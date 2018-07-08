@@ -512,6 +512,8 @@ desktop/views/components/settings.vue:
 
   display: "デザインと表示"
   customize: "ホームをカスタマイズ"
+  choose-wallpaper: "壁紙を選択"
+  delete-wallpaper: "壁紙を削除"
   dark-mode: "ダークモード"
   circle-icons: "円形のアイコンを使用"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
