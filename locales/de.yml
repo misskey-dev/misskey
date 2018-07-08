@@ -443,6 +443,8 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "API-Anfrage über WebSocket statt native Aktualisierungs-API (für bessere Leistung). Diese Einstellung wird im Browser gespeichert."
   display: "Erscheinungsbild und Anzeige"
   customize: "Startseite anpassen"
+  choose-wallpaper: "壁紙を選択"
+  delete-wallpaper: "壁紙を削除"
   dark-mode: "Nacht Modus"
   circle-icons: "Kreisförmige Icons"
   gradient-window-header: "Übergang in Fensterköpfen"
