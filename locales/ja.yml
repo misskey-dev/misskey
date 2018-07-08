@@ -440,6 +440,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
   retry: "リトライ"
+  load-more: "もっと読み込む"
 
 desktop/views/components/notifications.vue:
   more: "もっと見る"
@@ -703,6 +704,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
+  edit: "オプション"
 
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "{}がRenote"
