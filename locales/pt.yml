@@ -443,6 +443,8 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   display: "デザインと表示"
   customize: "ホームをカスタマイズ"
+  choose-wallpaper: "壁紙を選択"
+  delete-wallpaper: "壁紙を削除"
   dark-mode: "ダークモード"
   circle-icons: "円形のアイコンを使用"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
