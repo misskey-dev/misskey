@@ -3,7 +3,6 @@
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<p class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
 			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
@@ -23,6 +22,7 @@
 		<div></div>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
+			<span class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
 			<mk-time :time="message.createdAt"/>
 			<template v-if="message.is_edited">%fa:pencil-alt%</template>
 		</footer>
@@ -120,17 +120,6 @@ root(isDark)
 					height 16px
 					cursor pointer
 
-			> .read
-				user-select none
-				display block
-				position absolute
-				z-index 1
-				bottom -4px
-				left -12px
-				margin 0
-				color isDark ? rgba(#fff, 0.5) : rgba(#000, 0.5)
-				font-size 11px
-
 			> .content
 
 				> .is-deleted
@@ -186,10 +175,13 @@ root(isDark)
 			margin 8px 0
 
 		> footer
-			display block
+			display flex
 			margin 2px 0 0 0
 			font-size 10px
 			color isDark ? rgba(#fff, 0.4) : rgba(#000, 0.4)
+
+			> .read
+				margin 0 8px 0 0
 
 			> [data-fa]
 				margin-left 4px
@@ -222,7 +214,7 @@ root(isDark)
 							color #fff
 
 			> footer
-				text-align left
+				justify-content left
 
 	&[data-is-me]
 		> .avatar
@@ -256,7 +248,7 @@ root(isDark)
 							color #fff !important
 
 			> footer
-				text-align right
+				justify-content right
 
 	&[data-is-deleted]
 		> .baloon
