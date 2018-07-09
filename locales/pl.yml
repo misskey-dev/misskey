@@ -381,7 +381,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "Ładowanie nie powiodło się."
   retry: "Spróbuj ponownie"
-  load-more: "もっと読み込む"
+  load-more: "Załaduj więcej"
 desktop/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
@@ -444,8 +444,8 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   display: "Wygląd i wyświetlanie"
   customize: "Dostosuj stronę główną"
-  choose-wallpaper: "壁紙を選択"
-  delete-wallpaper: "壁紙を削除"
+  choose-wallpaper: "Wybierz tło"
+  delete-wallpaper: "Usuń tło"
   dark-mode: "Tryb ciemny"
   circle-icons: "Używaj okrągłych ikon"
   gradient-window-header: "Używaj gradientów na pasku tytułu okna"
@@ -541,9 +541,9 @@ desktop/views/components/settings.profile.vue:
   description: "Opis"
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
-  locked-account: "アカウントの保護"
-  is-locked: "投稿を非公開にする"
-  other: "その他"
+  locked-account: "Zabezpiecz swoje konto"
+  is-locked: "Uczyń wpis prywatnym"
+  other: "Inne"
   is-bot: "To konto jest prowadzone przez bota"
   is-cat: "To konto jest prowadzone przez kota"
 desktop/views/components/sub-note-content.vue:
@@ -566,7 +566,7 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Ulubione"
   lists: "Listy"
   follow-requests: "Prośby o śledzenie"
-  customize: "ホームのカスタマイズ"
+  customize: "Dostosuj stronę główną"
   settings: "Ustawienia"
   signout: "Wyloguj się"
   dark: "Sprowadź ciemność"
@@ -605,7 +605,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Tylko wpisy z zawartością multimedialną"
   is-media-view: "Widok multimediów"
-  edit: "オプション"
+  edit: "Opcje"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Udostępniono przez {}"
   private: "ten wpis jest prywatny"
