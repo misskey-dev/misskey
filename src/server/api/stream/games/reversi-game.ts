@@ -1,6 +1,6 @@
 import * as websocket from 'websocket';
 import * as redis from 'redis';
-import * as CRC32 from 'crc-32/types';
+import * as CRC32 from 'crc-32';
 import ReversiGame, { pack } from '../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../stream';
 import Reversi from '../../../../games/reversi/core';
