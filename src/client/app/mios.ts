@@ -104,7 +104,7 @@ export default class MiOS extends EventEmitter {
 	 */
 	public streams: {
 		localTimelineStream: LocalTimelineStreamManager;
-		hybridTimelineStreamManager: HybridTimelineStreamManager;
+		hybridTimelineStream: HybridTimelineStreamManager;
 		globalTimelineStream: GlobalTimelineStreamManager;
 		driveStream: DriveStreamManager;
 		serverStatsStream: ServerStatsStreamManager;
@@ -113,7 +113,7 @@ export default class MiOS extends EventEmitter {
 		reversiStream: ReversiStreamManager;
 	} = {
 		localTimelineStream: null,
-		hybridTimelineStreamManager: null,
+		hybridTimelineStream: null,
 		globalTimelineStream: null,
 		driveStream: null,
 		serverStatsStream: null,
@@ -233,7 +233,7 @@ export default class MiOS extends EventEmitter {
 
 			// Init other stream manager
 			this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.store.state.i);
-			this.streams.hybridTimelineStreamManager = new HybridTimelineStreamManager(this, this.store.state.i);
+			this.streams.hybridTimelineStream = new HybridTimelineStreamManager(this, this.store.state.i);
 			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.store.state.i);
 			this.streams.driveStream = new DriveStreamManager(this, this.store.state.i);
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.store.state.i);

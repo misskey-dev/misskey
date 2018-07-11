@@ -23,12 +23,16 @@ export const getFriendIds = async (me: mongodb.ObjectID, includeMe = true) => {
 	return myfollowingIds;
 };
 
-export const getFriends = async (me: mongodb.ObjectID, includeMe = true) => {
+export const getFriends = async (me: mongodb.ObjectID, includeMe = true, remoteOnly = false) => {
+	const q: any = remoteOnly ? {
+		followerId: me,
+		'_followee.host': { $ne: null }
+	} : {
+		followerId: me
+	};
 	// Fetch relation to other users who the I follows
 	const followings = await Following
-		.find({
-			followerId: me
-		});
+		.find(q);
 
 	// ID list of other users who the I follows
 	const myfollowings = followings.map(following => ({
