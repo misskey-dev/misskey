@@ -5,6 +5,7 @@ import config from '../../config';
 
 import homeStream from './stream/home';
 import localTimelineStream from './stream/local-timeline';
+import hybridTimelineStream from './stream/hybrid-timeline';
 import globalTimelineStream from './stream/global-timeline';
 import userListStream from './stream/user-list';
 import driveStream from './stream/drive';
@@ -64,6 +65,7 @@ module.exports = (server: http.Server) => {
 		const channel: any =
 			request.resourceURL.pathname === '/' ? homeStream :
 			request.resourceURL.pathname === '/local-timeline' ? localTimelineStream :
+			request.resourceURL.pathname === '/hybrid-timeline' ? hybridTimelineStream :
 			request.resourceURL.pathname === '/global-timeline' ? globalTimelineStream :
 			request.resourceURL.pathname === '/user-list' ? userListStream :
 			request.resourceURL.pathname === '/drive' ? driveStream :

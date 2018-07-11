@@ -269,7 +269,7 @@ export default async (user: IUser, data: {
 				// Publish note to local and hybrid timeline stream
 				if (note.visibility != 'home') {
 					publishLocalTimelineStream(noteObj);
-					publishHybridTimelineStream(noteObj);
+					publishHybridTimelineStream(null, noteObj);
 				}
 			}
 		}

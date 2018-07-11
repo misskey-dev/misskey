@@ -12,7 +12,7 @@ export default async function(
 	user: IUser
 ) {
 	// Subscribe stream
-	subscriber.subscribe(`misskey:hybrid-timeline:${user._id}`);
+	subscriber.subscribe('misskey:hybrid-timeline', `misskey:hybrid-timeline:${user._id}`);
 
 	const mute = await Mute.find({ muterId: user._id });
 	const mutedUserIds = mute.map(m => m.muteeId.toString());

@@ -50,7 +50,7 @@ class MisskeyEvent {
 	}
 
 	public publishHybridTimelineStream(userId: ID, note: any): void {
-		this.redisClient.publish(`misskey:hybrid-timeline:${userId}`, JSON.stringify(note));
+		this.redisClient.publish(userId ? `misskey:hybrid-timeline:${userId}` : 'misskey:hybrid-timeline', JSON.stringify(note));
 	}
 
 	public publishGlobalTimelineStream(note: any): void {
