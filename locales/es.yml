@@ -85,6 +85,7 @@ common:
     widgets: "Accesorios"
     home: "Inicio"
     local: "Local"
+    hybrid: "ハイブリッド"
     global: "Global"
     notifications: "Notificaciones"
     list: "Listado"
@@ -556,6 +557,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
+  hybrid: "ハイブリッド"
   global: "グローバル"
   list: "リスト"
 desktop/views/components/ui.header.vue:
@@ -818,6 +820,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
+  hybrid: "ハイブリッド"
   global: "グローバル"
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
