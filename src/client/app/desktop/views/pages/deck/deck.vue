@@ -120,6 +120,15 @@ export default Vue.extend({
 						});
 					}
 				}, {
+					icon: '%fa:share-alt%',
+					text: '%i18n:common.deck.hybrid%',
+					action: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'hybrid'
+						});
+					}
+				}, {
 					icon: '%fa:globe%',
 					text: '%i18n:common.deck.global%',
 					action: () => {

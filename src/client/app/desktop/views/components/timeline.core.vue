@@ -43,19 +43,21 @@ export default Vue.extend({
 		},
 
 		stream(): any {
-			return this.src == 'home'
-				? (this as any).os.stream
-				: this.src == 'local'
-					? (this as any).os.streams.localTimelineStream
-					: (this as any).os.streams.globalTimelineStream;
+			switch (this.src) {
+				case 'home': return (this as any).os.stream;
+				case 'local': return (this as any).os.streams.localTimelineStream;
+				case 'hybrid': return (this as any).os.streams.hybridTimelineStream;
+				case 'global': return (this as any).os.streams.globalTimelineStream;
+			}
 		},
 
 		endpoint(): string {
-			return this.src == 'home'
-				? 'notes/timeline'
-				: this.src == 'local'
-					? 'notes/local-timeline'
-					: 'notes/global-timeline';
+			switch (this.src) {
+				case 'home': return 'notes/timeline';
+				case 'local': return 'notes/local-timeline';
+				case 'hybrid': return 'notes/hybrid-timeline';
+				case 'global': return 'notes/global-timeline';
+			}
 		},
 
 		canFetchMore(): boolean {

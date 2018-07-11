@@ -1,7 +1,7 @@
 import es from '../../db/elasticsearch';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
-import stream, { publishLocalTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../stream';
+import stream, { publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -266,9 +266,10 @@ export default async (user: IUser, data: {
 				// Publish event to myself's stream
 				stream(note.userId, 'note', noteObj);
 
-				// Publish note to local timeline stream
+				// Publish note to local and hybrid timeline stream
 				if (note.visibility != 'home') {
 					publishLocalTimelineStream(noteObj);
+					publishHybridTimelineStream(noteObj);
 				}
 			}
 		}
@@ -303,6 +304,10 @@ export default async (user: IUser, data: {
 
 						// Publish event to followers stream
 						stream(following.followerId, 'note', noteObj);
+
+						if (isRemoteUser(user)) {
+							publishHybridTimelineStream(following.followerId, noteObj);
+						}
 					} else {
 						//#region AP配送
 						// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信

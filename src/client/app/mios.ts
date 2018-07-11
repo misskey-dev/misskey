@@ -15,6 +15,7 @@ import { ReversiStreamManager } from './common/scripts/streaming/games/reversi/r
 
 import Err from './common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
+import { HybridTimelineStreamManager } from './common/scripts/streaming/hybrid-timeline';
 import { GlobalTimelineStreamManager } from './common/scripts/streaming/global-timeline';
 
 //#region api requests
@@ -103,6 +104,7 @@ export default class MiOS extends EventEmitter {
 	 */
 	public streams: {
 		localTimelineStream: LocalTimelineStreamManager;
+		hybridTimelineStream: HybridTimelineStreamManager;
 		globalTimelineStream: GlobalTimelineStreamManager;
 		driveStream: DriveStreamManager;
 		serverStatsStream: ServerStatsStreamManager;
@@ -111,6 +113,7 @@ export default class MiOS extends EventEmitter {
 		reversiStream: ReversiStreamManager;
 	} = {
 		localTimelineStream: null,
+		hybridTimelineStream: null,
 		globalTimelineStream: null,
 		driveStream: null,
 		serverStatsStream: null,
@@ -230,6 +233,7 @@ export default class MiOS extends EventEmitter {
 
 			// Init other stream manager
 			this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.store.state.i);
+			this.streams.hybridTimelineStream = new HybridTimelineStreamManager(this, this.store.state.i);
 			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.store.state.i);
 			this.streams.driveStream = new DriveStreamManager(this, this.store.state.i);
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.store.state.i);

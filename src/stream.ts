@@ -49,6 +49,10 @@ class MisskeyEvent {
 		this.redisClient.publish('misskey:local-timeline', JSON.stringify(note));
 	}
 
+	public publishHybridTimelineStream(userId: ID, note: any): void {
+		this.redisClient.publish(`misskey:hybrid-timeline:${userId}`, JSON.stringify(note));
+	}
+
 	public publishGlobalTimelineStream(note: any): void {
 		this.redisClient.publish('misskey:global-timeline', JSON.stringify(note));
 	}
@@ -67,6 +71,7 @@ const ev = new MisskeyEvent();
 export default ev.publishUserStream.bind(ev);
 
 export const publishLocalTimelineStream = ev.publishLocalTimelineStream.bind(ev);
+export const publishHybridTimelineStream = ev.publishHybridTimelineStream.bind(ev);
 export const publishGlobalTimelineStream = ev.publishGlobalTimelineStream.bind(ev);
 export const publishDriveStream = ev.publishDriveStream.bind(ev);
 export const publishUserListStream = ev.publishUserListStream.bind(ev);

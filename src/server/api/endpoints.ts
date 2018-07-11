@@ -544,6 +544,13 @@ const endpoints: Endpoint[] = [
 		}
 	},
 	{
+		name: 'notes/hybrid-timeline',
+		limit: {
+			duration: ms('10minutes'),
+			max: 100
+		}
+	},
+	{
 		name: 'notes/global-timeline',
 		limit: {
 			duration: ms('10minutes'),
