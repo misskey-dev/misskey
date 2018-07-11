@@ -58,8 +58,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as CRC32 from 'crc-32';
-import Reversi, { Color } from '../../../../../games/reversi/core';
-import { url } from '../../../config';
+import Reversi, { Color } from '../../../../../../../games/reversi/core';
+import { url } from '../../../../../config';
 
 export default Vue.extend({
 	props: ['initGame', 'connection'],

@@ -27,7 +27,7 @@ import urlPreview from './url-preview.vue';
 import twitterSetting from './twitter-setting.vue';
 import fileTypeIcon from './file-type-icon.vue';
 import Switch from './switch.vue';
-import Reversi from './reversi.vue';
+import Reversi from './games/reversi/reversi.vue';
 import welcomeTimeline from './welcome-timeline.vue';
 import uiInput from './ui/input.vue';
 import uiButton from './ui/button.vue';
