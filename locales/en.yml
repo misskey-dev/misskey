@@ -85,7 +85,7 @@ common:
     widgets: "Widgets"
     home: "Home"
     local: "Local"
-    hybrid: "ハイブリッド"
+    hybrid: "Hybrid"
     global: "Global"
     notifications: "Notifications"
     list: "Lists"
@@ -557,7 +557,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "Home"
   local: "Local"
-  hybrid: "ハイブリッド"
+  hybrid: "Hybrid"
   global: "Global"
   list: "Lists"
 desktop/views/components/ui.header.vue:
@@ -568,7 +568,7 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
-  customize: "Customization of the home layout"
+  customize: "Customize home layout"
   settings: "Settings"
   signout: "Sign out"
   dark: "Submerge in dark"
@@ -820,7 +820,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "Home"
   local: "Local"
-  hybrid: "ハイブリッド"
+  hybrid: "Hybrid"
   global: "Global"
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
