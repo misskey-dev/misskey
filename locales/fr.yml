@@ -381,6 +381,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
+  load-more: "もっと読み込む"
 desktop/views/components/notifications.vue:
   more: "Plus"
   empty: "Pas de notifications"
@@ -443,6 +444,8 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   display: "Affichage et design"
   customize: "Personnaliser l'Accueil"
+  choose-wallpaper: "壁紙を選択"
+  delete-wallpaper: "壁紙を削除"
   dark-mode: "Mode nuit"
   circle-icons: "Utiliser des icônes circulaires"
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
@@ -538,6 +541,9 @@ desktop/views/components/settings.profile.vue:
   description: "Description"
   birthday: "Date de naissance"
   save: "Mettre à jour le profil"
+  locked-account: "アカウントの保護"
+  is-locked: "投稿を非公開にする"
+  other: "その他"
   is-bot: "Ce compte est un Bot"
   is-cat: "Ce compte est un Chat"
 desktop/views/components/sub-note-content.vue:
@@ -560,7 +566,7 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Listes"
   follow-requests: "Demandes de suivi"
-  customize: "Modifications"
+  customize: "ホームのカスタマイズ"
   settings: "Réglages"
   signout: "Déconnexion"
   dark: "Fall in dark"
@@ -599,6 +605,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
+  edit: "オプション"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposté par {}"
   private: "cette publication est privée"
@@ -928,7 +935,4 @@ docs:
     props:
       name: "Nom"
       type: "Type"
-      optional: "Optionel"
       description: "Description"
-      yes: "Oui"
-      no: "Non"

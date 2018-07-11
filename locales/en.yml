@@ -381,6 +381,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
+  load-more: "Read more"
 desktop/views/components/notifications.vue:
   more: "More"
   empty: "No notifications!"
@@ -443,6 +444,8 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "API request is performed via the WebSocket connection instead of native fetch API (for better performance). This setting is stored in the browser."
   display: "Design and display"
   customize: "Customize home layout"
+  choose-wallpaper: "Choose a background"
+  delete-wallpaper: "Remove background"
   dark-mode: "Dark Mode"
   circle-icons: "Use circle icons"
   gradient-window-header: "Use gradients on window headers"
@@ -538,6 +541,9 @@ desktop/views/components/settings.profile.vue:
   description: "Description"
   birthday: "Birthday"
   save: "Update profile"
+  locked-account: "Protect your account"
+  is-locked: "Make a note private"
+  other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
 desktop/views/components/sub-note-content.vue:
@@ -560,7 +566,7 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
-  customize: "Customize layout"
+  customize: "Customization of the home layout"
   settings: "Settings"
   signout: "Sign out"
   dark: "Submerge in dark"
@@ -599,6 +605,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
+  edit: "Options"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposted by {}"
   private: "This post is private"
@@ -928,7 +935,4 @@ docs:
     props:
       name: "Name"
       type: "Type"
-      optional: "Optional"
       description: "Description"
-      yes: "Yes"
-      no: "No"

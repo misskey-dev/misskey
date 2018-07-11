@@ -381,6 +381,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
   retry: "リトライ"
+  load-more: "もっと読み込む"
 desktop/views/components/notifications.vue:
   more: "もっと見る"
   empty: "ありません！"
@@ -443,6 +444,8 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   display: "デザインと表示"
   customize: "ホームをカスタマイズ"
+  choose-wallpaper: "壁紙を選択"
+  delete-wallpaper: "壁紙を削除"
   dark-mode: "ダークモード"
   circle-icons: "円形のアイコンを使用"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
@@ -538,6 +541,9 @@ desktop/views/components/settings.profile.vue:
   description: "自己紹介"
   birthday: "誕生日"
   save: "保存"
+  locked-account: "アカウントの保護"
+  is-locked: "投稿を非公開にする"
+  other: "その他"
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
 desktop/views/components/sub-note-content.vue:
@@ -560,7 +566,7 @@ desktop/views/components/ui.header.account.vue:
   favorites: "お気に入り"
   lists: "リスト"
   follow-requests: "フォロー申請"
-  customize: "カスタマイズ"
+  customize: "ホームのカスタマイズ"
   settings: "設定"
   signout: "サインアウト"
   dark: "闇に飲まれる"
@@ -599,6 +605,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
+  edit: "オプション"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
@@ -928,7 +935,4 @@ docs:
     props:
       name: "名前"
       type: "型"
-      optional: "オプション"
       description: "説明"
-      yes: "はい"
-      no: "いいえ"
