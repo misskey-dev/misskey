@@ -6,7 +6,7 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 
 const loadLang = lang => yaml.safeLoad(
-	fs.readFileSync(`./locales/${lang}.yml`, 'utf-8'));
+	fs.readFileSync(`${__dirname}/${lang}.yml`, 'utf-8'));
 
 const native = loadLang('ja');
 
