@@ -11,7 +11,7 @@ import { DriveStreamManager } from './common/scripts/streaming/drive';
 import { ServerStatsStreamManager } from './common/scripts/streaming/server-stats';
 import { NotesStatsStreamManager } from './common/scripts/streaming/notes-stats';
 import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
-import { ReversiStreamManager } from './common/scripts/streaming/games/reversi';
+import { ReversiStreamManager } from './common/scripts/streaming/games/reversi/reversi';
 
 import Err from './common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';

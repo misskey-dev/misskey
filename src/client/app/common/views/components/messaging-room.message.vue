@@ -22,7 +22,7 @@
 		<div></div>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
-			<span class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
+			<span class="read" v-if="isMe && message.isRead">%i18n:@is-read%</span>
 			<mk-time :time="message.createdAt"/>
 			<template v-if="message.is_edited">%fa:pencil-alt%</template>
 		</footer>

@@ -1,6 +1,6 @@
-import StreamManager from '../stream-manager';
-import Stream from '../stream';
-import MiOS from '../../../../mios';
+import StreamManager from '../../stream-manager';
+import Stream from '../../stream';
+import MiOS from '../../../../../mios';
 
 export class ReversiStream extends Stream {
 	constructor(os: MiOS, me) {

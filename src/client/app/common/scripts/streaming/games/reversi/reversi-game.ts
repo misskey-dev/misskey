@@ -1,5 +1,5 @@
-import Stream from '../stream';
-import MiOS from '../../../../mios';
+import Stream from '../../stream';
+import MiOS from '../../../../../mios';
 
 export class ReversiGameStream extends Stream {
 	constructor(os: MiOS, me, game) {

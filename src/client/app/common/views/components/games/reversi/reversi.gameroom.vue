@@ -9,7 +9,7 @@
 import Vue from 'vue';
 import XGame from './reversi.game.vue';
 import XRoom from './reversi.room.vue';
-import { ReversiGameStream } from '../../scripts/streaming/reversi-game';
+import { ReversiGameStream } from '../../../../scripts/streaming/games/reversi-game';
 
 export default Vue.extend({
 	components: {
