@@ -29,9 +29,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 @import '~const.styl'
-
-.search
-
+root(isDark)
 	> [data-fa]
 		display block
 		position absolute
@@ -60,15 +58,21 @@ export default Vue.extend({
 		border none
 		border-radius 16px
 		transition color 0.5s ease, border 0.5s ease
-		font-family FontAwesome, sans-serif
+		color isDark ? #fff : #000
+		
 
 		&::placeholder
 			color #9eaba8
 
 		&:hover
-			background rgba(#000, 0.08)
+			background isDark ? rgba(#fff, 0.04) : rgba(#000, 0.08)
 
 		&:focus
 			box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important
 
+.search[data-darkmode]
+	root(true)
+
+.search:not([data-darkmode])
+	root(false)
 </style>
