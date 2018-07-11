@@ -3,6 +3,7 @@
 	<span slot="header">
 		<template v-if="column.type == 'home'">%fa:home%</template>
 		<template v-if="column.type == 'local'">%fa:R comments%</template>
+		<template v-if="column.type == 'hybrid'">%fa:share-alt%</template>
 		<template v-if="column.type == 'global'">%fa:globe%</template>
 		<template v-if="column.type == 'list'">%fa:list%</template>
 		<span>{{ name }}</span>
@@ -61,6 +62,7 @@ export default Vue.extend({
 			switch (this.column.type) {
 				case 'home': return '%i18n:common.deck.home%';
 				case 'local': return '%i18n:common.deck.local%';
+				case 'hybrid': return '%i18n:common.deck.hybrid%';
 				case 'global': return '%i18n:common.deck.global%';
 				case 'list': return this.column.list.title;
 			}
