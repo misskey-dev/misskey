@@ -176,7 +176,7 @@ $border-color = rgba(27, 31, 35, 0.15)
 
 		> button
 			display block
-			padding 8px 16px
+			padding 8px 12px
 			width 100%
 
 			&:hover
