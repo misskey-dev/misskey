@@ -269,6 +269,8 @@ export default async (user: IUser, data: {
 				// Publish note to local and hybrid timeline stream
 				if (note.visibility != 'home') {
 					publishLocalTimelineStream(noteObj);
+				}
+				if (note.visibility == 'public') {
 					publishHybridTimelineStream(null, noteObj);
 				}
 			}
@@ -281,9 +283,11 @@ export default async (user: IUser, data: {
 
 		if (note.visibility == 'specified') {
 			data.visibleUsers.forEach(async u => {
-				stream(u._id, 'note', await pack(note, u, {
+				const n = await pack(note, u, {
 					detail: true
-				}));
+				});
+				stream(u._id, 'note', n);
+				publishHybridTimelineStream(u._id, n);
 			});
 		}
 
@@ -304,10 +308,7 @@ export default async (user: IUser, data: {
 
 						// Publish event to followers stream
 						stream(following.followerId, 'note', noteObj);
-
-						if (isRemoteUser(user)) {
-							publishHybridTimelineStream(following.followerId, noteObj);
-						}
+						publishHybridTimelineStream(following.followerId, noteObj);
 					} else {
 						//#region AP配送
 						// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
