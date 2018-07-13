@@ -20,7 +20,8 @@ export default class Logger {
 	public static log(level: LogLevel, message: string): void {
 		const color = toLevelColor(level);
 		const time = (new Date()).toLocaleTimeString('ja-JP');
-		console.log(`[${time} ${color.bold(level.toUpperCase())}]: ${message}`);
+		const coloredMessage = level === 'Info' ? message : color.bold(message);
+		console.log(`[${time} ${color.bold(level.toUpperCase())}]: ${coloredMessage}`);
 	}
 
 	public static error(message: string): void {
