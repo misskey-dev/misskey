@@ -119,7 +119,7 @@ async function init(): Promise<Config> {
 	}
 
 	configLogger.info('Successfully loaded');
-	configLogger.info(`maintainer: ${config.maintainer}`);
+	configLogger.info(`Maintainer: ${config.maintainer.name}`);
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
 		throw 'You need root privileges to listen on port below 1024 on Linux';
