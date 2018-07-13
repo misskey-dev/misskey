@@ -190,7 +190,7 @@ process.on('uncaughtException', err => {
 
 // Dying away...
 process.on('exit', code => {
-	Logger.info(`The process is going exit with code ${code}`);
+	Logger.info(`The process is going to exit with code ${code}`);
 
 	db.close();
 });
