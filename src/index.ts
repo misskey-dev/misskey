@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as cluster from 'cluster';
 import * as debug from 'debug';
 import chalk from 'chalk';
-// import portUsed = require('tcp-port-used');
+import * as portscanner from 'portscanner';
 import isRoot = require('is-root');
 import Xev from 'xev';
 
@@ -125,12 +125,9 @@ async function init(): Promise<Config> {
 		throw 'You need root privileges to listen on port below 1024 on Linux';
 	}
 
-	// Check if a port is being used
-	/* https://github.com/stdarg/tcp-port-used/issues/3
-	if (await portUsed.check(config.port)) {
-		throw `Port ${config.port} is already used`;
+	if (await portscanner.checkPortStatus(config.port, '127.0.0.1') === 'open') {
+		throw `Port ${config.port} is already in use`;
 	}
-	*/
 
 	// Try to connect to MongoDB
 	const mongoDBLogger = new Logger('MongoDB');
