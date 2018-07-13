@@ -127,7 +127,7 @@ async function init(): Promise<Config> {
 	}
 
 	if (await portscanner.checkPortStatus(config.port, '127.0.0.1') === 'open') {
-		Logger.error(`Port ${config.port} is already in use`)
+		Logger.error(`Port ${config.port} is already in use`);
 		process.exit(1);
 	}
 
