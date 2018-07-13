@@ -6,7 +6,8 @@ import { IApp } from '../../models/app';
 export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, file?: any) => new Promise<any>(async (ok, rej) => {
 	const isSecure = user != null && app == null;
 
-	const ep = typeof endpoint == 'string' ? endpoints.find(e => e.name == endpoint) : endpoint;
+	const epName = typeof endpoint === 'string' ? endpoint : endpoint.name;
+	const ep = endpoints.find(e => e.name === epName);
 
 	if (ep.name.includes('.')) {
 		return rej('INVALID_ENDPOINT');
