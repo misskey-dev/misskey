@@ -9,10 +9,6 @@ export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, 
 	const epName = typeof endpoint === 'string' ? endpoint : endpoint.name;
 	const ep = endpoints.find(e => e.name === epName);
 
-	if (ep.name.includes('.')) {
-		return rej('INVALID_ENDPOINT');
-	}
-
 	if (ep.secure && !isSecure) {
 		return rej('ACCESS_DENIED');
 	}
