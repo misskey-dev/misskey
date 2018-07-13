@@ -124,6 +124,9 @@ export default async (params: any, user: ILocalUser) => {
 				// フォローしている人の投稿
 				$or: followQuery
 			}, {
+				// public only
+				visibility: 'public',
+
 				// local
 				'_user.host': null
 			}],
