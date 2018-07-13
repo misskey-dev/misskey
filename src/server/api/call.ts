@@ -17,6 +17,10 @@ export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, 
 		return rej('SIGNIN_REQUIRED');
 	}
 
+	if (ep.withCredential && user.isSuspended) {
+		return rej('YOUR_ACCOUNT_HAS_BEEN_SUSPENDED');
+	}
+
 	if (app && ep.kind) {
 		if (!app.permission.some(p => p === ep.kind)) {
 			return rej('PERMISSION_DENIED');
