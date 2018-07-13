@@ -122,11 +122,13 @@ async function init(): Promise<Config> {
 	configLogger.info(`Maintainer: ${config.maintainer.name}`);
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
-		throw 'You need root privileges to listen on port below 1024 on Linux';
+		Logger.error('You need root privileges to listen on port below 1024 on Linux');
+		process.exit(1);
 	}
 
 	if (await portscanner.checkPortStatus(config.port, '127.0.0.1') === 'open') {
-		throw `Port ${config.port} is already in use`;
+		Logger.error(`Port ${config.port} is already in use`);
+		process.exit(1);
 	}
 
 	// Try to connect to MongoDB
