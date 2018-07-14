@@ -33,7 +33,7 @@
 		"@types/bcryptjs": "2.4.1",
 		"@types/debug": "0.0.30",
 		"@types/deep-equal": "1.0.1",
-		"@types/elasticsearch": "5.0.24",
+		"@types/elasticsearch": "5.0.25",
 		"@types/file-type": "5.2.1",
 		"@types/gm": "1.18.0",
 		"@types/gulp": "3.8.36",
