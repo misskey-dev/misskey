@@ -85,7 +85,7 @@ common:
     widgets: "Widgets"
     home: "Accueil"
     local: "Local"
-    hybrid: "コミュニティ"
+    hybrid: "ソーシャル"
     global: "Global"
     notifications: "Notifications"
     list: "Liste"
@@ -557,7 +557,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "Accueil"
   local: "Local"
-  hybrid: "コミュニティ"
+  hybrid: "ソーシャル"
   global: "Global"
   list: "Listes"
 desktop/views/components/ui.header.vue:
@@ -820,7 +820,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
-  hybrid: "コミュニティ"
+  hybrid: "ソーシャル"
   global: "Global"
 mobile/views/pages/messaging.vue:
   messaging: "Messagerie"
