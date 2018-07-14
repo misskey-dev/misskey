@@ -52,7 +52,7 @@ root(isDark)
 		width 100%
 		padding 8px
 		background isDark ? #282c37 : #f7f7f7
-		box-shadow 0 0px 2px rgba(0,0,0,0.2)
+		box-shadow 0 0px 2px isDark ? #000 : rgba(#000, 0.2)
 
 		> button
 			width 100%

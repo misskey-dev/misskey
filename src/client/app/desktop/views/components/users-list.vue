@@ -63,6 +63,9 @@ export default Vue.extend({
 				this.users = this.users.concat(obj.users);
 				this.next = obj.next;
 			});
+		},
+		navigate(list) {
+			this.$emit('navigate', list);
 		}
 	}
 });

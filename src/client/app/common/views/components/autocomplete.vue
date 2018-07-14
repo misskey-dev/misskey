@@ -228,12 +228,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-autocomplete
+root(isDark)
 	position fixed
 	z-index 65535
 	margin-top calc(1em + 8px)
 	overflow hidden
-	background #fff
+	background isDark ? #313543 : #fff
 	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
 	transition top 0.1s ease, left 0.1s ease
@@ -284,11 +284,13 @@ export default Vue.extend({
 			border-radius 100%
 
 		.name
+			vertical-align middle
 			margin 0 8px 0 0
-			color rgba(#000, 0.8)
+			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 		.username
-			color rgba(#000, 0.3)
+			vertical-align middle
+			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
 
 	> .emojis > li
 
@@ -304,4 +306,9 @@ export default Vue.extend({
 			margin 0 0 0 8px
 			color rgba(#000, 0.3)
 
+.mk-autocomplete[data-darkmode]
+	root(true)
+
+.mk-autocomplete:not([data-darkmode])
+	root(false)
 </style>
