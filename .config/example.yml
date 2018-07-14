@@ -10,9 +10,9 @@ maintainer:
 # URL and Port settings overview
 # e.g., If you want following structure:
 #
-#                  +--- https://example.com:123 ---------------+
+#                  +--- https://example.com:123 -----------+
 # +---------+      |+-------------+      +----------------+|
-# | Browser | ---> || Proxy (123) | ---> | Misskey (456) ||
+# | Browser | ---> || Proxy (123) | ---> | Misskey (456)  ||
 # +---------+      |+-------------+      +----------------+|
 #                  +---------------------------------------+
 #
