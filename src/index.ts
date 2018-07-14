@@ -131,6 +131,11 @@ async function init(): Promise<Config> {
 
 	// Try to connect to MongoDB
 	const mongoDBLogger = new Logger('MongoDB');
+	mongoDBLogger.info(`Host: ${config.mongodb.host}`);
+	mongoDBLogger.info(`Port: ${config.mongodb.port}`);
+	mongoDBLogger.info(`DB: ${config.mongodb.db}`);
+	if (config.mongodb.user) mongoDBLogger.info(`User: ${config.mongodb.user}`);
+	if (config.mongodb.pass) mongoDBLogger.info(`Pass: ****`);
 	const db = require('./db/mongodb').default;
 	mongoDBLogger.succ('Connectivity confirmed');
 	db.close();
