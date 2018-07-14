@@ -21,12 +21,12 @@ export default class Logger {
 		(new Logger('')).warn(message);
 	}
 
-	public static info(message: string): void {
-		(new Logger('')).info(message);
-	}
-
 	public static succ(message: string): void {
 		(new Logger('')).succ(message);
+	}
+
+	public static info(message: string): void {
+		(new Logger('')).info(message);
 	}
 
 	public log(level: string, message: string) {
@@ -34,19 +34,20 @@ export default class Logger {
 		Logger.log(level, `${domain}${message}`);
 	}
 
-	public error(message: string): void {
+	public error(message: string): void { // 実行を継続できない状況で使う
 		this.log(chalk.red.bold('ERROR'), chalk.red.bold(message));
 	}
 
-	public warn(message: string): void {
+	public warn(message: string): void {　// 実行を継続できるが改善すべき状況で使う
 		this.log(chalk.yellow.bold('WARN'), chalk.yellow.bold(message));
 	}
 
-	public info(message: string): void {
+	public succ(message: string): void { // 何かに成功した状況で使う
+		this.log(chalk.blue.bold('INFO'), chalk.green.bold(message));
+	}
+
+	public info(message: string): void { // それ以外
 		this.log(chalk.blue.bold('INFO'), message);
 	}
 
-	public succ(message: string): void {
-		this.log(chalk.blue.bold('INFO'), chalk.green.bold(message));
-	}
 }
