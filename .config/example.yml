@@ -8,6 +8,9 @@ maintainer:
   feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
 
 url: http://localhost/
+
+# A port that your Misskey server should listen.
+# This value is not a port to use when accessing with a browser.
 port: 80
 
 mongodb:
