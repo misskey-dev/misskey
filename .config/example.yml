@@ -13,10 +13,10 @@ maintainer:
   url: 'http://example.com/'
 
   # Repository URL
-  repository_url: 'http://example.com/'
+  repository_url: 'https://github.com/syuilo/misskey'
 
   # Feedback URL (e.g. github issue)
-  feedback_url: 'http://example.com/'
+  feedback_url: 'https://github.com/syuilo/misskey/issues'
 
 # URL
 url: http://localhost/
