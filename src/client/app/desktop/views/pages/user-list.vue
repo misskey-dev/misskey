@@ -52,7 +52,7 @@ export default Vue.extend({
 	display flex
 	justify-content center
 	margin 0 auto
-	max-width 1200px
+	width 980px
 
 	> main
 	> div > div
@@ -61,7 +61,7 @@ export default Vue.extend({
 
 	> main
 		padding 16px
-		width calc(100% - 275px * 2)
+		width calc(100% - 307px)
 
 	> div
 		width 275px

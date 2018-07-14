@@ -205,7 +205,7 @@ root(isDark)
 		z-index 1
 		width 100%
 		background #fff
-		box-shadow 0 0px 2px rgba(#000, 0.2)
+		box-shadow 0 0px 2px isDark ? #000 : rgba(#000, 0.2)
 
 		> .form
 			padding 8px
@@ -264,7 +264,7 @@ root(isDark)
 			width 100%
 			margin 0
 			padding 0
-			background #fff
+			background isDark ? #313543 : #fff
 
 			> .users
 				margin 0
@@ -315,14 +315,15 @@ root(isDark)
 						border-radius 6px
 
 					.name
+						vertical-align middle
 						margin 0 8px 0 0
-						/*font-weight bold*/
 						font-weight normal
-						color rgba(#000, 0.8)
+						color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 					.username
+						vertical-align middle
 						font-weight normal
-						color rgba(#000, 0.3)
+						color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
 
 	> .history
 

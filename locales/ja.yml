@@ -239,6 +239,10 @@ common/views/components/twitter-setting.vue:
 common/views/components/uploader.vue:
   waiting: "待機中"
 
+common/views/components/user-lists.vue:
+  create-list: "リストを作成"
+  enter-list-name: "リスト名を入力してください"
+
 common/views/components/visibility-chooser.vue:
   public: "公開"
   home: "ホーム"
@@ -683,7 +687,6 @@ desktop/views/components/received-follow-requests-window.vue:
 
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
-  create-list: "リストを作成"
 
 desktop/views/components/user-preview.vue:
   notes: "投稿"
