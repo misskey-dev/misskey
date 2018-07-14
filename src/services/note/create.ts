@@ -309,7 +309,7 @@ export default async (user: IUser, data: {
 						// Publish event to followers stream
 						stream(following.followerId, 'note', noteObj);
 						
-						if (note.visibility != 'public') {
+						if (isRemoteUser(user) || note.visibility != 'public') {
 							publishHybridTimelineStream(following.followerId, noteObj);
 						}
 					} else {
