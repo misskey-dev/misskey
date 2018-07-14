@@ -1,73 +1,71 @@
-# インスタンス名
-name:
+# Name of your instance
+name: 'example-instance-name'
 
-# インスタンスの紹介
-description:
+# Description of your instance
+description: 'example-description'
 
-# サーバーのメンテナ情報
+# Maintainer
 maintainer:
-  # メンテナの名前
-  name:
+  # Your name
+  name: 'example-maitainer-name'
 
-  # メンテナの連絡先(URLかmailto形式のURL)
-  url:
+  # Your contact (http or mailto)
+  url: 'http://example.com/'
 
-  # レポジトリのURL
-  repository_url:
+  # Repository URL
+  repository_url: 'http://example.com/'
 
-  # フィードバックのURL(issueなど)
-  feedback_url:
+  # Feedback URL (e.g. github issue)
+  feedback_url: 'http://example.com/'
 
-# (Misskeyを動かす)URL
-url:
+# URL
+url: http://localhost/
 
-# 待受ポート
-port:
+port: 80
 
-# TLSの設定(利用しない場合はフィールドごと削除してください)
-https:
-  # 証明書のパス...
-  key:
-  cert:
+# TLS (Uncomment if you need)
+# https:
+#   # path for certification
+#   key: example-tls-key
+#   cert: example-tls-cert
 
-# MongoDBの設定
+# MongoDB
 mongodb:
   host: localhost
   port: 27017
-  db: misskey
-  user:
-  pass:
+  db: example-db
+  user: example-misskey-user
+  pass: example-misskey-pass
 
-# Redisの設定
+# Redis
 redis:
   host: localhost
   port: 6379
-  pass:
+  pass: 'example-pass'
 
-# reCAPTCHAの設定
+# reCAPTCHA
 recaptcha:
-  site_key:
-  secret_key:
+  site_key: example-site-key
+  secret_key: example-secret-key
 
-# ServiceWorkerの設定
+# ServiceWorker
 sw:
-  # VAPIDの公開鍵
-  public_key:
+  # Public key of VAPID
+  public_key: example-sw-public-key
 
-  # VAPIDの秘密鍵
-  private_key:
+  # Private key of VAPID
+  private_key: example-sw-private-key
 
 # Google Maps API
-google_maps_api_key:
+google_maps_api_key: example-google-maps-api-key
 
-# Twitterインテグレーションの設定(利用しない場合は省略可能)
+# Twitter integration (can be omitted)
 twitter:
-  # インテグレーション用アプリのコンシューマーキー
-  consumer_key:
+  consumer_key: example-twitter-consumer-key
+  consumer_secret: example-twitter-consumer-secret-key
 
-  # インテグレーション用アプリのコンシューマーシークレット
-  consumer_secret:
-
-# true にすると、リモートのファイルをキャッシュしなくなります(直リンクします)。
-# ストレージ容量を節約することができますが、「リモートメディアを表示しない」設定をオンにしているユーザーは、リモートの画像などは見えなくなります。
+# If enabled:
+#  Server will not cache remote files (Using direct link instead).
+#  You can save your storage.
+#  Users cannot see remote images when they turn off "Show media from a remote server"　setting.
 preventCache: false
