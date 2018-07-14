@@ -6,11 +6,8 @@ import { IApp } from '../../models/app';
 export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, file?: any) => new Promise<any>(async (ok, rej) => {
 	const isSecure = user != null && app == null;
 
-	const ep = typeof endpoint == 'string' ? endpoints.find(e => e.name == endpoint) : endpoint;
-
-	if (ep.name.includes('.')) {
-		return rej('INVALID_ENDPOINT');
-	}
+	const epName = typeof endpoint === 'string' ? endpoint : endpoint.name;
+	const ep = endpoints.find(e => e.name === epName);
 
 	if (ep.secure && !isSecure) {
 		return rej('ACCESS_DENIED');
@@ -18,6 +15,10 @@ export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, 
 
 	if (ep.withCredential && user == null) {
 		return rej('SIGNIN_REQUIRED');
+	}
+
+	if (ep.withCredential && user.isSuspended) {
+		return rej('YOUR_ACCOUNT_HAS_BEEN_SUSPENDED');
 	}
 
 	if (app && ep.kind) {

@@ -49,7 +49,7 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 
 	try {
 		driveFile = await create(user, path, name, null, folderId, false, config.preventCacheRemoteFiles, url, uri);
-		log(`created: ${driveFile._id}`);
+		log(`got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;
 		log(`failed: ${e}`);

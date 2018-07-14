@@ -50,7 +50,7 @@ export default Vue.extend({
 				this.list = this.$store.state.device.tl.arg;
 			}
 		} else if (this.$store.state.i.followingCount == 0) {
-			this.src = 'local';
+			this.src = 'hybrid';
 		}
 	},
 

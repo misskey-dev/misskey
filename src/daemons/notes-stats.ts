@@ -3,7 +3,7 @@ import Xev from 'xev';
 
 const ev = new Xev();
 
-export default function() {
+export default function () {
 	const log: any[] = [];
 
 	const p = childProcess.fork(__dirname + '/notes-stats-child.js');
@@ -17,4 +17,9 @@ export default function() {
 	ev.on('requestNotesStatsLog', id => {
 		ev.emit('notesStatsLog:' + id, log);
 	});
+
+	process.on('exit', code => {
+		process.kill(p.pid);
+	});
+
 }

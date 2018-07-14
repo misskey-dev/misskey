@@ -93,7 +93,7 @@ common:
     widgets: "ウィジェット"
     home: "ホーム"
     local: "ローカル"
-    hybrid: "ハイブリッド"
+    hybrid: "ソーシャル"
     global: "グローバル"
     notifications: "通知"
     list: "リスト"
@@ -643,7 +643,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ハイブリッド"
+  hybrid: "ソーシャル"
   global: "グローバル"
   list: "リスト"
 
@@ -967,7 +967,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ハイブリッド"
+  hybrid: "ソーシャル"
   global: "グローバル"
 
 mobile/views/pages/messaging.vue:
