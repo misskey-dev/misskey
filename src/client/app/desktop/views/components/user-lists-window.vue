@@ -11,7 +11,7 @@ export default Vue.extend({
 	methods: {
 		navigate(list) {
 			this.$router.push(`/i/lists/${list.id}`);
-			(this as any).close(this);
+			(this.$refs.window as any).close();
 		}
 	}
 });
