@@ -209,7 +209,7 @@
 		"vue-template-compiler": "2.5.16",
 		"vuedraggable": "2.16.0",
 		"vuex": "3.0.1",
-		"vuex-persistedstate": "^2.5.4",
+		"vuex-persistedstate": "2.5.4",
 		"web-push": "3.3.2",
 		"webfinger.js": "2.6.6",
 		"webpack": "4.16.0",
