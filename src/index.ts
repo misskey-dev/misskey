@@ -67,7 +67,7 @@ async function masterMain() {
 		process.exit(1);
 	}
 
-	Logger.succ('Successfully initialized');
+	Logger.succ('Misskey initialized');
 
 	spawnWorkers(() => {
 		Logger.succ('All workers started');
@@ -117,8 +117,7 @@ async function init(): Promise<Config> {
 		throw exception;
 	}
 
-	configLogger.succ('Successfully loaded');
-	configLogger.info(`Maintainer: ${config.maintainer.name}`);
+	configLogger.succ('Loaded');
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
 		Logger.error('You need root privileges to listen on port below 1024 on Linux');
@@ -133,7 +132,7 @@ async function init(): Promise<Config> {
 	// Try to connect to MongoDB
 	const mongoDBLogger = new Logger('MongoDB');
 	const db = require('./db/mongodb').default;
-	mongoDBLogger.succ('Successfully connected');
+	mongoDBLogger.succ('Connectivity confirmed');
 	db.close();
 
 	return config;
