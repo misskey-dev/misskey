@@ -48,7 +48,7 @@ recaptcha:
 # If enabled:
 #  Server will not cache remote files (Using direct link instead).
 #  You can save your storage.
-#  Users cannot see remote images when they turn off "Show media from a remote server"　setting.
+#  Users cannot see remote images when they turn off "Show media from a remote server" setting.
 preventCache: false
 
 #
