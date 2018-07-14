@@ -61,6 +61,12 @@ preventCache: false
 #   key: example-tls-key
 #   cert: example-tls-cert
 
+# Elasticsearch
+# elasticsearch:
+#   host: localhost
+#   port: 9200
+#   pass: null
+
 # ServiceWorker
 # sw:
 #   # Public key of VAPID
