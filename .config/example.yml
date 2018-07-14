@@ -18,6 +18,9 @@ maintainer:
 #
 # You need to set 'https://example.com:123' to 'url' prop and
 # You need to set 456 to 'port' prop.
+#
+# In other words, the 'url' prop should be the final accessible URL seen by a user.
+# 'port' prop is a port that the Misskey server should actually listen on and it is not necessarily the port that a user accesses.
 
 url: http://localhost/
 
