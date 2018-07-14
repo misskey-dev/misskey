@@ -71,8 +71,7 @@ async function masterMain() {
 
 	spawnWorkers(() => {
 		Logger.succ('All workers started');
-		Logger.info(`Now listening on port ${config.port}`);
-		Logger.info(`URL is ${config.url}`);
+		Logger.info(`Now listening on port ${config.port} on ${config.url}`);
 	});
 }
 
