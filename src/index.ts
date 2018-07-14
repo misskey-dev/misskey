@@ -96,8 +96,8 @@ async function workerMain() {
 async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
 
-	EnvironmentInfo.show();
 	MachineInfo.show();
+	EnvironmentInfo.show();
 	new DependencyInfo().showAll();
 
 	const configLogger = new Logger('Config');
