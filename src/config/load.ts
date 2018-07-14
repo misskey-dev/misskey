@@ -26,7 +26,7 @@ export default function load() {
 	const mixin = {} as Mixin;
 
 	// Validate URLs
-	if (!isUrl(config.url)) urlError(config.url);
+	if (!isUrl(config.url)) throw `url="${config.url}" is not a valid URL`;
 
 	const url = new URL(config.url);
 	config.url = normalizeUrl(config.url);
@@ -49,9 +49,4 @@ export default function load() {
 
 function normalizeUrl(url: string) {
 	return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
-}
-
-function urlError(url: string) {
-	console.error(`「${url}」は、正しいURLではありません。先頭に http:// または https:// をつけ忘れてないかなど確認してください。`);
-	process.exit(99);
 }

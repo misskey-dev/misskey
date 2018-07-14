@@ -1,14 +1,5 @@
-import chalk, { Chalk } from 'chalk';
-
-export type LogLevel = 'Error' | 'Warn' | 'Info';
-
-function toLevelColor(level: LogLevel): Chalk {
-	switch (level) {
-		case 'Error': return chalk.red;
-		case 'Warn': return chalk.yellow;
-		case 'Info': return chalk.blue;
-	}
-}
+import chalk from 'chalk';
+import * as dateformat from 'dateformat';
 
 export default class Logger {
 	private domain: string;
@@ -17,38 +8,45 @@ export default class Logger {
 		this.domain = domain;
 	}
 
-	public static log(level: LogLevel, message: string): void {
-		const color = toLevelColor(level);
-		const time = (new Date()).toLocaleTimeString('ja-JP');
-		const coloredMessage = level === 'Info' ? message : color.bold(message);
-		console.log(`[${time} ${color.bold(level.toUpperCase())}]: ${coloredMessage}`);
+	public static log(level: string, message: string): void {
+		const time = dateformat(new Date(), 'HH:MM:ss');
+		console.log(`[${time} ${level}] ${message}`);
 	}
 
 	public static error(message: string): void {
-		Logger.log('Error', message);
+		(new Logger('')).error(message);
 	}
 
 	public static warn(message: string): void {
-		Logger.log('Warn', message);
+		(new Logger('')).warn(message);
 	}
 
 	public static info(message: string): void {
-		Logger.log('Info', message);
+		(new Logger('')).info(message);
 	}
 
-	public log(level: LogLevel, message: string): void {
-		Logger.log(level, `[${this.domain}] ${message}`);
+	public static succ(message: string): void {
+		(new Logger('')).succ(message);
+	}
+
+	public log(level: string, message: string) {
+		const domain = this.domain.length > 0 ? `[${this.domain}] ` : '';
+		Logger.log(level, `${domain}${message}`);
 	}
 
 	public error(message: string): void {
-		this.log('Error', message);
+		this.log(chalk.red.bold('ERROR'), chalk.red.bold(message));
 	}
 
 	public warn(message: string): void {
-		this.log('Warn', message);
+		this.log(chalk.yellow.bold('WARN'), chalk.yellow.bold(message));
 	}
 
 	public info(message: string): void {
-		this.log('Info', message);
+		this.log(chalk.blue.bold('INFO'), message);
+	}
+
+	public succ(message: string): void {
+		this.log(chalk.blue.bold('INFO'), chalk.green.bold(message));
 	}
 }

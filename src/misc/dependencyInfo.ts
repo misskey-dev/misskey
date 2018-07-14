@@ -21,7 +21,7 @@ export default class {
 			const x = execSync(command, { stdio: ['pipe', 'pipe', 'ignore'] });
 			const ver = transform(x.toString());
 			if (ver != null) {
-				this.logger.info(`${serviceName} ${ver[1]} found`);
+				this.logger.succ(`${serviceName} ${ver[1]} found`);
 			} else {
 				this.logger.warn(`${serviceName} not found`);
 				this.logger.warn(`Regexp used for version check of ${serviceName} is probably messed up`);

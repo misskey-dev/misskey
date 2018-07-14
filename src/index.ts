@@ -63,18 +63,15 @@ async function masterMain() {
 		config = await init();
 	} catch (e) {
 		console.error(e);
-		Logger.error(chalk.red('Fatal error occurred during initializing :('));
+		Logger.error('Fatal error occurred during initialization');
 		process.exit(1);
 	}
 
-	Logger.info(chalk.green('Successfully initialized :)'));
+	Logger.succ('Successfully initialized');
 
 	spawnWorkers(() => {
-		Logger.info(chalk.bold.green(
-			`Now listening on port ${chalk.underline(config.port.toString())}`));
-
+		Logger.info(chalk.bold.green(`Now listening on port ${chalk.underline(config.port.toString())}`));
 		Logger.info(chalk.bold.green(config.url));
-
 		Logger.info(chalk.bold.green('Now processing jobs'));
 	});
 }
@@ -98,7 +95,6 @@ async function workerMain() {
  */
 async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
-	Logger.info('Initializing...');
 
 	EnvironmentInfo.show();
 	MachineInfo.show();
@@ -110,14 +106,18 @@ async function init(): Promise<Config> {
 	try {
 		config = loadConfig();
 	} catch (exception) {
-		if (exception.code === 'ENOENT') {
-			throw 'Configuration not found - Please run "npm run config" command.';
+		if (typeof exception === 'string') {
+			configLogger.error(exception);
+			process.exit(1);
 		}
-
+		if (exception.code === 'ENOENT') {
+			configLogger.error('Configuration file not found');
+			process.exit(1);
+		}
 		throw exception;
 	}
 
-	configLogger.info('Successfully loaded');
+	configLogger.succ('Successfully loaded');
 	configLogger.info(`Maintainer: ${config.maintainer.name}`);
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
@@ -133,7 +133,7 @@ async function init(): Promise<Config> {
 	// Try to connect to MongoDB
 	const mongoDBLogger = new Logger('MongoDB');
 	const db = require('./db/mongodb').default;
-	mongoDBLogger.info('Successfully connected');
+	mongoDBLogger.succ('Successfully connected');
 	db.close();
 
 	return config;
