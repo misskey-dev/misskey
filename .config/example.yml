@@ -10,11 +10,11 @@ maintainer:
 # URL and Port settings overview
 # e.g., If you want to realize following structure:
 #
-#                  +--- https://example.com:123 -----------+
-# +---------+      |+-------------+      +----------------+|
-# | Browser | ---> || Proxy (123) | ---> | Misskey (456)  ||
-# +---------+      |+-------------+      +----------------+|
-#                  +---------------------------------------+
+#               +--- https://example.com:123 ----------+
+# +------+      |+-------------+      +---------------+|
+# | User | ---> || Proxy (123) | ---> | Misskey (456) ||
+# +------+      |+-------------+      +---------------+|
+#               +--------------------------------------+
 #
 # You need to set 'https://example.com:123' to 'url' prop and
 # You need to set 456 to 'port' prop.
