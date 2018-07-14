@@ -8,7 +8,7 @@ maintainer:
   feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
 
 # URL and Port settings overview
-# e.g., If you want following structure:
+# e.g., If you want to realize following structure:
 #
 #                  +--- https://example.com:123 -----------+
 # +---------+      |+-------------+      +----------------+|
