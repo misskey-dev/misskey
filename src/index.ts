@@ -70,9 +70,9 @@ async function masterMain() {
 	Logger.succ('Successfully initialized');
 
 	spawnWorkers(() => {
-		Logger.info(chalk.bold.green(`Now listening on port ${chalk.underline(config.port.toString())}`));
-		Logger.info(chalk.bold.green(config.url));
-		Logger.info(chalk.bold.green('Now processing jobs'));
+		Logger.succ('All workers started');
+		Logger.info(`Now listening on port ${config.port}`);
+		Logger.info(`URL is ${config.url}`);
 	});
 }
 
