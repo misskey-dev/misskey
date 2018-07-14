@@ -32,7 +32,7 @@ port: 80
 mongodb:
   host: localhost
   port: 27017
-  db: example-db
+  db: misskey
   user: example-misskey-user
   pass: example-misskey-pass
 
