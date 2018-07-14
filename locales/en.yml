@@ -91,7 +91,7 @@ common:
     list: "Lists"
     swap-left: "Move to the left"
     swap-right: "Move to the right"
-    swap-up: "Move upward"
+    swap-up: "Move up"
     swap-down: "Move downward"
     remove: "Remove"
     add-column: "Add a column"
@@ -271,7 +271,7 @@ desktop/views/components/choose-file-from-drive-window.vue:
   upload: "Upload files from your device"
   cancel: "Cancel"
   ok: "OK"
-  choose-prompt: "Choose a file"
+  choose-prompt: "Choose files"
 desktop/views/components/choose-folder-from-drive-window.vue:
   cancel: "Cancel"
   ok: "OK"
@@ -716,7 +716,7 @@ mobile/views/components/drive.vue:
 mobile/views/components/drive-file-detail.vue:
   rename: "Rename"
 mobile/views/components/drive-file-chooser.vue:
-  select-file: "Choose a file"
+  select-file: "Choose files"
 mobile/views/components/drive-folder-chooser.vue:
   select-folder: "Choose a folder"
 mobile/views/components/drive.file-detail.vue:
@@ -855,7 +855,7 @@ mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
 mobile/views/pages/selectdrive.vue:
-  select-file: "Choose a file"
+  select-file: "Choose files"
 mobile/views/pages/settings.vue:
   signed-in-as: "Signed in as {}"
   lang: "Language"
