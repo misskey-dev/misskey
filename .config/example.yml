@@ -1,14 +1,13 @@
-name: 'example-instance-name' # Name of your instance
-description: 'example-description' # Description of your instance
+name: example-instance-name # Name of your instance
+description: example-description # Description of your instance
 
 maintainer:
-  name: 'example-maitainer-name' # Your name
-  url: 'http://example.com/' # Your contact (http or mailto)
-  repository_url: 'https://github.com/syuilo/misskey' # Repository URL
-  feedback_url: 'https://github.com/syuilo/misskey/issues' # Feedback URL (e.g. github issue)
+  name: example-maitainer-name # Your name
+  url: http://example.com/ # Your contact (http or mailto)
+  repository_url: https://github.com/syuilo/misskey # Repository URL
+  feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
 
 url: http://localhost/
-
 port: 80
 
 mongodb:
@@ -21,7 +20,7 @@ mongodb:
 redis:
   host: localhost
   port: 6379
-  pass: 'example-pass'
+  pass: example-pass
 
 recaptcha:
   site_key: example-site-key
