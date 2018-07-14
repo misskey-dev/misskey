@@ -4,8 +4,8 @@ description: 'example-description' # Description of your instance
 maintainer:
   name: 'example-maitainer-name' # Your name
   url: 'http://example.com/' # Your contact (http or mailto)
-  repository_url: 'http://example.com/' # Repository URL
-  feedback_url: 'http://example.com/' # Feedback URL (e.g. github issue)
+  repository_url: 'https://github.com/syuilo/misskey' # Repository URL
+  feedback_url: 'https://github.com/syuilo/misskey/issues' # Feedback URL (e.g. github issue)
 
 url: http://localhost/
 
