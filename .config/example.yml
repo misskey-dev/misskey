@@ -7,6 +7,18 @@ maintainer:
   repository_url: https://github.com/syuilo/misskey # Repository URL
   feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
 
+# URL and Port settings overview
+# e.g., If you want following structure:
+#
+#                  +--- https://example.com:123 ---------------+
+# +---------+      |+-------------+      +----------------+|
+# | Browser | ---> || Proxy (123) | ---> | Misskey (456) ||
+# +---------+      |+-------------+      +----------------+|
+#                  +---------------------------------------+
+#
+# You need to set 'https://example.com:123' to 'url' prop and
+# You need to set 456 to 'port' prop.
+
 url: http://localhost/
 
 # A port that your Misskey server should listen.
