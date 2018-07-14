@@ -85,7 +85,7 @@ common:
     widgets: "Widgets"
     home: "Home"
     local: "Local"
-    hybrid: "Community"
+    hybrid: "Social"
     global: "Global"
     notifications: "Notifications"
     list: "Lists"
@@ -231,7 +231,7 @@ common/views/widgets/donation.vue:
   title: "Request for donations"
   text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
-  title: "Photostream"
+  title: "Photo stream"
   no-photos: "No photos"
 common/views/widgets/posts-monitor.vue:
   title: "Chart of posts"
@@ -557,7 +557,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "Home"
   local: "Local"
-  hybrid: "Community"
+  hybrid: "Social"
   global: "Global"
   list: "Lists"
 desktop/views/components/ui.header.vue:
@@ -820,7 +820,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "Home"
   local: "Local"
-  hybrid: "Community"
+  hybrid: "Social"
   global: "Global"
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
