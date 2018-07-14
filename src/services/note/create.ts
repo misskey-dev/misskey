@@ -308,7 +308,10 @@ export default async (user: IUser, data: {
 
 						// Publish event to followers stream
 						stream(following.followerId, 'note', noteObj);
-						publishHybridTimelineStream(following.followerId, noteObj);
+						
+						if (note.visibility != 'public') {
+							publishHybridTimelineStream(following.followerId, noteObj);
+						}
 					} else {
 						//#region AP配送
 						// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
