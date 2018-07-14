@@ -1,73 +1,61 @@
-# インスタンス名
-name:
+name: example-instance-name # Name of your instance
+description: example-description # Description of your instance
 
-# インスタンスの紹介
-description:
-
-# サーバーのメンテナ情報
 maintainer:
-  # メンテナの名前
-  name:
+  name: example-maitainer-name # Your name
+  url: http://example.com/ # Your contact (http or mailto)
+  repository_url: https://github.com/syuilo/misskey # Repository URL
+  feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
 
-  # メンテナの連絡先(URLかmailto形式のURL)
-  url:
+url: http://localhost/
 
-  # レポジトリのURL
-  repository_url:
+# A port that your Misskey server should listen.
+# This value is not a port to use when accessing with a browser.
+port: 80
 
-  # フィードバックのURL(issueなど)
-  feedback_url:
-
-# (Misskeyを動かす)URL
-url:
-
-# 待受ポート
-port:
-
-# TLSの設定(利用しない場合はフィールドごと削除してください)
-https:
-  # 証明書のパス...
-  key:
-  cert:
-
-# MongoDBの設定
 mongodb:
   host: localhost
   port: 27017
-  db: misskey
-  user:
-  pass:
+  db: example-db
+  user: example-misskey-user
+  pass: example-misskey-pass
 
-# Redisの設定
 redis:
   host: localhost
   port: 6379
-  pass:
+  pass: example-pass
 
-# reCAPTCHAの設定
 recaptcha:
-  site_key:
-  secret_key:
+  site_key: example-site-key
+  secret_key: example-secret-key
 
-# ServiceWorkerの設定
-sw:
-  # VAPIDの公開鍵
-  public_key:
-
-  # VAPIDの秘密鍵
-  private_key:
-
-# Google Maps API
-google_maps_api_key:
-
-# Twitterインテグレーションの設定(利用しない場合は省略可能)
-twitter:
-  # インテグレーション用アプリのコンシューマーキー
-  consumer_key:
-
-  # インテグレーション用アプリのコンシューマーシークレット
-  consumer_secret:
-
-# true にすると、リモートのファイルをキャッシュしなくなります(直リンクします)。
-# ストレージ容量を節約することができますが、「リモートメディアを表示しない」設定をオンにしているユーザーは、リモートの画像などは見えなくなります。
+# If enabled:
+#  Server will not cache remote files (Using direct link instead).
+#  You can save your storage.
+#  Users cannot see remote images when they turn off "Show media from a remote server"　setting.
 preventCache: false
+
+#
+# Below settings are optional
+#
+
+# TLS
+# https:
+#   # path for certification
+#   key: example-tls-key
+#   cert: example-tls-cert
+
+# ServiceWorker
+# sw:
+#   # Public key of VAPID
+#   public_key: example-sw-public-key
+
+#   # Private key of VAPID
+#   private_key: example-sw-private-key
+
+# google_maps_api_key: example-google-maps-api-key
+
+# Twitter integration
+# twitter:
+#   consumer_key: example-twitter-consumer-key
+#   consumer_secret: example-twitter-consumer-secret-key

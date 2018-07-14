@@ -308,8 +308,8 @@ export default async (user: IUser, data: {
 
 						// Publish event to followers stream
 						stream(following.followerId, 'note', noteObj);
-						
-						if (note.visibility != 'public') {
+
+						if (isRemoteUser(user) || note.visibility != 'public') {
 							publishHybridTimelineStream(following.followerId, noteObj);
 						}
 					} else {
@@ -363,14 +363,14 @@ export default async (user: IUser, data: {
 			// 削除されたドキュメントは除く
 			deletedAt: { $exists: false }
 		}, {
-			fields: {
-				userId: true
-			}
-		}).then(watchers => {
-			watchers.forEach(watcher => {
-				nm.push(watcher.userId, 'reply');
+				fields: {
+					userId: true
+				}
+			}).then(watchers => {
+				watchers.forEach(watcher => {
+					nm.push(watcher.userId, 'reply');
+				});
 			});
-		});
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.settings.autoWatch !== false) {
@@ -392,14 +392,14 @@ export default async (user: IUser, data: {
 			noteId: data.renote._id,
 			userId: { $ne: user._id }
 		}, {
-			fields: {
-				userId: true
-			}
-		}).then(watchers => {
-			watchers.forEach(watcher => {
-				nm.push(watcher.userId, type);
+				fields: {
+					userId: true
+				}
+			}).then(watchers => {
+				watchers.forEach(watcher => {
+					nm.push(watcher.userId, type);
+				});
 			});
-		});
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.settings.autoWatch !== false) {

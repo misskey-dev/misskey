@@ -11,7 +11,7 @@ export default class {
 	public showAll(): void {
 		this.show('MongoDB', 'mongo --version', x => x.match(/^MongoDB shell version:? (.*)\r?\n/));
 		this.show('Redis', 'redis-server --version', x => x.match(/v=([0-9\.]*)/));
-		this.show('ImageMagick', 'magick -version', x => x.match(/^Version: ImageMagick (.+?)\r?\n/));
+		this.show('ImageMagick', 'magick -version', x => x.match(/^Version: ImageMagick ([^ ]*)/));
 	}
 
 	public show(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
@@ -21,7 +21,7 @@ export default class {
 			const x = execSync(command, { stdio: ['pipe', 'pipe', 'ignore'] });
 			const ver = transform(x.toString());
 			if (ver != null) {
-				this.logger.info(`${serviceName} ${ver[1]} found`);
+				this.logger.succ(`${serviceName} ${ver[1]} found`);
 			} else {
 				this.logger.warn(`${serviceName} not found`);
 				this.logger.warn(`Regexp used for version check of ${serviceName} is probably messed up`);

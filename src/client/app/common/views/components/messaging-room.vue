@@ -255,8 +255,7 @@ root(isDark)
 		width 100%
 		max-width 600px
 		margin 0 auto
-		flex 1 1 0
-		overflow-y auto
+		flex 1
 
 		> .init
 			width 100%
@@ -342,6 +341,10 @@ root(isDark)
 				background isDark ? #191b22 : #fff
 
 	> footer
+		position -webkit-sticky
+		position sticky
+		z-index 2
+		bottom 0
 		width 100%
 		max-width 600px
 		margin 0 auto

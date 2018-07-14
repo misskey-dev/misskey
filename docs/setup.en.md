@@ -41,7 +41,7 @@ Please install and setup these softwares:
 2. `cd misskey`
 3. `npm install`
 
-*4.* Prepare configuration
+*4.* Make configuration file
 ----------------------------------------------------------------
 You need to generate config file via `npm run config` command.
 

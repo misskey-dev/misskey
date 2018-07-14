@@ -1,4 +1,5 @@
 import Logger from './logger';
+import isRoot = require('is-root');
 
 export default class {
 	public static show(): void {
@@ -10,5 +11,7 @@ export default class {
 			logger.warn('The environment is not in production mode');
 			logger.warn('Do not use for production purpose');
 		}
+
+		logger.info(`You ${isRoot() ? '' : 'do not '}have root privileges`);
 	}
 }

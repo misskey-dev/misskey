@@ -9,8 +9,7 @@ export default class {
 		logger.info(`Hostname: ${os.hostname()}`);
 		logger.info(`Platform: ${process.platform}`);
 		logger.info(`Architecture: ${process.arch}`);
-		logger.info(`Node.js: ${process.version}`);
-		logger.info(`CPU: ${os.cpus().length}core`);
+		logger.info(`CPU: ${os.cpus().length} core`);
 		logger.info(`MEM: ${totalmem}GB (available: ${freemem}GB)`);
 	}
 }
