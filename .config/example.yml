@@ -40,22 +40,22 @@ preventCache: false
 #
 
 # TLS
-# https:
-#   # path for certification
-#   key: example-tls-key
-#   cert: example-tls-cert
+#https:
+#  # path for certification
+#  key: example-tls-key
+#  cert: example-tls-cert
 
 # ServiceWorker
-# sw:
-#   # Public key of VAPID
-#   public_key: example-sw-public-key
+#sw:
+#  # Public key of VAPID
+#  public_key: example-sw-public-key
 
-#   # Private key of VAPID
-#   private_key: example-sw-private-key
+#  # Private key of VAPID
+#  private_key: example-sw-private-key
 
-# google_maps_api_key: example-google-maps-api-key
+#google_maps_api_key: example-google-maps-api-key
 
 # Twitter integration
-# twitter:
-#   consumer_key: example-twitter-consumer-key
-#   consumer_secret: example-twitter-consumer-secret-key
+#twitter:
+#  consumer_key: example-twitter-consumer-key
+#  consumer_secret: example-twitter-consumer-secret-key
