@@ -1,35 +1,16 @@
-# Name of your instance
-name: 'example-instance-name'
+name: 'example-instance-name' # Name of your instance
+description: 'example-description' # Description of your instance
 
-# Description of your instance
-description: 'example-description'
-
-# Maintainer
 maintainer:
-  # Your name
-  name: 'example-maitainer-name'
+  name: 'example-maitainer-name' # Your name
+  url: 'http://example.com/' # Your contact (http or mailto)
+  repository_url: 'http://example.com/' # Repository URL
+  feedback_url: 'http://example.com/' # Feedback URL (e.g. github issue)
 
-  # Your contact (http or mailto)
-  url: 'http://example.com/'
-
-  # Repository URL
-  repository_url: 'http://example.com/'
-
-  # Feedback URL (e.g. github issue)
-  feedback_url: 'http://example.com/'
-
-# URL
 url: http://localhost/
 
 port: 80
 
-# TLS (Uncomment if you need)
-# https:
-#   # path for certification
-#   key: example-tls-key
-#   cert: example-tls-cert
-
-# MongoDB
 mongodb:
   host: localhost
   port: 27017
@@ -37,35 +18,42 @@ mongodb:
   user: example-misskey-user
   pass: example-misskey-pass
 
-# Redis
 redis:
   host: localhost
   port: 6379
   pass: 'example-pass'
 
-# reCAPTCHA
 recaptcha:
   site_key: example-site-key
   secret_key: example-secret-key
-
-# ServiceWorker
-sw:
-  # Public key of VAPID
-  public_key: example-sw-public-key
-
-  # Private key of VAPID
-  private_key: example-sw-private-key
-
-# Google Maps API
-google_maps_api_key: example-google-maps-api-key
-
-# Twitter integration (can be omitted)
-twitter:
-  consumer_key: example-twitter-consumer-key
-  consumer_secret: example-twitter-consumer-secret-key
 
 # If enabled:
 #  Server will not cache remote files (Using direct link instead).
 #  You can save your storage.
 #  Users cannot see remote images when they turn off "Show media from a remote server"　setting.
 preventCache: false
+
+#
+# Below settings are optional
+#
+
+# TLS
+# https:
+#   # path for certification
+#   key: example-tls-key
+#   cert: example-tls-cert
+
+# ServiceWorker
+# sw:
+#   # Public key of VAPID
+#   public_key: example-sw-public-key
+
+#   # Private key of VAPID
+#   private_key: example-sw-private-key
+
+# google_maps_api_key: example-google-maps-api-key
+
+# Twitter integration
+# twitter:
+#   consumer_key: example-twitter-consumer-key
+#   consumer_secret: example-twitter-consumer-secret-key
