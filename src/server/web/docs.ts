@@ -21,16 +21,18 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	vars['lang'] = lang;
 
-	const endpoints = glob.sync('./built/server/api/endpoints/**/*.js');
+	const cwd = path.resolve(__dirname + '/../../../');
+
+	const endpoints = glob.sync('built/server/api/endpoints/**/*.js', { cwd });
 	vars['endpoints'] = endpoints.map(ep => require('../../../' + ep)).filter(x => x.meta).map(x => x.meta.name);
 
-	const entities = glob.sync('./src/docs/api/entities/**/*.yaml');
+	const entities = glob.sync('src/docs/api/entities/**/*.yaml', { cwd });
 	vars['entities'] = entities.map(x => {
 		const _x = yaml.safeLoad(fs.readFileSync(x, 'utf-8')) as any;
 		return _x.name;
 	});
 
-	const docs = glob.sync('./src/docs/**/*.md');
+	const docs = glob.sync('src/docs/**/*.md', { cwd });
 	vars['docs'] = {};
 	docs.forEach(x => {
 		const [, name, lang] = x.match(/docs\/(.+?)\.(.+?)\.md$/);
