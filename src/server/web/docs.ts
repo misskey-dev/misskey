@@ -13,7 +13,6 @@ import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import config from '../../config';
 import I18n from '../../misc/i18n';
-import { fa } from '../../misc/fa';
 import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
 
@@ -49,8 +48,6 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	vars['config'] = config;
 
 	vars['copyright'] = constants.copyright;
-
-	vars['facss'] = fa.dom.css();
 
 	vars['license'] = licenseHtml;
 
@@ -207,7 +204,22 @@ router.get('/*/*', async ctx => {
 	const lang = ctx.params[0];
 	const doc = ctx.params[1];
 
-	const conv = new showdown.Converter();
+	showdown.extension('urlExtension', () => ({
+		type: 'output',
+		regex: /%URL%/g,
+		replace: config.url
+	}));
+
+	showdown.extension('apiUrlExtension', () => ({
+		type: 'output',
+		regex: /%API_URL%/g,
+		replace: config.api_url
+	}));
+
+	const conv = new showdown.Converter({
+		tables: true,
+		extensions: ['urlExtension', 'apiUrlExtension']
+	});
 	const md = fs.readFileSync(`${__dirname}/../../../src/docs/${doc}.${lang}.md`, 'utf8');
 
 	await ctx.render('../../../../src/docs/article', Object.assign({
