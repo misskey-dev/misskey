@@ -49,7 +49,9 @@ export default async (params: any, user: ILocalUser) => {
 
 	const query = {
 		// public only
-		visibility: 'public'
+		visibility: 'public',
+
+		replyId: null
 	} as any;
 
 	if (mutedUserIds && mutedUserIds.length > 0) {
