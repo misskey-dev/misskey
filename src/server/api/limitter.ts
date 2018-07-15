@@ -1,7 +1,7 @@
 import * as Limiter from 'ratelimiter';
 import * as debug from 'debug';
 import limiterDB from '../../db/redis';
-import { Endpoint } from './endpoints';
+import Endpoint from './endpoint';
 import getAcct from '../../misc/acct/render';
 import { IUser } from '../../models/user';
 

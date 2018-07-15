@@ -1,4 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+const ms = require('ms');
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
 import User, { ILocalUser, IUser } from '../../../../models/user';
 import DriveFile, { IDriveFile } from '../../../../models/drive-file';
@@ -12,6 +13,16 @@ export const meta = {
 	desc: {
 		ja: '投稿します。'
 	},
+
+	requireCredential: true,
+
+	limit: {
+		duration: ms('1hour'),
+		max: 300,
+		minInterval: ms('1second')
+	},
+
+	kind: 'note-write',
 
 	params: {
 		visibility: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']).note({

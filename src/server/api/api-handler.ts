@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 
-import { Endpoint } from './endpoints';
+import Endpoint from './endpoint';
 import authenticate from './authenticate';
 import call from './call';
 import { IUser } from '../../models/user';
