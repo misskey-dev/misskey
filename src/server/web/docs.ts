@@ -21,14 +21,14 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	vars['lang'] = lang;
 
-	const cwd = path.resolve(__dirname + '/../../../');
+	const cwd = path.resolve(__dirname + '/../../../') + '/';
 
 	const endpoints = glob.sync('built/server/api/endpoints/**/*.js', { cwd });
-	vars['endpoints'] = endpoints.map(ep => require('../../../' + ep)).filter(x => x.meta).map(x => x.meta.name);
+	vars['endpoints'] = endpoints.map(ep => require(cwd + ep)).filter(x => x.meta).map(x => x.meta.name);
 
 	const entities = glob.sync('src/docs/api/entities/**/*.yaml', { cwd });
 	vars['entities'] = entities.map(x => {
-		const _x = yaml.safeLoad(fs.readFileSync(x, 'utf-8')) as any;
+		const _x = yaml.safeLoad(fs.readFileSync(cwd + x, 'utf-8')) as any;
 		return _x.name;
 	});
 
@@ -42,7 +42,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 				title: {}
 			};
 		}
-		vars['docs'][name]['title'][lang] = fs.readFileSync(x, 'utf-8').match(/^# (.+?)\r?\n/)[1];
+		vars['docs'][name]['title'][lang] = fs.readFileSync(cwd + x, 'utf-8').match(/^# (.+?)\r?\n/)[1];
 	});
 
 	vars['kebab'] = (string: string) => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
