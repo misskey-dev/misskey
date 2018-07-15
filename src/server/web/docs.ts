@@ -32,10 +32,10 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 		return _x.name;
 	});
 
-	const docs = glob.sync('src/docs/**/*.md', { cwd });
+	const docs = glob.sync(`src/docs/**/*.${lang}.md`, { cwd });
 	vars['docs'] = {};
 	docs.forEach(x => {
-		const [, name, lang] = x.match(/docs\/(.+?)\.(.+?)\.md$/);
+		const [, name] = x.match(/docs\/(.+?)\.(.+?)\.md$/);
 		if (vars['docs'][name] == null) {
 			vars['docs'][name] = {
 				name,
