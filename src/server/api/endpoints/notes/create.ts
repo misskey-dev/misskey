@@ -8,8 +8,6 @@ import { IApp } from '../../../../models/app';
 import getParams from '../../get-params';
 
 export const meta = {
-	name: 'notes/create',
-
 	desc: {
 		ja: '投稿します。'
 	},

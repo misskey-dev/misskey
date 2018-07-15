@@ -168,14 +168,15 @@ router.get('/assets/*', async ctx => {
 
 router.get('/*/api/endpoints/*', async ctx => {
 	const lang = ctx.params[0];
-	const ep = require('../../../built/server/api/endpoints/' + ctx.params[1]).meta;
+	const name = ctx.params[1];
+	const ep = require('../../../built/server/api/endpoints/' + name).meta || {};
 
 	const vars = {
-		title: ep.name,
-		endpoint: ep.name,
+		title: name,
+		endpoint: name,
 		url: {
 			host: config.api_url,
-			path: ep.name
+			path: name
 		},
 		desc: ep.desc,
 		// @ts-ignore

@@ -1,14 +1,14 @@
 import * as Limiter from 'ratelimiter';
 import * as debug from 'debug';
 import limiterDB from '../../db/redis';
-import Endpoint from './endpoint';
+import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
 import { IUser } from '../../models/user';
 
 const log = debug('misskey:limitter');
 
-export default (endpoint: Endpoint, user: IUser) => new Promise((ok, reject) => {
-	const limitation = endpoint.limit;
+export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) => {
+	const limitation = endpoint.meta.limit;
 
 	const key = limitation.hasOwnProperty('key')
 		? limitation.key

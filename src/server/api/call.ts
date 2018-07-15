@@ -1,35 +1,12 @@
-import * as path from 'path';
-import * as glob from 'glob';
-
-import Endpoint from './endpoint';
 import limitter from './limitter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
+import endpoints from './endpoints';
 
-const files = glob.sync('**/*.js', {
-	cwd: path.resolve(__dirname + '/endpoints/')
-});
-
-const endpoints: Array<{
-	exec: any,
-	meta: Endpoint
-}> = files.map(f => {
-	const ep = require('./endpoints/' + f);
-
-	ep.meta = ep.meta || {};
-	ep.meta.name = f.replace('.js', '');
-
-	return {
-		exec: ep.default,
-		meta: ep.meta
-	};
-});
-
-export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, file?: any) => new Promise<any>(async (ok, rej) => {
+export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any) => new Promise<any>(async (ok, rej) => {
 	const isSecure = user != null && app == null;
 
-	const epName = typeof endpoint === 'string' ? endpoint : endpoint.name;
-	const ep = endpoints.find(e => e.meta.name === epName);
+	const ep = endpoints.find(e => e.name === endpoint);
 
 	if (ep.meta.secure && !isSecure) {
 		return rej('ACCESS_DENIED');
@@ -51,7 +28,7 @@ export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, 
 
 	if (ep.meta.requireCredential && ep.meta.limit) {
 		try {
-			await limitter(ep.meta, user); // Rate limit
+			await limitter(ep, user); // Rate limit
 		} catch (e) {
 			// drop request if limit exceeded
 			return rej('RATE_LIMIT_EXCEEDED');
