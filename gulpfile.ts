@@ -9,6 +9,7 @@ import * as ts from 'gulp-typescript';
 const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
 const cssnano = require('gulp-cssnano');
+const stylus = require('gulp-stylus');
 import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
 import * as rimraf from 'rimraf';
@@ -37,8 +38,6 @@ if (isDebug) {
 }
 
 const constants = require('./src/const.json');
-
-require('./src/client/docs/gulpfile.ts');
 
 gulp.task('build', [
 	'build:ts',
@@ -200,4 +199,11 @@ gulp.task('build:client:pug', [
 				minifyCSS: true
 			}))
 			.pipe(gulp.dest('./built/client/app/'))
+);
+
+gulp.task('doc', () =>
+	gulp.src('./src/docs/**/*.styl')
+		.pipe(stylus())
+		.pipe((cssnano as any)())
+		.pipe(gulp.dest('./built/docs/assets/'))
 );

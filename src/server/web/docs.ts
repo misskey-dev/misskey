@@ -4,6 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as showdown from 'showdown';
 import ms = require('ms');
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
@@ -16,8 +17,6 @@ import { fa } from '../../misc/fa';
 import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
 
-const docs = `${__dirname}/../../client/docs/`;
-
 async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const vars = {} as { [key: string]: any };
 
@@ -26,23 +25,23 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const endpoints = glob.sync('./built/server/api/endpoints/**/*.js');
 	vars['endpoints'] = endpoints.map(ep => require('../../../' + ep)).filter(x => x.meta).map(x => x.meta.name);
 
-	const entities = glob.sync('./src/client/docs/api/entities/**/*.yaml');
+	const entities = glob.sync('./src/docs/api/entities/**/*.yaml');
 	vars['entities'] = entities.map(x => {
 		const _x = yaml.safeLoad(fs.readFileSync(x, 'utf-8')) as any;
 		return _x.name;
 	});
 
-	const docs = glob.sync('./src/client/docs/**/*.*.pug');
+	const docs = glob.sync('./src/docs/**/*.md');
 	vars['docs'] = {};
 	docs.forEach(x => {
-		const [, name, lang] = x.match(/docs\/(.+?)\.(.+?)\.pug$/);
+		const [, name, lang] = x.match(/docs\/(.+?)\.(.+?)\.md$/);
 		if (vars['docs'][name] == null) {
 			vars['docs'][name] = {
 				name,
 				title: {}
 			};
 		}
-		vars['docs'][name]['title'][lang] = fs.readFileSync(x, 'utf-8').match(/^h1 (.+?)\r?\n/)[1];
+		vars['docs'][name]['title'][lang] = fs.readFileSync(x, 'utf-8').match(/^# (.+?)\r?\n/)[1];
 	});
 
 	vars['kebab'] = (string: string) => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
@@ -162,7 +161,7 @@ const router = new Router();
 
 router.get('/assets/*', async ctx => {
 	await send(ctx, ctx.params[0], {
-		root: docs + '/assets/',
+		root: `${__dirname}/../../docs/assets/`,
 		maxage: ms('7 days'),
 		immutable: true
 	});
@@ -183,20 +182,20 @@ router.get('/*/api/endpoints/*', async ctx => {
 		// @ts-ignore
 		params: sortParams(Object.entries(ep.params).map(([k, v]) => parseParamDefinition(k, v))),
 		paramDefs: extractParamDefRef(Object.entries(ep.params).map(([k, v]) => v)),
-		res: ep.res.props ? sortParams(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
+		res: ep.res && ep.res.props ? sortParams(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
 		resDefs: null//extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
 	};
 
-	await ctx.render('../../../../src/client/docs/api/endpoints/view', Object.assign(await genVars(lang), vars));
+	await ctx.render('../../../../src/docs/api/endpoints/view', Object.assign(await genVars(lang), vars));
 });
 
 router.get('/*/api/entities/*', async ctx => {
 	const lang = ctx.params[0];
 	const entity = ctx.params[1];
 
-	const x = yaml.safeLoad(fs.readFileSync(path.resolve('./src/client/docs/api/entities/' + entity + '.yaml'), 'utf-8')) as any;
+	const x = yaml.safeLoad(fs.readFileSync(path.resolve('./src/docs/api/entities/' + entity + '.yaml'), 'utf-8')) as any;
 
-	await ctx.render('../../../../src/client/docs/api/entities/view', Object.assign(await genVars(lang), {
+	await ctx.render('../../../../src/docs/api/entities/view', Object.assign(await genVars(lang), {
 		name: x.name,
 		desc: x.desc,
 		props: sortParams(Object.entries(x.props).map(([k, v]) => parsePropDefinition(k, v))),
@@ -208,7 +207,12 @@ router.get('/*/*', async ctx => {
 	const lang = ctx.params[0];
 	const doc = ctx.params[1];
 
-	await ctx.render('../../../../src/client/docs/' + doc + '.' + lang, await genVars(lang));
+	const conv = new showdown.Converter();
+	const md = fs.readFileSync(`${__dirname}/../../../src/docs/${doc}.${lang}.md`, 'utf8');
+
+	await ctx.render('../../../../src/docs/article', Object.assign({
+		html: conv.makeHtml(md)
+	}, await genVars(lang)));
 });
 
 export default router;
