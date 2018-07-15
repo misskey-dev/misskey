@@ -937,6 +937,7 @@ docs:
       no-params: "パラメータはありません"
       res: "Odpowiedź"
       require-credential: "このエンドポイントは認証情報が必須です。"
+      limit: "レートリミットがあります。直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
     props:
       name: "Nazwa"
       type: "Rodzaj"
