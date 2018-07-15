@@ -5,7 +5,7 @@ block meta
 	link(rel="stylesheet" href="/docs/assets/api/endpoints/style.css")
 
 block main
-	h1= endpoint
+	h1= title
 
 	p#url
 		span.method POST
@@ -14,10 +14,13 @@ block main
 			| /
 		span.path= url.path
 
-	if desc
-		p#desc= desc[lang] || desc['ja']
+	if endpoint.desc
+		p#desc= endpoint.desc[lang] || endpoint.desc['ja']
 
-	if params
+	if endpoint.requireCredential
+		div.ui.info: p= i18n('docs.api.endpoints.require-credential')
+
+	if params && Object.keys(params).length > 0
 		section
 			h2= i18n('docs.api.endpoints.params')
 			+propTable(params)
@@ -27,6 +30,10 @@ block main
 					section(id= paramDef.name)
 						h3= paramDef.name
 						+propTable(paramDef.params)
+	if params && Object.keys(params).length == 0
+		section
+			h2= i18n('docs.api.endpoints.params')
+			p= i18n('docs.api.endpoints.no-params')
 
 	if res
 		section

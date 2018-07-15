@@ -173,12 +173,11 @@ router.get('/*/api/endpoints/*', async ctx => {
 
 	const vars = {
 		title: name,
-		endpoint: name,
+		endpoint: ep.meta,
 		url: {
 			host: config.api_url,
 			path: name
 		},
-		desc: ep.meta.desc,
 		// @ts-ignore
 		params: ep.meta.params ? sortParams(Object.entries(ep.meta.params).map(([k, v]) => parseParamDefinition(k, v))) : null,
 		paramDefs: ep.meta.params ? extractParamDefRef(Object.entries(ep.meta.params).map(([k, v]) => v)) : null,
