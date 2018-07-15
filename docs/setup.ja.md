@@ -23,7 +23,7 @@ adduser --disabled-password --disabled-login misskey
 
 #### 依存関係 :package:
 * *Node.js* と *npm*
-* **[MongoDB](https://www.mongodb.com/)**
+* **[MongoDB](https://www.mongodb.com/)** (3.6以上)
 * **[Redis](https://redis.io/)**
 * **[ImageMagick](http://www.imagemagick.org/script/index.php)**
 
