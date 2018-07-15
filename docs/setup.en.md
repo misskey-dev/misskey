@@ -13,7 +13,7 @@ This guide describes how to install and setup Misskey.
 Running misskey on root is not a good idea so we create a user for that.
 In debian for exemple :
 
-``` 
+```
 adduser --disabled-password --disabled-login misskey
 ```
 
@@ -67,7 +67,7 @@ web-push generate-vapid-keys
 *6.* Make configuration file
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
-2. Edit it
+2. Edit `default.yml`
 
 *7.* Build Misskey
 ----------------------------------------------------------------
