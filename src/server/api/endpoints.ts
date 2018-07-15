@@ -2,6 +2,12 @@ import * as path from 'path';
 import * as glob from 'glob';
 
 export interface IEndpointMeta {
+	desc?: any;
+
+	params?: any;
+
+	res?: any;
+
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
 	 * 省略した場合は false として解釈されます。

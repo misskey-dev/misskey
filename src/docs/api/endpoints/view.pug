@@ -14,17 +14,19 @@ block main
 			| /
 		span.path= url.path
 
-	p#desc= desc[lang] || desc['ja']
+	if desc
+		p#desc= desc[lang] || desc['ja']
 
-	section
-		h2= i18n('docs.api.endpoints.params')
-		+propTable(params)
+	if params
+		section
+			h2= i18n('docs.api.endpoints.params')
+			+propTable(params)
 
-		if paramDefs
-			each paramDef in paramDefs
-				section(id= paramDef.name)
-					h3= paramDef.name
-					+propTable(paramDef.params)
+			if paramDefs
+				each paramDef in paramDefs
+					section(id= paramDef.name)
+						h3= paramDef.name
+						+propTable(paramDef.params)
 
 	if res
 		section

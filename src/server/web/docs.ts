@@ -15,6 +15,7 @@ import config from '../../config';
 import I18n from '../../misc/i18n';
 import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
+import endpoints from '../../server/api/endpoints';
 
 async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const vars = {} as { [key: string]: any };
@@ -23,8 +24,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	const cwd = path.resolve(__dirname + '/../../../') + '/';
 
-	const endpoints = glob.sync('built/server/api/endpoints/**/*.js', { cwd });
-	vars['endpoints'] = endpoints.map(ep => require(cwd + ep)).filter(x => x.meta).map(x => x.meta.name);
+	vars['endpoints'] = endpoints;
 
 	const entities = glob.sync('src/docs/api/entities/**/*.yaml', { cwd });
 	vars['entities'] = entities.map(x => {
@@ -169,7 +169,7 @@ router.get('/assets/*', async ctx => {
 router.get('/*/api/endpoints/*', async ctx => {
 	const lang = ctx.params[0];
 	const name = ctx.params[1];
-	const ep = require('../../../built/server/api/endpoints/' + name).meta || {};
+	const ep = endpoints.find(e => e.name === name);
 
 	const vars = {
 		title: name,
@@ -178,11 +178,11 @@ router.get('/*/api/endpoints/*', async ctx => {
 			host: config.api_url,
 			path: name
 		},
-		desc: ep.desc,
+		desc: ep.meta.desc,
 		// @ts-ignore
-		params: sortParams(Object.entries(ep.params).map(([k, v]) => parseParamDefinition(k, v))),
-		paramDefs: extractParamDefRef(Object.entries(ep.params).map(([k, v]) => v)),
-		res: ep.res && ep.res.props ? sortParams(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
+		params: ep.meta.params ? sortParams(Object.entries(ep.meta.params).map(([k, v]) => parseParamDefinition(k, v))) : null,
+		paramDefs: ep.meta.params ? extractParamDefRef(Object.entries(ep.meta.params).map(([k, v]) => v)) : null,
+		res: ep.meta.res && ep.meta.res.props ? sortParams(Object.entries(ep.meta.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
 		resDefs: null//extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
 	};
 

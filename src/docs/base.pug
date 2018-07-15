@@ -25,7 +25,7 @@ html(lang= lang)
 					li Endpoints
 						ul
 							each endpoint in endpoints
-								li: a(href=`/docs/${lang}/api/endpoints/${kebab(endpoint)}`)= endpoint
+								li: a(href=`/docs/${lang}/api/endpoints/${kebab(endpoint.name)}`)= endpoint.name
 		main
 			article
 				block main
