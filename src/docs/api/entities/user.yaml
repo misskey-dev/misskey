@@ -135,6 +135,7 @@ props:
     desc:
       ja: "連携されているTwitterアカウント情報"
       en: "The info of the connected twitter account of this user"
+
     props:
       userId:
         type: "string"
@@ -142,6 +143,7 @@ props:
         desc:
           ja: "ユーザーID"
           en: "The user ID"
+
       screenName:
         type: "string"
         optional: false
@@ -162,6 +164,7 @@ props:
     desc:
       ja: "プロフィール"
       en: "The profile of this user"
+
     props:
       location:
         type: "string"
@@ -169,6 +172,7 @@ props:
         desc:
           ja: "場所"
           en: "The location of this user"
+
       birthday:
         type: "string"
         optional: true
