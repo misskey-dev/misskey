@@ -27,3 +27,9 @@ node cli/suspend @syuilo@misskey.xyz
 ``` shell
 node cli/clean-cached-remote-files
 ```
+
+## 使われていないドライブのファイルをクリーンアップする
+``` shell
+node cli/clean-unused-drive-files
+```
+> ユーザーの大事なファイルを削除する可能性があるので、この操作を実行する前にユーザーに告知することをお勧めします。
