@@ -22,3 +22,8 @@ node cli/suspend @syuilo
 # ユーザー名 (リモート)
 node cli/suspend @syuilo@misskey.xyz
 ```
+
+## キャッシュされたリモートファイルをクリーンアップする
+``` shell
+node cli/clean-cached-remote-files
+```

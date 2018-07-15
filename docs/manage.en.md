@@ -22,3 +22,8 @@ node cli/suspend @syuilo
 # Use username (remote)
 node cli/suspend @syuilo@misskey.xyz
 ```
+
+## Clean up cached remote files
+``` shell
+node cli/clean-cached-remote-files
+```
