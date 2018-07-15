@@ -7,11 +7,11 @@ import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
 
 export const meta = {
-	name: 'notes/timeline',
-
 	desc: {
 		ja: 'タイムラインを取得します。'
 	},
+
+	requireCredential: true,
 
 	params: {
 		limit: $.num.optional.range(1, 100).note({
