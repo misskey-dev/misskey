@@ -9,5 +9,16 @@ When you access port 3050, you will see the UI.
 
 ## Suspend users
 ``` shell
-node cli/suspend (User-ID)
+node cli/suspend (User-ID or Username)
+```
+e.g.
+``` shell
+# Use id
+node cli/suspend 57d01a501fdf2d07be417afe
+
+# Use username
+node cli/suspend @syuilo
+
+# Use username (remote)
+node cli/suspend @syuilo@misskey.xyz
 ```
