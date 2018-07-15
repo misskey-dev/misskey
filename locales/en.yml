@@ -934,7 +934,9 @@ docs:
       properties: "Properties"
     endpoints:
       params: "Parameters"
+      no-params: "パラメータはありません"
       res: "Response"
+      require-credential: "このエンドポイントは認証情報が必須です。"
     props:
       name: "Name"
       type: "Type"
