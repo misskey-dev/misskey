@@ -937,8 +937,8 @@ docs:
       no-params: "No parameter."
       res: "Response"
       require-credential: "This endpoint requires the authentication information."
-      has-limit: "レートリミットがあります。"
-      duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
+      has-limit: "There is a rate limit."
+      duration-limit: "You can't request when a frequency of a request in during {duration} milliseconds exceeds {max} times."
       min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
     props:
       name: "Name"
