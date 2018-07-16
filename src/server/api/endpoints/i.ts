@@ -8,7 +8,12 @@ export const meta = {
 
 	requireCredential: true,
 
-	params: {}
+	params: {},
+
+	res: {
+		type: 'entity',
+		entity: 'User'
+	}
 };
 
 export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {

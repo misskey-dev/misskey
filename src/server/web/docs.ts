@@ -182,8 +182,10 @@ router.get('/*/api/endpoints/*', async ctx => {
 		// @ts-ignore
 		params: ep.meta.params ? sortParams(Object.entries(ep.meta.params).map(([k, v]) => parseParamDefinition(k, v))) : null,
 		paramDefs: ep.meta.params ? extractParamDefRef(Object.entries(ep.meta.params).map(([k, v]) => v)) : null,
-		res: ep.meta.res && ep.meta.res.props ? sortParams(Object.entries(ep.meta.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
-		resDefs: null//extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
+		res: ep.meta.res,
+		resProps: ep.meta.res && ep.meta.res.props ? sortParams(Object.entries(ep.meta.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
+		resDefs: null,//extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
+		src: `https://github.com/syuilo/misskey/tree/master/src/server/api/endpoints/${name}.ts`
 	};
 
 	await ctx.render('../../../../src/docs/api/endpoints/view', Object.assign(await genVars(lang), vars));
@@ -227,7 +229,8 @@ router.get('/*/*', async ctx => {
 
 	await ctx.render('../../../../src/docs/article', Object.assign({
 		html: conv.makeHtml(md),
-		title: md.match(/^# (.+?)\r?\n/)[1]
+		title: md.match(/^# (.+?)\r?\n/)[1],
+		src: `https://github.com/syuilo/misskey/tree/master/src/docs/${doc}.${lang}.md`
 	}, await genVars(lang)));
 });
 

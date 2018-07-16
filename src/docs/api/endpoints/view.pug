@@ -47,10 +47,23 @@ block main
 	if res
 		section
 			h2= i18n('docs.api.endpoints.res')
-			+propTable(res)
 
-			if resDefs
-				each resDef in resDefs
-					section(id= resDef.name)
-						h3= resDef.name
-						+propTable(resDef.props)
+			if resProps
+				+propTable(resProps)
+
+				if resDefs
+					each resDef in resDefs
+						section(id= resDef.name)
+							h3= resDef.name
+							+propTable(resDef.props)
+			else
+				if res.type.startsWith('entity')
+					a(href=`/docs/${lang}/api/entities/${kebab(res.entity)}`)= res.entity
+
+block footer
+	div.ui.info: p
+		i.fas.fa-info-circle(style="margin-right: 4px")
+		= i18n('docs.api.endpoints.generated')
+	p
+		= i18n('docs.api.endpoints.show-src')
+		a(href=src target="_blank")= i18n('docs.api.endpoints.show-src-link')
