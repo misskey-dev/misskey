@@ -4,9 +4,17 @@ import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/messaging-message';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Show messaging history
- */
+export const meta = {
+	desc: {
+		ja: 'Messagingの履歴を取得します。',
+		en: 'Show messaging history.'
+	},
+
+	requireCredential: true,
+
+	kind: 'messaging-read'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

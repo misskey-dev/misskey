@@ -11,9 +11,17 @@ import { publishMessagingStream, publishMessagingIndexStream } from '../../../..
 import pushSw from '../../../../../push-sw';
 import config from '../../../../../config';
 
-/**
- * Create a message
- */
+export const meta = {
+	desc: {
+		ja: '指定したユーザーへMessagingのメッセージを送信します。',
+		en: 'Create a message of messaging.'
+	},
+
+	requireCredential: true,
+
+	kind: 'messaging-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);

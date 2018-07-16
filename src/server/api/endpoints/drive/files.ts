@@ -2,9 +2,17 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../models/drive-file';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get drive files
- */
+export const meta = {
+	desc: {
+		ja: 'ドライブのファイル一覧を取得します。',
+		en: 'Get files of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
 export default async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

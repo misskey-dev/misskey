@@ -4,9 +4,17 @@ import User, { ILocalUser } from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 
-/**
- * Get messages
- */
+export const meta = {
+	desc: {
+		ja: '指定したユーザーとのMessagingのメッセージ一覧を取得します。',
+		en: 'Get messages of messaging.'
+	},
+
+	requireCredential: true,
+
+	kind: 'messaging-read'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);

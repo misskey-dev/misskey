@@ -3,9 +3,17 @@ import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Unreact to a note
- */
+export const meta = {
+	desc: {
+		ja: '指定した投稿へのリアクションを取り消します。',
+		en: 'Unreact to a note.'
+	},
+
+	requireCredential: true,
+
+	kind: 'reaction-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);

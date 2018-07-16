@@ -2,9 +2,17 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Favorite, { pack } from '../../../../models/favorite';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get favorited notes
- */
+export const meta = {
+	desc: {
+		ja: 'お気に入りに登録した投稿一覧を取得します。',
+		en: 'Get favorited notes'
+	},
+
+	requireCredential: true,
+
+	kind: 'favorites-read'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

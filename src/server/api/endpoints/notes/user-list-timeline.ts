@@ -5,9 +5,15 @@ import { pack } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get timeline of a user list
- */
+export const meta = {
+	desc: {
+		ja: '指定したユーザーリストのタイムラインを取得します。',
+		en: 'Get timeline of a user list.'
+	},
+
+	requireCredential: true
+};
+
 export default async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

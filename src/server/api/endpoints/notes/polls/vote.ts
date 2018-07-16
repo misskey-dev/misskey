@@ -7,9 +7,17 @@ import { publishNoteStream } from '../../../../../stream';
 import notify from '../../../../../notify';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Vote poll of a note
- */
+export const meta = {
+	desc: {
+		ja: '指定した投稿のアンケートに投票します。',
+		en: 'Vote poll of a note.'
+	},
+
+	requireCredential: true,
+
+	kind: 'vote-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);

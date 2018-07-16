@@ -2,9 +2,16 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Show a folder
- */
+export const meta = {
+	desc: {
+		ja: '指定したドライブのフォルダの情報を取得します。'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'folderId' parameter
 	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);

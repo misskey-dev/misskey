@@ -3,9 +3,15 @@ import Vote from '../../../../../models/poll-vote';
 import Note, { pack } from '../../../../../models/note';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Get recommended polls
- */
+export const meta = {
+	desc: {
+		ja: 'おすすめのアンケート一覧を取得します。',
+		en: 'Get recommended polls.'
+	},
+
+	requireCredential: true,
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

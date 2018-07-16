@@ -3,9 +3,17 @@ import Favorite from '../../../../../models/favorite';
 import Note from '../../../../../models/note';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Favorite a note
- */
+export const meta = {
+	desc: {
+		ja: '指定した投稿をお気に入りに登録します。',
+		en: 'Favorite a note.'
+	},
+
+	requireCredential: true,
+
+	kind: 'favorite-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);

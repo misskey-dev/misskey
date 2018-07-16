@@ -3,9 +3,17 @@ import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Delete a note
- */
+export const meta = {
+	desc: {
+		ja: '指定した投稿を削除します。',
+		en: 'Delete a note.'
+	},
+
+	requireCredential: true,
+
+	kind: 'note-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);

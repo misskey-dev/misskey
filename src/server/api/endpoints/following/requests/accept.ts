@@ -2,9 +2,17 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import acceptFollowRequest from '../../../../../services/following/requests/accept';
 import User, { ILocalUser } from '../../../../../models/user';
 
-/**
- * Accept a follow request
- */
+export const meta = {
+	desc: {
+		ja: '自分に届いた、指定したフォローリクエストを承認します。',
+		en: 'Accept a follow request.'
+	},
+
+	requireCredential: true,
+
+	kind: 'following-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [followerId, followerIdErr] = $.type(ID).get(params.userId);

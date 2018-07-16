@@ -6,6 +6,17 @@ import ap from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
 
+export const meta = {
+	desc: {
+		ja: '指定したユーザーリストに指定したユーザーを追加します。',
+		en: 'Add a user to a user list.'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-write'
+};
+
 /**
  * Add a user to a user list
  */

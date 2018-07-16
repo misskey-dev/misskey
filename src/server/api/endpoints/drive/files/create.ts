@@ -8,7 +8,8 @@ import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
-		ja: 'ドライブにファイルをアップロードします。'
+		ja: 'ドライブにファイルをアップロードします。',
+		en: 'Upload a file to drive.'
 	},
 
 	requireCredential: true,

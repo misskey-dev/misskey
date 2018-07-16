@@ -4,9 +4,16 @@ import User, { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';
 
-/**
- * Get recommended users
- */
+export const meta = {
+	desc: {
+		ja: 'おすすめのユーザー一覧を取得します。'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-read'
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

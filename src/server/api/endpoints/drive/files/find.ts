@@ -2,9 +2,12 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Find a file(s)
- */
+export const meta = {
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $.str.get(params.name);

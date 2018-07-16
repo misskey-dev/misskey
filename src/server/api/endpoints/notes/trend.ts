@@ -3,9 +3,15 @@ import $ from 'cafy';
 import Note, { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get trend notes
- */
+export const meta = {
+	desc: {
+		ja: '人気の投稿の一覧を取得します。',
+		en: 'Get trend notes.'
+	},
+
+	requireCredential: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

@@ -2,6 +2,10 @@ import $ from 'cafy';
 import Subscription from '../../../../models/sw-subscription';
 import { ILocalUser } from '../../../../models/user';
 
+export const meta = {
+	requireCredential: true
+};
+
 /**
  * subscribe service worker
  */

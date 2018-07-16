@@ -2,9 +2,17 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Show a file
- */
+export const meta = {
+	desc: {
+		ja: '指定したドライブのファイルの情報を取得します。',
+		en: 'Get specified file of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
 export default async (params: any, user: ILocalUser) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);

@@ -1,9 +1,17 @@
 import DriveFile from '../../../models/drive-file';
 import { ILocalUser } from '../../../models/user';
 
-/**
- * Get drive information
- */
+export const meta = {
+	desc: {
+		ja: 'ドライブの情報を取得します。',
+		en: 'Get drive information.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Calculate drive usage
 	const usage = await DriveFile

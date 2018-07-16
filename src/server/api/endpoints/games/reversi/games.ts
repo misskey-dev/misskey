@@ -2,6 +2,10 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { ILocalUser } from '../../../../../models/user';
 
+export const meta = {
+	requireCredential: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'my' parameter
 	const [my = false, myErr] = $.bool.optional.get(params.my);

@@ -4,9 +4,15 @@ import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get mentions of myself
- */
+export const meta = {
+	desc: {
+		ja: '自分に言及している投稿の一覧を取得します。',
+		en: 'Get mentions of myself.'
+	},
+
+	requireCredential: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following = false, followingError] =

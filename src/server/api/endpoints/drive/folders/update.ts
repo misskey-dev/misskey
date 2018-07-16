@@ -3,9 +3,17 @@ import DriveFolder, { isValidFolderName, pack } from '../../../../../models/driv
 import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Update a folder
- */
+export const meta = {
+	desc: {
+		ja: '指定したドライブのフォルダの情報を更新します。',
+		en: 'Update specified folder of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'folderId' parameter
 	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);

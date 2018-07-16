@@ -2,9 +2,17 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
 
-/**
- * Unmute a user
- */
+export const meta = {
+	desc: {
+		ja: 'ユーザーのミュートを解除します。',
+		en: 'Unmute a user'
+	},
+
+	requireCredential: true,
+
+	kind: 'account/write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const muter = user;
 

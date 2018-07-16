@@ -3,6 +3,10 @@ import $ from 'cafy';
 import App, { isValidNameId, pack } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
 
+export const meta = {
+	requireCredential: true
+};
+
 /**
  * @swagger
  * /app/create:

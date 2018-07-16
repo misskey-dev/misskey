@@ -6,6 +6,11 @@ import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';
 import { ILocalUser } from '../../../../models/user';
 
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
+
 /**
  * @swagger
  * /auth/accept:

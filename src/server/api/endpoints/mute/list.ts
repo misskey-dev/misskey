@@ -3,9 +3,17 @@ import Mute from '../../../../models/mute';
 import { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 
-/**
- * Get muted users of a user
- */
+export const meta = {
+	desc: {
+		ja: 'ミュートしているユーザー一覧を取得します。',
+		en: 'Get muted users.'
+	},
+
+	requireCredential: true,
+
+	kind: 'account/read'
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'iknow' parameter
 	const [iknow = false, iknowErr] = $.bool.optional.get(params.iknow);

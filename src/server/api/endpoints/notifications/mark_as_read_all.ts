@@ -2,6 +2,17 @@ import Notification from '../../../../models/notification';
 import event from '../../../../stream';
 import User, { ILocalUser } from '../../../../models/user';
 
+export const meta = {
+	desc: {
+		ja: '全ての通知を既読にします。',
+		en: 'Mark as read all notifications.'
+	},
+
+	requireCredential: true,
+
+	kind: 'notification-write'
+};
+
 /**
  * Mark as read all notifications
  */

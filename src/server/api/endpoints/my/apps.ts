@@ -2,9 +2,15 @@ import $ from 'cafy';
 import App, { pack } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get my apps
- */
+export const meta = {
+	desc: {
+		ja: '自分のアプリケーション一覧を取得します。',
+		en: 'Get my apps'
+	},
+
+	requireCredential: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

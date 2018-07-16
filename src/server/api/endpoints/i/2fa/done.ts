@@ -2,6 +2,11 @@ import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
 import User, { ILocalUser } from '../../../../../models/user';
 
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
+
 export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
 	const [token, tokenErr] = $.str.get(params.token);

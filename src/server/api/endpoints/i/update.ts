@@ -5,9 +5,17 @@ import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';
 
-/**
- * Update myself
- */
+export const meta = {
+	desc: {
+		ja: 'アカウント情報を更新します。',
+		en: 'Update myself'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-write'
+};
+
 export default async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 

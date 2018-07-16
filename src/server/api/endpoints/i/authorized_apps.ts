@@ -3,9 +3,11 @@ import AccessToken from '../../../../models/access-token';
 import { pack } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get authorized apps of my account
- */
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

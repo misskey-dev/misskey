@@ -5,6 +5,10 @@ import User, { ILocalUser } from '../../../../../models/user';
 import publishUserStream, { publishReversiStream } from '../../../../../stream';
 import { eighteight } from '../../../../../games/reversi/maps';
 
+export const meta = {
+	requireCredential: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [childId, childIdErr] = $.type(ID).get(params.userId);

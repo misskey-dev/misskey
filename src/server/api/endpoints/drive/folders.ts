@@ -2,9 +2,17 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../models/drive-folder';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get drive folders
- */
+export const meta = {
+	desc: {
+		ja: 'ドライブのフォルダ一覧を取得します。',
+		en: 'Get folders of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

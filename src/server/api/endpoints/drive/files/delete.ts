@@ -4,9 +4,17 @@ import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Delete a file
- */
+export const meta = {
+	desc: {
+		ja: 'ドライブのファイルを削除します。',
+		en: 'Delete a file of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-write'
+};
+
 export default async (params: any, user: ILocalUser) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);

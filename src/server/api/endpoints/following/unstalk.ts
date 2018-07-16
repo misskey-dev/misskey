@@ -2,9 +2,17 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Following from '../../../../models/following';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Unstalk a user
- */
+export const meta = {
+	desc: {
+		ja: '指定したユーザーのストーキングをやめます。',
+		en: 'Unstalk a user.'
+	},
+
+	requireCredential: true,
+
+	kind: 'following-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const follower = user;
 

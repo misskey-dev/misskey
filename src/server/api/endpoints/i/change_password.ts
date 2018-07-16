@@ -2,9 +2,11 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import User, { ILocalUser } from '../../../../models/user';
 
-/**
- * Change password
- */
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
+
 export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'currentPasword' parameter
 	const [currentPassword, currentPasswordErr] = $.str.get(params.currentPasword);

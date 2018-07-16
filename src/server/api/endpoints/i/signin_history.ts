@@ -2,9 +2,11 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Signin, { pack } from '../../../../models/signin';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get signin history of my account
- */
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);

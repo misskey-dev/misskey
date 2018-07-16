@@ -3,9 +3,15 @@ import Note from '../../../../models/note';
 import Reaction, { pack } from '../../../../models/note-reaction';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Show reactions of a note
- */
+export const meta = {
+	desc: {
+		ja: '指定した投稿のリアクション一覧を取得します。',
+		en: 'Show reactions of a note.'
+	},
+
+	requireCredential: true
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
@@ -46,6 +52,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	// Serialize
-	res(await Promise.all(reactions.map(async reaction =>
-		await pack(reaction, user))));
+	res(await Promise.all(reactions.map(reaction => pack(reaction, user))));
 });

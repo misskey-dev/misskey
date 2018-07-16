@@ -4,9 +4,17 @@ import DriveFile, { validateFileName, pack } from '../../../../../models/drive-f
 import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Update a file
- */
+export const meta = {
+	desc: {
+		ja: '指定したドライブのファイルの情報を更新します。',
+		en: 'Update specified file of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-write'
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
