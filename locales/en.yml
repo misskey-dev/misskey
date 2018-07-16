@@ -936,7 +936,7 @@ docs:
       params: "Parameters"
       no-params: "パラメータはありません"
       res: "Response"
-      require-credential: "このエンドポイントは認証情報が必須です。"
+      require-credential: "This endpoint requires the authentication information."
       limit: "レートリミットがあります。直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
     props:
       name: "Name"
