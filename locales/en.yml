@@ -939,7 +939,7 @@ docs:
       require-credential: "This endpoint requires the authentication information."
       has-limit: "There is a rate limit."
       duration-limit: "You can't request when a frequency of a request in during {duration} milliseconds exceeds {max} times."
-      min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
+      min-interval-limit: "You can't request before {interval} milliseconds has passed since previous request."
     props:
       name: "Name"
       type: "Type"
