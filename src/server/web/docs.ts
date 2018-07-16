@@ -5,6 +5,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as showdown from 'showdown';
+import 'showdown-highlightjs-extension';
 import ms = require('ms');
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
@@ -220,7 +221,7 @@ router.get('/*/*', async ctx => {
 
 	const conv = new showdown.Converter({
 		tables: true,
-		extensions: ['urlExtension', 'apiUrlExtension']
+		extensions: ['urlExtension', 'apiUrlExtension', 'highlightjs']
 	});
 	const md = fs.readFileSync(`${__dirname}/../../../src/docs/${doc}.${lang}.md`, 'utf8');
 
