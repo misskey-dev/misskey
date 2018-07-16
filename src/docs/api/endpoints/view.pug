@@ -21,7 +21,13 @@ block main
 		div.ui.info: p= i18n('docs.api.endpoints.require-credential')
 
 	if endpoint.limit
-		div.ui.warn: p!= i18n('docs.api.endpoints.limit').replace('{duration}', endpoint.limit.duration).replace('{max}', endpoint.limit.max)
+		div.ui.info.warn
+			p
+				b!= i18n('docs.api.endpoints.has-limit')
+				if endpoint.limit.duration
+					!= i18n('docs.api.endpoints.duration-limit').replace('{duration}', endpoint.limit.duration).replace('{max}', endpoint.limit.max)
+				if endpoint.limit.minInterval
+					!= i18n('docs.api.endpoints.min-interval-limit').replace('{interval}', endpoint.limit.minInterval)
 
 	if params && Object.keys(params).length > 0
 		section
