@@ -934,10 +934,10 @@ docs:
       properties: "Properties"
     endpoints:
       params: "Parameters"
-      no-params: "パラメータはありません"
+      no-params: "No parameter."
       res: "Response"
       require-credential: "This endpoint requires the authentication information."
-      limit: "レートリミットがあります。直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
+      limit: "There is a rate limit. You can't request when a frequency of a request in during {duration} milliseconds exceeds {max} times."
     props:
       name: "Name"
       type: "Type"
