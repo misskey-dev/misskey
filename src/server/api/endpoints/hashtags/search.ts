@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import Hashtag from '../../../../models/hashtag';
 import getParams from '../../get-params';
+const escapeRegexp = require('escape-regexp');
 
 export const meta = {
 	desc: {
@@ -38,7 +39,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	const hashtags = await Hashtag
 		.find({
-			tag: new RegExp(ps.query.toLowerCase())
+			tag: new RegExp('^' + escapeRegexp(ps.query.toLowerCase()))
 		}, {
 			sort: {
 				count: -1

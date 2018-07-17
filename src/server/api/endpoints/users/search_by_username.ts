@@ -1,5 +1,6 @@
 import $ from 'cafy';
 import User, { pack, ILocalUser } from '../../../../models/user';
+const escapeRegexp = require('escape-regexp');
 
 /**
  * Search a user by username
@@ -20,7 +21,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	let users = await User
 		.find({
 			host: null,
-			usernameLower: new RegExp(query.toLowerCase())
+			usernameLower: new RegExp(escapeRegexp(query.toLowerCase()))
 		}, {
 			limit: limit,
 			skip: offset
@@ -30,7 +31,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		const remoteUsers = await User
 			.find({
 				host: { $ne: null },
-				usernameLower: new RegExp(query.toLowerCase())
+				usernameLower: new RegExp(escapeRegexp(query.toLowerCase()))
 			}, {
 				limit: limit - users.length
 			});
