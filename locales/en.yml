@@ -937,6 +937,7 @@ docs:
       no-params: "No parameter."
       res: "Response"
       require-credential: "This endpoint requires the authentication information."
+      require-permission: "このエンドポイントは{permission}の権限を必要とします。"
       has-limit: "There is a rate limit."
       duration-limit: "You can't request when a frequency of a request in during {duration} milliseconds exceeds {max} times."
       min-interval-limit: "You can't request before {interval} milliseconds has passed since previous request."
