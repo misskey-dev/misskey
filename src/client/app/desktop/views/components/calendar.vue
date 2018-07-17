@@ -35,10 +35,7 @@ import Vue from 'vue';
 const eachMonthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 function isLeapYear(year) {
-	return (year % 400 == 0) ? true :
-		(year % 100 == 0) ? false :
-			(year % 4 == 0) ? true :
-				false;
+	return !(year % (year % 25 ? 4 : 16));
 }
 
 export default Vue.extend({
