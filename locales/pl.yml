@@ -937,6 +937,7 @@ docs:
       no-params: "パラメータはありません"
       res: "Odpowiedź"
       require-credential: "このエンドポイントは認証情報が必須です。"
+      require-permission: "このエンドポイントは{permission}の権限を必要とします。"
       has-limit: "レートリミットがあります。"
       duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
       min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
