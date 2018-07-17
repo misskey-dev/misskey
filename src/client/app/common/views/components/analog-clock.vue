@@ -39,6 +39,10 @@ export default Vue.extend({
 		dark: {
 			type: Boolean,
 			default: false
+		},
+		smooth: {
+			type: Boolean,
+			default: false
 		}
 	},
 
@@ -88,13 +92,13 @@ export default Vue.extend({
 		},
 
 		hAngle(): number {
-			return Math.PI * (this.h % 12 + (this.m + (this.s + this.ms / 1000) / 60) / 60) / 6;
+			return Math.PI * (this.h % 12 + (this.m + (this.s + this.ms * this.smooth / 1000) / 60) / 60) / 6;
 		},
 		mAngle(): number {
-			return Math.PI * (this.m + (this.s + this.ms / 1000) / 60) / 30;
+			return Math.PI * (this.m + (this.s + this.ms * this.smooth / 1000) / 60) / 30;
 		},
 		sAngle(): number {
-			return Math.PI * (this.s + this.ms / 1000) / 30;
+			return Math.PI * (this.s + this.ms * this.smooth / 1000) / 30;
 		},
 
 		graduations(): any {
