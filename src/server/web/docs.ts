@@ -16,7 +16,7 @@ import config from '../../config';
 import I18n from '../../misc/i18n';
 import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
-import endpoints from '../../server/api/endpoints';
+import endpoints from '../api/endpoints';
 
 async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const vars = {} as { [key: string]: any };
