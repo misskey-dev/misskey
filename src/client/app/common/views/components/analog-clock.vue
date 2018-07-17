@@ -119,7 +119,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		enabled = false;
+		this.enabled = false;
 	},
 
 	methods: {
