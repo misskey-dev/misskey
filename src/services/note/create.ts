@@ -20,6 +20,7 @@ import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
 import Meta from '../../models/meta';
 import config from '../../config';
+import registerHashtag from '../register-hashtag';
 
 type Type = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -64,7 +65,6 @@ export default async (user: IUser, data: {
 	geo?: any;
 	poll?: any;
 	viaMobile?: boolean;
-	tags?: string[];
 	cw?: string;
 	visibility?: string;
 	visibleUsers?: IUser[];
@@ -75,7 +75,7 @@ export default async (user: IUser, data: {
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
 
-	let tags = data.tags || [];
+	let tags: string[] = [];
 
 	let tokens: any[] = null;
 
@@ -148,6 +148,9 @@ export default async (user: IUser, data: {
 	}
 
 	res(note);
+
+	// ハッシュタグ登録
+	tags.map(tag => registerHashtag(user, tag));
 
 	//#region Increment notes count
 	if (isLocalUser(user)) {

@@ -16,7 +16,7 @@
 			<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="%i18n:@cw-placeholder%">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder"></textarea>
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 				<div class="file" v-for="file in files" :key="file.id">

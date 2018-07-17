@@ -67,15 +67,27 @@ class Autocomplete {
 	 * テキスト入力時
 	 */
 	private onInput() {
-		const caret = this.textarea.selectionStart;
-		const text = this.text.substr(0, caret);
+		const caretPos = this.textarea.selectionStart;
+		const text = this.text.substr(0, caretPos);
 
 		const mentionIndex = text.lastIndexOf('@');
+		const hashtagIndex = text.lastIndexOf('#');
 		const emojiIndex = text.lastIndexOf(':');
+
+		const start = Math.min(
+			mentionIndex == -1 ? Infinity : mentionIndex,
+			hashtagIndex == -1 ? Infinity : hashtagIndex,
+			emojiIndex == -1 ? Infinity : emojiIndex);
+
+		if (start == Infinity) return;
+
+		const isMention = mentionIndex == start;
+		const isHashtag = hashtagIndex == start;
+		const isEmoji = emojiIndex == start;
 
 		let opened = false;
 
-		if (mentionIndex != -1 && mentionIndex > emojiIndex) {
+		if (isMention) {
 			const username = text.substr(mentionIndex + 1);
 			if (username != '' && username.match(/^[a-zA-Z0-9_]+$/)) {
 				this.open('user', username);
@@ -83,7 +95,15 @@ class Autocomplete {
 			}
 		}
 
-		if (emojiIndex != -1 && emojiIndex > mentionIndex) {
+		if (isHashtag || opened == false) {
+			const hashtag = text.substr(hashtagIndex + 1);
+			if (hashtag != '' && !hashtag.includes(' ') && !hashtag.includes('\n')) {
+				this.open('hashtag', hashtag);
+				opened = true;
+			}
+		}
+
+		if (isEmoji || opened == false) {
 			const emoji = text.substr(emojiIndex + 1);
 			if (emoji != '' && emoji.match(/^[\+\-a-z0-9_]+$/)) {
 				this.open('emoji', emoji);
@@ -171,6 +191,22 @@ class Autocomplete {
 			this.vm.$nextTick(() => {
 				this.textarea.focus();
 				const pos = trimmedBefore.length + (value.username.length + 2);
+				this.textarea.setSelectionRange(pos, pos);
+			});
+		} else if (type == 'hashtag') {
+			const source = this.text;
+
+			const before = source.substr(0, caret);
+			const trimmedBefore = before.substring(0, before.lastIndexOf('#'));
+			const after = source.substr(caret);
+
+			// 挿入
+			this.text = trimmedBefore + '#' + value + ' ' + after;
+
+			// キャレットを戻す
+			this.vm.$nextTick(() => {
+				this.textarea.focus();
+				const pos = trimmedBefore.length + (value.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		} else if (type == 'emoji') {

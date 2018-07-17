@@ -7,6 +7,11 @@
 			<span class="username">@{{ user | acct }}</span>
 		</li>
 	</ol>
+	<ol class="hashtags" ref="suggests" v-if="hashtags.length > 0">
+		<li v-for="hashtag in hashtags" @click="complete(type, hashtag)" @keydown="onKeydown" tabindex="-1">
+			<span class="name">{{ hashtag }}</span>
+		</li>
+	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
 			<span class="emoji">{{ emoji.emoji }}</span>
@@ -48,33 +53,33 @@ emjdb.sort((a, b) => a.name.length - b.name.length);
 
 export default Vue.extend({
 	props: ['type', 'q', 'textarea', 'complete', 'close', 'x', 'y'],
+
 	data() {
 		return {
 			fetching: true,
 			users: [],
+			hashtags: [],
 			emojis: [],
 			select: -1,
 			emojilib
 		}
 	},
+
 	computed: {
 		items(): HTMLCollection {
 			return (this.$refs.suggests as Element).children;
 		}
 	},
+
 	updated() {
 		//#region 位置調整
-		const margin = 32;
-
-		if (this.x + this.$el.offsetWidth > window.innerWidth - margin) {
-			this.$el.style.left = (this.x - this.$el.offsetWidth) + 'px';
-			this.$el.style.marginLeft = '-16px';
+		if (this.x + this.$el.offsetWidth > window.innerWidth) {
+			this.$el.style.left = (window.innerWidth - this.$el.offsetWidth) + 'px';
 		} else {
 			this.$el.style.left = this.x + 'px';
-			this.$el.style.marginLeft = '0';
 		}
 
-		if (this.y + this.$el.offsetHeight > window.innerHeight - margin) {
+		if (this.y + this.$el.offsetHeight > window.innerHeight) {
 			this.$el.style.top = (this.y - this.$el.offsetHeight) + 'px';
 			this.$el.style.marginTop = '0';
 		} else {
@@ -83,6 +88,7 @@ export default Vue.extend({
 		}
 		//#endregion
 	},
+
 	mounted() {
 		this.textarea.addEventListener('keydown', this.onKeydown);
 
@@ -100,6 +106,7 @@ export default Vue.extend({
 			});
 		});
 	},
+
 	beforeDestroy() {
 		this.textarea.removeEventListener('keydown', this.onKeydown);
 
@@ -107,6 +114,7 @@ export default Vue.extend({
 			el.removeEventListener('mousedown', this.onMousedown);
 		});
 	},
+
 	methods: {
 		exec() {
 			this.select = -1;
@@ -117,7 +125,8 @@ export default Vue.extend({
 			}
 
 			if (this.type == 'user') {
-				const cache = sessionStorage.getItem(this.q);
+				const cacheKey = 'autocomplete:user:' + this.q;
+				const cache = sessionStorage.getItem(cacheKey);
 				if (cache) {
 					const users = JSON.parse(cache);
 					this.users = users;
@@ -131,7 +140,26 @@ export default Vue.extend({
 						this.fetching = false;
 
 						// キャッシュ
-						sessionStorage.setItem(this.q, JSON.stringify(users));
+						sessionStorage.setItem(cacheKey, JSON.stringify(users));
+					});
+				}
+			} else if (this.type == 'hashtag') {
+				const cacheKey = 'autocomplete:hashtag:' + this.q;
+				const cache = sessionStorage.getItem(cacheKey);
+				if (cache) {
+					const hashtags = JSON.parse(cache);
+					this.hashtags = hashtags;
+					this.fetching = false;
+				} else {
+					(this as any).api('hashtags/search', {
+						query: this.q,
+						limit: 30
+					}).then(hashtags => {
+						this.hashtags = hashtags;
+						this.fetching = false;
+
+						// キャッシュ
+						sessionStorage.setItem(cacheKey, JSON.stringify(hashtags));
 					});
 				}
 			} else if (this.type == 'emoji') {
@@ -260,6 +288,8 @@ root(isDark)
 				user-select none
 
 			&:hover
+				background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.1)
+
 			&[data-selected='true']
 				background $theme-color
 
@@ -292,6 +322,14 @@ root(isDark)
 			vertical-align middle
 			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
 
+
+	> .hashtags > li
+
+		.name
+			vertical-align middle
+			margin 0 8px 0 0
+			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
+
 	> .emojis > li
 
 		.emoji
@@ -300,11 +338,11 @@ root(isDark)
 			width 24px
 
 		.name
-			color rgba(#000, 0.8)
+			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 		.alias
 			margin 0 0 0 8px
-			color rgba(#000, 0.3)
+			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
 
 .mk-autocomplete[data-darkmode]
 	root(true)
