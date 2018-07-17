@@ -114,7 +114,7 @@ export default Vue.extend({
 				this.tick();
 				requestAnimationFrame(update);
 			}
-		});
+		};
 		update();
 	},
 
