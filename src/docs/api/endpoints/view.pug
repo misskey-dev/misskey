@@ -18,16 +18,23 @@ block main
 		p#desc= endpoint.desc[lang] || endpoint.desc['ja']
 
 	if endpoint.requireCredential
-		div.ui.info: p= i18n('docs.api.endpoints.require-credential')
+		div.ui.info: p
+			i.fas.fa-id-card-alt(style="margin-right: 4px")
+			= i18n('docs.api.endpoints.require-credential')
+
+		if endpoint.kind
+			div.ui.info: p
+				i.fas.fa-unlock-alt(style="margin-right: 4px")
+				!= i18n('docs.api.endpoints.require-permission').replace('{permission}', `<code>${endpoint.kind}</code>`)
 
 	if endpoint.limit
-		div.ui.info.warn
-			p
-				b!= i18n('docs.api.endpoints.has-limit')
-				if endpoint.limit.duration
-					!= i18n('docs.api.endpoints.duration-limit').replace('{duration}', endpoint.limit.duration).replace('{max}', endpoint.limit.max)
-				if endpoint.limit.minInterval
-					!= i18n('docs.api.endpoints.min-interval-limit').replace('{interval}', endpoint.limit.minInterval)
+		div.ui.info.warn: p
+			i.far.fa-clock(style="margin-right: 4px")
+			b!= i18n('docs.api.endpoints.has-limit')
+			if endpoint.limit.duration
+				!= i18n('docs.api.endpoints.duration-limit').replace('{duration}', endpoint.limit.duration).replace('{max}', endpoint.limit.max)
+			if endpoint.limit.minInterval
+				!= i18n('docs.api.endpoints.min-interval-limit').replace('{interval}', endpoint.limit.minInterval)
 
 	if params && Object.keys(params).length > 0
 		section
