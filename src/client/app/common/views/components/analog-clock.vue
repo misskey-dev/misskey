@@ -39,6 +39,10 @@ export default Vue.extend({
 		dark: {
 			type: Boolean,
 			default: false
+		},
+		smooth: {
+			type: Boolean,
+			default: false
 		}
 	},
 
@@ -75,7 +79,7 @@ export default Vue.extend({
 		},
 
 		ms(): number {
-			return this.now.getMilliseconds();
+			return this.now.getMilliseconds() * this.smooth;
 		}
 		s(): number {
 			return this.now.getSeconds();
