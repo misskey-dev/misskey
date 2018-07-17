@@ -941,7 +941,7 @@ docs:
       duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
       min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
       show-src: "このエンドポイントのソースコードも閲覧できます。"
-      show-src-link: "コードをGitHubで見る"
+      show-src-link: "Zobacz kod na GitHubie"
       generated: "このドキュメントはAPI定義に基づき自動生成されています。"
     props:
       name: "Nazwa"
