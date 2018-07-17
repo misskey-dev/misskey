@@ -45,7 +45,7 @@ export default Vue.extend({
 	data() {
 		return {
 			now: new Date(),
-			clock: null,
+			enabled: true,
 
 			graduationsPadding: 0.5,
 			handsPadding: 1,
@@ -74,6 +74,9 @@ export default Vue.extend({
 			return themeColor;
 		},
 
+		ms(): number {
+			return this.now.getMilliseconds();
+		}
 		s(): number {
 			return this.now.getSeconds();
 		},
@@ -85,13 +88,13 @@ export default Vue.extend({
 		},
 
 		hAngle(): number {
-			return Math.PI * (this.h % 12 + this.m / 60) / 6;
+			return Math.PI * (this.h % 12 + (this.m + (this.s + this.ms / 1000) / 60) / 60) / 6;
 		},
 		mAngle(): number {
-			return Math.PI * (this.m + this.s / 60) / 30;
+			return Math.PI * (this.m + (this.s + this.ms / 1000) / 60) / 30;
 		},
 		sAngle(): number {
-			return Math.PI * this.s / 30;
+			return Math.PI * (this.s + this.ms / 1000) / 30;
 		},
 
 		graduations(): any {
@@ -106,11 +109,17 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.clock = setInterval(this.tick, 1000);
+		const update = () => {
+			if (this.enabled) {
+				this.tick();
+				requestAnimationFrame(update);
+			}
+		});
+		update();
 	},
 
 	beforeDestroy() {
-		clearInterval(this.clock);
+		enabled = false;
 	},
 
 	methods: {
