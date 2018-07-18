@@ -113,7 +113,7 @@ const parsePropDefinition = (key: string, prop: any) => {
 	return prop;
 };
 
-const sortParams = (params: Array<{name: string}>) => {
+const sortParams = (params: Array<{ name: string }>) => {
 	return params;
 };
 
@@ -184,7 +184,7 @@ router.get('/*/api/endpoints/*', async ctx => {
 		paramDefs: ep.meta.params ? extractParamDefRef(Object.entries(ep.meta.params).map(([k, v]) => v)) : null,
 		res: ep.meta.res,
 		resProps: ep.meta.res && ep.meta.res.props ? sortParams(Object.entries(ep.meta.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
-		resDefs: null,//extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
+		resDefs: null, //extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
 		src: `https://github.com/syuilo/misskey/tree/master/src/server/api/endpoints/${name}.ts`
 	};
 
