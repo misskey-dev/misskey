@@ -48,9 +48,9 @@ In root :
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Install misskey dependencies.
 
-*5.* reCAPTCHA tokens
+*(optional)* reCAPTCHA tokens
 ----------------------------------------------------------------
-Misskey requires reCAPTCHA tokens.
+If you want to enable reCAPTCHA, you need to generate reCAPTCHA tokens:
 Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
 *(optional)* Generating VAPID keys
@@ -63,13 +63,12 @@ npm install web-push -g
 web-push generate-vapid-keys
 ```
 
-
-*6.* Make configuration file
+*5.* Make configuration file
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
 2. Edit `default.yml`
 
-*7.* Build Misskey
+*6.* Build Misskey
 ----------------------------------------------------------------
 
 Build misskey with the following:
@@ -85,7 +84,7 @@ If you're still encountering errors about some modules, use node-gyp:
 3. `node-gyp build`
 4. `npm run build`
 
-*8.* That is it.
+*7.* That is it.
 ----------------------------------------------------------------
 Well done! Now, you have an environment that run to Misskey.
 

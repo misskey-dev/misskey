@@ -72,7 +72,7 @@ const output = {
 
 //#region Define consts
 const consts = {
-	_RECAPTCHA_SITEKEY_: config.recaptcha.site_key,
+	_RECAPTCHA_SITEKEY_: config.recaptcha ? config.recaptcha.site_key : null,
 	_SW_PUBLICKEY_: config.sw ? config.sw.public_key : null,
 	_THEME_COLOR_: constants.themeColor,
 	_COPYRIGHT_: constants.copyright,

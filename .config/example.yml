@@ -41,10 +41,6 @@ redis:
   port: 6379
   pass: example-pass
 
-recaptcha:
-  site_key: example-site-key
-  secret_key: example-secret-key
-
 # If enabled:
 #  Server will not cache remote files (Using direct link instead).
 #  You can save your storage.
@@ -66,6 +62,11 @@ preventCache: false
 #   host: localhost
 #   port: 9200
 #   pass: null
+
+# reCAPTCHA
+# recaptcha:
+#   site_key: example-site-key
+#  secret_key: example-secret-key
 
 # ServiceWorker
 # sw:

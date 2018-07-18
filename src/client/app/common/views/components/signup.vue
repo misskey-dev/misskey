@@ -29,7 +29,7 @@
 			<p slot="text" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@password-not-matched%</p>
 		</div>
 	</ui-input>
-	<div class="g-recaptcha" :data-sitekey="recaptchaSitekey" style="margin: 16px 0;"></div>
+	<div v-if="recaptchaSitekey != null" class="g-recaptcha" :data-sitekey="recaptchaSitekey" style="margin: 16px 0;"></div>
 	<label class="agree-tou" style="display: block; margin: 16px 0;">
 		<input name="agree-tou" type="checkbox" required/>
 		<p><a :href="touUrl" target="_blank">利用規約</a>に同意する</p>
@@ -115,7 +115,7 @@ export default Vue.extend({
 			(this as any).api('signup', {
 				username: this.username,
 				password: this.password,
-				'g-recaptcha-response': (window as any).grecaptcha.getResponse()
+				'g-recaptcha-response': recaptchaSitekey != null ? (window as any).grecaptcha.getResponse() : null
 			}).then(() => {
 				(this as any).api('signin', {
 					username: this.username,
@@ -126,15 +126,19 @@ export default Vue.extend({
 			}).catch(() => {
 				alert('%i18n:@some-error%');
 
-				(window as any).grecaptcha.reset();
+				if (recaptchaSitekey != null) {
+					(window as any).grecaptcha.reset();
+				}
 			});
 		}
 	},
 	mounted() {
-		const head = document.getElementsByTagName('head')[0];
-		const script = document.createElement('script');
-		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
-		head.appendChild(script);
+		if (recaptchaSitekey != null) {
+			const head = document.getElementsByTagName('head')[0];
+			const script = document.createElement('script');
+			script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
+			head.appendChild(script);
+		}
 	}
 });
 </script>

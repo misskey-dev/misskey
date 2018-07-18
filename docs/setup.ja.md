@@ -47,10 +47,10 @@ adduser --disabled-password --disabled-login misskey
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 5. `npm install` Misskeyの依存パッケージをインストール
 
-*5.* reCAPTCHAトークン
+*(オプション)* reCAPTCHAトークン
 ----------------------------------------------------------------
-MisskeyはreCAPTCHAトークンを必要とします。
-https://www.google.com/recaptcha/intro/ にアクセスしてトークンを生成してください。
+reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。
+https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。
 
 *(オプション)* VAPIDキーペアの生成
 ----------------------------------------------------------------
@@ -61,12 +61,12 @@ npm install web-push -g
 web-push generate-vapid-keys
 ```
 
-*6.* Make configuration file
+*5.* 設定ファイルを作成する
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする。
 2. `default.yml` を編集する。
 
-*7.* Misskeyのビルド
+*6.* Misskeyのビルド
 ----------------------------------------------------------------
 
 次のコマンドでMisskeyをビルドしてください:
@@ -81,8 +81,7 @@ Debianをお使いであれば、`build-essential`パッケージをインスト
 3. `node-gyp build`
 4. `npm run build`
 
-
-*6.* 以上です！
+*7.* 以上です！
 ----------------------------------------------------------------
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
 

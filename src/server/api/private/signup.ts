@@ -7,14 +7,16 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';
 
-recaptcha.init({
-	secret_key: config.recaptcha.secret_key
-});
+if (config.recaptcha) {
+	recaptcha.init({
+		secret_key: config.recaptcha.secret_key
+	});
+}
 
 export default async (ctx: Koa.Context) => {
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
-	if (process.env.NODE_ENV !== 'test') {
+	if (process.env.NODE_ENV !== 'test' && config.recaptcha != null) {
 		const success = await recaptcha(ctx.request.body['g-recaptcha-response']);
 
 		if (!success) {
