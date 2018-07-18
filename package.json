@@ -100,7 +100,7 @@
 		"dompurify": "1.0.5",
 		"elasticsearch": "15.1.1",
 		"element-ui": "2.4.4",
-		"emojilib": "2.2.12",
+		"emojilib": "2.3.0",
 		"escape-regexp": "0.0.1",
 		"eslint": "5.0.1",
 		"eslint-plugin-vue": "4.7.0",
