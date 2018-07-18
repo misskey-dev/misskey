@@ -175,6 +175,7 @@ root(isDark)
 					> .val
 						height 4px
 						background $theme-color
+						transition width .3s cubic-bezier(0.23, 1, 0.32, 1)
 
 				&:nth-child(1)
 					> .meter > .val
