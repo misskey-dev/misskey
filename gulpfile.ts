@@ -23,7 +23,6 @@ const uglifyes = require('uglify-es');
 
 const locales = require('./locales');
 import { fa } from './src/misc/fa';
-const client = require('./built/client/meta.json');
 import config from './src/config';
 
 const uglify = uglifyComposer(uglifyes, console);
@@ -117,8 +116,9 @@ gulp.task('build:client', [
 	'copy:client'
 ]);
 
-gulp.task('build:client:script', () =>
-	gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
+gulp.task('build:client:script', () => {
+	const client = require('./built/client/meta.json');
+	return gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
 		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(replace('ENV', JSON.stringify(env)))
@@ -126,8 +126,8 @@ gulp.task('build:client:script', () =>
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
-		.pipe(gulp.dest('./built/client/assets/')) as any
-);
+		.pipe(gulp.dest('./built/client/assets/'));
+});
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/client/app/init.css')
