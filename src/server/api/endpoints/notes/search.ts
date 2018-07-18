@@ -18,6 +18,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	const [limit = 10, limitErr] = $.num.optional.range(1, 30).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
+	if (es == null) return rej('searching not available');
+
 	es.search({
 		index: 'misskey',
 		type: 'note',
@@ -53,10 +55,10 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 				$in: hits
 			}
 		}, {
-			sort: {
-				_id: -1
-			}
-		});
+				sort: {
+					_id: -1
+				}
+			});
 
 		res(await Promise.all(notes.map(note => pack(note, me))));
 	});
