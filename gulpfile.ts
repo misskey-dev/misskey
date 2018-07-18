@@ -84,12 +84,12 @@ gulp.task('lint', () =>
 );
 
 gulp.task('format', () =>
-gulp.src('./src/**/*.ts')
-	.pipe(tslint({
-		formatter: 'verbose',
-		fix: true
-	}))
-	.pipe(tslint.report())
+	gulp.src('./src/**/*.ts')
+		.pipe(tslint({
+			formatter: 'verbose',
+			fix: true
+		}))
+		.pipe(tslint.report())
 );
 
 gulp.task('mocha', () =>
