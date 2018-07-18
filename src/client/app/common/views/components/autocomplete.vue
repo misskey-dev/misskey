@@ -259,6 +259,7 @@ export default Vue.extend({
 root(isDark)
 	position fixed
 	z-index 65535
+	max-width 100%
 	margin-top calc(1em + 8px)
 	overflow hidden
 	background isDark ? #313543 : #fff
