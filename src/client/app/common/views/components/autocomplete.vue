@@ -277,7 +277,8 @@ root(isDark)
 		list-style none
 
 		> li
-			display block
+			display flex
+			align-items center
 			padding 4px 12px
 			white-space nowrap
 			overflow hidden
@@ -287,6 +288,10 @@ root(isDark)
 
 			&, *
 				user-select none
+
+			*
+				overflow hidden
+				text-overflow ellipsis
 
 			&:hover
 				background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.1)
@@ -306,7 +311,6 @@ root(isDark)
 	> .users > li
 
 		.avatar
-			vertical-align middle
 			min-width 28px
 			min-height 28px
 			max-width 28px
@@ -315,19 +319,15 @@ root(isDark)
 			border-radius 100%
 
 		.name
-			vertical-align middle
 			margin 0 8px 0 0
 			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 		.username
-			vertical-align middle
 			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
-
 
 	> .hashtags > li
 
 		.name
-			vertical-align middle
 			margin 0 8px 0 0
 			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
