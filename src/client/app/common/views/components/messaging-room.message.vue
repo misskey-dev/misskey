@@ -4,9 +4,9 @@
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
 			<p class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
-			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
+			<!-- <button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
-			</button>
+			</button> -->
 			<div class="content" v-if="!message.isDeleted">
 				<misskey-flavored-markdown class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
