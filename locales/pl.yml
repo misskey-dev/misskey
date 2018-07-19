@@ -288,6 +288,8 @@ desktop/views/components/drive.file.vue:
   banner: "Baner"
   contextmenu:
     rename: "Zmień nazwę"
+    mark-as-sensitive: "閲覧注意に設定"
+    unmark-as-sensitive: "閲覧注意を解除"
     copy-url: "Skopiuj adres"
     download: "Pobierz"
     else-files: "Inne"
@@ -331,6 +333,9 @@ desktop/views/components/drive.vue:
     create-folder: "Utwórz katalog"
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
+desktop/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 desktop/views/components/follow-button.vue:
   following: "Śledzisz"
   follow: "Śledź"
@@ -725,6 +730,9 @@ mobile/views/components/drive.file-detail.vue:
   move: "Przenieś"
   hash: "Hash (md5)"
   exif: "EXIF"
+mobile/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 mobile/views/components/follow-button.vue:
   following: "Śledzisz"
   follow: "Śledź"
