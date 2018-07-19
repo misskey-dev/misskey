@@ -45,8 +45,6 @@ gulp.task('build', [
 	'doc'
 ]);
 
-gulp.task('rebuild', ['clean', 'build']);
-
 gulp.task('build:ts', () => {
 	const tsProject = ts.createProject('./tsconfig.json');
 

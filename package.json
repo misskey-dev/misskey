@@ -9,12 +9,10 @@
 	"scripts": {
 		"start": "node ./built",
 		"debug": "DEBUG=misskey:* node ./built",
-		"swagger": "node ./swagger.js",
 		"build": "webpack && gulp build",
 		"webpack": "webpack",
 		"watch": "webpack --watch",
 		"gulp": "gulp build",
-		"rebuild": "gulp rebuild",
 		"clean": "gulp clean",
 		"cleanall": "gulp cleanall",
 		"lint": "gulp lint",
