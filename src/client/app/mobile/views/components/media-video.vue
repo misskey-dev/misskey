@@ -1,17 +1,32 @@
 <template>
-	<a class="mk-media-video"
-		:href="video.url"
-		target="_blank"
-		:style="imageStyle"
-		:title="video.name">
-		%fa:R play-circle%
-	</a>
+<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="video.isSensitive && hide" @click="hide = false">
+	<div>
+		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
+		<span>%i18n:@click-to-show%</span>
+	</div>
+</div>
+<a class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else
+	:href="video.url"
+	target="_blank"
+	:style="imageStyle"
+	:title="video.name">
+	%fa:R play-circle%
+</a>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-	props: ['video'],
+	props: {
+		video: {
+			type: Object,
+			required: true
+		},
+		hide: {
+			type: Boolean,
+			default: true
+		}
+	},
 	computed: {
 		imageStyle(): any {
 			return {
@@ -22,7 +37,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-media-video
+.kkjnbbplepmiyuadieoenjgutgcmtsvu
 	display flex
 	justify-content center
 	align-items center
@@ -33,4 +48,20 @@ export default Vue.extend({
 	background-size cover
 	width 100%
 	height 100%
+
+.icozogqfvdetwohsdglrbswgrejoxbdj
+	display flex
+	justify-content center
+	align-items center
+	background #111
+	color #fff
+
+	> div
+		display table-cell
+		text-align center
+		font-size 12px
+
+		> b
+			display block
+
 </style>
