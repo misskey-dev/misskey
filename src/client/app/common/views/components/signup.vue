@@ -30,10 +30,6 @@
 		</div>
 	</ui-input>
 	<div v-if="recaptchaSitekey != null" class="g-recaptcha" :data-sitekey="recaptchaSitekey" style="margin: 16px 0;"></div>
-	<label class="agree-tou" style="display: block; margin: 16px 0;">
-		<input name="agree-tou" type="checkbox" required/>
-		<p><a :href="touUrl" target="_blank">利用規約</a>に同意する</p>
-	</label>
 	<ui-button type="submit">%i18n:@create%</ui-button>
 </form>
 </template>
@@ -41,7 +37,7 @@
 <script lang="ts">
 import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
-import { host, url, docsUrl, lang, recaptchaSitekey } from '../../../config';
+import { host, url, recaptchaSitekey } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -51,7 +47,6 @@ export default Vue.extend({
 			password: '',
 			retypedPassword: '',
 			url,
-			touUrl: `${docsUrl}/${lang}/tou`,
 			recaptchaSitekey,
 			usernameState: null,
 			passwordStrength: '',
@@ -148,22 +143,4 @@ export default Vue.extend({
 
 .mk-signup
 	min-width 302px
-
-	.agree-tou
-		padding 4px
-		border-radius 4px
-
-		&:hover
-			background #f4f4f4
-
-		&:active
-			background #eee
-
-		&, *
-			cursor pointer
-
-		p
-			display inline
-			color #555
-
 </style>
