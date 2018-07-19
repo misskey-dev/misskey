@@ -10,6 +10,9 @@
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
 			<a @click="addVisibleUser">+ユーザーを追加</a>
 		</div>
+		<div class="hashtags" v-if="recentHashtags.length > 0">
+			<a v-for="tag in recentHashtags" @click="addTag(tag)">#{{ tag }}</a>
+		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
@@ -46,6 +49,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import getKao from '../../../common/scripts/get-kao';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
@@ -91,7 +95,8 @@ export default Vue.extend({
 			visibility: 'public',
 			visibleUsers: [],
 			autocomplete: null,
-			draghover: false
+			draghover: false,
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]')
 		};
 	},
 
@@ -183,6 +188,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		addTag(tag: string) {
+			insertTextAtCursor(this.$refs.text, ` #${tag} `);
+		},
+
 		watch() {
 			this.$watch('text', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
@@ -370,6 +379,13 @@ export default Vue.extend({
 			}).then(() => {
 				this.posting = false;
 			});
+
+			if (this.text && this.text != '') {
+				const hashtags = parse(this.text).filter(x => x.type == 'hashtag').map(x => x.hashtag);
+				let history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
+				history = history.filter(x => !hashtags.includes(x));
+				localStorage.setItem('hashtags', JSON.stringify(hashtags.concat(history)));
+			}
 		},
 
 		saveDraft() {
@@ -477,6 +493,10 @@ root(isDark)
 			> span
 				margin-right 16px
 				color isDark ? #fff : #666
+
+		> .hashtags
+			> *
+				margin-right 8px
 
 		> .medias
 			margin 0
