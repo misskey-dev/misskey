@@ -1,3 +1,4 @@
+import { performance } from 'perf_hooks';
 import limitter from './limitter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
@@ -45,7 +46,13 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 	// API invoking
 	try {
+		const a = performance.now();
 		res = await exec(data, user, app);
+		const b = performance.now();
+
+		if (b - a > 500) {
+			console.warn(`SLOW API CALL DETECTED: ${ep.name}`);
+		}
 	} catch (e) {
 		rej(e);
 		return;
