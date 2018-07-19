@@ -18,14 +18,13 @@ ultimately sophisticated professional microblogging software.
 
 :sparkles: Features
 ----------------------------------------------------------------
+* Rich text contents
 * Reactions
 * User lists
 * Customizable column view (called MisskeyDeck)
   * and widgets!
 * Private messages
-* Mute
-* Real-time timelines
-* ActivityPub compatible
+* ActivityPub support
 
 and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
 
