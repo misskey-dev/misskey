@@ -288,6 +288,8 @@ desktop/views/components/drive.file.vue:
   banner: "Banner"
   contextmenu:
     rename: "Rename"
+    mark-as-sensitive: "Mark as 'sensitive'"
+    unmark-as-sensitive: "Unmark as 'sensitive'"
     copy-url: "Copy URL"
     download: "Download"
     else-files: "Others"
@@ -331,6 +333,12 @@ desktop/views/components/drive.vue:
     create-folder: "Create a folder"
     upload: "Upload a file"
     url-upload: "Upload from a URL"
+desktop/views/components/media-image.vue:
+  sensitive: "The content is NSFW"
+  click-to-show: "Click to show"
+desktop/views/components/media-video.vue:
+  sensitive: "The content is NSFW"
+  click-to-show: "Click to show"
 desktop/views/components/follow-button.vue:
   following: "Following"
   follow: "Follow"
@@ -725,6 +733,12 @@ mobile/views/components/drive.file-detail.vue:
   move: "Move"
   hash: "Hash (md5)"
   exif: "EXIF"
+mobile/views/components/media-image.vue:
+  sensitive: "The content is NSFW"
+  click-to-show: "Click to show"
+mobile/views/components/media-video.vue:
+  sensitive: "The content is NSFW"
+  click-to-show: "Click to show"
 mobile/views/components/follow-button.vue:
   following: "Following"
   follow: "Follow"
