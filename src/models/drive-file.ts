@@ -33,6 +33,7 @@ export type IMetadata = {
 	url?: string;
 	deletedAt?: Date;
 	isMetaOnly?: boolean;
+	isSensitive?: boolean;
 };
 
 export type IDriveFile = {

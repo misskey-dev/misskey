@@ -81,3 +81,10 @@ props:
     desc:
       ja: "フォルダ"
       en: "The folder of this file"
+
+  sensitive:
+    type: "boolean"
+    optional: true
+    desc:
+      ja: "このメディアが「閲覧注意」(NSFW)かどうか"
+      en: "Whether this media is NSFW"

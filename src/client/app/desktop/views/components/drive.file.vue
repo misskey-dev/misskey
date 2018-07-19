@@ -69,6 +69,11 @@ export default Vue.extend({
 				action: this.rename
 			}, {
 				type: 'item',
+				text: this.file.isSensitive ? '%i18n:@contextmenu.unmark-as-sensitive%' : '%i18n:@contextmenu.mark-as-sensitive%',
+				icon: this.file.isSensitive ? '%fa:R eye%' : '%fa:R eye-slash%',
+				action: this.toggleSensitive
+			}, null, {
+				type: 'item',
 				text: '%i18n:@contextmenu.copy-url%',
 				icon: '%fa:link%',
 				action: this.copyUrl
@@ -146,6 +151,13 @@ export default Vue.extend({
 					fileId: this.file.id,
 					name: name
 				});
+			});
+		},
+
+		toggleSensitive() {
+			(this as any).api('drive/files/update', {
+				fileId: this.file.id,
+				isSensitive: !this.file.isSensitive
 			});
 		},
 

@@ -4,9 +4,15 @@ import config from '../../../config';
 import { ILocalUser } from '../../../models/user';
 import toHtml from '../../../mfm/html';
 import parse from '../../../mfm/parse';
+import DriveFile from '../../../models/drive-file';
 
-export default (user: ILocalUser) => {
+export default async (user: ILocalUser) => {
 	const id = `${config.url}/users/${user._id}`;
+
+	const [avatar, banner] = await Promise.all([
+		DriveFile.findOne({ _id: user.avatarId }),
+		DriveFile.findOne({ _id: user.bannerId })
+	]);
 
 	return {
 		type: user.isBot ? 'Service' : 'Person',
@@ -18,8 +24,8 @@ export default (user: ILocalUser) => {
 		preferredUsername: user.username,
 		name: user.name,
 		summary: toHtml(parse(user.description)),
-		icon: user.avatarId && renderImage(user.avatarId),
-		image: user.bannerId && renderImage(user.bannerId),
+		icon: user.avatarId && renderImage(avatar),
+		image: user.bannerId && renderImage(banner),
 		manuallyApprovesFollowers: user.isLocked,
 		publicKey: renderKey(user)
 	};

@@ -111,13 +111,13 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
-function userInfo(ctx: Router.IRouterContext, user: IUser) {
+async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 	if (user === null) {
 		ctx.status = 404;
 		return;
 	}
 
-	ctx.body = pack(renderPerson(user as ILocalUser));
+	ctx.body = pack(await renderPerson(user as ILocalUser));
 }
 
 router.get('/users/:user', async ctx => {
@@ -128,7 +128,7 @@ router.get('/users/:user', async ctx => {
 		host: null
 	});
 
-	userInfo(ctx, user);
+	await userInfo(ctx, user);
 });
 
 router.get('/@:user', async (ctx, next) => {
@@ -139,7 +139,7 @@ router.get('/@:user', async (ctx, next) => {
 		host: null
 	});
 
-	userInfo(ctx, user);
+	await userInfo(ctx, user);
 });
 //#endregion
 

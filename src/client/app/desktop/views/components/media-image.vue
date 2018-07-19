@@ -1,5 +1,11 @@
 <template>
-<a class="mk-media-image"
+<div class="ldwbgwstjsdgcjruamauqdrffetqudry" v-if="image.isSensitive && hide" @click="hide = false">
+	<div>
+		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
+		<span>%i18n:@click-to-show%</span>
+	</div>
+</div>
+<a class="lcjomzwbohoelkxsnuqjiaccdbdfiazy" v-else
 	:href="image.url"
 	@mousemove="onMousemove"
 	@mouseleave="onMouseleave"
@@ -21,6 +27,10 @@ export default Vue.extend({
 		},
 		raw: {
 			default: false
+		},
+		hide: {
+			type: Boolean,
+			default: true
 		}
 	},
 	computed: {
@@ -56,16 +66,30 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-media-image
+.lcjomzwbohoelkxsnuqjiaccdbdfiazy
 	display block
 	cursor zoom-in
 	overflow hidden
 	width 100%
 	height 100%
 	background-position center
-	border-radius 4px
 
 	&:not(:hover)
 		background-size cover
+
+.ldwbgwstjsdgcjruamauqdrffetqudry
+	display flex
+	justify-content center
+	align-items center
+	background #111
+	color #fff
+
+	> div
+		display table-cell
+		text-align center
+		font-size 12px
+
+		> b
+			display block
 
 </style>

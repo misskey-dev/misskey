@@ -29,6 +29,14 @@ export const meta = {
 			desc: {
 				ja: 'フォルダID'
 			}
+		}),
+
+		isSensitive: $.bool.optional.note({
+			default: false,
+			desc: {
+				ja: 'このメディアが「閲覧注意」(NSFW)かどうか',
+				en: 'Whether this media is NSFW'
+			}
 		})
 	}
 };
@@ -68,7 +76,7 @@ export default async (file: any, params: any, user: ILocalUser): Promise<any> =>
 
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, ps.folderId);
+		const driveFile = await create(user, file.path, name, null, ps.folderId, false, false, null, null, ps.isSensitive);
 
 		cleanup();
 

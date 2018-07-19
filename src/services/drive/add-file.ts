@@ -83,7 +83,8 @@ export default async function(
 	force: boolean = false,
 	metaOnly: boolean = false,
 	url: string = null,
-	uri: string = null
+	uri: string = null,
+	sensitive = false
 ): Promise<IDriveFile> {
 	// Calc md5 hash
 	const calcHash = new Promise<string>((res, rej) => {
@@ -258,7 +259,8 @@ export default async function(
 		folderId: folder !== null ? folder._id : null,
 		comment: comment,
 		properties: properties,
-		isMetaOnly: metaOnly
+		isMetaOnly: metaOnly,
+		isSensitive: sensitive
 	} as IMetadata;
 
 	if (url !== null) {
