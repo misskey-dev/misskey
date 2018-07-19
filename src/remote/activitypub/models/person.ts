@@ -117,6 +117,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 				publicKeyPem: person.publicKey.publicKeyPem
 			},
 			inbox: person.inbox,
+			sharedInbox: person.sharedInbox,
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
@@ -239,6 +240,8 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 	await User.update({ _id: exist._id }, {
 		$set: {
 			updatedAt: new Date(),
+			inbox: person.inbox,
+			sharedInbox: person.sharedInbox,
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
 			avatarUrl: avatar && avatar.metadata.isMetaOnly ? avatar.metadata.url : null,
