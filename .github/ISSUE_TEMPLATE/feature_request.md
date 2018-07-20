@@ -8,4 +8,4 @@ about: Suggest an idea for this project
 
 # Environment
 <!-- Tell us where on the platform it related -->
-<!-- e.g. desktop or mobile version, your browser, operating system -->
+<!-- e.g. desktop or mobile version, your browser, your OS -->
