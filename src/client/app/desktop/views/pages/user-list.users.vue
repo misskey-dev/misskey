@@ -49,7 +49,8 @@ export default Vue.extend({
 		add() {
 			(this as any).apis.input({
 				title: '%i18n:@username%',
-			}).then(async username => {
+			}).then(async (username: string) => {
+				if (username.startsWith('@')) username = username.slice(1);
 				const user = await (this as any).api('users/show', {
 					username
 				});
