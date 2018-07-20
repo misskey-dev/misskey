@@ -413,6 +413,8 @@ desktop/views/components/post-form.vue:
   insert-a-kao: "v('ω')v"
   create-poll: "Create a poll"
   text-remain: "{} characters remaining"
+  recent-tags: "最近"
+  click-to-tagging: "クリックでタグ付け"
 desktop/views/components/post-form-window.vue:
   note: "New note"
   reply: "Reply"
