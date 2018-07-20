@@ -175,7 +175,7 @@ export default Vue.extend({
 				offsetX = 0;
 				hashtags.map(x => x.style.transform = 'translateX(0)');
 			} else {
-				offsetX -= .25;
+				offsetX--;
 				hashtags.map(x => x.style.transform = `translateX(${offsetX}px)`);
 			}
 			requestAnimationFrame(update);
