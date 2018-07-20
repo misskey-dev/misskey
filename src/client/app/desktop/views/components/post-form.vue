@@ -199,7 +199,8 @@ export default Vue.extend({
 				}
 				requestAnimationFrame(update);
 			};
-			update()
+			if (hashtags[hashtags.length - 1].left >= hashtagsContainer.getBoundingClientRect().right)
+				update();
 		});
 	},
 
