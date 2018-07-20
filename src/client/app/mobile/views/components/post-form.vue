@@ -167,7 +167,7 @@ export default Vue.extend({
 		});
 
 		const hashtags = [...document.getElementsByClassName('hashtag')];
-		const hashtagsContainer = hashtags.parentElement;
+		const hashtagsContainer = hashtags[0].parentElement;
 		let offsetX = 0
 		const update = () => {
 			if (hashtags[0].getBoundingClientRect().right <= hashtagsContainer.getBoundingClientRect().left) {
