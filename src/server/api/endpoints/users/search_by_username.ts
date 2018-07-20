@@ -28,7 +28,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		});
 
 	if (users.length < limit) {
-		const remoteUsers = await User
+		const otherUsers = await User
 			.find({
 				host: { $ne: null },
 				usernameLower: new RegExp('^' + escapeRegexp(query.toLowerCase()))
@@ -36,31 +36,33 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 				limit: limit - users.length
 			});
 
-		users = users.concat(remoteUsers);
+		users = users.concat(otherUsers);
 	}
 
 	if (users.length < limit) {
-		const remoteUsers = await User
+		const otherUsers = await User
 			.find({
+				_id: { $nin: users.map(u => u._id) },
 				host: null,
 				usernameLower: new RegExp(escapeRegexp(query.toLowerCase()))
 			}, {
 				limit: limit - users.length
 			});
 
-		users = users.concat(remoteUsers);
+		users = users.concat(otherUsers);
 	}
 
 	if (users.length < limit) {
-		const remoteUsers = await User
+		const otherUsers = await User
 			.find({
+				_id: { $nin: users.map(u => u._id) },
 				host: { $ne: null },
 				usernameLower: new RegExp(escapeRegexp(query.toLowerCase()))
 			}, {
 				limit: limit - users.length
 			});
 
-		users = users.concat(remoteUsers);
+		users = users.concat(otherUsers);
 	}
 
 	// Serialize
