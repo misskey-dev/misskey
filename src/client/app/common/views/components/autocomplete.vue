@@ -333,7 +333,6 @@ root(isDark)
 	> .hashtags > li
 
 		.name
-			margin 0 8px 0 0
 			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 	> .emojis > li
