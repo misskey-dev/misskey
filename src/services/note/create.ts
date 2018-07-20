@@ -23,6 +23,7 @@ import config from '../../config';
 import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
+import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 
 type Type = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -58,7 +59,7 @@ class NotificationManager {
 	}
 }
 
-export default async (user: IUser, data: {
+type Option = {
 	createdAt?: Date;
 	text?: string;
 	reply?: INote;
@@ -72,97 +73,31 @@ export default async (user: IUser, data: {
 	visibleUsers?: IUser[];
 	uri?: string;
 	app?: IApp;
-}, silent = false) => new Promise<INote>(async (res, rej) => {
+};
+
+export default async (user: IUser, data: Option, silent = false) => new Promise<INote>(async (res, rej) => {
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
-
-	let tags: string[] = [];
-
-	let tokens: any[] = null;
-
-	if (data.text) {
-		// Analyze
-		tokens = parse(data.text);
-
-		// Extract hashtags
-		const hashtags = tokens
-			.filter(t => t.type == 'hashtag')
-			.map(t => t.hashtag);
-
-		hashtags.forEach(tag => {
-			if (tags.indexOf(tag) == -1) {
-				tags.push(tag);
-			}
-		});
-	}
-
-	tags = tags.filter(tag => tag.length <= 100);
 
 	if (data.visibleUsers) {
 		data.visibleUsers = data.visibleUsers.filter(x => x != null);
 	}
 
-	const insert: any = {
-		createdAt: data.createdAt,
-		mediaIds: data.media ? data.media.map(file => file._id) : [],
-		replyId: data.reply ? data.reply._id : null,
-		renoteId: data.renote ? data.renote._id : null,
-		text: data.text,
-		poll: data.poll,
-		cw: data.cw == null ? null : data.cw,
-		tags,
-		tagsLower: tags.map(tag => tag.toLowerCase()),
-		userId: user._id,
-		viaMobile: data.viaMobile,
-		geo: data.geo || null,
-		appId: data.app ? data.app._id : null,
-		visibility: data.visibility,
-		visibleUserIds: data.visibility == 'specified'
-			? data.visibleUsers
-				? data.visibleUsers.map(u => u._id)
-				: []
-			: [],
+	// Parse MFM
+	const tokens = data.text ? parse(data.text) : [];
 
-		// 以下非正規化データ
-		_reply: data.reply ? { userId: data.reply.userId } : null,
-		_renote: data.renote ? { userId: data.renote.userId } : null,
-		_user: {
-			host: user.host,
-			inbox: isRemoteUser(user) ? user.inbox : undefined
-		}
-	};
+	const tags = extractHashtags(tokens);
 
-	if (data.uri != null) insert.uri = data.uri;
-
-	// メンション
 	const mentionedUsers = await extractMentionedUsers(tokens);
 
-	// Append mentions data
-	if (mentionedUsers.length > 0) {
-		insert.mentions = mentionedUsers.map(u => u._id);
-		insert.mentionedRemoteUsers = mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
-			uri: (u as IRemoteUser).uri,
-			username: u.username,
-			host: u.host
-		}));
-	}
-
-	// 投稿を作成
-	let note: INote;
-	try {
-		note = await Note.insert(insert);
-	} catch (e) {
-		// duplicate key error
-		if (e.code === 11000) {
-			return res(null);
-		}
-
-		console.error(e);
-		return rej('something happened');
-	}
+	const note = await insertNote(user, data, tokens, tags, mentionedUsers);
 
 	res(note);
+
+	if (note == null) {
+		return;
+	}
 
 	// ハッシュタグ登録
 	tags.map(tag => registerHashtag(user, tag));
@@ -200,62 +135,8 @@ export default async (user: IUser, data: {
 	}
 
 	if (!silent) {
-		if (isLocalUser(user)) {
-			if (note.visibility == 'private' || note.visibility == 'followers' || note.visibility == 'specified') {
-				// Publish event to myself's stream
-				stream(note.userId, 'note', await pack(note, user, {
-					detail: true
-				}));
-			} else {
-				// Publish event to myself's stream
-				stream(note.userId, 'note', noteObj);
-
-				// Publish note to local and hybrid timeline stream
-				if (note.visibility != 'home') {
-					publishLocalTimelineStream(noteObj);
-				}
-				if (note.visibility == 'public') {
-					publishHybridTimelineStream(null, noteObj);
-				}
-			}
-		}
-
-		// Publish note to global timeline stream
-		if (note.visibility == 'public' && note.replyId == null) {
-			publishGlobalTimelineStream(noteObj);
-		}
-
-		if (note.visibility == 'specified') {
-			data.visibleUsers.forEach(async u => {
-				const n = await pack(note, u, {
-					detail: true
-				});
-				stream(u._id, 'note', n);
-				publishHybridTimelineStream(u._id, n);
-			});
-		}
-
-		if (note.visibility == 'public' || note.visibility == 'home' || note.visibility == 'followers') {
-			// フォロワーに配信
-			publishToFollowers(note, noteObj, user, noteActivity);
-		}
-
-		// リストに配信
-		publishToUserLists(note, noteObj);
+		publish(user, note, noteObj, data.reply, data.renote, data.visibleUsers, noteActivity);
 	}
-
-	//#region リプライとAnnounceのAP配送
-
-	// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
-	if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
-		deliver(user, noteActivity, data.reply._user.inbox);
-	}
-
-	// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
-	if (data.renote && isLocalUser(user) && isRemoteUser(data.renote._user)) {
-		deliver(user, noteActivity, data.renote._user.inbox);
-	}
-	//#endergion
 
 	// If has in reply to note
 	if (data.reply) {
@@ -307,6 +188,129 @@ export default async (user: IUser, data: {
 	// Register to search database
 	index(note);
 });
+
+async function publish(user: IUser, note: INote, noteObj: any, reply: INote, renote: INote, visibleUsers: IUser[], noteActivity: any) {
+	if (isLocalUser(user)) {
+		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
+		if (reply && isRemoteUser(reply._user)) {
+			deliver(user, noteActivity, reply._user.inbox);
+		}
+
+		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
+		if (renote && isRemoteUser(renote._user)) {
+			deliver(user, noteActivity, renote._user.inbox);
+		}
+
+		if (['private', 'followers', 'specified'].includes(note.visibility)) {
+			// Publish event to myself's stream
+			stream(note.userId, 'note', await pack(note, user, {
+				detail: true
+			}));
+		} else {
+			// Publish event to myself's stream
+			stream(note.userId, 'note', noteObj);
+
+			// Publish note to local and hybrid timeline stream
+			if (note.visibility != 'home') {
+				publishLocalTimelineStream(noteObj);
+			}
+
+			if (note.visibility == 'public') {
+				publishHybridTimelineStream(null, noteObj);
+			}
+		}
+	}
+
+	// Publish note to global timeline stream
+	if (note.visibility == 'public' && note.replyId == null) {
+		publishGlobalTimelineStream(noteObj);
+	}
+
+	if (note.visibility == 'specified') {
+		visibleUsers.forEach(async (u) => {
+			const n = await pack(note, u, {
+				detail: true
+			});
+			stream(u._id, 'note', n);
+			publishHybridTimelineStream(u._id, n);
+		});
+	}
+
+	if (['public', 'home', 'followers'].includes(note.visibility)) {
+		// フォロワーに配信
+		publishToFollowers(note, noteObj, user, noteActivity);
+	}
+
+	// リストに配信
+	publishToUserLists(note, noteObj);
+}
+
+async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof parse>, tags: string[], mentionedUsers: IUser[]) {
+	const insert: any = {
+		createdAt: data.createdAt,
+		mediaIds: data.media ? data.media.map(file => file._id) : [],
+		replyId: data.reply ? data.reply._id : null,
+		renoteId: data.renote ? data.renote._id : null,
+		text: data.text,
+		poll: data.poll,
+		cw: data.cw == null ? null : data.cw,
+		tags,
+		tagsLower: tags.map(tag => tag.toLowerCase()),
+		userId: user._id,
+		viaMobile: data.viaMobile,
+		geo: data.geo || null,
+		appId: data.app ? data.app._id : null,
+		visibility: data.visibility,
+		visibleUserIds: data.visibility == 'specified'
+			? data.visibleUsers
+				? data.visibleUsers.map(u => u._id)
+				: []
+			: [],
+
+		// 以下非正規化データ
+		_reply: data.reply ? { userId: data.reply.userId } : null,
+		_renote: data.renote ? { userId: data.renote.userId } : null,
+		_user: {
+			host: user.host,
+			inbox: isRemoteUser(user) ? user.inbox : undefined
+		}
+	};
+
+	if (data.uri != null) insert.uri = data.uri;
+
+	// Append mentions data
+	if (mentionedUsers.length > 0) {
+		insert.mentions = mentionedUsers.map(u => u._id);
+		insert.mentionedRemoteUsers = mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
+			uri: (u as IRemoteUser).uri,
+			username: u.username,
+			host: u.host
+		}));
+	}
+
+	// 投稿を作成
+	try {
+		return await Note.insert(insert);
+	} catch (e) {
+		// duplicate key error
+		if (e.code === 11000) {
+			return null;
+		}
+
+		console.error(e);
+		throw 'something happened';
+	}
+}
+
+function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
+	// Extract hashtags
+	const hashtags = tokens
+		.filter(t => t.type == 'hashtag')
+		.map(t => (t as TextElementHashtag).hashtag)
+		.filter(tag => tag.length <= 100);
+
+	return [...new Set(hashtags)];
+}
 
 function index(note: INote) {
 	if (note.text == null || config.elasticsearch == null) return;
