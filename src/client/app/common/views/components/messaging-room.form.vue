@@ -119,7 +119,7 @@ export default Vue.extend({
 		},
 
 		onKeypress(e) {
-			if ((e.which == 10 || e.which == 13) && e.ctrlKey) {
+			if ((e.which == 10 || e.which == 13) && e.ctrlKey && this.canSend) {
 				this.send();
 			}
 		},
