@@ -468,7 +468,7 @@ root(isDark)
 			margin 0
 			max-width 100%
 			min-width 100%
-			min-height 64px
+			min-height 84px
 
 			&:hover
 				& + *
