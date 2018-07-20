@@ -20,4 +20,3 @@ about: Create a report to help us improve
 # Environment
 <!-- Tell us where on the platform it happens -->
 <!-- e.g. desktop or mobile version, your browser, operating system -->
-
