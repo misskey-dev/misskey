@@ -144,23 +144,28 @@ export default Vue.extend({
 					});
 				}
 			} else if (this.type == 'hashtag') {
-				const cacheKey = 'autocomplete:hashtag:' + this.q;
-				const cache = sessionStorage.getItem(cacheKey);
-				if (cache) {
-					const hashtags = JSON.parse(cache);
-					this.hashtags = hashtags;
+				if (this.q == null || this.q == '') {
+					this.hashtags = JSON.parse(localStorage.getItem('hashtags') || '[]');
 					this.fetching = false;
 				} else {
-					(this as any).api('hashtags/search', {
-						query: this.q,
-						limit: 30
-					}).then(hashtags => {
+					const cacheKey = 'autocomplete:hashtag:' + this.q;
+					const cache = sessionStorage.getItem(cacheKey);
+					if (cache) {
+						const hashtags = JSON.parse(cache);
 						this.hashtags = hashtags;
 						this.fetching = false;
+					} else {
+						(this as any).api('hashtags/search', {
+							query: this.q,
+							limit: 30
+						}).then(hashtags => {
+							this.hashtags = hashtags;
+							this.fetching = false;
 
-						// キャッシュ
-						sessionStorage.setItem(cacheKey, JSON.stringify(hashtags));
-					});
+							// キャッシュ
+							sessionStorage.setItem(cacheKey, JSON.stringify(hashtags));
+						});
+					}
 				}
 			} else if (this.type == 'emoji') {
 				const matched = [];

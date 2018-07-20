@@ -79,7 +79,10 @@ class Autocomplete {
 			hashtagIndex == -1 ? Infinity : hashtagIndex,
 			emojiIndex == -1 ? Infinity : emojiIndex);
 
-		if (start == Infinity) return;
+		if (start == Infinity) {
+			this.close();
+			return;
+		}
 
 		const isMention = mentionIndex == start;
 		const isHashtag = hashtagIndex == start;
@@ -97,7 +100,7 @@ class Autocomplete {
 
 		if (isHashtag || opened == false) {
 			const hashtag = text.substr(hashtagIndex + 1);
-			if (hashtag != '' && !hashtag.includes(' ') && !hashtag.includes('\n')) {
+			if (!hashtag.includes(' ') && !hashtag.includes('\n')) {
 				this.open('hashtag', hashtag);
 				opened = true;
 			}
