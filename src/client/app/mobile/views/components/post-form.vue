@@ -40,7 +40,7 @@
 		</div>
 	</div>
 	<div class="hashtags" v-if="recentHashtags.length > 0">
-		<a v-for="tag in recentHashtags" @click="addTag(tag)">#{{ tag }}</a>
+		<a class="hashtag" v-for="tag in recentHashtags" @click="addTag(tag)">%fa:hashtag%{{ tag }}</a>
 	</div>
 </div>
 </template>
@@ -165,6 +165,22 @@ export default Vue.extend({
 		this.$nextTick(() => {
 			this.focus();
 		});
+
+		const hashtags = [...document.getElementsByClassName('hashtag')];
+		const hashtagsContainer = hashtags.parentElement;
+		let offsetX = 0
+		const update = () => {
+			if (hashtags[0].getBoundingClientRect().right <= hashtagsContainer.getBoundingClientRect().left) {
+				hashtags.push(hashtags.shift());
+				offsetX = 0;
+				hashtags.map(x => x.style.transform = 'translateX(0)');
+			} else {
+				offsetX -= .25;
+				hashtags.map(x => x.style.transform = `translateX(${offsetX}px)`);
+			}
+			requestAnimationFrame(update);
+		};
+		update()
 	},
 
 	methods: {
@@ -465,10 +481,35 @@ root(isDark)
 					box-shadow none
 
 	> .hashtags
-		margin 8px
-
+		margin 0 -16px 8px
+		overflow-x hidden
+		white-space nowrap
 		> *
-			margin-right 8px
+			background $theme-color
+			border-radius: 0 4px 4px 0
+			color isDark ? #282c37 : #fff8f6
+			margin-left 28px
+			white-space nowrap
+			&::before
+				background inherit
+				border-radius 4px 0
+				content ''
+				display inline-block
+				height 17.677669529663688110021109052621225982120898442212px
+				position absolute
+				right 100%
+				top 50%
+				transform translateY(-50%) translateX(50%) rotate(-45deg)
+				width 17.677669529663688110021109052621225982120898442212px
+			&::after
+				background isDark ? #282c37 : #fff8f6
+				border-radius 50%
+				content ''
+				height 4px
+				left -6.25px
+				position absolute
+				top 10px
+				width 4px
 
 .mk-post-form[data-darkmode]
 	root(true)
