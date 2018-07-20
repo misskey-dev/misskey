@@ -33,29 +33,52 @@ type Type = 'reply' | 'renote' | 'quote' | 'mention';
 class NotificationManager {
 	private notifier: IUser;
 	private note: INote;
+	private queue: Array<{
+		target: ILocalUser['_id'];
+		reason: Type;
+	}>;
 
 	constructor(notifier: IUser, note: INote) {
 		this.notifier = notifier;
 		this.note = note;
+		this.queue = [];
 	}
 
-	public async push(notifiee: ILocalUser['_id'], type: Type) {
+	public push(notifiee: ILocalUser['_id'], reason: Type) {
 		// 自分自身へは通知しない
 		if (this.notifier._id.equals(notifiee)) return;
 
-		// ミュート情報を取得
-		const mentioneeMutes = await Mute.find({
-			muterId: notifiee
-		});
+		const exist = this.queue.find(x => x.target.equals(notifiee));
 
-		const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
-
-		// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-		if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
-			notify(notifiee, this.notifier._id, type, {
-				noteId: this.note._id
+		if (exist) {
+			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
+			if (reason != 'mention') {
+				exist.reason = reason;
+			}
+		} else {
+			this.queue.push({
+				reason: reason,
+				target: notifiee
 			});
 		}
+	}
+
+	public deliver() {
+		this.queue.forEach(async x => {
+			// ミュート情報を取得
+			const mentioneeMutes = await Mute.find({
+				muterId: x.target
+			});
+
+			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
+
+			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
+			if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
+				notify(x.target, this.notifier._id, x.reason, {
+					noteId: this.note._id
+				});
+			}
+		});
 	}
 }
 
@@ -124,6 +147,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	const noteObj = await pack(note);
 
 	const nm = new NotificationManager(user, note);
+	const nmRelatedPromises = [];
 
 	createMentionedEvents(mentionedUsers, noteObj, nm);
 
@@ -136,7 +160,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// If has in reply to note
 	if (data.reply) {
 		// Fetch watchers
-		notifyToWatchersOfReplyee(data.reply, user, nm);
+		nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.settings.autoWatch !== false) {
@@ -154,7 +178,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		nm.push(data.renote.userId, type);
 
 		// Fetch watchers
-		notifyToWatchersOfRenotee(data.renote, user, nm, type);
+		nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.settings.autoWatch !== false) {
@@ -176,6 +200,10 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (!silent) {
 		publish(user, note, noteObj, data.reply, data.renote, data.visibleUsers, noteActivity);
 	}
+
+	Promise.all(nmRelatedPromises).then(() => {
+		nm.deliver();
+	});
 
 	// Register to search database
 	index(note);
@@ -413,7 +441,6 @@ function deliverNoteToMentionedRemoteUsers(mentionedUsers: IUser[], user: ILocal
 function createMentionedEvents(mentionedUsers: IUser[], noteObj: any, nm: NotificationManager) {
 	mentionedUsers.filter(u => isLocalUser(u)).forEach(async (u) => {
 		event(u, 'mention', noteObj);
-		// TODO: 既に言及されたユーザーに対する返信や引用renoteの場合はスキップ
 
 		// Create notification
 		nm.push(u._id, 'mention');
