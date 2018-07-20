@@ -7,7 +7,7 @@ import { publishMessagingIndexStream } from '../../../stream';
 import User from '../../../models/user';
 
 /**
- * Mark as read message(s)
+ * Mark messages as read
  */
 export default (
 	user: string | mongo.ObjectID,
@@ -42,12 +42,12 @@ export default (
 		recipientId: userId,
 		isRead: false
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
-	});
+			$set: {
+				isRead: true
+			}
+		}, {
+			multi: true
+		});
 
 	// Publish event
 	publishMessagingStream(otherpartyId, userId, 'read', ids.map(id => id.toString()));
@@ -59,8 +59,8 @@ export default (
 			recipientId: userId,
 			isRead: false
 		}, {
-			limit: 1
-		});
+				limit: 1
+			});
 
 	if (count == 0) {
 		// Update flag

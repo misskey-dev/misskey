@@ -5,7 +5,7 @@ import User, { ILocalUser } from '../../../../models/user';
 export const meta = {
 	desc: {
 		ja: '全ての通知を既読にします。',
-		en: 'Mark as read all notifications.'
+		en: 'Mark all notifications as read.'
 	},
 
 	requireCredential: true,
@@ -14,7 +14,7 @@ export const meta = {
 };
 
 /**
- * Mark as read all notifications
+ * Mark all notifications as read
  */
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Update documents
@@ -22,12 +22,12 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		notifieeId: user._id,
 		isRead: false
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
-	});
+			$set: {
+				isRead: true
+			}
+		}, {
+			multi: true
+		});
 
 	// Response
 	res();

@@ -24,10 +24,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	const recipient = await User.findOne({
 		_id: recipientId
 	}, {
-		fields: {
-			_id: true
-		}
-	});
+			fields: {
+				_id: true
+			}
+		});
 
 	if (recipient === null) {
 		return rej('user not found');
@@ -96,7 +96,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return;
 	}
 
-	// Mark as read all
+	// Mark all as read
 	if (markAsRead) {
 		read(user._id, recipient._id, messages);
 	}

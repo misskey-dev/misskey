@@ -96,7 +96,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Serialize
 	res(await Promise.all(notifications.map(notification => pack(notification))));
 
-	// Mark as read all
+	// Mark all as read
 	if (notifications.length > 0 && markAsRead) {
 		read(user._id, notifications);
 	}
