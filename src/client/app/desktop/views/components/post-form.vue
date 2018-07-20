@@ -11,7 +11,8 @@
 			<a @click="addVisibleUser">+ユーザーを追加</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0">
-			<a class="hashtag" v-for="tag in recentHashtags" @click="addTag(tag)">%fa:hashtag%{{ tag }}</a>
+			<b>%i18n:@recent-tags%:</b>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%@click-to-tagging%">#{{ tag }}</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -184,22 +185,6 @@ export default Vue.extend({
 			}
 
 			this.$nextTick(() => this.watch());
-
-			const hashtags = [...document.getElementsByClassName('hashtag')];
-			const hashtagsContainer = hashtags[0].parentElement;
-			let offsetX = 0
-			const update = () => {
-				if (hashtags[0].getBoundingClientRect().right <= hashtagsContainer.getBoundingClientRect().left) {
-					hashtags.push(hashtags.shift());
-					offsetX = 0;
-					hashtags.map(x => x.style.transform = 'translateX(0)');
-				} else {
-					offsetX--;
-					hashtags.map(x => x.style.transform = `translateX(${offsetX}px)`);
-				}
-				requestAnimationFrame(update);
-			};
-			update()
 		});
 	},
 
@@ -510,38 +495,17 @@ root(isDark)
 				color isDark ? #fff : #666
 
 		> .hashtags
-			margin 0 -16px 8px
-			overflow-x hidden
+			margin 0 0 8px 0
+			overflow hidden
 			white-space nowrap
+			font-size 14px
+
+			> b
+				color isDark ? #9baec8 : darken($theme-color, 20%)
+
 			> *
-				background $theme-color
-				border-radius: 0 4px 4px 0
-				color isDark ? #282c37 : #fff8f6
-				margin-left 28px
+				margin-right 8px
 				white-space nowrap
-				&:hover
-					text-decoration none
-					background darken($theme-color, 10%)
-				&::before
-					background inherit
-					border-radius 4px 0
-					content ''
-					display inline-block
-					height 17.677669529663688110021109052621225982120898442212px
-					position absolute
-					right 100%
-					top 50%
-					transform translateY(-50%) translateX(50%) rotate(-45deg)
-					width 17.677669529663688110021109052621225982120898442212px
-				&::after
-					background isDark ? #282c37 : #fff8f6
-					border-radius 50%
-					content ''
-					height 4px
-					left -6.25px
-					position absolute
-					top 10px
-					width 4px
 
 		> .medias
 			margin 0
