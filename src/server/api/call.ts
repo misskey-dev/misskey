@@ -46,12 +46,14 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 	// API invoking
 	try {
-		const a = performance.now();
+		const before = performance.now();
 		res = await exec(data, user, app);
-		const b = performance.now();
+		const after = performance.now();
 
-		if (b - a > 500) {
-			console.warn(`SLOW API CALL DETECTED: ${ep.name}`);
+		const time = after - before;
+
+		if (time > 500) {
+			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${ time }ms)`);
 		}
 	} catch (e) {
 		rej(e);
