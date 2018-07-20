@@ -112,6 +112,10 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		saveReply(data.reply, note);
 	}
 
+	if (data.renote) {
+		incRenoteCount(data.renote);
+	}
+
 	if (isQuote(note)) {
 		saveQuote(data.renote, note);
 	}
@@ -119,23 +123,14 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// Pack the note
 	const noteObj = await pack(note);
 
-	const noteActivity = await (async () => {
-		const content = data.renote && data.text == null
-			? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
-			: renderCreate(await renderNote(note));
-		return packAp(content);
-	})();
-
 	const nm = new NotificationManager(user, note);
 
 	createMentionedEvents(mentionedUsers, noteObj, nm);
 
+	const noteActivity = await renderActivity(data, note);
+
 	if (isLocalUser(user)) {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
-	}
-
-	if (!silent) {
-		publish(user, note, noteObj, data.reply, data.renote, data.visibleUsers, noteActivity);
 	}
 
 	// If has in reply to note
@@ -176,18 +171,31 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 				event(data.renote.userId, 'renote', noteObj);
 			}
 		}
+	}
 
-		// Update renoteee status
-		Note.update({ _id: data.renote._id }, {
-			$inc: {
-				renoteCount: 1
-			}
-		});
+	if (!silent) {
+		publish(user, note, noteObj, data.reply, data.renote, data.visibleUsers, noteActivity);
 	}
 
 	// Register to search database
 	index(note);
 });
+
+async function renderActivity(data: Option, note: INote) {
+	const content = data.renote && data.text == null
+		? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
+		: renderCreate(await renderNote(note));
+
+	return packAp(content);
+}
+
+function incRenoteCount(renote: INote) {
+	Note.update({ _id: renote._id }, {
+		$inc: {
+			renoteCount: 1
+		}
+	});
+}
 
 async function publish(user: IUser, note: INote, noteObj: any, reply: INote, renote: INote, visibleUsers: IUser[], noteActivity: any) {
 	if (isLocalUser(user)) {
