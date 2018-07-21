@@ -72,7 +72,6 @@ export default async (ctx: Koa.Context) => {
 		followingCount: 0,
 		name: null,
 		notesCount: 0,
-		driveCapacity: 1024 * 1024 * 128, // 128MiB
 		username: username,
 		usernameLower: username.toLowerCase(),
 		host: null,

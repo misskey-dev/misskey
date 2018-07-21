@@ -115,13 +115,6 @@ props:
       ja: "ピン留めされた投稿のID"
       en: "The ID of the pinned note of this user"
 
-  driveCapacity:
-    type: "number"
-    optional: false
-    desc:
-      ja: "ドライブの容量(bytes)"
-      en: "The capacity of drive of this user (bytes)"
-
   host:
     type: "string | null"
     optional: false

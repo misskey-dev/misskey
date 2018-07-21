@@ -43,7 +43,6 @@ type IUserBase = {
 	followingCount: number;
 	name?: string;
 	notesCount: number;
-	driveCapacity: number;
 	username: string;
 	usernameLower: string;
 	avatarId: mongo.ObjectID;
@@ -418,7 +417,6 @@ export const pack = (
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
 		delete _user.avatarId;
 		delete _user.bannerId;
-		delete _user.driveCapacity;
 		delete _user.hasUnreadMessagingMessage;
 		delete _user.hasUnreadNotification;
 	}

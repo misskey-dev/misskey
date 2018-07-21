@@ -44,6 +44,9 @@ export default function load() {
 	mixin.status_url = `${mixin.scheme}://${mixin.host}/status`;
 	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
 
+	if (config.localDriveCapacityMb == null) config.localDriveCapacityMb = 256;
+	if (config.remoteDriveCapacityMb == null) config.remoteDriveCapacityMb = 8;
+
 	return Object.assign(config, mixin);
 }
 

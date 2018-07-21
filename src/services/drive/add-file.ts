@@ -17,6 +17,7 @@ import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import genThumbnail from '../../drive/gen-thumbnail';
 import delFile from './delete-file';
+import config from '../../config';
 
 const gm = _gm.subClass({
 	imageMagick: true
@@ -175,8 +176,10 @@ export default async function(
 
 		log(`drive usage is ${usage}`);
 
+		const driveCapacity = 1024 * 1024 * (isLocalUser(user) ? config.localDriveCapacityMb : config.remoteDriveCapacityMb);
+
 		// If usage limit exceeded
-		if (usage + size > user.driveCapacity) {
+		if (usage + size > driveCapacity) {
 			if (isLocalUser(user)) {
 				throw 'no-free-space';
 			} else {

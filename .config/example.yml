@@ -41,6 +41,12 @@ redis:
   port: 6379
   pass: example-pass
 
+# Drive capacity of a local user (MB)
+localDriveCapacityMb: 256
+
+# Drive capacity of a remote user (MB)
+remoteDriveCapacityMb: 8
+
 # If enabled:
 #  Server will not cache remote files (Using direct link instead).
 #  You can save your storage.

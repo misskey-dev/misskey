@@ -1,5 +1,6 @@
 import DriveFile from '../../../models/drive-file';
 import { ILocalUser } from '../../../models/user';
+import config from '../../../config';
 
 export const meta = {
 	desc: {
@@ -38,7 +39,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	res({
-		capacity: user.driveCapacity,
+		capacity: 1024 * 1024 * config.localDriveCapacityMb,
 		usage: usage
 	});
 });
