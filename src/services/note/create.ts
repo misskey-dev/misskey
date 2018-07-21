@@ -495,18 +495,20 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	// TODO: Drop dupulicates
-	const mentionTokens = tokens
-		.filter(t => t.type == 'mention') as TextElementMention[];
+	const mentionTokens = [...new Set(
+		tokens
+			.filter(t => t.type == 'mention') as TextElementMention[]
+	)];
 
-	// TODO: Drop dupulicates
-	const mentionedUsers = (await Promise.all(mentionTokens.map(async m => {
-		try {
-			return await resolveUser(m.username, m.host);
-		} catch (e) {
-			return null;
-		}
-	}))).filter(x => x != null);
+	const mentionedUsers = [...new Set(
+		(await Promise.all(mentionTokens.map(async m => {
+			try {
+				return await resolveUser(m.username, m.host);
+			} catch (e) {
+				return null;
+			}
+		}))).filter(x => x != null)
+	)];
 
 	return mentionedUsers;
 }
