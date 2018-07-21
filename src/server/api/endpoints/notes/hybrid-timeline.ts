@@ -82,7 +82,7 @@ export default async (params: any, user: ILocalUser) => {
 	const [followings, mutedUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
-		getFriends(user._id, true, true),
+		getFriends(user._id, true, false),
 
 		// ミュートしているユーザーを取得
 		Mute.find({
