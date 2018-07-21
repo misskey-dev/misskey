@@ -25,17 +25,14 @@ import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 
-type Type = 'reply' | 'renote' | 'quote' | 'mention';
+type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
-/**
- * 通知を担当
- */
 class NotificationManager {
 	private notifier: IUser;
 	private note: INote;
 	private queue: Array<{
 		target: ILocalUser['_id'];
-		reason: Type;
+		reason: NotificationType;
 	}>;
 
 	constructor(notifier: IUser, note: INote) {
@@ -44,7 +41,7 @@ class NotificationManager {
 		this.queue = [];
 	}
 
-	public push(notifiee: ILocalUser['_id'], reason: Type) {
+	public push(notifiee: ILocalUser['_id'], reason: NotificationType) {
 		// 自分自身へは通知しない
 		if (this.notifier._id.equals(notifiee)) return;
 
@@ -361,7 +358,7 @@ function index(note: INote) {
 	});
 }
 
-async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: NotificationManager, type: Type) {
+async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: NotificationManager, type: NotificationType) {
 	const watchers = await NoteWatching.find({
 		noteId: renote._id,
 		userId: { $ne: user._id }
