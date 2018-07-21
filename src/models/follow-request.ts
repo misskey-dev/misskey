@@ -17,10 +17,12 @@ export type IFollowRequest = {
 	_followee: {
 		host: string;
 		inbox?: string;
+		sharedInbox?: string;
 	},
 	_follower: {
 		host: string;
 		inbox?: string;
+		sharedInbox?: string;
 	}
 };
 

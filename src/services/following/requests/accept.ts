@@ -18,11 +18,13 @@ export default async function(followee: IUser, follower: IUser) {
 		// 非正規化
 		_follower: {
 			host: follower.host,
-			inbox: isRemoteUser(follower) ? follower.inbox : undefined
+			inbox: isRemoteUser(follower) ? follower.inbox : undefined,
+			sharedInbox: isRemoteUser(follower) ? follower.sharedInbox : undefined
 		},
 		_followee: {
 			host: followee.host,
-			inbox: isRemoteUser(followee) ? followee.inbox : undefined
+			inbox: isRemoteUser(followee) ? followee.inbox : undefined,
+			sharedInbox: isRemoteUser(followee) ? followee.sharedInbox : undefined
 		}
 	});
 

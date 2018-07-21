@@ -403,7 +403,9 @@ async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteAc
 		followeeId: note.userId
 	});
 
-	followers.map(async (following) => {
+	const queue: string[] = [];
+
+	followers.map(following => {
 		const follower = following._follower;
 
 		if (isLocalUser(follower)) {
@@ -423,9 +425,14 @@ async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteAc
 		} else {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 			if (isLocalUser(user)) {
-				deliver(user, noteActivity, follower.inbox);
+				const inbox = follower.sharedInbox || follower.inbox;
+				if (!queue.includes(inbox)) queue.push(inbox);
 			}
 		}
+	});
+
+	queue.forEach(inbox => {
+		deliver(user, noteActivity, inbox);
 	});
 }
 

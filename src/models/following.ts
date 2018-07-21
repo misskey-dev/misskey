@@ -16,10 +16,12 @@ export type IFollowing = {
 	_followee: {
 		host: string;
 		inbox?: string;
+		sharedInbox?: string;
 	},
 	_follower: {
 		host: string;
 		inbox?: string;
+		sharedInbox?: string;
 	}
 };
 
