@@ -14,10 +14,12 @@ if (config.recaptcha) {
 }
 
 export default async (ctx: Koa.Context) => {
+	const body = ctx.request.body as any;
+
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
 	if (process.env.NODE_ENV !== 'test' && config.recaptcha != null) {
-		const success = await recaptcha(ctx.request.body['g-recaptcha-response']);
+		const success = await recaptcha(body['g-recaptcha-response']);
 
 		if (!success) {
 			ctx.throw(400, 'recaptcha-failed');
@@ -25,8 +27,8 @@ export default async (ctx: Koa.Context) => {
 		}
 	}
 
-	const username = ctx.request.body['username'];
-	const password = ctx.request.body['password'];
+	const username = body['username'];
+	const password = body['password'];
 
 	// Validate username
 	if (!validateUsername(username)) {
@@ -46,8 +48,8 @@ export default async (ctx: Koa.Context) => {
 			usernameLower: username.toLowerCase(),
 			host: null
 		}, {
-			limit: 1
-		});
+				limit: 1
+			});
 
 	// Check username already used
 	if (usernameExist !== 0) {

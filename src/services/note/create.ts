@@ -363,10 +363,10 @@ async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: Notific
 		noteId: renote._id,
 		userId: { $ne: user._id }
 	}, {
-		fields: {
-			userId: true
-		}
-	});
+			fields: {
+				userId: true
+			}
+		});
 
 	watchers.forEach(watcher => {
 		nm.push(watcher.userId, type);
@@ -378,10 +378,10 @@ async function notifyToWatchersOfReplyee(reply: INote, user: IUser, nm: Notifica
 		noteId: reply._id,
 		userId: { $ne: user._id }
 	}, {
-		fields: {
-			userId: true
-		}
-	});
+			fields: {
+				userId: true
+			}
+		});
 
 	watchers.forEach(watcher => {
 		nm.push(watcher.userId, 'reply');
@@ -432,7 +432,7 @@ async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteAc
 	});
 
 	queue.forEach(inbox => {
-		deliver(user, noteActivity, inbox);
+		deliver(user as any, noteActivity, inbox);
 	});
 }
 

@@ -11,9 +11,10 @@ export default async (ctx: Koa.Context) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
 	ctx.set('Access-Control-Allow-Credentials', 'true');
 
-	const username = ctx.request.body['username'];
-	const password = ctx.request.body['password'];
-	const token = ctx.request.body['token'];
+	const body = ctx.request.body as any;
+	const username = body['username'];
+	const password = body['password'];
+	const token = body['token'];
 
 	if (typeof username != 'string') {
 		ctx.status = 400;
@@ -35,11 +36,11 @@ export default async (ctx: Koa.Context) => {
 		usernameLower: username.toLowerCase(),
 		host: null
 	}, {
-		fields: {
-			data: false,
-			profile: false
-		}
-	}) as ILocalUser;
+			fields: {
+				data: false,
+				profile: false
+			}
+		}) as ILocalUser;
 
 	if (user === null) {
 		ctx.throw(404, {
