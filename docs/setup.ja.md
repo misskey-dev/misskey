@@ -30,7 +30,7 @@ adduser --disabled-password --disabled-login misskey
 ##### オプション
 * [Elasticsearch](https://www.elastic.co/) - 検索機能を向上させるために用います。
 
-*3.* Mongodbの設定
+*3.* MongoDBの設定
 ----------------------------------------------------------------
 ルートで:
 1. `mongo` mongoシェルを起動

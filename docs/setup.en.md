@@ -31,7 +31,7 @@ Please install and setup these softwares:
 * [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB
 
 
-*3.* Setup Mongodb Database
+*3.* Setup MongoDB
 ----------------------------------------------------------------
 In root :
 1. `mongo` Go to the mongo shell
