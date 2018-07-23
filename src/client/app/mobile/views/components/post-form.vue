@@ -132,7 +132,9 @@ export default Vue.extend({
 		},
 
 		canPost(): boolean {
-			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
+			return !this.posting &&
+				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
+				(this.text.length <= 1000);
 		}
 	},
 
@@ -221,8 +223,8 @@ export default Vue.extend({
 			}, err => {
 				alert('%i18n:@error%: ' + err.message);
 			}, {
-				enableHighAccuracy: true
-			});
+					enableHighAccuracy: true
+				});
 		},
 
 		removeGeo() {
