@@ -156,9 +156,6 @@ root(isDark)
 				> .center
 					margin auto
 					> .icon
-						position absolute
-						top 0
-						left 0
 						display block
 						width 48px
 						height 48px
@@ -167,6 +164,7 @@ root(isDark)
 						background-position center
 						background-repeat no-repeat
 						opacity 0.3
+						cursor: pointer;
 
 				> .left
 					height 48px
