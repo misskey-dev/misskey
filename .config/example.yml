@@ -53,6 +53,22 @@ remoteDriveCapacityMb: 8
 #  Users cannot see remote images when they turn off "Show media from a remote server" setting.
 preventCache: false
 
+drive:
+  storage: 'db'
+
+  # OR
+
+  # storage: 'object-storage'
+  # service: 'minio'
+  # bucket:
+  # prefix:
+  # config:
+  #   endPoint:
+  #   port:
+  #   secure:
+  #   accessKey:
+  #   secretKey:
+
 #
 # Below settings are optional
 #

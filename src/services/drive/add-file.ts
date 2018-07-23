@@ -8,14 +8,14 @@ import * as _gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
 const prominence = require('prominence');
+import * as Minio from 'minio';
+import * as uuid from 'uuid';
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
-import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
-import genThumbnail from '../../drive/gen-thumbnail';
 import delFile from './delete-file';
 import config from '../../config';
 
@@ -25,28 +25,43 @@ const gm = _gm.subClass({
 
 const log = debug('misskey:drive:add-file');
 
-const writeChunks = (name: string, readable: stream.Readable, type: string, metadata: any) =>
-	getDriveFileBucket()
-		.then(bucket => new Promise((resolve, reject) => {
+async function save(readable: stream.Readable, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
+	if (config.drive && config.drive.storage == 'object-storage') {
+		if (config.drive.service == 'minio') {
+
+			const minio = new Minio.Client(config.drive.config);
+			const id = uuid.v4();
+			const obj = `${config.drive.prefix}/${id}`;
+			await minio.putObject(config.drive.bucket, obj, readable);
+
+			Object.assign(metadata, {
+				obj: id,
+				url: `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }/${ obj }`
+			});
+
+			const file = await DriveFile.insert({
+				length: size,
+				uploadDate: new Date(),
+				md5: hash,
+				filename: name,
+				metadata: metadata,
+				contentType: type
+			});
+
+			return file;
+		}
+	} else {
+		// Get MongoDB GridFS bucket
+		const bucket = await getDriveFileBucket();
+
+		return new Promise<IDriveFile>((resolve, reject) => {
 			const writeStream = bucket.openUploadStream(name, { contentType: type, metadata });
 			writeStream.once('finish', resolve);
 			writeStream.on('error', reject);
 			readable.pipe(writeStream);
-		}));
-
-const writeThumbnailChunks = (name: string, readable: stream.Readable, originalId: mongodb.ObjectID) =>
-	getDriveFileThumbnailBucket()
-		.then(bucket => new Promise((resolve, reject) => {
-			const writeStream = bucket.openUploadStream(name, {
-				contentType: 'image/jpeg',
-				metadata: {
-					originalId
-				}
-			});
-			writeStream.once('finish', resolve);
-			writeStream.on('error', reject);
-			readable.pipe(writeStream);
-		}));
+		});
+	}
+}
 
 async function deleteOldFile(user: IRemoteUser) {
 	const oldFile = await DriveFile.findOne({
@@ -283,7 +298,7 @@ export default async function(
 			metadata: metadata,
 			contentType: mime
 		})
-		: await (writeChunks(detectedName, fs.createReadStream(path), mime, metadata) as Promise<IDriveFile>);
+		: await (save(fs.createReadStream(path), detectedName, mime, hash, size, metadata));
 
 	log(`drive file has been created ${driveFile._id}`);
 
@@ -293,16 +308,7 @@ export default async function(
 		publishDriveStream(user._id, 'file_created', packedFile);
 	});
 
-	if (!metaOnly) {
-		try {
-			const thumb = await genThumbnail(driveFile);
-			if (thumb) {
-				await writeThumbnailChunks(detectedName, thumb, driveFile._id);
-			}
-		} catch (e) {
-			// noop
-		}
-	}
+	// TODO: サムネイル生成
 
 	return driveFile;
 }
