@@ -35,6 +35,8 @@ async function save(readable: stream.Readable, name: string, type: string, hash:
 			await minio.putObject(config.drive.bucket, obj, readable);
 
 			Object.assign(metadata, {
+				storage: 'object-storage',
+				withoutChunks: true,
 				obj: id,
 				url: `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }/${ obj }`
 			});
@@ -97,7 +99,7 @@ export default async function(
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false,
-	metaOnly: boolean = false,
+	isLink: boolean = false,
 	url: string = null,
 	uri: string = null,
 	sensitive = false
@@ -165,7 +167,7 @@ export default async function(
 	}
 
 	//#region Check drive usage
-	if (!metaOnly) {
+	if (!isLink) {
 		const usage = await DriveFile
 			.aggregate([{
 				$match: {
@@ -277,19 +279,23 @@ export default async function(
 		folderId: folder !== null ? folder._id : null,
 		comment: comment,
 		properties: properties,
-		isMetaOnly: metaOnly,
+		withoutChunks: isLink,
 		isSensitive: sensitive
 	} as IMetadata;
 
 	if (url !== null) {
-		metadata.url = url;
+		metadata.src = url;
+
+		if (isLink) {
+			metadata.url = url;
+		}
 	}
 
 	if (uri !== null) {
 		metadata.uri = uri;
 	}
 
-	const driveFile = metaOnly
+	const driveFile = isLink
 		? await DriveFile.insert({
 			length: 0,
 			uploadDate: new Date(),
