@@ -112,7 +112,7 @@ export default Vue.extend({
 
 	computed: {
 		mapCategories(): string[] {
-			const categories = Object.entries(maps).map(x => x[1].category);
+			const categories = Object.values(maps).map(x => x.category);
 			return categories.filter((item, pos) => categories.indexOf(item) == pos);
 		},
 		isAccepted(): boolean {
@@ -179,8 +179,8 @@ export default Vue.extend({
 			if (this.game.settings.map == null) {
 				this.mapName = null;
 			} else {
-				const foundMap = Object.entries(maps).find(x => x[1].data.join('') == this.game.settings.map.join(''));
-				this.mapName = foundMap ? foundMap[1].name : '-Custom-';
+				const found = Object.values(maps).find(x => x.data.join('') == this.game.settings.map.join(''));
+				this.mapName = found ? found.name : '-Custom-';
 			}
 		},
 
@@ -206,7 +206,7 @@ export default Vue.extend({
 			if (v == null) {
 				this.game.settings.map = null;
 			} else {
-				this.game.settings.map = Object.entries(maps).find(x => x[1].name == v)[1].data;
+				this.game.settings.map = Object.values(maps).find(x => x.name == v).data;
 			}
 			this.$forceUpdate();
 			this.updateSettings();
@@ -217,9 +217,9 @@ export default Vue.extend({
 			const y = Math.floor(pos / this.game.settings.map[0].length);
 			const newPixel =
 				pixel == ' ' ? '-' :
-				pixel == '-' ? 'b' :
-				pixel == 'b' ? 'w' :
-				' ';
+					pixel == '-' ? 'b' :
+						pixel == 'b' ? 'w' :
+							' ';
 			const line = this.game.settings.map[y].split('');
 			line[x] = newPixel;
 			this.$set(this.game.settings.map, y, line.join(''));

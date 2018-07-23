@@ -19,9 +19,9 @@ const langs = {
 	'es': loadLang('es')
 };
 
-Object.entries(langs).map(([, locale]) => {
+Object.values(langs).forEach(locale => {
 	// Extend native language (Japanese)
-	locale = Object.assign({}, native, locale);
+	Object.assign(locale, native);
 });
 
 module.exports = langs;
