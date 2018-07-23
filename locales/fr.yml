@@ -335,10 +335,10 @@ desktop/views/components/drive.vue:
     url-upload: "Uploader d'un URL"
 desktop/views/components/media-image.vue:
   sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  click-to-show: "Cliquer pour afficher"
 desktop/views/components/media-video.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "Le contenu est NSFW"
+  click-to-show: "Cliquer pour afficher"
 desktop/views/components/follow-button.vue:
   following: "Abonnements"
   follow: "Suivre"
@@ -390,7 +390,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
-  load-more: "もっと読み込む"
+  load-more: "Afficher plus"
 desktop/views/components/notifications.vue:
   more: "Plus"
   empty: "Pas de notifications"
@@ -413,7 +413,7 @@ desktop/views/components/post-form.vue:
   insert-a-kao: "v('ω')v"
   create-poll: "Créer un sondage"
   text-remain: "{} charactères restants"
-  recent-tags: "最近"
+  recent-tags: "Récent"
   click-to-tagging: "クリックでタグ付け"
 desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
@@ -455,8 +455,8 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   display: "Affichage et design"
   customize: "Personnaliser l'Accueil"
-  choose-wallpaper: "壁紙を選択"
-  delete-wallpaper: "壁紙を削除"
+  choose-wallpaper: "Sélectionner un fond d'écran"
+  delete-wallpaper: "Supprimer le fond d'écran"
   dark-mode: "Mode nuit"
   circle-icons: "Utiliser des icônes circulaires"
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
@@ -484,7 +484,7 @@ desktop/views/components/settings.vue:
   cache-warn: "クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。"
   cache-cleared: "Cache nettoyé"
   cache-cleared-desc: "Veuillez recharger la page."
-  auto-watch: "投稿の自動ウォッチ"
+  auto-watch: "Montre automatique"
   auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
   about: "À propose de Misskey"
   operator: "L'admin de cette instance"
@@ -552,9 +552,9 @@ desktop/views/components/settings.profile.vue:
   description: "Description"
   birthday: "Date de naissance"
   save: "Mettre à jour le profil"
-  locked-account: "アカウントの保護"
+  locked-account: "Protéger votre compte"
   is-locked: "投稿を非公開にする"
-  other: "その他"
+  other: "Autre"
   is-bot: "Ce compte est un Bot"
   is-cat: "Ce compte est un Chat"
 desktop/views/components/sub-note-content.vue:
@@ -567,7 +567,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "Accueil"
   local: "Local"
-  hybrid: "ソーシャル"
+  hybrid: "Social"
   global: "Global"
   list: "Listes"
 desktop/views/components/ui.header.vue:
@@ -617,7 +617,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
-  edit: "オプション"
+  edit: "Options"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposté par {}"
   private: "cette publication est privée"
@@ -675,7 +675,7 @@ desktop/views/pages/user/user.profile.vue:
   muted: "Muting"
   unmute: "Enlever la sourdine"
 desktop/views/pages/user/user.header.vue:
-  posts: "投稿"
+  posts: "Notes"
   following: "Suit"
   followers: "Abonnés"
   is-bot: "Ce compte est un Bot"
@@ -736,11 +736,11 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "Le contenu est NSFW"
+  click-to-show: "Cliquer pour afficher"
 mobile/views/components/media-video.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "Le contenu est NSFW"
+  click-to-show: "Cliquer pour afficher"
 mobile/views/components/follow-button.vue:
   following: "Abonnements"
   follow: "Suivre"
@@ -836,7 +836,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
-  hybrid: "ソーシャル"
+  hybrid: "Social"
   global: "Global"
 mobile/views/pages/messaging.vue:
   messaging: "Messagerie"
@@ -950,7 +950,7 @@ docs:
       properties: "Propriétés"
     endpoints:
       params: "Paramètres"
-      no-params: "パラメータはありません"
+      no-params: "Aucun paramètre"
       res: "Réponse"
       require-credential: "このエンドポイントは認証情報が必須です。"
       require-permission: "このエンドポイントは{permission}の権限を必要とします。"
@@ -958,7 +958,7 @@ docs:
       duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
       min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
       show-src: "このエンドポイントのソースコードも閲覧できます。"
-      show-src-link: "コードをGitHubで見る"
+      show-src-link: "Consulter le code sur GitHub"
       generated: "このドキュメントはAPI定義に基づき自動生成されています。"
     props:
       name: "Nom"
