@@ -288,8 +288,8 @@ desktop/views/components/drive.file.vue:
   banner: "Bannière"
   contextmenu:
     rename: "Renommer"
-    mark-as-sensitive: "閲覧注意に設定"
-    unmark-as-sensitive: "閲覧注意を解除"
+    mark-as-sensitive: "Marquer comme sensible"
+    unmark-as-sensitive: "Ne pas marquer comme sensible"
     copy-url: "Copier l'URL"
     download: "Télécharger"
     else-files: "Autres..."
