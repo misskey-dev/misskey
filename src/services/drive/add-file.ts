@@ -35,9 +35,11 @@ async function save(readable: stream.Readable, name: string, type: string, hash:
 			await minio.putObject(config.drive.bucket, obj, readable);
 
 			Object.assign(metadata, {
-				storage: 'object-storage',
 				withoutChunks: true,
-				obj: id,
+				storage: 'object-storage',
+				storageProps: {
+					id: id
+				},
 				url: `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }/${ obj }`
 			});
 

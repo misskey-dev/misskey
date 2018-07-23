@@ -34,6 +34,8 @@ export type IMetadata = {
 	src?: string;
 	deletedAt?: Date;
 	withoutChunks?: boolean;
+	storage?: string;
+	storageProps?: any;
 	isSensitive?: boolean;
 };
 
