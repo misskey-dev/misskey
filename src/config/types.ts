@@ -51,9 +51,8 @@ export type Source = {
 
 	drive?: {
 		storage: string;
-		bucket: string;
-		prefix: string;
-		service?: string;
+		bucket?: string;
+		prefix?: string;
 		config?: any;
 	};
 

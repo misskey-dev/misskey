@@ -58,8 +58,7 @@ drive:
 
   # OR
 
-  # storage: 'object-storage'
-  # service: 'minio'
+  # storage: 'minio'
   # bucket:
   # prefix:
   # config:

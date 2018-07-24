@@ -21,36 +21,31 @@ import config from '../../config';
 const log = debug('misskey:drive:add-file');
 
 async function save(readable: stream.Readable, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
-	if (config.drive && config.drive.storage == 'object-storage') {
-		if (config.drive.service == 'minio') {
+	if (config.drive && config.drive.storage == 'minio') {
+		const minio = new Minio.Client(config.drive.config);
+		const id = uuid.v4();
+		const obj = `${config.drive.prefix}/${id}`;
+		await minio.putObject(config.drive.bucket, obj, readable);
 
-			const minio = new Minio.Client(config.drive.config);
-			const id = uuid.v4();
-			const obj = `${config.drive.prefix}/${id}`;
-			await minio.putObject(config.drive.bucket, obj, readable);
+		Object.assign(metadata, {
+			withoutChunks: true,
+			storage: 'minio',
+			storageProps: {
+				id: id
+			},
+			url: `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }/${ obj }`
+		});
 
-			Object.assign(metadata, {
-				withoutChunks: true,
-				storage: 'object-storage',
-				storageProps: {
-					id: id
-				},
-				url: `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }/${ obj }`
-			});
+		const file = await DriveFile.insert({
+			length: size,
+			uploadDate: new Date(),
+			md5: hash,
+			filename: name,
+			metadata: metadata,
+			contentType: type
+		});
 
-			const file = await DriveFile.insert({
-				length: size,
-				uploadDate: new Date(),
-				md5: hash,
-				filename: name,
-				metadata: metadata,
-				contentType: type
-			});
-
-			return file;
-		} else {
-			throw 'unknown storage type';
-		}
+		return file;
 	} else {
 		// Get MongoDB GridFS bucket
 		const bucket = await getDriveFileBucket();
