@@ -51,6 +51,7 @@ common:
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
   i-like-sushi: "Je préfère les sushis (au pudding)"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
+  verified-user: "認証済みのユーザー"
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
