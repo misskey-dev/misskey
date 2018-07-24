@@ -7,6 +7,16 @@ node_modules/kue/bin/kue-dashboard -p 3050
 ```
 ポート3050にアクセスするとUIが表示されます
 
+## 管理者ユーザーを設定する
+``` shell
+node cli/mark-admin (ユーザーID または ユーザー名)
+```
+
+## 'verified'ユーザーを設定する
+``` shell
+node cli/mark-verified (ユーザーID または ユーザー名)
+```
+
 ## ユーザーを凍結する
 ``` shell
 node cli/suspend (ユーザーID または ユーザー名)

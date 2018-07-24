@@ -7,6 +7,16 @@ node_modules/kue/bin/kue-dashboard -p 3050
 ```
 When you access port 3050, you will see the UI.
 
+## Mark as 'admin' user
+``` shell
+node cli/mark-admin (User-ID or Username)
+```
+
+## Mark as 'verified' user
+``` shell
+node cli/mark-verified (User-ID or Username)
+```
+
 ## Suspend users
 ``` shell
 node cli/suspend (User-ID or Username)
