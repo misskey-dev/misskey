@@ -23,7 +23,7 @@
 		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
-					<div class="img" :style="{ backgroundImage: `url(${file.url}?thumbnail&size=64)` }" :title="file.name"></div>
+					<div class="img" :style="{ backgroundImage: `url(${file.url})` }" :title="file.name"></div>
 					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:@attach-cancel%" alt=""/>
 				</div>
 			</x-draggable>

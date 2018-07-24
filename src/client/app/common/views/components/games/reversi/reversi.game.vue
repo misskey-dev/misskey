@@ -26,8 +26,8 @@
 						:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
 						@click="set(i)"
 						:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`">
-					<img v-if="stone === true" :src="`${blackUser.avatarUrl}?thumbnail&size=128`" alt="">
-					<img v-if="stone === false" :src="`${whiteUser.avatarUrl}?thumbnail&size=128`" alt="">
+					<img v-if="stone === true" :src="blackUser.avatarUrl" alt="">
+					<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="">
 				</div>
 			</div>
 			<div class="labels-y" v-if="this.$store.state.settings.reversiBoardLabels">

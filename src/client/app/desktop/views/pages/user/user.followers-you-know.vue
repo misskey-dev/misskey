@@ -4,7 +4,7 @@
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 	<router-link v-for="user in users" :to="user | userPage" :key="user.id">
-		<img :src="`${user.avatarUrl}?thumbnail&size=64`" :alt="user | userName" v-user-preview="user.id"/>
+		<img :src="user.avatarUrl" :alt="user | userName" v-user-preview="user.id"/>
 	</router-link>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@no-users%</p>

@@ -2,7 +2,7 @@
 <div class="profile">
 	<label class="avatar ui from group">
 		<p>%i18n:@avatar%</p>
-		<img class="avatar" :src="`${$store.state.i.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
 		<button class="ui" @click="updateAvatar">%i18n:@choice-avatar%</button>
 	</label>
 	<label class="ui from group">
