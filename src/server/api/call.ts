@@ -38,7 +38,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 	let exec = ep.exec;
 
-	if (ep.meta.withFile && file) {
+	if (ep.meta.requireFile && file) {
 		exec = exec.bind(null, file);
 	}
 
