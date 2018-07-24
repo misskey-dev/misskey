@@ -104,3 +104,8 @@ drive:
 # twitter:
 #   consumer_key: example-twitter-consumer-key
 #   consumer_secret: example-twitter-consumer-secret-key
+
+# Ghost
+# Ghost account is an account used for the purpose of delegating
+# followers when putting users in the list.
+# ghost: user-id-of-your-ghost-account
