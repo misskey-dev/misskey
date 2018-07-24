@@ -12,29 +12,6 @@ export const meta = {
 };
 
 /**
- * @swagger
- * /auth/accept:
- *   note:
- *     summary: Accept a session
- *     parameters:
- *       - $ref: "#/parameters/NativeToken"
- *       -
- *         name: token
- *         description: Session Token
- *         in: formData
- *         required: true
- *         type: string
- *     responses:
- *       204:
- *         description: OK
- *
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
-
-/**
  * Accept
  */
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {

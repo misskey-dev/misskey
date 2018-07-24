@@ -8,37 +8,6 @@ import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
 
 /**
- * @swagger
- * /auth/session/generate:
- *   note:
- *     summary: Generate a session
- *     parameters:
- *       -
- *         name: appSecret
- *         description: App Secret
- *         in: formData
- *         required: true
- *         type: string
- *
- *     responses:
- *       200:
- *         description: OK
- *         schema:
- *           type: object
- *           properties:
- *             token:
- *               type: string
- *               description: Session Token
- *             url:
- *               type: string
- *               description: Authentication form's URL
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
-
-/**
  * Generate a session
  *
  * @param {any} params

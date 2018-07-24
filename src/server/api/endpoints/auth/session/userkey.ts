@@ -8,42 +8,6 @@ import AccessToken from '../../../../../models/access-token';
 import { pack } from '../../../../../models/user';
 
 /**
- * @swagger
- * /auth/session/userkey:
- *   note:
- *     summary: Get an access token(userkey)
- *     parameters:
- *       -
- *         name: appSecret
- *         description: App Secret
- *         in: formData
- *         required: true
- *         type: string
- *       -
- *         name: token
- *         description: Session Token
- *         in: formData
- *         required: true
- *         type: string
- *
- *     responses:
- *       200:
- *         description: OK
- *         schema:
- *           type: object
- *           properties:
- *             userkey:
- *               type: string
- *               description: Access Token
- *             user:
- *               $ref: "#/definitions/User"
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
-
-/**
  * Generate a session
  *
  * @param {any} params

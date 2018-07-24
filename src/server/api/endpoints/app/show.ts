@@ -3,36 +3,6 @@ import App, { pack, IApp } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
 
 /**
- * @swagger
- * /app/show:
- *   note:
- *     summary: Show an application's information
- *     description: Require appId or nameId
- *     parameters:
- *       -
- *         name: appId
- *         description: Application ID
- *         in: formData
- *         type: string
- *       -
- *         name: nameId
- *         description: Application unique name
- *         in: formData
- *         type: string
- *
- *     responses:
- *       200:
- *         description: Success
- *         schema:
- *           $ref: "#/definitions/Application"
- *
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
-
-/**
  * Show an app
  */
 export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {

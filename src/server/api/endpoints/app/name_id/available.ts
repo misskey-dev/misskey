@@ -6,35 +6,6 @@ import App from '../../../../../models/app';
 import { isValidNameId } from '../../../../../models/app';
 
 /**
- * @swagger
- * /app/nameId/available:
- *   note:
- *     summary: Check available nameId on creation an application
- *     parameters:
- *       -
- *         name: nameId
- *         description: Application unique name
- *         in: formData
- *         required: true
- *         type: string
- *
- *     responses:
- *       200:
- *         description: Success
- *         schema:
- *           type: object
- *           properties:
- *             available:
- *               description: Whether nameId is available
- *               type: boolean
- *
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
-
-/**
  * Check available nameId of app
  *
  * @param {any} params
