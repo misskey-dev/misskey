@@ -3,8 +3,8 @@
 const chalk = require('chalk');
 const sequential = require('promise-sequential');
 
-const { default: User } = require('../built/models/user');
-const { default: DriveFile } = require('../built/models/drive-file');
+const { default: User } = require('../../built/models/user');
+const { default: DriveFile } = require('../../built/models/drive-file');
 
 async function main() {
 	const promiseGens = [];
