@@ -1,5 +1,5 @@
 <template>
-<div class="root file"
+<div class="gvfdktuvdgwhmztnuekzkswkjygptfcv"
 	:data-is-selected="isSelected"
 	:data-is-contextmenu-showing="isContextmenuShowing"
 	@click="onClick"
@@ -324,10 +324,10 @@ root(isDark)
 		> .ext
 			opacity 0.5
 
-.root.file[data-darkmode]
+.gvfdktuvdgwhmztnuekzkswkjygptfcv[data-darkmode]
 	root(true)
 
-.root.file:not([data-darkmode])
+.gvfdktuvdgwhmztnuekzkswkjygptfcv:not([data-darkmode])
 	root(false)
 
 </style>
