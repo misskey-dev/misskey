@@ -37,7 +37,7 @@ export default async function(ctx: Koa.Context) {
 		return;
 	}
 
-	if (file.metadata.isMetaOnly) {
+	if (file.metadata.withoutChunks) {
 		ctx.status = 204;
 		return;
 	}

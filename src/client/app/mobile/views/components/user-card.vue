@@ -1,6 +1,6 @@
 <template>
 <div class="mk-user-card">
-	<header :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''">
+	<header :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
 		<mk-avatar class="avatar" :user="user"/>
 	</header>
 	<a class="name" :href="user | userPage" target="_blank">{{ user | userName }}</a>

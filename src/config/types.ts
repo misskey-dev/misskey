@@ -49,6 +49,14 @@ export type Source = {
 	remoteDriveCapacityMb: number;
 	preventCacheRemoteFiles: boolean;
 
+	drive?: {
+		storage: string;
+		bucket: string;
+		prefix: string;
+		service?: string;
+		config?: any;
+	};
+
 	/**
 	 * ゴーストアカウントのID
 	 */

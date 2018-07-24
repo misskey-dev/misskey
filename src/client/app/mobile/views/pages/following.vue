@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt="">
+		<img :src="user.avatarUrl" alt="">
 		{{ '%i18n:@following-of%'.replace('{}', name) }}
 	</template>
 	<mk-users-list

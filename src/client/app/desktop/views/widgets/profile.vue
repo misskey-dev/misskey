@@ -4,7 +4,7 @@
 	:data-melt="props.design == 2"
 >
 	<div class="banner"
-		:style="$store.state.i.bannerUrl ? `background-image: url(${$store.state.i.bannerUrl}?thumbnail&size=256)` : ''"
+		:style="$store.state.i.bannerUrl ? `background-image: url(${$store.state.i.bannerUrl})` : ''"
 		title="%i18n:@update-banner%"
 		@click="os.apis.updateBanner"
 	></div>

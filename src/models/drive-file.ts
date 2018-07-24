@@ -31,8 +31,11 @@ export type IMetadata = {
 	comment: string;
 	uri?: string;
 	url?: string;
+	src?: string;
 	deletedAt?: Date;
-	isMetaOnly?: boolean;
+	withoutChunks?: boolean;
+	storage?: string;
+	storageProps?: any;
 	isSensitive?: boolean;
 };
 
@@ -155,9 +158,9 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
+	_target.url = _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
 	_target.src = _file.metadata.url;
-	_target.url = _file.metadata.isMetaOnly ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
-	_target.isRemote = _file.metadata.isMetaOnly;
+	_target.isRemote = _file.metadata.withoutChunks;
 
 	if (_target.properties == null) _target.properties = {};
 

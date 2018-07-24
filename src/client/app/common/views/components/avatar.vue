@@ -31,7 +31,7 @@ export default Vue.extend({
 					: this.user.avatarColor && this.user.avatarColor.length == 3
 						? `rgb(${ this.user.avatarColor.join(',') })`
 						: null,
-				backgroundImage: this.lightmode ? null : `url(${ this.user.avatarUrl }?thumbnail)`,
+				backgroundImage: this.lightmode ? null : `url(${ this.user.avatarUrl })`,
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
 		}

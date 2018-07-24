@@ -10,7 +10,7 @@
 	<transition name="nav">
 		<div class="body" v-if="isOpen">
 			<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
-				<img class="avatar" :src="`${$store.state.i.avatarUrl}?thumbnail&size=128`" alt="avatar"/>
+				<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
 				<p class="name">{{ $store.state.i | userName }}</p>
 			</router-link>
 			<div class="links">
