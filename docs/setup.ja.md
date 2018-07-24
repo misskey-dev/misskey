@@ -25,7 +25,6 @@ adduser --disabled-password --disabled-login misskey
 * *Node.js* と *npm*
 * **[MongoDB](https://www.mongodb.com/)** (3.6以上)
 * **[Redis](https://redis.io/)**
-* **[ImageMagick](http://www.imagemagick.org/script/index.php)**
 
 ##### オプション
 * [Elasticsearch](https://www.elastic.co/) - 検索機能を向上させるために用います。

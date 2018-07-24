@@ -37,6 +37,7 @@ export type IMetadata = {
 	storage?: string;
 	storageProps?: any;
 	isSensitive?: boolean;
+	isRemote?: boolean;
 };
 
 export type IDriveFile = {
@@ -160,7 +161,7 @@ export const pack = (
 
 	_target.url = _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
 	_target.src = _file.metadata.url;
-	_target.isRemote = _file.metadata.withoutChunks;
+	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
 

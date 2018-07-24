@@ -4,12 +4,11 @@ import * as stream from 'stream';
 
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
-import * as _gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
-const prominence = require('prominence');
 import * as Minio from 'minio';
 import * as uuid from 'uuid';
+import * as sharp from 'sharp';
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
@@ -18,10 +17,6 @@ import event, { publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
-
-const gm = _gm.subClass({
-	imageMagick: true
-});
 
 const log = debug('misskey:drive:add-file');
 
@@ -53,6 +48,8 @@ async function save(readable: stream.Readable, name: string, type: string, hash:
 			});
 
 			return file;
+		} else {
+			throw 'unknown storage type';
 		}
 	} else {
 		// Get MongoDB GridFS bucket
@@ -228,42 +225,37 @@ export default async function(
 
 	let propPromises: Array<Promise<void>> = [];
 
-	const isImage = ['image/jpeg', 'image/gif', 'image/png'].includes(mime);
+	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/webp'].includes(mime);
 
 	if (isImage) {
+		const img = sharp(path);
+
 		// Calc width and height
 		const calcWh = async () => {
 			log('calculate image width and height...');
 
 			// Calculate width and height
-			const g = gm(fs.createReadStream(path), name);
-			const size = await prominence(g).size();
+			const meta = await img.metadata();
 
-			log(`image width and height is calculated: ${size.width}, ${size.height}`);
+			log(`image width and height is calculated: ${meta.width}, ${meta.height}`);
 
-			properties['width'] = size.width;
-			properties['height'] = size.height;
+			properties['width'] = meta.width;
+			properties['height'] = meta.height;
 		};
 
 		// Calc average color
 		const calcAvg = async () => {
 			log('calculate average color...');
 
-			const info = await prominence(gm(fs.createReadStream(path), name)).identify();
-			const isTransparent = info ? info['Channel depth'].Alpha != null : false;
+			const info = await (img as any).stats();
 
-			const buffer = await prominence(gm(fs.createReadStream(path), name)
-				.setFormat('ppm')
-				.resize(1, 1)) // 1pxのサイズに縮小して平均色を取得するというハック
-				.toBuffer();
-
-			const r = buffer.readUInt8(buffer.length - 3);
-			const g = buffer.readUInt8(buffer.length - 2);
-			const b = buffer.readUInt8(buffer.length - 1);
+			const r = Math.round(info.channels[0].mean);
+			const g = Math.round(info.channels[1].mean);
+			const b = Math.round(info.channels[2].mean);
 
 			log(`average color is calculated: ${r}, ${g}, ${b}`);
 
-			const value = isTransparent ? [r, g, b, 255] : [r, g, b];
+			const value = info.isOpaque ? [r, g, b] : [r, g, b, 255];
 
 			properties['avgColor'] = value;
 		};
@@ -282,6 +274,7 @@ export default async function(
 		comment: comment,
 		properties: properties,
 		withoutChunks: isLink,
+		isRemote: isLink,
 		isSensitive: sensitive
 	} as IMetadata;
 
