@@ -1,5 +1,6 @@
 import * as getCaretCoordinates from 'textarea-caret';
 import MkAutocomplete from '../components/autocomplete.vue';
+import renderAcct from '../../../../../misc/acct/render';
 
 export default {
 	bind(el, binding, vn) {
@@ -187,13 +188,15 @@ class Autocomplete {
 			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
 			const after = source.substr(caret);
 
+			const acct = renderAcct(value);
+
 			// 挿入
-			this.text = trimmedBefore + '@' + value.username + ' ' + after;
+			this.text = trimmedBefore + '@' + acct + ' ' + after;
 
 			// キャレットを戻す
 			this.vm.$nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + (value.username.length + 2);
+				const pos = trimmedBefore.length + (acct.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		} else if (type == 'hashtag') {
