@@ -51,6 +51,7 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
+  verified-user: "認証済みのユーザー"
   reversi:
     drawn: "引き分け"
     my-turn: "あなたのターンです"
