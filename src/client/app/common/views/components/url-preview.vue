@@ -2,6 +2,9 @@
 <iframe v-if="youtubeId" type="text/html" height="250"
 	:src="`https://www.youtube.com/embed/${youtubeId}?origin=${misskeyUrl}`"
 	frameborder="0"/>
+<blockquote v-else-if="tweetUrl" class="twitter-tweet" ref="tweet">
+	<a :href="url"></a>
+</blockquote>
 <div v-else class="mk-url-preview">
 	<a :href="url" target="_blank" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url(${thumbnail})`"></div>
@@ -34,6 +37,7 @@ export default Vue.extend({
 			icon: null,
 			sitename: null,
 			youtubeId: null,
+			tweetUrl: null,
 			misskeyUrl
 		};
 	},
@@ -44,6 +48,25 @@ export default Vue.extend({
 			this.youtubeId = url.searchParams.get('v');
 		} else if (url.hostname == 'youtu.be') {
 			this.youtubeId = url.pathname;
+		} else if (url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
+			this.tweetUrl = url;
+			const twttr = (window as any).twttr || {};
+			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
+
+			if (twttr.widgets) {
+				Vue.nextTick(loadTweet);
+			} else {
+				const wjsId = 'twitter-wjs';
+				if (!document.getElementById(wjsId)) {
+					const head = document.getElementsByTagName('head')[0];
+					const script = document.createElement('script');
+					script.setAttribute('id', wjsId);
+					script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
+					head.appendChild(script);
+				}
+				twttr.ready = loadTweet;
+				(window as any).twttr = twttr;
+			}
 		} else {
 			fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
 				res.json().then(info => {
