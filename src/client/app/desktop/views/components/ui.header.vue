@@ -45,14 +45,7 @@ export default Vue.extend({
 		XPost,
 		XClock,
 	},
-	methods: {
-		goToTop() {
-			window.scrollTo({
-				top: 0,
-				behavior: 'smooth'
-			});
-		}
-	},
+
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', 48);
 
@@ -104,7 +97,16 @@ export default Vue.extend({
 				}, 2500);
 			}
 		}
-	}
+	},
+
+	methods: {
+		goToTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		}
+	},
 });
 </script>
 
