@@ -1,11 +1,7 @@
 # 運営ガイド
 
 ## ジョブキューの状態を調べる
-Misskeyのディレクトリで:
-``` shell
-node_modules/kue/bin/kue-dashboard -p 3050
-```
-ポート3050にアクセスするとUIが表示されます
+coming soon
 
 ## 管理者ユーザーを設定する
 ``` shell

@@ -1,8 +1,8 @@
-import * as kue from 'kue';
+import * as bq from 'bee-queue';
 
 import request from '../../../remote/activitypub/request';
 
-export default async (job: kue.Job, done: any): Promise<void> => {
+export default async (job: bq.Job, done: any): Promise<void> => {
 	try {
 		await request(job.data.user, job.data.to, job.data.content);
 		done();
