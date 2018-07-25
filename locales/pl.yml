@@ -51,7 +51,7 @@ common:
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   i-like-sushi: "Wolę sushi od puddingu"
   show-reversi-board-labels: "Pokazuj podpisy wierszy i kolumn w Reversi"
-  verified-user: "認証済みのユーザー"
+  verified-user: "Zweryfikowany użytkownik"
   reversi:
     drawn: "Remis"
     my-turn: "Twoja kolej"
@@ -289,8 +289,8 @@ desktop/views/components/drive.file.vue:
   banner: "Baner"
   contextmenu:
     rename: "Zmień nazwę"
-    mark-as-sensitive: "閲覧注意に設定"
-    unmark-as-sensitive: "閲覧注意を解除"
+    mark-as-sensitive: "Oznacz jako zawartość wrażliwą"
+    unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
     copy-url: "Skopiuj adres"
     download: "Pobierz"
     else-files: "Inne"
@@ -335,11 +335,11 @@ desktop/views/components/drive.vue:
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
 desktop/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "To jest zawartość NSFW"
+  click-to-show: "Naciśnij aby wyświetlić"
 desktop/views/components/media-video.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "To jest zawartość NSFW"
+  click-to-show: "Naciśnij aby wyświetlić"
 desktop/views/components/follow-button.vue:
   following: "Śledzisz"
   follow: "Śledź"
@@ -414,8 +414,8 @@ desktop/views/components/post-form.vue:
   insert-a-kao: "v('ω')v"
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
-  recent-tags: "最近"
-  click-to-tagging: "クリックでタグ付け"
+  recent-tags: "Ostatnie"
+  click-to-tagging: "Naciśnij aby oznaczyć"
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
   reply: "Odpowiedz"
@@ -737,11 +737,11 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "To jest zawartość NSFW"
+  click-to-show: "Naciśnij aby wyświetlić"
 mobile/views/components/media-video.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "To jest zawartość NSFW"
+  click-to-show: "Naciśnij aby wyświetlić"
 mobile/views/components/follow-button.vue:
   following: "Śledzisz"
   follow: "Śledź"
@@ -951,14 +951,14 @@ docs:
       properties: "Właściwości"
     endpoints:
       params: "Parametry"
-      no-params: "パラメータはありません"
+      no-params: "Brak parametrów."
       res: "Odpowiedź"
-      require-credential: "このエンドポイントは認証情報が必須です。"
-      require-permission: "このエンドポイントは{permission}の権限を必要とします。"
-      has-limit: "レートリミットがあります。"
+      require-credential: "Punkt końcowy wymaga informacji o uwierzytelnieniu."
+      require-permission: "Ten punkt końcowy wymaga uprawnienia {permission}."
+      has-limit: "Istnieje limit częstotliwości."
       duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
-      min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
-      show-src: "このエンドポイントのソースコードも閲覧できます。"
+      min-interval-limit: "Nie możesz wykonać żądania przed upłynięciem {interval} od ostatniego żądania."
+      show-src: "Możesz zobaczyć kod źródłowy tego punktu końcowego."
       show-src-link: "Zobacz kod na GitHubie"
       generated: "このドキュメントはAPI定義に基づき自動生成されています。"
     props:
