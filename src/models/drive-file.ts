@@ -37,6 +37,10 @@ export type IMetadata = {
 	storage?: string;
 	storageProps?: any;
 	isSensitive?: boolean;
+
+	/**
+	 * 外部の(信頼されていない)URLへの直リンクか否か
+	 */
 	isRemote?: boolean;
 };
 
