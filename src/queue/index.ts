@@ -12,6 +12,13 @@ const queue = createQueue({
 	}
 });
 
+process.once('SIGTERM', () => {
+	queue.shutdown(5000, (err: any) => {
+		console.log('Kue shutdown: ', err || '');
+		process.exit(0);
+	});
+});
+
 export function createHttp(data: any) {
 	return queue
 		.create('http', data)
