@@ -25,7 +25,7 @@ async function save(readable: stream.Readable, name: string, type: string, hash:
 		const minio = new Minio.Client(config.drive.config);
 		const id = uuid.v4();
 		const obj = `${config.drive.prefix}/${id}`;
-		await minio.putObject(config.drive.bucket, obj, readable, size, { 'Content-Type': type });
+		await minio.putObject(config.drive.bucket, obj, readable, size, { 'Content-Type': type, 'Cache-Control': 'max-age=31536000, immutable' });
 
 		Object.assign(metadata, {
 			withoutChunks: true,
