@@ -52,7 +52,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 		const time = after - before;
 
-		if (time > 500) {
+		if (time > 1000) {
 			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${ time }ms)`);
 		}
 	} catch (e) {
