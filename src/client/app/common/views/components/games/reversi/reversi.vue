@@ -67,7 +67,9 @@ export default Vue.extend({
 	components: {
 		XGameroom
 	},
+
 	props: ['initGame'],
+
 	data() {
 		return {
 			game: null,
@@ -82,54 +84,63 @@ export default Vue.extend({
 			pingClock: null
 		};
 	},
+
 	watch: {
 		game(g) {
 			this.$emit('gamed', g);
 		}
 	},
+
 	created() {
 		if (this.initGame) {
 			this.game = this.initGame;
 		}
 	},
+
 	mounted() {
-		this.connection = (this as any).os.streams.reversiStream.getConnection();
-		this.connectionId = (this as any).os.streams.reversiStream.use();
+		if (this.$store.getters.isSignedIn) {
+			this.connection = (this as any).os.streams.reversiStream.getConnection();
+			this.connectionId = (this as any).os.streams.reversiStream.use();
 
-		this.connection.on('matched', this.onMatched);
-		this.connection.on('invited', this.onInvited);
+			this.connection.on('matched', this.onMatched);
+			this.connection.on('invited', this.onInvited);
 
-		(this as any).api('games/reversi/games', {
-			my: true
-		}).then(games => {
-			this.myGames = games;
-		});
+			(this as any).api('games/reversi/games', {
+				my: true
+			}).then(games => {
+				this.myGames = games;
+			});
+
+			(this as any).api('games/reversi/invitations').then(invitations => {
+				this.invitations = this.invitations.concat(invitations);
+			});
+
+			this.pingClock = setInterval(() => {
+				if (this.matching) {
+					this.connection.send({
+						type: 'ping',
+						id: this.matching.id
+					});
+				}
+			}, 3000);
+		}
 
 		(this as any).api('games/reversi/games').then(games => {
 			this.games = games;
 			this.gamesFetching = false;
 		});
-
-		(this as any).api('games/reversi/invitations').then(invitations => {
-			this.invitations = this.invitations.concat(invitations);
-		});
-
-		this.pingClock = setInterval(() => {
-			if (this.matching) {
-				this.connection.send({
-					type: 'ping',
-					id: this.matching.id
-				});
-			}
-		}, 3000);
 	},
+
 	beforeDestroy() {
-		this.connection.off('matched', this.onMatched);
-		this.connection.off('invited', this.onInvited);
-		(this as any).os.streams.reversiStream.dispose(this.connectionId);
+		if (this.connection) {
+			this.connection.off('matched', this.onMatched);
+			this.connection.off('invited', this.onInvited);
+			(this as any).os.streams.reversiStream.dispose(this.connectionId);
 
-		clearInterval(this.pingClock);
+			clearInterval(this.pingClock);
+		}
 	},
+
 	methods: {
 		go(game) {
 			(this as any).api('games/reversi/games/show', {
@@ -139,6 +150,7 @@ export default Vue.extend({
 				this.game = game;
 			});
 		},
+
 		match() {
 			(this as any).apis.input({
 				title: 'ユーザー名を入力してください'
@@ -158,10 +170,12 @@ export default Vue.extend({
 				});
 			});
 		},
+
 		cancel() {
 			this.matching = null;
 			(this as any).api('games/reversi/match/cancel');
 		},
+
 		accept(invitation) {
 			(this as any).api('games/reversi/match', {
 				userId: invitation.parent.id
@@ -172,10 +186,12 @@ export default Vue.extend({
 				}
 			});
 		},
+
 		onMatched(game) {
 			this.matching = null;
 			this.game = game;
 		},
+
 		onInvited(invite) {
 			this.invitations.unshift(invite);
 		}
