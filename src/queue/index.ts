@@ -20,8 +20,8 @@ const queue = new Queue('misskey', {
 
 export function createHttpJob(data: any) {
 	return queue.createJob(data)
-		.retries(4)
-		.backoff('exponential', 16384) // 16s
+		//.retries(4)
+		//.backoff('exponential', 16384) // 16s
 		.save();
 }
 
