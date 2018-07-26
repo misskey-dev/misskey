@@ -38,7 +38,13 @@
 	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
 	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
 	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
+	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">
+		<span v-if="visibility === 'public'">%fa:globe%</span>
+		<span v-if="visibility === 'home'">%fa:home%</span>
+		<span v-if="visibility === 'followers'">%fa:unlock%</span>
+		<span v-if="visibility === 'specified'">%fa:envelope%</span>
+		<span v-if="visibility === 'private'">%fa:lock%</span>
+	</button>
 	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
