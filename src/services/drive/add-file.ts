@@ -242,17 +242,19 @@ export default async function(
 		const calcAvg = async () => {
 			log('calculate average color...');
 
-			const info = await (img as any).stats();
+			try {
+				const info = await (img as any).stats();
 
-			const r = Math.round(info.channels[0].mean);
-			const g = Math.round(info.channels[1].mean);
-			const b = Math.round(info.channels[2].mean);
+				const r = Math.round(info.channels[0].mean);
+				const g = Math.round(info.channels[1].mean);
+				const b = Math.round(info.channels[2].mean);
 
-			log(`average color is calculated: ${r}, ${g}, ${b}`);
+				log(`average color is calculated: ${r}, ${g}, ${b}`);
 
-			const value = info.isOpaque ? [r, g, b] : [r, g, b, 255];
+				const value = info.isOpaque ? [r, g, b] : [r, g, b, 255];
 
-			properties['avgColor'] = value;
+				properties['avgColor'] = value;
+			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];
