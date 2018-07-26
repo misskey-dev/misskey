@@ -53,6 +53,7 @@ export type Source = {
 		storage: string;
 		bucket?: string;
 		prefix?: string;
+		baseUrl?: string;
 		config?: any;
 	};
 
