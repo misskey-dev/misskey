@@ -21,7 +21,7 @@ const langs = {
 
 Object.values(langs).forEach(locale => {
 	// Extend native language (Japanese)
-	Object.assign(locale, native);
+	locale = Object.assign({}, native, locale);
 });
 
 module.exports = langs;
