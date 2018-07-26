@@ -11,7 +11,7 @@
 			<div>
 				<div v-for="stat in stats" :key="stat.tag">
 					<div class="tag">
-						<router-link :to="`/tags/${ stat.tag }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+						<router-link :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
 						<p>{{ '%i18n:@count%'.replace('{}', stat.usersCount) }}</p>
 					</div>
 					<x-chart class="chart" :src="stat.chart"/>
