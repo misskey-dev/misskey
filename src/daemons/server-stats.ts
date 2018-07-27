@@ -47,7 +47,7 @@ export default function() {
 async function cpuUsage() {
 	try {
 		const data = await sysUtils.currentLoad();
-		return Math.floor(data.currentload);
+		return Math.floor(data.currentload / 100);
 	} catch (error) {
 		console.error(error);
 		throw error;
