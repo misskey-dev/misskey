@@ -45,14 +45,7 @@ export default Vue.extend({
 		XPost,
 		XClock,
 	},
-	methods: {
-		goToTop() {
-			window.scrollTo({
-				top: 0,
-				behavior: 'smooth'
-			});
-		}
-	},
+
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', 48);
 
@@ -104,7 +97,16 @@ export default Vue.extend({
 				}, 2500);
 			}
 		}
-	}
+	},
+
+	methods: {
+		goToTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		}
+	},
 });
 </script>
 
@@ -155,6 +157,7 @@ root(isDark)
 
 				> .center
 					margin auto
+
 					> .icon
 						display block
 						width 48px
@@ -164,7 +167,7 @@ root(isDark)
 						background-position center
 						background-repeat no-repeat
 						opacity 0.3
-						cursor: pointer;
+						cursor pointer
 
 				> .left
 					height 48px

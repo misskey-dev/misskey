@@ -4,37 +4,35 @@ import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-
 import config from '../../config';
 
 export default async function(file: IDriveFile, isExpired = false) {
-	if (file.metadata.withoutChunks) {
-		if (file.metadata.storage == 'object-storage') {
-			const minio = new Minio.Client(config.drive.config);
-			const obj = `${config.drive.prefix}/${file.metadata.storageProps.id}`;
-			await minio.removeObject(config.drive.bucket, obj);
-		}
-	} else {
-		// チャンクをすべて削除
-		await DriveFileChunk.remove({
-			files_id: file._id
-		});
-
-		await DriveFile.update({ _id: file._id }, {
-			$set: {
-				'metadata.deletedAt': new Date(),
-				'metadata.isExpired': isExpired
-			}
-		});
-
-		//#region サムネイルもあれば削除
-		const thumbnail = await DriveFileThumbnail.findOne({
-			'metadata.originalId': file._id
-		});
-
-		if (thumbnail) {
-			await DriveFileThumbnailChunk.remove({
-				files_id: thumbnail._id
-			});
-
-			await DriveFileThumbnail.remove({ _id: thumbnail._id });
-		}
-		//#endregion
+	if (file.metadata.storage == 'minio') {
+		const minio = new Minio.Client(config.drive.config);
+		const obj = `${config.drive.prefix}/${file.metadata.storageProps.id}`;
+		await minio.removeObject(config.drive.bucket, obj);
 	}
+
+	// チャンクをすべて削除
+	await DriveFileChunk.remove({
+		files_id: file._id
+	});
+
+	await DriveFile.update({ _id: file._id }, {
+		$set: {
+			'metadata.deletedAt': new Date(),
+			'metadata.isExpired': isExpired
+		}
+	});
+
+	//#region サムネイルもあれば削除
+	const thumbnail = await DriveFileThumbnail.findOne({
+		'metadata.originalId': file._id
+	});
+
+	if (thumbnail) {
+		await DriveFileThumbnailChunk.remove({
+			files_id: thumbnail._id
+		});
+
+		await DriveFileThumbnail.remove({ _id: thumbnail._id });
+	}
+	//#endregion
 }

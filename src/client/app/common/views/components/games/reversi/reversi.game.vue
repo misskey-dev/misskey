@@ -105,7 +105,8 @@ export default Vue.extend({
 			}
 		},
 		isMyTurn(): boolean {
-			if (this.turnUser == null) return null;
+			if (!this.iAmPlayer) return false;
+			if (this.turnUser == null) return false;
 			return this.turnUser.id == this.$store.state.i.id;
 		},
 		cellsStyle(): any {

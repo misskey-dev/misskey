@@ -19,7 +19,7 @@ export const meta = {
 		max: 100
 	},
 
-	withFile: true,
+	requireFile: true,
 
 	kind: 'drive-write',
 

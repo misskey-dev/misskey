@@ -35,7 +35,7 @@ const router = new Router();
 /**
  * Register endpoint handlers
  */
-endpoints.forEach(endpoint => endpoint.meta.withFile
+endpoints.forEach(endpoint => endpoint.meta.requireFile
 	? router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint))
 	: router.post(`/${endpoint.name}`, handler.bind(null, endpoint))
 );

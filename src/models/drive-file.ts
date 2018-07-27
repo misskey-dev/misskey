@@ -37,6 +37,10 @@ export type IMetadata = {
 	storage?: string;
 	storageProps?: any;
 	isSensitive?: boolean;
+
+	/**
+	 * 外部の(信頼されていない)URLへの直リンクか否か
+	 */
 	isRemote?: boolean;
 };
 
@@ -160,7 +164,6 @@ export const pack = (
 	_target = Object.assign(_target, _file.metadata);
 
 	_target.url = _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
-	_target.src = _file.metadata.url;
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};

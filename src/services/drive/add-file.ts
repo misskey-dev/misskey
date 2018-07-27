@@ -21,36 +21,38 @@ import config from '../../config';
 const log = debug('misskey:drive:add-file');
 
 async function save(readable: stream.Readable, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
-	if (config.drive && config.drive.storage == 'object-storage') {
-		if (config.drive.service == 'minio') {
+	if (config.drive && config.drive.storage == 'minio') {
+		const minio = new Minio.Client(config.drive.config);
+		const id = uuid.v4();
+		const obj = `${config.drive.prefix}/${id}`;
 
-			const minio = new Minio.Client(config.drive.config);
-			const id = uuid.v4();
-			const obj = `${config.drive.prefix}/${id}`;
-			await minio.putObject(config.drive.bucket, obj, readable);
+		const baseUrl = config.drive.baseUrl
+			|| `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }`;
 
-			Object.assign(metadata, {
-				withoutChunks: true,
-				storage: 'object-storage',
-				storageProps: {
-					id: id
-				},
-				url: `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }/${ obj }`
-			});
+		await minio.putObject(config.drive.bucket, obj, readable, size, {
+			'Content-Type': type,
+			'Cache-Control': 'max-age=31536000, immutable'
+		});
 
-			const file = await DriveFile.insert({
-				length: size,
-				uploadDate: new Date(),
-				md5: hash,
-				filename: name,
-				metadata: metadata,
-				contentType: type
-			});
+		Object.assign(metadata, {
+			withoutChunks: true,
+			storage: 'minio',
+			storageProps: {
+				id: id
+			},
+			url: `${ baseUrl }/${ obj }`
+		});
 
-			return file;
-		} else {
-			throw 'unknown storage type';
-		}
+		const file = await DriveFile.insert({
+			length: size,
+			uploadDate: new Date(),
+			md5: hash,
+			filename: name,
+			metadata: metadata,
+			contentType: type
+		});
+
+		return file;
 	} else {
 		// Get MongoDB GridFS bucket
 		const bucket = await getDriveFileBucket();
@@ -247,17 +249,19 @@ export default async function(
 		const calcAvg = async () => {
 			log('calculate average color...');
 
-			const info = await (img as any).stats();
+			try {
+				const info = await (img as any).stats();
 
-			const r = Math.round(info.channels[0].mean);
-			const g = Math.round(info.channels[1].mean);
-			const b = Math.round(info.channels[2].mean);
+				const r = Math.round(info.channels[0].mean);
+				const g = Math.round(info.channels[1].mean);
+				const b = Math.round(info.channels[2].mean);
 
-			log(`average color is calculated: ${r}, ${g}, ${b}`);
+				log(`average color is calculated: ${r}, ${g}, ${b}`);
 
-			const value = info.isOpaque ? [r, g, b] : [r, g, b, 255];
+				const value = info.isOpaque ? [r, g, b] : [r, g, b, 255];
 
-			properties['avgColor'] = value;
+				properties['avgColor'] = value;
+			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];

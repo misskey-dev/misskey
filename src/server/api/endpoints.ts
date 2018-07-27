@@ -48,7 +48,7 @@ export interface IEndpointMeta {
 	 * ファイルの添付を必要とするか否か
 	 * 省略した場合は false として解釈されます。
 	 */
-	withFile?: boolean;
+	requireFile?: boolean;
 
 	/**
 	 * サードパーティアプリからはリクエストすることができないか否か

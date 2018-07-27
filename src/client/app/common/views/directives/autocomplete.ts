@@ -69,25 +69,25 @@ class Autocomplete {
 	 */
 	private onInput() {
 		const caretPos = this.textarea.selectionStart;
-		const text = this.text.substr(0, caretPos);
+		const text = this.text.substr(0, caretPos).split('\n').pop();
 
 		const mentionIndex = text.lastIndexOf('@');
 		const hashtagIndex = text.lastIndexOf('#');
 		const emojiIndex = text.lastIndexOf(':');
 
-		const start = Math.min(
-			mentionIndex == -1 ? Infinity : mentionIndex,
-			hashtagIndex == -1 ? Infinity : hashtagIndex,
-			emojiIndex == -1 ? Infinity : emojiIndex);
+		const max = Math.max(
+			mentionIndex,
+			hashtagIndex,
+			emojiIndex);
 
-		if (start == Infinity) {
+		if (max == -1) {
 			this.close();
 			return;
 		}
 
-		const isMention = mentionIndex == start;
-		const isHashtag = hashtagIndex == start;
-		const isEmoji = emojiIndex == start;
+		const isMention = mentionIndex != -1;
+		const isHashtag = hashtagIndex != -1;
+		const isEmoji = emojiIndex != -1;
 
 		let opened = false;
 
@@ -99,15 +99,15 @@ class Autocomplete {
 			}
 		}
 
-		if (isHashtag || opened == false) {
+		if (isHashtag && opened == false) {
 			const hashtag = text.substr(hashtagIndex + 1);
-			if (!hashtag.includes(' ') && !hashtag.includes('\n')) {
+			if (!hashtag.includes(' ')) {
 				this.open('hashtag', hashtag);
 				opened = true;
 			}
 		}
 
-		if (isEmoji || opened == false) {
+		if (isEmoji && opened == false) {
 			const emoji = text.substr(emojiIndex + 1);
 			if (emoji != '' && emoji.match(/^[\+\-a-z0-9_]+$/)) {
 				this.open('emoji', emoji);

@@ -31,9 +31,6 @@ if (process.env.NODE_ENV != 'production') {
 	process.env.DEBUG = 'misskey:*';
 }
 
-// https://github.com/Automattic/kue/issues/822
-require('events').EventEmitter.prototype._maxListeners = 512;
-
 // Start app
 main();
 
@@ -69,7 +66,7 @@ async function masterMain() {
 
 	Logger.succ('Misskey initialized');
 
-	spawnWorkers(() => {
+	spawnWorkers(config.clusterLimit, () => {
 		Logger.succ('All workers started');
 		Logger.info(`Now listening on port ${config.port} on ${config.url}`);
 	});
@@ -81,9 +78,6 @@ async function masterMain() {
 async function workerMain() {
 	// start server
 	await require('./server').default();
-
-	// start processor
-	require('./queue').default();
 
 	// Send a 'ready' message to parent process
 	process.send('ready');
@@ -143,14 +137,16 @@ async function init(): Promise<Config> {
 	return config;
 }
 
-function spawnWorkers(onComplete: Function) {
+function spawnWorkers(limit: number, onComplete: Function) {
 	// Count the machine's CPUs
 	const cpuCount = os.cpus().length;
 
-	const progress = new ProgressBar(cpuCount, 'Starting workers');
+	const count = limit || cpuCount;
+
+	const progress = new ProgressBar(count, 'Starting workers');
 
 	// Create a worker for each CPU
-	for (let i = 0; i < cpuCount; i++) {
+	for (let i = 0; i < count; i++) {
 		const worker = cluster.fork();
 		worker.on('message', message => {
 			if (message === 'ready') {

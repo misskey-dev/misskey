@@ -58,8 +58,7 @@ drive:
 
   # OR
 
-  # storage: 'object-storage'
-  # service: 'minio'
+  # storage: 'minio'
   # bucket:
   # prefix:
   # config:
@@ -68,6 +67,29 @@ drive:
   #   secure:
   #   accessKey:
   #   secretKey:
+
+  # S3 example
+  # storage: 'minio'
+  # bucket: bucket-name
+  # prefix: files
+  # config:
+  #   endPoint: s3-us-west-2.amazonaws.com
+  #   region: us-west-2
+  #   secure: true
+  #   accessKey: XXX
+  #   secretKey: YYY
+
+  # S3 example (with CDN, custom domain)
+  # storage: 'minio'
+  # bucket: drive.example.com
+  # prefix: files
+  # baseUrl: https://drive.example.com
+  # config:
+  #   endPoint: s3-us-west-2.amazonaws.com
+  #   region: us-west-2
+  #   secure: true
+  #   accessKey: XXX
+  #   secretKey: YYY
 
 #
 # Below settings are optional
@@ -109,3 +131,6 @@ drive:
 # Ghost account is an account used for the purpose of delegating
 # followers when putting users in the list.
 # ghost: user-id-of-your-ghost-account
+
+# Clustering
+# clusterLimit: 1

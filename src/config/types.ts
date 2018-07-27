@@ -51,9 +51,9 @@ export type Source = {
 
 	drive?: {
 		storage: string;
-		bucket: string;
-		prefix: string;
-		service?: string;
+		bucket?: string;
+		prefix?: string;
+		baseUrl?: string;
 		config?: any;
 	};
 
@@ -92,6 +92,8 @@ export type Source = {
 	};
 
 	google_maps_api_key: string;
+
+	clusterLimit?: number;
 };
 
 /**

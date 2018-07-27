@@ -84,12 +84,11 @@ export default Vue.extend({
 			(this as any).os.new(MkGameWindow);
 		},
 
-		goToTop(e: HTMLElement) {
-			if (e.classList.contains('active'))
-				window.scrollTo({
-					top: 0,
-					behavior: 'smooth'
-				});
+		goToTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
 		}
 	}
 });

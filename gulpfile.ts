@@ -90,10 +90,10 @@ gulp.task('format', () =>
 );
 
 gulp.task('mocha', () =>
-	gulp.src([])
+	gulp.src('./test/**/*.ts')
 		.pipe(mocha({
 			exit: true,
-			compilers: 'ts:ts-node/register'
+			require: 'ts-node/register'
 		} as any))
 );
 

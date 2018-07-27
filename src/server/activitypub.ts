@@ -3,7 +3,7 @@ import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
 
-import { createHttp } from '../queue';
+import { createHttpJob } from '../queue';
 import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
 import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
@@ -30,11 +30,11 @@ function inbox(ctx: Router.IRouterContext) {
 		return;
 	}
 
-	createHttp({
+	createHttpJob({
 		type: 'processInbox',
 		activity: ctx.request.body,
 		signature
-	}).save();
+	});
 
 	ctx.status = 202;
 }

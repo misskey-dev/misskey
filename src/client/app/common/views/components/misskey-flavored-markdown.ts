@@ -92,7 +92,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'hashtag':
 					return createElement('a', {
 						attrs: {
-							href: `${url}/tags/${token.hashtag}`,
+							href: `${url}/tags/${encodeURIComponent(token.hashtag)}`,
 							target: '_blank'
 						}
 					}, token.content);

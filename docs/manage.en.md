@@ -1,11 +1,17 @@
 # Management guide
 
 ## Check the status of the job queue
-In the directory of Misskey:
+coming soon
+
+## Mark as 'admin' user
 ``` shell
-node_modules/kue/bin/kue-dashboard -p 3050
+node cli/mark-admin (User-ID or Username)
 ```
-When you access port 3050, you will see the UI.
+
+## Mark as 'verified' user
+``` shell
+node cli/mark-verified (User-ID or Username)
+```
 
 ## Suspend users
 ``` shell
@@ -21,6 +27,11 @@ node cli/suspend @syuilo
 
 # Use username (remote)
 node cli/suspend @syuilo@misskey.xyz
+```
+
+## Reset password
+``` shell
+node cli/reset-password (User-ID or Username)
 ```
 
 ## Clean up cached remote files

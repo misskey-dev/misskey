@@ -22,7 +22,8 @@ export default async function(user: IUser, note: INote) {
 			text: null,
 			tags: [],
 			mediaIds: [],
-			poll: null
+			poll: null,
+			geo: null
 		}
 	});
 

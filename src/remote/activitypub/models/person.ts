@@ -14,6 +14,34 @@ import htmlToMFM from '../../../mfm/html-to-mfm';
 
 const log = debug('misskey:activitypub');
 
+function validatePerson(x: any) {
+	if (x == null) {
+		return new Error('invalid person: object is null');
+	}
+
+	if (x.type != 'Person' && x.type != 'Service') {
+		return new Error(`invalid person: object is not a person or service '${x.type}'`);
+	}
+
+	if (typeof x.preferredUsername !== 'string') {
+		return new Error('invalid person: preferredUsername is not a string');
+	}
+
+	if (typeof x.inbox !== 'string') {
+		return new Error('invalid person: inbox is not a string');
+	}
+
+	if (!validateUsername(x.preferredUsername)) {
+		return new Error('invalid person: invalid username');
+	}
+
+	if (!isValidName(x.name == '' ? null : x.name)) {
+		return new Error('invalid person: invalid name');
+	}
+
+	return null;
+}
+
 /**
  * Personをフェッチします。
  *
@@ -47,28 +75,10 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 
 	const object = await resolver.resolve(value) as any;
 
-	if (object == null) {
-		throw new Error('invalid person: object is null');
-	}
+	const err = validatePerson(object);
 
-	if (object.type != 'Person' && object.type != 'Service') {
-		throw new Error(`invalid person: object is not a person or service '${object.type}'`);
-	}
-
-	if (typeof object.preferredUsername !== 'string') {
-		throw new Error('invalid person: preferredUsername is not a string');
-	}
-
-	if (typeof object.inbox !== 'string') {
-		throw new Error('invalid person: inbox is not a string');
-	}
-
-	if (!validateUsername(object.preferredUsername)) {
-		throw new Error('invalid person: invalid username');
-	}
-
-	if (!isValidName(object.name == '' ? null : object.name)) {
-		throw new Error('invalid person: invalid name');
+	if (err) {
+		throw err;
 	}
 
 	const person: IPerson = object;
@@ -198,12 +208,10 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 
 	const object = await resolver.resolve(value) as any;
 
-	if (
-		object == null ||
-		object.type !== 'Person'
-	) {
-		log(`invalid person: ${JSON.stringify(object, null, 2)}`);
-		throw new Error('invalid person');
+	const err = validatePerson(object);
+
+	if (err) {
+		throw err;
 	}
 
 	const person: IPerson = object;
