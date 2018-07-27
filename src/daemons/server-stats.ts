@@ -2,6 +2,7 @@ import * as os from 'os';
 import * as sysUtils from 'systeminformation';
 import * as diskusage from 'diskusage';
 import Xev from 'xev';
+const osUtils = require('os-utils');
 
 const ev = new Xev();
 
@@ -44,14 +45,12 @@ export default function() {
 }
 
 // CPU STAT
-async function cpuUsage() {
-	try {
-		const data = await sysUtils.currentLoad();
-		return Math.floor(data.currentload / 100);
-	} catch (error) {
-		console.error(error);
-		throw error;
-	}
+function cpuUsage() {
+	return new Promise((res, rej) => {
+		osUtils.cpuUsage((cpuUsage: number) => {
+			res(cpuUsage);
+		});
+	});
 }
 
 // MEMORY(excl buffer + cache) STAT
