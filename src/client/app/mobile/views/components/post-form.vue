@@ -34,7 +34,13 @@
 				<button class="poll" @click="poll = true">%fa:chart-pie%</button>
 				<button class="poll" @click="useCw = !useCw">%fa:eye-slash%</button>
 				<button class="geo" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-				<button class="visibility" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
+				<button class="visibility" @click="setVisibility" ref="visibilityButton">
+					<span v-if="visibility === 'public'">%fa:globe%</span>
+					<span v-if="visibility === 'home'">%fa:home%</span>
+					<span v-if="visibility === 'followers'">%fa:unlock%</span>
+					<span v-if="visibility === 'specified'">%fa:envelope%</span>
+					<span v-if="visibility === 'private'">%fa:lock%</span>
+				</button>
 			</footer>
 			<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 		</div>
