@@ -1,5 +1,5 @@
 import * as os from 'os';
-const sysUtils = require('systeminformation');
+import * as sysUtils from 'systeminformation';
 import * as diskusage from 'diskusage';
 import Xev from 'xev';
 
@@ -61,6 +61,7 @@ async function usedMem() {
 		return data.active;
 	} catch (error) {
 		console.error(error);
+		throw error;
 	}
 }
 
@@ -71,5 +72,6 @@ async function totalMem() {
 		return data.total;
 	} catch (error) {
 		console.error(error);
+		throw error;
 	}
 }
