@@ -1,5 +1,5 @@
 import * as os from 'os';
-const osUtils = require('os-utils');
+const sysUtils = require('systeminformation');
 import * as diskusage from 'diskusage';
 import Xev from 'xev';
 
@@ -18,25 +18,59 @@ export default function() {
 	});
 
 	async function tick() {
-		osUtils.cpuUsage((cpuUsage: number) => {
-			const disk = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
-			const stats = {
-				cpu_usage: cpuUsage,
-				mem: {
-					total: os.totalmem(),
-					free: os.freemem()
-				},
-				disk,
-				os_uptime: os.uptime(),
-				process_uptime: process.uptime()
-			};
-			ev.emit('serverStats', stats);
-			log.push(stats);
-			if (log.length > 50) log.shift();
-		});
+		const cpu      = await cpuUsage();
+		const freemem  = await freeMem();
+		const totalmem = await totalMem();
+		const disk     = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
+
+		const stats = {
+			cpu_usage: cpu,
+			mem: {
+				total: totalmem,
+				free: freemem
+			},
+			disk,
+			os_uptime: os.uptime(),
+			process_uptime: process.uptime()
+		};
+		ev.emit('serverStats', stats);
+		log.push(stats);
 	}
 
 	tick();
 
 	setInterval(tick, interval);
+}
+
+// CPU STAT
+async function cpuUsage() {
+  try {
+    const data = await sysUtils.currentLoad();
+    return Math.floor(data.currentload);
+  }
+  catch(error) {
+    console.error(error);
+  }
+}
+
+// MEMORY(excl buffer + cache) STAT 
+async function freeMem() {
+  try {
+    const data = await sysUtils.mem();
+    return data.active;
+  }
+  catch(error) {
+    console.error(error);
+  }
+}
+
+// TOTAL MEMORY STAT
+async function totalMem() {
+  try {
+    const data = await sysUtils.mem();
+    return data.total;
+  }
+  catch(error) {
+    console.error(error);
+  }
 }
