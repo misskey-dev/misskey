@@ -18,10 +18,10 @@ export default function() {
 	});
 
 	async function tick() {
-		const cpu      = await cpuUsage();
-		const freemem  = await freeMem();
+		const cpu = await cpuUsage();
+		const freemem = await freeMem();
 		const totalmem = await totalMem();
-		const disk     = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
+		const disk = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
 
 		const stats = {
 			cpu_usage: cpu,
@@ -45,33 +45,31 @@ export default function() {
 
 // CPU STAT
 async function cpuUsage() {
-  try {
-    const data = await sysUtils.currentLoad();
-    return Math.floor(data.currentload);
-  }
-  catch(error) {
-    console.error(error);
-  }
+	try {
+		const data = await sysUtils.currentLoad();
+		return Math.floor(data.currentload);
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
 }
 
-// MEMORY(excl buffer + cache) STAT 
+// MEMORY(excl buffer + cache) STAT
 async function freeMem() {
-  try {
-    const data = await sysUtils.mem();
-    return data.active;
-  }
-  catch(error) {
-    console.error(error);
-  }
+	try {
+		const data = await sysUtils.mem();
+		return data.active;
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 // TOTAL MEMORY STAT
 async function totalMem() {
-  try {
-    const data = await sysUtils.mem();
-    return data.total;
-  }
-  catch(error) {
-    console.error(error);
-  }
+	try {
+		const data = await sysUtils.mem();
+		return data.total;
+	} catch (error) {
+		console.error(error);
+	}
 }
