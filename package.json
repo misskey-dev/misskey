@@ -75,6 +75,7 @@
 		"@types/showdown": "1.7.5",
 		"@types/single-line-log": "1.1.0",
 		"@types/speakeasy": "2.0.2",
+		"@types/systeminformation": "3.23.0",
 		"@types/tmp": "0.0.33",
 		"@types/uuid": "3.4.3",
 		"@types/webpack": "4.4.8",

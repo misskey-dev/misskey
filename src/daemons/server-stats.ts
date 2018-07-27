@@ -1,5 +1,5 @@
 import * as os from 'os';
-const sysUtils = require('systeminformation');
+import * as sysUtils from 'systeminformation';
 import * as diskusage from 'diskusage';
 import Xev from 'xev';
 
