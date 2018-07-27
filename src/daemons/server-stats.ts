@@ -35,6 +35,7 @@ export default function() {
 		};
 		ev.emit('serverStats', stats);
 		log.push(stats);
+		if (log.length > 50) log.shift();
 	}
 
 	tick();
