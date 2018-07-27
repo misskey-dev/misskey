@@ -218,8 +218,8 @@ common/views/components/visibility-chooser.vue:
   public: "Public"
   home: "Accueil"
   home-desc: "Publier sur le fil d'Accueil uniquement"
-  followers: "Abonnés"
-  followers-desc: "Publier à vos abonnés uniquement"
+  followers: "Abonné·e·s"
+  followers-desc: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
   specified-desc: "Publier aux utilisateurs mentionnés"
   private: "Privé"
@@ -346,9 +346,9 @@ desktop/views/components/follow-button.vue:
   request-pending: "En attente d'approbation"
   follow-request: "Demande d'abonnement"
 desktop/views/components/followers-window.vue:
-  followers: "{} abonnés"
+  followers: "{} abonné·e·s"
 desktop/views/components/followers.vue:
-  empty: "Il semble que vous n'avez pas encore d'abonnés."
+  empty: "Il semble que vous n'avez pas encore d'abonné·e·s."
 desktop/views/components/following-window.vue:
   following: "Suit {}"
 desktop/views/components/following.vue:
@@ -604,7 +604,7 @@ desktop/views/components/user-lists-window.vue:
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
-  followers: "Abonnés"
+  followers: "Abonné·e·s"
 desktop/views/components/users-list.vue:
   all: "Tout"
   iknow: "Vous connaissez"
@@ -650,7 +650,7 @@ desktop/views/pages/user-list.users.vue:
   add-user: "Ajouter un utilisateur"
   username: "Nom d'utilisateur"
 desktop/views/pages/user/user.followers-you-know.vue:
-  title: "Abonnés que vous connaissez"
+  title: "Abonné·e·s que vous connaissez"
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.friends.vue:
@@ -678,7 +678,7 @@ desktop/views/pages/user/user.profile.vue:
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
-  followers: "Abonnés"
+  followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
@@ -831,7 +831,7 @@ mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Afficher plus ..."
 mobile/views/pages/followers.vue:
-  followers-of: "Abonnés de {}"
+  followers-of: "Abonné·e·s de {}"
 mobile/views/pages/following.vue:
   following-of: "Abonnements de {}"
 mobile/views/pages/home.vue:
@@ -914,7 +914,7 @@ mobile/views/pages/settings.vue:
 mobile/views/pages/user.vue:
   follows-you: "vous suit"
   following: "Abonnements"
-  followers: "Abonnés"
+  followers: "Abonné·e·s"
   notes: "Posts"
   overview: "Aperçu"
   timeline: "Fil d'actualité"
@@ -929,7 +929,7 @@ mobile/views/pages/user/home.vue:
   keywords: "Mot clés"
   domains: "Domaines"
   frequently-replied-users: "Utilisateurs qui interagissent souvent"
-  followers-you-know: "Abonnés que vous connaissez"
+  followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Chargement"
