@@ -79,9 +79,6 @@ async function workerMain() {
 	// start server
 	await require('./server').default();
 
-	// start processor
-	require('./queue').default();
-
 	// Send a 'ready' message to parent process
 	process.send('ready');
 }
