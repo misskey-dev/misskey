@@ -29,6 +29,11 @@ node cli/suspend @syuilo
 node cli/suspend @syuilo@misskey.xyz
 ```
 
+## ユーザーのパスワードをリセットする
+``` shell
+node cli/reset-password (ユーザーID または ユーザー名)
+```
+
 ## キャッシュされたリモートファイルをクリーンアップする
 ``` shell
 node cli/clean-cached-remote-files
