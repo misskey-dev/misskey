@@ -61,6 +61,7 @@ async function freeMem() {
 		return data.active;
 	} catch (error) {
 		console.error(error);
+		throw error;
 	}
 }
 
@@ -71,5 +72,6 @@ async function totalMem() {
 		return data.total;
 	} catch (error) {
 		console.error(error);
+		throw error;
 	}
 }
