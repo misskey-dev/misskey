@@ -131,3 +131,6 @@ drive:
 # Ghost account is an account used for the purpose of delegating
 # followers when putting users in the list.
 # ghost: user-id-of-your-ghost-account
+
+# Clustering
+# clusterLimit: 1
