@@ -4,6 +4,7 @@ import event from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';
+import config from '../../../../config';
 
 export const meta = {
 	desc: {
@@ -81,7 +82,11 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 			_id: avatarId
 		});
 
-		if (avatar != null && avatar.metadata.properties.avgColor) {
+		if (avatar == null) return rej('avatar not found');
+
+		updates.avatarUrl = avatar.metadata.url || `${config.drive_url}/${avatar._id}`;
+
+		if (avatar.metadata.properties.avgColor) {
 			updates.avatarColor = avatar.metadata.properties.avgColor;
 		}
 	}
@@ -91,7 +96,11 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 			_id: bannerId
 		});
 
-		if (banner != null && banner.metadata.properties.avgColor) {
+		if (banner == null) return rej('banner not found');
+
+		updates.bannerUrl = banner.metadata.url || `${config.drive_url}/${banner._id}`;
+
+		if (banner.metadata.properties.avgColor) {
 			updates.bannerColor = banner.metadata.properties.avgColor;
 		}
 	}
@@ -101,7 +110,11 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 			_id: wallpaperId
 		});
 
-		if (wallpaper != null && wallpaper.metadata.properties.avgColor) {
+		if (wallpaper == null) return rej('wallpaper not found');
+
+		updates.wallpaperUrl = wallpaper.metadata.url || `${config.drive_url}/${wallpaper._id}`;
+
+		if (wallpaper.metadata.properties.avgColor) {
 			updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
 		}
 	}
