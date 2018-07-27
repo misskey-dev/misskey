@@ -102,7 +102,6 @@ export default Vue.extend({
 	},
 	methods: {
 		onStats(stats) {
-			stats.mem.used = stats.mem.total - stats.mem.free;
 			this.stats.push(stats);
 			if (this.stats.length > 50) this.stats.shift();
 
