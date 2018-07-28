@@ -11,3 +11,4 @@ npm-debug.log
 run.bat
 api-docs.json
 *.log
+*.code-workspace
