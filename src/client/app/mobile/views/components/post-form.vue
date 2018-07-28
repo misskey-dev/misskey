@@ -388,7 +388,7 @@ root(isDark)
 				padding 16px
 
 			> .visibleUsers
-				margin-bottom 8px
+				margin 5px
 				font-size 14px
 
 				> span
