@@ -11,6 +11,7 @@ import chalk from 'chalk';
 import * as portscanner from 'portscanner';
 import isRoot = require('is-root');
 import Xev from 'xev';
+import * as program from 'commander';
 
 import Logger from './misc/logger';
 import ProgressBar from './misc/cli/progressbar';
@@ -25,26 +26,42 @@ import { Config } from './config/types';
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
 
-process.title = 'Misskey';
-
 if (process.env.NODE_ENV != 'production') {
-	process.env.DEBUG = 'misskey:*';
+	debug.enable('misskey');
 }
 
-// Start app
+const pkg = require('../package.json');
+
+//#region Command line argument definitions
+program
+	.version(pkg.version)
+	.option('--no-daemons', 'Disable daemon processes (for debbuging)')
+	.option('--disable-clustering', 'Disable clustering')
+	.parse(process.argv);
+//#endregion
+
 main();
 
 /**
  * Init process
  */
 function main() {
-	if (cluster.isMaster) {
+	process.title = `Misskey (${ cluster.isMaster ? 'master' : 'worker' })`;
+
+	if (cluster.isMaster || program.disableClustering) {
 		masterMain();
 
-		ev.mount();
-		serverStats();
-		notesStats();
-	} else {
+		if (cluster.isMaster) {
+			ev.mount();
+		}
+
+		if (!program.noDaemons) {
+			serverStats();
+			notesStats();
+		}
+	}
+
+	if (cluster.isWorker || program.disableClustering) {
 		workerMain();
 	}
 }
@@ -66,10 +83,12 @@ async function masterMain() {
 
 	Logger.succ('Misskey initialized');
 
-	spawnWorkers(config.clusterLimit, () => {
+	if (!program.disableClustering) {
+		await spawnWorkers(config.clusterLimit);
 		Logger.succ('All workers started');
-		Logger.info(`Now listening on port ${config.port} on ${config.url}`);
-	});
+	}
+
+	Logger.info(`Now listening on port ${config.port} on ${config.url}`);
 }
 
 /**
@@ -79,8 +98,10 @@ async function workerMain() {
 	// start server
 	await require('./server').default();
 
-	// Send a 'ready' message to parent process
-	process.send('ready');
+	if (cluster.isWorker) {
+		// Send a 'ready' message to parent process
+		process.send('ready');
+	}
 }
 
 /**
@@ -124,42 +145,49 @@ async function init(): Promise<Config> {
 	}
 
 	// Try to connect to MongoDB
+	checkMongoDb(config);
+
+	return config;
+}
+
+function checkMongoDb(config: Config) {
 	const mongoDBLogger = new Logger('MongoDB');
 	mongoDBLogger.info(`Host: ${config.mongodb.host}`);
 	mongoDBLogger.info(`Port: ${config.mongodb.port}`);
 	mongoDBLogger.info(`DB: ${config.mongodb.db}`);
 	if (config.mongodb.user) mongoDBLogger.info(`User: ${config.mongodb.user}`);
 	if (config.mongodb.pass) mongoDBLogger.info(`Pass: ****`);
-	const db = require('./db/mongodb').default;
+	require('./db/mongodb');
 	mongoDBLogger.succ('Connectivity confirmed');
-	db.close();
-
-	return config;
 }
 
-function spawnWorkers(limit: number, onComplete: Function) {
-	// Count the machine's CPUs
-	const cpuCount = os.cpus().length;
+function spawnWorkers(limit: number) {
+	return new Promise(res => {
+		// Count the machine's CPUs
+		const cpuCount = os.cpus().length;
 
-	const count = limit || cpuCount;
+		const count = limit || cpuCount;
 
-	const progress = new ProgressBar(count, 'Starting workers');
+		const progress = new ProgressBar(count, 'Starting workers');
 
-	// Create a worker for each CPU
-	for (let i = 0; i < count; i++) {
-		const worker = cluster.fork();
-		worker.on('message', message => {
-			if (message === 'ready') {
-				progress.increment();
-			}
+		// Create a worker for each CPU
+		for (let i = 0; i < count; i++) {
+			const worker = cluster.fork();
+			worker.on('message', message => {
+				if (message === 'ready') {
+					progress.increment();
+				}
+			});
+		}
+
+		// On all workers started
+		progress.on('complete', () => {
+			res();
 		});
-	}
-
-	// On all workers started
-	progress.on('complete', () => {
-		onComplete();
 	});
 }
+
+//#region Events
 
 // Listen new workers
 cluster.on('fork', worker => {
@@ -191,3 +219,5 @@ process.on('uncaughtException', err => {
 process.on('exit', code => {
 	Logger.info(`The process is going to exit with code ${code}`);
 });
+
+//#endregion
