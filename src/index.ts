@@ -26,27 +26,28 @@ import { Config } from './config/types';
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
 
-process.title = 'Misskey';
-
 if (process.env.NODE_ENV != 'production') {
 	process.env.DEBUG = 'misskey:*';
 }
 
 const pkg = require('../package.json');
 
+//#region Command line argument definitions
 program
 	.version(pkg.version)
 	.option('--no-daemons', 'Disable daemon processes (for debbuging)')
 	.option('--disable-clustering', 'Disable clustering')
 	.parse(process.argv);
+//#endregion
 
-// Start app
 main();
 
 /**
  * Init process
  */
 function main() {
+	process.title = `Misskey (${ cluster.isMaster ? 'master' : 'worker' })`;
+
 	if (cluster.isMaster || program.disableClustering) {
 		masterMain();
 
@@ -186,6 +187,8 @@ function spawnWorkers(limit: number) {
 	});
 }
 
+//#region Events
+
 // Listen new workers
 cluster.on('fork', worker => {
 	clusterLog(`Process forked: [${worker.id}]`);
@@ -216,3 +219,5 @@ process.on('uncaughtException', err => {
 process.on('exit', code => {
 	Logger.info(`The process is going to exit with code ${code}`);
 });
+
+//#endregion
