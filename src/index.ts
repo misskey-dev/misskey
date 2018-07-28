@@ -27,7 +27,7 @@ const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
 
 if (process.env.NODE_ENV != 'production') {
-	process.env.DEBUG = 'misskey:*';
+	debug.enable('misskey');
 }
 
 const pkg = require('../package.json');
