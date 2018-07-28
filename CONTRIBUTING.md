@@ -1,27 +1,41 @@
-# Contribution guide
-:v: Misskeyへの貢献ありがとうございます。 :v:
+# Contributing
 
-## Issueの報告
-新機能の提案や不具合の報告は https://github.com/syuilo/misskey/issues で管理しています。
-Issueを作成する前に、既に同じIssueが作成されていないかご確認ください。
-もし既にIssueが作成されている場合は、既存のIssueにコメントをしたりリアクションをするようお願いします。
+We love pull requests from everyone. By participating in this project, you
+agree to abide by the thoughtbot [code of conduct].
 
-## Issueの解決
-[pr-welcomeのラベルがついているIssue](https://github.com/syuilo/misskey/labels/pr-welcome)
-の解決を目的としたPull Requestを作成してくださると非常にありがたいです。
+[code of conduct]: https://github.com/gutfuckllc/misskey/blob/master/CODE_OF_CONDUCT.md
 
-## 翻訳の改善
-ソースコード中の `%i18n:id%` という形の文字列は、言語ファイルの対応するテキストに置換されます。
-言語ファイルは /locales ディレクトリに存在します。
+Fork, then clone the repo:
 
-## ドキュメントの編集
-現在Misskeyはドキュメントが大きく不足しています。
-ドキュメントは /docs ディレクトリに存在します。
+    git clone git@github.com:your-username/factory_bot_rails.git
 
-## テストの追加
-現在Misskeyはテストが大きく不足しています。
-テストコードは /test ディレクトリに存在します。
+Set up your machine:
 
-## 自動テスト及び自動リリース
-Travis CIで行っています。
-設定ファイルは /.travis に存在します。
+    ./bin/setup
+
+Make sure the tests pass:
+
+    rake
+
+Make your change. Add tests for your change. Make the tests pass:
+
+    rake
+
+Push to your fork and [submit a pull request][pr].
+
+[pr]: https://github.com/gutfuckllc/misskey
+
+At this point you're waiting on us. We like to at least comment on pull requests
+within three business days (and, typically, one business day). We may suggest
+some changes or improvements or alternatives.
+
+Some things that will increase the chance that your pull request is accepted:
+
+* Write tests.
+* Write a [good commit message][commit].
+
+[commit]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+
+Adapted from [Factory Bot Rails]'
+
+[Factory Bot Rails]: https://github.com/thoughtbot/factory_bot_rails/blob/master/CONTRIBUTING.md
