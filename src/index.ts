@@ -55,7 +55,7 @@ function main() {
 			ev.mount();
 		}
 
-		if (!program.noDaemons) {
+		if (program.daemons) {
 			serverStats();
 			notesStats();
 		}
