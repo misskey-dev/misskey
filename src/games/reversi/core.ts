@@ -18,28 +18,28 @@ export type Options = {
 
 export type Undo = {
 	/**
-	 * 色
+	 * Color
 	 */
 	color: Color;
 
 	/**
-	 * どこに打ったか
+	 * Where did it hit?
 	 */
 	pos: number;
 
 	/**
-	 * 反転した石の位置の配列
+	 * Stone position
 	 */
 	effects: number[];
 
 	/**
-	 * ターン
+	 * Turns
 	 */
 	turn: Color;
 };
 
 /**
- * リバーシエンジン
+ * Reversi engine
  */
 export default class Reversi {
 	public map: MapPixel[];
@@ -55,7 +55,7 @@ export default class Reversi {
 	private logs: Undo[] = [];
 
 	/**
-	 * ゲームを初期化します
+	 * Initialization
 	 */
 	constructor(map: string[], opts: Options) {
 		//#region binds
@@ -87,7 +87,7 @@ export default class Reversi {
 		});
 		//#endregion
 
-		// ゲームが始まった時点で片方の色の石しかないか、始まった時点で勝敗が決定するようなマップの場合がある
+		// At the beginning of the game there is only one stone of stone, there are cases where the map is such that winning or losing is decided at the beginning
 		if (this.canPutSomewhere(BLACK).length == 0) {
 			if (this.canPutSomewhere(WHITE).length == 0) {
 				this.turn = null;
@@ -98,21 +98,21 @@ export default class Reversi {
 	}
 
 	/**
-	 * 黒石の数
+	 * Black stone count
 	 */
 	public get blackCount() {
 		return this.board.filter(x => x === BLACK).length;
 	}
 
 	/**
-	 * 白石の数
+	 * White stone count
 	 */
 	public get whiteCount() {
 		return this.board.filter(x => x === WHITE).length;
 	}
 
 	/**
-	 * 黒石の比率
+	 * Black stone ratio
 	 */
 	public get blackP() {
 		if (this.blackCount == 0 && this.whiteCount == 0) return 0;
@@ -120,7 +120,7 @@ export default class Reversi {
 	}
 
 	/**
-	 * 白石の比率
+	 * White stone ratio
 	 */
 	public get whiteP() {
 		if (this.blackCount == 0 && this.whiteCount == 0) return 0;
@@ -138,9 +138,9 @@ export default class Reversi {
 	}
 
 	/**
-	 * 指定のマスに石を打ちます
-	 * @param color 石の色
-	 * @param pos 位置
+	 * Stone mouvement
+	 * @param color stone
+	 * @param pos position
 	 */
 	public put(color: Color, pos: number) {
 		this.prevPos = pos;
@@ -148,10 +148,10 @@ export default class Reversi {
 
 		this.board[pos] = color;
 
-		// 反転させられる石を取得
+		// Gets a stone to be flipped
 		const effects = this.effects(color, pos);
 
-		// 反転させる
+		// Invert
 		for (const pos of effects) {
 			this.board[pos] = color;
 		}
@@ -169,7 +169,7 @@ export default class Reversi {
 	}
 
 	private calcTurn() {
-		// ターン計算
+		// Turn calculation
 		if (this.canPutSomewhere(!this.prevColor).length > 0) {
 			this.turn = !this.prevColor;
 		} else if (this.canPutSomewhere(this.prevColor).length > 0) {
@@ -192,7 +192,7 @@ export default class Reversi {
 	}
 
 	/**
-	 * 指定した位置のマップデータのマスを取得します
+	 * Gets the square of the map data at the specified position
 	 * @param pos 位置
 	 */
 	public mapDataGet(pos: number): MapPixel {
@@ -202,7 +202,7 @@ export default class Reversi {
 	}
 
 	/**
-	 * 打つことができる場所を取得します
+	 * Gets a place you can hit
 	 */
 	public canPutSomewhere(color: Color): number[] {
 		const result: number[] = [];
@@ -215,37 +215,37 @@ export default class Reversi {
 	}
 
 	/**
-	 * 指定のマスに石を打つことができるかどうかを取得します
+	 * Gets wheter it's possible to move a stone to a specificed squar
 	 * @param color 自分の色
 	 * @param pos 位置
 	 */
 	public canPut(color: Color, pos: number): boolean {
-		// 既に石が置いてある場所には打てない
+		// Can't move
 		if (this.board[pos] !== null) return false;
 
 		if (this.opts.canPutEverywhere) {
-			// 挟んでなくても置けるモード
+			// Can move
 			return this.mapDataGet(pos) == 'empty';
 		} else {
-			// 相手の石を1つでも反転させられるか
+			// Checks if inverting a stone is possible
 			return this.effects(color, pos).length !== 0;
 		}
 	}
 
 	/**
-	 * 指定のマスに石を置いた時の、反転させられる石を取得します
-	 * @param color 自分の色
-	 * @param pos 位置
+	 * Flip checks
+	 * @param color my color
+	 * @param pos my position
 	 */
 	public effects(color: Color, pos: number): number[] {
 		const enemyColor = !color;
 
-		// ひっくり返せる石(の位置)リスト
+		// Tipping over stones positionlist
 		let stones: number[] = [];
 
 		const initPos = pos;
 
-		// 走査
+		// scanning
 		const iterate = (fn: (i: number) => number[]) => {
 			let i = 1;
 			const found = [];
@@ -253,7 +253,7 @@ export default class Reversi {
 			while (true) {
 				let [x, y] = fn(i);
 
-				// 座標が指し示す位置がボード外に出たとき
+				// When the position indicated by the coordinates comes out of the board
 				if (this.opts.loopedBoard) {
 					if (x <  0             ) x = this.mapWidth  - ((-x) % this.mapWidth);
 					if (y <  0             ) y = this.mapHeight - ((-y) % this.mapHeight);
@@ -265,7 +265,7 @@ export default class Reversi {
 					//	console.log(x, y);
 					//}
 
-					// 一周して自分に帰ってきたら
+					// Loop
 					if (this.transformXyToPos(x, y) == initPos) {
 						// ↓のコメントアウトを外すと、「現時点で自分の石が隣接していないが、
 						// そこに置いたとするとループして最終的に挟んだことになる」というケースを有効化します。(Test4のマップで違いが分かります)
