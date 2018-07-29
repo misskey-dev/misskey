@@ -915,7 +915,7 @@ mobile/views/pages/user.vue:
   follows-you: "vous suit"
   following: "Abonnements"
   followers: "Abonné·e·s"
-  notes: "Posts"
+  notes: "Notes"
   overview: "Aperçu"
   timeline: "Fil d'actualité"
   media: "Media"
