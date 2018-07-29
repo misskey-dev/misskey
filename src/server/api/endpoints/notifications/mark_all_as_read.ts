@@ -1,5 +1,5 @@
 import Notification from '../../../../models/notification';
-import event from '../../../../stream';
+import { publishUserStream } from '../../../../stream';
 import User, { ILocalUser } from '../../../../models/user';
 
 export const meta = {
@@ -40,5 +40,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	});
 
 	// 全ての通知を読みましたよというイベントを発行
-	event(user._id, 'read_all_notifications');
+	publishUserStream(user._id, 'read_all_notifications');
 });

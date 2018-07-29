@@ -1,14 +1,13 @@
 import * as mongo from 'mongodb';
 import * as websocket from 'websocket';
-import * as redis from 'redis';
+import Xev from 'xev';
 import Matching, { pack } from '../../../../models/games/reversi/matching';
-import publishUserStream from '../../../../stream';
+import { publishUserStream } from '../../../../stream';
 
-export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+export default function(request: websocket.request, connection: websocket.connection, subscriber: Xev, user: any): void {
 	// Subscribe reversi stream
-	subscriber.subscribe(`misskey:reversi-stream:${user._id}`);
-	subscriber.on('message', (_, data) => {
-		connection.send(data);
+	subscriber.on(`reversi-stream:${user._id}`, data => {
+		connection.send(JSON.stringify(data));
 	});
 
 	connection.on('message', async (data) => {

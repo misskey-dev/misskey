@@ -1,6 +1,6 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack, ILocalUser } from '../../../../models/user';
-import event from '../../../../stream';
+import { publishUserStream } from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';
@@ -133,7 +133,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 	res(iObj);
 
 	// Publish meUpdated event
-	event(user._id, 'meUpdated', iObj);
+	publishUserStream(user._id, 'meUpdated', iObj);
 
 	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 	if (user.isLocked && isLocked === false) {

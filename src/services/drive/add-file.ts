@@ -13,7 +13,7 @@ import * as sharp from 'sharp';
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
-import event, { publishDriveStream } from '../../stream';
+import { publishUserStream, publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
@@ -309,7 +309,7 @@ export default async function(
 
 	pack(driveFile).then(packedFile => {
 		// Publish drive_file_created event
-		event(user._id, 'drive_file_created', packedFile);
+		publishUserStream(user._id, 'drive_file_created', packedFile);
 		publishDriveStream(user._id, 'file_created', packedFile);
 	});
 

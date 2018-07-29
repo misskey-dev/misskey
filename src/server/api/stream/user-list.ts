@@ -1,14 +1,13 @@
 import * as websocket from 'websocket';
-import * as redis from 'redis';
+import Xev from 'xev';
 import { ParsedUrlQuery } from 'querystring';
 
-export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+export default function(request: websocket.request, connection: websocket.connection, subscriber: Xev, user: any): void {
 	const q = request.resourceURL.query as ParsedUrlQuery;
 	const listId = q.listId as string;
 
 	// Subscribe stream
-	subscriber.subscribe(`misskey:user-list-stream:${listId}`);
-	subscriber.on('message', (_, data) => {
+	subscriber.on(`user-list-stream:${listId}`, data => {
 		connection.send(data);
 	});
 }

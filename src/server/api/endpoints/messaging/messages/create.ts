@@ -6,7 +6,7 @@ import User, { ILocalUser } from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
-import publishUserStream from '../../../../../stream';
+import { publishUserStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
 import config from '../../../../../config';

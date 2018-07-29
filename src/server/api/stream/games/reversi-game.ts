@@ -1,5 +1,5 @@
 import * as websocket from 'websocket';
-import * as redis from 'redis';
+import Xev from 'xev';
 import * as CRC32 from 'crc-32';
 import ReversiGame, { pack } from '../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../stream';
@@ -7,14 +7,13 @@ import Reversi from '../../../../games/reversi/core';
 import * as maps from '../../../../games/reversi/maps';
 import { ParsedUrlQuery } from 'querystring';
 
-export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user?: any): void {
+export default function(request: websocket.request, connection: websocket.connection, subscriber: Xev, user?: any): void {
 	const q = request.resourceURL.query as ParsedUrlQuery;
-	const gameId = q.game;
+	const gameId = q.game as string;
 
 	// Subscribe game stream
-	subscriber.subscribe(`misskey:reversi-game-stream:${gameId}`);
-	subscriber.on('message', (_, data) => {
-		connection.send(data);
+	subscriber.on(`reversi-game-stream:${gameId}`, data => {
+		connection.send(JSON.stringify(data));
 	});
 
 	connection.on('message', async (data) => {

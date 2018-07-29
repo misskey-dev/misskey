@@ -2,7 +2,7 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
 import ReversiGame, { pack as packGame } from '../../../../../models/games/reversi/game';
 import User, { ILocalUser } from '../../../../../models/user';
-import publishUserStream, { publishReversiStream } from '../../../../../stream';
+import { publishUserStream, publishReversiStream } from '../../../../../stream';
 import { eighteight } from '../../../../../games/reversi/maps';
 
 export const meta = {
