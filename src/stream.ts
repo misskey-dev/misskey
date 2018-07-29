@@ -22,7 +22,7 @@ export function publishDriveStream(userId: ID, type: string, value?: any): void 
 }
 
 export function publishNoteStream(noteId: ID, type: string): void {
-	publish(`note-stream:${noteId}`, type, noteId);
+	publish(`note-stream:${noteId}`, null, noteId);
 }
 
 export function publishUserListStream(listId: ID, type: string, value?: any): void {
