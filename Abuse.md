@@ -22,13 +22,14 @@ Doxing will find your account terminated and contact to law enforcement if relev
 
 Certain types of pornography are allowed and others disallowed. What is specifically disallowed and allowed is as such:
 
-Disallowed: 
-- Bestiality porn.
-- Child porn.
-Posting any of the above will find your account terminated and contact to relevant law enforcement made.
 Allowed:
 - Drawn depiction of any types of porn (legal within the U.S.A.).
 - Legal "real pornography" as pertaining to Californian law.
+
+Disallowed: 
+- Real bestiality porn.
+- Real child porn.
+Posting any of the above will find your account terminated and contact to relevant law enforcement made.
 
 ## Bots policy
 Bots are allowed within the site if they bring a "useful feature", which will be decided when the time is relevant. 
