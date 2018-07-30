@@ -129,6 +129,13 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "Clean cache"
   set-version: "Specify version"
   
+common/components/games/reversi/reversi.game.vue:
+  common.reversi.turn-of: My turn
+  common.reversi.past-turn-of: Past turn
+  common.reversi.opponent-turn: Opponent's turn
+  common.reversi.my-turn: My turn
+  common.reversi.win: Win
+  
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"

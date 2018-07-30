@@ -133,6 +133,13 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "正常に接続できるようです。ページを再度読み込みしてください。"
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
+  
+common/components/games/reversi/reversi.game.vue:
+  common.reversi.turn-of: (enter japanese text here)
+  common.reversi.past-turn-of: (enter japanese text here)
+  common.reversi.opponent-turn: (enter japanese text here)
+  common.reversi.my-turn: (enter japanese text here)
+  common.reversi.win: (enter japanese text here)
 
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
