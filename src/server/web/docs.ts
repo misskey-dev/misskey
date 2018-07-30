@@ -173,9 +173,10 @@ router.get('/*/api/endpoints/*', async ctx => {
 	const ep = endpoints.find(e => e.name === name);
 
 	const vars = {
+		id: `api/endpoints/${name}`,
 		title: name,
 		endpoint: ep.meta,
-		url: {
+		endpointUrl: {
 			host: config.api_url,
 			path: name
 		},
@@ -198,6 +199,7 @@ router.get('/*/api/entities/*', async ctx => {
 	const x = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname + '/../../../src/docs/api/entities/' + entity + '.yaml'), 'utf-8')) as any;
 
 	await ctx.render('../../../../src/docs/api/entities/view', Object.assign(await genVars(lang), {
+		id: `api/entities/${entity}`,
 		name: x.name,
 		desc: x.desc,
 		props: sortParams(Object.entries(x.props).map(([k, v]) => parsePropDefinition(k, v))),
@@ -228,6 +230,7 @@ router.get('/*/*', async ctx => {
 	const md = fs.readFileSync(`${__dirname}/../../../src/docs/${doc}.${lang}.md`, 'utf8');
 
 	await ctx.render('../../../../src/docs/article', Object.assign({
+		id: doc,
 		html: conv.makeHtml(md),
 		title: md.match(/^# (.+?)\r?\n/)[1],
 		src: `https://github.com/syuilo/misskey/tree/master/src/docs/${doc}.${lang}.md`

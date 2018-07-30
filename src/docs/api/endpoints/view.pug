@@ -10,9 +10,9 @@ block main
 	p#url
 		span.method POST
 		span.host
-			= url.host
+			= endpointUrl.host
 			| /
-		span.path= url.path
+		span.path= endpointUrl.path
 
 	if endpoint.desc
 		p#desc= endpoint.desc[lang] || endpoint.desc['ja']
