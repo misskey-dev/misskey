@@ -58,6 +58,7 @@ common:
     opponent-turn: "Tour de l’adversaire"
     turn-of: "C’est le tour de {}"
     past-turn-of: "C'est au tour de {}"
+    won: "{}の勝ち"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
