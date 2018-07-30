@@ -29,6 +29,7 @@ Allowed:
 Disallowed: 
 - Real bestiality porn.
 - Real child porn.
+- Anything resembling real child porn (3D, rotoscoped or otherwise)
 Posting any of the above will find your account terminated and contact to relevant law enforcement made.
 
 ## Bots policy
