@@ -58,6 +58,7 @@ common:
     opponent-turn: "Kolej na przeciwnika"
     turn-of: "Kolej na {}"
     past-turn-of: "Kolej {}"
+    won: "{}の勝ち"
   widgets:
     analog-clock: "Zegar analogowy"
     profile: "Profil"

@@ -58,6 +58,7 @@ common:
     opponent-turn: "Opponent's turn"
     turn-of: "{}'s turn"
     past-turn-of: "{}'s turn"
+    won: "{} won"
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
