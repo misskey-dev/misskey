@@ -8,7 +8,7 @@
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">%i18n:common.reversi.my-turn%</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
-			<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
+			<template v-if="game.winner">{{ '%i18n:common.reversi.won%'.replace('{}', game.winner.name) }}{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
 			<template v-else>%i18n:common.reversi.drawn%</template>
 		</p>
 	</div>
@@ -111,8 +111,8 @@ export default Vue.extend({
 		},
 		cellsStyle(): any {
 			return {
-				'grid-template-rows': `repeat(${ this.game.settings.map.length }, 1fr)`,
-				'grid-template-columns': `repeat(${ this.game.settings.map[0].length }, 1fr)`
+				'grid-template-rows': `repeat(${this.game.settings.map.length}, 1fr)`,
+				'grid-template-columns': `repeat(${this.game.settings.map[0].length}, 1fr)`
 			};
 		}
 	},

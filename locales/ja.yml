@@ -64,6 +64,7 @@ common:
     opponent-turn: "相手のターンです"
     turn-of: "{}のターンです"
     past-turn-of: "{}のターン"
+    won: "{}の勝ち"
 
   widgets:
     analog-clock: "アナログ時計"
