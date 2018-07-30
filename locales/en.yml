@@ -52,12 +52,14 @@ common:
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
   verified-user: "Verified user"
+  
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
     opponent-turn: "Opponent's turn"
     turn-of: "{}'s turn"
     past-turn-of: "{}'s turn"
+    
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
@@ -82,6 +84,7 @@ common:
     nav: "Navigation"
     tips: "Tips"
     hashtags: "Hashtags"
+    
   deck:
     widgets: "Widgets"
     home: "Home"
@@ -99,11 +102,13 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+    
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
   thanks: "Thank you for using notfreespee.ch."
   troubleshoot: "Troubleshoot"
+  
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Troubleshooting"
   network: "Network connection"
@@ -123,10 +128,12 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "It seems to be able to connect. Please reload the page."
   flush: "Clean cache"
   set-version: "Specify version"
+  
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
   no-history: "Without history"
+  
 common/views/components/messaging-room.vue:
   empty: "No conversations"
   more: "Read more"
