@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import Message from '../../../models/messaging-message';
 import { IMessagingMessage as IMessage } from '../../../models/messaging-message';
-import publishUserStream from '../../../stream';
+import { publishUserStream } from '../../../stream';
 import { publishMessagingStream } from '../../../stream';
 import { publishMessagingIndexStream } from '../../../stream';
 import User from '../../../models/user';

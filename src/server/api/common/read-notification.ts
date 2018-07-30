@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
 import { default as Notification, INotification } from '../../../models/notification';
-import publishUserStream from '../../../stream';
+import { publishUserStream } from '../../../stream';
 import Mute from '../../../models/mute';
 import User from '../../../models/user';
 

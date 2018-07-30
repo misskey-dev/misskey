@@ -53,7 +53,7 @@ export default Vue.extend({
 			this.moreFetching = true;
 			(this as any).api('i/favorites', {
 				limit: 11,
-				maxId: this.favorites[this.favorites.length - 1].id
+				maxId: this.favorites[this.favorites.length - 1].note.id
 			}).then(favorites => {
 				if (favorites.length == 11) {
 					this.existMore = true;

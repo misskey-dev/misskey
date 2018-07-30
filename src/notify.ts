@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import Notification from './models/notification';
 import Mute from './models/mute';
 import { pack } from './models/notification';
-import stream from './stream';
+import { publishUserStream } from './stream';
 import User from './models/user';
 import pushSw from './push-sw';
 
@@ -30,7 +30,7 @@ export default (
 	const packed = await pack(notification);
 
 	// Publish notification event
-	stream(notifiee, 'notification', packed);
+	publishUserStream(notifiee, 'notification', packed);
 
 	// Update flag
 	User.update({ _id: notifiee }, {
@@ -54,7 +54,7 @@ export default (
 			}
 			//#endregion
 
-			stream(notifiee, 'unread_notification', packed);
+			publishUserStream(notifiee, 'unread_notification', packed);
 
 			pushSw(notifiee, 'notification', packed);
 		}

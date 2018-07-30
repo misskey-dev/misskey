@@ -1,7 +1,7 @@
 import es from '../../db/elasticsearch';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
-import stream, { publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../stream';
+import { publishUserStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -13,7 +13,6 @@ import notify from '../../notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
 import Mute from '../../models/mute';
-import event from '../../stream';
 import parse from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
@@ -189,7 +188,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		} else {
 			// Publish event
 			if (!user._id.equals(data.renote.userId)) {
-				event(data.renote.userId, 'renote', noteObj);
+				publishUserStream(data.renote.userId, 'renote', noteObj);
 			}
 		}
 	}
@@ -236,12 +235,12 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 		if (['private', 'followers', 'specified'].includes(note.visibility)) {
 			// Publish event to myself's stream
-			stream(note.userId, 'note', await pack(note, user, {
+			publishUserStream(note.userId, 'note', await pack(note, user, {
 				detail: true
 			}));
 		} else {
 			// Publish event to myself's stream
-			stream(note.userId, 'note', noteObj);
+			publishUserStream(note.userId, 'note', noteObj);
 
 			// Publish note to local and hybrid timeline stream
 			if (note.visibility != 'home') {
@@ -264,7 +263,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 			const n = await pack(note, u, {
 				detail: true
 			});
-			stream(u._id, 'note', n);
+			publishUserStream(u._id, 'note', n);
 			publishHybridTimelineStream(u._id, n);
 		});
 	}
@@ -417,7 +416,7 @@ async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteAc
 			}
 
 			// Publish event to followers stream
-			stream(following.followerId, 'note', noteObj);
+			publishUserStream(following.followerId, 'note', noteObj);
 
 			if (isRemoteUser(user) || note.visibility != 'public') {
 				publishHybridTimelineStream(following.followerId, noteObj);
@@ -444,7 +443,7 @@ function deliverNoteToMentionedRemoteUsers(mentionedUsers: IUser[], user: ILocal
 
 function createMentionedEvents(mentionedUsers: IUser[], noteObj: any, nm: NotificationManager) {
 	mentionedUsers.filter(u => isLocalUser(u)).forEach(async (u) => {
-		event(u, 'mention', noteObj);
+		publishUserStream(u._id, 'mention', noteObj);
 
 		// Create notification
 		nm.push(u._id, 'mention');

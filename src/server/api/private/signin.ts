@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import User, { ILocalUser } from '../../../models/user';
 import Signin, { pack } from '../../../models/signin';
-import event from '../../../stream';
+import { publishUserStream } from '../../../stream';
 import signin from '../common/signin';
 import config from '../../../config';
 
@@ -86,5 +86,5 @@ export default async (ctx: Koa.Context) => {
 	});
 
 	// Publish signin event
-	event(user._id, 'signin', await pack(record));
+	publishUserStream(user._id, 'signin', await pack(record));
 };
