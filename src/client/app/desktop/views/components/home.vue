@@ -34,7 +34,7 @@
 			</div>
 			<div class="trash">
 				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
-				<p>ゴミ箱</p>
+				<p>%i18n:common.trash%</p>
 			</div>
 		</div>
 	</div>
@@ -187,13 +187,13 @@ export default Vue.extend({
 	methods: {
 		hint() {
 			(this as any).apis.dialog({
-				title: '%fa:info-circle%カスタマイズのヒント',
-				text: '<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
-					'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
-					'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
-					'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
+				title: '%fa:info-circle%%i18n:common.customization-tips.title%',
+				text: '<p>%i18n:common.customization-tips.paragraph1%</p>' +
+					'<p>%i18n:common.customization-tips.paragraph2%</p>' +
+					'<p>%i18n:common.customization-tips.paragraph3%</p>' +
+					'<p>%i18n:common.customization-tips.paragraph4%</p>',
 				actions: [{
-					text: 'Got it!'
+					text: '%i18n:common.customization-tips.gotit%'
 				}]
 			});
 		},
