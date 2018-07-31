@@ -6,6 +6,13 @@ common:
   misskey: "Une ⭐ du fédiverse"
   about-title: "Une ⭐ du fédiverse."
   about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
+  customization-tips:
+    title: "カスタマイズのヒント"
+    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
+    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
+    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
+    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    gotit: "Got it!"
   time:
     unknown: "inconnu"
     future: "future"
@@ -17,6 +24,7 @@ common:
     weeks_ago: "Il y a {} semaines·s"
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
+  trash: "ゴミ箱"
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -397,6 +405,9 @@ desktop/views/components/notifications.vue:
   more: "Plus"
   empty: "Pas de notifications"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ユーザーを追加"
+  attach-location-information: "位置情報を添付する"
+  hide-contents: "内容を隠す"
   reply-placeholder: "Répondre à cette note"
   quote-placeholder: "Citer cette note"
   submit: "Poster"
@@ -417,6 +428,10 @@ desktop/views/components/post-form.vue:
   text-remain: "{} charactères restants"
   recent-tags: "Récent"
   click-to-tagging: "クリックでタグ付け"
+  visibility: "公開範囲"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  enter-username: "ユーザー名を入力してください"
 desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
   reply: "Répondre"
@@ -559,6 +574,7 @@ desktop/views/components/settings.profile.vue:
   other: "Autre"
   is-bot: "Ce compte est un Bot"
   is-cat: "Ce compte est un Chat"
+  profile-updated: "プロフィールを更新しました"
 desktop/views/components/sub-note-content.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
