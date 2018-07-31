@@ -53,7 +53,7 @@
 				</div>
 			</x-draggable>
 			<div class="main">
-				<a @click="hint">カスタマイズのヒント</a>
+				<a @click="hint">%i18n:common.customization-tips.title%</a>
 				<div>
 					<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
 					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
