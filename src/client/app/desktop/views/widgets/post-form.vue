@@ -45,7 +45,7 @@ export default define({
 			this.save();
 		},
 		onKeydown(e) {
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && !this.posting && this.text) this.post();
 		},
 		post() {
 			this.posting = true;

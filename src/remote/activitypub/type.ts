@@ -47,6 +47,7 @@ export interface IPerson extends IObject {
 	preferredUsername: string;
 	manuallyApprovesFollowers: boolean;
 	inbox: string;
+	sharedInbox?: string;
 	publicKey: any;
 	followers: any;
 	following: any;

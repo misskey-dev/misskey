@@ -1,10 +1,19 @@
 import DriveFile from '../../../models/drive-file';
 import { ILocalUser } from '../../../models/user';
+import config from '../../../config';
 
-/**
- * Get drive information
- */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: 'ドライブの情報を取得します。',
+		en: 'Get drive information.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Calculate drive usage
 	const usage = await DriveFile
 		.aggregate([{
@@ -30,7 +39,7 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 		});
 
 	res({
-		capacity: user.driveCapacity,
+		capacity: 1024 * 1024 * config.localDriveCapacityMb,
 		usage: usage
 	});
 });

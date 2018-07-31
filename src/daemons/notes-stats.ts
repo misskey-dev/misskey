@@ -17,4 +17,9 @@ export default function() {
 	ev.on('requestNotesStatsLog', id => {
 		ev.emit('notesStatsLog:' + id, log);
 	});
+
+	process.on('exit', code => {
+		process.kill(p.pid);
+	});
+
 }

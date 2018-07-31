@@ -410,7 +410,7 @@ export default Vue.extend({
 			localStorage.clear();
 			(this as any).apis.dialog({
 				title: '%i18n:@cache-cleared%',
-				text: '%i18n:@caache-cleared-desc%'
+				text: '%i18n:@cache-cleared-desc%'
 			});
 		},
 		soundTest() {

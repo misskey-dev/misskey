@@ -14,6 +14,8 @@ export type Source = {
 		 * メンテナの連絡先(URLかmailto形式のURL)
 		 */
 		url: string;
+		repository_url?: string;
+		feedback_url?: string;
 	};
 	name?: string;
 	description?: string;
@@ -34,17 +36,26 @@ export type Source = {
 		pass: string;
 	};
 	elasticsearch: {
-		enable: boolean;
 		host: string;
 		port: number;
 		pass: string;
 	};
-	recaptcha: {
+	recaptcha?: {
 		site_key: string;
 		secret_key: string;
 	};
 
+	localDriveCapacityMb: number;
+	remoteDriveCapacityMb: number;
 	preventCacheRemoteFiles: boolean;
+
+	drive?: {
+		storage: string;
+		bucket?: string;
+		prefix?: string;
+		baseUrl?: string;
+		config?: any;
+	};
 
 	/**
 	 * ゴーストアカウントのID
@@ -81,6 +92,8 @@ export type Source = {
 	};
 
 	google_maps_api_key: string;
+
+	clusterLimit?: number;
 };
 
 /**

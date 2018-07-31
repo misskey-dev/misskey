@@ -1,15 +1,26 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import User, { pack as packUser, isRemoteUser, getGhost, ILocalUser } from '../../../../../models/user';
-import { publishUserListStream } from '../../../../../publishers/stream';
+import { publishUserListStream } from '../../../../../stream';
 import ap from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
 
+export const meta = {
+	desc: {
+		ja: '指定したユーザーリストに指定したユーザーを追加します。',
+		en: 'Add a user to a user list.'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-write'
+};
+
 /**
  * Add a user to a user list
  */
-module.exports = async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'listId' parameter
 	const [listId, listIdErr] = $.type(ID).get(params.listId);
 	if (listIdErr) return rej('invalid listId param');

@@ -1,7 +1,15 @@
+import * as Minio from 'minio';
 import DriveFile, { DriveFileChunk, IDriveFile } from '../../models/drive-file';
 import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
+import config from '../../config';
 
 export default async function(file: IDriveFile, isExpired = false) {
+	if (file.metadata.storage == 'minio') {
+		const minio = new Minio.Client(config.drive.config);
+		const obj = `${config.drive.prefix}/${file.metadata.storageProps.id}`;
+		await minio.removeObject(config.drive.bucket, obj);
+	}
+
 	// チャンクをすべて削除
 	await DriveFileChunk.remove({
 		files_id: file._id

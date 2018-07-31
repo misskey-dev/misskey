@@ -2,10 +2,18 @@ import $ from 'cafy';
 import UserList, { pack } from '../../../../../models/user-list';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Create a user list
- */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: 'ユーザーリストを作成します。',
+		en: 'Create a user list'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-write'
+};
+
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'title' parameter
 	const [title, titleErr] = $.str.range(1, 100).get(params.title);
 	if (titleErr) return rej('invalid title param');

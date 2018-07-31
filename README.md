@@ -7,7 +7,7 @@
 [![][dependencies-badge]][dependencies-link]
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/syuilo/misskey.svg)](https://greenkeeper.io/)
 
-> Lead Maintainer: [syuilo][syuilo-link]
+**Microblogging. Redefined.**
 
 **[Misskey](https://misskey.xyz)** is a completely open source,
 ultimately sophisticated professional microblogging software.
@@ -18,14 +18,13 @@ ultimately sophisticated professional microblogging software.
 
 :sparkles: Features
 ----------------------------------------------------------------
+* Rich text contents
 * Reactions
 * User lists
-* Customizable column view (known as MisskeyDeck)
+* Customizable column view (called MisskeyDeck)
   * and widgets!
 * Private messages
-* Mute
-* Real-time timelines
-* ActivityPub compatible
+* ActivityPub support
 
 and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
 
@@ -44,15 +43,15 @@ If you want to...
 
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
-| ![][nagarus-icon] | ![][dansup-icon] |
-|:-:|:-:|
-| [nagarus][nagarus-link] | [dansup][dansup-link] |
+| <img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/619786/32cf01444db24e578cd1982c197f6fc6/1?token-time=2145916800&token-hash=tB1e_r8RlZ5sFL0KV_e8dugapxatNBRK1Z3h67TO1g8%3D"> | <img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12378075/0156f769e20f412594fa6b87d85fe228/1?token-time=2145916800&token-hash=IsIJRUXszzoD6-7pDnRY8I05T9nSznc4GTaxj7C9SwU%3D"> | <img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1?token-time=2145916800&token-hash=S1zP0QyLU52Dqq6dtc9qNYyWfW86XrYHiR4NMbeOrnA%3D"> | <img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1?token-time=2145916800&token-hash=tMosUojzUYJCH_3t--tvYA-SMCyrS__hzSndyaRSnbo%3D"> |
+|:-:|:-:|:-:|:-:|
+| [Gargron](https://www.patreon.com/mastodon) | [39ff](https://www.patreon.com/user/creators?u=12378075) | [dansup](https://www.patreon.com/dansup) | [Takashi Shibuya](https://www.patreon.com/user/creators?u=12531784) |
 
 :four_leaf_clover: Copyright
 ----------------------------------------------------------------
 > Copyright (c) 2014-2018 syuilo
 
-Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
+Misskey is an open-source software licensed under the [GNU AGPLv3](LICENSE).
 
 [![][agpl-3.0-badge]][AGPL-3.0]
 
@@ -73,9 +72,3 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 
 [syuilo-link]:      https://syuilo.com
 [syuilo-icon]:      https://avatars2.githubusercontent.com/u/4439005?v=3&s=70
-
-[nagarus-link]: https://www.patreon.com/user/creators?u=11601413
-[nagarus-icon]: https://c10.patreonusercontent.com/3/eyJ2IjoiMSIsInciOjIwMH0%3D/patreon-media/user/11601413/20cb15f209924302b399b99d3c98b850?token-time=2145916800&token-hash=IO31nK6VZCMWBWU2VAk2c824BX2QZ4DNPKyHHZXS0iw%3D
-[dansup-link]: https://www.patreon.com/dansup
-[dansup-icon]: https://c10.patreonusercontent.com/3/eyJ2IjoiMSIsInciOjIwMH0%3D/patreon-media/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb?token-time=2145916800&token-hash=opXAM_pnhUTuN1jCA6p_Nn_YsaqohY465YFjWFqMEEE%3D
-

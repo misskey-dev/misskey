@@ -3,7 +3,7 @@ import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
 
-import { createHttp } from '../queue';
+import { createHttpJob } from '../queue';
 import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
 import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
@@ -11,7 +11,6 @@ import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
 import renderOrderedCollection from '../remote/activitypub/renderer/ordered-collection';
-import parseAcct from '../acct/parse';
 import config from '../config';
 
 // Init router
@@ -31,11 +30,11 @@ function inbox(ctx: Router.IRouterContext) {
 		return;
 	}
 
-	createHttp({
+	createHttpJob({
 		type: 'processInbox',
 		activity: ctx.request.body,
 		signature
-	}).save();
+	});
 
 	ctx.status = 202;
 }
@@ -112,13 +111,13 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
-function userInfo(ctx: Router.IRouterContext, user: IUser) {
+async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 	if (user === null) {
 		ctx.status = 404;
 		return;
 	}
 
-	ctx.body = pack(renderPerson(user as ILocalUser));
+	ctx.body = pack(await renderPerson(user as ILocalUser));
 }
 
 router.get('/users/:user', async ctx => {
@@ -129,7 +128,7 @@ router.get('/users/:user', async ctx => {
 		host: null
 	});
 
-	userInfo(ctx, user);
+	await userInfo(ctx, user);
 });
 
 router.get('/@:user', async (ctx, next) => {
@@ -140,7 +139,7 @@ router.get('/@:user', async (ctx, next) => {
 		host: null
 	});
 
-	userInfo(ctx, user);
+	await userInfo(ctx, user);
 });
 //#endregion
 

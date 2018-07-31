@@ -1,11 +1,19 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Show a user list
- */
-module.exports = async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: '指定したユーザーリストの情報を取得します。',
+		en: 'Show a user list.'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-read'
+};
+
+export default async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'listId' parameter
 	const [listId, listIdErr] = $.type(ID).get(params.listId);
 	if (listIdErr) return rej('invalid listId param');

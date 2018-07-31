@@ -28,7 +28,7 @@ export default Vue.extend({
 			default: false
 		},
 		title: {
-			default: '%fa:R file%%i18n:@choose-prompt%s'
+			default: '%fa:R file%%i18n:@choose-prompt%'
 		}
 	},
 	data() {

@@ -1,12 +1,12 @@
 import * as Koa from 'koa';
 
-import { Endpoint } from './endpoints';
+import { IEndpoint } from './endpoints';
 import authenticate from './authenticate';
 import call from './call';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 
-export default async (endpoint: Endpoint, ctx: Koa.Context) => {
+export default async (endpoint: IEndpoint, ctx: Koa.Context) => {
 	const body = ctx.is('multipart/form-data') ? (ctx.req as any).body : ctx.request.body;
 
 	const reply = (x?: any, y?: any) => {
@@ -37,7 +37,7 @@ export default async (endpoint: Endpoint, ctx: Koa.Context) => {
 
 	// API invoking
 	try {
-		res = await call(endpoint, user, app, body, (ctx.req as any).file);
+		res = await call(endpoint.name, user, app, body, (ctx.req as any).file);
 	} catch (e) {
 		reply(400, e);
 		return;

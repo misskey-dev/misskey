@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
+import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
 	props: {

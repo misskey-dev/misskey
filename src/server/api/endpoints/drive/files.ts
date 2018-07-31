@@ -1,21 +1,29 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../models/drive-file';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get drive files
- */
-module.exports = async (params: any, user: ILocalUser) => {
+export const meta = {
+	desc: {
+		ja: 'ドライブのファイル一覧を取得します。',
+		en: 'Get files of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read'
+};
+
+export default async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
+	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
 	if (sinceIdErr) throw 'invalid sinceId param';
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
+	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
 	if (untilIdErr) throw 'invalid untilId param';
 
 	// Check if both of sinceId and untilId is specified
@@ -24,11 +32,11 @@ module.exports = async (params: any, user: ILocalUser) => {
 	}
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
+	const [folderId = null, folderIdErr] = $.type(ID).optional.nullable.get(params.folderId);
 	if (folderIdErr) throw 'invalid folderId param';
 
 	// Get 'type' parameter
-	const [type, typeErr] = $.str.optional().match(/^[a-zA-Z\/\-\*]+$/).get(params.type);
+	const [type, typeErr] = $.str.optional.match(/^[a-zA-Z\/\-\*]+$/).get(params.type);
 	if (typeErr) throw 'invalid type param';
 
 	// Construct query

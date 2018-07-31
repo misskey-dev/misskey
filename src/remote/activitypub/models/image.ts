@@ -16,7 +16,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 		return null;
 	}
 
-	const image = await new Resolver().resolve(value);
+	const image = await new Resolver().resolve(value) as any;
 
 	if (image.url == null) {
 		throw new Error('invalid image: url not privided');
@@ -24,7 +24,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 
 	log(`Creating the Image: ${image.url}`);
 
-	return await uploadFromUrl(image.url, actor, null, image.url);
+	return await uploadFromUrl(image.url, actor, null, image.url, image.sensitive);
 }
 
 /**

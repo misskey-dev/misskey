@@ -3,63 +3,14 @@ import $ from 'cafy';
 import App, { isValidNameId, pack } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * @swagger
- * /app/create:
- *   note:
- *     summary: Create an application
- *     parameters:
- *       - $ref: "#/parameters/AccessToken"
- *       -
- *         name: nameId
- *         description: Application unique name
- *         in: formData
- *         required: true
- *         type: string
- *       -
- *         name: name
- *         description: Application name
- *         in: formData
- *         required: true
- *         type: string
- *       -
- *         name: description
- *         description: Application description
- *         in: formData
- *         required: true
- *         type: string
- *       -
- *         name: permission
- *         description: Permissions that application has
- *         in: formData
- *         required: true
- *         type: array
- *         items:
- *           type: string
- *           collectionFormat: csv
- *       -
- *         name: callbackUrl
- *         description: URL called back after authentication
- *         in: formData
- *         required: false
- *         type: string
- *
- *     responses:
- *       200:
- *         description: Created application's information
- *         schema:
- *           $ref: "#/definitions/Application"
- *
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
+export const meta = {
+	requireCredential: true
+};
 
 /**
  * Create an app
  */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'nameId' parameter
 	const [nameId, nameIdErr] = $.str.pipe(isValidNameId).get(params.nameId);
 	if (nameIdErr) return rej('invalid nameId param');
@@ -78,7 +29,7 @@ module.exports = async (params: any, user: ILocalUser) => new Promise(async (res
 
 	// Get 'callbackUrl' parameter
 	// TODO: Check it is valid url
-	const [callbackUrl = null, callbackUrlErr] = $.str.optional().nullable().get(params.callbackUrl);
+	const [callbackUrl = null, callbackUrlErr] = $.str.optional.nullable.get(params.callbackUrl);
 	if (callbackUrlErr) return rej('invalid callbackUrl param');
 
 	// Generate secret

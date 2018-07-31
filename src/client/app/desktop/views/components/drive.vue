@@ -10,7 +10,10 @@
 			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
-		<input class="search" type="search" placeholder="&#xf002; %i18n:@search%"/>
+		<!--
+			TODO: #343
+			<input class="search" type="search" placeholder="&#xf002; %i18n:@search%"/>
+		-->
 	</nav>
 	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"

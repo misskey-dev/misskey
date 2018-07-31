@@ -1,12 +1,26 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+const ms = require('ms');
 import User, { pack, ILocalUser } from '../../../../models/user';
 import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
 
-/**
- * Unfollow a user
- */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: '指定したユーザーのフォローを解除します。',
+		en: 'Unfollow a user.'
+	},
+
+	limit: {
+		duration: ms('1hour'),
+		max: 100
+	},
+
+	requireCredential: true,
+
+	kind: 'following-write'
+};
+
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'userId' parameter

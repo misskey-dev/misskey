@@ -1,15 +1,19 @@
 import $ from 'cafy';
 import User, { ILocalUser } from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import { publishUserStream } from '../../../../stream';
 
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
+
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'home' parameter
-	const [home, homeErr] = $.arr(
-		$.obj.strict()
-			.have('name', $.str)
-			.have('id', $.str)
-			.have('data', $.obj))
-		.get(params.home);
+	const [home, homeErr] = $.arr($.obj({
+		name: $.str,
+		id: $.str,
+		data: $.obj()
+	}).strict()).get(params.home);
 	if (homeErr) return rej('invalid home param');
 
 	await User.update(user._id, {
@@ -20,5 +24,5 @@ module.exports = async (params: any, user: ILocalUser) => new Promise(async (res
 
 	res();
 
-	event(user._id, 'mobile_home_updated', home);
+	publishUserStream(user._id, 'mobile_home_updated', home);
 });

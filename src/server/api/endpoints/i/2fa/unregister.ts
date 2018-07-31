@@ -2,7 +2,12 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import User, { ILocalUser } from '../../../../../models/user';
 
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
+
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'password' parameter
 	const [password, passwordErr] = $.str.get(params.password);
 	if (passwordErr) return rej('invalid password param');

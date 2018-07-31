@@ -31,7 +31,7 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	});
 
 	if (req) {
-		await cancelRequest(actor, followee);
+		await cancelRequest(followee, actor);
 	} else {
 		await unfollow(actor, followee);
 	}

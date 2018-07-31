@@ -1,10 +1,17 @@
 import UserList, { pack } from '../../../../../models/user-list';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Add a user to a user list
- */
-module.exports = async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: '自分の作成したユーザーリスト一覧を取得します。'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-read'
+};
+
+export default async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Fetch lists
 	const userLists = await UserList.find({
 		userId: me._id,

@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt="">
+		<img :src="user.avatarUrl" alt="">
 		{{ '%i18n:@followers-of%'.replace('{}', name) }}
 	</template>
 	<mk-users-list
@@ -19,8 +19,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
-import parseAcct from '../../../../../acct/parse';
-import getUserName from '../../../../../renderers/get-user-name';
+import parseAcct from '../../../../../misc/acct/parse';
+import getUserName from '../../../../../misc/get-user-name';
 
 export default Vue.extend({
 	data() {

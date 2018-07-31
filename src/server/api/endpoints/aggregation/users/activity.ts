@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import User from '../../../../../models/user';
 import Note from '../../../../../models/note';
 
@@ -7,9 +7,9 @@ import Note from '../../../../../models/note';
 /**
  * Aggregate activity of a user
  */
-module.exports = (params: any) => new Promise(async (res, rej) => {
+export default (params: any) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 365, limitErr] = $.num.optional().range(1, 365).get(params.limit);
+	const [limit = 365, limitErr] = $.num.optional.range(1, 365).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'userId' parameter

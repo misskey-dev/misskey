@@ -889,6 +889,7 @@ mobile/views/pages/settings/settings.profile.vue:
   saved: "Profile updated"
   uploading: "Uploading"
   upload-failed: "Failed to upload"
+  
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"

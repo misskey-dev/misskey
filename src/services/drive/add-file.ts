@@ -4,48 +4,67 @@ import * as stream from 'stream';
 
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
-import * as _gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
-const prominence = require('prominence');
+import * as Minio from 'minio';
+import * as uuid from 'uuid';
+import * as sharp from 'sharp';
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
-import event, { publishDriveStream } from '../../publishers/stream';
+import { publishUserStream, publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
-import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
-import genThumbnail from '../../drive/gen-thumbnail';
 import delFile from './delete-file';
-
-const gm = _gm.subClass({
-	imageMagick: true
-});
+import config from '../../config';
 
 const log = debug('misskey:drive:add-file');
 
-const writeChunks = (name: string, readable: stream.Readable, type: string, metadata: any) =>
-	getDriveFileBucket()
-		.then(bucket => new Promise((resolve, reject) => {
+async function save(readable: stream.Readable, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
+	if (config.drive && config.drive.storage == 'minio') {
+		const minio = new Minio.Client(config.drive.config);
+		const id = uuid.v4();
+		const obj = `${config.drive.prefix}/${id}`;
+
+		const baseUrl = config.drive.baseUrl
+			|| `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }`;
+
+		await minio.putObject(config.drive.bucket, obj, readable, size, {
+			'Content-Type': type,
+			'Cache-Control': 'max-age=31536000, immutable'
+		});
+
+		Object.assign(metadata, {
+			withoutChunks: true,
+			storage: 'minio',
+			storageProps: {
+				id: id
+			},
+			url: `${ baseUrl }/${ obj }`
+		});
+
+		const file = await DriveFile.insert({
+			length: size,
+			uploadDate: new Date(),
+			md5: hash,
+			filename: name,
+			metadata: metadata,
+			contentType: type
+		});
+
+		return file;
+	} else {
+		// Get MongoDB GridFS bucket
+		const bucket = await getDriveFileBucket();
+
+		return new Promise<IDriveFile>((resolve, reject) => {
 			const writeStream = bucket.openUploadStream(name, { contentType: type, metadata });
 			writeStream.once('finish', resolve);
 			writeStream.on('error', reject);
 			readable.pipe(writeStream);
-		}));
-
-const writeThumbnailChunks = (name: string, readable: stream.Readable, originalId: mongodb.ObjectID) =>
-	getDriveFileThumbnailBucket()
-		.then(bucket => new Promise((resolve, reject) => {
-			const writeStream = bucket.openUploadStream(name, {
-				contentType: 'image/jpeg',
-				metadata: {
-					originalId
-				}
-			});
-			writeStream.once('finish', resolve);
-			writeStream.on('error', reject);
-			readable.pipe(writeStream);
-		}));
+		});
+	}
+}
 
 async function deleteOldFile(user: IRemoteUser) {
 	const oldFile = await DriveFile.findOne({
@@ -81,9 +100,10 @@ export default async function(
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false,
-	metaOnly: boolean = false,
+	isLink: boolean = false,
 	url: string = null,
-	uri: string = null
+	uri: string = null,
+	sensitive = false
 ): Promise<IDriveFile> {
 	// Calc md5 hash
 	const calcHash = new Promise<string>((res, rej) => {
@@ -148,7 +168,7 @@ export default async function(
 	}
 
 	//#region Check drive usage
-	if (!metaOnly) {
+	if (!isLink) {
 		const usage = await DriveFile
 			.aggregate([{
 				$match: {
@@ -174,8 +194,10 @@ export default async function(
 
 		log(`drive usage is ${usage}`);
 
+		const driveCapacity = 1024 * 1024 * (isLocalUser(user) ? config.localDriveCapacityMb : config.remoteDriveCapacityMb);
+
 		// If usage limit exceeded
-		if (usage + size > user.driveCapacity) {
+		if (usage + size > driveCapacity) {
 			if (isLocalUser(user)) {
 				throw 'no-free-space';
 			} else {
@@ -205,44 +227,41 @@ export default async function(
 
 	let propPromises: Array<Promise<void>> = [];
 
-	const isImage = ['image/jpeg', 'image/gif', 'image/png'].includes(mime);
+	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/webp'].includes(mime);
 
 	if (isImage) {
+		const img = sharp(path);
+
 		// Calc width and height
 		const calcWh = async () => {
 			log('calculate image width and height...');
 
 			// Calculate width and height
-			const g = gm(fs.createReadStream(path), name);
-			const size = await prominence(g).size();
+			const meta = await img.metadata();
 
-			log(`image width and height is calculated: ${size.width}, ${size.height}`);
+			log(`image width and height is calculated: ${meta.width}, ${meta.height}`);
 
-			properties['width'] = size.width;
-			properties['height'] = size.height;
+			properties['width'] = meta.width;
+			properties['height'] = meta.height;
 		};
 
 		// Calc average color
 		const calcAvg = async () => {
 			log('calculate average color...');
 
-			const info = await prominence(gm(fs.createReadStream(path), name)).identify();
-			const isTransparent = info ? info['Channel depth'].Alpha != null : false;
+			try {
+				const info = await (img as any).stats();
 
-			const buffer = await prominence(gm(fs.createReadStream(path), name)
-				.setFormat('ppm')
-				.resize(1, 1)) // 1pxのサイズに縮小して平均色を取得するというハック
-				.toBuffer();
+				const r = Math.round(info.channels[0].mean);
+				const g = Math.round(info.channels[1].mean);
+				const b = Math.round(info.channels[2].mean);
 
-			const r = buffer.readUInt8(buffer.length - 3);
-			const g = buffer.readUInt8(buffer.length - 2);
-			const b = buffer.readUInt8(buffer.length - 1);
+				log(`average color is calculated: ${r}, ${g}, ${b}`);
 
-			log(`average color is calculated: ${r}, ${g}, ${b}`);
+				const value = info.isOpaque ? [r, g, b] : [r, g, b, 255];
 
-			const value = isTransparent ? [r, g, b, 255] : [r, g, b];
-
-			properties['avgColor'] = value;
+				properties['avgColor'] = value;
+			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];
@@ -258,18 +277,24 @@ export default async function(
 		folderId: folder !== null ? folder._id : null,
 		comment: comment,
 		properties: properties,
-		isMetaOnly: metaOnly
+		withoutChunks: isLink,
+		isRemote: isLink,
+		isSensitive: sensitive
 	} as IMetadata;
 
 	if (url !== null) {
-		metadata.url = url;
+		metadata.src = url;
+
+		if (isLink) {
+			metadata.url = url;
+		}
 	}
 
 	if (uri !== null) {
 		metadata.uri = uri;
 	}
 
-	const driveFile = metaOnly
+	const driveFile = isLink
 		? await DriveFile.insert({
 			length: 0,
 			uploadDate: new Date(),
@@ -278,26 +303,17 @@ export default async function(
 			metadata: metadata,
 			contentType: mime
 		})
-		: await (writeChunks(detectedName, fs.createReadStream(path), mime, metadata) as Promise<IDriveFile>);
+		: await (save(fs.createReadStream(path), detectedName, mime, hash, size, metadata));
 
 	log(`drive file has been created ${driveFile._id}`);
 
 	pack(driveFile).then(packedFile => {
 		// Publish drive_file_created event
-		event(user._id, 'drive_file_created', packedFile);
+		publishUserStream(user._id, 'drive_file_created', packedFile);
 		publishDriveStream(user._id, 'file_created', packedFile);
 	});
 
-	if (!metaOnly) {
-		try {
-			const thumb = await genThumbnail(driveFile);
-			if (thumb) {
-				await writeThumbnailChunks(detectedName, thumb, driveFile._id);
-			}
-		} catch (e) {
-			// noop
-		}
-	}
+	// TODO: サムネイル生成
 
 	return driveFile;
 }

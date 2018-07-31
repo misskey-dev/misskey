@@ -1,32 +1,38 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Get timeline of a user list
- */
-module.exports = async (params: any, user: ILocalUser) => {
+export const meta = {
+	desc: {
+		ja: '指定したユーザーリストのタイムラインを取得します。',
+		en: 'Get timeline of a user list.'
+	},
+
+	requireCredential: true
+};
+
+export default async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
+	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
 	if (sinceIdErr) throw 'invalid sinceId param';
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
+	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
 	if (untilIdErr) throw 'invalid untilId param';
 
 	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $.num.optional().get(params.sinceDate);
+	const [sinceDate, sinceDateErr] = $.num.optional.get(params.sinceDate);
 	if (sinceDateErr) throw 'invalid sinceDate param';
 
 	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $.num.optional().get(params.untilDate);
+	const [untilDate, untilDateErr] = $.num.optional.get(params.untilDate);
 	if (untilDateErr) throw 'invalid untilDate param';
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
@@ -35,15 +41,15 @@ module.exports = async (params: any, user: ILocalUser) => {
 	}
 
 	// Get 'includeMyRenotes' parameter
-	const [includeMyRenotes = true, includeMyRenotesErr] = $.bool.optional().get(params.includeMyRenotes);
+	const [includeMyRenotes = true, includeMyRenotesErr] = $.bool.optional.get(params.includeMyRenotes);
 	if (includeMyRenotesErr) throw 'invalid includeMyRenotes param';
 
 	// Get 'includeRenotedMyNotes' parameter
-	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $.bool.optional().get(params.includeRenotedMyNotes);
+	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $.bool.optional.get(params.includeRenotedMyNotes);
 	if (includeRenotedMyNotesErr) throw 'invalid includeRenotedMyNotes param';
 
 	// Get 'mediaOnly' parameter
-	const [mediaOnly, mediaOnlyErr] = $.bool.optional().get(params.mediaOnly);
+	const [mediaOnly, mediaOnlyErr] = $.bool.optional.get(params.mediaOnly);
 	if (mediaOnlyErr) throw 'invalid mediaOnly param';
 
 	// Get 'listId' parameter

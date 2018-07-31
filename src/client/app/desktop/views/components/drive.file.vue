@@ -1,5 +1,5 @@
 <template>
-<div class="root file"
+<div class="gvfdktuvdgwhmztnuekzkswkjygptfcv"
 	:data-is-selected="isSelected"
 	:data-is-contextmenu-showing="isContextmenuShowing"
 	@click="onClick"
@@ -16,7 +16,7 @@
 		<p>%i18n:@banner%</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
-		<img :src="`${file.url}?thumbnail&size=128`" alt="" @load="onThumbnailLoaded"/>
+		<img :src="file.url" alt="" @load="onThumbnailLoaded"/>
 	</div>
 	<p class="name">
 		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
@@ -68,6 +68,11 @@ export default Vue.extend({
 				icon: '%fa:i-cursor%',
 				action: this.rename
 			}, {
+				type: 'item',
+				text: this.file.isSensitive ? '%i18n:@contextmenu.unmark-as-sensitive%' : '%i18n:@contextmenu.mark-as-sensitive%',
+				icon: this.file.isSensitive ? '%fa:R eye%' : '%fa:R eye-slash%',
+				action: this.toggleSensitive
+			}, null, {
 				type: 'item',
 				text: '%i18n:@contextmenu.copy-url%',
 				icon: '%fa:link%',
@@ -146,6 +151,13 @@ export default Vue.extend({
 					fileId: this.file.id,
 					name: name
 				});
+			});
+		},
+
+		toggleSensitive() {
+			(this as any).api('drive/files/update', {
+				fileId: this.file.id,
+				isSensitive: !this.file.isSensitive
 			});
 		},
 
@@ -312,10 +324,10 @@ root(isDark)
 		> .ext
 			opacity 0.5
 
-.root.file[data-darkmode]
+.gvfdktuvdgwhmztnuekzkswkjygptfcv[data-darkmode]
 	root(true)
 
-.root.file:not([data-darkmode])
+.gvfdktuvdgwhmztnuekzkswkjygptfcv:not([data-darkmode])
 	root(false)
 
 </style>

@@ -1,22 +1,30 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Mute from '../../../../models/mute';
 import { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 
-/**
- * Get muted users of a user
- */
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: 'ミュートしているユーザー一覧を取得します。',
+		en: 'Get muted users.'
+	},
+
+	requireCredential: true,
+
+	kind: 'account/read'
+};
+
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = $.bool.optional().get(params.iknow);
+	const [iknow = false, iknowErr] = $.bool.optional.get(params.iknow);
 	if (iknowErr) return rej('invalid iknow param');
 
 	// Get 'limit' parameter
-	const [limit = 30, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 30, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.type(ID).optional().get(params.cursor);
+	const [cursor = null, cursorErr] = $.type(ID).optional.get(params.cursor);
 	if (cursorErr) return rej('invalid cursor param');
 
 	// Construct query

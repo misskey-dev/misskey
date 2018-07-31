@@ -1,13 +1,50 @@
 import * as fs from 'fs';
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+const ms = require('ms');
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
+
+export const meta = {
+	desc: {
+		ja: 'ドライブにファイルをアップロードします。',
+		en: 'Upload a file to drive.'
+	},
+
+	requireCredential: true,
+
+	limit: {
+		duration: ms('1hour'),
+		max: 100
+	},
+
+	requireFile: true,
+
+	kind: 'drive-write',
+
+	params: {
+		folderId: $.type(ID).optional.nullable.note({
+			default: null,
+			desc: {
+				ja: 'フォルダID'
+			}
+		}),
+
+		isSensitive: $.bool.optional.note({
+			default: false,
+			desc: {
+				ja: 'このメディアが「閲覧注意」(NSFW)かどうか',
+				en: 'Whether this media is NSFW'
+			}
+		})
+	}
+};
 
 /**
  * Create a file
  */
-module.exports = async (file: any, params: any, user: ILocalUser): Promise<any> => {
+export default async (file: any, params: any, user: ILocalUser): Promise<any> => {
 	if (file == null) {
 		throw 'file is required';
 	}
@@ -27,17 +64,19 @@ module.exports = async (file: any, params: any, user: ILocalUser): Promise<any> 
 		name = null;
 	}
 
-	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
-	if (folderIdErr) throw 'invalid folderId param';
-
 	function cleanup() {
 		fs.unlink(file.path, () => {});
 	}
 
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) {
+		cleanup();
+		throw psErr;
+	}
+
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, folderId);
+		const driveFile = await create(user, file.path, name, null, ps.folderId, false, false, null, null, ps.isSensitive);
 
 		cleanup();
 

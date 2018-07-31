@@ -8,7 +8,11 @@
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">+ユーザーを追加</a>
+			<a @click="addVisibleUser">%i18n:@add-visible-user%</a>
+		</div>
+		<div class="hashtags" v-if="recentHashtags.length > 0">
+			<b>%i18n:@recent-tags%:</b>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%@click-to-tagging%">#{{ tag }}</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -19,7 +23,7 @@
 		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
-					<div class="img" :style="{ backgroundImage: `url(${file.url}?thumbnail&size=64)` }" :title="file.name"></div>
+					<div class="img" :style="{ backgroundImage: `url(${file.url})` }" :title="file.name"></div>
 					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:@attach-cancel%" alt=""/>
 				</div>
 			</x-draggable>
@@ -32,9 +36,15 @@
 	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
-	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
-	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
+	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw">%fa:eye-slash%</button>
+	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
+	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
+		<span v-if="visibility === 'public'">%fa:globe%</span>
+		<span v-if="visibility === 'home'">%fa:home%</span>
+		<span v-if="visibility === 'followers'">%fa:unlock%</span>
+		<span v-if="visibility === 'specified'">%fa:envelope%</span>
+		<span v-if="visibility === 'private'">%fa:lock%</span>
+	</button>
 	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
@@ -46,6 +56,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import getKao from '../../../common/scripts/get-kao';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
@@ -91,7 +102,8 @@ export default Vue.extend({
 			visibility: 'public',
 			visibleUsers: [],
 			autocomplete: null,
-			draghover: false
+			draghover: false,
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]')
 		};
 	},
 
@@ -131,7 +143,9 @@ export default Vue.extend({
 		},
 
 		canPost(): boolean {
-			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
+			return !this.posting &&
+				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
+				(this.text.trim().length <= 1000);
 		}
 	},
 
@@ -183,6 +197,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		addTag(tag: string) {
+			insertTextAtCursor(this.$refs.text, ` #${tag} `);
+		},
+
 		watch() {
 			this.$watch('text', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
@@ -235,7 +253,7 @@ export default Vue.extend({
 		},
 
 		onKeydown(e) {
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canPost) this.post();
 		},
 
 		onPaste(e) {
@@ -287,7 +305,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('お使いの端末は位置情報に対応していません');
+				alert('%i18n:@geolocation-alert%');
 				return;
 			}
 
@@ -295,10 +313,10 @@ export default Vue.extend({
 				this.geo = pos.coords;
 				this.$emit('geo-attached', this.geo);
 			}, err => {
-				alert('エラー: ' + err.message);
+				alert('%i18n:@error%: ' + err.message);
 			}, {
-				enableHighAccuracy: true
-			});
+					enableHighAccuracy: true
+				});
 		},
 
 		removeGeo() {
@@ -318,7 +336,7 @@ export default Vue.extend({
 
 		addVisibleUser() {
 			(this as any).apis.input({
-				title: 'ユーザー名を入力してください'
+				title: '%i18n:@enter-username%'
 			}).then(username => {
 				(this as any).api('users/show', {
 					username
@@ -370,6 +388,12 @@ export default Vue.extend({
 			}).then(() => {
 				this.posting = false;
 			});
+
+			if (this.text && this.text != '') {
+				const hashtags = parse(this.text).filter(x => x.type == 'hashtag').map(x => x.hashtag);
+				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
+				localStorage.setItem('hashtags', JSON.stringify(hashtags.concat(history).reduce((a, c) => a.includes(c) ? a : [...a, c], [])));
+			}
 		},
 
 		saveDraft() {
@@ -452,7 +476,7 @@ root(isDark)
 			margin 0
 			max-width 100%
 			min-width 100%
-			min-height 64px
+			min-height 84px
 
 			&:hover
 				& + *
@@ -477,6 +501,19 @@ root(isDark)
 			> span
 				margin-right 16px
 				color isDark ? #fff : #666
+
+		> .hashtags
+			margin 0 0 8px 0
+			overflow hidden
+			white-space nowrap
+			font-size 14px
+
+			> b
+				color isDark ? #9baec8 : darken($theme-color, 20%)
+
+			> *
+				margin-right 8px
+				white-space nowrap
 
 		> .medias
 			margin 0

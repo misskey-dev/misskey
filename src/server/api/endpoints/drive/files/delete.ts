@@ -1,13 +1,21 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
-import { publishDriveStream } from '../../../../../publishers/stream';
+import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Delete a file
- */
-module.exports = async (params: any, user: ILocalUser) => {
+export const meta = {
+	desc: {
+		ja: 'ドライブのファイルを削除します。',
+		en: 'Delete a file of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-write'
+};
+
+export default async (params: any, user: ILocalUser) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
 	if (fileIdErr) throw 'invalid fileId param';

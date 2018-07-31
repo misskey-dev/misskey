@@ -9,6 +9,9 @@
 				<div class="left">
 					<x-nav/>
 				</div>
+				<div class="center">
+					<div class="icon" @click="goToTop"></div>
+				</div>
 				<div class="right">
 					<x-search/>
 					<x-account v-if="$store.getters.isSignedIn"/>
@@ -42,6 +45,7 @@ export default Vue.extend({
 		XPost,
 		XClock,
 	},
+
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', 48);
 
@@ -93,7 +97,16 @@ export default Vue.extend({
 				}, 2500);
 			}
 		}
-	}
+	},
+
+	methods: {
+		goToTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		}
+	},
 });
 </script>
 
@@ -142,26 +155,24 @@ root(isDark)
 				max-width 1300px
 				margin 0 auto
 
-				&:before
-					content ""
-					position absolute
-					top 0
-					left 0
-					display block
-					width 100%
-					height 48px
-					background-image isDark ? url('/assets/desktop/header-icon.dark.svg') : url('/assets/desktop/header-icon.light.svg')
-					background-size 24px
-					background-position center
-					background-repeat no-repeat
-					opacity 0.3
+				> .center
+					margin auto
+
+					> .icon
+						display block
+						width 48px
+						height 48px
+						background-image isDark ? url('/assets/desktop/header-icon.dark.svg') : url('/assets/desktop/header-icon.light.svg')
+						background-size 24px
+						background-position center
+						background-repeat no-repeat
+						opacity 0.3
+						cursor pointer
 
 				> .left
-					margin 0 auto 0 0
 					height 48px
 
 				> .right
-					margin 0 0 0 auto
 					height 48px
 
 					> *

@@ -6,33 +6,15 @@ import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * @swagger
- * /auth/accept:
- *   note:
- *     summary: Accept a session
- *     parameters:
- *       - $ref: "#/parameters/NativeToken"
- *       -
- *         name: token
- *         description: Session Token
- *         in: formData
- *         required: true
- *         type: string
- *     responses:
- *       204:
- *         description: OK
- *
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
+export const meta = {
+	requireCredential: true,
+	secure: true
+};
 
 /**
  * Accept
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
 	const [token, tokenErr] = $.str.get(params.token);
 	if (tokenErr) return rej('invalid token param');

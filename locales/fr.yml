@@ -40,7 +40,7 @@ common:
     hmm: "Hmm ... ?"
     surprise: "Wow"
     congrats: "Félicitations !"
-    angry: "En colère"
+    angry: "Faché"
     confused: "Confus"
     pudding: "Pudding"
   note-placeholders:

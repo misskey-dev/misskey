@@ -1,0 +1,90 @@
+name: "DriveFile"
+
+desc:
+  ja: "ドライブのファイル。"
+  en: "A file of Drive."
+
+props:
+  id:
+    type: "id"
+    optional: false
+    desc:
+      ja: "ファイルID"
+      en: "The ID of this file"
+
+  createdAt:
+    type: "date"
+    optional: false
+    desc:
+      ja: "アップロード日時"
+      en: "The upload date of this file"
+
+  userId:
+    type: "id(User)"
+    optional: false
+    desc:
+      ja: "所有者ID"
+      en: "The ID of the owner of this file"
+
+  user:
+    type: "entity(User)"
+    optional: true
+    desc:
+      ja: "所有者"
+      en: "The owner of this file"
+
+  name:
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイル名"
+      en: "The name of this file"
+
+  md5:
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイルのMD5ハッシュ値"
+      en: "The md5 hash value of this file"
+
+  type:
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイルの種類"
+      en: "The type of this file"
+
+  datasize:
+    type: "number"
+    optional: false
+    desc:
+      ja: "ファイルサイズ(bytes)"
+      en: "The size of this file (bytes)"
+
+  url:
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイルのURL"
+      en: "The URL of this file"
+
+  folderId:
+    type: "id(DriveFolder)"
+    optional: true
+    desc:
+      ja: "フォルダID"
+      en: "The ID of the folder of this file"
+
+  folder:
+    type: "entity(DriveFolder)"
+    optional: true
+    desc:
+      ja: "フォルダ"
+      en: "The folder of this file"
+
+  sensitive:
+    type: "boolean"
+    optional: true
+    desc:
+      ja: "このメディアが「閲覧注意」(NSFW)かどうか"
+      en: "Whether this media is NSFW"

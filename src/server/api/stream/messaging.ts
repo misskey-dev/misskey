@@ -1,16 +1,15 @@
 import * as websocket from 'websocket';
-import * as redis from 'redis';
+import Xev from 'xev';
 import read from '../common/read-messaging-message';
 import { ParsedUrlQuery } from 'querystring';
 
-export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+export default function(request: websocket.request, connection: websocket.connection, subscriber: Xev, user: any): void {
 	const q = request.resourceURL.query as ParsedUrlQuery;
 	const otherparty = q.otherparty as string;
 
 	// Subscribe messaging stream
-	subscriber.subscribe(`misskey:messaging-stream:${user._id}-${otherparty}`);
-	subscriber.on('message', (_, data) => {
-		connection.send(data);
+	subscriber.on(`messaging-stream:${user._id}-${otherparty}`, data => {
+		connection.send(JSON.stringify(data));
 	});
 
 	connection.on('message', async (data) => {

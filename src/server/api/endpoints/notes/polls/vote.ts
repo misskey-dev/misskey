@@ -1,16 +1,24 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import Vote from '../../../../../models/poll-vote';
 import Note from '../../../../../models/note';
 import Watching from '../../../../../models/note-watching';
 import watch from '../../../../../services/note/watch';
-import { publishNoteStream } from '../../../../../publishers/stream';
-import notify from '../../../../../publishers/notify';
+import { publishNoteStream } from '../../../../../stream';
+import notify from '../../../../../notify';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Vote poll of a note
- */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: '指定した投稿のアンケートに投票します。',
+		en: 'Vote poll of a note.'
+	},
+
+	requireCredential: true,
+
+	kind: 'vote-write'
+};
+
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');

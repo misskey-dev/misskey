@@ -3,12 +3,14 @@
 	<header>
 		<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% %i18n:@home%</span>
 		<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% %i18n:@local%</span>
+		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'">%fa:share-alt% %i18n:@hybrid%</span>
 		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
 		<button @click="chooseList" title="%i18n:@list%">%fa:list%</button>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
+	<x-core v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
 	<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 </div>
@@ -48,7 +50,7 @@ export default Vue.extend({
 				this.list = this.$store.state.device.tl.arg;
 			}
 		} else if (this.$store.state.i.followingCount == 0) {
-			this.src = 'local';
+			this.src = 'hybrid';
 		}
 	},
 

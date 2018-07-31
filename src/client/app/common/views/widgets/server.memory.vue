@@ -35,7 +35,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onStats(stats) {
-			stats.mem.used = stats.mem.total - stats.mem.free;
+			stats.mem.free = stats.mem.total - stats.mem.used;
 			this.usage = stats.mem.used / stats.mem.total;
 			this.total = stats.mem.total;
 			this.used = stats.mem.used;

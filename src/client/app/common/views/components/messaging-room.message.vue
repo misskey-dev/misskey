@@ -3,10 +3,9 @@
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<p class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
-			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
+			<!-- <button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
-			</button>
+			</button> -->
 			<div class="content" v-if="!message.isDeleted">
 				<misskey-flavored-markdown class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
@@ -23,6 +22,7 @@
 		<div></div>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
+			<span class="read" v-if="isMe && message.isRead">%i18n:@is-read%</span>
 			<mk-time :time="message.createdAt"/>
 			<template v-if="message.is_edited">%fa:pencil-alt%</template>
 		</footer>
@@ -119,17 +119,6 @@ root(isDark)
 					width 16px
 					height 16px
 					cursor pointer
-
-			> .read
-				user-select none
-				display block
-				position absolute
-				z-index 1
-				bottom -4px
-				left -12px
-				margin 0
-				color isDark ? rgba(#fff, 0.5) : rgba(#000, 0.5)
-				font-size 11px
 
 			> .content
 
@@ -257,6 +246,12 @@ root(isDark)
 
 			> footer
 				text-align right
+
+				> .read
+					user-select none
+					margin 0 4px 0 0
+					color isDark ? rgba(#fff, 0.5) : rgba(#000, 0.5)
+					font-size 11px
 
 	&[data-is-deleted]
 		> .baloon

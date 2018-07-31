@@ -43,7 +43,6 @@ type IUserBase = {
 	followingCount: number;
 	name?: string;
 	notesCount: number;
-	driveCapacity: number;
 	username: string;
 	usernameLower: string;
 	avatarId: mongo.ObjectID;
@@ -51,6 +50,7 @@ type IUserBase = {
 	avatarUrl?: string;
 	bannerUrl?: string;
 	wallpaperId: mongo.ObjectID;
+	wallpaperUrl?: string;
 	data: any;
 	description: string;
 	pinnedNoteId: mongo.ObjectID;
@@ -77,7 +77,6 @@ export interface ILocalUser extends IUserBase {
 	host: null;
 	keypair: string;
 	email: string;
-	links: string[];
 	password: string;
 	token: string;
 	twitter: {
@@ -97,7 +96,8 @@ export interface ILocalUser extends IUserBase {
 	lastUsedAt: Date;
 	isBot: boolean;
 	isCat: boolean;
-	isPro: boolean;
+	isAdmin?: boolean;
+	isVerified?: boolean;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;
 	twoFactorTempSecret?: string;
@@ -109,6 +109,7 @@ export interface ILocalUser extends IUserBase {
 
 export interface IRemoteUser extends IUserBase {
 	inbox: string;
+	sharedInbox?: string;
 	endpoints: string[];
 	uri: string;
 	url?: string;
@@ -400,25 +401,22 @@ export const pack = (
 	}
 
 	if (_user.avatarUrl == null) {
-		_user.avatarUrl = _user.avatarId != null
-			? `${config.drive_url}/${_user.avatarId}`
-			: `${config.drive_url}/default-avatar.jpg`;
+		_user.avatarUrl = `${config.drive_url}/default-avatar.jpg`;
+
+		// 互換性のため
+		if (_user.avatarId) {
+			_user.avatarUrl = `${config.drive_url}/${_user.avatarId}`;
+		}
 	}
 
-	if (_user.bannerUrl == null) {
-		_user.bannerUrl = _user.bannerId != null
-			? `${config.drive_url}/${_user.bannerId}`
-			: null;
+	// 互換性のため
+	if (_user.bannerId && _user.bannerUrl == null) {
+		_user.bannerUrl = `${config.drive_url}/${_user.bannerId}`;
 	}
-
-	_user.wallpaperUrl = _user.wallpaperId != null
-		? `${config.drive_url}/${_user.wallpaperId}`
-		: null;
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
 		delete _user.avatarId;
 		delete _user.bannerId;
-		delete _user.driveCapacity;
 		delete _user.hasUnreadMessagingMessage;
 		delete _user.hasUnreadNotification;
 	}

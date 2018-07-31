@@ -1,8 +1,8 @@
-import * as kue from 'kue';
+import * as bq from 'bee-queue';
 import * as debug from 'debug';
 
 const httpSignature = require('http-signature');
-import parseAcct from '../../../acct/parse';
+import parseAcct from '../../../misc/acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import perform from '../../../remote/activitypub/perform';
 import { resolvePerson } from '../../../remote/activitypub/models/person';
@@ -10,7 +10,7 @@ import { resolvePerson } from '../../../remote/activitypub/models/person';
 const log = debug('misskey:queue:inbox');
 
 // ユーザーのinboxにアクティビティが届いた時の処理
-export default async (job: kue.Job, done: any): Promise<void> => {
+export default async (job: bq.Job, done: any): Promise<void> => {
 	const signature = job.data.signature;
 	const activity = job.data.activity;
 

@@ -10,8 +10,7 @@ export default async (me: mongodb.ObjectID, note: object) => {
 	// if watching now
 	const exist = await Watching.findOne({
 		noteId: (note as any)._id,
-		userId: me,
-		deletedAt: { $exists: false }
+		userId: me
 	});
 
 	if (exist !== null) {

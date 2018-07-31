@@ -1,5 +1,5 @@
 <template>
-<div class="root folder"
+<div class="ynntpczxvnusfwdyxsfuhvcmuypqopdd"
 	:data-is-contextmenu-showing="isContextmenuShowing"
 	:data-draghover="draghover"
 	@click="onClick"
@@ -216,10 +216,10 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.root.folder
+root(isDark)
 	padding 8px
 	height 64px
-	background lighten($theme-color, 95%)
+	background isDark ? rgba($theme-color, 0.2) : lighten($theme-color, 95%)
 	border-radius 4px
 
 	&, *
@@ -229,10 +229,10 @@ export default Vue.extend({
 		pointer-events none
 
 	&:hover
-		background lighten($theme-color, 90%)
+		background isDark ? rgba(lighten($theme-color, 10%), 0.2) : lighten($theme-color, 90%)
 
 	&:active
-		background lighten($theme-color, 85%)
+		background isDark ? rgba(darken($theme-color, 10%), 0.2) : lighten($theme-color, 85%)
 
 	&[data-is-contextmenu-showing]
 	&[data-draghover]
@@ -248,16 +248,22 @@ export default Vue.extend({
 			border-radius 4px
 
 	&[data-draghover]
-		background lighten($theme-color, 90%)
+		background isDark ? rgba(darken($theme-color, 10%), 0.2) : lighten($theme-color, 90%)
 
 	> .name
 		margin 0
 		font-size 0.9em
-		color darken($theme-color, 30%)
+		color isDark ? #fff : darken($theme-color, 30%)
 
 		> [data-fa]
 			margin-right 4px
 			margin-left 2px
 			text-align left
+
+.ynntpczxvnusfwdyxsfuhvcmuypqopdd[data-darkmode]
+	root(true)
+
+.ynntpczxvnusfwdyxsfuhvcmuypqopdd:not([data-darkmode])
+	root(false)
 
 </style>

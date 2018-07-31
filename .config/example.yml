@@ -1,67 +1,136 @@
-# インスタンス名
-name:
+name: example-instance-name # Name of your instance
+description: example-description # Description of your instance
 
-# インスタンスの紹介
-description:
-
-# サーバーのメンテナ情報
 maintainer:
-  # メンテナの名前
-  name:
+  name: example-maitainer-name # Your name
+  url: http://example.com/ # Your contact (http or mailto)
+  repository_url: https://github.com/syuilo/misskey # Repository URL
+  feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
 
-  # メンテナの連絡先(URLかmailto形式のURL)
-  url:
+# URL and Port settings overview
+# e.g., If you want to realize following structure:
+#
+#               +--- https://example.com:123 ----------+
+# +------+      |+-------------+      +---------------+|
+# | User | ---> || Proxy (123) | ---> | Misskey (456) ||
+# +------+      |+-------------+      +---------------+|
+#               +--------------------------------------+
+#
+# You need to set 'https://example.com:123' to 'url' prop and
+# You need to set 456 to 'port' prop.
+#
+# In other words, the 'url' prop should be the final accessible URL seen by a user.
+# 'port' prop is a port that the Misskey server should actually listen
+# on and it is not necessarily the port that a user accesses.
 
-# (Misskeyを動かす)URL
-url:
+url: http://localhost/
 
-# 待受ポート
-port:
+# A port that your Misskey server should listen.
+# This value is not a port to use when accessing with a browser.
+port: 80
 
-# TLSの設定(利用しない場合は省略してください)
-https:
-  # 証明書のパス...
-  key:
-  cert:
-
-# MongoDBの設定
 mongodb:
   host: localhost
   port: 27017
   db: misskey
-  user:
-  pass:
+  user: example-misskey-user
+  pass: example-misskey-pass
 
-# Redisの設定
 redis:
   host: localhost
   port: 6379
-  pass:
+  pass: example-pass
 
-# reCAPTCHAの設定
-recaptcha:
-  site_key:
-  secret_key:
+# Drive capacity of a local user (MB)
+localDriveCapacityMb: 256
 
-# ServiceWrokerの設定
-sw:
-  # VAPIDの公開鍵
-  public_key:
+# Drive capacity of a remote user (MB)
+remoteDriveCapacityMb: 8
 
-  # VAPIDの秘密鍵
-  private_key:
-
-# Google Maps API
-google_maps_api_key:
-
-# Twitterインテグレーションの設定(利用しない場合は省略可能)
-twitter:
-  # インテグレーション用アプリのコンシューマーキー
-  consumer_key:
-
-  # インテグレーション用アプリのコンシューマーシークレット
-  consumer_secret:
-
-# true にすると、リモートのファイルをキャッシュしなくなります(直リンクします)。
-# ストレージ容量を節約することができますが、「リモートメディアを表示しない」設定をオンにしているユーザーは、リモートの画像などは見えなくなります。
+# If enabled:
+#  Server will not cache remote files (Using direct link instead).
+#  You can save your storage.
+#  Users cannot see remote images when they turn off "Show media from a remote server" setting.
 preventCache: false
+
+drive:
+  storage: 'db'
+
+  # OR
+
+  # storage: 'minio'
+  # bucket:
+  # prefix:
+  # config:
+  #   endPoint:
+  #   port:
+  #   secure:
+  #   accessKey:
+  #   secretKey:
+
+  # S3 example
+  # storage: 'minio'
+  # bucket: bucket-name
+  # prefix: files
+  # config:
+  #   endPoint: s3-us-west-2.amazonaws.com
+  #   region: us-west-2
+  #   secure: true
+  #   accessKey: XXX
+  #   secretKey: YYY
+
+  # S3 example (with CDN, custom domain)
+  # storage: 'minio'
+  # bucket: drive.example.com
+  # prefix: files
+  # baseUrl: https://drive.example.com
+  # config:
+  #   endPoint: s3-us-west-2.amazonaws.com
+  #   region: us-west-2
+  #   secure: true
+  #   accessKey: XXX
+  #   secretKey: YYY
+
+#
+# Below settings are optional
+#
+
+# TLS
+# https:
+#   # path for certification
+#   key: example-tls-key
+#   cert: example-tls-cert
+
+# Elasticsearch
+# elasticsearch:
+#   host: localhost
+#   port: 9200
+#   pass: null
+
+# reCAPTCHA
+# recaptcha:
+#   site_key: example-site-key
+#  secret_key: example-secret-key
+
+# ServiceWorker
+# sw:
+#   # Public key of VAPID
+#   public_key: example-sw-public-key
+
+#   # Private key of VAPID
+#   private_key: example-sw-private-key
+
+# google_maps_api_key: example-google-maps-api-key
+
+# Twitter integration
+# twitter:
+#   consumer_key: example-twitter-consumer-key
+#   consumer_secret: example-twitter-consumer-secret-key
+
+# Ghost
+# Ghost account is an account used for the purpose of delegating
+# followers when putting users in the list.
+# ghost: user-id-of-your-ghost-account
+
+# Clustering
+# clusterLimit: 1

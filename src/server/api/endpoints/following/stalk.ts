@@ -1,11 +1,19 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Following from '../../../../models/following';
 import { ILocalUser } from '../../../../models/user';
 
-/**
- * Stalk a user
- */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: '指定したユーザーをストーキングします。',
+		en: 'Stalk a user.'
+	},
+
+	requireCredential: true,
+
+	kind: 'following-write'
+};
+
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'userId' parameter

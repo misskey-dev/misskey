@@ -56,10 +56,10 @@
 				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
-				<button title="%i18n:@detail">
+				<!-- <button title="%i18n:@detail">
 					<template v-if="!isDetailOpened">%fa:caret-down%</template>
 					<template v-if="isDetailOpened">%fa:caret-up%</template>
-				</button>
+				</button> -->
 			</footer>
 		</div>
 	</article>

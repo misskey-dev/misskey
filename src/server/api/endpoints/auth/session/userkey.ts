@@ -8,48 +8,12 @@ import AccessToken from '../../../../../models/access-token';
 import { pack } from '../../../../../models/user';
 
 /**
- * @swagger
- * /auth/session/userkey:
- *   note:
- *     summary: Get an access token(userkey)
- *     parameters:
- *       -
- *         name: appSecret
- *         description: App Secret
- *         in: formData
- *         required: true
- *         type: string
- *       -
- *         name: token
- *         description: Session Token
- *         in: formData
- *         required: true
- *         type: string
- *
- *     responses:
- *       200:
- *         description: OK
- *         schema:
- *           type: object
- *           properties:
- *             userkey:
- *               type: string
- *               description: Access Token
- *             user:
- *               $ref: "#/definitions/User"
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
-
-/**
  * Generate a session
  *
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params: any) => new Promise(async (res, rej) => {
+export default (params: any) => new Promise(async (res, rej) => {
 	// Get 'appSecret' parameter
 	const [appSecret, appSecretErr] = $.str.get(params.appSecret);
 	if (appSecretErr) return rej('invalid appSecret param');

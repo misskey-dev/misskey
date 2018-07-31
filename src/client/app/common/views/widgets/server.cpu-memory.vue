@@ -102,7 +102,6 @@ export default Vue.extend({
 	},
 	methods: {
 		onStats(stats) {
-			stats.mem.used = stats.mem.total - stats.mem.free;
 			this.stats.push(stats);
 			if (this.stats.length > 50) this.stats.shift();
 
@@ -111,8 +110,8 @@ export default Vue.extend({
 			this.cpuPolylinePoints = cpuPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 			this.memPolylinePoints = memPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
-			this.cpuPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.cpuPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
-			this.memPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.memPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
+			this.cpuPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${this.viewBoxY} ${this.cpuPolylinePoints} ${this.viewBoxX},${this.viewBoxY}`;
+			this.memPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${this.viewBoxY} ${this.memPolylinePoints} ${this.viewBoxX},${this.viewBoxY}`;
 
 			this.cpuHeadX = cpuPolylinePoints[cpuPolylinePoints.length - 1][0];
 			this.cpuHeadY = cpuPolylinePoints[cpuPolylinePoints.length - 1][1];

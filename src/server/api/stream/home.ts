@@ -1,5 +1,5 @@
 import * as websocket from 'websocket';
-import * as redis from 'redis';
+import Xev from 'xev';
 import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
@@ -14,68 +14,54 @@ const log = debug('misskey');
 export default async function(
 	request: websocket.request,
 	connection: websocket.connection,
-	subscriber: redis.RedisClient,
+	subscriber: Xev,
 	user: IUser,
 	app: IApp
 ) {
-	// Subscribe Home stream channel
-	subscriber.subscribe(`misskey:user-stream:${user._id}`);
-
 	const mute = await Mute.find({ muterId: user._id });
 	const mutedUserIds = mute.map(m => m.muteeId.toString());
 
-	subscriber.on('message', async (channel, data) => {
-		switch (channel.split(':')[1]) {
-			case 'user-stream':
-				try {
-					const x = JSON.parse(data);
+	async function onNoteStream(noteId: any) {
+		const note = await packNote(noteId, user, {
+			detail: true
+		});
 
-					//#region 流れてきたメッセージがミュートしているユーザーが関わるものだったら無視する
-					if (x.type == 'note') {
-						if (mutedUserIds.includes(x.body.userId)) {
-							return;
-						}
-						if (x.body.reply != null && mutedUserIds.includes(x.body.reply.userId)) {
-							return;
-						}
-						if (x.body.renote != null && mutedUserIds.includes(x.body.renote.userId)) {
-							return;
-						}
-					} else if (x.type == 'notification') {
-						if (mutedUserIds.includes(x.body.userId)) {
-							return;
-						}
-					}
-					//#endregion
+		connection.send(JSON.stringify({
+			type: 'note-updated',
+			body: {
+				note: note
+			}
+		}));
+	}
 
-					// Renoteなら再pack
-					if (x.type == 'note' && x.body.renoteId != null) {
-						x.body.renote = await pack(x.body.renoteId, user, {
-							detail: true
-						});
-						data = JSON.stringify(x);
-					}
-
-					connection.send(data);
-				} catch (e) {
-					connection.send(data);
-				}
-				break;
-
-			case 'note-stream':
-				const noteId = channel.split(':')[2];
-				log(`RECEIVED: ${noteId} ${data} by @${user.username}`);
-				const note = await packNote(noteId, user, {
-					detail: true
-				});
-				connection.send(JSON.stringify({
-					type: 'note-updated',
-					body: {
-						note: note
-					}
-				}));
-				break;
+	// Subscribe Home stream channel
+	subscriber.on(`user-stream:${user._id}`, async x => {
+		//#region 流れてきたメッセージがミュートしているユーザーが関わるものだったら無視する
+		if (x.type == 'note') {
+			if (mutedUserIds.includes(x.body.userId)) {
+				return;
+			}
+			if (x.body.reply != null && mutedUserIds.includes(x.body.reply.userId)) {
+				return;
+			}
+			if (x.body.renote != null && mutedUserIds.includes(x.body.renote.userId)) {
+				return;
+			}
+		} else if (x.type == 'notification') {
+			if (mutedUserIds.includes(x.body.userId)) {
+				return;
+			}
 		}
+		//#endregion
+
+		// Renoteなら再pack
+		if (x.type == 'note' && x.body.renoteId != null) {
+			x.body.renote = await pack(x.body.renoteId, user, {
+				detail: true
+			});
+		}
+
+		connection.send(JSON.stringify(x));
 	});
 
 	connection.on('message', async data => {
@@ -113,9 +99,14 @@ export default async function(
 
 			case 'capture':
 				if (!msg.id) return;
-				const noteId = msg.id;
-				log(`CAPTURE: ${noteId} by @${user.username}`);
-				subscriber.subscribe(`misskey:note-stream:${noteId}`);
+				log(`CAPTURE: ${msg.id} by @${user.username}`);
+				subscriber.on(`note-stream:${msg.id}`, onNoteStream);
+				break;
+
+			case 'decapture':
+				if (!msg.id) return;
+				log(`DECAPTURE: ${msg.id} by @${user.username}`);
+				subscriber.off(`note-stream:${msg.id}`, onNoteStream);
 				break;
 		}
 	});

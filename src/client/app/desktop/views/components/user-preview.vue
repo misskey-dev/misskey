@@ -1,7 +1,7 @@
 <template>
 <div class="mk-user-preview">
 	<template v-if="u != null">
-		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl}?thumbnail&size=512)` : ''"></div>
+		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
 			<router-link class="name" :to="u | userPage">{{ u | userName }}</router-link>
@@ -19,7 +19,7 @@
 				<p>%i18n:@followers%</p><a>{{ u.followersCount }}</a>
 			</div>
 		</div>
-		<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="u"/>
+		<mk-follow-button v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u"/>
 	</template>
 </div>
 </template>
@@ -27,7 +27,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
-import parseAcct from '../../../../../acct/parse';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	props: {

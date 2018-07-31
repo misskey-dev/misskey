@@ -2,6 +2,11 @@
 <iframe v-if="youtubeId" type="text/html" height="250"
 	:src="`https://www.youtube.com/embed/${youtubeId}?origin=${misskeyUrl}`"
 	frameborder="0"/>
+<div v-else-if="tweetUrl && detail" class="twitter">
+	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
+		<a :href="url"></a>
+	</blockquote>
+</div>
 <div v-else class="mk-url-preview">
 	<a :href="url" target="_blank" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url(${thumbnail})`"></div>
@@ -24,7 +29,17 @@ import Vue from 'vue';
 import { url as misskeyUrl } from '../../../config';
 
 export default Vue.extend({
-	props: ['url'],
+	props: {
+		url: {
+			type: String,
+			require: true
+		},
+		detail: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 	data() {
 		return {
 			fetching: true,
@@ -34,6 +49,7 @@ export default Vue.extend({
 			icon: null,
 			sitename: null,
 			youtubeId: null,
+			tweetUrl: null,
 			misskeyUrl
 		};
 	},
@@ -44,6 +60,25 @@ export default Vue.extend({
 			this.youtubeId = url.searchParams.get('v');
 		} else if (url.hostname == 'youtu.be') {
 			this.youtubeId = url.pathname;
+		} else if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
+			this.tweetUrl = url;
+			const twttr = (window as any).twttr || {};
+			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
+
+			if (twttr.widgets) {
+				Vue.nextTick(loadTweet);
+			} else {
+				const wjsId = 'twitter-wjs';
+				if (!document.getElementById(wjsId)) {
+					const head = document.getElementsByTagName('head')[0];
+					const script = document.createElement('script');
+					script.setAttribute('id', wjsId);
+					script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
+					head.appendChild(script);
+				}
+				twttr.ready = loadTweet;
+				(window as any).twttr = twttr;
+			}
 		} else {
 			fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
 				res.json().then(info => {

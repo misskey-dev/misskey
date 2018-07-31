@@ -2,7 +2,7 @@
 <div class="mk-note-card">
 	<a :href="note | notePage">
 		<header>
-			<img :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/><h3>{{ note.user | userName }}</h3>
+			<img :src="note.user.avatarUrl" alt="avatar"/><h3>{{ note.user | userName }}</h3>
 		</header>
 		<div>
 			{{ text }}
@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import summary from '../../../../../renderers/get-note-summary';
+import summary from '../../../../../misc/get-note-summary';
 
 export default Vue.extend({
 	props: ['note'],

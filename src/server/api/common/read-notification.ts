@@ -1,11 +1,11 @@
 import * as mongo from 'mongodb';
 import { default as Notification, INotification } from '../../../models/notification';
-import publishUserStream from '../../../publishers/stream';
+import { publishUserStream } from '../../../stream';
 import Mute from '../../../models/mute';
 import User from '../../../models/user';
 
 /**
- * Mark as read notification(s)
+ * Mark notifications as read
  */
 export default (
 	user: string | mongo.ObjectID,
@@ -38,12 +38,12 @@ export default (
 		_id: { $in: ids },
 		isRead: false
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
-	});
+			$set: {
+				isRead: true
+			}
+		}, {
+			multi: true
+		});
 
 	// Calc count of my unread notifications
 	const count = await Notification
@@ -54,8 +54,8 @@ export default (
 			},
 			isRead: false
 		}, {
-			limit: 1
-		});
+				limit: 1
+			});
 
 	if (count == 0) {
 		// Update flag

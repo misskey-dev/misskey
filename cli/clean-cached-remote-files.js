@@ -9,7 +9,7 @@ const q = {
 	'metadata._user.host': {
 		$ne: null
 	},
-	'metadata.isMetaOnly': false
+	'metadata.withoutChunks': false
 };
 
 async function main() {
@@ -57,7 +57,7 @@ async function main() {
 
 					DriveFile.update({ _id: file._id }, {
 						$set: {
-							'metadata.isMetaOnly': true
+							'metadata.withoutChunks': true
 						}
 					})
 				]).then(async () => {

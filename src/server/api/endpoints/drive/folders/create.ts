@@ -1,18 +1,26 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
-import { publishDriveStream } from '../../../../../publishers/stream';
+import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 
-/**
- * Create drive folder
- */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		ja: 'ドライブのフォルダを作成します。',
+		en: 'Create a folder of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-write'
+};
+
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name = '無題のフォルダー', nameErr] = $.str.optional().pipe(isValidFolderName).get(params.name);
+	const [name = '無題のフォルダー', nameErr] = $.str.optional.pipe(isValidFolderName).get(params.name);
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $.type(ID).optional().nullable().get(params.parentId);
+	const [parentId = null, parentIdErr] = $.type(ID).optional.nullable.get(params.parentId);
 	if (parentIdErr) return rej('invalid parentId param');
 
 	// If the parent folder is specified

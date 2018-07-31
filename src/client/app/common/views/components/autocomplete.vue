@@ -2,9 +2,14 @@
 <div class="mk-autocomplete" @contextmenu.prevent="() => {}">
 	<ol class="users" ref="suggests" v-if="users.length > 0">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
-			<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
+			<img class="avatar" :src="user.avatarUrl" alt=""/>
 			<span class="name">{{ user | userName }}</span>
 			<span class="username">@{{ user | acct }}</span>
+		</li>
+	</ol>
+	<ol class="hashtags" ref="suggests" v-if="hashtags.length > 0">
+		<li v-for="hashtag in hashtags" @click="complete(type, hashtag)" @keydown="onKeydown" tabindex="-1">
+			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
@@ -48,33 +53,33 @@ emjdb.sort((a, b) => a.name.length - b.name.length);
 
 export default Vue.extend({
 	props: ['type', 'q', 'textarea', 'complete', 'close', 'x', 'y'],
+
 	data() {
 		return {
 			fetching: true,
 			users: [],
+			hashtags: [],
 			emojis: [],
 			select: -1,
 			emojilib
 		}
 	},
+
 	computed: {
 		items(): HTMLCollection {
 			return (this.$refs.suggests as Element).children;
 		}
 	},
+
 	updated() {
 		//#region 位置調整
-		const margin = 32;
-
-		if (this.x + this.$el.offsetWidth > window.innerWidth - margin) {
-			this.$el.style.left = (this.x - this.$el.offsetWidth) + 'px';
-			this.$el.style.marginLeft = '-16px';
+		if (this.x + this.$el.offsetWidth > window.innerWidth) {
+			this.$el.style.left = (window.innerWidth - this.$el.offsetWidth) + 'px';
 		} else {
 			this.$el.style.left = this.x + 'px';
-			this.$el.style.marginLeft = '0';
 		}
 
-		if (this.y + this.$el.offsetHeight > window.innerHeight - margin) {
+		if (this.y + this.$el.offsetHeight > window.innerHeight) {
 			this.$el.style.top = (this.y - this.$el.offsetHeight) + 'px';
 			this.$el.style.marginTop = '0';
 		} else {
@@ -83,6 +88,7 @@ export default Vue.extend({
 		}
 		//#endregion
 	},
+
 	mounted() {
 		this.textarea.addEventListener('keydown', this.onKeydown);
 
@@ -100,6 +106,7 @@ export default Vue.extend({
 			});
 		});
 	},
+
 	beforeDestroy() {
 		this.textarea.removeEventListener('keydown', this.onKeydown);
 
@@ -107,6 +114,7 @@ export default Vue.extend({
 			el.removeEventListener('mousedown', this.onMousedown);
 		});
 	},
+
 	methods: {
 		exec() {
 			this.select = -1;
@@ -117,7 +125,8 @@ export default Vue.extend({
 			}
 
 			if (this.type == 'user') {
-				const cache = sessionStorage.getItem(this.q);
+				const cacheKey = 'autocomplete:user:' + this.q;
+				const cache = sessionStorage.getItem(cacheKey);
 				if (cache) {
 					const users = JSON.parse(cache);
 					this.users = users;
@@ -131,8 +140,32 @@ export default Vue.extend({
 						this.fetching = false;
 
 						// キャッシュ
-						sessionStorage.setItem(this.q, JSON.stringify(users));
+						sessionStorage.setItem(cacheKey, JSON.stringify(users));
 					});
+				}
+			} else if (this.type == 'hashtag') {
+				if (this.q == null || this.q == '') {
+					this.hashtags = JSON.parse(localStorage.getItem('hashtags') || '[]');
+					this.fetching = false;
+				} else {
+					const cacheKey = 'autocomplete:hashtag:' + this.q;
+					const cache = sessionStorage.getItem(cacheKey);
+					if (cache) {
+						const hashtags = JSON.parse(cache);
+						this.hashtags = hashtags;
+						this.fetching = false;
+					} else {
+						(this as any).api('hashtags/search', {
+							query: this.q,
+							limit: 30
+						}).then(hashtags => {
+							this.hashtags = hashtags;
+							this.fetching = false;
+
+							// キャッシュ
+							sessionStorage.setItem(cacheKey, JSON.stringify(hashtags));
+						});
+					}
 				}
 			} else if (this.type == 'emoji') {
 				const matched = [];
@@ -228,12 +261,13 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-autocomplete
+root(isDark)
 	position fixed
 	z-index 65535
+	max-width 100%
 	margin-top calc(1em + 8px)
 	overflow hidden
-	background #fff
+	background isDark ? #313543 : #fff
 	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
 	transition top 0.1s ease, left 0.1s ease
@@ -248,7 +282,8 @@ export default Vue.extend({
 		list-style none
 
 		> li
-			display block
+			display flex
+			align-items center
 			padding 4px 12px
 			white-space nowrap
 			overflow hidden
@@ -259,7 +294,13 @@ export default Vue.extend({
 			&, *
 				user-select none
 
+			*
+				overflow hidden
+				text-overflow ellipsis
+
 			&:hover
+				background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.1)
+
 			&[data-selected='true']
 				background $theme-color
 
@@ -275,7 +316,6 @@ export default Vue.extend({
 	> .users > li
 
 		.avatar
-			vertical-align middle
 			min-width 28px
 			min-height 28px
 			max-width 28px
@@ -285,10 +325,15 @@ export default Vue.extend({
 
 		.name
 			margin 0 8px 0 0
-			color rgba(#000, 0.8)
+			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 		.username
-			color rgba(#000, 0.3)
+			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
+
+	> .hashtags > li
+
+		.name
+			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 	> .emojis > li
 
@@ -298,10 +343,15 @@ export default Vue.extend({
 			width 24px
 
 		.name
-			color rgba(#000, 0.8)
+			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
 
 		.alias
 			margin 0 0 0 8px
-			color rgba(#000, 0.3)
+			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
 
+.mk-autocomplete[data-darkmode]
+	root(true)
+
+.mk-autocomplete:not([data-darkmode])
+	root(false)
 </style>

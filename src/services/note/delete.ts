@@ -1,6 +1,6 @@
 import Note, { INote } from '../../models/note';
 import { IUser, isLocalUser } from '../../models/user';
-import { publishNoteStream } from '../../publishers/stream';
+import { publishNoteStream } from '../../stream';
 import renderDelete from '../../remote/activitypub/renderer/delete';
 import pack from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
@@ -22,7 +22,8 @@ export default async function(user: IUser, note: INote) {
 			text: null,
 			tags: [],
 			mediaIds: [],
-			poll: null
+			poll: null,
+			geo: null
 		}
 	});
 

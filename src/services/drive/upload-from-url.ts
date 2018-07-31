@@ -13,7 +13,7 @@ import * as mongodb from 'mongodb';
 
 const log = debug('misskey:drive:upload-from-url');
 
-export default async (url: string, user: IUser, folderId: mongodb.ObjectID = null, uri: string = null): Promise<IDriveFile> => {
+export default async (url: string, user: IUser, folderId: mongodb.ObjectID = null, uri: string = null, sensitive = false): Promise<IDriveFile> => {
 	log(`REQUESTED: ${url}`);
 
 	let name = URL.parse(url).pathname.split('/').pop();
@@ -48,8 +48,8 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, false, config.preventCacheRemoteFiles, url, uri);
-		log(`created: ${driveFile._id}`);
+		driveFile = await create(user, path, name, null, folderId, false, config.preventCacheRemoteFiles, url, uri, sensitive);
+		log(`got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;
 		log(`failed: ${e}`);
