@@ -661,6 +661,7 @@ desktop/views/components/settings.profile.vue:
   other: "その他"
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
+  profile-updated: "プロフィールを更新しました"
 
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"

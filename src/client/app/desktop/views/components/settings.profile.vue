@@ -63,7 +63,7 @@ export default Vue.extend({
 				description: this.description || null,
 				birthday: this.birthday || null
 			}).then(() => {
-				(this as any).apis.notify('プロフィールを更新しました');
+				(this as any).apis.notify('%i18n:@profile-updated%');
 			});
 		},
 		onChangeIsLocked() {
