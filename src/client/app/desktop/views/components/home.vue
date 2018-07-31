@@ -193,7 +193,7 @@ export default Vue.extend({
 					'<p>%i18n:common.customizationtips.paragraph3%</p>' +
 					'<p>%i18n:common.customizationtips.paragraph4%</p>',
 				actions: [{
-					text: 'Got it!'
+					text: '%i18n:common.customizationtips.gotit%'
 				}]
 			});
 		},
