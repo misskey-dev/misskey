@@ -9,7 +9,6 @@ import { pack } from '../../../../../models/messaging-message';
 import { publishUserStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
-import config from '../../../../../config';
 
 export const meta = {
 	desc: {
