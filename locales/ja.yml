@@ -6,6 +6,13 @@ common:
   misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  
+  customizationtips:
+    title: "カスタマイズのヒント"
+    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
+    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
+    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
+    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
 
   time:
     unknown: "なぞのじかん"
