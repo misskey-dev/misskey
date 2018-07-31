@@ -17,6 +17,7 @@ common:
     weeks_ago: "{}week(s) ago"
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
+  trash: "Garbage bin"
   weekday-short:
     sunday: "S"
     monday: "M"

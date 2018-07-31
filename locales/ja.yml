@@ -19,6 +19,8 @@ common:
     months_ago: "{}ヶ月前"
     years_ago: "{}年前"
 
+  trash: "ゴミ箱"
+
   weekday-short:
     sunday: "日"
     monday: "月"

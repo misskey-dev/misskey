@@ -34,7 +34,7 @@
 			</div>
 			<div class="trash">
 				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
-				<p>ゴミ箱</p>
+				<p>%i18n:common.trash%</p>
 			</div>
 		</div>
 	</div>
