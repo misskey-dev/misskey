@@ -11,7 +11,7 @@ common:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
     paragraph2: "You can change the display by <strong>right clicking</strong> on some widgets."
-    paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled "Trash"</strong> in the header."
+    paragraph3: 'To delete a widget, <strong>drag and drop the widget onto the area labeled "Trash"</strong> in the header.'
     paragraph4: "To finish the customization, click "Finish" in the upper right."
     gotit: "Got it!"
     
