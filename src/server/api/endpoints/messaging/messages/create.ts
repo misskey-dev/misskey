@@ -123,20 +123,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		}
 	}, 3000);
 
-	// Register to search database
-	if (message.text && config.elasticsearch) {
-		const es = require('../../../db/elasticsearch');
-
-		es.index({
-			index: 'misskey',
-			type: 'messaging_message',
-			id: message._id.toString(),
-			body: {
-				text: message.text
-			}
-		});
-	}
-
 	// 履歴作成(自分)
 	History.update({
 		userId: user._id,
