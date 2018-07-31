@@ -187,13 +187,13 @@ export default Vue.extend({
 	methods: {
 		hint() {
 			(this as any).apis.dialog({
-				title: '%fa:info-circle%%i18n:common.customizationtips.title%',
-				text: '<p>%i18n:common.customizationtips.paragraph1%</p>' +
-					'<p>%i18n:common.customizationtips.paragraph2%</p>' +
-					'<p>%i18n:common.customizationtips.paragraph3%</p>' +
-					'<p>%i18n:common.customizationtips.paragraph4%</p>',
+				title: '%fa:info-circle%%i18n:common.customization-tips.title%',
+				text: '<p>%i18n:common.customization-tips.paragraph1%</p>' +
+					'<p>%i18n:common.customization-tips.paragraph2%</p>' +
+					'<p>%i18n:common.customization-tips.paragraph3%</p>' +
+					'<p>%i18n:common.customization-tips.paragraph4%</p>',
 				actions: [{
-					text: '%i18n:common.customizationtips.gotit%'
+					text: '%i18n:common.customization-tips.gotit%'
 				}]
 			});
 		},

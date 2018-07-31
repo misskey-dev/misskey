@@ -7,7 +7,7 @@ common:
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   
-  customizationtips:
+  customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
     paragraph2: "You can change the display by <strong>right clicking</strong> on some widgets."
@@ -407,6 +407,9 @@ desktop/views/components/notifications.vue:
   more: "More"
   empty: "No notifications!"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ Add user"
+  attach-location-information: "Attach location information"
+  hide-contents: "Hide contents"
   reply-placeholder: "Reply to this note..."
   quote-placeholder: "Quote this note..."
   submit: "Post"
@@ -427,6 +430,11 @@ desktop/views/components/post-form.vue:
   text-remain: "{} characters remaining"
   recent-tags: "Recent"
   click-to-tagging: "Click to tagging"
+  visibility: "Visibility"
+  geolocation-alert: "Your device does not support geolocalization."
+  error: "Error"
+  enter-username: "Please enter a username..."
+  
 desktop/views/components/post-form-window.vue:
   note: "New note"
   reply: "Reply"

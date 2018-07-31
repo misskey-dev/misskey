@@ -8,7 +8,7 @@
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">+ユーザーを追加</a>
+			<a @click="addVisibleUser">%i18n:@add-visible-user%</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0">
 			<b>%i18n:@recent-tags%:</b>
@@ -36,9 +36,9 @@
 	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
-	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
-	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">
+	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw">%fa:eye-slash%</button>
+	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
+	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
 		<span v-if="visibility === 'public'">%fa:globe%</span>
 		<span v-if="visibility === 'home'">%fa:home%</span>
 		<span v-if="visibility === 'followers'">%fa:unlock%</span>
@@ -305,7 +305,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('お使いの端末は位置情報に対応していません');
+				alert('%i18n:@geolocation-alert%');
 				return;
 			}
 
@@ -313,7 +313,7 @@ export default Vue.extend({
 				this.geo = pos.coords;
 				this.$emit('geo-attached', this.geo);
 			}, err => {
-				alert('エラー: ' + err.message);
+				alert('%i18n:@error%: ' + err.message);
 			}, {
 					enableHighAccuracy: true
 				});

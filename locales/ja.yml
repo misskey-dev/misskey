@@ -7,7 +7,7 @@ common:
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
   
-  customizationtips:
+  customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
     paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
@@ -470,6 +470,9 @@ desktop/views/components/notifications.vue:
   empty: "ありません！"
 
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ユーザーを追加"
+  attach-location-information: "位置情報を添付する"
+  hide-contents: "内容を隠す"
   reply-placeholder: "この投稿への返信..."
   quote-placeholder: "この投稿を引用..."
   submit: "投稿"
@@ -490,7 +493,11 @@ desktop/views/components/post-form.vue:
   text-remain: "残り{}文字"
   recent-tags: "最近"
   click-to-tagging: "クリックでタグ付け"
-
+  visibility: "公開範囲"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  enter-username: "ユーザー名を入力してください"
+  
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
   reply: "返信"
