@@ -7,11 +7,11 @@ common:
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   customization-tips:
-    title: "カスタマイズのヒント"
-    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
-    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
-    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
-    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    title: "Customization tips"
+    paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
+    paragraph2: "You can change the display by <strong>right clicking</strong> on some widgets."
+    paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
+    paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
   time:
     unknown: "unknown"
@@ -24,7 +24,7 @@ common:
     weeks_ago: "{}week(s) ago"
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
-  trash: "ゴミ箱"
+  trash: "Trash"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -257,6 +257,10 @@ common/views/widgets/memo.vue:
   title: "Sticky note"
   memo: "Write here!"
   save: "Save"
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
+  folder: "クリックしてフォルダを指定してください"
+  no-image: "このフォルダには画像がありません"
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -405,9 +409,9 @@ desktop/views/components/notifications.vue:
   more: "More"
   empty: "No notifications!"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+ユーザーを追加"
-  attach-location-information: "位置情報を添付する"
-  hide-contents: "内容を隠す"
+  add-visible-user: "+Add a user"
+  attach-location-information: "Attach location information"
+  hide-contents: "Hide contents"
   reply-placeholder: "Reply to this note..."
   quote-placeholder: "Quote this note..."
   submit: "Post"
@@ -428,10 +432,10 @@ desktop/views/components/post-form.vue:
   text-remain: "{} characters remaining"
   recent-tags: "Recent"
   click-to-tagging: "Click to tagging"
-  visibility: "公開範囲"
-  geolocation-alert: "お使いの端末は位置情報に対応していません"
-  error: "エラー"
-  enter-username: "ユーザー名を入力してください"
+  visibility: "Visibility"
+  geolocation-alert: "Your device does not support geolocalization."
+  error: "Error"
+  enter-username: "Please enter a username..."
 desktop/views/components/post-form-window.vue:
   note: "New note"
   reply: "Reply"
@@ -574,7 +578,7 @@ desktop/views/components/settings.profile.vue:
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
-  profile-updated: "プロフィールを更新しました"
+  profile-updated: "Profile updated"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
