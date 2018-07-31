@@ -2,10 +2,10 @@
 <div class="mkw-slideshow" :data-mobile="platform == 'mobile'">
 	<div @click="choose">
 		<p v-if="props.folder === undefined">
-			<template v-if="isCustomizeMode">フォルダを指定するには、カスタマイズモードを終了してください</template>
-			<template v-else>クリックしてフォルダを指定してください</template>
+			<template v-if="isCustomizeMode">%i18n:@folder-customize-mode%</template>
+			<template v-else>%i18n:@folder%</template>
 		</p>
-		<p v-if="props.folder !== undefined && images.length == 0 && !fetching">このフォルダには画像がありません</p>
+		<p v-if="props.folder !== undefined && images.length == 0 && !fetching">%i18n:@no-image%</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>

@@ -259,6 +259,12 @@ common/views/widgets/memo.vue:
   title: "Sticky note"
   memo: "Write here!"
   save: "Save"
+  
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "To specify a folder, please exit customize mode"
+  folder: "Please click and specify a folder"
+  no-image: "There is no image in this folder"
+  
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
