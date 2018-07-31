@@ -6,6 +6,13 @@ common:
   misskey: "A ⭐ of the fediverse"
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
+  customization-tips:
+    title: "カスタマイズのヒント"
+    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
+    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
+    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
+    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    gotit: "Got it!"
   time:
     unknown: "unknown"
     future: "future"
@@ -17,6 +24,7 @@ common:
     weeks_ago: "{}week(s) ago"
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
+  trash: "ゴミ箱"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -397,6 +405,9 @@ desktop/views/components/notifications.vue:
   more: "More"
   empty: "No notifications!"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ユーザーを追加"
+  attach-location-information: "位置情報を添付する"
+  hide-contents: "内容を隠す"
   reply-placeholder: "Reply to this note..."
   quote-placeholder: "Quote this note..."
   submit: "Post"
@@ -417,6 +428,10 @@ desktop/views/components/post-form.vue:
   text-remain: "{} characters remaining"
   recent-tags: "Recent"
   click-to-tagging: "Click to tagging"
+  visibility: "公開範囲"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  enter-username: "ユーザー名を入力してください"
 desktop/views/components/post-form-window.vue:
   note: "New note"
   reply: "Reply"
@@ -559,6 +574,7 @@ desktop/views/components/settings.profile.vue:
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
+  profile-updated: "プロフィールを更新しました"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
