@@ -26,6 +26,9 @@ common:
     weeks_ago: "Il y a {} semaines·s"
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
+    
+  trash: "Corbeille"
+  
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -41,7 +44,7 @@ common:
     hmm: "Hmm ... ?"
     surprise: "Wow"
     congrats: "Félicitations !"
-    angry: "En colère"
+    angry: "Faché"
     confused: "Confus"
     pudding: "Pudding"
   note-placeholders:
@@ -67,7 +70,7 @@ common:
     opponent-turn: "Tour de l’adversaire"
     turn-of: "C’est le tour de {}"
     past-turn-of: "C'est au tour de {}"
-    won: "{}の勝ち"
+    won: "{} a gagné"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
