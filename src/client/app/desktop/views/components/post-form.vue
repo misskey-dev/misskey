@@ -336,7 +336,7 @@ export default Vue.extend({
 
 		addVisibleUser() {
 			(this as any).apis.input({
-				title: 'ユーザー名を入力してください'
+				title: '%i18n:@enter-username%'
 			}).then(username => {
 				(this as any).api('users/show', {
 					username
