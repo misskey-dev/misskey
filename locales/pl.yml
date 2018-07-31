@@ -6,6 +6,13 @@ common:
   misskey: "⭐ Fediwersum"
   about-title: "⭐ Fediwersum"
   about: "Dziękujemy za znalezienie Misskey. Misskey jest <b>zdecentralizowaną platformą mikroblogową</b> powstałą na Ziemi. Ponieważ działa ona w Fediwersum (uniwersum, w którego skład wchodzi wiele sieci społecznościowych), jest ona połączona z innymi platformami społecznościowymi. Spróbujesz odpocząć od zatłoczoneo miasta i zanurzyć się w nowym Internecie?"
+  customization-tips:
+    title: "カスタマイズのヒント"
+    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
+    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
+    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
+    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    gotit: "Got it!"
   time:
     unknown: "nieznany"
     future: "w przyszłości"
@@ -17,6 +24,7 @@ common:
     weeks_ago: "{} tyg. temu"
     months_ago: "{} mies. temu"
     years_ago: "{} lat temu"
+  trash: "ゴミ箱"
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -249,6 +257,10 @@ common/views/widgets/memo.vue:
   title: "Notatka"
   memo: "Napisz tutaj!"
   save: "Zapisz"
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
+  folder: "クリックしてフォルダを指定してください"
+  no-image: "このフォルダには画像がありません"
 common/views/pages/follow.vue:
   signed-in-as: "Zalogowany jako {}"
   following: "Śledzisz"
@@ -397,6 +409,9 @@ desktop/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ユーザーを追加"
+  attach-location-information: "位置情報を添付する"
+  hide-contents: "内容を隠す"
   reply-placeholder: "Odpowiedz na ten wpis…"
   quote-placeholder: "Zacytuj ten wpis…"
   submit: "Wyślij"
@@ -417,6 +432,10 @@ desktop/views/components/post-form.vue:
   text-remain: "pozostałe znaki: {}"
   recent-tags: "Ostatnie"
   click-to-tagging: "Naciśnij aby oznaczyć"
+  visibility: "公開範囲"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  enter-username: "ユーザー名を入力してください"
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
   reply: "Odpowiedz"
@@ -559,6 +578,7 @@ desktop/views/components/settings.profile.vue:
   other: "Inne"
   is-bot: "To konto jest prowadzone przez bota"
   is-cat: "To konto jest prowadzone przez kota"
+  profile-updated: "プロフィールを更新しました"
 desktop/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"

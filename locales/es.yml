@@ -6,6 +6,13 @@ common:
   misskey: "Una ⭐️ del fediverso"
   about-title: "Una ⭐️ del fediverso"
   about: "Gracias por encontrae Misskey. Misskey es una <b>plataforma descentralizada de microblogging</b> nacida en la Tierra. Gracias a existir dentro del Fediverso (un universo donde se organizan varias plataformas sociales) se encuentra enlazada mutuamente con otras plataformas sociales. ¿Por què no te tomas un respiro del caos de la ciudad y te sumerges es una nueva manera de entender Internet?"
+  customization-tips:
+    title: "カスタマイズのヒント"
+    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
+    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
+    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
+    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    gotit: "Got it!"
   time:
     unknown: "Desconocido"
     future: "Futuro"
@@ -17,6 +24,7 @@ common:
     weeks_ago: "Hace {} semana(s)"
     months_ago: "Hace {} mes(es)"
     years_ago: "Hace {} año(s)"
+  trash: "ゴミ箱"
   weekday-short:
     sunday: "domingo"
     monday: "lunes"
@@ -249,6 +257,10 @@ common/views/widgets/memo.vue:
   title: "付箋"
   memo: "ここに書いて！"
   save: "保存"
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
+  folder: "クリックしてフォルダを指定してください"
+  no-image: "このフォルダには画像がありません"
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
   following: "フォロー中"
@@ -397,6 +409,9 @@ desktop/views/components/notifications.vue:
   more: "もっと見る"
   empty: "ありません！"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ユーザーを追加"
+  attach-location-information: "位置情報を添付する"
+  hide-contents: "内容を隠す"
   reply-placeholder: "この投稿への返信..."
   quote-placeholder: "この投稿を引用..."
   submit: "投稿"
@@ -417,6 +432,10 @@ desktop/views/components/post-form.vue:
   text-remain: "quedan {} caracteres"
   recent-tags: "最近"
   click-to-tagging: "クリックでタグ付け"
+  visibility: "公開範囲"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  enter-username: "ユーザー名を入力してください"
 desktop/views/components/post-form-window.vue:
   note: "Nota nueva"
   reply: "Responder"
@@ -559,6 +578,7 @@ desktop/views/components/settings.profile.vue:
   other: "その他"
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
+  profile-updated: "プロフィールを更新しました"
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"

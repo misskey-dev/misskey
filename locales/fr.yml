@@ -5,8 +5,7 @@ meta:
 common:
   misskey: "Une ⭐ du fédiverse"
   about-title: "Une ⭐ du fédiverse."
-  about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet?"
-  
+  about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   customization-tips:
     title: "Conseils de personnalisation"
     paragraph1: "La personnalisation à la maison vous permet d'ajouter / supprimer, glisser et déposer et réorganiser les widgets."
@@ -14,7 +13,6 @@ common:
     paragraph3: "Pour supprimer un widget, <strong>glissez et déposez le widget sur la zone étiquetée \"Corbeille\"</strong> dans l'en-tête."
     paragraph4: "Pour terminer la personnalisation, cliquez sur \"Terminer\" dans le coin supérieur droit."
     gotit: "Compris!"
-  
   time:
     unknown: "inconnu"
     future: "future"
@@ -26,9 +24,7 @@ common:
     weeks_ago: "Il y a {} semaines·s"
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
-    
   trash: "Corbeille"
-  
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -261,6 +257,10 @@ common/views/widgets/memo.vue:
   title: "Pense-bête"
   memo: "Écrivez ici !"
   save: "Enregistrer"
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
+  folder: "クリックしてフォルダを指定してください"
+  no-image: "このフォルダには画像がありません"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté en tant que {}"
   following: "Suit"
@@ -409,6 +409,9 @@ desktop/views/components/notifications.vue:
   more: "Plus"
   empty: "Pas de notifications"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ユーザーを追加"
+  attach-location-information: "位置情報を添付する"
+  hide-contents: "内容を隠す"
   reply-placeholder: "Répondre à cette note"
   quote-placeholder: "Citer cette note"
   submit: "Poster"
@@ -429,6 +432,10 @@ desktop/views/components/post-form.vue:
   text-remain: "{} charactères restants"
   recent-tags: "Récent"
   click-to-tagging: "クリックでタグ付け"
+  visibility: "公開範囲"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  enter-username: "ユーザー名を入力してください"
 desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
   reply: "Répondre"
@@ -571,6 +578,7 @@ desktop/views/components/settings.profile.vue:
   other: "Autre"
   is-bot: "Ce compte est un Bot"
   is-cat: "Ce compte est un Chat"
+  profile-updated: "プロフィールを更新しました"
 desktop/views/components/sub-note-content.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
