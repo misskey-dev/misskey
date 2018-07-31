@@ -11,8 +11,8 @@ common:
     title: "Conseils de personnalisation"
     paragraph1: "La personnalisation à la maison vous permet d'ajouter / supprimer, glisser et déposer et réorganiser les widgets."
     paragraph2: "Vous pouvez changer l'affichage en <strong>cliquant droit</strong> sur certains widgets."
-    paragraph3: "Pour supprimer un widget, <strong>glissez et déposez le widget sur la zone étiquetée "Corbeille"</strong> dans l'en-tête."
-    paragraph4: "Pour terminer la personnalisation, cliquez sur "Terminer" dans le coin supérieur droit."
+    paragraph3: 'Pour supprimer un widget, <strong>glissez et déposez le widget sur la zone étiquetée "Corbeille"</strong> dans l'en-tête.'
+    paragraph4: 'Pour terminer la personnalisation, cliquez sur "Terminer" dans le coin supérieur droit.'
     gotit: "Compris!"
   
   time:
