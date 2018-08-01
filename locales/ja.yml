@@ -37,6 +37,15 @@ common:
     friday: "金"
     saturday: "土"
 
+  weekday:
+    sunday: "日曜日"
+    monday: "月曜日"
+    tuesday: "火曜日"
+    wednesday: "水曜日"
+    thursday: "木曜日"
+    friday: "金曜日"
+    saturday: "土曜日"
+
   reactions:
     like: "いいね"
     love: "しゅき"
@@ -265,7 +274,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
   next: "次"
-  
+
 common/views/widgets/calendar.vue:
   year-english: ""
   year-japanese: "年"
@@ -304,7 +313,7 @@ common/views/widgets/memo.vue:
   title: "付箋"
   memo: "ここに書いて！"
   save: "保存"
-  
+
 common/views/widgets/slideshow.vue:
   folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
   folder: "クリックしてフォルダを指定してください"
@@ -541,7 +550,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "お使いの端末は位置情報に対応していません"
   error: "エラー"
   enter-username: "ユーザー名を入力してください"
-  
+
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
   reply: "返信"
@@ -760,7 +769,7 @@ desktop/views/components/received-follow-requests-window.vue:
   title: "フォロー申請"
   accept: "承認"
   reject: "拒否"
-  
+
 
 
 desktop/views/components/user-lists-window.vue:
@@ -830,17 +839,17 @@ desktop/views/pages/search.vue:
   not-found-quotes2: "」"
   not-found-text-english: ""
   not-found-text-japanese: "に関する投稿は見つかりませんでした。"
- 
+
 desktop/views/pages/share.vue:
   share-with: "Misskeyで共有"
   close: "閉じる"
-  
+
 desktop/views/pages/tag.vue:
   no-posts-found-english: ""
   no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
   left-quote: "「"
   right-quote: "」"
-  
+
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
   add-user: "ユーザーを追加"
@@ -1068,7 +1077,7 @@ mobile/views/pages/user-lists.vue:
 mobile/views/pages/drive.vue:
   drive: "ドライブ"
   more: "もっと見る"
-  
+
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
 
@@ -1089,12 +1098,12 @@ mobile/views/pages/tag.vue:
   no-posts-found-english: ""
   left-quote: "「"
   right-quote: "」"
-  
+
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
 
 mobile/views/pages/widgets.vue:
-  dashboard: "ダッシュボード"  
+  dashboard: "ダッシュボード"
 
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
@@ -1118,7 +1127,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "通知"
   read-all: "すべての通知を既読にしますか？"
-  
+
 mobile/views/pages/reversi.vue:
   reversi: "リバーシ"
 

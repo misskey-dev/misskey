@@ -238,7 +238,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "No announcements"
   have-a-nice-day: "Have a nice day!"
   next: "Next"
-  
+
 common/views/widgets/calendar.vue:
   year-english: "Year "
   year-japanese: ""
@@ -251,7 +251,7 @@ common/views/widgets/calendar.vue:
   today: "Today: "
   this-month: "This month: "
   this-year: "This year: "
-  
+
 common/views/widgets/donation.vue:
   title: "Request for donations"
   text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
@@ -276,7 +276,7 @@ common/views/widgets/slideshow.vue:
   folder-customize-mode: "To specify a folder, please exit customize mode"
   folder: "Please click and specify a folder"
   no-image: "There is no image in this folder"
-  
+
 common/views/widgets/tips.vue:
   tips-line1: "You can focus on the timeline with <kbd>t</kbd>."
   tips-line2: "Open posting form with <kbd>p</kbd> or <kbd>n</kbd>."
@@ -715,18 +715,18 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Cancel"
   upload: "Upload files from your device"
-  
+
 desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
   not-found-quotes1: "\""
   not-found-quotes2: "\""
   not-found-text-english: "No posts were found for "
-  not-found-text-japanese: "."  
+  not-found-text-japanese: "."
 
 desktop/views/pages/share.vue:
   share-with: "Share with Misskey"
   close: "Close"
-  
+
 desktop/views/pages/tag.vue:
   no-posts-found-english: "No posts were found for "
   no-posts-found-japanese: ""
@@ -888,7 +888,7 @@ mobile/views/components/sub-note-content.vue:
 mobile/views/components/timeline.vue:
   empty: "No notes"
   load-more: "More"
-  
+
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
 
@@ -977,7 +977,7 @@ mobile/views/pages/settings/settings.profile.vue:
   saved: "Profile updated"
   uploading: "Uploading"
   upload-failed: "Failed to upload"
-  
+
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
