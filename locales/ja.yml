@@ -682,6 +682,10 @@ desktop/views/components/settings.api.vue:
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 
+desktop/views/components/settings.drive.vue:
+  max: "中"
+  in-use: "使用中"
+
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
 

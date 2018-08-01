@@ -598,6 +598,11 @@ desktop/views/components/settings.api.vue:
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
+
+desktop/views/components/settings.drive.vue:
+  max: "Max "
+  in-use: " in use."
+
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
