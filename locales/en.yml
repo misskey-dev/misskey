@@ -237,6 +237,20 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "No announcements"
   have-a-nice-day: "Have a nice day!"
   next: "Next"
+  
+common/views/widgets/calendar.vue:
+  year-english: "Year "
+  year-japanese: ""
+  month-english: "Month "
+  month-japanese: ""
+  day-english: "Day "
+  day-japanese: ""
+  weekday-english: "Weekday "
+  weekday-japanese: ""
+  today: "Today: "
+  this-month: "This month: "
+  this-year: "This year: "
+  
 common/views/widgets/donation.vue:
   title: "Request for donations"
   text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"

@@ -266,6 +266,19 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
   next: "次"
+  
+common/views/widgets/calendar.vue:
+  year-english: ""
+  year-japanese: "年"
+  month-english: ""
+  month-japanese: "月"
+  day-english: ""
+  day-japanese: "日"
+  weekday-english: ""
+  weekday-japanese: "曜日"
+  today: "今日:"
+  this-month: "今月:"
+  this-year: "今年:"
 
 common/views/widgets/donation.vue:
   title: "寄付のお願い"
