@@ -8,7 +8,7 @@
 	<div class="body" :style="{ backgroundImage: `url('${ welcomeBgUrl }')` }">
 		<div class="container">
 			<div class="info">
-				<span>%i18n:common.misskey% <b>{{ host }}</b></span>
+				<span>%i18n:common.name% <b>{{ host }}</b></span>
 				<span class="stats" v-if="stats">
 					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
 					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>

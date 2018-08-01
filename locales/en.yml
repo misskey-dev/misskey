@@ -700,6 +700,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "Log in"
   signup-button: "Sign up"
   timeline: "Timeline"
+  powered-by-misskey: "Powered by <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
 desktop/views/pages/favorites.vue:
@@ -731,9 +732,6 @@ desktop/views/pages/tag.vue:
   no-posts-found-japanese: ""
   left-quote: "\""
   right-quote: "\"."
-  
-desktop/views/pages/welcome.vue:
-  powered-by-misskey: "Powered by <b>Misskey</b>."
 
 desktop/views/pages/user-list.users.vue:
   users: "User"

@@ -803,6 +803,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "やってる"
   signup-button: "やる"
   timeline: "タイムライン"
+  powered-by-misskey: "Powered by <b>Misskey</b>."
 
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
@@ -839,9 +840,6 @@ desktop/views/pages/tag.vue:
   no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
   left-quote: "「"
   right-quote: "」"
-  
-desktop/views/pages/welcome.vue:
-  powered-by-misskey: "Powered by <b>Misskey</b>."
   
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
