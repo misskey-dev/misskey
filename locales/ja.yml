@@ -1084,6 +1084,15 @@ mobile/views/pages/home.vue:
   hybrid: "ソーシャル"
   global: "グローバル"
 
+mobile/views/pages/tag.vue:
+  no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
+  no-posts-found-english: ""
+  left-quote: "「"
+  right-quote: "」"
+  
+mobile/views/pages/welcome.vue:
+  signup: "新規登録"
+
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 
