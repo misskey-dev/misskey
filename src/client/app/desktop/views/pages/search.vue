@@ -7,7 +7,7 @@
 		<mk-ellipsis-icon/>
 	</div>
 	<p :class="$style.notAvailable" v-if="!fetching && notAvailable">%i18n:@not-available%</p>
-	<p :class="$style.empty" v-if="!fetching && empty">%fa:search%%i18n:@not-found-text-english%%i18n:@not-found-quotes1%{{ q }}%i18n:@not-found-quotes2%%i18n:@not-found-text-japanese%</p>
+	<p :class="$style.empty" v-if="!fetching && empty">%fa:search% {{ '%i18n:not-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:not-found%'.split('{}')[1] }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
