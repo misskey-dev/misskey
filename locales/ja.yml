@@ -1093,6 +1093,12 @@ mobile/views/pages/tag.vue:
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
 
+mobile/views/pages/widgets.vue:
+  dashboard: "ダッシュボード"  
+
+mobile/views/pages/widgets/activity.vue:
+  activity: "アクティビティ"
+
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 

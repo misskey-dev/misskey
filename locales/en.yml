@@ -933,6 +933,10 @@ mobile/views/pages/tag.vue:
   right-quote: "\"."
 mobile/views/pages/welcome.vue:
   signup: "Sign up."
+mobile/views/pages/widgets.vue:
+  dashboard: "Dashboard"
+mobile/views/pages/widgets/activity.vue:
+  activity: "Activity"
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
 mobile/views/pages/home.vue:
