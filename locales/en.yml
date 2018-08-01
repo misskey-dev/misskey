@@ -924,6 +924,8 @@ mobile/views/pages/drive.vue:
   more: "Load more"
 mobile/views/pages/followers.vue:
   followers-of: "Followers of {}"
+mobile/views/pages/signup.vue:
+  lets-start: "Let's start! 📦"
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
 mobile/views/pages/home.vue:

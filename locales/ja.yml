@@ -1068,6 +1068,9 @@ mobile/views/pages/user-lists.vue:
 mobile/views/pages/drive.vue:
   drive: "ドライブ"
   more: "もっと見る"
+  
+mobile/views/pages/signup.vue:
+  lets-start: "📦 始めましょう"
 
 mobile/views/pages/followers.vue:
   followers-of: "{}のフォロワー"
