@@ -13,6 +13,7 @@ common:
     paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
     paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
+  name: "Misskey"
   time:
     unknown: "unknown"
     future: "future"
@@ -889,6 +890,10 @@ mobile/views/components/sub-note-content.vue:
 mobile/views/components/timeline.vue:
   empty: "No notes"
   load-more: "More"
+  
+mobile/views/components/ui.header.vue:
+  welcome-back: "Welcome back, "
+
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"

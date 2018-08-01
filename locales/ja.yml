@@ -6,7 +6,6 @@ common:
   misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
-  
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
@@ -14,7 +13,7 @@ common:
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
     gotit: "Got it!"
-
+  name: "Misskey"
   time:
     unknown: "なぞのじかん"
     future: "未来"
@@ -1032,6 +1031,9 @@ mobile/views/components/sub-note-content.vue:
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
   load-more: "もっと"
+
+mobile/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
 
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
