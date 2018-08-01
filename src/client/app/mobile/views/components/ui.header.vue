@@ -3,12 +3,12 @@
 	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
-		<p ref="welcomeback" v-if="$store.getters.isSignedIn">おかえりなさい、<b>{{ $store.state.i | userName }}</b>さん</p>
+		<p ref="welcomeback" v-if="$store.getters.isSignedIn">%i18n:@welcome-back%<b>{{ $store.state.i | userName }}</b>さん</p>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation">%fa:circle%</template>
 			<h1>
-				<slot>Misskey</slot>
+				<slot>%i18n:common.name%</slot>
 			</h1>
 			<slot name="func"></slot>
 		</div>
