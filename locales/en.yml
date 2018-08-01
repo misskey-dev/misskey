@@ -667,6 +667,13 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Cancel"
   upload: "Upload files from your device"
   
+desktop/views/pages/search.vue:
+  not-available: "The search function can not be used."
+  not-found-quotes1: "\""
+  not-found-quotes2: "\""
+  not-found-text-english: "No posts were found for "
+  not-found-text-japanese: "."  
+
 desktop/views/pages/share.vue:
   share-with: "Share with Misskey"
   close: "Close"
