@@ -6,7 +6,7 @@
 		<div class="about">
 			<h2>{{ name || 'unidentified' }}</h2>
 			<p v-html="description || '%i18n:common.about%'"></p>
-			<router-link class="signup" to="/signup">新規登録</router-link>
+			<router-link class="signup" to="/signup">%i18n:@signup%</router-link>
 		</div>
 		<div class="login">
 			<mk-signin :with-avatar="false"/>
