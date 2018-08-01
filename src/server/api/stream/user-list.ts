@@ -8,6 +8,6 @@ export default function(request: websocket.request, connection: websocket.connec
 
 	// Subscribe stream
 	subscriber.on(`user-list-stream:${listId}`, data => {
-		connection.send(data);
+		connection.send(JSON.stringify(data));
 	});
 }
