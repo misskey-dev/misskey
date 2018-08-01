@@ -43,7 +43,7 @@ export default Vue.extend({
 		window.addEventListener('popstate', this.onPopState);
 	},
 	mounted() {
-		document.title = 'Misskey Drive';
+		document.title = '%i18n:common.name% Drive';
 		document.documentElement.style.background = '#fff';
 	},
 	beforeDestroy() {
@@ -63,7 +63,7 @@ export default Vue.extend({
 			(this.$refs as any).browser.openContextMenu();
 		},
 		onMoveRoot(silent) {
-			const title = 'Misskey Drive';
+			const title = '%i18n:common.name% Drive';
 
 			if (!silent) {
 				// Rewrite URL
@@ -76,7 +76,7 @@ export default Vue.extend({
 			this.folder = null;
 		},
 		onOpenFolder(folder, silent) {
-			const title = folder.name + ' | Misskey Drive';
+			const title = folder.name + ' | %i18n:common.name% Drive';
 
 			if (!silent) {
 				// Rewrite URL
@@ -89,7 +89,7 @@ export default Vue.extend({
 			this.folder = folder;
 		},
 		onOpenFile(file, silent) {
-			const title = file.name + ' | Misskey Drive';
+			const title = file.name + ' | %i18n:common.name% Drive';
 
 			if (!silent) {
 				// Rewrite URL

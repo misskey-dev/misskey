@@ -32,7 +32,7 @@
 			<mk-nav class="nav"/>
 		</div>
 		<mk-forkit class="forkit"/>
-		<img src="assets/title.dark.svg" alt="Misskey">
+		<img src="assets/title.dark.svg" alt="%i18n:common.name%">
 	</div>
 	<div class="tl">
 		<mk-welcome-timeline :max="20"/>
