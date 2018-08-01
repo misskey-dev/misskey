@@ -724,6 +724,12 @@ desktop/views/pages/search.vue:
 desktop/views/pages/share.vue:
   share-with: "Share with Misskey"
   close: "Close"
+  
+desktop/views/pages/tag.vue:
+  no-posts-found-english: "No posts were found for "
+  no-posts-found-japanese: ""
+  left-quote: "\""
+  right-quote: "\"."
 
 desktop/views/pages/user-list.users.vue:
   users: "User"

@@ -835,6 +835,12 @@ desktop/views/pages/share.vue:
   share-with: "Misskeyで共有"
   close: "閉じる"
   
+desktop/views/pages/tag.vue:
+  no-posts-found-english: ""
+  no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
+  left-quote: "「"
+  right-quote: "」"
+  
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
   add-user: "ユーザーを追加"
