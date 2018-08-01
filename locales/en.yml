@@ -34,6 +34,14 @@ common:
     thursday: "T"
     friday: "F"
     saturday: "S"
+  weekday:
+    sunday: "日曜日"
+    monday: "月曜日"
+    tuesday: "火曜日"
+    wednesday: "水曜日"
+    thursday: "木曜日"
+    friday: "金曜日"
+    saturday: "土曜日"
   reactions:
     like: "Like"
     love: "Love"
@@ -247,9 +255,9 @@ common/views/widgets/calendar.vue:
   day-japanese: "日"
   weekday-english: ""
   weekday-japanese: "曜日"
-  today: "今日:"
-  this-month: "今月:"
-  this-year: "今年:"
+  today: "Today: "
+  this-month: "This month: "
+  this-year: "This year: "
 common/views/widgets/donation.vue:
   title: "Request for donations"
   text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
