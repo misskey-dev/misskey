@@ -34,6 +34,14 @@ common:
     thursday: "T"
     friday: "F"
     saturday: "S"
+  weekday:
+    sunday: "Sunday"
+    monday: "Monday"
+    tuesday: "Tuesday"
+    wednesday: "Wednesday"
+    thursday: "Thursday"
+    friday: "Friday"
+    saturday: "Saturday"
   reactions:
     like: "Like"
     love: "Love"
@@ -68,6 +76,10 @@ common:
     turn-of: "{}'s turn"
     past-turn-of: "{}'s turn"
     won: "{} won"
+    black: "Black"
+    white: "White"
+    total: "Total"
+    this-turn: "Turn {}"
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
@@ -109,6 +121,42 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+common/views/components/games/reversi/reversi.vue:
+  title: "Misskey Reversi"
+  sub-title: "Play reversi with your friends!"
+  invite: "Invite"
+  rule: "How to play"
+  rule-desc: "Reversi is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called disks (often spelled \"discs\"), which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up. During a play, any disks of the opponent's color that are in a straight line and bounded by the disk just placed and another disk of the current player's color are turned over to the current player's color.\nThe object of the game is to have the majority of disks turned to display your color when the last playable empty square is filled.\n"
+  mode-invite: "Invite"
+  mode-invite-desc: "Invite to the game a user"
+  invitations: "You received invitation!"
+  my-games: "My games"
+  all-games: "All games"
+  enter-username: "Enter username"
+  game-state:
+    ended: "Ended"
+    playing: "In Progress"
+  matching:
+    waiting-for: "Waiting for {}"
+    cacnel: "Cancel"
+common/views/components/games/reversi/reversi.room.vue:
+  settings-of-the-game: "Game settings"
+  choose-map: "Choose a map"
+  random: "Random"
+  black-or-white: "Black/White"
+  black-is: "Black is {}"
+  rules: "Rules"
+  is-llotheo: "The lesser one wins"
+  looped-map: "Looped map"
+  can-put-everywhere: "Can put everywhere"
+  settings-of-the-bot: "Bot settings"
+  this-gane-is-started-soon: "This game will start soon"
+  waiting-for-other: "Waiting for the other party's preparation"
+  waiting-for-me: "Waiting for the your preparation"
+  waiting-for-both: "Waiting for yours"
+  cancel: "Cancel"
+  ready: "Ready"
+  cancel-ready: "Cancel \"Ready\""
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
@@ -238,20 +286,13 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "No announcements"
   have-a-nice-day: "Have a nice day!"
   next: "Next"
-
 common/views/widgets/calendar.vue:
-  year-english: "Year "
-  year-japanese: ""
-  month-english: "Month "
-  month-japanese: ""
-  day-english: "Day "
-  day-japanese: ""
-  weekday-english: "Weekday "
-  weekday-japanese: ""
+  year: "Year {}"
+  month: "Month {}"
+  day: "Day {}"
   today: "Today: "
   this-month: "This month: "
   this-year: "This year: "
-
 common/views/widgets/donation.vue:
   title: "Request for donations"
   text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
@@ -276,7 +317,6 @@ common/views/widgets/slideshow.vue:
   folder-customize-mode: "To specify a folder, please exit customize mode"
   folder: "Please click and specify a folder"
   no-image: "There is no image in this folder"
-
 common/views/widgets/tips.vue:
   tips-line1: "You can focus on the timeline with <kbd>t</kbd>."
   tips-line2: "Open posting form with <kbd>p</kbd> or <kbd>n</kbd>."
@@ -284,26 +324,20 @@ common/views/widgets/tips.vue:
   tips-line4: "You can paste an image from the clipboard into the submission form."
   tips-line5: "You can upload files by dragging and dropping them to Drive."
   tips-line6: "You can move a folder by dragging it within the Drive."
-  tips-line7: "You can move folders by dragging them within the Drive"
-  tips-line8: "Home can be customized from the settings widget."
+  tips-line7: "You can move folders by dragging them within the Drive."
+  tips-line8: "Home can be customized from the settings."
   tips-line9: "Misskey is licensed under AGPLv3."
   tips-line10: "Using the Time Machine widget makes it easy to trace back to the past timeline."
   tips-line11: "You can pin posts to user page by clicking on \"...\""
-  tips-line12: "Drive capacity is 1 GB (by default)"
   tips-line13: "All the files attached to the post are saved to Drive."
   tips-line14: "While customizing the home, you can right click on the widget and change the design."
-  tips-line15: "You can also place widgets at the top of the timeline."
-  tips-line16: "Double click on a post to see details."
   tips-line17: "Surrounding the text with ** ** will highlight it."
-  tips-line18: "By using the channel widget, you can quickly check frequently used channels."
   tips-line19: "Several windows can be detached outside the browser."
   tips-line20: "The percentage of the calendar widget shows the percentage of time elapsed."
   tips-line21: "You can also use the API to develop bots."
-  tips-line22: "Misskey is also available via LINE."
   tips-line23: "Mayu is so cute with its eyebrows."
   tips-line24: "Misskey started in 2014."
   tips-line25: "You can receive notification even if Misskey is not open in a compatible browser."
-
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -599,11 +633,9 @@ desktop/views/components/settings.api.vue:
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
-
 desktop/views/components/settings.drive.vue:
   max: "Max "
   in-use: " in use."
-
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
@@ -715,24 +747,14 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Cancel"
   upload: "Upload files from your device"
-
 desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
-  not-found-quotes1: "\""
-  not-found-quotes2: "\""
-  not-found-text-english: "No posts were found for "
-  not-found-text-japanese: "."
-
+  not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
   share-with: "Share with Misskey"
   close: "Close"
-
 desktop/views/pages/tag.vue:
-  no-posts-found-english: "No posts were found for "
-  no-posts-found-japanese: ""
-  left-quote: "\""
-  right-quote: "\"."
-
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -888,10 +910,8 @@ mobile/views/components/sub-note-content.vue:
 mobile/views/components/timeline.vue:
   empty: "No notes"
   load-more: "More"
-
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
-
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
@@ -922,21 +942,10 @@ mobile/views/pages/user-lists.vue:
 mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Load more"
-mobile/views/pages/followers.vue:
-  followers-of: "Followers of {}"
 mobile/views/pages/signup.vue:
   lets-start: "Let's start! 📦"
-mobile/views/pages/tag.vue:
-  no-posts-found-japanese: ""
-  no-posts-found-english: "No posts were found for "
-  left-quote: "\""
-  right-quote: "\"."
-mobile/views/pages/welcome.vue:
-  signup: "Sign up."
-mobile/views/pages/widgets.vue:
-  dashboard: "Dashboard"
-mobile/views/pages/widgets/activity.vue:
-  activity: "Activity"
+mobile/views/pages/followers.vue:
+  followers-of: "Followers of {}"
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
 mobile/views/pages/home.vue:
@@ -944,6 +953,14 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+mobile/views/pages/tag.vue:
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+mobile/views/pages/welcome.vue:
+  signup: "Sign up"
+mobile/views/pages/widgets.vue:
+  dashboard: "Dashboard"
+mobile/views/pages/widgets/activity.vue:
+  activity: "Activity"
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
@@ -959,10 +976,8 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
   read-all: "Do you wish to mark all notifications as read?"
-
 mobile/views/pages/reversi.vue:
   reversi: "Reversi"
-
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
   name: "Name"
@@ -977,7 +992,6 @@ mobile/views/pages/settings/settings.profile.vue:
   saved: "Profile updated"
   uploading: "Uploading"
   upload-failed: "Failed to upload"
-
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
