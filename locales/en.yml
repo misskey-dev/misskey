@@ -935,7 +935,7 @@ mobile/views/pages/welcome.vue:
   signup: "Sign up."
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
-  widget-hints: "You can add / delete / rearrange widgets. To move the widget, drag them around. Tap "x" to delete a widget. Some widgets can change display size by tapping."
+  widget-hints: "You can add / delete / rearrange widgets. To move the widget, drag them around. Tap \"x\" to delete a widget. Some widgets can change display size by tapping."
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/following.vue:
