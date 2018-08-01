@@ -730,6 +730,9 @@ desktop/views/pages/tag.vue:
   no-posts-found-japanese: ""
   left-quote: "\""
   right-quote: "\"."
+  
+desktop/views/pages/welcome.vue:
+  powered-by-misskey: "Powered by <b>Misskey</b>."
 
 desktop/views/pages/user-list.users.vue:
   users: "User"
