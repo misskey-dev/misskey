@@ -1,6 +1,6 @@
 <template>
 <div class="root">
-	<header><b>{{ blackUser.name }}</b>(黒) vs <b>{{ whiteUser.name }}</b>(白)</header>
+	<header><b>{{ blackUser.name }}</b>(%i18n:common.reversi.black%) vs <b>{{ whiteUser.name }}</b>(%i18n:common.reversi.white%)</header>
 
 	<div style="overflow: hidden">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', turnUser.name) }}<mk-ellipsis/></p>
@@ -39,7 +39,7 @@
 		</div>
 	</div>
 
-	<p class="status"><b>{{ logPos }}ターン目</b> 黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
+	<p class="status"><b>{{ '%i18n:common.reversi.this-turn%'.split('{}')[0] }}{{ logPos }}{{ '%i18n:common.reversi.this-turn%'.split('{}')[1] }}</b> %i18n:common.reversi.black%:{{ o.blackCount }} %i18n:common.reversi.white%:{{ o.whiteCount }} %i18n:common.reversi.total%:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="player" v-if="game.isEnded">
 		<el-button-group>

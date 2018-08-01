@@ -4,27 +4,27 @@
 		<div class="mkw-calendar--body">
 			<div class="calendar" :data-is-holiday="isHoliday">
 				<p class="month-and-year">
-					<span class="year">{{ year }}年</span>
-					<span class="month">{{ month }}月</span>
+					<span class="year">%i18n:@year-english%{{ year }}%i18n:@year-japanese%</span>
+					<span class="month">%i18n:@month-english%{{ month }}%i18n:@month-japanese%</span>
 				</p>
-				<p class="day">{{ day }}日</p>
-				<p class="week-day">{{ weekDay }}曜日</p>
+				<p class="day">%i18n:@day-english%{{ day }}%i18n:@day-japanese%</p>
+				<p class="week-day">{{ weekDay }}</p>
 			</div>
 			<div class="info">
 				<div>
-					<p>今日:<b>{{ dayP.toFixed(1) }}%</b></p>
+					<p>%i18n:@today%<b>{{ dayP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${dayP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>今月:<b>{{ monthP.toFixed(1) }}%</b></p>
+					<p>%i18n:@this-month%<b>{{ monthP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${monthP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>今年:<b>{{ yearP.toFixed(1) }}%</b></p>
+					<p>%i18n:@this-year%<b>{{ yearP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${yearP}%` }"></div>
 					</div>
@@ -84,7 +84,15 @@ export default define({
 			this.year = ny;
 			this.month = nm + 1;
 			this.day = nd;
-			this.weekDay = ['日', '月', '火', '水', '木', '金', '土'][now.getDay()];
+			this.weekDay = [
+				'%i18n:common.weekday.sunday%',
+				'%i18n:common.weekday.monday%',
+				'%i18n:common.weekday.tuesday%',
+				'%i18n:common.weekday.wednesday%',
+				'%i18n:common.weekday.thursday%',
+				'%i18n:common.weekday.friday%',
+				'%i18n:common.weekday.saturday%'
+			][now.getDay()];
 
 			const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();
 			const dayDenom   = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;
