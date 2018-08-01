@@ -749,18 +749,12 @@ desktop/views/pages/selectdrive.vue:
   upload: "Uploader un ou plusieurs fichier(s) depuis votre PC"
 desktop/views/pages/search.vue:
   not-available: "検索機能を利用することができません。"
-  not-found-quotes1: "「"
-  not-found-quotes2: "」"
-  not-found-text-english: ""
-  not-found-text-japanese: "に関する投稿は見つかりませんでした。"
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
   share-with: "Misskeyで共有"
   close: "閉じる"
 desktop/views/pages/tag.vue:
-  no-posts-found-english: ""
-  no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
-  left-quote: "「"
-  right-quote: "」"
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "Utilisateurs"
   add-user: "Ajouter un utilisateur"
@@ -960,10 +954,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
 mobile/views/pages/tag.vue:
-  no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
-  no-posts-found-english: ""
-  left-quote: "「"
-  right-quote: "」"
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
 mobile/views/pages/widgets.vue:
