@@ -6,7 +6,6 @@ common:
   misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
-  
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
@@ -14,7 +13,7 @@ common:
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
     gotit: "Got it!"
-
+  name: "Misskey"
   time:
     unknown: "なぞのじかん"
     future: "未来"
@@ -266,6 +265,19 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
   next: "次"
+  
+common/views/widgets/calendar.vue:
+  year-english: ""
+  year-japanese: "年"
+  month-english: ""
+  month-japanese: "月"
+  day-english: ""
+  day-japanese: "日"
+  weekday-english: ""
+  weekday-japanese: "曜日"
+  today: "今日:"
+  this-month: "今月:"
+  this-year: "今年:"
 
 common/views/widgets/donation.vue:
   title: "寄付のお願い"
@@ -297,6 +309,33 @@ common/views/widgets/slideshow.vue:
   folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
   folder: "クリックしてフォルダを指定してください"
   no-image: "このフォルダには画像がありません"
+
+common/views/widgets/tips.vue:
+  tips-line1: "<kbd>t</kbd>でタイムラインにフォーカスできます"
+  tips-line2: "<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます"
+  tips-line3: "投稿フォームにはファイルをドラッグ&ドロップできます"
+  tips-line4: "投稿フォームにクリップボードにある画像データをペーストできます"
+  tips-line5: "ドライブにファイルをドラッグ&ドロップしてアップロードできます"
+  tips-line6: "ドライブでファイルをドラッグしてフォルダ移動できます"
+  tips-line7: "ドライブでフォルダをドラッグしてフォルダ移動できます"
+  tips-line8: "ホームは設定からカスタマイズできます"
+  tips-line9: "MisskeyはAGPLv3です"
+  tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
+  tips-line11: "投稿の ... をクリックして、投稿をユーザーページにピン留めできます"
+  tips-line12: "ドライブの容量は(デフォルトで)1GBです"
+  tips-line13: "投稿に添付したファイルは全てドライブに保存されます"
+  tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できます"
+  tips-line15: "タイムライン上部にもウィジェットを設置できます"
+  tips-line16: "投稿をダブルクリックすると詳細が見れます"
+  tips-line17: "「**」でテキストを囲むと**強調表示**されます"
+  tips-line18: "チャンネルウィジェットを利用すると、よく利用するチャンネルを素早く確認できます"
+  tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができます"
+  tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示しています"
+  tips-line21: "APIを利用してbotの開発なども行えます"
+  tips-line22: "MisskeyはLINEを通じてでも利用できます"
+  tips-line23: "まゆかわいいよまゆ"
+  tips-line24: "Misskeyは2014年にサービスを開始しました"
+  tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
 
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
@@ -642,6 +681,10 @@ desktop/views/components/settings.api.vue:
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 
+desktop/views/components/settings.drive.vue:
+  max: "中"
+  in-use: "使用中"
+
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
 
@@ -717,6 +760,8 @@ desktop/views/components/received-follow-requests-window.vue:
   title: "フォロー申請"
   accept: "承認"
   reject: "拒否"
+  
+
 
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
@@ -778,6 +823,26 @@ desktop/views/pages/selectdrive.vue:
   cancel: "キャンセル"
   upload: "PCからドライブにファイルをアップロード"
 
+desktop/views/pages/search.vue:
+  not-available: "検索機能を利用することができません。"
+  not-found-quotes1: "「"
+  not-found-quotes2: "」"
+  not-found-text-english: ""
+  not-found-text-japanese: "に関する投稿は見つかりませんでした。"
+ 
+desktop/views/pages/share.vue:
+  share-with: "Misskeyで共有"
+  close: "閉じる"
+  
+desktop/views/pages/tag.vue:
+  no-posts-found-english: ""
+  no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
+  left-quote: "「"
+  right-quote: "」"
+  
+desktop/views/pages/welcome.vue:
+  powered-by-misskey: "Powered by <b>Misskey</b>."
+  
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
   add-user: "ユーザーを追加"
@@ -967,6 +1032,9 @@ mobile/views/components/timeline.vue:
   empty: "投稿がありません"
   load-more: "もっと"
 
+mobile/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
+
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
@@ -1034,6 +1102,9 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "通知"
   read-all: "すべての通知を既読にしますか？"
+  
+mobile/views/pages/reversi.vue:
+  reversi: "リバーシ"
 
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"

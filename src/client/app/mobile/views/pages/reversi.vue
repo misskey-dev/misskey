@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:gamepad%リバーシ</span>
+	<span slot="header">%fa:gamepad%%i18n:@reversi%</span>
 	<mk-reversi v-if="!fetching" :init-game="game" @gamed="onGamed"/>
 </mk-ui>
 </template>
@@ -23,7 +23,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = 'Misskey リバーシ';
+		document.title = '%i18n:common.name% %i18n:@reversi%';
 		document.documentElement.style.background = '#fff';
 	},
 	methods: {

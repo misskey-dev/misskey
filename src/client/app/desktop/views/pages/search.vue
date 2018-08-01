@@ -6,8 +6,8 @@
 	<div :class="$style.loading" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p :class="$style.notAvailable" v-if="!fetching && notAvailable">検索機能を利用することができません。</p>
-	<p :class="$style.empty" v-if="!fetching && empty">%fa:search%「{{ q }}」に関する投稿は見つかりませんでした。</p>
+	<p :class="$style.notAvailable" v-if="!fetching && notAvailable">%i18n:@not-available%</p>
+	<p :class="$style.empty" v-if="!fetching && empty">%fa:search%%i18n:@not-found-text-english%%i18n:@not-found-quotes1%{{ q }}%i18n:@not-found-quotes2%%i18n:@not-found-text-japanese%</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
