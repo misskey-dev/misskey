@@ -287,14 +287,9 @@ common/views/widgets/broadcast.vue:
   have-a-nice-day: "Have a nice day!"
   next: "Next"
 common/views/widgets/calendar.vue:
-  year-english: ""
-  year-japanese: "年"
-  month-english: ""
-  month-japanese: "月"
-  day-english: ""
-  day-japanese: "日"
-  weekday-english: ""
-  weekday-japanese: "曜日"
+  year: "Year {}"
+  month: "Month {}"
+  day: "Day {}"
   today: "Today: "
   this-month: "This month: "
   this-year: "This year: "
@@ -754,18 +749,12 @@ desktop/views/pages/selectdrive.vue:
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
-  not-found-quotes1: "\""
-  not-found-quotes2: "\""
-  not-found-text-english: ""
-  not-found-text-japanese: "に関する投稿は見つかりませんでした。"
+  not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
   share-with: "Share with Misskey"
   close: "Close"
 desktop/views/pages/tag.vue:
-  no-posts-found-english: ""
-  no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
-  left-quote: "\""
-  right-quote: "\""
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -965,10 +954,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
 mobile/views/pages/tag.vue:
-  no-posts-found-japanese: "に関する投稿は見つかりませんでした。"
-  no-posts-found-english: ""
-  left-quote: "\""
-  right-quote: "\""
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
