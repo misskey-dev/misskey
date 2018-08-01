@@ -76,6 +76,10 @@ common:
     turn-of: "{}'s turn"
     past-turn-of: "{}'s turn"
     won: "{} won"
+    black: "黒"
+    white: "白"
+    total: "合計"
+    this-turn: "{}ターン目"
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
@@ -117,6 +121,42 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+common/views/components/games/reversi/reversi.vue:
+  title: "Misskey Reversi"
+  sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
+  invite: "招待"
+  rule: "遊び方"
+  rule-desc: "リバーシは、相手と交互に石をボードに置いて、相手の石を挟んで自分の色に変えてゆき、最終的に残った石が多い方が勝ちというボードゲームです。"
+  mode-invite: "招待"
+  mode-invite-desc: "指定したユーザーと対戦するモードです。"
+  invitations: "対局の招待があります！"
+  my-games: "自分の対局"
+  all-games: "みんなの対局"
+  enter-username: "ユーザー名を入力してください"
+  game-state:
+    ended: "終了"
+    playing: "進行中"
+  matching:
+    waiting-for: "{}を待っています"
+    cacnel: "キャンセル"
+common/views/components/games/reversi/reversi.room.vue:
+  settings-of-the-game: "ゲームの設定"
+  choose-map: "マップを選択"
+  random: "ランダム"
+  black-or-white: "先手/後手"
+  black-is: "{}が黒"
+  rules: "ルール"
+  is-llotheo: "石の少ない方が勝ち(ロセオ)"
+  looped-map: "ループマップ"
+  can-put-everywhere: "どこでも置けるモード"
+  settings-of-the-bot: "Botの設定"
+  this-gane-is-started-soon: "ゲームは数秒後に開始されます"
+  waiting-for-other: "相手の準備が完了するのを待っています"
+  waiting-for-me: "あなたの準備が完了するのを待っています"
+  waiting-for-both: "準備中"
+  cancel: "キャンセル"
+  ready: "準備完了"
+  cancel-ready: "準備続行"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
@@ -917,19 +957,6 @@ mobile/views/pages/signup.vue:
   lets-start: "Let's start! 📦"
 mobile/views/pages/followers.vue:
   followers-of: "Followers of {}"
-mobile/views/pages/signup.vue:
-  lets-start: "Let's start! 📦"
-mobile/views/pages/tag.vue:
-  no-posts-found-japanese: ""
-  no-posts-found-english: "No posts were found for "
-  left-quote: "\""
-  right-quote: "\"."
-mobile/views/pages/welcome.vue:
-  signup: "Sign up."
-mobile/views/pages/widgets.vue:
-  dashboard: "Dashboard"
-mobile/views/pages/widgets/activity.vue:
-  activity: "Activity"
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
 mobile/views/pages/home.vue:
