@@ -13,6 +13,7 @@ common:
     paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
     paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
+  name: "Misskey"
   time:
     unknown: "unknown"
     future: "future"
@@ -237,6 +238,20 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "No announcements"
   have-a-nice-day: "Have a nice day!"
   next: "Next"
+  
+common/views/widgets/calendar.vue:
+  year-english: "Year "
+  year-japanese: ""
+  month-english: "Month "
+  month-japanese: ""
+  day-english: "Day "
+  day-japanese: ""
+  weekday-english: "Weekday "
+  weekday-japanese: ""
+  today: "Today: "
+  this-month: "This month: "
+  this-year: "This year: "
+  
 common/views/widgets/donation.vue:
   title: "Request for donations"
   text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
@@ -261,6 +276,34 @@ common/views/widgets/slideshow.vue:
   folder-customize-mode: "To specify a folder, please exit customize mode"
   folder: "Please click and specify a folder"
   no-image: "There is no image in this folder"
+  
+common/views/widgets/tips.vue:
+  tips-line1: "You can focus on the timeline with <kbd>t</kbd>."
+  tips-line2: "Open posting form with <kbd>p</kbd> or <kbd>n</kbd>."
+  tips-line3: "You can drag and drop files on the post form."
+  tips-line4: "You can paste an image from the clipboard into the submission form."
+  tips-line5: "You can upload files by dragging and dropping them to Drive."
+  tips-line6: "You can move a folder by dragging it within the Drive."
+  tips-line7: "You can move folders by dragging them within the Drive"
+  tips-line8: "Home can be customized from the settings widget."
+  tips-line9: "Misskey is licensed under AGPLv3."
+  tips-line10: "Using the Time Machine widget makes it easy to trace back to the past timeline."
+  tips-line11: "You can pin posts to user page by clicking on \"...\""
+  tips-line12: "Drive capacity is 1 GB (by default)"
+  tips-line13: "All the files attached to the post are saved to Drive."
+  tips-line14: "While customizing the home, you can right click on the widget and change the design."
+  tips-line15: "You can also place widgets at the top of the timeline."
+  tips-line16: "Double click on a post to see details."
+  tips-line17: "Surrounding the text with ** ** will highlight it."
+  tips-line18: "By using the channel widget, you can quickly check frequently used channels."
+  tips-line19: "Several windows can be detached outside the browser."
+  tips-line20: "The percentage of the calendar widget shows the percentage of time elapsed."
+  tips-line21: "You can also use the API to develop bots."
+  tips-line22: "Misskey is also available via LINE."
+  tips-line23: "Mayu is so cute with its eyebrows."
+  tips-line24: "Misskey started in 2014."
+  tips-line25: "You can receive notification even if Misskey is not open in a compatible browser."
+
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -556,6 +599,11 @@ desktop/views/components/settings.api.vue:
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
+
+desktop/views/components/settings.drive.vue:
+  max: "Max "
+  in-use: " in use."
+
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
@@ -652,6 +700,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "Log in"
   signup-button: "Sign up"
   timeline: "Timeline"
+  powered-by-misskey: "Powered by <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
 desktop/views/pages/favorites.vue:
@@ -666,6 +715,24 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Cancel"
   upload: "Upload files from your device"
+  
+desktop/views/pages/search.vue:
+  not-available: "The search function can not be used."
+  not-found-quotes1: "\""
+  not-found-quotes2: "\""
+  not-found-text-english: "No posts were found for "
+  not-found-text-japanese: "."  
+
+desktop/views/pages/share.vue:
+  share-with: "Share with Misskey"
+  close: "Close"
+  
+desktop/views/pages/tag.vue:
+  no-posts-found-english: "No posts were found for "
+  no-posts-found-japanese: ""
+  left-quote: "\""
+  right-quote: "\"."
+
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -821,6 +888,10 @@ mobile/views/components/sub-note-content.vue:
 mobile/views/components/timeline.vue:
   empty: "No notes"
   load-more: "More"
+  
+mobile/views/components/ui.header.vue:
+  welcome-back: "Welcome back, "
+
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
@@ -853,6 +924,19 @@ mobile/views/pages/drive.vue:
   more: "Load more"
 mobile/views/pages/followers.vue:
   followers-of: "Followers of {}"
+mobile/views/pages/signup.vue:
+  lets-start: "Let's start! 📦"
+mobile/views/pages/tag.vue:
+  no-posts-found-japanese: ""
+  no-posts-found-english: "No posts were found for "
+  left-quote: "\""
+  right-quote: "\"."
+mobile/views/pages/welcome.vue:
+  signup: "Sign up."
+mobile/views/pages/widgets.vue:
+  dashboard: "Dashboard"
+mobile/views/pages/widgets/activity.vue:
+  activity: "Activity"
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
 mobile/views/pages/home.vue:
@@ -875,6 +959,10 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
   read-all: "Do you wish to mark all notifications as read?"
+
+mobile/views/pages/reversi.vue:
+  reversi: "Reversi"
+
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
   name: "Name"
