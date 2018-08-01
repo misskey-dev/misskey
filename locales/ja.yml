@@ -1102,6 +1102,9 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "通知"
   read-all: "すべての通知を既読にしますか？"
+  
+mobile/views/pages/reversi.vue:
+  reversi: "リバーシ"
 
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"
