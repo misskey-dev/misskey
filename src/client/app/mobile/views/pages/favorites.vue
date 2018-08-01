@@ -28,7 +28,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = 'Misskey | %i18n:@notifications%';
+		document.title = '%i18n:common.name% | %i18n:@notifications%';
 	},
 	methods: {
 		fetch() {
