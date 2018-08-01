@@ -717,6 +717,8 @@ desktop/views/components/received-follow-requests-window.vue:
   title: "フォロー申請"
   accept: "承認"
   reject: "拒否"
+  
+
 
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
@@ -778,6 +780,10 @@ desktop/views/pages/selectdrive.vue:
   cancel: "キャンセル"
   upload: "PCからドライブにファイルをアップロード"
 
+desktop/views/pages/share.vue:
+  share-with: "Misskeyで共有"
+  close: "閉じる"
+  
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
   add-user: "ユーザーを追加"

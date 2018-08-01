@@ -666,6 +666,11 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Cancel"
   upload: "Upload files from your device"
+  
+desktop/views/pages/share.vue:
+  share-with: "Share with Misskey"
+  close: "Close"
+
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
