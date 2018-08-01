@@ -945,6 +945,9 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+mobile/views/pages/share.vue:
+  share-with-right: ""
+  share-with-left: "Share with "  
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:

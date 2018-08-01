@@ -1132,6 +1132,10 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
+mobile/views/pages/share.vue:
+  share-with-right: "で共有"
+  share-with-left: ""  
+  
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 
