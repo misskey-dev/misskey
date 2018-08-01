@@ -6,6 +6,13 @@ common:
   misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  customization-tips:
+    title: "カスタマイズのヒント"
+    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
+    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
+    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
+    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    gotit: "Got it!"
   time:
     unknown: "なぞのじかん"
     future: "未来"
@@ -17,6 +24,7 @@ common:
     weeks_ago: "{}週間前"
     months_ago: "{}ヶ月前"
     years_ago: "{}年前"
+  trash: "ゴミ箱"
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -249,6 +257,10 @@ common/views/widgets/memo.vue:
   title: "付箋"
   memo: "ここに書いて！"
   save: "保存"
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
+  folder: "クリックしてフォルダを指定してください"
+  no-image: "このフォルダには画像がありません"
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
   following: "フォロー中"
@@ -397,6 +409,9 @@ desktop/views/components/notifications.vue:
   more: "もっと見る"
   empty: "ありません！"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+ユーザーを追加"
+  attach-location-information: "位置情報を添付する"
+  hide-contents: "内容を隠す"
   reply-placeholder: "この投稿への返信..."
   quote-placeholder: "この投稿を引用..."
   submit: "投稿"
@@ -417,6 +432,10 @@ desktop/views/components/post-form.vue:
   text-remain: "残り{}文字"
   recent-tags: "最近"
   click-to-tagging: "クリックでタグ付け"
+  visibility: "公開範囲"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  enter-username: "ユーザー名を入力してください"
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
   reply: "返信"
@@ -559,6 +578,7 @@ desktop/views/components/settings.profile.vue:
   other: "その他"
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
+  profile-updated: "プロフィールを更新しました"
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"

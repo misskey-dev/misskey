@@ -9,7 +9,6 @@ import { pack } from '../../../../../models/messaging-message';
 import { publishUserStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
-import config from '../../../../../config';
 
 export const meta = {
 	desc: {
@@ -122,20 +121,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			pushSw(message.recipientId, 'unread_messaging_message', messageObj);
 		}
 	}, 3000);
-
-	// Register to search database
-	if (message.text && config.elasticsearch) {
-		const es = require('../../../db/elasticsearch');
-
-		es.index({
-			index: 'misskey',
-			type: 'messaging_message',
-			id: message._id.toString(),
-			body: {
-				text: message.text
-			}
-		});
-	}
 
 	// 履歴作成(自分)
 	History.update({
