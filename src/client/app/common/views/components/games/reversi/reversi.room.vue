@@ -5,8 +5,8 @@
 	<div>
 		<p>%i18n:@settings-of-the-game%</p>
 
-		<el-card class="map">
-			<div slot="header">
+		<div class="card">
+			<header>
 				<el-select :class="$style.mapSelect" v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
 					<el-option label="%i18n:@random%" :value="null"/>
 					<el-option-group v-for="c in mapCategories" :key="c" :label="c">
@@ -16,63 +16,80 @@
 						</el-option>
 					</el-option-group>
 				</el-select>
-			</div>
-			<div :class="$style.board" v-if="game.settings.map != null" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
-				<div v-for="(x, i) in game.settings.map.join('')"
-					:data-none="x == ' '"
-					@click="onPixelClick(i, x)"
-				>
-					<template v-if="x == 'b'">%fa:circle%</template>
-					<template v-if="x == 'w'">%fa:circle R%</template>
+			</header>
+
+			<div>
+				<div :class="$style.board" v-if="game.settings.map != null" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
+					<div v-for="(x, i) in game.settings.map.join('')"
+							:data-none="x == ' '"
+							@click="onPixelClick(i, x)">
+						<template v-if="x == 'b'">%fa:circle%</template>
+						<template v-if="x == 'w'">%fa:circle R%</template>
+					</div>
 				</div>
 			</div>
-		</el-card>
+		</div>
 
-		<el-card class="bw">
-			<div slot="header">
+		<div class="card">
+			<header>
 				<span>%i18n:@black-or-white%</span>
-			</div>
-			<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">%i18n:@random%</el-radio>
-			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
-			<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
-		</el-card>
+			</header>
 
-		<el-card class="rules">
-			<div slot="header">
+			<div>
+				<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">%i18n:@random%</el-radio>
+				<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
+				<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
+			</div>
+		</div>
+
+		<div class="card">
+			<header>
 				<span>%i18n:@rules%</span>
-			</div>
-			<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="%i18n:@is-llotheo%"/>
-			<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="%i18n:@looped-map%"/>
-			<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="%i18n:@can-put-everywhere%"/>
-		</el-card>
+			</header>
 
-		<el-card class="bot-form" v-if="form">
-			<div slot="header">
+			<div>
+				<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="%i18n:@is-llotheo%"/>
+				<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="%i18n:@looped-map%"/>
+				<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="%i18n:@can-put-everywhere%"/>
+			</div>
+		</div>
+
+		<div class="card" v-if="form">
+			<header>
 				<span>%i18n:@settings-of-the-bot%</span>
+			</header>
+
+			<div>
+				<el-alert v-for="message in messages"
+						:title="message.text"
+						:type="message.type"
+						:key="message.id"/>
+
+				<template v-for="item in form">
+					<mk-switch v-if="item.type == 'button'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm($event, item)">{{ item.desc || '' }}</mk-switch>
+
+					<div class="card" v-if="item.type == 'radio'" :key="item.id">
+						<header>
+							<span>{{ item.label }}</span>
+						</header>
+
+						<div>
+							<el-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :label="r.value" @change="onChangeForm($event, item)">{{ r.label }}</el-radio>
+						</div>
+					</div>
+
+					<div class="card" v-if="item.type == 'textbox'" :key="item.id">
+						<header>
+							<span>{{ item.label }}</span>
+						</header>
+
+						<div>
+							<el-input v-model="item.value" @change="onChangeForm($event, item)"/>
+						</div>
+					</div>
+				</template>
 			</div>
-			<el-alert v-for="message in messages"
-				:title="message.text"
-				:type="message.type"
-				:key="message.id"
-			/>
-			<template v-for="item in form">
-				<mk-switch v-if="item.type == 'button'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm($event, item)">{{ item.desc || '' }}</mk-switch>
-
-				<el-card v-if="item.type == 'radio'" :key="item.id">
-					<div slot="header">
-						<span>{{ item.label }}</span>
-					</div>
-					<el-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :label="r.value" @change="onChangeForm($event, item)">{{ r.label }}</el-radio>
-				</el-card>
-
-				<el-card v-if="item.type == 'textbox'" :key="item.id">
-					<div slot="header">
-						<span>{{ item.label }}</span>
-					</div>
-					<el-input v-model="item.value" @change="onChangeForm($event, item)"/>
-				</el-card>
-			</template>
-		</el-card>
+		</div>
 	</div>
 
 	<footer>
@@ -244,12 +261,23 @@ export default Vue.extend({
 	> div
 		padding 0 16px
 
-		> .map
-		> .bw
-		> .rules
-		> .bot-form
-			max-width 400px
+		> .card
 			margin 0 auto 16px auto
+
+		.card
+			max-width 400px
+			border-radius 4px
+			border 1px solid #ebeef5
+			background #fff
+			color #303133
+			box-shadow 0 2px 12px 0 rgba(#000, 0.1)
+
+			> header
+				padding 18px 20px
+				border-bottom 1px solid #ebeef5
+
+			> div
+				padding 20px
 
 	> footer
 		position sticky
@@ -289,9 +317,4 @@ export default Vue.extend({
 		&[data-none]
 			border-color transparent
 
-</style>
-
-<style lang="stylus">
-.el-alert__content
-	position initial !important
 </style>

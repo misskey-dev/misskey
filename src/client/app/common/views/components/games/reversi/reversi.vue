@@ -14,7 +14,7 @@
 		<p>%i18n:@sub-title%</p>
 		<div class="play">
 			<!--<el-button round>フリーマッチ(準備中)</el-button>-->
-			<el-button type="primary" round @click="match">%i18n:@invite%</el-button>
+			<form-button primary round @click="match">%i18n:@invite%</form-button>
 			<details>
 				<summary>%i18n:@rule%</summary>
 				<div>
