@@ -553,7 +553,6 @@ desktop/views/components/friends-maker.vue:
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
   refresh: "もっと見る"
-  close: "閉じる"
 
 desktop/views/components/game-window.vue:
   game: "リバーシ"
@@ -873,7 +872,6 @@ desktop/views/components/users-list-window.vue:
 
 desktop/views/components/window.vue:
   popout: "ポップアウト"
-  close: "閉じる"
 
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
@@ -1055,8 +1053,7 @@ mobile/views/components/friends-maker.vue:
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
   refresh: "もっと見る"
-  close: "閉じる"
-
+  
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
   more: "もっと見る"
