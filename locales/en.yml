@@ -135,6 +135,16 @@ auth/views/form.vue:
   notification-write: "Manage your notifications."
   cancel: "Cancel"
   accept: "Accept"
+auth/views/index.vue:
+  loading: "Loading..."
+  denied: "Application authorization is denied."
+  denied-paragraph: "This application will not access your account."
+  already-authorized: "This application is already authorized."
+  allowed: "Application authorization allowed."
+  callback-url: "Going back to the application."
+  please-go-back: "Please go back to the application."
+  error: "Session does not exist."
+  sign-in: "Please sign in."
 common/views/components/games/reversi/reversi.vue:
   title: "Misskey Reversi"
   sub-title: "Play reversi with your friends!"
