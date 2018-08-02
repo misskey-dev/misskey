@@ -5,6 +5,7 @@ import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
 
 const Notification = db.get<INotification>('notifications');
+Notification.createIndex('notifieeId');
 export default Notification;
 
 export interface INotification {

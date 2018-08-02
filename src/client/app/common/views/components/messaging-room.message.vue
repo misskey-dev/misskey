@@ -79,7 +79,8 @@ root(isDark)
 	> .content
 
 		> .balloon
-			display block
+			display flex
+			align-items center
 			padding 0
 			max-width calc(100% - 16px)
 			min-height 38px
@@ -254,7 +255,7 @@ root(isDark)
 					font-size 11px
 
 	&[data-is-deleted]
-		> .baloon
+		> .balloon
 			opacity 0.5
 
 .message[data-darkmode]
