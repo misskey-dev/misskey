@@ -30,6 +30,12 @@ common:
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
   trash: "Trash"
+  date:
+    full-year: "Year"
+    month: "Month"
+    day: "Day"
+    hours: "Hours"
+    minutes: "Minutes"
   weekday-short:
     sunday: "S"
     monday: "M"

@@ -32,6 +32,13 @@ common:
 
   trash: "ゴミ箱"
 
+  date:
+    full-year: "年"
+    month: "月"
+    day: "日"
+    hours: "時"
+    minutes: "分"
+  
   weekday-short:
     sunday: "日"
     monday: "月"
