@@ -28,7 +28,7 @@
 		</section>
 	</div>
 	<div class="action">
-		<button @click="cancel">%i18n:@cancel%</button>
+		<button @click="cancel">%i18n:common.cancel%</button>
 		<button @click="accept">%i18n:@accept%</button>
 	</div>
 </div>
