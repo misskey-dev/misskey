@@ -33,8 +33,8 @@
 				<span>%i18n:@black-or-white%</span>
 			</div>
 			<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">%i18n:@random%</el-radio>
-			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1.name }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
-			<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2.name }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
+			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
+			<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
 		</el-card>
 
 		<el-card class="rules">
