@@ -164,14 +164,19 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		}
 
 		// 通知
-		nm.push(data.reply.userId, 'reply');
+		if (isLocalUser(data.reply._user)) {
+			nm.push(data.reply.userId, 'reply');
+		}
 	}
 
 	// If it is renote
 	if (data.renote) {
-		// Notify
 		const type = data.text ? 'quote' : 'renote';
-		nm.push(data.renote.userId, type);
+
+		// Notify
+		if (isLocalUser(data.renote._user)) {
+			nm.push(data.renote.userId, type);
+		}
 
 		// Fetch watchers
 		nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
@@ -181,15 +186,9 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 			watch(user._id, data.renote);
 		}
 
-		// If it is quote renote
-		if (data.text) {
-			// Add mention
-			nm.push(data.renote.userId, 'quote');
-		} else {
-			// Publish event
-			if (!user._id.equals(data.renote.userId)) {
-				publishUserStream(data.renote.userId, 'renote', noteObj);
-			}
+		// Publish event
+		if (!user._id.equals(data.renote.userId)) {
+			publishUserStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
 

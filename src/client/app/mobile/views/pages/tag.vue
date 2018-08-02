@@ -3,7 +3,7 @@
 	<span slot="header">%fa:hashtag%{{ $route.params.tag }}</span>
 
 	<main>
-		<p v-if="!fetching && empty">%fa:search%%i18n:@no-posts-found-english%%i18n:@left-quote%{{ q }}%i18n:@right-quote%%i18n:@no-posts-found-japanese%</p>
+		<p v-if="!fetching && empty">%fa:search% {{ '%i18n:no-posts-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:no-posts-found%'.split('{}')[1] }}</p>
 		<mk-notes ref="timeline" :more="existMore ? more : null"/>
 	</main>
 </mk-ui>

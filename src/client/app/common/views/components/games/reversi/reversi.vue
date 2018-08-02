@@ -4,7 +4,7 @@
 		<x-gameroom :game="game"/>
 	</div>
 	<div class="matching" v-else-if="matching">
-		<h1>{{ '%i18n:@matching.waiting-for%'.split('{}')[0] }}<b>{{ matching.name }}</b>{{ '%i18n:@matching.waiting-for%'.split('{}')[1] }}<mk-ellipsis/></h1>
+		<h1>{{ '%i18n:@matching.waiting-for%'.split('{}')[0] }}<b>{{ matching | userName }}</b>{{ '%i18n:@matching.waiting-for%'.split('{}')[1] }}<mk-ellipsis/></h1>
 		<div class="cancel">
 			<el-button round @click="cancel">%i18n:@matching.cancel%</el-button>
 		</div>
@@ -30,7 +30,7 @@
 			<h2>%i18n:@invitations%</h2>
 			<div class="invitation" v-for="i in invitations" tabindex="-1" @click="accept(i)">
 				<mk-avatar class="avatar" :user="i.parent"/>
-				<span class="name"><b>{{ i.parent.name }}</b></span>
+				<span class="name"><b>{{ i.parent | userName }}</b></span>
 				<span class="username">@{{ i.parent.username }}</span>
 				<mk-time :time="i.createdAt"/>
 			</div>
@@ -40,7 +40,7 @@
 			<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 				<mk-avatar class="avatar" :user="g.user1"/>
 				<mk-avatar class="avatar" :user="g.user2"/>
-				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
+				<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
 				<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
 			</a>
 		</section>
@@ -49,7 +49,7 @@
 			<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 				<mk-avatar class="avatar" :user="g.user1"/>
 				<mk-avatar class="avatar" :user="g.user2"/>
-				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
+				<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
 				<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
 			</a>
 		</section>

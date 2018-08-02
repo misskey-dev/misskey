@@ -6,7 +6,7 @@
 	<div :class="$style.loading" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p :class="$style.empty" v-if="!fetching && empty">%i18n:no-posts-found-english%%fa:search%%i18n:left-quote%{{ q }}%i18n:right-quote%%i18n:no-posts-found-japanese%</p>
+	<p :class="$style.empty" v-if="!fetching && empty">%fa:search% {{ '%i18n:no-posts-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:no-posts-found%'.split('{}')[1] }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>

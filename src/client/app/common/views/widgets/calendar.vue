@@ -4,10 +4,10 @@
 		<div class="mkw-calendar--body">
 			<div class="calendar" :data-is-holiday="isHoliday">
 				<p class="month-and-year">
-					<span class="year">%i18n:@year-english%{{ year }}%i18n:@year-japanese%</span>
-					<span class="month">%i18n:@month-english%{{ month }}%i18n:@month-japanese%</span>
+					<span class="year">{{ '%i18n:@year%'.split('{}')[0] }}{{ year }}{{ '%i18n:@year%'.split('{}')[1] }}</span>
+					<span class="month">{{ '%i18n:@month%'.split('{}')[0] }}{{ month }}{{ '%i18n:@month%'.split('{}')[1] }}</span>
 				</p>
-				<p class="day">%i18n:@day-english%{{ day }}%i18n:@day-japanese%</p>
+				<p class="day">{{ '%i18n:@day%'.split('{}')[0] }}{{ day }}{{ '%i18n:@day%'.split('{}')[1] }}</p>
 				<p class="week-day">{{ weekDay }}</p>
 			</div>
 			<div class="info">
