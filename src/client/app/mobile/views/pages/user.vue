@@ -106,7 +106,7 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
-				document.title = Vue.filter('userName')(this.user) + ' | Misskey';
+				document.title = Vue.filter('userName')(this.user) + ' | %i18n:common.name%';
 			});
 		}
 	}

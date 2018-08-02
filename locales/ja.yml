@@ -1127,10 +1127,15 @@ mobile/views/pages/welcome.vue:
 
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
+  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
+mobile/views/pages/share.vue:
+  share-with-right: "で共有"
+  share-with-left: ""  
+  
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 

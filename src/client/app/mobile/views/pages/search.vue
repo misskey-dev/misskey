@@ -34,7 +34,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = `%i18n:@search%: ${this.q} | Misskey`;
+		document.title = `%i18n:@search%: ${this.q} | %i18n:common.name%`;
 
 		this.fetch();
 	},

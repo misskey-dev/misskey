@@ -187,7 +187,7 @@ export default Vue.extend({
 
 		clearNotification() {
 			this.unreadCount = 0;
-			document.title = 'Misskey';
+			document.title = '%i18n:common.name%';
 		},
 
 		onVisibilitychange() {

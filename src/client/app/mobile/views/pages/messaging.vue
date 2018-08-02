@@ -11,7 +11,7 @@ import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
 	mounted() {
-		document.title = 'Misskey %i18n:@messaging%';
+		document.title = '%i18n:common.name% %i18n:@messaging%';
 	},
 	methods: {
 		navigate(user) {
