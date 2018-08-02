@@ -756,6 +756,8 @@ desktop/views/components/users-list.vue:
   fetching: "Loading…"
 desktop/views/components/users-list-item.vue:
   followed: "Follows you"
+desktop/views/components/users-list-window.vue:
+  list-name: "List name"  
 desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Close"
