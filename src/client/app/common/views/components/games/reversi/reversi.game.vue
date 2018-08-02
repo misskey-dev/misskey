@@ -3,12 +3,12 @@
 	<header><b>{{ blackUser | userName }}</b>(%i18n:common.reversi.black%) vs <b>{{ whiteUser | userName }}</b>(%i18n:common.reversi.white%)</header>
 
 	<div style="overflow: hidden">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', turnUser | userName) }}<mk-ellipsis/></p>
-		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', turnUser | userName) }}</p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', Vue.filter('userName')(turnUser)) }}<mk-ellipsis/></p>
+		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', Vue.filter('userName')(turnUser)) }}</p>
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">%i18n:common.reversi.my-turn%</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
-			<template v-if="game.winner">{{ '%i18n:common.reversi.won%'.replace('{}', game.winner | userName) }}{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
+			<template v-if="game.winner">{{ '%i18n:common.reversi.won%'.replace('{}', Vue.filter('userName')(game.winner)) }}{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
 			<template v-else>%i18n:common.reversi.drawn%</template>
 		</p>
 	</div>
