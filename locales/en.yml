@@ -326,7 +326,7 @@ common/views/widgets/tips.vue:
   tips-line6: "You can move a folder by dragging it within the Drive."
   tips-line7: "You can move folders by dragging them within the Drive."
   tips-line8: "Home can be customized from the settings."
-  tips-line9: "Misskey is licensed under AGPLv3."
+  tips-line9: "Misskey is licensed under the AGPLv3."
   tips-line10: "Using the Time Machine widget makes it easy to trace back to the past timeline."
   tips-line11: "You can pin posts to user page by clicking on \"...\""
   tips-line13: "All the files attached to the post are saved to Drive."
@@ -754,7 +754,7 @@ desktop/views/pages/share.vue:
   share-with: "Share with Misskey"
   close: "Close"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No post with hashtag \"{}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -944,12 +944,6 @@ mobile/views/pages/drive.vue:
   more: "Load more"
 mobile/views/pages/signup.vue:
   lets-start: "Let's start! 📦"
-<<<<<<< HEAD
-mobile/views/pages/tag.vue:
-  no-posts-found-japanese: ""
-  no-posts-found-english: "No posts were found for "
-  left-quote: "\""
-  right-quote: "\"."
 mobile/views/pages/welcome.vue:
   signup: "Sign up."
 mobile/views/pages/widgets.vue:
@@ -968,20 +962,17 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
-<<<<<<< HEAD
 mobile/views/pages/share.vue:
   share-with-right: ""
   share-with-left: "Share with "  
-=======
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No post with hashtag "{}" found."
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
->>>>>>> upstream/master
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
