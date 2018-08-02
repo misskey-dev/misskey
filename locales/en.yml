@@ -22,10 +22,10 @@ common:
     file-uploaded: "File uploaded!"
     message-from: "Message from {}:"
     reversi-invited: "Invited to a game"
-    reversi-invited-by: "{}さんから"
-    notified-by: "{}さんから"
-    reply-from: "{}さんから返信:"
-    quoted-by: "{}さんが引用:"
+    reversi-invited-by: "Invited by {}:"
+    notified-by: "Notified by {}:"
+    reply-from: "Reply from {}:"
+    quoted-by: "Quoted by {}:"
   name: "Misskey"
   time:
     unknown: "unknown"
@@ -40,11 +40,11 @@ common:
     years_ago: "{}year(s) ago"
   trash: "Trash"
   date:
-    full-year: "年"
-    month: "月"
-    day: "日"
-    hours: "時"
-    minutes: "分"
+    full-year: "Year"
+    month: "Month"
+    day: "Day"
+    hours: "Hour"
+    minutes: "Minutes"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -141,29 +141,29 @@ common:
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
 auth/views/form.vue:
-  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
-  permission-ask: "このアプリは次の権限を要求しています:"
-  account-read: "アカウントの情報を見る。"
-  account-write: "アカウントの情報を操作する。"
-  note-write: "投稿する。"
-  like-write: "いいねしたりいいね解除する。"
-  following-write: "フォローしたりフォロー解除する。"
-  drive-read: "ドライブを見る。"
-  drive-write: "ドライブを操作する。"
-  notification-read: "通知を見る。"
-  notification-write: "通知を操作する。"
-  cancel: "キャンセル"
-  accept: "アクセスを許可"
+  share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
+  permission-ask: "This application requires the following permissions:"
+  account-read: "Viewing account information:"
+  account-write: "Modify account informations:"
+  note-write: "Post."
+  like-write: "To react to posts."
+  following-write: "Follow or unfollow."
+  drive-read: "Read your drive."
+  drive-write: "Upload/delete files in your drive."
+  notification-read: "Read your notifications."
+  notification-write: "Manage your notifications."
+  cancel: "Cancel"
+  accept: "Grant access."
 auth/views/index.vue:
-  loading: "読み込み中"
-  denied: "アプリケーションの連携をキャンセルしました。"
-  denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
-  already-authorized: "このアプリは既に連携済みです"
-  allowed: "アプリケーションの連携を許可しました"
-  callback-url: "アプリケーションに戻っています"
-  please-go-back: "アプリケーションに戻って、やっていってください。"
-  error: "セッションが存在しません。"
-  sign-in: "サインインしてください"
+  loading: "Loading"
+  denied: "Application authorization denied."
+  denied-paragraph: "This application will not access your account."
+  already-authorized: "This application has already been authorized."
+  allowed: "Application authorizations allowed.+"
+  callback-url: "Going back to the application."
+  please-go-back: "Please go back to the application."
+  error: "Session does not exist."
+  sign-in: "Please sign in."
 common/views/components/games/reversi/reversi.vue:
   title: "Misskey Reversi"
   sub-title: "Play reversi with your friends!"
@@ -794,9 +794,9 @@ desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "Share with {}."
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts \"{}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -996,7 +996,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts \"{}\" found."
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
@@ -1005,7 +1005,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "Share with {}."
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
