@@ -13,6 +13,7 @@ common:
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
     gotit: "Got it!"
+  name: "Misskey"
   time:
     unknown: "nieznany"
     future: "w przyszłości"
@@ -33,6 +34,14 @@ common:
     thursday: "C"
     friday: "P"
     saturday: "S"
+  weekday:
+    sunday: "日曜日"
+    monday: "月曜日"
+    tuesday: "火曜日"
+    wednesday: "水曜日"
+    thursday: "木曜日"
+    friday: "金曜日"
+    saturday: "土曜日"
   reactions:
     like: "Lubię"
     love: "Kocham"
@@ -67,6 +76,10 @@ common:
     turn-of: "Kolej na {}"
     past-turn-of: "Kolej {}"
     won: "{}の勝ち"
+    black: "黒"
+    white: "白"
+    total: "合計"
+    this-turn: "{}ターン目"
   widgets:
     analog-clock: "Zegar analogowy"
     profile: "Profil"
@@ -108,6 +121,42 @@ common:
     rename: "Zmień nazwę"
     stack-left: "Przypnij do lewej"
     pop-right: "Odepnij w prawo"
+common/views/components/games/reversi/reversi.vue:
+  title: "Misskey Reversi"
+  sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
+  invite: "招待"
+  rule: "遊び方"
+  rule-desc: "リバーシは、相手と交互に石をボードに置いて、相手の石を挟んで自分の色に変えてゆき、最終的に残った石が多い方が勝ちというボードゲームです。"
+  mode-invite: "招待"
+  mode-invite-desc: "指定したユーザーと対戦するモードです。"
+  invitations: "対局の招待があります！"
+  my-games: "自分の対局"
+  all-games: "みんなの対局"
+  enter-username: "ユーザー名を入力してください"
+  game-state:
+    ended: "終了"
+    playing: "進行中"
+  matching:
+    waiting-for: "{}を待っています"
+    cacnel: "キャンセル"
+common/views/components/games/reversi/reversi.room.vue:
+  settings-of-the-game: "ゲームの設定"
+  choose-map: "マップを選択"
+  random: "ランダム"
+  black-or-white: "先手/後手"
+  black-is: "{}が黒"
+  rules: "ルール"
+  is-llotheo: "石の少ない方が勝ち(ロセオ)"
+  looped-map: "ループマップ"
+  can-put-everywhere: "どこでも置けるモード"
+  settings-of-the-bot: "Botの設定"
+  this-gane-is-started-soon: "ゲームは数秒後に開始されます"
+  waiting-for-other: "相手の準備が完了するのを待っています"
+  waiting-for-me: "あなたの準備が完了するのを待っています"
+  waiting-for-both: "準備中"
+  cancel: "キャンセル"
+  ready: "準備完了"
+  cancel-ready: "準備続行"
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
@@ -237,6 +286,13 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "Brak transmisji"
   have-a-nice-day: "Miłego dnia!"
   next: "Dalej"
+common/views/widgets/calendar.vue:
+  year: "{}年"
+  month: "{}月"
+  day: "{}日"
+  today: "今日:"
+  this-month: "今月:"
+  this-year: "今年:"
 common/views/widgets/donation.vue:
   title: "Dotacje"
   text: "Aby utrzymywać Misskey, płacimy za domenę, serwery i nie tylko… Nie zarabiamy na tym, więc byłoby nam miło, gdybyśmy uzyskali od Ciebie dotację. Jeżeli jesteś zainteresowany, skontaktuj się z {}. Dziękujemy za wsparcie!"
@@ -261,6 +317,27 @@ common/views/widgets/slideshow.vue:
   folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
   folder: "クリックしてフォルダを指定してください"
   no-image: "このフォルダには画像がありません"
+common/views/widgets/tips.vue:
+  tips-line1: "<kbd>t</kbd>でタイムラインにフォーカスできます"
+  tips-line2: "<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます"
+  tips-line3: "投稿フォームにはファイルをドラッグ&ドロップできます"
+  tips-line4: "投稿フォームにクリップボードにある画像データをペーストできます"
+  tips-line5: "ドライブにファイルをドラッグ&ドロップしてアップロードできます"
+  tips-line6: "ドライブでファイルをドラッグしてフォルダ移動できます"
+  tips-line7: "ドライブでフォルダをドラッグしてフォルダ移動できます"
+  tips-line8: "ホームは設定からカスタマイズできます"
+  tips-line9: "MisskeyはAGPLv3です"
+  tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
+  tips-line11: "投稿の ... をクリックして、投稿をユーザーページにピン留めできます"
+  tips-line13: "投稿に添付したファイルは全てドライブに保存されます"
+  tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できます"
+  tips-line17: "「**」でテキストを囲むと**強調表示**されます"
+  tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができます"
+  tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示しています"
+  tips-line21: "APIを利用してbotの開発なども行えます"
+  tips-line23: "まゆかわいいよまゆ"
+  tips-line24: "Misskeyは2014年にサービスを開始しました"
+  tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
 common/views/pages/follow.vue:
   signed-in-as: "Zalogowany jako {}"
   following: "Śledzisz"
@@ -556,6 +633,9 @@ desktop/views/components/settings.api.vue:
   enter-password: "Wprowadź hasło"
 desktop/views/components/settings.apps.vue:
   no-apps: "Brak zautoryzowanych aplikacji"
+desktop/views/components/settings.drive.vue:
+  max: "中"
+  in-use: "使用中"
 desktop/views/components/settings.mute.vue:
   no-users: "Brak wyciszonych użytkowników"
 desktop/views/components/settings.password.vue:
@@ -652,6 +732,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "Zaloguj się"
   signup-button: "Zarejestruj się"
   timeline: "Oś czasu"
+  powered-by-misskey: "Powered by <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
 desktop/views/pages/favorites.vue:
@@ -666,6 +747,14 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Anuluj"
   upload: "Wyślij pliki z Twojego komputera"
+desktop/views/pages/search.vue:
+  not-available: "検索機能を利用することができません。"
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
+desktop/views/pages/share.vue:
+  share-with: "Misskeyで共有"
+  close: "閉じる"
+desktop/views/pages/tag.vue:
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "Użytkownicy"
   add-user: "Dodaj użytkownika"
@@ -821,6 +910,8 @@ mobile/views/components/sub-note-content.vue:
 mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
   load-more: "Więcej"
+mobile/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
 mobile/views/components/ui.nav.vue:
   timeline: "Oś czasu"
   notifications: "Powiadomienia"
@@ -851,6 +942,8 @@ mobile/views/pages/user-lists.vue:
 mobile/views/pages/drive.vue:
   drive: "Dysk"
   more: "Załaduj więcej"
+mobile/views/pages/signup.vue:
+  lets-start: "📦 始めましょう"
 mobile/views/pages/followers.vue:
   followers-of: "Śledzący {}"
 mobile/views/pages/following.vue:
@@ -860,6 +953,14 @@ mobile/views/pages/home.vue:
   local: "Lokalne"
   hybrid: "Społeczność"
   global: "Globalne"
+mobile/views/pages/tag.vue:
+  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+mobile/views/pages/welcome.vue:
+  signup: "新規登録"
+mobile/views/pages/widgets.vue:
+  dashboard: "ダッシュボード"
+mobile/views/pages/widgets/activity.vue:
+  activity: "アクティビティ"
 mobile/views/pages/messaging.vue:
   messaging: "Wiadomości"
 mobile/views/pages/messaging-room.vue:
@@ -875,6 +976,8 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
+mobile/views/pages/reversi.vue:
+  reversi: "リバーシ"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"
   name: "Nazwa"
