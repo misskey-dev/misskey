@@ -6,6 +6,7 @@ common:
   misskey: "A ⭐ of the fediverse"
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
+  application-authorization: "Application authorizations"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
