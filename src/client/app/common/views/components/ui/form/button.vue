@@ -1,6 +1,6 @@
 <template>
 <div class="nvemkhtwcnnpkdrwfcbzuwhfulejhmzg" :class="{ round, primary }">
-	<button :type="type" @click="$emit('click')">
+	<button @click="$emit('click')">
 		<slot></slot>
 	</button>
 </div>

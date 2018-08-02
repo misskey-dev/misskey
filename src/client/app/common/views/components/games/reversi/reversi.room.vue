@@ -1,21 +1,19 @@
 <template>
-<div class="root">
+<div class="urbixznjwwuukfsckrwzwsqzsxornqij">
 	<header><b>{{ game.user1 | userName }}</b> vs <b>{{ game.user2 | userName }}</b></header>
 
 	<div>
 		<p>%i18n:@settings-of-the-game%</p>
 
-		<div class="card">
+		<div class="card map">
 			<header>
-				<el-select :class="$style.mapSelect" v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
-					<el-option label="%i18n:@random%" :value="null"/>
-					<el-option-group v-for="c in mapCategories" :key="c" :label="c">
-						<el-option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">
-							<span style="float: left">{{ m.name }}</span>
-							<span style="float: right; color: #8492a6; font-size: 13px" v-if="m.author">(by <i>{{ m.author }}</i>)</span>
-						</el-option>
-					</el-option-group>
-				</el-select>
+				<select v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
+					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
+					<option label="%i18n:@random%" :value="null"/>
+					<optgroup v-for="c in mapCategories" :key="c" :label="c">
+						<option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
+					</optgroup>
+				</select>
 			</header>
 
 			<div>
@@ -219,11 +217,11 @@ export default Vue.extend({
 			});
 		},
 
-		onMapChange(v) {
-			if (v == null) {
+		onMapChange() {
+			if (this.mapName == null) {
 				this.game.settings.map = null;
 			} else {
-				this.game.settings.map = Object.values(maps).find(x => x.name == v).data;
+				this.game.settings.map = Object.values(maps).find(x => x.name == this.mapName).data;
 			}
 			this.$forceUpdate();
 			this.updateSettings();
@@ -250,7 +248,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.root
+.urbixznjwwuukfsckrwzwsqzsxornqij
 	text-align center
 	background #f9f9f9
 
@@ -263,6 +261,23 @@ export default Vue.extend({
 
 		> .card
 			margin 0 auto 16px auto
+
+			&.map
+				> header
+					> select
+						width 100%
+						padding 12px 16px
+						border 1px solid #dcdfe6
+						border-radius 4px
+						color #606266
+						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
+
+						&:hover
+							border-color #c0c4cc
+
+						&:focus
+						&:active
+							border-color $theme-color
 
 		.card
 			max-width 400px
@@ -291,9 +306,6 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" module>
-.mapSelect
-	width 100%
-
 .board
 	display grid
 	grid-gap 4px
