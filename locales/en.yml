@@ -7,10 +7,10 @@ common:
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   adblock:
-    detected: "広告ブロッカーを無効にしてください"
-    warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
-  application-authorization: "アプリの連携"
-  close: "閉じる"
+    detected: "Please disable ad blocker."
+    warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
+  application-authorization: "Application authorizations."
+  close: "Close"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
@@ -19,9 +19,9 @@ common:
     paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
   notification:
-    file-uploaded: "ファイルがアップロードされました"
-    message-from: "{}さんからメッセージ:"
-    reversi-invited: "対局への招待があります"
+    file-uploaded: "File uploaded!"
+    message-from: "Message from {}:"
+    reversi-invited: "Invited to a game"
     reversi-invited-by: "{}さんから"
     notified-by: "{}さんから"
     reply-from: "{}さんから返信:"
