@@ -20,18 +20,13 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 		method: 'POST',
 		path: pathname + search,
 	}, res => {
-		res.on('end', () => {
-			log(`${url} --> ${res.statusCode}`);
+		log(`${url} --> ${res.statusCode}`);
 
-			if (res.statusCode >= 200 && res.statusCode < 300) {
-				resolve();
-			} else {
-				reject(res);
-			}
-		});
-
-		res.on('data', () => {});
-		res.on('error', reject);
+		if (res.statusCode >= 400) {
+			reject();
+		} else {
+			resolve();
+		}
 	});
 
 	sign(req, {
