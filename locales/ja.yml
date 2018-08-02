@@ -10,6 +10,7 @@ common:
     detected: "広告ブロッカーを無効にしてください"
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
+  close: "閉じる"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
@@ -915,9 +916,7 @@ desktop/views/pages/search.vue:
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
-  share-with-right: "で共有"
-  share-with-left: ""  
-  close: "閉じる"
+  share-with: "{}で共有"
 
 desktop/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
@@ -1179,8 +1178,7 @@ mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
 mobile/views/pages/share.vue:
-  share-with-right: "で共有"
-  share-with-left: ""  
+  share-with: "{}で共有"
   
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
