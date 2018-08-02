@@ -1,6 +1,6 @@
 <template>
 <div class="root">
-	<header><b>{{ game.user1.name }}</b> vs <b>{{ game.user2.name }}</b></header>
+	<header><b>{{ game.user1 | userName }}</b> vs <b>{{ game.user2 | userName }}</b></header>
 
 	<div>
 		<p>%i18n:@settings-of-the-game%</p>
