@@ -4,55 +4,53 @@
 		<x-gameroom :game="game"/>
 	</div>
 	<div class="matching" v-else-if="matching">
-		<h1><b>{{ matching.name }}</b>を待っています<mk-ellipsis/></h1>
+		<h1>{{ '%i18n:@matching.waiting-for%'.split('{}')[0] }}<b>{{ matching | userName }}</b>{{ '%i18n:@matching.waiting-for%'.split('{}')[1] }}<mk-ellipsis/></h1>
 		<div class="cancel">
-			<el-button round @click="cancel">キャンセル</el-button>
+			<el-button round @click="cancel">%i18n:@matching.cancel%</el-button>
 		</div>
 	</div>
 	<div class="index" v-else>
-		<h1>Misskey Reversi</h1>
-		<p>他のMisskeyユーザーとリバーシで対戦しよう</p>
+		<h1>%i18n:@title%</h1>
+		<p>%i18n:@sub-title%</p>
 		<div class="play">
-			<el-button round>フリーマッチ(準備中)</el-button>
-			<el-button type="primary" round @click="match">指名</el-button>
+			<!--<el-button round>フリーマッチ(準備中)</el-button>-->
+			<el-button type="primary" round @click="match">%i18n:@invite%</el-button>
 			<details>
-				<summary>遊び方</summary>
+				<summary>%i18n:@rule%</summary>
 				<div>
-					<p>リバーシは、相手と交互に石をボードに置いてゆき、相手の石を挟んでひっくり返しながら、最終的に残った石が多い方が勝ちというボードゲームです。</p>
+					<p>%i18n:@rule-desc%</p>
 					<dl>
-						<dt><b>フリーマッチ</b></dt>
-						<dd>ランダムなユーザーと対戦するモードです。</dd>
-						<dt><b>指名</b></dt>
-						<dd>指定したユーザーと対戦するモードです。</dd>
+						<dt><b>%i18n:@mode-invite%</b></dt>
+						<dd>%i18n:@mode-invite-desc%</dd>
 					</dl>
 				</div>
 			</details>
 		</div>
 		<section v-if="invitations.length > 0">
-			<h2>対局の招待があります！:</h2>
+			<h2>%i18n:@invitations%</h2>
 			<div class="invitation" v-for="i in invitations" tabindex="-1" @click="accept(i)">
 				<mk-avatar class="avatar" :user="i.parent"/>
-				<span class="name"><b>{{ i.parent.name }}</b></span>
+				<span class="name"><b>{{ i.parent | userName }}</b></span>
 				<span class="username">@{{ i.parent.username }}</span>
 				<mk-time :time="i.createdAt"/>
 			</div>
 		</section>
 		<section v-if="myGames.length > 0">
-			<h2>自分の対局</h2>
+			<h2>%i18n:@my-games%</h2>
 			<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 				<mk-avatar class="avatar" :user="g.user1"/>
 				<mk-avatar class="avatar" :user="g.user2"/>
-				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
-				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
+				<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
+				<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
 			</a>
 		</section>
 		<section v-if="games.length > 0">
-			<h2>みんなの対局</h2>
+			<h2>%i18n:@all-games%</h2>
 			<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 				<mk-avatar class="avatar" :user="g.user1"/>
 				<mk-avatar class="avatar" :user="g.user2"/>
-				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
-				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
+				<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
+				<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
 			</a>
 		</section>
 	</div>
@@ -153,7 +151,7 @@ export default Vue.extend({
 
 		match() {
 			(this as any).apis.input({
-				title: 'ユーザー名を入力してください'
+				title: '%i18n:@enter-username%'
 			}).then(username => {
 				(this as any).api('users/show', {
 					username

@@ -1,14 +1,14 @@
 <template>
 <div class="root">
-	<header><b>{{ game.user1.name }}</b> vs <b>{{ game.user2.name }}</b></header>
+	<header><b>{{ game.user1 | userName }}</b> vs <b>{{ game.user2 | userName }}</b></header>
 
 	<div>
-		<p>ゲームの設定</p>
+		<p>%i18n:@settings-of-the-game%</p>
 
 		<el-card class="map">
 			<div slot="header">
-				<el-select :class="$style.mapSelect" v-model="mapName" placeholder="マップを選択" @change="onMapChange">
-					<el-option label="ランダム" :value="null"/>
+				<el-select :class="$style.mapSelect" v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
+					<el-option label="%i18n:@random%" :value="null"/>
 					<el-option-group v-for="c in mapCategories" :key="c" :label="c">
 						<el-option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">
 							<span style="float: left">{{ m.name }}</span>
@@ -30,25 +30,25 @@
 
 		<el-card class="bw">
 			<div slot="header">
-				<span>先手/後手</span>
+				<span>%i18n:@black-or-white%</span>
 			</div>
-			<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">ランダム</el-radio>
-			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ game.user1.name }}が黒</el-radio>
-			<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ game.user2.name }}が黒</el-radio>
+			<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">%i18n:@random%</el-radio>
+			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
+			<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
 		</el-card>
 
 		<el-card class="rules">
 			<div slot="header">
-				<span>ルール</span>
+				<span>%i18n:@rules%</span>
 			</div>
-			<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="石の少ない方が勝ち(ロセオ)"/>
-			<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="ループマップ"/>
-			<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="どこでも置けるモード"/>
+			<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="%i18n:@is-llotheo%"/>
+			<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="%i18n:@looped-map%"/>
+			<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="%i18n:@can-put-everywhere%"/>
 		</el-card>
 
 		<el-card class="bot-form" v-if="form">
 			<div slot="header">
-				<span>Botの設定</span>
+				<span>%i18n:@settings-of-the-bot%</span>
 			</div>
 			<el-alert v-for="message in messages"
 				:title="message.text"
@@ -77,16 +77,16 @@
 
 	<footer>
 		<p class="status">
-			<template v-if="isAccepted && isOpAccepted">ゲームは数秒後に開始されます<mk-ellipsis/></template>
-			<template v-if="isAccepted && !isOpAccepted">相手の準備が完了するのを待っています<mk-ellipsis/></template>
-			<template v-if="!isAccepted && isOpAccepted">あなたの準備が完了するのを待っています</template>
-			<template v-if="!isAccepted && !isOpAccepted">準備中<mk-ellipsis/></template>
+			<template v-if="isAccepted && isOpAccepted">%i18n:@this-gane-is-started-soon%<mk-ellipsis/></template>
+			<template v-if="isAccepted && !isOpAccepted">%i18n:@waiting-for-other%<mk-ellipsis/></template>
+			<template v-if="!isAccepted && isOpAccepted">%i18n:@waiting-for-me%</template>
+			<template v-if="!isAccepted && !isOpAccepted">%i18n:@waiting-for-both%<mk-ellipsis/></template>
 		</p>
 
 		<div class="actions">
-			<el-button @click="exit">キャンセル</el-button>
-			<el-button type="primary" @click="accept" v-if="!isAccepted">準備完了</el-button>
-			<el-button type="primary" @click="cancel" v-if="isAccepted">準備続行</el-button>
+			<el-button @click="exit">%i18n:@cancel%</el-button>
+			<el-button type="primary" @click="accept" v-if="!isAccepted">%i18n:@ready%</el-button>
+			<el-button type="primary" @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</el-button>
 		</div>
 	</footer>
 </div>
