@@ -41,8 +41,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	const mute = await Mute.find({
-		muterId: user._id,
-		deletedAt: { $exists: false }
+		muterId: user._id
 	});
 
 	const query = {
