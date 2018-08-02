@@ -6,6 +6,7 @@ common:
   misskey: "A ⭐ of the fediverse"
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
+  application-authorization: "Application authorizations"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
@@ -121,6 +122,30 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+auth/views/form.vue: 
+  share-access: "Would you <b>allow</b> <i>{{app.name}}</i> to access your account?"
+  permission-ask: "This application requires the following permissions:"
+  account-read: "View account information."
+  account-write: "Modify account information."
+  note-write: "Post."
+  like-write: "React."
+  following-write: "Follow or unfollow."
+  drive-read: "Read your drive."
+  drive-write: "Upload/delete files in your drive."
+  notification-read: "Read your notifications."
+  notification-write: "Manage your notifications."
+  cancel: "Cancel"
+  accept: "Accept"
+auth/views/index.vue:
+  loading: "Loading..."
+  denied: "Application authorization is denied."
+  denied-paragraph: "This application will not access your account."
+  already-authorized: "This application is already authorized."
+  allowed: "Application authorization allowed."
+  callback-url: "Going back to the application."
+  please-go-back: "Please go back to the application."
+  error: "Session does not exist."
+  sign-in: "Please sign in."
 common/views/components/games/reversi/reversi.vue:
   title: "Misskey Reversi"
   sub-title: "Play reversi with your friends!"
@@ -751,10 +776,11 @@ desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
-  share-with: "Share with Misskey"
+  share-with-right: ""
+  share-with-left: "Share with "
   close: "Close"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts \"{}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -954,7 +980,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts \"{}\" found."
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:

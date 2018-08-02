@@ -102,12 +102,12 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = 'Misskey';
+		document.title = '%i18n:common.name%';
 	},
 
 	methods: {
 		hint() {
-			alert('ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。');
+			alert('%i18n:@widgets-hints%');
 		},
 
 		widgetFunc(id) {

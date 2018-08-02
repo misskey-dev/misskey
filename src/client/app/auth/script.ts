@@ -15,7 +15,7 @@ import Index from './views/index.vue';
  * init
  */
 init(launch => {
-	document.title = 'Misskey | アプリの連携';
+	document.title = '%i18n:common.name% | %i18n:common.application-authorization%';
 
 	// Init router
 	const router = new VueRouter({

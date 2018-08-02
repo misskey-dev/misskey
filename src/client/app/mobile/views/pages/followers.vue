@@ -49,7 +49,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = '%i18n:@followers-of%'.replace('{}', this.name) + ' | Misskey';
+				document.title = '%i18n:@followers-of%'.replace('{}', this.name) + ' | %i18n:common.name%';
 			});
 		},
 		onLoaded() {

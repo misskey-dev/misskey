@@ -1,6 +1,6 @@
 <template>
 <div class="pptjhabgjtt7kwskbfv4y3uml6fpuhmr">
-	<h1>%i18n:@share-with%</h1>
+	<h1>%i18n:@share-with-left%%i18n:common.name%%i18n:@share-with-right%</h1>
 	<div>
 		<mk-signin v-if="!$store.getters.isSignedIn"/>
 		<mk-post-form v-else-if="!posted" :initial-text="text" :instant="true" @posted="posted = true"/>

@@ -6,6 +6,7 @@ common:
   misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  application-authorization: "アプリの連携"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
@@ -131,6 +132,32 @@ common:
     stack-left: "左に重ねる"
     pop-right: "右に出す"
 
+auth/views/form.vue: 
+  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
+  permission-ask: "このアプリは次の権限を要求しています:"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  like-write: "いいねしたりいいね解除する。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"
+  cancel: "キャンセル"
+  accept: "アクセスを許可"
+  
+auth/views/index.vue:
+  loading: "読み込み中"
+  denied: "アプリケーションの連携をキャンセルしました。"
+  denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
+  already-authorized: "このアプリは既に連携済みです"
+  allowed: "アプリケーションの連携を許可しました"
+  callback-url: "アプリケーションに戻っています"
+  please-go-back: "アプリケーションに戻って、やっていってください。"
+  error: "セッションが存在しません。"
+  sign-in: "サインインしてください"
+  
 common/views/components/games/reversi/reversi.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
@@ -870,7 +897,8 @@ desktop/views/pages/search.vue:
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
-  share-with: "Misskeyで共有"
+  share-with-right: "で共有"
+  share-with-left: ""  
   close: "閉じる"
 
 desktop/views/pages/tag.vue:
@@ -1127,10 +1155,15 @@ mobile/views/pages/welcome.vue:
 
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
+  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
+mobile/views/pages/share.vue:
+  share-with-right: "で共有"
+  share-with-left: ""  
+  
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 
