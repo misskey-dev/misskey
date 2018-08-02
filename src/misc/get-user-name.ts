@@ -1,5 +1,5 @@
 import { IUser } from '../models/user';
 
 export default function(user: IUser): string {
-	return user.name || '名無し';
+	return user.name || user.username;
 }

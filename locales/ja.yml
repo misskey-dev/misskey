@@ -148,7 +148,7 @@ common/views/components/games/reversi/reversi.vue:
     playing: "進行中"
   matching:
     waiting-for: "{}を待っています"
-    cacnel: "キャンセル"
+    cancel: "キャンセル"
 
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "ゲームの設定"
