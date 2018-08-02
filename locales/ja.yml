@@ -17,6 +17,14 @@ common:
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
     gotit: "Got it!"
+  notification:
+    file-uploaded: "ファイルがアップロードされました"
+    message-from: "{}さんからメッセージ:"
+    reversi-invited: "対局への招待があります"
+    reversi-invited-by: "{}さんから"
+    notified-by: "{}さんから"
+    reply-from: "{}さんから返信:"
+    quoted-by: "{}さんが引用:"
   name: "Misskey"
   time:
     unknown: "なぞのじかん"

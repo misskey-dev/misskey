@@ -17,6 +17,14 @@ common:
     paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
     paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
+  notification:
+    file-uploaded: "File uploaded!"
+    message-from: "Message from {}:"
+    reversi-invited: "Invited to a game:"
+    reversi-invited-by: "By {}."
+    notified-by: "Notified by {}:"
+    reply-from: "Reply from {}:"
+    quoted-by: "Quoted by {}:"
   name: "Misskey"
   time:
     unknown: "unknown"
