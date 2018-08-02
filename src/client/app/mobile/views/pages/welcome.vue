@@ -1,7 +1,7 @@
 <template>
 <div class="welcome">
 	<div>
-		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey">
+		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="%i18n:common.name%">
 		<p class="host">{{ host }}</p>
 		<div class="about">
 			<h2>{{ name || 'unidentified' }}</h2>

@@ -1,7 +1,7 @@
 <template>
 <div class="form">
 	<header>
-		<h1><i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？</h1>
+		<h1>%i18n:@share-access%</h1>
 		<img :src="app.iconUrl"/>
 	</header>
 	<div class="app">
@@ -11,25 +11,25 @@
 			<p class="description">{{ app.description }}</p>
 		</section>
 		<section>
-			<h2>このアプリは次の権限を要求しています:</h2>
+			<h2>%i18n:@permission-ask%</h2>
 			<ul>
 				<template v-for="p in app.permission">
-					<li v-if="p == 'account-read'">アカウントの情報を見る。</li>
-					<li v-if="p == 'account-write'">アカウントの情報を操作する。</li>
-					<li v-if="p == 'note-write'">投稿する。</li>
-					<li v-if="p == 'like-write'">いいねしたりいいね解除する。</li>
-					<li v-if="p == 'following-write'">フォローしたりフォロー解除する。</li>
-					<li v-if="p == 'drive-read'">ドライブを見る。</li>
-					<li v-if="p == 'drive-write'">ドライブを操作する。</li>
-					<li v-if="p == 'notification-read'">通知を見る。</li>
-					<li v-if="p == 'notification-write'">通知を操作する。</li>
+					<li v-if="p == 'account-read'">%i18n:@account-read%</li>
+					<li v-if="p == 'account-write'">%i18n:@account-write%</li>
+					<li v-if="p == 'note-write'">%i18n:@note-write%</li>
+					<li v-if="p == 'like-write'">%i18n:@like-write%</li>
+					<li v-if="p == 'following-write'">%i18n:@following-write%</li>
+					<li v-if="p == 'drive-read'">%i18n:@drive-read%</li>
+					<li v-if="p == 'drive-write'">%i18n:@drive-write%</li>
+					<li v-if="p == 'notification-read'">%i18n:@notification-read%</li>
+					<li v-if="p == 'notification-write'">%i18n:@notification-write%</li>
 				</template>
 			</ul>
 		</section>
 	</div>
 	<div class="action">
-		<button @click="cancel">キャンセル</button>
-		<button @click="accept">アクセスを許可</button>
+		<button @click="cancel">%i18n:@cancel%</button>
+		<button @click="accept">%i18n:@accept%</button>
 	</div>
 </div>
 </template>

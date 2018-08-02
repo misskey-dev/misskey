@@ -6,6 +6,10 @@ common:
   misskey: "A ⭐ of the fediverse"
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
+  adblock:
+    detected: "Please disable ad blocker."
+    warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
+  application-authorization: "Application authorizations"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
@@ -13,6 +17,15 @@ common:
     paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
     paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
+  close: "Close"
+  notification:
+    file-uploaded: "File uploaded!"
+    message-from: "Message from {}:"
+    reversi-invited: "Invited to a game:"
+    reversi-invited-by: "By {}."
+    notified-by: "Notified by {}:"
+    reply-from: "Reply from {}:"
+    quoted-by: "Quoted by {}:"
   name: "Misskey"
   time:
     unknown: "unknown"
@@ -26,6 +39,12 @@ common:
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
   trash: "Trash"
+  date:
+    full-year: "Year"
+    month: "Month"
+    day: "Day"
+    hours: "Hours"
+    minutes: "Minutes"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -121,6 +140,30 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+auth/views/form.vue: 
+  share-access: "Would you <b>allow</b> <i>{{app.name}}</i> to access your account?"
+  permission-ask: "This application requires the following permissions:"
+  account-read: "View account information."
+  account-write: "Modify account information."
+  note-write: "Post."
+  like-write: "React."
+  following-write: "Follow or unfollow."
+  drive-read: "Read your drive."
+  drive-write: "Upload/delete files in your drive."
+  notification-read: "Read your notifications."
+  notification-write: "Manage your notifications."
+  cancel: "Cancel"
+  accept: "Accept"
+auth/views/index.vue:
+  loading: "Loading..."
+  denied: "Application authorization is denied."
+  denied-paragraph: "This application will not access your account."
+  already-authorized: "This application is already authorized."
+  allowed: "Application authorization allowed."
+  callback-url: "Going back to the application."
+  please-go-back: "Please go back to the application."
+  error: "Session does not exist."
+  sign-in: "Please sign in."
 common/views/components/games/reversi/reversi.vue:
   title: "Misskey Reversi"
   sub-title: "Play reversi with your friends!"
@@ -751,10 +794,9 @@ desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
-  share-with: "Share with Misskey"
-  close: "Close"
+  share-with: "Share with {}"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts \"{}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -954,7 +996,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts \"{}\" found."
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
@@ -995,6 +1037,8 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
+mobile/views/pages/share.vue:
+  share-with: "Share with {}."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:
