@@ -400,8 +400,8 @@ export default Vue.extend({
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '%i18n:@update-available%',
-						text: '%i18n:@update-available-desc%'
+						title: '%i18n:common.update-available-title%',
+						text: '%i18n:common.update-available%'.replace('{newer}', newer).replace('{current}', current)
 					});
 				}
 			});

@@ -868,6 +868,9 @@ desktop/views/components/users-list.vue:
 desktop/views/components/users-list-item.vue:
   followed: "フォローされています"
 
+desktop/views/components/users-list-window.vue:
+  list-name: "リスト名"  
+
 desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
