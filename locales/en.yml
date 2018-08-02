@@ -6,6 +6,11 @@ common:
   misskey: "A ⭐ of the fediverse"
   about-title: "A ⭐ of the fediverse."
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
+  adblock:
+    detected: "広告ブロッカーを無効にしてください"
+    warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
+  application-authorization: "アプリの連携"
+  close: "閉じる"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
@@ -13,6 +18,14 @@ common:
     paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
     paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
+  notification:
+    file-uploaded: "ファイルがアップロードされました"
+    message-from: "{}さんからメッセージ:"
+    reversi-invited: "対局への招待があります"
+    reversi-invited-by: "{}さんから"
+    notified-by: "{}さんから"
+    reply-from: "{}さんから返信:"
+    quoted-by: "{}さんが引用:"
   name: "Misskey"
   time:
     unknown: "unknown"
@@ -26,6 +39,12 @@ common:
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
   trash: "Trash"
+  date:
+    full-year: "年"
+    month: "月"
+    day: "日"
+    hours: "時"
+    minutes: "分"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -121,6 +140,30 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+auth/views/form.vue:
+  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
+  permission-ask: "このアプリは次の権限を要求しています:"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  like-write: "いいねしたりいいね解除する。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"
+  cancel: "キャンセル"
+  accept: "アクセスを許可"
+auth/views/index.vue:
+  loading: "読み込み中"
+  denied: "アプリケーションの連携をキャンセルしました。"
+  denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
+  already-authorized: "このアプリは既に連携済みです"
+  allowed: "アプリケーションの連携を許可しました"
+  callback-url: "アプリケーションに戻っています"
+  please-go-back: "アプリケーションに戻って、やっていってください。"
+  error: "セッションが存在しません。"
+  sign-in: "サインインしてください"
 common/views/components/games/reversi/reversi.vue:
   title: "Misskey Reversi"
   sub-title: "Play reversi with your friends!"
@@ -751,8 +794,7 @@ desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
-  share-with: "Share with Misskey"
-  close: "Close"
+  share-with: "{}で共有"
 desktop/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
@@ -959,8 +1001,11 @@ mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
+  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
+mobile/views/pages/share.vue:
+  share-with: "{}で共有"
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
