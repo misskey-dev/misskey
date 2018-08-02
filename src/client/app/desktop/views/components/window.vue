@@ -10,7 +10,7 @@
 				<h1><slot name="header"></slot></h1>
 				<div>
 					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%">%fa:R window-restore%</button>
-					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%">%fa:times%</button>
+					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:common.close%">%fa:times%</button>
 				</div>
 			</header>
 			<div class="content">

@@ -10,7 +10,7 @@
 		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
+		<button :class="$style.cancel" @click="cancel">%i18n:common.cancel%</button>
 		<button :class="$style.ok" @click="ok">%i18n:@ok%</button>
 	</div>
 </mk-window>

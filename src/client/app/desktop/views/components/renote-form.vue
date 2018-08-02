@@ -4,7 +4,7 @@
 	<template v-if="!quote">
 		<footer>
 			<a class="quote" v-if="!quote" @click="onQuote">%i18n:@quote%</a>
-			<button class="ui cancel" @click="cancel">%i18n:@cancel%</button>
+			<button class="ui cancel" @click="cancel">%i18n:common.cancel%</button>
 			<button class="ui primary ok" @click="ok" :disabled="wait">{{ wait ? '%i18n:@reposting%' : '%i18n:@renote%' }}</button>
 		</footer>
 	</template>

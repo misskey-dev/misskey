@@ -84,7 +84,7 @@
 		</p>
 
 		<div class="actions">
-			<el-button @click="exit">%i18n:@cancel%</el-button>
+			<el-button @click="exit">%i18n:common.cancel%</el-button>
 			<el-button type="primary" @click="accept" v-if="!isAccepted">%i18n:@ready%</el-button>
 			<el-button type="primary" @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</el-button>
 		</div>
