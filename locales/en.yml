@@ -138,7 +138,7 @@ common/views/components/games/reversi/reversi.vue:
     playing: "In Progress"
   matching:
     waiting-for: "Waiting for {}"
-    cancel: "Cancel"
+    cancel: "キャンセル"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "Game settings"
   choose-map: "Choose a map"
