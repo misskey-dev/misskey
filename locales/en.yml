@@ -751,7 +751,8 @@ desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
-  share-with: "Share with Misskey"
+  share-with-right: ""
+  share-with-left: "Share with "
   close: "Close"
 desktop/views/pages/tag.vue:
   no-posts-found: "No posts \"{}\" found."

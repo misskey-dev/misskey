@@ -870,7 +870,8 @@ desktop/views/pages/search.vue:
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
-  share-with: "Misskeyで共有"
+  share-with-right: "で共有"
+  share-with-left: ""  
   close: "閉じる"
 
 desktop/views/pages/tag.vue:
