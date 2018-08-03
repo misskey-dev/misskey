@@ -6,6 +6,11 @@ common:
   misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  adblock:
+    detected: "広告ブロッカーを無効にしてください"
+    warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
+  application-authorization: "アプリの連携"
+  close: "閉じる"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
@@ -13,6 +18,14 @@ common:
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
     gotit: "Got it!"
+  notification:
+    file-uploaded: "ファイルがアップロードされました"
+    message-from: "{}さんからメッセージ:"
+    reversi-invited: "対局への招待があります"
+    reversi-invited-by: "{}さんから"
+    notified-by: "{}さんから"
+    reply-from: "{}さんから返信:"
+    quoted-by: "{}さんが引用:"
   name: "Misskey"
   time:
     unknown: "Unbekannt"
@@ -26,6 +39,12 @@ common:
     months_ago: "vor {0} Monat{0:en}"
     years_ago: "vor {} Jahr{0:en}"
   trash: "ゴミ箱"
+  date:
+    full-year: "年"
+    month: "月"
+    day: "日"
+    hours: "時"
+    minutes: "分"
   weekday-short:
     sunday: "So"
     monday: "Mo"
@@ -121,7 +140,35 @@ common:
     rename: "Umbenennen"
     stack-left: "Nach links schichten"
     pop-right: "右に出す"
+auth/views/form.vue:
+  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
+  permission-ask: "このアプリは次の権限を要求しています:"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  like-write: "いいねしたりいいね解除する。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"
+  cancel: "キャンセル"
+  accept: "アクセスを許可"
+auth/views/index.vue:
+  loading: "読み込み中"
+  denied: "アプリケーションの連携をキャンセルしました。"
+  denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
+  already-authorized: "このアプリは既に連携済みです"
+  allowed: "アプリケーションの連携を許可しました"
+  callback-url: "アプリケーションに戻っています"
+  please-go-back: "アプリケーションに戻って、やっていってください。"
+  error: "セッションが存在しません。"
+  sign-in: "サインインしてください"
 common/views/components/games/reversi/reversi.vue:
+  matching:
+    waiting-for: "{}を待っています"
+    cancel: "キャンセル"
+common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
   invite: "招待"
@@ -136,9 +183,6 @@ common/views/components/games/reversi/reversi.vue:
   game-state:
     ended: "終了"
     playing: "進行中"
-  matching:
-    waiting-for: "{}を待っています"
-    cancel: "キャンセル"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "ゲームの設定"
   choose-map: "マップを選択"
@@ -150,7 +194,7 @@ common/views/components/games/reversi/reversi.room.vue:
   looped-map: "ループマップ"
   can-put-everywhere: "どこでも置けるモード"
   settings-of-the-bot: "Botの設定"
-  this-gane-is-started-soon: "ゲームは数秒後に開始されます"
+  this-game-is-started-soon: "ゲームは数秒後に開始されます"
   waiting-for-other: "相手の準備が完了するのを待っています"
   waiting-for-me: "あなたの準備が完了するのを待っています"
   waiting-for-both: "準備中"
@@ -751,8 +795,7 @@ desktop/views/pages/search.vue:
   not-available: "検索機能を利用することができません。"
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
-  share-with: "Misskeyで共有"
-  close: "閉じる"
+  share-with: "{}で共有"
 desktop/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
@@ -959,8 +1002,11 @@ mobile/views/pages/welcome.vue:
   signup: "新規登録"
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
+  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
+mobile/views/pages/share.vue:
+  share-with: "{}で共有"
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 mobile/views/pages/messaging-room.vue:
@@ -976,7 +1022,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "通知"
   read-all: "すべての通知を既読にしますか？"
-mobile/views/pages/reversi.vue:
+mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"
