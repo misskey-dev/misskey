@@ -47,7 +47,7 @@ common:
     day: "日"
     hours: "時"
     minutes: "分"
-  
+
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -151,7 +151,7 @@ common:
     stack-left: "左に重ねる"
     pop-right: "右に出す"
 
-auth/views/form.vue: 
+auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
   account-read: "アカウントの情報を見る。"
@@ -165,7 +165,7 @@ auth/views/form.vue:
   notification-write: "通知を操作する。"
   cancel: "キャンセル"
   accept: "アクセスを許可"
-  
+
 auth/views/index.vue:
   loading: "読み込み中"
   denied: "アプリケーションの連携をキャンセルしました。"
@@ -176,7 +176,7 @@ auth/views/index.vue:
   please-go-back: "アプリケーションに戻って、やっていってください。"
   error: "セッションが存在しません。"
   sign-in: "サインインしてください"
-  
+
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}を待っています"
@@ -1181,7 +1181,7 @@ mobile/views/pages/widgets/activity.vue:
 
 mobile/views/pages/share.vue:
   share-with: "{}で共有"
-  
+
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 
@@ -1202,7 +1202,7 @@ mobile/views/pages/notifications.vue:
   notifications: "通知"
   read-all: "すべての通知を既読にしますか？"
 
-mobile/views/pages/reversi.vue:
+mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 
 mobile/views/pages/settings/settings.profile.vue:

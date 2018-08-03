@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	<div class="index" v-else>
-		<x-index @go="onGo" @matching="onMatching"/>
+		<x-index @go="nav" @matching="onMatching"/>
 	</div>
 </div>
 </template>
@@ -19,6 +19,7 @@
 import Vue from 'vue';
 import XGameroom from './reversi.gameroom.vue';
 import XIndex from './reversi.index.vue';
+import Progress from '../../../../scripts/loading';
 
 export default Vue.extend({
 	components: {
@@ -26,7 +27,12 @@ export default Vue.extend({
 		XIndex
 	},
 
-	props: ['initGame'],
+	props: {
+		gameId: {
+			type: String,
+			required: false
+		}
+	},
 
 	data() {
 		return {
@@ -39,14 +45,15 @@ export default Vue.extend({
 	},
 
 	watch: {
-		game(g) {
-			this.$emit('gamed', g);
-		}
-	},
-
-	created() {
-		if (this.initGame) {
-			this.game = this.initGame;
+		gameId(id) {
+			console.log(id);
+			Progress.start();
+			(this as any).api('games/reversi/games/show', {
+				gameId: id
+			}).then(game => {
+				this.nav(game, true);
+				Progress.done();
+			});
 		}
 	},
 
@@ -78,9 +85,13 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onGo(game) {
+		nav(game, silent) {
 			this.matching = null;
 			this.game = game;
+
+			if (!silent) {
+				this.$emit('nav', this.game);
+			}
 		},
 
 		onMatching(user) {
