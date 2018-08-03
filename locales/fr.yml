@@ -8,8 +8,8 @@ common:
   about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   adblock:
     detected: "Veuillez désactiver le bloqueur de publicités"
-    warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
-  application-authorization: "アプリの連携"
+    warning: "<strong>Misskey n'utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
+  application-authorization: "Permissions de l'application"
   close: "Fermer"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -21,7 +21,7 @@ common:
   notification:
     file-uploaded: "Le fichier a été téléversé !"
     message-from: "Message de {} :"
-    reversi-invited: "対局への招待があります"
+    reversi-invited: "Invité à jouer"
     reversi-invited-by: "Invité par {} :"
     notified-by: "Notifié par {} :"
     reply-from: "Réponse de {} :"
@@ -141,9 +141,9 @@ common:
     stack-left: "Vers la gauche"
     pop-right: "Vers la droite"
 auth/views/form.vue:
-  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
+  share-access: "Désirez-vous <b>autoriser</b> <i>{{ app.name }}</i> à avoir accès à votre compte ?"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
-  account-read: "アカウントの情報を見る。"
+  account-read: "Afficher les informations du compte :"
   account-write: "Modifications des informations du compte :"
   note-write: "投稿する。"
   like-write: "Réagir aux publications."
@@ -181,7 +181,7 @@ common/views/components/games/reversi/reversi.index.vue:
   all-games: "Tous les jeux"
   enter-username: "Saisir un nom d'utilisateur"
   game-state:
-    ended: "Terminé"
+    ended: "Terminée"
     playing: "En cours"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "Paramètres du jeu"
