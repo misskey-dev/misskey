@@ -46,14 +46,17 @@ export default Vue.extend({
 
 	watch: {
 		gameId(id) {
-			console.log(id);
-			Progress.start();
-			(this as any).api('games/reversi/games/show', {
-				gameId: id
-			}).then(game => {
-				this.nav(game, true);
-				Progress.done();
-			});
+			if (id == null) {
+				this.game = null;
+			} else {
+				Progress.start();
+				(this as any).api('games/reversi/games/show', {
+					gameId: id
+				}).then(game => {
+					this.nav(game, true);
+					Progress.done();
+				});
+			}
 		}
 	},
 
