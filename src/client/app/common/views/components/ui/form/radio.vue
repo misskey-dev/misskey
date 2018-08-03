@@ -60,6 +60,10 @@ root(isDark)
 	> *
 		user-select none
 
+	&:hover
+		> .button
+			border solid 2px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+
 	&.disabled
 		opacity 0.6
 		cursor not-allowed
@@ -89,7 +93,7 @@ root(isDark)
 		width 20px
 		height 20px
 		background none
-		border solid 2px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+		border solid 2px isDark ? rgba(#fff, 0.6) : rgba(#000, 0.4)
 		border-radius 100%
 		transition inherit
 

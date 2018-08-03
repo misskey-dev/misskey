@@ -17,12 +17,13 @@
 			</header>
 
 			<div>
-				<div :class="$style.board" v-if="game.settings.map != null" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
+				<div class="random" v-if="game.settings.map == null">%fa:dice%</div>
+				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 					<div v-for="(x, i) in game.settings.map.join('')"
 							:data-none="x == ' '"
 							@click="onPixelClick(i, x)">
-						<template v-if="x == 'b'">%fa:circle%</template>
-						<template v-if="x == 'w'">%fa:circle R%</template>
+						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode">%fa:circle R%</template><template v-else>%fa:circle%</template></template>
+						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode">%fa:circle%</template><template v-else>%fa:circle R%</template></template>
 					</div>
 				</div>
 			</div>
@@ -35,8 +36,8 @@
 
 			<div>
 				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">%i18n:@random%</form-radio>
-				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user1 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user2 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
 			</div>
 		</div>
 
@@ -250,7 +251,7 @@ export default Vue.extend({
 
 root(isDark)
 	text-align center
-	background #f9f9f9
+	background isDark ? #191b22 : #f9f9f9
 
 	> header
 		padding 8px
@@ -266,40 +267,72 @@ root(isDark)
 				> header
 					> select
 						width 100%
-						padding 12px 16px
-						border 1px solid #dcdfe6
+						padding 12px 14px
+						background isDark ? #282C37 : #fff
+						border 1px solid isDark ? #6a707d : #dcdfe6
 						border-radius 4px
-						color #606266
+						color isDark ? #fff : #606266
+						cursor pointer
 						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
 
 						&:hover
-							border-color #c0c4cc
+							border-color isDark ? #a7aebd : #c0c4cc
 
 						&:focus
 						&:active
 							border-color $theme-color
 
+				> div
+					> .random
+						padding 32px 0
+						font-size 64px
+						color isDark ? #4e5961 : #d8d8d8
+
+					> .board
+						display grid
+						grid-gap 4px
+						width 300px
+						height 300px
+						margin 0 auto
+						color isDark ? #fff : #444
+
+						> div
+							background transparent
+							border solid 2px isDark ? #6a767f : #ddd
+							border-radius 6px
+							overflow hidden
+							cursor pointer
+
+							*
+								pointer-events none
+								user-select none
+								width 100%
+								height 100%
+
+							&[data-none]
+								border-color transparent
+
 		.card
 			max-width 400px
 			border-radius 4px
-			border 1px solid #ebeef5
 			background isDark ? #282C37 : #fff
-			color #303133
+			color isDark ? #fff : #303133
 			box-shadow 0 2px 12px 0 rgba(#000, 0.1)
 
 			> header
 				padding 18px 20px
-				border-bottom 1px solid #ebeef5
+				border-bottom 1px solid isDark ? #1c2023 : #ebeef5
 
 			> div
 				padding 20px
+				color isDark ? #fff : #606266
 
 	> footer
 		position sticky
 		bottom 0
 		padding 16px
-		background rgba(255, 255, 255, 0.9)
-		border-top solid 1px #c4cdd4
+		background rgba(isDark ? #191b22 : #fff, 0.9)
+		border-top solid 1px isDark ? #606266 : #c4cdd4
 
 		> .status
 			margin 0 0 16px 0
@@ -309,31 +342,5 @@ root(isDark)
 
 .urbixznjwwuukfsckrwzwsqzsxornqij:not([data-darkmode])
 	root(false)
-
-</style>
-
-<style lang="stylus" module>
-.board
-	display grid
-	grid-gap 4px
-	width 300px
-	height 300px
-	margin 0 auto
-
-	> div
-		background transparent
-		border solid 2px #ddd
-		border-radius 6px
-		overflow hidden
-		cursor pointer
-
-		*
-			pointer-events none
-			user-select none
-			width 100%
-			height 100%
-
-		&[data-none]
-			border-color transparent
 
 </style>

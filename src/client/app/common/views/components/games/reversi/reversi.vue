@@ -1,5 +1,5 @@
 <template>
-<div class="mk-reversi">
+<div class="vchtoekanapleubgzioubdtmlkribzfd">
 	<div v-if="game">
 		<x-gameroom :game="game"/>
 	</div>
@@ -200,9 +200,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-reversi
-	color #677f84
-	background #fff
+root(isDark)
+	color isDark ? #fff : #677f84
+	background isDark ? #191b22 : #fff
 
 	> .matching
 		> h1
@@ -227,7 +227,7 @@ export default Vue.extend({
 			text-align center
 			font-weight normal
 			color #fff
-			background linear-gradient(to bottom, #8bca3e, #d6cf31)
+			background linear-gradient(to bottom, isDark ? #45730e : #8bca3e, isDark ? #464300 : #d6cf31)
 
 			& + p
 				margin 0
@@ -235,7 +235,7 @@ export default Vue.extend({
 				margin-bottom 12px
 				text-align center
 				font-size 14px
-				border-bottom solid 1px #d3d9dc
+				border-bottom solid 1px isDark ? #535f65 : #d3d9dc
 
 		> .play
 			margin 0 auto
@@ -250,14 +250,14 @@ export default Vue.extend({
 					padding 16px
 					font-size 14px
 					text-align left
-					background #f5f5f5
+					background isDark ? #282c37 : #f5f5f5
 					border-radius 8px
 
 		> section
 			margin 0 auto
 			padding 0 16px 16px 16px
 			max-width 500px
-			border-top solid 1px #d3d9dc
+			border-top solid 1px isDark ? #535f65 : #d3d9dc
 
 			> h2
 				margin 0
@@ -298,8 +298,9 @@ export default Vue.extend({
 		display block
 		margin 8px 0
 		padding 8px
-		color #677f84
-		border solid 1px #e1e5e8
+		color isDark ? #fff : #677f84
+		background isDark ? #282c37 : #fff
+		box-shadow 0 2px 16px rgba(#000, isDark ? 0.7 : 0.15)
 		border-radius 6px
 		cursor pointer
 
@@ -307,14 +308,11 @@ export default Vue.extend({
 			pointer-events none
 			user-select none
 
-		&:focus
-			border-color $theme-color
-
 		&:hover
-			background #f5f5f5
+			background isDark ? #313543 : #f5f5f5
 
 		&:active
-			background #eee
+			background isDark ? #1e222b : #eee
 
 		> .avatar
 			width 32px
@@ -324,4 +322,11 @@ export default Vue.extend({
 		> span
 			margin 0 8px
 			line-height 32px
+
+.vchtoekanapleubgzioubdtmlkribzfd[data-darkmode]
+	root(true)
+
+.vchtoekanapleubgzioubdtmlkribzfd:not([data-darkmode])
+	root(false)
+
 </style>

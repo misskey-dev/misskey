@@ -1,5 +1,5 @@
 <template>
-<div class="root">
+<div class="xqnhankfuuilcwvhgsopeqncafzsquya">
 	<header><b>{{ blackUser | userName }}</b>(%i18n:common.reversi.black%) vs <b>{{ whiteUser | userName }}</b>(%i18n:common.reversi.white%)</header>
 
 	<div style="overflow: hidden">
@@ -258,12 +258,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.root
+root(isDark)
 	text-align center
 
 	> header
 		padding 8px
-		border-bottom dashed 1px #c4cdd4
+		border-bottom dashed 1px isDark ? #4c5761 : #c4cdd4
 
 	> .board
 		width calc(100% - 16px)
@@ -327,16 +327,16 @@ export default Vue.extend({
 						user-select none
 
 					&.empty
-						border solid 2px #eee
+						border solid 2px isDark ? #51595f : #eee
 
 					&.empty.can
-						background #eee
+						background isDark ? #51595f : #eee
 
 					&.empty.myTurn
-						border-color #ddd
+						border-color isDark ? #6a767f : #ddd
 
 						&.can
-							background #eee
+							background isDark ? #51595f : #eee
 							cursor pointer
 
 							&:hover
@@ -350,7 +350,7 @@ export default Vue.extend({
 						box-shadow 0 0 0 4px rgba($theme-color, 0.7)
 
 					&.isEnded
-						border-color #ddd
+						border-color isDark ? #6a767f : #ddd
 
 					&.none
 						border-color transparent !important
@@ -388,4 +388,11 @@ export default Vue.extend({
 			display inline-block
 			margin 0 8px
 			min-width 70px
+
+.xqnhankfuuilcwvhgsopeqncafzsquya[data-darkmode]
+	root(true)
+
+.xqnhankfuuilcwvhgsopeqncafzsquya:not([data-darkmode])
+	root(false)
+
 </style>

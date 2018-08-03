@@ -38,18 +38,18 @@ root(isDark)
 		margin 0
 		padding 12px 20px
 		font-size 14px
-		border 1px solid #dcdfe6
+		border 1px solid isDark ? #6d727d : #dcdfe6
 		border-radius 4px
 		outline none
 		box-shadow none
-		color #606266
+		color isDark ? #fff : #606266
 		transition 0.1s
 
 		&:hover
 		&:focus
 			color $theme-color
-			background rgba($theme-color, 0.12)
-			border-color rgba($theme-color, 0.3)
+			background rgba($theme-color, isDark ? 0.2 : 0.12)
+			border-color rgba($theme-color, isDark ? 0.5 : 0.3)
 
 		&:active
 			color darken($theme-color, 20%)
