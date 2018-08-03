@@ -10,7 +10,7 @@ common:
     detected: "Spróbuj wyłączyć blokadę reklam."
     warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
   application-authorization: "アプリの連携"
-  close: "閉じる"
+  close: "Zamknij"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
