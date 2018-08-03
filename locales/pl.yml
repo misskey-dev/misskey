@@ -1022,7 +1022,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
-mobile/views/pages/reversi.vue:
+mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"
