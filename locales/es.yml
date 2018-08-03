@@ -7,7 +7,7 @@ common:
   about-title: "Una ⭐️ del fediverso"
   about: "Gracias por encontrae Misskey. Misskey es una <b>plataforma descentralizada de microblogging</b> nacida en la Tierra. Gracias a existir dentro del Fediverso (un universo donde se organizan varias plataformas sociales) se encuentra enlazada mutuamente con otras plataformas sociales. ¿Por què no te tomas un respiro del caos de la ciudad y te sumerges es una nueva manera de entender Internet?"
   adblock:
-    detected: "広告ブロッカーを無効にしてください"
+    detected: "Por favor, desactive el bloqueador de publicidad."
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
   close: "閉じる"
