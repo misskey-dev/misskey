@@ -6,8 +6,8 @@
 
 		<div class="mkw-polls--body" :data-darkmode="$store.state.device.darkmode">
 			<div class="poll" v-if="!fetching && poll != null">
-				<p v-if="poll.text"><router-link to="poll | notePage">{{ poll.text }}</router-link></p>
-				<p v-if="!poll.text"><router-link to="poll | notePage">%fa:link%</router-link></p>
+				<p v-if="poll.text"><router-link :to="poll | notePage">{{ poll.text }}</router-link></p>
+				<p v-if="!poll.text"><router-link :to="poll | notePage">%fa:link%</router-link></p>
 				<mk-poll :note="poll"/>
 			</div>
 			<p class="empty" v-if="!fetching && poll == null">%i18n:@nothing%</p>
