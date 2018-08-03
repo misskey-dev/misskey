@@ -1022,7 +1022,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
   read-all: "Êtes vous sûr de vouloir marqués toutes les notifications non-lus en tant que lus?"
-mobile/views/pages/reversi.vue:
+mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"
