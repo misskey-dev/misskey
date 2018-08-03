@@ -103,6 +103,10 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		data.visibleUsers = data.visibleUsers.filter(x => x != null);
 	}
 
+	if (data.text) {
+		data.text = data.text.trim();
+	}
+
 	// Parse MFM
 	const tokens = data.text ? parse(data.text) : [];
 
