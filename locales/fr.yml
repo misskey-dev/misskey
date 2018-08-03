@@ -7,7 +7,7 @@ common:
   about-title: "Une ⭐ du fédiverse."
   about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   adblock:
-    detected: "広告ブロッカーを無効にしてください"
+    detected: "Veuillez désactiver le bloqueur de publicités"
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
   close: "Fermer"
@@ -146,10 +146,10 @@ auth/views/form.vue:
   account-read: "アカウントの情報を見る。"
   account-write: "Modifications des informations du compte :"
   note-write: "投稿する。"
-  like-write: "いいねしたりいいね解除する。"
-  following-write: "フォローしたりフォロー解除する。"
+  like-write: "Réagir aux publications."
+  following-write: "S'abonner et se désabonner."
   drive-read: "Lire votre Drive"
-  drive-write: "ドライブを操作する。"
+  drive-write: "Téléverser/supprimer des fichiers dans votre Drive."
   notification-read: "Lire vos notifications."
   notification-write: "Gérer vos notifications."
   cancel: "Annuler"
@@ -181,7 +181,7 @@ common/views/components/games/reversi/reversi.index.vue:
   all-games: "Tous les jeux"
   enter-username: "Saisir un nom d'utilisateur"
   game-state:
-    ended: "終了"
+    ended: "Terminé"
     playing: "En cours"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "Paramètres du jeu"
@@ -383,7 +383,7 @@ common/views/widgets/tips.vue:
   tips-line24: "Misskeyは2014年にサービスを開始しました"
   tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
 common/views/pages/follow.vue:
-  signed-in-as: "Connecté en tant que {}"
+  signed-in-as: "Connecté·é en tant que {}"
   following: "Suit"
   follow: "Suivre"
   request-pending: "Demande d'abonnement en attente"
@@ -1044,7 +1044,7 @@ mobile/views/pages/search.vue:
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
-  signed-in-as: "Connecté en tant que {}"
+  signed-in-as: "Connecté·e en tant que {}"
   lang: "Langue"
   lang-tip: "Le rechargement de la page est requis afin d'appliquer les modifications."
   recommended: "Recommandé"
