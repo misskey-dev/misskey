@@ -8,7 +8,7 @@
 		<input ref="text" v-model="text" :type="type" @keydown="onKeydown" :placeholder="placeholder"/>
 	</div>
 	<div :class="$style.actions">
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
+		<button :class="$style.cancel" @click="cancel">%i18n:common.cancel%</button>
 		<button :class="$style.ok" :disabled="!allowEmpty && text.length == 0" @click="ok">%i18n:@ok%</button>
 	</div>
 </mk-window>

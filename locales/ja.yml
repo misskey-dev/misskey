@@ -10,6 +10,7 @@ common:
     detected: "広告ブロッカーを無効にしてください"
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
+  cancel: "キャンセル"
   close: "閉じる"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -163,7 +164,6 @@ auth/views/form.vue:
   drive-write: "ドライブを操作する。"
   notification-read: "通知を見る。"
   notification-write: "通知を操作する。"
-  cancel: "キャンセル"
   accept: "アクセスを許可"
 
 auth/views/index.vue:
@@ -213,7 +213,6 @@ common/views/components/games/reversi/reversi.room.vue:
   waiting-for-other: "相手の準備が完了するのを待っています"
   waiting-for-me: "あなたの準備が完了するのを待っています"
   waiting-for-both: "準備中"
-  cancel: "キャンセル"
   ready: "準備完了"
   cancel-ready: "準備続行"
 
@@ -452,18 +451,15 @@ desktop/views/components/calendar.vue:
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
-  cancel: "キャンセル"
   ok: "決定"
   choose-prompt: "ファイルを選択"
 
 desktop/views/components/choose-folder-from-drive-window.vue:
-  cancel: "キャンセル"
   ok: "決定"
   choose-prompt: "フォルダを選択"
 
 desktop/views/components/crop-window.vue:
   skip: "クロップをスキップ"
-  cancel: "キャンセル"
   ok: "決定"
 
 desktop/views/components/drive-window.vue:
@@ -555,7 +551,6 @@ desktop/views/components/friends-maker.vue:
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
   refresh: "もっと見る"
-  close: "閉じる"
 
 desktop/views/components/game-window.vue:
   game: "リバーシ"
@@ -566,7 +561,6 @@ desktop/views/components/home.vue:
   add: "追加"
 
 desktop/views/input-dialog.vue:
-  cancel: "キャンセル"
   ok: "決定"
 
 desktop/views/components/messaging-room-window.vue:
@@ -642,7 +636,6 @@ desktop/views/components/progress-dialog.vue:
 
 desktop/views/components/renote-form.vue:
   quote: "引用する..."
-  cancel: "キャンセル"
   renote: "Renote"
   reposting: "しています..."
   success: "Renoteしました！"
@@ -870,9 +863,11 @@ desktop/views/components/users-list.vue:
 desktop/views/components/users-list-item.vue:
   followed: "フォローされています"
 
+desktop/views/components/users-list-window.vue:
+  list-name: "リスト名"  
+
 desktop/views/components/window.vue:
   popout: "ポップアウト"
-  close: "閉じる"
 
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
@@ -910,7 +905,6 @@ desktop/views/pages/note.vue:
 desktop/views/pages/selectdrive.vue:
   title: "ファイルを選択してください"
   ok: "決定"
-  cancel: "キャンセル"
   upload: "PCからドライブにファイルをアップロード"
 
 desktop/views/pages/search.vue:
@@ -1054,8 +1048,7 @@ mobile/views/components/friends-maker.vue:
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
   refresh: "もっと見る"
-  close: "閉じる"
-
+  
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
   more: "もっと見る"
