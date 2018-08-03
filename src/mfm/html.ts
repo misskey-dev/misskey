@@ -11,6 +11,12 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 		document.body.appendChild(b);
 	},
 
+	big({ document }, { big }) {
+		const b = document.createElement('strong');
+		b.textContent = big;
+		document.body.appendChild(b);
+	},
+
 	code({ document }, { code }) {
 		const pre = document.createElement('pre');
 		const inner = document.createElement('code');

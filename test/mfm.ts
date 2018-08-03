@@ -31,6 +31,14 @@ describe('Text', () => {
 			], tokens);
 		});
 
+		it('big', () => {
+			const tokens = analyze('***Strawberry*** Pasta');
+			assert.deepEqual([
+				{ type: 'big', content: '***Strawberry***', bold: 'Strawberry' },
+				{ type: 'text', content: ' Pasta' }
+			], tokens);
+		});
+
 		it('mention', () => {
 			const tokens = analyze('@himawari お腹ペコい');
 			assert.deepEqual([

@@ -3,6 +3,7 @@
  */
 
 import { TextElementBold } from './elements/bold';
+import { TextElementBig } from './elements/big';
 import { TextElementCode } from './elements/code';
 import { TextElementEmoji } from './elements/emoji';
 import { TextElementHashtag } from './elements/hashtag';
@@ -15,6 +16,7 @@ import { TextElementTitle } from './elements/title';
 import { TextElementUrl } from './elements/url';
 
 const elements = [
+	require('./elements/big'),
 	require('./elements/bold'),
 	require('./elements/title'),
 	require('./elements/url'),
@@ -30,6 +32,7 @@ const elements = [
 
 export type TextElement = { type: 'text', content: string }
 	| TextElementBold
+	| TextElementBig
 	| TextElementCode
 	| TextElementEmoji
 	| TextElementHashtag
