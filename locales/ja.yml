@@ -132,6 +132,11 @@ common:
     pop-right: "右に出す"
 
 common/views/components/games/reversi/reversi.vue:
+  matching:
+    waiting-for: "{}を待っています"
+    cancel: "キャンセル"
+
+common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
   invite: "招待"
@@ -146,9 +151,6 @@ common/views/components/games/reversi/reversi.vue:
   game-state:
     ended: "終了"
     playing: "進行中"
-  matching:
-    waiting-for: "{}を待っています"
-    cancel: "キャンセル"
 
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "ゲームの設定"
