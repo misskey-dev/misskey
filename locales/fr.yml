@@ -678,8 +678,8 @@ desktop/views/components/settings.api.vue:
 desktop/views/components/settings.apps.vue:
   no-apps: "Aucune application autorisée"
 desktop/views/components/settings.drive.vue:
-  max: "中"
-  in-use: "使用中"
+  max: "Maximum"
+  in-use: "en cours d’utilisation"
 desktop/views/components/settings.mute.vue:
   no-users: "Aucun utilisateurs mis en sourdine"
 desktop/views/components/settings.password.vue:
@@ -702,7 +702,7 @@ desktop/views/components/settings.profile.vue:
   other: "Autre"
   is-bot: "Ce compte est un Bot"
   is-cat: "Ce compte est un Chat"
-  profile-updated: "プロフィールを更新しました"
+  profile-updated: "Profil mis à jour"
 desktop/views/components/sub-note-content.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
@@ -776,7 +776,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "Se connecter"
   signup-button: "S'inscrire"
   timeline: "Fil d'actualité"
-  powered-by-misskey: "Powered by <b>Misskey</b>."
+  powered-by-misskey: "Propulsé par <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
 desktop/views/pages/favorites.vue:
@@ -792,10 +792,10 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Annuler"
   upload: "Uploader un ou plusieurs fichier(s) depuis votre PC"
 desktop/views/pages/search.vue:
-  not-available: "検索機能を利用することができません。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-available: "Vous ne pouvez pas utiliser la fonctionnalité de recherche."
+  not-found: "Aucun message trouvé pour '{}'"
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "Partager avec {}"
 desktop/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
@@ -999,14 +999,14 @@ mobile/views/pages/home.vue:
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
-  signup: "新規登録"
+  signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
-  dashboard: "ダッシュボード"
+  dashboard: "Tableau de bord"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 mobile/views/pages/widgets/activity.vue:
-  activity: "アクティビティ"
+  activity: "Activité"
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "Partager avec {}"
 mobile/views/pages/messaging.vue:
   messaging: "Messagerie"
 mobile/views/pages/messaging-room.vue:
@@ -1023,7 +1023,7 @@ mobile/views/pages/notifications.vue:
   notifications: "Notifications"
   read-all: "Êtes vous sûr de vouloir marqués toutes les notifications non-lus en tant que lus?"
 mobile/views/pages/games/reversi.vue:
-  reversi: "リバーシ"
+  reversi: "Reversi"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"
   name: "Nom"
