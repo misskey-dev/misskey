@@ -73,7 +73,7 @@
 						</header>
 
 						<div>
-							<el-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :label="r.value" @change="onChangeForm($event, item)">{{ r.label }}</el-radio>
+							<form-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm($event, item)">{{ r.label }}</form-radio>
 						</div>
 					</div>
 
@@ -317,7 +317,7 @@ root(isDark)
 			border-radius 4px
 			background isDark ? #282C37 : #fff
 			color isDark ? #fff : #303133
-			box-shadow 0 2px 12px 0 rgba(#000, 0.1)
+			box-shadow 0 2px 12px 0 rgba(#000, isDark ? 0.7 : 0.1)
 
 			> header
 				padding 18px 20px
