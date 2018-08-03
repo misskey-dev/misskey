@@ -93,7 +93,7 @@
 
 	<footer>
 		<p class="status">
-			<template v-if="isAccepted && isOpAccepted">%i18n:@this-gane-is-started-soon%<mk-ellipsis/></template>
+			<template v-if="isAccepted && isOpAccepted">%i18n:@this-game-is-started-soon%<mk-ellipsis/></template>
 			<template v-if="isAccepted && !isOpAccepted">%i18n:@waiting-for-other%<mk-ellipsis/></template>
 			<template v-if="!isAccepted && isOpAccepted">%i18n:@waiting-for-me%</template>
 			<template v-if="!isAccepted && !isOpAccepted">%i18n:@waiting-for-both%<mk-ellipsis/></template>
