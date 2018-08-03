@@ -34,9 +34,9 @@
 			</header>
 
 			<div>
-				<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">%i18n:@random%</el-radio>
-				<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
-				<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
+				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">%i18n:@random%</form-radio>
+				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
 			</div>
 		</div>
 
@@ -99,9 +99,9 @@
 		</p>
 
 		<div class="actions">
-			<el-button @click="exit">%i18n:@cancel%</el-button>
-			<el-button type="primary" @click="accept" v-if="!isAccepted">%i18n:@ready%</el-button>
-			<el-button type="primary" @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</el-button>
+			<form-button @click="exit">%i18n:@cancel%</form-button>
+			<form-button primary @click="accept" v-if="!isAccepted">%i18n:@ready%</form-button>
+			<form-button primary @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</form-button>
 		</div>
 	</footer>
 </div>
@@ -248,7 +248,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.urbixznjwwuukfsckrwzwsqzsxornqij
+root(isDark)
 	text-align center
 	background #f9f9f9
 
@@ -283,7 +283,7 @@ export default Vue.extend({
 			max-width 400px
 			border-radius 4px
 			border 1px solid #ebeef5
-			background #fff
+			background isDark ? #282C37 : #fff
 			color #303133
 			box-shadow 0 2px 12px 0 rgba(#000, 0.1)
 
@@ -303,6 +303,13 @@ export default Vue.extend({
 
 		> .status
 			margin 0 0 16px 0
+
+.urbixznjwwuukfsckrwzwsqzsxornqij[data-darkmode]
+	root(true)
+
+.urbixznjwwuukfsckrwzwsqzsxornqij:not([data-darkmode])
+	root(false)
+
 </style>
 
 <style lang="stylus" module>

@@ -38,6 +38,7 @@ import uiSwitch from './ui/switch.vue';
 import uiRadio from './ui/radio.vue';
 import uiSelect from './ui/select.vue';
 import formButton from './ui/form/button.vue';
+import formRadio from './ui/form/radio.vue';
 
 Vue.component('mk-analog-clock', analogClock);
 Vue.component('mk-menu', menu);
@@ -77,3 +78,4 @@ Vue.component('ui-switch', uiSwitch);
 Vue.component('ui-radio', uiRadio);
 Vue.component('ui-select', uiSelect);
 Vue.component('form-button', formButton);
+Vue.component('form-radio', formRadio);

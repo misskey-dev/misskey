@@ -28,6 +28,11 @@ export default Vue.extend({
 @import '~const.styl'
 
 root(isDark)
+	display inline-block
+
+	& + .nvemkhtwcnnpkdrwfcbzuwhfulejhmzg
+		margin-left 12px
+
 	> button
 		display inline-block
 		margin 0
@@ -54,16 +59,18 @@ root(isDark)
 
 	&.primary
 		> button
-			border none
+			border 1px solid $theme-color
 			background $theme-color
 			color $theme-color-foreground
 
 			&:hover
 			&:focus
 				background lighten($theme-color, 20%)
+				border-color lighten($theme-color, 20%)
 
 			&:active
 				background darken($theme-color, 20%)
+				border-color darken($theme-color, 20%)
 				transition all 0s
 
 	&.round
