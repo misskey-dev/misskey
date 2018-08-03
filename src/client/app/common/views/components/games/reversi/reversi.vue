@@ -9,7 +9,7 @@
 			<form-button round @click="cancel">%i18n:@matching.cancel%</form-button>
 		</div>
 	</div>
-	<div v-if="gameId">
+	<div v-else-if="gameId">
 		...
 	</div>
 	<div class="index" v-else>
