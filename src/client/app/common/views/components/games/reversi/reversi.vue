@@ -9,6 +9,9 @@
 			<form-button round @click="cancel">%i18n:@matching.cancel%</form-button>
 		</div>
 	</div>
+	<div v-if="gameId">
+		...
+	</div>
 	<div class="index" v-else>
 		<x-index @go="nav" @matching="onMatching"/>
 	</div>
@@ -45,22 +48,14 @@ export default Vue.extend({
 	},
 
 	watch: {
-		gameId(id) {
-			if (id == null) {
-				this.game = null;
-			} else {
-				Progress.start();
-				(this as any).api('games/reversi/games/show', {
-					gameId: id
-				}).then(game => {
-					this.nav(game, true);
-					Progress.done();
-				});
-			}
+		gameId() {
+			this.fetch();
 		}
 	},
 
 	mounted() {
+		this.fetch();
+
 		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.streams.reversiStream.getConnection();
 			this.connectionId = (this as any).os.streams.reversiStream.use();
@@ -88,6 +83,20 @@ export default Vue.extend({
 	},
 
 	methods: {
+		fetch() {
+			if (this.gameId == null) {
+				this.game = null;
+			} else {
+				Progress.start();
+				(this as any).api('games/reversi/games/show', {
+					gameId: this.gameId
+				}).then(game => {
+					this.nav(game, true);
+					Progress.done();
+				});
+			}
+		},
+
 		nav(game, silent) {
 			this.matching = null;
 			this.game = game;
