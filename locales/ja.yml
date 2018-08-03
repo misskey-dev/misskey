@@ -197,11 +197,6 @@ common/views/components/games/reversi/reversi.index.vue:
   game-state:
     ended: "終了"
     playing: "進行中"
-<<<<<<< HEAD
-  matching:
-    waiting-for: "{}を待っています"
-=======
->>>>>>> upstream/master
 
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "ゲームの設定"

@@ -100,15 +100,9 @@
 		</p>
 
 		<div class="actions">
-<<<<<<< HEAD
-			<el-button @click="exit">%i18n:common.cancel%</el-button>
-			<el-button type="primary" @click="accept" v-if="!isAccepted">%i18n:@ready%</el-button>
-			<el-button type="primary" @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</el-button>
-=======
 			<form-button @click="exit">%i18n:@cancel%</form-button>
 			<form-button primary @click="accept" v-if="!isAccepted">%i18n:@ready%</form-button>
 			<form-button primary @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</form-button>
->>>>>>> upstream/master
 		</div>
 	</footer>
 </div>
