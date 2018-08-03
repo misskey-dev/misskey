@@ -12,8 +12,8 @@ common:
   application-authorization: "アプリの連携"
   close: "Zamknij"
   customization-tips:
-    title: "カスタマイズのヒント"
-    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
+    title: "Wskazówki o dostosowywaniu"
+    paragraph1: "Dostosowywanie strony głównej pozwala na dodawanie, usuwanie, przeciąganie i zmienianie kolejności widżetów."
     paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
@@ -702,7 +702,7 @@ desktop/views/components/settings.profile.vue:
   other: "Inne"
   is-bot: "To konto jest prowadzone przez bota"
   is-cat: "To konto jest prowadzone przez kota"
-  profile-updated: "プロフィールを更新しました"
+  profile-updated: "Zaktualizowano profil"
 desktop/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
@@ -776,7 +776,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "Zaloguj się"
   signup-button: "Zarejestruj się"
   timeline: "Oś czasu"
-  powered-by-misskey: "Powered by <b>Misskey</b>."
+  powered-by-misskey: "Oparto o <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
 desktop/views/pages/favorites.vue:
@@ -792,12 +792,12 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Anuluj"
   upload: "Wyślij pliki z Twojego komputera"
 desktop/views/pages/search.vue:
-  not-available: "検索機能を利用することができません。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-available: "Funkcja wyszukiwania nie może zostać wykorzystywana."
+  not-found: "Nie znaleziono wpisów zawierających „{}”"
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "Udostępnij z {}."
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Nie znaleziono wpisów zawierających „{}”."
 desktop/views/pages/user-list.users.vue:
   users: "Użytkownicy"
   add-user: "Dodaj użytkownika"
@@ -954,7 +954,7 @@ mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
   load-more: "Więcej"
 mobile/views/components/ui.header.vue:
-  welcome-back: "おかえりなさい、"
+  welcome-back: "Witaj ponownie, "
 mobile/views/components/ui.nav.vue:
   timeline: "Oś czasu"
   notifications: "Powiadomienia"
@@ -986,7 +986,7 @@ mobile/views/pages/drive.vue:
   drive: "Dysk"
   more: "Załaduj więcej"
 mobile/views/pages/signup.vue:
-  lets-start: "📦 始めましょう"
+  lets-start: "Rozpocznijmy! 📦"
 mobile/views/pages/followers.vue:
   followers-of: "Śledzący {}"
 mobile/views/pages/following.vue:
@@ -997,16 +997,16 @@ mobile/views/pages/home.vue:
   hybrid: "Społeczność"
   global: "Globalne"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Nie znaleziono wpisów zawierających „{}”."
 mobile/views/pages/welcome.vue:
-  signup: "新規登録"
+  signup: "Zarejestruj się"
 mobile/views/pages/widgets.vue:
-  dashboard: "ダッシュボード"
+  dashboard: "Kokpit"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 mobile/views/pages/widgets/activity.vue:
-  activity: "アクティビティ"
+  activity: "Aktywność"
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "Udostępnij z {}."
 mobile/views/pages/messaging.vue:
   messaging: "Wiadomości"
 mobile/views/pages/messaging-room.vue:
@@ -1023,7 +1023,7 @@ mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
 mobile/views/pages/games/reversi.vue:
-  reversi: "リバーシ"
+  reversi: "Reversi"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"
   name: "Nazwa"
