@@ -1,14 +1,14 @@
 <template>
-<div class="root">
+<div class="xqnhankfuuilcwvhgsopeqncafzsquya">
 	<header><b>{{ blackUser | userName }}</b>(%i18n:common.reversi.black%) vs <b>{{ whiteUser | userName }}</b>(%i18n:common.reversi.white%)</header>
 
 	<div style="overflow: hidden">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', Vue.filter('userName')(turnUser)) }}<mk-ellipsis/></p>
-		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', Vue.filter('userName')(turnUser)) }}</p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
+		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}</p>
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">%i18n:common.reversi.my-turn%</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
-			<template v-if="game.winner">{{ '%i18n:common.reversi.won%'.replace('{}', Vue.filter('userName')(game.winner)) }}{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
+			<template v-if="game.winner">{{ '%i18n:common.reversi.won%'.replace('{}', $options.filters.userName(game.winner)) }}{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
 			<template v-else>%i18n:common.reversi.drawn%</template>
 		</p>
 	</div>
@@ -258,12 +258,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.root
+root(isDark)
 	text-align center
 
 	> header
 		padding 8px
-		border-bottom dashed 1px #c4cdd4
+		border-bottom dashed 1px isDark ? #4c5761 : #c4cdd4
 
 	> .board
 		width calc(100% - 16px)
@@ -327,16 +327,16 @@ export default Vue.extend({
 						user-select none
 
 					&.empty
-						border solid 2px #eee
+						border solid 2px isDark ? #51595f : #eee
 
 					&.empty.can
-						background #eee
+						background isDark ? #51595f : #eee
 
 					&.empty.myTurn
-						border-color #ddd
+						border-color isDark ? #6a767f : #ddd
 
 						&.can
-							background #eee
+							background isDark ? #51595f : #eee
 							cursor pointer
 
 							&:hover
@@ -350,7 +350,7 @@ export default Vue.extend({
 						box-shadow 0 0 0 4px rgba($theme-color, 0.7)
 
 					&.isEnded
-						border-color #ddd
+						border-color isDark ? #6a767f : #ddd
 
 					&.none
 						border-color transparent !important
@@ -388,4 +388,11 @@ export default Vue.extend({
 			display inline-block
 			margin 0 8px
 			min-width 70px
+
+.xqnhankfuuilcwvhgsopeqncafzsquya[data-darkmode]
+	root(true)
+
+.xqnhankfuuilcwvhgsopeqncafzsquya:not([data-darkmode])
+	root(false)
+
 </style>
