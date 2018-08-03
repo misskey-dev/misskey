@@ -194,7 +194,7 @@ common/views/components/games/reversi/reversi.room.vue:
   looped-map: "Mapa en bucle"
   can-put-everywhere: "Puedes colocar donde quieras"
   settings-of-the-bot: "Configuración de bot"
-  this-gane-is-started-soon: "El juego comenzará dentro de poco"
+  this-game-is-started-soon: "ゲームは数秒後に開始されます"
   waiting-for-other: "Esperando a que se prepare el adversario"
   waiting-for-me: "Esperando por la preparación"
   waiting-for-both: "Esperando por ti"
