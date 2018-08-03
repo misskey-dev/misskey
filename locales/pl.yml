@@ -6,13 +6,26 @@ common:
   misskey: "⭐ Fediwersum"
   about-title: "⭐ Fediwersum"
   about: "Dziękujemy za znalezienie Misskey. Misskey jest <b>zdecentralizowaną platformą mikroblogową</b> powstałą na Ziemi. Ponieważ działa ona w Fediwersum (uniwersum, w którego skład wchodzi wiele sieci społecznościowych), jest ona połączona z innymi platformami społecznościowymi. Spróbujesz odpocząć od zatłoczoneo miasta i zanurzyć się w nowym Internecie?"
+  adblock:
+    detected: "Spróbuj wyłączyć blokadę reklam."
+    warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
+  application-authorization: "アプリの連携"
+  close: "閉じる"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
     paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
-    gotit: "Got it!"
+    gotit: "Rozumiem!"
+  notification:
+    file-uploaded: "Wysłano plik!"
+    message-from: "Wiadomość od {}:"
+    reversi-invited: "Zaproszono do gry"
+    reversi-invited-by: "Zaproszono przez {}:"
+    notified-by: "Powiadomiono przez {}:"
+    reply-from: "Odpowiedź od {}:"
+    quoted-by: "Zacytowano przez {}:"
   name: "Misskey"
   time:
     unknown: "nieznany"
@@ -25,7 +38,13 @@ common:
     weeks_ago: "{} tyg. temu"
     months_ago: "{} mies. temu"
     years_ago: "{} lat temu"
-  trash: "ゴミ箱"
+  trash: "Kosz"
+  date:
+    full-year: "Rok"
+    month: "Miesiąc"
+    day: "Dzień"
+    hours: "Godzina"
+    minutes: "Minuty"
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -35,13 +54,13 @@ common:
     friday: "P"
     saturday: "S"
   weekday:
-    sunday: "日曜日"
-    monday: "月曜日"
-    tuesday: "火曜日"
-    wednesday: "水曜日"
-    thursday: "木曜日"
-    friday: "金曜日"
-    saturday: "土曜日"
+    sunday: "Niedziela"
+    monday: "Poniedziałek"
+    tuesday: "Wtorek"
+    wednesday: "Środa"
+    thursday: "Czwartek"
+    friday: "Piątek"
+    saturday: "Sobota"
   reactions:
     like: "Lubię"
     love: "Kocham"
@@ -76,10 +95,10 @@ common:
     turn-of: "Kolej na {}"
     past-turn-of: "Kolej {}"
     won: "{}の勝ち"
-    black: "黒"
-    white: "白"
-    total: "合計"
-    this-turn: "{}ターン目"
+    black: "Czarny"
+    white: "Biały"
+    total: "Łącznie"
+    this-turn: "Ruch {}"
   widgets:
     analog-clock: "Zegar analogowy"
     profile: "Profil"
@@ -121,7 +140,35 @@ common:
     rename: "Zmień nazwę"
     stack-left: "Przypnij do lewej"
     pop-right: "Odepnij w prawo"
+auth/views/form.vue:
+  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
+  permission-ask: "このアプリは次の権限を要求しています:"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  like-write: "いいねしたりいいね解除する。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"
+  cancel: "キャンセル"
+  accept: "アクセスを許可"
+auth/views/index.vue:
+  loading: "読み込み中"
+  denied: "アプリケーションの連携をキャンセルしました。"
+  denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
+  already-authorized: "このアプリは既に連携済みです"
+  allowed: "アプリケーションの連携を許可しました"
+  callback-url: "アプリケーションに戻っています"
+  please-go-back: "アプリケーションに戻って、やっていってください。"
+  error: "セッションが存在しません。"
+  sign-in: "サインインしてください"
 common/views/components/games/reversi/reversi.vue:
+  matching:
+    waiting-for: "{}を待っています"
+    cancel: "キャンセル"
+common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
   invite: "招待"
@@ -136,9 +183,6 @@ common/views/components/games/reversi/reversi.vue:
   game-state:
     ended: "終了"
     playing: "進行中"
-  matching:
-    waiting-for: "{}を待っています"
-    cancel: "キャンセル"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "ゲームの設定"
   choose-map: "マップを選択"
@@ -150,7 +194,7 @@ common/views/components/games/reversi/reversi.room.vue:
   looped-map: "ループマップ"
   can-put-everywhere: "どこでも置けるモード"
   settings-of-the-bot: "Botの設定"
-  this-gane-is-started-soon: "ゲームは数秒後に開始されます"
+  this-game-is-started-soon: "ゲームは数秒後に開始されます"
   waiting-for-other: "相手の準備が完了するのを待っています"
   waiting-for-me: "あなたの準備が完了するのを待っています"
   waiting-for-both: "準備中"
@@ -751,8 +795,7 @@ desktop/views/pages/search.vue:
   not-available: "検索機能を利用することができません。"
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
-  share-with: "Misskeyで共有"
-  close: "閉じる"
+  share-with: "{}で共有"
 desktop/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
@@ -959,8 +1002,11 @@ mobile/views/pages/welcome.vue:
   signup: "新規登録"
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
+  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
+mobile/views/pages/share.vue:
+  share-with: "{}で共有"
 mobile/views/pages/messaging.vue:
   messaging: "Wiadomości"
 mobile/views/pages/messaging-room.vue:
@@ -976,7 +1022,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
-mobile/views/pages/reversi.vue:
+mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"

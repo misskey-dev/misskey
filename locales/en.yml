@@ -9,7 +9,8 @@ common:
   adblock:
     detected: "Please disable ad blocker."
     warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
-  application-authorization: "Application authorizations"
+  application-authorization: "Application authorizations."
+  close: "Close"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
@@ -17,12 +18,11 @@ common:
     paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
     paragraph4: "To finish the customization, click \"Finish\" in the upper right."
     gotit: "Got it!"
-  close: "Close"
   notification:
     file-uploaded: "File uploaded!"
     message-from: "Message from {}:"
-    reversi-invited: "Invited to a game:"
-    reversi-invited-by: "By {}."
+    reversi-invited: "Invited to a game"
+    reversi-invited-by: "Invited by {}:"
     notified-by: "Notified by {}:"
     reply-from: "Reply from {}:"
     quoted-by: "Quoted by {}:"
@@ -43,7 +43,7 @@ common:
     full-year: "Year"
     month: "Month"
     day: "Day"
-    hours: "Hours"
+    hours: "Hour"
     minutes: "Minutes"
   weekday-short:
     sunday: "S"
@@ -140,38 +140,42 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
-auth/views/form.vue: 
-  share-access: "Would you <b>allow</b> <i>{{app.name}}</i> to access your account?"
+auth/views/form.vue:
+  share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
-  account-read: "View account information."
-  account-write: "Modify account information."
+  account-read: "Viewing account information:"
+  account-write: "Modify account informations:"
   note-write: "Post."
-  like-write: "React."
+  like-write: "To react to posts."
   following-write: "Follow or unfollow."
   drive-read: "Read your drive."
   drive-write: "Upload/delete files in your drive."
   notification-read: "Read your notifications."
   notification-write: "Manage your notifications."
   cancel: "Cancel"
-  accept: "Accept"
+  accept: "Grant access."
 auth/views/index.vue:
-  loading: "Loading..."
-  denied: "Application authorization is denied."
+  loading: "Loading"
+  denied: "Application authorization denied."
   denied-paragraph: "This application will not access your account."
-  already-authorized: "This application is already authorized."
-  allowed: "Application authorization allowed."
+  already-authorized: "This application has already been authorized."
+  allowed: "Application authorizations allowed.+"
   callback-url: "Going back to the application."
   please-go-back: "Please go back to the application."
   error: "Session does not exist."
   sign-in: "Please sign in."
 common/views/components/games/reversi/reversi.vue:
+  matching:
+    waiting-for: "Waiting for {}"
+    cancel: "Cancel"
+common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "Play reversi with your friends!"
   invite: "Invite"
   rule: "How to play"
   rule-desc: "Reversi is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called disks (often spelled \"discs\"), which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up. During a play, any disks of the opponent's color that are in a straight line and bounded by the disk just placed and another disk of the current player's color are turned over to the current player's color. The object of the game is to have the majority of disks turned to display your color when the last playable empty square is filled."
   mode-invite: "Invite"
-  mode-invite-desc: "Invite to the game a user"
+  mode-invite-desc: "Invite to the game a user."
   invitations: "You received invitation!"
   my-games: "My games"
   all-games: "All games"
@@ -179,9 +183,6 @@ common/views/components/games/reversi/reversi.vue:
   game-state:
     ended: "Ended"
     playing: "In Progress"
-  matching:
-    waiting-for: "Waiting for {}"
-    cancel: "Cancel"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "Game settings"
   choose-map: "Choose a map"
@@ -193,7 +194,7 @@ common/views/components/games/reversi/reversi.room.vue:
   looped-map: "Looped map"
   can-put-everywhere: "Can put everywhere"
   settings-of-the-bot: "Bot settings"
-  this-gane-is-started-soon: "This game will start soon"
+  this-game-is-started-soon: "The game will begin soon"
   waiting-for-other: "Waiting for the other party's preparation"
   waiting-for-me: "Waiting for the your preparation"
   waiting-for-both: "Waiting for yours"
@@ -796,7 +797,7 @@ desktop/views/pages/search.vue:
   not-available: "The search function can not be used."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
-  share-with: "Share with {}"
+  share-with: "Share with {}."
 desktop/views/pages/tag.vue:
   no-posts-found: "No posts \"{}\" found."
 desktop/views/pages/user-list.users.vue:
@@ -1003,8 +1004,11 @@ mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
+  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
+mobile/views/pages/share.vue:
+  share-with: "Share with {}."
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
@@ -1020,7 +1024,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
   read-all: "Do you wish to mark all notifications as read?"
-mobile/views/pages/reversi.vue:
+mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
@@ -1039,8 +1043,6 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
-mobile/views/pages/share.vue:
-  share-with: "Share with {}."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:

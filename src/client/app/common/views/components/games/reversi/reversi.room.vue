@@ -1,92 +1,114 @@
 <template>
-<div class="root">
+<div class="urbixznjwwuukfsckrwzwsqzsxornqij">
 	<header><b>{{ game.user1 | userName }}</b> vs <b>{{ game.user2 | userName }}</b></header>
 
 	<div>
 		<p>%i18n:@settings-of-the-game%</p>
 
-		<el-card class="map">
-			<div slot="header">
-				<el-select :class="$style.mapSelect" v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
-					<el-option label="%i18n:@random%" :value="null"/>
-					<el-option-group v-for="c in mapCategories" :key="c" :label="c">
-						<el-option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">
-							<span style="float: left">{{ m.name }}</span>
-							<span style="float: right; color: #8492a6; font-size: 13px" v-if="m.author">(by <i>{{ m.author }}</i>)</span>
-						</el-option>
-					</el-option-group>
-				</el-select>
-			</div>
-			<div :class="$style.board" v-if="game.settings.map != null" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
-				<div v-for="(x, i) in game.settings.map.join('')"
-					:data-none="x == ' '"
-					@click="onPixelClick(i, x)"
-				>
-					<template v-if="x == 'b'">%fa:circle%</template>
-					<template v-if="x == 'w'">%fa:circle R%</template>
+		<div class="card map">
+			<header>
+				<select v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
+					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
+					<option label="%i18n:@random%" :value="null"/>
+					<optgroup v-for="c in mapCategories" :key="c" :label="c">
+						<option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
+					</optgroup>
+				</select>
+			</header>
+
+			<div>
+				<div class="random" v-if="game.settings.map == null">%fa:dice%</div>
+				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
+					<div v-for="(x, i) in game.settings.map.join('')"
+							:data-none="x == ' '"
+							@click="onPixelClick(i, x)">
+						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode">%fa:circle R%</template><template v-else>%fa:circle%</template></template>
+						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode">%fa:circle%</template><template v-else>%fa:circle R%</template></template>
+					</div>
 				</div>
 			</div>
-		</el-card>
+		</div>
 
-		<el-card class="bw">
-			<div slot="header">
+		<div class="card">
+			<header>
 				<span>%i18n:@black-or-white%</span>
-			</div>
-			<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">%i18n:@random%</el-radio>
-			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user1 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
-			<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}{{ game.user2 | userName }}{{ '%i18n:@black-is%'.split('{}')[1] }}</el-radio>
-		</el-card>
+			</header>
 
-		<el-card class="rules">
-			<div slot="header">
+			<div>
+				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">%i18n:@random%</form-radio>
+				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user1 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user2 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
+			</div>
+		</div>
+
+		<div class="card">
+			<header>
 				<span>%i18n:@rules%</span>
-			</div>
-			<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="%i18n:@is-llotheo%"/>
-			<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="%i18n:@looped-map%"/>
-			<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="%i18n:@can-put-everywhere%"/>
-		</el-card>
+			</header>
 
-		<el-card class="bot-form" v-if="form">
-			<div slot="header">
+			<div>
+				<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="%i18n:@is-llotheo%"/>
+				<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="%i18n:@looped-map%"/>
+				<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="%i18n:@can-put-everywhere%"/>
+			</div>
+		</div>
+
+		<div class="card" v-if="form">
+			<header>
 				<span>%i18n:@settings-of-the-bot%</span>
+			</header>
+
+			<div>
+				<el-alert v-for="message in messages"
+						:title="message.text"
+						:type="message.type"
+						:key="message.id"/>
+
+				<template v-for="item in form">
+					<mk-switch v-if="item.type == 'button'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm($event, item)">{{ item.desc || '' }}</mk-switch>
+
+					<div class="card" v-if="item.type == 'radio'" :key="item.id">
+						<header>
+							<span>{{ item.label }}</span>
+						</header>
+
+						<div>
+							<el-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :label="r.value" @change="onChangeForm($event, item)">{{ r.label }}</el-radio>
+						</div>
+					</div>
+
+					<div class="card" v-if="item.type == 'textbox'" :key="item.id">
+						<header>
+							<span>{{ item.label }}</span>
+						</header>
+
+						<div>
+							<el-input v-model="item.value" @change="onChangeForm($event, item)"/>
+						</div>
+					</div>
+				</template>
 			</div>
-			<el-alert v-for="message in messages"
-				:title="message.text"
-				:type="message.type"
-				:key="message.id"
-			/>
-			<template v-for="item in form">
-				<mk-switch v-if="item.type == 'button'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm($event, item)">{{ item.desc || '' }}</mk-switch>
-
-				<el-card v-if="item.type == 'radio'" :key="item.id">
-					<div slot="header">
-						<span>{{ item.label }}</span>
-					</div>
-					<el-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :label="r.value" @change="onChangeForm($event, item)">{{ r.label }}</el-radio>
-				</el-card>
-
-				<el-card v-if="item.type == 'textbox'" :key="item.id">
-					<div slot="header">
-						<span>{{ item.label }}</span>
-					</div>
-					<el-input v-model="item.value" @change="onChangeForm($event, item)"/>
-				</el-card>
-			</template>
-		</el-card>
+		</div>
 	</div>
 
 	<footer>
 		<p class="status">
-			<template v-if="isAccepted && isOpAccepted">%i18n:@this-gane-is-started-soon%<mk-ellipsis/></template>
+			<template v-if="isAccepted && isOpAccepted">%i18n:@this-game-is-started-soon%<mk-ellipsis/></template>
 			<template v-if="isAccepted && !isOpAccepted">%i18n:@waiting-for-other%<mk-ellipsis/></template>
 			<template v-if="!isAccepted && isOpAccepted">%i18n:@waiting-for-me%</template>
 			<template v-if="!isAccepted && !isOpAccepted">%i18n:@waiting-for-both%<mk-ellipsis/></template>
 		</p>
 
 		<div class="actions">
+<<<<<<< HEAD
 			<el-button @click="exit">%i18n:common.cancel%</el-button>
 			<el-button type="primary" @click="accept" v-if="!isAccepted">%i18n:@ready%</el-button>
 			<el-button type="primary" @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</el-button>
+=======
+			<form-button @click="exit">%i18n:@cancel%</form-button>
+			<form-button primary @click="accept" v-if="!isAccepted">%i18n:@ready%</form-button>
+			<form-button primary @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</form-button>
+>>>>>>> upstream/master
 		</div>
 	</footer>
 </div>
@@ -202,11 +224,11 @@ export default Vue.extend({
 			});
 		},
 
-		onMapChange(v) {
-			if (v == null) {
+		onMapChange() {
+			if (this.mapName == null) {
 				this.game.settings.map = null;
 			} else {
-				this.game.settings.map = Object.values(maps).find(x => x.name == v).data;
+				this.game.settings.map = Object.values(maps).find(x => x.name == this.mapName).data;
 			}
 			this.$forceUpdate();
 			this.updateSettings();
@@ -233,9 +255,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.root
+root(isDark)
 	text-align center
-	background #f9f9f9
+	background isDark ? #191b22 : #f9f9f9
 
 	> header
 		padding 8px
@@ -244,54 +266,87 @@ export default Vue.extend({
 	> div
 		padding 0 16px
 
-		> .map
-		> .bw
-		> .rules
-		> .bot-form
-			max-width 400px
+		> .card
 			margin 0 auto 16px auto
+
+			&.map
+				> header
+					> select
+						width 100%
+						padding 12px 14px
+						background isDark ? #282C37 : #fff
+						border 1px solid isDark ? #6a707d : #dcdfe6
+						border-radius 4px
+						color isDark ? #fff : #606266
+						cursor pointer
+						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
+
+						&:hover
+							border-color isDark ? #a7aebd : #c0c4cc
+
+						&:focus
+						&:active
+							border-color $theme-color
+
+				> div
+					> .random
+						padding 32px 0
+						font-size 64px
+						color isDark ? #4e5961 : #d8d8d8
+
+					> .board
+						display grid
+						grid-gap 4px
+						width 300px
+						height 300px
+						margin 0 auto
+						color isDark ? #fff : #444
+
+						> div
+							background transparent
+							border solid 2px isDark ? #6a767f : #ddd
+							border-radius 6px
+							overflow hidden
+							cursor pointer
+
+							*
+								pointer-events none
+								user-select none
+								width 100%
+								height 100%
+
+							&[data-none]
+								border-color transparent
+
+		.card
+			max-width 400px
+			border-radius 4px
+			background isDark ? #282C37 : #fff
+			color isDark ? #fff : #303133
+			box-shadow 0 2px 12px 0 rgba(#000, 0.1)
+
+			> header
+				padding 18px 20px
+				border-bottom 1px solid isDark ? #1c2023 : #ebeef5
+
+			> div
+				padding 20px
+				color isDark ? #fff : #606266
 
 	> footer
 		position sticky
 		bottom 0
 		padding 16px
-		background rgba(255, 255, 255, 0.9)
-		border-top solid 1px #c4cdd4
+		background rgba(isDark ? #191b22 : #fff, 0.9)
+		border-top solid 1px isDark ? #606266 : #c4cdd4
 
 		> .status
 			margin 0 0 16px 0
-</style>
 
-<style lang="stylus" module>
-.mapSelect
-	width 100%
+.urbixznjwwuukfsckrwzwsqzsxornqij[data-darkmode]
+	root(true)
 
-.board
-	display grid
-	grid-gap 4px
-	width 300px
-	height 300px
-	margin 0 auto
+.urbixznjwwuukfsckrwzwsqzsxornqij:not([data-darkmode])
+	root(false)
 
-	> div
-		background transparent
-		border solid 2px #ddd
-		border-radius 6px
-		overflow hidden
-		cursor pointer
-
-		*
-			pointer-events none
-			user-select none
-			width 100%
-			height 100%
-
-		&[data-none]
-			border-color transparent
-
-</style>
-
-<style lang="stylus">
-.el-alert__content
-	position initial !important
 </style>

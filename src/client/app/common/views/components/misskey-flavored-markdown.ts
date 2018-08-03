@@ -56,7 +56,18 @@ export default Vue.component('misskey-flavored-markdown', {
 					}
 
 				case 'bold':
-					return createElement('strong', token.bold);
+					return createElement('b', token.bold);
+
+				case 'big':
+					return (createElement as any)('strong', {
+						attrs: {
+							style: 'display: inline-block; font-size: 200%;'
+						},
+						directives: [{
+							name: 'animate-css',
+							value: { classes: 'tada', iteration: 'infinite' }
+						}]
+					}, token.big);
 
 				case 'url':
 					return createElement(MkUrl, {
