@@ -1,6 +1,6 @@
 <template>
 <div class="azibmfpleajagva420swmu4c3r7ni7iw">
-	<h1>Misskeyで共有</h1>
+	<h1>{{'%i18n:@share-with%'.split("{}")[0] + '%i18n:common.name%' + '%i18n:@share-with%'.split("{}")[1]}}</h1>
 	<div>
 		<mk-signin v-if="!$store.getters.isSignedIn"/>
 		<mk-post-form v-else-if="!posted" :initial-text="text" :instant="true" @posted="posted = true"/>

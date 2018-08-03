@@ -35,7 +35,7 @@ import MkFavorites from './views/pages/favorites.vue';
 import MkUserLists from './views/pages/user-lists.vue';
 import MkUserList from './views/pages/user-list.vue';
 import MkSettings from './views/pages/settings.vue';
-import MkReversi from './views/pages/reversi.vue';
+import MkReversi from './views/pages/games/reversi.vue';
 import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
@@ -76,8 +76,7 @@ init((launch) => {
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/share', component: MkShare },
-			{ path: '/reversi', name: 'reversi', component: MkReversi },
-			{ path: '/reversi/:game', component: MkReversi },
+			{ path: '/reversi/:game?', name: 'reversi', component: MkReversi },
 			{ path: '/@:user', component: MkUser },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },

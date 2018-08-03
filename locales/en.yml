@@ -1041,6 +1041,8 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
+mobile/views/pages/share.vue:
+  share-with: "Share with {}."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:

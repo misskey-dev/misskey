@@ -16,7 +16,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = 'Misskey';
+		document.title = '%i18n:common.name%';
 
 		Progress.start();
 	},

@@ -71,7 +71,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 				Progress.done();
-				document.title = getUserName(this.user) + ' | Misskey';
+				document.title = getUserName(this.user) + ' | %i18n:common.name%';
 			});
 		},
 
