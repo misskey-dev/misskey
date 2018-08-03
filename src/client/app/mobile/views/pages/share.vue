@@ -6,7 +6,7 @@
 		<mk-post-form v-else-if="!posted" :initial-text="text" :instant="true" @posted="posted = true"/>
 		<p v-if="posted" class="posted">%fa:check%</p>
 	</div>
-	<ui-button class="close" v-if="posted" @click="close">閉じる</ui-button>
+	<ui-button class="close" v-if="posted" @click="close">%i18n:common.close%</ui-button>
 </div>
 </template>
 
