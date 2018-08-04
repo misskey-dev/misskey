@@ -172,3 +172,6 @@ type: `textbox`
 }
 ```
 メッセージの種類: `success`, `info`, `warning`, `error`。
+
+## 投了する
+投了をするには、<a href="./api/endpoints/games/reversi/games/surrender">このエンドポイント</a>にリクエストします。
