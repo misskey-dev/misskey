@@ -88,6 +88,7 @@ common:
   i-like-sushi: "Je préfère les sushis (au pudding)"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
   verified-user: "Utilisateur·trice vérifié·e"
+  disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
@@ -156,7 +157,7 @@ auth/views/form.vue:
   accept: "Autoriser l’accès"
 auth/views/index.vue:
   loading: "Chargement en cours"
-  denied: "アプリケーションの連携をキャンセルしました。"
+  denied: "L'autorisation de l'application a été refusée."
   denied-paragraph: "Cette application ne va pas accéder à votre compte."
   already-authorized: "Cette application est déjà autorisée"
   allowed: "アプリケーションの連携を許可しました"
@@ -168,6 +169,9 @@ common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "En attente de {}"
     cancel: "Annuler"
+common/views/components/games/reversi/reversi.game.vue:
+  surrender: "投了"
+  surrendered: "投了により"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "Jouer à Reversi avec vos amis·es !"
@@ -364,15 +368,15 @@ common/views/widgets/slideshow.vue:
 common/views/widgets/tips.vue:
   tips-line1: "<kbd>t</kbd>でタイムラインにフォーカスできます"
   tips-line2: "<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます"
-  tips-line3: "投稿フォームにはファイルをドラッグ&ドロップできます"
-  tips-line4: "投稿フォームにクリップボードにある画像データをペーストできます"
+  tips-line3: "Vous pouvez glisser et déposer des fichiers sur la fenêtre de la note"
+  tips-line4: "Vous pouvez coller des images à partir du presse-papier sur la fenêtre de la note"
   tips-line5: "ドライブにファイルをドラッグ&ドロップしてアップロードできます"
   tips-line6: "ドライブでファイルをドラッグしてフォルダ移動できます"
   tips-line7: "ドライブでフォルダをドラッグしてフォルダ移動できます"
   tips-line8: "Vous pouvez personnaliser l'Accueil via les paramètres"
   tips-line9: "Misskey est sous licence AGPLv3"
   tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
-  tips-line11: "投稿の ... をクリックして、投稿をユーザーページにピン留めできます"
+  tips-line11: "Vous pouvez épingler des notes sur votre page en appuyant sur \"…\""
   tips-line13: "Tous les fichiers attachés à cette publication sont sauvegardés dans le Drive"
   tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できます"
   tips-line17: "「**」でテキストを囲むと**強調表示**されます"

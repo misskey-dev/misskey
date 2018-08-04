@@ -88,6 +88,7 @@ common:
   i-like-sushi: "Wolę sushi od puddingu"
   show-reversi-board-labels: "Pokazuj podpisy wierszy i kolumn w Reversi"
   verified-user: "Zweryfikowany użytkownik"
+  disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   reversi:
     drawn: "Remis"
     my-turn: "Twoja kolej"
@@ -168,6 +169,9 @@ common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}を待っています"
     cancel: "キャンセル"
+common/views/components/games/reversi/reversi.game.vue:
+  surrender: "投了"
+  surrendered: "投了により"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
