@@ -284,6 +284,9 @@ root(isDark)
 						color isDark ? #fff : #606266
 						cursor pointer
 						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
+						-webkit-appearance none
+						-moz-appearance none
+						appearance none
 
 						&:hover
 							border-color isDark ? #a7aebd : #c0c4cc
