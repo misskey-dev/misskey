@@ -48,6 +48,10 @@ export default Vue.extend({
 	},
 
 	watch: {
+		game() {
+			this.$emit('gamed', this.game);
+		},
+
 		gameId() {
 			this.fetch();
 		}
