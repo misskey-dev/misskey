@@ -99,7 +99,7 @@ common:
     black: "Noirs"
     white: "Blancs"
     total: "Total"
-    this-turn: "Tour de {}"
+    this-turn: "Tour {}"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
@@ -721,7 +721,7 @@ desktop/views/components/timeline.vue:
   global: "Global"
   list: "Listes"
 desktop/views/components/ui.header.vue:
-  welcome-back: "Vous êtes de retour !"
+  welcome-back: "Content de vous revoir !"
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
