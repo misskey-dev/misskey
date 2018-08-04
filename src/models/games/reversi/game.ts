@@ -25,6 +25,7 @@ export interface IReversiGame {
 	isStarted: boolean;
 	isEnded: boolean;
 	winnerId: mongo.ObjectID;
+	surrendered: mongo.ObjectID;
 	logs: Array<{
 		at: Date;
 		color: boolean;

@@ -1,6 +1,6 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
-	<header><b>{{ blackUser | userName }}</b>(%i18n:common.reversi.black%) vs <b>{{ whiteUser | userName }}</b>(%i18n:common.reversi.white%)</header>
+	<header><b><router-link :to="blackUser | userPage">{{ blackUser | userName }}</router-link></b>(%i18n:common.reversi.black%) vs <b><router-link :to="whiteUser | userPage">{{ whiteUser | userName }}</router-link></b>(%i18n:common.reversi.white%)</header>
 
 	<div style="overflow: hidden">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
@@ -8,7 +8,10 @@
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">%i18n:common.reversi.my-turn%</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
-			<template v-if="game.winner">{{ '%i18n:common.reversi.won%'.replace('{}', $options.filters.userName(game.winner)) }}{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
+			<template v-if="game.winner">
+				<span>{{ '%i18n:common.reversi.won%'.replace('{}', $options.filters.userName(game.winner)) }}</span>
+				<span v-if="game.surrendered != null"> (%i18n:@surrendered%)</span>
+			</template>
 			<template v-else>%i18n:common.reversi.drawn%</template>
 		</p>
 	</div>
@@ -40,6 +43,10 @@
 	</div>
 
 	<p class="status"><b>{{ '%i18n:common.reversi.this-turn%'.split('{}')[0] }}{{ logPos }}{{ '%i18n:common.reversi.this-turn%'.split('{}')[1] }}</b> %i18n:common.reversi.black%:{{ o.blackCount }} %i18n:common.reversi.white%:{{ o.whiteCount }} %i18n:common.reversi.total%:{{ o.blackCount + o.whiteCount }}</p>
+
+	<div class="actions" v-if="!game.isEnded && iAmPlayer">
+		<form-button @click="surrender">%i18n:@surrender%</form-button>
+	</div>
 
 	<div class="player" v-if="game.isEnded">
 		<el-button-group>
@@ -79,22 +86,27 @@ export default Vue.extend({
 			if (!this.$store.getters.isSignedIn) return false;
 			return this.game.user1Id == this.$store.state.i.id || this.game.user2Id == this.$store.state.i.id;
 		},
+
 		myColor(): Color {
 			if (!this.iAmPlayer) return null;
 			if (this.game.user1Id == this.$store.state.i.id && this.game.black == 1) return true;
 			if (this.game.user2Id == this.$store.state.i.id && this.game.black == 2) return true;
 			return false;
 		},
+
 		opColor(): Color {
 			if (!this.iAmPlayer) return null;
 			return this.myColor === true ? false : true;
 		},
+
 		blackUser(): any {
 			return this.game.black == 1 ? this.game.user1 : this.game.user2;
 		},
+
 		whiteUser(): any {
 			return this.game.black == 1 ? this.game.user2 : this.game.user1;
 		},
+
 		turnUser(): any {
 			if (this.o.turn === true) {
 				return this.game.black == 1 ? this.game.user1 : this.game.user2;
@@ -104,11 +116,13 @@ export default Vue.extend({
 				return null;
 			}
 		},
+
 		isMyTurn(): boolean {
 			if (!this.iAmPlayer) return false;
 			if (this.turnUser == null) return false;
 			return this.turnUser.id == this.$store.state.i.id;
 		},
+
 		cellsStyle(): any {
 			return {
 				'grid-template-rows': `repeat(${this.game.settings.map.length}, 1fr)`,
@@ -165,11 +179,13 @@ export default Vue.extend({
 	mounted() {
 		this.connection.on('set', this.onSet);
 		this.connection.on('rescue', this.onRescue);
+		this.connection.on('ended', this.onEnded);
 	},
 
 	beforeDestroy() {
 		this.connection.off('set', this.onSet);
 		this.connection.off('rescue', this.onRescue);
+		this.connection.off('ended', this.onEnded);
 
 		clearInterval(this.pollingClock);
 	},
@@ -215,6 +231,10 @@ export default Vue.extend({
 			}
 		},
 
+		onEnded(x) {
+			this.game = x.game;
+		},
+
 		checkEnd() {
 			this.game.isEnded = this.o.isEnded;
 			if (this.game.isEnded) {
@@ -250,6 +270,12 @@ export default Vue.extend({
 
 			this.checkEnd();
 			this.$forceUpdate();
+		},
+
+		surrender() {
+			(this as any).api('games/reversi/games/surrender', {
+				gameId: this.game.id
+			});
 		}
 	}
 });
@@ -264,6 +290,9 @@ root(isDark)
 	> header
 		padding 8px
 		border-bottom dashed 1px isDark ? #4c5761 : #c4cdd4
+
+		a
+			color inherit
 
 	> .board
 		width calc(100% - 16px)
@@ -380,6 +409,9 @@ root(isDark)
 	> .status
 		margin 0
 		padding 16px 0
+
+	> .actions
+		padding-bottom 16px
 
 	> .player
 		padding-bottom 32px
