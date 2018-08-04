@@ -63,7 +63,7 @@ export default Vue.component('misskey-flavored-markdown', {
 						attrs: {
 							style: 'display: inline-block; font-size: 200%;'
 						},
-						directives: [{
+						directives: [this.$store.state.settings.disableAnimatedMfm ? {} : {
 							name: 'animate-css',
 							value: { classes: 'tada', iteration: 'infinite' }
 						}]

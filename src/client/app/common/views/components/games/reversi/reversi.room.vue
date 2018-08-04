@@ -53,7 +53,7 @@
 			</div>
 		</div>
 
-		<div class="card" v-if="form">
+		<div class="card form" v-if="form">
 			<header>
 				<span>%i18n:@settings-of-the-bot%</span>
 			</header>
@@ -65,7 +65,7 @@
 						:key="message.id"/>
 
 				<template v-for="item in form">
-					<mk-switch v-if="item.type == 'button'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm($event, item)">{{ item.desc || '' }}</mk-switch>
+					<mk-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm(item)">{{ item.desc || '' }}</mk-switch>
 
 					<div class="card" v-if="item.type == 'radio'" :key="item.id">
 						<header>
@@ -73,7 +73,17 @@
 						</header>
 
 						<div>
-							<form-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm($event, item)">{{ r.label }}</form-radio>
+							<form-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm(item)">{{ r.label }}</form-radio>
+						</div>
+					</div>
+
+					<div class="card" v-if="item.type == 'slider'" :key="item.id">
+						<header>
+							<span>{{ item.label }}</span>
+						</header>
+
+						<div>
+							<input type="range" :min="item.min" :max="item.max" :step="item.step || 1" v-model="item.value" @change="onChangeForm(item)"/>
 						</div>
 					</div>
 
@@ -83,7 +93,7 @@
 						</header>
 
 						<div>
-							<el-input v-model="item.value" @change="onChangeForm($event, item)"/>
+							<el-input v-model="item.value" @change="onChangeForm(item)"/>
 						</div>
 					</div>
 				</template>
@@ -210,11 +220,11 @@ export default Vue.extend({
 			this.messages.unshift(x.message);
 		},
 
-		onChangeForm(v, item) {
+		onChangeForm(item) {
 			this.connection.send({
 				type: 'update-form',
 				id: item.id,
-				value: v
+				value: item.value
 			});
 		},
 
@@ -274,6 +284,9 @@ root(isDark)
 						color isDark ? #fff : #606266
 						cursor pointer
 						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
+						-webkit-appearance none
+						-moz-appearance none
+						appearance none
 
 						&:hover
 							border-color isDark ? #a7aebd : #c0c4cc
@@ -311,6 +324,14 @@ root(isDark)
 
 							&[data-none]
 								border-color transparent
+
+			&.form
+				> div
+					> .card + .card
+						margin-top 16px
+
+					input[type='range']
+						width 100%
 
 		.card
 			max-width 400px

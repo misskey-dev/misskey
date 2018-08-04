@@ -1,6 +1,6 @@
 ---
 meta:
-  lang: "日本語"
+  lang: "한국어"
   divider: ""
 common:
   misskey: "A ⭐ of fediverse"
@@ -88,6 +88,7 @@ common:
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
   verified-user: "認証済みのユーザー"
+  disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   reversi:
     drawn: "引き分け"
     my-turn: "あなたのターンです"
@@ -168,6 +169,9 @@ common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}を待っています"
     cancel: "キャンセル"
+common/views/components/games/reversi/reversi.game.vue:
+  surrender: "投了"
+  surrendered: "投了により"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"

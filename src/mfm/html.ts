@@ -1,5 +1,6 @@
 const { lib: emojilib } = require('emojilib');
-import { JSDOM } from 'jsdom';
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 import config from '../config';
 import { INote } from '../models/note';
 import { TextElement } from './parse';

@@ -4,6 +4,7 @@
 /node_modules
 /build
 /built
+built
 /data
 /.cache-loader
 npm-debug.log

@@ -55,6 +55,7 @@
 				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
 			<mk-switch v-model="$store.state.settings.reversiBoardLabels" @change="onChangeReversiBoardLabels" text="%i18n:common.show-reversi-board-labels%"/>
+			<mk-switch v-model="$store.state.settings.disableAnimatedMfm" @change="onChangeDisableAnimatedMfm" text="%i18n:common.disable-animated-mfm%"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -373,6 +374,12 @@ export default Vue.extend({
 		onChangeReversiBoardLabels(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'reversiBoardLabels',
+				value: v
+			});
+		},
+		onChangeDisableAnimatedMfm(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'disableAnimatedMfm',
 				value: v
 			});
 		},
