@@ -13,6 +13,8 @@
 			<button @click="react('angry')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="4" title="%i18n:common.reactions.angry%"><mk-reaction-icon reaction='angry'/></button>
 			<button @click="react('confused')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="5" title="%i18n:common.reactions.confused%"><mk-reaction-icon reaction='confused'/></button>
 			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" title="%i18n:common.reactions.pudding%"><mk-reaction-icon reaction='pudding'/></button>
+			<button @click="react('nausea')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" title="%i18n:common.reactions.nausea%"><mk-reaction-icon reaction='nausea'/></button>
+			<button @click="react('star_of_david')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" title="%i18n:common.reactions.star_of_david%"><mk-reaction-icon reaction='star_of_david'/></button>
 		</div>
 	</div>
 </div>

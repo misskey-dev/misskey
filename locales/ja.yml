@@ -77,6 +77,8 @@ common:
     angry: "おこ"
     confused: "こまこまのこまり"
     pudding: "Pudding"
+    nausea: "Nausea"
+    star_of_david: "Star of david"
 
   note-placeholders:
     a: "今どうしてる？"

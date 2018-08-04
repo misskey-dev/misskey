@@ -10,6 +10,8 @@
 		<span v-if="reactions.angry"><mk-reaction-icon reaction="angry"/><span>{{ reactions.angry }}</span></span>
 		<span v-if="reactions.confused"><mk-reaction-icon reaction="confused"/><span>{{ reactions.confused }}</span></span>
 		<span v-if="reactions.pudding"><mk-reaction-icon reaction="pudding"/><span>{{ reactions.pudding }}</span></span>
+		<span v-if="reactions.nausea"><mk-reaction-icon reaction="nausea"/><span>{{ reactions.nausea }}</span></span>
+		<span v-if="reactions.star_of_david"><mk-reaction-icon reaction="star_of_david"/><span>{{ reactions.star_of_david }}</span></span>
 	</template>
 </div>
 </template>

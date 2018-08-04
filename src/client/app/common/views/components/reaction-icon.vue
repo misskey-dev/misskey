@@ -8,6 +8,8 @@
 	<img v-if="reaction == 'congrats'" src="/assets/reactions/congrats.png" alt="%i18n:common.reactions.congrats%">
 	<img v-if="reaction == 'angry'" src="/assets/reactions/angry.png" alt="%i18n:common.reactions.angry%">
 	<img v-if="reaction == 'confused'" src="/assets/reactions/confused.png" alt="%i18n:common.reactions.confused%">
+	<img v-if="reaction == 'nausea'" src="/assets/reactions/nauseated_face.png" alt="%i18n:common.reactions.nausea%">
+	<img v-if="reaction == 'star_of_david'" src="/assets/reactions/star_of_david.png" alt="%i18n:common.reactions.star_of_david%">
 	<template v-if="reaction == 'pudding'">
 		<img v-if="$store.getters.isSignedIn && $store.state.settings.iLikeSushi" src="/assets/reactions/sushi.png" alt="%i18n:common.reactions.pudding%">
 		<img v-else src="/assets/reactions/pudding.png" alt="%i18n:common.reactions.pudding%">
