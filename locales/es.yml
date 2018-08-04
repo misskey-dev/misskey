@@ -168,6 +168,9 @@ common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Esperando por {}"
     cancel: "Cancelar"
+common/views/components/games/reversi/reversi.game.vue:
+  surrender: "投了"
+  surrendered: "投了により"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
