@@ -65,7 +65,7 @@
 						:key="message.id"/>
 
 				<template v-for="item in form">
-					<mk-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm($event, item)">{{ item.desc || '' }}</mk-switch>
+					<mk-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm(item)">{{ item.desc || '' }}</mk-switch>
 
 					<div class="card" v-if="item.type == 'radio'" :key="item.id">
 						<header>
@@ -73,7 +73,7 @@
 						</header>
 
 						<div>
-							<form-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm($event, item)">{{ r.label }}</form-radio>
+							<form-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm(item)">{{ r.label }}</form-radio>
 						</div>
 					</div>
 
@@ -83,7 +83,7 @@
 						</header>
 
 						<div>
-							<input type="range" :min="item.min" :max="item.max" :step="item.step || 1" v-model="item.value" @change="onChangeForm($event, item)"/>
+							<input type="range" :min="item.min" :max="item.max" :step="item.step || 1" v-model="item.value" @change="onChangeForm(item)"/>
 						</div>
 					</div>
 
@@ -93,7 +93,7 @@
 						</header>
 
 						<div>
-							<el-input v-model="item.value" @change="onChangeForm($event, item)"/>
+							<el-input v-model="item.value" @change="onChangeForm(item)"/>
 						</div>
 					</div>
 				</template>
@@ -220,7 +220,7 @@ export default Vue.extend({
 			this.messages.unshift(x.message);
 		},
 
-		onChangeForm(v, item) {
+		onChangeForm(item) {
 			this.connection.send({
 				type: 'update-form',
 				id: item.id,
