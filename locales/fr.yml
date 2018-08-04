@@ -88,6 +88,7 @@ common:
   i-like-sushi: "Je préfère les sushis (au pudding)"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
   verified-user: "Utilisateur·trice vérifié·e"
+  disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
