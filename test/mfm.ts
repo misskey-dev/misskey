@@ -34,7 +34,7 @@ describe('Text', () => {
 		it('big', () => {
 			const tokens = analyze('***Strawberry*** Pasta');
 			assert.deepEqual([
-				{ type: 'big', content: '***Strawberry***', bold: 'Strawberry' },
+				{ type: 'big', content: '***Strawberry***', big: 'Strawberry' },
 				{ type: 'text', content: ' Pasta' }
 			], tokens);
 		});
