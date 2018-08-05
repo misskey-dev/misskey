@@ -3,7 +3,7 @@
 	<button class="go-index" v-if="selfNav" @click="goIndex">%fa:arrow-left%</button>
 	<header><b><router-link :to="blackUser | userPage">{{ blackUser | userName }}</router-link></b>(%i18n:common.reversi.black%) vs <b><router-link :to="whiteUser | userPage">{{ whiteUser | userName }}</router-link></b>(%i18n:common.reversi.white%)</header>
 
-	<div style="overflow: hidden">
+	<div style="overflow: hidden; line-height: 28px;">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
 		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}</p>
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
