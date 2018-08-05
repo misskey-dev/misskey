@@ -40,11 +40,17 @@ describe('Text', () => {
 		});
 
 		it('motion', () => {
-			const tokens = analyze('(((Strawberry))) Pasta');
+			const tokens1 = analyze('(((Strawberry))) Pasta');
 			assert.deepEqual([
 				{ type: 'motion', content: '(((Strawberry)))', motion: 'Strawberry' },
 				{ type: 'text', content: ' Pasta' }
-			], tokens);
+			], tokens1);
+
+			const tokens2 = analyze('<motion>Strawberry</motion> Pasta');
+			assert.deepEqual([
+				{ type: 'motion', content: '<motion>Strawberry</motion>', motion: 'Strawberry' },
+				{ type: 'text', content: ' Pasta' }
+			], tokens2);
 		});
 
 		it('mention', () => {

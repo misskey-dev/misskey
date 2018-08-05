@@ -9,7 +9,7 @@ export type TextElementMotion = {
 };
 
 export default function(text: string) {
-	const match = text.match(/^\(\(\((.+?)\)\)\)/);
+	const match = text.match(/^\(\(\((.+?)\)\)\)/) || text.match(/^<motion>(.+?)<\/motion>/);
 	if (!match) return null;
 	const motion = match[0];
 	return {
