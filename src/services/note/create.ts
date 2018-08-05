@@ -103,6 +103,14 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		data.visibleUsers = data.visibleUsers.filter(x => x != null);
 	}
 
+	if (data.reply && data.reply.deletedAt != null) {
+		return rej();
+	}
+
+	if (data.renote && data.renote.deletedAt != null) {
+		return rej();
+	}
+
 	if (data.text) {
 		data.text = data.text.trim();
 	}
