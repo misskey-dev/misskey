@@ -12,7 +12,7 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		gameId: $.type(ID).optional.note({
+		gameId: $.type(ID).note({
 			desc: {
 				ja: '投了したい対局'
 			}
