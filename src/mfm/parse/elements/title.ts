@@ -9,7 +9,7 @@ export type TextElementTitle = {
 };
 
 export default function(text: string) {
-	const match = text.match(/^(【|\[)(.+?)(】|])\n/);
+	const match = text.match(/^(【|\[)(.+?)(】|])$/);
 	if (!match) return null;
 	const title = match[0];
 	return {
