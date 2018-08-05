@@ -41,6 +41,9 @@ export default Vue.component('misskey-flavored-markdown', {
 			ast = this.ast;
 		}
 
+		let bigCount = 0;
+		let motionCount = 0;
+
 		// Parse ast to DOM
 		const els = flatten(ast.map(token => {
 			switch (token.type) {
@@ -62,12 +65,14 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'big': {
+					bigCount++;
 					const isLong = length(token.big) > 10;
+					const isMany = bigCount > 3;
 					return (createElement as any)('strong', {
 						attrs: {
-							style: 'display: inline-block; font-size: 200%;'
+							style: `display: inline-block; font-size: ${ isMany ? '100%' : '200%' };`
 						},
-						directives: [this.$store.state.settings.disableAnimatedMfm || isLong ? {} : {
+						directives: [this.$store.state.settings.disableAnimatedMfm || isLong || isMany ? {} : {
 							name: 'animate-css',
 							value: { classes: 'tada', iteration: 'infinite' }
 						}]
@@ -75,12 +80,14 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'motion': {
+					motionCount++;
 					const isLong = length(token.motion) > 10;
+					const isMany = motionCount > 3;
 					return (createElement as any)('span', {
 						attrs: {
 							style: 'display: inline-block;'
 						},
-						directives: [this.$store.state.settings.disableAnimatedMfm || isLong ? {} : {
+						directives: [this.$store.state.settings.disableAnimatedMfm || isLong || isMany ? {} : {
 							name: 'animate-css',
 							value: { classes: 'rubberBand', iteration: 'infinite' }
 						}]
