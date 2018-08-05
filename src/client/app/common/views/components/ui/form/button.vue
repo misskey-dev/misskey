@@ -45,6 +45,9 @@ root(isDark)
 		color isDark ? #fff : #606266
 		transition 0.1s
 
+		*
+			pointer-events none
+
 		&:hover
 		&:focus
 			color $theme-color

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
+import { length } from 'stringz';
 import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../misc/acct/render';
 import { url } from '../../../config';
@@ -40,10 +41,13 @@ export default Vue.component('misskey-flavored-markdown', {
 			ast = this.ast;
 		}
 
+		let bigCount = 0;
+		let motionCount = 0;
+
 		// Parse ast to DOM
 		const els = flatten(ast.map(token => {
 			switch (token.type) {
-				case 'text':
+				case 'text': {
 					const text = token.content.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (this.shouldBreak) {
@@ -54,30 +58,52 @@ export default Vue.component('misskey-flavored-markdown', {
 					} else {
 						return createElement('span', text.replace(/\n/g, ' '));
 					}
+				}
 
-				case 'bold':
+				case 'bold': {
 					return createElement('b', token.bold);
+				}
 
-				case 'big':
+				case 'big': {
+					bigCount++;
+					const isLong = length(token.big) > 10;
+					const isMany = bigCount > 3;
 					return (createElement as any)('strong', {
 						attrs: {
-							style: 'display: inline-block; font-size: 200%;'
+							style: `display: inline-block; font-size: ${ isMany ? '100%' : '150%' };`
 						},
-						directives: [this.$store.state.settings.disableAnimatedMfm ? {} : {
+						directives: [this.$store.state.settings.disableAnimatedMfm || isLong || isMany ? {} : {
 							name: 'animate-css',
 							value: { classes: 'tada', iteration: 'infinite' }
 						}]
 					}, token.big);
+				}
 
-				case 'url':
+				case 'motion': {
+					motionCount++;
+					const isLong = length(token.motion) > 10;
+					const isMany = motionCount > 3;
+					return (createElement as any)('span', {
+						attrs: {
+							style: 'display: inline-block;'
+						},
+						directives: [this.$store.state.settings.disableAnimatedMfm || isLong || isMany ? {} : {
+							name: 'animate-css',
+							value: { classes: 'rubberBand', iteration: 'infinite' }
+						}]
+					}, token.motion);
+				}
+
+				case 'url': {
 					return createElement(MkUrl, {
 						props: {
 							url: token.content,
 							target: '_blank'
 						}
 					});
+				}
 
-				case 'link':
+				case 'link': {
 					return createElement('a', {
 						attrs: {
 							class: 'link',
@@ -86,8 +112,9 @@ export default Vue.component('misskey-flavored-markdown', {
 							title: token.url
 						}
 					}, token.title);
+				}
 
-				case 'mention':
+				case 'mention': {
 					return (createElement as any)('a', {
 						attrs: {
 							href: `${url}/@${getAcct(token)}`,
@@ -99,16 +126,18 @@ export default Vue.component('misskey-flavored-markdown', {
 							value: token.content
 						}]
 					}, token.content);
+				}
 
-				case 'hashtag':
+				case 'hashtag': {
 					return createElement('a', {
 						attrs: {
 							href: `${url}/tags/${encodeURIComponent(token.hashtag)}`,
 							target: '_blank'
 						}
 					}, token.content);
+				}
 
-				case 'code':
+				case 'code': {
 					return createElement('pre', {
 						class: 'code'
 					}, [
@@ -118,15 +147,17 @@ export default Vue.component('misskey-flavored-markdown', {
 							}
 						})
 					]);
+				}
 
-				case 'inline-code':
+				case 'inline-code': {
 					return createElement('code', {
 						domProps: {
 							innerHTML: token.html
 						}
 					});
+				}
 
-				case 'quote':
+				case 'quote': {
 					const text2 = token.quote.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (this.shouldBreak) {
@@ -145,27 +176,32 @@ export default Vue.component('misskey-flavored-markdown', {
 							}
 						}, text2.replace(/\n/g, ' '));
 					}
+				}
 
-				case 'title':
+				case 'title': {
 					return createElement('div', {
 						attrs: {
 							class: 'title'
 						}
 					}, token.title);
+				}
 
-				case 'emoji':
+				case 'emoji': {
 					const emoji = emojilib.lib[token.emoji];
 					return createElement('span', emoji ? emoji.char : token.content);
+				}
 
-				case 'search':
+				case 'search': {
 					return createElement(MkGoogle, {
 						props: {
 							q: token.query
 						}
 					});
+				}
 
-				default:
+				default: {
 					console.log('unknown ast type:', token.type);
+				}
 			}
 		}));
 

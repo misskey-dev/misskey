@@ -1,5 +1,5 @@
 /**
- * Bold
+ * Big
  */
 
 export type TextElementBig = {

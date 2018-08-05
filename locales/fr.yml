@@ -88,7 +88,7 @@ common:
   i-like-sushi: "Je préfère les sushis (au pudding)"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
   verified-user: "Utilisateur·trice vérifié·e"
-  disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
+  disable-animated-mfm: "Désactiver les textes animés dans les publications"
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
@@ -99,7 +99,7 @@ common:
     black: "Noirs"
     white: "Blancs"
     total: "Total"
-    this-turn: "Tour de {}"
+    this-turn: "Tour {}"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
@@ -117,7 +117,7 @@ common:
     notifications: "Notifications"
     users: "Utilisateurs"
     polls: "Sondages"
-    post-form: "投稿フォーム"
+    post-form: "Formulaire de publication"
     messaging: "Messagerie"
     server: "Info sur le serveur"
     donation: "Dons"
@@ -170,8 +170,8 @@ common/views/components/games/reversi/reversi.vue:
     waiting-for: "En attente de {}"
     cancel: "Annuler"
 common/views/components/games/reversi/reversi.game.vue:
-  surrender: "投了"
-  surrendered: "投了により"
+  surrender: "Se rendre"
+  surrendered: "Par abandon"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "Jouer à Reversi avec vos amis·es !"
@@ -201,10 +201,10 @@ common/views/components/games/reversi/reversi.room.vue:
   this-game-is-started-soon: "La partie commencera dans quelques instants"
   waiting-for-other: "En attente que l'adversaire soit prêt"
   waiting-for-me: "En attente que vous soyez prêt"
-  waiting-for-both: "準備中"
+  waiting-for-both: "En attente que vous soyez prêt"
   cancel: "Annuler"
   ready: "Prêt"
-  cancel-ready: "準備続行"
+  cancel-ready: "Annuler \"Je suis prêt\""
 common/views/components/connect-failed.vue:
   title: "Impossible de se connecter au server."
   description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
@@ -721,7 +721,7 @@ desktop/views/components/timeline.vue:
   global: "Global"
   list: "Listes"
 desktop/views/components/ui.header.vue:
-  welcome-back: "Vous êtes de retour !"
+  welcome-back: "Content de vous revoir !"
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
@@ -990,7 +990,7 @@ mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Afficher plus ..."
 mobile/views/pages/signup.vue:
-  lets-start: "📦 始めましょう"
+  lets-start: "Commençons ! 📦"
 mobile/views/pages/followers.vue:
   followers-of: "Abonné·e·s de {}"
 mobile/views/pages/following.vue:
@@ -1059,9 +1059,9 @@ mobile/views/pages/settings.vue:
   i-am-under-limited-internet: "J'ai un accès Internet limité"
   circle-icons: "Utiliser des icônes circulaires"
   timeline: "Fil d'actualité"
-  show-reply-target: "リプライ先を表示する"
+  show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications"
-  show-renoted-my-notes: "Renoteされた自分の投稿を表示する"
+  show-renoted-my-notes: "Afficher les notes que j'ai repartagé"
   post-style: "Style de la publication"
   post-style-standard: "Standard"
   post-style-smart: "Intelligent"

@@ -96,11 +96,7 @@ export default Vue.extend({
 
 	methods: {
 		go(game) {
-			(this as any).api('games/reversi/games/show', {
-				gameId: game.id
-			}).then(game => {
-				this.$emit('go', game);
-			});
+			this.$emit('go', game);
 		},
 
 		match() {

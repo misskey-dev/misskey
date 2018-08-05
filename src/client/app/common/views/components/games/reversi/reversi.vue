@@ -1,7 +1,7 @@
 <template>
 <div class="vchtoekanapleubgzioubdtmlkribzfd">
 	<div v-if="game">
-		<x-gameroom :game="game"/>
+		<x-gameroom :game="game" :self-nav="selfNav" @go-index="goIndex"/>
 	</div>
 	<div class="matching" v-else-if="matching">
 		<h1>{{ '%i18n:@matching.waiting-for%'.split('{}')[0] }}<b>{{ matching | userName }}</b>{{ '%i18n:@matching.waiting-for%'.split('{}')[1] }}<mk-ellipsis/></h1>
@@ -34,6 +34,11 @@ export default Vue.extend({
 		gameId: {
 			type: String,
 			required: false
+		},
+		selfNav: {
+			type: Boolean,
+			require: false,
+			default: true
 		}
 	},
 
@@ -95,18 +100,24 @@ export default Vue.extend({
 				(this as any).api('games/reversi/games/show', {
 					gameId: this.gameId
 				}).then(game => {
-					this.nav(game, true);
+					this.game = game;
 					Progress.done();
 				});
 			}
 		},
 
-		nav(game, silent) {
-			this.matching = null;
-			this.game = game;
+		async nav(game, actualNav = true) {
+			if (this.selfNav) {
+				// 受け取ったゲーム情報が省略されたものなら完全な情報を取得する
+				if (game != null && (game.settings == null || game.settings.map == null)) {
+					game = await (this as any).api('games/reversi/games/show', {
+						gameId: game.id
+					});
+				}
 
-			if (!silent) {
-				this.$emit('nav', this.game);
+				this.game = game;
+			} else {
+				this.$emit('nav', game, actualNav);
 			}
 		},
 
@@ -125,7 +136,8 @@ export default Vue.extend({
 			}).then(game => {
 				if (game) {
 					this.matching = null;
-					this.game = game;
+
+					this.nav(game);
 				}
 			});
 		},
@@ -133,6 +145,11 @@ export default Vue.extend({
 		onMatched(game) {
 			this.matching = null;
 			this.game = game;
+			this.nav(game, false);
+		},
+
+		goIndex() {
+			this.nav(null);
 		}
 	}
 });

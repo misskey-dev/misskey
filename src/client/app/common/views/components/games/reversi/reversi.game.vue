@@ -1,8 +1,9 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
+	<button class="go-index" v-if="selfNav" @click="goIndex">%fa:arrow-left%</button>
 	<header><b><router-link :to="blackUser | userPage">{{ blackUser | userName }}</router-link></b>(%i18n:common.reversi.black%) vs <b><router-link :to="whiteUser | userPage">{{ whiteUser | userName }}</router-link></b>(%i18n:common.reversi.white%)</header>
 
-	<div style="overflow: hidden">
+	<div style="overflow: hidden; line-height: 28px;">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
 		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}</p>
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
@@ -69,7 +70,20 @@ import Reversi, { Color } from '../../../../../../../games/reversi/core';
 import { url } from '../../../../../config';
 
 export default Vue.extend({
-	props: ['initGame', 'connection'],
+	props: {
+		initGame: {
+			type: Object,
+			require: true
+		},
+		connection: {
+			type: Object,
+			require: true
+		},
+		selfNav: {
+			type: Boolean,
+			require: true
+		}
+	},
 
 	data() {
 		return {
@@ -276,6 +290,10 @@ export default Vue.extend({
 			(this as any).api('games/reversi/games/surrender', {
 				gameId: this.game.id
 			});
+		},
+
+		goIndex() {
+			this.$emit('go-index');
 		}
 	}
 });
@@ -286,6 +304,14 @@ export default Vue.extend({
 
 root(isDark)
 	text-align center
+
+	> .go-index
+		position absolute
+		top 0
+		left 0
+		z-index 1
+		width 42px
+		height 42px
 
 	> header
 		padding 8px

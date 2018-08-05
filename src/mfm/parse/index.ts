@@ -14,6 +14,7 @@ import { TextElementQuote } from './elements/quote';
 import { TextElementSearch } from './elements/search';
 import { TextElementTitle } from './elements/title';
 import { TextElementUrl } from './elements/url';
+import { TextElementMotion } from './elements/motion';
 
 const elements = [
 	require('./elements/big'),
@@ -27,7 +28,8 @@ const elements = [
 	require('./elements/inline-code'),
 	require('./elements/quote'),
 	require('./elements/emoji'),
-	require('./elements/search')
+	require('./elements/search'),
+	require('./elements/motion')
 ].map(element => element.default as TextElementProcessor);
 
 export type TextElement = { type: 'text', content: string }
@@ -42,7 +44,8 @@ export type TextElement = { type: 'text', content: string }
 	| TextElementQuote
 	| TextElementSearch
 	| TextElementTitle
-	| TextElementUrl;
+	| TextElementUrl
+	| TextElementMotion;
 export type TextElementProcessor = (text: string, i: number) => TextElement | TextElement[];
 
 export default (source: string): TextElement[] => {

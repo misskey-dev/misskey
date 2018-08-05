@@ -11,7 +11,7 @@ const handler = new EventEmitter();
 
 let bot: IUser;
 
-const post = async (text: string) => {
+const post = async (text: string, home = true) => {
 	if (bot == null) {
 		const account = await User.findOne({
 			usernameLower: config.github_bot.username.toLowerCase()
@@ -25,7 +25,7 @@ const post = async (text: string) => {
 		}
 	}
 
-	createNote(bot, { text, visibility: 'home' });
+	createNote(bot, { text, visibility: home ? 'home' : 'public' });
 };
 
 // Init router
@@ -130,7 +130,7 @@ handler.on('issue_comment', event => {
 
 handler.on('watch', event => {
 	const sender = event.sender;
-	post(`⭐️ Starred by **${sender.login}** ⭐️`);
+	post(`(((⭐️))) Starred by **${sender.login}** (((⭐️)))`, false);
 });
 
 handler.on('fork', event => {
