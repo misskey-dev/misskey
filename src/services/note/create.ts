@@ -111,6 +111,16 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		return rej();
 	}
 
+	// リプライ先が自分以外の非公開の投稿なら禁止
+	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
+		return rej();
+	}
+
+	// Renote先が自分以外の非公開の投稿なら禁止
+	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
+		return rej();
+	}
+
 	if (data.text) {
 		data.text = data.text.trim();
 	}
