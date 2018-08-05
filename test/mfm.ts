@@ -42,7 +42,7 @@ describe('Text', () => {
 		it('motion', () => {
 			const tokens = analyze('(((Strawberry))) Pasta');
 			assert.deepEqual([
-				{ type: 'motion', content: '***Strawberry***', motion: 'Strawberry' },
+				{ type: 'motion', content: '(((Strawberry)))', motion: 'Strawberry' },
 				{ type: 'text', content: ' Pasta' }
 			], tokens);
 		});
