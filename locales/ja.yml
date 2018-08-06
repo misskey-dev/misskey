@@ -964,6 +964,7 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+  add-to-list: "リストに追加"
 
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"

@@ -13,7 +13,7 @@
 			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
 			<span v-if="!user.isMuted">%fa:eye-slash% %i18n:@mute%</span>
 		</button>
-		<button class="mute ui" @click="list">%fa:list% リストに追加</button>
+		<button class="mute ui" @click="list">%fa:list% %i18n:@add-to-list%</button>
 	</div>
 </div>
 </template>
