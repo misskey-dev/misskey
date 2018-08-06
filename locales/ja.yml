@@ -10,6 +10,7 @@ common:
     detected: "広告ブロッカーを無効にしてください"
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
+  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   close: "閉じる"
   got-it: "わかった"
   customization-tips:
