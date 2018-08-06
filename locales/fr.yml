@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskey n'utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
   application-authorization: "Permissions de l'application"
   close: "Fermer"
+  got-it: "わかった"
   customization-tips:
     title: "Conseils de personnalisation"
     paragraph1: "La personnalisation à la maison vous permet d'ajouter / supprimer, glisser et déposer et réorganiser les widgets."
@@ -39,12 +40,6 @@ common:
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
   trash: "Corbeille"
-  date:
-    full-year: "Année "
-    month: "Mois"
-    day: "Jour"
-    hours: "heures"
-    minutes: "minutes"
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -283,6 +278,8 @@ common/views/components/signin.vue:
   token: "Token"
   signing-in: "Connexion...."
   signin: "Se connecter"
+  or: "または"
+  signin-with-twitter: "Twitterでログイン"
 common/views/components/signup.vue:
   username: "Nom d'utilisateur"
   checking: "Vérification"
@@ -392,6 +389,17 @@ common/views/pages/follow.vue:
   follow: "Suivre"
   request-pending: "Demande d'abonnement en attente"
   follow-request: "Demande d'abonnement"
+desktop:
+  banner-crop-title: "バナーとして表示する部分を選択"
+  banner: "バナー"
+  uploading-banner: "新しいバナーをアップロードしています"
+  banner-updated: "バナーを更新しました"
+  choose-banner: "バナーにする画像を選択"
+  avatar-crop-title: "アバターとして表示する部分を選択"
+  avatar: "アバター"
+  uploading-avatar: "新しいアバターをアップロードしています"
+  avatar-updated: "アバターを更新しました"
+  choose-avatar: "アバターにする画像を選択"
 desktop/views/components/activity.chart.vue:
   total: "Noirs ... Total"
   notes: "Bleu ... Notes"
@@ -750,6 +758,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "Listes de l'utilisateur"
   create-list: "Créer une liste"
+  list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
@@ -832,6 +841,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mettre en sourdine"
   muted: "Muting"
   unmute: "Enlever la sourdine"
+  push-to-a-list: "リストに追加"
+  list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
