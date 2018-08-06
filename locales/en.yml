@@ -207,7 +207,7 @@ common/views/components/games/reversi/reversi.room.vue:
   cancel-ready: "Cancel \"Ready\""
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
-  description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
+  description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please {try again} later."
   thanks: "Thank you for using Misskey."
   troubleshoot: "Troubleshoot"
 common/views/components/connect-failed.troubleshooter.vue:
