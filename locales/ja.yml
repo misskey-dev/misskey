@@ -834,6 +834,7 @@ desktop/views/components/timeline.vue:
 
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
+  adjective: "さん"
 
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
