@@ -55,7 +55,7 @@ export default define({
 			}).then(data => {
 				this.clear();
 			}).catch(err => {
-				alert('失敗した');
+				alert('Something happened');
 			}).then(() => {
 				this.posting = false;
 			});

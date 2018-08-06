@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
   close: "閉じる"
+  got-it: "わかった"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
@@ -40,13 +41,6 @@ common:
     years_ago: "{}年前"
 
   trash: "ゴミ箱"
-
-  date:
-    full-year: "年"
-    month: "月"
-    day: "日"
-    hours: "時"
-    minutes: "分"
 
   weekday-short:
     sunday: "日"
@@ -311,6 +305,8 @@ common/views/components/signin.vue:
   token: "トークン"
   signing-in: "やってます..."
   signin: "サインイン"
+  or: "または"
+  signin-with-twitter: "Twitterでログイン"
 
 common/views/components/signup.vue:
   username: "ユーザー名"
@@ -437,6 +433,18 @@ common/views/pages/follow.vue:
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
+
+desktop:
+  banner-crop-title: "バナーとして表示する部分を選択"
+  banner: "バナー"
+  uploading-banner: "新しいバナーをアップロードしています"
+  banner-updated: "バナーを更新しました"
+  choose-banner: "バナーにする画像を選択"
+  avatar-crop-title: "アバターとして表示する部分を選択"
+  avatar: "アバター"
+  uploading-avatar: "新しいアバターをアップロードしています"
+  avatar-updated: "アバターを更新しました"
+  choose-avatar: "アバターにする画像を選択"
 
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
@@ -855,11 +863,10 @@ desktop/views/components/received-follow-requests-window.vue:
   accept: "承認"
   reject: "拒否"
 
-
-
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
   create-list: "リストを作成"
+  list-name: "リスト名"
 
 desktop/views/components/user-preview.vue:
   notes: "投稿"
@@ -964,6 +971,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+  push-to-a-list: "リストに追加"
+  list-pushed: "{user}を{list}に追加しました。"
 
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
