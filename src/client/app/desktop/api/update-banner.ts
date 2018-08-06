@@ -8,7 +8,7 @@ export default (os: OS) => {
 	const cropImage = file => new Promise((resolve, reject) => {
 		const w = os.new(CropWindow, {
 			image: file,
-			title: 'バナーとして表示する部分を選択',
+			title: '%i18n:desktop.banner-crop-title%',
 			aspectRatio: 16 / 9
 		});
 
@@ -18,11 +18,11 @@ export default (os: OS) => {
 			data.append('file', blob, file.name + '.cropped.png');
 
 			os.api('drive/folders/find', {
-				name: 'バナー'
+				name: '%i18n:desktop.banner%'
 			}).then(bannerFolder => {
 				if (bannerFolder.length === 0) {
 					os.api('drive/folders/create', {
-						name: 'バナー'
+						name: '%i18n:desktop.banner%'
 					}).then(iconFolder => {
 						resolve(upload(data, iconFolder));
 					});
@@ -43,7 +43,7 @@ export default (os: OS) => {
 
 	const upload = (data, folder) => new Promise((resolve, reject) => {
 		const dialog = os.new(ProgressDialog, {
-			title: '新しいバナーをアップロードしています'
+			title: '%i18n:desktop.uploading-banner%'
 		});
 		document.body.appendChild(dialog.$el);
 
@@ -79,10 +79,10 @@ export default (os: OS) => {
 			});
 
 			os.apis.dialog({
-				title: '%fa:info-circle%バナーを更新しました',
-				text: '新しいバナーが反映されるまで時間がかかる場合があります。',
+				title: '%fa:info-circle% %i18n:desktop.banner-updated%',
+				text: null,
 				actions: [{
-					text: 'わかった'
+					text: '%i18n:common.got-it%'
 				}]
 			});
 
@@ -95,7 +95,7 @@ export default (os: OS) => {
 			? Promise.resolve(file)
 			: os.apis.chooseDriveFile({
 				multiple: false,
-				title: '%fa:image%バナーにする画像を選択'
+				title: '%fa:image% %i18n:desktop.choose-banner%'
 			});
 
 		return selectedFile

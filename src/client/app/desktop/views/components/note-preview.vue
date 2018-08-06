@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import dateStringify from '../../../common/scripts/date-stringify';
 
 export default Vue.extend({
 	props: {
@@ -28,7 +27,7 @@ export default Vue.extend({
 	},
 	computed: {
 		title(): string {
-			return dateStringify(this.note.createdAt);
+			return new Date(this.note.createdAt).toLocaleString();
 		}
 	}
 });

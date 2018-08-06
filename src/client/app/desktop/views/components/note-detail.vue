@@ -79,7 +79,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import dateStringify from '../../../common/scripts/date-stringify';
 import parse from '../../../../../mfm/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
@@ -129,7 +128,7 @@ export default Vue.extend({
 				: 0;
 		},
 		title(): string {
-			return dateStringify(this.p.createdAt);
+			return new Date(this.p.createdAt).toLocaleString();
 		},
 		urls(): string[] {
 			if (this.p.text) {

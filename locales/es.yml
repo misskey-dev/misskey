@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskey no tiene anuncios publicitarios.</strong> Sin embargo, algunas características podrían no estar disponibles si el bloqueador de publicidad está habilitado."
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
+  got-it: "わかった"
   customization-tips:
     title: "Consejos de personalización"
     paragraph1: "Customización de inicio le permite agregar, borrar, o reorganizar los accesorios."
@@ -39,12 +40,6 @@ common:
     months_ago: "Hace {} mes(es)"
     years_ago: "Hace {} año(s)"
   trash: "Papelera"
-  date:
-    full-year: "Año"
-    month: "Mes"
-    day: "Día"
-    hours: "horas"
-    minutes: "minutos"
   weekday-short:
     sunday: "domingo"
     monday: "lunes"
@@ -283,6 +278,8 @@ common/views/components/signin.vue:
   token: "Identificador"
   signing-in: "Entrando..."
   signin: "Entra"
+  or: "または"
+  signin-with-twitter: "Twitterでログイン"
 common/views/components/signup.vue:
   username: "Usuario"
   checking: "Comprobando..."
@@ -392,6 +389,17 @@ common/views/pages/follow.vue:
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
+desktop:
+  banner-crop-title: "バナーとして表示する部分を選択"
+  banner: "バナー"
+  uploading-banner: "新しいバナーをアップロードしています"
+  banner-updated: "バナーを更新しました"
+  choose-banner: "バナーにする画像を選択"
+  avatar-crop-title: "アバターとして表示する部分を選択"
+  avatar: "アバター"
+  uploading-avatar: "新しいアバターをアップロードしています"
+  avatar-updated: "アバターを更新しました"
+  choose-avatar: "アバターにする画像を選択"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -750,6 +758,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
   create-list: "リストを作成"
+  list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "投稿"
   following: "フォロー"
@@ -832,6 +841,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+  push-to-a-list: "リストに追加"
+  list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"

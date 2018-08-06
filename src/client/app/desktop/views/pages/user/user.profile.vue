@@ -13,7 +13,7 @@
 			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
 			<span v-if="!user.isMuted">%fa:eye-slash% %i18n:@mute%</span>
 		</button>
-		<button class="mute ui" @click="list">%fa:list% %i18n:@add-to-list%</button>
+		<button class="mute ui" @click="list">%fa:list% %i18n:@push-to-a-list%</button>
 	</div>
 </div>
 </template>
@@ -76,7 +76,7 @@ export default Vue.extend({
 				});
 				(this as any).apis.dialog({
 					title: 'Done!',
-					text: `${this.user.name}を${list.title}に追加しました。`
+					text: '%i18n:@list-pushed%'.replace('{user}', this.user.name).replace('{list}', list.title)
 				});
 			});
 		}

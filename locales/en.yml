@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
   application-authorization: "Application authorizations."
   close: "Close"
+  got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
@@ -39,12 +40,6 @@ common:
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
   trash: "Trash"
-  date:
-    full-year: "Year"
-    month: "Month"
-    day: "Day"
-    hours: "Hour"
-    minutes: "Minutes"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -207,7 +202,7 @@ common/views/components/games/reversi/reversi.room.vue:
   cancel-ready: "Cancel \"Ready\""
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
-  description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
+  description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please {try again} later."
   thanks: "Thank you for using Misskey."
   troubleshoot: "Troubleshoot"
 common/views/components/connect-failed.troubleshooter.vue:
@@ -283,6 +278,8 @@ common/views/components/signin.vue:
   token: "Token"
   signing-in: "Signing in..."
   signin: "Sign in"
+  or: "Or"
+  signin-with-twitter: "Log in with Twitter"
 common/views/components/signup.vue:
   username: "Username"
   checking: "Checking..."
@@ -392,6 +389,17 @@ common/views/pages/follow.vue:
   follow: "Follow"
   request-pending: "Pending follow request"
   follow-request: "Follow request"
+desktop:
+  banner-crop-title: "Crop the part that appears as a banner"
+  banner: "Banner"
+  uploading-banner: "Uploading a new banner"
+  banner-updated: "Updated the banner"
+  choose-banner: "Choose the banner"
+  avatar-crop-title: "Crop the part that appears as an avatar"
+  avatar: "Avatar"
+  uploading-avatar: "Uploading a new avatar"
+  avatar-updated: "Updated the avatar"
+  choose-avatar: "Choose an avatar image"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -750,6 +758,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
   create-list: "Create new list"
+  list-name: "List name"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
@@ -832,6 +841,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mute"
   muted: "Muting"
   unmute: "Unmute"
+  push-to-a-list: "Add to list"
+  list-pushed: "You added {user} to {list}."
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
@@ -1006,7 +1017,7 @@ mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  widgets-hints: "You can add/delete/rearrange widgets. To move the widget, drag \"三\". Tap \"x\" to delete the widget. Some widgets can change display by tapping."
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:

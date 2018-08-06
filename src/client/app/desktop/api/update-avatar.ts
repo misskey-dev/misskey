@@ -8,7 +8,7 @@ export default (os: OS) => (cb, file = null) => {
 
 		const w = os.new(CropWindow, {
 			image: file,
-			title: 'アバターとして表示する部分を選択',
+			title: '%i18n:desktop.avatar-crop-title%',
 			aspectRatio: 1 / 1
 		});
 
@@ -18,11 +18,11 @@ export default (os: OS) => (cb, file = null) => {
 			data.append('file', blob, file.name + '.cropped.png');
 
 			os.api('drive/folders/find', {
-				name: 'アイコン'
+				name: '%i18n:desktop.avatar%'
 			}).then(iconFolder => {
 				if (iconFolder.length === 0) {
 					os.api('drive/folders/create', {
-						name: 'アイコン'
+						name: '%i18n:desktop.avatar%'
 					}).then(iconFolder => {
 						upload(data, iconFolder);
 					});
@@ -41,7 +41,7 @@ export default (os: OS) => (cb, file = null) => {
 
 	const upload = (data, folder) => {
 		const dialog = os.new(ProgressDialog, {
-			title: '新しいアバターをアップロードしています'
+			title: '%i18n:desktop.uploading-avatar%'
 		});
 		document.body.appendChild(dialog.$el);
 
@@ -76,10 +76,10 @@ export default (os: OS) => (cb, file = null) => {
 			});
 
 			os.apis.dialog({
-				title: '%fa:info-circle%アバターを更新しました',
-				text: '新しいアバターが反映されるまで時間がかかる場合があります。',
+				title: '%fa:info-circle% %i18n:desktop.avatar-updated%',
+				text: null,
 				actions: [{
-					text: 'わかった'
+					text: '%i18n:common.got-it%'
 				}]
 			});
 
@@ -92,7 +92,7 @@ export default (os: OS) => (cb, file = null) => {
 	} else {
 		os.apis.chooseDriveFile({
 			multiple: false,
-			title: '%fa:image%アバターにする画像を選択'
+			title: '%fa:image% %i18n:desktop.choose-avatar%'
 		}).then(file => {
 			fileSelected(file);
 		});

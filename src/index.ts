@@ -4,6 +4,8 @@
 
 Error.stackTraceLimit = Infinity;
 
+require('events').EventEmitter.defaultMaxListeners = 128;
+
 import * as os from 'os';
 import * as cluster from 'cluster';
 import * as debug from 'debug';
