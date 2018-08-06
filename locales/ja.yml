@@ -253,6 +253,7 @@ common/views/components/messaging-room.vue:
   no-history: "これより過去の履歴はありません"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージを入力"
