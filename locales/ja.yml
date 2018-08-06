@@ -606,6 +606,8 @@ desktop/views/components/notes.note.vue:
   detail: "詳細"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
+  hide: "隠す"
+  see-more: "もっと見る"
 
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
