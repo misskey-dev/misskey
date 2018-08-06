@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
   application-authorization: "Application authorizations."
   close: "Close"
+  got-it: "わかった"
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
@@ -39,12 +40,6 @@ common:
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
   trash: "Trash"
-  date:
-    full-year: "Year"
-    month: "Month"
-    day: "Day"
-    hours: "Hour"
-    minutes: "Minutes"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -283,6 +278,8 @@ common/views/components/signin.vue:
   token: "Token"
   signing-in: "Signing in..."
   signin: "Sign in"
+  or: "または"
+  signin-with-twitter: "Twitterでログイン"
 common/views/components/signup.vue:
   username: "Username"
   checking: "Checking..."
@@ -392,6 +389,17 @@ common/views/pages/follow.vue:
   follow: "Follow"
   request-pending: "Pending follow request"
   follow-request: "Follow request"
+desktop:
+  banner-crop-title: "バナーとして表示する部分を選択"
+  banner: "バナー"
+  uploading-banner: "新しいバナーをアップロードしています"
+  banner-updated: "バナーを更新しました"
+  choose-banner: "バナーにする画像を選択"
+  avatar-crop-title: "アバターとして表示する部分を選択"
+  avatar: "アバター"
+  uploading-avatar: "新しいアバターをアップロードしています"
+  avatar-updated: "アバターを更新しました"
+  choose-avatar: "アバターにする画像を選択"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -750,6 +758,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
   create-list: "Create new list"
+  list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
@@ -832,6 +841,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mute"
   muted: "Muting"
   unmute: "Unmute"
+  push-to-a-list: "リストに追加"
+  list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
@@ -1006,7 +1017,7 @@ mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  widgets-hints: "You can add/delete/rearrange widgets. To move the widget, drag \"三\". Tap \"x\" to delete the widget. Some widgets can change display by tapping."
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
