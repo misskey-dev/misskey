@@ -132,7 +132,7 @@ export default Vue.extend({
 					this.users = users;
 					this.fetching = false;
 				} else {
-					(this as any).api('users/search_by_username', {
+					(this as any).api('users/search', {
 						query: this.q,
 						limit: 30
 					}).then(users => {
