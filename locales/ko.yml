@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskey는 광고를 게재하지 않습니다</strong> 그러나 광고를 차단하는 기능 기능을 사용할 경우 일부 기능을 사용할 수 없게 될 가능성이나 결함이 발생하는 경우가 있습니다."
   application-authorization: "앱의 연계"
   close: "닫기"
+  got-it: "わかった"
   customization-tips:
     title: "사용자 정의 팁"
     paragraph1: "홈 정의는 위젯을 추가 / 삭제하거나 드래그 앤 드롭하여 정렬 할 수 있습니다."
@@ -39,12 +40,6 @@ common:
     months_ago: "{}개월전"
     years_ago: "{}년전"
   trash: "휴지통"
-  date:
-    full-year: "년"
-    month: "달"
-    day: "일"
-    hours: "때"
-    minutes: "분"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -283,6 +278,8 @@ common/views/components/signin.vue:
   token: "トークン"
   signing-in: "やってます..."
   signin: "サインイン"
+  or: "または"
+  signin-with-twitter: "Twitterでログイン"
 common/views/components/signup.vue:
   username: "ユーザー名"
   checking: "確認しています..."
@@ -392,6 +389,17 @@ common/views/pages/follow.vue:
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
+desktop:
+  banner-crop-title: "バナーとして表示する部分を選択"
+  banner: "バナー"
+  uploading-banner: "新しいバナーをアップロードしています"
+  banner-updated: "バナーを更新しました"
+  choose-banner: "バナーにする画像を選択"
+  avatar-crop-title: "アバターとして表示する部分を選択"
+  avatar: "アバター"
+  uploading-avatar: "新しいアバターをアップロードしています"
+  avatar-updated: "アバターを更新しました"
+  choose-avatar: "アバターにする画像を選択"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -750,6 +758,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
   create-list: "リストを作成"
+  list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "投稿"
   following: "フォロー"
@@ -832,6 +841,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+  push-to-a-list: "リストに追加"
+  list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
