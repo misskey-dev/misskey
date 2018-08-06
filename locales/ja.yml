@@ -1133,6 +1133,7 @@ mobile/views/components/timeline.vue:
 
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
+  adjective: "さん"
 
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
