@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
   application-authorization: "Application authorizations."
   close: "Close"
+  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -234,11 +235,13 @@ common/views/components/messaging-room.vue:
   no-history: "There is no further history"
   resize-form: "Drag to resize"
   new-message: "New message"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
   attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
   deleted: "This message has been deleted"
@@ -534,6 +537,8 @@ desktop/views/components/notes.note.vue:
   detail: "Show details"
   private: "This post is private"
   deleted: "The post has been deleted"
+  hide: "隠す"
+  see-more: "もっと見る"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
@@ -569,6 +574,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "Your device does not support geolocalization."
   error: "Error"
   enter-username: "Please enter a username..."
+  annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
   note: "New note"
   reply: "Reply"
@@ -730,6 +736,7 @@ desktop/views/components/timeline.vue:
   list: "Lists"
 desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
+  adjective: "さん"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Media storage"
@@ -970,6 +977,7 @@ mobile/views/components/timeline.vue:
   load-more: "More"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
+  adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
@@ -1018,6 +1026,8 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
   widgets-hints: "You can add/delete/rearrange widgets. To move the widget, drag \"三\". Tap \"x\" to delete the widget. Some widgets can change display by tapping."
+  add-widget: "追加"
+  customization-tips: "カスタマイズのヒント"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
@@ -1056,6 +1066,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:
@@ -1150,3 +1161,5 @@ docs:
       name: "Name"
       type: "Type"
       description: "Description"
+dev/views/index.vue:
+  manage-apps: "アプリの管理"
