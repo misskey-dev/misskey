@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
   close: "閉じる"
+  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   got-it: "わかった"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -234,11 +235,13 @@ common/views/components/messaging-room.vue:
   no-history: "これより過去の履歴はありません"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージを入力"
   send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.message.vue:
   is-read: "既読"
   deleted: "このメッセージは削除されました"
@@ -534,6 +537,8 @@ desktop/views/components/notes.note.vue:
   detail: "詳細"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
+  hide: "隠す"
+  see-more: "もっと見る"
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
   retry: "リトライ"
@@ -569,6 +574,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "お使いの端末は位置情報に対応していません"
   error: "エラー"
   enter-username: "ユーザー名を入力してください"
+  annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
   reply: "返信"
@@ -730,6 +736,7 @@ desktop/views/components/timeline.vue:
   list: "リスト"
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
+  adjective: "さん"
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   drive: "ドライブ"
@@ -970,6 +977,7 @@ mobile/views/components/timeline.vue:
   load-more: "もっと"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
+  adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
@@ -1018,6 +1026,8 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  add-widget: "追加"
+  customization-tips: "カスタマイズのヒント"
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 mobile/views/pages/share.vue:
@@ -1056,6 +1066,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "検索"
   empty: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
 mobile/views/pages/settings.vue:
@@ -1150,3 +1161,5 @@ docs:
       name: "名前"
       type: "型"
       description: "説明"
+dev/views/index.vue:
+  manage-apps: "アプリの管理"
