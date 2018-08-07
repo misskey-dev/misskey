@@ -1247,6 +1247,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "検索"
   empty: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
