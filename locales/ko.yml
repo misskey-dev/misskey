@@ -28,7 +28,6 @@ common:
     notified-by: "{}님"
     reply-from: "{}님으로부터 답글:"
     quoted-by: "{}씨가 인용:"
-  name: "Misskey"
   time:
     unknown: "수수께끼의 시간"
     future: "미래"
@@ -40,6 +39,7 @@ common:
     weeks_ago: "{}주전"
     months_ago: "{}개월전"
     years_ago: "{}년전"
+  month-and-day: "{month}月 {day}日"
   trash: "휴지통"
   weekday-short:
     sunday: "일"
