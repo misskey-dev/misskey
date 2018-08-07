@@ -12,7 +12,7 @@ common:
   application-authorization: "アプリの連携"
   close: "Zamknij"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
-  got-it: "わかった"
+  got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
     paragraph1: "Dostosowywanie strony głównej pozwala na dodawanie, usuwanie, przeciąganie i zmienianie kolejności widżetów."
@@ -282,7 +282,7 @@ common/views/components/signin.vue:
   signing-in: "Logowanie…"
   signin: "Zaloguj"
   or: "または"
-  signin-with-twitter: "Twitterでログイン"
+  signin-with-twitter: "Zaloguj się za pomocą Twittera"
 common/views/components/signup.vue:
   username: "Nazwa użytkownika"
   checking: "Sprawdzanie…"
@@ -372,7 +372,7 @@ common/views/widgets/tips.vue:
   tips-line4: "投稿フォームにクリップボードにある画像データをペーストできます"
   tips-line5: "Możesz wysłać pliki przeciągając i upuszczając je w Dysku."
   tips-line6: "Możesz przenieść katalog przeciągając go w Dysku."
-  tips-line7: "ドライブでフォルダをドラッグしてフォルダ移動できます"
+  tips-line7: "Możesz przenieść katalog przeciągając go w Dysku."
   tips-line8: "Strona główna może zostać dostosowana w ustawieniach."
   tips-line9: "Misskey jest dostępny na licencji AGPLv3."
   tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
@@ -537,8 +537,8 @@ desktop/views/components/notes.note.vue:
   detail: "Pokaż szczegóły"
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
-  hide: "隠す"
-  see-more: "もっと見る"
+  hide: "Zwiń"
+  see-more: "Więcej"
 desktop/views/components/notes.vue:
   error: "Ładowanie nie powiodło się."
   retry: "Spróbuj ponownie"
@@ -574,7 +574,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
   error: "Bład"
   enter-username: "Wprowadź nazwę użytkownika…"
-  annotations: "内容への注釈 (オプション)"
+  annotations: "Treść ostrzeżenia (opcjonalnie)"
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
   reply: "Odpowiedz"
@@ -765,7 +765,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "Listy"
   create-list: "Utwórz listę"
-  list-name: "リスト名"
+  list-name: "Nazwa listy"
 desktop/views/components/user-preview.vue:
   notes: "Wpisy"
   following: "Śledzeni"
@@ -848,8 +848,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Wycisz"
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
-  push-to-a-list: "リストに追加"
-  list-pushed: "{user}を{list}に追加しました。"
+  push-to-a-list: "Dodaj do listy"
+  list-pushed: "Dodałeś(-aś) {user} do {list}."
 desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
@@ -1026,7 +1026,7 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "Kokpit"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
-  add-widget: "追加"
+  add-widget: "Dodaj"
   customization-tips: "カスタマイズのヒント"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktywność"
