@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<b-button to="/apps" variant="primary">アプリの管理</b-button>
+	<b-button to="/apps" variant="primary">%i18n:@manage-apps%</b-button>
 </mk-ui>
 </template>
 
