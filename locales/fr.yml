@@ -221,8 +221,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet-desc: "Veuillez vérifier que vous êtes bien connecté à internet."
   no-server: "Impossible de se connecter au serveur"
   no-server-desc: "Votre connexion semble correcte, mais il a été impossible de vous connecter au serveur de Misskey. Il se peut que le serveur soit hors-ligne ou en maintenance, veuillez ressayer plus tard."
-  success: "Connexion au serveur de Misskey reussie!"
-  success-desc: "La connexion au serveur a été reussie. Veuillez recharger la page."
+  success: "Connexion au serveur de Misskey réussie !"
+  success-desc: "Succès de la connexion au serveur de Misskey. Veuillez recharger la page."
   flush: "Vider le cache"
   set-version: "Choisissez une version"
 common/views/components/messaging.vue:
@@ -621,7 +621,7 @@ desktop/views/components/settings.vue:
   circle-icons: "Utiliser des icônes circulaires"
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
-  show-reply-target: "リプライ先を表示する"
+  show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications dans le fil"
   show-renoted-my-notes: "Renoteされた自分の投稿をタイムラインに表示する"
   show-maps: "Afficher la carte"
@@ -765,7 +765,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "Listes de l'utilisateur"
   create-list: "Créer une liste"
-  list-name: "リスト名"
+  list-name: "Nom de la liste"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
@@ -848,8 +848,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mettre en sourdine"
   muted: "Muting"
   unmute: "Enlever la sourdine"
-  push-to-a-list: "リストに追加"
-  list-pushed: "{user}を{list}に追加しました。"
+  push-to-a-list: "Ajouter à la liste"
+  list-pushed: "Vous avez ajouté {user} à la liste {list}."
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
@@ -976,7 +976,7 @@ mobile/views/components/timeline.vue:
   empty: "Pas de notes"
   load-more: "Afficher plus"
 mobile/views/components/ui.header.vue:
-  welcome-back: "おかえりなさい、"
+  welcome-back: "Bon retour parmi nous !"
   adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "Fil d'actualité"
@@ -1026,8 +1026,8 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "Tableau de bord"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
-  add-widget: "追加"
-  customization-tips: "カスタマイズのヒント"
+  add-widget: "Ajouter"
+  customization-tips: "Conseils de personnalisation"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activité"
 mobile/views/pages/share.vue:
@@ -1162,4 +1162,4 @@ docs:
       type: "Type"
       description: "Description"
 dev/views/index.vue:
-  manage-apps: "アプリの管理"
+  manage-apps: "Gestion des applications"
