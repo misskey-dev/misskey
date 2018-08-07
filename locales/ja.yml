@@ -1351,3 +1351,7 @@ docs:
       name: "名前"
       type: "型"
       description: "説明"
+
+      
+dev/views/index.vue:
+  manage-apps: "アプリの管理"
