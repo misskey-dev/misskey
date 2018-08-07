@@ -309,7 +309,7 @@ common/views/components/special-message.vue:
   christmas: "Joyeux Noël!"
 common/views/components/stream-indicator.vue:
   connecting: "Connexion en cours"
-  reconnecting: "Re-connexion en cours"
+  reconnecting: "Reconnexion en cours"
   connected: "Connecté"
 common/views/components/twitter-setting.vue:
   description: "Si vous liez votre compte Twitter à votre compte Misskey, vous verrez ensuite votre compte Twitter s'afficher sur votre profile, vous aurez aussi la possibilité de vous connecter à Misskey en utilisant votre compte Twitter."
