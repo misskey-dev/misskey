@@ -648,6 +648,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "お使いの端末は位置情報に対応していません"
   error: "エラー"
   enter-username: "ユーザー名を入力してください"
+  annotations: "内容への注釈 (オプション)"
 
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
