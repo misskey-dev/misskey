@@ -537,8 +537,8 @@ desktop/views/components/notes.note.vue:
   detail: "Show details"
   private: "This post is private"
   deleted: "The post has been deleted"
-  hide: "隠す"
-  see-more: "もっと見る"
+  hide: "Hide"
+  see-more: "See more"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
@@ -1026,8 +1026,8 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "Dashboard"
   widgets-hints: "You can add/delete/rearrange widgets. To move the widget, drag \"三\". Tap \"x\" to delete the widget. Some widgets can change display by tapping."
-  add-widget: "追加"
-  customization-tips: "カスタマイズのヒント"
+  add-widget: "Add"
+  customization-tips: "Customization tips"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
@@ -1162,4 +1162,4 @@ docs:
       type: "Type"
       description: "Description"
 dev/views/index.vue:
-  manage-apps: "アプリの管理"
+  manage-apps: "Manage apps"
