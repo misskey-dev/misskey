@@ -28,7 +28,6 @@ common:
     notified-by: "Notificado por {}:"
     reply-from: "Respuesta de {}:"
     quoted-by: "Citado por {}:"
-  name: "Misskey"
   time:
     unknown: "Desconocido"
     future: "Futuro"
@@ -40,6 +39,7 @@ common:
     weeks_ago: "Hace {} semana(s)"
     months_ago: "Hace {} mes(es)"
     years_ago: "Hace {} año(s)"
+  month-and-day: "{month}月 {day}日"
   trash: "Papelera"
   weekday-short:
     sunday: "domingo"
