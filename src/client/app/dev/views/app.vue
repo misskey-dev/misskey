@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<p v-if="fetching">読み込み中</p>
+	<p v-if="fetching">%i18n:common.loading%</p>
 	<b-card v-if="!fetching" :header="app.name">
 		<b-form-group label="App Secret">
 			<b-input :value="app.secret" readonly/>

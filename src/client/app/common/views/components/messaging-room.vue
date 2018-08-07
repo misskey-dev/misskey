@@ -111,7 +111,7 @@ export default Vue.extend({
 				this.form.upload(e.dataTransfer.files[0]);
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
-				alert('メッセージに添付できるのはひとつのファイルのみです');
+				alert('%i18n:@only-one-file-attached%');
 				return;
 			}
 
