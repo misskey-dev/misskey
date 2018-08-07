@@ -4,7 +4,7 @@
 	<div>
 		<p>%fa:R hdd%Storage</p>
 		<p>Total: {{ total | bytes(1) }}</p>
-		<p>Available: {{ available | bytes(1) }}</p>
+		<p>Free: {{ available | bytes(1) }}</p>
 		<p>Used: {{ used | bytes(1) }}</p>
 	</div>
 </div>
