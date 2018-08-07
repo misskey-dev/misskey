@@ -8,7 +8,7 @@
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation">%fa:circle%</template>
 			<h1>
-				<slot>%i18n:common.name%</slot>
+				<slot>config.name</slot>
 			</h1>
 			<slot name="func"></slot>
 		</div>
@@ -20,11 +20,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	props: ['func'],
 	data() {
 		return {
+			config,
 			hasGameInvitation: false,
 			connection: null,
 			connectionId: null

@@ -12,6 +12,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
+import * as config from '../../../config';
 
 const limit = 20;
 
@@ -34,7 +35,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = `%i18n:@search%: ${this.q} | %i18n:common.name%`;
+		document.title = `%i18n:@search%: ${this.q} | ${config.name}`;
 
 		this.fetch();
 	},

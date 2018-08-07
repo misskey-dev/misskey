@@ -61,7 +61,7 @@ export default Vue.extend({
 				const date = new Date(message.createdAt).getDate();
 				const month = new Date(message.createdAt).getMonth() + 1;
 				message._date = date;
-				message._datetext = `${month}月 ${date}日`;
+				message._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
 				return message;
 			});
 		},

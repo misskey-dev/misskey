@@ -16,6 +16,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -31,7 +32,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = '%i18n:common.name%';
+		document.title = config.name;
 	},
 	methods: {
 		fetch() {

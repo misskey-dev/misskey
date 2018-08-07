@@ -1,7 +1,7 @@
 <template>
 <div>
 	<b-navbar toggleable="md" type="dark" variant="info">
-		<b-navbar-brand>%i18n:common.name% Developers</b-navbar-brand>
+		<b-navbar-brand>Developers</b-navbar-brand>
 		<b-navbar-nav>
 			<b-nav-item to="/">Home</b-nav-item>
 			<b-nav-item to="/apps">Apps</b-nav-item>

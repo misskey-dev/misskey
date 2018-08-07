@@ -28,7 +28,6 @@ common:
     notified-by: "{}さんから"
     reply-from: "{}さんから返信:"
     quoted-by: "{}さんが引用:"
-  name: "Misskey"
   time:
     unknown: "なぞのじかん"
     future: "未来"
@@ -40,6 +39,7 @@ common:
     weeks_ago: "{}週間前"
     months_ago: "{}ヶ月前"
     years_ago: "{}年前"
+  month-and-day: "{month}月 {day}日"
 
   trash: "ゴミ箱"
 
@@ -1353,6 +1353,6 @@ docs:
       type: "型"
       description: "説明"
 
-      
+
 dev/views/index.vue:
   manage-apps: "アプリの管理"

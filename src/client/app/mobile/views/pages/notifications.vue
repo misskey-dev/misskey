@@ -15,7 +15,7 @@ import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
 	mounted() {
-		document.title = '%i18n:common.name% | %i18n:@notifications%';
+		document.title = '%i18n:@notifications%';
 
 		Progress.start();
 	},

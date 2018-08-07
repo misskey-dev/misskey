@@ -7,10 +7,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as config from '../../../../config';
 
 export default Vue.extend({
 	mounted() {
-		document.title = '%i18n:common.name% %i18n:@reversi%';
+		document.title = `${config.name} %i18n:@reversi%`;
 		document.documentElement.style.background = '#fff';
 	},
 	methods: {

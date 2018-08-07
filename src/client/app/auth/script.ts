@@ -8,14 +8,14 @@ import VueRouter from 'vue-router';
 import './style.styl';
 
 import init from '../init';
-
 import Index from './views/index.vue';
+import * as config from '../config';
 
 /**
  * init
  */
 init(launch => {
-	document.title = '%i18n:common.name% | %i18n:common.application-authorization%';
+	document.title = `${config.name} | %i18n:common.application-authorization%`;
 
 	// Init router
 	const router = new VueRouter({

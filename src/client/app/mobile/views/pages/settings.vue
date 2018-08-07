@@ -143,7 +143,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = '%i18n:common.name% | %i18n:@settings%';
+		document.title = '%i18n:@settings%';
 	},
 
 	methods: {

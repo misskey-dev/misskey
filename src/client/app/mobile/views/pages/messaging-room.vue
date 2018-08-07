@@ -11,6 +11,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import parseAcct from '../../../../../misc/acct/parse';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -47,7 +48,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `%i18n:@messaging%: ${Vue.filter('userName')(this.user)} | %i18n:common.name%`;
+				document.title = `%i18n:@messaging%: ${Vue.filter('userName')(this.user)} | ${config.name}`;
 			});
 		}
 	}

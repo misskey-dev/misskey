@@ -47,6 +47,8 @@ export default function load() {
 	if (config.localDriveCapacityMb == null) config.localDriveCapacityMb = 256;
 	if (config.remoteDriveCapacityMb == null) config.remoteDriveCapacityMb = 8;
 
+	if (config.name == null) config.name = 'Misskey';
+
 	return Object.assign(config, mixin);
 }
 
