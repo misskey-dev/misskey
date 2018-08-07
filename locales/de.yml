@@ -28,7 +28,6 @@ common:
     notified-by: "{}さんから"
     reply-from: "{}さんから返信:"
     quoted-by: "{}さんが引用:"
-  name: "Misskey"
   time:
     unknown: "Unbekannt"
     future: "Zukunft"
@@ -40,6 +39,7 @@ common:
     weeks_ago: "vor {0} Woche{0:n}"
     months_ago: "vor {0} Monat{0:en}"
     years_ago: "vor {} Jahr{0:en}"
+  month-and-day: "{month}月 {day}日"
   trash: "ゴミ箱"
   weekday-short:
     sunday: "So"
