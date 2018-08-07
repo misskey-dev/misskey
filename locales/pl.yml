@@ -28,7 +28,6 @@ common:
     notified-by: "Powiadomiono przez {}:"
     reply-from: "Odpowiedź od {}:"
     quoted-by: "Zacytowano przez {}:"
-  name: "Misskey"
   time:
     unknown: "nieznany"
     future: "w przyszłości"
@@ -40,6 +39,7 @@ common:
     weeks_ago: "{} tyg. temu"
     months_ago: "{} mies. temu"
     years_ago: "{} lat temu"
+  month-and-day: "{month}月 {day}日"
   trash: "Kosz"
   weekday-short:
     sunday: "N"
