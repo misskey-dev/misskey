@@ -39,7 +39,7 @@ common:
     weeks_ago: "{}week(s) ago"
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
-  month-and-day: "{month}月 {day}日"
+  month-and-day: "{month}/{day}"
   trash: "Trash"
   weekday-short:
     sunday: "S"
