@@ -812,7 +812,7 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Cancel"
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
-  not-available: "The search function can not be used."
+  not-available: "The search feature is not available."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
   share-with: "Share with {}."
