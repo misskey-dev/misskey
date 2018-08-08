@@ -2,6 +2,9 @@
 <iframe v-if="youtubeId" type="text/html" height="250"
 	:src="`https://www.youtube.com/embed/${youtubeId}?origin=${misskeyUrl}`"
 	frameborder="0"/>
+<iframe v-else-if="spotifyId"
+	:src="`https://open.spotify.com/embed/track/${spotifyId}`"
+	frameborder="0" allowtransparency="true" allow="encrypted-media" />
 <div v-else-if="tweetUrl && detail" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
 		<a :href="url"></a>
@@ -60,6 +63,8 @@ export default Vue.extend({
 			this.youtubeId = url.searchParams.get('v');
 		} else if (url.hostname == 'youtu.be') {
 			this.youtubeId = url.pathname;
+		} else if (url.hostname == 'open.spotify.com') {
+			this.spotifyId = url.pathname.split('/').reverse().filter(x => x !== '')[0];
 		} else if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
 			this.tweetUrl = url;
 			const twttr = (window as any).twttr || {};
