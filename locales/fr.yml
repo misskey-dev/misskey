@@ -327,12 +327,12 @@ common/views/components/visibility-chooser.vue:
   followers: "Abonné·e·s"
   followers-desc: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
-  specified-desc: "Publier aux utilisateurs mentionnés"
+  specified-desc: "Publier aux utilisateurs·trices mentionné·es"
   private: "Privé"
 common/views/widgets/broadcast.vue:
   fetching: "Récuperation"
-  no-broadcasts: "No broadcasts"
-  have-a-nice-day: "Passez une bonne journée!"
+  no-broadcasts: "Aucune annonce"
+  have-a-nice-day: "Passez une bonne journée !"
   next: "Suivant"
 common/views/widgets/calendar.vue:
   year: "{} année"
