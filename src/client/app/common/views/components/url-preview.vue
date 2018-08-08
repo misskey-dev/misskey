@@ -5,6 +5,9 @@
 <iframe v-else-if="spotifyId"
 	:src="`https://open.spotify.com/embed/track/${spotifyId}`"
 	frameborder="0" allowtransparency="true" allow="encrypted-media" />
+<iframe v-else-if="nicovideoId"
+	:src="`https://embed.nicovideo.jp/watch/${nicovideoId}?oldScript=1&referer=${misskeyUrl}&from=${position || '0'}&allowProgrammaticFullScreen=1`"
+	frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 <div v-else-if="tweetUrl && detail" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
 		<a :href="url"></a>
@@ -52,6 +55,9 @@ export default Vue.extend({
 			icon: null,
 			sitename: null,
 			youtubeId: null,
+			spotifyId: null,
+			nicovideoId: null,
+			position: null,
 			tweetUrl: null,
 			misskeyUrl
 		};
@@ -65,6 +71,9 @@ export default Vue.extend({
 			this.youtubeId = url.pathname;
 		} else if (url.hostname == 'open.spotify.com') {
 			this.spotifyId = url.pathname.split('/').reverse().filter(x => x !== '')[0];
+		} else if (['nicovideo.jp', 'www.nicovideo.jp', 'nico.ms'].includes(url.hostname)) {
+			this.nicovideoId = url.pathname.split('/').reverse().filter(x => x !== '')[0];
+			this.position = url.searchParams.get('from');
 		} else if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
 			this.tweetUrl = url;
 			const twttr = (window as any).twttr || {};
