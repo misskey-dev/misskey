@@ -67,13 +67,20 @@ export default Vue.extend({
 
 		if (url.hostname == 'www.youtube.com') {
 			this.youtubeId = url.searchParams.get('v');
+			return;
 		} else if (url.hostname == 'youtu.be') {
 			this.youtubeId = url.pathname;
+			return;
 		} else if (url.hostname == 'open.spotify.com') {
 			this.spotifyId = url.pathname.split('/').reverse().filter(x => x !== '')[0];
+			return;
 		} else if (['nicovideo.jp', 'www.nicovideo.jp', 'nico.ms'].includes(url.hostname)) {
-			this.nicovideoId = url.pathname.split('/').reverse().filter(x => x !== '')[0];
-			this.position = url.searchParams.get('from');
+			const id = url.pathname.split('/').reverse().filter(x => x !== '')[0];
+			if (['sm', 'nm', 'ax', 'ca', 'cd', 'cw', 'fx', 'ig', 'na', 'om', 'sd', 'sk', 'yk', 'yo', 'za', 'zb', 'zc', 'zd', 'ze', 'nl', 'so', ...Array(10).keys()].some(x => id.startsWith(x)) {
+				this.nicovideoId = id;
+				this.position = url.searchParams.get('from');
+				return;
+			}
 		} else if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
 			this.tweetUrl = url;
 			const twttr = (window as any).twttr || {};
@@ -93,19 +100,19 @@ export default Vue.extend({
 				twttr.ready = loadTweet;
 				(window as any).twttr = twttr;
 			}
-		} else {
-			fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
-				res.json().then(info => {
-					this.title = info.title;
-					this.description = info.description;
-					this.thumbnail = info.thumbnail;
-					this.icon = info.icon;
-					this.sitename = info.sitename;
-
-					this.fetching = false;
-				});
-			});
+			return;
 		}
+		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
+			res.json().then(info => {
+				this.title = info.title;
+				this.description = info.description;
+				this.thumbnail = info.thumbnail;
+				this.icon = info.icon;
+				this.sitename = info.sitename;
+
+				this.fetching = false;
+			});
+		});
 	}
 });
 </script>
