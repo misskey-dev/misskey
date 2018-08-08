@@ -11,7 +11,8 @@ common:
     warning: "<strong>Misskey n'utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
   application-authorization: "Permissions de l'application"
   close: "Fermer"
-  got-it: "わかった"
+  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  got-it: "J'ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
     paragraph1: "La personnalisation à la maison vous permet d'ajouter / supprimer, glisser et déposer et réorganiser les widgets."
@@ -27,7 +28,6 @@ common:
     notified-by: "Notifié par {} :"
     reply-from: "Réponse de {} :"
     quoted-by: "Cité·e par {} :"
-  name: "Misskey"
   time:
     unknown: "inconnu"
     future: "future"
@@ -39,6 +39,7 @@ common:
     weeks_ago: "Il y a {} semaines·s"
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
+  month-and-day: "{month}/{day}"
   trash: "Corbeille"
   weekday-short:
     sunday: "D"
@@ -201,7 +202,7 @@ common/views/components/games/reversi/reversi.room.vue:
   ready: "Prêt"
   cancel-ready: "Annuler \"Je suis prêt\""
 common/views/components/connect-failed.vue:
-  title: "Impossible de se connecter au server."
+  title: "Échec de connexion au serveur"
   description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
   thanks: "On vous remercie d'utiliser Misskey."
   troubleshoot: "dépanner"
@@ -211,7 +212,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   checking-network: "Vérification de la connexion au réseau"
   internet: "Connexion Internet"
   checking-internet: "Vérification de la connexion internet"
-  server: "Connexion au server"
+  server: "Connexion au serveur"
   checking-server: "Vérification de la connexion au serveur"
   finding: "Recherche d'un problème"
   no-network: "Aucune connexion au réseau"
@@ -219,9 +220,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet: "Aucune connexion internet."
   no-internet-desc: "Veuillez vérifier que vous êtes bien connecté à internet."
   no-server: "Impossible de se connecter au serveur"
-  no-server-desc: "Votre connexion est OK, mais il a été impossible de vous connecter au serveur de Misskey. Il y a des chances que le serveur soit hors-ligne ou en maintenance, veuillez ressayer plus tard."
-  success: "Connexion au serveur de Misskey reussie!"
-  success-desc: "La connexion au serveur a été reussie. Veuillez recharger la page."
+  no-server-desc: "Votre connexion semble correcte, mais il a été impossible de vous connecter au serveur de Misskey. Il se peut que le serveur soit hors-ligne ou en maintenance, veuillez ressayer plus tard."
+  success: "Connexion au serveur de Misskey réussie !"
+  success-desc: "Succès de la connexion au serveur de Misskey. Veuillez recharger la page."
   flush: "Vider le cache"
   set-version: "Choisissez une version"
 common/views/components/messaging.vue:
@@ -234,11 +235,13 @@ common/views/components/messaging-room.vue:
   no-history: "Il n'y a pas plus d'historique"
   resize-form: "Faites glisser pour redimensionner"
   new-message: "Nouveau message"
+  only-one-file-attached: "Un seul fichier uniquement peut être joint au message"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Tapez ici votre message"
   send: "Envoyer"
   attach-from-local: "Joindre un fichier depuis votre PC"
   attach-from-drive: "Joindre un fichier depuis votre Drive"
+  only-one-file-attached: "Un seul fichier uniquement peut être joint au message"
 common/views/components/messaging-room.message.vue:
   is-read: "Lu"
   deleted: "Ce message a été supprimé"
@@ -278,8 +281,8 @@ common/views/components/signin.vue:
   token: "Token"
   signing-in: "Connexion...."
   signin: "Se connecter"
-  or: "または"
-  signin-with-twitter: "Twitterでログイン"
+  or: "Ou"
+  signin-with-twitter: "Se connecter via Twitter"
 common/views/components/signup.vue:
   username: "Nom d'utilisateur"
   checking: "Vérification"
@@ -287,10 +290,10 @@ common/views/components/signup.vue:
   unavailable: "Non disponible"
   error: "Erreur de réseau"
   invalid-format: "Utilisez seulement des lettres, nombres et/ou -."
-  too-short: "Veuillez taper au moins un charactère!"
-  too-long: "Veuillez entrer au maximum 20 charactères."
+  too-short: "Veuillez saisir au moins un caractère !"
+  too-long: "Veuillez entrer au maximum 20 caractères."
   password: "Mot de Passe"
-  password-placeholder: "Nous recommendons au moins 8 charactères."
+  password-placeholder: "Nous recommendons au moins 8 caractères."
   weak-password: "Faible"
   normal-password: "Moyen"
   strong-password: "Fort"
@@ -300,21 +303,21 @@ common/views/components/signup.vue:
   password-not-matched: "Les mots de passes ne correspondent pas."
   recaptcha: "Vérifier"
   create: "Créer un compte"
-  some-error: "La création de compte a échoué. Veuillez ressayer."
+  some-error: "La création du compte a échoué. Veuillez réessayer."
 common/views/components/special-message.vue:
-  new-year: "Bonne année!"
-  christmas: "Joyeux Noël!"
+  new-year: "Bonne année !"
+  christmas: "Joyeux Noël !"
 common/views/components/stream-indicator.vue:
   connecting: "Connexion en cours"
-  reconnecting: "Re-connexion en cours"
+  reconnecting: "Reconnexion en cours"
   connected: "Connecté"
 common/views/components/twitter-setting.vue:
   description: "Si vous liez votre compte Twitter à votre compte Misskey, vous verrez ensuite votre compte Twitter s'afficher sur votre profile, vous aurez aussi la possibilité de vous connecter à Misskey en utilisant votre compte Twitter."
-  connected-to: "Vous êtes connecté à ce compte"
-  detail: "Detail..."
+  connected-to: "Vous êtes connecté à ce compte Twitter"
+  detail: "Détails …"
   reconnect: "Reconnecter"
   connect: "Lier votre compte Twitter"
-  disconnect: "Deconnecter"
+  disconnect: "Déconnecter"
 common/views/components/uploader.vue:
   waiting: "En attente"
 common/views/components/visibility-chooser.vue:
@@ -324,12 +327,12 @@ common/views/components/visibility-chooser.vue:
   followers: "Abonné·e·s"
   followers-desc: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
-  specified-desc: "Publier aux utilisateurs mentionnés"
+  specified-desc: "Publier aux utilisateurs·trices mentionné·es"
   private: "Privé"
 common/views/widgets/broadcast.vue:
   fetching: "Récuperation"
-  no-broadcasts: "No broadcasts"
-  have-a-nice-day: "Passez une bonne journée!"
+  no-broadcasts: "Aucune annonce"
+  have-a-nice-day: "Passez une bonne journée !"
   next: "Suivant"
 common/views/widgets/calendar.vue:
   year: "{} année"
@@ -340,13 +343,13 @@ common/views/widgets/calendar.vue:
   this-year: "Cette année :"
 common/views/widgets/donation.vue:
   title: "Dons"
-  text: "Toutes les depences pour couvrir les frais de Misskey sortent directement de notre poche. Nous ne recevons pas d'argent, si vous pouvez nous faire dons d'argent, on vous serait eternellement reconnaissant. Si vous êtes intéressés veuilles contacter {}. Merci pour votre contribution!"
+  text: "Les frais pour faire fonctionner Misskey sortent directement de notre poche. Nous ne recevons pas d'argent issu de la publicité, si vous pouvez nous faire des dons, on vous serait éternellement reconnaissants. Si vous êtes intéressé·es veuillez contacter {}. Merci pour votre contribution !"
 common/views/widgets/photo-stream.vue:
   title: "Flux de photo"
   no-photos: "Pas de photos"
 common/views/widgets/posts-monitor.vue:
   title: "Graph des publications"
-  toggle: "Basculer les vues"
+  toggle: "Basculer entre les vues"
 common/views/widgets/hashtags.vue:
   title: "Étiquettes"
   count: "{} utilisateurs mentionnés"
@@ -367,7 +370,7 @@ common/views/widgets/tips.vue:
   tips-line2: "<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます"
   tips-line3: "Vous pouvez glisser et déposer des fichiers sur la fenêtre de la note"
   tips-line4: "Vous pouvez coller des images à partir du presse-papier sur la fenêtre de la note"
-  tips-line5: "ドライブにファイルをドラッグ&ドロップしてアップロードできます"
+  tips-line5: "Vous pouvez téléverser des fichiers sur le Drive en faisant un glisser/déplacer"
   tips-line6: "ドライブでファイルをドラッグしてフォルダ移動できます"
   tips-line7: "ドライブでフォルダをドラッグしてフォルダ移動できます"
   tips-line8: "Vous pouvez personnaliser l'Accueil via les paramètres"
@@ -376,7 +379,7 @@ common/views/widgets/tips.vue:
   tips-line11: "Vous pouvez épingler des notes sur votre page en appuyant sur \"…\""
   tips-line13: "Tous les fichiers attachés à cette publication sont sauvegardés dans le Drive"
   tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できます"
-  tips-line17: "「**」でテキストを囲むと**強調表示**されます"
+  tips-line17: "Vous pouvez mettre un texte en surbrillance en le mettant entre ** **"
   tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができます"
   tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示しています"
   tips-line21: "Vous pouvez aussi utiliser l'API pour développer des Bots."
@@ -390,16 +393,16 @@ common/views/pages/follow.vue:
   request-pending: "Demande d'abonnement en attente"
   follow-request: "Demande d'abonnement"
 desktop:
-  banner-crop-title: "バナーとして表示する部分を選択"
-  banner: "バナー"
-  uploading-banner: "新しいバナーをアップロードしています"
-  banner-updated: "バナーを更新しました"
-  choose-banner: "バナーにする画像を選択"
-  avatar-crop-title: "アバターとして表示する部分を選択"
-  avatar: "アバター"
-  uploading-avatar: "新しいアバターをアップロードしています"
-  avatar-updated: "アバターを更新しました"
-  choose-avatar: "アバターにする画像を選択"
+  banner-crop-title: "Découpez la partie qui apparaîtra comme une bannière"
+  banner: "Bannière"
+  uploading-banner: "Téléversement d'une nouvelle bannière"
+  banner-updated: "La bannière est mise à jour"
+  choose-banner: "Choisir une bannière"
+  avatar-crop-title: "Découpez la partie qui apparaîtra dans l'avatar"
+  avatar: "Avatar"
+  uploading-avatar: "Téléversement du nouvel avatar"
+  avatar-updated: "L'avatar est mis à jour"
+  choose-avatar: "Choisir un avatar"
 desktop/views/components/activity.chart.vue:
   total: "Noirs ... Total"
   notes: "Bleu ... Notes"
@@ -534,6 +537,8 @@ desktop/views/components/notes.note.vue:
   detail: "Afficher les détails"
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
+  hide: "Masquer"
+  see-more: "Voir plus"
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
@@ -569,6 +574,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "Votre appareil ne prend pas en charge les services de localisation"
   error: "Erreur"
   enter-username: "Saisir un nom d'utilisateur …"
+  annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
   reply: "Répondre"
@@ -615,7 +621,7 @@ desktop/views/components/settings.vue:
   circle-icons: "Utiliser des icônes circulaires"
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
-  show-reply-target: "リプライ先を表示する"
+  show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications dans le fil"
   show-renoted-my-notes: "Renoteされた自分の投稿をタイムラインに表示する"
   show-maps: "Afficher la carte"
@@ -730,6 +736,7 @@ desktop/views/components/timeline.vue:
   list: "Listes"
 desktop/views/components/ui.header.vue:
   welcome-back: "Content de vous revoir !"
+  adjective: "さん"
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
@@ -758,7 +765,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "Listes de l'utilisateur"
   create-list: "Créer une liste"
-  list-name: "リスト名"
+  list-name: "Nom de la liste"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
@@ -841,8 +848,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mettre en sourdine"
   muted: "Muting"
   unmute: "Enlever la sourdine"
-  push-to-a-list: "リストに追加"
-  list-pushed: "{user}を{list}に追加しました。"
+  push-to-a-list: "Ajouter à la liste"
+  list-pushed: "Vous avez ajouté {user} à la liste {list}."
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
@@ -969,7 +976,8 @@ mobile/views/components/timeline.vue:
   empty: "Pas de notes"
   load-more: "Afficher plus"
 mobile/views/components/ui.header.vue:
-  welcome-back: "おかえりなさい、"
+  welcome-back: "Bon retour parmi nous !"
+  adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "Fil d'actualité"
   notifications: "Notifications"
@@ -1018,6 +1026,8 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "Tableau de bord"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  add-widget: "Ajouter"
+  customization-tips: "Conseils de personnalisation"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activité"
 mobile/views/pages/share.vue:
@@ -1056,6 +1066,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Chercher"
   empty: "Aucun message trouvé pour '{}' "
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
@@ -1150,3 +1161,5 @@ docs:
       name: "Nom"
       type: "Type"
       description: "Description"
+dev/views/index.vue:
+  manage-apps: "Gestion des applications"

@@ -11,7 +11,8 @@ common:
     warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
   application-authorization: "アプリの連携"
   close: "Zamknij"
-  got-it: "わかった"
+  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
     paragraph1: "Dostosowywanie strony głównej pozwala na dodawanie, usuwanie, przeciąganie i zmienianie kolejności widżetów."
@@ -27,7 +28,6 @@ common:
     notified-by: "Powiadomiono przez {}:"
     reply-from: "Odpowiedź od {}:"
     quoted-by: "Zacytowano przez {}:"
-  name: "Misskey"
   time:
     unknown: "nieznany"
     future: "w przyszłości"
@@ -39,6 +39,7 @@ common:
     weeks_ago: "{} tyg. temu"
     months_ago: "{} mies. temu"
     years_ago: "{} lat temu"
+  month-and-day: "{month}月 {day}日"
   trash: "Kosz"
   weekday-short:
     sunday: "N"
@@ -234,11 +235,13 @@ common/views/components/messaging-room.vue:
   no-history: "Brak dalszej historii"
   resize-form: "Przeciągnij aby zmienić rozmiar"
   new-message: "Nowa wiadomość"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Wprowadź wiadomość tutaj"
   send: "Wyślij"
   attach-from-local: "Załącz pliki z komputera"
   attach-from-drive: "Załącz pliki z dysku"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.message.vue:
   is-read: "Przeczytano"
   deleted: "Wiadomość została usunięta"
@@ -279,7 +282,7 @@ common/views/components/signin.vue:
   signing-in: "Logowanie…"
   signin: "Zaloguj"
   or: "または"
-  signin-with-twitter: "Twitterでログイン"
+  signin-with-twitter: "Zaloguj się za pomocą Twittera"
 common/views/components/signup.vue:
   username: "Nazwa użytkownika"
   checking: "Sprawdzanie…"
@@ -369,7 +372,7 @@ common/views/widgets/tips.vue:
   tips-line4: "投稿フォームにクリップボードにある画像データをペーストできます"
   tips-line5: "Możesz wysłać pliki przeciągając i upuszczając je w Dysku."
   tips-line6: "Możesz przenieść katalog przeciągając go w Dysku."
-  tips-line7: "ドライブでフォルダをドラッグしてフォルダ移動できます"
+  tips-line7: "Możesz przenieść katalog przeciągając go w Dysku."
   tips-line8: "Strona główna może zostać dostosowana w ustawieniach."
   tips-line9: "Misskey jest dostępny na licencji AGPLv3."
   tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
@@ -534,6 +537,8 @@ desktop/views/components/notes.note.vue:
   detail: "Pokaż szczegóły"
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
+  hide: "Zwiń"
+  see-more: "Więcej"
 desktop/views/components/notes.vue:
   error: "Ładowanie nie powiodło się."
   retry: "Spróbuj ponownie"
@@ -569,6 +574,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
   error: "Bład"
   enter-username: "Wprowadź nazwę użytkownika…"
+  annotations: "Treść ostrzeżenia (opcjonalnie)"
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
   reply: "Odpowiedz"
@@ -730,6 +736,7 @@ desktop/views/components/timeline.vue:
   list: "Listy"
 desktop/views/components/ui.header.vue:
   welcome-back: "Witaj ponownie,"
+  adjective: "さん"
 desktop/views/components/ui.header.account.vue:
   profile: "Twój profil"
   drive: "Dysk"
@@ -758,7 +765,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "Listy"
   create-list: "Utwórz listę"
-  list-name: "リスト名"
+  list-name: "Nazwa listy"
 desktop/views/components/user-preview.vue:
   notes: "Wpisy"
   following: "Śledzeni"
@@ -841,8 +848,8 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Wycisz"
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
-  push-to-a-list: "リストに追加"
-  list-pushed: "{user}を{list}に追加しました。"
+  push-to-a-list: "Dodaj do listy"
+  list-pushed: "Dodałeś(-aś) {user} do {list}."
 desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
@@ -970,6 +977,7 @@ mobile/views/components/timeline.vue:
   load-more: "Więcej"
 mobile/views/components/ui.header.vue:
   welcome-back: "Witaj ponownie, "
+  adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "Oś czasu"
   notifications: "Powiadomienia"
@@ -1018,6 +1026,8 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "Kokpit"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  add-widget: "Dodaj"
+  customization-tips: "カスタマイズのヒント"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktywność"
 mobile/views/pages/share.vue:
@@ -1056,6 +1066,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Szukaj"
   empty: "Nie znaleziono wpisów zawierających '{}'"
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "Wybierz plik"
 mobile/views/pages/settings.vue:
@@ -1150,3 +1161,5 @@ docs:
       name: "Nazwa"
       type: "Rodzaj"
       description: "Opis"
+dev/views/index.vue:
+  manage-apps: "アプリの管理"

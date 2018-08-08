@@ -11,6 +11,7 @@ common:
     warning: "<strong>Misskey no tiene anuncios publicitarios.</strong> Sin embargo, algunas características podrían no estar disponibles si el bloqueador de publicidad está habilitado."
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
+  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
@@ -27,7 +28,6 @@ common:
     notified-by: "Notificado por {}:"
     reply-from: "Respuesta de {}:"
     quoted-by: "Citado por {}:"
-  name: "Misskey"
   time:
     unknown: "Desconocido"
     future: "Futuro"
@@ -39,6 +39,7 @@ common:
     weeks_ago: "Hace {} semana(s)"
     months_ago: "Hace {} mes(es)"
     years_ago: "Hace {} año(s)"
+  month-and-day: "{month}月 {day}日"
   trash: "Papelera"
   weekday-short:
     sunday: "domingo"
@@ -234,11 +235,13 @@ common/views/components/messaging-room.vue:
   no-history: "El historial se ha acabado"
   resize-form: "Arrastra para redimensionar"
   new-message: "Nuevo mensaje"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Escribe el mensaje aquí"
   send: "Enviar"
   attach-from-local: "Adjunta ficheros desde tu PC"
   attach-from-drive: "Adjunta ficheros desde tu disco"
+  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.message.vue:
   is-read: "Leer"
   deleted: "El mensaje se ha borrado"
@@ -534,6 +537,8 @@ desktop/views/components/notes.note.vue:
   detail: "Mostrar detalles"
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido borrada"
+  hide: "隠す"
+  see-more: "もっと見る"
 desktop/views/components/notes.vue:
   error: "Error al cargar."
   retry: "Reintentar"
@@ -569,6 +574,7 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "Tu dispositivo no tiene soporte de geolocalización."
   error: "Error"
   enter-username: "Por favor escribe un nombre de usuario..."
+  annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
   note: "Nota nueva"
   reply: "Responder"
@@ -730,6 +736,7 @@ desktop/views/components/timeline.vue:
   list: "リスト"
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
+  adjective: "さん"
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   drive: "ドライブ"
@@ -970,6 +977,7 @@ mobile/views/components/timeline.vue:
   load-more: "もっと"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
+  adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
@@ -1018,6 +1026,8 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  add-widget: "追加"
+  customization-tips: "カスタマイズのヒント"
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 mobile/views/pages/share.vue:
@@ -1056,6 +1066,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "検索"
   empty: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
 mobile/views/pages/settings.vue:
@@ -1150,3 +1161,5 @@ docs:
       name: "名前"
       type: "型"
       description: "説明"
+dev/views/index.vue:
+  manage-apps: "アプリの管理"
