@@ -290,7 +290,7 @@ common/views/components/signup.vue:
   unavailable: "Non disponible"
   error: "Erreur de réseau"
   invalid-format: "Utilisez seulement des lettres, nombres et/ou -."
-  too-short: "Veuillez taper au moins un charactère!"
+  too-short: "Veuillez saisir au moins un caractère !"
   too-long: "Veuillez entrer au maximum 20 charactères."
   password: "Mot de Passe"
   password-placeholder: "Nous recommendons au moins 8 charactères."
