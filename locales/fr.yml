@@ -343,13 +343,13 @@ common/views/widgets/calendar.vue:
   this-year: "Cette année :"
 common/views/widgets/donation.vue:
   title: "Dons"
-  text: "Toutes les depences pour couvrir les frais de Misskey sortent directement de notre poche. Nous ne recevons pas d'argent, si vous pouvez nous faire dons d'argent, on vous serait eternellement reconnaissant. Si vous êtes intéressés veuilles contacter {}. Merci pour votre contribution!"
+  text: "Les frais pour faire fonctionner Misskey sortent directement de notre poche. Nous ne recevons pas d'argent issu de la publicité, si vous pouvez nous faire des dons, on vous serait éternellement reconnaissants. Si vous êtes intéressé·es veuillez contacter {}. Merci pour votre contribution !"
 common/views/widgets/photo-stream.vue:
   title: "Flux de photo"
   no-photos: "Pas de photos"
 common/views/widgets/posts-monitor.vue:
   title: "Graph des publications"
-  toggle: "Basculer les vues"
+  toggle: "Basculer entre les vues"
 common/views/widgets/hashtags.vue:
   title: "Étiquettes"
   count: "{} utilisateurs mentionnés"
