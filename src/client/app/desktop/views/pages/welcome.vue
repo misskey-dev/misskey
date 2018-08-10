@@ -18,7 +18,7 @@
 				<div class="about">
 					<h1 v-if="name != 'Misskey'">{{ name }}</h1>
 					<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
-					<p class="powerd-by" v-if="name != 'Misskey'">%i18n:@powered-by-misskey%</p>
+					<p class="powerd-by" v-if="name != 'Misskey'" v-html="'%i18n:@powered-by-misskey%'"></p>
 					<p class="desc" v-html="description || '%i18n:common.about%'"></p>
 					<a ref="signup" @click="signup">📦 %i18n:@signup%</a>
 				</div>
