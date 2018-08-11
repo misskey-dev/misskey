@@ -1,6 +1,8 @@
 <template>
-	<router-link class="mk-avatar" :to="user | userPage" :title="user | acct" :target="target" :style="style" v-if="disablePreview"></router-link>
-	<router-link class="mk-avatar" :to="user | userPage" :title="user | acct" :target="target" :style="style" v-else v-user-preview="user.id"></router-link>
+	<span class="mk-avatar" :title="user | acct" :style="style" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick"></span>
+	<span class="mk-avatar" :title="user | acct" :style="style" v-else-if="disableLink && disablePreview" @click="onClick"></span>
+	<router-link class="mk-avatar" :to="user | userPage" :title="user | acct" :target="target" :style="style" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id"></router-link>
+	<router-link class="mk-avatar" :to="user | userPage" :title="user | acct" :target="target" :style="style" v-else-if="!disableLink && disablePreview"></router-link>
 </template>
 
 <script lang="ts">
@@ -14,6 +16,10 @@ export default Vue.extend({
 		target: {
 			required: false,
 			default: null
+		},
+		disableLink: {
+			required: false,
+			default: false
 		},
 		disablePreview: {
 			required: false,
@@ -34,6 +40,11 @@ export default Vue.extend({
 				backgroundImage: this.lightmode ? null : `url(${ this.user.avatarUrl })`,
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
+		}
+	},
+	methods: {
+		onClick(e) {
+			this.$emit('click', e);
 		}
 	}
 });

@@ -10,7 +10,7 @@ import DriveFileThumbnail, { deleteDriveFileThumbnail } from './drive-file-thumb
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
-DriveFile.createIndex('metadata.uri', { sparse: true, unique: true });
+DriveFile.createIndex(['metadata.uri', 'metadata.userId'], { sparse: true, unique: true });
 export default DriveFile;
 
 export const DriveFileChunk = monkDb.get('driveFiles.chunks');

@@ -294,16 +294,35 @@ export default async function(
 		metadata.uri = uri;
 	}
 
-	const driveFile = isLink
-		? await DriveFile.insert({
-			length: 0,
-			uploadDate: new Date(),
-			md5: hash,
-			filename: detectedName,
-			metadata: metadata,
-			contentType: mime
-		})
-		: await (save(fs.createReadStream(path), detectedName, mime, hash, size, metadata));
+	let driveFile: IDriveFile;
+
+	if (isLink) {
+		try {
+			driveFile = await DriveFile.insert({
+				length: 0,
+				uploadDate: new Date(),
+				md5: hash,
+				filename: detectedName,
+				metadata: metadata,
+				contentType: mime
+			});
+		} catch (e) {
+			// duplicate key error (when already registered)
+			if (e.code === 11000) {
+				log(`already registered ${metadata.uri}`);
+
+				driveFile = await DriveFile.findOne({
+					'metadata.uri': metadata.uri,
+					'metadata.userId': user._id
+				});
+			} else {
+				console.error(e);
+				throw e;
+			}
+		}
+	} else {
+		driveFile = await (save(fs.createReadStream(path), detectedName, mime, hash, size, metadata));
+	}
 
 	log(`drive file has been created ${driveFile._id}`);
 

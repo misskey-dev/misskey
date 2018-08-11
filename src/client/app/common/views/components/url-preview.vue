@@ -73,18 +73,19 @@ export default Vue.extend({
 				twttr.ready = loadTweet;
 				(window as any).twttr = twttr;
 			}
-		} else {
-			fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
-				res.json().then(info => {
+			return;
+		}
+		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
+			res.json().then(info => {
+				if (info.url != null) {
 					this.title = info.title;
 					this.description = info.description;
 					this.thumbnail = info.thumbnail;
-					this.player = info.player;
 					this.icon = info.icon;
 					this.sitename = info.sitename;
 
 					this.fetching = false;
-				});
+				}
 			});
 		}
 	}
