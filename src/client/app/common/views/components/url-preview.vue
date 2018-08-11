@@ -83,7 +83,7 @@ export default Vue.extend({
 					this.thumbnail = info.thumbnail;
 					this.icon = info.icon;
 					this.sitename = info.sitename;
-
+					this.player = info.player;
 					this.fetching = false;
 				}
 			});
