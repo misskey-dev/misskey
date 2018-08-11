@@ -39,7 +39,7 @@ common:
     weeks_ago: "{} tyg. temu"
     months_ago: "{} mies. temu"
     years_ago: "{} lat temu"
-  month-and-day: "{month}月 {day}日"
+  month-and-day: "{month}-{day}"
   trash: "Kosz"
   weekday-short:
     sunday: "N"
@@ -403,7 +403,7 @@ desktop:
   avatar: "アバター"
   uploading-avatar: "新しいアバターをアップロードしています"
   avatar-updated: "アバターを更新しました"
-  choose-avatar: "アバターにする画像を選択"
+  choose-avatar: "Wybierz awatar"
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -1163,4 +1163,4 @@ docs:
       type: "Rodzaj"
       description: "Opis"
 dev/views/index.vue:
-  manage-apps: "アプリの管理"
+  manage-apps: "Zarządzaj aplikacjami"
