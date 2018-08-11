@@ -188,6 +188,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		// 通知
 		if (isLocalUser(data.reply._user)) {
 			nm.push(data.reply.userId, 'reply');
+			publishUserStream(data.reply.userId, 'reply', noteObj);
 		}
 	}
 
@@ -209,7 +210,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		}
 
 		// Publish event
-		if (!user._id.equals(data.renote.userId)) {
+		if (!user._id.equals(data.renote.userId) && isLocalUser(data.renote._user)) {
 			publishUserStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
