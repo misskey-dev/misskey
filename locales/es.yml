@@ -66,6 +66,7 @@ common:
     congrats: "felicidades"
     angry: "enfadado"
     confused: "confundido"
+    rip: "RIP"
     pudding: "Chafado"
   note-placeholders:
     a: "¿Qué haces?"
