@@ -1067,7 +1067,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Chercher"
   empty: "Aucun message trouvé pour '{}' "
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "Aucun post pour {} n'a été trouvé."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
