@@ -843,7 +843,7 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "Pas de photos"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Vous suis"
-  stalk: "ストークする"
+  stalk: "Traquer"
   stalking: "ストーキングしています"
   unstalk: "ストーク解除"
   mute: "Mettre en sourdine"
@@ -893,11 +893,11 @@ mobile/views/components/drive.vue:
   load-more: "Charger plus"
   nothing-in-drive: "Rien"
   folder-is-empty: "Ce dossier est vide"
-  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  prompt: "Que veux-tu faire ? (Entrez un nombre): <1 → Télécharger le fichier | 2 → Télécharger le fichier avec l'URL | 3 → Créer le dossier | 4 → Modifier le nom du dossier | 5 → Déplacer ce dossier | 6 → Supprimer ce dossier >"
   deletion-alert: "Désolé ! La suppression d’un dossier n’est pas encore implémentée."
   folder-name: "Nom du dossier"
-  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
-  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  root-rename-alert: "L'emplacement actuel est la racine, pas le dossier, vous ne pouvez donc pas le renommer. Veuillez vous déplacer dans le dossier dont vous souhaitez modifier le nom."
+  root-move-alert: "L'emplacement actuel est la racine, ce n'est pas un dossier et il ne peut pas être déplacé. Veuillez vous déplacer dans le dossier que vous souhaitez déplacer."
   url-prompt: "URL du fichier que vous souhaitez téléverser"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
 mobile/views/components/drive-file-detail.vue:
@@ -1021,7 +1021,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Pas de message avec un hashtag {} trouvé."
 mobile/views/pages/welcome.vue:
   signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
