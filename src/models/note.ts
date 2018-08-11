@@ -340,7 +340,7 @@ export const pack = async (
 	_note = await rap(_note);
 
 	if (_note.user.isCat && _note.text) {
-		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ');
+		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');
 	}
 
 	if (hide) {
