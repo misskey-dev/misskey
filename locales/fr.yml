@@ -11,7 +11,7 @@ common:
     warning: "<strong>Misskey n'utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
   application-authorization: "Permissions de l'application"
   close: "Fermer"
-  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte peut être compromis."
   got-it: "J'ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
