@@ -104,13 +104,15 @@ export default Vue.extend({
 		}
 		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
 			res.json().then(info => {
-				this.title = info.title;
-				this.description = info.description;
-				this.thumbnail = info.thumbnail;
-				this.icon = info.icon;
-				this.sitename = info.sitename;
+				if (info.url != null) {
+					this.title = info.title;
+					this.description = info.description;
+					this.thumbnail = info.thumbnail;
+					this.icon = info.icon;
+					this.sitename = info.sitename;
 
-				this.fetching = false;
+					this.fetching = false;
+				}
 			});
 		});
 	}

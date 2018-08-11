@@ -14,7 +14,9 @@ module.exports = async (ctx: Koa.Context) => {
 
 		ctx.body = summary;
 	} catch (e) {
-		ctx.status = 500;
+		ctx.status = 200;
+		ctx.set('Cache-Control', 'max-age=86400, immutable');
+		ctx.body = '{}';
 	}
 };
 
