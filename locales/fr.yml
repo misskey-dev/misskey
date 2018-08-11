@@ -818,7 +818,7 @@ desktop/views/pages/search.vue:
 desktop/views/pages/share.vue:
   share-with: "Partager avec {}"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Pas de message avec un hashtag {} trouvé."
 desktop/views/pages/user-list.users.vue:
   users: "Utilisateurs"
   add-user: "Ajouter un utilisateur"
