@@ -3,9 +3,7 @@ import config from '../config';
 const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
 const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
 
-const uri = u && p
-	? `mongodb://${u}:${p}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`
-	: `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
+const uri = `mongodb://${u && p ? `${u}:${p}@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
 
 /**
  * monk
