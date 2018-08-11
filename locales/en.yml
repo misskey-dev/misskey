@@ -66,6 +66,7 @@ common:
     congrats: "Congrats!"
     angry: "Angry"
     confused: "Confused"
+    rip: "RIP"
     pudding: "Pudding"
   note-placeholders:
     a: "What are you doing?"
