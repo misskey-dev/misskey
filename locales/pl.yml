@@ -66,6 +66,7 @@ common:
     congrats: "Gratuluję!"
     angry: "Wściekły"
     confused: "Zmieszany"
+    rip: "RIP"
     pudding: "Pudding"
   note-placeholders:
     a: "Co robisz?"
