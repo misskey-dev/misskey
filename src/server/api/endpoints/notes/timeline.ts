@@ -8,7 +8,8 @@ import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		ja: 'タイムラインを取得します。'
+		ja: 'タイムラインを取得します。',
+		en: 'Get timeline of myself.'
 	},
 
 	requireCredential: true,
@@ -67,9 +68,6 @@ export const meta = {
 	}
 };
 
-/**
- * Get timeline of myself
- */
 export default async (params: any, user: ILocalUser) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) throw psErr;
