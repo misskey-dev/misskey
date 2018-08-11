@@ -95,7 +95,8 @@ const consts = {
 	_URL_: config.url,
 	_LICENSE_: licenseHtml,
 	_GOOGLE_MAPS_API_KEY_: config.google_maps_api_key,
-	_WELCOME_BG_URL_: config.welcome_bg_url
+	_WELCOME_BG_URL_: config.welcome_bg_url,
+	_TWITTER_INTEGRATION_: config.twitter != null
 };
 
 const _consts: { [ key: string ]: any } = {};

@@ -22,6 +22,7 @@ declare const _CODENAME_: string;
 declare const _LICENSE_: string;
 declare const _GOOGLE_MAPS_API_KEY_: string;
 declare const _WELCOME_BG_URL_: string;
+declare const _TWITTER_INTEGRATION_: boolean;
 
 export const host = _HOST_;
 export const hostname = _HOSTNAME_;
@@ -47,3 +48,4 @@ export const codename = _CODENAME_;
 export const license = _LICENSE_;
 export const googleMapsApiKey = _GOOGLE_MAPS_API_KEY_;
 export const welcomeBgUrl = _WELCOME_BG_URL_;
+export const twitterIntegration = _TWITTER_INTEGRATION_;
