@@ -66,6 +66,7 @@ common:
     congrats: "받으세요"
     angry: "화냈어"
     confused: "곤란하고 있어"
+    rip: "RIP"
     pudding: "Pudding"
   note-placeholders:
     a: "지금 어떻게하고있어?"
