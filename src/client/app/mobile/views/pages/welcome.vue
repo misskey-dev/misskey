@@ -1,10 +1,10 @@
 <template>
 <div class="welcome">
 	<div>
-		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="%i18n:common.name%">
+		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name">
 		<p class="host">{{ host }}</p>
 		<div class="about">
-			<h2>{{ name || 'unidentified' }}</h2>
+			<h2>{{ name }}</h2>
 			<p v-html="description || '%i18n:common.about%'"></p>
 			<router-link class="signup" to="/signup">%i18n:@signup%</router-link>
 		</div>

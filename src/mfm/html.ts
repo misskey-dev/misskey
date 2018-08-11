@@ -1,5 +1,6 @@
 const { lib: emojilib } = require('emojilib');
-import { JSDOM } from 'jsdom';
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 import config from '../config';
 import { INote } from '../models/note';
 import { TextElement } from './parse';
@@ -8,6 +9,18 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 	bold({ document }, { bold }) {
 		const b = document.createElement('b');
 		b.textContent = bold;
+		document.body.appendChild(b);
+	},
+
+	big({ document }, { big }) {
+		const b = document.createElement('strong');
+		b.textContent = big;
+		document.body.appendChild(b);
+	},
+
+	motion({ document }, { big }) {
+		const b = document.createElement('strong');
+		b.textContent = big;
 		document.body.appendChild(b);
 	},
 

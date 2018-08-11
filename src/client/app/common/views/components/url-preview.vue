@@ -2,6 +2,12 @@
 <iframe v-if="youtubeId" type="text/html" height="250"
 	:src="`https://www.youtube.com/embed/${youtubeId}?origin=${misskeyUrl}`"
 	frameborder="0"/>
+<iframe v-else-if="spotifyId"
+	:src="`https://open.spotify.com/embed/track/${spotifyId}`"
+	frameborder="0" allowtransparency="true" allow="encrypted-media" />
+<iframe v-else-if="nicovideoId"
+	:src="`https://embed.nicovideo.jp/watch/${nicovideoId}?oldScript=1&referer=${misskeyUrl}&from=${position || '0'}&allowProgrammaticFullScreen=1`"
+	frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 <div v-else-if="tweetUrl && detail" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
 		<a :href="url"></a>
@@ -49,6 +55,9 @@ export default Vue.extend({
 			icon: null,
 			sitename: null,
 			youtubeId: null,
+			spotifyId: null,
+			nicovideoId: null,
+			position: null,
 			tweetUrl: null,
 			misskeyUrl
 		};
@@ -58,8 +67,20 @@ export default Vue.extend({
 
 		if (url.hostname == 'www.youtube.com') {
 			this.youtubeId = url.searchParams.get('v');
+			return;
 		} else if (url.hostname == 'youtu.be') {
 			this.youtubeId = url.pathname;
+			return;
+		} else if (url.hostname == 'open.spotify.com') {
+			this.spotifyId = url.pathname.split('/').reverse().filter(x => x !== '')[0];
+			return;
+		} else if (['nicovideo.jp', 'www.nicovideo.jp', 'nico.ms'].includes(url.hostname)) {
+			const id = url.pathname.split('/').reverse().filter(x => x !== '')[0];
+			if (['sm', 'nm', 'ax', 'ca', 'cd', 'cw', 'fx', 'ig', 'na', 'om', 'sd', 'sk', 'yk', 'yo', 'za', 'zb', 'zc', 'zd', 'ze', 'nl', 'so', ...Array(10).keys()].some(x => id.startsWith(x)) {
+				this.nicovideoId = id;
+				this.position = url.searchParams.get('from');
+				return;
+			}
 		} else if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
 			this.tweetUrl = url;
 			const twttr = (window as any).twttr || {};
@@ -79,19 +100,19 @@ export default Vue.extend({
 				twttr.ready = loadTweet;
 				(window as any).twttr = twttr;
 			}
-		} else {
-			fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
-				res.json().then(info => {
-					this.title = info.title;
-					this.description = info.description;
-					this.thumbnail = info.thumbnail;
-					this.icon = info.icon;
-					this.sitename = info.sitename;
-
-					this.fetching = false;
-				});
-			});
+			return;
 		}
+		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
+			res.json().then(info => {
+				this.title = info.title;
+				this.description = info.description;
+				this.thumbnail = info.thumbnail;
+				this.icon = info.icon;
+				this.sitename = info.sitename;
+
+				this.fetching = false;
+			});
+		});
 	}
 });
 </script>

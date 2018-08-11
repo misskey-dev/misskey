@@ -1,7 +1,7 @@
 <template>
 <div>
 	<x-room v-if="!g.isStarted" :game="g" :connection="connection"/>
-	<x-game v-else :init-game="g" :connection="connection"/>
+	<x-game v-else :init-game="g" :connection="connection" :self-nav="selfNav" @go-index="goIndex"/>
 </div>
 </template>
 
@@ -16,7 +16,16 @@ export default Vue.extend({
 		XGame,
 		XRoom
 	},
-	props: ['game'],
+	props: {
+		game: {
+			type: Object,
+			required: true
+		},
+		selfNav: {
+			type: Boolean,
+			require: true
+		}
+	},
 	data() {
 		return {
 			connection: null,
@@ -36,6 +45,9 @@ export default Vue.extend({
 		onStarted(game) {
 			Object.assign(this.g, game);
 			this.$forceUpdate();
+		},
+		goIndex() {
+			this.$emit('go-index');
 		}
 	}
 });

@@ -1,6 +1,6 @@
 <template>
 <component :is="ui ? 'mk-ui' : 'div'">
-	<mk-reversi :game-id="$route.params.game" @nav="nav"/>
+	<mk-reversi :game-id="$route.params.game" @nav="nav" :self-nav="false"/>
 </component>
 </template>
 
@@ -14,9 +14,14 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		nav(game) {
-			history.pushState(null, null, '/reversi/' + game.id);
-		},
+		nav(game, actualNav) {
+			if (actualNav) {
+				this.$router.push('/reversi/' + game.id);
+			} else {
+				// TODO: https://github.com/vuejs/vue-router/issues/703
+				this.$router.push('/reversi/' + game.id);
+			}
+		}
 	}
 });
 </script>

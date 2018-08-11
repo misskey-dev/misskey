@@ -21,6 +21,7 @@ import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import parseAcct from '../../../../../misc/acct/parse';
 import getUserName from '../../../../../misc/get-user-name';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -49,7 +50,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = '%i18n:@followers-of%'.replace('{}', this.name) + ' | %i18n:common.name%';
+				document.title = '%i18n:@followers-of%'.replace('{}', this.name) + ' | ' + config.name;
 			});
 		},
 		onLoaded() {

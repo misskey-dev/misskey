@@ -61,7 +61,7 @@ export default Vue.extend({
 				const date = new Date(message.createdAt).getDate();
 				const month = new Date(message.createdAt).getMonth() + 1;
 				message._date = date;
-				message._datetext = `${month}月 ${date}日`;
+				message._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
 				return message;
 			});
 		},
@@ -111,7 +111,7 @@ export default Vue.extend({
 				this.form.upload(e.dataTransfer.files[0]);
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
-				alert('メッセージに添付できるのはひとつのファイルのみです');
+				alert('%i18n:@only-one-file-attached%');
 				return;
 			}
 

@@ -38,7 +38,7 @@ export default function(type, data): Notification {
 			switch (data.type) {
 				case 'mention':
 					return {
-						title: '%i18n:common.notification.notified-by%'.split("{}")[0] + `${getUserName(data.user)}さんから:` + '%i18n:common.notification.notified-by%'.split("{}")[1],
+						title: '%i18n:common.notification.notified-by%'.split("{}")[0] + `${getUserName(data.user)}:` + '%i18n:common.notification.notified-by%'.split("{}")[1],
 						body: getNoteSummary(data),
 						icon: data.user.avatarUrl
 					};

@@ -18,7 +18,7 @@
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
-					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '隠す' : 'もっと見る' }}</span>
+					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '%i18n:@hide%' : '%i18n:@see-more%' }}</span>
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
@@ -71,7 +71,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import dateStringify from '../../../common/scripts/date-stringify';
 import parse from '../../../../../mfm/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
@@ -128,7 +127,7 @@ export default Vue.extend({
 		},
 
 		title(): string {
-			return dateStringify(this.p.createdAt);
+			return new Date(this.p.createdAt).toLocaleString();
 		},
 
 		urls(): string[] {

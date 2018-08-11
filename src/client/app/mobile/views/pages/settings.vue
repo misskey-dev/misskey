@@ -14,6 +14,7 @@
 				<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
 				<ui-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 				<ui-switch v-model="$store.state.settings.reversiBoardLabels" @change="onChangeReversiBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
+				<ui-switch v-model="$store.state.settings.disableAnimatedMfm" @change="onChangeDisableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 
 				<div>
 					<div>%i18n:@timeline%</div>
@@ -142,7 +143,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = '%i18n:common.name% | %i18n:@settings%';
+		document.title = '%i18n:@settings%';
 	},
 
 	methods: {
@@ -188,6 +189,13 @@ export default Vue.extend({
 		onChangeReversiBoardLabels(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'reversiBoardLabels',
+				value: v
+			});
+		},
+
+		onChangeDisableAnimatedMfm(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'disableAnimatedMfm',
 				value: v
 			});
 		},

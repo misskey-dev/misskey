@@ -25,6 +25,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -43,7 +44,7 @@ export default Vue.extend({
 		window.addEventListener('popstate', this.onPopState);
 	},
 	mounted() {
-		document.title = '%i18n:common.name% Drive';
+		document.title = `${config.name} Drive`;
 		document.documentElement.style.background = '#fff';
 	},
 	beforeDestroy() {
@@ -63,7 +64,7 @@ export default Vue.extend({
 			(this.$refs as any).browser.openContextMenu();
 		},
 		onMoveRoot(silent) {
-			const title = '%i18n:common.name% Drive';
+			const title = `${config.name} Drive`;
 
 			if (!silent) {
 				// Rewrite URL
@@ -76,7 +77,7 @@ export default Vue.extend({
 			this.folder = null;
 		},
 		onOpenFolder(folder, silent) {
-			const title = folder.name + ' | %i18n:common.name% Drive';
+			const title = `${folder.name} | ${config.name} Drive`;
 
 			if (!silent) {
 				// Rewrite URL
@@ -89,7 +90,7 @@ export default Vue.extend({
 			this.folder = folder;
 		},
 		onOpenFile(file, silent) {
-			const title = file.name + ' | %i18n:common.name% Drive';
+			const title = `${file.name} | ${config.name} Drive`;
 
 			if (!silent) {
 				// Rewrite URL

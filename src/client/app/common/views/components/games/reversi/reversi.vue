@@ -1,13 +1,16 @@
 <template>
 <div class="vchtoekanapleubgzioubdtmlkribzfd">
 	<div v-if="game">
-		<x-gameroom :game="game"/>
+		<x-gameroom :game="game" :self-nav="selfNav" @go-index="goIndex"/>
 	</div>
 	<div class="matching" v-else-if="matching">
 		<h1>{{ '%i18n:@matching.waiting-for%'.split('{}')[0] }}<b>{{ matching | userName }}</b>{{ '%i18n:@matching.waiting-for%'.split('{}')[1] }}<mk-ellipsis/></h1>
 		<div class="cancel">
 			<form-button round @click="cancel">%i18n:@matching.cancel%</form-button>
 		</div>
+	</div>
+	<div v-else-if="gameId">
+		...
 	</div>
 	<div class="index" v-else>
 		<x-index @go="nav" @matching="onMatching"/>
@@ -31,6 +34,11 @@ export default Vue.extend({
 		gameId: {
 			type: String,
 			required: false
+		},
+		selfNav: {
+			type: Boolean,
+			require: false,
+			default: true
 		}
 	},
 
@@ -45,22 +53,18 @@ export default Vue.extend({
 	},
 
 	watch: {
-		gameId(id) {
-			if (id == null) {
-				this.game = null;
-			} else {
-				Progress.start();
-				(this as any).api('games/reversi/games/show', {
-					gameId: id
-				}).then(game => {
-					this.nav(game, true);
-					Progress.done();
-				});
-			}
+		game() {
+			this.$emit('gamed', this.game);
+		},
+
+		gameId() {
+			this.fetch();
 		}
 	},
 
 	mounted() {
+		this.fetch();
+
 		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.streams.reversiStream.getConnection();
 			this.connectionId = (this as any).os.streams.reversiStream.use();
@@ -88,12 +92,32 @@ export default Vue.extend({
 	},
 
 	methods: {
-		nav(game, silent) {
-			this.matching = null;
-			this.game = game;
+		fetch() {
+			if (this.gameId == null) {
+				this.game = null;
+			} else {
+				Progress.start();
+				(this as any).api('games/reversi/games/show', {
+					gameId: this.gameId
+				}).then(game => {
+					this.game = game;
+					Progress.done();
+				});
+			}
+		},
 
-			if (!silent) {
-				this.$emit('nav', this.game);
+		async nav(game, actualNav = true) {
+			if (this.selfNav) {
+				// 受け取ったゲーム情報が省略されたものなら完全な情報を取得する
+				if (game != null && (game.settings == null || game.settings.map == null)) {
+					game = await (this as any).api('games/reversi/games/show', {
+						gameId: game.id
+					});
+				}
+
+				this.game = game;
+			} else {
+				this.$emit('nav', game, actualNav);
 			}
 		},
 
@@ -112,7 +136,8 @@ export default Vue.extend({
 			}).then(game => {
 				if (game) {
 					this.matching = null;
-					this.game = game;
+
+					this.nav(game);
 				}
 			});
 		},
@@ -120,6 +145,11 @@ export default Vue.extend({
 		onMatched(game) {
 			this.matching = null;
 			this.game = game;
+			this.nav(game, false);
+		},
+
+		goIndex() {
+			this.nav(null);
 		}
 	}
 });

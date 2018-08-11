@@ -24,8 +24,8 @@
 					<option value="nav">%i18n:common.widgets.nav%</option>
 					<option value="tips">%i18n:common.widgets.tips%</option>
 				</select>
-				<button @click="addWidget">追加</button>
-				<p><a @click="hint">カスタマイズのヒント</a></p>
+				<button @click="addWidget">%i18n:add-widget%</button>
+				<p><a @click="hint">%i18n:customization-tips%</a></p>
 			</header>
 			<x-draggable
 				:list="widgets"
@@ -53,6 +53,7 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -102,7 +103,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = '%i18n:common.name%';
+		document.title = config.name;
 	},
 
 	methods: {

@@ -67,6 +67,7 @@ import * as age from 's-age';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
 import XHome from './user/home.vue';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -106,7 +107,7 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
-				document.title = Vue.filter('userName')(this.user) + ' | %i18n:common.name%';
+				document.title = Vue.filter('userName')(this.user) + ' | ' + config.name;
 			});
 		}
 	}
