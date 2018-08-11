@@ -70,6 +70,7 @@ common:
     congrats: "おめでとう"
     angry: "おこ"
     confused: "こまこまのこまり"
+    rip: "RIP"
     pudding: "Pudding"
 
   note-placeholders:

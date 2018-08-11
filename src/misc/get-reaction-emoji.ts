@@ -8,6 +8,7 @@ export default function(reaction: string): string {
 		case 'congrats': return '🎉';
 		case 'angry': return '💢';
 		case 'confused': return '😥';
+		case 'rip': return '😇';
 		case 'pudding': return '🍮';
 		default: return '';
 	}

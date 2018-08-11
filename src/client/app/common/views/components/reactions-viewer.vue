@@ -9,6 +9,7 @@
 		<span v-if="reactions.congrats"><mk-reaction-icon reaction="congrats"/><span>{{ reactions.congrats }}</span></span>
 		<span v-if="reactions.angry"><mk-reaction-icon reaction="angry"/><span>{{ reactions.angry }}</span></span>
 		<span v-if="reactions.confused"><mk-reaction-icon reaction="confused"/><span>{{ reactions.confused }}</span></span>
+		<span v-if="reactions.rip"><mk-reaction-icon reaction="rip"/><span>{{ reactions.rip }}</span></span>
 		<span v-if="reactions.pudding"><mk-reaction-icon reaction="pudding"/><span>{{ reactions.pudding }}</span></span>
 	</template>
 </div>
