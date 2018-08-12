@@ -40,7 +40,7 @@ export default Vue.extend({
 		},
 		cat(): boolean {
 			return this.user.isCat && this.$store.state.settings.circleIcons;
-		}
+		},
 		style(): any {
 			return {
 				backgroundColor: this.lightmode
