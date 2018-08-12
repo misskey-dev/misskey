@@ -93,4 +93,5 @@ export default Vue.extend({
 		right 0
 		top 0
 		transition border-radius 1s ease
+		z-index 1
 </style>
