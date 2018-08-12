@@ -182,6 +182,9 @@ common/views/components/games/reversi/reversi.vue:
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "投了"
   surrendered: "投了により"
+  is-llotheo: "石の少ない方が勝ち(ロセオ)"
+  looped-map: "ループマップ"
+  can-put-everywhere: "どこでも置けるモード"
 
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
