@@ -155,6 +155,10 @@ root(isDark)
 				max-width 1300px
 				margin 0 auto
 
+				> *
+					position absolute
+					height 48px
+
 				> .center
 					margin auto
 
@@ -169,11 +173,13 @@ root(isDark)
 						opacity 0.3
 						cursor pointer
 
-				> .left
-					height 48px
+				> .left,
+				> .center
+					left 0
 
-				> .right
-					height 48px
+				> .right,
+				> .center
+					right 0
 
 					> *
 						display inline-block
