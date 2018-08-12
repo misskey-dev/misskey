@@ -11,7 +11,7 @@ common:
     warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
   application-authorization: "Application authorizations."
   close: "Close"
-  do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -239,13 +239,13 @@ common/views/components/messaging-room.vue:
   no-history: "There is no further history"
   resize-form: "Drag to resize"
   new-message: "New message"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "Only one file can be attached to a message."
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
   attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "Only one file can be attached to a message."
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
   deleted: "This message has been deleted"
@@ -740,7 +740,7 @@ desktop/views/components/timeline.vue:
   list: "Lists"
 desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
-  adjective: "さん"
+  adjective: "Ms."
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Media storage"
@@ -981,7 +981,7 @@ mobile/views/components/timeline.vue:
   load-more: "More"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
-  adjective: "さん"
+  adjective: "Ms."
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
@@ -1070,7 +1070,7 @@ mobile/views/pages/settings/settings.profile.vue:
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "No posts were found for \"{}\"."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:
