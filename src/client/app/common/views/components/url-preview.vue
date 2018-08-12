@@ -1,5 +1,5 @@
 <template>
-<iframe v-if="player" :src="player" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
+<iframe v-if="player" :src="player" heigth="250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 <div v-else-if="tweetUrl && detail" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
 		<a :href="url"></a>
