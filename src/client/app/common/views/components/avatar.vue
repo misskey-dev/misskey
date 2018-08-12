@@ -66,8 +66,8 @@ export default Vue.extend({
 	display inline-block
 	vertical-align bottom
 
-	&::before,
-	&::after
+	&.cat::before,
+	&.cat::after
 		background #df548f
 		border solid 4px #ffffff
 		box-sizing border-box
@@ -76,11 +76,11 @@ export default Vue.extend({
 		height 50%
 		width 50%
 
-	&::before
+	&.cat::before
 		border-radius 0 75% 75%
 		transform rotate(37.5deg) skew(30deg)
 
-	&::after
+	&.cat::after
 		border-radius 75% 0 75% 75%
 		transform rotate(-37.5deg) skew(-30deg)
 
