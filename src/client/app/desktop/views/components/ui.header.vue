@@ -159,10 +159,8 @@ root(isDark)
 					position absolute
 					height 48px
 
-				> .center
-					margin auto
-
 					> .icon
+						margin auto
 						display block
 						width 48px
 						height 48px
