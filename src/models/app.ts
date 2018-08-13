@@ -13,7 +13,7 @@ export default App;
 export type IApp = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
-	userId: mongo.ObjectID;
+	userId: mongo.ObjectID | null;
 	secret: string;
 	name: string;
 	nameId: string;

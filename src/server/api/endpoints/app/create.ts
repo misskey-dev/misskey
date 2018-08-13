@@ -4,7 +4,7 @@ import App, { isValidNameId, pack } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
-	requireCredential: true
+	requireCredential: false
 };
 
 /**
@@ -38,7 +38,7 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	// Create account
 	const app = await App.insert({
 		createdAt: new Date(),
-		userId: user._id,
+		userId: user && user._id,
 		name: name,
 		nameId: nameId,
 		nameIdLower: nameId.toLowerCase(),
