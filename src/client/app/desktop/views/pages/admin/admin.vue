@@ -30,6 +30,16 @@ export default Vue.extend({
 	components: {
 		XDashboard,
 		XSuspendUser
+	},
+	data() {
+		return {
+			page: 'dashboard'
+		};
+	},
+	methods: {
+		nav(page: string) {
+			this.page = page;
+		}
 	}
 });
 </script>

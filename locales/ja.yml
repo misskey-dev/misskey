@@ -903,7 +903,7 @@ desktop/views/pages/admin/admin.vue:
   users: "ユーザー"
   update: "更新"
 
-desktop/views/paages/admin/admin.dashboard.vue:
+desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
