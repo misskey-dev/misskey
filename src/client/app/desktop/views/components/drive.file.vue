@@ -99,7 +99,7 @@ export default Vue.extend({
 					text: '%i18n:@contextmenu.set-as-banner%',
 					action: this.setAsBanner
 				}]
-			}, {
+			}, /*{
 				type: 'nest',
 				text: '%i18n:@contextmenu.open-in-app%',
 				menu: [{
@@ -107,11 +107,11 @@ export default Vue.extend({
 					text: '%i18n:@contextmenu.add-app%...',
 					action: this.addApp
 				}]
-			}], {
-				closed: () => {
-					this.isContextmenuShowing = false;
-				}
-			});
+			}*/], {
+					closed: () => {
+						this.isContextmenuShowing = false;
+					}
+				});
 		},
 
 		onDragstart(e) {
