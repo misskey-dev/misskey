@@ -169,6 +169,9 @@ common/views/components/games/reversi/reversi.vue:
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Se rendre"
   surrendered: "Par abandon"
+  is-llotheo: "石の少ない方が勝ち(ロセオ)"
+  looped-map: "Carte en boucle"
+  can-put-everywhere: "どこでも置けるモード"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "Jouer à Reversi avec vos amis·es !"
@@ -977,7 +980,7 @@ mobile/views/components/timeline.vue:
   empty: "Pas de notes"
   load-more: "Afficher plus"
 mobile/views/components/ui.header.vue:
-  welcome-back: "Bon retour parmi nous !"
+  welcome-back: "Content de vous revoir ! "
   adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "Fil d'actualité"
