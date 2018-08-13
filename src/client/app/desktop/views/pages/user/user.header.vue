@@ -176,6 +176,10 @@ root(isDark)
 		height 120px
 		box-shadow 1px 1px 3px rgba(#000, 0.2)
 
+		> &.cat::before,
+		> &.cat::after
+			border-width 8px
+
 	> .body
 		padding 16px 16px 16px 154px
 		color isDark ? #c5ced6 : #555
