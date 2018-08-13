@@ -64,7 +64,7 @@ drive:
   # config:
   #   endPoint:
   #   port:
-  #   secure:
+  #   useSSL:
   #   accessKey:
   #   secretKey:
 
@@ -75,7 +75,7 @@ drive:
   # config:
   #   endPoint: s3-us-west-2.amazonaws.com
   #   region: us-west-2
-  #   secure: true
+  #   useSSL: true
   #   accessKey: XXX
   #   secretKey: YYY
 
@@ -87,7 +87,7 @@ drive:
   # config:
   #   endPoint: s3-us-west-2.amazonaws.com
   #   region: us-west-2
-  #   secure: true
+  #   useSSL: true
   #   accessKey: XXX
   #   secretKey: YYY
 
