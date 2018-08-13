@@ -89,6 +89,48 @@ router.get('/users/:user/outbox', async ctx => {
 	ctx.body = pack(rendered);
 });
 
+// followers
+router.get('/users/:user/followers', async ctx => {
+	const userId = new mongo.ObjectID(ctx.params.user);
+
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
+
+	if (user === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	// TODO: Implement fetch and render
+
+	const rendered = renderOrderedCollection(`${config.url}/users/${userId}/followers`, 0, []);
+
+	ctx.body = pack(rendered);
+});
+
+// following
+router.get('/users/:user/following', async ctx => {
+	const userId = new mongo.ObjectID(ctx.params.user);
+
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
+
+	if (user === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	// TODO: Implement fetch and render
+
+	const rendered = renderOrderedCollection(`${config.url}/users/${userId}/following`, 0, []);
+
+	ctx.body = pack(rendered);
+});
+
 // publickey
 router.get('/users/:user/publickey', async ctx => {
 	const userId = new mongo.ObjectID(ctx.params.user);

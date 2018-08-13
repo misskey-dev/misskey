@@ -50,9 +50,21 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		? note.mentionedRemoteUsers.map(x => x.uri)
 		: [];
 
-	const cc = ['public', 'home', 'followers'].includes(note.visibility)
-		? [`${attributedTo}/followers`].concat(mentions)
-		: [];
+	let to: string[] = [];
+	let cc: string[] = [];
+
+	if (note.visibility == 'public') {
+		to = ['https://www.w3.org/ns/activitystreams#Public'];
+		cc = [`${attributedTo}/followers`].concat(mentions);
+	} else if (note.visibility == 'home') {
+		to = [`${attributedTo}/followers`];
+		cc = ['https://www.w3.org/ns/activitystreams#Public'].concat(mentions);
+	} else if (note.visibility == 'followers') {
+		to = [`${attributedTo}/followers`];
+		cc = mentions;
+	} else {
+		to = mentions;
+	}
 
 	const mentionedUsers = note.mentions ? await User.find({
 		_id: {
@@ -74,7 +86,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		summary: note.cw,
 		content: toHtml(note),
 		published: note.createdAt.toISOString(),
-		to: 'https://www.w3.org/ns/activitystreams#Public',
+		to,
 		cc,
 		inReplyTo,
 		attachment: (await promisedFiles).map(renderDocument),
