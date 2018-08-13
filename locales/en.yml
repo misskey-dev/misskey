@@ -796,9 +796,9 @@ desktop/views/pages/admin/admin.dashboard.vue:
   all-notes: "全てのノート"
   original-notes: "このインスタンスのノート"
 desktop/views/pages/admin/admin.suspend-user.vue:
-  suspend-user: "ユーザーの凍結"
-  suspend: "凍結"
-  suspended: "凍結しました"
+  suspend-user: "Suspend a user"
+  suspend: "Suspend"
+  suspended: "Suspended"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
