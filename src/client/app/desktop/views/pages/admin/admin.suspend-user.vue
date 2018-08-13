@@ -11,29 +11,29 @@ import Vue from "vue";
 import parseAcct from "../../../../../../misc/acct/parse";
 
 export default Vue.extend({
-  data() {
-    return {
-      username: null,
-      suspending: false
-    };
-  },
-  methods: {
-    async suspendUser() {
-      this.suspending = true;
+	data() {
+		return {
+			username: null,
+			suspending: false
+		};
+	},
+	methods: {
+		async suspendUser() {
+			this.suspending = true;
 
-      const user = await (this as any).os.api(
-        "users/show",
-        parseAcct(this.username)
-      );
+			const user = await (this as any).os.api(
+				"users/show",
+				parseAcct(this.username)
+			);
 
-      await (this as any).os.api("admin/suspend-user", {
-        userId: user.id
-      });
+			await (this as any).os.api("admin/suspend-user", {
+				userId: user.id
+			});
 
-      this.suspending = false;
+			this.suspending = false;
 
-      (this as any).os.apis.dialog("%i18n:@suspended%");
-    }
-  }
+			(this as any).os.apis.dialog({ text: "%i18n:@suspended%" });
+		}
+	}
 });
 </script>
