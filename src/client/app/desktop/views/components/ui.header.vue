@@ -159,6 +159,9 @@ root(isDark)
 					position absolute
 					height 48px
 
+				> .center
+					right 0
+
 					> .icon
 						margin auto
 						display block
@@ -175,8 +178,7 @@ root(isDark)
 				> .center
 					left 0
 
-				> .right,
-				> .center
+				> .right
 					right 0
 
 					> *
