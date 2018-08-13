@@ -784,6 +784,21 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Close"
+desktop/views/pages/admin/admin.vue:
+  dashboard: "ダッシュボード"
+  drive: "ドライブ"
+  users: "ユーザー"
+  update: "更新"
+desktop/views/pages/admin/admin.dashboard.vue:
+  dashboard: "ダッシュボード"
+  all-users: "全てのユーザー"
+  original-users: "このインスタンスのユーザー"
+  all-notes: "全てのノート"
+  original-notes: "このインスタンスのノート"
+desktop/views/pages/admin/admin.suspend-user.vue:
+  suspend-user: "ユーザーの凍結"
+  suspend: "凍結"
+  suspended: "凍結しました"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
