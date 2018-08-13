@@ -95,6 +95,8 @@ type Option = {
 };
 
 export default async (user: IUser, data: Option, silent = false) => new Promise<INote>(async (res, rej) => {
+	const isFirstNote = user.notesCount === 0;
+
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
@@ -163,6 +165,10 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// Pack the note
 	const noteObj = await pack(note);
+
+	if (isFirstNote) {
+		noteObj.isFirstNote = true;
+	}
 
 	const nm = new NotificationManager(user, note);
 	const nmRelatedPromises = [];
