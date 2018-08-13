@@ -1,14 +1,14 @@
 <template>
-	<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
+	<span class="mk-avatar" :class="{ cat, white }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
 		<span class="inner" :style="style"></span>
 	</span>
-	<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
+	<span class="mk-avatar" :class="{ cat, white }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
 		<span class="inner" :style="style"></span>
 	</span>
-	<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
+	<router-link class="mk-avatar" :class="{ cat, white }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
 		<span class="inner" :style="style"></span>
 	</router-link>
-	<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
+	<router-link class="mk-avatar" :class="{ cat, white }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
 		<span class="inner" :style="style"></span>
 	</router-link>
 </template>
@@ -41,6 +41,9 @@ export default Vue.extend({
 		cat(): boolean {
 			return this.user.isCat && this.$store.state.settings.circleIcons;
 		},
+		white():boolean {
+			return this.$store.state.device.darkmode;
+		},
 		style(): any {
 			return {
 				backgroundColor: this.lightmode
@@ -69,13 +72,16 @@ export default Vue.extend({
 	&.cat::before,
 	&.cat::after
 		background #df548f
-		border solid 4px #ffffff
+		border solid 4px #202224
 		box-sizing border-box
 		content ''
 		display inline-block
 		height 50%
 		width 50%
 
+		&.white
+			border-color #e0eefd
+ 
 	&.cat::before
 		border-radius 0 75% 75%
 		transform rotate(37.5deg) skew(30deg)
