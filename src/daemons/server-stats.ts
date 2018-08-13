@@ -2,6 +2,7 @@ import * as os from 'os';
 import * as sysUtils from 'systeminformation';
 import * as diskusage from 'diskusage';
 import Xev from 'xev';
+import Queue from '../misc/queue';
 const osUtils = require('os-utils');
 
 const ev = new Xev();
@@ -12,10 +13,10 @@ const interval = 1000;
  * Report server stats regularly
  */
 export default function() {
-	const log: any[] = [];
+	const log = new Queue<any>();
 
 	ev.on('requestServerStatsLog', id => {
-		ev.emit('serverStatsLog:' + id, log);
+		ev.emit('serverStatsLog:' + id, log.toArray());
 	});
 
 	async function tick() {
@@ -36,7 +37,7 @@ export default function() {
 		};
 		ev.emit('serverStats', stats);
 		log.push(stats);
-		if (log.length > 50) log.shift();
+		if (log.length > 50) log.pop();
 	}
 
 	tick();
