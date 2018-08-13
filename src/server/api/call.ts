@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import limitter from './limitter';
-import { IUser } from '../../models/user';
+import { IUser, isLocalUser } from '../../models/user';
 import { IApp } from '../../models/app';
 import endpoints from './endpoints';
 
@@ -19,6 +19,10 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 	if (ep.meta.requireCredential && user.isSuspended) {
 		return rej('YOUR_ACCOUNT_HAS_BEEN_SUSPENDED');
+	}
+
+	if (ep.meta.requireAdmin && !(isLocalUser(user) && user.isAdmin)) {
+		return rej('YOU_ARE_NOT_ADMIN');
 	}
 
 	if (app && ep.meta.kind) {
@@ -53,7 +57,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		const time = after - before;
 
 		if (time > 1000) {
-			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${ time }ms)`);
+			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 		}
 	} catch (e) {
 		rej(e);
