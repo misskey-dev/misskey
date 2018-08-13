@@ -1,8 +1,8 @@
 import * as os from 'os';
 import * as sysUtils from 'systeminformation';
 import * as diskusage from 'diskusage';
+import * as Deque from 'double-ended-queue';
 import Xev from 'xev';
-import Queue from '../misc/queue';
 const osUtils = require('os-utils');
 
 const ev = new Xev();
@@ -13,7 +13,7 @@ const interval = 1000;
  * Report server stats regularly
  */
 export default function() {
-	const log = new Queue<any>();
+	const log = new Deque<any>();
 
 	ev.on('requestServerStatsLog', id => {
 		ev.emit('serverStatsLog:' + id, log.toArray());

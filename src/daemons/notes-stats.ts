@@ -1,11 +1,11 @@
 import * as childProcess from 'child_process';
+import * as Deque from 'double-ended-queue';
 import Xev from 'xev';
-import Queue from '../misc/queue';
 
 const ev = new Xev();
 
 export default function() {
-	const log = new Queue<any>();
+	const log = new Deque<any>();
 
 	const p = childProcess.fork(__dirname + '/notes-stats-child.js');
 
