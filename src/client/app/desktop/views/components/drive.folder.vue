@@ -67,16 +67,16 @@ export default Vue.extend({
 				text: '%i18n:@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
 				action: this.rename
-			}, null, {
+			}/*, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
 				icon: '%fa:R trash-alt%',
 				action: this.deleteFolder
-			}], {
-				closed: () => {
-					this.isContextmenuShowing = false;
-				}
-			});
+			}*/], {
+					closed: () => {
+						this.isContextmenuShowing = false;
+					}
+				});
 		},
 
 		onMouseover() {
