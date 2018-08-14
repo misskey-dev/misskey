@@ -51,8 +51,15 @@ export default async (ctx: Koa.Context) => {
 
 		const query = {
 			userId: user._id,
-			$or: [ { visibility: 'public' }, { visibility: 'home' } ],
-			text: { $ne: null }	// exclude renote, but include quote
+			$and: [{
+				$or: [ { visibility: 'public' }, { visibility: 'home' } ]
+			}, { // exclude renote, but include quote
+				$or: [{
+					text: { $ne: null }
+				}, {
+					mediaIds: { $ne: [] }
+				}]
+			}]
 		} as any;
 
 		if (sinceId) {
