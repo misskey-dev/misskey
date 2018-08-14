@@ -10,8 +10,9 @@ import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
-import renderOrderedCollection from '../remote/activitypub/renderer/ordered-collection';
-import config from '../config';
+import Outbox from './activitypub/outbox';
+import Followers from './activitypub/followers';
+import Following from './activitypub/following';
 
 // Init router
 const router = new Router();
@@ -64,72 +65,14 @@ router.get('/notes/:note', async (ctx, next) => {
 	ctx.body = pack(await renderNote(note));
 });
 
-// outbot
-router.get('/users/:user/outbox', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
-
-	const user = await User.findOne({
-		_id: userId,
-		host: null
-	});
-
-	if (user === null) {
-		ctx.status = 404;
-		return;
-	}
-
-	const notes = await Note.find({ userId: user._id }, {
-		limit: 10,
-		sort: { _id: -1 }
-	});
-
-	const renderedNotes = await Promise.all(notes.map(note => renderNote(note)));
-	const rendered = renderOrderedCollection(`${config.url}/users/${userId}/inbox`, user.notesCount, renderedNotes);
-
-	ctx.body = pack(rendered);
-});
+// outbox
+router.get('/users/:user/outbox', Outbox);
 
 // followers
-router.get('/users/:user/followers', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
-
-	const user = await User.findOne({
-		_id: userId,
-		host: null
-	});
-
-	if (user === null) {
-		ctx.status = 404;
-		return;
-	}
-
-	// TODO: Implement fetch and render
-
-	const rendered = renderOrderedCollection(`${config.url}/users/${userId}/followers`, 0, []);
-
-	ctx.body = pack(rendered);
-});
+router.get('/users/:user/followers', Followers);
 
 // following
-router.get('/users/:user/following', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
-
-	const user = await User.findOne({
-		_id: userId,
-		host: null
-	});
-
-	if (user === null) {
-		ctx.status = 404;
-		return;
-	}
-
-	// TODO: Implement fetch and render
-
-	const rendered = renderOrderedCollection(`${config.url}/users/${userId}/following`, 0, []);
-
-	ctx.body = pack(rendered);
-});
+router.get('/users/:user/following', Following);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
