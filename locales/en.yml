@@ -798,7 +798,7 @@ desktop/views/pages/admin/admin.dashboard.vue:
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspend a user"
   suspend: "Suspend"
-  suspended: "Suspended"
+  suspended: "Successfully suspended."
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
