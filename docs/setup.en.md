@@ -62,6 +62,13 @@ npm install web-push -g
 web-push generate-vapid-keys
 ```
 
+*(optional)* Create a twitter application
+----------------------------------------------------------------
+If you want to enable the twitter integration, you need to create a twitter app at [apps.twitter.com](https://apps.twitter.com/).
+
+In the app you need to set the oauth callback url as : https://misskey-instance/api/tw/cb
+
+
 *5.* Make configuration file
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
