@@ -915,6 +915,11 @@ desktop/views/pages/admin/admin.suspend-user.vue:
   suspend: "凍結"
   suspended: "凍結しました"
 
+desktop/views/pages/admin/admin.unsuspend-user.vue:
+  unsuspend-user: "ユーザーの凍結の解除"
+  unsuspend: "凍結の解除"
+  unsuspended: "凍結を解除しました"
+
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
