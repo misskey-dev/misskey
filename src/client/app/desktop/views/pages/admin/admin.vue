@@ -3,7 +3,7 @@
 	<nav>
 		<ul>
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }">%fa:chalkboard .fw%%i18n:@dashboard%</li>
-			<!-- <li @click="nav('users')" :class="{ active: page == 'users' }">%fa:users .fw%%i18n:@users%</li> -->
+			<li @click="nav('users')" :class="{ active: page == 'users' }">%fa:users .fw%%i18n:@users%</li>
 			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:@drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
@@ -86,5 +86,14 @@ export default Vue.extend({
 	> main
 		width 100%
 		padding 16px 32px
+
+header
+	margin 10px 0
+
+
+button
+	margin 16px 0
+	position absolute
+	right 0
 
 </style>
