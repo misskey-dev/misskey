@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
-  verified-user: "Verified user"
+  verified-user: "Authorized User"
   disable-animated-mfm: "Disable animated texts in a post"
   reversi:
     drawn: "Draw"
@@ -262,7 +262,7 @@ common/views/components/note-menu.vue:
   favorite: "Favorite this note"
   pin: "Pin to your profile page"
   delete: "Delete"
-  delete-confirm: "Are you sure you want to delete this post?"
+  delete-confirm: "Delete this post?"
   remote: "Show original note"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
@@ -272,9 +272,9 @@ common/views/components/poll.vue:
   show-result: "Show results"
   voted: "Voted"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "At least two choices are required for this survey."
+  no-only-one-choice: "At least two choices are required to make a survey."
   choice-n: "Choice {}"
-  remove: "Delete this choice"
+  remove: "Delete the choice"
   add: "+ Add a choice"
   destroy: "Discard the poll"
 common/views/components/reaction-picker.vue:
