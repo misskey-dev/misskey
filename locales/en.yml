@@ -785,14 +785,14 @@ desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Close"
 desktop/views/pages/admin/admin.vue:
-  dashboard: "ダッシュボード"
+  dashboard: "Dashboard"
   drive: "ドライブ"
   users: "ユーザー"
   update: "更新"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
   all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
+  original-users: "Users on this instance"
   all-notes: "全てのノート"
   original-notes: "このインスタンスのノート"
 desktop/views/pages/admin/admin.suspend-user.vue:
