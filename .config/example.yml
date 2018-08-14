@@ -123,6 +123,7 @@ drive:
 # google_maps_api_key: example-google-maps-api-key
 
 # Twitter integration
+# You need to set the oauth callback url as : https://<your-misskey-instance>/api/tw/cb
 # twitter:
 #   consumer_key: example-twitter-consumer-key
 #   consumer_secret: example-twitter-consumer-secret-key
