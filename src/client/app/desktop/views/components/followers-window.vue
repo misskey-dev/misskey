@@ -27,6 +27,6 @@ export default Vue.extend({
 		vertical-align bottom
 		height calc(100% - 10px)
 		margin 5px
-		border-radius 4px
+		border-radius 100%
 
 </style>

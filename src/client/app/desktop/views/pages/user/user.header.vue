@@ -39,8 +39,8 @@ export default Vue.extend({
 		style(): any {
 			if (this.user.bannerUrl == null) return {};
 			return {
-				backgroundColor: this.user.bannerColor && this.user.bannerColor.length == 3 ? `rgb(${ this.user.bannerColor.join(',') })` : null,
-				backgroundImage: `url(${ this.user.bannerUrl })`
+				backgroundColor: this.user.bannerColor && this.user.bannerColor.length == 3 ? `rgb(${this.user.bannerColor.join(',')})` : null,
+				backgroundImage: `url(${this.user.bannerUrl})`
 			};
 		},
 
@@ -175,6 +175,7 @@ root(isDark)
 		width 120px
 		height 120px
 		box-shadow 1px 1px 3px rgba(#000, 0.2)
+		border-radius 100%
 
 		> &.cat::before,
 		> &.cat::after

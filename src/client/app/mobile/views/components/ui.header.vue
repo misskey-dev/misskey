@@ -187,7 +187,7 @@ root(isDark)
 					width ($height - 16px)
 					height ($height - 16px)
 					margin 8px
-					border-radius 6px
+					border-radius 100%
 
 			> .nav
 				display block

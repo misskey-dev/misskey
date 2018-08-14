@@ -49,7 +49,7 @@ root(isDark)
 				left 8px
 				width 28px
 				height 28px
-				border-radius 6px
+				border-radius 100%
 
 			> h3
 				display inline-block
