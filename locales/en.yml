@@ -8,8 +8,8 @@ common:
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   adblock:
     detected: "Please disable ad blocker."
-    warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
-  application-authorization: "Application authorizations."
+    warning: "Some features may be unavailable or cause malfunctions if ad blocking features are enabled. <strong>Misskey is not running ads</strong>."
+  application-authorization: "Application authorizations"
   close: "Close"
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
   got-it: "Got it!"
@@ -788,7 +788,7 @@ desktop/views/pages/admin/admin.vue:
   dashboard: "Dashboard"
   drive: "Drive"
   users: "Users"
-  update: "Reload"
+  update: "Updates"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Dashboard"
   all-users: "All users"
@@ -931,7 +931,7 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/media-image.vue:
-  sensitive: "The content is NSFW"
+  sensitive: "NSFW"
   click-to-show: "Click to show"
 mobile/views/components/media-video.vue:
   sensitive: "The content is NSFW"
