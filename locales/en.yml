@@ -17,8 +17,8 @@ common:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
     paragraph2: "You can change the display by <strong>right clicking</strong> on some widgets."
-    paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
-    paragraph4: "To finish the customization, click \"Finish\" in the upper right."
+    paragraph3: "To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header."
+    paragraph4: "To finish the customization, click \"Finish\" on the upper right."
     gotit: "Got it!"
   notification:
     file-uploaded: "File uploaded!"
@@ -151,7 +151,7 @@ auth/views/form.vue:
   notification-read: "Read your notifications."
   notification-write: "Manage your notifications."
   cancel: "Cancel"
-  accept: "Grant access."
+  accept: "Allow access."
 auth/views/index.vue:
   loading: "Loading"
   denied: "Application authorization denied."
