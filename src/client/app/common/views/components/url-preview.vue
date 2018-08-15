@@ -129,6 +129,7 @@ export default Vue.extend({
 						'newretrowave.com',
 						'nhk.or.jp',
 						'nicovideo.jp',
+						'nico.ms',
 						'noisetrade.com',
 						'nood.tv',
 						'npr.org',
