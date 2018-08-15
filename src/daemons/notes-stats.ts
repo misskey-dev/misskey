@@ -12,7 +12,7 @@ export default function() {
 	p.on('message', stats => {
 		ev.emit('notesStats', stats);
 		log.push(stats);
-		if (log.length > 100) log.pop();
+		if (log.length > 100) log.shift();
 	});
 
 	ev.on('requestNotesStatsLog', id => {
