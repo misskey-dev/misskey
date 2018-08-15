@@ -19,6 +19,6 @@ export default function(text: string) {
 		type: 'code',
 		content: code,
 		code: match[1],
-		html: genHtml(match[1])
+		html: genHtml(match[1].trim())
 	} as TextElementCode;
 }
