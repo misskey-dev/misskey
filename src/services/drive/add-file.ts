@@ -1,6 +1,5 @@
 import { Buffer } from 'buffer';
 import * as fs from 'fs';
-import * as stream from 'stream';
 
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
@@ -26,9 +25,9 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 	if (['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
 		thumbnail = await sharp(path)
-			.resize(500)
+			.resize(300)
 			.jpeg({
-				quality: 70,
+				quality: 50,
 				progressive: true
 			})
 			.toBuffer();
@@ -104,8 +103,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 				writeStream.once('finish', resolve);
 				writeStream.on('error', reject);
-
-				fs.createReadStream(path).pipe(writeStream);
+				writeStream.end(thumbnail);
 			});
 		}
 

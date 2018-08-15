@@ -31,6 +31,7 @@ export type IMetadata = {
 	comment: string;
 	uri?: string;
 	url?: string;
+	thumbnailUrl?: string;
 	src?: string;
 	deletedAt?: Date;
 	withoutChunks?: boolean;
@@ -164,6 +165,7 @@ export const pack = (
 	_target = Object.assign(_target, _file.metadata);
 
 	_target.url = _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
+	_target.thumbnailUrl = _file.metadata.thumbnailUrl ? _file.metadata.thumbnailUrl : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}?thumbnail`;
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
