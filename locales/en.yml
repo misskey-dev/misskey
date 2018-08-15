@@ -800,9 +800,9 @@ desktop/views/pages/admin/admin.suspend-user.vue:
   suspend: "Suspend"
   suspended: "Successfully suspended."
 desktop/views/pages/admin/admin.unsuspend-user.vue:
-  unsuspend-user: "ユーザーの凍結の解除"
-  unsuspend: "凍結の解除"
-  unsuspended: "凍結を解除しました"
+  unsuspend-user: "Unsuspend users"
+  unsuspend: "Unsuspend"
+  unsuspended: "The user has successfully unsuspended."
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
