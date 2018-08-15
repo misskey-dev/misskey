@@ -1,6 +1,8 @@
-export default () => [
+const kaos = [
 	'(=^・・^=)',
 	'v(\'ω\')v',
 	'🐡( \'-\' 🐡 )ﾌｸﾞﾊﾟﾝﾁ!!!!',
-	'🖕(´･_･`)🖕'
-][Math.floor(Math.random() * 4)];
+	'🖕(´･_･`)🖕',
+];
+
+export default () => kaos[Math.floor(Math.random() * kaos.length)];
