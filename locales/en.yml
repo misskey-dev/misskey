@@ -1032,7 +1032,7 @@ mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Load more"
 mobile/views/pages/signup.vue:
-  lets-start: "Let's start! 📦"
+  lets-start: "Your account is now ready! 📦"
 mobile/views/pages/followers.vue:
   followers-of: "Followers of {}"
 mobile/views/pages/following.vue:
@@ -1101,7 +1101,7 @@ mobile/views/pages/settings.vue:
   specify-language: "Select your language"
   design: "Design and display"
   dark-mode: "Dark Mode"
-  i-am-under-limited-internet: "I'm under limited internet"
+  i-am-under-limited-internet: "I'm in limited bandwidth"
   circle-icons: "Use circle icons"
   timeline: "Timeline"
   show-reply-target: "Show reply target"
@@ -1113,7 +1113,7 @@ mobile/views/pages/settings.vue:
   behavior: "Behavior"
   fetch-on-scroll: "Endless loading on scroll"
   disable-via-mobile: "Don't mark the post as 'from mobile'"
-  load-raw-images: "Show attached images in high-quality"
+  load-raw-images: "Show attached images in original quality"
   load-remote-media: "Show media from a remote server"
   twitter: "Twitter integration"
   twitter-connect: "Connect to your Twitter account"
@@ -1134,7 +1134,7 @@ mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
   followers: "Followers"
-  notes: "Notes"
+  notes: "Posts"
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
