@@ -144,6 +144,7 @@ export default Vue.extend({
 						'songkick.com',
 						'soundcloud.com',
 						'spinninrecords.com',
+						'spotify.com',
 						'stitcher.com',
 						'stream.me',
 						'switchboard.live',
