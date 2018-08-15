@@ -48,7 +48,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 		});
 
 		if (thumbnail) {
-			await minio.putObject(config.drive.bucket, thumbnailObj, fs.createReadStream(path), size, {
+			await minio.putObject(config.drive.bucket, thumbnailObj, thumbnail, size, {
 				'Content-Type': 'image/jpeg',
 				'Cache-Control': 'max-age=31536000, immutable'
 			});
