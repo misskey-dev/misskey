@@ -8,8 +8,8 @@ common:
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   adblock:
     detected: "Please disable ad blocker."
-    warning: "<strong>Misskey is not running ads</strong>, but some features may be unavailable or malfunctioning if ad blocking features are enabled."
-  application-authorization: "Application authorizations."
+    warning: "Some features may be unavailable or cause malfunctions if ad blocking features are enabled. <strong>Misskey is not running ads</strong>."
+  application-authorization: "Application authorizations"
   close: "Close"
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
   got-it: "Got it!"
@@ -17,8 +17,8 @@ common:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
     paragraph2: "You can change the display by <strong>right clicking</strong> on some widgets."
-    paragraph3: "To delete a widget, <strong>drag and drop the widget onto the area labeled \"Trash\"</strong> in the header."
-    paragraph4: "To finish the customization, click \"Finish\" in the upper right."
+    paragraph3: "To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header."
+    paragraph4: "To finish the customization, click \"Finish\" on the upper right."
     gotit: "Got it!"
   notification:
     file-uploaded: "File uploaded!"
@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
-  verified-user: "Verified user"
+  verified-user: "Authorized User"
   disable-animated-mfm: "Disable animated texts in a post"
   reversi:
     drawn: "Draw"
@@ -151,7 +151,7 @@ auth/views/form.vue:
   notification-read: "Read your notifications."
   notification-write: "Manage your notifications."
   cancel: "Cancel"
-  accept: "Grant access."
+  accept: "Allow access."
 auth/views/index.vue:
   loading: "Loading"
   denied: "Application authorization denied."
@@ -179,13 +179,13 @@ common/views/components/games/reversi/reversi.index.vue:
   rule: "How to play"
   rule-desc: "Reversi is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called disks (often spelled \"discs\"), which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up. During a play, any disks of the opponent's color that are in a straight line and bounded by the disk just placed and another disk of the current player's color are turned over to the current player's color. The object of the game is to have the majority of disks turned to display your color when the last playable empty square is filled."
   mode-invite: "Invite"
-  mode-invite-desc: "Invite to the game a user."
-  invitations: "You received invitation!"
-  my-games: "My games"
+  mode-invite-desc: "Game with a specified user."
+  invitations: "You’ve got an invitation!"
+  my-games: "My game"
   all-games: "All games"
-  enter-username: "Enter username"
+  enter-username: "Enter a username"
   game-state:
-    ended: "Ended"
+    ended: "Finished"
     playing: "In Progress"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "Game settings"
@@ -194,14 +194,14 @@ common/views/components/games/reversi/reversi.room.vue:
   black-or-white: "Black/White"
   black-is: "Black is {}"
   rules: "Rules"
-  is-llotheo: "The lesser one wins"
+  is-llotheo: "The lesser side wins"
   looped-map: "Looped map"
   can-put-everywhere: "Can put everywhere"
   settings-of-the-bot: "Bot settings"
-  this-game-is-started-soon: "The game will begin soon"
-  waiting-for-other: "Waiting for the other party's preparation"
-  waiting-for-me: "Waiting for the your preparation"
-  waiting-for-both: "Waiting for yours"
+  this-game-is-started-soon: "The game will begin in seconds"
+  waiting-for-other: "Waiting for the opponent"
+  waiting-for-me: "Waiting for you"
+  waiting-for-both: "Prepareing"
   cancel: "Cancel"
   ready: "Ready"
   cancel-ready: "Cancel \"Ready\""
@@ -239,13 +239,13 @@ common/views/components/messaging-room.vue:
   no-history: "There is no further history"
   resize-form: "Drag to resize"
   new-message: "New message"
-  only-one-file-attached: "Only one file can be attached to a message."
+  only-one-file-attached: "Only ONE file can be attached to a message."
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
   attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
-  only-one-file-attached: "Only one file can be attached to a message."
+  only-one-file-attached: "Only one file can be attached to the message."
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
   deleted: "This message has been deleted"
@@ -260,9 +260,9 @@ common/views/components/nav.vue:
   feedback: "Feedback"
 common/views/components/note-menu.vue:
   favorite: "Favorite this note"
-  pin: "Pin to your profile page"
+  pin: "Pin to your profile"
   delete: "Delete"
-  delete-confirm: "Are you sure you want to delete this post?"
+  delete-confirm: "Delete this post?"
   remote: "Show original note"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
@@ -272,9 +272,9 @@ common/views/components/poll.vue:
   show-result: "Show results"
   voted: "Voted"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "At least two choices are required for this survey."
+  no-only-one-choice: "At least two choices are required"
   choice-n: "Choice {}"
-  remove: "Delete this choice"
+  remove: "Delete the choice"
   add: "+ Add a choice"
   destroy: "Discard the poll"
 common/views/components/reaction-picker.vue:
@@ -289,15 +289,15 @@ common/views/components/signin.vue:
   signin-with-twitter: "Log in with Twitter"
 common/views/components/signup.vue:
   username: "Username"
-  checking: "Checking..."
+  checking: "Confirming..."
   available: "Available"
   unavailable: "Unavailable"
   error: "Network error"
-  invalid-format: "Only use letters, numbers and -."
-  too-short: "Please enter at least 1 character!"
-  too-long: "Please enter up to 20 characters."
+  invalid-format: "letters, numbers and _ are acceptable."
+  too-short: "Should not be blank!"
+  too-long: "Enter within 20 characters."
   password: "Password"
-  password-placeholder: "We recommend more than 8 characters."
+  password-placeholder: "More than 8 characters are recommended."
   weak-password: "Weak password"
   normal-password: "Fair password"
   strong-password: "Strong password"
@@ -327,9 +327,9 @@ common/views/components/uploader.vue:
 common/views/components/visibility-chooser.vue:
   public: "Public"
   home: "Home"
-  home-desc: "Post to the home timeline only"
+  home-desc: "Post to Home only"
   followers: "Followers"
-  followers-desc: "Post to followers only"
+  followers-desc: "Post to Followers only"
   specified: "Direct"
   specified-desc: "Post to specified users only"
   private: "Private"
@@ -340,8 +340,8 @@ common/views/widgets/broadcast.vue:
   next: "Next"
 common/views/widgets/calendar.vue:
   year: "Year {}"
-  month: "Month {}"
-  day: "Day {}"
+  month: "{},"
+  day: "{}"
   today: "Today: "
   this-month: "This month: "
   this-year: "This year: "
@@ -400,13 +400,13 @@ desktop:
   banner-crop-title: "Crop the part that appears as a banner"
   banner: "Banner"
   uploading-banner: "Uploading a new banner"
-  banner-updated: "Updated the banner"
+  banner-updated: "Successfully updated the banner"
   choose-banner: "Choose the banner"
   avatar-crop-title: "Crop the part that appears as an avatar"
   avatar: "Avatar"
   uploading-avatar: "Uploading a new avatar"
-  avatar-updated: "Updated the avatar"
-  choose-avatar: "Choose an avatar image"
+  avatar-updated: "Successfully updated the avatar"
+  choose-avatar: "Select an image for the avatar"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -454,7 +454,7 @@ desktop/views/components/drive.file.vue:
     rename-file: "Rename file"
     input-new-file-name: "Enter new name"
     copied: "Copied"
-    copied-url-to-clipboard: "Copied URL to clipboard"
+    copied-url-to-clipboard: "URL has been copied to clipboard"
 desktop/views/components/drive.folder.vue:
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
@@ -488,7 +488,7 @@ desktop/views/components/drive.vue:
     upload: "Upload a file"
     url-upload: "Upload from a URL"
 desktop/views/components/media-image.vue:
-  sensitive: "The content is NSFW"
+  sensitive: "NSFW"
   click-to-show: "Click to show"
 desktop/views/components/media-video.vue:
   sensitive: "The content is NSFW"
@@ -527,8 +527,8 @@ desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/note-detail.vue:
   more: "Load more conversations"
-  private: "This post is private"
-  deleted: "This post has been removed"
+  private: "Post is private"
+  deleted: "Post has been removed"
   reposted-by: "Reposted by {}"
   location: "Location"
   renote: "Repost"
@@ -539,8 +539,8 @@ desktop/views/components/notes.note.vue:
   renote: "Repost"
   add-reaction: "Add a reaction"
   detail: "Show details"
-  private: "This post is private"
-  deleted: "The post has been deleted"
+  private: "Post is private"
+  deleted: "Post has been deleted"
   hide: "Hide"
   see-more: "See more"
 desktop/views/components/notes.vue:
@@ -554,15 +554,15 @@ desktop/views/components/post-form.vue:
   add-visible-user: "+Add a user"
   attach-location-information: "Attach location information"
   hide-contents: "Hide contents"
-  reply-placeholder: "Reply to this note..."
-  quote-placeholder: "Quote this note..."
+  reply-placeholder: "Reply to this Post..."
+  quote-placeholder: "Quote this Post..."
   submit: "Post"
   reply: "Reply"
   renote: "Repost"
   posted: "Posted!"
   replied: "Replied!"
   reposted: "Reposted!"
-  note-failed: "Failed to post the note"
+  note-failed: "Failed to post"
   reply-failed: "Failed to reply"
   renote-failed: "Failed to repost"
   posting: "Posting"
@@ -575,12 +575,12 @@ desktop/views/components/post-form.vue:
   recent-tags: "Recent"
   click-to-tagging: "Click to tagging"
   visibility: "Visibility"
-  geolocation-alert: "Your device does not support geolocalization."
+  geolocation-alert: "Your device can not measure location infomation"
   error: "Error"
   enter-username: "Please enter a username..."
-  annotations: "内容への注釈 (オプション)"
+  annotations: "Annotations for the post (optional)"
 desktop/views/components/post-form-window.vue:
-  note: "New note"
+  note: "New Post"
   reply: "Reply"
   attaches: "{} media attached"
   uploading-media: "Uploading {} media"
@@ -592,9 +592,9 @@ desktop/views/components/renote-form.vue:
   renote: "Repost"
   reposting: "Reposting..."
   success: "Reposted!"
-  failure: "Repost failed"
+  failure: "Failed to Repost"
 desktop/views/components/renote-form-window.vue:
-  title: "Are you sure you want to repost this?"
+  title: "Do you want to Repost it?"
 desktop/views/components/settings-window.vue:
   settings: "Settings"
 desktop/views/components/settings.vue:
@@ -689,11 +689,11 @@ desktop/views/components/settings.2fa.vue:
   submit: "Submit"
   success: "Settings saved!"
   failed: "Failed to setup. Please ensure that the token is correct."
-  info: "From now on, enter the token that is displayed on your device in addition to your password when signing-in to Misskey."
+  info: "From the next time you sign in to Misskey, the token displayed on your device will be necessary too, as well as the password."
 desktop/views/components/settings.api.vue:
   intro: "To access the API, set this token as the key 'i' of request parameters."
-  caution: "Please do not show this token to third parties (do not enter it somewhere else other than here) otherwise your account could get compromised."
-  regeneration-of-token: "In the unlikely event that this token leaks out, you can regenerate it."
+  caution: "Do not enter this token to any apps nor tell this token to others otherwise your account may get compromised."
+  regeneration-of-token: "In case this token (may) leaks out, you want to regenerate it so that you’ll be safe."
   regenerate-token: "Regenerate the token"
   token: "Token:"
   enter-password: "Please enter the password"
@@ -713,18 +713,18 @@ desktop/views/components/settings.password.vue:
   changed: "Password updated"
 desktop/views/components/settings.profile.vue:
   avatar: "Avatar"
-  choice-avatar: "Choose an image"
+  choice-avatar: "Select an image"
   name: "Name"
   location: "Location"
   description: "Description"
   birthday: "Birthday"
   save: "Update profile"
   locked-account: "Protect your account"
-  is-locked: "Make a note private"
+  is-locked: "Make your posts private"
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
-  profile-updated: "Profile updated"
+  profile-updated: "Profile has successfully updated"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -740,7 +740,7 @@ desktop/views/components/timeline.vue:
   list: "Lists"
 desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
-  adjective: "Ms."
+  adjective: "Sir "
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Media storage"
@@ -784,6 +784,25 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Close"
+desktop/views/pages/admin/admin.vue:
+  dashboard: "Dashboard"
+  drive: "Drive"
+  users: "Users"
+  update: "Updates"
+desktop/views/pages/admin/admin.dashboard.vue:
+  dashboard: "Dashboard"
+  all-users: "All Users"
+  original-users: "Users on this instance"
+  all-notes: "All Posts"
+  original-notes: "Posts on this instance"
+desktop/views/pages/admin/admin.suspend-user.vue:
+  suspend-user: "Suspend a user"
+  suspend: "Suspend"
+  suspended: "Successfully suspended."
+desktop/views/pages/admin/admin.unsuspend-user.vue:
+  unsuspend-user: "Unsuspend users"
+  unsuspend: "Unsuspend"
+  unsuspended: "The user has successfully unsuspended."
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
@@ -797,7 +816,7 @@ desktop/views/pages/welcome.vue:
   gotit: "Got it!"
   signin: "Log In"
   signup: "Sign up"
-  signin-button: "Log in"
+  signin-button: "Logging in..."
   signup-button: "Sign up"
   timeline: "Timeline"
   powered-by-misskey: "Powered by <b>Misskey</b>."
@@ -808,8 +827,8 @@ desktop/views/pages/favorites.vue:
 desktop/views/pages/home-customize.vue:
   title: "Customize home layout"
 desktop/views/pages/note.vue:
-  prev: "Previous note"
-  next: "Next note"
+  prev: "Previous post"
+  next: "Next post"
 desktop/views/pages/selectdrive.vue:
   title: "Choose file(s)"
   ok: "OK"
@@ -821,22 +840,22 @@ desktop/views/pages/search.vue:
 desktop/views/pages/share.vue:
   share-with: "Share with {}."
 desktop/views/pages/tag.vue:
-  no-posts-found: "No posts \"{}\" found."
+  no-posts-found: "No posts contains \"{}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
   username: "Username"
 desktop/views/pages/user/user.followers-you-know.vue:
-  title: "Followers you know"
+  title: "Followers you may know"
   loading: "Loading"
   no-users: "No followers you know"
 desktop/views/pages/user/user.friends.vue:
   title: "Frequent mentions"
   loading: "Loading"
-  no-users: "No users"
+  no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information about them that you see here is not complete. "
+  is-remote: "The user is a remote user. Information about them that you see here may not complete."
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
@@ -853,7 +872,7 @@ desktop/views/pages/user/user.profile.vue:
   muted: "Muting"
   unmute: "Unmute"
   push-to-a-list: "Add to list"
-  list-pushed: "You added {user} to {list}."
+  list-pushed: "Successfully added {user} to {list}."
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
@@ -861,18 +880,18 @@ desktop/views/pages/user/user.header.vue:
   is-bot: "This account is a Bot"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
-  with-replies: "Notes and replies"
+  with-replies: "Posts and replies"
   with-media: "Media"
   empty: "This user doesn't seem to have posted anything yet."
 desktop/views/widgets/messaging.vue:
-  title: "Messaging"
+  title: "Message"
 desktop/views/widgets/notifications.vue:
   title: "Notifications"
   settings: "Settings"
 desktop/views/widgets/polls.vue:
   title: "Polls"
   refresh: "refresh"
-  nothing: "Nothing"
+  nothing: "No polls found!"
 desktop/views/widgets/post-form.vue:
   title: "Post"
   note: "Post"
@@ -882,11 +901,11 @@ desktop/views/widgets/profile.vue:
 desktop/views/widgets/trends.vue:
   title: "Trend"
   refresh: "refresh"
-  nothing: "Nothing"
+  nothing: "No trends found!"
 desktop/views/widgets/users.vue:
   title: "Recommended users"
   refresh: "refresh"
-  no-one: "No one"
+  no-one: "Anyone!"
 mobile/views/components/drive.vue:
   drive: "Media storage"
   used: "used"
@@ -916,7 +935,7 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/media-image.vue:
-  sensitive: "The content is NSFW"
+  sensitive: "NSFW"
   click-to-show: "Click to show"
 mobile/views/components/media-video.vue:
   sensitive: "The content is NSFW"
@@ -927,7 +946,7 @@ mobile/views/components/follow-button.vue:
   request-pending: "Pending follow request"
   follow-request: "Follow request"
 mobile/views/components/friends-maker.vue:
-  title: "Let's follow users"
+  title: "Let's follow them"
   empty: "Featured user was not found."
   fetching: "Loading"
   refresh: "See more"
@@ -958,7 +977,7 @@ mobile/views/components/notes.vue:
   failed: "Failed to load"
   retry: "Retry"
 mobile/views/components/notifications.vue:
-  more: "More"
+  more: "See more"
   empty: "No notifications"
 mobile/views/components/post-form.vue:
   add-visible-user: "Add a user"
@@ -967,7 +986,7 @@ mobile/views/components/post-form.vue:
   renote: "Renote"
   quote-placeholder: "Quote this post... (optional)"
   reply-placeholder: "Reply to this note..."
-  cw-placeholder: "Comments about content (optional)"
+  cw-placeholder: "Comments for the post (optional)"
   location-alert: "Your device does not provide location services"
   error: "Error"
   username-prompt: "Enter user name"
@@ -981,7 +1000,7 @@ mobile/views/components/timeline.vue:
   load-more: "More"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
-  adjective: "Ms."
+  adjective: "Sir"
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
@@ -998,7 +1017,7 @@ mobile/views/components/ui.nav.vue:
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
-  no-notes-with-media: "There are no notes with media attachments"
+  no-notes-with-media: "There are no posts attaching media"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
