@@ -340,8 +340,8 @@ common/views/widgets/broadcast.vue:
   next: "Next"
 common/views/widgets/calendar.vue:
   year: "Year {}"
-  month: "Month {}"
-  day: "Day {}"
+  month: "{},"
+  day: "{}"
   today: "Today: "
   this-month: "This month: "
   this-year: "This year: "
