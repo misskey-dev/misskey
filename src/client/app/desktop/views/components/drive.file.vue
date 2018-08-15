@@ -16,7 +16,7 @@
 		<p>%i18n:@banner%</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
-		<img :src="file.url" alt="" @load="onThumbnailLoaded"/>
+		<img :src="file.thumbnailUrl" alt="" @load="onThumbnailLoaded"/>
 	</div>
 	<p class="name">
 		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>

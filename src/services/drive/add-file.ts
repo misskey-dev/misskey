@@ -1,6 +1,5 @@
 import { Buffer } from 'buffer';
 import * as fs from 'fs';
-import * as stream from 'stream';
 
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
@@ -17,22 +16,43 @@ import { publishUserStream, publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
+import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 
 const log = debug('misskey:drive:add-file');
 
-async function save(readable: stream.Readable, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
+async function save(path: string, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
+	let thumbnail: Buffer;
+
+	if (['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+		thumbnail = await sharp(path)
+			.resize(300)
+			.jpeg({
+				quality: 50,
+				progressive: true
+			})
+			.toBuffer();
+	}
+
 	if (config.drive && config.drive.storage == 'minio') {
 		const minio = new Minio.Client(config.drive.config);
 		const id = uuid.v4();
 		const obj = `${config.drive.prefix}/${id}`;
+		const thumbnailObj = `${obj}-thumbnail`;
 
 		const baseUrl = config.drive.baseUrl
 			|| `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }`;
 
-		await minio.putObject(config.drive.bucket, obj, readable, size, {
+		await minio.putObject(config.drive.bucket, obj, fs.createReadStream(path), size, {
 			'Content-Type': type,
 			'Cache-Control': 'max-age=31536000, immutable'
 		});
+
+		if (thumbnail) {
+			await minio.putObject(config.drive.bucket, thumbnailObj, fs.createReadStream(path), size, {
+				'Content-Type': 'image/jpeg',
+				'Cache-Control': 'max-age=31536000, immutable'
+			});
+		}
 
 		Object.assign(metadata, {
 			withoutChunks: true,
@@ -40,7 +60,8 @@ async function save(readable: stream.Readable, name: string, type: string, hash:
 			storageProps: {
 				id: id
 			},
-			url: `${ baseUrl }/${ obj }`
+			url: `${ baseUrl }/${ obj }`,
+			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailObj }` : null
 		});
 
 		const file = await DriveFile.insert({
@@ -57,12 +78,36 @@ async function save(readable: stream.Readable, name: string, type: string, hash:
 		// Get MongoDB GridFS bucket
 		const bucket = await getDriveFileBucket();
 
-		return new Promise<IDriveFile>((resolve, reject) => {
-			const writeStream = bucket.openUploadStream(name, { contentType: type, metadata });
+		const file = await new Promise<IDriveFile>((resolve, reject) => {
+			const writeStream = bucket.openUploadStream(name, {
+				contentType: type,
+				metadata
+			});
+
 			writeStream.once('finish', resolve);
 			writeStream.on('error', reject);
-			readable.pipe(writeStream);
+
+			fs.createReadStream(path).pipe(writeStream);
 		});
+
+		if (thumbnail) {
+			const thumbnailBucket = await getDriveFileThumbnailBucket();
+
+			await new Promise<IDriveFile>((resolve, reject) => {
+				const writeStream = thumbnailBucket.openUploadStream(name, {
+					contentType: 'image/jpeg',
+					metadata: {
+						originalId: file._id
+					}
+				});
+
+				writeStream.once('finish', resolve);
+				writeStream.on('error', reject);
+				writeStream.end(thumbnail);
+			});
+		}
+
+		return file;
 	}
 }
 
@@ -321,7 +366,7 @@ export default async function(
 			}
 		}
 	} else {
-		driveFile = await (save(fs.createReadStream(path), detectedName, mime, hash, size, metadata));
+		driveFile = await (save(path, detectedName, mime, hash, size, metadata));
 	}
 
 	log(`drive file has been created ${driveFile._id}`);

@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as mongodb from 'mongodb';
@@ -51,23 +49,16 @@ export default async function(ctx: Koa.Context) {
 	};
 
 	if ('thumbnail' in ctx.query) {
-		// 画像以外
-		if (!file.contentType.startsWith('image/')) {
-			const readable = fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
-			ctx.set('Content-Type', 'image/png');
-			ctx.body = readable;
-		} else if (file.contentType == 'image/gif') {
-			// GIF
-			await sendRaw();
+		const thumb = await DriveFileThumbnail.findOne({
+			'metadata.originalId': fileId
+		});
+
+		if (thumb != null) {
+			ctx.set('Content-Type', 'image/jpeg');
+			const bucket = await getDriveFileThumbnailBucket();
+			ctx.body = bucket.openDownloadStream(thumb._id);
 		} else {
-			const thumb = await DriveFileThumbnail.findOne({ 'metadata.originalId': fileId });
-			if (thumb != null) {
-				ctx.set('Content-Type', 'image/jpeg');
-				const bucket = await getDriveFileThumbnailBucket();
-				ctx.body = bucket.openDownloadStream(thumb._id);
-			} else {
-				await sendRaw();
-			}
+			await sendRaw();
 		}
 	} else {
 		if ('download' in ctx.query) {
