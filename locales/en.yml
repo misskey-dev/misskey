@@ -946,7 +946,7 @@ mobile/views/components/follow-button.vue:
   request-pending: "Pending follow request"
   follow-request: "Follow request"
 mobile/views/components/friends-maker.vue:
-  title: "Let's follow users"
+  title: "Let's follow them"
   empty: "Featured user was not found."
   fetching: "Loading"
   refresh: "See more"
@@ -977,7 +977,7 @@ mobile/views/components/notes.vue:
   failed: "Failed to load"
   retry: "Retry"
 mobile/views/components/notifications.vue:
-  more: "More"
+  more: "See more"
   empty: "No notifications"
 mobile/views/components/post-form.vue:
   add-visible-user: "Add a user"
@@ -986,7 +986,7 @@ mobile/views/components/post-form.vue:
   renote: "Renote"
   quote-placeholder: "Quote this post... (optional)"
   reply-placeholder: "Reply to this note..."
-  cw-placeholder: "Comments about content (optional)"
+  cw-placeholder: "Comments for the post (optional)"
   location-alert: "Your device does not provide location services"
   error: "Error"
   username-prompt: "Enter user name"
@@ -1000,7 +1000,7 @@ mobile/views/components/timeline.vue:
   load-more: "More"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
-  adjective: "Ms."
+  adjective: "Sir"
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
@@ -1017,7 +1017,7 @@ mobile/views/components/ui.nav.vue:
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
-  no-notes-with-media: "There are no notes with media attachments"
+  no-notes-with-media: "There are no posts attaching media"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
