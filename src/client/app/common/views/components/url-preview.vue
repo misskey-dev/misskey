@@ -160,12 +160,12 @@ export default Vue.extend({
 						'web.tv',
 						'youtube.com',
 						'youtu.be'
-					].some(x => x == url.hostname || url.hostname.endsWith(`.${x}`))))
+					].some(x => x == url.hostname || url.hostname.endsWith(`.${x}`)))
 						this.player = info.player;
-				}
-			});
-		}
-	}
+				}	// info.url
+			})	// json
+		});	// fetch
+	}	// created
 });
 </script>
 
