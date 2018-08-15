@@ -9,7 +9,7 @@ export type TextElementSearch = {
 };
 
 export default function(text: string) {
-	const match = text.match(/^(.+?) (検索|Search)(\n|$)/i);
+	const match = text.match(/^(.+?)( |　)(検索|\[検索\]|Search|\[Search\])(\n|$)/i);
 	if (!match) return null;
 	return {
 		type: 'search',
