@@ -15,6 +15,6 @@ export default function(text: string) {
 	return {
 		type: 'quote',
 		content: quote,
-		quote: quote.substr(1, quote.length - 2).trim(),
+		quote: match[1].trim(),
 	} as TextElementQuote;
 }
