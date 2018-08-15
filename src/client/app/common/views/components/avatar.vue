@@ -67,6 +67,10 @@ root(isDark)
 	display inline-block
 	vertical-align bottom
 
+	&:not(.cat)
+		overflow hidden
+		border-radius 8px
+
 	&.cat::before,
 	&.cat::after
 		background #df548f
