@@ -562,7 +562,7 @@ desktop/views/components/post-form.vue:
   posted: "Posted!"
   replied: "Replied!"
   reposted: "Reposted!"
-  note-failed: "Failed to Post it"
+  note-failed: "Failed to post"
   reply-failed: "Failed to reply"
   renote-failed: "Failed to repost"
   posting: "Posting"
@@ -578,9 +578,9 @@ desktop/views/components/post-form.vue:
   geolocation-alert: "Your device can not measure location infomation"
   error: "Error"
   enter-username: "Please enter a username..."
-  annotations: "Annotations for the form (optional)"
+  annotations: "Annotations for the post (optional)"
 desktop/views/components/post-form-window.vue:
-  note: "New note"
+  note: "New Post"
   reply: "Reply"
   attaches: "{} media attached"
   uploading-media: "Uploading {} media"
@@ -592,9 +592,9 @@ desktop/views/components/renote-form.vue:
   renote: "Repost"
   reposting: "Reposting..."
   success: "Reposted!"
-  failure: "Repost failed"
+  failure: "Failed to Repost"
 desktop/views/components/renote-form-window.vue:
-  title: "Are you sure you want to repost this?"
+  title: "Do you want to Repost it?"
 desktop/views/components/settings-window.vue:
   settings: "Settings"
 desktop/views/components/settings.vue:
