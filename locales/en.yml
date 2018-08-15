@@ -724,7 +724,7 @@ desktop/views/components/settings.profile.vue:
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
-  profile-updated: "Profile updated"
+  profile-updated: "Profile has successfully updated"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -816,7 +816,7 @@ desktop/views/pages/welcome.vue:
   gotit: "Got it!"
   signin: "Log In"
   signup: "Sign up"
-  signin-button: "Log in"
+  signin-button: "Logging in..."
   signup-button: "Sign up"
   timeline: "Timeline"
   powered-by-misskey: "Powered by <b>Misskey</b>."
@@ -827,8 +827,8 @@ desktop/views/pages/favorites.vue:
 desktop/views/pages/home-customize.vue:
   title: "Customize home layout"
 desktop/views/pages/note.vue:
-  prev: "Previous note"
-  next: "Next note"
+  prev: "Previous post"
+  next: "Next post"
 desktop/views/pages/selectdrive.vue:
   title: "Choose file(s)"
   ok: "OK"
@@ -840,22 +840,22 @@ desktop/views/pages/search.vue:
 desktop/views/pages/share.vue:
   share-with: "Share with {}."
 desktop/views/pages/tag.vue:
-  no-posts-found: "No posts \"{}\" found."
+  no-posts-found: "No posts contains \"{}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
   username: "Username"
 desktop/views/pages/user/user.followers-you-know.vue:
-  title: "Followers you know"
+  title: "Followers you may know"
   loading: "Loading"
   no-users: "No followers you know"
 desktop/views/pages/user/user.friends.vue:
   title: "Frequent mentions"
   loading: "Loading"
-  no-users: "No users"
+  no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information about them that you see here is not complete. "
+  is-remote: "The user is a remote user. Information about them that you see here may not complete."
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
@@ -872,7 +872,7 @@ desktop/views/pages/user/user.profile.vue:
   muted: "Muting"
   unmute: "Unmute"
   push-to-a-list: "Add to list"
-  list-pushed: "You added {user} to {list}."
+  list-pushed: "Successfully added {user} to {list}."
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
@@ -880,18 +880,18 @@ desktop/views/pages/user/user.header.vue:
   is-bot: "This account is a Bot"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
-  with-replies: "Notes and replies"
+  with-replies: "Posts and replies"
   with-media: "Media"
   empty: "This user doesn't seem to have posted anything yet."
 desktop/views/widgets/messaging.vue:
-  title: "Messaging"
+  title: "Message"
 desktop/views/widgets/notifications.vue:
   title: "Notifications"
   settings: "Settings"
 desktop/views/widgets/polls.vue:
   title: "Polls"
   refresh: "refresh"
-  nothing: "Nothing"
+  nothing: "No polls found!"
 desktop/views/widgets/post-form.vue:
   title: "Post"
   note: "Post"
@@ -901,11 +901,11 @@ desktop/views/widgets/profile.vue:
 desktop/views/widgets/trends.vue:
   title: "Trend"
   refresh: "refresh"
-  nothing: "Nothing"
+  nothing: "No trends found!"
 desktop/views/widgets/users.vue:
   title: "Recommended users"
   refresh: "refresh"
-  no-one: "No one"
+  no-one: "Anyone!"
 mobile/views/components/drive.vue:
   drive: "Media storage"
   used: "used"
