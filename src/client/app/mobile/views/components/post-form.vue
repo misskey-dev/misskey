@@ -21,7 +21,7 @@
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 					<div class="file" v-for="file in files" :key="file.id">
-						<div class="img" :style="`background-image: url(${file.url})`" @click="detachMedia(file)"></div>
+						<div class="img" :style="`background-image: url(${file.thumbnailUrl})`" @click="detachMedia(file)"></div>
 					</div>
 				</x-draggable>
 			</div>
