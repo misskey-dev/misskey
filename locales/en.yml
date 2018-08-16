@@ -389,7 +389,7 @@ common/views/widgets/tips.vue:
   tips-line21: "You can also use the API to develop bots."
   tips-line23: "Mayu is so cute with its eyebrows."
   tips-line24: "Misskey has been running since 2014."
-  tips-line25: "In a browser compatible with notification features, you can receive notifications even if Misskey is not open"
+  tips-line25: "In a browser compatible with notification features, you can receive notifications in case Misskey is not open"
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -855,7 +855,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "The user is a remote user. Information about them that you see here may not complete."
+  is-remote: "The user is a remote user. The profile that you see here may not complete."
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
