@@ -35,20 +35,19 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 	if (config.drive && config.drive.storage == 'minio') {
 		const minio = new Minio.Client(config.drive.config);
-		const id = uuid.v4();
-		const obj = `${config.drive.prefix}/${id}`;
-		const thumbnailObj = `${obj}-thumbnail`;
+		const key = `${config.drive.prefix}/${uuid.v4()}/${name}`;
+		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}/${name}.thumbnail.jpg`;
 
 		const baseUrl = config.drive.baseUrl
 			|| `${ config.drive.config.secure ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }`;
 
-		await minio.putObject(config.drive.bucket, obj, fs.createReadStream(path), size, {
+		await minio.putObject(config.drive.bucket, key, fs.createReadStream(path), size, {
 			'Content-Type': type,
 			'Cache-Control': 'max-age=31536000, immutable'
 		});
 
 		if (thumbnail) {
-			await minio.putObject(config.drive.bucket, thumbnailObj, thumbnail, size, {
+			await minio.putObject(config.drive.bucket, thumbnailKey, thumbnail, size, {
 				'Content-Type': 'image/jpeg',
 				'Cache-Control': 'max-age=31536000, immutable'
 			});
@@ -58,10 +57,11 @@ async function save(path: string, name: string, type: string, hash: string, size
 			withoutChunks: true,
 			storage: 'minio',
 			storageProps: {
-				id: id
+				key: key,
+				thumbnailKey: thumbnailKey
 			},
-			url: `${ baseUrl }/${ obj }`,
-			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailObj }` : null
+			url: `${ baseUrl }/${ key }`,
+			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKey }` : null
 		});
 
 		const file = await DriveFile.insert({
