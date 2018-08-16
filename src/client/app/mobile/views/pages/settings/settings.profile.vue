@@ -61,7 +61,6 @@ export default Vue.extend({
 			birthday: null,
 			avatarId: null,
 			bannerId: null,
-			isBot: false,
 			isCat: false,
 			saving: false,
 			avatarUploading: false,
@@ -77,7 +76,6 @@ export default Vue.extend({
 		this.birthday = this.$store.state.i.profile.birthday;
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
-		this.isBot = this.$store.state.i.isBot;
 		this.isCat = this.$store.state.i.isCat;
 	},
 
@@ -136,7 +134,6 @@ export default Vue.extend({
 				birthday: this.birthday || null,
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
-				isBot: this.isBot,
 				isCat: this.isCat
 			}).then(i => {
 				this.saving = false;
