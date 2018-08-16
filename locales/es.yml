@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "Tu token se ha regenerado vas a ser desconectado."
   i-like-sushi: "Prefiero sushi a pudín"
   show-reversi-board-labels: "Mostrar etiquetas de filas y columnas en Reversi"
-  verified-user: "Usuario verificado"
+  verified-user: "公式アカウント"
   disable-animated-mfm: "Desactivar texto animado en una publicación"
   reversi:
     drawn: "Empatado"
