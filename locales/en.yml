@@ -693,15 +693,15 @@ desktop/views/components/settings.2fa.vue:
 desktop/views/components/settings.api.vue:
   intro: "To access the API, set this token as the key 'i' of request parameters."
   caution: "Do not enter this token to any apps nor tell this token to others otherwise your account may get compromised."
-  regeneration-of-token: "In case this token (may) leaks out, you want to regenerate it so that you’ll be safe."
+  regeneration-of-token: "If your token gets leaked, you can regenerate it."
   regenerate-token: "Regenerate the token"
   token: "Token:"
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
 desktop/views/components/settings.drive.vue:
-  max: "Max "
-  in-use: " in use."
+  max: "Max"
+  in-use: "In use"
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
@@ -724,7 +724,7 @@ desktop/views/components/settings.profile.vue:
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
-  profile-updated: "Profile has successfully updated"
+  profile-updated: "Your profile has been updated"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
