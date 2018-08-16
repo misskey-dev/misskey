@@ -16,7 +16,7 @@ common:
   customization-tips:
     title: "Customization tips"
     paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
-    paragraph2: "You can change the display by <strong>right clicking</strong> on some widgets."
+    paragraph2: "You can change the display by <strong><strong>right</strong> clicking</strong> on some widgets."
     paragraph3: "To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header."
     paragraph4: "To finish the customization, click \"Finish\" on the upper right."
     gotit: "Got it!"
@@ -141,11 +141,11 @@ common:
 auth/views/form.vue:
   share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
-  account-read: "Viewing account information:"
-  account-write: "Modify account informations:"
+  account-read: "View account information."
+  account-write: "Modify account information."
   note-write: "Post."
-  like-write: "To react to posts."
-  following-write: "Follow or unfollow."
+  like-write: "React to posts."
+  following-write: "Follow and unfollow."
   drive-read: "Read your drive."
   drive-write: "Upload/delete files in your drive."
   notification-read: "Read your notifications."
@@ -154,10 +154,10 @@ auth/views/form.vue:
   accept: "Allow access."
 auth/views/index.vue:
   loading: "Loading"
-  denied: "Application authorization denied."
+  denied: "Application authorization has been denied."
   denied-paragraph: "This application will not access your account."
   already-authorized: "This application has already been authorized."
-  allowed: "Application authorizations allowed.+"
+  allowed: "Application authorizations allowed."
   callback-url: "Going back to the application."
   please-go-back: "Please go back to the application."
   error: "Session does not exist."
@@ -169,7 +169,7 @@ common/views/components/games/reversi/reversi.vue:
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Surrender"
   surrendered: "By surrender"
-  is-llotheo: "The lesser one wins"
+  is-llotheo: "The lesser one wins(Llotheo)"
   looped-map: "Looped map"
   can-put-everywhere: "Can put everywhere"
 common/views/components/games/reversi/reversi.index.vue:
@@ -200,7 +200,7 @@ common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-bot: "Bot settings"
   this-game-is-started-soon: "The game will begin in seconds"
   waiting-for-other: "Waiting for the opponent"
-  waiting-for-me: "Waiting for you"
+  waiting-for-me: "Waiting for the your preparation"
   waiting-for-both: "Prepareing"
   cancel: "Cancel"
   ready: "Ready"
@@ -226,7 +226,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-server: "Unable to connect to the Misskey server"
   no-server-desc: "The network connection of your device is normal, but you could not connect to the Misskey server. There is a possibility that the server is either down, or under maintenance, please try again later."
   success: "Successfully connected to the Misskey server"
-  success-desc: "It seems to be able to connect. Please reload the page."
+  success-desc: "Looks like we have a connection. Please reload the page."
   flush: "Clean cache"
   set-version: "Specify version"
 common/views/components/messaging.vue:
@@ -388,8 +388,8 @@ common/views/widgets/tips.vue:
   tips-line20: "The percentage of the calendar widget shows the percentage of time elapsed."
   tips-line21: "You can also use the API to develop bots."
   tips-line23: "Mayu is so cute with its eyebrows."
-  tips-line24: "Misskey started in 2014."
-  tips-line25: "You can receive notification even if Misskey is not open in a compatible browser."
+  tips-line24: "Misskey has been running since 2014."
+  tips-line25: "In a browser compatible with notification features, you can receive notifications in case Misskey is not open"
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -470,7 +470,7 @@ desktop/views/components/drive.nav-folder.vue:
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
-  empty-draghover: "Drop it here, don't I look cute?"
+  empty-draghover: "Drop it here! Yep, cuz you know I'm cute, right?"
   empty-drive: "Your media storage is empty"
   empty-drive-description: "Right-click to open the menu, or drag and drop a file onto here for uploading."
   empty-folder: "This folder is empty"
@@ -480,7 +480,7 @@ desktop/views/components/drive.vue:
   url-upload: "Upload from a URL"
   url-of-file: "URL of file you want to upload"
   url-upload-requested: "Upload requested"
-  may-take-time: "It may take some time for the upload to complete."
+  may-take-time: "It may take some time until the upload is complete."
   create-folder: "Create a folder"
   folder-name: "Folder name"
   contextmenu:
@@ -505,7 +505,7 @@ desktop/views/components/followers.vue:
 desktop/views/components/following-window.vue:
   following: "Following {}"
 desktop/views/components/following.vue:
-  empty: "You don’t follow anyone."
+  empty: "It seems you don't have any following users…"
 desktop/views/components/friends-maker.vue:
   title: "Recommended users:"
   empty: "Couldn't find any recommended users."
@@ -554,7 +554,7 @@ desktop/views/components/post-form.vue:
   add-visible-user: "+Add a user"
   attach-location-information: "Attach location information"
   hide-contents: "Hide contents"
-  reply-placeholder: "Reply to this Post..."
+  reply-placeholder: "Reply to this post..."
   quote-placeholder: "Quote this Post..."
   submit: "Post"
   reply: "Reply"
@@ -575,7 +575,7 @@ desktop/views/components/post-form.vue:
   recent-tags: "Recent"
   click-to-tagging: "Click to tagging"
   visibility: "Visibility"
-  geolocation-alert: "Your device can not measure location infomation"
+  geolocation-alert: "Your device does not provide location services."
   error: "Error"
   enter-username: "Please enter a username..."
   annotations: "Annotations for the post (optional)"
@@ -613,7 +613,7 @@ desktop/views/components/settings.vue:
   fetch-on-scroll: "Endless loading on scroll"
   fetch-on-scroll-desc: "When you scroll down the page, it automatically fetches additional content."
   auto-popout: "Auto pop-out window"
-  auto-popout-desc: "Pops-out a newly opened window (onto a new tab), if possible. This setting is stored in the browser."
+  auto-popout-desc: "If it's possible, pop-out display will be used instead of opening a new window. This setting is stored in your browser."
   advanced: "Advanced settings"
   api-via-stream: "API request via stream"
   api-via-stream-desc: "API request is performed via the WebSocket connection instead of native fetch API (for better performance). This setting is stored in the browser."
@@ -626,9 +626,10 @@ desktop/views/components/settings.vue:
   gradient-window-header: "Use gradients on window headers"
   post-form-on-timeline: "Display post form at the top of the timeline"
   show-reply-target: "Display reply target"
-  show-my-renotes: "Show my reposts in the timeline"
-  show-renoted-my-notes: "Show my posts that have been shared in the timeline"
-  show-maps: "Show the map"
+  show-my-renotes: "Show my renotes in the timeline"
+  show-renoted-my-notes: "Show renoted my posts in timelines"
+  show-local-renotes: "Show renoted local posts in timelines"
+  show-maps: "Display a map to show the location"
   show-maps-desc: "Automatically show the location on the map attached to this post."
   sound: "Sound"
   enable-sounds: "Enable sound"
@@ -674,18 +675,18 @@ desktop/views/components/settings.vue:
   third-parties: "Third-parties"
 desktop/views/components/settings.2fa.vue:
   intro: "If you set up 2-step verification, you will not only need a password at sign-in, but also a pre-registered physical device (such as your smartphone), which will improve security."
-  detail: "See details..."
+  detail: "Details…"
   url: "https://www.google.com/landing/2step/"
-  caution: "If you lose access to your device, you won't be able to connect to Misskey anymore!"
+  caution: "If you lose access to your registered device, you won't be able to connect to Misskey anymore!"
   register: "Register a device"
-  already-registered: "A device is already registered"
-  unregister: "Disable"
+  already-registered: "This device is already registered"
+  unregister: "Unregister"
   unregistered: "Two-factor authentication has been disabled."
   enter-password: "Enter the password"
   authenticator: "First, you need to install Google Authenticator on your device:"
   howtoinstall: "How to install"
   scan: "And then, scan the QR code:"
-  done: "Please enter the token displaying on your device:"
+  done: "Please enter the token displayed on your device:"
   submit: "Submit"
   success: "Settings saved!"
   failed: "Failed to setup. Please ensure that the token is correct."
@@ -693,15 +694,15 @@ desktop/views/components/settings.2fa.vue:
 desktop/views/components/settings.api.vue:
   intro: "To access the API, set this token as the key 'i' of request parameters."
   caution: "Do not enter this token to any apps nor tell this token to others otherwise your account may get compromised."
-  regeneration-of-token: "In case this token (may) leaks out, you want to regenerate it so that you’ll be safe."
+  regeneration-of-token: "If your token gets leaked, you can regenerate it."
   regenerate-token: "Regenerate the token"
   token: "Token:"
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
 desktop/views/components/settings.drive.vue:
-  max: "Max "
-  in-use: " in use."
+  max: "Max"
+  in-use: "In use"
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
@@ -724,7 +725,7 @@ desktop/views/components/settings.profile.vue:
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
-  profile-updated: "Profile has successfully updated"
+  profile-updated: "Your profile has been updated"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -740,7 +741,7 @@ desktop/views/components/timeline.vue:
   list: "Lists"
 desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
-  adjective: "Sir "
+  adjective: "-san"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Media storage"
@@ -835,7 +836,7 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Cancel"
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
-  not-available: "The search feature is not available."
+  not-available: "The search feature is not available for now."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
   share-with: "Share with {}."
@@ -855,7 +856,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "The user is a remote user. Information about them that you see here may not complete."
+  is-remote: "The user is a remote user. The profile that you see here may not complete."
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
@@ -1106,7 +1107,8 @@ mobile/views/pages/settings.vue:
   timeline: "Timeline"
   show-reply-target: "Show reply target"
   show-my-renotes: "Show my reposts"
-  show-renoted-my-notes: "Show my reposted posts"
+  show-renoted-my-notes: "Show renoted my posts"
+  show-local-renotes: "Show renoted local posts"
   post-style: "Post design"
   post-style-standard: "Standard"
   post-style-smart: "Smart"
@@ -1163,7 +1165,7 @@ mobile/views/pages/user/home.photos.vue:
   loading: "Loading"
   no-photos: "No photos"
 docs:
-  edit-this-page-on-github: "Did you find an error or do you want to contribute to the documentation? "
+  edit-this-page-on-github: "Found a mistake or want to contribute for the documentation?"
   edit-this-page-on-github-link: "Edit this page on Github!"
   api:
     entities:
@@ -1175,11 +1177,11 @@ docs:
       require-credential: "This endpoint requires the authentication information."
       require-permission: "This endpoint requires {permission} permission."
       has-limit: "There is a rate limit."
-      duration-limit: "You can't request when a frequency of a request in during {duration} milliseconds exceeds {max} times."
-      min-interval-limit: "You can't request before {interval} milliseconds have passed since the previous request."
+      duration-limit: "If you have sent your requests more than {max} times in {duration} milliseconds, you will be unable to send more requests."
+      min-interval-limit: "If {interval} milliseconds haven't passed since the last request, you can't send a request."
       show-src: "You can view the source code for this endpoint."
       show-src-link: "See the code on GitHub"
-      generated: "This doc is generated by an API definition."
+      generated: "This document is generated by the API definition."
     props:
       name: "Name"
       type: "Type"
