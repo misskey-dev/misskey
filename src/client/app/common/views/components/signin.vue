@@ -12,7 +12,7 @@
 	</ui-input>
 	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
 	<ui-button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</ui-button>
-	<p style="margin: 8px 0;" v-if="twitterIntegration">%i18n:@or%<a :href="`${apiUrl}/signin/twitter`">%i18n:@signin-with-twitter%</a></p>
+	<p style="margin: 8px 0;" v-if="twitterIntegration">%i18n:@or% <a :href="`${apiUrl}/signin/twitter`">%i18n:@signin-with-twitter%</a></p>
 </form>
 </template>
 
