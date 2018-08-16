@@ -470,7 +470,7 @@ desktop/views/components/drive.nav-folder.vue:
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
-  empty-draghover: "Drop it here, don't I look cute?"
+  empty-draghover: "Drop it here! Yep, cuz you know I'm cute, right?"
   empty-drive: "Your media storage is empty"
   empty-drive-description: "Right-click to open the menu, or drag and drop a file onto here for uploading."
   empty-folder: "This folder is empty"
