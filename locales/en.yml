@@ -628,7 +628,7 @@ desktop/views/components/settings.vue:
   show-reply-target: "Display reply target"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show my renoted posts in the timeline."
-  show-maps: "Show the map"
+  show-maps: "Display a map to show the location"
   show-maps-desc: "Automatically show the location on the map attached to this post."
   sound: "Sound"
   enable-sounds: "Enable sound"
