@@ -48,6 +48,7 @@
 				<mk-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi" text="%i18n:common.i-like-sushi%"/>
 			</div>
 			<mk-switch v-model="$store.state.settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
+			<mk-switch v-model="$store.state.settings.suggestRecentHashtags" @change="onChangeSuggestRecentHashtags" text="%i18n:@suggest-recent-hashtags%"/>
 			<mk-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
 			<mk-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes" text="%i18n:@show-my-renotes%"/>
 			<mk-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
@@ -333,6 +334,12 @@ export default Vue.extend({
 		onChangeShowPostFormOnTopOfTl(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'showPostFormOnTopOfTl',
+				value: v
+			});
+		},
+		onChangeSuggestRecentHashtags(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'suggestRecentHashtags',
 				value: v
 			});
 		},

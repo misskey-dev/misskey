@@ -45,7 +45,7 @@
 			<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 		</div>
 	</div>
-	<div class="hashtags" v-if="recentHashtags.length > 0">
+	<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 		<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)">#{{ tag }}</a>
 	</div>
 </div>
