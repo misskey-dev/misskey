@@ -11,6 +11,7 @@ const defaultSettings = {
 	fetchOnScroll: true,
 	showMaps: true,
 	showPostFormOnTopOfTl: false,
+	suggestRecentHashtags: true,
 	circleIcons: true,
 	gradientWindowHeader: false,
 	showReplyTarget: true,

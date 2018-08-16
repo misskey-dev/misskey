@@ -10,7 +10,7 @@
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
 			<a @click="addVisibleUser">%i18n:@add-visible-user%</a>
 		</div>
-		<div class="hashtags" v-if="recentHashtags.length > 0">
+		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 			<b>%i18n:@recent-tags%:</b>
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%@click-to-tagging%">#{{ tag }}</a>
 		</div>
