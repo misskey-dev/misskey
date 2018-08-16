@@ -625,6 +625,7 @@ desktop/views/components/settings.vue:
   circle-icons: "Use circle icons"
   gradient-window-header: "Use gradients on window headers"
   post-form-on-timeline: "Display post form at the top of the timeline"
+  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-reply-target: "Display reply target"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show renoted my posts in timelines"
