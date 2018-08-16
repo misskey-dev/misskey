@@ -112,7 +112,7 @@ async function workerMain() {
 async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
 
-	(new Logger('Deps')).info(`Node.js ${process.version}`);
+	new Logger('Deps').info(`Node.js ${process.version}`);
 	MachineInfo.show();
 	EnvironmentInfo.show();
 	new DependencyInfo().showAll();
