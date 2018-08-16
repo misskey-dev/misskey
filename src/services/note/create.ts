@@ -328,8 +328,18 @@ async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof p
 			: [],
 
 		// 以下非正規化データ
-		_reply: data.reply ? { userId: data.reply.userId } : null,
-		_renote: data.renote ? { userId: data.renote.userId } : null,
+		_reply: data.reply ? {
+			userId: data.reply.userId,
+			user: {
+				host: data.reply._user.host
+			}
+		} : null,
+		_renote: data.renote ? {
+			userId: data.renote.userId,
+			user: {
+				host: data.reply._user.host
+			}
+		} : null,
 		_user: {
 			host: user.host,
 			inbox: isRemoteUser(user) ? user.inbox : undefined
