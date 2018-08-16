@@ -337,7 +337,7 @@ async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof p
 		_renote: data.renote ? {
 			userId: data.renote.userId,
 			user: {
-				host: data.reply._user.host
+				host: data.renote._user.host
 			}
 		} : null,
 		_user: {
