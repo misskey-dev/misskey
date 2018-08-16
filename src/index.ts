@@ -28,7 +28,7 @@ import { Config } from './config/types';
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {
 	debug.enable('misskey');
 }
 
