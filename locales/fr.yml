@@ -625,6 +625,7 @@ desktop/views/components/settings.vue:
   circle-icons: "Utiliser des icônes circulaires"
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
+  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications dans le fil"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
