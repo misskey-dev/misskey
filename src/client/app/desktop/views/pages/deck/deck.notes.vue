@@ -140,6 +140,12 @@ export default Vue.extend({
 					return;
 				}
 			}
+
+			if (this.$store.state.settings.showLocalRenotes === false) {
+				if (isPureRenote && (note.renote.user.host == null)) {
+					return;
+				}
+			}
 			//#endregion
 
 			if (this.isScrollTop()) {

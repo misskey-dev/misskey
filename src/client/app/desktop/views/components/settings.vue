@@ -51,6 +51,7 @@
 			<mk-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
 			<mk-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes" text="%i18n:@show-my-renotes%"/>
 			<mk-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
+			<mk-switch v-model="$store.state.settings.showLocalRenotes" @change="onChangeShowLocalRenotes" text="%i18n:@show-local-renotes%"/>
 			<mk-switch v-model="$store.state.settings.showMaps" @change="onChangeShowMaps" text="%i18n:@show-maps%">
 				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
@@ -350,6 +351,12 @@ export default Vue.extend({
 		onChangeShowRenotedMyNotes(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'showRenotedMyNotes',
+				value: v
+			});
+		},
+		onChangeShowLocalRenotes(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'showLocalRenotes',
 				value: v
 			});
 		},

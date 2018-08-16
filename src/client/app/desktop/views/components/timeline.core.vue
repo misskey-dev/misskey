@@ -100,7 +100,8 @@ export default Vue.extend({
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -122,7 +123,8 @@ export default Vue.extend({
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 			});
 
 			promise.then(notes => {

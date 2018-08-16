@@ -16,6 +16,7 @@ const defaultSettings = {
 	showReplyTarget: true,
 	showMyRenotes: true,
 	showRenotedMyNotes: true,
+	showLocalRenotes: true,
 	loadRemoteMedia: true,
 	disableViaMobile: false,
 	memo: null,

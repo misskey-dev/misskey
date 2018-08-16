@@ -59,6 +59,13 @@ export const meta = {
 			}
 		}),
 
+		includeLocalRenotes: $.bool.optional.note({
+			default: true,
+			desc: {
+				ja: 'Renoteされたローカルの投稿を含めるかどうか'
+			}
+		}),
+
 		mediaOnly: $.bool.optional.note({
 			desc: {
 				ja: 'true にすると、メディアが添付された投稿だけ取得します'
@@ -168,6 +175,22 @@ export default async (params: any, user: ILocalUser) => {
 		query.$and.push({
 			$or: [{
 				'_renote.userId': { $ne: user._id }
+			}, {
+				renoteId: null
+			}, {
+				text: { $ne: null }
+			}, {
+				mediaIds: { $ne: [] }
+			}, {
+				poll: { $ne: null }
+			}]
+		});
+	}
+
+	if (ps.includeLocalRenotes === false) {
+		query.$and.push({
+			$or: [{
+				'_renote.user.host': { $ne: null }
 			}, {
 				renoteId: null
 			}, {
