@@ -7,9 +7,12 @@
 [![][dependencies-badge]][dependencies-link]
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/syuilo/misskey.svg)](https://greenkeeper.io/)
 
-**Microblogging. Redefined.**
+Sophisticated microblogging platform, evolving forever.
 
-[Misskey](https://misskey.xyz) is an **advanced**, **redefined**, and ultimately **sophisticated** microblogging platform.
+[Misskey](https://misskey.xyz) is a decentralized microblogging platform born on Earth.
+Since it exists within the Fediverse (a universe where various social media platforms are organized),
+it is mutually linked with other social media platforms.
+Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
@@ -27,7 +30,7 @@
 
 and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
 
-:package: Create your instance
+:package: Create your own instance
 ----------------------------------------------------------------
 If you want to run your own instance of Misskey,
 please see [Setup and installation guide](./docs/setup.en.md).
