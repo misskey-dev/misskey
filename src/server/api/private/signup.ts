@@ -34,7 +34,7 @@ export default async (ctx: Koa.Context) => {
 
 	const meta = await Meta.findOne({});
 
-	if (meta.disableRegistration) {
+	if (meta && meta.disableRegistration) {
 		if (invitationCode == null || typeof invitationCode != 'string') {
 			ctx.status = 400;
 			return;
