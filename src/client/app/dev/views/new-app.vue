@@ -95,7 +95,7 @@ export default Vue.extend({
 				callbackUrl: this.cb,
 				permission: this.permission
 			}).then(() => {
-				location.href = '/apps';
+				location.href = '/dev/apps';
 			}).catch(() => {
 				alert('アプリの作成に失敗しました。再度お試しください。');
 			});
