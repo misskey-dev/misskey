@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
-  verified-user: "公式アカウント"
+  verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
   reversi:
     drawn: "Draw"
@@ -625,7 +625,7 @@ desktop/views/components/settings.vue:
   circle-icons: "Use circle icons"
   gradient-window-header: "Use gradients on window headers"
   post-form-on-timeline: "Display post form at the top of the timeline"
-  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
+  suggest-recent-hashtags: "Show popular hashtags on the post form"
   show-reply-target: "Display reply target"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show renoted my posts in timelines"
