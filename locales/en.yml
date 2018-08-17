@@ -813,6 +813,14 @@ desktop/views/pages/admin/admin.verify-user.vue:
   verify-user: "User account verification settings"
   verify: "Verify account"
   verified: "The account was verified"
+desktop/views/pages/admin/admin.notes-chart.vue:
+  title: "投稿"
+  local: "ローカル"
+  remote: "リモート"
+desktop/views/pages/admin/admin.users-chart.vue:
+  title: "ユーザー"
+  local: "ローカル"
+  remote: "リモート"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
