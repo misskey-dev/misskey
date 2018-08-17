@@ -287,6 +287,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "または"
   signin-with-twitter: "Twitterでログイン"
+  login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
   username: "ユーザー名"
   checking: "確認しています..."
