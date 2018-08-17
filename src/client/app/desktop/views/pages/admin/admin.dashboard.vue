@@ -1,11 +1,11 @@
 <template>
-<div>
-	<h1>%i18n:@dashboard%</h1>
-	<div v-if="stats">
-		<p><b>%i18n:@all-users%</b>: <span>{{ stats.usersCount | number }}</span></p>
-		<p><b>%i18n:@original-users%</b>: <span>{{ stats.originalUsersCount | number }}</span></p>
-		<p><b>%i18n:@all-notes%</b>: <span>{{ stats.notesCount | number }}</span></p>
-		<p><b>%i18n:@original-notes%</b>: <span>{{ stats.originalNotesCount | number }}</span></p>
+<div class="obdskegsannmntldydackcpzezagxqfy">
+	<header>%i18n:@dashboard%</header>
+	<div v-if="stats" class="stats">
+		<div><b>%fa:user% {{ stats.originalUsersCount | number }}</b><span>%i18n:@original-users%</span></div>
+		<div><b>%fa:user% {{ stats.usersCount | number }}</b><span>%i18n:@all-users%</span></div>
+		<div><b>%fa:pen% {{ stats.originalNotesCount | number }}</b><span>%i18n:@original-notes%</span></div>
+		<div><b>%fa:pen% {{ stats.notesCount | number }}</b><span>%i18n:@all-notes%</span></div>
 	</div>
 	<div>
 		<button class="ui" @click="invite">%i18n:@invite%</button>
@@ -40,10 +40,23 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-h1
-	margin 0 0 1em 0
-	padding 0 0 8px 0
-	font-size 1em
-	color #555
-	border-bottom solid 1px #eee
+@import '~const.styl'
+
+.obdskegsannmntldydackcpzezagxqfy
+	> .stats
+		display flex
+		justify-content center
+		margin-bottom 16px
+
+		> div
+			flex 1
+			text-align center
+
+			> b
+				display block
+				color $theme-color
+
+			> span
+				font-size 70%
+
 </style>

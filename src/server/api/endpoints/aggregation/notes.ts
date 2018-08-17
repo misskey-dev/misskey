@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import User from '../../../../models/user';
+import Note from '../../../../models/note';
 
 /**
- * Aggregate users
+ * Aggregate notes
  */
 export default (params: any) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
@@ -11,7 +11,9 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	const query = [{
 		$project: {
-			host: '$host',
+			renoteId: '$renoteId',
+			replyId: '$replyId',
+			user: '$_user',
 			createdAt: { $add: ['$createdAt', 9 * 60 * 60 * 1000] } // Convert into JST
 		}
 	}, {
@@ -21,9 +23,22 @@ export default (params: any) => new Promise(async (res, rej) => {
 				month: { $month: '$createdAt' },
 				day: { $dayOfMonth: '$createdAt' }
 			},
+			type: {
+				$cond: {
+					if: { $ne: ['$renoteId', null] },
+					then: 'renote',
+					else: {
+						$cond: {
+							if: { $ne: ['$replyId', null] },
+							then: 'reply',
+							else: 'note'
+						}
+					}
+				}
+			},
 			origin: {
 				$cond: {
-					if: { $eq: ['$host', null] },
+					if: { $eq: ['$user.host', null] },
 					then: 'local',
 					else: 'remote'
 				}
@@ -33,6 +48,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 		$group: {
 			_id: {
 				date: '$date',
+				type: '$type',
 				origin: '$origin'
 			},
 			count: { $sum: 1 }
@@ -50,14 +66,18 @@ export default (params: any) => new Promise(async (res, rej) => {
 		}
 	}] as any;
 
-	const datas = await User.aggregate(query);
+	const datas = await Note.aggregate(query);
 
 	datas.forEach((data: any) => {
 		data.date = data._id;
 		delete data._id;
 
-		data.local = (data.data.filter((x: any) => x.origin == 'local')[0] || { count: 0 }).count;
-		data.remote = (data.data.filter((x: any) => x.origin == 'remote')[0] || { count: 0 }).count;
+		data.localNotes = (data.data.filter((x: any) => x.type == 'note' && x.origin == 'local')[0] || { count: 0 }).count;
+		data.localRenotes = (data.data.filter((x: any) => x.type == 'renote' && x.origin == 'local')[0] || { count: 0 }).count;
+		data.localReplies = (data.data.filter((x: any) => x.type == 'reply' && x.origin == 'local')[0] || { count: 0 }).count;
+		data.remoteNotes = (data.data.filter((x: any) => x.type == 'note' && x.origin == 'remote')[0] || { count: 0 }).count;
+		data.remoteRenotes = (data.data.filter((x: any) => x.type == 'renote' && x.origin == 'remote')[0] || { count: 0 }).count;
+		data.remoteReplies = (data.data.filter((x: any) => x.type == 'reply' && x.origin == 'remote')[0] || { count: 0 }).count;
 
 		delete data.data;
 	});
@@ -76,8 +96,12 @@ export default (params: any) => new Promise(async (res, rej) => {
 		} else {
 			graph.push({
 				date: { year: day.getFullYear(), month: day.getMonth() + 1, day: day.getDate() },
-				local: 0,
-				remote: 0
+				localNotes: 0,
+				localRenotes: 0,
+				localReplies: 0,
+				remoteNotes: 0,
+				remoteRenotes: 0,
+				remoteReplies: 0
 			});
 		}
 	}

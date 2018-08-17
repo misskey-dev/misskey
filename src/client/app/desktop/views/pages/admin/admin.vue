@@ -11,6 +11,8 @@
 	<main>
 		<div v-if="page == 'dashboard'">
 			<x-dashboard/>
+			<x-users-chart/>
+			<x-notes-chart/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
@@ -29,13 +31,17 @@ import XDashboard from "./admin.dashboard.vue";
 import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
+import XUsersChart from "./admin.users-chart.vue";
+import XNotesChart from "./admin.notes-chart.vue";
 
 export default Vue.extend({
 	components: {
 		XDashboard,
 		XSuspendUser,
 		XUnsuspendUser,
-		XVerifyUser
+		XVerifyUser,
+		XUsersChart,
+		XNotesChart
 	},
 	data() {
 		return {
@@ -50,7 +56,7 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 @import '~const.styl'
 
 .mk-admin
@@ -101,13 +107,11 @@ export default Vue.extend({
 				background #fff
 				box-shadow 0 2px 8px rgba(#000, 0.1)
 
-header
-	margin 10px 0
-
-
-button
-	margin 16px 0
-	position absolute
-	right 0
+				> header
+					margin 0 0 1em 0
+					padding 0 0 8px 0
+					font-size 1em
+					color #555
+					border-bottom solid 1px #eee
 
 </style>
