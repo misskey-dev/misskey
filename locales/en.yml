@@ -72,9 +72,9 @@ common:
     a: "What are you doing?"
     b: "What's happening?"
     c: "What’s on your mind?"
-    d: "What do you wish to say?"
+    d: "Would you post any words?"
     e: "Write here"
-    f: "Waiting for your writing..."
+    f: "Waiting for your writing."
   search: "Search"
   delete: "Delete"
   loading: "Loading"
@@ -347,7 +347,7 @@ common/views/widgets/calendar.vue:
   this-year: "This year: "
 common/views/widgets/donation.vue:
   title: "Request for donations"
-  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
+  text: "To keep Misskey up and running, there have to happen some expense for the domain name, the server and so on. Since our policy is not to display any advertisements, we count on your donations. If you're interested in helping, contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photo stream"
   no-photos: "No photos"
@@ -631,7 +631,7 @@ desktop/views/components/settings.vue:
   show-renoted-my-notes: "Show renoted my posts in timelines"
   show-local-renotes: "Show renoted local posts in timelines"
   show-maps: "Display a map to show the location"
-  show-maps-desc: "Automatically show the location on the map attached to this post."
+  show-maps-desc: "If there comes a post contains location information, show a map to display the location."
   sound: "Sound"
   enable-sounds: "Enable sound"
   enable-sounds-desc: "Play a sound when you receive a post/message. This setting is stored in the browser."
@@ -770,7 +770,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create new list"
+  create-list: "Create list"
   list-name: "List name"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
@@ -1014,7 +1014,7 @@ mobile/views/components/ui.nav.vue:
   user-lists: "Lists"
   widgets: "Widgets"
   game: "Games"
-  darkmode: "Dark mode"
+  darkmode: "Dark theme"
   settings: "Settings"
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
@@ -1142,7 +1142,7 @@ mobile/views/pages/user.vue:
   timeline: "Timeline"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information you see here is not complete."
+  is-remote: "The user is a remote user. The profile that you see here may not complete."
   view-remote: "See his/her complete profile"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
@@ -1167,7 +1167,7 @@ mobile/views/pages/user/home.photos.vue:
   no-photos: "No photos"
 docs:
   edit-this-page-on-github: "Found a mistake or want to contribute for the documentation?"
-  edit-this-page-on-github-link: "Edit this page on Github!"
+  edit-this-page-on-github-link: "Edit this page at GitHub!"
   api:
     entities:
       properties: "Properties"
