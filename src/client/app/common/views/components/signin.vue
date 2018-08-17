@@ -60,7 +60,7 @@ export default Vue.extend({
 			}).then(() => {
 				location.reload();
 			}).catch(() => {
-				alert('something happened');
+				alert('%i18n:@login-failed%');
 				this.signing = false;
 			});
 		}
