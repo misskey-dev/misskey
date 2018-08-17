@@ -94,7 +94,7 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
-			visibility: 'public',
+			visibility: this.$store.state.device.visibility,
 			visibleUsers: [],
 			useCw: false,
 			cw: null,
@@ -240,8 +240,7 @@ export default Vue.extend({
 		setVisibility() {
 			const w = (this as any).os.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				compact: true,
-				v: this.visibility
+				compact: true
 			});
 			w.$once('chosen', v => {
 				this.visibility = v;
