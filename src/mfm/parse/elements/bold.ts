@@ -15,6 +15,6 @@ export default function(text: string) {
 	return {
 		type: 'bold',
 		content: bold,
-		bold: bold.substr(2, bold.length - 4)
+		bold: match[1]
 	} as TextElementBold;
 }

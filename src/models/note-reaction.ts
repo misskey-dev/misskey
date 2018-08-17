@@ -26,6 +26,7 @@ export const validateReaction = $.str.or([
 	'congrats',
 	'angry',
 	'confused',
+	'rip',
 	'pudding'
 ]);
 

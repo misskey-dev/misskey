@@ -21,7 +21,7 @@
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 					<div class="file" v-for="file in files" :key="file.id">
-						<div class="img" :style="`background-image: url(${file.url})`" @click="detachMedia(file)"></div>
+						<div class="img" :style="`background-image: url(${file.thumbnailUrl})`" @click="detachMedia(file)"></div>
 					</div>
 				</x-draggable>
 			</div>
@@ -45,7 +45,7 @@
 			<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 		</div>
 	</div>
-	<div class="hashtags" v-if="recentHashtags.length > 0">
+	<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 		<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)">#{{ tag }}</a>
 	</div>
 </div>

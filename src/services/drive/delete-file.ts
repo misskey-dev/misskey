@@ -6,8 +6,18 @@ import config from '../../config';
 export default async function(file: IDriveFile, isExpired = false) {
 	if (file.metadata.storage == 'minio') {
 		const minio = new Minio.Client(config.drive.config);
-		const obj = `${config.drive.prefix}/${file.metadata.storageProps.id}`;
+
+		// 後方互換性のため、file.metadata.storageProps.key があるかどうかチェックしています。
+		// 将来的には const obj = file.metadata.storageProps.key; とします。
+		const obj = file.metadata.storageProps.key ? file.metadata.storageProps.key : `${config.drive.prefix}/${file.metadata.storageProps.id}`;
 		await minio.removeObject(config.drive.bucket, obj);
+
+		if (file.metadata.thumbnailUrl) {
+			// 後方互換性のため、file.metadata.storageProps.thumbnailKey があるかどうかチェックしています。
+			// 将来的には const thumbnailObj = file.metadata.storageProps.thumbnailKey; とします。
+			const thumbnailObj = file.metadata.storageProps.thumbnailKey ? file.metadata.storageProps.thumbnailKey : `${config.drive.prefix}/${file.metadata.storageProps.id}-thumbnail`;
+			await minio.removeObject(config.drive.bucket, thumbnailObj);
+		}
 	}
 
 	// チャンクをすべて削除

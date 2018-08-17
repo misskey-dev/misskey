@@ -1,13 +1,5 @@
 <template>
-<iframe v-if="youtubeId" type="text/html" height="250"
-	:src="`https://www.youtube.com/embed/${youtubeId}?origin=${misskeyUrl}`"
-	frameborder="0"/>
-<iframe v-else-if="spotifyId"
-	:src="`https://open.spotify.com/embed/track/${spotifyId}`"
-	frameborder="0" allowtransparency="true" allow="encrypted-media" />
-<iframe v-else-if="nicovideoId"
-	:src="`https://embed.nicovideo.jp/watch/${nicovideoId}?oldScript=1&referer=${misskeyUrl}&from=${position || '0'}&allowProgrammaticFullScreen=1`"
-	frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
+<iframe v-if="player" :src="player" heigth="250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 <div v-else-if="tweetUrl && detail" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
 		<a :href="url"></a>
@@ -54,10 +46,7 @@ export default Vue.extend({
 			thumbnail: null,
 			icon: null,
 			sitename: null,
-			youtubeId: null,
-			spotifyId: null,
-			nicovideoId: null,
-			position: null,
+			player: null,
 			tweetUrl: null,
 			misskeyUrl
 		};
@@ -65,23 +54,7 @@ export default Vue.extend({
 	created() {
 		const url = new URL(this.url);
 
-		if (url.hostname == 'www.youtube.com') {
-			this.youtubeId = url.searchParams.get('v');
-			return;
-		} else if (url.hostname == 'youtu.be') {
-			this.youtubeId = url.pathname;
-			return;
-		} else if (url.hostname == 'open.spotify.com') {
-			this.spotifyId = url.pathname.split('/').reverse().filter(x => x !== '')[0];
-			return;
-		} else if (['nicovideo.jp', 'www.nicovideo.jp', 'nico.ms'].includes(url.hostname)) {
-			const id = url.pathname.split('/').reverse().filter(x => x !== '')[0];
-			if (['sm', 'nm', 'ax', 'ca', 'cd', 'cw', 'fx', 'ig', 'na', 'om', 'sd', 'sk', 'yk', 'yo', 'za', 'zb', 'zc', 'zd', 'ze', 'nl', 'so', ...Array(10).keys()].some(x => id.startsWith(x)) {
-				this.nicovideoId = id;
-				this.position = url.searchParams.get('from');
-				return;
-			}
-		} else if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
+		if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
 			this.tweetUrl = url;
 			const twttr = (window as any).twttr || {};
 			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
@@ -104,16 +77,95 @@ export default Vue.extend({
 		}
 		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
 			res.json().then(info => {
-				this.title = info.title;
-				this.description = info.description;
-				this.thumbnail = info.thumbnail;
-				this.icon = info.icon;
-				this.sitename = info.sitename;
-
-				this.fetching = false;
-			});
-		});
-	}
+				if (info.url != null) {
+					this.title = info.title;
+					this.description = info.description;
+					this.thumbnail = info.thumbnail;
+					this.icon = info.icon;
+					this.sitename = info.sitename;
+					this.fetching = false;
+					if ([ // THIS IS THE WHITELIST FOR THE EMBED PLAYER
+						'afreecatv.com',
+						'aparat.com',
+						'applemusic.com',
+						'amazon.com',
+						'awa.fm',
+						'bandcamp.com',
+						'bbc.co.uk',
+						'beatport.com',
+						'bilibili.com',
+						'boomstream.com',
+						'breakers.tv',
+						'cam4.com',
+						'cavelis.net',
+						'chaturbate.com',
+						'cnn.com',
+						'cybergame.tv',
+						'dailymotion.com',
+						'deezer.com',
+						'djlive.pl',
+						'e-onkyo.com',
+						'eventials.com',
+						'facebook.com',
+						'fc2.com',
+						'gameplank.tv',
+						'goodgame.ru',
+						'google.com',
+						'hardtunes.com',
+						'instagram.com',
+						'johnnylooch.com',
+						'kexp.org',
+						'lahzenegar.com',
+						'liveedu.tv',
+						'livetube.cc',
+						'livestream.com',
+						'meridix.com',
+						'mixcloud.com',
+						'mixer.com',
+						'mobcrush.com',
+						'mylive.in.th',
+						'myspace.com',
+						'netflix.com',
+						'newretrowave.com',
+						'nhk.or.jp',
+						'nicovideo.jp',
+						'nico.ms',
+						'noisetrade.com',
+						'nood.tv',
+						'npr.org',
+						'openrec.tv',
+						'pandora.com',
+						'pandora.tv',
+						'picarto.tv',
+						'pscp.tv',
+						'restream.io',
+						'reverbnation.com',
+						'sermonaudio.com',
+						'smashcast.tv',
+						'songkick.com',
+						'soundcloud.com',
+						'spinninrecords.com',
+						'spotify.com',
+						'stitcher.com',
+						'stream.me',
+						'switchboard.live',
+						'tunein.com',
+						'twitcasting.tv',
+						'twitch.tv',
+						'twitter.com',
+						'vaughnlive.tv',
+						'veoh.com',
+						'vimeo.com',
+						'watchpeoplecode.com',
+						'web.tv',
+						'youtube.com',
+						'youtu.be'
+					].some(x => x == url.hostname || url.hostname.endsWith(`.${x}`)))
+						this.player = info.player;
+				}	// info.url
+			})	// json
+		});	// fetch
+	}	// created
 });
 </script>
 

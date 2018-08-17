@@ -16,16 +16,12 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	if (usernameErr) return rej('invalid username param');
 
 	if (userId === undefined && username === undefined) {
-		return rej('userId or pair of username and host is required');
+		return rej('userId or username is required');
 	}
 
 	// Get 'host' parameter
 	const [host, hostErr] = $.str.optional.get(params.host);
 	if (hostErr) return rej('invalid host param');
-
-	if (userId === undefined && host === undefined) {
-		return rej('userId or pair of username and host is required');
-	}
 
 	// Get 'includeReplies' parameter
 	const [includeReplies = true, includeRepliesErr] = $.bool.optional.get(params.includeReplies);

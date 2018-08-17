@@ -70,6 +70,7 @@ common:
     congrats: "おめでとう"
     angry: "おこ"
     confused: "こまこまのこまり"
+    rip: "RIP"
     pudding: "Pudding"
 
   note-placeholders:
@@ -89,7 +90,7 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
-  verified-user: "認証済みのユーザー"
+  verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
 
   reversi:
@@ -181,6 +182,9 @@ common/views/components/games/reversi/reversi.vue:
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "投了"
   surrendered: "投了により"
+  is-llotheo: "石の少ない方が勝ち(ロセオ)"
+  looped-map: "ループマップ"
+  can-put-everywhere: "どこでも置けるモード"
 
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
@@ -310,6 +314,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "または"
   signin-with-twitter: "Twitterでログイン"
+  login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 
 common/views/components/signup.vue:
   username: "ユーザー名"
@@ -703,9 +708,11 @@ desktop/views/components/settings.vue:
   circle-icons: "円形のアイコンを使用"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
+  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
-  show-renoted-my-notes: "Renoteされた自分の投稿をタイムラインに表示する"
+  show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
+  show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
   show-maps: "マップの自動展開"
   show-maps-desc: "位置情報が添付された投稿のマップを自動的に展開します。"
 
@@ -892,6 +899,29 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
+
+desktop/views/pages/admin/admin.vue:
+  dashboard: "ダッシュボード"
+  drive: "ドライブ"
+  users: "ユーザー"
+  update: "更新"
+
+desktop/views/pages/admin/admin.dashboard.vue:
+  dashboard: "ダッシュボード"
+  all-users: "全てのユーザー"
+  original-users: "このインスタンスのユーザー"
+  all-notes: "全てのノート"
+  original-notes: "このインスタンスのノート"
+
+desktop/views/pages/admin/admin.suspend-user.vue:
+  suspend-user: "ユーザーの凍結"
+  suspend: "凍結"
+  suspended: "凍結しました"
+
+desktop/views/pages/admin/admin.unsuspend-user.vue:
+  unsuspend-user: "ユーザーの凍結の解除"
+  unsuspend: "凍結の解除"
+  unsuspended: "凍結を解除しました"
 
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
@@ -1266,7 +1296,8 @@ mobile/views/pages/settings.vue:
   timeline: "タイムライン"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "自分の行ったRenoteを表示する"
-  show-renoted-my-notes: "Renoteされた自分の投稿を表示する"
+  show-renoted-my-notes: "自分の投稿のRenoteを表示する"
+  show-local-renotes: "ローカルの投稿のRenoteを表示する"
   post-style: "投稿の表示スタイル"
   post-style-standard: "標準"
   post-style-smart: "スマート"

@@ -60,6 +60,12 @@
 			<el-button type="primary" @click="logPos = logs.length" :disabled="logPos == logs.length">%fa:angle-double-right%</el-button>
 		</el-button-group>
 	</div>
+
+	<div class="info">
+		<p v-if="game.settings.isLlotheo">%i18n:@is-llotheo%</p>
+		<p v-if="game.settings.loopedBoard">%i18n:@looped-map%</p>
+		<p v-if="game.settings.canPutEverywhere">%i18n:@can-put-everywhere%</p>
+	</div>
 </div>
 </template>
 

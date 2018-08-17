@@ -139,6 +139,12 @@ export default Vue.extend({
 					return;
 				}
 			}
+
+			if (this.$store.state.settings.showLocalRenotes === false) {
+				if (isPureRenote && (note.renote.user.host == null)) {
+					return;
+				}
+			}
 			//#endregion
 
 			// 投稿が自分のものではないかつ、タブが非表示またはスクロール位置が最上部ではないならタイトルで通知

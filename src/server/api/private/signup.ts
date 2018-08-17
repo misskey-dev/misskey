@@ -92,7 +92,7 @@ export default async (ctx: Koa.Context) => {
 			weight: null
 		},
 		settings: {
-			autoWatch: true
+			autoWatch: false
 		}
 	});
 

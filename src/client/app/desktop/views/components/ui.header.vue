@@ -155,10 +155,15 @@ root(isDark)
 				max-width 1300px
 				margin 0 auto
 
+				> *
+					position absolute
+					height 48px
+
 				> .center
-					margin auto
+					right 0
 
 					> .icon
+						margin auto
 						display block
 						width 48px
 						height 48px
@@ -169,11 +174,12 @@ root(isDark)
 						opacity 0.3
 						cursor pointer
 
-				> .left
-					height 48px
+				> .left,
+				> .center
+					left 0
 
 				> .right
-					height 48px
+					right 0
 
 					> *
 						display inline-block

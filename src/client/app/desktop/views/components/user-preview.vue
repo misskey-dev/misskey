@@ -10,13 +10,13 @@
 		<div class="description">{{ u.description }}</div>
 		<div class="status">
 			<div>
-				<p>%i18n:@notes%</p><a>{{ u.notesCount }}</a>
+				<p>%i18n:@notes%</p><span>{{ u.notesCount }}</span>
 			</div>
 			<div>
-				<p>%i18n:@following%</p><a>{{ u.followingCount }}</a>
+				<p>%i18n:@following%</p><span>{{ u.followingCount }}</span>
 			</div>
 			<div>
-				<p>%i18n:@followers%</p><a>{{ u.followersCount }}</a>
+				<p>%i18n:@followers%</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
 		<mk-follow-button v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u"/>
@@ -149,7 +149,7 @@ root(isDark)
 				font-size 0.7em
 				color #aaa
 
-			> a
+			> span
 				font-size 1em
 				color $theme-color
 

@@ -19,6 +19,8 @@ export default async (user: ILocalUser) => {
 		id,
 		inbox: `${id}/inbox`,
 		outbox: `${id}/outbox`,
+		followers: `${id}/followers`,
+		following: `${id}/following`,
 		sharedInbox: `${config.url}/inbox`,
 		url: `${config.url}/@${user.username}`,
 		preferredUsername: user.username,

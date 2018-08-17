@@ -1,15 +1,16 @@
 <template>
 <div class="mk-reactions-viewer">
 	<template v-if="reactions">
-		<span v-if="reactions.like"><mk-reaction-icon reaction="like"/><span>{{ reactions.like }}</span></span>
-		<span v-if="reactions.love"><mk-reaction-icon reaction="love"/><span>{{ reactions.love }}</span></span>
-		<span v-if="reactions.laugh"><mk-reaction-icon reaction="laugh"/><span>{{ reactions.laugh }}</span></span>
-		<span v-if="reactions.hmm"><mk-reaction-icon reaction="hmm"/><span>{{ reactions.hmm }}</span></span>
-		<span v-if="reactions.surprise"><mk-reaction-icon reaction="surprise"/><span>{{ reactions.surprise }}</span></span>
-		<span v-if="reactions.congrats"><mk-reaction-icon reaction="congrats"/><span>{{ reactions.congrats }}</span></span>
-		<span v-if="reactions.angry"><mk-reaction-icon reaction="angry"/><span>{{ reactions.angry }}</span></span>
-		<span v-if="reactions.confused"><mk-reaction-icon reaction="confused"/><span>{{ reactions.confused }}</span></span>
-		<span v-if="reactions.pudding"><mk-reaction-icon reaction="pudding"/><span>{{ reactions.pudding }}</span></span>
+		<span :class="{notReacted}" @click="react('like')" v-if="reactions.like"><mk-reaction-icon reaction="like"/><span>{{ reactions.like }}</span></span>
+		<span :class="{notReacted}" @click="react('love')" v-if="reactions.love"><mk-reaction-icon reaction="love"/><span>{{ reactions.love }}</span></span>
+		<span :class="{notReacted}" @click="react('laugh')" v-if="reactions.laugh"><mk-reaction-icon reaction="laugh"/><span>{{ reactions.laugh }}</span></span>
+		<span :class="{notReacted}" @click="react('hmm')" v-if="reactions.hmm"><mk-reaction-icon reaction="hmm"/><span>{{ reactions.hmm }}</span></span>
+		<span :class="{notReacted}" @click="react('surprise')" v-if="reactions.surprise"><mk-reaction-icon reaction="surprise"/><span>{{ reactions.surprise }}</span></span>
+		<span :class="{notReacted}" @click="react('congrats')" v-if="reactions.congrats"><mk-reaction-icon reaction="congrats"/><span>{{ reactions.congrats }}</span></span>
+		<span :class="{notReacted}" @click="react('angry')" v-if="reactions.angry"><mk-reaction-icon reaction="angry"/><span>{{ reactions.angry }}</span></span>
+		<span :class="{notReacted}" @click="react('confused')" v-if="reactions.confused"><mk-reaction-icon reaction="confused"/><span>{{ reactions.confused }}</span></span>
+		<span :class="{notReacted}" @click="react('rip')" v-if="reactions.rip"><mk-reaction-icon reaction="rip"/><span>{{ reactions.rip }}</span></span>
+		<span :class="{notReacted}" @click="react('pudding')" v-if="reactions.pudding"><mk-reaction-icon reaction="pudding"/><span>{{ reactions.pudding }}</span></span>
 	</template>
 </div>
 </template>
@@ -21,6 +22,17 @@ export default Vue.extend({
 	computed: {
 		reactions(): number {
 			return this.note.reactionCounts;
+		},
+		notReacted(): boolean {
+			return this.note.myReaction == null;
+		}
+	},
+	methods: {
+		react(reaction: string) {
+			(this as any).api('notes/reactions/create', {
+				noteId: this.note.id,
+				reaction: reaction
+			});
 		}
 	}
 });
@@ -38,6 +50,9 @@ root(isDark)
 
 	> span
 		margin-right 8px
+
+		&.notReacted
+			cursor pointer
 
 		> .mk-reaction-icon
 			font-size 1.4em

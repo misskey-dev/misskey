@@ -18,7 +18,7 @@ export default function(text: string) {
 	return {
 		type: 'code',
 		content: code,
-		code: code.substr(3, code.length - 6).trim(),
-		html: genHtml(code.substr(3, code.length - 6).trim())
+		code: match[1],
+		html: genHtml(match[1].trim())
 	} as TextElementCode;
 }

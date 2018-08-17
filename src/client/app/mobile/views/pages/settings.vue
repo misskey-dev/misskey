@@ -21,6 +21,7 @@
 					<ui-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</ui-switch>
 					<ui-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</ui-switch>
 					<ui-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
+					<ui-switch v-model="$store.state.settings.showLocalRenotes" @change="onChangeShowLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
 				</div>
 
 				<div>
@@ -217,6 +218,13 @@ export default Vue.extend({
 		onChangeShowRenotedMyNotes(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'showRenotedMyNotes',
+				value: v
+			});
+		},
+
+		onChangeShowLocalRenotes(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'showLocalRenotes',
 				value: v
 			});
 		},

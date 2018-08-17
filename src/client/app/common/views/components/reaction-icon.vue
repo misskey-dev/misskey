@@ -8,6 +8,7 @@
 	<img v-if="reaction == 'congrats'" src="/assets/reactions/congrats.png" alt="%i18n:common.reactions.congrats%">
 	<img v-if="reaction == 'angry'" src="/assets/reactions/angry.png" alt="%i18n:common.reactions.angry%">
 	<img v-if="reaction == 'confused'" src="/assets/reactions/confused.png" alt="%i18n:common.reactions.confused%">
+	<img v-if="reaction == 'rip'" src="/assets/reactions/rip.png" alt="%i18n:common.reactions.rip%">
 	<template v-if="reaction == 'pudding'">
 		<img v-if="$store.getters.isSignedIn && $store.state.settings.iLikeSushi" src="/assets/reactions/sushi.png" alt="%i18n:common.reactions.pudding%">
 		<img v-else src="/assets/reactions/pudding.png" alt="%i18n:common.reactions.pudding%">

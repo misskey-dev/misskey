@@ -40,6 +40,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	// Serialize
-	res(await Promise.all(history.map(async h =>
-		await pack(h.messageId, user))));
+	res(await Promise.all(history.map(h => pack(h.messageId, user))));
 });

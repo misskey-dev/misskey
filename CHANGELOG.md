@@ -5,6 +5,15 @@ ChangeLog
 
 This document describes breaking changes only.
 
+6.0.0
+-----
+
+### Migration
+
+オブジェクトストレージを使用している場合、設定ファイルの`drive.config.secure`を`drive.config.useSSL`にリネームしてください。
+
+If you use object storage, please rename `drive.config.secure` to `drive.config.useSSL` in config.
+
 5.0.0
 -----
 

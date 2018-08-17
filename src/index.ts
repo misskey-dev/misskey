@@ -28,7 +28,7 @@ import { Config } from './config/types';
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {
 	debug.enable('misskey');
 }
 
@@ -48,7 +48,7 @@ main();
  * Init process
  */
 function main() {
-	process.title = `Misskey (${ cluster.isMaster ? 'master' : 'worker' })`;
+	process.title = `Misskey (${cluster.isMaster ? 'master' : 'worker'})`;
 
 	if (cluster.isMaster || program.disableClustering) {
 		masterMain();
@@ -112,7 +112,7 @@ async function workerMain() {
 async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
 
-	(new Logger('Deps')).info(`Node.js ${process.version}`);
+	new Logger('Deps').info(`Node.js ${process.version}`);
 	MachineInfo.show();
 	EnvironmentInfo.show();
 	new DependencyInfo().showAll();
@@ -154,11 +154,10 @@ async function init(): Promise<Config> {
 
 function checkMongoDb(config: Config) {
 	const mongoDBLogger = new Logger('MongoDB');
-	mongoDBLogger.info(`Host: ${config.mongodb.host}`);
-	mongoDBLogger.info(`Port: ${config.mongodb.port}`);
-	mongoDBLogger.info(`DB: ${config.mongodb.db}`);
-	if (config.mongodb.user) mongoDBLogger.info(`User: ${config.mongodb.user}`);
-	if (config.mongodb.pass) mongoDBLogger.info(`Pass: ****`);
+	const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
+	const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
+	const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
+	mongoDBLogger.info(`Connecting to ${uri}`);
 	require('./db/mongodb');
 	mongoDBLogger.succ('Connectivity confirmed');
 }

@@ -95,6 +95,8 @@ type Option = {
 };
 
 export default async (user: IUser, data: Option, silent = false) => new Promise<INote>(async (res, rej) => {
+	const isFirstNote = user.notesCount === 0;
+
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
@@ -164,6 +166,10 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// Pack the note
 	const noteObj = await pack(note);
 
+	if (isFirstNote) {
+		noteObj.isFirstNote = true;
+	}
+
 	const nm = new NotificationManager(user, note);
 	const nmRelatedPromises = [];
 
@@ -188,6 +194,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		// 通知
 		if (isLocalUser(data.reply._user)) {
 			nm.push(data.reply.userId, 'reply');
+			publishUserStream(data.reply.userId, 'reply', noteObj);
 		}
 	}
 
@@ -209,7 +216,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		}
 
 		// Publish event
-		if (!user._id.equals(data.renote.userId)) {
+		if (!user._id.equals(data.renote.userId) && isLocalUser(data.renote._user)) {
 			publishUserStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
@@ -228,7 +235,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 async function renderActivity(data: Option, note: INote) {
 	const content = data.renote && data.text == null
-		? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
+		? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote), note)
 		: renderCreate(await renderNote(note));
 
 	return packAp(content);
@@ -321,8 +328,18 @@ async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof p
 			: [],
 
 		// 以下非正規化データ
-		_reply: data.reply ? { userId: data.reply.userId } : null,
-		_renote: data.renote ? { userId: data.renote.userId } : null,
+		_reply: data.reply ? {
+			userId: data.reply.userId,
+			user: {
+				host: data.reply._user.host
+			}
+		} : null,
+		_renote: data.renote ? {
+			userId: data.renote.userId,
+			user: {
+				host: data.renote._user.host
+			}
+		} : null,
 		_user: {
 			host: user.host,
 			inbox: isRemoteUser(user) ? user.inbox : undefined

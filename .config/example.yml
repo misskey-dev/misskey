@@ -50,8 +50,11 @@ remoteDriveCapacityMb: 8
 # If enabled:
 #  Server will not cache remote files (Using direct link instead).
 #  You can save your storage.
-#  Users cannot see remote images when they turn off "Show media from a remote server" setting.
-preventCache: false
+#
+#  NOTE:
+#  * Users cannot see remote images when they turn off "Show media from a remote server" setting.
+#  * Since thumbnails are not provided, traffic increases.
+preventCacheRemoteFiles: false
 
 drive:
   storage: 'db'
@@ -64,7 +67,7 @@ drive:
   # config:
   #   endPoint:
   #   port:
-  #   secure:
+  #   useSSL:
   #   accessKey:
   #   secretKey:
 
@@ -75,7 +78,7 @@ drive:
   # config:
   #   endPoint: s3-us-west-2.amazonaws.com
   #   region: us-west-2
-  #   secure: true
+  #   useSSL: true
   #   accessKey: XXX
   #   secretKey: YYY
 
@@ -87,7 +90,7 @@ drive:
   # config:
   #   endPoint: s3-us-west-2.amazonaws.com
   #   region: us-west-2
-  #   secure: true
+  #   useSSL: true
   #   accessKey: XXX
   #   secretKey: YYY
 
@@ -123,6 +126,7 @@ drive:
 # google_maps_api_key: example-google-maps-api-key
 
 # Twitter integration
+# You need to set the oauth callback url as : https://<your-misskey-instance>/api/tw/cb
 # twitter:
 #   consumer_key: example-twitter-consumer-key
 #   consumer_secret: example-twitter-consumer-secret-key

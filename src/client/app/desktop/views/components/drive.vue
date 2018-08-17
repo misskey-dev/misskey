@@ -567,6 +567,7 @@ export default Vue.extend({
 			// ファイル一覧取得
 			(this as any).api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
+				untilId: this.files[this.files.length - 1].id,
 				limit: max + 1
 			}).then(files => {
 				if (files.length == max + 1) {
