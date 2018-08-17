@@ -9,8 +9,7 @@
 
 **Microblogging. Redefined.**
 
-**[Misskey](https://misskey.xyz)** is a completely open source,
-ultimately sophisticated professional microblogging software.
+[Misskey](https://misskey.xyz) is an **advanced**, **redefined**, and ultimately **sophisticated** microblogging platform.
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
