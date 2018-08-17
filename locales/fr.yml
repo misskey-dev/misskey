@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
   i-like-sushi: "Je préfère les sushis (au pudding)"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
-  verified-user: "Utilisateur·trice vérifié·e"
+  verified-user: "公式アカウント"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
   reversi:
     drawn: "Partie nulle"
@@ -287,6 +287,7 @@ common/views/components/signin.vue:
   signin: "Se connecter"
   or: "Ou"
   signin-with-twitter: "Se connecter via Twitter"
+  login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
   username: "Nom d'utilisateur"
   checking: "Vérification"
@@ -625,6 +626,7 @@ desktop/views/components/settings.vue:
   circle-icons: "Utiliser des icônes circulaires"
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
+  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications dans le fil"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"

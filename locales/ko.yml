@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "당신의 토큰이 업데이트되어 있기 때문에 로그 아웃합니다."
   i-like-sushi: "나는(푸딩보다 오히려)스시가 좋아"
   show-reversi-board-labels: "리버시 보드의 행과 열 레이블을 표시"
-  verified-user: "인증 된 사용자"
+  verified-user: "公式アカウント"
   disable-animated-mfm: "게시물의 문자 애니메이션을 비활성화 할"
   reversi:
     drawn: "무승부"
@@ -287,6 +287,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "または"
   signin-with-twitter: "Twitterでログイン"
+  login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
   username: "ユーザー名"
   checking: "確認しています..."
@@ -625,6 +626,7 @@ desktop/views/components/settings.vue:
   circle-icons: "円形のアイコンを使用"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
+  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"

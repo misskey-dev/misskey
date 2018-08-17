@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
-  verified-user: "認証済みのユーザー"
+  verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   reversi:
     drawn: "引き分け"
@@ -287,6 +287,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "または"
   signin-with-twitter: "Twitterでログイン"
+  login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
   username: "ユーザー名"
   checking: "確認しています..."
@@ -625,6 +626,7 @@ desktop/views/components/settings.vue:
   circle-icons: "円形のアイコンを使用"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
+  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
