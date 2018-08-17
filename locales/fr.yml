@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
   i-like-sushi: "Je préfère les sushis (au pudding)"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
-  verified-user: "公式アカウント"
+  verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
   reversi:
     drawn: "Partie nulle"
@@ -289,8 +289,8 @@ common/views/components/signin.vue:
   signin-with-twitter: "Se connecter via Twitter"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
-  invitation-code: "招待コード"
-  invitation-info: "招待コードをお持ちでない方は、<a href=\"{}\">管理者</a>までご連絡ください。"
+  invitation-code: "Code d’invitation"
+  invitation-info: "Si vous n’avez pas de code d’invitation, contactez un·e <a href=\"{}\">administrateur·rice</a>."
   username: "Nom d'utilisateur"
   checking: "Vérification"
   available: "Disponible"
@@ -793,16 +793,16 @@ desktop/views/pages/admin/admin.vue:
   dashboard: "ダッシュボード"
   drive: "ドライブ"
   users: "ユーザー"
-  update: "更新"
+  update: "Mises à jour"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
-  all-notes: "全てのノート"
-  original-notes: "このインスタンスのノート"
-  invite: "招待"
+  all-notes: "Toutes les publications"
+  original-notes: "Publication sur cette instance"
+  invite: "Invitation"
 desktop/views/pages/admin/admin.suspend-user.vue:
-  suspend-user: "ユーザーの凍結"
+  suspend-user: "Suspendre un·e utilisateur·rice"
   suspend: "凍結"
   suspended: "凍結しました"
 desktop/views/pages/admin/admin.unsuspend-user.vue:
