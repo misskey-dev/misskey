@@ -1,8 +1,14 @@
 <template>
-<div>
+<div class="card">
 	<header>%i18n:@title%</header>
-	<x-chart v-if="data" :data="data" type="local"/>
-	<x-chart v-if="data" :data="data" type="remote"/>
+	<div class="card">
+		<header>%i18n:@local%</header>
+		<x-chart v-if="data" :data="data" type="local"/>
+	</div>
+	<div class="card">
+		<header>%i18n:@remote%</header>
+		<x-chart v-if="data" :data="data" type="remote"/>
+	</div>
 </div>
 </template>
 

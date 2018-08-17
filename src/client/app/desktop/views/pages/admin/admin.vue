@@ -101,17 +101,21 @@ export default Vue.extend({
 
 		> div
 			> div
-				margin-bottom 16px
-				padding 32px
 				max-width 800px
-				background #fff
-				box-shadow 0 2px 8px rgba(#000, 0.1)
 
-				> header
-					margin 0 0 1em 0
-					padding 0 0 8px 0
-					font-size 1em
-					color #555
-					border-bottom solid 1px #eee
+.card
+	padding 32px
+	background #fff
+	box-shadow 0 2px 8px rgba(#000, 0.1)
+
+	&:not(:last-child)
+		margin-bottom 16px
+
+	> header
+		margin 0 0 1em 0
+		padding 0 0 8px 0
+		font-size 1em
+		color #555
+		border-bottom solid 1px #eee
 
 </style>
