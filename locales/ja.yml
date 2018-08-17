@@ -914,6 +914,7 @@ desktop/views/pages/admin/admin.dashboard.vue:
   original-users: "このインスタンスのユーザー"
   all-notes: "全てのノート"
   original-notes: "このインスタンスのノート"
+  invite: "招待"
 
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "ユーザーの凍結"
