@@ -4,10 +4,10 @@ meta:
   divider: ""
 common:
   misskey: "Une ⭐ du fédiverse"
-  about-title: "Une ⭐ du fédiverse."
-  about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
+  about-title: "Une ⭐ du fédivers."
+  about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de microblogage distribuée</b> née sur Terre. Parce qu'il fait partie du Fédivers (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   adblock:
-    detected: "Veuillez désactiver le bloqueur de publicités"
+    detected: "Veuillez désactiver votre bloqueur de publicités"
     warning: "<strong>Misskey n'utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
   application-authorization: "Permissions de l'application"
   close: "Fermer"
@@ -17,7 +17,7 @@ common:
     title: "Conseils de personnalisation"
     paragraph1: "La personnalisation à la maison vous permet d'ajouter / supprimer, glisser et déposer et réorganiser les widgets."
     paragraph2: "Vous pouvez changer l'affichage en <strong>cliquant droit</strong> sur certains widgets."
-    paragraph3: "Pour supprimer un widget, <strong>glissez et déposez le widget sur la zone étiquetée \"Corbeille\"</strong> dans l'en-tête."
+    paragraph3: "Pour supprimer un widget, <strong>glissez et déposez le widget sur la zone étiquetée « Corbeille »</strong> dans l'en-tête."
     paragraph4: "Pour terminer la personnalisation, cliquez sur \"Terminer\" dans le coin supérieur droit."
     gotit: "Compris!"
   notification:
@@ -69,7 +69,7 @@ common:
     rip: "RIP"
     pudding: "Pudding"
   note-placeholders:
-    a: "Que faîtes vous maintenant ?"
+    a: "Que faites vous maintenant ?"
     b: "Quoi de neuf ?"
     c: "Qu'avez-vous en tête ?"
     d: "Voulez-vous exprimer quelque chose ?"
@@ -82,7 +82,7 @@ common:
   update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
-  i-like-sushi: "Je préfère les sushis (au pudding)"
+  i-like-sushi: "Je préfère les sushis plutôt que le pudding"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
   verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
