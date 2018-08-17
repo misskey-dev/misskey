@@ -1,15 +1,20 @@
 import $ from 'cafy';
 import Note from '../../../../models/note';
 
+export const meta = {
+	requireCredential: true,
+	requireAdmin: true
+};
+
 /**
  * Aggregate notes
  */
 export default (params: any) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 365, limitErr] = $.num.optional.range(1, 365).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
 	const query = [{
+		createdAt: {
+			$gt: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+		}
+	}, {
 		$project: {
 			renoteId: '$renoteId',
 			replyId: '$replyId',
@@ -84,7 +89,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	const graph = [];
 
-	for (let i = 0; i < limit; i++) {
+	for (let i = 0; i < 365; i++) {
 		const day = new Date(new Date().setDate(new Date().getDate() - i));
 
 		const data = datas.filter((d: any) =>
