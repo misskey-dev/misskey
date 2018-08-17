@@ -1,4 +1,4 @@
-const kaos = [
+const faces = [
 	'(=^・・^=)',
 	'v(\'ω\')v',
 	'🐡( \'-\' 🐡 )ﾌｸﾞﾊﾟﾝﾁ!!!!',
@@ -7,4 +7,4 @@ const kaos = [
 	'(Δ・x・Δ)'
 ];
 
-export default () => kaos[Math.floor(Math.random() * kaos.length)];
+export default () => faces[Math.floor(Math.random() * faces.length)];
