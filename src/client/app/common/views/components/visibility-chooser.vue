@@ -44,12 +44,12 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
+	props: ['source', 'compact'],
 	data() {
 		return {
-			v: this.$store.state.device.visibility
+			v: this.$store.state.device.visibility || 'public'
 		}
 	},
-	props: ['source', 'compact'],
 	mounted() {
 		this.$nextTick(() => {
 			const popover = this.$refs.popover as any;
