@@ -45,6 +45,7 @@ If you want to...
 
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
+<!-- PATREON_START -->
 <table>
   <tr>
     <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/619786/32cf01444db24e578cd1982c197f6fc6/1?token-time=2145916800&token-hash=tB1e_r8RlZ5sFL0KV_e8dugapxatNBRK1Z3h67TO1g8%3D"></td>
@@ -73,6 +74,7 @@ If you want to...
     <td><a href="https://www.patreon.com/gutfuckllc">gutfuckllc</a></td>
   </tr>
 </table>
+<!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
 ----------------------------------------------------------------
