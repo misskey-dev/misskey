@@ -278,7 +278,7 @@ common/views/components/poll-editor.vue:
   add: "+ Add a choice"
   destroy: "Discard the poll"
 common/views/components/reaction-picker.vue:
-  choose-reaction: "Express a reaction"
+  choose-reaction: "Send a reaction"
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
@@ -625,7 +625,7 @@ desktop/views/components/settings.vue:
   circle-icons: "Use circle icons"
   gradient-window-header: "Use gradients on window headers"
   post-form-on-timeline: "Display post form at the top of the timeline"
-  suggest-recent-hashtags: "Show popular hashtags on the post form"
+  suggest-recent-hashtags: "Show recent popular hashtags on the post form"
   show-reply-target: "Display reply target"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show renoted my posts in timelines"
@@ -1143,7 +1143,7 @@ mobile/views/pages/user.vue:
   media: "Media"
   is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information you see here is not complete."
-  view-remote: "See their complete profile"
+  view-remote: "See his/her complete profile"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"
