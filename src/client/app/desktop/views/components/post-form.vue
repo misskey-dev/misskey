@@ -99,7 +99,7 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
-			visibility: 'public',
+			visibility: this.$store.state.device.visibility || 'public',
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -326,8 +326,7 @@ export default Vue.extend({
 
 		setVisibility() {
 			const w = (this as any).os.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton,
-				v: this.visibility
+				source: this.$refs.visibilityButton
 			});
 			w.$once('chosen', v => {
 				this.visibility = v;
