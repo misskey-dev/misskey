@@ -32,6 +32,7 @@
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
 			<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
+			<mk-time :time="g.createdAt" />
 		</a>
 	</section>
 	<section v-if="games.length > 0">
@@ -41,6 +42,7 @@
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
 			<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
+			<mk-time :time="g.createdAt" />
 		</a>
 	</section>
 </div>
