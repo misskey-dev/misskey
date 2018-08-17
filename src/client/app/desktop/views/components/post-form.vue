@@ -99,7 +99,7 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
-			visibility: this.$store.state.device.visibility,
+			visibility: this.$store.state.device.visibility || 'public',
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,

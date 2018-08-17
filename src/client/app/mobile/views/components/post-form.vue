@@ -94,7 +94,7 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
-			visibility: this.$store.state.device.visibility,
+			visibility: this.$store.state.device.visibility || 'public',
 			visibleUsers: [],
 			useCw: false,
 			cw: null,
