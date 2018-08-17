@@ -6,6 +6,7 @@ import User, { IUser, validateUsername, validatePassword, pack } from '../../../
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';
+import RegistrationTicket from '../../../models/registration-tickets';
 
 if (config.recaptcha) {
 	recaptcha.init({
@@ -29,6 +30,29 @@ export default async (ctx: Koa.Context) => {
 
 	const username = body['username'];
 	const password = body['password'];
+	const invitationCode = body['invitationCode'];
+
+	const meta = await Meta.findOne({});
+
+	if (meta.disableRegistration) {
+		if (invitationCode == null || typeof invitationCode != 'string') {
+			ctx.status = 400;
+			return;
+		}
+
+		const ticket = await RegistrationTicket.findOne({
+			code: invitationCode
+		});
+
+		if (ticket == null) {
+			ctx.status = 400;
+			return;
+		}
+
+		RegistrationTicket.remove({
+			_id: ticket._id
+		});
+	}
 
 	// Validate username
 	if (!validateUsername(username)) {

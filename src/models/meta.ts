@@ -11,4 +11,5 @@ export type IMeta = {
 		usersCount: number;
 		originalUsersCount: number;
 	};
+	disableRegistration: boolean;
 };

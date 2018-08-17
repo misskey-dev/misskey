@@ -7,6 +7,10 @@
 		<p><b>%i18n:@all-notes%</b>: <span>{{ stats.notesCount | number }}</span></p>
 		<p><b>%i18n:@original-notes%</b>: <span>{{ stats.originalNotesCount | number }}</span></p>
 	</div>
+	<div>
+		<button class="ui" @click="invite">%i18n:@invite%</button>
+		<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
+	</div>
 </div>
 </template>
 
@@ -16,13 +20,21 @@ import Vue from "vue";
 export default Vue.extend({
 	data() {
 		return {
-			stats: null
+			stats: null,
+			inviteCode: null
 		};
 	},
 	created() {
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
 		});
+	},
+	methods: {
+		invite() {
+			(this as any).api('admin/invite').then(x => {
+				this.inviteCode = x.code;
+			});
+		}
 	}
 });
 </script>

@@ -1,5 +1,10 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
+	<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<span>%i18n:@invitation-code%</span>
+		<span slot="prefix">%fa:id-card-alt%</span>
+		<p slot="text" v-html="'%i18n:@invitation-info%'.replace('{}', meta.maintainer.url)"></p>
+	</ui-input>
 	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
 		<span>%i18n:@username%</span>
 		<span slot="prefix">@</span>
@@ -46,11 +51,13 @@ export default Vue.extend({
 			username: '',
 			password: '',
 			retypedPassword: '',
+			invitationCode: '',
 			url,
 			recaptchaSitekey,
 			usernameState: null,
 			passwordStrength: '',
-			passwordRetypeState: null
+			passwordRetypeState: null,
+			meta: null
 		}
 	},
 	computed: {
@@ -60,6 +67,11 @@ export default Vue.extend({
 				this.usernameState != 'min-range' &&
 				this.usernameState != 'max-range');
 		}
+	},
+	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.meta = meta;
+		});
 	},
 	methods: {
 		onChangeUsername() {
@@ -110,6 +122,7 @@ export default Vue.extend({
 			(this as any).api('signup', {
 				username: this.username,
 				password: this.password,
+				invitationCode: this.invitationCode,
 				'g-recaptcha-response': recaptchaSitekey != null ? (window as any).grecaptcha.getResponse() : null
 			}).then(() => {
 				(this as any).api('signin', {
