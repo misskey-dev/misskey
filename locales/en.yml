@@ -810,9 +810,9 @@ desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend: "Unsuspend"
   unsuspended: "The user has successfully unsuspended."
 desktop/views/pages/admin/admin.verify-user.vue:
-  verify-user: "ユーザーの公式アカウント設定"
-  verify: "公式アカウントにする"
-  verified: "公式アカウントにしました"
+  verify-user: "User account verification settings"
+  verify: "Verify account"
+  verified: "The account was verified"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
