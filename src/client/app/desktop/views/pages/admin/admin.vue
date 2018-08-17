@@ -93,6 +93,14 @@ export default Vue.extend({
 		width 100%
 		padding 16px 32px
 
+		> div
+			> div
+				margin-bottom 16px
+				padding 32px
+				max-width 800px
+				background #fff
+				box-shadow 0 2px 8px rgba(#000, 0.1)
+
 header
 	margin 10px 0
 
