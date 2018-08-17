@@ -15,6 +15,7 @@
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
 			<x-unsuspend-user/>
+			<x-verify-user/>
 		</div>
 		<div v-if="page == 'drive'"></div>
 		<div v-if="page == 'update'"></div>
@@ -27,12 +28,14 @@ import Vue from "vue";
 import XDashboard from "./admin.dashboard.vue";
 import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
+import XVerifyUser from "./admin.verify-user.vue";
 
 export default Vue.extend({
 	components: {
 		XDashboard,
 		XSuspendUser,
-		XUnsuspendUser
+		XUnsuspendUser,
+		XVerifyUser
 	},
 	data() {
 		return {
