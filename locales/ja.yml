@@ -931,6 +931,16 @@ desktop/views/pages/admin/admin.verify-user.vue:
   verify: "公式アカウントにする"
   verified: "公式アカウントにしました"
 
+desktop/views/pages/admin/admin.notes-chart.vue:
+  title: "投稿"
+  local: "ローカル"
+  remote: "リモート"
+
+desktop/views/pages/admin/admin.users-chart.vue:
+  title: "ユーザー"
+  local: "ローカル"
+  remote: "リモート"
+
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
