@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import User from '../../../../models/user';
 
 export const meta = {
@@ -11,8 +10,10 @@ export const meta = {
  */
 export default (params: any) => new Promise(async (res, rej) => {
 	const query = [{
-		createdAt: {
-			$gt: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+		$match: {
+			createdAt: {
+				$gt: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+			}
 		}
 	}, {
 		$project: {
