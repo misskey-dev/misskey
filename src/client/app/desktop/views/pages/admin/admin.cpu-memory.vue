@@ -111,6 +111,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
+	margin-bottom 16px
+
 	> svg
 		display block
 		width 50%
