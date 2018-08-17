@@ -9,7 +9,7 @@
 		</ul>
 	</nav>
 	<main>
-		<div v-if="page == 'dashboard'">
+		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
 			<x-users-chart/>
 			<x-notes-chart/>
