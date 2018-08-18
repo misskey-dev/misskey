@@ -51,7 +51,7 @@ export default function(html: string): string {
 					}
 				// メンション以外
 				} else {
-					text += `[${txt}](${node.attrs.find((x: any) => x.name == 'href').value})`
+					text += `[${txt}](${node.attrs.find((x: any) => x.name == 'href').value})`;
 				}
 
 				if (node.childNodes) {
