@@ -857,7 +857,7 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Anuluj"
   upload: "Wyślij pliki z Twojego komputera"
 desktop/views/pages/search.vue:
-  not-available: "Funkcja wyszukiwania nie może zostać wykorzystywana."
+  not-available: "検索機能はインスタンスの設定で無効になっています。"
   not-found: "Nie znaleziono wpisów zawierających „{}”"
 desktop/views/pages/share.vue:
   share-with: "Udostępnij z {}."
