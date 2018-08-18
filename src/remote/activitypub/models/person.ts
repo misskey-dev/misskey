@@ -11,6 +11,7 @@ import { isCollectionOrOrderedCollection, IObject, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import htmlToMFM from '../../../mfm/html-to-mfm';
+import { updateUserStats } from '../../../services/update-chart';
 
 const log = debug('misskey:activitypub');
 
@@ -148,6 +149,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 			'stats.usersCount': 1
 		}
 	}, { upsert: true });
+
+	updateUserStats(user, true);
 	//#endregion
 
 	//#region アイコンとヘッダー画像をフェッチ
