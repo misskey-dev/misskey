@@ -1,6 +1,6 @@
 import { INote } from '../models/note';
 import Chart, { IChart } from '../models/chart';
-import { isLocalUser } from '../models/user';
+import { isLocalUser, IUser } from '../models/user';
 
 async function getTodayStats(): Promise<IChart> {
 	const now = new Date();
@@ -22,7 +22,7 @@ async function getTodayStats(): Promise<IChart> {
 		//   「昨日の」と決め打ちせずに「もっとも最近の」とします
 		const mostRecentStats = await Chart.findOne({}, {
 			sort: {
-				createdAt: -1
+				date: -1
 			}
 		});
 
@@ -112,6 +112,22 @@ async function update(inc: any) {
 	}, {
 		$inc: inc
 	});
+}
+
+export async function updateUserStats(user: IUser, isAdditional: boolean) {
+	const inc = {} as any;
+
+	const val = isAdditional ? 1 : -1;
+
+	if (isLocalUser(user)) {
+		inc['users.local.total'] = val;
+		inc['users.local.diff'] = val;
+	} else {
+		inc['users.remote.total'] = val;
+		inc['users.remote.diff'] = val;
+	}
+
+	await update(inc);
 }
 
 export async function updateNoteStats(note: INote, isAdditional: boolean) {
