@@ -33,7 +33,7 @@ async function getTodayStats(): Promise<IStats> {
 		// * Misskeyインスタンスを建てて初めてのチャート更新時など
 		if (mostRecentStats == null) {
 			// 空の統計を作成
-			const chart: Omit<IStats, '_id'> = {
+			const data: Omit<IStats, '_id'> = {
 				date: today,
 				users: {
 					local: {
@@ -81,12 +81,12 @@ async function getTodayStats(): Promise<IStats> {
 				}
 			};
 
-			const stats = await Stats.insert(chart);
+			const stats = await Stats.insert(data);
 
 			return stats;
 		} else {
 			// 今日の統計を初期挿入
-			const chart: Omit<IStats, '_id'> = {
+			const data: Omit<IStats, '_id'> = {
 				date: today,
 				users: {
 					local: {
@@ -134,7 +134,7 @@ async function getTodayStats(): Promise<IStats> {
 				}
 			};
 
-			const stats = await Stats.insert(chart);
+			const stats = await Stats.insert(data);
 
 			return stats;
 		}
@@ -154,70 +154,46 @@ async function update(inc: any) {
 }
 
 export async function updateUserStats(user: IUser, isAdditional: boolean) {
-	const inc = {} as any;
-
 	const amount = isAdditional ? 1 : -1;
+	const origin = isLocalUser(user) ? 'local' : 'remote';
 
-	if (isLocalUser(user)) {
-		inc['users.local.total'] = amount;
-		inc['users.local.diff'] = amount;
-	} else {
-		inc['users.remote.total'] = amount;
-		inc['users.remote.diff'] = amount;
-	}
+	const inc = {} as any;
+	inc[`users.${origin}.total`] = amount;
+	inc[`users.${origin}.diff`] = amount;
 
 	await update(inc);
 }
 
 export async function updateNoteStats(note: INote, isAdditional: boolean) {
+	const amount = isAdditional ? 1 : -1;
+	const origin = isLocalUser(note._user) ? 'local' : 'remote';
+
 	const inc = {} as any;
 
-	const amount = isAdditional ? 1 : -1;
+	inc[`notes.${origin}.total`] = amount;
+	inc[`notes.${origin}.diff`] = amount;
 
-	if (isLocalUser(note._user)) {
-		inc['notes.local.total'] = amount;
-		inc['notes.local.diff'] = amount;
-
-		if (note.replyId != null) {
-			inc['notes.local.diffs.reply'] = amount;
-		} else if (note.renoteId != null) {
-			inc['notes.local.diffs.renote'] = amount;
-		} else {
-			inc['notes.local.diffs.normal'] = amount;
-		}
+	if (note.replyId != null) {
+		inc[`notes.${origin}.diffs.reply`] = amount;
+	} else if (note.renoteId != null) {
+		inc[`notes.${origin}.diffs.renote`] = amount;
 	} else {
-		inc['notes.remote.total'] = amount;
-		inc['notes.remote.diff'] = amount;
-
-		if (note.replyId != null) {
-			inc['notes.remote.diffs.reply'] = amount;
-		} else if (note.renoteId != null) {
-			inc['notes.remote.diffs.renote'] = amount;
-		} else {
-			inc['notes.remote.diffs.normal'] = amount;
-		}
+		inc[`notes.${origin}.diffs.normal`] = amount;
 	}
 
 	await update(inc);
 }
 
 export async function updateDriveStats(file: IDriveFile, isAdditional: boolean) {
-	const inc = {} as any;
-
 	const amount = isAdditional ? 1 : -1;
 	const size = isAdditional ? file.length : -file.length;
+	const origin = isLocalUser(file.metadata._user) ? 'local' : 'remote';
 
-	if (isLocalUser(file.metadata._user)) {
-		inc['drive.local.totalCount'] = amount;
-		inc['drive.local.diffCount'] = amount;
-		inc['drive.local.totalSize'] = size;
-		inc['drive.local.diffSize'] = size;
-	} else {
-		inc['drive.remote.total'] = amount;
-		inc['drive.remote.diff'] = amount;
-		inc['drive.remote.totalSize'] = size;
-		inc['drive.remote.diffSize'] = size;
-	}
+	const inc = {} as any;
+	inc[`drive.${origin}.totalCount`] = amount;
+	inc[`drive.${origin}.diffCount`] = amount;
+	inc[`drive.${origin}.totalSize`] = size;
+	inc[`drive.${origin}.diffSize`] = size;
 
 	await update(inc);
 }
