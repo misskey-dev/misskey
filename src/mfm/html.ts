@@ -5,6 +5,10 @@ import config from '../config';
 import { INote } from '../models/note';
 import { TextElement } from './parse';
 
+function intersperse<T>(sep: T, xs: T[]): T[] {
+	return [].concat(...xs.map(x => [sep, x])).slice(1);
+}
+
 const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers: INote['mentionedRemoteUsers']) => void } = {
 	bold({ document }, { bold }) {
 		const b = document.createElement('b');
@@ -80,12 +84,9 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 	},
 
 	text({ document }, { content }) {
-		const t = content.split('\n');
-		for (let i = 0; i < t.length; i++) {
-			document.body.appendChild(document.createTextNode(t[i]));
-			if (i != t.length - 1) {
-				document.body.appendChild(document.createElement('br'));
-			}
+		const nodes = (content as string).split('\n').map(x => document.createTextNode(x));
+		for (const x of intersperse(document.createElement('br'), nodes)) {
+			document.body.appendChild(x);
 		}
 	},
 
