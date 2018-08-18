@@ -49,9 +49,6 @@ export default function(html: string): string {
 						text += txt;
 						break;
 					}
-				// メンション以外
-				} else {
-					text += `[${txt}](${node.attrs.find((x: any) => x.name == 'href').value})`;
 				}
 
 				if (node.childNodes) {
