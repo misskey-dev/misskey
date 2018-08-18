@@ -1,6 +1,7 @@
 import { INote } from '../models/note';
 import Chart, { IChart } from '../models/chart';
 import { isLocalUser, IUser } from '../models/user';
+import { IDriveFile } from '../models/drive-file';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -63,6 +64,20 @@ async function getTodayStats(): Promise<IChart> {
 							renote: 0
 						}
 					}
+				},
+				drive: {
+					local: {
+						totalCount: 0,
+						totalSize: 0,
+						diffCount: 0,
+						diffSize: 0
+					},
+					remote: {
+						totalCount: 0,
+						totalSize: 0,
+						diffCount: 0,
+						diffSize: 0
+					}
 				}
 			};
 
@@ -102,6 +117,20 @@ async function getTodayStats(): Promise<IChart> {
 							renote: 0
 						}
 					}
+				},
+				drive: {
+					local: {
+						totalCount: mostRecentStats.drive.local.totalCount,
+						totalSize: mostRecentStats.drive.local.totalSize,
+						diffCount: 0,
+						diffSize: 0
+					},
+					remote: {
+						totalCount: mostRecentStats.drive.remote.totalCount,
+						totalSize: mostRecentStats.drive.remote.totalSize,
+						diffCount: 0,
+						diffSize: 0
+					}
 				}
 			};
 
@@ -127,14 +156,14 @@ async function update(inc: any) {
 export async function updateUserStats(user: IUser, isAdditional: boolean) {
 	const inc = {} as any;
 
-	const val = isAdditional ? 1 : -1;
+	const amount = isAdditional ? 1 : -1;
 
 	if (isLocalUser(user)) {
-		inc['users.local.total'] = val;
-		inc['users.local.diff'] = val;
+		inc['users.local.total'] = amount;
+		inc['users.local.diff'] = amount;
 	} else {
-		inc['users.remote.total'] = val;
-		inc['users.remote.diff'] = val;
+		inc['users.remote.total'] = amount;
+		inc['users.remote.diff'] = amount;
 	}
 
 	await update(inc);
@@ -143,30 +172,51 @@ export async function updateUserStats(user: IUser, isAdditional: boolean) {
 export async function updateNoteStats(note: INote, isAdditional: boolean) {
 	const inc = {} as any;
 
-	const val = isAdditional ? 1 : -1;
+	const amount = isAdditional ? 1 : -1;
 
 	if (isLocalUser(note._user)) {
-		inc['notes.local.total'] = val;
-		inc['notes.local.diff'] = val;
+		inc['notes.local.total'] = amount;
+		inc['notes.local.diff'] = amount;
 
 		if (note.replyId != null) {
-			inc['notes.local.diffs.reply'] = val;
+			inc['notes.local.diffs.reply'] = amount;
 		} else if (note.renoteId != null) {
-			inc['notes.local.diffs.renote'] = val;
+			inc['notes.local.diffs.renote'] = amount;
 		} else {
-			inc['notes.local.diffs.normal'] = val;
+			inc['notes.local.diffs.normal'] = amount;
 		}
 	} else {
-		inc['notes.remote.total'] = val;
-		inc['notes.remote.diff'] = val;
+		inc['notes.remote.total'] = amount;
+		inc['notes.remote.diff'] = amount;
 
 		if (note.replyId != null) {
-			inc['notes.remote.diffs.reply'] = val;
+			inc['notes.remote.diffs.reply'] = amount;
 		} else if (note.renoteId != null) {
-			inc['notes.remote.diffs.renote'] = val;
+			inc['notes.remote.diffs.renote'] = amount;
 		} else {
-			inc['notes.remote.diffs.normal'] = val;
+			inc['notes.remote.diffs.normal'] = amount;
 		}
+	}
+
+	await update(inc);
+}
+
+export async function updateDriveStats(user: IUser, file: IDriveFile, isAdditional: boolean) {
+	const inc = {} as any;
+
+	const amount = isAdditional ? 1 : -1;
+	const size = isAdditional ? file.length : -file.length;
+
+	if (isLocalUser(user)) {
+		inc['drive.local.totalCount'] = amount;
+		inc['drive.local.diffCount'] = amount;
+		inc['drive.local.totalSize'] = size;
+		inc['drive.local.diffSize'] = size;
+	} else {
+		inc['drive.remote.total'] = amount;
+		inc['drive.remote.diff'] = amount;
+		inc['drive.remote.totalSize'] = size;
+		inc['drive.remote.diffSize'] = size;
 	}
 
 	await update(inc);

@@ -10,6 +10,9 @@ export interface IChart {
 
 	date: Date;
 
+	/**
+	 * ユーザーに関する統計
+	 */
 	users: {
 		local: {
 			/**
@@ -36,6 +39,9 @@ export interface IChart {
 		};
 	};
 
+	/**
+	 * 投稿に関する統計
+	 */
 	notes: {
 		local: {
 			/**
@@ -93,6 +99,55 @@ export interface IChart {
 				 */
 				renote: number;
 			};
+		};
+	};
+
+	/**
+	 * ドライブ(のファイル)に関する統計
+	 */
+	drive: {
+		local: {
+			/**
+			 * この日時点での、ローカルのドライブファイル数の総計
+			 */
+			totalCount: number;
+
+			/**
+			 * この日時点での、ローカルのドライブファイルサイズの総計
+			 */
+			totalSize: number;
+
+			/**
+			 * ローカルのドライブファイル数の前日比
+			 */
+			diffCount: number;
+
+			/**
+			 * ローカルのドライブファイルサイズの前日比
+			 */
+			diffSize: number;
+		};
+
+		remote: {
+			/**
+			 * この日時点での、リモートのドライブファイル数の総計
+			 */
+			totalCount: number;
+
+			/**
+			 * この日時点での、リモートのドライブファイルサイズの総計
+			 */
+			totalSize: number;
+
+			/**
+			 * リモートのドライブファイル数の前日比
+			 */
+			diffCount: number;
+
+			/**
+			 * リモートのドライブファイルサイズの前日比
+			 */
+			diffSize: number;
 		};
 	};
 }
