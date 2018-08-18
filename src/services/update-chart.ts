@@ -2,6 +2,8 @@ import { INote } from '../models/note';
 import Chart, { IChart } from '../models/chart';
 import { isLocalUser, IUser } from '../models/user';
 
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
 async function getTodayStats(): Promise<IChart> {
 	const now = new Date();
 	const y = now.getFullYear();
@@ -30,7 +32,7 @@ async function getTodayStats(): Promise<IChart> {
 		// * Misskeyインスタンスを建てて初めてのチャート更新時など
 		if (mostRecentStats == null) {
 			// 空の統計を作成
-			const stats = await Chart.insert({
+			const chart: Omit<IChart, '_id'> = {
 				date: today,
 				users: {
 					local: {
@@ -45,6 +47,7 @@ async function getTodayStats(): Promise<IChart> {
 				notes: {
 					local: {
 						total: 0,
+						diff: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -53,6 +56,7 @@ async function getTodayStats(): Promise<IChart> {
 					},
 					remote: {
 						total: 0,
+						diff: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -60,12 +64,14 @@ async function getTodayStats(): Promise<IChart> {
 						}
 					}
 				}
-			});
+			};
+
+			const stats = await Chart.insert(chart);
 
 			return stats;
 		} else {
 			// 今日の統計を初期挿入
-			const stats = await Chart.insert({
+			const chart: Omit<IChart, '_id'> = {
 				date: today,
 				users: {
 					local: {
@@ -80,6 +86,7 @@ async function getTodayStats(): Promise<IChart> {
 				notes: {
 					local: {
 						total: mostRecentStats.notes.local.total,
+						diff: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -88,6 +95,7 @@ async function getTodayStats(): Promise<IChart> {
 					},
 					remote: {
 						total: mostRecentStats.notes.remote.total,
+						diff: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -95,7 +103,9 @@ async function getTodayStats(): Promise<IChart> {
 						}
 					}
 				}
-			});
+			};
+
+			const stats = await Chart.insert(chart);
 
 			return stats;
 		}
@@ -137,6 +147,7 @@ export async function updateNoteStats(note: INote, isAdditional: boolean) {
 
 	if (isLocalUser(note._user)) {
 		inc['notes.local.total'] = val;
+		inc['notes.local.diff'] = val;
 
 		if (note.replyId != null) {
 			inc['notes.local.diffs.reply'] = val;
@@ -147,6 +158,7 @@ export async function updateNoteStats(note: INote, isAdditional: boolean) {
 		}
 	} else {
 		inc['notes.remote.total'] = val;
+		inc['notes.remote.diff'] = val;
 
 		if (note.replyId != null) {
 			inc['notes.remote.diffs.reply'] = val;

@@ -18,7 +18,7 @@ export interface IChart {
 			total: number;
 
 			/**
-			 * この日時点での、ローカルのユーザー数の前日比
+			 * ローカルのユーザー数の前日比
 			 */
 			diff: number;
 		};
@@ -30,7 +30,7 @@ export interface IChart {
 			total: number;
 
 			/**
-			 * この日時点での、リモートのユーザー数の前日比
+			 * リモートのユーザー数の前日比
 			 */
 			diff: number;
 		};
@@ -43,19 +43,24 @@ export interface IChart {
 			 */
 			total: number;
 
+			/**
+			 * ローカルの投稿数の前日比
+			 */
+			diff: number;
+
 			diffs: {
 				/**
-				 * この日に行われた、ローカルの通常の投稿数の前日比
+				 * ローカルの通常の投稿数の前日比
 				 */
 				normal: number;
 
 				/**
-				 * この日に行われた、ローカルのリプライの投稿数の前日比
+				 * ローカルのリプライの投稿数の前日比
 				 */
 				reply: number;
 
 				/**
-				 * この日に行われた、ローカルのRenoteの投稿数の前日比
+				 * ローカルのRenoteの投稿数の前日比
 				 */
 				renote: number;
 			};
@@ -67,19 +72,24 @@ export interface IChart {
 			 */
 			total: number;
 
+			/**
+			 * リモートの投稿数の前日比
+			 */
+			diff: number;
+
 			diffs: {
 				/**
-				 * この日に行われた、リモートの通常の投稿数の前日比
+				 * リモートの通常の投稿数の前日比
 				 */
 				normal: number;
 
 				/**
-				 * この日に行われた、リモートのリプライの投稿数の前日比
+				 * リモートのリプライの投稿数の前日比
 				 */
 				reply: number;
 
 				/**
-				 * この日に行われた、リモートのRenoteの投稿数の前日比
+				 * リモートのRenoteの投稿数の前日比
 				 */
 				renote: number;
 			};
