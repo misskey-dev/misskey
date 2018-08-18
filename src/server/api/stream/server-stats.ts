@@ -22,7 +22,10 @@ export default function(request: websocket.request, connection: websocket.connec
 						body: statsLog
 					}));
 				});
-				ev.emit('requestServerStatsLog', msg.id);
+				ev.emit('requestServerStatsLog', {
+					id: msg.id,
+					length: msg.length
+				});
 				break;
 		}
 	});
