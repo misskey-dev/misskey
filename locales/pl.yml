@@ -443,6 +443,7 @@ desktop/views/components/drive-window.vue:
 desktop/views/components/drive.file.vue:
   avatar: "Awatar"
   banner: "Baner"
+  nsfw: "閲覧注意"
   contextmenu:
     rename: "Zmień nazwę"
     mark-as-sensitive: "Oznacz jako zawartość wrażliwą"
@@ -954,12 +955,15 @@ mobile/views/components/drive-file-chooser.vue:
   select-file: "Wybierz plik"
 mobile/views/components/drive-folder-chooser.vue:
   select-folder: "Wybierz katalog"
+mobile/views/components/drive.file.vue:
+  nsfw: "閲覧注意"
 mobile/views/components/drive.file-detail.vue:
   download: "Pobierz"
   rename: "Zmień nazwę"
   move: "Przenieś"
   hash: "Hash (md5)"
   exif: "EXIF"
+  nsfw: "閲覧注意"
 mobile/views/components/media-image.vue:
   sensitive: "To jest zawartość NSFW"
   click-to-show: "Naciśnij aby wyświetlić"
