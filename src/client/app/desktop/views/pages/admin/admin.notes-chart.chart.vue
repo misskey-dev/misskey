@@ -53,14 +53,14 @@ export default Vue.extend({
 		if (peak != 0) {
 			const data = this.chart.slice().reverse().map(x => ({
 				normal: this.type == 'local' ? x.notes.local.diffs.normal : x.notes.remote.diffs.normal,
-				replies: this.type == 'local' ? x.notes.local.diffs.replies : x.notes.remote.diffs.replies,
-				renotes: this.type == 'local' ? x.notes.local.diffs.renotes : x.notes.remote.diffs.renotes,
+				reply: this.type == 'local' ? x.notes.local.diffs.reply : x.notes.remote.diffs.reply,
+				renote: this.type == 'local' ? x.notes.local.diffs.renote : x.notes.remote.diffs.renote,
 				total: this.type == 'local' ? x.notes.local.diff : x.notes.remote.diff
 			}));
 
 			this.pointsNote = data.map((d, i) => `${i},${(1 - (d.normal / peak)) * this.viewBoxY}`).join(' ');
-			this.pointsReply = data.map((d, i) => `${i},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
-			this.pointsRenote = data.map((d, i) => `${i},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' ');
+			this.pointsReply = data.map((d, i) => `${i},${(1 - (d.reply / peak)) * this.viewBoxY}`).join(' ');
+			this.pointsRenote = data.map((d, i) => `${i},${(1 - (d.renote / peak)) * this.viewBoxY}`).join(' ');
 			this.pointsTotal = data.map((d, i) => `${i},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
 		}
 	}

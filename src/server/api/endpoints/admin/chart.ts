@@ -34,15 +34,15 @@ export default (params: any) => new Promise(async (res, rej) => {
 		const stat = stats.find(s => s.date.getTime() == day.getTime());
 
 		if (stat) {
-			chart.push(stat);
+			chart.unshift(stat);
 		} else { // 隙間埋め
 			const mostRecent = stats.find(s => s.date.getTime() < day.getTime());
 			if (mostRecent) {
-				chart.push(Object.assign({}, mostRecent, {
+				chart.unshift(Object.assign({}, mostRecent, {
 					date: day
 				}));
 			} else {
-				chart.push({
+				chart.unshift({
 					date: day,
 					users: {
 						local: {
@@ -92,6 +92,10 @@ export default (params: any) => new Promise(async (res, rej) => {
 			}
 		}
 	}
+
+	chart.forEach(x => {
+		delete x.date;
+	});
 
 	res(chart);
 });
