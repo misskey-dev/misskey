@@ -52,6 +52,11 @@ export type IDriveFile = {
 	filename: string;
 	contentType: string;
 	metadata: IMetadata;
+
+	/**
+	 * ファイルサイズ
+	 */
+	length: number;
 };
 
 export function validateFileName(name: string): boolean {

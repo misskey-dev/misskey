@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import XChart from "./admin.notes-chart.chart.vue";
+import XChart from "./admin.drive-chart.chart.vue";
 
 export default Vue.extend({
 	components: {

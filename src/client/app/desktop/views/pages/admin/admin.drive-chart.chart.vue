@@ -29,14 +29,14 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		const peak = Math.max.apply(null, this.chart.map(d => this.type == 'local' ? d.users.local.diff : d.users.remote.diff));
+		const peak = Math.max.apply(null, this.chart.map(d => this.type == 'local' ? d.drive.local.totalSize : d.drive.remote.totalSize));
 
 		if (peak != 0) {
 			const data = this.chart.slice().reverse().map(x => ({
-				count: this.type == 'local' ? x.users.local.diff : x.users.remote.diff
+				size: this.type == 'local' ? x.drive.local.totalSize : x.drive.remote.totalSize
 			}));
 
-			this.points = data.map((d, i) => `${i},${(1 - (d.count / peak)) * this.viewBoxY}`).join(' ');
+			this.points = data.map((d, i) => `${i},${(1 - (d.size / peak)) * this.viewBoxY}`).join(' ');
 		}
 	}
 });
