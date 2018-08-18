@@ -17,6 +17,7 @@ import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
+import { updateDriveStats } from '../update-chart';
 
 const log = debug('misskey:drive:add-file');
 
@@ -377,7 +378,8 @@ export default async function(
 		publishDriveStream(user._id, 'file_created', packedFile);
 	});
 
-	// TODO: サムネイル生成
+	// 統計を更新
+	updateDriveStats(driveFile, true);
 
 	return driveFile;
 }

@@ -44,7 +44,12 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	props: ['source', 'compact', 'v'],
+	props: ['source', 'compact'],
+	data() {
+		return {
+			v: this.$store.state.device.visibility || 'public'
+		}
+	},
 	mounted() {
 		this.$nextTick(() => {
 			const popover = this.$refs.popover as any;
@@ -92,6 +97,7 @@ export default Vue.extend({
 	},
 	methods: {
 		choose(visibility) {
+			this.$store.commit('device/setVisibility', visibility);
 			this.$emit('chosen', visibility);
 			this.$destroy();
 		},

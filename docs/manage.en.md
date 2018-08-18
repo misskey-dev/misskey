@@ -33,14 +33,3 @@ node cli/suspend @syuilo@misskey.xyz
 ``` shell
 node cli/reset-password (User-ID or Username)
 ```
-
-## Clean up cached remote files
-``` shell
-node cli/clean-cached-remote-files
-```
-
-## Clean up unused drive files
-``` shell
-node cli/clean-unused-drive-files
-```
-> We recommend that you announce a user that unused drive files will be deleted before performing this operation, as it may delete the user's important files.

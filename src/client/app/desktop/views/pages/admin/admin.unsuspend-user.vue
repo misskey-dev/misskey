@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="card">
 	<header>%i18n:@unsuspend-user%</header>
 	<input v-model="username" type="text" class="ui"/>
 	<button class="ui" @click="unsuspendUser" :disabled="unsuspending">%i18n:@unsuspend%</button>

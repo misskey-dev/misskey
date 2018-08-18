@@ -5,6 +5,15 @@ ChangeLog
 
 This document describes breaking changes only.
 
+7.0.0
+-----
+
+### Migration
+
+起動する前に、`node cli/migration/7.0.0`してください。
+
+Please run `node cli/migration/7.0.0` before launch.
+
 6.0.0
 -----
 

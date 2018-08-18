@@ -110,6 +110,10 @@ export default (os: MiOS) => new Vuex.Store({
 						src: x.src,
 						arg: x.arg
 					};
+				},
+
+				setVisibility(state, visibility) {
+					state.visibility = visibility;
 				}
 			}
 		},

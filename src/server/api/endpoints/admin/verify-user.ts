@@ -5,8 +5,8 @@ import User from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーを凍結します。',
-		en: 'Suspend a user.'
+		ja: '指定したユーザーを公式アカウントにします。',
+		en: 'Mark a user as verified.'
 	},
 
 	requireCredential: true,
@@ -16,7 +16,7 @@ export const meta = {
 		userId: $.type(ID).note({
 			desc: {
 				ja: '対象のユーザーID',
-				en: 'The user ID which you want to suspend'
+				en: 'The user ID which you want to verify'
 			}
 		}),
 	}
@@ -38,7 +38,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 		_id: user._id
 	}, {
 			$set: {
-				isSuspended: true
+				isVerified: true
 			}
 		});
 

@@ -28,6 +28,7 @@ export default () => new Promise(async (res, rej) => {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
 		},
-		broadcasts: meta.broadcasts
+		broadcasts: meta.broadcasts,
+		disableRegistration: meta.disableRegistration
 	});
 });

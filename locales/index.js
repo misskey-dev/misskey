@@ -15,6 +15,7 @@ const langs = {
 	'en': loadLang('en'),
 	'fr': loadLang('fr'),
 	'ja': native,
+	'ja-ks': loadLang('ja-ks'),
 	'pl': loadLang('pl'),
 	'es': loadLang('es')
 };

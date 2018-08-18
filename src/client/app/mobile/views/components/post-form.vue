@@ -56,7 +56,7 @@ import Vue from 'vue';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
-import getKao from '../../../common/scripts/get-kao';
+import getFace from '../../../common/scripts/get-face';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
 
@@ -94,7 +94,7 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
-			visibility: 'public',
+			visibility: this.$store.state.device.visibility || 'public',
 			visibleUsers: [],
 			useCw: false,
 			cw: null,
@@ -240,8 +240,7 @@ export default Vue.extend({
 		setVisibility() {
 			const w = (this as any).os.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				compact: true,
-				v: this.visibility
+				compact: true
 			});
 			w.$once('chosen', v => {
 				this.visibility = v;
@@ -314,7 +313,7 @@ export default Vue.extend({
 		},
 
 		kao() {
-			this.text += getKao();
+			this.text += getFace();
 		}
 	}
 });

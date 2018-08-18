@@ -16,8 +16,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 300,
-		minInterval: ms('1second')
+		max: 300
 	},
 
 	kind: 'note-write',

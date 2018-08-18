@@ -1,8 +1,8 @@
 <template>
 <div class="card">
-	<header>%i18n:@suspend-user%</header>
+	<header>%i18n:@verify-user%</header>
 	<input v-model="username" type="text" class="ui"/>
-	<button class="ui" @click="suspendUser" :disabled="suspending">%i18n:@suspend%</button>
+	<button class="ui" @click="verifyUser" :disabled="verifying">%i18n:@verify%</button>
 </div>
 </template>
 
@@ -14,25 +14,25 @@ export default Vue.extend({
 	data() {
 		return {
 			username: null,
-			suspending: false
+			verifying: false
 		};
 	},
 	methods: {
-		async suspendUser() {
-			this.suspending = true;
+		async verifyUser() {
+			this.verifying = true;
 
 			const user = await (this as any).os.api(
 				"users/show",
 				parseAcct(this.username)
 			);
 
-			await (this as any).os.api("admin/suspend-user", {
+			await (this as any).os.api("admin/verify-user", {
 				userId: user.id
 			});
 
-			this.suspending = false;
+			this.verifying = false;
 
-			(this as any).os.apis.dialog({ text: "%i18n:@suspended%" });
+			(this as any).os.apis.dialog({ text: "%i18n:@verified%" });
 		}
 	}
 });
