@@ -826,9 +826,9 @@ desktop/views/pages/admin/admin.users-chart.vue:
   local: "Local"
   remote: "Remote"
 desktop/views/pages/admin/admin.drive-chart.vue:
-  title: "ドライブ"
-  local: "ローカル"
-  remote: "リモート"
+  title: "Drive"
+  local: "Local"
+  remote: "Remote"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
@@ -861,7 +861,7 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Cancel"
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
-  not-available: "検索機能はインスタンスの設定で無効になっています。"
+  not-available: "Search feature is turned off in the settings for this instance."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
   share-with: "Share with {}."
