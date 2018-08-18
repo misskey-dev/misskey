@@ -18,6 +18,7 @@
 			<x-suspend-user/>
 			<x-unsuspend-user/>
 			<x-verify-user/>
+			<x-unverify-user/>
 		</div>
 		<div v-if="page == 'drive'"></div>
 		<div v-if="page == 'update'"></div>
@@ -31,6 +32,7 @@ import XDashboard from "./admin.dashboard.vue";
 import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
+import XUnverifyUser from "./admin.unverify-user.vue";
 import XUsersChart from "./admin.users-chart.vue";
 import XNotesChart from "./admin.notes-chart.vue";
 
@@ -40,6 +42,7 @@ export default Vue.extend({
 		XSuspendUser,
 		XUnsuspendUser,
 		XVerifyUser,
+		XUnverifyUser,
 		XUsersChart,
 		XNotesChart
 	},
