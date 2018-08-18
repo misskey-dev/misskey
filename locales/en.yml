@@ -812,11 +812,11 @@ desktop/views/pages/admin/admin.unsuspend-user.vue:
 desktop/views/pages/admin/admin.verify-user.vue:
   verify-user: "User account verification settings"
   verify: "Verify account"
-  verified: "The account was verified"
+  verified: "The account is now being verified"
 desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "User account unverification settings"
   unverify: "Unverify account"
-  unverified: "The account was unverified"
+  unverified: "The account is now being unverified"
 desktop/views/pages/admin/admin.notes-chart.vue:
   title: "Posts"
   local: "Local"
