@@ -1,11 +1,11 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 
-const Chart = db.get<IChart>('chart');
-Chart.createIndex('date', { unique: true });
-export default Chart;
+const Stats = db.get<IStats>('stats');
+Stats.createIndex({ date: -1 }, { unique: true });
+export default Stats;
 
-export interface IChart {
+export interface IStats {
 	_id: mongo.ObjectID;
 
 	date: Date;

@@ -1,4 +1,4 @@
-const { default: Chart } = require('../../built/models/chart');
+const { default: Stats } = require('../../built/models/stats');
 const { default: User } = require('../../built/models/user');
 const { default: Note } = require('../../built/models/note');
 const { default: DriveFile } = require('../../built/models/drive-file');
@@ -80,7 +80,7 @@ async function main() {
 			return 0;
 		});
 
-	await Chart.insert({
+	await Stats.insert({
 		date: today,
 		users: {
 			local: {

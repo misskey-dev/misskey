@@ -1,11 +1,11 @@
 import { INote } from '../models/note';
-import Chart, { IChart } from '../models/chart';
+import Stats, { IStats } from '../models/stats';
 import { isLocalUser, IUser } from '../models/user';
 import { IDriveFile } from '../models/drive-file';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-async function getTodayStats(): Promise<IChart> {
+async function getTodayStats(): Promise<IStats> {
 	const now = new Date();
 	const y = now.getFullYear();
 	const m = now.getMonth();
@@ -13,7 +13,7 @@ async function getTodayStats(): Promise<IChart> {
 	const today = new Date(y, m, d);
 
 	// 今日の統計
-	const todayStats = await Chart.findOne({
+	const todayStats = await Stats.findOne({
 		date: today
 	});
 
@@ -23,7 +23,7 @@ async function getTodayStats(): Promise<IChart> {
 		// * 昨日何もチャートを更新するような出来事がなかった場合は、
 		//   統計がそもそも作られずドキュメントが存在しないということがあり得るため、
 		//   「昨日の」と決め打ちせずに「もっとも最近の」とします
-		const mostRecentStats = await Chart.findOne({}, {
+		const mostRecentStats = await Stats.findOne({}, {
 			sort: {
 				date: -1
 			}
@@ -33,7 +33,7 @@ async function getTodayStats(): Promise<IChart> {
 		// * Misskeyインスタンスを建てて初めてのチャート更新時など
 		if (mostRecentStats == null) {
 			// 空の統計を作成
-			const chart: Omit<IChart, '_id'> = {
+			const chart: Omit<IStats, '_id'> = {
 				date: today,
 				users: {
 					local: {
@@ -81,12 +81,12 @@ async function getTodayStats(): Promise<IChart> {
 				}
 			};
 
-			const stats = await Chart.insert(chart);
+			const stats = await Stats.insert(chart);
 
 			return stats;
 		} else {
 			// 今日の統計を初期挿入
-			const chart: Omit<IChart, '_id'> = {
+			const chart: Omit<IStats, '_id'> = {
 				date: today,
 				users: {
 					local: {
@@ -134,7 +134,7 @@ async function getTodayStats(): Promise<IChart> {
 				}
 			};
 
-			const stats = await Chart.insert(chart);
+			const stats = await Stats.insert(chart);
 
 			return stats;
 		}
@@ -146,7 +146,7 @@ async function getTodayStats(): Promise<IChart> {
 async function update(inc: any) {
 	const stats = await getTodayStats();
 
-	await Chart.findOneAndUpdate({
+	await Stats.findOneAndUpdate({
 		_id: stats._id
 	}, {
 		$inc: inc

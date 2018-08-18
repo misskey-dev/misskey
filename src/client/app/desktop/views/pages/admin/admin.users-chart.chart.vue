@@ -13,7 +13,7 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: {
-		data: {
+		chart: {
 			required: true
 		},
 		type: {
@@ -23,21 +23,19 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			chart: this.data,
 			viewBoxX: 365,
 			viewBoxY: 70,
 			points: null
 		};
 	},
 	created() {
-		this.chart.forEach(d => {
-			d.count = this.type == 'local' ? d.local : d.remote;
-		});
-
-		const peak = Math.max.apply(null, this.chart.map(d => d.count));
+		const peak = Math.max.apply(null, this.chart.map(d => this.type == 'local' ? d.users.local.diff : d.users.remote.diff));
 
 		if (peak != 0) {
-			const data = this.chart.slice().reverse();
+			const data = this.chart.slice().reverse().map(x => ({
+				count: this.type == 'local' ? x.users.local.diff : x.users.remote.diff
+			}));
+
 			this.points = data.map((d, i) => `${i},${(1 - (d.count / peak)) * this.viewBoxY}`).join(' ');
 		}
 	}

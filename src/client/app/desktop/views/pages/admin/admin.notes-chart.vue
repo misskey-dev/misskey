@@ -3,11 +3,11 @@
 	<header>%i18n:@title%</header>
 	<div class="card">
 		<header>%i18n:@local%</header>
-		<x-chart v-if="data" :data="data" type="local"/>
+		<x-chart v-if="chart" :chart="chart" type="local"/>
 	</div>
 	<div class="card">
 		<header>%i18n:@remote%</header>
-		<x-chart v-if="data" :data="data" type="remote"/>
+		<x-chart v-if="chart" :chart="chart" type="remote"/>
 	</div>
 </div>
 </template>
@@ -20,15 +20,10 @@ export default Vue.extend({
 	components: {
 		XChart
 	},
-	data() {
-		return {
-			data: null
-		};
-	},
-	created() {
-		(this as any).api('aggregation/notes').then(res => {
-			this.data = res;
-		});
+	props: {
+		chart: {
+			required: true
+		}
 	}
 });
 </script>

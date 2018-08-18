@@ -11,8 +11,8 @@
 	<main>
 		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
-			<x-users-chart/>
-			<x-notes-chart/>
+			<x-users-chart :chart="chart"/>
+			<x-notes-chart :chart="chart"/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
@@ -48,8 +48,14 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			page: 'dashboard'
+			page: 'dashboard',
+			chart: null
 		};
+	},
+	created() {
+		(this as any).api('admin/chart').then(chart => {
+			this.chart = chart;
+		});
 	},
 	methods: {
 		nav(page: string) {
