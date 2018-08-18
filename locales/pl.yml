@@ -825,6 +825,10 @@ desktop/views/pages/admin/admin.users-chart.vue:
   title: "ユーザー"
   local: "ローカル"
   remote: "リモート"
+desktop/views/pages/admin/admin.drive-chart.vue:
+  title: "ドライブ"
+  local: "ローカル"
+  remote: "リモート"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Tylko wpisy z zawartością multimedialną"
   is-media-view: "Widok multimediów"
