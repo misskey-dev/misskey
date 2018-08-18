@@ -201,13 +201,13 @@ export async function updateNoteStats(note: INote, isAdditional: boolean) {
 	await update(inc);
 }
 
-export async function updateDriveStats(user: IUser, file: IDriveFile, isAdditional: boolean) {
+export async function updateDriveStats(file: IDriveFile, isAdditional: boolean) {
 	const inc = {} as any;
 
 	const amount = isAdditional ? 1 : -1;
 	const size = isAdditional ? file.length : -file.length;
 
-	if (isLocalUser(user)) {
+	if (isLocalUser(file.metadata._user)) {
 		inc['drive.local.totalCount'] = amount;
 		inc['drive.local.diffCount'] = amount;
 		inc['drive.local.totalSize'] = size;

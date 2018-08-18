@@ -6,6 +6,7 @@ import pack from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import Following from '../../models/following';
 import renderNote from '../../remote/activitypub/renderer/note';
+import { updateNoteStats } from '../update-chart';
 
 /**
  * 投稿を削除します。
@@ -43,4 +44,7 @@ export default async function(user: IUser, note: INote) {
 		});
 	}
 	//#endregion
+
+	// 統計を更新
+	updateNoteStats(note, false);
 }
