@@ -813,6 +813,10 @@ desktop/views/pages/admin/admin.verify-user.vue:
   verify-user: "User account verification settings"
   verify: "Verify account"
   verified: "The account was verified"
+desktop/views/pages/admin/admin.unverify-user.vue:
+  unverify-user: "ユーザーの公式アカウント解除"
+  unverify: "公式アカウントを解除する"
+  unverified: "公式アカウントを解除しました"
 desktop/views/pages/admin/admin.notes-chart.vue:
   title: "Posts"
   local: "Local"
