@@ -114,28 +114,30 @@ async function update(inc: any) {
 	});
 }
 
-export async function incNote(note: INote) {
+export async function updateNoteStats(note: INote, isAdditional: boolean) {
 	const inc = {} as any;
 
+	const val = isAdditional ? 1 : -1;
+
 	if (isLocalUser(note._user)) {
-		inc['notes.local.total'] = 1;
+		inc['notes.local.total'] = val;
 
 		if (note.replyId != null) {
-			inc['notes.local.diffs.reply'] = 1;
+			inc['notes.local.diffs.reply'] = val;
 		} else if (note.renoteId != null) {
-			inc['notes.local.diffs.renote'] = 1;
+			inc['notes.local.diffs.renote'] = val;
 		} else {
-			inc['notes.local.diffs.normal'] = 1;
+			inc['notes.local.diffs.normal'] = val;
 		}
 	} else {
-		inc['notes.remote.total'] = 1;
+		inc['notes.remote.total'] = val;
 
 		if (note.replyId != null) {
-			inc['notes.remote.diffs.reply'] = 1;
+			inc['notes.remote.diffs.reply'] = val;
 		} else if (note.renoteId != null) {
-			inc['notes.remote.diffs.renote'] = 1;
+			inc['notes.remote.diffs.renote'] = val;
 		} else {
-			inc['notes.remote.diffs.normal'] = 1;
+			inc['notes.remote.diffs.normal'] = val;
 		}
 	}
 
