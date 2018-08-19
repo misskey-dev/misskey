@@ -58,7 +58,7 @@ common:
     friday: "Friday"
     saturday: "Saturday"
   reactions:
-    like: "ええやん"
+    like: "Nice..."
     love: "Love"
     laugh: "Laugh"
     hmm: "Hmm...?"
