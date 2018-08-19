@@ -289,6 +289,8 @@ common/views/components/signin.vue:
   signin-with-twitter: "Ingresar con Twitter"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
+  invitation-code: "招待コード"
+  invitation-info: "招待コードをお持ちでない方は、<a href=\"{}\">管理者</a>までご連絡ください。"
   username: "Usuario"
   checking: "Comprobando..."
   available: "Disponible"
@@ -798,6 +800,7 @@ desktop/views/pages/admin/admin.dashboard.vue:
   original-users: "このインスタンスのユーザー"
   all-notes: "全てのノート"
   original-notes: "このインスタンスのノート"
+  invite: "招待"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "ユーザーの凍結"
   suspend: "凍結"
@@ -806,6 +809,26 @@ desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend-user: "ユーザーの凍結の解除"
   unsuspend: "凍結の解除"
   unsuspended: "凍結を解除しました"
+desktop/views/pages/admin/admin.verify-user.vue:
+  verify-user: "ユーザーの公式アカウント設定"
+  verify: "公式アカウントにする"
+  verified: "公式アカウントにしました"
+desktop/views/pages/admin/admin.unverify-user.vue:
+  unverify-user: "ユーザーの公式アカウント解除"
+  unverify: "公式アカウントを解除する"
+  unverified: "公式アカウントを解除しました"
+desktop/views/pages/admin/admin.notes-chart.vue:
+  title: "投稿"
+  local: "ローカル"
+  remote: "リモート"
+desktop/views/pages/admin/admin.users-chart.vue:
+  title: "ユーザー"
+  local: "ローカル"
+  remote: "リモート"
+desktop/views/pages/admin/admin.drive-chart.vue:
+  title: "ドライブ"
+  local: "ローカル"
+  remote: "リモート"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
@@ -838,7 +861,7 @@ desktop/views/pages/selectdrive.vue:
   cancel: "キャンセル"
   upload: "PCからドライブにファイルをアップロード"
 desktop/views/pages/search.vue:
-  not-available: "検索機能を利用することができません。"
+  not-available: "検索機能はインスタンスの設定で無効になっています。"
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
   share-with: "{}で共有"

@@ -9,21 +9,11 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 	const isSecure = user != null && app == null;
 
 	// Get 'appId' parameter
-	const [appId, appIdErr] = $.type(ID).optional.get(params.appId);
+	const [appId, appIdErr] = $.type(ID).get(params.appId);
 	if (appIdErr) return rej('invalid appId param');
 
-	// Get 'nameId' parameter
-	const [nameId, nameIdErr] = $.str.optional.get(params.nameId);
-	if (nameIdErr) return rej('invalid nameId param');
-
-	if (appId === undefined && nameId === undefined) {
-		return rej('appId or nameId is required');
-	}
-
 	// Lookup app
-	const ap = appId !== undefined
-		? await App.findOne({ _id: appId })
-		: await App.findOne({ nameIdLower: nameId.toLowerCase() });
+	const ap = await App.findOne({ _id: appId });
 
 	if (ap === null) {
 		return rej('app not found');

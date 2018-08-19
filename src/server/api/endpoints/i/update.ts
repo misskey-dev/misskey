@@ -105,17 +105,22 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		}
 	}
 
-	if (wallpaperId) {
-		const wallpaper = await DriveFile.findOne({
-			_id: wallpaperId
-		});
+	if (wallpaperId !== undefined) {
+		if (wallpaperId === null) {
+			updates.wallpaperUrl = null;
+			updates.wallpaperColor = null;
+		} else {
+			const wallpaper = await DriveFile.findOne({
+				_id: wallpaperId
+			});
 
-		if (wallpaper == null) return rej('wallpaper not found');
+			if (wallpaper == null) return rej('wallpaper not found');
 
-		updates.wallpaperUrl = wallpaper.metadata.url || `${config.drive_url}/${wallpaper._id}`;
+			updates.wallpaperUrl = wallpaper.metadata.url || `${config.drive_url}/${wallpaper._id}`;
 
-		if (wallpaper.metadata.properties.avgColor) {
-			updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
+			if (wallpaper.metadata.properties.avgColor) {
+				updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
+			}
 		}
 	}
 

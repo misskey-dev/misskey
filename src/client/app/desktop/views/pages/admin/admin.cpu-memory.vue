@@ -15,14 +15,14 @@
 					:points="cpuPolylinePoints"
 					fill="none"
 					stroke="#fff"
-					stroke-width="0.3"/>
+					stroke-width="1"/>
 			</mask>
 		</defs>
 		<rect
 			x="0" y="0"
 			:width="viewBoxX" :height="viewBoxY"
 			:style="`stroke: none; fill: url(#${ cpuGradientId }); mask: url(#${ cpuMaskId })`"/>
-		<text x="1" y="5">CPU <tspan>{{ cpuP }}%</tspan></text>
+		<text x="1" y="12">CPU <tspan>{{ cpuP }}%</tspan></text>
 	</svg>
 	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
 		<defs>
@@ -39,14 +39,14 @@
 					:points="memPolylinePoints"
 					fill="none"
 					stroke="#fff"
-					stroke-width="0.3"/>
+					stroke-width="1"/>
 			</mask>
 		</defs>
 		<rect
 			x="0" y="0"
 			:width="viewBoxX" :height="viewBoxY"
 			:style="`stroke: none; fill: url(#${ memGradientId }); mask: url(#${ memMaskId })`"/>
-		<text x="1" y="5">MEM <tspan>{{ memP }}%</tspan></text>
+		<text x="1" y="12">MEM <tspan>{{ memP }}%</tspan></text>
 	</svg>
 </div>
 </template>
@@ -59,8 +59,8 @@ export default Vue.extend({
 	props: ['connection'],
 	data() {
 		return {
-			viewBoxX: 50,
-			viewBoxY: 20,
+			viewBoxX: 200,
+			viewBoxY: 70,
 			stats: [],
 			cpuGradientId: uuid(),
 			cpuMaskId: uuid(),
@@ -79,7 +79,8 @@ export default Vue.extend({
 		this.connection.on('statsLog', this.onStatsLog);
 		this.connection.send({
 			type: 'requestLog',
-			id: Math.random().toString()
+			id: Math.random().toString(),
+			length: 200
 		});
 	},
 	beforeDestroy() {
@@ -89,7 +90,7 @@ export default Vue.extend({
 	methods: {
 		onStats(stats) {
 			this.stats.push(stats);
-			if (this.stats.length > 50) this.stats.shift();
+			if (this.stats.length > 200) this.stats.shift();
 
 			const cpuPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - s.cpu_usage) * this.viewBoxY]);
 			const memPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.mem.used / s.mem.total)) * this.viewBoxY]);
@@ -103,7 +104,7 @@ export default Vue.extend({
 			this.memP = (stats.mem.used / stats.mem.total * 100).toFixed(0);
 		},
 		onStatsLog(statsLog) {
-			statsLog.forEach(stats => this.onStats(stats));
+			statsLog.reverse().forEach(stats => this.onStats(stats));
 		}
 	}
 });
@@ -111,8 +112,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	margin-bottom 16px
-
 	> svg
 		display block
 		width 50%
@@ -125,7 +124,7 @@ root(isDark)
 			padding-left 5px
 
 		> text
-			font-size 2px
+			font-size 10px
 			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
 
 			> tspan

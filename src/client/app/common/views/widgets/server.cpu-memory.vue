@@ -122,7 +122,7 @@ export default Vue.extend({
 			this.memP = (stats.mem.used / stats.mem.total * 100).toFixed(0);
 		},
 		onStatsLog(statsLog) {
-			statsLog.forEach(stats => this.onStats(stats));
+			statsLog.reverse().forEach(stats => this.onStats(stats));
 		}
 	}
 });

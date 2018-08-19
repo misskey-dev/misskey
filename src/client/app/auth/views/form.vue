@@ -7,7 +7,7 @@
 	<div class="app">
 		<section>
 			<h2>{{ app.name }}</h2>
-			<p class="nid">{{ app.nameId }}</p>
+			<p class="id">{{ app.id }}</p>
 			<p class="description">{{ app.description }}</p>
 		</section>
 		<section>

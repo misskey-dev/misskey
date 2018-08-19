@@ -23,6 +23,7 @@ import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
+import { updateNoteStats } from '../update-chart';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -141,6 +142,9 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (note == null) {
 		return;
 	}
+
+	// 統計を更新
+	updateNoteStats(note, true);
 
 	// ハッシュタグ登録
 	tags.map(tag => registerHashtag(user, tag));

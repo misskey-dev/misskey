@@ -29,7 +29,7 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: {
-		data: {
+		chart: {
 			required: true
 		},
 		type: {
@@ -39,7 +39,6 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			chart: this.data,
 			viewBoxX: 365,
 			viewBoxY: 70,
 			pointsNote: null,
@@ -49,23 +48,19 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.chart.forEach(d => {
-			d.notes = this.type == 'local' ? d.localNotes : d.remoteNotes;
-			d.replies = this.type == 'local' ? d.localReplies : d.remoteReplies;
-			d.renotes = this.type == 'local' ? d.localRenotes : d.remoteRenotes;
-		});
-
-		this.chart.forEach(d => {
-			d.total = d.notes + d.replies + d.renotes;
-		});
-
-		const peak = Math.max.apply(null, this.chart.map(d => d.total));
+		const peak = Math.max.apply(null, this.chart.map(d => this.type == 'local' ? d.notes.local.diff : d.notes.remote.diff));
 
 		if (peak != 0) {
-			const data = this.chart.slice().reverse();
-			this.pointsNote = data.map((d, i) => `${i},${(1 - (d.notes / peak)) * this.viewBoxY}`).join(' ');
-			this.pointsReply = data.map((d, i) => `${i},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
-			this.pointsRenote = data.map((d, i) => `${i},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' ');
+			const data = this.chart.slice().reverse().map(x => ({
+				normal: this.type == 'local' ? x.notes.local.diffs.normal : x.notes.remote.diffs.normal,
+				reply: this.type == 'local' ? x.notes.local.diffs.reply : x.notes.remote.diffs.reply,
+				renote: this.type == 'local' ? x.notes.local.diffs.renote : x.notes.remote.diffs.renote,
+				total: this.type == 'local' ? x.notes.local.diff : x.notes.remote.diff
+			}));
+
+			this.pointsNote = data.map((d, i) => `${i},${(1 - (d.normal / peak)) * this.viewBoxY}`).join(' ');
+			this.pointsReply = data.map((d, i) => `${i},${(1 - (d.reply / peak)) * this.viewBoxY}`).join(' ');
+			this.pointsRenote = data.map((d, i) => `${i},${(1 - (d.renote / peak)) * this.viewBoxY}`).join(' ');
 			this.pointsTotal = data.map((d, i) => `${i},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
 		}
 	}
