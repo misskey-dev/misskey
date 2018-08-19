@@ -33,7 +33,7 @@ export default function(html: string): string {
 
 			case 'a':
 				const txt = getText(node);
-				const rel = node.attrs.find((x: any) => x.name == 'rel')
+				const rel = node.attrs.find((x: any) => x.name == 'rel');
 
 				// メンション
 				if (txt.startsWith('@')) {
