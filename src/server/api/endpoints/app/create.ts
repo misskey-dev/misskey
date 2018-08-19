@@ -1,6 +1,6 @@
 import rndstr from 'rndstr';
 import $ from 'cafy';
-import App, { isValidNameId, pack } from '../../../../models/app';
+import App, { pack } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
@@ -11,10 +11,6 @@ export const meta = {
  * Create an app
  */
 export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'nameId' parameter
-	const [nameId, nameIdErr] = $.str.pipe(isValidNameId).get(params.nameId);
-	if (nameIdErr) return rej('invalid nameId param');
-
 	// Get 'name' parameter
 	const [name, nameErr] = $.str.get(params.name);
 	if (nameErr) return rej('invalid name param');
@@ -40,8 +36,6 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		createdAt: new Date(),
 		userId: user && user._id,
 		name: name,
-		nameId: nameId,
-		nameIdLower: nameId.toLowerCase(),
 		description: description,
 		permission: permission,
 		callbackUrl: callbackUrl,
@@ -49,5 +43,7 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	});
 
 	// Response
-	res(await pack(app));
+	res(await pack(app, null, {
+		includeSecret: true
+	}));
 });

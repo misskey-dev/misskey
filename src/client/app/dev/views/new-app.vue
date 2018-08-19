@@ -5,16 +5,6 @@
 			<b-form-group label="アプリケーション名" description="あなたのアプリの名称。">
 				<b-form-input v-model="name" type="text" placeholder="ex) Misskey for iOS" autocomplete="off" required/>
 			</b-form-group>
-			<b-form-group label="ID" description="あなたのアプリのID。">
-				<b-input v-model="nid" type="text" pattern="^[a-zA-Z0-9_]{1,30}$" placeholder="ex) misskey-for-ios" autocomplete="off" required/>
-				<p class="info" v-if="nidState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%確認しています...</p>
-				<p class="info" v-if="nidState == 'ok'" style="color:#3CB7B5">%fa:fw check%利用できます</p>
-				<p class="info" v-if="nidState == 'unavailable'" style="color:#FF1161">%fa:fw exclamation-triangle%既に利用されています</p>
-				<p class="info" v-if="nidState == 'error'" style="color:#FF1161">%fa:fw exclamation-triangle%通信エラー</p>
-				<p class="info" v-if="nidState == 'invalid-format'" style="color:#FF1161">%fa:fw exclamation-triangle%a~z、A~Z、0~9、_が使えます</p>
-				<p class="info" v-if="nidState == 'min-range'" style="color:#FF1161">%fa:fw exclamation-triangle%1文字以上でお願いします！</p>
-				<p class="info" v-if="nidState == 'max-range'" style="color:#FF1161">%fa:fw exclamation-triangle%30文字以内でお願いします</p>
-			</b-form-group>
 			<b-form-group label="アプリの概要" description="あなたのアプリの簡単な説明や紹介。">
 				<b-textarea v-model="description" placeholder="ex) Misskey iOSクライアント。" autocomplete="off" required></b-textarea>
 			</b-form-group>
@@ -50,47 +40,16 @@ export default Vue.extend({
 	data() {
 		return {
 			name: '',
-			nid: '',
 			description: '',
 			cb: '',
 			nidState: null,
 			permission: []
 		};
 	},
-	watch: {
-		nid() {
-			if (this.nid == null || this.nid == '') {
-				this.nidState = null;
-				return;
-			}
-
-			const err =
-				!this.nid.match(/^[a-zA-Z0-9_]+$/) ? 'invalid-format' :
-				this.nid.length < 1                 ? 'min-range' :
-				this.nid.length > 30                ? 'max-range' :
-				null;
-
-			if (err) {
-				this.nidState = err;
-				return;
-			}
-
-			this.nidState = 'wait';
-
-			(this as any).api('app/name_id/available', {
-				nameId: this.nid
-			}).then(result => {
-				this.nidState = result.available ? 'ok' : 'unavailable';
-			}).catch(err => {
-				this.nidState = 'error';
-			});
-		}
-	},
 	methods: {
 		onSubmit() {
 			(this as any).api('app/create', {
 				name: this.name,
-				nameId: this.nid,
 				description: this.description,
 				callbackUrl: this.cb,
 				permission: this.permission
