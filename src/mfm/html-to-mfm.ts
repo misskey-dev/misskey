@@ -33,6 +33,7 @@ export default function(html: string): string {
 
 			case 'a':
 				const txt = getText(node);
+				const rel = node.attrs.find((x: any) => x.name == 'rel')
 
 				// メンション
 				if (txt.startsWith('@')) {
@@ -50,7 +51,7 @@ export default function(html: string): string {
 						break;
 					}
 				// ハッシュタグ
-				} else if (node.attrs.find((x: any) => x.name == 'rel').value.match('tag') !== null) {
+				} else if ( rel && rel.value.match('tag') !== null) {
 					text += txt;
 				// その他
 				} else {
