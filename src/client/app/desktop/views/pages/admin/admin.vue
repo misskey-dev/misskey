@@ -11,13 +11,15 @@
 	<main>
 		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
-			<x-users-chart/>
-			<x-notes-chart/>
+			<x-users-chart :chart="chart"/>
+			<x-notes-chart :chart="chart"/>
+			<x-drive-chart :chart="chart"/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
 			<x-unsuspend-user/>
 			<x-verify-user/>
+			<x-unverify-user/>
 		</div>
 		<div v-if="page == 'drive'"></div>
 		<div v-if="page == 'update'"></div>
@@ -31,8 +33,10 @@ import XDashboard from "./admin.dashboard.vue";
 import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
+import XUnverifyUser from "./admin.unverify-user.vue";
 import XUsersChart from "./admin.users-chart.vue";
 import XNotesChart from "./admin.notes-chart.vue";
+import XDriveChart from "./admin.drive-chart.vue";
 
 export default Vue.extend({
 	components: {
@@ -40,13 +44,21 @@ export default Vue.extend({
 		XSuspendUser,
 		XUnsuspendUser,
 		XVerifyUser,
+		XUnverifyUser,
 		XUsersChart,
-		XNotesChart
+		XNotesChart,
+		XDriveChart
 	},
 	data() {
 		return {
-			page: 'dashboard'
+			page: 'dashboard',
+			chart: null
 		};
+	},
+	created() {
+		(this as any).api('admin/chart').then(chart => {
+			this.chart = chart;
+		});
 	},
 	methods: {
 		nav(page: string) {

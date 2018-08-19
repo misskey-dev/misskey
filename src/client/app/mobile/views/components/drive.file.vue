@@ -14,13 +14,17 @@
 						li.tag(style={background: tag.color, color: contrast(tag.color)})= tag.name
 			-->
 			<footer>
-				<p class="type"><mk-file-type-icon :type="file.type"/>{{ file.type }}</p>
-				<p class="separator"></p>
-				<p class="data-size">{{ file.datasize | bytes }}</p>
-				<p class="separator"></p>
-				<p class="created-at">
+				<span class="type"><mk-file-type-icon :type="file.type"/>{{ file.type }}</span>
+				<span class="separator"></span>
+				<span class="data-size">{{ file.datasize | bytes }}</span>
+				<span class="separator"></span>
+				<span class="created-at">
 					%fa:R clock%<mk-time :time="file.createdAt"/>
-				</p>
+				</span>
+				<template v-if="file.isSensitive">
+					<span class="separator"></span>
+					<span class="nsfw">%fa:eye-slash% %i18n:@nsfw%</span>
+				</template>
 			</footer>
 		</div>
 	</div>
@@ -133,34 +137,26 @@ export default Vue.extend({
 				font-size 0.7em
 
 				> .separator
-					display inline
-					margin 0
 					padding 0 4px
 					color #CDCDCD
 
 				> .type
-					display inline
-					margin 0
-					padding 0
 					color #9D9D9D
 
 					> .mk-file-type-icon
 						margin-right 4px
 
 				> .data-size
-					display inline
-					margin 0
-					padding 0
 					color #9D9D9D
 
 				> .created-at
-					display inline
-					margin 0
-					padding 0
 					color #BDBDBD
 
 					> [data-fa]
 						margin-right 2px
+
+				> .nsfw
+					color #bf4633
 
 	&[data-is-selected]
 		background $theme-color

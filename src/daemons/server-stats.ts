@@ -15,8 +15,8 @@ const interval = 1000;
 export default function() {
 	const log = new Deque<any>();
 
-	ev.on('requestServerStatsLog', id => {
-		ev.emit('serverStatsLog:' + id, log.toArray());
+	ev.on('requestServerStatsLog', x => {
+		ev.emit('serverStatsLog:' + x.id, log.toArray().slice(0, x.length || 50));
 	});
 
 	async function tick() {
@@ -36,8 +36,8 @@ export default function() {
 			process_uptime: process.uptime()
 		};
 		ev.emit('serverStats', stats);
-		log.push(stats);
-		if (log.length > 50) log.shift();
+		log.unshift(stats);
+		if (log.length > 200) log.pop();
 	}
 
 	tick();

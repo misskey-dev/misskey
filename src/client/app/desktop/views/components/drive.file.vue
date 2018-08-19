@@ -9,11 +9,17 @@
 	@contextmenu.prevent.stop="onContextmenu"
 	:title="title"
 >
-	<div class="label" v-if="$store.state.i.avatarId == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="$store.state.i.avatarId == file.id">
+		<img src="/assets/label.svg"/>
 		<p>%i18n:@avatar%</p>
 	</div>
-	<div class="label" v-if="$store.state.i.bannerId == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="$store.state.i.bannerId == file.id">
+		<img src="/assets/label.svg"/>
 		<p>%i18n:@banner%</p>
+	</div>
+	<div class="label red" v-if="file.isSensitive">
+		<img src="/assets/label-red.svg"/>
+		<p>%i18n:@nsfw%</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
 		<img :src="file.thumbnailUrl" alt="" @load="onThumbnailLoaded"/>
@@ -212,6 +218,11 @@ root(isDark)
 			&:after
 				background #0b65a5
 
+			&.red
+				&:before
+				&:after
+					background #c12113
+
 	&:active
 		background rgba(#000, 0.1)
 
@@ -219,6 +230,11 @@ root(isDark)
 			&:before
 			&:after
 				background #0b588c
+
+			&.red
+				&:before
+				&:after
+					background #ce2212
 
 	&[data-is-selected]
 		background $theme-color
@@ -256,26 +272,29 @@ root(isDark)
 		pointer-events none
 
 		&:before
-			content ""
-			display block
-			position absolute
-			z-index 1
-			top 0
-			left 57px
-			width 28px
-			height 8px
-			background #0c7ac9
-
 		&:after
 			content ""
 			display block
 			position absolute
 			z-index 1
+			background #0c7ac9
+
+		&:before
+			top 0
+			left 57px
+			width 28px
+			height 8px
+
+		&:after
 			top 57px
 			left 0
 			width 8px
 			height 28px
-			background #0c7ac9
+
+		&.red
+			&:before
+			&:after
+				background #c12113
 
 		> img
 			position absolute

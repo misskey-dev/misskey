@@ -77,4 +77,10 @@ export default Vue.extend({
 			> *:last-child
 				font-size 70%
 
+	> .cpu-memory
+		margin-bottom 16px
+		padding 16px
+		border solid 1px #eee
+		border-radius: 8px
+
 </style>

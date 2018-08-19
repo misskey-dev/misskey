@@ -30,6 +30,10 @@
 			<span class="data-size">{{ file.datasize | bytes }}</span>
 			<span class="separator"></span>
 			<span class="created-at" @click="showCreatedAt">%fa:R clock%<mk-time :time="file.createdAt"/></span>
+			<template v-if="file.isSensitive">
+				<span class="separator"></span>
+				<span class="nsfw">%fa:eye-slash% %i18n:@nsfw%</span>
+			</template>
 		</div>
 	</div>
 	<div class="menu">
@@ -197,6 +201,9 @@ export default Vue.extend({
 
 				> [data-fa]
 					margin-right 2px
+
+			> .nsfw
+				color #bf4633
 
 	> .menu
 		padding 14px

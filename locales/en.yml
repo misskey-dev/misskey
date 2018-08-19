@@ -289,6 +289,8 @@ common/views/components/signin.vue:
   signin-with-twitter: "Log in with Twitter"
   login-failed: "Log in failed. Make sure you have entered your correct username and password."
 common/views/components/signup.vue:
+  invitation-code: "Invitation code"
+  invitation-info: "If you do not have an invitation code, please contact an <a href=\"{}\">administrator</a>."
   username: "Username"
   checking: "Confirming..."
   available: "Available"
@@ -798,6 +800,7 @@ desktop/views/pages/admin/admin.dashboard.vue:
   original-users: "Users on this instance"
   all-notes: "All Posts"
   original-notes: "Posts on this instance"
+  invite: "Invite"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspend a user"
   suspend: "Suspend"
@@ -806,6 +809,26 @@ desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend-user: "Unsuspend users"
   unsuspend: "Unsuspend"
   unsuspended: "The user has successfully unsuspended."
+desktop/views/pages/admin/admin.verify-user.vue:
+  verify-user: "User account verification settings"
+  verify: "Verify account"
+  verified: "The account is now being verified"
+desktop/views/pages/admin/admin.unverify-user.vue:
+  unverify-user: "User account unverification settings"
+  unverify: "Unverify account"
+  unverified: "The account is now being unverified"
+desktop/views/pages/admin/admin.notes-chart.vue:
+  title: "Posts"
+  local: "Local"
+  remote: "Remote"
+desktop/views/pages/admin/admin.users-chart.vue:
+  title: "Users"
+  local: "Local"
+  remote: "Remote"
+desktop/views/pages/admin/admin.drive-chart.vue:
+  title: "Drive"
+  local: "Local"
+  remote: "Remote"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
@@ -838,7 +861,7 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Cancel"
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
-  not-available: "The search feature is not available for now."
+  not-available: "Search feature is turned off in the settings for this instance."
   not-found: "No posts were found for '{}'"
 desktop/views/pages/share.vue:
   share-with: "Share with {}."

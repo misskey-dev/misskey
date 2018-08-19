@@ -64,7 +64,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	if (ps.name) file.filename = ps.name;
 
-	if (ps.isSensitive) file.metadata.isSensitive = ps.isSensitive;
+	if (ps.isSensitive !== undefined) file.metadata.isSensitive = ps.isSensitive;
 
 	if (ps.folderId !== undefined) {
 		if (ps.folderId === null) {
