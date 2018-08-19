@@ -443,6 +443,7 @@ desktop/views/components/drive-window.vue:
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Banner"
+  nsfw: "NSFW"
   contextmenu:
     rename: "Rename"
     mark-as-sensitive: "Mark as 'sensitive'"
@@ -954,12 +955,15 @@ mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose files"
 mobile/views/components/drive-folder-chooser.vue:
   select-folder: "Choose a folder"
+mobile/views/components/drive.file.vue:
+  nsfw: "NSFW"
 mobile/views/components/drive.file-detail.vue:
   download: "Download"
   rename: "Rename"
   move: "Move"
   hash: "Hash (md5)"
   exif: "EXIF"
+  nsfw: "NSFW"
 mobile/views/components/media-image.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
