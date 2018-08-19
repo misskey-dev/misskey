@@ -87,7 +87,7 @@ const consts = {
 	_REPOSITORY_URL_: config.maintainer.repository_url,
 	_FEEDBACK_URL_: config.maintainer.feedback_url,
 	_LANG_: '%lang%',
-	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
+	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.divider ? `${locales[l].meta.lang} (${locales[l].meta.divider})` : locales[l].meta.lang]),
 	_NAME_: config.name,
 	_DESCRIPTION_: config.description,
 	_HOST_: config.host,
