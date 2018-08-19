@@ -16,6 +16,7 @@ export interface IObject {
 	image?: any;
 	url?: string;
 	tag?: any[];
+	sensitive?: boolean;
 }
 
 export interface IActivity extends IObject {
