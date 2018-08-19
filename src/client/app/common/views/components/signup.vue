@@ -34,7 +34,7 @@
 			<p slot="text" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@password-not-matched%</p>
 		</div>
 	</ui-input>
-	<div v-if="recaptchaSitekey != null" class="g-recaptcha" :data-sitekey="recaptchaSitekey" style="margin: 16px 0;"></div>
+	<div v-if="meta && meta.recaptchaSitekey != null" class="g-recaptcha" :data-sitekey="meta.recaptchaSitekey" style="margin: 16px 0;"></div>
 	<ui-button type="submit">%i18n:@create%</ui-button>
 </form>
 </template>
@@ -42,7 +42,7 @@
 <script lang="ts">
 import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
-import { host, url, recaptchaSitekey } from '../../../config';
+import { host, url } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -53,7 +53,6 @@ export default Vue.extend({
 			retypedPassword: '',
 			invitationCode: '',
 			url,
-			recaptchaSitekey,
 			usernameState: null,
 			passwordStrength: '',
 			passwordRetypeState: null,
@@ -72,6 +71,12 @@ export default Vue.extend({
 		(this as any).os.getMeta().then(meta => {
 			this.meta = meta;
 		});
+	},
+	mounted() {
+		const head = document.getElementsByTagName('head')[0];
+		const script = document.createElement('script');
+		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
+		head.appendChild(script);
 	},
 	methods: {
 		onChangeUsername() {
@@ -123,7 +128,7 @@ export default Vue.extend({
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
-				'g-recaptcha-response': recaptchaSitekey != null ? (window as any).grecaptcha.getResponse() : null
+				'g-recaptcha-response': this.meta.recaptchaSitekey != null ? (window as any).grecaptcha.getResponse() : null
 			}).then(() => {
 				(this as any).api('signin', {
 					username: this.username,
@@ -134,18 +139,10 @@ export default Vue.extend({
 			}).catch(() => {
 				alert('%i18n:@some-error%');
 
-				if (recaptchaSitekey != null) {
+				if (this.meta.recaptchaSitekey != null) {
 					(window as any).grecaptcha.reset();
 				}
 			});
-		}
-	},
-	mounted() {
-		if (recaptchaSitekey != null) {
-			const head = document.getElementsByTagName('head')[0];
-			const script = document.createElement('script');
-			script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
-			head.appendChild(script);
 		}
 	}
 });

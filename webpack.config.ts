@@ -16,7 +16,6 @@ import I18nReplacer from './src/misc/i18n';
 import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
 import { pattern as faPattern, replacement as faReplacement } from './src/misc/fa';
 const constants = require('./src/const.json');
-import config from './src/config';
 import { licenseHtml } from './src/misc/license';
 
 const locales = require('./locales');
@@ -58,8 +57,6 @@ const isProduction = process.env.NODE_ENV == 'production';
 const entry = {
 	desktop: './src/client/app/desktop/script.ts',
 	mobile: './src/client/app/mobile/script.ts',
-	//stats: './src/client/app/stats/script.ts',
-	//status: './src/client/app/status/script.ts',
 	dev: './src/client/app/dev/script.ts',
 	auth: './src/client/app/auth/script.ts',
 	sw: './src/client/app/sw.js'
@@ -72,31 +69,13 @@ const output = {
 
 //#region Define consts
 const consts = {
-	_RECAPTCHA_SITEKEY_: config.recaptcha ? config.recaptcha.site_key : null,
-	_SW_PUBLICKEY_: config.sw ? config.sw.public_key : null,
 	_THEME_COLOR_: constants.themeColor,
 	_COPYRIGHT_: constants.copyright,
 	_VERSION_: version,
 	_CODENAME_: codename,
-	_STATUS_URL_: config.status_url,
-	_STATS_URL_: config.stats_url,
-	_DOCS_URL_: config.docs_url,
-	_API_URL_: config.api_url,
-	_WS_URL_: config.ws_url,
-	_DEV_URL_: config.dev_url,
-	_REPOSITORY_URL_: config.maintainer.repository_url,
-	_FEEDBACK_URL_: config.maintainer.feedback_url,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
-	_NAME_: config.name,
-	_DESCRIPTION_: config.description,
-	_HOST_: config.host,
-	_HOSTNAME_: config.hostname,
-	_URL_: config.url,
-	_LICENSE_: licenseHtml,
-	_GOOGLE_MAPS_API_KEY_: config.google_maps_api_key,
-	_WELCOME_BG_URL_: config.welcome_bg_url,
-	_TWITTER_INTEGRATION_: config.twitter != null
+	_LICENSE_: licenseHtml
 };
 
 const _consts: { [ key: string ]: any } = {};
