@@ -247,7 +247,7 @@ root(isDark)
 		top 47px
 		box-shadow 0 4px 4px isDark ? rgba(#000, 0.3) : rgba(#000, 0.07)
 		background-color $bg
-		z-index 1
+		z-index 2
 
 		> .nav-container
 			display flex
