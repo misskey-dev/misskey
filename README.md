@@ -39,9 +39,15 @@ please see [Setup and installation guide](./docs/setup.en.md).
 ----------------------------------------------------------------
 **[PR](https://github.com/syuilo/misskey/pulls)s welcome!**
 
-If you want to...
-* i18n ... please see [Translation guide](./docs/translate.en.md).
-* l10n ... please visit https://crowdin.com/project/misskey
+### i18n
+
+Please see [Translation guide](./docs/translate.en.md).
+
+### l10n
+
+Misskey is using Crowdin for l10n.
+
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)](https://crowdin.com/project/misskey)
 
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
