@@ -12,12 +12,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as config from '../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
-			name: config.name,
+			name: (this as any).os.instanceName,
 			posted: false,
 			text: new URLSearchParams(location.search).get('text')
 		};

@@ -70,6 +70,10 @@ export default class MiOS extends EventEmitter {
 		chachedAt: Date;
 	};
 
+	public get instanceName() {
+		return this.meta ? this.meta.data.name : 'Misskey';
+	}
+
 	private isMetaFetching = false;
 
 	public app: Vue;

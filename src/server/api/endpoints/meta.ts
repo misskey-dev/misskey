@@ -20,6 +20,9 @@ export default () => new Promise(async (res, rej) => {
 		version: pkg.version,
 		clientVersion: client.version,
 
+		name: config.name || 'Misskey',
+		description: config.description,
+
 		secure: config.https != null,
 		machine: os.hostname(),
 		os: os.platform(),
@@ -29,6 +32,8 @@ export default () => new Promise(async (res, rej) => {
 			cores: os.cpus().length
 		},
 		broadcasts: meta.broadcasts,
-		disableRegistration: meta.disableRegistration
+		disableRegistration: meta.disableRegistration,
+		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
+		swPublickey: config.sw ? config.sw.public_key : null
 	});
 });

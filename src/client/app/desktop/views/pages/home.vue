@@ -7,7 +7,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
-import * as config from '../../../config';
 
 export default Vue.extend({
 	props: {
@@ -17,7 +16,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = config.name;
+		document.title = (this as any).os.instanceName;
 
 		Progress.start();
 	},

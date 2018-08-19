@@ -38,7 +38,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import getNoteSummary from '../../../../../misc/get-note-summary';
-import * as config from '../../../config';
 
 const displayLimit = 30;
 
@@ -190,7 +189,7 @@ export default Vue.extend({
 
 		clearNotification() {
 			this.unreadCount = 0;
-			document.title = config.name;
+			document.title = (this as any).os.instanceName;
 		},
 
 		onVisibilitychange() {
