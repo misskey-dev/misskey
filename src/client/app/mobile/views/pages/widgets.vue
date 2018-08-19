@@ -53,7 +53,6 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
-import * as config from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -103,7 +102,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = config.name;
+		document.title = (this as any).os.instanceName;
 	},
 
 	methods: {

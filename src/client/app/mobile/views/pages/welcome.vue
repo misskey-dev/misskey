@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, copyright, host, name, description } from '../../../config';
+import { apiUrl, copyright, host } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -39,12 +39,17 @@ export default Vue.extend({
 			copyright,
 			stats: null,
 			host,
-			name,
-			description,
+			name: 'Misskey',
+			description: '',
 			tags: []
 		};
 	},
 	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.name = meta.name;
+			this.description = meta.description;
+		});
+
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
 		});

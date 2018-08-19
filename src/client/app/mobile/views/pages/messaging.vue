@@ -8,11 +8,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../misc/acct/render';
-import * as config from '../../../config';
 
 export default Vue.extend({
 	mounted() {
-		document.title = `${config.name} %i18n:@messaging%`;
+		document.title = `${(this as any).os.instanceName} %i18n:@messaging%`;
 	},
 	methods: {
 		navigate(user) {

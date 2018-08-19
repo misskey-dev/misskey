@@ -49,7 +49,6 @@
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import XTl from './home.timeline.vue';
-import * as config from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -97,7 +96,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = config.name;
+		document.title = (this as any).os.instanceName;
 
 		Progress.start();
 

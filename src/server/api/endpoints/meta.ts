@@ -33,7 +33,7 @@ export default () => new Promise(async (res, rej) => {
 		},
 		broadcasts: meta.broadcasts,
 		disableRegistration: meta.disableRegistration,
-		recaptchaSitekey: config.recaptcha.site_key,
-		swPublickey: config.sw.public_key
+		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
+		swPublickey: config.sw ? config.sw.public_key : null
 	});
 });

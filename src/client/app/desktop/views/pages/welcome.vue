@@ -5,7 +5,7 @@
 		<template v-if="$store.state.device.darkmode">%fa:moon%</template>
 		<template v-else>%fa:R moon%</template>
 	</button>
-	<div class="body" :style="{ backgroundImage: `url('${ welcomeBgUrl }')` }">
+	<div class="body">
 		<div class="container">
 			<div class="info">
 				<span><b>{{ host }}</b></span>
@@ -46,22 +46,26 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { host, name, description, copyright, welcomeBgUrl } from '../../../config';
+import { host, copyright } from '../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
 			stats: null,
 			copyright,
-			welcomeBgUrl,
 			host,
-			name,
-			description,
+			name: 'Misskey',
+			description: '',
 			pointerInterval: null,
 			tags: []
 		};
 	},
 	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.name = meta.name;
+			this.description = meta.description;
+		});
+
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
 		});
