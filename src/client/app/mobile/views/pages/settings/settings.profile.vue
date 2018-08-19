@@ -91,15 +91,15 @@ export default Vue.extend({
 				method: 'POST',
 				body: data
 			})
-			.then(response => response.json())
-			.then(f => {
-				this.avatarId = f.id;
-				this.avatarUploading = false;
-			})
-			.catch(e => {
-				this.avatarUploading = false;
-				alert('%18n:!@upload-failed%');
-			});
+				.then(response => response.json())
+				.then(f => {
+					this.avatarId = f.id;
+					this.avatarUploading = false;
+				})
+				.catch(e => {
+					this.avatarUploading = false;
+					alert('%18n:@upload-failed%');
+				});
 		},
 
 		onBannerChange([file]) {
@@ -113,15 +113,15 @@ export default Vue.extend({
 				method: 'POST',
 				body: data
 			})
-			.then(response => response.json())
-			.then(f => {
-				this.bannerId = f.id;
-				this.bannerUploading = false;
-			})
-			.catch(e => {
-				this.bannerUploading = false;
-				alert('%18n:!@upload-failed%');
-			});
+				.then(response => response.json())
+				.then(f => {
+					this.bannerId = f.id;
+					this.bannerUploading = false;
+				})
+				.catch(e => {
+					this.bannerUploading = false;
+					alert('%18n:@upload-failed%');
+				});
 		},
 
 		save() {
