@@ -1,0 +1,786 @@
+meta:
+  lang: Engelsk
+  divider: ''
+common:
+  misskey: Del alt med andre som bruker MIsskey.
+  time:
+    unknown: ukjent
+    future: fremtidig
+    just_now: akkurat nå
+    seconds_ago: '{s} sekunder siden'
+    minutes_ago: '{} minutter siden'
+    hours_ago: '{h} time siden'
+    days_ago: '{} dag siden'
+    weeks_ago: '{} uke(r) siden'
+    months_ago: '{} måned(er) siden'
+    years_ago: '{} år siden'
+  weekday-short:
+    sunday: S
+    monday: M
+    tuesday: T
+    wednesday: O
+    thursday: T
+    friday: F
+    saturday: L
+  reactions:
+    like: Lik
+    love: Elsk
+    laugh: Le
+    hmm: Hmm…?
+    surprise: Wow
+    congrats: Gratulerer!
+    angry: Sint
+    confused: Forvirret
+    pudding: Pudding
+  delete: Slett
+  loading: Laster
+  ok: OK
+  update-available: En ny versjon av Misskey er nå tilgjengelig ({newer}, nåværende
+    versjon er {current}). Last inn siden igjen for at oppdateringen skal tre i kraft.
+  my-token-regenerated: Ditt synbol har blitt generert. Du vil nå bli utlogget.
+common/views/components/connect-failed.vue:
+  title: Kunne ikke koble til tjeneren.
+  description: Det er enten et problem med internettilknytningen din, eller så har
+    tjeneren blitt tatt ned for vedlikehold. {Prøv igjen} senere.
+  thanks: ''
+  troubleshoot: ''
+common/views/components/connect-failed.troubleshooter.vue:
+  title: ''
+  network: ''
+  checking-network: ''
+  internet: ''
+  checking-internet: ''
+  server: ''
+  checking-server: ''
+  finding: ''
+  no-network: ''
+  no-network-desc: ''
+  no-internet: ''
+  no-internet-desc: ''
+  no-server: ''
+  no-server-desc: ''
+  success: ''
+  success-desc: ''
+  flush: ''
+  set-version: ''
+common/views/components/messaging.vue:
+  search-user: ''
+  you: ''
+  no-history: ''
+common/views/components/messaging-room.vue:
+  empty: ''
+  more: ''
+  no-history: ''
+  resize-form: ''
+  new-message: ''
+common/views/components/messaging-room.form.vue:
+  input-message-here: ''
+  send: ''
+  attach-from-local: ''
+  attach-from-drive: ''
+common/views/components/messaging-room.message.vue:
+  is-read: ''
+  deleted: ''
+common/views/components/nav.vue:
+  about: ''
+  stats: ''
+  status: ''
+  wiki: ''
+  donors: ''
+  repository: ''
+  develop: ''
+  feedback: ''
+common/views/components/note-menu.vue:
+  favorite: ''
+  pin: ''
+  remote: ''
+common/views/components/poll.vue:
+  vote-to: ''
+  vote-count: ''
+  total-users: ''
+  vote: ''
+  show-result: ''
+  voted: ''
+common/views/components/poll-editor.vue:
+  no-only-one-choice: ''
+  choice-n: ''
+  remove: ''
+  add: ''
+  destroy: ''
+common/views/components/reaction-picker.vue:
+  choose-reaction: ''
+common/views/components/signin.vue:
+  username: ''
+  password: ''
+  token: ''
+  signing-in: ''
+  signin: ''
+common/views/components/signup.vue:
+  username: ''
+  checking: ''
+  available: ''
+  unavailable: ''
+  error: ''
+  invalid-format: ''
+  too-short: ''
+  too-long: ''
+  password: ''
+  password-placeholder: ''
+  weak-password: ''
+  normal-password: ''
+  strong-password: ''
+  retype: ''
+  retype-placeholder: ''
+  password-matched: ''
+  password-not-matched: ''
+  recaptcha: ''
+  create: ''
+  some-error: ''
+common/views/components/special-message.vue:
+  new-year: ''
+  christmas: ''
+common/views/components/stream-indicator.vue:
+  connecting: ''
+  reconnecting: ''
+  connected: ''
+common/views/components/twitter-setting.vue:
+  description: ''
+  connected-to: ''
+  detail: ''
+  reconnect: ''
+  connect: ''
+  disconnect: ''
+common/views/components/uploader.vue:
+  waiting: ''
+common/views/widgets/broadcast.vue:
+  fetching: ''
+  no-broadcasts: ''
+  have-a-nice-day: ''
+  next: ''
+common/views/widgets/donation.vue:
+  title: ''
+  text: ''
+common/views/widgets/photo-stream.vue:
+  title: ''
+  no-photos: ''
+common/views/widgets/server.vue:
+  title: ''
+  toggle: ''
+common/views/widgets/visibility-chooser.vue:
+  public: ''
+  home: ''
+  home-desc: ''
+  followers: ''
+  followers-desc: ''
+  specified: ''
+  specified-desc: ''
+  private: ''
+desktop/views/components/activity.chart.vue:
+  total: ''
+  notes: ''
+  replies: ''
+  renotes: ''
+desktop/views/components/activity.vue:
+  title: ''
+  toggle: ''
+desktop/views/components/calendar.vue:
+  title: ''
+  prev: ''
+  next: ''
+  go: ''
+desktop/views/components/choose-file-from-drive-window.vue:
+  choose-file: ''
+  upload: ''
+  cancel: ''
+  ok: ''
+  choose-prompt: ''
+desktop/views/components/choose-folder-from-drive-window.vue:
+  cancel: ''
+  ok: ''
+  choose-prompt: ''
+desktop/views/components/crop-window.vue:
+  skip: ''
+  cancel: ''
+  ok: ''
+desktop/views/components/drive-window.vue:
+  used: ''
+  drive: ''
+desktop/views/components/drive.file.vue:
+  avatar: ''
+  banner: ''
+  contextmenu:
+    rename: ''
+    copy-url: ''
+    download: ''
+    else-files: ''
+    set-as-avatar: ''
+    set-as-banner: ''
+    open-in-app: ''
+    add-app: ''
+    rename-file: ''
+    input-new-file-name: ''
+    copied: ''
+    copied-url-to-clipboard: ''
+desktop/views/components/drive.folder.vue:
+  unable-to-process: ''
+  circular-reference-detected: ''
+  unhandled-error: ''
+  contextmenu:
+    move-to-this-folder: ''
+    show-in-new-window: ''
+    rename: ''
+    rename-folder: ''
+    input-new-folder-name: ''
+desktop/views/components/drive.nav-folder.vue:
+  drive: ''
+desktop/views/components/drive.vue:
+  search: ''
+  load-more: ''
+  empty-draghover: ''
+  empty-drive: ''
+  empty-drive-description: ''
+  empty-folder: ''
+  unable-to-process: ''
+  circular-reference-detected: ''
+  unhandled-error: ''
+  url-upload: ''
+  url-of-file: ''
+  url-upload-requested: ''
+  may-take-time: ''
+  create-folder: ''
+  folder-name: ''
+  contextmenu:
+    create-folder: ''
+    upload: ''
+    url-upload: ''
+desktop/views/components/follow-button.vue:
+  unfollow: ''
+  follow: ''
+desktop/views/components/followers-window.vue:
+  followers: ''
+desktop/views/components/followers.vue:
+  empty: ''
+desktop/views/components/following-window.vue:
+  following: ''
+desktop/views/components/following.vue:
+  empty: ''
+desktop/views/components/friends-maker.vue:
+  title: ''
+  empty: ''
+  fetching: ''
+  refresh: ''
+  close: ''
+desktop/views/components/game-window.vue:
+  game: ''
+desktop/views/components/home.vue:
+  done: ''
+  add-widget: ''
+  profile: ''
+  calendar: ''
+  timemachine: ''
+  activity: ''
+  rss: ''
+  trends: ''
+  photostream: ''
+  slideshow: ''
+  version: ''
+  broadcast: ''
+  notifications: ''
+  users: ''
+  polls: ''
+  post-form: ''
+  messaging: ''
+  server: ''
+  donation: ''
+  nav: ''
+  tips: ''
+  add: ''
+desktop/views/input-dialog.vue:
+  cancel: ''
+  ok: ''
+desktop/views/components/messaging-room-window.vue:
+  title: ''
+desktop/views/components/messaging-window.vue:
+  title: ''
+desktop/views/components/note-detail.vue:
+  more: ''
+  private: ''
+  is-renote: ''
+  location: ''
+  renote: ''
+  add-reaction: ''
+desktop/views/components/note-detail.sub.vue:
+  private: ''
+desktop/views/components/notes.note.vue:
+  reposted-by: ''
+  reply: ''
+  renote: ''
+  add-reaction: ''
+  detail: ''
+desktop/views/components/notes.vue:
+  error: ''
+  retry: ''
+desktop/views/components/notifications.vue:
+  more: ''
+  empty: ''
+desktop/views/components/post-form.vue:
+  note-placeholder: ''
+  reply-placeholder: ''
+  quote-placeholder: ''
+  note: ''
+  reply: ''
+  renote: ''
+  posted: ''
+  replied: ''
+  reposted: ''
+  note-failed: ''
+  reply-failed: ''
+  renote-failed: ''
+  posting: ''
+  attach-media-from-local: ''
+  attach-media-from-drive: ''
+  attach-cancel: ''
+  insert-a-kao: ''
+  create-poll: ''
+  text-remain: ''
+desktop/views/components/post-form-window.vue:
+  note: ''
+  reply: ''
+  attaches: ''
+  uploading-media: ''
+desktop/views/components/progress-dialog.vue:
+  waiting: ''
+desktop/views/components/renote-form.vue:
+  quote: ''
+  cancel: ''
+  renote: ''
+  reposting: ''
+  success: ''
+  failure: ''
+desktop/views/components/renote-form-window.vue:
+  title: ''
+desktop/views/components/settings.vue:
+  profile: ''
+  notification: ''
+  apps: ''
+  mute: ''
+  drive: ''
+  security: ''
+  signin: ''
+  password: ''
+  2fa: ''
+  other: ''
+  license: ''
+  behaviour: ''
+  fetch-on-scroll: ''
+  fetch-on-scroll-desc: ''
+  auto-popout: ''
+  auto-popout-desc: ''
+  advanced: ''
+  api-via-stream: ''
+  api-via-stream-desc: ''
+  display: ''
+  customize: ''
+  dark-mode: ''
+  circle-icons: ''
+  gradient-window-header: ''
+  post-form-on-timeline: ''
+  show-reply-target: ''
+  show-my-renotes: ''
+  show-renoted-my-notes: ''
+  show-maps: ''
+  show-maps-desc: ''
+  sound: ''
+  enable-sounds: ''
+  enable-sounds-desc: ''
+  volume: ''
+  test: ''
+  mobile: ''
+  disable-via-mobile: ''
+  language: ''
+  pick-language: ''
+  recommended: ''
+  auto: ''
+  specify-language: ''
+  language-desc: ''
+  cache: ''
+  clean-cache: ''
+  cache-warn: ''
+  cache-cleared: ''
+  cache-cleared-desc: ''
+  auto-watch: ''
+  auto-watch-desc: ''
+  about: ''
+  operator: ''
+  update: ''
+  version: ''
+  latest-version: ''
+  update-checking: ''
+  do-update: ''
+  update-settings: ''
+  prevent-update: ''
+  prevent-update-desc: ''
+  no-updates: ''
+  no-updates-desc: ''
+  update-available: ''
+  update-available-desc: ''
+  advanced-settings: ''
+  debug-mode: ''
+  debug-mode-desc: ''
+  experimental: ''
+  experimental-desc: ''
+  tools: ''
+  task-manager: ''
+  third-parties: ''
+desktop/views/components/settings.2fa.vue:
+  intro: ''
+  detail: ''
+  url: ''
+  caution: ''
+  register: ''
+  already-registered: ''
+  unregister: ''
+  unregistered: ''
+  enter-password: ''
+  authenticator: ''
+  howtoinstall: ''
+  scan: ''
+  done: ''
+  submit: ''
+  success: ''
+  failed: ''
+  info: ''
+desktop/views/components/settings.api.vue:
+  intro: ''
+  caution: ''
+  regeneration-of-token: ''
+  regenerate-token: ''
+  token: ''
+  enter-password: ''
+desktop/views/components/settings.app.vue:
+  no-apps: ''
+desktop/views/components/settings.mute.vue:
+  no-users: ''
+desktop/views/components/settings.password.vue:
+  reset: ''
+  enter-current-password: ''
+  enter-new-password: ''
+  enter-new-password-again: ''
+  not-match: ''
+  changed: ''
+desktop/views/components/settings.profile.vue:
+  avatar: ''
+  choice-avatar: ''
+  name: ''
+  location: ''
+  description: ''
+  birthday: ''
+  save: ''
+  is-bot: ''
+  is-cat: ''
+desktop/views/components/sub-note-content.vue:
+  hidden: ''
+  media: ''
+  poll: ''
+desktop/views/components/taskmanager.vue:
+  title: ''
+desktop/views/components/timeline.vue:
+  home: ''
+  local: ''
+  global: ''
+  list: ''
+desktop/views/components/ui.header.account.vue:
+  profile: ''
+  drive: ''
+  favorites: ''
+  lists: ''
+  customize: ''
+  settings: ''
+  signout: ''
+  dark: ''
+desktop/views/components/ui.header.nav.vue:
+  home: ''
+  messaging: ''
+  game: ''
+desktop/views/components/ui.header.notifications.vue:
+  title: ''
+desktop/views/components/ui.header.post.vue:
+  post: ''
+desktop/views/components/ui.header.search.vue:
+  placeholder: ''
+desktop/views/components/user-lists-window.vue:
+  create-list: ''
+desktop/views/components/user-preview.vue:
+  notes: ''
+  following: ''
+  followers: ''
+desktop/views/components/users-list.vue:
+  all: ''
+  iknow: ''
+  load-more: ''
+  fetching: ''
+desktop/views/components/users-list-item.vue:
+  followed: ''
+desktop/views/components/window.vue:
+  popout: ''
+  close: ''
+desktop/views/pages/welcome.vue:
+  signin: ''
+  signup: ''
+  signin-button: ''
+  signup-button: ''
+  timeline: ''
+desktop/views/pages/drive.vue:
+  title: ''
+desktop/views/pages/favorites.vue:
+  more: ''
+desktop/views/pages/home-customize.vue:
+  title: ''
+desktop/views/pages/note.vue:
+  prev: ''
+  next: ''
+desktop/views/pages/selectdrive.vue:
+  title: ''
+  ok: ''
+  cancel: ''
+  upload: ''
+desktop/views/pages/user-list.users.vue:
+  users: ''
+  add-user: ''
+  username: ''
+desktop/views/pages/user/user.followers-you-know.vue:
+  title: ''
+  loading: ''
+  no-users: ''
+desktop/views/pages/user/user.friends.vue:
+  title: ''
+  loading: ''
+  no-users: ''
+desktop/views/pages/user/user.header.vue:
+  is-suspended: ''
+  is-remote: ''
+  view-remote: ''
+desktop/views/pages/user/user.home.vue:
+  last-used-at: ''
+desktop/views/pages/user/user.photos.vue:
+  title: ''
+  loading: ''
+  no-photos: ''
+desktop/views/pages/user/user.profile.vue:
+  follows-you: ''
+  stalk: ''
+  stalking: ''
+  unstalk: ''
+  mute: ''
+  muted: ''
+  unmute: ''
+desktop/views/pages/user/user.timeline.vue:
+  default: ''
+  with-replies: ''
+  with-media: ''
+  empty: ''
+desktop/views/widgets/messaging.vue:
+  title: ''
+desktop/views/widgets/notifications.vue:
+  title: ''
+  settings: ''
+desktop/views/widgets/polls.vue:
+  title: ''
+  refresh: ''
+  nothing: ''
+desktop/views/widgets/post-form.vue:
+  title: ''
+  note: ''
+  placeholder: ''
+desktop/views/widgets/profile.vue:
+  update-banner: ''
+  update-avatar: ''
+desktop/views/widgets/trends.vue:
+  title: ''
+  refresh: ''
+  nothing: ''
+desktop/views/widgets/users.vue:
+  title: ''
+  refresh: ''
+  no-one: ''
+mobile/views/components/drive.vue:
+  drive: ''
+  used: ''
+  folder-count: ''
+  count-separator: ''
+  file-count: ''
+  load-more: ''
+  nothing-in-drive: ''
+  folder-is-empty: ''
+mobile/views/components/drive-file-chooser.vue:
+  select-file: ''
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: ''
+mobile/views/components/drive.file-detail.vue:
+  download: ''
+  rename: ''
+  move: ''
+  hash: ''
+  exif: ''
+mobile/views/components/follow-button.vue:
+  follow: ''
+  unfollow: ''
+mobile/views/components/note.vue:
+  reposted-by: ''
+mobile/views/components/note-detail.vue:
+  reply: ''
+  reaction: ''
+mobile/views/components/notifications.vue:
+  more: ''
+  empty: ''
+mobile/views/components/post-form.vue:
+  submit: ''
+  reply: ''
+  renote: ''
+  renote-placeholder: ''
+  reply-placeholder: ''
+  note-placeholder: ''
+mobile/views/components/sub-note-content.vue:
+  media-count: ''
+  poll: ''
+mobile/views/components/timeline.vue:
+  empty: ''
+  load-more: ''
+mobile/views/components/ui.nav.vue:
+  home: ''
+  notifications: ''
+  messaging: ''
+  search: ''
+  drive: ''
+  settings: ''
+  about: ''
+mobile/views/components/user-timeline.vue:
+  no-notes: ''
+  no-notes-with-media: ''
+  load-more: ''
+mobile/views/components/users-list.vue:
+  all: ''
+  known: ''
+  load-more: ''
+mobile/views/pages/drive.vue:
+  drive: ''
+mobile/views/pages/followers.vue:
+  followers-of: ''
+mobile/views/pages/following.vue:
+  following-of: ''
+mobile/views/pages/home.vue:
+  timeline: ''
+mobile/views/pages/messaging.vue:
+  messaging: ''
+mobile/views/pages/messaging-room.vue:
+  messaging: ''
+mobile/views/pages/note.vue:
+  title: ''
+  prev: ''
+  next: ''
+mobile/views/pages/notifications.vue:
+  notifications: ''
+  read-all: ''
+mobile/views/pages/settings/settings.profile.vue:
+  title: ''
+  name: ''
+  account: ''
+  location: ''
+  description: ''
+  birthday: ''
+  avatar: ''
+  banner: ''
+  is-cat: ''
+  save: ''
+  saved: ''
+  uploading: ''
+  upload-failed: ''
+mobile/views/pages/search.vue:
+  search: ''
+  empty: ''
+mobile/views/pages/selectdrive.vue:
+  select-file: ''
+mobile/views/pages/settings.vue:
+  signed-in-as: ''
+  lang: ''
+  lang-tip: ''
+  recommended: ''
+  auto: ''
+  specify-language: ''
+  design: ''
+  dark-mode: ''
+  i-am-under-limited-internet: ''
+  circle-icons: ''
+  timeline: ''
+  show-reply-target: ''
+  show-my-renotes: ''
+  show-renoted-my-notes: ''
+  post-style: ''
+  post-style-standard: ''
+  post-style-smart: ''
+  behavior: ''
+  fetch-on-scroll: ''
+  disable-via-mobile: ''
+  twitter: ''
+  twitter-connect: ''
+  twitter-reconnect: ''
+  twitter-disconnect: ''
+  update: ''
+  version: ''
+  latest-version: ''
+  update-checking: ''
+  check-for-updates: ''
+  no-updates: ''
+  no-updates-desc: ''
+  update-available: ''
+  update-available-desc: ''
+  settings: ''
+  signout: ''
+mobile/views/pages/user.vue:
+  follows-you: ''
+  following: ''
+  followers: ''
+  notes: ''
+  overview: ''
+  timeline: ''
+  media: ''
+  is-suspended: ''
+  is-remote: ''
+  view-remote: ''
+mobile/views/pages/user/home.vue:
+  recent-notes: ''
+  images: ''
+  activity: ''
+  keywords: ''
+  domains: ''
+  frequently-replied-users: ''
+  followers-you-know: ''
+  last-used-at: ''
+mobile/views/pages/user/home.followers-you-know.vue:
+  loading: ''
+  no-users: ''
+mobile/views/pages/user/home.friends.vue:
+  loading: ''
+  no-users: ''
+mobile/views/pages/user/home.notes.vue:
+  loading: ''
+  no-notes: ''
+mobile/views/pages/user/home.photos.vue:
+  loading: ''
+  no-photos: ''
+docs:
+  edit-this-page-on-github: ''
+  edit-this-page-on-github-link: ''
+  api:
+    entities:
+      properties: ''
+    endpoints:
+      params: ''
+      res: ''
+    props:
+      name: ''
+      type: ''
+      optional: ''
+      description: ''
+      'yes': ''
+      'no': ''
