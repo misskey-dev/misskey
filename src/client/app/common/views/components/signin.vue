@@ -36,8 +36,7 @@ export default Vue.extend({
 			password: '',
 			token: '',
 			apiUrl,
-			host,
-			twitterIntegration
+			host
 		};
 	},
 	methods: {
