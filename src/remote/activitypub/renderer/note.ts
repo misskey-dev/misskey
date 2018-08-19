@@ -79,6 +79,8 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		...mentionTags,
 	];
 
+	const files = await promisedFiles;
+
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
@@ -89,7 +91,8 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		to,
 		cc,
 		inReplyTo,
-		attachment: (await promisedFiles).map(renderDocument),
+		attachment: files.map(renderDocument),
+		sensitive: files.some(file => file.metadata.isSensitive),
 		tag
 	};
 }
