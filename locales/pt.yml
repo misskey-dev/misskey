@@ -67,12 +67,12 @@ common:
     angry: "Raiva"
     confused: "Confuso"
     rip: "RIP"
-    pudding: "Pudding"
+    pudding: "Pudim"
   note-placeholders:
     a: "O que está fazendo?"
     b: "O que está acontecendo?"
     c: "No que está pensando?"
-    d: "言いたいことは？"
+    d: "Quer postar algo?"
     e: "ここに書いてください"
     f: "あなたが書くのを待っています..."
   search: "検索"
@@ -779,7 +779,7 @@ desktop/views/components/user-lists-window.vue:
 desktop/views/components/user-preview.vue:
   notes: "投稿"
   following: "フォロー"
-  followers: "フォロワー"
+  followers: "Seguidores"
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
@@ -793,13 +793,13 @@ desktop/views/components/window.vue:
 desktop/views/pages/admin/admin.vue:
   dashboard: "ダッシュボード"
   drive: "ドライブ"
-  users: "ユーザー"
-  update: "更新"
+  users: "Usuários"
+  update: "Actualizações"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
-  all-users: "全てのユーザー"
+  all-users: "Todos os usuários"
   original-users: "このインスタンスのユーザー"
-  all-notes: "全てのノート"
+  all-notes: "Todas as notas"
   original-notes: "このインスタンスのノート"
   invite: "招待"
 desktop/views/pages/admin/admin.suspend-user.vue:
@@ -845,24 +845,24 @@ desktop/views/pages/welcome.vue:
   signup: "新規登録"
   signin-button: "やってる"
   signup-button: "やる"
-  timeline: "タイムライン"
-  powered-by-misskey: "Powered by <b>Misskey</b>."
+  timeline: "Timeline"
+  powered-by-misskey: "Desenvolvido por <b>Misskey</b>."
 desktop/views/pages/drive.vue:
-  title: "Misskey Drive"
+  title: "Drive Misskey"
 desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
+  more: "Carregar mais"
 desktop/views/pages/home-customize.vue:
-  title: "ホームのカスタマイズ"
+  title: "Personalizar a página inicial"
 desktop/views/pages/note.vue:
-  prev: "前の投稿"
-  next: "次の投稿"
+  prev: "Nota anterior"
+  next: "Próxima nota"
 desktop/views/pages/selectdrive.vue:
-  title: "ファイルを選択してください"
-  ok: "決定"
-  cancel: "キャンセル"
-  upload: "PCからドライブにファイルをアップロード"
+  title: "Selecione um arquivo"
+  ok: "OK"
+  cancel: "Cancelar"
+  upload: "Envie arquivos do seu dispositivo"
 desktop/views/pages/search.vue:
-  not-available: "検索機能はインスタンスの設定で無効になっています。"
+  not-available: "A pesquisa está desligada nas configurações desta instância."
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
   share-with: "{}で共有"
@@ -1170,29 +1170,29 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "メディア"
   is-suspended: "このユーザーは凍結されています。"
-  is-remote: "このユーザーはリモートユーザーです。"
-  view-remote: "正確な情報を見る"
+  is-remote: "Este é uma usuário remoto. O perfil que vê aqui pode não estar completo."
+  view-remote: "Ver o perfil completo."
 mobile/views/pages/user/home.vue:
-  recent-notes: "最近の投稿"
-  images: "画像"
-  activity: "アクティビティ"
+  recent-notes: "Notas recentes"
+  images: "Imagens"
+  activity: "Atividade"
   keywords: "キーワード"
   domains: "頻出ドメイン"
   frequently-replied-users: "よく会話するユーザー"
-  followers-you-know: "知り合いのフォロワー"
-  last-used-at: "最終ログイン"
+  followers-you-know: "Seguidores que você conhece"
+  last-used-at: "Ativo pela última vez:"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込み中"
+  loading: "Carregando"
   no-users: "知り合いのユーザーはいません"
 mobile/views/pages/user/home.friends.vue:
   loading: "読み込み中"
   no-users: "よく会話するユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込み中"
-  no-notes: "投稿はありません"
+  loading: "Carregando"
+  no-notes: "Nenhuma mensagem"
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込み中"
-  no-photos: "写真はありません"
+  loading: "Carregando"
+  no-photos: "Sem fotos"
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "このページをGitHubで編集"
