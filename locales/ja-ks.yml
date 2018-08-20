@@ -1,6 +1,6 @@
 meta:
-  lang: "日本語"
-  divider: "関西弁"
+  lang: "日本語 (関西弁)"
+  divider: ""
 
 common:
   misskey: "A ⭐ of fediverse"
