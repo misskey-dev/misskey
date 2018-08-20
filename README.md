@@ -59,8 +59,8 @@ Misskey is using Crowdin for l10n.
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/3384329/8b713330cb27404ea6e9fac50ff96efe/1?token-time=2145916800&token-hash=0eu4-m1gTWA9PhptVZt6rdKcusqcD7RB87rJT23VVFI%3D" alt="べすれい"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12021162/963128bb8d14476dbd8407943db8f31a/1?token-time=2145916800&token-hash=GgJ_NmUB6_nnRNLVGUWjV-WX91On7BOu59LKncYV9fE%3D" alt="gutfuckllc"></td>
 <td><img src="https://c8.patreon.com/2/100/12718187" alt="Peter G."></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13039004/509d0c412eb14ae08d6a812a3054f7d6/1?token-time=2145916800&token-hash=zwSu01tOtn5xTUucDZHuPsCxF2HBEMVs9ROJKTlEV_o%3D" alt="nemu"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/2?token-time=2145916800&token-hash=zElv7ZcPL3viGsXbNG_KWiKrbV0vvw1gk0panx8DJoo%3D" alt="Naoki Kosaka"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12931605/ead494101f364dffa90efe49e36fb494/1?token-time=2145916800&token-hash=NzSFPjIlodXyv41rwK61aZWVZWfI4surJaNj8vWKvqM%3D" alt="Reiju"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/user?u=12378075">39ff</a></td>
 <td><a href="https://www.patreon.com/user?u=12731202">negao</a></td>
@@ -68,22 +68,26 @@ Misskey is using Crowdin for l10n.
 <td><a href="https://www.patreon.com/user?u=3384329">べすれい</a></td>
 <td><a href="https://www.patreon.com/gutfuckllc">gutfuckllc</a></td>
 <td><a href="https://www.patreon.com/user?u=12718187">Peter G.</a></td>
+<td><a href="https://www.patreon.com/user?u=13039004">nemu</a></td>
 <td><a href="https://www.patreon.com/user?u=5881381">Naoki Kosaka</a></td>
-<td><a href="https://www.patreon.com/user?u=12931605">Reiju</a></td>
 </tr></table>
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12931605/ead494101f364dffa90efe49e36fb494/1?token-time=2145916800&token-hash=NzSFPjIlodXyv41rwK61aZWVZWfI4surJaNj8vWKvqM%3D" alt="Reiju"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13034746/c711c7f58e204ecfbc2fd646bc8a4eee/1?token-time=2145916800&token-hash=UERBN4OyP7Nh5XwwdDg0N0IE5cD6_qUQMO81Z5Wizso%3D" alt="Hiratake"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1?token-time=2145916800&token-hash=S1zP0QyLU52Dqq6dtc9qNYyWfW86XrYHiR4NMbeOrnA%3D" alt="dansup"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/4950409/28e7d016209243759d9316be2e21381d/2?token-time=2145916800&token-hash=LuEaDkchH3GQWUcTOhBQ8xfKQYF0s5FjlZRd7Yduia8%3D" alt="mikan54951"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1?token-time=2145916800&token-hash=tMosUojzUYJCH_3t--tvYA-SMCyrS__hzSndyaRSnbo%3D" alt="Takashi Shibuya"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12959468/c249e15aebec4424b5c0f427173671b6/1?token-time=2145916800&token-hash=lubpCEdxAkxPlpR2O6bvZ7BIh8Q4nGf-U_mE1qpjVAQ%3D" alt="fujishan"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/user?u=12931605">Reiju</a></td>
+<td><a href="https://www.patreon.com/hiratake">Hiratake</a></td>
 <td><a href="https://www.patreon.com/dansup">dansup</a></td>
 <td><a href="https://www.patreon.com/user?u=4950409">mikan54951</a></td>
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 <td><a href="https://www.patreon.com/fujishan">fujishan</a></td>
 </tr></table>
 
-**Last updated:** Sat, 18 Aug 2018 02:02:58 UTC
+**Last updated:** Mon, 20 Aug 2018 10:02:31 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
