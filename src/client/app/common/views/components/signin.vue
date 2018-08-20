@@ -53,8 +53,9 @@ export default Vue.extend({
 			this.signing = true;
 
 			(this as any).api('signin', {
-				username: this.username,
-				password: this.password,
+				// password という名前(または username とのペア？)では何らかのフィルタリングがされるっぽい？
+				x: this.username,
+				y: this.password,
 				token: this.user && this.user.twoFactorEnabled ? this.token : undefined
 			}).then(() => {
 				location.reload();
