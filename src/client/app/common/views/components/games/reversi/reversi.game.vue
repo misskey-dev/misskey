@@ -421,10 +421,10 @@ root(isDark)
 						width 100%
 						height 100%
 
-						&[alt="b"]
+						&[alt="black"]
 							filter brightness(.5)
 
-						&[alt="w"]
+						&[alt="white"]
 							filter brightness(2)
 
 	> .graph
