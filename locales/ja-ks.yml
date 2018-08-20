@@ -691,7 +691,6 @@ desktop/views/components/settings.vue:
   password: "パスワード"
   2fa: "二段階認証"
   other: "その他"
-  license: "ライセンス"
 
   behaviour: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"

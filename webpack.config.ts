@@ -16,7 +16,6 @@ import I18nReplacer from './src/misc/i18n';
 import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
 import { pattern as faPattern, replacement as faReplacement } from './src/misc/fa';
 const constants = require('./src/const.json');
-import { licenseHtml } from './src/misc/license';
 
 const locales = require('./locales');
 const meta = require('./package.json');
@@ -74,8 +73,7 @@ const consts = {
 	_VERSION_: version,
 	_CODENAME_: codename,
 	_LANG_: '%lang%',
-	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
-	_LICENSE_: licenseHtml
+	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang])
 };
 
 const _consts: { [ key: string ]: any } = {};

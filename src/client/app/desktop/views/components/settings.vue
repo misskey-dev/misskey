@@ -191,12 +191,6 @@
 				<button class="ui button block" @click="taskmngr">%i18n:@task-manager%</button>
 			</details>
 		</section>
-
-		<section class="other" v-show="page == 'other'">
-			<h1>%i18n:@license%</h1>
-			<div v-html="license"></div>
-			<a :href="licenseUrl" target="_blank">%i18n:@third-parties%</a>
-		</section>
 	</div>
 </div>
 </template>
@@ -211,7 +205,7 @@ import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XDrive from './settings.drive.vue';
-import { url, docsUrl, license, lang, langs, version } from '../../../config';
+import { url, langs, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 import MkTaskManager from './taskmanager.vue';
 
@@ -230,7 +224,6 @@ export default Vue.extend({
 		return {
 			page: 'profile',
 			meta: null,
-			license,
 			version,
 			langs,
 			latestVersion: undefined,
@@ -238,10 +231,6 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		licenseUrl(): string {
-			return `${docsUrl}/${lang}/license`;
-		},
-
 		apiViaStream: {
 			get() { return this.$store.state.device.apiViaStream; },
 			set(value) { this.$store.commit('device/set', { key: 'apiViaStream', value }); }
