@@ -150,28 +150,28 @@ auth/views/form.vue:
   drive-write: "ドライブを操作させてもらうで。"
   notification-read: "通知を見させてもらうで。"
   notification-write: "通知を操作させてもらうで。"
-  cancel: "キャンセル"
-  accept: "アクセスを許可"
+  cancel: "やめとくわ"
+  accept: "アクセスを許可や！"
 auth/views/index.vue:
   loading: "読み込み中"
-  denied: "アプリケーションの連携をキャンセルしました。"
-  denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
-  already-authorized: "このアプリは既に連携済みです"
-  allowed: "アプリケーションの連携を許可しました"
-  callback-url: "アプリケーションに戻っています"
-  please-go-back: "アプリケーションに戻って、やっていってください。"
-  error: "セッションが存在しません。"
-  sign-in: "サインインしてください"
+  denied: "アプリケーションの連携をやめといたわ。"
+  denied-paragraph: "このアプリがあんさんのアカウントにアクセスすることは多分あらへん。知らんけど。"
+  already-authorized: "このアプリはもう連携済みやったわ"
+  allowed: "アプリケーションの連携を許可したで"
+  callback-url: "アプリケーションに戻っとります"
+  please-go-back: "アプリケーションに戻って、気張ってってな。"
+  error: "セッションが存在してへん。"
+  sign-in: "サインインしてや"
 common/views/components/games/reversi/reversi.vue:
   matching:
-    waiting-for: "{}を待っています"
-    cancel: "キャンセル"
+    waiting-for: "{}を待っとります"
+    cancel: "やめとくわ"
 common/views/components/games/reversi/reversi.game.vue:
-  surrender: "投了"
+  surrender: "投了や..."
   surrendered: "投了により"
   is-llotheo: "石の少ない方が勝ち(ロセオ)"
   looped-map: "ループマップ"
-  can-put-everywhere: "どこでも置けるモード"
+  can-put-everywhere: "どこに置いてもええモード"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
@@ -202,7 +202,7 @@ common/views/components/games/reversi/reversi.room.vue:
   waiting-for-other: "相手の準備が完了するのを待っています"
   waiting-for-me: "あなたの準備が完了するのを待っています"
   waiting-for-both: "準備中"
-  cancel: "キャンセル"
+  cancel: "やめとくわ"
   ready: "準備完了"
   cancel-ready: "準備続行"
 common/views/components/connect-failed.vue:
@@ -426,16 +426,16 @@ desktop/views/components/calendar.vue:
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
-  cancel: "キャンセル"
+  cancel: "やめとくわ"
   ok: "決定"
   choose-prompt: "ファイルを選択"
 desktop/views/components/choose-folder-from-drive-window.vue:
-  cancel: "キャンセル"
+  cancel: "やめとくわ"
   ok: "決定"
   choose-prompt: "フォルダを選択"
 desktop/views/components/crop-window.vue:
   skip: "クロップをスキップ"
-  cancel: "キャンセル"
+  cancel: "やめとくわ"
   ok: "決定"
 desktop/views/components/drive-window.vue:
   used: "使用中"
@@ -523,7 +523,7 @@ desktop/views/components/home.vue:
   add-widget: "ウィジェットを追加:"
   add: "追加"
 desktop/views/input-dialog.vue:
-  cancel: "キャンセル"
+  cancel: "やめとくわ"
   ok: "決定"
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
@@ -592,7 +592,7 @@ desktop/views/components/progress-dialog.vue:
   waiting: "待機中"
 desktop/views/components/renote-form.vue:
   quote: "引用する..."
-  cancel: "キャンセル"
+  cancel: "やめとくわ"
   renote: "Renote"
   reposting: "しています..."
   success: "Renoteしました！"
@@ -859,7 +859,7 @@ desktop/views/pages/note.vue:
 desktop/views/pages/selectdrive.vue:
   title: "ファイルを選択してください"
   ok: "決定"
-  cancel: "キャンセル"
+  cancel: "やめとくわ"
   upload: "PCからドライブにファイルをアップロード"
 desktop/views/pages/search.vue:
   not-available: "検索機能はインスタンスの設定で無効になっています。"
