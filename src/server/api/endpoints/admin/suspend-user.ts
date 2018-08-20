@@ -34,6 +34,10 @@ export default (params: any) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
+	if (user.isAdmin) {
+		return rej('cannot suspend admin');
+	}
+
 	await User.findOneAndUpdate({
 		_id: user._id
 	}, {

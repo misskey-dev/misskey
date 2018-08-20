@@ -118,6 +118,7 @@ export interface IRemoteUser extends IUserBase {
 		publicKeyPem: string;
 	};
 	updatedAt: Date;
+	isAdmin: false;
 }
 
 export type IUser = ILocalUser | IRemoteUser;

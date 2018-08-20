@@ -21,7 +21,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		return rej('YOUR_ACCOUNT_HAS_BEEN_SUSPENDED');
 	}
 
-	if (ep.meta.requireAdmin && !(isLocalUser(user) && user.isAdmin)) {
+	if (ep.meta.requireAdmin && !user.isAdmin) {
 		return rej('YOU_ARE_NOT_ADMIN');
 	}
 
