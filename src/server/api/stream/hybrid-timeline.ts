@@ -11,12 +11,12 @@ export default async function(
 	subscriber: Xev,
 	user: IUser
 ) {
+	const mute = await Mute.find({ muterId: user._id });
+	const mutedUserIds = mute.map(m => m.muteeId.toString());
+
 	// Subscribe stream
 	subscriber.on('hybrid-timeline', onEvent);
 	subscriber.on(`hybrid-timeline:${user._id}`, onEvent);
-
-	const mute = await Mute.find({ muterId: user._id });
-	const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 	async function onEvent(note: any) {
 		//#region 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
