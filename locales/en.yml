@@ -58,7 +58,7 @@ common:
     friday: "Friday"
     saturday: "Saturday"
   reactions:
-    like: "Nice..."
+    like: "Like"
     love: "Love"
     laugh: "Laugh"
     hmm: "Hmm...?"
