@@ -23,7 +23,6 @@ const uglifyes = require('uglify-es');
 
 const locales = require('./locales');
 import { fa } from './src/misc/fa';
-import config from './src/config';
 
 const uglify = uglifyComposer(uglifyes, console);
 
@@ -118,7 +117,6 @@ gulp.task('build:client:script', () => {
 	const client = require('./built/client/meta.json');
 	return gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
-		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
 		.pipe(isProduction ? uglify({
