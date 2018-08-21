@@ -54,7 +54,8 @@ router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
 	const note = await Note.findOne({
-		_id: new mongo.ObjectID(ctx.params.note)
+		_id: new mongo.ObjectID(ctx.params.note),
+		$or: [ { visibility: 'public' }, { visibility: 'home' } ]
 	});
 
 	if (note === null) {
@@ -62,7 +63,7 @@ router.get('/notes/:note', async (ctx, next) => {
 		return;
 	}
 
-	ctx.body = pack(await renderNote(note));
+	ctx.body = pack(await renderNote(note, false));
 });
 
 // outbox
