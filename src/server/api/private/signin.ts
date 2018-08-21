@@ -63,7 +63,7 @@ export default async (ctx: Koa.Context) => {
 			if (verified) {
 				signin(ctx, user);
 			} else {
-				ctx.throw(400, {
+				ctx.throw(403, {
 					error: 'invalid token'
 				});
 			}
@@ -71,7 +71,7 @@ export default async (ctx: Koa.Context) => {
 			signin(ctx, user);
 		}
 	} else {
-		ctx.throw(400, {
+		ctx.throw(403, {
 			error: 'incorrect password'
 		});
 	}
