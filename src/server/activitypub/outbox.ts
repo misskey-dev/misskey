@@ -1,16 +1,17 @@
 import * as mongo from 'mongodb';
-import * as Koa from 'koa';
+import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy'; import ID from '../../misc/cafy-id';
 import User from '../../models/user';
 import pack from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
+import { setResponseType } from '../activitypub';
 
 import Note from '../../models/note';
 import renderNote from '../../remote/activitypub/renderer/note';
 
-export default async (ctx: Koa.Context) => {
+export default async (ctx: Router.IRouterContext) => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
 	// Get 'sinceId' parameter
@@ -92,6 +93,7 @@ export default async (ctx: Koa.Context) => {
 		);
 
 		ctx.body = pack(rendered);
+		setResponseType(ctx);
 	} else {
 		// index page
 		const rendered = renderOrderedCollection(partOf, user.notesCount,
@@ -99,5 +101,6 @@ export default async (ctx: Koa.Context) => {
 			`${partOf}?page=true&since_id=000000000000000000000000`
 		);
 		ctx.body = pack(rendered);
+		setResponseType(ctx);
 	}
 };
