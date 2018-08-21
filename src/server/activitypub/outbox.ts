@@ -83,7 +83,7 @@ export default async (ctx: Koa.Context) => {
 
 		if (sinceId) notes.reverse();
 
-		const renderedNotes = await Promise.all(notes.map(note => renderNote(note)));
+		const renderedNotes = await Promise.all(notes.map(note => renderNote(note, false)));
 		const rendered = renderOrderedCollectionPage(
 			`${partOf}?page=true${sinceId ? `&since_id=${sinceId}` : ''}${untilId ? `&until_id=${untilId}` : ''}`,
 			user.notesCount, renderedNotes, partOf,
