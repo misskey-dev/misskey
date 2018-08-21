@@ -1,4 +1,4 @@
-# **Please DO NOT edit these files** except `ja.yml`.
+# **Please DO NOT edit these files** except `ja-JP.yml`.
 
 If you want to...
 * i18n ... please see [Translation guide](../docs/translate.en.md).

@@ -16,7 +16,7 @@ Si vous trouvez un segment non-traduit sur Misskey :
 	- Par exemple, dans ce cas de figure, nous voulons modifier le segment non-traduit de : `src/client/app/mobile/views/pages/home.vue`donc il faut juste écrire : `mobile/views/pages/home.vue` dans les fichiers linguistiques.
 
 4. Ajoutez la propriété du texte traduit grâce à la clef `foo`, en-dessous du chemin correspondant à votre modification que vous avez trouvé ou créé dans l'étape 2. À côté, veuillez indiquer entre "guillemets" la valeur de votre traduction.
-	- Par exemple, dans ce cas de figure, nous ajoutons la propriété et la traduction `timeline: "Timeline"` à `locales/fr.yml`, mais aussi la propriété et la version originale `timeline: "タイムライン"` à `locales/ja.yml`.
+	- Par exemple, dans ce cas de figure, nous ajoutons la propriété et la traduction `timeline: "Timeline"` à `locales/fr.yml`, mais aussi la propriété et la version originale `timeline: "タイムライン"` à `locales/ja-JP.yml`.
 
 5. Vous avez réussi à traduire une portion de misskey ！
 
