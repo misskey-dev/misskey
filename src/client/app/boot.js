@@ -106,7 +106,7 @@
 	// グローバルにタイマーIDを代入しておく
 	window.mkBootTimer = window.setTimeout(async () => {
 		// Fetch meta
-		const res = await fetch(API + '/meta', {
+		const res = await fetch('/api/meta', {
 			method: 'POST',
 			cache: 'no-cache'
 		});
