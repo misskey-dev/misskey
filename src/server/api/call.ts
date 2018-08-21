@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import limitter from './limitter';
-import { IUser, isLocalUser } from '../../models/user';
+import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 import endpoints from './endpoints';
 
