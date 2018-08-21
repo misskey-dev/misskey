@@ -41,8 +41,18 @@ function inbox(ctx: Router.IRouterContext) {
 }
 
 function isActivityPubReq(ctx: Router.IRouterContext) {
+	ctx.response.vary('Accept');
 	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
 	return ['application/activity+json', 'application/ld+json'].includes(accepted as string);
+}
+
+export function setResponseType(ctx: Router.IRouterContext) {
+	const accpet = ctx.accepts('application/activity+json', 'application/ld+json');
+	if (accpet === 'application/ld+json') {
+		ctx.response.type = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
+	} else {
+		ctx.response.type = 'application/activity+json; charset=utf-8';
+	}
 }
 
 // inbox
@@ -64,6 +74,7 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	ctx.body = pack(await renderNote(note, false));
+	setResponseType(ctx);
 });
 
 // outbox
@@ -91,6 +102,7 @@ router.get('/users/:user/publickey', async ctx => {
 
 	if (isLocalUser(user)) {
 		ctx.body = pack(renderKey(user));
+		setResponseType(ctx);
 	} else {
 		ctx.status = 400;
 	}
@@ -104,6 +116,7 @@ async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 	}
 
 	ctx.body = pack(await renderPerson(user as ILocalUser));
+	setResponseType(ctx);
 }
 
 router.get('/users/:user', async ctx => {
