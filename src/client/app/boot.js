@@ -32,13 +32,15 @@
 	//#region Detect app name
 	let app = null;
 
-	if (url.pathname == '/docs' || url.pathname.startsWith('/docs/')) app = 'docs';
-	if (url.pathname == '/dev' || url.pathname.startsWith('/dev/')) app = 'dev';
-	if (url.pathname == '/auth' || url.pathname.startsWith('/auth/')) app = 'auth';
+	if (`${url.pathname}/`.startsWith('/docs/')) app = 'docs';
+	if (`${url.pathname}/`.startsWith('/dev/')) app = 'dev';
+	if (`${url.pathname}/`.startsWith('/auth/')) app = 'auth';
 	//#endregion
 
 	//#region Detect the user language
-	let lang = navigator.language.split('-')[0];
+	let lang = navigator.language;
+
+	if (!LANGS.includes(lang)) lang = lang.split('-')[0];
 
 	// The default language is English
 	if (!LANGS.includes(lang)) lang = 'en';
