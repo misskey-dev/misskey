@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import * as Koa from 'koa';
+import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy'; import ID from '../../misc/cafy-id';
 import User from '../../models/user';
@@ -8,8 +8,9 @@ import pack from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
+import { setResponseType } from '../activitypub';
 
-export default async (ctx: Koa.Context) => {
+export default async (ctx: Router.IRouterContext) => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
 	// Get 'cursor' parameter
@@ -72,9 +73,11 @@ export default async (ctx: Koa.Context) => {
 		);
 
 		ctx.body = pack(rendered);
+		setResponseType(ctx);
 	} else {
 		// index page
 		const rendered = renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`, null);
 		ctx.body = pack(rendered);
+		setResponseType(ctx);
 	}
 };
