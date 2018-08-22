@@ -34,9 +34,12 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	const sort = {
 		_id: -1
 	};
+
 	const query = {
-		'metadata.userId': user._id
+		'metadata.userId': user._id,
+		'metadata.deletedAt': { $exists: false }
 	} as any;
+
 	if (sinceId) {
 		sort._id = 1;
 		query._id = {
@@ -47,6 +50,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			$lt: untilId
 		};
 	}
+
 	if (type) {
 		query.contentType = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
 	}
@@ -59,6 +63,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	// Serialize
-	res(await Promise.all(files.map(async file =>
-		await pack(file))));
+	res(await Promise.all(files.map(file => pack(file))));
 });
