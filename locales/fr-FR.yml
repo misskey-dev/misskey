@@ -58,7 +58,7 @@ common:
     friday: "Vendredi"
     saturday: "Samedi"
   reactions:
-    like: "ええやん"
+    like: "いいね"
     love: "Adore"
     laugh: "Rire"
     hmm: "Hmm ... ?"
@@ -84,6 +84,7 @@ common:
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
   i-like-sushi: "Je préfère les sushis plutôt que le pudding"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
+  use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
   reversi:
@@ -754,6 +755,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "Listes"
   follow-requests: "Demandes de suivi"
   customize: "Personnaliser l'Accueil"
+  admin: "管理"
   settings: "Réglages"
   signout: "Déconnexion"
   dark: "Fall in dark"
@@ -1044,6 +1046,7 @@ mobile/views/components/ui.nav.vue:
   game: "Jeux"
   darkmode: "Mode nuit"
   settings: "Réglages"
+  admin: "管理"
   about: "À propose de Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "Cette utilisateur semble n'avoir rien poster pour le moment"
