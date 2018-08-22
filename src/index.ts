@@ -146,20 +146,7 @@ async function init(): Promise<Config> {
 		process.exit(1);
 	}
 
-	// Try to connect to MongoDB
-	checkMongoDb(config);
-
 	return config;
-}
-
-function checkMongoDb(config: Config) {
-	const mongoDBLogger = new Logger('MongoDB');
-	const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
-	const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
-	const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
-	mongoDBLogger.info(`Connecting to ${uri}`);
-	require('./db/mongodb');
-	mongoDBLogger.succ('Connectivity confirmed');
 }
 
 function spawnWorkers(limit: number) {
