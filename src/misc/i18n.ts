@@ -27,6 +27,8 @@ export default class Replacer {
 		let text = texts;
 
 		if (path) {
+			path = path.replace('.ts', '');
+
 			if (text.hasOwnProperty(path)) {
 				text = text[path];
 			} else {
