@@ -12,8 +12,9 @@ export default async (ctx: Koa.Context) => {
 	ctx.set('Access-Control-Allow-Credentials', 'true');
 
 	const body = ctx.request.body as any;
-	const username = body['username'];
-	const password = body['password'];
+	// See: https://github.com/syuilo/misskey/issues/2384
+	const username = body['username'] || body['x'];
+	const password = body['password'] || body['y'];
 	const token = body['token'];
 
 	if (typeof username != 'string') {
