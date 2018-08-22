@@ -38,12 +38,18 @@
 	//#endregion
 
 	//#region Detect the user language
-	let lang = navigator.language;
+	let lang = null;
 
-	if (!LANGS.includes(lang)) lang = lang.split('-')[0];
+	if (LANGS.includes(navigator.language)) {
+		lang = navigator.language;
+	} else {
+		lang = LANGS.find(x => x.split('-')[0] == lang);
 
-	// The default language is English
-	if (!LANGS.includes(lang)) lang = 'en';
+		if (lang == null) {
+			// Fallback
+			lang = 'en-US';
+		}
+	}
 
 	if (settings) {
 		if (settings.device.lang) lang = settings.device.lang;
