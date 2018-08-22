@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { docsUrl, lang } from '../../../config';
+import { lang } from '../../../config';
 
 export default Vue.extend({
 	props: ['isOpen'],
@@ -50,7 +50,7 @@ export default Vue.extend({
 			hasGameInvitation: false,
 			connection: null,
 			connectionId: null,
-			aboutUrl: `${docsUrl}/${lang}/about`
+			aboutUrl: `/docs/${lang}/about`
 		};
 	},
 	computed: {
