@@ -1,5 +1,7 @@
 <template>
-<iframe v-if="player" :src="player" heigth="250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
+<div v-if="player.url" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
+	<iframe :src="player.url" :width="player.width" :heigth="player.height" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
+</div>
 <div v-else-if="tweetUrl && detail" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
 		<a :href="url"></a>
@@ -46,7 +48,11 @@ export default Vue.extend({
 			thumbnail: null,
 			icon: null,
 			sitename: null,
-			player: null,
+			player: {
+				url: null,
+				width: null,
+				height: null
+			},
 			tweetUrl: null,
 			misskeyUrl
 		};
@@ -170,8 +176,16 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-iframe
+.twitter
+	position relative
 	width 100%
+
+	> iframe
+		height 100%
+		left 0
+		position absolute
+		top 0
+		width 100%
 
 root(isDark)
 	> a
