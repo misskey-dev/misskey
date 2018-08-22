@@ -58,7 +58,7 @@ common:
     friday: "Friday"
     saturday: "Saturday"
   reactions:
-    like: "いいね"
+    like: "Like"
     love: "Love"
     laugh: "Laugh"
     hmm: "Hmm...?"
@@ -755,7 +755,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "Lists"
   follow-requests: "Follow requests"
   customize: "Customize home layout"
-  admin: "管理"
+  admin: "Admin"
   settings: "Settings"
   signout: "Sign out"
   dark: "Submerge in dark"
@@ -1046,7 +1046,7 @@ mobile/views/components/ui.nav.vue:
   game: "Games"
   darkmode: "Dark theme"
   settings: "Settings"
-  admin: "管理"
+  admin: "Admin"
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
