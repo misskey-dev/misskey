@@ -5,7 +5,7 @@
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
 >
-	<header :class="{ indicate: count > 0 }"
+	<header :class="{ indicate: count }"
 			draggable="true"
 			@click="toggleActive"
 			@dragstart="onDragstart"
@@ -13,9 +13,12 @@
 			@contextmenu.prevent.stop="onContextmenu"
 		>
 		<slot name="header"></slot>
-		<span class="count" v-if="count > 0">({{ count }})</span>
+		<span class="count" v-if="count">({{ count }})</span>
 		<button ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
 	</header>
+	<div>
+		<button @click="goToTop" :class="{ indicate: count }">%fa:arrow-to-top%<span>上に戻る</span><!-- TODO: LOCALIZE THIS --></button>
+	</div>
 	<div ref="body" v-show="active">
 		<slot></slot>
 	</div>
@@ -199,6 +202,13 @@ export default Vue.extend({
 			return items;
 		},
 
+		goToTop(e) {
+			e.target.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		},
+
 		onContextmenu(e) {
 			contextmenu((this as any).os)(e, this.getMenu());
 		},
@@ -342,8 +352,32 @@ root(isDark)
 
 			&:active
 				color isDark ? #b2c1d5 : #999
+	> :not(:last-of-child)
+		display flex
+		justify-content center
+		overflow hidden
+		position absolute
+		width 100%
 
-	> div
+		> button
+			align-items center
+			background isDark ? #e3e5e8 : #313543
+			border-radius 18px
+			box-shadow 0 4px 8px 4px #0004
+			color isDark ? #313543 : #e3e5e8
+			display flex
+			margin 8px
+			min-height 36px
+			min-width 36px
+			padding 8px
+			transform translateY(calc(-100% - 32px))
+			transition transform .5s cubic-bezier(.5,-.5,.5,1.5)
+			z-index 2
+
+			&.indicate
+				transform translateY(0)
+
+	> :last-of-child
 		height "calc(100% - %s)" % $header-height
 		overflow auto
 		overflow-x hidden
