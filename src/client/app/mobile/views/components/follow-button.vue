@@ -99,7 +99,7 @@ export default Vue.extend({
 	cursor pointer
 	padding 0 16px
 	margin 0
-	min-width 150px
+	min-width 100px
 	line-height 36px
 	font-size 14px
 	font-weight bold
