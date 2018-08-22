@@ -82,7 +82,7 @@ props:
       ja: "フォルダ"
       en: "The folder of this file"
 
-  sensitive:
+  isSensitive:
     type: "boolean"
     optional: true
     desc:
