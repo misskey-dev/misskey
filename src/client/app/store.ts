@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
+import * as nestedProperty from 'nested-property';
 
 import MiOS from './mios';
 import { hostname } from './config';
@@ -22,7 +23,12 @@ const defaultSettings = {
 	disableViaMobile: false,
 	memo: null,
 	iLikeSushi: false,
-	reversiBoardLabels: false
+	games: {
+		reversi: {
+			showBoardLabels: false,
+			useContrastStones: false
+		}
+	}
 };
 
 const defaultDeviceSettings = {
@@ -125,7 +131,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 			mutations: {
 				set(state, x: { key: string; value: any }) {
-					state[x.key] = x.value;
+					nestedProperty.set(state, x.key, x.value);
 				},
 
 				setHome(state, data) {
