@@ -1,6 +1,6 @@
 <template>
 <div v-if="player.url" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<iframe :src="player.url" :width="player.width" :heigth="player.height" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
+	<iframe :src="player.url" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
 <div v-else-if="tweetUrl && detail" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
