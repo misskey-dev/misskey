@@ -11,6 +11,10 @@
 		<x-cpu-memory :connection="connection"/>
 	</div>
 	<div>
+		<label>
+			<input type="checkbox" v-model="disableRegistration" @change="updateMeta">
+			<span>disableRegistration</span>
+		</label>
 		<button class="ui" @click="invite">%i18n:@invite%</button>
 		<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
 	</div>
@@ -28,6 +32,7 @@ export default Vue.extend({
 	data() {
 		return {
 			stats: null,
+			disableRegistration: false,
 			inviteCode: null,
 			connection: null,
 			connectionId: null
@@ -36,6 +41,10 @@ export default Vue.extend({
 	created() {
 		this.connection = (this as any).os.streams.serverStatsStream.getConnection();
 		this.connectionId = (this as any).os.streams.serverStatsStream.use();
+
+		(this as any).os.getMeta().then(meta => {
+			this.disableRegistration = meta.disableRegistration;
+		});
 
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
@@ -48,6 +57,11 @@ export default Vue.extend({
 		invite() {
 			(this as any).api('admin/invite').then(x => {
 				this.inviteCode = x.code;
+			});
+		},
+		updateMeta() {
+			(this as any).api('admin/update-meta', {
+				disableRegistration: this.disableRegistration
 			});
 		}
 	}

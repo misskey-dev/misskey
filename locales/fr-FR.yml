@@ -30,7 +30,7 @@ common:
     quoted-by: "Cité·e par {} :"
   time:
     unknown: "inconnu"
-    future: "future"
+    future: "à l'instant"
     just_now: "à l'instant"
     seconds_ago: "Il y a {} seconde·s"
     minutes_ago: "Il y a {} minute·s"
@@ -58,7 +58,7 @@ common:
     friday: "Vendredi"
     saturday: "Samedi"
   reactions:
-    like: "Aime"
+    like: "ええやん"
     love: "Adore"
     laugh: "Rire"
     hmm: "Hmm ... ?"
@@ -287,7 +287,7 @@ common/views/components/signin.vue:
   signin: "Se connecter"
   or: "Ou"
   signin-with-twitter: "Se connecter via Twitter"
-  login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
+  login-failed: "Échec d'authentification. Veuillez vérifier que votre nom d'utilisateur et mot de passe sont corrects."
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
   invitation-info: "Si vous n’avez pas de code d’invitation, contactez un·e <a href=\"{}\">administrateur·rice</a>."
@@ -443,7 +443,7 @@ desktop/views/components/drive-window.vue:
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Bannière"
-  nsfw: "閲覧注意"
+  nsfw: "CW"
   contextmenu:
     rename: "Renommer"
     mark-as-sensitive: "Marquer comme sensible"
@@ -638,7 +638,7 @@ desktop/views/components/settings.vue:
   show-maps-desc: "位置情報が添付された投稿のマップを自動的に展開します。"
   sound: "Son"
   enable-sounds: "Activer le son"
-  enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
+  enable-sounds-desc: "Jouer un son lorsque vous recevez un message. Ce paramètre est sauvegardé dans le navigateur."
   volume: "Volume"
   test: "Test"
   mobile: "Mobile"
@@ -699,7 +699,7 @@ desktop/views/components/settings.2fa.vue:
 desktop/views/components/settings.api.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  regeneration-of-token: "Si votre jeton est compromis, vous pouvez le régénérer."
   regenerate-token: "Regenerer le token"
   token: "Jeton :"
   enter-password: "Veuillez entrer le mot de passe"

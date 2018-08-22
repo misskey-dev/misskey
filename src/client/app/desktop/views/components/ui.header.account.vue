@@ -30,15 +30,18 @@
 				<li @click="settings">
 					<p>%fa:cog%<span>%i18n:@settings%</span>%fa:angle-right%</p>
 				</li>
-			</ul>
-			<ul>
-				<li @click="signout">
-					<p class="signout">%fa:power-off%<span>%i18n:@signout%</span></p>
+				<li v-if="$store.state.i.isAdmin">
+					<router-link to="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</router-link>
 				</li>
 			</ul>
 			<ul>
 				<li @click="dark">
 					<p><span>%i18n:@dark%</span><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template></p>
+				</li>
+			</ul>
+			<ul>
+				<li @click="signout">
+					<p class="signout">%fa:power-off%<span>%i18n:@signout%</span></p>
 				</li>
 			</ul>
 		</div>
