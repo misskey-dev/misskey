@@ -27,10 +27,12 @@ export default class Replacer {
 		let text = texts;
 
 		if (path) {
+			path = path.replace('.ts', '');
+
 			if (text.hasOwnProperty(path)) {
 				text = text[path];
 			} else {
-				if (this.lang === 'ja') console.warn(`path '${path}' not found`);
+				if (this.lang === 'ja-JP') console.warn(`path '${path}' not found`);
 				return key; // Fallback
 			}
 		}
@@ -46,10 +48,10 @@ export default class Replacer {
 		});
 
 		if (error) {
-			if (this.lang === 'ja') console.warn(`key '${key}' not found in '${path}'`);
+			if (this.lang === 'ja-JP') console.warn(`key '${key}' not found in '${path}'`);
 			return key; // Fallback
 		} else if (typeof text !== 'string') {
-			if (this.lang === 'ja') console.warn(`key '${key}' is not string in '${path}'`);
+			if (this.lang === 'ja-JP') console.warn(`key '${key}' is not string in '${path}'`);
 			return key; // Fallback
 		} else {
 			return text;

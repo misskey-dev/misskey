@@ -1,6 +1,6 @@
 ---
 meta:
-  lang: "日本語"
+  lang: "中文(简体)"
   divider: ""
 common:
   misskey: "A ⭐ of fediverse"
@@ -58,7 +58,7 @@ common:
     friday: "金曜日"
     saturday: "土曜日"
   reactions:
-    like: "いいね"
+    like: "ええやん"
     love: "しゅき"
     laugh: "笑"
     hmm: "ふぅ～む"

@@ -857,6 +857,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "リスト"
   follow-requests: "フォロー申請"
   customize: "ホームのカスタマイズ"
+  admin: "管理"
   settings: "設定"
   signout: "サインアウト"
   dark: "闇に飲まれる"
@@ -1214,6 +1215,7 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   darkmode: "ダークモード"
   settings: "設定"
+  admin: "管理"
   about: "Misskeyについて"
 
 mobile/views/components/user-timeline.vue:
