@@ -58,7 +58,7 @@ common:
     friday: "金曜日"
     saturday: "土曜日"
   reactions:
-    like: "ええやん"
+    like: "いいね"
     love: "好きやねん"
     laugh: "わろた"
     hmm: "ふぅ～む"
@@ -84,6 +84,7 @@ common:
   my-token-regenerated: "あんさんのトークンが更新されたらしいわ。すまんがとりあえずサインアウトすんで。"
   i-like-sushi: "寿司(のほうがプリンよりむしろ)ウマい、タコ焼きはあらへんけど。"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示や！"
+  use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "アメちゃん付きアカウント"
   disable-animated-mfm: "投稿内のちょろちょろ動いてんのを止める"
   reversi:
@@ -754,6 +755,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "リスト"
   follow-requests: "フォロー申請"
   customize: "ホームのカスタマイズ"
+  admin: "管理"
   settings: "設定"
   signout: "サインアウト"
   dark: "闇に飲まれる"
@@ -1044,6 +1046,7 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   darkmode: "ダークモード"
   settings: "設定"
+  admin: "管理"
   about: "Misskeyについて"
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
