@@ -131,7 +131,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
-			isBot
+			isBot: isBot,
+			isCat: (person as any).isCat === true ? true : false
 		}) as IRemoteUser;
 	} catch (e) {
 		// duplicate key error
@@ -262,7 +263,8 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 			notesCount,
 			name: person.name,
 			url: person.url,
-			endpoints: person.endpoints
+			endpoints: person.endpoints,
+			isCat: (person as any).isCat === true ? true : false
 		}
 	});
 }
