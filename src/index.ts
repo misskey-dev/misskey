@@ -14,6 +14,7 @@ import * as portscanner from 'portscanner';
 import isRoot = require('is-root');
 import Xev from 'xev';
 import * as program from 'commander';
+import mongo from './db/mongodb';
 
 import Logger from './misc/logger';
 import ProgressBar from './misc/cli/progressbar';
@@ -158,8 +159,13 @@ function checkMongoDb(config: Config) {
 	const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
 	const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
 	mongoDBLogger.info(`Connecting to ${uri}`);
-	require('./db/mongodb');
-	mongoDBLogger.succ('Connectivity confirmed');
+
+	mongo.then(() => {
+		mongoDBLogger.succ('Connectivity confirmed');
+	})
+	.catch(err => {
+		mongoDBLogger.error(err.message);
+	});
 }
 
 function spawnWorkers(limit: number) {
