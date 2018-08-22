@@ -43,7 +43,7 @@
 	if (LANGS.includes(navigator.language)) {
 		lang = navigator.language;
 	} else {
-		lang = LANGS.find(x => x.split('-')[0] == lang);
+		lang = LANGS.find(x => x.split('-')[0] == navigator.language);
 
 		if (lang == null) {
 			// Fallback
