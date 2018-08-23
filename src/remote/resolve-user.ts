@@ -15,7 +15,7 @@ export default async (username: string, _host: string, option?: any): Promise<IU
 	const host = toUnicode(hostAscii);
 
 	if (config.host == host) {
-		return await User.findOne({ usernameLower });
+		return await User.findOne({ usernameLower, host: null });
 	}
 
 	let user = await User.findOne({ usernameLower, host }, option);
