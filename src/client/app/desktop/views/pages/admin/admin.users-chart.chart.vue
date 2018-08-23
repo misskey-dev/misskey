@@ -1,11 +1,14 @@
 <template>
-<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
-	<polyline
-		:points="points"
-		fill="none"
-		stroke-width="1"
-		stroke="#555"/>
-</svg>
+<div>
+	<a @click="span = 'day'">Per day</a> | <a @click="span = 'hour'">Per hour</a>
+	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
+		<polyline
+			:points="points"
+			fill="none"
+			stroke-width="0.3"
+			stroke="#555"/>
+	</svg>
+</div>
 </template>
 
 <script lang="ts">
@@ -23,20 +26,40 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			viewBoxX: 365,
-			viewBoxY: 70,
-			points: null
+			viewBoxX: 100,
+			viewBoxY: 30,
+			points: null,
+			span: 'day'
 		};
 	},
-	created() {
-		const peak = Math.max.apply(null, this.chart.map(d => this.type == 'local' ? d.users.local.diff : d.users.remote.diff));
+	computed: {
+		stats(): any[] {
+			return (
+				this.span == 'day' ? this.chart.perDay :
+				this.span == 'hour' ? this.chart.perHour :
+				null
+			);
+		}
+	},
+	watch: {
+		stats() {
+			this.render();
+		}
+	},
+	mounted() {
+		this.render();
+	},
+	methods: {
+		render() {
+			const peak = Math.max.apply(null, this.stats.map(d => this.type == 'local' ? d.users.local.diff : d.users.remote.diff));
 
-		if (peak != 0) {
-			const data = this.chart.slice().reverse().map(x => ({
-				count: this.type == 'local' ? x.users.local.diff : x.users.remote.diff
-			}));
+			if (peak != 0) {
+				const data = this.stats.slice().reverse().map(x => ({
+					count: this.type == 'local' ? x.users.local.diff : x.users.remote.diff
+				}));
 
-			this.points = data.map((d, i) => `${i},${(1 - (d.count / peak)) * this.viewBoxY}`).join(' ');
+				this.points = data.map((d, i) => `${(this.viewBoxX / data.length) * i},${(1 - (d.count / peak)) * this.viewBoxY}`).join(' ');
+			}
 		}
 	}
 });
