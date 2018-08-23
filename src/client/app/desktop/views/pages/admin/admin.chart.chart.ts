@@ -30,6 +30,9 @@ export default Vue.extend({
 						type: 'time',
 						distribution: 'series'
 					}]
+				},
+				tooltips: {
+					intersect: false
 				}
 			}, this.opts || {}));
 		}
