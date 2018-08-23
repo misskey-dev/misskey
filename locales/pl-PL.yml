@@ -820,18 +820,20 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
-desktop/views/pages/admin/admin.notes-chart.vue:
-  title: "投稿"
-  local: "ローカル"
-  remote: "リモート"
-desktop/views/pages/admin/admin.users-chart.vue:
-  title: "ユーザー"
-  local: "ローカル"
-  remote: "リモート"
-desktop/views/pages/admin/admin.drive-chart.vue:
-  title: "ドライブ"
-  local: "ローカル"
-  remote: "リモート"
+desktop/views/pages/admin/admin.chart.vue:
+  title: "チャート"
+  local-notes: "ローカルの投稿"
+  remote-notes: "リモートの投稿"
+  local-notes-total: "ローカルの投稿 (累計)"
+  remote-notes-total: "リモートの投稿 (累計)"
+  local-users: "ローカルのユーザー"
+  remote-users: "リモートのユーザー"
+  local-users-total: "ローカルのユーザー (累計)"
+  remote-users-total: "リモートのユーザー (累計)"
+  local-drive: "ローカルのドライブ使用量"
+  remote-drive: "リモートのドライブ使用量"
+  local-drive-total: "ローカルのドライブ使用量 (累計)"
+  remote-drive-total: "リモートのドライブ使用量 (累計)"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Tylko wpisy z zawartością multimedialną"
   is-media-view: "Widok multimediów"
