@@ -5,89 +5,46 @@ import { IDriveFile } from '../models/drive-file';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-async function getTodayStats(): Promise<IStats> {
+async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 	const now = new Date();
 	const y = now.getFullYear();
 	const m = now.getMonth();
 	const d = now.getDate();
-	const today = new Date(y, m, d);
+	const h = now.getHours();
 
-	// 今日の統計
-	const todayStats = await Stats.findOne({
-		date: today
+	const current =
+		span == 'day' ? new Date(y, m, d) :
+		span == 'hour' ? new Date(y, m, d, h) :
+		null;
+
+	// 現在(今日または今のHour)の統計
+	const currentStats = await Stats.findOne({
+		span: span,
+		date: current
 	});
 
-	// 日付が変わってから、初めてのチャート更新なら
-	if (todayStats == null) {
+	if (currentStats) {
+		return currentStats;
+	} else {
+		// 集計期間が変わってから、初めてのチャート更新なら
 		// 最も最近の統計を持ってくる
+		// * 例えば集計期間が「日」である場合で考えると、
 		// * 昨日何もチャートを更新するような出来事がなかった場合は、
-		//   統計がそもそも作られずドキュメントが存在しないということがあり得るため、
-		//   「昨日の」と決め打ちせずに「もっとも最近の」とします
-		const mostRecentStats = await Stats.findOne({}, {
+		// * 統計がそもそも作られずドキュメントが存在しないということがあり得るため、
+		// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
+		const mostRecentStats = await Stats.findOne({
+			span: span
+		}, {
 			sort: {
 				date: -1
 			}
 		});
 
-		// 統計が存在しなかったら
-		// * Misskeyインスタンスを建てて初めてのチャート更新時など
-		if (mostRecentStats == null) {
-			// 空の統計を作成
+		if (mostRecentStats) {
+			// 現在の統計を初期挿入
 			const data: Omit<IStats, '_id'> = {
-				date: today,
-				users: {
-					local: {
-						total: 0,
-						diff: 0
-					},
-					remote: {
-						total: 0,
-						diff: 0
-					}
-				},
-				notes: {
-					local: {
-						total: 0,
-						diff: 0,
-						diffs: {
-							normal: 0,
-							reply: 0,
-							renote: 0
-						}
-					},
-					remote: {
-						total: 0,
-						diff: 0,
-						diffs: {
-							normal: 0,
-							reply: 0,
-							renote: 0
-						}
-					}
-				},
-				drive: {
-					local: {
-						totalCount: 0,
-						totalSize: 0,
-						diffCount: 0,
-						diffSize: 0
-					},
-					remote: {
-						totalCount: 0,
-						totalSize: 0,
-						diffCount: 0,
-						diffSize: 0
-					}
-				}
-			};
-
-			const stats = await Stats.insert(data);
-
-			return stats;
-		} else {
-			// 今日の統計を初期挿入
-			const data: Omit<IStats, '_id'> = {
-				date: today,
+				span: span,
+				date: current,
 				users: {
 					local: {
 						total: mostRecentStats.users.local.total,
@@ -137,19 +94,82 @@ async function getTodayStats(): Promise<IStats> {
 			const stats = await Stats.insert(data);
 
 			return stats;
+		} else {
+			// 統計が存在しなかったら
+			// * Misskeyインスタンスを建てて初めてのチャート更新時など
+
+			// 空の統計を作成
+			const emptyStat: Omit<IStats, '_id'> = {
+				span: span,
+				date: current,
+				users: {
+					local: {
+						total: 0,
+						diff: 0
+					},
+					remote: {
+						total: 0,
+						diff: 0
+					}
+				},
+				notes: {
+					local: {
+						total: 0,
+						diff: 0,
+						diffs: {
+							normal: 0,
+							reply: 0,
+							renote: 0
+						}
+					},
+					remote: {
+						total: 0,
+						diff: 0,
+						diffs: {
+							normal: 0,
+							reply: 0,
+							renote: 0
+						}
+					}
+				},
+				drive: {
+					local: {
+						totalCount: 0,
+						totalSize: 0,
+						diffCount: 0,
+						diffSize: 0
+					},
+					remote: {
+						totalCount: 0,
+						totalSize: 0,
+						diffCount: 0,
+						diffSize: 0
+					}
+				}
+			};
+
+			const stats = await Stats.insert(emptyStat);
+
+			return stats;
 		}
-	} else {
-		return todayStats;
 	}
 }
 
-async function update(inc: any) {
-	const stats = await getTodayStats();
+function update(inc: any) {
+	getCurrentStats('day').then(stats => {
+		Stats.findOneAndUpdate({
+			_id: stats._id
+		}, {
+			$inc: inc
+		});
+	});
 
-	await Stats.findOneAndUpdate({
-		_id: stats._id
-	}, {
-		$inc: inc
+	getCurrentStats('hour').then(stats => {
+		Stats.findOneAndUpdate({
+			_id: stats._id
+		}, {
+			$inc: inc
+		});
 	});
 }
 

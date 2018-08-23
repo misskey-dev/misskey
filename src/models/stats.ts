@@ -10,6 +10,8 @@ export interface IStats {
 
 	date: Date;
 
+	span: 'day' | 'hour';
+
 	/**
 	 * ユーザーに関する統計
 	 */

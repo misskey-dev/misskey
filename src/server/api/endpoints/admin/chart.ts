@@ -14,6 +14,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 	const d = now.getDate();
 
 	const stats = await Stats.find({
+		span: 'day',
 		date: {
 			$gt: new Date(y - 1, m, d)
 		}
@@ -44,6 +45,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 			} else {
 				chart.unshift({
 					date: day,
+					span: 'day',
 					users: {
 						local: {
 							total: 0,

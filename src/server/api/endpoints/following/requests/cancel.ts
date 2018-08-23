@@ -27,7 +27,11 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('followee not found');
 	}
 
-	await cancelFollowRequest(followee, user);
+	try {
+		await cancelFollowRequest(followee, user);
+	} catch (e) {
+		return rej(e);
+	}
 
 	// Send response
 	res(await pack(followee._id, user));
