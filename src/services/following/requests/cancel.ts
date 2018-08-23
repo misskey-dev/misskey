@@ -12,6 +12,15 @@ export default async function(followee: IUser, follower: IUser) {
 		deliver(follower as ILocalUser, content, followee.inbox);
 	}
 
+	const request = await FollowRequest.findOne({
+		followeeId: followee._id,
+		followerId: follower._id
+	});
+
+	if (request == null) {
+		throw 'request not found';
+	}
+
 	await FollowRequest.remove({
 		followeeId: followee._id,
 		followerId: follower._id
