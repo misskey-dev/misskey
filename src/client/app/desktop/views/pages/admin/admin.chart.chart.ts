@@ -23,7 +23,8 @@ export default Vue.extend({
 	methods: {
 		render() {
 			this.renderChart(this.data, mergeOptions({
-				responsive: false,
+				responsive: true,
+				maintainAspectRatio: false,
 				scales: {
 					xAxes: [{
 						type: 'time',
