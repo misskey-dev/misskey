@@ -176,7 +176,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.twitter
+.player
 	position relative
 	width 100%
 
