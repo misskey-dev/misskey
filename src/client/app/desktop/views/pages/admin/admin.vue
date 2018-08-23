@@ -11,9 +11,7 @@
 	<main>
 		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
-			<x-users-chart :chart="chart"/>
-			<x-notes-chart :chart="chart"/>
-			<x-drive-chart :chart="chart"/>
+			<x-chart :chart="chart"/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
@@ -34,9 +32,7 @@ import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
 import XUnverifyUser from "./admin.unverify-user.vue";
-import XUsersChart from "./admin.users-chart.vue";
-import XNotesChart from "./admin.notes-chart.vue";
-import XDriveChart from "./admin.drive-chart.vue";
+import XChart from "./admin.chart.vue";
 
 export default Vue.extend({
 	components: {
@@ -45,9 +41,7 @@ export default Vue.extend({
 		XUnsuspendUser,
 		XVerifyUser,
 		XUnverifyUser,
-		XUsersChart,
-		XNotesChart,
-		XDriveChart
+		XChart
 	},
 	data() {
 		return {
