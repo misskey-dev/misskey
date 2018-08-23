@@ -44,13 +44,9 @@ export default Vue.extend({
 	components: {
 		XChart
 	},
-	props: {
-		chart: {
-			required: true
-		}
-	},
 	data() {
 		return {
+			chart: null,
 			chartType: 'local-notes',
 			span: 'hour'
 		};
@@ -84,6 +80,11 @@ export default Vue.extend({
 				null
 			);
 		}
+	},
+	created() {
+		(this as any).api('chart').then(chart => {
+			this.chart = chart;
+		});
 	},
 	methods: {
 		notesChart(local: boolean): any {
