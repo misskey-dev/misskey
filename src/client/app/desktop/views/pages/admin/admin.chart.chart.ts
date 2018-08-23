@@ -26,11 +26,6 @@ export default Vue.extend({
 				scales: {
 					xAxes: [{
 						type: 'time',
-						time: {
-							displayFormats: {
-								quarter: 'YYYY/MM/D h:mm'
-							}
-						},
 						distribution: 'series'
 					}]
 				}

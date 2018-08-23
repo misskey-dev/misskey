@@ -3,21 +3,31 @@
 	<header>
 		<b>%i18n:@title%:</b>
 		<select v-model="chartType">
-			<option value="local-users">%i18n:@local-users%</option>
-			<option value="remote-users">%i18n:@remote-users%</option>
-			<option value="local-users-total">%i18n:@local-users-total%</option>
-			<option value="remote-users-total">%i18n:@remote-users-total%</option>
-			<option value="local-notes">%i18n:@local-notes%</option>
-			<option value="remote-notes">%i18n:@remote-notes%</option>
-			<option value="local-notes-total">%i18n:@local-notes-total%</option>
-			<option value="remote-notes-total">%i18n:@remote-notes-total%</option>
-			<option value="local-drive">%i18n:@local-drive%</option>
-			<option value="remote-drive">%i18n:@remote-drive%</option>
-			<option value="local-drive-total">%i18n:@local-drive-total%</option>
-			<option value="remote-drive-total">%i18n:@remote-drive-total%</option>
+			<optgroup label="%i18n:@users%">
+				<option value="local-users">%i18n:@local-users%</option>
+				<option value="remote-users">%i18n:@remote-users%</option>
+				<option value="local-users-total">%i18n:@local-users-total%</option>
+				<option value="remote-users-total">%i18n:@remote-users-total%</option>
+			</optgroup>
+			<optgroup label="%i18n:@notes%">
+				<option value="local-notes">%i18n:@local-notes%</option>
+				<option value="remote-notes">%i18n:@remote-notes%</option>
+				<option value="local-notes-total">%i18n:@local-notes-total%</option>
+				<option value="remote-notes-total">%i18n:@remote-notes-total%</option>
+			</optgroup>
+			<optgroup label="%i18n:@drive%">
+				<option value="local-drive-files">%i18n:@local-drive-files%</option>
+				<option value="remote-drive-files">%i18n:@remote-drive-files%</option>
+				<option value="local-drive-files-total">%i18n:@local-drive-files-total%</option>
+				<option value="remote-drive-files-total">%i18n:@remote-drive-files-total%</option>
+				<option value="local-drive">%i18n:@local-drive%</option>
+				<option value="remote-drive">%i18n:@remote-drive%</option>
+				<option value="local-drive-total">%i18n:@local-drive-total%</option>
+				<option value="remote-drive-total">%i18n:@remote-drive-total%</option>
+			</optgroup>
 		</select>
 		<div>
-			<a @click="span = 'day'">Per DAY</a> | <a @click="span = 'hour'">Per HOUR</a>
+			<a @click="span = 'day'">%i18n:@per-day%</a> | <a @click="span = 'hour'">%i18n:@per-hour%</a>
 		</div>
 	</header>
 	<x-chart v-if="chart" :data="data[0]" :opts="data[1]" :width="720" :height="300"/>
@@ -59,6 +69,10 @@ export default Vue.extend({
 				case 'remote-drive': return this.driveChart(false, false);
 				case 'local-drive-total': return this.driveChart(true, true);
 				case 'remote-drive-total': return this.driveChart(false, true);
+				case 'local-drive-files': return this.driveFilesChart(true, false);
+				case 'remote-drive-files': return this.driveFilesChart(false, false);
+				case 'local-drive-files-total': return this.driveFilesChart(true, true);
+				case 'remote-drive-files-total': return this.driveFilesChart(false, true);
 			}
 		},
 		stats(): any[] {
@@ -76,11 +90,19 @@ export default Vue.extend({
 				normal: local ? x.notes.local.diffs.normal : x.notes.remote.diffs.normal,
 				reply: local ? x.notes.local.diffs.reply : x.notes.remote.diffs.reply,
 				renote: local ? x.notes.local.diffs.renote : x.notes.remote.diffs.renote,
-				total: local ? x.notes.local.diff : x.notes.remote.diff
+				all: local ? x.notes.local.diff : x.notes.remote.diff
 			}));
 
 			return [{
 				datasets: [{
+					label: 'All',
+					fill: false,
+					borderColor: '#555',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.all }))
+				}, {
 					label: 'Normal',
 					fill: false,
 					borderColor: '#41ddde',
@@ -107,6 +129,7 @@ export default Vue.extend({
 				}]
 			}];
 		},
+
 		notesTotalChart(local: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
@@ -125,6 +148,7 @@ export default Vue.extend({
 				}]
 			}];
 		},
+
 		usersChart(local: boolean, total: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
@@ -145,6 +169,7 @@ export default Vue.extend({
 				}]
 			}];
 		},
+
 		driveChart(local: boolean, total: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
@@ -174,7 +199,28 @@ export default Vue.extend({
 					}]
 				}
 			}];
-		}
+		},
+
+		driveFilesChart(local: boolean, total: boolean): any {
+			const data = this.stats.slice().reverse().map(x => ({
+				date: new Date(x.date),
+				count: local ?
+					total ? x.drive.local.totalCount : x.drive.local.diffCount :
+					total ? x.drive.remote.totalCount : x.drive.remote.diffCount
+			}));
+
+			return [{
+				datasets: [{
+					label: local ? 'Local Drive Files' : 'Remote Drive Files',
+					fill: false,
+					borderColor: '#f6584f',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.count }))
+				}]
+			}];
+		},
 	}
 });
 </script>
