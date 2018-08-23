@@ -173,7 +173,7 @@ export default Vue.extend({
 		driveChart(local: boolean, total: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				count: local ?
+				size: local ?
 					total ? x.drive.local.totalSize : x.drive.local.diffSize :
 					total ? x.drive.remote.totalSize : x.drive.remote.diffSize
 			}));
@@ -186,7 +186,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.count }))
+					data: data.map(x => ({ t: x.date, y: x.size }))
 				}]
 			}, {
 				scales: {

@@ -1,8 +1,8 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "8.3.0",
-	"clientVersion": "1.0.8825",
+	"version": "8.3.1",
+	"clientVersion": "1.0.8828",
 	"codename": "nighthike",
 	"main": "./built/index.js",
 	"private": true,
@@ -150,6 +150,7 @@
 		"loader-utils": "1.1.0",
 		"lodash.assign": "4.2.0",
 		"mecab-async": "0.1.2",
+		"merge-options": "1.0.1",
 		"minio": "7.0.0",
 		"mkdirp": "0.5.1",
 		"mocha": "5.2.0",
