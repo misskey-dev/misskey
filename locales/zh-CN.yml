@@ -822,8 +822,8 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverified: "公式アカウントを解除しました"
 desktop/views/pages/admin/admin.chart.vue:
   title: "チャート"
-  per-day: "1時間ごと"
-  per-hour: "1日ごと"
+  per-day: "1日ごと"
+  per-hour: "1時間ごと"
   notes: "投稿"
   users: "ユーザー"
   drive: "ドライブ"
