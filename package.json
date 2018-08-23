@@ -150,6 +150,7 @@
 		"loader-utils": "1.1.0",
 		"lodash.assign": "4.2.0",
 		"mecab-async": "0.1.2",
+		"merge-options": "1.0.1",
 		"minio": "7.0.0",
 		"mkdirp": "0.5.1",
 		"mocha": "5.2.0",

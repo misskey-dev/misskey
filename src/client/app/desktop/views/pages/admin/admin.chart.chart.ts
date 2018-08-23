@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { Line } from 'vue-chartjs';
+import * as mergeOptions from 'merge-options';
 
 export default Vue.extend({
 	extends: Line,
@@ -21,7 +22,7 @@ export default Vue.extend({
 	},
 	methods: {
 		render() {
-			this.renderChart(this.data, Object.assign({
+			this.renderChart(this.data, mergeOptions({
 				responsive: false,
 				scales: {
 					xAxes: [{
