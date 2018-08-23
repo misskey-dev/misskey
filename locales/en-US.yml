@@ -820,18 +820,20 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "User account unverification settings"
   unverify: "Unverify account"
   unverified: "The account is now being unverified"
-desktop/views/pages/admin/admin.notes-chart.vue:
-  title: "Posts"
-  local: "Local"
-  remote: "Remote"
-desktop/views/pages/admin/admin.users-chart.vue:
-  title: "Users"
-  local: "Local"
-  remote: "Remote"
-desktop/views/pages/admin/admin.drive-chart.vue:
-  title: "Drive"
-  local: "Local"
-  remote: "Remote"
+desktop/views/pages/admin/admin.chart.vue:
+  title: "チャート"
+  local-notes: "ローカルの投稿"
+  remote-notes: "リモートの投稿"
+  local-notes-total: "ローカルの投稿 (累計)"
+  remote-notes-total: "リモートの投稿 (累計)"
+  local-users: "ローカルのユーザー"
+  remote-users: "リモートのユーザー"
+  local-users-total: "ローカルのユーザー (累計)"
+  remote-users-total: "リモートのユーザー (累計)"
+  local-drive: "ローカルのドライブ使用量"
+  remote-drive: "リモートのドライブ使用量"
+  local-drive-total: "ローカルのドライブ使用量 (累計)"
+  remote-drive-total: "リモートのドライブ使用量 (累計)"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
