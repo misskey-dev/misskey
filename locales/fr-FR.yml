@@ -822,6 +822,11 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverified: "公式アカウントを解除しました"
 desktop/views/pages/admin/admin.chart.vue:
   title: "チャート"
+  per-day: "1時間ごと"
+  per-hour: "1日ごと"
+  notes: "投稿"
+  users: "ユーザー"
+  drive: "ドライブ"
   local-notes: "ローカルの投稿"
   remote-notes: "リモートの投稿"
   local-notes-total: "ローカルの投稿 (累計)"
@@ -834,6 +839,10 @@ desktop/views/pages/admin/admin.chart.vue:
   remote-drive: "リモートのドライブ使用量"
   local-drive-total: "ローカルのドライブ使用量 (累計)"
   remote-drive-total: "リモートのドライブ使用量 (累計)"
+  local-drive-files: "ローカルのドライブのファイル数"
+  remote-drive-files: "リモートのドライブのファイル数"
+  local-drive-files-total: "ローカルのドライブのファイル数 (累計)"
+  remote-drive-files-total: "リモートのドライブのファイル数 (累計)"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
