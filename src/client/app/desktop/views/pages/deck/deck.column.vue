@@ -352,7 +352,7 @@ root(isDark)
 
 			&:active
 				color isDark ? #b2c1d5 : #999
-	> :not(:last-of-child)
+	> :not(:last-child)
 		display flex
 		justify-content center
 		overflow hidden
@@ -377,7 +377,7 @@ root(isDark)
 			&.indicate
 				transform translateY(0)
 
-	> :last-of-child
+	> :last-child
 		height "calc(100% - %s)" % $header-height
 		overflow auto
 		overflow-x hidden
