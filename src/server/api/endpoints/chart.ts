@@ -1,10 +1,8 @@
-import Stats, { IStats } from '../../../../models/stats';
+import Stats, { IStats } from '../../../models/stats';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export const meta = {
-	requireCredential: true,
-	requireAdmin: true
 };
 
 export default (params: any) => new Promise(async (res, rej) => {
