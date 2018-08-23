@@ -8,7 +8,7 @@ export const meta = {
 };
 
 export default (params: any) => new Promise(async (res, rej) => {
-	const daysRange = 365;
+	const daysRange = 90;
 	const hoursRange = 24;
 
 	const now = new Date();
@@ -123,7 +123,6 @@ export default (params: any) => new Promise(async (res, rej) => {
 		}
 
 		chart.forEach(x => {
-			delete x.date;
 			delete (x as any).span;
 		});
 
