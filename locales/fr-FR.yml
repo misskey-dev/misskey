@@ -58,7 +58,7 @@ common:
     friday: "Vendredi"
     saturday: "Samedi"
   reactions:
-    like: "いいね"
+    like: "J'aime"
     love: "Adore"
     laugh: "Rire"
     hmm: "Hmm ... ?"
@@ -231,7 +231,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "Vider le cache"
   set-version: "Choisissez une version"
 common/views/components/messaging.vue:
-  search-user: "Trouver un·e utilisateur·rice"
+  search-user: "Trouver un·e utilisateur·trice"
   you: "Vous"
   no-history: "Pas d'historique"
 common/views/components/messaging-room.vue:
@@ -513,7 +513,7 @@ desktop/views/components/following.vue:
   empty: "Vous ne suivez aucun compte."
 desktop/views/components/friends-maker.vue:
   title: "Utilisateurs recommandés :"
-  empty: "Impossible de trouver des utilisateurs à recommander."
+  empty: "Impossible de trouver des utilisateurs·trices à recommander."
   fetching: "Chargement"
   refresh: "Plus"
   close: "Fermer"
@@ -755,7 +755,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "Listes"
   follow-requests: "Demandes de suivi"
   customize: "Personnaliser l'Accueil"
-  admin: "管理"
+  admin: "Admin"
   settings: "Réglages"
   signout: "Déconnexion"
   dark: "Fall in dark"
@@ -793,12 +793,12 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "Fermer"
 desktop/views/pages/admin/admin.vue:
-  dashboard: "ダッシュボード"
+  dashboard: "Tableau de bord"
   drive: "Drive"
   users: "Utilisateur·rice·s"
   update: "Mises à jour"
 desktop/views/pages/admin/admin.dashboard.vue:
-  dashboard: "ダッシュボード"
+  dashboard: "Tableau de bord"
   all-users: "Tou·te·s les utilisateur·rice·s"
   original-users: "Utilisateur·rice·s sur cette instance"
   all-notes: "Toutes les publications"
@@ -813,7 +813,7 @@ desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend: "Suspension levée"
   unsuspended: "La suspension de l’utilisateur·rice a été levée avec succès"
 desktop/views/pages/admin/admin.verify-user.vue:
-  verify-user: "ユーザーの公式アカウント設定"
+  verify-user: "Paramètres de vérification du compte utilisateur"
   verify: "Vérification du compte"
   verified: "Le compte a été vérifié"
 desktop/views/pages/admin/admin.unverify-user.vue:
@@ -821,12 +821,12 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
 desktop/views/pages/admin/admin.notes-chart.vue:
-  title: "投稿"
-  local: "ローカル"
-  remote: "リモート"
+  title: "Publications"
+  local: "Local"
+  remote: "Distant"
 desktop/views/pages/admin/admin.users-chart.vue:
-  title: "ユーザー"
-  local: "ローカル"
+  title: "Utilisateurs·trices"
+  local: "Local"
   remote: "リモート"
 desktop/views/pages/admin/admin.drive-chart.vue:
   title: "ドライブ"
@@ -979,7 +979,7 @@ mobile/views/components/follow-button.vue:
   follow-request: "Demande d'abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
-  empty: "Impossible de trouver des utilisateurs à recommander."
+  empty: "Impossible de trouver des utilisateurs·trices à recommander."
   fetching: "Chargement"
   refresh: "Voir plus"
   close: "Fermer"
