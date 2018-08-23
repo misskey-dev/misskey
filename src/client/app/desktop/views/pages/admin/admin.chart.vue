@@ -107,7 +107,8 @@ export default Vue.extend({
 					data: data.map(x => ({ t: x.date, y: x.all }))
 				}, {
 					label: 'Normal',
-					fill: false,
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
 					borderColor: '#41ddde',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
@@ -115,7 +116,8 @@ export default Vue.extend({
 					data: data.map(x => ({ t: x.date, y: x.normal }))
 				}, {
 					label: 'Replies',
-					fill: false,
+					fill: true,
+					backgroundColor: 'rgba(247, 121, 108, 0.1)',
 					borderColor: '#f7796c',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
@@ -123,7 +125,8 @@ export default Vue.extend({
 					data: data.map(x => ({ t: x.date, y: x.reply }))
 				}, {
 					label: 'Renotes',
-					fill: false,
+					fill: true,
+					backgroundColor: 'rgba(161, 222, 65, 0.1)',
 					borderColor: '#a1de41',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
@@ -143,6 +146,7 @@ export default Vue.extend({
 				datasets: [{
 					label: local ? 'Local Notes' : 'Remote Notes',
 					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
@@ -164,6 +168,7 @@ export default Vue.extend({
 				datasets: [{
 					label: local ? 'Local Users' : 'Remote Users',
 					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
@@ -185,6 +190,7 @@ export default Vue.extend({
 				datasets: [{
 					label: local ? 'Local Drive Usage' : 'Remote Drive Usage',
 					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
@@ -195,11 +201,18 @@ export default Vue.extend({
 				scales: {
 					yAxes: [{
 						ticks: {
-							callback: (value) => {
+							callback: value => {
 								return Vue.filter('bytes')(value);
 							}
 						}
 					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: tooltipItem => {
+							return Vue.filter('bytes')(tooltipItem.yLabel);
+						}
+					}
 				}
 			}];
 		},
@@ -232,6 +245,9 @@ export default Vue.extend({
 @import '~const.styl'
 
 .gkgckalzgidaygcxnugepioremxvxvpt
+	*
+		user-select none
+
 	> header
 		display flex
 
