@@ -57,10 +57,6 @@ export default function(html: string): string {
 				} else {
 					text += `[${txt}](${node.attrs.find((x: any) => x.name == 'href').value})`;
 				}
-
-				if (node.childNodes) {
-					node.childNodes.forEach((n: any) => analyze(n));
-				}
 				break;
 
 			case 'p':
