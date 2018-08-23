@@ -46,6 +46,11 @@ router.post('/signin', require('./private/signin').default);
 router.use(require('./service/github').routes());
 router.use(require('./service/twitter').routes());
 
+// Return 404 for unknown API
+router.all('*', async ctx => {
+	ctx.status = 404;
+});
+
 // Register router
 app.use(router.routes());
 
