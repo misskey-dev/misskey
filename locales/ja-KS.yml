@@ -58,7 +58,7 @@ common:
     friday: "金曜日"
     saturday: "土曜日"
   reactions:
-    like: "いいね"
+    like: "ええやん"
     love: "好きやねん"
     laugh: "わろた"
     hmm: "ふぅ～む"
@@ -84,7 +84,7 @@ common:
   my-token-regenerated: "あんさんのトークンが更新されたらしいわ。すまんがとりあえずサインアウトすんで。"
   i-like-sushi: "寿司(のほうがプリンよりむしろ)ウマい、タコ焼きはあらへんけど。"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示や！"
-  use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
+  use-contrast-reversi-stones: "リバーシのアイコンにコントラストをつけんで！"
   verified-user: "アメちゃん付きアカウント"
   disable-animated-mfm: "投稿内のちょろちょろ動いてんのを止める"
   reversi:
