@@ -94,7 +94,7 @@ init(async (launch) => {
 	/**
 	 * Init Notification
 	 */
-	if ('Notification' in window) {
+	if ('Notification' in window && os.store.getters.isSignedIn) {
 		// 許可を得ていなかったらリクエスト
 		if ((Notification as any).permission == 'default') {
 			await Notification.requestPermission();
