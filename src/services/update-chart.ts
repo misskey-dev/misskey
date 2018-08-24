@@ -48,17 +48,20 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 				users: {
 					local: {
 						total: mostRecentStats.users.local.total,
-						diff: 0
+						inc: 0,
+						dec: 0
 					},
 					remote: {
 						total: mostRecentStats.users.remote.total,
-						diff: 0
+						inc: 0,
+						dec: 0
 					}
 				},
 				notes: {
 					local: {
 						total: mostRecentStats.notes.local.total,
-						diff: 0,
+						inc: 0,
+						dec: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -67,7 +70,8 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 					},
 					remote: {
 						total: mostRecentStats.notes.remote.total,
-						diff: 0,
+						inc: 0,
+						dec: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -79,14 +83,18 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 					local: {
 						totalCount: mostRecentStats.drive.local.totalCount,
 						totalSize: mostRecentStats.drive.local.totalSize,
-						diffCount: 0,
-						diffSize: 0
+						incCount: 0,
+						incSize: 0,
+						decCount: 0,
+						decSize: 0
 					},
 					remote: {
 						totalCount: mostRecentStats.drive.remote.totalCount,
 						totalSize: mostRecentStats.drive.remote.totalSize,
-						diffCount: 0,
-						diffSize: 0
+						incCount: 0,
+						incSize: 0,
+						decCount: 0,
+						decSize: 0
 					}
 				}
 			};
@@ -105,17 +113,20 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 				users: {
 					local: {
 						total: 0,
-						diff: 0
+						inc: 0,
+						dec: 0
 					},
 					remote: {
 						total: 0,
-						diff: 0
+						inc: 0,
+						dec: 0
 					}
 				},
 				notes: {
 					local: {
 						total: 0,
-						diff: 0,
+						inc: 0,
+						dec: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -124,7 +135,8 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 					},
 					remote: {
 						total: 0,
-						diff: 0,
+						inc: 0,
+						dec: 0,
 						diffs: {
 							normal: 0,
 							reply: 0,
@@ -136,14 +148,18 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 					local: {
 						totalCount: 0,
 						totalSize: 0,
-						diffCount: 0,
-						diffSize: 0
+						incCount: 0,
+						incSize: 0,
+						decCount: 0,
+						decSize: 0
 					},
 					remote: {
 						totalCount: 0,
 						totalSize: 0,
-						diffCount: 0,
-						diffSize: 0
+						incCount: 0,
+						incSize: 0,
+						decCount: 0,
+						decSize: 0
 					}
 				}
 			};
@@ -174,46 +190,56 @@ function update(inc: any) {
 }
 
 export async function updateUserStats(user: IUser, isAdditional: boolean) {
-	const amount = isAdditional ? 1 : -1;
 	const origin = isLocalUser(user) ? 'local' : 'remote';
 
 	const inc = {} as any;
-	inc[`users.${origin}.total`] = amount;
-	inc[`users.${origin}.diff`] = amount;
+	inc[`users.${origin}.total`] = isAdditional ? 1 : -1;
+	if (isAdditional) {
+		inc[`users.${origin}.inc`] = 1;
+	} else {
+		inc[`users.${origin}.dec`] = 1;
+	}
 
 	await update(inc);
 }
 
 export async function updateNoteStats(note: INote, isAdditional: boolean) {
-	const amount = isAdditional ? 1 : -1;
 	const origin = isLocalUser(note._user) ? 'local' : 'remote';
 
 	const inc = {} as any;
 
-	inc[`notes.${origin}.total`] = amount;
-	inc[`notes.${origin}.diff`] = amount;
+	inc[`notes.${origin}.total`] = isAdditional ? 1 : -1;
+
+	if (isAdditional) {
+		inc[`notes.${origin}.inc`] = 1;
+	} else {
+		inc[`notes.${origin}.dec`] = 1;
+	}
 
 	if (note.replyId != null) {
-		inc[`notes.${origin}.diffs.reply`] = amount;
+		inc[`notes.${origin}.diffs.reply`] = isAdditional ? 1 : -1;
 	} else if (note.renoteId != null) {
-		inc[`notes.${origin}.diffs.renote`] = amount;
+		inc[`notes.${origin}.diffs.renote`] = isAdditional ? 1 : -1;
 	} else {
-		inc[`notes.${origin}.diffs.normal`] = amount;
+		inc[`notes.${origin}.diffs.normal`] = isAdditional ? 1 : -1;
 	}
 
 	await update(inc);
 }
 
 export async function updateDriveStats(file: IDriveFile, isAdditional: boolean) {
-	const amount = isAdditional ? 1 : -1;
-	const size = isAdditional ? file.length : -file.length;
 	const origin = isLocalUser(file.metadata._user) ? 'local' : 'remote';
 
 	const inc = {} as any;
-	inc[`drive.${origin}.totalCount`] = amount;
-	inc[`drive.${origin}.diffCount`] = amount;
-	inc[`drive.${origin}.totalSize`] = size;
-	inc[`drive.${origin}.diffSize`] = size;
+	inc[`drive.${origin}.totalCount`] = isAdditional ? 1 : -1;
+	inc[`drive.${origin}.totalSize`] = isAdditional ? file.length : -file.length;
+	if (isAdditional) {
+		inc[`drive.${origin}.incCount`] = 1;
+		inc[`drive.${origin}.incSize`] = file.length;
+	} else {
+		inc[`drive.${origin}.decCount`] = 1;
+		inc[`drive.${origin}.decSize`] = file.length;
+	}
 
 	await update(inc);
 }

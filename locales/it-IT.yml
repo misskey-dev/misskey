@@ -58,7 +58,7 @@ common:
     friday: "金曜日"
     saturday: "土曜日"
   reactions:
-    like: "ええやん"
+    like: "いいね"
     love: "しゅき"
     laugh: "笑"
     hmm: "ふぅ～む"
@@ -84,6 +84,7 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
+  use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   reversi:
@@ -754,6 +755,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "リスト"
   follow-requests: "フォロー申請"
   customize: "ホームのカスタマイズ"
+  admin: "管理"
   settings: "設定"
   signout: "サインアウト"
   dark: "闇に飲まれる"
@@ -818,18 +820,24 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
-desktop/views/pages/admin/admin.notes-chart.vue:
-  title: "投稿"
-  local: "ローカル"
-  remote: "リモート"
-desktop/views/pages/admin/admin.users-chart.vue:
-  title: "ユーザー"
-  local: "ローカル"
-  remote: "リモート"
-desktop/views/pages/admin/admin.drive-chart.vue:
-  title: "ドライブ"
-  local: "ローカル"
-  remote: "リモート"
+desktop/views/pages/admin/admin.chart.vue:
+  title: "チャート"
+  per-day: "1日ごと"
+  per-hour: "1時間ごと"
+  notes: "投稿"
+  users: "ユーザー"
+  drive: "ドライブ"
+  charts:
+    notes: "投稿の増減 (統合)"
+    local-notes: "投稿の増減 (ローカル)"
+    remote-notes: "投稿の増減 (リモート)"
+    notes-total: "投稿の累計"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの累計"
+    drive: "ドライブ使用量の増減"
+    drive-total: "ドライブ使用量の累計"
+    drive-files: "ドライブのファイル数の増減"
+    drive-files-total: "ドライブのファイル数の累計"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
@@ -1044,6 +1052,7 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   darkmode: "ダークモード"
   settings: "設定"
+  admin: "管理"
   about: "Misskeyについて"
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
