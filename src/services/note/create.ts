@@ -239,8 +239,8 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 async function renderActivity(data: Option, note: INote) {
 	const content = data.renote && data.text == null
-		? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote), note)
-		: renderCreate(await renderNote(note));
+		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
+		: renderCreate(await renderNote(note, false));
 
 	return packAp(content);
 }
