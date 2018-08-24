@@ -55,10 +55,10 @@ export default Vue.extend({
 				case 'local-notes': return this.notesChart('local');
 				case 'remote-notes': return this.notesChart('remote');
 				case 'notes-total': return this.notesTotalChart();
-				case 'drive': return this.driveChart(false);
-				case 'drive-total': return this.driveChart(true);
-				case 'drive-files': return this.driveFilesChart(false);
-				case 'drive-files-total': return this.driveFilesChart(true);
+				case 'drive': return this.driveChart();
+				case 'drive-total': return this.driveTotalChart();
+				case 'drive-files': return this.driveFilesChart();
+				case 'drive-files-total': return this.driveFilesTotalChart();
 			}
 		},
 		stats(): any[] {
@@ -81,7 +81,7 @@ export default Vue.extend({
 				normal: type == 'local' ? x.notes.local.diffs.normal : type == 'remote' ? x.notes.remote.diffs.normal : x.notes.local.diffs.normal + x.notes.remote.diffs.normal,
 				reply: type == 'local' ? x.notes.local.diffs.reply : type == 'remote' ? x.notes.remote.diffs.reply : x.notes.local.diffs.reply + x.notes.remote.diffs.reply,
 				renote: type == 'local' ? x.notes.local.diffs.renote : type == 'remote' ? x.notes.remote.diffs.renote : x.notes.local.diffs.renote + x.notes.remote.diffs.renote,
-				all: type == 'local' ? x.notes.local.diff : type == 'remote' ? x.notes.remote.diff : x.notes.local.diff + x.notes.remote.diff
+				all: type == 'local' ? (x.notes.local.inc + -x.notes.local.dec) : type == 'remote' ? (x.notes.remote.inc + -x.notes.remote.dec) : (x.notes.local.inc + -x.notes.local.dec) + (x.notes.remote.inc + -x.notes.remote.dec)
 			}));
 
 			return [{
@@ -152,7 +152,7 @@ export default Vue.extend({
 
 			return [{
 				datasets: [{
-					label: 'Notes',
+					label: 'Combined',
 					fill: false,
 					borderColor: '#555',
 					borderWidth: 2,
@@ -161,7 +161,7 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
 				}, {
-					label: 'Remote Notes',
+					label: 'Remote',
 					fill: true,
 					backgroundColor: 'rgba(65, 221, 222, 0.1)',
 					borderColor: '#41ddde',
@@ -170,7 +170,7 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
 				}, {
-					label: 'Local Notes',
+					label: 'Local',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
@@ -203,13 +203,13 @@ export default Vue.extend({
 		usersChart(total: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				localCount: total ? x.users.local.total : x.users.local.diff,
-				remoteCount: total ? x.users.remote.total : x.users.remote.diff
+				localCount: total ? x.users.local.total : (x.users.local.inc + -x.users.local.dec),
+				remoteCount: total ? x.users.remote.total : (x.users.remote.inc + -x.users.remote.dec)
 			}));
 
 			return [{
 				datasets: [{
-					label: 'Users',
+					label: 'Combined',
 					fill: false,
 					borderColor: '#555',
 					borderWidth: 2,
@@ -218,7 +218,7 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
 				}, {
-					label: 'Remote Users',
+					label: 'Remote',
 					fill: true,
 					backgroundColor: 'rgba(65, 221, 222, 0.1)',
 					borderColor: '#41ddde',
@@ -227,7 +227,7 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
 				}, {
-					label: 'Local Users',
+					label: 'Local',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
@@ -257,16 +257,93 @@ export default Vue.extend({
 			}];
 		},
 
-		driveChart(total: boolean): any {
+		driveChart(): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				localSize: total ? x.drive.local.totalSize : x.drive.local.diffSize,
-				remoteSize: total ? x.drive.remote.totalSize : x.drive.remote.diffSize
+				localInc: x.drive.local.incSize,
+				localDec: -x.drive.local.decSize,
+				remoteInc: x.drive.remote.incSize,
+				remoteDec: -x.drive.remote.decSize,
 			}));
 
 			return [{
 				datasets: [{
-					label: 'Drive Usage',
+					label: 'All',
+					fill: false,
+					borderColor: '#555',
+					borderWidth: 2,
+					borderDash: [4, 4],
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.localInc + x.localDec + x.remoteInc + x.remoteDec }))
+				}, {
+					label: 'Remote +',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteInc }))
+				}, {
+					label: 'Remote -',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteDec }))
+				}, {
+					label: 'Local +',
+					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
+					borderColor: '#f6584f',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.localInc }))
+				}, {
+					label: 'Local -',
+					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
+					borderColor: '#f6584f',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.localDec }))
+				}]
+			}, {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: value => {
+								return Vue.filter('bytes')(value);
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('bytes')(tooltipItem.yLabel)}`;
+						}
+					}
+				}
+			}];
+		},
+
+		driveTotalChart(): any {
+			const data = this.stats.slice().reverse().map(x => ({
+				date: new Date(x.date),
+				localSize: x.drive.local.totalSize,
+				remoteSize: x.drive.remote.totalSize
+			}));
+
+			return [{
+				datasets: [{
+					label: 'Combined',
 					fill: false,
 					borderColor: '#555',
 					borderWidth: 2,
@@ -275,7 +352,7 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.remoteSize + x.localSize }))
 				}, {
-					label: 'Remote Drive Usage',
+					label: 'Remote',
 					fill: true,
 					backgroundColor: 'rgba(65, 221, 222, 0.1)',
 					borderColor: '#41ddde',
@@ -284,7 +361,7 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.remoteSize }))
 				}, {
-					label: 'Local Drive Usage',
+					label: 'Local',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
@@ -314,25 +391,102 @@ export default Vue.extend({
 			}];
 		},
 
-		driveFilesChart(total: boolean): any {
+		driveFilesChart(): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				localCount: total ? x.drive.local.totalCount : x.drive.local.diffCount,
-				remoteCount: total ? x.drive.remote.totalCount : x.drive.remote.diffCount
+				localInc: x.drive.local.incCount,
+				localDec: -x.drive.local.decCount,
+				remoteInc: x.drive.remote.incCount,
+				remoteDec: -x.drive.remote.decCount
 			}));
 
 			return [{
 				datasets: [{
-					label: 'Drive Files',
+					label: 'All',
 					fill: false,
 					borderColor: '#555',
 					borderWidth: 2,
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
+					data: data.map(x => ({ t: x.date, y: x.localInc + x.localDec + x.remoteInc + x.remoteDec }))
 				}, {
-					label: 'Remote Drive Files',
+					label: 'Remote +',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteInc }))
+				}, {
+					label: 'Remote -',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteDec }))
+				}, {
+					label: 'Local +',
+					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
+					borderColor: '#f6584f',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.localInc }))
+				}, {
+					label: 'Local -',
+					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
+					borderColor: '#f6584f',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.localDec }))
+				}]
+			}, {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: value => {
+								return Vue.filter('number')(value);
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('number')(tooltipItem.yLabel)}`;
+						}
+					}
+				}
+			}];
+		},
+
+		driveFilesTotalChart(): any {
+			const data = this.stats.slice().reverse().map(x => ({
+				date: new Date(x.date),
+				localCount: x.drive.local.totalCount,
+				remoteCount: x.drive.remote.totalCount,
+			}));
+
+			return [{
+				datasets: [{
+					label: 'Combined',
+					fill: false,
+					borderColor: '#555',
+					borderWidth: 2,
+					borderDash: [4, 4],
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.localCount + x.remoteCount }))
+				}, {
+					label: 'Remote',
 					fill: true,
 					backgroundColor: 'rgba(65, 221, 222, 0.1)',
 					borderColor: '#41ddde',
@@ -341,7 +495,7 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
 				}, {
-					label: 'Local Drive Files',
+					label: 'Local',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',

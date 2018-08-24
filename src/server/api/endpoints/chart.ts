@@ -2,6 +2,31 @@ import Stats, { IStats } from '../../../models/stats';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+function migrateStats(stats: IStats[]) {
+	stats.forEach(stat => {
+		const isOldData = stat.users.local.inc == null;
+
+		if (!isOldData) return;
+
+		stat.users.local.inc = (stat as any).users.local.diff;
+		stat.users.local.dec = 0;
+		stat.users.remote.inc = (stat as any).users.remote.diff;
+		stat.users.remote.dec = 0;
+		stat.notes.local.inc = (stat as any).notes.local.diff;
+		stat.notes.local.dec = 0;
+		stat.notes.remote.inc = (stat as any).notes.remote.diff;
+		stat.notes.remote.dec = 0;
+		stat.drive.local.incCount = (stat as any).drive.local.diffCount;
+		stat.drive.local.decCount = 0;
+		stat.drive.local.incSize = (stat as any).drive.local.diffSize;
+		stat.drive.local.decSize = 0;
+		stat.drive.remote.incCount = (stat as any).drive.remote.diffCount;
+		stat.drive.remote.decCount = 0;
+		stat.drive.remote.incSize = (stat as any).drive.remote.diffSize;
+		stat.drive.remote.decSize = 0;
+	});
+}
+
 export const meta = {
 };
 
@@ -44,6 +69,10 @@ export default (params: any) => new Promise(async (res, rej) => {
 		}),
 	]);
 
+	// 後方互換性のため
+	migrateStats(statsPerDay);
+	migrateStats(statsPerHour);
+
 	const format = (src: IStats[], span: 'day' | 'hour') => {
 		const chart: Array<Omit<Omit<IStats, '_id'>, 'span'>> = [];
 
@@ -70,17 +99,20 @@ export default (params: any) => new Promise(async (res, rej) => {
 						users: {
 							local: {
 								total: mostRecent.users.local.total,
-								diff: 0
+								inc: 0,
+								dec: 0
 							},
 							remote: {
 								total: mostRecent.users.remote.total,
-								diff: 0
+								inc: 0,
+								dec: 0
 							}
 						},
 						notes: {
 							local: {
 								total: mostRecent.notes.local.total,
-								diff: 0,
+								inc: 0,
+								dec: 0,
 								diffs: {
 									normal: 0,
 									reply: 0,
@@ -89,7 +121,8 @@ export default (params: any) => new Promise(async (res, rej) => {
 							},
 							remote: {
 								total: mostRecent.notes.remote.total,
-								diff: 0,
+								inc: 0,
+								dec: 0,
 								diffs: {
 									normal: 0,
 									reply: 0,
@@ -101,14 +134,18 @@ export default (params: any) => new Promise(async (res, rej) => {
 							local: {
 								totalCount: mostRecent.drive.local.totalCount,
 								totalSize: mostRecent.drive.local.totalSize,
-								diffCount: 0,
-								diffSize: 0
+								incCount: 0,
+								incSize: 0,
+								decCount: 0,
+								decSize: 0
 							},
 							remote: {
 								totalCount: mostRecent.drive.remote.totalCount,
 								totalSize: mostRecent.drive.remote.totalSize,
-								diffCount: 0,
-								diffSize: 0
+								incCount: 0,
+								incSize: 0,
+								decCount: 0,
+								decSize: 0
 							}
 						}
 					});
@@ -118,17 +155,20 @@ export default (params: any) => new Promise(async (res, rej) => {
 						users: {
 							local: {
 								total: 0,
-								diff: 0
+								inc: 0,
+								dec: 0
 							},
 							remote: {
 								total: 0,
-								diff: 0
+								inc: 0,
+								dec: 0
 							}
 						},
 						notes: {
 							local: {
 								total: 0,
-								diff: 0,
+								inc: 0,
+								dec: 0,
 								diffs: {
 									normal: 0,
 									reply: 0,
@@ -137,7 +177,8 @@ export default (params: any) => new Promise(async (res, rej) => {
 							},
 							remote: {
 								total: 0,
-								diff: 0,
+								inc: 0,
+								dec: 0,
 								diffs: {
 									normal: 0,
 									reply: 0,
@@ -149,14 +190,18 @@ export default (params: any) => new Promise(async (res, rej) => {
 							local: {
 								totalCount: 0,
 								totalSize: 0,
-								diffCount: 0,
-								diffSize: 0
+								incCount: 0,
+								incSize: 0,
+								decCount: 0,
+								decSize: 0
 							},
 							remote: {
 								totalCount: 0,
 								totalSize: 0,
-								diffCount: 0,
-								diffSize: 0
+								incCount: 0,
+								incSize: 0,
+								decCount: 0,
+								decSize: 0
 							}
 						}
 					});
