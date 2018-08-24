@@ -84,6 +84,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
+  use-contrast-reversi-stones: "Make the stone color clear"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
   reversi:
@@ -754,6 +755,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "Lists"
   follow-requests: "Follow requests"
   customize: "Customize home layout"
+  admin: "Admin"
   settings: "Settings"
   signout: "Sign out"
   dark: "Submerge in dark"
@@ -818,18 +820,24 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "User account unverification settings"
   unverify: "Unverify account"
   unverified: "The account is now being unverified"
-desktop/views/pages/admin/admin.notes-chart.vue:
-  title: "Posts"
-  local: "Local"
-  remote: "Remote"
-desktop/views/pages/admin/admin.users-chart.vue:
-  title: "Users"
-  local: "Local"
-  remote: "Remote"
-desktop/views/pages/admin/admin.drive-chart.vue:
-  title: "Drive"
-  local: "Local"
-  remote: "Remote"
+desktop/views/pages/admin/admin.chart.vue:
+  title: "Chart"
+  per-day: "per Day"
+  per-hour: "per Hour"
+  notes: "Posts"
+  users: "Users"
+  drive: "Media storage"
+  charts:
+    notes: "The number of posts: increase/decrease (All)"
+    local-notes: "The number of posts: increase/decrease (Local)"
+    remote-notes: "The number of posts: increase/decrease (Global)"
+    notes-total: "The number of posts: cumulative total"
+    users: "The number of users: increase/decrease"
+    users-total: "The number of users: cumulative total"
+    drive: "Capacity used as the storage: increase/decrease"
+    drive-total: "Capacity used as the storage: cumulative total"
+    drive-files: "The number of files on the storage: increase/decrease"
+    drive-files-total: "The number of files on the storage: cumulative total"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
@@ -1044,6 +1052,7 @@ mobile/views/components/ui.nav.vue:
   game: "Games"
   darkmode: "Dark theme"
   settings: "Settings"
+  admin: "Admin"
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
