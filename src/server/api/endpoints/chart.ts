@@ -6,8 +6,8 @@ export const meta = {
 };
 
 export default (params: any) => new Promise(async (res, rej) => {
-	const daysRange = 90;
-	const hoursRange = 24;
+	const daysRange = 30;
+	const hoursRange = 30;
 
 	const now = new Date();
 	const y = now.getFullYear();
@@ -65,9 +65,53 @@ export default (params: any) => new Promise(async (res, rej) => {
 			} else { // 隙間埋め
 				const mostRecent = src.find(s => s.date.getTime() < current.getTime());
 				if (mostRecent) {
-					chart.unshift(Object.assign({}, mostRecent, {
-						date: current
-					}));
+					chart.unshift({
+						date: current,
+						users: {
+							local: {
+								total: mostRecent.users.local.total,
+								diff: 0
+							},
+							remote: {
+								total: mostRecent.users.remote.total,
+								diff: 0
+							}
+						},
+						notes: {
+							local: {
+								total: mostRecent.notes.local.total,
+								diff: 0,
+								diffs: {
+									normal: 0,
+									reply: 0,
+									renote: 0
+								}
+							},
+							remote: {
+								total: mostRecent.notes.remote.total,
+								diff: 0,
+								diffs: {
+									normal: 0,
+									reply: 0,
+									renote: 0
+								}
+							}
+						},
+						drive: {
+							local: {
+								totalCount: mostRecent.drive.local.totalCount,
+								totalSize: mostRecent.drive.local.totalSize,
+								diffCount: 0,
+								diffSize: 0
+							},
+							remote: {
+								totalCount: mostRecent.drive.remote.totalCount,
+								totalSize: mostRecent.drive.remote.totalSize,
+								diffCount: 0,
+								diffSize: 0
+							}
+						}
+					});
 				} else {
 					chart.unshift({
 						date: current,

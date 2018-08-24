@@ -4,30 +4,24 @@
 		<b>%i18n:@title%:</b>
 		<select v-model="chartType">
 			<optgroup label="%i18n:@users%">
-				<option value="local-users">%i18n:@local-users%</option>
-				<option value="remote-users">%i18n:@remote-users%</option>
-				<option value="local-users-total">%i18n:@local-users-total%</option>
-				<option value="remote-users-total">%i18n:@remote-users-total%</option>
+				<option value="users">%i18n:@charts.users%</option>
+				<option value="users-total">%i18n:@charts.users-total%</option>
 			</optgroup>
 			<optgroup label="%i18n:@notes%">
-				<option value="local-notes">%i18n:@local-notes%</option>
-				<option value="remote-notes">%i18n:@remote-notes%</option>
-				<option value="local-notes-total">%i18n:@local-notes-total%</option>
-				<option value="remote-notes-total">%i18n:@remote-notes-total%</option>
+				<option value="notes">%i18n:@charts.notes%</option>
+				<option value="local-notes">%i18n:@charts.local-notes%</option>
+				<option value="remote-notes">%i18n:@charts.remote-notes%</option>
+				<option value="notes-total">%i18n:@charts.notes-total%</option>
 			</optgroup>
 			<optgroup label="%i18n:@drive%">
-				<option value="local-drive-files">%i18n:@local-drive-files%</option>
-				<option value="remote-drive-files">%i18n:@remote-drive-files%</option>
-				<option value="local-drive-files-total">%i18n:@local-drive-files-total%</option>
-				<option value="remote-drive-files-total">%i18n:@remote-drive-files-total%</option>
-				<option value="local-drive">%i18n:@local-drive%</option>
-				<option value="remote-drive">%i18n:@remote-drive%</option>
-				<option value="local-drive-total">%i18n:@local-drive-total%</option>
-				<option value="remote-drive-total">%i18n:@remote-drive-total%</option>
+				<option value="drive-files">%i18n:@charts.drive-files%</option>
+				<option value="drive-files-total">%i18n:@charts.drive-files-total%</option>
+				<option value="drive">%i18n:@charts.drive%</option>
+				<option value="drive-total">%i18n:@charts.drive-total%</option>
 			</optgroup>
 		</select>
 		<div>
-			<a @click="span = 'day'">%i18n:@per-day%</a> | <a @click="span = 'hour'">%i18n:@per-hour%</a>
+			<span @click="span = 'day'" :class="{ active: span == 'day' }">%i18n:@per-day%</span> | <span @click="span = 'hour'" :class="{ active: span == 'hour' }">%i18n:@per-hour%</span>
 		</div>
 	</header>
 	<div>
@@ -47,7 +41,7 @@ export default Vue.extend({
 	data() {
 		return {
 			chart: null,
-			chartType: 'local-notes',
+			chartType: 'notes',
 			span: 'hour'
 		};
 	},
@@ -55,22 +49,16 @@ export default Vue.extend({
 		data(): any {
 			if (this.chart == null) return null;
 			switch (this.chartType) {
-				case 'local-users': return this.usersChart(true, false);
-				case 'remote-users': return this.usersChart(false, false);
-				case 'local-users-total': return this.usersChart(true, true);
-				case 'remote-users-total': return this.usersChart(false, true);
-				case 'local-notes': return this.notesChart(true);
-				case 'remote-notes': return this.notesChart(false);
-				case 'local-notes-total': return this.notesTotalChart(true);
-				case 'remote-notes-total': return this.notesTotalChart(false);
-				case 'local-drive': return this.driveChart(true, false);
-				case 'remote-drive': return this.driveChart(false, false);
-				case 'local-drive-total': return this.driveChart(true, true);
-				case 'remote-drive-total': return this.driveChart(false, true);
-				case 'local-drive-files': return this.driveFilesChart(true, false);
-				case 'remote-drive-files': return this.driveFilesChart(false, false);
-				case 'local-drive-files-total': return this.driveFilesChart(true, true);
-				case 'remote-drive-files-total': return this.driveFilesChart(false, true);
+				case 'users': return this.usersChart(false);
+				case 'users-total': return this.usersChart(true);
+				case 'notes': return this.notesChart('combined');
+				case 'local-notes': return this.notesChart('local');
+				case 'remote-notes': return this.notesChart('remote');
+				case 'notes-total': return this.notesTotalChart();
+				case 'drive': return this.driveChart(false);
+				case 'drive-total': return this.driveChart(true);
+				case 'drive-files': return this.driveFilesChart(false);
+				case 'drive-files-total': return this.driveFilesChart(true);
 			}
 		},
 		stats(): any[] {
@@ -87,13 +75,13 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		notesChart(local: boolean): any {
+		notesChart(type: string): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				normal: local ? x.notes.local.diffs.normal : x.notes.remote.diffs.normal,
-				reply: local ? x.notes.local.diffs.reply : x.notes.remote.diffs.reply,
-				renote: local ? x.notes.local.diffs.renote : x.notes.remote.diffs.renote,
-				all: local ? x.notes.local.diff : x.notes.remote.diff
+				normal: type == 'local' ? x.notes.local.diffs.normal : type == 'remote' ? x.notes.remote.diffs.normal : x.notes.local.diffs.normal + x.notes.remote.diffs.normal,
+				reply: type == 'local' ? x.notes.local.diffs.reply : type == 'remote' ? x.notes.remote.diffs.reply : x.notes.local.diffs.reply + x.notes.remote.diffs.reply,
+				renote: type == 'local' ? x.notes.local.diffs.renote : type == 'remote' ? x.notes.remote.diffs.renote : x.notes.local.diffs.renote + x.notes.remote.diffs.renote,
+				all: type == 'local' ? x.notes.local.diff : type == 'remote' ? x.notes.remote.diff : x.notes.local.diff + x.notes.remote.diff
 			}));
 
 			return [{
@@ -107,14 +95,14 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.all }))
 				}, {
-					label: 'Normal',
+					label: 'Renotes',
 					fill: true,
-					backgroundColor: 'rgba(65, 221, 222, 0.1)',
-					borderColor: '#41ddde',
+					backgroundColor: 'rgba(161, 222, 65, 0.1)',
+					borderColor: '#a1de41',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.normal }))
+					data: data.map(x => ({ t: x.date, y: x.renote }))
 				}, {
 					label: 'Replies',
 					fill: true,
@@ -125,78 +113,185 @@ export default Vue.extend({
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.reply }))
 				}, {
-					label: 'Renotes',
+					label: 'Normal',
 					fill: true,
-					backgroundColor: 'rgba(161, 222, 65, 0.1)',
-					borderColor: '#a1de41',
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.renote }))
+					data: data.map(x => ({ t: x.date, y: x.normal }))
 				}]
+			}, {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: value => {
+								return Vue.filter('number')(value);
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('number')(tooltipItem.yLabel)}`;
+						}
+					}
+				}
 			}];
 		},
 
-		notesTotalChart(local: boolean): any {
+		notesTotalChart(): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				count: local ? x.notes.local.total : x.notes.remote.total,
+				localCount: x.notes.local.total,
+				remoteCount: x.notes.remote.total
 			}));
 
 			return [{
 				datasets: [{
-					label: local ? 'Local Notes' : 'Remote Notes',
+					label: 'Notes',
+					fill: false,
+					borderColor: '#555',
+					borderWidth: 2,
+					borderDash: [4, 4],
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
+				}, {
+					label: 'Remote Notes',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
+				}, {
+					label: 'Local Notes',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.count }))
+					data: data.map(x => ({ t: x.date, y: x.localCount }))
 				}]
+			}, {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: value => {
+								return Vue.filter('number')(value);
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('number')(tooltipItem.yLabel)}`;
+						}
+					}
+				}
 			}];
 		},
 
-		usersChart(local: boolean, total: boolean): any {
+		usersChart(total: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				count: local ?
-					total ? x.users.local.total : x.users.local.diff :
-					total ? x.users.remote.total : x.users.remote.diff
+				localCount: total ? x.users.local.total : x.users.local.diff,
+				remoteCount: total ? x.users.remote.total : x.users.remote.diff
 			}));
 
 			return [{
 				datasets: [{
-					label: local ? 'Local Users' : 'Remote Users',
+					label: 'Users',
+					fill: false,
+					borderColor: '#555',
+					borderWidth: 2,
+					borderDash: [4, 4],
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
+				}, {
+					label: 'Remote Users',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
+				}, {
+					label: 'Local Users',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.count }))
+					data: data.map(x => ({ t: x.date, y: x.localCount }))
 				}]
+			}, {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: value => {
+								return Vue.filter('number')(value);
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('number')(tooltipItem.yLabel)}`;
+						}
+					}
+				}
 			}];
 		},
 
-		driveChart(local: boolean, total: boolean): any {
+		driveChart(total: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				size: local ?
-					total ? x.drive.local.totalSize : x.drive.local.diffSize :
-					total ? x.drive.remote.totalSize : x.drive.remote.diffSize
+				localSize: total ? x.drive.local.totalSize : x.drive.local.diffSize,
+				remoteSize: total ? x.drive.remote.totalSize : x.drive.remote.diffSize
 			}));
 
 			return [{
 				datasets: [{
-					label: local ? 'Local Drive Usage' : 'Remote Drive Usage',
+					label: 'Drive Usage',
+					fill: false,
+					borderColor: '#555',
+					borderWidth: 2,
+					borderDash: [4, 4],
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteSize + x.localSize }))
+				}, {
+					label: 'Remote Drive Usage',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteSize }))
+				}, {
+					label: 'Local Drive Usage',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.size }))
+					data: data.map(x => ({ t: x.date, y: x.localSize }))
 				}]
 			}, {
 				scales: {
@@ -210,35 +305,71 @@ export default Vue.extend({
 				},
 				tooltips: {
 					callbacks: {
-						label: tooltipItem => {
-							return Vue.filter('bytes')(tooltipItem.yLabel);
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('bytes')(tooltipItem.yLabel)}`;
 						}
 					}
 				}
 			}];
 		},
 
-		driveFilesChart(local: boolean, total: boolean): any {
+		driveFilesChart(total: boolean): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				count: local ?
-					total ? x.drive.local.totalCount : x.drive.local.diffCount :
-					total ? x.drive.remote.totalCount : x.drive.remote.diffCount
+				localCount: total ? x.drive.local.totalCount : x.drive.local.diffCount,
+				remoteCount: total ? x.drive.remote.totalCount : x.drive.remote.diffCount
 			}));
 
 			return [{
 				datasets: [{
-					label: local ? 'Local Drive Files' : 'Remote Drive Files',
+					label: 'Drive Files',
+					fill: false,
+					borderColor: '#555',
+					borderWidth: 2,
+					borderDash: [4, 4],
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
+				}, {
+					label: 'Remote Drive Files',
+					fill: true,
+					backgroundColor: 'rgba(65, 221, 222, 0.1)',
+					borderColor: '#41ddde',
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
+				}, {
+					label: 'Local Drive Files',
 					fill: true,
 					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.count }))
+					data: data.map(x => ({ t: x.date, y: x.localCount }))
 				}]
+			}, {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: value => {
+								return Vue.filter('number')(value);
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('number')(tooltipItem.yLabel)}`;
+						}
+					}
+				}
 			}];
-		},
+		}
 	}
 });
 </script>
@@ -258,6 +389,11 @@ export default Vue.extend({
 
 		> *:last-child
 			margin-left auto
+
+			*
+				&:not(.active)
+					color $theme-color
+					cursor pointer
 
 	> div
 		> *
