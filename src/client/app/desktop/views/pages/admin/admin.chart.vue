@@ -102,6 +102,7 @@ export default Vue.extend({
 					fill: false,
 					borderColor: '#555',
 					borderWidth: 2,
+					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
 					data: data.map(x => ({ t: x.date, y: x.all }))
@@ -228,7 +229,8 @@ export default Vue.extend({
 			return [{
 				datasets: [{
 					label: local ? 'Local Drive Files' : 'Remote Drive Files',
-					fill: false,
+					fill: true,
+					backgroundColor: 'rgba(246, 88, 79, 0.1)',
 					borderColor: '#f6584f',
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
