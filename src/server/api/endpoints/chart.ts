@@ -4,7 +4,23 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 function migrateStats(stats: IStats[]) {
 	stats.forEach(stat => {
-		const isOldData = stat.users.local.inc == null;
+		const isOldData =
+			stat.users.local.inc == null ||
+			stat.users.local.dec == null ||
+			stat.users.remote.inc == null ||
+			stat.users.remote.dec == null ||
+			stat.notes.local.inc == null ||
+			stat.notes.local.dec == null ||
+			stat.notes.remote.inc == null ||
+			stat.notes.remote.dec == null ||
+			stat.drive.local.incCount == null ||
+			stat.drive.local.decCount == null ||
+			stat.drive.local.incSize == null ||
+			stat.drive.local.decSize == null ||
+			stat.drive.remote.incCount == null ||
+			stat.drive.remote.decCount == null ||
+			stat.drive.remote.incSize == null ||
+			stat.drive.remote.decSize == null;
 
 		if (!isOldData) return;
 
