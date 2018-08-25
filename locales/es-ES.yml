@@ -649,6 +649,7 @@ desktop/views/components/settings.vue:
   gradient-window-header: "Usar degradados en las cabeceras de las páginas"
   post-form-on-timeline: "Mostrar el formulario de las entradas encima de la línea de tiempo"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
+  show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
