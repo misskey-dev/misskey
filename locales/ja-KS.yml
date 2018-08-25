@@ -536,7 +536,7 @@ desktop/views/components/friends-maker.vue:
   refresh: "もっと見る"
   close: "閉じる"
 desktop/views/components/game-window.vue:
-  game: "リバーシ"
+  game: "ゲーム"
 desktop/views/components/home.vue:
   done: "完了"
   add-widget: "ウィジェットを追加:"
