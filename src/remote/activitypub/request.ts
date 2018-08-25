@@ -19,6 +19,9 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 		port,
 		method: 'POST',
 		path: pathname + search,
+		headers: {
+			'Content-Type': 'application/activity+json'
+		}
 	}, res => {
 		log(`${url} --> ${res.statusCode}`);
 
