@@ -38,7 +38,7 @@ export default Vue.extend({
 
 .tcrwdhwpuxrwmcttxjcsehgpagpstqey
 	width 100%
-	padding 16px 32px
+	padding 16px
 
 	> .stats
 		display flex
