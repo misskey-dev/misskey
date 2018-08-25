@@ -819,8 +819,8 @@ desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
-  all-notes: "全てのノート"
-  original-notes: "このインスタンスのノート"
+  all-notes: "全ての投稿"
+  original-notes: "このインスタンスの投稿"
   invite: "招待"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "ユーザーの凍結"
@@ -849,8 +849,8 @@ desktop/views/pages/deck/deck.note.vue:
 desktop/views/pages/stats/stats.vue:
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
-  all-notes: "全てのノート"
-  original-notes: "このインスタンスのノート"
+  all-notes: "全ての投稿"
+  original-notes: "このインスタンスの投稿"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   gotit: "Rozumiem!"
