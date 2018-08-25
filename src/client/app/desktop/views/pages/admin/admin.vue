@@ -103,7 +103,7 @@ export default Vue.extend({
 			> div
 				max-width 800px
 
-.card
+.mk-admin-card
 	padding 32px
 	background #fff
 	box-shadow 0 2px 8px rgba(#000, 0.1)
