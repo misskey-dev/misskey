@@ -318,7 +318,7 @@ export default Vue.extend({
 					yAxes: [{
 						ticks: {
 							callback: value => {
-								return Vue.filter('bytes')(value);
+								return Vue.filter('bytes')(value, 1);
 							}
 						}
 					}]
@@ -327,7 +327,7 @@ export default Vue.extend({
 					callbacks: {
 						label: (tooltipItem, data) => {
 							const label = data.datasets[tooltipItem.datasetIndex].label || '';
-							return `${label}: ${Vue.filter('bytes')(tooltipItem.yLabel)}`;
+							return `${label}: ${Vue.filter('bytes')(tooltipItem.yLabel, 1)}`;
 						}
 					}
 				}
