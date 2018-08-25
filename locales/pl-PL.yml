@@ -846,6 +846,11 @@ desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Udostępniono przez {}"
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
+desktop/views/pages/stats/stats.vue:
+  all-users: "全てのユーザー"
+  original-users: "このインスタンスのユーザー"
+  all-notes: "全てのノート"
+  original-notes: "このインスタンスのノート"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   gotit: "Rozumiem!"
