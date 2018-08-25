@@ -237,16 +237,16 @@ common/views/components/messaging.vue:
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはあらへんで"
   more: "もっと読む"
-  no-history: "これより過去の履歴はありません"
+  no-history: "これより過去の履歴はあらへんで"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあるで"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "メッセージに添付できんのはひとつのファイルのみやで"
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージ書いてや"
   send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "メッセージに添付できんのはひとつのファイルのみやで"
 common/views/components/messaging-room.message.vue:
   is-read: "既読"
   deleted: "このメッセージは削除されたわ"
@@ -269,15 +269,15 @@ common/views/components/poll.vue:
   vote-to: "「{}」に投票や！"
   vote-count: "{}票"
   total-users: "{}人が投票"
-  vote: "投票する"
-  show-result: "結果を見る"
+  vote: "投票するで"
+  show-result: "結果を見よか"
   voted: "投票済みや"
 common/views/components/poll-editor.vue:
   no-only-one-choice: "選択肢が最低2つ必要やで"
   choice-n: "選択肢{}"
-  remove: "この選択肢を削除"
+  remove: "この選択肢を消すで"
   add: "+選択肢を追加"
-  destroy: "アンケートを破棄"
+  destroy: "アンケートをほかそ"
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
 common/views/components/signin.vue:
@@ -374,8 +374,8 @@ common/views/widgets/slideshow.vue:
   folder: "クリックしてフォルダを指定してください"
   no-image: "このフォルダには画像がありません"
 common/views/widgets/tips.vue:
-  tips-line1: "<kbd>t</kbd>でタイムラインにフォーカスできます"
-  tips-line2: "<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます"
+  tips-line1: "<kbd>t</kbd>でタイムラインにフォーカスできんで"
+  tips-line2: "<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開くで"
   tips-line3: "投稿フォームにはファイルをドラッグ&ドロップできます"
   tips-line4: "投稿フォームにクリップボードにある画像データをペーストできます"
   tips-line5: "ドライブにファイルをドラッグ&ドロップしてアップロードできます"
@@ -386,10 +386,10 @@ common/views/widgets/tips.vue:
   tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
   tips-line11: "投稿の ... をクリックして、投稿をユーザーページにピン留めできます"
   tips-line13: "投稿に添付したファイルは全てドライブに保存されます"
-  tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できます"
-  tips-line17: "「**」でテキストを囲むと**強調表示**されます"
-  tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができます"
-  tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示しています"
+  tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できんで"
+  tips-line17: "「**」でテキストを囲ったると**強調表示**されんで"
+  tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができんで"
+  tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示してんねん"
   tips-line21: "APIをつこてbotの開発なども行えるで"
   tips-line23: "まゆかわいいよまゆ"
   tips-line24: "Misskeyは2014年にサービスを開始したんよ"
@@ -481,7 +481,7 @@ desktop/views/components/drive.file.vue:
 desktop/views/components/drive.folder.vue:
   unable-to-process: "操作を完了できません"
   circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-  unhandled-error: "不明なエラー"
+  unhandled-error: "ようわからん"
   contextmenu:
     move-to-this-folder: "このフォルダへ移動"
     show-in-new-window: "新しいウィンドウで表示"
@@ -932,7 +932,7 @@ desktop/views/widgets/notifications.vue:
 desktop/views/widgets/polls.vue:
   title: "アンケート"
   refresh: "他を見る"
-  nothing: "ありません！"
+  nothing: "あらへん！"
 desktop/views/widgets/post-form.vue:
   title: "投稿"
   note: "投稿"
@@ -954,7 +954,7 @@ mobile/views/components/drive.vue:
   count-separator: "、"
   file-count: "ファイル"
   load-more: "もっと読み込む"
-  nothing-in-drive: "ドライブには何もありません"
+  nothing-in-drive: "ドライブには何もあらへんで。"
   folder-is-empty: "このフォルダは空です"
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
   deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
