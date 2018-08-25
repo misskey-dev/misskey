@@ -8,7 +8,7 @@ import { publishUserStream } from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(followee)) {
-		const content = pack(renderUndo(renderFollow(follower, followee)));
+		const content = pack(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower as ILocalUser, content, followee.inbox);
 	}
 
