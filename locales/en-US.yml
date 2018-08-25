@@ -1071,7 +1071,7 @@ mobile/views/pages/favorites.vue:
   title: "Favorites"
 mobile/views/pages/user-lists.vue:
   title: "Lists"
-  enter-list-name: "Enter list name"
+  enter-list-name: "Enter a name of the list to make"
 mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Load more"
