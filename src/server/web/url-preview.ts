@@ -1,11 +1,20 @@
 import * as Koa from 'koa';
+import * as request from 'request-promise-native';
 import summaly from 'summaly';
+import config from '../../config';
 
 module.exports = async (ctx: Koa.Context) => {
 	try {
-		const summary = await summaly(ctx.query.url, {
+		const summary = config.summalyProxy ? await request.get({
+			url: config.summalyProxy,
+			qs: {
+				url: ctx.query.url
+			},
+			json: true
+		}) : await summaly(ctx.query.url, {
 			followRedirects: false
 		});
+
 		summary.icon = wrap(summary.icon);
 		summary.thumbnail = wrap(summary.thumbnail);
 

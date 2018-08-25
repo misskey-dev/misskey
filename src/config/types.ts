@@ -62,6 +62,8 @@ export type Source = {
 	 */
 	ghost?: string;
 
+	summalyProxy?: string;
+
 	accesslog?: string;
 	twitter?: {
 		consumer_key: string;
