@@ -473,6 +473,25 @@ desktop/views/components/calendar.vue:
   next: "次の月"
   go: "クリックして時間遡行"
 
+desktop/views/components/charts.vue:
+  title: "チャート"
+  per-day: "1日ごと"
+  per-hour: "1時間ごと"
+  notes: "投稿"
+  users: "ユーザー"
+  drive: "ドライブ"
+  charts:
+    notes: "投稿の増減 (統合)"
+    local-notes: "投稿の増減 (ローカル)"
+    remote-notes: "投稿の増減 (リモート)"
+    notes-total: "投稿の累計"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの累計"
+    drive: "ドライブ使用量の増減"
+    drive-total: "ドライブ使用量の累計"
+    drive-files: "ドライブのファイル数の増減"
+    drive-files-total: "ドライブのファイル数の累計"
+
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
@@ -938,25 +957,6 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
-
-desktop/views/pages/admin/admin.chart.vue:
-  title: "チャート"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  notes: "投稿"
-  users: "ユーザー"
-  drive: "ドライブ"
-  charts:
-    notes: "投稿の増減 (統合)"
-    local-notes: "投稿の増減 (ローカル)"
-    remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の累計"
-    users: "ユーザーの増減"
-    users-total: "ユーザーの累計"
-    drive: "ドライブ使用量の増減"
-    drive-total: "ドライブ使用量の累計"
-    drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "ドライブのファイル数の累計"
 
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"

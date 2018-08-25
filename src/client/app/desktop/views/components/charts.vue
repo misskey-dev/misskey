@@ -1,5 +1,5 @@
 <template>
-<div class="card gkgckalzgidaygcxnugepioremxvxvpt">
+<div class="gkgckalzgidaygcxnugepioremxvxvpt">
 	<header>
 		<b>%i18n:@title%:</b>
 		<select v-model="chartType">
@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XChart from './admin.chart.chart.ts';
+import XChart from './charts.chart.ts';
 
 export default Vue.extend({
 	components: {
@@ -532,11 +532,20 @@ export default Vue.extend({
 @import '~const.styl'
 
 .gkgckalzgidaygcxnugepioremxvxvpt
+	padding 32px
+	background #fff
+	box-shadow 0 2px 8px rgba(#000, 0.1)
+
 	*
 		user-select none
 
 	> header
 		display flex
+		margin 0 0 1em 0
+		padding 0 0 8px 0
+		font-size 1em
+		color #555
+		border-bottom solid 1px #eee
 
 		> b
 			margin-right 8px
