@@ -25,6 +25,7 @@ import updateBanner from './api/update-banner';
 import MkIndex from './views/pages/index.vue';
 import MkDeck from './views/pages/deck/deck.vue';
 import MkAdmin from './views/pages/admin/admin.vue';
+import MkStats from './views/pages/stats/stats.vue';
 import MkUser from './views/pages/user/user.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
@@ -57,6 +58,7 @@ init(async (launch) => {
 			{ path: '/', name: 'index', component: MkIndex },
 			{ path: '/deck', name: 'deck', component: MkDeck },
 			{ path: '/admin', name: 'admin', component: MkAdmin },
+			{ path: '/stats', name: 'stats', component: MkStats },
 			{ path: '/i/customize-home', component: MkHomeCustomize },
 			{ path: '/i/favorites', component: MkFavorites },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },

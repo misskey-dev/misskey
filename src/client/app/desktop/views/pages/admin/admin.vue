@@ -11,7 +11,7 @@
 	<main>
 		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
-			<x-chart/>
+			<x-charts/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
@@ -32,7 +32,7 @@ import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
 import XUnverifyUser from "./admin.unverify-user.vue";
-import XChart from "./admin.chart.vue";
+import XCharts from "../../components/charts.vue";
 
 export default Vue.extend({
 	components: {
@@ -41,12 +41,11 @@ export default Vue.extend({
 		XUnsuspendUser,
 		XVerifyUser,
 		XUnverifyUser,
-		XChart
+		XCharts
 	},
 	data() {
 		return {
-			page: 'dashboard',
-			chart: null
+			page: 'dashboard'
 		};
 	},
 	methods: {
