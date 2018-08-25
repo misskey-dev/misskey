@@ -51,9 +51,10 @@
 		}
 	}
 
-	if (settings) {
-		if (settings.device.lang) lang = settings.device.lang;
-	}
+	if (settings &&
+			settings.device.lang &&
+			LANGS.includes(settings.device.lang))
+		lang = settings.device.lang;
 	//#endregion
 
 	// Detect the user agent
