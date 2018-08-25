@@ -19,6 +19,9 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 		port,
 		method: 'POST',
 		path: pathname + search,
+		headers: {
+			'Content-Type': 'application/activity+json'
+		}
 	}, res => {
 		log(`${url} --> ${res.statusCode}`);
 
@@ -32,7 +35,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 	sign(req, {
 		authorizationHeaderName: 'Signature',
 		key: user.keypair,
-		keyId: `acct:${user.username}@${config.host}`
+		keyId: `${config.url}/users/${user._id}/publickey`
 	});
 
 	// Signature: Signature ... => Signature: ...
