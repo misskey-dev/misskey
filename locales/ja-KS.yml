@@ -224,8 +224,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-network-desc: "つこてるPCのネットワーク接続が正常か確認してや。"
   no-internet: "インターネットに接続されとらんで"
   no-internet-desc: "ネットワークには接続されとるけど、インターネットには接続されとらんようやわ。つこてるPCのインターネット接続が正常か確認してや。"
-  no-server: "Misskeyのサーバーに接続できません"
-  no-server-desc: "お使いのPCのインターネット接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
+  no-server: "Misskeyのサーバーに接続でけへんわ"
+  no-server-desc: "つこてるPCのインターネット接続は正常やけど、Misskeyのサーバーにはつながらんわ。多分サーバーがダウンまたはメンテナンスしとるわ、知らんけど。すまんけどしばらくしてから再度アクセスしてみてや。"
   success: "Misskeyのサーバーに接続できました"
   success-desc: "正常に接続できるようやわ。ページを再度読み込みしてな。"
   flush: "キャッシュの削除"
@@ -233,13 +233,13 @@ common/views/components/connect-failed.troubleshooter.vue:
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あなた"
-  no-history: "履歴はありません"
+  no-history: "履歴はあらへんで"
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはありません"
   more: "もっと読む"
   no-history: "これより過去の履歴はありません"
   resize-form: "ドラッグしてフォームの広さを調整"
-  new-message: "新しいメッセージがあります"
+  new-message: "新しいメッセージがあるで"
   only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージ書いてや"
