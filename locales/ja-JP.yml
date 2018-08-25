@@ -1281,6 +1281,7 @@ mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
 mobile/views/pages/share.vue:
+  share: "共有"
   share-with: "{}で共有"
 
 mobile/views/pages/messaging.vue:
