@@ -425,11 +425,11 @@ desktop/views/components/calendar.vue:
   next: "Mois prochain"
   go: "Cliquez pour naviguer"
 desktop/views/components/charts.vue:
-  title: "チャート"
+  title: "Graphiques"
   per-day: "1日ごと"
   per-hour: "1時間ごと"
   notes: "投稿"
-  users: "ユーザー"
+  users: "Utilisateurs"
   drive: "ドライブ"
   charts:
     notes: "投稿の増減 (統合)"
