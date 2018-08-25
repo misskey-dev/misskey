@@ -48,7 +48,7 @@ export default Vue.extend({
 				this.open();
 			});
 		} else {
-			const query = this.user[0] == '@' ?
+			const query = this.user.startsWith('@') ?
 				parseAcct(this.user.substr(1)) :
 				{ userId: this.user };
 
