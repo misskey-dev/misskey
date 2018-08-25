@@ -116,7 +116,8 @@ async function deleteOldFile(user: IRemoteUser) {
 	const oldFile = await DriveFile.findOne({
 		_id: {
 			$nin: [user.avatarId, user.bannerId]
-		}
+		},
+		'metadata.userId': user._id
 	}, {
 		sort: {
 			_id: 1
