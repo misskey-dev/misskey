@@ -320,8 +320,8 @@ common/views/components/stream-indicator.vue:
   reconnecting: "再接続中"
   connected: "接続完了"
 common/views/components/twitter-setting.vue:
-  description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-  connected-to: "次のTwitterアカウントに接続されています"
+  description: "あんさんがつことるTwitterアカウントをMisskeyアカウントに接続しとくと、あんさんのプロフィールにTwitterアカウント情報が表示されるようになったり、Twitterをつこた便利なサインインが使えるようになったりすんで。"
+  connected-to: "次のTwitterアカウントに接続されとるで"
   detail: "詳細..."
   reconnect: "再接続する"
   connect: "Twitterと接続する"
@@ -339,7 +339,7 @@ common/views/components/visibility-chooser.vue:
   private: "非公開"
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
-  no-broadcasts: "お知らせはありません"
+  no-broadcasts: "お知らせはあらへんで"
   have-a-nice-day: "良い一日を！"
   next: "次"
 common/views/widgets/calendar.vue:
@@ -351,10 +351,10 @@ common/views/widgets/calendar.vue:
   this-year: "今年:"
 common/views/widgets/donation.vue:
   title: "寄付のお願い"
-  text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
+  text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かるんや。Misskeyは広告を掲載したりせんから、収入を皆様からの寄付に頼ってますねん。もし興味があるなら、{}までご連絡よろしゅう頼んます。ご協力おおきに。"
 common/views/widgets/photo-stream.vue:
   title: "フォトストリーム"
-  no-photos: "写真はありません"
+  no-photos: "写真はあらへんで"
 common/views/widgets/posts-monitor.vue:
   title: "投稿チャート"
   toggle: "表示を切り替え"
