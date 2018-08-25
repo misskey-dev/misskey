@@ -46,7 +46,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 
 		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
 		if (user === null) {
-			user = await resolvePerson(signature.keyId) as IRemoteUser;
+			user = await resolvePerson(activity.actor) as IRemoteUser;
 		}
 	}
 
