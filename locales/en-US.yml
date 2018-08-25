@@ -846,6 +846,11 @@ desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposted by {}"
   private: "This post is private"
   deleted: "This post has been deleted"
+desktop/views/pages/stats/stats.vue:
+  all-users: "全てのユーザー"
+  original-users: "このインスタンスのユーザー"
+  all-notes: "全てのノート"
+  original-notes: "このインスタンスのノート"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
