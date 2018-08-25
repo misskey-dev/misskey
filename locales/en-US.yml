@@ -649,6 +649,7 @@ desktop/views/components/settings.vue:
   gradient-window-header: "Use gradients on window headers"
   post-form-on-timeline: "Display post form at the top of the timeline"
   suggest-recent-hashtags: "Show recent popular hashtags on the post form"
+  show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "Display reply target"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show renoted my posts in timelines"
