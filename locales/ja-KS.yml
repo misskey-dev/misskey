@@ -242,7 +242,7 @@ common/views/components/messaging-room.vue:
   new-message: "新しいメッセージがあります"
   only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.form.vue:
-  input-message-here: "ここにメッセージを入力"
+  input-message-here: "ここにメッセージ書いてや"
   send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
