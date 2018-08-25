@@ -710,25 +710,25 @@ desktop/views/components/settings.2fa.vue:
   authenticator: "まず、Google Authenticatorとかのをつこてるデバイスにインストールしてや:"
   howtoinstall: "インストール方法はここやで"
   scan: "んで、ここに出とるQRコードをスキャンしてな:"
-  done: "お使いのデバイスに表示されているトークンを入力して完了します:"
-  submit: "完了"
-  success: "設定が完了しました！"
-  failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
-  info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+  done: "最後にデバイスに表示されとるトークンを入力してな:"
+  submit: "送信"
+  success: "設定が完了したで！"
+  failed: "なんか設定に失敗したで。トークンを間違えとらんか確認してや。"
+  info: "次のサインインからは、パスワードに加えてデバイスに出とるトークンを入力してな。"
 desktop/views/components/settings.api.vue:
-  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  intro: "APIを利用するには、上記のトークンを「i」っちゅうキーでパラメータに付加してリクエストしてや。"
+  caution: "アカウントを不正利用されるかも知れんから、このトークンは第三者に教えたらあかんで(アプリなどにも入力しんといてな)。"
+  regeneration-of-token: "万が一このトークンが漏れたとかその可能性があったらトークンを再生成できるで。"
   regenerate-token: "トークンを再生成"
-  token: "Token:"
-  enter-password: "パスワードを入力してください"
+  token: "トークン:"
+  enter-password: "パスワードを入力してや"
 desktop/views/components/settings.apps.vue:
-  no-apps: "連携しているアプリケーションはありません"
+  no-apps: "連携しているアプリケーションはあらへんで"
 desktop/views/components/settings.drive.vue:
   max: "中"
   in-use: "使用中"
 desktop/views/components/settings.mute.vue:
-  no-users: "ミュートしているユーザーはいません"
+  no-users: "ミュートしているユーザーはおらんで"
 desktop/views/components/settings.password.vue:
   reset: "パスワードを変更する"
   enter-current-password: "現在のパスワードを入力してください"
@@ -764,7 +764,7 @@ desktop/views/components/timeline.vue:
   global: "グローバル"
   list: "リスト"
 desktop/views/components/ui.header.vue:
-  welcome-back: "おかえりなさい、"
+  welcome-back: "おかえり、"
   adjective: "さん"
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
@@ -794,7 +794,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "拒否"
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
-  create-list: "リストを作成"
+  create-list: "新しいリストを作成"
   list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "投稿"
@@ -829,11 +829,11 @@ desktop/views/pages/admin/admin.suspend-user.vue:
 desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend-user: "ユーザーの凍結の解除"
   unsuspend: "凍結の解除"
-  unsuspended: "凍結を解除しました"
+  unsuspended: "凍結を解除したで"
 desktop/views/pages/admin/admin.verify-user.vue:
   verify-user: "ユーザーの公式アカウント設定"
   verify: "公式アカウントにする"
-  verified: "公式アカウントにしました"
+  verified: "公式アカウントにしたで"
 desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
@@ -1071,7 +1071,7 @@ mobile/views/pages/favorites.vue:
   title: "お気に入り"
 mobile/views/pages/user-lists.vue:
   title: "リスト"
-  enter-list-name: "リスト名を入力してください"
+  enter-list-name: "リスト名を入力してや"
 mobile/views/pages/drive.vue:
   drive: "ドライブ"
   more: "もっと見る"
