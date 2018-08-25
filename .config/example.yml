@@ -138,3 +138,6 @@ drive:
 
 # Clustering
 # clusterLimit: 1
+
+# Summaly proxy
+# summalyProxy: "http://example.com"

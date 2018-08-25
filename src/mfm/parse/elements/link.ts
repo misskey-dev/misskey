@@ -13,7 +13,7 @@ export type TextElementLink = {
 export default function(text: string) {
 	const match = text.match(/^\??\[([^\[\]]+?)\]\((https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.=\+\-]+?)\)/);
 	if (!match) return null;
-	const silent = text[0] == '?';
+	const silent = text.startsWith('?');
 	const link = match[0];
 	const title = match[1];
 	const url = match[2];
