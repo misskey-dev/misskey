@@ -49,6 +49,7 @@
 			</div>
 			<mk-switch v-model="$store.state.settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
 			<mk-switch v-model="$store.state.settings.suggestRecentHashtags" @change="onChangeSuggestRecentHashtags" text="%i18n:@suggest-recent-hashtags%"/>
+			<mk-switch v-model="$store.state.settings.showClockOnHeader" @change="onChangeShowClockOnHeader" text="%i18n:@show-clock-on-header%"/>
 			<mk-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
 			<mk-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes" text="%i18n:@show-my-renotes%"/>
 			<mk-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
@@ -330,6 +331,12 @@ export default Vue.extend({
 		onChangeSuggestRecentHashtags(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'suggestRecentHashtags',
+				value: v
+			});
+		},
+		onChangeShowClockOnHeader(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'showClockOnHeader',
 				value: v
 			});
 		},
