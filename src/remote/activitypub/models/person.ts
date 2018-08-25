@@ -166,8 +166,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 
 	const avatarId = avatar ? avatar._id : null;
 	const bannerId = banner ? banner._id : null;
-	const avatarUrl = avatar && avatar.metadata.url ? avatar.metadata.url : null;
-	const bannerUrl = banner && banner.metadata.url ? banner.metadata.url : null;
+	const avatarUrl = (avatar && avatar.metadata.thumbnailUrl) ? avatar.metadata.thumbnailUrl : (avatar && avatar.metadata.url) ? avatar.metadata.url : null;
+	const bannerUrl = (banner && banner.metadata.url) ? banner.metadata.url : null;
 
 	await User.update({ _id: user._id }, {
 		$set: {
@@ -255,7 +255,7 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 			sharedInbox: person.sharedInbox,
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
-			avatarUrl: avatar && avatar.metadata.url ? avatar.metadata.url : null,
+			avatarUrl: (avatar && avatar.metadata.thumbnailUrl) ? avatar.metadata.thumbnailUrl : (avatar && avatar.metadata.url) ? avatar.metadata.url : null,
 			bannerUrl: banner && banner.metadata.url ? banner.metadata.url : null,
 			description: htmlToMFM(person.summary),
 			followersCount,

@@ -84,7 +84,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 
 		if (avatar == null) return rej('avatar not found');
 
-		updates.avatarUrl = avatar.metadata.url || `${config.drive_url}/${avatar._id}`;
+		updates.avatarUrl = avatar.metadata.thumbnailUrl || avatar.metadata.url || `${config.drive_url}/${avatar._id}`;
 
 		if (avatar.metadata.properties.avgColor) {
 			updates.avatarColor = avatar.metadata.properties.avgColor;
