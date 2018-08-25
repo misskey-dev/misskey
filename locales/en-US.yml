@@ -819,8 +819,8 @@ desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Dashboard"
   all-users: "All Users"
   original-users: "Users on this instance"
-  all-notes: "All Posts"
-  original-notes: "Posts on this instance"
+  all-notes: "全ての投稿"
+  original-notes: "このインスタンスの投稿"
   invite: "Invite"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspend a user"
@@ -849,8 +849,8 @@ desktop/views/pages/deck/deck.note.vue:
 desktop/views/pages/stats/stats.vue:
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
-  all-notes: "全てのノート"
-  original-notes: "このインスタンスのノート"
+  all-notes: "全ての投稿"
+  original-notes: "このインスタンスの投稿"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
