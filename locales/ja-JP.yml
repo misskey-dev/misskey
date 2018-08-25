@@ -1008,6 +1008,7 @@ desktop/views/pages/search.vue:
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
+  share: "共有"
   share-with: "{}で共有"
 
 desktop/views/pages/tag.vue:
