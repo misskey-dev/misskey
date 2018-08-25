@@ -1009,6 +1009,7 @@ desktop/views/pages/search.vue:
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
+  share: "共有"
   share-with: "{}で共有"
 
 desktop/views/pages/tag.vue:
@@ -1281,6 +1282,7 @@ mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
 mobile/views/pages/share.vue:
+  share: "共有"
   share-with: "{}で共有"
 
 mobile/views/pages/messaging.vue:
