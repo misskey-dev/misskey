@@ -854,14 +854,14 @@ desktop/views/pages/stats/stats.vue:
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"
-  signin: "ログイン"
-  signup: "新規登録"
+  signin: "サインイン"
+  signup: "サインアップ"
   signin-button: "やってる"
-  signup-button: "やる"
+  signup-button: "サインアップ"
   timeline: "タイムライン"
   powered-by-misskey: "Powered by <b>Misskey</b>."
 desktop/views/pages/drive.vue:
-  title: "Misskey Drive"
+  title: "ドライブ"
 desktop/views/pages/favorites.vue:
   more: "さらに読み込む"
 desktop/views/pages/home-customize.vue:
