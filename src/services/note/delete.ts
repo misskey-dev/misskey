@@ -32,7 +32,7 @@ export default async function(user: IUser, note: INote) {
 
 	//#region ローカルの投稿なら削除アクティビティを配送
 	if (isLocalUser(user)) {
-		const content = pack(renderDelete(await renderNote(note)));
+		const content = pack(renderDelete(await renderNote(note), user));
 
 		const followings = await Following.find({
 			followeeId: user._id,

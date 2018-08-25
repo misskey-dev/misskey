@@ -6,6 +6,7 @@ export default (object: any, note: INote) => {
 
 	return {
 		id: `${config.url}/notes/${note._id}`,
+		actor: `${config.url}/users/${note.userId}`,
 		type: 'Announce',
 		published: note.createdAt.toISOString(),
 		to: ['https://www.w3.org/ns/activitystreams#Public'],
