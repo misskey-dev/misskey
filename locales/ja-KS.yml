@@ -856,14 +856,14 @@ desktop/views/pages/welcome.vue:
   gotit: "わかった"
   signin: "サインイン"
   signup: "サインアップ"
-  signin-button: "やってる"
+  signin-button: "サインイン中…"
   signup-button: "サインアップ"
   timeline: "タイムライン"
   powered-by-misskey: "Powered by <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "ドライブ"
 desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
+  more: "もっと読み込んでくで"
 desktop/views/pages/home-customize.vue:
   title: "ホームのカスタマイズ"
 desktop/views/pages/note.vue:
@@ -900,19 +900,19 @@ desktop/views/pages/user/user.vue:
 desktop/views/pages/user/user.home.vue:
   last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
-  title: "フォト"
+  title: "写真"
   loading: "読み込み中"
-  no-photos: "写真はありません"
+  no-photos: "写真はあらへんで"
 desktop/views/pages/user/user.profile.vue:
-  follows-you: "フォローされています"
+  follows-you: "フォローされとるで"
   stalk: "ストークする"
-  stalking: "ストーキングしています"
+  stalking: "ストーキングしとるで"
   unstalk: "ストーク解除"
   mute: "ミュートする"
-  muted: "ミュートしています"
+  muted: "ミュートしとるで"
   unmute: "ミュート解除"
   push-to-a-list: "リストに追加"
-  list-pushed: "{user}を{list}に追加しました。"
+  list-pushed: "{user}を{list}に追加したで。"
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
