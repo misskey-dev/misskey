@@ -1,5 +1,5 @@
 <template>
-<div class="card">
+<div class="mk-admin-card">
 	<header>%i18n:@suspend-user%</header>
 	<input v-model="username" type="text" class="ui"/>
 	<button class="ui" @click="suspendUser" :disabled="suspending">%i18n:@suspend%</button>

@@ -1,5 +1,5 @@
 <template>
-<div class="obdskegsannmntldydackcpzezagxqfy card">
+<div class="obdskegsannmntldydackcpzezagxqfy mk-admin-card">
 	<header>%i18n:@dashboard%</header>
 	<div v-if="stats" class="stats">
 		<div><b>%fa:user% {{ stats.originalUsersCount | number }}</b><span>%i18n:@original-users%</span></div>

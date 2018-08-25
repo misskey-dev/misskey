@@ -1,5 +1,5 @@
 <template>
-<div class="card">
+<div class="mk-admin-card">
 	<header>%i18n:@verify-user%</header>
 	<input v-model="username" type="text" class="ui"/>
 	<button class="ui" @click="verifyUser" :disabled="verifying">%i18n:@verify%</button>
