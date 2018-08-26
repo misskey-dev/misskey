@@ -57,6 +57,7 @@ Misskey is using Crowdin for l10n.
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12731202/0995c46cdcb54153ab5f073f5869b70a/1?token-time=2145916800&token-hash=Yd60FK_SWfQO56SeiJpy1tDHOnCV4xdEywQe8gn5_Wo%3D" alt="negao"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13099460/43cecdbaa63a40d79bf50a96b9910b9d/1?token-time=2145916800&token-hash=d6P5MWHHsCMxUuBAEPAoVc5wLUR19mIhqAq7Ma9h9rI%3D" alt="ne_moni"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/1?token-time=2145916800&token-hash=f03BFb4S2FUx9YEt87TnEmifb4h33OywGBW2akQVtQY%3D" alt="Melilot"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12999811/5f349fafcce44dd1824a8b1ebbec4564/1?token-time=2145916800&token-hash=DVrSdOqQq2dufgNgWZ3XMnEtl_ZAktr8Lhf2tbHKtoA%3D" alt="Axella"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/3384329/8b713330cb27404ea6e9fac50ff96efe/1?token-time=2145916800&token-hash=0eu4-m1gTWA9PhptVZt6rdKcusqcD7RB87rJT23VVFI%3D" alt="べすれい"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12021162/963128bb8d14476dbd8407943db8f31a/1?token-time=2145916800&token-hash=GgJ_NmUB6_nnRNLVGUWjV-WX91On7BOu59LKncYV9fE%3D" alt="gutfuckllc"></td>
 <td><img src="https://c8.patreon.com/2/100/12718187" alt="Peter G."></td>
@@ -66,6 +67,7 @@ Misskey is using Crowdin for l10n.
 <td><a href="https://www.patreon.com/user?u=12731202">negao</a></td>
 <td><a href="https://www.patreon.com/user?u=13099460">ne_moni</a></td>
 <td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>
+<td><a href="https://www.patreon.com/AxellaMC">Axella</a></td>
 <td><a href="https://www.patreon.com/user?u=3384329">べすれい</a></td>
 <td><a href="https://www.patreon.com/gutfuckllc">gutfuckllc</a></td>
 <td><a href="https://www.patreon.com/user?u=12718187">Peter G.</a></td>
@@ -89,7 +91,7 @@ Misskey is using Crowdin for l10n.
 <td><a href="https://www.patreon.com/fujishan">fujishan</a></td>
 </tr></table>
 
-**Last updated:** Wed, 22 Aug 2018 05:25:06 UTC
+**Last updated:** Sun, 26 Aug 2018 08:55:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
