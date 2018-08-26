@@ -53,5 +53,5 @@ export default function load() {
 }
 
 function normalizeUrl(url: string) {
-	return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
+	return url.endsWith('/') ? url.substr(0, url.length - 1) : url;
 }
