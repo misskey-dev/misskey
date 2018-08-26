@@ -7,7 +7,7 @@ function trim(text, g) {
 export default function(src) {
 	const fn = options => {
 		const search = options.search;
-		const g = search[search.length - 1] == 'g';
+		const g = search.endsWith('g');
 		const file = this.resourcePath.replace(/\\/g, '/');
 		const replace = options.i18n ? global[options.replace].bind(null, {
 			src: file,
