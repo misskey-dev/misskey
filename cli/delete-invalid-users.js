@@ -30,11 +30,7 @@ async function main() {
 			return Promise.all(doc.map(migrate))
 		},
 		idop
-	).then(a => {
-		const rv = []
-		a.forEach(e => rv.push(...e))
-		return rv
-	})
+	).then(a => [].concat(...a));
 }
 
 main().then(console.dir).catch(console.error)
