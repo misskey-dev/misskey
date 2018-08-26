@@ -4,7 +4,7 @@
 		<h1>%fa:heart%%i18n:@title%</h1>
 		<p>
 			{{ '%i18n:@text%'.substr(0, '%i18n:@text%'.indexOf('{')) }}
-			<a href="https://syuilo.com">@syuilo</a>
+			<a :href="meta.maintainer.url">@{{ meta.maintainer.name }}</a>
 			{{ '%i18n:@text%'.substr('%i18n:@text%'.indexOf('}') + 1) }}
 		</p>
 	</article>
@@ -15,6 +15,17 @@
 import define from '../../../common/define-widget';
 export default define({
 	name: 'donation'
+}).extend({
+	data() {
+		return {
+			meta: null;
+		};
+	},
+	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.meta = meta;
+		});
+	}
 });
 </script>
 
