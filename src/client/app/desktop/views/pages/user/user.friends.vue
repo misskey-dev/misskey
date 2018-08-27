@@ -45,6 +45,7 @@ root(isDark)
 	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
+	overflow hidden
 
 	> .title
 		z-index 1
