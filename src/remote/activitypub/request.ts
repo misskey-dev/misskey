@@ -35,7 +35,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 	sign(req, {
 		authorizationHeaderName: 'Signature',
 		key: user.keypair,
-		keyId: `${config.url}/users/${user._id}/publickey`
+		keyId: hasResolveBug(hostname) ? `acct:${user.username}@${config.host}` : `${config.url}/users/${user._id}/publickey`
 	});
 
 	// Signature: Signature ... => Signature: ...
@@ -45,3 +45,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 
 	req.end(JSON.stringify(object));
 });
+
+const hasResolveBug = (host: string) => {
+	return host.match(/^(misskey\.cercle\.jp|tri\.cash|misskey\.tmin\.ml|misskey\.xps2\.net|diary\.yukimochi\.jp|misskey\.nsa\.ovh|msky\.cafe|s\.nzws\.me|misskey\.xyz|mi-chan\.work|misskey\.ranranhome\.info|mewl\.me|mk\.odakyu\.app|msky\.tokyo|misskey\.jp|misskey\.ketsuben\.red|msk\.kirigakure\.net)$/i);
+};
