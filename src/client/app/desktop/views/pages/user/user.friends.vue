@@ -40,9 +40,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+root(isDark)
 .friends
-	background #fff
-	border solid 1px rgba(#000, 0.075)
+	background isDark ? #282C37 : #fff
+	border solid 1px isDark ? #21242f : rgba(#000, 0.075)
 	border-radius 6px
 
 	> .title
@@ -52,7 +53,8 @@ export default Vue.extend({
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color #888
+		background isDark ? #313543 : inherit
+		color isDark ? #e3e5e8 : #888
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
@@ -70,7 +72,7 @@ export default Vue.extend({
 
 	> .user
 		padding 16px
-		border-bottom solid 1px #eee
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		&:last-child
 			border-bottom none
@@ -96,18 +98,24 @@ export default Vue.extend({
 				margin 0
 				font-size 16px
 				line-height 24px
-				color #555
+				color isDark ? #ccc : #555
 
 			> .username
 				display block
 				margin 0
 				font-size 15px
 				line-height 16px
-				color #ccc
+				color isDark ? #555 : #ccc
 
 		> .mk-follow-button
 			position absolute
 			top 16px
 			right 16px
+
+.friends[data-darkmode]
+	root(true)
+
+.friends:not([data-darkmode])
+	root(false)
 
 </style>
