@@ -43,7 +43,7 @@ export default Vue.extend({
 root(isDark)
 .friends
 	background isDark ? #282C37 : #fff
-	border solid 1px isDark ? #21242f : rgba(#000, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	> .title
