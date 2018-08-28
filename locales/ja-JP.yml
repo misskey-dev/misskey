@@ -1368,6 +1368,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "ページを再度読み込みすると更新が適用されます。"
   settings: "設定"
   signout: "サインアウト"
+  sound: "サウンド"
+  enableSounds: "サウンドを有効にする"
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
