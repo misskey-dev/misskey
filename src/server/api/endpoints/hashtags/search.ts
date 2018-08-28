@@ -5,7 +5,7 @@ const escapeRegexp = require('escape-regexp');
 
 export const meta = {
 	desc: {
-		ja: 'ハッシュタグを検索します。'
+		'ja-JP': 'ハッシュタグを検索します。'
 	},
 
 	requireCredential: false,
@@ -14,20 +14,20 @@ export const meta = {
 		limit: $.num.optional.range(1, 100).note({
 			default: 10,
 			desc: {
-				ja: '最大数'
+				'ja-JP': '最大数'
 			}
 		}),
 
 		query: $.str.note({
 			desc: {
-				ja: 'クエリ'
+				'ja-JP': 'クエリ'
 			}
 		}),
 
 		offset: $.num.optional.min(0).note({
 			default: 0,
 			desc: {
-				ja: 'オフセット'
+				'ja-JP': 'オフセット'
 			}
 		})
 	}

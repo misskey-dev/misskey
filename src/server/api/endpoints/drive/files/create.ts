@@ -8,8 +8,8 @@ import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
-		ja: 'ドライブにファイルをアップロードします。',
-		en: 'Upload a file to drive.'
+		'ja-JP': 'ドライブにファイルをアップロードします。',
+		'en-US': 'Upload a file to drive.'
 	},
 
 	requireCredential: true,
@@ -27,15 +27,15 @@ export const meta = {
 		folderId: $.type(ID).optional.nullable.note({
 			default: null,
 			desc: {
-				ja: 'フォルダID'
+				'ja-JP': 'フォルダID'
 			}
 		}),
 
 		isSensitive: $.bool.optional.note({
 			default: false,
 			desc: {
-				ja: 'このメディアが「閲覧注意」(NSFW)かどうか',
-				en: 'Whether this media is NSFW'
+				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
+				'en-US': 'Whether this media is NSFW'
 			}
 		})
 	}

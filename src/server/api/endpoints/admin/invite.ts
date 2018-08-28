@@ -3,7 +3,7 @@ import RegistrationTicket from '../../../../models/registration-tickets';
 
 export const meta = {
 	desc: {
-		ja: '招待コードを発行します。'
+		'ja-JP': '招待コードを発行します。'
 	},
 
 	requireCredential: true,

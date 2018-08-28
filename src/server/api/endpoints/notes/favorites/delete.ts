@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定した投稿のお気に入りを解除します。',
-		en: 'Unfavorite a note.'
+		'ja-JP': '指定した投稿のお気に入りを解除します。',
+		'en-US': 'Unfavorite a note.'
 	},
 
 	requireCredential: true,

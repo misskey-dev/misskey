@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定したドライブのフォルダの情報を更新します。',
-		en: 'Update specified folder of drive.'
+		'ja-JP': '指定したドライブのフォルダの情報を更新します。',
+		'en-US': 'Update specified folder of drive.'
 	},
 
 	requireCredential: true,

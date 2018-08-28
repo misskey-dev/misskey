@@ -6,7 +6,7 @@ import Mute from '../../../../models/mute';
 
 export const meta = {
 	desc: {
-		ja: 'おすすめのユーザー一覧を取得します。'
+		'ja-JP': 'おすすめのユーザー一覧を取得します。'
 	},
 
 	requireCredential: true,

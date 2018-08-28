@@ -9,7 +9,7 @@ import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		ja: '投稿します。'
+		'ja-JP': '投稿します。'
 	},
 
 	requireCredential: true,
@@ -25,33 +25,33 @@ export const meta = {
 		visibility: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']).note({
 			default: 'public',
 			desc: {
-				ja: '投稿の公開範囲'
+				'ja-JP': '投稿の公開範囲'
 			}
 		}),
 
 		visibleUserIds: $.arr($.type(ID)).optional.unique().min(1).note({
 			desc: {
-				ja: '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
+				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
 			}
 		}),
 
 		text: $.str.optional.nullable.pipe(isValidText).note({
 			default: null,
 			desc: {
-				ja: '投稿内容'
+				'ja-JP': '投稿内容'
 			}
 		}),
 
 		cw: $.str.optional.nullable.pipe(isValidCw).note({
 			desc: {
-				ja: 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
+				'ja-JP': 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
 			}
 		}),
 
 		viaMobile: $.bool.optional.note({
 			default: false,
 			desc: {
-				ja: 'モバイルデバイスからの投稿か否か。'
+				'ja-JP': 'モバイルデバイスからの投稿か否か。'
 			}
 		}),
 
@@ -66,20 +66,20 @@ export const meta = {
 			speed: $.num.nullable
 		}).optional.nullable.strict().note({
 			desc: {
-				ja: '位置情報'
+				'ja-JP': '位置情報'
 			},
 			ref: 'geo'
 		}),
 
 		mediaIds: $.arr($.type(ID)).optional.unique().range(1, 4).note({
 			desc: {
-				ja: '添付するメディア'
+				'ja-JP': '添付するメディア'
 			}
 		}),
 
 		renoteId: $.type(ID).optional.note({
 			desc: {
-				ja: 'Renote対象'
+				'ja-JP': 'Renote対象'
 			}
 		}),
 
@@ -90,7 +90,7 @@ export const meta = {
 				.each(c => c.length > 0 && c.length < 50)
 		}).optional.strict().note({
 			desc: {
-				ja: 'アンケート'
+				'ja-JP': 'アンケート'
 			},
 			ref: 'poll'
 		})
@@ -102,7 +102,7 @@ export const meta = {
 			createdNote: {
 				type: 'entity(Note)',
 				desc: {
-					ja: '作成した投稿'
+					'ja-JP': '作成した投稿'
 				}
 			}
 		}

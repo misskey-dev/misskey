@@ -4,8 +4,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: 'ドライブのフォルダ一覧を取得します。',
-		en: 'Get folders of drive.'
+		'ja-JP': 'ドライブのフォルダ一覧を取得します。',
+		'en-US': 'Get folders of drive.'
 	},
 
 	requireCredential: true,

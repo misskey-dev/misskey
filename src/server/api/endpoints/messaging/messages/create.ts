@@ -12,8 +12,8 @@ import pushSw from '../../../../../push-sw';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーへMessagingのメッセージを送信します。',
-		en: 'Create a message of messaging.'
+		'ja-JP': '指定したユーザーへMessagingのメッセージを送信します。',
+		'en-US': 'Create a message of messaging.'
 	},
 
 	requireCredential: true,

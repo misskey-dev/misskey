@@ -4,7 +4,7 @@ import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		ja: 'インスタンスの設定を更新します。'
+		'ja-JP': 'インスタンスの設定を更新します。'
 	},
 
 	requireCredential: true,
@@ -13,7 +13,7 @@ export const meta = {
 	params: {
 		disableRegistration: $.bool.optional.nullable.note({
 			desc: {
-				ja: '招待制か否か'
+				'ja-JP': '招待制か否か'
 			}
 		}),
 	}

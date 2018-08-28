@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '人気の投稿の一覧を取得します。',
-		en: 'Get trend notes.'
+		'ja-JP': '人気の投稿の一覧を取得します。',
+		'en-US': 'Get trend notes.'
 	},
 
 	requireCredential: true

@@ -5,8 +5,8 @@ import User from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーの公式アカウントを解除します。',
-		en: 'Mark a user as unverified.'
+		'ja-JP': '指定したユーザーの公式アカウントを解除します。',
+		'en-US': 'Mark a user as unverified.'
 	},
 
 	requireCredential: true,
@@ -15,8 +15,8 @@ export const meta = {
 	params: {
 		userId: $.type(ID).note({
 			desc: {
-				ja: '対象のユーザーID',
-				en: 'The user ID which you want to unverify'
+				'ja-JP': '対象のユーザーID',
+				'en-US': 'The user ID which you want to unverify'
 			}
 		}),
 	}

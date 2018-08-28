@@ -6,8 +6,8 @@ import read from '../../common/read-messaging-message';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーとのMessagingのメッセージ一覧を取得します。',
-		en: 'Get messages of messaging.'
+		'ja-JP': '指定したユーザーとのMessagingのメッセージ一覧を取得します。',
+		'en-US': 'Get messages of messaging.'
 	},
 
 	requireCredential: true,

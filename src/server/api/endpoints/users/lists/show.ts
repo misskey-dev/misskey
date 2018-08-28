@@ -4,8 +4,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーリストの情報を取得します。',
-		en: 'Show a user list.'
+		'ja-JP': '指定したユーザーリストの情報を取得します。',
+		'en-US': 'Show a user list.'
 	},
 
 	requireCredential: true,

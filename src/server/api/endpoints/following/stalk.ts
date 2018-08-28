@@ -4,8 +4,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーをストーキングします。',
-		en: 'Stalk a user.'
+		'ja-JP': '指定したユーザーをストーキングします。',
+		'en-US': 'Stalk a user.'
 	},
 
 	requireCredential: true,

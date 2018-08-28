@@ -4,8 +4,8 @@ import config from '../../../config';
 
 export const meta = {
 	desc: {
-		ja: 'ドライブの情報を取得します。',
-		en: 'Get drive information.'
+		'ja-JP': 'ドライブの情報を取得します。',
+		'en-US': 'Get drive information.'
 	},
 
 	requireCredential: true,
