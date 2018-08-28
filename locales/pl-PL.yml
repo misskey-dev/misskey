@@ -1176,6 +1176,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "Odśwież stronę, aby zastosować aktualizację."
   settings: "Ustawienia"
   signout: "Wyloguj"
+  sound: "サウンド"
+  enableSounds: "サウンドを有効にする"
 mobile/views/pages/user.vue:
   follows-you: "Śledzi Cię"
   following: "Śledzeni"
