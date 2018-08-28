@@ -1176,6 +1176,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "Les mises à jour seront appliquées une fois la page est rechargée."
   settings: "Réglages"
   signout: "Déconnexion"
+  sound: "サウンド"
+  enableSounds: "サウンドを有効にする"
 mobile/views/pages/user.vue:
   follows-you: "vous suit"
   following: "Abonnements"
