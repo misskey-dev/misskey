@@ -6,10 +6,9 @@ import ProgressDialog from '../views/components/progress-dialog.vue';
 export default (os: OS) => {
 
 	const cropImage = file => new Promise((resolve, reject) => {
-		
-		var regex = RegExp('\.(jpg|jpeg|png|gif|webp|bmp|tiff)$')
 
-		if(!regex.test(file.name) ) {
+		const regex = RegExp('\.(jpg|jpeg|png|gif|webp|bmp|tiff)$');
+		if (!regex.test(file.name) ) {
 			os.apis.dialog({
 				title: '%fa:info-circle% %i18n:desktop.invalid-filetype%',
 				text: null,
@@ -17,9 +16,9 @@ export default (os: OS) => {
 					text: '%i18n:common.got-it%'
 				}]
 			});
-			reject
+			reject();
 		}
-		
+
 		const w = os.new(CropWindow, {
 			image: file,
 			title: '%i18n:desktop.banner-crop-title%',
