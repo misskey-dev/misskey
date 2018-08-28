@@ -1176,8 +1176,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "Updates will be applied after reloading the page"
   settings: "Settings"
   signout: "Sign out"
-  sound: "サウンド"
-  enableSounds: "サウンドを有効にする"
+  sound: "Sounds"
+  enableSounds: "Enable sounds"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
