@@ -650,6 +650,7 @@ desktop/views/components/settings.vue:
   gradient-window-header: "Use gradients on window headers"
   post-form-on-timeline: "Display post form at the top of the timeline"
   suggest-recent-hashtags: "Show recent popular hashtags on the post form"
+  show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "Display reply target"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show renoted my posts in timelines"
@@ -820,7 +821,7 @@ desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Dashboard"
   all-users: "All Users"
   original-users: "Users on this instance"
-  all-notes: "All Posts"
+  all-notes: "All the posts"
   original-notes: "Posts on this instance"
   invite: "Invite"
 desktop/views/pages/admin/admin.suspend-user.vue:
@@ -847,6 +848,11 @@ desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposted by {}"
   private: "This post is private"
   deleted: "This post has been deleted"
+desktop/views/pages/stats/stats.vue:
+  all-users: "All Users"
+  original-users: "Users on this instance"
+  all-notes: "All the posts"
+  original-notes: "Posts on this instance"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
@@ -1067,7 +1073,7 @@ mobile/views/pages/favorites.vue:
   title: "Favorites"
 mobile/views/pages/user-lists.vue:
   title: "Lists"
-  enter-list-name: "Enter list name"
+  enter-list-name: "Enter a name of the list to make"
 mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Load more"
@@ -1171,6 +1177,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "Updates will be applied after reloading the page"
   settings: "Settings"
   signout: "Sign out"
+  sound: "Sounds"
+  enableSounds: "Enable sounds"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
