@@ -1,4 +1,6 @@
+import $ from 'cafy';
 import Stats, { IStats } from '../../../models/stats';
+import getParams from '../../get-params';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -44,11 +46,26 @@ function migrateStats(stats: IStats[]) {
 }
 
 export const meta = {
+	desc: {
+		'ja-JP': 'インスタンスの統計を取得します。'
+	},
+
+	params: {
+		limit: $.num.optional.range(1, 100).note({
+			default: 30,
+			desc: {
+				'ja-JP': '最大数'
+			}
+		}),
+	}
 };
 
 export default (params: any) => new Promise(async (res, rej) => {
-	const daysRange = 30;
-	const hoursRange = 30;
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) throw psErr;
+
+	const daysRange = ps.limit;
+	const hoursRange = ps.limit;
 
 	const now = new Date();
 	const y = now.getFullYear();
