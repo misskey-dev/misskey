@@ -411,6 +411,7 @@ desktop:
   uploading-avatar: "Téléversement du nouvel avatar"
   avatar-updated: "L'avatar est mis à jour"
   choose-avatar: "Choisir un avatar"
+  invalid-filetype: "この形式のファイルはサポートされていません"
 desktop/views/components/activity.chart.vue:
   total: "Noirs ... Total"
   notes: "Bleu ... Notes"
@@ -426,11 +427,11 @@ desktop/views/components/calendar.vue:
   go: "Cliquez pour naviguer"
 desktop/views/components/charts.vue:
   title: "Graphiques"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  notes: "投稿"
+  per-day: "par jour"
+  per-hour: "par heure"
+  notes: "Publications"
   users: "Utilisateurs"
-  drive: "ドライブ"
+  drive: "Drive"
   charts:
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
@@ -649,7 +650,7 @@ desktop/views/components/settings.vue:
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
   suggest-recent-hashtags: "Afficher les hashtags populaires dans le champs de saisie"
-  show-clock-on-header: "右上に時計を表示する"
+  show-clock-on-header: "Afficher l'horloge à droite sur le coté supérieur"
   show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications dans le fil"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
@@ -818,10 +819,10 @@ desktop/views/pages/admin/admin.vue:
   update: "Mises à jour"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Tableau de bord"
-  all-users: "Tou·te·s les utilisateur·rice·s"
-  original-users: "Utilisateur·rice·s sur cette instance"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
+  all-users: "Toutes les utilisateurrices"
+  original-users: "Utilisateurrices sur cette instance"
+  all-notes: "Toutes les publications"
+  original-notes: "Publication sur cette instance"
   invite: "Invitation"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspendre un·e utilisateur·rice"
@@ -838,7 +839,7 @@ desktop/views/pages/admin/admin.verify-user.vue:
 desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "Ôter la vérification du compte"
-  unverified: "公式アカウントを解除しました"
+  unverified: "Ce compte n'est pas vérifié"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
@@ -848,10 +849,10 @@ desktop/views/pages/deck/deck.note.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
 desktop/views/pages/stats/stats.vue:
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
+  all-users: "Toutes les utilisateurrices"
+  original-users: "Utilisateurrices sur cette instance"
+  all-notes: "Toutes les publications"
+  original-notes: "Publication sur cette instance"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   gotit: "J'ai compris !"
@@ -1058,7 +1059,7 @@ mobile/views/components/ui.nav.vue:
   game: "Jeux"
   darkmode: "Mode nuit"
   settings: "Réglages"
-  admin: "管理"
+  admin: "Admin"
   about: "À propose de Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "Cette utilisateur semble n'avoir rien poster pour le moment"
@@ -1176,8 +1177,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "Les mises à jour seront appliquées une fois la page est rechargée."
   settings: "Réglages"
   signout: "Déconnexion"
-  sound: "サウンド"
-  enableSounds: "サウンドを有効にする"
+  sound: "Sons"
+  enableSounds: "Activer le son"
 mobile/views/pages/user.vue:
   follows-you: "vous suit"
   following: "Abonnements"

@@ -411,6 +411,7 @@ desktop:
   uploading-avatar: "新しいアバターをアップロードしています"
   avatar-updated: "アバターを更新しました"
   choose-avatar: "アバターにする画像を選択"
+  invalid-filetype: "この形式のファイルはサポートされていません"
 desktop/views/components/activity.chart.vue:
   total: "Schwarz ... komplett"
   notes: "Blau ... Hinweise"
