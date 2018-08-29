@@ -431,7 +431,7 @@ desktop/views/components/charts.vue:
   per-hour: "par heure"
   notes: "Publications"
   users: "Utilisateurs"
-  drive: "ドライブ"
+  drive: "Drive"
   charts:
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
@@ -650,7 +650,7 @@ desktop/views/components/settings.vue:
   gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
   suggest-recent-hashtags: "Afficher les hashtags populaires dans le champs de saisie"
-  show-clock-on-header: "右上に時計を表示する"
+  show-clock-on-header: "Afficher l'horloge à droite sur le coté supérieur"
   show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications dans le fil"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
@@ -839,7 +839,7 @@ desktop/views/pages/admin/admin.verify-user.vue:
 desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "Ôter la vérification du compte"
-  unverified: "公式アカウントを解除しました"
+  unverified: "Ce compte n'est pas vérifié"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
@@ -1059,7 +1059,7 @@ mobile/views/components/ui.nav.vue:
   game: "Jeux"
   darkmode: "Mode nuit"
   settings: "Réglages"
-  admin: "管理"
+  admin: "Admin"
   about: "À propose de Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "Cette utilisateur semble n'avoir rien poster pour le moment"
@@ -1177,8 +1177,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "Les mises à jour seront appliquées une fois la page est rechargée."
   settings: "Réglages"
   signout: "Déconnexion"
-  sound: "サウンド"
-  enableSounds: "サウンドを有効にする"
+  sound: "Sons"
+  enableSounds: "Activer le son"
 mobile/views/pages/user.vue:
   follows-you: "vous suit"
   following: "Abonnements"
