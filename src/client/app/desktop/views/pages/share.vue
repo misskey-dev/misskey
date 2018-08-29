@@ -16,7 +16,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	data() {
 		return {
-			name: (this as any).os.instanceName,
+			name: null,
 			posted: false,
 			text: new URLSearchParams(location.search).get('text')
 		};
@@ -25,6 +25,11 @@ export default Vue.extend({
 		close() {
 			window.close();
 		}
+	},
+	mounted() {
+		(this as any).os.getMeta().then(meta => {
+			this.name = meta.name;
+		});
 	}
 });
 </script>

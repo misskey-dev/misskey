@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定した投稿のリアクション一覧を取得します。',
-		en: 'Show reactions of a note.'
+		'ja-JP': '指定した投稿のリアクション一覧を取得します。',
+		'en-US': 'Show reactions of a note.'
 	},
 
 	requireCredential: true

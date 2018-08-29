@@ -2,13 +2,22 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 
 const Stats = db.get<IStats>('stats');
-Stats.createIndex({ date: -1 }, { unique: true });
+Stats.dropIndex({ date: -1 }); // 後方互換性のため
+Stats.createIndex({ span: -1, date: -1 }, { unique: true });
 export default Stats;
 
 export interface IStats {
 	_id: mongo.ObjectID;
 
+	/**
+	 * 集計日時
+	 */
 	date: Date;
+
+	/**
+	 * 集計期間
+	 */
+	span: 'day' | 'hour';
 
 	/**
 	 * ユーザーに関する統計
@@ -16,26 +25,36 @@ export interface IStats {
 	users: {
 		local: {
 			/**
-			 * この日時点での、ローカルのユーザーの総計
+			 * 集計期間時点での、全ユーザー数 (ローカル)
 			 */
 			total: number;
 
 			/**
-			 * ローカルのユーザー数の前日比
+			 * 増加したユーザー数 (ローカル)
 			 */
-			diff: number;
+			inc: number;
+
+			/**
+			 * 減少したユーザー数 (ローカル)
+			 */
+			dec: number;
 		};
 
 		remote: {
 			/**
-			 * この日時点での、リモートのユーザーの総計
+			 * 集計期間時点での、全ユーザー数 (リモート)
 			 */
 			total: number;
 
 			/**
-			 * リモートのユーザー数の前日比
+			 * 増加したユーザー数 (リモート)
 			 */
-			diff: number;
+			inc: number;
+
+			/**
+			 * 減少したユーザー数 (リモート)
+			 */
+			dec: number;
 		};
 	};
 
@@ -45,28 +64,33 @@ export interface IStats {
 	notes: {
 		local: {
 			/**
-			 * この日時点での、ローカルの投稿の総計
+			 * 集計期間時点での、全投稿数 (ローカル)
 			 */
 			total: number;
 
 			/**
-			 * ローカルの投稿数の前日比
+			 * 増加した投稿数 (ローカル)
 			 */
-			diff: number;
+			inc: number;
+
+			/**
+			 * 減少した投稿数 (ローカル)
+			 */
+			dec: number;
 
 			diffs: {
 				/**
-				 * ローカルの通常の投稿数の前日比
+				 * 通常の投稿数の差分 (ローカル)
 				 */
 				normal: number;
 
 				/**
-				 * ローカルのリプライの投稿数の前日比
+				 * リプライの投稿数の差分 (ローカル)
 				 */
 				reply: number;
 
 				/**
-				 * ローカルのRenoteの投稿数の前日比
+				 * Renoteの投稿数の差分 (ローカル)
 				 */
 				renote: number;
 			};
@@ -74,28 +98,33 @@ export interface IStats {
 
 		remote: {
 			/**
-			 * この日時点での、リモートの投稿の総計
+			 * 集計期間時点での、全投稿数 (リモート)
 			 */
 			total: number;
 
 			/**
-			 * リモートの投稿数の前日比
+			 * 増加した投稿数 (リモート)
 			 */
-			diff: number;
+			inc: number;
+
+			/**
+			 * 減少した投稿数 (リモート)
+			 */
+			dec: number;
 
 			diffs: {
 				/**
-				 * リモートの通常の投稿数の前日比
+				 * 通常の投稿数の差分 (リモート)
 				 */
 				normal: number;
 
 				/**
-				 * リモートのリプライの投稿数の前日比
+				 * リプライの投稿数の差分 (リモート)
 				 */
 				reply: number;
 
 				/**
-				 * リモートのRenoteの投稿数の前日比
+				 * Renoteの投稿数の差分 (リモート)
 				 */
 				renote: number;
 			};
@@ -108,46 +137,66 @@ export interface IStats {
 	drive: {
 		local: {
 			/**
-			 * この日時点での、ローカルのドライブファイル数の総計
+			 * 集計期間時点での、全ドライブファイル数 (ローカル)
 			 */
 			totalCount: number;
 
 			/**
-			 * この日時点での、ローカルのドライブファイルサイズの総計
+			 * 集計期間時点での、全ドライブファイルの合計サイズ (ローカル)
 			 */
 			totalSize: number;
 
 			/**
-			 * ローカルのドライブファイル数の前日比
+			 * 増加したドライブファイル数 (ローカル)
 			 */
-			diffCount: number;
+			incCount: number;
 
 			/**
-			 * ローカルのドライブファイルサイズの前日比
+			 * 増加したドライブ使用量 (ローカル)
 			 */
-			diffSize: number;
+			incSize: number;
+
+			/**
+			 * 減少したドライブファイル数 (ローカル)
+			 */
+			decCount: number;
+
+			/**
+			 * 減少したドライブ使用量 (ローカル)
+			 */
+			decSize: number;
 		};
 
 		remote: {
 			/**
-			 * この日時点での、リモートのドライブファイル数の総計
+			 * 集計期間時点での、全ドライブファイル数 (リモート)
 			 */
 			totalCount: number;
 
 			/**
-			 * この日時点での、リモートのドライブファイルサイズの総計
+			 * 集計期間時点での、全ドライブファイルの合計サイズ (リモート)
 			 */
 			totalSize: number;
 
 			/**
-			 * リモートのドライブファイル数の前日比
+			 * 増加したドライブファイル数 (リモート)
 			 */
-			diffCount: number;
+			incCount: number;
 
 			/**
-			 * リモートのドライブファイルサイズの前日比
+			 * 増加したドライブ使用量 (リモート)
 			 */
-			diffSize: number;
+			incSize: number;
+
+			/**
+			 * 減少したドライブファイル数 (リモート)
+			 */
+			decCount: number;
+
+			/**
+			 * 減少したドライブ使用量 (リモート)
+			 */
+			decSize: number;
 		};
 	};
 }

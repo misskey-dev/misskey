@@ -30,6 +30,7 @@
 				<ul>
 					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
+					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><router-link to="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</router-link></li>
 					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>

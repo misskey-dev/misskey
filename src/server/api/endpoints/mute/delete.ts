@@ -4,8 +4,8 @@ import Mute from '../../../../models/mute';
 
 export const meta = {
 	desc: {
-		ja: 'ユーザーのミュートを解除します。',
-		en: 'Unmute a user'
+		'ja-JP': 'ユーザーのミュートを解除します。',
+		'en-US': 'Unmute a user'
 	},
 
 	requireCredential: true,

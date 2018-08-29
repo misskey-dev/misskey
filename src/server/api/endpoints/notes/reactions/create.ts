@@ -7,8 +7,8 @@ import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
-		ja: '指定した投稿にリアクションします。',
-		en: 'React to a note.'
+		'ja-JP': '指定した投稿にリアクションします。',
+		'en-US': 'React to a note.'
 	},
 
 	requireCredential: true,
@@ -18,13 +18,13 @@ export const meta = {
 	params: {
 		noteId: $.type(ID).note({
 			desc: {
-				ja: '対象の投稿'
+				'ja-JP': '対象の投稿'
 			}
 		}),
 
 		reaction: $.str.pipe(validateReaction.ok).note({
 			desc: {
-				ja: 'リアクションの種類'
+				'ja-JP': 'リアクションの種類'
 			}
 		})
 	}

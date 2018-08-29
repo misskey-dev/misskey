@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: 'おすすめのアンケート一覧を取得します。',
-		en: 'Get recommended polls.'
+		'ja-JP': 'おすすめのアンケート一覧を取得します。',
+		'en-US': 'Get recommended polls.'
 	},
 
 	requireCredential: true,

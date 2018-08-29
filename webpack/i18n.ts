@@ -8,7 +8,7 @@ export const replacement = (ctx: any, _: any, key: string) => {
 	const client = '/src/client/app/';
 	let name = null;
 
-	if (key[0] == '@') {
+	if (key.startsWith('@')) {
 		name = ctx.src.substr(ctx.src.indexOf(client) + client.length);
 		key = key.substr(1);
 	}

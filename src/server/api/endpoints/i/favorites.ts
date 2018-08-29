@@ -4,8 +4,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: 'お気に入りに登録した投稿一覧を取得します。',
-		en: 'Get favorited notes'
+		'ja-JP': 'お気に入りに登録した投稿一覧を取得します。',
+		'en-US': 'Get favorited notes'
 	},
 
 	requireCredential: true,

@@ -25,9 +25,9 @@ export const replacement = (match: string, key: string) => {
 				arg == 'S' ? 'fas' :
 				arg == 'B' ? 'fab' :
 				'';
-		} else if (arg[0] == '.') {
+		} else if (arg.startsWith('.')) {
 			classes.push('fa-' + arg.substr(1));
-		} else if (arg[0] == '-') {
+		} else if (arg.startsWith('-')) {
 			transform = arg.substr(1).split('|').join(' ');
 		} else {
 			name = arg;

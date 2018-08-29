@@ -11,9 +11,7 @@
 	<main>
 		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
-			<x-users-chart :chart="chart"/>
-			<x-notes-chart :chart="chart"/>
-			<x-drive-chart :chart="chart"/>
+			<x-charts/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
@@ -34,9 +32,7 @@ import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
 import XUnverifyUser from "./admin.unverify-user.vue";
-import XUsersChart from "./admin.users-chart.vue";
-import XNotesChart from "./admin.notes-chart.vue";
-import XDriveChart from "./admin.drive-chart.vue";
+import XCharts from "../../components/charts.vue";
 
 export default Vue.extend({
 	components: {
@@ -45,20 +41,12 @@ export default Vue.extend({
 		XUnsuspendUser,
 		XVerifyUser,
 		XUnverifyUser,
-		XUsersChart,
-		XNotesChart,
-		XDriveChart
+		XCharts
 	},
 	data() {
 		return {
-			page: 'dashboard',
-			chart: null
+			page: 'dashboard'
 		};
-	},
-	created() {
-		(this as any).api('admin/chart').then(chart => {
-			this.chart = chart;
-		});
 	},
 	methods: {
 		nav(page: string) {
@@ -115,7 +103,7 @@ export default Vue.extend({
 			> div
 				max-width 800px
 
-.card
+.mk-admin-card
 	padding 32px
 	background #fff
 	box-shadow 0 2px 8px rgba(#000, 0.1)

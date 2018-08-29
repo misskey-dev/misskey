@@ -5,8 +5,8 @@ import User from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーの凍結を解除します。',
-		en: 'Unsuspend a user.'
+		'ja-JP': '指定したユーザーの凍結を解除します。',
+		'en-US': 'Unsuspend a user.'
 	},
 
 	requireCredential: true,
@@ -15,8 +15,8 @@ export const meta = {
 	params: {
 		userId: $.type(ID).note({
 			desc: {
-				ja: '対象のユーザーID',
-				en: 'The user ID which you want to unsuspend'
+				'ja-JP': '対象のユーザーID',
+				'en-US': 'The user ID which you want to unsuspend'
 			}
 		}),
 	}

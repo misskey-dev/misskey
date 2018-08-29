@@ -6,8 +6,8 @@ import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
-		ja: '指定した自分宛てのメッセージを既読にします。',
-		en: 'Mark as read a message of messaging.'
+		'ja-JP': '指定した自分宛てのメッセージを既読にします。',
+		'en-US': 'Mark as read a message of messaging.'
 	},
 
 	requireCredential: true,
@@ -17,8 +17,8 @@ export const meta = {
 	params: {
 		messageId: $.type(ID).note({
 			desc: {
-				ja: '既読にするメッセージのID',
-				en: 'The ID of a message that you want to mark as read'
+				'ja-JP': '既読にするメッセージのID',
+				'en-US': 'The ID of a message that you want to mark as read'
 			}
 		})
 	}

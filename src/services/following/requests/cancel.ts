@@ -8,8 +8,17 @@ import { publishUserStream } from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(followee)) {
-		const content = pack(renderUndo(renderFollow(follower, followee)));
+		const content = pack(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower as ILocalUser, content, followee.inbox);
+	}
+
+	const request = await FollowRequest.findOne({
+		followeeId: followee._id,
+		followerId: follower._id
+	});
+
+	if (request == null) {
+		throw 'request not found';
 	}
 
 	await FollowRequest.remove({

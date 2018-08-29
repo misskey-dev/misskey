@@ -4,8 +4,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '自分に届いたフォローリクエストの一覧を取得します。',
-		en: 'Get all pending received follow requests.'
+		'ja-JP': '自分に届いたフォローリクエストの一覧を取得します。',
+		'en-US': 'Get all pending received follow requests.'
 	},
 
 	requireCredential: true,

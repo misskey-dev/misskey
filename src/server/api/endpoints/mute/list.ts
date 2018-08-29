@@ -5,8 +5,8 @@ import { getFriendIds } from '../../common/get-friends';
 
 export const meta = {
 	desc: {
-		ja: 'ミュートしているユーザー一覧を取得します。',
-		en: 'Get muted users.'
+		'ja-JP': 'ミュートしているユーザー一覧を取得します。',
+		'en-US': 'Get muted users.'
 	},
 
 	requireCredential: true,

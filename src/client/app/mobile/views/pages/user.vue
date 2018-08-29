@@ -11,7 +11,7 @@
 					<a class="avatar">
 						<img :src="user.avatarUrl" alt="avatar"/>
 					</a>
-					<mk-mute-button v-if="$store.state.i.id != user.id" :user="user"/>
+					<mk-mute-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">

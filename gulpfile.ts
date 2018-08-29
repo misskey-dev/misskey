@@ -59,7 +59,16 @@ gulp.task('build:copy:views', () =>
 	gulp.src('./src/server/web/views/**/*').pipe(gulp.dest('./built/server/web/views'))
 );
 
-gulp.task('build:copy', ['build:copy:views'], () =>
+// 互換性のため
+gulp.task('build:copy:lang', () =>
+	gulp.src(['./built/client/assets/*.*-*.js'])
+		.pipe(rename(path => {
+			path.basename = path.basename.replace(/\-(.*)$/, '');
+		}))
+		.pipe(gulp.dest('./built/client/assets/'))
+);
+
+gulp.task('build:copy', ['build:copy:views', 'build:copy:lang'], () =>
 	gulp.src([
 		'./build/Release/crypto_key.node',
 		'./src/const.json',

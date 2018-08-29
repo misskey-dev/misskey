@@ -4,8 +4,8 @@ import User, { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '全ての通知を既読にします。',
-		en: 'Mark all notifications as read.'
+		'ja-JP': '全ての通知を既読にします。',
+		'en-US': 'Mark all notifications as read.'
 	},
 
 	requireCredential: true,

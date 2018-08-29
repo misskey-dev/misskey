@@ -13,6 +13,7 @@ const defaultSettings = {
 	showMaps: true,
 	showPostFormOnTopOfTl: false,
 	suggestRecentHashtags: true,
+	showClockOnHeader: true,
 	circleIcons: true,
 	gradientWindowHeader: false,
 	showReplyTarget: true,

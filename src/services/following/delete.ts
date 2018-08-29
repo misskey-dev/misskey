@@ -56,7 +56,7 @@ export default async function(follower: IUser, followee: IUser) {
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {
-		const content = pack(renderUndo(renderFollow(follower, followee)));
+		const content = pack(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
 	}
 }

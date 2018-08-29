@@ -8,8 +8,8 @@ import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーリストのタイムラインを取得します。',
-		en: 'Get timeline of a user list.'
+		'ja-JP': '指定したユーザーリストのタイムラインを取得します。',
+		'en-US': 'Get timeline of a user list.'
 	},
 
 	requireCredential: true,
@@ -17,65 +17,65 @@ export const meta = {
 	params: {
 		listId: $.type(ID).note({
 			desc: {
-				ja: 'リストのID'
+				'ja-JP': 'リストのID'
 			}
 		}),
 
 		limit: $.num.optional.range(1, 100).note({
 			default: 10,
 			desc: {
-				ja: '最大数'
+				'ja-JP': '最大数'
 			}
 		}),
 
 		sinceId: $.type(ID).optional.note({
 			desc: {
-				ja: '指定すると、この投稿を基点としてより新しい投稿を取得します'
+				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
 			}
 		}),
 
 		untilId: $.type(ID).optional.note({
 			desc: {
-				ja: '指定すると、この投稿を基点としてより古い投稿を取得します'
+				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
 			}
 		}),
 
 		sinceDate: $.num.optional.note({
 			desc: {
-				ja: '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
+				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		}),
 
 		untilDate: $.num.optional.note({
 			desc: {
-				ja: '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
+				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		}),
 
 		includeMyRenotes: $.bool.optional.note({
 			default: true,
 			desc: {
-				ja: '自分の行ったRenoteを含めるかどうか'
+				'ja-JP': '自分の行ったRenoteを含めるかどうか'
 			}
 		}),
 
 		includeRenotedMyNotes: $.bool.optional.note({
 			default: true,
 			desc: {
-				ja: 'Renoteされた自分の投稿を含めるかどうか'
+				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
 			}
 		}),
 
 		includeLocalRenotes: $.bool.optional.note({
 			default: true,
 			desc: {
-				ja: 'Renoteされたローカルの投稿を含めるかどうか'
+				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
 			}
 		}),
 
 		mediaOnly: $.bool.optional.note({
 			desc: {
-				ja: 'true にすると、メディアが添付された投稿だけ取得します'
+				'ja-JP': 'true にすると、メディアが添付された投稿だけ取得します'
 			}
 		}),
 	}

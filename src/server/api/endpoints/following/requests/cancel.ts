@@ -4,8 +4,8 @@ import User, { pack, ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '自分が作成した、指定したフォローリクエストをキャンセルします。',
-		en: 'Cancel a follow request.'
+		'ja-JP': '自分が作成した、指定したフォローリクエストをキャンセルします。',
+		'en-US': 'Cancel a follow request.'
 	},
 
 	requireCredential: true,
@@ -27,7 +27,11 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('followee not found');
 	}
 
-	await cancelFollowRequest(followee, user);
+	try {
+		await cancelFollowRequest(followee, user);
+	} catch (e) {
+		return rej(e);
+	}
 
 	// Send response
 	res(await pack(followee._id, user));

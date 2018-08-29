@@ -6,8 +6,8 @@ import create from '../../../../services/following/create';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーをフォローします。',
-		en: 'Follow a user.'
+		'ja-JP': '指定したユーザーをフォローします。',
+		'en-US': 'Follow a user.'
 	},
 
 	limit: {
