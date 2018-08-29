@@ -427,9 +427,9 @@ desktop/views/components/calendar.vue:
   go: "Cliquez pour naviguer"
 desktop/views/components/charts.vue:
   title: "Graphiques"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  notes: "投稿"
+  per-day: "par jour"
+  per-hour: "par heure"
+  notes: "Publications"
   users: "Utilisateurs"
   drive: "ドライブ"
   charts:
