@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import Stats, { IStats } from '../../../models/stats';
-import getParams from '../../get-params';
+import getParams from '../get-params';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
