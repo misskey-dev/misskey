@@ -60,5 +60,5 @@ export default Vue.extend({
 				font-size 70%
 
 	> div
-		max-width 800px
+		max-width 850px
 </style>
