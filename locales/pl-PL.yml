@@ -411,6 +411,7 @@ desktop:
   uploading-avatar: "Wysyłanie awatara"
   avatar-updated: "Wysłano awatar"
   choose-avatar: "Wybierz awatar"
+  invalid-filetype: "この形式のファイルはサポートされていません"
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
