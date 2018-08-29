@@ -818,10 +818,10 @@ desktop/views/pages/admin/admin.vue:
   update: "Mises à jour"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Tableau de bord"
-  all-users: "Tou·te·s les utilisateur·rice·s"
-  original-users: "Utilisateur·rice·s sur cette instance"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
+  all-users: "Toutes les utilisateurrices"
+  original-users: "Utilisateurrices sur cette instance"
+  all-notes: "Toutes les publications"
+  original-notes: "Publication sur cette instance"
   invite: "Invitation"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspendre un·e utilisateur·rice"
@@ -848,10 +848,10 @@ desktop/views/pages/deck/deck.note.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
 desktop/views/pages/stats/stats.vue:
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
+  all-users: "Toutes les utilisateurrices"
+  original-users: "Utilisateurrices sur cette instance"
+  all-notes: "Toutes les publications"
+  original-notes: "Publication sur cette instance"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   gotit: "J'ai compris !"
