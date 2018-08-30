@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: 'ドライブのフォルダを作成します。',
-		en: 'Create a folder of drive.'
+		'ja-JP': 'ドライブのフォルダを作成します。',
+		'en-US': 'Create a folder of drive.'
 	},
 
 	requireCredential: true,

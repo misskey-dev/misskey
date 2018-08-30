@@ -1,90 +1,90 @@
 name: "DriveFile"
 
 desc:
-  ja: "ドライブのファイル。"
-  en: "A file of Drive."
+  ja-JP: "ドライブのファイル。"
+  en-US: "A file of Drive."
 
 props:
   id:
     type: "id"
     optional: false
     desc:
-      ja: "ファイルID"
-      en: "The ID of this file"
+      ja-JP: "ファイルID"
+      en-US: "The ID of this file"
 
   createdAt:
     type: "date"
     optional: false
     desc:
-      ja: "アップロード日時"
-      en: "The upload date of this file"
+      ja-JP: "アップロード日時"
+      en-US: "The upload date of this file"
 
   userId:
     type: "id(User)"
     optional: false
     desc:
-      ja: "所有者ID"
-      en: "The ID of the owner of this file"
+      ja-JP: "所有者ID"
+      en-US: "The ID of the owner of this file"
 
   user:
     type: "entity(User)"
     optional: true
     desc:
-      ja: "所有者"
-      en: "The owner of this file"
+      ja-JP: "所有者"
+      en-US: "The owner of this file"
 
   name:
     type: "string"
     optional: false
     desc:
-      ja: "ファイル名"
-      en: "The name of this file"
+      ja-JP: "ファイル名"
+      en-US: "The name of this file"
 
   md5:
     type: "string"
     optional: false
     desc:
-      ja: "ファイルのMD5ハッシュ値"
-      en: "The md5 hash value of this file"
+      ja-JP: "ファイルのMD5ハッシュ値"
+      en-US: "The md5 hash value of this file"
 
   type:
     type: "string"
     optional: false
     desc:
-      ja: "ファイルの種類"
-      en: "The type of this file"
+      ja-JP: "ファイルの種類"
+      en-US: "The type of this file"
 
   datasize:
     type: "number"
     optional: false
     desc:
-      ja: "ファイルサイズ(bytes)"
-      en: "The size of this file (bytes)"
+      ja-JP: "ファイルサイズ(bytes)"
+      en-US: "The size of this file (bytes)"
 
   url:
     type: "string"
     optional: false
     desc:
-      ja: "ファイルのURL"
-      en: "The URL of this file"
+      ja-JP: "ファイルのURL"
+      en-US: "The URL of this file"
 
   folderId:
     type: "id(DriveFolder)"
     optional: true
     desc:
-      ja: "フォルダID"
-      en: "The ID of the folder of this file"
+      ja-JP: "フォルダID"
+      en-US: "The ID of the folder of this file"
 
   folder:
     type: "entity(DriveFolder)"
     optional: true
     desc:
-      ja: "フォルダ"
-      en: "The folder of this file"
+      ja-JP: "フォルダ"
+      en-US: "The folder of this file"
 
   isSensitive:
     type: "boolean"
     optional: true
     desc:
-      ja: "このメディアが「閲覧注意」(NSFW)かどうか"
-      en: "Whether this media is NSFW"
+      ja-JP: "このメディアが「閲覧注意」(NSFW)かどうか"
+      en-US: "Whether this media is NSFW"

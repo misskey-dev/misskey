@@ -3,7 +3,7 @@ import { IApp } from '../../../models/app';
 
 export const meta = {
 	desc: {
-		ja: '自分のアカウント情報を取得します。'
+		'ja-JP': '自分のアカウント情報を取得します。'
 	},
 
 	requireCredential: true,

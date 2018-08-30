@@ -7,8 +7,8 @@ import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
-		ja: '指定したドライブのファイルの情報を更新します。',
-		en: 'Update specified file of drive.'
+		'ja-JP': '指定したドライブのファイルの情報を更新します。',
+		'en-US': 'Update specified file of drive.'
 	},
 
 	requireCredential: true,
@@ -18,30 +18,30 @@ export const meta = {
 	params: {
 		fileId: $.type(ID).note({
 			desc: {
-				ja: '対象のファイルID'
+				'ja-JP': '対象のファイルID'
 			}
 		}),
 
 		folderId: $.type(ID).optional.nullable.note({
 			default: undefined,
 			desc: {
-				ja: 'フォルダID'
+				'ja-JP': 'フォルダID'
 			}
 		}),
 
 		name: $.str.optional.pipe(validateFileName).note({
 			default: undefined,
 			desc: {
-				ja: 'ファイル名',
-				en: 'Name of the file'
+				'ja-JP': 'ファイル名',
+				'en-US': 'Name of the file'
 			}
 		}),
 
 		isSensitive: $.bool.optional.note({
 			default: undefined,
 			desc: {
-				ja: 'このメディアが「閲覧注意」(NSFW)かどうか',
-				en: 'Whether this media is NSFW'
+				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
+				'en-US': 'Whether this media is NSFW'
 			}
 		})
 	}

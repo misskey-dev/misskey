@@ -1,5 +1,6 @@
 <template>
-<div class="header">
+<div class="header" ref="root">
+	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
 	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
@@ -20,6 +21,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
+import { env } from '../../../config';
 
 export default Vue.extend({
 	props: ['func'],
@@ -27,7 +29,8 @@ export default Vue.extend({
 		return {
 			hasGameInvitation: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			env: env
 		};
 	},
 	computed: {
@@ -39,7 +42,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.$store.commit('setUiHeaderHeight', 48);
+		this.$store.commit('setUiHeaderHeight', this.$refs.root.offsetHeight);
 
 		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
@@ -132,6 +135,15 @@ root(isDark)
 	> .indicator
 		height 3px
 		background $theme-color
+
+	> .warn
+		display block
+		margin 0
+		padding 4px
+		text-align center
+		font-size 12px
+		background #f00
+		color #fff
 
 	> .main
 		color rgba(#fff, 0.9)

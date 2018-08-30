@@ -411,6 +411,7 @@ desktop:
   uploading-avatar: "新しいアバターをアップロードしています"
   avatar-updated: "アバターを更新しました"
   choose-avatar: "アバターにする画像を選択"
+  invalid-filetype: "この形式のファイルはサポートされていません"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -649,6 +650,7 @@ desktop/views/components/settings.vue:
   gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
+  show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
@@ -819,8 +821,8 @@ desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
-  all-notes: "全てのノート"
-  original-notes: "このインスタンスのノート"
+  all-notes: "全ての投稿"
+  original-notes: "このインスタンスの投稿"
   invite: "招待"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "ユーザーの凍結"
@@ -846,6 +848,11 @@ desktop/views/pages/deck/deck.note.vue:
   reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
+desktop/views/pages/stats/stats.vue:
+  all-users: "全てのユーザー"
+  original-users: "このインスタンスのユーザー"
+  all-notes: "全ての投稿"
+  original-notes: "このインスタンスの投稿"
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"
@@ -1170,6 +1177,8 @@ mobile/views/pages/settings.vue:
   update-available-desc: "ページを再度読み込みすると更新が適用されます。"
   settings: "設定"
   signout: "サインアウト"
+  sound: "サウンド"
+  enableSounds: "サウンドを有効にする"
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
   following: "フォロー"

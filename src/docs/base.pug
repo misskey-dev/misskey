@@ -16,7 +16,7 @@ html(lang= lang)
 		nav
 			ul
 				each doc in docs
-					li: a(href=`/docs/${lang}/${doc.name}`)= doc.title[lang] || doc.title['ja']
+					li: a(href=`/docs/${lang}/${doc.name}`)= doc.title[lang] || doc.title['ja-JP']
 			section
 				h2 API
 				ul

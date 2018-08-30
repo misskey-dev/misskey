@@ -28,18 +28,99 @@
 import Vue from 'vue';
 import { url as misskeyUrl } from '../../../config';
 
+// THIS IS THE WHITELIST FOR THE EMBED PLAYER
+const whiteList = [
+	'afreecatv.com',
+	'aparat.com',
+	'applemusic.com',
+	'amazon.com',
+	'awa.fm',
+	'bandcamp.com',
+	'bbc.co.uk',
+	'beatport.com',
+	'bilibili.com',
+	'boomstream.com',
+	'breakers.tv',
+	'cam4.com',
+	'cavelis.net',
+	'chaturbate.com',
+	'cnn.com',
+	'cybergame.tv',
+	'dailymotion.com',
+	'deezer.com',
+	'djlive.pl',
+	'e-onkyo.com',
+	'eventials.com',
+	'facebook.com',
+	'fc2.com',
+	'gameplank.tv',
+	'goodgame.ru',
+	'google.com',
+	'hardtunes.com',
+	'instagram.com',
+	'johnnylooch.com',
+	'kexp.org',
+	'lahzenegar.com',
+	'liveedu.tv',
+	'livetube.cc',
+	'livestream.com',
+	'meridix.com',
+	'mixcloud.com',
+	'mixer.com',
+	'mobcrush.com',
+	'mylive.in.th',
+	'myspace.com',
+	'netflix.com',
+	'newretrowave.com',
+	'nhk.or.jp',
+	'nicovideo.jp',
+	'nico.ms',
+	'noisetrade.com',
+	'nood.tv',
+	'npr.org',
+	'openrec.tv',
+	'pandora.com',
+	'pandora.tv',
+	'picarto.tv',
+	'pscp.tv',
+	'restream.io',
+	'reverbnation.com',
+	'sermonaudio.com',
+	'smashcast.tv',
+	'songkick.com',
+	'soundcloud.com',
+	'spinninrecords.com',
+	'spotify.com',
+	'stitcher.com',
+	'stream.me',
+	'switchboard.live',
+	'tunein.com',
+	'twitcasting.tv',
+	'twitch.tv',
+	'twitter.com',
+	'vaughnlive.tv',
+	'veoh.com',
+	'vimeo.com',
+	'watchpeoplecode.com',
+	'web.tv',
+	'youtube.com',
+	'youtu.be'
+];
+
 export default Vue.extend({
 	props: {
 		url: {
 			type: String,
 			require: true
 		},
+
 		detail: {
 			type: Boolean,
 			required: false,
 			default: false
 		}
 	},
+
 	data() {
 		return {
 			fetching: true,
@@ -57,6 +138,7 @@ export default Vue.extend({
 			misskeyUrl
 		};
 	},
+
 	created() {
 		const url = new URL(this.url);
 
@@ -81,97 +163,22 @@ export default Vue.extend({
 			}
 			return;
 		}
+
 		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
 			res.json().then(info => {
-				if (info.url != null) {
-					this.title = info.title;
-					this.description = info.description;
-					this.thumbnail = info.thumbnail;
-					this.icon = info.icon;
-					this.sitename = info.sitename;
-					this.fetching = false;
-					if ([ // THIS IS THE WHITELIST FOR THE EMBED PLAYER
-						'afreecatv.com',
-						'aparat.com',
-						'applemusic.com',
-						'amazon.com',
-						'awa.fm',
-						'bandcamp.com',
-						'bbc.co.uk',
-						'beatport.com',
-						'bilibili.com',
-						'boomstream.com',
-						'breakers.tv',
-						'cam4.com',
-						'cavelis.net',
-						'chaturbate.com',
-						'cnn.com',
-						'cybergame.tv',
-						'dailymotion.com',
-						'deezer.com',
-						'djlive.pl',
-						'e-onkyo.com',
-						'eventials.com',
-						'facebook.com',
-						'fc2.com',
-						'gameplank.tv',
-						'goodgame.ru',
-						'google.com',
-						'hardtunes.com',
-						'instagram.com',
-						'johnnylooch.com',
-						'kexp.org',
-						'lahzenegar.com',
-						'liveedu.tv',
-						'livetube.cc',
-						'livestream.com',
-						'meridix.com',
-						'mixcloud.com',
-						'mixer.com',
-						'mobcrush.com',
-						'mylive.in.th',
-						'myspace.com',
-						'netflix.com',
-						'newretrowave.com',
-						'nhk.or.jp',
-						'nicovideo.jp',
-						'nico.ms',
-						'noisetrade.com',
-						'nood.tv',
-						'npr.org',
-						'openrec.tv',
-						'pandora.com',
-						'pandora.tv',
-						'picarto.tv',
-						'pscp.tv',
-						'restream.io',
-						'reverbnation.com',
-						'sermonaudio.com',
-						'smashcast.tv',
-						'songkick.com',
-						'soundcloud.com',
-						'spinninrecords.com',
-						'spotify.com',
-						'stitcher.com',
-						'stream.me',
-						'switchboard.live',
-						'tunein.com',
-						'twitcasting.tv',
-						'twitch.tv',
-						'twitter.com',
-						'vaughnlive.tv',
-						'veoh.com',
-						'vimeo.com',
-						'watchpeoplecode.com',
-						'web.tv',
-						'youtube.com',
-						'youtu.be'
-					].some(x => x == url.hostname || url.hostname.endsWith(`.${x}`)))
-						this.player = info.player;
-				}	// info.url
-			})	// json
-		});	// fetch
-	}	// created
+				if (info.url == null) return;
+				this.title = info.title;
+				this.description = info.description;
+				this.thumbnail = info.thumbnail;
+				this.icon = info.icon;
+				this.sitename = info.sitename;
+				this.fetching = false;
+				if (whiteList.some(x => x == url.hostname || url.hostname.endsWith(`.${x}`))) {
+					this.player = info.player;
+				}
+			})
+		});
+	}
 });
 </script>
 

@@ -1,5 +1,6 @@
 <template>
 <div class="header">
+	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
 	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
@@ -28,6 +29,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
+import { env } from '../../../config';
 
 import XNav from './ui.header.nav.vue';
 import XSearch from './ui.header.search.vue';
@@ -43,7 +45,13 @@ export default Vue.extend({
 		XAccount,
 		XNotifications,
 		XPost,
-		XClock,
+		XClock
+	},
+
+	data() {
+		return {
+			env: env
+		};
 	},
 
 	mounted() {
@@ -118,6 +126,15 @@ root(isDark)
 	z-index 1000
 	width 100%
 	box-shadow 0 1px 1px rgba(#000, 0.075)
+
+	> .warn
+		display block
+		margin 0
+		padding 4px
+		text-align center
+		font-size 12px
+		background #f00
+		color #fff
 
 	> .main
 		height 48px

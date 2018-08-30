@@ -8,8 +8,8 @@ import { deliver } from '../../../../../queue';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーリストに指定したユーザーを追加します。',
-		en: 'Add a user to a user list.'
+		'ja-JP': '指定したユーザーリストに指定したユーザーを追加します。',
+		'en-US': 'Add a user to a user list.'
 	},
 
 	requireCredential: true,

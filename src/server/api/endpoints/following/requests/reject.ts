@@ -4,8 +4,8 @@ import User, { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '自分に届いた、指定したフォローリクエストを拒否します。',
-		en: 'Reject a follow request.'
+		'ja-JP': '自分に届いた、指定したフォローリクエストを拒否します。',
+		'en-US': 'Reject a follow request.'
 	},
 
 	requireCredential: true,

@@ -9,8 +9,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定した投稿のアンケートに投票します。',
-		en: 'Vote poll of a note.'
+		'ja-JP': '指定した投稿のアンケートに投票します。',
+		'en-US': 'Vote poll of a note.'
 	},
 
 	requireCredential: true,

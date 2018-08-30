@@ -6,7 +6,7 @@ import { publishReversiGameStream } from '../../../../../../stream';
 
 export const meta = {
 	desc: {
-		ja: '指定したリバーシの対局で投了します。'
+		'ja-JP': '指定したリバーシの対局で投了します。'
 	},
 
 	requireCredential: true,
@@ -14,7 +14,7 @@ export const meta = {
 	params: {
 		gameId: $.type(ID).note({
 			desc: {
-				ja: '投了したい対局'
+				'ja-JP': '投了したい対局'
 			}
 		})
 	}

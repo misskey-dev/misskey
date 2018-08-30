@@ -4,8 +4,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定したドライブのファイルの情報を取得します。',
-		en: 'Get specified file of drive.'
+		'ja-JP': '指定したドライブのファイルの情報を取得します。',
+		'en-US': 'Get specified file of drive.'
 	},
 
 	requireCredential: true,
