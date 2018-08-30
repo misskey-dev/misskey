@@ -87,6 +87,7 @@ common:
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "公式アカウント"
   disable-animated-mfm: "Desactivar texto animado en una publicación"
+  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
   reversi:
     drawn: "Empatado"
     my-turn: "Mi turno"
