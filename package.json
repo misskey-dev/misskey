@@ -79,7 +79,7 @@
 		"@types/uuid": "3.4.4",
 		"@types/webpack": "4.4.11",
 		"@types/webpack-stream": "3.2.10",
-		"@types/websocket": "0.0.39",
+		"@types/websocket": "0.0.40",
 		"@types/ws": "6.0.0",
 		"animejs": "2.2.0",
 		"autosize": "4.0.2",
