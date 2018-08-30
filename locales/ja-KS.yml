@@ -87,6 +87,7 @@ common:
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストをつけんで！"
   verified-user: "アメちゃん付きアカウント"
   disable-animated-mfm: "投稿内のちょろちょろ動いてんのを止める"
+  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
