@@ -31,7 +31,14 @@ export default Vue.extend({
 			connectionId: null
 		};
 	},
+	watch: {
+		'$store.state.uiHeaderHeight'() {
+			this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
+		}
+	},
 	mounted() {
+		this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
+
 		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
