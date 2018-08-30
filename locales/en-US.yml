@@ -87,6 +87,7 @@ common:
   use-contrast-reversi-stones: "Make the stone color clear"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
+  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
