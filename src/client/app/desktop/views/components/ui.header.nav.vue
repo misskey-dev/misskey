@@ -11,7 +11,7 @@
 			<li class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
 				<router-link to="/deck">
 					%fa:columns%
-					<p>%i18n:@deck% <small>(beta)</small></p>
+					<p>%i18n:@deck%</p>
 				</router-link>
 			</li>
 			<li class="messaging">

@@ -42,6 +42,12 @@
 			</ui-card>
 
 			<ui-card>
+				<div slot="title">%fa:volume-up% %i18n:@sound%</div>
+
+				<ui-switch v-model="enableSounds">%i18n:@enable-sounds%</ui-switch>
+			</ui-card>
+
+			<ui-card>
 				<div slot="title">%fa:language% %i18n:@lang%</div>
 
 				<ui-select v-model="lang" placeholder="%i18n:@auto%">
@@ -141,6 +147,11 @@ export default Vue.extend({
 		lang: {
 			get() { return this.$store.state.device.lang; },
 			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
+		},
+
+		enableSounds: {
+			get() { return this.$store.state.device.enableSounds; },
+			set(value) { this.$store.commit('device/set', { key: 'enableSounds', value }); }
 		},
 	},
 

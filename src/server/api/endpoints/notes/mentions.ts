@@ -6,8 +6,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '自分に言及している投稿の一覧を取得します。',
-		en: 'Get mentions of myself.'
+		'ja-JP': '自分に言及している投稿の一覧を取得します。',
+		'en-US': 'Get mentions of myself.'
 	},
 
 	requireCredential: true

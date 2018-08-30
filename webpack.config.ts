@@ -73,7 +73,8 @@ const consts = {
 	_VERSION_: version,
 	_CODENAME_: codename,
 	_LANG_: '%lang%',
-	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang])
+	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
+	_ENV_: process.env.NODE_ENV
 };
 
 const _consts: { [ key: string ]: any } = {};

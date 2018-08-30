@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定した投稿へのリアクションを取り消します。',
-		en: 'Unreact to a note.'
+		'ja-JP': '指定した投稿へのリアクションを取り消します。',
+		'en-US': 'Unreact to a note.'
 	},
 
 	requireCredential: true,

@@ -6,8 +6,8 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: 'ドライブのファイルを削除します。',
-		en: 'Delete a file of drive.'
+		'ja-JP': 'ドライブのファイルを削除します。',
+		'en-US': 'Delete a file of drive.'
 	},
 
 	requireCredential: true,

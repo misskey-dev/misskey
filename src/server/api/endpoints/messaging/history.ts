@@ -6,8 +6,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: 'Messagingの履歴を取得します。',
-		en: 'Show messaging history.'
+		'ja-JP': 'Messagingの履歴を取得します。',
+		'en-US': 'Show messaging history.'
 	},
 
 	requireCredential: true,

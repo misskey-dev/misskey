@@ -4,8 +4,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '自分のアプリケーション一覧を取得します。',
-		en: 'Get my apps'
+		'ja-JP': '自分のアプリケーション一覧を取得します。',
+		'en-US': 'Get my apps'
 	},
 
 	requireCredential: true

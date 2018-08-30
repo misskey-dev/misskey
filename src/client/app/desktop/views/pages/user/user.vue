@@ -138,7 +138,7 @@ root(isDark)
 				padding 16px
 				font-size 12px
 				color #aaa
-				background #fff
+				background isDark ? #21242f : #fff
 				border solid 1px rgba(#000, 0.075)
 				border-radius 6px
 

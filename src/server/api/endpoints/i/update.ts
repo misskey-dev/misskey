@@ -8,8 +8,8 @@ import config from '../../../../config';
 
 export const meta = {
 	desc: {
-		ja: 'アカウント情報を更新します。',
-		en: 'Update myself'
+		'ja-JP': 'アカウント情報を更新します。',
+		'en-US': 'Update myself'
 	},
 
 	requireCredential: true,

@@ -1,190 +1,190 @@
 name: "Note"
 
 desc:
-  ja: "投稿。"
-  en: "A note."
+  ja-JP: "投稿。"
+  en-US: "A note."
 
 props:
   id:
     type: "id"
     optional: false
     desc:
-      ja: "投稿ID"
-      en: "The ID of this note"
+      ja-JP: "投稿ID"
+      en-US: "The ID of this note"
 
   createdAt:
     type: "date"
     optional: false
     desc:
-      ja: "投稿日時"
-      en: "The posted date of this note"
+      ja-JP: "投稿日時"
+      en-US: "The posted date of this note"
 
   viaMobile:
     type: "boolean"
     optional: true
     desc:
-      ja: "モバイル端末から投稿したか否か(自己申告であることに留意)"
-      en: "Whether this note sent via a mobile device"
+      ja-JP: "モバイル端末から投稿したか否か(自己申告であることに留意)"
+      en-US: "Whether this note sent via a mobile device"
 
   text:
     type: "string"
     optional: true
     desc:
-      ja: "投稿の本文"
-      en: "The text of this note"
+      ja-JP: "投稿の本文"
+      en-US: "The text of this note"
 
   mediaIds:
     type: "id(DriveFile)[]"
     optional: true
     desc:
-      ja: "添付されているメディアのID (なければレスポンスでは空配列)"
-      en: "The IDs of the attached media (empty array for response if no media is attached)"
+      ja-JP: "添付されているメディアのID (なければレスポンスでは空配列)"
+      en-US: "The IDs of the attached media (empty array for response if no media is attached)"
 
   media:
     type: "entity(DriveFile)[]"
     optional: true
     desc:
-      ja: "添付されているメディア"
-      en: "The attached media"
+      ja-JP: "添付されているメディア"
+      en-US: "The attached media"
 
   userId:
     type: "id(User)"
     optional: false
     desc:
-      ja: "投稿者ID"
-      en: "The ID of author of this note"
+      ja-JP: "投稿者ID"
+      en-US: "The ID of author of this note"
 
   user:
     type: "entity(User)"
     optional: true
     desc:
-      ja: "投稿者"
-      en: "The author of this note"
+      ja-JP: "投稿者"
+      en-US: "The author of this note"
 
   myReaction:
     type: "string"
     optional: true
     desc:
-      ja: "この投稿に対する自分の<a href='/docs/api/reactions'>リアクション</a>"
-      en: "The your <a href='/docs/api/reactions'>reaction</a> of this note"
+      ja-JP: "この投稿に対する自分の<a href='/docs/api/reactions'>リアクション</a>"
+      en-US: "The your <a href='/docs/api/reactions'>reaction</a> of this note"
 
   reactionCounts:
     type: "object"
     optional: false
     desc:
-      ja: "<a href='/docs/api/reactions'>リアクション</a>をキーとし、この投稿に対するそのリアクションの数を値としたオブジェクト"
+      ja-JP: "<a href='/docs/api/reactions'>リアクション</a>をキーとし、この投稿に対するそのリアクションの数を値としたオブジェクト"
 
   replyId:
     type: "id(Note)"
     optional: true
     desc:
-      ja: "返信した投稿のID"
-      en: "The ID of the replyed note"
+      ja-JP: "返信した投稿のID"
+      en-US: "The ID of the replyed note"
 
   reply:
     type: "entity(Note)"
     optional: true
     desc:
-      ja: "返信した投稿"
-      en: "The replyed note"
+      ja-JP: "返信した投稿"
+      en-US: "The replyed note"
 
   renoteId:
     type: "id(Note)"
     optional: true
     desc:
-      ja: "引用した投稿のID"
-      en: "The ID of the quoted note"
+      ja-JP: "引用した投稿のID"
+      en-US: "The ID of the quoted note"
 
   renote:
     type: "entity(Note)"
     optional: true
     desc:
-      ja: "引用した投稿"
-      en: "The quoted note"
+      ja-JP: "引用した投稿"
+      en-US: "The quoted note"
 
   poll:
     type: "object"
     optional: true
     desc:
-      ja: "投票"
-      en: "The poll"
+      ja-JP: "投票"
+      en-US: "The poll"
 
     props:
       choices:
         type: "object[]"
         optional: false
         desc:
-          ja: "投票の選択肢"
-          en: "The choices of this poll"
+          ja-JP: "投票の選択肢"
+          en-US: "The choices of this poll"
 
         props:
           id:
             type: "number"
             optional: false
             desc:
-              ja: "選択肢ID"
-              en: "The ID of this choice"
+              ja-JP: "選択肢ID"
+              en-US: "The ID of this choice"
 
           isVoted:
             type: "boolean"
             optional: true
             desc:
-              ja: "自分がこの選択肢に投票したかどうか"
-              en: "Whether you voted to this choice"
+              ja-JP: "自分がこの選択肢に投票したかどうか"
+              en-US: "Whether you voted to this choice"
 
           text:
             type: "string"
             optional: false
             desc:
-              ja: "選択肢本文"
-              en: "The text of this choice"
+              ja-JP: "選択肢本文"
+              en-US: "The text of this choice"
 
           votes:
             type: "number"
             optional: false
             desc:
-              ja: "この選択肢に投票された数"
-              en: "The number voted for this choice"
+              ja-JP: "この選択肢に投票された数"
+              en-US: "The number voted for this choice"
   geo:
     type: "object"
     optional: true
     desc:
-      ja: "位置情報"
-      en: "Geo location"
+      ja-JP: "位置情報"
+      en-US: "Geo location"
 
     props:
       coordinates:
         type: "number[]"
         optional: false
         desc:
-          ja: "座標。最初に経度：-180〜180で表す。最後に緯度：-90〜90で表す。"
+          ja-JP: "座標。最初に経度：-180〜180で表す。最後に緯度：-90〜90で表す。"
 
       altitude:
         type: "number"
         optional: false
         desc:
-          ja: "高度。メートル単位で表す。"
+          ja-JP: "高度。メートル単位で表す。"
 
       accuracy:
         type: "number"
         optional: false
         desc:
-          ja: "緯度、経度の精度。メートル単位で表す。"
+          ja-JP: "緯度、経度の精度。メートル単位で表す。"
 
       altitudeAccuracy:
         type: "number"
         optional: false
         desc:
-          ja: "高度の精度。メートル単位で表す。"
+          ja-JP: "高度の精度。メートル単位で表す。"
 
       heading:
         type: "number"
         optional: false
         desc:
-          ja: "方角。0〜360の角度で表す。0が北、90が東、180が南、270が西。"
+          ja-JP: "方角。0〜360の角度で表す。0が北、90が東、180が南、270が西。"
 
       speed:
         type: "number"
         optional: false
         desc:
-          ja: "速度。メートル / 秒数で表す。"
+          ja-JP: "速度。メートル / 秒数で表す。"

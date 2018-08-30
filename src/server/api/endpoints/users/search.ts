@@ -5,7 +5,7 @@ import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		ja: 'ユーザーを検索します。'
+		'ja-JP': 'ユーザーを検索します。'
 	},
 
 	requireCredential: false,
@@ -13,28 +13,28 @@ export const meta = {
 	params: {
 		query: $.str.note({
 			desc: {
-				ja: 'クエリ'
+				'ja-JP': 'クエリ'
 			}
 		}),
 
 		offset: $.num.optional.min(0).note({
 			default: 0,
 			desc: {
-				ja: 'オフセット'
+				'ja-JP': 'オフセット'
 			}
 		}),
 
 		limit: $.num.optional.range(1, 100).note({
 			default: 10,
 			desc: {
-				ja: '取得する数'
+				'ja-JP': '取得する数'
 			}
 		}),
 
 		localOnly: $.bool.optional.note({
 			default: false,
 			desc: {
-				ja: 'ローカルユーザーのみ検索対象にするか否か'
+				'ja-JP': 'ローカルユーザーのみ検索対象にするか否か'
 			}
 		}),
 	},

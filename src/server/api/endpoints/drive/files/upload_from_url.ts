@@ -6,7 +6,7 @@ import { ILocalUser } from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: 'ドライブに指定されたURLに存在するファイルをアップロードします。'
+		'ja-JP': 'ドライブに指定されたURLに存在するファイルをアップロードします。'
 	},
 
 	limit: {

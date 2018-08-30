@@ -6,8 +6,8 @@ import deleteFollowing from '../../../../services/following/delete';
 
 export const meta = {
 	desc: {
-		ja: '指定したユーザーのフォローを解除します。',
-		en: 'Unfollow a user.'
+		'ja-JP': '指定したユーザーのフォローを解除します。',
+		'en-US': 'Unfollow a user.'
 	},
 
 	limit: {

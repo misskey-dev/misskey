@@ -15,7 +15,7 @@ block main
 		span.path= endpointUrl.path
 
 	if endpoint.desc
-		p#desc= endpoint.desc[lang] || endpoint.desc['ja']
+		p#desc= endpoint.desc[lang] || endpoint.desc['ja-JP']
 
 	if endpoint.requireCredential
 		div.ui.info: p

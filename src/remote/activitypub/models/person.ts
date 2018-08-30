@@ -4,18 +4,25 @@ import * as debug from 'debug';
 
 import config from '../../../config';
 import User, { validateUsername, isValidName, IUser, IRemoteUser } from '../../../models/user';
-import webFinger from '../../webfinger';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, IObject, IPerson } from '../type';
+import { isCollectionOrOrderedCollection, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import htmlToMFM from '../../../mfm/html-to-mfm';
 import { updateUserStats } from '../../../services/update-chart';
+import { URL } from 'url';
 
 const log = debug('misskey:activitypub');
 
-function validatePerson(x: any) {
+/**
+ * Validate Person object
+ * @param x Fetched person object
+ * @param uri Fetch target URI
+ */
+function validatePerson(x: any, uri: string) {
+	const expectHost = toUnicode(new URL(uri).hostname.toLowerCase());
+
 	if (x == null) {
 		return new Error('invalid person: object is null');
 	}
@@ -40,6 +47,24 @@ function validatePerson(x: any) {
 		return new Error('invalid person: invalid name');
 	}
 
+	if (typeof x.id !== 'string') {
+		return new Error('invalid person: id is not a string');
+	}
+
+	const idHost = toUnicode(new URL(x.id).hostname.toLowerCase());
+	if (idHost !== expectHost) {
+		return new Error('invalid person: id has different host');
+	}
+
+	if (typeof x.publicKey.id !== 'string') {
+		return new Error('invalid person: publicKey.id is not a string');
+	}
+
+	const publicKeyIdHost = toUnicode(new URL(x.publicKey.id).hostname.toLowerCase());
+	if (publicKeyIdHost !== expectHost) {
+		return new Error('invalid person: publicKey.id has different host');
+	}
+
 	return null;
 }
 
@@ -48,8 +73,8 @@ function validatePerson(x: any) {
  *
  * Misskeyに対象のPersonが登録されていればそれを返します。
  */
-export async function fetchPerson(value: string | IObject, resolver?: Resolver): Promise<IUser> {
-	const uri = typeof value == 'string' ? value : value.id;
+export async function fetchPerson(uri: string, resolver?: Resolver): Promise<IUser> {
+	if (typeof uri !== 'string') throw 'uri is not string';
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
@@ -71,12 +96,14 @@ export async function fetchPerson(value: string | IObject, resolver?: Resolver):
 /**
  * Personを作成します。
  */
-export async function createPerson(value: any, resolver?: Resolver): Promise<IUser> {
+export async function createPerson(uri: string, resolver?: Resolver): Promise<IUser> {
+	if (typeof uri !== 'string') throw 'uri is not string';
+
 	if (resolver == null) resolver = new Resolver();
 
-	const object = await resolver.resolve(value) as any;
+	const object = await resolver.resolve(uri) as any;
 
-	const err = validatePerson(object);
+	const err = validatePerson(object, uri);
 
 	if (err) {
 		throw err;
@@ -86,7 +113,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 
 	log(`Creating the Person: ${person.id}`);
 
-	const [followersCount = 0, followingCount = 0, notesCount = 0, finger] = await Promise.all([
+	const [followersCount = 0, followingCount = 0, notesCount = 0] = await Promise.all([
 		resolver.resolve(person.followers).then(
 			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
 			() => undefined
@@ -98,11 +125,10 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		resolver.resolve(person.outbox).then(
 			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
 			() => undefined
-		),
-		webFinger(person.id)
+		)
 	]);
 
-	const host = toUnicode(finger.subject.replace(/^.*?@/, '')).toLowerCase();
+	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
 	const isBot = object.type == 'Service';
 
@@ -192,8 +218,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
  *
  * Misskeyに対象のPersonが登録されていなければ無視します。
  */
-export async function updatePerson(value: string | IObject, resolver?: Resolver): Promise<void> {
-	const uri = typeof value == 'string' ? value : value.id;
+export async function updatePerson(uri: string, resolver?: Resolver): Promise<void> {
+	if (typeof uri !== 'string') throw 'uri is not string';
 
 	// URIがこのサーバーを指しているならスキップ
 	if (uri.startsWith(config.url + '/')) {
@@ -210,9 +236,9 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 
 	if (resolver == null) resolver = new Resolver();
 
-	const object = await resolver.resolve(value) as any;
+	const object = await resolver.resolve(uri) as any;
 
-	const err = validatePerson(object);
+	const err = validatePerson(object, uri);
 
 	if (err) {
 		throw err;
@@ -275,8 +301,8 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
  * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolvePerson(value: string | IObject, verifier?: string): Promise<IUser> {
-	const uri = typeof value == 'string' ? value : value.id;
+export async function resolvePerson(uri: string, verifier?: string): Promise<IUser> {
+	if (typeof uri !== 'string') throw 'uri is not string';
 
 	//#region このサーバーに既に登録されていたらそれを返す
 	const exist = await fetchPerson(uri);
@@ -287,5 +313,5 @@ export async function resolvePerson(value: string | IObject, verifier?: string):
 	//#endregion
 
 	// リモートサーバーからフェッチしてきて登録
-	return await createPerson(value);
+	return await createPerson(uri);
 }

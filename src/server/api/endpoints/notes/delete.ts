@@ -5,8 +5,8 @@ import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
-		ja: '指定した投稿を削除します。',
-		en: 'Delete a note.'
+		'ja-JP': '指定した投稿を削除します。',
+		'en-US': 'Delete a note.'
 	},
 
 	requireCredential: true,

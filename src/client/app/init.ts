@@ -19,8 +19,8 @@ import { version, codename, lang } from './config';
 
 let elementLocale;
 switch (lang) {
-	case 'ja': elementLocale = ElementLocaleJa; break;
-	case 'en': elementLocale = ElementLocaleEn; break;
+	case 'ja-JP': elementLocale = ElementLocaleJa; break;
+	case 'en-US': elementLocale = ElementLocaleEn; break;
 	default: elementLocale = ElementLocaleEn; break;
 }
 

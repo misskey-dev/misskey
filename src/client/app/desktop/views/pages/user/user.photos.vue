@@ -39,10 +39,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+root(isDark)
 .photos
-	background #fff
+	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
+	overflow hidden
 
 	> .title
 		z-index 1
@@ -51,7 +53,8 @@ export default Vue.extend({
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color #888
+		background: isDark ? #313543 : inherit
+		color isDark ? #e3e5e8 : #888
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
@@ -84,5 +87,11 @@ export default Vue.extend({
 
 		> i
 			margin-right 4px
+
+.photos[data-darkmode]
+	root(true)
+
+.photos:not([data-darkmode])
+	root(false)
 
 </style>
