@@ -5,6 +5,7 @@
 import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
+import rndstr from 'rndstr';
 const { VueLoaderPlugin } = require('vue-loader');
 const jsonImporter = require('node-sass-json-importer');
 const minifyHtml = require('html-minifier').minify;
@@ -19,7 +20,7 @@ const constants = require('./src/const.json');
 
 const locales = require('./locales');
 const meta = require('./package.json');
-const version = meta.clientVersion;
+const version = meta.clientVersion + '-' + rndstr({ length: 8, chars: '0-9a-z' });
 const codename = meta.codename;
 
 declare var global: {
