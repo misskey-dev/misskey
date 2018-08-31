@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import Subscription from '../../../../models/sw-subscription';
 import { ILocalUser } from '../../../../models/user';
+import config from '../../../../config';
 
 export const meta = {
 	requireCredential: true
@@ -31,8 +32,11 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		deletedAt: { $exists: false }
 	});
 
-	if (exist !== null) {
-		return res();
+	if (exist != null) {
+		return res({
+			state: 'already-subscribed',
+			key: config.sw.public_key
+		});
 	}
 
 	await Subscription.insert({
@@ -42,5 +46,8 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		publickey: publickey
 	});
 
-	res();
+	res({
+		state: 'subscribed',
+		key: config.sw.public_key
+	});
 });
