@@ -36,8 +36,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+root(isDark)
 .followers-you-know
-	background #fff
+	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
@@ -48,7 +49,7 @@ export default Vue.extend({
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color #888
+		color isDark ? #e3e5e8 : #888
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
