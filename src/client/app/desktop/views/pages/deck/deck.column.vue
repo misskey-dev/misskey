@@ -3,18 +3,20 @@
 		@dragover.prevent.stop="onDragover"
 		@dragenter.prevent="onDragenter"
 		@dragleave="onDragleave"
-		@drop.prevent.stop="onDrop"
->
+		@drop.prevent.stop="onDrop">
 	<header :class="{ indicate: count > 0 }"
 			draggable="true"
-			@click="toggleActive"
+			@click="goTop"
 			@dragstart="onDragstart"
 			@dragend="onDragend"
-			@contextmenu.prevent.stop="onContextmenu"
-		>
+			@contextmenu.prevent.stop="onContextmenu">
+		<button class="toggleActive" @click="toggleActive" v-if="isStacked">
+			<template v-if="active">%fa:angle-up%</template>
+			<template v-else>%fa:angle-down%</template>
+		</button>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
-		<button ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
+		<button class="menu" ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -211,6 +213,13 @@ export default Vue.extend({
 			});
 		},
 
+		goTop() {
+			this.$refs.body.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		},
+
 		onDragstart(e) {
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData('mk-deck-column', this.column.id);
@@ -302,6 +311,7 @@ root(isDark)
 					color #bbb
 
 	> header
+		display flex
 		z-index 1
 		line-height $header-height
 		padding 0 16px
@@ -328,10 +338,8 @@ root(isDark)
 			margin-left 4px
 			opacity 0.5
 
-		> button
-			position absolute
-			top 0
-			right 0
+		> .toggleActive
+		> .menu
 			width $header-height
 			line-height $header-height
 			font-size 16px
@@ -342,6 +350,13 @@ root(isDark)
 
 			&:active
 				color isDark ? #b2c1d5 : #999
+
+		> .toggleActive
+			margin-left -16px
+
+		> .menu
+			margin-left auto
+			margin-right -16px
 
 	> div
 		height "calc(100% - %s)" % $header-height
