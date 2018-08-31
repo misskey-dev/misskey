@@ -38,7 +38,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		try {
 			ValidateActivity(activity, host);
 		} catch (e) {
-			console.warn(e);
+			console.warn(e.message);
 			done();
 			return;
 		}
@@ -55,7 +55,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		try {
 			ValidateActivity(activity, host);
 		} catch (e) {
-			console.warn(e);
+			console.warn(e.message);
 			done();
 			return;
 		}
@@ -100,7 +100,10 @@ function ValidateActivity(activity: any, host: string) {
 	// id (if exists)
 	if (typeof activity.id === 'string') {
 		const uriHost = toUnicode(new URL(activity.id).hostname.toLowerCase());
-		if (host !== uriHost) throw new Error('activity.id has different host');
+		if (host !== uriHost) {
+			const diag = activity.signature ? '. Has LD-Signature. Forwarded?' : '';
+			throw new Error(`activity.id(${activity.id}) has different host(${host})${diag}`);
+		}
 	}
 
 	// actor (if exists)
