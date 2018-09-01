@@ -5,7 +5,7 @@
 		<button class="upload" @click="upload">%fa:upload%</button>
 		<button v-if="multiple" class="ok" @click="ok">%fa:check%</button>
 	</header>
-	<mk-drive ref="browser" select-file :multiple="multiple" is-naked :top="42"/>
+	<mk-drive ref="browser" select-file :multiple="multiple" is-naked :top="$store.state.uiHeaderHeight"/>
 </div>
 </template>
 

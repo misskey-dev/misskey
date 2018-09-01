@@ -1,5 +1,5 @@
 <template>
-<div class="mk-drive">
+<div class="kmmwchoexgckptowjmjgfsygeltxfeqs">
 	<nav ref="nav">
 		<a @click.prevent="goRoot()" href="/i/drive">%fa:cloud%%i18n:@drive%</a>
 		<template v-for="folder in hierarchyFolders">
@@ -26,11 +26,11 @@
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
-			<x-folder v-for="folder in folders" :key="folder.id" :folder="folder"/>
+			<x-folder class="folder" v-for="folder in folders" :key="folder.id" :folder="folder"/>
 			<p v-if="moreFolders">%i18n:@load-more%</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
-			<x-file v-for="file in files" :key="file.id" :file="file"/>
+			<x-file class="file" v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
 				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:@load-more%' }}
 			</button>
@@ -92,6 +92,13 @@ export default Vue.extend({
 	computed: {
 		isFileSelectMode(): boolean {
 			return this.selectFile;
+		}
+	},
+	watch: {
+		top() {
+			if (this.isNaked) {
+				(this.$refs.nav as any).style.top = `${this.top}px`;
+			}
 		}
 	},
 	mounted() {
@@ -466,8 +473,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-drive
-	background #fff
+root(isDark)
+	background isDark ? #282c37 : #fff
 
 	> nav
 		display block
@@ -480,10 +487,10 @@ export default Vue.extend({
 		overflow auto
 		white-space nowrap
 		font-size 0.9em
-		color rgba(#000, 0.67)
+		color rgba(isDark ? #fff : #000, 0.67)
 		-webkit-backdrop-filter blur(12px)
 		backdrop-filter blur(12px)
-		background-color rgba(#fff, 0.75)
+		background-color rgba(isDark ? #313543 : #fff, 0.75)
 		border-bottom solid 1px rgba(#000, 0.13)
 
 		> p
@@ -509,7 +516,7 @@ export default Vue.extend({
 			opacity 0.5
 
 		> .info
-			border-bottom solid 1px #eee
+			border-bottom solid 1px isDark ? #1c2023 : #eee
 
 			&:empty
 				display none
@@ -520,15 +527,15 @@ export default Vue.extend({
 				margin 0 auto
 				padding 4px 16px
 				font-size 10px
-				color #777
+				color isDark ? #606984 : #777
 
 		> .folders
 			> .folder
-				border-bottom solid 1px #eee
+				border-bottom solid 1px isDark ? #1c2023 : #eee
 
 		> .files
 			> .file
-				border-bottom solid 1px #eee
+				border-bottom solid 1px isDark ? #1c2023 : #eee
 
 			> .more
 				display block
@@ -583,5 +590,11 @@ export default Vue.extend({
 
 	> .file
 		display none
+
+.kmmwchoexgckptowjmjgfsygeltxfeqs[data-darkmode]
+	root(true)
+
+.kmmwchoexgckptowjmjgfsygeltxfeqs:not([data-darkmode])
+	root(false)
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-<a class="file" @click.prevent="onClick" :href="`/i/drive/file/${ file.id }`" :data-is-selected="isSelected">
+<a class="vupkuhvjnjyqaqhsiogfbywvjxynrgsm" @click.prevent="onClick" :href="`/i/drive/file/${ file.id }`" :data-is-selected="isSelected">
 	<div class="container">
 		<div class="thumbnail" :style="thumbnail"></div>
 		<div class="body">
@@ -7,20 +7,12 @@
 				<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
 				<span class="ext" v-if="file.name.lastIndexOf('.') != -1">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
 			</p>
-			<!--
-			if file.tags.length > 0
-				ul.tags
-					each tag in file.tags
-						li.tag(style={background: tag.color, color: contrast(tag.color)})= tag.name
-			-->
 			<footer>
 				<span class="type"><mk-file-type-icon :type="file.type"/>{{ file.type }}</span>
 				<span class="separator"></span>
 				<span class="data-size">{{ file.datasize | bytes }}</span>
 				<span class="separator"></span>
-				<span class="created-at">
-					%fa:R clock%<mk-time :time="file.createdAt"/>
-				</span>
+				<span class="created-at">%fa:R clock%<mk-time :time="file.createdAt"/></span>
 				<template v-if="file.isSensitive">
 					<span class="separator"></span>
 					<span class="nsfw">%fa:eye-slash% %i18n:@nsfw%</span>
@@ -73,7 +65,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.file
+root(isDark)
 	display block
 	text-decoration none !important
 
@@ -111,7 +103,7 @@ export default Vue.extend({
 				padding 0
 				font-size 0.9em
 				font-weight bold
-				color #555
+				color isDark ? #fff : #555
 				text-overflow ellipsis
 				overflow-wrap break-word
 
@@ -138,7 +130,6 @@ export default Vue.extend({
 
 				> .separator
 					padding 0 4px
-					color #CDCDCD
 
 				> .type
 					color #9D9D9D
@@ -163,5 +154,11 @@ export default Vue.extend({
 
 		&, *
 			color #fff !important
+
+.vupkuhvjnjyqaqhsiogfbywvjxynrgsm[data-darkmode]
+	root(true)
+
+.vupkuhvjnjyqaqhsiogfbywvjxynrgsm:not([data-darkmode])
+	root(false)
 
 </style>

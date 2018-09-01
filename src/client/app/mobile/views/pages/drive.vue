@@ -11,7 +11,7 @@
 		:init-folder="initFolder"
 		:init-file="initFile"
 		:is-naked="true"
-		:top="48"
+		:top="$store.state.uiHeaderHeight"
 		@begin-fetch="Progress.start()"
 		@fetched-mid="Progress.set(0.5)"
 		@fetched="Progress.done()"
