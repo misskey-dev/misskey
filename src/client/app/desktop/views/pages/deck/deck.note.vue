@@ -36,6 +36,7 @@
 					<div class="renote" v-if="p.renote">
 						<mk-note-preview :note="p.renote" :mini="true"/>
 					</div>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="false" :mini="true"/>
 				</div>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 			</div>
