@@ -47,11 +47,9 @@ export default function(html: string): string {
 						//#region ホスト名部分が省略されているので復元する
 						const acct = `${txt}@${(new URL(href.value)).hostname}`;
 						text += acct;
-						break;
 						//#endregion
 					} else if (part.length == 3) {
 						text += txt;
-						break;
 					}
 				// その他
 				} else {
