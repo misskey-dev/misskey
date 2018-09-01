@@ -170,6 +170,8 @@ export default Vue.extend({
 			});
 		}
 
+		this.focus();
+
 		this.$nextTick(() => {
 			this.focus();
 		});
