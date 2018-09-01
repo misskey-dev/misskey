@@ -16,10 +16,10 @@ export default Vue.extend({
 	methods: {
 		nav(game, actualNav) {
 			if (actualNav) {
-				this.$router.push('/reversi/' + game.id);
+				this.$router.push(`/reversi/${game.id}`);
 			} else {
 				// TODO: https://github.com/vuejs/vue-router/issues/703
-				this.$router.push('/reversi/' + game.id);
+				this.$router.push(`/reversi/${game.id}`);
 			}
 		}
 	}

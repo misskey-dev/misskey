@@ -125,7 +125,7 @@ export default Vue.extend({
 			}
 
 			if (this.type == 'user') {
-				const cacheKey = 'autocomplete:user:' + this.q;
+				const cacheKey = `autocomplete:user:${this.q}`;
 				const cache = sessionStorage.getItem(cacheKey);
 				if (cache) {
 					const users = JSON.parse(cache);
@@ -148,7 +148,7 @@ export default Vue.extend({
 					this.hashtags = JSON.parse(localStorage.getItem('hashtags') || '[]');
 					this.fetching = false;
 				} else {
-					const cacheKey = 'autocomplete:hashtag:' + this.q;
+					const cacheKey = `autocomplete:hashtag:${this.q}`;
 					const cache = sessionStorage.getItem(cacheKey);
 					if (cache) {
 						const hashtags = JSON.parse(cache);

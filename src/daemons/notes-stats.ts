@@ -16,7 +16,7 @@ export default function() {
 	});
 
 	ev.on('requestNotesStatsLog', id => {
-		ev.emit('notesStatsLog:' + id, log.toArray());
+		ev.emit(`notesStatsLog:${id}`, log.toArray());
 	});
 
 	process.on('exit', code => {

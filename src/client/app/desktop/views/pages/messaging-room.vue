@@ -46,7 +46,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = 'メッセージ: ' + getUserName(this.user);
+				document.title = `メッセージ: ${getUserName(this.user)}`;
 
 				Progress.done();
 			});

@@ -94,7 +94,7 @@
 
 	// Get salt query
 	const salt = localStorage.getItem('salt')
-		? '?salt=' + localStorage.getItem('salt')
+		? `?salt=${localStorage.getItem('salt')}`
 		: '';
 
 	// Load an app script

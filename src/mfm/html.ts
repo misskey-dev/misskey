@@ -44,8 +44,8 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 
 	hashtag({ document }, { hashtag }) {
 		const a = document.createElement('a');
-		a.href = config.url + '/tags/' + hashtag;
-		a.textContent = '#' + hashtag;
+		a.href = `${config.url}/tags/${hashtag}`;
+		a.textContent = `#${hashtag}`;
 		a.setAttribute('rel', 'tag');
 		document.body.appendChild(a);
 	},

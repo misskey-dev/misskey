@@ -20,7 +20,7 @@ const constants = require('./src/const.json');
 
 const locales = require('./locales');
 const meta = require('./package.json');
-const version = meta.clientVersion + '-' + rndstr({ length: 8, chars: '0-9a-z' });
+const version = `${meta.clientVersion}-${rndstr({ length: 8, chars: '0-9a-z' })}`;
 const codename = meta.codename;
 
 declare var global: {
@@ -42,7 +42,7 @@ global['collapseSpacesReplacement'] = (html: string) => {
 };
 
 global['base64replacement'] = (_: any, key: string) => {
-	return fs.readFileSync(__dirname + '/src/client/' + key, 'base64');
+	return fs.readFileSync(`${__dirname}/src/client/${key}`, 'base64');
 };
 
 global['i18nReplacement'] = i18nReplacement;

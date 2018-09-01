@@ -163,7 +163,7 @@ export default Vue.extend({
 							});
 							break;
 						default:
-							alert('%i18n:@unhandled-error% ' + err);
+							alert(`%i18n:@unhandled-error% ${err}`);
 					}
 				});
 			}

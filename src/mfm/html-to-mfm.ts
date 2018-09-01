@@ -45,7 +45,7 @@ export default function(html: string): string {
 
 					if (part.length == 2) {
 						//#region ホスト名部分が省略されているので復元する
-						const acct = txt + '@' + (new URL(href.value)).hostname;
+						const acct = `${txt}@${(new URL(href.value)).hostname}`;
 						text += acct;
 						break;
 						//#endregion

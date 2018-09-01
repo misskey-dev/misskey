@@ -80,7 +80,7 @@ export default Vue.extend({
 		accepted() {
 			this.state = 'accepted';
 			if (this.session.app.callbackUrl) {
-				location.href = this.session.app.callbackUrl + '?token=' + this.session.token;
+				location.href = `${this.session.app.callbackUrl}?token=${this.session.token}`;
 			}
 		}
 	}

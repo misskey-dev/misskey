@@ -11,5 +11,5 @@ Vue.filter('userName', user => {
 });
 
 Vue.filter('userPage', (user, path?) => {
-	return '/@' + Vue.filter('acct')(user) + (path ? '/' + path : '');
+	return `/@${Vue.filter('acct')(user)}${(path ? `/${path}` : '')}`;
 });
