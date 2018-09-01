@@ -5,6 +5,7 @@ import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';
 import config from '../../../../config';
+import { publishToFollowers } from '../../../../services/i/update';
 
 export const meta = {
 	desc: {
@@ -144,4 +145,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 	if (user.isLocked && isLocked === false) {
 		acceptAllFollowRequests(user);
 	}
+
+	// フォロワーにUpdateを配信
+	publishToFollowers(user._id);
 });
