@@ -285,6 +285,8 @@ common/views/components/nav.vue:
   feedback: "フィードバック"
 
 common/views/components/note-menu.vue:
+  detail: "詳細"
+  copy-link: "リンクをコピー"
   favorite: "お気に入り"
   pin: "ピン留め"
   delete: "削除"

@@ -6,17 +6,27 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { url } from '../../../config';
+import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 
 export default Vue.extend({
 	props: ['note', 'source', 'compact'],
 	computed: {
 		items() {
-			const items = [];
-			items.push({
+			const items = [{
+				icon: '%fa:info-circle%',
+				text: '%i18n:@detail%',
+				action: this.detail
+			}, {
+				icon: '%fa:link%',
+				text: '%i18n:@copy-link%',
+				action: this.copyLink
+			}, null, {
 				icon: '%fa:star%',
 				text: '%i18n:@favorite%',
 				action: this.favorite
-			});
+			}];
+
 			if (this.note.userId == this.$store.state.i.id) {
 				items.push({
 					icon: '%fa:thumbtack%',
@@ -42,6 +52,14 @@ export default Vue.extend({
 		}
 	},
 	methods: {
+		detail() {
+			this.$router.push(`/notes/${ this.note.id }`);
+		},
+
+		copyLink() {
+			copyToClipboard(`${url}/notes/${ this.note.id }`);
+		},
+
 		pin() {
 			(this as any).api('i/pin', {
 				noteId: this.note.id
