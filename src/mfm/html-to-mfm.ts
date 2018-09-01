@@ -33,15 +33,19 @@ export default function(html: string): string {
 
 			case 'a':
 				const txt = getText(node);
+				const rel = node.attrs.find((x: any) => x.name == 'rel');
+				const href = node.attrs.find((x: any) => x.name == 'href');
 
+				// ハッシュタグ / hrefがない / txtがURL
+				if ((rel && rel.value.match('tag') !== null) || !href || href.value == txt) {
+					text += txt;
 				// メンション
-				if (txt.startsWith('@')) {
+				} else if (txt.startsWith('@')) {
 					const part = txt.split('@');
 
 					if (part.length == 2) {
 						//#region ホスト名部分が省略されているので復元する
-						const href = new URL(node.attrs.find((x: any) => x.name == 'href').value);
-						const acct = txt + '@' + href.hostname;
+						const acct = txt + '@' + (new URL(href.value)).hostname;
 						text += acct;
 						break;
 						//#endregion
@@ -49,10 +53,9 @@ export default function(html: string): string {
 						text += txt;
 						break;
 					}
-				}
-
-				if (node.childNodes) {
-					node.childNodes.forEach((n: any) => analyze(n));
+				// その他
+				} else {
+					text += `[${txt}](${href.value})`;
 				}
 				break;
 
