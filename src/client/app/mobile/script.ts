@@ -14,6 +14,7 @@ import chooseDriveFolder from './api/choose-drive-folder';
 import chooseDriveFile from './api/choose-drive-file';
 import dialog from './api/dialog';
 import input from './api/input';
+import post from './api/post';
 import notify from './api/notify';
 
 import MkIndex from './views/pages/index.vue';
@@ -90,7 +91,7 @@ init((launch) => {
 		chooseDriveFile,
 		dialog: dialog(os),
 		input,
-		post: () => alert('deprecated'),
+		post: post(os),
 		notify
 	}));
 }, true);

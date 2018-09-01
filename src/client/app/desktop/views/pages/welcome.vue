@@ -38,11 +38,9 @@
 		<mk-welcome-timeline :max="20"/>
 	</div>
 
-	<modal name="signup">
-		<div :class="$style.modal">
-			<header :class="$style.signupFormHeader">%i18n:@signup%</header>
-			<mk-signup :class="$style.signupForm"/>
-		</div>
+	<modal name="signup" width="500px" height="auto" scrollable>
+		<header :class="$style.signupFormHeader">%i18n:@signup%</header>
+		<mk-signup :class="$style.signupForm"/>
 	</modal>
 </div>
 </template>
@@ -91,10 +89,10 @@ export default Vue.extend({
 			this.$refs.pointer.style.left = x.left + 'px';
 		},
 		signup() {
-			this.$modal.push('signup');
+			this.$modal.show('signup');
 		},
 		signin() {
-			this.$modal.push('signin');
+			this.$modal.show('signin');
 		},
 		dark() {
 			this.$store.commit('device/set', {
@@ -268,10 +266,6 @@ root(isDark)
 </style>
 
 <style lang="stylus" module>
-.modal
-	width 500px
-	background #fff !important
-
 .signupForm
 	padding 24px 48px 48px 48px
 

@@ -75,19 +75,11 @@
 	<div class="replies" v-if="!compact">
 		<x-sub v-for="note in replies" :key="note.id" :note="note"/>
 	</div>
-
-	<modal :name="replyFormId">
-		<mk-post-form @posted="replyFormClosed" @cancel="replyFormClosed" :reply="p"/>
-	</modal>
-	<modal :name="renoteFormId">
-		<mk-post-form @posted="renoteFormClosed" @cancel="renoteFormClosed" :renote="p"/>
-	</modal>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import * as uuid from 'uuid';
 import parse from '../../../../../mfm/parse';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
@@ -113,9 +105,7 @@ export default Vue.extend({
 		return {
 			conversation: [],
 			conversationFetching: false,
-			replies: [],
-			replyFormId: uuid(),
-			renoteFormId: uuid()
+			replies: []
 		};
 	},
 
@@ -195,19 +185,15 @@ export default Vue.extend({
 		},
 
 		reply() {
-			this.$modal.push(this.replyFormId);
-		},
-
-		replyFormClosed() {
-			this.$modal.pop();
+			(this as any).apis.post({
+				reply: this.p
+			});
 		},
 
 		renote() {
-			this.$modal.push(this.renoteFormId);
-		},
-
-		renoteFormClosed() {
-			this.$modal.pop();
+			(this as any).apis.post({
+				renote: this.p
+			});
 		},
 
 		react() {
