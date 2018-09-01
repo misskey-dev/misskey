@@ -105,9 +105,9 @@ export default Vue.extend({
 	computed: {
 		draftId(): string {
 			return this.renote
-				? 'renote:' + this.renote.id
+				? `renote:${this.renote.id}`
 				: this.reply
-					? 'reply:' + this.reply.id
+					? `reply:${this.reply.id}`
 					: 'note';
 		},
 
@@ -229,7 +229,7 @@ export default Vue.extend({
 			navigator.geolocation.getCurrentPosition(pos => {
 				this.geo = pos.coords;
 			}, err => {
-				alert('%i18n:@error%: ' + err.message);
+				alert(`%i18n:@error%: ${err.message}`);
 			}, {
 					enableHighAccuracy: true
 				});

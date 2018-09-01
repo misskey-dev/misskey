@@ -82,7 +82,7 @@ export default Vue.extend({
 		search() {
 			const query = window.prompt('%i18n:@search%');
 			if (query == null || query == '') return;
-			this.$router.push('/search?q=' + encodeURIComponent(query));
+			this.$router.push(`/search?q=${encodeURIComponent(query)}`);
 		},
 		onReversiInvited() {
 			this.hasGameInvitation = true;

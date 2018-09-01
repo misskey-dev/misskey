@@ -43,7 +43,7 @@ export default Vue.extend({
 					title
 				});
 
-				this.$router.push('/i/lists/' + list.id);
+				this.$router.push(`/i/lists/${list.id}`);
 			});
 		}
 	}

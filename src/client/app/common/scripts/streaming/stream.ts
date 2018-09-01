@@ -44,11 +44,11 @@ export default class Connection extends EventEmitter {
 
 		const query = params
 			? Object.keys(params)
-				.map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+				.map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
 				.join('&')
 			: null;
 
-		this.socket = new ReconnectingWebsocket(`${wsUrl}/${endpoint}${query ? '?' + query : ''}`);
+		this.socket = new ReconnectingWebsocket(`${wsUrl}/${endpoint}${query ? `?${query}` : ''}`);
 		this.socket.addEventListener('open', this.onOpen);
 		this.socket.addEventListener('close', this.onClose);
 		this.socket.addEventListener('message', this.onMessage);

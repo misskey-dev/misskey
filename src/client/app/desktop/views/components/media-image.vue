@@ -48,7 +48,7 @@ export default Vue.extend({
 			const mouseY = e.clientY - rect.top;
 			const xp = mouseX / this.$el.offsetWidth * 100;
 			const yp = mouseY / this.$el.offsetHeight * 100;
-			this.$el.style.backgroundPosition = xp + '% ' + yp + '%';
+			this.$el.style.backgroundPosition = `${xp}% ${yp}%';
 			this.$el.style.backgroundImage = `url("${this.image.url}")`;
 		},
 

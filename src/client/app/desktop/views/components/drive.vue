@@ -323,7 +323,7 @@ export default Vue.extend({
 							});
 							break;
 						default:
-							alert('%i18n:@unhandled-error% ' + err);
+							alert(`%i18n:@unhandled-error% ${err}`);
 					}
 				});
 			}
@@ -404,7 +404,7 @@ export default Vue.extend({
 					folder: folder
 				});
 			} else {
-				window.open(url + '/i/drive/folder/' + folder.id,
+				window.open(`${url}/i/drive/folder/${folder.id}`,
 					'drive_window',
 					'height=500, width=800');
 			}

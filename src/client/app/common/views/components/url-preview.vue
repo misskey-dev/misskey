@@ -170,7 +170,7 @@ export default Vue.extend({
 			return;
 		}
 
-		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
+		fetch(`/url?url=${encodeURIComponent(this.url)}`).then(res => {
 			res.json().then(info => {
 				if (info.url == null) return;
 				this.title = info.title;

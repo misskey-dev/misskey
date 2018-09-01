@@ -80,7 +80,7 @@ export default Vue.extend({
 
 			if (!silent) {
 				// Rewrite URL
-				history.pushState(null, title, '/i/drive/folder/' + folder.id);
+				history.pushState(null, title, `/i/drive/folder/${folder.id}`);
 			}
 
 			document.title = title;
@@ -93,7 +93,7 @@ export default Vue.extend({
 
 			if (!silent) {
 				// Rewrite URL
-				history.pushState(null, title, '/i/drive/file/' + file.id);
+				history.pushState(null, title, `/i/drive/file/${file.id}`);
 			}
 
 			document.title = title;

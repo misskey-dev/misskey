@@ -16,7 +16,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		switch (msg.type) {
 			case 'requestLog':
-				ev.once('notesStatsLog:' + msg.id, statsLog => {
+				ev.once(`notesStatsLog:${msg.id}`, statsLog => {
 					connection.send(JSON.stringify({
 						type: 'statsLog',
 						body: statsLog
