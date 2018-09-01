@@ -24,7 +24,7 @@ Why don't you take a short break from the hustle and bustle of the city, and div
 * Reactions
 * User lists
 * Customizable column view (called MisskeyDeck)
-  * and widgets!
+* Customizable widgets
 * Private messages
 * ActivityPub support
 
