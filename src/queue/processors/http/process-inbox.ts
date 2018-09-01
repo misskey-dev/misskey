@@ -5,7 +5,7 @@ const httpSignature = require('http-signature');
 import parseAcct from '../../../misc/acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import perform from '../../../remote/activitypub/perform';
-import { resolvePerson } from '../../../remote/activitypub/models/person';
+import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
 
@@ -44,11 +44,6 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		}
 
 		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
-
-		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
-		if (user === null) {
-			user = await resolvePerson(activity.actor) as IRemoteUser;
-		}
 	} else {
 		// アクティビティ内のホストの検証
 		const host = toUnicode(new URL(signature.keyId).hostname.toLowerCase());
@@ -64,11 +59,26 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			host: { $ne: null },
 			'publicKey.id': signature.keyId
 		}) as IRemoteUser;
+	}
 
-		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
-		if (user === null) {
-			user = await resolvePerson(activity.actor) as IRemoteUser;
+	// Update activityの場合は、ここで署名検証/更新処理まで実施して終了
+	if (activity.type === 'Update') {
+		if (activity.object && activity.object.type === 'Person') {
+			if (user == null) {
+				console.warn('Update activity received, but user not registed.');
+			} else if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
+				console.warn('Update activity received, but signature verification failed.');
+			} else {
+				updatePerson(activity.actor, null, activity.object);
+			}
 		}
+		done();
+		return;
+	}
+
+	// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
+	if (user === null) {
+		user = await resolvePerson(activity.actor) as IRemoteUser;
 	}
 
 	if (user === null) {

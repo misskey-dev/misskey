@@ -216,10 +216,12 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 /**
  * Personの情報を更新します。
- *
  * Misskeyに対象のPersonが登録されていなければ無視します。
+ * @param uri URI of Person
+ * @param resolver Resolver
+ * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
  */
-export async function updatePerson(uri: string, resolver?: Resolver): Promise<void> {
+export async function updatePerson(uri: string, resolver?: Resolver, hint?: object): Promise<void> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	// URIがこのサーバーを指しているならスキップ
@@ -237,7 +239,7 @@ export async function updatePerson(uri: string, resolver?: Resolver): Promise<vo
 
 	if (resolver == null) resolver = new Resolver();
 
-	const object = await resolver.resolve(uri) as any;
+	const object = hint || await resolver.resolve(uri) as any;
 
 	const err = validatePerson(object, uri);
 
