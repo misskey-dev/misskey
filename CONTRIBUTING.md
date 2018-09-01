@@ -1,27 +1,27 @@
 # Contribution guide
-:v: Misskeyへの貢献ありがとうございます。 :v:
+:v: Thanks for your contributions :v:
 
-## Issueの報告
-新機能の提案や不具合の報告は https://github.com/syuilo/misskey/issues で管理しています。
-Issueを作成する前に、既に同じIssueが作成されていないかご確認ください。
-もし既にIssueが作成されている場合は、既存のIssueにコメントをしたりリアクションをするようお願いします。
+## Issues
+Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
+Before creating a new issue, please search existing issues to avoid duplication.
+If you find the existing issue, please add your reaction or comment to the issue.
 
-## Issueの解決
-[pr-welcomeのラベルがついているIssue](https://github.com/syuilo/misskey/labels/pr-welcome)
-の解決を目的としたPull Requestを作成してくださると非常にありがたいです。
+## Internationalization (i18n)
+Please see [Translation guide](./docs/translate.en.md).
 
-## 翻訳の改善
-ソースコード中の `%i18n:id%` という形の文字列は、言語ファイルの対応するテキストに置換されます。
-言語ファイルは /locales ディレクトリに存在します。
+## Localization (l10n)
+Please use Crowdin for localization.
 
-## ドキュメントの編集
-現在Misskeyはドキュメントが大きく不足しています。
-ドキュメントは /docs ディレクトリに存在します。
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)](https://crowdin.com/project/misskey)
 
-## テストの追加
-現在Misskeyはテストが大きく不足しています。
-テストコードは /test ディレクトリに存在します。
+## Documentation
+* Documents for contributors are located in `/docs`.
+* Documents for instance admins are located in `/docs`.
+* Documents for end users are located in `src/docs`.
 
-## 自動テスト及び自動リリース
-Travis CIで行っています。
-設定ファイルは /.travis に存在します。
+## Test
+* Test codes are located in `/test`.
+
+## Continuous integration
+Misskey uses Travis for automated test.
+Configuration files are located in `/.travis`.
