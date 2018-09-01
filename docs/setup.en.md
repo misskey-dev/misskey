@@ -131,6 +131,7 @@ You can check if the service is running with `systemctl status misskey`.
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
 3. `npm install`
 4. `npm run build`
+5. Check [ChangeLog](../CHANGELOG.md) for migration information
 
 ----------------------------------------------------------------
 
