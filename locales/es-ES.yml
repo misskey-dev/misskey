@@ -261,6 +261,8 @@ common/views/components/nav.vue:
   develop: "Desarrolladores"
   feedback: "Opiniones"
 common/views/components/note-menu.vue:
+  detail: "詳細"
+  copy-link: "リンクをコピー"
   favorite: "Me gusta esta nota"
   pin: "Fijar en el perfil"
   delete: "Borrar"
