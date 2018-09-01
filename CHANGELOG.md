@@ -47,13 +47,13 @@ Please run `node cli/migration/5.0.0` before launch.
 
 オセロがリバーシに変更されました。
 
-Othello is now Reversi.
+Othello is rename to Reversi.
 
 ### Migration
 
 MongoDBの、`othelloGames`と`othelloMatchings`コレクションをそれぞれ`reversiGames`と`reversiMatchings`にリネームしてください。
 
-You need to rename `othelloGames` and `othelloMatchings` MongoDB collections to `reversiGames` and `reversiMatchings`.
+Please rename `othelloGames` and `othelloMatchings` MongoDB collections to `reversiGames` and `reversiMatchings` respectively.
 
 3.0.0
 -----
