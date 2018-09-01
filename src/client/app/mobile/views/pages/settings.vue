@@ -2,7 +2,7 @@
 <mk-ui>
 	<span slot="header">%fa:cog%%i18n:@settings%</span>
 	<main :data-darkmode="$store.state.device.darkmode">
-		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></div>
+		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${name}</b>`)"></div>
 
 		<div>
 			<x-profile/>

@@ -191,7 +191,7 @@ class Autocomplete {
 			const acct = renderAcct(value);
 
 			// 挿入
-			this.text = trimmedBefore + '@' + acct + ' ' + after;
+			this.text = `${trimmedBefore}@${acct} ${after}`;
 
 			// キャレットを戻す
 			this.vm.$nextTick(() => {
@@ -207,7 +207,7 @@ class Autocomplete {
 			const after = source.substr(caret);
 
 			// 挿入
-			this.text = trimmedBefore + '#' + value + ' ' + after;
+			this.text = `${trimmedBefore}#${value} ${after}`;
 
 			// キャレットを戻す
 			this.vm.$nextTick(() => {

@@ -196,7 +196,7 @@ router.get('/*/api/entities/*', async ctx => {
 	const lang = ctx.params[0];
 	const entity = ctx.params[1];
 
-	const x = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname + '/../../../src/docs/api/entities/' + entity + '.yaml'), 'utf-8')) as any;
+	const x = yaml.safeLoad(fs.readFileSync(path.resolve(`${__dirname}/../../../src/docs/api/entities/${entity}.yaml`), 'utf-8')) as any;
 
 	await ctx.render('../../../../src/docs/api/entities/view', Object.assign(await genVars(lang), {
 		id: `api/entities/${entity}`,

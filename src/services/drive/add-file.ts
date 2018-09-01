@@ -40,7 +40,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}/${name}.thumbnail.jpg`;
 
 		const baseUrl = config.drive.baseUrl
-			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }`;
+			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
 
 		await minio.putObject(config.drive.bucket, key, fs.createReadStream(path), size, {
 			'Content-Type': type,

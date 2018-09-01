@@ -31,7 +31,7 @@ export default Vue.extend({
 			const title = folder.name + ' | %i18n:@title%';
 
 			// Rewrite URL
-			history.pushState(null, title, '/i/drive/folder/' + folder.id);
+			history.pushState(null, title, `/i/drive/folder/${folder.id}`);
 
 			document.title = title;
 		}

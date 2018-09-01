@@ -16,7 +16,7 @@ export default function() {
 	const log = new Deque<any>();
 
 	ev.on('requestServerStatsLog', x => {
-		ev.emit('serverStatsLog:' + x.id, log.toArray().slice(0, x.length || 50));
+		ev.emit(`serverStatsLog:${x.id}`, log.toArray().slice(0, x.length || 50));
 	});
 
 	async function tick() {

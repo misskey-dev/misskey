@@ -1,6 +1,6 @@
 <template>
 <div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
-	<div class="signed-in-as" v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + myName + '</b>')"></div>
+	<div class="signed-in-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${myName}`)"></div>
 
 	<main>
 		<div class="banner" :style="bannerStyle"></div>

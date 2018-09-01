@@ -110,9 +110,9 @@ export default Vue.extend({
 	computed: {
 		draftId(): string {
 			return this.renote
-				? 'renote:' + this.renote.id
+				? `renote:${this.renote.id}`
 				: this.reply
-					? 'reply:' + this.reply.id
+					? `reply:${this.reply.id}`
 					: 'note';
 		},
 
@@ -313,7 +313,7 @@ export default Vue.extend({
 				this.geo = pos.coords;
 				this.$emit('geo-attached', this.geo);
 			}, err => {
-				alert('%i18n:@error%: ' + err.message);
+				alert(`%i18n:@error%: ${err.message}`);
 			}, {
 					enableHighAccuracy: true
 				});

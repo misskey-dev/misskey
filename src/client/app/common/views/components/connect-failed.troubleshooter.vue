@@ -57,7 +57,7 @@ export default Vue.extend({
 		}
 
 		// Check internet connection
-		fetch('https://google.com?rand=' + Math.random(), {
+		fetch(`https://google.com?rand=${Math.random()}`, {
 			mode: 'no-cors'
 		}).then(() => {
 			this.internet = true;
