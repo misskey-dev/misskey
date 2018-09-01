@@ -87,7 +87,7 @@ common:
   use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
-  do-not-use-in-production: 'This is a development build. Do not use in production.'
+  do-not-use-in-production: 'As this is for development, do not use this in production.'
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
