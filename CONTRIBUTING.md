@@ -10,9 +10,9 @@ If you find the existing issue, please add your reaction or comment to the issue
 Please see [Translation guide](./docs/translate.en.md).
 
 ## Localization (l10n)
-Please use Crowdin for localization.
+Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
 
-[![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)](https://crowdin.com/project/misskey)
+![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Documentation
 * Documents for contributors are located in `/docs`.
