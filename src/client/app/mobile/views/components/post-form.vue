@@ -293,9 +293,6 @@ export default Vue.extend({
 				viaMobile: viaMobile
 			}).then(data => {
 				this.$emit('posted');
-				this.$nextTick(() => {
-					this.$destroy();
-				});
 			}).catch(err => {
 				this.posting = false;
 			});
@@ -309,7 +306,6 @@ export default Vue.extend({
 
 		cancel() {
 			this.$emit('cancel');
-			this.$destroy();
 		},
 
 		kao() {

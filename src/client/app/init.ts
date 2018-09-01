@@ -11,6 +11,8 @@ import VAnimateCss from 'v-animate-css';
 import Element from 'element-ui';
 import ElementLocaleEn from 'element-ui/lib/locale/lang/en';
 import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
+import VueThinModal from 'vue-thin-modal';
+import 'vue-thin-modal/dist/vue-thin-modal.css';
 
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
@@ -30,6 +32,9 @@ Vue.use(VModal);
 Vue.use(TreeView);
 Vue.use(VAnimateCss);
 Vue.use(Element, { locale: elementLocale });
+Vue.use(VueThinModal, {
+	autoMountPortal: false
+});
 
 // Register global directives
 require('./common/views/directives');

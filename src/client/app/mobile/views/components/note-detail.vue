@@ -75,6 +75,13 @@
 	<div class="replies" v-if="!compact">
 		<x-sub v-for="note in replies" :key="note.id" :note="note"/>
 	</div>
+
+	<modal name="replyForm">
+		<mk-post-form @posted="replyFormClosed" @cancel="replyFormClosed" :reply="p"/>
+	</modal>
+	<modal name="renoteForm">
+		<mk-post-form @posted="renoteFormClosed" @cancel="renoteFormClosed" :renote="p"/>
+	</modal>
 </div>
 </template>
 
@@ -116,9 +123,11 @@ export default Vue.extend({
 				this.note.mediaIds.length == 0 &&
 				this.note.poll == null);
 		},
+
 		p(): any {
 			return this.isRenote ? this.note.renote : this.note;
 		},
+
 		reactionsCount(): number {
 			return this.p.reactionCounts
 				? Object.keys(this.p.reactionCounts)
@@ -126,6 +135,7 @@ export default Vue.extend({
 					.reduce((a, b) => a + b)
 				: 0;
 		},
+
 		urls(): string[] {
 			if (this.p.text) {
 				const ast = parse(this.p.text);
@@ -180,16 +190,23 @@ export default Vue.extend({
 				this.conversation = conversation.reverse();
 			});
 		},
+
 		reply() {
-			(this as any).apis.post({
-				reply: this.p
-			});
+			this.$modal.push('replyForm');
 		},
+
+		replyFormClosed() {
+			this.$modal.pop();
+		},
+
 		renote() {
-			(this as any).apis.post({
-				renote: this.p
-			});
+			this.$modal.push('renoteForm');
 		},
+
+		renoteFormClosed() {
+			this.$modal.pop();
+		},
+
 		react() {
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
@@ -198,6 +215,7 @@ export default Vue.extend({
 				big: true
 			});
 		},
+
 		menu() {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,

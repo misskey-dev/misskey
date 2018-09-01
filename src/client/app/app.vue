@@ -1,3 +1,6 @@
 <template>
-<router-view id="app"></router-view>
+<div>
+	<router-view id="app"></router-view>
+	<modal-portal/>
+</div>
 </template>

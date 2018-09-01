@@ -42,6 +42,10 @@
 			<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 		</div>
 	</main>
+
+	<modal name="postForm">
+		<mk-post-form @posted="postFormClosed" @cancel="postFormClosed"/>
+	</modal>
 </mk-ui>
 </template>
 
@@ -107,7 +111,11 @@ export default Vue.extend({
 
 	methods: {
 		fn() {
-			(this as any).apis.post();
+			this.$modal.push('postForm');
+		},
+
+		postFormClosed() {
+			this.$modal.pop();
 		},
 
 		saveSrc() {

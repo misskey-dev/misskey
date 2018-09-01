@@ -48,7 +48,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-drive-file-chooser
 	position fixed
-	z-index 2048
+	z-index 20000
 	top 0
 	left 0
 	width 100%

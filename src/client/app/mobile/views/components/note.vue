@@ -60,6 +60,13 @@
 			</footer>
 		</div>
 	</article>
+
+	<modal name="replyForm">
+		<mk-post-form @posted="replyFormClosed" @cancel="replyFormClosed" :reply="p"/>
+	</modal>
+	<modal name="renoteForm">
+		<mk-post-form @posted="renoteFormClosed" @cancel="renoteFormClosed" :renote="p"/>
+	</modal>
 </div>
 </template>
 
@@ -195,15 +202,19 @@ export default Vue.extend({
 		},
 
 		reply() {
-			(this as any).apis.post({
-				reply: this.p
-			});
+			this.$modal.push('replyForm');
+		},
+
+		replyFormClosed() {
+			this.$modal.pop();
 		},
 
 		renote() {
-			(this as any).apis.post({
-				renote: this.p
-			});
+			this.$modal.push('renoteForm');
+		},
+
+		renoteFormClosed() {
+			this.$modal.pop();
 		},
 
 		react() {
