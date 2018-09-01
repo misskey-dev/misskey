@@ -159,11 +159,9 @@ export default Vue.extend({
 				canPutEverywhere: this.game.settings.canPutEverywhere,
 				loopedBoard: this.game.settings.loopedBoard
 			});
-			this.logs.forEach((log, i) => {
-				if (i < v) {
-					this.o.put(log.color, log.pos);
-				}
-			});
+			for (const log of this.logs.slice(0, v)) {
+				this.o.put(log.color, log.pos);
+			}
 			this.$forceUpdate();
 		}
 	},
