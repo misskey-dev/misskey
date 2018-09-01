@@ -291,7 +291,9 @@ export async function updatePerson(uri: string, resolver?: Resolver): Promise<vo
 			name: person.name,
 			url: person.url,
 			endpoints: person.endpoints,
-			isCat: (person as any).isCat === true ? true : false
+			isBot: object.type == 'Service',
+			isCat: (person as any).isCat === true ? true : false,
+			isLocked: person.manuallyApprovesFollowers
 		}
 	});
 }
