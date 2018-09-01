@@ -205,13 +205,7 @@ export default class Reversi {
 	 * 打つことができる場所を取得します
 	 */
 	public canPutSomewhere(color: Color): number[] {
-		const result: number[] = [];
-
-		this.board.forEach((x, i) => {
-			if (this.canPut(color, i)) result.push(i);
-		});
-
-		return result;
+		return Array.from(this.board.keys()).filter(i => this.canPut(color, i));
 	}
 
 	/**
