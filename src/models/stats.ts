@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 
 const Stats = db.get<IStats>('stats');
-Stats.dropIndex({ date: -1 }); // 後方互換性のため
+Stats.dropIndex({ date: -1 } as any); // 後方互換性のため
 Stats.createIndex({ span: -1, date: -1 }, { unique: true });
 export default Stats;
 
