@@ -3,7 +3,7 @@
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<div class="stream">
+	<div class="body">
 		<p class="init" v-if="init">%fa:spinner .spin%%i18n:common.loading%</p>
 		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:@empty%</p>
 		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:@no-history%</p>
@@ -77,6 +77,12 @@ export default Vue.extend({
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
+		if (this.isNaked) {
+			window.addEventListener('scroll', this.onScroll, { passive: true });
+		} else {
+			this.$el.addEventListener('scroll', this.onScroll, { passive: true });
+		}
+
 		document.addEventListener('visibilitychange', this.onVisibilitychange);
 
 		this.fetchMessages().then(() => {
@@ -89,6 +95,12 @@ export default Vue.extend({
 		this.connection.off('message', this.onMessage);
 		this.connection.off('read', this.onRead);
 		this.connection.close();
+
+		if (this.isNaked) {
+			window.removeEventListener('scroll', this.onScroll);
+		} else {
+			this.$el.removeEventListener('scroll', this.onScroll);
+		}
 
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
@@ -226,6 +238,14 @@ export default Vue.extend({
 			}, 4000);
 		},
 
+		onScroll() {
+			const el = this.isNaked ? window.document.documentElement : this.$el;
+			const current = el.scrollTop + el.clientHeight;
+			if (current > el.scrollHeight - 1) {
+				this.showIndicator = false;
+			}
+		},
+
 		onVisibilitychange() {
 			if (document.hidden) return;
 			this.messages.forEach(message => {
@@ -251,7 +271,7 @@ root(isDark)
 	height 100%
 	background isDark ? #191b22 : #fff
 
-	> .stream
+	> .body
 		width 100%
 		max-width 600px
 		margin 0 auto
