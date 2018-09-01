@@ -5,24 +5,13 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 
-const loadLang = lang => yaml.safeLoad(
-	fs.readFileSync(`${__dirname}/${lang}.yml`, 'utf-8'));
+const langs = ['de-DE', 'en-US', 'fr-FR', 'ja-JP', 'ja-KS', 'pl-PL', 'es-ES'];
+const nativeLang = 'ja-JP';
 
-const native = loadLang('ja-JP');
+const loadLocale = lang => yaml.safeLoad(fs.readFileSync(`${__dirname}/${lang}.yml`, 'utf-8'));
+const nativeLocale = loadLocale(nativeLang);
+const fallbackToNativeLocale = locale => Object.assign({}, nativeLocale, locale);
+const makeLocale = lang => lang == nativeLang ? nativeLocale : fallbackToNativeLocale(loadLocale(lang));
+const locales = langs.map(lang => ({ [lang]: makeLocale(lang) }));
 
-const langs = {
-	'de-DE': loadLang('de-DE'),
-	'en-US': loadLang('en-US'),
-	'fr-FR': loadLang('fr-FR'),
-	'ja-JP': native,
-	'ja-KS': loadLang('ja-KS'),
-	'pl-PL': loadLang('pl-PL'),
-	'es-ES': loadLang('es-ES')
-};
-
-Object.values(langs).forEach(locale => {
-	// Extend native language (Japanese)
-	locale = Object.assign({}, native, locale);
-});
-
-module.exports = langs;
+module.exports = locales.reduce((a, b) => ({ ...a, ...b }));
