@@ -61,10 +61,10 @@
 		</div>
 	</article>
 
-	<modal name="replyForm">
+	<modal :name="replyFormId">
 		<mk-post-form @posted="replyFormClosed" @cancel="replyFormClosed" :reply="p"/>
 	</modal>
-	<modal name="renoteForm">
+	<modal :name="renoteFormId">
 		<mk-post-form @posted="renoteFormClosed" @cancel="renoteFormClosed" :renote="p"/>
 	</modal>
 </div>
@@ -72,6 +72,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as uuid from 'uuid';
 import parse from '../../../../../mfm/parse';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
@@ -89,7 +90,9 @@ export default Vue.extend({
 		return {
 			showContent: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			replyFormId: uuid(),
+			renoteFormId: uuid()
 		};
 	},
 
@@ -202,7 +205,7 @@ export default Vue.extend({
 		},
 
 		reply() {
-			this.$modal.push('replyForm');
+			this.$modal.push(this.replyFormId);
 		},
 
 		replyFormClosed() {
@@ -210,7 +213,7 @@ export default Vue.extend({
 		},
 
 		renote() {
-			this.$modal.push('renoteForm');
+			this.$modal.push(this.renoteFormId);
 		},
 
 		renoteFormClosed() {
