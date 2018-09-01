@@ -5,7 +5,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
-import VModal from 'vue-js-modal';
 import * as TreeView from 'vue-json-tree-view';
 import VAnimateCss from 'v-animate-css';
 import Element from 'element-ui';
@@ -28,7 +27,6 @@ switch (lang) {
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
-Vue.use(VModal);
 Vue.use(TreeView);
 Vue.use(VAnimateCss);
 Vue.use(Element, { locale: elementLocale });
