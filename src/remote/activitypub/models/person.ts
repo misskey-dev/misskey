@@ -293,7 +293,12 @@ export async function updatePerson(uri: string, resolver?: Resolver): Promise<vo
 			endpoints: person.endpoints,
 			isBot: object.type == 'Service',
 			isCat: (person as any).isCat === true ? true : false,
-			isLocked: person.manuallyApprovesFollowers
+			isLocked: person.manuallyApprovesFollowers,
+			createdAt: Date.parse(person.published) || null,
+			publicKey: {
+				id: person.publicKey.id,
+				publicKeyPem: person.publicKey.publicKeyPem
+			},
 		}
 	});
 }
