@@ -1,5 +1,5 @@
 <template>
-<div class="friends">
+<div class="hozptpaliadatkehcmcayizwzwwctpbc">
 	<p class="title">%fa:users%%i18n:@title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
@@ -41,7 +41,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-.friends
 	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
@@ -113,10 +112,10 @@ root(isDark)
 			top 16px
 			right 16px
 
-.friends[data-darkmode]
+.hozptpaliadatkehcmcayizwzwwctpbc[data-darkmode]
 	root(true)
 
-.friends:not([data-darkmode])
+.hozptpaliadatkehcmcayizwzwwctpbc:not([data-darkmode])
 	root(false)
 
 </style>

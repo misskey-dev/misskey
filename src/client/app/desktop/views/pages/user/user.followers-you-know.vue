@@ -1,5 +1,5 @@
 <template>
-<div class="followers-you-know">
+<div class="vahgrswmbzfdlmomxnqftuueyvwaafth">
 	<p class="title">%fa:users%%i18n:@title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
@@ -37,7 +37,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-.followers-you-know
 	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
@@ -77,5 +76,11 @@ root(isDark)
 
 		> i
 			margin-right 4px
+
+.vahgrswmbzfdlmomxnqftuueyvwaafth[data-darkmode]
+	root(true)
+
+.vahgrswmbzfdlmomxnqftuueyvwaafth:not([data-darkmode])
+	root(false)
 
 </style>

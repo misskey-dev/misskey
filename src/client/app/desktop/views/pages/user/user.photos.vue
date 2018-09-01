@@ -1,5 +1,5 @@
 <template>
-<div class="photos">
+<div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
 	<p class="title">%fa:camera%%i18n:@title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
@@ -40,7 +40,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-.photos
 	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
@@ -88,10 +87,10 @@ root(isDark)
 		> i
 			margin-right 4px
 
-.photos[data-darkmode]
+.dzsuvbsrrrwobdxifudxuefculdfiaxd[data-darkmode]
 	root(true)
 
-.photos:not([data-darkmode])
+.dzsuvbsrrrwobdxifudxuefculdfiaxd:not([data-darkmode])
 	root(false)
 
 </style>
