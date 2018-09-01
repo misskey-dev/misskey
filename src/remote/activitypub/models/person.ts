@@ -139,6 +139,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			avatarId: null,
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
+			updatedAt: new Date(),
 			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,
