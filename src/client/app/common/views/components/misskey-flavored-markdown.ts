@@ -205,17 +205,8 @@ export default Vue.component('misskey-flavored-markdown', {
 			}
 		}));
 
-		const _els = [];
-		els.forEach((el, i) => {
-			if (el.tag == 'br') {
-				if (!['div', 'pre'].includes(els[i - 1].tag)) {
-					_els.push(el);
-				}
-			} else {
-				_els.push(el);
-			}
-		});
-
+		// el.tag === 'br' のとき i !== 0 が保証されるため、短絡評価により els[i - 1] は配列外参照しない
+		const _els = els.filter((el, i) => !(el.tag === 'br' && ['div', 'pre'].includes(els[i - 1].tag)));
 		return createElement('span', _els);
 	}
 });
