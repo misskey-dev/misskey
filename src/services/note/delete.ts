@@ -5,8 +5,9 @@ import renderDelete from '../../remote/activitypub/renderer/delete';
 import pack from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import Following from '../../models/following';
-import renderNote from '../../remote/activitypub/renderer/note';
+import renderTombstone from '../../remote/activitypub/renderer/tombstone';
 import { updateNoteStats } from '../update-chart';
+import config from '../../config';
 
 /**
  * 投稿を削除します。
@@ -32,7 +33,7 @@ export default async function(user: IUser, note: INote) {
 
 	//#region ローカルの投稿なら削除アクティビティを配送
 	if (isLocalUser(user)) {
-		const content = pack(renderDelete(await renderNote(note), user));
+		const content = pack(renderDelete(renderTombstone(`${config.url}/notes/${note._id}`), user));
 
 		const followings = await Following.find({
 			followeeId: user._id,
