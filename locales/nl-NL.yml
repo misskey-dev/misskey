@@ -1,0 +1,810 @@
+meta:
+  lang: Engels
+  divider: ''
+common:
+  misskey: Deel alles met anderen die ook Misskey gebruiken.
+  time:
+    unknown: onbekend
+    future: toekomstig
+    just_now: zojuist
+    seconds_ago: '{}s geleden'
+    minutes_ago: '{}m geleden'
+    hours_ago: '{}u geleden'
+    days_ago: '{}d geleden'
+    weeks_ago: '{}week/weken geleden'
+    months_ago: '{}maand(en) geleden'
+    years_ago: '{}jaar geleden'
+  weekday-short:
+    sunday: Z
+    monday: M
+    tuesday: D
+    wednesday: W
+    thursday: D
+    friday: V
+    saturday: Z
+  reactions:
+    like: Leuk
+    love: Geweldig
+    laugh: Grappig
+    hmm: Eh...?
+    surprise: Wauw
+    congrats: Gefeliciteerd!
+    angry: Boos
+    confused: Verward
+    pudding: Pudding
+  delete: Verwijderen
+  loading: Bezig met laden
+  ok: Oké
+  update-available: 'Er is een nieuwe versie van Misskey beschikbaar: {newer} (de
+    huidige versie is {current}). Herlaad de pagina om de update toe te passen.'
+  my-token-regenerated: Je sleutel is gegenereerd; je wordt nu uitgelogd.
+common/views/components/connect-failed.vue:
+  title: Verbinden met server mislukt
+  description: Er is een probleem met je internetverbinding, de server ligt plat of
+    er wordt aan gewerkt. {Probeer} het later opnieuw.
+  thanks: Bedankt voor het gebruiken van Misskey.
+  troubleshoot: Probleemoplossing
+common/views/components/connect-failed.troubleshooter.vue:
+  title: Probleemoplossing
+  network: Netwerkverbinding
+  checking-network: Bezig met controleren van netwerkverbinding
+  internet: Internetverbinding
+  checking-internet: Bezig met controleren van internetverbinding
+  server: Serververbinding
+  checking-server: Bezig met controleren van serververbinding
+  finding: Bezig met vaststellen van probleem
+  no-network: Er is geen internetverbinding
+  no-network-desc: Zorg ervoor dat je verbonden bent met een netwerk.
+  no-internet: Er is geen internetverbinding
+  no-internet-desc: Zorg ervoor dat je verbonden bent met het internet.
+  no-server: Verbinden met Misskey-server mislukt
+  no-server-desc: De netwerkverbinding van je computer is goed, maar er kan geen verbinding
+    worden gemaakt met de Misskey-server. Het kan dat de server plat ligt of dat eraan
+    wordt gewerkt. Probeer het later opnieuw.
+  success: Verbonden met de Misskey-server
+  success-desc: Het verbinden lijkt te lukken. Herlaad de pagina.
+  flush: Cache leegmaken
+  set-version: Versie opgeven
+common/views/components/messaging.vue:
+  search-user: Gebruiker zoeken
+  you: Jij
+  no-history: Geen geschiedenis
+common/views/components/messaging-room.vue:
+  empty: Geen gesprekken
+  more: Meer
+  no-history: Er is geen verdere geschiedenis
+  resize-form: Versleep om grootte te wijzigen
+  new-message: Nieuw bericht
+common/views/components/messaging-room.form.vue:
+  input-message-here: Voer hier je bericht in
+  send: Versturen
+  attach-from-local: Bestanden bijvoegen van je computer
+  attach-from-drive: Bestanden bijvoegen van je Drive
+common/views/components/messaging-room.message.vue:
+  is-read: Gelezen
+  deleted: Dit bericht is verwijderd
+common/views/components/nav.vue:
+  about: Over
+  stats: Statistieken
+  status: Status
+  wiki: Wiki
+  donors: Donateurs
+  repository: Broncode
+  develop: Ontwikkelaars
+  feedback: Feedback
+common/views/components/note-menu.vue:
+  favorite: Deze notitie toevoegen aan favorieten
+  pin: Vastmaken aan profielpagina
+  remote: Origineel tonen
+common/views/components/poll.vue:
+  vote-to: Stemmen op '{}'
+  vote-count: '{} stemmen'
+  total-users: '{} gebruikers hebben gestemd'
+  vote: Stemmen
+  show-result: Resultaten tonen
+  voted: Gestemd
+common/views/components/poll-editor.vue:
+  no-only-one-choice: Je moet twee of meer keuzes invoeren.
+  choice-n: Keuze {}
+  remove: Deze keuze verwijderen
+  add: + Keuze toevoegen
+  destroy: Deze peiling vernietigen
+common/views/components/reaction-picker.vue:
+  choose-reaction: Kies een reactie
+common/views/components/signin.vue:
+  username: Gebruikersnaam
+  password: Wachtwoord
+  token: Sleutel
+  signing-in: Bezig met inloggen...
+  signin: Inloggen
+common/views/components/signup.vue:
+  username: Gebruikersnaam
+  checking: Bezig met controleren...
+  available: Beschikbaar
+  unavailable: Niet beschikbaar
+  error: Netwerkfout
+  invalid-format: Gebruik alleen letters, cijfers en -.
+  too-short: Voer minimaal 1 teken in!
+  too-long: Voer maximaal 20 tekens in.
+  password: Wachtwoord
+  password-placeholder: Wij raden aan meer dan 8 tekens te gebruiken.
+  weak-password: Zwak
+  normal-password: '''t Ken net'
+  strong-password: Sterk
+  retype: Opnieuw invoeren
+  retype-placeholder: Wachtwoord bevestigen
+  password-matched: Oké
+  password-not-matched: Komt niet overeen
+  recaptcha: Verifiëren
+  create: Account creëren
+  some-error: Het creëren van een account is mislukt. Probeer het opnieuw.
+common/views/components/special-message.vue:
+  new-year: Gelukkig nieuwjaar!
+  christmas: Fijne kerstdagen!
+common/views/components/stream-indicator.vue:
+  connecting: Bezig met verbinden
+  reconnecting: Bezig met herverbinden
+  connected: Verbonden
+common/views/components/twitter-setting.vue:
+  description: Als je je Twitter-account verbindt met je Misskey-account, dan kun
+    je je Twitter-accountinformatie terugzien op je profiel en kun je inloggen met
+    Twitter.
+  connected-to: Je bent verbonden met dit Twitter-account
+  detail: Details...
+  reconnect: Opnieuw verbinden
+  connect: Koppel je Twitter-account
+  disconnect: Verbinding verbreken
+common/views/components/uploader.vue:
+  waiting: Bezig met wachten
+common/views/widgets/broadcast.vue:
+  fetching: Bezig met ophalen
+  no-broadcasts: Geen uitzendingen
+  have-a-nice-day: Fijne dag!
+  next: Volgende
+common/views/widgets/donation.vue:
+  title: Donatie
+  text: Om Misskey draaiende te houden, geven we geld uit aan onze domeinnaam, servers,
+    enz. We maken hier geen winst op, dus we zouden het fijn vinden als je een donatie
+    wilt doen. Neem in dat geval contact op via {}. Bedankt voor je bijdrage!
+common/views/widgets/photo-stream.vue:
+  title: Fotostream
+  no-photos: Geen foto's
+common/views/widgets/server.vue:
+  title: Serverinformatie
+  toggle: Schakelen tussen weergaven
+common/views/widgets/visibility-chooser.vue:
+  public: Openbaar
+  home: Start
+  home-desc: Alleen plaatsen op de start-tijdlijn
+  followers: Volgers
+  followers-desc: Alleen delen met volgers
+  specified: Direct
+  specified-desc: Alleen delen met opgegeven gebruikers
+  private: Privé
+desktop/views/components/activity.chart.vue:
+  total: Zwart ... totaal
+  notes: Blauw ... notities
+  replies: Rood ... antwoorden
+  renotes: Groen ... gedeelde notities
+desktop/views/components/activity.vue:
+  title: Activiteit
+  toggle: Schakelen tussen weergaven
+desktop/views/components/calendar.vue:
+  title: '{1} / {2}'
+  prev: Vorige maand
+  next: Volgende maand
+  go: Klik om te navigeren
+desktop/views/components/choose-file-from-drive-window.vue:
+  choose-file: Bestanden kiezen
+  upload: Bestanden uploaden van je computer
+  cancel: Annuleren
+  ok: Oké
+  choose-prompt: Kies een bestand
+desktop/views/components/choose-folder-from-drive-window.vue:
+  cancel: Annuleren
+  ok: Oké
+  choose-prompt: Kies een map
+desktop/views/components/crop-window.vue:
+  skip: Bijsnijden overslaan
+  cancel: Annuleren
+  ok: Oké
+desktop/views/components/drive-window.vue:
+  used: gebruikt
+  drive: Drive
+desktop/views/components/drive.file.vue:
+  avatar: Gebruikersafbeelding
+  banner: Omslagfoto
+  contextmenu:
+    rename: Naam wijzigen
+    copy-url: URL kopiëren
+    download: Downloaden
+    else-files: Overig
+    set-as-avatar: Instellen als gebruikersafbeelding
+    set-as-banner: Instellen als omslagfoto
+    open-in-app: Openen in app
+    add-app: App toevoegen
+    rename-file: Bestandsnaam wijzigen
+    input-new-file-name: Voer een nieuwe naam in
+    copied: Gekopieerd
+    copied-url-to-clipboard: URL gekopieerd naar klembord
+desktop/views/components/drive.folder.vue:
+  unable-to-process: De operatie kan niet worden voltooid.
+  circular-reference-detected: De bestemmingsmap is een submap van de map die je wilt
+    verplaatsen.
+  unhandled-error: Onbekende fout
+  contextmenu:
+    move-to-this-folder: Verplaatsen naar deze map
+    show-in-new-window: Openen in nieuw venster
+    rename: Naam wijzigen
+    rename-folder: Mapnaam wijzigen
+    input-new-folder-name: Voer een nieuwe naam in
+desktop/views/components/drive.nav-folder.vue:
+  drive: Drive
+desktop/views/components/drive.vue:
+  search: Zoeken
+  load-more: Meer laden
+  empty-draghover: Welkom!
+  empty-drive: Je schijf is leeg
+  empty-drive-description: Je kunt ook uploaden door te klikken met de rechtermuisknop
+    en te kiezen voor "Bestand uploaden" of door een bestand naar dit venster te slepen.
+  empty-folder: Deze map is leeg
+  unable-to-process: De operatie kan niet worden voltooid.
+  circular-reference-detected: De bestemmingsmap is een submap van de te verplaatsen
+    map.
+  unhandled-error: Onbekende fout
+  url-upload: Uploaden via URL
+  url-of-file: URL van het te uploaden bestand
+  url-upload-requested: Uploadverzoek
+  may-take-time: Het kan even duren voordat het uploaden voltooid is.
+  create-folder: Map creëren
+  folder-name: Mapnaam
+  contextmenu:
+    create-folder: Map creëren
+    upload: Bestand uploaden
+    url-upload: Uploaden via URL
+desktop/views/components/follow-button.vue:
+  unfollow: Ontvolgen
+  follow: Volgen
+desktop/views/components/followers-window.vue:
+  followers: Volgers van {}
+desktop/views/components/followers.vue:
+  empty: Het lijkt erop dat je geen volgers hebt.
+desktop/views/components/following-window.vue:
+  following: Volgend {}
+desktop/views/components/following.vue:
+  empty: Je volgt niemand.
+desktop/views/components/friends-maker.vue:
+  title: 'Aanbevolen gebruikers:'
+  empty: Er zijn geen vergelijkbare gebruikers gevonden.
+  fetching: Bezig met laden…
+  refresh: Meer
+  close: Sluiten
+desktop/views/components/game-window.vue:
+  game: Othello
+desktop/views/components/home.vue:
+  done: Versturen
+  add-widget: 'Widget toevoegen:'
+  profile: Profiel
+  calendar: Kalender
+  timemachine: Kalender (tijdmachine)
+  activity: Activiteit
+  rss: RSS-lezer
+  trends: Populair
+  photostream: Fotostream
+  slideshow: Diavoorstelling
+  version: Versie
+  broadcast: Uitzenden
+  notifications: Meldingen
+  users: Aanbevolen gebruikers
+  polls: Peilingen
+  post-form: Formulier
+  messaging: Gesprekken
+  server: Serverinformatie
+  donation: Donatie
+  nav: Navigatie
+  tips: Tips
+  add: Toevoegen
+desktop/views/input-dialog.vue:
+  cancel: Annuleren
+  ok: Oké
+desktop/views/components/messaging-room-window.vue:
+  title: 'Berichten:'
+desktop/views/components/messaging-window.vue:
+  title: Gesprekken
+desktop/views/components/note-detail.vue:
+  more: Meer gesprekken laden
+  private: (dit bericht is privé)
+  is-renote: がRenote
+  location: Locatie
+  renote: Renote
+  add-reaction: リアクション
+desktop/views/components/note-detail.sub.vue:
+  private: (dit bericht is privé)
+desktop/views/components/notes.note.vue:
+  reposted-by: Hergeplaatst door {}
+  reply: Antwoord
+  renote: Renote
+  add-reaction: Reactie toevoegen
+  detail: Details tonen
+desktop/views/components/notes.vue:
+  error: Laden mislukt.
+  retry: Opnieuw proberen
+desktop/views/components/notifications.vue:
+  more: Meer
+  empty: Geen meldingen
+desktop/views/components/post-form.vue:
+  note-placeholder: Hoe gaat het ermee?
+  reply-placeholder: Deze notitie beantwoorden...
+  quote-placeholder: Deze notitie citeren...
+  note: Plaatsen
+  reply: Beantwoorden
+  renote: Renote
+  posted: Geplaatst!
+  replied: Beantwoord!
+  reposted: Hergeplaatst!
+  note-failed: Noteren mislukt
+  reply-failed: Beantwoorden mislukt
+  renote-failed: Renote mislukt
+  posting: Bezig met plaatsen
+  attach-media-from-local: Media bijvoegen van je computer
+  attach-media-from-drive: Media bijvoegen uit je Drive
+  attach-cancel: Bijlage annuleren
+  insert-a-kao: v(‘ω’)v
+  create-poll: Peiling creëren
+  text-remain: '{} resterende tekens'
+desktop/views/components/post-form-window.vue:
+  note: Nieuwe notitie
+  reply: Beantwoorden
+  attaches: '{} media bijgevoegd'
+  uploading-media: Bezig met uploaden van media {}
+desktop/views/components/progress-dialog.vue:
+  waiting: Bezig met wachten
+desktop/views/components/renote-form.vue:
+  quote: Citeren...
+  cancel: Annuleren
+  renote: Renote
+  reposting: Bezig met herplaatsen...
+  success: Hergeplaatst!
+  failure: Renote mislukt
+desktop/views/components/renote-form-window.vue:
+  title: Weet je zeker dat je deze notitie wilt renoten?
+desktop/views/components/settings.vue:
+  profile: Profiel
+  notification: Melding
+  apps: Apps
+  mute: Dempen
+  drive: Drive
+  security: Beveiliging
+  signin: Inloggeschiedenis
+  password: Wachtwoord
+  2fa: Authenticatie in twee stappen
+  other: Overig
+  license: Licentie
+  behaviour: Gedrag
+  fetch-on-scroll: Ophalen bij scrollen
+  fetch-on-scroll-desc: Als je omlaag scrolt, wordt de rest van de inhoud automatisch
+    opgehaald.
+  auto-popout: Venster automatisch uitvouwen
+  auto-popout-desc: Venster uitvouwen, indien mogelijk. Deze instelling wordt opgeslagen
+    in je browser.
+  advanced: Geavanceerde instellingen
+  api-via-stream: API-verzoek via stream
+  api-via-stream-desc: API-verzoek wordt uitgevoerd via de WebSocket-verbinding i.p.v.
+    de ingebouwde ophaal-API (voor verbeterde prestaties). Deze instelling wordt opgeslagen
+    in je browser.
+  display: Ontwerp en weergave
+  customize: Startpagina aanpassen
+  dark-mode: Donkere modus
+  circle-icons: Ronde pictogrammen gebruiken
+  gradient-window-header: Kleurverloop gebruiken op vensterkoppen
+  post-form-on-timeline: Berichtformulier boven de tijdlijn tonen
+  show-reply-target: Antwoord-knop tonen
+  show-my-renotes: Mijn renote tonen op de tijdlijn
+  show-renoted-my-notes: Mijn gerenote bericht tonen op de tijdlijn
+  show-maps: Kaart tonen
+  show-maps-desc: Kaart van bijgevoegde locatie tonen.
+  sound: Geluid
+  enable-sounds: Geluid inschakelen
+  enable-sounds-desc: Een geluid afspelen bij het ontvangen van een bericht. Deze
+    instelling wordt opgeslagen in je browser.
+  volume: Volume
+  test: Testen
+  mobile: Mobiel
+  disable-via-mobile: Berichten niet markeren als 'via mobiel'
+  language: Taal
+  pick-language: Selecteer een taal
+  recommended: Aanbevolen
+  auto: Automatisch
+  specify-language: Taal opgeven
+  language-desc: Je moet de pagina herladen om de wijzigingen toe te passen.
+  cache: Cache
+  clean-cache: Opschonen
+  cache-warn: De cache van je accountinformatie/berichten/antwoorden/instellingen
+    wordt verwijderd. Je moet de pagina herladen na het opschonen.
+  cache-cleared: Cache opgeschoond
+  cache-cleared-desc: Herlaad de pagina.
+  auto-watch: Automatisch volgen
+  auto-watch-desc: Automatisch meldingen ontvangen over het bericht/antwoord.
+  about: Over Misskey
+  operator: De administrator van deze instantie
+  update: Misskey-update
+  version: 'Versie:'
+  latest-version: 'Nieuwste versie:'
+  update-checking: Bezig met controleren op updates
+  do-update: Controleren op updates
+  update-settings: Geavanceerde instellingen
+  prevent-update: Updates uitstellen (niet aanbevolen)
+  prevent-update-desc: De instelling is alleen van toepassing op dit apparaat.
+  no-updates: Geen updates beschikbaar
+  no-updates-desc: Je Misskey is bijgewerkt.
+  update-available: Nieuwe versie beschikbaar!
+  update-available-desc: Herlaad de pagina om de updates toe te passen.
+  advanced-settings: Geavanceerd
+  debug-mode: Foutopsporingsmodus inschakelen
+  debug-mode-desc: Deze instelling wordt opgeslagen in de browser.
+  experimental: Experimentele functies inschakelen
+  experimental-desc: Dit maakt Misskey instabiel. Deze instelling wordt opgeslagen
+    in de browser.
+  tools: Hulpmiddelen
+  task-manager: Taakbeheer
+  third-parties: Derde partij
+desktop/views/components/settings.2fa.vue:
+  intro: 'Als je verificatie in twee stappen instelt, dan heb je niet alleen een wachtwoord
+    nodig bij het inloggen, maar ook een geregistreerd fysiek apparaat (zoals je smartphone).
+    Dit verhoogt de veiligheid. '
+  detail: Details bekijken...
+  url: https://www.google.com/landing/2step/
+  caution: Als je geen toegang meer hebt tot je apparaat, dan kun je niet meer verbinden
+    met Misskey!
+  register: Apparaat registreren
+  already-registered: Er is al een apparaat geregistreerd
+  unregister: Uitschakelen
+  unregistered: Authenticatie in twee stappen is uitgeschakeld.
+  enter-password: Voer het wachtwoord in
+  authenticator: 'Installeer eerst Google Authenticator op je apparaat:'
+  howtoinstall: Hoe installeer ik dit?
+  scan: 'Scan daarna de QR-code:'
+  done: 'Voer de op je apparaat getoonde sleutel in:'
+  submit: Versturen
+  success: Instellen voltooid!
+  failed: Instellen mislukt. Zorg ervoor dat de sleutel juist is.
+  info: Vanaf nu moet je ook de op je apparaat getoonde sleutel tonen bij het inloggen
+    op Misskey.
+desktop/views/components/settings.api.vue:
+  intro: Als je toegang wilt tot de API, stel deze sleutel dan in als 'i' bij de verzoekparameters.
+  caution: Laat deze sleutel niet zien aan derde partijen (en voer hem nergens anders
+    in dan hier), anders kan je account gehackt worden.
+  regeneration-of-token: Mocht deze sleutel tóch uitlekken, dan kun je hem opnieuw
+    genereren.
+  regenerate-token: Sleutel opnieuw genereren
+  token: 'Sleutel:'
+  enter-password: Voer je wachtwoord in
+desktop/views/components/settings.app.vue:
+  no-apps: Geen geautoriseerde apps
+desktop/views/components/settings.mute.vue:
+  no-users: Geen gedempte gebruikers
+desktop/views/components/settings.password.vue:
+  reset: Wachtwoord wijzigen
+  enter-current-password: Voer je huidige wachtwoord in
+  enter-new-password: Voer je nieuwe wachtwoord in
+  enter-new-password-again: Voer je nieuwe wachtwoord nogmaals in
+  not-match: Het nieuwe wachtwoord komt niet overeen
+  changed: Wachtwoord bijgewerkt
+desktop/views/components/settings.profile.vue:
+  avatar: Gebruikersafbeelding
+  choice-avatar: Kies een afbeelding
+  name: Naam
+  location: Locatie
+  description: Omschrijving
+  birthday: Geboortedatum
+  save: Profiel bijwerken
+  is-bot: Dit account is een Bot
+  is-cat: Dit account is een Kat
+desktop/views/components/sub-note-content.vue:
+  hidden: (dit bericht is privé)
+  media: ' media'
+  poll: Peilingen
+desktop/views/components/taskmanager.vue:
+  title: Taakbeheer
+desktop/views/components/timeline.vue:
+  home: Startpagina
+  local: Lokaal
+  global: Algemeen
+  list: Lijsten
+desktop/views/components/ui.header.account.vue:
+  profile: Je profiel
+  drive: Drive
+  favorites: Favorieten
+  lists: Lijsten
+  customize: Aanpassen
+  settings: Instellingen
+  signout: Uitloggen
+  dark: Donkere modus
+desktop/views/components/ui.header.nav.vue:
+  home: Startpagina
+  messaging: Berichten
+  game: Othello spelen
+desktop/views/components/ui.header.notifications.vue:
+  title: Meldingen
+desktop/views/components/ui.header.post.vue:
+  post: Nieuw bericht opstellen
+desktop/views/components/ui.header.search.vue:
+  placeholder: Zoeken
+desktop/views/components/user-lists-window.vue:
+  create-list: Lijst creëren
+desktop/views/components/user-preview.vue:
+  notes: Berichten
+  following: Volgend
+  followers: Volgers
+desktop/views/components/users-list.vue:
+  all: Alle
+  iknow: die ik ken
+  load-more: Meer
+  fetching: Bezig met laden…
+desktop/views/components/users-list-item.vue:
+  followed: Volgt jou
+desktop/views/components/window.vue:
+  popout: Uitvouwen
+  close: Sluiten
+desktop/views/pages/welcome.vue:
+  signin: Inloggen
+  signup: Registreren
+  signin-button: Inloggen
+  signup-button: Registreren
+  timeline: Tijdlijn
+desktop/views/pages/drive.vue:
+  title: Misskey Drive
+desktop/views/pages/favorites.vue:
+  more: Meer laden
+desktop/views/pages/home-customize.vue:
+  title: Startpagina aanpassen
+desktop/views/pages/note.vue:
+  prev: Vorige notitie
+  next: Volgende notitie
+desktop/views/pages/selectdrive.vue:
+  title: Bestand(en) kiezen
+  ok: Oké
+  cancel: Annuleren
+  upload: Bestanden uploaden van je PC
+desktop/views/pages/user-list.users.vue:
+  users: Gebruiker
+  add-user: Gebruiker toevoegen
+  username: Gebruikersnaam
+desktop/views/pages/user/user.followers-you-know.vue:
+  title: Volgers die je kent
+  loading: Bezig met laden
+  no-users: Geen gebruikers
+desktop/views/pages/user/user.friends.vue:
+  title: Frequent beantwoord
+  loading: Bezig met laden
+  no-users: Geen gebruikers
+desktop/views/pages/user/user.header.vue:
+  is-suspended: Dit account is geschorst.
+  is-remote: 'Deze gebruiker is een externe gebruiker; de informatie is daarom niet
+    volledig. '
+  view-remote: Volledige informatie bekijken
+desktop/views/pages/user/user.home.vue:
+  last-used-at: 'Laatst actief: '
+desktop/views/pages/user/user.photos.vue:
+  title: Foto's
+  loading: Bezig met laden
+  no-photos: Geen foto's
+desktop/views/pages/user/user.profile.vue:
+  follows-you: Volgt jou
+  stalk: Stalken
+  stalking: Stalkend
+  unstalk: Stoppen met stalken
+  mute: Dempen
+  muted: Dempend
+  unmute: Ontdempen
+desktop/views/pages/user/user.timeline.vue:
+  default: Berichten
+  with-replies: Berichten en antwoorden
+  with-media: Media
+  empty: Deze gebruiker heeft nog niks geplaatst.
+desktop/views/widgets/messaging.vue:
+  title: Gesprekken
+desktop/views/widgets/notifications.vue:
+  title: Meldingen
+  settings: Instellingen
+desktop/views/widgets/polls.vue:
+  title: Peilingen
+  refresh: Anderen tonen
+  nothing: Niks
+desktop/views/widgets/post-form.vue:
+  title: Bericht
+  note: Bericht
+  placeholder: Hoe gaat het ermee?
+desktop/views/widgets/profile.vue:
+  update-banner: Klik om je omslagfoto te wijzigen
+  update-avatar: Klik om je gebruikersafbeelding te wijzigen
+desktop/views/widgets/trends.vue:
+  title: Populair
+  refresh: Anderen tonen
+  nothing: Niks
+desktop/views/widgets/users.vue:
+  title: Aanbevolen gebruikers
+  refresh: Anderen tonen
+  no-one: Niemand
+mobile/views/components/drive.vue:
+  drive: Drive
+  used: gebruikt
+  folder-count: Map(pen)
+  count-separator: ', '
+  file-count: Bestand(en)
+  load-more: Meer laden
+  nothing-in-drive: Niks
+  folder-is-empty: Deze map is leeg
+mobile/views/components/drive-file-chooser.vue:
+  select-file: Kies een bestand
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: Kies een map
+mobile/views/components/drive.file-detail.vue:
+  download: Downloaden
+  rename: Naam wijzigen
+  move: Verplaatsen
+  hash: Hash (md5)
+  exif: EXIF
+mobile/views/components/follow-button.vue:
+  follow: Volgen
+  unfollow: Ontvolgen
+mobile/views/components/note.vue:
+  reposted-by: Renote door {}
+mobile/views/components/note-detail.vue:
+  reply: Beantwoorden
+  reaction: Reactie
+mobile/views/components/notifications.vue:
+  more: Meer
+  empty: Geen meldingen
+mobile/views/components/post-form.vue:
+  submit: Plaatsen
+  reply: Antwoord
+  renote: Renote
+  renote-placeholder: Dit bericht citeren (optioneel)
+  reply-placeholder: Deze notitie beantwoorden...
+  note-placeholder: Hoe gaat het ermee?
+mobile/views/components/sub-note-content.vue:
+  media-count: '{} media'
+  poll: Peiling
+mobile/views/components/timeline.vue:
+  empty: Geen notities
+  load-more: Meer
+mobile/views/components/ui.nav.vue:
+  home: Startpagina
+  notifications: Meldingen
+  messaging: Gesprekken
+  search: Zoeken
+  drive: Drive
+  settings: Instellingen
+  about: Over Misskey
+mobile/views/components/user-timeline.vue:
+  no-notes: Het lijkt erop dat deze gebruiker nog niks heeft geplaatst
+  no-notes-with-media: Er zijn geen notities met bijgevoegde media
+  load-more: Meer
+mobile/views/components/users-list.vue:
+  all: Alles
+  known: die je kent
+  load-more: Meer
+mobile/views/pages/drive.vue:
+  drive: Drive
+mobile/views/pages/followers.vue:
+  followers-of: Volgers van {}
+mobile/views/pages/following.vue:
+  following-of: Volgenden van {}
+mobile/views/pages/home.vue:
+  timeline: Tijdlijn
+mobile/views/pages/messaging.vue:
+  messaging: Gesprekken
+mobile/views/pages/messaging-room.vue:
+  messaging: Gesprekken
+mobile/views/pages/note.vue:
+  title: Bericht
+  prev: Vorige notitie
+  next: Volgende notitie
+mobile/views/pages/notifications.vue:
+  notifications: Meldingen
+  read-all: Weet je zeker dat je alle meldingen wilt markeren als gelezen?
+mobile/views/pages/settings/settings.profile.vue:
+  title: Profiel
+  name: Naam
+  account: Account
+  location: Locatie
+  description: Omschrijving
+  birthday: Geboortedatum
+  avatar: Gebruikersafbeelding
+  banner: Omslagfoto
+  is-cat: Dit account is een Kat
+  save: Profiel bijwerken
+  saved: Profiel bijgewerkt
+  uploading: Bezig met uploaden
+  upload-failed: Upload mislukt
+mobile/views/pages/search.vue:
+  search: Zoeken
+  empty: Geen berichten gevonden voor '{}'
+mobile/views/pages/selectdrive.vue:
+  select-file: Kies een bestand
+mobile/views/pages/settings.vue:
+  signed-in-as: Ingelogd als {}
+  lang: Taal
+  lang-tip: Je moet de pagina herladen om de wijzigingen toe te passen.
+  recommended: Aanbevolen
+  auto: Automatisch
+  specify-language: Taal opgeven
+  design: Ontwerp en weergave
+  dark-mode: Donkere modus
+  i-am-under-limited-internet: Ik heb beperkt internet
+  circle-icons: Ronde pictogrammen gebruiken
+  timeline: Tijdlijn
+  show-reply-target: Antwoordknop tonen
+  show-my-renotes: Mijn renotes tonen
+  show-renoted-my-notes: Mijn gerenote notities tonen
+  post-style: Berichtontwerp
+  post-style-standard: Standaard
+  post-style-smart: Slim
+  behavior: Gedrag
+  fetch-on-scroll: Ophalen bij scrollen
+  disable-via-mobile: Zonder 'mobiele berichten'
+  twitter: Twitter-integratie
+  twitter-connect: Mijn Twitter-account verbinden
+  twitter-reconnect: Opnieuw verbinden
+  twitter-disconnect: Verbinding verbreken
+  update: Misskey-update
+  version: 'Huidige versie:'
+  latest-version: 'Nieuwste versie:'
+  update-checking: Bezig met controleren op updates
+  check-for-updates: Controleren op updates
+  no-updates: Geen updates beschikbaar
+  no-updates-desc: Je Misskey is bijgewerkt.
+  update-available: Nieuwe versie beschikbaar!
+  update-available-desc: Herlaad de pagina om de updates toe te passen.
+  settings: Instellingen
+  signout: Uitloggen
+mobile/views/pages/user.vue:
+  follows-you: Volgt jou
+  following: Volgend
+  followers: Volgers
+  notes: Berichten
+  overview: Overzicht
+  timeline: Tijdlijn
+  media: Media
+  is-suspended: Dit account is geschorst.
+  is-remote: 'Deze gebruiker is een externe gebruiker; de informatie is daarom niet
+    volledig. '
+  view-remote: Volledige informatie bekijken
+mobile/views/pages/user/home.vue:
+  recent-notes: Recente notities
+  images: Afbeeldingen
+  activity: Activiteit
+  keywords: Sleutelwoorden
+  domains: Domeinnamen
+  frequently-replied-users: Frequent gesproken gebruikers
+  followers-you-know: Volgers die je kent
+  last-used-at: 'Laatst actief:'
+mobile/views/pages/user/home.followers-you-know.vue:
+  loading: Bezig met laden
+  no-users: Geen gebruikers
+mobile/views/pages/user/home.friends.vue:
+  loading: Bezig met laden
+  no-users: Geen gebruikers
+mobile/views/pages/user/home.notes.vue:
+  loading: Bezig met laden
+  no-notes: Geen notities
+mobile/views/pages/user/home.photos.vue:
+  loading: Bezig met laden
+  no-photos: Geen foto's
+docs:
+  edit-this-page-on-github: 'Heb je een fout ontdekt of wil je bijdragen aan de documentatie? '
+  edit-this-page-on-github-link: Bewerk deze pagina op GitHub!
+  api:
+    entities:
+      properties: Eigenschappen
+    endpoints:
+      params: Parameters
+      res: Antwoord
+    props:
+      name: Naam
+      type: Type
+      optional: Optioneel
+      description: Omschrijving
+      'yes': Ja
+      'no': Nee
