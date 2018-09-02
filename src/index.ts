@@ -20,7 +20,6 @@ import Logger from './misc/logger';
 import ProgressBar from './misc/cli/progressbar';
 import EnvironmentInfo from './misc/environmentInfo';
 import MachineInfo from './misc/machineInfo';
-import DependencyInfo from './misc/dependencyInfo';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
@@ -116,7 +115,6 @@ async function init(): Promise<Config> {
 	new Logger('Deps').info(`Node.js ${process.version}`);
 	MachineInfo.show();
 	EnvironmentInfo.show();
-	new DependencyInfo().showAll();
 
 	const configLogger = new Logger('Config');
 	let config;

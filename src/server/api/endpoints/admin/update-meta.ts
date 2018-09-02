@@ -25,7 +25,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	const set = {} as any;
 
-	if (ps.disableRegistration === true || ps.disableRegistration === false) {
+	if (typeof ps.disableRegistration === 'boolean') {
 		set.disableRegistration = ps.disableRegistration;
 	}
 

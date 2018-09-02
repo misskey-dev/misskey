@@ -471,10 +471,6 @@ root(isDark)
 					&.reacted
 						color $theme-color
 
-					&.menu
-						@media (max-width 350px)
-							display none
-
 .note[data-darkmode]
 	root(true)
 
