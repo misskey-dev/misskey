@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
 import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
