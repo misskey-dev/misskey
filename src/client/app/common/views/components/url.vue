@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { toUnicode as decodePunycode } from 'punycode'
+import { toUnicode as decodePunycode } from 'punycode';
 export default Vue.extend({
 	props: ['url', 'target'],
 	data() {
