@@ -74,7 +74,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		createdAt: new Date(),
 		fileId: file ? file._id : undefined,
 		recipientId: recipient._id,
-		text: text ? text : undefined,
+		text: text ? text.trim() : undefined,
 		userId: user._id,
 		isRead: false
 	});
