@@ -1,5 +1,5 @@
 <template>
-<div class="mk-menu">
+<div class="onchrpzrvnoruiaenfcqvccjfuupzzwv">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ hukidasi }" ref="popover">
 		<template v-for="item in items">
@@ -119,9 +119,10 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-$border-color = rgba(27, 31, 35, 0.15)
+root(isDark)
+	$bg-color = isDark ? #2c303c : #fff
+	$border-color = rgba(27, 31, 35, 0.15)
 
-.mk-menu
 	position initial
 
 	> .backdrop
@@ -131,14 +132,14 @@ $border-color = rgba(27, 31, 35, 0.15)
 		z-index 10000
 		width 100%
 		height 100%
-		background rgba(#000, 0.1)
+		background rgba(#000, isDark ? 0.5 : 0.1)
 		opacity 0
 
 	> .popover
 		position absolute
 		z-index 10001
 		padding 8px 0
-		background #fff
+		background $bg-color
 		border 1px solid $border-color
 		border-radius 4px
 		box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
@@ -172,12 +173,13 @@ $border-color = rgba(27, 31, 35, 0.15)
 				border-top solid $balloon-size transparent
 				border-left solid $balloon-size transparent
 				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size #fff
+				border-bottom solid $balloon-size $bg-color
 
 		> button
 			display block
 			padding 8px 16px
 			width 100%
+			color isDark ? #d6dce2 : #111
 
 			&:hover
 				color $theme-color-foreground
@@ -191,6 +193,12 @@ $border-color = rgba(27, 31, 35, 0.15)
 		> div
 			margin 8px 0
 			height 1px
-			background #eee
+			background isDark ? #1c2023 : #eee
+
+.onchrpzrvnoruiaenfcqvccjfuupzzwv[data-darkmode]
+	root(true)
+
+.onchrpzrvnoruiaenfcqvccjfuupzzwv:not([data-darkmode])
+	root(false)
 
 </style>
