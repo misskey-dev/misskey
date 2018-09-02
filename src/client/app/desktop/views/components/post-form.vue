@@ -35,7 +35,7 @@
 	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
 	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
-	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
+	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll">%fa:chart-pie%</button>
 	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw">%fa:eye-slash%</button>
 	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
 	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
