@@ -432,10 +432,10 @@ export const pack = (
 				followerId: _user.id,
 				followeeId: meId
 			}),
-			_user.isLocked ? FollowRequest.findOne({
+			FollowRequest.findOne({
 				followerId: meId,
 				followeeId: _user.id
-			}) : Promise.resolve(null),
+			}),
 			FollowRequest.findOne({
 				followerId: _user.id,
 				followeeId: meId

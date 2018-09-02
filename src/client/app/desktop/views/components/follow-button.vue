@@ -55,13 +55,15 @@ export default Vue.extend({
 	methods: {
 		onFollow(user) {
 			if (user.id == this.u.id) {
-				this.user.isFollowing = user.isFollowing;
+				this.u.isFollowing = user.isFollowing;
+				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
 			}
 		},
 
 		onUnfollow(user) {
 			if (user.id == this.u.id) {
-				this.user.isFollowing = user.isFollowing;
+				this.u.isFollowing = user.isFollowing;
+				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
 			}
 		},
 
@@ -74,7 +76,7 @@ export default Vue.extend({
 						userId: this.u.id
 					});
 				} else {
-					if (this.u.isLocked && this.u.hasPendingFollowRequestFromYou) {
+					if (this.u.hasPendingFollowRequestFromYou) {
 						this.u = await (this as any).api('following/requests/cancel', {
 							userId: this.u.id
 						});
