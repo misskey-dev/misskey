@@ -51,5 +51,5 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	});
 
 	// Response
-	res(await pack(userList));
+	res(await pack(userList._id));
 });
