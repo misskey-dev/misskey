@@ -193,5 +193,10 @@ export const pack = (
 		*/
 	}
 
+	delete _target.withoutChunks;
+	delete _target.storage;
+	delete _target.storageProps;
+	delete _target.isRemote;
+
 	resolve(_target);
 });
