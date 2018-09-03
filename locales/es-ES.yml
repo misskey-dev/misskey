@@ -518,31 +518,31 @@ desktop/views/components/media-image.vue:
   sensitive: "El contenido es NSFW (no seguro para ver en el trabajo, 'not safe for work')"
   click-to-show: "Click para mostrar"
 desktop/views/components/media-video.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "Este contenido no es apropiado para ver en el trabajo"
+  click-to-show: "Click para mostrar"
 desktop/views/components/follow-button.vue:
   following: "Siguiendo"
   follow: "Sigue"
   request-pending: "Pendiente de aprobación"
-  follow-request: "フォロー申請"
+  follow-request: "Solicitud de seguir"
 desktop/views/components/followers-window.vue:
-  followers: "{} のフォロワー"
+  followers: "{} seguidores"
 desktop/views/components/followers.vue:
-  empty: "フォロワーはいないようです。"
+  empty: "Parece que no tienes seguidores aún."
 desktop/views/components/following-window.vue:
-  following: "{} のフォロー"
+  following: "Siguiendo {}"
 desktop/views/components/following.vue:
-  empty: "フォロー中のユーザーはいないようです。"
+  empty: "Parece que aún no sigues a nadie."
 desktop/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー:"
-  empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
-  refresh: "もっと見る"
-  close: "閉じる"
+  title: "Usuarios recomendados:"
+  empty: "No se pudieron encontrar usuarios para recomendar"
+  fetching: "Cargando"
+  refresh: "Más"
+  close: "Cerrar"
 desktop/views/components/game-window.vue:
-  game: "リバーシ"
+  game: "Reversi"
 desktop/views/components/home.vue:
-  done: "完了"
+  done: "Listo"
   add-widget: "Agregar accesorio:"
   add: "Agregar"
 desktop/views/input-dialog.vue:
@@ -568,8 +568,8 @@ desktop/views/components/notes.note.vue:
   detail: "Mostrar detalles"
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido borrada"
-  hide: "隠す"
-  see-more: "もっと見る"
+  hide: "Esconder"
+  see-more: "Ver más"
 desktop/views/components/notes.vue:
   error: "Error al cargar."
   retry: "Reintentar"
