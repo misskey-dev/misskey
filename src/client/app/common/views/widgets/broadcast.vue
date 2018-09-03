@@ -42,15 +42,7 @@ export default define({
 	},
 	mounted() {
 		(this as any).os.getMeta().then(meta => {
-			let broadcasts = [];
-			if (meta.broadcasts) {
-				meta.broadcasts.forEach(broadcast => {
-					if (broadcast[lang]) {
-						broadcasts.push(broadcast[lang]);
-					}
-				});
-			}
-			this.broadcasts = broadcasts;
+			this.broadcasts = meta.broadcasts;
 			this.fetching = false;
 		});
 	},
