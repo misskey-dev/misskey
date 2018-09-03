@@ -340,6 +340,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Bezpośredni"
   specified-desc: "Tylko dla określonych użytkowników"
   private: "Prywatny"
+common/views/components/trends.vue:
+  count: "{}人が投稿"
+  empty: "トレンドなし"
 common/views/widgets/broadcast.vue:
   fetching: "Sprawdzanie"
   no-broadcasts: "Brak transmisji"
@@ -363,8 +366,6 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Przełącz widok"
 common/views/widgets/hashtags.vue:
   title: "Hashtagi"
-  count: "Wspomniany przez {} użytkowników"
-  empty: "Brak popularnych hashtagów"
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
