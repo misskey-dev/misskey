@@ -341,8 +341,8 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "Post to specified users only"
   private: "Private"
 common/views/components/trends.vue:
-  count: "{}人が投稿"
-  empty: "トレンドなし"
+  count: "{} users mentioned"
+  empty: "No popular hashtag trends"
 common/views/widgets/broadcast.vue:
   fetching: "Fetching"
   no-broadcasts: "No announcements"
