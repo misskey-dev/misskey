@@ -340,6 +340,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Direct"
   specified-desc: "Post to specified users only"
   private: "Private"
+common/views/components/trends.vue:
+  count: "{}人が投稿"
+  empty: "トレンドなし"
 common/views/widgets/broadcast.vue:
   fetching: "Fetching"
   no-broadcasts: "No announcements"
@@ -363,8 +366,6 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Toggle views"
 common/views/widgets/hashtags.vue:
   title: "Hashtags"
-  count: "{} users mentioned"
-  empty: "No popular hashtag trends"
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
