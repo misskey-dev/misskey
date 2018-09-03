@@ -8,7 +8,7 @@
 	<mk-forkit class="forkit"/>
 
 	<div class="body">
-		<div class="main">
+		<div class="main block">
 			<h1 v-if="name != 'Misskey'">{{ name }}</h1>
 			<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
 
@@ -27,24 +27,24 @@
 				<span class="divider">|</span>
 				<span class="signin" @click="signin">%i18n:@signin%</span>
 			</p>
-
-			<div class="hashtags">
-				<router-link v-for="tag in tags" :key="tag" :to="`/tags/${ tag }`" :title="tag">#{{ tag }}</router-link>
-			</div>
 		</div>
 
-		<div class="broadcasts">
+		<div class="broadcasts block">
 			<div v-for="broadcast in broadcasts">
 				<h1 v-html="broadcast.title"></h1>
 				<div v-html="broadcast.text"></div>
 			</div>
 		</div>
 
-		<div class="nav">
+		<div class="nav block">
 			<mk-nav class="nav"/>
 		</div>
 
-		<mk-welcome-timeline class="tl" :max="20"/>
+		<div class="side">
+			<mk-trends class="trends block"/>
+
+			<mk-welcome-timeline class="tl block" :max="20"/>
+		</div>
 	</div>
 
 	<modal name="signup" :class="$store.state.device.darkmode ? 'modal-dark' : 'modal-light'" width="450px" height="auto" scrollable>
@@ -71,8 +71,7 @@ export default Vue.extend({
 			host,
 			name: 'Misskey',
 			description: '',
-			broadcasts: [],
-			tags: []
+			broadcasts: []
 		};
 	},
 	created() {
@@ -86,9 +85,6 @@ export default Vue.extend({
 			this.stats = stats;
 		});
 
-		(this as any).api('hashtags/trend').then(stats => {
-			this.tags = stats.map(x => x.tag);
-		});
 	},
 	methods: {
 		signup() {
@@ -113,7 +109,7 @@ export default Vue.extend({
 	left 15px
 
 .v--modal-overlay
-	background rgba(0, 0, 0, 0.4)
+	background rgba(0, 0, 0, 0.6)
 
 .modal-light
 	.v--modal-box
@@ -162,8 +158,8 @@ root(isDark)
 	> button
 		position fixed
 		z-index 1
-		bottom 64px
-		left 64px
+		bottom 16px
+		left 16px
 		padding 16px
 		font-size 18px
 		color isDark ? #fff : #444
@@ -179,7 +175,7 @@ root(isDark)
 		margin 0 auto
 		padding 64px
 
-		> *
+		.block
 			color isDark ? #fff : #444
 			background isDark ? #313543 : #fff
 			box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
@@ -190,6 +186,7 @@ root(isDark)
 			grid-row 1
 			grid-column 1
 			padding 32px
+			border-top solid 5px $theme-color
 
 			> h1
 				margin 0
@@ -257,12 +254,25 @@ root(isDark)
 			grid-column 1
 			font-size 14px
 
-		> .tl
+		> .side
+			display grid
 			grid-row 1 / 4
 			grid-column 2
-			text-align left
-			max-height 100%
-			overflow auto
+			grid-template-rows 1fr 350px
+			grid-template-columns 1fr
+			gap 16px
+
+			> .tl
+				grid-row 1
+				grid-column 1
+				text-align left
+				max-height 100%
+				overflow auto
+
+			> .trends
+				grid-row 2
+				grid-column 1
+				padding 8px
 
 .mk-welcome[data-darkmode]
 	root(true)
