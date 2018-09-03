@@ -54,7 +54,7 @@ Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
 *(optional)* Generating VAPID keys
 ----------------------------------------------------------------
-If you want to enable ServiceWroker, you need to generate VAPID keys:
+If you want to enable ServiceWorker, you need to generate VAPID keys:
 Unless you have set your global node_modules location elsewhere, you need to run this in root.
 
 ``` shell
