@@ -340,6 +340,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Directo"
   specified-desc: "Publica solo para los seguidores que quieras"
   private: "Privada"
+common/views/components/trends.vue:
+  count: "{}人が投稿"
+  empty: "トレンドなし"
 common/views/widgets/broadcast.vue:
   fetching: "Recuperando"
   no-broadcasts: "Sin emisión"
@@ -363,8 +366,6 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Alternar vistas"
 common/views/widgets/hashtags.vue:
   title: "Etiquetas"
-  count: "{} usuarios mencionados"
-  empty: "Ninguna tendencia popular ahora"
 common/views/widgets/server.vue:
   title: "Información del servidor"
   toggle: "Alternar vistas"
