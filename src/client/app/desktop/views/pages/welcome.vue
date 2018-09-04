@@ -172,6 +172,7 @@ root(isDark)
 		width 100%
 		max-width 1200px
 		height 100vh
+		min-height 800px
 		margin 0 auto
 		padding 64px
 
