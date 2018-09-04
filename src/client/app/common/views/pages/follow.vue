@@ -83,7 +83,7 @@ export default Vue.extend({
 						userId: this.user.id
 					});
 				} else {
-					if (this.user.isLocked && this.user.hasPendingFollowRequestFromYou) {
+					if (this.user.hasPendingFollowRequestFromYou) {
 						this.user = await (this as any).api('following/requests/cancel', {
 							userId: this.user.id
 						});

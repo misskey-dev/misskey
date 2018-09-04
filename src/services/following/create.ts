@@ -11,7 +11,7 @@ import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 
 export default async function(follower: IUser, followee: IUser) {
-	if (followee.isLocked) {
+	if (followee.isLocked || isLocalUser(follower) && isRemoteUser(followee)) {
 		await createFollowRequest(follower, followee);
 	} else {
 		const following = await Following.insert({
@@ -70,11 +70,6 @@ export default async function(follower: IUser, followee: IUser) {
 
 			// 通知を作成
 			notify(followee._id, follower._id, 'follow');
-		}
-
-		if (isLocalUser(follower) && isRemoteUser(followee)) {
-			const content = pack(renderFollow(follower, followee));
-			deliver(follower, content, followee.inbox);
 		}
 
 		if (isRemoteUser(follower) && isLocalUser(followee)) {
