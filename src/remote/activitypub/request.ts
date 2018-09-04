@@ -27,6 +27,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 		method: 'POST',
 		path: pathname + search,
 		headers: {
+			'User-Agent': config.user_agent,
 			'Content-Type': 'application/activity+json',
 			'Digest': `SHA-256=${hash}`
 		}
