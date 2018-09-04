@@ -583,6 +583,11 @@ desktop/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
 
+desktop/views/components/media-download.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
+  download: "ダウンロード"
+
 desktop/views/components/follow-button.vue:
   following: "フォロー中"
   follow: "フォロー"
