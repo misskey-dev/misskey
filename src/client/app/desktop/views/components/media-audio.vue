@@ -10,8 +10,7 @@
 		:src="audio.url"
 		:title="audio.name"
 		controls
-		ref="audio"
-		v-if="inlinePlayable" />
+		ref="audio" />
 </div>
 </template>
 
