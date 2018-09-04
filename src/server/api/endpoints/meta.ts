@@ -33,6 +33,7 @@ export default () => new Promise(async (res, rej) => {
 		},
 		broadcasts: meta.broadcasts,
 		disableRegistration: meta.disableRegistration,
+		driveCapacityPerLocalUserMb: config.localDriveCapacityMb,
 		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
 		swPublickey: config.sw ? config.sw.public_key : null
 	});
