@@ -24,7 +24,7 @@ export default Vue.extend({
 			setTimeout(() => {
 				anime({
 					targets: this.$el,
-					bottom: '-72px',
+					bottom: `-${this.$el.offsetHeight}px`,
 					duration: 500,
 					easing: 'easeOutQuad',
 					complete: () => this.$destroy()
@@ -37,14 +37,16 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-notify
+	$height = 78px
+
 	position fixed
 	z-index 1024
-	bottom -72px
+	bottom -($height)
 	left 0
 	right 0
 	width 100%
 	max-width 500px
-	height 72px
+	height $height
 	margin 0 auto
 	padding 8px
 	pointer-events none
@@ -55,6 +57,7 @@ export default Vue.extend({
 		-webkit-backdrop-filter blur(2px)
 		backdrop-filter blur(2px)
 		background-color rgba(#000, 0.5)
-		border-radius 6px
+		border-radius 7px
+		overflow hidden
 
 </style>
