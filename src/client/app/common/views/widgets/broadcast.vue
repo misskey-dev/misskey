@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-broadcast"
+<div class="anltbovirfeutcigvwgmgxipejaeozxi"
 	:data-found="broadcasts.length != 0"
 	:data-melt="props.design == 1"
 	:data-mobile="platform == 'mobile'"
@@ -25,7 +25,6 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
-import { lang } from '../../../config';
 
 export default define({
 	name: 'broadcast',
@@ -67,7 +66,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-.mkw-broadcast
+root(isDark)
 	padding 10px
 	border solid 1px #4078c0
 	border-radius 6px
@@ -134,14 +133,10 @@ export default define({
 		z-index 1
 		margin 0
 		font-size 0.7em
-		color #555
+		color isDark ? #fff : #555
 
 		&.fetching
 			text-align center
-
-		a
-			color #555
-			text-decoration underline
 
 	> a
 		display block
@@ -150,5 +145,11 @@ export default define({
 	&[data-mobile]
 		> p
 			color #fff
+
+.anltbovirfeutcigvwgmgxipejaeozxi[data-darkmode]
+	root(true)
+
+.anltbovirfeutcigvwgmgxipejaeozxi:not([data-darkmode])
+	root(false)
 
 </style>
