@@ -9,10 +9,10 @@ export default async function(
 	request: websocket.request,
 	connection: websocket.connection,
 	subscriber: Xev,
-	user: IUser
+	user?: IUser
 ) {
-	const mute = await Mute.find({ muterId: user._id });
-	const mutedUserIds = mute.map(m => m.muteeId.toString());
+	const mute = user ? await Mute.find({ muterId: user._id }) : null;
+	const mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
 
 	// Subscribe stream
 	subscriber.on('local-timeline', async note => {
