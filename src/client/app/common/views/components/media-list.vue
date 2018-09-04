@@ -3,8 +3,9 @@
 	<div :data-count="mediaList.length" ref="grid">
 		<template v-for="media in mediaList">
 			<mk-media-video :video="media" :key="media.id" v-if="media.type.startsWith('video')" :inline-playable="mediaList.length === 1"/>
-			<mk-media-audio :audio="media" :key="media.id" v-if="media.type.startsWith('audio')" :inline-playable="mediaList.length === 1"/>
-			<mk-media-image :image="media" :key="media.id" v-else :raw="raw"/>
+			<mk-media-audio :audio="media" :key="media.id" v-else-if="media.type.startsWith('audio')"/>
+			<mk-media-image :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
+			<mk-media-download :download="media" :key="media.id" v-else/>
 		</template>
 	</div>
 </div>
