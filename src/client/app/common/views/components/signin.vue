@@ -78,7 +78,7 @@ export default Vue.extend({
 			cursor wait !important
 
 	> .avatar
-		margin 16px auto 0 auto
+		margin 0 auto 0 auto
 		width 64px
 		height 64px
 		background #ddd

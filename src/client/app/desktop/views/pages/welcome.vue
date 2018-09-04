@@ -1,46 +1,60 @@
 <template>
 <div class="mk-welcome">
-	<img ref="pointer" class="pointer" src="/assets/pointer.png" alt="">
 	<button @click="dark">
 		<template v-if="$store.state.device.darkmode">%fa:moon%</template>
 		<template v-else>%fa:R moon%</template>
 	</button>
+
+	<mk-forkit class="forkit"/>
+
 	<div class="body">
-		<div class="container">
+		<div class="main block">
+			<h1 v-if="name != 'Misskey'">{{ name }}</h1>
+			<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
+
 			<div class="info">
-				<span><b>{{ host }}</b></span>
+				<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
 				<span class="stats" v-if="stats">
 					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
 					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
 				</span>
 			</div>
-			<main>
-				<div class="about">
-					<h1 v-if="name != 'Misskey'">{{ name }}</h1>
-					<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
-					<p class="powerd-by" v-if="name != 'Misskey'" v-html="'%i18n:@powered-by-misskey%'"></p>
-					<p class="desc" v-html="description || '%i18n:common.about%'"></p>
-					<a ref="signup" @click="signup">📦 %i18n:@signup%</a>
-				</div>
-				<div class="login">
-					<mk-signin/>
-				</div>
-			</main>
-			<div class="hashtags">
-				<router-link v-for="tag in tags" :key="tag" :to="`/tags/${ tag }`" :title="tag">#{{ tag }}</router-link>
+
+			<p class="desc" v-html="description || '%i18n:common.about%'"></p>
+
+			<p class="sign">
+				<span class="signup" @click="signup">%i18n:@signup%</span>
+				<span class="divider">|</span>
+				<span class="signin" @click="signin">%i18n:@signin%</span>
+			</p>
+		</div>
+
+		<div class="broadcasts block">
+			<div v-for="broadcast in broadcasts">
+				<h1 v-html="broadcast.title"></h1>
+				<div v-html="broadcast.text"></div>
 			</div>
+		</div>
+
+		<div class="nav block">
 			<mk-nav class="nav"/>
 		</div>
-		<mk-forkit class="forkit"/>
-		<img src="assets/title.dark.svg" :alt="name">
-	</div>
-	<div class="tl">
-		<mk-welcome-timeline :max="20"/>
+
+		<div class="side">
+			<mk-trends class="trends block"/>
+
+			<mk-welcome-timeline class="tl block" :max="20"/>
+		</div>
 	</div>
 
-	<modal name="signup" width="500px" height="auto" scrollable>
-		<header :class="$style.signupFormHeader">%i18n:@signup%</header>
-		<mk-signup :class="$style.signupForm"/>
+	<modal name="signup" :class="$store.state.device.darkmode ? 'modal-dark' : 'modal-light'" width="450px" height="auto" scrollable>
+		<header class="formHeader">%i18n:@signup%</header>
+		<mk-signup class="form"/>
+	</modal>
+
+	<modal name="signin" :class="$store.state.device.darkmode ? 'modal-dark' : 'modal-light'" width="450px" height="auto" scrollable>
+		<header class="formHeader">%i18n:@signin%</header>
+		<mk-signin class="form"/>
 	</modal>
 </div>
 </template>
@@ -57,37 +71,22 @@ export default Vue.extend({
 			host,
 			name: 'Misskey',
 			description: '',
-			pointerInterval: null,
-			tags: []
+			broadcasts: []
 		};
 	},
 	created() {
 		(this as any).os.getMeta().then(meta => {
 			this.name = meta.name;
 			this.description = meta.description;
+			this.broadcasts = meta.broadcasts;
 		});
 
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
 		});
 
-		(this as any).api('hashtags/trend').then(stats => {
-			this.tags = stats.map(x => x.tag);
-		});
-	},
-	mounted() {
-		this.point();
-		this.pointerInterval = setInterval(this.point, 100);
-	},
-	beforeDestroy() {
-		clearInterval(this.pointerInterval);
 	},
 	methods: {
-		point() {
-			const x = this.$refs.signup.getBoundingClientRect();
-			this.$refs.pointer.style.top = x.top + x.height + 'px';
-			this.$refs.pointer.style.left = x.left + 'px';
-		},
 		signup() {
 			this.$modal.show('signup');
 		},
@@ -104,11 +103,40 @@ export default Vue.extend({
 });
 </script>
 
-<style>
-#wait {
-	right: auto;
-	left: 15px;
-}
+<style lang="stylus">
+#wait
+	right auto
+	left 15px
+
+.v--modal-overlay
+	background rgba(0, 0, 0, 0.6)
+
+.modal-light
+	.v--modal-box
+		color #777
+
+		.formHeader
+			border-bottom solid 1px #eee
+
+.modal-dark
+	.v--modal-box
+		background #313543
+		color #fff
+
+		.formHeader
+			border-bottom solid 1px rgba(#000, 0.2)
+
+.modal-light
+.modal-dark
+	.form
+		padding 24px 48px 48px 48px
+
+	.formHeader
+		text-align center
+		padding 48px 0 12px 0
+		margin 0 48px
+		font-size 1.5em
+
 </style>
 
 <style lang="stylus" scoped>
@@ -117,122 +145,87 @@ export default Vue.extend({
 root(isDark)
 	display flex
 	min-height 100vh
+	//background-color #00070F
+	//background-image url('/assets/bg.jpg')
+	//background-position center
+	//background-size cover
 
-	> .pointer
-		display block
+	> .forkit
 		position absolute
-		z-index 1
 		top 0
 		right 0
-		width 180px
-		margin 0 0 0 -180px
-		transform rotateY(180deg) translateX(-10px) translateY(-48px)
-		pointer-events none
 
 	> button
 		position fixed
 		z-index 1
-		top 0
-		left 0
+		bottom 16px
+		left 16px
 		padding 16px
 		font-size 18px
-		color #fff
-
-		display none // TODO
+		color isDark ? #fff : #444
 
 	> .body
-		flex 1
-		padding 64px 0 0 0
-		text-align center
-		background #578394
-		background-position center
-		background-size cover
+		display grid
+		grid-template-rows 0.5fr 0.5fr 64px
+		grid-template-columns 1fr 350px
+		gap 16px
+		width 100%
+		max-width 1200px
+		height 100vh
+		min-height 800px
+		margin 0 auto
+		padding 64px
 
-		&:before
-			content ''
-			display block
-			position absolute
-			top 0
-			left 0
-			right 0
-			bottom 0
-			background rgba(#000, 0.5)
+		.block
+			color isDark ? #fff : #444
+			background isDark ? #313543 : #fff
+			box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
+			//border-radius 8px
+			overflow auto
 
-		> .forkit
-			position absolute
-			top 0
-			right 0
+		> .main
+			grid-row 1
+			grid-column 1
+			padding 32px
+			border-top solid 5px $theme-color
 
-		> img
-			position absolute
-			bottom 16px
-			right 16px
-			width 150px
+			> h1
+				margin 0
 
-		> .container
-			$aboutWidth = 380px
-			$loginWidth = 340px
-			$width = $aboutWidth + $loginWidth
+				> img
+					margin -8px 0 0 -16px
+					max-width 280px
 
 			> .info
 				margin 0 auto 16px auto
 				width $width
 				font-size 14px
-				color #fff
 
 				> .stats
 					margin-left 16px
 					padding-left 16px
-					border-left solid 1px #fff
+					border-left solid 1px isDark ? #fff : #444
 
 					> *
 						margin-right 16px
 
-			> main
-				display flex
-				margin auto
-				width $width
-				border-radius 8px
-				overflow hidden
-				box-shadow 0 2px 8px rgba(#000, 0.3)
+			> .sign
+				font-size 120%
 
-				> .about
-					width $aboutWidth
-					color #444
-					background #fff
+				> .divider
+					margin 0 16px
 
-					> h1
-						margin 0 0 16px 0
-						padding 32px 32px 0 32px
-						color #444
+				> .signin
+				> .signup
+					cursor pointer
 
-						> img
-							width 170px
-							vertical-align bottom
-
-					> .powerd-by
-						margin 16px
-						opacity 0.7
-
-					> .desc
-						margin 0
-						padding 0 32px 16px 32px
-
-					> a
-						display inline-block
-						margin 0 0 32px 0
-						font-weight bold
-
-				> .login
-					width $loginWidth
-					padding 16px 32px 32px 32px
-					background isDark ? #2e3440 : #f5f5f5
+					&:hover
+						color $theme-color
 
 			> .hashtags
 				margin 16px auto
 				width $width
 				font-size 14px
-				color #fff
 				background rgba(#000, 0.3)
 				border-radius 8px
 
@@ -240,22 +233,47 @@ root(isDark)
 					display inline-block
 					margin 14px
 
-			> .nav
-				display block
-				margin 16px 0
-				font-size 14px
-				color #fff
+		> .broadcasts
+			grid-row 2
+			grid-column 1
+			padding 32px
 
-	> .tl
-		margin 0
-		width 410px
-		height 100vh
-		text-align left
-		background isDark ? #313543 : #fff
+			> div
+				padding 0 0 16px 0
+				margin 0 0 16px 0
+				border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
 
-		> *
-			max-height 100%
-			overflow auto
+				> h1
+					margin 0
+					font-size 1.5em
+
+		> .nav
+			display flex
+			justify-content center
+			align-items center
+			grid-row 3
+			grid-column 1
+			font-size 14px
+
+		> .side
+			display grid
+			grid-row 1 / 4
+			grid-column 2
+			grid-template-rows 1fr 350px
+			grid-template-columns 1fr
+			gap 16px
+
+			> .tl
+				grid-row 1
+				grid-column 1
+				text-align left
+				max-height 100%
+				overflow auto
+
+			> .trends
+				grid-row 2
+				grid-column 1
+				padding 8px
 
 .mk-welcome[data-darkmode]
 	root(true)
@@ -263,30 +281,4 @@ root(isDark)
 .mk-welcome:not([data-darkmode])
 	root(false)
 
-</style>
-
-<style lang="stylus" module>
-.signupForm
-	padding 24px 48px 48px 48px
-
-.signupFormHeader
-	padding 48px 0 12px 0
-	margin: 0 48px
-	font-size 1.5em
-	color #777
-	border-bottom solid 1px #eee
-
-.signinForm
-	padding 24px 48px 48px 48px
-
-.signinFormHeader
-	padding 48px 0 12px 0
-	margin: 0 48px
-	font-size 1.5em
-	color #777
-	border-bottom solid 1px #eee
-
-.nav
-	a
-		color #666
 </style>

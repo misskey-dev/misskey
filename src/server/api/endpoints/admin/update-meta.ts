@@ -11,11 +11,17 @@ export const meta = {
 	requireAdmin: true,
 
 	params: {
+		broadcasts: $.arr($.obj()).optional.nullable.note({
+			desc: {
+				'ja-JP': 'ブロードキャスト'
+			}
+		}),
+
 		disableRegistration: $.bool.optional.nullable.note({
 			desc: {
 				'ja-JP': '招待制か否か'
 			}
-		}),
+		})
 	}
 };
 
@@ -25,7 +31,11 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	const set = {} as any;
 
-	if (ps.disableRegistration === true || ps.disableRegistration === false) {
+	if (ps.broadcasts) {
+		set.broadcasts = ps.broadcasts;
+	}
+
+	if (typeof ps.disableRegistration === 'boolean') {
 		set.disableRegistration = ps.disableRegistration;
 	}
 

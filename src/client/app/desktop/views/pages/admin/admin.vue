@@ -4,6 +4,7 @@
 		<ul>
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }">%fa:chalkboard .fw%%i18n:@dashboard%</li>
 			<li @click="nav('users')" :class="{ active: page == 'users' }">%fa:users .fw%%i18n:@users%</li>
+			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }">%fa:broadcast-tower .fw%%i18n:@announcements%</li>
 			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:@drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
@@ -12,6 +13,9 @@
 		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
 			<x-charts/>
+		</div>
+		<div v-show="page == 'announcements'">
+			<x-announcements/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
@@ -28,6 +32,7 @@
 <script lang="ts">
 import Vue from "vue";
 import XDashboard from "./admin.dashboard.vue";
+import XAnnouncements from "./admin.announcements.vue";
 import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
@@ -37,6 +42,7 @@ import XCharts from "../../components/charts.vue";
 export default Vue.extend({
 	components: {
 		XDashboard,
+		XAnnouncements,
 		XSuspendUser,
 		XUnsuspendUser,
 		XVerifyUser,

@@ -7,8 +7,6 @@ import { deliver } from '../../../queue';
 import FollowRequest from '../../../models/follow-request';
 
 export default async function(follower: IUser, followee: IUser) {
-	if (!followee.isLocked) throw '対象のアカウントは鍵アカウントではありません';
-
 	await FollowRequest.insert({
 		createdAt: new Date(),
 		followerId: follower._id,

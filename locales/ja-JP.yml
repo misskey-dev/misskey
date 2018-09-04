@@ -375,6 +375,10 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "指定したユーザーにのみ公開"
   private: "非公開"
 
+common/views/components/trends.vue:
+  count: "{}人が投稿"
+  empty: "トレンドなし"
+
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
   no-broadcasts: "お知らせはありません"
@@ -403,8 +407,6 @@ common/views/widgets/posts-monitor.vue:
 
 common/views/widgets/hashtags.vue:
   title: "ハッシュタグ"
-  count: "{}人が投稿"
-  empty: "トレンドなし"
 
 common/views/widgets/server.vue:
   title: "サーバー情報"

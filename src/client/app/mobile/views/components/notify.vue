@@ -1,6 +1,8 @@
 <template>
 <div class="mk-notify">
-	<mk-notification-preview :notification="notification"/>
+	<div>
+		<mk-notification-preview :notification="notification"/>
+	</div>
 </div>
 </template>
 
@@ -22,7 +24,7 @@ export default Vue.extend({
 			setTimeout(() => {
 				anime({
 					targets: this.$el,
-					bottom: '-64px',
+					bottom: `-${this.$el.offsetHeight}px`,
 					duration: 500,
 					easing: 'easeOutQuad',
 					complete: () => this.$destroy()
@@ -35,15 +37,27 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-notify
+	$height = 78px
+
 	position fixed
 	z-index 1024
-	bottom -64px
+	bottom -($height)
 	left 0
+	right 0
 	width 100%
-	height 64px
+	max-width 500px
+	height $height
+	margin 0 auto
+	padding 8px
 	pointer-events none
-	-webkit-backdrop-filter blur(2px)
-	backdrop-filter blur(2px)
-	background-color rgba(#000, 0.5)
+	font-size 80%
+
+	> div
+		height 100%
+		-webkit-backdrop-filter blur(2px)
+		backdrop-filter blur(2px)
+		background-color rgba(#000, 0.5)
+		border-radius 7px
+		overflow hidden
 
 </style>

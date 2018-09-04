@@ -7,6 +7,7 @@ import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
 import isUrl = require('is-url');
+const pkg = require('../../package.json');
 
 /**
  * Path of configuration directory
@@ -43,6 +44,7 @@ export default function load() {
 	mixin.stats_url = `${mixin.scheme}://${mixin.host}/stats`;
 	mixin.status_url = `${mixin.scheme}://${mixin.host}/status`;
 	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
+	mixin.user_agent = `Misskey/${pkg.version} (${config.url})`;
 
 	if (config.localDriveCapacityMb == null) config.localDriveCapacityMb = 256;
 	if (config.remoteDriveCapacityMb == null) config.remoteDriveCapacityMb = 8;

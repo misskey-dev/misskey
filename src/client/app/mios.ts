@@ -3,7 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 
 import initStore from './store';
-import { apiUrl, swPublickey, version, lang, googleMapsApiKey } from './config';
+import { apiUrl, version, lang } from './config';
 import Progress from './common/scripts/loading';
 import Connection from './common/scripts/streaming/stream';
 import { HomeStreamManager } from './common/scripts/streaming/home';
@@ -230,13 +230,13 @@ export default class MiOS extends EventEmitter {
 		//#region Init stream managers
 		this.streams.serverStatsStream = new ServerStatsStreamManager(this);
 		this.streams.notesStatsStream = new NotesStatsStreamManager(this);
+		this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.store.state.i);
 
 		this.once('signedin', () => {
 			// Init home stream manager
 			this.stream = new HomeStreamManager(this, this.store.state.i);
 
 			// Init other stream manager
-			this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.store.state.i);
 			this.streams.hybridTimelineStream = new HybridTimelineStreamManager(this, this.store.state.i);
 			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.store.state.i);
 			this.streams.driveStream = new DriveStreamManager(this, this.store.state.i);
@@ -361,7 +361,7 @@ export default class MiOS extends EventEmitter {
 
 				// A public key your push server will use to send
 				// messages to client apps via a push server.
-				applicationServerKey: urlBase64ToUint8Array(swPublickey)
+				applicationServerKey: urlBase64ToUint8Array(this.meta.data.swPublickey)
 			};
 
 			// Subscribe push notification

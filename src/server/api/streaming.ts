@@ -52,6 +52,11 @@ module.exports = (server: http.Server) => {
 			return;
 		}
 
+		if (request.resourceURL.pathname === '/local-timeline') {
+			localTimelineStream(request, connection, ev, user);
+			return;
+		}
+
 		if (user == null) {
 			connection.send('authentication-failed');
 			connection.close();
@@ -60,7 +65,6 @@ module.exports = (server: http.Server) => {
 
 		const channel: any =
 			request.resourceURL.pathname === '/' ? homeStream :
-			request.resourceURL.pathname === '/local-timeline' ? localTimelineStream :
 			request.resourceURL.pathname === '/hybrid-timeline' ? hybridTimelineStream :
 			request.resourceURL.pathname === '/global-timeline' ? globalTimelineStream :
 			request.resourceURL.pathname === '/user-list' ? userListStream :

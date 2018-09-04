@@ -7,9 +7,9 @@ import MiOS from '../../../mios';
  */
 export class LocalTimelineStream extends Stream {
 	constructor(os: MiOS, me) {
-		super(os, 'local-timeline', {
+		super(os, 'local-timeline', me ? {
 			i: me.token
-		});
+		} : {});
 	}
 }
 

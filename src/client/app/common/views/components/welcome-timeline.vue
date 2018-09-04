@@ -31,15 +31,30 @@ export default Vue.extend({
 			default: undefined
 		}
 	},
+
 	data() {
 		return {
 			fetching: true,
-			notes: []
+			notes: [],
+			connection: null,
+			connectionId: null
 		};
 	},
+
 	mounted() {
 		this.fetch();
+
+		this.connection = (this as any).os.streams.localTimelineStream.getConnection();
+		this.connectionId = (this as any).os.streams.localTimelineStream.use();
+
+		this.connection.on('note', this.onNote);
 	},
+
+	beforeDestroy() {
+		this.connection.off('note', this.onNote);
+		(this as any).os.streams.localTimelineStream.dispose(this.connectionId);
+	},
+
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
@@ -49,13 +64,20 @@ export default Vue.extend({
 				reply: false,
 				renote: false,
 				media: false,
-				poll: false,
-				bot: false
+				poll: false
 			}).then(notes => {
 				this.notes = notes;
 				this.fetching = false;
 			});
-		}
+		},
+
+		onNote(note) {
+			if (note.replyId != null) return;
+			if (note.renoteId != null) return;
+			if (note.poll != null) return;
+
+			this.notes.unshift(note);
+		},
 	}
 });
 </script>

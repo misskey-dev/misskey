@@ -114,6 +114,7 @@ export type Mixin = {
 	status_url: string;
 	dev_url: string;
 	drive_url: string;
+	user_agent: string;
 };
 
 export type Config = Source & Mixin;

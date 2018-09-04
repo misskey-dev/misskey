@@ -1,7 +1,7 @@
 import * as request from 'request-promise-native';
 import * as debug from 'debug';
 import { IObject } from './type';
-//import config from '../../config';
+import config from '../../config';
 
 const log = debug('misskey:activitypub:resolver');
 
@@ -51,6 +51,7 @@ export default class Resolver {
 		const object = await request({
 			url: value,
 			headers: {
+				'User-Agent': config.user_agent,
 				Accept: 'application/activity+json, application/ld+json'
 			},
 			json: true
