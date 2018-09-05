@@ -45,9 +45,9 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	const [renote = null, renoteErr] = $.bool.optional.nullable.get(params.renote);
 	if (renoteErr) return rej('invalid renote param');
 
-	// Get 'media' parameter
-	const [media = null, mediaErr] = $.bool.optional.nullable.get(params.media);
-	if (mediaErr) return rej('invalid media param');
+	// Get 'withFiles' parameter
+	const [withFiles = null, withFilesErr] = $.bool.optional.nullable.get(params.withFiles);
+	if (withFilesErr) return rej('invalid withFiles param');
 
 	// Get 'poll' parameter
 	const [poll = null, pollErr] = $.bool.optional.nullable.get(params.poll);
@@ -244,8 +244,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		}
 	}
 
-	if (media != null) {
-		if (media) {
+	if (withFiles != null) {
+		if (withFiles) {
 			push({
 				fileIds: {
 					$exists: true,
