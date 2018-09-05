@@ -204,10 +204,17 @@ export default class Reversi {
 	}
 
 	/**
+	 * 打つことができる場所を取得します
+	 */
+	public puttablePlaces(color: Color): number[] {
+		return Array.from(this.board.keys()).filter(i => this.canPut(color, i));
+	}
+
+	/**
 	 * 打つことができる場所があるかどうかを取得します
 	 */
 	public canPutSomewhere(color: Color): boolean {
-		return countIf(i => this.canPut(color, i), Array.from(this.board.keys())) > 0;
+		return this.puttablePlaces(color).length > 0;
 	}
 
 	/**
