@@ -225,9 +225,13 @@ root(isDark)
 			overflow auto
 
 			> header
+				z-index 1
 				padding 0 16px
 				line-height 48px
 				background isDark ? #313543 : #fff
+
+				if !isDark
+					box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
 
 				& + div
 					max-height calc(100% - 48px)
