@@ -33,19 +33,19 @@ props:
       ja-JP: "投稿の本文"
       en-US: "The text of this note"
 
-  mediaIds:
+  fileIds:
     type: "id(DriveFile)[]"
     optional: true
     desc:
-      ja-JP: "添付されているメディアのID (なければレスポンスでは空配列)"
-      en-US: "The IDs of the attached media (empty array for response if no media is attached)"
+      ja-JP: "添付されているファイルのID (なければレスポンスでは空配列)"
+      en-US: "The IDs of the attached files (empty array for response if no files is attached)"
 
-  media:
+  files:
     type: "entity(DriveFile)[]"
     optional: true
     desc:
-      ja-JP: "添付されているメディア"
-      en-US: "The attached media"
+      ja-JP: "添付されているファイル"
+      en-US: "The attached files"
 
   userId:
     type: "id(User)"

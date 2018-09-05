@@ -41,7 +41,7 @@ export default Vue.extend({
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
 				(this as any).api('users/notes', {
 					userId: this.user.id,
-					withMedia: this.withMedia,
+					withFiles: this.withMedia,
 					limit: fetchLimit + 1
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
@@ -62,7 +62,7 @@ export default Vue.extend({
 
 			const promise = (this as any).api('users/notes', {
 				userId: this.user.id,
-				withMedia: this.withMedia,
+				withFiles: this.withMedia,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id
 			});

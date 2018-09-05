@@ -20,9 +20,9 @@ export default (params: any) => new Promise(async (res, rej) => {
 	const [renote, renoteErr] = $.bool.optional.get(params.renote);
 	if (renoteErr) return rej('invalid renote param');
 
-	// Get 'media' parameter
-	const [media, mediaErr] = $.bool.optional.get(params.media);
-	if (mediaErr) return rej('invalid media param');
+	// Get 'files' parameter
+	const [files, filesErr] = $.bool.optional.get(params.files);
+	if (filesErr) return rej('invalid files param');
 
 	// Get 'poll' parameter
 	const [poll, pollErr] = $.bool.optional.get(params.poll);
@@ -79,8 +79,8 @@ export default (params: any) => new Promise(async (res, rej) => {
 		query.renoteId = renote ? { $exists: true, $ne: null } : null;
 	}
 
-	if (media != undefined) {
-		query.mediaIds = media ? { $exists: true, $ne: null } : [];
+	if (files != undefined) {
+		query.fileIds = files ? { $exists: true, $ne: null } : [];
 	}
 
 	if (poll != undefined) {

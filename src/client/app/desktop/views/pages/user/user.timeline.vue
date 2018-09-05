@@ -66,7 +66,7 @@ export default Vue.extend({
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined,
 					includeReplies: this.mode == 'with-replies',
-					withMedia: this.mode == 'with-media'
+					withFiles: this.mode == 'with-media'
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -86,7 +86,7 @@ export default Vue.extend({
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',
-				withMedia: this.mode == 'with-media',
+				withFiles: this.mode == 'with-media',
 				untilId: (this.$refs.timeline as any).tail().id
 			});
 

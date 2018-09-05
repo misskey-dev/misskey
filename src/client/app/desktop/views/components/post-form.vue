@@ -20,7 +20,7 @@
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
 			v-autocomplete="'text'"
 		></textarea>
-		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
+		<div class="files" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
@@ -188,7 +188,7 @@ export default Vue.extend({
 							(this.$refs.poll as any).set(draft.data.poll);
 						});
 					}
-					this.$emit('change-attached-media', this.files);
+					this.$emit('change-attached-files', this.files);
 				}
 			}
 
@@ -225,12 +225,12 @@ export default Vue.extend({
 
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		detachMedia(id) {
 			this.files = this.files.filter(x => x.id != id);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onChangeFile() {
@@ -249,7 +249,7 @@ export default Vue.extend({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onKeydown(e) {
@@ -297,7 +297,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.files.push(file);
-				this.$emit('change-attached-media', this.files);
+				this.$emit('change-attached-files', this.files);
 				e.preventDefault();
 			}
 			//#endregion
@@ -354,7 +354,7 @@ export default Vue.extend({
 
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
-				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
@@ -514,7 +514,7 @@ root(isDark)
 				margin-right 8px
 				white-space nowrap
 
-		> .medias
+		> .files
 			margin 0
 			padding 0
 			background isDark ? #181b23 : lighten($theme-color, 98%)

@@ -247,7 +247,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	if (media != null) {
 		if (media) {
 			push({
-				mediaIds: {
+				fileIds: {
 					$exists: true,
 					$ne: null
 				}
@@ -255,11 +255,11 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		} else {
 			push({
 				$or: [{
-					mediaIds: {
+					fileIds: {
 						$exists: false
 					}
 				}, {
-					mediaIds: null
+					fileIds: null
 				}]
 			});
 		}

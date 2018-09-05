@@ -33,9 +33,9 @@ export default async (params: any, user: ILocalUser) => {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
-	// Get 'mediaOnly' parameter
-	const [mediaOnly, mediaOnlyErr] = $.bool.optional.get(params.mediaOnly);
-	if (mediaOnlyErr) throw 'invalid mediaOnly param';
+	// Get 'withFiles' parameter
+	const [withFiles, withFilesErr] = $.bool.optional.get(params.withFiles);
+	if (withFilesErr) throw 'invalid withFiles param';
 
 	// ミュートしているユーザーを取得
 	const mutedUserIds = user ? (await Mute.find({
@@ -69,8 +69,8 @@ export default async (params: any, user: ILocalUser) => {
 		};
 	}
 
-	if (mediaOnly) {
-		query.mediaIds = { $exists: true, $ne: [] };
+	if (withFiles) {
+		query.fileIds = { $exists: true, $ne: [] };
 	}
 
 	if (sinceId) {

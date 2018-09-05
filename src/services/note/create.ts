@@ -84,7 +84,7 @@ type Option = {
 	text?: string;
 	reply?: INote;
 	renote?: INote;
-	media?: IDriveFile[];
+	files?: IDriveFile[];
 	geo?: any;
 	poll?: any;
 	viaMobile?: boolean;
@@ -135,7 +135,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const mentionedUsers = await extractMentionedUsers(tokens);
 
-	const note = await insertNote(user, data, tokens, tags, mentionedUsers);
+	const note = await insertNote(user, data, tags, mentionedUsers);
 
 	res(note);
 
@@ -309,10 +309,10 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 	publishToUserLists(note, noteObj);
 }
 
-async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof parse>, tags: string[], mentionedUsers: IUser[]) {
+async function insertNote(user: IUser, data: Option, tags: string[], mentionedUsers: IUser[]) {
 	const insert: any = {
 		createdAt: data.createdAt,
-		mediaIds: data.media ? data.media.map(file => file._id) : [],
+		fileIds: data.files ? data.files.map(file => file._id) : [],
 		replyId: data.reply ? data.reply._id : null,
 		renoteId: data.renote ? data.renote._id : null,
 		text: data.text,
@@ -347,7 +347,8 @@ async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof p
 		_user: {
 			host: user.host,
 			inbox: isRemoteUser(user) ? user.inbox : undefined
-		}
+		},
+		_files: data.files ? data.files : []
 	};
 
 	if (data.uri != null) insert.uri = data.uri;

@@ -200,12 +200,12 @@ export default Vue.extend({
 
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		detachMedia(file) {
 			this.files = this.files.filter(x => x.id != file.id);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onChangeFile() {
@@ -269,7 +269,7 @@ export default Vue.extend({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
-			this.$emit('change-attached-media');
+			this.$emit('change-attached-files');
 		},
 
 		post() {
@@ -277,7 +277,7 @@ export default Vue.extend({
 			const viaMobile = this.$store.state.settings.disableViaMobile !== true;
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
-				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,

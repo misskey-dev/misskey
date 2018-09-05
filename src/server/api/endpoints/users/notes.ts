@@ -27,9 +27,9 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	const [includeReplies = true, includeRepliesErr] = $.bool.optional.get(params.includeReplies);
 	if (includeRepliesErr) return rej('invalid includeReplies param');
 
-	// Get 'withMedia' parameter
-	const [withMedia = false, withMediaErr] = $.bool.optional.get(params.withMedia);
-	if (withMediaErr) return rej('invalid withMedia param');
+	// Get 'withFiles' parameter
+	const [withFiles = false, withFilesErr] = $.bool.optional.get(params.withFiles);
+	if (withFilesErr) return rej('invalid withFiles param');
 
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
@@ -104,8 +104,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		query.replyId = null;
 	}
 
-	if (withMedia) {
-		query.mediaIds = {
+	if (withFiles) {
+		query.fileIds = {
 			$exists: true,
 			$ne: []
 		};

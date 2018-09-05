@@ -96,7 +96,7 @@ export default Vue.extend({
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
 				(this as any).api(this.endpoint, {
 					limit: fetchLimit + 1,
-					mediaOnly: this.mediaOnly,
+					withFiles: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
 					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
@@ -117,7 +117,7 @@ export default Vue.extend({
 
 			const promise = (this as any).api(this.endpoint, {
 				limit: fetchLimit + 1,
-				mediaOnly: this.mediaOnly,
+				withFiles: this.mediaOnly,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -138,7 +138,7 @@ export default Vue.extend({
 		},
 
 		onNote(note) {
-			if (this.mediaOnly && note.media.length == 0) return;
+			if (this.mediaOnly && note.files.length == 0) return;
 
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);

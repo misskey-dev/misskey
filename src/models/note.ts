@@ -6,7 +6,7 @@ import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import PollVote, { deletePollVote } from './poll-vote';
 import Reaction, { deleteNoteReaction } from './note-reaction';
-import { pack as packFile } from './drive-file';
+import { pack as packFile, IDriveFile } from './drive-file';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
 import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
@@ -17,9 +17,20 @@ const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
 Note.createIndex('tagsLower');
+Note.createIndex('_files.contentType');
 Note.createIndex({
 	createdAt: -1
 });
+
+// 後方互換性のため
+Note.update({}, {
+	$rename: {
+		mediaIds: 'fileIds'
+	}
+}, {
+	multi: true
+});
+
 export default Note;
 
 export function isValidText(text: string): boolean {
@@ -34,7 +45,7 @@ export type INote = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	deletedAt: Date;
-	mediaIds: mongo.ObjectID[];
+	fileIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
 	poll: {
@@ -92,6 +103,7 @@ export type INote = {
 		inbox?: string;
 	};
 	_replyIds?: mongo.ObjectID[];
+	_files?: IDriveFile[];
 };
 
 /**
@@ -271,10 +283,14 @@ export const pack = async (
 		_note.app = packApp(_note.appId);
 	}
 
-	// Populate media
-	_note.media = hide ? [] : Promise.all(_note.mediaIds.map((fileId: mongo.ObjectID) =>
+	// Populate files
+	_note.files = hide ? [] : Promise.all(_note.fileIds.map((fileId: mongo.ObjectID) =>
 		packFile(fileId)
 	));
+
+	// 後方互換性のため
+	_note.mediaIds = _note.fileIds;
+	_note.media = _note.files;
 
 	// When requested a detailed note data
 	if (opts.detail) {
@@ -344,7 +360,7 @@ export const pack = async (
 	}
 
 	if (hide) {
-		_note.mediaIds = [];
+		_note.fileIds = [];
 		_note.text = null;
 		_note.poll = null;
 		_note.cw = null;

@@ -24,12 +24,12 @@ export default Vue.extend({
 	mounted() {
 		(this as any).api('users/notes', {
 			userId: this.user.id,
-			withMedia: true,
+			withFiles: true,
 			limit: 9
 		}).then(notes => {
 			notes.forEach(note => {
-				note.media.forEach(media => {
-					if (this.images.length < 9) this.images.push(media);
+				note.files.forEach(file => {
+					if (this.images.length < 9) this.images.push(file);
 				});
 			});
 			this.fetching = false;

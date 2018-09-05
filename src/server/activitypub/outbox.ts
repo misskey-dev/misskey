@@ -58,7 +58,7 @@ export default async (ctx: Router.IRouterContext) => {
 				$or: [{
 					text: { $ne: null }
 				}, {
-					mediaIds: { $ne: [] }
+					fileIds: { $ne: [] }
 				}]
 			}]
 		} as any;

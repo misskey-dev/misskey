@@ -26,7 +26,7 @@ export default Vue.extend({
 	mounted() {
 		(this as any).api('users/notes', {
 			userId: this.user.id,
-			withMedia: true,
+			withFiles: true,
 			limit: 6
 		}).then(notes => {
 			notes.forEach(note => {

@@ -42,8 +42,8 @@
 				<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
 				<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
 			</div>
-			<div class="media" v-if="p.media.length > 0">
-				<mk-media-list :media-list="p.media" :raw="true"/>
+			<div class="files" v-if="p.files.length > 0">
+				<mk-media-list :media-list="p.files" :raw="true"/>
 			</div>
 			<mk-poll v-if="p.poll" :note="p"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
@@ -114,7 +114,7 @@ export default Vue.extend({
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds.length == 0 &&
+				this.note.fileIds.length == 0 &&
 				this.note.poll == null);
 		},
 		p(): any {

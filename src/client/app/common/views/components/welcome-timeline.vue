@@ -63,7 +63,7 @@ export default Vue.extend({
 				local: true,
 				reply: false,
 				renote: false,
-				media: false,
+				file: false,
 				poll: false
 			}).then(notes => {
 				this.notes = notes;

@@ -127,7 +127,7 @@ export default Vue.extend({
 		prepend(note, silent = false) {
 			//#region 弾く
 			const isMyNote = note.userId == this.$store.state.i.id;
-			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
+			const isPureRenote = note.renoteId != null && note.text == null && note.fileIds.length == 0 && note.poll == null;
 
 			if (this.$store.state.settings.showMyRenotes === false) {
 				if (isMyNote && isPureRenote) {

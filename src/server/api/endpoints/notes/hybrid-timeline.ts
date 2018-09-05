@@ -66,7 +66,7 @@ export const meta = {
 			}
 		}),
 
-		mediaOnly: $.bool.optional.note({
+		withFiles: $.bool.optional.note({
 			desc: {
 				'ja-JP': 'true にすると、メディアが添付された投稿だけ取得します'
 			}
@@ -164,7 +164,7 @@ export default async (params: any, user: ILocalUser) => {
 			}, {
 				text: { $ne: null }
 			}, {
-				mediaIds: { $ne: [] }
+				fileIds: { $ne: [] }
 			}, {
 				poll: { $ne: null }
 			}]
@@ -180,7 +180,7 @@ export default async (params: any, user: ILocalUser) => {
 			}, {
 				text: { $ne: null }
 			}, {
-				mediaIds: { $ne: [] }
+				fileIds: { $ne: [] }
 			}, {
 				poll: { $ne: null }
 			}]
@@ -196,16 +196,16 @@ export default async (params: any, user: ILocalUser) => {
 			}, {
 				text: { $ne: null }
 			}, {
-				mediaIds: { $ne: [] }
+				fileIds: { $ne: [] }
 			}, {
 				poll: { $ne: null }
 			}]
 		});
 	}
 
-	if (ps.mediaOnly) {
+	if (ps.withFiles) {
 		query.$and.push({
-			mediaIds: { $exists: true, $ne: [] }
+			fileIds: { $exists: true, $ne: [] }
 		});
 	}
 
