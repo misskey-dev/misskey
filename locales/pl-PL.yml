@@ -865,6 +865,8 @@ desktop/views/pages/welcome.vue:
   signin-button: "Zaloguj się"
   signup-button: "Zarejestruj się"
   timeline: "Oś czasu"
+  announcements: "お知らせ"
+  photos: "最近の画像"
   powered-by-misskey: "Oparto o <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
