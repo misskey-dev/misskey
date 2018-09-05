@@ -3,6 +3,7 @@ import getHostLower from '../../common/get-host-lower';
 import Note, { pack } from '../../../../models/note';
 import User, { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
+import { countIf } from '../../../../prelude/array';
 
 export const meta = {
 	desc: {
@@ -110,7 +111,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	}
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if ([ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x != null).length > 1) {
+	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 

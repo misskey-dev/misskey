@@ -1,3 +1,5 @@
+import { count } from "../../prelude/array";
+
 // MISSKEY REVERSI ENGINE
 
 /**
@@ -101,14 +103,14 @@ export default class Reversi {
 	 * 黒石の数
 	 */
 	public get blackCount() {
-		return this.board.filter(x => x === BLACK).length;
+		return count(BLACK, this.board);
 	}
 
 	/**
 	 * 白石の数
 	 */
 	public get whiteCount() {
-		return this.board.filter(x => x === WHITE).length;
+		return count(BLACK, this.board);
 	}
 
 	/**
