@@ -87,6 +87,7 @@ common:
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
+  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
@@ -260,6 +261,8 @@ common/views/components/nav.vue:
   develop: "Développeur·se·s"
   feedback: "Remarques"
 common/views/components/note-menu.vue:
+  detail: "詳細"
+  copy-link: "リンクをコピー"
   favorite: "Mettre cette note en favoris"
   pin: "Épingler sur votre profil"
   delete: "Supprimer"
@@ -337,6 +340,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Direct"
   specified-desc: "Publier aux utilisateur·rice·s mentionné·e·s"
   private: "Privé"
+common/views/components/trends.vue:
+  count: "{}人が投稿"
+  empty: "トレンドなし"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
   no-broadcasts: "Aucune annonce"
@@ -360,8 +366,6 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Basculer entre les vues"
 common/views/widgets/hashtags.vue:
   title: "Étiquettes"
-  count: "{} utilisateur·rice·s mentionné·e·s"
-  empty: "Aucune tendance"
 common/views/widgets/server.vue:
   title: "Informations sur le serveur"
   toggle: "Afficher les vues"

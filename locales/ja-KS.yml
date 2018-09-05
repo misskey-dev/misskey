@@ -87,6 +87,7 @@ common:
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストをつけんで！"
   verified-user: "アメちゃん付きアカウント"
   disable-animated-mfm: "投稿内のちょろちょろ動いてんのを止める"
+  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
@@ -260,6 +261,8 @@ common/views/components/nav.vue:
   develop: "開発者"
   feedback: "フィードバック"
 common/views/components/note-menu.vue:
+  detail: "詳細"
+  copy-link: "リンクをコピー"
   favorite: "お気に入り"
   pin: "ピン留め"
   delete: "ほかす"
@@ -337,6 +340,9 @@ common/views/components/visibility-chooser.vue:
   specified: "ダイレクト"
   specified-desc: "指定したユーザーにのみ公開"
   private: "非公開"
+common/views/components/trends.vue:
+  count: "{}人が投稿"
+  empty: "トレンドなし"
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
   no-broadcasts: "お知らせはあらへんで"
@@ -360,8 +366,6 @@ common/views/widgets/posts-monitor.vue:
   toggle: "表示を切り替え"
 common/views/widgets/hashtags.vue:
   title: "ハッシュタグ"
-  count: "{}人が投稿"
-  empty: "流行は自分で作るんや"
 common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"

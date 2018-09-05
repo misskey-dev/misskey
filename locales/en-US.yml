@@ -84,9 +84,10 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
-  use-contrast-reversi-stones: "Make the stone color clear"
+  use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
+  do-not-use-in-production: 'As this is for development, do not use this in production.'
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
@@ -260,6 +261,8 @@ common/views/components/nav.vue:
   develop: "Developers"
   feedback: "Feedback"
 common/views/components/note-menu.vue:
+  detail: "Details"
+  copy-link: "Copy link"
   favorite: "Favorite this note"
   pin: "Pin to your profile"
   delete: "Delete"
@@ -337,6 +340,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Direct"
   specified-desc: "Post to specified users only"
   private: "Private"
+common/views/components/trends.vue:
+  count: "{} users mentioned"
+  empty: "No popular hashtag trends"
 common/views/widgets/broadcast.vue:
   fetching: "Fetching"
   no-broadcasts: "No announcements"
@@ -360,8 +366,6 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Toggle views"
 common/views/widgets/hashtags.vue:
   title: "Hashtags"
-  count: "{} users mentioned"
-  empty: "No popular hashtag trends"
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
