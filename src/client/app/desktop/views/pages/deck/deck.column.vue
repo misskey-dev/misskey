@@ -28,6 +28,7 @@
 import Vue from 'vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import contextmenu from '../../../api/contextmenu';
+import { countIf } from '../../../../../../prelude/array';
 
 export default Vue.extend({
 	props: {
@@ -117,7 +118,7 @@ export default Vue.extend({
 		toggleActive() {
 			if (!this.isStacked) return;
 			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
-			if (this.active && vms.filter(vm => vm.$el.classList.contains('active')).length == 1) return;
+			if (this.active && countIf(vm => vm.$el.classList.contains('active'), vms) == 1) return;
 			this.active = !this.active;
 		},
 

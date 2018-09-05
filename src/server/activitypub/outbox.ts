@@ -10,6 +10,7 @@ import { setResponseType } from '../activitypub';
 
 import Note from '../../models/note';
 import renderNote from '../../remote/activitypub/renderer/note';
+import { countIf } from '../../prelude/array';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = new mongo.ObjectID(ctx.params.user);
@@ -25,7 +26,7 @@ export default async (ctx: Router.IRouterContext) => {
 	const page: boolean = ctx.request.query.page === 'true';
 
 	// Validate parameters
-	if (sinceIdErr || untilIdErr || pageErr || [sinceId, untilId].filter(x => x != null).length > 1) {
+	if (sinceIdErr || untilIdErr || pageErr || countIf(x => x != null, [sinceId, untilId]) > 1) {
 		ctx.status = 400;
 		return;
 	}

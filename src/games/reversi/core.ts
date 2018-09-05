@@ -1,3 +1,5 @@
+import { count, countIf } from "../../prelude/array";
+
 // MISSKEY REVERSI ENGINE
 
 /**
@@ -88,8 +90,8 @@ export default class Reversi {
 		//#endregion
 
 		// ゲームが始まった時点で片方の色の石しかないか、始まった時点で勝敗が決定するようなマップの場合がある
-		if (this.canPutSomewhere(BLACK).length == 0) {
-			if (this.canPutSomewhere(WHITE).length == 0) {
+		if (!this.canPutSomewhere(BLACK)) {
+			if (!this.canPutSomewhere(WHITE)) {
 				this.turn = null;
 			} else {
 				this.turn = WHITE;
@@ -101,14 +103,14 @@ export default class Reversi {
 	 * 黒石の数
 	 */
 	public get blackCount() {
-		return this.board.filter(x => x === BLACK).length;
+		return count(BLACK, this.board);
 	}
 
 	/**
 	 * 白石の数
 	 */
 	public get whiteCount() {
-		return this.board.filter(x => x === WHITE).length;
+		return count(BLACK, this.board);
 	}
 
 	/**
@@ -170,9 +172,9 @@ export default class Reversi {
 
 	private calcTurn() {
 		// ターン計算
-		if (this.canPutSomewhere(!this.prevColor).length > 0) {
+		if (this.canPutSomewhere(!this.prevColor)) {
 			this.turn = !this.prevColor;
-		} else if (this.canPutSomewhere(this.prevColor).length > 0) {
+		} else if (this.canPutSomewhere(this.prevColor)) {
 			this.turn = this.prevColor;
 		} else {
 			this.turn = null;
@@ -204,8 +206,15 @@ export default class Reversi {
 	/**
 	 * 打つことができる場所を取得します
 	 */
-	public canPutSomewhere(color: Color): number[] {
+	public puttablePlaces(color: Color): number[] {
 		return Array.from(this.board.keys()).filter(i => this.canPut(color, i));
+	}
+
+	/**
+	 * 打つことができる場所があるかどうかを取得します
+	 */
+	public canPutSomewhere(color: Color): boolean {
+		return this.puttablePlaces(color).length > 0;
 	}
 
 	/**

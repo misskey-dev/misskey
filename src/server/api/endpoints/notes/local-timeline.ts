@@ -4,6 +4,7 @@ import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
+import { countIf } from '../../../../prelude/array';
 
 export const meta = {
 	desc: {
@@ -48,7 +49,7 @@ export default async (params: any, user: ILocalUser) => {
 	if (psErr) throw psErr;
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if ([ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x != null).length > 1) {
+	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 

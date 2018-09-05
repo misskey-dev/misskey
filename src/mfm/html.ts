@@ -4,10 +4,7 @@ const { JSDOM } = jsdom;
 import config from '../config';
 import { INote } from '../models/note';
 import { TextElement } from './parse';
-
-function intersperse<T>(sep: T, xs: T[]): T[] {
-	return [].concat(...xs.map(x => [sep, x])).slice(1);
-}
+import { intersperse } from '../prelude/array';
 
 const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers: INote['mentionedRemoteUsers']) => void } = {
 	bold({ document }, { bold }) {
