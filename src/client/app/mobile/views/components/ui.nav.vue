@@ -34,6 +34,12 @@
 					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>
+			<div class="announcements" v-if="announcements.length > 0">
+				<article v-for="announcement in announcements">
+					<span v-html="announcement.title" class="title"></span>
+					<div v-html="announcement.text"></div>
+				</article>
+			</div>
 			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
 		</div>
 	</transition>
@@ -46,23 +52,32 @@ import { lang } from '../../../config';
 
 export default Vue.extend({
 	props: ['isOpen'],
+
 	data() {
 		return {
 			hasGameInvitation: false,
 			connection: null,
 			connectionId: null,
-			aboutUrl: `/docs/${lang}/about`
+			aboutUrl: `/docs/${lang}/about`,
+			announcements: []
 		};
 	},
+
 	computed: {
 		hasUnreadNotification(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
 		},
+
 		hasUnreadMessagingMessage(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
 		}
 	},
+
 	mounted() {
+		(this as any).os.getMeta().then(meta => {
+			this.announcements = meta.broadcasts;
+		});
+
 		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
@@ -71,6 +86,7 @@ export default Vue.extend({
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
+
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection.off('reversi_invited', this.onReversiInvited);
@@ -78,18 +94,22 @@ export default Vue.extend({
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
+
 	methods: {
 		search() {
 			const query = window.prompt('%i18n:@search%');
 			if (query == null || query == '') return;
 			this.$router.push(`/search?q=${encodeURIComponent(query)}`);
 		},
+
 		onReversiInvited() {
 			this.hasGameInvitation = true;
 		},
+
 		onReversiNoInvites() {
 			this.hasGameInvitation = false;
 		},
+
 		dark() {
 			this.$store.commit('device/set', {
 				key: 'darkmode',
@@ -203,6 +223,17 @@ root(isDark)
 					line-height calc(1rem + 30px)
 					color $color
 					opacity 0.5
+
+	.announcements
+		> article
+			background isDark ? rgba(30, 129, 216, 0.2) : rgba(155, 196, 232, 0.2)
+			color isDark ? #fff : #3f4967
+			padding 16px
+			margin 8px 0
+			font-size 12px
+
+			> .title
+				font-weight bold
 
 	.about
 		margin 0 0 8px 0
