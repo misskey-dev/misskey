@@ -70,7 +70,10 @@ export default Vue.extend({
 		> .mk-media-banner-icon
 			font-size 1.6em
 
-	.mk-media-banner-download
+	.mk-media-banner-download[data-darkmode]
+		background #21242d
+
+	.mk-media-banner-download:not([data-darkmode])
 		background #f7f7f7
 
 	.mk-media-banner-sensitive
