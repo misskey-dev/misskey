@@ -7,8 +7,6 @@ import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
 
 export const meta = {
-	name: 'notes/hybrid-timeline',
-
 	desc: {
 		'ja-JP': 'ハイブリッドタイムラインを取得します。'
 	},
@@ -68,7 +66,13 @@ export const meta = {
 
 		withFiles: $.bool.optional.note({
 			desc: {
-				'ja-JP': 'true にすると、メディアが添付された投稿だけ取得します'
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
+			}
+		}),
+
+		mediaOnly: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		}),
 	}
@@ -203,7 +207,7 @@ export default async (params: any, user: ILocalUser) => {
 		});
 	}
 
-	if (ps.withFiles) {
+	if (ps.withFiles || ps.mediaOnly) {
 		query.$and.push({
 			fileIds: { $exists: true, $ne: [] }
 		});

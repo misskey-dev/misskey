@@ -3,39 +3,48 @@ import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
-/**
- * Get timeline of local
- */
+export const meta = {
+	desc: {
+		'ja-JP': 'ローカルタイムラインを取得します。'
+	},
+
+	params: {
+		withFiles: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
+			}
+		}),
+
+		mediaOnly: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
+			}
+		}),
+
+		limit: $.num.optional.range(1, 100).note({
+			default: 10
+		}),
+
+		sinceId: $.type(ID).optional.note({}),
+
+		untilId: $.type(ID).optional.note({}),
+
+		sinceDate: $.num.optional.note({}),
+
+		untilDate: $.num.optional.note({}),
+	}
+};
+
 export default async (params: any, user: ILocalUser) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) throw 'invalid limit param';
-
-	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
-	if (sinceIdErr) throw 'invalid sinceId param';
-
-	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
-	if (untilIdErr) throw 'invalid untilId param';
-
-	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $.num.optional.get(params.sinceDate);
-	if (sinceDateErr) throw 'invalid sinceDate param';
-
-	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $.num.optional.get(params.untilDate);
-	if (untilDateErr) throw 'invalid untilDate param';
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) throw psErr;
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if ([sinceId, untilId, sinceDate, untilDate].filter(x => x != null).length > 1) {
+	if ([ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x != null).length > 1) {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
-
-	// Get 'withFiles' parameter
-	const [withFiles, withFilesErr] = $.bool.optional.get(params.withFiles);
-	if (withFilesErr) throw 'invalid withFiles param';
 
 	// ミュートしているユーザーを取得
 	const mutedUserIds = user ? (await Mute.find({
@@ -69,27 +78,29 @@ export default async (params: any, user: ILocalUser) => {
 		};
 	}
 
+	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
+
 	if (withFiles) {
 		query.fileIds = { $exists: true, $ne: [] };
 	}
 
-	if (sinceId) {
+	if (ps.sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: sinceId
+			$gt: ps.sinceId
 		};
-	} else if (untilId) {
+	} else if (ps.untilId) {
 		query._id = {
-			$lt: untilId
+			$lt: ps.untilId
 		};
-	} else if (sinceDate) {
+	} else if (ps.sinceDate) {
 		sort._id = 1;
 		query.createdAt = {
-			$gt: new Date(sinceDate)
+			$gt: new Date(ps.sinceDate)
 		};
-	} else if (untilDate) {
+	} else if (ps.untilDate) {
 		query.createdAt = {
-			$lt: new Date(untilDate)
+			$lt: new Date(ps.untilDate)
 		};
 	}
 	//#endregion
@@ -97,7 +108,7 @@ export default async (params: any, user: ILocalUser) => {
 	// Issue query
 	const timeline = await Note
 		.find(query, {
-			limit: limit,
+			limit: ps.limit,
 			sort: sort
 		});
 

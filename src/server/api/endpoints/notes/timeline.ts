@@ -69,7 +69,13 @@ export const meta = {
 
 		withFiles: $.bool.optional.note({
 			desc: {
-				'ja-JP': 'true にすると、メディアが添付された投稿だけ取得します'
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
+			}
+		}),
+
+		mediaOnly: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		}),
 	}
@@ -193,7 +199,9 @@ export default async (params: any, user: ILocalUser) => {
 		});
 	}
 
-	if (ps.withFiles) {
+	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
+
+	if (withFiles) {
 		query.$and.push({
 			fileIds: { $exists: true, $ne: [] }
 		});

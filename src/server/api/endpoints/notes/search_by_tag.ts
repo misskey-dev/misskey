@@ -4,119 +4,152 @@ import User, { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
+import getParams from '../../get-params';
 
-/**
- * Search notes by tag
- */
+export const meta = {
+	desc: {
+		'ja-JP': '指定されたタグが付けられた投稿を取得します。'
+	},
+
+	params: {
+		tag: $.str.note({
+			desc: {
+				'ja-JP': 'タグ'
+			}
+		}),
+
+		includeUserIds: $.arr($.type(ID)).optional.note({
+			default: []
+		}),
+
+		excludeUserIds: $.arr($.type(ID)).optional.note({
+			default: []
+		}),
+
+		includeUserUsernames: $.arr($.str).optional.note({
+			default: []
+		}),
+
+		excludeUserUsernames: $.arr($.str).optional.note({
+			default: []
+		}),
+
+		following: $.bool.optional.nullable.note({
+			default: null
+		}),
+
+		mute: $.str.optional.note({
+			default: 'mute_all'
+		}),
+
+		reply: $.bool.optional.nullable.note({
+			default: null,
+
+			desc: {
+				'ja-JP': '返信に限定するか否か'
+			}
+		}),
+
+		renote: $.bool.optional.nullable.note({
+			default: null,
+
+			desc: {
+				'ja-JP': 'Renoteに限定するか否か'
+			}
+		}),
+
+		withFiles: $.bool.optional.nullable.note({
+			default: null,
+
+			desc: {
+				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
+			}
+		}),
+
+		media: $.bool.optional.nullable.note({
+			default: null,
+
+			desc: {
+				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
+			}
+		}),
+
+		poll: $.bool.optional.nullable.note({
+			default: null,
+
+			desc: {
+				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
+			}
+		}),
+
+		sinceDate: $.num.optional.note({
+		}),
+
+		untilDate: $.num.optional.note({
+		}),
+
+		offset: $.num.optional.min(0).note({
+			default: 0
+		}),
+
+		limit: $.num.optional.range(1, 30).note({
+			default: 10
+		}),
+	}
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'tag' parameter
-	const [tag, tagError] = $.str.get(params.tag);
-	if (tagError) return rej('invalid tag param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) throw psErr;
 
-	// Get 'includeUserIds' parameter
-	const [includeUserIds = [], includeUserIdsErr] = $.arr($.type(ID)).optional.get(params.includeUserIds);
-	if (includeUserIdsErr) return rej('invalid includeUserIds param');
-
-	// Get 'excludeUserIds' parameter
-	const [excludeUserIds = [], excludeUserIdsErr] = $.arr($.type(ID)).optional.get(params.excludeUserIds);
-	if (excludeUserIdsErr) return rej('invalid excludeUserIds param');
-
-	// Get 'includeUserUsernames' parameter
-	const [includeUserUsernames = [], includeUserUsernamesErr] = $.arr($.str).optional.get(params.includeUserUsernames);
-	if (includeUserUsernamesErr) return rej('invalid includeUserUsernames param');
-
-	// Get 'excludeUserUsernames' parameter
-	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $.arr($.str).optional.get(params.excludeUserUsernames);
-	if (excludeUserUsernamesErr) return rej('invalid excludeUserUsernames param');
-
-	// Get 'following' parameter
-	const [following = null, followingErr] = $.bool.optional.nullable.get(params.following);
-	if (followingErr) return rej('invalid following param');
-
-	// Get 'mute' parameter
-	const [mute = 'mute_all', muteErr] = $.str.optional.get(params.mute);
-	if (muteErr) return rej('invalid mute param');
-
-	// Get 'reply' parameter
-	const [reply = null, replyErr] = $.bool.optional.nullable.get(params.reply);
-	if (replyErr) return rej('invalid reply param');
-
-	// Get 'renote' parameter
-	const [renote = null, renoteErr] = $.bool.optional.nullable.get(params.renote);
-	if (renoteErr) return rej('invalid renote param');
-
-	// Get 'withFiles' parameter
-	const [withFiles = null, withFilesErr] = $.bool.optional.nullable.get(params.withFiles);
-	if (withFilesErr) return rej('invalid withFiles param');
-
-	// Get 'poll' parameter
-	const [poll = null, pollErr] = $.bool.optional.nullable.get(params.poll);
-	if (pollErr) return rej('invalid poll param');
-
-	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $.num.optional.get(params.sinceDate);
-	if (sinceDateErr) throw 'invalid sinceDate param';
-
-	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $.num.optional.get(params.untilDate);
-	if (untilDateErr) throw 'invalid untilDate param';
-
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional.min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
-
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 30).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	if (includeUserUsernames != null) {
-		const ids = (await Promise.all(includeUserUsernames.map(async (username) => {
+	if (ps.includeUserUsernames != null) {
+		const ids = (await Promise.all(ps.includeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
 				usernameLower: username.toLowerCase()
 			});
 			return _user ? _user._id : null;
 		}))).filter(id => id != null);
 
-		ids.forEach(id => includeUserIds.push(id));
+		ids.forEach(id => ps.includeUserIds.push(id));
 	}
 
-	if (excludeUserUsernames != null) {
-		const ids = (await Promise.all(excludeUserUsernames.map(async (username) => {
+	if (ps.excludeUserUsernames != null) {
+		const ids = (await Promise.all(ps.excludeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
 				usernameLower: username.toLowerCase()
 			});
 			return _user ? _user._id : null;
 		}))).filter(id => id != null);
 
-		ids.forEach(id => excludeUserIds.push(id));
+		ids.forEach(id => ps.excludeUserIds.push(id));
 	}
 
 	let q: any = {
 		$and: [{
-			tagsLower: tag.toLowerCase()
+			tagsLower: ps.tag.toLowerCase()
 		}]
 	};
 
 	const push = (x: any) => q.$and.push(x);
 
-	if (includeUserIds && includeUserIds.length != 0) {
+	if (ps.includeUserIds && ps.includeUserIds.length != 0) {
 		push({
 			userId: {
-				$in: includeUserIds
+				$in: ps.includeUserIds
 			}
 		});
-	} else if (excludeUserIds && excludeUserIds.length != 0) {
+	} else if (ps.excludeUserIds && ps.excludeUserIds.length != 0) {
 		push({
 			userId: {
-				$nin: excludeUserIds
+				$nin: ps.excludeUserIds
 			}
 		});
 	}
 
-	if (following != null && me != null) {
+	if (ps.following != null && me != null) {
 		const ids = await getFriendIds(me._id, false);
 		push({
-			userId: following ? {
+			userId: ps.following ? {
 				$in: ids
 			} : {
 				$nin: ids.concat(me._id)
@@ -131,7 +164,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		});
 		const mutedUserIds = mutes.map(m => m.muteeId);
 
-		switch (mute) {
+		switch (ps.mute) {
 			case 'mute_all':
 				push({
 					userId: {
@@ -202,8 +235,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		}
 	}
 
-	if (reply != null) {
-		if (reply) {
+	if (ps.reply != null) {
+		if (ps.reply) {
 			push({
 				replyId: {
 					$exists: true,
@@ -223,8 +256,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		}
 	}
 
-	if (renote != null) {
-		if (renote) {
+	if (ps.renote != null) {
+		if (ps.renote) {
 			push({
 				renoteId: {
 					$exists: true,
@@ -243,6 +276,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			});
 		}
 	}
+
+	const withFiles = ps.withFiles != null ? ps.withFiles : ps.media;
 
 	if (withFiles != null) {
 		if (withFiles) {
@@ -265,8 +300,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		}
 	}
 
-	if (poll != null) {
-		if (poll) {
+	if (ps.poll != null) {
+		if (ps.poll) {
 			push({
 				poll: {
 					$exists: true,
@@ -286,18 +321,18 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		}
 	}
 
-	if (sinceDate) {
+	if (ps.sinceDate) {
 		push({
 			createdAt: {
-				$gt: new Date(sinceDate)
+				$gt: new Date(ps.sinceDate)
 			}
 		});
 	}
 
-	if (untilDate) {
+	if (ps.untilDate) {
 		push({
 			createdAt: {
-				$lt: new Date(untilDate)
+				$lt: new Date(ps.untilDate)
 			}
 		});
 	}
@@ -312,8 +347,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			sort: {
 				_id: -1
 			},
-			limit: limit,
-			skip: offset
+			limit: ps.limit,
+			skip: ps.offset
 		});
 
 	// Serialize
