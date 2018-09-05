@@ -865,6 +865,8 @@ desktop/views/pages/welcome.vue:
   signin-button: "やってる"
   signup-button: "やる"
   timeline: "Timeline"
+  announcements: "お知らせ"
+  photos: "最近の画像"
   powered-by-misskey: "Desenvolvido por <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Drive Misskey"
