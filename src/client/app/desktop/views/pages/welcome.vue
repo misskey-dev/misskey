@@ -44,8 +44,7 @@
 		<div class="photos block">
 			<header>%fa:images% %i18n:@photos%</header>
 			<div>
-				<div v-for="photo in photos">
-				</div>
+				<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
 			</div>
 		</div>
 
@@ -99,6 +98,7 @@ export default Vue.extend({
 			photos: []
 		};
 	},
+
 	created() {
 		(this as any).os.getMeta().then(meta => {
 			this.name = meta.name;
@@ -110,14 +110,30 @@ export default Vue.extend({
 			this.stats = stats;
 		});
 
+		const image = [
+			'image/jpeg',
+			'image/png',
+			'image/gif'
+		];
+
+		(this as any).api('notes/local-timeline', {
+			fileType: image,
+			limit: 6
+		}).then(notes => {
+			const files = [].concat(...notes.map(n => n.files));
+			this.photos = files.filter(f => image.includes(f.type)).slice(0, 6);
+		});
 	},
+
 	methods: {
 		signup() {
 			this.$modal.show('signup');
 		},
+
 		signin() {
 			this.$modal.show('signin');
 		},
+
 		dark() {
 			this.$store.commit('device/set', {
 				key: 'darkmode',
@@ -279,6 +295,19 @@ root(isDark)
 		> .photos
 			grid-row 2
 			grid-column 2
+
+			> div
+				display grid
+				grid-template-rows 1fr 1fr 1fr
+				grid-template-columns 1fr 1fr
+				gap 8px
+				height 100%
+				padding 16px
+
+				> div
+					//border-radius 4px
+					background-position center center
+					background-size cover
 
 		> .nav
 			display flex
