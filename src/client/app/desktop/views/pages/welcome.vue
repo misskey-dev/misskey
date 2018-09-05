@@ -34,9 +34,9 @@
 		<div class="announcements block">
 			<header>%fa:broadcast-tower% %i18n:@announcements%</header>
 			<div>
-				<div v-for="broadcast in broadcasts">
-					<h1 v-html="broadcast.title"></h1>
-					<div v-html="broadcast.text"></div>
+				<div v-for="announcement in announcements">
+					<h1 v-html="announcement.title"></h1>
+					<div v-html="announcement.text"></div>
 				</div>
 			</div>
 		</div>
@@ -94,7 +94,7 @@ export default Vue.extend({
 			host,
 			name: 'Misskey',
 			description: '',
-			broadcasts: [],
+			announcements: [],
 			photos: []
 		};
 	},
@@ -103,7 +103,7 @@ export default Vue.extend({
 		(this as any).os.getMeta().then(meta => {
 			this.name = meta.name;
 			this.description = meta.description;
-			this.broadcasts = meta.broadcasts;
+			this.announcements = meta.broadcasts;
 		});
 
 		(this as any).api('stats').then(stats => {

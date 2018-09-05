@@ -1,5 +1,5 @@
 <template>
-<div class="welcome">
+<div class="wgwfgvvimdjvhjfwxropcwksnzftjqes">
 	<div>
 		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name">
 		<p class="host">{{ host }}</p>
@@ -17,9 +17,18 @@
 		<div class="hashtags">
 			<router-link v-for="tag in tags" :key="tag" :to="`/tags/${ tag }`" :title="tag">#{{ tag }}</router-link>
 		</div>
+		<div class="photos">
+			<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
+		</div>
 		<div class="stats" v-if="stats">
 			<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
 			<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
+		</div>
+		<div class="announcements" v-if="announcements && announcements.length > 0">
+			<article v-for="announcement in announcements">
+				<span class="title" v-html="announcement.title"></span>
+				<div v-html="announcement.text"></div>
+			</article>
 		</div>
 		<footer>
 			<small>{{ copyright }}</small>
@@ -41,13 +50,16 @@ export default Vue.extend({
 			host,
 			name: 'Misskey',
 			description: '',
-			tags: []
+			tags: [],
+			photos: [],
+			announcements: []
 		};
 	},
 	created() {
 		(this as any).os.getMeta().then(meta => {
 			this.name = meta.name;
 			this.description = meta.description;
+			this.announcements = meta.broadcasts;
 		});
 
 		(this as any).api('stats').then(stats => {
@@ -57,12 +69,26 @@ export default Vue.extend({
 		(this as any).api('hashtags/trend').then(stats => {
 			this.tags = stats.map(x => x.tag);
 		});
+
+		const image = [
+			'image/jpeg',
+			'image/png',
+			'image/gif'
+		];
+
+		(this as any).api('notes/local-timeline', {
+			fileType: image,
+			limit: 6
+		}).then(notes => {
+			const files = [].concat(...notes.map(n => n.files));
+			this.photos = files.filter(f => image.includes(f.type)).slice(0, 6);
+		});
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.welcome
+root(isDark)
 	text-align center
 	//background #fff
 
@@ -145,6 +171,19 @@ export default Vue.extend({
 			> *
 				margin 0 16px
 
+		> .photos
+			display grid
+			grid-template-rows 1fr 1fr 1fr
+			grid-template-columns 1fr 1fr
+			gap 8px
+			height 300px
+			margin-top 16px
+
+			> div
+				border-radius 4px
+				background-position center center
+				background-size cover
+
 		> .stats
 			margin 16px 0
 			padding 8px
@@ -156,6 +195,20 @@ export default Vue.extend({
 			> *
 				margin 0 8px
 
+		> .announcements
+			margin 16px 0
+
+			> article
+				background isDark ? rgba(30, 129, 216, 0.2) : rgba(155, 196, 232, 0.2)
+				border-radius 6px
+				color isDark ? #fff : #3f4967
+				padding 16px
+				margin 8px 0
+				font-size 12px
+
+				> .title
+					font-weight bold
+
 		> footer
 			text-align center
 			color #444
@@ -164,5 +217,11 @@ export default Vue.extend({
 				display block
 				margin 16px 0 0 0
 				opacity 0.7
+
+.wgwfgvvimdjvhjfwxropcwksnzftjqes[data-darkmode]
+	root(true)
+
+.wgwfgvvimdjvhjfwxropcwksnzftjqes:not([data-darkmode])
+	root(false)
 
 </style>
