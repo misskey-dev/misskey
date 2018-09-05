@@ -9,41 +9,65 @@
 
 	<div class="body">
 		<div class="main block">
-			<h1 v-if="name != 'Misskey'">{{ name }}</h1>
-			<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
+			<div>
+				<h1 v-if="name != 'Misskey'">{{ name }}</h1>
+				<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
 
-			<div class="info">
-				<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
-				<span class="stats" v-if="stats">
-					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
-					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
-				</span>
+				<div class="info">
+					<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
+					<span class="stats" v-if="stats">
+						<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
+						<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
+					</span>
+				</div>
+
+				<p class="desc" v-html="description || '%i18n:common.about%'"></p>
+
+				<p class="sign">
+					<span class="signup" @click="signup">%i18n:@signup%</span>
+					<span class="divider">|</span>
+					<span class="signin" @click="signin">%i18n:@signin%</span>
+				</p>
 			</div>
-
-			<p class="desc" v-html="description || '%i18n:common.about%'"></p>
-
-			<p class="sign">
-				<span class="signup" @click="signup">%i18n:@signup%</span>
-				<span class="divider">|</span>
-				<span class="signin" @click="signin">%i18n:@signin%</span>
-			</p>
 		</div>
 
-		<div class="broadcasts block">
-			<div v-for="broadcast in broadcasts">
-				<h1 v-html="broadcast.title"></h1>
-				<div v-html="broadcast.text"></div>
+		<div class="announcements block">
+			<header>%fa:broadcast-tower% %i18n:@announcements%</header>
+			<div>
+				<div v-for="broadcast in broadcasts">
+					<h1 v-html="broadcast.title"></h1>
+					<div v-html="broadcast.text"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="photos block">
+			<header>%fa:images% %i18n:@photos%</header>
+			<div>
+				<div v-for="photo in photos">
+				</div>
 			</div>
 		</div>
 
 		<div class="nav block">
-			<mk-nav class="nav"/>
+			<div>
+				<mk-nav class="nav"/>
+			</div>
 		</div>
 
 		<div class="side">
-			<mk-trends class="trends block"/>
+			<div class="trends block">
+				<div>
+					<mk-trends/>
+				</div>
+			</div>
 
-			<mk-welcome-timeline class="tl block" :max="20"/>
+			<div class="tl block">
+				<header>%fa:comment-alt R% %i18n:@timeline%</header>
+				<div>
+					<mk-welcome-timeline class="tl" :max="20"/>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -71,7 +95,8 @@ export default Vue.extend({
 			host,
 			name: 'Misskey',
 			description: '',
-			broadcasts: []
+			broadcasts: [],
+			photos: []
 		};
 	},
 	created() {
@@ -166,8 +191,8 @@ root(isDark)
 
 	> .body
 		display grid
-		grid-template-rows 0.5fr 0.5fr 64px
-		grid-template-columns 1fr 350px
+		grid-template-rows 1fr 1fr 64px
+		grid-template-columns 1fr 1fr 350px
 		gap 16px
 		width 100%
 		max-width 1200px
@@ -178,87 +203,95 @@ root(isDark)
 
 		.block
 			color isDark ? #fff : #444
-			background isDark ? #313543 : #fff
+			background isDark ? #282C37 : #fff
 			box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 			//border-radius 8px
 			overflow auto
 
-		> .main
-			grid-row 1
-			grid-column 1
-			padding 32px
-			border-top solid 5px $theme-color
+			> header
+				padding 0 16px
+				line-height 48px
+				background isDark ? #313543 : #fff
 
-			> h1
-				margin 0
-
-				> img
-					margin -8px 0 0 -16px
-					max-width 280px
-
-			> .info
-				margin 0 auto 16px auto
-				width $width
-				font-size 14px
-
-				> .stats
-					margin-left 16px
-					padding-left 16px
-					border-left solid 1px isDark ? #fff : #444
-
-					> *
-						margin-right 16px
-
-			> .sign
-				font-size 120%
-
-				> .divider
-					margin 0 16px
-
-				> .signin
-				> .signup
-					cursor pointer
-
-					&:hover
-						color $theme-color
-
-			> .hashtags
-				margin 16px auto
-				width $width
-				font-size 14px
-				background rgba(#000, 0.3)
-				border-radius 8px
-
-				> *
-					display inline-block
-					margin 14px
-
-		> .broadcasts
-			grid-row 2
-			grid-column 1
-			padding 32px
+				& + div
+					max-height calc(100% - 48px)
 
 			> div
-				padding 0 0 16px 0
-				margin 0 0 16px 0
-				border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+				overflow auto
+
+		> .main
+			grid-row 1
+			grid-column 1 / 3
+			border-top solid 5px $theme-color
+
+			> div
+				padding 32px
 
 				> h1
 					margin 0
-					font-size 1.5em
+
+					> img
+						margin -8px 0 0 -16px
+						max-width 280px
+
+				> .info
+					margin 0 auto 16px auto
+					width $width
+					font-size 14px
+
+					> .stats
+						margin-left 16px
+						padding-left 16px
+						border-left solid 1px isDark ? #fff : #444
+
+						> *
+							margin-right 16px
+
+				> .sign
+					font-size 120%
+
+					> .divider
+						margin 0 16px
+
+					> .signin
+					> .signup
+						cursor pointer
+
+						&:hover
+							color $theme-color
+
+		> .announcements
+			grid-row 2
+			grid-column 1
+
+			> div
+				padding 32px
+
+				> div
+					padding 0 0 16px 0
+					margin 0 0 16px 0
+					border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+
+					> h1
+						margin 0
+						font-size 1.25em
+
+		> .photos
+			grid-row 2
+			grid-column 2
 
 		> .nav
 			display flex
 			justify-content center
 			align-items center
 			grid-row 3
-			grid-column 1
+			grid-column 1 / 3
 			font-size 14px
 
 		> .side
 			display grid
 			grid-row 1 / 4
-			grid-column 2
+			grid-column 3
 			grid-template-rows 1fr 350px
 			grid-template-columns 1fr
 			gap 16px
@@ -266,8 +299,6 @@ root(isDark)
 			> .tl
 				grid-row 1
 				grid-column 1
-				text-align left
-				max-height 100%
 				overflow auto
 
 			> .trends
