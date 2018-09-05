@@ -23,6 +23,12 @@ export const meta = {
 			}
 		}),
 
+		fileType: $.arr($.str).optional.note({
+			desc: {
+				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
+			}
+		}),
+
 		limit: $.num.optional.range(1, 100).note({
 			default: 10
 		}),
@@ -82,6 +88,14 @@ export default async (params: any, user: ILocalUser) => {
 
 	if (withFiles) {
 		query.fileIds = { $exists: true, $ne: [] };
+	}
+
+	if (ps.fileType) {
+		query.fileIds = { $exists: true, $ne: [] };
+
+		query['_files.contentType'] = {
+			$in: ps.fileType
+		};
 	}
 
 	if (ps.sinceId) {
