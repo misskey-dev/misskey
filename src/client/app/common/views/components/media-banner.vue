@@ -42,7 +42,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-media-banner
+root(isDark)
 	width 100%
 	border-radius 4px
 	margin-top 4px
@@ -70,11 +70,8 @@ export default Vue.extend({
 		> .mk-media-banner-icon
 			font-size 1.6em
 
-	.mk-media-banner-download[data-darkmode]
-		background #21242d
-
-	.mk-media-banner-download:not([data-darkmode])
-		background #f7f7f7
+	.mk-media-banner-download
+		background isDark ? #21242d : #f7f7f7
 
 	.mk-media-banner-sensitive
 		background #111
@@ -85,4 +82,10 @@ export default Vue.extend({
 			display block
 			width 100%
 			height 100%
+
+.mk-media-banner[data-darkmode]
+	root(true)
+
+.mk-media-banner:not([data-darkmode])
+	root(false)
 </style>
