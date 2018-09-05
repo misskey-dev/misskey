@@ -4,6 +4,12 @@ import config from '../config';
 const index = {
 	settings: {
 		analysis: {
+			normalizer: {
+				lowercase_normalizer: {
+					type: 'custom',
+					filter: ['lowercase']
+				}
+			},
 			analyzer: {
 				bigram: {
 					tokenizer: 'bigram_tokenizer'
@@ -24,7 +30,8 @@ const index = {
 				text: {
 					type: 'text',
 					index: true,
-					analyzer: 'bigram'
+					analyzer: 'bigram',
+					normalizer: 'lowercase_normalizer'
 				}
 			}
 		}
