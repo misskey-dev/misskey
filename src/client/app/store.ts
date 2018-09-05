@@ -43,7 +43,8 @@ const defaultDeviceSettings = {
 	debug: false,
 	lightmode: false,
 	loadRawImages: false,
-	postStyle: 'standard'
+	postStyle: 'standard',
+	mobileNotificationPosition: 'bottom'
 };
 
 export default (os: MiOS) => new Vuex.Store({
