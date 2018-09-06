@@ -260,6 +260,8 @@ export default class Reversi {
 			const found: number[] = []; // 挟めるかもしれない相手の石を入れておく配列
 			let [x, y] = this.transformPosToXy(initPos);
 			while (true) {
+				[x, y] = nextPos(x, y);
+
 				// 座標が指し示す位置がボード外に出たとき
 				if (this.opts.loopedBoard) {
 					x = ((x % this.mapWidth) + this.mapWidth) % this.mapWidth;
@@ -281,8 +283,6 @@ export default class Reversi {
 				if (stone === null) return []; // 挟めないことが確定 (石が置かれていないマスに到達)
 				if (stone === enemyColor) found.push(pos); // 挟めるかもしれない (相手の石を発見)
 				if (stone === color) return found; // 挟めることが確定 (対となる自分の石を発見)
-
-				[x, y] = nextPos(x, y);
 			}
 		};
 
