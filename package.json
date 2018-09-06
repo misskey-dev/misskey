@@ -80,7 +80,7 @@
 		"@types/webpack": "4.4.11",
 		"@types/webpack-stream": "3.2.10",
 		"@types/websocket": "0.0.40",
-		"@types/ws": "6.0.0",
+		"@types/ws": "6.0.1",
 		"animejs": "2.2.0",
 		"autosize": "4.0.2",
 		"autwh": "0.1.0",
