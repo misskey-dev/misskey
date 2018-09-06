@@ -1,3 +1,5 @@
+import { capitalize } from "../../../prelude/string";
+
 function escape(text: string) {
 	return text
 		.replace(/>/g, '&gt;')
@@ -89,7 +91,7 @@ const _keywords = [
 ];
 
 const keywords = _keywords
-	.concat(_keywords.map(k => k[0].toUpperCase() + k.substr(1)))
+	.concat(_keywords.map(capitalize))
 	.concat(_keywords.map(k => k.toUpperCase()))
 	.sort((a, b) => b.length - a.length);
 
