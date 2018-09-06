@@ -21,3 +21,7 @@ export function erase<T>(x: T, xs: T[]): T[] {
 export function unique<T>(xs: T[]): T[] {
 	return [...new Set(xs)];
 }
+
+export function sum(xs: number[]): number {
+	return xs.reduce((a, b) => a + b, 0);
+}

@@ -85,6 +85,7 @@ import parse from '../../../../../mfm/parse';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './note.sub.vue';
+import { sum } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	components: {
@@ -123,9 +124,7 @@ export default Vue.extend({
 
 		reactionsCount(): number {
 			return this.p.reactionCounts
-				? Object.keys(this.p.reactionCounts)
-					.map(key => this.p.reactionCounts[key])
-					.reduce((a, b) => a + b)
+				? sum(Object.values(this.p.reactionCounts))
 				: 0;
 		},
 
