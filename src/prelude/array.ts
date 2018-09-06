@@ -17,3 +17,7 @@ export function intersperse<T>(sep: T, xs: T[]): T[] {
 export function erase<T>(x: T, xs: T[]): T[] {
 	return xs.filter(y => x !== y);
 }
+
+export function unique<T>(xs: T[]): T[] {
+	return [...new Set(xs)];
+}
