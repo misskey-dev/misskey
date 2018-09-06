@@ -5,6 +5,7 @@ import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 import getParams from '../../get-params';
+import { erase } from '../../../../prelude/array';
 
 export const meta = {
 	desc: {
@@ -103,23 +104,23 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	if (psErr) throw psErr;
 
 	if (ps.includeUserUsernames != null) {
-		const ids = (await Promise.all(ps.includeUserUsernames.map(async (username) => {
+		const ids = erase(null, await Promise.all(ps.includeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
 				usernameLower: username.toLowerCase()
 			});
 			return _user ? _user._id : null;
-		}))).filter(id => id != null);
+		})));
 
 		ids.forEach(id => ps.includeUserIds.push(id));
 	}
 
 	if (ps.excludeUserUsernames != null) {
-		const ids = (await Promise.all(ps.excludeUserUsernames.map(async (username) => {
+		const ids = erase(null, await Promise.all(ps.excludeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
 				usernameLower: username.toLowerCase()
 			});
 			return _user ? _user._id : null;
-		}))).filter(id => id != null);
+		})));
 
 		ids.forEach(id => ps.excludeUserIds.push(id));
 	}

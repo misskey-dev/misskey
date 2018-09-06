@@ -17,6 +17,7 @@ import Err from './common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
 import { HybridTimelineStreamManager } from './common/scripts/streaming/hybrid-timeline';
 import { GlobalTimelineStreamManager } from './common/scripts/streaming/global-timeline';
+import { erase } from '../../prelude/array';
 
 //#region api requests
 let spinner = null;
@@ -537,7 +538,7 @@ export default class MiOS extends EventEmitter {
 	}
 
 	public unregisterStreamConnection(connection: Connection) {
-		this.connections = this.connections.filter(c => c != connection);
+		this.connections = erase(connection, this.connections);
 	}
 }
 

@@ -24,6 +24,7 @@ import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import { updateNoteStats } from '../update-chart';
+import { erase, unique } from '../../prelude/array';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -103,7 +104,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.viaMobile == null) data.viaMobile = false;
 
 	if (data.visibleUsers) {
-		data.visibleUsers = data.visibleUsers.filter(x => x != null);
+		data.visibleUsers = erase(null, data.visibleUsers);
 	}
 
 	if (data.reply && data.reply.deletedAt != null) {
@@ -384,7 +385,7 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 		.map(t => (t as TextElementHashtag).hashtag)
 		.filter(tag => tag.length <= 100);
 
-	return [...new Set(hashtags)];
+	return unique(hashtags);
 }
 
 function index(note: INote) {
@@ -541,20 +542,20 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentionTokens = [...new Set(
+	const mentionTokens = unique(
 		tokens
 			.filter(t => t.type == 'mention') as TextElementMention[]
-	)];
+	);
 
-	const mentionedUsers = [...new Set(
-		(await Promise.all(mentionTokens.map(async m => {
+	const mentionedUsers = unique(
+		erase(null, await Promise.all(mentionTokens.map(async m => {
 			try {
 				return await resolveUser(m.username, m.host);
 			} catch (e) {
 				return null;
 			}
-		}))).filter(x => x != null)
-	)];
+		})))
+	);
 
 	return mentionedUsers;
 }
