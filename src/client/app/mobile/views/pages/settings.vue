@@ -13,6 +13,7 @@
 				<section>
 					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
 					<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
+					<ui-switch v-model="$store.state.settings.contrastedAcct" @change="onChangeContrastedAcct">%i18n:@contrasted-acct%</ui-switch>
 					<ui-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 					<ui-switch v-model="$store.state.settings.disableAnimatedMfm" @change="onChangeDisableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 					<ui-switch v-model="$store.state.settings.games.reversi.showBoardLabels" @change="onChangeReversiBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
@@ -214,6 +215,13 @@ export default Vue.extend({
 		onChangeCircleIcons(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'circleIcons',
+				value: v
+			});
+		},
+
+		onChangeContrastedAcct(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'contrastedAcct',
 				value: v
 			});
 		},

@@ -16,6 +16,7 @@ const defaultSettings = {
 	suggestRecentHashtags: true,
 	showClockOnHeader: true,
 	circleIcons: true,
+	contrastedAcct: true,
 	gradientWindowHeader: false,
 	showReplyTarget: true,
 	showMyRenotes: true,

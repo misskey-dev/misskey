@@ -1,7 +1,7 @@
 <template>
 <span class="mk-acct">
 	<span class="name">@{{ user.username }}</span>
-	<span class="host" v-if="user.host || detail">@{{ user.host || host }}</span>
+	<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }" v-if="user.host || detail">@{{ user.host || host }}</span>
 </span>
 </template>
 
@@ -20,6 +20,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-acct
-	> .host
+	> .host.fade
 		opacity 0.5
 </style>
