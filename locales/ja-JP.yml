@@ -1383,7 +1383,7 @@ mobile/views/pages/settings.vue:
   settings: "設定"
   signout: "サインアウト"
   sound: "サウンド"
-  enableSounds: "サウンドを有効にする"
+  enable-sounds: "サウンドを有効にする"
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
