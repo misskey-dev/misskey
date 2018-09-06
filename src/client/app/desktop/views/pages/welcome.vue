@@ -287,8 +287,8 @@ root(isDark)
 				> .char
 					display block
 					position absolute
-					right 0
-					bottom 0
+					right 16px
+					bottom 16px
 					width 180px
 					opacity 0.3
 
