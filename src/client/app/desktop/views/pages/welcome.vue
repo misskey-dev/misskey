@@ -28,6 +28,8 @@
 					<span class="divider">|</span>
 					<span class="signin" @click="signin">%i18n:@signin%</span>
 				</p>
+
+				<img src="/assets/pointer.png" alt="" class="char">
 			</div>
 		</div>
 
@@ -247,6 +249,7 @@ root(isDark)
 
 			> div
 				padding 32px
+				min-height 100%
 
 				> h1
 					margin 0
@@ -280,6 +283,17 @@ root(isDark)
 
 						&:hover
 							color $theme-color
+
+				> .char
+					display block
+					position absolute
+					right 0
+					bottom 0
+					width 180px
+					opacity 0.3
+
+				> *:not(.char)
+					z-index 1
 
 		> .announcements
 			grid-row 2
