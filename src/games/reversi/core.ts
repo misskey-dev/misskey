@@ -110,7 +110,7 @@ export default class Reversi {
 	 * 白石の数
 	 */
 	public get whiteCount() {
-		return count(BLACK, this.board);
+		return count(WHITE, this.board);
 	}
 
 	/**
