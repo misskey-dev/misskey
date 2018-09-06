@@ -24,7 +24,7 @@ import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import { updateNoteStats } from '../update-chart';
-import { erase } from '../../prelude/array';
+import { erase, unique } from '../../prelude/array';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -385,7 +385,7 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 		.map(t => (t as TextElementHashtag).hashtag)
 		.filter(tag => tag.length <= 100);
 
-	return [...new Set(hashtags)];
+	return unique(hashtags);
 }
 
 function index(note: INote) {
@@ -542,12 +542,12 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentionTokens = [...new Set(
+	const mentionTokens = unique(
 		tokens
 			.filter(t => t.type == 'mention') as TextElementMention[]
-	)];
+	);
 
-	const mentionedUsers = [...new Set(
+	const mentionedUsers = unique(
 		erase(null, await Promise.all(mentionTokens.map(async m => {
 			try {
 				return await resolveUser(m.username, m.host);
@@ -555,7 +555,7 @@ async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<
 				return null;
 			}
 		})))
-	)];
+	);
 
 	return mentionedUsers;
 }
