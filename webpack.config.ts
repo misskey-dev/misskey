@@ -196,7 +196,7 @@ module.exports = {
 			}, {
 				loader: 'sass-loader',
 				options: {
-					importer: jsonImporter,
+					importer: jsonImporter(),
 				}
 			}]
 		}, {
