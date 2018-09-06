@@ -238,87 +238,55 @@ export default class Reversi {
 	/**
 	 * 指定のマスに石を置いた時の、反転させられる石を取得します
 	 * @param color 自分の色
-	 * @param pos 位置
+	 * @param initPos 位置
 	 */
-	public effects(color: Color, pos: number): number[] {
+	public effects(color: Color, initPos: number): number[] {
 		const enemyColor = !color;
 
-		// ひっくり返せる石(の位置)リスト
-		let stones: number[] = [];
+		const diffVectors: [number, number][] = [
+			[  0,  -1], // 上
+			[ +1,  -1], // 右上
+			[ +1,   0], // 右
+			[ +1,  +1], // 右下
+			[  0,  +1], // 下
+			[ -1,  +1], // 左下
+			[ -1,   0], // 左
+			[ -1,  -1]  // 左上
+		];
 
-		const initPos = pos;
+		const effectsInLine = ([dx, dy]: [number, number]): number[] => {
+			const nextPos = (x: number, y: number): [number, number] => [x + dx, y + dy];
 
-		// 走査
-		const iterate = (fn: (i: number) => number[]) => {
-			let i = 1;
-			const found = [];
-
+			const found: number[] = []; // 挟めるかもしれない相手の石を入れておく配列
+			let [x, y] = this.transformPosToXy(initPos);
 			while (true) {
-				let [x, y] = fn(i);
-
 				// 座標が指し示す位置がボード外に出たとき
 				if (this.opts.loopedBoard) {
-					if (x <  0             ) x = this.mapWidth  - ((-x) % this.mapWidth);
-					if (y <  0             ) y = this.mapHeight - ((-y) % this.mapHeight);
-					if (x >= this.mapWidth ) x = x % this.mapWidth;
-					if (y >= this.mapHeight) y = y % this.mapHeight;
+					x = ((x % this.mapWidth) + this.mapWidth) % this.mapWidth;
+					y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight;
 
-					// for debug
-					//if (x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight) {
-					//	console.log(x, y);
-					//}
-
-					// 一周して自分に帰ってきたら
 					if (this.transformXyToPos(x, y) == initPos) {
-						// ↓のコメントアウトを外すと、「現時点で自分の石が隣接していないが、
-						// そこに置いたとするとループして最終的に挟んだことになる」というケースを有効化します。(Test4のマップで違いが分かります)
-						// このケースを有効にした方が良いのか無効にした方が良いのか判断がつかなかったためとりあえず無効としておきます
-						// (あと無効な方がゲームとしておもしろそうだった)
-						stones = stones.concat(found);
-						break;
+						// 盤面の境界でループし、自分が石を置く位置に戻ってきたとき、挟めるようにしている (ref: Test4のマップ)
+						return found;
 					}
 				} else {
-					if (x == -1 || y == -1 || x == this.mapWidth || y == this.mapHeight) break;
+					if (x == -1 || y == -1 || x == this.mapWidth || y == this.mapHeight) {
+						return []; // 挟めないことが確定 (盤面外に到達)
+					}
 				}
 
 				const pos = this.transformXyToPos(x, y);
-
-				//#region 「配置不能」マスに当たった場合走査終了
-				const pixel = this.mapDataGet(pos);
-				if (pixel == 'null') break;
-				//#endregion
-
-				// 石取得
+				if (this.mapDataGet(pos) === 'null') return []; // 挟めないことが確定 (配置不可能なマスに到達)
 				const stone = this.board[pos];
+				if (stone === null) return []; // 挟めないことが確定 (石が置かれていないマスに到達)
+				if (stone === enemyColor) found.push(pos); // 挟めるかもしれない (相手の石を発見)
+				if (stone === color) return found; // 挟めることが確定 (対となる自分の石を発見)
 
-				// 石が置かれていないマスなら走査終了
-				if (stone === null) break;
-
-				// 相手の石なら「ひっくり返せるかもリスト」に入れておく
-				if (stone === enemyColor) found.push(pos);
-
-				// 自分の石なら「ひっくり返せるかもリスト」を「ひっくり返せるリスト」に入れ、走査終了
-				if (stone === color) {
-					stones = stones.concat(found);
-					break;
-				}
-
-				i++;
+				[x, y] = nextPos(x, y);
 			}
 		};
 
-		const [x, y] = this.transformPosToXy(pos);
-
-		iterate(i => [x    , y - i]); // 上
-		iterate(i => [x + i, y - i]); // 右上
-		iterate(i => [x + i, y    ]); // 右
-		iterate(i => [x + i, y + i]); // 右下
-		iterate(i => [x    , y + i]); // 下
-		iterate(i => [x - i, y + i]); // 左下
-		iterate(i => [x - i, y    ]); // 左
-		iterate(i => [x - i, y - i]); // 左上
-
-		return stones;
+		return [].concat(...diffVectors.map(effectsInLine));
 	}
 
 	/**
