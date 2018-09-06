@@ -34,8 +34,9 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	// write content at URL to temp file
 	await new Promise((res, rej) => {
 		const writable = fs.createWriteStream(path);
+		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
 		request({
-			url,
+			url: requestUrl,
 			headers: {
 				'User-Agent': config.user_agent
 			}
