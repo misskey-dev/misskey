@@ -126,7 +126,7 @@ root(isDark)
 		margin 0
 		font-size 0.95em
 		font-weight normal
-		color #4078c0
+		color isDark ? #539eff : #4078c0
 
 	> p
 		display block
