@@ -15,7 +15,7 @@ export default function(html: string): string {
 		if (node.nodeName == '#text') return node.value;
 
 		if (node.childNodes) {
-			return node.childNodes.map((n: any) => getText(n)).join('');
+			return node.childNodes.map(getText).join('');
 		}
 
 		return '';

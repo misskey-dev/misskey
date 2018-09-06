@@ -93,12 +93,12 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 	// このDriveFileを添付しているNoteをすべて削除
 	await Promise.all((
 		await Note.find({ fileIds: d._id })
-	).map(x => deleteNote(x)));
+	).map(deleteNote));
 
 	// このDriveFileを添付しているMessagingMessageをすべて削除
 	await Promise.all((
 		await MessagingMessage.find({ fileId: d._id })
-	).map(x => deleteMessagingMessage(x)));
+	).map(deleteMessagingMessage));
 
 	// このDriveFileがアバターやバナーに使われていたらそれらのプロパティをnullにする
 	const u = await User.findOne({ _id: d.metadata.userId });
@@ -114,7 +114,7 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 	// このDriveFileのDriveFileThumbnailをすべて削除
 	await Promise.all((
 		await DriveFileThumbnail.find({ 'metadata.originalId': d._id })
-	).map(x => deleteDriveFileThumbnail(x)));
+	).map(deleteDriveFileThumbnail));
 
 	// このDriveFileのチャンクをすべて削除
 	await DriveFileChunk.remove({

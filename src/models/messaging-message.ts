@@ -46,7 +46,7 @@ export async function deleteMessagingMessage(messagingMessage: string | mongo.Ob
 	// このMessagingMessageを指すMessagingHistoryをすべて削除
 	await Promise.all((
 		await MessagingHistory.find({ messageId: m._id })
-	).map(x => deleteMessagingHistory(x)));
+	).map(deleteMessagingHistory));
 
 	// このMessagingMessageを削除
 	await MessagingMessage.remove({

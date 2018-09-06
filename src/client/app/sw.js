@@ -26,7 +26,7 @@ self.addEventListener('activate', ev => {
 	ev.waitUntil(
 		caches.keys().then(keys => Promise.all(
 			erase(_VERSION_, keys)
-				.map(key => caches.delete(key))
+				.map(caches.delete)
 		))
 	);
 });

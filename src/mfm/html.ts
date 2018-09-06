@@ -81,7 +81,7 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 	},
 
 	text({ document }, { content }) {
-		const nodes = (content as string).split('\n').map(x => document.createTextNode(x));
+		const nodes = (content as string).split('\n').map(document.createTextNode);
 		for (const x of intersperse(document.createElement('br'), nodes)) {
 			document.body.appendChild(x);
 		}
