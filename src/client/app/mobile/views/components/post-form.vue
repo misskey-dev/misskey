@@ -59,6 +59,7 @@ import MkVisibilityChooser from '../../../common/views/components/visibility-cho
 import getFace from '../../../common/scripts/get-face';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
+import { erase } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	components: {
@@ -262,7 +263,7 @@ export default Vue.extend({
 		},
 
 		removeVisibleUser(user) {
-			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+			this.visibleUsers = erase(user, this.visibleUsers);
 		},
 
 		clear() {

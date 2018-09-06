@@ -9,3 +9,7 @@ export function count<T>(x: T, xs: T[]): number {
 export function intersperse<T>(sep: T, xs: T[]): T[] {
 	return [].concat(...xs.map(x => [sep, x])).slice(1);
 }
+
+export function erase<T>(x: T, xs: T[]): T[] {
+	return xs.filter(y => x !== y);
+}
