@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { erase } from '../../../../../prelude/array';
 export default Vue.extend({
 	data() {
 		return {
@@ -53,7 +54,7 @@ export default Vue.extend({
 
 		get() {
 			return {
-				choices: this.choices.filter(choice => choice != '')
+				choices: erase('', this.choices)
 			}
 		},
 

@@ -24,6 +24,7 @@ import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import { updateNoteStats } from '../update-chart';
+import { erase } from '../../prelude/array';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -103,7 +104,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.viaMobile == null) data.viaMobile = false;
 
 	if (data.visibleUsers) {
-		data.visibleUsers = data.visibleUsers.filter(x => x != null);
+		data.visibleUsers = erase(null, data.visibleUsers);
 	}
 
 	if (data.reply && data.reply.deletedAt != null) {
@@ -547,13 +548,13 @@ async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<
 	)];
 
 	const mentionedUsers = [...new Set(
-		(await Promise.all(mentionTokens.map(async m => {
+		erase(null, await Promise.all(mentionTokens.map(async m => {
 			try {
 				return await resolveUser(m.username, m.host);
 			} catch (e) {
 				return null;
 			}
-		}))).filter(x => x != null)
+		})))
 	)];
 
 	return mentionedUsers;

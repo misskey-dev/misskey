@@ -1,6 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 import Connection from './stream';
+import { erase } from '../../../../../prelude/array';
 
 /**
  * ストリーム接続を管理するクラス
@@ -89,7 +90,7 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 	 * @param userId use で発行したユーザーID
 	 */
 	public dispose(userId) {
-		this.users = this.users.filter(id => id != userId);
+		this.users = erase(userId, this.users);
 
 		this._connection.user = `Managed (${ this.users.length })`;
 
