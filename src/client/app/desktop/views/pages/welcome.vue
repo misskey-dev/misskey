@@ -85,6 +85,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { host, copyright } from '../../../config';
+import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	data() {
@@ -119,8 +120,8 @@ export default Vue.extend({
 		(this as any).api('notes/local-timeline', {
 			fileType: image,
 			limit: 6
-		}).then(notes => {
-			const files = [].concat(...notes.map(n => n.files));
+		}).then((notes: any[]) => {
+			const files = concat(notes.map((n: any): any[] => n.files));
 			this.photos = files.filter(f => image.includes(f.type)).slice(0, 6);
 		});
 	},

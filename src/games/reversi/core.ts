@@ -1,4 +1,4 @@
-import { count, countIf } from "../../prelude/array";
+import { count, concat } from "../../prelude/array";
 
 // MISSKEY REVERSI ENGINE
 
@@ -286,7 +286,7 @@ export default class Reversi {
 			}
 		};
 
-		return [].concat(...diffVectors.map(effectsInLine));
+		return concat(diffVectors.map(effectsInLine));
 	}
 
 	/**
