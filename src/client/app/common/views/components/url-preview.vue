@@ -241,6 +241,8 @@ root(isDark)
 				margin 0
 				color isDark ? #a4aab3 : #777
 				font-size 0.8em
+				max-height 5.1em
+				overflow hidden
 
 			> footer
 				margin-top 8px
