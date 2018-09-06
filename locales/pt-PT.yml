@@ -865,6 +865,8 @@ desktop/views/pages/welcome.vue:
   signin-button: "やってる"
   signup-button: "やる"
   timeline: "Timeline"
+  announcements: "お知らせ"
+  photos: "最近の画像"
   powered-by-misskey: "Desenvolvido por <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Drive Misskey"
@@ -1161,6 +1163,9 @@ mobile/views/pages/settings.vue:
   post-style: "投稿の表示スタイル"
   post-style-standard: "標準"
   post-style-smart: "スマート"
+  notification-position: "通知の表示"
+  notification-position-bottom: "下"
+  notification-position-top: "上"
   behavior: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
   disable-via-mobile: "「モバイルからの投稿」フラグを付けない"

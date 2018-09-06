@@ -865,6 +865,8 @@ desktop/views/pages/welcome.vue:
   signin-button: "Se connecter"
   signup-button: "S'inscrire"
   timeline: "Fil d'actualité"
+  announcements: "お知らせ"
+  photos: "最近の画像"
   powered-by-misskey: "Propulsé par <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
@@ -1161,6 +1163,9 @@ mobile/views/pages/settings.vue:
   post-style: "Style de la publication"
   post-style-standard: "Standard"
   post-style-smart: "Intelligent"
+  notification-position: "通知の表示"
+  notification-position-bottom: "下"
+  notification-position-top: "上"
   behavior: "Comportement"
   fetch-on-scroll: "Chargement lors du défilement"
   disable-via-mobile: "Ne pas mentionner que ma publication provient d'un 'périphérique mobile'"

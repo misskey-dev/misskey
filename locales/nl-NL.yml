@@ -865,6 +865,8 @@ desktop/views/pages/welcome.vue:
   signin-button: "Inloggen"
   signup-button: "Registreren"
   timeline: "Tijdlijn"
+  announcements: "お知らせ"
+  photos: "最近の画像"
   powered-by-misskey: "Powered by <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
@@ -1161,6 +1163,9 @@ mobile/views/pages/settings.vue:
   post-style: "Berichtontwerp"
   post-style-standard: "Standaard"
   post-style-smart: "Slim"
+  notification-position: "通知の表示"
+  notification-position-bottom: "下"
+  notification-position-top: "上"
   behavior: "Gedrag"
   fetch-on-scroll: "Ophalen bij scrollen"
   disable-via-mobile: "Zonder 'mobiele berichten'"

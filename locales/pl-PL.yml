@@ -865,6 +865,8 @@ desktop/views/pages/welcome.vue:
   signin-button: "Zaloguj się"
   signup-button: "Zarejestruj się"
   timeline: "Oś czasu"
+  announcements: "お知らせ"
+  photos: "最近の画像"
   powered-by-misskey: "Oparto o <b>Misskey</b>."
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
@@ -1161,6 +1163,9 @@ mobile/views/pages/settings.vue:
   post-style: "Styl wpisów"
   post-style-standard: "Standardowy"
   post-style-smart: "Inteligentny"
+  notification-position: "通知の表示"
+  notification-position-bottom: "下"
+  notification-position-top: "上"
   behavior: "Zachowanie"
   fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
   disable-via-mobile: "Nie oznaczaj wpisów jako „wysłane z telefonu”"
