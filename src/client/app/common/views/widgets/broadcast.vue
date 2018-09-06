@@ -1,6 +1,6 @@
 <template>
 <div class="anltbovirfeutcigvwgmgxipejaeozxi"
-	:data-found="broadcasts.length != 0"
+	:data-found="announcements && announcements.length != 0"
 	:data-melt="props.design == 1"
 	:data-mobile="platform == 'mobile'"
 >
@@ -14,12 +14,12 @@
 		</svg>
 	</div>
 	<p class="fetching" v-if="fetching">%i18n:@fetching%<mk-ellipsis/></p>
-	<h1 v-if="!fetching">{{ broadcasts.length == 0 ? '%i18n:@no-broadcasts%' : broadcasts[i].title }}</h1>
+	<h1 v-if="!fetching">{{ announcements.length == 0 ? '%i18n:@no-broadcasts%' : announcements[i].title }}</h1>
 	<p v-if="!fetching">
-		<span v-if="broadcasts.length != 0" v-html="broadcasts[i].text"></span>
-		<template v-if="broadcasts.length == 0">%i18n:@have-a-nice-day%</template>
+		<span v-if="announcements.length != 0" v-html="announcements[i].text"></span>
+		<template v-if="announcements.length == 0">%i18n:@have-a-nice-day%</template>
 	</p>
-	<a v-if="broadcasts.length > 1" @click="next">%i18n:@next% &gt;&gt;</a>
+	<a v-if="announcements.length > 1" @click="next">%i18n:@next% &gt;&gt;</a>
 </div>
 </template>
 
@@ -36,18 +36,18 @@ export default define({
 		return {
 			i: 0,
 			fetching: true,
-			broadcasts: []
+			announcements: []
 		};
 	},
 	mounted() {
 		(this as any).os.getMeta().then(meta => {
-			this.broadcasts = meta.broadcasts;
+			this.announcements = meta.broadcasts;
 			this.fetching = false;
 		});
 	},
 	methods: {
 		next() {
-			if (this.i == this.broadcasts.length - 1) {
+			if (this.i == this.announcements.length - 1) {
 				this.i = 0;
 			} else {
 				this.i++;

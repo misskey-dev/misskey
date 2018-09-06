@@ -34,7 +34,7 @@
 					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>
-			<div class="announcements" v-if="announcements.length > 0">
+			<div class="announcements" v-if="announcements && announcements.length > 0">
 				<article v-for="announcement in announcements">
 					<span v-html="announcement.title" class="title"></span>
 					<div v-html="announcement.text"></div>

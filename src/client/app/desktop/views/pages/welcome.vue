@@ -33,7 +33,7 @@
 
 		<div class="announcements block">
 			<header>%fa:broadcast-tower% %i18n:@announcements%</header>
-			<div>
+			<div v-if="announcements && announcements.length > 0">
 				<div v-for="announcement in announcements">
 					<h1 v-html="announcement.title"></h1>
 					<div v-html="announcement.text"></div>
