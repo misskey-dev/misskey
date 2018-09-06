@@ -140,7 +140,7 @@
 		// Random
 		localStorage.setItem('salt', Math.random().toString());
 
-		// Clear cache (serive worker)
+		// Clear cache (service worker)
 		try {
 			navigator.serviceWorker.controller.postMessage('clear');
 
