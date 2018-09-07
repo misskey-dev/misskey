@@ -6,6 +6,7 @@
 		<vue-word-cloud
 				:words="tags.map(x => [x.name, x.count])"
 				:color="color"
+				:spacing="0.25"
 				font-family="Roboto">
 			<template slot-scope="{word, text, weight}">
 				<div style="cursor: pointer;" :title="weight">
