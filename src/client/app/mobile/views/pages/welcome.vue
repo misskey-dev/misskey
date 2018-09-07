@@ -15,7 +15,7 @@
 			<mk-welcome-timeline/>
 		</div>
 		<div class="hashtags">
-			<router-link v-for="tag in tags" :key="tag" :to="`/tags/${ tag }`" :title="tag">#{{ tag }}</router-link>
+			<mk-tag-cloud/>
 		</div>
 		<div class="photos">
 			<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
@@ -30,6 +30,10 @@
 				<div v-html="announcement.text"></div>
 			</article>
 		</div>
+		<div class="info" v-if="meta">
+			<p>Version: <b>{{ meta.version }}</b></p>
+			<p>Maintainer: <b><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></b></p>
+		</div>
 		<footer>
 			<small>{{ copyright }}</small>
 		</footer>
@@ -39,25 +43,25 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, copyright, host } from '../../../config';
+import { copyright, host } from '../../../config';
 import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	data() {
 		return {
-			apiUrl,
+			meta: null,
 			copyright,
 			stats: null,
 			host,
 			name: 'Misskey',
 			description: '',
-			tags: [],
 			photos: [],
 			announcements: []
 		};
 	},
 	created() {
 		(this as any).os.getMeta().then(meta => {
+			this.meta = meta;
 			this.name = meta.name;
 			this.description = meta.description;
 			this.announcements = meta.broadcasts;
@@ -65,10 +69,6 @@ export default Vue.extend({
 
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
-		});
-
-		(this as any).api('hashtags/trend').then(stats => {
-			this.tags = stats.map(x => x.tag);
 		});
 
 		const image = [
@@ -165,12 +165,8 @@ root(isDark)
 				-webkit-overflow-scrolling touch
 
 		> .hashtags
-			padding 16px 0
-			border solid 2px #ddd
-			border-radius 8px
-
-			> *
-				margin 0 16px
+			padding 0 8px
+			height 200px
 
 		> .photos
 			display grid
@@ -209,6 +205,14 @@ root(isDark)
 
 				> .title
 					font-weight bold
+
+		> .info
+			padding 16px 0
+			border solid 2px #ddd
+			border-radius 8px
+
+			> *
+				margin 0 16px
 
 		> footer
 			text-align center
