@@ -19,7 +19,7 @@ export interface IMessagingMessage {
 }
 
 export function isValidText(text: string): boolean {
-	return text.length <= 1000 && text.trim() != '';
+	return [...text.trim()].length <= 1000 && text.trim() != '';
 }
 
 /**
