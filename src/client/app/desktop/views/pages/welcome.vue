@@ -50,6 +50,12 @@
 			</div>
 		</div>
 
+		<div class="tag-cloud block">
+			<div>
+				<mk-tag-cloud/>
+			</div>
+		</div>
+
 		<div class="nav block">
 			<div>
 				<mk-nav class="nav"/>
@@ -67,6 +73,16 @@
 				<header>%fa:comment-alt R% %i18n:@timeline%</header>
 				<div>
 					<mk-welcome-timeline class="tl" :max="20"/>
+				</div>
+			</div>
+
+			<div class="info block">
+				<header>%fa:info-circle% %i18n:@info%</header>
+				<div>
+					<div v-if="meta" class="body">
+						<p>Version: <b>{{ meta.version }}</b></p>
+						<p>Maintainer: <b><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></b></p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -92,6 +108,7 @@ import { concat } from '../../../../../prelude/array';
 export default Vue.extend({
 	data() {
 		return {
+			meta: null,
 			stats: null,
 			copyright,
 			host,
@@ -104,6 +121,7 @@ export default Vue.extend({
 
 	created() {
 		(this as any).os.getMeta().then(meta => {
+			this.meta = meta;
 			this.name = meta.name;
 			this.description = meta.description;
 			this.announcements = meta.broadcasts;
@@ -210,13 +228,12 @@ root(isDark)
 
 	> .body
 		display grid
-		grid-template-rows 1fr 1fr 64px
+		grid-template-rows 1fr 1fr 256px 64px
 		grid-template-columns 1fr 1fr 350px
 		gap 16px
 		width 100%
 		max-width 1200px
-		height 100vh
-		min-height 950px
+		height 1200px
 		margin 0 auto
 		padding 64px
 
@@ -328,17 +345,25 @@ root(isDark)
 					background-position center center
 					background-size cover
 
+		> .tag-cloud
+			grid-row 3
+			grid-column 1 / 3
+
+			> div
+				height 256px
+				padding 32px
+
 		> .nav
 			display flex
 			justify-content center
 			align-items center
-			grid-row 3
+			grid-row 4
 			grid-column 1 / 3
 			font-size 14px
 
 		> .side
 			display grid
-			grid-row 1 / 4
+			grid-row 1 / 5
 			grid-column 3
 			grid-template-rows 1fr 350px
 			grid-template-columns 1fr
@@ -353,6 +378,18 @@ root(isDark)
 				grid-row 2
 				grid-column 1
 				padding 8px
+
+			> .info
+				grid-row 3
+				grid-column 1
+
+				> div
+					padding 16px
+
+					> .body
+						> p
+							display block
+							margin 0
 
 .mk-welcome[data-darkmode]
 	root(true)

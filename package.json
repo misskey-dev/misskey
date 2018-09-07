@@ -217,6 +217,7 @@
 		"vue-style-loader": "4.1.2",
 		"vue-template-compiler": "2.5.17",
 		"vuedraggable": "2.16.0",
+		"vuewordcloud": "18.7.11",
 		"vuex": "3.0.1",
 		"vuex-persistedstate": "2.5.4",
 		"web-push": "3.3.2",
