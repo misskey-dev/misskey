@@ -44,7 +44,7 @@
 				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
 				<mk-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons" text="%i18n:@circle-icons%"/>
-				<mk-switch v-model="$store.state.settings.contrastedAcct" @change="onContrastedAcct" text="%i18n:@contrasted-acct%"/>
+				<mk-switch v-model="$store.state.settings.contrastedAcct" @change="onChangeContrastedAcct" text="%i18n:@contrasted-acct%"/>
 				<mk-switch v-model="$store.state.settings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="%i18n:@gradient-window-header%"/>
 				<mk-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi" text="%i18n:common.i-like-sushi%"/>
 			</div>
