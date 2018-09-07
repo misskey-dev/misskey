@@ -23,3 +23,6 @@ block meta
 		link(rel='prev' href=`${config.url}/notes/${note.prev}`)
 	if note.next
 		link(rel='next' href=`${config.url}/notes/${note.next}`)
+
+	if !user.host
+		link(rel='alternate' href=url type='application/activity+json')
