@@ -100,7 +100,7 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
-			visibility: this.$store.state.device.visibility || 'public',
+			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,

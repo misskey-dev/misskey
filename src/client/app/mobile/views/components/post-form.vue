@@ -95,7 +95,7 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
-			visibility: this.$store.state.device.visibility || 'public',
+			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
 			useCw: false,
 			cw: null,

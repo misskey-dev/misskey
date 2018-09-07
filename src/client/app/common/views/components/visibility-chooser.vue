@@ -47,7 +47,7 @@ export default Vue.extend({
 	props: ['source', 'compact'],
 	data() {
 		return {
-			v: this.$store.state.device.visibility || 'public'
+			v: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility
 		}
 	},
 	mounted() {
@@ -97,7 +97,9 @@ export default Vue.extend({
 	},
 	methods: {
 		choose(visibility) {
-			this.$store.commit('device/setVisibility', visibility);
+			if (this.$store.state.settings.rememberNoteVisibility) {
+				this.$store.commit('device/setVisibility', visibility);
+			}
 			this.$emit('chosen', visibility);
 			this.$destroy();
 		},

@@ -26,6 +26,8 @@ const defaultSettings = {
 	disableViaMobile: false,
 	memo: null,
 	iLikeSushi: false,
+	rememberNoteVisibility: false,
+	defaultNoteVisibility: 'public',
 	games: {
 		reversi: {
 			showBoardLabels: false,

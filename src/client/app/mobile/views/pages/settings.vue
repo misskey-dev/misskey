@@ -53,6 +53,21 @@
 					<ui-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
 					<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
 				</section>
+
+				<section>
+					<header>%i18n:@note-visibility%</header>
+					<ui-switch v-model="$store.state.settings.rememberNoteVisibility" @change="onChangeRememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
+					<section>
+						<header>%i18n:@default-note-visibility%</header>
+						<ui-select v-model="defaultNoteVisibility">
+							<option value="public">%i18n:common.note-visibility.public%</option>
+							<option value="home">%i18n:common.note-visibility.home%</option>
+							<option value="followers">%i18n:common.note-visibility.followers%</option>
+							<option value="specified">%i18n:common.note-visibility.specified%</option>
+							<option value="private">%i18n:common.note-visibility.private%</option>
+						</ui-select>
+					</section>
+				</section>
 			</ui-card>
 
 			<ui-card>
@@ -161,6 +176,11 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'mobileNotificationPosition', value }); }
 		},
 
+		defaultNoteVisibility: {
+			get() { return this.$store.state.settings.defaultNoteVisibility; },
+			set(value) { this.$store.commit('settings/set', { key: 'defaultNoteVisibility', value }); }
+		},
+
 		lightmode: {
 			get() { return this.$store.state.device.lightmode; },
 			set(value) { this.$store.commit('device/set', { key: 'lightmode', value }); }
@@ -194,6 +214,13 @@ export default Vue.extend({
 		onChangeFetchOnScroll(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'fetchOnScroll',
+				value: v
+			});
+		},
+
+		onChangeRememberNoteVisibility(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'rememberNoteVisibility',
 				value: v
 			});
 		},
