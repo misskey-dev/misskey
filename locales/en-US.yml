@@ -917,7 +917,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "The user is a remote user. The profile that you see here may not complete."
+  is-remote: "This profile belongs to a remote user. The profile that you see here may not be complete. "
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
