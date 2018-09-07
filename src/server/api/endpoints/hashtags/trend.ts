@@ -1,5 +1,6 @@
 import Note from '../../../../models/note';
 import { erase } from '../../../../prelude/array';
+import Meta from '../../../../models/meta';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -17,6 +18,9 @@ const max = 5;
  * Get trends of hashtags
  */
 export default () => new Promise(async (res, rej) => {
+	const meta = await Meta.findOne({});
+	const hidedTags = (meta.hidedTags || []).map(t => t.toLowerCase());
+
 	//#region 1. 直近Aの内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{
 		$match: {
@@ -53,6 +57,9 @@ export default () => new Promise(async (res, rej) => {
 
 	// カウント
 	data.map(x => x._id).forEach(x => {
+		// ブラックリストに登録されているタグなら弾く
+		if (hidedTags.includes(x.tag)) return;
+
 		const i = tags.findIndex(tag => tag.name == x.tag);
 		if (i != -1) {
 			tags[i].count++;
