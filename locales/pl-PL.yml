@@ -869,6 +869,7 @@ desktop/views/pages/welcome.vue:
   announcements: "お知らせ"
   photos: "最近の画像"
   powered-by-misskey: "Oparto o <b>Misskey</b>."
+  info: "情報"
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
 desktop/views/pages/favorites.vue:
