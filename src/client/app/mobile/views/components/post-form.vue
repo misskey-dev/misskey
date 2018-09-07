@@ -4,7 +4,7 @@
 		<header>
 			<button class="cancel" @click="cancel">%fa:times%</button>
 			<div>
-				<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
+				<span class="text-count" :class="{ over: [...text.trim()].length > 1000 }">{{ 1000 - [...text.trim()].length }}</span>
 				<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
