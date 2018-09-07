@@ -45,7 +45,7 @@
 		<span v-if="visibility === 'specified'">%fa:envelope%</span>
 		<span v-if="visibility === 'private'">%fa:lock%</span>
 	</button>
-	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
+	<p class="text-count" :class="{ over: [...text.trim()].length > 1000 }">{{ 1000 - [...text.trim()].length }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -146,7 +146,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(this.text.trim().length <= 1000);
+				([...this.text.trim()].length <= 1000);
 		}
 	},
 
