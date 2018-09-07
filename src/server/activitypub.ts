@@ -10,7 +10,7 @@ import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
-import Outbox from './activitypub/outbox';
+import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
 import Following from './activitypub/following';
 
@@ -74,6 +74,22 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	ctx.body = pack(await renderNote(note, false));
+	setResponseType(ctx);
+});
+
+// note activity
+router.get('/notes/:note/activity', async ctx => {
+	const note = await Note.findOne({
+		_id: new mongo.ObjectID(ctx.params.note),
+		visibility: { $in: ['public', 'home'] }
+	});
+
+	if (note === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = pack(await packActivity(note));
 	setResponseType(ctx);
 });
 
