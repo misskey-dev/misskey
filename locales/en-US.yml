@@ -651,7 +651,7 @@ desktop/views/components/settings.vue:
   delete-wallpaper: "Remove background"
   dark-mode: "Dark Mode"
   circle-icons: "Use circle icons"
-  contrasted-acct: "ユーザー名にコントラストを付ける"
+  contrasted-acct: "Add contrast to username"
   gradient-window-header: "Use gradients on window headers"
   post-form-on-timeline: "Display post form at the top of the timeline"
   suggest-recent-hashtags: "Show recent popular hashtags on the post form"
@@ -869,7 +869,7 @@ desktop/views/pages/welcome.vue:
   announcements: "Announcements"
   photos: "Recent uploaded"
   powered-by-misskey: "Powered by <b>Misskey</b>."
-  info: "情報"
+  info: "Information"
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
 desktop/views/pages/favorites.vue:
@@ -1157,7 +1157,7 @@ mobile/views/pages/settings.vue:
   dark-mode: "Dark Mode"
   i-am-under-limited-internet: "I'm in limited bandwidth"
   circle-icons: "Use circle icons"
-  contrasted-acct: "ユーザー名にコントラストを付ける"
+  contrasted-acct: "Add contrast to username"
   timeline: "Timeline"
   show-reply-target: "Show reply target"
   show-my-renotes: "Show my reposts"
@@ -1190,7 +1190,7 @@ mobile/views/pages/settings.vue:
   settings: "Settings"
   signout: "Sign out"
   sound: "Sounds"
-  enable-sounds: "サウンドを有効にする"
+  enable-sounds: "Enable sounds"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
