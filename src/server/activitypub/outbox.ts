@@ -55,7 +55,7 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const query = {
 			userId: user._id,
-			$or: [ { visibility: 'public' }, { visibility: 'home' } ]
+			visibility: { $in: ['public', 'home'] }
 		} as any;
 
 		if (sinceId) {
