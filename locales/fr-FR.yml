@@ -869,6 +869,7 @@ desktop/views/pages/welcome.vue:
   announcements: "お知らせ"
   photos: "最近の画像"
   powered-by-misskey: "Propulsé par <b>Misskey</b>."
+  info: "情報"
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
 desktop/views/pages/favorites.vue:
