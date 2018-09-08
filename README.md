@@ -1,4 +1,4 @@
-<img src="https://github.com/syuilo/misskey/blob/b3f42e62af698a67c2250533c437569559f1fdf9/src/himasaku/resources/himasaku.png?raw=true" align="right" width="320px"/>
+<img src="https://github.com/syuilo/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/>
 
 [![Misskey](/assets/title.png)](https://misskey.xyz/)
 ================================================================
