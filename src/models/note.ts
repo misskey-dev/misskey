@@ -21,16 +21,6 @@ Note.createIndex('_files.contentType');
 Note.createIndex({
 	createdAt: -1
 });
-
-// 後方互換性のため
-Note.update({}, {
-	$rename: {
-		mediaIds: 'fileIds'
-	}
-}, {
-	multi: true
-});
-
 export default Note;
 
 export function isValidText(text: string): boolean {
