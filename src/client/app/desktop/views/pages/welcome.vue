@@ -22,8 +22,10 @@
 						</span>
 					</div>
 
-					<p class="desc" v-html="description || '%i18n:common.about%'"></p>
-					<a class="about" @click="about">%i18n:@about%</a>
+					<div class="desc">
+						<span class="desc" v-html="description || '%i18n:common.about%'"></span>
+						<a class="about" @click="about">%i18n:@about%</a>
+					</div>
 
 					<p class="sign">
 						<span class="signup" @click="signup">%i18n:@signup%</span>
@@ -31,7 +33,7 @@
 						<span class="signin" @click="signin">%i18n:@signin%</span>
 					</p>
 
-					<img src="/assets/pointer.png" alt="" class="char">
+					<img src="/assets/ai.png" alt="" title="藍" class="char">
 				</div>
 			</div>
 
@@ -350,10 +352,10 @@ root(isDark)
 
 		> .body
 			display grid
-			grid-template-rows 1fr 1fr 256px 64px
+			grid-template-rows 390px 1fr 256px 64px
 			grid-template-columns 1fr 1fr 350px
 			gap 16px
-			height 1200px
+			height 1150px
 
 			> .main
 				grid-row 1
@@ -384,8 +386,12 @@ root(isDark)
 							> *
 								margin-right 16px
 
+					> .desc
+						max-width calc(100% - 150px)
+
 					> .sign
 						font-size 120%
+						margin-bottom 0
 
 						> .divider
 							margin 0 16px
@@ -401,9 +407,9 @@ root(isDark)
 						display block
 						position absolute
 						right 16px
-						bottom 16px
-						width 180px
-						opacity 0.3
+						bottom 0
+						height 320px
+						opacity 0.7
 
 					> *:not(.char)
 						z-index 1
