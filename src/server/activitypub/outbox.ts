@@ -105,7 +105,7 @@ export default async (ctx: Router.IRouterContext) => {
  * @param note Note
  */
 export async function packActivity(note: INote): Promise<object> {
-	if (note.renoteId && note.text == null) {
+	if (note.renoteId && note.text == null && note.poll == null && (note.fileIds == null || note.fileIds.length == 0)) {
 		const renote = await Note.findOne(note.renoteId);
 		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote._id}`, note);
 	}
