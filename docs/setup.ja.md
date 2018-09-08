@@ -109,6 +109,7 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 ```
+CentOSで1024以下のポートを使用してMisskeyを使用する場合は`ExecStart=/usr/bin/sudo /usr/bin/npm start`に変更する必要があります。
 
 3. `systemctl daemon-reload ; systemctl enable misskey` systemdを再読み込みしmisskeyサービスを有効化
 4. `systemctl start misskey` misskeyサービスの起動
