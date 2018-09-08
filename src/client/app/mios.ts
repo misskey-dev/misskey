@@ -3,7 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 
 import initStore from './store';
-import { apiUrl, version, lang, name } from './config';
+import { apiUrl, version, lang } from './config';
 import Progress from './common/scripts/loading';
 import Connection from './common/scripts/streaming/stream';
 import { HomeStreamManager } from './common/scripts/streaming/home';
@@ -72,7 +72,7 @@ export default class MiOS extends EventEmitter {
 	};
 
 	public get instanceName() {
-		return this.meta ? this.meta.data.name : name;
+		return this.meta ? this.meta.data.name : 'Misskey';
 	}
 
 	private isMetaFetching = false;
