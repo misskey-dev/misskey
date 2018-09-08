@@ -7,7 +7,7 @@
 	<img v-if="reaction == 'surprise'" src="https://twemoji.maxcdn.com/2/svg/1f62e.svg" alt="%i18n:common.reactions.surprise%">
 	<img v-if="reaction == 'congrats'" src="https://twemoji.maxcdn.com/2/svg/1f389.svg" alt="%i18n:common.reactions.congrats%">
 	<img v-if="reaction == 'angry'" src="https://twemoji.maxcdn.com/2/svg/1f4a2.svg" alt="%i18n:common.reactions.angry%">
-	<img v-if="reaction == 'confused'" src="https://twemoji.maxcdn.com/2/svg/1f622.svg" alt="%i18n:common.reactions.confused%">
+	<img v-if="reaction == 'confused'" src="https://twemoji.maxcdn.com/2/svg/1f625.svg" alt="%i18n:common.reactions.confused%">
 	<img v-if="reaction == 'rip'" src="https://twemoji.maxcdn.com/2/svg/1f607.svg" alt="%i18n:common.reactions.rip%">
 	<template v-if="reaction == 'pudding'">
 		<img v-if="$store.getters.isSignedIn && $store.state.settings.iLikeSushi" src="https://twemoji.maxcdn.com/2/svg/1f363.svg" alt="%i18n:common.reactions.pudding%">
