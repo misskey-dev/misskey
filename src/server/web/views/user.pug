@@ -6,7 +6,7 @@ block vars
 	- const img = user.avatarId ? `${config.drive_url}/${user.avatarId}` : null;
 
 block title
-	= `${title} | Misskey`
+	= `${title} | ${config.name}`
 
 block desc
 	meta(name='description' content= user.description)

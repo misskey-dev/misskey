@@ -22,6 +22,7 @@ const locales = require('./locales');
 const meta = require('./package.json');
 const version = `${meta.clientVersion}-${rndstr({ length: 8, chars: '0-9a-z' })}`;
 const codename = meta.codename;
+import config from './src/config';
 
 declare var global: {
 	faReplacement: typeof faReplacement;
@@ -75,7 +76,8 @@ const consts = {
 	_CODENAME_: codename,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
-	_ENV_: process.env.NODE_ENV
+	_ENV_: process.env.NODE_ENV,
+	_NAME_: config.name
 };
 
 const _consts: { [ key: string ]: any } = {};
