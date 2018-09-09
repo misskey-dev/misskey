@@ -447,6 +447,11 @@ async function publishToUserLists(note: INote, noteObj: any) {
 }
 
 async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteActivity: any) {
+	const detailPackedNote = await pack(note, null, {
+		detail: true,
+		skipHide: true
+	});
+
 	const followers = await Following.find({
 		followeeId: note.userId
 	});
@@ -465,10 +470,10 @@ async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteAc
 			}
 
 			// Publish event to followers stream
-			publishUserStream(following.followerId, 'note', noteObj);
+			publishUserStream(following.followerId, 'note', detailPackedNote);
 
 			if (isRemoteUser(user) || note.visibility != 'public') {
-				publishHybridTimelineStream(following.followerId, noteObj);
+				publishHybridTimelineStream(following.followerId, detailPackedNote);
 			}
 		} else {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
