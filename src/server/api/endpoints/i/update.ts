@@ -84,6 +84,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		});
 
 		if (avatar == null) return rej('avatar not found');
+		if (!avatar.contentType.startsWith('image/')) return rej('avatar not an image');
 
 		updates.avatarUrl = avatar.metadata.thumbnailUrl || avatar.metadata.url || `${config.drive_url}/${avatar._id}`;
 
@@ -98,6 +99,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		});
 
 		if (banner == null) return rej('banner not found');
+		if (!banner.contentType.startsWith('image/')) return rej('banner not an image');
 
 		updates.bannerUrl = banner.metadata.url || `${config.drive_url}/${banner._id}`;
 
