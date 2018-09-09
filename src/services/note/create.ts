@@ -184,7 +184,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const noteActivity = await renderActivity(data, note);
 
-	if (isLocalUser(user)) {
+	if (isLocalUser(user) && note.visibility != 'private') {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
