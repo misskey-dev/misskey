@@ -40,6 +40,7 @@ export interface IOrderedCollection extends IObject {
 
 export interface INote extends IObject {
 	type: 'Note';
+	_misskey_content: string;
 }
 
 export interface IPerson extends IObject {
