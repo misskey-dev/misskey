@@ -2,6 +2,7 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
+import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import PollVote, { deletePollVote } from './poll-vote';
@@ -34,11 +35,11 @@ Note.update({}, {
 export default Note;
 
 export function isValidText(text: string): boolean {
-	return [...text.trim()].length <= 1000 && text.trim() != '';
+	return length(text.trim()) <= 1000 && text.trim() != '';
 }
 
 export function isValidCw(text: string): boolean {
-	return [...text.trim()].length <= 100;
+	return length(text.trim()) <= 100;
 }
 
 export type INote = {
