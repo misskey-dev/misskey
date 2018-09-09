@@ -269,13 +269,16 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 		}
 
 		if (['private', 'followers', 'specified'].includes(note.visibility)) {
-			// Publish event to myself's stream
-			publishUserStream(note.userId, 'note', await pack(note, user, {
+			const detailPackedNote = await pack(note, user, {
 				detail: true
-			}));
+			});
+			// Publish event to myself's stream
+			publishUserStream(note.userId, 'note', detailPackedNote);
+			publishHybridTimelineStream(note.userId, detailPackedNote);
 		} else {
 			// Publish event to myself's stream
 			publishUserStream(note.userId, 'note', noteObj);
+			publishHybridTimelineStream(note.userId, noteObj);
 
 			// Publish note to local and hybrid timeline stream
 			if (note.visibility != 'home') {
