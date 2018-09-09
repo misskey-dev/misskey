@@ -107,20 +107,22 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		data.visibleUsers = erase(null, data.visibleUsers);
 	}
 
+	// リプライ対象が削除された投稿だったらreject
 	if (data.reply && data.reply.deletedAt != null) {
 		return rej();
 	}
 
+	// Renote対象が削除された投稿だったらreject
 	if (data.renote && data.renote.deletedAt != null) {
 		return rej();
 	}
 
-	// リプライ先が自分以外の非公開の投稿なら禁止
+	// リプライ対象が自分以外の非公開の投稿なら禁止
 	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
 		return rej();
 	}
 
-	// Renote先が自分以外の非公開の投稿なら禁止
+	// Renote対象が自分以外の非公開の投稿なら禁止
 	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
 		return rej();
 	}
