@@ -4,10 +4,9 @@
 	<p class="empty" v-else-if="tags.length == 0">%fa:exclamation-circle%%i18n:@empty%</p>
 	<div v-else>
 		<vue-word-cloud
-				:words="tags.map(x => [x.name, x.count])"
+				:words="tags.slice(0, 20).map(x => [x.name, x.count])"
 				:color="color"
-				:spacing="0.25"
-				font-family="Roboto">
+				:spacing="1">
 			<template slot-scope="{word, text, weight}">
 				<div style="cursor: pointer;" :title="weight">
 					{{ text }}
@@ -51,7 +50,7 @@ export default Vue.extend({
 			const peak = Math.max.apply(null, this.tags.map(x => x.count));
 			const w = weight / peak;
 
-			if (w == 1) {
+			if (w > 0.9) {
 				return this.$store.state.device.darkmode ? '#ff4e69' : '#ff4e69';
 			} else if (w > 0.5) {
 				return this.$store.state.device.darkmode ? '#3bc4c7' : '#3bc4c7';

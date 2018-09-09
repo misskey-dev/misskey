@@ -1,4 +1,4 @@
-<img src="https://github.com/syuilo/misskey/blob/b3f42e62af698a67c2250533c437569559f1fdf9/src/himasaku/resources/himasaku.png?raw=true" align="right" width="320px"/>
+<img src="https://github.com/syuilo/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/>
 
 [![Misskey](/assets/title.png)](https://misskey.xyz/)
 ================================================================
@@ -7,7 +7,7 @@
 [![][dependencies-badge]][dependencies-link]
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/syuilo/misskey.svg)](https://greenkeeper.io/)
 
-Sophisticated microblogging platform, evolving forever.
+**Sophisticated microblogging platform, evolving forever.**
 
 [Misskey](https://misskey.xyz) is a decentralized microblogging platform born on Earth.
 Since it exists within the Fediverse (a universe where various social media platforms are organized),

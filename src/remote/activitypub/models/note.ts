@@ -91,7 +91,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
 	// テキストのパース
-	const text = htmlToMFM(note.content);
+	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {

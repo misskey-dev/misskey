@@ -79,9 +79,6 @@ export const meta = {
 	}
 };
 
-/**
- * Get hybrid timeline of myself
- */
 export default async (params: any, user: ILocalUser) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) throw psErr;

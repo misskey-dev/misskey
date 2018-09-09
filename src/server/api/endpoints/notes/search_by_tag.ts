@@ -125,10 +125,11 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		ids.forEach(id => ps.excludeUserIds.push(id));
 	}
 
-	let q: any = {
+	const q: any = {
 		$and: [{
 			tagsLower: ps.tag.toLowerCase()
-		}]
+		}],
+		deletedAt: { $exists: false }
 	};
 
 	const push = (x: any) => q.$and.push(x);
@@ -339,7 +340,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	}
 
 	if (q.$and.length == 0) {
-		q = {};
+		delete q.$and;
 	}
 
 	// Search notes

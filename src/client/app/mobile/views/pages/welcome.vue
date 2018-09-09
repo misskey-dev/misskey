@@ -30,6 +30,34 @@
 				<div v-html="announcement.text"></div>
 			</article>
 		</div>
+		<article class="about-misskey">
+			<h1>%i18n:common.intro.title%</h1>
+			<p v-html="'%i18n:common.intro.about%'"></p>
+			<section>
+				<h2>%i18n:common.intro.features%</h2>
+				<section>
+					<h3>%i18n:common.intro.rich-contents%</h3>
+					<div class="image"><img src="/assets/about/post.png" alt=""></div>
+					<p v-html="'%i18n:common.intro.rich-contents-desc%'"></p>
+				</section>
+				<section>
+					<h3>%i18n:common.intro.reaction%</h3>
+					<div class="image"><img src="/assets/about/reaction.png" alt=""></div>
+					<p v-html="'%i18n:common.intro.reaction-desc%'"></p>
+				</section>
+				<section>
+					<h3>%i18n:common.intro.ui%</h3>
+					<div class="image"><img src="/assets/about/ui.png" alt=""></div>
+					<p v-html="'%i18n:common.intro.ui-desc%'"></p>
+				</section>
+				<section>
+					<h3>%i18n:common.intro.drive%</h3>
+					<div class="image"><img src="/assets/about/drive.png" alt=""></div>
+					<p v-html="'%i18n:common.intro.drive-desc%'"></p>
+				</section>
+			</section>
+			<p v-html="'%i18n:common.intro.outro%'"></p>
+		</article>
 		<div class="info" v-if="meta">
 			<p>Version: <b>{{ meta.version }}</b></p>
 			<p>Maintainer: <b><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></b></p>
@@ -205,6 +233,46 @@ root(isDark)
 
 				> .title
 					font-weight bold
+
+		> .about-misskey
+			margin 16px 0
+			padding 32px
+			font-size 14px
+			background #fff
+			border-radius 6px
+			overflow hidden
+			color #3a3e46
+
+			> h1
+				margin 0
+
+				& + p
+					margin-top 8px
+
+			> p:last-child
+				margin-bottom 0
+
+			> section
+				> h2
+					border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+
+				> section
+					margin-bottom 16px
+					padding-bottom 16px
+					border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+
+					> h3
+						margin-bottom 8px
+
+					> p
+						margin-bottom 0
+
+					> .image
+						> img
+							display block
+							width 100%
+							height 120px
+							object-fit cover
 
 		> .info
 			padding 16px 0
