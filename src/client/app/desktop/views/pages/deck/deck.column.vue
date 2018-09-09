@@ -117,7 +117,7 @@ export default Vue.extend({
 
 		toggleActive() {
 			if (!this.isStacked) return;
-			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
+			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(this.getColumnVm);
 			if (this.active && countIf(vm => vm.$el.classList.contains('active'), vms) == 1) return;
 			this.active = !this.active;
 		},

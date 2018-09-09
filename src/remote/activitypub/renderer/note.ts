@@ -72,8 +72,8 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		}
 	}) : [];
 
-	const hashtagTags = (note.tags || []).map(tag => renderHashtag(tag));
-	const mentionTags = mentionedUsers.map(u => renderMention(u));
+	const hashtagTags = (note.tags || []).map(renderHashtag);
+	const mentionTags = mentionedUsers.map(renderMention);
 	const tag = [
 		...hashtagTags,
 		...mentionTags,

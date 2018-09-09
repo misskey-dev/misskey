@@ -122,37 +122,37 @@ export async function deleteNote(note: string | mongo.ObjectID | INote) {
 	// このNoteへの返信をすべて削除
 	await Promise.all((
 		await Note.find({ replyId: n._id })
-	).map(x => deleteNote(x)));
+	).map(deleteNote));
 
 	// このNoteのRenoteをすべて削除
 	await Promise.all((
 		await Note.find({ renoteId: n._id })
-	).map(x => deleteNote(x)));
+	).map(deleteNote));
 
 	// この投稿に対するNoteWatchingをすべて削除
 	await Promise.all((
 		await NoteWatching.find({ noteId: n._id })
-	).map(x => deleteNoteWatching(x)));
+	).map(deleteNoteWatching));
 
 	// この投稿に対するNoteReactionをすべて削除
 	await Promise.all((
 		await NoteReaction.find({ noteId: n._id })
-	).map(x => deleteNoteReaction(x)));
+	).map(deleteNoteReaction));
 
 	// この投稿に対するPollVoteをすべて削除
 	await Promise.all((
 		await PollVote.find({ noteId: n._id })
-	).map(x => deletePollVote(x)));
+	).map(deletePollVote));
 
 	// この投稿に対するFavoriteをすべて削除
 	await Promise.all((
 		await Favorite.find({ noteId: n._id })
-	).map(x => deleteFavorite(x)));
+	).map(deleteFavorite));
 
 	// この投稿に対するNotificationをすべて削除
 	await Promise.all((
 		await Notification.find({ noteId: n._id })
-	).map(x => deleteNotification(x)));
+	).map(deleteNotification));
 
 	// このNoteを削除
 	await Note.remove({
