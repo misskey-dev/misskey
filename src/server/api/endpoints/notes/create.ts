@@ -132,25 +132,14 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 	let files: IDriveFile[] = [];
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
-		// Fetch files
-		// forEach だと途中でエラーなどがあっても return できないので
-		// 敢えて for を使っています。
-		for (const fileId of fileIds) {
-			// Fetch file
-			// SELECT _id
-			const entity = await DriveFile.findOne({
+		files = await Promise.all(fileIds.map(fileId => {
+			return DriveFile.findOne({
 				_id: fileId,
 				'metadata.userId': user._id
 			});
+		}));
 
-			if (entity === null) {
-				return rej('file not found');
-			} else {
-				files.push(entity);
-			}
-		}
-	} else {
-		files = null;
+		files = files.filter(file => file != null);
 	}
 
 	let renote: INote = null;
