@@ -7,7 +7,7 @@ common:
   about-title: "Une ⭐ du fédivers."
   about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de microblogage distribuée</b> née sur Terre. Parce qu'il fait partie du Fédivers (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   intro:
-    title: "Misskeyって？"
+    title: "C’est quoi Misskey ?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
     features: "Fonctionnalités"
     rich-contents: "Notes"
@@ -891,7 +891,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "Se connecter"
   signup-button: "S'inscrire"
   timeline: "Fil d'actualité"
-  announcements: "お知らせ"
+  announcements: "Notices"
   photos: "最近の画像"
   powered-by-misskey: "Propulsé par <b>Misskey</b>."
   info: "情報"
