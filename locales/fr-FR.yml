@@ -892,9 +892,9 @@ desktop/views/pages/welcome.vue:
   signup-button: "S'inscrire"
   timeline: "Fil d'actualité"
   announcements: "Notices"
-  photos: "最近の画像"
+  photos: "Images récentes"
   powered-by-misskey: "Propulsé par <b>Misskey</b>."
-  info: "情報"
+  info: "Informations"
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
 desktop/views/pages/favorites.vue:
@@ -1191,7 +1191,7 @@ mobile/views/pages/settings.vue:
   post-style: "Style de la publication"
   post-style-standard: "Standard"
   post-style-smart: "Intelligent"
-  notification-position: "通知の表示"
+  notification-position: "Style de notification"
   notification-position-bottom: "en bas"
   notification-position-top: "en haut"
   behavior: "Comportement"
