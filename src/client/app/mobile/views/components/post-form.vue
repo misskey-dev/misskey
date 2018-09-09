@@ -60,6 +60,7 @@ import getFace from '../../../common/scripts/get-face';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
 import { erase } from '../../../../../prelude/array';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	components: {
@@ -253,10 +254,9 @@ export default Vue.extend({
 		addVisibleUser() {
 			(this as any).apis.input({
 				title: '%i18n:@username-prompt%'
-			}).then(username => {
-				(this as any).api('users/show', {
-					username
-				}).then(user => {
+			}).then(acct => {
+				if (acct.startsWith('@')) acct = acct.substr(1);
+				(this as any).api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
