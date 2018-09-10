@@ -202,7 +202,7 @@ export default Vue.extend({
 	methods: {
 	  trimmedLength(text: string) {
 			return length(text.trim());
-		}
+		},
 
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
