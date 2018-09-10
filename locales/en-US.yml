@@ -13,7 +13,7 @@ common:
     rich-contents: "Post"
     rich-contents-desc: "Just post your idea, hot topics and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files including movies and create a poll - those are the things you can do on Misskey!"
     reaction: "Reactions"
-    reaction-desc: "Easiest way to tell your emotions.\nMisskey allows you to add various type of reactions to other’s post. The emotional experience on Misskey will never be on other SNSs which only able to push “likes”."
+    reaction-desc: "Easiest way to tell your emotions. Misskey allows you to add various type of reactions to other’s post. The emotional experience on Misskey will never be on other SNSs which only able to push “likes”."
     ui: "Interface"
     ui-desc: "No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. You can edit layouts of your timeline, place selectable widgets you can easily move and create your unique home as this place will be your home."
     drive: "Misskey Drive"
