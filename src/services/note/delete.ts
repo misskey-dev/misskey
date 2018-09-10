@@ -25,7 +25,8 @@ export default async function(user: IUser, note: INote) {
 			tags: [],
 			fileIds: [],
 			poll: null,
-			geo: null
+			geo: null,
+			cw: null
 		}
 	});
 
