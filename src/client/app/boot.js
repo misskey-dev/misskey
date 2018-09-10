@@ -18,6 +18,8 @@
 		return;
 	}
 
+	const langs = LANGS;
+
 	//#region Load settings
 	let settings = null;
 	const vuex = localStorage.getItem('vuex');
@@ -40,10 +42,10 @@
 	//#region Detect the user language
 	let lang = null;
 
-	if (LANGS.includes(navigator.language)) {
+	if (langs.includes(navigator.language)) {
 		lang = navigator.language;
 	} else {
-		lang = LANGS.find(x => x.split('-')[0] == navigator.language);
+		lang = langs.find(x => x.split('-')[0] == navigator.language);
 
 		if (lang == null) {
 			// Fallback
@@ -52,7 +54,7 @@
 	}
 
 	if (settings && settings.device.lang &&
-		LANGS.includes(settings.device.lang)) {
+		langs.includes(settings.device.lang)) {
 		lang = settings.device.lang;
 	}
 	//#endregion
