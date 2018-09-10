@@ -4,7 +4,7 @@
 		<header>
 			<button class="cancel" @click="cancel">%fa:times%</button>
 			<div>
-				<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
+				<span class="text-count" :class="{ over: trimmedLength(text) > 1000 }">{{ 1000 - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
@@ -60,6 +60,7 @@ import getFace from '../../../common/scripts/get-face';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
 import { erase } from '../../../../../prelude/array';
+import { length } from 'stringz';
 import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
@@ -180,6 +181,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		trimmedLength(text: string) {
+			return length(text.trim());
+		},
+
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
