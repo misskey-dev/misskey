@@ -45,7 +45,7 @@
 		<span v-if="visibility === 'specified'">%fa:envelope%</span>
 		<span v-if="visibility === 'private'">%fa:lock%</span>
 	</button>
-	<p class="text-count" :class="{ over: length(text.trim()) > 1000 }">{{ 1000 - length(text.trim()) }}</p>
+	<p class="text-count" :class="{ over: this.trimmedLength(text) > 1000 }">{{ 1000 - this.trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -63,7 +63,7 @@ import MkVisibilityChooser from '../../../common/views/components/visibility-cho
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
 import { erase } from '../../../../../prelude/array';
-impprt { length } from 'stringz';
+import { length } from 'stringz';
 import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
@@ -200,6 +200,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+	  trimmedLength(text: string) {
+			return length(text.trim());
+		}
+
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
