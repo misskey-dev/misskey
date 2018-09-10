@@ -4,7 +4,7 @@
 		<header>
 			<button class="cancel" @click="cancel">%fa:times%</button>
 			<div>
-				<span class="text-count" :class="{ over: length(text.trim()) > 1000 }">{{ 1000 - length(text.trim()) }}</span>
+				<span class="text-count" :class="{ over: trimmedLength(text) > 1000 }">{{ 1000 - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
@@ -181,6 +181,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		trimmedLength(text: string) {
+			return length(text.trim());
+		}
+
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
