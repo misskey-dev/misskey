@@ -36,8 +36,11 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 	if (config.drive && config.drive.storage == 'minio') {
 		const minio = new Minio.Client(config.drive.config);
-		const key = `${config.drive.prefix}/${uuid.v4()}/${name}`;
-		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}/${name}.thumbnail.jpg`;
+
+		const keyDir = `${config.drive.prefix}/${uuid.v4()}`;
+		const key = `${keyDir}/${name}`;
+		const thumbnailKeyDir = `${config.drive.prefix}/${uuid.v4()}`;
+		const thumbnailKey = `${thumbnailKeyDir}/${name}.thumbnail.jpg`;
 
 		const baseUrl = config.drive.baseUrl
 			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
@@ -61,8 +64,8 @@ async function save(path: string, name: string, type: string, hash: string, size
 				key: key,
 				thumbnailKey: thumbnailKey
 			},
-			url: `${ baseUrl }/${ key }`,
-			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKey }` : null
+			url: `${ baseUrl }/${ keyDir }/${ encodeURIComponent(name) }`,
+			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKeyDir }/${ encodeURIComponent(name) }.thumbnail.jpg` : null
 		});
 
 		const file = await DriveFile.insert({
