@@ -10,7 +10,7 @@ function publish(channel: string, type: string, value?: any): void {
 		{ type: type } :
 		{ type: type, body: value };
 
-		ev.emit(channel, message);
+	ev.emit(channel, message);
 }
 
 export function publishUserStream(userId: ID, type: string, value?: any): void {
