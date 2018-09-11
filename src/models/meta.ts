@@ -12,5 +12,6 @@ export type IMeta = {
 		originalUsersCount: number;
 	};
 	disableRegistration?: boolean;
+	disableLocalTimeline?: boolean;
 	hidedTags?: string[];
 };

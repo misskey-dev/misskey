@@ -2,8 +2,8 @@
 <div class="mk-timeline">
 	<header>
 		<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% %i18n:@home%</span>
-		<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% %i18n:@local%</span>
-		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'">%fa:share-alt% %i18n:@hybrid%</span>
+		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline">%fa:R comments% %i18n:@local%</span>
+		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
 		<button @click="chooseList" title="%i18n:@list%">%fa:list%</button>
@@ -29,7 +29,8 @@ export default Vue.extend({
 	data() {
 		return {
 			src: 'home',
-			list: null
+			list: null,
+			enableLocalTimeline: false
 		};
 	},
 
@@ -44,6 +45,10 @@ export default Vue.extend({
 	},
 
 	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.enableLocalTimeline = !meta.disableLocalTimeline;
+		});
+
 		if (this.$store.state.device.tl) {
 			this.src = this.$store.state.device.tl.src;
 			if (this.src == 'list') {
