@@ -308,7 +308,7 @@ export default Vue.extend({
 			if (this.text && this.text != '') {
 				const hashtags = parse(this.text).filter(x => x.type == 'hashtag').map(x => x.hashtag);
 				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(hashtags.concat(history).reduce((a, c) => a.includes(c) ? a : [...a, c], [])));
+				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 			}
 		},
 
