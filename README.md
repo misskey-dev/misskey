@@ -20,13 +20,42 @@ Why don't you take a short break from the hustle and bustle of the city, and div
 
 :sparkles: Features
 ----------------------------------------------------------------
-* Rich text contents
-* Reactions
-* User lists
-* Customizable column view (called MisskeyDeck)
-* Customizable widgets
-* Private messages
-* ActivityPub support
+
+<img src="/assets/about/post.png" align="left" height="200px"/>
+
+<h3 align="left">Posting</h3>
+<p align="left">
+Just post your idea, hot topics and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files including movies and create a poll - those are the things you can do on Misskey!
+</p>
+
+---
+
+<img src="/assets/about/reaction.png" align="right" height="200px"/>
+
+<h3 align="right">Reactions</h3>
+<p align="right">
+Easiest way to tell your emotions. Misskey allows you to add various type of reactions to other’s post. The emotional experience on Misskey will never be on other SNSs which only able to push “likes”.
+</p>
+
+---
+
+<img src="/assets/about/ui.png" align="left" height="200px"/>
+
+<h3 align="left">Interface</h3>
+<p align="left">
+No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. You can edit layouts of your timeline, place selectable widgets you can easily move and create your unique home as this place will be your home.
+</p>
+
+---
+
+<img src="/assets/about/drive.png" align="right" width="300px"/>
+
+<h3 align="right">Misskey Drive</h3>
+<p align="right">
+Wanna post a picture you have already uploaded? Wish to organize, name and create a folder for your uploaded files? Misskey Drive is the best solution for you. Very easy to share your files online.
+</p>
+
+---
 
 and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
 
