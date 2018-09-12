@@ -12,7 +12,7 @@
 [Misskey](https://misskey.xyz) is a decentralized microblogging platform born on Earth.
 Since it exists within the Fediverse (a universe where various social media platforms are organized),
 it is mutually linked with other social media platforms.
-Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?
+Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? [Find instance!](https://joinmisskey.github.io/)
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
@@ -57,7 +57,7 @@ Wanna post a picture you have already uploaded? Wish to organize, name and creat
 
 ---
 
-and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
+and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz) or [other instances](https://joinmisskey.github.io/).
 
 :package: Create your own instance
 ----------------------------------------------------------------
