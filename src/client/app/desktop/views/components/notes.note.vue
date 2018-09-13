@@ -34,9 +34,7 @@
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
 					<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
-					<div class="renote" v-if="p.renote">
-						<mk-note-preview :note="p.renote"/>
-					</div>
+					<div class="renote" v-if="p.renote"><mk-note-preview :note="p.renote"/></div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
 			</div>
@@ -96,7 +94,12 @@ export default Vue.extend({
 		XSub
 	},
 
-	props: ['note'],
+	props: {
+		note: {
+			type: Object,
+			required: true
+		}
+	},
 
 	data() {
 		return {
@@ -469,7 +472,7 @@ root(isDark)
 					> .renote
 						margin 8px 0
 
-						> .mk-note-preview
+						> *
 							padding 16px
 							border dashed 1px isDark ? #4e945e : #c0dac6
 							border-radius 8px

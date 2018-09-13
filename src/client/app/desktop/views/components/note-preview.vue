@@ -1,10 +1,16 @@
 <template>
-<div class="mk-note-preview" :title="title">
+<div class="qiziqtywpuaucsgarwajitwaakggnisj" :title="title">
 	<mk-avatar class="avatar" :user="note.user" v-if="!mini"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note" :mini="true"/>
 		<div class="body">
-			<mk-sub-note-content class="text" :note="note"/>
+			<p v-if="note.cw != null" class="cw">
+				<span class="text" v-if="note.cw != ''">{{ note.cw }}</span>
+				<span class="toggle" @click="showContent = !showContent">{{ showContent ? '%i18n:@hide%' : '%i18n:@see-more%' }}</span>
+			</p>
+			<div class="content" v-show="note.cw == null || showContent">
+				<mk-sub-note-content class="text" :note="note"/>
+			</div>
 		</div>
 	</div>
 </div>
@@ -25,6 +31,13 @@ export default Vue.extend({
 			default: false
 		}
 	},
+
+	data() {
+		return {
+			showContent: false
+		};
+	},
+
 	computed: {
 		title(): string {
 			return new Date(this.note.createdAt).toLocaleString();
@@ -52,16 +65,41 @@ root(isDark)
 
 		> .body
 
-			> .text
+			> .cw
 				cursor default
+				display block
 				margin 0
 				padding 0
-				color isDark ? #959ba7 : #717171
+				overflow-wrap break-word
+				color isDark ? #fff : #717171
 
-.mk-note-preview[data-darkmode]
+				> .text
+					margin-right 8px
+
+				> .toggle
+					display inline-block
+					padding 4px 8px
+					font-size 0.7em
+					color isDark ? #393f4f : #fff
+					background isDark ? #687390 : #b1b9c1
+					border-radius 2px
+					cursor pointer
+					user-select none
+
+					&:hover
+						background isDark ? #707b97 : #bbc4ce
+
+			> .content
+				> .text
+					cursor default
+					margin 0
+					padding 0
+					color isDark ? #959ba7 : #717171
+
+.qiziqtywpuaucsgarwajitwaakggnisj[data-darkmode]
 	root(true)
 
-.mk-note-preview:not([data-darkmode])
+.qiziqtywpuaucsgarwajitwaakggnisj:not([data-darkmode])
 	root(false)
 
 </style>

@@ -10,8 +10,8 @@
 			</div>
 		</header>
 		<div class="form">
-			<mk-note-preview v-if="reply" :note="reply"/>
-			<mk-note-preview v-if="renote" :note="renote"/>
+			<mk-note-preview class="preview" v-if="reply" :note="reply"/>
+			<mk-note-preview class="preview" v-if="renote" :note="renote"/>
 			<div v-if="visibility == 'specified'" class="visibleUsers">
 				<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
 				<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
@@ -387,7 +387,7 @@ root(isDark)
 			max-width 500px
 			margin 0 auto
 
-			> .mk-note-preview
+			> .preview
 				padding 16px
 
 			> .visibleUsers

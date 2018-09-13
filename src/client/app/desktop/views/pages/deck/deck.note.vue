@@ -394,7 +394,7 @@ root(isDark)
 					> .renote
 						margin 8px 0
 
-						> .mk-note-preview
+						> *
 							padding 16px
 							border dashed 1px isDark ? #4e945e : #c0dac6
 							border-radius 8px

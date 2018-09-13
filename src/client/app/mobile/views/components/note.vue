@@ -35,9 +35,7 @@
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 					<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
-					<div class="renote" v-if="p.renote">
-						<mk-note-preview :note="p.renote"/>
-					</div>
+					<div class="renote" v-if="p.renote"><mk-note-preview :note="p.renote"/></div>
 				</div>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 			</div>
@@ -436,7 +434,7 @@ root(isDark)
 					> .renote
 						margin 8px 0
 
-						> .mk-note-preview
+						> *
 							padding 16px
 							border dashed 1px isDark ? #4e945e : #c0dac6
 							border-radius 8px

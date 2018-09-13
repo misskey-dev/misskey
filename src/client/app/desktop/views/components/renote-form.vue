@@ -1,6 +1,6 @@
 <template>
 <div class="mk-renote-form">
-	<mk-note-preview :note="note"/>
+	<mk-note-preview class="preview" :note="note"/>
 	<template v-if="!quote">
 		<footer>
 			<a class="quote" v-if="!quote" @click="onQuote">%i18n:@quote%</a>
@@ -61,7 +61,7 @@ export default Vue.extend({
 
 root(isDark)
 
-	> .mk-note-preview
+	> .preview
 		margin 16px 22px
 
 	> footer
