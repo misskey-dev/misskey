@@ -253,6 +253,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Parece que la conexión ha sido posible. Por favor refresca la página."
   flush: "Limpiar la memoria caché"
   set-version: "Escoge la versión"
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "Encuentra un usuario"
   you: "Tu"
@@ -591,8 +594,6 @@ desktop/views/components/notes.note.vue:
   detail: "Mostrar detalles"
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido borrada"
-  hide: "Esconder"
-  see-more: "Ver más"
 desktop/views/components/notes.vue:
   error: "Error al cargar."
   retry: "Reintentar"
@@ -1031,8 +1032,6 @@ mobile/views/components/friends-maker.vue:
   close: "閉じる"
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
-  more: "もっと見る"
-  less: "隠す"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
