@@ -40,10 +40,24 @@
 				<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
 			</ui-input>
 
-			<ui-switch v-model="isCat">%i18n:@is-cat%</ui-switch>
-
-			<ui-button @click="save">%i18n:@save%</ui-button>
+			<ui-button @click="save(true)">%i18n:@save%</ui-button>
 		</ui-form>
+	</section>
+
+	<section>
+		<header>%i18n:@advanced%</header>
+
+		<div>
+			<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
+		</div>
+	</section>
+
+	<section>
+		<header>%i18n:@privacy%</header>
+
+		<div>
+			<ui-switch v-model="isLocked" @change="save(false)">%i18n:@is-locked%</ui-switch>
+		</div>
 	</section>
 </ui-card>
 </template>
@@ -64,6 +78,7 @@ export default Vue.extend({
 			avatarId: null,
 			bannerId: null,
 			isCat: false,
+			isLocked: false,
 			saving: false,
 			avatarUploading: false,
 			bannerUploading: false
@@ -79,6 +94,7 @@ export default Vue.extend({
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isCat = this.$store.state.i.isCat;
+		this.isLocked = this.$store.state.i.isLocked;
 	},
 
 	methods: {
@@ -126,7 +142,7 @@ export default Vue.extend({
 				});
 		},
 
-		save() {
+		save(notify) {
 			this.saving = true;
 
 			(this as any).api('i/update', {
@@ -136,7 +152,8 @@ export default Vue.extend({
 				birthday: this.birthday || null,
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
-				isCat: this.isCat
+				isCat: this.isCat,
+				isLocked: this.isLocked
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;
@@ -144,7 +161,9 @@ export default Vue.extend({
 				this.$store.state.i.bannerId = i.bannerId;
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
-				alert('%i18n:@saved%');
+				if (notify) {
+					alert('%i18n:@saved%');
+				}
 			});
 		}
 	}
