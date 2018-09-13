@@ -253,6 +253,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Die Verbindung scheint zu funktionieren. Bitte lade die Seite neu."
   flush: "Cache leeren"
   set-version: "Version angeben"
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "Einen Nutzer suchen"
   you: "Du"
@@ -591,8 +594,6 @@ desktop/views/components/notes.note.vue:
   detail: "Zeige Details"
   private: "Dieser Beitrag ist eine privat"
   deleted: "Dieser Beitrag wurde entfernt"
-  hide: "隠す"
-  see-more: "もっと見る"
 desktop/views/components/notes.vue:
   error: "Laden fehlgeschlagen."
   retry: "Erneut versuchen"
@@ -777,7 +778,7 @@ desktop/views/components/settings.profile.vue:
   birthday: "誕生日"
   save: "Profil aktualisieren"
   locked-account: "アカウントの保護"
-  is-locked: "投稿を非公開にする"
+  is-locked: "フォローを承認制にする"
   other: "その他"
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
@@ -1031,8 +1032,6 @@ mobile/views/components/friends-maker.vue:
   close: "閉じる"
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
-  more: "もっと見る"
-  less: "隠す"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
@@ -1161,6 +1160,9 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "アイコン"
   banner: "バナー"
   is-cat: "このアカウントはCatです"
+  is-locked: "フォローを承認制にする"
+  advanced: "その他"
+  privacy: "プライバシー"
   save: "保存"
   saved: "Profil wurde aktualisiert"
   uploading: "アップロード中"
