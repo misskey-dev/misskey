@@ -253,6 +253,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Succès de la connexion au serveur de Misskey. Veuillez recharger la page."
   flush: "Vider le cache"
   set-version: "Choisissez une version"
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "Trouver un·e utilisateur·trice"
   you: "Vous"
@@ -591,8 +594,6 @@ desktop/views/components/notes.note.vue:
   detail: "Afficher les détails"
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
-  hide: "Masquer"
-  see-more: "Voir plus"
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
@@ -1031,8 +1032,6 @@ mobile/views/components/friends-maker.vue:
   close: "Fermer"
 mobile/views/components/note.vue:
   reposted-by: "Renoté par {}"
-  more: "Voir plus"
-  less: "Masquer"
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
   location: "Géolocalisation"
