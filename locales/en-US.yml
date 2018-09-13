@@ -254,8 +254,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "Clean cache"
   set-version: "Specify version"
 common/views/components/cw-button.vue:
-  hide: "隠す"
-  show: "もっと見る"
+  hide: "Hide"
+  show: "See more"
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
