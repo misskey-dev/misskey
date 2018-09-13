@@ -253,6 +253,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Het verbinden lijkt te lukken. Herlaad de pagina."
   flush: "Cache leegmaken"
   set-version: "Versie opgeven"
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "Gebruiker zoeken"
   you: "Jij"
@@ -591,8 +594,6 @@ desktop/views/components/notes.note.vue:
   detail: "Details tonen"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  hide: "隠す"
-  see-more: "もっと見る"
 desktop/views/components/notes.vue:
   error: "Laden mislukt."
   retry: "Opnieuw proberen"
@@ -1031,8 +1032,6 @@ mobile/views/components/friends-maker.vue:
   close: "閉じる"
 mobile/views/components/note.vue:
   reposted-by: "Renote door {}"
-  more: "もっと見る"
-  less: "隠す"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
