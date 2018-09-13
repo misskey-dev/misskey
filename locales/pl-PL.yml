@@ -253,6 +253,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Wygląda na to, że udało się połączyć. Odśwież stronę."
   flush: "Wyczyść pamięć podręczną"
   set-version: "Określ wersję"
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "Znajdź użytkownika"
   you: "Ty"
@@ -591,8 +594,6 @@ desktop/views/components/notes.note.vue:
   detail: "Pokaż szczegóły"
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
-  hide: "Zwiń"
-  see-more: "Więcej"
 desktop/views/components/notes.vue:
   error: "Ładowanie nie powiodło się."
   retry: "Spróbuj ponownie"
@@ -1031,8 +1032,6 @@ mobile/views/components/friends-maker.vue:
   close: "Zamknij"
 mobile/views/components/note.vue:
   reposted-by: "Udostępniono przez {}"
-  more: "Rozwiń"
-  less: "Zwiń"
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
   location: "Informacje o lokalizacji"
