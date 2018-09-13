@@ -273,6 +273,10 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
 
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
+
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あなた"
@@ -666,8 +670,6 @@ desktop/views/components/notes.note.vue:
   detail: "詳細"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  hide: "隠す"
-  see-more: "もっと見る"
 
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
@@ -1192,8 +1194,6 @@ mobile/views/components/friends-maker.vue:
 
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
-  more: "もっと見る"
-  less: "隠す"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
