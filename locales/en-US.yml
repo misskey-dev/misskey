@@ -253,6 +253,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Looks like we have a connection. Please reload the page."
   flush: "Clean cache"
   set-version: "Specify version"
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
@@ -591,8 +594,6 @@ desktop/views/components/notes.note.vue:
   detail: "Show details"
   private: "Post is private"
   deleted: "Post has been deleted"
-  hide: "Hide"
-  see-more: "See more"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
@@ -1031,8 +1032,6 @@ mobile/views/components/friends-maker.vue:
   close: "Close"
 mobile/views/components/note.vue:
   reposted-by: "Reposted by {}"
-  more: "See more"
-  less: "Hide"
   private: "This post is private"
   deleted: "This post has been deleted"
   location: "Location"
