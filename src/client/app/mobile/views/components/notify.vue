@@ -45,7 +45,7 @@ export default Vue.extend({
 	$height = 78px
 
 	position fixed
-	z-index 1024
+	z-index 10000
 	left 0
 	right 0
 	width 100%
