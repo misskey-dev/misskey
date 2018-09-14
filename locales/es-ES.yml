@@ -109,6 +109,8 @@ common:
   use-contrast-reversi-stones: "Hacer el color de la piedra claro en Reversi"
   verified-user: "Cuenta verificada"
   disable-animated-mfm: "Desactivar texto animado en una publicación"
+  always-show-nsfw: "常に閲覧注意のメディアを表示する"
+  this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: 'Esto está en desarrollo, no usarlo para producción.'
   reversi:
     drawn: "Empatado"
