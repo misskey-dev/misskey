@@ -19,7 +19,7 @@ const max = 5;
  */
 export default () => new Promise(async (res, rej) => {
 	const meta = await Meta.findOne({});
-	const hidedTags = (meta.hidedTags || []).map(t => t.toLowerCase());
+	const hidedTags = meta ? (meta.hidedTags || []).map(t => t.toLowerCase()) : [];
 
 	//#region 1. 直近Aの内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{

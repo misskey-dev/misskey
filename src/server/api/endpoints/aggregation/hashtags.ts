@@ -3,7 +3,7 @@ import Meta from '../../../../models/meta';
 
 export default () => new Promise(async (res, rej) => {
 	const meta = await Meta.findOne({});
-	const hidedTags = (meta.hidedTags || []).map(t => t.toLowerCase());
+	const hidedTags = meta ? (meta.hidedTags || []).map(t => t.toLowerCase()) : [];
 
 	const span = 1000 * 60 * 60 * 24 * 7; // 1週間
 
