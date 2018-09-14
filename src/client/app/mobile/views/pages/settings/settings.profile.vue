@@ -49,6 +49,7 @@
 
 		<div>
 			<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
+			<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
 		</div>
 	</section>
 
@@ -83,6 +84,13 @@ export default Vue.extend({
 			avatarUploading: false,
 			bannerUploading: false
 		};
+	},
+
+	computed: {
+		alwaysMarkNsfw: {
+			get() { return this.$store.state.i.settings.alwaysMarkNsfw; },
+			set(value) { (this as any).api('i/update', { alwaysMarkNsfw: value }); }
+		},
 	},
 
 	created() {

@@ -102,7 +102,10 @@ export interface ILocalUser extends IUserBase {
 	twoFactorEnabled: boolean;
 	twoFactorTempSecret?: string;
 	clientSettings: any;
-	settings: any;
+	settings: {
+		autoWatch: boolean;
+		alwaysMarkNsfw?: boolean;
+	};
 	hasUnreadNotification: boolean;
 	hasUnreadMessagingMessage: boolean;
 }

@@ -84,6 +84,12 @@ export const meta = {
 				'ja-JP': '投稿の自動ウォッチをするか否か'
 			}
 		}),
+
+		alwaysMarkNsfw: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'アップロードするメディアをデフォルトで「閲覧注意」として設定するか'
+			}
+		}),
 	}
 };
 
@@ -106,6 +112,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
 	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
+	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFile.findOne({
