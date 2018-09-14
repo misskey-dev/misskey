@@ -61,6 +61,7 @@
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
 				<mk-switch v-model="circleIcons" text="%i18n:@circle-icons%"/>
 				<mk-switch v-model="contrastedAcct" text="%i18n:@contrasted-acct%"/>
+				<mk-switch v-model="showFullAcct" text="%i18n:common.show-full-acct%"/>
 				<mk-switch v-model="gradientWindowHeader" text="%i18n:@gradient-window-header%"/>
 				<mk-switch v-model="iLikeSushi" text="%i18n:common.i-like-sushi%"/>
 			</div>
@@ -364,6 +365,11 @@ export default Vue.extend({
 		contrastedAcct: {
 			get() { return this.$store.state.settings.contrastedAcct; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'contrastedAcct', value }); }
+		},
+
+		showFullAcct: {
+			get() { return this.$store.state.settings.showFullAcct; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showFullAcct', value }); }
 		},
 
 		iLikeSushi: {

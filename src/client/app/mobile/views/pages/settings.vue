@@ -14,6 +14,7 @@
 					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
 					<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
 					<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
+					<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
 					<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 					<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
@@ -230,6 +231,11 @@ export default Vue.extend({
 		contrastedAcct: {
 			get() { return this.$store.state.settings.contrastedAcct; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'contrastedAcct', value }); }
+		},
+
+		showFullAcct: {
+			get() { return this.$store.state.settings.showFullAcct; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showFullAcct', value }); }
 		},
 
 		iLikeSushi: {

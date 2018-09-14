@@ -17,6 +17,7 @@ const defaultSettings = {
 	showClockOnHeader: true,
 	circleIcons: true,
 	contrastedAcct: true,
+	showFullAcct: false,
 	gradientWindowHeader: false,
 	showReplyTarget: true,
 	showMyRenotes: true,
