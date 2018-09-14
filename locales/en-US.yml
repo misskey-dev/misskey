@@ -111,8 +111,8 @@ common:
   disable-animated-mfm: "Disable animated texts in a post"
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
-  show-full-acct: "ユーザー名のホストを省略しない"
-  this-setting-is-this-device-only: "このデバイスのみ"
+  show-full-acct: "Do not omit the hostname from the username"
+  this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
   reversi:
     drawn: "Draw"
@@ -782,7 +782,7 @@ desktop/views/components/settings.profile.vue:
   birthday: "Birthday"
   save: "Update profile"
   locked-account: "Protect your account"
-  is-locked: "フォローを承認制にする"
+  is-locked: "Follow request needs approval"
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
@@ -1164,7 +1164,7 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "Avatar"
   banner: "Banner"
   is-cat: "This account is a Cat"
-  is-locked: "フォローを承認制にする"
+  is-locked: "Follow request needs approval"
   advanced: "Advanced"
   privacy: "Privacy"
   save: "Update profile"
