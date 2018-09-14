@@ -109,6 +109,10 @@ common:
   use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
+  always-show-nsfw: "常に閲覧注意のメディアを表示する"
+  always-mark-nsfw: "常にメディアを閲覧注意として投稿"
+  show-full-acct: "Do not omit the hostname from the username"
+  this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
   reversi:
     drawn: "Draw"
@@ -461,6 +465,7 @@ desktop/views/components/charts.vue:
   notes: "Posts"
   users: "Users"
   drive: "Drive"
+  network: "ネットワーク"
   charts:
     notes: "The number of posts: increase/decrease (Combined)"
     local-notes: "The number of posts: increase/decrease (Local)"
@@ -472,6 +477,9 @@ desktop/views/components/charts.vue:
     drive-total: "Capacity used as the storage: cumulative total"
     drive-files: "The number of files on the storage: increase/decrease"
     drive-files-total: "The number of files on the storage: cumulative total"
+    network-requests: "リクエスト"
+    network-time: "応答時間"
+    network-usage: "通信量"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Choose files"
   upload: "Upload files from your device"
@@ -778,7 +786,7 @@ desktop/views/components/settings.profile.vue:
   birthday: "Birthday"
   save: "Update profile"
   locked-account: "Protect your account"
-  is-locked: "フォローを承認制にする"
+  is-locked: "Follow request needs approval"
   other: "Other"
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
@@ -1160,7 +1168,7 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "Avatar"
   banner: "Banner"
   is-cat: "This account is a Cat"
-  is-locked: "フォローを承認制にする"
+  is-locked: "Follow request needs approval"
   advanced: "Advanced"
   privacy: "Privacy"
   save: "Update profile"
