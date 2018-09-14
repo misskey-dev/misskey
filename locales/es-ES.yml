@@ -465,6 +465,7 @@ desktop/views/components/charts.vue:
   notes: "Publicaciones"
   users: "Usuarios"
   drive: "Unidad"
+  network: "ネットワーク"
   charts:
     notes: "Número de publicaciones: aumentar/disminuir (Combinado)"
     local-notes: "Número de publicaciones: aumentar/disminuir (Local)"
@@ -476,6 +477,9 @@ desktop/views/components/charts.vue:
     drive-total: "Capacidad de almacenamiento usada: Acumulativa total"
     drive-files: "Número de archivos almacenados: aumentar/disminuir"
     drive-files-total: "Número de archivos almacenados: Acumulativo total"
+    network-requests: "リクエスト"
+    network-time: "応答時間"
+    network-usage: "通信量"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Escoger archivos"
   upload: "Cargar archivos de tu dispositivo"
