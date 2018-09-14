@@ -12,21 +12,22 @@
 
 				<section>
 					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
-					<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
-					<ui-switch v-model="$store.state.settings.contrastedAcct" @change="onChangeContrastedAcct">%i18n:@contrasted-acct%</ui-switch>
-					<ui-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi">%i18n:common.i-like-sushi%</ui-switch>
-					<ui-switch v-model="$store.state.settings.disableAnimatedMfm" @change="onChangeDisableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
-					<ui-switch v-model="$store.state.settings.games.reversi.showBoardLabels" @change="onChangeReversiBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
-					<ui-switch v-model="$store.state.settings.games.reversi.useContrastStones" @change="onChangeUseContrastReversiStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
+					<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
+					<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
+					<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
+					<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
+					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
+					<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
+					<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
 				</section>
 
 				<section>
 					<header>%i18n:@timeline%</header>
 					<div>
-						<ui-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</ui-switch>
-						<ui-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</ui-switch>
-						<ui-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
-						<ui-switch v-model="$store.state.settings.showLocalRenotes" @change="onChangeShowLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
+						<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>
+						<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
+						<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
+						<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
 					</div>
 				</section>
 
@@ -47,16 +48,16 @@
 				<div slot="title">%fa:cog% %i18n:@behavior%</div>
 
 				<section>
-					<ui-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
-					<ui-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
+					<ui-switch v-model="fetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
+					<ui-switch v-model="disableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
 					<ui-switch v-model="loadRawImages">%i18n:@load-raw-images%</ui-switch>
-					<ui-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
+					<ui-switch v-model="loadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
 					<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
 				</section>
 
 				<section>
 					<header>%i18n:@note-visibility%</header>
-					<ui-switch v-model="$store.state.settings.rememberNoteVisibility" @change="onChangeRememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
+					<ui-switch v-model="rememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
 					<section>
 						<header>%i18n:@default-note-visibility%</header>
 						<ui-select v-model="defaultNoteVisibility">
@@ -166,6 +167,11 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
 		},
 
+		alwaysShowNsfw: {
+			get() { return this.$store.state.device.alwaysShowNsfw; },
+			set(value) { this.$store.commit('device/set', { key: 'alwaysShowNsfw', value }); }
+		},
+
 		postStyle: {
 			get() { return this.$store.state.device.postStyle; },
 			set(value) { this.$store.commit('device/set', { key: 'postStyle', value }); }
@@ -174,11 +180,6 @@ export default Vue.extend({
 		mobileNotificationPosition: {
 			get() { return this.$store.state.device.mobileNotificationPosition; },
 			set(value) { this.$store.commit('device/set', { key: 'mobileNotificationPosition', value }); }
-		},
-
-		defaultNoteVisibility: {
-			get() { return this.$store.state.settings.defaultNoteVisibility; },
-			set(value) { this.$store.commit('settings/set', { key: 'defaultNoteVisibility', value }); }
 		},
 
 		lightmode: {
@@ -200,6 +201,81 @@ export default Vue.extend({
 			get() { return this.$store.state.device.enableSounds; },
 			set(value) { this.$store.commit('device/set', { key: 'enableSounds', value }); }
 		},
+
+		fetchOnScroll: {
+			get() { return this.$store.state.settings.fetchOnScroll; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'fetchOnScroll', value }); }
+		},
+
+		rememberNoteVisibility: {
+			get() { return this.$store.state.settings.rememberNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'rememberNoteVisibility', value }); }
+		},
+
+		disableViaMobile: {
+			get() { return this.$store.state.settings.disableViaMobile; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
+		},
+
+		loadRemoteMedia: {
+			get() { return this.$store.state.settings.loadRemoteMedia; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'loadRemoteMedia', value }); }
+		},
+
+		circleIcons: {
+			get() { return this.$store.state.settings.circleIcons; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'circleIcons', value }); }
+		},
+
+		contrastedAcct: {
+			get() { return this.$store.state.settings.contrastedAcct; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'contrastedAcct', value }); }
+		},
+
+		iLikeSushi: {
+			get() { return this.$store.state.settings.iLikeSushi; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'iLikeSushi', value }); }
+		},
+
+		games_reversi_showBoardLabels: {
+			get() { return this.$store.state.settings.games.reversi.showBoardLabels; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
+		},
+
+		games_reversi_useContrastStones: {
+			get() { return this.$store.state.settings.games.reversi.useContrastStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useContrastStones', value }); }
+		},
+
+		disableAnimatedMfm: {
+			get() { return this.$store.state.settings.disableAnimatedMfm; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
+		},
+
+		showReplyTarget: {
+			get() { return this.$store.state.settings.showReplyTarget; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showReplyTarget', value }); }
+		},
+
+		showMyRenotes: {
+			get() { return this.$store.state.settings.showMyRenotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showMyRenotes', value }); }
+		},
+
+		showRenotedMyNotes: {
+			get() { return this.$store.state.settings.showRenotedMyNotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showRenotedMyNotes', value }); }
+		},
+
+		showLocalRenotes: {
+			get() { return this.$store.state.settings.showLocalRenotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showLocalRenotes', value }); }
+		},
+
+		defaultNoteVisibility: {
+			get() { return this.$store.state.settings.defaultNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
+		},
 	},
 
 	mounted() {
@@ -209,104 +285,6 @@ export default Vue.extend({
 	methods: {
 		signout() {
 			(this as any).os.signout();
-		},
-
-		onChangeFetchOnScroll(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'fetchOnScroll',
-				value: v
-			});
-		},
-
-		onChangeRememberNoteVisibility(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'rememberNoteVisibility',
-				value: v
-			});
-		},
-
-		onChangeDisableViaMobile(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'disableViaMobile',
-				value: v
-			});
-		},
-
-		onChangeLoadRemoteMedia(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'loadRemoteMedia',
-				value: v
-			});
-		},
-
-		onChangeCircleIcons(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'circleIcons',
-				value: v
-			});
-		},
-
-		onChangeContrastedAcct(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'contrastedAcct',
-				value: v
-			});
-		},
-
-		onChangeILikeSushi(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'iLikeSushi',
-				value: v
-			});
-		},
-
-		onChangeReversiBoardLabels(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'games.reversi.showBoardLabels',
-				value: v
-			});
-		},
-
-		onChangeUseContrastReversiStones(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'games.reversi.useContrastStones',
-				value: v
-			});
-		},
-
-		onChangeDisableAnimatedMfm(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'disableAnimatedMfm',
-				value: v
-			});
-		},
-
-		onChangeShowReplyTarget(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showReplyTarget',
-				value: v
-			});
-		},
-
-		onChangeShowMyRenotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showMyRenotes',
-				value: v
-			});
-		},
-
-		onChangeShowRenotedMyNotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showRenotedMyNotes',
-				value: v
-			});
-		},
-
-		onChangeShowLocalRenotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showLocalRenotes',
-				value: v
-			});
 		},
 
 		checkForUpdate() {

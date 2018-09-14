@@ -20,7 +20,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@behaviour%</h1>
-			<mk-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll" text="%i18n:@fetch-on-scroll%">
+			<mk-switch v-model="fetchOnScroll" text="%i18n:@fetch-on-scroll%">
 				<span>%i18n:@fetch-on-scroll-desc%</span>
 			</mk-switch>
 			<mk-switch v-model="autoPopout" text="%i18n:@auto-popout%">
@@ -29,7 +29,7 @@
 
 			<section>
 				<header>%i18n:@note-visibility%</header>
-				<mk-switch v-model="$store.state.settings.rememberNoteVisibility" @change="onChangeRememberNoteVisibility" text="%i18n:@remember-note-visibility%"/>
+				<mk-switch v-model="rememberNoteVisibility" text="%i18n:@remember-note-visibility%"/>
 				<section>
 					<header>%i18n:@default-note-visibility%</header>
 					<ui-select v-model="defaultNoteVisibility">
@@ -59,24 +59,25 @@
 				<button class="ui" @click="updateWallpaper">%i18n:@choose-wallpaper%</button>
 				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
-				<mk-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons" text="%i18n:@circle-icons%"/>
-				<mk-switch v-model="$store.state.settings.contrastedAcct" @change="onChangeContrastedAcct" text="%i18n:@contrasted-acct%"/>
-				<mk-switch v-model="$store.state.settings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="%i18n:@gradient-window-header%"/>
-				<mk-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi" text="%i18n:common.i-like-sushi%"/>
+				<mk-switch v-model="circleIcons" text="%i18n:@circle-icons%"/>
+				<mk-switch v-model="contrastedAcct" text="%i18n:@contrasted-acct%"/>
+				<mk-switch v-model="gradientWindowHeader" text="%i18n:@gradient-window-header%"/>
+				<mk-switch v-model="iLikeSushi" text="%i18n:common.i-like-sushi%"/>
 			</div>
-			<mk-switch v-model="$store.state.settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
-			<mk-switch v-model="$store.state.settings.suggestRecentHashtags" @change="onChangeSuggestRecentHashtags" text="%i18n:@suggest-recent-hashtags%"/>
-			<mk-switch v-model="$store.state.settings.showClockOnHeader" @change="onChangeShowClockOnHeader" text="%i18n:@show-clock-on-header%"/>
-			<mk-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
-			<mk-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes" text="%i18n:@show-my-renotes%"/>
-			<mk-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
-			<mk-switch v-model="$store.state.settings.showLocalRenotes" @change="onChangeShowLocalRenotes" text="%i18n:@show-local-renotes%"/>
-			<mk-switch v-model="$store.state.settings.showMaps" @change="onChangeShowMaps" text="%i18n:@show-maps%">
+			<mk-switch v-model="showPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
+			<mk-switch v-model="suggestRecentHashtags" text="%i18n:@suggest-recent-hashtags%"/>
+			<mk-switch v-model="showClockOnHeader" text="%i18n:@show-clock-on-header%"/>
+			<mk-switch v-model="alwaysShowNsfw" text="%i18n:common.always-show-nsfw%"/>
+			<mk-switch v-model="showReplyTarget" text="%i18n:@show-reply-target%"/>
+			<mk-switch v-model="showMyRenotes" text="%i18n:@show-my-renotes%"/>
+			<mk-switch v-model="showRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
+			<mk-switch v-model="showLocalRenotes" text="%i18n:@show-local-renotes%"/>
+			<mk-switch v-model="showMaps" text="%i18n:@show-maps%">
 				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
-			<mk-switch v-model="$store.state.settings.disableAnimatedMfm" @change="onChangeDisableAnimatedMfm" text="%i18n:common.disable-animated-mfm%"/>
-			<mk-switch v-model="$store.state.settings.games.reversi.showBoardLabels" @change="onChangeReversiBoardLabels" text="%i18n:common.show-reversi-board-labels%"/>
-			<mk-switch v-model="$store.state.settings.games.reversi.useContrastStones" @change="onChangeUseContrastReversiStones" text="%i18n:common.use-contrast-reversi-stones%"/>
+			<mk-switch v-model="disableAnimatedMfm" text="%i18n:common.disable-animated-mfm%"/>
+			<mk-switch v-model="games_reversi_showBoardLabels" text="%i18n:common.show-reversi-board-labels%"/>
+			<mk-switch v-model="games_reversi_useContrastStones" text="%i18n:common.use-contrast-reversi-stones%"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -98,7 +99,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@mobile%</h1>
-			<mk-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile" text="%i18n:@disable-via-mobile%"/>
+			<mk-switch v-model="disableViaMobile" text="%i18n:@disable-via-mobile%"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -255,11 +256,6 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'apiViaStream', value }); }
 		},
 
-		defaultNoteVisibility: {
-			get() { return this.$store.state.settings.defaultNoteVisibility; },
-			set(value) { this.$store.commit('settings/set', { key: 'defaultNoteVisibility', value }); }
-		},
-
 		autoPopout: {
 			get() { return this.$store.state.device.autoPopout; },
 			set(value) { this.$store.commit('device/set', { key: 'autoPopout', value }); }
@@ -298,7 +294,107 @@ export default Vue.extend({
 		enableExperimentalFeatures: {
 			get() { return this.$store.state.device.enableExperimentalFeatures; },
 			set(value) { this.$store.commit('device/set', { key: 'enableExperimentalFeatures', value }); }
-		}
+		},
+
+		alwaysShowNsfw: {
+			get() { return this.$store.state.device.alwaysShowNsfw; },
+			set(value) { this.$store.commit('device/set', { key: 'alwaysShowNsfw', value }); }
+		},
+
+		fetchOnScroll: {
+			get() { return this.$store.state.settings.fetchOnScroll; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'fetchOnScroll', value }); }
+		},
+
+		rememberNoteVisibility: {
+			get() { return this.$store.state.settings.rememberNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'rememberNoteVisibility', value }); }
+		},
+
+		defaultNoteVisibility: {
+			get() { return this.$store.state.settings.defaultNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
+		},
+
+		showReplyTarget: {
+			get() { return this.$store.state.settings.showReplyTarget; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showReplyTarget', value }); }
+		},
+
+		showMyRenotes: {
+			get() { return this.$store.state.settings.showMyRenotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showMyRenotes', value }); }
+		},
+
+		showRenotedMyNotes: {
+			get() { return this.$store.state.settings.showRenotedMyNotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showRenotedMyNotes', value }); }
+		},
+
+		showLocalRenotes: {
+			get() { return this.$store.state.settings.showLocalRenotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showLocalRenotes', value }); }
+		},
+
+		showPostFormOnTopOfTl: {
+			get() { return this.$store.state.settings.showPostFormOnTopOfTl; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showPostFormOnTopOfTl', value }); }
+		},
+
+		suggestRecentHashtags: {
+			get() { return this.$store.state.settings.suggestRecentHashtags; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'suggestRecentHashtags', value }); }
+		},
+
+		showClockOnHeader: {
+			get() { return this.$store.state.settings.showClockOnHeader; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showClockOnHeader', value }); }
+		},
+
+		showMaps: {
+			get() { return this.$store.state.settings.showMaps; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showMaps', value }); }
+		},
+
+		circleIcons: {
+			get() { return this.$store.state.settings.circleIcons; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'circleIcons', value }); }
+		},
+
+		contrastedAcct: {
+			get() { return this.$store.state.settings.contrastedAcct; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'contrastedAcct', value }); }
+		},
+
+		iLikeSushi: {
+			get() { return this.$store.state.settings.iLikeSushi; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'iLikeSushi', value }); }
+		},
+
+		games_reversi_showBoardLabels: {
+			get() { return this.$store.state.settings.games.reversi.showBoardLabels; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
+		},
+
+		games_reversi_useContrastStones: {
+			get() { return this.$store.state.settings.games.reversi.useContrastStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useContrastStones', value }); }
+		},
+
+		disableAnimatedMfm: {
+			get() { return this.$store.state.settings.disableAnimatedMfm; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
+		},
+
+		disableViaMobile: {
+			get() { return this.$store.state.settings.disableViaMobile; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
+		},
+
+		gradientWindowHeader: {
+			get() { return this.$store.state.settings.gradientWindowHeader; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'gradientWindowHeader', value }); }
+		},
 	},
 	created() {
 		(this as any).os.getMeta().then(meta => {
@@ -327,123 +423,9 @@ export default Vue.extend({
 				wallpaperId: null
 			});
 		},
-		onChangeFetchOnScroll(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'fetchOnScroll',
-				value: v
-			});
-		},
-		onChangeRememberNoteVisibility(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'rememberNoteVisibility',
-				value: v
-			});
-		},
 		onChangeAutoWatch(v) {
 			(this as any).api('i/update', {
 				autoWatch: v
-			});
-		},
-		onChangeDark(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'dark',
-				value: v
-			});
-		},
-		onChangeShowPostFormOnTopOfTl(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showPostFormOnTopOfTl',
-				value: v
-			});
-		},
-		onChangeSuggestRecentHashtags(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'suggestRecentHashtags',
-				value: v
-			});
-		},
-		onChangeShowClockOnHeader(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showClockOnHeader',
-				value: v
-			});
-		},
-		onChangeShowReplyTarget(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showReplyTarget',
-				value: v
-			});
-		},
-		onChangeShowMyRenotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showMyRenotes',
-				value: v
-			});
-		},
-		onChangeShowRenotedMyNotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showRenotedMyNotes',
-				value: v
-			});
-		},
-		onChangeShowLocalRenotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showLocalRenotes',
-				value: v
-			});
-		},
-		onChangeShowMaps(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showMaps',
-				value: v
-			});
-		},
-		onChangeCircleIcons(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'circleIcons',
-				value: v
-			});
-		},
-		onChangeContrastedAcct(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'contrastedAcct',
-				value: v
-			});
-		},
-		onChangeILikeSushi(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'iLikeSushi',
-				value: v
-			});
-		},
-		onChangeReversiBoardLabels(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'games.reversi.showBoardLabels',
-				value: v
-			});
-		},
-		onChangeUseContrastReversiStones(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'games.reversi.useContrastStones',
-				value: v
-			});
-		},
-		onChangeDisableAnimatedMfm(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'disableAnimatedMfm',
-				value: v
-			});
-		},
-		onChangeGradientWindowHeader(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'gradientWindowHeader',
-				value: v
-			});
-		},
-		onChangeDisableViaMobile(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'disableViaMobile',
-				value: v
 			});
 		},
 		checkForUpdate() {

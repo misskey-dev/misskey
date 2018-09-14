@@ -1,5 +1,5 @@
 <template>
-<div class="ldwbgwstjsdgcjruamauqdrffetqudry" v-if="image.isSensitive && hide" @click="hide = false">
+<div class="ldwbgwstjsdgcjruamauqdrffetqudry" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
 		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
 		<span>%i18n:@click-to-show%</span>
