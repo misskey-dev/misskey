@@ -518,6 +518,7 @@ desktop/views/components/charts.vue:
   notes: "投稿"
   users: "ユーザー"
   drive: "ドライブ"
+  network: "ネットワーク"
   charts:
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
@@ -529,6 +530,9 @@ desktop/views/components/charts.vue:
     drive-total: "ドライブ使用量の累計"
     drive-files: "ドライブのファイル数の増減"
     drive-files-total: "ドライブのファイル数の累計"
+    network-requests: "リクエスト"
+    network-time: "応答時間"
+    network-usage: "通信量"
 
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"

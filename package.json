@@ -179,6 +179,7 @@
 		"redis": "2.8.0",
 		"request": "2.88.0",
 		"request-promise-native": "1.0.5",
+		"request-stats": "3.0.0",
 		"rimraf": "2.6.2",
 		"rndstr": "1.0.0",
 		"s-age": "1.1.2",

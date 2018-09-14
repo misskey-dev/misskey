@@ -19,6 +19,11 @@
 				<option value="drive">%i18n:@charts.drive%</option>
 				<option value="drive-total">%i18n:@charts.drive-total%</option>
 			</optgroup>
+			<optgroup label="%i18n:@network%">
+				<option value="network-requests">%i18n:@charts.network-requests%</option>
+				<option value="network-time">%i18n:@charts.network-time%</option>
+				<option value="network-usage">%i18n:@charts.network-usage%</option>
+			</optgroup>
 		</select>
 		<div>
 			<span @click="span = 'day'" :class="{ active: span == 'day' }">%i18n:@per-day%</span> | <span @click="span = 'hour'" :class="{ active: span == 'hour' }">%i18n:@per-hour%</span>
@@ -41,7 +46,10 @@ const colors = {
 	localPlus: 'rgb(52, 178, 118)',
 	remotePlus: 'rgb(158, 255, 209)',
 	localMinus: 'rgb(255, 97, 74)',
-	remoteMinus: 'rgb(255, 149, 134)'
+	remoteMinus: 'rgb(255, 149, 134)',
+
+	incoming: 'rgb(52, 178, 118)',
+	outgoing: 'rgb(255, 97, 74)',
 };
 
 const rgba = (color: string): string => {
@@ -75,6 +83,9 @@ export default Vue.extend({
 				case 'drive-total': return this.driveTotalChart();
 				case 'drive-files': return this.driveFilesChart();
 				case 'drive-files-total': return this.driveFilesTotalChart();
+				case 'network-requests': return this.networkRequestsChart();
+				case 'network-time': return this.networkTimeChart();
+				case 'network-usage': return this.networkUsageChart();
 			}
 		},
 
@@ -544,7 +555,95 @@ export default Vue.extend({
 					}
 				}
 			}];
-		}
+		},
+
+		networkRequestsChart(): any {
+			const data = this.stats.slice().reverse().map(x => ({
+				date: new Date(x.date),
+				requests: x.network.requests
+			}));
+
+			return [{
+				datasets: [{
+					label: 'Requests',
+					fill: true,
+					backgroundColor: rgba(colors.localPlus),
+					borderColor: colors.localPlus,
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.requests }))
+				}]
+			}];
+		},
+
+		networkTimeChart(): any {
+			const data = this.stats.slice().reverse().map(x => ({
+				date: new Date(x.date),
+				time: x.network.requests != 0 ? (x.network.totalTime / x.network.requests) : 0,
+			}));
+
+			return [{
+				datasets: [{
+					label: 'Avg time (ms)',
+					fill: true,
+					backgroundColor: rgba(colors.localPlus),
+					borderColor: colors.localPlus,
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.time }))
+				}]
+			}];
+		},
+
+		networkUsageChart(): any {
+			const data = this.stats.slice().reverse().map(x => ({
+				date: new Date(x.date),
+				incoming: x.network.incomingBytes,
+				outgoing: x.network.outgoingBytes
+			}));
+
+			return [{
+				datasets: [{
+					label: 'Incoming',
+					fill: true,
+					backgroundColor: rgba(colors.incoming),
+					borderColor: colors.incoming,
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.incoming }))
+				}, {
+					label: 'Outgoing',
+					fill: true,
+					backgroundColor: rgba(colors.outgoing),
+					borderColor: colors.outgoing,
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: data.map(x => ({ t: x.date, y: x.outgoing }))
+				}]
+			}, {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: value => {
+								return Vue.filter('bytes')(value, 1);
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							const label = data.datasets[tooltipItem.datasetIndex].label || '';
+							return `${label}: ${Vue.filter('bytes')(tooltipItem.yLabel, 1)}`;
+						}
+					}
+				}
+			}];
+		},
 	}
 });
 </script>
