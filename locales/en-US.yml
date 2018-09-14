@@ -110,6 +110,7 @@ common:
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
+  always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
   reversi:
