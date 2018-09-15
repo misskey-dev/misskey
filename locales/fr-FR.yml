@@ -112,8 +112,8 @@ common:
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "ユーザー名のホストを省略しない"
-  this-setting-is-this-device-only: "このデバイスのみ"
-  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+  this-setting-is-this-device-only: "Uniquement sur cet appareil"
+  do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
@@ -258,8 +258,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "Vider le cache"
   set-version: "Choisissez une version"
 common/views/components/cw-button.vue:
-  hide: "隠す"
-  show: "もっと見る"
+  hide: "Masquer"
+  show: "Voir plus"
 common/views/components/messaging.vue:
   search-user: "Trouver un·e utilisateur·trice"
   you: "Vous"
@@ -465,7 +465,7 @@ desktop/views/components/charts.vue:
   notes: "Publications"
   users: "Utilisateurs"
   drive: "Drive"
-  network: "ネットワーク"
+  network: "Réseau"
   charts:
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
@@ -477,8 +477,8 @@ desktop/views/components/charts.vue:
     drive-total: "ドライブ使用量の累計"
     drive-files: "ドライブのファイル数の増減"
     drive-files-total: "ドライブのファイル数の累計"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
+    network-requests: "Requêtes"
+    network-time: "Temps de réponse"
     network-usage: "通信量"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Sélection de fichiers"
@@ -673,7 +673,7 @@ desktop/views/components/settings.vue:
   fetch-on-scroll-desc: "Chargement automatique du contenu lors du défilement de la page."
   note-visibility: "Visibilité de la publication"
   default-note-visibility: "Visibilité par défaut"
-  remember-note-visibility: "投稿の公開範囲を記憶する"
+  remember-note-visibility: "Se souvenir du mode de visibilité de la publication"
   auto-popout: "Fenêtre contextuelle automatique"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
   advanced: "Paramètres avancés"
@@ -1169,8 +1169,8 @@ mobile/views/pages/settings/settings.profile.vue:
   banner: "Bannière"
   is-cat: "Ce compte est un Bot"
   is-locked: "フォローを承認制にする"
-  advanced: "その他"
-  privacy: "プライバシー"
+  advanced: "Avancé"
+  privacy: "Vie privée"
   save: "Mettre à jour le profil"
   saved: "Profil mis à jour avec succès"
   uploading: "En cours d'envoi"
@@ -1192,7 +1192,7 @@ mobile/views/pages/settings.vue:
   dark-mode: "Mode nuit"
   i-am-under-limited-internet: "J'ai un accès Internet limité"
   circle-icons: "Utiliser des icônes circulaires"
-  contrasted-acct: "ユーザー名にコントラストを付ける"
+  contrasted-acct: "Nom d’utilisateur contrasté"
   timeline: "Fil d'actualité"
   show-reply-target: "Afficher les réponses"
   show-my-renotes: "Afficher mes republications"
