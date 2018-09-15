@@ -7,7 +7,6 @@ import * as webpack from 'webpack';
 import chalk from 'chalk';
 import rndstr from 'rndstr';
 const { VueLoaderPlugin } = require('vue-loader');
-const jsonImporter = require('node-sass-json-importer');
 const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -182,22 +181,6 @@ module.exports = {
 				}, {
 					loader: 'stylus-loader'
 				}]
-			}]
-		}, {
-			test: /\.scss$/,
-			exclude: /node_modules/,
-			use: [{
-				loader: 'style-loader'
-			}, {
-				loader: 'css-loader',
-				options: {
-					minimize: true
-				}
-			}, {
-				loader: 'sass-loader',
-				options: {
-					importer: jsonImporter(),
-				}
 			}]
 		}, {
 			test: /\.css$/,

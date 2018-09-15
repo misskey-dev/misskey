@@ -7,9 +7,6 @@ import Vuex from 'vuex';
 import VueRouter from 'vue-router';
 import * as TreeView from 'vue-json-tree-view';
 import VAnimateCss from 'v-animate-css';
-import Element from 'element-ui';
-import ElementLocaleEn from 'element-ui/lib/locale/lang/en';
-import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
 import VModal from 'vue-js-modal';
 
 import App from './app.vue';
@@ -17,18 +14,10 @@ import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './mios';
 import { version, codename, lang } from './config';
 
-let elementLocale;
-switch (lang) {
-	case 'ja-JP': elementLocale = ElementLocaleJa; break;
-	case 'en-US': elementLocale = ElementLocaleEn; break;
-	default: elementLocale = ElementLocaleEn; break;
-}
-
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(TreeView);
 Vue.use(VAnimateCss);
-Vue.use(Element, { locale: elementLocale });
 Vue.use(VModal);
 
 // Register global directives

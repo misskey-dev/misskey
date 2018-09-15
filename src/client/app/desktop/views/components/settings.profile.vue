@@ -19,7 +19,7 @@
 	</label>
 	<label class="ui from group">
 		<p>%i18n:@birthday%</p>
-		<el-date-picker v-model="birthday" type="date" value-format="yyyy-MM-dd"/>
+		<input type="date" v-model="birthday"/>
 	</label>
 	<button class="ui primary" @click="save">%i18n:@save%</button>
 	<section>

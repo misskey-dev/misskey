@@ -87,13 +87,11 @@
 				<span>%i18n:@enable-sounds-desc%</span>
 			</mk-switch>
 			<label>%i18n:@volume%</label>
-			<el-slider
+			<input type="range"
 				v-model="soundVolume"
-				:show-input="true"
-				:format-tooltip="v => `${v * 100}%`"
 				:disabled="!enableSounds"
-				:max="1"
-				:step="0.1"
+				max="1"
+				step="0.1"
 			/>
 			<button class="ui button" @click="soundTest">%fa:volume-up% %i18n:@test%</button>
 		</section>
@@ -105,14 +103,15 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@language%</h1>
-			<el-select v-model="lang" placeholder="%i18n:@pick-language%">
-				<el-option-group label="%i18n:@recommended%">
-					<el-option label="%i18n:@auto%" :value="null"/>
-				</el-option-group>
-				<el-option-group label="%i18n:@specify-language%">
-					<el-option v-for="x in langs" :label="x[1]" :value="x[0]" :key="x[0]"/>
-				</el-option-group>
-			</el-select>
+			<select v-model="lang" placeholder="%i18n:@pick-language%">
+				<optgroup label="%i18n:@recommended%">
+					<option value="">%i18n:@auto%</option>
+				</optgroup>
+
+				<optgroup label="%i18n:@specify-language%">
+					<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+				</optgroup>
+			</select>
 			<div class="none ui info">
 				<p>%fa:info-circle%%i18n:@language-desc%</p>
 			</div>
@@ -207,10 +206,6 @@
 			<mk-switch v-model="enableExperimentalFeatures" text="%i18n:@experimental%">
 				<span>%i18n:@experimental-desc%</span>
 			</mk-switch>
-			<details v-if="debug">
-				<summary>%i18n:@tools%</summary>
-				<button class="ui button block" @click="taskmngr">%i18n:@task-manager%</button>
-			</details>
 		</section>
 	</div>
 </div>
@@ -228,7 +223,6 @@ import XSignins from './settings.signins.vue';
 import XDrive from './settings.drive.vue';
 import { url, langs, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
-import MkTaskManager from './taskmanager.vue';
 
 export default Vue.extend({
 	components: {
@@ -408,9 +402,6 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		taskmngr() {
-			(this as any).os.new(MkTaskManager);
-		},
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
