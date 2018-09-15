@@ -112,6 +112,7 @@ common:
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "ユーザー名のホストを省略しない"
+  enable-animations: "アニメーションを使用"
   this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
   reversi:
@@ -257,6 +258,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "正常に接続できるようやわ。ページを再度読み込みしてな。"
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
+common/views/components/media-banner.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/cw-button.vue:
   hide: "隠す"
   show: "もっと見る"
