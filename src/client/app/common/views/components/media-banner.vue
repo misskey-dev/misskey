@@ -32,11 +32,12 @@ export default Vue.extend({
 		media: {
 			type: Object,
 			required: true
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
+	},
+	data() {
+		return {
+			hide: true
+		};
 	}
 })
 </script>

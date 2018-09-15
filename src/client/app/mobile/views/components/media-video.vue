@@ -15,17 +15,19 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
+
 export default Vue.extend({
 	props: {
 		video: {
 			type: Object,
 			required: true
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
+	},
+	data() {
+		return {
+			hide: true
+		};
 	},
 	computed: {
 		imageStyle(): any {
@@ -33,7 +35,8 @@ export default Vue.extend({
 				'background-image': `url(${this.video.url})`
 			};
 		}
-	},})
+	}
+});
 </script>
 
 <style lang="stylus" scoped>

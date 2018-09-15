@@ -36,11 +36,12 @@ export default Vue.extend({
 		},
 		inlinePlayable: {
 			default: false
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
+	},
+	data() {
+		return {
+			hide: true
+		};
 	},
 	computed: {
 		imageStyle(): any {

@@ -27,11 +27,12 @@ export default Vue.extend({
 		},
 		raw: {
 			default: false
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
+	},
+	data() {
+		return {
+			hide: true
+		};
 	},
 	computed: {
 		style(): any {
