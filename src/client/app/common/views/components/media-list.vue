@@ -1,10 +1,10 @@
 <template>
 <div class="mk-media-list">
-	<template v-for="media in mediaList">
-		<mk-media-banner :media="media" :key="media.id" v-if="!media.type.startsWith('image') && !media.type.startsWith('video')"/>
+	<template v-for="media in mediaList.filter(media => !previewable(media))">
+		<mk-media-banner :media="media" :key="media.id"/>
 	</template>
-	<div class="mk-media-list-fixed" v-if="mediaList.filter(media => media.type.startsWith('image') || media.type.startsWith('video')).length > 0">
-		<div :data-count="mediaList.filter(media => media.type.startsWith('video') || media.type.startsWith('image')).length" ref="grid">
+	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
+		<div :data-count="mediaList.filter(media => previewable(media)).length" ref="grid">
 			<template v-for="media in mediaList">
 				<mk-media-video :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
 				<mk-media-image :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
@@ -27,15 +27,23 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		// for Safari bug
-		this.$refs.grid.style.height = this.$refs.grid.clientHeight ? `${this.$refs.grid.clientHeight}px` : '128px';
+		//#region for Safari bug
+		if (this.$refs.grid) {
+			this.$refs.grid.style.height = this.$refs.grid.clientHeight ? `${this.$refs.grid.clientHeight}px` : '128px';
+		}
+		//#endregion
+	},
+	methods: {
+		previewable(file) {
+			return file.type.startsWith('video') || file.type.startsWith('image');
+		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
 .mk-media-list
-	> .mk-media-list-fixed
+	> .gird-container
 		width 100%
 		margin-top 4px
 
