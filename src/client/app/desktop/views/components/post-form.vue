@@ -49,7 +49,7 @@
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
-	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
+	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
 </div>
 </template>

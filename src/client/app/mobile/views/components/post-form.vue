@@ -42,7 +42,7 @@
 					<span v-if="visibility === 'private'">%fa:lock%</span>
 				</button>
 			</footer>
-			<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
+			<input ref="file" class="file" type="file" multiple="multiple" @change="onChangeFile"/>
 		</div>
 	</div>
 	<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
