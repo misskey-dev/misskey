@@ -6,19 +6,11 @@
 	</div>
 </div>
 <div class="vwxdhznewyashiknzolsoihtlpicqepe" v-else>
-	<video class="video"
-		:src="video.url"
-		:title="video.name"
-		controls
-		@dblclick.prevent="onClick"
-		ref="video"
-		v-if="inlinePlayable" />
 	<a class="thumbnail"
 		:href="video.url"
 		:style="imageStyle"
 		@click.prevent="onClick"
-		:title="video.name"
-		v-else>
+		:title="video.name">
 		%fa:R play-circle%
 	</a>
 </div>
@@ -33,9 +25,6 @@ export default Vue.extend({
 		video: {
 			type: Object,
 			required: true
-		},
-		inlinePlayable: {
-			default: false
 		},
 		hide: {
 			type: Boolean,
@@ -68,12 +57,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .vwxdhznewyashiknzolsoihtlpicqepe
-	.video
-		display block
-		width 100%
-		height 100%
-		border-radius 4px
-
 	.thumbnail
 		display flex
 		justify-content center
@@ -99,7 +82,7 @@ export default Vue.extend({
 		text-align center
 		font-size 12px
 
-		> b
+		> *
 			display block
 
 </style>
