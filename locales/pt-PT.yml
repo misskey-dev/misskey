@@ -8,9 +8,9 @@ common:
   about: "Obrigado por encontrar Misskey. Uma <b>plataforma descentralizada de microblog</b> nascida na Terra. Já que ela existe no Fediverso (um universo onde várias plataformas de mídia social são organizadas), ela é ligada com outras plataformas.Por que você não tira uma folga do agito e confusão da cidade, e mergulha em uma nova internet?"
   intro:
     title: "O que é Misskey?"
-    about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
-    features: "特徴"
-    rich-contents: "投稿"
+    about: "Misskey é um <b>serviço de microblog descentralizado</b>. Personalização sofisticada da interface, variedade de reações a posts, armazenamento de arquivos grátis com gerenciamento integrado e outras funções avançadas estão disponíveis. Um sistema em rede chamado \"Fediverso\" permite que nos comuniquemos com usuários em outras redes sociais. Se você postar algo, por exemplo, seu post não será mandado apenas para o Misskey, mas também para o Mastodon. Apenas imagine que o planeta está enviando ondas de rádio para outros planetas para se comunicar."
+    features: "Recursos"
+    rich-contents: "Post"
     rich-contents-desc: "自分の考え、話題の出来事、皆と共有したいことについて発信してください。必要であれば、様々な構文を使って投稿を装飾したり、好きな画像、動画などのファイルやアンケートを添付することもできます。"
     reaction: "リアクション"
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
