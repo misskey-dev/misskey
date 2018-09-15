@@ -258,6 +258,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Die Verbindung scheint zu funktionieren. Bitte lade die Seite neu."
   flush: "Cache leeren"
   set-version: "Version angeben"
+common/views/components/media-banner.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/cw-button.vue:
   hide: "隠す"
   show: "もっと見る"
