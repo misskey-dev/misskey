@@ -65,7 +65,7 @@ export default Vue.extend({
 		text-align center
 		font-size 12px
 
-		> b
+		> *
 			display block
 
 </style>
