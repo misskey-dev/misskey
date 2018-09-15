@@ -59,7 +59,7 @@ import MkVisibilityChooser from '../../../common/views/components/visibility-cho
 import getFace from '../../../common/scripts/get-face';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
-import { erase } from '../../../../../prelude/array';
+import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import parseAcct from '../../../../../misc/acct/parse';
 
