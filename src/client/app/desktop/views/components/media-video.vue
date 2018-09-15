@@ -27,6 +27,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import MkMediaVideoDialog from './media-video-dialog.vue';
+
 export default Vue.extend({
 	props: {
 		video: {
@@ -72,6 +73,7 @@ export default Vue.extend({
 		width 100%
 		height 100%
 		border-radius 4px
+
 	.thumbnail
 		display flex
 		justify-content center
@@ -83,16 +85,19 @@ export default Vue.extend({
 		background-size cover
 		width 100%
 		height 100%
+
 .uofhebxjdgksfmltszlxurtjnjjsvioh
 	display flex
 	justify-content center
 	align-items center
 	background #111
 	color #fff
+
 	> div
 		display table-cell
 		text-align center
 		font-size 12px
+
 		> b
 			display block
 </style>
