@@ -1,7 +1,7 @@
 <template>
 <div class="mk-media-list">
 	<template v-for="media in mediaList.filter(media => !previewable(media))">
-		<mk-media-banner :media="media" :key="media.id"/>
+		<x-banner :media="media" :key="media.id"/>
 	</template>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
 		<div :data-count="mediaList.filter(media => previewable(media)).length" ref="grid">
@@ -16,8 +16,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import XBanner from './media-banner.vue';
 
 export default Vue.extend({
+	components: {
+		XBanner
+	},
 	props: {
 		mediaList: {
 			required: true
