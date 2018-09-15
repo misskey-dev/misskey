@@ -78,11 +78,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 	//#endergion
 
-	// 添付メディア
+	// 添付ファイル
 	// TODO: attachmentは必ずしもImageではない
 	// TODO: attachmentは必ずしも配列ではない
 	// Noteがsensitiveなら添付もsensitiveにする
-	const media = note.attachment
+	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
 		? await Promise.all(note.attachment.map(x => resolveImage(actor, x)))
 		: [];
@@ -91,7 +91,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
 	// テキストのパース
-	const text = htmlToMFM(note.content);
+	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -100,7 +100,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	return await post(actor, {
 		createdAt: new Date(note.published),
-		media,
+		files: files,
 		reply,
 		renote: undefined,
 		cw: note.summary,

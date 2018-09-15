@@ -4,12 +4,14 @@ const Meta = db.get<IMeta>('meta');
 export default Meta;
 
 export type IMeta = {
-	broadcasts: any[];
-	stats: {
+	broadcasts?: any[];
+	stats?: {
 		notesCount: number;
 		originalNotesCount: number;
 		usersCount: number;
 		originalUsersCount: number;
 	};
-	disableRegistration: boolean;
+	disableRegistration?: boolean;
+	disableLocalTimeline?: boolean;
+	hidedTags?: string[];
 };

@@ -16,6 +16,13 @@ export default async function(
 
 	// Subscribe stream
 	subscriber.on('local-timeline', async note => {
+		// Renoteなら再pack
+		if (note.renoteId != null) {
+			note.renote = await pack(note.renoteId, user, {
+				detail: true
+			});
+		}
+
 		//#region 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (mutedUserIds.indexOf(note.userId) != -1) {
 			return;
@@ -27,13 +34,6 @@ export default async function(
 			return;
 		}
 		//#endregion
-
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await pack(note.renoteId, user, {
-				detail: true
-			});
-		}
 
 		connection.send(JSON.stringify({
 			type: 'note',

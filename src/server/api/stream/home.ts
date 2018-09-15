@@ -36,6 +36,13 @@ export default async function(
 
 	// Subscribe Home stream channel
 	subscriber.on(`user-stream:${user._id}`, async x => {
+		// Renoteなら再pack
+		if (x.type == 'note' && x.body.renoteId != null) {
+			x.body.renote = await pack(x.body.renoteId, user, {
+				detail: true
+			});
+		}
+
 		//#region 流れてきたメッセージがミュートしているユーザーが関わるものだったら無視する
 		if (x.type == 'note') {
 			if (mutedUserIds.includes(x.body.userId)) {
@@ -53,13 +60,6 @@ export default async function(
 			}
 		}
 		//#endregion
-
-		// Renoteなら再pack
-		if (x.type == 'note' && x.body.renoteId != null) {
-			x.body.renote = await pack(x.body.renoteId, user, {
-				detail: true
-			});
-		}
 
 		connection.send(JSON.stringify(x));
 	});

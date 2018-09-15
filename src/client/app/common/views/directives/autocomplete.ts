@@ -167,7 +167,7 @@ class Autocomplete {
 	private close() {
 		if (this.suggestion == null) return;
 
-		this.suggestion.$destroy();
+		this.suggestion.destroyDom();
 		this.suggestion = null;
 
 		this.textarea.focus();

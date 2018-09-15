@@ -8,8 +8,8 @@ import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
-	const promisedFiles: Promise<IDriveFile[]> = note.mediaIds
-		? DriveFile.find({ _id: { $in: note.mediaIds } })
+	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
+		? DriveFile.find({ _id: { $in: note.fileIds } })
 		: Promise.resolve([]);
 
 	let inReplyTo;
@@ -87,6 +87,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		attributedTo,
 		summary: note.cw,
 		content: toHtml(note),
+		_misskey_content_: note.text,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,

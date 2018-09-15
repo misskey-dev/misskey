@@ -55,7 +55,7 @@ export default Vue.extend({
 
 root(isDark)
 	display inline-block
-	margin 32px 32px 32px 0
+	margin 0 32px 0 0
 	cursor pointer
 	transition all 0.3s
 

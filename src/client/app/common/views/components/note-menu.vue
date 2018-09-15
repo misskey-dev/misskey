@@ -64,7 +64,7 @@ export default Vue.extend({
 			(this as any).api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$destroy();
+				this.destroyDom();
 			});
 		},
 
@@ -73,7 +73,7 @@ export default Vue.extend({
 			(this as any).api('notes/delete', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$destroy();
+				this.destroyDom();
 			});
 		},
 
@@ -81,13 +81,13 @@ export default Vue.extend({
 			(this as any).api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$destroy();
+				this.destroyDom();
 			});
 		},
 
 		closed() {
 			this.$nextTick(() => {
-				this.$destroy();
+				this.destroyDom();
 			});
 		}
 	}

@@ -106,7 +106,7 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.preventMount) {
-			this.$destroy();
+			this.destroyDom();
 			return;
 		}
 
@@ -190,7 +190,7 @@ export default Vue.extend({
 			});
 
 			setTimeout(() => {
-				this.$destroy();
+				this.destroyDom();
 				this.$emit('closed');
 			}, 300);
 		},

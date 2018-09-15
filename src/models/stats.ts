@@ -204,4 +204,30 @@ export interface IStats {
 			decSize: number;
 		};
 	};
+
+	/**
+	 * ネットワークに関する統計
+	 */
+	network: {
+		/**
+		 * サーバーへのリクエスト数
+		 */
+		requests: number;
+
+		/**
+		 * 応答時間の合計
+		 * TIP: (totalTime / requests) でひとつのリクエストに平均でどれくらいの時間がかかったか知れる
+		 */
+		totalTime: number;
+
+		/**
+		 * 合計受信データ量
+		 */
+		incomingBytes: number;
+
+		/**
+		 * 合計送信データ量
+		 */
+		outgoingBytes: number;
+	};
 }

@@ -4,7 +4,7 @@
 		<span class="icon" v-if="geo">%fa:map-marker-alt%</span>
 		<span v-if="!reply">%i18n:@note%</span>
 		<span v-if="reply">%i18n:@reply%</span>
-		<span class="count" v-if="media.length != 0">{{ '%i18n:@attaches%'.replace('{}', media.length) }}</span>
+		<span class="count" v-if="files.length != 0">{{ '%i18n:@attaches%'.replace('{}', files.length) }}</span>
 		<span class="count" v-if="uploadings.length != 0">{{ '%i18n:@uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
 	</span>
 
@@ -14,7 +14,7 @@
 			:reply="reply"
 			@posted="onPosted"
 			@change-uploadings="onChangeUploadings"
-			@change-attached-media="onChangeMedia"
+			@change-attached-files="onChangeFiles"
 			@geo-attached="onGeoAttached"
 			@geo-dettached="onGeoDettached"/>
 	</div>
@@ -29,7 +29,7 @@ export default Vue.extend({
 	data() {
 		return {
 			uploadings: [],
-			media: [],
+			files: [],
 			geo: null
 		};
 	},
@@ -42,8 +42,8 @@ export default Vue.extend({
 		onChangeUploadings(files) {
 			this.uploadings = files;
 		},
-		onChangeMedia(media) {
-			this.media = media;
+		onChangeFiles(files) {
+			this.files = files;
 		},
 		onGeoAttached(geo) {
 			this.geo = geo;

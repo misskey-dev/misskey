@@ -35,20 +35,26 @@
 			</div>
 		</header>
 		<div class="body">
-			<div class="text">
-				<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
-				<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
-				<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
-			</div>
-			<div class="media" v-if="p.media.length > 0">
-				<mk-media-list :media-list="p.media" :raw="true"/>
-			</div>
-			<mk-poll v-if="p.poll" :note="p"/>
-			<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
-			<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
-			<div class="map" v-if="p.geo" ref="map"></div>
-			<div class="renote" v-if="p.renote">
-				<mk-note-preview :note="p.renote"/>
+			<p v-if="p.cw != null" class="cw">
+				<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+				<mk-cw-button v-model="showContent"/>
+			</p>
+			<div class="content" v-show="p.cw == null || showContent">
+				<div class="text">
+					<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
+					<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
+					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
+				</div>
+				<div class="files" v-if="p.files.length > 0">
+					<mk-media-list :media-list="p.files" :raw="true"/>
+				</div>
+				<mk-poll v-if="p.poll" :note="p"/>
+				<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
+				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
+				<div class="map" v-if="p.geo" ref="map"></div>
+				<div class="renote" v-if="p.renote">
+					<mk-note-preview :note="p.renote"/>
+				</div>
 			</div>
 		</div>
 		<router-link class="time" :to="p | notePage">
@@ -85,6 +91,7 @@ import parse from '../../../../../mfm/parse';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './note.sub.vue';
+import { sum } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	components: {
@@ -103,6 +110,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			showContent: false,
 			conversation: [],
 			conversationFetching: false,
 			replies: []
@@ -113,7 +121,7 @@ export default Vue.extend({
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds.length == 0 &&
+				this.note.fileIds.length == 0 &&
 				this.note.poll == null);
 		},
 
@@ -123,9 +131,7 @@ export default Vue.extend({
 
 		reactionsCount(): number {
 			return this.p.reactionCounts
-				? Object.keys(this.p.reactionCounts)
-					.map(key => this.p.reactionCounts[key])
-					.reduce((a, b) => a + b)
+				? sum(Object.values(this.p.reactionCounts))
 				: 0;
 		},
 
@@ -335,44 +341,57 @@ root(isDark)
 		> .body
 			padding 8px 0
 
-			> .text
+			> .cw
+				cursor default
 				display block
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				font-size 16px
 				color isDark ? #fff : #717171
 
-				@media (min-width 500px)
-					font-size 24px
+				> .text
+					margin-right 8px
 
-			> .renote
-				margin 8px 0
+			> .content
 
-				> .mk-note-preview
-					padding 16px
-					border dashed 1px #c0dac6
-					border-radius 8px
-
-			> .location
-				margin 4px 0
-				font-size 12px
-				color #ccc
-
-			> .map
-				width 100%
-				height 200px
-
-				&:empty
-					display none
-
-			> .mk-url-preview
-				margin-top 8px
-
-			> .media
-				> img
+				> .text
 					display block
-					max-width 100%
+					margin 0
+					padding 0
+					overflow-wrap break-word
+					font-size 16px
+					color isDark ? #fff : #717171
+
+					@media (min-width 500px)
+						font-size 24px
+
+				> .renote
+					margin 8px 0
+
+					> *
+						padding 16px
+						border dashed 1px #c0dac6
+						border-radius 8px
+
+				> .location
+					margin 4px 0
+					font-size 12px
+					color #ccc
+
+				> .map
+					width 100%
+					height 200px
+
+					&:empty
+						display none
+
+				> .mk-url-preview
+					margin-top 8px
+
+				> .files
+					> img
+						display block
+						max-width 100%
 
 		> .time
 			font-size 16px

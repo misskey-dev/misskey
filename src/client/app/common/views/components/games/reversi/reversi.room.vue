@@ -59,11 +59,6 @@
 			</header>
 
 			<div>
-				<el-alert v-for="message in messages"
-						:title="message.text"
-						:type="message.type"
-						:key="message.id"/>
-
 				<template v-for="item in form">
 					<mk-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm(item)">{{ item.desc || '' }}</mk-switch>
 
@@ -93,7 +88,7 @@
 						</header>
 
 						<div>
-							<el-input v-model="item.value" @change="onChangeForm(item)"/>
+							<input v-model="item.value" @change="onChangeForm(item)"/>
 						</div>
 					</div>
 				</template>

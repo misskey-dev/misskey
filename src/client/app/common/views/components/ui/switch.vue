@@ -64,6 +64,12 @@ root(isDark)
 	cursor pointer
 	transition all 0.3s
 
+	&:first-child
+		margin-top 0
+
+	&:last-child
+		margin-bottom 0
+
 	> *
 		user-select none
 
@@ -89,6 +95,7 @@ root(isDark)
 
 	> .button
 		display inline-block
+		flex-shrink 0
 		margin 3px 0 0 0
 		width 34px
 		height 14px

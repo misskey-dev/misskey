@@ -18,7 +18,7 @@
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
-					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '%i18n:@less%' : '%i18n:@more%' }}</span>
+					<mk-cw-button v-model="showContent"/>
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
@@ -28,8 +28,8 @@
 						<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
 					</div>
-					<div class="media" v-if="p.media.length > 0">
-						<mk-media-list :media-list="p.media"/>
+					<div class="files" v-if="p.files.length > 0">
+						<mk-media-list :media-list="p.files"/>
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
 					<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
@@ -54,11 +54,11 @@
 	</article>
 </div>
 <div v-else class="srwrkujossgfuhrbnvqkybtzxpblgchi">
-	<div v-if="note.media.length > 0">
-		<mk-media-list :media-list="note.media"/>
+	<div v-if="note.files.length > 0">
+		<mk-media-list :media-list="note.files"/>
 	</div>
-	<div v-if="note.renote && note.renote.media.length > 0">
-		<mk-media-list :media-list="note.renote.media"/>
+	<div v-if="note.renote && note.renote.files.length > 0">
+		<mk-media-list :media-list="note.renote.files"/>
 	</div>
 </div>
 </template>
@@ -100,7 +100,7 @@ export default Vue.extend({
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds.length == 0 &&
+				this.note.fileIds.length == 0 &&
 				this.note.poll == null);
 		},
 
@@ -371,7 +371,7 @@ root(isDark)
 					.mk-url-preview
 						margin-top 8px
 
-					> .media
+					> .files
 						> img
 							display block
 							max-width 100%
@@ -394,7 +394,7 @@ root(isDark)
 					> .renote
 						margin 8px 0
 
-						> .mk-note-preview
+						> *
 							padding 16px
 							border dashed 1px isDark ? #4e945e : #c0dac6
 							border-radius 8px

@@ -1,5 +1,7 @@
 import Vue from 'vue';
 
+import cwButton from './cw-button.vue';
+import tagCloud from './tag-cloud.vue';
 import trends from './trends.vue';
 import analogClock from './analog-clock.vue';
 import menu from './menu.vue';
@@ -42,6 +44,8 @@ import uiSelect from './ui/select.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
+Vue.component('mk-cw-button', cwButton);
+Vue.component('mk-tag-cloud', tagCloud);
 Vue.component('mk-trends', trends);
 Vue.component('mk-analog-clock', analogClock);
 Vue.component('mk-menu', menu);

@@ -8,8 +8,11 @@ import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-c
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import { setResponseType } from '../activitypub';
 
-import Note from '../../models/note';
+import Note, { INote } from '../../models/note';
 import renderNote from '../../remote/activitypub/renderer/note';
+import renderCreate from '../../remote/activitypub/renderer/create';
+import renderAnnounce from '../../remote/activitypub/renderer/announce';
+import { countIf } from '../../prelude/array';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = new mongo.ObjectID(ctx.params.user);
@@ -25,7 +28,7 @@ export default async (ctx: Router.IRouterContext) => {
 	const page: boolean = ctx.request.query.page === 'true';
 
 	// Validate parameters
-	if (sinceIdErr || untilIdErr || pageErr || [sinceId, untilId].filter(x => x != null).length > 1) {
+	if (sinceIdErr || untilIdErr || pageErr || countIf(x => x != null, [sinceId, untilId]) > 1) {
 		ctx.status = 400;
 		return;
 	}
@@ -52,15 +55,7 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const query = {
 			userId: user._id,
-			$and: [{
-				$or: [ { visibility: 'public' }, { visibility: 'home' } ]
-			}, { // exclude renote, but include quote
-				$or: [{
-					text: { $ne: null }
-				}, {
-					mediaIds: { $ne: [] }
-				}]
-			}]
+			visibility: { $in: ['public', 'home'] }
 		} as any;
 
 		if (sinceId) {
@@ -84,10 +79,10 @@ export default async (ctx: Router.IRouterContext) => {
 
 		if (sinceId) notes.reverse();
 
-		const renderedNotes = await Promise.all(notes.map(note => renderNote(note, false)));
+		const activities = await Promise.all(notes.map(note => packActivity(note)));
 		const rendered = renderOrderedCollectionPage(
 			`${partOf}?page=true${sinceId ? `&since_id=${sinceId}` : ''}${untilId ? `&until_id=${untilId}` : ''}`,
-			user.notesCount, renderedNotes, partOf,
+			user.notesCount, activities, partOf,
 			notes.length > 0 ? `${partOf}?page=true&since_id=${notes[0]._id}` : null,
 			notes.length > 0 ? `${partOf}?page=true&until_id=${notes[notes.length - 1]._id}` : null
 		);
@@ -104,3 +99,16 @@ export default async (ctx: Router.IRouterContext) => {
 		setResponseType(ctx);
 	}
 };
+
+/**
+ * Pack Create<Note> or Announce Activity
+ * @param note Note
+ */
+export async function packActivity(note: INote): Promise<object> {
+	if (note.renoteId && note.text == null && note.poll == null && (note.fileIds == null || note.fileIds.length == 0)) {
+		const renote = await Note.findOne(note.renoteId);
+		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote._id}`, note);
+	}
+
+	return renderCreate(await renderNote(note, false), note);
+}

@@ -92,7 +92,7 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 
 	// このDriveFileを添付しているNoteをすべて削除
 	await Promise.all((
-		await Note.find({ mediaIds: d._id })
+		await Note.find({ fileIds: d._id })
 	).map(x => deleteNote(x)));
 
 	// このDriveFileを添付しているMessagingMessageをすべて削除

@@ -2,47 +2,64 @@
 <ui-card>
 	<div slot="title">%fa:user% %i18n:@title%</div>
 
-	<ui-form :disabled="saving">
-		<ui-input v-model="name" :max="30">
-			<span>%i18n:@name%</span>
-		</ui-input>
+	<section class="fit-top">
+		<ui-form :disabled="saving">
+			<ui-input v-model="name" :max="30">
+				<span>%i18n:@name%</span>
+			</ui-input>
 
-		<ui-input v-model="username" readonly>
-			<span>%i18n:@account%</span>
-			<span slot="prefix">@</span>
-			<span slot="suffix">@{{ host }}</span>
-		</ui-input>
+			<ui-input v-model="username" readonly>
+				<span>%i18n:@account%</span>
+				<span slot="prefix">@</span>
+				<span slot="suffix">@{{ host }}</span>
+			</ui-input>
 
-		<ui-input v-model="location">
-			<span>%i18n:@location%</span>
-			<span slot="prefix">%fa:map-marker-alt%</span>
-		</ui-input>
+			<ui-input v-model="location">
+				<span>%i18n:@location%</span>
+				<span slot="prefix">%fa:map-marker-alt%</span>
+			</ui-input>
 
-		<ui-input v-model="birthday" type="date">
-			<span>%i18n:@birthday%</span>
-			<span slot="prefix">%fa:birthday-cake%</span>
-		</ui-input>
+			<ui-input v-model="birthday" type="date">
+				<span>%i18n:@birthday%</span>
+				<span slot="prefix">%fa:birthday-cake%</span>
+			</ui-input>
 
-		<ui-textarea v-model="description" :max="500">
-			<span>%i18n:@description%</span>
-		</ui-textarea>
+			<ui-textarea v-model="description" :max="500">
+				<span>%i18n:@description%</span>
+			</ui-textarea>
 
-		<ui-input type="file" @change="onAvatarChange">
-			<span>%i18n:@avatar%</span>
-			<span slot="icon">%fa:image%</span>
-			<span slot="text" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
-		</ui-input>
+			<ui-input type="file" @change="onAvatarChange">
+				<span>%i18n:@avatar%</span>
+				<span slot="icon">%fa:image%</span>
+				<span slot="text" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
+			</ui-input>
 
-		<ui-input type="file" @change="onBannerChange">
-			<span>%i18n:@banner%</span>
-			<span slot="icon">%fa:image%</span>
-			<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
-		</ui-input>
+			<ui-input type="file" @change="onBannerChange">
+				<span>%i18n:@banner%</span>
+				<span slot="icon">%fa:image%</span>
+				<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
+			</ui-input>
 
-		<ui-switch v-model="isCat">%i18n:@is-cat%</ui-switch>
+			<ui-button @click="save(true)">%i18n:@save%</ui-button>
+		</ui-form>
+	</section>
 
-		<ui-button @click="save">%i18n:@save%</ui-button>
-	</ui-form>
+	<section>
+		<header>%i18n:@advanced%</header>
+
+		<div>
+			<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
+			<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
+		</div>
+	</section>
+
+	<section>
+		<header>%i18n:@privacy%</header>
+
+		<div>
+			<ui-switch v-model="isLocked" @change="save(false)">%i18n:@is-locked%</ui-switch>
+		</div>
+	</section>
 </ui-card>
 </template>
 
@@ -62,10 +79,18 @@ export default Vue.extend({
 			avatarId: null,
 			bannerId: null,
 			isCat: false,
+			isLocked: false,
 			saving: false,
 			avatarUploading: false,
 			bannerUploading: false
 		};
+	},
+
+	computed: {
+		alwaysMarkNsfw: {
+			get() { return this.$store.state.i.settings.alwaysMarkNsfw; },
+			set(value) { (this as any).api('i/update', { alwaysMarkNsfw: value }); }
+		},
 	},
 
 	created() {
@@ -77,6 +102,7 @@ export default Vue.extend({
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isCat = this.$store.state.i.isCat;
+		this.isLocked = this.$store.state.i.isLocked;
 	},
 
 	methods: {
@@ -124,7 +150,7 @@ export default Vue.extend({
 				});
 		},
 
-		save() {
+		save(notify) {
 			this.saving = true;
 
 			(this as any).api('i/update', {
@@ -134,7 +160,8 @@ export default Vue.extend({
 				birthday: this.birthday || null,
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
-				isCat: this.isCat
+				isCat: this.isCat,
+				isLocked: this.isLocked
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;
@@ -142,7 +169,9 @@ export default Vue.extend({
 				this.$store.state.i.bannerId = i.bannerId;
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
-				alert('%i18n:@saved%');
+				if (notify) {
+					alert('%i18n:@saved%');
+				}
 			});
 		}
 	}

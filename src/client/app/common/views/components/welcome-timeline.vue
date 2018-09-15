@@ -1,22 +1,24 @@
 <template>
 <div class="mk-welcome-timeline">
-	<div v-for="note in notes">
-		<mk-avatar class="avatar" :user="note.user" target="_blank"/>
-		<div class="body">
-			<header>
-				<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
-				<span class="username">@{{ note.user | acct }}</span>
-				<div class="info">
-					<router-link class="created-at" :to="note | notePage">
-						<mk-time :time="note.createdAt"/>
-					</router-link>
+	<transition-group name="ldzpakcixzickvggyixyrhqwjaefknon" tag="div">
+		<div v-for="note in notes" :key="note.id">
+			<mk-avatar class="avatar" :user="note.user" target="_blank"/>
+			<div class="body">
+				<header>
+					<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
+					<span class="username">@{{ note.user | acct }}</span>
+					<div class="info">
+						<router-link class="created-at" :to="note | notePage">
+							<mk-time :time="note.createdAt"/>
+						</router-link>
+					</div>
+				</header>
+				<div class="text">
+					<misskey-flavored-markdown v-if="note.text" :text="note.text"/>
 				</div>
-			</header>
-			<div class="text">
-				<misskey-flavored-markdown v-if="note.text" :text="note.text"/>
 			</div>
 		</div>
-	</div>
+	</transition-group>
 </div>
 </template>
 
@@ -63,7 +65,7 @@ export default Vue.extend({
 				local: true,
 				reply: false,
 				renote: false,
-				media: false,
+				file: false,
 				poll: false
 			}).then(notes => {
 				this.notes = notes;
@@ -83,64 +85,73 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+.ldzpakcixzickvggyixyrhqwjaefknon-enter
+.ldzpakcixzickvggyixyrhqwjaefknon-leave-to
+	opacity 0
+	transform translateY(-30px)
+
 root(isDark)
 	background isDark ? #282C37 : #fff
 
 	> div
-		padding 16px
-		overflow-wrap break-word
-		font-size .9em
-		color isDark ? #fff : #4C4C4C
-		border-bottom 1px solid isDark ? rgba(#000, 0.1) : rgba(#000, 0.05)
+		> *
+			transition transform .3s ease, opacity .3s ease
 
-		&:after
-			content ""
-			display block
-			clear both
+		> div
+			padding 16px
+			overflow-wrap break-word
+			font-size .9em
+			color isDark ? #fff : #4C4C4C
+			border-bottom 1px solid isDark ? rgba(#000, 0.1) : rgba(#000, 0.05)
 
-		> .avatar
-			display block
-			float left
-			position -webkit-sticky
-			position sticky
-			top 16px
-			width 42px
-			height 42px
-			border-radius 6px
+			&:after
+				content ""
+				display block
+				clear both
 
-		> .body
-			float right
-			width calc(100% - 42px)
-			padding-left 12px
+			> .avatar
+				display block
+				float left
+				position -webkit-sticky
+				position sticky
+				top 16px
+				width 42px
+				height 42px
+				border-radius 6px
 
-			> header
-				display flex
-				align-items center
-				margin-bottom 4px
-				white-space nowrap
+			> .body
+				float right
+				width calc(100% - 42px)
+				padding-left 12px
 
-				> .name
-					display block
-					margin 0 .5em 0 0
-					padding 0
-					overflow hidden
-					font-weight bold
-					text-overflow ellipsis
-					color isDark ? #fff : #627079
+				> header
+					display flex
+					align-items center
+					margin-bottom 4px
+					white-space nowrap
 
-				> .username
-					margin 0 .5em 0 0
-					color isDark ? #606984 : #ccc
+					> .name
+						display block
+						margin 0 .5em 0 0
+						padding 0
+						overflow hidden
+						font-weight bold
+						text-overflow ellipsis
+						color isDark ? #fff : #627079
 
-				> .info
-					margin-left auto
-					font-size 0.9em
+					> .username
+						margin 0 .5em 0 0
+						color isDark ? #606984 : #ccc
 
-					> .created-at
-						color isDark ? #606984 : #c0c0c0
+					> .info
+						margin-left auto
+						font-size 0.9em
 
-			> .text
-				text-align left
+						> .created-at
+							color isDark ? #606984 : #c0c0c0
+
+				> .text
+					text-align left
 
 .mk-welcome-timeline[data-darkmode]
 	root(true)

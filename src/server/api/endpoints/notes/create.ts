@@ -71,9 +71,15 @@ export const meta = {
 			ref: 'geo'
 		}),
 
+		fileIds: $.arr($.type(ID)).optional.unique().range(1, 4).note({
+			desc: {
+				'ja-JP': '添付するファイル'
+			}
+		}),
+
 		mediaIds: $.arr($.type(ID)).optional.unique().range(1, 4).note({
 			desc: {
-				'ja-JP': '添付するメディア'
+				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
 			}
 		}),
 
@@ -124,26 +130,16 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 	}
 
 	let files: IDriveFile[] = [];
-	if (ps.mediaIds !== undefined) {
-		// Fetch files
-		// forEach だと途中でエラーなどがあっても return できないので
-		// 敢えて for を使っています。
-		for (const mediaId of ps.mediaIds) {
-			// Fetch file
-			// SELECT _id
-			const entity = await DriveFile.findOne({
-				_id: mediaId,
+	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
+	if (fileIds != null) {
+		files = await Promise.all(fileIds.map(fileId => {
+			return DriveFile.findOne({
+				_id: fileId,
 				'metadata.userId': user._id
 			});
+		}));
 
-			if (entity === null) {
-				return rej('file not found');
-			} else {
-				files.push(entity);
-			}
-		}
-	} else {
-		files = null;
+		files = files.filter(file => file != null);
 	}
 
 	let renote: INote = null;
@@ -155,7 +151,7 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 
 		if (renote == null) {
 			return rej('renoteee is not found');
-		} else if (renote.renoteId && !renote.text && !renote.mediaIds) {
+		} else if (renote.renoteId && !renote.text && !renote.fileIds) {
 			return rej('cannot renote to renote');
 		}
 	}
@@ -176,7 +172,7 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 		}
 
 		// 返信対象が引用でないRenoteだったらエラー
-		if (reply.renoteId && !reply.text && !reply.mediaIds) {
+		if (reply.renoteId && !reply.text && !reply.fileIds) {
 			return rej('cannot reply to renote');
 		}
 	}
@@ -191,13 +187,13 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
 	if ((ps.text === undefined || ps.text === null) && files === null && renote === null && ps.poll === undefined) {
-		return rej('text, mediaIds, renoteId or poll is required');
+		return rej('text, fileIds, renoteId or poll is required');
 	}
 
 	// 投稿を作成
 	const note = await create(user, {
 		createdAt: new Date(),
-		media: files,
+		files: files,
 		poll: ps.poll,
 		text: ps.text,
 		reply,

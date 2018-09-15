@@ -11,11 +11,13 @@ import * as Router from 'koa-router';
 import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
 import * as logger from 'koa-logger';
+const requestStats = require('request-stats');
 //const slow = require('koa-slow');
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
 import config from '../config';
+import { updateNetworkStats } from '../services/update-chart';
 
 // Init app
 const app = new Koa();
@@ -81,4 +83,27 @@ export default () => new Promise(resolve => {
 
 	// Listen
 	server.listen(config.port, resolve);
+
+	//#region Network stats
+	let queue: any[] = [];
+
+	requestStats(server, (stats: any) => {
+		if (stats.ok) {
+			queue.push(stats);
+		}
+	});
+
+	// Bulk write
+	setInterval(() => {
+		if (queue.length == 0) return;
+
+		const requests = queue.length;
+		const time = queue.reduce((a, b) => a + b.time, 0);
+		const incomingBytes = queue.reduce((a, b) => a + b.req.bytes, 0);
+		const outgoingBytes = queue.reduce((a, b) => a + b.res.bytes, 0);
+		queue = [];
+
+		updateNetworkStats(requests, time, incomingBytes, outgoingBytes);
+	}, 5000);
+	//#endregion
 });

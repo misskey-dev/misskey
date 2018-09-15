@@ -9,7 +9,7 @@ export default async function(mios: MiOS, force = false, silent = false) {
 		localStorage.setItem('should-refresh', 'true');
 		localStorage.setItem('v', newer);
 
-		// Clear cache (serive worker)
+		// Clear cache (service worker)
 		try {
 			if (navigator.serviceWorker.controller) {
 				navigator.serviceWorker.controller.postMessage('clear');

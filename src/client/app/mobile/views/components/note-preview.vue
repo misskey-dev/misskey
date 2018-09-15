@@ -1,10 +1,16 @@
 <template>
-<div class="mk-note-preview" :class="{ smart: $store.state.device.postStyle == 'smart' }">
+<div class="yohlumlkhizgfkvvscwfcrcggkotpvry" :class="{ smart: $store.state.device.postStyle == 'smart' }">
 	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle != 'smart'"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note" :mini="true"/>
 		<div class="body">
-			<mk-sub-note-content class="text" :note="note"/>
+			<p v-if="note.cw != null" class="cw">
+				<span class="text" v-if="note.cw != ''">{{ note.cw }}</span>
+				<mk-cw-button v-model="showContent"/>
+			</p>
+			<div class="content" v-show="note.cw == null || showContent">
+				<mk-sub-note-content class="text" :note="note"/>
+			</div>
 		</div>
 	</div>
 </div>
@@ -14,7 +20,18 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['note']
+	props: {
+		note: {
+			type: Object,
+			required: true
+		}
+	},
+
+	data() {
+		return {
+			showContent: false
+		};
+	}
 });
 </script>
 
@@ -65,16 +82,28 @@ root(isDark)
 
 		> .body
 
-			> .text
+			> .cw
 				cursor default
+				display block
 				margin 0
 				padding 0
-				color isDark ? #959ba7 : #717171
+				overflow-wrap break-word
+				color isDark ? #fff : #717171
 
-.mk-note-preview[data-darkmode]
+				> .text
+					margin-right 8px
+
+			> .content
+				> .text
+					cursor default
+					margin 0
+					padding 0
+					color isDark ? #959ba7 : #717171
+
+.yohlumlkhizgfkvvscwfcrcggkotpvry[data-darkmode]
 	root(true)
 
-.mk-note-preview:not([data-darkmode])
+.yohlumlkhizgfkvvscwfcrcggkotpvry:not([data-darkmode])
 	root(false)
 
 </style>

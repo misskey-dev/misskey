@@ -19,6 +19,13 @@ export default async function(
 	subscriber.on(`hybrid-timeline:${user._id}`, onEvent);
 
 	async function onEvent(note: any) {
+		// Renoteなら再pack
+		if (note.renoteId != null) {
+			note.renote = await pack(note.renoteId, user, {
+				detail: true
+			});
+		}
+
 		//#region 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (mutedUserIds.indexOf(note.userId) != -1) {
 			return;
@@ -30,13 +37,6 @@ export default async function(
 			return;
 		}
 		//#endregion
-
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await pack(note.renoteId, user, {
-				detail: true
-			});
-		}
 
 		connection.send(JSON.stringify({
 			type: 'note',

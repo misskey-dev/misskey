@@ -4,14 +4,14 @@
 		<header>
 			<button class="cancel" @click="cancel">%fa:times%</button>
 			<div>
-				<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
+				<span class="text-count" :class="{ over: trimmedLength(text) > 1000 }">{{ 1000 - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
 		</header>
 		<div class="form">
-			<mk-note-preview v-if="reply" :note="reply"/>
-			<mk-note-preview v-if="renote" :note="renote"/>
+			<mk-note-preview class="preview" v-if="reply" :note="reply"/>
+			<mk-note-preview class="preview" v-if="renote" :note="renote"/>
 			<div v-if="visibility == 'specified'" class="visibleUsers">
 				<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
 				<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
@@ -59,6 +59,9 @@ import MkVisibilityChooser from '../../../common/views/components/visibility-cho
 import getFace from '../../../common/scripts/get-face';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
+import { erase } from '../../../../../prelude/array';
+import { length } from 'stringz';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	components: {
@@ -94,7 +97,7 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
-			visibility: this.$store.state.device.visibility || 'public',
+			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
 			useCw: false,
 			cw: null,
@@ -178,6 +181,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		trimmedLength(text: string) {
+			return length(text.trim());
+		},
+
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
@@ -200,12 +207,12 @@ export default Vue.extend({
 
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		detachMedia(file) {
 			this.files = this.files.filter(x => x.id != file.id);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onChangeFile() {
@@ -252,24 +259,23 @@ export default Vue.extend({
 		addVisibleUser() {
 			(this as any).apis.input({
 				title: '%i18n:@username-prompt%'
-			}).then(username => {
-				(this as any).api('users/show', {
-					username
-				}).then(user => {
+			}).then(acct => {
+				if (acct.startsWith('@')) acct = acct.substr(1);
+				(this as any).api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
 		},
 
 		removeVisibleUser(user) {
-			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+			this.visibleUsers = erase(user, this.visibleUsers);
 		},
 
 		clear() {
 			this.text = '';
 			this.files = [];
 			this.poll = false;
-			this.$emit('change-attached-media');
+			this.$emit('change-attached-files');
 		},
 
 		post() {
@@ -277,7 +283,7 @@ export default Vue.extend({
 			const viaMobile = this.$store.state.settings.disableViaMobile !== true;
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
-				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
@@ -302,7 +308,7 @@ export default Vue.extend({
 			if (this.text && this.text != '') {
 				const hashtags = parse(this.text).filter(x => x.type == 'hashtag').map(x => x.hashtag);
 				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(hashtags.concat(history).reduce((a, c) => a.includes(c) ? a : [...a, c], [])));
+				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 			}
 		},
 
@@ -381,7 +387,7 @@ root(isDark)
 			max-width 500px
 			margin 0 auto
 
-			> .mk-note-preview
+			> .preview
 				padding 16px
 
 			> .visibleUsers

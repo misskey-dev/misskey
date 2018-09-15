@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-analog-clock">
-	<mk-widget-container :naked="!(props.design % 2)" :show-header="false">
+	<mk-widget-container :naked="props.style % 2 === 0" :show-header="false">
 		<div class="mkw-analog-clock--body">
-			<mk-analog-clock :dark="$store.state.device.darkmode" :smooth="!(props.design && ~props.design)"/>
+			<mk-analog-clock :dark="$store.state.device.darkmode" :smooth="props.style < 2"/>
 		</div>
 	</mk-widget-container>
 </div>
@@ -13,13 +13,12 @@ import define from '../../../common/define-widget';
 export default define({
 	name: 'analog-clock',
 	props: () => ({
-		design: -1
+		style: 0
 	})
 }).extend({
 	methods: {
 		func() {
-			if (++this.props.design > 2)
-				this.props.design = -1;
+			this.props.style = (this.props.style + 1) % 4;
 			this.save();
 		}
 	}

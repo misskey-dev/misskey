@@ -31,8 +31,8 @@ export const meta = {
 			}
 		}),
 
-		isSensitive: $.bool.optional.note({
-			default: false,
+		isSensitive: $.bool.optional.nullable.note({
+			default: null,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'

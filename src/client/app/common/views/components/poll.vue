@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { sum } from '../../../../../prelude/array';
 export default Vue.extend({
 	props: ['note'],
 	data() {
@@ -33,7 +34,7 @@ export default Vue.extend({
 			return this.note.poll;
 		},
 		total(): number {
-			return this.poll.choices.reduce((a, b) => a + b.votes, 0);
+			return sum(this.poll.choices.map(x => x.votes));
 		},
 		isVoted(): boolean {
 			return this.poll.choices.some(c => c.isVoted);

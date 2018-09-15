@@ -24,6 +24,7 @@ import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import { updateNoteStats } from '../update-chart';
+import { erase, unique } from '../../prelude/array';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -84,7 +85,7 @@ type Option = {
 	text?: string;
 	reply?: INote;
 	renote?: INote;
-	media?: IDriveFile[];
+	files?: IDriveFile[];
 	geo?: any;
 	poll?: any;
 	viaMobile?: boolean;
@@ -103,23 +104,25 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.viaMobile == null) data.viaMobile = false;
 
 	if (data.visibleUsers) {
-		data.visibleUsers = data.visibleUsers.filter(x => x != null);
+		data.visibleUsers = erase(null, data.visibleUsers);
 	}
 
+	// リプライ対象が削除された投稿だったらreject
 	if (data.reply && data.reply.deletedAt != null) {
 		return rej();
 	}
 
+	// Renote対象が削除された投稿だったらreject
 	if (data.renote && data.renote.deletedAt != null) {
 		return rej();
 	}
 
-	// リプライ先が自分以外の非公開の投稿なら禁止
+	// リプライ対象が自分以外の非公開の投稿なら禁止
 	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
 		return rej();
 	}
 
-	// Renote先が自分以外の非公開の投稿なら禁止
+	// Renote対象が自分以外の非公開の投稿なら禁止
 	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
 		return rej();
 	}
@@ -135,7 +138,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const mentionedUsers = await extractMentionedUsers(tokens);
 
-	const note = await insertNote(user, data, tokens, tags, mentionedUsers);
+	const note = await insertNote(user, data, tags, mentionedUsers);
 
 	res(note);
 
@@ -181,7 +184,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const noteActivity = await renderActivity(data, note);
 
-	if (isLocalUser(user)) {
+	if (isLocalUser(user) && note.visibility != 'private') {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
@@ -238,7 +241,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 });
 
 async function renderActivity(data: Option, note: INote) {
-	const content = data.renote && data.text == null
+	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
@@ -266,10 +269,12 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 		}
 
 		if (['private', 'followers', 'specified'].includes(note.visibility)) {
-			// Publish event to myself's stream
-			publishUserStream(note.userId, 'note', await pack(note, user, {
+			const detailPackedNote = await pack(note, user, {
 				detail: true
-			}));
+			});
+			// Publish event to myself's stream
+			publishUserStream(note.userId, 'note', detailPackedNote);
+			publishHybridTimelineStream(note.userId, detailPackedNote);
 		} else {
 			// Publish event to myself's stream
 			publishUserStream(note.userId, 'note', noteObj);
@@ -281,6 +286,9 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 			if (note.visibility == 'public') {
 				publishHybridTimelineStream(null, noteObj);
+			} else {
+				// Publish event to myself's stream
+				publishHybridTimelineStream(note.userId, noteObj);
 			}
 		}
 	}
@@ -309,10 +317,10 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 	publishToUserLists(note, noteObj);
 }
 
-async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof parse>, tags: string[], mentionedUsers: IUser[]) {
+async function insertNote(user: IUser, data: Option, tags: string[], mentionedUsers: IUser[]) {
 	const insert: any = {
 		createdAt: data.createdAt,
-		mediaIds: data.media ? data.media.map(file => file._id) : [],
+		fileIds: data.files ? data.files.map(file => file._id) : [],
 		replyId: data.reply ? data.reply._id : null,
 		renoteId: data.renote ? data.renote._id : null,
 		text: data.text,
@@ -347,7 +355,8 @@ async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof p
 		_user: {
 			host: user.host,
 			inbox: isRemoteUser(user) ? user.inbox : undefined
-		}
+		},
+		_files: data.files ? data.files : []
 	};
 
 	if (data.uri != null) insert.uri = data.uri;
@@ -383,7 +392,7 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 		.map(t => (t as TextElementHashtag).hashtag)
 		.filter(tag => tag.length <= 100);
 
-	return [...new Set(hashtags)];
+	return unique(hashtags);
 }
 
 function index(note: INote) {
@@ -440,6 +449,11 @@ async function publishToUserLists(note: INote, noteObj: any) {
 }
 
 async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteActivity: any) {
+	const detailPackedNote = await pack(note, null, {
+		detail: true,
+		skipHide: true
+	});
+
 	const followers = await Following.find({
 		followeeId: note.userId
 	});
@@ -458,10 +472,10 @@ async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteAc
 			}
 
 			// Publish event to followers stream
-			publishUserStream(following.followerId, 'note', noteObj);
+			publishUserStream(following.followerId, 'note', detailPackedNote);
 
 			if (isRemoteUser(user) || note.visibility != 'public') {
-				publishHybridTimelineStream(following.followerId, noteObj);
+				publishHybridTimelineStream(following.followerId, detailPackedNote);
 			}
 		} else {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
@@ -540,20 +554,20 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentionTokens = [...new Set(
+	const mentionTokens = unique(
 		tokens
 			.filter(t => t.type == 'mention') as TextElementMention[]
-	)];
+	);
 
-	const mentionedUsers = [...new Set(
-		(await Promise.all(mentionTokens.map(async m => {
+	const mentionedUsers = unique(
+		erase(null, await Promise.all(mentionTokens.map(async m => {
 			try {
 				return await resolveUser(m.username, m.host);
 			} catch (e) {
 				return null;
 			}
-		}))).filter(x => x != null)
-	)];
+		})))
+	);
 
 	return mentionedUsers;
 }

@@ -20,7 +20,7 @@
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
 			v-autocomplete="'text'"
 		></textarea>
-		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
+		<div class="files" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
@@ -45,7 +45,7 @@
 		<span v-if="visibility === 'specified'">%fa:envelope%</span>
 		<span v-if="visibility === 'private'">%fa:lock%</span>
 	</button>
-	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
+	<p class="text-count" :class="{ over: this.trimmedLength(text) > 1000 }">{{ 1000 - this.trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -62,6 +62,9 @@ import getFace from '../../../common/scripts/get-face';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
+import { erase, unique } from '../../../../../prelude/array';
+import { length } from 'stringz';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	components: {
@@ -99,7 +102,7 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
-			visibility: this.$store.state.device.visibility || 'public',
+			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -145,7 +148,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(this.text.trim().length <= 1000);
+				(length(this.text.trim()) <= 1000);
 		}
 	},
 
@@ -188,7 +191,7 @@ export default Vue.extend({
 							(this.$refs.poll as any).set(draft.data.poll);
 						});
 					}
-					this.$emit('change-attached-media', this.files);
+					this.$emit('change-attached-files', this.files);
 				}
 			}
 
@@ -197,6 +200,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+	  trimmedLength(text: string) {
+			return length(text.trim());
+		},
+
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
@@ -225,12 +232,12 @@ export default Vue.extend({
 
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		detachMedia(id) {
 			this.files = this.files.filter(x => x.id != id);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onChangeFile() {
@@ -249,7 +256,7 @@ export default Vue.extend({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onKeydown(e) {
@@ -297,7 +304,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.files.push(file);
-				this.$emit('change-attached-media', this.files);
+				this.$emit('change-attached-files', this.files);
 				e.preventDefault();
 			}
 			//#endregion
@@ -336,17 +343,16 @@ export default Vue.extend({
 		addVisibleUser() {
 			(this as any).apis.input({
 				title: '%i18n:@enter-username%'
-			}).then(username => {
-				(this as any).api('users/show', {
-					username
-				}).then(user => {
+			}).then(acct => {
+				if (acct.startsWith('@')) acct = acct.substr(1);
+				(this as any).api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
 		},
 
 		removeVisibleUser(user) {
-			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+			this.visibleUsers = erase(user, this.visibleUsers);
 		},
 
 		post() {
@@ -354,7 +360,7 @@ export default Vue.extend({
 
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
-				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
@@ -391,7 +397,7 @@ export default Vue.extend({
 			if (this.text && this.text != '') {
 				const hashtags = parse(this.text).filter(x => x.type == 'hashtag').map(x => x.hashtag);
 				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(hashtags.concat(history).reduce((a, c) => a.includes(c) ? a : [...a, c], [])));
+				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 			}
 		},
 
@@ -514,7 +520,7 @@ root(isDark)
 				margin-right 8px
 				white-space nowrap
 
-		> .medias
+		> .files
 			margin 0
 			padding 0
 			background isDark ? #181b23 : lighten($theme-color, 98%)

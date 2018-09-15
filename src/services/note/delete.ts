@@ -23,9 +23,10 @@ export default async function(user: IUser, note: INote) {
 			deletedAt: new Date(),
 			text: null,
 			tags: [],
-			mediaIds: [],
+			fileIds: [],
 			poll: null,
-			geo: null
+			geo: null,
+			cw: null
 		}
 	});
 

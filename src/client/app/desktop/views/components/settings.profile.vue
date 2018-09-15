@@ -19,7 +19,7 @@
 	</label>
 	<label class="ui from group">
 		<p>%i18n:@birthday%</p>
-		<el-date-picker v-model="birthday" type="date" value-format="yyyy-MM-dd"/>
+		<input type="date" v-model="birthday"/>
 	</label>
 	<button class="ui primary" @click="save">%i18n:@save%</button>
 	<section>
@@ -30,6 +30,7 @@
 		<h2>%i18n:@other%</h2>
 		<mk-switch v-model="$store.state.i.isBot" @change="onChangeIsBot" text="%i18n:@is-bot%"/>
 		<mk-switch v-model="$store.state.i.isCat" @change="onChangeIsCat" text="%i18n:@is-cat%"/>
+		<mk-switch v-model="alwaysMarkNsfw" text="%i18n:common.always-mark-nsfw%"/>
 	</section>
 </div>
 </template>
@@ -45,6 +46,12 @@ export default Vue.extend({
 			description: null,
 			birthday: null,
 		};
+	},
+	computed: {
+		alwaysMarkNsfw: {
+			get() { return this.$store.state.i.settings.alwaysMarkNsfw; },
+			set(value) { (this as any).api('i/update', { alwaysMarkNsfw: value }); }
+		},
 	},
 	created() {
 		this.name = this.$store.state.i.name || '';

@@ -49,7 +49,7 @@ export default define({
 				offset: this.offset,
 				renote: false,
 				reply: false,
-				media: false,
+				file: false,
 				poll: false
 			}).then(notes => {
 				const note = notes ? notes[0] : null;

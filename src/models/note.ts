@@ -2,11 +2,12 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
+import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import PollVote, { deletePollVote } from './poll-vote';
 import Reaction, { deleteNoteReaction } from './note-reaction';
-import { pack as packFile } from './drive-file';
+import { pack as packFile, IDriveFile } from './drive-file';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
 import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
@@ -17,24 +18,25 @@ const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
 Note.createIndex('tagsLower');
+Note.createIndex('_files.contentType');
 Note.createIndex({
 	createdAt: -1
 });
 export default Note;
 
 export function isValidText(text: string): boolean {
-	return text.length <= 1000 && text.trim() != '';
+	return length(text.trim()) <= 1000 && text.trim() != '';
 }
 
 export function isValidCw(text: string): boolean {
-	return text.length <= 100;
+	return length(text.trim()) <= 100;
 }
 
 export type INote = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	deletedAt: Date;
-	mediaIds: mongo.ObjectID[];
+	fileIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
 	poll: {
@@ -92,6 +94,7 @@ export type INote = {
 		inbox?: string;
 	};
 	_replyIds?: mongo.ObjectID[];
+	_files?: IDriveFile[];
 };
 
 /**
@@ -160,6 +163,66 @@ export async function deleteNote(note: string | mongo.ObjectID | INote) {
 	console.log(`Note: deleted ${n._id}`);
 }
 
+export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
+	let hide = false;
+
+	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示
+	if (packedNote.visibility == 'private' && (meId == null || !meId.equals(packedNote.userId))) {
+		hide = true;
+	}
+
+	// visibility が specified かつ自分が指定されていなかったら非表示
+	if (packedNote.visibility == 'specified') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId.equals(packedNote.userId)) {
+			hide = false;
+		} else {
+			// 指定されているかどうか
+			const specified = packedNote.visibleUserIds.some((id: mongo.ObjectID) => id.equals(meId));
+
+			if (specified) {
+				hide = false;
+			} else {
+				hide = true;
+			}
+		}
+	}
+
+	// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
+	if (packedNote.visibility == 'followers') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId.equals(packedNote.userId)) {
+			hide = false;
+		} else {
+			// フォロワーかどうか
+			const following = await Following.findOne({
+				followeeId: packedNote.userId,
+				followerId: meId
+			});
+
+			if (following == null) {
+				hide = true;
+			} else {
+				hide = false;
+			}
+		}
+	}
+
+	if (hide) {
+		packedNote.fileIds = [];
+		packedNote.files = [];
+		packedNote.text = null;
+		packedNote.poll = null;
+		packedNote.cw = null;
+		packedNote.tags = [];
+		packedNote.tagsLower = [];
+		packedNote.geo = null;
+		packedNote.isHidden = true;
+	}
+};
+
 /**
  * Pack a note for API response
  *
@@ -172,11 +235,13 @@ export const pack = async (
 	note: string | mongo.ObjectID | INote,
 	me?: string | mongo.ObjectID | IUser,
 	options?: {
-		detail: boolean
+		detail?: boolean;
+		skipHide?: boolean;
 	}
 ) => {
 	const opts = Object.assign({
-		detail: true
+		detail: true,
+		skipHide: false
 	}, options);
 
 	// Me
@@ -205,52 +270,6 @@ export const pack = async (
 
 	if (!_note) throw `invalid note arg ${note}`;
 
-	let hide = false;
-
-	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示
-	if (_note.visibility == 'private' && (meId == null || !meId.equals(_note.userId))) {
-		hide = true;
-	}
-
-	// visibility が specified かつ自分が指定されていなかったら非表示
-	if (_note.visibility == 'specified') {
-		if (meId == null) {
-			hide = true;
-		} else if (meId.equals(_note.userId)) {
-			hide = false;
-		} else {
-			// 指定されているかどうか
-			const specified = _note.visibleUserIds.some((id: mongo.ObjectID) => id.equals(meId));
-
-			if (specified) {
-				hide = false;
-			} else {
-				hide = true;
-			}
-		}
-	}
-
-	// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
-	if (_note.visibility == 'followers') {
-		if (meId == null) {
-			hide = true;
-		} else if (meId.equals(_note.userId)) {
-			hide = false;
-		} else {
-			// フォロワーかどうか
-			const following = await Following.findOne({
-				followeeId: _note.userId,
-				followerId: meId
-			});
-
-			if (following == null) {
-				hide = true;
-			} else {
-				hide = false;
-			}
-		}
-	}
-
 	const id = _note._id;
 
 	// Rename _id to id
@@ -271,10 +290,14 @@ export const pack = async (
 		_note.app = packApp(_note.appId);
 	}
 
-	// Populate media
-	_note.media = hide ? [] : Promise.all(_note.mediaIds.map((fileId: mongo.ObjectID) =>
+	// Populate files
+	_note.files = Promise.all(_note.fileIds.map((fileId: mongo.ObjectID) =>
 		packFile(fileId)
 	));
+
+	// 後方互換性のため
+	_note.mediaIds = _note.fileIds;
+	_note.media = _note.files;
 
 	// When requested a detailed note data
 	if (opts.detail) {
@@ -298,7 +321,7 @@ export const pack = async (
 		}
 
 		// Poll
-		if (meId && _note.poll && !hide) {
+		if (meId && _note.poll) {
 			_note.poll = (async poll => {
 				const vote = await PollVote
 					.findOne({
@@ -343,15 +366,8 @@ export const pack = async (
 		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');
 	}
 
-	if (hide) {
-		_note.mediaIds = [];
-		_note.text = null;
-		_note.poll = null;
-		_note.cw = null;
-		_note.tags = [];
-		_note.tagsLower = [];
-		_note.geo = null;
-		_note.isHidden = true;
+	if (!opts.skipHide) {
+		await hideNote(_note, meId);
 	}
 
 	return _note;

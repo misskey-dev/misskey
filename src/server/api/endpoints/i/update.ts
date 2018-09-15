@@ -6,6 +6,7 @@ import acceptAllFollowRequests from '../../../../services/following/requests/acc
 import { IApp } from '../../../../models/app';
 import config from '../../../../config';
 import { publishToFollowers } from '../../../../services/i/update';
+import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
@@ -15,75 +16,111 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write'
+	kind: 'account-write',
+
+	params: {
+		name: $.str.optional.nullable.pipe(isValidName).note({
+			desc: {
+				'ja-JP': '名前(ハンドルネームやニックネーム)'
+			}
+		}),
+
+		description: $.str.optional.nullable.pipe(isValidDescription).note({
+			desc: {
+				'ja-JP': 'アカウントの説明や自己紹介'
+			}
+		}),
+
+		location: $.str.optional.nullable.pipe(isValidLocation).note({
+			desc: {
+				'ja-JP': '住んでいる地域、所在'
+			}
+		}),
+
+		birthday: $.str.optional.nullable.pipe(isValidBirthday).note({
+			desc: {
+				'ja-JP': '誕生日 (YYYY-MM-DD形式)'
+			}
+		}),
+
+		avatarId: $.type(ID).optional.nullable.note({
+			desc: {
+				'ja-JP': 'アイコンに設定する画像のドライブファイルID'
+			}
+		}),
+
+		bannerId: $.type(ID).optional.nullable.note({
+			desc: {
+				'ja-JP': 'バナーに設定する画像のドライブファイルID'
+			}
+		}),
+
+		wallpaperId: $.type(ID).optional.nullable.note({
+			desc: {
+				'ja-JP': '壁紙に設定する画像のドライブファイルID'
+			}
+		}),
+
+		isLocked: $.bool.optional.note({
+			desc: {
+				'ja-JP': '鍵アカウントか否か'
+			}
+		}),
+
+		isBot: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'Botか否か'
+			}
+		}),
+
+		isCat: $.bool.optional.note({
+			desc: {
+				'ja-JP': '猫か否か'
+			}
+		}),
+
+		autoWatch: $.bool.optional.note({
+			desc: {
+				'ja-JP': '投稿の自動ウォッチをするか否か'
+			}
+		}),
+
+		alwaysMarkNsfw: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'アップロードするメディアをデフォルトで「閲覧注意」として設定するか'
+			}
+		}),
+	}
 };
 
 export default async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) throw psErr;
+
 	const isSecure = user != null && app == null;
 
 	const updates = {} as any;
 
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional.nullable.pipe(isValidName).get(params.name);
-	if (nameErr) return rej('invalid name param');
-	if (name) updates.name = name;
+	if (ps.name !== undefined) updates.name = ps.name;
+	if (ps.description !== undefined) updates.description = ps.description;
+	if (ps.location !== undefined) updates['profile.location'] = ps.location;
+	if (ps.birthday !== undefined) updates['profile.birthday'] = ps.birthday;
+	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
+	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
+	if (ps.wallpaperId !== undefined) updates.wallpaperId = ps.wallpaperId;
+	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
+	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
+	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
+	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
+	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
 
-	// Get 'description' parameter
-	const [description, descriptionErr] = $.str.optional.nullable.pipe(isValidDescription).get(params.description);
-	if (descriptionErr) return rej('invalid description param');
-	if (description !== undefined) updates.description = description;
-
-	// Get 'location' parameter
-	const [location, locationErr] = $.str.optional.nullable.pipe(isValidLocation).get(params.location);
-	if (locationErr) return rej('invalid location param');
-	if (location !== undefined) updates['profile.location'] = location;
-
-	// Get 'birthday' parameter
-	const [birthday, birthdayErr] = $.str.optional.nullable.pipe(isValidBirthday).get(params.birthday);
-	if (birthdayErr) return rej('invalid birthday param');
-	if (birthday !== undefined) updates['profile.birthday'] = birthday;
-
-	// Get 'avatarId' parameter
-	const [avatarId, avatarIdErr] = $.type(ID).optional.nullable.get(params.avatarId);
-	if (avatarIdErr) return rej('invalid avatarId param');
-	if (avatarId !== undefined) updates.avatarId = avatarId;
-
-	// Get 'bannerId' parameter
-	const [bannerId, bannerIdErr] = $.type(ID).optional.nullable.get(params.bannerId);
-	if (bannerIdErr) return rej('invalid bannerId param');
-	if (bannerId !== undefined) updates.bannerId = bannerId;
-
-	// Get 'wallpaperId' parameter
-	const [wallpaperId, wallpaperIdErr] = $.type(ID).optional.nullable.get(params.wallpaperId);
-	if (wallpaperIdErr) return rej('invalid wallpaperId param');
-	if (wallpaperId !== undefined) updates.wallpaperId = wallpaperId;
-
-	// Get 'isLocked' parameter
-	const [isLocked, isLockedErr] = $.bool.optional.get(params.isLocked);
-	if (isLockedErr) return rej('invalid isLocked param');
-	if (isLocked != null) updates.isLocked = isLocked;
-
-	// Get 'isBot' parameter
-	const [isBot, isBotErr] = $.bool.optional.get(params.isBot);
-	if (isBotErr) return rej('invalid isBot param');
-	if (isBot != null) updates.isBot = isBot;
-
-	// Get 'isCat' parameter
-	const [isCat, isCatErr] = $.bool.optional.get(params.isCat);
-	if (isCatErr) return rej('invalid isCat param');
-	if (isCat != null) updates.isCat = isCat;
-
-	// Get 'autoWatch' parameter
-	const [autoWatch, autoWatchErr] = $.bool.optional.get(params.autoWatch);
-	if (autoWatchErr) return rej('invalid autoWatch param');
-	if (autoWatch != null) updates['settings.autoWatch'] = autoWatch;
-
-	if (avatarId) {
+	if (ps.avatarId) {
 		const avatar = await DriveFile.findOne({
-			_id: avatarId
+			_id: ps.avatarId
 		});
 
 		if (avatar == null) return rej('avatar not found');
+		if (!avatar.contentType.startsWith('image/')) return rej('avatar not an image');
 
 		updates.avatarUrl = avatar.metadata.thumbnailUrl || avatar.metadata.url || `${config.drive_url}/${avatar._id}`;
 
@@ -92,12 +129,13 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		}
 	}
 
-	if (bannerId) {
+	if (ps.bannerId) {
 		const banner = await DriveFile.findOne({
-			_id: bannerId
+			_id: ps.bannerId
 		});
 
 		if (banner == null) return rej('banner not found');
+		if (!banner.contentType.startsWith('image/')) return rej('banner not an image');
 
 		updates.bannerUrl = banner.metadata.url || `${config.drive_url}/${banner._id}`;
 
@@ -106,13 +144,13 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		}
 	}
 
-	if (wallpaperId !== undefined) {
-		if (wallpaperId === null) {
+	if (ps.wallpaperId !== undefined) {
+		if (ps.wallpaperId === null) {
 			updates.wallpaperUrl = null;
 			updates.wallpaperColor = null;
 		} else {
 			const wallpaper = await DriveFile.findOne({
-				_id: wallpaperId
+				_id: ps.wallpaperId
 			});
 
 			if (wallpaper == null) return rej('wallpaper not found');
@@ -142,7 +180,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 	publishUserStream(user._id, 'meUpdated', iObj);
 
 	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
-	if (user.isLocked && isLocked === false) {
+	if (user.isLocked && ps.isLocked === false) {
 		acceptAllFollowRequests(user);
 	}
 

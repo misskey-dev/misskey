@@ -27,7 +27,7 @@ export default Vue.extend({
 					translateY: -64,
 					duration: 500,
 					easing: 'easeInElastic',
-					complete: () => this.$destroy()
+					complete: () => this.destroyDom()
 				});
 			}, 6000);
 		});

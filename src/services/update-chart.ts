@@ -96,6 +96,12 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 						decCount: 0,
 						decSize: 0
 					}
+				},
+				network: {
+					requests: 0,
+					totalTime: 0,
+					incomingBytes: 0,
+					outgoingBytes: 0
 				}
 			};
 
@@ -161,6 +167,12 @@ async function getCurrentStats(span: 'day' | 'hour'): Promise<IStats> {
 						decCount: 0,
 						decSize: 0
 					}
+				},
+				network: {
+					requests: 0,
+					totalTime: 0,
+					incomingBytes: 0,
+					outgoingBytes: 0
 				}
 			};
 
@@ -240,6 +252,16 @@ export async function updateDriveStats(file: IDriveFile, isAdditional: boolean) 
 		inc[`drive.${origin}.decCount`] = 1;
 		inc[`drive.${origin}.decSize`] = file.length;
 	}
+
+	await update(inc);
+}
+
+export async function updateNetworkStats(requests: number, time: number, incomingBytes: number, outgoingBytes: number) {
+	const inc = {} as any;
+	inc['network.requests'] = requests;
+	inc['network.totalTime'] = time;
+	inc['network.incomingBytes'] = incomingBytes;
+	inc['network.outgoingBytes'] = outgoingBytes;
 
 	await update(inc);
 }

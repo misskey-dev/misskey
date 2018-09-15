@@ -1,15 +1,15 @@
 <template>
-	<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
-		<span class="inner" :style="style"></span>
+	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
+		<span class="inner" :style="icon"></span>
 	</span>
-	<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
-		<span class="inner" :style="style"></span>
+	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
+		<span class="inner" :style="icon"></span>
 	</span>
-	<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
-		<span class="inner" :style="style"></span>
+	<router-link class="mk-avatar" :style="style" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
+		<span class="inner" :style="icon"></span>
 	</router-link>
-	<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
-		<span class="inner" :style="style"></span>
+	<router-link class="mk-avatar" :style="style" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
+		<span class="inner" :style="icon"></span>
 	</router-link>
 </template>
 
@@ -42,6 +42,11 @@ export default Vue.extend({
 			return this.user.isCat && this.$store.state.settings.circleIcons;
 		},
 		style(): any {
+			return {
+				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
+			};
+		},
+		icon(): any {
 			return {
 				backgroundColor: this.lightmode
 					? `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`

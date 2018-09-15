@@ -6,6 +6,15 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 function migrateStats(stats: IStats[]) {
 	stats.forEach(stat => {
+		if (stat.network == null) {
+			stat.network = {
+				requests: 0,
+				totalTime: 0,
+				incomingBytes: 0,
+				outgoingBytes: 0
+			};
+		}
+
 		const isOldData =
 			stat.users.local.inc == null ||
 			stat.users.local.dec == null ||
@@ -180,6 +189,12 @@ export default (params: any) => new Promise(async (res, rej) => {
 								decCount: 0,
 								decSize: 0
 							}
+						},
+						network: {
+							requests: 0,
+							totalTime: 0,
+							incomingBytes: 0,
+							outgoingBytes: 0
 						}
 					});
 				} else {
@@ -236,6 +251,12 @@ export default (params: any) => new Promise(async (res, rej) => {
 								decCount: 0,
 								decSize: 0
 							}
+						},
+						network: {
+							requests: 0,
+							totalTime: 0,
+							incomingBytes: 0,
+							outgoingBytes: 0
 						}
 					});
 				}

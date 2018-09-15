@@ -1,7 +1,7 @@
 <template>
 <div class="ulveipglmagnxfgvitaxyszerjwiqmwl">
-	<div class="bg" ref="bg" @click="onBgClick"></div>
-	<div class="main" ref="main" @click.self="onBgClick">
+	<div class="bg" ref="bg"></div>
+	<div class="main" ref="main">
 		<mk-post-form ref="form"
 			:reply="reply"
 			:renote="renote"
@@ -79,13 +79,8 @@ export default Vue.extend({
 				translateY: 16,
 				duration: 300,
 				easing: 'easeOutQuad',
-				complete: () => this.$destroy()
+				complete: () => this.destroyDom()
 			});
-		},
-
-		onBgClick() {
-			this.$emit('cancel');
-			this.close();
 		},
 
 		onPosted() {

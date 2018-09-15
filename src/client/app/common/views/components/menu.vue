@@ -108,7 +108,7 @@ export default Vue.extend({
 				easing: 'easeInBack',
 				complete: () => {
 					this.$emit('closed');
-					this.$destroy();
+					this.destroyDom();
 				}
 			});
 		}

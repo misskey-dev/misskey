@@ -10,80 +10,119 @@
 			<ui-card>
 				<div slot="title">%fa:palette% %i18n:@design%</div>
 
-				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
-				<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
-				<ui-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi">%i18n:common.i-like-sushi%</ui-switch>
-				<ui-switch v-model="$store.state.settings.disableAnimatedMfm" @change="onChangeDisableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
-				<ui-switch v-model="$store.state.settings.games.reversi.showBoardLabels" @change="onChangeReversiBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
-				<ui-switch v-model="$store.state.settings.games.reversi.useContrastStones" @change="onChangeUseContrastReversiStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
+				<section>
+					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
+					<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
+					<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
+					<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
+					<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
+					<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
+					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
+					<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
+					<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
+				</section>
 
-				<div>
-					<div>%i18n:@timeline%</div>
-					<ui-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</ui-switch>
-					<ui-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</ui-switch>
-					<ui-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
-					<ui-switch v-model="$store.state.settings.showLocalRenotes" @change="onChangeShowLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
-				</div>
+				<section>
+					<header>%i18n:@timeline%</header>
+					<div>
+						<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>
+						<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
+						<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
+						<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
+					</div>
+				</section>
 
-				<div>
-					<div>%i18n:@post-style%</div>
+				<section>
+					<header>%i18n:@post-style%</header>
 					<ui-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</ui-radio>
 					<ui-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</ui-radio>
-				</div>
+				</section>
+
+				<section>
+					<header>%i18n:@notification-position%</header>
+					<ui-radio v-model="mobileNotificationPosition" value="bottom">%i18n:@notification-position-bottom%</ui-radio>
+					<ui-radio v-model="mobileNotificationPosition" value="top">%i18n:@notification-position-top%</ui-radio>
+				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title">%fa:cog% %i18n:@behavior%</div>
-				<ui-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
-				<ui-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
-				<ui-switch v-model="loadRawImages">%i18n:@load-raw-images%</ui-switch>
-				<ui-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
-				<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
+
+				<section>
+					<ui-switch v-model="fetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
+					<ui-switch v-model="disableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
+					<ui-switch v-model="loadRawImages">%i18n:@load-raw-images%</ui-switch>
+					<ui-switch v-model="loadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
+					<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
+				</section>
+
+				<section>
+					<header>%i18n:@note-visibility%</header>
+					<ui-switch v-model="rememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
+					<section>
+						<header>%i18n:@default-note-visibility%</header>
+						<ui-select v-model="defaultNoteVisibility">
+							<option value="public">%i18n:common.note-visibility.public%</option>
+							<option value="home">%i18n:common.note-visibility.home%</option>
+							<option value="followers">%i18n:common.note-visibility.followers%</option>
+							<option value="specified">%i18n:common.note-visibility.specified%</option>
+							<option value="private">%i18n:common.note-visibility.private%</option>
+						</ui-select>
+					</section>
+				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title">%fa:volume-up% %i18n:@sound%</div>
 
-				<ui-switch v-model="enableSounds">%i18n:@enable-sounds%</ui-switch>
+				<section>
+					<ui-switch v-model="enableSounds">%i18n:@enable-sounds%</ui-switch>
+				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title">%fa:language% %i18n:@lang%</div>
 
-				<ui-select v-model="lang" placeholder="%i18n:@auto%">
-					<optgroup label="%i18n:@recommended%">
-						<option value="">%i18n:@auto%</option>
-					</optgroup>
+				<section class="fit-top">
+					<ui-select v-model="lang" placeholder="%i18n:@auto%">
+						<optgroup label="%i18n:@recommended%">
+							<option value="">%i18n:@auto%</option>
+						</optgroup>
 
-					<optgroup label="%i18n:@specify-language%">
-						<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-					</optgroup>
-				</ui-select>
-				<span>%fa:info-circle% %i18n:@lang-tip%</span>
+						<optgroup label="%i18n:@specify-language%">
+							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+						</optgroup>
+					</ui-select>
+					<span>%fa:info-circle% %i18n:@lang-tip%</span>
+				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title">%fa:B twitter% %i18n:@twitter%</div>
 
-				<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
-				<p>
-					<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
-					<span v-if="$store.state.i.twitter"> or </span>
-					<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">%i18n:@twitter-disconnect%</a>
-				</p>
+				<section>
+					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
+					<p>
+						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
+						<span v-if="$store.state.i.twitter"> or </span>
+						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">%i18n:@twitter-disconnect%</a>
+					</p>
+				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title">%fa:sync-alt% %i18n:@update%</div>
 
-				<div>%i18n:@version% <i>{{ version }}</i></div>
-				<template v-if="latestVersion !== undefined">
-					<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
-				</template>
-				<ui-button @click="checkForUpdate" :disabled="checkingForUpdate">
-					<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
-					<template v-else>%i18n:@check-for-updates%</template>
-				</ui-button>
+				<section>
+					<div>%i18n:@version% <i>{{ version }}</i></div>
+					<template v-if="latestVersion !== undefined">
+						<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
+					</template>
+					<ui-button @click="checkForUpdate" :disabled="checkingForUpdate">
+						<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
+						<template v-else>%i18n:@check-for-updates%</template>
+					</ui-button>
+				</section>
 			</ui-card>
 		</div>
 
@@ -129,9 +168,19 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
 		},
 
+		alwaysShowNsfw: {
+			get() { return this.$store.state.device.alwaysShowNsfw; },
+			set(value) { this.$store.commit('device/set', { key: 'alwaysShowNsfw', value }); }
+		},
+
 		postStyle: {
 			get() { return this.$store.state.device.postStyle; },
 			set(value) { this.$store.commit('device/set', { key: 'postStyle', value }); }
+		},
+
+		mobileNotificationPosition: {
+			get() { return this.$store.state.device.mobileNotificationPosition; },
+			set(value) { this.$store.commit('device/set', { key: 'mobileNotificationPosition', value }); }
 		},
 
 		lightmode: {
@@ -153,6 +202,86 @@ export default Vue.extend({
 			get() { return this.$store.state.device.enableSounds; },
 			set(value) { this.$store.commit('device/set', { key: 'enableSounds', value }); }
 		},
+
+		fetchOnScroll: {
+			get() { return this.$store.state.settings.fetchOnScroll; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'fetchOnScroll', value }); }
+		},
+
+		rememberNoteVisibility: {
+			get() { return this.$store.state.settings.rememberNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'rememberNoteVisibility', value }); }
+		},
+
+		disableViaMobile: {
+			get() { return this.$store.state.settings.disableViaMobile; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
+		},
+
+		loadRemoteMedia: {
+			get() { return this.$store.state.settings.loadRemoteMedia; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'loadRemoteMedia', value }); }
+		},
+
+		circleIcons: {
+			get() { return this.$store.state.settings.circleIcons; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'circleIcons', value }); }
+		},
+
+		contrastedAcct: {
+			get() { return this.$store.state.settings.contrastedAcct; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'contrastedAcct', value }); }
+		},
+
+		showFullAcct: {
+			get() { return this.$store.state.settings.showFullAcct; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showFullAcct', value }); }
+		},
+
+		iLikeSushi: {
+			get() { return this.$store.state.settings.iLikeSushi; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'iLikeSushi', value }); }
+		},
+
+		games_reversi_showBoardLabels: {
+			get() { return this.$store.state.settings.games.reversi.showBoardLabels; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
+		},
+
+		games_reversi_useContrastStones: {
+			get() { return this.$store.state.settings.games.reversi.useContrastStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useContrastStones', value }); }
+		},
+
+		disableAnimatedMfm: {
+			get() { return this.$store.state.settings.disableAnimatedMfm; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
+		},
+
+		showReplyTarget: {
+			get() { return this.$store.state.settings.showReplyTarget; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showReplyTarget', value }); }
+		},
+
+		showMyRenotes: {
+			get() { return this.$store.state.settings.showMyRenotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showMyRenotes', value }); }
+		},
+
+		showRenotedMyNotes: {
+			get() { return this.$store.state.settings.showRenotedMyNotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showRenotedMyNotes', value }); }
+		},
+
+		showLocalRenotes: {
+			get() { return this.$store.state.settings.showLocalRenotes; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showLocalRenotes', value }); }
+		},
+
+		defaultNoteVisibility: {
+			get() { return this.$store.state.settings.defaultNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
+		},
 	},
 
 	mounted() {
@@ -162,90 +291,6 @@ export default Vue.extend({
 	methods: {
 		signout() {
 			(this as any).os.signout();
-		},
-
-		onChangeFetchOnScroll(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'fetchOnScroll',
-				value: v
-			});
-		},
-
-		onChangeDisableViaMobile(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'disableViaMobile',
-				value: v
-			});
-		},
-
-		onChangeLoadRemoteMedia(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'loadRemoteMedia',
-				value: v
-			});
-		},
-
-		onChangeCircleIcons(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'circleIcons',
-				value: v
-			});
-		},
-
-		onChangeILikeSushi(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'iLikeSushi',
-				value: v
-			});
-		},
-
-		onChangeReversiBoardLabels(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'games.reversi.showBoardLabels',
-				value: v
-			});
-		},
-
-		onChangeUseContrastReversiStones(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'games.reversi.useContrastStones',
-				value: v
-			});
-		},
-
-		onChangeDisableAnimatedMfm(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'disableAnimatedMfm',
-				value: v
-			});
-		},
-
-		onChangeShowReplyTarget(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showReplyTarget',
-				value: v
-			});
-		},
-
-		onChangeShowMyRenotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showMyRenotes',
-				value: v
-			});
-		},
-
-		onChangeShowRenotedMyNotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showRenotedMyNotes',
-				value: v
-			});
-		},
-
-		onChangeShowLocalRenotes(v) {
-			this.$store.dispatch('settings/set', {
-				key: 'showLocalRenotes',
-				value: v
-			});
 		},
 
 		checkForUpdate() {
@@ -273,7 +318,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 root(isDark)
 	margin 0 auto
-	max-width 500px
+	max-width 600px
 	width 100%
 
 	> .signin-as

@@ -3,7 +3,6 @@
 	<h1>%i18n:@title%</h1>
 	<p>%i18n:@sub-title%</p>
 	<div class="play">
-		<!--<el-button round>フリーマッチ(準備中)</el-button>-->
 		<form-button primary round @click="match">%i18n:@invite%</form-button>
 		<details>
 			<summary>%i18n:@rule%</summary>

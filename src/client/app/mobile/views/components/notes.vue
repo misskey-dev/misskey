@@ -14,8 +14,7 @@
 	</div>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<!-- <transition-group name="mk-notes" class="transition"> -->
-	<div class="transition">
+	<transition-group name="mk-notes" class="transition" tag="div">
 		<template v-for="(note, i) in _notes">
 			<mk-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
@@ -23,8 +22,7 @@
 				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</div>
-	<!-- </transition-group> -->
+	</transition-group>
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
@@ -125,7 +123,7 @@ export default Vue.extend({
 		prepend(note, silent = false) {
 			//#region 弾く
 			const isMyNote = note.userId == this.$store.state.i.id;
-			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
+			const isPureRenote = note.renoteId != null && note.text == null && note.fileIds.length == 0 && note.poll == null;
 
 			if (this.$store.state.settings.showMyRenotes === false) {
 				if (isMyNote && isPureRenote) {

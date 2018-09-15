@@ -5,7 +5,7 @@ export default (object: any, note: INote) => {
 	const attributedTo = `${config.url}/users/${note.userId}`;
 
 	return {
-		id: `${config.url}/notes/${note._id}`,
+		id: `${config.url}/notes/${note._id}/activity`,
 		actor: `${config.url}/users/${note.userId}`,
 		type: 'Announce',
 		published: note.createdAt.toISOString(),

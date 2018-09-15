@@ -21,7 +21,19 @@ export const meta = {
 			desc: {
 				'ja-JP': '招待制か否か'
 			}
-		})
+		}),
+
+		disableLocalTimeline: $.bool.optional.nullable.note({
+			desc: {
+				'ja-JP': 'ローカルタイムライン(とソーシャルタイムライン)を無効にするか否か'
+			}
+		}),
+
+		hidedTags: $.arr($.str).optional.nullable.note({
+			desc: {
+				'ja-JP': '統計などで無視するハッシュタグ'
+			}
+		}),
 	}
 };
 
@@ -37,6 +49,14 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	if (typeof ps.disableRegistration === 'boolean') {
 		set.disableRegistration = ps.disableRegistration;
+	}
+
+	if (typeof ps.disableLocalTimeline === 'boolean') {
+		set.disableLocalTimeline = ps.disableLocalTimeline;
+	}
+
+	if (Array.isArray(ps.hidedTags)) {
+		set.hidedTags = ps.hidedTags;
 	}
 
 	await Meta.update({}, {

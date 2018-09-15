@@ -5,6 +5,7 @@ import { getFriends } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
+import { countIf } from '../../../../prelude/array';
 
 export const meta = {
 	desc: {
@@ -67,9 +68,15 @@ export const meta = {
 			}
 		}),
 
+		withFiles: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
+			}
+		}),
+
 		mediaOnly: $.bool.optional.note({
 			desc: {
-				'ja-JP': 'true にすると、メディアが添付された投稿だけ取得します'
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		}),
 	}
@@ -80,7 +87,7 @@ export default async (params: any, user: ILocalUser) => {
 	if (psErr) throw psErr;
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if ([ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x != null).length > 1) {
+	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
@@ -154,7 +161,7 @@ export default async (params: any, user: ILocalUser) => {
 			}, {
 				text: { $ne: null }
 			}, {
-				mediaIds: { $ne: [] }
+				fileIds: { $ne: [] }
 			}, {
 				poll: { $ne: null }
 			}]
@@ -170,7 +177,7 @@ export default async (params: any, user: ILocalUser) => {
 			}, {
 				text: { $ne: null }
 			}, {
-				mediaIds: { $ne: [] }
+				fileIds: { $ne: [] }
 			}, {
 				poll: { $ne: null }
 			}]
@@ -186,16 +193,18 @@ export default async (params: any, user: ILocalUser) => {
 			}, {
 				text: { $ne: null }
 			}, {
-				mediaIds: { $ne: [] }
+				fileIds: { $ne: [] }
 			}, {
 				poll: { $ne: null }
 			}]
 		});
 	}
 
-	if (ps.mediaOnly) {
+	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
+
+	if (withFiles) {
 		query.$and.push({
-			mediaIds: { $exists: true, $ne: [] }
+			fileIds: { $exists: true, $ne: [] }
 		});
 	}
 

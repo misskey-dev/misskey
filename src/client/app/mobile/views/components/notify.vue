@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notify">
+<div class="mk-notify" :class="pos">
 	<div>
 		<mk-notification-preview :notification="notification"/>
 	</div>
@@ -12,11 +12,16 @@ import * as anime from 'animejs';
 
 export default Vue.extend({
 	props: ['notification'],
+	computed: {
+		pos() {
+			return this.$store.state.device.mobileNotificationPosition;
+		}
+	},
 	mounted() {
 		this.$nextTick(() => {
 			anime({
 				targets: this.$el,
-				bottom: '0px',
+				[this.pos]: '0px',
 				duration: 500,
 				easing: 'easeOutQuad'
 			});
@@ -24,10 +29,10 @@ export default Vue.extend({
 			setTimeout(() => {
 				anime({
 					targets: this.$el,
-					bottom: `-${this.$el.offsetHeight}px`,
+					[this.pos]: `-${this.$el.offsetHeight}px`,
 					duration: 500,
 					easing: 'easeOutQuad',
-					complete: () => this.$destroy()
+					complete: () => this.destroyDom()
 				});
 			}, 6000);
 		});
@@ -40,8 +45,7 @@ export default Vue.extend({
 	$height = 78px
 
 	position fixed
-	z-index 1024
-	bottom -($height)
+	z-index 10000
 	left 0
 	right 0
 	width 100%
@@ -51,6 +55,12 @@ export default Vue.extend({
 	padding 8px
 	pointer-events none
 	font-size 80%
+
+	&.bottom
+		bottom -($height)
+
+	&.top
+		top -($height)
 
 	> div
 		height 100%

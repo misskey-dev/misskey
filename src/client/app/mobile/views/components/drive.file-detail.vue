@@ -67,7 +67,7 @@
 import Vue from 'vue';
 import * as EXIF from 'exif-js';
 import * as hljs from 'highlight.js';
-import gcd from '../../../common/scripts/gcd';
+import { gcd } from '../../../../../prelude/math';
 
 export default Vue.extend({
 	props: ['file'],

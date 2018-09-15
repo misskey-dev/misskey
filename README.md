@@ -1,4 +1,4 @@
-<img src="https://github.com/syuilo/misskey/blob/b3f42e62af698a67c2250533c437569559f1fdf9/src/himasaku/resources/himasaku.png?raw=true" align="right" width="320px"/>
+<img src="https://github.com/syuilo/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/>
 
 [![Misskey](/assets/title.png)](https://misskey.xyz/)
 ================================================================
@@ -7,12 +7,12 @@
 [![][dependencies-badge]][dependencies-link]
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/syuilo/misskey.svg)](https://greenkeeper.io/)
 
-Sophisticated microblogging platform, evolving forever.
+**Sophisticated microblogging platform, evolving forever.**
 
 [Misskey](https://misskey.xyz) is a decentralized microblogging platform born on Earth.
 Since it exists within the Fediverse (a universe where various social media platforms are organized),
 it is mutually linked with other social media platforms.
-Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?
+Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? [Find instance!](https://joinmisskey.github.io/)
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
@@ -20,15 +20,44 @@ Why don't you take a short break from the hustle and bustle of the city, and div
 
 :sparkles: Features
 ----------------------------------------------------------------
-* Rich text contents
-* Reactions
-* User lists
-* Customizable column view (called MisskeyDeck)
-* Customizable widgets
-* Private messages
-* ActivityPub support
 
-and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
+<img src="/assets/about/post.png" align="left" height="200px"/>
+
+<h3 align="left">Posting</h3>
+<p align="left">
+Just post your idea, hot topics and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files including movies and create a poll - those are the things you can do on Misskey!
+</p>
+
+---
+
+<img src="/assets/about/reaction.png" align="right" height="200px"/>
+
+<h3 align="right">Reactions</h3>
+<p align="right">
+Easiest way to tell your emotions. Misskey allows you to add various type of reactions to other’s post. The emotional experience on Misskey will never be on other SNSs which only able to push “likes”.
+</p>
+
+---
+
+<img src="/assets/about/ui.png" align="left" height="200px"/>
+
+<h3 align="left">Interface</h3>
+<p align="left">
+No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. You can edit layouts of your timeline, place selectable widgets you can easily move and create your unique home as this place will be your home.
+</p>
+
+---
+
+<img src="/assets/about/drive.png" align="right" width="300px"/>
+
+<h3 align="right">Misskey Drive</h3>
+<p align="right">
+Wanna post a picture you have already uploaded? Wish to organize, name and create a folder for your uploaded files? Misskey Drive is the best solution for you. Very easy to share your files online.
+</p>
+
+---
+
+and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz) or [other instances](https://joinmisskey.github.io/).
 
 :package: Create your own instance
 ----------------------------------------------------------------

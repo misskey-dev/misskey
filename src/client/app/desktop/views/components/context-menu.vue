@@ -64,7 +64,7 @@ export default Vue.extend({
 			});
 
 			this.$emit('closed');
-			this.$destroy();
+			this.destroyDom();
 		}
 	}
 });

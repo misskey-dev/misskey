@@ -4,6 +4,7 @@ import { pack as packUser } from './user';
 import { pack as packFile } from './drive-file';
 import db from '../db/mongodb';
 import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
+import { length } from 'stringz';
 
 const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
 export default MessagingMessage;
@@ -19,7 +20,7 @@ export interface IMessagingMessage {
 }
 
 export function isValidText(text: string): boolean {
-	return text.length <= 1000 && text.trim() != '';
+	return length(text.trim()) <= 1000 && text.trim() != '';
 }
 
 /**

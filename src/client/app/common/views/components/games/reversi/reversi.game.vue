@@ -50,15 +50,15 @@
 	</div>
 
 	<div class="player" v-if="game.isEnded">
-		<el-button-group>
-			<el-button type="primary" @click="logPos = 0" :disabled="logPos == 0">%fa:angle-double-left%</el-button>
-			<el-button type="primary" @click="logPos--" :disabled="logPos == 0">%fa:angle-left%</el-button>
-		</el-button-group>
+		<div>
+			<button @click="logPos = 0" :disabled="logPos == 0">%fa:angle-double-left%</button>
+			<button @click="logPos--" :disabled="logPos == 0">%fa:angle-left%</button>
+		</div>
 		<span>{{ logPos }} / {{ logs.length }}</span>
-		<el-button-group>
-			<el-button type="primary" @click="logPos++" :disabled="logPos == logs.length">%fa:angle-right%</el-button>
-			<el-button type="primary" @click="logPos = logs.length" :disabled="logPos == logs.length">%fa:angle-double-right%</el-button>
-		</el-button-group>
+		<div>
+			<button @click="logPos++" :disabled="logPos == logs.length">%fa:angle-right%</button>
+			<button @click="logPos = logs.length" :disabled="logPos == logs.length">%fa:angle-double-right%</button>
+		</div>
 	</div>
 
 	<div class="info">

@@ -31,15 +31,15 @@ export default Vue.extend({
 		},
 		onSelected(file) {
 			this.$emit('selected', file);
-			this.$destroy();
+			this.destroyDom();
 		},
 		cancel() {
 			this.$emit('canceled');
-			this.$destroy();
+			this.destroyDom();
 		},
 		ok() {
 			this.$emit('selected', this.files);
-			this.$destroy();
+			this.destroyDom();
 		}
 	}
 });
