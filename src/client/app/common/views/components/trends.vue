@@ -3,8 +3,7 @@
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<p class="empty" v-else-if="stats.length == 0">%fa:exclamation-circle%%i18n:@empty%</p>
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<!-- <transition-group v-else tag="div" name="chart"> -->
-	<div>
+	<transition-group v-else tag="div" name="chart">
 		<div v-for="stat in stats" :key="stat.tag">
 			<div class="tag">
 				<router-link :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
@@ -12,8 +11,7 @@
 			</div>
 			<x-chart class="chart" :src="stat.chart"/>
 		</div>
-	</div>
-	<!-- </transition-group> -->
+	</transition-group>
 </div>
 </template>
 

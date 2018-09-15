@@ -2,7 +2,7 @@
 <div class="mk-notifications">
 	<div class="notifications" v-if="notifications.length != 0">
 		<!-- トランジションを有効にするとなぜかメモリリークする -->
-		<transition-group name="mk-notifications" class="transition" tag="div">
+		<component :is="$store.state.device.animations ? 'transition-group' : 'div'" name="mk-notifications" class="transition" tag="div">
 			<template v-for="(notification, i) in _notifications">
 				<div class="notification" :class="notification.type" :key="notification.id">
 					<mk-time :time="notification.createdAt"/>
@@ -96,7 +96,7 @@
 					<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
 				</p>
 			</template>
-		</transition-group>
+		</component>
 	</div>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}

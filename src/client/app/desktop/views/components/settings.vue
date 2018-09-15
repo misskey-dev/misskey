@@ -60,6 +60,7 @@
 				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
 				<mk-switch v-model="circleIcons" text="%i18n:@circle-icons%"/>
+				<mk-switch v-model="animations" text="%i18n:common.enable-animations%"/>
 				<mk-switch v-model="contrastedAcct" text="%i18n:@contrasted-acct%"/>
 				<mk-switch v-model="showFullAcct" text="%i18n:common.show-full-acct%"/>
 				<mk-switch v-model="gradientWindowHeader" text="%i18n:@gradient-window-header%"/>
@@ -246,6 +247,11 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		animations: {
+			get() { return this.$store.state.device.animations; },
+			set(value) { this.$store.commit('device/set', { key: 'animations', value }); }
+		},
+
 		apiViaStream: {
 			get() { return this.$store.state.device.apiViaStream; },
 			set(value) { this.$store.commit('device/set', { key: 'apiViaStream', value }); }

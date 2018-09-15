@@ -13,6 +13,7 @@
 				<section>
 					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
 					<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
+					<ui-switch v-model="animations">%i18n:common.enable-animations% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
 					<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
 					<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
 					<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
@@ -166,6 +167,11 @@ export default Vue.extend({
 		darkmode: {
 			get() { return this.$store.state.device.darkmode; },
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
+		},
+
+		animations: {
+			get() { return this.$store.state.device.animations; },
+			set(value) { this.$store.commit('device/set', { key: 'animations', value }); }
 		},
 
 		alwaysShowNsfw: {
