@@ -465,7 +465,7 @@ desktop/views/components/charts.vue:
   notes: "Posts"
   users: "Users"
   drive: "Drive"
-  network: "ネットワーク"
+  network: "Network"
   charts:
     notes: "The number of posts: increase/decrease (Combined)"
     local-notes: "The number of posts: increase/decrease (Local)"
@@ -477,9 +477,9 @@ desktop/views/components/charts.vue:
     drive-total: "Capacity used as the storage: cumulative total"
     drive-files: "The number of files on the storage: increase/decrease"
     drive-files-total: "The number of files on the storage: cumulative total"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
-    network-usage: "通信量"
+    network-requests: "Requests"
+    network-time: "Response time"
+    network-usage: "Traffic"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Choose files"
   upload: "Upload files from your device"
