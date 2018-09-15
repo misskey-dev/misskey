@@ -7,7 +7,7 @@ common:
   about-title: "Uma ⭐ do fediverso."
   about: "Obrigado por encontrar Misskey. Uma <b>plataforma descentralizada de microblog</b> nascida na Terra. Já que ela existe no Fediverso (um universo onde várias plataformas de mídia social são organizadas), ela é ligada com outras plataformas.Por que você não tira uma folga do agito e confusão da cidade, e mergulha em uma nova internet?"
   intro:
-    title: "Misskeyって？"
+    title: "O que é Misskey?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
     features: "特徴"
     rich-contents: "投稿"
