@@ -95,7 +95,7 @@ export default Vue.extend({
 				reaction: reaction
 			}).then(() => {
 				if (this.cb) this.cb();
-				this.$destroy();
+				this.destroyDom();
 			});
 		},
 		onMouseover(e) {
@@ -120,7 +120,7 @@ export default Vue.extend({
 				scale: 0.5,
 				duration: 200,
 				easing: 'easeInBack',
-				complete: () => this.$destroy()
+				complete: () => this.destroyDom()
 			});
 		}
 	}

@@ -32,7 +32,7 @@ export default Vue.extend({
 					[this.pos]: `-${this.$el.offsetHeight}px`,
 					duration: 500,
 					easing: 'easeOutQuad',
-					complete: () => this.$destroy()
+					complete: () => this.destroyDom()
 				});
 			}, 6000);
 		});

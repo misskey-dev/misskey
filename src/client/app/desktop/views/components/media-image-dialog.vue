@@ -26,7 +26,7 @@ export default Vue.extend({
 				opacity: 0,
 				duration: 100,
 				easing: 'linear',
-				complete: () => this.$destroy()
+				complete: () => this.destroyDom()
 			});
 		}
 	}

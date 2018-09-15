@@ -79,7 +79,7 @@ export default Vue.extend({
 				translateY: 16,
 				duration: 300,
 				easing: 'easeOutQuad',
-				complete: () => this.$destroy()
+				complete: () => this.destroyDom()
 			});
 		},
 

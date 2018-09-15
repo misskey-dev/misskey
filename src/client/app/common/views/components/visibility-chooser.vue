@@ -101,7 +101,7 @@ export default Vue.extend({
 				this.$store.commit('device/setVisibility', visibility);
 			}
 			this.$emit('chosen', visibility);
-			this.$destroy();
+			this.destroyDom();
 		},
 		close() {
 			(this.$refs.backdrop as any).style.pointerEvents = 'none';
@@ -119,7 +119,7 @@ export default Vue.extend({
 				scale: 0.5,
 				duration: 200,
 				easing: 'easeInBack',
-				complete: () => this.$destroy()
+				complete: () => this.destroyDom()
 			});
 		}
 	}

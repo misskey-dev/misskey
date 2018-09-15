@@ -19,11 +19,11 @@ export default Vue.extend({
 	methods: {
 		cancel() {
 			this.$emit('canceled');
-			this.$destroy();
+			this.destroyDom();
 		},
 		ok() {
 			this.$emit('selected', (this.$refs.browser as any).folder);
-			this.$destroy();
+			this.destroyDom();
 		}
 	}
 });

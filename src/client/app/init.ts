@@ -31,9 +31,13 @@ require('./common/views/widgets');
 require('./common/views/filters');
 
 Vue.mixin({
-	destroyed(this: any) {
-		if (this.$el.parentNode) {
-			this.$el.parentNode.removeChild(this.$el);
+	methods: {
+		destroyDom() {
+			this.$destroy();
+
+			if (this.$el.parentNode) {
+				this.$el.parentNode.removeChild(this.$el);
+			}
 		}
 	}
 });
