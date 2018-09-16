@@ -139,6 +139,15 @@ export default Vue.extend({
 						});
 					}
 				}, {
+					icon: '%fa:at%',
+					text: '%i18n:common.deck.mentions%',
+					action: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'mentions'
+						});
+					}
+				}, {
 					icon: '%fa:list%',
 					text: '%i18n:common.deck.list%',
 					action: () => {
