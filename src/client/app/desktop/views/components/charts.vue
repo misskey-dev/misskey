@@ -100,7 +100,7 @@ export default Vue.extend({
 
 	created() {
 		(this as any).api('chart', {
-			limit: 32
+			limit: 35
 		}).then(chart => {
 			this.chart = chart;
 		});
@@ -681,6 +681,6 @@ export default Vue.extend({
 	> div
 		> *
 			display block
-			height 320px
+			height 350px
 
 </style>

@@ -43,7 +43,7 @@ export default Vue.extend({
 	> .stats
 		display flex
 		justify-content center
-		margin-bottom 16px
+		margin 0 auto 16px auto
 		padding 32px
 		background #fff
 		box-shadow 0 2px 8px rgba(#000, 0.1)
@@ -60,5 +60,6 @@ export default Vue.extend({
 				font-size 70%
 
 	> div
-		max-width 850px
+		max-width 950px
+		margin 0 auto
 </style>
