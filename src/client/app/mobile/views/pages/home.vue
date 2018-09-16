@@ -6,6 +6,7 @@
 			<span v-if="src == 'local'">%fa:R comments%%i18n:@local%</span>
 			<span v-if="src == 'hybrid'">%fa:share-alt%%i18n:@hybrid%</span>
 			<span v-if="src == 'global'">%fa:globe%%i18n:@global%</span>
+			<span v-if="src == 'mentions'">%fa:at%%i18n:@mentions%</span>
 			<span v-if="src == 'list'">%fa:list%{{ list.title }}</span>
 		</span>
 		<span style="margin-left:8px">
@@ -27,6 +28,7 @@
 					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline">%fa:R comments% %i18n:@local%</span>
 					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
+					<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%</span>
 					<template v-if="lists">
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
 					</template>
@@ -39,6 +41,7 @@
 			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
 			<x-tl v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
+			<x-tl v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
 			<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 		</div>
 	</main>

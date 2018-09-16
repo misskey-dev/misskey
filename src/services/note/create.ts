@@ -138,6 +138,10 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const mentionedUsers = await extractMentionedUsers(tokens);
 
+	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
+		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
+	}
+
 	const note = await insertNote(user, data, tags, mentionedUsers);
 
 	res(note);

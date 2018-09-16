@@ -48,6 +48,7 @@ export default Vue.extend({
 				case 'local': return (this as any).os.streams.localTimelineStream;
 				case 'hybrid': return (this as any).os.streams.hybridTimelineStream;
 				case 'global': return (this as any).os.streams.globalTimelineStream;
+				case 'mentions': return (this as any).os.stream;
 			}
 		},
 
@@ -57,6 +58,7 @@ export default Vue.extend({
 				case 'local': return 'notes/local-timeline';
 				case 'hybrid': return 'notes/hybrid-timeline';
 				case 'global': return 'notes/global-timeline';
+				case 'mentions': return 'notes/mentions';
 			}
 		},
 
@@ -69,7 +71,7 @@ export default Vue.extend({
 		this.connection = this.stream.getConnection();
 		this.connectionId = this.stream.use();
 
-		this.connection.on('note', this.onNote);
+		this.connection.on(this.src == 'mentions' ? 'mention' : 'note', this.onNote);
 		if (this.src == 'home') {
 			this.connection.on('follow', this.onChangeFollowing);
 			this.connection.on('unfollow', this.onChangeFollowing);
@@ -81,7 +83,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
+		this.connection.off(this.src == 'mentions' ? 'mention' : 'note', this.onNote);
 		if (this.src == 'home') {
 			this.connection.off('follow', this.onChangeFollowing);
 			this.connection.off('unfollow', this.onChangeFollowing);

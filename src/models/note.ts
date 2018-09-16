@@ -17,6 +17,8 @@ import Following from './following';
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
+Note.createIndex('mentions');
+Note.createIndex('visibleUserIds');
 Note.createIndex('tagsLower');
 Note.createIndex('_files.contentType');
 Note.createIndex({

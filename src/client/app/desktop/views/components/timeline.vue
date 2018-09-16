@@ -5,6 +5,7 @@
 		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline">%fa:R comments% %i18n:@local%</span>
 		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
+		<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
 		<button @click="chooseList" title="%i18n:@list%">%fa:list%</button>
 	</header>
@@ -12,6 +13,7 @@
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
 	<x-core v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
+	<x-core v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
 	<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 </div>
 </template>
