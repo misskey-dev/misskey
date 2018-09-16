@@ -156,6 +156,7 @@ common:
     local: "Lokal"
     hybrid: "ソーシャル"
     global: "Global"
+    mentions: "あなた宛て"
     notifications: "Mitteilungen"
     list: "Listen"
     swap-left: "Nach links"
@@ -807,6 +808,7 @@ desktop/views/components/timeline.vue:
   local: "Lokal"
   hybrid: "ソーシャル"
   global: "Global"
+  mentions: "あなた宛て"
   list: "Listen"
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
@@ -1132,6 +1134,7 @@ mobile/views/pages/home.vue:
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
+  mentions: "あなた宛て"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
