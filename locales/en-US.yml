@@ -156,7 +156,7 @@ common:
     local: "Local"
     hybrid: "Social"
     global: "Global"
-    mentions: "あなた宛て"
+    mentions: "Mentions"
     notifications: "Notifications"
     list: "Lists"
     swap-left: "Move to the left"
@@ -808,7 +808,7 @@ desktop/views/components/timeline.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
-  mentions: "あなた宛て"
+  mentions: "Mentions"
   list: "Lists"
 desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
@@ -1134,7 +1134,7 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
-  mentions: "あなた宛て"
+  mentions: "Mentions"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts \"{}\" found."
 mobile/views/pages/welcome.vue:
