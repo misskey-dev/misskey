@@ -156,6 +156,7 @@ common:
     local: "Lokalne"
     hybrid: "Społeczność"
     global: "Globalne"
+    mentions: "あなた宛て"
     notifications: "Powiadomienia"
     list: "Listy"
     swap-left: "Przesuń w lewo"
@@ -807,6 +808,7 @@ desktop/views/components/timeline.vue:
   local: "Lokalne"
   hybrid: "Społeczność"
   global: "Globalne"
+  mentions: "あなた宛て"
   list: "Listy"
 desktop/views/components/ui.header.vue:
   welcome-back: "Witaj ponownie,"
@@ -1132,6 +1134,7 @@ mobile/views/pages/home.vue:
   local: "Lokalne"
   hybrid: "Społeczność"
   global: "Globalne"
+  mentions: "あなた宛て"
 mobile/views/pages/tag.vue:
   no-posts-found: "Nie znaleziono wpisów zawierających „{}”."
 mobile/views/pages/welcome.vue:
