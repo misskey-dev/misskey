@@ -112,7 +112,7 @@ common:
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "Do not omit the hostname from the username"
-  enable-animations: "Enable animations"
+  reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
   reversi:
@@ -156,6 +156,7 @@ common:
     local: "Local"
     hybrid: "Social"
     global: "Global"
+    mentions: "Mentions"
     notifications: "Notifications"
     list: "Lists"
     swap-left: "Move to the left"
@@ -807,6 +808,7 @@ desktop/views/components/timeline.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+  mentions: "Mentions"
   list: "Lists"
 desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
@@ -1132,6 +1134,7 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+  mentions: "Mentions"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts \"{}\" found."
 mobile/views/pages/welcome.vue:

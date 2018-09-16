@@ -112,7 +112,7 @@ common:
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "ユーザー名のホストを省略しない"
-  enable-animations: "アニメーションを使用"
+  reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
   reversi:
@@ -156,6 +156,7 @@ common:
     local: "로컬"
     hybrid: "소셜"
     global: "글로벌"
+    mentions: "あなた宛て"
     notifications: "통지"
     list: "목록"
     swap-left: "左に移動"
@@ -807,6 +808,7 @@ desktop/views/components/timeline.vue:
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
+  mentions: "あなた宛て"
   list: "リスト"
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
@@ -1132,6 +1134,7 @@ mobile/views/pages/home.vue:
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
+  mentions: "あなた宛て"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
