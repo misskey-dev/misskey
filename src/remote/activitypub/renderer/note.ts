@@ -6,6 +6,7 @@ import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
+import parseMfm from '../../../mfm/parse';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
 	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
@@ -81,13 +82,21 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	const files = await promisedFiles;
 
+	const text = note.text ? parseMfm(note.text).map(x => {
+		if (x.type == 'mention' && x.host == null) {
+			return `${x.content}@${config.host}`;
+		} else {
+			return x.content;
+		}
+	}).join('') : null;
+
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
 		summary: note.cw,
 		content: toHtml(note),
-		_misskey_content: note.text,
+		_misskey_content: text,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,
