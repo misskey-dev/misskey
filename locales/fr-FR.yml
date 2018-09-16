@@ -156,6 +156,7 @@ common:
     local: "Local"
     hybrid: "Social"
     global: "Global"
+    mentions: "あなた宛て"
     notifications: "Notifications"
     list: "Liste"
     swap-left: "Déplacer à gauche"
@@ -807,6 +808,7 @@ desktop/views/components/timeline.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+  mentions: "あなた宛て"
   list: "Listes"
 desktop/views/components/ui.header.vue:
   welcome-back: "Content de vous revoir !"
@@ -1132,6 +1134,7 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+  mentions: "あなた宛て"
 mobile/views/pages/tag.vue:
   no-posts-found: "Pas de message avec un hashtag {} trouvé."
 mobile/views/pages/welcome.vue:
