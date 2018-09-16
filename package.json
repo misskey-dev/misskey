@@ -20,10 +20,10 @@
 		"format": "gulp format"
 	},
 	"dependencies": {
-		"@fortawesome/fontawesome": "1.1.8",
-		"@fortawesome/fontawesome-free-brands": "5.0.13",
-		"@fortawesome/fontawesome-free-regular": "5.0.13",
-		"@fortawesome/fontawesome-free-solid": "5.0.13",
+		"@fortawesome/fontawesome-svg-core": "1.2.4",
+		"@fortawesome/free-brands-svg-icons": "5.3.1",
+		"@fortawesome/free-regular-svg-icons": "5.3.1",
+		"@fortawesome/free-solid-svg-icons": "5.3.1",
 		"@koa/cors": "2.2.2",
 		"@prezzemolo/rap": "0.1.2",
 		"@prezzemolo/zip": "0.0.3",
