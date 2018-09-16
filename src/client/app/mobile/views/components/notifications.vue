@@ -1,7 +1,7 @@
 <template>
 <div class="mk-notifications">
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<component :is="$store.state.device.animations ? 'transition-group' : 'div'" name="mk-notifications" class="transition notifications">
+	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notifications" class="transition notifications">
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
 			<p class="date" :key="notification.id + '_date'" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">

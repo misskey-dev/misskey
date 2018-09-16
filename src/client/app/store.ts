@@ -38,7 +38,7 @@ const defaultSettings = {
 };
 
 const defaultDeviceSettings = {
-	animations: true,
+	reduceMotion: false,
 	apiViaStream: true,
 	autoPopout: false,
 	darkmode: false,
