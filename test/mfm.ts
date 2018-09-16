@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 
 import analyze from '../src/mfm/parse';
+import toHtml from '../src/mfm/html';
 import syntaxhighlighter from '../src/mfm/parse/core/syntax-highlighter';
 
 describe('Text', () => {
@@ -168,6 +169,14 @@ describe('Text', () => {
 		it('slash', () => {
 			const html = syntaxhighlighter('/');
 			assert.equal(html, '<span class="symbol">/</span>');
+		});
+	});
+
+	describe('toHtml', () => {
+		it('br', () => {
+			const input = 'foo\nbar\nbaz';
+			const output = '<p>foo<br>bar<br>baz</p>';
+			assert.equal(toHtml(analyze(input)), output);
 		});
 	});
 });
