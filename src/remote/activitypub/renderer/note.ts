@@ -87,7 +87,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		attributedTo,
 		summary: note.cw,
 		content: toHtml(note),
-		_misskey_content_: note.text,
+		_misskey_content: note.text,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,
