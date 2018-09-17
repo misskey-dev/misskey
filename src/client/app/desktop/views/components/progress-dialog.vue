@@ -1,5 +1,5 @@
 <template>
-<mk-window ref="window" :is-modal="false" :can-close="false" width="500px" @closed="$destroy">
+<mk-window ref="window" :is-modal="false" :can-close="false" width="500px" @closed="destroyDom">
 	<span slot="header">{{ title }}<mk-ellipsis/></span>
 	<div :class="$style.body">
 		<p :class="$style.init" v-if="isNaN(value)">%i18n:@waiting%<mk-ellipsis/></p>

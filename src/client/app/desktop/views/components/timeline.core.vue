@@ -152,14 +152,11 @@ export default Vue.extend({
 			});
 		}
 
-		document.addEventListener('keydown', this.onKeydown);
-
 		this.fetch();
 	},
 
 	beforeDestroy() {
 		this.$emit('beforeDestroy');
-		document.removeEventListener('keydown', this.onKeydown);
 	},
 
 	methods: {
@@ -212,14 +209,6 @@ export default Vue.extend({
 		warp(date) {
 			this.date = date;
 			this.fetch();
-		},
-
-		onKeydown(e) {
-			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
-				if (e.which == 84) { // t
-					this.focus();
-				}
-			}
 		}
 	}
 });

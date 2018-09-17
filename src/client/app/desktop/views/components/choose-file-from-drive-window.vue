@@ -1,5 +1,5 @@
 <template>
-<mk-window ref="window" is-modal width="800px" height="500px" @closed="$destroy">
+<mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
 	<span slot="header">
 		<span v-html="title" :class="$style.title"></span>
 		<span :class="$style.count" v-if="multiple && files.length > 0">({{ files.length }}%i18n:@choose-file%)</span>

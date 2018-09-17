@@ -190,8 +190,8 @@ export default Vue.extend({
 			});
 
 			setTimeout(() => {
-				this.destroyDom();
 				this.$emit('closed');
+				this.destroyDom();
 			}, 300);
 		},
 

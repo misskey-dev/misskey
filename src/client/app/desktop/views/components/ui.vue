@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui" :style="style">
+<div class="mk-ui" :style="style" v-hotkey.global="keymap">
 	<x-header class="header" v-show="!zenMode"/>
 	<div class="content">
 		<slot></slot>
@@ -16,11 +16,13 @@ export default Vue.extend({
 	components: {
 		XHeader
 	},
+
 	data() {
 		return {
 			zenMode: false
 		};
 	},
+
 	computed: {
 		style(): any {
 			if (!this.$store.getters.isSignedIn || this.$store.state.i.wallpaperUrl == null) return {};
@@ -28,27 +30,24 @@ export default Vue.extend({
 				backgroundColor: this.$store.state.i.wallpaperColor && this.$store.state.i.wallpaperColor.length == 3 ? `rgb(${ this.$store.state.i.wallpaperColor.join(',') })` : null,
 				backgroundImage: `url(${ this.$store.state.i.wallpaperUrl })`
 			};
+		},
+
+		keymap(): any {
+			return {
+				'p': this.post,
+				'n': this.post,
+				'z': this.toggleZenMode
+			};
 		}
 	},
-	mounted() {
-		document.addEventListener('keydown', this.onKeydown);
-	},
-	beforeDestroy() {
-		document.removeEventListener('keydown', this.onKeydown);
-	},
+
 	methods: {
-		onKeydown(e) {
-			if (e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA') return;
+		post() {
+			(this as any).apis.post();
+		},
 
-			if (e.which == 80 || e.which == 78) { // p or n
-				e.preventDefault();
-				(this as any).apis.post();
-			}
-
-			if (e.which == 90) { // z
-				e.preventDefault();
-				this.zenMode = !this.zenMode;
-			}
+		toggleZenMode() {
+			this.zenMode = !this.zenMode;
 		}
 	}
 });

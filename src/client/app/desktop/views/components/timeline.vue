@@ -92,6 +92,10 @@ export default Vue.extend({
 			});
 		},
 
+		focus() {
+			(this.$refs.tl as any).focus();
+		},
+
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
 		},

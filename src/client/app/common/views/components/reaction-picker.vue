@@ -1,5 +1,5 @@
 <template>
-<div class="mk-reaction-picker">
+<div class="mk-reaction-picker" v-hotkey.global="keymap">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact, big }" ref="popover">
 		<p v-if="!compact">{{ title }}</p>
@@ -31,28 +31,51 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
+
 		source: {
 			required: true
 		},
+
 		compact: {
 			type: Boolean,
 			required: false,
 			default: false
 		},
+
 		cb: {
 			required: false
 		},
+
 		big: {
 			type: Boolean,
 			required: false,
 			default: false
 		}
 	},
+
 	data() {
 		return {
 			title: placeholder
 		};
 	},
+
+	computed: {
+		keymap(): any {
+			return {
+				'1': () => this.react('like'),
+				'2': () => this.react('love'),
+				'3': () => this.react('laugh'),
+				'4': () => this.react('hmm'),
+				'5': () => this.react('surprise'),
+				'6': () => this.react('congrats'),
+				'7': () => this.react('angry'),
+				'8': () => this.react('confused'),
+				'9': () => this.react('rip'),
+				'0': () => this.react('pudding'),
+			};
+		}
+	},
+
 	mounted() {
 		this.$nextTick(() => {
 			const popover = this.$refs.popover as any;
@@ -88,6 +111,7 @@ export default Vue.extend({
 			});
 		});
 	},
+
 	methods: {
 		react(reaction) {
 			(this as any).api('notes/reactions/create', {
@@ -95,15 +119,19 @@ export default Vue.extend({
 				reaction: reaction
 			}).then(() => {
 				if (this.cb) this.cb();
+				this.$emit('closed');
 				this.destroyDom();
 			});
 		},
+
 		onMouseover(e) {
 			this.title = e.target.title;
 		},
+
 		onMouseout(e) {
 			this.title = placeholder;
 		},
+
 		close() {
 			(this.$refs.backdrop as any).style.pointerEvents = 'none';
 			anime({
@@ -120,7 +148,10 @@ export default Vue.extend({
 				scale: 0.5,
 				duration: 200,
 				easing: 'easeInBack',
-				complete: () => this.destroyDom()
+				complete: () => {
+					this.$emit('closed');
+					this.destroyDom();
+				}
 			});
 		}
 	}

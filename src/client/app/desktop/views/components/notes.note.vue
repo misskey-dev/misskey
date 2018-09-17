@@ -1,5 +1,5 @@
 <template>
-<div class="note" tabindex="-1" :title="title" @keydown="onKeydown">
+<div class="note" tabindex="-1" v-hotkey="keymap" :title="title">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
@@ -111,6 +111,18 @@ export default Vue.extend({
 	},
 
 	computed: {
+		keymap(): any {
+			return {
+				'r': this.reply,
+				'a': this.react,
+				'n': this.renote,
+				'up': this.focusBefore,
+				'shift+tab': this.focusBefore,
+				'down': this.focusAfter,
+				'tab': this.focusAfter,
+			};
+		},
+
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
@@ -223,64 +235,39 @@ export default Vue.extend({
 		reply() {
 			(this as any).os.new(MkPostFormWindow, {
 				reply: this.p
-			});
+			}).$once('closed', this.focus);
 		},
 
 		renote() {
 			(this as any).os.new(MkRenoteFormWindow, {
 				note: this.p
-			});
+			}).$once('closed', this.focus);
 		},
 
 		react() {
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p
-			});
+			}).$once('closed', this.focus);
 		},
 
 		menu() {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.p
-			});
+			}).$once('closed', this.focus);
 		},
 
-		onKeydown(e) {
-			let shouldBeCancel = true;
+		focus() {
+			this.$el.focus();
+		},
 
-			switch (true) {
-				case e.which == 38: // [↑]
-				case e.which == 74: // [j]
-				case e.which == 9 && e.shiftKey: // [Shift] + [Tab]
-					focus(this.$el, e => e.previousElementSibling);
-					break;
+		focusBefore() {
+			focus(this.$el, e => e.previousElementSibling);
+		},
 
-				case e.which == 40: // [↓]
-				case e.which == 75: // [k]
-				case e.which == 9: // [Tab]
-					focus(this.$el, e => e.nextElementSibling);
-					break;
-
-				case e.which == 81: // [q]
-				case e.which == 69: // [e]
-					this.renote();
-					break;
-
-				case e.which == 70: // [f]
-				case e.which == 76: // [l]
-					//this.like();
-					break;
-
-				case e.which == 82: // [r]
-					this.reply();
-					break;
-
-				default:
-					shouldBeCancel = false;
-			}
-
-			if (shouldBeCancel) e.preventDefault();
+		focusAfter() {
+			focus(this.$el, e => e.nextElementSibling);
 		}
 	}
 });

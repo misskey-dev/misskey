@@ -1,5 +1,5 @@
 <template>
-<mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
+<mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
 	<span slot="header">%fa:envelope R% %i18n:@title%</span>
 
 	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc" :data-darkmode="$store.state.device.darkmode">

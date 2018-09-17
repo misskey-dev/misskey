@@ -8,6 +8,7 @@ import VueRouter from 'vue-router';
 import * as TreeView from 'vue-json-tree-view';
 import VAnimateCss from 'v-animate-css';
 import VModal from 'vue-js-modal';
+import VueHotkey from './common/hotkey';
 
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
@@ -19,6 +20,7 @@ Vue.use(VueRouter);
 Vue.use(TreeView);
 Vue.use(VAnimateCss);
 Vue.use(VModal);
+Vue.use(VueHotkey);
 
 // Register global directives
 require('./common/views/directives');

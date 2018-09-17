@@ -1,5 +1,5 @@
 <template>
-<mk-window class="mk-post-form-window" ref="window" is-modal @closed="$destroy">
+<mk-window class="mk-post-form-window" ref="window" is-modal @closed="onWindowClosed">
 	<span slot="header" class="mk-post-form-window--header">
 		<span class="icon" v-if="geo">%fa:map-marker-alt%</span>
 		<span v-if="!reply">%i18n:@note%</span>
@@ -53,6 +53,10 @@ export default Vue.extend({
 		},
 		onPosted() {
 			(this.$refs.window as any).close();
+		},
+		onWindowClosed() {
+			this.$emit('closed');
+			this.destroyDom();
 		}
 	}
 });

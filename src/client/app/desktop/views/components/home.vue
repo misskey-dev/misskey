@@ -237,6 +237,10 @@ export default Vue.extend({
 
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
+		},
+
+		focus() {
+			(this.$refs.tl as any).focus();
 		}
 	}
 });
