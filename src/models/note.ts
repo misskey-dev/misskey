@@ -196,7 +196,7 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 			hide = false;
 		} else {
 			// 指定されているかどうか
-			const specified = packedNote.visibleUserIds.some((id: mongo.ObjectID) => id.equals(meId));
+			const specified = packedNote.visibleUserIds.some((id: any) => meId.equals(id));
 
 			if (specified) {
 				hide = false;
