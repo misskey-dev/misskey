@@ -62,16 +62,27 @@ export default Vue.extend({
 	computed: {
 		keymap(): any {
 			return {
+				'esc': this.close,
 				'1': () => this.react('like'),
+				'numpad 1': () => this.react('like'),
 				'2': () => this.react('love'),
+				'numpad 2': () => this.react('love'),
 				'3': () => this.react('laugh'),
+				'numpad 3': () => this.react('laugh'),
 				'4': () => this.react('hmm'),
+				'numpad 4': () => this.react('hmm'),
 				'5': () => this.react('surprise'),
+				'numpad 5': () => this.react('surprise'),
 				'6': () => this.react('congrats'),
+				'numpad 6': () => this.react('congrats'),
 				'7': () => this.react('angry'),
+				'numpad 7': () => this.react('angry'),
 				'8': () => this.react('confused'),
+				'numpad 8': () => this.react('confused'),
 				'9': () => this.react('rip'),
+				'numpad 9': () => this.react('rip'),
 				'0': () => this.react('pudding'),
+				'numpad 0': () => this.react('pudding'),
 			};
 		}
 	},
