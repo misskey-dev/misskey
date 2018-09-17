@@ -82,6 +82,20 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	const files = await promisedFiles;
 
+	if (note.poll != null) {
+		if (note.text == null) note.text = '';
+		const url = `${config.url}/notes/${note._id}`;
+		// TODO: i18n
+		note.text += `\n\n[投票を見る](${url})`;
+	}
+
+	if (note.renoteId != null) {
+		if (note.text == null) note.text = '';
+		const url = `${config.url}/notes/${note.renoteId}`;
+		note.text += `\n\nRE: ${url}`;
+	}
+
+	// 省略されたメンションのホストを復元する
 	const text = note.text ? parseMfm(note.text).map(x => {
 		if (x.type == 'mention' && x.host == null) {
 			return `${x.content}@${config.host}`;
