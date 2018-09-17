@@ -158,6 +158,7 @@ common:
     hashtag: "Hashtag"
     global: "Global"
     mentions: "Mentions"
+    direct: "ダイレクト投稿"
     notifications: "Notifications"
     list: "Lists"
     swap-left: "Move to the left"
@@ -810,6 +811,7 @@ desktop/views/components/timeline.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
+  messages: "メッセージ"
   list: "Lists"
   hashtag: "Hashtag"
   add-tag-timeline: "Add hashtag tl"
@@ -1140,6 +1142,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
+  messages: "メッセージ"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts \"{}\" found."
 mobile/views/pages/welcome.vue:
