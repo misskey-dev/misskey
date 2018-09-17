@@ -158,6 +158,7 @@ common:
     hashtag: "ハッシュタグ"
     global: "Global"
     mentions: "あなた宛て"
+    direct: "ダイレクト投稿"
     notifications: "Notificaciones"
     list: "Listado"
     swap-left: "Desplazar a la izq."
@@ -810,6 +811,7 @@ desktop/views/components/timeline.vue:
   hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
+  messages: "メッセージ"
   list: "リスト"
   hashtag: "ハッシュタグ"
   add-tag-timeline: "ハッシュタグを追加"
@@ -1140,6 +1142,7 @@ mobile/views/pages/home.vue:
   hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
+  messages: "メッセージ"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
