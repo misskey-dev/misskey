@@ -71,11 +71,20 @@ describe('Text', () => {
 		});
 
 		it('hashtag', () => {
-			const tokens = analyze('Strawberry Pasta #alice');
+			const tokens1 = analyze('Strawberry Pasta #alice');
 			assert.deepEqual([
 				{ type: 'text', content: 'Strawberry Pasta ' },
 				{ type: 'hashtag', content: '#alice', hashtag: 'alice' }
-			], tokens);
+			], tokens1);
+
+			const tokens2 = analyze('Foo #bar, baz #piyo.');
+			assert.deepEqual([
+				{ type: 'text', content: 'Foo ' },
+				{ type: 'hashtag', content: '#bar', hashtag: 'bar' },
+				{ type: 'text', content: ', baz ' },
+				{ type: 'hashtag', content: '#piyo', hashtag: 'piyo' },
+				{ type: 'text', content: '.' }
+			], tokens2);
 		});
 
 		it('url', () => {
