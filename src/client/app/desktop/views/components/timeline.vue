@@ -188,10 +188,10 @@ root(isDark)
 			z-index 2
 			top 0
 			right 0
+			padding-right 8px
 
 			> button
-				padding 0
-				width 42px
+				padding 0 8px
 				font-size 0.9em
 				line-height 42px
 				color isDark ? #9baec8 : #ccc
