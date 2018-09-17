@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { HashtagStream } from '../../../common/scripts/streaming/hashtag';
 
 const fetchLimit = 10;
 
@@ -23,6 +24,9 @@ export default Vue.extend({
 		src: {
 			type: String,
 			required: true
+		},
+		tagTl: {
+			required: false
 		}
 	},
 
@@ -31,6 +35,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
+			streamManager: null,
 			connection: null,
 			connectionId: null,
 			date: null
@@ -42,16 +47,6 @@ export default Vue.extend({
 			return this.$store.state.i.followingCount == 0;
 		},
 
-		stream(): any {
-			switch (this.src) {
-				case 'home': return (this as any).os.stream;
-				case 'local': return (this as any).os.streams.localTimelineStream;
-				case 'hybrid': return (this as any).os.streams.hybridTimelineStream;
-				case 'global': return (this as any).os.streams.globalTimelineStream;
-				case 'mentions': return (this as any).os.stream;
-			}
-		},
-
 		endpoint(): string {
 			switch (this.src) {
 				case 'home': return 'notes/timeline';
@@ -59,6 +54,7 @@ export default Vue.extend({
 				case 'hybrid': return 'notes/hybrid-timeline';
 				case 'global': return 'notes/global-timeline';
 				case 'mentions': return 'notes/mentions';
+				case 'tag': return 'notes/search_by_tag';
 			}
 		},
 
@@ -68,13 +64,36 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
-
-		this.connection.on(this.src == 'mentions' ? 'mention' : 'note', this.onNote);
-		if (this.src == 'home') {
+		if (this.src == 'tag') {
+			this.connection = new HashtagStream((this as any).os, this.$store.state.i, this.tagTl.query);
+			this.connection.on('note', this.onNote);
+		} else if (this.src == 'home') {
+			this.streamManager = (this as any).os.stream;
+			this.connection = this.streamManager.getConnection();
+			this.connectionId = this.streamManager.use();
+			this.connection.on('note', this.onNote);
 			this.connection.on('follow', this.onChangeFollowing);
 			this.connection.on('unfollow', this.onChangeFollowing);
+		} else if (this.src == 'local') {
+			this.streamManager = (this as any).os.streams.localTimelineStream;
+			this.connection = this.streamManager.getConnection();
+			this.connectionId = this.streamManager.use();
+			this.connection.on('note', this.onNote);
+		} else if (this.src == 'hybrid') {
+			this.streamManager = (this as any).os.streams.hybridTimelineStream;
+			this.connection = this.streamManager.getConnection();
+			this.connectionId = this.streamManager.use();
+			this.connection.on('note', this.onNote);
+		} else if (this.src == 'global') {
+			this.streamManager = (this as any).os.streams.globalTimelineStream;
+			this.connection = this.streamManager.getConnection();
+			this.connectionId = this.streamManager.use();
+			this.connection.on('note', this.onNote);
+		} else if (this.src == 'mentions') {
+			this.streamManager = (this as any).os.stream;
+			this.connection = this.streamManager.getConnection();
+			this.connectionId = this.streamManager.use();
+			this.connection.on('mention', this.onNote);
 		}
 
 		document.addEventListener('keydown', this.onKeydown);
@@ -83,12 +102,27 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off(this.src == 'mentions' ? 'mention' : 'note', this.onNote);
-		if (this.src == 'home') {
+		if (this.src == 'tag') {
+			this.connection.off('note', this.onNote);
+			this.connection.close();
+		} else if (this.src == 'home') {
+			this.connection.off('note', this.onNote);
 			this.connection.off('follow', this.onChangeFollowing);
 			this.connection.off('unfollow', this.onChangeFollowing);
+			this.streamManager.dispose(this.connectionId);
+		} else if (this.src == 'local') {
+			this.connection.off('note', this.onNote);
+			this.streamManager.dispose(this.connectionId);
+		} else if (this.src == 'hybrid') {
+			this.connection.off('note', this.onNote);
+			this.streamManager.dispose(this.connectionId);
+		} else if (this.src == 'global') {
+			this.connection.off('note', this.onNote);
+			this.streamManager.dispose(this.connectionId);
+		} else if (this.src == 'mentions') {
+			this.connection.off('mention', this.onNote);
+			this.streamManager.dispose(this.connectionId);
 		}
-		this.stream.dispose(this.connectionId);
 
 		document.removeEventListener('keydown', this.onKeydown);
 	},
@@ -103,7 +137,8 @@ export default Vue.extend({
 					untilDate: this.date ? this.date.getTime() : undefined,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes,
+					query: this.tagTl ? this.tagTl.query : undefined
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -126,7 +161,8 @@ export default Vue.extend({
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes,
+				query: this.tagTl ? this.tagTl.query : undefined
 			});
 
 			promise.then(notes => {

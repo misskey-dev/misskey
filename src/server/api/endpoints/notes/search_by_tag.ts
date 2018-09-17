@@ -13,9 +13,15 @@ export const meta = {
 	},
 
 	params: {
-		tag: $.str.note({
+		tag: $.str.optional.note({
 			desc: {
 				'ja-JP': 'タグ'
+			}
+		}),
+
+		query: $.arr($.arr($.str)).optional.note({
+			desc: {
+				'ja-JP': 'クエリ'
 			}
 		}),
 
@@ -59,11 +65,9 @@ export const meta = {
 			}
 		}),
 
-		withFiles: $.bool.optional.nullable.note({
-			default: null,
-
+		withFiles: $.bool.optional.note({
 			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
 		}),
 
@@ -126,8 +130,14 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	}
 
 	const q: any = {
-		$and: [{
+		$and: [ps.tag ? {
 			tagsLower: ps.tag.toLowerCase()
+		} : {
+			$or: ps.query.map(tags => ({
+				$and: tags.map(t => ({
+					tagsLower: t.toLowerCase()
+				}))
+			}))
 		}],
 		deletedAt: { $exists: false }
 	};
@@ -281,25 +291,10 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 	const withFiles = ps.withFiles != null ? ps.withFiles : ps.media;
 
-	if (withFiles != null) {
-		if (withFiles) {
-			push({
-				fileIds: {
-					$exists: true,
-					$ne: null
-				}
-			});
-		} else {
-			push({
-				$or: [{
-					fileIds: {
-						$exists: false
-					}
-				}, {
-					fileIds: null
-				}]
-			});
-		}
+	if (withFiles) {
+		push({
+			fileIds: { $exists: true, $ne: [] }
+		});
 	}
 
 	if (ps.poll != null) {

@@ -8,6 +8,7 @@
 			<span v-if="src == 'global'">%fa:globe%%i18n:@global%</span>
 			<span v-if="src == 'mentions'">%fa:at%%i18n:@mentions%</span>
 			<span v-if="src == 'list'">%fa:list%{{ list.title }}</span>
+			<span v-if="src == 'tag'">%fa:hashtag%{{ tagTl.title }}</span>
 		</span>
 		<span style="margin-left:8px">
 			<template v-if="!showNav">%fa:angle-down%</template>
@@ -32,6 +33,7 @@
 					<template v-if="lists">
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
 					</template>
+					<span v-for="tl in $store.state.settings.tagTimelines" :data-active="src == 'tag' && tagTl == tl" @click="src = 'tag'; tagTl = tl" :key="tl.id">%fa:hashtag% {{ tl.title }}</span>
 				</div>
 			</div>
 		</div>
@@ -42,6 +44,7 @@
 			<x-tl v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
 			<x-tl v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
+			<x-tl v-if="src == 'tag'" ref="tl" key="tag" src="tag" :tag-tl="tagTl"/>
 			<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 		</div>
 	</main>
@@ -63,6 +66,7 @@ export default Vue.extend({
 			src: 'home',
 			list: null,
 			lists: null,
+			tagTl: null,
 			showNav: false,
 			enableLocalTimeline: false
 		};
@@ -74,9 +78,16 @@ export default Vue.extend({
 			this.saveSrc();
 		},
 
-		list() {
+		list(x) {
 			this.showNav = false;
 			this.saveSrc();
+			if (x != null) this.tagTl = null;
+		},
+
+		tagTl(x) {
+			this.showNav = false;
+			this.saveSrc();
+			if (x != null) this.list = null;
 		},
 
 		showNav(v) {
@@ -97,6 +108,8 @@ export default Vue.extend({
 			this.src = this.$store.state.device.tl.src;
 			if (this.src == 'list') {
 				this.list = this.$store.state.device.tl.arg;
+			} else if (this.src == 'tag') {
+				this.tagTl = this.$store.state.device.tl.arg;
 			}
 		} else if (this.$store.state.i.followingCount == 0) {
 			this.src = 'hybrid';
@@ -121,7 +134,7 @@ export default Vue.extend({
 		saveSrc() {
 			this.$store.commit('device/setTl', {
 				src: this.src,
-				arg: this.list
+				arg: this.src == 'list' ? this.list : this.tagTl
 			});
 		},
 

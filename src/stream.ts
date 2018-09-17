@@ -78,6 +78,10 @@ class Publisher {
 	public publishGlobalTimelineStream = (note: any): void => {
 		this.publish('global-timeline', null, note);
 	}
+
+	public publishHashtagStream = (note: any): void => {
+		this.publish('hashtag', null, note);
+	}
 }
 
 const publisher = new Publisher();
@@ -95,3 +99,4 @@ export const publishReversiGameStream = publisher.publishReversiGameStream;
 export const publishLocalTimelineStream = publisher.publishLocalTimelineStream;
 export const publishHybridTimelineStream = publisher.publishHybridTimelineStream;
 export const publishGlobalTimelineStream = publisher.publishGlobalTimelineStream;
+export const publishHashtagStream = publisher.publishHashtagStream;

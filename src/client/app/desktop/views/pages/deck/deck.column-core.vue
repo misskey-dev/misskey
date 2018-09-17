@@ -6,6 +6,7 @@
 <x-tl-column v-else-if="column.type == 'hybrid'" :column="column" :is-stacked="isStacked"/>
 <x-tl-column v-else-if="column.type == 'global'" :column="column" :is-stacked="isStacked"/>
 <x-tl-column v-else-if="column.type == 'list'" :column="column" :is-stacked="isStacked"/>
+<x-tl-column v-else-if="column.type == 'hashtag'" :column="column" :is-stacked="isStacked"/>
 <x-mentions-column v-else-if="column.type == 'mentions'" :column="column" :is-stacked="isStacked"/>
 </template>
 

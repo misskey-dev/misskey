@@ -162,6 +162,20 @@ export default Vue.extend({
 						});
 					}
 				}, {
+					icon: '%fa:hashtag%',
+					text: '%i18n:common.deck.hashtag%',
+					action: () => {
+						(this as any).apis.input({
+							title: '%i18n:@enter-hashtag-tl-title%'
+						}).then(title => {
+							this.$store.dispatch('settings/addDeckColumn', {
+								id: uuid(),
+								type: 'hashtag',
+								tagTlId: this.$store.state.settings.tagTimelines.find(x => x.title == title).id
+							});
+						});
+					}
+				}, {
 					icon: '%fa:bell R%',
 					text: '%i18n:common.deck.notifications%',
 					action: () => {

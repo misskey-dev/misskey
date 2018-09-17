@@ -6,14 +6,19 @@
 		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
 		<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%</span>
+		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl">%fa:hashtag% {{ tagTl.title }}</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
-		<button @click="chooseList" title="%i18n:@list%">%fa:list%</button>
+		<div class="buttons">
+			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton">%fa:hashtag%</button>
+			<button @click="chooseList" title="%i18n:@list%" ref="listButton">%fa:list%</button>
+		</div>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
 	<x-core v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
 	<x-core v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
+	<x-core v-if="src == 'tag'" ref="tl" key="tag" src="tag" :tag-tl="tagTl"/>
 	<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 </div>
 </template>
@@ -21,7 +26,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import XCore from './timeline.core.vue';
-import MkUserListsWindow from './user-lists-window.vue';
+import Menu from '../../../common/views/components/menu.vue';
+import MkSettingsWindow from './settings-window.vue';
 
 export default Vue.extend({
 	components: {
@@ -32,6 +38,7 @@ export default Vue.extend({
 		return {
 			src: 'home',
 			list: null,
+			tagTl: null,
 			enableLocalTimeline: false
 		};
 	},
@@ -41,8 +48,14 @@ export default Vue.extend({
 			this.saveSrc();
 		},
 
-		list() {
+		list(x) {
 			this.saveSrc();
+			if (x != null) this.tagTl = null;
+		},
+
+		tagTl(x) {
+			this.saveSrc();
+			if (x != null) this.list = null;
 		}
 	},
 
@@ -55,6 +68,8 @@ export default Vue.extend({
 			this.src = this.$store.state.device.tl.src;
 			if (this.src == 'list') {
 				this.list = this.$store.state.device.tl.arg;
+			} else if (this.src == 'tag') {
+				this.tagTl = this.$store.state.device.tl.arg;
 			}
 		} else if (this.$store.state.i.followingCount == 0) {
 			this.src = 'hybrid';
@@ -71,7 +86,7 @@ export default Vue.extend({
 		saveSrc() {
 			this.$store.commit('device/setTl', {
 				src: this.src,
-				arg: this.list
+				arg: this.src == 'list' ? this.list : this.tagTl
 			});
 		},
 
@@ -79,12 +94,74 @@ export default Vue.extend({
 			(this.$refs.tl as any).warp(date);
 		},
 
-		chooseList() {
-			const w = (this as any).os.new(MkUserListsWindow);
-			w.$once('choosen', list => {
-				this.list = list;
-				this.src = 'list';
-				w.close();
+		async chooseList() {
+			const lists = await (this as any).api('users/lists/list');
+
+			let menu = [{
+				icon: '%fa:plus%',
+				text: '%i18n:@add-list%',
+				action: () => {
+					(this as any).apis.input({
+						title: '%i18n:@list-name%',
+					}).then(async title => {
+						const list = await (this as any).api('users/lists/create', {
+							title
+						});
+
+						this.list = list;
+						this.src = 'list';
+					});
+				}
+			}];
+
+			if (lists.length > 0) {
+				menu.push(null);
+			}
+
+			menu = menu.concat(lists.map(list => ({
+				icon: '%fa:list%',
+				text: list.title,
+				action: () => {
+					this.list = list;
+					this.src = 'list';
+				}
+			})));
+
+			this.os.new(Menu, {
+				source: this.$refs.listButton,
+				compact: false,
+				items: menu
+			});
+		},
+
+		chooseTag() {
+			let menu = [{
+				icon: '%fa:plus%',
+				text: '%i18n:@add-tag-timeline%',
+				action: () => {
+					(this as any).os.new(MkSettingsWindow, {
+						initialPage: 'hashtags'
+					});
+				}
+			}];
+
+			if (this.$store.state.settings.tagTimelines.length > 0) {
+				menu.push(null);
+			}
+
+			menu = menu.concat(this.$store.state.settings.tagTimelines.map(t => ({
+				icon: '%fa:hashtag%',
+				text: t.title,
+				action: () => {
+					this.tagTl = t;
+					this.src = 'tag';
+				}
+			})));
+
+			this.os.new(Menu, {
+				source: this.$refs.tagButton,
+				compact: false,
+				items: menu
 			});
 		}
 	}
@@ -106,22 +183,24 @@ root(isDark)
 		border-radius 6px 6px 0 0
 		box-shadow 0 1px isDark ? rgba(#000, 0.15) : rgba(#000, 0.08)
 
-		> button
+		> .buttons
 			position absolute
 			z-index 2
 			top 0
 			right 0
-			padding 0
-			width 42px
-			font-size 0.9em
-			line-height 42px
-			color isDark ? #9baec8 : #ccc
 
-			&:hover
-				color isDark ? #b2c1d5 : #aaa
+			> button
+				padding 0
+				width 42px
+				font-size 0.9em
+				line-height 42px
+				color isDark ? #9baec8 : #ccc
 
-			&:active
-				color isDark ? #b2c1d5 : #999
+				&:hover
+					color isDark ? #b2c1d5 : #aaa
+
+				&:active
+					color isDark ? #b2c1d5 : #999
 
 		> span
 			display inline-block

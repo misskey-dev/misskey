@@ -5,6 +5,7 @@
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'">%fa:desktop .fw%Web</p>
 		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'">%fa:R bell .fw%%i18n:@notification%</p>
 		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:@drive%</p>
+		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'">%fa:hashtag .fw%%i18n:@tags%</p>
 		<p :class="{ active: page == 'mute' }" @mousedown="page = 'mute'">%fa:ban .fw%%i18n:@mute%</p>
 		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'">%fa:puzzle-piece .fw%%i18n:@apps%</p>
 		<p :class="{ active: page == 'twitter' }" @mousedown="page = 'twitter'">%fa:B twitter .fw%Twitter</p>
@@ -138,6 +139,11 @@
 			<x-drive/>
 		</section>
 
+		<section class="hashtags" v-show="page == 'hashtags'">
+			<h1>%i18n:@tags%</h1>
+			<x-tags/>
+		</section>
+
 		<section class="mute" v-show="page == 'mute'">
 			<h1>%i18n:@mute%</h1>
 			<x-mute/>
@@ -222,6 +228,7 @@ import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XDrive from './settings.drive.vue';
+import XTags from './settings.tags.vue';
 import { url, langs, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
@@ -234,11 +241,18 @@ export default Vue.extend({
 		XApi,
 		XApps,
 		XSignins,
-		XDrive
+		XDrive,
+		XTags
+	},
+	props: {
+		initialPage: {
+			type: String,
+			required: false
+		}
 	},
 	data() {
 		return {
-			page: 'profile',
+			page: this.initialPage || 'profile',
 			meta: null,
 			version,
 			langs,

@@ -1,7 +1,7 @@
 import es from '../../db/elasticsearch';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
-import { publishUserStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../stream';
+import { publishUserStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream, publishHashtagStream } from '../../stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -179,6 +179,10 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	if (isFirstNote) {
 		noteObj.isFirstNote = true;
+	}
+
+	if (tags.length > 0) {
+		publishHashtagStream(noteObj);
 	}
 
 	const nm = new NotificationManager(user, note);

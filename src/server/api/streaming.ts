@@ -14,6 +14,7 @@ import reversiGameStream from './stream/games/reversi-game';
 import reversiStream from './stream/games/reversi';
 import serverStatsStream from './stream/server-stats';
 import notesStatsStream from './stream/notes-stats';
+import hashtagStream from './stream/hashtag';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 
@@ -54,6 +55,11 @@ module.exports = (server: http.Server) => {
 
 		if (request.resourceURL.pathname === '/local-timeline') {
 			localTimelineStream(request, connection, ev, user);
+			return;
+		}
+
+		if (request.resourceURL.pathname === '/hashtag') {
+			hashtagStream(request, connection, ev, user);
 			return;
 		}
 
