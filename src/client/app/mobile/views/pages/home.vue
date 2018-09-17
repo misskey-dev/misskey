@@ -7,6 +7,7 @@
 			<span v-if="src == 'hybrid'">%fa:share-alt%%i18n:@hybrid%</span>
 			<span v-if="src == 'global'">%fa:globe%%i18n:@global%</span>
 			<span v-if="src == 'mentions'">%fa:at%%i18n:@mentions%</span>
+			<span v-if="src == 'messages'">%fa:envelope R%%i18n:@messages%</span>
 			<span v-if="src == 'list'">%fa:list%{{ list.title }}</span>
 			<span v-if="src == 'tag'">%fa:hashtag%{{ tagTl.title }}</span>
 		</span>
@@ -23,16 +24,21 @@
 	<main :data-darkmode="$store.state.device.darkmode">
 		<div class="nav" v-if="showNav">
 			<div class="bg" @click="showNav = false"></div>
+			<div class="pointer"></div>
 			<div class="body">
 				<div>
 					<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% %i18n:@home%</span>
 					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline">%fa:R comments% %i18n:@local%</span>
 					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
+					<div class="hr"></div>
 					<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%</span>
+					<span :data-active="src == 'messages'" @click="src = 'messages'">%fa:envelope R% %i18n:@messages%</span>
 					<template v-if="lists">
+						<div class="hr"></div>
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
 					</template>
+					<div class="hr" v-if="$store.state.settings.tagTimelines && $store.state.settings.tagTimelines.length > 0"></div>
 					<span v-for="tl in $store.state.settings.tagTimelines" :data-active="src == 'tag' && tagTl == tl" @click="src = 'tag'; tagTl = tl" :key="tl.id">%fa:hashtag% {{ tl.title }}</span>
 				</div>
 			</div>
@@ -44,6 +50,7 @@
 			<x-tl v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
 			<x-tl v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
+			<x-tl v-if="src == 'messages'" ref="tl" key="messages" src="messages"/>
 			<x-tl v-if="src == 'tag'" ref="tl" key="tag" src="tag" :tag-tl="tagTl"/>
 			<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 		</div>
@@ -150,6 +157,26 @@ export default Vue.extend({
 
 root(isDark)
 	> .nav
+		> .pointer
+			position fixed
+			z-index 10002
+			top 56px
+			left 0
+			right 0
+
+			$size = 16px
+
+			&:after
+				content ""
+				display block
+				position absolute
+				top -($size * 2)
+				left s('calc(50% - %s)', $size)
+				border-top solid $size transparent
+				border-left solid $size transparent
+				border-right solid $size transparent
+				border-bottom solid $size isDark ? #272f3a : #fff
+
 		> .bg
 			position fixed
 			z-index 10000
@@ -166,28 +193,22 @@ root(isDark)
 			left 0
 			right 0
 			width 300px
+			max-height calc(100% - 70px)
 			margin 0 auto
+			overflow auto
+			-webkit-overflow-scrolling touch
 			background isDark ? #272f3a : #fff
 			border-radius 8px
 			box-shadow 0 0 16px rgba(#000, 0.1)
 
-			$balloon-size = 16px
-
-			&:after
-				content ""
-				display block
-				position absolute
-				top -($balloon-size * 2) + 1.5px
-				left s('calc(50% - %s)', $balloon-size)
-				border-top solid $balloon-size transparent
-				border-left solid $balloon-size transparent
-				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size isDark ? #272f3a : #fff
-
 			> div
 				padding 8px 0
 
-				> *
+				> .hr
+					margin 8px 0
+					border-top solid 1px isDark ? rgba(#000, 0.3) : rgba(#000, 0.1)
+
+				> *:not(.hr)
 					display block
 					padding 8px 16px
 					color isDark ? #cdd0d8 : #666

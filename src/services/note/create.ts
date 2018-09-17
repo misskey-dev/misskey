@@ -142,6 +142,14 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
 	}
 
+	if (data.visibility == 'specified') {
+		data.visibleUsers.forEach(u => {
+			if (!mentionedUsers.some(x => x._id.equals(u._id))) {
+				mentionedUsers.push(u);
+			}
+		});
+	}
+
 	const note = await insertNote(user, data, tags, mentionedUsers);
 
 	res(note);
@@ -188,7 +196,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	const nm = new NotificationManager(user, note);
 	const nmRelatedPromises = [];
 
-	createMentionedEvents(mentionedUsers, noteObj, nm);
+	createMentionedEvents(mentionedUsers, note, nm);
 
 	const noteActivity = await renderActivity(data, note);
 
@@ -318,7 +326,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 	if (['public', 'home', 'followers'].includes(note.visibility)) {
 		// フォロワーに配信
-		publishToFollowers(note, noteObj, user, noteActivity);
+		publishToFollowers(note, user, noteActivity);
 	}
 
 	// リストに配信
@@ -456,7 +464,7 @@ async function publishToUserLists(note: INote, noteObj: any) {
 	});
 }
 
-async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteActivity: any) {
+async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 	const detailPackedNote = await pack(note, null, {
 		detail: true,
 		skipHide: true
@@ -505,9 +513,13 @@ function deliverNoteToMentionedRemoteUsers(mentionedUsers: IUser[], user: ILocal
 	});
 }
 
-function createMentionedEvents(mentionedUsers: IUser[], noteObj: any, nm: NotificationManager) {
+function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: NotificationManager) {
 	mentionedUsers.filter(u => isLocalUser(u)).forEach(async (u) => {
-		publishUserStream(u._id, 'mention', noteObj);
+		const detailPackedNote = await pack(note, u, {
+			detail: true
+		});
+
+		publishUserStream(u._id, 'mention', detailPackedNote);
 
 		// Create notification
 		nm.push(u._id, 'mention');

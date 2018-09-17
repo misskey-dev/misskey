@@ -148,6 +148,15 @@ export default Vue.extend({
 						});
 					}
 				}, {
+					icon: '%fa:envelope R%',
+					text: '%i18n:common.deck.direct%',
+					action: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'direct'
+						});
+					}
+				}, {
 					icon: '%fa:list%',
 					text: '%i18n:common.deck.list%',
 					action: () => {

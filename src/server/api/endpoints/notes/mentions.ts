@@ -27,6 +27,9 @@ export const meta = {
 
 		untilId: $.type(ID).optional.note({
 		}),
+
+		visibility: $.str.optional.note({
+		}),
 	}
 };
 
@@ -51,6 +54,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	const sort = {
 		_id: -1
 	};
+
+	if (ps.visibility) {
+		query.visibility = ps.visibility;
+	}
 
 	if (ps.following) {
 		const followingIds = await getFriendIds(user._id);

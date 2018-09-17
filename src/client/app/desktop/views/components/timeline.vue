@@ -5,10 +5,11 @@
 		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline">%fa:R comments% %i18n:@local%</span>
 		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
-		<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%</span>
 		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl">%fa:hashtag% {{ tagTl.title }}</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
 		<div class="buttons">
+			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%">%fa:at%</button>
+			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%">%fa:envelope R%</button>
 			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton">%fa:hashtag%</button>
 			<button @click="chooseList" title="%i18n:@list%" ref="listButton">%fa:list%</button>
 		</div>
@@ -18,6 +19,7 @@
 	<x-core v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
 	<x-core v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
+	<x-core v-if="src == 'messages'" ref="tl" key="messages" src="messages"/>
 	<x-core v-if="src == 'tag'" ref="tl" key="tag" src="tag" :tag-tl="tagTl"/>
 	<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 </div>
@@ -201,6 +203,20 @@ root(isDark)
 
 				&:active
 					color isDark ? #b2c1d5 : #999
+
+				&[data-active]
+					color $theme-color
+					cursor default
+
+					&:before
+						content ""
+						display block
+						position absolute
+						bottom 0
+						left 0
+						width 100%
+						height 2px
+						background $theme-color
 
 		> span
 			display inline-block

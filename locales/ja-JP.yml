@@ -169,6 +169,7 @@ common:
     hashtag: "ハッシュタグ"
     global: "グローバル"
     mentions: "あなた宛て"
+    direct: "ダイレクト投稿"
     notifications: "通知"
     list: "リスト"
     swap-left: "左に移動"
@@ -916,6 +917,7 @@ desktop/views/components/timeline.vue:
   hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
+  messages: "メッセージ"
   list: "リスト"
   hashtag: "ハッシュタグ"
   add-tag-timeline: "ハッシュタグを追加"
@@ -1322,6 +1324,7 @@ mobile/views/pages/home.vue:
   hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
+  messages: "メッセージ"
 
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
