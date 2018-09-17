@@ -21,9 +21,21 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		return rej('note not found');
 	}
 
+	const pinnedNoteIds = user.pinnedNoteIds || [];
+
+	if (pinnedNoteIds.some(id => id.equals(note._id))) {
+		return rej('already exists');
+	}
+
+	pinnedNoteIds.unshift(note._id);
+
+	if (pinnedNoteIds.length > 5) {
+		pinnedNoteIds.pop();
+	}
+
 	await User.update(user._id, {
 		$set: {
-			pinnedNoteId: note._id
+			pinnedNoteIds: pinnedNoteIds
 		}
 	});
 

@@ -101,15 +101,15 @@ props:
       ja-JP: "投稿の数"
       en-US: "The number of the notes of this user"
 
-  pinnedNote:
-    type: "entity(Note)"
+  pinnedNotes:
+    type: "entity(Note)[]"
     optional: true
     desc:
       ja-JP: "ピン留めされた投稿"
       en-US: "The pinned note of this user"
 
-  pinnedNoteId:
-    type: "id(Note)"
+  pinnedNoteIds:
+    type: "id(Note)[]"
     optional: true
     desc:
       ja-JP: "ピン留めされた投稿のID"

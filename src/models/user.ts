@@ -35,6 +35,28 @@ User.createIndex('uri', { sparse: true, unique: true });
 
 export default User;
 
+// 後方互換性のため
+User.findOne({
+	pinnedNoteId: { $exists: true }
+}).then(async x => {
+	if (x == null) return;
+
+	const users = await User.find({
+		pinnedNoteId: { $exists: true }
+	});
+
+	users.forEach(u => {
+		User.update({ _id: u._id }, {
+			$set: {
+				pinnedNoteIds: [(u as any).pinnedNoteId]
+			},
+			$unset: {
+				pinnedNoteId: ''
+			}
+		});
+	});
+});
+
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
@@ -53,7 +75,7 @@ type IUserBase = {
 	wallpaperUrl?: string;
 	data: any;
 	description: string;
-	pinnedNoteId: mongo.ObjectID;
+	pinnedNoteIds: mongo.ObjectID[];
 
 	/**
 	 * 凍結されているか否か
@@ -464,11 +486,11 @@ export const pack = (
 	}
 
 	if (opts.detail) {
-		if (_user.pinnedNoteId) {
-			// Populate pinned note
-			_user.pinnedNote = packNote(_user.pinnedNoteId, meId, {
+		if (_user.pinnedNoteIds) {
+			// Populate pinned notes
+			_user.pinnedNotes = Promise.all(_user.pinnedNoteIds.map((id: mongo.ObjectId) => packNote(id, meId, {
 				detail: true
-			});
+			})));
 		}
 
 		if (meId && !meId.equals(_user.id)) {

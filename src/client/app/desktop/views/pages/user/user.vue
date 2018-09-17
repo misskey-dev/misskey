@@ -6,7 +6,7 @@
 		<main>
 			<div class="main">
 				<x-header :user="user"/>
-				<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
+				<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 				<x-timeline class="timeline" ref="tl" :user="user"/>
 			</div>
 			<div class="side">
