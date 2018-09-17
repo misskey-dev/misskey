@@ -155,6 +155,7 @@ common:
     home: "Strona główna"
     local: "Lokalne"
     hybrid: "Społeczność"
+    hashtag: "ハッシュタグ"
     global: "Globalne"
     mentions: "あなた宛て"
     notifications: "Powiadomienia"
@@ -810,6 +811,10 @@ desktop/views/components/timeline.vue:
   global: "Globalne"
   mentions: "あなた宛て"
   list: "Listy"
+  hashtag: "ハッシュタグ"
+  add-tag-timeline: "ハッシュタグを追加"
+  add-list: "リストを追加"
+  list-name: "リスト名"
 desktop/views/components/ui.header.vue:
   welcome-back: "Witaj ponownie,"
   adjective: "さん"
