@@ -60,7 +60,7 @@
 		"@types/mocha": "5.2.3",
 		"@types/mongodb": "3.1.7",
 		"@types/ms": "0.7.30",
-		"@types/node": "10.10.0",
+		"@types/node": "10.10.1",
 		"@types/portscanner": "2.1.0",
 		"@types/pug": "2.0.4",
 		"@types/qrcode": "1.2.0",
