@@ -3,6 +3,7 @@ import Xev from 'xev';
 
 import { IUser } from '../../../models/user';
 import Mute from '../../../models/mute';
+import shouldMuteThisNote from '../../../misc/should-mute-this-note';
 
 export default async function(
 	request: websocket.request,
@@ -15,17 +16,8 @@ export default async function(
 
 	// Subscribe stream
 	subscriber.on('global-timeline', async note => {
-		//#region 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (mutedUserIds.indexOf(note.userId) != -1) {
-			return;
-		}
-		if (note.reply != null && mutedUserIds.indexOf(note.reply.userId) != -1) {
-			return;
-		}
-		if (note.renote != null && mutedUserIds.indexOf(note.renote.userId) != -1) {
-			return;
-		}
-		//#endregion
+		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
+		if (shouldMuteThisNote(note, mutedUserIds)) return;
 
 		connection.send(JSON.stringify({
 			type: 'note',

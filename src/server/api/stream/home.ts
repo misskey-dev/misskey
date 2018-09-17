@@ -8,6 +8,7 @@ import { pack as packNote, pack } from '../../../models/note';
 import readNotification from '../common/read-notification';
 import call from '../call';
 import { IApp } from '../../../models/app';
+import shouldMuteThisNote from '../../../misc/should-mute-this-note';
 
 const log = debug('misskey');
 
@@ -45,15 +46,7 @@ export default async function(
 
 		//#region 流れてきたメッセージがミュートしているユーザーが関わるものだったら無視する
 		if (x.type == 'note') {
-			if (mutedUserIds.includes(x.body.userId)) {
-				return;
-			}
-			if (x.body.reply != null && mutedUserIds.includes(x.body.reply.userId)) {
-				return;
-			}
-			if (x.body.renote != null && mutedUserIds.includes(x.body.renote.userId)) {
-				return;
-			}
+			if (shouldMuteThisNote(x.body, mutedUserIds)) return;
 		} else if (x.type == 'notification') {
 			if (mutedUserIds.includes(x.body.userId)) {
 				return;
