@@ -78,7 +78,7 @@ gulp.task('build:copy', ['build:copy:views', 'build:copy:lang'], () =>
 	]).pipe(gulp.dest('./built/'))
 );
 
-gulp.task('test', ['lint', 'mocha']);
+gulp.task('test', ['mocha']);
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
