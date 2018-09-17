@@ -112,7 +112,7 @@ common:
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "ユーザー名のホストを省略しない"
-  reduce-motion: "UIの動きを減らす"
+  reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
   reversi:
@@ -155,8 +155,9 @@ common:
     home: "Accueil"
     local: "Local"
     hybrid: "Social"
+    hashtag: "ハッシュタグ"
     global: "Global"
-    mentions: "あなた宛て"
+    mentions: "Mentions"
     notifications: "Notifications"
     list: "Liste"
     swap-left: "Déplacer à gauche"
@@ -260,8 +261,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "Vider le cache"
   set-version: "Choisissez une version"
 common/views/components/media-banner.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "Contenu sensible"
+  click-to-show: "Cliquer pour afficher"
 common/views/components/cw-button.vue:
   hide: "Masquer"
   show: "Voir plus"
@@ -484,7 +485,7 @@ desktop/views/components/charts.vue:
     drive-files-total: "ドライブのファイル数の累計"
     network-requests: "Requêtes"
     network-time: "Temps de réponse"
-    network-usage: "通信量"
+    network-usage: "Traffic"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Sélection de fichiers"
   upload: "Téléverser des fichiers à partir de votre ordinateur"
@@ -791,7 +792,7 @@ desktop/views/components/settings.profile.vue:
   birthday: "Date de naissance"
   save: "Mettre à jour le profil"
   locked-account: "Protéger votre compte"
-  is-locked: "フォローを承認制にする"
+  is-locked: "Demande d’abonnement en attente d’approbation"
   other: "Autre"
   is-bot: "Ce compte est un Bot"
   is-cat: "Ce compte est un Chat"
@@ -808,8 +809,12 @@ desktop/views/components/timeline.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
-  mentions: "あなた宛て"
+  mentions: "Mentions"
   list: "Listes"
+  hashtag: "ハッシュタグ"
+  add-tag-timeline: "ハッシュタグを追加"
+  add-list: "リストを追加"
+  list-name: "リスト名"
 desktop/views/components/ui.header.vue:
   welcome-back: "Content de vous revoir !"
   adjective: "さん"
@@ -1134,7 +1139,7 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
-  mentions: "あなた宛て"
+  mentions: "Mentions"
 mobile/views/pages/tag.vue:
   no-posts-found: "Pas de message avec un hashtag {} trouvé."
 mobile/views/pages/welcome.vue:
@@ -1175,7 +1180,7 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "Avatar"
   banner: "Bannière"
   is-cat: "Ce compte est un Bot"
-  is-locked: "フォローを承認制にする"
+  is-locked: "Demande d’abonnement en attente d’approbation"
   advanced: "Avancé"
   privacy: "Vie privée"
   save: "Mettre à jour le profil"
