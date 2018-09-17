@@ -811,7 +811,7 @@ desktop/views/components/timeline.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "メッセージ"
+  messages: "Messages"
   list: "Lists"
   hashtag: "Hashtag"
   add-tag-timeline: "Add hashtag tl"
@@ -1142,7 +1142,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "メッセージ"
+  messages: "Messages"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts \"{}\" found."
 mobile/views/pages/welcome.vue:
