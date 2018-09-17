@@ -45,6 +45,12 @@ module.exports = (server: http.Server) => {
 			ev.removeAllListeners();
 		});
 
+		connection.on('message', async (data) => {
+			if (data.utf8Data == 'ping') {
+				connection.send('pong');
+			}
+		});
+
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
 
