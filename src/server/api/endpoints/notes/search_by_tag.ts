@@ -87,6 +87,12 @@ export const meta = {
 			}
 		}),
 
+		untilId: $.type(ID).optional.note({
+			desc: {
+				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
+			}
+		}),
+
 		sinceDate: $.num.optional.note({
 		}),
 
@@ -316,6 +322,14 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 				}]
 			});
 		}
+	}
+
+	if (ps.untilId) {
+		push({
+			_id: {
+				$lt: ps.untilId
+			}
+		});
 	}
 
 	if (ps.sinceDate) {
