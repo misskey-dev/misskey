@@ -124,15 +124,10 @@ for (let i = 97; i < 123; i++) {
 
 // numbers
 for (let i = 48; i < 58; i++) {
-	codes[i - 48] = i;
+	codes[i - 48] = [i, (i - 48) + 96];
 }
 
 // function keys
 for (let i = 1; i < 13; i++) {
 	codes['f' + i] = i + 111;
-}
-
-// numpad keys
-for (let i = 0; i < 10; i++) {
-	codes['numpad ' + i] = i + 96;
 }

@@ -73,30 +73,20 @@ export default Vue.extend({
 				'enter': this.choose,
 				'space': this.choose,
 				'numpad plus': this.choose,
-				'1': () => this.react('like'),
-				'numpad 1': () => this.react('like'),
-				'2': () => this.react('love'),
-				'numpad 2': () => this.react('love'),
-				'3': () => this.react('laugh'),
-				'numpad 3': () => this.react('laugh'),
-				'4': () => this.react('hmm'),
-				'numpad 4': () => this.react('hmm'),
-				'5': () => this.react('surprise'),
-				'numpad 5': () => this.react('surprise'),
-				'6': () => this.react('congrats'),
-				'numpad 6': () => this.react('congrats'),
-				'7': () => this.react('angry'),
-				'numpad 7': () => this.react('angry'),
-				'8': () => this.react('confused'),
-				'numpad 8': () => this.react('confused'),
-				'9': () => this.react('rip'),
-				'numpad 9': () => this.react('rip'),
-				'0': () => this.react('pudding'),
-				'numpad 0': () => this.react('pudding'),
 				'up': this.focusUp,
 				'right': this.focusRight,
 				'down': this.focusDown,
 				'left': this.focusLeft,
+				'1': () => this.react('like'),
+				'2': () => this.react('love'),
+				'3': () => this.react('laugh'),
+				'4': () => this.react('hmm'),
+				'5': () => this.react('surprise'),
+				'6': () => this.react('congrats'),
+				'7': () => this.react('angry'),
+				'8': () => this.react('confused'),
+				'9': () => this.react('rip'),
+				'0': () => this.react('pudding'),
 			};
 		}
 	},
@@ -104,6 +94,10 @@ export default Vue.extend({
 	watch: {
 		focus(i) {
 			this.$refs.buttons.childNodes[i].focus();
+
+			if (this.showFocus) {
+				this.title = this.$refs.buttons.childNodes[i].title;
+			}
 		}
 	},
 
