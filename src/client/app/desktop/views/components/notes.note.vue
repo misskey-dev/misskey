@@ -113,14 +113,11 @@ export default Vue.extend({
 	computed: {
 		keymap(): any {
 			return {
-				'r': this.reply,
-				'a': () => this.react(true),
-				'plus': () => this.react(true),
-				'n': this.renote,
-				'up': this.focusBefore,
-				'shift+tab': this.focusBefore,
-				'down': this.focusAfter,
-				'tab': this.focusAfter,
+				'r|left': this.reply,
+				'a|plus': () => this.react(true),
+				'n|right': this.renote,
+				'up|shift+tab': this.focusBefore,
+				'down|tab': this.focusAfter,
 			};
 		},
 
@@ -250,7 +247,8 @@ export default Vue.extend({
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p,
-				showFocus: viaKeyboard
+				showFocus: viaKeyboard,
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 

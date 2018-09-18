@@ -51,7 +51,8 @@ export default {
 
 				const actions = getKeyMap(binding.value);
 
-				const reservedKeys = concat(actions.map(a => a.patterns.map(p => p.which)));
+				// flatten
+				const reservedKeys = concat(concat(actions.map(a => a.patterns.map(p => p.which))));
 
 				el.dataset.reservedKeys = reservedKeys.map(key => `'${key}'`).join(' ');
 

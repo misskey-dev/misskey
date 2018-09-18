@@ -56,6 +56,12 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+
+		animation: {
+			type: Boolean,
+			required: false,
+			default: true
 		}
 	},
 
@@ -70,9 +76,7 @@ export default Vue.extend({
 		keymap(): any {
 			return {
 				'esc': this.close,
-				'enter': this.choose,
-				'space': this.choose,
-				'plus': this.choose,
+				'enter|space|plus': this.choose,
 				'up': this.focusUp,
 				'right': this.focusRight,
 				'down': this.focusDown,
@@ -126,7 +130,7 @@ export default Vue.extend({
 			anime({
 				targets: this.$refs.backdrop,
 				opacity: 1,
-				duration: 100,
+				duration: this.animation ? 100 : 0,
 				easing: 'linear'
 			});
 
@@ -134,7 +138,7 @@ export default Vue.extend({
 				targets: this.$refs.popover,
 				opacity: 1,
 				scale: [0.5, 1],
-				duration: 500
+				duration: this.animation ? 500 : 0
 			});
 		});
 	},
@@ -164,7 +168,7 @@ export default Vue.extend({
 			anime({
 				targets: this.$refs.backdrop,
 				opacity: 0,
-				duration: 200,
+				duration: this.animation ? 200 : 0,
 				easing: 'linear'
 			});
 
@@ -173,7 +177,7 @@ export default Vue.extend({
 				targets: this.$refs.popover,
 				opacity: 0,
 				scale: 0.5,
-				duration: 200,
+				duration: this.animation ? 200 : 0,
 				easing: 'easeInBack',
 				complete: () => {
 					this.$emit('closed');
