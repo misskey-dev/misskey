@@ -78,6 +78,7 @@ export default async (ctx: Router.IRouterContext) => {
 		// index page
 		const rendered = renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`, null);
 		ctx.body = pack(rendered);
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		setResponseType(ctx);
 	}
 };
