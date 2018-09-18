@@ -28,7 +28,7 @@ export default Vue.extend({
 	props: {
 		reply: {
 			type: Object,
-			required: true
+			required: false
 		},
 
 		animation: {
