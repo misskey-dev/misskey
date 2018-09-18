@@ -119,6 +119,7 @@ export default Vue.extend({
 				'ctrl+q|ctrl+right': this.renoteDirectly,
 				'up|k|shift+tab': this.focusBefore,
 				'down|j|tab': this.focusAfter,
+				'esc': this.blur,
 				'm|o': () => this.menu(true),
 				's': this.toggleShowContent,
 				'1': () => this.reactDirectly('like'),
