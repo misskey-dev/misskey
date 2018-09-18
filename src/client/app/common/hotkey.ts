@@ -22,7 +22,10 @@ const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): a
 
 	result.patterns = patterns.split('|').map(part => {
 		const pattern = {
-			which: []
+			which: [],
+			ctrl: false,
+			alt: false,
+			shift: false
 		} as pattern;
 
 		part.trim().split('+').forEach(key => {
@@ -66,10 +69,10 @@ export default {
 						if (el._hotkey_global && targetReservedKeys.includes(`'${key}'`)) break;
 
 						const matched = action.patterns.some(pattern => {
-							let matched = pattern.which.includes(key);
-							if (pattern.ctrl && !e.ctrlKey) matched = false;
-							if (pattern.shift && !e.shiftKey) matched = false;
-							if (pattern.alt && !e.altKey) matched = false;
+							const matched = pattern.which.includes(key) &&
+								pattern.ctrl == e.ctrlKey &&
+								pattern.shift == e.shiftKey &&
+								pattern.alt == e.altKey;
 
 							if (matched) {
 								e.preventDefault();
