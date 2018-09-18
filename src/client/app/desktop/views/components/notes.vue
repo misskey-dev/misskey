@@ -10,7 +10,7 @@
 	</div>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="notes transition" tag="div">
+	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="notes transition" tag="div" ref="notes">
 		<template v-for="(note, i) in _notes">
 			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" ref="note"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
@@ -89,7 +89,7 @@ export default Vue.extend({
 		},
 
 		focus() {
-			(this.$refs.note as any)[0].focus();
+			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
 		},
 
 		onNoteUpdated(i, note) {
