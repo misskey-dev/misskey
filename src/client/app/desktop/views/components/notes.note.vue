@@ -115,9 +115,19 @@ export default Vue.extend({
 			return {
 				'r|left': this.reply,
 				'a|plus': () => this.react(true),
-				'n|right': this.renote,
+				'q|n|right': this.renote,
 				'up|shift+tab': this.focusBefore,
 				'down|tab': this.focusAfter,
+				'1': () => this.reactDirectly('like'),
+				'2': () => this.reactDirectly('love'),
+				'3': () => this.reactDirectly('laugh'),
+				'4': () => this.reactDirectly('hmm'),
+				'5': () => this.reactDirectly('surprise'),
+				'6': () => this.reactDirectly('congrats'),
+				'7': () => this.reactDirectly('angry'),
+				'8': () => this.reactDirectly('confused'),
+				'9': () => this.reactDirectly('rip'),
+				'0': () => this.reactDirectly('pudding'),
 			};
 		},
 
@@ -250,6 +260,13 @@ export default Vue.extend({
 				showFocus: viaKeyboard,
 				animation: !viaKeyboard
 			}).$once('closed', this.focus);
+		},
+
+		reactDirectly(reaction) {
+			(this as any).api('notes/reactions/create', {
+				noteId: this.p.id,
+				reaction: reaction
+			});
 		},
 
 		menu() {
