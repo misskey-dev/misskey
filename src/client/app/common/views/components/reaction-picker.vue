@@ -97,10 +97,10 @@ export default Vue.extend({
 
 	watch: {
 		focus(i) {
-			this.$refs.buttons.childNodes[i].focus();
+			this.$refs.buttons.children[i].focus();
 
 			if (this.showFocus) {
-				this.title = this.$refs.buttons.childNodes[i].title;
+				this.title = this.$refs.buttons.children[i].title;
 			}
 		}
 	},

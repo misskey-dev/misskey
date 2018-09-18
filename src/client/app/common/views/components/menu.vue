@@ -2,9 +2,9 @@
 <div class="onchrpzrvnoruiaenfcqvccjfuupzzwv">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ hukidasi }" ref="popover">
-		<template v-for="item in items">
+		<template v-for="item, i in items">
 			<div v-if="item === null"></div>
-			<button v-if="item" @click="clicked(item.action)" v-html="item.icon ? item.icon + ' ' + item.text : item.text"></button>
+			<button v-if="item" @click="clicked(item.action)" v-html="item.icon ? item.icon + ' ' + item.text : item.text" :tabindex="i"></button>
 		</template>
 	</div>
 </div>

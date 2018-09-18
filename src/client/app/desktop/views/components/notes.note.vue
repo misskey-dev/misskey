@@ -51,7 +51,7 @@
 				<button class="reactionButton" :class="{ reacted: p.myReaction != null }" @click="react()" ref="reactButton" title="%i18n:@add-reaction%">
 					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 				</button>
-				<button @click="menu" ref="menuButton">
+				<button @click="menu()" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
 				<!-- <button title="%i18n:@detail">
@@ -114,11 +114,12 @@ export default Vue.extend({
 		keymap(): any {
 			return {
 				'r|left': () => this.reply(true),
-				'a|plus': () => this.react(true),
+				'e|a|plus': () => this.react(true),
 				'q|right': () => this.renote(true),
 				'ctrl+q|ctrl+right': this.renoteDirectly,
 				'up|k|shift+tab': this.focusBefore,
 				'down|j|tab': this.focusAfter,
+				'm|o': () => this.menu(true),
 				'1': () => this.reactDirectly('like'),
 				'2': () => this.reactDirectly('love'),
 				'3': () => this.reactDirectly('laugh'),
@@ -278,10 +279,11 @@ export default Vue.extend({
 			});
 		},
 
-		menu() {
+		menu(viaKeyboard = false) {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
-				note: this.p
+				note: this.p,
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 
