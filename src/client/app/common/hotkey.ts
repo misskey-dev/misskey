@@ -13,8 +13,10 @@ const getKeyMap = keymap => Object.keys(keymap).map(input => {
 			case 'meta':
 				result[keyName] = true;
 				break;
-			default:
+			default: {
 				result.keyCode = keyCode(keyName);
+				if (!Array.isArray(result.keyCode)) result.keyCode = [result.keyCode];
+			}
 		}
 	});
 
@@ -45,7 +47,7 @@ export default {
 					for (const hotkey of el._keymap) {
 						if (el._hotkey_global && reservedKeyCodes.includes(`'${e.keyCode}'`)) break;
 
-						const callback = hotkey.keyCode === e.keyCode &&
+						const callback = hotkey.keyCode.includes(e.keyCode) &&
 							!!hotkey.ctrl === e.ctrlKey &&
 							!!hotkey.alt === e.altKey &&
 							!!hotkey.shift === e.shiftKey &&
