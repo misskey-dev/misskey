@@ -115,7 +115,7 @@ export default Vue.extend({
 			return {
 				'r': this.reply,
 				'a': () => this.react(true),
-				'numpad plus': () => this.react(true),
+				'plus': () => this.react(true),
 				'n': this.renote,
 				'up': this.focusBefore,
 				'shift+tab': this.focusBefore,

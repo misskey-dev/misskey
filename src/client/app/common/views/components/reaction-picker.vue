@@ -72,7 +72,7 @@ export default Vue.extend({
 				'esc': this.close,
 				'enter': this.choose,
 				'space': this.choose,
-				'numpad plus': this.choose,
+				'plus': this.choose,
 				'up': this.focusUp,
 				'right': this.focusRight,
 				'down': this.focusDown,
