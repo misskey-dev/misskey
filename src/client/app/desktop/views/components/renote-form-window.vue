@@ -15,7 +15,8 @@ export default Vue.extend({
 		keymap(): any {
 			return {
 				'esc': this.close,
-				'ctrl+enter': this.post
+				'enter': this.post,
+				'q': this.quote,
 			};
 		}
 	},
@@ -23,6 +24,9 @@ export default Vue.extend({
 	methods: {
 		post() {
 			(this.$refs.form as any).ok();
+		},
+		quote() {
+			(this.$refs.form as any).onQuote();
 		},
 		close() {
 			(this.$refs.window as any).close();

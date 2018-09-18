@@ -115,7 +115,7 @@ export default Vue.extend({
 			return {
 				'r|left': this.reply,
 				'a|plus': () => this.react(true),
-				'q|n|right': this.renote,
+				'q|right': this.renote,
 				'up|shift+tab': this.focusBefore,
 				'down|tab': this.focusAfter,
 				'1': () => this.reactDirectly('like'),
