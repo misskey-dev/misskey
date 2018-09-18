@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { ILocalUser } from '../../../../models/user';
 import Note from '../../../../models/note';
@@ -22,8 +23,8 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		return rej('note not found');
 	}
 
-	let addedId;
-	let removedId;
+	let addedId: mongo.ObjectID;
+	let removedId: mongo.ObjectID;
 
 	const pinnedNoteIds = user.pinnedNoteIds || [];
 

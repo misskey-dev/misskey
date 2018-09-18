@@ -7,7 +7,7 @@ import renderRemove from '../../remote/activitypub/renderer/remove';
 import packAp from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 
-export async function deliverPinnedChange(userId: mongo.ObjectID, oldId: mongo.ObjectID, newId: mongo.ObjectID) {
+export async function deliverPinnedChange(userId: mongo.ObjectID, oldId?: mongo.ObjectID, newId?: mongo.ObjectID) {
 	const user = await User.findOne({
 		_id: userId
 	});
