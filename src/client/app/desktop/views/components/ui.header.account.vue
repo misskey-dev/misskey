@@ -1,5 +1,5 @@
 <template>
-<div class="account">
+<div class="account" v-hotkey.global="keymap">
 	<button class="header" :data-active="isOpen" @click="toggle">
 		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
 		<mk-avatar class="avatar" :user="$store.state.i"/>
@@ -62,6 +62,13 @@ export default Vue.extend({
 		return {
 			isOpen: false
 		};
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'a|m': this.toggle
+			};
+		}
 	},
 	beforeDestroy() {
 		this.close();
