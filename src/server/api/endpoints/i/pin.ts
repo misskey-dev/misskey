@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { ILocalUser } from '../../../../models/user';
 import Note from '../../../../models/note';
 import { pack } from '../../../../models/user';
+import { deliverPinnedChange } from '../../../../services/i/pin';
 
 /**
  * Pin note
@@ -21,6 +22,9 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		return rej('note not found');
 	}
 
+	let addedId;
+	let removedId;
+
 	const pinnedNoteIds = user.pinnedNoteIds || [];
 
 	if (pinnedNoteIds.some(id => id.equals(note._id))) {
@@ -28,9 +32,10 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	}
 
 	pinnedNoteIds.unshift(note._id);
+	addedId = note._id;
 
 	if (pinnedNoteIds.length > 5) {
-		pinnedNoteIds.pop();
+		removedId = pinnedNoteIds.pop();
 	}
 
 	await User.update(user._id, {
@@ -43,6 +48,9 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	const iObj = await pack(user, user, {
 		detail: true
 	});
+
+	// Send Add/Remove to followers
+	deliverPinnedChange(user._id, removedId, addedId);
 
 	// Send response
 	res(iObj);
