@@ -35,7 +35,7 @@
 					<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%</span>
 					<span :data-active="src == 'messages'" @click="src = 'messages'">%fa:envelope R% %i18n:@messages%</span>
 					<template v-if="lists">
-						<div class="hr"></div>
+						<div class="hr" v-if="lists.length > 0"></div>
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
 					</template>
 					<div class="hr" v-if="$store.state.settings.tagTimelines && $store.state.settings.tagTimelines.length > 0"></div>
