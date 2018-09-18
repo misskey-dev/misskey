@@ -1,5 +1,5 @@
 <template>
-<div class="notifications">
+<div class="notifications" v-hotkey.global="keymap">
 	<button :data-active="isOpen" @click="toggle" title="%i18n:@title%">
 		%fa:R bell%<template v-if="hasUnreadNotification">%fa:circle%</template>
 	</button>
@@ -19,11 +19,19 @@ export default Vue.extend({
 			isOpen: false
 		};
 	},
+
 	computed: {
 		hasUnreadNotification(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
+		},
+
+		keymap(): any {
+			return {
+				'shift+n': this.toggle
+			};
 		}
 	},
+
 	methods: {
 		toggle() {
 			this.isOpen ? this.close() : this.open();
