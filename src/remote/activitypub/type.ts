@@ -53,6 +53,7 @@ export interface IPerson extends IObject {
 	publicKey: any;
 	followers: any;
 	following: any;
+	featured?: any;
 	outbox: any;
 	endpoints: string[];
 }
