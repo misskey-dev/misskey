@@ -1,5 +1,5 @@
 <template>
-<mk-window class="mk-post-form-window" ref="window" is-modal @closed="onWindowClosed">
+<mk-window class="mk-post-form-window" ref="window" is-modal @closed="onWindowClosed" :animation="animation">
 	<span slot="header" class="mk-post-form-window--header">
 		<span class="icon" v-if="geo">%fa:map-marker-alt%</span>
 		<span v-if="!reply">%i18n:@note%</span>
@@ -25,7 +25,19 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['reply'],
+	props: {
+		reply: {
+			type: Object,
+			required: true
+		},
+
+		animation: {
+			type: Boolean,
+			required: false,
+			default: true
+		}
+	},
+
 	data() {
 		return {
 			uploadings: [],
@@ -33,11 +45,13 @@ export default Vue.extend({
 			geo: null
 		};
 	},
+
 	mounted() {
 		this.$nextTick(() => {
 			(this.$refs.form as any).focus();
 		});
 	},
+
 	methods: {
 		onChangeUploadings(files) {
 			this.uploadings = files;

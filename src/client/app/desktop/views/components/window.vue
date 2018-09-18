@@ -76,6 +76,11 @@ export default Vue.extend({
 		name: {
 			type: String,
 			default: null
+		},
+		animation: {
+			type: Boolean,
+			required: false,
+			default: true
 		}
 	},
 
@@ -142,7 +147,7 @@ export default Vue.extend({
 				anime({
 					targets: bg,
 					opacity: 1,
-					duration: 100,
+					duration: this.animation ? 100 : 0,
 					easing: 'linear'
 				});
 			}
@@ -152,7 +157,7 @@ export default Vue.extend({
 				targets: main,
 				opacity: 1,
 				scale: [1.1, 1],
-				duration: 200,
+				duration: this.animation ? 200 : 0,
 				easing: 'easeOutQuad'
 			});
 
@@ -160,7 +165,7 @@ export default Vue.extend({
 
 			setTimeout(() => {
 				this.$emit('opened');
-			}, 300);
+			}, this.animation ? 300 : 0);
 		},
 
 		close() {
@@ -174,7 +179,7 @@ export default Vue.extend({
 				anime({
 					targets: bg,
 					opacity: 0,
-					duration: 300,
+					duration: this.animation ? 300 : 0,
 					easing: 'linear'
 				});
 			}
@@ -185,14 +190,14 @@ export default Vue.extend({
 				targets: main,
 				opacity: 0,
 				scale: 0.8,
-				duration: 300,
+				duration: this.animation ? 300 : 0,
 				easing: [0.5, -0.5, 1, 0.5]
 			});
 
 			setTimeout(() => {
 				this.$emit('closed');
 				this.destroyDom();
-			}, 300);
+			}, this.animation ? 300 : 0);
 		},
 
 		popout() {
