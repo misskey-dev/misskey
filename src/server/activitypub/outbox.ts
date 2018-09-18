@@ -88,6 +88,7 @@ export default async (ctx: Router.IRouterContext) => {
 		);
 
 		ctx.body = pack(rendered);
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		setResponseType(ctx);
 	} else {
 		// index page
@@ -96,6 +97,7 @@ export default async (ctx: Router.IRouterContext) => {
 			`${partOf}?page=true&since_id=000000000000000000000000`
 		);
 		ctx.body = pack(rendered);
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		setResponseType(ctx);
 	}
 };

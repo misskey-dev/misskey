@@ -34,5 +34,6 @@ export default async (ctx: Router.IRouterContext) => {
 	);
 
 	ctx.body = pack(rendered);
+	ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 	setResponseType(ctx);
 };
