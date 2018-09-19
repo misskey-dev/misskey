@@ -348,7 +348,8 @@ export const pack = (
 	me?: string | mongo.ObjectID | IUser,
 	options?: {
 		detail?: boolean,
-		includeSecrets?: boolean
+		includeSecrets?: boolean,
+		includeHasUnreadNotes?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 
@@ -508,6 +509,11 @@ export const pack = (
 				followerId: { $in: myFollowingIds }
 			});
 		}
+	}
+
+	if (!opts.includeHasUnreadNotes) {
+		delete _user.hasUnreadSpecifiedNotes;
+		delete _user.hasUnreadMentions;
 	}
 
 	// resolve promises in _user object

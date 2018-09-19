@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:home%%i18n:@dashboard%</span>
+	<span slot="header"><span style="margin-right:4px;">%fa:home%</span>%i18n:@dashboard%</span>
 	<template slot="func">
 		<button @click="customizing = !customizing">%fa:cog%</button>
 	</template>

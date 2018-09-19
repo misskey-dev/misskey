@@ -50,6 +50,30 @@ export class HomeStream extends Stream {
 			});
 		});
 
+		this.on('unreadMention', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadMentions: true
+			});
+		});
+
+		this.on('readAllUnreadMentions', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadMentions: false
+			});
+		});
+
+		this.on('unreadSpecifiedNote', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadSpecifiedNotes: true
+			});
+		});
+
+		this.on('readAllUnreadSpecifiedNotes', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadSpecifiedNotes: false
+			});
+		});
+
 		this.on('clientSettingUpdated', x => {
 			os.store.commit('settings/set', {
 				key: x.key,

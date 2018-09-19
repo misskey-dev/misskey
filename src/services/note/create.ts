@@ -25,6 +25,7 @@ import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import { updateNoteStats } from '../update-chart';
 import { erase, unique } from '../../prelude/array';
+import insertNoteUnread from './unread';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -170,6 +171,17 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
 
+	// 未読通知を作成
+	if (data.visibility == 'specified') {
+		data.visibleUsers.forEach(u => {
+			insertNoteUnread(u, note, true);
+		});
+	} else {
+		mentionedUsers.forEach(u => {
+			insertNoteUnread(u, note, false);
+		});
+	}
+
 	if (data.reply) {
 		saveReply(data.reply, note);
 	}
@@ -312,16 +324,6 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 	// Publish note to global timeline stream
 	if (note.visibility == 'public' && note.replyId == null) {
 		publishGlobalTimelineStream(noteObj);
-	}
-
-	if (note.visibility == 'specified') {
-		visibleUsers.forEach(async (u) => {
-			const n = await pack(note, u, {
-				detail: true
-			});
-			publishUserStream(u._id, 'note', n);
-			publishHybridTimelineStream(u._id, n);
-		});
 	}
 
 	if (['public', 'home', 'followers'].includes(note.visibility)) {

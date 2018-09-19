@@ -8,8 +8,8 @@
 		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl">%fa:hashtag% {{ tagTl.title }}</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
 		<div class="buttons">
-			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%">%fa:at%</button>
-			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%">%fa:envelope R%</button>
+			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%">%fa:at%<i class="badge" v-if="$store.state.i.hasUnreadMentions">%fa:circle%</i></button>
+			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%">%fa:envelope R%<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes">%fa:circle%</i></button>
 			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton">%fa:hashtag%</button>
 			<button @click="chooseList" title="%i18n:@list%" ref="listButton">%fa:list%</button>
 		</div>
@@ -201,6 +201,13 @@ root(isDark)
 				font-size 0.9em
 				line-height 42px
 				color isDark ? #9baec8 : #ccc
+
+				> .badge
+					position absolute
+					top -4px
+					right 4px
+					font-size 10px
+					color $theme-color
 
 				&:hover
 					color isDark ? #b2c1d5 : #aaa

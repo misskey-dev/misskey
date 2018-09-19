@@ -188,9 +188,6 @@ root(isDark)
 				overflow hidden
 				text-overflow ellipsis
 
-				[data-fa], [data-icon]
-					margin-right 4px
-
 				> img
 					display inline-block
 					vertical-align bottom

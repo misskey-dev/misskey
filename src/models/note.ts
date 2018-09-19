@@ -295,8 +295,8 @@ export const pack = async (
 
 	delete _note._user;
 	delete _note._reply;
-	delete _note.repost;
-	delete _note.mentions;
+	delete _note._renote;
+	delete _note._files;
 	if (_note.geo) delete _note.geo.type;
 
 	// Populate user

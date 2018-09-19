@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header" @click="showNav = true">
-		<span>
+		<span :class="$style.title">
 			<span v-if="src == 'home'">%fa:home%%i18n:@home%</span>
 			<span v-if="src == 'local'">%fa:R comments%%i18n:@local%</span>
 			<span v-if="src == 'hybrid'">%fa:share-alt%%i18n:@hybrid%</span>
@@ -15,6 +15,7 @@
 			<template v-if="!showNav">%fa:angle-down%</template>
 			<template v-else>%fa:angle-up%</template>
 		</span>
+		<i :class="$style.badge" v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes">%fa:circle%</i>
 	</span>
 
 	<template slot="func">
@@ -32,8 +33,8 @@
 					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
 					<div class="hr"></div>
-					<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%</span>
-					<span :data-active="src == 'messages'" @click="src = 'messages'">%fa:envelope R% %i18n:@messages%</span>
+					<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%<i class="badge" v-if="$store.state.i.hasUnreadMentions">%fa:circle%</i></span>
+					<span :data-active="src == 'messages'" @click="src = 'messages'">%fa:envelope R% %i18n:@messages%<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes">%fa:circle%</i></span>
 					<template v-if="lists">
 						<div class="hr" v-if="lists.length > 0"></div>
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
@@ -220,6 +221,11 @@ root(isDark)
 					&:not([data-active]):hover
 						background isDark ? #353e4a : #eee
 
+					> .badge
+						margin-left 6px
+						font-size 10px
+						color $theme-color
+
 	> .tl
 		max-width 680px
 		margin 0 auto
@@ -236,5 +242,20 @@ main[data-darkmode]
 
 main:not([data-darkmode])
 	root(false)
+
+</style>
+
+<style lang="stylus" module>
+@import '~const.styl'
+
+.title
+	i
+		margin-right 4px
+
+.badge
+	margin-left 6px
+	font-size 10px
+	color $theme-color
+	vertical-align middle
 
 </style>

@@ -9,6 +9,7 @@ import readNotification from '../common/read-notification';
 import call from '../call';
 import { IApp } from '../../../models/app';
 import shouldMuteThisNote from '../../../misc/should-mute-this-note';
+import readNote from '../../../services/note/read';
 
 const log = debug('misskey');
 
@@ -94,6 +95,9 @@ export default async function(
 				if (!msg.id) return;
 				log(`CAPTURE: ${msg.id} by @${user.username}`);
 				subscriber.on(`note-stream:${msg.id}`, onNoteStream);
+				if (msg.read) {
+					readNote(user._id, msg.id);
+				}
 				break;
 
 			case 'decapture':

@@ -213,10 +213,14 @@ export default Vue.extend({
 	methods: {
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
+				const data = {
 					type: 'capture',
 					id: this.p.id
-				});
+				} as any;
+				if ((this.p.visibleUserIds || []).includes(this.$store.state.i.id) || (this.p.mentions || []).includes(this.$store.state.i.id)) {
+					data.read = true;
+				}
+				this.connection.send(data);
 				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
 			}
 		},

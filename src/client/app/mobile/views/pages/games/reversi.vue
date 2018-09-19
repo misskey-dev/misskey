@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:gamepad%%i18n:@reversi%</span>
+	<span slot="header"><span style="margin-right:4px;">%fa:gamepad%</span>%i18n:@reversi%</span>
 	<mk-reversi :game-id="$route.params.game" @nav="nav" :self-nav="false"/>
 </mk-ui>
 </template>

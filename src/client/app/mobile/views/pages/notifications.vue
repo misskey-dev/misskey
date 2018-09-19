@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:R bell%%i18n:@notifications%</span>
+	<span slot="header"><span style="margin-right:4px;">%fa:R bell%</span>%i18n:@notifications%</span>
 	<template slot="func"><button @click="fn">%fa:check%</button></template>
 
 	<main>
