@@ -162,8 +162,7 @@ const router = new Router();
 router.get('/assets/*', async ctx => {
 	await send(ctx, ctx.params[0], {
 		root: `${__dirname}/../../docs/assets/`,
-		maxage: ms('7 days'),
-		immutable: true
+		maxage: ms('1 days')
 	});
 });
 
