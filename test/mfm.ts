@@ -87,6 +87,20 @@ describe('Text', () => {
 			], tokens2);
 		});
 
+		it('quote', () => {
+			const tokens1 = analyze('> foo\nbar\baz');
+			assert.deepEqual([
+				{ type: 'quote', content: '> foo\nbar\baz', quote: 'foo\nbar\baz' }
+			], tokens1);
+
+			const tokens2 = analyze('before\n> foo\nbar\baz\n\nafter');
+			assert.deepEqual([
+				{ type: 'text', content: 'before' },
+				{ type: 'quote', content: '\n> foo\nbar\baz\n\n', quote: 'foo\nbar\baz' },
+				{ type: 'text', content: 'after' }
+			], tokens2);
+		});
+
 		it('url', () => {
 			const tokens = analyze('https://himasaku.net');
 			assert.deepEqual([{
