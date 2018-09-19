@@ -33,12 +33,16 @@ export default Vue.extend({
 					text: '%i18n:@pin%',
 					action: this.pin
 				});
+			}
+
+			if (this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin) {
 				items.push({
 					icon: '%fa:trash-alt R%',
 					text: '%i18n:@delete%',
 					action: this.del
 				});
 			}
+
 			if (this.note.uri) {
 				items.push({
 					icon: '%fa:external-link-square-alt%',
@@ -48,6 +52,7 @@ export default Vue.extend({
 					}
 				});
 			}
+
 			return items;
 		}
 	},

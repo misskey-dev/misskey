@@ -21,12 +21,15 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Fetch note
 	const note = await Note.findOne({
-		_id: noteId,
-		userId: user._id
+		_id: noteId
 	});
 
 	if (note === null) {
 		return rej('note not found');
+	}
+
+	if (!user.isAdmin && !note.userId.equals(user._id)) {
+		return rej('access denied');
 	}
 
 	await deleteNote(user, note);
