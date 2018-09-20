@@ -5,6 +5,14 @@ import Mute from '../../models/mute';
 import { publishUserStream } from '../../stream';
 
 export default async function(user: IUser, note: INote, isSpecified = false) {
+	//#region ミュートしているなら無視
+	const mute = await Mute.find({
+		muterId: user._id
+	});
+	const mutedUserIds = mute.map(m => m.muteeId.toString());
+	if (mutedUserIds.includes(note.userId.toString())) return;
+	//#endregion
+
 	const unread = await NoteUnread.insert({
 		noteId: note._id,
 		userId: user._id,
@@ -18,14 +26,6 @@ export default async function(user: IUser, note: INote, isSpecified = false) {
 	setTimeout(async () => {
 		const exist = await NoteUnread.findOne({ _id: unread._id });
 		if (exist == null) return;
-
-		//#region ただしミュートされているなら発行しない
-		const mute = await Mute.find({
-			muterId: user._id
-		});
-		const mutedUserIds = mute.map(m => m.muteeId.toString());
-		if (mutedUserIds.includes(note.userId.toString())) return;
-		//#endregion
 
 		User.update({
 			_id: user._id
