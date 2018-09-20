@@ -221,7 +221,7 @@
 		"webfinger.js": "2.6.6",
 		"webpack": "4.19.1",
 		"webpack-cli": "3.1.0",
-		"websocket": "1.0.26",
+		"websocket": "1.0.28",
 		"ws": "6.0.0",
 		"xev": "2.0.1"
 	},
