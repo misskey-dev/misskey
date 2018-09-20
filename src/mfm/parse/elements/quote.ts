@@ -8,13 +8,20 @@ export type TextElementQuote = {
 	quote: string
 };
 
-export default function(text: string) {
-	const match = text.match(/^"([\s\S]+?)\n"/) || text.match(/^>([\s\S]+?)\n\n/) || text.match(/^\n>([\s\S]+?)\n\n/) || text.match(/^>([\s\S]+?)$/);
+export default function(text: string, index: number) {
+	const match = text.match(/^"([\s\S]+?)\n"/) || text.match(/^\n>([\s\S]+?)(\n\n|$)/) ||
+		(index == 0 ? text.match(/^>([\s\S]+?)(\n\n|$)/) : null);
+
 	if (!match) return null;
-	const quote = match[0];
+
+	const quote = match[1]
+		.split('\n')
+		.map(line => line.replace(/^>+/g, '').trim())
+		.join('\n');
+
 	return {
 		type: 'quote',
-		content: quote,
-		quote: match[1].trim(),
+		content: match[0],
+		quote: quote,
 	} as TextElementQuote;
 }

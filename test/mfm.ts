@@ -88,17 +88,27 @@ describe('Text', () => {
 		});
 
 		it('quote', () => {
-			const tokens1 = analyze('> foo\nbar\baz');
+			const tokens1 = analyze('> foo\nbar\nbaz');
 			assert.deepEqual([
-				{ type: 'quote', content: '> foo\nbar\baz', quote: 'foo\nbar\baz' }
+				{ type: 'quote', content: '> foo\nbar\nbaz', quote: 'foo\nbar\nbaz' }
 			], tokens1);
 
-			const tokens2 = analyze('before\n> foo\nbar\baz\n\nafter');
+			const tokens2 = analyze('before\n> foo\nbar\nbaz\n\nafter');
 			assert.deepEqual([
 				{ type: 'text', content: 'before' },
-				{ type: 'quote', content: '\n> foo\nbar\baz\n\n', quote: 'foo\nbar\baz' },
+				{ type: 'quote', content: '\n> foo\nbar\nbaz\n\n', quote: 'foo\nbar\nbaz' },
 				{ type: 'text', content: 'after' }
 			], tokens2);
+
+			const tokens3 = analyze('piyo> foo\nbar\nbaz');
+			assert.deepEqual([
+				{ type: 'text', content: 'piyo> foo\nbar\nbaz' }
+			], tokens3);
+
+			const tokens4 = analyze('> foo\n> bar\n> baz');
+			assert.deepEqual([
+				{ type: 'quote', content: '> foo\n> bar\n> baz', quote: 'foo\nbar\nbaz' }
+			], tokens4);
 		});
 
 		it('url', () => {
