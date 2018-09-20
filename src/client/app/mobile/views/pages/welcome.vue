@@ -1,5 +1,7 @@
 <template>
 <div class="wgwfgvvimdjvhjfwxropcwksnzftjqes">
+	<div class="banner" :style="{ backgroundImage: banner ? `url(${banner})` : null }"></div>
+
 	<div>
 		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name">
 		<p class="host">{{ host }}</p>
@@ -80,6 +82,7 @@ export default Vue.extend({
 			meta: null,
 			copyright,
 			stats: null,
+			banner: null,
 			host,
 			name: 'Misskey',
 			description: '',
@@ -93,6 +96,7 @@ export default Vue.extend({
 			this.name = meta.name;
 			this.description = meta.description;
 			this.announcements = meta.broadcasts;
+			this.banner = meta.bannerUrl;
 		});
 
 		(this as any).api('stats').then(stats => {
@@ -121,7 +125,27 @@ root(isDark)
 	text-align center
 	//background #fff
 
-	> div
+	> .banner
+		position absolute
+		top 0
+		left 0
+		width 100%
+		height 300px
+		background-position center
+		background-size cover
+		opacity 0.7
+
+		&:after
+			content ""
+			display block
+			position absolute
+			bottom 0
+			left 0
+			width 100%
+			height 100px
+			background linear-gradient(transparent, isDark ? #191b22 : #f7f7f7)
+
+	> div:not(.banner)
 		padding 32px
 		margin 0 auto
 		max-width 500px

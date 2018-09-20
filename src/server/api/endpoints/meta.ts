@@ -38,6 +38,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		driveCapacityPerLocalUserMb: config.localDriveCapacityMb,
 		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
 		swPublickey: config.sw ? config.sw.public_key : null,
-		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined
+		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
+		bannerUrl: meta.bannerUrl
 	});
 });

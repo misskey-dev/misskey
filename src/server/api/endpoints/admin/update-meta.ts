@@ -34,6 +34,12 @@ export const meta = {
 				'ja-JP': '統計などで無視するハッシュタグ'
 			}
 		}),
+
+		bannerUrl: $.str.optional.nullable.note({
+			desc: {
+				'ja-JP': 'インスタンスのバナー画像URL'
+			}
+		}),
 	}
 };
 
@@ -57,6 +63,10 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	if (Array.isArray(ps.hidedTags)) {
 		set.hidedTags = ps.hidedTags;
+	}
+
+	if (ps.bannerUrl !== undefined) {
+		set.bannerUrl = ps.bannerUrl;
 	}
 
 	await Meta.update({}, {

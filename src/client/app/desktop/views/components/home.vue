@@ -38,7 +38,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="main">
+	<div class="main" :class="{ withBg: $store.state.i.wallpaperUrl != null }">
 		<template v-if="customize">
 			<x-draggable v-for="place in ['left', 'right']"
 				:list="widgets[place]"
@@ -340,7 +340,10 @@ root(isDark)
 		display flex
 		justify-content center
 		margin 0 auto
-		max-width 1220px
+		max-width 1240px
+
+		&.withBg
+			background rgba(isDark ? #000 : #fff, 0.5)
 
 		> *
 			.customize-container
@@ -355,7 +358,7 @@ root(isDark)
 
 		> .main
 			padding 16px
-			width calc(100% - 275px * 2)
+			width calc(100% - 280px * 2)
 			order 2
 
 			> .form
@@ -371,7 +374,7 @@ root(isDark)
 					border-radius 0
 
 		> *:not(.main)
-			width 275px
+			width 280px
 			padding 16px 0 16px 0
 
 			> *:not(:last-child)

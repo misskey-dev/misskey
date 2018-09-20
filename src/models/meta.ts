@@ -14,4 +14,5 @@ export type IMeta = {
 	disableRegistration?: boolean;
 	disableLocalTimeline?: boolean;
 	hidedTags?: string[];
+	bannerUrl?: string;
 };
