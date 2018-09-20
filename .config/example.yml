@@ -94,6 +94,8 @@ drive:
   #   accessKey: XXX
   #   secretKey: YYY
 
+initialBalance: 0
+
 #
 # Below settings are optional
 #

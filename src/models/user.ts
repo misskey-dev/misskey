@@ -57,6 +57,25 @@ User.findOne({
 	});
 });
 
+// 後方互換性のため
+User.findOne({
+	balance: { $exists: false },
+	host: null
+}).then(async x => {
+	if (x == null) return;
+
+	User.update({
+		balance: { $exists: false },
+		host: null
+	}, {
+		$set: {
+			balance: config.initialBalance
+		}
+	}, {
+		multi: true
+	});
+});
+
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
@@ -130,6 +149,7 @@ export interface ILocalUser extends IUserBase {
 	};
 	hasUnreadNotification: boolean;
 	hasUnreadMessagingMessage: boolean;
+	balance: number;
 }
 
 export interface IRemoteUser extends IUserBase {
@@ -418,6 +438,7 @@ export const pack = (
 			delete _user.email;
 			delete _user.settings;
 			delete _user.clientSettings;
+			delete _user.balance;
 		}
 
 		if (!opts.detail) {

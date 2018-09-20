@@ -118,7 +118,8 @@ export default async (ctx: Koa.Context) => {
 		},
 		settings: {
 			autoWatch: false
-		}
+		},
+		balance: config.initialBalance
 	});
 
 	//#region Increment users count
