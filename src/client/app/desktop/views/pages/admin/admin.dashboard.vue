@@ -16,6 +16,14 @@
 	<div class="form">
 		<div>
 			<label>
+				<p>%i18n:@banner-url%</p>
+				<input v-model="bannerUrl">
+			</label>
+			<button class="ui" @click="updateMeta">%i18n:@save%</button>
+		</div>
+
+		<div>
+			<label>
 				<input type="checkbox" v-model="disableRegistration" @change="updateMeta">
 				<span>%i18n:@disableRegistration%</span>
 			</label>
@@ -46,6 +54,7 @@ export default Vue.extend({
 			stats: null,
 			disableRegistration: false,
 			disableLocalTimeline: false,
+			bannerUrl: null,
 			inviteCode: null,
 			connection: null,
 			connectionId: null
@@ -58,6 +67,7 @@ export default Vue.extend({
 		(this as any).os.getMeta().then(meta => {
 			this.disableRegistration = meta.disableRegistration;
 			this.disableLocalTimeline = meta.disableLocalTimeline;
+			this.bannerUrl = meta.bannerUrl;
 		});
 
 		(this as any).api('stats').then(stats => {
@@ -76,7 +86,8 @@ export default Vue.extend({
 		updateMeta() {
 			(this as any).api('admin/update-meta', {
 				disableRegistration: this.disableRegistration,
-				disableLocalTimeline: this.disableLocalTimeline
+				disableLocalTimeline: this.disableLocalTimeline,
+				bannerUrl: this.bannerUrl
 			});
 		}
 	}
@@ -114,6 +125,7 @@ export default Vue.extend({
 
 	> .form
 		> div
+			padding 16px
 			border-bottom solid 1px #eee
 
 </style>

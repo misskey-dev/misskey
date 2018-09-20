@@ -1,5 +1,7 @@
 <template>
 <div class="mk-welcome">
+	<div class="banner" :style="{ backgroundImage: banner ? `url(${banner})` : null }"></div>
+
 	<button @click="dark">
 		<template v-if="$store.state.device.darkmode">%fa:moon%</template>
 		<template v-else>%fa:R moon%</template>
@@ -154,6 +156,7 @@ export default Vue.extend({
 		return {
 			meta: null,
 			stats: null,
+			banner: null,
 			copyright,
 			host,
 			name: 'Misskey',
@@ -169,6 +172,7 @@ export default Vue.extend({
 			this.name = meta.name;
 			this.description = meta.description;
 			this.announcements = meta.broadcasts;
+			this.banner = meta.bannerUrl;
 		});
 
 		(this as any).api('stats').then(stats => {
@@ -307,6 +311,26 @@ root(isDark)
 	//background-image url('/assets/bg.jpg')
 	//background-position center
 	//background-size cover
+
+	> .banner
+		position absolute
+		top 0
+		left 0
+		width 100%
+		height 400px
+		background-position center
+		background-size cover
+		opacity 0.7
+
+		&:after
+			content ""
+			display block
+			position absolute
+			bottom 0
+			left 0
+			width 100%
+			height 100px
+			background linear-gradient(transparent, isDark ? #191b22 : #f7f7f7)
 
 	> .forkit
 		position absolute
