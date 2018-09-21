@@ -1060,9 +1060,9 @@ mobile/views/components/note-detail.vue:
   reply: "返す"
   reaction: "リアクション"
   reposted-by: "{}がRenote"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
-  location: "位置情報"
+  private: "この投稿は見せられへんわ"
+  deleted: "この投稿なんか無くなってもうたわ"
+  location: "ここおるで:"
 mobile/views/components/note-preview.vue:
   admin: "admin"
   bot: "bot"
@@ -1072,55 +1072,55 @@ mobile/views/components/note-sub.vue:
   bot: "bot"
   cat: "cat"
 mobile/views/components/notes.vue:
-  failed: "読み込みに失敗しました。"
-  retry: "リトライ"
+  failed: "あかん、読み込めへんわ"
+  retry: "もっぺん"
 mobile/views/components/notifications.vue:
-  more: "もっと見る"
-  empty: "ありません！"
+  more: "もっとあるやろ！"
+  empty: "あらへん！"
 mobile/views/components/post-form.vue:
-  add-visible-user: "ユーザーを追加"
+  add-visible-user: "ユーザー増やす"
   submit: "投稿"
-  reply: "返信"
+  reply: "返す"
   renote: "Renote"
-  quote-placeholder: "この投稿を引用... (オプション)"
+  quote-placeholder: "この投稿を持ってくる(オプション)"
   reply-placeholder: "この投稿への返信..."
   cw-placeholder: "内容への注釈 (オプション)"
   location-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
   error: "エラー"
   username-prompt: "ユーザー名を入力してや"
 mobile/views/components/sub-note-content.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "この投稿は見せられへんわ"
+  deleted: "この投稿なんか無くなってもうたわ"
   media-count: "{}つのメディア"
   poll: "アンケート"
 mobile/views/components/timeline.vue:
-  empty: "投稿がありません"
+  empty: "投稿はあらへん"
   load-more: "もっと"
 mobile/views/components/ui.header.vue:
-  welcome-back: "おかえりなさい、"
-  adjective: "さん"
+  welcome-back: "おかえり、"
+  adjective: "はん"
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
   messaging: "メッセージ"
-  follow-requests: "フォロー申請"
+  follow-requests: "フォロー許してくれや！言うてみる"
   search: "検索"
   drive: "ドライブ"
   favorites: "お気に入り"
   user-lists: "リスト"
   widgets: "ウィジェット"
   game: "ゲーム"
-  darkmode: "ダークモード"
+  darkmode: "ナイトゲームや"
   settings: "設定"
   admin: "管理"
-  about: "Misskeyについて"
+  about: "Misskeyってなんや？"
 mobile/views/components/user-timeline.vue:
-  no-notes: "このユーザーは投稿していないようです。"
-  no-notes-with-media: "メディア付き投稿はありません。"
+  no-notes: "このユーザーは投稿しとらんようや。"
+  no-notes-with-media: "メディア付き投稿はあらへん。"
   load-more: "もっと"
 mobile/views/components/users-list.vue:
   all: "すべて"
-  known: "知り合い"
+  known: "知っとる"
   load-more: "もっと"
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
@@ -1129,9 +1129,9 @@ mobile/views/pages/user-lists.vue:
   enter-list-name: "リスト名を入力してや"
 mobile/views/pages/drive.vue:
   drive: "ドライブ"
-  more: "もっと見る"
+  more: "もっとあるやろ！"
 mobile/views/pages/signup.vue:
-  lets-start: "📦 始めましょう"
+  lets-start: "📦 始めようや"
 mobile/views/pages/followers.vue:
   followers-of: "{}のフォロワー"
 mobile/views/pages/following.vue:
@@ -1141,7 +1141,7 @@ mobile/views/pages/home.vue:
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
-  mentions: "あなた宛て"
+  mentions: "あんた宛て"
   messages: "メッセージ"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿はあらへんで。"
@@ -1149,28 +1149,28 @@ mobile/views/pages/welcome.vue:
   signup: "新規登録"
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
-  add-widget: "追加"
+  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできんで。ウィジェットを移動するんやったら「三」をドラッグしてや。ウィジェットを削除するんやったら「x」をタップしてや。いくつかのウィジェットはタップしたったら表示を変更できるかも分からん、知らんけど。"
+  add-widget: "増やす"
   customization-tips: "カスタマイズのヒント"
 mobile/views/pages/widgets/activity.vue:
-  activity: "アクティビティ"
+  activity: "やっとること"
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "{}で「わけわけ」"
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
 mobile/views/pages/messaging-room.vue:
   messaging: "メッセージ"
 mobile/views/pages/received-follow-requests.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
+  title: "フォロー許してくれや！"
+  accept: "許す"
+  reject: "許さん"
 mobile/views/pages/note.vue:
   title: "投稿"
-  prev: "前の投稿"
-  next: "次の投稿"
+  prev: "前のやつ"
+  next: "次のやつ"
 mobile/views/pages/notifications.vue:
   notifications: "通知"
-  read-all: "すべての通知を既読にしますか？"
+  read-all: "通知全部読んだか？"
 mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/settings/settings.profile.vue:
@@ -1178,12 +1178,12 @@ mobile/views/pages/settings/settings.profile.vue:
   name: "名前"
   account: "アカウント"
   location: "場所"
-  description: "自己紹介"
+  description: "ワイのこと"
   birthday: "誕生日"
   avatar: "アイコン"
   banner: "バナー"
-  is-cat: "このアカウントはCatです"
-  is-locked: "フォローを承認制にする"
+  is-cat: "このアカウントはCatや"
+  is-locked: "他人のフォローは許してからや！"
   advanced: "その他"
   privacy: "プライバシー"
   save: "保存"
