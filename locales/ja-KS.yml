@@ -112,9 +112,9 @@ common:
   always-show-nsfw: "閲覧注意？見せたらあかん？そんなん知らんわ、見せろや！"
   always-mark-nsfw: "わからんからとりあえずメディアは見せたらあかん"
   show-full-acct: "ユーザー名のホストも出したる"
-  reduce-motion: "UIの動きを減らす"
+  reduce-motion: "UI、動き過ぎや、静かにしてや"
   this-setting-is-this-device-only: "このデバイスのみ"
-  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+  do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
@@ -157,7 +157,7 @@ common:
     hybrid: "ソーシャル"
     hashtag: "ハッシュタグ"
     global: "グローバル"
-    mentions: "あなた宛て"
+    mentions: "あんた宛て"
     direct: "ダイレクト投稿"
     notifications: "通知"
     list: "リスト"
@@ -262,11 +262,11 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
 common/views/components/media-banner.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
+  sensitive: "見せたらあかん"
+  click-to-show: "押してみ、見せたるわ"
 common/views/components/cw-button.vue:
-  hide: "隠す"
-  show: "もっと見る"
+  hide: "見せへんわ"
+  show: "もっとあるやろ！"
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あんさん"
@@ -303,7 +303,7 @@ common/views/components/note-menu.vue:
   pin: "ピン留め"
   delete: "ほかす"
   delete-confirm: "この投稿を削除してもええか？"
-  remote: "投稿元で見る"
+  remote: "投稿元に行ってみよか"
 common/views/components/poll.vue:
   vote-to: "「{}」に投票や！"
   vote-count: "{}票"
@@ -318,7 +318,7 @@ common/views/components/poll-editor.vue:
   add: "+選択肢を追加"
   destroy: "アンケートをほかそ"
 common/views/components/reaction-picker.vue:
-  choose-reaction: "リアクションを選択"
+  choose-reaction: "リアクション、どれにするんや？"
 common/views/components/signin.vue:
   username: "ユーザー名"
   password: "パスワード"
@@ -330,7 +330,7 @@ common/views/components/signin.vue:
   login-failed: "なんかログインできんかったわ。ユーザー名とパスワードとかを確認してや。"
 common/views/components/signup.vue:
   invitation-code: "招待コード"
-  invitation-info: "招待コードをお持ちでない方は、<a href=\"{}\">管理者</a>までご連絡ください。"
+  invitation-info: "招待コードをもっとらんのやったら、<a href=\"{}\">管理者</a>まで連絡してや。"
   username: "ユーザー名"
   checking: "確認中や…"
   available: "使えるで"
@@ -338,7 +338,7 @@ common/views/components/signup.vue:
   error: "通信あかんわ"
   invalid-format: "a~z、A~Z、0~9、_が使えるで"
   too-short: "1文字以上やで！"
-  too-long: "20文字以内でお願いします"
+  too-long: "20文字以内やで"
   password: "パスワード"
   password-placeholder: "8文字以上にしときや"
   weak-password: "へぼいパスワード"
@@ -352,8 +352,8 @@ common/views/components/signup.vue:
   create: "アカウント作成"
   some-error: "何かよう分からんけど、アカウントの作成に失敗してしもたわ。すまんがもっぺん試してくれへんか？"
 common/views/components/special-message.vue:
-  new-year: "Happy New Year!"
-  christmas: "Merry Christmas!"
+  new-year: "おおきに。今年もよろしゅう。"
+  christmas: "メリークリスマス！"
 common/views/components/stream-indicator.vue:
   connecting: "つないどるで"
   reconnecting: "つなぎ直すで"
@@ -370,19 +370,19 @@ common/views/components/uploader.vue:
 common/views/components/visibility-chooser.vue:
   public: "公開"
   home: "ホーム"
-  home-desc: "ホームタイムラインにのみ公開"
+  home-desc: "ホームタイムライン以外に見せんとって"
   followers: "フォロワー"
-  followers-desc: "自分のフォロワーにのみ公開"
+  followers-desc: "自分のフォロワー以外に見せんとって"
   specified: "ダイレクト"
-  specified-desc: "指定したユーザーにのみ公開"
+  specified-desc: "今から言うユーザー以外に見せんとってや"
   private: "非公開"
 common/views/components/trends.vue:
   count: "{}人が投稿"
-  empty: "トレンドなし"
+  empty: "流行は自分で作るんや"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
   no-broadcasts: "お知らせはあらへんで"
-  have-a-nice-day: "良い一日を！"
+  have-a-nice-day: "おおきに！"
   next: "次"
 common/views/widgets/calendar.vue:
   year: "{}年"
@@ -436,21 +436,21 @@ common/views/widgets/tips.vue:
   tips-line25: "対応ブラウザやったらMisskeyを開いとらんでも通知を受け取れんで"
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
-  following: "フォロー中"
+  following: "フォローしとる"
   follow: "フォロー"
-  request-pending: "フォロー許可待ち"
-  follow-request: "フォロー申請"
+  request-pending: "フォローの許し待っとる"
+  follow-request: "フォロー許してくれや！言うてみる"
 desktop:
-  banner-crop-title: "バナーとして表示する部分を選択"
+  banner-crop-title: "どこバナーとして出す？"
   banner: "バナー"
   uploading-banner: "新しいバナーをアップロードしとるで"
   banner-updated: "バナーを更新したで"
   choose-banner: "バナーにする画像選んでや"
   avatar-crop-title: "どこアバターとして出しとく？"
   avatar: "アバター"
-  uploading-avatar: "新しいアバターをアップロードしています"
-  avatar-updated: "アバターを更新しました"
-  choose-avatar: "アバターにする画像を選択"
+  uploading-avatar: "新しいアバターをアップロードしとるで"
+  avatar-updated: "アバターを更新したで"
+  choose-avatar: "アバターにする画像選んでや"
   invalid-filetype: "この形式のファイル無理やねん"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
@@ -459,7 +459,7 @@ desktop/views/components/activity.chart.vue:
   renotes: "Green ... Renotes"
 desktop/views/components/activity.vue:
   title: "アクティビティ"
-  toggle: "表示を切り替え"
+  toggle: "表示変える"
 desktop/views/components/calendar.vue:
   title: "{1}年 {2} 月"
   prev: "前の月"
@@ -474,10 +474,10 @@ desktop/views/components/charts.vue:
   drive: "ドライブ"
   network: "ネットワーク"
   charts:
-    notes: "投稿の増減 (統合)"
+    notes: "投稿の増減(統合)"
     local-notes: "投稿の増減 (ローカル)"
     remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の累計"
+    notes-total: "全部の投稿"
     users: "ユーザーの増減"
     users-total: "ユーザーの累計"
     drive: "ドライブ使用量の増減"
