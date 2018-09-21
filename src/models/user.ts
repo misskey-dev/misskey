@@ -59,17 +59,25 @@ User.findOne({
 
 // 後方互換性のため
 User.findOne({
-	balance: { $exists: false },
+	$or: [{
+		balance: { $exists: false },
+	}, {
+		balance: null
+	}],
 	host: null
 }).then(async x => {
 	if (x == null) return;
 
 	User.update({
-		balance: { $exists: false },
+		$or: [{
+			balance: { $exists: false },
+		}, {
+			balance: null
+		}],
 		host: null
 	}, {
 		$set: {
-			balance: config.initialBalance
+			balance: config.initialBalance || 0
 		}
 	}, {
 		multi: true
