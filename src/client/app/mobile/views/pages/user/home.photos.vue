@@ -4,7 +4,7 @@
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images"
 			class="img"
-			:style="`background-image: url(${image.media.url})`"
+			:style="`background-image: url(${image.media.thumbnailUrl})`"
 			:href="image.note | notePage"
 		></a>
 	</div>

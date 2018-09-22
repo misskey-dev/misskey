@@ -179,14 +179,14 @@ export default Vue.extend({
 
 root(isDark)
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+	box-shadow var(--shadow)
+	border-radius var(--round)
+	overflow hidden
 
 	> header
 		padding 0 8px
 		z-index 10
 		background isDark ? #313543 : #fff
-		border-radius 6px 6px 0 0
 		box-shadow 0 1px isDark ? rgba(#000, 0.15) : rgba(#000, 0.08)
 
 		> .buttons

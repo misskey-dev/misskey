@@ -4,7 +4,7 @@
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<div v-for="image in images" class="img"
-			:style="`background-image: url(${image.url})`"
+			:style="`background-image: url(${image.thumbnailUrl})`"
 		></div>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
@@ -41,8 +41,8 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 root(isDark)
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+	box-shadow var(--shadow)
+	border-radius var(--round)
 	overflow hidden
 
 	> .title

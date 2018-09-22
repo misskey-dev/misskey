@@ -1,4 +1,4 @@
-# Misskeyキーボードショートカットまとめ
+# キーボードショートカット
 
 ## グローバル
 これらのショートカットは基本的にどこでも使えます。
@@ -11,6 +11,7 @@
 		<tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
 		<tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>通知を表示/隠す</td><td><b>N</b>otifications</td></tr>
 		<tr><td><kbd class="key">A</kbd>, <kbd class="key">M</kbd></td><td>アカウントメニューを表示/隠す</td><td><b>A</b>ccount, <b>M</b>y, <b>M</b>e, <b>M</b>enu</td></tr>
+		<tr><td><kbd class="key">D</kbd></td><td>ダークモード切り替え</td><td><b>D</b>ark</td></tr>
 		<tr><td><kbd class="key">Z</kbd></td><td>上部のバーを隠す</td><td><b>Z</b>en</td></tr>
 		<tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>ヘルプを表示</td><td><b>H</b>elp</td></tr>
 	</tbody>

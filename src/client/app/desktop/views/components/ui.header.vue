@@ -1,5 +1,5 @@
 <template>
-<div class="header">
+<div class="header" :style="style">
 	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
 	<mk-special-message/>
 	<div class="main" ref="main">
@@ -54,8 +54,16 @@ export default Vue.extend({
 		};
 	},
 
+	computed: {
+		style(): any {
+			return {
+				'box-shadow': this.$store.state.settings.useShadow ? '0 0px 8px rgba(0, 0, 0, 0.2)' : 'none'
+			};
+		}
+	},
+
 	mounted() {
-		this.$store.commit('setUiHeaderHeight', 48);
+		this.$store.commit('setUiHeaderHeight', this.$el.offsetHeight);
 
 		if (this.$store.getters.isSignedIn) {
 			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
@@ -120,12 +128,10 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	position -webkit-sticky
-	position sticky
+	position fixed
 	top 0
 	z-index 1000
 	width 100%
-	box-shadow 0 1px 1px rgba(#000, 0.075)
 
 	> .warn
 		display block
