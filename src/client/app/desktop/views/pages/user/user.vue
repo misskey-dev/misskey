@@ -88,17 +88,16 @@ root(isDark)
 		margin-bottom 16px
 		padding 14px 16px
 		font-size 14px
-		border-radius 6px
+		box-shadow var(--shadow)
+		border-radius var(--round)
 
 		&.is-suspended
 			color isDark ? #ffb4b4 : #570808
 			background isDark ? #611d1d : #ffdbdb
-			border solid 1px isDark ? #d64a4a : #e09696
 
 		&.is-remote
 			color isDark ? #ffbd3e : #573c08
 			background isDark ? #42321c : #fff0db
-			border solid 1px isDark ? #90733c : #dcbb7b
 
 		> a
 			font-weight bold
@@ -118,7 +117,7 @@ root(isDark)
 			margin-right 16px
 
 			> .timeline
-				box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
+				box-shadow var(--shadow)
 
 		> .side
 			width 275px
@@ -137,7 +136,8 @@ root(isDark)
 				font-size 12px
 				color #aaa
 				background isDark ? #21242f : #fff
-				box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
+				box-shadow var(--shadow)
+				border-radius var(--round)
 
 				a
 					color #999

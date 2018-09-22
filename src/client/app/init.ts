@@ -125,6 +125,26 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			});
 			//#endregion
 
+			//#region shadow
+			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
+			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadow', shadow);
+			os.store.watch(s => {
+				return s.settings.useShadow;
+			}, v => {
+				document.documentElement.style.setProperty('--shadow', v ? shadow : 'none');
+			});
+			//#endregion
+
+			//#region rounded corners
+			const round = '6px';
+			if (os.store.state.settings.roundedCorners) document.documentElement.style.setProperty('--round', round);
+			os.store.watch(s => {
+				return s.settings.roundedCorners;
+			}, v => {
+				document.documentElement.style.setProperty('--round', v ? round : '0');
+			});
+			//#endregion
+
 			Vue.mixin({
 				data() {
 					return {

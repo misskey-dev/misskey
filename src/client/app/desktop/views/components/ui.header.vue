@@ -1,5 +1,5 @@
 <template>
-<div class="header">
+<div class="header" :style="style">
 	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
 	<mk-special-message/>
 	<div class="main" ref="main">
@@ -52,6 +52,14 @@ export default Vue.extend({
 		return {
 			env: env
 		};
+	},
+
+	computed: {
+		style(): any {
+			return {
+				'box-shadow': this.$store.state.settings.useShadow ? '0 0px 8px rgba(0, 0, 0, 0.2)' : 'none'
+			};
+		}
 	},
 
 	mounted() {
@@ -124,7 +132,6 @@ root(isDark)
 	top 0
 	z-index 1000
 	width 100%
-	box-shadow 0 0px 8px rgba(#000, 0.2)
 
 	> .warn
 		display block

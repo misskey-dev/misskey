@@ -231,7 +231,8 @@ root(isDark)
 	overflow hidden
 	text-align left
 	background isDark ? #282C37 : #fff
-	box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
+	box-shadow var(--shadow)
+	border-radius var(--round)
 
 	> .read-more
 		display block

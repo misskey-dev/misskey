@@ -16,6 +16,8 @@ const defaultSettings = {
 	showPostFormOnTopOfTl: false,
 	suggestRecentHashtags: true,
 	showClockOnHeader: true,
+	useShadow: true,
+	roundedCorners: false,
 	circleIcons: true,
 	contrastedAcct: true,
 	showFullAcct: false,

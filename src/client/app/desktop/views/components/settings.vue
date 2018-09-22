@@ -60,6 +60,8 @@
 				<button class="ui" @click="updateWallpaper">%i18n:@choose-wallpaper%</button>
 				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
+				<mk-switch v-model="useShadow" text="%i18n:@use-shadow%"/>
+				<mk-switch v-model="roundedCorners" text="%i18n:@rounded-corners%"/>
 				<mk-switch v-model="circleIcons" text="%i18n:@circle-icons%"/>
 				<mk-switch v-model="reduceMotion" text="%i18n:common.reduce-motion%"/>
 				<mk-switch v-model="contrastedAcct" text="%i18n:@contrasted-acct%"/>
@@ -314,6 +316,16 @@ export default Vue.extend({
 		alwaysShowNsfw: {
 			get() { return this.$store.state.device.alwaysShowNsfw; },
 			set(value) { this.$store.commit('device/set', { key: 'alwaysShowNsfw', value }); }
+		},
+
+		useShadow: {
+			get() { return this.$store.state.settings.useShadow; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'useShadow', value }); }
+		},
+
+		roundedCorners: {
+			get() { return this.$store.state.settings.roundedCorners; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'roundedCorners', value }); }
 		},
 
 		fetchOnScroll: {
