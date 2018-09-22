@@ -38,7 +38,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="main" :class="{ withBg: $store.state.i.wallpaperUrl != null }">
+	<div class="main">
 		<template v-if="customize">
 			<x-draggable v-for="place in ['left', 'right']"
 				:list="widgets[place]"
@@ -341,9 +341,6 @@ root(isDark)
 		justify-content center
 		margin 0 auto
 		max-width 1240px
-
-		&.withBg
-			background rgba(isDark ? #000 : #fff, 0.5)
 
 		> *
 			.customize-container

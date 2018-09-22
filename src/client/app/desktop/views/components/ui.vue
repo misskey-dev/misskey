@@ -1,5 +1,6 @@
 <template>
-<div class="mk-ui" :style="style" v-hotkey.global="keymap">
+<div class="mk-ui" v-hotkey.global="keymap">
+	<div class="bg" v-if="$store.getters.isSignedIn && $store.state.i.wallpaperUrl" :style="style"></div>
 	<x-header class="header" v-show="!zenMode"/>
 	<div class="content">
 		<slot></slot>
@@ -41,6 +42,16 @@ export default Vue.extend({
 		}
 	},
 
+	watch: {
+		'$store.state.uiHeaderHeight'() {
+			this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
+		}
+	},
+
+	mounted() {
+		this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
+	},
+
 	methods: {
 		post() {
 			(this as any).apis.post();
@@ -55,20 +66,22 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-ui
-	display flex
-	flex-direction column
-	flex 1
-	background-size cover
-	background-position center
-	background-attachment fixed
+	min-height 100vh
+	padding-top 48px
+
+	> .bg
+		position fixed
+		top 0
+		left 0
+		width 100%
+		height 100vh
+		background-size cover
+		background-position center
+		background-attachment fixed
+		opacity 0.3
 
 	> .header
 		@media (max-width 1000px)
 			display none
 
-	> .content
-		display flex
-		flex-direction column
-		flex 1
-		overflow hidden
 </style>

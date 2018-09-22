@@ -55,7 +55,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.$store.commit('setUiHeaderHeight', 48);
+		this.$store.commit('setUiHeaderHeight', this.$el.offsetHeight);
 
 		if (this.$store.getters.isSignedIn) {
 			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
@@ -120,8 +120,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	position -webkit-sticky
-	position sticky
+	position fixed
 	top 0
 	z-index 1000
 	width 100%
