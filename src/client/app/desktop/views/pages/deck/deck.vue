@@ -1,6 +1,6 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode" :style="style">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
@@ -35,6 +35,11 @@ export default Vue.extend({
 			if (this.$store.state.settings.deck == null) return [];
 			if (this.$store.state.settings.deck.layout == null) return this.$store.state.settings.deck.columns.map(c => [c.id]);
 			return this.$store.state.settings.deck.layout;
+		},
+		style(): any {
+			return {
+				height: `calc(100vh - ${this.$store.state.uiHeaderHeight}px)`
+			};
 		}
 	},
 

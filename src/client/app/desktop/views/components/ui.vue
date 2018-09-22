@@ -1,7 +1,7 @@
 <template>
 <div class="mk-ui" v-hotkey.global="keymap">
 	<div class="bg" v-if="$store.getters.isSignedIn && $store.state.i.wallpaperUrl" :style="style"></div>
-	<x-header class="header" v-show="!zenMode"/>
+	<x-header class="header" v-show="!zenMode" ref="header"/>
 	<div class="content">
 		<slot></slot>
 	</div>
@@ -59,6 +59,9 @@ export default Vue.extend({
 
 		toggleZenMode() {
 			this.zenMode = !this.zenMode;
+			this.$nextTick(() => {
+				this.$store.commit('setUiHeaderHeight', this.$refs.header.$el.offsetHeight);
+			});
 		}
 	}
 });
