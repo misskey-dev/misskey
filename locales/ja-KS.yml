@@ -691,6 +691,8 @@ desktop/views/components/settings.vue:
   choose-wallpaper: "壁紙選ぶ"
   delete-wallpaper: "壁紙ほかす"
   dark-mode: "夜にすんで"
+  use-shadow: "UIに影を使用"
+  rounded-corners: "UIの角を丸める"
   circle-icons: "アイコンもタコ焼きも丸いやんな？"
   contrasted-acct: "ユーザー名ようわからんし見やすしといて"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーション付ける"
