@@ -691,6 +691,8 @@ desktop/views/components/settings.vue:
   choose-wallpaper: "Elije un fondo"
   delete-wallpaper: "Suprimir fondo"
   dark-mode: "Modo Nocturno"
+  use-shadow: "UIに影を使用"
+  rounded-corners: "UIの角を丸める"
   circle-icons: "Usar iconos circulares"
   contrasted-acct: "ユーザー名にコントラストを付ける"
   gradient-window-header: "Usar degradados en las cabeceras de las páginas"
