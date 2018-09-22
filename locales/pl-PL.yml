@@ -691,6 +691,8 @@ desktop/views/components/settings.vue:
   choose-wallpaper: "Wybierz tło"
   delete-wallpaper: "Usuń tło"
   dark-mode: "Tryb ciemny"
+  use-shadow: "UIに影を使用"
+  rounded-corners: "UIの角を丸める"
   circle-icons: "Używaj okrągłych ikon"
   contrasted-acct: "ユーザー名にコントラストを付ける"
   gradient-window-header: "Używaj gradientów na pasku tytułu okna"
