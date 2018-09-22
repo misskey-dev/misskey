@@ -125,7 +125,7 @@ root(isDark)
 	top 0
 	z-index 1000
 	width 100%
-	box-shadow 0 1px 1px rgba(#000, 0.075)
+	box-shadow 0 0px 8px rgba(#000, 0.2)
 
 	> .warn
 		display block

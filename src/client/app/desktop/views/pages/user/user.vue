@@ -118,8 +118,7 @@ root(isDark)
 			margin-right 16px
 
 			> .timeline
-				border 1px solid rgba(#000, 0.075)
-				border-radius 6px
+				box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 		> .side
 			width 275px
@@ -138,8 +137,7 @@ root(isDark)
 				font-size 12px
 				color #aaa
 				background isDark ? #21242f : #fff
-				border solid 1px rgba(#000, 0.075)
-				border-radius 6px
+				box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 				a
 					color #999

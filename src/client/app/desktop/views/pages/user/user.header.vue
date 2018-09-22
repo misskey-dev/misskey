@@ -104,8 +104,7 @@ export default Vue.extend({
 
 root(isDark)
 	background isDark ? #282C37 : #fff
-	border 1px solid rgba(#000, 0.075)
-	border-radius 6px
+	box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 	overflow hidden
 
 	&[data-is-dark-background]
