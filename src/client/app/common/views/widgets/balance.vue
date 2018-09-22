@@ -19,6 +19,17 @@
 				<span class="credits">CREDITS</span>
 				<span class="x"><b>■</b><i>TEXT</i></span>
 			</div>
+			<div v-show="props.view == 1" class="b">
+				<div class="line"></div>
+				<div>
+					<b>{{ $store.state.i.balance | number }}</b>
+				</div>
+				<span class="credits">CREDITS</span>
+				<span class="x"><b>■</b><i>TEXT</i></span>
+			</div>
+			<div v-show="props.view == 2" class="c">
+				<p>text</p>
+			</div>
 		</div>
 	</mk-widget-container>
 </div>
@@ -35,7 +46,7 @@ export default define({
 }).extend({
 	methods: {
 		toggle() {
-			if (this.props.view == 3) {
+			if (this.props.view == 2) {
 				this.props.view = 0;
 			} else {
 				this.props.view++;
@@ -82,6 +93,44 @@ root(isDark)
 				> div
 					font-size 50%
 					opacity 0.5
+
+			> .credits
+				position absolute
+				bottom 0
+				left 0
+				font-size 12px
+				opacity 0.5
+
+			> .x
+				position absolute
+				bottom 0
+				right 0
+				font-size 12px
+
+				> b
+					color #0ff
+
+				> i
+					opacity 0.5
+
+		> div.b
+			> .line
+				position absolute
+				bottom 0
+				left 0
+				right 0
+				height 32px
+				width 1px
+				margin 0 auto
+				background #0ff
+
+			> div:not(.line)
+				padding 30px 0 42px 0
+				font-size 38px
+
+				> b
+					font-weight normal
+					border-bottom solid 1px #0ff
 
 			> .credits
 				position absolute
