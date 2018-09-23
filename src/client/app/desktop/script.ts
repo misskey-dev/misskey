@@ -87,10 +87,12 @@ init(async (launch) => {
 		updateBanner: updateBanner(os)
 	}));
 
-	/**
-	 * Fuck AD Block
-	 */
-	fuckAdBlock(os);
+	if (os.store.getters.isSignedIn) {
+		/**
+		 * Fuck AD Block
+		 */
+		fuckAdBlock(os);
+	}
 
 	/**
 	 * Init Notification
