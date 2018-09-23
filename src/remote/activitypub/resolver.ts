@@ -55,6 +55,8 @@ export default class Resolver {
 				Accept: 'application/activity+json, application/ld+json'
 			},
 			json: true
+		}).catch(e => {
+			throw new Error(`request error: ${e.message}`);
 		});
 
 		if (object === null || (
