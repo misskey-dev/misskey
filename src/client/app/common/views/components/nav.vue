@@ -2,6 +2,8 @@
 <span class="mk-nav">
 	<a :href="aboutUrl">%i18n:@about%</a>
 	<i>・</i>
+	<a href="/stats">%i18n:@stats%</a>
+	<i>・</i>
 	<a :href="repositoryUrl">%i18n:@repository%</a>
 	<i>・</i>
 	<a :href="feedbackUrl" target="_blank">%i18n:@feedback%</a>
