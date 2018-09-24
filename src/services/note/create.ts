@@ -118,6 +118,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		return rej();
 	}
 
+	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
+	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
+		return rej();
+	}
+
 	// リプライ対象が自分以外の非公開の投稿なら禁止
 	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
 		return rej();
