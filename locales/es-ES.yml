@@ -301,6 +301,7 @@ common/views/components/note-menu.vue:
   copy-link: "Copiar enlace"
   favorite: "Me gusta esta nota"
   pin: "Fijar en el perfil"
+  unpin: "ピン留め解除"
   delete: "Borrar"
   delete-confirm: "¿Seguro que quieres borrar la publicación?"
   remote: "Ver el original"
