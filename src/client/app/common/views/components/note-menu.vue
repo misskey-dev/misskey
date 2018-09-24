@@ -28,11 +28,19 @@ export default Vue.extend({
 			}];
 
 			if (this.note.userId == this.$store.state.i.id) {
-				items.push({
-					icon: '%fa:thumbtack%',
-					text: '%i18n:@pin%',
-					action: this.pin
-				});
+				if (this.$store.state.i.pinnedNoteIds.includes(this.note.id)) {
+					items.push({
+						icon: '%fa:thumbtack%',
+						text: '%i18n:@unpin%',
+						action: this.unpin
+					});
+				} else {
+					items.push({
+						icon: '%fa:thumbtack%',
+						text: '%i18n:@pin%',
+						action: this.pin
+					});
+				}
 			}
 
 			if (this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin) {
@@ -56,6 +64,7 @@ export default Vue.extend({
 			return items;
 		}
 	},
+
 	methods: {
 		detail() {
 			this.$router.push(`/notes/${ this.note.id }`);
@@ -67,6 +76,14 @@ export default Vue.extend({
 
 		pin() {
 			(this as any).api('i/pin', {
+				noteId: this.note.id
+			}).then(() => {
+				this.destroyDom();
+			});
+		},
+
+		unpin() {
+			(this as any).api('i/unpin', {
 				noteId: this.note.id
 			}).then(() => {
 				this.destroyDom();

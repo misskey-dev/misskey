@@ -7,7 +7,7 @@ import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		'ja-JP': '指定した投稿をピン留めします。'
+		'ja-JP': '指定した投稿のピン留めを解除します。'
 	},
 
 	requireCredential: true,
@@ -27,7 +27,7 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) return rej(psErr);
 
-	// Fetch pinee
+	// Fetch unpinee
 	const note = await Note.findOne({
 		_id: ps.noteId,
 		userId: user._id
@@ -37,17 +37,7 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		return rej('note not found');
 	}
 
-	const pinnedNoteIds = user.pinnedNoteIds || [];
-
-	if (pinnedNoteIds.length > 5) {
-		return rej('cannot pin more notes');
-	}
-
-	if (pinnedNoteIds.some(id => id.equals(note._id))) {
-		return rej('already exists');
-	}
-
-	pinnedNoteIds.unshift(note._id);
+	const pinnedNoteIds = (user.pinnedNoteIds || []).filter(id => !id.equals(note._id));
 
 	await User.update(user._id, {
 		$set: {
@@ -62,6 +52,6 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	// Send response
 	res(iObj);
 
-	// Send Add to followers
-	deliverPinnedChange(user._id, note._id, true);
+	// Send Remove to followers
+	deliverPinnedChange(user._id, note._id, false);
 });
