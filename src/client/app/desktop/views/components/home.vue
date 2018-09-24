@@ -360,8 +360,8 @@ root(isDark)
 
 			> .form
 				margin-bottom 16px
-				border solid 1px rgba(#000, 0.075)
-				border-radius 4px
+				box-shadow var(--shadow)
+				border-radius var(--round)
 
 			@media (max-width 700px)
 				padding 0
