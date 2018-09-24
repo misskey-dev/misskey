@@ -23,6 +23,7 @@
 			<x-hashtags/>
 		</div>
 		<div v-if="page == 'users'">
+			<x-set-balance/>
 			<x-suspend-user/>
 			<x-unsuspend-user/>
 			<x-verify-user/>
@@ -44,6 +45,7 @@ import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
 import XUnverifyUser from "./admin.unverify-user.vue";
 import XCharts from "../../components/charts.vue";
+import XSetBalance from "./admin.set-balance.vue";
 
 export default Vue.extend({
 	components: {
@@ -54,7 +56,8 @@ export default Vue.extend({
 		XUnsuspendUser,
 		XVerifyUser,
 		XUnverifyUser,
-		XCharts
+		XCharts,
+		XSetBalance
 	},
 	data() {
 		return {
