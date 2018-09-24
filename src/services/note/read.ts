@@ -20,10 +20,14 @@ export default (
 		: new mongo.ObjectID(note);
 
 	// Remove document
-	await NoteUnread.remove({
+	const res = await NoteUnread.remove({
 		userId: userId,
 		noteId: noteId
 	});
+
+	if (res.deletedCount == 0) {
+		return;
+	}
 
 	const count1 = await NoteUnread
 		.count({

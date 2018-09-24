@@ -10,6 +10,7 @@
 				<x-timeline class="timeline" ref="tl" :user="user"/>
 			</div>
 			<div class="side">
+				<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 				<x-profile :user="user"/>
 				<x-twitter :user="user" v-if="user.host === null && user.twitter"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
@@ -130,6 +131,10 @@ root(isDark)
 				text-align center
 				font-size 0.8em
 				color #aaa
+
+			> .instance
+				box-shadow var(--shadow)
+				border-radius var(--round)
 
 			> .nav
 				padding 16px

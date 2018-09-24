@@ -4,6 +4,7 @@ import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
+import read from '../../../../services/note/read';
 
 export const meta = {
 	desc: {
@@ -84,6 +85,8 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			limit: ps.limit,
 			sort: sort
 		});
+
+	mentions.forEach(note => read(user._id, note._id));
 
 	// Serialize
 	res(await Promise.all(mentions.map(mention => pack(mention, user))));
