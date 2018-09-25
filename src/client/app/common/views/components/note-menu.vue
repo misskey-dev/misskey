@@ -28,7 +28,7 @@ export default Vue.extend({
 			}];
 
 			if (this.note.userId == this.$store.state.i.id) {
-				if (this.$store.state.i.pinnedNoteIds.includes(this.note.id)) {
+				if ((this.$store.state.i.pinnedNoteIds || []).includes(this.note.id)) {
 					items.push({
 						icon: '%fa:thumbtack%',
 						text: '%i18n:@unpin%',
