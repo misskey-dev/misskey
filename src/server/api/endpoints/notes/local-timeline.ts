@@ -30,6 +30,13 @@ export const meta = {
 			}
 		}),
 
+		excludeNsfw: $.bool.optional.note({
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
+			}
+		}),
+
 		limit: $.num.optional.range(1, 100).note({
 			default: 10
 		}),
@@ -97,6 +104,12 @@ export default async (params: any, user: ILocalUser) => {
 		query['_files.contentType'] = {
 			$in: ps.fileType
 		};
+
+		if (ps.excludeNsfw) {
+			query['_files.metadata.isSensitive'] = {
+				$ne: true
+			};
+		}
 	}
 
 	if (ps.sinceId) {

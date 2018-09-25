@@ -111,6 +111,7 @@ export default Vue.extend({
 
 		(this as any).api('notes/local-timeline', {
 			fileType: image,
+			excludeNsfw: true,
 			limit: 6
 		}).then((notes: any[]) => {
 			const files = concat(notes.map((n: any): any[] => n.files));
