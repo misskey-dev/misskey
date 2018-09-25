@@ -265,8 +265,8 @@ common/views/components/media-banner.vue:
   sensitive: "見せたらあかん"
   click-to-show: "押してみ、見せたるわ"
 common/views/components/cw-button.vue:
-  hide: "見せへんわ"
-  show: "もっとあるやろ！"
+  hide: "もうええわ"
+  show: "見たいやろ？"
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あんさん"
@@ -301,7 +301,7 @@ common/views/components/note-menu.vue:
   copy-link: "リンクをコピー"
   favorite: "お気に入り"
   pin: "ピン留め"
-  unpin: "ピン留め解除"
+  unpin: "ピン留めやめる"
   delete: "ほかす"
   delete-confirm: "この投稿を削除してもええか？"
   remote: "投稿元に行ってみよか"
@@ -432,7 +432,7 @@ common/views/widgets/tips.vue:
   tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができんで"
   tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示してんねん"
   tips-line21: "APIをつこてbotの開発なども行えるで"
-  tips-line23: "まゆかわいいよまゆ"
+  tips-line23: "ウチのタコちゃんかわええやろ…今の突っ込むところや！"
   tips-line24: "Misskeyは2014年にサービスを開始したんよ"
   tips-line25: "対応ブラウザやったらMisskeyを開いとらんでも通知を受け取れんで"
 common/views/pages/follow.vue:
@@ -454,10 +454,10 @@ desktop:
   choose-avatar: "アバターにする画像選んでや"
   invalid-filetype: "この形式のファイル無理やねん"
 desktop/views/components/activity.chart.vue:
-  total: "Black ... Total"
-  notes: "Blue ... Notes"
-  replies: "Red ... Replies"
-  renotes: "Green ... Renotes"
+  total: "黒いの… 全部"
+  notes: "青いの… 投稿"
+  replies: "赤いの… 返信"
+  renotes: "みどり… Renotes"
 desktop/views/components/activity.vue:
   title: "アクティビティ"
   toggle: "表示変える"
@@ -589,7 +589,7 @@ desktop/views/components/home.vue:
   add: "増やす"
 desktop/views/input-dialog.vue:
   cancel: "やめとくわ"
-  ok: "決定"
+  ok: "これや！"
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
 desktop/views/components/messaging-window.vue:
@@ -692,8 +692,8 @@ desktop/views/components/settings.vue:
   choose-wallpaper: "壁紙選ぶ"
   delete-wallpaper: "壁紙ほかす"
   dark-mode: "夜にすんで"
-  use-shadow: "UIに影を使用"
-  rounded-corners: "UIの角を丸める"
+  use-shadow: "UIに影付けたる"
+  rounded-corners: "みんなまぁるくUI変更"
   circle-icons: "アイコンもタコ焼きも丸いやんな？"
   contrasted-acct: "ユーザー名ようわからんし見やすしといて"
   gradient-window-header: "ウィンドウのタイトルバーにグラデーション付ける"
@@ -1188,13 +1188,13 @@ mobile/views/pages/settings/settings.profile.vue:
   is-cat: "このアカウントはCatや"
   is-locked: "他人のフォローは許してからや！"
   advanced: "その他"
-  privacy: "プライバシー"
+  privacy: "プライバシー⇔オカンの年齢"
   save: "保存"
-  saved: "プロフィールを保存しました"
-  uploading: "アップロード中"
-  upload-failed: "アップロードに失敗しました"
+  saved: "プロフィールを保存したで"
+  uploading: "アップロードしとるで…"
+  upload-failed: "これアップロードでけへんわ"
 mobile/views/pages/search.vue:
-  search: "検索"
+  search: "探す"
   empty: "「{}」に関する投稿は見つかりませんでした。"
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
