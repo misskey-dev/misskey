@@ -177,6 +177,15 @@ export default Vue.extend({
 			this.visibility = this.reply.visibility;
 		}
 
+		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
+		if (this.reply && this.reply.visibility === 'specified') {
+			this.visibility = this.reply.visibility;
+
+			(this as any).api('users/show', {	userId: this.reply.userId }).then(user => {
+				this.visibleUsers.push(user);
+			});
+		}
+
 		this.focus();
 
 		this.$nextTick(() => {
