@@ -173,6 +173,10 @@ export default Vue.extend({
 			});
 		}
 
+		if (this.reply && ['home', 'followers'].includes(this.reply.visibility)) {
+			this.visibility = this.reply.visibility;
+		}
+
 		this.focus();
 
 		this.$nextTick(() => {

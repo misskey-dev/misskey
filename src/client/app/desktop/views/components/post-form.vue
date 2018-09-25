@@ -178,6 +178,10 @@ export default Vue.extend({
 			});
 		}
 
+		if (this.reply && ['home', 'followers'].includes(this.reply.visibility)) {
+			this.visibility = this.reply.visibility;
+		}
+
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
 			if (!this.instant) {
