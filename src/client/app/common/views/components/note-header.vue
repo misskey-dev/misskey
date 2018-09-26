@@ -110,7 +110,7 @@ root(isDark)
 		> .app
 			margin-right 8px
 			padding-right 8px
-			border-right solid 1px isDark ? #1c2023 : #eaeaea
+			border-right solid 1px var(--faceDivider)
 
 		> .visibility
 			margin-left 8px

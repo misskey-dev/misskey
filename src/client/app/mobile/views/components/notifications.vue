@@ -126,7 +126,7 @@ root(isDark)
 	> .notifications
 
 		> .mk-notification:not(:last-child)
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			border-bottom solid 1px var(--faceDivider)
 
 		> .date
 			display block
@@ -136,7 +136,7 @@ root(isDark)
 			font-size 0.8em
 			color isDark ? #666b79 : #aaa
 			background isDark ? #242731 : #fdfdfd
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			border-bottom solid 1px var(--faceDivider)
 
 			span
 				margin 0 16px

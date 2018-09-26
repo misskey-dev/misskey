@@ -323,7 +323,7 @@ root(isDark)
 	margin 0
 	padding 0
 	background var(--face)
-	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+	border-bottom solid 1px var(--faceDivider)
 
 	&[data-round]
 		&:first-child

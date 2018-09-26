@@ -10,6 +10,7 @@
 	"scrollbarHandleHover": "#535660",
 	"face": "#282c37",
 	"faceHeader": "#313543",
+	"faceDivider": "rgba(0, 0, 0, 0.3)",
 	"mobileSignedInAsBg": "#273c34",
 	"mobileSignedInAsFg": "#49ab63",
 	"mobileSignoutBg": "#652222",

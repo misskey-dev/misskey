@@ -245,7 +245,7 @@ root(isDark)
 			font-size 0.9em
 			color isDark ? #666b79 : #aaa
 			background isDark ? #242731 : #fdfdfd
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			border-bottom solid 1px var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -276,7 +276,7 @@ root(isDark)
 
 	> footer
 		text-align center
-		border-top solid 1px isDark ? #1c2023 : #eaeaea
+		border-top solid 1px var(--faceDivider)
 
 		&:empty
 			display none

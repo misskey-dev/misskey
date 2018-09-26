@@ -232,7 +232,7 @@ export default Vue.extend({
 
 root(isDark)
 	font-size 12px
-	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+	border-bottom solid 1px var(--faceDivider)
 
 	&:last-of-type
 		border-bottom none
