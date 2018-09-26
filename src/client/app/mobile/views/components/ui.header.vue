@@ -118,7 +118,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	$height = 48px
@@ -134,7 +134,7 @@ root(isDark)
 
 	> .indicator
 		height 3px
-		background $theme-color
+		background var(--primary)
 
 	> .warn
 		display block
@@ -216,7 +216,7 @@ root(isDark)
 				left 8px
 				pointer-events none
 				font-size 10px
-				color $theme-color
+				color var(--primary)
 
 			> button:last-child
 				display block

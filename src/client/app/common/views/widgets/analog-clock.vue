@@ -26,7 +26,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	.mkw-analog-clock--body

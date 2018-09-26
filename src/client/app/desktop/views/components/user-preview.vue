@@ -83,7 +83,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	position absolute
@@ -151,7 +151,7 @@ root(isDark)
 
 			> span
 				font-size 1em
-				color $theme-color
+				color var(--primary)
 
 	> .mk-follow-button
 		position absolute

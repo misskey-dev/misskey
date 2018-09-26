@@ -116,7 +116,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	&[data-special='on-new-years-day']
@@ -182,7 +182,7 @@ root(isDark)
 
 					> .val
 						height 4px
-						background $theme-color
+						background var(--primary)
 						transition width .3s cubic-bezier(0.23, 1, 0.32, 1)
 
 				&:nth-child(1)

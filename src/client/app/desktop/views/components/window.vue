@@ -463,7 +463,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display block
@@ -494,9 +494,9 @@ root(isDark)
 			&:not([data-is-modal])
 				> .body
 					if isDark
-						box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 12px 0 rgba(#000, 0.5)
+						box-shadow 0 0 0px 1px var(--primaryAlpha05), 0 2px 12px 0 rgba(#000, 0.5)
 					else
-						box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(#000, 0.2)
+						box-shadow 0 0 0px 1px var(--primaryAlpha05), 0 2px 6px 0 rgba(#000, 0.2)
 
 		> .handle
 			$size = 8px

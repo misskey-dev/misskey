@@ -27,7 +27,7 @@ body
 	z-index 65536
 
 	.bar
-		background $theme-color
+		background var(--primary)
 
 		position fixed
 		z-index 65537
@@ -44,7 +44,7 @@ body
 		right 0px
 		width 100px
 		height 100%
-		box-shadow 0 0 10px $theme-color, 0 0 5px $theme-color
+		box-shadow 0 0 10px var(--primary), 0 0 5px var(--primary)
 		opacity 1
 
 		transform rotate(3deg) translate(0px, -4px)
@@ -64,8 +64,8 @@ body
 		box-sizing border-box
 
 		border solid 2px transparent
-		border-top-color $theme-color
-		border-left-color $theme-color
+		border-top-color var(--primary)
+		border-left-color var(--primary)
 		border-radius 50%
 
 		animation progress-spinner 400ms linear infinite

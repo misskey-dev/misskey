@@ -117,7 +117,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	$bg-color = isDark ? #2c303c : #fff
@@ -182,13 +182,13 @@ root(isDark)
 			color isDark ? #d6dce2 : #111
 
 			&:hover
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 				text-decoration none
 
 			&:active
-				color $theme-color-foreground
-				background darken($theme-color, 10%)
+				color var(--primaryForeground)
+				background var(--primaryDarken10)
 
 		> div
 			margin 8px 0

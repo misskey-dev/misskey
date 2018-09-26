@@ -31,7 +31,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	$width = 240px
@@ -69,7 +69,7 @@ root(isDark)
 
 			&:active
 				> p, a
-					background $theme-color
+					background var(--primary)
 
 		> p, a
 			display block
@@ -90,14 +90,14 @@ root(isDark)
 		&:hover
 			> p, a
 				text-decoration none
-				background $theme-color
-				color $theme-color-foreground
+				background var(--primary)
+				color var(--primaryForeground)
 
 		&:active
 			> p, a
 				text-decoration none
-				background darken($theme-color, 10%)
-				color $theme-color-foreground
+				background var(--primaryDarken10)
+				color var(--primaryForeground)
 
 	li > ul
 		visibility hidden

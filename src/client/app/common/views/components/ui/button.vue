@@ -32,7 +32,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark, fill)
 	> button
@@ -49,23 +49,23 @@ root(isDark, fill)
 		box-shadow none
 
 		if fill
-			color $theme-color-foreground
-			background $theme-color
+			color var(--primaryForeground)
+			background var(--primary)
 
 			&:hover
-				background lighten($theme-color, 5%)
+				background var(--primaryLighten5)
 
 			&:active
-				background darken($theme-color, 5%)
+				background var(--primaryDarken5)
 		else
-			color $theme-color
+			color var(--primary)
 			background none
 
 			&:hover
-				color darken($theme-color, 5%)
+				color var(--primaryDarken5)
 
 			&:active
-				background rgba($theme-color, 0.3)
+				background var(--primaryAlpha03)
 
 .ui-button[data-darkmode]
 	&.fill

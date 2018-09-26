@@ -155,7 +155,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark, fill)
 	margin 32px 0
@@ -193,7 +193,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				height 2px
-				background $theme-color
+				background var(--primary)
 				opacity 0
 				transform scaleX(0.12)
 				transition border 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
@@ -325,7 +325,7 @@ root(isDark, fill)
 					transform scaleX(1)
 
 			> .label
-				color $theme-color
+				color var(--primary)
 
 	&.focused
 	&.filled

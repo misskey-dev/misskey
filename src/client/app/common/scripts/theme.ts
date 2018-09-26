@@ -1,3 +1,5 @@
+import * as tinycolor from 'tinycolor2';
+
 export default function(theme: { [key: string]: string }) {
 	const props = compile(theme);
 
@@ -10,56 +12,47 @@ export default function(theme: { [key: string]: string }) {
 }
 
 function compile(theme: { [key: string]: string }): { [key: string]: string } {
-	function getRgba(code: string): number[] {
+	function getColor(code: string): tinycolor.Instance {
 		// ref
 		if (code[0] == '@') {
-			return getRgba(theme[code.substr(1)]);
+			return getColor(theme[code.substr(1)]);
 		}
 
-		let m;
-
-		//#region #RGB
-		m = code.match(/^#([0-9a-f]{3})$/i);
-		if (m) {
-			return [
-				parseInt(m[1].charAt(0), 16) * 0x11,
-				parseInt(m[1].charAt(1), 16) * 0x11,
-				parseInt(m[1].charAt(2), 16) * 0x11,
-				255
-			];
-		}
-		//#endregion
-
-		//#region #RRGGBB
-		m = code.match(/^#([0-9a-f]{6})$/i);
-		if (m) {
-			return [
-				parseInt(m[1].substr(0, 2), 16),
-				parseInt(m[1].substr(2, 2), 16),
-				parseInt(m[1].substr(4, 2), 16),
-				255
-			];
-		}
-		//#endregion
-
-		return [0, 0, 0, 255];
+		return tinycolor(code);
 	}
 
 	const props = {};
 
 	Object.entries(theme).forEach(([k, v]) => {
 		if (k == 'meta') return;
-		const [r, g, b, a] = getRgba(v);
-		props[k] = genValue(r, g, b, a);
-		props[`${k}-r`] = r;
-		props[`${k}-g`] = g;
-		props[`${k}-b`] = b;
-		props[`${k}-a`] = a;
+		const c = getColor(v);
+		props[k] = genValue(c);
+		props[`${k}-r`] = c.toRgb().r;
+		props[`${k}-g`] = c.toRgb().g;
+		props[`${k}-b`] = c.toRgb().b;
+		props[`${k}-a`] = c.toRgb().a;
 	});
+
+	const primary = getColor(props['primary']);
+
+	for (let i = 1; i < 10; i++) {
+		const color = primary.clone().setAlpha(i / 10);
+		props['primaryAlpha0' + i] = genValue(color);
+	}
+
+	for (let i = 1; i < 100; i++) {
+		const color = primary.clone().lighten(i);
+		props['primaryLighten' + i] = genValue(color);
+	}
+
+	for (let i = 1; i < 100; i++) {
+		const color = primary.clone().darken(i);
+		props['primaryDarken' + i] = genValue(color);
+	}
 
 	return props;
 }
 
-function genValue(r: number, g: number, b: number, a: number): string {
-	return a != 255 ? `rgba(${r}, ${g}, ${b}, ${a})` : `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+function genValue(c: tinycolor.Instance): string {
+	return c.toRgbString();
 }

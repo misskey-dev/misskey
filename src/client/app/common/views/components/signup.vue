@@ -151,7 +151,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-signup
 	min-width 302px

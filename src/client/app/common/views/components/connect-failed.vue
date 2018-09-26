@@ -39,7 +39,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-connect-failed
 	width 100%
@@ -70,17 +70,17 @@ export default Vue.extend({
 		display block
 		margin 1em auto 0 auto
 		padding 8px 10px
-		color $theme-color-foreground
-		background $theme-color
+		color var(--primaryForeground)
+		background var(--primary)
 
 		&:focus
-			outline solid 3px rgba($theme-color, 0.3)
+			outline solid 3px var(--primaryAlpha03)
 
 		&:hover
-			background lighten($theme-color, 10%)
+			background var(--primaryLighten10)
 
 		&:active
-			background darken($theme-color, 10%)
+			background var(--primaryDarken10)
 
 	> .thanks
 		display block

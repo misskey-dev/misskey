@@ -59,10 +59,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
-	$me-balloon-color = $theme-color
+	$me-balloon-color = var(--primary)
 
 	padding 10px 12px 10px 12px
 	background-color transparent

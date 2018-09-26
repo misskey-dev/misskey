@@ -91,7 +91,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-dialog
 	> .bg
@@ -144,20 +144,20 @@ export default Vue.extend({
 					margin 0 0.375em
 
 				&:hover
-					color $theme-color
+					color var(--primary)
 
 				&:active
-					color darken($theme-color, 10%)
+					color var(--primaryDarken10)
 					transition color 0s ease
 
 </style>
 
 <style lang="stylus" module>
-@import '~const.styl'
+
 
 .header
 	margin 1em 0
-	color $theme-color
+	color var(--primary)
 	// color #43A4EC
 	font-weight bold
 

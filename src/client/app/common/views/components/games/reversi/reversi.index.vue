@@ -138,7 +138,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	> h1
@@ -200,7 +200,7 @@ root(isDark)
 			user-select none
 
 		&:focus
-			border-color $theme-color
+			border-color var(--primary)
 
 		&:hover
 			background isDark ? #313543 : #f5f5f5

@@ -3,6 +3,7 @@
 		"name": "Dark"
 	},
 	"primary": "#fb4e4e",
+	"primaryForeground": "#fff",
 	"bg": "#191B22",
 	"scrollbarTrack": "#282C37",
 	"scrollbarHandle": "#454954",

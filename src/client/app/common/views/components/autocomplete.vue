@@ -259,7 +259,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	position fixed
@@ -302,13 +302,13 @@ root(isDark)
 				background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.1)
 
 			&[data-selected='true']
-				background $theme-color
+				background var(--primary)
 
 				&, *
 					color #fff !important
 
 			&:active
-				background darken($theme-color, 10%)
+				background var(--primaryDarken10)
 
 				&, *
 					color #fff !important

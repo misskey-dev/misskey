@@ -228,7 +228,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	font-size 12px
@@ -395,8 +395,8 @@ root(isDark)
 							padding 0 4px
 							margin-left 4px
 							font-size 80%
-							color $theme-color-foreground
-							background $theme-color
+							color var(--primaryForeground)
+							background var(--primary)
 							border-radius 4px
 
 					.mk-url-preview
@@ -457,7 +457,7 @@ root(isDark)
 						color #999
 
 					&.reacted
-						color $theme-color
+						color var(--primary)
 
 .note[data-darkmode]
 	root(true)

@@ -324,7 +324,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	max-width 500px
@@ -376,8 +376,8 @@ root(isDark)
 					padding 0 16px
 					line-height 34px
 					vertical-align bottom
-					color $theme-color-foreground
-					background $theme-color
+					color var(--primaryForeground)
+					background var(--primary)
 					border-radius 4px
 
 					&:disabled

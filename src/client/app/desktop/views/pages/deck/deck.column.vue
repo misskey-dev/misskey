@@ -269,7 +269,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	$header-height = 42px
@@ -283,10 +283,10 @@ root(isDark)
 	overflow hidden
 
 	&.draghover
-		box-shadow 0 0 0 2px rgba($theme-color, 0.8)
+		box-shadow 0 0 0 2px var(--primaryAlpha08)
 
 	&.dragging
-		box-shadow 0 0 0 2px rgba($theme-color, 0.4)
+		box-shadow 0 0 0 2px var(--primaryAlpha04)
 
 	&.dropready
 		*
@@ -329,7 +329,7 @@ root(isDark)
 			pointer-events none
 
 		&.indicate
-			box-shadow 0 3px 0 0 $theme-color
+			box-shadow 0 3px 0 0 var(--primary)
 
 		> span
 			[data-fa]

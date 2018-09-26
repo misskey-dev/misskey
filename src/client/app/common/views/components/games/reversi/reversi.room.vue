@@ -252,7 +252,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	text-align center
@@ -288,7 +288,7 @@ root(isDark)
 
 						&:focus
 						&:active
-							border-color $theme-color
+							border-color var(--primary)
 
 				> div
 					> .random

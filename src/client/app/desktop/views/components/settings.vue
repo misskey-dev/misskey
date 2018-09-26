@@ -492,7 +492,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display flex
@@ -524,7 +524,7 @@ root(isDark)
 
 			&.active
 				margin-left 8px
-				color $theme-color !important
+				color var(--primary) !important
 
 	> .pages
 		width 100%

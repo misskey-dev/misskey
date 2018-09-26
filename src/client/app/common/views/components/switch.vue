@@ -85,7 +85,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display flex
@@ -102,21 +102,21 @@ root(isDark)
 
 	&.checked
 		> .button
-			background-color $theme-color
-			border-color $theme-color
+			background-color var(--primary)
+			border-color var(--primary)
 
 		> .label
 			> span
-				color $theme-color
+				color var(--primary)
 
 		&:hover
 			> .label
 				> span
-					color darken($theme-color, 10%)
+					color var(--primaryDarken10)
 
 			> .button
-				background darken($theme-color, 10%)
-				border-color darken($theme-color, 10%)
+				background var(--primaryDarken10)
+				border-color var(--primaryDarken10)
 
 	&:hover
 		> .label
@@ -144,7 +144,7 @@ root(isDark)
 				right -5px
 				bottom -5px
 				left -5px
-				border 2px solid rgba($theme-color, 0.3)
+				border 2px solid var(--primaryAlpha03)
 				border-radius 14px
 
 	> .button

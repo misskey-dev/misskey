@@ -154,7 +154,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	> .nav
@@ -215,8 +215,8 @@ root(isDark)
 					color isDark ? #cdd0d8 : #666
 
 					&[data-active]
-						color $theme-color-foreground
-						background $theme-color
+						color var(--primaryForeground)
+						background var(--primary)
 
 					&:not([data-active]):hover
 						background isDark ? #353e4a : #eee
@@ -224,7 +224,7 @@ root(isDark)
 					> .badge
 						margin-left 6px
 						font-size 10px
-						color $theme-color
+						color var(--primary)
 
 	> .tl
 		max-width 680px
@@ -246,7 +246,7 @@ main:not([data-darkmode])
 </style>
 
 <style lang="stylus" module>
-@import '~const.styl'
+
 
 .title
 	i
@@ -255,7 +255,7 @@ main:not([data-darkmode])
 .badge
 	margin-left 6px
 	font-size 10px
-	color $theme-color
+	color var(--primary)
 	vertical-align middle
 
 </style>

@@ -210,7 +210,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 $border-color = rgba(27, 31, 35, 0.15)
 
@@ -301,7 +301,7 @@ root(isDark)
 						right 0
 						bottom 0
 						left 0
-						border 2px solid rgba($theme-color, 0.3)
+						border 2px solid var(--primaryAlpha03)
 						border-radius 4px
 
 			> button
@@ -315,7 +315,7 @@ root(isDark)
 					background isDark ? #252731 : #eee
 
 				&:active
-					background $theme-color
+					background var(--primary)
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
 .mk-reaction-picker[data-darkmode]

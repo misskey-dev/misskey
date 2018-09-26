@@ -585,7 +585,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 
@@ -697,8 +697,8 @@ root(isDark)
 			z-index 128
 			top 0
 			left 0
-			border solid 1px $theme-color
-			background rgba($theme-color, 0.5)
+			border solid 1px var(--primary)
+			background var(--primaryAlpha05)
 			pointer-events none
 
 		> .contents
@@ -769,7 +769,7 @@ root(isDark)
 		top 38px
 		width 100%
 		height calc(100% - 38px)
-		border dashed 2px rgba($theme-color, 0.5)
+		border dashed 2px var(--primaryAlpha05)
 		pointer-events none
 
 	> .mk-uploader

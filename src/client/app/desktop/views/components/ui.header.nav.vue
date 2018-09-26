@@ -95,7 +95,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display inline-block
@@ -120,7 +120,7 @@ root(isDark)
 
 			&.active
 				> a
-					border-bottom solid 3px $theme-color
+					border-bottom solid 3px var(--primary)
 
 			> a
 				display inline-block
@@ -147,7 +147,7 @@ root(isDark)
 				> [data-fa]:last-child
 					margin-left 5px
 					font-size 10px
-					color $theme-color
+					color var(--primary)
 
 					@media (max-width 1100px)
 						margin-left -5px

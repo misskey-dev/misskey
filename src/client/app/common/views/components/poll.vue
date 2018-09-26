@@ -67,7 +67,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 
@@ -99,7 +99,7 @@ root(isDark)
 				top 0
 				left 0
 				height 100%
-				background $theme-color
+				background var(--primary)
 				transition width 1s ease
 
 			> span

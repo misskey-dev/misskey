@@ -247,7 +247,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display block
@@ -292,15 +292,15 @@ root(isDark)
 			padding 0 16px
 			line-height 48px
 			text-decoration none
-			color $theme-color-foreground
-			background $theme-color
+			color var(--primaryForeground)
+			background var(--primary)
 			transition background 0.1s ease
 
 			&:hover
-				background lighten($theme-color, 10%)
+				background var(--primaryLighten10)
 
 			&:active
-				background darken($theme-color, 10%)
+				background var(--primaryDarken10)
 				transition background 0s ease
 
 			> [data-fa]

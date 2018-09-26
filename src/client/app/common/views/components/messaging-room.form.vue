@@ -195,7 +195,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	> textarea
@@ -234,10 +234,10 @@ root(isDark)
 		transition color 0.1s ease
 
 		&:hover
-			color $theme-color
+			color var(--primary)
 
 		&:active
-			color darken($theme-color, 10%)
+			color var(--primaryDarken10)
 			transition color 0s ease
 
 	.files
@@ -293,10 +293,10 @@ root(isDark)
 		transition color 0.1s ease
 
 		&:hover
-			color $theme-color
+			color var(--primary)
 
 		&:active
-			color darken($theme-color, 10%)
+			color var(--primaryDarken10)
 			transition color 0s ease
 
 	input[type=file]

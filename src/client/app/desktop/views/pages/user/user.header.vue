@@ -100,7 +100,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	background isDark ? #282C37 : #fff
@@ -208,7 +208,7 @@ root(isDark)
 					margin-right 4px
 					font-size 1rem
 					font-weight bold
-					color $theme-color
+					color var(--primary)
 
 .header[data-darkmode]
 	root(true)

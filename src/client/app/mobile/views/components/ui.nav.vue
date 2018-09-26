@@ -121,7 +121,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	$color = isDark ? #c9d2e0 : #777
@@ -198,11 +198,11 @@ root(isDark)
 				text-decoration none
 
 				&[data-active]
-					color $theme-color-foreground
-					background $theme-color
+					color var(--primaryForeground)
+					background var(--primary)
 
 					> [data-fa]:last-child
-						color $theme-color-foreground
+						color var(--primaryForeground)
 
 				> [data-fa]:first-child
 					margin-right 0.5em
@@ -212,7 +212,7 @@ root(isDark)
 				> [data-fa].circle
 					margin-left 6px
 					font-size 10px
-					color $theme-color
+					color var(--primary)
 
 				> [data-fa]:last-child
 					position absolute

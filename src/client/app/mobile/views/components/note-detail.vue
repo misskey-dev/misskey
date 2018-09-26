@@ -223,7 +223,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	overflow hidden
@@ -422,7 +422,7 @@ root(isDark)
 					color #999
 
 				&.reacted
-					color $theme-color
+					color var(--primary)
 
 	> .replies
 		> *

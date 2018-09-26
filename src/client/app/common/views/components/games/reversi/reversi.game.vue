@@ -304,7 +304,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	text-align center
@@ -399,14 +399,14 @@ root(isDark)
 							cursor pointer
 
 							&:hover
-								border-color darken($theme-color, 10%)
-								background $theme-color
+								border-color var(--primaryDarken10)
+								background var(--primary)
 
 							&:active
-								background darken($theme-color, 10%)
+								background var(--primaryDarken10)
 
 					&.prev
-						box-shadow 0 0 0 4px rgba($theme-color, 0.7)
+						box-shadow 0 0 0 4px var(--primaryAlpha07)
 
 					&.isEnded
 						border-color isDark ? #6a767f : #ddd

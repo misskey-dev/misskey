@@ -115,7 +115,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	$bg = isDark ? #22252f : #f7f7f7
@@ -275,8 +275,8 @@ root(isDark)
 
 				&[data-active]
 					font-weight bold
-					color $theme-color
-					border-color $theme-color
+					color var(--primary)
+					border-color var(--primary)
 
 	> .body
 		max-width 680px

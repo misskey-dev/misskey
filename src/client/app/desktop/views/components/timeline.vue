@@ -175,7 +175,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	background isDark ? #282C37 : #fff
@@ -207,7 +207,7 @@ root(isDark)
 					top -4px
 					right 4px
 					font-size 10px
-					color $theme-color
+					color var(--primary)
 
 				&:hover
 					color isDark ? #b2c1d5 : #aaa
@@ -216,7 +216,7 @@ root(isDark)
 					color isDark ? #b2c1d5 : #999
 
 				&[data-active]
-					color $theme-color
+					color var(--primary)
 					cursor default
 
 					&:before
@@ -227,7 +227,7 @@ root(isDark)
 						left 0
 						width 100%
 						height 2px
-						background $theme-color
+						background var(--primary)
 
 		> span
 			display inline-block
@@ -237,7 +237,7 @@ root(isDark)
 			user-select none
 
 			&[data-active]
-				color $theme-color
+				color var(--primary)
 				cursor default
 				font-weight bold
 
@@ -249,7 +249,7 @@ root(isDark)
 					left -8px
 					width calc(100% + 16px)
 					height 2px
-					background $theme-color
+					background var(--primary)
 
 			&:not([data-active])
 				color isDark ? #9aa2a7 : #6f7477

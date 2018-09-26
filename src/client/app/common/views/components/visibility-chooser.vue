@@ -127,7 +127,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 $border-color = rgba(27, 31, 35, 0.15)
 
@@ -199,8 +199,8 @@ root(isDark)
 				background isDark ? #21242b : #ddd
 
 			&.active
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 
 			> *
 				user-select none

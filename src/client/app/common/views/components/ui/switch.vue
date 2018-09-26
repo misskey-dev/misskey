@@ -56,7 +56,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display flex
@@ -79,11 +79,11 @@ root(isDark)
 
 	&.checked
 		> .button
-			background-color rgba($theme-color, 0.4)
-			border-color rgba($theme-color, 0.4)
+			background-color var(--primaryAlpha04)
+			border-color var(--primaryAlpha04)
 
 			> *
-				background-color $theme-color
+				background-color var(--primary)
 				transform translateX(14px)
 
 	> input

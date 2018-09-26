@@ -262,7 +262,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display flex
@@ -386,15 +386,15 @@ root(isDark)
 				cursor pointer
 				line-height 32px
 				font-size 12px
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 				border-radius 16px
 
 				&:hover
-					background lighten($theme-color, 10%)
+					background var(--primaryLighten10)
 
 				&:active
-					background darken($theme-color, 10%)
+					background var(--primaryDarken10)
 
 				> [data-fa]
 					position absolute

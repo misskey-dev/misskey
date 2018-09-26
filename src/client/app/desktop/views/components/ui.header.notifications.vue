@@ -61,7 +61,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 
@@ -93,7 +93,7 @@ root(isDark)
 			margin-left -5px
 			vertical-align super
 			font-size 10px
-			color $theme-color
+			color var(--primary)
 
 	> .pop
 		$bgcolor = isDark ? #282c37 : #fff

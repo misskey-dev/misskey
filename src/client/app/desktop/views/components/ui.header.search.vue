@@ -28,7 +28,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 root(isDark)
 	> [data-fa]
 		display block
@@ -67,7 +67,7 @@ root(isDark)
 			background isDark ? rgba(#fff, 0.04) : rgba(#000, 0.08)
 
 		&:focus
-			box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important
+			box-shadow 0 0 0 2px var(--primaryAlpha05) !important
 
 .search[data-darkmode]
 	root(true)

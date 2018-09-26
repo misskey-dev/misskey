@@ -57,7 +57,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 
@@ -66,7 +66,7 @@ root(isDark)
 
 	> footer
 		height 72px
-		background isDark ? #313543 : lighten($theme-color, 95%)
+		background isDark ? #313543 : var(--primaryLighten95)
 
 		> .quote
 			position absolute

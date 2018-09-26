@@ -303,7 +303,7 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display flex
@@ -385,7 +385,7 @@ root(isDark)
 			> .main
 				grid-row 1
 				grid-column 1 / 3
-				border-top solid 5px $theme-color
+				border-top solid 5px var(--primary)
 
 				> div
 					padding 32px
@@ -426,7 +426,7 @@ root(isDark)
 							cursor pointer
 
 							&:hover
-								color $theme-color
+								color var(--primary)
 
 					> .char
 						display block

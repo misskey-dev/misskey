@@ -317,7 +317,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	margin 0
@@ -348,7 +348,7 @@ root(isDark)
 			right 2px
 			bottom 2px
 			left 2px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 4px
 
 	> .renote
@@ -557,7 +557,7 @@ root(isDark)
 		padding 0 4px
 		margin-left 4px
 		font-size 80%
-		color $theme-color-foreground
-		background $theme-color
+		color var(--primaryForeground)
+		background var(--primary)
 		border-radius 4px
 </style>

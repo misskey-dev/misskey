@@ -167,7 +167,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 
@@ -252,8 +252,8 @@ root(isDark)
 					transition border 0.2s ease
 
 				&:focus
-					color darken($theme-color, 20%)
-					border solid 1px $theme-color
+					color var(--primaryDarken20)
+					border solid 1px var(--primary)
 					transition color 0, border 0
 
 		> .result
@@ -287,7 +287,7 @@ root(isDark)
 					&:hover
 					&:focus
 						color #fff
-						background $theme-color
+						background var(--primary)
 
 						.name
 							color #fff
@@ -297,7 +297,7 @@ root(isDark)
 
 					&:active
 						color #fff
-						background darken($theme-color, 10%)
+						background var(--primaryDarken10)
 
 						.name
 							color #fff

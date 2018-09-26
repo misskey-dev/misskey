@@ -63,7 +63,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display block
@@ -150,7 +150,7 @@ root(isDark)
 					color #bf4633
 
 	&[data-is-selected]
-		background $theme-color
+		background var(--primary)
 
 		&, *
 			color #fff !important

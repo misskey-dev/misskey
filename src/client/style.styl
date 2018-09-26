@@ -1,10 +1,8 @@
 @charset 'utf-8'
 
-@import "./const"
-
 /*
 	::selection
-		background $theme-color
+		background var(--primary)
 		color #fff
 */
 
@@ -24,10 +22,8 @@ html, body
 
 a
 	text-decoration none
-	color $theme-color
+	color var(--primary)
 	cursor pointer
-	tap-highlight-color rgba($theme-color, 0.7) !important
-	-webkit-tap-highlight-color rgba($theme-color, 0.7) !important
 
 	&:hover
 		text-decoration underline
@@ -35,3 +31,9 @@ a
 	*
 		cursor pointer
 
+@css {
+	a {
+		tap-highlight-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.7) !important;
+		-webkit-tap-highlight-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.7) !important;
+	}
+}

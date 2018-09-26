@@ -214,12 +214,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	padding 8px
 	height 64px
-	background isDark ? rgba($theme-color, 0.2) : lighten($theme-color, 95%)
+	background isDark ? var(--primaryAlpha02) : var(--primaryLighten95)
 	border-radius 4px
 
 	&, *
@@ -229,10 +229,10 @@ root(isDark)
 		pointer-events none
 
 	&:hover
-		background isDark ? rgba(lighten($theme-color, 10%), 0.2) : lighten($theme-color, 90%)
+		//background isDark ? rgba(var(--primaryLighten10), 0.2) : var(--primaryLighten90)
 
 	&:active
-		background isDark ? rgba(darken($theme-color, 10%), 0.2) : lighten($theme-color, 85%)
+		//background isDark ? rgba(var(--primaryDarken10), 0.2) : var(--primaryLighten85)
 
 	&[data-is-contextmenu-showing]
 	&[data-draghover]
@@ -244,16 +244,16 @@ root(isDark)
 			right -4px
 			bottom -4px
 			left -4px
-			border 2px dashed rgba($theme-color, 0.3)
+			border 2px dashed var(--primaryAlpha03)
 			border-radius 4px
 
 	&[data-draghover]
-		background isDark ? rgba(darken($theme-color, 10%), 0.2) : lighten($theme-color, 90%)
+		//background isDark ? rgba(var(--primaryDarken10), 0.2) : var(--primaryLighten90)
 
 	> .name
 		margin 0
 		font-size 0.9em
-		color isDark ? #fff : darken($theme-color, 30%)
+		color isDark ? #fff : var(--primaryDarken30)
 
 		> [data-fa]
 			margin-right 4px

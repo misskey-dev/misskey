@@ -49,7 +49,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display inline-flex
@@ -70,15 +70,15 @@ root(isDark)
 
 	&.checked
 		> .button
-			border-color $theme-color
+			border-color var(--primary)
 
 			&:after
-				background-color $theme-color
+				background-color var(--primary)
 				transform scale(1)
 				opacity 1
 
 		> .label
-			color $theme-color
+			color var(--primary)
 
 	> input
 		position absolute

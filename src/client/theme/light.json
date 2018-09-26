@@ -3,6 +3,7 @@
 		"name": "Light"
 	},
 	"primary": "#fb4e4e",
+	"primaryForeground": "#fff",
 	"bg": "#f7f7f7",
 	"scrollbarTrack": "#fff",
 	"scrollbarHandle": "#00000033",

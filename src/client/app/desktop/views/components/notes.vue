@@ -216,7 +216,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	.transition
@@ -250,7 +250,7 @@ root(isDark)
 		position sticky
 		z-index 100
 		height 3px
-		background $theme-color
+		background var(--primary)
 
 	> footer
 		> button

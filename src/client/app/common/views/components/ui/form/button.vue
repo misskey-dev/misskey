@@ -25,7 +25,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	display inline-block
@@ -50,30 +50,30 @@ root(isDark)
 
 		&:hover
 		&:focus
-			color $theme-color
-			background rgba($theme-color, isDark ? 0.2 : 0.12)
-			border-color rgba($theme-color, isDark ? 0.5 : 0.3)
+			color var(--primary)
+			//background rgba(var(--primary-r), var(--primary-g), var(--primary-b), isDark ? 0.2 : 0.12)
+			//border-color rgba(var(--primary-r), var(--primary-g), var(--primary-b), isDark ? 0.5 : 0.3)
 
 		&:active
-			color darken($theme-color, 20%)
-			background rgba($theme-color, 0.12)
-			border-color $theme-color
+			color var(--primaryDarken20)
+			//background rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.12)
+			border-color var(--primary)
 			transition all 0s
 
 	&.primary
 		> button
-			border 1px solid $theme-color
-			background $theme-color
-			color $theme-color-foreground
+			border 1px solid var(--primary)
+			background var(--primary)
+			color var(--primaryForeground)
 
 			&:hover
 			&:focus
-				background lighten($theme-color, 20%)
-				border-color lighten($theme-color, 20%)
+				background var(--primaryLighten20)
+				border-color var(--primaryLighten20)
 
 			&:active
-				background darken($theme-color, 20%)
-				border-color darken($theme-color, 20%)
+				background var(--primaryDarken20)
+				border-color var(--primaryDarken20)
 				transition all 0s
 
 	&.round

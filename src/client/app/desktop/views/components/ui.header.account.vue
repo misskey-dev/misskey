@@ -127,7 +127,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 root(isDark)
 	> .header
@@ -249,8 +249,8 @@ root(isDark)
 							padding 2px 8px
 							font-size 90%
 							font-style normal
-							background $theme-color
-							color $theme-color-foreground
+							background var(--primary)
+							color var(--primaryForeground)
 							border-radius 8px
 
 					> [data-fa]:first-child
@@ -269,11 +269,11 @@ root(isDark)
 
 					&:hover, &:active
 						text-decoration none
-						background $theme-color
-						color $theme-color-foreground
+						background var(--primary)
+						color var(--primaryForeground)
 
 					&:active
-						background darken($theme-color, 10%)
+						background var(--primaryDarken10)
 
 					&.signout
 						$color = #e64137
