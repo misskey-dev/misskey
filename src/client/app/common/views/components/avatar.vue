@@ -58,6 +58,9 @@ export default Vue.extend({
 			};
 		}
 	},
+	mounted() {
+		this.$el.style.color = `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`;
+	},
 	methods: {
 		onClick(e) {
 			this.$emit('click', e);
@@ -67,8 +70,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-root(isDark)
+.mk-avatar
 	display inline-block
 	vertical-align bottom
 
@@ -79,7 +81,7 @@ root(isDark)
 	&.cat::before,
 	&.cat::after
 		background #df548f
-		border solid 4px isDark ? #e0eefd : #202224
+		border solid 4px currentColor
 		box-sizing border-box
 		content ''
 		display inline-block
@@ -105,9 +107,4 @@ root(isDark)
 		transition border-radius 1s ease
 		z-index 1
 
-.mk-avatar[data-darkmode]
-	root(true)
-
-.mk-avatar:not([data-darkmode])
-	root(false)
 </style>
