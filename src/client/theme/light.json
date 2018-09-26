@@ -9,5 +9,7 @@
 	"scrollbarHandle": "#00000033",
 	"scrollbarHandleHover": "#00000066",
 	"face": "#fff",
-	"faceHeader": "#fff"
+	"faceHeader": "#fff",
+	"mobileSignedInAsBg": "#fcfff5",
+	"mobileSignedInAsFg": "#2c662d"
 }
