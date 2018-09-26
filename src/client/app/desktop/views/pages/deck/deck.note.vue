@@ -314,19 +314,6 @@ root(isDark)
 					> .text
 						margin-right 8px
 
-					> .toggle
-						display inline-block
-						padding 4px 8px
-						font-size 0.7em
-						color isDark ? #393f4f : #fff
-						background isDark ? #687390 : #b1b9c1
-						border-radius 2px
-						cursor pointer
-						user-select none
-
-						&:hover
-							background isDark ? #707b97 : #bbc4ce
-
 				> .content
 
 					> .text
