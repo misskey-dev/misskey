@@ -14,6 +14,8 @@
 	"faceDivider": "rgba(0, 0, 0, 0.082)",
 	"popupBg": "#fff",
 	"popupFg": "#586069",
+	"renoteGradient": "#edfde2",
+	"renoteText": "#9dbb00",
 	"modalBackdrop": "rgba(0, 0, 0, 0.1)",
 	"dateDividerBg": "#fdfdfd",
 	"dateDividerFg": "#aaa",

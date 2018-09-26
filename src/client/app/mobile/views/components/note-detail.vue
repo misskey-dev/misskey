@@ -266,8 +266,8 @@ root(isDark)
 			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 
 	> .renote
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		> p
 			margin 0

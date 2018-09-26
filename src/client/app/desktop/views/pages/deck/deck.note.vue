@@ -246,8 +246,8 @@ root(isDark)
 		padding 8px 16px 0 16px
 		line-height 28px
 		white-space pre
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		.avatar
 			flex-shrink 0
