@@ -8,12 +8,18 @@ import VueRouter from 'vue-router';
 import * as TreeView from 'vue-json-tree-view';
 import VAnimateCss from 'v-animate-css';
 import VModal from 'vue-js-modal';
-import VueHotkey from './common/hotkey';
 
+import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './mios';
 import { version, codename, lang } from './config';
+import applyTheme from './common/scripts/theme';
+const defaultTheme = require('../theme/light.json');
+
+if (localStorage.getItem('theme') == null) {
+	applyTheme(defaultTheme);
+}
 
 Vue.use(Vuex);
 Vue.use(VueRouter);

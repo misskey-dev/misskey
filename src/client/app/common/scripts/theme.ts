@@ -5,6 +5,8 @@ export default function(theme: { [key: string]: string }) {
 		if (k == 'meta') return;
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	});
+
+	localStorage.setItem('theme', JSON.stringify(props));
 }
 
 function compile(theme: { [key: string]: string }): { [key: string]: string } {
@@ -17,24 +19,24 @@ function compile(theme: { [key: string]: string }): { [key: string]: string } {
 		let m;
 
 		//#region #RGB
-		m = code.match(/^#([0-9a-f]{3})$/i)[1];
+		m = code.match(/^#([0-9a-f]{3})$/i);
 		if (m) {
 			return [
-				parseInt(m.charAt(0), 16) * 0x11,
-				parseInt(m.charAt(1), 16) * 0x11,
-				parseInt(m.charAt(2), 16) * 0x11,
+				parseInt(m[1].charAt(0), 16) * 0x11,
+				parseInt(m[1].charAt(1), 16) * 0x11,
+				parseInt(m[1].charAt(2), 16) * 0x11,
 				255
 			];
 		}
 		//#endregion
 
 		//#region #RRGGBB
-		m = code.match(/^#([0-9a-f]{6})$/i)[1];
+		m = code.match(/^#([0-9a-f]{6})$/i);
 		if (m) {
 			return [
-				parseInt(m.substr(0, 2), 16),
-				parseInt(m.substr(2, 2), 16),
-				parseInt(m.substr(4, 2), 16),
+				parseInt(m[1].substr(0, 2), 16),
+				parseInt(m[1].substr(2, 2), 16),
+				parseInt(m[1].substr(4, 2), 16),
 				255
 			];
 		}

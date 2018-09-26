@@ -6,7 +6,7 @@
 import Vue from 'vue';
 import { url, lang } from './config';
 import applyTheme from './common/scripts/theme';
-import darkTheme from '../theme/dark.json';
+const darkTheme = require('../theme/dark');
 
 export default Vue.extend({
 	computed: {
