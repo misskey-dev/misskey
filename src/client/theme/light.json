@@ -11,5 +11,7 @@
 	"face": "#fff",
 	"faceHeader": "#fff",
 	"mobileSignedInAsBg": "#fcfff5",
-	"mobileSignedInAsFg": "#2c662d"
+	"mobileSignedInAsFg": "#2c662d",
+	"mobileSignoutBg": "#fff6f5",
+	"mobileSignoutFg": "#cc2727"
 }

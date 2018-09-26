@@ -339,8 +339,8 @@ root(isDark)
 		margin 16px
 		padding 16px
 		text-align center
-		color isDark ? #ff5f56 : #cc2727
-		background isDark ? #652222 : #fff6f5
+		color var(--mobileSignedInAsFg)
+		background var(--mobileSignedInAsBg)
 		box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
 
 	> footer
