@@ -14,8 +14,12 @@
 	"faceDivider": "rgba(0, 0, 0, 0.082)",
 	"popupBg": "#fff",
 	"popupFg": "#586069",
-	"reactionPickerButtonHoverBg": "#eee",
 	"modalBackdrop": "rgba(0, 0, 0, 0.1)",
+
+	"autocompleteItemHoverBg": "rgba(0, 0, 0, 0.1)",
+	"autocompleteItemText": "rgba(0, 0, 0, 0.8)",
+	"autocompleteItemTextSub": "rgba(0, 0, 0, 0.3)",
+	"reactionPickerButtonHoverBg": "#eee",
 	"desktopHeaderBg": "#f7f7f7",
 	"mobileSignedInAsBg": "#fcfff5",
 	"mobileSignedInAsFg": "#2c662d",
