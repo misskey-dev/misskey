@@ -7,13 +7,15 @@ import Vue from 'vue';
 import { url, lang } from './config';
 import applyTheme from './common/scripts/theme';
 const darkTheme = require('../theme/dark');
+const halloweenTheme = require('../theme/halloween');
 
 export default Vue.extend({
 	computed: {
 		keymap(): any {
 			return {
 				'h|slash': this.help,
-				'd': this.dark
+				'd': this.dark,
+				'x': this.test
 			};
 		}
 	},
@@ -25,6 +27,10 @@ export default Vue.extend({
 
 		dark() {
 			applyTheme(darkTheme);
+		},
+
+		test() {
+			applyTheme(halloweenTheme);
 		}
 	}
 });

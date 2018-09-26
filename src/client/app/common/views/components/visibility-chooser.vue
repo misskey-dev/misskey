@@ -145,7 +145,7 @@ root(isDark)
 		opacity 0
 
 	> .popover
-		$bgcolor = isDark ? #2c303c : #fff
+		$bgcolor = var(--popupBg)
 		position absolute
 		z-index 10001
 		width 240px

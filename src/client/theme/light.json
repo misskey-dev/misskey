@@ -1,5 +1,6 @@
 {
 	"meta": {
+		"id": "406cfea3-a4e7-486c-9057-30ede1353c3f",
 		"name": "Light"
 	},
 	"primary": "#fb4e4e",
@@ -11,6 +12,11 @@
 	"face": "#fff",
 	"faceHeader": "#fff",
 	"faceDivider": "rgba(0, 0, 0, 0.082)",
+	"popupBg": "#fff",
+	"popupFg": "#586069",
+	"reactionPickerButtonHoverBg": "#eee",
+	"modalBackdrop": "rgba(0, 0, 0, 0.1)",
+	"desktopHeaderBg": "#f7f7f7",
 	"mobileSignedInAsBg": "#fcfff5",
 	"mobileSignedInAsFg": "#2c662d",
 	"mobileSignoutBg": "#fff6f5",

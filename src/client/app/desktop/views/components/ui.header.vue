@@ -151,7 +151,7 @@ root(isDark)
 			z-index 1000
 			width 100%
 			height 48px
-			background isDark ? #313543 : #f7f7f7
+			background var(--desktopHeaderBg)
 
 		> .main
 			z-index 1001

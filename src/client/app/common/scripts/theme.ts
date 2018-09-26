@@ -1,6 +1,23 @@
 import * as tinycolor from 'tinycolor2';
+const lightTheme = require('../../../theme/light');
+const darkTheme = require('../../../theme/dark');
 
-export default function(theme: { [key: string]: string }) {
+type Theme = {
+	meta: {
+		id: string;
+		name: string;
+		inherit: string;
+	};
+} & {
+	[key: string]: string;
+};
+
+export default function(theme: Theme) {
+	if (theme.meta.inherit) {
+		const inherit = [lightTheme, darkTheme].find(x => x.meta.id == theme.meta.inherit);
+		theme = Object.assign({}, inherit, theme);
+	}
+
 	const props = compile(theme);
 
 	Object.entries(props).forEach(([k, v]) => {
@@ -11,7 +28,7 @@ export default function(theme: { [key: string]: string }) {
 	localStorage.setItem('theme', JSON.stringify(props));
 }
 
-function compile(theme: { [key: string]: string }): { [key: string]: string } {
+function compile(theme: Theme): { [key: string]: string } {
 	function getColor(code: string): tinycolor.Instance {
 		// ref
 		if (code[0] == '@') {

@@ -280,7 +280,7 @@ root(isDark)
 		width 100%
 		height 48px
 		color isDark ? #fff : #000
-		background isDark ? #313543 : #f7f7f7
+		background var(--desktopHeaderBg)
 		box-shadow 0 1px 1px rgba(#000, 0.075)
 
 		> a
