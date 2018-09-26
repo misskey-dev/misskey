@@ -322,7 +322,7 @@ export default Vue.extend({
 root(isDark)
 	margin 0
 	padding 0
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 	&[data-round]

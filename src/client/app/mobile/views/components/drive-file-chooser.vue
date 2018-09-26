@@ -59,7 +59,7 @@ root(isDark)
 	> .body
 		width 100%
 		height 100%
-		background isDark ? #282c37 : #fff
+		background var(--face)
 
 		> header
 			border-bottom solid 1px isDark ? #1b1f29 : #eee

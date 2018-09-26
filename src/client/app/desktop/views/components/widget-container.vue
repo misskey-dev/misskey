@@ -35,7 +35,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
 	overflow hidden
@@ -45,7 +45,7 @@ root(isDark)
 		box-shadow none !important
 
 	> header
-		background isDark ? #313543 : #fff
+		background var(--faceHeader)
 
 		> .title
 			z-index 1

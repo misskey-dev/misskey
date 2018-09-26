@@ -596,7 +596,7 @@ root(isDark)
 		overflow auto
 		font-size 0.9em
 		color isDark ? #d2d9dc : #555
-		background isDark ? #282c37 : #fff
+		background var(--face)
 		box-shadow 0 1px 0 rgba(#000, 0.05)
 
 		&, *

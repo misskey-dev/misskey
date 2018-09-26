@@ -116,7 +116,7 @@ root(isDark)
 	text-align center
 	color isDark ? #9baec8 : #868c8c
 
-	$bg = isDark ? #282C37 : #fff
+	$bg = var(--face)
 
 	@media (max-width 400px)
 		padding 16px

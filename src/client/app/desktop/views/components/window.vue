@@ -562,7 +562,7 @@ root(isDark)
 		> .body
 			height 100%
 			overflow hidden
-			background isDark ? #282C37 : #fff
+			background var(--face)
 			border-radius 6px
 
 			if isDark
@@ -578,7 +578,7 @@ root(isDark)
 				overflow hidden
 				white-space nowrap
 				cursor move
-				background isDark ? #313543 : #fff
+				background var(--faceHeader)
 				border-radius 6px 6px 0 0
 				box-shadow 0 1px 0 rgba(#000, 0.1)
 

@@ -32,7 +32,7 @@ root(isDark)
 	width 150px
 	//height 120px
 	font-size 12px
-	background isDark ? #282c37 : #fff
+	background var(--face)
 	border-radius 4px
 
 	> a

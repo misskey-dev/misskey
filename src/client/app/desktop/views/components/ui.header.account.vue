@@ -177,7 +177,7 @@ root(isDark)
 			transition filter 100ms ease
 
 	> .menu
-		$bgcolor = isDark ? #282c37 : #fff
+		$bgcolor = var(--face)
 		display block
 		position absolute
 		top 56px

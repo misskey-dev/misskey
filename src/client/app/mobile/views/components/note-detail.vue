@@ -229,7 +229,7 @@ root(isDark)
 	overflow hidden
 	width 100%
 	text-align left
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-radius 8px
 	box-shadow 0 0 2px rgba(#000, 0.1)
 

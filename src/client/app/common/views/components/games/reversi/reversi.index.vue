@@ -190,7 +190,7 @@ root(isDark)
 		margin 8px 0
 		padding 8px
 		color isDark ? #fff : #677f84
-		background isDark ? #282c37 : #fff
+		background var(--face)
 		box-shadow 0 2px 16px rgba(#000, isDark ? 0.7 : 0.15)
 		border-radius 6px
 		cursor pointer
@@ -222,7 +222,7 @@ root(isDark)
 		margin 8px 0
 		padding 8px
 		color isDark ? #fff : #677f84
-		background isDark ? #282c37 : #fff
+		background var(--face)
 		box-shadow 0 2px 16px rgba(#000, isDark ? 0.7 : 0.15)
 		border-radius 6px
 		cursor pointer

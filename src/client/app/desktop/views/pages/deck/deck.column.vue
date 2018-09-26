@@ -277,7 +277,7 @@ root(isDark)
 	width 330px
 	min-width 330px
 	height 100%
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-radius 6px
 	//box-shadow 0 2px 16px rgba(#000, 0.1)
 	overflow hidden
@@ -318,7 +318,7 @@ root(isDark)
 		padding 0 16px
 		font-size 14px
 		color isDark ? #e3e5e8 : #888
-		background isDark ? #313543 : #fff
+		background var(--faceHeader)
 		box-shadow 0 1px rgba(#000, 0.15)
 		cursor pointer
 

@@ -25,7 +25,7 @@ export default Vue.extend({
 root(isDark)
 	margin 16px
 	color isDark ? #fff : #000
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
 
 	> header

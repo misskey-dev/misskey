@@ -329,7 +329,7 @@ root(isDark)
 		> a
 			display block
 			text-decoration none
-			background isDark ? #282c37 : #fff
+			background var(--face)
 			border-bottom solid 1px isDark ? #1c2023 : #eee
 
 			*

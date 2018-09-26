@@ -7,5 +7,7 @@
 	"bg": "#f7f7f7",
 	"scrollbarTrack": "#fff",
 	"scrollbarHandle": "#00000033",
-	"scrollbarHandleHover": "#00000066"
+	"scrollbarHandleHover": "#00000066",
+	"face": "#fff",
+	"faceHeader": "#fff"
 }

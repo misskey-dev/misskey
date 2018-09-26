@@ -355,7 +355,7 @@ root(isDark)
 
 		.block
 			color isDark ? #fff : #444
-			background isDark ? #282C37 : #fff
+			background var(--face)
 			box-shadow var(--shadow)
 			//border-radius 8px
 			overflow auto
@@ -364,7 +364,7 @@ root(isDark)
 				z-index 1
 				padding 0 16px
 				line-height 48px
-				background isDark ? #313543 : #fff
+				background var(--faceHeader)
 
 				if !isDark
 					box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)

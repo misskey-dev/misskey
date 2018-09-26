@@ -21,7 +21,7 @@ root(isDark)
 		padding 16px
 		font-size 12px
 		color isDark ? #9aa4b3 : #aaa
-		background isDark ? #282c37 : #fff
+		background var(--face)
 
 		a
 			color isDark ? #9aa4b3 : #999

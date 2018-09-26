@@ -31,7 +31,7 @@ export default define({
 
 <style lang="stylus" scoped>
 root(isDark)
-	background isDark ? #282c37 : #fff
+	background var(--face)
 	border solid 1px isDark ? #c3831c : #ead8bb
 	border-radius 6px
 

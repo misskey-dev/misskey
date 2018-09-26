@@ -474,7 +474,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	background isDark ? #282c37 : #fff
+	background var(--face)
 
 	> nav
 		display block
@@ -490,7 +490,7 @@ root(isDark)
 		color rgba(isDark ? #fff : #000, 0.67)
 		-webkit-backdrop-filter blur(12px)
 		backdrop-filter blur(12px)
-		background-color rgba(isDark ? #313543 : #fff, 0.75)
+		//background-color rgba(var(--faceHeader), 0.75)
 		border-bottom solid 1px rgba(#000, 0.13)
 
 		> p

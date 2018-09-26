@@ -90,7 +90,7 @@ root(isDark)
 	z-index 2048
 	margin-top -8px
 	width 250px
-	background isDark ? #282c37 : #fff
+	background var(--face)
 	background-clip content-box
 	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
@@ -111,7 +111,7 @@ root(isDark)
 		z-index 2
 		width 58px
 		height 58px
-		border solid 3px isDark ? #282c37 : #fff
+		border solid 3px var(--face)
 		border-radius 8px
 
 	> .title

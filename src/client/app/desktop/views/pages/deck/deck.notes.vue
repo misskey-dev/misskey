@@ -232,7 +232,7 @@ root(isDark)
 			width 100%
 			text-align center
 			color #ccc
-			background isDark ? #282C37 : #fff
+			background var(--face)
 			border-top solid 1px isDark ? #1c2023 : #eaeaea
 			border-bottom-left-radius 6px
 			border-bottom-right-radius 6px

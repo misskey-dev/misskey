@@ -100,7 +100,7 @@ root(isDark)
 		left 16px
 		width 58px
 		height 58px
-		border solid 3px isDark ? #282c37 : #fff
+		border solid 3px var(--face)
 		border-radius 8px
 		cursor pointer
 

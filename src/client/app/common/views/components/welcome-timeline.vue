@@ -91,7 +91,7 @@ export default Vue.extend({
 	transform translateY(-30px)
 
 root(isDark)
-	background isDark ? #282C37 : #fff
+	background var(--face)
 
 	> div
 		> *

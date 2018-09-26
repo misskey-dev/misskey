@@ -45,7 +45,7 @@ root(isDark)
 			font-size 15px
 			font-weight normal
 			color isDark ? #b8c5cc : #465258
-			background isDark ? #282c37 : #fff
+			background var(--face)
 			border-radius 8px 8px 0 0
 
 			> [data-fa]

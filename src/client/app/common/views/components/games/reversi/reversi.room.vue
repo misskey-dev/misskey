@@ -273,7 +273,7 @@ root(isDark)
 					> select
 						width 100%
 						padding 12px 14px
-						background isDark ? #282C37 : #fff
+						background var(--face)
 						border 1px solid isDark ? #6a707d : #dcdfe6
 						border-radius 4px
 						color isDark ? #fff : #606266
@@ -331,7 +331,7 @@ root(isDark)
 		.card
 			max-width 400px
 			border-radius 4px
-			background isDark ? #282C37 : #fff
+			background var(--face)
 			color isDark ? #fff : #303133
 			box-shadow 0 2px 12px 0 rgba(#000, isDark ? 0.7 : 0.1)
 

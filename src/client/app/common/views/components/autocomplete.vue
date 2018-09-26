@@ -267,7 +267,7 @@ root(isDark)
 	max-width 100%
 	margin-top calc(1em + 8px)
 	overflow hidden
-	background isDark ? #313543 : #fff
+	background var(--faceHeader)
 	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
 	transition top 0.1s ease, left 0.1s ease

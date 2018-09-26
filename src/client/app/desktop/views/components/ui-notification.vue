@@ -47,7 +47,7 @@ root(isDark)
 	padding 128px 0 0 0
 	width 500px
 	color rgba(isDark ? #fff : #000, 0.6)
-	background rgba(isDark ? #282C37 : #fff, 0.9)
+	//background rgba(var(--face), 0.9)
 	border-radius 0 0 8px 8px
 	box-shadow 0 2px 4px rgba(#000, isDark ? 0.4 : 0.2)
 	transform translateY(-64px)

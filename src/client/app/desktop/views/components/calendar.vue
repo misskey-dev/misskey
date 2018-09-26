@@ -132,7 +132,7 @@ export default Vue.extend({
 
 root(isDark)
 	color isDark ? #c5ced6 : #777
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
 	overflow hidden

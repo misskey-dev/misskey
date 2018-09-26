@@ -369,7 +369,7 @@ root(isDark)
 		max-width 600px
 		margin 0 auto
 		padding 0
-		background rgba(isDark ? #282c37 : #fff, 0.95)
+		//background rgba(var(--face), 0.95)
 		background-clip content-box
 
 		> .new-message
