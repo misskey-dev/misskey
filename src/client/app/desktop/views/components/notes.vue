@@ -216,9 +216,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-notes
 	.transition
 		.mk-notes-enter
 		.mk-notes-leave-to
@@ -235,8 +233,8 @@ root(isDark)
 			line-height 32px
 			font-size 14px
 			text-align center
-			color isDark ? #666b79 : #aaa
-			background isDark ? #242731 : #fdfdfd
+			color var(--dateDividerFg)
+			background var(--dateDividerBg)
 			border-bottom solid 1px var(--faceDivider)
 
 			span
@@ -266,15 +264,9 @@ root(isDark)
 			border-bottom-right-radius 6px
 
 			&:hover
-				background isDark ? #2e3440 : #f5f5f5
+				background var(--footerButtonHover)
 
 			&:active
-				background isDark ? #21242b : #eee
-
-.mk-notes[data-darkmode]
-	root(true)
-
-.mk-notes:not([data-darkmode])
-	root(false)
+				background var(--footerButtonActive)
 
 </style>
