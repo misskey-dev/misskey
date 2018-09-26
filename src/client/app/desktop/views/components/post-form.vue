@@ -178,14 +178,13 @@ export default Vue.extend({
 			});
 		}
 
-		if (this.reply && ['home', 'followers'].includes(this.reply.visibility)) {
+		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
+		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 		}
 
 		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
 		if (this.reply && this.reply.visibility === 'specified') {
-			this.visibility = this.reply.visibility;
-
 			(this as any).api('users/show', {	userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
