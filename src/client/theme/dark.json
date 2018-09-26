@@ -1,0 +1,10 @@
+{
+	"meta": {
+		"name": "Dark"
+	},
+	"primary": "#fb4e4e",
+	"bg": "#191B22",
+	"scrollbarTrack": "#282C37",
+	"scrollbarHandle": "#454954",
+	"scrollbarHandleHover": "#535660"
+}

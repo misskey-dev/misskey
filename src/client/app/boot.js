@@ -20,6 +20,16 @@
 
 	const langs = LANGS;
 
+	//#region Apply theme
+	const theme = localStorage.getItem('theme');
+	if (theme) {
+		Object.entries(JSON.parse(theme)).forEach(([k, v]) => {
+			if (k == 'meta') return;
+			document.documentElement.style.setProperty(`--${k}`, v.toString());
+		});
+	}
+	//#endregion
+
 	//#region Load settings
 	let settings = null;
 	const vuex = localStorage.getItem('vuex');
@@ -82,13 +92,6 @@
 	// Switch desktop or mobile version
 	if (app == null) {
 		app = isMobile ? 'mobile' : 'desktop';
-	}
-
-	// Dark/Light
-	if (settings) {
-		if (settings.device.darkmode) {
-			document.documentElement.setAttribute('data-darkmode', 'true');
-		}
 	}
 
 	// Script version

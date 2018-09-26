@@ -1,0 +1,10 @@
+{
+	"meta": {
+		"name": "Light"
+	},
+	"primary": "#fb4e4e",
+	"bg": "#f7f7f7",
+	"scrollbarTrack": "#fff",
+	"scrollbarHandle": "#00000033",
+	"scrollbarHandleHover": "#00000066"
+}

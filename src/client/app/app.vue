@@ -5,6 +5,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { url, lang } from './config';
+import applyTheme from './common/scripts/theme';
+import darkTheme from '../theme/dark.json';
 
 export default Vue.extend({
 	computed: {
@@ -22,10 +24,7 @@ export default Vue.extend({
 		},
 
 		dark() {
-			this.$store.commit('device/set', {
-				key: 'darkmode',
-				value: !this.$store.state.device.darkmode
-			});
+			applyTheme(darkTheme);
 		}
 	}
 });

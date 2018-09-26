@@ -86,45 +86,6 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
 			os.apis = api ? api(os) : null;
 
-			//#region Dark/Light
-			Vue.mixin({
-				data() {
-					return {
-						_unwatchDarkmode_: null
-					};
-				},
-				mounted() {
-					const apply = v => {
-						if (this.$el.setAttribute == null) return;
-						if (v) {
-							this.$el.setAttribute('data-darkmode', 'true');
-						} else {
-							this.$el.removeAttribute('data-darkmode');
-						}
-					};
-
-					apply(os.store.state.device.darkmode);
-
-					this._unwatchDarkmode_ = os.store.watch(s => {
-						return s.device.darkmode;
-					}, apply);
-				},
-				beforeDestroy() {
-					this._unwatchDarkmode_();
-				}
-			});
-
-			os.store.watch(s => {
-				return s.device.darkmode;
-			}, v => {
-				if (v) {
-					document.documentElement.setAttribute('data-darkmode', 'true');
-				} else {
-					document.documentElement.removeAttribute('data-darkmode');
-				}
-			});
-			//#endregion
-
 			//#region shadow
 			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
 			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadow', shadow);

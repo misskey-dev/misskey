@@ -11,34 +11,21 @@
 
 html
 	height 100%
-	background #f7f7f7
+	background var(--bg)
 
 	&, *
 		&::-webkit-scrollbar
 			width 6px
 			height 6px
 
+		&::-webkit-scrollbar-track
+			background var(--scrollbarTrack)
+
 		&::-webkit-scrollbar-thumb
-			background rgba(0, 0, 0, 0.2)
+			background var(--scrollbarHandle)
 
 			&:hover
-				background rgba(0, 0, 0, 0.4)
+				background var(--scrollbarHandleHover)
 
 			&:active
-				background $theme-color
-
-	&[data-darkmode]
-		background #191B22
-
-		&, *
-			&::-webkit-scrollbar-track
-				background-color #282C37
-
-			&::-webkit-scrollbar-thumb
-				background-color #454954
-
-				&:hover
-					background-color #535660
-
-				&:active
-					background-color $theme-color
+				background var(--primary)
