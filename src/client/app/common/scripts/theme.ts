@@ -62,10 +62,6 @@ function compile(theme: Theme): { [key: string]: string } {
 		if (k == 'meta') return;
 		const c = getColor(v);
 		props[k] = genValue(c);
-		props[`${k}-r`] = c.toRgb().r;
-		props[`${k}-g`] = c.toRgb().g;
-		props[`${k}-b`] = c.toRgb().b;
-		props[`${k}-a`] = c.toRgb().a;
 	});
 
 	const primary = getColor(props['primary']);
