@@ -486,9 +486,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-settings
 	display flex
 	width 100%
 	height 100%
@@ -499,13 +497,13 @@ root(isDark)
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		border-right solid 1px isDark ? #1c2023 : #ddd
+		border-right solid 1px var(--faceDivider)
 
 		> p
 			display block
 			padding 10px 16px
 			margin 0
-			color isDark ? #9aa2a7 : #666
+			color var(--desktopSettingsNavItem)
 			cursor pointer
 			user-select none
 			transition margin-left 0.2s ease
@@ -514,7 +512,7 @@ root(isDark)
 				margin-right 4px
 
 			&:hover
-				color isDark ? #fff : #555
+				color var(--desktopSettingsNavItemHover)
 
 			&.active
 				margin-left 8px
@@ -528,14 +526,13 @@ root(isDark)
 
 		> section
 			margin 32px
-			color isDark ? #c4ccd2 : #4a535a
+			color var(--text)
 
 			> h1
 				margin 0 0 1em 0
 				padding 0 0 8px 0
 				font-size 1em
-				color isDark ? #e3e7ea : #555
-				border-bottom solid 1px isDark ? #1c2023 : #eee
+				border-bottom solid 1px var(--faceDivider)
 
 			&, >>> *
 				.ui.button.block
@@ -548,18 +545,12 @@ root(isDark)
 						margin 0 0 1em 0
 						padding 0 0 8px 0
 						font-size 1em
-						color isDark ? #e3e7ea : #555
-						border-bottom solid 1px isDark ? #1c2023 : #eee
+						color var(--text)
+						border-bottom solid 1px var(--faceDivider)
 
 		> .web
 			> .div
-				border-bottom solid 1px isDark ? #1c2023 : #eee
+				border-bottom solid 1px var(--faceDivider)
 				margin 16px 0
-
-.mk-settings[data-darkmode]
-	root(true)
-
-.mk-settings:not([data-darkmode])
-	root(false)
 
 </style>

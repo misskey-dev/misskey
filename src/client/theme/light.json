@@ -5,12 +5,14 @@
 		"author": "syuilo",
 		"vars": {
 			"primary": "#fb4e4e",
-			"secondary": "#fff"
+			"secondary": "#fff",
+			"text": "#666"
 		}
 	},
 	"primary": "$primary",
 	"primaryForeground": "#fff",
 	"bg": ":darken<8<$secondary",
+	"text": "$text",
 	"scrollbarTrack": "#fff",
 	"scrollbarHandle": "#00000033",
 	"scrollbarHandleHover": "#00000066",
@@ -99,6 +101,9 @@
 	"desktopTimelineSrc": "#6f7477",
 	"desktopTimelineSrcHover": "#525a5f",
 	"desktopWindowTitle": "#666",
+	"desktopSettingsNavItem": ":alpha<0.8<$text",
+	"desktopSettingsNavItemHover": ":darken<10<$text",
+
 	"mobileSignedInAsBg": "#fcfff5",
 	"mobileSignedInAsFg": "#2c662d",
 	"mobileSignoutBg": "#fff6f5",

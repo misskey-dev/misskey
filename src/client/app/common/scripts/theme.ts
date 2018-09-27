@@ -43,12 +43,13 @@ function compile(theme: Theme): { [key: string]: string } {
 		if (code[0] == ':') {
 			const parts = code.split('<');
 			const func = parts.shift().substr(1);
-			const arg = parseInt(parts.shift(), 10);
+			const arg = parseFloat(parts.shift());
 			const color = getColor(parts.join('<'));
 
 			switch (func) {
 				case 'darken': return color.darken(arg);
 				case 'lighten': return color.lighten(arg);
+				case 'alpha': return color.setAlpha(arg);
 			}
 		}
 
