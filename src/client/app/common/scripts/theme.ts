@@ -7,6 +7,7 @@ type Theme = {
 		id: string;
 		name: string;
 		inherit: string;
+		vars: any;
 	};
 } & {
 	[key: string]: string;
@@ -33,6 +34,22 @@ function compile(theme: Theme): { [key: string]: string } {
 		// ref
 		if (code[0] == '@') {
 			return getColor(theme[code.substr(1)]);
+		}
+		if (code[0] == '$') {
+			return getColor(theme.meta.vars[code.substr(1)]);
+		}
+
+		// func
+		if (code[0] == ':') {
+			const parts = code.split('<');
+			const func = parts.shift().substr(1);
+			const arg = parseInt(parts.shift(), 10);
+			const color = getColor(parts.join('<'));
+
+			switch (func) {
+				case 'darken': return color.darken(arg);
+				case 'lighten': return color.lighten(arg);
+			}
 		}
 
 		return tinycolor(code);

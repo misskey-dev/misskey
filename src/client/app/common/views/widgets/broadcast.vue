@@ -71,9 +71,9 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.anltbovirfeutcigvwgmgxipejaeozxi-body
 	padding 10px
-	background isDark ? #253a50 : #f3f9ff
+	background var(--announcementsBg)
 
 	&[data-melt]
 		background transparent
@@ -130,14 +130,14 @@ root(isDark)
 		margin 0
 		font-size 0.95em
 		font-weight normal
-		color isDark ? #539eff : #4078c0
+		color var(--announcementsTitle)
 
 	> p
 		display block
 		z-index 1
 		margin 0
 		font-size 0.7em
-		color isDark ? #fff : #57616f
+		color var(--announcementsText)
 
 		&.fetching
 			text-align center
@@ -149,11 +149,5 @@ root(isDark)
 	&[data-mobile]
 		> p
 			color #fff
-
-.anltbovirfeutcigvwgmgxipejaeozxi-body[data-darkmode]
-	root(true)
-
-.anltbovirfeutcigvwgmgxipejaeozxi-body:not([data-darkmode])
-	root(false)
 
 </style>
