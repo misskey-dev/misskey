@@ -204,12 +204,10 @@ root(isDark)
 		left 0
 		z-index 1
 		width 100%
-		background #fff
 		box-shadow 0 0px 2px rgba(#000, 0.2)
 
 		> .form
-			padding 8px
-			background isDark ? #282c37 : #f7f7f7
+			background rgba(0, 0, 0, 0.02)
 
 			> label
 				display block
@@ -229,32 +227,22 @@ root(isDark)
 					bottom 0
 					left 0
 					width 1em
-					line-height 56px
+					line-height 48px
 					margin auto
 					color #555
 
 			> input
 				margin 0
-				padding 0 0 0 32px
+				padding 0 0 0 42px
 				width 100%
 				font-size 1em
-				line-height 38px
-				color #000
+				line-height 48px
+				color var(--faceText)
 				outline none
-				background isDark ? #191b22 : #fff
-				border solid 1px isDark ? #495156 : #eee
+				background transparent
+				border none
 				border-radius 5px
 				box-shadow none
-				transition color 0.5s ease, border 0.5s ease
-
-				&:hover
-					border solid 1px isDark ? #b0b0b0 : #ddd
-					transition border 0.2s ease
-
-				&:focus
-					color var(--primaryDarken20)
-					border solid 1px var(--primary)
-					transition color 0, border 0
 
 		> .result
 			display block

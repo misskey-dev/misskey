@@ -11,6 +11,7 @@
 	"scrollbarHandle": "#454954",
 	"scrollbarHandleHover": "#535660",
 	"face": "#282c37",
+	"faceText": "#fff",
 	"faceHeader": "#313543",
 	"faceHeaderText": "#e3e5e8",
 	"faceDivider": "rgba(0, 0, 0, 0.3)",

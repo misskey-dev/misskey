@@ -20,11 +20,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.ui-card
 	margin 16px
-	color isDark ? #fff : #000
+	color var(--faceText)
 	background var(--face)
 	box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
 
@@ -32,14 +30,14 @@ root(isDark)
 		padding 16px
 		font-weight bold
 		font-size 20px
-		color isDark ? #fff : #444
+		color var(--faceText)
 
 		@media (min-width 500px)
 			padding 24px 32px
 
 	> section
 		padding 20px 16px
-		border-top solid 1px isDark ? rgba(#000, 0.3) : rgba(#000, 0.1)
+		border-top solid 1px var(--faceDivider)
 
 		@media (min-width 500px)
 			padding 32px
@@ -50,12 +48,5 @@ root(isDark)
 		> header
 			margin-bottom 16px
 			font-weight bold
-			color isDark ? #fff : #444
-
-.ui-card[data-darkmode]
-	root(true)
-
-.ui-card:not([data-darkmode])
-	root(false)
-
+			color var(--faceText)
 </style>
