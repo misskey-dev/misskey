@@ -14,7 +14,7 @@
 			<div class="main block">
 				<div>
 					<h1 v-if="name != 'Misskey'">{{ name }}</h1>
-					<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
+					<h1 v-else><img svg-inline src="../../../../assets/title.svg" :alt="name"></h1>
 
 					<div class="info">
 						<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
@@ -377,9 +377,11 @@ export default Vue.extend({
 					> h1
 						margin 0
 
-						> img
+						> svg
 							margin -8px 0 0 -16px
-							max-width 280px
+							width 280px
+							height 100px
+							fill currentColor
 
 					> .info
 						margin 0 auto 16px auto
