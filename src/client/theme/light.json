@@ -120,6 +120,8 @@
 	"desktopSettingsNavItem": ":alpha<0.8<$text",
 	"desktopSettingsNavItemHover": ":darken<10<$text",
 
+	"mobileAnnouncement": "rgba(155, 196, 232, 0.2)",
+	"mobileAnnouncementFg": "#3f4967",
 	"mobileSignedInAsBg": "#fcfff5",
 	"mobileSignedInAsFg": "#2c662d",
 	"mobileSignoutBg": "#fff6f5",

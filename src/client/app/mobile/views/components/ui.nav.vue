@@ -226,8 +226,8 @@ root(isDark)
 
 	.announcements
 		> article
-			background isDark ? rgba(30, 129, 216, 0.2) : rgba(155, 196, 232, 0.2)
-			color isDark ? #fff : #3f4967
+			background var(--mobileAnnouncement)
+			color var(--mobileAnnouncementFg)
 			padding 16px
 			margin 8px 0
 			font-size 12px
