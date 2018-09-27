@@ -38,29 +38,45 @@
 	"noteHeaderAdminBg": "#5d282e",
 	"noteHeaderAcct": "#ccc",
 	"noteHeaderInfo": "#c0c0c0",
+
 	"noteActions": "#ddd",
 	"noteActionsHover": "#444",
 	"noteActionsReplyHover": "#0af",
 	"noteActionsRenoteHover": "#8d0",
 	"noteActionsReactionHover": "#fa0",
 	"noteActionsHighlighted": "#888",
+
 	"modalBackdrop": "rgba(0, 0, 0, 0.1)",
+
 	"dateDividerBg": "#fdfdfd",
 	"dateDividerFg": "#aaa",
+
 	"switchTrack": "rgba(0, 0, 0, 0.25)",
+
 	"autocompleteItemHoverBg": "rgba(0, 0, 0, 0.1)",
 	"autocompleteItemText": "rgba(0, 0, 0, 0.8)",
 	"autocompleteItemTextSub": "rgba(0, 0, 0, 0.3)",
+
 	"cwButtonBg": "#b1b9c1",
 	"cwButtonFg": "#fff",
 	"cwButtonHoverBg": "#bbc4ce",
+
 	"reactionPickerButtonHoverBg": "#eee",
+
 	"calendarWeek": "#19a2a9",
 	"calendarSaturdayOrSunday": "#ef95a0",
 	"calendarDay": "#777",
+
 	"announcementsBg": "#f3f9ff",
 	"announcementsTitle": "#4078c0",
 	"announcementsText": "#57616f",
+
+	"googleSearchBg": "#fff",
+	"googleSearchFg": "#55595c",
+	"googleSearchBorder": "rgba(0, 0, 0, 0.2)",
+	"googleSearchHoverBorder": "rgba(0, 0, 0, 0.3)",
+	"googleSearchHoverButton": "rgba(0, 0, 0, 0.05)",
+
 	"desktopHeaderBg": "#f7f7f7",
 	"desktopHeaderFg": "#9eaba8",
 	"desktopHeaderHoverFg": "#7b8c88",
