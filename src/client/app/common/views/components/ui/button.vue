@@ -32,8 +32,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 root(isDark, fill)
 	> button
 		display block

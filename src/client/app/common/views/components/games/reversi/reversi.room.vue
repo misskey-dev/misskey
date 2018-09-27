@@ -47,9 +47,9 @@
 			</header>
 
 			<div>
-				<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="%i18n:@is-llotheo%"/>
-				<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="%i18n:@looped-map%"/>
-				<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="%i18n:@can-put-everywhere%"/>
+				<ui-switch v-model="game.settings.isLlotheo" @change="updateSettings">%i18n:@is-llotheo%</ui-switch>
+				<ui-switch v-model="game.settings.loopedBoard" @change="updateSettings">%i18n:@looped-map%</ui-switch>
+				<ui-switch v-model="game.settings.canPutEverywhere" @change="updateSettings">%i18n:@can-put-everywhere%</ui-switch>
 			</div>
 		</div>
 

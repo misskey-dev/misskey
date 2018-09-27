@@ -1,7 +1,8 @@
 {
 	"meta": {
 		"id": "9978f7f9-5616-44fd-a704-cc5985efdd63",
-		"name": "Dark"
+		"name": "Dark",
+		"author": "syuilo"
 	},
 	"primary": "#fb4e4e",
 	"primaryForeground": "#fff",
@@ -28,7 +29,7 @@
 	"dateDividerFg": "#666b79",
 	"footerButtonHover": "#2e3440",
 	"footerButtonActive": "#21242b",
-
+	"switchTrack": "rgba(255, 255, 255, 0.15)",
 	"noteHeaderName": "#fff",
 	"noteHeaderBadgeFg": "#758188",
 	"noteHeaderBadgeBg": "rgba(0, 0, 0, 0.25)",

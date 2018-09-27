@@ -1,7 +1,8 @@
 {
 	"meta": {
 		"id": "406cfea3-a4e7-486c-9057-30ede1353c3f",
-		"name": "Light"
+		"name": "Light",
+		"author": "syuilo"
 	},
 	"primary": "#fb4e4e",
 	"primaryForeground": "#fff",
@@ -28,7 +29,7 @@
 	"dateDividerFg": "#aaa",
 	"footerButtonHover": "#f5f5f5",
 	"footerButtonActive": "#eee",
-
+	"switchTrack": "rgba(0, 0, 0, 0.25)",
 	"noteHeaderName": "#627079",
 	"noteHeaderBadgeFg": "#aaa",
 	"noteHeaderBadgeBg": "rgba(0, 0, 0, 0.05)",

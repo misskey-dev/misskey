@@ -30,7 +30,7 @@
 
 			<section>
 				<header>%i18n:@note-visibility%</header>
-				<mk-switch v-model="rememberNoteVisibility" text="%i18n:@remember-note-visibility%"/>
+				<ui-switch v-model="rememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
 				<section>
 					<header>%i18n:@default-note-visibility%</header>
 					<ui-select v-model="defaultNoteVisibility">
@@ -59,30 +59,30 @@
 			<div class="div">
 				<button class="ui" @click="updateWallpaper">%i18n:@choose-wallpaper%</button>
 				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
-				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
-				<mk-switch v-model="useShadow" text="%i18n:@use-shadow%"/>
-				<mk-switch v-model="roundedCorners" text="%i18n:@rounded-corners%"/>
-				<mk-switch v-model="circleIcons" text="%i18n:@circle-icons%"/>
-				<mk-switch v-model="reduceMotion" text="%i18n:common.reduce-motion%"/>
-				<mk-switch v-model="contrastedAcct" text="%i18n:@contrasted-acct%"/>
-				<mk-switch v-model="showFullAcct" text="%i18n:common.show-full-acct%"/>
-				<mk-switch v-model="gradientWindowHeader" text="%i18n:@gradient-window-header%"/>
-				<mk-switch v-model="iLikeSushi" text="%i18n:common.i-like-sushi%"/>
+				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
+				<ui-switch v-model="useShadow">%i18n:@use-shadow%</ui-switch>
+				<ui-switch v-model="roundedCorners">%i18n:@rounded-corners%</ui-switch>
+				<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
+				<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion%</ui-switch>
+				<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
+				<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
+				<ui-switch v-model="gradientWindowHeader">%i18n:@gradient-window-header%</ui-switch>
+				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 			</div>
-			<mk-switch v-model="showPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
-			<mk-switch v-model="suggestRecentHashtags" text="%i18n:@suggest-recent-hashtags%"/>
-			<mk-switch v-model="showClockOnHeader" text="%i18n:@show-clock-on-header%"/>
-			<mk-switch v-model="alwaysShowNsfw" text="%i18n:common.always-show-nsfw%"/>
-			<mk-switch v-model="showReplyTarget" text="%i18n:@show-reply-target%"/>
-			<mk-switch v-model="showMyRenotes" text="%i18n:@show-my-renotes%"/>
-			<mk-switch v-model="showRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
-			<mk-switch v-model="showLocalRenotes" text="%i18n:@show-local-renotes%"/>
+			<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
+			<ui-switch v-model="suggestRecentHashtags">%i18n:@suggest-recent-hashtags%</ui-switch>
+			<ui-switch v-model="showClockOnHeader">%i18n:@show-clock-on-header%</ui-switch>
+			<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw%</ui-switch>
+			<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>
+			<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
+			<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
+			<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
 			<mk-switch v-model="showMaps" text="%i18n:@show-maps%">
 				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
-			<mk-switch v-model="disableAnimatedMfm" text="%i18n:common.disable-animated-mfm%"/>
-			<mk-switch v-model="games_reversi_showBoardLabels" text="%i18n:common.show-reversi-board-labels%"/>
-			<mk-switch v-model="games_reversi_useContrastStones" text="%i18n:common.use-contrast-reversi-stones%"/>
+			<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
+			<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
+			<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -102,7 +102,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@mobile%</h1>
-			<mk-switch v-model="disableViaMobile" text="%i18n:@disable-via-mobile%"/>
+			<ui-switch v-model="disableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
