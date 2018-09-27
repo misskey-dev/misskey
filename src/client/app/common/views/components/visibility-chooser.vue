@@ -127,11 +127,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 $border-color = rgba(27, 31, 35, 0.15)
 
-root(isDark)
+.mk-visibility-chooser
 	position initial
 
 	> .backdrop
@@ -141,7 +139,7 @@ root(isDark)
 		z-index 10000
 		width 100%
 		height 100%
-		background isDark ? rgba(#000, 0.4) : rgba(#000, 0.1)
+		background var(--modalBackdrop)
 		opacity 0
 
 	> .popover
@@ -189,14 +187,14 @@ root(isDark)
 			display flex
 			padding 8px 14px
 			font-size 12px
-			color isDark ? #fff : #666
+			color var(--popupFg)
 			cursor pointer
 
 			&:hover
-				background isDark ? #252731 : #eee
+				background var(--faceClearButtonHover)
 
 			&:active
-				background isDark ? #21242b : #ddd
+				background var(--faceClearButtonActive)
 
 			&.active
 				color var(--primaryForeground)
@@ -222,11 +220,4 @@ root(isDark)
 
 				> span:last-child:not(:first-child)
 					opacity 0.6
-
-.mk-visibility-chooser[data-darkmode]
-	root(true)
-
-.mk-visibility-chooser:not([data-darkmode])
-	root(false)
-
 </style>
