@@ -27,8 +27,6 @@
 	"modalBackdrop": "rgba(0, 0, 0, 0.1)",
 	"dateDividerBg": "#fdfdfd",
 	"dateDividerFg": "#aaa",
-	"footerButtonHover": "#f5f5f5",
-	"footerButtonActive": "#eee",
 	"switchTrack": "rgba(0, 0, 0, 0.25)",
 	"noteHeaderName": "#627079",
 	"noteHeaderBadgeFg": "#aaa",

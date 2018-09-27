@@ -264,9 +264,9 @@ export default Vue.extend({
 			border-bottom-right-radius 6px
 
 			&:hover
-				background var(--footerButtonHover)
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 			&:active
-				background var(--footerButtonActive)
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 </style>
