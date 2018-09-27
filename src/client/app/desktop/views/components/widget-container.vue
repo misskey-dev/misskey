@@ -1,6 +1,6 @@
 <template>
 <div class="mk-widget-container" :class="{ naked }">
-	<header :class="{ withGradient }" v-if="showHeader">
+	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
 	</header>
@@ -19,15 +19,6 @@ export default Vue.extend({
 		naked: {
 			type: Boolean,
 			default: false
-		}
-	},
-	computed: {
-		withGradient(): boolean {
-			return this.$store.getters.isSignedIn
-				? this.$store.state.settings.gradientWindowHeader != null
-					? this.$store.state.settings.gradientWindowHeader
-					: false
-				: false;
 		}
 	}
 });
@@ -54,7 +45,7 @@ root(isDark)
 			line-height 42px
 			font-size 0.9em
 			font-weight bold
-			color isDark ? #e3e5e8 : #888
+			color var(--faceHeaderText)
 			box-shadow 0 1px rgba(#000, 0.07)
 
 			> [data-fa]
@@ -78,12 +69,7 @@ root(isDark)
 				color var(--faceTextButtonHover)
 
 			&:active
-				color isDark ? #b2c1d5 : #999
-
-		&.withGradient
-			> .title
-				background isDark ? linear-gradient(to bottom, #313543, #1d2027) : linear-gradient(to bottom, #fff, #ececec)
-				box-shadow 0 1px rgba(#000, 0.11)
+				color var(--faceTextButtonActive)
 
 .mk-widget-container[data-darkmode]
 	root(true)

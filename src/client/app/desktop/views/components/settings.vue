@@ -66,7 +66,6 @@
 				<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion%</ui-switch>
 				<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
 				<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
-				<ui-switch v-model="gradientWindowHeader">%i18n:@gradient-window-header%</ui-switch>
 				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 			</div>
 			<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
@@ -421,12 +420,7 @@ export default Vue.extend({
 		disableViaMobile: {
 			get() { return this.$store.state.settings.disableViaMobile; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
-		},
-
-		gradientWindowHeader: {
-			get() { return this.$store.state.settings.gradientWindowHeader; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'gradientWindowHeader', value }); }
-		},
+		}
 	},
 	created() {
 		(this as any).os.getMeta().then(meta => {

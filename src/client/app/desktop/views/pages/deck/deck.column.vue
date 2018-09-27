@@ -317,7 +317,7 @@ root(isDark)
 		line-height $header-height
 		padding 0 16px
 		font-size 14px
-		color isDark ? #e3e5e8 : #888
+		color var(--faceHeaderText)
 		background var(--faceHeader)
 		box-shadow 0 1px rgba(#000, 0.15)
 		cursor pointer

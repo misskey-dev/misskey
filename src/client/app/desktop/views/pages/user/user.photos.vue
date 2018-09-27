@@ -53,7 +53,7 @@ root(isDark)
 		font-size 0.9em
 		font-weight bold
 		background: isDark ? #313543 : inherit
-		color isDark ? #e3e5e8 : #888
+		color var(--faceHeaderText)
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
