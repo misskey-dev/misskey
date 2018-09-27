@@ -33,7 +33,7 @@ root(isDark)
 	display flex
 	padding 16px
 	font-size 10px
-	background isDark ? #21242d : #fcfcfc
+	background var(--subNoteBg)
 
 	&.smart
 		> .main

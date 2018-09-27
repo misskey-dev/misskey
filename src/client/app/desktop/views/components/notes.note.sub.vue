@@ -47,7 +47,7 @@ root(isDark)
 	margin 0
 	padding 16px 32px
 	font-size 0.9em
-	background isDark ? #21242d : #fcfcfc
+	background var(--subNoteBg)
 
 	> .avatar
 		flex-shrink 0

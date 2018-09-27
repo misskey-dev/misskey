@@ -137,7 +137,7 @@ root(isDark)
 						overflow hidden
 						font-weight bold
 						text-overflow ellipsis
-						color isDark ? #fff : #627079
+						color var(--noteHeaderName)
 
 					> .username
 						margin 0 .5em 0 0

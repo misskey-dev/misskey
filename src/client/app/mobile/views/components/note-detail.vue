@@ -223,8 +223,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 root(isDark)
 	overflow hidden
 	width 100%
@@ -248,22 +246,22 @@ root(isDark)
 		text-align center
 		color #999
 		cursor pointer
-		background isDark ? #21242d : #fafafa
+		background var(--subNoteBg)
 		outline none
 		border none
-		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
+		border-bottom solid 1px var(--faceDivider)
 		border-radius 6px 6px 0 0
 		box-shadow none
 
 		&:hover
-			background isDark ? #16181d : #f6f6f6
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
-		&:disabled
-			color #ccc
+		&:active
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 	> .conversation
 		> *
-			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+			border-bottom 1px solid var(--faceDivider)
 
 	> .renote
 		color var(--renoteText)
@@ -290,7 +288,7 @@ root(isDark)
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+		border-bottom 1px solid var(--faceDivider)
 
 	> article
 		padding 14px 16px 9px 16px
@@ -323,7 +321,7 @@ root(isDark)
 				> .name
 					display inline-block
 					margin .4em 0
-					color isDark ? #fff : #627079
+					color var(--noteHeaderName)
 					font-size 16px
 					font-weight bold
 					text-align left
@@ -407,7 +405,7 @@ root(isDark)
 				border none
 				box-shadow none
 				font-size 1em
-				color isDark ? #606984 : #ddd
+				color var(--noteActions)
 				cursor pointer
 
 				&:not(:last-child)
@@ -426,7 +424,7 @@ root(isDark)
 
 	> .replies
 		> *
-			border-top 1px solid isDark ? #1c2023 : #eef0f2
+			border-top 1px solid var(--faceDivider)
 
 .mk-note-detail[data-darkmode]
 	root(true)

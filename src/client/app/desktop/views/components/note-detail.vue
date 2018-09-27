@@ -225,8 +225,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 root(isDark)
 	overflow hidden
 	text-align left
@@ -243,24 +241,24 @@ root(isDark)
 		text-align center
 		color #999
 		cursor pointer
-		background isDark ? #21242d : #fafafa
+		background var(--subNoteBg)
 		outline none
 		border none
-		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
-		border-radius 6px 6px 0 0
+		border-bottom solid 1px var(--faceDivider)
+		border-radius var(--round) var(--round) 0 0
 
 		&:hover
-			background isDark ? #2e3440 : #f6f6f6
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 		&:active
-			background isDark ? #21242b : #f0f0f0
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 		&:disabled
-			color isDark ? #21242b : #ccc
+			cursor wait
 
 	> .conversation
 		> *
-			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+			border-bottom 1px solid var(--faceDivider)
 
 	> .renote
 		color var(--renoteText)
@@ -287,7 +285,7 @@ root(isDark)
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+		border-bottom 1px solid var(--faceDivider)
 
 	> article
 		padding 28px 32px 18px 32px
@@ -299,7 +297,7 @@ root(isDark)
 
 		&:hover
 			> footer > button
-				color isDark ? #707b97 : #888
+				color var(--noteActionsHighlighted)
 
 		> .avatar
 			width 60px
@@ -316,7 +314,7 @@ root(isDark)
 				display inline-block
 				margin 0
 				line-height 24px
-				color isDark ? #fff : #627079
+				color var(--noteHeaderName)
 				font-size 18px
 				font-weight 700
 				text-align left
@@ -394,20 +392,20 @@ root(isDark)
 				background transparent
 				border none
 				font-size 1em
-				color isDark ? #606984 : #ccc
+				color var(--noteActions)
 				cursor pointer
 
 				&:hover
-					color isDark ? #a1a8bf : #444
+					color var(--noteActionsHover)
 
 				&.replyButton:hover
-					color #0af
+					color var(--noteActionsReplyHover)
 
 				&.renoteButton:hover
-					color #8d0
+					color var(--noteActionsRenoteHover)
 
 				&.reactionButton:hover
-					color #fa0
+					color var(--noteActionsReactionHover)
 
 				> .count
 					display inline
@@ -415,11 +413,11 @@ root(isDark)
 					color #999
 
 				&.reacted, &.reacted:hover
-					color #fa0
+					color var(--noteActionsReactionHover)
 
 	> .replies
 		> *
-			border-top 1px solid isDark ? #1c2023 : #eef0f2
+			border-top 1px solid var(--faceDivider)
 
 .mk-note-detail[data-darkmode]
 	root(true)

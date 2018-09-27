@@ -398,7 +398,7 @@ root(isDark)
 
 		&:hover
 			> .main > footer > button
-				color isDark ? #707b97 : #888
+				color var(--noteActionsHighlighted)
 
 		> .avatar
 			flex-shrink 0
@@ -500,22 +500,22 @@ root(isDark)
 					padding 0 8px
 					line-height 32px
 					font-size 1em
-					color isDark ? #606984 : #ddd
+					color var(--noteActions)
 					background transparent
 					border none
 					cursor pointer
 
 					&:hover
-						color isDark ? #a1a8bf : #444
+						color var(--noteActionsHover)
 
 					&.replyButton:hover
-						color #0af
+						color var(--noteActionsReplyHover)
 
 					&.renoteButton:hover
-						color #8d0
+						color var(--noteActionsRenoteHover)
 
 					&.reactionButton:hover
-						color #fa0
+						color var(--noteActionsReactionHover)
 
 					> .count
 						display inline
@@ -523,7 +523,7 @@ root(isDark)
 						color #999
 
 					&.reacted, &.reacted:hover
-						color #fa0
+						color var(--noteActionsReactionHover)
 
 	> .detail
 		padding-top 4px

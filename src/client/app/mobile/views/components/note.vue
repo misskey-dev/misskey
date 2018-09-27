@@ -442,7 +442,7 @@ root(isDark)
 					border none
 					box-shadow none
 					font-size 1em
-					color isDark ? #606984 : #ddd
+					color var(--noteActions)
 					cursor pointer
 
 					&:not(:last-child)
