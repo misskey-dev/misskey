@@ -127,9 +127,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.account
 	> .header
 		display block
 		margin 0
@@ -217,7 +215,7 @@ root(isDark)
 
 			& + ul
 				padding-top 10px
-				border-top solid 1px isDark ? #1c2023 : #eee
+				border-top solid 1px var(--faceDivider)
 
 			> li
 				display block
@@ -231,7 +229,7 @@ root(isDark)
 					padding 0 28px
 					margin 0
 					line-height 40px
-					color isDark ? #c8cece : #868C8C
+					color var(--text)
 					cursor pointer
 
 					*
@@ -286,11 +284,5 @@ root(isDark)
 .zoom-in-top-leave-active {
 	transform-origin: center -16px;
 }
-
-.account[data-darkmode]
-	root(true)
-
-.account:not([data-darkmode])
-	root(false)
 
 </style>
