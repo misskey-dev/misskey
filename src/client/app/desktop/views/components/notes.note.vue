@@ -447,7 +447,7 @@ root(isDark)
 							padding 4px
 							font-size 90%
 							text-align center
-							background isDark ? #2f3944 : #eef1f3
+							background var(--mfmTitleBg)
 							border-radius 4px
 
 						>>> .code
@@ -461,12 +461,12 @@ root(isDark)
 
 						> .reply
 							margin-right 8px
-							color isDark ? #99abbf : #717171
+							color var(--text)
 
 						> .rp
 							margin-left 4px
 							font-style oblique
-							color #a0bf46
+							color var(--renoteText)
 
 					> .location
 						margin 4px 0
@@ -491,7 +491,7 @@ root(isDark)
 
 						> *
 							padding 16px
-							border dashed 1px vat(--quoteBorder)
+							border dashed 1px var(--quoteBorder)
 							border-radius 8px
 
 			> footer

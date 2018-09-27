@@ -91,6 +91,8 @@
 	"googleSearchHoverBorder": "rgba(255, 255, 255, 0.3)",
 	"googleSearchHoverButton": "rgba(255, 255, 255, 0.1)",
 
+	"mfmTitleBg": "rgba(0, 0, 0, 0.2)",
+
 	"messagingRoomBg": "@bg",
 	"messagingRoomInfo": "#fff",
 	"messagingRoomDateDividerLine": "rgba(255, 255, 255, 0.1)",

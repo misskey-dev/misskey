@@ -329,7 +329,7 @@ root(isDark)
 							padding 4px
 							font-size 90%
 							text-align center
-							background isDark ? #2f3944 : #eef1f3
+							background var(--mfmTitleBg)
 							border-radius 4px
 
 						>>> .code
@@ -348,7 +348,7 @@ root(isDark)
 						> .rp
 							margin-left 4px
 							font-style oblique
-							color #a0bf46
+							color var(--renoteText)
 
 						[data-is-me]:after
 							content "you"
@@ -387,7 +387,7 @@ root(isDark)
 
 						> *
 							padding 16px
-							border dashed 1px vat(--quoteBorder)
+							border dashed 1px var(--quoteBorder)
 							border-radius 8px
 
 				> .app

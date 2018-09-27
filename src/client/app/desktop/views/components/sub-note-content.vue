@@ -38,7 +38,7 @@ export default Vue.extend({
 		> .rp
 			margin-left 4px
 			font-style oblique
-			color #a0bf46
+			color var(--renoteText)
 
 	mk-poll
 		font-size 80%

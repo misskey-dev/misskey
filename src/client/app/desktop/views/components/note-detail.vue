@@ -365,7 +365,7 @@ export default Vue.extend({
 
 					> *
 						padding 16px
-						border dashed 1px vat(--quoteBorder)
+						border dashed 1px var(--quoteBorder)
 						border-radius 8px
 
 				> .location
