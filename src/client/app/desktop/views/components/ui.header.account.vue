@@ -134,7 +134,7 @@ root(isDark)
 		display block
 		margin 0
 		padding 0
-		color #9eaba8
+		color var(--desktopHeaderFg)
 		border none
 		background transparent
 		cursor pointer
@@ -144,13 +144,10 @@ root(isDark)
 
 		&:hover
 		&[data-active='true']
-			color isDark ? #fff : darken(#9eaba8, 20%)
+			color var(--desktopHeaderHoverFg)
 
 			> .avatar
 				filter saturate(150%)
-
-		&:active
-			color isDark ? #fff : darken(#9eaba8, 30%)
 
 		> .username
 			display block

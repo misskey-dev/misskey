@@ -5,7 +5,6 @@
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="main">
-			<p ref="welcomeback" v-if="$store.getters.isSignedIn">%i18n:@welcome-back%<b>{{ $store.state.i | userName }}</b>%i18n:@adjective%</p>
 			<div class="container" ref="mainContainer">
 				<div class="left">
 					<x-nav/>
@@ -64,55 +63,6 @@ export default Vue.extend({
 
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', this.$el.offsetHeight);
-
-		if (this.$store.getters.isSignedIn) {
-			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
-			const isHisasiburi = ago >= 3600;
-			this.$store.state.i.lastUsedAt = new Date();
-
-			if (isHisasiburi) {
-				(this.$refs.welcomeback as any).style.display = 'block';
-				(this.$refs.main as any).style.overflow = 'hidden';
-
-				anime({
-					targets: this.$refs.welcomeback,
-					top: '0',
-					opacity: 1,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				anime({
-					targets: this.$refs.mainContainer,
-					opacity: 0,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				setTimeout(() => {
-					anime({
-						targets: this.$refs.welcomeback,
-						top: '-48px',
-						opacity: 0,
-						duration: 500,
-						complete: () => {
-							(this.$refs.welcomeback as any).style.display = 'none';
-							(this.$refs.main as any).style.overflow = 'initial';
-						},
-						easing: 'easeInQuad'
-					});
-
-					anime({
-						targets: this.$refs.mainContainer,
-						opacity: 1,
-						duration: 500,
-						easing: 'easeInQuad'
-					});
-				}, 2500);
-			}
-		}
 	},
 
 	methods: {
@@ -161,17 +111,6 @@ root(isDark)
 			font-size 0.9rem
 			user-select none
 
-			> p
-				display none
-				position absolute
-				top 48px
-				width 100%
-				line-height 48px
-				margin 0
-				text-align center
-				color isDark ? #fff : #888
-				opacity 0
-
 			> .container
 				display flex
 				width 100%
@@ -190,7 +129,7 @@ root(isDark)
 						display block
 						width 48px
 						height 48px
-						background-image isDark ? url('/assets/desktop/header-icon.dark.svg') : url('/assets/desktop/header-icon.light.svg')
+						background-image var(--desktopHeaderIcon)
 						background-size 24px
 						background-position center
 						background-repeat no-repeat

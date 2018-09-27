@@ -95,9 +95,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.nav
 	display inline-block
 	margin 0
 	padding 0
@@ -129,7 +127,7 @@ root(isDark)
 				padding 0 24px
 				font-size 13px
 				font-variant small-caps
-				color isDark ? #b8c5ca : #9eaba8
+				color var(--desktopHeaderFg)
 				text-decoration none
 				transition none
 				cursor pointer
@@ -138,7 +136,7 @@ root(isDark)
 					pointer-events none
 
 				&:hover
-					color isDark ? #fff : darken(#9eaba8, 20%)
+					color var(--desktopHeaderHoverFg)
 					text-decoration none
 
 				> [data-fa]:first-child
@@ -161,11 +159,5 @@ root(isDark)
 
 				@media (max-width 700px)
 					padding 0 12px
-
-.nav[data-darkmode]
-	root(true)
-
-.nav:not([data-darkmode])
-	root(false)
 
 </style>
