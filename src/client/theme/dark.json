@@ -6,9 +6,10 @@
 		"vars": {
 			"primary": "#fb4e4e",
 			"secondary": "#282C37",
-			"text": "#d0e0ea"
+			"text": "#d6dae0"
 		}
 	},
+
 	"primary": "$primary",
 	"primaryForeground": "#fff",
 	"bg": ":darken<8<$secondary",
@@ -54,6 +55,9 @@
 	"dateDividerFg": "#666b79",
 
 	"switchTrack": "rgba(255, 255, 255, 0.15)",
+	"inputBorder": "rgba(255, 255, 255, 0.7)",
+	"inputLabel": "rgba(255, 255, 255, 0.7)",
+	"inputText": "#fff",
 
 	"autocompleteItemHoverBg": "rgba(255, 255, 255, 0.1)",
 	"autocompleteItemText": "rgba(255, 255, 255, 0.8)",
@@ -64,6 +68,12 @@
 	"cwButtonHoverBg": "#707b97",
 
 	"reactionPickerButtonHoverBg": "rgba(255, 255, 255, 0.18)",
+
+	"urlPreviewBorder": "rgba(0, 0, 0, 0.4)",
+	"urlPreviewBorderHover": "rgba(255, 255, 255, 0.2)",
+	"urlPreviewTitle": "$text",
+	"urlPreviewText": ":alpha<0.7<$text",
+	"urlPreviewInfo": ":alpha<0.8<$text",
 
 	"calendarWeek": "#43d5dc",
 	"calendarSaturdayOrSunday": "#ff6679",

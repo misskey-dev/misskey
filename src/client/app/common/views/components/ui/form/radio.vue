@@ -62,7 +62,7 @@ root(isDark)
 
 	&:hover
 		> .button
-			border solid 2px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+			border solid 2px var(--inputLabel)
 
 	&.disabled
 		opacity 0.6

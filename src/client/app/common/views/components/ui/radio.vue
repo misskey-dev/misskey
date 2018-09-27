@@ -87,7 +87,7 @@ root(isDark)
 		width 20px
 		height 20px
 		background none
-		border solid 2px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+		border solid 2px var(--inputLabel)
 		border-radius 100%
 		transition inherit
 

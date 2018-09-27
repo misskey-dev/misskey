@@ -9,6 +9,7 @@
 			"text": "#666"
 		}
 	},
+
 	"primary": "$primary",
 	"primaryForeground": "#fff",
 	"bg": ":darken<8<$secondary",
@@ -54,6 +55,9 @@
 	"dateDividerFg": "#aaa",
 
 	"switchTrack": "rgba(0, 0, 0, 0.25)",
+	"inputBorder": "rgba(0, 0, 0, 0.42)",
+	"inputLabel": "rgba(0, 0, 0, 0.54)",
+	"inputText": "#000",
 
 	"autocompleteItemHoverBg": "rgba(0, 0, 0, 0.1)",
 	"autocompleteItemText": "rgba(0, 0, 0, 0.8)",
@@ -64,6 +68,12 @@
 	"cwButtonHoverBg": "#bbc4ce",
 
 	"reactionPickerButtonHoverBg": "#eee",
+
+	"urlPreviewBorder": "rgba(0, 0, 0, 0.1)",
+	"urlPreviewBorderHover": "rgba(0, 0, 0, 0.2)",
+	"urlPreviewTitle": "$text",
+	"urlPreviewText": ":alpha<0.7<$text",
+	"urlPreviewInfo": ":alpha<0.8<$text",
 
 	"calendarWeek": "#19a2a9",
 	"calendarSaturdayOrSunday": "#ef95a0",

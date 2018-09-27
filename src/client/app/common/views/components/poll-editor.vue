@@ -103,7 +103,7 @@ root(isDark)
 				padding 6px 8px
 				width 300px
 				font-size 14px
-				color isDark ? #fff : #000
+				color var(--inputText)
 				background isDark ? #191b22 : #fff
 				border solid 1px var(--primaryAlpha01)
 				border-radius 4px

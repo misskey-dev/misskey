@@ -209,7 +209,7 @@ root(isDark)
 		padding 8px
 		resize none
 		font-size 1em
-		color isDark ? #fff : #000
+		color var(--inputText)
 		outline none
 		border none
 		border-top solid 1px isDark ? #4b5056 : #eee
