@@ -124,7 +124,7 @@ root(isDark)
 
 	.mkw-calendar--body
 		padding 16px 0
-		color isDark ? #c5ced6 : #777
+		color var(--calendarDay)
 
 		&:after
 			content ""

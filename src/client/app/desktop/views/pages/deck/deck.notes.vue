@@ -214,8 +214,8 @@ root(isDark)
 			line-height 32px
 			font-size 14px
 			text-align center
-			color isDark ? #666b79 : #aaa
-			background isDark ? #242731 : #fdfdfd
+			color var(--dateDividerFg)
+			background var(--dateDividerBg)
 			border-bottom solid 1px var(--faceDivider)
 
 			span

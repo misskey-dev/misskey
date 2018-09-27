@@ -191,7 +191,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-notifications
 	.transition
 		.mk-notifications-enter
 		.mk-notifications-leave-to
@@ -208,7 +208,7 @@ root(isDark)
 				padding 16px
 				overflow-wrap break-word
 				font-size 13px
-				border-bottom solid 1px isDark ? #1c2023 : rgba(#000, 0.05)
+				border-bottom solid 1px var(--faceDivider)
 
 				&:last-child
 					border-bottom none
@@ -219,7 +219,7 @@ root(isDark)
 					top 16px
 					right 12px
 					vertical-align top
-					color isDark ? #606984 : rgba(#000, 0.6)
+					color var(--noteHeaderInfo)
 					font-size small
 
 				&:after
@@ -249,10 +249,10 @@ root(isDark)
 							margin-right 4px
 
 				.note-preview
-					color isDark ? #c2cad4 : rgba(#000, 0.7)
+					color var(--noteText)
 
 				.note-ref
-					color isDark ? #c2cad4 : rgba(#000, 0.7)
+					color var(--noteText)
 
 					[data-fa]
 						font-size 1em
@@ -283,9 +283,9 @@ root(isDark)
 				line-height 32px
 				text-align center
 				font-size 0.8em
-				color isDark ? #666b79 : #aaa
-				background isDark ? #242731 : #fdfdfd
-				border-bottom solid 1px isDark ? #1c2023 : rgba(#000, 0.05)
+				color var(--dateDividerFg)
+				background var(--dateDividerBg)
+				border-bottom solid 1px var(--faceDivider)
 
 				span
 					margin 0 16px
@@ -326,11 +326,5 @@ root(isDark)
 
 		> [data-fa]
 			margin-right 4px
-
-.mk-notifications[data-darkmode]
-	root(true)
-
-.mk-notifications:not([data-darkmode])
-	root(false)
 
 </style>

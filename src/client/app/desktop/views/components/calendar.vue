@@ -128,10 +128,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
-	color isDark ? #c5ced6 : #777
+.mk-calendar
+	color var(--calendarDay)
 	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
@@ -149,11 +147,9 @@ root(isDark)
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color isDark ? #c5ced6 : #888
+		color var(--faceHeaderText)
+		background var(--faceHeader)
 		box-shadow 0 1px rgba(#000, 0.07)
-
-		if isDark
-			background #313543
 
 		> [data-fa]
 			margin-right 4px
@@ -172,7 +168,7 @@ root(isDark)
 			color var(--faceTextButtonHover)
 
 		&:active
-			color isDark ? #b2c1d5 : #999
+			color var(--faceTextButtonActive)
 
 		&:first-of-type
 			left 0
@@ -195,49 +191,46 @@ root(isDark)
 			font-size 14px
 
 			&.weekday
-				color isDark ? #43d5dc : #19a2a9
+				color var(--calendarWeek)
 
 				&[data-is-donichi]
-					color isDark ? #ff6679 : #ef95a0
+					color var(--calendarSaturdayOrSunday)
 
 				&[data-today]
-					box-shadow 0 0 0 1px isDark ? #43d5dc : #19a2a9 inset
+					box-shadow 0 0 0 1px var(--calendarWeek) inset
 					border-radius 6px
 
 					&[data-is-donichi]
-						box-shadow 0 0 0 1px isDark ? #ff6679 : #ef95a0 inset
+						box-shadow 0 0 0 1px var(--calendarSaturdayOrSunday) inset
 
 			&.day
 				cursor pointer
-				color isDark ? #c5ced6 : #777
+				color var(--calendarDay)
 
 				> div
 					border-radius 6px
 
 				&:hover > div
-					background rgba(#000, isDark ? 0.1 : 0.025)
+					background var(--faceClearButtonHover)
 
 				&:active > div
-					background rgba(#000, isDark ? 0.2 : 0.05)
+					background var(--faceClearButtonActive)
 
 				&[data-is-donichi]
-					color isDark ? #ff6679 : #ef95a0
+					color var(--calendarSaturdayOrSunday)
 
 				&[data-is-out-of-range]
 					cursor default
-					color rgba(isDark ? #c5ced6 : #777, 0.5)
-
-					&[data-is-donichi]
-						color rgba(isDark ? #ff6679 : #ef95a0, 0.5)
+					opacity 0.5
 
 				&[data-selected]
 					font-weight bold
 
 					> div
-						background rgba(#000, isDark ? 0.1 : 0.025)
+						background var(--faceClearButtonHover)
 
 					&:active > div
-						background rgba(#000, isDark ? 0.2 : 0.05)
+						background var(--faceClearButtonActive)
 
 				&[data-today]
 					> div
@@ -249,11 +242,5 @@ root(isDark)
 
 					&:active > div
 						background var(--primaryDarken10)
-
-.mk-calendar[data-darkmode]
-	root(true)
-
-.mk-calendar:not([data-darkmode])
-	root(false)
 
 </style>
