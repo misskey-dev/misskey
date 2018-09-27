@@ -59,9 +59,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.message
 	$me-balloon-color = var(--primary)
 
 	padding 10px 12px 10px 12px
@@ -179,7 +177,7 @@ root(isDark)
 			display block
 			margin 2px 0 0 0
 			font-size 10px
-			color isDark ? rgba(#fff, 0.4) : rgba(#000, 0.4)
+			color var(--messagingRoomMessageInfo)
 
 			> [data-fa]
 				margin-left 4px
@@ -192,7 +190,7 @@ root(isDark)
 			padding-left 66px
 
 			> .balloon
-				$color = isDark ? #2d3338 : #eee
+				$color = var(--messagingRoomMessageBg)
 				float left
 				background $color
 
@@ -208,8 +206,7 @@ root(isDark)
 
 				> .content
 					> .text
-						if isDark
-							color #fff
+							color var(--messagingRoomMessageFg)
 
 			> footer
 				text-align left
@@ -250,18 +247,9 @@ root(isDark)
 
 				> .read
 					user-select none
-					margin 0 4px 0 0
-					color isDark ? rgba(#fff, 0.5) : rgba(#000, 0.5)
-					font-size 11px
 
 	&[data-is-deleted]
 		> .balloon
 			opacity 0.5
-
-.message[data-darkmode]
-	root(true)
-
-.message:not([data-darkmode])
-	root(false)
 
 </style>

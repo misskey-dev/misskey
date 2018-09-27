@@ -4,7 +4,6 @@
 	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
-		<p ref="welcomeback" v-if="$store.getters.isSignedIn">%i18n:@welcome-back%<b>{{ $store.state.i | userName }}</b>%i18n:@adjective%</p>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation">%fa:circle%</template>
@@ -50,53 +49,6 @@ export default Vue.extend({
 
 			this.connection.on('reversi_invited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
-
-			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
-			const isHisasiburi = ago >= 3600;
-			this.$store.state.i.lastUsedAt = new Date();
-
-			if (isHisasiburi) {
-				(this.$refs.welcomeback as any).style.display = 'block';
-				(this.$refs.main as any).style.overflow = 'hidden';
-
-				anime({
-					targets: this.$refs.welcomeback,
-					top: '0',
-					opacity: 1,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				anime({
-					targets: this.$refs.mainContainer,
-					opacity: 0,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				setTimeout(() => {
-					anime({
-						targets: this.$refs.welcomeback,
-						top: '-48px',
-						opacity: 0,
-						duration: 500,
-						complete: () => {
-							(this.$refs.welcomeback as any).style.display = 'none';
-							(this.$refs.main as any).style.overflow = 'initial';
-						},
-						easing: 'easeInQuad'
-					});
-
-					anime({
-						targets: this.$refs.mainContainer,
-						opacity: 1,
-						duration: 500,
-						easing: 'easeInQuad'
-					});
-				}, 2500);
-			}
 		}
 	},
 	beforeDestroy() {
@@ -158,18 +110,6 @@ root(isDark)
 			backdrop-filter blur(12px)
 			//background-color rgba(#1b2023, 0.75)
 			background-color isDark ? #313543 : #595f6f
-
-		> p
-			display none
-			position absolute
-			z-index 1002
-			top $height
-			width 100%
-			line-height $height
-			margin 0
-			text-align center
-			color #fff
-			opacity 0
 
 		> .content
 			z-index 1001

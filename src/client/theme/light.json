@@ -77,6 +77,14 @@
 	"googleSearchHoverBorder": "rgba(0, 0, 0, 0.3)",
 	"googleSearchHoverButton": "rgba(0, 0, 0, 0.05)",
 
+	"messagingRoomBg": "#fff",
+	"messagingRoomInfo": "#000",
+	"messagingRoomDateDividerLine": "rgba(0, 0, 0, 0.1)",
+	"messagingRoomDateDividerText": "rgba(0, 0, 0, 0.3)",
+	"messagingRoomMessageInfo": "rgba(0, 0, 0, 0.4)",
+	"messagingRoomMessageBg": "#eee",
+	"messagingRoomMessageFg": "#333",
+
 	"desktopHeaderBg": "#f7f7f7",
 	"desktopHeaderFg": "#9eaba8",
 	"desktopHeaderHoverFg": "#7b8c88",
