@@ -503,7 +503,7 @@ root(isDark)
 
 			> span
 				margin-right 16px
-				color isDark ? #fff : #666
+				color var(--primary)
 
 		> .hashtags
 			margin 0 0 8px 0
@@ -512,7 +512,7 @@ root(isDark)
 			font-size 14px
 
 			> b
-				color isDark ? #9baec8 : var(--primaryDarken20)
+				color var(--primary)
 
 			> *
 				margin-right 8px
