@@ -69,6 +69,8 @@
 
 	"reactionPickerButtonHoverBg": "#eee",
 
+	"reactionViewerBorder": "rgba(0, 0, 0, 0.1)",
+
 	"urlPreviewBorder": "rgba(0, 0, 0, 0.1)",
 	"urlPreviewBorderHover": "rgba(0, 0, 0, 0.2)",
 	"urlPreviewTitle": "$text",
