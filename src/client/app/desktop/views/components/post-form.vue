@@ -521,7 +521,7 @@ root(isDark)
 		> .files
 			margin 0
 			padding 0
-			background isDark ? #181b23 : var(--primaryLighten98)
+			background var(--desktopPostFormTextareaBg)
 			border solid 1px var(--primaryAlpha01)
 			border-top none
 			border-radius 0 0 4px 4px
@@ -572,7 +572,7 @@ root(isDark)
 						cursor pointer
 
 		> .mk-poll-editor
-			background isDark ? #181b23 : var(--primaryLighten98)
+			background var(--desktopPostFormTextareaBg)
 			border solid 1px var(--primaryAlpha01)
 			border-top none
 			border-radius 0 0 4px 4px
