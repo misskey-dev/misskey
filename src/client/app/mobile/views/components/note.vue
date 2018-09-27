@@ -349,7 +349,7 @@ root(isDark)
 					margin 0
 					padding 0
 					overflow-wrap break-word
-					color isDark ? #fff : #717171
+					color var(--noteText)
 
 					> .text
 						margin-right 8px
@@ -361,7 +361,7 @@ root(isDark)
 						margin 0
 						padding 0
 						overflow-wrap break-word
-						color isDark ? #fff : #717171
+						color var(--noteText)
 
 						>>> .title
 							display block
@@ -427,7 +427,7 @@ root(isDark)
 
 						> *
 							padding 16px
-							border dashed 1px isDark ? #4e945e : #c0dac6
+							border dashed 1px vat(--quoteBorder)
 							border-radius 8px
 
 				> .app

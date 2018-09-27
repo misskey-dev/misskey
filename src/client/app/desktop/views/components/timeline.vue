@@ -175,9 +175,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-timeline
 	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
@@ -187,7 +185,7 @@ root(isDark)
 		padding 0 8px
 		z-index 10
 		background var(--faceHeader)
-		box-shadow 0 1px isDark ? rgba(#000, 0.15) : rgba(#000, 0.08)
+		box-shadow 0 1px var(--desktopTimelineHeaderShadow)
 
 		> .buttons
 			position absolute
@@ -200,7 +198,7 @@ root(isDark)
 				padding 0 8px
 				font-size 0.9em
 				line-height 42px
-				color isDark ? #9baec8 : #ccc
+				color var(--faceTextButton)
 
 				> .badge
 					position absolute
@@ -210,10 +208,7 @@ root(isDark)
 					color var(--primary)
 
 				&:hover
-					color isDark ? #b2c1d5 : #aaa
-
-				&:active
-					color isDark ? #b2c1d5 : #999
+					color var(--faceTextButtonHover)
 
 				&[data-active]
 					color var(--primary)
@@ -252,16 +247,10 @@ root(isDark)
 					background var(--primary)
 
 			&:not([data-active])
-				color isDark ? #9aa2a7 : #6f7477
+				color var(--desktopTimelineSrc)
 				cursor pointer
 
 				&:hover
-					color isDark ? #d9dcde : #525a5f
-
-.mk-timeline[data-darkmode]
-	root(true)
-
-.mk-timeline:not([data-darkmode])
-	root(false)
+					color var(--desktopTimelineSrcHover)
 
 </style>

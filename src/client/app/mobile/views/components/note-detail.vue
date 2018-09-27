@@ -223,7 +223,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-note-detail
 	overflow hidden
 	width 100%
 	text-align left
@@ -334,7 +334,7 @@ root(isDark)
 					display block
 					text-align left
 					margin 0
-					color isDark ? #606984 : #ccc
+					color var(--noteHeaderAcct)
 
 		> .body
 			padding 8px 0
@@ -345,7 +345,7 @@ root(isDark)
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 				> .text
 					margin-right 8px
@@ -358,7 +358,7 @@ root(isDark)
 					padding 0
 					overflow-wrap break-word
 					font-size 16px
-					color isDark ? #fff : #717171
+					color var(--noteText)
 
 					@media (min-width 500px)
 						font-size 24px
@@ -368,7 +368,7 @@ root(isDark)
 
 					> *
 						padding 16px
-						border dashed 1px #c0dac6
+						border dashed 1px vat(--quoteBorder)
 						border-radius 8px
 
 				> .location
@@ -393,7 +393,7 @@ root(isDark)
 
 		> .time
 			font-size 16px
-			color isDark ? #606984 : #c0c0c0
+			color var(--noteHeaderInfo)
 
 		> footer
 			font-size 1.2em
@@ -412,7 +412,7 @@ root(isDark)
 					margin-right 28px
 
 				&:hover
-					color isDark ? #9198af : #666
+					color var(--noteActionsHover)
 
 				> .count
 					display inline
@@ -425,11 +425,5 @@ root(isDark)
 	> .replies
 		> *
 			border-top 1px solid var(--faceDivider)
-
-.mk-note-detail[data-darkmode]
-	root(true)
-
-.mk-note-detail:not([data-darkmode])
-	root(false)
 
 </style>

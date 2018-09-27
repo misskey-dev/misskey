@@ -166,10 +166,10 @@ root(isDark)
 		width 42px
 		font-size 0.9em
 		line-height 42px
-		color isDark ? #9baec8 : #ccc
+		color var(--faceTextButton)
 
 		&:hover
-			color isDark ? #b2c1d5 : #aaa
+			color var(--faceTextButtonHover)
 
 		&:active
 			color isDark ? #b2c1d5 : #999

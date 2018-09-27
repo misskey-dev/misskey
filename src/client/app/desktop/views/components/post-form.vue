@@ -434,12 +434,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 root(isDark)
 	display block
 	padding 16px
-	background isDark ? #282C37 : var(--primaryLighten95)
+	background var(--desktopPostFormBg)
 
 	&:after
 		content ""
@@ -453,8 +451,8 @@ root(isDark)
 			width 100%
 			padding 12px
 			font-size 16px
-			color isDark ? #fff : #333
-			background isDark ? #191d23 : #fff
+			color var(--desktopPostFormTextareaFg)
+			background var(--desktopPostFormTextareaBg)
 			outline none
 			border solid 1px var(--primaryAlpha01)
 			border-radius 4px

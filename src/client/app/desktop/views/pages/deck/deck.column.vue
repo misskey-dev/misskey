@@ -344,10 +344,10 @@ root(isDark)
 			width $header-height
 			line-height $header-height
 			font-size 16px
-			color isDark ? #9baec8 : #ccc
+			color var(--faceTextButton)
 
 			&:hover
-				color isDark ? #b2c1d5 : #aaa
+				color var(--faceTextButtonHover)
 
 			&:active
 				color isDark ? #b2c1d5 : #999

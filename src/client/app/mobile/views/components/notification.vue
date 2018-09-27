@@ -158,10 +158,10 @@ root(isDark)
 					font-size 0.9em
 
 			> .note-preview
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 			> .note-ref
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 				[data-fa]
 					font-size 1em
