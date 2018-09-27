@@ -317,9 +317,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.note
 	margin 0
 	padding 0
 	background var(--face)
@@ -456,8 +454,8 @@ root(isDark)
 						>>> .quote
 							margin 8px
 							padding 6px 12px
-							color isDark ? #6f808e : #aaa
-							border-left solid 3px isDark ? #637182 : #eee
+							color var(--mfmQuote)
+							border-left solid 3px var(--mfmQuoteLine)
 
 						> .reply
 							margin-right 8px
@@ -528,12 +526,6 @@ root(isDark)
 	> .detail
 		padding-top 4px
 		background rgba(#000, 0.0125)
-
-.note[data-darkmode]
-	root(true)
-
-.note:not([data-darkmode])
-	root(false)
 
 </style>
 

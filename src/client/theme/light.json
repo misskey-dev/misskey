@@ -92,6 +92,8 @@
 	"googleSearchHoverButton": "rgba(0, 0, 0, 0.05)",
 
 	"mfmTitleBg": "rgba(0, 0, 0, 0.07)",
+	"mfmQuote": ":alpha<0.6<$text",
+	"mfmQuoteLine": ":alpha<0.5<$text",
 
 	"messagingRoomBg": "#fff",
 	"messagingRoomInfo": "#000",
