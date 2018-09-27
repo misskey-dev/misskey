@@ -95,7 +95,7 @@
 		</div>
 	</main>
 
-	<modal name="about" :class="$store.state.device.darkmode ? ['about', 'modal-dark'] : ['about', 'modal-light']" width="800px" height="auto" scrollable>
+	<modal name="about" class="about modal" width="800px" height="auto" scrollable>
 		<article class="fpdezooorhntlzyeszemrsqdlgbysvxq">
 			<h1>%i18n:common.intro.title%</h1>
 			<p v-html="'%i18n:common.intro.about%'"></p>
@@ -258,7 +258,7 @@ export default Vue.extend({
 
 	> section
 		> h2
-			border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+			border-bottom 1px solid var(--faceDivider)
 
 		> section
 			display grid
@@ -267,7 +267,7 @@ export default Vue.extend({
 			gap 32px
 			margin-bottom 32px
 			padding-bottom 32px
-			border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+			border-bottom 1px solid var(--faceDivider)
 
 			&:nth-child(odd)
 				grid-template-columns 1fr 180px
