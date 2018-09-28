@@ -4,7 +4,6 @@
 		<div class="egwyvoaaryotefqhqtmiyawwefemjfsd-body"
 			:data-compact="props.design == 1 || props.design == 2"
 			:data-melt="props.design == 2"
-			:data-darkmode="$store.state.device.darkmode"
 		>
 			<div class="banner"
 				:style="$store.state.i.bannerUrl ? `background-image: url(${$store.state.i.bannerUrl})` : ''"
@@ -46,8 +45,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-
+.egwyvoaaryotefqhqtmiyawwefemjfsd-body
 	&[data-compact]
 		> .banner:before
 			content ""
@@ -88,7 +86,7 @@ root(isDark)
 
 	> .banner
 		height 100px
-		background-color isDark ? #303e4a : #f5f5f5
+		background-color var(--primaryDarken10)
 		background-size cover
 		background-position center
 		cursor pointer
@@ -100,7 +98,7 @@ root(isDark)
 		left 16px
 		width 58px
 		height 58px
-		border solid 3px isDark ? #282c37 : #fff
+		border solid 3px var(--face)
 		border-radius 8px
 		cursor pointer
 
@@ -109,19 +107,14 @@ root(isDark)
 		margin 10px 0 0 84px
 		line-height 16px
 		font-weight bold
-		color isDark ? #fff : #555
+		color var(--text)
 
 	> .username
 		display block
 		margin 4px 0 8px 84px
 		line-height 16px
 		font-size 0.9em
-		color isDark ? #606984 : #999
-
-.egwyvoaaryotefqhqtmiyawwefemjfsd-body[data-darkmode]
-	root(true)
-
-.egwyvoaaryotefqhqtmiyawwefemjfsd-body:not([data-darkmode])
-	root(false)
+		color var(--text)
+		opacity 0.7
 
 </style>

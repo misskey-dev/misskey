@@ -649,7 +649,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .gkgckalzgidaygcxnugepioremxvxvpt
 	padding 32px
@@ -675,7 +675,7 @@ export default Vue.extend({
 
 			*
 				&:not(.active)
-					color $theme-color
+					color var(--primary)
 					cursor pointer
 
 	> div

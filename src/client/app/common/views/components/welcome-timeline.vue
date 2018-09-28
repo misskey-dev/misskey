@@ -90,8 +90,8 @@ export default Vue.extend({
 	opacity 0
 	transform translateY(-30px)
 
-root(isDark)
-	background isDark ? #282C37 : #fff
+.mk-welcome-timeline
+	background var(--face)
 
 	> div
 		> *
@@ -101,8 +101,8 @@ root(isDark)
 			padding 16px
 			overflow-wrap break-word
 			font-size .9em
-			color isDark ? #fff : #4C4C4C
-			border-bottom 1px solid isDark ? rgba(#000, 0.1) : rgba(#000, 0.05)
+			color var(--noteText)
+			border-bottom 1px solid var(--faceDivider)
 
 			&:after
 				content ""
@@ -137,26 +137,20 @@ root(isDark)
 						overflow hidden
 						font-weight bold
 						text-overflow ellipsis
-						color isDark ? #fff : #627079
+						color var(--noteHeaderName)
 
 					> .username
 						margin 0 .5em 0 0
-						color isDark ? #606984 : #ccc
+						color var(--noteHeaderAcct)
 
 					> .info
 						margin-left auto
 						font-size 0.9em
 
 						> .created-at
-							color isDark ? #606984 : #c0c0c0
+							color var(--noteHeaderInfo)
 
 				> .text
 					text-align left
-
-.mk-welcome-timeline[data-darkmode]
-	root(true)
-
-.mk-welcome-timeline:not([data-darkmode])
-	root(false)
 
 </style>

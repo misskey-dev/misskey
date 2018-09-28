@@ -42,9 +42,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.bvonvjxbwzaiskogyhbwgyxvcgserpmu
 	display flex
 	align-items baseline
 	white-space nowrap
@@ -61,7 +59,7 @@ root(isDark)
 		margin 0 .5em 0 0
 		padding 0
 		overflow hidden
-		color isDark ? #fff : #627079
+		color var(--noteHeaderName)
 		font-size 1em
 		font-weight bold
 		text-decoration none
@@ -82,19 +80,19 @@ root(isDark)
 		margin 0 .5em 0 0
 		padding 1px 6px
 		font-size 80%
-		color isDark ? #758188 : #aaa
-		border solid 1px isDark ? #57616f : #ddd
+		color var(--noteHeaderBadgeFg)
+		background var(--noteHeaderBadgeBg)
 		border-radius 3px
 
 		&.is-admin
-			border-color isDark ? #d42c41 : #f56a7b
-			color isDark ? #d42c41 : #f56a7b
+			background var(--noteHeaderAdminBg)
+			color var(--noteHeaderAdminFg)
 
 	> .username
 		margin 0 .5em 0 0
 		overflow hidden
 		text-overflow ellipsis
-		color isDark ? #606984 : #ccc
+		color var(--noteHeaderAcct)
 		flex-shrink 2147483647
 
 	> .info
@@ -102,7 +100,7 @@ root(isDark)
 		font-size 0.9em
 
 		> *
-			color isDark ? #606984 : #c0c0c0
+			color var(--noteHeaderInfo)
 
 		> .mobile
 			margin-right 8px
@@ -110,15 +108,9 @@ root(isDark)
 		> .app
 			margin-right 8px
 			padding-right 8px
-			border-right solid 1px isDark ? #1c2023 : #eaeaea
+			border-right solid 1px var(--faceDivider)
 
 		> .visibility
 			margin-left 8px
-
-.bvonvjxbwzaiskogyhbwgyxvcgserpmu[data-darkmode]
-	root(true)
-
-.bvonvjxbwzaiskogyhbwgyxvcgserpmu:not([data-darkmode])
-	root(false)
 
 </style>

@@ -47,7 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.qiziqtywpuaucsgarwajitwaakggnisj
 	display flex
 	font-size 0.9em
 
@@ -71,7 +71,7 @@ root(isDark)
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 				> .text
 					margin-right 8px
@@ -81,12 +81,6 @@ root(isDark)
 					cursor default
 					margin 0
 					padding 0
-					color isDark ? #959ba7 : #717171
-
-.qiziqtywpuaucsgarwajitwaakggnisj[data-darkmode]
-	root(true)
-
-.qiziqtywpuaucsgarwajitwaakggnisj:not([data-darkmode])
-	root(false)
+					color var(--subNoteText)
 
 </style>

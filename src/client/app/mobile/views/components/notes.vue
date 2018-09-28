@@ -217,11 +217,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-notes
 	overflow hidden
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-radius 8px
 	box-shadow 0 0 2px rgba(#000, 0.1)
 
@@ -243,9 +241,9 @@ root(isDark)
 			line-height 32px
 			text-align center
 			font-size 0.9em
-			color isDark ? #666b79 : #aaa
-			background isDark ? #242731 : #fdfdfd
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			color var(--dateDividerFg)
+			background var(--dateDividerBg)
+			border-bottom solid 1px var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -276,7 +274,7 @@ root(isDark)
 
 	> footer
 		text-align center
-		border-top solid 1px isDark ? #1c2023 : #eaeaea
+		border-top solid 1px var(--faceDivider)
 
 		&:empty
 			display none
@@ -292,11 +290,5 @@ root(isDark)
 
 			&:disabled
 				opacity 0.7
-
-.mk-notes[data-darkmode]
-	root(true)
-
-.mk-notes:not([data-darkmode])
-	root(false)
 
 </style>

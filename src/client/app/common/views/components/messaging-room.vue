@@ -262,14 +262,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-messaging-room
 	display flex
 	flex 1
 	flex-direction column
 	height 100%
-	background isDark ? #191b22 : #fff
+	background var(--messagingRoomBg)
 
 	> .body
 		width 100%
@@ -277,24 +275,15 @@ root(isDark)
 		margin 0 auto
 		flex 1
 
-		> .init
-			width 100%
-			margin 0
-			padding 16px 8px 8px 8px
-			text-align center
-			font-size 0.8em
-			color rgba(isDark ? #fff : #000, 0.4)
-
-			[data-fa]
-				margin-right 4px
-
+		> .init,
 		> .empty
 			width 100%
 			margin 0
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(isDark ? #fff : #000, 0.4)
+			color var(--messagingRoomInfo)
+			opacity 0.5
 
 			[data-fa]
 				margin-right 4px
@@ -305,7 +294,8 @@ root(isDark)
 			padding 16px
 			text-align center
 			font-size 0.8em
-			color rgba(isDark ? #fff : #000, 0.4)
+			color var(--messagingRoomInfo)
+			opacity 0.5
 
 			[data-fa]
 				margin-right 4px
@@ -349,7 +339,7 @@ root(isDark)
 				left 0
 				right 0
 				margin 0 auto
-				background rgba(isDark ? #fff : #000, 0.1)
+				background var(--messagingRoomDateDividerLine)
 
 			> span
 				display inline-block
@@ -357,8 +347,8 @@ root(isDark)
 				padding 0 16px
 				//font-weight bold
 				line-height 32px
-				color rgba(isDark ? #fff : #000, 0.3)
-				background isDark ? #191b22 : #fff
+				color var(--messagingRoomDateDividerText)
+				background var(--messagingRoomBg)
 
 	> footer
 		position -webkit-sticky
@@ -369,7 +359,7 @@ root(isDark)
 		max-width 600px
 		margin 0 auto
 		padding 0
-		background rgba(isDark ? #282c37 : #fff, 0.95)
+		//background rgba(var(--face), 0.95)
 		background-clip content-box
 
 		> .new-message
@@ -386,15 +376,15 @@ root(isDark)
 				cursor pointer
 				line-height 32px
 				font-size 12px
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 				border-radius 16px
 
 				&:hover
-					background lighten($theme-color, 10%)
+					background var(--primaryLighten10)
 
 				&:active
-					background darken($theme-color, 10%)
+					background var(--primaryDarken10)
 
 				> [data-fa]
 					position absolute
@@ -409,11 +399,5 @@ root(isDark)
 .fade-enter, .fade-leave-to
 	transition opacity 0.5s
 	opacity 0
-
-.mk-messaging-room[data-darkmode]
-	root(true)
-
-.mk-messaging-room:not([data-darkmode])
-	root(false)
 
 </style>

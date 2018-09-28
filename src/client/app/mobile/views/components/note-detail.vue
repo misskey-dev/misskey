@@ -223,13 +223,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-note-detail
 	overflow hidden
 	width 100%
 	text-align left
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-radius 8px
 	box-shadow 0 0 2px rgba(#000, 0.1)
 
@@ -248,26 +246,26 @@ root(isDark)
 		text-align center
 		color #999
 		cursor pointer
-		background isDark ? #21242d : #fafafa
+		background var(--subNoteBg)
 		outline none
 		border none
-		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
+		border-bottom solid 1px var(--faceDivider)
 		border-radius 6px 6px 0 0
 		box-shadow none
 
 		&:hover
-			background isDark ? #16181d : #f6f6f6
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
-		&:disabled
-			color #ccc
+		&:active
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 	> .conversation
 		> *
-			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+			border-bottom 1px solid var(--faceDivider)
 
 	> .renote
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		> p
 			margin 0
@@ -290,7 +288,7 @@ root(isDark)
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+		border-bottom 1px solid var(--faceDivider)
 
 	> article
 		padding 14px 16px 9px 16px
@@ -323,7 +321,7 @@ root(isDark)
 				> .name
 					display inline-block
 					margin .4em 0
-					color isDark ? #fff : #627079
+					color var(--noteHeaderName)
 					font-size 16px
 					font-weight bold
 					text-align left
@@ -336,7 +334,7 @@ root(isDark)
 					display block
 					text-align left
 					margin 0
-					color isDark ? #606984 : #ccc
+					color var(--noteHeaderAcct)
 
 		> .body
 			padding 8px 0
@@ -347,7 +345,7 @@ root(isDark)
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 				> .text
 					margin-right 8px
@@ -360,7 +358,7 @@ root(isDark)
 					padding 0
 					overflow-wrap break-word
 					font-size 16px
-					color isDark ? #fff : #717171
+					color var(--noteText)
 
 					@media (min-width 500px)
 						font-size 24px
@@ -370,7 +368,7 @@ root(isDark)
 
 					> *
 						padding 16px
-						border dashed 1px #c0dac6
+						border dashed 1px var(--quoteBorder)
 						border-radius 8px
 
 				> .location
@@ -395,7 +393,7 @@ root(isDark)
 
 		> .time
 			font-size 16px
-			color isDark ? #606984 : #c0c0c0
+			color var(--noteHeaderInfo)
 
 		> footer
 			font-size 1.2em
@@ -407,14 +405,14 @@ root(isDark)
 				border none
 				box-shadow none
 				font-size 1em
-				color isDark ? #606984 : #ddd
+				color var(--noteActions)
 				cursor pointer
 
 				&:not(:last-child)
 					margin-right 28px
 
 				&:hover
-					color isDark ? #9198af : #666
+					color var(--noteActionsHover)
 
 				> .count
 					display inline
@@ -422,16 +420,10 @@ root(isDark)
 					color #999
 
 				&.reacted
-					color $theme-color
+					color var(--primary)
 
 	> .replies
 		> *
-			border-top 1px solid isDark ? #1c2023 : #eef0f2
-
-.mk-note-detail[data-darkmode]
-	root(true)
-
-.mk-note-detail:not([data-darkmode])
-	root(false)
+			border-top 1px solid var(--faceDivider)
 
 </style>

@@ -11,8 +11,8 @@
 	</span>
 
 	<div class="editor" style="padding:0 12px" v-if="edit">
-		<mk-switch v-model="column.isMediaOnly" @change="onChangeSettings" text="%i18n:@is-media-only%"/>
-		<mk-switch v-model="column.isMediaView" @change="onChangeSettings" text="%i18n:@is-media-view%"/>
+		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">%i18n:@is-media-only%</ui-switch>
+		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">%i18n:@is-media-view%</ui-switch>
 	</div>
 	<x-list-tl v-if="column.type == 'list'" :list="column.list" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
 	<x-hashtag-tl v-if="column.type == 'hashtag'" :tag-tl="$store.state.settings.tagTimelines.find(x => x.id == column.tagTlId)" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>

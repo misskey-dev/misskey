@@ -14,7 +14,7 @@
 			<div class="main block">
 				<div>
 					<h1 v-if="name != 'Misskey'">{{ name }}</h1>
-					<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
+					<h1 v-else><img svg-inline src="../../../../assets/title.svg" :alt="name"></h1>
 
 					<div class="info">
 						<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
@@ -95,7 +95,7 @@
 		</div>
 	</main>
 
-	<modal name="about" :class="$store.state.device.darkmode ? ['about', 'modal-dark'] : ['about', 'modal-light']" width="800px" height="auto" scrollable>
+	<modal name="about" class="about modal" width="800px" height="auto" scrollable>
 		<article class="fpdezooorhntlzyeszemrsqdlgbysvxq">
 			<h1>%i18n:common.intro.title%</h1>
 			<p v-html="'%i18n:common.intro.about%'"></p>
@@ -134,12 +134,12 @@
 		</article>
 	</modal>
 
-	<modal name="signup" :class="$store.state.device.darkmode ? 'modal-dark' : 'modal-light'" width="450px" height="auto" scrollable>
+	<modal name="signup" class="modal" width="450px" height="auto" scrollable>
 		<header class="formHeader">%i18n:@signup%</header>
 		<mk-signup class="form"/>
 	</modal>
 
-	<modal name="signin" :class="$store.state.device.darkmode ? 'modal-dark' : 'modal-light'" width="450px" height="auto" scrollable>
+	<modal name="signin" class="modal" width="450px" height="auto" scrollable>
 		<header class="formHeader">%i18n:@signin%</header>
 		<mk-signin class="form"/>
 	</modal>
@@ -226,23 +226,7 @@ export default Vue.extend({
 .v--modal-overlay
 	background rgba(0, 0, 0, 0.6)
 
-.modal-light
-	.v--modal-box
-		color #777
-
-		.formHeader
-			border-bottom solid 1px #eee
-
-.modal-dark
-	.v--modal-box
-		background #313543
-		color #fff
-
-		.formHeader
-			border-bottom solid 1px rgba(#000, 0.2)
-
-.modal-light
-.modal-dark
+.modal
 	.form
 		padding 24px 48px 48px 48px
 
@@ -251,6 +235,13 @@ export default Vue.extend({
 		padding 48px 0 12px 0
 		margin 0 48px
 		font-size 1.5em
+
+	.v--modal-box
+		background var(--face)
+		color var(--text)
+
+		.formHeader
+			border-bottom solid 1px rgba(#000, 0.2)
 
 .v--modal-overlay.about
 	.v--modal-box.v--modal
@@ -267,7 +258,7 @@ export default Vue.extend({
 
 	> section
 		> h2
-			border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+			border-bottom 1px solid var(--faceDivider)
 
 		> section
 			display grid
@@ -276,7 +267,7 @@ export default Vue.extend({
 			gap 32px
 			margin-bottom 32px
 			padding-bottom 32px
-			border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+			border-bottom 1px solid var(--faceDivider)
 
 			&:nth-child(odd)
 				grid-template-columns 1fr 180px
@@ -303,15 +294,9 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-welcome
 	display flex
 	min-height 100vh
-	//background-color #00070F
-	//background-image url('/assets/bg.jpg')
-	//background-position center
-	//background-size cover
 
 	> .banner
 		position absolute
@@ -331,7 +316,7 @@ root(isDark)
 			left 0
 			width 100%
 			height 100px
-			background linear-gradient(transparent, isDark ? #191b22 : #f7f7f7)
+			background linear-gradient(transparent, var(--bg))
 
 	> .forkit
 		position absolute
@@ -345,7 +330,7 @@ root(isDark)
 		left 16px
 		padding 16px
 		font-size 18px
-		color isDark ? #fff : #444
+		color var(--text)
 
 	> main
 		margin 0 auto
@@ -354,8 +339,8 @@ root(isDark)
 		max-width 1200px
 
 		.block
-			color isDark ? #fff : #444
-			background isDark ? #282C37 : #fff
+			color var(--text)
+			background var(--face)
 			box-shadow var(--shadow)
 			//border-radius 8px
 			overflow auto
@@ -364,10 +349,8 @@ root(isDark)
 				z-index 1
 				padding 0 16px
 				line-height 48px
-				background isDark ? #313543 : #fff
-
-				if !isDark
-					box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+				background var(--faceHeader)
+				box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
 
 				& + div
 					max-height calc(100% - 48px)
@@ -385,7 +368,7 @@ root(isDark)
 			> .main
 				grid-row 1
 				grid-column 1 / 3
-				border-top solid 5px $theme-color
+				border-top solid 5px var(--primary)
 
 				> div
 					padding 32px
@@ -394,9 +377,11 @@ root(isDark)
 					> h1
 						margin 0
 
-						> img
+						> svg
 							margin -8px 0 0 -16px
-							max-width 280px
+							width 280px
+							height 100px
+							fill currentColor
 
 					> .info
 						margin 0 auto 16px auto
@@ -406,7 +391,7 @@ root(isDark)
 						> .stats
 							margin-left 16px
 							padding-left 16px
-							border-left solid 1px isDark ? #fff : #444
+							border-left solid 1px var(--faceDivider)
 
 							> *
 								margin-right 16px
@@ -426,7 +411,7 @@ root(isDark)
 							cursor pointer
 
 							&:hover
-								color $theme-color
+								color var(--primary)
 
 					> .char
 						display block
@@ -449,7 +434,7 @@ root(isDark)
 					> div
 						padding 0 0 16px 0
 						margin 0 0 16px 0
-						border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+						border-bottom 1px solid var(--faceDivider)
 
 						> h1
 							margin 0
@@ -517,11 +502,5 @@ root(isDark)
 							> p
 								display block
 								margin 0
-
-.mk-welcome[data-darkmode]
-	root(true)
-
-.mk-welcome:not([data-darkmode])
-	root(false)
 
 </style>

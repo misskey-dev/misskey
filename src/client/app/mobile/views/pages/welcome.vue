@@ -3,7 +3,7 @@
 	<div class="banner" :style="{ backgroundImage: banner ? `url(${banner})` : null }"></div>
 
 	<div>
-		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name">
+		<img svg-inline src="../../../../assets/title.svg" :alt="name">
 		<p class="host">{{ host }}</p>
 		<div class="about">
 			<h2>{{ name }}</h2>
@@ -122,9 +122,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.wgwfgvvimdjvhjfwxropcwksnzftjqes
 	text-align center
-	//background #fff
 
 	> .banner
 		position absolute
@@ -144,16 +143,17 @@ root(isDark)
 			left 0
 			width 100%
 			height 100px
-			background linear-gradient(transparent, isDark ? #191b22 : #f7f7f7)
+			background linear-gradient(transparent, var(--bg))
 
 	> div:not(.banner)
 		padding 32px
 		margin 0 auto
 		max-width 500px
 
-		> img
+		> svg
 			display block
-			max-width 200px
+			width 200px
+			height 50px
 			margin 0 auto
 
 		> .host
@@ -169,8 +169,8 @@ root(isDark)
 		> .about
 			margin-top 16px
 			padding 16px
-			color #555
-			background #fff
+			color var(--text)
+			background var(--face)
 			border-radius 6px
 
 			> h2
@@ -238,7 +238,7 @@ root(isDark)
 			margin 16px 0
 			padding 8px
 			font-size 14px
-			color #444
+			color var(--text)
 			background rgba(#000, 0.1)
 			border-radius 6px
 
@@ -249,9 +249,9 @@ root(isDark)
 			margin 16px 0
 
 			> article
-				background isDark ? rgba(30, 129, 216, 0.2) : rgba(155, 196, 232, 0.2)
+				background var(--mobileAnnouncement)
 				border-radius 6px
-				color isDark ? #fff : #3f4967
+				color var(--mobileAnnouncementFg)
 				padding 16px
 				margin 8px 0
 				font-size 12px
@@ -263,10 +263,10 @@ root(isDark)
 			margin 16px 0
 			padding 32px
 			font-size 14px
-			background #fff
+			background var(--face)
 			border-radius 6px
 			overflow hidden
-			color #3a3e46
+			color var(--text)
 
 			> h1
 				margin 0
@@ -279,12 +279,12 @@ root(isDark)
 
 			> section
 				> h2
-					border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+					border-bottom 1px solid var(--faceDivider)
 
 				> section
 					margin-bottom 16px
 					padding-bottom 16px
-					border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
+					border-bottom 1px solid var(--faceDivider)
 
 					> h3
 						margin-bottom 8px
@@ -301,7 +301,7 @@ root(isDark)
 
 		> .info
 			padding 16px 0
-			border solid 2px #ddd
+			border solid 2px rgba(0, 0, 0, 0.1)
 			border-radius 8px
 
 			> *
@@ -309,17 +309,11 @@ root(isDark)
 
 		> footer
 			text-align center
-			color #444
+			color var(--text)
 
 			> small
 				display block
 				margin 16px 0 0 0
 				opacity 0.7
-
-.wgwfgvvimdjvhjfwxropcwksnzftjqes[data-darkmode]
-	root(true)
-
-.wgwfgvvimdjvhjfwxropcwksnzftjqes:not([data-darkmode])
-	root(false)
 
 </style>

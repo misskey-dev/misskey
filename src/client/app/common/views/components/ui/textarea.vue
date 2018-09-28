@@ -63,9 +63,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark, fill)
+root(fill)
 	margin 42px 0 32px 0
 
 	> .input
@@ -84,7 +82,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				background none
-				border solid 1px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.42)
+				border solid 1px var(--inputBorder)
 				border-radius 3px
 				pointer-events none
 
@@ -97,7 +95,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				background none
-				border solid 2px $theme-color
+				border solid 2px var(--primary)
 				border-radius 3px
 				opacity 0
 				transition opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)
@@ -112,7 +110,7 @@ root(isDark, fill)
 			transition-duration 0.3s
 			font-size 16px
 			line-height 32px
-			color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+			color var(--inputLabel)
 			pointer-events none
 			//will-change transform
 			transform-origin top left
@@ -126,7 +124,7 @@ root(isDark, fill)
 			font inherit
 			font-weight fill ? bold : normal
 			font-size 16px
-			color isDark ? #fff : #000
+			color var(--inputText)
 			background transparent
 			border none
 			border-radius 0
@@ -149,7 +147,7 @@ root(isDark, fill)
 					opacity 1
 
 			> .label
-				color $theme-color
+				color var(--primary)
 
 	&.focused
 	&.filled
@@ -159,16 +157,10 @@ root(isDark, fill)
 				left 0 !important
 				transform scale(0.75)
 
-.ui-textarea[data-darkmode]
-	&.fill
-		root(true, true)
-	&:not(.fill)
-		root(true, false)
+.ui-textarea.fill
+	root(true)
 
-.ui-textarea:not([data-darkmode])
-	&.fill
-		root(false, true)
-	&:not(.fill)
-		root(false, false)
+.ui-textarea:not(.fill)
+	root(false)
 
 </style>

@@ -5,13 +5,14 @@
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="main">
-			<p ref="welcomeback" v-if="$store.getters.isSignedIn">%i18n:@welcome-back%<b>{{ $store.state.i | userName }}</b>%i18n:@adjective%</p>
 			<div class="container" ref="mainContainer">
 				<div class="left">
 					<x-nav/>
 				</div>
 				<div class="center">
-					<div class="icon" @click="goToTop"></div>
+					<div class="icon" @click="goToTop">
+						<img svg-inline src="../../assets/header-icon.svg"/>
+					</div>
 				</div>
 				<div class="right">
 					<x-search/>
@@ -64,55 +65,6 @@ export default Vue.extend({
 
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', this.$el.offsetHeight);
-
-		if (this.$store.getters.isSignedIn) {
-			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
-			const isHisasiburi = ago >= 3600;
-			this.$store.state.i.lastUsedAt = new Date();
-
-			if (isHisasiburi) {
-				(this.$refs.welcomeback as any).style.display = 'block';
-				(this.$refs.main as any).style.overflow = 'hidden';
-
-				anime({
-					targets: this.$refs.welcomeback,
-					top: '0',
-					opacity: 1,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				anime({
-					targets: this.$refs.mainContainer,
-					opacity: 0,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				setTimeout(() => {
-					anime({
-						targets: this.$refs.welcomeback,
-						top: '-48px',
-						opacity: 0,
-						duration: 500,
-						complete: () => {
-							(this.$refs.welcomeback as any).style.display = 'none';
-							(this.$refs.main as any).style.overflow = 'initial';
-						},
-						easing: 'easeInQuad'
-					});
-
-					anime({
-						targets: this.$refs.mainContainer,
-						opacity: 1,
-						duration: 500,
-						easing: 'easeInQuad'
-					});
-				}, 2500);
-			}
-		}
 	},
 
 	methods: {
@@ -127,7 +79,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.header
 	position fixed
 	top 0
 	z-index 1000
@@ -151,7 +103,7 @@ root(isDark)
 			z-index 1000
 			width 100%
 			height 48px
-			background isDark ? #313543 : #f7f7f7
+			background var(--desktopHeaderBg)
 
 		> .main
 			z-index 1001
@@ -160,17 +112,6 @@ root(isDark)
 			background-clip content-box
 			font-size 0.9rem
 			user-select none
-
-			> p
-				display none
-				position absolute
-				top 48px
-				width 100%
-				line-height 48px
-				margin 0
-				text-align center
-				color isDark ? #fff : #888
-				opacity 0
 
 			> .container
 				display flex
@@ -189,13 +130,15 @@ root(isDark)
 						margin auto
 						display block
 						width 48px
-						height 48px
-						background-image isDark ? url('/assets/desktop/header-icon.dark.svg') : url('/assets/desktop/header-icon.light.svg')
-						background-size 24px
-						background-position center
-						background-repeat no-repeat
-						opacity 0.3
+						text-align center
 						cursor pointer
+						opacity 0.5
+
+						> svg
+							width 24px
+							height 48px
+							vertical-align top
+							fill var(--desktopHeaderFg)
 
 				> .left,
 				> .center
@@ -211,11 +154,5 @@ root(isDark)
 					@media (max-width 1100px)
 						> .mk-ui-header-search
 							display none
-
-.header[data-darkmode]
-	root(true)
-
-.header:not([data-darkmode])
-	root(false)
 
 </style>

@@ -446,12 +446,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-post-form
 	display block
 	padding 16px
-	background isDark ? #282C37 : lighten($theme-color, 95%)
+	background var(--desktopPostFormBg)
 
 	&:after
 		content ""
@@ -465,26 +463,26 @@ root(isDark)
 			width 100%
 			padding 12px
 			font-size 16px
-			color isDark ? #fff : #333
-			background isDark ? #191d23 : #fff
+			color var(--desktopPostFormTextareaFg)
+			background var(--desktopPostFormTextareaBg)
 			outline none
-			border solid 1px rgba($theme-color, 0.1)
+			border solid 1px var(--primaryAlpha01)
 			border-radius 4px
 			transition border-color .2s ease
 
 			&:hover
-				border-color rgba($theme-color, 0.2)
+				border-color var(--primaryAlpha02)
 				transition border-color .1s ease
 
 			&:focus
-				border-color rgba($theme-color, 0.5)
+				border-color var(--primaryAlpha05)
 				transition border-color 0s ease
 
 			&:disabled
 				opacity 0.5
 
 			&::-webkit-input-placeholder
-				color rgba($theme-color, 0.3)
+				color var(--primaryAlpha03)
 
 		> input
 			margin-bottom 8px
@@ -498,17 +496,17 @@ root(isDark)
 			&:hover
 				& + *
 				& + * + *
-					border-color rgba($theme-color, 0.2)
+					border-color var(--primaryAlpha02)
 					transition border-color .1s ease
 
 			&:focus
 				& + *
 				& + * + *
-					border-color rgba($theme-color, 0.5)
+					border-color var(--primaryAlpha05)
 					transition border-color 0s ease
 
 			&.with
-				border-bottom solid 1px rgba($theme-color, 0.1) !important
+				border-bottom solid 1px var(--primaryAlpha01) !important
 				border-radius 4px 4px 0 0
 
 		> .visibleUsers
@@ -517,7 +515,7 @@ root(isDark)
 
 			> span
 				margin-right 16px
-				color isDark ? #fff : #666
+				color var(--primary)
 
 		> .hashtags
 			margin 0 0 8px 0
@@ -526,7 +524,7 @@ root(isDark)
 			font-size 14px
 
 			> b
-				color isDark ? #9baec8 : darken($theme-color, 20%)
+				color var(--primary)
 
 			> *
 				margin-right 8px
@@ -535,14 +533,14 @@ root(isDark)
 		> .files
 			margin 0
 			padding 0
-			background isDark ? #181b23 : lighten($theme-color, 98%)
-			border solid 1px rgba($theme-color, 0.1)
+			background var(--desktopPostFormTextareaBg)
+			border solid 1px var(--primaryAlpha01)
 			border-top none
 			border-radius 0 0 4px 4px
 			transition border-color .3s ease
 
 			&.with
-				border-bottom solid 1px rgba($theme-color, 0.1) !important
+				border-bottom solid 1px var(--primaryAlpha01) !important
 				border-radius 0
 
 			> .remain
@@ -552,7 +550,7 @@ root(isDark)
 				right 8px
 				margin 0
 				padding 0
-				color rgba($theme-color, 0.4)
+				color var(--primaryAlpha04)
 
 			> div
 				padding 4px
@@ -586,8 +584,8 @@ root(isDark)
 						cursor pointer
 
 		> .mk-poll-editor
-			background isDark ? #181b23 : lighten($theme-color, 98%)
-			border solid 1px rgba($theme-color, 0.1)
+			background var(--desktopPostFormTextareaBg)
+			border solid 1px var(--primaryAlpha01)
 			border-top none
 			border-radius 0 0 4px 4px
 			transition border-color .3s ease
@@ -595,7 +593,7 @@ root(isDark)
 	> .mk-uploader
 		margin 8px 0 0 0
 		padding 8px
-		border solid 1px rgba($theme-color, 0.2)
+		border solid 1px var(--primaryAlpha02)
 		border-radius 4px
 
 	input[type='file']
@@ -612,22 +610,20 @@ root(isDark)
 		width 110px
 		height 40px
 		font-size 1em
-		color $theme-color-foreground
-		background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
+		color var(--primaryForeground)
+		background var(--primary)
 		outline none
-		border solid 1px lighten($theme-color, 15%)
+		border none
 		border-radius 4px
 
 		&:not(:disabled)
 			font-weight bold
 
 		&:hover:not(:disabled)
-			background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-			border-color $theme-color
+			background var(--primaryLighten5)
 
 		&:active:not(:disabled)
-			background $theme-color
-			border-color $theme-color
+			background var(--primaryDarken5)
 
 		&:focus
 			&:after
@@ -638,7 +634,7 @@ root(isDark)
 				right -5px
 				bottom -5px
 				left -5px
-				border 2px solid rgba($theme-color, 0.3)
+				border 2px solid var(--primaryAlpha03)
 				border-radius 8px
 
 		&:disabled
@@ -648,13 +644,13 @@ root(isDark)
 		&.wait
 			background linear-gradient(
 				45deg,
-				darken($theme-color, 10%) 25%,
-				$theme-color              25%,
-				$theme-color              50%,
-				darken($theme-color, 10%) 50%,
-				darken($theme-color, 10%) 75%,
-				$theme-color              75%,
-				$theme-color
+				var(--primaryDarken10) 25%,
+				var(--primary)              25%,
+				var(--primary)              50%,
+				var(--primaryDarken10) 50%,
+				var(--primaryDarken10) 75%,
+				var(--primary)              75%,
+				var(--primary)
 			)
 			background-size 32px 32px
 			animation stripe-bg 1.5s linear infinite
@@ -673,7 +669,7 @@ root(isDark)
 		right 138px
 		margin 0
 		line-height 40px
-		color rgba($theme-color, 0.5)
+		color var(--primaryAlpha05)
 
 		&.over
 			color #ec3828
@@ -691,7 +687,7 @@ root(isDark)
 		width 40px
 		height 40px
 		font-size 1em
-		color isDark ? $theme-color : rgba($theme-color, 0.5)
+		color var(--desktopPostFormTransparentButtonFg)
 		background transparent
 		outline none
 		border solid 1px transparent
@@ -699,12 +695,12 @@ root(isDark)
 
 		&:hover
 			background transparent
-			border-color isDark ? rgba($theme-color, 0.5) : rgba($theme-color, 0.3)
+			border-color var(--primaryAlpha03)
 
 		&:active
-			color rgba($theme-color, 0.6)
-			background isDark ? transparent : linear-gradient(to bottom, lighten($theme-color, 80%) 0%, lighten($theme-color, 90%) 100%)
-			border-color rgba($theme-color, 0.5)
+			color var(--primaryAlpha06)
+			background linear-gradient(to bottom, var(--desktopPostFormTransparentButtonActiveGradientStart) 0%, var(--desktopPostFormTransparentButtonActiveGradientEnd) 100%)
+			border-color var(--primaryAlpha05)
 			box-shadow 0 2px 4px rgba(#000, 0.15) inset
 
 		&:focus
@@ -716,7 +712,7 @@ root(isDark)
 				right -5px
 				bottom -5px
 				left -5px
-				border 2px solid rgba($theme-color, 0.3)
+				border 2px solid var(--primaryAlpha03)
 				border-radius 8px
 
 	> .dropzone
@@ -725,13 +721,7 @@ root(isDark)
 		top 0
 		width 100%
 		height 100%
-		border dashed 2px rgba($theme-color, 0.5)
+		border dashed 2px var(--primaryAlpha05)
 		pointer-events none
-
-.mk-post-form[data-darkmode]
-	root(true)
-
-.mk-post-form:not([data-darkmode])
-	root(false)
 
 </style>

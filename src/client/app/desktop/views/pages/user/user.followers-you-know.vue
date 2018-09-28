@@ -36,8 +36,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-	background isDark ? #282C37 : #fff
+.vahgrswmbzfdlmomxnqftuueyvwaafth
+	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
 
@@ -48,7 +48,7 @@ root(isDark)
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color isDark ? #e3e5e8 : #888
+		color var(--faceHeaderText)
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
@@ -76,11 +76,5 @@ root(isDark)
 
 		> i
 			margin-right 4px
-
-.vahgrswmbzfdlmomxnqftuueyvwaafth[data-darkmode]
-	root(true)
-
-.vahgrswmbzfdlmomxnqftuueyvwaafth:not([data-darkmode])
-	root(false)
 
 </style>

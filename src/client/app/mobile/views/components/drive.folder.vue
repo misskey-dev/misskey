@@ -24,9 +24,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.jvwxssxsytqlqvrpiymarjlzlsxskqsr
 	display block
-	color isDark ? #fff : #777
+	color var(--text)
 	text-decoration none !important
 
 	*
@@ -54,11 +54,5 @@ root(isDark)
 
 			> *
 				height 100%
-
-.jvwxssxsytqlqvrpiymarjlzlsxskqsr[data-darkmode]
-	root(true)
-
-.jvwxssxsytqlqvrpiymarjlzlsxskqsr:not([data-darkmode])
-	root(false)
 
 </style>

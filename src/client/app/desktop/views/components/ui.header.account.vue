@@ -127,14 +127,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.account
 	> .header
 		display block
 		margin 0
 		padding 0
-		color #9eaba8
+		color var(--desktopHeaderFg)
 		border none
 		background transparent
 		cursor pointer
@@ -144,13 +142,10 @@ root(isDark)
 
 		&:hover
 		&[data-active='true']
-			color isDark ? #fff : darken(#9eaba8, 20%)
+			color var(--desktopHeaderHoverFg)
 
 			> .avatar
 				filter saturate(150%)
-
-		&:active
-			color isDark ? #fff : darken(#9eaba8, 30%)
 
 		> .username
 			display block
@@ -177,7 +172,7 @@ root(isDark)
 			transition filter 100ms ease
 
 	> .menu
-		$bgcolor = isDark ? #282c37 : #fff
+		$bgcolor = var(--face)
 		display block
 		position absolute
 		top 56px
@@ -220,7 +215,7 @@ root(isDark)
 
 			& + ul
 				padding-top 10px
-				border-top solid 1px isDark ? #1c2023 : #eee
+				border-top solid 1px var(--faceDivider)
 
 			> li
 				display block
@@ -234,7 +229,7 @@ root(isDark)
 					padding 0 28px
 					margin 0
 					line-height 40px
-					color isDark ? #c8cece : #868C8C
+					color var(--text)
 					cursor pointer
 
 					*
@@ -249,8 +244,8 @@ root(isDark)
 							padding 2px 8px
 							font-size 90%
 							font-style normal
-							background $theme-color
-							color $theme-color-foreground
+							background var(--primary)
+							color var(--primaryForeground)
 							border-radius 8px
 
 					> [data-fa]:first-child
@@ -269,11 +264,11 @@ root(isDark)
 
 					&:hover, &:active
 						text-decoration none
-						background $theme-color
-						color $theme-color-foreground
+						background var(--primary)
+						color var(--primaryForeground)
 
 					&:active
-						background darken($theme-color, 10%)
+						background var(--primaryDarken10)
 
 					&.signout
 						$color = #e64137
@@ -289,11 +284,5 @@ root(isDark)
 .zoom-in-top-leave-active {
 	transform-origin: center -16px;
 }
-
-.account[data-darkmode]
-	root(true)
-
-.account:not([data-darkmode])
-	root(false)
 
 </style>

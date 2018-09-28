@@ -47,19 +47,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-root(isDark)
+.vfcitkilproprqtbnpoertpsziierwzi
 	> .timeline
 		padding-bottom 16px
 		border-bottom solid 1px rgba(#000, 0.1)
 
 	> .add
 		margin-top 16px
-
-.vfcitkilproprqtbnpoertpsziierwzi[data-darkmode]
-	root(true)
-
-.vfcitkilproprqtbnpoertpsziierwzi:not([data-darkmode])
-	root(false)
 
 </style>

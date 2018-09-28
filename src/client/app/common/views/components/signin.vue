@@ -68,7 +68,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-signin
 	color #555

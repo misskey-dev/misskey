@@ -41,11 +41,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.zlrxdaqttccpwhpaagdmkawtzklsccam
 	display flex
 	padding 16px
 	font-size 10px
-	background isDark ? #21242d : #fcfcfc
+	background var(--subNoteBg)
 
 	@media (min-width 350px)
 		font-size 12px
@@ -95,7 +95,7 @@ root(isDark)
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 				> .text
 					margin-right 8px
@@ -104,16 +104,10 @@ root(isDark)
 				> .text
 					margin 0
 					padding 0
-					color isDark ? #959ba7 : #717171
+					color var(--subNoteText)
 
 					pre
 						max-height 120px
 						font-size 80%
-
-.zlrxdaqttccpwhpaagdmkawtzklsccam[data-darkmode]
-	root(true)
-
-.zlrxdaqttccpwhpaagdmkawtzklsccam:not([data-darkmode])
-	root(false)
 
 </style>

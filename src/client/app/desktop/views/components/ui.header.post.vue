@@ -17,7 +17,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .note
 	display inline-block
@@ -33,8 +33,8 @@ export default Vue.extend({
 		font-size 1.2em
 		font-weight normal
 		text-decoration none
-		color $theme-color-foreground
-		background $theme-color !important
+		color var(--primaryForeground)
+		background var(--primary) !important
 		outline none
 		border none
 		border-radius 4px
@@ -45,10 +45,10 @@ export default Vue.extend({
 			pointer-events none
 
 		&:hover
-			background lighten($theme-color, 10%) !important
+			background var(--primaryLighten10) !important
 
 		&:active
-			background darken($theme-color, 10%) !important
+			background var(--primaryDarken10) !important
 			transition background 0s ease
 
 </style>

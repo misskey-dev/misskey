@@ -41,11 +41,11 @@ export default Vue.extend({
 
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-mute-button
   display block
-  user-select none 
+  user-select none
   cursor pointer
   padding 0 16px
   margin 0
@@ -53,27 +53,27 @@ export default Vue.extend({
   line-height 36px
   font-size 14px
   font-weight bold
-  color $theme-color
+  color var(--primary)
   background transparent
   outline none
-  border solid 1px $theme-color
+  border solid 1px var(--primary)
   border-radius 36px
 
   &:hover
-    background rgba($theme-color, 0.1)
+    background var(--primaryAlpha01)
 
   &:active
-    background rgba($theme-color, 0.2)
+    background var(--primaryAlpha02)
 
   &.active
-    color $theme-color-foreground
-    background $theme-color
+    color var(--primaryForeground)
+    background var(--primary)
 
     &:hover
-      background lighten($theme-color, 10%)
-      border-color lighten($theme-color, 10%)
+      background var(--primaryLighten10)
+      border-color var(--primaryLighten10)
     &:active
-      background darken($theme-color, 10%)
-      border-color darken($theme-color, 10%)
+      background var(--primaryDarken10)
+      border-color var(--primaryDarken10)
 
 </style>

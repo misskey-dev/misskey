@@ -135,6 +135,8 @@ module.exports = {
 					}
 				}
 			}, {
+				loader: 'vue-svg-inline-loader'
+			}, {
 				loader: 'replace',
 				query: {
 					qs: [{

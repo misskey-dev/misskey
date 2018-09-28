@@ -117,10 +117,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-	$bg-color = isDark ? #2c303c : #fff
+.onchrpzrvnoruiaenfcqvccjfuupzzwv
+	$bg-color = var(--popupBg)
 	$border-color = rgba(27, 31, 35, 0.15)
 
 	position initial
@@ -132,7 +130,7 @@ root(isDark)
 		z-index 10000
 		width 100%
 		height 100%
-		background rgba(#000, isDark ? 0.5 : 0.1)
+		background var(--modalBackdrop)
 		opacity 0
 
 	> .popover
@@ -179,26 +177,20 @@ root(isDark)
 			display block
 			padding 8px 16px
 			width 100%
-			color isDark ? #d6dce2 : #111
+			color var(--popupFg)
 
 			&:hover
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 				text-decoration none
 
 			&:active
-				color $theme-color-foreground
-				background darken($theme-color, 10%)
+				color var(--primaryForeground)
+				background var(--primaryDarken10)
 
 		> div
 			margin 8px 0
 			height 1px
-			background isDark ? #1c2023 : #eee
-
-.onchrpzrvnoruiaenfcqvccjfuupzzwv[data-darkmode]
-	root(true)
-
-.onchrpzrvnoruiaenfcqvccjfuupzzwv:not([data-darkmode])
-	root(false)
+			background var(--faceDivider)
 
 </style>

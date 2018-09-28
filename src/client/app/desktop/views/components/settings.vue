@@ -20,17 +20,24 @@
 		</section>
 
 		<section class="web" v-show="page == 'web'">
+			<h1>%i18n:@theme%</h1>
+			<mk-theme/>
+		</section>
+
+		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@behaviour%</h1>
-			<mk-switch v-model="fetchOnScroll" text="%i18n:@fetch-on-scroll%">
-				<span>%i18n:@fetch-on-scroll-desc%</span>
-			</mk-switch>
-			<mk-switch v-model="autoPopout" text="%i18n:@auto-popout%">
-				<span>%i18n:@auto-popout-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="fetchOnScroll">
+				%i18n:@fetch-on-scroll%
+				<span slot="desc">%i18n:@fetch-on-scroll-desc%</span>
+			</ui-switch>
+			<ui-switch v-model="autoPopout">
+				%i18n:@auto-popout%
+				<span slot="desc">%i18n:@auto-popout-desc%</span>
+			</ui-switch>
 
 			<section>
 				<header>%i18n:@note-visibility%</header>
-				<mk-switch v-model="rememberNoteVisibility" text="%i18n:@remember-note-visibility%"/>
+				<ui-switch v-model="rememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
 				<section>
 					<header>%i18n:@default-note-visibility%</header>
 					<ui-select v-model="defaultNoteVisibility">
@@ -45,9 +52,10 @@
 
 			<details>
 				<summary>%i18n:@advanced%</summary>
-				<mk-switch v-model="apiViaStream" text="%i18n:@api-via-stream%">
-					<span>%i18n:@api-via-stream-desc%</span>
-				</mk-switch>
+				<ui-switch v-model="apiViaStream">
+					%i18n:@api-via-stream%
+					<span slot="desc">%i18n:@api-via-stream-desc%</span>
+				</ui-switch>
 			</details>
 		</section>
 
@@ -59,37 +67,35 @@
 			<div class="div">
 				<button class="ui" @click="updateWallpaper">%i18n:@choose-wallpaper%</button>
 				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
-				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
-				<mk-switch v-model="useShadow" text="%i18n:@use-shadow%"/>
-				<mk-switch v-model="roundedCorners" text="%i18n:@rounded-corners%"/>
-				<mk-switch v-model="circleIcons" text="%i18n:@circle-icons%"/>
-				<mk-switch v-model="reduceMotion" text="%i18n:common.reduce-motion%"/>
-				<mk-switch v-model="contrastedAcct" text="%i18n:@contrasted-acct%"/>
-				<mk-switch v-model="showFullAcct" text="%i18n:common.show-full-acct%"/>
-				<mk-switch v-model="gradientWindowHeader" text="%i18n:@gradient-window-header%"/>
-				<mk-switch v-model="iLikeSushi" text="%i18n:common.i-like-sushi%"/>
+				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
+				<ui-switch v-model="useShadow">%i18n:@use-shadow%</ui-switch>
+				<ui-switch v-model="roundedCorners">%i18n:@rounded-corners%</ui-switch>
+				<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
+				<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion%</ui-switch>
+				<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
+				<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
+				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 			</div>
-			<mk-switch v-model="showPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
-			<mk-switch v-model="suggestRecentHashtags" text="%i18n:@suggest-recent-hashtags%"/>
-			<mk-switch v-model="showClockOnHeader" text="%i18n:@show-clock-on-header%"/>
-			<mk-switch v-model="alwaysShowNsfw" text="%i18n:common.always-show-nsfw%"/>
-			<mk-switch v-model="showReplyTarget" text="%i18n:@show-reply-target%"/>
-			<mk-switch v-model="showMyRenotes" text="%i18n:@show-my-renotes%"/>
-			<mk-switch v-model="showRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
-			<mk-switch v-model="showLocalRenotes" text="%i18n:@show-local-renotes%"/>
-			<mk-switch v-model="showMaps" text="%i18n:@show-maps%">
-				<span>%i18n:@show-maps-desc%</span>
-			</mk-switch>
-			<mk-switch v-model="disableAnimatedMfm" text="%i18n:common.disable-animated-mfm%"/>
-			<mk-switch v-model="games_reversi_showBoardLabels" text="%i18n:common.show-reversi-board-labels%"/>
-			<mk-switch v-model="games_reversi_useContrastStones" text="%i18n:common.use-contrast-reversi-stones%"/>
+			<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
+			<ui-switch v-model="suggestRecentHashtags">%i18n:@suggest-recent-hashtags%</ui-switch>
+			<ui-switch v-model="showClockOnHeader">%i18n:@show-clock-on-header%</ui-switch>
+			<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw%</ui-switch>
+			<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>
+			<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
+			<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
+			<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
+			<ui-switch v-model="showMaps">%i18n:@show-maps%</ui-switch>
+			<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
+			<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
+			<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@sound%</h1>
-			<mk-switch v-model="enableSounds" text="%i18n:@enable-sounds%">
-				<span>%i18n:@enable-sounds-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="enableSounds">
+				%i18n:@enable-sounds%
+				<span slot="desc">%i18n:@enable-sounds-desc%</span>
+			</ui-switch>
 			<label>%i18n:@volume%</label>
 			<input type="range"
 				v-model="soundVolume"
@@ -102,7 +108,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@mobile%</h1>
-			<mk-switch v-model="disableViaMobile" text="%i18n:@disable-via-mobile%"/>
+			<ui-switch v-model="disableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -131,9 +137,10 @@
 
 		<section class="notification" v-show="page == 'notification'">
 			<h1>%i18n:@notification%</h1>
-			<mk-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch" text="%i18n:@auto-watch%">
-				<span>%i18n:@auto-watch-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
+				%i18n:@auto-watch%
+				<span slot="desc">%i18n:@auto-watch-desc%</span>
+			</ui-switch>
 		</section>
 
 		<section class="drive" v-show="page == 'drive'">
@@ -201,20 +208,23 @@
 			</button>
 			<details>
 				<summary>%i18n:@update-settings%</summary>
-				<mk-switch v-model="preventUpdate" text="%i18n:@prevent-update%">
-					<span>%i18n:@prevent-update-desc%</span>
-				</mk-switch>
+				<ui-switch v-model="preventUpdate">
+					%i18n:@prevent-update%
+					<span slot="desc">%i18n:@prevent-update-desc%</span>
+				</ui-switch>
 			</details>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
 			<h1>%i18n:@advanced-settings%</h1>
-			<mk-switch v-model="debug" text="%i18n:@debug-mode%">
-				<span>%i18n:@debug-mode-desc%</span>
-			</mk-switch>
-			<mk-switch v-model="enableExperimentalFeatures" text="%i18n:@experimental%">
-				<span>%i18n:@experimental-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="debug">
+				%i18n:@debug-mode%
+				<span slot="desc">%i18n:@debug-mode-desc%</span>
+			</ui-switch>
+			<ui-switch v-model="enableExperimentalFeatures">
+				%i18n:@experimental%
+				<span slot="desc">%i18n:@experimental-desc%</span>
+			</ui-switch>
 		</section>
 	</div>
 </div>
@@ -421,12 +431,7 @@ export default Vue.extend({
 		disableViaMobile: {
 			get() { return this.$store.state.settings.disableViaMobile; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
-		},
-
-		gradientWindowHeader: {
-			get() { return this.$store.state.settings.gradientWindowHeader; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'gradientWindowHeader', value }); }
-		},
+		}
 	},
 	created() {
 		(this as any).os.getMeta().then(meta => {
@@ -492,9 +497,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-settings
 	display flex
 	width 100%
 	height 100%
@@ -505,13 +508,13 @@ root(isDark)
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		border-right solid 1px isDark ? #1c2023 : #ddd
+		border-right solid 1px var(--faceDivider)
 
 		> p
 			display block
 			padding 10px 16px
 			margin 0
-			color isDark ? #9aa2a7 : #666
+			color var(--desktopSettingsNavItem)
 			cursor pointer
 			user-select none
 			transition margin-left 0.2s ease
@@ -520,11 +523,11 @@ root(isDark)
 				margin-right 4px
 
 			&:hover
-				color isDark ? #fff : #555
+				color var(--desktopSettingsNavItemHover)
 
 			&.active
 				margin-left 8px
-				color $theme-color !important
+				color var(--primary) !important
 
 	> .pages
 		width 100%
@@ -534,14 +537,13 @@ root(isDark)
 
 		> section
 			margin 32px
-			color isDark ? #c4ccd2 : #4a535a
+			color var(--text)
 
 			> h1
 				margin 0 0 1em 0
 				padding 0 0 8px 0
 				font-size 1em
-				color isDark ? #e3e7ea : #555
-				border-bottom solid 1px isDark ? #1c2023 : #eee
+				border-bottom solid 1px var(--faceDivider)
 
 			&, >>> *
 				.ui.button.block
@@ -554,18 +556,12 @@ root(isDark)
 						margin 0 0 1em 0
 						padding 0 0 8px 0
 						font-size 1em
-						color isDark ? #e3e7ea : #555
-						border-bottom solid 1px isDark ? #1c2023 : #eee
+						color var(--text)
+						border-bottom solid 1px var(--faceDivider)
 
 		> .web
 			> .div
-				border-bottom solid 1px isDark ? #1c2023 : #eee
+				border-bottom solid 1px var(--faceDivider)
 				margin 16px 0
-
-.mk-settings[data-darkmode]
-	root(true)
-
-.mk-settings:not([data-darkmode])
-	root(false)
 
 </style>

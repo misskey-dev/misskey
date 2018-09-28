@@ -37,7 +37,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-@import '~const.styl'
+
 
 .body
 	padding 18px 24px 24px 24px
@@ -53,7 +53,7 @@ export default Vue.extend({
 	margin 0 0 4px 0
 	text-align center
 	line-height 16px
-	color rgba($theme-color, 0.7)
+	color var(--primaryAlpha07)
 
 	&:after
 		content '%'
@@ -69,21 +69,21 @@ export default Vue.extend({
 	overflow hidden
 
 	&::-webkit-progress-value
-		background $theme-color
+		background var(--primary)
 
 	&::-webkit-progress-bar
-		background rgba($theme-color, 0.1)
+		background var(--primaryAlpha01)
 
 .waiting
 	background linear-gradient(
 		45deg,
-		lighten($theme-color, 30%) 25%,
-		$theme-color               25%,
-		$theme-color               50%,
-		lighten($theme-color, 30%) 50%,
-		lighten($theme-color, 30%) 75%,
-		$theme-color               75%,
-		$theme-color
+		var(--primaryLighten30) 25%,
+		var(--primary)               25%,
+		var(--primary)               50%,
+		var(--primaryLighten30) 50%,
+		var(--primaryLighten30) 75%,
+		var(--primary)               75%,
+		var(--primary)
 	)
 	background-size 32px 32px
 	animation progress-dialog-tag-progress-waiting 1.5s linear infinite

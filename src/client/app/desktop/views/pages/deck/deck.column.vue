@@ -269,24 +269,22 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs
 	$header-height = 42px
 
 	width 330px
 	min-width 330px
 	height 100%
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-radius 6px
 	//box-shadow 0 2px 16px rgba(#000, 0.1)
 	overflow hidden
 
 	&.draghover
-		box-shadow 0 0 0 2px rgba($theme-color, 0.8)
+		box-shadow 0 0 0 2px var(--primaryAlpha08)
 
 	&.dragging
-		box-shadow 0 0 0 2px rgba($theme-color, 0.4)
+		box-shadow 0 0 0 2px var(--primaryAlpha04)
 
 	&.dropready
 		*
@@ -301,15 +299,14 @@ root(isDark)
 		min-width 285px
 
 	&.naked
-		background rgba(#000, isDark ? 0.25 : 0.1)
+		background var(--deckAcrylicColumnBg)
 
 		> header
 			background transparent
 			box-shadow none
 
-			if !isDark
-				> button
-					color #bbb
+			> button
+				color var(--text)
 
 	> header
 		display flex
@@ -317,8 +314,8 @@ root(isDark)
 		line-height $header-height
 		padding 0 16px
 		font-size 14px
-		color isDark ? #e3e5e8 : #888
-		background isDark ? #313543 : #fff
+		color var(--faceHeaderText)
+		background var(--faceHeader)
 		box-shadow 0 1px rgba(#000, 0.15)
 		cursor pointer
 
@@ -329,7 +326,7 @@ root(isDark)
 			pointer-events none
 
 		&.indicate
-			box-shadow 0 3px 0 0 $theme-color
+			box-shadow 0 3px 0 0 var(--primary)
 
 		> span
 			[data-fa]
@@ -344,13 +341,13 @@ root(isDark)
 			width $header-height
 			line-height $header-height
 			font-size 16px
-			color isDark ? #9baec8 : #ccc
+			color var(--faceTextButton)
 
 			&:hover
-				color isDark ? #b2c1d5 : #aaa
+				color var(--faceTextButtonHover)
 
 			&:active
-				color isDark ? #b2c1d5 : #999
+				color var(--faceTextButtonActive)
 
 		> .toggleActive
 			margin-left -16px
@@ -363,11 +360,5 @@ root(isDark)
 		height "calc(100% - %s)" % $header-height
 		overflow auto
 		overflow-x hidden
-
-.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs[data-darkmode]
-	root(true)
-
-.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs:not([data-darkmode])
-	root(false)
 
 </style>

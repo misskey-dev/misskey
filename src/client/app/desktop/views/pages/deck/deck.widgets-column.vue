@@ -135,9 +135,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.wtdtxvecapixsepjtcupubtsmometobz
 	.gqpwvtwtprsbmnssnbicggtwqhmylhnq
 		> header
 			padding 16px
@@ -168,15 +166,6 @@ root(isDark)
 				color #fff
 				background rgba(#000, 0.7)
 				border-radius 4px
-
-		> header
-			color isDark ? #fff : #000
-
-.wtdtxvecapixsepjtcupubtsmometobz[data-darkmode]
-	root(true)
-
-.wtdtxvecapixsepjtcupubtsmometobz:not([data-darkmode])
-	root(false)
 
 </style>
 

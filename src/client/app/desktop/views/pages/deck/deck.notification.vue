@@ -109,7 +109,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.dsfykdcjpuwfvpefwufddclpjhzktmpw
 	> .notification
 		padding 16px
 		font-size 13px
@@ -142,14 +142,14 @@ root(isDark)
 
 				> .mk-time
 					margin-left auto
-					color isDark ? #606984 : #c0c0c0
+					color var(--noteHeaderInfo)
 					font-size 0.9em
 
 			> .note-preview
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 			> .note-ref
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 				[data-fa]
 					font-size 1em
@@ -169,11 +169,5 @@ root(isDark)
 		&.receiveFollowRequest
 			> div > header i
 				color #888
-
-.dsfykdcjpuwfvpefwufddclpjhzktmpw[data-darkmode]
-	root(true)
-
-.dsfykdcjpuwfvpefwufddclpjhzktmpw:not([data-darkmode])
-	root(false)
 
 </style>

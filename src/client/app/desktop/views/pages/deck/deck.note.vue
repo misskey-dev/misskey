@@ -214,9 +214,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-mediaRoot(isDark)
+.srwrkujossgfuhrbnvqkybtzxpblgchi
 	font-size 13px
 	margin 4px 12px
 
@@ -226,9 +224,9 @@ mediaRoot(isDark)
 	&:last-child
 		margin-bottom 12px
 
-root(isDark)
+.zyjjkidcqjnlegkqebitfviomuqmseqk
 	font-size 13px
-	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+	border-bottom solid 1px var(--faceDivider)
 
 	&:last-of-type
 		border-bottom none
@@ -246,8 +244,8 @@ root(isDark)
 		padding 8px 16px 0 16px
 		line-height 28px
 		white-space pre
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		.avatar
 			flex-shrink 0
@@ -309,23 +307,10 @@ root(isDark)
 					margin 0
 					padding 0
 					overflow-wrap break-word
-					color isDark ? #fff : #717171
+					color var(--noteText)
 
 					> .text
 						margin-right 8px
-
-					> .toggle
-						display inline-block
-						padding 4px 8px
-						font-size 0.7em
-						color isDark ? #393f4f : #fff
-						background isDark ? #687390 : #b1b9c1
-						border-radius 2px
-						cursor pointer
-						user-select none
-
-						&:hover
-							background isDark ? #707b97 : #bbc4ce
 
 				> .content
 
@@ -334,7 +319,7 @@ root(isDark)
 						margin 0
 						padding 0
 						overflow-wrap break-word
-						color isDark ? #fff : #717171
+						color var(--noteText)
 
 						>>> .title
 							display block
@@ -342,7 +327,7 @@ root(isDark)
 							padding 4px
 							font-size 90%
 							text-align center
-							background isDark ? #2f3944 : #eef1f3
+							background var(--mfmTitleBg)
 							border-radius 4px
 
 						>>> .code
@@ -351,25 +336,25 @@ root(isDark)
 						>>> .quote
 							margin 8px
 							padding 6px 12px
-							color isDark ? #6f808e : #aaa
-							border-left solid 3px isDark ? #637182 : #eee
+							color var(--mfmQuote)
+							border-left solid 3px var(--mfmQuoteLine)
 
 						> .reply
 							margin-right 8px
-							color isDark ? #99abbf : #717171
+							color var(--noteText)
 
 						> .rp
 							margin-left 4px
 							font-style oblique
-							color #a0bf46
+							color var(--renoteText)
 
 						[data-is-me]:after
 							content "you"
 							padding 0 4px
 							margin-left 4px
 							font-size 80%
-							color $theme-color-foreground
-							background $theme-color
+							color var(--primaryForeground)
+							background var(--primary)
 							border-radius 4px
 
 					.mk-url-preview
@@ -400,7 +385,7 @@ root(isDark)
 
 						> *
 							padding 16px
-							border dashed 1px isDark ? #4e945e : #c0dac6
+							border dashed 1px var(--quoteBorder)
 							border-radius 8px
 
 				> .app
@@ -415,14 +400,14 @@ root(isDark)
 					border none
 					box-shadow none
 					font-size 1em
-					color isDark ? #606984 : #ddd
+					color var(--noteActions)
 					cursor pointer
 
 					&:not(:last-child)
 						margin-right 28px
 
 					&:hover
-						color isDark ? #9198af : #666
+						color var(--noteActionsHover)
 
 					> .count
 						display inline
@@ -430,18 +415,6 @@ root(isDark)
 						color #999
 
 					&.reacted
-						color $theme-color
-
-.zyjjkidcqjnlegkqebitfviomuqmseqk[data-darkmode]
-	root(true)
-
-.zyjjkidcqjnlegkqebitfviomuqmseqk:not([data-darkmode])
-	root(false)
-
-.srwrkujossgfuhrbnvqkybtzxpblgchi[data-darkmode]
-	mediaRoot(true)
-
-.srwrkujossgfuhrbnvqkybtzxpblgchi:not([data-darkmode])
-	mediaRoot(false)
+						color var(--primary)
 
 </style>
