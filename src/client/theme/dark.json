@@ -140,6 +140,7 @@
 	"desktopTimelineSrc": "@faceTextButton",
 	"desktopTimelineSrcHover": "@faceTextButtonHover",
 	"desktopWindowTitle": "@faceHeaderText",
+	"desktopDriveBg": "@bg",
 	"desktopSettingsNavItem": ":alpha<0.8<$text",
 	"desktopSettingsNavItemHover": ":lighten<10<$text",
 

@@ -140,6 +140,7 @@
 	"desktopTimelineSrc": "#6f7477",
 	"desktopTimelineSrcHover": "#525a5f",
 	"desktopWindowTitle": "#666",
+	"desktopDriveBg": "#fff",
 	"desktopSettingsNavItem": ":alpha<0.8<$text",
 	"desktopSettingsNavItemHover": ":darken<10<$text",
 

@@ -585,17 +585,14 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
-
+.mk-drive
 	> nav
 		display block
 		z-index 2
 		width 100%
 		overflow auto
 		font-size 0.9em
-		color isDark ? #d2d9dc : #555
+		color var(--text)
 		background var(--face)
 		box-shadow 0 1px 0 rgba(#000, 0.05)
 
@@ -674,7 +671,7 @@ root(isDark)
 		padding 8px
 		height calc(100% - 38px)
 		overflow auto
-		background isDark ? #191b22 : #fff
+		background var(--desktopDriveBg)
 
 		&, *
 			user-select none
@@ -779,11 +776,5 @@ root(isDark)
 
 	> input
 		display none
-
-.mk-drive[data-darkmode]
-	root(true)
-
-.mk-drive:not([data-darkmode])
-	root(false)
 
 </style>
