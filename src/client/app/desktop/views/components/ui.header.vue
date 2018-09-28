@@ -10,7 +10,9 @@
 					<x-nav/>
 				</div>
 				<div class="center">
-					<div class="icon" @click="goToTop"></div>
+					<div class="icon" @click="goToTop">
+						<img svg-inline src="../../assets/header-icon.svg"/>
+					</div>
 				</div>
 				<div class="right">
 					<x-search/>
@@ -129,12 +131,11 @@ export default Vue.extend({
 						display block
 						width 48px
 						height 48px
-						background-image var(--desktopHeaderIcon)
-						background-size 24px
-						background-position center
-						background-repeat no-repeat
 						opacity 0.3
 						cursor pointer
+
+						> svg
+							fill currentColor
 
 				> .left,
 				> .center

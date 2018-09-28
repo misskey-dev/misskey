@@ -136,7 +136,6 @@
 	"desktopHeaderBg": ":lighten<5<$secondary",
 	"desktopHeaderFg": "$text",
 	"desktopHeaderHoverFg": "#7b8c88",
-	"desktopHeaderIcon": "url('/assets/desktop/header-icon.light.svg')",
 	"desktopHeaderSearchBg": "rgba(0, 0, 0, 0.05)",
 	"desktopHeaderSearchHoverBg": "rgba(0, 0, 0, 0.08)",
 	"desktopHeaderSearchFg": "#000",
