@@ -43,7 +43,7 @@
 	"noteHeaderBadgeFg": "#aaa",
 	"noteHeaderBadgeBg": "rgba(0, 0, 0, 0.05)",
 	"noteHeaderAdminFg": "#f15f71",
-	"noteHeaderAdminBg": "#5d282e",
+	"noteHeaderAdminBg": "#ffdfdf",
 	"noteHeaderAcct": "#ccc",
 	"noteHeaderInfo": "#c0c0c0",
 
