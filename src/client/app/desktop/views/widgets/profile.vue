@@ -4,7 +4,6 @@
 		<div class="egwyvoaaryotefqhqtmiyawwefemjfsd-body"
 			:data-compact="props.design == 1 || props.design == 2"
 			:data-melt="props.design == 2"
-			:data-darkmode="$store.state.device.darkmode"
 		>
 			<div class="banner"
 				:style="$store.state.i.bannerUrl ? `background-image: url(${$store.state.i.bannerUrl})` : ''"

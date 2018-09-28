@@ -67,6 +67,10 @@
 	"inputLabel": "rgba(255, 255, 255, 0.7)",
 	"inputText": "#fff",
 
+	"buttonBg": "rgba(255, 255, 255, 0.05)",
+	"buttonHoverBg": "rgba(255, 255, 255, 0.1)",
+	"buttonActiveBg": "rgba(255, 255, 255, 0.15)",
+
 	"autocompleteItemHoverBg": "rgba(255, 255, 255, 0.1)",
 	"autocompleteItemText": "rgba(255, 255, 255, 0.8)",
 	"autocompleteItemTextSub": "rgba(255, 255, 255, 0.3)",

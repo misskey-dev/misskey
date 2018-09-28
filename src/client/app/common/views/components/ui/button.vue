@@ -1,9 +1,7 @@
 <template>
-<div class="ui-button" :class="[styl]">
-	<button :type="type" @click="$emit('click')">
-		<slot></slot>
-	</button>
-</div>
+<button class="dmtdnykelhudezerjlfpbhgovrgnqqgr" :class="[styl, { inline, primary }]" :type="type" @click="$emit('click')">
+	<slot></slot>
+</button>
 </template>
 
 <script lang="ts">
@@ -13,6 +11,16 @@ export default Vue.extend({
 		type: {
 			type: String,
 			required: false
+		},
+		primary: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		inline: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 	data() {
@@ -32,21 +40,36 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(fill)
-	> button
-		display block
-		width 100%
-		margin 0
-		padding 0
-		font-weight bold
-		font-size 16px
-		line-height 44px
-		border none
-		border-radius 6px
-		outline none
-		box-shadow none
+.dmtdnykelhudezerjlfpbhgovrgnqqgr
+	display block
+	width 100%
+	margin 0
+	padding 0
+	font-weight normal
+	font-size 16px
+	border none
+	border-radius 6px
+	outline none
+	box-shadow none
 
-		if fill
+	&.inline
+		display inline-block
+		width auto
+
+	&.primary
+		font-weight bold
+
+	&.fill
+		color var(--text)
+		background var(--buttonBg)
+
+		&:hover
+			background var(--buttonHoverBg)
+
+		&:active
+			background var(--buttonActiveBg)
+
+		&.primary
 			color var(--primaryForeground)
 			background var(--primary)
 
@@ -55,20 +78,15 @@ root(fill)
 
 			&:active
 				background var(--primaryDarken5)
-		else
-			color var(--primary)
-			background none
 
-			&:hover
-				color var(--primaryDarken5)
-
-			&:active
-				background var(--primaryAlpha03)
-
-.ui-button
-	&.fill
-		root(true)
 	&:not(.fill)
-		root(false)
+		color var(--primary)
+		background none
+
+		&:hover
+			color var(--primaryDarken5)
+
+		&:active
+			background var(--primaryAlpha03)
 
 </style>

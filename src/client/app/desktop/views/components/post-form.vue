@@ -599,21 +599,19 @@ export default Vue.extend({
 		height 40px
 		font-size 1em
 		color var(--primaryForeground)
-		background linear-gradient(to bottom, var(--primaryLighten25) 0%, var(--primaryLighten10) 100%)
+		background var(--primary)
 		outline none
-		border solid 1px var(--primaryLighten15)
+		border none
 		border-radius 4px
 
 		&:not(:disabled)
 			font-weight bold
 
 		&:hover:not(:disabled)
-			background linear-gradient(to bottom, var(--primaryLighten8) 0%, var(--primaryDarken8) 100%)
-			border-color var(--primary)
+			background var(--primaryLighten5)
 
 		&:active:not(:disabled)
-			background var(--primary)
-			border-color var(--primary)
+			background var(--primaryDarken5)
 
 		&:focus
 			&:after

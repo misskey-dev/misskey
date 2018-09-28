@@ -4,8 +4,8 @@
 	<template v-if="!quote">
 		<footer>
 			<a class="quote" v-if="!quote" @click="onQuote">%i18n:@quote%</a>
-			<button class="ui cancel" @click="cancel">%i18n:@cancel%</button>
-			<button class="ui primary ok" @click="ok" :disabled="wait">{{ wait ? '%i18n:@reposting%' : '%i18n:@renote%' }}</button>
+			<ui-button class="button cancel" inline @click="cancel">%i18n:@cancel%</ui-button>
+			<ui-button class="button ok" inline primary @click="ok" :disabled="wait">{{ wait ? '%i18n:@reposting%' : '%i18n:@renote%' }}</ui-button>
 		</footer>
 	</template>
 	<template v-if="quote">
@@ -71,7 +71,7 @@ export default Vue.extend({
 			left 28px
 			line-height 40px
 
-		button
+		> .button
 			display block
 			position absolute
 			bottom 16px

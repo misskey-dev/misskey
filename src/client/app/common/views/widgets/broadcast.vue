@@ -5,7 +5,6 @@
 			:data-found="announcements && announcements.length != 0"
 			:data-melt="props.design == 1"
 			:data-mobile="platform == 'mobile'"
-			:data-darkmode="$store.state.device.darkmode"
 		>
 			<div class="icon">
 				<svg height="32" version="1.1" viewBox="0 0 32 32" width="32">
