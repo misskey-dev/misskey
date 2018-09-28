@@ -128,6 +128,8 @@
 	"desktopSettingsNavItem": ":alpha<0.8<$text",
 	"desktopSettingsNavItemHover": ":lighten<10<$text",
 
+	"mobileHeaderBg": ":lighten<5<$secondary",
+	"mobileHeaderFg": "$text",
 	"mobileNavBackdrop": "rgba(0, 0, 0, 0.7)",
 	"mobileUserPageName": "#fff",
 	"mobileUserPageAcct": "$text",

@@ -70,9 +70,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.header
 	$height = 48px
 
 	position fixed
@@ -98,7 +96,7 @@ root(isDark)
 		color #fff
 
 	> .main
-		color rgba(#fff, 0.9)
+		color var(--mobileHeaderFg)
 
 		> .backdrop
 			position absolute
@@ -108,8 +106,7 @@ root(isDark)
 			height $height
 			-webkit-backdrop-filter blur(12px)
 			backdrop-filter blur(12px)
-			//background-color rgba(#1b2023, 0.75)
-			background-color isDark ? #313543 : #595f6f
+			background-color var(--mobileHeaderBg)
 
 		> .content
 			z-index 1001
@@ -170,11 +167,5 @@ root(isDark)
 				color inherit
 				line-height $height
 				border-left solid 1px rgba(#000, 0.1)
-
-.header[data-darkmode]
-	root(true)
-
-.header:not([data-darkmode])
-	root(false)
 
 </style>
