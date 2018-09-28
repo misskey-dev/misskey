@@ -214,12 +214,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.ynntpczxvnusfwdyxsfuhvcmuypqopdd
 	padding 8px
 	height 64px
-	background isDark ? var(--primaryAlpha02) : var(--primaryLighten95)
+	background var(--desktopDriveFolderBg)
 	border-radius 4px
 
 	&, *
@@ -229,10 +227,10 @@ root(isDark)
 		pointer-events none
 
 	&:hover
-		//background isDark ? rgba(var(--primaryLighten10), 0.2) : var(--primaryLighten90)
+		background var(--desktopDriveFolderHoverBg)
 
 	&:active
-		//background isDark ? rgba(var(--primaryDarken10), 0.2) : var(--primaryLighten85)
+		background var(--desktopDriveFolderActiveBg)
 
 	&[data-is-contextmenu-showing]
 	&[data-draghover]
@@ -248,22 +246,16 @@ root(isDark)
 			border-radius 4px
 
 	&[data-draghover]
-		//background isDark ? rgba(var(--primaryDarken10), 0.2) : var(--primaryLighten90)
+		background var(--desktopDriveFolderActiveBg)
 
 	> .name
 		margin 0
 		font-size 0.9em
-		color isDark ? #fff : var(--primaryDarken30)
+		color var(--desktopDriveFolderFg)
 
 		> [data-fa]
 			margin-right 4px
 			margin-left 2px
 			text-align left
-
-.ynntpczxvnusfwdyxsfuhvcmuypqopdd[data-darkmode]
-	root(true)
-
-.ynntpczxvnusfwdyxsfuhvcmuypqopdd:not([data-darkmode])
-	root(false)
 
 </style>

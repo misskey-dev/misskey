@@ -141,6 +141,10 @@
 	"desktopTimelineSrcHover": "@faceTextButtonHover",
 	"desktopWindowTitle": "@faceHeaderText",
 	"desktopDriveBg": "@bg",
+	"desktopDriveFolderBg": ":alpha<0.2<$primary",
+	"desktopDriveFolderHoverBg": ":alpha<0.3<$primary",
+	"desktopDriveFolderActiveBg": ":alpha<0.3<:darken<10<$primary",
+	"desktopDriveFolderFg": "#fff",
 	"desktopSettingsNavItem": ":alpha<0.8<$text",
 	"desktopSettingsNavItemHover": ":lighten<10<$text",
 
