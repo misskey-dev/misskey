@@ -81,7 +81,7 @@ root(isDark)
 					cursor default
 					margin 0
 					padding 0
-					color isDark ? #959ba7 : #717171
+					color var(--subNoteText)
 
 .qiziqtywpuaucsgarwajitwaakggnisj[data-darkmode]
 	root(true)

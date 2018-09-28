@@ -34,6 +34,7 @@
 	"popupFg": "#586069",
 
 	"subNoteBg": "rgba(0, 0, 0, 0.01)",
+	"subNoteText": ":alpha<0.7<$text",
 	"renoteGradient": "#edfde2",
 	"renoteText": "#9dbb00",
 	"quoteBorder": "#c0dac6",

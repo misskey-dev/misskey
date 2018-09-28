@@ -62,7 +62,7 @@ root(isDark)
 			> .text
 				margin 0
 				padding 0
-				color isDark ? #959ba7 : #717171
+				color var(--subNoteText)
 
 				pre
 					max-height 120px
