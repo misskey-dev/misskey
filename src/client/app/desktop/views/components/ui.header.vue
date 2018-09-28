@@ -77,7 +77,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.header
 	position fixed
 	top 0
 	z-index 1000
@@ -150,11 +150,5 @@ root(isDark)
 					@media (max-width 1100px)
 						> .mk-ui-header-search
 							display none
-
-.header[data-darkmode]
-	root(true)
-
-.header:not([data-darkmode])
-	root(false)
 
 </style>

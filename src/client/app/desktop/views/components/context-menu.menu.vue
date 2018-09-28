@@ -31,9 +31,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.menu
 	$width = 240px
 	$item-height = 38px
 	$padding = 10px
@@ -48,7 +46,7 @@ root(isDark)
 		&.divider
 			margin-top $padding
 			padding-top $padding
-			border-top solid 1px isDark ? #1c2023 : #eee
+			border-top solid 1px var(--faceDivider)
 
 		&.nest
 			> p
@@ -77,7 +75,7 @@ root(isDark)
 			margin 0
 			padding 0 32px 0 38px
 			line-height $item-height
-			color isDark ? #c8cece : #868C8C
+			color var(--text)
 			text-decoration none
 			cursor pointer
 
@@ -106,16 +104,10 @@ root(isDark)
 		left $width
 		margin-top -($padding)
 		width $width
-		background isDark ? #282c37 :#fff
+		background var(--popupBg)
 		border-radius 0 4px 4px 4px
 		box-shadow 2px 2px 8px rgba(#000, 0.2)
 		transition visibility 0s linear 0.2s
-
-.menu[data-darkmode]
-	root(true)
-
-.menu:not([data-darkmode])
-	root(false)
 
 </style>
 

@@ -200,9 +200,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.gvfdktuvdgwhmztnuekzkswkjygptfcv
 	padding 8px 0 0 0
 	height 180px
 	border-radius 4px
@@ -337,16 +335,10 @@ root(isDark)
 		font-size 0.8em
 		text-align center
 		word-break break-all
-		color isDark ? #fff : #444
+		color var(--text)
 		overflow hidden
 
 		> .ext
 			opacity 0.5
-
-.gvfdktuvdgwhmztnuekzkswkjygptfcv[data-darkmode]
-	root(true)
-
-.gvfdktuvdgwhmztnuekzkswkjygptfcv:not([data-darkmode])
-	root(false)
 
 </style>

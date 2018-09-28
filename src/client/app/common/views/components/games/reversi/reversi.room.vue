@@ -252,11 +252,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.urbixznjwwuukfsckrwzwsqzsxornqij
 	text-align center
-	background isDark ? #191b22 : #f9f9f9
+	background var(--bg)
 
 	> header
 		padding 8px
@@ -274,9 +272,9 @@ root(isDark)
 						width 100%
 						padding 12px 14px
 						background var(--face)
-						border 1px solid isDark ? #6a707d : #dcdfe6
+						border 1px solid var(--reversiMapSelectBorder)
 						border-radius 4px
-						color isDark ? #fff : #606266
+						color var(--text)
 						cursor pointer
 						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
 						-webkit-appearance none
@@ -284,7 +282,7 @@ root(isDark)
 						appearance none
 
 						&:hover
-							border-color isDark ? #a7aebd : #c0c4cc
+							border-color var(--reversiMapSelectHoverBorder)
 
 						&:focus
 						&:active
@@ -294,7 +292,8 @@ root(isDark)
 					> .random
 						padding 32px 0
 						font-size 64px
-						color isDark ? #4e5961 : #d8d8d8
+						color var(--text)
+						opacity 0.7
 
 					> .board
 						display grid
@@ -302,11 +301,11 @@ root(isDark)
 						width 300px
 						height 300px
 						margin 0 auto
-						color isDark ? #fff : #444
+						color var(--text)
 
 						> div
 							background transparent
-							border solid 2px isDark ? #6a767f : #ddd
+							border solid 2px var(--faceDivider)
 							border-radius 6px
 							overflow hidden
 							cursor pointer
@@ -332,31 +331,25 @@ root(isDark)
 			max-width 400px
 			border-radius 4px
 			background var(--face)
-			color isDark ? #fff : #303133
-			box-shadow 0 2px 12px 0 rgba(#000, isDark ? 0.7 : 0.1)
+			color var(--text)
+			box-shadow 0 2px 12px 0 var(--reversiRoomFormShadow)
 
 			> header
 				padding 18px 20px
-				border-bottom 1px solid isDark ? #1c2023 : #ebeef5
+				border-bottom 1px solid var(--faceDivider)
 
 			> div
 				padding 20px
-				color isDark ? #fff : #606266
+				color var(--text)
 
 	> footer
 		position sticky
 		bottom 0
 		padding 16px
-		background rgba(isDark ? #191b22 : #fff, 0.9)
-		border-top solid 1px isDark ? #606266 : #c4cdd4
+		background var(--reversiRoomFooterBg)
+		border-top solid 1px var(--faceDivider)
 
 		> .status
 			margin 0 0 16px 0
-
-.urbixznjwwuukfsckrwzwsqzsxornqij[data-darkmode]
-	root(true)
-
-.urbixznjwwuukfsckrwzwsqzsxornqij:not([data-darkmode])
-	root(false)
 
 </style>

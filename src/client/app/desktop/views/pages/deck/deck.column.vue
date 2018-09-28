@@ -305,9 +305,8 @@ export default Vue.extend({
 			background transparent
 			box-shadow none
 
-			if !isDark
-				> button
-					color #bbb
+			> button
+				color var(--text)
 
 	> header
 		display flex

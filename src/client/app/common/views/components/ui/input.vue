@@ -155,9 +155,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark, fill)
+root(fill)
 	margin 32px 0
 
 	> .icon
@@ -335,16 +333,10 @@ root(isDark, fill)
 				left 0 !important
 				transform scale(0.75)
 
-.ui-input[data-darkmode]
+.ui-input
 	&.fill
-		root(true, true)
+		root(true)
 	&:not(.fill)
-		root(true, false)
-
-.ui-input:not([data-darkmode])
-	&.fill
-		root(false, true)
-	&:not(.fill)
-		root(false, false)
+		root(false)
 
 </style>

@@ -155,8 +155,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-
+.oxynyeqmfvracxnglgulyqfgqxnxmehl
 	.transition
 		.mk-notifications-enter
 		.mk-notifications-leave-to
@@ -220,11 +219,5 @@ root(isDark)
 
 		> [data-fa]
 			margin-right 4px
-
-.oxynyeqmfvracxnglgulyqfgqxnxmehl[data-darkmode]
-	root(true)
-
-.oxynyeqmfvracxnglgulyqfgqxnxmehl:not([data-darkmode])
-	root(false)
 
 </style>

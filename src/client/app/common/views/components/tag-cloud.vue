@@ -63,7 +63,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.jtivnzhfwquxpsfidertopbmwmchmnmo
 	height 100%
 	width 100%
 
@@ -80,11 +80,5 @@ root(isDark)
 	> div
 		height 100%
 		width 100%
-
-.jtivnzhfwquxpsfidertopbmwmchmnmo[data-darkmode]
-	root(true)
-
-.jtivnzhfwquxpsfidertopbmwmchmnmo:not([data-darkmode])
-	root(false)
 
 </style>

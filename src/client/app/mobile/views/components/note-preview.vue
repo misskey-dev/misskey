@@ -36,7 +36,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.yohlumlkhizgfkvvscwfcrcggkotpvry
 	display flex
 	margin 0
 	padding 0
@@ -99,11 +99,5 @@ root(isDark)
 					margin 0
 					padding 0
 					color var(--subNoteText)
-
-.yohlumlkhizgfkvvscwfcrcggkotpvry[data-darkmode]
-	root(true)
-
-.yohlumlkhizgfkvvscwfcrcggkotpvry:not([data-darkmode])
-	root(false)
 
 </style>

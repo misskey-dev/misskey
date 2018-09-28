@@ -32,7 +32,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark, fill)
+root(fill)
 	> button
 		display block
 		width 100%
@@ -65,16 +65,10 @@ root(isDark, fill)
 			&:active
 				background var(--primaryAlpha03)
 
-.ui-button[data-darkmode]
+.ui-button
 	&.fill
-		root(true, true)
+		root(true)
 	&:not(.fill)
-		root(true, false)
-
-.ui-button:not([data-darkmode])
-	&.fill
-		root(false, true)
-	&:not(.fill)
-		root(false, false)
+		root(false)
 
 </style>

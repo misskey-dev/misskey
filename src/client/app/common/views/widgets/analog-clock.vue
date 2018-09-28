@@ -26,16 +26,8 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mkw-analog-clock
 	.mkw-analog-clock--body
 		padding 8px
-
-.mkw-analog-clock[data-darkmode]
-	root(true)
-
-.mkw-analog-clock:not([data-darkmode])
-	root(false)
 
 </style>

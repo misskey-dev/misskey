@@ -138,9 +138,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.phgnkghfpyvkrvwiajkiuoxyrdaqpzcx
 	> h1
 		margin 0
 		padding 24px
@@ -148,7 +146,7 @@ root(isDark)
 		text-align center
 		font-weight normal
 		color #fff
-		background linear-gradient(to bottom, isDark ? #45730e : #8bca3e, isDark ? #464300 : #d6cf31)
+		background linear-gradient(to bottom, var(--reversiBannerGradientStart), var(--reversiBannerGradientEnd))
 
 		& + p
 			margin 0
@@ -156,7 +154,7 @@ root(isDark)
 			margin-bottom 12px
 			text-align center
 			font-size 14px
-			border-bottom solid 1px isDark ? #535f65 : #d3d9dc
+			border-bottom solid 1px var(--faceDivider)
 
 	> .play
 		margin 0 auto
@@ -171,14 +169,14 @@ root(isDark)
 				padding 16px
 				font-size 14px
 				text-align left
-				background isDark ? #282c37 : #f5f5f5
+				background var(--reversiDescBg)
 				border-radius 8px
 
 	> section
 		margin 0 auto
 		padding 0 16px 16px 16px
 		max-width 500px
-		border-top solid 1px isDark ? #535f65 : #d3d9dc
+		border-top solid 1px var(--faceDivider)
 
 		> h2
 			margin 0
@@ -189,9 +187,9 @@ root(isDark)
 	.invitation
 		margin 8px 0
 		padding 8px
-		color isDark ? #fff : #677f84
+		color var(--text)
 		background var(--face)
-		box-shadow 0 2px 16px rgba(#000, isDark ? 0.7 : 0.15)
+		box-shadow 0 2px 16px var(--reversiListItemShadow)
 		border-radius 6px
 		cursor pointer
 
@@ -203,10 +201,10 @@ root(isDark)
 			border-color var(--primary)
 
 		&:hover
-			background isDark ? #313543 : #f5f5f5
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 		&:active
-			background isDark ? #1e222b : #eee
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 		> .avatar
 			width 32px
@@ -221,9 +219,9 @@ root(isDark)
 		display block
 		margin 8px 0
 		padding 8px
-		color isDark ? #fff : #677f84
+		color var(--text)
 		background var(--face)
-		box-shadow 0 2px 16px rgba(#000, isDark ? 0.7 : 0.15)
+		box-shadow 0 2px 16px var(--reversiListItemShadow)
 		border-radius 6px
 		cursor pointer
 
@@ -232,10 +230,10 @@ root(isDark)
 			user-select none
 
 		&:hover
-			background isDark ? #313543 : #f5f5f5
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 		&:active
-			background isDark ? #1e222b : #eee
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 		> .avatar
 			width 32px
@@ -245,11 +243,5 @@ root(isDark)
 		> span
 			margin 0 8px
 			line-height 32px
-
-.phgnkghfpyvkrvwiajkiuoxyrdaqpzcx[data-darkmode]
-	root(true)
-
-.phgnkghfpyvkrvwiajkiuoxyrdaqpzcx:not([data-darkmode])
-	root(false)
 
 </style>

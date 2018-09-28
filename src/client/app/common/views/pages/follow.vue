@@ -107,14 +107,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.syxhndwprovvuqhmyvveewmbqayniwkv
 	padding 32px
 	max-width 500px
 	margin 0 auto
 	text-align center
-	color isDark ? #9baec8 : #868c8c
+	color var(--text)
 
 	$bg = var(--face)
 
@@ -124,7 +122,6 @@ root(isDark)
 	> .signed-in-as
 		margin-bottom 16px
 		font-size 14px
-		color isDark ? #9baec8 : #9daab3
 
 	> main
 		margin-bottom 16px
@@ -203,11 +200,5 @@ root(isDark)
 
 		*
 			pointer-events none
-
-.syxhndwprovvuqhmyvveewmbqayniwkv[data-darkmode]
-	root(true)
-
-.syxhndwprovvuqhmyvveewmbqayniwkv:not([data-darkmode])
-	root(false)
 
 </style>

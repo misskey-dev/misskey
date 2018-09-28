@@ -122,9 +122,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.wgwfgvvimdjvhjfwxropcwksnzftjqes
 	text-align center
-	//background #fff
 
 	> .banner
 		position absolute
@@ -316,11 +315,5 @@ root(isDark)
 				display block
 				margin 16px 0 0 0
 				opacity 0.7
-
-.wgwfgvvimdjvhjfwxropcwksnzftjqes[data-darkmode]
-	root(true)
-
-.wgwfgvvimdjvhjfwxropcwksnzftjqes:not([data-darkmode])
-	root(false)
 
 </style>

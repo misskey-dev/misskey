@@ -116,9 +116,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mkw-calendar
 	&[data-special='on-new-years-day']
 		border-color #ef95a0
 
@@ -169,7 +167,8 @@ root(isDark)
 					margin 0 0 2px 0
 					font-size 12px
 					line-height 18px
-					color isDark ? #7a8692 : #888
+					color var(--text)
+					opacity 0.8
 
 					> b
 						margin-left 2px
@@ -177,7 +176,7 @@ root(isDark)
 				> .meter
 					width 100%
 					overflow hidden
-					background isDark ? #1c1f25 : #eee
+					background var(--materBg)
 					border-radius 8px
 
 					> .val
@@ -196,11 +195,5 @@ root(isDark)
 				&:nth-child(3)
 					> .meter > .val
 						background #41ddde
-
-.mkw-calendar[data-darkmode]
-	root(true)
-
-.mkw-calendar:not([data-darkmode])
-	root(false)
 
 </style>

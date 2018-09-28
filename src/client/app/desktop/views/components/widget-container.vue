@@ -25,7 +25,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-widget-container
 	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
@@ -70,11 +70,5 @@ root(isDark)
 
 			&:active
 				color var(--faceTextButtonActive)
-
-.mk-widget-container[data-darkmode]
-	root(true)
-
-.mk-widget-container:not([data-darkmode])
-	root(false)
 
 </style>

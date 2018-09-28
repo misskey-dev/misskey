@@ -462,7 +462,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-window
 	display block
 
 	> .bg
@@ -490,10 +490,7 @@ root(isDark)
 		&:focus
 			&:not([data-is-modal])
 				> .body
-					if isDark
-						box-shadow 0 0 0px 1px var(--primaryAlpha05), 0 2px 12px 0 rgba(#000, 0.5)
-					else
-						box-shadow 0 0 0px 1px var(--primaryAlpha05), 0 2px 6px 0 rgba(#000, 0.2)
+						box-shadow 0 0 0px 1px var(--primaryAlpha05), 0 2px 12px 0 var(--desktopWindowShadow)
 
 		> .handle
 			$size = 8px
@@ -561,11 +558,7 @@ root(isDark)
 			overflow hidden
 			background var(--face)
 			border-radius 6px
-
-			if isDark
-				box-shadow 0 2px 12px 0 rgba(#000, 0.5)
-			else
-				box-shadow 0 2px 6px 0 rgba(#000, 0.2)
+			box-shadow 0 2px 12px 0 rgba(#000, 0.5)
 
 			> header
 				$header-height = 40px
@@ -631,11 +624,5 @@ root(isDark)
 	&:not([flexible])
 		> .main > .body > .content
 			height calc(100% - 40px)
-
-.mk-window[data-darkmode]
-	root(true)
-
-.mk-window:not([data-darkmode])
-	root(false)
 
 </style>

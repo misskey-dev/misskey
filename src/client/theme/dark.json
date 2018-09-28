@@ -62,6 +62,7 @@
 	"dateDividerFg": ":alpha<0.7<$text",
 
 	"switchTrack": "rgba(255, 255, 255, 0.15)",
+	"radioBorder": "rgba(255, 255, 255, 0.6)",
 	"inputBorder": "rgba(255, 255, 255, 0.7)",
 	"inputLabel": "rgba(255, 255, 255, 0.7)",
 	"inputText": "#fff",
@@ -80,6 +81,9 @@
 
 	"pollEditorInputBg": "rgba(0, 0, 0, 0.25)",
 
+	"pollChoiceText": "#fff",
+	"pollChoiceBorder": "rgba(255, 255, 255, 0.1)",
+
 	"urlPreviewBorder": "rgba(0, 0, 0, 0.4)",
 	"urlPreviewBorderHover": "rgba(255, 255, 255, 0.2)",
 	"urlPreviewTitle": "$text",
@@ -90,11 +94,16 @@
 	"calendarSaturdayOrSunday": "#ff6679",
 	"calendarDay": "#c5ced6",
 
+	"materBg": "rgba(0, 0, 0, 0.3)",
+
 	"chartCaption": ":alpha<0.6<$text",
 
 	"announcementsBg": "#253a50",
 	"announcementsTitle": "#539eff",
 	"announcementsText": "#fff",
+
+	"donationBg": "#5d5242",
+	"donationFg": "#e4dbce",
 
 	"googleSearchBg": "rgba(0, 0, 0, 0.2)",
 	"googleSearchFg": "#dee4e8",
@@ -119,6 +128,11 @@
 	"messagingRoomMessageBg": "$secondary",
 	"messagingRoomMessageFg": "#fff",
 
+	"formButtonBorder": "rgba(255, 255, 255, 0.1)",
+	"formButtonHoverBg": ":alpha<0.2<$primary",
+	"formButtonHoverBorder": ":alpha<0.5<$primary",
+	"formButtonActiveBg": ":alpha<0.12<$primary",
+
 	"desktopHeaderBg": ":lighten<5<$secondary",
 	"desktopHeaderFg": "$text",
 	"desktopHeaderHoverFg": "#fff",
@@ -140,6 +154,7 @@
 	"desktopTimelineSrc": "@faceTextButton",
 	"desktopTimelineSrcHover": "@faceTextButtonHover",
 	"desktopWindowTitle": "@faceHeaderText",
+	"desktopWindowShadow": "rgba(0, 0, 0, 0.5)",
 	"desktopDriveBg": "@bg",
 	"desktopDriveFolderBg": ":alpha<0.2<$primary",
 	"desktopDriveFolderHoverBg": ":alpha<0.3<$primary",
@@ -169,5 +184,18 @@
 	"mobileSignedInAsBg": "#273c34",
 	"mobileSignedInAsFg": "#49ab63",
 	"mobileSignoutBg": "#652222",
-	"mobileSignoutFg": "#ff5f56"
+	"mobileSignoutFg": "#ff5f56",
+
+	"reversiBannerGradientStart": "#45730e",
+	"reversiBannerGradientEnd": "#464300",
+	"reversiDescBg": "rgba(255, 255, 255, 0.1)",
+	"reversiListItemShadow": "rgba(0, 0, 0, 0.7)",
+	"reversiMapSelectBorder": "rgba(255, 255, 255, 0.1)",
+	"reversiMapSelectHoverBorder": "rgba(255, 255, 255, 0.2)",
+	"reversiRoomFormShadow": "rgba(0, 0, 0, 0.7)",
+	"reversiRoomFooterBg": ":alpha<0.9<$secondary",
+	"reversiGameHeaderLine": ":alpha<0.5<$secondary",
+	"reversiGameEmptyCell": ":lighten<2<$secondary",
+	"reversiGameEmptyCellMyTurn": ":lighten<5<$secondary",
+	"reversiGameEmptyCellCanPut": ":lighten<4<$secondary"
 }

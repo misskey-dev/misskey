@@ -62,6 +62,7 @@
 	"dateDividerFg": ":alpha<0.7<$text",
 
 	"switchTrack": "rgba(0, 0, 0, 0.25)",
+	"radioBorder": "rgba(0, 0, 0, 0.4)",
 	"inputBorder": "rgba(0, 0, 0, 0.42)",
 	"inputLabel": "rgba(0, 0, 0, 0.54)",
 	"inputText": "#000",
@@ -80,6 +81,9 @@
 
 	"pollEditorInputBg": "#fff",
 
+	"pollChoiceText": "#000",
+	"pollChoiceBorder": "rgba(0, 0, 0, 0.1)",
+
 	"urlPreviewBorder": "rgba(0, 0, 0, 0.1)",
 	"urlPreviewBorderHover": "rgba(0, 0, 0, 0.2)",
 	"urlPreviewTitle": "$text",
@@ -90,11 +94,16 @@
 	"calendarSaturdayOrSunday": "#ef95a0",
 	"calendarDay": "#777",
 
+	"materBg": "rgba(0, 0, 0, 0.1)",
+
 	"chartCaption": ":alpha<0.6<$text",
 
 	"announcementsBg": "#f3f9ff",
 	"announcementsTitle": "#4078c0",
 	"announcementsText": "#57616f",
+
+	"donationBg": "#fbead4",
+	"donationFg": "#777d71",
 
 	"googleSearchBg": "#fff",
 	"googleSearchFg": "#55595c",
@@ -119,6 +128,11 @@
 	"messagingRoomMessageBg": "#eee",
 	"messagingRoomMessageFg": "#333",
 
+	"formButtonBorder": "rgba(0, 0, 0, 0.1)",
+	"formButtonHoverBg": ":alpha<0.12<$primary",
+	"formButtonHoverBorder": ":alpha<0.3<$primary",
+	"formButtonActiveBg": ":alpha<0.12<$primary",
+
 	"desktopHeaderBg": ":lighten<5<$secondary",
 	"desktopHeaderFg": "$text",
 	"desktopHeaderHoverFg": "#7b8c88",
@@ -140,6 +154,7 @@
 	"desktopTimelineSrc": "#6f7477",
 	"desktopTimelineSrcHover": "#525a5f",
 	"desktopWindowTitle": "#666",
+	"desktopWindowShadow": "rgba(0, 0, 0, 0.2)",
 	"desktopDriveBg": "#fff",
 	"desktopDriveFolderBg": ":lighten<31<$primary",
 	"desktopDriveFolderHoverBg": ":lighten<27<$primary",
@@ -169,5 +184,18 @@
 	"mobileSignedInAsBg": "#fcfff5",
 	"mobileSignedInAsFg": "#2c662d",
 	"mobileSignoutBg": "#fff6f5",
-	"mobileSignoutFg": "#cc2727"
+	"mobileSignoutFg": "#cc2727",
+
+	"reversiBannerGradientStart": "#8bca3e",
+	"reversiBannerGradientEnd": "#d6cf31",
+	"reversiDescBg": "rgba(0, 0, 0, 0.1)",
+	"reversiListItemShadow": "rgba(0, 0, 0, 0.15)",
+	"reversiMapSelectBorder": "rgba(0, 0, 0, 0.1)",
+	"reversiMapSelectHoverBorder": "rgba(0, 0, 0, 0.2)",
+	"reversiRoomFormShadow": "rgba(0, 0, 0, 0.1)",
+	"reversiRoomFooterBg": ":alpha<0.9<$secondary",
+	"reversiGameHeaderLine": "#c4cdd4",
+	"reversiGameEmptyCell": "rgba(0, 0, 0, 0.06)",
+	"reversiGameEmptyCellMyTurn": "rgba(0, 0, 0, 0.12)",
+	"reversiGameEmptyCellCanPut": "rgba(0, 0, 0, 0.9)"
 }

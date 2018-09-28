@@ -111,7 +111,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.zyknedwtlthezamcjlolyusmipqmjgxz
 	> svg
 		display block
 		width 50%
@@ -134,11 +134,5 @@ root(isDark)
 		content ""
 		display block
 		clear both
-
-.zyknedwtlthezamcjlolyusmipqmjgxz[data-darkmode]
-	root(true)
-
-.zyknedwtlthezamcjlolyusmipqmjgxz:not([data-darkmode])
-	root(false)
 
 </style>

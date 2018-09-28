@@ -42,7 +42,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.tkfdzaxtkdeianobciwadajxzbddorql
 	display flex
 	margin 0
 	padding 16px 32px
@@ -87,11 +87,5 @@ root(isDark)
 					pre
 						max-height 120px
 						font-size 80%
-
-.tkfdzaxtkdeianobciwadajxzbddorql[data-darkmode]
-	root(true)
-
-.tkfdzaxtkdeianobciwadajxzbddorql:not([data-darkmode])
-	root(false)
 
 </style>

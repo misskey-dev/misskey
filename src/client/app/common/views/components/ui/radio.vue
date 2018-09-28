@@ -51,9 +51,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.ui-radio
 	display inline-block
 	margin 0 32px 0 0
 	cursor pointer
@@ -110,11 +108,5 @@ root(isDark)
 		font-size 16px
 		line-height 20px
 		cursor pointer
-
-.ui-radio[data-darkmode]
-	root(true)
-
-.ui-radio:not([data-darkmode])
-	root(false)
 
 </style>

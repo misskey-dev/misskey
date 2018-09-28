@@ -195,9 +195,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-messaging-form
 	> textarea
 		cursor auto
 		display block
@@ -212,7 +210,7 @@ root(isDark)
 		color var(--inputText)
 		outline none
 		border none
-		border-top solid 1px isDark ? #4b5056 : #eee
+		border-top solid 1px var(--faceDivider)
 		border-radius 0
 		box-shadow none
 		background transparent
@@ -301,11 +299,5 @@ root(isDark)
 
 	input[type=file]
 		display none
-
-.mk-messaging-form[data-darkmode]
-	root(true)
-
-.mk-messaging-form:not([data-darkmode])
-	root(false)
 
 </style>

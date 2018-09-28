@@ -57,9 +57,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mkw-memo
 	.mkw-memo--body
 		padding-bottom 28px + 16px
 
@@ -69,10 +67,10 @@ root(isDark)
 			max-width 100%
 			min-width 100%
 			padding 16px
-			color isDark ? #fff : #222
+			color var(--inputText)
 			background var(--face)
 			border none
-			border-bottom solid 1px isDark ? #1c2023 : #eee
+			border-bottom solid 1px var(--faceDivider)
 			border-radius 0
 
 		> button
@@ -101,11 +99,5 @@ root(isDark)
 			&:disabled
 				opacity 0.7
 				cursor default
-
-.mkw-memo[data-darkmode]
-	root(true)
-
-.mkw-memo:not([data-darkmode])
-	root(false)
 
 </style>

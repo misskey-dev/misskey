@@ -25,9 +25,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.nvemkhtwcnnpkdrwfcbzuwhfulejhmzg
 	display inline-block
 
 	& + .nvemkhtwcnnpkdrwfcbzuwhfulejhmzg
@@ -38,11 +36,11 @@ root(isDark)
 		margin 0
 		padding 12px 20px
 		font-size 14px
-		border 1px solid isDark ? #6d727d : #dcdfe6
+		border 1px solid var(--formButtonBorder)
 		border-radius 4px
 		outline none
 		box-shadow none
-		color isDark ? #fff : #606266
+		color var(--text)
 		transition 0.1s
 
 		*
@@ -51,12 +49,12 @@ root(isDark)
 		&:hover
 		&:focus
 			color var(--primary)
-			//background rgba(var(--primary-r), var(--primary-g), var(--primary-b), isDark ? 0.2 : 0.12)
-			//border-color rgba(var(--primary-r), var(--primary-g), var(--primary-b), isDark ? 0.5 : 0.3)
+			background var(--formButtonHoverBg)
+			border-color var(--formButtonHoverBorder)
 
 		&:active
 			color var(--primaryDarken20)
-			//background rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.12)
+			background var(--formButtonActiveBg)
 			border-color var(--primary)
 			transition all 0s
 
@@ -79,11 +77,5 @@ root(isDark)
 	&.round
 		> button
 			border-radius 64px
-
-.nvemkhtwcnnpkdrwfcbzuwhfulejhmzg[data-darkmode]
-	root(true)
-
-.nvemkhtwcnnpkdrwfcbzuwhfulejhmzg:not([data-darkmode])
-	root(false)
 
 </style>

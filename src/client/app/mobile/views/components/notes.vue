@@ -217,9 +217,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-notes
 	overflow hidden
 	background var(--face)
 	border-radius 8px
@@ -292,11 +290,5 @@ root(isDark)
 
 			&:disabled
 				opacity 0.7
-
-.mk-notes[data-darkmode]
-	root(true)
-
-.mk-notes:not([data-darkmode])
-	root(false)
 
 </style>

@@ -109,7 +109,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.dsfykdcjpuwfvpefwufddclpjhzktmpw
 	> .notification
 		padding 16px
 		font-size 13px
@@ -169,11 +169,5 @@ root(isDark)
 		&.receiveFollowRequest
 			> div > header i
 				color #888
-
-.dsfykdcjpuwfvpefwufddclpjhzktmpw[data-darkmode]
-	root(true)
-
-.dsfykdcjpuwfvpefwufddclpjhzktmpw:not([data-darkmode])
-	root(false)
 
 </style>

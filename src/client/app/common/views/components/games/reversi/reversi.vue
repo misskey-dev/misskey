@@ -156,11 +156,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
-	color isDark ? #fff : #677f84
-	background isDark ? #191b22 : #fff
+.vchtoekanapleubgzioubdtmlkribzfd
+	color var(--text)
+	background var(--bg)
 
 	> .matching
 		> h1
@@ -176,11 +174,5 @@ root(isDark)
 			max-width 200px
 			text-align center
 			border-top dashed 1px #c4cdd4
-
-.vchtoekanapleubgzioubdtmlkribzfd[data-darkmode]
-	root(true)
-
-.vchtoekanapleubgzioubdtmlkribzfd:not([data-darkmode])
-	root(false)
 
 </style>
