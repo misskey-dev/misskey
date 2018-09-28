@@ -19,7 +19,7 @@
 	<span class="label">
 		<span :aria-hidden="!checked"><slot></slot></span>
 		<p :aria-hidden="!checked">
-			<slot name="text"></slot>
+			<slot name="desc"></slot>
 		</p>
 	</span>
 </div>

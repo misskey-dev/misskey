@@ -21,12 +21,14 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@behaviour%</h1>
-			<mk-switch v-model="fetchOnScroll" text="%i18n:@fetch-on-scroll%">
-				<span>%i18n:@fetch-on-scroll-desc%</span>
-			</mk-switch>
-			<mk-switch v-model="autoPopout" text="%i18n:@auto-popout%">
-				<span>%i18n:@auto-popout-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="fetchOnScroll">
+				%i18n:@fetch-on-scroll%
+				<span slot="desc">%i18n:@fetch-on-scroll-desc%</span>
+			</ui-switch>
+			<ui-switch v-model="autoPopout">
+				%i18n:@auto-popout%
+				<span slot="desc">%i18n:@auto-popout-desc%</span>
+			</ui-switch>
 
 			<section>
 				<header>%i18n:@note-visibility%</header>
@@ -45,9 +47,10 @@
 
 			<details>
 				<summary>%i18n:@advanced%</summary>
-				<mk-switch v-model="apiViaStream" text="%i18n:@api-via-stream%">
-					<span>%i18n:@api-via-stream-desc%</span>
-				</mk-switch>
+				<ui-switch v-model="apiViaStream">
+					%i18n:@api-via-stream%
+					<span slot="desc">%i18n:@api-via-stream-desc%</span>
+				</ui-switch>
 			</details>
 		</section>
 
@@ -76,9 +79,7 @@
 			<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
 			<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
 			<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
-			<mk-switch v-model="showMaps" text="%i18n:@show-maps%">
-				<span>%i18n:@show-maps-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="showMaps">%i18n:@show-maps%</ui-switch>
 			<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 			<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
 			<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
@@ -86,9 +87,10 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@sound%</h1>
-			<mk-switch v-model="enableSounds" text="%i18n:@enable-sounds%">
-				<span>%i18n:@enable-sounds-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="enableSounds">
+				%i18n:@enable-sounds%
+				<span slot="desc">%i18n:@enable-sounds-desc%</span>
+			</ui-switch>
 			<label>%i18n:@volume%</label>
 			<input type="range"
 				v-model="soundVolume"
@@ -130,9 +132,10 @@
 
 		<section class="notification" v-show="page == 'notification'">
 			<h1>%i18n:@notification%</h1>
-			<mk-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch" text="%i18n:@auto-watch%">
-				<span>%i18n:@auto-watch-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
+				%i18n:@auto-watch%
+				<span slot="desc">%i18n:@auto-watch-desc%</span>
+			</ui-switch>
 		</section>
 
 		<section class="drive" v-show="page == 'drive'">
@@ -200,20 +203,23 @@
 			</button>
 			<details>
 				<summary>%i18n:@update-settings%</summary>
-				<mk-switch v-model="preventUpdate" text="%i18n:@prevent-update%">
-					<span>%i18n:@prevent-update-desc%</span>
-				</mk-switch>
+				<ui-switch v-model="preventUpdate">
+					%i18n:@prevent-update%
+					<span slot="desc">%i18n:@prevent-update-desc%</span>
+				</ui-switch>
 			</details>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
 			<h1>%i18n:@advanced-settings%</h1>
-			<mk-switch v-model="debug" text="%i18n:@debug-mode%">
-				<span>%i18n:@debug-mode-desc%</span>
-			</mk-switch>
-			<mk-switch v-model="enableExperimentalFeatures" text="%i18n:@experimental%">
-				<span>%i18n:@experimental-desc%</span>
-			</mk-switch>
+			<ui-switch v-model="debug">
+				%i18n:@debug-mode%
+				<span slot="desc">%i18n:@debug-mode-desc%</span>
+			</ui-switch>
+			<ui-switch v-model="enableExperimentalFeatures">
+				%i18n:@experimental%
+				<span slot="desc">%i18n:@experimental-desc%</span>
+			</ui-switch>
 		</section>
 	</div>
 </div>

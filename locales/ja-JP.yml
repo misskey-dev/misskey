@@ -792,7 +792,6 @@ desktop/views/components/settings.vue:
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
   show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
   show-maps: "マップの自動展開"
-  show-maps-desc: "位置情報が添付された投稿のマップを自動的に展開します。"
 
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
