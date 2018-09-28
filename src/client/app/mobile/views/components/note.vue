@@ -228,9 +228,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.note
 	font-size 12px
 	border-bottom solid 1px var(--faceDivider)
 
@@ -383,7 +381,7 @@ root(isDark)
 
 						> .reply
 							margin-right 8px
-							color isDark ? #99abbf : #717171
+							color var(--noteText)
 
 						> .rp
 							margin-left 4px
@@ -449,7 +447,7 @@ root(isDark)
 						margin-right 28px
 
 					&:hover
-						color isDark ? #9198af : #666
+						color var(--noteActionsHover)
 
 					> .count
 						display inline
@@ -458,12 +456,6 @@ root(isDark)
 
 					&.reacted
 						color var(--primary)
-
-.note[data-darkmode]
-	root(true)
-
-.note:not([data-darkmode])
-	root(false)
 
 </style>
 

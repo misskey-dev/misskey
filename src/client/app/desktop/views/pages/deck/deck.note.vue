@@ -343,7 +343,7 @@ root(isDark)
 
 						> .reply
 							margin-right 8px
-							color isDark ? #99abbf : #717171
+							color var(--noteText)
 
 						> .rp
 							margin-left 4px
