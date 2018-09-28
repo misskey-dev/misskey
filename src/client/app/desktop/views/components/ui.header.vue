@@ -130,12 +130,15 @@ export default Vue.extend({
 						margin auto
 						display block
 						width 48px
-						height 48px
-						opacity 0.3
+						text-align center
 						cursor pointer
+						opacity 0.5
 
 						> svg
-							fill currentColor
+							width 24px
+							height 48px
+							vertical-align top
+							fill var(--desktopHeaderFg)
 
 				> .left,
 				> .center
