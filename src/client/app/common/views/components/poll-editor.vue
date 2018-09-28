@@ -68,9 +68,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-poll-editor
 	padding 8px
 
 	> .caution
@@ -104,7 +102,7 @@ root(isDark)
 				width 300px
 				font-size 14px
 				color var(--inputText)
-				background isDark ? #191b22 : #fff
+				background var(--pollEditorInputBg)
 				border solid 1px var(--primaryAlpha01)
 				border-radius 4px
 
@@ -141,11 +139,5 @@ root(isDark)
 
 		&:active
 			color var(--primaryDarken30)
-
-.mk-poll-editor[data-darkmode]
-	root(true)
-
-.mk-poll-editor:not([data-darkmode])
-	root(false)
 
 </style>
