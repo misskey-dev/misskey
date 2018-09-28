@@ -6,22 +6,19 @@
 		<button class="ui" @click="updateAvatar">%i18n:@choice-avatar%</button>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:@name%</p>
-		<input v-model="name" type="text" class="ui"/>
+		<ui-input v-model="name" type="text">%i18n:@name%</ui-input>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:@location%</p>
-		<input v-model="location" type="text" class="ui"/>
+		<ui-input v-model="location" type="text">%i18n:@location%</ui-input>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:@description%</p>
-		<textarea v-model="description" class="ui"></textarea>
+		<ui-textarea v-model="description">%i18n:@description%</ui-textarea>
 	</label>
 	<label class="ui from group">
 		<p>%i18n:@birthday%</p>
 		<input type="date" v-model="birthday"/>
 	</label>
-	<button class="ui primary" @click="save">%i18n:@save%</button>
+	<ui-button primary @click="save">%i18n:@save%</ui-button>
 	<section>
 		<h2>%i18n:@locked-account%</h2>
 		<ui-switch v-model="$store.state.i.isLocked" @change="onChangeIsLocked">%i18n:@is-locked%</ui-switch>
