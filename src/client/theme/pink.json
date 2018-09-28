@@ -1,0 +1,17 @@
+{
+	"meta": {
+		"id": "e9c8c01d-9c15-48d0-9b5c-3d00843b5b36",
+		"name": "Pink",
+		"author": "syuilo",
+		"base": "light",
+		"vars": {
+			"primary": "rgb(251, 78, 112)",
+			"secondary": "rgb(255, 218, 240)",
+			"text": "rgb(113, 91, 102)"
+		}
+	},
+
+	"renoteGradient": "#ffb1c9",
+	"renoteText": "#ff588d",
+	"quoteBorder": "#ff6c9b"
+}

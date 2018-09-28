@@ -91,10 +91,12 @@ function genValue(c: tinycolor.Instance): string {
 
 export const lightTheme = require('../theme/light.json');
 export const darkTheme = require('../theme/dark.json');
+export const pinkTheme = require('../theme/pink.json');
 export const halloweenTheme = require('../theme/halloween.json');
 
 export const builtinThemes = [
 	lightTheme,
 	darkTheme,
+	pinkTheme,
 	halloweenTheme
 ];
