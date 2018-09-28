@@ -14,9 +14,11 @@
 	"primaryForeground": "#fff",
 	"bg": ":darken<8<$secondary",
 	"text": "$text",
-	"scrollbarTrack": "#282c37",
-	"scrollbarHandle": "#454954",
-	"scrollbarHandleHover": "#535660",
+
+	"scrollbarTrack": ":darken<5<$secondary",
+	"scrollbarHandle": ":lighten<5<$secondary",
+	"scrollbarHandleHover": ":lighten<10<$secondary",
+
 	"face": "$secondary",
 	"faceText": "#fff",
 	"faceHeader": ":lighten<5<$secondary",
