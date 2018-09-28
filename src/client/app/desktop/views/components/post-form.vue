@@ -434,7 +434,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-post-form
 	display block
 	padding 16px
 	background var(--desktopPostFormBg)
@@ -677,7 +677,7 @@ root(isDark)
 		width 40px
 		height 40px
 		font-size 1em
-		color isDark ? var(--primary) : var(--primaryAlpha05)
+		color var(--desktopPostFormTransparentButtonFg)
 		background transparent
 		outline none
 		border solid 1px transparent
@@ -685,11 +685,11 @@ root(isDark)
 
 		&:hover
 			background transparent
-			border-color isDark ? var(--primaryAlpha05) : var(--primaryAlpha03)
+			border-color var(--primaryAlpha03)
 
 		&:active
 			color var(--primaryAlpha06)
-			background isDark ? transparent : linear-gradient(to bottom, var(--primaryLighten80) 0%, var(--primaryLighten90) 100%)
+			background linear-gradient(to bottom, var(--desktopPostFormTransparentButtonActiveGradientStart) 0%, var(--desktopPostFormTransparentButtonActiveGradientEnd) 100%)
 			border-color var(--primaryAlpha05)
 			box-shadow 0 2px 4px rgba(#000, 0.15) inset
 
@@ -713,11 +713,5 @@ root(isDark)
 		height 100%
 		border dashed 2px var(--primaryAlpha05)
 		pointer-events none
-
-.mk-post-form[data-darkmode]
-	root(true)
-
-.mk-post-form:not([data-darkmode])
-	root(false)
 
 </style>
