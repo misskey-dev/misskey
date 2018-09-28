@@ -27,14 +27,6 @@ export default Vue.extend({
 		return {
 			styl: 'fill'
 		};
-	},
-	inject: {
-		isCardChild: { default: false }
-	},
-	created() {
-		if (this.isCardChild) {
-			this.styl = 'line';
-		}
 	}
 });
 </script>
@@ -43,6 +35,7 @@ export default Vue.extend({
 .dmtdnykelhudezerjlfpbhgovrgnqqgr
 	display block
 	width 100%
+	min-height 40px
 	margin 0
 	padding 0
 	font-weight normal
@@ -51,6 +44,9 @@ export default Vue.extend({
 	border-radius 6px
 	outline none
 	box-shadow none
+
+	&:not(.inline) + .dmtdnykelhudezerjlfpbhgovrgnqqgr
+		margin-top 16px
 
 	&.inline
 		display inline-block

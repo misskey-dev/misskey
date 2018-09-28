@@ -14,11 +14,11 @@ import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './mios';
 import { version, codename, lang } from './config';
-import applyTheme from './common/scripts/theme';
-const defaultTheme = require('../theme/light.json');
+import { builtinThemes, applyTheme } from './theme';
+const lightTheme = require('../theme/light.json');
 
 if (localStorage.getItem('theme') == null) {
-	applyTheme(defaultTheme);
+	applyTheme(lightTheme);
 }
 
 Vue.use(Vuex);
@@ -91,6 +91,35 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 
 		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
 			os.apis = api ? api(os) : null;
+
+			//#region theme
+			os.store.watch(s => {
+				return s.device.darkmode;
+			}, v => {
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const dark = themes.find(t => t.meta.id == os.store.state.device.darkTheme);
+				const light = themes.find(t => t.meta.id == os.store.state.device.lightTheme);
+				applyTheme(v ? dark : light);
+			});
+			os.store.watch(s => {
+				return s.device.lightTheme;
+			}, v => {
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const theme = themes.find(t => t.meta.id == v);
+				if (!os.store.state.device.darkmode) {
+					applyTheme(theme);
+				}
+			});
+			os.store.watch(s => {
+				return s.device.darkTheme;
+			}, v => {
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const theme = themes.find(t => t.meta.id == v);
+				if (os.store.state.device.darkmode) {
+					applyTheme(theme);
+				}
+			});
+			//#endregion
 
 			//#region shadow
 			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';

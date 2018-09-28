@@ -59,7 +59,9 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.$el.style.color = `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`;
+		if (this.user.avatarColor) {
+			this.$el.style.color = `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`;
+		}
 	},
 	methods: {
 		onClick(e) {

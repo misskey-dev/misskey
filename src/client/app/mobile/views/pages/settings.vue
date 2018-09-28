@@ -24,6 +24,13 @@
 				</section>
 
 				<section>
+					<header>%i18n:@theme%</header>
+					<div>
+						<mk-theme/>
+					</div>
+				</section>
+
+				<section>
 					<header>%i18n:@timeline%</header>
 					<div>
 						<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>

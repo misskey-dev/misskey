@@ -20,6 +20,11 @@
 		</section>
 
 		<section class="web" v-show="page == 'web'">
+			<h1>%i18n:@theme%</h1>
+			<mk-theme/>
+		</section>
+
+		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@behaviour%</h1>
 			<ui-switch v-model="fetchOnScroll">
 				%i18n:@fetch-on-scroll%

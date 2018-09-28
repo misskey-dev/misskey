@@ -1,22 +1,21 @@
 import * as tinycolor from 'tinycolor2';
-const lightTheme = require('../../../theme/light');
-const darkTheme = require('../../../theme/dark');
 
 type Theme = {
 	meta: {
 		id: string;
 		name: string;
-		inherit: string;
+		author: string;
+		base?: string;
 		vars: any;
 	};
 } & {
 	[key: string]: string;
 };
 
-export default function(theme: Theme) {
-	if (theme.meta.inherit) {
-		const inherit = [lightTheme, darkTheme].find(x => x.meta.id == theme.meta.inherit);
-		theme = Object.assign({}, inherit, theme);
+export function applyTheme(theme: Theme, persisted = true) {
+	if (theme.meta.base) {
+		const base = [lightTheme, darkTheme].find(x => x.meta.id == theme.meta.base);
+		theme = Object.assign({}, base, theme);
 	}
 
 	const props = compile(theme);
@@ -26,7 +25,9 @@ export default function(theme: Theme) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	});
 
-	localStorage.setItem('theme', JSON.stringify(props));
+	if (persisted) {
+		localStorage.setItem('theme', JSON.stringify(props));
+	}
 }
 
 function compile(theme: Theme): { [key: string]: string } {
@@ -87,3 +88,13 @@ function compile(theme: Theme): { [key: string]: string } {
 function genValue(c: tinycolor.Instance): string {
 	return c.toRgbString();
 }
+
+export const lightTheme = require('../theme/light.json');
+export const darkTheme = require('../theme/dark.json');
+export const halloweenTheme = require('../theme/halloween.json');
+
+export const builtinThemes = [
+	lightTheme,
+	darkTheme,
+	halloweenTheme
+];

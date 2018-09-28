@@ -14,8 +14,7 @@ export default Vue.extend({
 		keymap(): any {
 			return {
 				'h|slash': this.help,
-				'd': this.dark,
-				'x': this.test
+				'd': this.dark
 			};
 		}
 	},
@@ -26,11 +25,10 @@ export default Vue.extend({
 		},
 
 		dark() {
-			applyTheme(darkTheme);
-		},
-
-		test() {
-			applyTheme(halloweenTheme);
+			this.$store.commit('device/set', {
+				key: 'darkmode',
+				value: !this.$store.state.device.darkmode
+			});
 		}
 	}
 });
