@@ -12,6 +12,7 @@
 
 	"primary": "$primary",
 	"primaryForeground": "#fff",
+	"secondary": "$secondary",
 	"bg": ":darken<8<$secondary",
 	"text": "$text",
 
@@ -127,6 +128,7 @@
 	"desktopSettingsNavItem": ":alpha<0.8<$text",
 	"desktopSettingsNavItemHover": ":darken<10<$text",
 
+	"mobileNavBackdrop": "rgba(0, 0, 0, 0.2)",
 	"mobileUserPageName": "#757c82",
 	"mobileUserPageAcct": "#969ea5",
 	"mobileUserPageDescription": "#757c82",
