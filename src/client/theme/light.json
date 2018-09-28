@@ -131,6 +131,8 @@
 	"mobileHeaderBg": ":lighten<5<$secondary",
 	"mobileHeaderFg": "$text",
 	"mobileNavBackdrop": "rgba(0, 0, 0, 0.2)",
+	"mobilePostFormDivider": "rgba(0, 0, 0, 0.1)",
+	"mobilePostFormTextareaBg": "#fff",
 	"mobileHomeTlItemHover": "rgba(0, 0, 0, 0.05)",
 	"mobileUserPageName": "#757c82",
 	"mobileUserPageAcct": "#969ea5",

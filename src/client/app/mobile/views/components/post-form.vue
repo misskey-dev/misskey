@@ -324,9 +324,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-post-form
 	max-width 500px
 	width calc(100% - 16px)
 	margin 8px auto
@@ -349,20 +347,20 @@ root(isDark)
 		> header
 			z-index 1000
 			height 50px
-			box-shadow 0 1px 0 0 isDark ? rgba(#000, 0.2) : rgba(#000, 0.1)
+			box-shadow 0 1px 0 0 var(--mobilePostFormDivider)
 
 			> .cancel
 				padding 0
 				width 50px
 				line-height 50px
 				font-size 24px
-				color isDark ? #9baec8 : #555
+				color var(--text)
 
 			> div
 				position absolute
 				top 0
 				right 0
-				color #657786
+				color var(--text)
 
 				> .text-count
 					line-height 50px
@@ -396,7 +394,7 @@ root(isDark)
 
 				> span
 					margin-right 16px
-					color isDark ? #fff : #666
+					color var(--text)
 
 			> input
 				z-index 1
@@ -408,11 +406,11 @@ root(isDark)
 				margin 0
 				width 100%
 				font-size 16px
-				color isDark ? #fff : #333
-				background isDark ? #191d23 : #fff
+				color var(--inputText)
+				background var(--mobilePostFormTextareaBg)
 				border none
 				border-radius 0
-				box-shadow 0 1px 0 0 isDark ? rgba(#000, 0.2) : rgba(#000, 0.1)
+				box-shadow 0 1px 0 0 var(--mobilePostFormDivider)
 
 				&:disabled
 					opacity 0.5
@@ -480,11 +478,5 @@ root(isDark)
 
 		> *
 			margin-right 8px
-
-.mk-post-form[data-darkmode]
-	root(true)
-
-.mk-post-form:not([data-darkmode])
-	root(false)
 
 </style>
