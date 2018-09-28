@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header"><span style="margin-right:4px;">%fa:cog%</span>%i18n:@settings%</span>
-	<main :data-darkmode="$store.state.device.darkmode">
+	<main>
 		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${name}</b>`)"></div>
 
 		<div>

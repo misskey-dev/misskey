@@ -100,9 +100,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.header
 	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
@@ -182,12 +180,12 @@ root(isDark)
 
 	> .body
 		padding 16px 16px 16px 154px
-		color isDark ? #c5ced6 : #555
+		color var(--text)
 
 		> .status
 			margin-top 16px
 			padding-top 16px
-			border-top solid 1px rgba(#000, isDark ? 0.2 : 0.1)
+			border-top solid 1px var(--faceDivider)
 			font-size 80%
 
 			> *
@@ -196,24 +194,18 @@ root(isDark)
 				margin-right 16px
 
 				&:not(:last-child)
-					border-right solid 1px rgba(#000, isDark ? 0.2 : 0.1)
+					border-right solid 1px var(--faceDivider)
 
 				&.clickable
 					cursor pointer
 
 					&:hover
-						color isDark ? #fff : #000
+						color var(--faceTextButtonHover)
 
 				> b
 					margin-right 4px
 					font-size 1rem
 					font-weight bold
 					color var(--primary)
-
-.header[data-darkmode]
-	root(true)
-
-.header:not([data-darkmode])
-	root(false)
 
 </style>

@@ -4,7 +4,7 @@
 		<template slot="header">%fa:chart-pie%%i18n:@title%</template>
 		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
 
-		<div class="mkw-polls--body" :data-darkmode="$store.state.device.darkmode">
+		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
 				<p v-if="poll.text"><router-link :to="poll | notePage">{{ poll.text }}</router-link></p>
 				<p v-if="!poll.text"><router-link :to="poll | notePage">%fa:link%</router-link></p>
@@ -64,11 +64,11 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-polls--body
 	> .poll
 		padding 16px
 		font-size 12px
-		color isDark ? #9ea4ad : #555
+		color var(--text)
 
 		> p
 			margin 0 0 8px 0
@@ -90,11 +90,5 @@ root(isDark)
 
 		> [data-fa]
 			margin-right 4px
-
-.mkw-polls--body[data-darkmode]
-	root(true)
-
-.mkw-polls--body:not([data-darkmode])
-	root(false)
 
 </style>

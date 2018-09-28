@@ -85,7 +85,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.profile
 	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
@@ -96,7 +96,7 @@ root(isDark)
 	> .friend-form
 		padding 16px
 		text-align center
-		border-bottom solid 1px isDark ? #21242f : #eee
+		border-bottom solid 1px var(--faceDivider)
 
 		> .followed
 			margin 12px 0 0 0
@@ -114,18 +114,12 @@ root(isDark)
 	> .action-form
 		padding 16px
 		text-align center
-		border-bottom solid 1px isDark ? #21242f : #eee
+		border-bottom solid 1px var(--faceDivider)
 
 		> *
 			width 100%
 
 			&:not(:last-child)
 				margin-bottom 12px
-
-.profile[data-darkmode]
-	root(true)
-
-.profile:not([data-darkmode])
-	root(false)
 
 </style>

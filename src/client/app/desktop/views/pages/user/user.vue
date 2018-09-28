@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
+	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
 		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<main>
@@ -79,7 +79,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.xygkxeaeontfaokvqmiblezmhvhostak
 	width 980px
 	padding 16px
 	margin 0 auto
@@ -93,12 +93,12 @@ root(isDark)
 		border-radius var(--round)
 
 		&.is-suspended
-			color isDark ? #ffb4b4 : #570808
-			background isDark ? #611d1d : #ffdbdb
+			color var(--suspendedInfoFg)
+			background var(--suspendedInfoBg)
 
 		&.is-remote
-			color isDark ? #ffbd3e : #573c08
-			background isDark ? #42321c : #fff0db
+			color var(--remoteInfoFg)
+			background var(--remoteInfoBg)
 
 		> a
 			font-weight bold
@@ -139,21 +139,15 @@ root(isDark)
 			> .nav
 				padding 16px
 				font-size 12px
-				color #aaa
-				background isDark ? #21242f : #fff
+				color var(--text)
+				background var(--face)
 				box-shadow var(--shadow)
 				border-radius var(--round)
 
 				a
-					color #999
+					color var(--text)99
 
 				i
-					color #ccc
-
-.xygkxeaeontfaokvqmiblezmhvhostak[data-darkmode]
-	root(true)
-
-.xygkxeaeontfaokvqmiblezmhvhostak:not([data-darkmode])
-	root(false)
+					color var(--text)
 
 </style>

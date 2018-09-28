@@ -46,7 +46,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.cdxzvcfawjxdyxsekbxbfgtplebnoneb
 	position fixed
 	z-index 20000
 	top 0
@@ -59,11 +59,11 @@ root(isDark)
 	> .body
 		width 100%
 		height 100%
-		background var(--face)
+		background var(--faceHeader)
 
 		> header
-			border-bottom solid 1px isDark ? #1b1f29 : #eee
-			color isDark ? #fff : #111
+			border-bottom solid 1px var(--faceDivider)
+			color var(--text)
 
 			> h1
 				margin 0
@@ -95,11 +95,5 @@ root(isDark)
 			height calc(100% - 42px)
 			overflow scroll
 			-webkit-overflow-scrolling touch
-
-.cdxzvcfawjxdyxsekbxbfgtplebnoneb[data-darkmode]
-	root(true)
-
-.cdxzvcfawjxdyxsekbxbfgtplebnoneb:not([data-darkmode])
-	root(false)
 
 </style>

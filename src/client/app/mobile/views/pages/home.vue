@@ -22,7 +22,7 @@
 		<button @click="fn">%fa:pencil-alt%</button>
 	</template>
 
-	<main :data-darkmode="$store.state.device.darkmode">
+	<main>
 		<div class="nav" v-if="showNav">
 			<div class="bg" @click="showNav = false"></div>
 			<div class="pointer"></div>

@@ -46,8 +46,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-
+.egwyvoaaryotefqhqtmiyawwefemjfsd-body
 	&[data-compact]
 		> .banner:before
 			content ""
@@ -88,7 +87,7 @@ root(isDark)
 
 	> .banner
 		height 100px
-		background-color isDark ? #303e4a : #f5f5f5
+		background-color var(--primaryDarken10)
 		background-size cover
 		background-position center
 		cursor pointer
@@ -109,19 +108,14 @@ root(isDark)
 		margin 10px 0 0 84px
 		line-height 16px
 		font-weight bold
-		color isDark ? #fff : #555
+		color var(--text)
 
 	> .username
 		display block
 		margin 4px 0 8px 84px
 		line-height 16px
 		font-size 0.9em
-		color isDark ? #606984 : #999
-
-.egwyvoaaryotefqhqtmiyawwefemjfsd-body[data-darkmode]
-	root(true)
-
-.egwyvoaaryotefqhqtmiyawwefemjfsd-body:not([data-darkmode])
-	root(false)
+		color var(--text)
+		opacity 0.7
 
 </style>

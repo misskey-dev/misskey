@@ -2,7 +2,7 @@
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
 	<span slot="header">%fa:envelope R% %i18n:@title%</span>
 
-	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc" :data-darkmode="$store.state.device.darkmode">
+	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc">
 		<div v-for="req in requests">
 			<router-link :key="req.id" :to="req.follower | userPage">{{ req.follower | userName }}</router-link>
 			<span>

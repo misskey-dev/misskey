@@ -4,7 +4,7 @@
 		<template slot="header">%fa:chart-line%%i18n:@title%</template>
 		<button slot="func" @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
 
-		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }" :data-darkmode="$store.state.device.darkmode">
+		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }">
 			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" v-show="props.view != 2">
 				<defs>
 					<linearGradient :id="localGradientId" x1="0" x2="0" y1="1" y2="0">

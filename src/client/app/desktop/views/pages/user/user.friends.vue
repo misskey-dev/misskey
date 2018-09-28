@@ -40,7 +40,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.hozptpaliadatkehcmcayizwzwwctpbc
 	background var(--face)
 	box-shadow var(--shadow)
 	border-radius var(--round)
@@ -53,7 +53,7 @@ root(isDark)
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		background isDark ? #313543 : inherit
+		background var(--faceHeader)
 		color var(--faceHeaderText)
 		box-shadow 0 1px rgba(#000, 0.07)
 
@@ -72,7 +72,7 @@ root(isDark)
 
 	> .user
 		padding 16px
-		border-bottom solid 1px isDark ? #21242f : #eee
+		border-bottom solid 1px var(--faceDivider)
 
 		&:last-child
 			border-bottom none
@@ -98,24 +98,19 @@ root(isDark)
 				margin 0
 				font-size 16px
 				line-height 24px
-				color isDark ? #ccc : #555
+				color var(--text)
 
 			> .username
 				display block
 				margin 0
 				font-size 15px
 				line-height 16px
-				color isDark ? #555 : #ccc
+				color var(--text)
+				opacity 0.7
 
 		> .mk-follow-button
 			position absolute
 			top 16px
 			right 16px
-
-.hozptpaliadatkehcmcayizwzwwctpbc[data-darkmode]
-	root(true)
-
-.hozptpaliadatkehcmcayizwzwwctpbc:not([data-darkmode])
-	root(false)
 
 </style>

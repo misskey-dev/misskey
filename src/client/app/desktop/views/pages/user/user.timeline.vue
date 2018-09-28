@@ -112,9 +112,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.oh5y2r7l5lx8j6jj791ykeiwgihheguk
 	background var(--face)
 	border-radius var(--round)
 	overflow hidden
@@ -123,7 +121,7 @@ root(isDark)
 		padding 0 8px
 		z-index 10
 		background var(--faceHeader)
-		box-shadow 0 1px isDark ? rgba(#000, 0.15) : rgba(#000, 0.08)
+		box-shadow 0 1px var(--desktopTimelineHeaderShadow)
 
 		> span
 			display inline-block
@@ -148,11 +146,11 @@ root(isDark)
 					background var(--primary)
 
 			&:not([data-active])
-				color isDark ? #9aa2a7 : #6f7477
+				color var(--desktopTimelineSrc)
 				cursor pointer
 
 				&:hover
-					color isDark ? #d9dcde : #525a5f
+					color var(--desktopTimelineSrcHover)
 
 	> .loading
 		padding 64px 0
@@ -170,11 +168,5 @@ root(isDark)
 			margin-bottom 16px
 			font-size 3em
 			color #ccc
-
-.oh5y2r7l5lx8j6jj791ykeiwgihheguk[data-darkmode]
-	root(true)
-
-.oh5y2r7l5lx8j6jj791ykeiwgihheguk:not([data-darkmode])
-	root(false)
 
 </style>
