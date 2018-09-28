@@ -45,6 +45,18 @@ export default Vue.extend({
 	outline none
 	box-shadow none
 
+	&:focus
+		&:after
+			content ""
+			pointer-events none
+			position absolute
+			top -5px
+			right -5px
+			bottom -5px
+			left -5px
+			border 2px solid var(--primaryAlpha03)
+			border-radius 10px
+
 	&:not(.inline) + .dmtdnykelhudezerjlfpbhgovrgnqqgr
 		margin-top 16px
 
