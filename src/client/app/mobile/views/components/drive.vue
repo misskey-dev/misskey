@@ -473,7 +473,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.kmmwchoexgckptowjmjgfsygeltxfeqs
 	background var(--face)
 
 	> nav
@@ -487,10 +487,10 @@ root(isDark)
 		overflow auto
 		white-space nowrap
 		font-size 0.9em
-		color rgba(isDark ? #fff : #000, 0.67)
+		color var(--text)
 		-webkit-backdrop-filter blur(12px)
 		backdrop-filter blur(12px)
-		//background-color rgba(var(--faceHeader), 0.75)
+		background-color var(--mobileDriveNavBg)
 		border-bottom solid 1px rgba(#000, 0.13)
 
 		> p
@@ -516,7 +516,7 @@ root(isDark)
 			opacity 0.5
 
 		> .info
-			border-bottom solid 1px isDark ? #1c2023 : #eee
+			border-bottom solid 1px var(--faceDivider)
 
 			&:empty
 				display none
@@ -527,15 +527,15 @@ root(isDark)
 				margin 0 auto
 				padding 4px 16px
 				font-size 10px
-				color isDark ? #606984 : #777
+				color var(--text)
 
 		> .folders
 			> .folder
-				border-bottom solid 1px isDark ? #1c2023 : #eee
+				border-bottom solid 1px var(--faceDivider)
 
 		> .files
 			> .file
-				border-bottom solid 1px isDark ? #1c2023 : #eee
+				border-bottom solid 1px var(--faceDivider)
 
 			> .more
 				display block
@@ -590,11 +590,5 @@ root(isDark)
 
 	> .file
 		display none
-
-.kmmwchoexgckptowjmjgfsygeltxfeqs[data-darkmode]
-	root(true)
-
-.kmmwchoexgckptowjmjgfsygeltxfeqs:not([data-darkmode])
-	root(false)
 
 </style>
