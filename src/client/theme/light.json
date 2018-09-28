@@ -86,6 +86,8 @@
 	"calendarSaturdayOrSunday": "#ef95a0",
 	"calendarDay": "#777",
 
+	"chartCaption": ":alpha<0.6<$text",
+
 	"announcementsBg": "#f3f9ff",
 	"announcementsTitle": "#4078c0",
 	"announcementsText": "#57616f",
@@ -125,6 +127,13 @@
 	"desktopSettingsNavItem": ":alpha<0.8<$text",
 	"desktopSettingsNavItemHover": ":darken<10<$text",
 
+	"mobileUserPageName": "#757c82",
+	"mobileUserPageAcct": "#969ea5",
+	"mobileUserPageDescription": "#757c82",
+	"mobileUserPageFollowedBg": "#a7bec7",
+	"mobileUserPageFollowedFg": "#fff",
+	"mobileUserPageStatusHighlight": "#787e86",
+	"mobileUserPageHeaderShadow": "rgba(0, 0, 0, 0.07)",
 	"mobileAnnouncement": "rgba(155, 196, 232, 0.2)",
 	"mobileAnnouncementFg": "#3f4967",
 	"mobileSignedInAsBg": "#fcfff5",

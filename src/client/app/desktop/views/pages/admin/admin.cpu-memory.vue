@@ -125,7 +125,7 @@ root(isDark)
 
 		> text
 			font-size 10px
-			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
+			fill var(--chartCaption)
 
 			> tspan
 				opacity 0.5

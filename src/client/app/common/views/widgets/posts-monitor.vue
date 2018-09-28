@@ -173,7 +173,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.qpdmibaztplkylerhdbllwcokyrfxeyj
 	&.dual
 		> svg
 			width 50%
@@ -192,7 +192,7 @@ root(isDark)
 
 		> text
 			font-size 5px
-			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
+			fill var(--chartCaption)
 
 			> tspan
 				opacity 0.5
@@ -201,11 +201,5 @@ root(isDark)
 		content ""
 		display block
 		clear both
-
-.qpdmibaztplkylerhdbllwcokyrfxeyj[data-darkmode]
-	root(true)
-
-.qpdmibaztplkylerhdbllwcokyrfxeyj:not([data-darkmode])
-	root(false)
 
 </style>

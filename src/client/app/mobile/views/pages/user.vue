@@ -115,10 +115,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
-	$bg = isDark ? #22252f : #f7f7f7
+main
+	$bg = var(--face)
 
 	> .is-suspended
 	> .is-remote
@@ -148,7 +146,7 @@ root(isDark)
 
 		> .banner
 			padding-bottom 33.3%
-			background-color isDark ? #5f7273 : #cacaca
+			background-color rgba(0, 0, 0, 0.1)
 			background-size cover
 			background-position center
 
@@ -198,26 +196,26 @@ root(isDark)
 					margin 0
 					line-height 22px
 					font-size 20px
-					color isDark ? #fff : #757c82
+					color var(--mobileUserPageName)
 
 				> .username
 					display inline-block
 					line-height 20px
 					font-size 16px
 					font-weight bold
-					color isDark ? #657786 : #969ea5
+					color var(--mobileUserPageAcct)
 
 				> .followed
 					margin-left 8px
 					padding 2px 4px
 					font-size 12px
-					color isDark ? #657786 : #fff
-					background isDark ? #f8f8f8 : #a7bec7
+					color var(--mobileUserPageFollowedFg)
+					background var(--mobileUserPageFollowedBg)
 					border-radius 4px
 
 			> .description
 				margin 8px 0
-				color isDark ? #fff : #757c82
+				color var(--mobileUserPageDescription)
 
 			> .info
 				margin 8px 0
@@ -225,14 +223,14 @@ root(isDark)
 				> p
 					display inline
 					margin 0 16px 0 0
-					color isDark ? #a9b9c1 : #90989c
+					color var(--text)
 
 					> i
 						margin-right 4px
 
 			> .status
 				> a
-					color isDark ? #657786 : #818a92
+					color var(--text)
 
 					&:not(:last-child)
 						margin-right 16px
@@ -240,7 +238,7 @@ root(isDark)
 					> b
 						margin-right 4px
 						font-size 16px
-						color isDark ? #fff : #787e86
+						color var(--mobileUserPageStatusHighlight)
 
 					> i
 						font-size 14px
@@ -249,7 +247,7 @@ root(isDark)
 		position -webkit-sticky
 		position sticky
 		top 47px
-		box-shadow 0 4px 4px isDark ? rgba(#000, 0.3) : rgba(#000, 0.07)
+		box-shadow 0 4px 4px var(--mobileUserPageHeaderShadow)
 		background-color $bg
 		z-index 2
 
@@ -266,7 +264,7 @@ root(isDark)
 				line-height 48px
 				font-size 12px
 				text-decoration none
-				color isDark ? #657786 : #9ca1a5
+				color var(--text)
 				border-bottom solid 2px transparent
 
 				@media (min-width 400px)
@@ -288,11 +286,5 @@ root(isDark)
 
 		@media (min-width 600px)
 			padding 32px
-
-main[data-darkmode]
-	root(true)
-
-main:not([data-darkmode])
-	root(false)
 
 </style>
