@@ -195,9 +195,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.eamppglmnmimdhrlzhplwpvyeaqmmhxu
 	.transition
 		.mk-notes-enter
 		.mk-notes-leave-to
@@ -238,15 +236,9 @@ root(isDark)
 			border-bottom-right-radius 6px
 
 			&:hover
-				background isDark ? #2e3440 : #f5f5f5
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 			&:active
-				background isDark ? #21242b : #eee
-
-.eamppglmnmimdhrlzhplwpvyeaqmmhxu[data-darkmode]
-	root(true)
-
-.eamppglmnmimdhrlzhplwpvyeaqmmhxu:not([data-darkmode])
-	root(false)
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 </style>

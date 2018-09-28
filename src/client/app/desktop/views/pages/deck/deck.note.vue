@@ -214,9 +214,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-mediaRoot(isDark)
+.srwrkujossgfuhrbnvqkybtzxpblgchi
 	font-size 13px
 	margin 4px 12px
 
@@ -226,7 +224,7 @@ mediaRoot(isDark)
 	&:last-child
 		margin-bottom 12px
 
-root(isDark)
+.zyjjkidcqjnlegkqebitfviomuqmseqk
 	font-size 13px
 	border-bottom solid 1px var(--faceDivider)
 
@@ -409,7 +407,7 @@ root(isDark)
 						margin-right 28px
 
 					&:hover
-						color isDark ? #9198af : #666
+						color var(--noteActionsHover)
 
 					> .count
 						display inline
@@ -418,17 +416,5 @@ root(isDark)
 
 					&.reacted
 						color var(--primary)
-
-.zyjjkidcqjnlegkqebitfviomuqmseqk[data-darkmode]
-	root(true)
-
-.zyjjkidcqjnlegkqebitfviomuqmseqk:not([data-darkmode])
-	root(false)
-
-.srwrkujossgfuhrbnvqkybtzxpblgchi[data-darkmode]
-	mediaRoot(true)
-
-.srwrkujossgfuhrbnvqkybtzxpblgchi:not([data-darkmode])
-	mediaRoot(false)
 
 </style>

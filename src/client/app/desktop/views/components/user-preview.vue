@@ -83,9 +83,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.mk-user-preview
 	position absolute
 	z-index 2048
 	margin-top -8px
@@ -99,7 +97,7 @@ root(isDark)
 
 	> .banner
 		height 84px
-		background-color isDark ? #1c1e26 : #f5f5f5
+		background-color rgba(0, 0, 0, 0.1)
 		background-size cover
 		background-position center
 
@@ -123,19 +121,20 @@ root(isDark)
 			margin 0
 			font-weight bold
 			line-height 16px
-			color isDark ? #fff : #656565
+			color var(--text)
 
 		> .username
 			display block
 			margin 0
 			line-height 16px
 			font-size 0.8em
-			color isDark ? #606984 : #999
+			color var(--text)
+			opacity 0.7
 
 	> .description
 		padding 0 16px
 		font-size 0.7em
-		color isDark ? #9ea4ad : #555
+		color var(--text)
 
 	> .status
 		padding 8px 16px
@@ -147,7 +146,7 @@ root(isDark)
 			> p
 				margin 0
 				font-size 0.7em
-				color #aaa
+				color var(--text)
 
 			> span
 				font-size 1em
@@ -157,11 +156,5 @@ root(isDark)
 		position absolute
 		top 92px
 		right 8px
-
-.mk-user-preview[data-darkmode]
-	root(true)
-
-.mk-user-preview:not([data-darkmode])
-	root(false)
 
 </style>

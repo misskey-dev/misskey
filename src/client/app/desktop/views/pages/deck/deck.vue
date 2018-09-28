@@ -221,9 +221,7 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.qlvquzbjribqcaozciifydkngcwtyzje
 	display flex
 	flex 1
 	padding 16px 0 16px 16px
@@ -251,18 +249,12 @@ root(isDark)
 
 	> button
 		padding 0 16px
-		color isDark ? #93a0a5 : #888
+		color var(--faceTextButton)
 
 		&:hover
-			color isDark ? #b8c5ca : #777
+			color var(--faceTextButtonHover)
 
 		&:active
-			color isDark ? #fff : #555
-
-.qlvquzbjribqcaozciifydkngcwtyzje[data-darkmode]
-	root(true)
-
-.qlvquzbjribqcaozciifydkngcwtyzje:not([data-darkmode])
-	root(false)
+			color var(--faceTextButtonActive)
 
 </style>

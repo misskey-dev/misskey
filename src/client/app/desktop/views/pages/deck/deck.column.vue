@@ -269,9 +269,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs
 	$header-height = 42px
 
 	width 330px
@@ -301,7 +299,7 @@ root(isDark)
 		min-width 285px
 
 	&.naked
-		background rgba(#000, isDark ? 0.25 : 0.1)
+		background var(--deckAcrylicColumnBg)
 
 		> header
 			background transparent
@@ -350,7 +348,7 @@ root(isDark)
 				color var(--faceTextButtonHover)
 
 			&:active
-				color isDark ? #b2c1d5 : #999
+				color var(--faceTextButtonActive)
 
 		> .toggleActive
 			margin-left -16px
@@ -363,11 +361,5 @@ root(isDark)
 		height "calc(100% - %s)" % $header-height
 		overflow auto
 		overflow-x hidden
-
-.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs[data-darkmode]
-	root(true)
-
-.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs:not([data-darkmode])
-	root(false)
 
 </style>

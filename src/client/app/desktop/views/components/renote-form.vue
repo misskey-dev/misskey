@@ -57,16 +57,13 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
-
+.mk-renote-form
 	> .preview
 		margin 16px 22px
 
 	> footer
 		height 72px
-		background isDark ? #313543 : var(--primaryLighten95)
+		background var(--desktopRenoteFormFooter)
 
 		> .quote
 			position absolute
@@ -86,11 +83,5 @@ root(isDark)
 
 			&.ok
 				right 16px
-
-.mk-renote-form[data-darkmode]
-	root(true)
-
-.mk-renote-form:not([data-darkmode])
-	root(false)
 
 </style>

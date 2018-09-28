@@ -142,7 +142,7 @@ root(isDark)
 
 				> .mk-time
 					margin-left auto
-					color isDark ? #606984 : #c0c0c0
+					color var(--noteHeaderInfo)
 					font-size 0.9em
 
 			> .note-preview

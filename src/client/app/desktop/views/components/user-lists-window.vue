@@ -47,8 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-root(isDark)
+.xkxvokkjlptzyewouewmceqcxhpgzprp
 	padding 16px
 
 	> button
@@ -57,13 +56,7 @@ root(isDark)
 	> a
 		display block
 		padding 16px
-		border solid 1px isDark ? #1c2023 : #eee
+		border solid 1px var(--faceDivider)
 		border-radius 4px
-
-.xkxvokkjlptzyewouewmceqcxhpgzprp[data-darkmode]
-	root(true)
-
-.xkxvokkjlptzyewouewmceqcxhpgzprp:not([data-darkmode])
-	root(false)
 
 </style>
