@@ -322,7 +322,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+main
 	margin 0 auto
 	max-width 600px
 	width 100%
@@ -346,12 +346,7 @@ root(isDark)
 	> footer
 		margin 16px
 		text-align center
-		color isDark ? #c9d2e0 : #888
-
-main[data-darkmode]
-	root(true)
-
-main:not([data-darkmode])
-	root(false)
+		color var(--text)
+		opacity 0.7
 
 </style>
