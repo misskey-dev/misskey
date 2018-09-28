@@ -154,9 +154,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
-root(isDark)
+main
 	> .nav
 		> .pointer
 			position fixed
@@ -176,7 +174,7 @@ root(isDark)
 				border-top solid $size transparent
 				border-left solid $size transparent
 				border-right solid $size transparent
-				border-bottom solid $size isDark ? #272f3a : #fff
+				border-bottom solid $size var(--popupBg)
 
 		> .bg
 			position fixed
@@ -198,7 +196,7 @@ root(isDark)
 			margin 0 auto
 			overflow auto
 			-webkit-overflow-scrolling touch
-			background isDark ? #272f3a : #fff
+			background var(--popupBg)
 			border-radius 8px
 			box-shadow 0 0 16px rgba(#000, 0.1)
 
@@ -207,19 +205,19 @@ root(isDark)
 
 				> .hr
 					margin 8px 0
-					border-top solid 1px isDark ? rgba(#000, 0.3) : rgba(#000, 0.1)
+					border-top solid 1px var(--faceDivider)
 
 				> *:not(.hr)
 					display block
 					padding 8px 16px
-					color isDark ? #cdd0d8 : #666
+					color var(--text)
 
 					&[data-active]
 						color var(--primaryForeground)
 						background var(--primary)
 
 					&:not([data-active]):hover
-						background isDark ? #353e4a : #eee
+						background var(--mobileHomeTlItemHover)
 
 					> .badge
 						margin-left 6px
@@ -237,17 +235,9 @@ root(isDark)
 		@media (min-width 600px)
 			padding 32px
 
-main[data-darkmode]
-	root(true)
-
-main:not([data-darkmode])
-	root(false)
-
 </style>
 
 <style lang="stylus" module>
-
-
 .title
 	i
 		margin-right 4px
