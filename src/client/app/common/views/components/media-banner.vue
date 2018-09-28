@@ -43,7 +43,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-media-banner
 	width 100%
 	border-radius 4px
 	margin-top 4px
@@ -71,7 +71,7 @@ root(isDark)
 			font-size 1.6em
 
 	> .download
-		background isDark ? #21242d : #f7f7f7
+		background var(--noteAttachedFile)
 
 	> .sensitive
 		background #111
@@ -82,9 +82,4 @@ root(isDark)
 			display block
 			width 100%
 
-.mk-media-banner[data-darkmode]
-	root(true)
-
-.mk-media-banner:not([data-darkmode])
-	root(false)
 </style>

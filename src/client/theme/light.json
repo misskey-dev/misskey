@@ -29,6 +29,7 @@
 	"faceClearButtonActive": "rgba(0, 0, 0, 0.05)",
 	"popupBg": ":lighten<5<$secondary",
 	"popupFg": "#586069",
+
 	"subNoteBg": "rgba(0, 0, 0, 0.01)",
 	"renoteGradient": "#edfde2",
 	"renoteText": "#9dbb00",
@@ -49,10 +50,12 @@
 	"noteActionsReactionHover": "#fa0",
 	"noteActionsHighlighted": "#888",
 
+	"noteAttachedFile": "rgba(0, 0, 0, 0.05)",
+
 	"modalBackdrop": "rgba(0, 0, 0, 0.1)",
 
-	"dateDividerBg": "#fdfdfd",
-	"dateDividerFg": "#aaa",
+	"dateDividerBg": ":darken<2<$secondary",
+	"dateDividerFg": ":alpha<0.7<$text",
 
 	"switchTrack": "rgba(0, 0, 0, 0.25)",
 	"inputBorder": "rgba(0, 0, 0, 0.42)",
@@ -103,8 +106,8 @@
 	"messagingRoomMessageBg": "#eee",
 	"messagingRoomMessageFg": "#333",
 
-	"desktopHeaderBg": "#f7f7f7",
-	"desktopHeaderFg": "#9eaba8",
+	"desktopHeaderBg": ":lighten<5<$secondary",
+	"desktopHeaderFg": "$text",
 	"desktopHeaderHoverFg": "#7b8c88",
 	"desktopHeaderIcon": "url('/assets/desktop/header-icon.light.svg')",
 	"desktopHeaderSearchBg": "rgba(0, 0, 0, 0.05)",
