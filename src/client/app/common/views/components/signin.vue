@@ -1,16 +1,16 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
-	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange" styl="fill">
 		<span>%i18n:@username%</span>
 		<span slot="prefix">@</span>
 		<span slot="suffix">@{{ host }}</span>
 	</ui-input>
-	<ui-input v-model="password" type="password" required>
+	<ui-input v-model="password" type="password" required styl="fill">
 		<span>%i18n:@password%</span>
 		<span slot="prefix">%fa:lock%</span>
 	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
 	<ui-button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</ui-button>
 	<p style="margin: 8px 0;">%i18n:@or% <a :href="`${apiUrl}/signin/twitter`">%i18n:@signin-with-twitter%</a></p>
 </form>

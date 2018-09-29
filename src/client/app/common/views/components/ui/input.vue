@@ -71,14 +71,18 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		styl: {
+			type: String,
+			required: false,
+			default: 'line'
 		}
 	},
 	data() {
 		return {
 			v: this.value,
 			focused: false,
-			passwordStrength: '',
-			styl: 'fill'
+			passwordStrength: ''
 		};
 	},
 	computed: {
@@ -115,14 +119,6 @@ export default Vue.extend({
 				this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
 				(this.$refs.passwordMetar as any).style.width = `${strength * 100}%`;
 			}
-		}
-	},
-	inject: {
-		isCardChild: { default: false }
-	},
-	created() {
-		if (this.isCardChild) {
-			this.styl = 'line';
 		}
 	},
 	mounted() {

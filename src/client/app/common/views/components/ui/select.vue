@@ -29,13 +29,17 @@ export default Vue.extend({
 		required: {
 			type: Boolean,
 			required: false
+		},
+		styl: {
+			type: String,
+			required: false,
+			default: 'line'
 		}
 	},
 	data() {
 		return {
 			v: this.value,
-			focused: false,
-			styl: 'fill'
+			focused: false
 		};
 	},
 	computed: {
@@ -46,14 +50,6 @@ export default Vue.extend({
 	watch: {
 		value(v) {
 			this.v = v;
-		}
-	},
-	inject: {
-		isCardChild: { default: false }
-	},
-	created() {
-		if (this.isCardChild) {
-			this.styl = 'line';
 		}
 	},
 	mounted() {

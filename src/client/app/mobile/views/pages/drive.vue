@@ -44,7 +44,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = `${(this as any).os.instanceName} Drive`;
-		document.documentElement.style.background = '#fff';
 	},
 	beforeDestroy() {
 		window.removeEventListener('popstate', this.onPopState);
