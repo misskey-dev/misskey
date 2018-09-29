@@ -86,7 +86,7 @@ export default define({
 
 	> .banner
 		height 100px
-		background-color var(--primaryDarken10)
+		background-color var(--primaryAlpha01)
 		background-size cover
 		background-position center
 		cursor pointer
