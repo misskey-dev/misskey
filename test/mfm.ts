@@ -54,20 +54,45 @@ describe('Text', () => {
 			], tokens2);
 		});
 
-		it('mention', () => {
-			const tokens = analyze('@himawari お腹ペコい');
-			assert.deepEqual([
-				{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
-				{ type: 'text', content: ' お腹ペコい' }
-			], tokens);
-		});
+		describe('mention', () => {
+			it('local', () => {
+				const tokens = analyze('@himawari お腹ペコい');
+				assert.deepEqual([
+					{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
+					{ type: 'text', content: ' お腹ペコい' }
+				], tokens);
+			});
 
-		it('remote mention', () => {
-			const tokens = analyze('@hima_sub@namori.net お腹ペコい');
-			assert.deepEqual([
-				{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
-				{ type: 'text', content: ' お腹ペコい' }
-			], tokens);
+			it('remote', () => {
+				const tokens = analyze('@hima_sub@namori.net お腹ペコい');
+				assert.deepEqual([
+					{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
+					{ type: 'text', content: ' お腹ペコい' }
+				], tokens);
+			});
+/*
+			it('ignore', () => {
+				const tokens = analyze('idolm@ster');
+				assert.deepEqual([
+					{ type: 'text', content: 'idolm@ster' }
+				], tokens);
+
+				const tokens2 = analyze('@a\n@b\n@c');
+				assert.deepEqual([
+					{ type: 'mention', content: '@a', username: 'a', host: null },
+					{ type: 'text', content: '\n' },
+					{ type: 'mention', content: '@b', username: 'b', host: null },
+					{ type: 'text', content: '\n' },
+					{ type: 'mention', content: '@c', username: 'c', host: null }
+				], tokens2);
+
+				const tokens3 = analyze('**x**@a');
+				assert.deepEqual([
+					{ type: 'bold', content: '**x**', bold: 'x' },
+					{ type: 'mention', content: '@a', username: 'a', host: null }
+				], tokens3);
+			});
+*/
 		});
 
 		it('hashtag', () => {
