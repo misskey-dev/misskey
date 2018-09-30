@@ -450,6 +450,7 @@ export default Vue.extend({
 	display block
 	padding 16px
 	background var(--desktopPostFormBg)
+	overflow hidden
 
 	&:after
 		content ""
