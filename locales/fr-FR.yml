@@ -270,6 +270,7 @@ common/views/components/theme.vue:
   install-a-theme: "Installer un thème"
   theme-code: "Code du thème"
   install: "Installation"
+  installed: "「{}」をインストールしました"
   create-a-theme: "Créer un thème"
   save-created-theme: "Enregistrer le thème"
   primary-color: "Couleur primaire"
@@ -285,6 +286,8 @@ common/views/components/theme.vue:
   saved: "enregistré"
   installed-themes: "Thèmes installés"
   select-theme: "Veuillez sélectionner un thème"
+  uninstall: "アンインストール"
+  uninstalled: "「{}」をアンインストールしました"
 common/views/components/cw-button.vue:
   hide: "Masquer"
   show: "Voir plus"
