@@ -58,13 +58,13 @@
 		<ui-textarea readonly :value="selectedInstalledThemeCode">
 			<span>%i18n:@theme-code%</span>
 		</ui-textarea>
+		<ui-button @click="uninstall()">%i18n:@uninstall%</ui-button>
 	</details>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, docsUrl } from '../../../config';
 import { lightTheme, darkTheme, builtinThemes, applyTheme } from '../../../theme';
 import { Chrome } from 'vue-color';
 import * as uuid from 'uuid';
@@ -151,6 +151,16 @@ export default Vue.extend({
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
+			alert('%i18n:@installed%'.replace('{}', theme.meta.name));
+		},
+
+		uninstall() {
+			const theme = this.installedThemes.find(x => x.meta.id == this.selectedInstalledTheme);
+			const themes = this.$store.state.device.themes.filter(t => t.meta.id != theme.meta.id);
+			this.$store.commit('device/set', {
+				key: 'themes', value: themes
+			});
+			alert('%i18n:@uninstalled%'.replace('{}', theme.meta.name));
 		},
 
 		preview() {
