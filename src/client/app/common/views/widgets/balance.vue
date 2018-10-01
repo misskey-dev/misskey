@@ -88,7 +88,11 @@ export default define({
 				margin auto
 
 			> div
-				padding 48px
+				display flex
+				flex-direction column
+				justify-content center
+				align-items center
+				height 150px
 				font-size 20px
 
 				> div
@@ -115,6 +119,7 @@ export default define({
 					opacity 0.5
 
 		> div.b
+
 			> .line
 				position absolute
 				bottom 0
@@ -126,7 +131,11 @@ export default define({
 				background #0ff
 
 			> div:not(.line)
-				padding 30px 0 42px 0
+				display flex
+				flex-direction column
+				justify-content center
+				align-items center
+				height 150px
 				font-size 38px
 
 				> b
