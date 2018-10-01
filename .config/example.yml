@@ -101,8 +101,8 @@ drive:
 # TLS
 # https:
 #   # path for certification
-#   key: example-tls-key
-#   cert: example-tls-cert
+#   key: /etc/letsencrypt/live/example.tld/privkey.pem
+#   cert: /etc/letsencrypt/live/example.tld/fullchain.pem
 
 # Elasticsearch
 # elasticsearch:
