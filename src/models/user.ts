@@ -35,28 +35,6 @@ User.createIndex('uri', { sparse: true, unique: true });
 
 export default User;
 
-// 後方互換性のため
-User.findOne({
-	pinnedNoteId: { $exists: true }
-}).then(async x => {
-	if (x == null) return;
-
-	const users = await User.find({
-		pinnedNoteId: { $exists: true }
-	});
-
-	users.forEach(u => {
-		User.update({ _id: u._id }, {
-			$set: {
-				pinnedNoteIds: [(u as any).pinnedNoteId]
-			},
-			$unset: {
-				pinnedNoteId: ''
-			}
-		});
-	});
-});
-
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
