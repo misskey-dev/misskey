@@ -464,6 +464,7 @@ common/views/pages/follow.vue:
   following: "Suit"
   follow: "Suivre"
   request-pending: "Demande d'abonnement en attente"
+  follow-processing: "フォロー処理中"
   follow-request: "Demande d'abonnement"
 desktop:
   banner-crop-title: "Découpez la partie qui apparaitra comme bannière"
@@ -590,6 +591,7 @@ desktop/views/components/follow-button.vue:
   following: "Abonnements"
   follow: "Suivre"
   request-pending: "En attente d'approbation"
+  follow-processing: "フォロー処理中"
   follow-request: "Demande d'abonnement"
 desktop/views/components/followers-window.vue:
   followers: "{} abonné·e·s"
@@ -1070,6 +1072,7 @@ mobile/views/components/follow-button.vue:
   following: "Abonnements"
   follow: "Suivre"
   request-pending: "En attente d'approbation"
+  follow-processing: "フォロー処理中"
   follow-request: "Demande d'abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
