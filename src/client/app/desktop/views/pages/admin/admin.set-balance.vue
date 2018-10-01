@@ -42,8 +42,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 header
 	margin 10px 0
 

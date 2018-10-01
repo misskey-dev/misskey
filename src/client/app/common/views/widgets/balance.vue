@@ -58,24 +58,25 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.nxqgvwhnuthzathxvfmmkcjcxheqldsg
 	.nxqgvwhnuthzathxvfmmkcjcxheqldsg-body
 		text-align center
 		padding 16px
-		color isDark ? #fff : #222
+		color var(--text)
 
 		> .toggle
 			position absolute
+			z-index 1
 			top 0
 			right 0
 			padding 16px
-			color isDark ? #9baec8 : #ccc
+			color var(--faceTextButton)
 
 			&:hover
-				color isDark ? #b2c1d5 : #aaa
+				color var(--faceTextButtonHover)
 
 			&:active
-				color isDark ? #b2c1d5 : #999
+				color var(--faceTextButtonActive)
 
 		> div.a
 			> svg
@@ -150,11 +151,5 @@ root(isDark)
 
 				> i
 					opacity 0.5
-
-.nxqgvwhnuthzathxvfmmkcjcxheqldsg[data-darkmode]
-	root(true)
-
-.nxqgvwhnuthzathxvfmmkcjcxheqldsg:not([data-darkmode])
-	root(false)
 
 </style>
