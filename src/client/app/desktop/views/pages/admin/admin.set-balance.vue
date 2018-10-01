@@ -1,7 +1,7 @@
 <template>
 <div class="mk-admin-card">
 	<header>Set balance</header>
-	<input v-model="username" type="text" class="ui"/>
+	<input v-model="username" type="text" class="ui" @input="onChangeUsername"/>
 	<input v-model="amount" type="text" class="ui"/>
 	<button class="ui" @click="setBalance" :disabled="processing">Set</button>
 </div>
@@ -36,6 +36,15 @@ export default Vue.extend({
 			this.processing = false;
 
 			(this as any).os.apis.dialog({ text: "Done!" });
+		},
+
+		async onChangeUsername() {
+			const user = await (this as any).os.api(
+				"users/show",
+				parseAcct(this.username)
+			);
+
+			this.amount = user.balance;
 		}
 	}
 });

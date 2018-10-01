@@ -59,7 +59,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 		// Send response
 		res(await pack(user, me, {
-			detail: true
+			detail: true,
+			includeSecrets: me.isAdmin
 		}));
 	}
 });
