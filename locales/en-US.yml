@@ -439,6 +439,7 @@ common/views/pages/follow.vue:
   following: "Following"
   follow: "Follow"
   request-pending: "Pending follow request"
+  follow-processing: "Processing follow"
   follow-request: "Follow request"
 desktop:
   banner-crop-title: "Crop the part that appears as a banner"
@@ -565,6 +566,7 @@ desktop/views/components/follow-button.vue:
   following: "Following"
   follow: "Follow"
   request-pending: "Pending follow request"
+  follow-processing: "Processing follow"
   follow-request: "Follow request"
 desktop/views/components/followers-window.vue:
   followers: "{}'s followers"
@@ -1044,6 +1046,7 @@ mobile/views/components/follow-button.vue:
   following: "Following"
   follow: "Follow"
   request-pending: "Pending follow request"
+  follow-processing: "Processing follow"
   follow-request: "Follow request"
 mobile/views/components/friends-maker.vue:
   title: "Let's follow them"
