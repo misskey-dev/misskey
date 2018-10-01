@@ -464,6 +464,7 @@ common/views/pages/follow.vue:
   following: "フォローしとる"
   follow: "フォロー"
   request-pending: "フォローの許し待っとる"
+  follow-processing: "フォロー処理中"
   follow-request: "フォロー許してくれや！言うてみる"
 desktop:
   banner-crop-title: "どこバナーとして出す？"
@@ -590,6 +591,7 @@ desktop/views/components/follow-button.vue:
   following: "フォローしとる"
   follow: "フォロー"
   request-pending: "フォローの許し待っとる"
+  follow-processing: "フォロー処理中"
   follow-request: "フォロー許してくれや！言うてみる"
 desktop/views/components/followers-window.vue:
   followers: "{} のフォロワー"
@@ -1070,6 +1072,7 @@ mobile/views/components/follow-button.vue:
   following: "フォローしとる"
   follow: "フォロー"
   request-pending: "フォローの許し待っとる"
+  follow-processing: "フォロー処理中"
   follow-request: "フォロー許してくれや！言うてみる"
 mobile/views/components/friends-maker.vue:
   title: "おもろそうやな"
