@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import theme from './theme.vue';
 import instance from './instance.vue';
 import cwButton from './cw-button.vue';
 import tagCloud from './tag-cloud.vue';
@@ -30,7 +31,6 @@ import messagingRoom from './messaging-room.vue';
 import urlPreview from './url-preview.vue';
 import twitterSetting from './twitter-setting.vue';
 import fileTypeIcon from './file-type-icon.vue';
-import Switch from './switch.vue';
 import Reversi from './games/reversi/reversi.vue';
 import welcomeTimeline from './welcome-timeline.vue';
 import uiInput from './ui/input.vue';
@@ -44,6 +44,7 @@ import uiSelect from './ui/select.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
+Vue.component('mk-theme', theme);
 Vue.component('mk-instance', instance);
 Vue.component('mk-cw-button', cwButton);
 Vue.component('mk-tag-cloud', tagCloud);
@@ -74,7 +75,6 @@ Vue.component('mk-messaging-room', messagingRoom);
 Vue.component('mk-url-preview', urlPreview);
 Vue.component('mk-twitter-setting', twitterSetting);
 Vue.component('mk-file-type-icon', fileTypeIcon);
-Vue.component('mk-switch', Switch);
 Vue.component('mk-reversi', Reversi);
 Vue.component('mk-welcome-timeline', welcomeTimeline);
 Vue.component('ui-input', uiInput);

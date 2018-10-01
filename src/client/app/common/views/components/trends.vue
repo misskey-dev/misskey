@@ -49,13 +49,14 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.csqvmxybqbycalfhkxvyfrgbrdalkaoc
 	> .fetching
 	> .empty
 		margin 0
 		padding 16px
 		text-align center
-		color #aaa
+		color var(--text)
+		opacity 0.7
 
 		> [data-fa]
 			margin-right 4px
@@ -70,13 +71,13 @@ root(isDark)
 			padding 14px 16px
 
 			&:not(:last-child)
-				border-bottom solid 1px isDark ? #393f4f : #eee
+				border-bottom solid 1px var(--faceDivider)
 
 			> .tag
 				flex 1
 				overflow hidden
 				font-size 14px
-				color isDark ? #9baec8 : #65727b
+				color var(--text)
 
 				> a
 					display block
@@ -93,11 +94,5 @@ root(isDark)
 
 			> .chart
 				height 30px
-
-.csqvmxybqbycalfhkxvyfrgbrdalkaoc[data-darkmode]
-	root(true)
-
-.csqvmxybqbycalfhkxvyfrgbrdalkaoc:not([data-darkmode])
-	root(false)
 
 </style>

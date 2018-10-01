@@ -34,7 +34,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus">
-@import '~const.styl'
+
 
 .tcrwdhwpuxrwmcttxjcsehgpagpstqey
 	width 100%
@@ -54,7 +54,7 @@ export default Vue.extend({
 
 			> *:first-child
 				display block
-				color $theme-color
+				color var(--primary)
 
 			> *:last-child
 				font-size 70%

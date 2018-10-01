@@ -68,7 +68,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mkw-post-form
 	background #fff
@@ -107,8 +107,8 @@ export default define({
 		margin 0
 		padding 0 10px
 		height 28px
-		color $theme-color-foreground
-		background $theme-color !important
+		color var(--primaryForeground)
+		background var(--primary) !important
 		outline none
 		border none
 		border-radius 4px
@@ -116,10 +116,10 @@ export default define({
 		cursor pointer
 
 		&:hover
-			background lighten($theme-color, 10%) !important
+			background var(--primaryLighten10) !important
 
 		&:active
-			background darken($theme-color, 10%) !important
+			background var(--primaryDarken10) !important
 			transition background 0s ease
 
 </style>

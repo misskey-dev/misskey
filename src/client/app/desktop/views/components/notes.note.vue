@@ -317,13 +317,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.note
 	margin 0
 	padding 0
-	background isDark ? #282C37 : #fff
-	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+	background var(--face)
+	border-bottom solid 1px var(--faceDivider)
 
 	&[data-round]
 		&:first-child
@@ -348,7 +346,7 @@ root(isDark)
 			right 2px
 			bottom 2px
 			left 2px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 4px
 
 	> .renote
@@ -357,8 +355,8 @@ root(isDark)
 		padding 16px 32px 8px 32px
 		line-height 28px
 		white-space pre
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		.avatar
 			display inline-block
@@ -398,7 +396,7 @@ root(isDark)
 
 		&:hover
 			> .main > footer > button
-				color isDark ? #707b97 : #888
+				color var(--noteActionsHighlighted)
 
 		> .avatar
 			flex-shrink 0
@@ -426,7 +424,7 @@ root(isDark)
 					margin 0
 					padding 0
 					overflow-wrap break-word
-					color isDark ? #fff : #717171
+					color var(--noteText)
 
 					> .text
 						margin-right 8px
@@ -439,7 +437,7 @@ root(isDark)
 						margin 0
 						padding 0
 						overflow-wrap break-word
-						color isDark ? #fff : #717171
+						color var(--noteText)
 
 						>>> .title
 							display block
@@ -447,7 +445,7 @@ root(isDark)
 							padding 4px
 							font-size 90%
 							text-align center
-							background isDark ? #2f3944 : #eef1f3
+							background var(--mfmTitleBg)
 							border-radius 4px
 
 						>>> .code
@@ -456,17 +454,17 @@ root(isDark)
 						>>> .quote
 							margin 8px
 							padding 6px 12px
-							color isDark ? #6f808e : #aaa
-							border-left solid 3px isDark ? #637182 : #eee
+							color var(--mfmQuote)
+							border-left solid 3px var(--mfmQuoteLine)
 
 						> .reply
 							margin-right 8px
-							color isDark ? #99abbf : #717171
+							color var(--text)
 
 						> .rp
 							margin-left 4px
 							font-style oblique
-							color #a0bf46
+							color var(--renoteText)
 
 					> .location
 						margin 4px 0
@@ -491,7 +489,7 @@ root(isDark)
 
 						> *
 							padding 16px
-							border dashed 1px isDark ? #4e945e : #c0dac6
+							border dashed 1px var(--quoteBorder)
 							border-radius 8px
 
 			> footer
@@ -500,22 +498,22 @@ root(isDark)
 					padding 0 8px
 					line-height 32px
 					font-size 1em
-					color isDark ? #606984 : #ddd
+					color var(--noteActions)
 					background transparent
 					border none
 					cursor pointer
 
 					&:hover
-						color isDark ? #a1a8bf : #444
+						color var(--noteActionsHover)
 
 					&.replyButton:hover
-						color #0af
+						color var(--noteActionsReplyHover)
 
 					&.renoteButton:hover
-						color #8d0
+						color var(--noteActionsRenoteHover)
 
 					&.reactionButton:hover
-						color #fa0
+						color var(--noteActionsReactionHover)
 
 					> .count
 						display inline
@@ -523,17 +521,11 @@ root(isDark)
 						color #999
 
 					&.reacted, &.reacted:hover
-						color #fa0
+						color var(--noteActionsReactionHover)
 
 	> .detail
 		padding-top 4px
 		background rgba(#000, 0.0125)
-
-.note[data-darkmode]
-	root(true)
-
-.note:not([data-darkmode])
-	root(false)
 
 </style>
 
@@ -557,7 +549,7 @@ root(isDark)
 		padding 0 4px
 		margin-left 4px
 		font-size 80%
-		color $theme-color-foreground
-		background $theme-color
+		color var(--primaryForeground)
+		background var(--primary)
 		border-radius 4px
 </style>

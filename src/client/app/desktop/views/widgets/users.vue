@@ -73,11 +73,11 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-users
 	.mkw-users--body
 		> .user
 			padding 16px
-			border-bottom solid 1px isDark ? #1c2023 : #eee
+			border-bottom solid 1px var(--faceDivider)
 
 			&:last-child
 				border-bottom none
@@ -103,14 +103,15 @@ root(isDark)
 					margin 0
 					font-size 16px
 					line-height 24px
-					color isDark ? #fff : #555
+					color var(--text)
 
 				> .username
 					display block
 					margin 0
 					font-size 15px
 					line-height 16px
-					color isDark ? #606984 : #ccc
+					color var(--text)
+					opacity 0.7
 
 			> .mk-follow-button
 				position absolute
@@ -131,11 +132,5 @@ root(isDark)
 
 			> [data-fa]
 				margin-right 4px
-
-.mkw-users[data-darkmode]
-	root(true)
-
-.mkw-users:not([data-darkmode])
-	root(false)
 
 </style>

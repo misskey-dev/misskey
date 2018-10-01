@@ -26,9 +26,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-	color isDark ? #fff : #5b646f
-	background isDark ? #21242f : #fff
+.nhasjydimbopojusarffqjyktglcuxjy
+	color var(--text)
+	background var(--face)
 	text-align center
 
 	> .banner
@@ -47,11 +47,5 @@ root(isDark)
 	> a
 		display block
 		padding-bottom 16px
-
-.nhasjydimbopojusarffqjyktglcuxjy[data-darkmode]
-	root(true)
-
-.nhasjydimbopojusarffqjyktglcuxjy:not([data-darkmode])
-	root(false)
 
 </style>

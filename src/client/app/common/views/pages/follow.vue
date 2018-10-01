@@ -1,5 +1,5 @@
 <template>
-<div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
+<div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching">
 	<div class="signed-in-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${myName}`)"></div>
 
 	<main>
@@ -107,16 +107,14 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.syxhndwprovvuqhmyvveewmbqayniwkv
 	padding 32px
 	max-width 500px
 	margin 0 auto
 	text-align center
-	color isDark ? #9baec8 : #868c8c
+	color var(--text)
 
-	$bg = isDark ? #282C37 : #fff
+	$bg = var(--face)
 
 	@media (max-width 400px)
 		padding 16px
@@ -124,7 +122,6 @@ root(isDark)
 	> .signed-in-as
 		margin-bottom 16px
 		font-size 14px
-		color isDark ? #9baec8 : #9daab3
 
 	> main
 		margin-bottom 16px
@@ -173,29 +170,29 @@ root(isDark)
 		min-width 150px
 		font-size 14px
 		font-weight bold
-		color $theme-color
+		color var(--primary)
 		background transparent
 		outline none
-		border solid 1px $theme-color
+		border solid 1px var(--primary)
 		border-radius 36px
 
 		&:hover
-			background rgba($theme-color, 0.1)
+			background var(--primaryAlpha01)
 
 		&:active
-			background rgba($theme-color, 0.2)
+			background var(--primaryAlpha02)
 
 		&.active
-			color $theme-color-foreground
-			background $theme-color
+			color var(--primaryForeground)
+			background var(--primary)
 
 			&:hover
-				background lighten($theme-color, 10%)
-				border-color lighten($theme-color, 10%)
+				background var(--primaryLighten10)
+				border-color var(--primaryLighten10)
 
 			&:active
-				background darken($theme-color, 10%)
-				border-color darken($theme-color, 10%)
+				background var(--primaryDarken10)
+				border-color var(--primaryDarken10)
 
 		&.wait
 			cursor wait !important
@@ -203,11 +200,5 @@ root(isDark)
 
 		*
 			pointer-events none
-
-.syxhndwprovvuqhmyvveewmbqayniwkv[data-darkmode]
-	root(true)
-
-.syxhndwprovvuqhmyvveewmbqayniwkv:not([data-darkmode])
-	root(false)
 
 </style>

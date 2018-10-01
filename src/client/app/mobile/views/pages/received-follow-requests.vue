@@ -52,8 +52,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 main
 	width 100%
 	max-width 680px
@@ -69,7 +67,7 @@ main
 	> div
 		display flex
 		padding 16px
-		border solid 1px isDark ? #1c2023 : #eee
+		border solid 1px var(--faceDivider)
 		border-radius 4px
 
 		> span

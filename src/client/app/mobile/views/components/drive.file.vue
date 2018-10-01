@@ -63,9 +63,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.vupkuhvjnjyqaqhsiogfbywvjxynrgsm
 	display block
 	text-decoration none !important
 
@@ -103,7 +101,7 @@ root(isDark)
 				padding 0
 				font-size 0.9em
 				font-weight bold
-				color isDark ? #fff : #555
+				color var(--text)
 				text-overflow ellipsis
 				overflow-wrap break-word
 
@@ -127,21 +125,22 @@ root(isDark)
 				display block
 				margin 4px 0 0 0
 				font-size 0.7em
+				color var(--text)
 
 				> .separator
 					padding 0 4px
 
 				> .type
-					color #9D9D9D
+					opacity 0.7
 
 					> .mk-file-type-icon
 						margin-right 4px
 
 				> .data-size
-					color #9D9D9D
+					opacity 0.7
 
 				> .created-at
-					color #BDBDBD
+					opacity 0.7
 
 					> [data-fa]
 						margin-right 2px
@@ -150,15 +149,9 @@ root(isDark)
 					color #bf4633
 
 	&[data-is-selected]
-		background $theme-color
+		background var(--primary)
 
 		&, *
 			color #fff !important
-
-.vupkuhvjnjyqaqhsiogfbywvjxynrgsm[data-darkmode]
-	root(true)
-
-.vupkuhvjnjyqaqhsiogfbywvjxynrgsm:not([data-darkmode])
-	root(false)
 
 </style>

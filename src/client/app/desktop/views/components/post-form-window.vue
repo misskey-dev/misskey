@@ -77,7 +77,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-post-form-window
 	.mk-post-form-window--header
 		.icon
 			margin-right 8px
@@ -94,15 +94,6 @@ root(isDark)
 
 	.mk-post-form-window--body
 		.notePreview
-			if isDark
-				margin 16px 22px 0 22px
-			else
 				margin 16px 22px
-
-.mk-post-form-window[data-darkmode]
-	root(true)
-
-.mk-post-form-window:not([data-darkmode])
-	root(false)
 
 </style>

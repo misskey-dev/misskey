@@ -304,9 +304,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.xqnhankfuuilcwvhgsopeqncafzsquya
 	text-align center
 
 	> .go-index
@@ -319,7 +317,7 @@ root(isDark)
 
 	> header
 		padding 8px
-		border-bottom dashed 1px isDark ? #4c5761 : #c4cdd4
+		border-bottom dashed 1px var(--reversiGameHeaderLine)
 
 		a
 			color inherit
@@ -386,30 +384,30 @@ root(isDark)
 						user-select none
 
 					&.empty
-						border solid 2px isDark ? #51595f : #eee
+						border solid 2px var(--reversiGameEmptyCell)
 
 					&.empty.can
-						background isDark ? #51595f : #eee
+						background var(--reversiGameEmptyCell)
 
 					&.empty.myTurn
-						border-color isDark ? #6a767f : #ddd
+						border-color var(--reversiGameEmptyCellMyTurn)
 
 						&.can
-							background isDark ? #51595f : #eee
+							background var(--reversiGameEmptyCellCanPut)
 							cursor pointer
 
 							&:hover
-								border-color darken($theme-color, 10%)
-								background $theme-color
+								border-color var(--primaryDarken10)
+								background var(--primary)
 
 							&:active
-								background darken($theme-color, 10%)
+								background var(--primaryDarken10)
 
 					&.prev
-						box-shadow 0 0 0 4px rgba($theme-color, 0.7)
+						box-shadow 0 0 0 4px var(--primaryAlpha07)
 
 					&.isEnded
-						border-color isDark ? #6a767f : #ddd
+						border-color var(--reversiGameEmptyCellMyTurn)
 
 					&.none
 						border-color transparent !important
@@ -457,11 +455,5 @@ root(isDark)
 			display inline-block
 			margin 0 8px
 			min-width 70px
-
-.xqnhankfuuilcwvhgsopeqncafzsquya[data-darkmode]
-	root(true)
-
-.xqnhankfuuilcwvhgsopeqncafzsquya:not([data-darkmode])
-	root(false)
 
 </style>

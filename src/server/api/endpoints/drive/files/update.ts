@@ -4,6 +4,7 @@ import DriveFile, { validateFileName, pack } from '../../../../../models/drive-f
 import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
+import Note from '../../../../../models/note';
 
 export const meta = {
 	desc: {
@@ -91,6 +92,18 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			'metadata.folderId': file.metadata.folderId,
 			'metadata.isSensitive': file.metadata.isSensitive
 		}
+	});
+
+	// ドライブのファイルが非正規化されているドキュメントも更新
+	Note.find({
+		'_files._id': file._id
+	}).then(notes => {
+		notes.forEach(note => {
+			note._files[note._files.findIndex(f => f._id.equals(file._id))] = file;
+			Note.findOneAndUpdate({ _id: note._id }, {
+				_files: note._files
+			});
+		});
 	});
 
 	// Serialize

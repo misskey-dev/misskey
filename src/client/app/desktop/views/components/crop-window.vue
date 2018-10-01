@@ -61,7 +61,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-@import '~const.styl'
+
 
 .header
 	> [data-fa]
@@ -73,7 +73,7 @@ export default Vue.extend({
 
 .actions
 	height 72px
-	background lighten($theme-color, 95%)
+	background var(--primaryLighten95)
 
 .ok
 .cancel
@@ -98,7 +98,7 @@ export default Vue.extend({
 			right -5px
 			bottom -5px
 			left -5px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 8px
 
 	&:disabled
@@ -111,20 +111,20 @@ export default Vue.extend({
 
 .ok
 	right 16px
-	color $theme-color-foreground
-	background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
-	border solid 1px lighten($theme-color, 15%)
+	color var(--primaryForeground)
+	background linear-gradient(to bottom, var(--primaryLighten25) 0%, var(--primaryLighten10) 100%)
+	border solid 1px var(--primaryLighten15)
 
 	&:not(:disabled)
 		font-weight bold
 
 	&:hover:not(:disabled)
-		background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-		border-color $theme-color
+		background linear-gradient(to bottom, var(--primaryLighten8) 0%, var(--primaryDarken8) 100%)
+		border-color var(--primary)
 
 	&:active:not(:disabled)
-		background $theme-color
-		border-color $theme-color
+		background var(--primary)
+		border-color var(--primary)
 
 .cancel
 .skip
@@ -155,11 +155,11 @@ export default Vue.extend({
 }
 
 .cropper-view-box {
-	outline-color: $theme-color;
+	outline-color: var(--primary);
 }
 
 .cropper-line, .cropper-point {
-	background-color: $theme-color;
+	background-color: var(--primary);
 }
 
 .cropper-bg {

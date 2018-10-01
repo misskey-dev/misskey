@@ -259,15 +259,13 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-autocomplete
 	position fixed
 	z-index 65535
 	max-width 100%
 	margin-top calc(1em + 8px)
 	overflow hidden
-	background isDark ? #313543 : #fff
+	background var(--faceHeader)
 	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
 	transition top 0.1s ease, left 0.1s ease
@@ -299,16 +297,16 @@ root(isDark)
 				text-overflow ellipsis
 
 			&:hover
-				background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.1)
+				background var(--autocompleteItemHoverBg)
 
 			&[data-selected='true']
-				background $theme-color
+				background var(--primary)
 
 				&, *
 					color #fff !important
 
 			&:active
-				background darken($theme-color, 10%)
+				background var(--primaryDarken10)
 
 				&, *
 					color #fff !important
@@ -325,15 +323,15 @@ root(isDark)
 
 		.name
 			margin 0 8px 0 0
-			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
+			color var(--autocompleteItemText)
 
 		.username
-			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
+			color var(--autocompleteItemTextSub)
 
 	> .hashtags > li
 
 		.name
-			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
+			color var(--autocompleteItemText)
 
 	> .emojis > li
 
@@ -343,15 +341,9 @@ root(isDark)
 			width 24px
 
 		.name
-			color isDark ? rgba(#fff, 0.8) : rgba(#000, 0.8)
+			color var(--autocompleteItemText)
 
 		.alias
 			margin 0 0 0 8px
-			color isDark ? rgba(#fff, 0.3) : rgba(#000, 0.3)
-
-.mk-autocomplete[data-darkmode]
-	root(true)
-
-.mk-autocomplete:not([data-darkmode])
-	root(false)
+			color var(--autocompleteItemTextSub)
 </style>

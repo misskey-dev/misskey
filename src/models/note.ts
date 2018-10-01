@@ -20,6 +20,7 @@ Note.createIndex('userId');
 Note.createIndex('mentions');
 Note.createIndex('visibleUserIds');
 Note.createIndex('tagsLower');
+Note.createIndex('_files._id');
 Note.createIndex('_files.contentType');
 Note.createIndex({
 	createdAt: -1

@@ -210,11 +210,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 $border-color = rgba(27, 31, 35, 0.15)
 
-root(isDark)
+.mk-reaction-picker
 	position initial
 
 	> .backdrop
@@ -224,11 +222,11 @@ root(isDark)
 		z-index 10000
 		width 100%
 		height 100%
-		background isDark ? rgba(#000, 0.4) : rgba(#000, 0.1)
+		background var(--modalBackdrop)
 		opacity 0
 
 	> .popover
-		$bgcolor = isDark ? #2c303c : #fff
+		$bgcolor = var(--popupBg)
 		position absolute
 		z-index 10001
 		background $bgcolor
@@ -281,8 +279,8 @@ root(isDark)
 			margin 0
 			padding 8px 10px
 			font-size 14px
-			color isDark ? #d6dce2 : #586069
-			border-bottom solid 1px isDark ? #1c2023 : #e1e4e8
+			color var(--popupFg)
+			border-bottom solid 1px var(--faceDivider)
 
 		> div
 			padding 4px
@@ -301,7 +299,7 @@ root(isDark)
 						right 0
 						bottom 0
 						left 0
-						border 2px solid rgba($theme-color, 0.3)
+						border 2px solid var(--primaryAlpha03)
 						border-radius 4px
 
 			> button
@@ -312,16 +310,10 @@ root(isDark)
 				border-radius 2px
 
 				&:hover
-					background isDark ? #252731 : #eee
+					background var(--reactionPickerButtonHoverBg)
 
 				&:active
-					background $theme-color
+					background var(--primary)
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
-
-.mk-reaction-picker[data-darkmode]
-	root(true)
-
-.mk-reaction-picker:not([data-darkmode])
-	root(false)
 
 </style>

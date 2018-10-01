@@ -121,10 +121,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-	$color = isDark ? #c9d2e0 : #777
+.nav
+	$color = var(--text)
 
 	.backdrop
 		position fixed
@@ -133,7 +131,7 @@ root(isDark)
 		z-index 1025
 		width 100%
 		height 100%
-		background isDark ? rgba(#000, 0.7) : rgba(#000, 0.2)
+		background var(--mobileNavBackdrop)
 
 	.body
 		position fixed
@@ -144,7 +142,7 @@ root(isDark)
 		height 100%
 		overflow auto
 		-webkit-overflow-scrolling touch
-		background isDark ? #16191f : #fff
+		background var(--secondary)
 
 	.me
 		display block
@@ -198,11 +196,11 @@ root(isDark)
 				text-decoration none
 
 				&[data-active]
-					color $theme-color-foreground
-					background $theme-color
+					color var(--primaryForeground)
+					background var(--primary)
 
 					> [data-fa]:last-child
-						color $theme-color-foreground
+						color var(--primaryForeground)
 
 				> [data-fa]:first-child
 					margin-right 0.5em
@@ -212,7 +210,7 @@ root(isDark)
 				> [data-fa].circle
 					margin-left 6px
 					font-size 10px
-					color $theme-color
+					color var(--primary)
 
 				> [data-fa]:last-child
 					position absolute
@@ -226,8 +224,8 @@ root(isDark)
 
 	.announcements
 		> article
-			background isDark ? rgba(30, 129, 216, 0.2) : rgba(155, 196, 232, 0.2)
-			color isDark ? #fff : #3f4967
+			background var(--mobileAnnouncement)
+			color var(--mobileAnnouncementFg)
 			padding 16px
 			margin 8px 0
 			font-size 12px
@@ -264,11 +262,5 @@ root(isDark)
 .back-leave-active {
 	opacity: 0;
 }
-
-.nav[data-darkmode]
-	root(true)
-
-.nav:not([data-darkmode])
-	root(false)
 
 </style>

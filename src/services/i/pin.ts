@@ -7,7 +7,7 @@ import renderRemove from '../../remote/activitypub/renderer/remove';
 import packAp from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 
-export async function deliverPinnedChange(userId: mongo.ObjectID, oldId?: mongo.ObjectID, newId?: mongo.ObjectID) {
+export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.ObjectID, isAddition: boolean) {
 	const user = await User.findOne({
 		_id: userId
 	});
@@ -20,21 +20,11 @@ export async function deliverPinnedChange(userId: mongo.ObjectID, oldId?: mongo.
 
 	const target = `${config.url}/users/${user._id}/collections/featured`;
 
-	if (oldId) {
-		const oldItem = `${config.url}/notes/${oldId}`;
-		const content = packAp(renderRemove(user, target, oldItem));
-		queue.forEach(inbox => {
-			deliver(user, content, inbox);
-		});
-	}
-
-	if (newId) {
-		const newItem = `${config.url}/notes/${newId}`;
-		const content = packAp(renderAdd(user, target, newItem));
-		queue.forEach(inbox => {
-			deliver(user, content, inbox);
-		});
-	}
+	const item = `${config.url}/notes/${noteId}`;
+	const content = packAp(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
+	queue.forEach(inbox => {
+		deliver(user, content, inbox);
+	});
 }
 
 /**

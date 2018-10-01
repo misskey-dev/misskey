@@ -11,7 +11,6 @@ import Vue from 'vue';
 export default Vue.extend({
 	mounted() {
 		document.title = `${(this as any).os.instanceName} %i18n:@reversi%`;
-		document.documentElement.style.background = '#fff';
 	},
 	methods: {
 		nav(game, actualNav) {

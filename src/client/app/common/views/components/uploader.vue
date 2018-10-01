@@ -81,7 +81,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-uploader
 	overflow auto
@@ -100,7 +100,7 @@ export default Vue.extend({
 			margin 8px 0 0 0
 			padding 0
 			height 36px
-			box-shadow 0 -1px 0 rgba($theme-color, 0.1)
+			box-shadow 0 -1px 0 var(--primaryAlpha01)
 			border-top solid 8px transparent
 
 			&:first-child
@@ -127,7 +127,7 @@ export default Vue.extend({
 				padding 0
 				max-width 256px
 				font-size 0.8em
-				color rgba($theme-color, 0.7)
+				color var(--primaryAlpha07)
 				white-space nowrap
 				text-overflow ellipsis
 				overflow hidden
@@ -145,17 +145,17 @@ export default Vue.extend({
 				font-size 0.8em
 
 				> .initing
-					color rgba($theme-color, 0.5)
+					color var(--primaryAlpha05)
 
 				> .kb
-					color rgba($theme-color, 0.5)
+					color var(--primaryAlpha05)
 
 				> .percentage
 					display inline-block
 					width 48px
 					text-align right
 
-					color rgba($theme-color, 0.7)
+					color var(--primaryAlpha07)
 
 					&:after
 						content '%'
@@ -174,10 +174,10 @@ export default Vue.extend({
 				overflow hidden
 
 				&::-webkit-progress-value
-					background $theme-color
+					background var(--primary)
 
 				&::-webkit-progress-bar
-					background rgba($theme-color, 0.1)
+					background var(--primaryAlpha01)
 
 			> .progress
 				display block
@@ -191,13 +191,13 @@ export default Vue.extend({
 				border-radius 4px
 				background linear-gradient(
 					45deg,
-					lighten($theme-color, 30%) 25%,
-					$theme-color               25%,
-					$theme-color               50%,
-					lighten($theme-color, 30%) 50%,
-					lighten($theme-color, 30%) 75%,
-					$theme-color               75%,
-					$theme-color
+					var(--primaryLighten30) 25%,
+					var(--primary)               25%,
+					var(--primary)               50%,
+					var(--primaryLighten30) 50%,
+					var(--primaryLighten30) 75%,
+					var(--primary)               75%,
+					var(--primary)
 				)
 				background-size 32px 32px
 				animation bg 1.5s linear infinite

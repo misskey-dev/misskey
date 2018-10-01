@@ -19,7 +19,7 @@
 	<span class="label">
 		<span :aria-hidden="!checked"><slot></slot></span>
 		<p :aria-hidden="!checked">
-			<slot name="text"></slot>
+			<slot name="desc"></slot>
 		</p>
 	</span>
 </div>
@@ -56,9 +56,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.ui-switch
 	display flex
 	margin 32px 0
 	cursor pointer
@@ -79,11 +77,11 @@ root(isDark)
 
 	&.checked
 		> .button
-			background-color rgba($theme-color, 0.4)
-			border-color rgba($theme-color, 0.4)
+			background-color var(--primaryAlpha04)
+			border-color var(--primaryAlpha04)
 
 			> *
-				background-color $theme-color
+				background-color var(--primary)
 				transform translateX(14px)
 
 	> input
@@ -99,7 +97,7 @@ root(isDark)
 		margin 3px 0 0 0
 		width 34px
 		height 14px
-		background isDark ? rgba(#fff, 0.15) : rgba(#000, 0.25)
+		background var(--switchTrack)
 		outline none
 		border-radius 14px
 		transition inherit
@@ -125,18 +123,11 @@ root(isDark)
 		> span
 			display block
 			line-height 20px
-			color isDark ? #c4ccd2 : rgba(#000, 0.75)
+			color currentColor
 			transition inherit
 
 		> p
 			margin 0
-			//font-size 90%
-			color isDark ? #78858e : #9daab3
-
-.ui-switch[data-darkmode]
-	root(true)
-
-.ui-switch:not([data-darkmode])
-	root(false)
+			opacity 0.7
 
 </style>

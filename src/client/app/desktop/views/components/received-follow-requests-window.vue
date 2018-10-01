@@ -2,7 +2,7 @@
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
 	<span slot="header">%fa:envelope R% %i18n:@title%</span>
 
-	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc" :data-darkmode="$store.state.device.darkmode">
+	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc">
 		<div v-for="req in requests">
 			<router-link :key="req.id" :to="req.follower | userPage">{{ req.follower | userName }}</router-link>
 			<span>
@@ -47,8 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-root(isDark)
+.slpqaxdoxhvglersgjukmvizkqbmbokc
 	padding 16px
 
 	> button
@@ -57,16 +56,10 @@ root(isDark)
 	> div
 		display flex
 		padding 16px
-		border solid 1px isDark ? #1c2023 : #eee
+		border solid 1px var(--faceDivider)
 		border-radius 4px
 
 		> span
 			margin 0 0 0 auto
-
-.slpqaxdoxhvglersgjukmvizkqbmbokc[data-darkmode]
-	root(true)
-
-.slpqaxdoxhvglersgjukmvizkqbmbokc:not([data-darkmode])
-	root(false)
 
 </style>

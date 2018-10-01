@@ -4,7 +4,7 @@
 		<template slot="header">%fa:chart-line%%i18n:@title%</template>
 		<button slot="func" @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
 
-		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }" :data-darkmode="$store.state.device.darkmode">
+		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }">
 			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" v-show="props.view != 2">
 				<defs>
 					<linearGradient :id="localGradientId" x1="0" x2="0" y1="1" y2="0">
@@ -173,7 +173,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.qpdmibaztplkylerhdbllwcokyrfxeyj
 	&.dual
 		> svg
 			width 50%
@@ -192,7 +192,7 @@ root(isDark)
 
 		> text
 			font-size 5px
-			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
+			fill var(--chartCaption)
 
 			> tspan
 				opacity 0.5
@@ -201,11 +201,5 @@ root(isDark)
 		content ""
 		display block
 		clear both
-
-.qpdmibaztplkylerhdbllwcokyrfxeyj[data-darkmode]
-	root(true)
-
-.qpdmibaztplkylerhdbllwcokyrfxeyj:not([data-darkmode])
-	root(false)
 
 </style>

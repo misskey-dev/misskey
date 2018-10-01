@@ -200,17 +200,17 @@ export default Vue.extend({
 		top 0
 		width 100%
 
-root(isDark)
+.mk-url-preview
 	> a
 		display block
 		font-size 14px
-		border solid 1px isDark ? #191b1f : #eee
+		border solid 1px var(--urlPreviewBorder)
 		border-radius 4px
 		overflow hidden
 
 		&:hover
 			text-decoration none
-			border-color isDark ? #4f5561 : #ddd
+			border-color var(--urlPreviewBorderHover)
 
 			> article > header > h1
 				text-decoration underline
@@ -235,11 +235,11 @@ root(isDark)
 				> h1
 					margin 0
 					font-size 1em
-					color isDark ? #d6dae0 : #555
+					color var(--urlPreviewTitle)
 
 			> p
 				margin 0
-				color isDark ? #a4aab3 : #777
+				color var(--urlPreviewText)
 				font-size 0.8em
 
 			> footer
@@ -256,7 +256,7 @@ root(isDark)
 				> p
 					display inline-block
 					margin 0
-					color isDark ? #b0b4bf : #666
+					color var(--urlPreviewInfo)
 					font-size 0.8em
 					line-height 16px
 					vertical-align top
@@ -321,11 +321,5 @@ root(isDark)
 					> img
 						width 12px
 						height 12px
-
-.mk-url-preview[data-darkmode]
-	root(true)
-
-.mk-url-preview:not([data-darkmode])
-	root(false)
 
 </style>

@@ -59,7 +59,7 @@ export default {
 
 				el.dataset.reservedKeys = reservedKeys.map(key => `'${key}'`).join(' ');
 
-				el._keyHandler = e => {
+				el._keyHandler = (e: KeyboardEvent) => {
 					const key = e.code.toLowerCase();
 
 					const targetReservedKeys = document.activeElement ? ((document.activeElement as any).dataset || {}).reservedKeys || '' : '';
@@ -72,7 +72,8 @@ export default {
 							const matched = pattern.which.includes(key) &&
 								pattern.ctrl == e.ctrlKey &&
 								pattern.shift == e.shiftKey &&
-								pattern.alt == e.altKey;
+								pattern.alt == e.altKey &&
+								e.metaKey == false;
 
 							if (matched) {
 								e.preventDefault();

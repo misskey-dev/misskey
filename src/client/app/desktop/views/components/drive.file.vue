@@ -200,9 +200,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.gvfdktuvdgwhmztnuekzkswkjygptfcv
 	padding 8px 0 0 0
 	height 180px
 	border-radius 4px
@@ -237,13 +235,13 @@ root(isDark)
 					background #ce2212
 
 	&[data-is-selected]
-		background $theme-color
+		background var(--primary)
 
 		&:hover
-			background lighten($theme-color, 10%)
+			background var(--primaryLighten10)
 
 		&:active
-			background darken($theme-color, 10%)
+			background var(--primaryDarken10)
 
 		> .label
 			&:before
@@ -251,7 +249,7 @@ root(isDark)
 				display none
 
 		> .name
-			color $theme-color-foreground
+			color var(--primaryForeground)
 
 	&[data-is-contextmenu-showing]
 		&:after
@@ -262,7 +260,7 @@ root(isDark)
 			right -4px
 			bottom -4px
 			left -4px
-			border 2px dashed rgba($theme-color, 0.3)
+			border 2px dashed var(--primaryAlpha03)
 			border-radius 4px
 
 	> .label
@@ -337,16 +335,10 @@ root(isDark)
 		font-size 0.8em
 		text-align center
 		word-break break-all
-		color isDark ? #fff : #444
+		color var(--text)
 		overflow hidden
 
 		> .ext
 			opacity 0.5
-
-.gvfdktuvdgwhmztnuekzkswkjygptfcv[data-darkmode]
-	root(true)
-
-.gvfdktuvdgwhmztnuekzkswkjygptfcv:not([data-darkmode])
-	root(false)
 
 </style>

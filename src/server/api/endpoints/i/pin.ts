@@ -1,21 +1,35 @@
-import * as mongo from 'mongodb';
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { ILocalUser } from '../../../../models/user';
 import Note from '../../../../models/note';
 import { pack } from '../../../../models/user';
 import { deliverPinnedChange } from '../../../../services/i/pin';
+import getParams from '../../get-params';
 
-/**
- * Pin note
- */
+export const meta = {
+	desc: {
+		'ja-JP': '指定した投稿をピン留めします。'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-write',
+
+	params: {
+		noteId: $.type(ID).note({
+			desc: {
+				'ja-JP': '対象の投稿のID'
+			}
+		})
+	}
+};
+
 export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch pinee
 	const note = await Note.findOne({
-		_id: noteId,
+		_id: ps.noteId,
 		userId: user._id
 	});
 
@@ -23,21 +37,17 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		return rej('note not found');
 	}
 
-	let addedId: mongo.ObjectID;
-	let removedId: mongo.ObjectID;
-
 	const pinnedNoteIds = user.pinnedNoteIds || [];
+
+	if (pinnedNoteIds.length > 5) {
+		return rej('cannot pin more notes');
+	}
 
 	if (pinnedNoteIds.some(id => id.equals(note._id))) {
 		return rej('already exists');
 	}
 
 	pinnedNoteIds.unshift(note._id);
-	addedId = note._id;
-
-	if (pinnedNoteIds.length > 5) {
-		removedId = pinnedNoteIds.pop();
-	}
 
 	await User.update(user._id, {
 		$set: {
@@ -45,14 +55,13 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		}
 	});
 
-	// Serialize
 	const iObj = await pack(user, user, {
 		detail: true
 	});
 
-	// Send Add/Remove to followers
-	deliverPinnedChange(user._id, removedId, addedId);
-
 	// Send response
 	res(iObj);
+
+	// Send Add to followers
+	deliverPinnedChange(user._id, note._id, true);
 });

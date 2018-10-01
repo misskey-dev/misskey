@@ -9,7 +9,7 @@
 </template>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .a
 	display block
@@ -18,8 +18,8 @@
 		display block
 		//fill #151513
 		//color #fff
-		fill $theme-color
-		color $theme-color-foreground
+		fill var(--primary)
+		color var(--primaryForeground)
 
 		.octo-arm
 			transform-origin 130px 106px

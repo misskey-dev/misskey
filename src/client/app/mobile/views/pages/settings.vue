@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header"><span style="margin-right:4px;">%fa:cog%</span>%i18n:@settings%</span>
-	<main :data-darkmode="$store.state.device.darkmode">
+	<main>
 		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${name}</b>`)"></div>
 
 		<div>
@@ -21,6 +21,13 @@
 					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
 					<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
 					<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
+				</section>
+
+				<section>
+					<header>%i18n:@theme%</header>
+					<div>
+						<mk-theme/>
+					</div>
 				</section>
 
 				<section>
@@ -322,7 +329,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+main
 	margin 0 auto
 	max-width 600px
 	width 100%
@@ -331,27 +338,22 @@ root(isDark)
 		margin 16px
 		padding 16px
 		text-align center
-		color isDark ? #49ab63 : #2c662d
-		background isDark ? #273c34 : #fcfff5
+		color var(--mobileSignedInAsFg)
+		background var(--mobileSignedInAsBg)
 		box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
 
 	> .signout
 		margin 16px
 		padding 16px
 		text-align center
-		color isDark ? #ff5f56 : #cc2727
-		background isDark ? #652222 : #fff6f5
+		color var(--mobileSignedInAsFg)
+		background var(--mobileSignedInAsBg)
 		box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
 
 	> footer
 		margin 16px
 		text-align center
-		color isDark ? #c9d2e0 : #888
-
-main[data-darkmode]
-	root(true)
-
-main:not([data-darkmode])
-	root(false)
+		color var(--text)
+		opacity 0.7
 
 </style>

@@ -5,6 +5,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { url, lang } from './config';
+import applyTheme from './common/scripts/theme';
+const darkTheme = require('../theme/dark');
+const halloweenTheme = require('../theme/halloween');
 
 export default Vue.extend({
 	computed: {

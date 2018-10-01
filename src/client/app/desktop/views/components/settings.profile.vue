@@ -6,31 +6,28 @@
 		<button class="ui" @click="updateAvatar">%i18n:@choice-avatar%</button>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:@name%</p>
-		<input v-model="name" type="text" class="ui"/>
+		<ui-input v-model="name" type="text">%i18n:@name%</ui-input>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:@location%</p>
-		<input v-model="location" type="text" class="ui"/>
+		<ui-input v-model="location" type="text">%i18n:@location%</ui-input>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:@description%</p>
-		<textarea v-model="description" class="ui"></textarea>
+		<ui-textarea v-model="description">%i18n:@description%</ui-textarea>
 	</label>
 	<label class="ui from group">
 		<p>%i18n:@birthday%</p>
 		<input type="date" v-model="birthday"/>
 	</label>
-	<button class="ui primary" @click="save">%i18n:@save%</button>
+	<ui-button primary @click="save">%i18n:@save%</ui-button>
 	<section>
 		<h2>%i18n:@locked-account%</h2>
-		<mk-switch v-model="$store.state.i.isLocked" @change="onChangeIsLocked" text="%i18n:@is-locked%"/>
+		<ui-switch v-model="$store.state.i.isLocked" @change="onChangeIsLocked">%i18n:@is-locked%</ui-switch>
 	</section>
 	<section>
 		<h2>%i18n:@other%</h2>
-		<mk-switch v-model="$store.state.i.isBot" @change="onChangeIsBot" text="%i18n:@is-bot%"/>
-		<mk-switch v-model="$store.state.i.isCat" @change="onChangeIsCat" text="%i18n:@is-cat%"/>
-		<mk-switch v-model="alwaysMarkNsfw" text="%i18n:common.always-mark-nsfw%"/>
+		<ui-switch v-model="$store.state.i.isBot" @change="onChangeIsBot">%i18n:@is-bot%</ui-switch>
+		<ui-switch v-model="$store.state.i.isCat" @change="onChangeIsCat">%i18n:@is-cat%</ui-switch>
+		<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
 	</section>
 </div>
 </template>

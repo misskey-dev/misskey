@@ -22,23 +22,17 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.nrvgflfuaxwgkxoynpnumyookecqrrvh
 	display inline-block
 	padding 4px 8px
 	font-size 0.7em
-	color isDark ? #393f4f : #fff
-	background isDark ? #687390 : #b1b9c1
+	color var(--cwButtonFg)
+	background var(--cwButtonBg)
 	border-radius 2px
 	cursor pointer
 	user-select none
 
 	&:hover
-		background isDark ? #707b97 : #bbc4ce
-
-.nrvgflfuaxwgkxoynpnumyookecqrrvh[data-darkmode]
-	root(true)
-
-.nrvgflfuaxwgkxoynpnumyookecqrrvh:not([data-darkmode])
-	root(false)
+		background var(--cwButtonHoverBg)
 
 </style>

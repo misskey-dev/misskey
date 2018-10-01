@@ -95,7 +95,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .obdskegsannmntldydackcpzezagxqfy
 	> .stats
@@ -112,7 +112,7 @@ export default Vue.extend({
 
 			> *:first-child
 				display block
-				color $theme-color
+				color var(--primary)
 
 			> *:last-child
 				font-size 70%

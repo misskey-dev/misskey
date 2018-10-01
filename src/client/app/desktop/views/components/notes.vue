@@ -216,9 +216,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-notes
 	.transition
 		.mk-notes-enter
 		.mk-notes-leave-to
@@ -235,9 +233,9 @@ root(isDark)
 			line-height 32px
 			font-size 14px
 			text-align center
-			color isDark ? #666b79 : #aaa
-			background isDark ? #242731 : #fdfdfd
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			color var(--dateDividerFg)
+			background var(--dateDividerBg)
+			border-bottom solid 1px var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -250,7 +248,7 @@ root(isDark)
 		position sticky
 		z-index 100
 		height 3px
-		background $theme-color
+		background var(--primary)
 
 	> footer
 		> button
@@ -260,21 +258,15 @@ root(isDark)
 			width 100%
 			text-align center
 			color #ccc
-			background isDark ? #282C37 : #fff
-			border-top solid 1px isDark ? #1c2023 : #eaeaea
+			background var(--face)
+			border-top solid 1px var(--faceDivider)
 			border-bottom-left-radius 6px
 			border-bottom-right-radius 6px
 
 			&:hover
-				background isDark ? #2e3440 : #f5f5f5
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 			&:active
-				background isDark ? #21242b : #eee
-
-.mk-notes[data-darkmode]
-	root(true)
-
-.mk-notes:not([data-darkmode])
-	root(false)
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 </style>

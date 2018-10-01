@@ -68,9 +68,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-poll-editor
 	padding 8px
 
 	> .caution
@@ -103,49 +101,43 @@ root(isDark)
 				padding 6px 8px
 				width 300px
 				font-size 14px
-				color isDark ? #fff : #000
-				background isDark ? #191b22 : #fff
-				border solid 1px rgba($theme-color, 0.1)
+				color var(--inputText)
+				background var(--pollEditorInputBg)
+				border solid 1px var(--primaryAlpha01)
 				border-radius 4px
 
 				&:hover
-					border-color rgba($theme-color, 0.2)
+					border-color var(--primaryAlpha02)
 
 				&:focus
-					border-color rgba($theme-color, 0.5)
+					border-color var(--primaryAlpha05)
 
 			> button
 				padding 4px 8px
-				color rgba($theme-color, 0.4)
+				color var(--primaryAlpha04)
 
 				&:hover
-					color rgba($theme-color, 0.6)
+					color var(--primaryAlpha06)
 
 				&:active
-					color darken($theme-color, 30%)
+					color var(--primaryDarken30)
 
 	> .add
 		margin 8px 0 0 0
 		vertical-align top
-		color $theme-color
+		color var(--primary)
 
 	> .destroy
 		position absolute
 		top 0
 		right 0
 		padding 4px 8px
-		color rgba($theme-color, 0.4)
+		color var(--primaryAlpha04)
 
 		&:hover
-			color rgba($theme-color, 0.6)
+			color var(--primaryAlpha06)
 
 		&:active
-			color darken($theme-color, 30%)
-
-.mk-poll-editor[data-darkmode]
-	root(true)
-
-.mk-poll-editor:not([data-darkmode])
-	root(false)
+			color var(--primaryDarken30)
 
 </style>

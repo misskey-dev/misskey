@@ -73,7 +73,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus">
-@import '~const.styl'
+
 
 .mk-admin
 	display flex
@@ -109,7 +109,7 @@ export default Vue.extend({
 
 				&.active
 					margin-left 8px
-					color $theme-color !important
+					color var(--primary) !important
 
 	> main
 		width 100%
