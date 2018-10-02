@@ -45,7 +45,7 @@
 	<details>
 		<summary>%fa:download% %i18n:@install-a-theme%</summary>
 		<ui-button @click="import_()">%fa:file-import% %i18n:@import%</ui-button>
-		<input ref="file" type="file" style="display:none;" @change="onUpdateImportFile"/>
+		<input ref="file" type="file" accept=".misskeytheme" style="display:none;" @change="onUpdateImportFile"/>
 		<p>%i18n:@import-by-code%:</p>
 		<ui-textarea v-model="installThemeCode">
 			<span>%i18n:@theme-code%</span>
