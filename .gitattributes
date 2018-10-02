@@ -3,3 +3,4 @@
 *.ai -diff -text
 yarn.lock -diff -text
 package-lock.json -diff -text
+*.json5 linguist-language=JavaScript
