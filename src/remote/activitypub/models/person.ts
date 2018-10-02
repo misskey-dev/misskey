@@ -352,14 +352,14 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
 
 	// Resolve and regist Notes
-	const feturedNotes = await Promise.all(items
+	const featuredNotes = await Promise.all(items
 		.filter(item => item.type === 'Note')
 		.slice(0, 5)
 		.map(item => resolveNote(item, resolver)));
 
 	await User.update({ _id: user._id }, {
 		$set: {
-			pinnedNoteIds: feturedNotes.map(note => note._id)
+			pinnedNoteIds: featuredNotes.map(note => note._id)
 		}
 	});
 }
