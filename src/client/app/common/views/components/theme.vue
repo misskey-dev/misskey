@@ -25,6 +25,9 @@
 			<ui-input v-model="myThemeName">
 				<span>%i18n:@theme-name%</span>
 			</ui-input>
+			<ui-textarea v-model="myThemeDesc">
+				<span>%i18n:@desc%</span>
+			</ui-textarea>
 		</div>
 		<div>
 			<div style="padding-bottom:8px;">%i18n:@primary-color%:</div>
@@ -108,6 +111,7 @@ export default Vue.extend({
 			selectedInstalledThemeId: null,
 			myThemeBase: 'light',
 			myThemeName: '',
+			myThemeDesc: '',
 			myThemePrimary: lightTheme.vars.primary,
 			myThemeSecondary: lightTheme.vars.secondary,
 			myThemeText: lightTheme.vars.text
@@ -147,6 +151,7 @@ export default Vue.extend({
 			return {
 				name: this.myThemeName,
 				author: this.$store.state.i.username,
+				desc: this.myThemeDesc,
 				base: this.myThemeBase,
 				vars: {
 					primary: tinycolor(typeof this.myThemePrimary == 'string' ? this.myThemePrimary : this.myThemePrimary.rgba).toRgbString(),
@@ -252,6 +257,10 @@ export default Vue.extend({
 
 		gen() {
 			const theme = this.myTheme;
+			if (theme.name == null || theme.name.trim() == '') {
+				alert('%i18n:@theme-name-required%');
+				return;
+			}
 			theme.id = uuid();
 			const themes = this.$store.state.device.themes.concat(theme);
 			this.$store.commit('device/set', {
