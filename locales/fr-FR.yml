@@ -290,6 +290,9 @@ common/views/components/theme.vue:
   uninstalled: "« {} » a été désinstallé"
   author: "Auteur"
   desc: "Description"
+  export: "エクスポート"
+  import: "インポート"
+  import-by-code: "またはコードをペースト"
 common/views/components/cw-button.vue:
   hide: "Masquer"
   show: "Voir plus"
