@@ -286,10 +286,10 @@ common/views/components/theme.vue:
   saved: "enregistré"
   installed-themes: "Thèmes installés"
   select-theme: "Veuillez sélectionner un thème"
-  uninstall: "アンインストール"
+  uninstall: "Désinstaller"
   uninstalled: "「{}」をアンインストールしました"
-  author: "作者"
-  desc: "説明"
+  author: "Auteur"
+  desc: "Description"
 common/views/components/cw-button.vue:
   hide: "Masquer"
   show: "Voir plus"
