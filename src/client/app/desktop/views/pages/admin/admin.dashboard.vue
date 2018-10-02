@@ -13,7 +13,7 @@
 		<x-cpu-memory :connection="connection"/>
 	</div>
 
-	<div class="form">
+	<div v-if="this.$store.state.i && this.$store.state.i.isAdmin" class="form">
 		<div>
 			<label>
 				<p>%i18n:@banner-url%</p>
@@ -81,6 +81,8 @@ export default Vue.extend({
 		invite() {
 			(this as any).api('admin/invite').then(x => {
 				this.inviteCode = x.code;
+			}).catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		},
 		updateMeta() {
@@ -88,6 +90,10 @@ export default Vue.extend({
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
 				bannerUrl: this.bannerUrl
+			}).then(() => {
+				(this as any).os.apis.dialog({ text: `Saved` });
+			}).catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}
