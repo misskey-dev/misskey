@@ -3,15 +3,16 @@ import { toUnicode } from 'punycode';
 import * as debug from 'debug';
 
 import config from '../../../config';
-import User, { validateUsername, isValidName, IUser, IRemoteUser } from '../../../models/user';
+import User, { validateUsername, isValidName, IUser, IRemoteUser, isRemoteUser } from '../../../models/user';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, IPerson } from '../type';
+import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import htmlToMFM from '../../../mfm/html-to-mfm';
 import { updateUserStats } from '../../../services/update-chart';
 import { URL } from 'url';
+import { resolveNote } from './note';
 
 const log = debug('misskey:activitypub');
 
@@ -155,6 +156,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			},
 			inbox: person.inbox,
 			sharedInbox: person.sharedInbox,
+			featured: person.featured,
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
@@ -211,6 +213,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	user.bannerUrl = bannerUrl;
 	//#endregion
 
+	await updateFeatured(user._id).catch(err => console.log(err));
 	return user;
 }
 
@@ -282,6 +285,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			updatedAt: new Date(),
 			inbox: person.inbox,
 			sharedInbox: person.sharedInbox,
+			featured: person.featured,
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
 			avatarUrl: (avatar && avatar.metadata.thumbnailUrl) ? avatar.metadata.thumbnailUrl : (avatar && avatar.metadata.url) ? avatar.metadata.url : null,
@@ -303,6 +307,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			},
 		}
 	});
+
+	await updateFeatured(exist._id).catch(err => console.log(err));
 }
 
 /**
@@ -311,7 +317,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
  * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolvePerson(uri: string, verifier?: string): Promise<IUser> {
+export async function resolvePerson(uri: string, verifier?: string, resolver?: Resolver): Promise<IUser> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -323,5 +329,37 @@ export async function resolvePerson(uri: string, verifier?: string): Promise<IUs
 	//#endregion
 
 	// リモートサーバーからフェッチしてきて登録
-	return await createPerson(uri);
+	if (resolver == null) resolver = new Resolver();
+	return await createPerson(uri, resolver);
+}
+
+export async function updateFeatured(userId: mongo.ObjectID) {
+	const user = await User.findOne({ _id: userId });
+	if (!isRemoteUser(user)) return;
+	if (!user.featured) return;
+
+	log(`Updating the featured: ${user.uri}`);
+
+	const resolver = new Resolver();
+
+	// Resolve to (Ordered)Collection Object
+	const collection = await resolver.resolveCollection(user.featured);
+	if (!isCollectionOrOrderedCollection(collection)) throw new Error(`Object is not Collection or OrderedCollection`);
+
+	// Resolve to Object(may be Note) arrays
+	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
+	const items = await resolver.resolve(unresolvedItems);
+	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
+
+	// Resolve and regist Notes
+	const featuredNotes = await Promise.all(items
+		.filter(item => item.type === 'Note')
+		.slice(0, 5)
+		.map(item => resolveNote(item, resolver)));
+
+	await User.update({ _id: user._id }, {
+		$set: {
+			pinnedNoteIds: featuredNotes.map(note => note._id)
+		}
+	});
 }
