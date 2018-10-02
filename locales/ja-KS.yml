@@ -293,6 +293,7 @@ common/views/components/theme.vue:
   export: "エクスポート"
   import: "インポート"
   import-by-code: "またはコードをペースト"
+  theme-name-required: "テーマ名は必須です。"
 common/views/components/cw-button.vue:
   hide: "もうええわ"
   show: "見たいやろ？"
