@@ -52,13 +52,21 @@
 
 	<details>
 		<summary>%i18n:@installed-themes%</summary>
-		<ui-select v-model="selectedInstalledTheme" placeholder="%i18n:@select-theme%">
+		<ui-select v-model="selectedInstalledThemeId" placeholder="%i18n:@select-theme%">
 			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</ui-select>
-		<ui-textarea readonly :value="selectedInstalledThemeCode">
-			<span>%i18n:@theme-code%</span>
-		</ui-textarea>
-		<ui-button @click="uninstall()">%i18n:@uninstall%</ui-button>
+		<template v-if="selectedInstalledTheme">
+			<ui-input readonly :value="selectedInstalledTheme.author">
+				<span>%i18n:@author%</span>
+			</ui-input>
+			<ui-textarea v-if="selectedInstalledTheme.desc" readonly :value="selectedInstalledTheme.desc">
+				<span>%i18n:@desc%</span>
+			</ui-textarea>
+			<ui-textarea readonly :value="selectedInstalledThemeCode">
+				<span>%i18n:@theme-code%</span>
+			</ui-textarea>
+			<ui-button @click="uninstall()">%i18n:@uninstall%</ui-button>
+		</template>
 	</details>
 </div>
 </template>
@@ -93,7 +101,7 @@ export default Vue.extend({
 	data() {
 		return {
 			installThemeCode: null,
-			selectedInstalledTheme: null,
+			selectedInstalledThemeId: null,
 			myThemeBase: 'light',
 			myThemeName: '',
 			myThemePrimary: lightTheme.vars.primary,
@@ -121,15 +129,20 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'darkTheme', value }); }
 		},
 
+		selectedInstalledTheme() {
+			if (this.selectedInstalledThemeId == null) return null;
+			return this.installedThemes.find(x => x.id == this.selectedInstalledThemeId);
+		},
+
 		selectedInstalledThemeCode() {
 			if (this.selectedInstalledTheme == null) return null;
-			return JSON5.stringify(this.installedThemes.find(x => x.id == this.selectedInstalledTheme), null, '\t');
+			return JSON5.stringify(this.selectedInstalledTheme, null, '\t');
 		},
 
 		myTheme(): any {
 			return {
 				name: this.myThemeName,
-				author: this.$store.state.i.name,
+				author: this.$store.state.i.username,
 				base: this.myThemeBase,
 				vars: {
 					primary: tinycolor(typeof this.myThemePrimary == 'string' ? this.myThemePrimary : this.myThemePrimary.rgba).toRgbString(),
@@ -198,7 +211,7 @@ export default Vue.extend({
 		},
 
 		uninstall() {
-			const theme = this.installedThemes.find(x => x.id == this.selectedInstalledTheme);
+			const theme = this.selectedInstalledTheme;
 			const themes = this.$store.state.device.themes.filter(t => t.id != theme.id);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes

@@ -309,6 +309,8 @@ common/views/components/theme.vue:
   select-theme: "テーマを選択してください"
   uninstall: "アンインストール"
   uninstalled: "「{}」をアンインストールしました"
+  author: "作者"
+  desc: "説明"
 
 common/views/components/cw-button.vue:
   hide: "隠す"
