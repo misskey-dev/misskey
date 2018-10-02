@@ -21,18 +21,25 @@ export default Vue.extend({
 		async unsuspendUser() {
 			this.unsuspending = true;
 
-			const user = await (this as any).os.api(
-				"users/show",
-				parseAcct(this.username)
-			);
+			const process = async () => {
+				const user = await (this as any).os.api(
+					"users/show",
+					parseAcct(this.username)
+				);
 
-			await (this as any).os.api("admin/unsuspend-user", {
-				userId: user.id
+				await (this as any).os.api("admin/unsuspend-user", {
+					userId: user.id
+				});
+
+				(this as any).os.apis.dialog({ text: "%i18n:@unsuspended%" });
+			};
+
+			await process().catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed: ${e}` });
 			});
 
 			this.unsuspending = false;
 
-			(this as any).os.apis.dialog({ text: "%i18n:@unsuspended%" });
 		}
 	}
 });
