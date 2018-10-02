@@ -3,14 +3,14 @@
 	<label>
 		<span>%i18n:@light-theme%</span>
 		<ui-select v-model="light" placeholder="%i18n:@light-theme%">
-			<option v-for="x in themes" :value="x.meta.id" :key="x.meta.id">{{ x.meta.name }}</option>
+			<option v-for="x in themes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</ui-select>
 	</label>
 
 	<label>
 		<span>%i18n:@dark-theme%</span>
 		<ui-select v-model="dark" placeholder="%i18n:@dark-theme%">
-			<option v-for="x in themes" :value="x.meta.id" :key="x.meta.id">{{ x.meta.name }}</option>
+			<option v-for="x in themes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</ui-select>
 	</label>
 
@@ -53,7 +53,7 @@
 	<details>
 		<summary>%i18n:@installed-themes%</summary>
 		<ui-select v-model="selectedInstalledTheme" placeholder="%i18n:@select-theme%">
-			<option v-for="x in installedThemes" :value="x.meta.id" :key="x.meta.id">{{ x.meta.name }}</option>
+			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</ui-select>
 		<ui-textarea readonly :value="selectedInstalledThemeCode">
 			<span>%i18n:@theme-code%</span>
@@ -65,10 +65,25 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { lightTheme, darkTheme, builtinThemes, applyTheme } from '../../../theme';
+import { lightTheme, darkTheme, builtinThemes, applyTheme, Theme } from '../../../theme';
 import { Chrome } from 'vue-color';
 import * as uuid from 'uuid';
 import * as tinycolor from 'tinycolor2';
+import * as JSON5 from 'json5';
+
+// 後方互換性のため
+function convertOldThemedefinition(t) {
+	const t2 = {
+		id: t.meta.id,
+		name: t.meta.name,
+		author: t.meta.author,
+		base: t.meta.base,
+		vars: t.meta.vars,
+		props: t
+	};
+	delete t2.props.meta;
+	return t2;
+}
 
 export default Vue.extend({
 	components: {
@@ -81,18 +96,18 @@ export default Vue.extend({
 			selectedInstalledTheme: null,
 			myThemeBase: 'light',
 			myThemeName: '',
-			myThemePrimary: lightTheme.meta.vars.primary,
-			myThemeSecondary: lightTheme.meta.vars.secondary,
-			myThemeText: lightTheme.meta.vars.text
+			myThemePrimary: lightTheme.vars.primary,
+			myThemeSecondary: lightTheme.vars.secondary,
+			myThemeText: lightTheme.vars.text
 		};
 	},
 
 	computed: {
-		themes(): any {
+		themes(): Theme[] {
 			return this.$store.state.device.themes.concat(builtinThemes);
 		},
 
-		installedThemes(): any {
+		installedThemes(): Theme[] {
 			return this.$store.state.device.themes;
 		},
 
@@ -108,20 +123,18 @@ export default Vue.extend({
 
 		selectedInstalledThemeCode() {
 			if (this.selectedInstalledTheme == null) return null;
-			return JSON.stringify(this.installedThemes.find(x => x.meta.id == this.selectedInstalledTheme));
+			return JSON5.stringify(this.installedThemes.find(x => x.id == this.selectedInstalledTheme), null, '\t');
 		},
 
 		myTheme(): any {
 			return {
-				meta: {
-					name: this.myThemeName,
-					author: this.$store.state.i.name,
-					base: this.myThemeBase,
-					vars: {
-						primary: tinycolor(typeof this.myThemePrimary == 'string' ? this.myThemePrimary : this.myThemePrimary.rgba).toRgbString(),
-						secondary: tinycolor(typeof this.myThemeSecondary == 'string' ? this.myThemeSecondary : this.myThemeSecondary.rgba).toRgbString(),
-						text: tinycolor(typeof this.myThemeText == 'string' ? this.myThemeText : this.myThemeText.rgba).toRgbString()
-					}
+				name: this.myThemeName,
+				author: this.$store.state.i.name,
+				base: this.myThemeBase,
+				vars: {
+					primary: tinycolor(typeof this.myThemePrimary == 'string' ? this.myThemePrimary : this.myThemePrimary.rgba).toRgbString(),
+					secondary: tinycolor(typeof this.myThemeSecondary == 'string' ? this.myThemeSecondary : this.myThemeSecondary.rgba).toRgbString(),
+					text: tinycolor(typeof this.myThemeText == 'string' ? this.myThemeText : this.myThemeText.rgba).toRgbString()
 				}
 			};
 		}
@@ -130,37 +143,67 @@ export default Vue.extend({
 	watch: {
 		myThemeBase(v) {
 			const theme = v == 'light' ? lightTheme : darkTheme;
-			this.myThemePrimary = theme.meta.vars.primary;
-			this.myThemeSecondary = theme.meta.vars.secondary;
-			this.myThemeText = theme.meta.vars.text;
+			this.myThemePrimary = theme.vars.primary;
+			this.myThemeSecondary = theme.vars.secondary;
+			this.myThemeText = theme.vars.text;
 		}
+	},
+
+	beforeCreate() {
+		// migrate old theme definitions
+		// 後方互換性のため
+		this.$store.commit('device/set', {
+			key: 'themes', value: this.$store.state.device.themes.map(t => {
+				if (t.id == null) {
+					return convertOldThemedefinition(t);
+				} else {
+					return t;
+				}
+			})
+		});
 	},
 
 	methods: {
 		install() {
-			const theme = JSON.parse(this.installThemeCode);
-			if (theme.meta == null || theme.meta.id == null) {
+			let theme;
+
+			try {
+				theme = JSON5.parse(this.installThemeCode);
+			} catch (e) {
 				alert('%i18n:@invalid-theme%');
 				return;
 			}
-			if (this.$store.state.device.themes.some(t => t.meta.id == theme.meta.id)) {
+
+			// 後方互換性のため
+			if (theme.id == null && theme.meta != null) {
+				theme = convertOldThemedefinition(theme);
+			}
+
+			if (theme.id == null) {
+				alert('%i18n:@invalid-theme%');
+				return;
+			}
+
+			if (this.$store.state.device.themes.some(t => t.id == theme.id)) {
 				alert('%i18n:@already-installed%');
 				return;
 			}
+
 			const themes = this.$store.state.device.themes.concat(theme);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			alert('%i18n:@installed%'.replace('{}', theme.meta.name));
+
+			alert('%i18n:@installed%'.replace('{}', theme.name));
 		},
 
 		uninstall() {
-			const theme = this.installedThemes.find(x => x.meta.id == this.selectedInstalledTheme);
-			const themes = this.$store.state.device.themes.filter(t => t.meta.id != theme.meta.id);
+			const theme = this.installedThemes.find(x => x.id == this.selectedInstalledTheme);
+			const themes = this.$store.state.device.themes.filter(t => t.id != theme.id);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			alert('%i18n:@uninstalled%'.replace('{}', theme.meta.name));
+			alert('%i18n:@uninstalled%'.replace('{}', theme.name));
 		},
 
 		preview() {
@@ -169,7 +212,7 @@ export default Vue.extend({
 
 		gen() {
 			const theme = this.myTheme;
-			theme.meta.id = uuid();
+			theme.id = uuid();
 			const themes = this.$store.state.device.themes.concat(theme);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
