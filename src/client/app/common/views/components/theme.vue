@@ -15,7 +15,7 @@
 	</label>
 
 	<details class="creator">
-		<summary>%i18n:@create-a-theme%</summary>
+		<summary>%fa:palette% %i18n:@create-a-theme%</summary>
 		<div>
 			<span>%i18n:@base-theme%:</span>
 			<ui-radio v-model="myThemeBase" value="light">%i18n:@base-theme-light%</ui-radio>
@@ -38,20 +38,20 @@
 			<div style="padding-bottom:8px;">%i18n:@text-color%:</div>
 			<color-picker v-model="myThemeText"/>
 		</div>
-		<ui-button @click="preview()">%i18n:@preview-created-theme%</ui-button>
-		<ui-button primary @click="gen()">%i18n:@save-created-theme%</ui-button>
+		<ui-button @click="preview()">%fa:eye% %i18n:@preview-created-theme%</ui-button>
+		<ui-button primary @click="gen()">%fa:save R% %i18n:@save-created-theme%</ui-button>
 	</details>
 
 	<details>
-		<summary>%i18n:@install-a-theme%</summary>
+		<summary>%fa:download% %i18n:@install-a-theme%</summary>
 		<ui-textarea v-model="installThemeCode">
 			<span>%i18n:@theme-code%</span>
 		</ui-textarea>
-		<ui-button @click="install()">%i18n:@install%</ui-button>
+		<ui-button @click="install()">%fa:check% %i18n:@install%</ui-button>
 	</details>
 
 	<details>
-		<summary>%i18n:@installed-themes%</summary>
+		<summary>%fa:folder-open% %i18n:@installed-themes%</summary>
 		<ui-select v-model="selectedInstalledThemeId" placeholder="%i18n:@select-theme%">
 			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</ui-select>
@@ -65,7 +65,7 @@
 			<ui-textarea readonly :value="selectedInstalledThemeCode">
 				<span>%i18n:@theme-code%</span>
 			</ui-textarea>
-			<ui-button @click="uninstall()">%i18n:@uninstall%</ui-button>
+			<ui-button @click="uninstall()">%fa:trash-alt R% %i18n:@uninstall%</ui-button>
 		</template>
 	</details>
 </div>
@@ -238,6 +238,11 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .nicnklzforebnpfgasiypmpdaaglujqm
+	> details
+		margin-top 16px
+		padding-top 16px
+		border-top solid 1px var(--faceDivider)
+
 	> .creator
 		> div
 			padding 16px 0
