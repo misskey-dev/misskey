@@ -44,10 +44,13 @@
 
 	<details>
 		<summary>%fa:download% %i18n:@install-a-theme%</summary>
+		<ui-button @click="import_()">%fa:file-import% %i18n:@import%</ui-button>
+		<input ref="file" type="file" style="display:none;" @change="onUpdateImportFile"/>
+		<p>%i18n:@import-by-code%:</p>
 		<ui-textarea v-model="installThemeCode">
 			<span>%i18n:@theme-code%</span>
 		</ui-textarea>
-		<ui-button @click="install()">%fa:check% %i18n:@install%</ui-button>
+		<ui-button @click="() => install(this.installThemeCode)">%fa:check% %i18n:@install%</ui-button>
 	</details>
 
 	<details>
@@ -65,6 +68,7 @@
 			<ui-textarea readonly :value="selectedInstalledThemeCode">
 				<span>%i18n:@theme-code%</span>
 			</ui-textarea>
+			<ui-button @click="export_()" link :download="`${selectedInstalledTheme.name}.misskeytheme`" ref="export">%fa:box% %i18n:@export%</ui-button>
 			<ui-button @click="uninstall()">%fa:trash-alt R% %i18n:@uninstall%</ui-button>
 		</template>
 	</details>
@@ -177,11 +181,11 @@ export default Vue.extend({
 	},
 
 	methods: {
-		install() {
+		install(code) {
 			let theme;
 
 			try {
-				theme = JSON5.parse(this.installThemeCode);
+				theme = JSON5.parse(code);
 			} catch (e) {
 				alert('%i18n:@invalid-theme%');
 				return;
@@ -219,6 +223,29 @@ export default Vue.extend({
 			alert('%i18n:@uninstalled%'.replace('{}', theme.name));
 		},
 
+		import_() {
+			(this.$refs.file as any).click();
+		}
+
+		export_() {
+			const blob = new Blob([this.selectedInstalledThemeCode], {
+				type: 'application/json5'
+			});
+			this.$refs.export.$el.href = window.URL.createObjectURL(blob);
+		},
+
+		onUpdateImportFile() {
+			const f = (this.$refs.file as any).files[0];
+
+			const reader = new FileReader();
+
+			reader.onload = e => {
+				this.install(e.target.result);
+			};
+
+			reader.readAsText(f);
+		},
+
 		preview() {
 			applyTheme(this.myTheme, false);
 		},
@@ -239,9 +266,13 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .nicnklzforebnpfgasiypmpdaaglujqm
 	> details
-		margin-top 16px
-		padding-top 16px
 		border-top solid 1px var(--faceDivider)
+
+		> summary
+			padding 16px 0
+
+		> *:last-child
+			margin-bottom 16px
 
 	> .creator
 		> div
