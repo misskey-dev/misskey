@@ -78,7 +78,7 @@
 		"@types/tinycolor2": "1.4.1",
 		"@types/tmp": "0.0.33",
 		"@types/uuid": "3.4.4",
-		"@types/webpack": "4.4.12",
+		"@types/webpack": "4.4.14",
 		"@types/webpack-stream": "3.2.10",
 		"@types/websocket": "0.0.40",
 		"@types/ws": "6.0.1",
