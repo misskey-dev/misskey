@@ -226,6 +226,17 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	}
 };
 
+export const packMany = async (
+	notes: (string | mongo.ObjectID | INote)[],
+	me?: string | mongo.ObjectID | IUser,
+	options?: {
+		detail?: boolean;
+		skipHide?: boolean;
+	}
+) => {
+	return (await Promise.all(notes.map(n => pack(n, me, options)))).filter(x => x != null);
+};
+
 /**
  * Pack a note for API response
  *
@@ -271,7 +282,11 @@ export const pack = async (
 		_note = deepcopy(note);
 	}
 
-	if (!_note) throw `invalid note arg ${note}`;
+	// 投稿がデータベース上に見つからなかったとき
+	if (_note == null) {
+		console.warn(`note not found on database: ${note}`);
+		return null;
+	}
 
 	const id = _note._id;
 

@@ -2,7 +2,7 @@ import $ from 'cafy';
 import * as mongo from 'mongodb';
 import Note from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
-import { pack } from '../../../../models/note';
+import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
@@ -60,6 +60,6 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 				}
 			});
 
-		res(await Promise.all(notes.map(note => pack(note, me))));
+		res(await packMany(notes, me));
 	});
 });

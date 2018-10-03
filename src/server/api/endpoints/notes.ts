@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../misc/cafy-id';
-import Note, { pack } from '../../../models/note';
+import Note, { packMany } from '../../../models/note';
 import getParams from '../get-params';
 
 export const meta = {
@@ -116,5 +116,5 @@ export default (params: any) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(notes.map(note => pack(note))));
+	res(await packMany(notes));
 });
