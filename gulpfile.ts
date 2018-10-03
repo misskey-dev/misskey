@@ -2,7 +2,6 @@
  * Gulp tasks
  */
 
-import * as fs from 'fs';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
