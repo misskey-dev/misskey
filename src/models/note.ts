@@ -294,7 +294,7 @@ export const pack = async (
 	}
 
 	// Populate files
-	_note.files = Promise.all(_note.fileIds.map((fileId: mongo.ObjectID) =>
+	_note.files = Promise.all((_note.fileIds || []).map((fileId: mongo.ObjectID) =>
 		packFile(fileId)
 	));
 
