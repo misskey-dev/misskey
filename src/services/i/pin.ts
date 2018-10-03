@@ -26,7 +26,7 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 
 	const pinnedNoteIds = user.pinnedNoteIds || [];
 
-	if (pinnedNoteIds.length > 5) {
+	if (pinnedNoteIds.length >= 5) {
 		throw new Error('cannot pin more notes');
 	}
 
