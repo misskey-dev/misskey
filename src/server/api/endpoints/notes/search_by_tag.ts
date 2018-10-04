@@ -3,7 +3,7 @@ import Note from '../../../../models/note';
 import User, { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
-import { pack } from '../../../../models/note';
+import { packMany } from '../../../../models/note';
 import getParams from '../../get-params';
 import { erase } from '../../../../prelude/array';
 
@@ -363,5 +363,5 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		});
 
 	// Serialize
-	res(await Promise.all(notes.map(note => pack(note, me))));
+	res(await packMany(notes, me));
 });

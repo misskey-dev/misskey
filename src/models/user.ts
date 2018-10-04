@@ -3,7 +3,7 @@ const deepcopy = require('deepcopy');
 const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import Note, { pack as packNote, deleteNote } from './note';
+import Note, { packMany as packNoteMany, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
 import { getFriendIds } from '../server/api/common/get-friends';
@@ -34,28 +34,6 @@ User.createIndex('token', { sparse: true, unique: true });
 User.createIndex('uri', { sparse: true, unique: true });
 
 export default User;
-
-// 後方互換性のため
-User.findOne({
-	pinnedNoteId: { $exists: true }
-}).then(async x => {
-	if (x == null) return;
-
-	const users = await User.find({
-		pinnedNoteId: { $exists: true }
-	});
-
-	users.forEach(u => {
-		User.update({ _id: u._id }, {
-			$set: {
-				pinnedNoteIds: [(u as any).pinnedNoteId]
-			},
-			$unset: {
-				pinnedNoteId: ''
-			}
-		});
-	});
-});
 
 type IUserBase = {
 	_id: mongo.ObjectID;
@@ -135,6 +113,7 @@ export interface ILocalUser extends IUserBase {
 export interface IRemoteUser extends IUserBase {
 	inbox: string;
 	sharedInbox?: string;
+	featured?: string;
 	endpoints: string[];
 	uri: string;
 	url?: string;
@@ -382,9 +361,11 @@ export const pack = (
 		_user = deepcopy(user);
 	}
 
-	// TODO: ここでエラーにするのではなくダミーのユーザーデータを返す
-	// SEE: https://github.com/syuilo/misskey/issues/1432
-	if (!_user) return reject('invalid user arg.');
+	// ユーザーがデータベース上に見つからなかったとき
+	if (_user == null) {
+		console.warn(`user not found on database: ${user}`);
+		return null;
+	}
 
 	// Me
 	const meId: mongo.ObjectID = me
@@ -489,9 +470,9 @@ export const pack = (
 	if (opts.detail) {
 		if (_user.pinnedNoteIds) {
 			// Populate pinned notes
-			_user.pinnedNotes = Promise.all(_user.pinnedNoteIds.map((id: mongo.ObjectId) => packNote(id, meId, {
+			_user.pinnedNotes = packNoteMany(_user.pinnedNoteIds, meId, {
 				detail: true
-			})));
+			});
 		}
 
 		if (meId && !meId.equals(_user.id)) {

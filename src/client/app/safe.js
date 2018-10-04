@@ -12,16 +12,6 @@ if (!('fetch' in window)) {
 		'To run Misskey, please update your browser to latest version or try other browsers.');
 }
 
-// Detect Edge
-if (navigator.userAgent.toLowerCase().indexOf('edge') != -1) {
-	alert(
-		'現在、お使いのブラウザ(Microsoft Edge)ではMisskeyは正しく動作しません。' +
-		'サポートしているブラウザ: Google Chrome, Mozilla Firefox, Apple Safari など' +
-		'\n\n' +
-		'Currently, Misskey cannot run correctly on your browser (Microsoft Edge). ' +
-		'Supported browsers: Google Chrome, Mozilla Firefox, Apple Safari, etc');
-}
-
 // Check whether cookie enabled
 if (!navigator.cookieEnabled) {
 	alert(

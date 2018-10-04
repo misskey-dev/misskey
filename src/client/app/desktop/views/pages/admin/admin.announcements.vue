@@ -1,7 +1,7 @@
 <template>
 <div class="qldxjjsrseehkusjuoooapmsprvfrxyl mk-admin-card">
 	<header>%i18n:@announcements%</header>
-	<textarea v-model="broadcasts"></textarea>
+	<textarea v-model="broadcasts" placeholder='[ { "title": "Title1", "text": "Text1" }, { "title": "Title2", "text": "Text2" } ]'></textarea>
 	<button class="ui" @click="save">%i18n:@save%</button>
 </div>
 </template>
@@ -22,8 +22,21 @@ export default Vue.extend({
 	},
 	methods: {
 		save() {
+			let json;
+
+			try {
+				json = JSON.parse(this.broadcasts);
+			} catch (e) {
+				(this as any).os.apis.dialog({ text: `Failed: ${e}` });
+				return;
+			}
+
 			(this as any).api('admin/update-meta', {
-				broadcasts: JSON.parse(this.broadcasts)
+				broadcasts: json
+			}).then(() => {
+				(this as any).os.apis.dialog({ text: `Saved` });
+			}.catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}

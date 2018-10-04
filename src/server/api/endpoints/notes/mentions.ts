@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds } from '../../common/get-friends';
-import { pack } from '../../../../models/note';
+import { packMany } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
 import read from '../../../../services/note/read';
@@ -89,5 +89,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	mentions.forEach(note => read(user._id, note._id));
 
 	// Serialize
-	res(await Promise.all(mentions.map(mention => pack(mention, user))));
+	res(await packMany(mentions, user));
 });

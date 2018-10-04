@@ -19,11 +19,11 @@ export default class Resolver {
 
 		switch (collection.type) {
 		case 'Collection':
-			collection.objects = collection.object.items;
+			collection.objects = collection.items;
 			break;
 
 		case 'OrderedCollection':
-			collection.objects = collection.object.orderedItems;
+			collection.objects = collection.orderedItems;
 			break;
 
 		default:

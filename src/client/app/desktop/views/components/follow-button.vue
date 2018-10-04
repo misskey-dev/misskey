@@ -5,7 +5,8 @@
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="u.hasPendingFollowRequestFromYou">%fa:hourglass-half%<template v-if="size == 'big'"> %i18n:@request-pending%</template></template>
+		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked">%fa:hourglass-half%<template v-if="size == 'big'"> %i18n:@request-pending%</template></template>
+		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked">%fa:hourglass-start%<template v-if="size == 'big'"> %i18n:@follow-processing%</template></template>
 		<template v-else-if="u.isFollowing">%fa:minus%<template v-if="size == 'big'"> %i18n:@following%</template></template>
 		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow-request%</template></template>
 		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow%</template></template>

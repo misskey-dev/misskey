@@ -8,6 +8,8 @@ import like from './like';
 import announce from './announce';
 import accept from './accept';
 import reject from './reject';
+import add from './add';
+import remove from './remove';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	switch (activity.type) {
@@ -29,6 +31,14 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 
 	case 'Reject':
 		await reject(actor, activity);
+		break;
+
+	case 'Add':
+		await add(actor, activity).catch(err => console.log(err));
+		break;
+
+	case 'Remove':
+		await remove(actor, activity).catch(err => console.log(err));
 		break;
 
 	case 'Announce':

@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import Note, { pack } from '../../../../models/note';
+import Note, { packMany } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 
 /**
@@ -30,5 +30,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	const ids = (note._replyIds || []).slice(offset, offset + limit);
 
 	// Serialize
-	res(await Promise.all(ids.map(id => pack(id, user))));
+	res(await packMany(ids, user));
 });
