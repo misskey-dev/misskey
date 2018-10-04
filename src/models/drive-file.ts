@@ -167,7 +167,7 @@ export const pack = (
 	// (データベースの欠損などで)ファイルがデータベース上に見つからなかったとき
 	if (_file == null) {
 		console.warn(`in packaging driveFile: driveFile not found on database: ${_file}`);
-		return null;
+		return resolve(null);
 	}
 
 	// rendered target

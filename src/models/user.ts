@@ -364,7 +364,7 @@ export const pack = (
 	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
 	if (_user == null) {
 		console.warn(`user not found on database: ${user}`);
-		return null;
+		return resolve(null);
 	}
 
 	// Me
