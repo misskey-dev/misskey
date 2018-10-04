@@ -184,7 +184,7 @@
 		"s-age": "1.1.2",
 		"sass-loader": "7.1.0",
 		"seedrandom": "2.4.4",
-		"sharp": "0.20.7",
+		"sharp": "0.21.0",
 		"showdown": "1.8.6",
 		"showdown-highlightjs-extension": "0.1.2",
 		"single-line-log": "1.1.2",
