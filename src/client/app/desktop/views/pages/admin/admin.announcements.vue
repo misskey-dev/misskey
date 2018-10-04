@@ -44,8 +44,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .qldxjjsrseehkusjuoooapmsprvfrxyl
 	textarea
 		width 100%
