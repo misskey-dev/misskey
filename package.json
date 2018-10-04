@@ -203,7 +203,7 @@
 		"ts-node": "7.0.1",
 		"tslint": "5.10.0",
 		"typescript": "2.9.2",
-		"typescript-eslint-parser": "18.0.0",
+		"typescript-eslint-parser": "19.0.2",
 		"uglify-es": "3.3.9",
 		"url-loader": "1.1.1",
 		"uuid": "3.3.2",
