@@ -7,6 +7,7 @@ const log = debug('misskey:activitypub:resolver');
 
 export default class Resolver {
 	private history: Set<string>;
+	private timeout = 10 * 1000;
 
 	constructor() {
 		this.history = new Set();
@@ -50,6 +51,7 @@ export default class Resolver {
 
 		const object = await request({
 			url: value,
+			timeout: this.timeout,
 			headers: {
 				'User-Agent': config.user_agent,
 				Accept: 'application/activity+json, application/ld+json'
