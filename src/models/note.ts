@@ -7,7 +7,7 @@ import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import PollVote, { deletePollVote } from './poll-vote';
 import Reaction, { deleteNoteReaction } from './note-reaction';
-import { pack as packFile, IDriveFile } from './drive-file';
+import { packMany as packFileMany, IDriveFile } from './drive-file';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
 import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
@@ -309,9 +309,7 @@ export const pack = async (
 	}
 
 	// Populate files
-	_note.files = Promise.all((_note.fileIds || []).map((fileId: mongo.ObjectID) =>
-		packFile(fileId)
-	));
+	_note.files = packFileMany(_note.fileIds || []);
 
 	// 後方互換性のため
 	_note.mediaIds = _note.fileIds;
@@ -379,6 +377,12 @@ export const pack = async (
 
 	// resolve promises in _note object
 	_note = await rap(_note);
+
+	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
+	if (_note.user == null) {
+		console.warn(`in packaging note: note user not found on database: note(${_note.id})`);
+		return null;
+	}
 
 	if (_note.user.isCat && _note.text) {
 		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');

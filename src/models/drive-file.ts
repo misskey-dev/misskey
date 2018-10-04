@@ -127,6 +127,15 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 	});
 }
 
+export const packMany = async (
+	files: any[],
+	options?: {
+		detail: boolean
+	}
+) => {
+	return (await Promise.all(files.map(f => pack(f, options)))).filter(x => x != null);
+};
+
 /**
  * Pack a drive file for API response
  */
@@ -155,7 +164,11 @@ export const pack = (
 		_file = deepcopy(file);
 	}
 
-	if (!_file) return reject('invalid file arg.');
+	// (データベースの欠損などで)ファイルがデータベース上に見つからなかったとき
+	if (_file == null) {
+		console.warn(`in packaging driveFile: driveFile not found on database: ${_file}`);
+		return null;
+	}
 
 	// rendered target
 	let _target: any = {};

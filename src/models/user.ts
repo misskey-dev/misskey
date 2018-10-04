@@ -361,7 +361,7 @@ export const pack = (
 		_user = deepcopy(user);
 	}
 
-	// ユーザーがデータベース上に見つからなかったとき
+	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
 	if (_user == null) {
 		console.warn(`user not found on database: ${user}`);
 		return null;
