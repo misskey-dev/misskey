@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import Favorite, { pack } from '../../../../models/favorite';
+import Favorite, { packMany } from '../../../../models/favorite';
 import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
@@ -55,5 +55,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		.find(query, { limit, sort });
 
 	// Serialize
-	res(await Promise.all(favorites.map(favorite => pack(favorite, user))));
+	res(await packMany(favorites, user));
 });

@@ -41,6 +41,13 @@ export async function deleteFavorite(favorite: string | mongo.ObjectID | IFavori
 	});
 }
 
+export const packMany = async (
+	favorites: any[],
+	me: any
+) => {
+	return (await Promise.all(favorites.map(f => pack(f, me)))).filter(x => x != null);
+};
+
 /**
  * Pack a favorite for API response
  */
@@ -69,6 +76,12 @@ export const pack = (
 
 	// Populate note
 	_favorite.note = await packNote(_favorite.noteId, me);
+
+	// (データベースの不具合などで)投稿が見つからなかったら
+	if (_favorite.note == null) {
+		console.warn(`favorite: note not found on database: ${_favorite.noteId}`);
+		return resolve(null);
+	}
 
 	resolve(_favorite);
 });
