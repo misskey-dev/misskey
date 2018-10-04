@@ -46,15 +46,15 @@
 		noteHeaderBadgeBg: 'rgba(0, 0, 0, 0.25)',
 		noteHeaderAdminFg: '#f15f71',
 		noteHeaderAdminBg: '#5d282e',
-		noteHeaderAcct: '#606984',
-		noteHeaderInfo: '#606984',
+		noteHeaderAcct: ':alpha<0.65<$text',
+		noteHeaderInfo: ':alpha<0.5<$text',
 
-		noteActions: '#606984',
-		noteActionsHover: '#a1a8bf',
+		noteActions: ':alpha<0.45<$text',
+		noteActionsHover: ':alpha<0.6<$text',
 		noteActionsReplyHover: '#0af',
 		noteActionsRenoteHover: '#8d0',
 		noteActionsReactionHover: '#fa0',
-		noteActionsHighlighted: '#707b97',
+		noteActionsHighlighted: ':alpha<0.7<$text',
 
 		noteAttachedFile: 'rgba(255, 255, 255, 0.1)',
 
