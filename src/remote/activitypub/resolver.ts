@@ -7,7 +7,7 @@ const log = debug('misskey:activitypub:resolver');
 
 export default class Resolver {
 	private history: Set<string>;
-	private timeout: number = 10 * 1000;
+	private timeout = 10 * 1000;
 
 	constructor() {
 		this.history = new Set();
