@@ -77,6 +77,12 @@ export async function deleteNotification(notification: string | mongo.ObjectID |
 	});
 }
 
+export const packMany = async (
+	notifications: any[]
+) => {
+	return (await Promise.all(notifications.map(n => pack(n)))).filter(x => x != null);
+};
+
 /**
  * Pack a notification for API response
  */
@@ -123,6 +129,12 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 		case 'poll_vote':
 			// Populate note
 			_notification.note = await packNote(_notification.noteId, me);
+
+			// (データベースの不具合などで)投稿が見つからなかったら
+			if (_notification.note == null) {
+				console.warn(`in packaging notification: note not found on database: ${_notification.noteId}`);
+				return resolve(null);
+			}
 			break;
 		default:
 			console.error(`Unknown type: ${_notification.type}`);
