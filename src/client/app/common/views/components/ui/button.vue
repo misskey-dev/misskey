@@ -1,7 +1,7 @@
 <template>
-<button class="dmtdnykelhudezerjlfpbhgovrgnqqgr" :class="[styl, { inline, primary }]" :type="type" @click="$emit('click')">
+<component class="dmtdnykelhudezerjlfpbhgovrgnqqgr" :is="link ? 'a' : 'button'" :class="[styl, { inline, primary }]" :type="type" @click="$emit('click')">
 	<slot></slot>
-</button>
+</component>
 </template>
 
 <script lang="ts">
@@ -21,6 +21,11 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		link: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 	data() {
@@ -35,15 +40,20 @@ export default Vue.extend({
 .dmtdnykelhudezerjlfpbhgovrgnqqgr
 	display block
 	width 100%
-	min-height 40px
 	margin 0
-	padding 0
+	padding 8px
+	text-align center
 	font-weight normal
 	font-size 16px
 	border none
 	border-radius 6px
 	outline none
 	box-shadow none
+	text-decoration none
+	user-select none
+
+	*
+		pointer-events none
 
 	&:focus
 		&:after

@@ -2,7 +2,6 @@
  * Gulp tasks
  */
 
-import * as fs from 'fs';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
@@ -166,9 +165,7 @@ gulp.task('build:client:pug', [
 			.pipe(pug({
 				locals: {
 					themeColor: constants.themeColor,
-					facss: fa.dom.css(),
-					//hljscss: fs.readFileSync('./node_modules/highlight.js/styles/default.css', 'utf8')
-					hljscss: fs.readFileSync('./src/client/assets/code-highlight.css', 'utf8')
+					facss: fa.dom.css()
 				}
 			}))
 			.pipe(htmlmin({

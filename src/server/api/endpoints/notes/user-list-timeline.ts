@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
-import { pack } from '../../../../models/note';
+import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
@@ -242,5 +242,5 @@ export default async (params: any, user: ILocalUser) => {
 		});
 
 	// Serialize
-	return await Promise.all(timeline.map(note => pack(note, user)));
+	return await packMany(timeline, user);
 };

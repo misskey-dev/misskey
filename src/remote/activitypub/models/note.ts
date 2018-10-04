@@ -56,7 +56,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	log(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
-	const actor = await resolvePerson(note.attributedTo) as IRemoteUser;
+	const actor = await resolvePerson(note.attributedTo, null, resolver) as IRemoteUser;
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
@@ -73,7 +73,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 			visibility = 'followers';
 		} else {
 			visibility = 'specified';
-			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
+			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, null, resolver)));
 		}
 	}
 	//#endergion

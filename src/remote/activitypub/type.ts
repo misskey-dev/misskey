@@ -91,6 +91,14 @@ export interface IReject extends IActivity {
 	type: 'Reject';
 }
 
+export interface IAdd extends IActivity {
+	type: 'Add';
+}
+
+export interface IRemove extends IActivity {
+	type: 'Remove';
+}
+
 export interface ILike extends IActivity {
 	type: 'Like';
 	_misskey_reaction: string;
@@ -109,5 +117,7 @@ export type Object =
 	IFollow |
 	IAccept |
 	IReject |
+	IAdd |
+	IRemove |
 	ILike |
 	IAnnounce;

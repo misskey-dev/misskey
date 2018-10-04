@@ -1,27 +1,40 @@
 import * as tinycolor from 'tinycolor2';
 
-type Theme = {
-	meta: {
-		id: string;
-		name: string;
-		author: string;
-		base?: string;
-		vars: any;
-	};
-} & {
-	[key: string]: string;
+export type Theme = {
+	id: string;
+	name: string;
+	author: string;
+	desc?: string;
+	base?: 'dark' | 'light';
+	vars: { [key: string]: string };
+	props: { [key: string]: string };
 };
 
+export const lightTheme: Theme = require('../theme/light.json5');
+export const darkTheme: Theme = require('../theme/dark.json5');
+export const pinkTheme: Theme = require('../theme/pink.json5');
+export const halloweenTheme: Theme = require('../theme/halloween.json5');
+
+export const builtinThemes = [
+	lightTheme,
+	darkTheme,
+	pinkTheme,
+	halloweenTheme
+];
+
 export function applyTheme(theme: Theme, persisted = true) {
-	if (theme.meta.base) {
-		const base = [lightTheme, darkTheme].find(x => x.meta.id == theme.meta.base);
-		theme = Object.assign({}, base, theme);
+	// Deep copy
+	const _theme = JSON.parse(JSON.stringify(theme));
+
+	if (_theme.base) {
+		const base = [lightTheme, darkTheme].find(x => x.id == _theme.base);
+		_theme.vars = Object.assign({}, base.vars, _theme.vars);
+		_theme.props = Object.assign({}, base.props, _theme.props);
 	}
 
-	const props = compile(theme);
+	const props = compile(_theme);
 
 	Object.entries(props).forEach(([k, v]) => {
-		if (k == 'meta') return;
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	});
 
@@ -34,10 +47,10 @@ function compile(theme: Theme): { [key: string]: string } {
 	function getColor(code: string): tinycolor.Instance {
 		// ref
 		if (code[0] == '@') {
-			return getColor(theme[code.substr(1)]);
+			return getColor(theme.props[code.substr(1)]);
 		}
 		if (code[0] == '$') {
-			return getColor(theme.meta.vars[code.substr(1)]);
+			return getColor(theme.vars[code.substr(1)]);
 		}
 
 		// func
@@ -59,8 +72,7 @@ function compile(theme: Theme): { [key: string]: string } {
 
 	const props = {};
 
-	Object.entries(theme).forEach(([k, v]) => {
-		if (k == 'meta') return;
+	Object.entries(theme.props).forEach(([k, v]) => {
 		const c = getColor(v);
 		props[k] = genValue(c);
 	});
@@ -88,15 +100,3 @@ function compile(theme: Theme): { [key: string]: string } {
 function genValue(c: tinycolor.Instance): string {
 	return c.toRgbString();
 }
-
-export const lightTheme = require('../theme/light.json');
-export const darkTheme = require('../theme/dark.json');
-export const pinkTheme = require('../theme/pink.json');
-export const halloweenTheme = require('../theme/halloween.json');
-
-export const builtinThemes = [
-	lightTheme,
-	darkTheme,
-	pinkTheme,
-	halloweenTheme
-];
