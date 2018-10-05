@@ -38,10 +38,10 @@
 	</div>
 	<div class="menu">
 		<div>
-			<a :href="`${file.url}?download`" :download="file.name">%fa:download%%i18n:@download%</a>
-			<button @click="rename">%fa:pencil-alt%%i18n:@rename%</button>
-			<button @click="move">%fa:R folder-open%%i18n:@move%</button>
-			<button @click="del">%fa:trash-alt R%%i18n:@delete%</button>
+			<ui-button link :href="`${file.url}?download`" :download="file.name">%fa:download% %i18n:@download%</ui-button>
+			<ui-button @click="rename">%fa:pencil-alt% %i18n:@rename%</ui-button>
+			<ui-button @click="move">%fa:R folder-open% %i18n:@move%</ui-button>
+			<ui-button @click="del">%fa:trash-alt R% %i18n:@delete%</ui-button>
 		</div>
 	</div>
 	<div class="exif" v-show="exif">
@@ -204,28 +204,6 @@ export default Vue.extend({
 		> div
 			max-width 500px
 			margin 0 auto
-
-			> *
-				display block
-				width 100%
-				padding 10px 16px
-				margin 0 0 12px 0
-				color var(--primaryForeground)
-				font-size 0.9em
-				text-align center
-				text-decoration none
-				background var(--primary)
-				border none
-				border-radius 3px
-
-				&:last-child
-					margin-bottom 0
-
-				&:active
-					background var(--primaryDarken10)
-
-				> [data-fa]
-					margin-right 4px
 
 	> .hash
 		padding 14px
