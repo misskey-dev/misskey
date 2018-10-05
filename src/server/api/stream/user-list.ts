@@ -1,13 +1,12 @@
-import * as websocket from 'websocket';
-import Xev from 'xev';
-import { ParsedUrlQuery } from 'querystring';
+import { Channel } from '.';
 
-export default function(request: websocket.request, connection: websocket.connection, subscriber: Xev, user: any): void {
-	const q = request.resourceURL.query as ParsedUrlQuery;
-	const listId = q.listId as string;
+export default class extends Channel {
+	public init = async (params: any) => {
+		const listId = params.listId as string;
 
-	// Subscribe stream
-	subscriber.on(`user-list-stream:${listId}`, data => {
-		connection.send(JSON.stringify(data));
-	});
+		// Subscribe stream
+		subscriber.on(`user-list-stream:${listId}`, data => {
+			connection.send(JSON.stringify(data));
+		});
+	}
 }

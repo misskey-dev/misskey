@@ -1,35 +1,37 @@
-import * as websocket from 'websocket';
 import Xev from 'xev';
+import { Channel } from '.';
 
 const ev = new Xev();
 
-export default function(request: websocket.request, connection: websocket.connection): void {
-	const onStats = (stats: any) => {
-		connection.send(JSON.stringify({
-			type: 'stats',
-			body: stats
-		}));
-	};
+export default class extends Channel {
+	public init = async (params: any) => {
+		const onStats = (stats: any) => {
+			connection.send(JSON.stringify({
+				type: 'stats',
+				body: stats
+			}));
+		};
 
-	connection.on('message', async data => {
-		const msg = JSON.parse(data.utf8Data);
+		connection.on('message', async data => {
+			const msg = JSON.parse(data.utf8Data);
 
-		switch (msg.type) {
-			case 'requestLog':
-				ev.once(`notesStatsLog:${msg.id}`, statsLog => {
-					connection.send(JSON.stringify({
-						type: 'statsLog',
-						body: statsLog
-					}));
-				});
-				ev.emit('requestNotesStatsLog', msg.id);
-				break;
-		}
-	});
+			switch (msg.type) {
+				case 'requestLog':
+					ev.once(`notesStatsLog:${msg.id}`, statsLog => {
+						connection.send(JSON.stringify({
+							type: 'statsLog',
+							body: statsLog
+						}));
+					});
+					ev.emit('requestNotesStatsLog', msg.id);
+					break;
+			}
+		});
 
-	ev.addListener('notesStats', onStats);
+		ev.addListener('notesStats', onStats);
 
-	connection.on('close', () => {
-		ev.removeListener('notesStats', onStats);
-	});
+		connection.on('close', () => {
+			ev.removeListener('notesStats', onStats);
+		});
+	}
 }

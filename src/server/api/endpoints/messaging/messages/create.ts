@@ -6,7 +6,7 @@ import User, { ILocalUser } from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
-import { publishUserStream } from '../../../../../stream';
+import { publishMainStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
 
@@ -88,12 +88,12 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// 自分のストリーム
 	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
 	publishMessagingIndexStream(message.userId, 'message', messageObj);
-	publishUserStream(message.userId, 'messaging_message', messageObj);
+	publishMainStream(message.userId, 'messaging_message', messageObj);
 
 	// 相手のストリーム
 	publishMessagingStream(message.recipientId, message.userId, 'message', messageObj);
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
-	publishUserStream(message.recipientId, 'messaging_message', messageObj);
+	publishMainStream(message.recipientId, 'messaging_message', messageObj);
 
 	// Update flag
 	User.update({ _id: recipient._id }, {
@@ -117,7 +117,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			}
 			//#endregion
 
-			publishUserStream(message.recipientId, 'unread_messaging_message', messageObj);
+			publishMainStream(message.recipientId, 'unread_messaging_message', messageObj);
 			pushSw(message.recipientId, 'unread_messaging_message', messageObj);
 		}
 	}, 3000);

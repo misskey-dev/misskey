@@ -2,7 +2,7 @@ import NoteUnread from '../../models/note-unread';
 import User, { IUser } from '../../models/user';
 import { INote } from '../../models/note';
 import Mute from '../../models/mute';
-import { publishUserStream } from '../../stream';
+import { publishMainStream } from '../../stream';
 
 export default async function(user: IUser, note: INote, isSpecified = false) {
 	//#region ミュートしているなら無視
@@ -38,10 +38,10 @@ export default async function(user: IUser, note: INote, isSpecified = false) {
 			}
 		});
 
-		publishUserStream(user._id, 'unreadMention', note._id);
+		publishMainStream(user._id, 'unreadMention', note._id);
 
 		if (isSpecified) {
-			publishUserStream(user._id, 'unreadSpecifiedNote', note._id);
+			publishMainStream(user._id, 'unreadSpecifiedNote', note._id);
 		}
 	}, 3000);
 }

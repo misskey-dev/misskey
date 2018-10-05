@@ -1,5 +1,5 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../../models/user';
-import { publishUserStream } from '../../../stream';
+import { publishMainStream } from '../../../stream';
 import notify from '../../../notify';
 import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
@@ -33,11 +33,11 @@ export default async function(follower: IUser, followee: IUser) {
 
 	// Publish receiveRequest event
 	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => publishUserStream(followee._id, 'receiveFollowRequest', packed));
+		packUser(follower, followee).then(packed => publishMainStream(followee._id, 'receiveFollowRequest', packed));
 
 		packUser(followee, followee, {
 			detail: true
-		}).then(packed => publishUserStream(followee._id, 'meUpdated', packed));
+		}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
 
 		// 通知を作成
 		notify(followee._id, follower._id, 'receiveFollowRequest');

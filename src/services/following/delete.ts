@@ -2,7 +2,7 @@ import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../
 import Following from '../../models/following';
 import FollowingLog from '../../models/following-log';
 import FollowedLog from '../../models/followed-log';
-import { publishUserStream } from '../../stream';
+import { publishMainStream } from '../../stream';
 import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
@@ -52,7 +52,7 @@ export default async function(follower: IUser, followee: IUser) {
 
 	// Publish unfollow event
 	if (isLocalUser(follower)) {
-		packUser(followee, follower).then(packed => publishUserStream(follower._id, 'unfollow', packed));
+		packUser(followee, follower).then(packed => publishMainStream(follower._id, 'unfollow', packed));
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {

@@ -1,9 +1,10 @@
-import * as websocket from 'websocket';
-import Xev from 'xev';
+import { Channel } from '.';
 
-export default function(request: websocket.request, connection: websocket.connection, subscriber: Xev, user: any): void {
-	// Subscribe messaging index stream
-	subscriber.on(`messaging-index-stream:${user._id}`, data => {
-		connection.send(JSON.stringify(data));
-	});
+export default class extends Channel {
+	public init = async (params: any) => {
+		// Subscribe messaging index stream
+		subscriber.on(`messaging-index-stream:${user._id}`, data => {
+			connection.send(JSON.stringify(data));
+		});
+	}
 }

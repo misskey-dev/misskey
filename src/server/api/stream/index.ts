@@ -13,21 +13,22 @@ import homeTimeline from './home-timeline';
 
 const log = debug('misskey');
 
+/**
+ * Main stream connection
+ */
 export default class Connection {
-	public request: websocket.request;
 	public user: IUser;
 	public app: IApp;
 	private wsConnection: websocket.connection;
 	public subscriber: Xev;
+	private channels: Channel[] = [];
 
 	constructor(
-		request: websocket.request,
 		wsConnection: websocket.connection,
 		subscriber: Xev,
 		user: IUser,
 		app: IApp
 	) {
-		this.request = request;
 		this.wsConnection = wsConnection;
 		this.user = user;
 		this.app = app;
@@ -36,6 +37,9 @@ export default class Connection {
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 	}
 
+	/**
+	 * クライアントからメッセージ受信時
+	 */
 	private onWsConnectionMessage = async (data: websocket.IMessage) => {
 		const { type, body } = JSON.parse(data.utf8Data);
 
@@ -50,6 +54,9 @@ export default class Connection {
 		}
 	}
 
+	/**
+	 * APIリクエスト要求時
+	 */
 	private onApiRequest = async (data: any) => {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
 		call(data.endpoint, await User.findOne({ _id: this.user._id }), this.app, data.data).then(res => {
@@ -73,6 +80,9 @@ export default class Connection {
 		readNotification(this.user._id, data.id);
 	}
 
+	/**
+	 * 投稿購読要求時
+	 */
 	private onSubscribeNote = (data: any) => {
 		if (!data.id) return;
 		log(`CAPTURE: ${data.id} by @${this.user.username}`);
@@ -82,6 +92,9 @@ export default class Connection {
 		}
 	}
 
+	/**
+	 * 投稿購読解除要求時
+	 */
 	private onUnsubscribeNote = (data: any) => {
 		if (!data.id) return;
 		log(`DECAPTURE: ${data.id} by @${this.user.username}`);
@@ -98,18 +111,85 @@ export default class Connection {
 		});
 	}
 
+	/**
+	 * チャンネル接続要求時
+	 */
 	private onChannelConnectRequested = (data: any) => {
-		const { channel } = data;
+		const { channel, id, params } = data;
 
 		switch (channel) {
-			case 'homeTimeline': homeTimeline(this); break;
+			case 'homeTimeline': this.connectChannel(id, params, homeTimeline); break;
 		}
 	}
 
+	/**
+	 * チャンネル切断要求時
+	 */
+	private onChannelDisconnectRequested = (data: any) => {
+		const { id } = data;
+
+		this.disconnectChannel(id);
+	}
+
+	/**
+	 * クライアントにメッセージ送信
+	 */
 	private sendMessageToWs = (type: string, payload: any) => {
 		this.wsConnection.send(JSON.stringify({
 			type: type,
 			body: payload
 		}));
 	}
+
+	/**
+	 * チャンネルに接続
+	 */
+	private connectChannel = (id: string, params: any, channelClass: { new(id: string, connection: Connection, send: (data: any) => void): Channel }) => {
+		const send = (data: any) => {
+			this.sendMessageToWs(`channel:${id}`, data);
+		};
+
+		const channel = new channelClass(id, this, send);
+		this.channels.push(channel);
+		channel.init(params);
+	}
+
+	/**
+	 * チャンネルから切断
+	 */
+	private disconnectChannel = (id: string) => {
+		const channel = this.channels.find(c => c.id === id);
+
+		if (channel) {
+			channel.dispose();
+			this.channels = this.channels.filter(c => c.id !== id);
+		}
+	}
+
+	/**
+	 * ストリームが切れたとき
+	 */
+	public dispose = () => {
+		this.channels.forEach(c => {
+			if (c.dispose) c.dispose();
+		});
+	}
+}
+
+/**
+ * Stream channel
+ */
+export abstract class Channel {
+	protected connection: Connection;
+	protected send: (data: any) => void;
+	public id: string;
+
+	constructor(id: string, connection: Connection, send: (data: any) => void) {
+		this.id = id;
+		this.connection = connection;
+		this.send = send;
+	}
+
+	public abstract init: (params: any) => void;
+	public abstract dispose?: () => void;
 }
