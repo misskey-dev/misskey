@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    restart: always
+    links:
+      - mongo
+      - redis
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - internal_network
+      - external_network
+
+  redis:
+    restart: always
+    image: redis:4.0-alpine
+    networks:
+      - internal_network
+### Uncomment to enable Redis persistance
+    volumes:
+      - ./redis:/data
+
+  mongo:
+    restart: always
+    image: mongo:4.1-bionic
+    networks:
+      - internal_network
+    environment:
+      MONGO_INITDB_DATABASE: "misskey"
+    volumes:
+      - ./.config/mongo_initdb.js:/docker-entrypoint-initdb.d/mongo_initdb.js:ro
+### Uncomment to enable MongoDB persistance
+      - ./mongo:/data
+
+networks:
+  internal_network:
+    internal: true
+  external_network:
