@@ -116,8 +116,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.driveStream.getConnection();
-		this.connectionId = (this as any).os.streams.driveStream.use();
+		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('drive');
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);

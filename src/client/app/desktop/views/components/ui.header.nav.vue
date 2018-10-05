@@ -42,8 +42,7 @@ export default Vue.extend({
 	data() {
 		return {
 			hasGameInvitations: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	computed: {
@@ -53,8 +52,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
+			this.connection = (this as any).os.stream;
 
 			this.connection.on('reversi_invited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
@@ -64,7 +62,6 @@ export default Vue.extend({
 		if (this.$store.getters.isSignedIn) {
 			this.connection.off('reversi_invited', this.onReversiInvited);
 			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
-			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 	methods: {

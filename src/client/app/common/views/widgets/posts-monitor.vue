@@ -110,8 +110,7 @@ export default define({
 		}
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.notesStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.notesStatsStream.use();
+		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('notesStats');
 
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);

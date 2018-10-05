@@ -131,12 +131,19 @@ export default class Stream extends EventEmitter {
 			existConnection.users.push(userId);
 			return [existConnection.ev, userId];
 		} else {
+			const id = Math.random().toString();
 			const ev = new EventEmitter();
+			(ev as any).send = (data: any) => {
+				this.send('channel', {
+					id: id,
+					body: data
+				});
+			};
 			this.sharedConnections.push({
 				channel: channel,
-				id: Math.random().toString(),
-				users: [userId],
-				ev: ev
+				id: id,
+				ev: ev,
+				users: [userId]
 			});
 			return [ev, userId];
 		}
@@ -166,7 +173,7 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Callback of when open connection
 	 */
-	private onOpen() {
+	private onOpen = () => {
 		this.state = 'connected';
 		this.emit('_connected_');
 
@@ -181,7 +188,7 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Callback of when close connection
 	 */
-	private onClose() {
+	private onClose = () => {
 		this.state = 'reconnecting';
 		this.emit('_disconnected_');
 	}
@@ -189,7 +196,7 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Callback of when received a message from connection
 	 */
-	private onMessage(message) {
+	private onMessage = (message) => {
 		const { type, body } = JSON.parse(message.data);
 
 		if (type.startsWith('channel:')) {
@@ -204,7 +211,7 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Send a message to connection
 	 */
-	public send(typeOrPayload, payload?) {
+	public send = (typeOrPayload, payload?) => {
 		const data = arguments.length == 1 ? typeOrPayload : {
 			type: typeOrPayload,
 			body: payload
@@ -222,7 +229,7 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Close this connection
 	 */
-	public close() {
+	public close = () => {
 		this.stream.removeEventListener('open', this.onOpen);
 		this.stream.removeEventListener('message', this.onMessage);
 	}

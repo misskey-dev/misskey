@@ -29,8 +29,7 @@ export default define({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream;
 
 		this.connection.on('drive_file_created', this.onDriveFileCreated);
 

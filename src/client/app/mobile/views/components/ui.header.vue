@@ -24,44 +24,48 @@ import { env } from '../../../config';
 
 export default Vue.extend({
 	props: ['func'],
+
 	data() {
 		return {
 			hasGameInvitation: false,
 			connection: null,
-			connectionId: null,
 			env: env
 		};
 	},
+
 	computed: {
 		hasUnreadNotification(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
 		},
+
 		hasUnreadMessagingMessage(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
 		}
 	},
+
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', this.$refs.root.offsetHeight);
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
+			this.connection = (this as any).os.stream;
 
 			this.connection.on('reversi_invited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
+
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection.off('reversi_invited', this.onReversiInvited);
 			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
-			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
+
 	methods: {
 		onReversiInvited() {
 			this.hasGameInvitation = true;
 		},
+
 		onReversiNoInvites() {
 			this.hasGameInvitation = false;
 		}

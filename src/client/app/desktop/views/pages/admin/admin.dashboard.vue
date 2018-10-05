@@ -61,8 +61,7 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.connection = (this as any).os.streams.serverStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.serverStatsStream.use();
+		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('serverStats');
 
 		(this as any).os.getMeta().then(meta => {
 			this.disableRegistration = meta.disableRegistration;

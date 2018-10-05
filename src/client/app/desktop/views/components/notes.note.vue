@@ -105,8 +105,7 @@ export default Vue.extend({
 		return {
 			showContent: false,
 			isDetailOpened: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
@@ -170,8 +169,7 @@ export default Vue.extend({
 
 	created() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
+			this.connection = (this as any).os.stream;
 		}
 	},
 
@@ -206,7 +204,6 @@ export default Vue.extend({
 
 		if (this.$store.getters.isSignedIn) {
 			this.connection.off('_connected_', this.onStreamConnected);
-			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 

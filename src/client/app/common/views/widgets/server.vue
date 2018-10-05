@@ -55,8 +55,7 @@ export default define({
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.streams.serverStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.serverStatsStream.use();
+		[this.connection, this.connectionId] = (this as any).os.streams.serverStatsStream.use();
 	},
 	beforeDestroy() {
 		(this as any).os.streams.serverStatsStream.dispose(this.connectionId);

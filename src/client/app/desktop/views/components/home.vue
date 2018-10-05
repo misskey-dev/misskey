@@ -141,7 +141,6 @@ export default Vue.extend({
 	data() {
 		return {
 			connection: null,
-			connectionId: null,
 			widgetAdderSelected: null,
 			trash: []
 		};
@@ -176,12 +175,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
-	},
-
-	beforeDestroy() {
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection = (this as any).os.stream;
 	},
 
 	methods: {

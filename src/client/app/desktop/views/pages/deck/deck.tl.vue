@@ -36,8 +36,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
@@ -68,8 +67,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
+		this.connection = this.stream;
 
 		this.connection.on('note', this.onNote);
 		if (this.src == 'home') {
@@ -86,7 +84,6 @@ export default Vue.extend({
 			this.connection.off('follow', this.onChangeFollowing);
 			this.connection.off('unfollow', this.onChangeFollowing);
 		}
-		this.stream.dispose(this.connectionId);
 	},
 
 	methods: {

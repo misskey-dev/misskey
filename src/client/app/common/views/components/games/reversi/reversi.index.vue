@@ -66,8 +66,7 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.streams.reversiStream.getConnection();
-			this.connectionId = (this as any).os.streams.reversiStream.use();
+			[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('reversi');
 
 			this.connection.on('invited', this.onInvited);
 

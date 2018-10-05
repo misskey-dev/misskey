@@ -76,8 +76,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.messagingIndexStream.getConnection();
-		this.connectionId = (this as any).os.streams.messagingIndexStream.use();
+		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);

@@ -51,6 +51,7 @@ export default class Connection {
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
 			case 'connect': this.onChannelConnectRequested(body); break;
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
+			case 'channel': this.onChannelMessageRequested(body); break;
 		}
 	}
 
@@ -161,9 +162,14 @@ export default class Connection {
 		const channel = this.channels.find(c => c.id === id);
 
 		if (channel) {
-			channel.dispose();
+			if (channel.dispose) channel.dispose();
 			this.channels = this.channels.filter(c => c.id !== id);
 		}
+	}
+
+	private onChannelMessageRequested = (data: any) => {
+		const channel = this.channels.find(c => c.id === data.id);
+		channel.onMessage(data.data);
 	}
 
 	/**
@@ -192,4 +198,5 @@ export abstract class Channel {
 
 	public abstract init: (params: any) => void;
 	public abstract dispose?: () => void;
+	public abstract onMessage?: (data: any) => void;
 }

@@ -46,8 +46,7 @@ export default Vue.extend({
 	mounted() {
 		this.fetch();
 
-		this.connection = (this as any).os.streams.localTimelineStream.getConnection();
-		this.connectionId = (this as any).os.streams.localTimelineStream.use();
+		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('localTimeline');
 
 		this.connection.on('note', this.onNote);
 	},

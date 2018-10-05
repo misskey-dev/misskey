@@ -23,35 +23,38 @@ export default Vue.extend({
 		XHeader,
 		XNav
 	},
+
 	props: ['title'],
+
 	data() {
 		return {
 			isDrawerOpening: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
+
 	watch: {
 		'$store.state.uiHeaderHeight'() {
 			this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
 		}
 	},
+
 	mounted() {
 		this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
+			this.connection = (this as any).os.stream;
 
 			this.connection.on('notification', this.onNotification);
 		}
 	},
+
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection.off('notification', this.onNotification);
-			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
+
 	methods: {
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
