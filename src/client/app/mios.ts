@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import initStore from './store';
 import { apiUrl, version, lang } from './config';
 import Progress from './common/scripts/loading';
-import Connection from './common/scripts/streaming/stream';
+import Connection from './common/scripts/stream';
 import { HomeStreamManager } from './common/scripts/streaming/home';
 import { DriveStreamManager } from './common/scripts/streaming/drive';
 import { ServerStatsStreamManager } from './common/scripts/streaming/server-stats';

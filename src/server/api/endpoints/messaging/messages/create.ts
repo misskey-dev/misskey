@@ -117,8 +117,8 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			}
 			//#endregion
 
-			publishMainStream(message.recipientId, 'unread_messaging_message', messageObj);
-			pushSw(message.recipientId, 'unread_messaging_message', messageObj);
+			publishMainStream(message.recipientId, 'unreadMessagingMessage', messageObj);
+			pushSw(message.recipientId, 'unreadMessagingMessage', messageObj);
 		}
 	}, 3000);
 

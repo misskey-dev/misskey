@@ -25,5 +25,5 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 
 	res();
 
-	publishMainStream(user._id, 'home_updated', home);
+	publishMainStream(user._id, 'homeUpdated', home);
 });

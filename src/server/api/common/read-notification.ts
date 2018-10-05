@@ -66,6 +66,6 @@ export default (
 		});
 
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
-		publishMainStream(userId, 'read_all_notifications');
+		publishMainStream(userId, 'readAllNotifications');
 	}
 });

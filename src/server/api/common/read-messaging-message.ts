@@ -71,6 +71,6 @@ export default (
 		});
 
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
-		publishMainStream(userId, 'read_all_messaging_messages');
+		publishMainStream(userId, 'readAllMessagingMessages');
 	}
 });

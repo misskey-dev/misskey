@@ -137,8 +137,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 5000);
 		});
 
-		connection.on('unread_messaging_message', message => {
-			const _n = composeNotification('unread_messaging_message', message);
+		connection.on('unreadMessagingMessage', message => {
+			const _n = composeNotification('unreadMessagingMessage', message);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon

@@ -40,5 +40,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	});
 
 	// 全ての通知を読みましたよというイベントを発行
-	publishMainStream(user._id, 'read_all_notifications');
+	publishMainStream(user._id, 'readAllNotifications');
 });

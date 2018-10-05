@@ -20,7 +20,7 @@ export default function(type, data): Notification {
 				icon: data.url
 			};
 
-		case 'unread_messaging_message':
+		case 'unreadMessagingMessage':
 			return {
 				title: '%i18n:common.notification.message-from%'.split("{}")[0] + `${getUserName(data.user)}` + '%i18n:common.notification.message-from%'.split("{}")[1] ,
 				body: data.text, // TODO: getMessagingMessageSummary(data),

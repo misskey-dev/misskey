@@ -33,5 +33,5 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	res();
 
 	// Publish event
-	publishMainStream(user._id, 'my_token_regenerated');
+	publishMainStream(user._id, 'myTokenRegenerated');
 });
