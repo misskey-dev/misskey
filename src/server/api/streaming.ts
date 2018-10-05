@@ -2,6 +2,7 @@ import * as http from 'http';
 import * as websocket from 'websocket';
 import Xev from 'xev';
 
+import MainStreamConnection from './stream';
 import homeStream from './stream/home';
 import localTimelineStream from './stream/local-timeline';
 import hybridTimelineStream from './stream/hybrid-timeline';
@@ -29,6 +30,7 @@ module.exports = (server: http.Server) => {
 	ws.on('request', async (request) => {
 		const connection = request.accept();
 
+		//#region TODO: Misskey v10 でこのコードを削除
 		if (request.resourceURL.pathname === '/server-stats') {
 			serverStatsStream(request, connection);
 			return;
@@ -38,6 +40,7 @@ module.exports = (server: http.Server) => {
 			notesStatsStream(request, connection);
 			return;
 		}
+		//#endregion
 
 		const ev = new Xev();
 
@@ -54,6 +57,13 @@ module.exports = (server: http.Server) => {
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
 
+		// TODO: Misskey v10 でこのif文は無くす(if文の内容は無くさない)
+		if (request.resourceURL.pathname === '/@') {
+			const a = new MainStreamConnection(request, connection, ev, user, app);
+			return;
+		}
+
+		//#region TODO: Misskey v10 でこのコードを削除
 		if (request.resourceURL.pathname === '/games/reversi-game') {
 			reversiGameStream(request, connection, ev, user);
 			return;
@@ -91,5 +101,6 @@ module.exports = (server: http.Server) => {
 		} else {
 			connection.close();
 		}
+		//#endregion
 	});
 };

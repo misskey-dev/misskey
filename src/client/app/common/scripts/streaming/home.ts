@@ -32,7 +32,7 @@ export class HomeStream extends Stream {
 			});
 		});
 
-		this.on('unread_notification', () => {
+		this.on('unreadNotification', () => {
 			os.store.dispatch('mergeMe', {
 				hasUnreadNotification: true
 			});

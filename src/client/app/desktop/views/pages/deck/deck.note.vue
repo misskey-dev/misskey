@@ -148,7 +148,7 @@ export default Vue.extend({
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				const data = {
-					type: 'capture',
+					type: 'subNote',
 					id: this.p.id
 				} as any;
 				if ((this.p.visibleUserIds || []).includes(this.$store.state.i.id) || (this.p.mentions || []).includes(this.$store.state.i.id)) {
@@ -162,7 +162,7 @@ export default Vue.extend({
 		decapture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
-					type: 'decapture',
+					type: 'unsubNote',
 					id: this.p.id
 				});
 				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);

@@ -54,7 +54,7 @@ export default (
 			}
 			//#endregion
 
-			publishUserStream(notifiee, 'unread_notification', packed);
+			publishUserStream(notifiee, 'unreadNotification', packed);
 
 			pushSw(notifiee, 'notification', packed);
 		}
