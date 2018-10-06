@@ -32,7 +32,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
 		},
-		broadcasts: meta.broadcasts,
+		broadcasts: meta.broadcasts || [],
 		disableRegistration: meta.disableRegistration,
 		disableLocalTimeline: meta.disableLocalTimeline,
 		driveCapacityPerLocalUserMb: config.localDriveCapacityMb,
