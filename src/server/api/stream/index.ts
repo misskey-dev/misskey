@@ -147,7 +147,10 @@ export default class Connection {
 	 */
 	private connectChannel = (id: string, params: any, channelClass: { new(id: string, connection: Connection, send: (data: any) => void): Channel }) => {
 		const send = (data: any) => {
-			this.sendMessageToWs(`channel:${id}`, data);
+			this.sendMessageToWs('channel', {
+				id: id,
+				data: data
+			});
 		};
 
 		const channel = new channelClass(id, this, send);

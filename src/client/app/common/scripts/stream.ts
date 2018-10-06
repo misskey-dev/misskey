@@ -10,7 +10,8 @@ export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
 	private state: string;
 	private buffer: any[];
-	private sharedConnections: Connection[] = [];
+	private sharedConnections: SharedConnection[] = [];
+	private nonSharedConnections: NonSharedConnection[] = [];
 
 	constructor(os: MiOS) {
 		super();
@@ -108,24 +109,31 @@ export default class Stream extends EventEmitter {
 		});
 	}
 
-	public useSharedConnection = (channel: string): Connection => {
+	public useSharedConnection = (channel: string): SharedConnection => {
 		const existConnection = this.sharedConnections.find(c => c.channel === channel);
 
 		if (existConnection) {
 			existConnection.use();
-
 			return existConnection;
 		} else {
-			const connection = new Connection(channel);
-
+			const connection = new SharedConnection(channel);
 			this.sharedConnections.push(connection);
-
 			return connection;
 		}
 	}
 
-	public removeSharedConnection = (connection: Connection) => {
+	public removeSharedConnection = (connection: SharedConnection) => {
 		this.sharedConnections = this.sharedConnections.filter(c => c.id !== connection.id);
+	}
+
+	public connectToChannel = (channel: string): NonSharedConnection => {
+		const connection = new NonSharedConnection(channel);
+		this.nonSharedConnections.push(connection);
+		return connection;
+	}
+
+	public disconnectToChannel = (connection: NonSharedConnection) => {
+		this.nonSharedConnections = this.nonSharedConnections.filter(c => c.id !== connection.id);
 	}
 
 	/**
@@ -157,10 +165,10 @@ export default class Stream extends EventEmitter {
 	private onMessage = (message) => {
 		const { type, body } = JSON.parse(message.data);
 
-		if (type.startsWith('channel:')) {
-			const id = type.split(':')[1];
-			const connection = this.sharedConnections.find(c => c.id === id);
-			connection.emit(type, body);
+		if (type == 'channel') {
+			const id = body.id;
+			const connection = this.sharedConnections.find(c => c.id === id) || this.nonSharedConnections.find(c => c.id === id);
+			connection.emit(body.data.type, body.data.data);
 		} else {
 			this.emit(type, body);
 		}
@@ -193,7 +201,7 @@ export default class Stream extends EventEmitter {
 	}
 }
 
-class Connection extends EventEmitter {
+class SharedConnection extends EventEmitter {
 	public channel: string;
 	public id: string;
 	public stream: Stream;
@@ -243,5 +251,36 @@ class Connection extends EventEmitter {
 				this.stream.removeSharedConnection(this);
 			}, 3000);
 		}
+	}
+}
+
+class NonSharedConnection extends EventEmitter {
+	public channel: string;
+	public id: string;
+	public stream: Stream;
+
+	constructor(channel: string) {
+		super();
+
+		this.channel = channel;
+		this.id = Math.random().toString();
+	}
+
+	public send = (typeOrPayload, payload?) => {
+		const data = arguments.length == 1 ? typeOrPayload : {
+			type: typeOrPayload,
+			body: payload
+		};
+
+		this.stream.send('channel', {
+			id: this.id,
+			body: data
+		});
+	}
+
+	public dispose = () => {
+		this.removeAllListeners();
+		this.send('disconnet', this.id);
+		this.stream.disconnectToChannel(this);
 	}
 }
