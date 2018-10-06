@@ -24,12 +24,11 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		var offset = params.offset
 		var timeout = config.user_recommendation.timeout
 		var engine = config.user_recommendation.engine
-		var url
-		url = engine
-		url = url.replace('{{host}}', hostName)
-		url = url.replace('{{user}}', userName)
-		url = url.replace('{{limit}}', limit)
-		url = url.replace('{{offset}}', offset)
+		const url = engine
+			.replace('{{host}}', hostName)
+			.replace('{{user}}', userName)
+			.replace('{{limit}}', limit)
+			.replace('{{offset}}', offset)
 		request(
 			{
 				url: url,
