@@ -63,8 +63,8 @@ class Publisher {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishHomeTimelineStream = (note: any): void => {
-		this.publish('homeTimeline', null, note);
+	public publishHomeTimelineStream = (userId: ID, note: any): void => {
+		this.publish(`homeTimeline:${userId}`, null, note);
 	}
 
 	public publishLocalTimelineStream = async (note: any): Promise<void> => {

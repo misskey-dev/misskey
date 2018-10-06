@@ -8,7 +8,7 @@ export default class extends Channel {
 		const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe stream
-		this.subscriber.on('global-timeline', async note => {
+		this.subscriber.on('globalTimeline', async note => {
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (shouldMuteThisNote(note, mutedUserIds)) return;
 

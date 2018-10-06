@@ -306,11 +306,11 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 				detail: true
 			});
 			// Publish event to myself's stream
-			publishHomeTimelineStream(note.userId, 'note', detailPackedNote);
+			publishHomeTimelineStream(note.userId, detailPackedNote);
 			publishHybridTimelineStream(note.userId, detailPackedNote);
 		} else {
 			// Publish event to myself's stream
-			publishHomeTimelineStream(note.userId, 'note', noteObj);
+			publishHomeTimelineStream(note.userId, noteObj);
 
 			// Publish note to local and hybrid timeline stream
 			if (note.visibility != 'home') {
@@ -495,7 +495,7 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 			}
 
 			// Publish event to followers stream
-			publishHomeTimelineStream(following.followerId, 'note', detailPackedNote);
+			publishHomeTimelineStream(following.followerId, detailPackedNote);
 
 			if (isRemoteUser(user) || note.visibility != 'public') {
 				publishHybridTimelineStream(following.followerId, detailPackedNote);

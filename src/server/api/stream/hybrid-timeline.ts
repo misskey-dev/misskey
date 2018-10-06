@@ -11,8 +11,8 @@ export default class extends Channel {
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe stream
-		this.subscriber.on('hybrid-timeline', this.onEvent);
-		this.subscriber.on(`hybrid-timeline:${this.user._id}`, this.onEvent);
+		this.subscriber.on('hybridTimeline', this.onEvent);
+		this.subscriber.on(`hybridTimeline:${this.user._id}`, this.onEvent);
 	}
 
 	private onEvent = async (note: any) => {
