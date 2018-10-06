@@ -95,7 +95,7 @@ export default Vue.extend({
 		XSub
 	},
 
-	mixins: [noteSubscriber],
+	mixins: [noteSubscriber('note')],
 
 	props: {
 		note: {
@@ -167,12 +167,6 @@ export default Vue.extend({
 				return null;
 			}
 		}
-	},
-
-	created() {
-		this.subscribe(this.note, note => {
-			this.$emit('update:note', note);
-		});
 	},
 
 	methods: {

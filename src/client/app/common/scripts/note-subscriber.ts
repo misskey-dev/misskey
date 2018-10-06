@@ -1,15 +1,17 @@
 import Vue from 'vue';
 
-export default {
+export default prop => ({
 	data() {
 		return {
-			$_ns_note_: null,
-			$_ns_cb_: null,
 			connection: null
 		};
 	},
 
 	computed: {
+		$_ns_note_(): any {
+			return this[prop];
+		},
+
 		$_ns_isRenote(): boolean {
 			return (this.$_ns_note_.renote &&
 				this.$_ns_note_.text == null &&
@@ -45,11 +47,6 @@ export default {
 	},
 
 	methods: {
-		subscribe(prop, cb) {
-			this.$_ns_note_ = prop;
-			this.$_ns_cb_ = cb;
-		},
-
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				const data = {
@@ -95,7 +92,7 @@ export default {
 				}
 			}
 
-			this.$_ns_cb_(this.$_ns_note_);
+			this.$emit(`update:${prop}`, this.$_ns_note_);
 		},
 	}
-};
+});
