@@ -2,7 +2,7 @@
 <div class="mkw-rss">
 	<mk-widget-container :show-header="!props.compact">
 		<template slot="header">%fa:rss-square%RSS</template>
-		<button slot="func" title="設定" @click="setting">%fa:cog%</button>
+		<button slot="func" title="Feed Settings" @click="setting">%fa:cog%</button>
 
 		<div class="mkw-rss--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
@@ -20,7 +20,7 @@ export default define({
 	name: 'rss',
 	props: () => ({
 		compact: false,
-		url: 'http://news.yahoo.co.jp/pickup/rss.xml'
+		url: 'https://cryptocurrencynews.com/feed/'
 	})
 }).extend({
 	data() {
