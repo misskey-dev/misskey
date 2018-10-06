@@ -3,7 +3,6 @@ import Xev from 'xev';
 import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
-import { pack as packNote } from '../../../models/note';
 import readNotification from '../common/read-notification';
 import call from '../call';
 import { IApp } from '../../../models/app';
@@ -108,13 +107,11 @@ export default class Connection {
 		this.subscriber.off(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 	}
 
-	private onNoteStreamMessage = async (noteId: any) => {
-		const note = await packNote(noteId, this.user, {
-			detail: true
-		});
-
+	private onNoteStreamMessage = async (data: any) => {
 		this.sendMessageToWs('noteUpdated', {
-			note: note
+			id: data.body.id,
+			type: data.type,
+			body: data.body.body,
 		});
 	}
 

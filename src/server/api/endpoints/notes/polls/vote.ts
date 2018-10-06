@@ -72,7 +72,9 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		$inc: inc
 	});
 
-	publishNoteStream(note._id, 'poll_voted');
+	publishNoteStream(note._id, 'pollVoted', {
+		choice: choice
+	});
 
 	// Notify
 	notify(note.userId, user._id, 'poll_vote', {

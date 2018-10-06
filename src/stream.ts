@@ -39,8 +39,11 @@ class Publisher {
 		this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishNoteStream = (noteId: ID, type: string): void => {
-		this.publish(`noteStream:${noteId}`, null, noteId);
+	public publishNoteStream = (noteId: ID, type: string, value: any): void => {
+		this.publish(`noteStream:${noteId}`, type, {
+			id: noteId,
+			body: value
+		});
 	}
 
 	public publishUserListStream = (listId: ID, type: string, value?: any): void => {
