@@ -8,7 +8,6 @@
 				<router-link class="name" :to="user | userPage" v-user-preview="user.id">{{ user | userName }}</router-link>
 				<p class="username">@{{ user | acct }}</p>
 			</div>
-			<mk-follow-button :user="user"/>
 		</div>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@empty%</p>
