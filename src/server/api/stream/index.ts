@@ -7,6 +7,7 @@ import { pack as packNote } from '../../../models/note';
 import readNotification from '../common/read-notification';
 import call from '../call';
 import { IApp } from '../../../models/app';
+import Mute from '../../../models/mute';
 import readNote from '../../../services/note/read';
 
 import Channel from './channels';
@@ -18,7 +19,8 @@ const log = debug('misskey');
  * Main stream connection
  */
 export default class Connection {
-	public user: IUser;
+	public user?: IUser;
+	private mutedUserIds: string[] = [];
 	public app: IApp;
 	private wsConnection: websocket.connection;
 	public subscriber: Xev;
@@ -35,7 +37,30 @@ export default class Connection {
 		this.app = app;
 		this.subscriber = subscriber;
 
+		this.subscriber.on(`mainStream:${this.user._id}`, this.onEvent);
 		this.wsConnection.on('message', this.onWsConnectionMessage);
+
+		if (this.user) {
+			this.signin();
+		}
+	}
+
+	private signin = async () => {
+		const mute = await Mute.find({ muterId: this.user._id });
+		this.mutedUserIds = mute.map(m => m.muteeId.toString());
+	}
+
+	private onEvent = (data: any) => {
+		const { type, body } = data;
+
+		switch (type) {
+			case 'notification': {
+				if (!this.mutedUserIds.includes(body.userId)) {
+					this.sendMessageToWs('notification', body);
+				}
+				break;
+			}
+		}
 	}
 
 	/**
@@ -88,7 +113,7 @@ export default class Connection {
 	private onSubscribeNote = (payload: any) => {
 		if (!payload.id) return;
 		log(`CAPTURE: ${payload.id} by @${this.user.username}`);
-		this.subscriber.on(`note-stream:${payload.id}`, this.onNoteStreamMessage);
+		this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 		if (payload.read) {
 			readNote(this.user._id, payload.id);
 		}
@@ -100,7 +125,7 @@ export default class Connection {
 	private onUnsubscribeNote = (payload: any) => {
 		if (!payload.id) return;
 		log(`DECAPTURE: ${payload.id} by @${this.user.username}`);
-		this.subscriber.off(`note-stream:${payload.id}`, this.onNoteStreamMessage);
+		this.subscriber.off(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 	}
 
 	private onNoteStreamMessage = async (noteId: any) => {
@@ -108,7 +133,7 @@ export default class Connection {
 			detail: true
 		});
 
-		this.sendMessageToWs('note-updated', {
+		this.sendMessageToWs('noteUpdated', {
 			note: note
 		});
 	}
