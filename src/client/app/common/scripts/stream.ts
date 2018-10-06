@@ -117,6 +117,7 @@ export default class Stream extends EventEmitter {
 			return existConnection;
 		} else {
 			const connection = new SharedConnection(this, channel);
+			connection.use();
 			this.sharedConnections.push(connection);
 			return connection;
 		}
@@ -279,7 +280,7 @@ class SharedConnection extends Connection {
 			this.disposeTimerId = setTimeout(() => {
 				this.disposeTimerId = null;
 				this.removeAllListeners();
-				this.send('disconnet', this.id);
+				this.stream.send('disconnet', { id: this.id });
 				this.stream.removeSharedConnection(this);
 			}, 3000);
 		}
@@ -295,7 +296,7 @@ class NonSharedConnection extends Connection {
 
 	public dispose = () => {
 		this.removeAllListeners();
-		this.send('disconnet', this.id);
+		this.stream.send('disconnet', { id: this.id });
 		this.stream.disconnectToChannel(this);
 	}
 }
