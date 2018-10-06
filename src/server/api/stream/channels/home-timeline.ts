@@ -9,25 +9,18 @@ export default class extends Channel {
 		const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe Home stream channel
-		this.subscriber.on(`homeTimeline:${this.user._id}`, async x => {
+		this.subscriber.on(`homeTimeline:${this.user._id}`, async note => {
 			// Renoteなら再pack
-			if (x.type == 'note' && x.body.renoteId != null) {
-				x.body.renote = await pack(x.body.renoteId, this.user, {
+			if (note.renoteId != null) {
+				note.renote = await pack(note.renoteId, this.user, {
 					detail: true
 				});
 			}
 
-			//#region 流れてきたメッセージがミュートしているユーザーが関わるものだったら無視する
-			if (x.type == 'note') {
-				if (shouldMuteThisNote(x.body, mutedUserIds)) return;
-			} else if (x.type == 'notification') {
-				if (mutedUserIds.includes(x.body.userId)) {
-					return;
-				}
-			}
-			//#endregion
+			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
+			if (shouldMuteThisNote(note, mutedUserIds)) return;
 
-			this.send(x);
+			this.send('note', note);
 		});
 	}
 }

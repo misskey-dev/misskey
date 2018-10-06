@@ -21,14 +21,13 @@ export default abstract class Channel {
 	}
 
 	public send = (typeOrPayload: any, payload?: any) => {
-		const data = payload === undefined ? typeOrPayload : {
-			type: typeOrPayload,
-			body: payload
-		};
+		const type = payload === undefined ? typeOrPayload.type : typeOrPayload;
+		const body = payload === undefined ? typeOrPayload.body : payload;
 
 		this.connection.sendMessageToWs('channel', {
 			id: this.id,
-			data: data
+			type: type,
+			body: body
 		});
 	}
 

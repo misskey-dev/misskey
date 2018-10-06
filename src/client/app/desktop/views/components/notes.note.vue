@@ -211,21 +211,19 @@ export default Vue.extend({
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				const data = {
-					type: 'subNote',
 					id: this.p.id
 				} as any;
 				if ((this.p.visibleUserIds || []).includes(this.$store.state.i.id) || (this.p.mentions || []).includes(this.$store.state.i.id)) {
 					data.read = true;
 				}
-				this.connection.send(data);
+				this.connection.send('subNote', data);
 				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
 			}
 		},
 
 		decapture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
-					type: 'unsubNote',
+				this.connection.send('unsubNote',{
 					id: this.p.id
 				});
 				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);

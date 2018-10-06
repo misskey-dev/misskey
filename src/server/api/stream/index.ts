@@ -77,30 +77,30 @@ export default class Connection {
 		});
 	}
 
-	private onReadNotification = (data: any) => {
-		if (!data.id) return;
-		readNotification(this.user._id, data.id);
+	private onReadNotification = (payload: any) => {
+		if (!payload.id) return;
+		readNotification(this.user._id, payload.id);
 	}
 
 	/**
 	 * 投稿購読要求時
 	 */
-	private onSubscribeNote = (data: any) => {
-		if (!data.id) return;
-		log(`CAPTURE: ${data.id} by @${this.user.username}`);
-		this.subscriber.on(`note-stream:${data.id}`, this.onNoteStreamMessage);
-		if (data.read) {
-			readNote(this.user._id, data.id);
+	private onSubscribeNote = (payload: any) => {
+		if (!payload.id) return;
+		log(`CAPTURE: ${payload.id} by @${this.user.username}`);
+		this.subscriber.on(`note-stream:${payload.id}`, this.onNoteStreamMessage);
+		if (payload.read) {
+			readNote(this.user._id, payload.id);
 		}
 	}
 
 	/**
 	 * 投稿購読解除要求時
 	 */
-	private onUnsubscribeNote = (data: any) => {
-		if (!data.id) return;
-		log(`DECAPTURE: ${data.id} by @${this.user.username}`);
-		this.subscriber.off(`note-stream:${data.id}`, this.onNoteStreamMessage);
+	private onUnsubscribeNote = (payload: any) => {
+		if (!payload.id) return;
+		log(`DECAPTURE: ${payload.id} by @${this.user.username}`);
+		this.subscriber.off(`note-stream:${payload.id}`, this.onNoteStreamMessage);
 	}
 
 	private onNoteStreamMessage = async (noteId: any) => {

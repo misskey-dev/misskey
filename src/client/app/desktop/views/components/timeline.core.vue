@@ -77,7 +77,7 @@ export default Vue.extend({
 			const onChangeFollowing = () => {
 				this.fetch();
 			};
-			this.connection = (this as any).os.stream;
+			this.connection = (this as any).os.stream.useSharedConnection('homeTimeline');
 			this.connection.on('note', prepend);
 			this.connection.on('follow', onChangeFollowing);
 			this.connection.on('unfollow', onChangeFollowing);
@@ -85,6 +85,7 @@ export default Vue.extend({
 				this.connection.off('note', prepend);
 				this.connection.off('follow', onChangeFollowing);
 				this.connection.off('unfollow', onChangeFollowing);
+				this.connection.dispose();
 			});
 		} else if (this.src == 'local') {
 			this.endpoint = 'notes/local-timeline';

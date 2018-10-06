@@ -116,7 +116,7 @@ export default class Stream extends EventEmitter {
 			existConnection.use();
 			return existConnection;
 		} else {
-			const connection = new SharedConnection(channel);
+			const connection = new SharedConnection(this, channel);
 			this.sharedConnections.push(connection);
 			return connection;
 		}
@@ -127,7 +127,7 @@ export default class Stream extends EventEmitter {
 	}
 
 	public connectToChannel = (channel: string, params?: any): NonSharedConnection => {
-		const connection = new NonSharedConnection(channel, params);
+		const connection = new NonSharedConnection(this, channel, params);
 		this.nonSharedConnections.push(connection);
 		return connection;
 	}
@@ -176,7 +176,7 @@ export default class Stream extends EventEmitter {
 		if (type == 'channel') {
 			const id = body.id;
 			const connection = this.sharedConnections.find(c => c.id === id) || this.nonSharedConnections.find(c => c.id === id);
-			connection.emit(body.data.type, body.data.data);
+			connection.emit(body.type, body.body);
 		} else {
 			this.emit(type, body);
 		}
@@ -215,9 +215,10 @@ abstract class Connection extends EventEmitter {
 	protected params: any;
 	protected stream: Stream;
 
-	constructor(channel: string) {
+	constructor(stream: Stream, channel: string) {
 		super();
 
+		this.stream = stream;
 		this.channel = channel;
 		this.id = Math.random().toString();
 		this.connect();
@@ -250,8 +251,8 @@ class SharedConnection extends Connection {
 	private users = 0;
 	private disposeTimerId: any;
 
-	constructor(channel: string) {
-		super(channel);
+	constructor(stream: Stream, channel: string) {
+		super(stream, channel);
 	}
 
 	public use = () => {
@@ -282,8 +283,8 @@ class SharedConnection extends Connection {
 }
 
 class NonSharedConnection extends Connection {
-	constructor(channel: string, params?: any) {
-		super(channel);
+	constructor(stream: Stream, channel: string, params?: any) {
+		super(stream, channel);
 
 		this.params = params;
 	}
