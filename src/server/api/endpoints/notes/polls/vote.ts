@@ -73,7 +73,8 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	});
 
 	publishNoteStream(note._id, 'pollVoted', {
-		choice: choice
+		choice: choice,
+		userId: user._id.toHexString()
 	});
 
 	// Notify

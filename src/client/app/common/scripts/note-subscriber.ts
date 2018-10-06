@@ -90,6 +90,13 @@ export default prop => ({
 					this.$_ns_target.reactionCounts[reaction] = (this.$_ns_target.reactionCounts[reaction] || 0) + 1;
 					break;
 				}
+
+				case 'pollVoted': {
+					if (body.userId == this.$store.state.i.id) return;
+					const choice = body.choice;
+					this.$_ns_target.poll.choices.find(c => c.id === choice).votes++;
+					break;
+				}
 			}
 
 			this.$emit(`update:${prop}`, this.$_ns_note_);
