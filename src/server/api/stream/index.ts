@@ -7,7 +7,6 @@ import { pack as packNote } from '../../../models/note';
 import readNotification from '../common/read-notification';
 import call from '../call';
 import { IApp } from '../../../models/app';
-import Mute from '../../../models/mute';
 import readNote from '../../../services/note/read';
 
 import Channel from './channel';
@@ -20,7 +19,6 @@ const log = debug('misskey');
  */
 export default class Connection {
 	public user?: IUser;
-	private mutedUserIds: string[] = [];
 	public app: IApp;
 	private wsConnection: websocket.connection;
 	public subscriber: Xev;
@@ -38,30 +36,6 @@ export default class Connection {
 		this.subscriber = subscriber;
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
-
-		if (this.user) {
-			this.signin();
-		}
-	}
-
-	private signin = async () => {
-		this.subscriber.on(`mainStream:${this.user._id}`, this.onEvent);
-
-		const mute = await Mute.find({ muterId: this.user._id });
-		this.mutedUserIds = mute.map(m => m.muteeId.toString());
-	}
-
-	private onEvent = (data: any) => {
-		const { type, body } = data;
-
-		switch (type) {
-			case 'notification': {
-				if (!this.mutedUserIds.includes(body.userId)) {
-					this.sendMessageToWs('notification', body);
-				}
-				break;
-			}
-		}
 	}
 
 	/**

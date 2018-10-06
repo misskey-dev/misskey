@@ -28,7 +28,7 @@ export default define({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream;
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 
@@ -41,8 +41,7 @@ export default define({
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('driveFileCreated', this.onDriveFileCreated);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		onDriveFileCreated(file) {

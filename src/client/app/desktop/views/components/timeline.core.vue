@@ -68,10 +68,6 @@ export default Vue.extend({
 			};
 			this.connection = (this as any).os.stream.connectToChannel('hashtag', this.tagTl.query);
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.connection.dispose();
-			});
 		} else if (this.src == 'home') {
 			this.endpoint = 'notes/timeline';
 			const onChangeFollowing = () => {
@@ -81,44 +77,22 @@ export default Vue.extend({
 			this.connection.on('note', prepend);
 			this.connection.on('follow', onChangeFollowing);
 			this.connection.on('unfollow', onChangeFollowing);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.connection.off('follow', onChangeFollowing);
-				this.connection.off('unfollow', onChangeFollowing);
-				this.connection.dispose();
-			});
 		} else if (this.src == 'local') {
 			this.endpoint = 'notes/local-timeline';
 			this.connection = (this as any).os.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.connection.dispose();
-			});
 		} else if (this.src == 'hybrid') {
 			this.endpoint = 'notes/hybrid-timeline';
 			this.connection = (this as any).os.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.connection.dispose();
-			});
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';
 			this.connection = (this as any).os.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.connection.dispose();
-			});
 		} else if (this.src == 'mentions') {
 			this.endpoint = 'notes/mentions';
-			this.connection = (this as any).os.stream;
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 			this.connection.on('mention', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('mention', prepend);
-				this.connection.dispose();
-			});
 		} else if (this.src == 'messages') {
 			this.endpoint = 'notes/mentions';
 			this.query = {
@@ -129,19 +103,15 @@ export default Vue.extend({
 					prepend(note);
 				}
 			};
-			this.connection = (this as any).os.stream;
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 			this.connection.on('mention', onNote);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('mention', onNote);
-				this.connection.dispose();
-			});
 		}
 
 		this.fetch();
 	},
 
 	beforeDestroy() {
-		this.$emit('beforeDestroy');
+		this.connection.dispose();
 	},
 
 	methods: {

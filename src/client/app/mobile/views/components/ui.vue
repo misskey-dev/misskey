@@ -43,7 +43,7 @@ export default Vue.extend({
 		this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream;
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 
 			this.connection.on('notification', this.onNotification);
 		}

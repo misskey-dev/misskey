@@ -78,7 +78,7 @@ export default Vue.extend({
 			const onChangeFollowing = () => {
 				this.fetch();
 			};
-			this.streamManager = (this as any).os.stream;
+			this.streamManager = (this as any).os.stream.useSharedConnection('main');
 			this.connection = this.streamManager.getConnection();
 			this.connectionId = this.streamManager.use();
 			this.connection.on('note', prepend);
@@ -122,7 +122,7 @@ export default Vue.extend({
 			});
 		} else if (this.src == 'mentions') {
 			this.endpoint = 'notes/mentions';
-			this.streamManager = (this as any).os.stream;
+			this.streamManager = (this as any).os.stream.useSharedConnection('main');
 			this.connection = this.streamManager.getConnection();
 			this.connectionId = this.streamManager.use();
 			this.connection.on('mention', prepend);
@@ -140,7 +140,7 @@ export default Vue.extend({
 					prepend(note);
 				}
 			};
-			this.streamManager = (this as any).os.stream;
+			this.streamManager = (this as any).os.stream.useSharedConnection('main');
 			this.connection = this.streamManager.getConnection();
 			this.connectionId = this.streamManager.use();
 			this.connection.on('mention', onNote);

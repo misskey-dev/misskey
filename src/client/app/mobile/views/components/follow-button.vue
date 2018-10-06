@@ -32,7 +32,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream;
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('follow', this.onFollow);
 		this.connection.on('unfollow', this.onUnfollow);

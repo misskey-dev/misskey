@@ -47,7 +47,7 @@ export default Vue.extend({
 		this.$store.commit('setUiHeaderHeight', this.$refs.root.offsetHeight);
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream;
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);

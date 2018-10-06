@@ -33,7 +33,7 @@ export default Vue.extend({
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.stream;
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('signin', this.onSignin);
 	},
