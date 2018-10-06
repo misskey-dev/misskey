@@ -154,6 +154,9 @@ export default class Stream extends EventEmitter {
 		this.sharedConnections.forEach(c => {
 			c.connect();
 		});
+		this.nonSharedConnections.forEach(c => {
+			c.connect();
+		});
 	}
 
 	/**
