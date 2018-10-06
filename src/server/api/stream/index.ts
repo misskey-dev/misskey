@@ -165,7 +165,7 @@ export default class Connection {
 
 	private onChannelMessageRequested = (data: any) => {
 		const channel = this.channels.find(c => c.id === data.id);
-		channel.onMessage(data.data);
+		channel.onMessage(data.type, data.body);
 	}
 
 	/**
@@ -204,5 +204,5 @@ export abstract class Channel {
 
 	public abstract init: (params: any) => void;
 	public dispose?: () => void;
-	public onMessage?: (data: any) => void;
+	public onMessage?: (type: string, body: any) => void;
 }
