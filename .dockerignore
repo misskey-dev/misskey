@@ -4,9 +4,9 @@
 .travis
 .vscode
 Dockerfile
-build
+build/
 docker-compose.yml
-node_modules
-mongo
-redis
-elasticsearch
+node_modules/
+mongo/
+redis/
+elasticsearch/
