@@ -5,14 +5,14 @@ import { Channel } from '.';
 
 export default class extends Channel {
 	public init = async (params: any) => {
-		const mute = user ? await Mute.find({ muterId: user._id }) : null;
+		const mute = this.connection.user ? await Mute.find({ muterId: this.connection.user._id }) : null;
 		const mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
 
 		// Subscribe stream
-		subscriber.on('local-timeline', async note => {
+		this.connection.subscriber.on('local-timeline', async note => {
 			// Renoteなら再pack
 			if (note.renoteId != null) {
-				note.renote = await pack(note.renoteId, user, {
+				note.renote = await pack(note.renoteId, this.connection.user, {
 					detail: true
 				});
 			}
@@ -20,10 +20,7 @@ export default class extends Channel {
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (shouldMuteThisNote(note, mutedUserIds)) return;
 
-			connection.send(JSON.stringify({
-				type: 'note',
-				body: note
-			}));
+			this.send('note', note);
 		});
 	}
 }

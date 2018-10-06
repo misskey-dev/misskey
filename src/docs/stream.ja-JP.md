@@ -55,7 +55,7 @@ APIへリクエストすると、レスポンスがストリームから次の�
 
 ```json
 {
-	type: 'api-res:xxxxxxxxxxxxxxxx',
+	type: 'api:xxxxxxxxxxxxxxxx',
 	body: {
 		...
 	}

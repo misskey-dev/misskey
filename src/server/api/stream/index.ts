@@ -61,9 +61,9 @@ export default class Connection {
 	private onApiRequest = async (data: any) => {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
 		call(data.endpoint, await User.findOne({ _id: this.user._id }), this.app, data.data).then(res => {
-			this.sendMessageToWs(`api-res:${data.id}`, { res });
+			this.sendMessageToWs(`api:${data.id}`, { res });
 		}).catch(e => {
-			this.sendMessageToWs(`api-res:${data.id}`, { e });
+			this.sendMessageToWs(`api:${data.id}`, { e });
 		});
 	}
 
@@ -135,7 +135,7 @@ export default class Connection {
 	/**
 	 * クライアントにメッセージ送信
 	 */
-	private sendMessageToWs = (type: string, payload: any) => {
+	public sendMessageToWs = (type: string, payload: any) => {
 		this.wsConnection.send(JSON.stringify({
 			type: type,
 			body: payload
@@ -145,15 +145,8 @@ export default class Connection {
 	/**
 	 * チャンネルに接続
 	 */
-	private connectChannel = (id: string, params: any, channelClass: { new(id: string, connection: Connection, send: (data: any) => void): Channel }) => {
-		const send = (data: any) => {
-			this.sendMessageToWs('channel', {
-				id: id,
-				data: data
-			});
-		};
-
-		const channel = new channelClass(id, this, send);
+	private connectChannel = (id: string, params: any, channelClass: { new(id: string, connection: Connection): Channel }) => {
+		const channel = new channelClass(id, this);
 		this.channels.push(channel);
 		channel.init(params);
 	}
@@ -190,16 +183,26 @@ export default class Connection {
  */
 export abstract class Channel {
 	protected connection: Connection;
-	protected send: (data: any) => void;
 	public id: string;
 
-	constructor(id: string, connection: Connection, send: (data: any) => void) {
+	constructor(id: string, connection: Connection) {
 		this.id = id;
 		this.connection = connection;
-		this.send = send;
+	}
+
+	public send = (typeOrPayload: any, payload?: any) => {
+		const data = payload === undefined ? typeOrPayload : {
+			type: typeOrPayload,
+			body: payload
+		};
+
+		this.connection.sendMessageToWs('channel', {
+			id: this.id,
+			data: data
+		});
 	}
 
 	public abstract init: (params: any) => void;
-	public abstract dispose?: () => void;
-	public abstract onMessage?: (data: any) => void;
+	public dispose?: () => void;
+	public onMessage?: (data: any) => void;
 }

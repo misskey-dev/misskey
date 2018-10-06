@@ -186,7 +186,7 @@ export default class Stream extends EventEmitter {
 	 * Send a message to connection
 	 */
 	public send = (typeOrPayload, payload?) => {
-		const data = arguments.length == 1 ? typeOrPayload : {
+		const data = payload === undefined ? typeOrPayload : {
 			type: typeOrPayload,
 			body: payload
 		};
@@ -232,7 +232,7 @@ abstract class Connection extends EventEmitter {
 	}
 
 	public send = (typeOrPayload, payload?) => {
-		const data = arguments.length == 1 ? typeOrPayload : {
+		const data = payload === undefined ? typeOrPayload : {
 			type: typeOrPayload,
 			body: payload
 		};

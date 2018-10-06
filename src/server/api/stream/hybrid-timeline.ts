@@ -4,29 +4,28 @@ import shouldMuteThisNote from '../../../misc/should-mute-this-note';
 import { Channel } from '.';
 
 export default class extends Channel {
+	private mutedUserIds: string[];
+
 	public init = async (params: any) => {
-		const mute = await Mute.find({ muterId: user._id });
-		const mutedUserIds = mute.map(m => m.muteeId.toString());
+		const mute = await Mute.find({ muterId: this.connection.user._id });
+		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe stream
-		subscriber.on('hybrid-timeline', onEvent);
-		subscriber.on(`hybrid-timeline:${user._id}`, onEvent);
+		this.connection.subscriber.on('hybrid-timeline', this.onEvent);
+		this.connection.subscriber.on(`hybrid-timeline:${this.connection.user._id}`, this.onEvent);
+	}
 
-		async function onEvent(note: any) {
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await pack(note.renoteId, user, {
-					detail: true
-				});
-			}
-
-			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-			if (shouldMuteThisNote(note, mutedUserIds)) return;
-
-			connection.send(JSON.stringify({
-				type: 'note',
-				body: note
-			}));
+	private onEvent = async (note: any) => {
+		// Renoteなら再pack
+		if (note.renoteId != null) {
+			note.renote = await pack(note.renoteId, this.connection.user, {
+				detail: true
+			});
 		}
+
+		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
+		if (shouldMuteThisNote(note, this.mutedUserIds)) return;
+
+		this.send('note', note);
 	}
 }
