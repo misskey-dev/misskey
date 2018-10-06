@@ -88,12 +88,12 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// 自分のストリーム
 	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
 	publishMessagingIndexStream(message.userId, 'message', messageObj);
-	publishMainStream(message.userId, 'messaging_message', messageObj);
+	publishMainStream(message.userId, 'messagingMessage', messageObj);
 
 	// 相手のストリーム
 	publishMessagingStream(message.recipientId, message.userId, 'message', messageObj);
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
-	publishMainStream(message.recipientId, 'messaging_message', messageObj);
+	publishMainStream(message.recipientId, 'messagingMessage', messageObj);
 
 	// Update flag
 	User.update({ _id: recipient._id }, {

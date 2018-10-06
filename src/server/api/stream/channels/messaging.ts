@@ -11,7 +11,7 @@ export default class extends Channel {
 
 		// Subscribe messaging stream
 		this.subscriber.on(`messagingStream:${this.user._id}-${this.otherpartyId}`, data => {
-			this.send(JSON.stringify(data));
+			this.send(data);
 		});
 	}
 

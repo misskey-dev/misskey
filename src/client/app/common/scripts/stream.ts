@@ -232,11 +232,12 @@ abstract class Connection extends EventEmitter {
 	protected params: any;
 	protected stream: Stream;
 
-	constructor(stream: Stream, channel: string) {
+	constructor(stream: Stream, channel: string, params?: any) {
 		super();
 
 		this.stream = stream;
 		this.channel = channel;
+		this.params = params;
 		this.id = Math.random().toString();
 		this.connect();
 	}
@@ -305,9 +306,7 @@ class SharedConnection extends Connection {
 
 class NonSharedConnection extends Connection {
 	constructor(stream: Stream, channel: string, params?: any) {
-		super(stream, channel);
-
-		this.params = params;
+		super(stream, channel, params);
 	}
 
 	@autobind

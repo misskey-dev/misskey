@@ -131,7 +131,7 @@ export default class Connection {
 	@autobind
 	private onChannelConnectRequested(payload: any) {
 		const { channel, id, params } = payload;
-
+		log(`CH CONNECT: ${id} ${channel} by @${this.user.username}`);
 		this.connectChannel(id, params, (channels as any)[channel]);
 	}
 
@@ -141,7 +141,7 @@ export default class Connection {
 	@autobind
 	private onChannelDisconnectRequested(payload: any) {
 		const { id } = payload;
-
+		log(`CH DISCONNECT: ${id} by @${this.user.username}`);
 		this.disconnectChannel(id);
 	}
 
