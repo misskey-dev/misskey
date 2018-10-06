@@ -73,7 +73,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		(this as any).os.streams.serverStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		invite() {

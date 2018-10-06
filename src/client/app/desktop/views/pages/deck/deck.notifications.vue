@@ -84,7 +84,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('notification', this.onNotification);
+		this.connection.dispose();
 
 		this.column.$off('top', this.onTop);
 		this.column.$off('bottom', this.onBottom);

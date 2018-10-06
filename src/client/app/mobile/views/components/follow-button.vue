@@ -38,8 +38,7 @@ export default Vue.extend({
 		this.connection.on('unfollow', this.onUnfollow);
 	},
 	beforeDestroy() {
-		this.connection.off('follow', this.onFollow);
-		this.connection.off('unfollow', this.onUnfollow);
+		this.connection.dispose();
 	},
 	methods: {
 

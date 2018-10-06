@@ -51,8 +51,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		(this as any).os.streams.localTimelineStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {

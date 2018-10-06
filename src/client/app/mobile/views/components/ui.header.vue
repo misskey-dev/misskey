@@ -56,8 +56,7 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('reversiInvited', this.onReversiInvited);
-			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
+			this.connection.dispose();
 		}
 	},
 

@@ -54,10 +54,10 @@ export default define({
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.streams.serverStatsStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
 	},
 	beforeDestroy() {
-		(this as any).os.streams.serverStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		toggle() {

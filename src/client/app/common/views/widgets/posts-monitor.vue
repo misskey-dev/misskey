@@ -119,9 +119,7 @@ export default define({
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('stats', this.onStats);
-		this.connection.off('statsLog', this.onStatsLog);
-		(this as any).os.streams.notesStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		toggle() {

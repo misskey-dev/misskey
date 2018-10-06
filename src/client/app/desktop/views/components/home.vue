@@ -178,6 +178,10 @@ export default Vue.extend({
 		this.connection = (this as any).os.stream.useSharedConnection('main');
 	},
 
+	beforeDestroy() {
+		this.connection.dispose();
+	},
+
 	methods: {
 		hint() {
 			(this as any).apis.dialog({

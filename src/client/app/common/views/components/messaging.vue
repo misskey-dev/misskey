@@ -86,9 +86,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('message', this.onMessage);
-		this.connection.off('read', this.onRead);
-		(this as any).os.streams.messagingIndexStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		getAcct,

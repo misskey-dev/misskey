@@ -65,7 +65,7 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('reversi');
+			this.connection = (this as any).os.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('invited', this.onInvited);
 
@@ -88,8 +88,7 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		if (this.connection) {
-			this.connection.off('invited', this.onInvited);
-			(this as any).os.streams.reversiStream.dispose(this.connectionId);
+			this.connection.dispose();
 		}
 	},
 

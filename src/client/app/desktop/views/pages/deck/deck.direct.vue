@@ -33,7 +33,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('mention', this.onNote);
+		this.connection.dispose();
 	},
 
 	methods: {

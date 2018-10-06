@@ -43,10 +43,10 @@ export default Vue.extend({
 	computed: {
 		stream(): any {
 			switch (this.src) {
-				case 'home': return (this as any).os.stream.useSharedConnection('main');
-				case 'local': return (this as any).os.streams.localTimelineStream;
-				case 'hybrid': return (this as any).os.streams.hybridTimelineStream;
-				case 'global': return (this as any).os.streams.globalTimelineStream;
+				case 'home': return (this as any).os.stream.useSharedConnection('homeTimeline');
+				case 'local': return (this as any).os.stream.useSharedConnection('localTimeline');
+				case 'hybrid': return (this as any).os.stream.useSharedConnection('hybridTimeline');
+				case 'global': return (this as any).os.stream.useSharedConnection('globalTimeline');
 			}
 		},
 
@@ -79,11 +79,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.off('follow', this.onChangeFollowing);
-			this.connection.off('unfollow', this.onChangeFollowing);
-		}
+		this.connection.dispose();
 	},
 
 	methods: {

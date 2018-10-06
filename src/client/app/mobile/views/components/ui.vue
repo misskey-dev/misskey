@@ -51,7 +51,7 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('notification', this.onNotification);
+			this.connection.dispose();
 		}
 	},
 
