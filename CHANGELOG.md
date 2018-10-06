@@ -20,18 +20,22 @@ This document describes breaking changes only.
 
 ### 個々のエンドポイントが廃止されることによる新しいストリーミングAPIの利用方法
 具体的には、まず https://example.misskey/streaming にwebsocket接続します。
-次に、例えば「localTimeline」ストリーム(チャンネルと呼びます)に接続したいときは、ストリームに次のようなデータを送信します:
+次に、例えば「messaging」ストリーム(チャンネルと呼びます)に接続したいときは、ストリームに次のようなデータを送信します:
 ``` javascript
 {
   type: 'connect',
   body: {
-    channel: 'localTimeline',
-    id: 'foobar'
+    channel: 'messaging',
+    id: 'foobar',
+    params: {
+      otherparty: 'xxxxxxxxxxxx'
+    }
   }
 }
 ```
 ここで、`id`にはそのチャンネルとやり取りするための任意のIDを設定します。
 IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。
+`params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
 
 チャンネルにメッセージを送信するには、次のようなデータを送信します:
 ``` javascript
@@ -65,6 +69,20 @@ IDはチャンネルごとではなく「チャンネルの接続ごと」です
 
 ### 投稿のキャプチャに関する変更
 投稿の更新イベントに投稿情報は含まれなくなりました。代わりに、その投稿が「リアクションされた」「アンケートに投票された」「削除された」といったアクション情報が設定されます。
+
+具体的には次のようなデータが受信されます:
+``` javascript
+{
+  type: 'noteUpdated',
+  body: {
+    id: 'xxxxxxxxxxx',
+    type: 'reacted',
+    body: {
+      reaction: 'hmm'
+    }
+  }
+}
+```
 
 * reacted ... 投稿にリアクションされた。`reaction`プロパティにリアクションコードが含まれます。
 * pollVoted ... アンケートに投票された。`choice`プロパティに選択肢ID、`userId`に投票者IDが含まれます。
