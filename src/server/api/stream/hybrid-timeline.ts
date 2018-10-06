@@ -7,18 +7,18 @@ export default class extends Channel {
 	private mutedUserIds: string[];
 
 	public init = async (params: any) => {
-		const mute = await Mute.find({ muterId: this.connection.user._id });
+		const mute = await Mute.find({ muterId: this.user._id });
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe stream
 		this.connection.subscriber.on('hybrid-timeline', this.onEvent);
-		this.connection.subscriber.on(`hybrid-timeline:${this.connection.user._id}`, this.onEvent);
+		this.connection.subscriber.on(`hybrid-timeline:${this.user._id}`, this.onEvent);
 	}
 
 	private onEvent = async (note: any) => {
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await pack(note.renoteId, this.connection.user, {
+			note.renote = await pack(note.renoteId, this.user, {
 				detail: true
 			});
 		}

@@ -6,7 +6,7 @@ import { Channel } from '..';
 export default class extends Channel {
 	public init = async (params: any) => {
 		// Subscribe reversi stream
-		this.connection.subscriber.on(`reversi-stream:${this.connection.user._id}`, data => {
+		this.connection.subscriber.on(`reversi-stream:${this.user._id}`, data => {
 			this.send(data);
 		});
 	}
@@ -16,7 +16,7 @@ export default class extends Channel {
 			case 'ping':
 				if (body.id == null) return;
 				const matching = await Matching.findOne({
-					parentId: this.connection.user._id,
+					parentId: this.user._id,
 					childId: new mongo.ObjectID(body.id)
 				});
 				if (matching == null) return;

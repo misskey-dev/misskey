@@ -185,6 +185,10 @@ export abstract class Channel {
 	protected connection: Connection;
 	public id: string;
 
+	protected get user() {
+		return this.user;
+	}
+
 	constructor(id: string, connection: Connection) {
 		this.id = id;
 		this.connection = connection;

@@ -5,14 +5,14 @@ import { Channel } from '.';
 
 export default class extends Channel {
 	public init = async (params: any) => {
-		const mute = await Mute.find({ muterId: this.connection.user._id });
+		const mute = await Mute.find({ muterId: this.user._id });
 		const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe Home stream channel
-		this.connection.subscriber.on(`home-timeline:${this.connection.user._id}`, async x => {
+		this.connection.subscriber.on(`home-timeline:${this.user._id}`, async x => {
 			// Renoteなら再pack
 			if (x.type == 'note' && x.body.renoteId != null) {
-				x.body.renote = await pack(x.body.renoteId, this.connection.user, {
+				x.body.renote = await pack(x.body.renoteId, this.user, {
 					detail: true
 				});
 			}
