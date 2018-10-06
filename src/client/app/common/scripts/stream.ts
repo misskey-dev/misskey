@@ -26,87 +26,91 @@ export default class Stream extends EventEmitter {
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
 
-		// 自分の情報が更新されたとき
-		this.on('meUpdated', i => {
-			os.store.dispatch('mergeMe', i);
-		});
+		if (user) {
+			const main = this.useSharedConnection('main');
 
-		this.on('readAllNotifications', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadNotification: false
+			// 自分の情報が更新されたとき
+			main.on('meUpdated', i => {
+				os.store.dispatch('mergeMe', i);
 			});
-		});
 
-		this.on('unreadNotification', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadNotification: true
+			main.on('readAllNotifications', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadNotification: false
+				});
 			});
-		});
 
-		this.on('readAllMessagingMessages', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadMessagingMessage: false
+			main.on('unreadNotification', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadNotification: true
+				});
 			});
-		});
 
-		this.on('unreadMessagingMessage', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadMessagingMessage: true
+			main.on('readAllMessagingMessages', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadMessagingMessage: false
+				});
 			});
-		});
 
-		this.on('unreadMention', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadMentions: true
+			main.on('unreadMessagingMessage', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadMessagingMessage: true
+				});
 			});
-		});
 
-		this.on('readAllUnreadMentions', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadMentions: false
+			main.on('unreadMention', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadMentions: true
+				});
 			});
-		});
 
-		this.on('unreadSpecifiedNote', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadSpecifiedNotes: true
+			main.on('readAllUnreadMentions', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadMentions: false
+				});
 			});
-		});
 
-		this.on('readAllUnreadSpecifiedNotes', () => {
-			os.store.dispatch('mergeMe', {
-				hasUnreadSpecifiedNotes: false
+			main.on('unreadSpecifiedNote', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadSpecifiedNotes: true
+				});
 			});
-		});
 
-		this.on('clientSettingUpdated', x => {
-			os.store.commit('settings/set', {
-				key: x.key,
-				value: x.value
+			main.on('readAllUnreadSpecifiedNotes', () => {
+				os.store.dispatch('mergeMe', {
+					hasUnreadSpecifiedNotes: false
+				});
 			});
-		});
 
-		this.on('homeUpdated', x => {
-			os.store.commit('settings/setHome', x);
-		});
-
-		this.on('mobileHomeUpdated', x => {
-			os.store.commit('settings/setMobileHome', x);
-		});
-
-		this.on('widgetUpdated', x => {
-			os.store.commit('settings/setWidget', {
-				id: x.id,
-				data: x.data
+			main.on('clientSettingUpdated', x => {
+				os.store.commit('settings/set', {
+					key: x.key,
+					value: x.value
+				});
 			});
-		});
 
-		// トークンが再生成されたとき
-		// このままではMisskeyが利用できないので強制的にサインアウトさせる
-		this.on('myTokenRegenerated', () => {
-			alert('%i18n:common.my-token-regenerated%');
-			os.signout();
-		});
+			main.on('homeUpdated', x => {
+				os.store.commit('settings/setHome', x);
+			});
+
+			main.on('mobileHomeUpdated', x => {
+				os.store.commit('settings/setMobileHome', x);
+			});
+
+			main.on('widgetUpdated', x => {
+				os.store.commit('settings/setWidget', {
+					id: x.id,
+					data: x.data
+				});
+			});
+
+			// トークンが再生成されたとき
+			// このままではMisskeyが利用できないので強制的にサインアウトさせる
+			main.on('myTokenRegenerated', () => {
+				alert('%i18n:common.my-token-regenerated%');
+				os.signout();
+			});
+		}
 	}
 
 	public useSharedConnection = (channel: string): SharedConnection => {

@@ -36,6 +36,7 @@ import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
+import MiOS from '../mios';
 
 /**
  * init
@@ -101,62 +102,56 @@ init(async (launch) => {
 		}
 
 		if ((Notification as any).permission == 'granted') {
-			registerNotifications(os.stream);
+			registerNotifications(os);
 		}
 	}
 }, true);
 
-function registerNotifications(stream: HomeStreamManager) {
+function registerNotifications(os: MiOS) {
+	const stream = os.stream;
+
 	if (stream == null) return;
 
-	if (stream.hasConnection) {
-		attach(stream.borrow());
-	}
+	const connection = stream.useSharedConnection('main');
 
-	stream.on('connected', connection => {
-		attach(connection);
+	connection.on('notification', notification => {
+		const _n = composeNotification('notification', notification);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
+		});
+		setTimeout(n.close.bind(n), 6000);
 	});
 
-	function attach(connection) {
-		connection.on('notification', notification => {
-			const _n = composeNotification('notification', notification);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			setTimeout(n.close.bind(n), 6000);
+	connection.on('driveFileCreated', file => {
+		const _n = composeNotification('driveFileCreated', file);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
 		});
+		setTimeout(n.close.bind(n), 5000);
+	});
 
-		connection.on('driveFileCreated', file => {
-			const _n = composeNotification('driveFileCreated', file);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			setTimeout(n.close.bind(n), 5000);
+	connection.on('unreadMessagingMessage', message => {
+		const _n = composeNotification('unreadMessagingMessage', message);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
 		});
+		n.onclick = () => {
+			n.close();
+			/*(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+				user: message.user
+			});*/
+		};
+		setTimeout(n.close.bind(n), 7000);
+	});
 
-		connection.on('unreadMessagingMessage', message => {
-			const _n = composeNotification('unreadMessagingMessage', message);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			n.onclick = () => {
-				n.close();
-				/*(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
-					user: message.user
-				});*/
-			};
-			setTimeout(n.close.bind(n), 7000);
+	connection.on('reversiInvited', matching => {
+		const _n = composeNotification('reversiInvited', matching);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
 		});
-
-		connection.on('reversiInvited', matching => {
-			const _n = composeNotification('reversiInvited', matching);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-		});
-	}
+	});
 }
