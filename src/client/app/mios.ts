@@ -136,35 +136,6 @@ export default class MiOS extends EventEmitter {
 		}
 	}
 
-	private googleMapsIniting = false;
-
-	public getGoogleMaps() {
-		return new Promise((res, rej) => {
-			if ((window as any).google && (window as any).google.maps) {
-				res((window as any).google.maps);
-			} else {
-				this.once('init-google-maps', () => {
-					res((window as any).google.maps);
-				});
-
-				//#region load google maps api
-				if (!this.googleMapsIniting) {
-					this.googleMapsIniting = true;
-					(window as any).initGoogleMaps = () => {
-						this.emit('init-google-maps');
-					};
-					const head = document.getElementsByTagName('head')[0];
-					const script = document.createElement('script');
-					script.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initGoogleMaps`);
-					script.setAttribute('async', 'true');
-					script.setAttribute('defer', 'true');
-					head.appendChild(script);
-				}
-				//#endregion
-			}
-		});
-	}
-
 	public log(...args) {
 		if (!this.debug) return;
 		console.log.apply(null, args);
@@ -196,8 +167,6 @@ export default class MiOS extends EventEmitter {
 	 */
 	public async init(callback) {
 		this.store = initStore(this);
-
-		this.stream = new Stream(this);
 
 		// ユーザーをフェッチしてコールバックする
 		const fetchme = (token, cb) => {
@@ -249,6 +218,8 @@ export default class MiOS extends EventEmitter {
 		const fetched = () => {
 			this.emit('signedin');
 
+			this.stream = new Stream(this);
+
 			// Finish init
 			callback();
 
@@ -281,6 +252,8 @@ export default class MiOS extends EventEmitter {
 				} else {
 					// Finish init
 					callback();
+
+					this.stream = new Stream(this);
 				}
 			});
 		}
@@ -371,7 +344,7 @@ export default class MiOS extends EventEmitter {
 	 * @param endpoint エンドポイント名
 	 * @param data パラメータ
 	 */
-	public api(endpoint: string, data: { [x: string]: any } = {}): Promise<{ [x: string]: any }> {
+	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false): Promise<{ [x: string]: any }> {
 		if (++pending === 1) {
 			spinner = document.createElement('div');
 			spinner.setAttribute('id', 'wait');
@@ -383,7 +356,7 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream && this.store.state.device.apiViaStream;
+			const viaStream = this.stream && this.store.state.device.apiViaStream && !forceFetch;
 
 			if (viaStream) {
 				const id = Math.random().toString();
@@ -399,9 +372,9 @@ export default class MiOS extends EventEmitter {
 				});
 
 				this.stream.send('api', {
-					id,
-					endpoint,
-					data
+					id: id,
+					ep: endpoint,
+					data: data
 				});
 			} else {
 				// Append a credential

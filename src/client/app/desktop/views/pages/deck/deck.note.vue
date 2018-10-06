@@ -152,7 +152,7 @@ export default Vue.extend({
 					data.read = true;
 				}
 				this.connection.send(data);
-				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
+				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
 
@@ -162,7 +162,7 @@ export default Vue.extend({
 					type: 'unsubNote',
 					id: this.p.id
 				});
-				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);
+				if (withHandler) this.connection.off('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
 

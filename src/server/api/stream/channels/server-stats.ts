@@ -1,5 +1,5 @@
 import Xev from 'xev';
-import Channel from '.';
+import Channel from '../channel';
 
 const ev = new Xev();
 

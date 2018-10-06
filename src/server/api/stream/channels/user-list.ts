@@ -1,4 +1,4 @@
-import Channel from '.';
+import Channel from '../channel';
 
 export default class extends Channel {
 	public init = async (params: any) => {

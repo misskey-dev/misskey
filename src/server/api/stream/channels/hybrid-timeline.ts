@@ -1,7 +1,7 @@
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
-import Channel from '.';
+import Channel from '../channel';
 
 export default class extends Channel {
 	private mutedUserIds: string[];

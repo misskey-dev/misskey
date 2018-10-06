@@ -10,8 +10,8 @@ import { IApp } from '../../../models/app';
 import Mute from '../../../models/mute';
 import readNote from '../../../services/note/read';
 
-import Channel from './channels';
-import homeTimeline from './channels/home-timeline';
+import Channel from './channel';
+import channels from './channels';
 
 const log = debug('misskey');
 
@@ -37,7 +37,6 @@ export default class Connection {
 		this.app = app;
 		this.subscriber = subscriber;
 
-		this.subscriber.on(`mainStream:${this.user._id}`, this.onEvent);
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
 		if (this.user) {
@@ -46,6 +45,8 @@ export default class Connection {
 	}
 
 	private signin = async () => {
+		this.subscriber.on(`mainStream:${this.user._id}`, this.onEvent);
+
 		const mute = await Mute.find({ muterId: this.user._id });
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 	}
@@ -84,12 +85,17 @@ export default class Connection {
 	/**
 	 * APIリクエスト要求時
 	 */
-	private onApiRequest = async (data: any) => {
+	private onApiRequest = async (payload: any) => {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
-		call(data.endpoint, await User.findOne({ _id: this.user._id }), this.app, data.data).then(res => {
-			this.sendMessageToWs(`api:${data.id}`, { res });
+		const user = this.user ? await User.findOne({ _id: this.user._id }) : null;
+
+		const endpoint = payload.endpoint || payload.ep; // alias
+
+		// 呼び出し
+		call(endpoint, user, this.app, payload.data).then(res => {
+			this.sendMessageToWs(`api:${payload.id}`, { res });
 		}).catch(e => {
-			this.sendMessageToWs(`api:${data.id}`, { e });
+			this.sendMessageToWs(`api:${payload.id}`, { e });
 		});
 	}
 
@@ -144,9 +150,7 @@ export default class Connection {
 	private onChannelConnectRequested = (data: any) => {
 		const { channel, id, params } = data;
 
-		switch (channel) {
-			case 'homeTimeline': this.connectChannel(id, params, homeTimeline); break;
-		}
+		this.connectChannel(id, params, (channels as any)[channel]);
 	}
 
 	/**

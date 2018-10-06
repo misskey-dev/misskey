@@ -131,11 +131,11 @@ export default Vue.extend({
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'g-recaptcha-response': this.meta.recaptchaSitekey != null ? (window as any).grecaptcha.getResponse() : null
-			}).then(() => {
+			}, true).then(() => {
 				(this as any).api('signin', {
 					username: this.username,
 					password: this.password
-				}).then(() => {
+				}, true).then(() => {
 					location.href = '/';
 				});
 			}).catch(() => {

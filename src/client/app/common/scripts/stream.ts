@@ -140,6 +140,8 @@ export default class Stream extends EventEmitter {
 	 * Callback of when open connection
 	 */
 	private onOpen = () => {
+		const isReconnect = this.state == 'reconnecting';
+
 		this.state = 'connected';
 		this.emit('_connected_');
 
@@ -151,12 +153,14 @@ export default class Stream extends EventEmitter {
 		});
 
 		// チャンネル再接続
-		this.sharedConnections.forEach(c => {
-			c.connect();
-		});
-		this.nonSharedConnections.forEach(c => {
-			c.connect();
-		});
+		if (isReconnect) {
+			this.sharedConnections.forEach(c => {
+				c.connect();
+			});
+			this.nonSharedConnections.forEach(c => {
+				c.connect();
+			});
+		}
 	}
 
 	/**

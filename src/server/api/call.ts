@@ -9,6 +9,10 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 	const ep = endpoints.find(e => e.name === endpoint);
 
+	if (ep == null) {
+		return rej('ENDPOINT_NOT_FOUND');
+	}
+
 	if (ep.meta.secure && !isSecure) {
 		return rej('ACCESS_DENIED');
 	}

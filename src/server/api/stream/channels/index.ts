@@ -1,37 +1,29 @@
-import Connection from '..';
+import homeTimeline from './home-timeline';
+import localTimeline from './local-timeline';
+import hybridTimeline from './hybrid-timeline';
+import globalTimeline from './global-timeline';
+import notesStats from './notes-stats';
+import serverStats from './server-stats';
+import userList from './user-list';
+import messaging from './messaging';
+import messagingIndex from './messaging-index';
+import drive from './drive';
+import hashtag from './hashtag';
+import gamesReversi from './games/reversi';
+import gamesReversiGame from './games/reversi-game';
 
-/**
- * Stream channel
- */
-export default abstract class Channel {
-	protected connection: Connection;
-	public id: string;
-
-	protected get user() {
-		return this.connection.user;
-	}
-
-	protected get subscriber() {
-		return this.connection.subscriber;
-	}
-
-	constructor(id: string, connection: Connection) {
-		this.id = id;
-		this.connection = connection;
-	}
-
-	public send = (typeOrPayload: any, payload?: any) => {
-		const type = payload === undefined ? typeOrPayload.type : typeOrPayload;
-		const body = payload === undefined ? typeOrPayload.body : payload;
-
-		this.connection.sendMessageToWs('channel', {
-			id: this.id,
-			type: type,
-			body: body
-		});
-	}
-
-	public abstract init: (params: any) => void;
-	public dispose?: () => void;
-	public onMessage?: (type: string, body: any) => void;
-}
+export default {
+	homeTimeline,
+	localTimeline,
+	hybridTimeline,
+	globalTimeline,
+	notesStats,
+	serverStats,
+	userList,
+	messaging,
+	messagingIndex,
+	drive,
+	hashtag,
+	gamesReversi,
+	gamesReversiGame
+};

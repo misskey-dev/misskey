@@ -3,7 +3,7 @@ import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../../stream';
 import Reversi from '../../../../../games/reversi/core';
 import * as maps from '../../../../../games/reversi/maps';
-import Channel from '..';
+import Channel from '../../channel';
 
 export default class extends Channel {
 	private gameId: string;
