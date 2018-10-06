@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
-import Matching, { pack } from '../../../../models/games/reversi/matching';
-import { publishMainStream } from '../../../../stream';
-import { Channel } from '..';
+import Matching, { pack } from '../../../../../models/games/reversi/matching';
+import { publishMainStream } from '../../../../../stream';
+import Channel from '..';
 
 export default class extends Channel {
 	public init = async (params: any) => {

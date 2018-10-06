@@ -1,5 +1,5 @@
-import read from '../common/read-messaging-message';
-import { Channel } from '.';
+import read from '../../common/read-messaging-message';
+import Channel from '.';
 
 export default class extends Channel {
 	private otherpartyId: string;

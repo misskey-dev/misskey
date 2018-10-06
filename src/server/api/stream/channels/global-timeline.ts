@@ -1,6 +1,6 @@
-import Mute from '../../../models/mute';
-import shouldMuteThisNote from '../../../misc/should-mute-this-note';
-import { Channel } from '.';
+import Mute from '../../../../models/mute';
+import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
+import Channel from '.';
 
 export default class extends Channel {
 	public init = async (params: any) => {

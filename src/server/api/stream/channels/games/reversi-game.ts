@@ -1,9 +1,9 @@
 import * as CRC32 from 'crc-32';
-import ReversiGame, { pack } from '../../../../models/games/reversi/game';
-import { publishReversiGameStream } from '../../../../stream';
-import Reversi from '../../../../games/reversi/core';
-import * as maps from '../../../../games/reversi/maps';
-import { Channel } from '..';
+import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
+import { publishReversiGameStream } from '../../../../../stream';
+import Reversi from '../../../../../games/reversi/core';
+import * as maps from '../../../../../games/reversi/maps';
+import Channel from '..';
 
 export default class extends Channel {
 	private gameId: string;

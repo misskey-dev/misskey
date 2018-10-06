@@ -1,11 +1,11 @@
 import Xev from 'xev';
-import { Channel } from '.';
+import Channel from '.';
 
 const ev = new Xev();
 
 export default class extends Channel {
 	public init = async (params: any) => {
-		ev.addListener('notesStats', this.onStats);
+		ev.addListener('serverStats', this.onStats);
 	}
 
 	private onStats = (stats: any) => {
@@ -15,15 +15,18 @@ export default class extends Channel {
 	public onMessage = (type: string, body: any) => {
 		switch (type) {
 			case 'requestLog':
-				ev.once(`notesStatsLog:${body.id}`, statsLog => {
+				ev.once(`serverStatsLog:${body.id}`, statsLog => {
 					this.send('statsLog', statsLog);
 				});
-				ev.emit('requestNotesStatsLog', body.id);
+				ev.emit('requestServerStatsLog', {
+					id: body.id,
+					length: body.length
+				});
 				break;
 		}
 	}
 
 	public dispose = () => {
-		ev.removeListener('notesStats', this.onStats);
+		ev.removeListener('serverStats', this.onStats);
 	}
 }
