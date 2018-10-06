@@ -24,6 +24,7 @@ Please install and setup these softwares:
 #### Dependencies :package:
 * **[Node.js](https://nodejs.org/en/)**
 * **[MongoDB](https://www.mongodb.com/)** >= 3.6
+	* CONFIRM VIRSION BEFORE INSTALL! [Latest version](https://docs.mongodb.com/manual/administration/install-on-linux)
 * **[Redis](https://redis.io/)**
 
 ##### Optional
