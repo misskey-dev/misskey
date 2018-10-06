@@ -4,7 +4,6 @@ import User, { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';
 import * as request from 'request'
-import { ILocalUser } from '../../../../models/user'
 import config from '../../../../config'
 
 export const meta = {
