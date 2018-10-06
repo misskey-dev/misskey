@@ -4,15 +4,15 @@ import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 
 export default class extends Channel {
-	private mutedUserIds: string[];
+	private mutedUserIds: string[] = [];
 
 	public init = async (params: any) => {
-		const mute = await Mute.find({ muterId: this.user._id });
-		this.mutedUserIds = mute.map(m => m.muteeId.toString());
-
-		// Subscribe stream
+		// Subscribe events
 		this.subscriber.on('hybridTimeline', this.onEvent);
 		this.subscriber.on(`hybridTimeline:${this.user._id}`, this.onEvent);
+
+		const mute = await Mute.find({ muterId: this.user._id });
+		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 	}
 
 	private onEvent = async (note: any) => {
@@ -27,5 +27,11 @@ export default class extends Channel {
 		if (shouldMuteThisNote(note, this.mutedUserIds)) return;
 
 		this.send('note', note);
+	}
+
+	public dispose = () => {
+		// Unsubscribe events
+		this.subscriber.off('hybridTimeline', this.onEvent);
+		this.subscriber.off(`hybridTimeline:${this.user._id}`, this.onEvent);
 	}
 }

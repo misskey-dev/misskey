@@ -4,23 +4,32 @@ import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 
 export default class extends Channel {
+	private mutedUserIds: string[] = [];
+
 	public init = async (params: any) => {
+		// Subscribe events
+		this.subscriber.on('localTimeline', this.onNote);
+
 		const mute = this.user ? await Mute.find({ muterId: this.user._id }) : null;
-		const mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
+		this.mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
+	}
 
-		// Subscribe stream
-		this.subscriber.on('localTimeline', async note => {
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await pack(note.renoteId, this.user, {
-					detail: true
-				});
-			}
+	private onNote = async (note: any) => {
+		// Renoteなら再pack
+		if (note.renoteId != null) {
+			note.renote = await pack(note.renoteId, this.user, {
+				detail: true
+			});
+		}
 
-			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-			if (shouldMuteThisNote(note, mutedUserIds)) return;
+		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
+		if (shouldMuteThisNote(note, this.mutedUserIds)) return;
 
-			this.send('note', note);
-		});
+		this.send('note', note);
+	}
+
+	public dispose = () => {
+		// Unsubscribe events
+		this.subscriber.off('localTimeline', this.onNote);
 	}
 }

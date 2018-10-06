@@ -118,8 +118,8 @@ export default class Connection {
 	/**
 	 * チャンネル接続要求時
 	 */
-	private onChannelConnectRequested = (data: any) => {
-		const { channel, id, params } = data;
+	private onChannelConnectRequested = (payload: any) => {
+		const { channel, id, params } = payload;
 
 		this.connectChannel(id, params, (channels as any)[channel]);
 	}
@@ -127,8 +127,8 @@ export default class Connection {
 	/**
 	 * チャンネル切断要求時
 	 */
-	private onChannelDisconnectRequested = (data: any) => {
-		const { id } = data;
+	private onChannelDisconnectRequested = (payload: any) => {
+		const { id } = payload;
 
 		this.disconnectChannel(id);
 	}

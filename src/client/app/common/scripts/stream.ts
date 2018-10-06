@@ -280,7 +280,7 @@ class SharedConnection extends Connection {
 			this.disposeTimerId = setTimeout(() => {
 				this.disposeTimerId = null;
 				this.removeAllListeners();
-				this.stream.send('disconnet', { id: this.id });
+				this.stream.send('disconnect', { id: this.id });
 				this.stream.removeSharedConnection(this);
 			}, 3000);
 		}
@@ -296,7 +296,7 @@ class NonSharedConnection extends Connection {
 
 	public dispose = () => {
 		this.removeAllListeners();
-		this.stream.send('disconnet', { id: this.id });
+		this.stream.send('disconnect', { id: this.id });
 		this.stream.disconnectToChannel(this);
 	}
 }
