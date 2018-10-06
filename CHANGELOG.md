@@ -5,6 +5,60 @@ ChangeLog
 
 This document describes breaking changes only.
 
+10.0.0
+------
+
+ストリーミングAPIに破壊的変更があります。運営者がすべきことはありません。
+
+変更は以下の通りです
+
+* ストリーミングでやり取りする際の snake_case が全て camelCase に
+* ストリーミングの個々のエンドポイントが廃止され、一旦元となるストリームに接続してから、個々のチャンネル(今までのエンドポイント)に接続します。
+
+具体的には、まず今まで通り https://example.misskey/ にwebsocket接続します。
+次に、例えば「localTimeline」ストリーム(チャンネルと呼びます)に接続したいときは、ストリームに次のようなデータを送信します:
+``` javascript
+{
+  type: 'connect',
+  body: {
+    channel: 'localTimeline',
+    id: 'foobar'
+  }
+}
+```
+ここで、`id`にはそのチャンネルとやり取りするための任意のIDを設定します。
+IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。
+
+チャンネルにメッセージを送信するには、次のようなデータを送信します:
+``` javascript
+{
+  type: 'channel',
+  body: {
+    id: 'foobar',
+    type: 'something',
+    body: {
+      some: 'thing'
+    }
+  }
+}
+```
+ここで、`id`にはチャンネルに接続するときに指定したIDを設定します。
+
+逆に、チャンネルからメッセージが流れてくると、次のようなデータが受信されます:
+``` javascript
+{
+  type: 'channel',
+  body: {
+    id: 'foobar',
+    type: 'something',
+    body: {
+      some: 'thing'
+    }
+  }
+}
+```
+ここで、`id`にはチャンネルに接続するときに指定したIDが設定されています。
+
 9.0.0
 -----
 
