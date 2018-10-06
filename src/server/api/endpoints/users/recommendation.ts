@@ -17,9 +17,7 @@ export const meta = {
 };
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	var external = config.user_recommendation.external
-
-	if (external) {
+	if (config.user_recommendation && config.user_recommendation.external) {
 		var userName = me.username
 		var hostName = config.hostname
 		var limit = params.limit
