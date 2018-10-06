@@ -49,14 +49,14 @@ export default Vue.extend({
 		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream;
 
-			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
 
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('reversi_invited', this.onReversiInvited);
+			this.connection.off('reversiInvited', this.onReversiInvited);
 			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},

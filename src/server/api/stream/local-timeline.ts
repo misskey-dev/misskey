@@ -9,7 +9,7 @@ export default class extends Channel {
 		const mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
 
 		// Subscribe stream
-		this.connection.subscriber.on('local-timeline', async note => {
+		this.subscriber.on('local-timeline', async note => {
 			// Renoteなら再pack
 			if (note.renoteId != null) {
 				note.renote = await pack(note.renoteId, this.user, {

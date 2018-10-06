@@ -5,8 +5,8 @@ export default class extends Channel {
 		const listId = params.listId as string;
 
 		// Subscribe stream
-		subscriber.on(`user-list-stream:${listId}`, data => {
-			connection.send(JSON.stringify(data));
+		this.subscriber.on(`user-list-stream:${listId}`, data => {
+			this.send(data);
 		});
 	}
 }

@@ -5,36 +5,28 @@ const ev = new Xev();
 
 export default class extends Channel {
 	public init = async (params: any) => {
-		const onStats = (stats: any) => {
-			connection.send(JSON.stringify({
-				type: 'stats',
-				body: stats
-			}));
-		};
+		ev.addListener('serverStats', this.onStats);
+	}
 
-		connection.on('message', async data => {
-			const msg = JSON.parse(data.utf8Data);
+	private onStats = (stats: any) => {
+		this.send('stats', stats);
+	}
 
-			switch (msg.type) {
-				case 'requestLog':
-					ev.once(`serverStatsLog:${msg.id}`, statsLog => {
-						connection.send(JSON.stringify({
-							type: 'statsLog',
-							body: statsLog
-						}));
-					});
-					ev.emit('requestServerStatsLog', {
-						id: msg.id,
-						length: msg.length
-					});
-					break;
-			}
-		});
+	public onMessage = (type: string, body: any) => {
+		switch (type) {
+			case 'requestLog':
+				ev.once(`serverStatsLog:${body.id}`, statsLog => {
+					this.send('statsLog', statsLog);
+				});
+				ev.emit('requestServerStatsLog', {
+					id: body.id,
+					length: body.length
+				});
+				break;
+		}
+	}
 
-		ev.addListener('serverStats', onStats);
-
-		connection.on('close', () => {
-			ev.removeListener('serverStats', onStats);
-		});
+	public dispose = () => {
+		ev.removeListener('serverStats', this.onStats);
 	}
 }

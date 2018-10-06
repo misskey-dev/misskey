@@ -94,6 +94,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		// 招待
 		publishReversiStream(child._id, 'invited', packed);
 
-		publishMainStream(child._id, 'reversi_invited', packed);
+		publishMainStream(child._id, 'reversiInvited', packed);
 	}
 });

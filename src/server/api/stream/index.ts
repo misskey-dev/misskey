@@ -186,7 +186,11 @@ export abstract class Channel {
 	public id: string;
 
 	protected get user() {
-		return this.user;
+		return this.connection.user;
+	}
+
+	protected get subscriber() {
+		return this.connection.subscriber;
 	}
 
 	constructor(id: string, connection: Connection) {

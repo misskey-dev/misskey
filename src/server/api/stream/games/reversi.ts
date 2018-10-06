@@ -6,7 +6,7 @@ import { Channel } from '..';
 export default class extends Channel {
 	public init = async (params: any) => {
 		// Subscribe reversi stream
-		this.connection.subscriber.on(`reversi-stream:${this.user._id}`, data => {
+		this.subscriber.on(`reversiStream:${this.user._id}`, data => {
 			this.send(data);
 		});
 	}
@@ -20,7 +20,7 @@ export default class extends Channel {
 					childId: new mongo.ObjectID(body.id)
 				});
 				if (matching == null) return;
-				publishMainStream(matching.childId, 'reversi_invited', await pack(matching, matching.childId));
+				publishMainStream(matching.childId, 'reversiInvited', await pack(matching, matching.childId));
 				break;
 		}
 	}

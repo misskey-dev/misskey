@@ -151,8 +151,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 7000);
 		});
 
-		connection.on('reversi_invited', matching => {
-			const _n = composeNotification('reversi_invited', matching);
+		connection.on('reversiInvited', matching => {
+			const _n = composeNotification('reversiInvited', matching);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon

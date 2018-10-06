@@ -1,26 +1,23 @@
 import read from '../common/read-messaging-message';
-import { ParsedUrlQuery } from 'querystring';
 import { Channel } from '.';
 
 export default class extends Channel {
+	private otherpartyId: string;
+
 	public init = async (params: any) => {
-		const q = request.resourceURL.query as ParsedUrlQuery;
-		const otherparty = q.otherparty as string;
+		this.otherpartyId = params.otherparty as string;
 
 		// Subscribe messaging stream
-		subscriber.on(`messaging-stream:${user._id}-${otherparty}`, data => {
-			connection.send(JSON.stringify(data));
+		this.subscriber.on(`messagingStream:${this.user._id}-${this.otherpartyId}`, data => {
+			this.send(JSON.stringify(data));
 		});
+	}
 
-		connection.on('message', async (data) => {
-			const msg = JSON.parse(data.utf8Data);
-
-			switch (msg.type) {
-				case 'read':
-					if (!msg.id) return;
-					read(user._id, otherparty, msg.id);
-					break;
-			}
-		});
+	public onMessage = (type: string, body: any) => {
+		switch (type) {
+			case 'read':
+				read(this.user._id, this.otherpartyId, body.id);
+				break;
+		}
 	}
 }

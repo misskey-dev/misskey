@@ -27,7 +27,7 @@ export default function(type, data): Notification {
 				icon: data.user.avatarUrl
 			};
 
-		case 'reversi_invited':
+		case 'reversiInvited':
 			return {
 				title: '%i18n:common.notification.reversi-invited%',
 				body: '%i18n:common.notification.reversi-invited-by%'.split("{}")[0] + `${getUserName(data.parent)}` + '%i18n:common.notification.reversi-invited-by%'.split("{}")[1],

@@ -12,7 +12,7 @@ export default class extends Channel {
 		this.gameId = params.gameId as string;
 
 		// Subscribe game stream
-		this.connection.subscriber.on(`reversiGameStream:${this.gameId}`, data => {
+		this.subscriber.on(`reversiGameStream:${this.gameId}`, data => {
 			this.send(data);
 		});
 	}
@@ -63,7 +63,7 @@ export default class extends Channel {
 			$set: set
 		});
 
-		publishReversiGameStream(this.gameId, 'init-form', {
+		publishReversiGameStream(this.gameId, 'initForm', {
 			userId: this.user._id,
 			form
 		});
@@ -93,7 +93,7 @@ export default class extends Channel {
 			$set: set
 		});
 
-		publishReversiGameStream(this.gameId, 'update-form', {
+		publishReversiGameStream(this.gameId, 'updateForm', {
 			userId: this.user._id,
 			id,
 			value
@@ -122,7 +122,7 @@ export default class extends Channel {
 				}
 			});
 
-			publishReversiGameStream(this.gameId, 'change-accepts', {
+			publishReversiGameStream(this.gameId, 'changeAccepts', {
 				user1: accept,
 				user2: game.user2Accepted
 			});
@@ -135,7 +135,7 @@ export default class extends Channel {
 				}
 			});
 
-			publishReversiGameStream(this.gameId, 'change-accepts', {
+			publishReversiGameStream(this.gameId, 'changeAccepts', {
 				user1: game.user1Accepted,
 				user2: accept
 			});
