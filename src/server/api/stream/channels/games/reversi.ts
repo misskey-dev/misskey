@@ -1,17 +1,20 @@
+import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
 import Matching, { pack } from '../../../../../models/games/reversi/matching';
 import { publishMainStream } from '../../../../../stream';
 import Channel from '../../channel';
 
 export default class extends Channel {
-	public init = async (params: any) => {
+	@autobind
+	public async init(params: any) {
 		// Subscribe reversi stream
 		this.subscriber.on(`reversiStream:${this.user._id}`, data => {
 			this.send(data);
 		});
 	}
 
-	public onMessage = async (type: string, body: any) => {
+	@autobind
+	public async onMessage(type: string, body: any) {
 		switch (type) {
 			case 'ping':
 				if (body.id == null) return;

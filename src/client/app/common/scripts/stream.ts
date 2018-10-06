@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import * as ReconnectingWebsocket from 'reconnecting-websocket';
 import { wsUrl } from '../../config';
@@ -127,7 +128,8 @@ export default class Stream extends EventEmitter {
 		}
 	}
 
-	public removeSharedConnection = (connection: SharedConnection) => {
+	@autobind
+	public removeSharedConnection(connection: SharedConnection) {
 		this.sharedConnections = this.sharedConnections.filter(c => c.id !== connection.id);
 	}
 
@@ -137,14 +139,16 @@ export default class Stream extends EventEmitter {
 		return connection;
 	}
 
-	public disconnectToChannel = (connection: NonSharedConnection) => {
+	@autobind
+	public disconnectToChannel(connection: NonSharedConnection) {
 		this.nonSharedConnections = this.nonSharedConnections.filter(c => c.id !== connection.id);
 	}
 
 	/**
 	 * Callback of when open connection
 	 */
-	private onOpen = () => {
+	@autobind
+	private onOpen() {
 		const isReconnect = this.state == 'reconnecting';
 
 		this.state = 'connected';
@@ -171,7 +175,8 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Callback of when close connection
 	 */
-	private onClose = () => {
+	@autobind
+	private onClose() {
 		this.state = 'reconnecting';
 		this.emit('_disconnected_');
 	}
@@ -179,7 +184,8 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Callback of when received a message from connection
 	 */
-	private onMessage = (message) => {
+	@autobind
+	private onMessage(message) {
 		const { type, body } = JSON.parse(message.data);
 
 		if (type == 'channel') {
@@ -194,7 +200,8 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Send a message to connection
 	 */
-	public send = (typeOrPayload, payload?) => {
+	@autobind
+	public send(typeOrPayload, payload?) {
 		const data = payload === undefined ? typeOrPayload : {
 			type: typeOrPayload,
 			body: payload
@@ -212,7 +219,8 @@ export default class Stream extends EventEmitter {
 	/**
 	 * Close this connection
 	 */
-	public close = () => {
+	@autobind
+	public close() {
 		this.stream.removeEventListener('open', this.onOpen);
 		this.stream.removeEventListener('message', this.onMessage);
 	}
@@ -233,7 +241,8 @@ abstract class Connection extends EventEmitter {
 		this.connect();
 	}
 
-	public connect = () => {
+	@autobind
+	public connect() {
 		this.stream.send('connect', {
 			channel: this.channel,
 			id: this.id,
@@ -241,7 +250,8 @@ abstract class Connection extends EventEmitter {
 		});
 	}
 
-	public send = (typeOrPayload, payload?) => {
+	@autobind
+	public send(typeOrPayload, payload?) {
 		const data = payload === undefined ? typeOrPayload : {
 			type: typeOrPayload,
 			body: payload
@@ -264,7 +274,8 @@ class SharedConnection extends Connection {
 		super(stream, channel);
 	}
 
-	public use = () => {
+	@autobind
+	public use() {
 		this.users++;
 
 		// タイマー解除
@@ -274,7 +285,8 @@ class SharedConnection extends Connection {
 		}
 	}
 
-	public dispose = () => {
+	@autobind
+	public dispose() {
 		this.users--;
 
 		// そのコネクションの利用者が誰もいなくなったら
@@ -298,7 +310,8 @@ class NonSharedConnection extends Connection {
 		this.params = params;
 	}
 
-	public dispose = () => {
+	@autobind
+	public dispose() {
 		this.removeAllListeners();
 		this.stream.send('disconnect', { id: this.id });
 		this.stream.disconnectToChannel(this);

@@ -14,7 +14,8 @@
     "removeComments": false,
     "noLib": false,
     "strict": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "experimentalDecorators": true
   },
   "compileOnSave": false,
   "include": [

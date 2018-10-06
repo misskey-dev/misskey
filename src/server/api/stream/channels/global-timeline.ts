@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
@@ -6,7 +7,8 @@ import Channel from '../channel';
 export default class extends Channel {
 	private mutedUserIds: string[] = [];
 
-	public init = async (params: any) => {
+	@autobind
+	public async init(params: any) {
 		// Subscribe events
 		this.subscriber.on('globalTimeline', this.onNote);
 
@@ -14,7 +16,8 @@ export default class extends Channel {
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 	}
 
-	private onNote = async (note: any) => {
+	@autobind
+	private async onNote(note: any) {
 		// Renoteなら再pack
 		if (note.renoteId != null) {
 			note.renote = await pack(note.renoteId, this.user, {
@@ -28,7 +31,8 @@ export default class extends Channel {
 		this.send('note', note);
 	}
 
-	public dispose = () => {
+	@autobind
+	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('globalTimeline', this.onNote);
 	}

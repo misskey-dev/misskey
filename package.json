@@ -83,6 +83,7 @@
 		"@types/websocket": "0.0.40",
 		"@types/ws": "6.0.1",
 		"animejs": "2.2.0",
+		"autobind-decorator": "2.1.0",
 		"autosize": "4.0.2",
 		"autwh": "0.1.0",
 		"bcryptjs": "2.4.3",
@@ -225,8 +226,8 @@
 		"vuex-persistedstate": "2.5.4",
 		"web-push": "3.3.3",
 		"webfinger.js": "2.6.6",
-		"webpack-cli": "3.1.2",
 		"webpack": "4.20.2",
+		"webpack-cli": "3.1.2",
 		"websocket": "1.0.28",
 		"ws": "6.0.0",
 		"xev": "2.0.1"

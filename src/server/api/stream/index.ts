@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
 import Xev from 'xev';
 import * as debug from 'debug';
@@ -40,7 +41,8 @@ export default class Connection {
 	/**
 	 * クライアントからメッセージ受信時
 	 */
-	private onWsConnectionMessage = async (data: websocket.IMessage) => {
+	@autobind
+	private async onWsConnectionMessage(data: websocket.IMessage) {
 		const { type, body } = JSON.parse(data.utf8Data);
 
 		switch (type) {
@@ -60,7 +62,8 @@ export default class Connection {
 	/**
 	 * APIリクエスト要求時
 	 */
-	private onApiRequest = async (payload: any) => {
+	@autobind
+	private async onApiRequest(payload: any) {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
 		const user = this.user ? await User.findOne({ _id: this.user._id }) : null;
 
@@ -74,7 +77,8 @@ export default class Connection {
 		});
 	}
 
-	private onAlive = () => {
+	@autobind
+	private onAlive() {
 		// Update lastUsedAt
 		User.update({ _id: this.user._id }, {
 			$set: {
@@ -83,7 +87,8 @@ export default class Connection {
 		});
 	}
 
-	private onReadNotification = (payload: any) => {
+	@autobind
+	private onReadNotification(payload: any) {
 		if (!payload.id) return;
 		readNotification(this.user._id, payload.id);
 	}
@@ -91,7 +96,8 @@ export default class Connection {
 	/**
 	 * 投稿購読要求時
 	 */
-	private onSubscribeNote = (payload: any) => {
+	@autobind
+	private onSubscribeNote(payload: any) {
 		if (!payload.id) return;
 		log(`CAPTURE: ${payload.id} by @${this.user.username}`);
 		this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
@@ -103,13 +109,15 @@ export default class Connection {
 	/**
 	 * 投稿購読解除要求時
 	 */
-	private onUnsubscribeNote = (payload: any) => {
+	@autobind
+	private onUnsubscribeNote(payload: any) {
 		if (!payload.id) return;
 		log(`DECAPTURE: ${payload.id} by @${this.user.username}`);
 		this.subscriber.off(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 	}
 
-	private onNoteStreamMessage = async (data: any) => {
+	@autobind
+	private async onNoteStreamMessage(data: any) {
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
 			type: data.type,
@@ -120,7 +128,8 @@ export default class Connection {
 	/**
 	 * チャンネル接続要求時
 	 */
-	private onChannelConnectRequested = (payload: any) => {
+	@autobind
+	private onChannelConnectRequested(payload: any) {
 		const { channel, id, params } = payload;
 
 		this.connectChannel(id, params, (channels as any)[channel]);
@@ -129,7 +138,8 @@ export default class Connection {
 	/**
 	 * チャンネル切断要求時
 	 */
-	private onChannelDisconnectRequested = (payload: any) => {
+	@autobind
+	private onChannelDisconnectRequested(payload: any) {
 		const { id } = payload;
 
 		this.disconnectChannel(id);
@@ -138,7 +148,8 @@ export default class Connection {
 	/**
 	 * クライアントにメッセージ送信
 	 */
-	public sendMessageToWs = (type: string, payload: any) => {
+	@autobind
+	public sendMessageToWs(type: string, payload: any) {
 		this.wsConnection.send(JSON.stringify({
 			type: type,
 			body: payload
@@ -148,7 +159,8 @@ export default class Connection {
 	/**
 	 * チャンネルに接続
 	 */
-	private connectChannel = (id: string, params: any, channelClass: { new(id: string, connection: Connection): Channel }) => {
+	@autobind
+	private connectChannel(id: string, params: any, channelClass: { new(id: string, connection: Connection): Channel }) {
 		const channel = new channelClass(id, this);
 		this.channels.push(channel);
 		channel.init(params);
@@ -157,7 +169,8 @@ export default class Connection {
 	/**
 	 * チャンネルから切断
 	 */
-	private disconnectChannel = (id: string) => {
+	@autobind
+	private disconnectChannel(id: string) {
 		const channel = this.channels.find(c => c.id === id);
 
 		if (channel) {
@@ -166,7 +179,8 @@ export default class Connection {
 		}
 	}
 
-	private onChannelMessageRequested = (data: any) => {
+	@autobind
+	private onChannelMessageRequested(data: any) {
 		const channel = this.channels.find(c => c.id === data.id);
 		if (channel != null && channel.onMessage != null) {
 			channel.onMessage(data.type, data.body);
@@ -176,7 +190,8 @@ export default class Connection {
 	/**
 	 * ストリームが切れたとき
 	 */
-	public dispose = () => {
+	@autobind
+	public dispose() {
 		this.channels.forEach(c => {
 			if (c.dispose) c.dispose();
 		});

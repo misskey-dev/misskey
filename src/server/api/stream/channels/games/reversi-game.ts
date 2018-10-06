@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 import * as CRC32 from 'crc-32';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../../stream';
@@ -8,7 +9,8 @@ import Channel from '../../channel';
 export default class extends Channel {
 	private gameId: string;
 
-	public init = async (params: any) => {
+	@autobind
+	public async init(params: any) {
 		this.gameId = params.gameId as string;
 
 		// Subscribe game stream
@@ -17,7 +19,8 @@ export default class extends Channel {
 		});
 	}
 
-	public onMessage = (type: string, body: any) => {
+	@autobind
+	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'accept': this.accept(true); break;
 			case 'cancel-accept': this.accept(false); break;
@@ -30,7 +33,8 @@ export default class extends Channel {
 		}
 	}
 
-	private updateSettings = async (settings: any) => {
+	@autobind
+	private async updateSettings(settings: any) {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (game.isStarted) return;
@@ -47,7 +51,8 @@ export default class extends Channel {
 		publishReversiGameStream(this.gameId, 'updateSettings', settings);
 	}
 
-	private initForm = async (form: any) => {
+	@autobind
+	private async initForm(form: any) {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (game.isStarted) return;
@@ -69,7 +74,8 @@ export default class extends Channel {
 		});
 	}
 
-	private updateForm = async (id: string, value: any) => {
+	@autobind
+	private async updateForm(id: string, value: any) {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (game.isStarted) return;
@@ -100,7 +106,8 @@ export default class extends Channel {
 		});
 	}
 
-	private message = async (message: any) => {
+	@autobind
+	private async message(message: any) {
 		message.id = Math.random();
 		publishReversiGameStream(this.gameId, 'message', {
 			userId: this.user._id,
@@ -108,7 +115,8 @@ export default class extends Channel {
 		});
 	}
 
-	private accept = async (accept: boolean) => {
+	@autobind
+	private async accept(accept: boolean) {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (game.isStarted) return;
@@ -215,7 +223,8 @@ export default class extends Channel {
 	}
 
 	// 石を打つ
-	private set = async (pos: number) => {
+	@autobind
+	private async set(pos: number) {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (!game.isStarted) return;
@@ -284,7 +293,8 @@ export default class extends Channel {
 		}
 	}
 
-	private check = async (crc32: string) => {
+	@autobind
+	private async check(crc32: string) {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (!game.isStarted) return;

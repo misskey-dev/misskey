@@ -1,18 +1,22 @@
+import autobind from 'autobind-decorator';
 import Xev from 'xev';
 import Channel from '../channel';
 
 const ev = new Xev();
 
 export default class extends Channel {
-	public init = async (params: any) => {
+	@autobind
+	public async init(params: any) {
 		ev.addListener('notesStats', this.onStats);
 	}
 
-	private onStats = (stats: any) => {
+	@autobind
+	private onStats(stats: any) {
 		this.send('stats', stats);
 	}
 
-	public onMessage = (type: string, body: any) => {
+	@autobind
+	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'requestLog':
 				ev.once(`notesStatsLog:${body.id}`, statsLog => {
@@ -23,7 +27,8 @@ export default class extends Channel {
 		}
 	}
 
-	public dispose = () => {
+	@autobind
+	public dispose() {
 		ev.removeListener('notesStats', this.onStats);
 	}
 }

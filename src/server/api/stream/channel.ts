@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 import Connection from '.';
 
 /**
@@ -20,7 +21,8 @@ export default abstract class Channel {
 		this.connection = connection;
 	}
 
-	public send = (typeOrPayload: any, payload?: any) => {
+	@autobind
+	public send(typeOrPayload: any, payload?: any) {
 		const type = payload === undefined ? typeOrPayload.type : typeOrPayload;
 		const body = payload === undefined ? typeOrPayload.body : payload;
 
@@ -31,7 +33,7 @@ export default abstract class Channel {
 		});
 	}
 
-	public abstract init: (params: any) => void;
-	public dispose?: () => void;
-	public onMessage?: (type: string, body: any) => void;
+	public abstract init(params: any): void;
+	public dispose?(): void;
+	public onMessage?(type: string, body: any): void;
 }
