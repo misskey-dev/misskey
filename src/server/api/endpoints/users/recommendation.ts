@@ -37,7 +37,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 				followRedirect: true,
 				followAllRedirects: true
 			},
-			function (error: any, response: any, body: any) {
+			(error: any, response: any, body: any) => {
 				if (!error && response.statusCode == 200) {
 					res(body)
 				} else {
