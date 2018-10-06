@@ -18,12 +18,12 @@ export const meta = {
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	if (config.user_recommendation && config.user_recommendation.external) {
-		var userName = me.username
-		var hostName = config.hostname
-		var limit = params.limit
-		var offset = params.offset
-		var timeout = config.user_recommendation.timeout
-		var engine = config.user_recommendation.engine
+		const userName = me.username
+		const hostName = config.hostname
+		const limit = params.limit
+		const offset = params.offset
+		const timeout = config.user_recommendation.timeout
+		const engine = config.user_recommendation.engine
 		const url = engine
 			.replace('{{host}}', hostName)
 			.replace('{{user}}', userName)
