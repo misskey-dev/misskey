@@ -9,3 +9,4 @@ docker-compose.yml
 node_modules
 mongo
 redis
+elasticsearch
