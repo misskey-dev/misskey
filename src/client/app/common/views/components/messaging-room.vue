@@ -30,7 +30,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { MessagingStream } from '../../scripts/streaming/messaging';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { url } from '../../../config';

@@ -13,7 +13,7 @@ type Notification = {
 
 export default function(type, data): Notification {
 	switch (type) {
-		case 'drive_file_created':
+		case 'driveFileCreated':
 			return {
 				title: '%i18n:common.notification.file-uploaded%',
 				body: data.name,

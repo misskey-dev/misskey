@@ -30,7 +30,7 @@ export default define({
 	mounted() {
 		this.connection = (this as any).os.stream;
 
-		this.connection.on('drive_file_created', this.onDriveFileCreated);
+		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 
 		(this as any).api('drive/stream', {
 			type: 'image/*',
@@ -41,7 +41,7 @@ export default define({
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('drive_file_created', this.onDriveFileCreated);
+		this.connection.off('driveFileCreated', this.onDriveFileCreated);
 		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {

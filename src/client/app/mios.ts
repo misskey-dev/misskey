@@ -6,18 +6,10 @@ import initStore from './store';
 import { apiUrl, version, lang } from './config';
 import Progress from './common/scripts/loading';
 import Connection from './common/scripts/stream';
-import { HomeStreamManager } from './common/scripts/streaming/home';
-import { DriveStreamManager } from './common/scripts/streaming/drive';
-import { ServerStatsStreamManager } from './common/scripts/streaming/server-stats';
-import { NotesStatsStreamManager } from './common/scripts/streaming/notes-stats';
-import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
-import { ReversiStreamManager } from './common/scripts/streaming/games/reversi/reversi';
 
 import Err from './common/views/components/connect-failed.vue';
-import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
-import { HybridTimelineStreamManager } from './common/scripts/streaming/hybrid-timeline';
-import { GlobalTimelineStreamManager } from './common/scripts/streaming/global-timeline';
 import { erase } from '../../prelude/array';
+import Stream from './common/scripts/stream';
 
 //#region api requests
 let spinner = null;
@@ -102,30 +94,7 @@ export default class MiOS extends EventEmitter {
 	/**
 	 * A connection manager of home stream
 	 */
-	public stream: HomeStreamManager;
-
-	/**
-	 * Connection managers
-	 */
-	public streams: {
-		localTimelineStream: LocalTimelineStreamManager;
-		hybridTimelineStream: HybridTimelineStreamManager;
-		globalTimelineStream: GlobalTimelineStreamManager;
-		driveStream: DriveStreamManager;
-		serverStatsStream: ServerStatsStreamManager;
-		notesStatsStream: NotesStatsStreamManager;
-		messagingIndexStream: MessagingIndexStreamManager;
-		reversiStream: ReversiStreamManager;
-	} = {
-		localTimelineStream: null,
-		hybridTimelineStream: null,
-		globalTimelineStream: null,
-		driveStream: null,
-		serverStatsStream: null,
-		notesStatsStream: null,
-		messagingIndexStream: null,
-		reversiStream: null
-	};
+	public stream: Stream;
 
 	/**
 	 * A registration of service worker
@@ -228,23 +197,7 @@ export default class MiOS extends EventEmitter {
 	public async init(callback) {
 		this.store = initStore(this);
 
-		//#region Init stream managers
-		this.streams.serverStatsStream = new ServerStatsStreamManager(this);
-		this.streams.notesStatsStream = new NotesStatsStreamManager(this);
-		this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.store.state.i);
-
-		this.once('signedin', () => {
-			// Init home stream manager
-			this.stream = new HomeStreamManager(this, this.store.state.i);
-
-			// Init other stream manager
-			this.streams.hybridTimelineStream = new HybridTimelineStreamManager(this, this.store.state.i);
-			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.store.state.i);
-			this.streams.driveStream = new DriveStreamManager(this, this.store.state.i);
-			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.store.state.i);
-			this.streams.reversiStream = new ReversiStreamManager(this, this.store.state.i);
-		});
-		//#endregion
+		this.stream = new Stream(this);
 
 		// ユーザーをフェッチしてコールバックする
 		const fetchme = (token, cb) => {
@@ -430,13 +383,12 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream && this.stream.hasConnection && this.store.state.device.apiViaStream;
+			const viaStream = this.stream && this.store.state.device.apiViaStream;
 
 			if (viaStream) {
-				const stream = this.stream.borrow();
 				const id = Math.random().toString();
 
-				stream.once(`api-res:${id}`, res => {
+				this.stream.once(`api-res:${id}`, res => {
 					if (res == null || Object.keys(res).length == 0) {
 						resolve(null);
 					} else if (res.res) {
@@ -446,8 +398,7 @@ export default class MiOS extends EventEmitter {
 					}
 				});
 
-				stream.send({
-					type: 'api',
+				this.stream.send('api', {
 					id,
 					endpoint,
 					data

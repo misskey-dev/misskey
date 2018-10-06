@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { HashtagStream } from '../../../common/scripts/streaming/hashtag';
 
 const fetchLimit = 10;
 

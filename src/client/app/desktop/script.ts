@@ -9,7 +9,6 @@ import './style.styl';
 
 import init from '../init';
 import fuckAdBlock from '../common/scripts/fuck-ad-block';
-import { HomeStreamManager } from '../common/scripts/streaming/home';
 import composeNotification from '../common/scripts/compose-notification';
 
 import chooseDriveFolder from './api/choose-drive-folder';
@@ -128,8 +127,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 6000);
 		});
 
-		connection.on('drive_file_created', file => {
-			const _n = composeNotification('drive_file_created', file);
+		connection.on('driveFileCreated', file => {
+			const _n = composeNotification('driveFileCreated', file);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon

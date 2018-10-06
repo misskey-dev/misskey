@@ -383,8 +383,8 @@ export default async function(
 	log(`drive file has been created ${driveFile._id}`);
 
 	pack(driveFile).then(packedFile => {
-		// Publish drive_file_created event
-		publishMainStream(user._id, 'drive_file_created', packedFile);
+		// Publish driveFileCreated event
+		publishMainStream(user._id, 'driveFileCreated', packedFile);
 		publishDriveStream(user._id, 'file_created', packedFile);
 	});
 
