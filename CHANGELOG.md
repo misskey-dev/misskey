@@ -15,7 +15,7 @@ This document describes breaking changes only.
 * ストリーミングでやり取りする際の snake_case が全て camelCase に
 * ストリーミングの個々のエンドポイントが廃止され、一旦元となるストリームに接続してから、個々のチャンネル(今までのエンドポイント)に接続します。
 
-具体的には、まず今まで通り https://example.misskey/ にwebsocket接続します。
+具体的には、まず https://example.misskey/streaming にwebsocket接続します。
 次に、例えば「localTimeline」ストリーム(チャンネルと呼びます)に接続したいときは、ストリームに次のようなデータを送信します:
 ``` javascript
 {

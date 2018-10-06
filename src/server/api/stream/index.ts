@@ -169,7 +169,9 @@ export default class Connection {
 
 	private onChannelMessageRequested = (data: any) => {
 		const channel = this.channels.find(c => c.id === data.id);
-		channel.onMessage(data.type, data.body);
+		if (channel != null && channel.onMessage != null) {
+			channel.onMessage(data.type, data.body);
+		}
 	}
 
 	/**
