@@ -48,7 +48,9 @@ export default class Connection {
 			case 'alive': this.onAlive(); break;
 			case 'readNotification': this.onReadNotification(body); break;
 			case 'subNote': this.onSubscribeNote(body); break;
+			case 'sn': this.onSubscribeNote(body); break; // alias
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
+			case 'un': this.onUnsubscribeNote(body); break; // alias
 			case 'connect': this.onChannelConnectRequested(body); break;
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
 			case 'channel': this.onChannelMessageRequested(body); break;

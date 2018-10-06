@@ -60,14 +60,14 @@ export default prop => ({
 					data.read = true;
 				}
 
-				this.connection.send('subNote', data);
+				this.connection.send('sn', data);
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
 
 		decapture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
-				this.connection.send('unsubNote', {
+				this.connection.send('un', {
 					id: this.$_ns_target.id
 				});
 				if (withHandler) this.connection.off('noteUpdated', this.onStreamNoteUpdated);

@@ -79,7 +79,7 @@ class Publisher {
 	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => {
 		const meta = await this.getMeta();
 		if (meta.disableLocalTimeline) return;
-		this.publish(userId ? `hybridTimeline:${userId}` : 'hybrid-timeline', null, note);
+		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
 	}
 
 	public publishGlobalTimelineStream = (note: any): void => {

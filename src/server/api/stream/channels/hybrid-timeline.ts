@@ -8,14 +8,14 @@ export default class extends Channel {
 
 	public init = async (params: any) => {
 		// Subscribe events
-		this.subscriber.on('hybridTimeline', this.onEvent);
-		this.subscriber.on(`hybridTimeline:${this.user._id}`, this.onEvent);
+		this.subscriber.on('hybridTimeline', this.onNewNote);
+		this.subscriber.on(`hybridTimeline:${this.user._id}`, this.onNewNote);
 
 		const mute = await Mute.find({ muterId: this.user._id });
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 	}
 
-	private onEvent = async (note: any) => {
+	private onNewNote = async (note: any) => {
 		// Renoteなら再pack
 		if (note.renoteId != null) {
 			note.renote = await pack(note.renoteId, this.user, {
@@ -31,7 +31,7 @@ export default class extends Channel {
 
 	public dispose = () => {
 		// Unsubscribe events
-		this.subscriber.off('hybridTimeline', this.onEvent);
-		this.subscriber.off(`hybridTimeline:${this.user._id}`, this.onEvent);
+		this.subscriber.off('hybridTimeline', this.onNewNote);
+		this.subscriber.off(`hybridTimeline:${this.user._id}`, this.onNewNote);
 	}
 }
