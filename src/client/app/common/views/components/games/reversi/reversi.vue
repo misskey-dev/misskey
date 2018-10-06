@@ -47,7 +47,6 @@ export default Vue.extend({
 			game: null,
 			matching: null,
 			connection: null,
-			connectionId: null,
 			pingClock: null
 		};
 	},
@@ -66,7 +65,7 @@ export default Vue.extend({
 		this.fetch();
 
 		if (this.$store.getters.isSignedIn) {
-			[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('reversi');
+			this.connection = (this as any).os.stream.useSharedConnection('reversi');
 
 			this.connection.on('matched', this.onMatched);
 

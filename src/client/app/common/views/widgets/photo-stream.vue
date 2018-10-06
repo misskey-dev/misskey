@@ -24,8 +24,7 @@ export default define({
 		return {
 			images: [],
 			fetching: true,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {

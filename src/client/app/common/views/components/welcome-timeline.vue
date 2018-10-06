@@ -38,15 +38,14 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			notes: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
 	mounted() {
 		this.fetch();
 
-		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('localTimeline');
+		this.connection = (this as any).os.stream.useSharedConnection('localTimeline');
 
 		this.connection.on('note', this.onNote);
 	},

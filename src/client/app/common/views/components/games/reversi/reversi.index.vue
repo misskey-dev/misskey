@@ -59,14 +59,13 @@ export default Vue.extend({
 			myGames: [],
 			matching: null,
 			invitations: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('reversi');
+			this.connection = (this as any).os.stream.useSharedConnection('reversi');
 
 			this.connection.on('invited', this.onInvited);
 

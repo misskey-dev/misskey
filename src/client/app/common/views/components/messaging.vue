@@ -71,12 +71,11 @@ export default Vue.extend({
 			messages: [],
 			q: null,
 			result: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {
-		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('messagingIndex');
+		this.connection = (this as any).os.stream.useSharedConnection('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);

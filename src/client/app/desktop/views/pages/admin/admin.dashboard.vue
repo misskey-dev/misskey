@@ -56,12 +56,11 @@ export default Vue.extend({
 			disableLocalTimeline: false,
 			bannerUrl: null,
 			inviteCode: null,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	created() {
-		[this.connection, this.connectionId] = (this as any).os.stream.useSharedConnection('serverStats');
+		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
 
 		(this as any).os.getMeta().then(meta => {
 			this.disableRegistration = meta.disableRegistration;

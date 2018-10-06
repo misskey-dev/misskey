@@ -116,7 +116,7 @@ export default class Stream extends EventEmitter {
 		});
 	}
 
-	public useSharedConnection = (channel: string): [any, string] => {
+	public useSharedConnection = (channel: string): any => {
 		const userId = uuid();
 
 		const existConnection = this.sharedConnections.find(c => c.channel === channel);
@@ -129,7 +129,8 @@ export default class Stream extends EventEmitter {
 			}
 
 			existConnection.users.push(userId);
-			return [existConnection.ev, userId];
+
+			return existConnection.ev;
 		} else {
 			const id = Math.random().toString();
 			const ev = new EventEmitter();
@@ -139,24 +140,26 @@ export default class Stream extends EventEmitter {
 					body: data
 				});
 			};
+			(ev as any).id = id;
+
 			this.sharedConnections.push({
 				channel: channel,
 				id: id,
 				ev: ev,
 				users: [userId]
 			});
-			return [ev, userId];
+
+			return ev;
 		}
 	}
 
 	/**
 	 * コネクションを利用し終わってもう必要ないことを通知します
-	 * @param userId useSharedConnection で発行されたユーザーID
 	 */
-	public disposeSharedConnection = (userId: string) => {
-		const connection = this.sharedConnections.find(c => c.users.includes(userId));
+	public disposeSharedConnection = (ev: any) => {
+		const connection = this.sharedConnections.find(c => c.users.includes(ev.id));
 
-		connection.users = connection.users.filter(u => u !== userId);
+		connection.users = connection.users.filter(u => u !== ev.id);
 
 		// そのコネクションの利用者が誰もいなくなったら
 		if (connection.users.length === 0) {
