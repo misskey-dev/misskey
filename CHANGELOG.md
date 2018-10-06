@@ -13,8 +13,10 @@ This document describes breaking changes only.
 変更は以下の通りです
 
 * ストリーミングでやり取りする際の snake_case が全て camelCase に
+* リバーシのストリームエンドポイント名が reversi → gamesReversi、reversiGame → gamesReversiGame に
 * ストリーミングの個々のエンドポイントが廃止され、一旦元となるストリームに接続してから、個々のチャンネル(今までのエンドポイント)に接続します。
 
+### 個々のエンドポイントが廃止されることによる新しいストリーミングAPIの利用方法
 具体的には、まず https://example.misskey/streaming にwebsocket接続します。
 次に、例えば「localTimeline」ストリーム(チャンネルと呼びます)に接続したいときは、ストリームに次のようなデータを送信します:
 ``` javascript
