@@ -149,6 +149,11 @@ export default class Stream extends EventEmitter {
 		_buffer.forEach(data => {
 			this.send(data); // Resend each buffered messages
 		});
+
+		// チャンネル再接続
+		this.sharedConnections.forEach(c => {
+			c.connect();
+		});
 	}
 
 	/**
@@ -201,18 +206,24 @@ export default class Stream extends EventEmitter {
 	}
 }
 
-class SharedConnection extends EventEmitter {
+abstract class Connection extends EventEmitter {
 	public channel: string;
 	public id: string;
 	public stream: Stream;
-	private users = 0;
-	private disposeTimerId: any;
 
 	constructor(channel: string) {
 		super();
 
 		this.channel = channel;
 		this.id = Math.random().toString();
+		this.connect();
+	}
+
+	public connect = () => {
+		this.stream.send('connect', {
+			channel: this.channel,
+			id: this.id
+		});
 	}
 
 	public send = (typeOrPayload, payload?) => {
@@ -225,6 +236,17 @@ class SharedConnection extends EventEmitter {
 			id: this.id,
 			body: data
 		});
+	}
+
+	public abstract dispose: () => void;
+}
+
+class SharedConnection extends Connection {
+	private users = 0;
+	private disposeTimerId: any;
+
+	constructor(channel: string) {
+		super(channel);
 	}
 
 	public use = () => {
@@ -254,28 +276,9 @@ class SharedConnection extends EventEmitter {
 	}
 }
 
-class NonSharedConnection extends EventEmitter {
-	public channel: string;
-	public id: string;
-	public stream: Stream;
-
+class NonSharedConnection extends Connection {
 	constructor(channel: string) {
-		super();
-
-		this.channel = channel;
-		this.id = Math.random().toString();
-	}
-
-	public send = (typeOrPayload, payload?) => {
-		const data = arguments.length == 1 ? typeOrPayload : {
-			type: typeOrPayload,
-			body: payload
-		};
-
-		this.stream.send('channel', {
-			id: this.id,
-			body: data
-		});
+		super(channel);
 	}
 
 	public dispose = () => {
