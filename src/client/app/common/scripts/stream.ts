@@ -126,8 +126,8 @@ export default class Stream extends EventEmitter {
 		this.sharedConnections = this.sharedConnections.filter(c => c.id !== connection.id);
 	}
 
-	public connectToChannel = (channel: string): NonSharedConnection => {
-		const connection = new NonSharedConnection(channel);
+	public connectToChannel = (channel: string, params?: any): NonSharedConnection => {
+		const connection = new NonSharedConnection(channel, params);
 		this.nonSharedConnections.push(connection);
 		return connection;
 	}
@@ -212,7 +212,8 @@ export default class Stream extends EventEmitter {
 abstract class Connection extends EventEmitter {
 	public channel: string;
 	public id: string;
-	public stream: Stream;
+	protected params: any;
+	protected stream: Stream;
 
 	constructor(channel: string) {
 		super();
@@ -225,7 +226,8 @@ abstract class Connection extends EventEmitter {
 	public connect = () => {
 		this.stream.send('connect', {
 			channel: this.channel,
-			id: this.id
+			id: this.id,
+			params: this.params
 		});
 	}
 
@@ -280,8 +282,10 @@ class SharedConnection extends Connection {
 }
 
 class NonSharedConnection extends Connection {
-	constructor(channel: string) {
+	constructor(channel: string, params?: any) {
 		super(channel);
+
+		this.params = params;
 	}
 
 	public dispose = () => {

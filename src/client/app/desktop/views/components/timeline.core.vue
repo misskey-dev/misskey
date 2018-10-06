@@ -67,11 +67,11 @@ export default Vue.extend({
 			this.query = {
 				query: this.tagTl.query
 			};
-			this.connection = new HashtagStream((this as any).os, this.$store.state.i, this.tagTl.query);
+			this.connection = (this as any).os.stream.connectToChannel('hashtag', this.tagTl.query);
 			this.connection.on('note', prepend);
 			this.$once('beforeDestroy', () => {
 				this.connection.off('note', prepend);
-				this.connection.close();
+				this.connection.dispose();
 			});
 		} else if (this.src == 'home') {
 			this.endpoint = 'notes/timeline';
