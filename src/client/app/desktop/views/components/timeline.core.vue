@@ -35,9 +35,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			streamManager: null,
 			connection: null,
-			connectionId: null,
 			date: null,
 			baseQuery: {
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -80,9 +78,7 @@ export default Vue.extend({
 			const onChangeFollowing = () => {
 				this.fetch();
 			};
-			this.streamManager = (this as any).os.stream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream;
 			this.connection.on('note', prepend);
 			this.connection.on('follow', onChangeFollowing);
 			this.connection.on('unfollow', onChangeFollowing);
@@ -90,47 +86,38 @@ export default Vue.extend({
 				this.connection.off('note', prepend);
 				this.connection.off('follow', onChangeFollowing);
 				this.connection.off('unfollow', onChangeFollowing);
-				this.streamManager.dispose(this.connectionId);
 			});
 		} else if (this.src == 'local') {
 			this.endpoint = 'notes/local-timeline';
-			this.streamManager = (this as any).os.streams.localTimelineStream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
 			this.$once('beforeDestroy', () => {
 				this.connection.off('note', prepend);
-				this.streamManager.dispose(this.connectionId);
+				this.connection.dispose();
 			});
 		} else if (this.src == 'hybrid') {
 			this.endpoint = 'notes/hybrid-timeline';
-			this.streamManager = (this as any).os.streams.hybridTimelineStream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
 			this.$once('beforeDestroy', () => {
 				this.connection.off('note', prepend);
-				this.streamManager.dispose(this.connectionId);
+				this.connection.dispose();
 			});
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';
-			this.streamManager = (this as any).os.streams.globalTimelineStream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
 			this.$once('beforeDestroy', () => {
 				this.connection.off('note', prepend);
-				this.streamManager.dispose(this.connectionId);
+				this.connection.dispose();
 			});
 		} else if (this.src == 'mentions') {
 			this.endpoint = 'notes/mentions';
-			this.streamManager = (this as any).os.stream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream;
 			this.connection.on('mention', prepend);
 			this.$once('beforeDestroy', () => {
 				this.connection.off('mention', prepend);
-				this.streamManager.dispose(this.connectionId);
+				this.connection.dispose();
 			});
 		} else if (this.src == 'messages') {
 			this.endpoint = 'notes/mentions';
@@ -142,13 +129,11 @@ export default Vue.extend({
 					prepend(note);
 				}
 			};
-			this.streamManager = (this as any).os.stream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream;
 			this.connection.on('mention', onNote);
 			this.$once('beforeDestroy', () => {
 				this.connection.off('mention', onNote);
-				this.streamManager.dispose(this.connectionId);
+				this.connection.dispose();
 			});
 		}
 

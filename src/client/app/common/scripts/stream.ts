@@ -1,6 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
 import * as ReconnectingWebsocket from 'reconnecting-websocket';
-import * as uuid from 'uuid';
 import { wsUrl } from '../../config';
 import MiOS from '../../mios';
 
@@ -11,14 +10,7 @@ export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
 	private state: string;
 	private buffer: any[];
-
-	private sharedConnections: Array<{
-		channel: string;
-		id: string;
-		ev: any;
-		users: string[];
-		disposeTimerId?: any;
-	}> = [];
+	private sharedConnections: Connection[] = [];
 
 	constructor(os: MiOS) {
 		super();
@@ -116,61 +108,24 @@ export default class Stream extends EventEmitter {
 		});
 	}
 
-	public useSharedConnection = (channel: string): any => {
-		const userId = uuid();
-
+	public useSharedConnection = (channel: string): Connection => {
 		const existConnection = this.sharedConnections.find(c => c.channel === channel);
 
 		if (existConnection) {
-			// タイマー解除
-			if (existConnection.disposeTimerId) {
-				clearTimeout(existConnection.disposeTimerId);
-				existConnection.disposeTimerId = null;
-			}
+			existConnection.use();
 
-			existConnection.users.push(userId);
-
-			return existConnection.ev;
+			return existConnection;
 		} else {
-			const id = Math.random().toString();
-			const ev = new EventEmitter();
-			(ev as any).send = (data: any) => {
-				this.send('channel', {
-					id: id,
-					body: data
-				});
-			};
-			(ev as any).id = id;
+			const connection = new Connection(channel);
 
-			this.sharedConnections.push({
-				channel: channel,
-				id: id,
-				ev: ev,
-				users: [userId]
-			});
+			this.sharedConnections.push(connection);
 
-			return ev;
+			return connection;
 		}
 	}
 
-	/**
-	 * コネクションを利用し終わってもう必要ないことを通知します
-	 */
-	public disposeSharedConnection = (ev: any) => {
-		const connection = this.sharedConnections.find(c => c.users.includes(ev.id));
-
-		connection.users = connection.users.filter(u => u !== ev.id);
-
-		// そのコネクションの利用者が誰もいなくなったら
-		if (connection.users.length === 0) {
-			// また直ぐに再利用される可能性があるので、一定時間待ち、
-			// 新たな利用者が現れなければコネクションを切断する
-			connection.disposeTimerId = setTimeout(() => {
-				connection.disposeTimerId = null;
-				connection.ev.removeAllListeners();
-				this.send('disconnet', connection.id);
-			}, 3000);
-		}
+	public removeSharedConnection = (connection: Connection) => {
+		this.sharedConnections = this.sharedConnections.filter(c => c.id !== connection.id);
 	}
 
 	/**
@@ -205,7 +160,7 @@ export default class Stream extends EventEmitter {
 		if (type.startsWith('channel:')) {
 			const id = type.split(':')[1];
 			const connection = this.sharedConnections.find(c => c.id === id);
-			connection.ev.emit(type, body);
+			connection.emit(type, body);
 		} else {
 			this.emit(type, body);
 		}
@@ -235,5 +190,58 @@ export default class Stream extends EventEmitter {
 	public close = () => {
 		this.stream.removeEventListener('open', this.onOpen);
 		this.stream.removeEventListener('message', this.onMessage);
+	}
+}
+
+class Connection extends EventEmitter {
+	public channel: string;
+	public id: string;
+	public stream: Stream;
+	private users = 0;
+	private disposeTimerId: any;
+
+	constructor(channel: string) {
+		super();
+
+		this.channel = channel;
+		this.id = Math.random().toString();
+	}
+
+	public send = (typeOrPayload, payload?) => {
+		const data = arguments.length == 1 ? typeOrPayload : {
+			type: typeOrPayload,
+			body: payload
+		};
+
+		this.stream.send('channel', {
+			id: this.id,
+			body: data
+		});
+	}
+
+	public use = () => {
+		this.users++;
+
+		// タイマー解除
+		if (this.disposeTimerId) {
+			clearTimeout(this.disposeTimerId);
+			this.disposeTimerId = null;
+		}
+	}
+
+	public dispose = () => {
+		this.users--;
+
+		// そのコネクションの利用者が誰もいなくなったら
+		if (this.users === 0) {
+			// また直ぐに再利用される可能性があるので、一定時間待ち、
+			// 新たな利用者が現れなければコネクションを切断する
+			this.disposeTimerId = setTimeout(() => {
+				this.disposeTimerId = null;
+				this.removeAllListeners();
+				this.send('disconnet', this.id);
+				this.stream.removeSharedConnection(this);
+			}, 3000);
+		}
 	}
 }
