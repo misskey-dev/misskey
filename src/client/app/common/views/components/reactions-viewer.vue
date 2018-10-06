@@ -48,14 +48,16 @@ export default Vue.extend({
 	> span
 		margin-right 6px
 		padding 6px 6px 6px 4px
-		border solid 1px var(--reactionViewerButtonBorder)
 		border-radius 3px
 
 		&.notReacted
 			cursor pointer
+			border solid 1px var(--reactionViewerButtonBorder)
+			background-color var(--reactionViewerButtonBg)
 
 			&:hover
 				border solid 1px var(--reactionViewerButtonHoverBorder)
+				background-color var(--reactionViewerButtonHoverBg)
 
 		> .mk-reaction-icon
 			font-size 1.4em

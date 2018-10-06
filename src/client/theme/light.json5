@@ -83,6 +83,8 @@
 
 		reactionPickerButtonHoverBg: '#eee',
 
+		reactionViewerButtonBg: 'rgba(0, 0, 0, 0)',
+		reactionViewerButtonHoverBg: 'rgba(0, 0, 0, 0)',
 		reactionViewerButtonBorder: 'rgba(0, 0, 0, 0.1)',
 		reactionViewerButtonHoverBorder: 'rgba(0, 0, 0, 0.2)',
 
