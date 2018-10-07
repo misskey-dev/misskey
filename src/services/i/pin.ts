@@ -24,7 +24,15 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 		throw new Error('note not found');
 	}
 
-	const pinnedNoteIds = user.pinnedNoteIds || [];
+	let pinnedNoteIds = user.pinnedNoteIds || [];
+
+	//#region 現在ピン留め投稿している投稿が実際にデータベースに存在しているのかチェック
+	// データベースの欠損などで存在していない場合があるので。
+	// 存在していなかったらピン留め投稿から外す
+	const pinnedNotes = (await Promise.all(pinnedNoteIds.map(id => Note.findOne({ _id: id })))).filter(x => x != null);
+
+	pinnedNoteIds = pinnedNoteIds.filter(id => pinnedNotes.some(n => n._id.equals(id)));
+	//#endregion
 
 	if (pinnedNoteIds.length >= 5) {
 		throw new Error('cannot pin more notes');
