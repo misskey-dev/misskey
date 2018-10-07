@@ -175,6 +175,7 @@
 		mobileNavBackdrop: 'rgba(0, 0, 0, 0.2)',
 		mobilePostFormDivider: 'rgba(0, 0, 0, 0.1)',
 		mobilePostFormTextareaBg: '#fff',
+		mobilePostFormButton: '$text',
 		mobileDriveNavBg: ':alpha<0.75<$secondary',
 		mobileHomeTlItemHover: 'rgba(0, 0, 0, 0.05)',
 		mobileUserPageName: '#757c82',
