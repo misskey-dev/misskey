@@ -29,7 +29,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 	if (psErr) return rej(psErr);
 
 	const object = await fetchAny(ps.uri);
-	if (object !== null) res(object);
+	if (object !== null) return res(object);
 
 	return rej('object not found');
 });
