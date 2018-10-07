@@ -53,7 +53,7 @@ common:
     months_ago: "{} måned(er) siden"
     years_ago: "{} år siden"
   month-and-day: "{day}/{month}"
-  trash: "ゴミ箱"
+  trash: "Papirkurv"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -152,7 +152,7 @@ common:
     hashtags: "ハッシュタグ"
   deck:
     widgets: "ウィジェット"
-    home: "ホーム"
+    home: "Hjem"
     local: "ローカル"
     hybrid: "ソーシャル"
     hashtag: "ハッシュタグ"
@@ -160,7 +160,7 @@ common:
     mentions: "あなた宛て"
     direct: "ダイレクト投稿"
     notifications: "Notifikasjon"
-    list: "リスト"
+    list: "Lister"
     swap-left: "左に移動"
     swap-right: "右に移動"
     swap-up: "上に移動"
@@ -225,7 +225,7 @@ common/views/components/games/reversi/reversi.room.vue:
   random: "ランダム"
   black-or-white: "先手/後手"
   black-is: "{}が黒"
-  rules: "ルール"
+  rules: "Regler"
   is-llotheo: "石の少ない方が勝ち(ロセオ)"
   looped-map: "ループマップ"
   can-put-everywhere: "どこでも置けるモード"
@@ -419,9 +419,9 @@ common/views/widgets/calendar.vue:
   year: "{}年"
   month: "{}月"
   day: "{}日"
-  today: "今日:"
-  this-month: "今月:"
-  this-year: "今年:"
+  today: "I dag:"
+  this-month: "Denne måneden:"
+  this-year: "Dette året:"
 common/views/widgets/donation.vue:
   title: "寄付のお願い"
   text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
@@ -675,7 +675,7 @@ desktop/views/components/post-form.vue:
   click-to-tagging: "クリックでタグ付け"
   visibility: "公開範囲"
   geolocation-alert: "お使いの端末は位置情報に対応していません"
-  error: "エラー"
+  error: "Feil"
   enter-username: "ユーザー名を入力してください"
   annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
@@ -808,7 +808,7 @@ desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 desktop/views/components/settings.drive.vue:
   max: "Maks"
-  in-use: "使用中"
+  in-use: "I bruk"
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
 desktop/views/components/settings.password.vue:
@@ -828,7 +828,7 @@ desktop/views/components/settings.profile.vue:
   save: "Lagre profilen"
   locked-account: "アカウントの保護"
   is-locked: "フォローを承認制にする"
-  other: "その他"
+  other: "Annet"
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
   profile-updated: "プロフィールを更新しました"
@@ -867,7 +867,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "闇に飲まれる"
 desktop/views/components/ui.header.nav.vue:
   home: "Hjem"
-  deck: "デッキ"
+  deck: "Kolonner"
   messaging: "メッセージ"
   game: "Spill"
 desktop/views/components/ui.header.notifications.vue:
