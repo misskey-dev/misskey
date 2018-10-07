@@ -182,6 +182,7 @@ export default class Connection {
 
 	/**
 	 * チャンネルから切断
+	 * @param id チャンネルコネクションID
 	 */
 	@autobind
 	private disconnectChannel(id: string) {
@@ -193,6 +194,10 @@ export default class Connection {
 		}
 	}
 
+	/**
+	 * チャンネルへメッセージ送信要求時
+	 * @param data メッセージ
+	 */
 	@autobind
 	private onChannelMessageRequested(data: any) {
 		const channel = this.channels.find(c => c.id === data.id);
