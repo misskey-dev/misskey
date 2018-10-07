@@ -3,8 +3,8 @@ meta:
   lang: "norsk"
   divider: ""
 common:
-  misskey: "A ⭐ of fediverse"
-  about-title: "A ⭐ of fediverse."
+  misskey: "En ⭐ av fediverse"
+  about-title: "En ⭐ av fediverse"
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
   intro:
     title: "Misskeyって？"
@@ -39,8 +39,8 @@ common:
     reversi-invited: "Invitert til et spill"
     reversi-invited-by: "Invitert av {}:"
     notified-by: "{}さんから"
-    reply-from: "{}さんから返信:"
-    quoted-by: "{}さんが引用:"
+    reply-from: "Svar fra {}:"
+    quoted-by: "Sitert av {}:"
   time:
     unknown: "ukjent"
     future: "fremtidig"
@@ -52,7 +52,7 @@ common:
     weeks_ago: "{} uke(r) siden"
     months_ago: "{} måned(er) siden"
     years_ago: "{} år siden"
-  month-and-day: "{month}月 {day}日"
+  month-and-day: "{day}/{month}"
   trash: "ゴミ箱"
   weekday-short:
     sunday: "S"
@@ -82,7 +82,7 @@ common:
     rip: "RIP"
     pudding: "Pudding"
   note-visibility:
-    public: "公開"
+    public: "Offentlig"
     home: "Hjem"
     home-desc: "ホームタイムラインにのみ公開"
     followers: "フォロワー"
