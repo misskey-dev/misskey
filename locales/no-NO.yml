@@ -523,16 +523,16 @@ desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "Ok"
   choose-prompt: "ファイルを選択"
 desktop/views/components/choose-folder-from-drive-window.vue:
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "Ok"
   choose-prompt: "フォルダを選択"
 desktop/views/components/crop-window.vue:
   skip: "クロップをスキップ"
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "Ok"
 desktop/views/components/drive-window.vue:
   used: "使用中"
   drive: "ドライブ"
@@ -616,12 +616,12 @@ desktop/views/components/friends-maker.vue:
 desktop/views/components/game-window.vue:
   game: "リバーシ"
 desktop/views/components/home.vue:
-  done: "完了"
+  done: "Fullført"
   add-widget: "ウィジェットを追加:"
-  add: "追加"
+  add: "Legg til"
 desktop/views/input-dialog.vue:
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "Ok"
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
 desktop/views/components/messaging-window.vue:
@@ -709,7 +709,7 @@ desktop/views/components/settings.vue:
   other: "その他"
   license: "ライセンス"
   theme: "テーマ"
-  behaviour: "動作"
+  behaviour: "Oppførsel"
   fetch-on-scroll: "スクロールで自動読み込み"
   fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
   note-visibility: "投稿の公開範囲"
@@ -744,10 +744,10 @@ desktop/views/components/settings.vue:
   test: "テスト"
   mobile: "モバイル"
   disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
-  language: "言語"
+  language: "Språk"
   pick-language: "言語を選択"
-  recommended: "推奨"
-  auto: "自動"
+  recommended: "Anbefalt"
+  auto: "Automatisk"
   specify-language: "言語を指定"
   language-desc: "変更はページの再度読み込み後に反映されます。"
   cache: "キャッシュ"
@@ -885,7 +885,7 @@ desktop/views/components/user-lists-window.vue:
   create-list: "リストを作成"
   list-name: "リスト名"
 desktop/views/components/user-preview.vue:
-  notes: "投稿"
+  notes: "Innlegg"
   following: "フォロー"
   followers: "フォロワー"
 desktop/views/components/users-list.vue:
@@ -1115,7 +1115,7 @@ mobile/views/components/notifications.vue:
 mobile/views/components/post-form.vue:
   add-visible-user: "ユーザーを追加"
   submit: "Send"
-  reply: "返信"
+  reply: "Svar"
   renote: "Renote"
   quote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "この投稿への返信..."
@@ -1210,9 +1210,9 @@ mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"
-  name: "名前"
+  name: "Navn"
   account: "アカウント"
-  location: "場所"
+  location: "Lokasjon"
   description: "自己紹介"
   birthday: "誕生日"
   avatar: "アイコン"
