@@ -29,7 +29,7 @@
 		"@prezzemolo/zip": "0.0.3",
 		"@types/bcryptjs": "2.4.2",
 		"@types/dateformat": "1.0.1",
-		"@types/debug": "0.0.30",
+		"@types/debug": "0.0.31",
 		"@types/deep-equal": "1.0.1",
 		"@types/double-ended-queue": "2.1.0",
 		"@types/elasticsearch": "5.0.26",
