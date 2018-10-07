@@ -1,14 +1,14 @@
 <template>
 <div class="mk-stream-indicator">
-	<p v-if=" stream.state == 'initializing' ">
+	<p v-if="stream.state == 'initializing'">
 		%fa:spinner .pulse%
 		<span>%i18n:@connecting%<mk-ellipsis/></span>
 	</p>
-	<p v-if=" stream.state == 'reconnecting' ">
+	<p v-if="stream.state == 'reconnecting'">
 		%fa:spinner .pulse%
 		<span>%i18n:@reconnecting%<mk-ellipsis/></span>
 	</p>
-	<p v-if=" stream.state == 'connected' ">
+	<p v-if="stream.state == 'connected'">
 		%fa:check%
 		<span>%i18n:@connected%</span>
 	</p>
@@ -22,7 +22,7 @@ import * as anime from 'animejs';
 export default Vue.extend({
 	computed: {
 		stream() {
-			return (this as any).os.stream.useSharedConnection('main');
+			return (this as any).os.stream;
 		}
 	},
 	created() {
