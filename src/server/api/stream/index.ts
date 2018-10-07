@@ -174,7 +174,7 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@autobind
-	private connectChannel(id: string, params: any, channelClass: { new(id: string, connection: Connection): Channel }) {
+	public connectChannel(id: string, params: any, channelClass: { new(id: string, connection: Connection): Channel }) {
 		const channel = new channelClass(id, this);
 		this.channels.push(channel);
 		channel.init(params);
@@ -185,7 +185,7 @@ export default class Connection {
 	 * @param id チャンネルコネクションID
 	 */
 	@autobind
-	private disconnectChannel(id: string) {
+	public disconnectChannel(id: string) {
 		const channel = this.channels.find(c => c.id === id);
 
 		if (channel) {

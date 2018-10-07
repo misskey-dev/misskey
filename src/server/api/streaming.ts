@@ -5,6 +5,7 @@ import Xev from 'xev';
 import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
+import channels from './stream/channels';
 
 module.exports = (server: http.Server) => {
 	// Init websocket server
@@ -21,6 +22,27 @@ module.exports = (server: http.Server) => {
 		const [user, app] = await authenticate(q.i as string);
 
 		const main = new MainStreamConnection(connection, ev, user, app);
+
+		// 後方互換性のため
+		if (request.resourceURL.pathname !== '/streaming') {
+			main.sendMessageToWs = (type: string, payload: any) => {
+				if (type == 'channel') {
+					type = payload.type;
+					payload = payload.body;
+				}
+				connection.send(JSON.stringify({
+					type: type,
+					body: payload
+				}));
+			};
+			if (request.resourceURL.pathname === '/') {
+				main.connectChannel(Math.random().toString(), null,
+					request.resourceURL.pathname === '/' ? channels.homeTimeline :
+					request.resourceURL.pathname === '/local-timeline' ? channels.localTimeline :
+					request.resourceURL.pathname === '/hybrid-timeline' ? channels.hybridTimeline :
+					request.resourceURL.pathname === '/global-timeline' ? channels.globalTimeline : null);
+			}
+		}
 
 		connection.once('close', () => {
 			ev.removeAllListeners();
