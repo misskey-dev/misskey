@@ -291,9 +291,9 @@ common/views/components/theme.vue:
   author: "Auteur"
   desc: "Description"
   export: "エクスポート"
-  import: "インポート"
-  import-by-code: "またはコードをペースト"
-  theme-name-required: "テーマ名は必須です。"
+  import: "Importer"
+  import-by-code: "Ou coller du code"
+  theme-name-required: "Nom du thème est obligatoire."
 common/views/components/cw-button.vue:
   hide: "Masquer"
   show: "Voir plus"
