@@ -699,14 +699,14 @@ desktop/views/components/settings-window.vue:
 desktop/views/components/settings.vue:
   profile: "プロフィール"
   notification: "Notifikasjon"
-  apps: "アプリ"
+  apps: "Apper"
   mute: "ミュート"
   drive: "ドライブ"
   security: "セキュリティ"
   signin: "サインイン履歴"
   password: "パスワード"
   2fa: "二段階認証"
-  other: "その他"
+  other: "Annet"
   license: "ライセンス"
   theme: "テーマ"
   behaviour: "Oppførsel"
@@ -824,7 +824,7 @@ desktop/views/components/settings.profile.vue:
   name: "Navn"
   location: "Lokasjon"
   description: "自己紹介"
-  birthday: "誕生日"
+  birthday: "Bursdag"
   save: "Lagre profilen"
   locked-account: "アカウントの保護"
   is-locked: "フォローを承認制にする"
@@ -840,13 +840,13 @@ desktop/views/components/sub-note-content.vue:
 desktop/views/components/taskmanager.vue:
   title: "タスクマネージャ"
 desktop/views/components/timeline.vue:
-  home: "ホーム"
+  home: "Hjem"
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "メッセージ"
-  list: "リスト"
+  list: "Lister"
   hashtag: "ハッシュタグ"
   add-tag-timeline: "ハッシュタグを追加"
   add-list: "リストを追加"
@@ -858,7 +858,7 @@ desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   drive: "ドライブ"
   favorites: "お気に入り"
-  lists: "リスト"
+  lists: "Lister"
   follow-requests: "フォロー申請"
   customize: "ホームのカスタマイズ"
   admin: "Admin"
@@ -866,10 +866,10 @@ desktop/views/components/ui.header.account.vue:
   signout: "サインアウト"
   dark: "闇に飲まれる"
 desktop/views/components/ui.header.nav.vue:
-  home: "ホーム"
+  home: "Hjem"
   deck: "デッキ"
   messaging: "メッセージ"
-  game: "ゲーム"
+  game: "Spill"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifikasjon"
 desktop/views/components/ui.header.post.vue:
@@ -991,7 +991,7 @@ desktop/views/pages/user/user.vue:
 desktop/views/pages/user/user.home.vue:
   last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
-  title: "フォト"
+  title: "Bilder"
   loading: "読み込み中"
   no-photos: "写真はありません"
 desktop/views/pages/user/user.profile.vue:
@@ -1039,7 +1039,7 @@ desktop/views/widgets/users.vue:
   no-one: "いません！"
 mobile/views/components/drive.vue:
   drive: "ドライブ"
-  used: "使用中"
+  used: "brukt"
   folder-count: "フォルダ"
   count-separator: ","
   file-count: "ファイル"
@@ -1130,7 +1130,7 @@ mobile/views/components/sub-note-content.vue:
   poll: "アンケート"
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
-  load-more: "もっと"
+  load-more: "Mer"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
   adjective: "Mr."
@@ -1152,11 +1152,11 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
-  load-more: "もっと"
+  load-more: "Mer"
 mobile/views/components/users-list.vue:
-  all: "すべて"
+  all: "Alle"
   known: "知り合い"
-  load-more: "もっと"
+  load-more: "Mer"
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 mobile/views/pages/user-lists.vue:
