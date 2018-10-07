@@ -55,7 +55,7 @@ common:
   month-and-day: "{day}/{month}"
   trash: "ゴミ箱"
   weekday-short:
-    sunday: "Søn"
+    sunday: "S"
     monday: "M"
     tuesday: "T"
     wednesday: "O"
@@ -98,7 +98,7 @@ common:
     e: "ここに書いてください"
     f: "あなたが書くのを待っています..."
   search: "検索"
-  delete: "削除"
+  delete: "Slett"
   loading: "読み込み中"
   ok: "わかった"
   update-available-title: "更新があります"
@@ -122,8 +122,8 @@ common:
     turn-of: "{}のターンです"
     past-turn-of: "{}のターン"
     won: "{}の勝ち"
-    black: "黒"
-    white: "白"
+    black: "Sort"
+    white: "Hvit"
     total: "合計"
     this-turn: "{}ターン目"
   widgets:
@@ -310,16 +310,16 @@ common/views/components/messaging-room.vue:
   only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージを入力"
-  send: "送信"
+  send: "Send"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
   only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
 common/views/components/messaging-room.message.vue:
-  is-read: "既読"
+  is-read: "Lest"
   deleted: "このメッセージは削除されました"
 common/views/components/nav.vue:
   about: "Misskeyについて"
-  stats: "統計"
+  stats: "Statistikk"
   status: "ステータス"
   wiki: "Wiki"
   donors: "ドナー"
@@ -379,7 +379,7 @@ common/views/components/signup.vue:
   retype-placeholder: "確認のため再入力してください"
   password-matched: "確認されました"
   password-not-matched: "一致していません"
-  recaptcha: "認証"
+  recaptcha: "Captcha"
   create: "アカウント作成"
   some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
 common/views/components/special-message.vue:
@@ -414,7 +414,7 @@ common/views/widgets/broadcast.vue:
   fetching: "確認中"
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
-  next: "次"
+  next: "Neste"
 common/views/widgets/calendar.vue:
   year: "{}年"
   month: "{}月"
@@ -568,7 +568,7 @@ desktop/views/components/drive.folder.vue:
 desktop/views/components/drive.nav-folder.vue:
   drive: "ドライブ"
 desktop/views/components/drive.vue:
-  search: "検索"
+  search: "Søk"
   load-more: "もっと読み込む"
   empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
   empty-drive: "ドライブには何もありません。"
@@ -636,10 +636,10 @@ desktop/views/components/note-detail.vue:
   add-reaction: "リアクション"
 desktop/views/components/notes.note.vue:
   reposted-by: "{}がRenote"
-  reply: "返信"
+  reply: "Svar"
   renote: "Renote"
   add-reaction: "リアクション"
-  detail: "詳細"
+  detail: "Vis detaljer"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
@@ -656,7 +656,7 @@ desktop/views/components/post-form.vue:
   reply-placeholder: "この投稿への返信..."
   quote-placeholder: "この投稿を引用..."
   submit: "投稿"
-  reply: "返信"
+  reply: "Svar"
   renote: "Renote"
   posted: "投稿しました！"
   replied: "返信しました！"
@@ -680,7 +680,7 @@ desktop/views/components/post-form.vue:
   annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
-  reply: "返信"
+  reply: "Svar"
   attaches: "添付: {}メディア"
   uploading-media: "{}個のメディアをアップロード中"
 desktop/views/components/progress-dialog.vue:
@@ -698,7 +698,7 @@ desktop/views/components/settings-window.vue:
   settings: "設定"
 desktop/views/components/settings.vue:
   profile: "プロフィール"
-  notification: "通知"
+  notification: "Notifikasjon"
   apps: "アプリ"
   mute: "ミュート"
   drive: "ドライブ"
@@ -807,7 +807,7 @@ desktop/views/components/settings.api.vue:
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 desktop/views/components/settings.drive.vue:
-  max: "中"
+  max: "Maks"
   in-use: "使用中"
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
@@ -1041,7 +1041,7 @@ mobile/views/components/drive.vue:
   drive: "ドライブ"
   used: "使用中"
   folder-count: "フォルダ"
-  count-separator: "、"
+  count-separator: ","
   file-count: "ファイル"
   load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
@@ -1252,8 +1252,8 @@ mobile/views/pages/settings.vue:
   post-style-standard: "標準"
   post-style-smart: "スマート"
   notification-position: "通知の表示"
-  notification-position-bottom: "下"
-  notification-position-top: "上"
+  notification-position-bottom: "Bunn"
+  notification-position-top: "Topp"
   theme: "テーマ"
   behavior: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
@@ -1332,7 +1332,7 @@ docs:
       generated: "このドキュメントはAPI定義に基づき自動生成されています。"
     props:
       name: "名前"
-      type: "型"
+      type: "Type"
       description: "説明"
 dev/views/index.vue:
   manage-apps: "アプリの管理"
