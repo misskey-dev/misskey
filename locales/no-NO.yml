@@ -1021,7 +1021,7 @@ desktop/views/widgets/notifications.vue:
   settings: "通知の設定"
 desktop/views/widgets/polls.vue:
   title: "アンケート"
-  refresh: "他を見る"
+  refresh: "Oppdater"
   nothing: "ありません！"
 desktop/views/widgets/post-form.vue:
   title: "Innlegg"
@@ -1030,19 +1030,19 @@ desktop/views/widgets/profile.vue:
   update-banner: "クリックでバナー編集"
   update-avatar: "クリックでアバター編集"
 desktop/views/widgets/trends.vue:
-  title: "トレンド"
-  refresh: "他を見る"
+  title: "Populært nå"
+  refresh: "Oppdater"
   nothing: "ありません！"
 desktop/views/widgets/users.vue:
   title: "おすすめユーザー"
-  refresh: "他を見る"
+  refresh: "Oppdater"
   no-one: "いません！"
 mobile/views/components/drive.vue:
-  drive: "ドライブ"
+  drive: "Disk"
   used: "brukt"
-  folder-count: "フォルダ"
+  folder-count: "Mappe(r)"
   count-separator: ","
-  file-count: "ファイル"
+  file-count: "Fil(er)"
   load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
@@ -1076,7 +1076,7 @@ mobile/views/components/media-video.vue:
   click-to-show: "クリックして表示"
 mobile/views/components/follow-button.vue:
   following: "フォロー中"
-  follow: "フォロー"
+  follow: "Følg"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
@@ -1140,7 +1140,7 @@ mobile/views/components/ui.nav.vue:
   messaging: "メッセージ"
   follow-requests: "フォロー申請"
   search: "Søk"
-  drive: "ドライブ"
+  drive: "Disk"
   favorites: "お気に入り"
   user-lists: "Lister"
   widgets: "ウィジェット"
@@ -1155,7 +1155,7 @@ mobile/views/components/user-timeline.vue:
   load-more: "Mer"
 mobile/views/components/users-list.vue:
   all: "Alle"
-  known: "知り合い"
+  known: "Du kjenner"
   load-more: "Mer"
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
@@ -1163,7 +1163,7 @@ mobile/views/pages/user-lists.vue:
   title: "Lister"
   enter-list-name: "リスト名を入力してください"
 mobile/views/pages/drive.vue:
-  drive: "ドライブ"
+  drive: "Disk"
   more: "もっと見る"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
@@ -1201,7 +1201,7 @@ mobile/views/pages/received-follow-requests.vue:
   reject: "Avslå"
 mobile/views/pages/note.vue:
   title: "投稿"
-  prev: "前の投稿"
+  prev: "Forrige innlegg"
   next: "次の投稿"
 mobile/views/pages/notifications.vue:
   notifications: "Notifikasjon"
