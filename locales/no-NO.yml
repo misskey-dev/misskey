@@ -387,15 +387,15 @@ common/views/components/special-message.vue:
   christmas: "Merry Christmas!"
 common/views/components/stream-indicator.vue:
   connecting: "Tilkobler"
-  reconnecting: "再接続中"
-  connected: "接続完了"
+  reconnecting: "Kobler til på nytt"
+  connected: "Tilkoblet"
 common/views/components/twitter-setting.vue:
   description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のTwitterアカウントに接続されています"
   detail: "詳細..."
   reconnect: "再接続する"
   connect: "Twitterと接続する"
-  disconnect: "切断する"
+  disconnect: "Koble fra"
 common/views/components/uploader.vue:
   waiting: "Venter"
 common/views/components/visibility-chooser.vue:
@@ -535,9 +535,9 @@ desktop/views/components/crop-window.vue:
   ok: "Ok"
 desktop/views/components/drive-window.vue:
   used: "brukt"
-  drive: "ドライブ"
+  drive: "Disk"
 desktop/views/components/drive.file.vue:
-  avatar: "アイコン"
+  avatar: "Avatar"
   banner: "Banner"
   nsfw: "閲覧注意"
   contextmenu:
@@ -566,7 +566,7 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "フォルダ名の変更"
     input-new-folder-name: "新しいフォルダ名を入力してください"
 desktop/views/components/drive.nav-folder.vue:
-  drive: "ドライブ"
+  drive: "Disk"
 desktop/views/components/drive.vue:
   search: "Søk"
   load-more: "もっと読み込む"
@@ -679,7 +679,7 @@ desktop/views/components/post-form.vue:
   enter-username: "ユーザー名を入力してください"
   annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
-  note: "新規投稿"
+  note: "Nytt innlegg"
   reply: "Svar"
   attaches: "添付: {}メディア"
   uploading-media: "{}個のメディアをアップロード中"
@@ -700,8 +700,8 @@ desktop/views/components/settings.vue:
   profile: "プロフィール"
   notification: "Notifikasjon"
   apps: "Apper"
-  mute: "ミュート"
-  drive: "ドライブ"
+  mute: "Demp"
+  drive: "Disk"
   security: "セキュリティ"
   signin: "サインイン履歴"
   password: "パスワード"
@@ -819,11 +819,11 @@ desktop/views/components/settings.password.vue:
   not-match: "新しいパスワードが一致しません"
   changed: "パスワードを変更しました"
 desktop/views/components/settings.profile.vue:
-  avatar: "アイコン"
+  avatar: "Avatar"
   choice-avatar: "画像を選択"
   name: "Navn"
   location: "Lokasjon"
-  description: "自己紹介"
+  description: "Om meg"
   birthday: "Bursdag"
   save: "Lagre profilen"
   locked-account: "アカウントの保護"
@@ -856,7 +856,7 @@ desktop/views/components/ui.header.vue:
   adjective: "-san"
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
-  drive: "ドライブ"
+  drive: "Disk"
   favorites: "お気に入り"
   lists: "Lister"
   follow-requests: "フォロー申請"
@@ -873,7 +873,7 @@ desktop/views/components/ui.header.nav.vue:
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifikasjon"
 desktop/views/components/ui.header.post.vue:
-  post: "新規投稿"
+  post: "Skriv nytt innlegg"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Søk"
 desktop/views/components/received-follow-requests-window.vue:
@@ -958,8 +958,8 @@ desktop/views/pages/favorites.vue:
 desktop/views/pages/home-customize.vue:
   title: "ホームのカスタマイズ"
 desktop/views/pages/note.vue:
-  prev: "前の投稿"
-  next: "次の投稿"
+  prev: "Forrige innlegg"
+  next: "Neste innlegg"
 desktop/views/pages/selectdrive.vue:
   title: "ファイルを選択してください"
   ok: "Ok"
