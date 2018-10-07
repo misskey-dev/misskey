@@ -793,7 +793,7 @@ desktop/views/components/settings.2fa.vue:
   howtoinstall: "インストール方法はこちら"
   scan: "次に、表示されているQRコードをスキャンします:"
   done: "お使いのデバイスに表示されているトークンを入力して完了します:"
-  submit: "完了"
+  submit: "Send"
   success: "設定が完了しました！"
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
@@ -821,11 +821,11 @@ desktop/views/components/settings.password.vue:
 desktop/views/components/settings.profile.vue:
   avatar: "アイコン"
   choice-avatar: "画像を選択"
-  name: "名前"
-  location: "場所"
+  name: "Navn"
+  location: "Lokasjon"
   description: "自己紹介"
   birthday: "誕生日"
-  save: "保存"
+  save: "Lagre profilen"
   locked-account: "アカウントの保護"
   is-locked: "フォローを承認制にする"
   other: "その他"
@@ -862,7 +862,7 @@ desktop/views/components/ui.header.account.vue:
   follow-requests: "フォロー申請"
   customize: "ホームのカスタマイズ"
   admin: "管理"
-  settings: "設定"
+  settings: "Innstillinger"
   signout: "サインアウト"
   dark: "闇に飲まれる"
 desktop/views/components/ui.header.nav.vue:
@@ -871,11 +871,11 @@ desktop/views/components/ui.header.nav.vue:
   messaging: "メッセージ"
   game: "ゲーム"
 desktop/views/components/ui.header.notifications.vue:
-  title: "通知"
+  title: "Notifikasjon"
 desktop/views/components/ui.header.post.vue:
   post: "新規投稿"
 desktop/views/components/ui.header.search.vue:
-  placeholder: "検索"
+  placeholder: "Søk"
 desktop/views/components/received-follow-requests-window.vue:
   title: "フォロー申請"
   accept: "承認"
@@ -962,7 +962,7 @@ desktop/views/pages/note.vue:
   next: "次の投稿"
 desktop/views/pages/selectdrive.vue:
   title: "ファイルを選択してください"
-  ok: "決定"
+  ok: "Ok"
   cancel: "キャンセル"
   upload: "PCからドライブにファイルをアップロード"
 desktop/views/pages/search.vue:
@@ -1017,15 +1017,15 @@ desktop/views/pages/user/user.timeline.vue:
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
 desktop/views/widgets/notifications.vue:
-  title: "通知"
+  title: "Notifikasjon"
   settings: "通知の設定"
 desktop/views/widgets/polls.vue:
   title: "アンケート"
   refresh: "他を見る"
   nothing: "ありません！"
 desktop/views/widgets/post-form.vue:
-  title: "投稿"
-  note: "投稿"
+  title: "Innlegg"
+  note: "Innlegg"
 desktop/views/widgets/profile.vue:
   update-banner: "クリックでバナー編集"
   update-avatar: "クリックでアバター編集"
@@ -1064,7 +1064,7 @@ mobile/views/components/drive.file.vue:
 mobile/views/components/drive.file-detail.vue:
   download: "ダウンロード"
   rename: "名前を変更"
-  move: "移動"
+  move: "Flytt"
   hash: "ハッシュ (md5)"
   exif: "EXIF"
   nsfw: "閲覧注意"
@@ -1092,7 +1092,7 @@ mobile/views/components/note.vue:
   deleted: "この投稿は削除されました"
   location: "位置情報"
 mobile/views/components/note-detail.vue:
-  reply: "返信"
+  reply: "Svar"
   reaction: "リアクション"
   reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
@@ -1114,7 +1114,7 @@ mobile/views/components/notifications.vue:
   empty: "ありません！"
 mobile/views/components/post-form.vue:
   add-visible-user: "ユーザーを追加"
-  submit: "投稿"
+  submit: "Send"
   reply: "返信"
   renote: "Renote"
   quote-placeholder: "この投稿を引用... (オプション)"
