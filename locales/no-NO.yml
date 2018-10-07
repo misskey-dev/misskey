@@ -393,7 +393,7 @@ common/views/components/twitter-setting.vue:
   description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のTwitterアカウントに接続されています"
   detail: "Detaljer..."
-  reconnect: "再接続する"
+  reconnect: "Koble til på nytt"
   connect: "Twitterと接続する"
   disconnect: "Koble fra"
 common/views/components/uploader.vue:
@@ -541,7 +541,7 @@ desktop/views/components/drive.file.vue:
   banner: "Banner"
   nsfw: "NSFW"
   contextmenu:
-    rename: "名前を変更"
+    rename: "Endre navn"
     mark-as-sensitive: "閲覧注意に設定"
     unmark-as-sensitive: "閲覧注意を解除"
     copy-url: "URLをコピー"
@@ -553,7 +553,7 @@ desktop/views/components/drive.file.vue:
     add-app: "アプリを追加"
     rename-file: "ファイル名の変更"
     input-new-file-name: "新しいファイル名を入力してください"
-    copied: "コピー完了"
+    copied: "Kopiert"
     copied-url-to-clipboard: "URLをクリップボードにコピーしました"
 desktop/views/components/drive.folder.vue:
   unable-to-process: "操作を完了できません"
@@ -562,7 +562,7 @@ desktop/views/components/drive.folder.vue:
   contextmenu:
     move-to-this-folder: "このフォルダへ移動"
     show-in-new-window: "新しいウィンドウで表示"
-    rename: "名前を変更"
+    rename: "Endre navn"
     rename-folder: "フォルダ名の変更"
     input-new-folder-name: "新しいフォルダ名を入力してください"
 desktop/views/components/drive.nav-folder.vue:
@@ -625,7 +625,7 @@ desktop/views/input-dialog.vue:
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
 desktop/views/components/messaging-window.vue:
-  title: "メッセージ"
+  title: "Samtaler"
 desktop/views/components/note-detail.vue:
   more: "会話をもっと読み込む"
   private: "この投稿は非公開です"
@@ -647,7 +647,7 @@ desktop/views/components/notes.vue:
   retry: "Prøv på nytt"
   load-more: "もっと読み込む"
 desktop/views/components/notifications.vue:
-  more: "もっと見る"
+  more: "Mer"
   empty: "ありません！"
 desktop/views/components/post-form.vue:
   add-visible-user: "+ユーザーを追加"
@@ -687,7 +687,7 @@ desktop/views/components/progress-dialog.vue:
   waiting: "Venter"
 desktop/views/components/renote-form.vue:
   quote: "引用する..."
-  cancel: "キャンセル"
+  cancel: "Avbryt"
   renote: "Renote"
   reposting: "しています..."
   success: "Renoteしました！"
@@ -704,10 +704,10 @@ desktop/views/components/settings.vue:
   drive: "Disk"
   security: "セキュリティ"
   signin: "サインイン履歴"
-  password: "パスワード"
-  2fa: "二段階認証"
+  password: "Passord"
+  2fa: "To-faktor autentisering"
   other: "Annet"
-  license: "ライセンス"
+  license: "Lisens"
   theme: "Utseende"
   behaviour: "Oppførsel"
   fetch-on-scroll: "スクロールで自動読み込み"
@@ -781,12 +781,12 @@ desktop/views/components/settings.vue:
   third-parties: "サードパーティ"
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
-  detail: "詳細..."
+  detail: "Detaljer..."
   url: "https://www.google.co.jp/intl/ja/landing/2step/"
   caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
   register: "デバイスを登録する"
   already-registered: "既に設定は完了しています。"
-  unregister: "設定を解除"
+  unregister: "Avregistrer"
   unregistered: "二段階認証が無効になりました。"
   enter-password: "パスワードを入力してください"
   authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
@@ -820,7 +820,7 @@ desktop/views/components/settings.password.vue:
   changed: "パスワードを変更しました"
 desktop/views/components/settings.profile.vue:
   avatar: "Avatar"
-  choice-avatar: "画像を選択"
+  choice-avatar: "Velg et bilde"
   name: "Navn"
   location: "Lokasjon"
   description: "Om meg"
@@ -857,7 +857,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   drive: "Disk"
-  favorites: "お気に入り"
+  favorites: "Favoritter"
   lists: "Lister"
   follow-requests: "フォロー申請"
   customize: "ホームのカスタマイズ"
@@ -868,7 +868,7 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "Hjem"
   deck: "Kolonner"
-  messaging: "メッセージ"
+  messaging: "Samtaler"
   game: "Spill"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifikasjon"
@@ -963,7 +963,7 @@ desktop/views/pages/note.vue:
 desktop/views/pages/selectdrive.vue:
   title: "ファイルを選択してください"
   ok: "Ok"
-  cancel: "キャンセル"
+  cancel: "Avbryt"
   upload: "PCからドライブにファイルをアップロード"
 desktop/views/pages/search.vue:
   not-available: "検索機能はインスタンスの設定で無効になっています。"
@@ -978,11 +978,11 @@ desktop/views/pages/user-list.users.vue:
   username: "ユーザー名"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "知り合いのフォロワー"
-  loading: "読み込み中"
+  loading: "Laster inn"
   no-users: "知り合いのフォロワーはいません"
 desktop/views/pages/user/user.friends.vue:
   title: "よく話すユーザー"
-  loading: "読み込み中"
+  loading: "Laster inn"
   no-users: "よく話すユーザーはいません"
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーは凍結されています。"
@@ -992,7 +992,7 @@ desktop/views/pages/user/user.home.vue:
   last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
   title: "Bilder"
-  loading: "読み込み中"
+  loading: "Laster inn"
   no-photos: "写真はありません"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "フォローされています"
@@ -1015,10 +1015,10 @@ desktop/views/pages/user/user.timeline.vue:
   with-media: "Media"
   empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
-  title: "メッセージ"
+  title: "Melding"
 desktop/views/widgets/notifications.vue:
   title: "Notifikasjon"
-  settings: "通知の設定"
+  settings: "Innstillinger"
 desktop/views/widgets/polls.vue:
   title: "アンケート"
   refresh: "Oppdater"
