@@ -9,7 +9,8 @@
 	:href="video.url"
 	target="_blank"
 	:style="imageStyle"
-	:title="video.name">
+	:title="video.name"
+>
 	%fa:R play-circle%
 </a>
 </template>
@@ -32,7 +33,7 @@ export default Vue.extend({
 	computed: {
 		imageStyle(): any {
 			return {
-				'background-image': `url(${this.video.url})`
+				'background-image': null // TODO `url(${this.video.thumbnailUrl})`
 			};
 		}
 	}
