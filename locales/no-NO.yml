@@ -222,7 +222,7 @@ common/views/components/games/reversi/reversi.index.vue:
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "ゲームの設定"
   choose-map: "マップを選択"
-  random: "ランダム"
+  random: "Tilfeldig"
   black-or-white: "先手/後手"
   black-is: "{}が黒"
   rules: "Regler"
@@ -588,10 +588,10 @@ desktop/views/components/drive.vue:
     upload: "ファイルをアップロード"
     url-upload: "URLからアップロード"
 desktop/views/components/media-image.vue:
-  sensitive: "閲覧注意"
+  sensitive: "NSFW"
   click-to-show: "クリックして表示"
 desktop/views/components/media-video.vue:
-  sensitive: "閲覧注意"
+  sensitive: "Innholdet er NSFW"
   click-to-show: "クリックして表示"
 desktop/views/components/follow-button.vue:
   following: "フォロー中"
@@ -673,7 +673,7 @@ desktop/views/components/post-form.vue:
   text-remain: "残り{}文字"
   recent-tags: "Nylig"
   click-to-tagging: "クリックでタグ付け"
-  visibility: "公開範囲"
+  visibility: "Synlighet"
   geolocation-alert: "お使いの端末は位置情報に対応していません"
   error: "Feil"
   enter-username: "ユーザー名を入力してください"
@@ -1069,10 +1069,10 @@ mobile/views/components/drive.file-detail.vue:
   exif: "EXIF"
   nsfw: "閲覧注意"
 mobile/views/components/media-image.vue:
-  sensitive: "閲覧注意"
+  sensitive: "NSFW"
   click-to-show: "クリックして表示"
 mobile/views/components/media-video.vue:
-  sensitive: "閲覧注意"
+  sensitive: "Innholdet er NSFW"
   click-to-show: "クリックして表示"
 mobile/views/components/follow-button.vue:
   following: "フォロー中"
@@ -1181,7 +1181,7 @@ mobile/views/pages/home.vue:
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
-  signup: "新規登録"
+  signup: "Bli med"
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
