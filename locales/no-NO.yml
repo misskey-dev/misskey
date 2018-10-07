@@ -288,8 +288,8 @@ common/views/components/theme.vue:
   select-theme: "テーマを選択してください"
   uninstall: "アンインストール"
   uninstalled: "「{}」をアンインストールしました"
-  author: "作者"
-  desc: "説明"
+  author: "Forfatter"
+  desc: "Beskrivelse"
   export: "エクスポート"
   import: "インポート"
   import-by-code: "またはコードをペースト"
@@ -299,7 +299,7 @@ common/views/components/cw-button.vue:
   show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
-  you: "あなた"
+  you: "Du"
   no-history: "履歴はありません"
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはありません"
@@ -322,9 +322,9 @@ common/views/components/nav.vue:
   stats: "Statistikk"
   status: "ステータス"
   wiki: "Wiki"
-  donors: "ドナー"
+  donors: "Donatorer"
   repository: "リポジトリ"
-  develop: "開発者"
+  develop: "Utviklere"
   feedback: "フィードバック"
 common/views/components/note-menu.vue:
   detail: "Detaljer"
