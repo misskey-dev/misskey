@@ -129,7 +129,7 @@ common:
   widgets:
     analog-clock: "アナログ時計"
     profile: "プロフィール"
-    calendar: "カレンダー"
+    calendar: "Kalender"
     timemachine: "カレンダー(タイムマシン)"
     activity: "アクティビティ"
     rss: "RSSリーダー"
@@ -138,13 +138,13 @@ common:
     photo-stream: "フォトストリーム"
     posts-monitor: "投稿チャート"
     slideshow: "スライドショー"
-    version: "バージョン"
+    version: "Versjon"
     broadcast: "ブロードキャスト"
     notifications: "Notifikasjon"
     users: "おすすめユーザー"
     polls: "アンケート"
     post-form: "投稿フォーム"
-    messaging: "メッセージ"
+    messaging: "Meldinger"
     server: "サーバー情報"
     donation: "寄付のお願い"
     nav: "ナビゲーション"
@@ -156,7 +156,7 @@ common:
     local: "Lokalt"
     hybrid: "ソーシャル"
     hashtag: "ハッシュタグ"
-    global: "グローバル"
+    global: "Globalt"
     mentions: "あなた宛て"
     direct: "ダイレクト投稿"
     notifications: "Notifikasjon"
@@ -167,7 +167,7 @@ common:
     swap-down: "Flytt ned"
     remove: "カラムを削除"
     add-column: "カラムを追加"
-    rename: "名前を変更"
+    rename: "Endre navn"
     stack-left: "左に重ねる"
     pop-right: "Til høyre"
 auth/views/form.vue:
@@ -404,7 +404,7 @@ common/views/components/visibility-chooser.vue:
   home-desc: "ホームタイムラインにのみ公開"
   followers: "Følgere"
   followers-desc: "自分のフォロワーにのみ公開"
-  specified: "ダイレクト"
+  specified: "Direkte"
   specified-desc: "指定したユーザーにのみ公開"
   private: "Privat"
 common/views/components/trends.vue:
@@ -594,7 +594,7 @@ desktop/views/components/media-video.vue:
   sensitive: "Innholdet er NSFW"
   click-to-show: "クリックして表示"
 desktop/views/components/follow-button.vue:
-  following: "フォロー中"
+  following: "Følger"
   follow: "Følg"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
@@ -1054,7 +1054,7 @@ mobile/views/components/drive.vue:
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
 mobile/views/components/drive-file-detail.vue:
-  rename: "名前を変更"
+  rename: "Endre navn"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1075,7 +1075,7 @@ mobile/views/components/media-video.vue:
   sensitive: "Innholdet er NSFW"
   click-to-show: "クリックして表示"
 mobile/views/components/follow-button.vue:
-  following: "フォロー中"
+  following: "Følger"
   follow: "Følg"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
@@ -1084,7 +1084,7 @@ mobile/views/components/friends-maker.vue:
   title: "気になるユーザーをフォロー"
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
-  refresh: "もっと見る"
+  refresh: "Se mer"
   close: "Lukk"
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
@@ -1141,7 +1141,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "フォロー申請"
   search: "Søk"
   drive: "Disk"
-  favorites: "お気に入り"
+  favorites: "Favoritter"
   user-lists: "Lister"
   widgets: "ウィジェット"
   game: "Spill"
@@ -1158,13 +1158,13 @@ mobile/views/components/users-list.vue:
   known: "Du kjenner"
   load-more: "Mer"
 mobile/views/pages/favorites.vue:
-  title: "お気に入り"
+  title: "Favoritter"
 mobile/views/pages/user-lists.vue:
   title: "Lister"
   enter-list-name: "リスト名を入力してください"
 mobile/views/pages/drive.vue:
   drive: "Disk"
-  more: "もっと見る"
+  more: "Vis mer"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
 mobile/views/pages/followers.vue:
