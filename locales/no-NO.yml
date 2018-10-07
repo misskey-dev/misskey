@@ -148,7 +148,7 @@ common:
     server: "サーバー情報"
     donation: "寄付のお願い"
     nav: "ナビゲーション"
-    tips: "ヒント"
+    tips: "Tips"
     hashtags: "ハッシュタグ"
   deck:
     widgets: "ウィジェット"
@@ -881,7 +881,7 @@ desktop/views/components/received-follow-requests-window.vue:
   accept: "Godta"
   reject: "Avslå"
 desktop/views/components/user-lists-window.vue:
-  title: "リスト"
+  title: "Brukerlister"
   create-list: "リストを作成"
   list-name: "リスト名"
 desktop/views/components/user-preview.vue:
@@ -1101,11 +1101,11 @@ mobile/views/components/note-detail.vue:
 mobile/views/components/note-preview.vue:
   admin: "admin"
   bot: "bot"
-  cat: "cat"
+  cat: "katt"
 mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
-  cat: "cat"
+  cat: "katt"
 mobile/views/components/notes.vue:
   failed: "読み込みに失敗しました。"
   retry: "リトライ"
@@ -1121,7 +1121,7 @@ mobile/views/components/post-form.vue:
   reply-placeholder: "この投稿への返信..."
   cw-placeholder: "内容への注釈 (オプション)"
   location-alert: "お使いの端末は位置情報に対応していません"
-  error: "エラー"
+  error: "Feil"
   username-prompt: "ユーザー名を入力してください"
 mobile/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
@@ -1142,9 +1142,9 @@ mobile/views/components/ui.nav.vue:
   search: "Søk"
   drive: "ドライブ"
   favorites: "お気に入り"
-  user-lists: "リスト"
+  user-lists: "Lister"
   widgets: "ウィジェット"
-  game: "ゲーム"
+  game: "Spill"
   darkmode: "ダークモード"
   settings: "Innstillinger"
   admin: "Admin"
@@ -1160,7 +1160,7 @@ mobile/views/components/users-list.vue:
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 mobile/views/pages/user-lists.vue:
-  title: "リスト"
+  title: "Lister"
   enter-list-name: "リスト名を入力してください"
 mobile/views/pages/drive.vue:
   drive: "ドライブ"
