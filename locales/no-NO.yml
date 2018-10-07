@@ -889,9 +889,9 @@ desktop/views/components/user-preview.vue:
   following: "フォロー"
   followers: "フォロワー"
 desktop/views/components/users-list.vue:
-  all: "すべて"
+  all: "Alle"
   iknow: "知り合い"
-  load-more: "もっと"
+  load-more: "Mer"
   fetching: "読み込んでいます"
 desktop/views/components/users-list-item.vue:
   followed: "フォローされています"
