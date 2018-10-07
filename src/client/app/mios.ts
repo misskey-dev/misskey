@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
@@ -5,10 +6,8 @@ import * as uuid from 'uuid';
 import initStore from './store';
 import { apiUrl, version, lang } from './config';
 import Progress from './common/scripts/loading';
-import Connection from './common/scripts/stream';
 
 import Err from './common/views/components/connect-failed.vue';
-import { erase } from '../../prelude/array';
 import Stream from './common/scripts/stream';
 
 //#region api requests
@@ -120,42 +119,36 @@ export default class MiOS extends EventEmitter {
 
 		this.shouldRegisterSw = shouldRegisterSw;
 
-		//#region BIND
-		this.log = this.log.bind(this);
-		this.logInfo = this.logInfo.bind(this);
-		this.logWarn = this.logWarn.bind(this);
-		this.logError = this.logError.bind(this);
-		this.init = this.init.bind(this);
-		this.api = this.api.bind(this);
-		this.getMeta = this.getMeta.bind(this);
-		this.registerSw = this.registerSw.bind(this);
-		//#endregion
-
 		if (this.debug) {
 			(window as any).os = this;
 		}
 	}
 
+	@autobind
 	public log(...args) {
 		if (!this.debug) return;
 		console.log.apply(null, args);
 	}
 
+	@autobind
 	public logInfo(...args) {
 		if (!this.debug) return;
 		console.info.apply(null, args);
 	}
 
+	@autobind
 	public logWarn(...args) {
 		if (!this.debug) return;
 		console.warn.apply(null, args);
 	}
 
+	@autobind
 	public logError(...args) {
 		if (!this.debug) return;
 		console.error.apply(null, args);
 	}
 
+	@autobind
 	public signout() {
 		this.store.dispatch('logout');
 		location.href = '/';
@@ -165,6 +158,7 @@ export default class MiOS extends EventEmitter {
 	 * Initialize MiOS (boot)
 	 * @param callback A function that call when initialized
 	 */
+	@autobind
 	public async init(callback) {
 		this.store = initStore(this);
 
@@ -262,6 +256,7 @@ export default class MiOS extends EventEmitter {
 	/**
 	 * Register service worker
 	 */
+	@autobind
 	private registerSw() {
 		// Check whether service worker and push manager supported
 		const isSwSupported =
@@ -344,6 +339,7 @@ export default class MiOS extends EventEmitter {
 	 * @param endpoint エンドポイント名
 	 * @param data パラメータ
 	 */
+	@autobind
 	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false): Promise<{ [x: string]: any }> {
 		if (++pending === 1) {
 			spinner = document.createElement('div');
@@ -427,6 +423,7 @@ export default class MiOS extends EventEmitter {
 	 * Misskeyのメタ情報を取得します
 	 * @param force キャッシュを無視するか否か
 	 */
+	@autobind
 	public getMeta(force = false) {
 		return new Promise<{ [x: string]: any }>(async (res, rej) => {
 			if (this.isMetaFetching) {
@@ -453,16 +450,6 @@ export default class MiOS extends EventEmitter {
 				res(this.meta.data);
 			}
 		});
-	}
-
-	public connections: Connection[] = [];
-
-	public registerStreamConnection(connection: Connection) {
-		this.connections.push(connection);
-	}
-
-	public unregisterStreamConnection(connection: Connection) {
-		this.connections = erase(connection, this.connections);
 	}
 }
 
