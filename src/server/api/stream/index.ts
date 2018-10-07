@@ -23,6 +23,7 @@ export default class Connection {
 	private wsConnection: websocket.connection;
 	public subscriber: Xev;
 	private channels: Channel[] = [];
+	private subscribingNotes: any = {};
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -99,8 +100,17 @@ export default class Connection {
 	@autobind
 	private onSubscribeNote(payload: any) {
 		if (!payload.id) return;
-		log(`CAPTURE: ${payload.id} by @${this.user.username}`);
-		this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
+
+		if (this.subscribingNotes[payload.id] == null) {
+			this.subscribingNotes[payload.id] = 0;
+		}
+
+		this.subscribingNotes[payload.id]++;
+
+		if (this.subscribingNotes[payload.id] == 1) {
+			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
+		}
+
 		if (payload.read) {
 			readNote(this.user._id, payload.id);
 		}
@@ -112,8 +122,12 @@ export default class Connection {
 	@autobind
 	private onUnsubscribeNote(payload: any) {
 		if (!payload.id) return;
-		log(`DECAPTURE: ${payload.id} by @${this.user.username}`);
-		this.subscriber.off(`noteStream:${payload.id}`, this.onNoteStreamMessage);
+
+		this.subscribingNotes[payload.id]--;
+		if (this.subscribingNotes[payload.id] <= 0) {
+			delete this.subscribingNotes[payload.id];
+			this.subscriber.off(`noteStream:${payload.id}`, this.onNoteStreamMessage);
+		}
 	}
 
 	@autobind
