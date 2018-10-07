@@ -97,6 +97,17 @@ export default prop => ({
 					this.$_ns_target.poll.choices.find(c => c.id === choice).votes++;
 					break;
 				}
+
+				case 'deleted': {
+					Vue.set(this.$_ns_target, 'deletedAt', body.deletedAt);
+					this.$_ns_target.text = null;
+					this.$_ns_target.tags = [];
+					this.$_ns_target.fileIds = [];
+					this.$_ns_target.poll = null;
+					this.$_ns_target.geo = null;
+					this.$_ns_target.cw = null;
+					break;
+				}
 			}
 
 			this.$emit(`update:${prop}`, this.$_ns_note_);

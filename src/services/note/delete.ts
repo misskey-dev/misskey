@@ -15,12 +15,14 @@ import config from '../../config';
  * @param note 投稿
  */
 export default async function(user: IUser, note: INote) {
+	const deletedAt = new Date();
+
 	await Note.update({
 		_id: note._id,
 		userId: user._id
 	}, {
 		$set: {
-			deletedAt: new Date(),
+			deletedAt: deletedAt,
 			text: null,
 			tags: [],
 			fileIds: [],
@@ -30,7 +32,9 @@ export default async function(user: IUser, note: INote) {
 		}
 	});
 
-	publishNoteStream(note._id, 'deleted', {});
+	publishNoteStream(note._id, 'deleted', {
+		deletedAt: deletedAt
+	});
 
 	//#region ローカルの投稿なら削除アクティビティを配送
 	if (isLocalUser(user)) {

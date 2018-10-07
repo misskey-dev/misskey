@@ -39,7 +39,7 @@
 				</div>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 			</div>
-			<footer>
+			<footer v-if="p.deletedAt == null">
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
 				<button @click="reply">
 					<template v-if="p.reply">%fa:reply-all%</template>
