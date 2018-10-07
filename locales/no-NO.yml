@@ -1136,10 +1136,10 @@ mobile/views/components/ui.header.vue:
   adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
-  notifications: "通知"
+  notifications: "Notifikasjon"
   messaging: "メッセージ"
   follow-requests: "フォロー申請"
-  search: "検索"
+  search: "Søk"
   drive: "ドライブ"
   favorites: "お気に入り"
   user-lists: "リスト"
