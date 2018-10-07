@@ -50,7 +50,6 @@ export default Vue.extend({
 			const reader = new FileReader();
 			reader.onload = (e: any) => {
 				this.checkExistence(e.target.result).then(result => {
-					console.log(result);
 					if (result !== null) {
 						this.$emit('uploaded', result);
 						return;
@@ -58,7 +57,7 @@ export default Vue.extend({
 
 					// Upload if the file didn't exist yet
 					const buf = new Uint8Array(e.target.result);
-					let bin = "";
+					let bin = '';
 					// We use for-of loop instead of apply() to avoid RangeError
 					// SEE: https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
 					for (const byte of buf) bin += String.fromCharCode(byte);
@@ -107,8 +106,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .mk-uploader
 	overflow auto
 
