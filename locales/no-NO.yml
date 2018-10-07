@@ -9,8 +9,8 @@ common:
   intro:
     title: "Hva er Misskey?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
-    features: "特徴"
-    rich-contents: "投稿"
+    features: "Funksjoner"
+    rich-contents: "Innlegg"
     rich-contents-desc: "自分の考え、話題の出来事、皆と共有したいことについて発信してください。必要であれば、様々な構文を使って投稿を装飾したり、好きな画像、動画などのファイルやアンケートを添付することもできます。"
     reaction: "リアクション"
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
@@ -124,7 +124,7 @@ common:
     won: "{}の勝ち"
     black: "Sort"
     white: "Hvit"
-    total: "合計"
+    total: "Totalt"
     this-turn: "{}ターン目"
   widgets:
     analog-clock: "アナログ時計"
@@ -199,7 +199,7 @@ common/views/components/games/reversi/reversi.vue:
     waiting-for: "{}を待っています"
     cancel: "キャンセル"
 common/views/components/games/reversi/reversi.game.vue:
-  surrender: "投了"
+  surrender: "Gi opp"
   surrendered: "投了により"
   is-llotheo: "石の少ない方が勝ち(ロセオ)"
   looped-map: "ループマップ"
@@ -207,17 +207,17 @@ common/views/components/games/reversi/reversi.game.vue:
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "他のMisskeyユーザーとリバーシで対戦しよう"
-  invite: "招待"
+  invite: "Inviter"
   rule: "遊び方"
   rule-desc: "リバーシは、相手と交互に石をボードに置いて、相手の石を挟んで自分の色に変えてゆき、最終的に残った石が多い方が勝ちというボードゲームです。"
-  mode-invite: "招待"
+  mode-invite: "Inviter"
   mode-invite-desc: "指定したユーザーと対戦するモードです。"
   invitations: "対局の招待があります！"
   my-games: "自分の対局"
   all-games: "みんなの対局"
   enter-username: "ユーザー名を入力してください"
   game-state:
-    ended: "終了"
+    ended: "Ferdig"
     playing: "進行中"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "ゲームの設定"
@@ -295,7 +295,7 @@ common/views/components/theme.vue:
   import-by-code: "またはコードをペースト"
   theme-name-required: "テーマ名は必須です。"
 common/views/components/cw-button.vue:
-  hide: "隠す"
+  hide: "Skjul"
   show: "もっと見る"
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
@@ -327,7 +327,7 @@ common/views/components/nav.vue:
   develop: "開発者"
   feedback: "フィードバック"
 common/views/components/note-menu.vue:
-  detail: "詳細"
+  detail: "Detaljer"
   copy-link: "リンクをコピー"
   favorite: "お気に入り"
   pin: "ピン留め"
@@ -501,7 +501,7 @@ desktop/views/components/charts.vue:
   title: "チャート"
   per-day: "1日ごと"
   per-hour: "1時間ごと"
-  notes: "投稿"
+  notes: "Innlegg"
   users: "ユーザー"
   drive: "ドライブ"
   network: "ネットワーク"
@@ -671,7 +671,7 @@ desktop/views/components/post-form.vue:
   insert-a-kao: "v('ω')v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
-  recent-tags: "最近"
+  recent-tags: "Nylig"
   click-to-tagging: "クリックでタグ付け"
   visibility: "公開範囲"
   geolocation-alert: "お使いの端末は位置情報に対応していません"
@@ -853,7 +853,7 @@ desktop/views/components/timeline.vue:
   list-name: "リスト名"
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
-  adjective: "さん"
+  adjective: "-san"
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   drive: "ドライブ"
@@ -861,7 +861,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "リスト"
   follow-requests: "フォロー申請"
   customize: "ホームのカスタマイズ"
-  admin: "管理"
+  admin: "Admin"
   settings: "Innstillinger"
   signout: "サインアウト"
   dark: "闇に飲まれる"
@@ -902,17 +902,17 @@ desktop/views/pages/admin/admin.vue:
   dashboard: "ダッシュボード"
   drive: "ドライブ"
   users: "ユーザー"
-  update: "更新"
+  update: "Oppdater"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
   all-notes: "全ての投稿"
   original-notes: "このインスタンスの投稿"
-  invite: "招待"
+  invite: "Inviter"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "ユーザーの凍結"
-  suspend: "凍結"
+  suspend: "Suspender"
   suspended: "凍結しました"
 desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend-user: "ユーザーの凍結の解除"
@@ -950,7 +950,7 @@ desktop/views/pages/welcome.vue:
   announcements: "お知らせ"
   photos: "最近の画像"
   powered-by-misskey: "Powered by <b>Misskey</b>."
-  info: "情報"
+  info: "Informasjon"
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 desktop/views/pages/favorites.vue:
@@ -1005,7 +1005,7 @@ desktop/views/pages/user/user.profile.vue:
   push-to-a-list: "リストに追加"
   list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
-  posts: "投稿"
+  posts: "Innlegg"
   following: "フォロー"
   followers: "フォロワー"
   is-bot: "このアカウントはBotです"
@@ -1133,7 +1133,7 @@ mobile/views/components/timeline.vue:
   load-more: "もっと"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
-  adjective: "さん"
+  adjective: "Mr."
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "Notifikasjon"
@@ -1147,7 +1147,7 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   darkmode: "ダークモード"
   settings: "Innstillinger"
-  admin: "管理"
+  admin: "Admin"
   about: "Misskeyについて"
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
@@ -1185,7 +1185,7 @@ mobile/views/pages/welcome.vue:
 mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
-  add-widget: "追加"
+  add-widget: "Legg til"
   customization-tips: "カスタマイズのヒント"
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
