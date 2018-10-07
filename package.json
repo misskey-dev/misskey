@@ -229,7 +229,7 @@
 		"webpack": "4.20.2",
 		"webpack-cli": "3.1.2",
 		"websocket": "1.0.28",
-		"ws": "6.0.0",
+		"ws": "6.1.0",
 		"xev": "2.0.1"
 	},
 	"greenkeeper": {
