@@ -337,7 +337,7 @@ common/views/components/note-menu.vue:
   remote: "投稿元で見る"
 common/views/components/poll.vue:
   vote-to: "「{}」に投票する"
-  vote-count: "{}票"
+  vote-count: "{} stemmer"
   total-users: "{}人が投票"
   vote: "投票する"
   show-result: "結果を見る"
@@ -375,7 +375,7 @@ common/views/components/signup.vue:
   weak-password: "弱いパスワード"
   normal-password: "まあまあのパスワード"
   strong-password: "強いパスワード"
-  retype: "再入力"
+  retype: "Gjenta"
   retype-placeholder: "確認のため再入力してください"
   password-matched: "確認されました"
   password-not-matched: "一致していません"
@@ -386,7 +386,7 @@ common/views/components/special-message.vue:
   new-year: "Happy New Year!"
   christmas: "Merry Christmas!"
 common/views/components/stream-indicator.vue:
-  connecting: "接続中"
+  connecting: "Tilkobler"
   reconnecting: "再接続中"
   connected: "接続完了"
 common/views/components/twitter-setting.vue:
@@ -397,7 +397,7 @@ common/views/components/twitter-setting.vue:
   connect: "Twitterと接続する"
   disconnect: "切断する"
 common/views/components/uploader.vue:
-  waiting: "待機中"
+  waiting: "Venter"
 common/views/components/visibility-chooser.vue:
   public: "Offentlig"
   home: "ホーム"
@@ -411,7 +411,7 @@ common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
 common/views/widgets/broadcast.vue:
-  fetching: "確認中"
+  fetching: "Henter"
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
   next: "Neste"
