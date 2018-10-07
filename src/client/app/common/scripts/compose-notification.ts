@@ -13,21 +13,21 @@ type Notification = {
 
 export default function(type, data): Notification {
 	switch (type) {
-		case 'drive_file_created':
+		case 'driveFileCreated':
 			return {
 				title: '%i18n:common.notification.file-uploaded%',
 				body: data.name,
 				icon: data.url
 			};
 
-		case 'unread_messaging_message':
+		case 'unreadMessagingMessage':
 			return {
 				title: '%i18n:common.notification.message-from%'.split("{}")[0] + `${getUserName(data.user)}` + '%i18n:common.notification.message-from%'.split("{}")[1] ,
 				body: data.text, // TODO: getMessagingMessageSummary(data),
 				icon: data.user.avatarUrl
 			};
 
-		case 'reversi_invited':
+		case 'reversiInvited':
 			return {
 				title: '%i18n:common.notification.reversi-invited%',
 				body: '%i18n:common.notification.reversi-invited-by%'.split("{}")[0] + `${getUserName(data.parent)}` + '%i18n:common.notification.reversi-invited-by%'.split("{}")[1],

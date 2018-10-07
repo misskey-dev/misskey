@@ -21,23 +21,19 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
-
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 		this.connection.on('mention', this.onNote);
 
 		this.fetch();
 	},
 
 	beforeDestroy() {
-		this.connection.off('mention', this.onNote);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {

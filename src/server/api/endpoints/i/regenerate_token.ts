@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import User, { ILocalUser } from '../../../../models/user';
-import { publishUserStream } from '../../../../stream';
+import { publishMainStream } from '../../../../stream';
 import generateUserToken from '../../common/generate-native-user-token';
 
 export const meta = {
@@ -33,5 +33,5 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	res();
 
 	// Publish event
-	publishUserStream(user._id, 'my_token_regenerated');
+	publishMainStream(user._id, 'myTokenRegenerated');
 });

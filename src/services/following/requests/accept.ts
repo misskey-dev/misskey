@@ -7,7 +7,7 @@ import { deliver } from '../../../queue';
 import Following from '../../../models/following';
 import FollowingLog from '../../../models/following-log';
 import FollowedLog from '../../../models/followed-log';
-import { publishUserStream } from '../../../stream';
+import { publishMainStream } from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	const following = await Following.insert({
@@ -74,7 +74,7 @@ export default async function(followee: IUser, follower: IUser) {
 
 	packUser(followee, followee, {
 		detail: true
-	}).then(packed => publishUserStream(followee._id, 'meUpdated', packed));
+	}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
 
-	packUser(followee, follower).then(packed => publishUserStream(follower._id, 'follow', packed));
+	packUser(followee, follower).then(packed => publishMainStream(follower._id, 'follow', packed));
 }

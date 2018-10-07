@@ -5,7 +5,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import XNotes from './deck.notes.vue';
-import { UserListStream } from '../../../../common/scripts/streaming/user-list';
 
 const fetchLimit = 10;
 

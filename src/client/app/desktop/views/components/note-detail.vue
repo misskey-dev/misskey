@@ -93,11 +93,14 @@ import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './notes.note.sub.vue';
 import { sum } from '../../../../../prelude/array';
+import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
 	components: {
 		XSub
 	},
+
+	mixins: [noteSubscriber('note')],
 
 	props: {
 		note: {

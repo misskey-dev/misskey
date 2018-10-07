@@ -118,10 +118,10 @@ export default Vue.extend({
 			notifications: [],
 			moreNotifications: false,
 			connection: null,
-			connectionId: null,
 			getNoteSummary
 		};
 	},
+
 	computed: {
 		_notifications(): any[] {
 			return (this.notifications as any).map(notification => {
@@ -133,9 +133,9 @@ export default Vue.extend({
 			});
 		}
 	},
+
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('notification', this.onNotification);
 
@@ -153,10 +153,11 @@ export default Vue.extend({
 			this.fetching = false;
 		});
 	},
+
 	beforeDestroy() {
-		this.connection.off('notification', this.onNotification);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
+
 	methods: {
 		fetchMoreNotifications() {
 			this.fetchingMoreNotifications = true;
@@ -177,10 +178,11 @@ export default Vue.extend({
 				this.fetchingMoreNotifications = false;
 			});
 		},
+
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
 			this.connection.send({
-				type: 'read_notification',
+				type: 'readNotification',
 				id: notification.id
 			});
 

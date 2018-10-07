@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { HashtagStream } from '../../../common/scripts/streaming/hashtag';
 
 const fetchLimit = 10;
 
@@ -35,9 +34,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			streamManager: null,
 			connection: null,
-			connectionId: null,
 			date: null,
 			baseQuery: {
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -69,69 +66,33 @@ export default Vue.extend({
 			this.query = {
 				query: this.tagTl.query
 			};
-			this.connection = new HashtagStream((this as any).os, this.$store.state.i, this.tagTl.query);
+			this.connection = (this as any).os.stream.connectToChannel('hashtag', { q: this.tagTl.query });
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.connection.close();
-			});
 		} else if (this.src == 'home') {
 			this.endpoint = 'notes/timeline';
 			const onChangeFollowing = () => {
 				this.fetch();
 			};
-			this.streamManager = (this as any).os.stream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('homeTimeline');
 			this.connection.on('note', prepend);
 			this.connection.on('follow', onChangeFollowing);
 			this.connection.on('unfollow', onChangeFollowing);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.connection.off('follow', onChangeFollowing);
-				this.connection.off('unfollow', onChangeFollowing);
-				this.streamManager.dispose(this.connectionId);
-			});
 		} else if (this.src == 'local') {
 			this.endpoint = 'notes/local-timeline';
-			this.streamManager = (this as any).os.streams.localTimelineStream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.streamManager.dispose(this.connectionId);
-			});
 		} else if (this.src == 'hybrid') {
 			this.endpoint = 'notes/hybrid-timeline';
-			this.streamManager = (this as any).os.streams.hybridTimelineStream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.streamManager.dispose(this.connectionId);
-			});
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';
-			this.streamManager = (this as any).os.streams.globalTimelineStream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('note', prepend);
-				this.streamManager.dispose(this.connectionId);
-			});
 		} else if (this.src == 'mentions') {
 			this.endpoint = 'notes/mentions';
-			this.streamManager = (this as any).os.stream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 			this.connection.on('mention', prepend);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('mention', prepend);
-				this.streamManager.dispose(this.connectionId);
-			});
 		} else if (this.src == 'messages') {
 			this.endpoint = 'notes/mentions';
 			this.query = {
@@ -142,21 +103,15 @@ export default Vue.extend({
 					prepend(note);
 				}
 			};
-			this.streamManager = (this as any).os.stream;
-			this.connection = this.streamManager.getConnection();
-			this.connectionId = this.streamManager.use();
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 			this.connection.on('mention', onNote);
-			this.$once('beforeDestroy', () => {
-				this.connection.off('mention', onNote);
-				this.streamManager.dispose(this.connectionId);
-			});
 		}
 
 		this.fetch();
 	},
 
 	beforeDestroy() {
-		this.$emit('beforeDestroy');
+		this.connection.dispose();
 	},
 
 	methods: {

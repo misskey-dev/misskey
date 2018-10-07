@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
 import { default as Notification, INotification } from '../../../models/notification';
-import { publishUserStream } from '../../../stream';
+import { publishMainStream } from '../../../stream';
 import Mute from '../../../models/mute';
 import User from '../../../models/user';
 
@@ -66,6 +66,6 @@ export default (
 		});
 
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
-		publishUserStream(userId, 'read_all_notifications');
+		publishMainStream(userId, 'readAllNotifications');
 	}
 });

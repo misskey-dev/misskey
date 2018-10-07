@@ -56,13 +56,11 @@ export default Vue.extend({
 			disableLocalTimeline: false,
 			bannerUrl: null,
 			inviteCode: null,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	created() {
-		this.connection = (this as any).os.streams.serverStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.serverStatsStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
 
 		(this as any).os.getMeta().then(meta => {
 			this.disableRegistration = meta.disableRegistration;
@@ -75,7 +73,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		(this as any).os.streams.serverStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		invite() {

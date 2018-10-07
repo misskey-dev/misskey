@@ -4,7 +4,7 @@ import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
-import { publishUserStream } from '../../../stream';
+import { publishMainStream } from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(follower)) {
@@ -23,5 +23,5 @@ export default async function(followee: IUser, follower: IUser) {
 		}
 	});
 
-	packUser(followee, follower).then(packed => publishUserStream(follower._id, 'unfollow', packed));
+	packUser(followee, follower).then(packed => publishMainStream(follower._id, 'unfollow', packed));
 }

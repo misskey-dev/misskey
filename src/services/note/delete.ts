@@ -30,7 +30,7 @@ export default async function(user: IUser, note: INote) {
 		}
 	});
 
-	publishNoteStream(note._id, 'deleted');
+	publishNoteStream(note._id, 'deleted', {});
 
 	//#region ローカルの投稿なら削除アクティビティを配送
 	if (isLocalUser(user)) {

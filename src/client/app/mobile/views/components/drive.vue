@@ -81,8 +81,7 @@ export default Vue.extend({
 			hierarchyFolders: [],
 			selectedFiles: [],
 			info: null,
-			connection: null,
-			connectionId: null,
+			connection: null
 
 			fetching: true,
 			fetchingMoreFiles: false,
@@ -102,8 +101,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.driveStream.getConnection();
-		this.connectionId = (this as any).os.streams.driveStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('drive');
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
@@ -124,12 +122,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		this.connection.off('file_created', this.onStreamDriveFileCreated);
-		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
-		this.connection.off('file_deleted', this.onStreamDriveFileDeleted);
-		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
-		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
-		(this as any).os.streams.driveStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		onStreamDriveFileCreated(file) {

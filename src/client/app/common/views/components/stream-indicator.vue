@@ -22,7 +22,7 @@ import * as anime from 'animejs';
 export default Vue.extend({
 	computed: {
 		stream() {
-			return (this as any).os.stream;
+			return (this as any).os.stream.useSharedConnection('main');
 		}
 	},
 	created() {

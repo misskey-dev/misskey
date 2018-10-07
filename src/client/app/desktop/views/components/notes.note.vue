@@ -77,6 +77,7 @@ import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './notes.note.sub.vue';
 import { sum } from '../../../../../prelude/array';
+import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 function focus(el, fn) {
 	const target = fn(el);
@@ -94,6 +95,8 @@ export default Vue.extend({
 		XSub
 	},
 
+	mixins: [noteSubscriber('note')],
+
 	props: {
 		note: {
 			type: Object,
@@ -104,9 +107,7 @@ export default Vue.extend({
 	data() {
 		return {
 			showContent: false,
-			isDetailOpened: false,
-			connection: null,
-			connectionId: null
+			isDetailOpened: false
 		};
 	},
 
@@ -168,86 +169,7 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
-		}
-	},
-
-	mounted() {
-		this.capture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.on('_connected_', this.onStreamConnected);
-		}
-
-		// Draw map
-		if (this.p.geo) {
-			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
-			if (shouldShowMap) {
-				(this as any).os.getGoogleMaps().then(maps => {
-					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
-					const map = new maps.Map(this.$refs.map, {
-						center: uluru,
-						zoom: 15
-					});
-					new maps.Marker({
-						position: uluru,
-						map: map
-					});
-				});
-			}
-		}
-	},
-
-	beforeDestroy() {
-		this.decapture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.off('_connected_', this.onStreamConnected);
-			(this as any).os.stream.dispose(this.connectionId);
-		}
-	},
-
 	methods: {
-		capture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				const data = {
-					type: 'capture',
-					id: this.p.id
-				} as any;
-				if ((this.p.visibleUserIds || []).includes(this.$store.state.i.id) || (this.p.mentions || []).includes(this.$store.state.i.id)) {
-					data.read = true;
-				}
-				this.connection.send(data);
-				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		decapture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
-					type: 'decapture',
-					id: this.p.id
-				});
-				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		onStreamConnected() {
-			this.capture();
-		},
-
-		onStreamNoteUpdated(data) {
-			const note = data.note;
-			if (note.id == this.note.id) {
-				this.$emit('update:note', note);
-			} else if (note.id == this.note.renoteId) {
-				this.note.renote = note;
-			}
-		},
-
 		reply(viaKeyboard = false) {
 			(this as any).os.new(MkPostFormWindow, {
 				reply: this.p,

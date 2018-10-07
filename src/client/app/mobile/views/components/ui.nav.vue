@@ -57,7 +57,6 @@ export default Vue.extend({
 		return {
 			hasGameInvitation: false,
 			connection: null,
-			connectionId: null,
 			aboutUrl: `/docs/${lang}/about`,
 			announcements: []
 		};
@@ -79,19 +78,16 @@ export default Vue.extend({
 		});
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 
-			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
 
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('reversi_invited', this.onReversiInvited);
-			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
-			(this as any).os.stream.dispose(this.connectionId);
+			this.connection.dispose();
 		}
 	},
 

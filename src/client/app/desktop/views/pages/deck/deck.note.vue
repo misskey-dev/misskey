@@ -70,11 +70,14 @@ import parse from '../../../../../../mfm/parse';
 import MkNoteMenu from '../../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../../common/views/components/reaction-picker.vue';
 import XSub from './deck.note.sub.vue';
+import noteSubscriber from '../../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
 	components: {
 		XSub
 	},
+
+	mixins: [noteSubscriber('note')],
 
 	props: {
 		note: {
@@ -90,9 +93,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			showContent: false,
-			connection: null,
-			connectionId: null
+			showContent: false
 		};
 	},
 
@@ -120,68 +121,7 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
-		}
-	},
-
-	mounted() {
-		this.capture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.on('_connected_', this.onStreamConnected);
-		}
-	},
-
-	beforeDestroy() {
-		this.decapture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.off('_connected_', this.onStreamConnected);
-			(this as any).os.stream.dispose(this.connectionId);
-		}
-	},
-
 	methods: {
-		capture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				const data = {
-					type: 'capture',
-					id: this.p.id
-				} as any;
-				if ((this.p.visibleUserIds || []).includes(this.$store.state.i.id) || (this.p.mentions || []).includes(this.$store.state.i.id)) {
-					data.read = true;
-				}
-				this.connection.send(data);
-				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		decapture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
-					type: 'decapture',
-					id: this.p.id
-				});
-				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		onStreamConnected() {
-			this.capture();
-		},
-
-		onStreamNoteUpdated(data) {
-			const note = data.note;
-			if (note.id == this.note.id) {
-				this.$emit('update:note', note);
-			} else if (note.id == this.note.renoteId) {
-				this.note.renote = note;
-			}
-		},
-
 		reply() {
 			(this as any).apis.post({
 				reply: this.p
