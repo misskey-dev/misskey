@@ -270,7 +270,7 @@ common/views/components/theme.vue:
   install-a-theme: "Installer un thème"
   theme-code: "Code du thème"
   install: "Installation"
-  installed: "「{}」をインストールしました"
+  installed: "« {} » a été installé"
   create-a-theme: "Créer un thème"
   save-created-theme: "Enregistrer le thème"
   primary-color: "Couleur primaire"
