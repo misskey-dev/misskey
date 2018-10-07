@@ -25,7 +25,7 @@ module.exports = (server: http.Server) => {
 
 		// 後方互換性のため
 		if (request.resourceURL.pathname !== '/streaming') {
-			main.sendMessageToWs = (type: string, payload: any) => {
+			main.sendMessageToWsOverride = (type: string, payload: any) => {
 				if (type == 'channel') {
 					type = payload.type;
 					payload = payload.body;
@@ -35,13 +35,12 @@ module.exports = (server: http.Server) => {
 					body: payload
 				}));
 			};
-			if (request.resourceURL.pathname === '/') {
-				main.connectChannel(Math.random().toString(), null,
-					request.resourceURL.pathname === '/' ? channels.homeTimeline :
-					request.resourceURL.pathname === '/local-timeline' ? channels.localTimeline :
-					request.resourceURL.pathname === '/hybrid-timeline' ? channels.hybridTimeline :
-					request.resourceURL.pathname === '/global-timeline' ? channels.globalTimeline : null);
-			}
+
+			main.connectChannel(Math.random().toString(), null,
+				request.resourceURL.pathname === '/' ? channels.homeTimeline :
+				request.resourceURL.pathname === '/local-timeline' ? channels.localTimeline :
+				request.resourceURL.pathname === '/hybrid-timeline' ? channels.hybridTimeline :
+				request.resourceURL.pathname === '/global-timeline' ? channels.globalTimeline : null);
 		}
 
 		connection.once('close', () => {

@@ -24,6 +24,7 @@ export default class Connection {
 	public subscriber: Xev;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
+	public sendMessageToWsOverride: any = null; // 後方互換性のため
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -164,6 +165,7 @@ export default class Connection {
 	 */
 	@autobind
 	public sendMessageToWs(type: string, payload: any) {
+		if (this.sendMessageToWsOverride) return this.sendMessageToWsOverride(type, payload); // 後方互換性のため
 		this.wsConnection.send(JSON.stringify({
 			type: type,
 			body: payload
