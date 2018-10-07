@@ -16,7 +16,7 @@ common:
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
     ui: "インターフェース"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
-    drive: "ドライブ"
+    drive: "Disk"
     drive-desc: "以前投稿したことのある画像をまた投稿したくなったことはありませんか？もしくは、アップロードしたファイルをフォルダ分けして整理したくなったことはありませんか？Misskeyの根幹に組み込まれたドライブ機能によってそれらが解決します。ファイルの共有も簡単です。"
     outro: "他にもMisskeyにしかない機能はまだまだあるので、ぜひあなた自身の目で確かめてください。Misskeyは分散型SNSなので、このインスタンスが気に入らなければ他のインスタンスを試すこともできます。それでは、GLHF!"
   adblock:
@@ -25,7 +25,7 @@ common:
   application-authorization: "アプリの連携"
   close: "Lukk"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
-  got-it: "わかった"
+  got-it: "Skjønner!"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
@@ -224,7 +224,7 @@ common/views/components/games/reversi/reversi.room.vue:
   choose-map: "マップを選択"
   random: "Tilfeldig"
   black-or-white: "先手/後手"
-  black-is: "{}が黒"
+  black-is: "Sort er {}"
   rules: "Regler"
   is-llotheo: "石の少ない方が勝ち(ロセオ)"
   looped-map: "ループマップ"
@@ -235,8 +235,8 @@ common/views/components/games/reversi/reversi.room.vue:
   waiting-for-me: "あなたの準備が完了するのを待っています"
   waiting-for-both: "Venter på deg"
   cancel: "キャンセル"
-  ready: "準備完了"
-  cancel-ready: "準備続行"
+  ready: "Klar"
+  cancel-ready: "Avbryt \"Klar\""
 common/views/components/connect-failed.vue:
   title: "Kunne ikke koble til tjeneren."
   description: "Det er enten et problem med internettilknytningen din, eller så har tjeneren blitt tatt ned for vedlikehold. {Prøv igjen} senere."
@@ -262,7 +262,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
 common/views/components/media-banner.vue:
-  sensitive: "閲覧注意"
+  sensitive: "Sensitivt innhold"
   click-to-show: "クリックして表示"
 common/views/components/theme.vue:
   light-theme: "非ダークモード時に使用するテーマ"
@@ -479,7 +479,7 @@ desktop:
   banner-updated: "バナーを更新しました"
   choose-banner: "バナーにする画像を選択"
   avatar-crop-title: "アバターとして表示する部分を選択"
-  avatar: "アバター"
+  avatar: "Avatar"
   uploading-avatar: "新しいアバターをアップロードしています"
   avatar-updated: "アバターを更新しました"
   choose-avatar: "アバターにする画像を選択"
@@ -498,12 +498,12 @@ desktop/views/components/calendar.vue:
   next: "Neste måned"
   go: "クリックして時間遡行"
 desktop/views/components/charts.vue:
-  title: "チャート"
-  per-day: "1日ごと"
+  title: "Diagrammer"
+  per-day: "per dag"
   per-hour: "1時間ごと"
   notes: "Innlegg"
-  users: "ユーザー"
-  drive: "ドライブ"
+  users: "Brukere"
+  drive: "Disk"
   network: "ネットワーク"
   charts:
     notes: "投稿の増減 (統合)"
@@ -517,7 +517,7 @@ desktop/views/components/charts.vue:
     drive-files: "ドライブのファイル数の増減"
     drive-files-total: "ドライブのファイル数の積算"
     network-requests: "リクエスト"
-    network-time: "応答時間"
+    network-time: "Responstid"
     network-usage: "Nettverks bruk"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
@@ -539,7 +539,7 @@ desktop/views/components/drive-window.vue:
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Banner"
-  nsfw: "閲覧注意"
+  nsfw: "NSFW"
   contextmenu:
     rename: "名前を変更"
     mark-as-sensitive: "閲覧注意に設定"
@@ -850,7 +850,7 @@ desktop/views/components/timeline.vue:
   hashtag: "ハッシュタグ"
   add-tag-timeline: "ハッシュタグを追加"
   add-list: "リストを追加"
-  list-name: "リスト名"
+  list-name: "Liste navn"
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
   adjective: "-san"
@@ -883,7 +883,7 @@ desktop/views/components/received-follow-requests-window.vue:
 desktop/views/components/user-lists-window.vue:
   title: "Brukerlister"
   create-list: "リストを作成"
-  list-name: "リスト名"
+  list-name: "Liste navn"
 desktop/views/components/user-preview.vue:
   notes: "Innlegg"
   following: "Følger"
@@ -900,8 +900,8 @@ desktop/views/components/window.vue:
   close: "Lukk"
 desktop/views/pages/admin/admin.vue:
   dashboard: "ダッシュボード"
-  drive: "ドライブ"
-  users: "ユーザー"
+  drive: "Disk"
+  users: "Brukere"
   update: "Oppdater"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
@@ -947,7 +947,7 @@ desktop/views/pages/welcome.vue:
   signin-button: "Logger inn..."
   signup-button: "Registrer"
   timeline: "タイムライン"
-  announcements: "お知らせ"
+  announcements: "Kunngjøringer"
   photos: "最近の画像"
   powered-by-misskey: "Powered by <b>Misskey</b>."
   info: "Informasjon"
@@ -1060,14 +1060,14 @@ mobile/views/components/drive-file-chooser.vue:
 mobile/views/components/drive-folder-chooser.vue:
   select-folder: "フォルダーを選択"
 mobile/views/components/drive.file.vue:
-  nsfw: "閲覧注意"
+  nsfw: "NSFW"
 mobile/views/components/drive.file-detail.vue:
   download: "ダウンロード"
   rename: "名前を変更"
   move: "Flytt"
   hash: "ハッシュ (md5)"
   exif: "EXIF"
-  nsfw: "閲覧注意"
+  nsfw: "NSFW"
 mobile/views/components/media-image.vue:
   sensitive: "NSFW"
   click-to-show: "クリックして表示"
@@ -1207,7 +1207,7 @@ mobile/views/pages/notifications.vue:
   notifications: "Notifikasjon"
   read-all: "すべての通知を既読にしますか？"
 mobile/views/pages/games/reversi.vue:
-  reversi: "リバーシ"
+  reversi: "Reversi"
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"
   name: "Navn"
@@ -1278,7 +1278,7 @@ mobile/views/pages/settings.vue:
   update-available-desc: "ページを再度読み込みすると更新が適用されます。"
   settings: "Innstillinger"
   signout: "サインアウト"
-  sound: "サウンド"
+  sound: "Lyder"
   enable-sounds: "サウンドを有効にする"
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
