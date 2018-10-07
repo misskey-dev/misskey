@@ -1146,7 +1146,7 @@ mobile/views/components/ui.nav.vue:
   widgets: "ウィジェット"
   game: "ゲーム"
   darkmode: "ダークモード"
-  settings: "設定"
+  settings: "Innstillinger"
   admin: "管理"
   about: "Misskeyについて"
 mobile/views/components/user-timeline.vue:
@@ -1226,7 +1226,7 @@ mobile/views/pages/settings/settings.profile.vue:
   uploading: "アップロード中"
   upload-failed: "アップロードに失敗しました"
 mobile/views/pages/search.vue:
-  search: "検索"
+  search: "Søk"
   empty: "「{}」に関する投稿は見つかりませんでした。"
   not-found: "「{}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
@@ -1276,7 +1276,7 @@ mobile/views/pages/settings.vue:
   no-updates-desc: "お使いのMisskeyは最新です。"
   update-available: "新しいバージョンが利用可能です"
   update-available-desc: "ページを再度読み込みすると更新が適用されます。"
-  settings: "設定"
+  settings: "Innstillinger"
   signout: "サインアウト"
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
@@ -1285,7 +1285,7 @@ mobile/views/pages/user.vue:
   following: "フォロー"
   followers: "フォロワー"
   notes: "投稿"
-  overview: "概要"
+  overview: "Oversikt"
   timeline: "タイムライン"
   media: "メディア"
   is-suspended: "このユーザーは凍結されています。"
@@ -1293,7 +1293,7 @@ mobile/views/pages/user.vue:
   view-remote: "正確な情報を見る"
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
-  images: "画像"
+  images: "Bilder"
   activity: "アクティビティ"
   keywords: "キーワード"
   domains: "頻出ドメイン"
@@ -1331,7 +1331,7 @@ docs:
       show-src-link: "コードをGitHubで見る"
       generated: "このドキュメントはAPI定義に基づき自動生成されています。"
     props:
-      name: "名前"
+      name: "Navn"
       type: "Type"
       description: "説明"
 dev/views/index.vue:
