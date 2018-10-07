@@ -402,7 +402,7 @@ common/views/components/visibility-chooser.vue:
   public: "Offentlig"
   home: "Hjem"
   home-desc: "ホームタイムラインにのみ公開"
-  followers: "フォロワー"
+  followers: "Følgere"
   followers-desc: "自分のフォロワーにのみ公開"
   specified: "ダイレクト"
   specified-desc: "指定したユーザーにのみ公開"
@@ -522,16 +522,16 @@ desktop/views/components/charts.vue:
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
-  cancel: "キャンセル"
+  cancel: "Avbryt"
   ok: "Ok"
   choose-prompt: "ファイルを選択"
 desktop/views/components/choose-folder-from-drive-window.vue:
-  cancel: "キャンセル"
+  cancel: "Avbryt"
   ok: "Ok"
   choose-prompt: "フォルダを選択"
 desktop/views/components/crop-window.vue:
   skip: "クロップをスキップ"
-  cancel: "キャンセル"
+  cancel: "Avbryt"
   ok: "Ok"
 desktop/views/components/drive-window.vue:
   used: "brukt"
@@ -611,7 +611,7 @@ desktop/views/components/friends-maker.vue:
   title: "気になるユーザーをフォロー:"
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
-  refresh: "もっと見る"
+  refresh: "Mer"
   close: "Lukk"
 desktop/views/components/game-window.vue:
   game: "Reversi"
@@ -620,7 +620,7 @@ desktop/views/components/home.vue:
   add-widget: "ウィジェットを追加:"
   add: "Legg til"
 desktop/views/input-dialog.vue:
-  cancel: "キャンセル"
+  cancel: "Avbryt"
   ok: "Ok"
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
@@ -740,17 +740,17 @@ desktop/views/components/settings.vue:
   sound: "Lyd"
   enable-sounds: "サウンドを有効にする"
   enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
-  volume: "ボリューム"
+  volume: "Volum"
   test: "Test"
   mobile: "Mobil"
   disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
   language: "Språk"
-  pick-language: "言語を選択"
+  pick-language: "Velg språk"
   recommended: "Anbefalt"
   auto: "Automatisk"
-  specify-language: "言語を指定"
+  specify-language: "Angi språk"
   language-desc: "変更はページの再度読み込み後に反映されます。"
-  cache: "キャッシュ"
+  cache: "Hurtiglager"
   clean-cache: "クリーンアップ"
   cache-warn: "クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。"
   cache-cleared: "キャッシュを削除しました"
@@ -771,7 +771,7 @@ desktop/views/components/settings.vue:
   no-updates-desc: "お使いのMisskeyは最新です。"
   update-available: "新しいバージョンが利用可能です"
   update-available-desc: "ページを再度読み込みすると更新が適用されます。"
-  advanced-settings: "高度な設定"
+  advanced-settings: "Avansert"
   debug-mode: "デバッグモードを有効にする"
   debug-mode-desc: "この設定はブラウザに記憶されます。"
   experimental: "実験的機能を有効にする"
@@ -843,7 +843,7 @@ desktop/views/components/timeline.vue:
   home: "Hjem"
   local: "Lokalt"
   hybrid: "ソーシャル"
-  global: "グローバル"
+  global: "Globalt"
   mentions: "あなた宛て"
   messages: "メッセージ"
   list: "Lister"
@@ -887,7 +887,7 @@ desktop/views/components/user-lists-window.vue:
 desktop/views/components/user-preview.vue:
   notes: "Innlegg"
   following: "Følger"
-  followers: "フォロワー"
+  followers: "Følgere"
 desktop/views/components/users-list.vue:
   all: "Alle"
   iknow: "Du kjenner"
@@ -975,7 +975,7 @@ desktop/views/pages/tag.vue:
 desktop/views/pages/user-list.users.vue:
   users: "Bruker"
   add-user: "ユーザーを追加"
-  username: "ユーザー名"
+  username: "Brukernavn"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "知り合いのフォロワー"
   loading: "Laster inn"
@@ -1011,7 +1011,7 @@ desktop/views/pages/user/user.header.vue:
   is-bot: "このアカウントはBotです"
 desktop/views/pages/user/user.timeline.vue:
   default: "Innlegg"
-  with-replies: "投稿と返信"
+  with-replies: "Innlegg og svar"
   with-media: "Media"
   empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
@@ -1036,7 +1036,7 @@ desktop/views/widgets/trends.vue:
 desktop/views/widgets/users.vue:
   title: "おすすめユーザー"
   refresh: "Oppdater"
-  no-one: "いません！"
+  no-one: "Ingen"
 mobile/views/components/drive.vue:
   drive: "Disk"
   used: "brukt"
@@ -1063,7 +1063,7 @@ mobile/views/components/drive.file.vue:
   nsfw: "NSFW"
 mobile/views/components/drive.file-detail.vue:
   download: "ダウンロード"
-  rename: "名前を変更"
+  rename: "Endre navn"
   move: "Flytt"
   hash: "ハッシュ (md5)"
   exif: "EXIF"
@@ -1110,7 +1110,7 @@ mobile/views/components/notes.vue:
   failed: "読み込みに失敗しました。"
   retry: "Prøv på nytt"
 mobile/views/components/notifications.vue:
-  more: "もっと見る"
+  more: "Mer"
   empty: "ありません！"
 mobile/views/components/post-form.vue:
   add-visible-user: "ユーザーを追加"
@@ -1137,7 +1137,7 @@ mobile/views/components/ui.header.vue:
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "Notifikasjon"
-  messaging: "メッセージ"
+  messaging: "Meldinger"
   follow-requests: "フォロー申請"
   search: "Søk"
   drive: "Disk"
@@ -1175,7 +1175,7 @@ mobile/views/pages/home.vue:
   home: "Hjem"
   local: "Lokalt"
   hybrid: "ソーシャル"
-  global: "グローバル"
+  global: "Globalt"
   mentions: "あなた宛て"
   messages: "メッセージ"
 mobile/views/pages/tag.vue:
@@ -1192,9 +1192,9 @@ mobile/views/pages/widgets/activity.vue:
 mobile/views/pages/share.vue:
   share-with: "{}で共有"
 mobile/views/pages/messaging.vue:
-  messaging: "メッセージ"
+  messaging: "Meldinger"
 mobile/views/pages/messaging-room.vue:
-  messaging: "メッセージ"
+  messaging: "Meldinger"
 mobile/views/pages/received-follow-requests.vue:
   title: "フォロー申請"
   accept: "Godta"
@@ -1211,7 +1211,7 @@ mobile/views/pages/games/reversi.vue:
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"
   name: "Navn"
-  account: "アカウント"
+  account: "Konto"
   location: "Lokasjon"
   description: "Om meg"
   birthday: "Bursdag"
@@ -1237,7 +1237,7 @@ mobile/views/pages/settings.vue:
   lang-tip: "変更はページの再読み込み後に反映されます。"
   recommended: "Anbefalt"
   auto: "Automatisk"
-  specify-language: "言語を指定"
+  specify-language: "Angi språk"
   design: "デザインと表示"
   dark-mode: "ダークモード"
   i-am-under-limited-internet: "私は通信を制限されている"
@@ -1265,7 +1265,7 @@ mobile/views/pages/settings.vue:
   load-remote-media: "リモートサーバーのメディアを表示する"
   twitter: "Twitter連携"
   twitter-connect: "Twitterアカウントに接続する"
-  twitter-reconnect: "再接続する"
+  twitter-reconnect: "Koble til på nytt"
   twitter-disconnect: "Koble fra"
   update: "Misskey Update"
   version: "バージョン:"
@@ -1283,7 +1283,7 @@ mobile/views/pages/settings.vue:
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
   following: "Følger"
-  followers: "フォロワー"
+  followers: "Følgere"
   notes: "Innlegg"
   overview: "Oversikt"
   timeline: "タイムライン"
@@ -1292,36 +1292,36 @@ mobile/views/pages/user.vue:
   is-remote: "このユーザーはリモートユーザーです。"
   view-remote: "正確な情報を見る"
 mobile/views/pages/user/home.vue:
-  recent-notes: "最近の投稿"
+  recent-notes: "Nylige innlegg"
   images: "Bilder"
   activity: "アクティビティ"
-  keywords: "キーワード"
+  keywords: "Nøkkelord"
   domains: "頻出ドメイン"
   frequently-replied-users: "よく会話するユーザー"
   followers-you-know: "知り合いのフォロワー"
   last-used-at: "最終ログイン"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込み中"
+  loading: "Laster inn"
   no-users: "知り合いのユーザーはいません"
 mobile/views/pages/user/home.friends.vue:
-  loading: "読み込み中"
+  loading: "Laster inn"
   no-users: "よく会話するユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込み中"
+  loading: "Laster inn"
   no-notes: "投稿はありません"
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込み中"
+  loading: "Laster inn"
   no-photos: "写真はありません"
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "このページをGitHubで編集"
   api:
     entities:
-      properties: "プロパティ"
+      properties: "Egenskaper"
     endpoints:
-      params: "パラメータ"
+      params: "Parametere"
       no-params: "パラメータはありません"
-      res: "レスポンス"
+      res: "Respons"
       require-credential: "このエンドポイントは認証情報が必須です。"
       require-permission: "このエンドポイントは{permission}の権限を必要とします。"
       has-limit: "レートリミットがあります。"
