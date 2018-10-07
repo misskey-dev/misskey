@@ -1,20 +1,20 @@
 {
 	id: 'e9c8c01d-9c15-48d0-9b5c-3d00843b5b36',
 
-	name: 'Strawberry Milk',
-	author: 'syuilo',
+	name: 'Lavender',
+	author: 'sokuyuku & syuilo',
 
 	base: 'light',
 
 	vars: {
-		primary: 'rgb(251, 78, 112)',
-		secondary: 'rgb(255, 218, 240)',
-		text: 'rgb(113, 91, 102)',
+		primary: 'rgb(206, 147, 191)',
+		secondary: 'rgb(253, 242, 243)',
+		text: 'rgb(161, 139, 146)',
 	},
 
 	props: {
-		renoteGradient: '#ffb1c9',
-		renoteText: '#ff588d',
-		quoteBorder: '#ff6c9b',
+		renoteGradient: '#f7e4ec',
+		renoteText: '$primary',
+		quoteBorder: '$primary',
 	},
 }
