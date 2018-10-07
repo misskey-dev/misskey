@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
-import * as ReconnectingWebsocket from 'reconnecting-websocket';
+import ReconnectingWebsocket from 'reconnecting-websocket';
 import { wsUrl } from '../../config';
 import MiOS from '../../mios';
 
