@@ -14,12 +14,12 @@ export default class extends Channel {
 
 			switch (type) {
 				case 'notification': {
-					if (!mutedUserIds.includes(body.userId)) {
-						this.send('notification', body);
-					}
+					if (mutedUserIds.includes(body.userId)) return;
 					break;
 				}
 			}
+
+			this.send(type, body);
 		});
 	}
 }

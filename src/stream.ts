@@ -25,7 +25,7 @@ class Publisher {
 
 	private publish = (channel: string, type: string, value?: any): void => {
 		const message = type == null ? value : value == null ?
-			{ type: type } :
+			{ type: type, body: null } :
 			{ type: type, body: value };
 
 		this.ev.emit(channel, message);
