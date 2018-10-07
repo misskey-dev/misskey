@@ -134,7 +134,7 @@ common:
     activity: "アクティビティ"
     rss: "RSSリーダー"
     memo: "Notis"
-    trends: "トレンド"
+    trends: "Populært nå"
     photo-stream: "フォトストリーム"
     posts-monitor: "投稿チャート"
     slideshow: "スライドショー"
@@ -153,7 +153,7 @@ common:
   deck:
     widgets: "ウィジェット"
     home: "Hjem"
-    local: "ローカル"
+    local: "Lokalt"
     hybrid: "ソーシャル"
     hashtag: "ハッシュタグ"
     global: "グローバル"
@@ -161,7 +161,7 @@ common:
     direct: "ダイレクト投稿"
     notifications: "Notifikasjon"
     list: "Lister"
-    swap-left: "左に移動"
+    swap-left: "Flytt til venstre"
     swap-right: "右に移動"
     swap-up: "上に移動"
     swap-down: "下に移動"
@@ -595,7 +595,7 @@ desktop/views/components/media-video.vue:
   click-to-show: "クリックして表示"
 desktop/views/components/follow-button.vue:
   following: "フォロー中"
-  follow: "フォロー"
+  follow: "Følg"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
@@ -941,10 +941,10 @@ desktop/views/pages/stats/stats.vue:
   original-notes: "このインスタンスの投稿"
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
-  gotit: "わかった"
-  signin: "ログイン"
-  signup: "新規登録"
-  signin-button: "やってる"
+  gotit: "Skjønner!"
+  signin: "Logg inn"
+  signup: "Bli med"
+  signin-button: "Logger inn..."
   signup-button: "Registrer"
   timeline: "タイムライン"
   announcements: "お知らせ"
@@ -973,7 +973,7 @@ desktop/views/pages/share.vue:
 desktop/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
-  users: "ユーザー"
+  users: "Bruker"
   add-user: "ユーザーを追加"
   username: "ユーザー名"
 desktop/views/pages/user/user.followers-you-know.vue:
@@ -1012,7 +1012,7 @@ desktop/views/pages/user/user.header.vue:
 desktop/views/pages/user/user.timeline.vue:
   default: "Innlegg"
   with-replies: "投稿と返信"
-  with-media: "メディア"
+  with-media: "Media"
   empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
@@ -1090,14 +1090,14 @@ mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  location: "位置情報"
+  location: "Lokasjon"
 mobile/views/components/note-detail.vue:
   reply: "Svar"
   reaction: "リアクション"
   reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  location: "位置情報"
+  location: "Lokasjon"
 mobile/views/components/note-preview.vue:
   admin: "admin"
   bot: "bot"
@@ -1108,7 +1108,7 @@ mobile/views/components/note-sub.vue:
   cat: "katt"
 mobile/views/components/notes.vue:
   failed: "読み込みに失敗しました。"
-  retry: "リトライ"
+  retry: "Prøv på nytt"
 mobile/views/components/notifications.vue:
   more: "もっと見る"
   empty: "ありません！"
@@ -1173,7 +1173,7 @@ mobile/views/pages/following.vue:
   following-of: "{}のフォロー"
 mobile/views/pages/home.vue:
   home: "Hjem"
-  local: "ローカル"
+  local: "Lokalt"
   hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
@@ -1215,7 +1215,7 @@ mobile/views/pages/settings/settings.profile.vue:
   location: "Lokasjon"
   description: "Om meg"
   birthday: "Bursdag"
-  avatar: "アイコン"
+  avatar: "Avatar"
   banner: "Banner"
   is-cat: "このアカウントはCatです"
   is-locked: "フォローを承認制にする"
@@ -1250,7 +1250,7 @@ mobile/views/pages/settings.vue:
   show-local-renotes: "ローカルの投稿のRenoteを表示する"
   post-style: "投稿の表示スタイル"
   post-style-standard: "Standard"
-  post-style-smart: "スマート"
+  post-style-smart: "Smart"
   notification-position: "通知の表示"
   notification-position-bottom: "Bunn"
   notification-position-top: "Topp"
@@ -1266,7 +1266,7 @@ mobile/views/pages/settings.vue:
   twitter: "Twitter連携"
   twitter-connect: "Twitterアカウントに接続する"
   twitter-reconnect: "再接続する"
-  twitter-disconnect: "切断する"
+  twitter-disconnect: "Koble fra"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"
