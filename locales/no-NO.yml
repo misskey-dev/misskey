@@ -1333,6 +1333,6 @@ docs:
     props:
       name: "Navn"
       type: "Type"
-      description: "説明"
+      description: "Beskrivelse"
 dev/views/index.vue:
   manage-apps: "アプリの管理"
