@@ -102,7 +102,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		}
 	});
 
-	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
+	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { isRead: true });
 		if (!freshMessage.isRead) {
@@ -120,7 +120,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			publishMainStream(message.recipientId, 'unreadMessagingMessage', messageObj);
 			pushSw(message.recipientId, 'unreadMessagingMessage', messageObj);
 		}
-	}, 3000);
+	}, 2000);
 
 	// 履歴作成(自分)
 	History.update({

@@ -22,7 +22,7 @@ export default async function(user: IUser, note: INote, isSpecified = false) {
 		}
 	});
 
-	// 3秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
+	// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 	setTimeout(async () => {
 		const exist = await NoteUnread.findOne({ _id: unread._id });
 		if (exist == null) return;
@@ -43,5 +43,5 @@ export default async function(user: IUser, note: INote, isSpecified = false) {
 		if (isSpecified) {
 			publishMainStream(user._id, 'unreadSpecifiedNote', note._id);
 		}
-	}, 3000);
+	}, 2000);
 }

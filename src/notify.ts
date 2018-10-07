@@ -39,7 +39,7 @@ export default (
 		}
 	});
 
-	// 3秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
+	// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 	setTimeout(async () => {
 		const fresh = await Notification.findOne({ _id: notification._id }, { isRead: true });
 		if (!fresh.isRead) {
@@ -58,5 +58,5 @@ export default (
 
 			pushSw(notifiee, 'notification', packed);
 		}
-	}, 3000);
+	}, 2000);
 });
