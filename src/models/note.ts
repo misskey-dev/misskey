@@ -220,7 +220,6 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 		packedNote.poll = null;
 		packedNote.cw = null;
 		packedNote.tags = [];
-		packedNote.tagsLower = [];
 		packedNote.geo = null;
 		packedNote.isHidden = true;
 	}
@@ -294,6 +293,9 @@ export const pack = async (
 	_note.id = _note._id;
 	delete _note._id;
 
+	delete _note.prev;
+	delete _note.next;
+	delete _note.tagsLower;
 	delete _note._user;
 	delete _note._reply;
 	delete _note._renote;
