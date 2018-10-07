@@ -162,14 +162,14 @@ common:
     notifications: "Notifikasjon"
     list: "Lister"
     swap-left: "Flytt til venstre"
-    swap-right: "右に移動"
-    swap-up: "上に移動"
-    swap-down: "下に移動"
+    swap-right: "Flytt til høyre"
+    swap-up: "Flytt opp"
+    swap-down: "Flytt ned"
     remove: "カラムを削除"
     add-column: "カラムを追加"
     rename: "名前を変更"
     stack-left: "左に重ねる"
-    pop-right: "右に出す"
+    pop-right: "Til høyre"
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
@@ -468,7 +468,7 @@ common/views/widgets/tips.vue:
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
   following: "フォロー中"
-  follow: "フォロー"
+  follow: "Følg"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
@@ -614,7 +614,7 @@ desktop/views/components/friends-maker.vue:
   refresh: "もっと見る"
   close: "Lukk"
 desktop/views/components/game-window.vue:
-  game: "リバーシ"
+  game: "Reversi"
 desktop/views/components/home.vue:
   done: "Fullført"
   add-widget: "ウィジェットを追加:"
@@ -1006,7 +1006,7 @@ desktop/views/pages/user/user.profile.vue:
   list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
   posts: "Innlegg"
-  following: "フォロー"
+  following: "Følger"
   followers: "フォロワー"
   is-bot: "このアカウントはBotです"
 desktop/views/pages/user/user.timeline.vue:
