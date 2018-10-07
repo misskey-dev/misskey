@@ -29,23 +29,15 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		checkExistence(fileData: ArrayBuffer): Promise<boolean> {
+		checkExistence(fileData: ArrayBuffer): Promise<any> {
 			return new Promise((resolve, reject) => {
 				const data = new FormData();
 				data.append('md5', getMD5(fileData));
 
-				// const xhr = new XMLHttpRequest();
-				// xhr.open('POST', apiUrl + '/drive/files/check_existence', true);
-				// xhr.onload = (e: any) => {
-				// 	const file = JSON.parse(e.target.response).file;
-				// 	resolve(file !== null);
-				// }
-				// xhr.send(data);
-
 				(this as any).api('drive/files/check_existence', {
 					md5: getMD5(fileData)
 				}).then(resp => {
-					resolve(resp.file !== null);
+					resolve(resp.file);
 				});
 			});
 		},
@@ -55,29 +47,31 @@ export default Vue.extend({
 
 			const id = Math.random();
 
-			const ctx = {
-				id: id,
-				name: file.name || 'untitled',
-				progress: undefined,
-				img: undefined
-			};
-
-			this.uploads.push(ctx);
-			this.$emit('change', this.uploads);
-
 			const reader = new FileReader();
 			reader.onload = (e: any) => {
-				const bin = btoa(String.fromCharCode.apply(null, new Uint8Array(e.target.result)));
-				ctx.img = 'data:*/*;base64,' + btoa(bin);
-
-				this.checkExistence(e.target.result).then(fileExists => {
-					if (fileExists) { 
-						this.uploads = this.uploads.filter(x => x.id != id);
-						this.$emit('change', this.uploads);
+				this.checkExistence(e.target.result).then(result => {
+					console.log(result);
+					if (result !== null) {
+						this.$emit('uploaded', result);
 						return;
 					}
 
 					// Upload if the file didn't exist yet
+					const buf = new Uint8Array(e.target.result);
+					let bin = "";
+					// We use for-of loop instead of apply() to avoid RangeError
+					// SEE: https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
+					for (const byte of buf) bin += String.fromCharCode(byte);
+					const ctx = {
+						id: id,
+						name: file.name || 'untitled',
+						progress: undefined,
+						img: 'data:*/*;base64,' + btoa(bin)
+					};
+
+					this.uploads.push(ctx);
+					this.$emit('change', this.uploads);
+
 					const data = new FormData();
 					data.append('i', this.$store.state.i.token);
 					data.append('file', file);
