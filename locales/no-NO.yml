@@ -400,13 +400,13 @@ common/views/components/uploader.vue:
   waiting: "Venter"
 common/views/components/visibility-chooser.vue:
   public: "Offentlig"
-  home: "ホーム"
+  home: "Hjem"
   home-desc: "ホームタイムラインにのみ公開"
   followers: "フォロワー"
   followers-desc: "自分のフォロワーにのみ公開"
   specified: "ダイレクト"
   specified-desc: "指定したユーザーにのみ公開"
-  private: "非公開"
+  private: "Privat"
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
@@ -612,7 +612,7 @@ desktop/views/components/friends-maker.vue:
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
   refresh: "もっと見る"
-  close: "閉じる"
+  close: "Lukk"
 desktop/views/components/game-window.vue:
   game: "リバーシ"
 desktop/views/components/home.vue:
@@ -684,7 +684,7 @@ desktop/views/components/post-form-window.vue:
   attaches: "添付: {}メディア"
   uploading-media: "{}個のメディアをアップロード中"
 desktop/views/components/progress-dialog.vue:
-  waiting: "待機中"
+  waiting: "Venter"
 desktop/views/components/renote-form.vue:
   quote: "引用する..."
   cancel: "キャンセル"
@@ -741,7 +741,7 @@ desktop/views/components/settings.vue:
   enable-sounds: "サウンドを有効にする"
   enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
   volume: "ボリューム"
-  test: "テスト"
+  test: "Test"
   mobile: "モバイル"
   disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
   language: "Språk"
@@ -776,7 +776,7 @@ desktop/views/components/settings.vue:
   debug-mode-desc: "この設定はブラウザに記憶されます。"
   experimental: "実験的機能を有効にする"
   experimental-desc: "実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。この設定はブラウザに記憶されます。"
-  tools: "ツール"
+  tools: "Verktøy"
   task-manager: "タスクマネージャ"
   third-parties: "サードパーティ"
 desktop/views/components/settings.2fa.vue:
@@ -897,7 +897,7 @@ desktop/views/components/users-list-item.vue:
   followed: "フォローされています"
 desktop/views/components/window.vue:
   popout: "ポップアウト"
-  close: "閉じる"
+  close: "Lukk"
 desktop/views/pages/admin/admin.vue:
   dashboard: "ダッシュボード"
   drive: "ドライブ"
@@ -1085,7 +1085,7 @@ mobile/views/components/friends-maker.vue:
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
   refresh: "もっと見る"
-  close: "閉じる"
+  close: "Lukk"
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
@@ -1172,7 +1172,7 @@ mobile/views/pages/followers.vue:
 mobile/views/pages/following.vue:
   following-of: "{}のフォロー"
 mobile/views/pages/home.vue:
-  home: "ホーム"
+  home: "Hjem"
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
@@ -1214,9 +1214,9 @@ mobile/views/pages/settings/settings.profile.vue:
   account: "アカウント"
   location: "Lokasjon"
   description: "自己紹介"
-  birthday: "誕生日"
+  birthday: "Bursdag"
   avatar: "アイコン"
-  banner: "バナー"
+  banner: "Banner"
   is-cat: "このアカウントはCatです"
   is-locked: "フォローを承認制にする"
   advanced: "その他"
