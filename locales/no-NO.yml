@@ -5,9 +5,9 @@ meta:
 common:
   misskey: "En ⭐ av fediverse"
   about-title: "En ⭐ av fediverse"
-  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  about: "Takk for at du fant Misskey. Misskey er en <b>desentralisert mikroblogging platform</b> født på jorden. Siden den eksisterer sammen med Fediverset (Et univers hvor forskjellige sosiale media-plattformer blir organisert), så blir den gjensidig tilknyttet med andre sosiale media-plattformer. Hvorfor ikke ta en pause fra kjas og mas fra storbyen og hoppe inn i en ny type internett?"
   intro:
-    title: "Misskeyって？"
+    title: "Hva er Misskey?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
     features: "特徴"
     rich-contents: "投稿"
@@ -23,7 +23,7 @@ common:
     detected: "広告ブロッカーを無効にしてください"
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
-  close: "閉じる"
+  close: "Lukk"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   got-it: "わかった"
   customization-tips:
@@ -55,7 +55,7 @@ common:
   month-and-day: "{day}/{month}"
   trash: "ゴミ箱"
   weekday-short:
-    sunday: "S"
+    sunday: "Søn"
     monday: "M"
     tuesday: "T"
     wednesday: "O"
