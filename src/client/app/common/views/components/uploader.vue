@@ -20,6 +20,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { apiUrl } from '../../../config';
+import getMD5 from '../../scripts/get-md5';
 
 export default Vue.extend({
 	data() {
@@ -28,7 +29,28 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		upload(file, folder) {
+		checkExistence(fileData: ArrayBuffer): Promise<boolean> {
+			return new Promise((resolve, reject) => {
+				const data = new FormData();
+				data.append('md5', getMD5(fileData));
+
+				// const xhr = new XMLHttpRequest();
+				// xhr.open('POST', apiUrl + '/drive/files/check_existence', true);
+				// xhr.onload = (e: any) => {
+				// 	const file = JSON.parse(e.target.response).file;
+				// 	resolve(file !== null);
+				// }
+				// xhr.send(data);
+
+				(this as any).api('drive/files/check_existence', {
+					md5: getMD5(fileData)
+				}).then(resp => {
+					resolve(resp.file !== null);
+				});
+			});
+		},
+
+		upload(file: File, folder: any) {
 			if (folder && typeof folder == 'object') folder = folder.id;
 
 			const id = Math.random();
@@ -45,36 +67,46 @@ export default Vue.extend({
 
 			const reader = new FileReader();
 			reader.onload = (e: any) => {
-				ctx.img = e.target.result;
-			};
-			reader.readAsDataURL(file);
+				const bin = btoa(String.fromCharCode.apply(null, new Uint8Array(e.target.result)));
+				ctx.img = 'data:*/*;base64,' + btoa(bin);
 
-			const data = new FormData();
-			data.append('i', this.$store.state.i.token);
-			data.append('file', file);
+				this.checkExistence(e.target.result).then(fileExists => {
+					if (fileExists) { 
+						this.uploads = this.uploads.filter(x => x.id != id);
+						this.$emit('change', this.uploads);
+						return;
+					}
 
-			if (folder) data.append('folderId', folder);
+					// Upload if the file didn't exist yet
+					const data = new FormData();
+					data.append('i', this.$store.state.i.token);
+					data.append('file', file);
 
-			const xhr = new XMLHttpRequest();
-			xhr.open('POST', apiUrl + '/drive/files/create', true);
-			xhr.onload = (e: any) => {
-				const driveFile = JSON.parse(e.target.response);
+					if (folder) data.append('folderId', folder);
 
-				this.$emit('uploaded', driveFile);
+					const xhr = new XMLHttpRequest();
+					xhr.open('POST', apiUrl + '/drive/files/create', true);
+					xhr.onload = (e: any) => {
+						const driveFile = JSON.parse(e.target.response);
 
-				this.uploads = this.uploads.filter(x => x.id != id);
-				this.$emit('change', this.uploads);
-			};
+						this.$emit('uploaded', driveFile);
 
-			xhr.upload.onprogress = e => {
-				if (e.lengthComputable) {
-					if (ctx.progress == undefined) ctx.progress = {};
-					ctx.progress.max = e.total;
-					ctx.progress.value = e.loaded;
-				}
-			};
+						this.uploads = this.uploads.filter(x => x.id != id);
+						this.$emit('change', this.uploads);
+					};
 
-			xhr.send(data);
+					xhr.upload.onprogress = e => {
+						if (e.lengthComputable) {
+							if (ctx.progress == undefined) ctx.progress = {};
+							ctx.progress.max = e.total;
+							ctx.progress.value = e.loaded;
+						}
+					};
+
+					xhr.send(data);
+				})
+			}
+			reader.readAsArrayBuffer(file);
 		}
 	}
 });
