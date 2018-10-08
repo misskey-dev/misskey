@@ -4,6 +4,7 @@
 	name: 'Dark',
 	author: 'syuilo',
 	desc: 'Default dark theme',
+	kind: 'dark',
 
 	vars: {
 		primary: '#fb4e4e',

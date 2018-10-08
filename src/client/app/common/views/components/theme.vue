@@ -3,14 +3,24 @@
 	<label>
 		<span>%i18n:@light-theme%</span>
 		<ui-select v-model="light" placeholder="%i18n:@light-theme%">
-			<option v-for="x in themes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			<optgroup label="%i18n:@light-themes%">
+				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup label="%i18n:@dark-themes%">
+				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
 		</ui-select>
 	</label>
 
 	<label>
 		<span>%i18n:@dark-theme%</span>
 		<ui-select v-model="dark" placeholder="%i18n:@dark-theme%">
-			<option v-for="x in themes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			<optgroup label="%i18n:@dark-themes%">
+				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup label="%i18n:@light-themes%">
+				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
 		</ui-select>
 	</label>
 
@@ -120,7 +130,15 @@ export default Vue.extend({
 
 	computed: {
 		themes(): Theme[] {
-			return this.$store.state.device.themes.concat(builtinThemes);
+			return builtinThemes.concat(this.$store.state.device.themes);
+		},
+
+		darkThemes(): Theme[] {
+			return this.themes.filter(t => t.base == 'dark' || t.kind == 'dark');
+		},
+
+		lightThemes(): Theme[] {
+			return this.themes.filter(t => t.base == 'light' || t.kind == 'light');
 		},
 
 		installedThemes(): Theme[] {

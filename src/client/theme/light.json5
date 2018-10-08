@@ -4,6 +4,7 @@
 	name: 'Light',
 	author: 'syuilo',
 	desc: 'Default light theme',
+	kind: 'light',
 
 	vars: {
 		primary: '#fb4e4e',
