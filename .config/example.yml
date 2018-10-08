@@ -159,3 +159,10 @@ drive:
 
 # Summaly proxy
 # summalyProxy: "http://example.com"
+
+# User recommendation
+user_recommendation:
+  external: true
+  engine: http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}
+  timeout: 300000
+

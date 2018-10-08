@@ -96,6 +96,12 @@ export type Source = {
 	google_maps_api_key: string;
 
 	clusterLimit?: number;
+
+	user_recommendation: {
+		external: boolean;
+		engine: string;
+		timeout: number;
+	};
 };
 
 /**
