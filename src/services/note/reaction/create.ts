@@ -44,7 +44,8 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	});
 
 	publishNoteStream(note._id, 'reacted', {
-		reaction: reaction
+		reaction: reaction,
+		userId: user._id
 	});
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成

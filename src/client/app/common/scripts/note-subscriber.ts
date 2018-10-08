@@ -86,8 +86,16 @@ export default prop => ({
 			switch (type) {
 				case 'reacted': {
 					const reaction = body.reaction;
-					if (this.$_ns_target.reactionCounts == null) Vue.set(this.$_ns_target, 'reactionCounts', {});
+
+					if (this.$_ns_target.reactionCounts == null) {
+						Vue.set(this.$_ns_target, 'reactionCounts', {});
+					}
+
 					this.$_ns_target.reactionCounts[reaction] = (this.$_ns_target.reactionCounts[reaction] || 0) + 1;
+
+					if (body.userId == this.$store.state.i.id) {
+						Vue.set(this.$_ns_target, 'myReaction', reaction);
+					}
 					break;
 				}
 
