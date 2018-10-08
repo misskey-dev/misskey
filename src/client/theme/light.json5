@@ -98,7 +98,7 @@
 
 		calendarWeek: '#19a2a9',
 		calendarSaturdayOrSunday: '#ef95a0',
-		calendarDay: '#777',
+		calendarDay: '$text',
 
 		materBg: 'rgba(0, 0, 0, 0.1)',
 

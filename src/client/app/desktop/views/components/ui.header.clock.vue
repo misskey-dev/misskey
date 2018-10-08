@@ -89,7 +89,7 @@ export default Vue.extend({
 			display table-cell
 			vertical-align middle
 			height 48px
-			color #9eaba8
+			color var(--desktopHeaderFg)
 
 			> .yyyymmdd
 				opacity 0.7
