@@ -40,18 +40,24 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-reactions-viewer
-	border-top dashed 1px var(--reactionViewerBorder)
-	border-bottom dashed 1px var(--reactionViewerBorder)
-	margin 4px 0
+	margin 6px 0
 
 	&:empty
 		display none
 
 	> span
-		margin-right 8px
+		margin-right 6px
+		padding 6px 6px 6px 4px
+		border-radius 3px
 
 		&.notReacted
 			cursor pointer
+			border solid 1px var(--reactionViewerButtonBorder)
+			background-color var(--reactionViewerButtonBg)
+
+			&:hover
+				border solid 1px var(--reactionViewerButtonHoverBorder)
+				background-color var(--reactionViewerButtonHoverBg)
 
 		> .mk-reaction-icon
 			font-size 1.4em
