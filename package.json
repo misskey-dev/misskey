@@ -22,7 +22,7 @@
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "1.2.5",
 		"@fortawesome/free-brands-svg-icons": "5.3.1",
-		"@fortawesome/free-regular-svg-icons": "5.3.1",
+		"@fortawesome/free-regular-svg-icons": "5.4.0",
 		"@fortawesome/free-solid-svg-icons": "5.3.1",
 		"@koa/cors": "2.2.2",
 		"@prezzemolo/rap": "0.1.2",
