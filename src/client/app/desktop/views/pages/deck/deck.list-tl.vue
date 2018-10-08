@@ -46,8 +46,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		if (this.connection) this.connection.close();
-		this.connection = new UserListStream((this as any).os, this.$store.state.i, this.list.id);
+		if (this.connection) this.connection.dispose();
+		this.connection = (this as any).os.stream.connectToChannel('userList', {
+			listId: this.list.id
+		});
 		this.connection.on('note', this.onNote);
 		this.connection.on('userAdded', this.onUserAdded);
 		this.connection.on('userRemoved', this.onUserRemoved);
@@ -56,7 +58,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.close();
+		this.connection.dispose();
 	},
 
 	methods: {
