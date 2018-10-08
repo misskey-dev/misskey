@@ -20,7 +20,7 @@ export default prop => ({
 		},
 
 		$_ns_target(): any {
-			return this._ns_isRenote ? this.$_ns_note_.renote : this.$_ns_note_;
+			return this.$_ns_isRenote ? this.$_ns_note_.renote : this.$_ns_note_;
 		},
 	},
 
