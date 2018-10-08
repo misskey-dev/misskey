@@ -67,22 +67,30 @@
 	</details>
 
 	<details>
-		<summary>%fa:folder-open% %i18n:@installed-themes%</summary>
-		<ui-select v-model="selectedInstalledThemeId" placeholder="%i18n:@select-theme%">
-			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		<summary>%fa:folder-open% %i18n:@manage-themes%</summary>
+		<ui-select v-model="selectedThemeId" placeholder="%i18n:@select-theme%">
+			<optgroup label="%i18n:@builtin-themes%">
+				<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup label="%i18n:@my-themes%">
+				<option v-for="x in installedThemes.filter(t => t.author == this.$store.state.i.username)" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup label="%i18n:@installed-themes%">
+				<option v-for="x in installedThemes.filter(t => t.author != this.$store.state.i.username)" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
 		</ui-select>
-		<template v-if="selectedInstalledTheme">
-			<ui-input readonly :value="selectedInstalledTheme.author">
+		<template v-if="selectedTheme">
+			<ui-input readonly :value="selectedTheme.author">
 				<span>%i18n:@author%</span>
 			</ui-input>
-			<ui-textarea v-if="selectedInstalledTheme.desc" readonly :value="selectedInstalledTheme.desc">
+			<ui-textarea v-if="selectedTheme.desc" readonly :value="selectedTheme.desc">
 				<span>%i18n:@desc%</span>
 			</ui-textarea>
-			<ui-textarea readonly :value="selectedInstalledThemeCode">
+			<ui-textarea readonly :value="selectedThemeCode">
 				<span>%i18n:@theme-code%</span>
 			</ui-textarea>
-			<ui-button @click="export_()" link :download="`${selectedInstalledTheme.name}.misskeytheme`" ref="export">%fa:box% %i18n:@export%</ui-button>
-			<ui-button @click="uninstall()">%fa:trash-alt R% %i18n:@uninstall%</ui-button>
+			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export">%fa:box% %i18n:@export%</ui-button>
+			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)">%fa:trash-alt R% %i18n:@uninstall%</ui-button>
 		</template>
 	</details>
 </div>
@@ -117,8 +125,9 @@ export default Vue.extend({
 
 	data() {
 		return {
+			builtinThemes: builtinThemes,
 			installThemeCode: null,
-			selectedInstalledThemeId: null,
+			selectedThemeId: null,
 			myThemeBase: 'light',
 			myThemeName: '',
 			myThemeDesc: '',
@@ -155,14 +164,14 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'darkTheme', value }); }
 		},
 
-		selectedInstalledTheme() {
-			if (this.selectedInstalledThemeId == null) return null;
-			return this.installedThemes.find(x => x.id == this.selectedInstalledThemeId);
+		selectedTheme() {
+			if (this.selectedThemeId == null) return null;
+			return this.themes.find(x => x.id == this.selectedThemeId);
 		},
 
-		selectedInstalledThemeCode() {
-			if (this.selectedInstalledTheme == null) return null;
-			return JSON5.stringify(this.selectedInstalledTheme, null, '\t');
+		selectedThemeCode() {
+			if (this.selectedTheme == null) return null;
+			return JSON5.stringify(this.selectedTheme, null, '\t');
 		},
 
 		myTheme(): any {
@@ -238,7 +247,7 @@ export default Vue.extend({
 		},
 
 		uninstall() {
-			const theme = this.selectedInstalledTheme;
+			const theme = this.selectedTheme;
 			const themes = this.$store.state.device.themes.filter(t => t.id != theme.id);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
@@ -251,7 +260,7 @@ export default Vue.extend({
 		}
 
 		export_() {
-			const blob = new Blob([this.selectedInstalledThemeCode], {
+			const blob = new Blob([this.selectedThemeCode], {
 				type: 'application/json5'
 			});
 			this.$refs.export.$el.href = window.URL.createObjectURL(blob);
