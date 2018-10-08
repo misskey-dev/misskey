@@ -31,7 +31,7 @@ module.exports = (server: http.Server) => {
 					payload = payload.body;
 				}
 				if (type.startsWith('api:')) {
-					type = payload.type.replace('api:', 'api-res:');
+					type = type.replace('api:', 'api-res:');
 				}
 				connection.send(JSON.stringify({
 					type: type,
