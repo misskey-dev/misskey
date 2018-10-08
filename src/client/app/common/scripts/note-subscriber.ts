@@ -13,7 +13,7 @@ export default prop => ({
 		},
 
 		$_ns_isRenote(): boolean {
-			return (this.$_ns_note_.renote &&
+			return (this.$_ns_note_.renote != null &&
 				this.$_ns_note_.text == null &&
 				this.$_ns_note_.fileIds.length == 0 &&
 				this.$_ns_note_.poll == null);
