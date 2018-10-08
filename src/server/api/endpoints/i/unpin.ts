@@ -1,8 +1,7 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import User, { ILocalUser } from '../../../../models/user';
-import Note from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 import { pack } from '../../../../models/user';
-import { deliverPinnedChange } from '../../../../services/i/pin';
+import { removePinned } from '../../../../services/i/pin';
 import getParams from '../../get-params';
 
 export const meta = {
@@ -27,31 +26,18 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) return rej(psErr);
 
-	// Fetch unpinee
-	const note = await Note.findOne({
-		_id: ps.noteId,
-		userId: user._id
-	});
-
-	if (note === null) {
-		return rej('note not found');
+	// Processing
+	try {
+		await removePinned(user, ps.noteId);
+	} catch (e) {
+		return rej(e.message);
 	}
 
-	const pinnedNoteIds = (user.pinnedNoteIds || []).filter(id => !id.equals(note._id));
-
-	await User.update(user._id, {
-		$set: {
-			pinnedNoteIds: pinnedNoteIds
-		}
-	});
-
+	// Serialize
 	const iObj = await pack(user, user, {
 		detail: true
 	});
 
 	// Send response
 	res(iObj);
-
-	// Send Remove to followers
-	deliverPinnedChange(user._id, note._id, false);
 });

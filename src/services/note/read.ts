@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import { publishUserStream } from '../../stream';
+import { publishMainStream } from '../../stream';
 import User from '../../models/user';
 import NoteUnread from '../../models/note-unread';
 
@@ -56,11 +56,11 @@ export default (
 
 	if (count1 == 0) {
 		// 全て既読になったイベントを発行
-		publishUserStream(userId, 'readAllUnreadMentions');
+		publishMainStream(userId, 'readAllUnreadMentions');
 	}
 
 	if (count2 == 0) {
 		// 全て既読になったイベントを発行
-		publishUserStream(userId, 'readAllUnreadSpecifiedNotes');
+		publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
 	}
 });

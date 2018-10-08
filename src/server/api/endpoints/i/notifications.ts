@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Notification from '../../../../models/notification';
 import Mute from '../../../../models/mute';
-import { pack } from '../../../../models/notification';
+import { packMany } from '../../../../models/notification';
 import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 import { ILocalUser } from '../../../../models/user';
@@ -83,7 +83,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	// Serialize
-	res(await Promise.all(notifications.map(notification => pack(notification))));
+	res(await packMany(notifications));
 
 	// Mark all as read
 	if (notifications.length > 0 && markAsRead) {

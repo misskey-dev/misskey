@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
 export default Vue.extend({
 	data() {
 		return {
@@ -30,10 +31,10 @@ export default Vue.extend({
 			fetchingMoreNotifications: false,
 			notifications: [],
 			moreNotifications: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
+
 	computed: {
 		_notifications(): any[] {
 			return (this.notifications as any).map(notification => {
@@ -45,9 +46,11 @@ export default Vue.extend({
 			});
 		}
 	},
+
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		window.addEventListener('scroll', this.onScroll, { passive: true });
+
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('notification', this.onNotification);
 
@@ -66,10 +69,12 @@ export default Vue.extend({
 			this.$emit('fetched');
 		});
 	},
+
 	beforeDestroy() {
-		this.connection.off('notification', this.onNotification);
-		(this as any).os.stream.dispose(this.connectionId);
+		window.removeEventListener('scroll', this.onScroll);
+		this.connection.dispose();
 	},
+
 	methods: {
 		fetchMoreNotifications() {
 			this.fetchingMoreNotifications = true;
@@ -90,14 +95,27 @@ export default Vue.extend({
 				this.fetchingMoreNotifications = false;
 			});
 		},
+
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
 			this.connection.send({
-				type: 'read_notification',
+				type: 'readNotification',
 				id: notification.id
 			});
 
 			this.notifications.unshift(notification);
+		},
+
+		onScroll() {
+			if (this.$store.state.settings.fetchOnScroll !== false) {
+				// 親要素が display none だったら弾く
+				// https://github.com/syuilo/misskey/issues/1569
+				// http://d.hatena.ne.jp/favril/20091105/1257403319
+				if (this.$el.offsetHeight == 0) return;
+
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.fetchMoreNotifications();
+			}
 		}
 	}
 });
@@ -148,7 +166,7 @@ export default Vue.extend({
 		display block
 		width 100%
 		padding 16px
-		color #555
+		color var(--text)
 		border-top solid 1px rgba(#000, 0.05)
 
 		> [data-fa]

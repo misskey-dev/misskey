@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import Notification from './models/notification';
 import Mute from './models/mute';
 import { pack } from './models/notification';
-import { publishUserStream } from './stream';
+import { publishMainStream } from './stream';
 import User from './models/user';
 import pushSw from './push-sw';
 
@@ -30,7 +30,7 @@ export default (
 	const packed = await pack(notification);
 
 	// Publish notification event
-	publishUserStream(notifiee, 'notification', packed);
+	publishMainStream(notifiee, 'notification', packed);
 
 	// Update flag
 	User.update({ _id: notifiee }, {
@@ -39,7 +39,7 @@ export default (
 		}
 	});
 
-	// 3秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
+	// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 	setTimeout(async () => {
 		const fresh = await Notification.findOne({ _id: notification._id }, { isRead: true });
 		if (!fresh.isRead) {
@@ -54,9 +54,9 @@ export default (
 			}
 			//#endregion
 
-			publishUserStream(notifiee, 'unread_notification', packed);
+			publishMainStream(notifiee, 'unreadNotification', packed);
 
 			pushSw(notifiee, 'notification', packed);
 		}
-	}, 3000);
+	}, 2000);
 });

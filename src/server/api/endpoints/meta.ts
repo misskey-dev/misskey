@@ -32,13 +32,22 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
 		},
-		broadcasts: meta.broadcasts,
+		broadcasts: meta.broadcasts || [],
 		disableRegistration: meta.disableRegistration,
 		disableLocalTimeline: meta.disableLocalTimeline,
 		driveCapacityPerLocalUserMb: config.localDriveCapacityMb,
 		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
 		swPublickey: config.sw ? config.sw.public_key : null,
 		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
-		bannerUrl: meta.bannerUrl
+		bannerUrl: meta.bannerUrl,
+		features: {
+			registration: !meta.disableRegistration,
+			localTimeLine: !meta.disableLocalTimeline,
+			elasticsearch: config.elasticsearch ? true : false,
+			recaptcha: config.recaptcha ? true : false,
+			objectStorage: config.drive && config.drive.storage === 'minio',
+			twitter: config.twitter ? true : false,
+			serviceWorker: config.sw ? true : false
+		}
 	});
 });

@@ -71,13 +71,11 @@ export default Vue.extend({
 			messages: [],
 			q: null,
 			result: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.messagingIndexStream.getConnection();
-		this.connectionId = (this as any).os.streams.messagingIndexStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
@@ -88,9 +86,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('message', this.onMessage);
-		this.connection.off('read', this.onRead);
-		(this as any).os.streams.messagingIndexStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		getAcct,

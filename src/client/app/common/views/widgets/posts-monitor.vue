@@ -82,7 +82,6 @@ export default define({
 	data() {
 		return {
 			connection: null,
-			connectionId: null,
 			viewBoxY: 30,
 			stats: [],
 			fediGradientId: uuid(),
@@ -110,8 +109,7 @@ export default define({
 		}
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.notesStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.notesStatsStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('notesStats');
 
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
@@ -121,9 +119,7 @@ export default define({
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('stats', this.onStats);
-		this.connection.off('statsLog', this.onStatsLog);
-		(this as any).os.streams.notesStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		toggle() {

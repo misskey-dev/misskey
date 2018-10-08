@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import DriveFile, { pack } from '../../../../models/drive-file';
+import DriveFile, { packMany } from '../../../../models/drive-file';
 import { ILocalUser } from '../../../../models/user';
 
 export const meta = {
@@ -73,6 +73,5 @@ export default async (params: any, user: ILocalUser) => {
 		});
 
 	// Serialize
-	const _files = await Promise.all(files.map(file => pack(file)));
-	return _files;
+	return await packMany(files);
 };

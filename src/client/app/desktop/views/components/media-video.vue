@@ -6,19 +6,12 @@
 	</div>
 </div>
 <div class="vwxdhznewyashiknzolsoihtlpicqepe" v-else>
-	<video class="video"
-		:src="video.url"
-		:title="video.name"
-		controls
-		@dblclick.prevent="onClick"
-		ref="video"
-		v-if="inlinePlayable" />
 	<a class="thumbnail"
 		:href="video.url"
 		:style="imageStyle"
 		@click.prevent="onClick"
 		:title="video.name"
-		v-else>
+	>
 		%fa:R play-circle%
 	</a>
 </div>
@@ -46,7 +39,7 @@ export default Vue.extend({
 	computed: {
 		imageStyle(): any {
 			return {
-				'background-image': `url(${this.video.url})`
+				'background-image': null // TODO `url(${this.video.thumbnailUrl})`
 			};
 		}
 	},

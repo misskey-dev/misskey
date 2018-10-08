@@ -24,6 +24,10 @@ export default Vue.extend({
 		save() {
 			(this as any).api('admin/update-meta', {
 				hidedTags: this.hidedTags.split('\n')
+			}).then(() => {
+				(this as any).os.apis.dialog({ text: `Saved` });
+			}).catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}

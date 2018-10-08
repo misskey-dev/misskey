@@ -14,8 +14,7 @@ import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './mios';
 import { version, codename, lang } from './config';
-import { builtinThemes, applyTheme } from './theme';
-const lightTheme = require('../theme/light.json');
+import { builtinThemes, lightTheme, applyTheme } from './theme';
 
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
@@ -97,15 +96,15 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				return s.device.darkmode;
 			}, v => {
 				const themes = os.store.state.device.themes.concat(builtinThemes);
-				const dark = themes.find(t => t.meta.id == os.store.state.device.darkTheme);
-				const light = themes.find(t => t.meta.id == os.store.state.device.lightTheme);
+				const dark = themes.find(t => t.id == os.store.state.device.darkTheme);
+				const light = themes.find(t => t.id == os.store.state.device.lightTheme);
 				applyTheme(v ? dark : light);
 			});
 			os.store.watch(s => {
 				return s.device.lightTheme;
 			}, v => {
 				const themes = os.store.state.device.themes.concat(builtinThemes);
-				const theme = themes.find(t => t.meta.id == v);
+				const theme = themes.find(t => t.id == v);
 				if (!os.store.state.device.darkmode) {
 					applyTheme(theme);
 				}
@@ -114,7 +113,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				return s.device.darkTheme;
 			}, v => {
 				const themes = os.store.state.device.themes.concat(builtinThemes);
-				const theme = themes.find(t => t.meta.id == v);
+				const theme = themes.find(t => t.id == v);
 				if (os.store.state.device.darkmode) {
 					applyTheme(theme);
 				}

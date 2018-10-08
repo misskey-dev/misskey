@@ -9,7 +9,6 @@ import './style.styl';
 
 import init from '../init';
 import fuckAdBlock from '../common/scripts/fuck-ad-block';
-import { HomeStreamManager } from '../common/scripts/streaming/home';
 import composeNotification from '../common/scripts/compose-notification';
 
 import chooseDriveFolder from './api/choose-drive-folder';
@@ -37,6 +36,7 @@ import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
+import MiOS from '../mios';
 
 /**
  * init
@@ -102,62 +102,56 @@ init(async (launch) => {
 		}
 
 		if ((Notification as any).permission == 'granted') {
-			registerNotifications(os.stream);
+			registerNotifications(os);
 		}
 	}
 }, true);
 
-function registerNotifications(stream: HomeStreamManager) {
+function registerNotifications(os: MiOS) {
+	const stream = os.stream;
+
 	if (stream == null) return;
 
-	if (stream.hasConnection) {
-		attach(stream.borrow());
-	}
+	const connection = stream.useSharedConnection('main');
 
-	stream.on('connected', connection => {
-		attach(connection);
+	connection.on('notification', notification => {
+		const _n = composeNotification('notification', notification);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
+		});
+		setTimeout(n.close.bind(n), 6000);
 	});
 
-	function attach(connection) {
-		connection.on('notification', notification => {
-			const _n = composeNotification('notification', notification);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			setTimeout(n.close.bind(n), 6000);
+	connection.on('driveFileCreated', file => {
+		const _n = composeNotification('driveFileCreated', file);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
 		});
+		setTimeout(n.close.bind(n), 5000);
+	});
 
-		connection.on('drive_file_created', file => {
-			const _n = composeNotification('drive_file_created', file);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			setTimeout(n.close.bind(n), 5000);
+	connection.on('unreadMessagingMessage', message => {
+		const _n = composeNotification('unreadMessagingMessage', message);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
 		});
+		n.onclick = () => {
+			n.close();
+			/*(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+				user: message.user
+			});*/
+		};
+		setTimeout(n.close.bind(n), 7000);
+	});
 
-		connection.on('unread_messaging_message', message => {
-			const _n = composeNotification('unread_messaging_message', message);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			n.onclick = () => {
-				n.close();
-				/*(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
-					user: message.user
-				});*/
-			};
-			setTimeout(n.close.bind(n), 7000);
+	connection.on('reversiInvited', matching => {
+		const _n = composeNotification('reversiInvited', matching);
+		const n = new Notification(_n.title, {
+			body: _n.body,
+			icon: _n.icon
 		});
-
-		connection.on('reversi_invited', matching => {
-			const _n = composeNotification('reversi_invited', matching);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-		});
-	}
+	});
 }

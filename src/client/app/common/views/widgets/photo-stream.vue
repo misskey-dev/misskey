@@ -24,15 +24,13 @@ export default define({
 		return {
 			images: [],
 			fetching: true,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
-		this.connection.on('drive_file_created', this.onDriveFileCreated);
+		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 
 		(this as any).api('drive/stream', {
 			type: 'image/*',
@@ -43,8 +41,7 @@ export default define({
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('drive_file_created', this.onDriveFileCreated);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		onDriveFileCreated(file) {

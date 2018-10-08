@@ -1,6 +1,6 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import getHostLower from '../../common/get-host-lower';
-import Note, { pack } from '../../../../models/note';
+import Note, { packMany } from '../../../../models/note';
 import User, { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
 import { countIf } from '../../../../prelude/array';
@@ -181,5 +181,5 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		});
 
 	// Serialize
-	res(await Promise.all(notes.map(note => pack(note, me))));
+	res(await packMany(notes, me));
 });

@@ -59,15 +59,13 @@ export default Vue.extend({
 			myGames: [],
 			matching: null,
 			invitations: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.streams.reversiStream.getConnection();
-			this.connectionId = (this as any).os.streams.reversiStream.use();
+			this.connection = (this as any).os.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('invited', this.onInvited);
 
@@ -90,8 +88,7 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		if (this.connection) {
-			this.connection.off('invited', this.onInvited);
-			(this as any).os.streams.reversiStream.dispose(this.connectionId);
+			this.connection.dispose();
 		}
 	},
 

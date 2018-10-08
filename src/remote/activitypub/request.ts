@@ -12,6 +12,8 @@ const log = debug('misskey:activitypub:deliver');
 export default (user: ILocalUser, url: string, object: any) => new Promise((resolve, reject) => {
 	log(`--> ${url}`);
 
+	const timeout = 10 * 1000;
+
 	const { protocol, hostname, port, pathname, search } = new URL(url);
 
 	const data = JSON.stringify(object);
@@ -26,6 +28,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 		port,
 		method: 'POST',
 		path: pathname + search,
+		timeout,
 		headers: {
 			'User-Agent': config.user_agent,
 			'Content-Type': 'application/activity+json',
@@ -35,7 +38,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 		log(`${url} --> ${res.statusCode}`);
 
 		if (res.statusCode >= 400) {
-			reject();
+			reject(res);
 		} else {
 			resolve();
 		}
@@ -52,6 +55,13 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 	let sig = req.getHeader('Signature').toString();
 	sig = sig.replace(/^Signature /, '');
 	req.setHeader('Signature', sig);
+
+	req.on('timeout', () => req.abort());
+
+	req.on('error', e => {
+		if (req.aborted) reject('timeout');
+		reject(e);
+	});
 
 	req.end(data);
 });

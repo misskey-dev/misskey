@@ -47,7 +47,6 @@ export default Vue.extend({
 			game: null,
 			matching: null,
 			connection: null,
-			connectionId: null,
 			pingClock: null
 		};
 	},
@@ -66,8 +65,7 @@ export default Vue.extend({
 		this.fetch();
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.streams.reversiStream.getConnection();
-			this.connectionId = (this as any).os.streams.reversiStream.use();
+			this.connection = (this as any).os.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('matched', this.onMatched);
 
@@ -84,9 +82,7 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		if (this.connection) {
-			this.connection.off('matched', this.onMatched);
-			(this as any).os.streams.reversiStream.dispose(this.connectionId);
-
+			this.connection.dispose();
 			clearInterval(this.pingClock);
 		}
 	},

@@ -24,7 +24,6 @@
 	const theme = localStorage.getItem('theme');
 	if (theme) {
 		Object.entries(JSON.parse(theme)).forEach(([k, v]) => {
-			if (k == 'meta') return;
 			document.documentElement.style.setProperty(`--${k}`, v.toString());
 		});
 	}

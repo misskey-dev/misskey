@@ -7,7 +7,7 @@ import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import PollVote, { deletePollVote } from './poll-vote';
 import Reaction, { deleteNoteReaction } from './note-reaction';
-import { pack as packFile, IDriveFile } from './drive-file';
+import { packMany as packFileMany, IDriveFile } from './drive-file';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
 import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
@@ -26,21 +26,6 @@ Note.createIndex({
 	createdAt: -1
 });
 export default Note;
-
-// 後方互換性のため
-Note.findOne({
-	fileIds: { $exists: true }
-}).then(n => {
-	if (n == null) {
-		Note.update({}, {
-			$rename: {
-				mediaIds: 'fileIds'
-			}
-		}, {
-			multi: true
-		});
-	}
-});
 
 export function isValidText(text: string): boolean {
 	return length(text.trim()) <= 1000 && text.trim() != '';
@@ -235,10 +220,20 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 		packedNote.poll = null;
 		packedNote.cw = null;
 		packedNote.tags = [];
-		packedNote.tagsLower = [];
 		packedNote.geo = null;
 		packedNote.isHidden = true;
 	}
+};
+
+export const packMany = async (
+	notes: (string | mongo.ObjectID | INote)[],
+	me?: string | mongo.ObjectID | IUser,
+	options?: {
+		detail?: boolean;
+		skipHide?: boolean;
+	}
+) => {
+	return (await Promise.all(notes.map(n => pack(n, me, options)))).filter(x => x != null);
 };
 
 /**
@@ -286,7 +281,11 @@ export const pack = async (
 		_note = deepcopy(note);
 	}
 
-	if (!_note) throw `invalid note arg ${note}`;
+	// 投稿がデータベース上に見つからなかったとき
+	if (_note == null) {
+		console.warn(`note not found on database: ${note}`);
+		return null;
+	}
 
 	const id = _note._id;
 
@@ -294,6 +293,9 @@ export const pack = async (
 	_note.id = _note._id;
 	delete _note._id;
 
+	delete _note.prev;
+	delete _note.next;
+	delete _note.tagsLower;
 	delete _note._user;
 	delete _note._reply;
 	delete _note._renote;
@@ -309,9 +311,7 @@ export const pack = async (
 	}
 
 	// Populate files
-	_note.files = Promise.all(_note.fileIds.map((fileId: mongo.ObjectID) =>
-		packFile(fileId)
-	));
+	_note.files = packFileMany(_note.fileIds || []);
 
 	// 後方互換性のため
 	_note.mediaIds = _note.fileIds;
@@ -379,6 +379,12 @@ export const pack = async (
 
 	// resolve promises in _note object
 	_note = await rap(_note);
+
+	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
+	if (_note.user == null) {
+		console.warn(`in packaging note: note user not found on database: note(${_note.id})`);
+		return null;
+	}
 
 	if (_note.user.isCat && _note.text) {
 		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');

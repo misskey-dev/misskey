@@ -5,7 +5,8 @@
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="u.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
+		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked">%fa:hourglass-half% %i18n:@request-pending%</template>
+		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked">%fa:hourglass-start% %i18n:@follow-processing%</template>
 		<template v-else-if="u.isFollowing">%fa:minus% %i18n:@following%</template>
 		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus% %i18n:@follow-request%</template>
 		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus% %i18n:@follow%</template>
@@ -27,21 +28,17 @@ export default Vue.extend({
 		return {
 			u: this.user,
 			wait: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('follow', this.onFollow);
 		this.connection.on('unfollow', this.onUnfollow);
 	},
 	beforeDestroy() {
-		this.connection.off('follow', this.onFollow);
-		this.connection.off('unfollow', this.onUnfollow);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 

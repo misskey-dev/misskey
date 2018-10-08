@@ -13,7 +13,6 @@
 						<router-link class="name" :to="_user | userPage" v-user-preview="_user.id">{{ _user | userName }}</router-link>
 						<p class="username">@{{ _user | acct }}</p>
 					</div>
-					<mk-follow-button :user="_user"/>
 				</div>
 			</template>
 			<p class="empty" v-else>%i18n:@no-one%</p>

@@ -19,7 +19,8 @@
 			@click="onClick"
 			:disabled="followWait">
 		<template v-if="!followWait">
-			<template v-if="user.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
+			<template v-if="user.hasPendingFollowRequestFromYou && user.isLocked">%fa:hourglass-half% %i18n:@request-pending%</template>
+			<template v-else-if="user.hasPendingFollowRequestFromYou && !user.isLocked">%fa:hourglass-start% %i18n:@follow-processing%</template>
 			<template v-else-if="user.isFollowing">%fa:minus% %i18n:@following%</template>
 			<template v-else-if="!user.isFollowing && user.isLocked">%fa:plus% %i18n:@follow-request%</template>
 			<template v-else-if="!user.isFollowing && !user.isLocked">%fa:plus% %i18n:@follow%</template>

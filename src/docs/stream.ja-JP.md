@@ -55,7 +55,7 @@ APIへリクエストすると、レスポンスがストリームから次の�
 
 ```json
 {
-	type: 'api-res:xxxxxxxxxxxxxxxx',
+	type: 'api:xxxxxxxxxxxxxxxx',
 	body: {
 		...
 	}
@@ -95,7 +95,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 ```json
 {
-	type: 'note-updated',
+	type: 'noteUpdated',
 	body: {
 		note: {
 			...
@@ -108,7 +108,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 ---
 
-このように、投稿の情報が更新されると、`note-updated`イベントが流れてくるようになります。`note-updated`イベントが発生するのは、以下の場合です:
+このように、投稿の情報が更新されると、`noteUpdated`イベントが流れてくるようになります。`noteUpdated`イベントが発生するのは、以下の場合です:
 
 - 投稿にリアクションが付いた
 - 投稿に添付されたアンケートに投票がされた
@@ -153,7 +153,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 `body`プロパティの中に、投稿情報が含まれています。
 
-### `read_all_notifications`
+### `readAllNotifications`
 
 自分宛ての通知がすべて既読になったことを表すイベントです。このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
 

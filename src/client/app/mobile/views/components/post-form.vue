@@ -478,7 +478,7 @@ export default Vue.extend({
 					width 48px
 					height 48px
 					font-size 20px
-					color #657786
+					color var(--mobilePostFormButton)
 					background transparent
 					outline none
 					border none

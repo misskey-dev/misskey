@@ -98,6 +98,12 @@ export type Source = {
 	clusterLimit?: number;
 
 	initialBalance: number;
+
+	user_recommendation: {
+		external: boolean;
+		engine: string;
+		timeout: number;
+	};
 };
 
 /**
