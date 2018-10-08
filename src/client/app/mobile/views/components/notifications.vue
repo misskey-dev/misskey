@@ -166,7 +166,7 @@ export default Vue.extend({
 		display block
 		width 100%
 		padding 16px
-		color #555
+		color var(--text)
 		border-top solid 1px rgba(#000, 0.05)
 
 		> [data-fa]
