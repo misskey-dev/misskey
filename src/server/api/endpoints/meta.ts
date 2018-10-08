@@ -1,6 +1,3 @@
-/**
- * Module dependencies
- */
 import * as os from 'os';
 import config from '../../../config';
 import Meta from '../../../models/meta';
@@ -9,9 +6,17 @@ import { ILocalUser } from '../../../models/user';
 const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
 
-/**
- * Show core info
- */
+export const meta = {
+	desc: {
+		'ja-JP': 'インスタンス情報を取得します。',
+		'en-US': 'Get the information of this instance.'
+	},
+
+	requireCredential: false,
+
+	params: {},
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	const meta: any = (await Meta.findOne()) || {};
 
@@ -28,10 +33,12 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,
+
 		cpu: {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
 		},
+
 		broadcasts: meta.broadcasts || [],
 		disableRegistration: meta.disableRegistration,
 		disableLocalTimeline: meta.disableLocalTimeline,
@@ -40,6 +47,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		swPublickey: config.sw ? config.sw.public_key : null,
 		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
 		bannerUrl: meta.bannerUrl,
+
 		features: {
 			registration: !meta.disableRegistration,
 			localTimeLine: !meta.disableLocalTimeline,
