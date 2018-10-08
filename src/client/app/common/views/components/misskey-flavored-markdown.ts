@@ -95,7 +95,8 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement(MkUrl, {
 						props: {
 							url: token.content,
-							target: '_blank'
+							target: '_blank',
+							style: 'color:var(--mfmLink);'
 						}
 					})];
 				}
@@ -106,7 +107,8 @@ export default Vue.component('misskey-flavored-markdown', {
 							class: 'link',
 							href: token.url,
 							target: '_blank',
-							title: token.url
+							title: token.url,
+							style: 'color:var(--mfmLink);'
 						}
 					}, token.title)];
 				}
@@ -116,7 +118,8 @@ export default Vue.component('misskey-flavored-markdown', {
 						attrs: {
 							href: `${url}/@${getAcct(token)}`,
 							target: '_blank',
-							dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token)
+							dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token),
+							style: 'color:var(--mfmMention);'
 						},
 						directives: [{
 							name: 'user-preview',
@@ -129,7 +132,8 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('a', {
 						attrs: {
 							href: `${url}/tags/${encodeURIComponent(token.hashtag)}`,
-							target: '_blank'
+							target: '_blank',
+							style: 'color:var(--mfmHashtag);'
 						}
 					}, token.content)];
 				}

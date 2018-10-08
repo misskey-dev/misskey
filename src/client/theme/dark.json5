@@ -121,6 +121,9 @@
 		mfmTitleBg: 'rgba(0, 0, 0, 0.2)',
 		mfmQuote: ':alpha<0.7<$text',
 		mfmQuoteLine: ':alpha<0.6<$text',
+		mfmLink: '$primary',
+		mfmMention: '$primary',
+		mfmHashtag: '$primary',
 
 		suspendedInfoBg: '#611d1d',
 		suspendedInfoFg: '#ffb4b4',
