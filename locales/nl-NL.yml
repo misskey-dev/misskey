@@ -267,6 +267,8 @@ common/views/components/media-banner.vue:
 common/views/components/theme.vue:
   light-theme: "非ダークモード時に使用するテーマ"
   dark-theme: "ダークモード時に使用するテーマ"
+  light-themes: "明るいテーマ"
+  dark-themes: "暗いテーマ"
   install-a-theme: "テーマのインストール"
   theme-code: "テーマコード"
   install: "インストール"
