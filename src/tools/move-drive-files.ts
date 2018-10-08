@@ -1,5 +1,6 @@
 import * as Minio from 'minio';
 import * as uuid from 'uuid';
+const sequential = require('promise-sequential');
 import DriveFile, { DriveFileChunk, getDriveFileBucket } from '../models/drive-file';
 import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../models/drive-file-thumbnail';
 import config from '../config';
@@ -11,7 +12,7 @@ DriveFile.find({
 		withoutChunks: false
 	}]
 }).then(async files => {
-	files.forEach(async file => {
+	await sequential(files.map(file => async () => {
 		const minio = new Minio.Client(config.drive.config);
 
 		const keyDir = `${config.drive.prefix}/${uuid.v4()}`;
@@ -60,5 +61,7 @@ DriveFile.find({
 			await DriveFileThumbnail.remove({ _id: thumbnail._id });
 		}
 		//#endregion
-	});
+
+		console.log('done', file._id);
+	}));
 });
