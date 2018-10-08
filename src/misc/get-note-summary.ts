@@ -17,7 +17,7 @@ const summarize = (note: any): string => {
 	summary += note.text ? note.text : '';
 
 	// ファイルが添付されているとき
-	if (note.files.length != 0) {
+	if ((note.files || []).length != 0) {
 		summary += ` (${note.files.length}つのファイル)`;
 	}
 
