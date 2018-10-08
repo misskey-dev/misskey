@@ -96,7 +96,7 @@
 		"crc-32": "1.2.0",
 		"css-loader": "1.0.0",
 		"dateformat": "3.0.3",
-		"debug": "4.0.1",
+		"debug": "4.1.0",
 		"deep-equal": "1.0.1",
 		"deepcopy": "0.6.3",
 		"diskusage": "0.2.5",
