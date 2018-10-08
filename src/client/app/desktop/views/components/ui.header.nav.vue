@@ -42,8 +42,7 @@ export default Vue.extend({
 	data() {
 		return {
 			hasGameInvitations: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	computed: {
@@ -53,18 +52,15 @@ export default Vue.extend({
 	},
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 
-			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('reversi_invited', this.onReversiInvited);
-			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
-			(this as any).os.stream.dispose(this.connectionId);
+			this.connection.dispose();
 		}
 	},
 	methods: {
@@ -95,9 +91,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.nav
 	display inline-block
 	margin 0
 	padding 0
@@ -120,7 +114,7 @@ root(isDark)
 
 			&.active
 				> a
-					border-bottom solid 3px $theme-color
+					border-bottom solid 3px var(--primary)
 
 			> a
 				display inline-block
@@ -129,7 +123,7 @@ root(isDark)
 				padding 0 24px
 				font-size 13px
 				font-variant small-caps
-				color isDark ? #b8c5ca : #9eaba8
+				color var(--desktopHeaderFg)
 				text-decoration none
 				transition none
 				cursor pointer
@@ -138,7 +132,7 @@ root(isDark)
 					pointer-events none
 
 				&:hover
-					color isDark ? #fff : darken(#9eaba8, 20%)
+					color var(--desktopHeaderHoverFg)
 					text-decoration none
 
 				> [data-fa]:first-child
@@ -147,7 +141,7 @@ root(isDark)
 				> [data-fa]:last-child
 					margin-left 5px
 					font-size 10px
-					color $theme-color
+					color var(--primary)
 
 					@media (max-width 1100px)
 						margin-left -5px
@@ -161,11 +155,5 @@ root(isDark)
 
 				@media (max-width 700px)
 					padding 0 12px
-
-.nav[data-darkmode]
-	root(true)
-
-.nav:not([data-darkmode])
-	root(false)
 
 </style>

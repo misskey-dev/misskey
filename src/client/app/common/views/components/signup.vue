@@ -1,12 +1,12 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
-		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required styl="fill">
 			<span>%i18n:@invitation-code%</span>
 			<span slot="prefix">%fa:id-card-alt%</span>
 			<p slot="text" v-html="'%i18n:@invitation-info%'.replace('{}', meta.maintainer.url)"></p>
 		</ui-input>
-		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
+		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername" styl="fill">
 			<span>%i18n:@username%</span>
 			<span slot="prefix">@</span>
 			<span slot="suffix">@{{ host }}</span>
@@ -18,7 +18,7 @@
 			<p slot="text" v-if="usernameState == 'min-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-short%</p>
 			<p slot="text" v-if="usernameState == 'max-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-long%</p>
 		</ui-input>
-		<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true">
+		<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true" styl="fill">
 			<span>%i18n:@password%</span>
 			<span slot="prefix">%fa:lock%</span>
 			<div slot="text">
@@ -27,7 +27,7 @@
 				<p slot="text" v-if="passwordStrength == 'high'" style="color:#3CB7B5">%fa:check .fw% %i18n:@strong-password%</p>
 			</div>
 		</ui-input>
-		<ui-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
+		<ui-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype" styl="fill">
 			<span>%i18n:@password% (%i18n:@retype%)</span>
 			<span slot="prefix">%fa:lock%</span>
 			<div slot="text">
@@ -131,11 +131,11 @@ export default Vue.extend({
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'g-recaptcha-response': this.meta.recaptchaSitekey != null ? (window as any).grecaptcha.getResponse() : null
-			}).then(() => {
+			}, true).then(() => {
 				(this as any).api('signin', {
 					username: this.username,
 					password: this.password
-				}).then(() => {
+				}, true).then(() => {
 					location.href = '/';
 				});
 			}).catch(() => {
@@ -151,7 +151,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-signup
 	min-width 302px

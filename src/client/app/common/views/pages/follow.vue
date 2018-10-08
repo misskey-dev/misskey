@@ -1,6 +1,6 @@
 <template>
-<div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
-	<div class="signed-in-as" v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + myName + '</b>')"></div>
+<div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching">
+	<div class="signed-in-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${myName}`)"></div>
 
 	<main>
 		<div class="banner" :style="bannerStyle"></div>
@@ -19,7 +19,8 @@
 			@click="onClick"
 			:disabled="followWait">
 		<template v-if="!followWait">
-			<template v-if="user.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
+			<template v-if="user.hasPendingFollowRequestFromYou && user.isLocked">%fa:hourglass-half% %i18n:@request-pending%</template>
+			<template v-else-if="user.hasPendingFollowRequestFromYou && !user.isLocked">%fa:hourglass-start% %i18n:@follow-processing%</template>
 			<template v-else-if="user.isFollowing">%fa:minus% %i18n:@following%</template>
 			<template v-else-if="!user.isFollowing && user.isLocked">%fa:plus% %i18n:@follow-request%</template>
 			<template v-else-if="!user.isFollowing && !user.isLocked">%fa:plus% %i18n:@follow%</template>
@@ -32,7 +33,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import parseAcct from '../../../../../misc/acct/parse';
-import getUserName from '../../../../../misc/get-user-name';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
@@ -83,7 +83,7 @@ export default Vue.extend({
 						userId: this.user.id
 					});
 				} else {
-					if (this.user.isLocked && this.user.hasPendingFollowRequestFromYou) {
+					if (this.user.hasPendingFollowRequestFromYou) {
 						this.user = await (this as any).api('following/requests/cancel', {
 							userId: this.user.id
 						});
@@ -108,16 +108,14 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.syxhndwprovvuqhmyvveewmbqayniwkv
 	padding 32px
 	max-width 500px
 	margin 0 auto
 	text-align center
-	color isDark ? #9baec8 : #868c8c
+	color var(--text)
 
-	$bg = isDark ? #282C37 : #fff
+	$bg = var(--face)
 
 	@media (max-width 400px)
 		padding 16px
@@ -125,7 +123,6 @@ root(isDark)
 	> .signed-in-as
 		margin-bottom 16px
 		font-size 14px
-		color isDark ? #9baec8 : #9daab3
 
 	> main
 		margin-bottom 16px
@@ -174,29 +171,29 @@ root(isDark)
 		min-width 150px
 		font-size 14px
 		font-weight bold
-		color $theme-color
+		color var(--primary)
 		background transparent
 		outline none
-		border solid 1px $theme-color
+		border solid 1px var(--primary)
 		border-radius 36px
 
 		&:hover
-			background rgba($theme-color, 0.1)
+			background var(--primaryAlpha01)
 
 		&:active
-			background rgba($theme-color, 0.2)
+			background var(--primaryAlpha02)
 
 		&.active
-			color $theme-color-foreground
-			background $theme-color
+			color var(--primaryForeground)
+			background var(--primary)
 
 			&:hover
-				background lighten($theme-color, 10%)
-				border-color lighten($theme-color, 10%)
+				background var(--primaryLighten10)
+				border-color var(--primaryLighten10)
 
 			&:active
-				background darken($theme-color, 10%)
-				border-color darken($theme-color, 10%)
+				background var(--primaryDarken10)
+				border-color var(--primaryDarken10)
 
 		&.wait
 			cursor wait !important
@@ -204,11 +201,5 @@ root(isDark)
 
 		*
 			pointer-events none
-
-.syxhndwprovvuqhmyvveewmbqayniwkv[data-darkmode]
-	root(true)
-
-.syxhndwprovvuqhmyvveewmbqayniwkv:not([data-darkmode])
-	root(false)
 
 </style>

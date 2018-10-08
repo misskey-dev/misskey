@@ -22,6 +22,7 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 	// Serialize
 	res(await pack(user, user, {
 		detail: true,
+		includeHasUnreadNotes: true,
 		includeSecrets: isSecure
 	}));
 

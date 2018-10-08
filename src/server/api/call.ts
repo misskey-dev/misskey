@@ -9,6 +9,10 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 	const ep = endpoints.find(e => e.name === endpoint);
 
+	if (ep == null) {
+		return rej('ENDPOINT_NOT_FOUND');
+	}
+
 	if (ep.meta.secure && !isSecure) {
 		return rej('ACCESS_DENIED');
 	}
@@ -25,10 +29,8 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		return rej('YOU_ARE_NOT_ADMIN');
 	}
 
-	if (app && ep.meta.kind) {
-		if (!app.permission.some(p => p === ep.meta.kind)) {
-			return rej('PERMISSION_DENIED');
-		}
+	if (app && ep.meta.kind && !app.permission.some(p => p === ep.meta.kind)) {
+		return rej('PERMISSION_DENIED');
 	}
 
 	if (ep.meta.requireCredential && ep.meta.limit) {

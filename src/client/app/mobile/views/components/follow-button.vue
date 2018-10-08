@@ -5,7 +5,8 @@
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="u.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
+		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked">%fa:hourglass-half% %i18n:@request-pending%</template>
+		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked">%fa:hourglass-start% %i18n:@follow-processing%</template>
 		<template v-else-if="u.isFollowing">%fa:minus% %i18n:@following%</template>
 		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus% %i18n:@follow-request%</template>
 		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus% %i18n:@follow%</template>
@@ -27,33 +28,31 @@ export default Vue.extend({
 		return {
 			u: this.user,
 			wait: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('follow', this.onFollow);
 		this.connection.on('unfollow', this.onUnfollow);
 	},
 	beforeDestroy() {
-		this.connection.off('follow', this.onFollow);
-		this.connection.off('unfollow', this.onUnfollow);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 
 		onFollow(user) {
 			if (user.id == this.u.id) {
 				this.u.isFollowing = user.isFollowing;
+				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
 			}
 		},
 
 		onUnfollow(user) {
 			if (user.id == this.u.id) {
 				this.u.isFollowing = user.isFollowing;
+				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
 			}
 		},
 
@@ -66,7 +65,7 @@ export default Vue.extend({
 						userId: this.u.id
 					});
 				} else {
-					if (this.u.isLocked && this.u.hasPendingFollowRequestFromYou) {
+					if (this.u.hasPendingFollowRequestFromYou) {
 						this.u = await (this as any).api('following/requests/cancel', {
 							userId: this.u.id
 						});
@@ -91,7 +90,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-follow-button
 	display block
@@ -103,29 +102,29 @@ export default Vue.extend({
 	line-height 36px
 	font-size 14px
 	font-weight bold
-	color $theme-color
+	color var(--primary)
 	background transparent
 	outline none
-	border solid 1px $theme-color
+	border solid 1px var(--primary)
 	border-radius 36px
 
 	&:hover
-		background rgba($theme-color, 0.1)
+		background var(--primaryAlpha01)
 
 	&:active
-		background rgba($theme-color, 0.2)
+		background var(--primaryAlpha02)
 
 	&.active
-		color $theme-color-foreground
-		background $theme-color
+		color var(--primaryForeground)
+		background var(--primary)
 
 		&:hover
-			background lighten($theme-color, 10%)
-			border-color lighten($theme-color, 10%)
+			background var(--primaryLighten10)
+			border-color var(--primaryLighten10)
 
 		&:active
-			background darken($theme-color, 10%)
-			border-color darken($theme-color, 10%)
+			background var(--primaryDarken10)
+			border-color var(--primaryDarken10)
 
 	&.wait
 		cursor wait !important

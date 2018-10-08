@@ -54,7 +54,7 @@ Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
 *(optional)* Generating VAPID keys
 ----------------------------------------------------------------
-If you want to enable ServiceWroker, you need to generate VAPID keys:
+If you want to enable ServiceWorker, you need to generate VAPID keys:
 Unless you have set your global node_modules location elsewhere, you need to run this in root.
 
 ``` shell
@@ -131,6 +131,7 @@ You can check if the service is running with `systemctl status misskey`.
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
 3. `npm install`
 4. `npm run build`
+5. Check [ChangeLog](../CHANGELOG.md) for migration information
 
 ----------------------------------------------------------------
 

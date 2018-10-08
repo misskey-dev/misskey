@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 import * as emojilib from 'emojilib';
 import { length } from 'stringz';
 import parse from '../../../../../mfm/parse';
@@ -6,10 +6,7 @@ import getAcct from '../../../../../misc/acct/render';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
 import MkGoogle from './google.vue';
-
-const flatten = list => list.reduce(
-	(a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
-);
+import { concat } from '../../../../../prelude/array';
 
 export default Vue.component('misskey-flavored-markdown', {
 	props: {
@@ -32,20 +29,20 @@ export default Vue.component('misskey-flavored-markdown', {
 	},
 
 	render(createElement) {
-		let ast;
+		let ast: any[];
 
 		if (this.ast == null) {
 			// Parse text to ast
 			ast = parse(this.text);
 		} else {
-			ast = this.ast;
+			ast = this.ast as any[];
 		}
 
 		let bigCount = 0;
 		let motionCount = 0;
 
 		// Parse ast to DOM
-		const els = flatten(ast.map(token => {
+		const els = concat(ast.map((token): VNode[] => {
 			switch (token.type) {
 				case 'text': {
 					const text = token.content.replace(/(\r\n|\n|\r)/g, '\n');
@@ -56,12 +53,12 @@ export default Vue.component('misskey-flavored-markdown', {
 						x[x.length - 1].pop();
 						return x;
 					} else {
-						return createElement('span', text.replace(/\n/g, ' '));
+						return [createElement('span', text.replace(/\n/g, ' '))];
 					}
 				}
 
 				case 'bold': {
-					return createElement('b', token.bold);
+					return [createElement('b', token.bold)];
 				}
 
 				case 'big': {
@@ -95,23 +92,23 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'url': {
-					return createElement(MkUrl, {
+					return [createElement(MkUrl, {
 						props: {
 							url: token.content,
 							target: '_blank'
 						}
-					});
+					})];
 				}
 
 				case 'link': {
-					return createElement('a', {
+					return [createElement('a', {
 						attrs: {
 							class: 'link',
 							href: token.url,
 							target: '_blank',
 							title: token.url
 						}
-					}, token.title);
+					}, token.title)];
 				}
 
 				case 'mention': {
@@ -129,16 +126,16 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'hashtag': {
-					return createElement('a', {
+					return [createElement('a', {
 						attrs: {
 							href: `${url}/tags/${encodeURIComponent(token.hashtag)}`,
 							target: '_blank'
 						}
-					}, token.content);
+					}, token.content)];
 				}
 
 				case 'code': {
-					return createElement('pre', {
+					return [createElement('pre', {
 						class: 'code'
 					}, [
 						createElement('code', {
@@ -146,15 +143,15 @@ export default Vue.component('misskey-flavored-markdown', {
 								innerHTML: token.html
 							}
 						})
-					]);
+					])];
 				}
 
 				case 'inline-code': {
-					return createElement('code', {
+					return [createElement('code', {
 						domProps: {
 							innerHTML: token.html
 						}
-					});
+					})];
 				}
 
 				case 'quote': {
@@ -164,58 +161,51 @@ export default Vue.component('misskey-flavored-markdown', {
 						const x = text2.split('\n')
 							.map(t => [createElement('span', t), createElement('br')]);
 						x[x.length - 1].pop();
-						return createElement('div', {
+						return [createElement('div', {
 							attrs: {
 								class: 'quote'
 							}
-						}, x);
+						}, x)];
 					} else {
-						return createElement('span', {
+						return [createElement('span', {
 							attrs: {
 								class: 'quote'
 							}
-						}, text2.replace(/\n/g, ' '));
+						}, text2.replace(/\n/g, ' '))];
 					}
 				}
 
 				case 'title': {
-					return createElement('div', {
+					return [createElement('div', {
 						attrs: {
 							class: 'title'
 						}
-					}, token.title);
+					}, token.title)];
 				}
 
 				case 'emoji': {
 					const emoji = emojilib.lib[token.emoji];
-					return createElement('span', emoji ? emoji.char : token.content);
+					return [createElement('span', emoji ? emoji.char : token.content)];
 				}
 
 				case 'search': {
-					return createElement(MkGoogle, {
+					return [createElement(MkGoogle, {
 						props: {
 							q: token.query
 						}
-					});
+					})];
 				}
 
 				default: {
 					console.log('unknown ast type:', token.type);
+
+					return [];
 				}
 			}
 		}));
 
-		const _els = [];
-		els.forEach((el, i) => {
-			if (el.tag == 'br') {
-				if (!['div', 'pre'].includes(els[i - 1].tag)) {
-					_els.push(el);
-				}
-			} else {
-				_els.push(el);
-			}
-		});
-
+		// el.tag === 'br' のとき i !== 0 が保証されるため、短絡評価により els[i - 1] は配列外参照しない
+		const _els = els.filter((el, i) => !(el.tag === 'br' && ['div', 'pre'].includes(els[i - 1].tag)));
 		return createElement('span', _els);
 	}
 });

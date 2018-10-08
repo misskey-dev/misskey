@@ -1,5 +1,5 @@
 <template>
-<div class="ldwbgwstjsdgcjruamauqdrffetqudry" v-if="image.isSensitive && hide" @click="hide = false">
+<div class="ldwbgwstjsdgcjruamauqdrffetqudry" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
 		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
 		<span>%i18n:@click-to-show%</span>
@@ -27,11 +27,12 @@ export default Vue.extend({
 		},
 		raw: {
 			default: false
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
+	},
+	data() {
+		return {
+			hide: true
+		};
 	},
 	computed: {
 		style(): any {
@@ -48,7 +49,7 @@ export default Vue.extend({
 			const mouseY = e.clientY - rect.top;
 			const xp = mouseX / this.$el.offsetWidth * 100;
 			const yp = mouseY / this.$el.offsetHeight * 100;
-			this.$el.style.backgroundPosition = xp + '% ' + yp + '%';
+			this.$el.style.backgroundPosition = `${xp}% ${yp}%`;
 			this.$el.style.backgroundImage = `url("${this.image.url}")`;
 		},
 
@@ -89,7 +90,7 @@ export default Vue.extend({
 		text-align center
 		font-size 12px
 
-		> b
+		> *
 			display block
 
 </style>

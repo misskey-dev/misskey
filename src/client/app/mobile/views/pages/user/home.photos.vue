@@ -4,7 +4,7 @@
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images"
 			class="img"
-			:style="`background-image: url(${image.media.url})`"
+			:style="`background-image: url(${image.media.thumbnailUrl})`"
 			:href="image.note | notePage"
 		></a>
 	</div>
@@ -26,7 +26,7 @@ export default Vue.extend({
 	mounted() {
 		(this as any).api('users/notes', {
 			userId: this.user.id,
-			withMedia: true,
+			withFiles: true,
 			limit: 6
 		}).then(notes => {
 			notes.forEach(note => {

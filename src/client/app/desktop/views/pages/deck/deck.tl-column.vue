@@ -6,14 +6,16 @@
 		<template v-if="column.type == 'hybrid'">%fa:share-alt%</template>
 		<template v-if="column.type == 'global'">%fa:globe%</template>
 		<template v-if="column.type == 'list'">%fa:list%</template>
+		<template v-if="column.type == 'hashtag'">%fa:hashtag%</template>
 		<span>{{ name }}</span>
 	</span>
 
 	<div class="editor" style="padding:0 12px" v-if="edit">
-		<mk-switch v-model="column.isMediaOnly" @change="onChangeSettings" text="%i18n:@is-media-only%"/>
-		<mk-switch v-model="column.isMediaView" @change="onChangeSettings" text="%i18n:@is-media-view%"/>
+		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">%i18n:@is-media-only%</ui-switch>
+		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">%i18n:@is-media-view%</ui-switch>
 	</div>
 	<x-list-tl v-if="column.type == 'list'" :list="column.list" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
+	<x-hashtag-tl v-if="column.type == 'hashtag'" :tag-tl="$store.state.settings.tagTimelines.find(x => x.id == column.tagTlId)" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
 	<x-tl v-else :src="column.type" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
 </x-column>
 </template>
@@ -23,12 +25,14 @@ import Vue from 'vue';
 import XColumn from './deck.column.vue';
 import XTl from './deck.tl.vue';
 import XListTl from './deck.list-tl.vue';
+import XHashtagTl from './deck.hashtag-tl.vue';
 
 export default Vue.extend({
 	components: {
 		XColumn,
 		XTl,
-		XListTl
+		XListTl,
+		XHashtagTl
 	},
 
 	props: {
@@ -65,6 +69,7 @@ export default Vue.extend({
 				case 'hybrid': return '%i18n:common.deck.hybrid%';
 				case 'global': return '%i18n:common.deck.global%';
 				case 'list': return this.column.list.title;
+				case 'hashtag': return this.$store.state.settings.tagTimelines.find(x => x.id == this.column.tagTlId).title;
 			}
 		}
 	},

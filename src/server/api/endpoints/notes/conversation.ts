@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import Note, { pack, INote } from '../../../../models/note';
+import Note, { packMany, INote } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 
 /**
@@ -52,5 +52,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	// Serialize
-	res(await Promise.all(conversation.map(note => pack(note, user))));
+	res(await packMany(conversation, user));
 });

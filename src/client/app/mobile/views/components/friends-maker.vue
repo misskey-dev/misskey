@@ -47,7 +47,7 @@ export default Vue.extend({
 			this.fetch();
 		},
 		close() {
-			this.$destroy();
+			this.destroyDom();
 		}
 	}
 });

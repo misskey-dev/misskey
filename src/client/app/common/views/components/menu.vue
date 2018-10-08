@@ -1,10 +1,10 @@
 <template>
-<div class="mk-menu">
+<div class="onchrpzrvnoruiaenfcqvccjfuupzzwv">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ hukidasi }" ref="popover">
-		<template v-for="item in items">
+		<template v-for="item, i in items">
 			<div v-if="item === null"></div>
-			<button v-if="item" @click="clicked(item.action)" v-html="item.icon ? item.icon + ' ' + item.text : item.text"></button>
+			<button v-if="item" @click="clicked(item.action)" v-html="item.icon ? item.icon + ' ' + item.text : item.text" :tabindex="i"></button>
 		</template>
 	</div>
 </div>
@@ -108,7 +108,7 @@ export default Vue.extend({
 				easing: 'easeInBack',
 				complete: () => {
 					this.$emit('closed');
-					this.$destroy();
+					this.destroyDom();
 				}
 			});
 		}
@@ -117,11 +117,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+.onchrpzrvnoruiaenfcqvccjfuupzzwv
+	$bg-color = var(--popupBg)
+	$border-color = rgba(27, 31, 35, 0.15)
 
-$border-color = rgba(27, 31, 35, 0.15)
-
-.mk-menu
 	position initial
 
 	> .backdrop
@@ -131,14 +130,14 @@ $border-color = rgba(27, 31, 35, 0.15)
 		z-index 10000
 		width 100%
 		height 100%
-		background rgba(#000, 0.1)
+		background var(--modalBackdrop)
 		opacity 0
 
 	> .popover
 		position absolute
 		z-index 10001
 		padding 8px 0
-		background #fff
+		background $bg-color
 		border 1px solid $border-color
 		border-radius 4px
 		box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
@@ -172,25 +171,26 @@ $border-color = rgba(27, 31, 35, 0.15)
 				border-top solid $balloon-size transparent
 				border-left solid $balloon-size transparent
 				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size #fff
+				border-bottom solid $balloon-size $bg-color
 
 		> button
 			display block
 			padding 8px 16px
 			width 100%
+			color var(--popupFg)
 
 			&:hover
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 				text-decoration none
 
 			&:active
-				color $theme-color-foreground
-				background darken($theme-color, 10%)
+				color var(--primaryForeground)
+				background var(--primaryDarken10)
 
 		> div
 			margin 8px 0
 			height 1px
-			background #eee
+			background var(--faceDivider)
 
 </style>

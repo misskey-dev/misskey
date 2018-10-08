@@ -1,8 +1,10 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds } from '../../common/get-friends';
-import { pack } from '../../../../models/note';
+import { packMany } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
+import read from '../../../../services/note/read';
 
 export const meta = {
 	desc: {
@@ -10,42 +12,55 @@ export const meta = {
 		'en-US': 'Get mentions of myself.'
 	},
 
-	requireCredential: true
+	requireCredential: true,
+
+	params: {
+		following: $.bool.optional.note({
+			default: false
+		}),
+
+		limit: $.num.optional.range(1, 100).note({
+			default: 10
+		}),
+
+		sinceId: $.type(ID).optional.note({
+		}),
+
+		untilId: $.type(ID).optional.note({
+		}),
+
+		visibility: $.str.optional.note({
+		}),
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'following' parameter
-	const [following = false, followingError] =
-		$.bool.optional.get(params.following);
-	if (followingError) return rej('invalid following param');
-
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
-	if (sinceIdErr) return rej('invalid sinceId param');
-
-	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
-	if (untilIdErr) return rej('invalid untilId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) throw psErr;
 
 	// Check if both of sinceId and untilId is specified
-	if (sinceId && untilId) {
+	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
 	}
 
 	// Construct query
 	const query = {
-		mentions: user._id
+		$or: [{
+			mentions: user._id
+		}, {
+			visibleUserIds: user._id
+		}]
 	} as any;
 
 	const sort = {
 		_id: -1
 	};
 
-	if (following) {
+	if (ps.visibility) {
+		query.visibility = ps.visibility;
+	}
+
+	if (ps.following) {
 		const followingIds = await getFriendIds(user._id);
 
 		query.userId = {
@@ -53,26 +68,26 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		};
 	}
 
-	if (sinceId) {
+	if (ps.sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: sinceId
+			$gt: ps.sinceId
 		};
-	} else if (untilId) {
+	} else if (ps.untilId) {
 		query._id = {
-			$lt: untilId
+			$lt: ps.untilId
 		};
 	}
 
 	// Issue query
 	const mentions = await Note
 		.find(query, {
-			limit: limit,
+			limit: ps.limit,
 			sort: sort
 		});
 
+	mentions.forEach(note => read(user._id, note._id));
+
 	// Serialize
-	res(await Promise.all(mentions.map(async mention =>
-		await pack(mention, user)
-	)));
+	res(await packMany(mentions, user));
 });

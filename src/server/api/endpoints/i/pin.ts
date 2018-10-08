@@ -1,31 +1,37 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import User, { ILocalUser } from '../../../../models/user';
-import Note from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 import { pack } from '../../../../models/user';
+import { addPinned } from '../../../../services/i/pin';
+import getParams from '../../get-params';
 
-/**
- * Pin note
- */
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定した投稿をピン留めします。'
+	},
 
-	// Fetch pinee
-	const note = await Note.findOne({
-		_id: noteId,
-		userId: user._id
-	});
+	requireCredential: true,
 
-	if (note === null) {
-		return rej('note not found');
+	kind: 'account-write',
+
+	params: {
+		noteId: $.type(ID).note({
+			desc: {
+				'ja-JP': '対象の投稿のID'
+			}
+		})
 	}
+};
 
-	await User.update(user._id, {
-		$set: {
-			pinnedNoteId: note._id
-		}
-	});
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
+
+	// Processing
+	try {
+		await addPinned(user, ps.noteId);
+	} catch (e) {
+		return rej(e.message);
+	}
 
 	// Serialize
 	const iObj = await pack(user, user, {

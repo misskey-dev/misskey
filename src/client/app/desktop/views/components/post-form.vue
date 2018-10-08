@@ -20,7 +20,7 @@
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
 			v-autocomplete="'text'"
 		></textarea>
-		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
+		<div class="files" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
@@ -35,7 +35,7 @@
 	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
 	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
-	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
+	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll">%fa:chart-pie%</button>
 	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw">%fa:eye-slash%</button>
 	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
 	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
@@ -45,11 +45,11 @@
 		<span v-if="visibility === 'specified'">%fa:envelope%</span>
 		<span v-if="visibility === 'private'">%fa:lock%</span>
 	</button>
-	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
+	<p class="text-count" :class="{ over: this.trimmedLength(text) > 1000 }">{{ 1000 - this.trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
-	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
+	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
 </div>
 </template>
@@ -62,6 +62,9 @@ import getFace from '../../../common/scripts/get-face';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
+import { erase, unique } from '../../../../../prelude/array';
+import { length } from 'stringz';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	components: {
@@ -99,7 +102,7 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
-			visibility: this.$store.state.device.visibility || 'public',
+			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -110,9 +113,9 @@ export default Vue.extend({
 	computed: {
 		draftId(): string {
 			return this.renote
-				? 'renote:' + this.renote.id
+				? `renote:${this.renote.id}`
 				: this.reply
-					? 'reply:' + this.reply.id
+					? `reply:${this.reply.id}`
 					: 'note';
 		},
 
@@ -145,7 +148,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(this.text.trim().length <= 1000);
+				(length(this.text.trim()) <= 1000);
 		}
 	},
 
@@ -175,6 +178,18 @@ export default Vue.extend({
 			});
 		}
 
+		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
+		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
+			this.visibility = this.reply.visibility;
+		}
+
+		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
+		if (this.reply && this.reply.visibility === 'specified') {
+			(this as any).api('users/show', {	userId: this.reply.userId }).then(user => {
+				this.visibleUsers.push(user);
+			});
+		}
+
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
 			if (!this.instant) {
@@ -188,7 +203,7 @@ export default Vue.extend({
 							(this.$refs.poll as any).set(draft.data.poll);
 						});
 					}
-					this.$emit('change-attached-media', this.files);
+					this.$emit('change-attached-files', this.files);
 				}
 			}
 
@@ -197,6 +212,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+	  trimmedLength(text: string) {
+			return length(text.trim());
+		},
+
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
@@ -225,12 +244,12 @@ export default Vue.extend({
 
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		detachMedia(id) {
 			this.files = this.files.filter(x => x.id != id);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onChangeFile() {
@@ -249,7 +268,7 @@ export default Vue.extend({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onKeydown(e) {
@@ -297,7 +316,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.files.push(file);
-				this.$emit('change-attached-media', this.files);
+				this.$emit('change-attached-files', this.files);
 				e.preventDefault();
 			}
 			//#endregion
@@ -313,7 +332,7 @@ export default Vue.extend({
 				this.geo = pos.coords;
 				this.$emit('geo-attached', this.geo);
 			}, err => {
-				alert('%i18n:@error%: ' + err.message);
+				alert(`%i18n:@error%: ${err.message}`);
 			}, {
 					enableHighAccuracy: true
 				});
@@ -336,17 +355,16 @@ export default Vue.extend({
 		addVisibleUser() {
 			(this as any).apis.input({
 				title: '%i18n:@enter-username%'
-			}).then(username => {
-				(this as any).api('users/show', {
-					username
-				}).then(user => {
+			}).then(acct => {
+				if (acct.startsWith('@')) acct = acct.substr(1);
+				(this as any).api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
 		},
 
 		removeVisibleUser(user) {
-			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+			this.visibleUsers = erase(user, this.visibleUsers);
 		},
 
 		post() {
@@ -354,7 +372,7 @@ export default Vue.extend({
 
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
-				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
@@ -391,7 +409,7 @@ export default Vue.extend({
 			if (this.text && this.text != '') {
 				const hashtags = parse(this.text).filter(x => x.type == 'hashtag').map(x => x.hashtag);
 				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(hashtags.concat(history).reduce((a, c) => a.includes(c) ? a : [...a, c], [])));
+				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 			}
 		},
 
@@ -428,12 +446,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-post-form
 	display block
 	padding 16px
-	background isDark ? #282C37 : lighten($theme-color, 95%)
+	background var(--desktopPostFormBg)
+	overflow hidden
 
 	&:after
 		content ""
@@ -447,26 +464,26 @@ root(isDark)
 			width 100%
 			padding 12px
 			font-size 16px
-			color isDark ? #fff : #333
-			background isDark ? #191d23 : #fff
+			color var(--desktopPostFormTextareaFg)
+			background var(--desktopPostFormTextareaBg)
 			outline none
-			border solid 1px rgba($theme-color, 0.1)
+			border solid 1px var(--primaryAlpha01)
 			border-radius 4px
 			transition border-color .2s ease
 
 			&:hover
-				border-color rgba($theme-color, 0.2)
+				border-color var(--primaryAlpha02)
 				transition border-color .1s ease
 
 			&:focus
-				border-color rgba($theme-color, 0.5)
+				border-color var(--primaryAlpha05)
 				transition border-color 0s ease
 
 			&:disabled
 				opacity 0.5
 
 			&::-webkit-input-placeholder
-				color rgba($theme-color, 0.3)
+				color var(--primaryAlpha03)
 
 		> input
 			margin-bottom 8px
@@ -480,17 +497,17 @@ root(isDark)
 			&:hover
 				& + *
 				& + * + *
-					border-color rgba($theme-color, 0.2)
+					border-color var(--primaryAlpha02)
 					transition border-color .1s ease
 
 			&:focus
 				& + *
 				& + * + *
-					border-color rgba($theme-color, 0.5)
+					border-color var(--primaryAlpha05)
 					transition border-color 0s ease
 
 			&.with
-				border-bottom solid 1px rgba($theme-color, 0.1) !important
+				border-bottom solid 1px var(--primaryAlpha01) !important
 				border-radius 4px 4px 0 0
 
 		> .visibleUsers
@@ -499,7 +516,7 @@ root(isDark)
 
 			> span
 				margin-right 16px
-				color isDark ? #fff : #666
+				color var(--primary)
 
 		> .hashtags
 			margin 0 0 8px 0
@@ -508,23 +525,23 @@ root(isDark)
 			font-size 14px
 
 			> b
-				color isDark ? #9baec8 : darken($theme-color, 20%)
+				color var(--primary)
 
 			> *
 				margin-right 8px
 				white-space nowrap
 
-		> .medias
+		> .files
 			margin 0
 			padding 0
-			background isDark ? #181b23 : lighten($theme-color, 98%)
-			border solid 1px rgba($theme-color, 0.1)
+			background var(--desktopPostFormTextareaBg)
+			border solid 1px var(--primaryAlpha01)
 			border-top none
 			border-radius 0 0 4px 4px
 			transition border-color .3s ease
 
 			&.with
-				border-bottom solid 1px rgba($theme-color, 0.1) !important
+				border-bottom solid 1px var(--primaryAlpha01) !important
 				border-radius 0
 
 			> .remain
@@ -534,7 +551,7 @@ root(isDark)
 				right 8px
 				margin 0
 				padding 0
-				color rgba($theme-color, 0.4)
+				color var(--primaryAlpha04)
 
 			> div
 				padding 4px
@@ -568,8 +585,8 @@ root(isDark)
 						cursor pointer
 
 		> .mk-poll-editor
-			background isDark ? #181b23 : lighten($theme-color, 98%)
-			border solid 1px rgba($theme-color, 0.1)
+			background var(--desktopPostFormTextareaBg)
+			border solid 1px var(--primaryAlpha01)
 			border-top none
 			border-radius 0 0 4px 4px
 			transition border-color .3s ease
@@ -577,7 +594,7 @@ root(isDark)
 	> .mk-uploader
 		margin 8px 0 0 0
 		padding 8px
-		border solid 1px rgba($theme-color, 0.2)
+		border solid 1px var(--primaryAlpha02)
 		border-radius 4px
 
 	input[type='file']
@@ -594,22 +611,20 @@ root(isDark)
 		width 110px
 		height 40px
 		font-size 1em
-		color $theme-color-foreground
-		background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
+		color var(--primaryForeground)
+		background var(--primary)
 		outline none
-		border solid 1px lighten($theme-color, 15%)
+		border none
 		border-radius 4px
 
 		&:not(:disabled)
 			font-weight bold
 
 		&:hover:not(:disabled)
-			background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-			border-color $theme-color
+			background var(--primaryLighten5)
 
 		&:active:not(:disabled)
-			background $theme-color
-			border-color $theme-color
+			background var(--primaryDarken5)
 
 		&:focus
 			&:after
@@ -620,7 +635,7 @@ root(isDark)
 				right -5px
 				bottom -5px
 				left -5px
-				border 2px solid rgba($theme-color, 0.3)
+				border 2px solid var(--primaryAlpha03)
 				border-radius 8px
 
 		&:disabled
@@ -630,13 +645,13 @@ root(isDark)
 		&.wait
 			background linear-gradient(
 				45deg,
-				darken($theme-color, 10%) 25%,
-				$theme-color              25%,
-				$theme-color              50%,
-				darken($theme-color, 10%) 50%,
-				darken($theme-color, 10%) 75%,
-				$theme-color              75%,
-				$theme-color
+				var(--primaryDarken10) 25%,
+				var(--primary)              25%,
+				var(--primary)              50%,
+				var(--primaryDarken10) 50%,
+				var(--primaryDarken10) 75%,
+				var(--primary)              75%,
+				var(--primary)
 			)
 			background-size 32px 32px
 			animation stripe-bg 1.5s linear infinite
@@ -655,7 +670,7 @@ root(isDark)
 		right 138px
 		margin 0
 		line-height 40px
-		color rgba($theme-color, 0.5)
+		color var(--primaryAlpha05)
 
 		&.over
 			color #ec3828
@@ -673,7 +688,7 @@ root(isDark)
 		width 40px
 		height 40px
 		font-size 1em
-		color isDark ? $theme-color : rgba($theme-color, 0.5)
+		color var(--desktopPostFormTransparentButtonFg)
 		background transparent
 		outline none
 		border solid 1px transparent
@@ -681,12 +696,12 @@ root(isDark)
 
 		&:hover
 			background transparent
-			border-color isDark ? rgba($theme-color, 0.5) : rgba($theme-color, 0.3)
+			border-color var(--primaryAlpha03)
 
 		&:active
-			color rgba($theme-color, 0.6)
-			background isDark ? transparent : linear-gradient(to bottom, lighten($theme-color, 80%) 0%, lighten($theme-color, 90%) 100%)
-			border-color rgba($theme-color, 0.5)
+			color var(--primaryAlpha06)
+			background linear-gradient(to bottom, var(--desktopPostFormTransparentButtonActiveGradientStart) 0%, var(--desktopPostFormTransparentButtonActiveGradientEnd) 100%)
+			border-color var(--primaryAlpha05)
 			box-shadow 0 2px 4px rgba(#000, 0.15) inset
 
 		&:focus
@@ -698,7 +713,7 @@ root(isDark)
 				right -5px
 				bottom -5px
 				left -5px
-				border 2px solid rgba($theme-color, 0.3)
+				border 2px solid var(--primaryAlpha03)
 				border-radius 8px
 
 	> .dropzone
@@ -707,13 +722,7 @@ root(isDark)
 		top 0
 		width 100%
 		height 100%
-		border dashed 2px rgba($theme-color, 0.5)
+		border dashed 2px var(--primaryAlpha05)
 		pointer-events none
-
-.mk-post-form[data-darkmode]
-	root(true)
-
-.mk-post-form:not([data-darkmode])
-	root(false)
 
 </style>

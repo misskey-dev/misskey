@@ -12,7 +12,7 @@ import * as sharp from 'sharp';
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
-import { publishUserStream, publishDriveStream } from '../../stream';
+import { publishMainStream, publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
@@ -36,11 +36,14 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 	if (config.drive && config.drive.storage == 'minio') {
 		const minio = new Minio.Client(config.drive.config);
-		const key = `${config.drive.prefix}/${uuid.v4()}/${name}`;
-		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}/${name}.thumbnail.jpg`;
+
+		const keyDir = `${config.drive.prefix}/${uuid.v4()}`;
+		const key = `${keyDir}/${name}`;
+		const thumbnailKeyDir = `${config.drive.prefix}/${uuid.v4()}`;
+		const thumbnailKey = `${thumbnailKeyDir}/${name}.thumbnail.jpg`;
 
 		const baseUrl = config.drive.baseUrl
-			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? ':' + config.drive.config.port : '' }/${ config.drive.bucket }`;
+			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
 
 		await minio.putObject(config.drive.bucket, key, fs.createReadStream(path), size, {
 			'Content-Type': type,
@@ -61,8 +64,8 @@ async function save(path: string, name: string, type: string, hash: string, size
 				key: key,
 				thumbnailKey: thumbnailKey
 			},
-			url: `${ baseUrl }/${ key }`,
-			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKey }` : null
+			url: `${ baseUrl }/${ keyDir }/${ encodeURIComponent(name) }`,
+			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKeyDir }/${ encodeURIComponent(name) }.thumbnail.jpg` : null
 		});
 
 		const file = await DriveFile.insert({
@@ -150,7 +153,7 @@ export default async function(
 	isLink: boolean = false,
 	url: string = null,
 	uri: string = null,
-	sensitive = false
+	sensitive: boolean = null
 ): Promise<IDriveFile> {
 	// Calc md5 hash
 	const calcHash = new Promise<string>((res, rej) => {
@@ -326,7 +329,13 @@ export default async function(
 		properties: properties,
 		withoutChunks: isLink,
 		isRemote: isLink,
-		isSensitive: sensitive
+		isSensitive: (sensitive !== null && sensitive !== undefined)
+			? sensitive
+			: isLocalUser(user)
+				? user.settings.alwaysMarkNsfw
+					? true
+					: false
+				: false
 	} as IMetadata;
 
 	if (url !== null) {
@@ -374,8 +383,8 @@ export default async function(
 	log(`drive file has been created ${driveFile._id}`);
 
 	pack(driveFile).then(packedFile => {
-		// Publish drive_file_created event
-		publishUserStream(user._id, 'drive_file_created', packedFile);
+		// Publish driveFileCreated event
+		publishMainStream(user._id, 'driveFileCreated', packedFile);
 		publishDriveStream(user._id, 'file_created', packedFile);
 	});
 

@@ -34,6 +34,12 @@
 					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>
+			<div class="announcements" v-if="announcements && announcements.length > 0">
+				<article v-for="announcement in announcements">
+					<span v-html="announcement.title" class="title"></span>
+					<div v-html="announcement.text"></div>
+				</article>
+			</div>
 			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
 		</div>
 	</transition>
@@ -46,50 +52,60 @@ import { lang } from '../../../config';
 
 export default Vue.extend({
 	props: ['isOpen'],
+
 	data() {
 		return {
 			hasGameInvitation: false,
 			connection: null,
-			connectionId: null,
-			aboutUrl: `/docs/${lang}/about`
+			aboutUrl: `/docs/${lang}/about`,
+			announcements: []
 		};
 	},
+
 	computed: {
 		hasUnreadNotification(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
 		},
+
 		hasUnreadMessagingMessage(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
 		}
 	},
-	mounted() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
 
-			this.connection.on('reversi_invited', this.onReversiInvited);
+	mounted() {
+		(this as any).os.getMeta().then(meta => {
+			this.announcements = meta.broadcasts;
+		});
+
+		if (this.$store.getters.isSignedIn) {
+			this.connection = (this as any).os.stream.useSharedConnection('main');
+
+			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
+
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('reversi_invited', this.onReversiInvited);
-			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
-			(this as any).os.stream.dispose(this.connectionId);
+			this.connection.dispose();
 		}
 	},
+
 	methods: {
 		search() {
 			const query = window.prompt('%i18n:@search%');
 			if (query == null || query == '') return;
-			this.$router.push('/search?q=' + encodeURIComponent(query));
+			this.$router.push(`/search?q=${encodeURIComponent(query)}`);
 		},
+
 		onReversiInvited() {
 			this.hasGameInvitation = true;
 		},
+
 		onReversiNoInvites() {
 			this.hasGameInvitation = false;
 		},
+
 		dark() {
 			this.$store.commit('device/set', {
 				key: 'darkmode',
@@ -101,10 +117,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-	$color = isDark ? #c9d2e0 : #777
+.nav
+	$color = var(--text)
 
 	.backdrop
 		position fixed
@@ -113,7 +127,7 @@ root(isDark)
 		z-index 1025
 		width 100%
 		height 100%
-		background isDark ? rgba(#000, 0.7) : rgba(#000, 0.2)
+		background var(--mobileNavBackdrop)
 
 	.body
 		position fixed
@@ -124,7 +138,7 @@ root(isDark)
 		height 100%
 		overflow auto
 		-webkit-overflow-scrolling touch
-		background isDark ? #16191f : #fff
+		background var(--secondary)
 
 	.me
 		display block
@@ -178,11 +192,11 @@ root(isDark)
 				text-decoration none
 
 				&[data-active]
-					color $theme-color-foreground
-					background $theme-color
+					color var(--primaryForeground)
+					background var(--primary)
 
 					> [data-fa]:last-child
-						color $theme-color-foreground
+						color var(--primaryForeground)
 
 				> [data-fa]:first-child
 					margin-right 0.5em
@@ -192,7 +206,7 @@ root(isDark)
 				> [data-fa].circle
 					margin-left 6px
 					font-size 10px
-					color $theme-color
+					color var(--primary)
 
 				> [data-fa]:last-child
 					position absolute
@@ -203,6 +217,17 @@ root(isDark)
 					line-height calc(1rem + 30px)
 					color $color
 					opacity 0.5
+
+	.announcements
+		> article
+			background var(--mobileAnnouncement)
+			color var(--mobileAnnouncementFg)
+			padding 16px
+			margin 8px 0
+			font-size 12px
+
+			> .title
+				font-weight bold
 
 	.about
 		margin 0 0 8px 0
@@ -233,11 +258,5 @@ root(isDark)
 .back-leave-active {
 	opacity: 0;
 }
-
-.nav[data-darkmode]
-	root(true)
-
-.nav:not([data-darkmode])
-	root(false)
 
 </style>

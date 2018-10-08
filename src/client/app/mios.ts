@@ -1,22 +1,14 @@
+import autobind from 'autobind-decorator';
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 
 import initStore from './store';
-import { apiUrl, swPublickey, version, lang, googleMapsApiKey } from './config';
+import { apiUrl, version, lang } from './config';
 import Progress from './common/scripts/loading';
-import Connection from './common/scripts/streaming/stream';
-import { HomeStreamManager } from './common/scripts/streaming/home';
-import { DriveStreamManager } from './common/scripts/streaming/drive';
-import { ServerStatsStreamManager } from './common/scripts/streaming/server-stats';
-import { NotesStatsStreamManager } from './common/scripts/streaming/notes-stats';
-import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
-import { ReversiStreamManager } from './common/scripts/streaming/games/reversi/reversi';
 
 import Err from './common/views/components/connect-failed.vue';
-import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
-import { HybridTimelineStreamManager } from './common/scripts/streaming/hybrid-timeline';
-import { GlobalTimelineStreamManager } from './common/scripts/streaming/global-timeline';
+import Stream from './common/scripts/stream';
 
 //#region api requests
 let spinner = null;
@@ -101,30 +93,7 @@ export default class MiOS extends EventEmitter {
 	/**
 	 * A connection manager of home stream
 	 */
-	public stream: HomeStreamManager;
-
-	/**
-	 * Connection managers
-	 */
-	public streams: {
-		localTimelineStream: LocalTimelineStreamManager;
-		hybridTimelineStream: HybridTimelineStreamManager;
-		globalTimelineStream: GlobalTimelineStreamManager;
-		driveStream: DriveStreamManager;
-		serverStatsStream: ServerStatsStreamManager;
-		notesStatsStream: NotesStatsStreamManager;
-		messagingIndexStream: MessagingIndexStreamManager;
-		reversiStream: ReversiStreamManager;
-	} = {
-		localTimelineStream: null,
-		hybridTimelineStream: null,
-		globalTimelineStream: null,
-		driveStream: null,
-		serverStatsStream: null,
-		notesStatsStream: null,
-		messagingIndexStream: null,
-		reversiStream: null
-	};
+	public stream: Stream;
 
 	/**
 	 * A registration of service worker
@@ -150,71 +119,36 @@ export default class MiOS extends EventEmitter {
 
 		this.shouldRegisterSw = shouldRegisterSw;
 
-		//#region BIND
-		this.log = this.log.bind(this);
-		this.logInfo = this.logInfo.bind(this);
-		this.logWarn = this.logWarn.bind(this);
-		this.logError = this.logError.bind(this);
-		this.init = this.init.bind(this);
-		this.api = this.api.bind(this);
-		this.getMeta = this.getMeta.bind(this);
-		this.registerSw = this.registerSw.bind(this);
-		//#endregion
-
 		if (this.debug) {
 			(window as any).os = this;
 		}
 	}
 
-	private googleMapsIniting = false;
-
-	public getGoogleMaps() {
-		return new Promise((res, rej) => {
-			if ((window as any).google && (window as any).google.maps) {
-				res((window as any).google.maps);
-			} else {
-				this.once('init-google-maps', () => {
-					res((window as any).google.maps);
-				});
-
-				//#region load google maps api
-				if (!this.googleMapsIniting) {
-					this.googleMapsIniting = true;
-					(window as any).initGoogleMaps = () => {
-						this.emit('init-google-maps');
-					};
-					const head = document.getElementsByTagName('head')[0];
-					const script = document.createElement('script');
-					script.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initGoogleMaps`);
-					script.setAttribute('async', 'true');
-					script.setAttribute('defer', 'true');
-					head.appendChild(script);
-				}
-				//#endregion
-			}
-		});
-	}
-
+	@autobind
 	public log(...args) {
 		if (!this.debug) return;
 		console.log.apply(null, args);
 	}
 
+	@autobind
 	public logInfo(...args) {
 		if (!this.debug) return;
 		console.info.apply(null, args);
 	}
 
+	@autobind
 	public logWarn(...args) {
 		if (!this.debug) return;
 		console.warn.apply(null, args);
 	}
 
+	@autobind
 	public logError(...args) {
 		if (!this.debug) return;
 		console.error.apply(null, args);
 	}
 
+	@autobind
 	public signout() {
 		this.store.dispatch('logout');
 		location.href = '/';
@@ -224,26 +158,9 @@ export default class MiOS extends EventEmitter {
 	 * Initialize MiOS (boot)
 	 * @param callback A function that call when initialized
 	 */
+	@autobind
 	public async init(callback) {
 		this.store = initStore(this);
-
-		//#region Init stream managers
-		this.streams.serverStatsStream = new ServerStatsStreamManager(this);
-		this.streams.notesStatsStream = new NotesStatsStreamManager(this);
-
-		this.once('signedin', () => {
-			// Init home stream manager
-			this.stream = new HomeStreamManager(this, this.store.state.i);
-
-			// Init other stream manager
-			this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.store.state.i);
-			this.streams.hybridTimelineStream = new HybridTimelineStreamManager(this, this.store.state.i);
-			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.store.state.i);
-			this.streams.driveStream = new DriveStreamManager(this, this.store.state.i);
-			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.store.state.i);
-			this.streams.reversiStream = new ReversiStreamManager(this, this.store.state.i);
-		});
-		//#endregion
 
 		// ユーザーをフェッチしてコールバックする
 		const fetchme = (token, cb) => {
@@ -264,7 +181,7 @@ export default class MiOS extends EventEmitter {
 			// When success
 			.then(res => {
 				// When failed to authenticate user
-				if (res.status !== 200) {
+				if (res.status !== 200 && res.status < 500) {
 					return this.signout();
 				}
 
@@ -294,6 +211,8 @@ export default class MiOS extends EventEmitter {
 		// フェッチが完了したとき
 		const fetched = () => {
 			this.emit('signedin');
+
+			this.stream = new Stream(this);
 
 			// Finish init
 			callback();
@@ -327,6 +246,8 @@ export default class MiOS extends EventEmitter {
 				} else {
 					// Finish init
 					callback();
+
+					this.stream = new Stream(this);
 				}
 			});
 		}
@@ -335,6 +256,7 @@ export default class MiOS extends EventEmitter {
 	/**
 	 * Register service worker
 	 */
+	@autobind
 	private registerSw() {
 		// Check whether service worker and push manager supported
 		const isSwSupported =
@@ -361,7 +283,7 @@ export default class MiOS extends EventEmitter {
 
 				// A public key your push server will use to send
 				// messages to client apps via a push server.
-				applicationServerKey: urlBase64ToUint8Array(swPublickey)
+				applicationServerKey: urlBase64ToUint8Array(this.meta.data.swPublickey)
 			};
 
 			// Subscribe push notification
@@ -417,7 +339,8 @@ export default class MiOS extends EventEmitter {
 	 * @param endpoint エンドポイント名
 	 * @param data パラメータ
 	 */
-	public api(endpoint: string, data: { [x: string]: any } = {}): Promise<{ [x: string]: any }> {
+	@autobind
+	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false): Promise<{ [x: string]: any }> {
 		if (++pending === 1) {
 			spinner = document.createElement('div');
 			spinner.setAttribute('id', 'wait');
@@ -429,13 +352,12 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream && this.stream.hasConnection && this.store.state.device.apiViaStream;
+			const viaStream = this.stream && this.store.state.device.apiViaStream && !forceFetch;
 
 			if (viaStream) {
-				const stream = this.stream.borrow();
 				const id = Math.random().toString();
 
-				stream.once(`api-res:${id}`, res => {
+				this.stream.once(`api:${id}`, res => {
 					if (res == null || Object.keys(res).length == 0) {
 						resolve(null);
 					} else if (res.res) {
@@ -445,11 +367,10 @@ export default class MiOS extends EventEmitter {
 					}
 				});
 
-				stream.send({
-					type: 'api',
-					id,
-					endpoint,
-					data
+				this.stream.send('api', {
+					id: id,
+					ep: endpoint,
+					data: data
 				});
 			} else {
 				// Append a credential
@@ -502,6 +423,7 @@ export default class MiOS extends EventEmitter {
 	 * Misskeyのメタ情報を取得します
 	 * @param force キャッシュを無視するか否か
 	 */
+	@autobind
 	public getMeta(force = false) {
 		return new Promise<{ [x: string]: any }>(async (res, rej) => {
 			if (this.isMetaFetching) {
@@ -528,16 +450,6 @@ export default class MiOS extends EventEmitter {
 				res(this.meta.data);
 			}
 		});
-	}
-
-	public connections: Connection[] = [];
-
-	public registerStreamConnection(connection: Connection) {
-		this.connections.push(connection);
-	}
-
-	public unregisterStreamConnection(connection: Connection) {
-		this.connections = this.connections.filter(c => c != connection);
 	}
 }
 

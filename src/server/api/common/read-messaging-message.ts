@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import Message from '../../../models/messaging-message';
 import { IMessagingMessage as IMessage } from '../../../models/messaging-message';
-import { publishUserStream } from '../../../stream';
+import { publishMainStream } from '../../../stream';
 import { publishMessagingStream } from '../../../stream';
 import { publishMessagingIndexStream } from '../../../stream';
 import User from '../../../models/user';
@@ -71,6 +71,6 @@ export default (
 		});
 
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
-		publishUserStream(userId, 'read_all_messaging_messages');
+		publishMainStream(userId, 'readAllMessagingMessages');
 	}
 });

@@ -23,25 +23,25 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			signins: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
+
 	mounted() {
 		(this as any).api('i/signin_history').then(signins => {
 			this.signins = signins;
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('signin', this.onSignin);
 	},
+
 	beforeDestroy() {
-		this.connection.off('signin', this.onSignin);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
+
 	methods: {
 		onSignin(signin) {
 			this.signins.unshift(signin);

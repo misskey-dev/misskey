@@ -1,5 +1,5 @@
 <template>
-<div class="file-detail">
+<div class="pyvicwrksnfyhpfgkjwqknuururpaztw">
 	<div class="preview">
 		<img v-if="kind == 'image'" ref="img"
 			:src="file.url"
@@ -25,7 +25,7 @@
 	</div>
 	<div class="info">
 		<div>
-			<span class="type"><mk-file-type-icon :type="file.type"/>{{ file.type }}</span>
+			<span class="type"><mk-file-type-icon :type="file.type"/> {{ file.type }}</span>
 			<span class="separator"></span>
 			<span class="data-size">{{ file.datasize | bytes }}</span>
 			<span class="separator"></span>
@@ -38,10 +38,10 @@
 	</div>
 	<div class="menu">
 		<div>
-			<a :href="`${file.url}?download`" :download="file.name">%fa:download%%i18n:@download%</a>
-			<button @click="rename">%fa:pencil-alt%%i18n:@rename%</button>
-			<button @click="move">%fa:R folder-open%%i18n:@move%</button>
-			<button @click="del">%fa:trash-alt R%%i18n:@delete%</button>
+			<ui-button link :href="`${file.url}?download`" :download="file.name">%fa:download% %i18n:@download%</ui-button>
+			<ui-button @click="rename">%fa:pencil-alt% %i18n:@rename%</ui-button>
+			<ui-button @click="move">%fa:R folder-open% %i18n:@move%</ui-button>
+			<ui-button @click="del">%fa:trash-alt R% %i18n:@delete%</ui-button>
 		</div>
 	</div>
 	<div class="exif" v-show="exif">
@@ -67,7 +67,7 @@
 import Vue from 'vue';
 import * as EXIF from 'exif-js';
 import * as hljs from 'highlight.js';
-import gcd from '../../../common/scripts/gcd';
+import { gcd } from '../../../../../prelude/math';
 
 export default Vue.extend({
 	props: ['file'],
@@ -134,11 +134,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.file-detail
-
+.pyvicwrksnfyhpfgkjwqknuururpaztw
 	> .preview
 		padding 8px
-		background #f0f0f0
+		background var(--bg)
 
 		> img
 			display block
@@ -149,9 +148,10 @@ export default Vue.extend({
 
 		> footer
 			padding 8px 8px 0 8px
-			font-size 0.8em
-			color #888
 			text-align center
+			font-size 0.8em
+			color var(--text)
+			opacity 0.7
 
 			> .separator
 				display inline
@@ -179,25 +179,17 @@ export default Vue.extend({
 	> .info
 		padding 14px
 		font-size 0.8em
-		border-top solid 1px #dfdfdf
+		border-top solid 1px var(--faceDivider)
 
 		> div
 			max-width 500px
 			margin 0 auto
+			color var(--text)
 
 			> .separator
 				padding 0 4px
-				color #cdcdcd
-
-			> .type
-			> .data-size
-				color #9d9d9d
-
-				> mk-file-type-icon
-					margin-right 4px
 
 			> .created-at
-				color #bdbdbd
 
 				> [data-fa]
 					margin-right 2px
@@ -207,42 +199,15 @@ export default Vue.extend({
 
 	> .menu
 		padding 14px
-		border-top solid 1px #dfdfdf
+		border-top solid 1px var(--faceDivider)
 
 		> div
 			max-width 500px
 			margin 0 auto
 
-			> *
-				display block
-				width 100%
-				padding 10px 16px
-				margin 0 0 12px 0
-				color #333
-				font-size 0.9em
-				text-align center
-				text-decoration none
-				text-shadow 0 1px 0 rgba(255, 255, 255, 0.9)
-				background-image linear-gradient(#fafafa, #eaeaea)
-				border 1px solid #ddd
-				border-bottom-color #cecece
-				border-radius 3px
-
-				&:last-child
-					margin-bottom 0
-
-				&:active
-					background-color #767676
-					background-image none
-					border-color #444
-					box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
-
-				> [data-fa]
-					margin-right 4px
-
 	> .hash
 		padding 14px
-		border-top solid 1px #dfdfdf
+		border-top solid 1px var(--faceDivider)
 
 		> div
 			max-width 500px
@@ -252,7 +217,7 @@ export default Vue.extend({
 				display block
 				margin 0
 				padding 0
-				color #555
+				color var(--text)
 				font-size 0.9em
 
 				> [data-fa]
@@ -273,7 +238,7 @@ export default Vue.extend({
 
 	> .exif
 		padding 14px
-		border-top solid 1px #dfdfdf
+		border-top solid 1px var(--faceDivider)
 
 		> div
 			max-width 500px
@@ -283,7 +248,7 @@ export default Vue.extend({
 				display block
 				margin 0
 				padding 0
-				color #555
+				color var(--text)
 				font-size 0.9em
 
 				> [data-fa]

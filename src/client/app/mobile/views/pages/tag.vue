@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:hashtag%{{ $route.params.tag }}</span>
+	<span slot="header"><span style="margin-right:4px;">%fa:hashtag%</span>{{ $route.params.tag }}</span>
 
 	<main>
 		<p v-if="!fetching && empty">%fa:search% {{ '%i18n:no-posts-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:no-posts-found%'.split('{}')[1] }}</p>

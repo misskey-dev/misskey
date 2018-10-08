@@ -9,31 +9,35 @@
 	:href="video.url"
 	target="_blank"
 	:style="imageStyle"
-	:title="video.name">
+	:title="video.name"
+>
 	%fa:R play-circle%
 </a>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
+
 export default Vue.extend({
 	props: {
 		video: {
 			type: Object,
 			required: true
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
+	},
+	data() {
+		return {
+			hide: true
+		};
 	},
 	computed: {
 		imageStyle(): any {
 			return {
-				'background-image': `url(${this.video.url})`
+				'background-image': null // TODO `url(${this.video.thumbnailUrl})`
 			};
 		}
-	},})
+	}
+});
 </script>
 
 <style lang="stylus" scoped>

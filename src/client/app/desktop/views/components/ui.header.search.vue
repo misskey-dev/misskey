@@ -28,8 +28,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-root(isDark)
+.search
 	> [data-fa]
 		display block
 		position absolute
@@ -38,7 +37,7 @@ root(isDark)
 		width 48px
 		text-align center
 		line-height 48px
-		color #9eaba8
+		color var(--desktopHeaderFg)
 		pointer-events none
 
 		> *
@@ -52,26 +51,20 @@ root(isDark)
 		width 14em
 		height 32px
 		font-size 1em
-		background rgba(#000, 0.05)
+		background var(--desktopHeaderSearchBg)
 		outline none
-		//border solid 1px #ddd
 		border none
 		border-radius 16px
 		transition color 0.5s ease, border 0.5s ease
-		color isDark ? #fff : #000
+		color var(--desktopHeaderSearchFg)
 
 		&::placeholder
-			color #9eaba8
+			color var(--desktopHeaderFg)
 
 		&:hover
-			background isDark ? rgba(#fff, 0.04) : rgba(#000, 0.08)
+			background var(--desktopHeaderSearchHoverBg)
 
 		&:focus
-			box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important
+			box-shadow 0 0 0 2px var(--primaryAlpha05) !important
 
-.search[data-darkmode]
-	root(true)
-
-.search:not([data-darkmode])
-	root(false)
 </style>

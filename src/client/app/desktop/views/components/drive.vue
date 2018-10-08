@@ -98,8 +98,7 @@ export default Vue.extend({
 			hierarchyFolders: [],
 			selectedFiles: [],
 			uploadings: [],
-			connection: null,
-			connectionId: null,
+			connection: null
 
 			/**
 			 * ドロップされようとしているか
@@ -116,8 +115,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.driveStream.getConnection();
-		this.connectionId = (this as any).os.streams.driveStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('drive');
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
@@ -132,12 +130,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		this.connection.off('file_created', this.onStreamDriveFileCreated);
-		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
-		this.connection.off('file_deleted', this.onStreamDriveFileDeleted);
-		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
-		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
-		(this as any).os.streams.driveStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		onContextmenu(e) {
@@ -323,7 +316,7 @@ export default Vue.extend({
 							});
 							break;
 						default:
-							alert('%i18n:@unhandled-error% ' + err);
+							alert(`%i18n:@unhandled-error% ${err}`);
 					}
 				});
 			}
@@ -404,7 +397,7 @@ export default Vue.extend({
 					folder: folder
 				});
 			} else {
-				window.open(url + '/i/drive/folder/' + folder.id,
+				window.open(`${url}/i/drive/folder/${folder.id}`,
 					'drive_window',
 					'height=500, width=800');
 			}
@@ -585,18 +578,15 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-
+.mk-drive
 	> nav
 		display block
 		z-index 2
 		width 100%
 		overflow auto
 		font-size 0.9em
-		color isDark ? #d2d9dc : #555
-		background isDark ? #282c37 : #fff
+		color var(--text)
+		background var(--face)
 		box-shadow 0 1px 0 rgba(#000, 0.05)
 
 		&, *
@@ -674,7 +664,7 @@ root(isDark)
 		padding 8px
 		height calc(100% - 38px)
 		overflow auto
-		background isDark ? #191b22 : #fff
+		background var(--desktopDriveBg)
 
 		&, *
 			user-select none
@@ -697,8 +687,8 @@ root(isDark)
 			z-index 128
 			top 0
 			left 0
-			border solid 1px $theme-color
-			background rgba($theme-color, 0.5)
+			border solid 1px var(--primary)
+			background var(--primaryAlpha05)
 			pointer-events none
 
 		> .contents
@@ -769,7 +759,7 @@ root(isDark)
 		top 38px
 		width 100%
 		height calc(100% - 38px)
-		border dashed 2px rgba($theme-color, 0.5)
+		border dashed 2px var(--primaryAlpha05)
 		pointer-events none
 
 	> .mk-uploader
@@ -779,11 +769,5 @@ root(isDark)
 
 	> input
 		display none
-
-.mk-drive[data-darkmode]
-	root(true)
-
-.mk-drive:not([data-darkmode])
-	root(false)
 
 </style>

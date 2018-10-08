@@ -37,20 +37,26 @@
 			</router-link>
 		</header>
 		<div class="body">
-			<div class="text">
-				<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
-				<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
-				<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
-			</div>
-			<div class="media" v-if="p.media.length > 0">
-				<mk-media-list :media-list="p.media" :raw="true"/>
-			</div>
-			<mk-poll v-if="p.poll" :note="p"/>
-			<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
-			<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
-			<div class="map" v-if="p.geo" ref="map"></div>
-			<div class="renote" v-if="p.renote">
-				<mk-note-preview :note="p.renote"/>
+			<p v-if="p.cw != null" class="cw">
+				<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+				<mk-cw-button v-model="showContent"/>
+			</p>
+			<div class="content" v-show="p.cw == null || showContent">
+				<div class="text">
+					<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
+					<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
+					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
+				</div>
+				<div class="files" v-if="p.files.length > 0">
+					<mk-media-list :media-list="p.files" :raw="true"/>
+				</div>
+				<mk-poll v-if="p.poll" :note="p"/>
+				<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
+				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
+				<div class="map" v-if="p.geo" ref="map"></div>
+				<div class="renote" v-if="p.renote">
+					<mk-note-preview :note="p.renote"/>
+				</div>
 			</div>
 		</div>
 		<footer>
@@ -86,11 +92,15 @@ import MkRenoteFormWindow from './renote-form-window.vue';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './notes.note.sub.vue';
+import { sum } from '../../../../../prelude/array';
+import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
 	components: {
 		XSub
 	},
+
+	mixins: [noteSubscriber('note')],
 
 	props: {
 		note: {
@@ -104,6 +114,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			showContent: false,
 			conversation: [],
 			conversationFetching: false,
 			replies: []
@@ -114,22 +125,24 @@ export default Vue.extend({
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds.length == 0 &&
+				this.note.fileIds.length == 0 &&
 				this.note.poll == null);
 		},
+
 		p(): any {
 			return this.isRenote ? this.note.renote : this.note;
 		},
+
 		reactionsCount(): number {
 			return this.p.reactionCounts
-				? Object.keys(this.p.reactionCounts)
-					.map(key => this.p.reactionCounts[key])
-					.reduce((a, b) => a + b)
+				? sum(Object.values(this.p.reactionCounts))
 				: 0;
 		},
+
 		title(): string {
 			return new Date(this.p.createdAt).toLocaleString();
 		},
+
 		urls(): string[] {
 			if (this.p.text) {
 				const ast = parse(this.p.text);
@@ -184,22 +197,26 @@ export default Vue.extend({
 				this.conversation = conversation.reverse();
 			});
 		},
+
 		reply() {
 			(this as any).os.new(MkPostFormWindow, {
 				reply: this.p
 			});
 		},
+
 		renote() {
 			(this as any).os.new(MkRenoteFormWindow, {
 				note: this.p
 			});
 		},
+
 		react() {
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p
 			});
 		},
+
 		menu() {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
@@ -211,14 +228,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-note-detail
 	overflow hidden
 	text-align left
-	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.1)
-	border-radius 8px
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
 
 	> .read-more
 		display block
@@ -229,28 +244,28 @@ root(isDark)
 		text-align center
 		color #999
 		cursor pointer
-		background isDark ? #21242d : #fafafa
+		background var(--subNoteBg)
 		outline none
 		border none
-		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
-		border-radius 6px 6px 0 0
+		border-bottom solid 1px var(--faceDivider)
+		border-radius var(--round) var(--round) 0 0
 
 		&:hover
-			background isDark ? #2e3440 : #f6f6f6
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 		&:active
-			background isDark ? #21242b : #f0f0f0
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 		&:disabled
-			color isDark ? #21242b : #ccc
+			cursor wait
 
 	> .conversation
 		> *
-			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+			border-bottom 1px solid var(--faceDivider)
 
 	> .renote
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		> p
 			margin 0
@@ -273,7 +288,7 @@ root(isDark)
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+		border-bottom 1px solid var(--faceDivider)
 
 	> article
 		padding 28px 32px 18px 32px
@@ -285,7 +300,7 @@ root(isDark)
 
 		&:hover
 			> footer > button
-				color isDark ? #707b97 : #888
+				color var(--noteActionsHighlighted)
 
 		> .avatar
 			width 60px
@@ -302,7 +317,7 @@ root(isDark)
 				display inline-block
 				margin 0
 				line-height 24px
-				color isDark ? #fff : #627079
+				color var(--noteHeaderName)
 				font-size 18px
 				font-weight 700
 				text-align left
@@ -315,49 +330,61 @@ root(isDark)
 				display block
 				text-align left
 				margin 0
-				color isDark ? #606984 : #ccc
+				color var(--noteHeaderAcct)
 
 			> .time
 				position absolute
 				top 0
 				right 32px
 				font-size 1em
-				color isDark ? #606984 : #c0c0c0
+				color var(--noteHeaderInfo)
 
 		> .body
 			padding 8px 0
 
-			> .text
+			> .cw
 				cursor default
 				display block
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				font-size 1.5em
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
-			> .renote
-				margin 8px 0
+				> .text
+					margin-right 8px
 
-				> .mk-note-preview
-					padding 16px
-					border dashed 1px #c0dac6
-					border-radius 8px
+			> .content
+				> .text
+					cursor default
+					display block
+					margin 0
+					padding 0
+					overflow-wrap break-word
+					font-size 1.5em
+					color var(--noteText)
 
-			> .location
-				margin 4px 0
-				font-size 12px
-				color #ccc
+				> .renote
+					margin 8px 0
 
-			> .map
-				width 100%
-				height 300px
+					> *
+						padding 16px
+						border dashed 1px var(--quoteBorder)
+						border-radius 8px
 
-				&:empty
-					display none
+				> .location
+					margin 4px 0
+					font-size 12px
+					color #ccc
 
-			> .mk-url-preview
-				margin-top 8px
+				> .map
+					width 100%
+					height 300px
+
+					&:empty
+						display none
+
+				> .mk-url-preview
+					margin-top 8px
 
 		> footer
 			font-size 1.2em
@@ -368,20 +395,20 @@ root(isDark)
 				background transparent
 				border none
 				font-size 1em
-				color isDark ? #606984 : #ccc
+				color var(--noteActions)
 				cursor pointer
 
 				&:hover
-					color isDark ? #a1a8bf : #444
+					color var(--noteActionsHover)
 
 				&.replyButton:hover
-					color #0af
+					color var(--noteActionsReplyHover)
 
 				&.renoteButton:hover
-					color #8d0
+					color var(--noteActionsRenoteHover)
 
 				&.reactionButton:hover
-					color #fa0
+					color var(--noteActionsReactionHover)
 
 				> .count
 					display inline
@@ -389,16 +416,10 @@ root(isDark)
 					color #999
 
 				&.reacted, &.reacted:hover
-					color #fa0
+					color var(--noteActionsReactionHover)
 
 	> .replies
 		> *
-			border-top 1px solid isDark ? #1c2023 : #eef0f2
-
-.mk-note-detail[data-darkmode]
-	root(true)
-
-.mk-note-detail:not([data-darkmode])
-	root(false)
+			border-top 1px solid var(--faceDivider)
 
 </style>

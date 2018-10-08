@@ -40,6 +40,7 @@ export interface IOrderedCollection extends IObject {
 
 export interface INote extends IObject {
 	type: 'Note';
+	_misskey_content: string;
 }
 
 export interface IPerson extends IObject {
@@ -52,6 +53,7 @@ export interface IPerson extends IObject {
 	publicKey: any;
 	followers: any;
 	following: any;
+	featured?: any;
 	outbox: any;
 	endpoints: string[];
 }
@@ -89,6 +91,14 @@ export interface IReject extends IActivity {
 	type: 'Reject';
 }
 
+export interface IAdd extends IActivity {
+	type: 'Add';
+}
+
+export interface IRemove extends IActivity {
+	type: 'Remove';
+}
+
 export interface ILike extends IActivity {
 	type: 'Like';
 	_misskey_reaction: string;
@@ -107,5 +117,7 @@ export type Object =
 	IFollow |
 	IAccept |
 	IReject |
+	IAdd |
+	IRemove |
 	ILike |
 	IAnnounce;

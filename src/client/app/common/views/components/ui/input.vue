@@ -71,14 +71,18 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		styl: {
+			type: String,
+			required: false,
+			default: 'line'
 		}
 	},
 	data() {
 		return {
 			v: this.value,
 			focused: false,
-			passwordStrength: '',
-			styl: 'fill'
+			passwordStrength: ''
 		};
 	},
 	computed: {
@@ -117,14 +121,6 @@ export default Vue.extend({
 			}
 		}
 	},
-	inject: {
-		isCardChild: { default: false }
-	},
-	created() {
-		if (this.isCardChild) {
-			this.styl = 'line';
-		}
-	},
 	mounted() {
 		if (this.$refs.prefix) {
 			this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
@@ -155,9 +151,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark, fill)
+root(fill)
 	margin 32px 0
 
 	> .icon
@@ -167,7 +161,7 @@ root(isDark, fill)
 		width 24px
 		text-align center
 		line-height 32px
-		color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+		color var(--inputLabel)
 
 		&:not(:empty) + .input
 			margin-left 28px
@@ -183,7 +177,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				height 1px
-				background isDark ? rgba(#fff, 0.7) : rgba(#000, 0.42)
+				background var(--inputBorder)
 
 			&:after
 				content ''
@@ -193,7 +187,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				height 2px
-				background $theme-color
+				background var(--primary)
 				opacity 0
 				transform scaleX(0.12)
 				transition border 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
@@ -242,7 +236,7 @@ root(isDark, fill)
 			transition-duration 0.3s
 			font-size 16px
 			line-height 32px
-			color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+			color var(--inputLabel)
 			pointer-events none
 			//will-change transform
 			transform-origin top left
@@ -257,7 +251,7 @@ root(isDark, fill)
 			font-weight fill ? bold : normal
 			font-size 16px
 			line-height 32px
-			color isDark ? #fff : #000
+			color var(--inputText)
 			background transparent
 			border none
 			border-radius 0
@@ -280,7 +274,7 @@ root(isDark, fill)
 			top 0
 			font-size 16px
 			line-height fill ? 44px : 32px
-			color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+			color var(--inputLabel)
 			pointer-events none
 
 			&:empty
@@ -325,7 +319,7 @@ root(isDark, fill)
 					transform scaleX(1)
 
 			> .label
-				color $theme-color
+				color var(--primary)
 
 	&.focused
 	&.filled
@@ -335,16 +329,10 @@ root(isDark, fill)
 				left 0 !important
 				transform scale(0.75)
 
-.ui-input[data-darkmode]
+.ui-input
 	&.fill
-		root(true, true)
+		root(true)
 	&:not(.fill)
-		root(true, false)
-
-.ui-input:not([data-darkmode])
-	&.fill
-		root(false, true)
-	&:not(.fill)
-		root(false, false)
+		root(false)
 
 </style>

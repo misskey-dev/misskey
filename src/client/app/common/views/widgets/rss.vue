@@ -65,7 +65,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-rss
 	.mkw-rss--body
 		.feed
 			padding 12px 16px
@@ -74,8 +74,8 @@ root(isDark)
 			> a
 				display block
 				padding 4px 0
-				color isDark ? #9aa4b3 : #666
-				border-bottom dashed 1px isDark ? #1c2023 : #eee
+				color var(--text)
+				border-bottom dashed 1px var(--faceDivider)
 
 				&:last-child
 					border-bottom none
@@ -90,7 +90,7 @@ root(isDark)
 				margin-right 4px
 
 		&[data-mobile]
-			background isDark ? #21242f : #f3f3f3
+			background var(--face)
 
 			.feed
 				padding 0
@@ -100,12 +100,6 @@ root(isDark)
 					border-bottom none
 
 					&:nth-child(even)
-						background isDark ? rgba(#000, 0.05) : rgba(#fff, 0.7)
-
-.mkw-rss[data-darkmode]
-	root(true)
-
-.mkw-rss:not([data-darkmode])
-	root(false)
+						background rgba(#000, 0.05)
 
 </style>

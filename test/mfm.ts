@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 
 import analyze from '../src/mfm/parse';
+import toHtml from '../src/mfm/html';
 import syntaxhighlighter from '../src/mfm/parse/core/syntax-highlighter';
 
 describe('Text', () => {
@@ -53,28 +54,86 @@ describe('Text', () => {
 			], tokens2);
 		});
 
-		it('mention', () => {
-			const tokens = analyze('@himawari お腹ペコい');
-			assert.deepEqual([
-				{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
-				{ type: 'text', content: ' お腹ペコい' }
-			], tokens);
-		});
+		describe('mention', () => {
+			it('local', () => {
+				const tokens = analyze('@himawari お腹ペコい');
+				assert.deepEqual([
+					{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
+					{ type: 'text', content: ' お腹ペコい' }
+				], tokens);
+			});
 
-		it('remote mention', () => {
-			const tokens = analyze('@hima_sub@namori.net お腹ペコい');
-			assert.deepEqual([
-				{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
-				{ type: 'text', content: ' お腹ペコい' }
-			], tokens);
+			it('remote', () => {
+				const tokens = analyze('@hima_sub@namori.net お腹ペコい');
+				assert.deepEqual([
+					{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
+					{ type: 'text', content: ' お腹ペコい' }
+				], tokens);
+			});
+/*
+			it('ignore', () => {
+				const tokens = analyze('idolm@ster');
+				assert.deepEqual([
+					{ type: 'text', content: 'idolm@ster' }
+				], tokens);
+
+				const tokens2 = analyze('@a\n@b\n@c');
+				assert.deepEqual([
+					{ type: 'mention', content: '@a', username: 'a', host: null },
+					{ type: 'text', content: '\n' },
+					{ type: 'mention', content: '@b', username: 'b', host: null },
+					{ type: 'text', content: '\n' },
+					{ type: 'mention', content: '@c', username: 'c', host: null }
+				], tokens2);
+
+				const tokens3 = analyze('**x**@a');
+				assert.deepEqual([
+					{ type: 'bold', content: '**x**', bold: 'x' },
+					{ type: 'mention', content: '@a', username: 'a', host: null }
+				], tokens3);
+			});
+*/
 		});
 
 		it('hashtag', () => {
-			const tokens = analyze('Strawberry Pasta #alice');
+			const tokens1 = analyze('Strawberry Pasta #alice');
 			assert.deepEqual([
 				{ type: 'text', content: 'Strawberry Pasta ' },
 				{ type: 'hashtag', content: '#alice', hashtag: 'alice' }
-			], tokens);
+			], tokens1);
+
+			const tokens2 = analyze('Foo #bar, baz #piyo.');
+			assert.deepEqual([
+				{ type: 'text', content: 'Foo ' },
+				{ type: 'hashtag', content: '#bar', hashtag: 'bar' },
+				{ type: 'text', content: ', baz ' },
+				{ type: 'hashtag', content: '#piyo', hashtag: 'piyo' },
+				{ type: 'text', content: '.' }
+			], tokens2);
+		});
+
+		it('quote', () => {
+			const tokens1 = analyze('> foo\nbar\nbaz');
+			assert.deepEqual([
+				{ type: 'quote', content: '> foo\nbar\nbaz', quote: 'foo\nbar\nbaz' }
+			], tokens1);
+
+			const tokens2 = analyze('before\n> foo\nbar\nbaz\n\nafter');
+			assert.deepEqual([
+				{ type: 'text', content: 'before' },
+				{ type: 'quote', content: '\n> foo\nbar\nbaz\n\n', quote: 'foo\nbar\nbaz' },
+				{ type: 'text', content: 'after' }
+			], tokens2);
+
+			const tokens3 = analyze('piyo> foo\nbar\nbaz');
+			assert.deepEqual([
+				{ type: 'text', content: 'piyo> foo\nbar\nbaz' }
+			], tokens3);
+
+			const tokens4 = analyze('> foo\n> bar\n> baz');
+			assert.deepEqual([
+				{ type: 'quote', content: '> foo\n> bar\n> baz', quote: 'foo\nbar\nbaz' }
+			], tokens4);
 		});
 
 		it('url', () => {
@@ -168,6 +227,14 @@ describe('Text', () => {
 		it('slash', () => {
 			const html = syntaxhighlighter('/');
 			assert.equal(html, '<span class="symbol">/</span>');
+		});
+	});
+
+	describe('toHtml', () => {
+		it('br', () => {
+			const input = 'foo\nbar\nbaz';
+			const output = '<p>foo<br>bar<br>baz</p>';
+			assert.equal(toHtml(analyze(input)), output);
 		});
 	});
 });

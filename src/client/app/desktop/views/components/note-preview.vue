@@ -1,10 +1,16 @@
 <template>
-<div class="mk-note-preview" :title="title">
+<div class="qiziqtywpuaucsgarwajitwaakggnisj" :title="title">
 	<mk-avatar class="avatar" :user="note.user" v-if="!mini"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note" :mini="true"/>
 		<div class="body">
-			<mk-sub-note-content class="text" :note="note"/>
+			<p v-if="note.cw != null" class="cw">
+				<span class="text" v-if="note.cw != ''">{{ note.cw }}</span>
+				<mk-cw-button v-model="showContent"/>
+			</p>
+			<div class="content" v-show="note.cw == null || showContent">
+				<mk-sub-note-content class="text" :note="note"/>
+			</div>
 		</div>
 	</div>
 </div>
@@ -25,6 +31,13 @@ export default Vue.extend({
 			default: false
 		}
 	},
+
+	data() {
+		return {
+			showContent: false
+		};
+	},
+
 	computed: {
 		title(): string {
 			return new Date(this.note.createdAt).toLocaleString();
@@ -34,7 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.qiziqtywpuaucsgarwajitwaakggnisj
 	display flex
 	font-size 0.9em
 
@@ -52,16 +65,22 @@ root(isDark)
 
 		> .body
 
-			> .text
+			> .cw
 				cursor default
+				display block
 				margin 0
 				padding 0
-				color isDark ? #959ba7 : #717171
+				overflow-wrap break-word
+				color var(--noteText)
 
-.mk-note-preview[data-darkmode]
-	root(true)
+				> .text
+					margin-right 8px
 
-.mk-note-preview:not([data-darkmode])
-	root(false)
+			> .content
+				> .text
+					cursor default
+					margin 0
+					padding 0
+					color var(--subNoteText)
 
 </style>

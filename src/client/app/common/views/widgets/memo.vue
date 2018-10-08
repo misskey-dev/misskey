@@ -57,9 +57,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mkw-memo
 	.mkw-memo--body
 		padding-bottom 28px + 16px
 
@@ -69,10 +67,10 @@ root(isDark)
 			max-width 100%
 			min-width 100%
 			padding 16px
-			color isDark ? #fff : #222
-			background isDark ? #282c37 : #fff
+			color var(--inputText)
+			background var(--face)
 			border none
-			border-bottom solid 1px isDark ? #1c2023 : #eee
+			border-bottom solid 1px var(--faceDivider)
 			border-radius 0
 
 		> button
@@ -83,8 +81,8 @@ root(isDark)
 			margin 0
 			padding 0 10px
 			height 28px
-			color $theme-color-foreground
-			background $theme-color !important
+			color var(--primaryForeground)
+			background var(--primary) !important
 			outline none
 			border none
 			border-radius 4px
@@ -92,20 +90,14 @@ root(isDark)
 			cursor pointer
 
 			&:hover
-				background lighten($theme-color, 10%) !important
+				background var(--primaryLighten10) !important
 
 			&:active
-				background darken($theme-color, 10%) !important
+				background var(--primaryDarken10) !important
 				transition background 0s ease
 
 			&:disabled
 				opacity 0.7
 				cursor default
-
-.mkw-memo[data-darkmode]
-	root(true)
-
-.mkw-memo:not([data-darkmode])
-	root(false)
 
 </style>

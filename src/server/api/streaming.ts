@@ -2,25 +2,13 @@ import * as http from 'http';
 import * as websocket from 'websocket';
 import Xev from 'xev';
 
-import homeStream from './stream/home';
-import localTimelineStream from './stream/local-timeline';
-import hybridTimelineStream from './stream/hybrid-timeline';
-import globalTimelineStream from './stream/global-timeline';
-import userListStream from './stream/user-list';
-import driveStream from './stream/drive';
-import messagingStream from './stream/messaging';
-import messagingIndexStream from './stream/messaging-index';
-import reversiGameStream from './stream/games/reversi-game';
-import reversiStream from './stream/games/reversi';
-import serverStatsStream from './stream/server-stats';
-import notesStatsStream from './stream/notes-stats';
+import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
+import channels from './stream/channels';
 
 module.exports = (server: http.Server) => {
-	/**
-	 * Init websocket server
-	 */
+	// Init websocket server
 	const ws = new websocket.server({
 		httpServer: server
 	});
@@ -28,52 +16,45 @@ module.exports = (server: http.Server) => {
 	ws.on('request', async (request) => {
 		const connection = request.accept();
 
-		if (request.resourceURL.pathname === '/server-stats') {
-			serverStatsStream(request, connection);
-			return;
-		}
-
-		if (request.resourceURL.pathname === '/notes-stats') {
-			notesStatsStream(request, connection);
-			return;
-		}
-
 		const ev = new Xev();
-
-		connection.once('close', () => {
-			ev.removeAllListeners();
-		});
 
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
 
-		if (request.resourceURL.pathname === '/games/reversi-game') {
-			reversiGameStream(request, connection, ev, user);
-			return;
+		const main = new MainStreamConnection(connection, ev, user, app);
+
+		// 後方互換性のため
+		if (request.resourceURL.pathname !== '/streaming') {
+			main.sendMessageToWsOverride = (type: string, payload: any) => {
+				if (type == 'channel') {
+					type = payload.type;
+					payload = payload.body;
+				}
+				if (type.startsWith('api:')) {
+					type = type.replace('api:', 'api-res:');
+				}
+				connection.send(JSON.stringify({
+					type: type,
+					body: payload
+				}));
+			};
+
+			main.connectChannel(Math.random().toString(), null,
+				request.resourceURL.pathname === '/' ? channels.homeTimeline :
+				request.resourceURL.pathname === '/local-timeline' ? channels.localTimeline :
+				request.resourceURL.pathname === '/hybrid-timeline' ? channels.hybridTimeline :
+				request.resourceURL.pathname === '/global-timeline' ? channels.globalTimeline : null);
 		}
 
-		if (user == null) {
-			connection.send('authentication-failed');
-			connection.close();
-			return;
-		}
+		connection.once('close', () => {
+			ev.removeAllListeners();
+			main.dispose();
+		});
 
-		const channel: any =
-			request.resourceURL.pathname === '/' ? homeStream :
-			request.resourceURL.pathname === '/local-timeline' ? localTimelineStream :
-			request.resourceURL.pathname === '/hybrid-timeline' ? hybridTimelineStream :
-			request.resourceURL.pathname === '/global-timeline' ? globalTimelineStream :
-			request.resourceURL.pathname === '/user-list' ? userListStream :
-			request.resourceURL.pathname === '/drive' ? driveStream :
-			request.resourceURL.pathname === '/messaging' ? messagingStream :
-			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
-			request.resourceURL.pathname === '/games/reversi' ? reversiStream :
-			null;
-
-		if (channel !== null) {
-			channel(request, connection, ev, user, app);
-		} else {
-			connection.close();
-		}
+		connection.on('message', async (data) => {
+			if (data.utf8Data == 'ping') {
+				connection.send('pong');
+			}
+		});
 	});
 };

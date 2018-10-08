@@ -1,5 +1,5 @@
 <template>
-<div class="note" tabindex="-1" :title="title" @keydown="onKeydown">
+<div class="note" tabindex="-1" v-hotkey="keymap" :title="title">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
@@ -18,7 +18,7 @@
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
-					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '%i18n:@hide%' : '%i18n:@see-more%' }}</span>
+					<mk-cw-button v-model="showContent"/>
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
@@ -28,32 +28,30 @@
 						<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote">RP:</a>
 					</div>
-					<div class="media" v-if="p.media.length > 0">
-						<mk-media-list :media-list="p.media"/>
+					<div class="files" v-if="p.files.length > 0">
+						<mk-media-list :media-list="p.files"/>
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
 					<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
-					<div class="renote" v-if="p.renote">
-						<mk-note-preview :note="p.renote"/>
-					</div>
+					<div class="renote" v-if="p.renote"><mk-note-preview :note="p.renote"/></div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
 			</div>
-			<footer>
+			<footer v-if="p.deletedAt == null">
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
-				<button class="replyButton" @click="reply" title="%i18n:@reply%">
+				<button class="replyButton" @click="reply()" title="%i18n:@reply%">
 					<template v-if="p.reply">%fa:reply-all%</template>
 					<template v-else>%fa:reply%</template>
 					<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 				</button>
-				<button class="renoteButton" @click="renote" title="%i18n:@renote%">
+				<button class="renoteButton" @click="renote()" title="%i18n:@renote%">
 					%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 				</button>
-				<button class="reactionButton" :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@add-reaction%">
+				<button class="reactionButton" :class="{ reacted: p.myReaction != null }" @click="react()" ref="reactButton" title="%i18n:@add-reaction%">
 					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 				</button>
-				<button @click="menu" ref="menuButton">
+				<button @click="menu()" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
 				<!-- <button title="%i18n:@detail">
@@ -78,6 +76,8 @@ import MkRenoteFormWindow from './renote-form-window.vue';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './notes.note.sub.vue';
+import { sum } from '../../../../../prelude/array';
+import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 function focus(el, fn) {
 	const target = fn(el);
@@ -95,22 +95,51 @@ export default Vue.extend({
 		XSub
 	},
 
-	props: ['note'],
+	mixins: [noteSubscriber('note')],
+
+	props: {
+		note: {
+			type: Object,
+			required: true
+		}
+	},
 
 	data() {
 		return {
 			showContent: false,
-			isDetailOpened: false,
-			connection: null,
-			connectionId: null
+			isDetailOpened: false
 		};
 	},
 
 	computed: {
+		keymap(): any {
+			return {
+				'r|left': () => this.reply(true),
+				'e|a|plus': () => this.react(true),
+				'q|right': () => this.renote(true),
+				'ctrl+q|ctrl+right': this.renoteDirectly,
+				'up|k|shift+tab': this.focusBefore,
+				'down|j|tab': this.focusAfter,
+				'esc': this.blur,
+				'm|o': () => this.menu(true),
+				's': this.toggleShowContent,
+				'1': () => this.reactDirectly('like'),
+				'2': () => this.reactDirectly('love'),
+				'3': () => this.reactDirectly('laugh'),
+				'4': () => this.reactDirectly('hmm'),
+				'5': () => this.reactDirectly('surprise'),
+				'6': () => this.reactDirectly('congrats'),
+				'7': () => this.reactDirectly('angry'),
+				'8': () => this.reactDirectly('confused'),
+				'9': () => this.reactDirectly('rip'),
+				'0': () => this.reactDirectly('pudding'),
+			};
+		},
+
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds.length == 0 &&
+				this.note.fileIds.length == 0 &&
 				this.note.poll == null);
 		},
 
@@ -120,9 +149,7 @@ export default Vue.extend({
 
 		reactionsCount(): number {
 			return this.p.reactionCounts
-				? Object.keys(this.p.reactionCounts)
-					.map(key => this.p.reactionCounts[key])
-					.reduce((a, b) => a + b)
+				? sum(Object.values(this.p.reactionCounts))
 				: 0;
 		},
 
@@ -142,156 +169,81 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
-		}
-	},
-
-	mounted() {
-		this.capture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.on('_connected_', this.onStreamConnected);
-		}
-
-		// Draw map
-		if (this.p.geo) {
-			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
-			if (shouldShowMap) {
-				(this as any).os.getGoogleMaps().then(maps => {
-					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
-					const map = new maps.Map(this.$refs.map, {
-						center: uluru,
-						zoom: 15
-					});
-					new maps.Marker({
-						position: uluru,
-						map: map
-					});
-				});
-			}
-		}
-	},
-
-	beforeDestroy() {
-		this.decapture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.off('_connected_', this.onStreamConnected);
-			(this as any).os.stream.dispose(this.connectionId);
-		}
-	},
-
 	methods: {
-		capture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
-					type: 'capture',
-					id: this.p.id
-				});
-				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		decapture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
-					type: 'decapture',
-					id: this.p.id
-				});
-				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		onStreamConnected() {
-			this.capture();
-		},
-
-		onStreamNoteUpdated(data) {
-			const note = data.note;
-			if (note.id == this.note.id) {
-				this.$emit('update:note', note);
-			} else if (note.id == this.note.renoteId) {
-				this.note.renote = note;
-			}
-		},
-
-		reply() {
+		reply(viaKeyboard = false) {
 			(this as any).os.new(MkPostFormWindow, {
-				reply: this.p
-			});
+				reply: this.p,
+				animation: !viaKeyboard
+			}).$once('closed', this.focus);
 		},
 
-		renote() {
+		renote(viaKeyboard = false) {
 			(this as any).os.new(MkRenoteFormWindow, {
-				note: this.p
+				note: this.p,
+				animation: !viaKeyboard
+			}).$once('closed', this.focus);
+		},
+
+		renoteDirectly() {
+			(this as any).api('notes/create', {
+				renoteId: this.p.id
 			});
 		},
 
-		react() {
+		react(viaKeyboard = false) {
+			this.blur();
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
-				note: this.p
+				note: this.p,
+				showFocus: viaKeyboard,
+				animation: !viaKeyboard
+			}).$once('closed', this.focus);
+		},
+
+		reactDirectly(reaction) {
+			(this as any).api('notes/reactions/create', {
+				noteId: this.p.id,
+				reaction: reaction
 			});
 		},
 
-		menu() {
+		menu(viaKeyboard = false) {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
-				note: this.p
-			});
+				note: this.p,
+				animation: !viaKeyboard
+			}).$once('closed', this.focus);
 		},
 
-		onKeydown(e) {
-			let shouldBeCancel = true;
+		toggleShowContent() {
+			this.showContent = !this.showContent;
+		},
 
-			switch (true) {
-				case e.which == 38: // [↑]
-				case e.which == 74: // [j]
-				case e.which == 9 && e.shiftKey: // [Shift] + [Tab]
-					focus(this.$el, e => e.previousElementSibling);
-					break;
+		focus() {
+			this.$el.focus();
+		},
 
-				case e.which == 40: // [↓]
-				case e.which == 75: // [k]
-				case e.which == 9: // [Tab]
-					focus(this.$el, e => e.nextElementSibling);
-					break;
+		blur() {
+			this.$el.blur();
+		},
 
-				case e.which == 81: // [q]
-				case e.which == 69: // [e]
-					this.renote();
-					break;
+		focusBefore() {
+			focus(this.$el, e => e.previousElementSibling);
+		},
 
-				case e.which == 70: // [f]
-				case e.which == 76: // [l]
-					//this.like();
-					break;
-
-				case e.which == 82: // [r]
-					this.reply();
-					break;
-
-				default:
-					shouldBeCancel = false;
-			}
-
-			if (shouldBeCancel) e.preventDefault();
+		focusAfter() {
+			focus(this.$el, e => e.nextElementSibling);
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.note
 	margin 0
 	padding 0
-	background isDark ? #282C37 : #fff
-	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+	background var(--face)
+	border-bottom solid 1px var(--faceDivider)
 
 	&[data-round]
 		&:first-child
@@ -316,7 +268,7 @@ root(isDark)
 			right 2px
 			bottom 2px
 			left 2px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 4px
 
 	> .renote
@@ -325,8 +277,8 @@ root(isDark)
 		padding 16px 32px 8px 32px
 		line-height 28px
 		white-space pre
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		.avatar
 			display inline-block
@@ -366,7 +318,7 @@ root(isDark)
 
 		&:hover
 			> .main > footer > button
-				color isDark ? #707b97 : #888
+				color var(--noteActionsHighlighted)
 
 		> .avatar
 			flex-shrink 0
@@ -394,23 +346,10 @@ root(isDark)
 					margin 0
 					padding 0
 					overflow-wrap break-word
-					color isDark ? #fff : #717171
+					color var(--noteText)
 
 					> .text
 						margin-right 8px
-
-					> .toggle
-						display inline-block
-						padding 4px 8px
-						font-size 0.7em
-						color isDark ? #393f4f : #fff
-						background isDark ? #687390 : #b1b9c1
-						border-radius 2px
-						cursor pointer
-						user-select none
-
-						&:hover
-							background isDark ? #707b97 : #bbc4ce
 
 				> .content
 
@@ -420,7 +359,7 @@ root(isDark)
 						margin 0
 						padding 0
 						overflow-wrap break-word
-						color isDark ? #fff : #717171
+						color var(--noteText)
 
 						>>> .title
 							display block
@@ -428,7 +367,7 @@ root(isDark)
 							padding 4px
 							font-size 90%
 							text-align center
-							background isDark ? #2f3944 : #eef1f3
+							background var(--mfmTitleBg)
 							border-radius 4px
 
 						>>> .code
@@ -437,17 +376,17 @@ root(isDark)
 						>>> .quote
 							margin 8px
 							padding 6px 12px
-							color isDark ? #6f808e : #aaa
-							border-left solid 3px isDark ? #637182 : #eee
+							color var(--mfmQuote)
+							border-left solid 3px var(--mfmQuoteLine)
 
 						> .reply
 							margin-right 8px
-							color isDark ? #99abbf : #717171
+							color var(--text)
 
 						> .rp
 							margin-left 4px
 							font-style oblique
-							color #a0bf46
+							color var(--renoteText)
 
 					> .location
 						margin 4px 0
@@ -470,9 +409,9 @@ root(isDark)
 					> .renote
 						margin 8px 0
 
-						> .mk-note-preview
+						> *
 							padding 16px
-							border dashed 1px isDark ? #4e945e : #c0dac6
+							border dashed 1px var(--quoteBorder)
 							border-radius 8px
 
 			> footer
@@ -481,22 +420,22 @@ root(isDark)
 					padding 0 8px
 					line-height 32px
 					font-size 1em
-					color isDark ? #606984 : #ddd
+					color var(--noteActions)
 					background transparent
 					border none
 					cursor pointer
 
 					&:hover
-						color isDark ? #a1a8bf : #444
+						color var(--noteActionsHover)
 
 					&.replyButton:hover
-						color #0af
+						color var(--noteActionsReplyHover)
 
 					&.renoteButton:hover
-						color #8d0
+						color var(--noteActionsRenoteHover)
 
 					&.reactionButton:hover
-						color #fa0
+						color var(--noteActionsReactionHover)
 
 					> .count
 						display inline
@@ -504,17 +443,11 @@ root(isDark)
 						color #999
 
 					&.reacted, &.reacted:hover
-						color #fa0
+						color var(--noteActionsReactionHover)
 
 	> .detail
 		padding-top 4px
 		background rgba(#000, 0.0125)
-
-.note[data-darkmode]
-	root(true)
-
-.note:not([data-darkmode])
-	root(false)
 
 </style>
 
@@ -538,7 +471,7 @@ root(isDark)
 		padding 0 4px
 		margin-left 4px
 		font-size 80%
-		color $theme-color-foreground
-		background $theme-color
+		color var(--primaryForeground)
+		background var(--primary)
 		border-radius 4px
 </style>

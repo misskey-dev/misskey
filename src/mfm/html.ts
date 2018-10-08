@@ -4,10 +4,7 @@ const { JSDOM } = jsdom;
 import config from '../config';
 import { INote } from '../models/note';
 import { TextElement } from './parse';
-
-function intersperse<T>(sep: T, xs: T[]): T[] {
-	return [].concat(...xs.map(x => [sep, x])).slice(1);
-}
+import { intersperse } from '../prelude/array';
 
 const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers: INote['mentionedRemoteUsers']) => void } = {
 	bold({ document }, { bold }) {
@@ -44,8 +41,8 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 
 	hashtag({ document }, { hashtag }) {
 		const a = document.createElement('a');
-		a.href = config.url + '/tags/' + hashtag;
-		a.textContent = '#' + hashtag;
+		a.href = `${config.url}/tags/${hashtag}`;
+		a.textContent = `#${hashtag}`;
 		a.setAttribute('rel', 'tag');
 		document.body.appendChild(a);
 	},
@@ -85,8 +82,12 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 
 	text({ document }, { content }) {
 		const nodes = (content as string).split('\n').map(x => document.createTextNode(x));
-		for (const x of intersperse(document.createElement('br'), nodes)) {
-			document.body.appendChild(x);
+		for (const x of intersperse('br', nodes)) {
+			if (x === 'br') {
+				document.body.appendChild(document.createElement('br'));
+			} else {
+				document.body.appendChild(x);
+			}
 		}
 	},
 

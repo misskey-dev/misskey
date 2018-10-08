@@ -3,18 +3,20 @@
 		@dragover.prevent.stop="onDragover"
 		@dragenter.prevent="onDragenter"
 		@dragleave="onDragleave"
-		@drop.prevent.stop="onDrop"
->
+		@drop.prevent.stop="onDrop">
 	<header :class="{ indicate: count > 0 }"
 			draggable="true"
-			@click="toggleActive"
+			@click="goTop"
 			@dragstart="onDragstart"
 			@dragend="onDragend"
-			@contextmenu.prevent.stop="onContextmenu"
-		>
+			@contextmenu.prevent.stop="onContextmenu">
+		<button class="toggleActive" @click="toggleActive" v-if="isStacked">
+			<template v-if="active">%fa:angle-up%</template>
+			<template v-else>%fa:angle-down%</template>
+		</button>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
-		<button ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
+		<button class="menu" ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -26,6 +28,7 @@
 import Vue from 'vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import contextmenu from '../../../api/contextmenu';
+import { countIf } from '../../../../../../prelude/array';
 
 export default Vue.extend({
 	props: {
@@ -115,7 +118,7 @@ export default Vue.extend({
 		toggleActive() {
 			if (!this.isStacked) return;
 			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
-			if (this.active && vms.filter(vm => vm.$el.classList.contains('active')).length == 1) return;
+			if (this.active && countIf(vm => vm.$el.classList.contains('active'), vms) == 1) return;
 			this.active = !this.active;
 		},
 
@@ -211,6 +214,13 @@ export default Vue.extend({
 			});
 		},
 
+		goTop() {
+			this.$refs.body.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		},
+
 		onDragstart(e) {
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData('mk-deck-column', this.column.id);
@@ -259,24 +269,22 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs
 	$header-height = 42px
 
 	width 330px
 	min-width 330px
 	height 100%
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-radius 6px
-	box-shadow 0 2px 16px rgba(#000, 0.1)
+	//box-shadow 0 2px 16px rgba(#000, 0.1)
 	overflow hidden
 
 	&.draghover
-		box-shadow 0 0 0 2px rgba($theme-color, 0.8)
+		box-shadow 0 0 0 2px var(--primaryAlpha08)
 
 	&.dragging
-		box-shadow 0 0 0 2px rgba($theme-color, 0.4)
+		box-shadow 0 0 0 2px var(--primaryAlpha04)
 
 	&.dropready
 		*
@@ -291,23 +299,23 @@ root(isDark)
 		min-width 285px
 
 	&.naked
-		background rgba(#000, isDark ? 0.25 : 0.1)
+		background var(--deckAcrylicColumnBg)
 
 		> header
 			background transparent
 			box-shadow none
 
-			if !isDark
-				> button
-					color #bbb
+			> button
+				color var(--text)
 
 	> header
+		display flex
 		z-index 1
 		line-height $header-height
 		padding 0 16px
 		font-size 14px
-		color isDark ? #e3e5e8 : #888
-		background isDark ? #313543 : #fff
+		color var(--faceHeaderText)
+		background var(--faceHeader)
 		box-shadow 0 1px rgba(#000, 0.15)
 		cursor pointer
 
@@ -318,7 +326,7 @@ root(isDark)
 			pointer-events none
 
 		&.indicate
-			box-shadow 0 3px 0 0 $theme-color
+			box-shadow 0 3px 0 0 var(--primary)
 
 		> span
 			[data-fa]
@@ -328,30 +336,29 @@ root(isDark)
 			margin-left 4px
 			opacity 0.5
 
-		> button
-			position absolute
-			top 0
-			right 0
+		> .toggleActive
+		> .menu
 			width $header-height
 			line-height $header-height
 			font-size 16px
-			color isDark ? #9baec8 : #ccc
+			color var(--faceTextButton)
 
 			&:hover
-				color isDark ? #b2c1d5 : #aaa
+				color var(--faceTextButtonHover)
 
 			&:active
-				color isDark ? #b2c1d5 : #999
+				color var(--faceTextButtonActive)
+
+		> .toggleActive
+			margin-left -16px
+
+		> .menu
+			margin-left auto
+			margin-right -16px
 
 	> div
 		height "calc(100% - %s)" % $header-height
 		overflow auto
 		overflow-x hidden
-
-.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs[data-darkmode]
-	root(true)
-
-.dnpfarvgbnfmyzbdquhhzyxcmstpdqzs:not([data-darkmode])
-	root(false)
 
 </style>

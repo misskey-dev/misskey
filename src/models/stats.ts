@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 
 const Stats = db.get<IStats>('stats');
-Stats.dropIndex({ date: -1 }); // 後方互換性のため
+
 Stats.createIndex({ span: -1, date: -1 }, { unique: true });
 export default Stats;
 
@@ -198,5 +198,31 @@ export interface IStats {
 			 */
 			decSize: number;
 		};
+	};
+
+	/**
+	 * ネットワークに関する統計
+	 */
+	network: {
+		/**
+		 * サーバーへのリクエスト数
+		 */
+		requests: number;
+
+		/**
+		 * 応答時間の合計
+		 * TIP: (totalTime / requests) でひとつのリクエストに平均でどれくらいの時間がかかったか知れる
+		 */
+		totalTime: number;
+
+		/**
+		 * 合計受信データ量
+		 */
+		incomingBytes: number;
+
+		/**
+		 * 合計送信データ量
+		 */
+		outgoingBytes: number;
 	};
 }

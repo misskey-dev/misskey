@@ -20,6 +20,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { apiUrl } from '../../../config';
+import getMD5 from '../../scripts/get-md5';
 
 export default Vue.extend({
 	data() {
@@ -28,61 +29,83 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		upload(file, folder) {
+		checkExistence(fileData: ArrayBuffer): Promise<any> {
+			return new Promise((resolve, reject) => {
+				const data = new FormData();
+				data.append('md5', getMD5(fileData));
+
+				(this as any).api('drive/files/check_existence', {
+					md5: getMD5(fileData)
+				}).then(resp => {
+					resolve(resp.file);
+				});
+			});
+		},
+
+		upload(file: File, folder: any) {
 			if (folder && typeof folder == 'object') folder = folder.id;
 
 			const id = Math.random();
 
-			const ctx = {
-				id: id,
-				name: file.name || 'untitled',
-				progress: undefined,
-				img: undefined
-			};
-
-			this.uploads.push(ctx);
-			this.$emit('change', this.uploads);
-
 			const reader = new FileReader();
 			reader.onload = (e: any) => {
-				ctx.img = e.target.result;
-			};
-			reader.readAsDataURL(file);
+				this.checkExistence(e.target.result).then(result => {
+					if (result !== null) {
+						this.$emit('uploaded', result);
+						return;
+					}
 
-			const data = new FormData();
-			data.append('i', this.$store.state.i.token);
-			data.append('file', file);
+					// Upload if the file didn't exist yet
+					const buf = new Uint8Array(e.target.result);
+					let bin = '';
+					// We use for-of loop instead of apply() to avoid RangeError
+					// SEE: https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
+					for (const byte of buf) bin += String.fromCharCode(byte);
+					const ctx = {
+						id: id,
+						name: file.name || 'untitled',
+						progress: undefined,
+						img: 'data:*/*;base64,' + btoa(bin)
+					};
 
-			if (folder) data.append('folderId', folder);
+					this.uploads.push(ctx);
+					this.$emit('change', this.uploads);
 
-			const xhr = new XMLHttpRequest();
-			xhr.open('POST', apiUrl + '/drive/files/create', true);
-			xhr.onload = (e: any) => {
-				const driveFile = JSON.parse(e.target.response);
+					const data = new FormData();
+					data.append('i', this.$store.state.i.token);
+					data.append('file', file);
 
-				this.$emit('uploaded', driveFile);
+					if (folder) data.append('folderId', folder);
 
-				this.uploads = this.uploads.filter(x => x.id != id);
-				this.$emit('change', this.uploads);
-			};
+					const xhr = new XMLHttpRequest();
+					xhr.open('POST', apiUrl + '/drive/files/create', true);
+					xhr.onload = (e: any) => {
+						const driveFile = JSON.parse(e.target.response);
 
-			xhr.upload.onprogress = e => {
-				if (e.lengthComputable) {
-					if (ctx.progress == undefined) ctx.progress = {};
-					ctx.progress.max = e.total;
-					ctx.progress.value = e.loaded;
-				}
-			};
+						this.$emit('uploaded', driveFile);
 
-			xhr.send(data);
+						this.uploads = this.uploads.filter(x => x.id != id);
+						this.$emit('change', this.uploads);
+					};
+
+					xhr.upload.onprogress = e => {
+						if (e.lengthComputable) {
+							if (ctx.progress == undefined) ctx.progress = {};
+							ctx.progress.max = e.total;
+							ctx.progress.value = e.loaded;
+						}
+					};
+
+					xhr.send(data);
+				})
+			}
+			reader.readAsArrayBuffer(file);
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 .mk-uploader
 	overflow auto
 
@@ -100,7 +123,7 @@ export default Vue.extend({
 			margin 8px 0 0 0
 			padding 0
 			height 36px
-			box-shadow 0 -1px 0 rgba($theme-color, 0.1)
+			box-shadow 0 -1px 0 var(--primaryAlpha01)
 			border-top solid 8px transparent
 
 			&:first-child
@@ -127,7 +150,7 @@ export default Vue.extend({
 				padding 0
 				max-width 256px
 				font-size 0.8em
-				color rgba($theme-color, 0.7)
+				color var(--primaryAlpha07)
 				white-space nowrap
 				text-overflow ellipsis
 				overflow hidden
@@ -145,17 +168,17 @@ export default Vue.extend({
 				font-size 0.8em
 
 				> .initing
-					color rgba($theme-color, 0.5)
+					color var(--primaryAlpha05)
 
 				> .kb
-					color rgba($theme-color, 0.5)
+					color var(--primaryAlpha05)
 
 				> .percentage
 					display inline-block
 					width 48px
 					text-align right
 
-					color rgba($theme-color, 0.7)
+					color var(--primaryAlpha07)
 
 					&:after
 						content '%'
@@ -174,10 +197,10 @@ export default Vue.extend({
 				overflow hidden
 
 				&::-webkit-progress-value
-					background $theme-color
+					background var(--primary)
 
 				&::-webkit-progress-bar
-					background rgba($theme-color, 0.1)
+					background var(--primaryAlpha01)
 
 			> .progress
 				display block
@@ -191,13 +214,13 @@ export default Vue.extend({
 				border-radius 4px
 				background linear-gradient(
 					45deg,
-					lighten($theme-color, 30%) 25%,
-					$theme-color               25%,
-					$theme-color               50%,
-					lighten($theme-color, 30%) 50%,
-					lighten($theme-color, 30%) 75%,
-					$theme-color               75%,
-					$theme-color
+					var(--primaryLighten30) 25%,
+					var(--primary)               25%,
+					var(--primary)               50%,
+					var(--primaryLighten30) 50%,
+					var(--primaryLighten30) 75%,
+					var(--primary)               75%,
+					var(--primary)
 				)
 				background-size 32px 32px
 				animation bg 1.5s linear infinite

@@ -1,9 +1,10 @@
-import User, { IUser, isRemoteUser, ILocalUser } from '../../../models/user';
+import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from '../../../models/user';
 import FollowRequest from '../../../models/follow-request';
 import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
+import { publishMainStream } from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(follower)) {
@@ -21,4 +22,6 @@ export default async function(followee: IUser, follower: IUser) {
 			pendingReceivedFollowRequestsCount: -1
 		}
 	});
+
+	packUser(followee, follower).then(packed => publishMainStream(follower._id, 'unfollow', packed));
 }

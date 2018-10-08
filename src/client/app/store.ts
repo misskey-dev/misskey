@@ -4,18 +4,23 @@ import * as nestedProperty from 'nested-property';
 
 import MiOS from './mios';
 import { hostname } from './config';
+import { erase } from '../../prelude/array';
 
 const defaultSettings = {
 	home: null,
 	mobileHome: [],
 	deck: null,
+	tagTimelines: [],
 	fetchOnScroll: true,
 	showMaps: true,
 	showPostFormOnTopOfTl: false,
 	suggestRecentHashtags: true,
 	showClockOnHeader: true,
+	useShadow: true,
+	roundedCorners: false,
 	circleIcons: true,
-	gradientWindowHeader: false,
+	contrastedAcct: true,
+	showFullAcct: false,
 	showReplyTarget: true,
 	showMyRenotes: true,
 	showRenotedMyNotes: true,
@@ -24,6 +29,8 @@ const defaultSettings = {
 	disableViaMobile: false,
 	memo: null,
 	iLikeSushi: false,
+	rememberNoteVisibility: false,
+	defaultNoteVisibility: 'public',
 	games: {
 		reversi: {
 			showBoardLabels: false,
@@ -33,9 +40,13 @@ const defaultSettings = {
 };
 
 const defaultDeviceSettings = {
+	reduceMotion: false,
 	apiViaStream: true,
 	autoPopout: false,
 	darkmode: false,
+	darkTheme: 'dark',
+	lightTheme: 'light',
+	themes: [],
 	enableSounds: true,
 	soundVolume: 0.5,
 	lang: null,
@@ -43,7 +54,9 @@ const defaultDeviceSettings = {
 	debug: false,
 	lightmode: false,
 	loadRawImages: false,
-	postStyle: 'standard'
+	alwaysShowNsfw: false,
+	postStyle: 'standard',
+	mobileNotificationPosition: 'bottom'
 };
 
 export default (os: MiOS) => new Vuex.Store({
@@ -194,7 +207,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 				removeDeckColumn(state, id) {
 					state.deck.columns = state.deck.columns.filter(c => c.id != id);
-					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},
 
@@ -265,7 +278,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 				stackLeftDeckColumn(state, id) {
 					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
-					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					const left = state.deck.layout[i - 1];
 					if (left) state.deck.layout[i - 1].push(id);
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
@@ -273,7 +286,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 				popRightDeckColumn(state, id) {
 					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
-					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					state.deck.layout.splice(i + 1, 0, [id]);
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},

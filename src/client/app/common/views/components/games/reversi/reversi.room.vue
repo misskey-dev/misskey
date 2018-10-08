@@ -47,9 +47,9 @@
 			</header>
 
 			<div>
-				<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="%i18n:@is-llotheo%"/>
-				<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="%i18n:@looped-map%"/>
-				<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="%i18n:@can-put-everywhere%"/>
+				<ui-switch v-model="game.settings.isLlotheo" @change="updateSettings">%i18n:@is-llotheo%</ui-switch>
+				<ui-switch v-model="game.settings.loopedBoard" @change="updateSettings">%i18n:@looped-map%</ui-switch>
+				<ui-switch v-model="game.settings.canPutEverywhere" @change="updateSettings">%i18n:@can-put-everywhere%</ui-switch>
 			</div>
 		</div>
 
@@ -59,13 +59,8 @@
 			</header>
 
 			<div>
-				<el-alert v-for="message in messages"
-						:title="message.text"
-						:type="message.type"
-						:key="message.id"/>
-
 				<template v-for="item in form">
-					<mk-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm(item)">{{ item.desc || '' }}</mk-switch>
+					<ui-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm(item)">{{ item.desc || '' }}</ui-switch>
 
 					<div class="card" v-if="item.type == 'radio'" :key="item.id">
 						<header>
@@ -93,7 +88,7 @@
 						</header>
 
 						<div>
-							<el-input v-model="item.value" @change="onChangeForm(item)"/>
+							<input v-model="item.value" @change="onChangeForm(item)"/>
 						</div>
 					</div>
 				</template>
@@ -257,11 +252,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.urbixznjwwuukfsckrwzwsqzsxornqij
 	text-align center
-	background isDark ? #191b22 : #f9f9f9
+	background var(--bg)
 
 	> header
 		padding 8px
@@ -278,10 +271,10 @@ root(isDark)
 					> select
 						width 100%
 						padding 12px 14px
-						background isDark ? #282C37 : #fff
-						border 1px solid isDark ? #6a707d : #dcdfe6
+						background var(--face)
+						border 1px solid var(--reversiMapSelectBorder)
 						border-radius 4px
-						color isDark ? #fff : #606266
+						color var(--text)
 						cursor pointer
 						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
 						-webkit-appearance none
@@ -289,17 +282,18 @@ root(isDark)
 						appearance none
 
 						&:hover
-							border-color isDark ? #a7aebd : #c0c4cc
+							border-color var(--reversiMapSelectHoverBorder)
 
 						&:focus
 						&:active
-							border-color $theme-color
+							border-color var(--primary)
 
 				> div
 					> .random
 						padding 32px 0
 						font-size 64px
-						color isDark ? #4e5961 : #d8d8d8
+						color var(--text)
+						opacity 0.7
 
 					> .board
 						display grid
@@ -307,11 +301,11 @@ root(isDark)
 						width 300px
 						height 300px
 						margin 0 auto
-						color isDark ? #fff : #444
+						color var(--text)
 
 						> div
 							background transparent
-							border solid 2px isDark ? #6a767f : #ddd
+							border solid 2px var(--faceDivider)
 							border-radius 6px
 							overflow hidden
 							cursor pointer
@@ -336,32 +330,26 @@ root(isDark)
 		.card
 			max-width 400px
 			border-radius 4px
-			background isDark ? #282C37 : #fff
-			color isDark ? #fff : #303133
-			box-shadow 0 2px 12px 0 rgba(#000, isDark ? 0.7 : 0.1)
+			background var(--face)
+			color var(--text)
+			box-shadow 0 2px 12px 0 var(--reversiRoomFormShadow)
 
 			> header
 				padding 18px 20px
-				border-bottom 1px solid isDark ? #1c2023 : #ebeef5
+				border-bottom 1px solid var(--faceDivider)
 
 			> div
 				padding 20px
-				color isDark ? #fff : #606266
+				color var(--text)
 
 	> footer
 		position sticky
 		bottom 0
 		padding 16px
-		background rgba(isDark ? #191b22 : #fff, 0.9)
-		border-top solid 1px isDark ? #606266 : #c4cdd4
+		background var(--reversiRoomFooterBg)
+		border-top solid 1px var(--faceDivider)
 
 		> .status
 			margin 0 0 16px 0
-
-.urbixznjwwuukfsckrwzwsqzsxornqij[data-darkmode]
-	root(true)
-
-.urbixznjwwuukfsckrwzwsqzsxornqij:not([data-darkmode])
-	root(false)
 
 </style>

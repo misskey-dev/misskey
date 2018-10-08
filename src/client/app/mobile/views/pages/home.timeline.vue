@@ -21,6 +21,9 @@ export default Vue.extend({
 		src: {
 			type: String,
 			required: true
+		},
+		tagTl: {
+			required: false
 		}
 	},
 
@@ -29,10 +32,17 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
+			streamManager: null,
 			connection: null,
-			connectionId: null,
 			unreadCount: 0,
-			date: null
+			date: null,
+			baseQuery: {
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+			},
+			query: {},
+			endpoint: null
 		};
 	},
 
@@ -41,49 +51,67 @@ export default Vue.extend({
 			return this.$store.state.i.followingCount == 0;
 		},
 
-		stream(): any {
-			switch (this.src) {
-				case 'home': return (this as any).os.stream;
-				case 'local': return (this as any).os.streams.localTimelineStream;
-				case 'hybrid': return (this as any).os.streams.hybridTimelineStream;
-				case 'global': return (this as any).os.streams.globalTimelineStream;
-			}
-		},
-
-		endpoint(): string {
-			switch (this.src) {
-				case 'home': return 'notes/timeline';
-				case 'local': return 'notes/local-timeline';
-				case 'hybrid': return 'notes/hybrid-timeline';
-				case 'global': return 'notes/global-timeline';
-			}
-		},
-
 		canFetchMore(): boolean {
 			return !this.moreFetching && !this.fetching && this.existMore;
 		}
 	},
 
 	mounted() {
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
+		const prepend = note => {
+			(this.$refs.timeline as any).prepend(note);
+		};
 
-		this.connection.on('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.on('follow', this.onChangeFollowing);
-			this.connection.on('unfollow', this.onChangeFollowing);
+		if (this.src == 'tag') {
+			this.endpoint = 'notes/search_by_tag';
+			this.query = {
+				query: this.tagTl.query
+			};
+			this.connection = (this as any).os.stream.connectToChannel('hashtag', { q: this.tagTl.query });
+			this.connection.on('note', prepend);
+		} else if (this.src == 'home') {
+			this.endpoint = 'notes/timeline';
+			const onChangeFollowing = () => {
+				this.fetch();
+			};
+			this.connection = (this as any).os.stream.useSharedConnection('homeTimeline');
+			this.connection.on('note', prepend);
+			this.connection.on('follow', onChangeFollowing);
+			this.connection.on('unfollow', onChangeFollowing);
+		} else if (this.src == 'local') {
+			this.endpoint = 'notes/local-timeline';
+			this.connection = (this as any).os.stream.useSharedConnection('localTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'hybrid') {
+			this.endpoint = 'notes/hybrid-timeline';
+			this.connection = (this as any).os.stream.useSharedConnection('hybridTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'global') {
+			this.endpoint = 'notes/global-timeline';
+			this.connection = (this as any).os.stream.useSharedConnection('globalTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'mentions') {
+			this.endpoint = 'notes/mentions';
+			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection.on('mention', prepend);
+		} else if (this.src == 'messages') {
+			this.endpoint = 'notes/mentions';
+			this.query = {
+				visibility: 'specified'
+			};
+			const onNote = note => {
+				if (note.visibility == 'specified') {
+					prepend(note);
+				}
+			};
+			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection.on('mention', onNote);
 		}
 
 		this.fetch();
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.off('follow', this.onChangeFollowing);
-			this.connection.off('unfollow', this.onChangeFollowing);
-		}
-		this.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {
@@ -91,13 +119,10 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api(this.endpoint, {
+				(this as any).api(this.endpoint, Object.assign({
 					limit: fetchLimit + 1,
-					untilDate: this.date ? this.date.getTime() : undefined,
-					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-				}).then(notes => {
+					untilDate: this.date ? this.date.getTime() : undefined
+				}, this.baseQuery, this.query)).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
 						this.existMore = true;
@@ -114,13 +139,10 @@ export default Vue.extend({
 
 			this.moreFetching = true;
 
-			const promise = (this as any).api(this.endpoint, {
+			const promise = (this as any).api(this.endpoint, Object.assign({
 				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			});
+				untilId: (this.$refs.timeline as any).tail().id
+			}, this.baseQuery, this.query));
 
 			promise.then(notes => {
 				if (notes.length == fetchLimit + 1) {
@@ -133,15 +155,6 @@ export default Vue.extend({
 			});
 
 			return promise;
-		},
-
-		onNote(note) {
-			// Prepend a note
-			(this.$refs.timeline as any).prepend(note);
-		},
-
-		onChangeFollowing() {
-			this.fetch();
 		},
 
 		focus() {

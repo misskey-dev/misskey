@@ -48,7 +48,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = '%i18n:@followers-of%'.replace('{}', this.name) + ' | ' + (this as any).os.instanceName;
+				document.title = `${'%i18n:@followers-of%'.replace('{}', this.name)} | ${(this as any).os.instanceName}`;
 			});
 		},
 		onLoaded() {

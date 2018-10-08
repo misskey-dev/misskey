@@ -2,12 +2,12 @@
  * Replace fontawesome symbols
  */
 
-import * as fontawesome from '@fortawesome/fontawesome';
-import regular from '@fortawesome/fontawesome-free-regular';
-import solid from '@fortawesome/fontawesome-free-solid';
-import brands from '@fortawesome/fontawesome-free-brands';
+import * as fontawesome from '@fortawesome/fontawesome-svg-core';
+import { far } from '@fortawesome/free-regular-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
 
-fontawesome.library.add(regular, solid, brands);
+fontawesome.library.add(far, fas, fab);
 
 export const pattern = /%fa:(.+?)%/g;
 
@@ -26,7 +26,7 @@ export const replacement = (match: string, key: string) => {
 				arg == 'B' ? 'fab' :
 				'';
 		} else if (arg.startsWith('.')) {
-			classes.push('fa-' + arg.substr(1));
+			classes.push(`fa-${arg.substr(1)}`);
 		} else if (arg.startsWith('-')) {
 			transform = arg.substr(1).split('|').join(' ');
 		} else {

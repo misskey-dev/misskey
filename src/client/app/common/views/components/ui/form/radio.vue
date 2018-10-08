@@ -49,9 +49,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.uywduthvrdnlpsvsjkqigicixgyfctto
 	display inline-flex
 	margin 0 16px 0 0
 	cursor pointer
@@ -62,7 +60,7 @@ root(isDark)
 
 	&:hover
 		> .button
-			border solid 2px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+			border solid 2px var(--inputLabel)
 
 	&.disabled
 		opacity 0.6
@@ -70,15 +68,15 @@ root(isDark)
 
 	&.checked
 		> .button
-			border-color $theme-color
+			border-color var(--primary)
 
 			&:after
-				background-color $theme-color
+				background-color var(--primary)
 				transform scale(1)
 				opacity 1
 
 		> .label
-			color $theme-color
+			color var(--primary)
 
 	> input
 		position absolute
@@ -93,7 +91,7 @@ root(isDark)
 		width 20px
 		height 20px
 		background none
-		border solid 2px isDark ? rgba(#fff, 0.6) : rgba(#000, 0.4)
+		border solid 2px var(--radioBorder)
 		border-radius 100%
 		transition inherit
 
@@ -116,11 +114,5 @@ root(isDark)
 		font-size 14px
 		line-height 20px
 		cursor pointer
-
-.uywduthvrdnlpsvsjkqigicixgyfctto[data-darkmode]
-	root(true)
-
-.uywduthvrdnlpsvsjkqigicixgyfctto:not([data-darkmode])
-	root(false)
 
 </style>

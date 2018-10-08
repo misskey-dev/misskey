@@ -45,8 +45,7 @@ export default define({
 		return {
 			fetching: true,
 			meta: null,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {
@@ -55,11 +54,10 @@ export default define({
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.streams.serverStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.serverStatsStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
 	},
 	beforeDestroy() {
-		(this as any).os.streams.serverStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		toggle() {

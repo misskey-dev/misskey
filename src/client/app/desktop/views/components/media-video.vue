@@ -6,19 +6,12 @@
 	</div>
 </div>
 <div class="vwxdhznewyashiknzolsoihtlpicqepe" v-else>
-	<video class="video"
-		:src="video.url"
-		:title="video.name"
-		controls
-		@dblclick.prevent="onClick"
-		ref="video"
-		v-if="inlinePlayable" />
 	<a class="thumbnail"
 		:href="video.url"
 		:style="imageStyle"
 		@click.prevent="onClick"
 		:title="video.name"
-		v-else>
+	>
 		%fa:R play-circle%
 	</a>
 </div>
@@ -36,16 +29,17 @@ export default Vue.extend({
 		},
 		inlinePlayable: {
 			default: false
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
+	},
+	data() {
+		return {
+			hide: true
+		};
 	},
 	computed: {
 		imageStyle(): any {
 			return {
-				'background-image': `url(${this.video.url})`
+				'background-image': null // TODO `url(${this.video.thumbnailUrl})`
 			};
 		}
 	},
@@ -79,7 +73,6 @@ export default Vue.extend({
 		justify-content center
 		align-items center
 		font-size 3.5em
-
 		cursor zoom-in
 		overflow hidden
 		background-position center
@@ -101,5 +94,4 @@ export default Vue.extend({
 
 		> b
 			display block
-
 </style>

@@ -163,7 +163,7 @@ export default Vue.extend({
 							});
 							break;
 						default:
-							alert('%i18n:@unhandled-error% ' + err);
+							alert(`%i18n:@unhandled-error% ${err}`);
 					}
 				});
 			}
@@ -214,12 +214,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.ynntpczxvnusfwdyxsfuhvcmuypqopdd
 	padding 8px
 	height 64px
-	background isDark ? rgba($theme-color, 0.2) : lighten($theme-color, 95%)
+	background var(--desktopDriveFolderBg)
 	border-radius 4px
 
 	&, *
@@ -229,10 +227,10 @@ root(isDark)
 		pointer-events none
 
 	&:hover
-		background isDark ? rgba(lighten($theme-color, 10%), 0.2) : lighten($theme-color, 90%)
+		background var(--desktopDriveFolderHoverBg)
 
 	&:active
-		background isDark ? rgba(darken($theme-color, 10%), 0.2) : lighten($theme-color, 85%)
+		background var(--desktopDriveFolderActiveBg)
 
 	&[data-is-contextmenu-showing]
 	&[data-draghover]
@@ -244,26 +242,20 @@ root(isDark)
 			right -4px
 			bottom -4px
 			left -4px
-			border 2px dashed rgba($theme-color, 0.3)
+			border 2px dashed var(--primaryAlpha03)
 			border-radius 4px
 
 	&[data-draghover]
-		background isDark ? rgba(darken($theme-color, 10%), 0.2) : lighten($theme-color, 90%)
+		background var(--desktopDriveFolderActiveBg)
 
 	> .name
 		margin 0
 		font-size 0.9em
-		color isDark ? #fff : darken($theme-color, 30%)
+		color var(--desktopDriveFolderFg)
 
 		> [data-fa]
 			margin-right 4px
 			margin-left 2px
 			text-align left
-
-.ynntpczxvnusfwdyxsfuhvcmuypqopdd[data-darkmode]
-	root(true)
-
-.ynntpczxvnusfwdyxsfuhvcmuypqopdd:not([data-darkmode])
-	root(false)
 
 </style>

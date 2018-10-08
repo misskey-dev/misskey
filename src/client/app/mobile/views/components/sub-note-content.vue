@@ -7,9 +7,9 @@
 		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i"/>
 		<a class="rp" v-if="note.renoteId">RP: ...</a>
 	</div>
-	<details v-if="note.media.length > 0">
-		<summary>({{ '%i18n:@media-count%'.replace('{}', note.media.length) }})</summary>
-		<mk-media-list :media-list="note.media"/>
+	<details v-if="note.files.length > 0">
+		<summary>({{ '%i18n:@media-count%'.replace('{}', note.files.length) }})</summary>
+		<mk-media-list :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>%i18n:@poll%</summary>
@@ -37,7 +37,7 @@ export default Vue.extend({
 		> .rp
 			margin-left 4px
 			font-style oblique
-			color #a0bf46
+			color var(--renoteText)
 
 	mk-poll
 		font-size 80%

@@ -10,9 +10,10 @@ import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
-import Outbox from './activitypub/outbox';
+import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
 import Following from './activitypub/following';
+import Featured from './activitypub/featured';
 
 // Init router
 const router = new Router();
@@ -22,7 +23,7 @@ const router = new Router();
 function inbox(ctx: Router.IRouterContext) {
 	let signature;
 
-	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
+	ctx.req.headers.authorization = `Signature ${ctx.req.headers.signature}`;
 
 	try {
 		signature = httpSignature.parseRequest(ctx.req, { 'headers': [] });
@@ -74,6 +75,24 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	ctx.body = pack(await renderNote(note, false));
+	ctx.set('Cache-Control', 'public, max-age=180');
+	setResponseType(ctx);
+});
+
+// note activity
+router.get('/notes/:note/activity', async ctx => {
+	const note = await Note.findOne({
+		_id: new mongo.ObjectID(ctx.params.note),
+		visibility: { $in: ['public', 'home'] }
+	});
+
+	if (note === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = pack(await packActivity(note));
+	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
 });
 
@@ -85,6 +104,9 @@ router.get('/users/:user/followers', Followers);
 
 // following
 router.get('/users/:user/following', Following);
+
+// featured
+router.get('/users/:user/collections/featured', Featured);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
@@ -102,6 +124,7 @@ router.get('/users/:user/publickey', async ctx => {
 
 	if (isLocalUser(user)) {
 		ctx.body = pack(renderKey(user));
+		ctx.set('Cache-Control', 'public, max-age=180');
 		setResponseType(ctx);
 	} else {
 		ctx.status = 400;
@@ -116,6 +139,7 @@ async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 	}
 
 	ctx.body = pack(await renderPerson(user as ILocalUser));
+	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
 }
 

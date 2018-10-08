@@ -57,7 +57,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	// Delete following
-	deleteFollowing(follower, followee);
+	await deleteFollowing(follower, followee);
 
 	// Send response
 	res(await pack(followee._id, user));

@@ -3,7 +3,6 @@
 	<h1>%i18n:@title%</h1>
 	<p>%i18n:@sub-title%</p>
 	<div class="play">
-		<!--<el-button round>フリーマッチ(準備中)</el-button>-->
 		<form-button primary round @click="match">%i18n:@invite%</form-button>
 		<details>
 			<summary>%i18n:@rule%</summary>
@@ -60,15 +59,13 @@ export default Vue.extend({
 			myGames: [],
 			matching: null,
 			invitations: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.streams.reversiStream.getConnection();
-			this.connectionId = (this as any).os.streams.reversiStream.use();
+			this.connection = (this as any).os.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('invited', this.onInvited);
 
@@ -91,8 +88,7 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		if (this.connection) {
-			this.connection.off('invited', this.onInvited);
-			(this as any).os.streams.reversiStream.dispose(this.connectionId);
+			this.connection.dispose();
 		}
 	},
 
@@ -139,9 +135,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.phgnkghfpyvkrvwiajkiuoxyrdaqpzcx
 	> h1
 		margin 0
 		padding 24px
@@ -149,7 +143,7 @@ root(isDark)
 		text-align center
 		font-weight normal
 		color #fff
-		background linear-gradient(to bottom, isDark ? #45730e : #8bca3e, isDark ? #464300 : #d6cf31)
+		background linear-gradient(to bottom, var(--reversiBannerGradientStart), var(--reversiBannerGradientEnd))
 
 		& + p
 			margin 0
@@ -157,7 +151,7 @@ root(isDark)
 			margin-bottom 12px
 			text-align center
 			font-size 14px
-			border-bottom solid 1px isDark ? #535f65 : #d3d9dc
+			border-bottom solid 1px var(--faceDivider)
 
 	> .play
 		margin 0 auto
@@ -172,14 +166,14 @@ root(isDark)
 				padding 16px
 				font-size 14px
 				text-align left
-				background isDark ? #282c37 : #f5f5f5
+				background var(--reversiDescBg)
 				border-radius 8px
 
 	> section
 		margin 0 auto
 		padding 0 16px 16px 16px
 		max-width 500px
-		border-top solid 1px isDark ? #535f65 : #d3d9dc
+		border-top solid 1px var(--faceDivider)
 
 		> h2
 			margin 0
@@ -190,9 +184,9 @@ root(isDark)
 	.invitation
 		margin 8px 0
 		padding 8px
-		color isDark ? #fff : #677f84
-		background isDark ? #282c37 : #fff
-		box-shadow 0 2px 16px rgba(#000, isDark ? 0.7 : 0.15)
+		color var(--text)
+		background var(--face)
+		box-shadow 0 2px 16px var(--reversiListItemShadow)
 		border-radius 6px
 		cursor pointer
 
@@ -201,13 +195,13 @@ root(isDark)
 			user-select none
 
 		&:focus
-			border-color $theme-color
+			border-color var(--primary)
 
 		&:hover
-			background isDark ? #313543 : #f5f5f5
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 		&:active
-			background isDark ? #1e222b : #eee
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 		> .avatar
 			width 32px
@@ -222,9 +216,9 @@ root(isDark)
 		display block
 		margin 8px 0
 		padding 8px
-		color isDark ? #fff : #677f84
-		background isDark ? #282c37 : #fff
-		box-shadow 0 2px 16px rgba(#000, isDark ? 0.7 : 0.15)
+		color var(--text)
+		background var(--face)
+		box-shadow 0 2px 16px var(--reversiListItemShadow)
 		border-radius 6px
 		cursor pointer
 
@@ -233,10 +227,10 @@ root(isDark)
 			user-select none
 
 		&:hover
-			background isDark ? #313543 : #f5f5f5
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 		&:active
-			background isDark ? #1e222b : #eee
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 		> .avatar
 			width 32px
@@ -246,11 +240,5 @@ root(isDark)
 		> span
 			margin 0 8px
 			line-height 32px
-
-.phgnkghfpyvkrvwiajkiuoxyrdaqpzcx[data-darkmode]
-	root(true)
-
-.phgnkghfpyvkrvwiajkiuoxyrdaqpzcx:not([data-darkmode])
-	root(false)
 
 </style>

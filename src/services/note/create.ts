@@ -1,7 +1,7 @@
 import es from '../../db/elasticsearch';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
-import { publishUserStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../stream';
+import { publishMainStream, publishHomeTimelineStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream, publishHashtagStream } from '../../stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -24,6 +24,8 @@ import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import { updateNoteStats } from '../update-chart';
+import { erase, unique } from '../../prelude/array';
+import insertNoteUnread from './unread';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -84,7 +86,7 @@ type Option = {
 	text?: string;
 	reply?: INote;
 	renote?: INote;
-	media?: IDriveFile[];
+	files?: IDriveFile[];
 	geo?: any;
 	poll?: any;
 	viaMobile?: boolean;
@@ -103,23 +105,30 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.viaMobile == null) data.viaMobile = false;
 
 	if (data.visibleUsers) {
-		data.visibleUsers = data.visibleUsers.filter(x => x != null);
+		data.visibleUsers = erase(null, data.visibleUsers);
 	}
 
+	// リプライ対象が削除された投稿だったらreject
 	if (data.reply && data.reply.deletedAt != null) {
 		return rej();
 	}
 
+	// Renote対象が削除された投稿だったらreject
 	if (data.renote && data.renote.deletedAt != null) {
 		return rej();
 	}
 
-	// リプライ先が自分以外の非公開の投稿なら禁止
+	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
+	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
+		return rej();
+	}
+
+	// リプライ対象が自分以外の非公開の投稿なら禁止
 	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
 		return rej();
 	}
 
-	// Renote先が自分以外の非公開の投稿なら禁止
+	// Renote対象が自分以外の非公開の投稿なら禁止
 	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
 		return rej();
 	}
@@ -135,7 +144,19 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const mentionedUsers = await extractMentionedUsers(tokens);
 
-	const note = await insertNote(user, data, tokens, tags, mentionedUsers);
+	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
+		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
+	}
+
+	if (data.visibility == 'specified') {
+		data.visibleUsers.forEach(u => {
+			if (!mentionedUsers.some(x => x._id.equals(u._id))) {
+				mentionedUsers.push(u);
+			}
+		});
+	}
+
+	const note = await insertNote(user, data, tags, mentionedUsers);
 
 	res(note);
 
@@ -154,6 +175,17 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
+
+	// 未読通知を作成
+	if (data.visibility == 'specified') {
+		data.visibleUsers.forEach(u => {
+			insertNoteUnread(u, note, true);
+		});
+	} else {
+		mentionedUsers.forEach(u => {
+			insertNoteUnread(u, note, false);
+		});
+	}
 
 	if (data.reply) {
 		saveReply(data.reply, note);
@@ -174,14 +206,18 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		noteObj.isFirstNote = true;
 	}
 
+	if (tags.length > 0) {
+		publishHashtagStream(noteObj);
+	}
+
 	const nm = new NotificationManager(user, note);
 	const nmRelatedPromises = [];
 
-	createMentionedEvents(mentionedUsers, noteObj, nm);
+	createMentionedEvents(mentionedUsers, note, nm);
 
 	const noteActivity = await renderActivity(data, note);
 
-	if (isLocalUser(user)) {
+	if (isLocalUser(user) && note.visibility != 'private') {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
@@ -198,7 +234,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		// 通知
 		if (isLocalUser(data.reply._user)) {
 			nm.push(data.reply.userId, 'reply');
-			publishUserStream(data.reply.userId, 'reply', noteObj);
+			publishMainStream(data.reply.userId, 'reply', noteObj);
 		}
 	}
 
@@ -221,7 +257,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 		// Publish event
 		if (!user._id.equals(data.renote.userId) && isLocalUser(data.renote._user)) {
-			publishUserStream(data.renote.userId, 'renote', noteObj);
+			publishMainStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
 
@@ -238,7 +274,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 });
 
 async function renderActivity(data: Option, note: INote) {
-	const content = data.renote && data.text == null
+	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
@@ -266,13 +302,15 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 		}
 
 		if (['private', 'followers', 'specified'].includes(note.visibility)) {
-			// Publish event to myself's stream
-			publishUserStream(note.userId, 'note', await pack(note, user, {
+			const detailPackedNote = await pack(note, user, {
 				detail: true
-			}));
+			});
+			// Publish event to myself's stream
+			publishHomeTimelineStream(note.userId, detailPackedNote);
+			publishHybridTimelineStream(note.userId, detailPackedNote);
 		} else {
 			// Publish event to myself's stream
-			publishUserStream(note.userId, 'note', noteObj);
+			publishHomeTimelineStream(note.userId, noteObj);
 
 			// Publish note to local and hybrid timeline stream
 			if (note.visibility != 'home') {
@@ -281,6 +319,9 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 			if (note.visibility == 'public') {
 				publishHybridTimelineStream(null, noteObj);
+			} else {
+				// Publish event to myself's stream
+				publishHybridTimelineStream(note.userId, noteObj);
 			}
 		}
 	}
@@ -290,29 +331,19 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 		publishGlobalTimelineStream(noteObj);
 	}
 
-	if (note.visibility == 'specified') {
-		visibleUsers.forEach(async (u) => {
-			const n = await pack(note, u, {
-				detail: true
-			});
-			publishUserStream(u._id, 'note', n);
-			publishHybridTimelineStream(u._id, n);
-		});
-	}
-
 	if (['public', 'home', 'followers'].includes(note.visibility)) {
 		// フォロワーに配信
-		publishToFollowers(note, noteObj, user, noteActivity);
+		publishToFollowers(note, user, noteActivity);
 	}
 
 	// リストに配信
 	publishToUserLists(note, noteObj);
 }
 
-async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof parse>, tags: string[], mentionedUsers: IUser[]) {
+async function insertNote(user: IUser, data: Option, tags: string[], mentionedUsers: IUser[]) {
 	const insert: any = {
 		createdAt: data.createdAt,
-		mediaIds: data.media ? data.media.map(file => file._id) : [],
+		fileIds: data.files ? data.files.map(file => file._id) : [],
 		replyId: data.reply ? data.reply._id : null,
 		renoteId: data.renote ? data.renote._id : null,
 		text: data.text,
@@ -347,7 +378,8 @@ async function insertNote(user: IUser, data: Option, tokens: ReturnType<typeof p
 		_user: {
 			host: user.host,
 			inbox: isRemoteUser(user) ? user.inbox : undefined
-		}
+		},
+		_files: data.files ? data.files : []
 	};
 
 	if (data.uri != null) insert.uri = data.uri;
@@ -383,7 +415,7 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 		.map(t => (t as TextElementHashtag).hashtag)
 		.filter(tag => tag.length <= 100);
 
-	return [...new Set(hashtags)];
+	return unique(hashtags);
 }
 
 function index(note: INote) {
@@ -439,7 +471,12 @@ async function publishToUserLists(note: INote, noteObj: any) {
 	});
 }
 
-async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteActivity: any) {
+async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
+	const detailPackedNote = await pack(note, null, {
+		detail: true,
+		skipHide: true
+	});
+
 	const followers = await Following.find({
 		followeeId: note.userId
 	});
@@ -458,10 +495,10 @@ async function publishToFollowers(note: INote, noteObj: any, user: IUser, noteAc
 			}
 
 			// Publish event to followers stream
-			publishUserStream(following.followerId, 'note', noteObj);
+			publishHomeTimelineStream(following.followerId, detailPackedNote);
 
 			if (isRemoteUser(user) || note.visibility != 'public') {
-				publishHybridTimelineStream(following.followerId, noteObj);
+				publishHybridTimelineStream(following.followerId, detailPackedNote);
 			}
 		} else {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
@@ -483,9 +520,13 @@ function deliverNoteToMentionedRemoteUsers(mentionedUsers: IUser[], user: ILocal
 	});
 }
 
-function createMentionedEvents(mentionedUsers: IUser[], noteObj: any, nm: NotificationManager) {
+function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: NotificationManager) {
 	mentionedUsers.filter(u => isLocalUser(u)).forEach(async (u) => {
-		publishUserStream(u._id, 'mention', noteObj);
+		const detailPackedNote = await pack(note, u, {
+			detail: true
+		});
+
+		publishMainStream(u._id, 'mention', detailPackedNote);
 
 		// Create notification
 		nm.push(u._id, 'mention');
@@ -540,20 +581,20 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentionTokens = [...new Set(
+	const mentionTokens = unique(
 		tokens
 			.filter(t => t.type == 'mention') as TextElementMention[]
-	)];
+	);
 
-	const mentionedUsers = [...new Set(
-		(await Promise.all(mentionTokens.map(async m => {
+	const mentionedUsers = unique(
+		erase(null, await Promise.all(mentionTokens.map(async m => {
 			try {
 				return await resolveUser(m.username, m.host);
 			} catch (e) {
 				return null;
 			}
-		}))).filter(x => x != null)
-	)];
+		})))
+	);
 
 	return mentionedUsers;
 }

@@ -49,7 +49,7 @@ export default define({
 				offset: this.offset,
 				renote: false,
 				reply: false,
-				media: false,
+				file: false,
 				poll: false
 			}).then(notes => {
 				const note = notes ? notes[0] : null;
@@ -67,7 +67,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-trends
 	.mkw-trends--body
 		> .note
 			padding 16px
@@ -97,11 +97,5 @@ root(isDark)
 
 			> [data-fa]
 				margin-right 4px
-
-.mkw-trends[data-darkmode]
-	root(true)
-
-.mkw-trends:not([data-darkmode])
-	root(false)
 
 </style>

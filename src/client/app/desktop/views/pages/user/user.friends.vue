@@ -1,5 +1,5 @@
 <template>
-<div class="friends">
+<div class="hozptpaliadatkehcmcayizwzwwctpbc">
 	<p class="title">%fa:users%%i18n:@title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
@@ -40,11 +40,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-.friends
-	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+.hozptpaliadatkehcmcayizwzwwctpbc
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
 	overflow hidden
 
 	> .title
@@ -54,8 +53,8 @@ root(isDark)
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		background isDark ? #313543 : inherit
-		color isDark ? #e3e5e8 : #888
+		background var(--faceHeader)
+		color var(--faceHeaderText)
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
@@ -73,7 +72,7 @@ root(isDark)
 
 	> .user
 		padding 16px
-		border-bottom solid 1px isDark ? #21242f : #eee
+		border-bottom solid 1px var(--faceDivider)
 
 		&:last-child
 			border-bottom none
@@ -99,24 +98,19 @@ root(isDark)
 				margin 0
 				font-size 16px
 				line-height 24px
-				color isDark ? #ccc : #555
+				color var(--text)
 
 			> .username
 				display block
 				margin 0
 				font-size 15px
 				line-height 16px
-				color isDark ? #555 : #ccc
+				color var(--text)
+				opacity 0.7
 
 		> .mk-follow-button
 			position absolute
 			top 16px
 			right 16px
-
-.friends[data-darkmode]
-	root(true)
-
-.friends:not([data-darkmode])
-	root(false)
 
 </style>

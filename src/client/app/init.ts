@@ -5,31 +5,27 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
-import VModal from 'vue-js-modal';
 import * as TreeView from 'vue-json-tree-view';
 import VAnimateCss from 'v-animate-css';
-import Element from 'element-ui';
-import ElementLocaleEn from 'element-ui/lib/locale/lang/en';
-import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
+import VModal from 'vue-js-modal';
 
+import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './mios';
 import { version, codename, lang } from './config';
+import { builtinThemes, lightTheme, applyTheme } from './theme';
 
-let elementLocale;
-switch (lang) {
-	case 'ja-JP': elementLocale = ElementLocaleJa; break;
-	case 'en-US': elementLocale = ElementLocaleEn; break;
-	default: elementLocale = ElementLocaleEn; break;
+if (localStorage.getItem('theme') == null) {
+	applyTheme(lightTheme);
 }
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
-Vue.use(VModal);
 Vue.use(TreeView);
 Vue.use(VAnimateCss);
-Vue.use(Element, { locale: elementLocale });
+Vue.use(VModal);
+Vue.use(VueHotkey);
 
 // Register global directives
 require('./common/views/directives');
@@ -42,9 +38,13 @@ require('./common/views/widgets');
 require('./common/views/filters');
 
 Vue.mixin({
-	destroyed(this: any) {
-		if (this.$el.parentNode) {
-			this.$el.parentNode.removeChild(this.$el);
+	methods: {
+		destroyDom() {
+			this.$destroy();
+
+			if (this.$el.parentNode) {
+				this.$el.parentNode.removeChild(this.$el);
+			}
 		}
 	}
 });
@@ -91,42 +91,52 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
 			os.apis = api ? api(os) : null;
 
-			//#region Dark/Light
-			Vue.mixin({
-				data() {
-					return {
-						_unwatchDarkmode_: null
-					};
-				},
-				mounted() {
-					const apply = v => {
-						if (this.$el.setAttribute == null) return;
-						if (v) {
-							this.$el.setAttribute('data-darkmode', 'true');
-						} else {
-							this.$el.removeAttribute('data-darkmode');
-						}
-					};
-
-					apply(os.store.state.device.darkmode);
-
-					this._unwatchDarkmode_ = os.store.watch(s => {
-						return s.device.darkmode;
-					}, apply);
-				},
-				beforeDestroy() {
-					this._unwatchDarkmode_();
-				}
-			});
-
+			//#region theme
 			os.store.watch(s => {
 				return s.device.darkmode;
 			}, v => {
-				if (v) {
-					document.documentElement.setAttribute('data-darkmode', 'true');
-				} else {
-					document.documentElement.removeAttribute('data-darkmode');
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const dark = themes.find(t => t.id == os.store.state.device.darkTheme);
+				const light = themes.find(t => t.id == os.store.state.device.lightTheme);
+				applyTheme(v ? dark : light);
+			});
+			os.store.watch(s => {
+				return s.device.lightTheme;
+			}, v => {
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const theme = themes.find(t => t.id == v);
+				if (!os.store.state.device.darkmode) {
+					applyTheme(theme);
 				}
+			});
+			os.store.watch(s => {
+				return s.device.darkTheme;
+			}, v => {
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const theme = themes.find(t => t.id == v);
+				if (os.store.state.device.darkmode) {
+					applyTheme(theme);
+				}
+			});
+			//#endregion
+
+			//#region shadow
+			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
+			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadow', shadow);
+			os.store.watch(s => {
+				return s.settings.useShadow;
+			}, v => {
+				document.documentElement.style.setProperty('--shadow', v ? shadow : 'none');
+			});
+			//#endregion
+
+			//#region rounded corners
+			const round = '6px';
+			if (os.store.state.settings.roundedCorners) document.documentElement.style.setProperty('--round', round);
+			os.store.watch(s => {
+				return s.settings.roundedCorners;
+			}, v => {
+				document.documentElement.style.setProperty('--round', v ? round : '0');
 			});
 			//#endregion
 

@@ -6,7 +6,7 @@
 		<div class="title">
 			<p class="name">{{ user | userName }}</p>
 			<div>
-				<span class="username"><mk-acct :user="user"/></span>
+				<span class="username"><mk-acct :user="user" :detail="true" /></span>
 				<span v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</span>
 				<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
 				<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</span>
@@ -100,12 +100,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-	background isDark ? #282C37 : #fff
-	border 1px solid rgba(#000, 0.075)
-	border-radius 6px
+.header
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
 	overflow hidden
 
 	&[data-is-dark-background]
@@ -182,12 +180,12 @@ root(isDark)
 
 	> .body
 		padding 16px 16px 16px 154px
-		color isDark ? #c5ced6 : #555
+		color var(--text)
 
 		> .status
 			margin-top 16px
 			padding-top 16px
-			border-top solid 1px rgba(#000, isDark ? 0.2 : 0.1)
+			border-top solid 1px var(--faceDivider)
 			font-size 80%
 
 			> *
@@ -196,24 +194,18 @@ root(isDark)
 				margin-right 16px
 
 				&:not(:last-child)
-					border-right solid 1px rgba(#000, isDark ? 0.2 : 0.1)
+					border-right solid 1px var(--faceDivider)
 
 				&.clickable
 					cursor pointer
 
 					&:hover
-						color isDark ? #fff : #000
+						color var(--faceTextButtonHover)
 
 				> b
 					margin-right 4px
 					font-size 1rem
 					font-weight bold
-					color $theme-color
-
-.header[data-darkmode]
-	root(true)
-
-.header:not([data-darkmode])
-	root(false)
+					color var(--primary)
 
 </style>

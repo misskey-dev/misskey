@@ -1,8 +1,8 @@
 <template>
-<mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
+<mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
 	<span slot="header">%fa:list% %i18n:@title%</span>
 
-	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp" :data-darkmode="$store.state.device.darkmode">
+	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
 		<button class="ui" @click="add">%i18n:@create-list%</button>
 		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
 	</div>
@@ -47,8 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-root(isDark)
+.xkxvokkjlptzyewouewmceqcxhpgzprp
 	padding 16px
 
 	> button
@@ -57,13 +56,7 @@ root(isDark)
 	> a
 		display block
 		padding 16px
-		border solid 1px isDark ? #1c2023 : #eee
+		border solid 1px var(--faceDivider)
 		border-radius 4px
-
-.xkxvokkjlptzyewouewmceqcxhpgzprp[data-darkmode]
-	root(true)
-
-.xkxvokkjlptzyewouewmceqcxhpgzprp:not([data-darkmode])
-	root(false)
 
 </style>

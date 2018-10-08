@@ -35,20 +35,26 @@
 			</div>
 		</header>
 		<div class="body">
-			<div class="text">
-				<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
-				<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
-				<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
-			</div>
-			<div class="media" v-if="p.media.length > 0">
-				<mk-media-list :media-list="p.media" :raw="true"/>
-			</div>
-			<mk-poll v-if="p.poll" :note="p"/>
-			<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
-			<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
-			<div class="map" v-if="p.geo" ref="map"></div>
-			<div class="renote" v-if="p.renote">
-				<mk-note-preview :note="p.renote"/>
+			<p v-if="p.cw != null" class="cw">
+				<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+				<mk-cw-button v-model="showContent"/>
+			</p>
+			<div class="content" v-show="p.cw == null || showContent">
+				<div class="text">
+					<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
+					<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
+					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
+				</div>
+				<div class="files" v-if="p.files.length > 0">
+					<mk-media-list :media-list="p.files" :raw="true"/>
+				</div>
+				<mk-poll v-if="p.poll" :note="p"/>
+				<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
+				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
+				<div class="map" v-if="p.geo" ref="map"></div>
+				<div class="renote" v-if="p.renote">
+					<mk-note-preview :note="p.renote"/>
+				</div>
 			</div>
 		</div>
 		<router-link class="time" :to="p | notePage">
@@ -85,11 +91,15 @@ import parse from '../../../../../mfm/parse';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './note.sub.vue';
+import { sum } from '../../../../../prelude/array';
+import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
 	components: {
 		XSub
 	},
+
+	mixins: [noteSubscriber('note')],
 
 	props: {
 		note: {
@@ -103,6 +113,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			showContent: false,
 			conversation: [],
 			conversationFetching: false,
 			replies: []
@@ -113,19 +124,20 @@ export default Vue.extend({
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds.length == 0 &&
+				this.note.fileIds.length == 0 &&
 				this.note.poll == null);
 		},
+
 		p(): any {
 			return this.isRenote ? this.note.renote : this.note;
 		},
+
 		reactionsCount(): number {
 			return this.p.reactionCounts
-				? Object.keys(this.p.reactionCounts)
-					.map(key => this.p.reactionCounts[key])
-					.reduce((a, b) => a + b)
+				? sum(Object.values(this.p.reactionCounts))
 				: 0;
 		},
+
 		urls(): string[] {
 			if (this.p.text) {
 				const ast = parse(this.p.text);
@@ -180,16 +192,19 @@ export default Vue.extend({
 				this.conversation = conversation.reverse();
 			});
 		},
+
 		reply() {
 			(this as any).apis.post({
 				reply: this.p
 			});
 		},
+
 		renote() {
 			(this as any).apis.post({
 				renote: this.p
 			});
 		},
+
 		react() {
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
@@ -198,6 +213,7 @@ export default Vue.extend({
 				big: true
 			});
 		},
+
 		menu() {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
@@ -210,13 +226,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-note-detail
 	overflow hidden
 	width 100%
 	text-align left
-	background isDark ? #282C37 : #fff
+	background var(--face)
 	border-radius 8px
 	box-shadow 0 0 2px rgba(#000, 0.1)
 
@@ -235,26 +249,26 @@ root(isDark)
 		text-align center
 		color #999
 		cursor pointer
-		background isDark ? #21242d : #fafafa
+		background var(--subNoteBg)
 		outline none
 		border none
-		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
+		border-bottom solid 1px var(--faceDivider)
 		border-radius 6px 6px 0 0
 		box-shadow none
 
 		&:hover
-			background isDark ? #16181d : #f6f6f6
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
-		&:disabled
-			color #ccc
+		&:active
+			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 	> .conversation
 		> *
-			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+			border-bottom 1px solid var(--faceDivider)
 
 	> .renote
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		> p
 			margin 0
@@ -277,7 +291,7 @@ root(isDark)
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
+		border-bottom 1px solid var(--faceDivider)
 
 	> article
 		padding 14px 16px 9px 16px
@@ -310,7 +324,7 @@ root(isDark)
 				> .name
 					display inline-block
 					margin .4em 0
-					color isDark ? #fff : #627079
+					color var(--noteHeaderName)
 					font-size 16px
 					font-weight bold
 					text-align left
@@ -323,53 +337,66 @@ root(isDark)
 					display block
 					text-align left
 					margin 0
-					color isDark ? #606984 : #ccc
+					color var(--noteHeaderAcct)
 
 		> .body
 			padding 8px 0
 
-			> .text
+			> .cw
+				cursor default
 				display block
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				font-size 16px
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
-				@media (min-width 500px)
-					font-size 24px
+				> .text
+					margin-right 8px
 
-			> .renote
-				margin 8px 0
+			> .content
 
-				> .mk-note-preview
-					padding 16px
-					border dashed 1px #c0dac6
-					border-radius 8px
-
-			> .location
-				margin 4px 0
-				font-size 12px
-				color #ccc
-
-			> .map
-				width 100%
-				height 200px
-
-				&:empty
-					display none
-
-			> .mk-url-preview
-				margin-top 8px
-
-			> .media
-				> img
+				> .text
 					display block
-					max-width 100%
+					margin 0
+					padding 0
+					overflow-wrap break-word
+					font-size 16px
+					color var(--noteText)
+
+					@media (min-width 500px)
+						font-size 24px
+
+				> .renote
+					margin 8px 0
+
+					> *
+						padding 16px
+						border dashed 1px var(--quoteBorder)
+						border-radius 8px
+
+				> .location
+					margin 4px 0
+					font-size 12px
+					color #ccc
+
+				> .map
+					width 100%
+					height 200px
+
+					&:empty
+						display none
+
+				> .mk-url-preview
+					margin-top 8px
+
+				> .files
+					> img
+						display block
+						max-width 100%
 
 		> .time
 			font-size 16px
-			color isDark ? #606984 : #c0c0c0
+			color var(--noteHeaderInfo)
 
 		> footer
 			font-size 1.2em
@@ -381,14 +408,14 @@ root(isDark)
 				border none
 				box-shadow none
 				font-size 1em
-				color isDark ? #606984 : #ddd
+				color var(--noteActions)
 				cursor pointer
 
 				&:not(:last-child)
 					margin-right 28px
 
 				&:hover
-					color isDark ? #9198af : #666
+					color var(--noteActionsHover)
 
 				> .count
 					display inline
@@ -396,16 +423,10 @@ root(isDark)
 					color #999
 
 				&.reacted
-					color $theme-color
+					color var(--primary)
 
 	> .replies
 		> *
-			border-top 1px solid isDark ? #1c2023 : #eef0f2
-
-.mk-note-detail[data-darkmode]
-	root(true)
-
-.mk-note-detail:not([data-darkmode])
-	root(false)
+			border-top 1px solid var(--faceDivider)
 
 </style>

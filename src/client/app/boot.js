@@ -18,6 +18,17 @@
 		return;
 	}
 
+	const langs = LANGS;
+
+	//#region Apply theme
+	const theme = localStorage.getItem('theme');
+	if (theme) {
+		Object.entries(JSON.parse(theme)).forEach(([k, v]) => {
+			document.documentElement.style.setProperty(`--${k}`, v.toString());
+		});
+	}
+	//#endregion
+
 	//#region Load settings
 	let settings = null;
 	const vuex = localStorage.getItem('vuex');
@@ -40,10 +51,10 @@
 	//#region Detect the user language
 	let lang = null;
 
-	if (LANGS.includes(navigator.language)) {
+	if (langs.includes(navigator.language)) {
 		lang = navigator.language;
 	} else {
-		lang = LANGS.find(x => x.split('-')[0] == navigator.language);
+		lang = langs.find(x => x.split('-')[0] == navigator.language);
 
 		if (lang == null) {
 			// Fallback
@@ -52,7 +63,7 @@
 	}
 
 	if (settings && settings.device.lang &&
-		LANGS.includes(settings.device.lang)) {
+		langs.includes(settings.device.lang)) {
 		lang = settings.device.lang;
 	}
 	//#endregion
@@ -82,19 +93,12 @@
 		app = isMobile ? 'mobile' : 'desktop';
 	}
 
-	// Dark/Light
-	if (settings) {
-		if (settings.device.darkmode) {
-			document.documentElement.setAttribute('data-darkmode', 'true');
-		}
-	}
-
 	// Script version
 	const ver = localStorage.getItem('v') || VERSION;
 
 	// Get salt query
 	const salt = localStorage.getItem('salt')
-		? '?salt=' + localStorage.getItem('salt')
+		? `?salt=${localStorage.getItem('salt')}`
 		: '';
 
 	// Load an app script
@@ -140,7 +144,7 @@
 		// Random
 		localStorage.setItem('salt', Math.random().toString());
 
-		// Clear cache (serive worker)
+		// Clear cache (service worker)
 		try {
 			navigator.serviceWorker.controller.postMessage('clear');
 

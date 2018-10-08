@@ -1,17 +1,16 @@
 <template>
-<div class="root item">
-	<mk-avatar class="avatar" :user="user"/>
-	<div class="main">
-		<header>
-			<router-link class="name" :to="user | userPage" v-user-preview="user.id">{{ user | userName }}</router-link>
-			<span class="username">@{{ user | acct }}</span>
-		</header>
-		<div class="body">
-			<p class="followed" v-if="user.isFollowed">%i18n:@followed%</p>
-			<div class="description">{{ user.description }}</div>
+<div class="zvdbznxvfixtmujpsigoccczftvpiwqh">
+	<div class="banner" :style="bannerStyle"></div>
+	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+	<div class="body">
+		<router-link :to="user | userPage" class="name">{{ user | userName }}</router-link>
+		<span class="username">@{{ user | acct }}</span>
+		<div class="description">
+			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 		</div>
+		<p class="followed" v-if="user.isFollowed">%i18n:@followed%</p>
+		<mk-follow-button :user="user" :size="'big'"/>
 	</div>
-	<mk-follow-button :user="user"/>
 </div>
 </template>
 
@@ -19,76 +18,69 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['user']
+	props: ['user'],
+
+	computed: {
+		bannerStyle(): any {
+			if (this.user.bannerUrl == null) return {};
+			return {
+				backgroundColor: this.user.bannerColor && this.user.bannerColor.length == 3 ? `rgb(${ this.user.bannerColor.join(',') })` : null,
+				backgroundImage: `url(${ this.user.bannerUrl })`
+			};
+		}
+	},
 });
 </script>
 
 <style lang="stylus" scoped>
-.root.item
-	padding 16px
-	font-size 16px
+.zvdbznxvfixtmujpsigoccczftvpiwqh
+	$bg = #fff
 
-	&:after
-		content ""
-		display block
-		clear both
+	margin 16px auto
+	max-width calc(100% - 32px)
+	font-size 16px
+	text-align center
+	background $bg
+	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
+
+	> .banner
+		height 100px
+		background-color #f9f4f4
+		background-position center
+		background-size cover
 
 	> .avatar
 		display block
-		float left
-		margin 0 16px 0 0
-		width 58px
-		height 58px
-		border-radius 8px
+		margin -40px auto 0 auto
+		width 80px
+		height 80px
+		border-radius 100%
+		border solid 4px $bg
 
-	> .main
-		float left
-		width calc(100% - 74px)
+	> .body
+		padding 4px 32px 32px 32px
 
-		> header
-			margin-bottom 2px
+		@media (max-width 400px)
+			padding 4px 16px 16px 16px
 
-			> .name
-				display inline
-				margin 0
-				padding 0
-				color #777
-				font-size 1em
-				font-weight 700
-				text-align left
-				text-decoration none
+		> .name
+			font-size 20px
+			font-weight bold
 
-				&:hover
-					text-decoration underline
+		> .username
+			display block
+			opacity 0.7
 
-			> .username
-				text-align left
-				margin 0 0 0 8px
-				color #ccc
+		> .description
+			margin 16px 0
 
-		> .body
-			> .followed
-				display inline-block
-				margin 0 0 4px 0
-				padding 2px 8px
-				vertical-align top
-				font-size 10px
-				color #71afc7
-				background #eefaff
-				border-radius 4px
-
-			> .description
-				cursor default
-				display block
-				margin 0
-				padding 0
-				overflow-wrap break-word
-				font-size 1.1em
-				color #717171
-
-	> .mk-follow-button
-		position absolute
-		top 16px
-		right 16px
+		> .followed
+			margin 0 0 16px 0
+			padding 0
+			line-height 24px
+			font-size 0.8em
+			color #71afc7
+			background #eefaff
+			border-radius 4px
 
 </style>

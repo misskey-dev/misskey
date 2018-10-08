@@ -1,15 +1,16 @@
 <template>
 <mk-ui>
-	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
+	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
 		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<main>
 			<div class="main">
 				<x-header :user="user"/>
-				<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
+				<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 				<x-timeline class="timeline" ref="tl" :user="user"/>
 			</div>
 			<div class="side">
+				<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 				<x-profile :user="user"/>
 				<x-twitter :user="user" v-if="user.host === null && user.twitter"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
@@ -28,7 +29,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import parseAcct from '../../../../../../misc/acct/parse';
-import getUserName from '../../../../../../misc/get-user-name';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
 import XTimeline from './user.timeline.vue';
@@ -79,7 +79,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.xygkxeaeontfaokvqmiblezmhvhostak
 	width 980px
 	padding 16px
 	margin 0 auto
@@ -89,17 +89,16 @@ root(isDark)
 		margin-bottom 16px
 		padding 14px 16px
 		font-size 14px
-		border-radius 6px
+		box-shadow var(--shadow)
+		border-radius var(--round)
 
 		&.is-suspended
-			color isDark ? #ffb4b4 : #570808
-			background isDark ? #611d1d : #ffdbdb
-			border solid 1px isDark ? #d64a4a : #e09696
+			color var(--suspendedInfoFg)
+			background var(--suspendedInfoBg)
 
 		&.is-remote
-			color isDark ? #ffbd3e : #573c08
-			background isDark ? #42321c : #fff0db
-			border solid 1px isDark ? #90733c : #dcbb7b
+			color var(--remoteInfoFg)
+			background var(--remoteInfoBg)
 
 		> a
 			font-weight bold
@@ -119,8 +118,7 @@ root(isDark)
 			margin-right 16px
 
 			> .timeline
-				border 1px solid rgba(#000, 0.075)
-				border-radius 6px
+				box-shadow var(--shadow)
 
 		> .side
 			width 275px
@@ -134,24 +132,22 @@ root(isDark)
 				font-size 0.8em
 				color #aaa
 
+			> .instance
+				box-shadow var(--shadow)
+				border-radius var(--round)
+
 			> .nav
 				padding 16px
 				font-size 12px
-				color #aaa
-				background isDark ? #21242f : #fff
-				border solid 1px rgba(#000, 0.075)
-				border-radius 6px
+				color var(--text)
+				background var(--face)
+				box-shadow var(--shadow)
+				border-radius var(--round)
 
 				a
-					color #999
+					color var(--text)99
 
 				i
-					color #ccc
-
-.xygkxeaeontfaokvqmiblezmhvhostak[data-darkmode]
-	root(true)
-
-.xygkxeaeontfaokvqmiblezmhvhostak:not([data-darkmode])
-	root(false)
+					color var(--text)
 
 </style>

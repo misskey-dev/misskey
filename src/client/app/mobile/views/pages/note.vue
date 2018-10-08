@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:R sticky-note%%i18n:@title%</span>
+	<span slot="header"><span style="margin-right:4px;">%fa:R sticky-note%</span>%i18n:@title%</span>
 	<main v-if="!fetching">
 		<div>
 			<mk-note-detail :note="note"/>

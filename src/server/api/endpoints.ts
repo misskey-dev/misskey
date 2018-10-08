@@ -79,7 +79,7 @@ const files = glob.sync('**/*.js', {
 });
 
 const endpoints: IEndpoint[] = files.map(f => {
-	const ep = require('./endpoints/' + f);
+	const ep = require(`./endpoints/${f}`);
 
 	return {
 		name: f.replace('.js', ''),

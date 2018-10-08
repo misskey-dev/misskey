@@ -52,7 +52,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	if (media != undefined) {
-		query.mediaIds = media ? { $exists: true, $ne: null } : null;
+		query.fileIds = media ? { $exists: true, $ne: null } : null;
 	}
 
 	if (poll != undefined) {

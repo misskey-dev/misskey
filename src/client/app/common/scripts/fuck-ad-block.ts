@@ -1,8 +1,8 @@
-require('fuckadblock');
-
 declare const fuckAdBlock: any;
 
 export default (os) => {
+	require('fuckadblock');
+
 	function adBlockDetected() {
 		os.apis.dialog({
 			title: '%fa:exclamation-triangle%%i18n:common.adblock.detected%',

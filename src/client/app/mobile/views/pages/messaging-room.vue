@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header">
-		<template v-if="user">%fa:R comments%{{ user | userName }}</template>
+		<template v-if="user"><span style="margin-right:4px;">%fa:R comments%</span>{{ user | userName }}</template>
 		<template v-else><mk-ellipsis/></template>
 	</span>
 	<mk-messaging-room v-if="!fetching" :user="user" :is-naked="true"/>

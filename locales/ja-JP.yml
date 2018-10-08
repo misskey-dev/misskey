@@ -6,6 +6,19 @@ common:
   misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  intro:
+    title: "Misskeyって？"
+    about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
+    features: "特徴"
+    rich-contents: "投稿"
+    rich-contents-desc: "自分の考え、話題の出来事、皆と共有したいことについて発信してください。必要であれば、様々な構文を使って投稿を装飾したり、好きな画像、動画などのファイルやアンケートを添付することもできます。"
+    reaction: "リアクション"
+    reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
+    ui: "インターフェース"
+    ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
+    drive: "ドライブ"
+    drive-desc: "以前投稿したことのある画像をまた投稿したくなったことはありませんか？もしくは、アップロードしたファイルをフォルダ分けして整理したくなったことはありませんか？Misskeyの根幹に組み込まれたドライブ機能によってそれらが解決します。ファイルの共有も簡単です。"
+    outro: "他にもMisskeyにしかない機能はまだまだあるので、ぜひあなた自身の目で確かめてください。Misskeyは分散型SNSなので、このインスタンスが気に入らなければ他のインスタンスを試すこともできます。それでは、GLHF!"
   adblock:
     detected: "広告ブロッカーを無効にしてください"
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
@@ -73,6 +86,16 @@ common:
     rip: "RIP"
     pudding: "Pudding"
 
+  note-visibility:
+    public: "公開"
+    home: "ホーム"
+    home-desc: "ホームタイムラインにのみ公開"
+    followers: "フォロワー"
+    followers-desc: "自分のフォロワーにのみ公開"
+    specified: "ダイレクト"
+    specified-desc: "指定したユーザーにのみ公開"
+    private: "非公開"
+
   note-placeholders:
     a: "今どうしてる？"
     b: "何かありましたか？"
@@ -93,6 +116,13 @@ common:
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
+  always-show-nsfw: "常に閲覧注意のメディアを表示する"
+  always-mark-nsfw: "常にメディアを閲覧注意として投稿"
+  show-full-acct: "ユーザー名のホストを省略しない"
+  reduce-motion: "UIの動きを減らす"
+  this-setting-is-this-device-only: "このデバイスのみ"
+
+  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
 
   reversi:
     drawn: "引き分け"
@@ -136,7 +166,10 @@ common:
     home: "ホーム"
     local: "ローカル"
     hybrid: "ソーシャル"
+    hashtag: "ハッシュタグ"
     global: "グローバル"
+    mentions: "あなた宛て"
+    direct: "ダイレクト投稿"
     notifications: "通知"
     list: "リスト"
     swap-left: "左に移動"
@@ -248,6 +281,47 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
 
+common/views/components/media-banner.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
+
+common/views/components/theme.vue:
+  light-theme: "非ダークモード時に使用するテーマ"
+  dark-theme: "ダークモード時に使用するテーマ"
+  light-themes: "明るいテーマ"
+  dark-themes: "暗いテーマ"
+  install-a-theme: "テーマのインストール"
+  theme-code: "テーマコード"
+  install: "インストール"
+  installed: "「{}」をインストールしました"
+  create-a-theme: "テーマの作成"
+  save-created-theme: "テーマを保存"
+  primary-color: "プライマリ カラー"
+  secondary-color: "セカンダリ カラー"
+  text-color: "文字色"
+  base-theme: "ベーステーマ"
+  base-theme-light: "Light"
+  base-theme-dark: "Dark"
+  theme-name: "テーマ名"
+  preview-created-theme: "プレビュー"
+  invalid-theme: "テーマが正しくありません。"
+  already-installed: "既にそのテーマはインストールされています。"
+  saved: "保存しました"
+  installed-themes: "インストールされたテーマ"
+  select-theme: "テーマを選択してください"
+  uninstall: "アンインストール"
+  uninstalled: "「{}」をアンインストールしました"
+  author: "作者"
+  desc: "説明"
+  export: "エクスポート"
+  import: "インポート"
+  import-by-code: "またはコードをペースト"
+  theme-name-required: "テーマ名は必須です。"
+
+common/views/components/cw-button.vue:
+  hide: "隠す"
+  show: "もっと見る"
+
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あなた"
@@ -283,8 +357,11 @@ common/views/components/nav.vue:
   feedback: "フィードバック"
 
 common/views/components/note-menu.vue:
+  detail: "詳細"
+  copy-link: "リンクをコピー"
   favorite: "お気に入り"
   pin: "ピン留め"
+  unpin: "ピン留め解除"
   delete: "削除"
   delete-confirm: "この投稿を削除しますか？"
   remote: "投稿元で見る"
@@ -371,6 +448,10 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "指定したユーザーにのみ公開"
   private: "非公開"
 
+common/views/components/trends.vue:
+  count: "{}人が投稿"
+  empty: "トレンドなし"
+
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
   no-broadcasts: "お知らせはありません"
@@ -399,8 +480,6 @@ common/views/widgets/posts-monitor.vue:
 
 common/views/widgets/hashtags.vue:
   title: "ハッシュタグ"
-  count: "{}人が投稿"
-  empty: "トレンドなし"
 
 common/views/widgets/server.vue:
   title: "サーバー情報"
@@ -443,6 +522,7 @@ common/views/pages/follow.vue:
   following: "フォロー中"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
+  follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
 
 desktop:
@@ -481,17 +561,21 @@ desktop/views/components/charts.vue:
   notes: "投稿"
   users: "ユーザー"
   drive: "ドライブ"
+  network: "ネットワーク"
   charts:
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
     remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の累計"
+    notes-total: "投稿の積算"
     users: "ユーザーの増減"
-    users-total: "ユーザーの累計"
+    users-total: "ユーザーの積算"
     drive: "ドライブ使用量の増減"
-    drive-total: "ドライブ使用量の累計"
+    drive-total: "ドライブ使用量の積算"
     drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "ドライブのファイル数の累計"
+    drive-files-total: "ドライブのファイル数の積算"
+    network-requests: "リクエスト"
+    network-time: "応答時間"
+    network-usage: "通信量"
 
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
@@ -581,6 +665,7 @@ desktop/views/components/follow-button.vue:
   following: "フォロー中"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
+  follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
 
 desktop/views/components/followers-window.vue:
@@ -637,8 +722,6 @@ desktop/views/components/notes.note.vue:
   detail: "詳細"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  hide: "隠す"
-  see-more: "もっと見る"
 
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
@@ -714,10 +797,14 @@ desktop/views/components/settings.vue:
   2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
+  theme: "テーマ"
 
   behaviour: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
   fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
+  note-visibility: "投稿の公開範囲"
+  default-note-visibility: "デフォルトの公開範囲"
+  remember-note-visibility: "投稿の公開範囲を記憶する"
   auto-popout: "ウィンドウの自動ポップアウト"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
   advanced: "詳細設定"
@@ -729,8 +816,10 @@ desktop/views/components/settings.vue:
   choose-wallpaper: "壁紙を選択"
   delete-wallpaper: "壁紙を削除"
   dark-mode: "ダークモード"
+  use-shadow: "UIに影を使用"
+  rounded-corners: "UIの角を丸める"
   circle-icons: "円形のアイコンを使用"
-  gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
+  contrasted-acct: "ユーザー名にコントラストを付ける"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-clock-on-header: "右上に時計を表示する"
@@ -739,7 +828,6 @@ desktop/views/components/settings.vue:
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
   show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
   show-maps: "マップの自動展開"
-  show-maps-desc: "位置情報が添付された投稿のマップを自動的に展開します。"
 
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
@@ -845,7 +933,7 @@ desktop/views/components/settings.profile.vue:
   birthday: "誕生日"
   save: "保存"
   locked-account: "アカウントの保護"
-  is-locked: "投稿を非公開にする"
+  is-locked: "フォローを承認制にする"
   other: "その他"
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
@@ -865,7 +953,13 @@ desktop/views/components/timeline.vue:
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
+  mentions: "あなた宛て"
+  messages: "メッセージ"
   list: "リスト"
+  hashtag: "ハッシュタグ"
+  add-tag-timeline: "ハッシュタグを追加"
+  add-list: "リストを追加"
+  list-name: "リスト名"
 
 desktop/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
@@ -984,7 +1078,10 @@ desktop/views/pages/welcome.vue:
   signin-button: "やってる"
   signup-button: "やる"
   timeline: "タイムライン"
+  announcements: "お知らせ"
+  photos: "最近の画像"
   powered-by-misskey: "Powered by <b>Misskey</b>."
+  info: "情報"
 
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
@@ -1145,6 +1242,7 @@ mobile/views/components/follow-button.vue:
   following: "フォロー中"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
+  follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
 
 mobile/views/components/friends-maker.vue:
@@ -1156,8 +1254,6 @@ mobile/views/components/friends-maker.vue:
 
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
-  more: "もっと見る"
-  less: "隠す"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
@@ -1265,6 +1361,8 @@ mobile/views/pages/home.vue:
   local: "ローカル"
   hybrid: "ソーシャル"
   global: "グローバル"
+  mentions: "あなた宛て"
+  messages: "メッセージ"
 
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
@@ -1317,6 +1415,9 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "アイコン"
   banner: "バナー"
   is-cat: "このアカウントはCatです"
+  is-locked: "フォローを承認制にする"
+  advanced: "その他"
+  privacy: "プライバシー"
   save: "保存"
   saved: "プロフィールを保存しました"
   uploading: "アップロード中"
@@ -1341,6 +1442,7 @@ mobile/views/pages/settings.vue:
   dark-mode: "ダークモード"
   i-am-under-limited-internet: "私は通信を制限されている"
   circle-icons: "円形のアイコンを使用"
+  contrasted-acct: "ユーザー名にコントラストを付ける"
   timeline: "タイムライン"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "自分の行ったRenoteを表示する"
@@ -1349,8 +1451,15 @@ mobile/views/pages/settings.vue:
   post-style: "投稿の表示スタイル"
   post-style-standard: "標準"
   post-style-smart: "スマート"
+  notification-position: "通知の表示"
+  notification-position-bottom: "下"
+  notification-position-top: "上"
+  theme: "テーマ"
   behavior: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
+  note-visibility: "投稿の公開範囲"
+  default-note-visibility: "デフォルトの公開範囲"
+  remember-note-visibility: "投稿の公開範囲を記憶する"
   disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
   load-raw-images: "添付された画像を高画質で表示する"
   load-remote-media: "リモートサーバーのメディアを表示する"
@@ -1370,7 +1479,7 @@ mobile/views/pages/settings.vue:
   settings: "設定"
   signout: "サインアウト"
   sound: "サウンド"
-  enableSounds: "サウンドを有効にする"
+  enable-sounds: "サウンドを有効にする"
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"

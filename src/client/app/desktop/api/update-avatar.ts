@@ -16,7 +16,7 @@ export default (os: OS) => {
 					text: '%i18n:common.got-it%'
 				}]
 			});
-			reject();
+			return reject('invalid-filetype');
 		}
 
 		const w = os.new(CropWindow, {

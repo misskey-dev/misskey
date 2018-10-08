@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
-const jsonImporter = require('node-sass-json-importer');
 const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -41,7 +40,7 @@ global['collapseSpacesReplacement'] = (html: string) => {
 };
 
 global['base64replacement'] = (_: any, key: string) => {
-	return fs.readFileSync(__dirname + '/src/client/' + key, 'base64');
+	return fs.readFileSync(`${__dirname}/src/client/${key}`, 'base64');
 };
 
 global['i18nReplacement'] = i18nReplacement;
@@ -73,7 +72,8 @@ const consts = {
 	_VERSION_: version,
 	_CODENAME_: codename,
 	_LANG_: '%lang%',
-	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang])
+	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
+	_ENV_: process.env.NODE_ENV
 };
 
 const _consts: { [ key: string ]: any } = {};
@@ -135,6 +135,8 @@ module.exports = {
 					}
 				}
 			}, {
+				loader: 'vue-svg-inline-loader'
+			}, {
 				loader: 'replace',
 				query: {
 					qs: [{
@@ -182,22 +184,6 @@ module.exports = {
 				}]
 			}]
 		}, {
-			test: /\.scss$/,
-			exclude: /node_modules/,
-			use: [{
-				loader: 'style-loader'
-			}, {
-				loader: 'css-loader',
-				options: {
-					minimize: true
-				}
-			}, {
-				loader: 'sass-loader',
-				options: {
-					importer: jsonImporter,
-				}
-			}]
-		}, {
 			test: /\.css$/,
 			use: [{
 				loader: 'vue-style-loader'
@@ -210,6 +196,9 @@ module.exports = {
 		}, {
 			test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
 			loader: 'url-loader'
+		}, {
+			test: /\.json5$/,
+			loader: 'json5-loader'
 		}, {
 			test: /\.ts$/,
 			exclude: /node_modules/,

@@ -1,9 +1,7 @@
 <template>
-<div class="ui-button" :class="[styl]">
-	<button :type="type" @click="$emit('click')">
-		<slot></slot>
-	</button>
-</div>
+<component class="dmtdnykelhudezerjlfpbhgovrgnqqgr" :is="link ? 'a' : 'button'" :class="[styl, { inline, primary }]" :type="type" @click="$emit('click')">
+	<slot></slot>
+</component>
 </template>
 
 <script lang="ts">
@@ -13,70 +11,100 @@ export default Vue.extend({
 		type: {
 			type: String,
 			required: false
+		},
+		primary: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		inline: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		link: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 	data() {
 		return {
 			styl: 'fill'
 		};
-	},
-	inject: {
-		isCardChild: { default: false }
-	},
-	created() {
-		if (this.isCardChild) {
-			this.styl = 'line';
-		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+.dmtdnykelhudezerjlfpbhgovrgnqqgr
+	display block
+	width 100%
+	margin 0
+	padding 8px
+	text-align center
+	font-weight normal
+	font-size 16px
+	border none
+	border-radius 6px
+	outline none
+	box-shadow none
+	text-decoration none
+	user-select none
 
-root(isDark, fill)
-	> button
-		display block
-		width 100%
-		margin 0
-		padding 0
+	*
+		pointer-events none
+
+	&:focus
+		&:after
+			content ""
+			pointer-events none
+			position absolute
+			top -5px
+			right -5px
+			bottom -5px
+			left -5px
+			border 2px solid var(--primaryAlpha03)
+			border-radius 10px
+
+	&:not(.inline) + .dmtdnykelhudezerjlfpbhgovrgnqqgr
+		margin-top 16px
+
+	&.inline
+		display inline-block
+		width auto
+
+	&.primary
 		font-weight bold
-		font-size 16px
-		line-height 44px
-		border none
-		border-radius 6px
-		outline none
-		box-shadow none
 
-		if fill
-			color $theme-color-foreground
-			background $theme-color
+	&.fill
+		color var(--text)
+		background var(--buttonBg)
+
+		&:hover
+			background var(--buttonHoverBg)
+
+		&:active
+			background var(--buttonActiveBg)
+
+		&.primary
+			color var(--primaryForeground)
+			background var(--primary)
 
 			&:hover
-				background lighten($theme-color, 5%)
+				background var(--primaryLighten5)
 
 			&:active
-				background darken($theme-color, 5%)
-		else
-			color $theme-color
-			background none
+				background var(--primaryDarken5)
 
-			&:hover
-				color darken($theme-color, 5%)
-
-			&:active
-				background rgba($theme-color, 0.3)
-
-.ui-button[data-darkmode]
-	&.fill
-		root(true, true)
 	&:not(.fill)
-		root(true, false)
+		color var(--primary)
+		background none
 
-.ui-button:not([data-darkmode])
-	&.fill
-		root(false, true)
-	&:not(.fill)
-		root(false, false)
+		&:hover
+			color var(--primaryDarken5)
+
+		&:active
+			background var(--primaryAlpha03)
 
 </style>

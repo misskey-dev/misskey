@@ -9,7 +9,6 @@
 import Vue from 'vue';
 import XGame from './reversi.game.vue';
 import XRoom from './reversi.room.vue';
-import { ReversiGameStream } from '../../../../scripts/streaming/games/reversi/reversi-game';
 
 export default Vue.extend({
 	components: {
@@ -34,12 +33,13 @@ export default Vue.extend({
 	},
 	created() {
 		this.g = this.game;
-		this.connection = new ReversiGameStream((this as any).os, this.$store.state.i, this.game);
+		this.connection = (this as any).os.stream.connectToChannel('gamesReversiGame', {
+			gameId: this.game.id
+		});
 		this.connection.on('started', this.onStarted);
 	},
 	beforeDestroy() {
-		this.connection.off('started', this.onStarted);
-		this.connection.close();
+		this.connection.dispose();
 	},
 	methods: {
 		onStarted(game) {

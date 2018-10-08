@@ -8,13 +8,13 @@
 	</blockquote>
 </div>
 <div v-else class="mk-url-preview">
-	<a :href="url" target="_blank" :title="url" v-if="!fetching">
+	<a :class="{ mini }" :href="url" target="_blank" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url(${thumbnail})`"></div>
 		<article>
 			<header>
 				<h1>{{ title }}</h1>
 			</header>
-			<p>{{ description }}</p>
+			<p>{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
 			<footer>
 				<img class="icon" v-if="icon" :src="icon"/>
 				<p>{{ sitename }}</p>
@@ -118,6 +118,12 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+
+		mini: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 
@@ -164,7 +170,7 @@ export default Vue.extend({
 			return;
 		}
 
-		fetch('/url?url=' + encodeURIComponent(this.url)).then(res => {
+		fetch(`/url?url=${encodeURIComponent(this.url)}`).then(res => {
 			res.json().then(info => {
 				if (info.url == null) return;
 				this.title = info.title;
@@ -194,17 +200,17 @@ export default Vue.extend({
 		top 0
 		width 100%
 
-root(isDark)
+.mk-url-preview
 	> a
 		display block
 		font-size 14px
-		border solid 1px isDark ? #191b1f : #eee
+		border solid 1px var(--urlPreviewBorder)
 		border-radius 4px
 		overflow hidden
 
 		&:hover
 			text-decoration none
-			border-color isDark ? #4f5561 : #ddd
+			border-color var(--urlPreviewBorderHover)
 
 			> article > header > h1
 				text-decoration underline
@@ -229,11 +235,11 @@ root(isDark)
 				> h1
 					margin 0
 					font-size 1em
-					color isDark ? #d6dae0 : #555
+					color var(--urlPreviewTitle)
 
 			> p
 				margin 0
-				color isDark ? #a4aab3 : #777
+				color var(--urlPreviewText)
 				font-size 0.8em
 
 			> footer
@@ -250,7 +256,7 @@ root(isDark)
 				> p
 					display inline-block
 					margin 0
-					color isDark ? #b0b4bf : #666
+					color var(--urlPreviewInfo)
 					font-size 0.8em
 					line-height 16px
 					vertical-align top
@@ -293,10 +299,27 @@ root(isDark)
 						width 12px
 						height 12px
 
-.mk-url-preview[data-darkmode]
-	root(true)
+		&.mini
+			font-size 10px
 
-.mk-url-preview:not([data-darkmode])
-	root(false)
+			> .thumbnail
+				position relative
+				width 100%
+				height 60px
+
+			> article
+				left 0
+				width 100%
+				padding 8px
+
+				> header
+					margin-bottom 4px
+
+				> footer
+					margin-top 4px
+
+					> img
+						width 12px
+						height 12px
 
 </style>

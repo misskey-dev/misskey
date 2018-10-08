@@ -1,10 +1,10 @@
 <template>
-<div class="photos">
+<div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
 	<p class="title">%fa:camera%%i18n:@title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<div v-for="image in images" class="img"
-			:style="`background-image: url(${image.url})`"
+			:style="`background-image: url(${image.thumbnailUrl})`"
 		></div>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
@@ -24,12 +24,12 @@ export default Vue.extend({
 	mounted() {
 		(this as any).api('users/notes', {
 			userId: this.user.id,
-			withMedia: true,
+			withFiles: true,
 			limit: 9
 		}).then(notes => {
 			notes.forEach(note => {
-				note.media.forEach(media => {
-					if (this.images.length < 9) this.images.push(media);
+				note.files.forEach(file => {
+					if (this.images.length < 9) this.images.push(file);
 				});
 			});
 			this.fetching = false;
@@ -39,11 +39,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-.photos
-	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+.dzsuvbsrrrwobdxifudxuefculdfiaxd
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
 	overflow hidden
 
 	> .title
@@ -53,8 +52,8 @@ root(isDark)
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		background: isDark ? #313543 : inherit
-		color isDark ? #e3e5e8 : #888
+		background var(--faceHeader)
+		color var(--faceHeaderText)
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
@@ -87,11 +86,5 @@ root(isDark)
 
 		> i
 			margin-right 4px
-
-.photos[data-darkmode]
-	root(true)
-
-.photos:not([data-darkmode])
-	root(false)
 
 </style>

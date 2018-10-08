@@ -73,8 +73,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	}
 
 	// Serialize
-	const users = await Promise.all(following.map(async f =>
-		await pack(f.followerId, me, { detail: true })));
+	const users = await Promise.all(following.map(f => pack(f.followerId, me, { detail: true })));
 
 	// Response
 	res({

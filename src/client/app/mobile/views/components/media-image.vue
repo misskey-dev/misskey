@@ -1,5 +1,5 @@
 <template>
-<div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide" @click="hide = false">
+<div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
 		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
 		<span>%i18n:@click-to-show%</span>
@@ -19,12 +19,13 @@ export default Vue.extend({
 		},
 		raw: {
 			default: false
-		},
-		hide: {
-			type: Boolean,
-			default: true
 		}
 	},
+	data() {
+		return {
+			hide: true
+		};
+	}
 	computed: {
 		style(): any {
 			let url = `url(${this.image.thumbnailUrl})`;
@@ -65,7 +66,7 @@ export default Vue.extend({
 		text-align center
 		font-size 12px
 
-		> b
+		> *
 			display block
 
 </style>

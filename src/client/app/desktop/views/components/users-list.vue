@@ -33,7 +33,7 @@ export default Vue.extend({
 	props: ['fetch', 'count', 'youKnowCount'],
 	data() {
 		return {
-			limit: 30,
+			limit: 20,
 			mode: 'all',
 			fetching: true,
 			moreFetching: false,
@@ -69,14 +69,18 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mk-users-list
 	height 100%
-	background #fff
+	overflow auto
+	background #eee
 
 	> nav
-		z-index 1
+		z-index 10
+		position sticky
+		top 0
+		background #fff
 		box-shadow 0 1px 0 rgba(#000, 0.1)
 
 		> div
@@ -100,8 +104,8 @@ export default Vue.extend({
 
 				&[data-active]
 					font-weight bold
-					color $theme-color
-					border-color $theme-color
+					color var(--primary)
+					border-color var(--primary)
 					cursor default
 
 				> span
@@ -114,16 +118,14 @@ export default Vue.extend({
 					background #eee
 					border-radius 20px
 
-	> .users
-		height calc(100% - 54px)
-		overflow auto
+	> button
+		display block
+		width calc(100% - 32px)
+		margin 16px
+		padding 16px
 
-		> *
-			border-bottom solid 1px rgba(#000, 0.05)
-
-			> *
-				max-width 600px
-				margin 0 auto
+		&:hover
+			background rgba(#000, 0.1)
 
 	> .no
 		margin 0

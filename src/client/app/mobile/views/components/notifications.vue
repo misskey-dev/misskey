@@ -1,8 +1,7 @@
 <template>
 <div class="mk-notifications">
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<!-- <transition-group name="mk-notifications" class="transition notifications"> -->
-	<div class="transition notifications">
+	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notifications" class="transition notifications">
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
 			<p class="date" :key="notification.id + '_date'" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
@@ -10,8 +9,7 @@
 				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</div>
-	<!-- </transition-group> -->
+	</component>
 
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>
@@ -25,6 +23,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
 export default Vue.extend({
 	data() {
 		return {
@@ -32,10 +31,10 @@ export default Vue.extend({
 			fetchingMoreNotifications: false,
 			notifications: [],
 			moreNotifications: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
+
 	computed: {
 		_notifications(): any[] {
 			return (this.notifications as any).map(notification => {
@@ -47,9 +46,9 @@ export default Vue.extend({
 			});
 		}
 	},
+
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 
 		this.connection.on('notification', this.onNotification);
 
@@ -68,10 +67,11 @@ export default Vue.extend({
 			this.$emit('fetched');
 		});
 	},
+
 	beforeDestroy() {
-		this.connection.off('notification', this.onNotification);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
+
 	methods: {
 		fetchMoreNotifications() {
 			this.fetchingMoreNotifications = true;
@@ -92,10 +92,11 @@ export default Vue.extend({
 				this.fetchingMoreNotifications = false;
 			});
 		},
+
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
 			this.connection.send({
-				type: 'read_notification',
+				type: 'readNotification',
 				id: notification.id
 			});
 
@@ -106,9 +107,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-notifications
 	margin 0 auto
-	background isDark ? #282C37 :#fff
+	background var(--face)
 	border-radius 8px
 	box-shadow 0 0 2px rgba(#000, 0.1)
 	overflow hidden
@@ -128,7 +129,7 @@ root(isDark)
 	> .notifications
 
 		> .mk-notification:not(:last-child)
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			border-bottom solid 1px var(--faceDivider)
 
 		> .date
 			display block
@@ -136,9 +137,9 @@ root(isDark)
 			line-height 32px
 			text-align center
 			font-size 0.8em
-			color isDark ? #666b79 : #aaa
-			background isDark ? #242731 : #fdfdfd
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			color var(--dateDividerFg)
+			background var(--dateDividerBg)
+			border-bottom solid 1px var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -170,11 +171,5 @@ root(isDark)
 
 		> [data-fa]
 			margin-right 4px
-
-.mk-notifications[data-darkmode]
-	root(true)
-
-.mk-notifications:not([data-darkmode])
-	root(false)
 
 </style>

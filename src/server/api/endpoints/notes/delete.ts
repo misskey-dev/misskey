@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
-import { ILocalUser } from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 
 export const meta = {
 	desc: {
@@ -21,15 +21,18 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Fetch note
 	const note = await Note.findOne({
-		_id: noteId,
-		userId: user._id
+		_id: noteId
 	});
 
 	if (note === null) {
 		return rej('note not found');
 	}
 
-	await deleteNote(user, note);
+	if (!user.isAdmin && !note.userId.equals(user._id)) {
+		return rej('access denied');
+	}
+
+	await deleteNote(await User.findOne({ _id: note.userId }), note);
 
 	res();
 });

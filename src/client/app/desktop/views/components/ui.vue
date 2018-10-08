@@ -1,6 +1,7 @@
 <template>
-<div class="mk-ui" :style="style">
-	<x-header class="header" v-show="!zenMode"/>
+<div class="mk-ui" v-hotkey.global="keymap">
+	<div class="bg" v-if="$store.getters.isSignedIn && $store.state.i.wallpaperUrl" :style="style"></div>
+	<x-header class="header" v-show="!zenMode" ref="header"/>
 	<div class="content">
 		<slot></slot>
 	</div>
@@ -16,11 +17,13 @@ export default Vue.extend({
 	components: {
 		XHeader
 	},
+
 	data() {
 		return {
 			zenMode: false
 		};
 	},
+
 	computed: {
 		style(): any {
 			if (!this.$store.getters.isSignedIn || this.$store.state.i.wallpaperUrl == null) return {};
@@ -28,27 +31,37 @@ export default Vue.extend({
 				backgroundColor: this.$store.state.i.wallpaperColor && this.$store.state.i.wallpaperColor.length == 3 ? `rgb(${ this.$store.state.i.wallpaperColor.join(',') })` : null,
 				backgroundImage: `url(${ this.$store.state.i.wallpaperUrl })`
 			};
+		},
+
+		keymap(): any {
+			return {
+				'p': this.post,
+				'n': this.post,
+				'z': this.toggleZenMode
+			};
 		}
 	},
+
+	watch: {
+		'$store.state.uiHeaderHeight'() {
+			this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
+		}
+	},
+
 	mounted() {
-		document.addEventListener('keydown', this.onKeydown);
+		this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
 	},
-	beforeDestroy() {
-		document.removeEventListener('keydown', this.onKeydown);
-	},
+
 	methods: {
-		onKeydown(e) {
-			if (e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA') return;
+		post() {
+			(this as any).apis.post();
+		},
 
-			if (e.which == 80 || e.which == 78) { // p or n
-				e.preventDefault();
-				(this as any).apis.post();
-			}
-
-			if (e.which == 90) { // z
-				e.preventDefault();
-				this.zenMode = !this.zenMode;
-			}
+		toggleZenMode() {
+			this.zenMode = !this.zenMode;
+			this.$nextTick(() => {
+				this.$store.commit('setUiHeaderHeight', this.$refs.header.$el.offsetHeight);
+			});
 		}
 	}
 });
@@ -56,20 +69,22 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-ui
-	display flex
-	flex-direction column
-	flex 1
-	background-size cover
-	background-position center
-	background-attachment fixed
+	min-height 100vh
+	padding-top 48px
+
+	> .bg
+		position fixed
+		top 0
+		left 0
+		width 100%
+		height 100vh
+		background-size cover
+		background-position center
+		background-attachment fixed
+		opacity 0.3
 
 	> .header
 		@media (max-width 1000px)
 			display none
 
-	> .content
-		display flex
-		flex-direction column
-		flex 1
-		overflow hidden
 </style>

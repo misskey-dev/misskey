@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { sum } from '../../../../../prelude/array';
 export default Vue.extend({
 	props: ['note'],
 	data() {
@@ -33,7 +34,7 @@ export default Vue.extend({
 			return this.note.poll;
 		},
 		total(): number {
-			return this.poll.choices.reduce((a, b) => a + b.votes, 0);
+			return sum(this.poll.choices.map(x => x.votes));
 		},
 		isVoted(): boolean {
 			return this.poll.choices.some(c => c.isVoted);
@@ -66,10 +67,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-
+.mk-poll
 	> ul
 		display block
 		margin 0
@@ -81,8 +79,8 @@ root(isDark)
 			margin 4px 0
 			padding 4px 8px
 			width 100%
-			color isDark ? #fff : #000
-			border solid 1px isDark ? #5e636f : #eee
+			color var(--pollChoiceText)
+			border solid 1px var(--pollChoiceBorder)
 			border-radius 4px
 			overflow hidden
 			cursor pointer
@@ -98,7 +96,7 @@ root(isDark)
 				top 0
 				left 0
 				height 100%
-				background $theme-color
+				background var(--primary)
 				transition width 1s ease
 
 			> span
@@ -109,7 +107,7 @@ root(isDark)
 					margin-left 4px
 
 	> p
-		color isDark ? #a3aebf : #000
+		color var(--text)
 
 		a
 			color inherit
@@ -123,11 +121,5 @@ root(isDark)
 
 			&:active
 				background transparent
-
-.mk-poll[data-darkmode]
-	root(true)
-
-.mk-poll:not([data-darkmode])
-	root(false)
 
 </style>

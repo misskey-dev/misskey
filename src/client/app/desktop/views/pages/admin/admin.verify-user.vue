@@ -21,25 +21,31 @@ export default Vue.extend({
 		async verifyUser() {
 			this.verifying = true;
 
-			const user = await (this as any).os.api(
-				"users/show",
-				parseAcct(this.username)
-			);
+			const process = async () => {
+				const user = await (this as any).os.api(
+					"users/show",
+					parseAcct(this.username)
+				);
 
-			await (this as any).os.api("admin/verify-user", {
-				userId: user.id
+				await (this as any).os.api("admin/verify-user", {
+					userId: user.id
+				});
+
+				(this as any).os.apis.dialog({ text: "%i18n:@verified%" });
+			};
+
+			await process().catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed: ${e}` });
 			});
 
 			this.verifying = false;
-
-			(this as any).os.apis.dialog({ text: "%i18n:@verified%" });
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 header
 	margin 10px 0

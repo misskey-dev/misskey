@@ -2,7 +2,7 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
 import ReversiGame, { pack as packGame } from '../../../../../models/games/reversi/game';
 import User, { ILocalUser } from '../../../../../models/user';
-import { publishUserStream, publishReversiStream } from '../../../../../stream';
+import { publishMainStream, publishReversiStream } from '../../../../../stream';
 import { eighteight } from '../../../../../games/reversi/maps';
 
 export const meta = {
@@ -58,7 +58,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 		if (other == 0) {
-			publishUserStream(user._id, 'reversi_no_invites');
+			publishMainStream(user._id, 'reversi_no_invites');
 		}
 	} else {
 		// Fetch child
@@ -94,6 +94,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		// 招待
 		publishReversiStream(child._id, 'invited', packed);
 
-		publishUserStream(child._id, 'reversi_invited', packed);
+		publishMainStream(child._id, 'reversiInvited', packed);
 	}
 });

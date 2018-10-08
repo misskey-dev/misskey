@@ -1,15 +1,15 @@
 <template>
-	<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
-		<span class="inner" :style="style"></span>
+	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
+		<span class="inner" :style="icon"></span>
 	</span>
-	<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
-		<span class="inner" :style="style"></span>
+	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
+		<span class="inner" :style="icon"></span>
 	</span>
-	<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
-		<span class="inner" :style="style"></span>
+	<router-link class="mk-avatar" :style="style" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
+		<span class="inner" :style="icon"></span>
 	</router-link>
-	<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
-		<span class="inner" :style="style"></span>
+	<router-link class="mk-avatar" :style="style" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
+		<span class="inner" :style="icon"></span>
 	</router-link>
 </template>
 
@@ -43,6 +43,11 @@ export default Vue.extend({
 		},
 		style(): any {
 			return {
+				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
+			};
+		},
+		icon(): any {
+			return {
 				backgroundColor: this.lightmode
 					? `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`
 					: this.user.avatarColor && this.user.avatarColor.length == 3
@@ -51,6 +56,11 @@ export default Vue.extend({
 				backgroundImage: this.lightmode ? null : `url(${this.user.avatarUrl})`,
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
+		}
+	},
+	mounted() {
+		if (this.user.avatarColor) {
+			this.$el.style.color = `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`;
 		}
 	},
 	methods: {
@@ -62,8 +72,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-root(isDark)
+.mk-avatar
 	display inline-block
 	vertical-align bottom
 
@@ -74,7 +83,7 @@ root(isDark)
 	&.cat::before,
 	&.cat::after
 		background #df548f
-		border solid 4px isDark ? #e0eefd : #202224
+		border solid 4px currentColor
 		box-sizing border-box
 		content ''
 		display inline-block
@@ -100,9 +109,4 @@ root(isDark)
 		transition border-radius 1s ease
 		z-index 1
 
-.mk-avatar[data-darkmode]
-	root(true)
-
-.mk-avatar:not([data-darkmode])
-	root(false)
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div class="notifications">
+<div class="notifications" v-hotkey.global="keymap">
 	<button :data-active="isOpen" @click="toggle" title="%i18n:@title%">
 		%fa:R bell%<template v-if="hasUnreadNotification">%fa:circle%</template>
 	</button>
@@ -19,11 +19,19 @@ export default Vue.extend({
 			isOpen: false
 		};
 	},
+
 	computed: {
 		hasUnreadNotification(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
+		},
+
+		keymap(): any {
+			return {
+				'shift+n': this.toggle
+			};
 		}
 	},
+
 	methods: {
 		toggle() {
 			this.isOpen ? this.close() : this.open();
@@ -53,16 +61,13 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-
+.notifications
 	> button
 		display block
 		margin 0
 		padding 0
 		width 32px
-		color #9eaba8
+		color var(--desktopHeaderFg)
 		border none
 		background transparent
 		cursor pointer
@@ -72,10 +77,7 @@ root(isDark)
 
 		&:hover
 		&[data-active='true']
-			color isDark ? #fff : darken(#9eaba8, 20%)
-
-		&:active
-			color isDark ? #fff : darken(#9eaba8, 30%)
+			color var(--desktopHeaderHoverFg)
 
 		> [data-fa].bell
 			font-size 1.2em
@@ -85,10 +87,10 @@ root(isDark)
 			margin-left -5px
 			vertical-align super
 			font-size 10px
-			color $theme-color
+			color var(--primary)
 
 	> .pop
-		$bgcolor = isDark ? #282c37 : #fff
+		$bgcolor = var(--face)
 		display block
 		position absolute
 		top 56px
@@ -126,11 +128,5 @@ root(isDark)
 			max-height 350px
 			font-size 1rem
 			overflow auto
-
-.notifications[data-darkmode]
-	root(true)
-
-.notifications:not([data-darkmode])
-	root(false)
 
 </style>

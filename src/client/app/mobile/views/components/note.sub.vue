@@ -1,10 +1,16 @@
 <template>
-<div class="sub" :class="{ smart: $store.state.device.postStyle == 'smart' }">
+<div class="zlrxdaqttccpwhpaagdmkawtzklsccam" :class="{ smart: $store.state.device.postStyle == 'smart' }">
 	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle != 'smart'"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note" :mini="true"/>
 		<div class="body">
-			<mk-sub-note-content class="text" :note="note"/>
+			<p v-if="note.cw != null" class="cw">
+				<span class="text" v-if="note.cw != ''">{{ note.cw }}</span>
+				<mk-cw-button v-model="showContent"/>
+			</p>
+			<div class="content" v-show="note.cw == null || showContent">
+				<mk-sub-note-content class="text" :note="note"/>
+			</div>
 		</div>
 	</div>
 </div>
@@ -24,16 +30,22 @@ export default Vue.extend({
 			type: Boolean,
 			default: true
 		}
+	},
+
+	data() {
+		return {
+			showContent: false
+		};
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.zlrxdaqttccpwhpaagdmkawtzklsccam
 	display flex
 	padding 16px
 	font-size 10px
-	background isDark ? #21242d : #fcfcfc
+	background var(--subNoteBg)
 
 	@media (min-width 350px)
 		font-size 12px
@@ -77,20 +89,25 @@ root(isDark)
 			margin-bottom 2px
 
 		> .body
-
-			> .text
+			> .cw
+				cursor default
+				display block
 				margin 0
 				padding 0
-				color isDark ? #959ba7 : #717171
+				overflow-wrap break-word
+				color var(--noteText)
 
-				pre
-					max-height 120px
-					font-size 80%
+				> .text
+					margin-right 8px
 
-.sub[data-darkmode]
-	root(true)
+			> .content
+				> .text
+					margin 0
+					padding 0
+					color var(--subNoteText)
 
-.sub:not([data-darkmode])
-	root(false)
+					pre
+						max-height 120px
+						font-size 80%
 
 </style>

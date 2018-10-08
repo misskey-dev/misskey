@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:star%%i18n:@title%</span>
+	<span slot="header"><span style="margin-right:4px;">%fa:star%</span>%i18n:@title%</span>
 
 	<main>
 		<template v-for="favorite in favorites">
@@ -71,7 +71,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 main
 	width 100%

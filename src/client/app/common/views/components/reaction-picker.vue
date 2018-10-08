@@ -1,9 +1,9 @@
 <template>
-<div class="mk-reaction-picker">
+<div class="mk-reaction-picker" v-hotkey.global="keymap">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact, big }" ref="popover">
 		<p v-if="!compact">{{ title }}</p>
-		<div>
+		<div ref="buttons" :class="{ showFocus }">
 			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" title="%i18n:common.reactions.like%"><mk-reaction-icon reaction='like'/></button>
 			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" title="%i18n:common.reactions.love%"><mk-reaction-icon reaction='love'/></button>
 			<button @click="react('laugh')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="3" title="%i18n:common.reactions.laugh%"><mk-reaction-icon reaction='laugh'/></button>
@@ -31,30 +31,84 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
+
 		source: {
 			required: true
 		},
+
 		compact: {
 			type: Boolean,
 			required: false,
 			default: false
 		},
+
 		cb: {
 			required: false
 		},
+
 		big: {
 			type: Boolean,
 			required: false,
 			default: false
+		},
+
+		showFocus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+
+		animation: {
+			type: Boolean,
+			required: false,
+			default: true
 		}
 	},
+
 	data() {
 		return {
-			title: placeholder
+			title: placeholder,
+			focus: null
 		};
 	},
+
+	computed: {
+		keymap(): any {
+			return {
+				'esc': this.close,
+				'enter|space|plus': this.choose,
+				'up|k': this.focusUp,
+				'left|h|shift+tab': this.focusLeft,
+				'right|l|tab': this.focusRight,
+				'down|j': this.focusDown,
+				'1': () => this.react('like'),
+				'2': () => this.react('love'),
+				'3': () => this.react('laugh'),
+				'4': () => this.react('hmm'),
+				'5': () => this.react('surprise'),
+				'6': () => this.react('congrats'),
+				'7': () => this.react('angry'),
+				'8': () => this.react('confused'),
+				'9': () => this.react('rip'),
+				'0': () => this.react('pudding'),
+			};
+		}
+	},
+
+	watch: {
+		focus(i) {
+			this.$refs.buttons.children[i].focus();
+
+			if (this.showFocus) {
+				this.title = this.$refs.buttons.children[i].title;
+			}
+		}
+	},
+
 	mounted() {
 		this.$nextTick(() => {
+			this.focus = 0;
+
 			const popover = this.$refs.popover as any;
 
 			const rect = this.source.getBoundingClientRect();
@@ -76,7 +130,7 @@ export default Vue.extend({
 			anime({
 				targets: this.$refs.backdrop,
 				opacity: 1,
-				duration: 100,
+				duration: this.animation ? 100 : 0,
 				easing: 'linear'
 			});
 
@@ -84,10 +138,11 @@ export default Vue.extend({
 				targets: this.$refs.popover,
 				opacity: 1,
 				scale: [0.5, 1],
-				duration: 500
+				duration: this.animation ? 500 : 0
 			});
 		});
 	},
+
 	methods: {
 		react(reaction) {
 			(this as any).api('notes/reactions/create', {
@@ -95,21 +150,25 @@ export default Vue.extend({
 				reaction: reaction
 			}).then(() => {
 				if (this.cb) this.cb();
-				this.$destroy();
+				this.$emit('closed');
+				this.destroyDom();
 			});
 		},
+
 		onMouseover(e) {
 			this.title = e.target.title;
 		},
+
 		onMouseout(e) {
 			this.title = placeholder;
 		},
+
 		close() {
 			(this.$refs.backdrop as any).style.pointerEvents = 'none';
 			anime({
 				targets: this.$refs.backdrop,
 				opacity: 0,
-				duration: 200,
+				duration: this.animation ? 200 : 0,
 				easing: 'linear'
 			});
 
@@ -118,21 +177,42 @@ export default Vue.extend({
 				targets: this.$refs.popover,
 				opacity: 0,
 				scale: 0.5,
-				duration: 200,
+				duration: this.animation ? 200 : 0,
 				easing: 'easeInBack',
-				complete: () => this.$destroy()
+				complete: () => {
+					this.$emit('closed');
+					this.destroyDom();
+				}
 			});
+		},
+
+		focusUp() {
+			this.focus = this.focus == 0 ? 9 : this.focus < 5 ? (this.focus + 4) : (this.focus - 5);
+		},
+
+		focusDown() {
+			this.focus = this.focus == 9 ? 0 : this.focus >= 5 ? (this.focus - 4) : (this.focus + 5);
+		},
+
+		focusRight() {
+			this.focus = this.focus == 9 ? 0 : (this.focus + 1);
+		},
+
+		focusLeft() {
+			this.focus = this.focus == 0 ? 9 : (this.focus - 1);
+		},
+
+		choose() {
+			this.$refs.buttons.childNodes[this.focus].click();
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 $border-color = rgba(27, 31, 35, 0.15)
 
-root(isDark)
+.mk-reaction-picker
 	position initial
 
 	> .backdrop
@@ -142,11 +222,11 @@ root(isDark)
 		z-index 10000
 		width 100%
 		height 100%
-		background isDark ? rgba(#000, 0.4) : rgba(#000, 0.1)
+		background var(--modalBackdrop)
 		opacity 0
 
 	> .popover
-		$bgcolor = isDark ? #2c303c : #fff
+		$bgcolor = var(--popupBg)
 		position absolute
 		z-index 10001
 		background $bgcolor
@@ -199,13 +279,28 @@ root(isDark)
 			margin 0
 			padding 8px 10px
 			font-size 14px
-			color isDark ? #d6dce2 : #586069
-			border-bottom solid 1px isDark ? #1c2023 : #e1e4e8
+			color var(--popupFg)
+			border-bottom solid 1px var(--faceDivider)
 
 		> div
 			padding 4px
 			width 240px
 			text-align center
+
+			&.showFocus
+				> button:focus
+					z-index 1
+
+					&:after
+						content ""
+						pointer-events none
+						position absolute
+						top 0
+						right 0
+						bottom 0
+						left 0
+						border 2px solid var(--primaryAlpha03)
+						border-radius 4px
 
 			> button
 				padding 0
@@ -215,16 +310,10 @@ root(isDark)
 				border-radius 2px
 
 				&:hover
-					background isDark ? #252731 : #eee
+					background var(--reactionPickerButtonHoverBg)
 
 				&:active
-					background $theme-color
+					background var(--primary)
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
-
-.mk-reaction-picker[data-darkmode]
-	root(true)
-
-.mk-reaction-picker:not([data-darkmode])
-	root(false)
 
 </style>

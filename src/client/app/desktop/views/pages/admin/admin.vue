@@ -3,7 +3,16 @@
 	<nav>
 		<ul>
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }">%fa:chalkboard .fw%%i18n:@dashboard%</li>
-			<li @click="nav('users')" :class="{ active: page == 'users' }">%fa:users .fw%%i18n:@users%</li>
+
+			<li v-if="this.$store.state.i && this.$store.state.i.isAdmin"
+				@click="nav('users')" :class="{ active: page == 'users' }">%fa:users .fw%%i18n:@users%</li>
+
+			<li v-if="this.$store.state.i && this.$store.state.i.isAdmin"
+				@click="nav('announcements')" :class="{ active: page == 'announcements' }">%fa:broadcast-tower .fw%%i18n:@announcements%</li>
+
+			<li v-if="this.$store.state.i && this.$store.state.i.isAdmin"
+				@click="nav('hashtags')" :class="{ active: page == 'hashtags' }">%fa:hashtag .fw%%i18n:@hashtags%</li>
+
 			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:@drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
@@ -12,6 +21,12 @@
 		<div v-show="page == 'dashboard'">
 			<x-dashboard/>
 			<x-charts/>
+		</div>
+		<div v-show="page == 'announcements'">
+			<x-announcements/>
+		</div>
+		<div v-show="page == 'hashtags'">
+			<x-hashtags/>
 		</div>
 		<div v-if="page == 'users'">
 			<x-suspend-user/>
@@ -28,6 +43,8 @@
 <script lang="ts">
 import Vue from "vue";
 import XDashboard from "./admin.dashboard.vue";
+import XAnnouncements from "./admin.announcements.vue";
+import XHashtags from "./admin.hashtags.vue";
 import XSuspendUser from "./admin.suspend-user.vue";
 import XUnsuspendUser from "./admin.unsuspend-user.vue";
 import XVerifyUser from "./admin.verify-user.vue";
@@ -37,6 +54,8 @@ import XCharts from "../../components/charts.vue";
 export default Vue.extend({
 	components: {
 		XDashboard,
+		XAnnouncements,
+		XHashtags,
 		XSuspendUser,
 		XUnsuspendUser,
 		XVerifyUser,
@@ -57,7 +76,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus">
-@import '~const.styl'
+
 
 .mk-admin
 	display flex
@@ -93,7 +112,7 @@ export default Vue.extend({
 
 				&.active
 					margin-left 8px
-					color $theme-color !important
+					color var(--primary) !important
 
 	> main
 		width 100%

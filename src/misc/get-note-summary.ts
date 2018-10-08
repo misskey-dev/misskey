@@ -16,9 +16,9 @@ const summarize = (note: any): string => {
 	// 本文
 	summary += note.text ? note.text : '';
 
-	// メディアが添付されているとき
-	if (note.media.length != 0) {
-		summary += ` (${note.media.length}つのメディア)`;
+	// ファイルが添付されているとき
+	if (note.files.length != 0) {
+		summary += ` (${note.files.length}つのファイル)`;
 	}
 
 	// 投票が添付されているとき

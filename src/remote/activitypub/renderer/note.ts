@@ -6,10 +6,11 @@ import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
+import parseMfm from '../../../mfm/parse';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
-	const promisedFiles: Promise<IDriveFile[]> = note.mediaIds
-		? DriveFile.find({ _id: { $in: note.mediaIds } })
+	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
+		? DriveFile.find({ _id: { $in: note.fileIds } })
 		: Promise.resolve([]);
 
 	let inReplyTo;
@@ -81,12 +82,39 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	const files = await promisedFiles;
 
+	let text = note.text;
+
+	if (note.poll != null) {
+		if (text == null) text = '';
+		const url = `${config.url}/notes/${note._id}`;
+		// TODO: i18n
+		text += `\n\n[投票を見る](${url})`;
+	}
+
+	if (note.renoteId != null) {
+		if (text == null) text = '';
+		const url = `${config.url}/notes/${note.renoteId}`;
+		text += `\n\nRE: ${url}`;
+	}
+
+	// 省略されたメンションのホストを復元する
+	if (text != null) {
+		text = parseMfm(text).map(x => {
+			if (x.type == 'mention' && x.host == null) {
+				return `${x.content}@${config.host}`;
+			} else {
+				return x.content;
+			}
+		}).join('');
+	}
+
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
 		summary: note.cw,
-		content: toHtml(note),
+		content: toHtml(Object.assign({}, note, { text })),
+		_misskey_content: text,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,

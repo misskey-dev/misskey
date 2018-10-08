@@ -18,7 +18,7 @@
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
-					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '%i18n:@less%' : '%i18n:@more%' }}</span>
+					<mk-cw-button v-model="showContent"/>
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
@@ -28,14 +28,15 @@
 						<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
 					</div>
-					<div class="media" v-if="p.media.length > 0">
-						<mk-media-list :media-list="p.media"/>
+					<div class="files" v-if="p.files.length > 0">
+						<mk-media-list :media-list="p.files"/>
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
 					<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 					<div class="renote" v-if="p.renote">
 						<mk-note-preview :note="p.renote" :mini="true"/>
 					</div>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="false" :mini="true"/>
 				</div>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 			</div>
@@ -53,11 +54,11 @@
 	</article>
 </div>
 <div v-else class="srwrkujossgfuhrbnvqkybtzxpblgchi">
-	<div v-if="note.media.length > 0">
-		<mk-media-list :media-list="note.media"/>
+	<div v-if="note.files.length > 0">
+		<mk-media-list :media-list="note.files"/>
 	</div>
-	<div v-if="note.renote && note.renote.media.length > 0">
-		<mk-media-list :media-list="note.renote.media"/>
+	<div v-if="note.renote && note.renote.files.length > 0">
+		<mk-media-list :media-list="note.renote.files"/>
 	</div>
 </div>
 </template>
@@ -69,11 +70,14 @@ import parse from '../../../../../../mfm/parse';
 import MkNoteMenu from '../../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../../common/views/components/reaction-picker.vue';
 import XSub from './deck.note.sub.vue';
+import noteSubscriber from '../../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
 	components: {
 		XSub
 	},
+
+	mixins: [noteSubscriber('note')],
 
 	props: {
 		note: {
@@ -89,9 +93,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			showContent: false,
-			connection: null,
-			connectionId: null
+			showContent: false
 		};
 	},
 
@@ -99,7 +101,7 @@ export default Vue.extend({
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds.length == 0 &&
+				this.note.fileIds.length == 0 &&
 				this.note.poll == null);
 		},
 
@@ -119,64 +121,7 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
-		}
-	},
-
-	mounted() {
-		this.capture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.on('_connected_', this.onStreamConnected);
-		}
-	},
-
-	beforeDestroy() {
-		this.decapture(true);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection.off('_connected_', this.onStreamConnected);
-			(this as any).os.stream.dispose(this.connectionId);
-		}
-	},
-
 	methods: {
-		capture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
-					type: 'capture',
-					id: this.p.id
-				});
-				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		decapture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send({
-					type: 'decapture',
-					id: this.p.id
-				});
-				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);
-			}
-		},
-
-		onStreamConnected() {
-			this.capture();
-		},
-
-		onStreamNoteUpdated(data) {
-			const note = data.note;
-			if (note.id == this.note.id) {
-				this.$emit('update:note', note);
-			} else if (note.id == this.note.renoteId) {
-				this.note.renote = note;
-			}
-		},
-
 		reply() {
 			(this as any).apis.post({
 				reply: this.p
@@ -209,9 +154,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-mediaRoot(isDark)
+.srwrkujossgfuhrbnvqkybtzxpblgchi
 	font-size 13px
 	margin 4px 12px
 
@@ -221,9 +164,9 @@ mediaRoot(isDark)
 	&:last-child
 		margin-bottom 12px
 
-root(isDark)
+.zyjjkidcqjnlegkqebitfviomuqmseqk
 	font-size 13px
-	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+	border-bottom solid 1px var(--faceDivider)
 
 	&:last-of-type
 		border-bottom none
@@ -241,8 +184,8 @@ root(isDark)
 		padding 8px 16px 0 16px
 		line-height 28px
 		white-space pre
-		color #9dbb00
-		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		color var(--renoteText)
+		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		.avatar
 			flex-shrink 0
@@ -304,23 +247,10 @@ root(isDark)
 					margin 0
 					padding 0
 					overflow-wrap break-word
-					color isDark ? #fff : #717171
+					color var(--noteText)
 
 					> .text
 						margin-right 8px
-
-					> .toggle
-						display inline-block
-						padding 4px 8px
-						font-size 0.7em
-						color isDark ? #393f4f : #fff
-						background isDark ? #687390 : #b1b9c1
-						border-radius 2px
-						cursor pointer
-						user-select none
-
-						&:hover
-							background isDark ? #707b97 : #bbc4ce
 
 				> .content
 
@@ -329,7 +259,7 @@ root(isDark)
 						margin 0
 						padding 0
 						overflow-wrap break-word
-						color isDark ? #fff : #717171
+						color var(--noteText)
 
 						>>> .title
 							display block
@@ -337,7 +267,7 @@ root(isDark)
 							padding 4px
 							font-size 90%
 							text-align center
-							background isDark ? #2f3944 : #eef1f3
+							background var(--mfmTitleBg)
 							border-radius 4px
 
 						>>> .code
@@ -346,31 +276,31 @@ root(isDark)
 						>>> .quote
 							margin 8px
 							padding 6px 12px
-							color isDark ? #6f808e : #aaa
-							border-left solid 3px isDark ? #637182 : #eee
+							color var(--mfmQuote)
+							border-left solid 3px var(--mfmQuoteLine)
 
 						> .reply
 							margin-right 8px
-							color isDark ? #99abbf : #717171
+							color var(--noteText)
 
 						> .rp
 							margin-left 4px
 							font-style oblique
-							color #a0bf46
+							color var(--renoteText)
 
 						[data-is-me]:after
 							content "you"
 							padding 0 4px
 							margin-left 4px
 							font-size 80%
-							color $theme-color-foreground
-							background $theme-color
+							color var(--primaryForeground)
+							background var(--primary)
 							border-radius 4px
 
 					.mk-url-preview
 						margin-top 8px
 
-					> .media
+					> .files
 						> img
 							display block
 							max-width 100%
@@ -393,9 +323,9 @@ root(isDark)
 					> .renote
 						margin 8px 0
 
-						> .mk-note-preview
+						> *
 							padding 16px
-							border dashed 1px isDark ? #4e945e : #c0dac6
+							border dashed 1px var(--quoteBorder)
 							border-radius 8px
 
 				> .app
@@ -410,14 +340,14 @@ root(isDark)
 					border none
 					box-shadow none
 					font-size 1em
-					color isDark ? #606984 : #ddd
+					color var(--noteActions)
 					cursor pointer
 
 					&:not(:last-child)
 						margin-right 28px
 
 					&:hover
-						color isDark ? #9198af : #666
+						color var(--noteActionsHover)
 
 					> .count
 						display inline
@@ -425,18 +355,6 @@ root(isDark)
 						color #999
 
 					&.reacted
-						color $theme-color
-
-.zyjjkidcqjnlegkqebitfviomuqmseqk[data-darkmode]
-	root(true)
-
-.zyjjkidcqjnlegkqebitfviomuqmseqk:not([data-darkmode])
-	root(false)
-
-.srwrkujossgfuhrbnvqkybtzxpblgchi[data-darkmode]
-	mediaRoot(true)
-
-.srwrkujossgfuhrbnvqkybtzxpblgchi:not([data-darkmode])
-	mediaRoot(false)
+						color var(--primary)
 
 </style>

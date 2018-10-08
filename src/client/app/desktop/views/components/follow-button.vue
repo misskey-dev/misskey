@@ -5,7 +5,8 @@
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="u.hasPendingFollowRequestFromYou">%fa:hourglass-half%<template v-if="size == 'big'"> %i18n:@request-pending%</template></template>
+		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked">%fa:hourglass-half%<template v-if="size == 'big'"> %i18n:@request-pending%</template></template>
+		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked">%fa:hourglass-start%<template v-if="size == 'big'"> %i18n:@follow-processing%</template></template>
 		<template v-else-if="u.isFollowing">%fa:minus%<template v-if="size == 'big'"> %i18n:@following%</template></template>
 		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow-request%</template></template>
 		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow%</template></template>
@@ -33,35 +34,32 @@ export default Vue.extend({
 		return {
 			u: this.user,
 			wait: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
-
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 		this.connection.on('follow', this.onFollow);
 		this.connection.on('unfollow', this.onUnfollow);
 	},
 
 	beforeDestroy() {
-		this.connection.off('follow', this.onFollow);
-		this.connection.off('unfollow', this.onUnfollow);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {
 		onFollow(user) {
 			if (user.id == this.u.id) {
-				this.user.isFollowing = user.isFollowing;
+				this.u.isFollowing = user.isFollowing;
+				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
 			}
 		},
 
 		onUnfollow(user) {
 			if (user.id == this.u.id) {
-				this.user.isFollowing = user.isFollowing;
+				this.u.isFollowing = user.isFollowing;
+				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
 			}
 		},
 
@@ -74,7 +72,7 @@ export default Vue.extend({
 						userId: this.u.id
 					});
 				} else {
-					if (this.u.isLocked && this.u.hasPendingFollowRequestFromYou) {
+					if (this.u.hasPendingFollowRequestFromYou) {
 						this.u = await (this as any).api('following/requests/cancel', {
 							userId: this.u.id
 						});
@@ -99,9 +97,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-follow-button
 	display block
 	cursor pointer
 	padding 0
@@ -124,37 +120,34 @@ root(isDark)
 			right -5px
 			bottom -5px
 			left -5px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 8px
 
 	&:not(.active)
-		color isDark ? #fff : #888
-		background isDark ? linear-gradient(to bottom, #313543 0%, #282c37 100%) : linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%)
-		border solid 1px isDark ? #1c2023 : #e2e2e2
+		color var(--primary)
+		border solid 1px var(--primary)
 
 		&:hover
-			background isDark ? linear-gradient(to bottom, #2c2f3c 0%, #22262f 100%) : linear-gradient(to bottom, #f9f9f9 0%, #ececec 100%)
-			border-color isDark ? #151a1d : #dcdcdc
+			background var(--primaryAlpha03)
 
 		&:active
-			background isDark ? #22262f : #ececec
-			border-color isDark ? #151a1d : #dcdcdc
+			background var(--primaryAlpha05)
 
 	&.active
-		color $theme-color-foreground
-		background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
-		border solid 1px lighten($theme-color, 15%)
+		color var(--primaryForeground)
+		background var(--primary)
+		border solid 1px var(--primary)
 
 		&:not(:disabled)
 			font-weight bold
 
 		&:hover:not(:disabled)
-			background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-			border-color $theme-color
+			background var(--primaryLighten5)
+			border-color var(--primaryLighten5)
 
 		&:active:not(:disabled)
-			background $theme-color
-			border-color $theme-color
+			background var(--primaryDarken5)
+			border-color var(--primaryDarken5)
 
 	&.wait
 		cursor wait !important
@@ -164,11 +157,5 @@ root(isDark)
 		width 100%
 		height 38px
 		line-height 38px
-
-.mk-follow-button[data-darkmode]
-	root(true)
-
-.mk-follow-button:not([data-darkmode])
-	root(false)
 
 </style>

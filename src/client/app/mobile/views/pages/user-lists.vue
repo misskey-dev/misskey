@@ -43,7 +43,7 @@ export default Vue.extend({
 					title
 				});
 
-				this.$router.push('/i/lists/' + list.id);
+				this.$router.push(`/i/lists/${list.id}`);
 			});
 		}
 	}
@@ -51,7 +51,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 main
 	width 100%

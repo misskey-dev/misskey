@@ -1,9 +1,9 @@
 <template>
-<div class="header">
+<div class="header" ref="root">
+	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
 	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
-		<p ref="welcomeback" v-if="$store.getters.isSignedIn">%i18n:@welcome-back%<b>{{ $store.state.i | userName }}</b>%i18n:@adjective%</p>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation">%fa:circle%</template>
@@ -20,93 +20,51 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
+import { env } from '../../../config';
 
 export default Vue.extend({
 	props: ['func'],
+
 	data() {
 		return {
 			hasGameInvitation: false,
 			connection: null,
-			connectionId: null
+			env: env
 		};
 	},
+
 	computed: {
 		hasUnreadNotification(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
 		},
+
 		hasUnreadMessagingMessage(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
 		}
 	},
+
 	mounted() {
-		this.$store.commit('setUiHeaderHeight', 48);
+		this.$store.commit('setUiHeaderHeight', this.$refs.root.offsetHeight);
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
+			this.connection = (this as any).os.stream.useSharedConnection('main');
 
-			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
-
-			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
-			const isHisasiburi = ago >= 3600;
-			this.$store.state.i.lastUsedAt = new Date();
-
-			if (isHisasiburi) {
-				(this.$refs.welcomeback as any).style.display = 'block';
-				(this.$refs.main as any).style.overflow = 'hidden';
-
-				anime({
-					targets: this.$refs.welcomeback,
-					top: '0',
-					opacity: 1,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				anime({
-					targets: this.$refs.mainContainer,
-					opacity: 0,
-					delay: 1000,
-					duration: 500,
-					easing: 'easeOutQuad'
-				});
-
-				setTimeout(() => {
-					anime({
-						targets: this.$refs.welcomeback,
-						top: '-48px',
-						opacity: 0,
-						duration: 500,
-						complete: () => {
-							(this.$refs.welcomeback as any).style.display = 'none';
-							(this.$refs.main as any).style.overflow = 'initial';
-						},
-						easing: 'easeInQuad'
-					});
-
-					anime({
-						targets: this.$refs.mainContainer,
-						opacity: 1,
-						duration: 500,
-						easing: 'easeInQuad'
-					});
-				}, 2500);
-			}
 		}
 	},
+
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('reversi_invited', this.onReversiInvited);
-			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
-			(this as any).os.stream.dispose(this.connectionId);
+			this.connection.dispose();
 		}
 	},
+
 	methods: {
 		onReversiInvited() {
 			this.hasGameInvitation = true;
 		},
+
 		onReversiNoInvites() {
 			this.hasGameInvitation = false;
 		}
@@ -115,9 +73,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.header
 	$height = 48px
 
 	position fixed
@@ -131,10 +87,19 @@ root(isDark)
 
 	> .indicator
 		height 3px
-		background $theme-color
+		background var(--primary)
+
+	> .warn
+		display block
+		margin 0
+		padding 4px
+		text-align center
+		font-size 12px
+		background #f00
+		color #fff
 
 	> .main
-		color rgba(#fff, 0.9)
+		color var(--mobileHeaderFg)
 
 		> .backdrop
 			position absolute
@@ -144,20 +109,7 @@ root(isDark)
 			height $height
 			-webkit-backdrop-filter blur(12px)
 			backdrop-filter blur(12px)
-			//background-color rgba(#1b2023, 0.75)
-			background-color isDark ? #313543 : #595f6f
-
-		> p
-			display none
-			position absolute
-			z-index 1002
-			top $height
-			width 100%
-			line-height $height
-			margin 0
-			text-align center
-			color #fff
-			opacity 0
+			background-color var(--mobileHeaderBg)
 
 		> .content
 			z-index 1001
@@ -175,9 +127,6 @@ root(isDark)
 				white-space nowrap
 				overflow hidden
 				text-overflow ellipsis
-
-				[data-fa], [data-icon]
-					margin-right 4px
 
 				> img
 					display inline-block
@@ -207,7 +156,7 @@ root(isDark)
 				left 8px
 				pointer-events none
 				font-size 10px
-				color $theme-color
+				color var(--primary)
 
 			> button:last-child
 				display block
@@ -221,11 +170,5 @@ root(isDark)
 				color inherit
 				line-height $height
 				border-left solid 1px rgba(#000, 0.1)
-
-.header[data-darkmode]
-	root(true)
-
-.header:not([data-darkmode])
-	root(false)
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-<a class="root folder" @click.prevent="onClick" :href="`/i/drive/folder/${ folder.id }`">
+<a class="jvwxssxsytqlqvrpiymarjlzlsxskqsr" @click.prevent="onClick" :href="`/i/drive/folder/${ folder.id }`">
 	<div class="container">
 		<p class="name">%fa:folder%{{ folder.name }}</p>%fa:angle-right%
 	</div>
@@ -24,9 +24,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.root.folder
+.jvwxssxsytqlqvrpiymarjlzlsxskqsr
 	display block
-	color #777
+	color var(--text)
 	text-decoration none !important
 
 	*

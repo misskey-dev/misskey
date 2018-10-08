@@ -1,5 +1,5 @@
 <template>
-<mk-window width="400px" height="550px" @closed="$destroy">
+<mk-window width="400px" height="550px" @closed="destroyDom">
 	<span slot="header" :class="$style.header">
 		<img :src="user.avatarUrl" alt=""/>{{ '%i18n:@following%'.replace('{}', name) }}
 	</span>

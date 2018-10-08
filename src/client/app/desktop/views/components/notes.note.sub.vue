@@ -1,10 +1,16 @@
 <template>
-<div class="sub" :title="title">
+<div class="tkfdzaxtkdeianobciwadajxzbddorql" :title="title">
 	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note"/>
 		<div class="body">
-			<mk-sub-note-content class="text" :note="note"/>
+			<p v-if="note.cw != null" class="cw">
+				<span class="text" v-if="note.cw != ''">{{ note.cw }}</span>
+				<mk-cw-button v-model="showContent"/>
+			</p>
+			<div class="content" v-show="note.cw == null || showContent">
+				<mk-sub-note-content class="text" :note="note"/>
+			</div>
 		</div>
 	</div>
 </div>
@@ -14,7 +20,19 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['note'],
+	props: {
+		note: {
+			type: Object,
+			required: true
+		}
+	},
+
+	data() {
+		return {
+			showContent: false
+		};
+	},
+
 	computed: {
 		title(): string {
 			return new Date(this.note.createdAt).toLocaleString();
@@ -24,12 +42,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.tkfdzaxtkdeianobciwadajxzbddorql
 	display flex
 	margin 0
 	padding 16px 32px
 	font-size 0.9em
-	background isDark ? #21242d : #fcfcfc
+	background var(--subNoteBg)
 
 	> .avatar
 		flex-shrink 0
@@ -48,20 +66,26 @@ root(isDark)
 
 		> .body
 
-			> .text
+			> .cw
 				cursor default
+				display block
 				margin 0
 				padding 0
-				color isDark ? #959ba7 : #717171
+				overflow-wrap break-word
+				color var(--noteText)
 
-				pre
-					max-height 120px
-					font-size 80%
+				> .text
+					margin-right 8px
 
-.sub[data-darkmode]
-	root(true)
+			> .content
+				> .text
+					cursor default
+					margin 0
+					padding 0
+					color var(--subNoteText)
 
-.sub:not([data-darkmode])
-	root(false)
+					pre
+						max-height 120px
+						font-size 80%
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-<mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="$destroy">
+<mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="destroyDom">
 	<span slot="header" :class="$style.header">%fa:comments%%i18n:@title% {{ user | userName }}</span>
 	<mk-messaging-room :user="user" :class="$style.content"/>
 </mk-window>

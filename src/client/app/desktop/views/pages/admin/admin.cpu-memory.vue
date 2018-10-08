@@ -111,7 +111,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.zyknedwtlthezamcjlolyusmipqmjgxz
 	> svg
 		display block
 		width 50%
@@ -125,7 +125,7 @@ root(isDark)
 
 		> text
 			font-size 10px
-			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
+			fill var(--chartCaption)
 
 			> tspan
 				opacity 0.5
@@ -134,11 +134,5 @@ root(isDark)
 		content ""
 		display block
 		clear both
-
-.zyknedwtlthezamcjlolyusmipqmjgxz[data-darkmode]
-	root(true)
-
-.zyknedwtlthezamcjlolyusmipqmjgxz:not([data-darkmode])
-	root(false)
 
 </style>

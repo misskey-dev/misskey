@@ -39,10 +39,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
-	$borderColor = isDark ? #5e6673 : #eee
-	border-top dashed 1px $borderColor
-	border-bottom dashed 1px $borderColor
+.mk-reactions-viewer
+	border-top dashed 1px var(--reactionViewerBorder)
+	border-bottom dashed 1px var(--reactionViewerBorder)
 	margin 4px 0
 
 	&:empty
@@ -60,12 +59,6 @@ root(isDark)
 		> span
 			margin-left 4px
 			font-size 1.2em
-			color isDark ? #d1d5dc : #444
-
-.mk-reactions-viewer[data-darkmode]
-	root(true)
-
-.mk-reactions-viewer:not([data-darkmode])
-	root(false)
+			color var(--text)
 
 </style>

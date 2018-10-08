@@ -1,35 +1,46 @@
 <template>
 <mk-ui>
 	<span slot="header" @click="showNav = true">
-		<span>
+		<span :class="$style.title">
 			<span v-if="src == 'home'">%fa:home%%i18n:@home%</span>
 			<span v-if="src == 'local'">%fa:R comments%%i18n:@local%</span>
 			<span v-if="src == 'hybrid'">%fa:share-alt%%i18n:@hybrid%</span>
 			<span v-if="src == 'global'">%fa:globe%%i18n:@global%</span>
+			<span v-if="src == 'mentions'">%fa:at%%i18n:@mentions%</span>
+			<span v-if="src == 'messages'">%fa:envelope R%%i18n:@messages%</span>
 			<span v-if="src == 'list'">%fa:list%{{ list.title }}</span>
+			<span v-if="src == 'tag'">%fa:hashtag%{{ tagTl.title }}</span>
 		</span>
 		<span style="margin-left:8px">
 			<template v-if="!showNav">%fa:angle-down%</template>
 			<template v-else>%fa:angle-up%</template>
 		</span>
+		<i :class="$style.badge" v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes">%fa:circle%</i>
 	</span>
 
 	<template slot="func">
 		<button @click="fn">%fa:pencil-alt%</button>
 	</template>
 
-	<main :data-darkmode="$store.state.device.darkmode">
+	<main>
 		<div class="nav" v-if="showNav">
 			<div class="bg" @click="showNav = false"></div>
+			<div class="pointer"></div>
 			<div class="body">
 				<div>
 					<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% %i18n:@home%</span>
-					<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% %i18n:@local%</span>
-					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'">%fa:share-alt% %i18n:@hybrid%</span>
+					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline">%fa:R comments% %i18n:@local%</span>
+					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
 					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
+					<div class="hr"></div>
+					<span :data-active="src == 'mentions'" @click="src = 'mentions'">%fa:at% %i18n:@mentions%<i class="badge" v-if="$store.state.i.hasUnreadMentions">%fa:circle%</i></span>
+					<span :data-active="src == 'messages'" @click="src = 'messages'">%fa:envelope R% %i18n:@messages%<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes">%fa:circle%</i></span>
 					<template v-if="lists">
+						<div class="hr" v-if="lists.length > 0"></div>
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
 					</template>
+					<div class="hr" v-if="$store.state.settings.tagTimelines && $store.state.settings.tagTimelines.length > 0"></div>
+					<span v-for="tl in $store.state.settings.tagTimelines" :data-active="src == 'tag' && tagTl == tl" @click="src = 'tag'; tagTl = tl" :key="tl.id">%fa:hashtag% {{ tl.title }}</span>
 				</div>
 			</div>
 		</div>
@@ -39,6 +50,9 @@
 			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
 			<x-tl v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
+			<x-tl v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
+			<x-tl v-if="src == 'messages'" ref="tl" key="messages" src="messages"/>
+			<x-tl v-if="src == 'tag'" ref="tl" key="tag" src="tag" :tag-tl="tagTl"/>
 			<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 		</div>
 	</main>
@@ -60,7 +74,9 @@ export default Vue.extend({
 			src: 'home',
 			list: null,
 			lists: null,
-			showNav: false
+			tagTl: null,
+			showNav: false,
+			enableLocalTimeline: false
 		};
 	},
 
@@ -70,9 +86,16 @@ export default Vue.extend({
 			this.saveSrc();
 		},
 
-		list() {
+		list(x) {
 			this.showNav = false;
 			this.saveSrc();
+			if (x != null) this.tagTl = null;
+		},
+
+		tagTl(x) {
+			this.showNav = false;
+			this.saveSrc();
+			if (x != null) this.list = null;
 		},
 
 		showNav(v) {
@@ -85,10 +108,16 @@ export default Vue.extend({
 	},
 
 	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.enableLocalTimeline = !meta.disableLocalTimeline;
+		});
+
 		if (this.$store.state.device.tl) {
 			this.src = this.$store.state.device.tl.src;
 			if (this.src == 'list') {
 				this.list = this.$store.state.device.tl.arg;
+			} else if (this.src == 'tag') {
+				this.tagTl = this.$store.state.device.tl.arg;
 			}
 		} else if (this.$store.state.i.followingCount == 0) {
 			this.src = 'hybrid';
@@ -113,7 +142,7 @@ export default Vue.extend({
 		saveSrc() {
 			this.$store.commit('device/setTl', {
 				src: this.src,
-				arg: this.list
+				arg: this.src == 'list' ? this.list : this.tagTl
 			});
 		},
 
@@ -125,10 +154,28 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+main
 	> .nav
+		> .pointer
+			position fixed
+			z-index 10002
+			top 56px
+			left 0
+			right 0
+
+			$size = 16px
+
+			&:after
+				content ""
+				display block
+				position absolute
+				top -($size * 2)
+				left s('calc(50% - %s)', $size)
+				border-top solid $size transparent
+				border-left solid $size transparent
+				border-right solid $size transparent
+				border-bottom solid $size var(--popupBg)
+
 		> .bg
 			position fixed
 			z-index 10000
@@ -145,38 +192,37 @@ root(isDark)
 			left 0
 			right 0
 			width 300px
+			max-height calc(100% - 70px)
 			margin 0 auto
-			background isDark ? #272f3a : #fff
+			overflow auto
+			-webkit-overflow-scrolling touch
+			background var(--popupBg)
 			border-radius 8px
 			box-shadow 0 0 16px rgba(#000, 0.1)
-
-			$balloon-size = 16px
-
-			&:after
-				content ""
-				display block
-				position absolute
-				top -($balloon-size * 2) + 1.5px
-				left s('calc(50% - %s)', $balloon-size)
-				border-top solid $balloon-size transparent
-				border-left solid $balloon-size transparent
-				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size isDark ? #272f3a : #fff
 
 			> div
 				padding 8px 0
 
-				> *
+				> .hr
+					margin 8px 0
+					border-top solid 1px var(--faceDivider)
+
+				> *:not(.hr)
 					display block
 					padding 8px 16px
-					color isDark ? #cdd0d8 : #666
+					color var(--text)
 
 					&[data-active]
-						color $theme-color-foreground
-						background $theme-color
+						color var(--primaryForeground)
+						background var(--primary)
 
 					&:not([data-active]):hover
-						background isDark ? #353e4a : #eee
+						background var(--mobileHomeTlItemHover)
+
+					> .badge
+						margin-left 6px
+						font-size 10px
+						color var(--primary)
 
 	> .tl
 		max-width 680px
@@ -189,10 +235,17 @@ root(isDark)
 		@media (min-width 600px)
 			padding 32px
 
-main[data-darkmode]
-	root(true)
+</style>
 
-main:not([data-darkmode])
-	root(false)
+<style lang="stylus" module>
+.title
+	i
+		margin-right 4px
+
+.badge
+	margin-left 6px
+	font-size 10px
+	color var(--primary)
+	vertical-align middle
 
 </style>

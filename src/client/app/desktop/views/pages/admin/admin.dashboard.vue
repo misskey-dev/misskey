@@ -1,22 +1,42 @@
 <template>
 <div class="obdskegsannmntldydackcpzezagxqfy mk-admin-card">
 	<header>%i18n:@dashboard%</header>
+
 	<div v-if="stats" class="stats">
 		<div><b>%fa:user% {{ stats.originalUsersCount | number }}</b><span>%i18n:@original-users%</span></div>
 		<div><span>%fa:user% {{ stats.usersCount | number }}</span><span>%i18n:@all-users%</span></div>
 		<div><b>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</b><span>%i18n:@original-notes%</span></div>
 		<div><span>%fa:pencil-alt% {{ stats.notesCount | number }}</span><span>%i18n:@all-notes%</span></div>
 	</div>
+
 	<div class="cpu-memory">
 		<x-cpu-memory :connection="connection"/>
 	</div>
-	<div>
-		<label>
-			<input type="checkbox" v-model="disableRegistration" @change="updateMeta">
-			<span>disableRegistration</span>
-		</label>
-		<button class="ui" @click="invite">%i18n:@invite%</button>
-		<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
+
+	<div v-if="this.$store.state.i && this.$store.state.i.isAdmin" class="form">
+		<div>
+			<label>
+				<p>%i18n:@banner-url%</p>
+				<input v-model="bannerUrl">
+			</label>
+			<button class="ui" @click="updateMeta">%i18n:@save%</button>
+		</div>
+
+		<div>
+			<label>
+				<input type="checkbox" v-model="disableRegistration" @change="updateMeta">
+				<span>%i18n:@disableRegistration%</span>
+			</label>
+			<button class="ui" @click="invite">%i18n:@invite%</button>
+			<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
+		</div>
+
+		<div>
+			<label>
+				<input type="checkbox" v-model="disableLocalTimeline" @change="updateMeta">
+				<span>%i18n:@disableLocalTimeline%</span>
+			</label>
+		</div>
 	</div>
 </div>
 </template>
@@ -33,17 +53,19 @@ export default Vue.extend({
 		return {
 			stats: null,
 			disableRegistration: false,
+			disableLocalTimeline: false,
+			bannerUrl: null,
 			inviteCode: null,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	created() {
-		this.connection = (this as any).os.streams.serverStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.serverStatsStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
 
 		(this as any).os.getMeta().then(meta => {
 			this.disableRegistration = meta.disableRegistration;
+			this.disableLocalTimeline = meta.disableLocalTimeline;
+			this.bannerUrl = meta.bannerUrl;
 		});
 
 		(this as any).api('stats').then(stats => {
@@ -51,17 +73,25 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		(this as any).os.streams.serverStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		invite() {
 			(this as any).api('admin/invite').then(x => {
 				this.inviteCode = x.code;
+			}).catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		},
 		updateMeta() {
 			(this as any).api('admin/update-meta', {
-				disableRegistration: this.disableRegistration
+				disableRegistration: this.disableRegistration,
+				disableLocalTimeline: this.disableLocalTimeline,
+				bannerUrl: this.bannerUrl
+			}).then(() => {
+				(this as any).os.apis.dialog({ text: `Saved` });
+			}).catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}
@@ -69,7 +99,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .obdskegsannmntldydackcpzezagxqfy
 	> .stats
@@ -86,7 +116,7 @@ export default Vue.extend({
 
 			> *:first-child
 				display block
-				color $theme-color
+				color var(--primary)
 
 			> *:last-child
 				font-size 70%
@@ -96,5 +126,10 @@ export default Vue.extend({
 		padding 16px
 		border solid 1px #eee
 		border-radius: 8px
+
+	> .form
+		> div
+			padding 16px
+			border-bottom solid 1px #eee
 
 </style>

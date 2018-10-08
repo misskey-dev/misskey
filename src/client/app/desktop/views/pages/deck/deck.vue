@@ -1,6 +1,6 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :style="style">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
@@ -35,6 +35,11 @@ export default Vue.extend({
 			if (this.$store.state.settings.deck == null) return [];
 			if (this.$store.state.settings.deck.layout == null) return this.$store.state.settings.deck.columns.map(c => [c.id]);
 			return this.$store.state.settings.deck.layout;
+		},
+		style(): any {
+			return {
+				height: `calc(100vh - ${this.$store.state.uiHeaderHeight}px)`
+			};
 		}
 	},
 
@@ -85,6 +90,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		document.title = (this as any).os.instanceName;
 		document.documentElement.style.overflow = 'hidden';
 	},
 
@@ -138,6 +144,24 @@ export default Vue.extend({
 						});
 					}
 				}, {
+					icon: '%fa:at%',
+					text: '%i18n:common.deck.mentions%',
+					action: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'mentions'
+						});
+					}
+				}, {
+					icon: '%fa:envelope R%',
+					text: '%i18n:common.deck.direct%',
+					action: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'direct'
+						});
+					}
+				}, {
 					icon: '%fa:list%',
 					text: '%i18n:common.deck.list%',
 					action: () => {
@@ -149,6 +173,20 @@ export default Vue.extend({
 								list: list
 							});
 							w.close();
+						});
+					}
+				}, {
+					icon: '%fa:hashtag%',
+					text: '%i18n:common.deck.hashtag%',
+					action: () => {
+						(this as any).apis.input({
+							title: '%i18n:@enter-hashtag-tl-title%'
+						}).then(title => {
+							this.$store.dispatch('settings/addDeckColumn', {
+								id: uuid(),
+								type: 'hashtag',
+								tagTlId: this.$store.state.settings.tagTimelines.find(x => x.title == title).id
+							});
 						});
 					}
 				}, {
@@ -183,9 +221,7 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.qlvquzbjribqcaozciifydkngcwtyzje
 	display flex
 	flex 1
 	padding 16px 0 16px 16px
@@ -213,18 +249,12 @@ root(isDark)
 
 	> button
 		padding 0 16px
-		color isDark ? #93a0a5 : #888
+		color var(--faceTextButton)
 
 		&:hover
-			color isDark ? #b8c5ca : #777
+			color var(--faceTextButtonHover)
 
 		&:active
-			color isDark ? #fff : #555
-
-.qlvquzbjribqcaozciifydkngcwtyzje[data-darkmode]
-	root(true)
-
-.qlvquzbjribqcaozciifydkngcwtyzje:not([data-darkmode])
-	root(false)
+			color var(--faceTextButtonActive)
 
 </style>

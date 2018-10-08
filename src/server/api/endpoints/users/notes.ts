@@ -1,64 +1,123 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import getHostLower from '../../common/get-host-lower';
-import Note, { pack } from '../../../../models/note';
+import Note, { packMany } from '../../../../models/note';
 import User, { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
+import { countIf } from '../../../../prelude/array';
 
-/**
- * Get notes of a user
- */
+export const meta = {
+	desc: {
+		'ja-JP': '指定したユーザーのタイムラインを取得します。'
+	},
+
+	params: {
+		userId: $.type(ID).optional.note({
+			desc: {
+				'ja-JP': 'ユーザーID'
+			}
+		}),
+
+		username: $.str.optional.note({
+			desc: {
+				'ja-JP': 'ユーザー名'
+			}
+		}),
+
+		host: $.str.optional.note({
+		}),
+
+		includeReplies: $.bool.optional.note({
+			default: true,
+
+			desc: {
+				'ja-JP': 'リプライを含めるか否か'
+			}
+		}),
+
+		limit: $.num.optional.range(1, 100).note({
+			default: 10,
+			desc: {
+				'ja-JP': '最大数'
+			}
+		}),
+
+		sinceId: $.type(ID).optional.note({
+			desc: {
+				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
+			}
+		}),
+
+		untilId: $.type(ID).optional.note({
+			desc: {
+				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
+			}
+		}),
+
+		sinceDate: $.num.optional.note({
+			desc: {
+				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
+			}
+		}),
+
+		untilDate: $.num.optional.note({
+			desc: {
+				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
+			}
+		}),
+
+		includeMyRenotes: $.bool.optional.note({
+			default: true,
+			desc: {
+				'ja-JP': '自分の行ったRenoteを含めるかどうか'
+			}
+		}),
+
+		includeRenotedMyNotes: $.bool.optional.note({
+			default: true,
+			desc: {
+				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
+			}
+		}),
+
+		includeLocalRenotes: $.bool.optional.note({
+			default: true,
+			desc: {
+				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
+			}
+		}),
+
+		withFiles: $.bool.optional.note({
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
+			}
+		}),
+
+		mediaOnly: $.bool.optional.note({
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
+			}
+		}),
+	}
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).optional.get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) throw psErr;
 
-	// Get 'username' parameter
-	const [username, usernameErr] = $.str.optional.get(params.username);
-	if (usernameErr) return rej('invalid username param');
-
-	if (userId === undefined && username === undefined) {
+	if (ps.userId === undefined && ps.username === undefined) {
 		return rej('userId or username is required');
 	}
 
-	// Get 'host' parameter
-	const [host, hostErr] = $.str.optional.get(params.host);
-	if (hostErr) return rej('invalid host param');
-
-	// Get 'includeReplies' parameter
-	const [includeReplies = true, includeRepliesErr] = $.bool.optional.get(params.includeReplies);
-	if (includeRepliesErr) return rej('invalid includeReplies param');
-
-	// Get 'withMedia' parameter
-	const [withMedia = false, withMediaErr] = $.bool.optional.get(params.withMedia);
-	if (withMediaErr) return rej('invalid withMedia param');
-
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
-	if (sinceIdErr) return rej('invalid sinceId param');
-
-	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
-	if (untilIdErr) return rej('invalid untilId param');
-
-	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $.num.optional.get(params.sinceDate);
-	if (sinceDateErr) throw 'invalid sinceDate param';
-
-	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $.num.optional.get(params.untilDate);
-	if (untilDateErr) throw 'invalid untilDate param';
-
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if ([sinceId, untilId, sinceDate, untilDate].filter(x => x != null).length > 1) {
+	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
-	const q = userId !== undefined
-		? { _id: userId }
-		: { usernameLower: username.toLowerCase(), host: getHostLower(host) } ;
+	const q = ps.userId !== undefined
+		? { _id: ps.userId }
+		: { usernameLower: ps.username.toLowerCase(), host: getHostLower(ps.host) } ;
 
 	// Lookup user
 	const user = await User.findOne(q, {
@@ -80,32 +139,34 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		userId: user._id
 	} as any;
 
-	if (sinceId) {
+	if (ps.sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: sinceId
+			$gt: ps.sinceId
 		};
-	} else if (untilId) {
+	} else if (ps.untilId) {
 		query._id = {
-			$lt: untilId
+			$lt: ps.untilId
 		};
-	} else if (sinceDate) {
+	} else if (ps.sinceDate) {
 		sort._id = 1;
 		query.createdAt = {
-			$gt: new Date(sinceDate)
+			$gt: new Date(ps.sinceDate)
 		};
-	} else if (untilDate) {
+	} else if (ps.untilDate) {
 		query.createdAt = {
-			$lt: new Date(untilDate)
+			$lt: new Date(ps.untilDate)
 		};
 	}
 
-	if (!includeReplies) {
+	if (!ps.includeReplies) {
 		query.replyId = null;
 	}
 
-	if (withMedia) {
-		query.mediaIds = {
+	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
+
+	if (withFiles) {
+		query.fileIds = {
 			$exists: true,
 			$ne: []
 		};
@@ -115,12 +176,10 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	// Issue query
 	const notes = await Note
 		.find(query, {
-			limit: limit,
+			limit: ps.limit,
 			sort: sort
 		});
 
 	// Serialize
-	res(await Promise.all(notes.map(async (note) =>
-		await pack(note, me)
-	)));
+	res(await packMany(notes, me));
 });

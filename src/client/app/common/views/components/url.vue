@@ -12,6 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { toUnicode as decodePunycode } from 'punycode';
 export default Vue.extend({
 	props: ['url', 'target'],
 	data() {
@@ -27,11 +28,11 @@ export default Vue.extend({
 	created() {
 		const url = new URL(this.url);
 		this.schema = url.protocol;
-		this.hostname = url.hostname;
+		this.hostname = decodePunycode(url.hostname);
 		this.port = url.port;
-		this.pathname = url.pathname;
-		this.query = url.search;
-		this.hash = url.hash;
+		this.pathname = decodeURIComponent(url.pathname);
+		this.query = decodeURIComponent(url.search);
+		this.hash = decodeURIComponent(url.hash);
 	}
 });
 </script>

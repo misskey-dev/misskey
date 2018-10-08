@@ -7,27 +7,51 @@ maintainer:
   repository_url: https://github.com/syuilo/misskey # Repository URL
   feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
 
-# URL and Port settings overview
-# e.g., If you want to realize following structure:
-#
-#               +--- https://example.com:123 ----------+
-# +------+      |+-------------+      +---------------+|
-# | User | ---> || Proxy (123) | ---> | Misskey (456) ||
-# +------+      |+-------------+      +---------------+|
-#               +--------------------------------------+
-#
-# You need to set 'https://example.com:123' to 'url' prop and
-# You need to set 456 to 'port' prop.
-#
-# In other words, the 'url' prop should be the final accessible URL seen by a user.
-# 'port' prop is a port that the Misskey server should actually listen
-# on and it is not necessarily the port that a user accesses.
 
-url: http://localhost/
+# Final accessible URL seen by a user.
+url: https://example.tld/
 
-# A port that your Misskey server should listen.
-# This value is not a port to use when accessing with a browser.
-port: 80
+
+### Port and TLS settings ######################################
+#
+# Misskey supports two deployment options for public.
+#
+
+# Option 1: With Reverse Proxy
+#
+#                 +----- https://example.tld/ ------------+
+#   +------+      |+-------------+      +----------------+|
+#   | User | ---> || Proxy (443) | ---> | Misskey (3000) ||
+#   +------+      |+-------------+      +----------------+|
+#                 +---------------------------------------+
+#
+#   You need to setup reverse proxy. (eg. Nginx)
+#   You do not define 'https' section.
+
+# Option 2: Standalone
+#
+#                 +- https://example.tld/ -+
+#   +------+      |   +---------------+    |
+#   | User | ---> |   | Misskey (443) |    |
+#   +------+      |   +---------------+    |
+#                 +------------------------+
+#
+#   You need to run Misskey as root.
+#   You need to set Certificate in 'https' section.
+
+# To use option 1, uncomment below line.
+# port: 3000    # A port that your Misskey server should listen.
+
+# To use option 2, uncomment below lines.
+# port: 443
+#
+# https:
+#   # path for certification
+#   key: /etc/letsencrypt/live/example.tld/privkey.pem
+#   cert: /etc/letsencrypt/live/example.tld/fullchain.pem
+
+################################################################
+
 
 mongodb:
   host: localhost
@@ -97,12 +121,6 @@ drive:
 #
 # Below settings are optional
 #
-
-# TLS
-# https:
-#   # path for certification
-#   key: example-tls-key
-#   cert: example-tls-cert
 
 # Elasticsearch
 # elasticsearch:

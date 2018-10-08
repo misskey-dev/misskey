@@ -5,7 +5,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import XNotes from './deck.notes.vue';
-import { UserListStream } from '../../../../common/scripts/streaming/user-list';
 
 const fetchLimit = 10;
 
@@ -68,7 +67,7 @@ export default Vue.extend({
 				(this as any).api('notes/user-list-timeline', {
 					listId: this.list.id,
 					limit: fetchLimit + 1,
-					mediaOnly: this.mediaOnly,
+					withFiles: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
 					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
@@ -90,7 +89,7 @@ export default Vue.extend({
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
-				mediaOnly: this.mediaOnly,
+				withFiles: this.mediaOnly,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
 				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
@@ -109,7 +108,7 @@ export default Vue.extend({
 			return promise;
 		},
 		onNote(note) {
-			if (this.mediaOnly && note.media.length == 0) return;
+			if (this.mediaOnly && note.files.length == 0) return;
 
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);

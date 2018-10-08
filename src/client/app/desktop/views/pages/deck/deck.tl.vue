@@ -36,18 +36,17 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
 	computed: {
 		stream(): any {
 			switch (this.src) {
-				case 'home': return (this as any).os.stream;
-				case 'local': return (this as any).os.streams.localTimelineStream;
-				case 'hybrid': return (this as any).os.streams.hybridTimelineStream;
-				case 'global': return (this as any).os.streams.globalTimelineStream;
+				case 'home': return (this as any).os.stream.useSharedConnection('homeTimeline');
+				case 'local': return (this as any).os.stream.useSharedConnection('localTimeline');
+				case 'hybrid': return (this as any).os.stream.useSharedConnection('hybridTimeline');
+				case 'global': return (this as any).os.stream.useSharedConnection('globalTimeline');
 			}
 		},
 
@@ -68,8 +67,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
+		this.connection = this.stream;
 
 		this.connection.on('note', this.onNote);
 		if (this.src == 'home') {
@@ -81,12 +79,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.off('follow', this.onChangeFollowing);
-			this.connection.off('unfollow', this.onChangeFollowing);
-		}
-		this.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {
@@ -96,7 +89,7 @@ export default Vue.extend({
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
 				(this as any).api(this.endpoint, {
 					limit: fetchLimit + 1,
-					mediaOnly: this.mediaOnly,
+					withFiles: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
 					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
@@ -117,7 +110,7 @@ export default Vue.extend({
 
 			const promise = (this as any).api(this.endpoint, {
 				limit: fetchLimit + 1,
-				mediaOnly: this.mediaOnly,
+				withFiles: this.mediaOnly,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -138,7 +131,7 @@ export default Vue.extend({
 		},
 
 		onNote(note) {
-			if (this.mediaOnly && note.media.length == 0) return;
+			if (this.mediaOnly && note.files.length == 0) return;
 
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);

@@ -1,58 +1,110 @@
 import * as mongo from 'mongodb';
 import Xev from 'xev';
-
-const ev = new Xev();
+import Meta, { IMeta } from './models/meta';
 
 type ID = string | mongo.ObjectID;
 
-function publish(channel: string, type: string, value?: any): void {
-	const message = type == null ? value : value == null ?
-		{ type: type } :
-		{ type: type, body: value };
+class Publisher {
+	private ev: Xev;
+	private meta: IMeta;
 
-		ev.emit(channel, message);
+	constructor() {
+		this.ev = new Xev();
+
+		setInterval(async () => {
+			this.meta = await Meta.findOne({});
+		}, 5000);
+	}
+
+	public getMeta = async () => {
+		if (this.meta != null) return this.meta;
+
+		this.meta = await Meta.findOne({});
+		return this.meta;
+	}
+
+	private publish = (channel: string, type: string, value?: any): void => {
+		const message = type == null ? value : value == null ?
+			{ type: type, body: null } :
+			{ type: type, body: value };
+
+		this.ev.emit(channel, message);
+	}
+
+	public publishMainStream = (userId: ID, type: string, value?: any): void => {
+		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishDriveStream = (userId: ID, type: string, value?: any): void => {
+		this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishNoteStream = (noteId: ID, type: string, value: any): void => {
+		this.publish(`noteStream:${noteId}`, type, {
+			id: noteId,
+			body: value
+		});
+	}
+
+	public publishUserListStream = (listId: ID, type: string, value?: any): void => {
+		this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishMessagingStream = (userId: ID, otherpartyId: ID, type: string, value?: any): void => {
+		this.publish(`messagingStream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishMessagingIndexStream = (userId: ID, type: string, value?: any): void => {
+		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishReversiStream = (userId: ID, type: string, value?: any): void => {
+		this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishReversiGameStream = (gameId: ID, type: string, value?: any): void => {
+		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishHomeTimelineStream = (userId: ID, note: any): void => {
+		this.publish(`homeTimeline:${userId}`, null, note);
+	}
+
+	public publishLocalTimelineStream = async (note: any): Promise<void> => {
+		const meta = await this.getMeta();
+		if (meta.disableLocalTimeline) return;
+		this.publish('localTimeline', null, note);
+	}
+
+	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => {
+		const meta = await this.getMeta();
+		if (meta.disableLocalTimeline) return;
+		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
+	}
+
+	public publishGlobalTimelineStream = (note: any): void => {
+		this.publish('globalTimeline', null, note);
+	}
+
+	public publishHashtagStream = (note: any): void => {
+		this.publish('hashtag', null, note);
+	}
 }
 
-export function publishUserStream(userId: ID, type: string, value?: any): void {
-	publish(`user-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
-}
+const publisher = new Publisher();
 
-export function publishDriveStream(userId: ID, type: string, value?: any): void {
-	publish(`drive-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
-}
+export default publisher;
 
-export function publishNoteStream(noteId: ID, type: string): void {
-	publish(`note-stream:${noteId}`, null, noteId);
-}
-
-export function publishUserListStream(listId: ID, type: string, value?: any): void {
-	publish(`user-list-stream:${listId}`, type, typeof value === 'undefined' ? null : value);
-}
-
-export function publishMessagingStream(userId: ID, otherpartyId: ID, type: string, value?: any): void {
-	publish(`messaging-stream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
-}
-
-export function publishMessagingIndexStream(userId: ID, type: string, value?: any): void {
-	publish(`messaging-index-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
-}
-
-export function publishReversiStream(userId: ID, type: string, value?: any): void {
-	publish(`reversi-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
-}
-
-export function publishReversiGameStream(gameId: ID, type: string, value?: any): void {
-	publish(`reversi-game-stream:${gameId}`, type, typeof value === 'undefined' ? null : value);
-}
-
-export function publishLocalTimelineStream(note: any): void {
-	publish('local-timeline', null, note);
-}
-
-export function publishHybridTimelineStream(userId: ID, note: any): void {
-	publish(userId ? `hybrid-timeline:${userId}` : 'hybrid-timeline', null, note);
-}
-
-export function publishGlobalTimelineStream(note: any): void {
-	publish('global-timeline', null, note);
-}
+export const publishMainStream = publisher.publishMainStream;
+export const publishDriveStream = publisher.publishDriveStream;
+export const publishNoteStream = publisher.publishNoteStream;
+export const publishUserListStream = publisher.publishUserListStream;
+export const publishMessagingStream = publisher.publishMessagingStream;
+export const publishMessagingIndexStream = publisher.publishMessagingIndexStream;
+export const publishReversiStream = publisher.publishReversiStream;
+export const publishReversiGameStream = publisher.publishReversiGameStream;
+export const publishHomeTimelineStream = publisher.publishHomeTimelineStream;
+export const publishLocalTimelineStream = publisher.publishLocalTimelineStream;
+export const publishHybridTimelineStream = publisher.publishHybridTimelineStream;
+export const publishGlobalTimelineStream = publisher.publishGlobalTimelineStream;
+export const publishHashtagStream = publisher.publishHashtagStream;

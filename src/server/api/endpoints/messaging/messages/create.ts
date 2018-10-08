@@ -6,7 +6,7 @@ import User, { ILocalUser } from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
-import { publishUserStream } from '../../../../../stream';
+import { publishMainStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
 
@@ -74,7 +74,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		createdAt: new Date(),
 		fileId: file ? file._id : undefined,
 		recipientId: recipient._id,
-		text: text ? text : undefined,
+		text: text ? text.trim() : undefined,
 		userId: user._id,
 		isRead: false
 	});
@@ -88,12 +88,12 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// 自分のストリーム
 	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
 	publishMessagingIndexStream(message.userId, 'message', messageObj);
-	publishUserStream(message.userId, 'messaging_message', messageObj);
+	publishMainStream(message.userId, 'messagingMessage', messageObj);
 
 	// 相手のストリーム
 	publishMessagingStream(message.recipientId, message.userId, 'message', messageObj);
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
-	publishUserStream(message.recipientId, 'messaging_message', messageObj);
+	publishMainStream(message.recipientId, 'messagingMessage', messageObj);
 
 	// Update flag
 	User.update({ _id: recipient._id }, {
@@ -102,7 +102,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		}
 	});
 
-	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
+	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { isRead: true });
 		if (!freshMessage.isRead) {
@@ -117,10 +117,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			}
 			//#endregion
 
-			publishUserStream(message.recipientId, 'unread_messaging_message', messageObj);
-			pushSw(message.recipientId, 'unread_messaging_message', messageObj);
+			publishMainStream(message.recipientId, 'unreadMessagingMessage', messageObj);
+			pushSw(message.recipientId, 'unreadMessagingMessage', messageObj);
 		}
-	}, 3000);
+	}, 2000);
 
 	// 履歴作成(自分)
 	History.update({

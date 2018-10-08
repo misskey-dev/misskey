@@ -3,7 +3,7 @@
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<div class="stream">
+	<div class="body">
 		<p class="init" v-if="init">%fa:spinner .spin%%i18n:common.loading%</p>
 		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:@empty%</p>
 		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:@no-history%</p>
@@ -30,7 +30,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { MessagingStream } from '../../scripts/streaming/messaging';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { url } from '../../../config';
@@ -72,10 +71,16 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = new MessagingStream((this as any).os, this.$store.state.i, this.user.id);
+		this.connection =((this as any).os.stream.connectToChannel('messaging', { otherparty: this.user.id });
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
+
+		if (this.isNaked) {
+			window.addEventListener('scroll', this.onScroll, { passive: true });
+		} else {
+			this.$el.addEventListener('scroll', this.onScroll, { passive: true });
+		}
 
 		document.addEventListener('visibilitychange', this.onVisibilitychange);
 
@@ -86,9 +91,13 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('message', this.onMessage);
-		this.connection.off('read', this.onRead);
-		this.connection.close();
+		this.connection.dispose();
+
+		if (this.isNaked) {
+			window.removeEventListener('scroll', this.onScroll);
+		} else {
+			this.$el.removeEventListener('scroll', this.onScroll);
+		}
 
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
@@ -226,6 +235,14 @@ export default Vue.extend({
 			}, 4000);
 		},
 
+		onScroll() {
+			const el = this.isNaked ? window.document.documentElement : this.$el;
+			const current = el.scrollTop + el.clientHeight;
+			if (current > el.scrollHeight - 1) {
+				this.showIndicator = false;
+			}
+		},
+
 		onVisibilitychange() {
 			if (document.hidden) return;
 			this.messages.forEach(message => {
@@ -242,39 +259,28 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-messaging-room
 	display flex
 	flex 1
 	flex-direction column
 	height 100%
-	background isDark ? #191b22 : #fff
+	background var(--messagingRoomBg)
 
-	> .stream
+	> .body
 		width 100%
 		max-width 600px
 		margin 0 auto
 		flex 1
 
-		> .init
-			width 100%
-			margin 0
-			padding 16px 8px 8px 8px
-			text-align center
-			font-size 0.8em
-			color rgba(isDark ? #fff : #000, 0.4)
-
-			[data-fa]
-				margin-right 4px
-
+		> .init,
 		> .empty
 			width 100%
 			margin 0
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(isDark ? #fff : #000, 0.4)
+			color var(--messagingRoomInfo)
+			opacity 0.5
 
 			[data-fa]
 				margin-right 4px
@@ -285,7 +291,8 @@ root(isDark)
 			padding 16px
 			text-align center
 			font-size 0.8em
-			color rgba(isDark ? #fff : #000, 0.4)
+			color var(--messagingRoomInfo)
+			opacity 0.5
 
 			[data-fa]
 				margin-right 4px
@@ -329,7 +336,7 @@ root(isDark)
 				left 0
 				right 0
 				margin 0 auto
-				background rgba(isDark ? #fff : #000, 0.1)
+				background var(--messagingRoomDateDividerLine)
 
 			> span
 				display inline-block
@@ -337,8 +344,8 @@ root(isDark)
 				padding 0 16px
 				//font-weight bold
 				line-height 32px
-				color rgba(isDark ? #fff : #000, 0.3)
-				background isDark ? #191b22 : #fff
+				color var(--messagingRoomDateDividerText)
+				background var(--messagingRoomBg)
 
 	> footer
 		position -webkit-sticky
@@ -349,7 +356,7 @@ root(isDark)
 		max-width 600px
 		margin 0 auto
 		padding 0
-		background rgba(isDark ? #282c37 : #fff, 0.95)
+		//background rgba(var(--face), 0.95)
 		background-clip content-box
 
 		> .new-message
@@ -366,15 +373,15 @@ root(isDark)
 				cursor pointer
 				line-height 32px
 				font-size 12px
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 				border-radius 16px
 
 				&:hover
-					background lighten($theme-color, 10%)
+					background var(--primaryLighten10)
 
 				&:active
-					background darken($theme-color, 10%)
+					background var(--primaryDarken10)
 
 				> [data-fa]
 					position absolute
@@ -389,11 +396,5 @@ root(isDark)
 .fade-enter, .fade-leave-to
 	transition opacity 0.5s
 	opacity 0
-
-.mk-messaging-room[data-darkmode]
-	root(true)
-
-.mk-messaging-room:not([data-darkmode])
-	root(false)
 
 </style>

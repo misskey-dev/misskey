@@ -56,7 +56,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	log(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
-	const actor = await resolvePerson(note.attributedTo) as IRemoteUser;
+	const actor = await resolvePerson(note.attributedTo, null, resolver) as IRemoteUser;
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
@@ -73,16 +73,16 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 			visibility = 'followers';
 		} else {
 			visibility = 'specified';
-			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
+			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, null, resolver)));
 		}
 	}
 	//#endergion
 
-	// 添付メディア
+	// 添付ファイル
 	// TODO: attachmentは必ずしもImageではない
 	// TODO: attachmentは必ずしも配列ではない
 	// Noteがsensitiveなら添付もsensitiveにする
-	const media = note.attachment
+	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
 		? await Promise.all(note.attachment.map(x => resolveImage(actor, x)))
 		: [];
@@ -91,7 +91,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
 	// テキストのパース
-	const text = htmlToMFM(note.content);
+	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -100,7 +100,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	return await post(actor, {
 		createdAt: new Date(note.published),
-		media,
+		files: files,
 		reply,
 		renote: undefined,
 		cw: note.summary,

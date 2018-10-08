@@ -57,7 +57,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	// Create following
-	create(follower, followee);
+	await create(follower, followee);
 
 	// Send response
 	res(await pack(followee._id, user));

@@ -9,9 +9,9 @@ export type TextElementHashtag = {
 };
 
 export default function(text: string, i: number) {
-	if (!(/^\s#[^\s]+/.test(text) || (i == 0 && /^#[^\s]+/.test(text)))) return null;
+	if (!(/^\s#[^\s\.,]+/.test(text) || (i == 0 && /^#[^\s\.,]+/.test(text)))) return null;
 	const isHead = text.startsWith('#');
-	const hashtag = text.match(/^\s?#[^\s]+/)[0];
+	const hashtag = text.match(/^\s?#[^\s\.,]+/)[0];
 	const res: any[] = !isHead ? [{
 		type: 'text',
 		content: text[0]

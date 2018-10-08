@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import User, { ILocalUser } from '../../../../models/user';
-import { publishUserStream } from '../../../../stream';
+import { publishMainStream } from '../../../../stream';
 
 export const meta = {
 	requireCredential: true,
@@ -26,7 +26,7 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	res();
 
 	// Publish event
-	publishUserStream(user._id, 'clientSettingUpdated', {
+	publishMainStream(user._id, 'clientSettingUpdated', {
 		key: name,
 		value
 	});

@@ -3,7 +3,7 @@ const deepcopy = require('deepcopy');
 const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import Note, { pack as packNote, deleteNote } from './note';
+import Note, { packMany as packNoteMany, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
 import { getFriendIds } from '../server/api/common/get-friends';
@@ -53,7 +53,7 @@ type IUserBase = {
 	wallpaperUrl?: string;
 	data: any;
 	description: string;
-	pinnedNoteId: mongo.ObjectID;
+	pinnedNoteIds: mongo.ObjectID[];
 
 	/**
 	 * 凍結されているか否か
@@ -102,7 +102,10 @@ export interface ILocalUser extends IUserBase {
 	twoFactorEnabled: boolean;
 	twoFactorTempSecret?: string;
 	clientSettings: any;
-	settings: any;
+	settings: {
+		autoWatch: boolean;
+		alwaysMarkNsfw?: boolean;
+	};
 	hasUnreadNotification: boolean;
 	hasUnreadMessagingMessage: boolean;
 }
@@ -110,6 +113,7 @@ export interface ILocalUser extends IUserBase {
 export interface IRemoteUser extends IUserBase {
 	inbox: string;
 	sharedInbox?: string;
+	featured?: string;
 	endpoints: string[];
 	uri: string;
 	url?: string;
@@ -323,7 +327,8 @@ export const pack = (
 	me?: string | mongo.ObjectID | IUser,
 	options?: {
 		detail?: boolean,
-		includeSecrets?: boolean
+		includeSecrets?: boolean,
+		includeHasUnreadNotes?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 
@@ -356,9 +361,11 @@ export const pack = (
 		_user = deepcopy(user);
 	}
 
-	// TODO: ここでエラーにするのではなくダミーのユーザーデータを返す
-	// SEE: https://github.com/syuilo/misskey/issues/1432
-	if (!_user) return reject('invalid user arg.');
+	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
+	if (_user == null) {
+		console.warn(`user not found on database: ${user}`);
+		return resolve(null);
+	}
 
 	// Me
 	const meId: mongo.ObjectID = me
@@ -432,10 +439,10 @@ export const pack = (
 				followerId: _user.id,
 				followeeId: meId
 			}),
-			_user.isLocked ? FollowRequest.findOne({
+			FollowRequest.findOne({
 				followerId: meId,
 				followeeId: _user.id
-			}) : Promise.resolve(null),
+			}),
 			FollowRequest.findOne({
 				followerId: _user.id,
 				followeeId: meId
@@ -461,9 +468,9 @@ export const pack = (
 	}
 
 	if (opts.detail) {
-		if (_user.pinnedNoteId) {
-			// Populate pinned note
-			_user.pinnedNote = packNote(_user.pinnedNoteId, meId, {
+		if (_user.pinnedNoteIds) {
+			// Populate pinned notes
+			_user.pinnedNotes = packNoteMany(_user.pinnedNoteIds, meId, {
 				detail: true
 			});
 		}
@@ -483,6 +490,11 @@ export const pack = (
 				followerId: { $in: myFollowingIds }
 			});
 		}
+	}
+
+	if (!opts.includeHasUnreadNotes) {
+		delete _user.hasUnreadSpecifiedNotes;
+		delete _user.hasUnreadMentions;
 	}
 
 	// resolve promises in _user object

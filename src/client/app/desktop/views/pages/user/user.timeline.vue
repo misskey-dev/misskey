@@ -66,7 +66,7 @@ export default Vue.extend({
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined,
 					includeReplies: this.mode == 'with-replies',
-					withMedia: this.mode == 'with-media'
+					withFiles: this.mode == 'with-media'
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -86,7 +86,7 @@ export default Vue.extend({
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',
-				withMedia: this.mode == 'with-media',
+				withFiles: this.mode == 'with-media',
 				untilId: (this.$refs.timeline as any).tail().id
 			});
 
@@ -112,17 +112,16 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-	background isDark ? #282C37 : #fff
+.oh5y2r7l5lx8j6jj791ykeiwgihheguk
+	background var(--face)
+	border-radius var(--round)
+	overflow hidden
 
 	> header
 		padding 0 8px
 		z-index 10
-		background isDark ? #313543 : #fff
-		border-radius 6px 6px 0 0
-		box-shadow 0 1px isDark ? rgba(#000, 0.15) : rgba(#000, 0.08)
+		background var(--faceHeader)
+		box-shadow 0 1px var(--desktopTimelineHeaderShadow)
 
 		> span
 			display inline-block
@@ -132,7 +131,7 @@ root(isDark)
 			user-select none
 
 			&[data-active]
-				color $theme-color
+				color var(--primary)
 				cursor default
 				font-weight bold
 
@@ -144,14 +143,14 @@ root(isDark)
 					left -8px
 					width calc(100% + 16px)
 					height 2px
-					background $theme-color
+					background var(--primary)
 
 			&:not([data-active])
-				color isDark ? #9aa2a7 : #6f7477
+				color var(--desktopTimelineSrc)
 				cursor pointer
 
 				&:hover
-					color isDark ? #d9dcde : #525a5f
+					color var(--desktopTimelineSrcHover)
 
 	> .loading
 		padding 64px 0
@@ -169,11 +168,5 @@ root(isDark)
 			margin-bottom 16px
 			font-size 3em
 			color #ccc
-
-.oh5y2r7l5lx8j6jj791ykeiwgihheguk[data-darkmode]
-	root(true)
-
-.oh5y2r7l5lx8j6jj791ykeiwgihheguk:not([data-darkmode])
-	root(false)
 
 </style>

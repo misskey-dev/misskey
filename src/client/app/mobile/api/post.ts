@@ -1,13 +1,12 @@
-import PostForm from '../views/components/post-form.vue';
+import PostForm from '../views/components/post-form-dialog.vue';
 
 export default (os) => (opts) => {
 	const o = opts || {};
 
-	const app = document.getElementById('app');
-	app.style.display = 'none';
+	document.documentElement.style.overflow = 'hidden';
 
 	function recover() {
-		app.style.display = 'block';
+		document.documentElement.style.overflow = 'auto';
 	}
 
 	const vm = new PostForm({

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-drive">
+<div class="kmmwchoexgckptowjmjgfsygeltxfeqs">
 	<nav ref="nav">
 		<a @click.prevent="goRoot()" href="/i/drive">%fa:cloud%%i18n:@drive%</a>
 		<template v-for="folder in hierarchyFolders">
@@ -26,11 +26,11 @@
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
-			<x-folder v-for="folder in folders" :key="folder.id" :folder="folder"/>
+			<x-folder class="folder" v-for="folder in folders" :key="folder.id" :folder="folder"/>
 			<p v-if="moreFolders">%i18n:@load-more%</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
-			<x-file v-for="file in files" :key="file.id" :file="file"/>
+			<x-file class="file" v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
 				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:@load-more%' }}
 			</button>
@@ -81,8 +81,7 @@ export default Vue.extend({
 			hierarchyFolders: [],
 			selectedFiles: [],
 			info: null,
-			connection: null,
-			connectionId: null,
+			connection: null
 
 			fetching: true,
 			fetchingMoreFiles: false,
@@ -94,9 +93,15 @@ export default Vue.extend({
 			return this.selectFile;
 		}
 	},
+	watch: {
+		top() {
+			if (this.isNaked) {
+				(this.$refs.nav as any).style.top = `${this.top}px`;
+			}
+		}
+	},
 	mounted() {
-		this.connection = (this as any).os.streams.driveStream.getConnection();
-		this.connectionId = (this as any).os.streams.driveStream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('drive');
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
@@ -117,12 +122,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		this.connection.off('file_created', this.onStreamDriveFileCreated);
-		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
-		this.connection.off('file_deleted', this.onStreamDriveFileDeleted);
-		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
-		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
-		(this as any).os.streams.driveStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		onStreamDriveFileCreated(file) {
@@ -466,8 +466,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-drive
-	background #fff
+.kmmwchoexgckptowjmjgfsygeltxfeqs
+	background var(--face)
 
 	> nav
 		display block
@@ -480,10 +480,10 @@ export default Vue.extend({
 		overflow auto
 		white-space nowrap
 		font-size 0.9em
-		color rgba(#000, 0.67)
+		color var(--text)
 		-webkit-backdrop-filter blur(12px)
 		backdrop-filter blur(12px)
-		background-color rgba(#fff, 0.75)
+		background-color var(--mobileDriveNavBg)
 		border-bottom solid 1px rgba(#000, 0.13)
 
 		> p
@@ -509,7 +509,7 @@ export default Vue.extend({
 			opacity 0.5
 
 		> .info
-			border-bottom solid 1px #eee
+			border-bottom solid 1px var(--faceDivider)
 
 			&:empty
 				display none
@@ -520,15 +520,15 @@ export default Vue.extend({
 				margin 0 auto
 				padding 4px 16px
 				font-size 10px
-				color #777
+				color var(--text)
 
 		> .folders
 			> .folder
-				border-bottom solid 1px #eee
+				border-bottom solid 1px var(--faceDivider)
 
 		> .files
 			> .file
-				border-bottom solid 1px #eee
+				border-bottom solid 1px var(--faceDivider)
 
 			> .more
 				display block

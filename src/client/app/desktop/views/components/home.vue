@@ -141,7 +141,6 @@ export default Vue.extend({
 	data() {
 		return {
 			connection: null,
-			connectionId: null,
 			widgetAdderSelected: null,
 			trash: []
 		};
@@ -176,12 +175,11 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = (this as any).os.stream.useSharedConnection('main');
 	},
 
 	beforeDestroy() {
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {
@@ -237,15 +235,17 @@ export default Vue.extend({
 
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
+		},
+
+		focus() {
+			(this.$refs.tl as any).focus();
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-home
 	display block
 
 	&[data-customize]
@@ -275,8 +275,8 @@ root(isDark)
 		left 0
 		width 100%
 		height 48px
-		color isDark ? #fff : #000
-		background isDark ? #313543 : #f7f7f7
+		color var(--text)
+		background var(--desktopHeaderBg)
 		box-shadow 0 1px 1px rgba(#000, 0.075)
 
 		> a
@@ -288,15 +288,15 @@ root(isDark)
 			padding 0 16px
 			line-height 48px
 			text-decoration none
-			color $theme-color-foreground
-			background $theme-color
+			color var(--primaryForeground)
+			background var(--primary)
 			transition background 0.1s ease
 
 			&:hover
-				background lighten($theme-color, 10%)
+				background var(--primaryLighten10)
 
 			&:active
-				background darken($theme-color, 10%)
+				background var(--primaryDarken10)
 				transition background 0s ease
 
 			> [data-fa]
@@ -316,7 +316,7 @@ root(isDark)
 						line-height 48px
 
 				&.trash
-					border-left solid 1px isDark ? #1c2023 : #ddd
+					border-left solid 1px var(--faceDivider)
 
 					> div
 						width 100%
@@ -336,7 +336,7 @@ root(isDark)
 		display flex
 		justify-content center
 		margin 0 auto
-		max-width 1220px
+		max-width 1240px
 
 		> *
 			.customize-container
@@ -351,13 +351,13 @@ root(isDark)
 
 		> .main
 			padding 16px
-			width calc(100% - 275px * 2)
+			width calc(100% - 280px * 2)
 			order 2
 
 			> .form
 				margin-bottom 16px
-				border solid 1px rgba(#000, 0.075)
-				border-radius 4px
+				box-shadow var(--shadow)
+				border-radius var(--round)
 
 			@media (max-width 700px)
 				padding 0
@@ -367,7 +367,7 @@ root(isDark)
 					border-radius 0
 
 		> *:not(.main)
-			width 275px
+			width 280px
 			padding 16px 0 16px 0
 
 			> *:not(:last-child)
@@ -390,11 +390,5 @@ root(isDark)
 				width 100%
 				max-width 700px
 				margin 0 auto
-
-.mk-home[data-darkmode]
-	root(true)
-
-.mk-home:not([data-darkmode])
-	root(false)
 
 </style>

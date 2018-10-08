@@ -43,6 +43,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('note not found');
 	}
 
+	if (note.deletedAt != null) {
+		return rej('this not is already deleted');
+	}
+
 	try {
 		await create(user, note, ps.reaction);
 	} catch (e) {
