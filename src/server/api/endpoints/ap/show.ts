@@ -24,15 +24,15 @@ export const meta = {
 	},
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
+export default async (params: any) => {
 	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
+	if (psErr) throw psErr;
 
 	const object = await fetchAny(ps.uri);
-	if (object !== null) return res(object);
+	if (object !== null) return object;
 
-	return rej('object not found');
-});
+	throw new Error('object not found');
+};
 
 /***
  * URIからUserかNoteを解決する
