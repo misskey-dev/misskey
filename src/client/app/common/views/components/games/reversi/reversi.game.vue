@@ -186,9 +186,8 @@ export default Vue.extend({
 		if (this.game.isStarted && !this.game.isEnded) {
 			this.pollingClock = setInterval(() => {
 				const crc32 = CRC32.str(this.logs.map(x => x.pos.toString()).join(''));
-				this.connection.send({
-					type: 'check',
-					crc32
+				this.connection.send('check', {
+					crc32: crc32
 				});
 			}, 3000);
 		}
@@ -224,9 +223,8 @@ export default Vue.extend({
 				sound.play();
 			}
 
-			this.connection.send({
-				type: 'set',
-				pos
+			this.connection.send('set', {
+				pos: pos
 			});
 
 			this.checkEnd();

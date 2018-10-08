@@ -174,8 +174,7 @@ export default Vue.extend({
 
 			this.messages.push(message);
 			if (message.userId != this.$store.state.i.id && !document.hidden) {
-				this.connection.send({
-					type: 'read',
+				this.connection.send('read', {
 					id: message.id
 				});
 			}
@@ -247,8 +246,7 @@ export default Vue.extend({
 			if (document.hidden) return;
 			this.messages.forEach(message => {
 				if (message.userId !== this.$store.state.i.id && !message.isRead) {
-					this.connection.send({
-						type: 'read',
+					this.connection.send('read', {
 						id: message.id
 					});
 				}

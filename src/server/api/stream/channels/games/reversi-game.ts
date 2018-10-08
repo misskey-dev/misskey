@@ -23,10 +23,10 @@ export default class extends Channel {
 	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'accept': this.accept(true); break;
-			case 'cancel-accept': this.accept(false); break;
-			case 'update-settings': this.updateSettings(body.settings); break;
-			case 'init-form': this.initForm(body); break;
-			case 'update-form': this.updateForm(body.id, body.value); break;
+			case 'cancelAccept': this.accept(false); break;
+			case 'updateSettings': this.updateSettings(body.settings); break;
+			case 'initForm': this.initForm(body); break;
+			case 'updateForm': this.updateForm(body.id, body.value); break;
 			case 'message': this.message(body); break;
 			case 'set': this.set(body.pos); break;
 			case 'check': this.check(body.crc32); break;

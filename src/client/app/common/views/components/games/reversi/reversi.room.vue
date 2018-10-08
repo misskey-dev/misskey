@@ -149,9 +149,9 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.connection.on('change-accepts', this.onChangeAccepts);
-		this.connection.on('update-settings', this.onUpdateSettings);
-		this.connection.on('init-form', this.onInitForm);
+		this.connection.on('changeAccepts', this.onChangeAccepts);
+		this.connection.on('updateSettings', this.onUpdateSettings);
+		this.connection.on('initForm', this.onInitForm);
 		this.connection.on('message', this.onMessage);
 
 		if (this.game.user1Id != this.$store.state.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
@@ -159,9 +159,9 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('change-accepts', this.onChangeAccepts);
-		this.connection.off('update-settings', this.onUpdateSettings);
-		this.connection.off('init-form', this.onInitForm);
+		this.connection.off('changeAccepts', this.onChangeAccepts);
+		this.connection.off('updateSettings', this.onUpdateSettings);
+		this.connection.off('initForm', this.onInitForm);
 		this.connection.off('message', this.onMessage);
 	},
 
@@ -171,15 +171,11 @@ export default Vue.extend({
 		},
 
 		accept() {
-			this.connection.send({
-				type: 'accept'
-			});
+			this.connection.send('accept', {});
 		},
 
 		cancel() {
-			this.connection.send({
-				type: 'cancel-accept'
-			});
+			this.connection.send('cancelAccept', {});
 		},
 
 		onChangeAccepts(accepts) {
@@ -189,8 +185,7 @@ export default Vue.extend({
 		},
 
 		updateSettings() {
-			this.connection.send({
-				type: 'update-settings',
+			this.connection.send('updateSettings', {
 				settings: this.game.settings
 			});
 		},
@@ -216,8 +211,7 @@ export default Vue.extend({
 		},
 
 		onChangeForm(item) {
-			this.connection.send({
-				type: 'update-form',
+			this.connection.send('updateForm', {
 				id: item.id,
 				value: item.value
 			});
@@ -238,9 +232,9 @@ export default Vue.extend({
 			const y = Math.floor(pos / this.game.settings.map[0].length);
 			const newPixel =
 				pixel == ' ' ? '-' :
-					pixel == '-' ? 'b' :
-						pixel == 'b' ? 'w' :
-							' ';
+				pixel == '-' ? 'b' :
+				pixel == 'b' ? 'w' :
+				' ';
 			const line = this.game.settings.map[y].split('');
 			line[x] = newPixel;
 			this.$set(this.game.settings.map, y, line.join(''));
