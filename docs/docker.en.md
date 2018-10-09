@@ -38,6 +38,7 @@ Just `docker-compose up -d`. GLHF!
 4. `git stash pop`
 5. `docker-compose build`
 6. Check [ChangeLog](../CHANGELOG.md) for migration information
+7. `docker-compose stop && docker-compose up -d`
 
 ### Way to execute cli command:
 `docker-compose run --rm web node cli/mark-admin @example`

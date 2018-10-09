@@ -38,6 +38,7 @@ Dockerを使ったMisskey構築方法
 4. `git stash pop`
 5. `docker-compose build`
 6. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
+7. `docker-compose stop && docker-compose up -d`
 
 ### cliコマンドを実行する方法:
 
