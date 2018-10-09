@@ -12,7 +12,7 @@ Dockerを使ったMisskey構築方法
 2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` `.config/mongo_initdb_example.js`をコピーし名前を`mongo_initdb.js`にする
 3. `default.yml`と`mongo_initdb.js`を編集する
 
-*2.* dockerの設定
+*2.* Dockerの設定
 ----------------
 
 `docker-compose.yml`を編集してください。
