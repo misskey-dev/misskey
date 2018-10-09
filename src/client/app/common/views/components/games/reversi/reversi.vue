@@ -71,8 +71,7 @@ export default Vue.extend({
 
 			this.pingClock = setInterval(() => {
 				if (this.matching) {
-					this.connection.send({
-						type: 'ping',
+					this.connection.send('ping', {
 						id: this.matching.id
 					});
 				}

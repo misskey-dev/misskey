@@ -58,8 +58,7 @@ export default Vue.extend({
 	methods: {
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.connection.send({
-				type: 'readNotification',
+			(this as any).os.stream.send('readNotification', {
 				id: notification.id
 			});
 

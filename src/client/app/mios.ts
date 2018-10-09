@@ -212,7 +212,7 @@ export default class MiOS extends EventEmitter {
 		const fetched = () => {
 			this.emit('signedin');
 
-			this.stream = new Stream(this);
+			this.initStream();
 
 			// Finish init
 			callback();
@@ -247,8 +247,99 @@ export default class MiOS extends EventEmitter {
 					// Finish init
 					callback();
 
-					this.stream = new Stream(this);
+					this.initStream();
 				}
+			});
+		}
+	}
+
+	@autobind
+	private initStream() {
+		this.stream = new Stream(this);
+
+		if (this.store.getters.isSignedIn) {
+			const main = this.stream.useSharedConnection('main');
+
+			// 自分の情報が更新されたとき
+			main.on('meUpdated', i => {
+				this.store.dispatch('mergeMe', i);
+			});
+
+			main.on('readAllNotifications', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadNotification: false
+				});
+			});
+
+			main.on('unreadNotification', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadNotification: true
+				});
+			});
+
+			main.on('readAllMessagingMessages', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMessagingMessage: false
+				});
+			});
+
+			main.on('unreadMessagingMessage', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMessagingMessage: true
+				});
+			});
+
+			main.on('unreadMention', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMentions: true
+				});
+			});
+
+			main.on('readAllUnreadMentions', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMentions: false
+				});
+			});
+
+			main.on('unreadSpecifiedNote', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadSpecifiedNotes: true
+				});
+			});
+
+			main.on('readAllUnreadSpecifiedNotes', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadSpecifiedNotes: false
+				});
+			});
+
+			main.on('clientSettingUpdated', x => {
+				this.store.commit('settings/set', {
+					key: x.key,
+					value: x.value
+				});
+			});
+
+			main.on('homeUpdated', x => {
+				this.store.commit('settings/setHome', x);
+			});
+
+			main.on('mobileHomeUpdated', x => {
+				this.store.commit('settings/setMobileHome', x);
+			});
+
+			main.on('widgetUpdated', x => {
+				this.store.commit('settings/setWidget', {
+					id: x.id,
+					data: x.data
+				});
+			});
+
+			// トークンが再生成されたとき
+			// このままではMisskeyが利用できないので強制的にサインアウトさせる
+			main.on('myTokenRegenerated', () => {
+				alert('%i18n:common.my-token-regenerated%');
+				this.signout();
 			});
 		}
 	}
