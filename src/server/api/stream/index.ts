@@ -181,6 +181,9 @@ export default class Connection {
 		const channel = new channelClass(id, this);
 		this.channels.push(channel);
 		channel.init(params);
+		this.sendMessageToWs('connected', {
+			id: id
+		});
 	}
 
 	/**
