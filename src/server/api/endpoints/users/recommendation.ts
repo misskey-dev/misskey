@@ -67,7 +67,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 				_id: {
 					$nin: followingIds.concat(mutedUserIds)
 				},
-				isLocked: false,
+				isLocked: { $ne: true },
 				$or: [{
 					lastUsedAt: {
 						$gte: new Date(Date.now() - ms('7days'))
