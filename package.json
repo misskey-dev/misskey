@@ -219,6 +219,7 @@
 		"vue-router": "3.0.1",
 		"vue-style-loader": "4.1.2",
 		"vue-svg-inline-loader": "1.2.0",
+		"vue-sweetalert2": "1.5.5",
 		"vue-template-compiler": "2.5.17",
 		"vuedraggable": "2.16.0",
 		"vuewordcloud": "18.7.11",

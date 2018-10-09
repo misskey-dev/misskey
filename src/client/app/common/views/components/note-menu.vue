@@ -103,6 +103,12 @@ export default Vue.extend({
 			(this as any).api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
+				this.$swal({
+					type: 'success',
+					showConfirmButton: false,
+					timer: 1250,
+					customClass: 'swal-icon-only'
+				});
 				this.destroyDom();
 			});
 		},

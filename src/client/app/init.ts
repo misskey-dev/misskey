@@ -8,6 +8,7 @@ import VueRouter from 'vue-router';
 import * as TreeView from 'vue-json-tree-view';
 import VAnimateCss from 'v-animate-css';
 import VModal from 'vue-js-modal';
+import VueSweetalert2 from 'vue-sweetalert2';
 
 import VueHotkey from './common/hotkey';
 import App from './app.vue';
@@ -26,6 +27,7 @@ Vue.use(TreeView);
 Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
+Vue.use(VueSweetalert2);
 
 // Register global directives
 require('./common/views/directives');
