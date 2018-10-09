@@ -170,7 +170,7 @@ abstract class Connection extends EventEmitter {
 		const type = payload === undefined ? typeOrPayload.type : typeOrPayload;
 		const body = payload === undefined ? typeOrPayload.body : payload;
 
-		this.stream.send('channel', {
+		this.stream.send('ch', {
 			id: this.id,
 			type: type,
 			body: body

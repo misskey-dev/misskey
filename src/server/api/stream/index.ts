@@ -58,6 +58,7 @@ export default class Connection {
 			case 'connect': this.onChannelConnectRequested(body); break;
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
 			case 'channel': this.onChannelMessageRequested(body); break;
+			case 'ch': this.onChannelMessageRequested(body); break; // alias
 		}
 	}
 
