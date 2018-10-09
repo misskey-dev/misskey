@@ -1,5 +1,6 @@
 /.config/*
 !/.config/example.yml
+!/.config/mongo_initdb_example.js
 /.vscode
 /node_modules
 /build
@@ -12,3 +13,6 @@ npm-debug.log
 run.bat
 api-docs.json
 *.log
+/redis
+/mongo
+/elasticsearch
