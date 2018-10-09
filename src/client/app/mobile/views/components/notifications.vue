@@ -77,6 +77,8 @@ export default Vue.extend({
 
 	methods: {
 		fetchMoreNotifications() {
+			if (this.fetchingMoreNotifications) return;
+
 			this.fetchingMoreNotifications = true;
 
 			const max = 30;
