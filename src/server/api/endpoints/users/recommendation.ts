@@ -3,8 +3,8 @@ import $ from 'cafy';
 import User, { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';
-import * as request from 'request'
-import config from '../../../../config'
+import * as request from 'request';
+import config from '../../../../config';
 
 export const meta = {
 	desc: {
@@ -18,18 +18,19 @@ export const meta = {
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	if (config.user_recommendation && config.user_recommendation.external) {
-		const userName = me.username
-		const hostName = config.hostname
-		const limit = params.limit
-		const offset = params.offset
-		const timeout = config.user_recommendation.timeout
-		const engine = config.user_recommendation.engine
+		const userName = me.username;
+		const hostName = config.hostname;
+		const limit = params.limit;
+		const offset = params.offset;
+		const timeout = config.user_recommendation.timeout;
+		const engine = config.user_recommendation.engine;
 		const url = engine
 			.replace('{{host}}', hostName)
 			.replace('{{user}}', userName)
 			.replace('{{limit}}', limit)
-			.replace('{{offset}}', offset)
-		request(
+			.replace('{{offset}}', offset);
+
+			request(
 			{
 				url: url,
 				timeout: timeout,
@@ -39,12 +40,12 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			},
 			(error: any, response: any, body: any) => {
 				if (!error && response.statusCode == 200) {
-					res(body)
+					res(body);
 				} else {
-					res([])
+					res([]);
 				}
 			}
-		)
+		);
 	} else {
 		// Get 'limit' parameter
 		const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
