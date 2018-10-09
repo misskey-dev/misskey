@@ -329,7 +329,7 @@ common/views/components/nav.vue:
   wiki: "Wiki"
   donors: "Donateur·rice·s"
   repository: "Dépôt"
-  develop: "Développeur·se·s"
+  develop: "Développeurs"
   feedback: "Remarques"
 common/views/components/note-menu.vue:
   detail: "Détails"
@@ -986,7 +986,7 @@ desktop/views/pages/user/user.followers-you-know.vue:
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.friends.vue:
-  title: "Personnes qui répondent le plus"
+  title: "Mentions fréquentes"
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.vue:
@@ -1000,7 +1000,7 @@ desktop/views/pages/user/user.photos.vue:
   loading: "Chargement en cours"
   no-photos: "Pas de photos"
 desktop/views/pages/user/user.profile.vue:
-  follows-you: "Vous suis"
+  follows-you: "Vous suit"
   stalk: "Traquer"
   stalking: "ストーキングしています"
   unstalk: "ストーク解除"
@@ -1171,7 +1171,7 @@ mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Afficher plus ..."
 mobile/views/pages/signup.vue:
-  lets-start: "Commençons ! 📦"
+  lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
   followers-of: "Abonné·e·s de {}"
 mobile/views/pages/following.vue:
@@ -1286,7 +1286,7 @@ mobile/views/pages/settings.vue:
   sound: "Sons"
   enable-sounds: "Activer les sons"
 mobile/views/pages/user.vue:
-  follows-you: "vous suit"
+  follows-you: "Vous suit"
   following: "Abonnements"
   followers: "Abonné·e·s"
   notes: "Notes"
