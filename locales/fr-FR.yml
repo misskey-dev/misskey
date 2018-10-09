@@ -88,7 +88,7 @@ common:
     followers: "Abonnés·es"
     followers-desc: "Publier à vos abonnés·es uniquement"
     specified: "Direct"
-    specified-desc: "Publier aux utilisateurs·trices mentionnés·es"
+    specified-desc: "Publier uniquement aux utilisateurs·rices mentionnés·es"
     private: "Privé"
   note-placeholders:
     a: "Que faites-vous maintenant ?"
@@ -410,7 +410,7 @@ common/views/components/visibility-chooser.vue:
   followers: "Abonné·e·s"
   followers-desc: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
-  specified-desc: "Publier aux utilisateur·rice·s mentionné·e·s"
+  specified-desc: "Publier uniquement aux utilisateurs·rices mentionné·e·s"
   private: "Privé"
 common/views/components/trends.vue:
   count: "{} utilisateurs·trices mentionnés·es"
@@ -991,8 +991,8 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.vue:
   is-suspended: "Ce compte a été suspendu."
-  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées"
-  view-remote: "Voir les informations détaillées"
+  is-remote: "Cet utilisateur n'est pas un utilisateur Misskey. Certaines informations peuvent ne pas refléter ce profil dans sa totalité."
+  view-remote: "Consulter le profil complet"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last used at"
 desktop/views/pages/user/user.photos.vue:
@@ -1294,8 +1294,8 @@ mobile/views/pages/user.vue:
   timeline: "Fil d'actualité"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
-  view-remote: "Voir les informations détaillées"
+  is-remote: "Ceci est le profil d’un utilisateur·rice distant·e. Certaines informations peuvent ne pas refléter ce profil dans sa totalité."
+  view-remote: "Consulter son profil complet"
 mobile/views/pages/user/home.vue:
   recent-notes: "Notes récentes"
   images: "Images"
