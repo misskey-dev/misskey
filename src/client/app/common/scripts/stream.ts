@@ -177,7 +177,7 @@ abstract class Connection extends EventEmitter {
 		});
 	}
 
-	public abstract dispose: () => void;
+	public abstract dispose(): void;
 }
 
 class SharedConnection extends Connection {
