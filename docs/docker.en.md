@@ -1,8 +1,7 @@
 Misskey Setup and Installation Guide
 ================================================================
 
-We thank you for your interest in setting up your Misskey server!
-This guide describes how to install and setup Misskey.
+This guide describes how to install and setup Misskey with Docker.
 
 [Japanese version also available - 日本語版もあります](./docker.ja.md)
 
