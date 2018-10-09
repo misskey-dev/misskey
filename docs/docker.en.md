@@ -1,4 +1,4 @@
-Misskey Setup and Installation Guide
+Docker Guide
 ================================================================
 
 This guide describes how to install and setup Misskey with Docker.
