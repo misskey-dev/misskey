@@ -380,11 +380,22 @@ export const pack = async (
 	// resolve promises in _note object
 	_note = await rap(_note);
 
-	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
+	//#region (データベースの欠損などで)参照しているデータがデータベース上に見つからなかったとき
 	if (_note.user == null) {
-		console.warn(`in packaging note: note user not found on database: note(${_note.id})`);
+		console.warn(`[DAMAGED DB] (missing) in pkg note -> user :: ${_note.id} (user ${_note.userId})`);
 		return null;
 	}
+
+	if (_note.replyId != null && _note.reply == null) {
+		console.warn(`[DAMAGED DB] (missing) in pkg note -> reply :: ${_note.id} (reply ${_note.replyId})`);
+		return null;
+	}
+
+	if (_note.renoteId != null && _note.renote == null) {
+		console.warn(`[DAMAGED DB] (missing) in pkg note -> renote :: ${_note.id} (renote ${_note.renoteId})`);
+		return null;
+	}
+	//#endregion
 
 	if (_note.user.isCat && _note.text) {
 		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');
