@@ -1,5 +1,6 @@
 import autobind from 'autobind-decorator';
 import * as CRC32 from 'crc-32';
+import * as mongo from 'mongodb';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../../stream';
 import Reversi from '../../../../../games/reversi/core';
@@ -7,11 +8,11 @@ import * as maps from '../../../../../games/reversi/maps';
 import Channel from '../../channel';
 
 export default class extends Channel {
-	private gameId: string;
+	private gameId: mongo.ObjectID;
 
 	@autobind
 	public async init(params: any) {
-		this.gameId = params.gameId as string;
+		this.gameId = new mongo.ObjectID(params.gameId as string);
 
 		// Subscribe game stream
 		this.subscriber.on(`reversiGameStream:${this.gameId}`, data => {
