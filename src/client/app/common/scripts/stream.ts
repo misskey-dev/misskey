@@ -29,7 +29,8 @@ export default class Stream extends EventEmitter {
 		this.stream.addEventListener('message', this.onMessage);
 	}
 
-	public useSharedConnection = (channel: string): SharedConnection => {
+	@autobind
+	public useSharedConnection(channel: string): SharedConnection {
 		let pool = this.sharedConnectionPools.find(p => p.channel === channel);
 
 		if (pool == null) {
@@ -47,7 +48,8 @@ export default class Stream extends EventEmitter {
 		this.sharedConnections = this.sharedConnections.filter(c => c !== connection);
 	}
 
-	public connectToChannel = (channel: string, params?: any): NonSharedConnection => {
+	@autobind
+	public connectToChannel(channel: string, params?: any): NonSharedConnection {
 		const connection = new NonSharedConnection(this, channel, params);
 		this.nonSharedConnections.push(connection);
 		return connection;
