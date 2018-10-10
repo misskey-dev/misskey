@@ -22,7 +22,8 @@ export default async (params: any, user: ILocalUser) => {
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			'metadata.userId': user._id
+			'metadata.userId': user._id,
+			'metadata.deletedAt': { $exists: false }
 		});
 
 	if (file === null) {
