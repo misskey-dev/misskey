@@ -79,6 +79,7 @@ export default Vue.extend({
 			(this as any).api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
+				(this as any).os.new(Ok);
 				this.destroyDom();
 			});
 		},
