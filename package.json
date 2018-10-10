@@ -206,7 +206,7 @@
 		"typescript": "2.9.2",
 		"typescript-eslint-parser": "20.0.0",
 		"uglify-es": "3.3.9",
-		"url-loader": "1.1.1",
+		"url-loader": "1.1.2",
 		"uuid": "3.3.2",
 		"v-animate-css": "0.0.2",
 		"vue": "2.5.17",
