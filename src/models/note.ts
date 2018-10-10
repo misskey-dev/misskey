@@ -281,9 +281,9 @@ export const pack = async (
 		_note = deepcopy(note);
 	}
 
-	// 投稿がデータベース上に見つからなかったとき
+	// (データベースの欠損などで)投稿がデータベース上に見つからなかったとき
 	if (_note == null) {
-		console.warn(`note not found on database: ${note}`);
+		console.warn(`[DAMAGED DB] (missing) pkg: note :: ${note}`);
 		return null;
 	}
 
@@ -382,17 +382,17 @@ export const pack = async (
 
 	//#region (データベースの欠損などで)参照しているデータがデータベース上に見つからなかったとき
 	if (_note.user == null) {
-		console.warn(`[DAMAGED DB] (missing) in pkg note -> user :: ${_note.id} (user ${_note.userId})`);
+		console.warn(`[DAMAGED DB] (missing) pkg: note -> user :: ${_note.id} (user ${_note.userId})`);
 		return null;
 	}
 
 	if (_note.replyId != null && _note.reply == null) {
-		console.warn(`[DAMAGED DB] (missing) in pkg note -> reply :: ${_note.id} (reply ${_note.replyId})`);
+		console.warn(`[DAMAGED DB] (missing) pkg: note -> reply :: ${_note.id} (reply ${_note.replyId})`);
 		return null;
 	}
 
 	if (_note.renoteId != null && _note.renote == null) {
-		console.warn(`[DAMAGED DB] (missing) in pkg note -> renote :: ${_note.id} (renote ${_note.renoteId})`);
+		console.warn(`[DAMAGED DB] (missing) pkg: note -> renote :: ${_note.id} (renote ${_note.renoteId})`);
 		return null;
 	}
 	//#endregion

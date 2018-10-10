@@ -79,7 +79,7 @@ export const pack = (
 
 	// (データベースの不具合などで)投稿が見つからなかったら
 	if (_favorite.note == null) {
-		console.warn(`in packaging favorite: note not found on database: ${_favorite.noteId}`);
+		console.warn(`[DAMAGED DB] (missing) pkg: favorite -> note :: ${_favorite.id} (note ${_favorite.noteId})`);
 		return resolve(null);
 	}
 

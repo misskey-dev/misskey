@@ -132,7 +132,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 
 			// (データベースの不具合などで)投稿が見つからなかったら
 			if (_notification.note == null) {
-				console.warn(`in packaging notification: note not found on database: ${_notification.noteId}`);
+				console.warn(`[DAMAGED DB] (missing) pkg: notification -> note :: ${_notification.id} (note ${_notification.noteId})`);
 				return resolve(null);
 			}
 			break;
