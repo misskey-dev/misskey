@@ -83,17 +83,17 @@ common:
     pudding: "Pudding"
   note-visibility:
     public: "Public"
-    home: "Accueil"
-    home-desc: "Publier sur le fil local uniquement"
+    home: "Principal"
+    home-desc: "Publier sur le fil principal uniquement"
     followers: "Abonnés·es"
     followers-desc: "Publier à vos abonnés·es uniquement"
     specified: "Direct"
-    specified-desc: "Publier aux utilisateurs·trices mentionnés·es"
+    specified-desc: "Publier uniquement aux utilisateurs·rices mentionnés·es"
     private: "Privé"
   note-placeholders:
     a: "Que faites-vous maintenant ?"
     b: "Quoi de neuf ?"
-    c: "Qu'avez-vous en tête ?"
+    c: "Qu’avez-vous en tête ?"
     d: "Désirez-vous publier quelques mots ?"
     e: "Écrivez ici"
     f: "En attente de vos écrits"
@@ -103,7 +103,7 @@ common:
   ok: "OK"
   update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
-  my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
+  my-token-regenerated: "Votre jeton vient d’être généré, vous allez maintenant être déconnecté."
   i-like-sushi: "Je préfère les sushis plutôt que le pudding"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
@@ -120,7 +120,7 @@ common:
     my-turn: "C’est votre tour"
     opponent-turn: "Tour de l’adversaire"
     turn-of: "C’est le tour de {}"
-    past-turn-of: "C'est au tour de {}"
+    past-turn-of: "C’est au tour de {}"
     won: "{} a gagné"
     black: "Noirs"
     white: "Blancs"
@@ -267,8 +267,8 @@ common/views/components/media-banner.vue:
 common/views/components/theme.vue:
   light-theme: "非ダークモード時に使用するテーマ"
   dark-theme: "ダークモード時に使用するテーマ"
-  light-themes: "明るいテーマ"
-  dark-themes: "暗いテーマ"
+  light-themes: "Thème clair"
+  dark-themes: "Thème sombre"
   install-a-theme: "Installer un thème"
   theme-code: "Code du thème"
   install: "Installation"
@@ -286,16 +286,16 @@ common/views/components/theme.vue:
   invalid-theme: "Thème n’est pas valide."
   already-installed: "Le thème est déjà installé."
   saved: "enregistré"
-  manage-themes: "テーマの管理"
-  builtin-themes: "標準テーマ"
-  my-themes: "マイテーマ"
+  manage-themes: "Gestion des thèmes"
+  builtin-themes: "Thèmes standards"
+  my-themes: "Mes thèmes"
   installed-themes: "Thèmes installés"
   select-theme: "Veuillez sélectionner un thème"
   uninstall: "Désinstaller"
   uninstalled: "« {} » a été désinstallé"
   author: "Auteur"
   desc: "Description"
-  export: "エクスポート"
+  export: "Exporter"
   import: "Importer"
   import-by-code: "Ou coller du code"
   theme-name-required: "Nom du thème est obligatoire."
@@ -329,8 +329,8 @@ common/views/components/nav.vue:
   wiki: "Wiki"
   donors: "Donateur·rice·s"
   repository: "Dépôt"
-  develop: "Développeur·se·s"
-  feedback: "Remarques"
+  develop: "Développeurs"
+  feedback: "Suggestions"
 common/views/components/note-menu.vue:
   detail: "Détails"
   copy-link: "Copier le lien"
@@ -410,10 +410,10 @@ common/views/components/visibility-chooser.vue:
   followers: "Abonné·e·s"
   followers-desc: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
-  specified-desc: "Publier aux utilisateur·rice·s mentionné·e·s"
+  specified-desc: "Publier uniquement aux utilisateurs·rices mentionné·e·s"
   private: "Privé"
 common/views/components/trends.vue:
-  count: "{} utilisateurs·trices mentionnés·es"
+  count: "{} utilisateurs·rices mentionnés·es"
   empty: "Aucune tendance"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
@@ -514,7 +514,7 @@ desktop/views/components/charts.vue:
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
     remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の積算"
+    notes-total: "Total des notes"
     users: "Nombre d’utilisateurs·trices : augmentation/diminution"
     users-total: "ユーザーの積算"
     drive: "ドライブ使用量の増減"
@@ -858,7 +858,7 @@ desktop/views/components/timeline.vue:
   list-name: "Nom de la liste"
 desktop/views/components/ui.header.vue:
   welcome-back: "Content de vous revoir !"
-  adjective: "さん"
+  adjective: "M."
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
@@ -911,9 +911,9 @@ desktop/views/pages/admin/admin.vue:
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Tableau de bord"
   all-users: "Toutes les utilisateurrices"
-  original-users: "Utilisateurrices sur cette instance"
+  original-users: "Utilisateur·rice·s sur cette instance"
   all-notes: "Toutes les publications"
-  original-notes: "Publication sur cette instance"
+  original-notes: "Publications sur cette instance"
   invite: "Invitation"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspendre un·e utilisateur·rice"
@@ -941,9 +941,9 @@ desktop/views/pages/deck/deck.note.vue:
   deleted: "cette publication a été supprimée"
 desktop/views/pages/stats/stats.vue:
   all-users: "Toutes les utilisateurrices"
-  original-users: "Utilisateurrices sur cette instance"
+  original-users: "Utilisateur·rice·s sur cette instance"
   all-notes: "Toutes les publications"
-  original-notes: "Publication sur cette instance"
+  original-notes: "Publications sur cette instance"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   gotit: "J'ai compris !"
@@ -986,13 +986,13 @@ desktop/views/pages/user/user.followers-you-know.vue:
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.friends.vue:
-  title: "Personnes qui répondent le plus"
+  title: "Mentions fréquentes"
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.vue:
   is-suspended: "Ce compte a été suspendu."
-  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées"
-  view-remote: "Voir les informations détaillées"
+  is-remote: "Cet utilisateur n'est pas un utilisateur Misskey. Certaines informations peuvent ne pas refléter ce profil dans sa totalité."
+  view-remote: "Consulter le profil complet"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last used at"
 desktop/views/pages/user/user.photos.vue:
@@ -1000,7 +1000,7 @@ desktop/views/pages/user/user.photos.vue:
   loading: "Chargement en cours"
   no-photos: "Pas de photos"
 desktop/views/pages/user/user.profile.vue:
-  follows-you: "Vous suis"
+  follows-you: "Vous suit"
   stalk: "Traquer"
   stalking: "ストーキングしています"
   unstalk: "ストーク解除"
@@ -1171,7 +1171,7 @@ mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Afficher plus ..."
 mobile/views/pages/signup.vue:
-  lets-start: "Commençons ! 📦"
+  lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
   followers-of: "Abonné·e·s de {}"
 mobile/views/pages/following.vue:
@@ -1286,7 +1286,7 @@ mobile/views/pages/settings.vue:
   sound: "Sons"
   enable-sounds: "Activer les sons"
 mobile/views/pages/user.vue:
-  follows-you: "vous suit"
+  follows-you: "Vous suit"
   following: "Abonnements"
   followers: "Abonné·e·s"
   notes: "Notes"
@@ -1294,8 +1294,8 @@ mobile/views/pages/user.vue:
   timeline: "Fil d'actualité"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
-  view-remote: "Voir les informations détaillées"
+  is-remote: "Ceci est le profil d’un utilisateur·rice distant·e. Certaines informations peuvent ne pas refléter ce profil dans sa totalité."
+  view-remote: "Consulter son profil complet"
 mobile/views/pages/user/home.vue:
   recent-notes: "Notes récentes"
   images: "Images"
@@ -1319,7 +1319,7 @@ mobile/views/pages/user/home.photos.vue:
   no-photos: "Pas de photos"
 docs:
   edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation?"
-  edit-this-page-on-github-link: "Modifiez cette page sur github!"
+  edit-this-page-on-github-link: "Éditez cette page sur Github !"
   api:
     entities:
       properties: "Propriétés"
