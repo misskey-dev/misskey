@@ -8,6 +8,7 @@
 import Vue from 'vue';
 import { url } from '../../../config';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
+import Ok from './ok.vue';
 
 export default Vue.extend({
 	props: ['note', 'source', 'compact'],
@@ -103,12 +104,7 @@ export default Vue.extend({
 			(this as any).api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$swal({
-					type: 'success',
-					showConfirmButton: false,
-					timer: 1250,
-					customClass: 'swal-icon-only'
-				});
+				(this as any).os.new(Ok);
 				this.destroyDom();
 			});
 		},
