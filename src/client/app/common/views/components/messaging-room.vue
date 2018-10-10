@@ -71,7 +71,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection =((this as any).os.stream.connectToChannel('messaging', { otherparty: this.user.id });
+		this.connection = (this as any).os.stream.connectToChannel('messaging', { otherparty: this.user.id });
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
