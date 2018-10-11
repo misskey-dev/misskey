@@ -47,6 +47,11 @@ export default class Stream extends EventEmitter {
 	}
 
 	@autobind
+	public removeSharedConnectionPool(pool: Pool) {
+		this.sharedConnectionPools = this.sharedConnectionPools.filter(p => p !== pool);
+	}
+
+	@autobind
 	public connectToChannel(channel: string, params?: any): NonSharedConnection {
 		const connection = new NonSharedConnection(this, channel, params);
 		this.nonSharedConnections.push(connection);
@@ -71,9 +76,7 @@ export default class Stream extends EventEmitter {
 		// チャンネル再接続
 		if (isReconnect) {
 			this.sharedConnectionPools.forEach(p => {
-				if (p.users > 0) {
-					p.connect();
-				}
+				p.connect();
 			});
 			this.nonSharedConnections.forEach(c => {
 				c.connect();
@@ -152,6 +155,13 @@ class Pool {
 		this.stream = stream;
 
 		this.id = Math.random().toString();
+
+		this.stream.on('_disconnected_', this.onStreamDisconnected);
+	}
+
+	@autobind
+	private onStreamDisconnected() {
+		this.isConnected = false;
 	}
 
 	@autobind
@@ -185,6 +195,7 @@ class Pool {
 
 	@autobind
 	public connect() {
+		if (this.isConnected) return;
 		this.isConnected = true;
 		this.stream.send('connect', {
 			channel: this.channel,
@@ -194,9 +205,9 @@ class Pool {
 
 	@autobind
 	private disconnect() {
-		this.isConnected = false;
-		this.disposeTimerId = null;
+		this.stream.off('_disconnected_', this.onStreamDisconnected);
 		this.stream.send('disconnect', { id: this.id });
+		this.stream.removeSharedConnectionPool(this);
 	}
 }
 
