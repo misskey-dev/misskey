@@ -169,6 +169,7 @@
 		"parse5": "5.1.0",
 		"portscanner": "2.2.0",
 		"progress-bar-webpack-plugin": "1.11.0",
+		"promise-limit": "2.7.0",
 		"promise-sequential": "1.1.1",
 		"pug": "2.0.3",
 		"punycode": "2.1.1",
