@@ -89,8 +89,10 @@ export default class Stream extends EventEmitter {
 	 */
 	@autobind
 	private onClose() {
-		this.state = 'reconnecting';
-		this.emit('_disconnected_');
+		if (this.state == 'connected') {
+			this.state = 'reconnecting';
+			this.emit('_disconnected_');
+		}
 	}
 
 	/**
