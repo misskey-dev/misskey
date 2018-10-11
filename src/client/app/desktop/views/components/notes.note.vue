@@ -1,5 +1,5 @@
 <template>
-<div class="note" :class="{ deleted: p.deletedAt != null }" tabindex="-1" v-hotkey="keymap" :title="title">
+<div class="note" v-show="p.deletedAt == null" tabindex="-1" v-hotkey="keymap" :title="title">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
@@ -239,9 +239,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.note.deleted
-	display none
-
 .note
 	margin 0
 	padding 0

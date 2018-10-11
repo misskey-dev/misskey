@@ -1,5 +1,5 @@
 <template>
-<div v-if="!mediaView" class="zyjjkidcqjnlegkqebitfviomuqmseqk" :class="{ renote: isRenote, deleted: p.deletedAt != null }">
+<div v-if="!mediaView" v-show="p.deletedAt == null" class="zyjjkidcqjnlegkqebitfviomuqmseqk" :class="{ renote: isRenote }">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
@@ -163,9 +163,6 @@ export default Vue.extend({
 
 	&:last-child
 		margin-bottom 12px
-
-.zyjjkidcqjnlegkqebitfviomuqmseqk.deleted
-	display none
 
 .zyjjkidcqjnlegkqebitfviomuqmseqk
 	font-size 13px

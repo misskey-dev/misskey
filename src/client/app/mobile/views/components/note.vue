@@ -1,5 +1,5 @@
 <template>
-<div class="note" :class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart', deleted: p.deletedAt != null }">
+<div class="note" v-show="p.deletedAt == null" :class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
@@ -150,9 +150,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.note.deleted
-	display: none
-
 .note
 	font-size 12px
 	border-bottom solid 1px var(--faceDivider)
