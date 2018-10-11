@@ -45,6 +45,8 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Construct query
 	const query = {
+		deletedAt: null,
+
 		$or: [{
 			mentions: user._id
 		}, {
