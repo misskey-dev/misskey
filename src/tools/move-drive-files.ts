@@ -11,8 +11,16 @@ DriveFile.find({
 	}, {
 		withoutChunks: false
 	}]
+}, {
+	fields: {
+		_id: true
+	}
 }).then(async files => {
+	console.log(`there is ${files.length} files`);
+
 	await sequential(files.map(file => async () => {
+		file = await DriveFile.findOne({ _id: file._id });
+
 		const minio = new Minio.Client(config.drive.config);
 
 		const keyDir = `${config.drive.prefix}/${uuid.v4()}`;
