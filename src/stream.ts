@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import redis from './db/redis';
 import Xev from 'xev';
 import Meta, { IMeta } from './models/meta';
 
@@ -9,7 +10,10 @@ class Publisher {
 	private meta: IMeta;
 
 	constructor() {
-		this.ev = new Xev();
+		// Redisがインストールされてないときはプロセス間通信を使う
+		if (redis == null) {
+			this.ev = new Xev();
+		}
 
 		setInterval(async () => {
 			this.meta = await Meta.findOne({});
@@ -28,7 +32,14 @@ class Publisher {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		this.ev.emit(channel, message);
+		if (this.ev) {
+			this.ev.emit(channel, message);
+		} else {
+			redis.publish('misskey', JSON.stringify({
+				channel: channel,
+				message: message
+			}));
+		}
 	}
 
 	public publishMainStream = (userId: ID, type: string, value?: any): void => {

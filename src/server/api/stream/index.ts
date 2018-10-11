@@ -1,6 +1,5 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import Xev from 'xev';
 import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
@@ -11,6 +10,7 @@ import readNote from '../../../services/note/read';
 
 import Channel from './channel';
 import channels from './channels';
+import { EventEmitter } from 'events';
 
 const log = debug('misskey');
 
@@ -21,14 +21,14 @@ export default class Connection {
 	public user?: IUser;
 	public app: IApp;
 	private wsConnection: websocket.connection;
-	public subscriber: Xev;
+	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
 	public sendMessageToWsOverride: any = null; // 後方互換性のため
 
 	constructor(
 		wsConnection: websocket.connection,
-		subscriber: Xev,
+		subscriber: EventEmitter,
 		user: IUser,
 		app: IApp
 	) {

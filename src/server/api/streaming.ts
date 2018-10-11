@@ -1,11 +1,14 @@
 import * as http from 'http';
 import * as websocket from 'websocket';
+import * as redis from 'redis';
 import Xev from 'xev';
 
 import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 import channels from './stream/channels';
+import { EventEmitter } from 'events';
+import config from '../../config';
 
 module.exports = (server: http.Server) => {
 	// Init websocket server
@@ -16,10 +19,35 @@ module.exports = (server: http.Server) => {
 	ws.on('request', async (request) => {
 		const connection = request.accept();
 
-		const ev = new Xev();
-
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
+
+		let ev: EventEmitter;
+
+		if (config.redis) {
+			// Connect to Redis
+			const subscriber = redis.createClient(
+				config.redis.port, config.redis.host);
+
+			subscriber.subscribe('misskey');
+
+			ev = new EventEmitter();
+
+			subscriber.on('message', async (_, data) => {
+				const obj = JSON.parse(data);
+
+				console.log(obj);
+
+				ev.emit(obj.channel, obj.message);
+			});
+
+			connection.once('close', () => {
+				subscriber.unsubscribe();
+				subscriber.quit();
+			});
+		} else {
+			ev = new Xev();
+		}
 
 		const main = new MainStreamConnection(connection, ev, user, app);
 
