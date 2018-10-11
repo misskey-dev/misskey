@@ -23,6 +23,7 @@ DriveFile.find({
 
 		const minio = new Minio.Client(config.drive.config);
 
+		const name = file.filename;
 		const keyDir = `${config.drive.prefix}/${uuid.v4()}`;
 		const key = `${keyDir}/${name}`;
 		const thumbnailKeyDir = `${config.drive.prefix}/${uuid.v4()}`;
