@@ -129,6 +129,8 @@ export default async (params: any, user: ILocalUser) => {
 
 	const query = {
 		$and: [{
+			deletedAt: null,
+
 			$or: [{
 				// フォローしている人の投稿
 				$or: followQuery

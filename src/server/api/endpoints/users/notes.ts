@@ -136,6 +136,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	};
 
 	const query = {
+		deletedAt: null,
 		userId: user._id
 	} as any;
 

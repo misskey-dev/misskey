@@ -1,5 +1,5 @@
 <template>
-<div class="note" :class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }">
+<div class="note" v-show="p.deletedAt == null" :class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
