@@ -10,7 +10,8 @@ DriveFile.find({
 		withoutChunks: { $exists: false }
 	}, {
 		withoutChunks: false
-	}]
+	}],
+	'metadata.deletedAt': { $exists: false }
 }, {
 	fields: {
 		_id: true
