@@ -672,7 +672,7 @@ desktop/views/components/post-form.vue:
   posting: "Publication …"
   attach-media-from-local: "Joindre un média depuis votre appareil"
   attach-media-from-drive: "Joindre un média depuis votre Drive"
-  attach-cancel: "Annuler la jointure de fichier"
+  attach-cancel: "Annuler le fichier attaché"
   insert-a-kao: "v('ω')v"
   create-poll: "Créer un sondage"
   text-remain: "{} charactères restants"
@@ -695,7 +695,7 @@ desktop/views/components/renote-form.vue:
   cancel: "Annuler"
   renote: "Republier"
   reposting: "Republication en cours …"
-  success: "Reposté!"
+  success: "Republié !"
   failure: "La renote a échoué"
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
@@ -1092,7 +1092,7 @@ mobile/views/components/friends-maker.vue:
   refresh: "Voir plus"
   close: "Fermer"
 mobile/views/components/note.vue:
-  reposted-by: "Renoté par {}"
+  reposted-by: "Republié par {}"
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
   location: "Géolocalisation"
