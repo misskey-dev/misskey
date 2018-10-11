@@ -60,11 +60,6 @@ mongodb:
   user: example-misskey-user
   pass: example-misskey-pass
 
-redis:
-  host: localhost
-  port: 6379
-  pass: example-pass
-
 # Drive capacity of a local user (MB)
 localDriveCapacityMb: 256
 
@@ -122,47 +117,50 @@ drive:
 # Below settings are optional
 #
 
+# Redis
+#redis:
+#  host: localhost
+#  port: 6379
+#  pass: example-pass
+
 # Elasticsearch
-# elasticsearch:
-#   host: localhost
-#   port: 9200
-#   pass: null
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  pass: null
 
 # reCAPTCHA
-# recaptcha:
-#   site_key: example-site-key
+#recaptcha:
+#  site_key: example-site-key
 #  secret_key: example-secret-key
 
 # ServiceWorker
-# sw:
-#   # Public key of VAPID
-#   public_key: example-sw-public-key
-
-#   # Private key of VAPID
-#   private_key: example-sw-private-key
-
-# google_maps_api_key: example-google-maps-api-key
+#sw:
+#  # Public key of VAPID
+#  public_key: example-sw-public-key
+#
+#  # Private key of VAPID
+#  private_key: example-sw-private-key
 
 # Twitter integration
 # You need to set the oauth callback url as : https://<your-misskey-instance>/api/tw/cb
-# twitter:
-#   consumer_key: example-twitter-consumer-key
-#   consumer_secret: example-twitter-consumer-secret-key
+#twitter:
+#  consumer_key: example-twitter-consumer-key
+#  consumer_secret: example-twitter-consumer-secret-key
 
 # Ghost
 # Ghost account is an account used for the purpose of delegating
 # followers when putting users in the list.
-# ghost: user-id-of-your-ghost-account
+#ghost: user-id-of-your-ghost-account
 
 # Clustering
-# clusterLimit: 1
+#clusterLimit: 1
 
 # Summaly proxy
-# summalyProxy: "http://example.com"
+#summalyProxy: "http://example.com"
 
 # User recommendation
-user_recommendation:
-  external: true
-  engine: http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}
-  timeout: 300000
-
+#user_recommendation:
+#  external: true
+#  engine: http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}
+#  timeout: 300000

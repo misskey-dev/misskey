@@ -24,9 +24,11 @@ adduser --disabled-password --disabled-login misskey
 #### 依存関係 :package:
 * **[Node.js](https://nodejs.org/en/)**
 * **[MongoDB](https://www.mongodb.com/)** (3.6以上)
-* **[Redis](https://redis.io/)**
 
 ##### オプション
+* [Redis](https://redis.io/)
+  * Redisはオプションですが、インストールすることを強く推奨します。
+	* インストールしなくていいのは、あなたのインスタンスが自分専用のときだけです
 * [Elasticsearch](https://www.elastic.co/) - 検索機能を向上させるために用います。
 
 *3.* MongoDBの設定

@@ -55,7 +55,7 @@ router.get('/disconnect/twitter', async ctx => {
 	}));
 });
 
-if (config.twitter == null) {
+if (config.twitter == null || redis == null) {
 	router.get('/connect/twitter', ctx => {
 		ctx.body = '現在Twitterへ接続できません (このインスタンスではTwitterはサポートされていません)';
 	});
