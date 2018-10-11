@@ -34,7 +34,7 @@ common:
     paragraph4: "Pour terminer la personnalisation, cliquez sur \"Terminer\" dans le coin supérieur droit."
     gotit: "Compris !"
   notification:
-    file-uploaded: "Le fichier a été téléversé !"
+    file-uploaded: "Le fichier a été transféré !"
     message-from: "Message de {} :"
     reversi-invited: "Invité à jouer"
     reversi-invited-by: "Invité par {} :"
@@ -136,7 +136,7 @@ common:
     memo: "Pense-bête"
     trends: "Tendances"
     photo-stream: "Flux de photos"
-    posts-monitor: "Graphe des publications"
+    posts-monitor: "Graph des publications"
     slideshow: "Diaporama"
     version: "Version"
     broadcast: "Diffusion"
@@ -434,7 +434,7 @@ common/views/widgets/photo-stream.vue:
   title: "Flux de photos"
   no-photos: "Pas de photo"
 common/views/widgets/posts-monitor.vue:
-  title: "Graphe des publications"
+  title: "Graph des publications"
   toggle: "Basculer entre les vues"
 common/views/widgets/hashtags.vue:
   title: "Hashtags"
@@ -582,7 +582,7 @@ desktop/views/components/drive.vue:
   unable-to-process: "L'opération n'a pas pu être complétée"
   circular-reference-detected: "Le dossier de destination est un sous-dossier du dossier que vous souhaitez déplacer."
   unhandled-error: "Erreur inconnue"
-  url-upload: "Uploader d'un URL"
+  url-upload: "Téléverser via une URL"
   url-of-file: "URL de l'image que vous souhaitez uploader."
   url-upload-requested: "Upload requested"
   may-take-time: "L'upload de votre fichier peut prendre un certain temps."
@@ -590,8 +590,8 @@ desktop/views/components/drive.vue:
   folder-name: "Nom du dossier"
   contextmenu:
     create-folder: "Créer un dossier"
-    upload: "Uploader un fichier"
-    url-upload: "Uploader d'un URL"
+    upload: "Transférer un fichier"
+    url-upload: "Transférer à partir d’une URL"
 desktop/views/components/media-image.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
@@ -658,20 +658,20 @@ desktop/views/components/post-form.vue:
   add-visible-user: "+Ajouter un utilisateur"
   attach-location-information: "Attacher des informations de localisation"
   hide-contents: "Masquer les contenus"
-  reply-placeholder: "Répondre à cette note"
-  quote-placeholder: "Citer cette note"
-  submit: "Poster"
+  reply-placeholder: "Répondre à cette note …"
+  quote-placeholder: "Citer cette note …"
+  submit: "Publier"
   reply: "Répondre"
   renote: "Republier"
-  posted: "Posté!"
-  replied: "Répondu!"
-  reposted: "Reposté!"
+  posted: "Publié !"
+  replied: "Répondu !"
+  reposted: "Reposté !"
   note-failed: "La note à échoué"
   reply-failed: "La réponse à échoué"
-  renote-failed: "La renote à échoué"
-  posting: "Publication..."
-  attach-media-from-local: "Joindre un media depuis votre PC"
-  attach-media-from-drive: "Joindre un media depuis votre Drive"
+  renote-failed: "Échec lors de la republication"
+  posting: "Publication …"
+  attach-media-from-local: "Joindre un média depuis votre appareil"
+  attach-media-from-drive: "Joindre un média depuis votre Drive"
   attach-cancel: "Annuler la jointure de fichier"
   insert-a-kao: "v('ω')v"
   create-poll: "Créer un sondage"
@@ -687,14 +687,14 @@ desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
   reply: "Répondre"
   attaches: "{} media joint(s)"
-  uploading-media: "Upload du media {}"
+  uploading-media: "Transfert du média {}"
 desktop/views/components/progress-dialog.vue:
   waiting: "En attente"
 desktop/views/components/renote-form.vue:
   quote: "Citer..."
   cancel: "Annuler"
   renote: "Republier"
-  reposting: "Repost en cours..."
+  reposting: "Republication en cours …"
   success: "Reposté!"
   failure: "La renote a échoué"
 desktop/views/components/renote-form-window.vue:
@@ -878,7 +878,7 @@ desktop/views/components/ui.header.nav.vue:
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
 desktop/views/components/ui.header.post.vue:
-  post: "Composer un nouveau post"
+  post: "Rédiger une nouvelle publication"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Chercher"
 desktop/views/components/received-follow-requests-window.vue:
@@ -969,7 +969,7 @@ desktop/views/pages/selectdrive.vue:
   title: "Choisir fichier(s)"
   ok: "OK"
   cancel: "Annuler"
-  upload: "Uploader un ou plusieurs fichier(s) depuis votre PC"
+  upload: "Téléverser des fichiers à partir de votre ordinateur"
 desktop/views/pages/search.vue:
   not-available: "La fonction de recherche est désactivée dans les paramètres de l’instance."
   not-found: "Aucun message trouvé pour '{}'"
@@ -1029,8 +1029,8 @@ desktop/views/widgets/polls.vue:
   refresh: "Afficher d'autres"
   nothing: "Rien"
 desktop/views/widgets/post-form.vue:
-  title: "Post"
-  note: "Post"
+  title: "Publication"
+  note: "Publication"
 desktop/views/widgets/profile.vue:
   update-banner: "Cliquer pour éditer votre bannière"
   update-avatar: "Cliquer pour éditer votre avatar"
@@ -1119,7 +1119,7 @@ mobile/views/components/notifications.vue:
   empty: "Pas de notifications"
 mobile/views/components/post-form.vue:
   add-visible-user: "Ajouter un utilisateur"
-  submit: "Poster"
+  submit: "Publier"
   reply: "Répondre"
   renote: "Republier"
   quote-placeholder: "Citer ce billet ... (Facultatif)"
