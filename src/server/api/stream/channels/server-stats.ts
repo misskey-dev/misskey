@@ -6,7 +6,7 @@ const ev = new Xev();
 
 export default class extends Channel {
 	public readonly chName = 'serverStats';
-	public readonly shouldShare = true;
+	public static shouldShare = true;
 
 	@autobind
 	public async init(params: any) {

@@ -6,7 +6,7 @@ import Channel from '../channel';
 
 export default class extends Channel {
 	public readonly chName = 'hybridTimeline';
-	public readonly shouldShare = true;
+	public static shouldShare = true;
 
 	private mutedUserIds: string[] = [];
 

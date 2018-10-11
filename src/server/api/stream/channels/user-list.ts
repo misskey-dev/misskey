@@ -3,7 +3,7 @@ import Channel from '../channel';
 
 export default class extends Channel {
 	public readonly chName = 'userList';
-	public readonly shouldShare = false;
+	public static shouldShare = false;
 
 	@autobind
 	public async init(params: any) {

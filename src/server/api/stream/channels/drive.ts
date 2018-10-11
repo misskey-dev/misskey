@@ -3,7 +3,7 @@ import Channel from '../channel';
 
 export default class extends Channel {
 	public readonly chName = 'drive';
-	public readonly shouldShare = true;
+	public static shouldShare = true;
 
 	@autobind
 	public async init(params: any) {
