@@ -310,7 +310,7 @@ export default Vue.extend({
 
 	> header
 		display flex
-		z-index 1
+		z-index 2
 		line-height $header-height
 		padding 0 16px
 		font-size 14px
