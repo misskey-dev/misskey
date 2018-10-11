@@ -36,8 +36,6 @@ module.exports = (server: http.Server) => {
 			subscriber.on('message', async (_, data) => {
 				const obj = JSON.parse(data);
 
-				console.log(obj);
-
 				ev.emit(obj.channel, obj.message);
 			});
 
