@@ -9,9 +9,9 @@ const limit = promiseLimit(16);
 
 DriveFile.find({
 	$or: [{
-		withoutChunks: { $exists: false }
+		'metadata.withoutChunks': { $exists: false }
 	}, {
-		withoutChunks: false
+		'metadata.withoutChunks': false
 	}],
 	'metadata.deletedAt': { $exists: false }
 }, {
