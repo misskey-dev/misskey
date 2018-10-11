@@ -7,6 +7,8 @@ import Connection from '.';
 export default abstract class Channel {
 	protected connection: Connection;
 	public id: string;
+	public abstract readonly chName: string;
+	public abstract readonly shouldShare: boolean;
 
 	protected get user() {
 		return this.connection.user;

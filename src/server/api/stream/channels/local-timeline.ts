@@ -5,6 +5,9 @@ import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 
 export default class extends Channel {
+	public readonly chName = 'localTimeline';
+	public readonly shouldShare = true;
+
 	private mutedUserIds: string[] = [];
 
 	@autobind

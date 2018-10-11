@@ -5,6 +5,9 @@ import { publishMainStream } from '../../../../../stream';
 import Channel from '../../channel';
 
 export default class extends Channel {
+	public readonly chName = 'gamesReversi';
+	public readonly shouldShare = true;
+
 	@autobind
 	public async init(params: any) {
 		// Subscribe reversi stream

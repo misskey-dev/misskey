@@ -5,6 +5,9 @@ import Channel from '../channel';
 const ev = new Xev();
 
 export default class extends Channel {
+	public readonly chName = 'notesStats';
+	public readonly shouldShare = true;
+
 	@autobind
 	public async init(params: any) {
 		ev.addListener('notesStats', this.onStats);

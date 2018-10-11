@@ -6,7 +6,6 @@ import Xev from 'xev';
 import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
-import channels from './stream/channels';
 import { EventEmitter } from 'events';
 import config from '../../config';
 
@@ -66,13 +65,13 @@ module.exports = (server: http.Server) => {
 			};
 
 			main.connectChannel(Math.random().toString(), null,
-				request.resourceURL.pathname === '/' ? channels.homeTimeline :
-				request.resourceURL.pathname === '/local-timeline' ? channels.localTimeline :
-				request.resourceURL.pathname === '/hybrid-timeline' ? channels.hybridTimeline :
-				request.resourceURL.pathname === '/global-timeline' ? channels.globalTimeline : null);
+				request.resourceURL.pathname === '/' ? 'homeTimeline' :
+				request.resourceURL.pathname === '/local-timeline' ? 'localTimeline' :
+				request.resourceURL.pathname === '/hybrid-timeline' ? 'hybridTimeline' :
+				request.resourceURL.pathname === '/global-timeline' ? 'globalTimeline' : null);
 
 			if (request.resourceURL.pathname === '/') {
-				main.connectChannel(Math.random().toString(), null, channels.main);
+				main.connectChannel(Math.random().toString(), null, 'main');
 			}
 		}
 

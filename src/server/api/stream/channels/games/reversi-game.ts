@@ -8,6 +8,9 @@ import * as maps from '../../../../../games/reversi/maps';
 import Channel from '../../channel';
 
 export default class extends Channel {
+	public readonly chName = 'gamesReversiGame';
+	public readonly shouldShare = false;
+
 	private gameId: mongo.ObjectID;
 
 	@autobind

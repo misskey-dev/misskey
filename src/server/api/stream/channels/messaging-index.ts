@@ -2,6 +2,9 @@ import autobind from 'autobind-decorator';
 import Channel from '../channel';
 
 export default class extends Channel {
+	public readonly chName = 'messagingIndex';
+	public readonly shouldShare = true;
+
 	@autobind
 	public async init(params: any) {
 		// Subscribe messaging index stream

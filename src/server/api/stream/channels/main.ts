@@ -3,6 +3,9 @@ import Mute from '../../../../models/mute';
 import Channel from '../channel';
 
 export default class extends Channel {
+	public readonly chName = 'main';
+	public readonly shouldShare = true;
+
 	@autobind
 	public async init(params: any) {
 		const mute = await Mute.find({ muterId: this.user._id });
