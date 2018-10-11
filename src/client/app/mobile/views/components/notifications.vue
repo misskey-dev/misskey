@@ -77,6 +77,8 @@ export default Vue.extend({
 
 	methods: {
 		fetchMoreNotifications() {
+			if (this.fetchingMoreNotifications) return;
+
 			this.fetchingMoreNotifications = true;
 
 			const max = 30;
@@ -98,8 +100,7 @@ export default Vue.extend({
 
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.connection.send({
-				type: 'readNotification',
+			(this as any).os.stream.send('readNotification', {
 				id: notification.id
 			});
 

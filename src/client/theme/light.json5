@@ -84,7 +84,8 @@
 
 		reactionPickerButtonHoverBg: '#eee',
 
-		reactionViewerBorder: 'rgba(0, 0, 0, 0.1)',
+		reactionViewerButtonBg: 'rgba(0, 0, 0, 0.05)',
+		reactionViewerButtonHoverBg: 'rgba(0, 0, 0, 0.1)',
 
 		pollEditorInputBg: '#fff',
 

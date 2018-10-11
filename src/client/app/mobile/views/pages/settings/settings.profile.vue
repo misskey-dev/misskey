@@ -170,7 +170,10 @@ export default Vue.extend({
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
-					alert('%i18n:@saved%');
+					this.$swal({
+						type: 'success',
+						text: '%i18n:@saved%'
+					});
 				}
 			});
 		}

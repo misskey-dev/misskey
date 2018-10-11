@@ -71,6 +71,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 ----------------------------------------------------------------
 <!-- PATREON_START -->
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/619786/32cf01444db24e578cd1982c197f6fc6/1?token-time=2145916800&token-hash=CXe9AqlZy9AsYfiWd3OBYVOzvODoN47Litz0Tu4BFpU%3D" alt="Gargron"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12731202/0995c46cdcb54153ab5f073f5869b70a/1?token-time=2145916800&token-hash=Yd60FK_SWfQO56SeiJpy1tDHOnCV4xdEywQe8gn5_Wo%3D" alt="negao"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13099460/43cecdbaa63a40d79bf50a96b9910b9d/1?token-time=2145916800&token-hash=d6P5MWHHsCMxUuBAEPAoVc5wLUR19mIhqAq7Ma9h9rI%3D" alt="ne_moni"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/2?token-time=2145916800&token-hash=mgPdX9TqZxEg4TTPuc477dxhIgYk9246qafjWZEqZ7g%3D" alt="Melilot"></td>
@@ -80,6 +81,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><img src="https://c8.patreon.com/2/100/12718187" alt="Peter G."></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13039004/509d0c412eb14ae08d6a812a3054f7d6/1?token-time=2145916800&token-hash=zwSu01tOtn5xTUucDZHuPsCxF2HBEMVs9ROJKTlEV_o%3D" alt="nemu"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/mastodon">Gargron</a></td>
 <td><a href="https://www.patreon.com/negao">negao</a></td>
 <td><a href="https://www.patreon.com/user?u=13099460">ne_moni</a></td>
 <td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>

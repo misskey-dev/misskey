@@ -44,6 +44,10 @@ module.exports = (server: http.Server) => {
 				request.resourceURL.pathname === '/local-timeline' ? channels.localTimeline :
 				request.resourceURL.pathname === '/hybrid-timeline' ? channels.hybridTimeline :
 				request.resourceURL.pathname === '/global-timeline' ? channels.globalTimeline : null);
+
+			if (request.resourceURL.pathname === '/') {
+				main.connectChannel(Math.random().toString(), null, channels.main);
+			}
 		}
 
 		connection.once('close', () => {

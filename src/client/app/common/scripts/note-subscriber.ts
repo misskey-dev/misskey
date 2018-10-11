@@ -13,14 +13,14 @@ export default prop => ({
 		},
 
 		$_ns_isRenote(): boolean {
-			return (this.$_ns_note_.renote &&
+			return (this.$_ns_note_.renote != null &&
 				this.$_ns_note_.text == null &&
 				this.$_ns_note_.fileIds.length == 0 &&
 				this.$_ns_note_.poll == null);
 		},
 
 		$_ns_target(): any {
-			return this._ns_isRenote ? this.$_ns_note_.renote : this.$_ns_note_;
+			return this.$_ns_isRenote ? this.$_ns_note_.renote : this.$_ns_note_;
 		},
 	},
 
@@ -86,8 +86,20 @@ export default prop => ({
 			switch (type) {
 				case 'reacted': {
 					const reaction = body.reaction;
-					if (this.$_ns_target.reactionCounts == null) Vue.set(this.$_ns_target, 'reactionCounts', {});
-					this.$_ns_target.reactionCounts[reaction] = (this.$_ns_target.reactionCounts[reaction] || 0) + 1;
+
+					if (this.$_ns_target.reactionCounts == null) {
+						Vue.set(this.$_ns_target, 'reactionCounts', {});
+					}
+
+					if (this.$_ns_target.reactionCounts[reaction] == null) {
+						Vue.set(this.$_ns_target.reactionCounts, reaction, 0);
+					}
+
+					this.$_ns_target.reactionCounts[reaction]++;
+
+					if (body.userId == this.$store.state.i.id) {
+						Vue.set(this.$_ns_target, 'myReaction', reaction);
+					}
 					break;
 				}
 

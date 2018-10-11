@@ -111,6 +111,7 @@ async function workerMain() {
  */
 async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
+	Logger.info(`<<< Misskey v${pkg.version} >>>`);
 
 	new Logger('Deps').info(`Node.js ${process.version}`);
 	MachineInfo.show();

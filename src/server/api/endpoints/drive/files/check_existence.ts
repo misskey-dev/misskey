@@ -27,7 +27,8 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	const file = await DriveFile.findOne({
 		md5: md5,
-		'metadata.userId': user._id
+		'metadata.userId': user._id,
+		'metadata.deletedAt': { $exists: false }
 	});
 
 	if (file === null) {
