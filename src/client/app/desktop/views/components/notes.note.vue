@@ -36,7 +36,7 @@
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
 			</div>
-			<footer v-if="appearNote.deletedAt == null">
+			<footer>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button class="replyButton" @click="reply()" title="%i18n:@reply%">
 					<template v-if="appearNote.reply">%fa:reply-all%</template>

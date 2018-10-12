@@ -43,7 +43,7 @@
 				</div>
 				<span class="app" v-if="appearNote.app">via <b>{{ appearNote.app.name }}</b></span>
 			</div>
-			<footer v-if="appearNote.deletedAt == null">
+			<footer>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button @click="reply()">
 					<template v-if="appearNote.reply">%fa:reply-all%</template>
