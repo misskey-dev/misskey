@@ -335,6 +335,7 @@ common/views/components/note-menu.vue:
   detail: "Details"
   copy-link: "Copy link"
   favorite: "Favorite this note"
+  unfavorite: "お気に入り解除"
   pin: "Pin to your profile"
   unpin: "ピン留め解除"
   delete: "Delete"
