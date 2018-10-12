@@ -4,6 +4,7 @@ import db from '../db/mongodb';
 import DriveFile from './drive-file';
 
 const DriveFolder = db.get<IDriveFolder>('driveFolders');
+DriveFolder.createIndex('userId');
 export default DriveFolder;
 
 export type IDriveFolder = {
