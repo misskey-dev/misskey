@@ -41,7 +41,7 @@
 					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote"/></div>
 				</div>
-				<span class="app" v-if="appearNote.app">via <b>{{ appearNote.apappearNote.name }}</b></span>
+				<span class="app" v-if="appearNote.app">via <b>{{ appearNote.app.name }}</b></span>
 			</div>
 			<footer v-if="appearNote.deletedAt == null">
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
