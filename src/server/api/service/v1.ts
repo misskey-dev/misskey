@@ -8,7 +8,6 @@ const router = new Router();
 router.get('/v1/instance/peers', async ctx => {
 	const peers = await User.distinct('host', { host: { $ne: null } }) as any as string[];
 	const punyCodes = peers.map(peer => toASCII(peer));
-	ctx.set('Cache-Control', 'public, max-age=3600');
 	ctx.body = punyCodes;
 });
 
