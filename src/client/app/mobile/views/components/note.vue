@@ -89,26 +89,6 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		}
-	},
-
-	data() {
-		return {
-			showContent: false
-		};
-	},
-
-	methods: {
-		reply() {
-			(this as any).apis.post({
-				reply: this.appearNote
-			});
-		},
-
-		renote() {
-			(this as any).apis.post({
-				renote: this.appearNote
-			});
-		},
 	}
 });
 </script>

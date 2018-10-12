@@ -84,6 +84,26 @@ export default (opts: Opts = {}) => ({
 	},
 
 	methods: {
+		reply(viaKeyboard = false) {
+			(this as any).apis.post({
+				reply: this.appearNote,
+				animation: !viaKeyboard,
+				cb: () => {
+					this.focus();
+				}
+			});
+		},
+
+		renote(viaKeyboard = false) {
+			(this as any).apis.post({
+				renote: this.appearNote,
+				animation: !viaKeyboard,
+				cb: () => {
+					this.focus();
+				}
+			});
+		},
+
 		renoteDirectly() {
 			(this as any).api('notes/create', {
 				renoteId: this.appearNote.id

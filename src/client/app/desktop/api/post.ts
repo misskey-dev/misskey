@@ -6,13 +6,17 @@ export default (os: OS) => opts => {
 	const o = opts || {};
 	if (o.renote) {
 		const vm = os.new(RenoteFormWindow, {
-			note: o.renote
+			note: o.renote,
+			animation: o.animation == null ? true : o.animation
 		});
+		if (opts.cb) vm.$once('closed', opts.cb);
 		document.body.appendChild(vm.$el);
 	} else {
 		const vm = os.new(PostFormWindow, {
-			reply: o.reply
+			reply: o.reply,
+			animation: o.animation == null ? true : o.animation
 		});
+		if (opts.cb) vm.$once('closed', opts.cb);
 		document.body.appendChild(vm.$el);
 	}
 };

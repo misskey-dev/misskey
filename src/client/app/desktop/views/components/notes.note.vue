@@ -82,22 +82,6 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		}
-	},
-
-	methods: {
-		reply(viaKeyboard = false) {
-			(this as any).os.new(MkPostFormWindow, {
-				reply: this.appearNote,
-				animation: !viaKeyboard
-			}).$once('closed', this.focus);
-		},
-
-		renote(viaKeyboard = false) {
-			(this as any).os.new(MkRenoteFormWindow, {
-				note: this.appearNote,
-				animation: !viaKeyboard
-			}).$once('closed', this.focus);
-		},
 	}
 });
 </script>
