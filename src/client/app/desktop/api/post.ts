@@ -9,14 +9,14 @@ export default (os: OS) => opts => {
 			note: o.renote,
 			animation: o.animation == null ? true : o.animation
 		});
-		if (opts.cb) vm.$once('closed', opts.cb);
+		if (o.cb) vm.$once('closed', o.cb);
 		document.body.appendChild(vm.$el);
 	} else {
 		const vm = os.new(PostFormWindow, {
 			reply: o.reply,
 			animation: o.animation == null ? true : o.animation
 		});
-		if (opts.cb) vm.$once('closed', opts.cb);
+		if (o.cb) vm.$once('closed', o.cb);
 		document.body.appendChild(vm.$el);
 	}
 };
