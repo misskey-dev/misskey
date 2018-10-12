@@ -5,6 +5,9 @@ import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 
 export default class extends Channel {
+	public readonly chName = 'hashtag';
+	public static shouldShare = false;
+
 	@autobind
 	public async init(params: any) {
 		const mute = this.user ? await Mute.find({ muterId: this.user._id }) : null;

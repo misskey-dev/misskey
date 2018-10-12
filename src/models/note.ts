@@ -386,14 +386,16 @@ export const pack = async (
 		return null;
 	}
 
-	if (_note.replyId != null && _note.reply == null) {
-		console.warn(`[DAMAGED DB] (missing) pkg: note -> reply :: ${_note.id} (reply ${_note.replyId})`);
-		return null;
-	}
+	if (opts.detail) {
+		if (_note.replyId != null && _note.reply == null) {
+			console.warn(`[DAMAGED DB] (missing) pkg: note -> reply :: ${_note.id} (reply ${_note.replyId})`);
+			return null;
+		}
 
-	if (_note.renoteId != null && _note.renote == null) {
-		console.warn(`[DAMAGED DB] (missing) pkg: note -> renote :: ${_note.id} (renote ${_note.renoteId})`);
-		return null;
+		if (_note.renoteId != null && _note.renote == null) {
+			console.warn(`[DAMAGED DB] (missing) pkg: note -> renote :: ${_note.id} (renote ${_note.renoteId})`);
+			return null;
+		}
 	}
 	//#endregion
 

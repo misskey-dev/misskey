@@ -1,6 +1,5 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import Xev from 'xev';
 import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
@@ -11,6 +10,7 @@ import readNote from '../../../services/note/read';
 
 import Channel from './channel';
 import channels from './channels';
+import { EventEmitter } from 'events';
 
 const log = debug('misskey');
 
@@ -21,14 +21,14 @@ export default class Connection {
 	public user?: IUser;
 	public app: IApp;
 	private wsConnection: websocket.connection;
-	public subscriber: Xev;
+	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
 	public sendMessageToWsOverride: any = null; // 後方互換性のため
 
 	constructor(
 		wsConnection: websocket.connection,
-		subscriber: Xev,
+		subscriber: EventEmitter,
 		user: IUser,
 		app: IApp
 	) {
@@ -148,7 +148,7 @@ export default class Connection {
 	private onChannelConnectRequested(payload: any) {
 		const { channel, id, params } = payload;
 		log(`CH CONNECT: ${id} ${channel} by @${this.user.username}`);
-		this.connectChannel(id, params, (channels as any)[channel]);
+		this.connectChannel(id, params, channel);
 	}
 
 	/**
@@ -177,10 +177,15 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@autobind
-	public connectChannel(id: string, params: any, channelClass: { new(id: string, connection: Connection): Channel }) {
-		const channel = new channelClass(id, this);
-		this.channels.push(channel);
-		channel.init(params);
+	public connectChannel(id: string, params: any, channel: string) {
+		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
+		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
+			return;
+		}
+
+		const ch: Channel = new (channels as any)[channel](id, this);
+		this.channels.push(ch);
+		ch.init(params);
 		this.sendMessageToWs('connected', {
 			id: id
 		});

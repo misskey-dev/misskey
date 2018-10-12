@@ -10,7 +10,6 @@ import MiOS from '../../mios';
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
 	private state: string;
-	private buffer: any[];
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
@@ -19,7 +18,6 @@ export default class Stream extends EventEmitter {
 		super();
 
 		this.state = 'initializing';
-		this.buffer = [];
 
 		const user = os.store.state.i;
 
@@ -49,6 +47,11 @@ export default class Stream extends EventEmitter {
 	}
 
 	@autobind
+	public removeSharedConnectionPool(pool: Pool) {
+		this.sharedConnectionPools = this.sharedConnectionPools.filter(p => p !== pool);
+	}
+
+	@autobind
 	public connectToChannel(channel: string, params?: any): NonSharedConnection {
 		const connection = new NonSharedConnection(this, channel, params);
 		this.nonSharedConnections.push(connection);
@@ -70,13 +73,6 @@ export default class Stream extends EventEmitter {
 		this.state = 'connected';
 		this.emit('_connected_');
 
-		// バッファーを処理
-		const _buffer = [].concat(this.buffer); // Shallow copy
-		this.buffer = []; // Clear buffer
-		_buffer.forEach(data => {
-			this.send(data); // Resend each buffered messages
-		});
-
 		// チャンネル再接続
 		if (isReconnect) {
 			this.sharedConnectionPools.forEach(p => {
@@ -93,8 +89,10 @@ export default class Stream extends EventEmitter {
 	 */
 	@autobind
 	private onClose() {
-		this.state = 'reconnecting';
-		this.emit('_disconnected_');
+		if (this.state == 'connected') {
+			this.state = 'reconnecting';
+			this.emit('_disconnected_');
+		}
 	}
 
 	/**
@@ -133,12 +131,6 @@ export default class Stream extends EventEmitter {
 			body: payload
 		};
 
-		// まだ接続が確立されていなかったらバッファリングして次に接続した時に送信する
-		if (this.state != 'connected') {
-			this.buffer.push(data);
-			return;
-		}
-
 		this.stream.send(JSON.stringify(data));
 	}
 
@@ -156,7 +148,7 @@ class Pool {
 	public channel: string;
 	public id: string;
 	protected stream: Stream;
-	private users = 0;
+	public users = 0;
 	private disposeTimerId: any;
 	private isConnected = false;
 
@@ -165,6 +157,13 @@ class Pool {
 		this.stream = stream;
 
 		this.id = Math.random().toString();
+
+		this.stream.on('_disconnected_', this.onStreamDisconnected);
+	}
+
+	@autobind
+	private onStreamDisconnected() {
+		this.isConnected = false;
 	}
 
 	@autobind
@@ -198,6 +197,7 @@ class Pool {
 
 	@autobind
 	public connect() {
+		if (this.isConnected) return;
 		this.isConnected = true;
 		this.stream.send('connect', {
 			channel: this.channel,
@@ -207,9 +207,9 @@ class Pool {
 
 	@autobind
 	private disconnect() {
-		this.isConnected = false;
-		this.disposeTimerId = null;
+		this.stream.off('_disconnected_', this.onStreamDisconnected);
 		this.stream.send('disconnect', { id: this.id });
+		this.stream.removeSharedConnectionPool(this);
 	}
 }
 

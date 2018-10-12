@@ -24,11 +24,11 @@ Please install and setup these softwares:
 #### Dependencies :package:
 * **[Node.js](https://nodejs.org/en/)**
 * **[MongoDB](https://www.mongodb.com/)** >= 3.6
-* **[Redis](https://redis.io/)**
 
 ##### Optional
+* [Redis](https://redis.io/)
+  * Redis is optional, but we strongly recommended to install it
 * [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB
-
 
 *3.* Setup MongoDB
 ----------------------------------------------------------------

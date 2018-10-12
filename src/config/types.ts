@@ -93,13 +93,11 @@ export type Source = {
 		private_key: string;
 	};
 
-	google_maps_api_key: string;
-
 	clusterLimit?: number;
 
 	initialBalance: number;
 
-	user_recommendation: {
+	user_recommendation?: {
 		external: boolean;
 		engine: string;
 		timeout: number;

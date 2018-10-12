@@ -24,10 +24,17 @@ adduser --disabled-password --disabled-login misskey
 #### 依存関係 :package:
 * **[Node.js](https://nodejs.org/en/)**
 * **[MongoDB](https://www.mongodb.com/)** (3.6以上)
-* **[Redis](https://redis.io/)**
 
 ##### オプション
-* [Elasticsearch](https://www.elastic.co/) - 検索機能を向上させるために用います。
+* [Redis](https://redis.io/)
+	* Redisはオプションですが、インストールすることを強く推奨します。
+	* インストールしなくていいのは、あなたのインスタンスが自分専用のときだけとお考えください。
+	* 具体的には、Redisをインストールしないと、次の事が出来なくなります:
+		* Misskeyプロセスを複数起動しての負荷分散
+		* レートリミット
+		* Twitter連携
+* [Elasticsearch](https://www.elastic.co/)
+	* 検索機能を有効にするためにはインストールが必要です。
 
 *3.* MongoDBの設定
 ----------------------------------------------------------------
