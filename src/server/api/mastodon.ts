@@ -1,5 +1,5 @@
 import * as Router from 'koa-router';
-import User from '../../../models/user';
+import User from '../../models/user';
 import { toASCII } from 'punycode';
 
 // Init router
