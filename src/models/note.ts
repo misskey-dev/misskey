@@ -358,8 +358,8 @@ export const pack = async (
 			})(_note.poll);
 		}
 
-		// Fetch my reaction
 		if (meId) {
+			// Fetch my reaction
 			_note.myReaction = (async () => {
 				const reaction = await Reaction
 					.findOne({
@@ -373,6 +373,19 @@ export const pack = async (
 				}
 
 				return null;
+			})();
+
+			// isFavorited
+			_note.isFavorited = (async () => {
+				const favorite = await Favorite
+					.count({
+						userId: meId,
+						noteId: id
+					}, {
+						limit: 1
+					});
+
+				return favorite === 1;
 			})();
 		}
 	}
