@@ -1,5 +1,5 @@
 <template>
-<div class="note" v-show="p.deletedAt == null" tabindex="-1" v-hotkey="keymap" :title="title">
+<div class="note" v-show="p.deletedAt == null" :tabindex="p.deletedAt == null ? '-1' : null" v-hotkey="keymap" :title="title">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
