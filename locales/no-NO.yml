@@ -335,6 +335,7 @@ common/views/components/note-menu.vue:
   detail: "Detaljer"
   copy-link: "リンクをコピー"
   favorite: "Merket som favoritt"
+  unfavorite: "お気に入り解除"
   pin: "Fest til profilen din"
   unpin: "ピン留め解除"
   delete: "Slett"
