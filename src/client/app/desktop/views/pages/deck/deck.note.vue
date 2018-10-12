@@ -1,7 +1,15 @@
 <template>
-<div v-if="!mediaView" v-show="p.deletedAt == null" :tabindex="p.deletedAt == null ? '-1' : null" class="zyjjkidcqjnlegkqebitfviomuqmseqk" :class="{ renote: isRenote }">
-	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
-		<x-sub :note="p.reply"/>
+<div
+	v-if="!mediaView"
+	v-show="appearNote.deletedAt == null"
+	:tabindex="appearNote.deletedAt == null ? '-1' : null"
+	class="zyjjkidcqjnlegkqebitfviomuqmseqk"
+	:class="{ renote: isRenote }"
+	v-hotkey="keymap"
+	:title="title"
+>
+	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
+		<x-sub :note="appearNote.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
@@ -12,43 +20,42 @@
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<mk-avatar class="avatar" :user="p.user"/>
+		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
-			<mk-note-header class="header" :note="p" :mini="true"/>
+			<mk-note-header class="header" :note="appearNote" :mini="true"/>
 			<div class="body">
-				<p v-if="p.cw != null" class="cw">
-					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+				<p v-if="appearNote.cw != null" class="cw">
+					<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
 					<mk-cw-button v-model="showContent"/>
 				</p>
-				<div class="content" v-show="p.cw == null || showContent">
+				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
-						<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
-						<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
-						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
-						<a class="rp" v-if="p.renote != null">RP:</a>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
+						<a class="reply" v-if="appearNote.reply">%fa:reply%</a>
+						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i"/>
+						<a class="rp" v-if="appearNote.renote != null">RP:</a>
 					</div>
-					<div class="files" v-if="p.files.length > 0">
-						<mk-media-list :media-list="p.files"/>
+					<div class="files" v-if="appearNote.files.length > 0">
+						<mk-media-list :media-list="appearNote.files"/>
 					</div>
-					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
-					<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
-					<div class="renote" v-if="p.renote">
-						<mk-note-preview :note="p.renote" :mini="true"/>
+					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
+					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
+					<div class="renote" v-if="appearNote.renote">
+						<mk-note-preview :note="appearNote.renote" :mini="true"/>
 					</div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="false" :mini="true"/>
 				</div>
-				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
+				<span class="app" v-if="appearNote.app">via <b>{{ appearNote.app.name }}</b></span>
 			</div>
 			<footer>
-				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
-				<button @click="reply">
-					<template v-if="p.reply">%fa:reply-all%</template>
+				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
+				<button @click="reply()">
+					<template v-if="appearNote.reply">%fa:reply-all%</template>
 					<template v-else>%fa:reply%</template>
 				</button>
-				<button @click="renote" title="Renote">%fa:retweet%</button>
-				<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton">%fa:plus%</button>
-				<button class="menu" @click="menu" ref="menuButton">%fa:ellipsis-h%</button>
+				<button @click="renote()" title="Renote">%fa:retweet%</button>
+				<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton">%fa:plus%</button>
+				<button class="menu" @click="menu()" ref="menuButton">%fa:ellipsis-h%</button>
 			</footer>
 		</div>
 	</article>
@@ -65,11 +72,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parse from '../../../../../../mfm/parse';
-
-import MkNoteMenu from '../../../../common/views/components/note-menu.vue';
-import MkReactionPicker from '../../../../common/views/components/reaction-picker.vue';
+import MkPostFormWindow from '../../components/post-form-window.vue';
+import MkRenoteFormWindow from '../../components/renote-form-window.vue';
 import XSub from './deck.note.sub.vue';
+import noteMixin from '../../../../common/scripts/note-mixin';
 import noteSubscriber from '../../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
@@ -77,7 +83,10 @@ export default Vue.extend({
 		XSub
 	},
 
-	mixins: [noteSubscriber('note')],
+	mixins: [
+		noteMixin(),
+		noteSubscriber('note')
+	],
 
 	props: {
 		note: {
@@ -91,64 +100,20 @@ export default Vue.extend({
 		}
 	},
 
-	data() {
-		return {
-			showContent: false
-		};
-	},
-
-	computed: {
-		isRenote(): boolean {
-			return (this.note.renote &&
-				this.note.text == null &&
-				this.note.fileIds.length == 0 &&
-				this.note.poll == null);
-		},
-
-		p(): any {
-			return this.isRenote ? this.note.renote : this.note;
-		},
-
-		urls(): string[] {
-			if (this.p.text) {
-				const ast = parse(this.p.text);
-				return ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
-			} else {
-				return null;
-			}
-		}
-	},
-
 	methods: {
-		reply() {
-			(this as any).apis.post({
-				reply: this.p
-			});
+		reply(viaKeyboard = false) {
+			(this as any).os.new(MkPostFormWindow, {
+				reply: this.appearNote,
+				animation: !viaKeyboard
+			}).$once('closed', this.focus);
 		},
 
-		renote() {
-			(this as any).apis.post({
-				renote: this.p
-			});
+		renote(viaKeyboard = false) {
+			(this as any).os.new(MkRenoteFormWindow, {
+				note: this.appearNote,
+				animation: !viaKeyboard
+			}).$once('closed', this.focus);
 		},
-
-		react() {
-			(this as any).os.new(MkReactionPicker, {
-				source: this.$refs.reactButton,
-				note: this.p,
-				compact: true
-			});
-		},
-
-		menu() {
-			(this as any).os.new(MkNoteMenu, {
-				source: this.$refs.menuButton,
-				note: this.p,
-				compact: true
-			});
-		}
 	}
 });
 </script>
@@ -167,6 +132,20 @@ export default Vue.extend({
 .zyjjkidcqjnlegkqebitfviomuqmseqk
 	font-size 13px
 	border-bottom solid 1px var(--faceDivider)
+
+	&:focus
+		z-index 1
+
+		&:after
+			content ""
+			pointer-events none
+			position absolute
+			top 2px
+			right 2px
+			bottom 2px
+			left 2px
+			border 2px solid var(--primaryAlpha03)
+			border-radius 4px
 
 	&:last-of-type
 		border-bottom none
