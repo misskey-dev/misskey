@@ -22,7 +22,19 @@ export default Vue.extend({
 				icon: '%fa:link%',
 				text: '%i18n:@copy-link%',
 				action: this.copyLink
-			}, null];
+			}];
+
+			if (this.note.uri) {
+				items.push({
+					icon: '%fa:external-link-square-alt%',
+					text: '%i18n:@remote%',
+					action: () => {
+						window.open(this.note.uri, '_blank');
+					}
+				});
+			}
+
+			items.push(null);
 
 			if (this.note.isFavorited) {
 				items.push({
@@ -60,16 +72,6 @@ export default Vue.extend({
 					icon: '%fa:trash-alt R%',
 					text: '%i18n:@delete%',
 					action: this.del
-				});
-			}
-
-			if (this.note.uri) {
-				items.push({
-					icon: '%fa:external-link-square-alt%',
-					text: '%i18n:@remote%',
-					action: () => {
-						window.open(this.note.uri, '_blank');
-					}
 				});
 			}
 
