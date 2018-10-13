@@ -19,7 +19,7 @@
 				<li @click="list">
 					<p>%fa:list%<span>%i18n:@lists%</span>%fa:angle-right%</p>
 				</li>
-				<li @click="followRequests" v-if="$store.state.i.isLocked">
+				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<p>%fa:envelope R%<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>%fa:angle-right%</p>
 				</li>
 			</ul>

@@ -58,6 +58,7 @@
 
 		<div>
 			<ui-switch v-model="isLocked" @change="save(false)">%i18n:@is-locked%</ui-switch>
+			<ui-switch v-model="carefulBot" @change="save(false)">%i18n:@careful-bot%</ui-switch>
 		</div>
 	</section>
 </ui-card>
@@ -80,6 +81,7 @@ export default Vue.extend({
 			bannerId: null,
 			isCat: false,
 			isLocked: false,
+			carefulBot: false,
 			saving: false,
 			avatarUploading: false,
 			bannerUploading: false
@@ -103,6 +105,7 @@ export default Vue.extend({
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isCat = this.$store.state.i.isCat;
 		this.isLocked = this.$store.state.i.isLocked;
+		this.carefulBot = this.$store.state.i.carefulBot;
 	},
 
 	methods: {
@@ -161,7 +164,8 @@ export default Vue.extend({
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
 				isCat: this.isCat,
-				isLocked: this.isLocked
+				isLocked: this.isLocked,
+				carefulBot: this.carefulBot
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;

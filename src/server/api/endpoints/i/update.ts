@@ -67,6 +67,12 @@ export const meta = {
 			}
 		}),
 
+		carefulBot: $.bool.optional.note({
+			desc: {
+				'ja-JP': 'Botからのフォローを承認制にするか'
+			}
+		}),
+
 		isBot: $.bool.optional.note({
 			desc: {
 				'ja-JP': 'Botか否か'
@@ -110,6 +116,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 	if (ps.wallpaperId !== undefined) updates.wallpaperId = ps.wallpaperId;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
+	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
 	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
 	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;

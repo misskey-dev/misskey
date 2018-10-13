@@ -66,6 +66,16 @@ type IUserBase = {
 	isLocked: boolean;
 
 	/**
+	 * Botか否か
+	 */
+	isBot: boolean;
+
+	/**
+	 * Botからのフォローを承認制にするか
+	 */
+	carefulBot: boolean;
+
+	/**
 	 * このアカウントに届いているフォローリクエストの数
 	 */
 	pendingReceivedFollowRequestsCount: number;
@@ -94,7 +104,6 @@ export interface ILocalUser extends IUserBase {
 		tags: string[];
 	};
 	lastUsedAt: Date;
-	isBot: boolean;
 	isCat: boolean;
 	isAdmin?: boolean;
 	isVerified?: boolean;
