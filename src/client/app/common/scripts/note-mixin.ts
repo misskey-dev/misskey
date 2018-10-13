@@ -1,7 +1,8 @@
 import parse from '../../../../mfm/parse';
 import { sum } from '../../../../prelude/array';
-import MkNoteMenu from '..//views/components/note-menu.vue';
+import MkNoteMenu from '../views/components/note-menu.vue';
 import MkReactionPicker from '../views/components/reaction-picker.vue';
+import Ok from '../views/components/ok.vue';
 
 function focus(el, fn) {
 	const target = fn(el);
@@ -31,6 +32,8 @@ export default (opts: Opts = {}) => ({
 				'r|left': () => this.reply(true),
 				'e|a|plus': () => this.react(true),
 				'q|right': () => this.renote(true),
+				'f|b': this.favorite,
+				'delete|ctrl+d': this.del,
 				'ctrl+q|ctrl+right': this.renoteDirectly,
 				'up|k|shift+tab': this.focusBefore,
 				'down|j|tab': this.focusAfter,
@@ -126,6 +129,20 @@ export default (opts: Opts = {}) => ({
 			(this as any).api('notes/reactions/create', {
 				noteId: this.appearNote.id,
 				reaction: reaction
+			});
+		},
+
+		favorite() {
+			(this as any).api('notes/favorites/create', {
+				noteId: this.appearNote.id
+			}).then(() => {
+				(this as any).os.new(Ok);
+			});
+		},
+
+		del() {
+			(this as any).api('notes/delete', {
+				noteId: this.appearNote.id
 			});
 		},
 
