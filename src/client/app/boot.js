@@ -142,7 +142,7 @@
 		localStorage.setItem('shouldFlush', 'false');
 
 		// Random
-		localStorage.setItem('salt', Math.random().toString());
+		localStorage.setItem('salt', Math.random().toString().substr(2, 8));
 
 		// Clear cache (service worker)
 		try {

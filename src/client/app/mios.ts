@@ -446,7 +446,7 @@ export default class MiOS extends EventEmitter {
 			const viaStream = this.stream && this.store.state.device.apiViaStream && !forceFetch;
 
 			if (viaStream) {
-				const id = Math.random().toString();
+				const id = Math.random().toString().substr(2, 8);
 
 				this.stream.once(`api:${id}`, res => {
 					if (res == null || Object.keys(res).length == 0) {

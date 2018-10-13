@@ -64,14 +64,14 @@ module.exports = (server: http.Server) => {
 				}));
 			};
 
-			main.connectChannel(Math.random().toString(), null,
+			main.connectChannel(Math.random().toString().substr(2, 8), null,
 				request.resourceURL.pathname === '/' ? 'homeTimeline' :
 				request.resourceURL.pathname === '/local-timeline' ? 'localTimeline' :
 				request.resourceURL.pathname === '/hybrid-timeline' ? 'hybridTimeline' :
 				request.resourceURL.pathname === '/global-timeline' ? 'globalTimeline' : null);
 
 			if (request.resourceURL.pathname === '/') {
-				main.connectChannel(Math.random().toString(), null, 'main');
+				main.connectChannel(Math.random().toString().substr(2, 8), null, 'main');
 			}
 		}
 
