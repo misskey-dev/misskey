@@ -17,8 +17,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .note
 	display inline-block
 	padding 8px
