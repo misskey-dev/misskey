@@ -125,7 +125,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							name: 'user-preview',
 							value: token.content
 						}]
-					}, token.content);
+					}, token.canonical);
 				}
 
 				case 'hashtag': {
