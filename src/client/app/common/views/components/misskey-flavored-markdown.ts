@@ -116,14 +116,14 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'mention': {
 					return (createElement as any)('a', {
 						attrs: {
-							href: `${url}/@${getAcct(token)}`,
+							href: `${url}/${token.canonical}`,
 							target: '_blank',
 							dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token),
 							style: 'color:var(--mfmMention);'
 						},
 						directives: [{
 							name: 'user-preview',
-							value: token.content
+							value: token.canonical
 						}]
 					}, token.canonical);
 				}
