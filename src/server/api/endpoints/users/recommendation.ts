@@ -30,22 +30,20 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			.replace('{{limit}}', limit)
 			.replace('{{offset}}', offset);
 
-			request(
-			{
-				url: url,
-				timeout: timeout,
-				json: true,
-				followRedirect: true,
-				followAllRedirects: true
-			},
-			(error: any, response: any, body: any) => {
-				if (!error && response.statusCode == 200) {
-					res(body);
-				} else {
-					res([]);
-				}
+		request({
+			url: url,
+			proxy: config.proxy,
+			timeout: timeout,
+			json: true,
+			followRedirect: true,
+			followAllRedirects: true
+		}, (error: any, response: any, body: any) => {
+			if (!error && response.statusCode == 200) {
+				res(body);
+			} else {
+				res([]);
 			}
-		);
+		});
 	} else {
 		// Get 'limit' parameter
 		const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
