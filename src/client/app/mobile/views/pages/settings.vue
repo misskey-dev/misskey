@@ -8,7 +8,14 @@
 			<x-profile/>
 
 			<ui-card>
-				<div slot="title">%fa:palette% %i18n:@design%</div>
+				<div slot="title">%fa:palette% %i18n:@theme%</div>
+				<section>
+					<mk-theme/>
+				</section>
+			</ui-card>
+
+			<ui-card>
+				<div slot="title">%fa:poll-h% %i18n:@design%</div>
 
 				<section>
 					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
@@ -21,13 +28,6 @@
 					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
 					<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
 					<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
-				</section>
-
-				<section>
-					<header>%i18n:@theme%</header>
-					<div>
-						<mk-theme/>
-					</div>
 				</section>
 
 				<section>
@@ -54,7 +54,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:cog% %i18n:@behavior%</div>
+				<div slot="title">%fa:sliders-h% %i18n:@behavior%</div>
 
 				<section>
 					<ui-switch v-model="fetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
