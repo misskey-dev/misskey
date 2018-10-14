@@ -1,8 +1,9 @@
 <template>
 <div class="mk-ui" v-hotkey.global="keymap">
 	<div class="bg" v-if="$store.getters.isSignedIn && $store.state.i.wallpaperUrl" :style="style"></div>
-	<x-header class="header" v-show="!zenMode" ref="header"/>
-	<div class="content">
+	<x-header class="header" v-if="navbar == 'top'" v-show="!zenMode" ref="header"/>
+	<x-sidebar class="sidebar" v-if="navbar != 'top'" ref="sidebar"/>
+	<div class="content" :class="[{ sidebar: navbar != 'top' }, navbar]">
 		<slot></slot>
 	</div>
 	<mk-stream-indicator v-if="$store.getters.isSignedIn"/>
@@ -12,10 +13,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import XHeader from './ui.header.vue';
+import XSidebar from './ui.sidebar.vue';
 
 export default Vue.extend({
 	components: {
-		XHeader
+		XHeader,
+		XSidebar
 	},
 
 	data() {
@@ -25,6 +28,10 @@ export default Vue.extend({
 	},
 
 	computed: {
+		navbar(): string {
+			return this.$store.state.device.navbar;
+		},
+
 		style(): any {
 			if (!this.$store.getters.isSignedIn || this.$store.state.i.wallpaperUrl == null) return {};
 			return {
@@ -45,6 +52,12 @@ export default Vue.extend({
 	watch: {
 		'$store.state.uiHeaderHeight'() {
 			this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
+		},
+
+		navbar() {
+			if (this.navbar != 'top') {
+				this.$store.commit('setUiHeaderHeight', 0);
+			}
 		}
 	},
 
@@ -86,5 +99,11 @@ export default Vue.extend({
 	> .header
 		@media (max-width 1000px)
 			display none
+
+	> .content.sidebar.left
+		padding-left 64px
+
+	> .content.sidebar.right
+		padding-right 64px
 
 </style>
