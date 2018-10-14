@@ -1,6 +1,6 @@
 <template>
 <div class="mk-notifications">
-	<div class="skeleton" v-if="fetching">
+	<div class="placeholder" v-if="fetching">
 		<template v-for="i in 10">
 			<mk-note-skeleton :key="i"/>
 		</template>
@@ -184,7 +184,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-	> .skeleton
+	> .placeholder
 		padding 16px
 		opacity 0.3
 

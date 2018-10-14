@@ -4,7 +4,7 @@
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div class="skeleton" v-if="fetching">
+	<div class="placeholder" v-if="fetching">
 		<template v-for="i in 10">
 			<mk-note-skeleton :key="i"/>
 		</template>
@@ -253,7 +253,7 @@ export default Vue.extend({
 			[data-fa]
 				margin-right 8px
 
-	> .skeleton
+	> .placeholder
 		padding 16px
 		opacity 0.3
 
