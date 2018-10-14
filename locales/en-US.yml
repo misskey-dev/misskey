@@ -785,6 +785,10 @@ desktop/views/components/settings.vue:
   tools: "Tools"
   task-manager: "Task Manager"
   third-parties: "Third-parties"
+  navbar-position: "ナビゲーションバーの位置"
+  navbar-position-top: "上"
+  navbar-position-left: "左"
+  navbar-position-right: "右"
 desktop/views/components/settings.2fa.vue:
   intro: "If you set up 2-step verification, you will not only need a password at sign-in, but also a pre-registered physical device (such as your smartphone), which will improve security."
   detail: "Details…"
