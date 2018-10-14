@@ -96,14 +96,10 @@ export default Vue.extend({
 		background-attachment fixed
 		opacity 0.3
 
-	> .header
-		@media (max-width 1000px)
-			display none
-
 	> .content.sidebar.left
-		padding-left 64px
+		padding-left 68px
 
 	> .content.sidebar.right
-		padding-right 64px
+		padding-right 68px
 
 </style>
