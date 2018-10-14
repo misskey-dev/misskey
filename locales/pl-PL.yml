@@ -785,6 +785,10 @@ desktop/views/components/settings.vue:
   tools: "Narzędzia"
   task-manager: "Menedżer zadań"
   third-parties: "Autorzy trzeci"
+  navbar-position: "ナビゲーションバーの位置"
+  navbar-position-top: "上"
+  navbar-position-left: "左"
+  navbar-position-right: "右"
 desktop/views/components/settings.2fa.vue:
   intro: "Jeżeli skonfigurujesz uwierzytelnianie dwuetapowe, aby zablokować się będziesz potrzebować (oprócz hasła) kodu ze skonfigurowanego urządzenia (np. smartfonu), co zwiększy bezpieczeństwo."
   detail: "Zobacz szczegóły…"
