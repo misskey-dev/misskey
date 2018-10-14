@@ -4,8 +4,10 @@
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div class="init" v-if="fetching">
-		%fa:spinner .pulse%%i18n:common.loading%
+	<div class="skeleton" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
 	</div>
 
 	<div v-if="!fetching && requestInitPromise != null">
@@ -251,13 +253,12 @@ export default Vue.extend({
 			[data-fa]
 				margin-right 8px
 
-	> .init
-		padding 64px 0
-		text-align center
-		color #999
+	> .skeleton
+		padding 16px
+		opacity 0.3
 
-		> [data-fa]
-			margin-right 4px
+		@media (min-width 500px)
+			padding 32px
 
 	> .empty
 		margin 0 auto

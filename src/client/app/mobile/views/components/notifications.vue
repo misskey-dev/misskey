@@ -1,5 +1,11 @@
 <template>
 <div class="mk-notifications">
+	<div class="skeleton" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
+	</div>
+
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notifications" class="transition notifications">
 		<template v-for="(notification, i) in _notifications">
@@ -17,7 +23,6 @@
 	</button>
 
 	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>
 
@@ -179,13 +184,11 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-	> .fetching
-		margin 0
+	> .skeleton
 		padding 16px
-		text-align center
-		color #aaa
+		opacity 0.3
 
-		> [data-fa]
-			margin-right 4px
+		@media (min-width 500px)
+			padding 32px
 
 </style>

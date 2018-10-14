@@ -9,6 +9,12 @@
 		<button @click="resolveInitPromise">%i18n:@retry%</button>
 	</div>
 
+	<div class="skeleton" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
+	</div>
+
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="notes transition" tag="div" ref="notes">
 		<template v-for="(note, i) in _notes">
@@ -225,6 +231,10 @@ export default Vue.extend({
 
 		> *
 			transition transform .3s ease, opacity .3s ease
+
+	> .skeleton
+		padding 32px
+		opacity 0.3
 
 	> .notes
 		> .date

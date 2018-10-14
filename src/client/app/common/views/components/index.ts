@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import noteSkeleton from './note-skeleton.vue';
 import theme from './theme.vue';
 import instance from './instance.vue';
 import cwButton from './cw-button.vue';
@@ -44,6 +45,7 @@ import uiSelect from './ui/select.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
+Vue.component('mk-note-skeleton', noteSkeleton);
 Vue.component('mk-theme', theme);
 Vue.component('mk-instance', instance);
 Vue.component('mk-cw-button', cwButton);
