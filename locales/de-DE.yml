@@ -785,6 +785,10 @@ desktop/views/components/settings.vue:
   tools: "Werkzeuge"
   task-manager: "Taskmanager"
   third-parties: "サードパーティ"
+  navbar-position: "ナビゲーションバーの位置"
+  navbar-position-top: "上"
+  navbar-position-left: "左"
+  navbar-position-right: "右"
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
   detail: "詳細..."
