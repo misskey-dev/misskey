@@ -8,9 +8,9 @@ describe('Text', () => {
 	it('can be analyzed', () => {
 		const tokens = analyze('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
 		assert.deepEqual([
-			{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
+			{ type: 'mention', content: '@himawari', canonical: '@himawari', username: 'himawari', host: null },
 			{ type: 'text', content: ' '},
-			{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
+			{ type: 'mention', content: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
 			{ type: 'text', content: ' お腹ペコい ' },
 			{ type: 'emoji', content: ':cat:', emoji: 'cat'},
 			{ type: 'text', content: ' '},
@@ -58,7 +58,7 @@ describe('Text', () => {
 			it('local', () => {
 				const tokens = analyze('@himawari お腹ペコい');
 				assert.deepEqual([
-					{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
+					{ type: 'mention', content: '@himawari', canonical: '@himawari', username: 'himawari', host: null },
 					{ type: 'text', content: ' お腹ペコい' }
 				], tokens);
 			});
@@ -66,7 +66,15 @@ describe('Text', () => {
 			it('remote', () => {
 				const tokens = analyze('@hima_sub@namori.net お腹ペコい');
 				assert.deepEqual([
-					{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
+					{ type: 'mention', content: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
+					{ type: 'text', content: ' お腹ペコい' }
+				], tokens);
+			});
+
+			it('remote punycode', () => {
+				const tokens = analyze('@hima_sub@xn--q9j5bya.xn--zckzah お腹ペコい');
+				assert.deepEqual([
+					{ type: 'mention', content: '@hima_sub@xn--q9j5bya.xn--zckzah', canonical: '@hima_sub@なもり.テスト', username: 'hima_sub', host: 'xn--q9j5bya.xn--zckzah' },
 					{ type: 'text', content: ' お腹ペコい' }
 				], tokens);
 			});
