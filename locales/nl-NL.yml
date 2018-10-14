@@ -785,6 +785,10 @@ desktop/views/components/settings.vue:
   tools: "Hulpmiddelen"
   task-manager: "Taakbeheer"
   third-parties: "Derde partij"
+  navbar-position: "ナビゲーションバーの位置"
+  navbar-position-top: "上"
+  navbar-position-left: "左"
+  navbar-position-right: "右"
 desktop/views/components/settings.2fa.vue:
   intro: "Als je verificatie in twee stappen instelt, dan heb je niet alleen een wachtwoord nodig bij het inloggen, maar ook een geregistreerd fysiek apparaat (zoals je smartphone). Dit verhoogt de veiligheid. "
   detail: "Details bekijken..."
