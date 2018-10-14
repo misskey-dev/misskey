@@ -167,10 +167,13 @@ export default Vue.extend({
 
 	> .nav
 		> *
+			&.active
+				box-shadow -4px 0 var(--primary) inset
+
 			> *
 				display block
 				width $width
-				line-height 56px
+				line-height 52px
 				text-align center
 				font-size 18px
 				color var(--desktopHeaderFg)
@@ -187,12 +190,12 @@ export default Vue.extend({
 	> .post
 		width $width
 		height $width
-		padding 10px
+		padding 12px
 
 		> button
 			display inline-block
 			margin 0
-			padding 0 10px
+			padding 0
 			height 100%
 			width 100%
 			font-size 1.2em
@@ -202,7 +205,7 @@ export default Vue.extend({
 			background var(--primary) !important
 			outline none
 			border none
-			border-radius 4px
+			border-radius 100%
 			transition background 0.1s ease
 			cursor pointer
 
@@ -222,7 +225,7 @@ export default Vue.extend({
 		left 0
 		width $width
 		height $width
-		padding 12px
+		padding 14px
 
 		> *
 			display block
