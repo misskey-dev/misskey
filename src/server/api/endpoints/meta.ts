@@ -55,7 +55,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			recaptcha: config.recaptcha ? true : false,
 			objectStorage: config.drive && config.drive.storage === 'minio',
 			twitter: config.twitter ? true : false,
-			serviceWorker: config.sw ? true : false
+			serviceWorker: config.sw ? true : false,
+			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
 		}
 	});
 });
