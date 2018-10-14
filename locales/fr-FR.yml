@@ -785,6 +785,10 @@ desktop/views/components/settings.vue:
   tools: "Outils"
   task-manager: "Gestionnaire de tâches"
   third-parties: "Services tiers"
+  navbar-position: "ナビゲーションバーの位置"
+  navbar-position-top: "上"
+  navbar-position-left: "左"
+  navbar-position-right: "右"
 desktop/views/components/settings.2fa.vue:
   intro: "Si vous configurez la vérication en deux étapes vous aurez non seulement besoin de votre mot de passe mais aussi un appareil déjà pré-enregistré(tel que votre smartphone) ce qui ameliora grandement la sécurité de votre compte."
   detail: "Voir les détails..."
