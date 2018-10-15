@@ -39,7 +39,7 @@
 		"@types/gulp-mocha": "0.0.32",
 		"@types/gulp-rename": "0.0.33",
 		"@types/gulp-replace": "0.0.31",
-		"@types/gulp-uglify": "3.0.5",
+		"@types/gulp-uglify": "3.0.6",
 		"@types/gulp-util": "3.0.34",
 		"@types/is-root": "1.0.0",
 		"@types/is-url": "1.2.28",
