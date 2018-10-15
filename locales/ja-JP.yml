@@ -1239,6 +1239,8 @@ mobile/views/components/drive.file-detail.vue:
   hash: "ハッシュ (md5)"
   exif: "EXIF"
   nsfw: "閲覧注意"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
 
 mobile/views/components/media-image.vue:
   sensitive: "閲覧注意"
