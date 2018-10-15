@@ -200,4 +200,30 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 	});
+
+	describe('users/show', () => {
+		it('ユーザーが取得できる', async(async () => {
+			const me = await signup();
+			const res = await request('/users/show', {
+				userId: me.id
+			}, me);
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('id').eql(me.id);
+		}));
+
+		it('ユーザーが存在しなかったら怒る', async(async () => {
+			const res = await request('/users/show', {
+				userId: '000000000000000000000000'
+			});
+			expect(res).have.status(400);
+		}));
+
+		it('間違ったIDで怒られる', async(async () => {
+			const res = await request('/users/show', {
+				userId: 'kyoppie'
+			});
+			expect(res).have.status(400);
+		}));
+	});
 });
