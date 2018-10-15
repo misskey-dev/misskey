@@ -54,4 +54,4 @@ router.all('*', async ctx => {
 // Register router
 app.use(router.routes());
 
-module.exports = app;
+export default app;

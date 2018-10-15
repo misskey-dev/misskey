@@ -1,3 +1,7 @@
+/*
+ * Tests of MFM
+ */
+
 import * as assert from 'assert';
 
 import analyze from '../src/mfm/parse';

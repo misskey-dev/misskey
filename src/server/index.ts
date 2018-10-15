@@ -18,6 +18,7 @@ import activityPub from './activitypub';
 import webFinger from './webfinger';
 import config from '../config';
 import { updateNetworkStats } from '../services/update-chart';
+import apiServer from './api';
 
 // Init app
 const app = new Koa();
@@ -47,7 +48,7 @@ if (config.url.startsWith('https')) {
 	});
 }
 
-app.use(mount('/api', require('./api')));
+app.use(mount('/api', apiServer));
 app.use(mount('/files', require('./file')));
 
 // Init router
