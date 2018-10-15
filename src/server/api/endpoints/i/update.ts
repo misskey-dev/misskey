@@ -101,7 +101,7 @@ export const meta = {
 
 export default async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
+	if (psErr) return rej(psErr);
 
 	const isSecure = user != null && app == null;
 

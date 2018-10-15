@@ -132,6 +132,12 @@ export default async (ctx: Koa.Context) => {
 
 	updateUserStats(account, true);
 
-	// Response
-	ctx.body = await pack(account);
+	const res = await pack(account, account, {
+		detail: true,
+		includeSecrets: true
+	});
+
+	res.token = secret;
+
+	ctx.body = res;
 };

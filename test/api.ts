@@ -75,7 +75,7 @@ describe('API', () => {
 				username: 'test.',
 				password: 'test'
 			});
-			expect(res).to.have.status(400);
+			expect(res).have.status(400);
 		}));
 
 		it('空のパスワードでアカウントが作成できない', async(async () => {
@@ -83,7 +83,7 @@ describe('API', () => {
 				username: 'test',
 				password: ''
 			});
-			expect(res).to.have.status(400);
+			expect(res).have.status(400);
 		}));
 
 		it('正しくアカウントが作成できる', async(async () => {
@@ -92,7 +92,7 @@ describe('API', () => {
 				password: 'test'
 			};
 			const res = await request('/signup', me);
-			expect(res).to.have.status(200);
+			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('username').eql(me.username);
 		}));
@@ -105,7 +105,7 @@ describe('API', () => {
 				username: 'test',
 				password: 'test'
 			});
-			expect(res).to.have.status(400);
+			expect(res).have.status(400);
 		}));
 	});
 
@@ -119,7 +119,7 @@ describe('API', () => {
 				username: 'test',
 				password: 'bar'
 			});
-			expect(res).to.have.status(403);
+			expect(res).have.status(403);
 		}));
 
 		it('クエリをインジェクションできない', async(async () => {
@@ -132,7 +132,7 @@ describe('API', () => {
 					$gt: ''
 				}
 			});
-			expect(res).to.have.status(400);
+			expect(res).have.status(400);
 		}));
 
 		it('正しい情報でサインインできる', async(async () => {
@@ -144,7 +144,60 @@ describe('API', () => {
 				username: 'test',
 				password: 'foo'
 			});
-			expect(res).to.have.status(204);
+			expect(res).have.status(204);
+		}));
+	});
+
+	describe('i/update', () => {
+		it('アカウント設定を更新できる', async(async () => {
+			const me = await signup();
+
+			const myName = '大室櫻子';
+			const myLocation = '七森中';
+			const myBirthday = '2000-09-07';
+
+			const res = await request('/i/update', {
+				name: myName,
+				location: myLocation,
+				birthday: myBirthday
+			}, me);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('name').eql(myName);
+			expect(res.body).have.nested.property('profile').a('object');
+			expect(res.body).have.nested.property('profile.location').eql(myLocation);
+			expect(res.body).have.nested.property('profile.birthday').eql(myBirthday);
+		}));
+
+		it('名前を空白にできない', async(async () => {
+			const me = await signup();
+			const res = await request('/i/update', {
+				name: ' '
+			}, me);
+			expect(res).have.status(400);
+		}));
+
+		it('誕生日の設定を削除できる', async(async () => {
+			const me = await signup();
+			await request('/i/update', {
+				birthday: '2000-09-07'
+			}, me);
+			const res = await request('/i/update', {
+				birthday: null
+			}, me);
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.nested.property('profile').a('object');
+			expect(res.body).have.nested.property('profile.birthday').eql(null);
+		}));
+
+		it('不正な誕生日の形式で怒られる', async(async () => {
+			const me = await signup();
+			const res = await request('/i/update', {
+				birthday: '2000/09/07'
+			}, me);
+			expect(res).have.status(400);
 		}));
 	});
 });
