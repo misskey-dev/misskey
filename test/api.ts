@@ -32,18 +32,17 @@ const async = (fn: Function) => (done: Function) => {
 	});
 };
 
-const request = (endpoint: string, params: any, me?: any): Promise<ChaiHttp.Response> => new Promise((ok, ng) => {
+const request = async (endpoint: string, params: any, me?: any): Promise<ChaiHttp.Response> => {
 	const auth = me ? {
-		i: me.account.token
+		i: me.token
 	} : {};
 
-	assert.request(server)
+	const res = await assert.request(server)
 		.post(endpoint)
-		.send(Object.assign(auth, params))
-		.end((err, res) => {
-			ok(res);
-		});
-});
+		.send(Object.assign(auth, params));
+
+	return res;
+};
 
 const signup = async (params?: any) => {
 	const q = Object.assign({
