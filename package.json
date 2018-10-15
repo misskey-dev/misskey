@@ -70,7 +70,7 @@
 		"@types/request-promise-native": "1.0.15",
 		"@types/rimraf": "2.0.2",
 		"@types/seedrandom": "2.4.27",
-		"@types/sharp": "0.17.10",
+		"@types/sharp": "0.21.0",
 		"@types/showdown": "1.7.5",
 		"@types/single-line-log": "1.1.0",
 		"@types/speakeasy": "2.0.2",
