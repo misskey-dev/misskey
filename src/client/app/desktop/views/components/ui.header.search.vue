@@ -29,6 +29,9 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .search
+	@media (max-width 800px)
+		display none !important
+
 	> [data-fa]
 		display block
 		position absolute
@@ -57,6 +60,9 @@ export default Vue.extend({
 		border-radius 16px
 		transition color 0.5s ease, border 0.5s ease
 		color var(--desktopHeaderSearchFg)
+
+		@media (max-width 1000px)
+			width 10em
 
 		&::placeholder
 			color var(--desktopHeaderFg)

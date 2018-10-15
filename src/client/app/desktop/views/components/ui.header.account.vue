@@ -157,6 +157,9 @@ export default Vue.extend({
 			font-family Meiryo, sans-serif
 			text-decoration none
 
+			@media (max-width 1100px)
+				display none
+
 			[data-fa]
 				margin-left 8px
 
@@ -170,6 +173,9 @@ export default Vue.extend({
 			margin 8px 8px 8px 0
 			border-radius 4px
 			transition filter 100ms ease
+
+			@media (max-width 1100px)
+				margin-left 8px
 
 	> .menu
 		$bgcolor = var(--face)
