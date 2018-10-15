@@ -91,7 +91,7 @@
 		"bootstrap-vue": "2.0.0-rc.11",
 		"cafy": "11.3.0",
 		"chalk": "2.4.1",
-		"chart.js": "2.7.2",
+		"chart.js": "2.7.3",
 		"commander": "2.19.0",
 		"crc-32": "1.2.0",
 		"css-loader": "1.0.0",
