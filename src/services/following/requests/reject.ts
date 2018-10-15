@@ -13,7 +13,7 @@ export default async function(followee: IUser, follower: IUser) {
 			followerId: follower._id
 		});
 
-		const content = pack(renderReject(renderFollow(follower, followee, request.requestId)));
+		const content = pack(renderReject(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 

@@ -34,7 +34,7 @@ export default async function(followee: IUser, follower: IUser) {
 			followerId: follower._id
 		});
 
-		const content = pack(renderAccept(renderFollow(follower, followee, request.requestId)));
+		const content = pack(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
