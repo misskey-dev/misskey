@@ -12,6 +12,7 @@ export type IFollowRequest = {
 	createdAt: Date;
 	followeeId: mongo.ObjectID;
 	followerId: mongo.ObjectID;
+	requestId?: string;	// id of Follow Activity
 
 	// 非正規化
 	_followee: {
