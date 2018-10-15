@@ -10,13 +10,13 @@ import renderAccept from '../../remote/activitypub/renderer/accept';
 import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 
-export default async function(follower: IUser, followee: IUser) {
+export default async function(follower: IUser, followee: IUser, requestId?: string) {
 	// フォロー対象が鍵アカウントである or
 	// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
 	// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
 	// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
 	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (isLocalUser(follower) && isRemoteUser(followee))) {
-		await createFollowRequest(follower, followee);
+		await createFollowRequest(follower, followee, requestId);
 		return;
 	}
 
@@ -79,7 +79,7 @@ export default async function(follower: IUser, followee: IUser) {
 	}
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
-		const content = pack(renderAccept(renderFollow(follower, followee)));
+		const content = pack(renderAccept(renderFollow(follower, followee, requestId), followee));
 		deliver(followee, content, follower.inbox);
 	}
 }

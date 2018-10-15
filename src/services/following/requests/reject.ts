@@ -8,7 +8,12 @@ import { publishMainStream } from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(follower)) {
-		const content = pack(renderReject(renderFollow(follower, followee)));
+		const request = await FollowRequest.findOne({
+			followeeId: followee._id,
+			followerId: follower._id
+		});
+
+		const content = pack(renderReject(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
