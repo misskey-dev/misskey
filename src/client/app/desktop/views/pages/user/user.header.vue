@@ -8,8 +8,6 @@
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
 				<span v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</span>
-				<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
-				<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</span>
 			</div>
 		</div>
 	</div>
@@ -17,6 +15,10 @@
 	<div class="body">
 		<div class="description">
 			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+		</div>
+		<div class="info">
+			<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
+			<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</span>
 		</div>
 		<div class="status">
 			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
@@ -181,6 +183,14 @@ export default Vue.extend({
 	> .body
 		padding 16px 16px 16px 154px
 		color var(--text)
+
+		> .info
+			margin-top 16px
+			padding-top 16px
+			border-top solid 1px var(--faceDivider)
+
+			> *
+				margin-right 16px
 
 		> .status
 			margin-top 16px

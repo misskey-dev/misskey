@@ -443,10 +443,10 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream && this.store.state.device.apiViaStream && !forceFetch;
+			const viaStream = this.stream && this.stream.state == 'connected' && this.store.state.device.apiViaStream && !forceFetch;
 
 			if (viaStream) {
-				const id = Math.random().toString();
+				const id = Math.random().toString().substr(2, 8);
 
 				this.stream.once(`api:${id}`, res => {
 					if (res == null || Object.keys(res).length == 0) {

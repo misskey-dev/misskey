@@ -1,6 +1,6 @@
 import * as getCaretCoordinates from 'textarea-caret';
 import MkAutocomplete from '../components/autocomplete.vue';
-import renderAcct from '../../../../../misc/acct/render';
+import { toASCII } from 'punycode';
 
 export default {
 	bind(el, binding, vn) {
@@ -188,7 +188,7 @@ class Autocomplete {
 			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
 			const after = source.substr(caret);
 
-			const acct = renderAcct(value);
+			const acct = value.host === null ? value.username : `${value.username}@${toASCII(value.host)}`;
 
 			// 挿入
 			this.text = `${trimmedBefore}@${acct} ${after}`;

@@ -3,6 +3,7 @@ const deepcopy = require('deepcopy');
 import { pack as packFolder } from './drive-folder';
 import config from '../config';
 import monkDb, { nativeDbConn } from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import Note, { deleteNote } from './note';
 import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
 import User from './user';
@@ -11,6 +12,8 @@ import DriveFileThumbnail, { deleteDriveFileThumbnail } from './drive-file-thumb
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
 DriveFile.createIndex('metadata.uri');
+DriveFile.createIndex('metadata.userId');
+DriveFile.createIndex('metadata.folderId');
 export default DriveFile;
 
 export const DriveFileChunk = monkDb.get('driveFiles.chunks');
@@ -76,7 +79,7 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 	let d: IDriveFile;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(driveFile)) {
+	if (isObjectId(driveFile)) {
 		d = await DriveFile.findOne({
 			_id: driveFile
 		});
@@ -152,7 +155,7 @@ export const pack = (
 	let _file: any;
 
 	// Populate the file if 'file' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
+	if (isObjectId(file)) {
 		_file = await DriveFile.findOne({
 			_id: file
 		});

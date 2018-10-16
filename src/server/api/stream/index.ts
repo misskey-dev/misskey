@@ -146,9 +146,9 @@ export default class Connection {
 	 */
 	@autobind
 	private onChannelConnectRequested(payload: any) {
-		const { channel, id, params } = payload;
+		const { channel, id, params, pong } = payload;
 		log(`CH CONNECT: ${id} ${channel} by @${this.user.username}`);
-		this.connectChannel(id, params, channel);
+		this.connectChannel(id, params, channel, pong);
 	}
 
 	/**
@@ -177,7 +177,7 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@autobind
-	public connectChannel(id: string, params: any, channel: string) {
+	public connectChannel(id: string, params: any, channel: string, pong = false) {
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
 		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
@@ -186,9 +186,12 @@ export default class Connection {
 		const ch: Channel = new (channels as any)[channel](id, this);
 		this.channels.push(ch);
 		ch.init(params);
-		this.sendMessageToWs('connected', {
-			id: id
-		});
+
+		if (pong) {
+			this.sendMessageToWs('connected', {
+				id: id
+			});
+		}
 	}
 
 	/**

@@ -3,6 +3,7 @@ const deepcopy = require('deepcopy');
 import { pack as packUser } from './user';
 import { pack as packFile } from './drive-file';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
 import { length } from 'stringz';
 
@@ -30,7 +31,7 @@ export async function deleteMessagingMessage(messagingMessage: string | mongo.Ob
 	let m: IMessagingMessage;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(messagingMessage)) {
+	if (isObjectId(messagingMessage)) {
 		m = await MessagingMessage.findOne({
 			_id: messagingMessage
 		});
@@ -72,7 +73,7 @@ export const pack = (
 	let _message: any;
 
 	// Populate the message if 'message' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(message)) {
+	if (isObjectId(message)) {
 		_message = await MessagingMessage.findOne({
 			_id: message
 		});

@@ -5,9 +5,6 @@
 		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'">%fa:comments% %i18n:@with-replies%</span>
 		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'">%fa:images% %i18n:@with-media%</span>
 	</header>
-	<div class="loading" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p class="empty" slot="empty">%fa:R comments%%i18n:@empty%</p>
 	</mk-notes>
@@ -151,9 +148,6 @@ export default Vue.extend({
 
 				&:hover
 					color var(--desktopTimelineSrcHover)
-
-	> .loading
-		padding 64px 0
 
 	> .empty
 		display block

@@ -56,6 +56,7 @@ const defaultDeviceSettings = {
 	loadRawImages: false,
 	alwaysShowNsfw: false,
 	postStyle: 'standard',
+	navbar: 'top',
 	mobileNotificationPosition: 'bottom'
 };
 

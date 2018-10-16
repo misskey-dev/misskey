@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { pack as packNote } from './note';
 
 const Favorite = db.get<IFavorite>('favorites');
@@ -21,7 +22,7 @@ export async function deleteFavorite(favorite: string | mongo.ObjectID | IFavori
 	let f: IFavorite;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(favorite)) {
+	if (isObjectId(favorite)) {
 		f = await Favorite.findOne({
 			_id: favorite
 		});
@@ -58,7 +59,7 @@ export const pack = (
 	let _favorite: any;
 
 	// Populate the favorite if 'favorite' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(favorite)) {
+	if (isObjectId(favorite)) {
 		_favorite = await Favorite.findOne({
 			_id: favorite
 		});
@@ -75,7 +76,9 @@ export const pack = (
 	delete _favorite._id;
 
 	// Populate note
-	_favorite.note = await packNote(_favorite.noteId, me);
+	_favorite.note = await packNote(_favorite.noteId, me, {
+		detail: true
+	});
 
 	// (データベースの不具合などで)投稿が見つからなかったら
 	if (_favorite.note == null) {

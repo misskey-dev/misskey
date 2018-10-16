@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const MessagingHistory = db.get<IMessagingHistory>('messagingHistories');
 export default MessagingHistory;
@@ -19,7 +20,7 @@ export async function deleteMessagingHistory(messagingHistory: string | mongo.Ob
 	let m: IMessagingHistory;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(messagingHistory)) {
+	if (isObjectId(messagingHistory)) {
 		m = await MessagingHistory.findOne({
 			_id: messagingHistory
 		});

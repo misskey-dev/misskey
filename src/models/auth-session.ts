@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { pack as packApp } from './app';
 
 const AuthSession = db.get<IAuthSession>('authSessions');
@@ -31,7 +32,7 @@ export const pack = (
 	_session = deepcopy(session);
 
 	// Me
-	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
+	if (me && !isObjectId(me)) {
 		if (typeof me === 'string') {
 			me = new mongo.ObjectID(me);
 		} else {

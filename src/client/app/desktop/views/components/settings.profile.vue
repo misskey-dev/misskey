@@ -21,12 +21,13 @@
 	<ui-button primary @click="save">%i18n:@save%</ui-button>
 	<section>
 		<h2>%i18n:@locked-account%</h2>
-		<ui-switch v-model="$store.state.i.isLocked" @change="onChangeIsLocked">%i18n:@is-locked%</ui-switch>
+		<ui-switch v-model="isLocked" @change="save(false)">%i18n:@is-locked%</ui-switch>
+		<ui-switch v-model="carefulBot" @change="save(false)">%i18n:@careful-bot%</ui-switch>
 	</section>
 	<section>
 		<h2>%i18n:@other%</h2>
-		<ui-switch v-model="$store.state.i.isBot" @change="onChangeIsBot">%i18n:@is-bot%</ui-switch>
-		<ui-switch v-model="$store.state.i.isCat" @change="onChangeIsCat">%i18n:@is-cat%</ui-switch>
+		<ui-switch v-model="isBot" @change="save(false)">%i18n:@is-bot%</ui-switch>
+		<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
 		<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
 	</section>
 </div>
@@ -42,6 +43,10 @@ export default Vue.extend({
 			location: null,
 			description: null,
 			birthday: null,
+			isBot: false,
+			isCat: false,
+			isLocked: false,
+			carefulBot: false,
 		};
 	},
 	computed: {
@@ -55,34 +60,29 @@ export default Vue.extend({
 		this.location = this.$store.state.i.profile.location;
 		this.description = this.$store.state.i.description;
 		this.birthday = this.$store.state.i.profile.birthday;
+		this.isCat = this.$store.state.i.isCat;
+		this.isBot = this.$store.state.i.isBot;
+		this.isLocked = this.$store.state.i.isLocked;
+		this.carefulBot = this.$store.state.i.carefulBot;
 	},
 	methods: {
 		updateAvatar() {
 			(this as any).apis.updateAvatar();
 		},
-		save() {
+		save(notify) {
 			(this as any).api('i/update', {
 				name: this.name || null,
 				location: this.location || null,
 				description: this.description || null,
-				birthday: this.birthday || null
+				birthday: this.birthday || null,
+				isCat: this.isCat,
+				isBot: this.isBot,
+				isLocked: this.isLocked,
+				carefulBot: this.carefulBot
 			}).then(() => {
-				(this as any).apis.notify('%i18n:@profile-updated%');
-			});
-		},
-		onChangeIsLocked() {
-			(this as any).api('i/update', {
-				isLocked: this.$store.state.i.isLocked
-			});
-		},
-		onChangeIsBot() {
-			(this as any).api('i/update', {
-				isBot: this.$store.state.i.isBot
-			});
-		},
-		onChangeIsCat() {
-			(this as any).api('i/update', {
-				isCat: this.$store.state.i.isCat
+				if (notify) {
+					(this as any).apis.notify('%i18n:@profile-updated%');
+				}
 			});
 		}
 	}

@@ -65,6 +65,7 @@ import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import parseAcct from '../../../../../misc/acct/parse';
+import { toASCII } from 'punycode';
 
 export default Vue.extend({
 	components: {
@@ -158,14 +159,14 @@ export default Vue.extend({
 		}
 
 		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
 
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
 			ast.filter(t => t.type == 'mention').forEach(x => {
-				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
 				if (this.$store.state.i.username == x.username && x.host == null) return;

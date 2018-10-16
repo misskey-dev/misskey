@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import isObjectId from '../../misc/is-objectid';
 import { publishMainStream } from '../../stream';
 import User from '../../models/user';
 import NoteUnread from '../../models/note-unread';
@@ -11,11 +12,11 @@ export default (
 	note: string | mongo.ObjectID
 ) => new Promise<any>(async (resolve, reject) => {
 
-	const userId: mongo.ObjectID = mongo.ObjectID.prototype.isPrototypeOf(user)
+	const userId: mongo.ObjectID = isObjectId(user)
 		? user as mongo.ObjectID
 		: new mongo.ObjectID(user);
 
-	const noteId: mongo.ObjectID = mongo.ObjectID.prototype.isPrototypeOf(note)
+	const noteId: mongo.ObjectID = isObjectId(note)
 		? note as mongo.ObjectID
 		: new mongo.ObjectID(note);
 

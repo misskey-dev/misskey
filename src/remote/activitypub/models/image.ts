@@ -2,7 +2,7 @@ import * as debug from 'debug';
 
 import uploadFromUrl from '../../../services/drive/upload-from-url';
 import { IRemoteUser } from '../../../models/user';
-import { IDriveFile } from '../../../models/drive-file';
+import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Resolver from '../resolver';
 
 const log = debug('misskey:activitypub');
@@ -24,7 +24,22 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 
 	log(`Creating the Image: ${image.url}`);
 
-	return await uploadFromUrl(image.url, actor, null, image.url, image.sensitive);
+	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive);
+
+	// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
+	// URLを更新する
+	if (file.metadata.url !== image.url) {
+		file = await DriveFile.findOneAndUpdate({ _id: file._id }, {
+			$set: {
+				'metadata.url': image.url,
+				'metadata.uri': image.url
+			}
+		}, {
+			returnNewDocument: true
+		});
+	}
+
+	return file;
 }
 
 /**

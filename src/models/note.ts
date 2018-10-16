@@ -2,6 +2,7 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
@@ -107,7 +108,7 @@ export async function deleteNote(note: string | mongo.ObjectID | INote) {
 	let n: INote;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(note)) {
+	if (isObjectId(note)) {
 		n = await Note.findOne({
 			_id: note
 		});
@@ -259,7 +260,7 @@ export const pack = async (
 
 	// Me
 	const meId: mongo.ObjectID = me
-		? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? isObjectId(me)
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
@@ -269,7 +270,7 @@ export const pack = async (
 	let _note: any;
 
 	// Populate the note if 'note' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(note)) {
+	if (isObjectId(note)) {
 		_note = await Note.findOne({
 			_id: note
 		});
@@ -358,8 +359,8 @@ export const pack = async (
 			})(_note.poll);
 		}
 
-		// Fetch my reaction
 		if (meId) {
+			// Fetch my reaction
 			_note.myReaction = (async () => {
 				const reaction = await Reaction
 					.findOne({
@@ -373,6 +374,19 @@ export const pack = async (
 				}
 
 				return null;
+			})();
+
+			// isFavorited
+			_note.isFavorited = (async () => {
+				const favorite = await Favorite
+					.count({
+						userId: meId,
+						noteId: id
+					}, {
+						limit: 1
+					});
+
+				return favorite === 1;
 			})();
 		}
 	}

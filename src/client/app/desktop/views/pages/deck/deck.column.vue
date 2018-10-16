@@ -276,12 +276,23 @@ export default Vue.extend({
 	min-width 330px
 	height 100%
 	background var(--face)
-	border-radius 6px
-	//box-shadow 0 2px 16px rgba(#000, 0.1)
+	border-radius var(--round)
+	box-shadow var(--shadow)
 	overflow hidden
 
 	&.draghover
 		box-shadow 0 0 0 2px var(--primaryAlpha08)
+
+		&:after
+			content ""
+			display block
+			position absolute
+			z-index 1000
+			top 0
+			left 0
+			width 100%
+			height 100%
+			background var(--primaryAlpha02)
 
 	&.dragging
 		box-shadow 0 0 0 2px var(--primaryAlpha04)
@@ -338,6 +349,7 @@ export default Vue.extend({
 
 		> .toggleActive
 		> .menu
+			padding 0
 			width $header-height
 			line-height $header-height
 			font-size 16px

@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../../../db/mongodb';
+import isObjectId from '../../../misc/is-objectid';
 import { IUser, pack as packUser } from '../../user';
 
 const Matching = db.get<IMatching>('reversiMatchings');
@@ -23,7 +24,7 @@ export const pack = (
 
 	// Me
 	const meId: mongo.ObjectID = me
-		? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? isObjectId(me)
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)

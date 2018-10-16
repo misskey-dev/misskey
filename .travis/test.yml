@@ -1,12 +1,8 @@
-maintainer: '@syuilo'
-url: 'https://misskey.xyz'
-secondary_url: 'https://himasaku.net'
+maintainer:
+  name: syuilo
+  url: 'https://syuilo.com'
+url: 'http://misskey.local'
 port: 80
-https:
-  enable: false
-  key: null
-  cert: null
-  ca: null
 mongodb:
   host: localhost
   port: 27017
@@ -21,6 +17,3 @@ elasticsearch:
   host: localhost
   port: 9200
   pass: ''
-recaptcha:
-  site_key: hima
-  secret_key: saku

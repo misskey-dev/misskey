@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const SwSubscription = db.get<ISwSubscription>('swSubscriptions');
 export default SwSubscription;
@@ -19,7 +20,7 @@ export async function deleteSwSubscription(swSubscription: string | mongo.Object
 	let s: ISwSubscription;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(swSubscription)) {
+	if (isObjectId(swSubscription)) {
 		s = await SwSubscription.findOne({
 			_id: swSubscription
 		});

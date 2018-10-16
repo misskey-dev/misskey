@@ -26,7 +26,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	} catch (e) {
 		// duplicate key error
 		if (e.code === 11000) {
-			return res(null);
+			return rej('already reacted');
 		}
 
 		console.error(e);

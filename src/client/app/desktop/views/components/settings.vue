@@ -88,6 +88,13 @@
 			<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 			<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
 			<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
+
+			<section>
+				<header>%i18n:@navbar-position%</header>
+				<ui-radio v-model="navbar" value="top">%i18n:@navbar-position-top%</ui-radio>
+				<ui-radio v-model="navbar" value="left">%i18n:@navbar-position-left%</ui-radio>
+				<ui-radio v-model="navbar" value="right">%i18n:@navbar-position-right%</ui-radio>
+			</section>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -291,6 +298,11 @@ export default Vue.extend({
 		darkmode: {
 			get() { return this.$store.state.device.darkmode; },
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
+		},
+
+		navbar: {
+			get() { return this.$store.state.device.navbar; },
+			set(value) { this.$store.commit('device/set', { key: 'navbar', value }); }
 		},
 
 		enableSounds: {

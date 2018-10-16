@@ -22,11 +22,33 @@ export default Vue.extend({
 				icon: '%fa:link%',
 				text: '%i18n:@copy-link%',
 				action: this.copyLink
-			}, null, {
-				icon: '%fa:star%',
-				text: '%i18n:@favorite%',
-				action: this.favorite
 			}];
+
+			if (this.note.uri) {
+				items.push({
+					icon: '%fa:external-link-square-alt%',
+					text: '%i18n:@remote%',
+					action: () => {
+						window.open(this.note.uri, '_blank');
+					}
+				});
+			}
+
+			items.push(null);
+
+			if (this.note.isFavorited) {
+				items.push({
+					icon: '%fa:star%',
+					text: '%i18n:@unfavorite%',
+					action: this.unfavorite
+				});
+			} else {
+				items.push({
+					icon: '%fa:star%',
+					text: '%i18n:@favorite%',
+					action: this.favorite
+				});
+			}
 
 			if (this.note.userId == this.$store.state.i.id) {
 				if ((this.$store.state.i.pinnedNoteIds || []).includes(this.note.id)) {
@@ -45,20 +67,11 @@ export default Vue.extend({
 			}
 
 			if (this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin) {
+				items.push(null);
 				items.push({
 					icon: '%fa:trash-alt R%',
 					text: '%i18n:@delete%',
 					action: this.del
-				});
-			}
-
-			if (this.note.uri) {
-				items.push({
-					icon: '%fa:external-link-square-alt%',
-					text: '%i18n:@remote%',
-					action: () => {
-						window.open(this.note.uri, '_blank');
-					}
 				});
 			}
 
@@ -103,6 +116,15 @@ export default Vue.extend({
 
 		favorite() {
 			(this as any).api('notes/favorites/create', {
+				noteId: this.note.id
+			}).then(() => {
+				(this as any).os.new(Ok);
+				this.destroyDom();
+			});
+		},
+
+		unfavorite() {
+			(this as any).api('notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				(this as any).os.new(Ok);

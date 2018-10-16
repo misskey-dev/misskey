@@ -38,7 +38,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="main">
+	<div class="main" :class="{ side: widgets.left.length == 0 || widgets.right.length == 0 }">
 		<template v-if="customize">
 			<x-draggable v-for="place in ['left', 'right']"
 				:list="widgets[place]"
@@ -359,12 +359,10 @@ export default Vue.extend({
 				box-shadow var(--shadow)
 				border-radius var(--round)
 
-			@media (max-width 700px)
-				padding 0
-
-				> .tl
-					border none
-					border-radius 0
+		&.side
+			> .main
+				width calc(100% - 280px)
+				max-width 680px
 
 		> *:not(.main)
 			width 280px
@@ -381,14 +379,24 @@ export default Vue.extend({
 			padding-right 16px
 			order 3
 
-		@media (max-width 1100px)
-			> *:not(.main)
-				display none
+		&.side
+			@media (max-width 1000px)
+				> *:not(.main)
+					display none
 
-			> .main
-				float none
-				width 100%
-				max-width 700px
-				margin 0 auto
+				> .main
+					width 100%
+					max-width 700px
+					margin 0 auto
+
+		&:not(.side)
+			@media (max-width 1200px)
+				> *:not(.main)
+					display none
+
+				> .main
+					width 100%
+					max-width 700px
+					margin 0 auto
 
 </style>

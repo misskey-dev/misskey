@@ -2,6 +2,12 @@
 <div class="eamppglmnmimdhrlzhplwpvyeaqmmhxu">
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
+	</div>
+
 	<div v-if="!fetching && requestInitPromise != null">
 		<p>%i18n:@error%</p>
 		<button @click="resolveInitPromise">%i18n:@retry%</button>
@@ -204,6 +210,10 @@ export default Vue.extend({
 
 		> *
 			transition transform .3s ease, opacity .3s ease
+
+	> .placeholder
+		padding 16px
+		opacity 0.3
 
 	> .notes
 		> .date

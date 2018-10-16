@@ -63,6 +63,7 @@ handler.on('status', event => {
 			// Fetch parent status
 			request({
 				url: `${parent.url}/statuses`,
+				proxy: config.proxy,
 				headers: {
 					'User-Agent': 'misskey'
 				}

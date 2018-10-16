@@ -19,7 +19,7 @@
 				<li @click="list">
 					<p>%fa:list%<span>%i18n:@lists%</span>%fa:angle-right%</p>
 				</li>
-				<li @click="followRequests" v-if="$store.state.i.isLocked">
+				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<p>%fa:envelope R%<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>%fa:angle-right%</p>
 				</li>
 			</ul>
@@ -157,6 +157,9 @@ export default Vue.extend({
 			font-family Meiryo, sans-serif
 			text-decoration none
 
+			@media (max-width 1100px)
+				display none
+
 			[data-fa]
 				margin-left 8px
 
@@ -170,6 +173,9 @@ export default Vue.extend({
 			margin 8px 8px 8px 0
 			border-radius 4px
 			transition filter 100ms ease
+
+			@media (max-width 1100px)
+				margin-left 8px
 
 	> .menu
 		$bgcolor = var(--face)
