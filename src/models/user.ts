@@ -3,6 +3,7 @@ const deepcopy = require('deepcopy');
 const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import Note, { packMany as packNoteMany, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
@@ -175,7 +176,7 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	let u: IUser;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+	if (isObjectId(user)) {
 		u = await User.findOne({
 			_id: user
 		});
@@ -340,7 +341,6 @@ export const pack = (
 		includeHasUnreadNotes?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
-
 	const opts = Object.assign({
 		detail: false,
 		includeSecrets: false
@@ -358,7 +358,7 @@ export const pack = (
 	};
 
 	// Populate the user if 'user' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+	if (isObjectId(user)) {
 		_user = await User.findOne({
 			_id: user
 		}, { fields });
@@ -378,7 +378,7 @@ export const pack = (
 
 	// Me
 	const meId: mongo.ObjectID = me
-		? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? isObjectId(me)
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)

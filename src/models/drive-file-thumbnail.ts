@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import monkDb, { nativeDbConn } from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const DriveFileThumbnail = monkDb.get<IDriveFileThumbnail>('driveFileThumbnails.files');
 DriveFileThumbnail.createIndex('metadata.originalId', { sparse: true, unique: true });
@@ -35,7 +36,7 @@ export async function deleteDriveFileThumbnail(driveFile: string | mongo.ObjectI
 	let d: IDriveFileThumbnail;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(driveFile)) {
+	if (isObjectId(driveFile)) {
 		d = await DriveFileThumbnail.findOne({
 			_id: driveFile
 		});

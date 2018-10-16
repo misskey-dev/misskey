@@ -1,7 +1,8 @@
 import * as mongo from 'mongodb';
+import isObjectId from './is-objectid';
 
 function toString(id: any) {
-	return mongo.ObjectID.prototype.isPrototypeOf(id) ? (id as mongo.ObjectID).toHexString() : id;
+	return isObjectId(id) ? (id as mongo.ObjectID).toHexString() : id;
 }
 
 export default function(note: any, mutedUserIds: string[]): boolean {

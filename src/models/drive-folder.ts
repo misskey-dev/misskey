@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import DriveFile from './drive-file';
 
 const DriveFolder = db.get<IDriveFolder>('driveFolders');
@@ -29,7 +30,7 @@ export async function deleteDriveFolder(driveFolder: string | mongo.ObjectID | I
 	let d: IDriveFolder;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(driveFolder)) {
+	if (isObjectId(driveFolder)) {
 		d = await DriveFolder.findOne({
 			_id: driveFolder
 		});
@@ -83,7 +84,7 @@ export const pack = (
 	let _folder: any;
 
 	// Populate the folder if 'folder' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(folder)) {
+	if (isObjectId(folder)) {
 		_folder = await DriveFolder.findOne({ _id: folder });
 	} else if (typeof folder === 'string') {
 		_folder = await DriveFolder.findOne({ _id: new mongo.ObjectID(folder) });

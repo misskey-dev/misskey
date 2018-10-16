@@ -2,6 +2,7 @@ import * as mongo from 'mongodb';
 import $ from 'cafy';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import Reaction from './note-reaction';
 import { pack as packUser } from './user';
 
@@ -37,7 +38,7 @@ export async function deleteNoteReaction(noteReaction: string | mongo.ObjectID |
 	let n: INoteReaction;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(noteReaction)) {
+	if (isObjectId(noteReaction)) {
 		n = await NoteReaction.findOne({
 			_id: noteReaction
 		});
@@ -67,7 +68,7 @@ export const pack = (
 	let _reaction: any;
 
 	// Populate the reaction if 'reaction' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(reaction)) {
+	if (isObjectId(reaction)) {
 		_reaction = await Reaction.findOne({
 			_id: reaction
 		});

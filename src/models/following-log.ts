@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const FollowingLog = db.get<IFollowingLog>('followingLogs');
 export default FollowingLog;
@@ -18,7 +19,7 @@ export async function deleteFollowingLog(followingLog: string | mongo.ObjectID |
 	let f: IFollowingLog;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(followingLog)) {
+	if (isObjectId(followingLog)) {
 		f = await FollowingLog.findOne({
 			_id: followingLog
 		});
