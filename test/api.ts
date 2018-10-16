@@ -118,7 +118,9 @@ describe('API', () => {
 				username: 'test',
 				password: 'test'
 			};
+
 			const res = await request('/signup', me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('username').eql(me.username);
@@ -128,10 +130,12 @@ describe('API', () => {
 			await signup({
 				username: 'test'
 			});
+
 			const res = await request('/signup', {
 				username: 'test',
 				password: 'test'
 			});
+
 			expect(res).have.status(400);
 		}));
 	});
@@ -142,10 +146,12 @@ describe('API', () => {
 				username: 'test',
 				password: 'foo'
 			});
+
 			const res = await request('/signin', {
 				username: 'test',
 				password: 'bar'
 			});
+
 			expect(res).have.status(403);
 		}));
 
@@ -153,12 +159,14 @@ describe('API', () => {
 			await signup({
 				username: 'test'
 			});
+
 			const res = await request('/signin', {
 				username: 'test',
 				password: {
 					$gt: ''
 				}
 			});
+
 			expect(res).have.status(400);
 		}));
 
@@ -167,10 +175,12 @@ describe('API', () => {
 				username: 'test',
 				password: 'foo'
 			});
+
 			const res = await request('/signin', {
 				username: 'test',
 				password: 'foo'
 			});
+
 			expect(res).have.status(204);
 		}));
 	});
@@ -210,9 +220,11 @@ describe('API', () => {
 			await request('/i/update', {
 				birthday: '2000-09-07'
 			}, me);
+
 			const res = await request('/i/update', {
 				birthday: null
 			}, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.nested.property('profile').a('object');
@@ -231,9 +243,11 @@ describe('API', () => {
 	describe('users/show', () => {
 		it('ユーザーが取得できる', async(async () => {
 			const me = await signup();
+
 			const res = await request('/users/show', {
 				userId: me.id
 			}, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('id').eql(me.id);
@@ -260,7 +274,9 @@ describe('API', () => {
 			const post = {
 				text: 'test'
 			};
+
 			const res = await request('/notes/create', post, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('createdNote');
@@ -270,9 +286,11 @@ describe('API', () => {
 		it('ファイルを添付できる', async(async () => {
 			const me = await signup();
 			const file = await uploadFile(me);
+
 			const res = await request('/notes/create', {
 				fileIds: [file.id]
 			}, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('createdNote');
@@ -283,9 +301,11 @@ describe('API', () => {
 			const me = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
 			const file = await uploadFile(bob);
+
 			const res = await request('/notes/create', {
 				fileIds: [file.id]
 			}, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('createdNote');
@@ -294,9 +314,11 @@ describe('API', () => {
 
 		it('存在しないファイルは無視', async(async () => {
 			const me = await signup();
+
 			const res = await request('/notes/create', {
 				fileIds: ['000000000000000000000000']
 			}, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('createdNote');
@@ -322,6 +344,7 @@ describe('API', () => {
 			};
 
 			const res = await request('/notes/create', alicePost, alice);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('createdNote');
@@ -365,6 +388,7 @@ describe('API', () => {
 			};
 
 			const res = await request('/notes/create', alicePost, alice);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('createdNote');
@@ -432,12 +456,14 @@ describe('API', () => {
 
 		it('投票を添付できる', async(async () => {
 			const me = await signup();
+
 			const res = await request('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['foo', 'bar']
 				}
 			}, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('createdNote');
@@ -479,9 +505,11 @@ describe('API', () => {
 			const myPost = await post(me, {
 				text: 'test'
 			});
+
 			const res = await request('/notes/show', {
 				noteId: myPost.id
 			}, me);
+
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('id').eql(myPost.id);
@@ -546,25 +574,543 @@ describe('API', () => {
 
 		it('存在しない投稿にはリアクションできない', async(async () => {
 			const me = await signup();
+
 			const res = await request('/notes/reactions/create', {
 				noteId: '000000000000000000000000',
 				reaction: 'like'
 			}, me);
+
 			expect(res).have.status(400);
 		}));
 
 		it('空のパラメータで怒られる', async(async () => {
 			const me = await signup();
+
 			const res = await request('/notes/reactions/create', {}, me);
+
 			expect(res).have.status(400);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await signup();
+
 			const res = await request('/notes/reactions/create', {
 				noteId: 'kyoppie',
 				reaction: 'like'
 			}, me);
+
+			expect(res).have.status(400);
+		}));
+	});
+
+	describe('following/create', () => {
+		it('フォローできる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const res = await request('/following/create', {
+				userId: alice.id
+			}, bob);
+
+			expect(res).have.status(200);
+		}));
+
+		it('既にフォローしている場合は怒る', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+			await request('/following/create', {
+				userId: alice.id
+			}, bob);
+
+			const res = await request('/following/create', {
+				userId: alice.id
+			}, bob);
+
+			expect(res).have.status(400);
+		}));
+
+		it('存在しないユーザーはフォローできない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/create', {
+				userId: '000000000000000000000000'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('自分自身はフォローできない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/create', {
+				userId: alice.id
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('空のパラメータで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/create', {}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('間違ったIDで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/create', {
+				userId: 'foo'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+	});
+
+	describe('following/delete', () => {
+		it('フォロー解除できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+			await request('/following/create', {
+				userId: alice.id
+			}, bob);
+
+			const res = await request('/following/delete', {
+				userId: alice.id
+			}, bob);
+
+			expect(res).have.status(200);
+		}));
+
+		it('フォローしていない場合は怒る', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const res = await request('/following/delete', {
+				userId: alice.id
+			}, bob);
+
+			expect(res).have.status(400);
+		}));
+
+		it('存在しないユーザーはフォロー解除できない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/delete', {
+				userId: '000000000000000000000000'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('自分自身はフォロー解除できない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/delete', {
+				userId: alice.id
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('空のパラメータで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/delete', {}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('間違ったIDで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/following/delete', {
+				userId: 'kyoppie'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+	});
+
+	describe('drive', () => {
+		/*
+		it('ドライブ情報を取得できる', async(async () => {
+			const bob = await signup({ username: 'bob' });
+			await uploadFile({
+				userId: me._id,
+				datasize: 256
+			});
+			await uploadFile({
+				userId: me._id,
+				datasize: 512
+			});
+			await uploadFile({
+				userId: me._id,
+				datasize: 1024
+			});
+			const res = await request('/drive', {}, me);
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('usage').eql(1792);
+		}));*/
+	});
+
+	describe('drive/files/create', () => {
+		it('ファイルを作成できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await assert.request(server)
+				.post('/drive/files/create')
+				.field('i', alice.token)
+				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('name').eql('Lenna.png');
+		}));
+
+		it('ファイル無しで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/drive/files/create', {}, alice);
+
+			expect(res).have.status(400);
+		}));
+	});
+
+	describe('drive/files/update', () => {
+		it('名前を更新できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const file = await uploadFile(alice);
+			const newName = 'いちごパスタ.png';
+
+			const res = await request('/drive/files/update', {
+				fileId: file.id,
+				name: newName
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('name').eql(newName);
+		}));
+
+		it('他人のファイルは更新できない', async(async () => {
+			const bob = await signup({ username: 'bob' });
+			const alice = await signup({ username: 'alice' });
+			const file = await uploadFile(bob);
+
+			const res = await request('/drive/files/update', {
+				fileId: file.id,
+				name: 'いちごパスタ.png'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('親フォルダを更新できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const file = await uploadFile(alice);
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+
+			const res = await request('/drive/files/update', {
+				fileId: file.id,
+				folderId: folder.id
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('folderId').eql(folder.id);
+		}));
+
+		it('親フォルダを無しにできる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const file = await uploadFile(alice);
+
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+
+			await request('/drive/files/update', {
+				fileId: file.id,
+				folderId: folder.id
+			}, alice);
+
+			const res = await request('/drive/files/update', {
+				fileId: file.id,
+				folderId: null
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('folderId').eql(null);
+		}));
+
+		it('他人のフォルダには入れられない', async(async () => {
+			const bob = await signup({ username: 'bob' });
+			const alice = await signup({ username: 'alice' });
+			const file = await uploadFile(alice);
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, bob)).body;
+
+			const res = await request('/drive/files/update', {
+				fileId: file.id,
+				folderId: folder.id
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('存在しないフォルダで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const file = await uploadFile(alice);
+
+			const res = await request('/drive/files/update', {
+				fileId: file.id,
+				folderId: '000000000000000000000000'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('不正なフォルダIDで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const file = await uploadFile(alice);
+
+			const res = await request('/drive/files/update', {
+				fileId: file.id,
+				folderId: 'foo'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('ファイルが存在しなかったら怒る', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/drive/files/update', {
+				fileId: '000000000000000000000000',
+				name: 'いちごパスタ.png'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('間違ったIDで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/drive/files/update', {
+				fileId: 'kyoppie',
+				name: 'いちごパスタ.png'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+	});
+
+	describe('drive/folders/create', () => {
+		it('フォルダを作成できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/drive/folders/create', {
+				name: 'test'
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('name').eql('test');
+		}));
+	});
+
+	describe('drive/folders/update', () => {
+		it('名前を更新できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				name: 'new name'
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('name').eql('new name');
+		}));
+
+		it('他人のフォルダを更新できない', async(async () => {
+			const bob = await signup({ username: 'bob' });
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, bob)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				name: 'new name'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('親フォルダを更新できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+			const parentFolder = (await request('/drive/folders/create', {
+				name: 'parent'
+			}, alice)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				parentId: parentFolder.id
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('parentId').eql(parentFolder.id);
+		}));
+
+		it('親フォルダを無しに更新できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+			const parentFolder = (await request('/drive/folders/create', {
+				name: 'parent'
+			}, alice)).body;
+			await request('/drive/folders/update', {
+				folderId: folder.id,
+				parentId: parentFolder.id
+			}, alice);
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				parentId: null
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('parentId').eql(null);
+		}));
+
+		it('他人のフォルダを親フォルダに設定できない', async(async () => {
+			const bob = await signup({ username: 'bob' });
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+			const parentFolder = (await request('/drive/folders/create', {
+				name: 'parent'
+			}, bob)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				parentId: parentFolder.id
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('フォルダが循環するような構造にできない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+			const parentFolder = (await request('/drive/folders/create', {
+				name: 'parent'
+			}, alice)).body;
+			await request('/drive/folders/update', {
+				folderId: parentFolder.id,
+				parentId: folder.id
+			}, alice);
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				parentId: parentFolder.id
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('フォルダが循環するような構造にできない(再帰的)', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const folderA = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+			const folderB = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+			const folderC = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+			await request('/drive/folders/update', {
+				folderId: folderB.id,
+				parentId: folderA.id
+			}, alice);
+			await request('/drive/folders/update', {
+				folderId: folderC.id,
+				parentId: folderB.id
+			}, alice);
+
+			const res = await request('/drive/folders/update', {
+				folderId: folderA.id,
+				parentId: folderC.id
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('存在しない親フォルダを設定できない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				parentId: '000000000000000000000000'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('不正な親フォルダIDで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const folder = (await request('/drive/folders/create', {
+				name: 'test'
+			}, alice)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folder.id,
+				parentId: 'foo'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('存在しないフォルダを更新できない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/drive/folders/update', {
+				folderId: '000000000000000000000000'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('不正なフォルダIDで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/drive/folders/update', {
+				folderId: 'foo'
+			}, alice);
+
 			expect(res).have.status(400);
 		}));
 	});
