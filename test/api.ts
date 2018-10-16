@@ -85,16 +85,27 @@ const uploadFile = async (user: any): Promise<any> => {
 
 describe('API', () => {
 	// Reset database each test
-	beforeEach(() => Promise.all([
-		db.get('users').drop(),
-		db.get('posts').drop(),
-		db.get('driveFiles.files').drop(),
-		db.get('driveFiles.chunks').drop(),
-		db.get('driveFolders').drop(),
-		db.get('apps').drop(),
-		db.get('accessTokens').drop(),
-		db.get('authSessions').drop()
-	]));
+	beforeEach(() => new Promise((res) => {
+		// APIがなにかレスポンスを返した後に、後処理を行う場合があり、
+		// レスポンスを受け取ってすぐデータベースをリセットすると
+		// その後処理と競合し(テスト自体は合格するものの)エラーがコンソールに出力され
+		// 見た目的に気持ち悪くなるので、後処理が終るのを待つために500msくらい待ってから
+		// データベースをリセットするようにする
+		setTimeout(async () => {
+			await Promise.all([
+				db.get('users').drop(),
+				db.get('posts').drop(),
+				db.get('driveFiles.files').drop(),
+				db.get('driveFiles.chunks').drop(),
+				db.get('driveFolders').drop(),
+				db.get('apps').drop(),
+				db.get('accessTokens').drop(),
+				db.get('authSessions').drop()
+			]);
+
+			res();
+		}, 500);
+	}));
 
 	describe('signup', () => {
 		it('不正なユーザー名でアカウントが作成できない', async(async () => {
