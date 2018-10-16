@@ -26,17 +26,19 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 
 	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive);
 
-	// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
-	// URLを更新する
-	if (file.metadata.url !== image.url) {
-		file = await DriveFile.findOneAndUpdate({ _id: file._id }, {
-			$set: {
-				'metadata.url': image.url,
-				'metadata.uri': image.url
-			}
-		}, {
-			returnNewDocument: true
-		});
+	if (file.metadata.isRemote) {
+		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
+		// URLを更新する
+		if (file.metadata.url !== image.url) {
+			file = await DriveFile.findOneAndUpdate({ _id: file._id }, {
+				$set: {
+					'metadata.url': image.url,
+					'metadata.uri': image.url
+				}
+			}, {
+				returnNewDocument: true
+			});
+		}
 	}
 
 	return file;
