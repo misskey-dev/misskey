@@ -307,7 +307,7 @@ export default Vue.extend({
 		display block
 		width 100%
 		padding 16px
-		color #555
+		color var(--text)
 		border-top solid 1px rgba(#000, 0.05)
 
 		&:hover
@@ -326,6 +326,6 @@ export default Vue.extend({
 		margin 0
 		padding 16px
 		text-align center
-		color #aaa
+		color var(--text)
 
 </style>
