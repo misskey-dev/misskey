@@ -1125,4 +1125,76 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 	});
+
+	describe('messaging/messages/create', () => {
+		it('メッセージを送信できる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const res = await request('/messaging/messages/create', {
+				userId: bob.id,
+				text: 'test'
+			}, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('text').eql('test');
+		}));
+
+		it('自分自身にはメッセージを送信できない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/messaging/messages/create', {
+				userId: alice.id,
+				text: 'Yo'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('存在しないユーザーにはメッセージを送信できない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/messaging/messages/create', {
+				userId: '000000000000000000000000',
+				text: 'test'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('不正なユーザーIDで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+
+			const res = await request('/messaging/messages/create', {
+				userId: 'foo',
+				text: 'test'
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('テキストが無くて怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const res = await request('/messaging/messages/create', {
+				userId: bob.id
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+
+		it('文字数オーバーで怒られる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const res = await request('/messaging/messages/create', {
+				userId: bob.id,
+				text: '!'.repeat(1001)
+			}, alice);
+
+			expect(res).have.status(400);
+		}));
+	});
 });
