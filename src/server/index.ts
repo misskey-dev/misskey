@@ -41,7 +41,7 @@ app.use(compress({
 
 // HSTS
 // 6months (15552000sec)
-if (config.url.startsWith('https')) {
+if (config.url.startsWith('https') && !config.disableHsts) {
 	app.use(async (ctx, next) => {
 		ctx.set('strict-transport-security', 'max-age=15552000; preload');
 		await next();

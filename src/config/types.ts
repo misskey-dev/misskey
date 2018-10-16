@@ -23,6 +23,7 @@ export type Source = {
 	url: string;
 	port: number;
 	https?: { [x: string]: string };
+	disableHsts?: boolean;
 	mongodb: {
 		host: string;
 		port: number;
