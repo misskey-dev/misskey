@@ -15,7 +15,7 @@
 		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">%i18n:@is-media-view%</ui-switch>
 	</div>
 	<x-list-tl v-if="column.type == 'list'" :list="column.list" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
-	<x-hashtag-tl v-if="column.type == 'hashtag'" :tag-tl="$store.state.settings.tagTimelines.find(x => x.id == column.tagTlId)" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
+	<x-hashtag-tl v-else-if="column.type == 'hashtag'" :tag-tl="$store.state.settings.tagTimelines.find(x => x.id == column.tagTlId)" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
 	<x-tl v-else :src="column.type" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
 </x-column>
 </template>
