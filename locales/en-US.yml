@@ -110,7 +110,7 @@ common:
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
   always-show-nsfw: "Always show NSFW contents"
-  always-mark-nsfw: "Always post with a warning about media attachment"
+  always-mark-nsfw: "Always mark posts with media attachments as NSFW"
   show-full-acct: "Do not omit the hostname from the username"
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
@@ -463,7 +463,7 @@ common/views/widgets/tips.vue:
   tips-line10: "Using the Time Machine widget makes it easy to trace back to the past timeline."
   tips-line11: "You can pin posts to user page by clicking on \"...\""
   tips-line13: "All the files attached to the post are saved to Drive."
-  tips-line14: "While customizing the home, you can right click on the widget and change the design."
+  tips-line14: "While customizing your home layout, you can right click on a widget to change its design."
   tips-line17: "Surrounding the text with ** ** will highlight it."
   tips-line19: "Several windows can be detached outside the browser."
   tips-line20: "The percentage of the calendar widget shows the percentage of time elapsed."
@@ -1164,7 +1164,7 @@ mobile/views/components/ui.nav.vue:
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
-  no-notes-with-media: "There are no posts attaching media"
+  no-notes-with-media: "There are no notes with media attachments"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
