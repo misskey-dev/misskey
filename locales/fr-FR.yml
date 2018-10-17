@@ -254,7 +254,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-network: "Aucune connexion au réseau"
   no-network-desc: "Veuillez vérifier que vous êtes bien connecté au réseau."
   no-internet: "Aucune connexion internet."
-  no-internet-desc: "Veuillez vérifier que vous êtes bien connecté à internet."
+  no-internet-desc: "Assurez-vous que vous êtes bien connectés à internet."
   no-server: "Impossible de se connecter au serveur"
   no-server-desc: "Votre connexion semble correcte, mais il a été impossible de vous connecter au serveur de Misskey. Il se peut que le serveur soit hors-ligne ou en maintenance, veuillez ressayer plus tard."
   success: "Connexion au serveur de Misskey réussie !"
