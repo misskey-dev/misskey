@@ -265,7 +265,7 @@ common/views/components/media-banner.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
 common/views/components/theme.vue:
-  light-theme: "Theme during non-dark mode"
+  light-theme: "Theme"
   dark-theme: "Theme during dark mode"
   light-themes: "Light theme"
   dark-themes: "Dark theme"
