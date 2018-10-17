@@ -959,7 +959,7 @@ desktop/views/pages/welcome.vue:
   signup-button: "Sign up"
   timeline: "Timeline"
   announcements: "Announcements"
-  photos: "Recent uploaded"
+  photos: "Recent Images"
   powered-by-misskey: "Powered by <b>Misskey</b>."
   info: "Information"
 desktop/views/pages/drive.vue:
