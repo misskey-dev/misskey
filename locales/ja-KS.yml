@@ -1237,7 +1237,7 @@ mobile/views/pages/settings/settings.profile.vue:
   privacy: "プライバシーってなんや？オカンの年齢か？"
   save: "保存"
   saved: "プロフィールを保存したで"
-  uploading: "アップロードしとるで…"
+  uploading: "アップロードしとります"
   upload-failed: "これアップロードでけへんわ"
 mobile/views/pages/search.vue:
   search: "探す"
@@ -1284,7 +1284,7 @@ mobile/views/pages/settings.vue:
   update: "あんたのMisskeyいつのや？"
   version: "バージョン:"
   latest-version: "いっちゃん新しいやつ:"
-  update-checking: "アップデートはあらへんか…"
+  update-checking: "アップデートあるか見とるで"
   check-for-updates: "アップデートあるんかな？"
   no-updates: "アップデートあらへんわ"
   no-updates-desc: "つこてるMisskeyは最新や！"
@@ -1315,16 +1315,16 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "知っとるフォロワー"
   last-used-at: "最後いつ来た？"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-users: "知っとるユーザーは居らん"
 mobile/views/pages/user/home.friends.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-users: "よう話すユーザーは居らん"
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-notes: "投稿はあらへん"
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-photos: "写真はあらへんで"
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
