@@ -17,7 +17,7 @@ common:
     ui: "インターフェイス"
     ui-desc: "このUIええ言うてたで、知らんけど。あんたの好みのUIなんて知ったこっちゃない。Misskeyは好きにいじれるからな、レイアウトやデザイン変えたり、色んなウィジェットひっつけたりして、あんただけのMisskey作って楽しんでな！"
     drive: "ドライブ"
-    drive-desc: "「こないだの画像、どこやったかな…また投稿したいんやけど…」「さっきのファイルあのフォルダに直しといて」そんなこと言わんとって。Misskeyはもとからドライブ機能持っとるさかい、心配あらへん。ファイルの「わけわけ」したってな。"
+    drive-desc: "「こないだの画像、どこやったかな……また投稿したいんやけど……」「さっきのファイルあのフォルダに直しといて」そんなこと言わんとって。Misskeyはもとからドライブ機能持っとるさかい、心配あらへん。ファイルの「わけわけ」したってな。"
     outro: "Misskeyの機能は無限大や！知らんけど。知らん言うとるやんけ、あんたが見に行けや！Misskeyは分散型SNSやから、ここがあかんくても他がある。阪神でもオリックスでもワイは応援するで！"
   adblock:
     detected: "広告ブロッカーを無効にしてや"
@@ -369,7 +369,7 @@ common/views/components/signup.vue:
   invitation-code: "招待コード"
   invitation-info: "招待コードをもっとらんのやったら、<a href=\"{}\">管理者</a>まで連絡してや。"
   username: "ユーザー名"
-  checking: "確認中や…"
+  checking: "確認中や……"
   available: "使えるで"
   unavailable: "もう使われとるで"
   error: "通信あかんわ"
@@ -491,10 +491,10 @@ desktop:
   choose-avatar: "アバターにする画像選んでや"
   invalid-filetype: "この形式のファイル無理やねん"
 desktop/views/components/activity.chart.vue:
-  total: "黒いの… 全部"
-  notes: "青いの… 投稿"
-  replies: "赤いの… 返信"
-  renotes: "みどり… Renotes"
+  total: "黒いの ... 全部"
+  notes: "青いの ... 投稿"
+  replies: "赤いの ... 返信"
+  renotes: "碧いの ... Renotes"
 desktop/views/components/activity.vue:
   title: "アクティビティ"
   toggle: "表示変える"
@@ -552,7 +552,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "やっぱ見せたるわ"
     copy-url: "URLをコピー"
     download: "ダウンロード"
-    else-files: "もっとあるで…"
+    else-files: "まだあんで..."
     set-as-avatar: "アイコンにする"
     set-as-banner: "バナーにする"
     open-in-app: "アプリで開く"
@@ -586,7 +586,7 @@ desktop/views/components/drive.vue:
   url-upload: "URLアップロード"
   url-of-file: "このURLのファイルをアップロードしたいねん"
   url-upload-requested: "アップロードしたい言うといたで"
-  may-take-time: "アップロード終わるまで時間かかるわ、知らんけど。たこ焼き何個食べれるやろか…"
+  may-take-time: "アップロード終わるんにちょい時間かかるかもしれへんわ。"
   create-folder: "フォルダー作成"
   folder-name: "フォルダー名"
   contextmenu:
@@ -616,7 +616,7 @@ desktop/views/components/following.vue:
 desktop/views/components/friends-maker.vue:
   title: "おもろそうやな:"
   empty: "おもろいユーザー居らんかったわ"
-  fetching: "読みこんどるで…"
+  fetching: "読み込んどります"
   refresh: "もっとあるやろ！"
   close: "さいなら"
 desktop/views/components/game-window.vue:
@@ -688,11 +688,11 @@ desktop/views/components/post-form-window.vue:
   note: "新規投稿"
   reply: "返す"
   attaches: "添付: {}メディア"
-  uploading-media: "{}個のメディアを上げてるで…"
+  uploading-media: "{}個のメディアを上げとんねん……"
 desktop/views/components/progress-dialog.vue:
   waiting: "待っとる"
 desktop/views/components/renote-form.vue:
-  quote: "持ってくる…"
+  quote: "取ってくる……"
   cancel: "やめとくわ"
   renote: "Renote"
   reposting: "やっとります..."
@@ -768,7 +768,7 @@ desktop/views/components/settings.vue:
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"
-  update-checking: "アップデートはあらへんか…"
+  update-checking: "アップデートはあらへんか……"
   do-update: "アップデートあるか見てみる"
   update-settings: "もっと設定"
   prevent-update: "アップデートしたないわ、また今度や(やめときや)"
@@ -903,7 +903,7 @@ desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知っとる"
   load-more: "もっと"
-  fetching: "読みこんどるで…"
+  fetching: "読み込んどります"
 desktop/views/components/users-list-item.vue:
   followed: "フォローされとるで"
 desktop/views/components/window.vue:
@@ -951,11 +951,11 @@ desktop/views/pages/stats/stats.vue:
   all-notes: "全ての投稿"
   original-notes: "このインスタンスの投稿"
 desktop/views/pages/welcome.vue:
-  about: "もっと…"
+  about: "もうちょい……"
   gotit: "ほい"
   signin: "サインイン"
   signup: "サインアップ"
-  signin-button: "サインイン中…"
+  signin-button: "やっとる"
   signup-button: "サインアップ"
   timeline: "タイムライン"
   announcements: "知っときや"
@@ -989,11 +989,11 @@ desktop/views/pages/user-list.users.vue:
   username: "ユーザー名"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "知っとるフォロワー"
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-users: "フォロワー全員知らんわ"
 desktop/views/pages/user/user.friends.vue:
   title: "よう話すツレ"
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-users: "よう話すツレは居らん"
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーはあかんわ。凍結されとる。"
@@ -1003,7 +1003,7 @@ desktop/views/pages/user/user.home.vue:
   last-used-at: "最後いつ来た？"
 desktop/views/pages/user/user.photos.vue:
   title: "写真"
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-photos: "写真はあらへんで"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "フォローされとるで"
@@ -1096,7 +1096,7 @@ mobile/views/components/follow-button.vue:
 mobile/views/components/friends-maker.vue:
   title: "おもろそうやな"
   empty: "おすすめのユーザーはおらん。"
-  fetching: "読みこんどるで…"
+  fetching: "読み込んどります"
   refresh: "もっとあるやろ！"
   close: "さいなら"
 mobile/views/components/note.vue:
@@ -1237,7 +1237,7 @@ mobile/views/pages/settings/settings.profile.vue:
   privacy: "プライバシーってなんや？オカンの年齢か？"
   save: "保存"
   saved: "プロフィールを保存したで"
-  uploading: "アップロードしとるで…"
+  uploading: "アップロードしとります"
   upload-failed: "これアップロードでけへんわ"
 mobile/views/pages/search.vue:
   search: "探す"
@@ -1284,7 +1284,7 @@ mobile/views/pages/settings.vue:
   update: "あんたのMisskeyいつのや？"
   version: "バージョン:"
   latest-version: "いっちゃん新しいやつ:"
-  update-checking: "アップデートはあらへんか…"
+  update-checking: "アップデートあるか見とるで"
   check-for-updates: "アップデートあるんかな？"
   no-updates: "アップデートあらへんわ"
   no-updates-desc: "つこてるMisskeyは最新や！"
@@ -1315,16 +1315,16 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "知っとるフォロワー"
   last-used-at: "最後いつ来た？"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-users: "知っとるユーザーは居らん"
 mobile/views/pages/user/home.friends.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-users: "よう話すユーザーは居らん"
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-notes: "投稿はあらへん"
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込んどる…"
+  loading: "読み込んどります"
   no-photos: "写真はあらへんで"
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
