@@ -22,7 +22,7 @@ common:
   adblock:
     detected: "Bitte deaktivieren Sie den Werbeblocker."
     warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
-  application-authorization: "アプリの連携"
+  application-authorization: "Autorisierte Anwendungen"
   close: "Schließen"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   got-it: "Verstanden!"
@@ -293,10 +293,10 @@ common/views/components/theme.vue:
   select-theme: "テーマを選択してください"
   uninstall: "アンインストール"
   uninstalled: "「{}」をアンインストールしました"
-  author: "作者"
+  author: "Autor"
   desc: "説明"
-  export: "エクスポート"
-  import: "インポート"
+  export: "Exportieren"
+  import: "Importieren"
   import-by-code: "またはコードをペースト"
   theme-name-required: "テーマ名は必須です。"
 common/views/components/cw-button.vue:
