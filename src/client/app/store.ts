@@ -68,7 +68,8 @@ export default (os: MiOS) => new Vuex.Store({
 	state: {
 		i: null,
 		indicate: false,
-		uiHeaderHeight: 0
+		uiHeaderHeight: 0,
+		navHook: null
 	},
 
 	getters: {
@@ -90,6 +91,10 @@ export default (os: MiOS) => new Vuex.Store({
 
 		setUiHeaderHeight(state, height) {
 			state.uiHeaderHeight = height;
+		},
+
+		navHook(state, callback) {
+			state.navHook = callback;
 		}
 	},
 

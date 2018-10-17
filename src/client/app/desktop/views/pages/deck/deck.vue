@@ -9,6 +9,9 @@
 			</div>
 			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
 		</template>
+		<template v-if="temporaryColumn">
+			<x-user-column v-if="temporaryColumn.type == 'user'" :user="temporaryColumn.user"/>
+		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
 </mk-ui>
@@ -24,6 +27,12 @@ import * as uuid from 'uuid';
 export default Vue.extend({
 	components: {
 		XColumnCore
+	},
+
+	data() {
+		return {
+			temporaryColumn: null
+		};
 	},
 
 	computed: {
@@ -50,6 +59,8 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$store.commit('navHook', this.onNav);
+
 		if (this.$store.state.settings.deck == null) {
 			const deck = {
 				columns: [/*{
@@ -101,6 +112,10 @@ export default Vue.extend({
 	methods: {
 		getColumnVm(id) {
 			return this.$refs[id][0];
+		},
+
+		onNav() {
+			console.log('navigated');
 		},
 
 		add() {

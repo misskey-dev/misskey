@@ -148,6 +148,17 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			});
 			//#endregion
 
+			// Navigation hook
+			router.beforeEach((to, from, next) => {
+				console.log(to, from);
+				if (os.store.state.navHook) {
+					os.store.state.navHook();
+					next(false);
+				} else {
+					next();
+				}
+			});
+
 			Vue.mixin({
 				data() {
 					return {
