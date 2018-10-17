@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "Une ⭐ du fédiverse"
   about-title: "Une ⭐ du fédivers."
-  about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de microblogage distribuée</b> née sur Terre. Parce qu'il fait partie du Fédivers (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
+  about: "Merci d’avoir choisis Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre et fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), elle est connectée mutuellement avec d’autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, un court instant, loin de l’agitation de la ville et plonger dans un Internet d’un nouveau genre ?"
   intro:
     title: "C’est quoi Misskey ?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
@@ -43,7 +43,7 @@ common:
     quoted-by: "Cité·e par {} :"
   time:
     unknown: "inconnu"
-    future: "à l'instant"
+    future: "à l’instant"
     just_now: "à l'instant"
     seconds_ago: "Il y a {} seconde·s"
     minutes_ago: "Il y a {} minute·s"
@@ -786,9 +786,9 @@ desktop/views/components/settings.vue:
   task-manager: "Gestionnaire de tâches"
   third-parties: "Services tiers"
   navbar-position: "ナビゲーションバーの位置"
-  navbar-position-top: "上"
-  navbar-position-left: "左"
-  navbar-position-right: "右"
+  navbar-position-top: "En haut"
+  navbar-position-left: "à gauche"
+  navbar-position-right: "à droite"
 desktop/views/components/settings.2fa.vue:
   intro: "Si vous configurez la vérication en deux étapes vous aurez non seulement besoin de votre mot de passe mais aussi un appareil déjà pré-enregistré(tel que votre smartphone) ce qui ameliora grandement la sécurité de votre compte."
   detail: "Voir les détails..."
