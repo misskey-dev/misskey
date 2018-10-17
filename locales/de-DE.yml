@@ -335,7 +335,7 @@ common/views/components/note-menu.vue:
   detail: "詳細"
   copy-link: "リンクをコピー"
   favorite: "Diese Anmerkung favorisieren"
-  unfavorite: "お気に入り解除"
+  unfavorite: "Entfavorisieren"
   pin: "An die Profilseite pinnen"
   unpin: "ピン留め解除"
   delete: "Löschen"
@@ -362,7 +362,7 @@ common/views/components/signin.vue:
   token: "Token"
   signing-in: "Melde an..."
   signin: "Anmelden"
-  or: "または"
+  or: "Oder"
   signin-with-twitter: "Twitterでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
@@ -510,7 +510,7 @@ desktop/views/components/charts.vue:
   notes: "投稿"
   users: "ユーザー"
   drive: "ドライブ"
-  network: "ネットワーク"
+  network: "Netzwerk"
   charts:
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
@@ -522,9 +522,9 @@ desktop/views/components/charts.vue:
     drive-total: "ドライブ使用量の積算"
     drive-files: "ドライブのファイル数の増減"
     drive-files-total: "ドライブのファイル数の積算"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
-    network-usage: "通信量"
+    network-requests: "Anfragen"
+    network-time: "Antwortzeit"
+    network-usage: "Datenverkehr"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Datei auswählen"
   upload: "Dateien von deinem PC hochladen"
@@ -651,14 +651,14 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "Laden fehlgeschlagen."
   retry: "Erneut versuchen"
-  load-more: "もっと読み込む"
+  load-more: "Mehr laden"
 desktop/views/components/notifications.vue:
   more: "Mehr"
   empty: "Keine Benachrichtigungen"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+ユーザーを追加"
+  add-visible-user: "+Nutzer hinzufügen"
   attach-location-information: "位置情報を添付する"
-  hide-contents: "内容を隠す"
+  hide-contents: "Inhalt verstecken"
   reply-placeholder: "Antworte auf diese Anmerkung..."
   quote-placeholder: "Zitiere diese Anmerkung..."
   submit: "Beitragsform"
@@ -679,10 +679,10 @@ desktop/views/components/post-form.vue:
   text-remain: "{} Zeichen verbleibend"
   recent-tags: "最近"
   click-to-tagging: "クリックでタグ付け"
-  visibility: "公開範囲"
+  visibility: "Sichtbarkeit"
   geolocation-alert: "お使いの端末は位置情報に対応していません"
-  error: "エラー"
-  enter-username: "ユーザー名を入力してください"
+  error: "Fehler"
+  enter-username: "Bitte gib einen Benutzernamen ein..."
   annotations: "内容への注釈 (オプション)"
 desktop/views/components/post-form-window.vue:
   note: "Neue Notiz"
@@ -732,7 +732,7 @@ desktop/views/components/settings.vue:
   delete-wallpaper: "壁紙を削除"
   dark-mode: "Nacht Modus"
   use-shadow: "UIに影を使用"
-  rounded-corners: "UIの角を丸める"
+  rounded-corners: "Abgerundete Ecken"
   circle-icons: "Kreisförmige Icons"
   contrasted-acct: "ユーザー名にコントラストを付ける"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
@@ -822,12 +822,12 @@ desktop/views/components/settings.drive.vue:
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
 desktop/views/components/settings.password.vue:
-  reset: "パスワードを変更する"
+  reset: "Passwort ändern"
   enter-current-password: "Derzeitiges Passwort eingeben"
   enter-new-password: "Neues Passwort eingeben"
   enter-new-password-again: "Neues Passwort erneut eingeben"
-  not-match: "新しいパスワードが一致しません"
-  changed: "パスワードを変更しました"
+  not-match: "Passwörter stimmen nicht überein."
+  changed: "Passwort geändert"
 desktop/views/components/settings.profile.vue:
   avatar: "アイコン"
   choice-avatar: "画像を選択"
@@ -902,7 +902,7 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
-  load-more: "もっと"
+  load-more: "Mehr"
   fetching: "Lade…"
 desktop/views/components/users-list-item.vue:
   followed: "フォローされています"
@@ -1165,19 +1165,19 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
-  load-more: "もっと"
+  load-more: "Mehr"
 mobile/views/components/users-list.vue:
   all: "すべて"
   known: "知り合い"
-  load-more: "もっと"
+  load-more: "Mehr"
 mobile/views/pages/favorites.vue:
-  title: "お気に入り"
+  title: "Favoriten"
 mobile/views/pages/user-lists.vue:
   title: "リスト"
   enter-list-name: "リスト名を入力してください"
 mobile/views/pages/drive.vue:
   drive: "ドライブ"
-  more: "もっと見る"
+  more: "Mehr laden"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
 mobile/views/pages/followers.vue:
@@ -1309,7 +1309,7 @@ mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
   images: "画像"
   activity: "アクティビティ"
-  keywords: "キーワード"
+  keywords: "Schlagwörter"
   domains: "頻出ドメイン"
   frequently-replied-users: "よく会話するユーザー"
   followers-you-know: "知り合いのフォロワー"
