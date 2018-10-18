@@ -11,6 +11,7 @@
 		</template>
 		<template v-if="temporaryColumn">
 			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
+			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
 		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
@@ -23,13 +24,15 @@ import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 import XUserColumn from './deck.user-column.vue';
+import XNoteColumn from './deck.note-column.vue';
 
 import * as uuid from 'uuid';
 
 export default Vue.extend({
 	components: {
 		XColumnCore,
-		XUserColumn
+		XUserColumn,
+		XNoteColumn
 	},
 
 	computed: {
@@ -109,6 +112,8 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
+		this.$store.commit('navHook', null);
+
 		document.documentElement.style.overflow = 'auto';
 	},
 
@@ -124,6 +129,15 @@ export default Vue.extend({
 					value: {
 						type: 'user',
 						acct: to.params.user
+					}
+				});
+				return true;
+			} else if (to.name == 'note') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'note',
+						noteId: to.params.note
 					}
 				});
 				return true;

@@ -21,7 +21,7 @@
 		</div>
 		<div class="tl">
 			<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-				<p>%i18n:@pinned-notes%</p>
+				<p>%fa:thumbtack% %i18n:@pinned-notes%</p>
 				<div class="notes">
 					<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n"/>
 				</div>
@@ -67,7 +67,7 @@ export default Vue.extend({
 
 	computed: {
 		title(): string {
-			return this.user ? this.user.name || this.user.username : '';
+			return this.user ? Vue.filter('userName')(this.user) : '';
 		},
 
 		bannerStyle(): any {
