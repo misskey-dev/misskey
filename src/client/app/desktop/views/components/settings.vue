@@ -573,7 +573,8 @@ export default Vue.extend({
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		border-right solid 1px var(--faceDivider)
+		box-shadow var(--shadowRight)
+		z-index 1
 
 		> p
 			display block
