@@ -234,7 +234,7 @@ export default Vue.extend({
 		> p
 			margin 0
 			padding 8px 16px
-			font-size 14px
+			font-size 12px
 			color var(--text)
 
 		> .notes
