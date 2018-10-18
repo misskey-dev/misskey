@@ -1,6 +1,6 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :style="style">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :style="style" :class="{ center: $store.state.device.deckColumnAlign == 'center' }">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
@@ -283,12 +283,13 @@ export default Vue.extend({
 			> *:not(:last-child)
 				margin-bottom 8px
 
-	> *
-		&:first-child
-			margin-left auto
+	&.center
+		> *
+			&:first-child
+				margin-left auto
 
-		&:last-child
-			margin-right auto
+			&:last-child
+				margin-right auto
 
 	> button
 		padding 0 16px

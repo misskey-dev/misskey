@@ -58,6 +58,7 @@ const defaultDeviceSettings = {
 	alwaysShowNsfw: false,
 	postStyle: 'standard',
 	navbar: 'top',
+	deckColumnAlign: 'center',
 	mobileNotificationPosition: 'bottom',
 	deckTemporaryColumn: null
 };

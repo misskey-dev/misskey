@@ -113,6 +113,11 @@
 				<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
 				<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
 			</section>
+			<section>
+				<header>%i18n:@deck-column-align%</header>
+				<ui-radio v-model="deckColumnAlign" value="center">%i18n:@deck-column-align-center%</ui-radio>
+				<ui-radio v-model="deckColumnAlign" value="left">%i18n:@deck-column-align-left%</ui-radio>
+			</section>
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
@@ -348,6 +353,11 @@ export default Vue.extend({
 		navbar: {
 			get() { return this.$store.state.device.navbar; },
 			set(value) { this.$store.commit('device/set', { key: 'navbar', value }); }
+		},
+
+		deckColumnAlign: {
+			get() { return this.$store.state.device.deckColumnAlign; },
+			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
 		},
 
 		enableSounds: {
