@@ -9,6 +9,10 @@
 			</div>
 			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
 		</template>
+		<template v-if="temporaryColumn">
+			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
+			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
+		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
 </mk-ui>
@@ -19,11 +23,16 @@ import Vue from 'vue';
 import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
+import XUserColumn from './deck.user-column.vue';
+import XNoteColumn from './deck.note-column.vue';
+
 import * as uuid from 'uuid';
 
 export default Vue.extend({
 	components: {
-		XColumnCore
+		XColumnCore,
+		XUserColumn,
+		XNoteColumn
 	},
 
 	computed: {
@@ -31,15 +40,21 @@ export default Vue.extend({
 			if (this.$store.state.settings.deck == null) return [];
 			return this.$store.state.settings.deck.columns;
 		},
+
 		layout(): any[] {
 			if (this.$store.state.settings.deck == null) return [];
 			if (this.$store.state.settings.deck.layout == null) return this.$store.state.settings.deck.columns.map(c => [c.id]);
 			return this.$store.state.settings.deck.layout;
 		},
+
 		style(): any {
 			return {
 				height: `calc(100vh - ${this.$store.state.uiHeaderHeight}px)`
 			};
+		},
+
+		temporaryColumn(): any {
+			return this.$store.state.device.deckTemporaryColumn;
 		}
 	},
 
@@ -50,6 +65,8 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$store.commit('navHook', this.onNav);
+
 		if (this.$store.state.settings.deck == null) {
 			const deck = {
 				columns: [/*{
@@ -95,12 +112,38 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
+		this.$store.commit('navHook', null);
+
 		document.documentElement.style.overflow = 'auto';
 	},
 
 	methods: {
 		getColumnVm(id) {
 			return this.$refs[id][0];
+		},
+
+		onNav(to) {
+			if (!this.$store.state.settings.deckNav) return false;
+
+			if (to.name == 'user') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'user',
+						acct: to.params.user
+					}
+				});
+				return true;
+			} else if (to.name == 'note') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'note',
+						noteId: to.params.note
+					}
+				});
+				return true;
+			}
 		},
 
 		add() {

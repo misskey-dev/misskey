@@ -1,5 +1,5 @@
 <template>
-<div class="tkfdzaxtkdeianobciwadajxzbddorql" :title="title">
+<div class="tkfdzaxtkdeianobciwadajxzbddorql" :class="{ mini }" :title="title">
 	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note"/>
@@ -24,6 +24,11 @@ export default Vue.extend({
 		note: {
 			type: Object,
 			required: true
+		},
+		mini: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 
@@ -44,10 +49,18 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .tkfdzaxtkdeianobciwadajxzbddorql
 	display flex
-	margin 0
 	padding 16px 32px
 	font-size 0.9em
 	background var(--subNoteBg)
+
+	&.mini
+		padding 16px
+		font-size 10px
+
+		> .avatar
+			margin 0 8px 0 0
+			width 38px
+			height 38px
 
 	> .avatar
 		flex-shrink 0

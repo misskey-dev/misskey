@@ -40,7 +40,7 @@ import Vue from 'vue';
 import * as config from '../../../config';
 import getNoteSummary from '../../../../../misc/get-note-summary';
 
-import XNote from './notes.note.vue';
+import XNote from './note.vue';
 
 const displayLimit = 30;
 

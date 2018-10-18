@@ -73,9 +73,6 @@ export default define({
 		border-radius 8px
 
 .stream
-	display -webkit-flex
-	display -moz-flex
-	display -ms-flex
 	display flex
 	justify-content center
 	flex-wrap wrap

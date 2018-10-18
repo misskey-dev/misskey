@@ -17,7 +17,7 @@
 	<!--<transition-group name="mk-notes" class="transition">-->
 	<div class="notes">
 		<template v-for="(note, i) in _notes">
-			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" :media-view="mediaView"/>
+			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" :media-view="mediaView" :mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
 				<span>%fa:angle-up%{{ note._datetext }}</span>
 				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import XNote from './deck.note.vue';
+import XNote from '../../components/note.vue';
 
 const displayLimit = 20;
 
@@ -220,7 +220,7 @@ export default Vue.extend({
 			display block
 			margin 0
 			line-height 32px
-			font-size 14px
+			font-size 12px
 			text-align center
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)

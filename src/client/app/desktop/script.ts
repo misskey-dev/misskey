@@ -67,8 +67,8 @@ init(async (launch) => {
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/reversi/:game?', component: MkReversi },
-			{ path: '/@:user', component: MkUser },
-			{ path: '/notes/:note', component: MkNote },
+			{ path: '/@:user', name: 'user', component: MkUser },
+			{ path: '/notes/:note', name: 'note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow }
 		]
 	});

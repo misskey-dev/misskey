@@ -1,10 +1,12 @@
 <template>
 <div class="root api">
-	<p>%i18n:@token% <code>{{ $store.state.i.token }}</code></p>
+	<ui-input :value="$store.state.i.token" readonly>
+		<span>%i18n:@token%</span>
+	</ui-input>
 	<p>%i18n:@intro%</p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:@caution%</p></div>
 	<p>%i18n:@regeneration-of-token%</p>
-	<button class="ui" @click="regenerateToken">%i18n:@regenerate-token%</button>
+	<ui-button @click="regenerateToken">%i18n:@regenerate-token%</ui-button>
 </div>
 </template>
 

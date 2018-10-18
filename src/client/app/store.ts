@@ -10,6 +10,7 @@ const defaultSettings = {
 	home: null,
 	mobileHome: [],
 	deck: null,
+	deckNav: true,
 	tagTimelines: [],
 	fetchOnScroll: true,
 	showMaps: true,
@@ -57,7 +58,8 @@ const defaultDeviceSettings = {
 	alwaysShowNsfw: false,
 	postStyle: 'standard',
 	navbar: 'top',
-	mobileNotificationPosition: 'bottom'
+	mobileNotificationPosition: 'bottom',
+	deckTemporaryColumn: null
 };
 
 export default (os: MiOS) => new Vuex.Store({
@@ -68,7 +70,8 @@ export default (os: MiOS) => new Vuex.Store({
 	state: {
 		i: null,
 		indicate: false,
-		uiHeaderHeight: 0
+		uiHeaderHeight: 0,
+		navHook: null
 	},
 
 	getters: {
@@ -90,6 +93,10 @@ export default (os: MiOS) => new Vuex.Store({
 
 		setUiHeaderHeight(state, height) {
 			state.uiHeaderHeight = height;
+		},
+
+		navHook(state, callback) {
+			state.navHook = callback;
 		}
 	},
 
