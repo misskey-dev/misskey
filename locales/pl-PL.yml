@@ -761,6 +761,7 @@ desktop/views/components/settings.vue:
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "Pokazuj cel odpowiedzi"
+  timeline: "タイムライン"
   show-my-renotes: "Pokazuj moje udostępnienia na osi czasu"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
   show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
