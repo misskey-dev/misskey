@@ -5,6 +5,7 @@
 	</span>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
+		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<header :style="bannerStyle">
 			<div>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
@@ -141,6 +142,17 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .zubukjlciycdsyynicqrnlsmdwmymzqu
+	> .is-remote
+		padding 8px 16px
+		font-size 12px
+
+		&.is-remote
+			color var(--remoteInfoFg)
+			background var(--remoteInfoBg)
+
+		> a
+			font-weight bold
+
 	> header
 		overflow hidden
 		background-size cover
