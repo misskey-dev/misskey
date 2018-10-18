@@ -19,13 +19,16 @@
 				<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 			</div>
 		</div>
-		<div class="tl">
-			<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-				<p>%fa:thumbtack% %i18n:@pinned-notes%</p>
-				<div class="notes">
-					<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n"/>
-				</div>
+		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
+			<p>%fa:thumbtack% %i18n:@pinned-notes%</p>
+			<div class="notes">
+				<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n"/>
 			</div>
+		</div>
+		<div class="images" v-if="images.length > 0">
+			<router-link v-for="image in images" :style="`background-image: url(${image.thumbnailUrl})`" :key="`${image.id}:${image._note.id}`" :to="image._note | notePage"></router-link>
+		</div>
+		<div class="tl">
 			<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 		</div>
 	</div>
@@ -61,7 +64,8 @@ export default Vue.extend({
 			fetching: true,
 			existMore: false,
 			moreFetching: false,
-			withFiles: false
+			withFiles: false,
+			images: []
 		};
 	},
 
@@ -87,6 +91,19 @@ export default Vue.extend({
 
 			this.$nextTick(() => {
 				(this.$refs.timeline as any).init(() => this.initTl());
+			});
+
+			(this as any).api('users/notes', {
+				userId: this.user.id,
+				withFiles: true,
+				limit: 9
+			}).then(notes => {
+				notes.forEach(note => {
+					note.files.forEach(file => {
+						file._note = note;
+						if (this.images.length < 9) this.images.push(file);
+					});
+				});
 			});
 		});
 	},
@@ -142,6 +159,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .zubukjlciycdsyynicqrnlsmdwmymzqu
+	background var(--deckUserColumnBg)
+
 	> .is-remote
 		padding 8px 16px
 		font-size 12px
@@ -191,6 +210,7 @@ export default Vue.extend({
 		font-size 14px
 		color var(--text)
 		text-align center
+		background var(--face)
 		border-bottom solid 1px var(--faceDivider)
 
 		&:before
@@ -207,18 +227,35 @@ export default Vue.extend({
 			border-right solid 16px transparent
 			border-bottom solid 16px var(--face)
 
+	> .pinned
+		padding-bottom 16px
+		background var(--deckUserColumnBg)
+
+		> p
+			margin 0
+			padding 8px 16px
+			font-size 14px
+			color var(--text)
+
+		> .notes
+			background var(--face)
+
+	> .images
+		display grid
+		grid-template-rows 1fr 1fr 1fr
+		grid-template-columns 1fr 1fr 1fr
+		gap 4px
+		height 250px
+		padding 16px
+		margin-bottom 16px
+		background var(--face)
+
+		> *
+			background-position center center
+			background-size cover
+			background-clip content-box
+
 	> .tl
-		> .pinned
-			padding-bottom 16px
-			background var(--deckUserColumnBg)
-
-			> p
-				margin 0
-				padding 12px 16px
-				font-size 14px
-				color var(--text)
-
-			> .notes
-				background var(--face)
+		background var(--face)
 
 </style>
