@@ -57,6 +57,13 @@
 			</section>
 
 			<section>
+				<header>%i18n:@timeline%</header>
+				<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
+				<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
+				<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
+			</section>
+
+			<section>
 				<header>%i18n:@note-visibility%</header>
 				<ui-switch v-model="rememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
 				<section>
@@ -76,6 +83,7 @@
 			<div slot="title">%fa:desktop% %i18n:@display%</div>
 
 			<section>
+				<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
 				<ui-button @click="customizeHome">%i18n:@customize%</ui-button>
 			</section>
 			<section>
@@ -100,23 +108,21 @@
 				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 			</section>
 			<section>
-				<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
 				<ui-switch v-model="suggestRecentHashtags">%i18n:@suggest-recent-hashtags%</ui-switch>
 				<ui-switch v-model="showClockOnHeader">%i18n:@show-clock-on-header%</ui-switch>
 				<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw%</ui-switch>
 				<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>
-				<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
-				<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
-				<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
 				<ui-switch v-model="showMaps">%i18n:@show-maps%</ui-switch>
 				<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
-				<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
-				<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
 			</section>
 			<section>
 				<header>%i18n:@deck-column-align%</header>
 				<ui-radio v-model="deckColumnAlign" value="center">%i18n:@deck-column-align-center%</ui-radio>
 				<ui-radio v-model="deckColumnAlign" value="left">%i18n:@deck-column-align-left%</ui-radio>
+			</section>
+			<section>
+				<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
+				<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
 			</section>
 		</ui-card>
 
