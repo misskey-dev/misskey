@@ -8,6 +8,8 @@ import Following from '../../models/following';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
 import { updateNoteStats } from '../update-chart';
 import config from '../../config';
+import NoteUnread from '../../models/note-unread';
+import read from './read';
 
 /**
  * 投稿を削除します。
@@ -34,6 +36,15 @@ export default async function(user: IUser, note: INote) {
 
 	publishNoteStream(note._id, 'deleted', {
 		deletedAt: deletedAt
+	});
+
+	// この投稿が関わる未読通知を削除
+	NoteUnread.find({
+		noteId: note._id
+	}).then(unreads => {
+		unreads.forEach(unread => {
+			read(unread.userId, unread.noteId);
+		});
 	});
 
 	//#region ローカルの投稿なら削除アクティビティを配送
