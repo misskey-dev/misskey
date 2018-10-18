@@ -6,7 +6,7 @@
 
 	<div class="rvtscbadixhhbsczoorqoaygovdeecsx" v-if="note">
 		<div class="is-remote" v-if="note.user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="note.url || note.uri" target="_blank">%i18n:@view-remote%</a></div>
-		<x-note :note="note"/>
+		<x-note :note="note" :detail="true"/>
 	</div>
 </x-column>
 </template>

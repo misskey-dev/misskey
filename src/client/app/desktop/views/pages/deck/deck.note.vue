@@ -8,6 +8,9 @@
 	v-hotkey="keymap"
 	:title="title"
 >
+	<div class="conversation" v-if="detail && conversation.length > 0">
+		<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
+	</div>
 	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="appearNote.reply"/>
 	</div>
@@ -59,6 +62,9 @@
 			</footer>
 		</div>
 	</article>
+	<div class="replies" v-if="detail && replies.length > 0">
+		<x-sub v-for="note in replies" :key="note.id" :note="note"/>
+	</div>
 </div>
 <div v-else class="srwrkujossgfuhrbnvqkybtzxpblgchi">
 	<div v-if="note.files.length > 0">
@@ -72,8 +78,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkPostFormWindow from '../../components/post-form-window.vue';
-import MkRenoteFormWindow from '../../components/renote-form-window.vue';
 import XSub from './deck.note.sub.vue';
 import noteMixin from '../../../../common/scripts/note-mixin';
 import noteSubscriber from '../../../../common/scripts/note-subscriber';
@@ -97,6 +101,35 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		detail: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
+
+	data() {
+		return {
+			conversation: [],
+			replies: []
+		};
+	},
+
+	created() {
+		if (this.detail) {
+			(this as any).api('notes/replies', {
+				noteId: this.appearNote.id,
+				limit: 8
+			}).then(replies => {
+				this.replies = replies;
+			});
+
+			(this as any).api('notes/conversation', {
+				noteId: this.appearNote.replyId
+			}).then(conversation => {
+				this.conversation = conversation.reverse();
+			});
 		}
 	}
 });
