@@ -1,5 +1,5 @@
 <template>
-<x-column :is-stacked="false">
+<x-column>
 	<span slot="header">
 		%fa:user%<span>{{ title }}</span>
 	</span>
@@ -8,6 +8,7 @@
 		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<header :style="bannerStyle">
 			<div>
+				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow"/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 				<span class="name">{{ user | userName }}</span>
 				<span class="acct">@{{ user | acct }}</span>
@@ -17,17 +18,14 @@
 			<div class="description">
 				<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 			</div>
-			<div class="info">
-				<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
-				<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</span>
-			</div>
-			<div class="status">
-				<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
-				<span class="following clickable"><b>{{ user.followingCount | number }}</b>%i18n:@following%</span>
-				<span class="followers clickable"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</span>
-			</div>
 		</div>
 		<div class="tl">
+			<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
+				<p>%i18n:@pinned-notes%</p>
+				<div class="notes">
+					<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n"/>
+				</div>
+			</div>
 			<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 		</div>
 	</div>
@@ -39,13 +37,15 @@ import Vue from 'vue';
 import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
+import XNote from './deck.note.vue';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
 	components: {
 		XColumn,
-		XNotes
+		XNotes,
+		XNote
 	},
 
 	props: {
@@ -164,6 +164,11 @@ export default Vue.extend({
 			color #fff
 			text-align center
 
+			> .follow
+				position absolute
+				top 16px
+				right 16px
+
 			> .avatar
 				display block
 				width 64px
@@ -186,5 +191,34 @@ export default Vue.extend({
 		font-size 14px
 		color var(--text)
 		text-align center
+		border-bottom solid 1px var(--faceDivider)
+
+		&:before
+			content ""
+			display blcok
+			position absolute
+			top -32px
+			left 0
+			right 0
+			width 0px
+			margin 0 auto
+			border-top solid 16px transparent
+			border-left solid 16px transparent
+			border-right solid 16px transparent
+			border-bottom solid 16px var(--face)
+
+	> .tl
+		> .pinned
+			padding-bottom 16px
+			background var(--deckUserColumnBg)
+
+			> p
+				margin 0
+				padding 12px 16px
+				font-size 14px
+				color var(--text)
+
+			> .notes
+				background var(--face)
 
 </style>

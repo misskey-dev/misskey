@@ -39,7 +39,8 @@ export default Vue.extend({
 		},
 		isStacked: {
 			type: Boolean,
-			required: true
+			required: false,
+			default: false
 		},
 		name: {
 			type: String,

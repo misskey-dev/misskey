@@ -10,7 +10,7 @@
 			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
 		</template>
 		<template v-if="temporaryColumn">
-			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct"/>
+			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
 		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
