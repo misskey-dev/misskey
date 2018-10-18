@@ -1,7 +1,17 @@
 <template>
-<div class="note" v-show="appearNote.deletedAt == null" :tabindex="appearNote.deletedAt == null ? '-1' : null" v-hotkey="keymap" :title="title">
+<div
+	class="note"
+	:class="{ mini }"
+	v-show="appearNote.deletedAt == null"
+	:tabindex="appearNote.deletedAt == null ? '-1' : null"
+	v-hotkey="keymap"
+	:title="title"
+>
+	<div class="conversation" v-if="detail && conversation.length > 0">
+		<x-sub v-for="note in conversation" :key="note.id" :note="note" :mini="mini"/>
+	</div>
 	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
-		<x-sub :note="appearNote.reply"/>
+		<x-sub :note="appearNote.reply" :mini="mini"/>
 	</div>
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
@@ -32,8 +42,8 @@
 					</div>
 					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
 					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
-					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote"/></div>
-					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
+					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote" :mini="mini"/></div>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :mini="mini"/>
 				</div>
 			</div>
 			<footer>
@@ -55,15 +65,16 @@
 			</footer>
 		</div>
 	</article>
+	<div class="replies" v-if="detail && replies.length > 0">
+		<x-sub v-for="note in replies" :key="note.id" :note="note" :mini="mini"/>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
-import MkPostFormWindow from './post-form-window.vue';
-import MkRenoteFormWindow from './renote-form-window.vue';
-import XSub from './notes.note.sub.vue';
+import XSub from './note.sub.vue';
 import noteMixin from '../../../common/scripts/note-mixin';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
@@ -81,6 +92,40 @@ export default Vue.extend({
 		note: {
 			type: Object,
 			required: true
+		},
+		detail: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		mini: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
+
+	data() {
+		return {
+			conversation: [],
+			replies: []
+		};
+	},
+
+	created() {
+		if (this.detail) {
+			(this as any).api('notes/replies', {
+				noteId: this.appearNote.id,
+				limit: 8
+			}).then(replies => {
+				this.replies = replies;
+			});
+
+			(this as any).api('notes/conversation', {
+				noteId: this.appearNote.replyId
+			}).then(conversation => {
+				this.conversation = conversation.reverse();
+			});
 		}
 	}
 });
@@ -93,14 +138,23 @@ export default Vue.extend({
 	background var(--face)
 	border-bottom solid 1px var(--faceDivider)
 
-	&[data-round]
-		&:first-child
-			border-top-left-radius 6px
-			border-top-right-radius 6px
+	&.mini
+		font-size 13px
 
-			> .renote
-				border-top-left-radius 6px
-				border-top-right-radius 6px
+		> .renote
+			padding 8px 16px 0 16px
+
+			.avatar
+				width 20px
+				height 20px
+
+		> article
+			padding 16px 16px 4px
+
+			> .avatar
+				margin 0 10px 8px 0
+				width 42px
+				height 42px
 
 	&:last-of-type
 		border-bottom none
@@ -129,6 +183,7 @@ export default Vue.extend({
 		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
 		.avatar
+			flex-shrink 0
 			display inline-block
 			width 28px
 			height 28px
@@ -272,6 +327,9 @@ export default Vue.extend({
 					background transparent
 					border none
 					cursor pointer
+
+					&:last-child
+						margin-right 0
 
 					&:hover
 						color var(--noteActionsHover)

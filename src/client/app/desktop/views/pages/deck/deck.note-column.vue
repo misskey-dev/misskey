@@ -6,7 +6,7 @@
 
 	<div class="rvtscbadixhhbsczoorqoaygovdeecsx" v-if="note">
 		<div class="is-remote" v-if="note.user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="note.url || note.uri" target="_blank">%i18n:@view-remote%</a></div>
-		<x-note :note="note" :detail="true"/>
+		<x-note :note="note" :detail="true" :mini="true"/>
 	</div>
 </x-column>
 </template>
@@ -15,7 +15,7 @@
 import Vue from 'vue';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
-import XNote from './deck.note.vue';
+import XNote from '../../components/note.vue';
 
 export default Vue.extend({
 	components: {

@@ -123,6 +123,8 @@ export default Vue.extend({
 		},
 
 		onNav(to) {
+			if (!this.$store.state.settings.deckNav) return false;
+
 			if (to.name == 'user') {
 				this.$store.commit('device/set', {
 					key: 'deckTemporaryColumn',

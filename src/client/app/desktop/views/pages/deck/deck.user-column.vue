@@ -22,7 +22,7 @@
 		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
 			<p>%fa:thumbtack% %i18n:@pinned-notes%</p>
 			<div class="notes">
-				<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n"/>
+				<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
 			</div>
 		</div>
 		<div class="images" v-if="images.length > 0">
@@ -40,7 +40,7 @@ import Vue from 'vue';
 import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
-import XNote from './deck.note.vue';
+import XNote from '../../components/note.vue';
 
 const fetchLimit = 10;
 

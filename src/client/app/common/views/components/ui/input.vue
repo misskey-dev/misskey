@@ -122,17 +122,19 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		if (this.$refs.prefix) {
-			this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
-			if (this.$refs.prefix.offsetWidth) {
-				this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
+		this.$nextTick(() => {
+			if (this.$refs.prefix) {
+				this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
+				if (this.$refs.prefix.offsetWidth) {
+					this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
+				}
 			}
-		}
-		if (this.$refs.suffix) {
-			if (this.$refs.suffix.offsetWidth) {
-				this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+			if (this.$refs.suffix) {
+				if (this.$refs.suffix.offsetWidth) {
+					this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+				}
 			}
-		}
+		});
 	},
 	methods: {
 		focus() {

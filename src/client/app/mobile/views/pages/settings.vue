@@ -5,7 +5,7 @@
 		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${name}</b>`)"></div>
 
 		<div>
-			<x-profile/>
+			<mk-profile-editor/>
 
 			<ui-card>
 				<div slot="title">%fa:palette% %i18n:@theme%</div>
@@ -148,13 +148,7 @@ import Vue from 'vue';
 import { apiUrl, version, codename, langs } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
-import XProfile from './settings/settings.profile.vue';
-
 export default Vue.extend({
-	components: {
-		XProfile
-	},
-
 	data() {
 		return {
 			apiUrl,

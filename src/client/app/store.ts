@@ -10,6 +10,7 @@ const defaultSettings = {
 	home: null,
 	mobileHome: [],
 	deck: null,
+	deckNav: true,
 	tagTimelines: [],
 	fetchOnScroll: true,
 	showMaps: true,
