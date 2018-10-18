@@ -169,6 +169,9 @@
 					%i18n:@auto-watch%
 					<span slot="desc">%i18n:@auto-watch-desc%</span>
 				</ui-switch>
+				<section>
+					<ui-button @click="readAllUnreadNotes">%i18n:@mark-as-read-all-unread-notes%</ui-button>
+				</section>
 			</section>
 		</ui-card>
 
@@ -488,6 +491,9 @@ export default Vue.extend({
 		});
 	},
 	methods: {
+		readAllUnreadNotes() {
+			(this as any).api('i/read_all_unread_notes');
+		},
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
