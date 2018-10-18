@@ -15,7 +15,8 @@
 		</button>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
-		<button class="menu" ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
+		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
+		<button v-else class="close" @click.stop="close">%fa:times%</button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -226,6 +227,13 @@ export default Vue.extend({
 			});
 		},
 
+		close() {
+			this.$store.commit('device/set', {
+				key: 'deckTemporaryColumn',
+				value: null
+			});
+		},
+
 		goTop() {
 			this.$refs.body.scrollTo({
 				top: 0,
@@ -371,6 +379,7 @@ export default Vue.extend({
 
 		> .toggleActive
 		> .menu
+		> .close
 			padding 0
 			width $header-height
 			line-height $header-height
@@ -387,6 +396,7 @@ export default Vue.extend({
 			margin-left -16px
 
 		> .menu
+		> .close
 			margin-left auto
 			margin-right -16px
 

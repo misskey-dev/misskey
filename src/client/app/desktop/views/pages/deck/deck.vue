@@ -32,26 +32,26 @@ export default Vue.extend({
 		XUserColumn
 	},
 
-	data() {
-		return {
-			temporaryColumn: null
-		};
-	},
-
 	computed: {
 		columns(): any[] {
 			if (this.$store.state.settings.deck == null) return [];
 			return this.$store.state.settings.deck.columns;
 		},
+
 		layout(): any[] {
 			if (this.$store.state.settings.deck == null) return [];
 			if (this.$store.state.settings.deck.layout == null) return this.$store.state.settings.deck.columns.map(c => [c.id]);
 			return this.$store.state.settings.deck.layout;
 		},
+
 		style(): any {
 			return {
 				height: `calc(100vh - ${this.$store.state.uiHeaderHeight}px)`
 			};
+		},
+
+		temporaryColumn(): any {
+			return this.$store.state.device.deckTemporaryColumn;
 		}
 	},
 
@@ -119,11 +119,13 @@ export default Vue.extend({
 
 		onNav(to) {
 			if (to.name == 'user') {
-				this.temporaryColumn = {
-					type: 'user',
-					acct: to.params.user
-				};
-
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'user',
+						acct: to.params.user
+					}
+				});
 				return true;
 			}
 		},

@@ -57,7 +57,8 @@ const defaultDeviceSettings = {
 	alwaysShowNsfw: false,
 	postStyle: 'standard',
 	navbar: 'top',
-	mobileNotificationPosition: 'bottom'
+	mobileNotificationPosition: 'bottom',
+	deckTemporaryColumn: null
 };
 
 export default (os: MiOS) => new Vuex.Store({
