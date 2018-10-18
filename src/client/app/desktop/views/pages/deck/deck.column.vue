@@ -216,6 +216,7 @@ export default Vue.extend({
 		},
 
 		onContextmenu(e) {
+			if (this.isTemporaryColumn) return;
 			contextmenu((this as any).os)(e, this.getMenu());
 		},
 
