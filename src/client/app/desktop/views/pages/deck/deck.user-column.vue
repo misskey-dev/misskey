@@ -1,7 +1,7 @@
 <template>
-<x-column :name="name" :is-stacked="false">
+<x-column :is-stacked="false">
 	<span slot="header">
-		%fa:user%<span>{{ name }}</span>
+		%fa:user%<span>{{ title }}</span>
 	</span>
 
 	<p>test</p>
@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XTl from './deck.tl.vue';
 import XListTl from './deck.list-tl.vue';
@@ -21,7 +22,7 @@ export default Vue.extend({
 	},
 
 	props: {
-		user: {
+		acct: {
 			type: String,
 			required: true
 		}
@@ -29,8 +30,22 @@ export default Vue.extend({
 
 	data() {
 		return {
-			name: 'a'
+			user: null,
+			fetching: true
 		};
+	},
+
+	computed: {
+		title(): string {
+			return this.user ? this.user.name || this.user.username : '';
+		}
+	},
+
+	created() {
+		(this as any).api('users/show', parseAcct(this.acct)).then(user => {
+			this.user = user;
+			this.fetching = false;
+		});
 	}
 });
 </script>

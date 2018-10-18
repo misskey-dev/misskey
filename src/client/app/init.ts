@@ -152,8 +152,11 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			router.beforeEach((to, from, next) => {
 				console.log(to, from);
 				if (os.store.state.navHook) {
-					os.store.state.navHook();
-					next(false);
+					if (os.store.state.navHook(to)) {
+						next(false);
+					} else {
+						next();
+					}
 				} else {
 					next();
 				}

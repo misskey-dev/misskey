@@ -10,7 +10,7 @@
 			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
 		</template>
 		<template v-if="temporaryColumn">
-			<x-user-column v-if="temporaryColumn.type == 'user'" :user="temporaryColumn.user"/>
+			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct"/>
 		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
@@ -117,12 +117,15 @@ export default Vue.extend({
 			return this.$refs[id][0];
 		},
 
-		onNav() {
-			console.log('navigated');
-			this.temporaryColumn = {
-				type: 'user',
-				user: null
-			};
+		onNav(to) {
+			if (to.name == 'user') {
+				this.temporaryColumn = {
+					type: 'user',
+					acct: to.params.user
+				};
+
+				return true;
+			}
 		},
 
 		add() {
