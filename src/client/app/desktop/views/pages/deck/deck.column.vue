@@ -1,7 +1,6 @@
 <template>
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
 		@dragover.prevent.stop="onDragover"
-		@dragenter.prevent="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop">
 	<header :class="{ indicate: count > 0 }"
@@ -34,7 +33,8 @@ export default Vue.extend({
 	props: {
 		column: {
 			type: Object,
-			required: true
+			required: false,
+			default: null
 		},
 		isStacked: {
 			type: Boolean,
@@ -58,6 +58,12 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		}
+	},
+
+	computed: {
+		isTemporaryColumn(): boolean {
+			return this.column == null;
 		}
 	},
 
@@ -96,14 +102,20 @@ export default Vue.extend({
 
 	mounted() {
 		this.$refs.body.addEventListener('scroll', this.onScroll, { passive: true });
-		this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
-		this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
+
+		if (!this.isTemporaryColumn) {
+			this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
+			this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
+		}
 	},
 
 	beforeDestroy() {
 		this.$refs.body.removeEventListener('scroll', this.onScroll);
-		this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
-		this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
+
+		if (!this.isTemporaryColumn) {
+			this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
+			this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
+		}
 	},
 
 	methods: {
@@ -116,6 +128,7 @@ export default Vue.extend({
 		},
 
 		toggleActive() {
+			if (this.isTemporaryColumn) return;
 			if (!this.isStacked) return;
 			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
 			if (this.active && countIf(vm => vm.$el.classList.contains('active'), vms) == 1) return;
@@ -222,6 +235,12 @@ export default Vue.extend({
 		},
 
 		onDragstart(e) {
+			// テンポラリカラムはドラッグさせない
+			if (this.isTemporaryColumn) {
+				e.preventDefault();
+				return;
+			}
+
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData('mk-deck-column', this.column.id);
 			this.dragging = true;
@@ -232,6 +251,12 @@ export default Vue.extend({
 		},
 
 		onDragover(e) {
+			// テンポラリカラムにはドロップさせない
+			if (this.isTemporaryColumn) {
+				e.dataTransfer.dropEffect = 'none';
+				return;
+			}
+
 			// 自分自身がドラッグされている場合
 			if (this.dragging) {
 				// 自分自身にはドロップさせない
@@ -242,9 +267,7 @@ export default Vue.extend({
 			const isDeckColumn = e.dataTransfer.types[0] == 'mk-deck-column';
 
 			e.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
-		},
 
-		onDragenter() {
 			if (!this.dragging) this.draghover = true;
 		},
 

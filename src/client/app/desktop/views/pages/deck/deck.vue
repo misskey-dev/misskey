@@ -22,11 +22,14 @@ import Vue from 'vue';
 import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
+import XUserColumn from './deck.user-column.vue';
+
 import * as uuid from 'uuid';
 
 export default Vue.extend({
 	components: {
-		XColumnCore
+		XColumnCore,
+		XUserColumn
 	},
 
 	data() {
@@ -116,6 +119,10 @@ export default Vue.extend({
 
 		onNav() {
 			console.log('navigated');
+			this.temporaryColumn = {
+				type: 'user',
+				user: null
+			};
 		},
 
 		add() {
