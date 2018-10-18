@@ -761,6 +761,7 @@ desktop/views/components/settings.vue:
   suggest-recent-hashtags: "Show recent popular hashtags on the post form"
   show-clock-on-header: "Show clock on upper-right"
   show-reply-target: "Display reply target"
+  timeline: "タイムライン"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show renoted my posts in timelines"
   show-local-renotes: "Show renoted local posts in timelines"
