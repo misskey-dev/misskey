@@ -66,7 +66,7 @@ init(async (launch) => {
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
-			{ path: '/tags/:tag', component: MkTag },
+			{ path: '/tags/:tag', name: 'tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/reversi/:game?', component: MkReversi },
 			{ path: '/@:user', name: 'user', component: MkUser },

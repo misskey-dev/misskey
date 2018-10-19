@@ -12,6 +12,7 @@
 		<template v-if="temporaryColumn">
 			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
 			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
+			<x-hashtag-column v-else-if="temporaryColumn.type == 'tag'" :tag="temporaryColumn.tag" :key="temporaryColumn.tag"/>
 		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
@@ -25,6 +26,7 @@ import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 import XUserColumn from './deck.user-column.vue';
 import XNoteColumn from './deck.note-column.vue';
+import XHashtagColumn from './deck.hashtag-column.vue';
 
 import * as uuid from 'uuid';
 
@@ -32,7 +34,8 @@ export default Vue.extend({
 	components: {
 		XColumnCore,
 		XUserColumn,
-		XNoteColumn
+		XNoteColumn,
+		XHashtagColumn
 	},
 
 	computed: {
@@ -159,6 +162,15 @@ export default Vue.extend({
 					value: {
 						type: 'note',
 						noteId: to.params.note
+					}
+				});
+				return true;
+			} else if (to.name == 'tag') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'tag',
+						tag: to.params.tag
 					}
 				});
 				return true;
