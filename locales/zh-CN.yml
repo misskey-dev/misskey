@@ -659,7 +659,7 @@ desktop/views/components/note-detail.vue:
   location: "位置情報"
   renote: "Renote"
   add-reaction: "リアクション"
-desktop/views/components/notes.note.vue:
+desktop/views/components/note.vue:
   reposted-by: "{}がRenote"
   reply: "返信"
   renote: "Renote"
