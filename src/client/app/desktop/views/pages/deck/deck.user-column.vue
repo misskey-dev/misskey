@@ -41,6 +41,7 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
+import { concat } from '../../../../../../prelude/array';
 
 const fetchLimit = 10;
 
@@ -93,17 +94,24 @@ export default Vue.extend({
 				(this.$refs.timeline as any).init(() => this.initTl());
 			});
 
+			const image = [
+				'image/jpeg',
+				'image/png',
+				'image/gif'
+			];
+
 			(this as any).api('users/notes', {
 				userId: this.user.id,
-				withFiles: true,
+				fileType: image,
 				limit: 9
 			}).then(notes => {
 				notes.forEach(note => {
 					note.files.forEach(file => {
 						file._note = note;
-						if (this.images.length < 9) this.images.push(file);
 					});
 				});
+				const files = concat(notes.map((n: any): any[] => n.files));
+				this.images = files.filter(f => image.includes(f.type)).slice(0, 6);
 			});
 		});
 	},
