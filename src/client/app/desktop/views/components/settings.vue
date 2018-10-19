@@ -98,6 +98,9 @@
 				<ui-radio v-model="navbar" value="right">%i18n:@navbar-position-right%</ui-radio>
 			</section>
 			<section>
+				<ui-switch v-model="deckDefault">%i18n:@deck-default%</ui-switch>
+			</section>
+			<section>
 				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
 				<ui-switch v-model="useShadow">%i18n:@use-shadow%</ui-switch>
 				<ui-switch v-model="roundedCorners">%i18n:@rounded-corners%</ui-switch>
@@ -364,6 +367,11 @@ export default Vue.extend({
 		deckColumnAlign: {
 			get() { return this.$store.state.device.deckColumnAlign; },
 			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
+		},
+
+		deckDefault: {
+			get() { return this.$store.state.device.deckDefault; },
+			set(value) { this.$store.commit('device/set', { key: 'deckDefault', value }); }
 		},
 
 		enableSounds: {

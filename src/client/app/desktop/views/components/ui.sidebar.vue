@@ -6,12 +6,22 @@
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">
-			<div class="home" :class="{ active: $route.name == 'index' }" @click="goToTop">
-				<router-link to="/">%fa:home%</router-link>
-			</div>
-			<div class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-				<router-link to="/deck">%fa:columns%</router-link>
-			</div>
+			<template v-if="$store.state.device.deckDefault">
+				<div class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
+					<router-link to="/">%fa:columns%</router-link>
+				</div>
+				<div class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
+					<router-link to="/home">%fa:home%</router-link>
+				</div>
+			</template>
+			<template v-else>
+				<div class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
+					<router-link to="/">%fa:home%</router-link>
+				</div>
+				<div class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
+					<router-link to="/deck">%fa:columns%</router-link>
+				</div>
+			</template>
 			<div class="messaging">
 				<a @click="messaging">%fa:comments%<template v-if="hasUnreadMessagingMessage">%fa:circle%</template></a>
 			</div>

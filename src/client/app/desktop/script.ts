@@ -21,6 +21,7 @@ import updateAvatar from './api/update-avatar';
 import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
+import MkHome from './views/pages/home.vue';
 import MkDeck from './views/pages/deck/deck.vue';
 import MkAdmin from './views/pages/admin/admin.vue';
 import MkStats from './views/pages/stats/stats.vue';
@@ -54,6 +55,7 @@ init(async (launch) => {
 		mode: 'history',
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
+			{ path: '/home', name: 'home', component: MkHome },
 			{ path: '/deck', name: 'deck', component: MkDeck },
 			{ path: '/admin', name: 'admin', component: MkAdmin },
 			{ path: '/stats', name: 'stats', component: MkStats },
