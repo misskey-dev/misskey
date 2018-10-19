@@ -67,10 +67,10 @@ export default {
 				// flatten
 				const reservedKeys = concat(actions.map(a => a.patterns));
 
-				el.dataset.reservedKeys = JSON.stringify(reservedKeys);
+				el._misskey_reservedKeys = reservedKeys;
 
 				el._keyHandler = (e: KeyboardEvent) => {
-					const targetReservedKeys = JSON.parse(document.activeElement ? ((document.activeElement as any).dataset || {}).reservedKeys || '[]' : '[]');
+					const targetReservedKeys = document.activeElement ? ((document.activeElement as any)._misskey_reservedKeys || []) : [];
 					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
 
 					for (const action of actions) {
