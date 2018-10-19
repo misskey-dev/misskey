@@ -39,6 +39,7 @@ export default Vue.extend({
 		},
 
 		async onChangeUsername() {
+			this.amount = "";
 			const user = await (this as any).os.api(
 				"users/show",
 				parseAcct(this.username)
@@ -55,6 +56,7 @@ header
 	margin 10px 0
 
 button
-	margin 16px 0
+	margin 16px
+	background-color #EEEEEE
 
 </style>
