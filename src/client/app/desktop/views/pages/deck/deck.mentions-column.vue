@@ -2,7 +2,7 @@
 <x-column :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">%fa:at%{{ name }}</span>
 
-	<x-mentions/>
+	<x-mentions ref="tl" @parentFocus="parentFocus"/>
 </x-column>
 </template>
 
@@ -34,5 +34,15 @@ export default Vue.extend({
 			return '%i18n:common.deck.mentions%';
 		}
 	},
+
+	methods: {
+		focus() {
+			this.$refs.tl.focus();
+		},
+
+		parentFocus(direction) {
+			this.$emit('parentFocus', direction);
+		},
+	}
 });
 </script>

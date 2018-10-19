@@ -1,5 +1,5 @@
 <template>
-<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
+<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView" @parentFocus="parentFocus"/>
 </template>
 
 <script lang="ts">
@@ -84,6 +84,7 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
+
 		more() {
 			this.moreFetching = true;
 
@@ -109,18 +110,29 @@ export default Vue.extend({
 
 			return promise;
 		},
+
 		onNote(note) {
 			if (this.mediaOnly && note.files.length == 0) return;
 
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
+
 		onUserAdded() {
 			this.fetch();
 		},
+
 		onUserRemoved() {
 			this.fetch();
-		}
+		},
+
+		focus() {
+			this.$refs.timeline.focus();
+		},
+
+		parentFocus(direction) {
+			this.$emit('parentFocus', direction);
+		},
 	}
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null"/>
+	<x-notes ref="timeline" :more="existMore ? more : null" @parentFocus="parentFocus"/>
 </template>
 
 <script lang="ts">
@@ -57,6 +57,7 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
+
 		more() {
 			this.moreFetching = true;
 
@@ -80,10 +81,19 @@ export default Vue.extend({
 
 			return promise;
 		},
+
 		onNote(note) {
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
-		}
+		},
+
+		focus() {
+			this.$refs.timeline.focus();
+		},
+
+		parentFocus(direction) {
+			this.$emit('parentFocus', direction);
+		},
 	}
 });
 </script>
