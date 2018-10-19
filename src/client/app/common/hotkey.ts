@@ -46,6 +46,16 @@ const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): a
 
 const ignoreElemens = ['input', 'textarea'];
 
+function match(e: KeyboardEvent, patterns: action['patterns']): boolean {
+	const key = e.code.toLowerCase();
+	return patterns.some(pattern => pattern.which.includes(key) &&
+		pattern.ctrl == e.ctrlKey &&
+		pattern.shift == e.shiftKey &&
+		pattern.alt == e.altKey &&
+		e.metaKey == false
+	);
+}
+
 export default {
 	install(Vue) {
 		Vue.directive('hotkey', {
@@ -55,37 +65,27 @@ export default {
 				const actions = getKeyMap(binding.value);
 
 				// flatten
-				const reservedKeys = concat(concat(actions.map(a => a.patterns.map(p => p.which))));
+				const reservedKeys = concat(actions.map(a => a.patterns));
 
-				el.dataset.reservedKeys = reservedKeys.map(key => `'${key}'`).join(' ');
+				el.dataset.reservedKeys = JSON.stringify(reservedKeys);
 
 				el._keyHandler = (e: KeyboardEvent) => {
-					const key = e.code.toLowerCase();
-
-					const targetReservedKeys = document.activeElement ? ((document.activeElement as any).dataset || {}).reservedKeys || '' : '';
+					const targetReservedKeys = JSON.parse(document.activeElement ? ((document.activeElement as any).dataset || {}).reservedKeys || '[]' : '[]');
 					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
 
 					for (const action of actions) {
-						if (el._hotkey_global && targetReservedKeys.includes(`'${key}'`)) break;
-
-						const matched = action.patterns.some(pattern => {
-							const matched = pattern.which.includes(key) &&
-								pattern.ctrl == e.ctrlKey &&
-								pattern.shift == e.shiftKey &&
-								pattern.alt == e.altKey &&
-								e.metaKey == false;
-
-							if (matched) {
-								e.preventDefault();
-								e.stopPropagation();
-								action.callback(e);
-								return true;
-							} else {
-								return false;
-							}
-						});
+						const matched = match(e, action.patterns);
 
 						if (matched) {
+							if (el._hotkey_global) {
+								if (match(e, targetReservedKeys)) {
+									return;
+								}
+							}
+
+							e.preventDefault();
+							e.stopPropagation();
+							action.callback(e);
 							break;
 						}
 					}
