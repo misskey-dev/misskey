@@ -1,6 +1,6 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :style="style" :class="{ center: $store.state.device.deckColumnAlign == 'center' }" v-hotkey.global="keymap">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" ref="body" :style="style" :class="{ center: $store.state.device.deckColumnAlign == 'center' }" v-hotkey.global="keymap">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
@@ -61,6 +61,19 @@ export default Vue.extend({
 			return {
 				't': this.focus
 			};
+		}
+	},
+
+	watch: {
+		temporaryColumn() {
+			if (this.temporaryColumn != null) {
+				this.$nextTick(() => {
+					this.$refs.body.scrollTo({
+						left: 10000,
+						behavior: 'smooth'
+					});
+				});
+			}
 		}
 	},
 
