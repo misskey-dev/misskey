@@ -69,7 +69,7 @@ export default Vue.extend({
 			if (this.temporaryColumn != null) {
 				this.$nextTick(() => {
 					this.$refs.body.scrollTo({
-						left: 10000,
+						left: this.$refs.body.scrollWidth - this.$refs.body.clientWidth,
 						behavior: 'smooth'
 					});
 				});
