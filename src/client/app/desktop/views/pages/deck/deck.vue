@@ -1,6 +1,6 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :style="style" :class="{ center: $store.state.device.deckColumnAlign == 'center' }">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :style="style" :class="{ center: $store.state.device.deckColumnAlign == 'center' }" v-hotkey.global="keymap">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
@@ -55,6 +55,12 @@ export default Vue.extend({
 
 		temporaryColumn(): any {
 			return this.$store.state.device.deckTemporaryColumn;
+		},
+
+		keymap(): any {
+			return {
+				't': this.focus
+			};
 		}
 	},
 
@@ -253,6 +259,20 @@ export default Vue.extend({
 					}
 				}]
 			});
+		},
+
+		focus() {
+			// Flatten array of arrays
+			const ids = [].concat.apply([], this.layout);
+			const firstTl = ids.find(id => {
+				const c = this.columns.find(c => c.id === id);
+				const isTlColumn = ['home', 'local', 'hybrid', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(c.type);
+				return isTlColumn;
+			});
+
+			if (firstTl) {
+				this.$refs[firstTl][0].focus();
+			}
 		}
 	}
 });

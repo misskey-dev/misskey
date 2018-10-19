@@ -38,6 +38,12 @@ export default Vue.extend({
 			required: false,
 			default: false
 		}
+	},
+
+	methods: {
+		focus() {
+			this.$children[0].focus();
+		}
 	}
 });
 </script>

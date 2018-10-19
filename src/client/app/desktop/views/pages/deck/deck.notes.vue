@@ -14,8 +14,8 @@
 	</div>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<!--<transition-group name="mk-notes" class="transition">-->
-	<div class="notes">
+	<!--<transition-group name="mk-notes" class="transition" ref="notes">-->
+	<div class="notes" ref="notes">
 		<template v-for="(note, i) in _notes">
 			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" :media-view="mediaView" :mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
@@ -102,7 +102,7 @@ export default Vue.extend({
 
 	methods: {
 		focus() {
-			(this.$el as any).children[0].focus();
+			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
 		},
 
 		onNoteUpdated(i, note) {
