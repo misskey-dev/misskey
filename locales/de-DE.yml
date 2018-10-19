@@ -32,7 +32,7 @@ common:
     paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
     paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
     paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
-    gotit: "Got it!"
+    gotit: "Verstanden!"
   notification:
     file-uploaded: "Datei hochgeladen!"
     message-from: "Nachricht von {}:"
@@ -175,7 +175,7 @@ auth/views/form.vue:
   permission-ask: "このアプリは次の権限を要求しています:"
   account-read: "アカウントの情報を見る。"
   account-write: "アカウントの情報を操作する。"
-  note-write: "投稿する。"
+  note-write: "Senden."
   like-write: "いいねしたりいいね解除する。"
   following-write: "フォローしたりフォロー解除する。"
   drive-read: "ドライブを見る。"
@@ -186,14 +186,14 @@ auth/views/form.vue:
   accept: "Zugriff erlauben."
 auth/views/index.vue:
   loading: "Lädt"
-  denied: "アプリケーションの連携をキャンセルしました。"
+  denied: "Autorisierung der Anwendung wurde verweigert."
   denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
-  already-authorized: "このアプリは既に連携済みです"
-  allowed: "アプリケーションの連携を許可しました"
+  already-authorized: "Diese Anwendung ist bereits autorisiert."
+  allowed: "Autorisierung der Anwendung wurde erlaubt."
   callback-url: "アプリケーションに戻っています"
-  please-go-back: "アプリケーションに戻って、やっていってください。"
-  error: "セッションが存在しません。"
-  sign-in: "サインインしてください"
+  please-go-back: "Bitte gehen Sie zurück zur Anwendung."
+  error: "Sitzung ist nicht vorhanden."
+  sign-in: "Bitte melde dich an."
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Warten auf {}"
