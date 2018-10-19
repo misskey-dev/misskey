@@ -38,7 +38,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as config from '../../../config';
-import getNoteSummary from '../../../../../misc/get-note-summary';
 
 import XNote from './note.vue';
 
@@ -61,7 +60,6 @@ export default Vue.extend({
 			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
-			unreadCount: 0,
 			fetching: true,
 			moreFetching: false
 		};
@@ -80,12 +78,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 		window.addEventListener('scroll', this.onScroll, { passive: true });
 	},
 
 	beforeDestroy() {
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		window.removeEventListener('scroll', this.onScroll);
 	},
 
@@ -147,10 +143,9 @@ export default Vue.extend({
 			}
 			//#endregion
 
-			// 投稿が自分のものではないかつ、タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
-			if ((document.hidden || !this.isScrollTop()) && note.userId !== this.$store.state.i.id) {
-				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
+			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+			if (document.hidden || !this.isScrollTop()) {
+				this.$store.commit('pushBehindNote', note);
 			}
 
 			if (this.isScrollTop()) {
@@ -195,21 +190,9 @@ export default Vue.extend({
 			this.moreFetching = false;
 		},
 
-		clearNotification() {
-			this.unreadCount = 0;
-			document.title = (this as any).os.instanceName;
-		},
-
-		onVisibilitychange() {
-			if (!document.hidden) {
-				this.clearNotification();
-			}
-		},
-
 		onScroll() {
 			if (this.isScrollTop()) {
 				this.releaseQueue();
-				this.clearNotification();
 			}
 
 			if (this.$store.state.settings.fetchOnScroll !== false) {

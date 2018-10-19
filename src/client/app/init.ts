@@ -161,6 +161,12 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				}
 			});
 
+			document.addEventListener('visibilitychange', () => {
+				if (!document.hidden) {
+					os.store.commit('clearBehindNotes');
+				}
+			}, false);
+
 			Vue.mixin({
 				data() {
 					return {

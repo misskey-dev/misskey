@@ -5,6 +5,7 @@ import * as nestedProperty from 'nested-property';
 import MiOS from './mios';
 import { hostname } from './config';
 import { erase } from '../../prelude/array';
+import getNoteSummary from '../../misc/get-note-summary';
 
 const defaultSettings = {
 	home: null,
@@ -73,7 +74,8 @@ export default (os: MiOS) => new Vuex.Store({
 		i: null,
 		indicate: false,
 		uiHeaderHeight: 0,
-		navHook: null
+		navHook: null,
+		behindNotes: []
 	},
 
 	getters: {
@@ -99,6 +101,18 @@ export default (os: MiOS) => new Vuex.Store({
 
 		navHook(state, callback) {
 			state.navHook = callback;
+		},
+
+		pushBehindNote(state, note) {
+			if (note.userId === state.i.id) return;
+			if (state.behindNotes.some(n => n.id === note.id)) return;
+			state.behindNotes.push(note);
+			document.title = `(${state.behindNotes.length}) ${getNoteSummary(note)}`;
+		},
+
+		clearBehindNotes(state) {
+			state.behindNotes = [];
+			document.title = os.instanceName;
 		}
 	},
 
