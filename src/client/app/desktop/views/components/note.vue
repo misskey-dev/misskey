@@ -35,7 +35,7 @@
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">%i18n:@private%</span>
 						<a class="reply" v-if="appearNote.reply">%fa:reply%</a>
 						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text"/>
-						<a class="rp" v-if="appearNote.renote">RP:</a>
+						<a class="rp" v-if="appearNote.renote">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
 						<mk-media-list :media-list="appearNote.files"/>
