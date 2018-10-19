@@ -747,6 +747,7 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "API-verzoek wordt uitgevoerd via de WebSocket-verbinding i.p.v. de ingebouwde ophaal-API (voor verbeterde prestaties). Deze instelling wordt opgeslagen in je browser."
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
+  deck-default: "デッキをデフォルトのUIにする"
   display: "Ontwerp en weergave"
   customize: "Startpagina aanpassen"
   wallpaper: "壁紙"
