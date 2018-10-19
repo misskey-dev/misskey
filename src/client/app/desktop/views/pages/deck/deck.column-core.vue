@@ -1,14 +1,14 @@
 <template>
 <x-widgets-column v-if="column.type == 'widgets'" :column="column" :is-stacked="isStacked"/>
 <x-notifications-column v-else-if="column.type == 'notifications'" :column="column" :is-stacked="isStacked"/>
-<x-tl-column v-else-if="column.type == 'home'" :column="column" :is-stacked="isStacked"/>
-<x-tl-column v-else-if="column.type == 'local'" :column="column" :is-stacked="isStacked"/>
-<x-tl-column v-else-if="column.type == 'hybrid'" :column="column" :is-stacked="isStacked"/>
-<x-tl-column v-else-if="column.type == 'global'" :column="column" :is-stacked="isStacked"/>
-<x-tl-column v-else-if="column.type == 'list'" :column="column" :is-stacked="isStacked"/>
-<x-tl-column v-else-if="column.type == 'hashtag'" :column="column" :is-stacked="isStacked"/>
-<x-mentions-column v-else-if="column.type == 'mentions'" :column="column" :is-stacked="isStacked"/>
-<x-direct-column v-else-if="column.type == 'direct'" :column="column" :is-stacked="isStacked"/>
+<x-tl-column v-else-if="column.type == 'home'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
+<x-tl-column v-else-if="column.type == 'local'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
+<x-tl-column v-else-if="column.type == 'hybrid'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
+<x-tl-column v-else-if="column.type == 'global'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
+<x-tl-column v-else-if="column.type == 'list'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
+<x-tl-column v-else-if="column.type == 'hashtag'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
+<x-mentions-column v-else-if="column.type == 'mentions'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
+<x-direct-column v-else-if="column.type == 'direct'" :column="column" :is-stacked="isStacked" @parentFocus="parentFocus"/>
 </template>
 
 <script lang="ts">
@@ -43,7 +43,11 @@ export default Vue.extend({
 	methods: {
 		focus() {
 			this.$children[0].focus();
-		}
+		},
+
+		parentFocus(direction) {
+			this.$emit('parentFocus', direction);
+		},
 	}
 });
 </script>

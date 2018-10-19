@@ -20,18 +20,21 @@
 		:media-only="column.isMediaOnly"
 		:media-view="column.isMediaView"
 		ref="tl"
+		@parentFocus="parentFocus"
 	/>
 	<x-hashtag-tl v-else-if="column.type == 'hashtag'"
 		:tag-tl="$store.state.settings.tagTimelines.find(x => x.id == column.tagTlId)"
 		:media-only="column.isMediaOnly"
 		:media-view="column.isMediaView"
 		ref="tl"
+		@parentFocus="parentFocus"
 	/>
 	<x-tl v-else
 		:src="column.type"
 		:media-only="column.isMediaOnly"
 		:media-view="column.isMediaView"
 		ref="tl"
+		@parentFocus="parentFocus"
 	/>
 </x-column>
 </template>
@@ -97,7 +100,11 @@ export default Vue.extend({
 
 		focus() {
 			this.$refs.tl.focus();
-		}
+		},
+
+		parentFocus(direction) {
+			this.$emit('parentFocus', direction);
+		},
 	}
 });
 </script>

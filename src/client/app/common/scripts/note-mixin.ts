@@ -29,14 +29,18 @@ export default (opts: Opts = {}) => ({
 	computed: {
 		keymap(): any {
 			return {
-				'r|left': () => this.reply(true),
+				'r': () => this.reply(true),
 				'e|a|plus': () => this.react(true),
-				'q|right': () => this.renote(true),
+				'q': () => this.renote(true),
 				'f|b': this.favorite,
 				'delete|ctrl+d': this.del,
-				'ctrl+q|ctrl+right': this.renoteDirectly,
+				'ctrl+q': this.renoteDirectly,
 				'up|k|shift+tab': this.focusBefore,
 				'down|j|tab': this.focusAfter,
+				'shift+up': () => this.$emit('parentFocus', 'up'),
+				'shift+down': () => this.$emit('parentFocus', 'down'),
+				'shift+left': () => this.$emit('parentFocus', 'left'),
+				'shift+right': () => this.$emit('parentFocus', 'right'),
 				'esc': this.blur,
 				'm|o': () => this.menu(true),
 				's': this.toggleShowContent,

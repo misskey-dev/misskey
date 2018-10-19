@@ -4,10 +4,10 @@
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
-					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true"/>
+					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true" @parentFocus="moveFocus(id, $event)"/>
 				</template>
 			</div>
-			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
+			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])" @parentFocus="moveFocus(ids[0], $event)"/>
 		</template>
 		<template v-if="temporaryColumn">
 			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
@@ -264,15 +264,66 @@ export default Vue.extend({
 		focus() {
 			// Flatten array of arrays
 			const ids = [].concat.apply([], this.layout);
-			const firstTl = ids.find(id => {
-				const c = this.columns.find(c => c.id === id);
-				const isTlColumn = ['home', 'local', 'hybrid', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(c.type);
-				return isTlColumn;
-			});
+			const firstTl = ids.find(id => this.isTlColumn(id));
 
 			if (firstTl) {
 				this.$refs[firstTl][0].focus();
 			}
+		},
+
+		moveFocus(id, direction) {
+			let targetColumn;
+
+			if (direction == 'right') {
+				const currentColumnIndex = this.layout.findIndex(ids => ids.includes(id));
+				this.layout.some((ids, i) => {
+					if (i <= currentColumnIndex) return false;
+					const tl = ids.find(id => this.isTlColumn(id));
+					if (tl) {
+						targetColumn = tl;
+						return true;
+					}
+				});
+			} else if (direction == 'left') {
+				const currentColumnIndex = [...this.layout].reverse().findIndex(ids => ids.includes(id));
+				[...this.layout].reverse().some((ids, i) => {
+					if (i <= currentColumnIndex) return false;
+					const tl = ids.find(id => this.isTlColumn(id));
+					if (tl) {
+						targetColumn = tl;
+						return true;
+					}
+				});
+			} else if (direction == 'down') {
+				const currentColumn = this.layout.find(ids => ids.includes(id));
+				const currentIndex = currentColumn.indexOf(id);
+				currentColumn.some((_id, i) => {
+					if (i <= currentIndex) return false;
+					if (this.isTlColumn(_id)) {
+						targetColumn = _id;
+						return true;
+					}
+				});
+			} else if (direction == 'up') {
+				const currentColumn = [...this.layout.find(ids => ids.includes(id))].reverse();
+				const currentIndex = currentColumn.indexOf(id);
+				currentColumn.some((_id, i) => {
+					if (i <= currentIndex) return false;
+					if (this.isTlColumn(_id)) {
+						targetColumn = _id;
+						return true;
+					}
+				});
+			}
+
+			if (targetColumn) {
+				this.$refs[targetColumn][0].focus();
+			}
+		},
+
+		isTlColumn(id) {
+			const column = this.columns.find(c => c.id === id);
+			return ['home', 'local', 'hybrid', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(column.type);
 		}
 	}
 });

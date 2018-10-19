@@ -25,9 +25,9 @@
 	<tbody>
 		<tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>上の投稿にフォーカスを移動</td><td>-</td></tr>
 		<tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd>, <kbd class="key">Tab</kbd></td><td>下の投稿にフォーカスを移動</td><td>-</td></tr>
-		<tr><td><kbd class="key">←</kbd>, <kbd class="key">R</kbd></td><td>返信フォームを開く</td><td><b>R</b>eply</td></tr>
-		<tr><td><kbd class="key">→</kbd>, <kbd class="key">Q</kbd></td><td>Renoteフォームを開く</td><td><b>Q</b>uote</td></tr>
-		<tr><td><kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">→</kbd></kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">Q</kbd></kbd></td><td>即刻Renoteする(フォームを開かずに)</td><td>-</td></tr>
+		<tr><td><kbd class="key">R</kbd></td><td>返信フォームを開く</td><td><b>R</b>eply</td></tr>
+		<tr><td><kbd class="key">Q</kbd></td><td>Renoteフォームを開く</td><td><b>Q</b>uote</td></tr>
+		<tr><td><kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">Q</kbd></kbd></td><td>即刻Renoteする(フォームを開かずに)</td><td>-</td></tr>
 		<tr><td><kbd class="key">E</kbd>, <kbd class="key">A</kbd>, <kbd class="key">+</kbd></td><td>リアクションフォームを開く</td><td><b>E</b>mote, re<b>A</b>ction</td></tr>
 		<tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションをする(対応については後述)</td><td>-</td></tr>
 		<tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>お気に入りに登録</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
@@ -83,6 +83,19 @@
 		<tr><td><kbd class="key">8</kbd></td><td>😥</td></tr>
 		<tr><td><kbd class="key">9</kbd></td><td>😇</td></tr>
 		<tr><td><kbd class="key">0</kbd></td><td>🍮 or 🍣</td></tr>
+	</tbody>
+</table>
+
+## デッキ
+<table>
+	<thead>
+		<tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+	</thead>
+	<tbody>
+		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">↑</kbd></kbd></td><td>上のカラムにフォーカス</td><td>-</td></tr>
+		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">↓</kbd></kbd></td><td>下のカラムにフォーカス</td><td>-</td></tr>
+		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">→</kbd></kbd></td><td>右のカラムにフォーカス</td><td>-</td></tr>
+		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">←</kbd></kbd></td><td>左のカラムにフォーカス</td><td>-</td></tr>
 	</tbody>
 </table>
 

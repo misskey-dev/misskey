@@ -1,5 +1,5 @@
 <template>
-<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
+<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView" @parentFocus="parentFocus"/>
 </template>
 
 <script lang="ts">
@@ -143,7 +143,11 @@ export default Vue.extend({
 
 		focus() {
 			(this.$refs.timeline as any).focus();
-		}
+		},
+
+		parentFocus(direction) {
+			this.$emit('parentFocus', direction);
+		},
 	}
 });
 </script>
