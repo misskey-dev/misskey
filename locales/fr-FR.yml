@@ -659,14 +659,14 @@ desktop/views/components/note-detail.vue:
   location: "Géolocalisation"
   renote: "Republier"
   add-reaction: "Ajouter votre reaction"
-desktop/views/components/notes.note.vue:
-  reposted-by: "Reposté par {}"
-  reply: "Répondre"
-  renote: "Republier"
-  add-reaction: "Ajouter votre reaction"
-  detail: "Afficher les détails"
-  private: "cette publication est privée"
-  deleted: "cette publication a été supprimée"
+desktop/views/components/note.vue:
+  reposted-by: "{}がRenote"
+  reply: "返信"
+  renote: "Renote"
+  add-reaction: "リアクション"
+  detail: "詳細"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
