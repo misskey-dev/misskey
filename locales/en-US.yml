@@ -659,14 +659,14 @@ desktop/views/components/note-detail.vue:
   location: "Location"
   renote: "Repost"
   add-reaction: "Add a reaction"
-desktop/views/components/notes.note.vue:
+desktop/views/components/note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
-  renote: "Repost"
+  renote: "Renote"
   add-reaction: "Add a reaction"
-  detail: "Show details"
-  private: "Post is private"
-  deleted: "Post has been deleted"
+  detail: "Details"
+  private: "This post is private"
+  deleted: "This post has been deleted"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
@@ -761,6 +761,7 @@ desktop/views/components/settings.vue:
   suggest-recent-hashtags: "Show recent popular hashtags on the post form"
   show-clock-on-header: "Show clock on upper-right"
   show-reply-target: "Display reply target"
+  timeline: "Timeline"
   show-my-renotes: "Show my renotes in the timeline"
   show-renoted-my-notes: "Show renoted my posts in timelines"
   show-local-renotes: "Show renoted local posts in timelines"

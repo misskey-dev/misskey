@@ -659,14 +659,14 @@ desktop/views/components/note-detail.vue:
   location: "ここおるで:"
   renote: "Renote"
   add-reaction: "リアクション"
-desktop/views/components/notes.note.vue:
+desktop/views/components/note.vue:
   reposted-by: "{}がRenote"
-  reply: "返す"
+  reply: "返信"
   renote: "Renote"
   add-reaction: "リアクション"
-  detail: "もっと"
-  private: "この投稿は見せられへんわ"
-  deleted: "この投稿なんか無くなってもうたわ"
+  detail: "詳細"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
   error: "あかん、読み込めへんわ"
   retry: "もっぺん"
@@ -761,6 +761,7 @@ desktop/views/components/settings.vue:
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示すんで"
   show-clock-on-header: "右上をカリヨン広場にする(時計表示)"
   show-reply-target: "どこにリプライするんや見せて"
+  timeline: "タイムライン"
   show-my-renotes: "わしのRenoteもタイムライン載せてくれや"
   show-renoted-my-notes: "わしのRenoteもタイムライン載せてくれや"
   show-local-renotes: "ローカル投稿のRenoteも見たいんや"
