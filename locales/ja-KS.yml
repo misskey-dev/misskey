@@ -747,6 +747,7 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、WebSocket接続を経由してAPIリクエストが行われんで(パフォーマンス向上するかも、知らんけど)。オフにすると、ネイティブの fetch API が利用されるで。この設定はこのデバイスのみ有効やで。"
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
+  deck-default: "デッキをデフォルトのUIにする"
   display: "見た感じ"
   customize: "ホームをカスタマイズ"
   wallpaper: "壁紙"
