@@ -659,12 +659,12 @@ desktop/views/components/note-detail.vue:
   location: "Lokasjon"
   renote: "Renote"
   add-reaction: "リアクション"
-desktop/views/components/notes.note.vue:
+desktop/views/components/note.vue:
   reposted-by: "{}がRenote"
-  reply: "Svar"
+  reply: "返信"
   renote: "Renote"
   add-reaction: "リアクション"
-  detail: "Vis detaljer"
+  detail: "詳細"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
