@@ -885,7 +885,7 @@ desktop/views/components/ui.header.account.vue:
   admin: "Admin"
   settings: "Settings"
   signout: "Sign out"
-  dark: "Submerge in dark"
+  dark: "Toggle dark mode"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
