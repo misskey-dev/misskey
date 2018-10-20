@@ -47,7 +47,9 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.connection) this.connection.close();
-		this.connection = (this as any).os.stream.connectToChannel('hashtag', this.tagTl.query);
+		this.connection = (this as any).os.stream.connectToChannel('hashtag', {
+			q: this.tagTl.query
+		});
 		this.connection.on('note', this.onNote);
 
 		this.fetch();
