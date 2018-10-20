@@ -5,7 +5,12 @@
 	</span>
 
 	<div class="rvtscbadixhhbsczoorqoaygovdeecsx" v-if="note">
-		<div class="is-remote" v-if="note.user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="note.url || note.uri" target="_blank">%i18n:@view-remote%</a></div>
+		<div class="is-remote" v-if="note.user.host != null">
+			<details>
+				<summary>%fa:exclamation-triangle% %i18n:common.is-remote-post%</summary>
+				<a :href="note.url || note.uri" target="_blank">%i18n:common.view-on-remote%</a>
+			</details>
+		</div>
 		<x-note :note="note" :detail="true" :mini="true"/>
 	</div>
 </x-column>

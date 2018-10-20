@@ -5,7 +5,12 @@
 	</span>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
-		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
+		<div class="is-remote" v-if="user.host != null">
+			<details>
+				<summary>%fa:exclamation-triangle% %i18n:common.is-remote-user%</summary>
+				<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a>
+			</details>
+		</div>
 		<header :style="bannerStyle">
 			<div>
 				<button class="menu" @click="menu" ref="menu">%fa:ellipsis-h%</button>

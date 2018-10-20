@@ -2,7 +2,7 @@
 <mk-ui>
 	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
-		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
+		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:common.is-remote-user%<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a></div>
 		<main>
 			<div class="main">
 				<x-header :user="user"/>
