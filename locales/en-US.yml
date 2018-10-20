@@ -115,6 +115,9 @@ common:
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
+  error:
+    title: 'Something happened :('
+    retry: 'Retry'
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
@@ -747,7 +750,7 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "API request is performed via the WebSocket connection instead of native fetch API (for better performance). This setting is stored in the browser."
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
-  deck-default: "デッキをデフォルトのUIにする"
+  deck-default: "Use Deck as default UI"
   display: "Design and display"
   customize: "Customize home layout"
   wallpaper: "Wallpaper"
