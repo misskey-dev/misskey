@@ -26,7 +26,12 @@
 			</div>
 		</div>
 		<div class="images" v-if="images.length > 0">
-			<router-link v-for="image in images" :style="`background-image: url(${image.thumbnailUrl})`" :key="`${image.id}:${image._note.id}`" :to="image._note | notePage"></router-link>
+			<router-link v-for="image in images"
+				:style="`background-image: url(${image.thumbnailUrl})`"
+				:key="`${image.id}:${image._note.id}`"
+				:to="image._note | notePage"
+				:title="`${image.name}\n${(new Date(image.createdAt)).toLocaleString()}`"
+			></router-link>
 		</div>
 		<div class="tl">
 			<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
