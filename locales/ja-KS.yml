@@ -25,6 +25,14 @@ common:
   application-authorization: "アプリの連携"
   close: "さいなら"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
+  BSoD:
+    fatal-error: ":( 致命的な問題が発生しました。"
+    update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
+    error-code: "エラーコード"
+    browser-version: "ブラウザ バージョン"
+    client-version: "クライアント バージョン"
+    email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
+    thanks: "Thank you for using Misskey."
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
