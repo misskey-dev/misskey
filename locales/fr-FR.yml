@@ -1041,6 +1041,10 @@ desktop/views/pages/user/user.header.vue:
   following: "Suit"
   followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
+  years-old: "歳"
+  year: "年"
+  month: "月"
+  day: "日"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
