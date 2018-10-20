@@ -1356,7 +1356,7 @@ dev/views/apps.vue:
   create-app: "アプリ作成"
   app-missing: "アプリなし"
 dev/views/new-app.vue:
-  create-app: "アプリ作成"
+  create-app: "アプリケーションの作成"
   app-name: "アプリケーション名"
   app-name-desc: "あなたのアプリの名称。"
   app-name-ex: "ex) Misskey for iOS"
