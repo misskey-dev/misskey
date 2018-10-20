@@ -1314,7 +1314,7 @@ mobile/views/pages/user/home.vue:
   domains: "Domínios"
   frequently-replied-users: "Perguntas frequentes"
   followers-you-know: "Seguidores que você conhece"
-  last-used-at: "Ativo pela última vez:"
+  last-used-at: "Ativo pela última vez"
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Carregando"
   no-users: "知り合いのユーザーはいません"
