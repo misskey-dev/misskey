@@ -115,6 +115,9 @@ common:
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: 'Esto está en desarrollo, no usarlo para producción.'
+  error:
+    title: '問題が発生しました'
+    retry: 'やり直す'
   reversi:
     drawn: "Empatado"
     my-turn: "Mi turno"
