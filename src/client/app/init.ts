@@ -216,10 +216,10 @@ function panic(e) {
 	document.documentElement.style.background = '#1269e2';
 	document.body.innerHTML =
 		'<div id="error">'
-			+ '<h1>:( 致命的な問題が発生しました。</h1>'
-			+ '<p>お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。</p>'
+			+ '<h1>%i18n.common.BSoD.fatal-error%</h1>'
+			+ '<p>%i18n.common.BSoD.update-browser-os%</p>'
 			+ '<hr>'
-			+ `<p>エラーコード: ${e.toString()}</p>`
+			+ `<p>%i18n.common.BSoD.error-code%: ${e.toString()}</p>`
 			+ `<p>ブラウザ バージョン: ${navigator.userAgent}</p>`
 			+ `<p>クライアント バージョン: ${version}</p>`
 			+ '<hr>'
