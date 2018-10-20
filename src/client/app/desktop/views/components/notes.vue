@@ -218,9 +218,12 @@ export default Vue.extend({
 	> .error
 		max-width 300px
 		margin 0 auto
-		padding 16px
+		padding 32px
 		text-align center
 		color var(--text)
+
+		> p
+			margin 0 0 8px 0
 
 	> .placeholder
 		padding 32px
