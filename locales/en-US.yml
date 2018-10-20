@@ -27,11 +27,11 @@ common:
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
   BSoD:
     fatal-error: "A fatal error has occurred :("
-    update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
+    update-browser-os: "You might resolve to update the version of your browser (or OS)."
     error-code: "Error code"
     browser-version: "Browser version"
     client-version: "Client version"
-    email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
+    email-support: "If the problem persists, contact syuilotan@yahoo.co.jp please on the above information."
     thanks: "Thank you for using Misskey."
   got-it: "Got it!"
   customization-tips:
@@ -123,9 +123,9 @@ common:
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
-  is-remote-user: "このユーザー情報はコピーです。"
-  is-remote-post: "この投稿情報はコピーです。"
-  view-on-remote: "正確な情報を見る"
+  is-remote-user: "This user information is copied."
+  is-remote-post: "This post information is a copy."
+  view-on-remote: "View it on remote"
   error:
     title: 'Something happened :('
     retry: 'Retry'
