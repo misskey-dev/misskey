@@ -1314,7 +1314,7 @@ mobile/views/pages/user/home.vue:
   domains: "Domeinnamen"
   frequently-replied-users: "Frequent gesproken gebruikers"
   followers-you-know: "Volgers die je kent"
-  last-used-at: "Laatst actief:"
+  last-used-at: "Laatst actief"
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Bezig met laden"
   no-users: "Geen gebruikers"
