@@ -124,6 +124,10 @@ common:
 
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
 
+  error:
+    title: '問題が発生しました'
+    retry: 'やり直す'
+
   reversi:
     drawn: "引き分け"
     my-turn: "あなたのターンです"
