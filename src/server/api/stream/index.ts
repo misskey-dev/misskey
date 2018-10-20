@@ -1,6 +1,5 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
 import readNotification from '../common/read-notification';
@@ -11,8 +10,6 @@ import readNote from '../../../services/note/read';
 import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
-
-const log = debug('misskey');
 
 /**
  * Main stream connection
@@ -147,7 +144,6 @@ export default class Connection {
 	@autobind
 	private onChannelConnectRequested(payload: any) {
 		const { channel, id, params, pong } = payload;
-		log(`CH CONNECT: ${id} ${channel} by @${this.user.username}`);
 		this.connectChannel(id, params, channel, pong);
 	}
 
@@ -157,7 +153,6 @@ export default class Connection {
 	@autobind
 	private onChannelDisconnectRequested(payload: any) {
 		const { id } = payload;
-		log(`CH DISCONNECT: ${id} by @${this.user.username}`);
 		this.disconnectChannel(id);
 	}
 
