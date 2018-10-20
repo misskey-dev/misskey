@@ -1041,6 +1041,10 @@ desktop/views/pages/user/user.header.vue:
   following: "Śledzeni"
   followers: "Śledzący"
   is-bot: "To konto jest botem"
+  years-old: "歳"
+  year: "年"
+  month: "月"
+  day: "日"
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
