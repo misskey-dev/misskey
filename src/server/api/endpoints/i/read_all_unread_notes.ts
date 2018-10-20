@@ -4,7 +4,8 @@ import NoteUnread from '../../../../models/note-unread';
 
 export const meta = {
 	desc: {
-		'ja-JP': '未読の投稿をすべて既読にします。'
+		'ja-JP': '未読の投稿をすべて既読にします。',
+		'en-US': 'Mark all messages as read.'
 	},
 
 	requireCredential: true,
