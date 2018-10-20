@@ -115,6 +115,9 @@ common:
   reduce-motion: "UI、動き過ぎや、静かにしてや"
   this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
+  error:
+    title: '問題が発生しました'
+    retry: 'やり直す'
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
