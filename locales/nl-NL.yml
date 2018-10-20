@@ -1041,6 +1041,10 @@ desktop/views/pages/user/user.header.vue:
   following: "フォロー"
   followers: "フォロワー"
   is-bot: "このアカウントはBotです"
+  years-old: "歳"
+  year: "年"
+  month: "月"
+  day: "日"
 desktop/views/pages/user/user.timeline.vue:
   default: "Berichten"
   with-replies: "Berichten en antwoorden"
