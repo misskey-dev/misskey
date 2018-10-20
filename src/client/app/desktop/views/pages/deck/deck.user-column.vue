@@ -8,6 +8,7 @@
 		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<header :style="bannerStyle">
 			<div>
+				<button class="menu" @click="menu" ref="menu">%fa:ellipsis-h%</button>
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow"/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 				<span class="name">{{ user | userName }}</span>
@@ -46,6 +47,9 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
+import Menu from '../../../../common/views/components/menu.vue';
+import MkUserListsWindow from '../../components/user-lists-window.vue';
+import Ok from '../../../../common/views/components/ok.vue';
 import { concat } from '../../../../../../prelude/array';
 
 const fetchLimit = 10;
@@ -166,6 +170,30 @@ export default Vue.extend({
 
 			return promise;
 		},
+
+		menu() {
+			let menu = [{
+				icon: '%fa:list%',
+				text: '%i18n:@push-to-a-list%',
+				action: () => {
+					const w = (this as any).os.new(MkUserListsWindow);
+					w.$once('choosen', async list => {
+						w.close();
+						await (this as any).api('users/lists/push', {
+							listId: list.id,
+							userId: this.user.id
+						});
+						(this as any).os.new(Ok);
+					});
+				}
+			}];
+
+			this.os.new(Menu, {
+				source: this.$refs.menu,
+				compact: false,
+				items: menu
+			});
+		}
 	}
 });
 </script>
@@ -195,6 +223,14 @@ export default Vue.extend({
 			background rgba(#000, 0.5)
 			color #fff
 			text-align center
+
+			> .menu
+				position absolute
+				top 8px
+				left 8px
+				padding 8px
+				font-size 16px
+				text-shadow 0 0 8px #000
 
 			> .follow
 				position absolute
