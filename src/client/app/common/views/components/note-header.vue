@@ -70,7 +70,7 @@ export default Vue.extend({
 
 	> .is-verified
 		margin-right 8px
-		color #4dabf7
+		color #D4AF37
 
 	> .is-admin
 	> .is-bot
