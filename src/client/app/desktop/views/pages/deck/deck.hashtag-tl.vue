@@ -56,7 +56,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.close();
+		this.connection.dispose();
 	},
 
 	methods: {
