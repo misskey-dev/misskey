@@ -1589,4 +1589,3 @@ dev/views/new-app.vue:
   drive-write: "ドライブを操作する。"
   notification-read: "通知を見る。"
   notification-write: "通知を操作する。"
-  create-app: "アプリ作成"
