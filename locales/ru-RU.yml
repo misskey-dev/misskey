@@ -123,6 +123,9 @@ common:
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-post: "この投稿情報はコピーです。"
+  view-on-remote: "正確な情報を見る"
   error:
     title: '問題が発生しました'
     retry: 'やり直す'
@@ -1016,8 +1019,6 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "よく話すユーザーはいません"
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーは凍結されています。"
-  is-remote: "このユーザーはリモートユーザーです。"
-  view-remote: "正確な情報を見る"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
@@ -1304,8 +1305,6 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "メディア"
   is-suspended: "このユーザーは凍結されています。"
-  is-remote: "このユーザーはリモートユーザーです。"
-  view-remote: "正確な情報を見る"
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
   images: "画像"
