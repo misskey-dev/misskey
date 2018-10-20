@@ -220,11 +220,11 @@ function panic(e) {
 			+ '<p>%i18n.common.BSoD.update-browser-os%</p>'
 			+ '<hr>'
 			+ `<p>%i18n.common.BSoD.error-code%: ${e.toString()}</p>`
-			+ `<p>ブラウザ バージョン: ${navigator.userAgent}</p>`
-			+ `<p>クライアント バージョン: ${version}</p>`
+			+ `<p>%i18n.common.BSoD.browser-version%: ${navigator.userAgent}</p>`
+			+ `<p>%i18n.common.BSoD.client-version%: ${version}</p>`
 			+ '<hr>'
-			+ '<p>問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>'
-			+ '<p>Thank you for using Misskey.</p>'
+			+ '<p>%i18n.common.BSoD.email-support%</p>'
+			+ '<p>%i18n.common.BSoD.thanks%</p>'
 		+ '</div>';
 
 	// TODO: Report the bug
