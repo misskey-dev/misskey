@@ -1019,7 +1019,7 @@ desktop/views/pages/user/user.vue:
   is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
   view-remote: "Wyświetl dokładne informacje"
 desktop/views/pages/user/user.home.vue:
-  last-used-at: "Ostatnio aktywny: "
+  last-used-at: "Ostatnio aktywny"
 desktop/views/pages/user/user.photos.vue:
   title: "Zdjęcia"
   loading: "Ładowanie"
