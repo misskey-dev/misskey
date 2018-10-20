@@ -120,7 +120,7 @@ export default Vue.extend({
 					});
 				});
 				const files = concat(notes.map((n: any): any[] => n.files));
-				this.images = files.filter(f => image.includes(f.type)).slice(0, 6);
+				this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
 			});
 		});
 	},
