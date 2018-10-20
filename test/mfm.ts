@@ -125,7 +125,8 @@ describe('Text', () => {
 
 			const tokens3 = analyze('#Foo!');
 			assert.deepEqual([
-				{ type: 'text', content: '#Foo!' },
+				{ type: 'hashtag', content: '#Foo', hashtag: 'Foo' },
+				{ type: 'text', content: '!' },
 			], tokens3);
 		});
 
