@@ -1559,3 +1559,8 @@ docs:
 
 dev/views/index.vue:
   manage-apps: "アプリの管理"
+
+dev/views/apps.vue:
+  manage-apps: "アプリを管理"
+  create-app: "アプリ作成"
+  app-missing: "アプリなし"
