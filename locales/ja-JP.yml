@@ -130,6 +130,7 @@ common:
   show-full-acct: "ユーザー名のホストを省略しない"
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
+  mark-all-as-read: "未読の投稿をすべて既読にします。"
 
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
 
