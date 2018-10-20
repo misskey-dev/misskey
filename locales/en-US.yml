@@ -25,6 +25,14 @@ common:
   application-authorization: "Application authorizations"
   close: "Close"
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
+  BSoD:
+    fatal-error: "A fatal error has occurred :("
+    update-browser-os: "You might resolve to update the version of your browser (or OS)."
+    error-code: "Error code"
+    browser-version: "Browser version"
+    client-version: "Client version"
+    email-support: "If the problem persists, contact syuilotan@yahoo.co.jp please on the above information."
+    thanks: "Thank you for using Misskey."
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -115,6 +123,9 @@ common:
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
+  is-remote-user: "This user information is copied."
+  is-remote-post: "This post information is a copy."
+  view-on-remote: "View it on remote"
   error:
     title: 'Something happened :('
     retry: 'Retry'
@@ -1008,8 +1019,6 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "This profile belongs to a remote user. The profile that you see here may not be complete. "
-  view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
 desktop/views/pages/user/user.photos.vue:
@@ -1296,8 +1305,6 @@ mobile/views/pages/user.vue:
   timeline: "Timeline"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "The user is a remote user. The profile that you see here may not complete."
-  view-remote: "See his/her complete profile"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"

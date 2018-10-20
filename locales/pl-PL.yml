@@ -25,6 +25,14 @@ common:
   application-authorization: "アプリの連携"
   close: "Zamknij"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  BSoD:
+    fatal-error: ":( 致命的な問題が発生しました。"
+    update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
+    error-code: "エラーコード"
+    browser-version: "ブラウザ バージョン"
+    client-version: "クライアント バージョン"
+    email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
+    thanks: "Thank you for using Misskey."
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -115,6 +123,9 @@ common:
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-post: "この投稿情報はコピーです。"
+  view-on-remote: "正確な情報を見る"
   error:
     title: '問題が発生しました'
     retry: 'やり直す'
@@ -1008,10 +1019,8 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Brak użytkowników"
 desktop/views/pages/user/user.vue:
   is-suspended: "To konto zostało zawieszone."
-  is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
-  view-remote: "Wyświetl dokładne informacje"
 desktop/views/pages/user/user.home.vue:
-  last-used-at: "Ostatnio aktywny: "
+  last-used-at: "Ostatnio aktywny"
 desktop/views/pages/user/user.photos.vue:
   title: "Zdjęcia"
   loading: "Ładowanie"
@@ -1296,8 +1305,6 @@ mobile/views/pages/user.vue:
   timeline: "Oś czasu"
   media: "Multimedia"
   is-suspended: "To konto zostało zablokowane"
-  is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
-  view-remote: "Wyświetl dokładne informacje"
 mobile/views/pages/user/home.vue:
   recent-notes: "Ostatnie wpisy"
   images: "Zdjęcia"
