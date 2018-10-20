@@ -115,6 +115,9 @@ common:
   reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
+  error:
+    title: '問題が発生しました'
+    retry: 'やり直す'
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
