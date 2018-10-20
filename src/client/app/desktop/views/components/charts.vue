@@ -90,11 +90,25 @@ export default Vue.extend({
 		},
 
 		stats(): any[] {
-			return (
+			const now = new Date();
+			const y = now.getFullYear();
+			const m = now.getMonth();
+			const d = now.getDate();
+			const h = now.getHours();
+
+			const stats =
 				this.span == 'day' ? this.chart.perDay :
 				this.span == 'hour' ? this.chart.perHour :
-				null
-			);
+				null;
+
+			stats.forEach((s, i) => {
+				s.date =
+					this.span == 'day' ? new Date(y, m, d - i) :
+					this.span == 'hour' ? new Date(y, m, d, h - i) :
+					null;
+			});
+
+			return stats;
 		}
 	},
 
@@ -560,19 +574,19 @@ export default Vue.extend({
 		networkRequestsChart(): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				requests: x.network.requests
+				incoming: x.network.incomingRequests
 			}));
 
 			return [{
 				datasets: [{
-					label: 'Requests',
+					label: 'Incoming',
 					fill: true,
 					backgroundColor: rgba(colors.localPlus),
 					borderColor: colors.localPlus,
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.requests }))
+					data: data.map(x => ({ t: x.date, y: x.incomingRequests }))
 				}]
 			}];
 		},

@@ -6,7 +6,7 @@ import pack from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import Following from '../../models/following';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import { updateNoteStats } from '../update-chart';
+import { coreChart } from '../stats';
 import config from '../../config';
 import NoteUnread from '../../models/note-unread';
 import read from './read';
@@ -63,5 +63,5 @@ export default async function(user: IUser, note: INote) {
 	//#endregion
 
 	// 統計を更新
-	updateNoteStats(note, false);
+	coreChart.updateNoteStats(note, false);
 }

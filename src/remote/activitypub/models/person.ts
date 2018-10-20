@@ -10,7 +10,7 @@ import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type'
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import htmlToMFM from '../../../mfm/html-to-mfm';
-import { updateUserStats } from '../../../services/update-chart';
+import { coreChart } from '../../../services/stats';
 import { URL } from 'url';
 import { resolveNote } from './note';
 
@@ -180,7 +180,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 		}
 	}, { upsert: true });
 
-	updateUserStats(user, true);
+	coreChart.updateUserStats(user, true);
 	//#endregion
 
 	//#region アイコンとヘッダー画像をフェッチ
