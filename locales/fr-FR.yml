@@ -123,6 +123,9 @@ common:
   reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
+  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-post: "この投稿情報はコピーです。"
+  view-on-remote: "正確な情報を見る"
   error:
     title: '問題が発生しました'
     retry: 'やり直す'
@@ -1016,8 +1019,6 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.vue:
   is-suspended: "Ce compte a été suspendu."
-  is-remote: "Cet utilisateur n'est pas un utilisateur Misskey. Certaines informations peuvent ne pas refléter ce profil dans sa totalité."
-  view-remote: "Consulter le profil complet"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last used at"
 desktop/views/pages/user/user.photos.vue:
@@ -1304,8 +1305,6 @@ mobile/views/pages/user.vue:
   timeline: "Fil d'actualité"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "Ceci est le profil d’un utilisateur·rice distant·e. Certaines informations peuvent ne pas refléter ce profil dans sa totalité."
-  view-remote: "Consulter son profil complet"
 mobile/views/pages/user/home.vue:
   recent-notes: "Notes récentes"
   images: "Images"
