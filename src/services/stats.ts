@@ -59,7 +59,7 @@ type Log<T extends Obj> = {
  */
 abstract class Stats<T> {
 	protected collection: ICollection<Log<T>>;
-	protected abstract async getTemplate(init: boolean, latestLog?: T, group?: any): Promise<T>;
+	protected abstract async getTemplate(init: boolean, latest?: T, group?: any): Promise<T>;
 
 	constructor(name: string) {
 		this.collection = db.get<Log<T>>(`stats.${name}`);
@@ -117,7 +117,7 @@ abstract class Stats<T> {
 		// * 昨日何もチャートを更新するような出来事がなかった場合は、
 		// * 統計がそもそも作られずドキュメントが存在しないということがあり得るため、
 		// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
-		const latestLog = await this.collection.findOne({
+		const latest = await this.collection.findOne({
 			group: group,
 			span: span
 		}, {
@@ -126,9 +126,9 @@ abstract class Stats<T> {
 			}
 		});
 
-		if (latestLog) {
+		if (latest) {
 			// 現在の統計を初期挿入
-			const data = await this.getTemplate(false, latestLog.data);
+			const data = await this.getTemplate(false, latest.data);
 
 			const log = await this.collection.insert({
 				group: group,
@@ -316,13 +316,13 @@ class UsersStats extends Stats<UsersLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latestLog?: UsersLog): Promise<UsersLog> {
+	protected async getTemplate(init: boolean, latest?: UsersLog): Promise<UsersLog> {
 		const [localCount, remoteCount] = init ? await Promise.all([
 			User.count({ host: null }),
 			User.count({ host: { $ne: null } })
 		]) : [
-			latestLog ? latestLog.local.total : 0,
-			latestLog ? latestLog.remote.total : 0
+			latest ? latest.local.total : 0,
+			latest ? latest.remote.total : 0
 		];
 
 		return {
@@ -407,13 +407,13 @@ class NotesStats extends Stats<NotesLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latestLog?: NotesLog): Promise<NotesLog> {
+	protected async getTemplate(init: boolean, latest?: NotesLog): Promise<NotesLog> {
 		const [localCount, remoteCount] = init ? await Promise.all([
 			Note.count({ '_user.host': null }),
 			Note.count({ '_user.host': { $ne: null } })
 		]) : [
-			latestLog ? latestLog.local.total : 0,
-			latestLog ? latestLog.remote.total : 0
+			latest ? latest.local.total : 0,
+			latest ? latest.remote.total : 0
 		];
 
 		return {
@@ -517,7 +517,7 @@ class DriveStats extends Stats<DriveLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latestLog?: DriveLog): Promise<DriveLog> {
+	protected async getTemplate(init: boolean, latest?: DriveLog): Promise<DriveLog> {
 		const calcSize = (local: boolean) => DriveFile
 			.aggregate([{
 				$match: {
@@ -542,10 +542,10 @@ class DriveStats extends Stats<DriveLog> {
 			calcSize(true),
 			calcSize(false)
 		]) : [
-			latestLog ? latestLog.local.totalCount : 0,
-			latestLog ? latestLog.remote.totalCount : 0,
-			latestLog ? latestLog.local.totalSize : 0,
-			latestLog ? latestLog.remote.totalSize : 0
+			latest ? latest.local.totalCount : 0,
+			latest ? latest.remote.totalCount : 0,
+			latest ? latest.local.totalSize : 0,
+			latest ? latest.remote.totalSize : 0
 		];
 
 		return {
@@ -629,7 +629,7 @@ class NetworkStats extends Stats<NetworkLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latestLog?: NetworkLog): Promise<NetworkLog> {
+	protected async getTemplate(init: boolean, latest?: NetworkLog): Promise<NetworkLog> {
 		return {
 			incomingRequests: 0,
 			outgoingRequests: 0,
@@ -672,7 +672,7 @@ class HashtagStats extends Stats<HashtagLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latestLog?: HashtagLog): Promise<HashtagLog> {
+	protected async getTemplate(init: boolean, latest?: HashtagLog): Promise<HashtagLog> {
 		return {
 			count: 0
 		};
@@ -747,7 +747,7 @@ class FollowingStats extends Stats<FollowingLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latestLog?: FollowingLog, group?: any): Promise<FollowingLog> {
+	protected async getTemplate(init: boolean, latest?: FollowingLog, group?: any): Promise<FollowingLog> {
 		const [
 			localFollowingsCount,
 			localFollowersCount,
@@ -759,10 +759,10 @@ class FollowingStats extends Stats<FollowingLog> {
 			Following.count({ followerId: group, '_followee.host': { $ne: null } }),
 			Following.count({ followeeId: group, '_follower.host': { $ne: null } })
 		]) : [
-			latestLog ? latestLog.local.followings.total : 0,
-			latestLog ? latestLog.local.followers.total : 0,
-			latestLog ? latestLog.remote.followings.total : 0,
-			latestLog ? latestLog.remote.followers.total : 0
+			latest ? latest.local.followings.total : 0,
+			latest ? latest.local.followers.total : 0,
+			latest ? latest.remote.followings.total : 0,
+			latest ? latest.remote.followers.total : 0
 		];
 
 		return {
