@@ -24,7 +24,7 @@ type ArrayValue<T> = {
 type Span = 'day' | 'hour';
 
 //#region Chart Core
-type ChartDocument<T extends Obj> = {
+type Log<T extends Obj> = {
 	_id: mongo.ObjectID;
 
 	/**
@@ -56,12 +56,12 @@ type ChartDocument<T extends Obj> = {
 /**
  * 様々なチャートの管理を司るクラス
  */
-abstract class Chart<T> {
-	protected collection: ICollection<ChartDocument<T>>;
-	protected abstract async generateTemplate(initial: boolean, latestStats?: T): Promise<T>;
+abstract class Stats<T> {
+	protected collection: ICollection<Log<T>>;
+	protected abstract async generateTemplate(init: boolean, latestLog?: T): Promise<T>;
 
 	constructor(name: string) {
-		this.collection = db.get<ChartDocument<T>>(`stats.${name}`);
+		this.collection = db.get<Log<T>>(`stats.${name}`);
 		this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
 		this.collection.createIndex('group');
 	}
@@ -87,7 +87,7 @@ abstract class Chart<T> {
 	}
 
 	@autobind
-	private async getCurrentStats(span: Span, group?: Obj): Promise<ChartDocument<T>> {
+	private async getCurrentLog(span: Span, group?: Obj): Promise<Log<T>> {
 		const now = new Date();
 		const y = now.getFullYear();
 		const m = now.getMonth();
@@ -100,14 +100,14 @@ abstract class Chart<T> {
 			null;
 
 		// 現在(今日または今のHour)の統計
-		const currentStats = await this.collection.findOne({
+		const currentLog = await this.collection.findOne({
 			group: group,
 			span: span,
 			date: current
 		});
 
-		if (currentStats) {
-			return currentStats;
+		if (currentLog) {
+			return currentLog;
 		}
 
 		// 集計期間が変わってから、初めてのチャート更新なら
@@ -116,7 +116,7 @@ abstract class Chart<T> {
 		// * 昨日何もチャートを更新するような出来事がなかった場合は、
 		// * 統計がそもそも作られずドキュメントが存在しないということがあり得るため、
 		// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
-		const latestStats = await this.collection.findOne({
+		const latestLog = await this.collection.findOne({
 			group: group,
 			span: span
 		}, {
@@ -125,18 +125,18 @@ abstract class Chart<T> {
 			}
 		});
 
-		if (latestStats) {
+		if (latestLog) {
 			// 現在の統計を初期挿入
-			const data = await this.generateTemplate(false, latestStats.data);
+			const data = await this.generateTemplate(false, latestLog.data);
 
-			const stats = await this.collection.insert({
+			const log = await this.collection.insert({
 				group: group,
 				span: span,
 				date: current,
 				data: data
 			});
 
-			return stats;
+			return log;
 		} else {
 			// 統計が存在しなかったら
 			// * Misskeyインスタンスを建てて初めてのチャート更新時など
@@ -144,26 +144,26 @@ abstract class Chart<T> {
 			// 空の統計を作成
 			const data = await this.generateTemplate(true);
 
-			const stats = await this.collection.insert({
+			const log = await this.collection.insert({
 				group: group,
 				span: span,
 				date: current,
 				data: data
 			});
 
-			return stats;
+			return log;
 		}
 	}
 
 	@autobind
 	protected commit(query: Obj, group?: Obj, uniqueKey?: string, uniqueValue?: string): void {
-		const update = (stats: ChartDocument<T>) => {
+		const update = (log: Log<T>) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
 				uniqueKey &&
-				stats.unique &&
-				stats.unique[uniqueKey] &&
-				stats.unique[uniqueKey].includes(uniqueValue)
+				log.unique &&
+				log.unique[uniqueKey] &&
+				log.unique[uniqueKey].includes(uniqueValue)
 			) return;
 
 			// ユニークインクリメントの指定のキーに値を追加
@@ -174,12 +174,12 @@ abstract class Chart<T> {
 			}
 
 			this.collection.update({
-				_id: stats._id
+				_id: log._id
 			}, query);
 		};
 
-		this.getCurrentStats('day', group).then(stats => update(stats));
-		this.getCurrentStats('hour', group).then(stats => update(stats));
+		this.getCurrentLog('day', group).then(log => update(log));
+		this.getCurrentLog('hour', group).then(log => update(log));
 	}
 
 	@autobind
@@ -197,7 +197,7 @@ abstract class Chart<T> {
 	}
 
 	@autobind
-	public async getStats(span: Span, range: number, group?: Obj): Promise<ArrayValue<T>> {
+	public async getChart(span: Span, range: number, group?: Obj): Promise<ArrayValue<T>> {
 		const promisedChart: Promise<T>[] = [];
 
 		const now = new Date();
@@ -210,7 +210,7 @@ abstract class Chart<T> {
 			span == 'day' ? new Date(y, m, d - range) :
 			span == 'hour' ? new Date(y, m, d, h - range) : null;
 
-		const stats = await this.collection.find({
+		const logs = await this.collection.find({
 			group: group,
 			span: span,
 			date: {
@@ -231,12 +231,12 @@ abstract class Chart<T> {
 				span == 'hour' ? new Date(y, m, d, h - i) :
 				null;
 
-			const stat = stats.find(s => s.date.getTime() == current.getTime());
+			const log = logs.find(l => l.date.getTime() == current.getTime());
 
-			if (stat) {
-				promisedChart.unshift(Promise.resolve(stat.data));
+			if (log) {
+				promisedChart.unshift(Promise.resolve(log.data));
 			} else { // 隙間埋め
-				const latest = stats.find(s => s.date.getTime() < current.getTime());
+				const latest = logs.find(l => l.date.getTime() < current.getTime());
 				promisedChart.unshift(this.generateTemplate(false, latest ? latest.data : null));
 			}
 		}
@@ -288,7 +288,7 @@ abstract class Chart<T> {
 /**
  * ユーザーに関する統計
  */
-type UsersStats = {
+type UsersLog = {
 	local: {
 		/**
 		 * 集計期間時点での、全ユーザー数 (ローカル)
@@ -324,19 +324,19 @@ type UsersStats = {
 	};
 };
 
-class UsersChart extends Chart<UsersStats> {
+class UsersStats extends Stats<UsersLog> {
 	constructor() {
 		super('users');
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, latestStats?: UsersStats): Promise<UsersStats> {
-		const [localCount, remoteCount] = initial ? await Promise.all([
+	protected async generateTemplate(init: boolean, latestLog?: UsersLog): Promise<UsersLog> {
+		const [localCount, remoteCount] = init ? await Promise.all([
 			User.count({ host: null }),
 			User.count({ host: { $ne: null } })
 		]) : [
-			latestStats ? latestStats.local.total : 0,
-			latestStats ? latestStats.remote.total : 0
+			latestLog ? latestLog.local.total : 0,
+			latestLog ? latestLog.remote.total : 0
 		];
 
 		return {
@@ -370,14 +370,14 @@ class UsersChart extends Chart<UsersStats> {
 	}
 }
 
-export const usersChart = new UsersChart();
+export const usersStats = new UsersStats();
 //#endregion
 
 //#region Notes stats
 /**
  * 投稿に関する統計
  */
-type NotesStats = {
+type NotesLog = {
 	local: {
 		/**
 		 * 集計期間時点での、全投稿数 (ローカル)
@@ -447,19 +447,19 @@ type NotesStats = {
 	};
 };
 
-class NotesChart extends Chart<NotesStats> {
+class NotesStats extends Stats<NotesLog> {
 	constructor() {
 		super('notes');
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, latestStats?: NotesStats): Promise<NotesStats> {
-		const [localCount, remoteCount] = initial ? await Promise.all([
+	protected async generateTemplate(init: boolean, latestLog?: NotesLog): Promise<NotesLog> {
+		const [localCount, remoteCount] = init ? await Promise.all([
 			Note.count({ '_user.host': null }),
 			Note.count({ '_user.host': { $ne: null } })
 		]) : [
-			latestStats ? latestStats.local.total : 0,
-			latestStats ? latestStats.remote.total : 0
+			latestLog ? latestLog.local.total : 0,
+			latestLog ? latestLog.remote.total : 0
 		];
 
 		return {
@@ -514,14 +514,14 @@ class NotesChart extends Chart<NotesStats> {
 	}
 }
 
-export const notesChart = new NotesChart();
+export const notesStats = new NotesStats();
 //#endregion
 
 //#region Drive stats
 /**
  * ドライブに関する統計
  */
-type DriveStats = {
+type DriveLog = {
 	local: {
 		/**
 		 * 集計期間時点での、全ドライブファイル数 (ローカル)
@@ -587,13 +587,13 @@ type DriveStats = {
 	};
 };
 
-class DriveChart extends Chart<DriveStats> {
+class DriveStats extends Stats<DriveLog> {
 	constructor() {
 		super('drive');
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, latestStats?: DriveStats): Promise<DriveStats> {
+	protected async generateTemplate(init: boolean, latestLog?: DriveLog): Promise<DriveLog> {
 		const calcSize = (local: boolean) => DriveFile
 			.aggregate([{
 				$match: {
@@ -612,16 +612,16 @@ class DriveChart extends Chart<DriveStats> {
 			}])
 			.then(res => res.length > 0 ? res[0].usage : 0);
 
-		const [localCount, remoteCount, localSize, remoteSize] = initial ? await Promise.all([
+		const [localCount, remoteCount, localSize, remoteSize] = init ? await Promise.all([
 			DriveFile.count({ 'metadata._user.host': null }),
 			DriveFile.count({ 'metadata._user.host': { $ne: null } }),
 			calcSize(true),
 			calcSize(false)
 		]) : [
-			latestStats ? latestStats.local.totalCount : 0,
-			latestStats ? latestStats.remote.totalCount : 0,
-			latestStats ? latestStats.local.totalSize : 0,
-			latestStats ? latestStats.remote.totalSize : 0
+			latestLog ? latestLog.local.totalCount : 0,
+			latestLog ? latestLog.remote.totalCount : 0,
+			latestLog ? latestLog.local.totalSize : 0,
+			latestLog ? latestLog.remote.totalSize : 0
 		];
 
 		return {
@@ -664,14 +664,14 @@ class DriveChart extends Chart<DriveStats> {
 	}
 }
 
-export const driveChart = new DriveChart();
+export const driveStats = new DriveStats();
 //#endregion
 
 //#region Network stats
 /**
  * ネットワークに関する統計
  */
-type NetworkStats = {
+type NetworkLog = {
 	/**
 	 * 受信したリクエスト数
 	 */
@@ -699,13 +699,13 @@ type NetworkStats = {
 	outgoingBytes: number;
 };
 
-class NetworkChart extends Chart<NetworkStats> {
+class NetworkStats extends Stats<NetworkLog> {
 	constructor() {
 		super('network');
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, latestStats?: NetworkStats): Promise<NetworkStats> {
+	protected async generateTemplate(init: boolean, latestLog?: NetworkLog): Promise<NetworkLog> {
 		return {
 			incomingRequests: 0,
 			outgoingRequests: 0,
@@ -717,7 +717,7 @@ class NetworkChart extends Chart<NetworkStats> {
 
 	@autobind
 	public async update(incomingRequests: number, time: number, incomingBytes: number, outgoingBytes: number) {
-		const inc: Partial<NetworkStats> = {
+		const inc: Partial<NetworkLog> = {
 			incomingRequests: incomingRequests,
 			totalTime: time,
 			incomingBytes: incomingBytes,
@@ -728,5 +728,5 @@ class NetworkChart extends Chart<NetworkStats> {
 	}
 }
 
-export const networkChart = new NetworkChart();
+export const networkStats = new NetworkStats();
 //#endregion

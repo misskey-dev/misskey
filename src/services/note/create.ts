@@ -23,7 +23,7 @@ import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
-import { notesChart } from '../stats';
+import { notesStats } from '../stats';
 import { erase, unique } from '../../prelude/array';
 import insertNoteUnread from './unread';
 
@@ -165,7 +165,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	}
 
 	// 統計を更新
-	notesChart.update(note, true);
+	notesStats.update(note, true);
 
 	// ハッシュタグ登録
 	tags.map(tag => registerHashtag(user, tag));
