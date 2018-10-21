@@ -1044,7 +1044,7 @@ desktop/views/pages/user/user.header.vue:
   years-old: " years old"
   year: "/"
   month: "/"
-  day: "日"
+  day: "-"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
