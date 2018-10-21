@@ -87,7 +87,7 @@ abstract class Stats<T> {
 	}
 
 	@autobind
-	private async getCurrentLog(span: Span, group?: Obj): Promise<Log<T>> {
+	private async getCurrentLog(span: Span, group?: any): Promise<Log<T>> {
 		const now = new Date();
 		const y = now.getFullYear();
 		const m = now.getMonth();
@@ -156,7 +156,7 @@ abstract class Stats<T> {
 	}
 
 	@autobind
-	protected commit(query: Obj, group?: Obj, uniqueKey?: string, uniqueValue?: string): void {
+	protected commit(query: Obj, group?: any, uniqueKey?: string, uniqueValue?: string): void {
 		const update = (log: Log<T>) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
@@ -183,21 +183,21 @@ abstract class Stats<T> {
 	}
 
 	@autobind
-	protected inc(inc: Partial<T>, group?: Obj): void {
+	protected inc(inc: Partial<T>, group?: any): void {
 		this.commit({
 			$inc: this.convertQuery(inc, 'data')
 		}, group);
 	}
 
 	@autobind
-	protected incIfUnique(inc: Partial<T>, key: string, value: string, group?: Obj): void {
+	protected incIfUnique(inc: Partial<T>, key: string, value: string, group?: any): void {
 		this.commit({
 			$inc: this.convertQuery(inc, 'data')
 		}, group, key, value);
 	}
 
 	@autobind
-	public async getChart(span: Span, range: number, group?: Obj): Promise<ArrayValue<T>> {
+	public async getChart(span: Span, range: number, group?: any): Promise<ArrayValue<T>> {
 		const promisedChart: Promise<T>[] = [];
 
 		const now = new Date();
@@ -729,4 +729,40 @@ class NetworkStats extends Stats<NetworkLog> {
 }
 
 export const networkStats = new NetworkStats();
+//#endregion
+
+//#region Hashtag stats
+/**
+ * ハッシュタグに関する統計
+ */
+type HashtagLog = {
+	/**
+	 * 投稿された数
+	 */
+	count: number;
+};
+
+class HashtagStats extends Stats<HashtagLog> {
+	constructor() {
+		super('hashtag');
+	}
+
+	@autobind
+	protected async generateTemplate(init: boolean, latestLog?: HashtagLog): Promise<HashtagLog> {
+		return {
+			count: 0
+		};
+	}
+
+	@autobind
+	public async update(hashtag: string, userId: mongo.ObjectId) {
+		const inc: Partial<HashtagLog> = {
+			count: 1
+		};
+
+		await this.incIfUnique(inc, 'users', userId.toHexString(), hashtag);
+	}
+}
+
+export const hashtagStats = new HashtagStats();
 //#endregion
