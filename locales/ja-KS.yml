@@ -1301,7 +1301,7 @@ mobile/views/pages/settings.vue:
   signout: "さいなら"
   sound: "サウンド"
   enable-sounds: "サウンド鳴らす"
-  mark-as-read-all-unread-notes: "すべての通知を既読にしますか？"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
 mobile/views/pages/user.vue:
   follows-you: "フォローされとるで"
   following: "フォロー"
