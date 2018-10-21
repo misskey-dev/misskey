@@ -58,7 +58,7 @@ type ChartDocument<T extends Obj> = {
  */
 abstract class Chart<T> {
 	protected collection: ICollection<ChartDocument<T>>;
-	protected abstract async generateTemplate(initial: boolean, mostRecentStats?: T): Promise<T>;
+	protected abstract async generateTemplate(initial: boolean, latestStats?: T): Promise<T>;
 
 	constructor(name: string) {
 		this.collection = db.get<ChartDocument<T>>(`stats.${name}`);
@@ -116,7 +116,7 @@ abstract class Chart<T> {
 		// * 昨日何もチャートを更新するような出来事がなかった場合は、
 		// * 統計がそもそも作られずドキュメントが存在しないということがあり得るため、
 		// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
-		const mostRecentStats = await this.collection.findOne({
+		const latestStats = await this.collection.findOne({
 			group: group,
 			span: span
 		}, {
@@ -125,9 +125,9 @@ abstract class Chart<T> {
 			}
 		});
 
-		if (mostRecentStats) {
+		if (latestStats) {
 			// 現在の統計を初期挿入
-			const data = await this.generateTemplate(false, mostRecentStats.data);
+			const data = await this.generateTemplate(false, latestStats.data);
 
 			const stats = await this.collection.insert({
 				group: group,
@@ -236,8 +236,8 @@ abstract class Chart<T> {
 			if (stat) {
 				promisedChart.unshift(Promise.resolve(stat.data));
 			} else { // 隙間埋め
-				const mostRecent = stats.find(s => s.date.getTime() < current.getTime());
-				promisedChart.unshift(this.generateTemplate(false, mostRecent ? mostRecent.data : null));
+				const latest = stats.find(s => s.date.getTime() < current.getTime());
+				promisedChart.unshift(this.generateTemplate(false, latest ? latest.data : null));
 			}
 		}
 
@@ -330,13 +330,13 @@ class UsersChart extends Chart<UsersStats> {
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, mostRecentStats?: UsersStats): Promise<UsersStats> {
+	protected async generateTemplate(initial: boolean, latestStats?: UsersStats): Promise<UsersStats> {
 		const [localCount, remoteCount] = initial ? await Promise.all([
 			User.count({ host: null }),
 			User.count({ host: { $ne: null } })
 		]) : [
-			mostRecentStats ? mostRecentStats.local.total : 0,
-			mostRecentStats ? mostRecentStats.remote.total : 0
+			latestStats ? latestStats.local.total : 0,
+			latestStats ? latestStats.remote.total : 0
 		];
 
 		return {
@@ -453,13 +453,13 @@ class NotesChart extends Chart<NotesStats> {
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, mostRecentStats?: NotesStats): Promise<NotesStats> {
+	protected async generateTemplate(initial: boolean, latestStats?: NotesStats): Promise<NotesStats> {
 		const [localCount, remoteCount] = initial ? await Promise.all([
 			Note.count({ '_user.host': null }),
 			Note.count({ '_user.host': { $ne: null } })
 		]) : [
-			mostRecentStats ? mostRecentStats.local.total : 0,
-			mostRecentStats ? mostRecentStats.remote.total : 0
+			latestStats ? latestStats.local.total : 0,
+			latestStats ? latestStats.remote.total : 0
 		];
 
 		return {
@@ -593,7 +593,7 @@ class DriveChart extends Chart<DriveStats> {
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, mostRecentStats?: DriveStats): Promise<DriveStats> {
+	protected async generateTemplate(initial: boolean, latestStats?: DriveStats): Promise<DriveStats> {
 		const calcSize = (local: boolean) => DriveFile
 			.aggregate([{
 				$match: {
@@ -618,10 +618,10 @@ class DriveChart extends Chart<DriveStats> {
 			calcSize(true),
 			calcSize(false)
 		]) : [
-			mostRecentStats ? mostRecentStats.local.totalCount : 0,
-			mostRecentStats ? mostRecentStats.remote.totalCount : 0,
-			mostRecentStats ? mostRecentStats.local.totalSize : 0,
-			mostRecentStats ? mostRecentStats.remote.totalSize : 0
+			latestStats ? latestStats.local.totalCount : 0,
+			latestStats ? latestStats.remote.totalCount : 0,
+			latestStats ? latestStats.local.totalSize : 0,
+			latestStats ? latestStats.remote.totalSize : 0
 		];
 
 		return {
@@ -705,7 +705,7 @@ class NetworkChart extends Chart<NetworkStats> {
 	}
 
 	@autobind
-	protected async generateTemplate(initial: boolean, mostRecentStats?: NetworkStats): Promise<NetworkStats> {
+	protected async generateTemplate(initial: boolean, latestStats?: NetworkStats): Promise<NetworkStats> {
 		return {
 			incomingRequests: 0,
 			outgoingRequests: 0,
