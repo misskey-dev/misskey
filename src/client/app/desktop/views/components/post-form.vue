@@ -12,7 +12,7 @@
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 			<b>%i18n:@recent-tags%:</b>
-			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%@click-to-tagging%">#{{ tag }}</a>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%i18n:@click-to-tagging%">#{{ tag }}</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="%i18n:@annotations%">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
