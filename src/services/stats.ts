@@ -1,3 +1,7 @@
+/**
+ * このファイルでは、チャートに関する処理を行います。
+ */
+
 const nestedProperty = require('nested-property');
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
@@ -43,6 +47,9 @@ type ChartDocument<T extends Obj> = {
 	data: T;
 };
 
+/**
+ * 様々なチャートの管理を司るクラス
+ */
 abstract class Chart<T> {
 	protected collection: ICollection<ChartDocument<T>>;
 	protected abstract generateInitialStats(): T;
