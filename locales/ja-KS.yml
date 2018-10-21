@@ -26,13 +26,13 @@ common:
   close: "さいなら"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
   BSoD:
-    fatal-error: ":( 致命的な問題が発生しました。"
-    update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
+    fatal-error: "あかん、やってもうたわ… (致命的なエラー"
+    update-browser-os: "ブラウザ(またはOS)のバージョン更新してくれへん？なおるかもしれんわ。"
     error-code: "エラーコード"
     browser-version: "ブラウザ バージョン"
     client-version: "クライアント バージョン"
-    email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
-    thanks: "Thank you for using Misskey."
+    email-support: "それでもあかん？せやったら syuilotan@yahoo.co.jp に連絡してや！"
+    thanks: "Thank you おおきに。Misskey"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -125,10 +125,10 @@ common:
   do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
-  view-on-remote: "正確な情報を見る"
+  view-on-remote: "ちゃんとした情報見せてや！"
   error:
-    title: '問題が発生しました'
-    retry: 'やり直す'
+    title: '問題が起こったわ'
+    retry: 'もっぺん'
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
@@ -184,7 +184,7 @@ common:
     rename: "名前を変更や！"
     stack-left: "左に重ねんで！"
     pop-right: "右に出すで！"
-  dev: "アプリの作成に失敗しました。再度お試しください。"
+  dev: "アプリの作成あかんかったわ。もっぺんやってみて。"
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があんさんのアカウントにアクセスすんのを<b>許可</b>してもええか？"
   permission-ask: "このアプリは次の権限を要求してんで:"
@@ -440,16 +440,16 @@ common/views/components/profile-editor.vue:
   birthday: "誕生日"
   avatar: "アイコン"
   banner: "バナー"
-  is-cat: "このアカウントはCatです"
-  is-bot: "このアカウントはBotです"
-  is-locked: "フォローを承認制にする"
-  careful-bot: "Botからのフォローだけ承認制にする"
+  is-cat: "このアカウントはCatやで"
+  is-bot: "このアカウントはBotやで"
+  is-locked: "他人のフォローは許可してからや！"
+  careful-bot: "Botからのフォローだけは許可制や"
   advanced: "その他"
-  privacy: "プライバシー"
+  privacy: "プライバシーってなんや？オカンの年齢か？"
   save: "保存"
-  saved: "プロフィールを保存しました"
-  uploading: "アップロード中"
-  upload-failed: "アップロードに失敗しました"
+  saved: "プロフィールを保存したで"
+  uploading: "アップロードしとります"
+  upload-failed: "これアップロードでけへんわ"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
   no-broadcasts: "お知らせはあらへんで"
@@ -676,12 +676,12 @@ desktop/views/components/note-detail.vue:
   add-reaction: "リアクション"
 desktop/views/components/note.vue:
   reposted-by: "{}がRenote"
-  reply: "返信"
+  reply: "返す"
   renote: "Renote"
   add-reaction: "リアクション"
-  detail: "詳細"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  detail: "もっと"
+  private: "この投稿は見せられへんわ"
+  deleted: "この投稿なんか無くなってもうたわ"
 desktop/views/components/notes.vue:
   error: "あかん、読み込めへんわ"
   retry: "もっぺん"
