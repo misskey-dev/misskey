@@ -968,6 +968,7 @@ desktop/views/pages/deck/deck.tl-column.vue:
   edit: "Options"
 desktop/views/pages/deck/deck.user-column.vue:
   pinned-notes: "Pinned posts"
+  push-to-a-list: "リストに追加"
 desktop/views/pages/stats/stats.vue:
   all-users: "All Users"
   original-users: "Users on this instance"
@@ -1020,7 +1021,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  last-used-at: "最終アクセス"
+  last-used-at: "Last active"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
@@ -1300,7 +1301,7 @@ mobile/views/pages/settings.vue:
   signout: "Sign out"
   sound: "Sounds"
   enable-sounds: "Enable sounds"
-  mark-as-read-all-unread-notes: "すべての通知を既読にしますか？"
+  mark-as-read-all-unread-notes: "Do you wish to mark all notifications as read?"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
