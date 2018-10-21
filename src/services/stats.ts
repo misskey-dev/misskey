@@ -17,6 +17,11 @@ type ChartDocument<T extends Obj> = {
 	_id: mongo.ObjectID;
 
 	/**
+	 * 集計のグループ
+	 */
+	group?: any;
+
+	/**
 	 * 集計日時
 	 */
 	date: Date;
@@ -40,6 +45,7 @@ abstract class Chart<T> {
 	constructor(dbCollectionName: string) {
 		this.collection = db.get<ChartDocument<T>>(dbCollectionName);
 		this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
+		this.collection.createIndex('group');
 	}
 
 	protected async getCurrentStats(span: Span, group?: Obj): Promise<ChartDocument<T>> {
@@ -55,10 +61,11 @@ abstract class Chart<T> {
 			null;
 
 		// 現在(今日または今のHour)の統計
-		const currentStats = await this.collection.findOne(Object.assign({}, {
+		const currentStats = await this.collection.findOne({
+			group: group,
 			span: span,
 			date: current
-		}, group));
+		});
 
 		if (currentStats) {
 			return currentStats;
@@ -69,9 +76,10 @@ abstract class Chart<T> {
 			// * 昨日何もチャートを更新するような出来事がなかった場合は、
 			// * 統計がそもそも作られずドキュメントが存在しないということがあり得るため、
 			// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
-			const mostRecentStats = await this.collection.findOne(Object.assign({}, {
+			const mostRecentStats = await this.collection.findOne({
+				group: group,
 				span: span
-			}, group), {
+			}, {
 				sort: {
 					date: -1
 				}
@@ -81,11 +89,12 @@ abstract class Chart<T> {
 				// 現在の統計を初期挿入
 				const data = this.generateEmptyStats(mostRecentStats.data);
 
-				const stats = await this.collection.insert(Object.assign({}, {
+				const stats = await this.collection.insert({
+					group: group,
 					span: span,
 					date: current,
 					data: data
-				}, group));
+				});
 
 				return stats;
 			} else {
@@ -95,18 +104,19 @@ abstract class Chart<T> {
 				// 空の統計を作成
 				const data = this.generateInitialStats();
 
-				const stats = await this.collection.insert(Object.assign({}, {
+				const stats = await this.collection.insert({
+					group: group,
 					span: span,
 					date: current,
 					data: data
-				}, group));
+				});
 
 				return stats;
 			}
 		}
 	}
 
-	protected update(inc: Partial<T>, group?: Obj): void {
+	protected inc(inc: Partial<T>, group?: Obj): void {
 		const query: Obj = {};
 
 		const dive = (path: string, x: Obj) => {
@@ -151,12 +161,13 @@ abstract class Chart<T> {
 			span == 'day' ? new Date(y, m, d - range) :
 			span == 'hour' ? new Date(y, m, d, h - range) : null;
 
-		const stats = await this.collection.find(Object.assign({
+		const stats = await this.collection.find({
+			group: group,
 			span: span,
 			date: {
 				$gt: gt
 			}
-		}, group), {
+		}, {
 			sort: {
 				date: -1
 			},
@@ -189,356 +200,82 @@ abstract class Chart<T> {
 	}
 }
 
-type CoreStats = {
-	/**
-	 * ユーザーに関する統計
-	 */
-	users: {
-		local: {
-			/**
-			 * 集計期間時点での、全ユーザー数 (ローカル)
-			 */
-			total: number;
+//#region Users stats
+/**
+ * ユーザーに関する統計
+ */
+type UsersStats = {
+	local: {
+		/**
+		 * 集計期間時点での、全ユーザー数 (ローカル)
+		 */
+		total: number;
 
-			/**
-			 * 増加したユーザー数 (ローカル)
-			 */
-			inc: number;
+		/**
+		 * 増加したユーザー数 (ローカル)
+		 */
+		inc: number;
 
-			/**
-			 * 減少したユーザー数 (ローカル)
-			 */
-			dec: number;
-		};
-
-		remote: {
-			/**
-			 * 集計期間時点での、全ユーザー数 (リモート)
-			 */
-			total: number;
-
-			/**
-			 * 増加したユーザー数 (リモート)
-			 */
-			inc: number;
-
-			/**
-			 * 減少したユーザー数 (リモート)
-			 */
-			dec: number;
-		};
+		/**
+		 * 減少したユーザー数 (ローカル)
+		 */
+		dec: number;
 	};
 
-	/**
-	 * 投稿に関する統計
-	 */
-	notes: {
-		local: {
-			/**
-			 * 集計期間時点での、全投稿数 (ローカル)
-			 */
-			total: number;
-
-			/**
-			 * 増加した投稿数 (ローカル)
-			 */
-			inc: number;
-
-			/**
-			 * 減少した投稿数 (ローカル)
-			 */
-			dec: number;
-
-			diffs: {
-				/**
-				 * 通常の投稿数の差分 (ローカル)
-				 */
-				normal: number;
-
-				/**
-				 * リプライの投稿数の差分 (ローカル)
-				 */
-				reply: number;
-
-				/**
-				 * Renoteの投稿数の差分 (ローカル)
-				 */
-				renote: number;
-			};
-		};
-
-		remote: {
-			/**
-			 * 集計期間時点での、全投稿数 (リモート)
-			 */
-			total: number;
-
-			/**
-			 * 増加した投稿数 (リモート)
-			 */
-			inc: number;
-
-			/**
-			 * 減少した投稿数 (リモート)
-			 */
-			dec: number;
-
-			diffs: {
-				/**
-				 * 通常の投稿数の差分 (リモート)
-				 */
-				normal: number;
-
-				/**
-				 * リプライの投稿数の差分 (リモート)
-				 */
-				reply: number;
-
-				/**
-				 * Renoteの投稿数の差分 (リモート)
-				 */
-				renote: number;
-			};
-		};
-	};
-
-	/**
-	 * ドライブ(のファイル)に関する統計
-	 */
-	drive: {
-		local: {
-			/**
-			 * 集計期間時点での、全ドライブファイル数 (ローカル)
-			 */
-			totalCount: number;
-
-			/**
-			 * 集計期間時点での、全ドライブファイルの合計サイズ (ローカル)
-			 */
-			totalSize: number;
-
-			/**
-			 * 増加したドライブファイル数 (ローカル)
-			 */
-			incCount: number;
-
-			/**
-			 * 増加したドライブ使用量 (ローカル)
-			 */
-			incSize: number;
-
-			/**
-			 * 減少したドライブファイル数 (ローカル)
-			 */
-			decCount: number;
-
-			/**
-			 * 減少したドライブ使用量 (ローカル)
-			 */
-			decSize: number;
-		};
-
-		remote: {
-			/**
-			 * 集計期間時点での、全ドライブファイル数 (リモート)
-			 */
-			totalCount: number;
-
-			/**
-			 * 集計期間時点での、全ドライブファイルの合計サイズ (リモート)
-			 */
-			totalSize: number;
-
-			/**
-			 * 増加したドライブファイル数 (リモート)
-			 */
-			incCount: number;
-
-			/**
-			 * 増加したドライブ使用量 (リモート)
-			 */
-			incSize: number;
-
-			/**
-			 * 減少したドライブファイル数 (リモート)
-			 */
-			decCount: number;
-
-			/**
-			 * 減少したドライブ使用量 (リモート)
-			 */
-			decSize: number;
-		};
-	};
-
-	/**
-	 * ネットワークに関する統計
-	 */
-	network: {
+	remote: {
 		/**
-		 * 受信したリクエスト数
+		 * 集計期間時点での、全ユーザー数 (リモート)
 		 */
-		incomingRequests: number;
+		total: number;
 
 		/**
-		 * 送信したリクエスト数
+		 * 増加したユーザー数 (リモート)
 		 */
-		outgoingRequests: number;
+		inc: number;
 
 		/**
-		 * 応答時間の合計
-		 * TIP: (totalTime / incomingRequests) でひとつのリクエストに平均でどれくらいの時間がかかったか知れる
+		 * 減少したユーザー数 (リモート)
 		 */
-		totalTime: number;
-
-		/**
-		 * 合計受信データ量
-		 */
-		incomingBytes: number;
-
-		/**
-		 * 合計送信データ量
-		 */
-		outgoingBytes: number;
+		dec: number;
 	};
 };
 
-class CoreChart extends Chart<CoreStats> {
+class UsersChart extends Chart<UsersStats> {
 	constructor() {
-		super('coreStats');
+		super('usersStats');
 	}
 
-	protected generateInitialStats(): CoreStats {
+	protected generateInitialStats(): UsersStats {
 		return {
-			users: {
-				local: {
-					total: 0,
-					inc: 0,
-					dec: 0
-				},
-				remote: {
-					total: 0,
-					inc: 0,
-					dec: 0
-				}
+			local: {
+				total: 0,
+				inc: 0,
+				dec: 0
 			},
-			notes: {
-				local: {
-					total: 0,
-					inc: 0,
-					dec: 0,
-					diffs: {
-						normal: 0,
-						reply: 0,
-						renote: 0
-					}
-				},
-				remote: {
-					total: 0,
-					inc: 0,
-					dec: 0,
-					diffs: {
-						normal: 0,
-						reply: 0,
-						renote: 0
-					}
-				}
-			},
-			drive: {
-				local: {
-					totalCount: 0,
-					totalSize: 0,
-					incCount: 0,
-					incSize: 0,
-					decCount: 0,
-					decSize: 0
-				},
-				remote: {
-					totalCount: 0,
-					totalSize: 0,
-					incCount: 0,
-					incSize: 0,
-					decCount: 0,
-					decSize: 0
-				}
-			},
-			network: {
-				incomingRequests: 0,
-				outgoingRequests: 0,
-				totalTime: 0,
-				incomingBytes: 0,
-				outgoingBytes: 0
+			remote: {
+				total: 0,
+				inc: 0,
+				dec: 0
 			}
 		};
 	}
 
-	protected generateEmptyStats(mostRecentStats: CoreStats): CoreStats {
+	protected generateEmptyStats(mostRecentStats: UsersStats): UsersStats {
 		return {
-			users: {
-				local: {
-					total: mostRecentStats.users.local.total,
-					inc: 0,
-					dec: 0
-				},
-				remote: {
-					total: mostRecentStats.users.remote.total,
-					inc: 0,
-					dec: 0
-				}
+			local: {
+				total: mostRecentStats.local.total,
+				inc: 0,
+				dec: 0
 			},
-			notes: {
-				local: {
-					total: mostRecentStats.notes.local.total,
-					inc: 0,
-					dec: 0,
-					diffs: {
-						normal: 0,
-						reply: 0,
-						renote: 0
-					}
-				},
-				remote: {
-					total: mostRecentStats.notes.remote.total,
-					inc: 0,
-					dec: 0,
-					diffs: {
-						normal: 0,
-						reply: 0,
-						renote: 0
-					}
-				}
-			},
-			drive: {
-				local: {
-					totalCount: mostRecentStats.drive.local.totalCount,
-					totalSize: mostRecentStats.drive.local.totalSize,
-					incCount: 0,
-					incSize: 0,
-					decCount: 0,
-					decSize: 0
-				},
-				remote: {
-					totalCount: mostRecentStats.drive.remote.totalCount,
-					totalSize: mostRecentStats.drive.remote.totalSize,
-					incCount: 0,
-					incSize: 0,
-					decCount: 0,
-					decSize: 0
-				}
-			},
-			network: {
-				incomingRequests: 0,
-				outgoingRequests: 0,
-				totalTime: 0,
-				incomingBytes: 0,
-				outgoingBytes: 0
+			remote: {
+				total: mostRecentStats.remote.total,
+				inc: 0,
+				dec: 0
 			}
 		};
 	}
 
-	public async updateUserStats(user: IUser, isAdditional: boolean) {
-		const origin = isLocalUser(user) ? 'local' : 'remote';
-
+	public async update(user: IUser, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.total = isAdditional ? 1 : -1;
@@ -548,18 +285,145 @@ class CoreChart extends Chart<CoreStats> {
 			update.dec = 1;
 		}
 
-		const inc: Obj = {
-			users: {}
+		await this.inc({
+			[isLocalUser(user) ? 'local' : 'remote']: update
+		});
+	}
+}
+
+export const usersChart = new UsersChart();
+//#endregion
+
+//#region Notes stats
+/**
+ * 投稿に関する統計
+ */
+type NotesStats = {
+	local: {
+		/**
+		 * 集計期間時点での、全投稿数 (ローカル)
+		 */
+		total: number;
+
+		/**
+		 * 増加した投稿数 (ローカル)
+		 */
+		inc: number;
+
+		/**
+		 * 減少した投稿数 (ローカル)
+		 */
+		dec: number;
+
+		diffs: {
+			/**
+			 * 通常の投稿数の差分 (ローカル)
+			 */
+			normal: number;
+
+			/**
+			 * リプライの投稿数の差分 (ローカル)
+			 */
+			reply: number;
+
+			/**
+			 * Renoteの投稿数の差分 (ローカル)
+			 */
+			renote: number;
 		};
+	};
 
-		inc.users[origin] = update;
+	remote: {
+		/**
+		 * 集計期間時点での、全投稿数 (リモート)
+		 */
+		total: number;
 
-		await this.update(inc);
+		/**
+		 * 増加した投稿数 (リモート)
+		 */
+		inc: number;
+
+		/**
+		 * 減少した投稿数 (リモート)
+		 */
+		dec: number;
+
+		diffs: {
+			/**
+			 * 通常の投稿数の差分 (リモート)
+			 */
+			normal: number;
+
+			/**
+			 * リプライの投稿数の差分 (リモート)
+			 */
+			reply: number;
+
+			/**
+			 * Renoteの投稿数の差分 (リモート)
+			 */
+			renote: number;
+		};
+	};
+};
+
+class NotesChart extends Chart<NotesStats> {
+	constructor() {
+		super('notesStats');
 	}
 
-	public async updateNoteStats(note: INote, isAdditional: boolean) {
-		const origin = isLocalUser(note._user) ? 'local' : 'remote';
+	protected generateInitialStats(): NotesStats {
+		return {
+			local: {
+				total: 0,
+				inc: 0,
+				dec: 0,
+				diffs: {
+					normal: 0,
+					reply: 0,
+					renote: 0
+				}
+			},
+			remote: {
+				total: 0,
+				inc: 0,
+				dec: 0,
+				diffs: {
+					normal: 0,
+					reply: 0,
+					renote: 0
+				}
+			}
+		};
+	}
 
+	protected generateEmptyStats(mostRecentStats: NotesStats): NotesStats {
+		return {
+			local: {
+				total: mostRecentStats.local.total,
+				inc: 0,
+				dec: 0,
+				diffs: {
+					normal: 0,
+					reply: 0,
+					renote: 0
+				}
+			},
+			remote: {
+				total: mostRecentStats.remote.total,
+				inc: 0,
+				dec: 0,
+				diffs: {
+					normal: 0,
+					reply: 0,
+					renote: 0
+				}
+			}
+		};
+	}
+
+	public async update(note: INote, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.total = isAdditional ? 1 : -1;
@@ -578,18 +442,133 @@ class CoreChart extends Chart<CoreStats> {
 			update.diffs.normal = isAdditional ? 1 : -1;
 		}
 
-		const inc: Obj = {
-			notes: {}
-		};
+		await this.inc({
+			[isLocalUser(note._user) ? 'local' : 'remote']: update
+		});
+	}
+}
 
-		inc.notes[origin] = update;
+export const notesChart = new NotesChart();
+//#endregion
 
-		await this.update(inc);
+//#region Drive stats
+/**
+ * ドライブに関する統計
+ */
+type DriveStats = {
+	local: {
+		/**
+		 * 集計期間時点での、全ドライブファイル数 (ローカル)
+		 */
+		totalCount: number;
+
+		/**
+		 * 集計期間時点での、全ドライブファイルの合計サイズ (ローカル)
+		 */
+		totalSize: number;
+
+		/**
+		 * 増加したドライブファイル数 (ローカル)
+		 */
+		incCount: number;
+
+		/**
+		 * 増加したドライブ使用量 (ローカル)
+		 */
+		incSize: number;
+
+		/**
+		 * 減少したドライブファイル数 (ローカル)
+		 */
+		decCount: number;
+
+		/**
+		 * 減少したドライブ使用量 (ローカル)
+		 */
+		decSize: number;
+	};
+
+	remote: {
+		/**
+		 * 集計期間時点での、全ドライブファイル数 (リモート)
+		 */
+		totalCount: number;
+
+		/**
+		 * 集計期間時点での、全ドライブファイルの合計サイズ (リモート)
+		 */
+		totalSize: number;
+
+		/**
+		 * 増加したドライブファイル数 (リモート)
+		 */
+		incCount: number;
+
+		/**
+		 * 増加したドライブ使用量 (リモート)
+		 */
+		incSize: number;
+
+		/**
+		 * 減少したドライブファイル数 (リモート)
+		 */
+		decCount: number;
+
+		/**
+		 * 減少したドライブ使用量 (リモート)
+		 */
+		decSize: number;
+	};
+};
+
+class DriveChart extends Chart<DriveStats> {
+	constructor() {
+		super('driveStats');
 	}
 
-	public async updateDriveStats(file: IDriveFile, isAdditional: boolean) {
-		const origin = isLocalUser(file.metadata._user) ? 'local' : 'remote';
+	protected generateInitialStats(): DriveStats {
+		return {
+			local: {
+				totalCount: 0,
+				totalSize: 0,
+				incCount: 0,
+				incSize: 0,
+				decCount: 0,
+				decSize: 0
+			},
+			remote: {
+				totalCount: 0,
+				totalSize: 0,
+				incCount: 0,
+				incSize: 0,
+				decCount: 0,
+				decSize: 0
+			}
+		};
+	}
 
+	protected generateEmptyStats(mostRecentStats: DriveStats): DriveStats {
+		return {
+			local: {
+				totalCount: mostRecentStats.local.totalCount,
+				totalSize: mostRecentStats.local.totalSize,
+				incCount: 0,
+				incSize: 0,
+				decCount: 0,
+				decSize: 0
+			},
+			remote: {
+				totalCount: mostRecentStats.remote.totalCount,
+				totalSize: mostRecentStats.remote.totalSize,
+				incCount: 0,
+				incSize: 0,
+				decCount: 0,
+				decSize: 0
+			}
+		};
+	}
+
+	public async update(file: IDriveFile, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.totalCount = isAdditional ? 1 : -1;
@@ -602,27 +581,83 @@ class CoreChart extends Chart<CoreStats> {
 			update.decSize = file.length;
 		}
 
-		const inc: Obj = {
-			drive: {}
-		};
-
-		inc.drive[origin] = update;
-
-		await this.update(inc);
-	}
-
-	public async updateNetworkStats(incomingRequests: number, time: number, incomingBytes: number, outgoingBytes: number) {
-		const inc: Partial<CoreStats> = {
-			network: {
-				incomingRequests: incomingRequests,
-				totalTime: time,
-				incomingBytes: incomingBytes,
-				outgoingBytes: outgoingBytes
-			}
-		};
-
-		await this.update(inc);
+		await this.inc({
+			[isLocalUser(file.metadata._user) ? 'local' : 'remote']: update
+		});
 	}
 }
 
-export const coreChart = new CoreChart();
+export const driveChart = new DriveChart();
+//#endregion
+
+//#region Network stats
+/**
+ * ネットワークに関する統計
+ */
+type NetworkStats = {
+	/**
+	 * 受信したリクエスト数
+	 */
+	incomingRequests: number;
+
+	/**
+	 * 送信したリクエスト数
+	 */
+	outgoingRequests: number;
+
+	/**
+	 * 応答時間の合計
+	 * TIP: (totalTime / incomingRequests) でひとつのリクエストに平均でどれくらいの時間がかかったか知れる
+	 */
+	totalTime: number;
+
+	/**
+	 * 合計受信データ量
+	 */
+	incomingBytes: number;
+
+	/**
+	 * 合計送信データ量
+	 */
+	outgoingBytes: number;
+};
+
+class NetworkChart extends Chart<NetworkStats> {
+	constructor() {
+		super('networkStats');
+	}
+
+	protected generateInitialStats(): NetworkStats {
+		return {
+			incomingRequests: 0,
+			outgoingRequests: 0,
+			totalTime: 0,
+			incomingBytes: 0,
+			outgoingBytes: 0
+		};
+	}
+
+	protected generateEmptyStats(mostRecentStats: NetworkStats): NetworkStats {
+		return {
+			incomingRequests: 0,
+			outgoingRequests: 0,
+			totalTime: 0,
+			incomingBytes: 0,
+			outgoingBytes: 0
+		};
+	}
+
+	public async update(incomingRequests: number, time: number, incomingBytes: number, outgoingBytes: number) {
+		const inc: Partial<NetworkStats> = {
+			incomingRequests: incomingRequests,
+			totalTime: time,
+			incomingBytes: incomingBytes,
+			outgoingBytes: outgoingBytes
+		};
+
+		await this.inc(inc);
+	}
+}
+
+export const networkChart = new NetworkChart();
+//#endregion

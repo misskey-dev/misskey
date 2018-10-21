@@ -7,7 +7,7 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';
 import RegistrationTicket from '../../../models/registration-tickets';
-import { coreChart } from '../../../services/stats';
+import { usersChart } from '../../../services/stats';
 
 if (config.recaptcha) {
 	recaptcha.init({
@@ -130,7 +130,7 @@ export default async (ctx: Koa.Context) => {
 	}, { upsert: true });
 	//#endregion
 
-	coreChart.updateUserStats(account, true);
+	usersChart.update(account, true);
 
 	const res = await pack(account, account, {
 		detail: true,

@@ -112,12 +112,42 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
-		(this as any).api('chart', {
-			limit: 35
-		}).then(chart => {
-			this.chart = chart;
-		});
+	async created() {
+		const limit = 35;
+
+		const [perHour, perDay] = await Promise.all([Promise.all([
+			(this as any).api('charts/users', { limit: limit, span: 'hour' }),
+			(this as any).api('charts/notes', { limit: limit, span: 'hour' }),
+			(this as any).api('charts/drive', { limit: limit, span: 'hour' }),
+			(this as any).api('charts/network', { limit: limit, span: 'hour' })
+		]), Promise.all([
+			(this as any).api('charts/users', { limit: limit, span: 'day' }),
+			(this as any).api('charts/notes', { limit: limit, span: 'day' }),
+			(this as any).api('charts/drive', { limit: limit, span: 'day' }),
+			(this as any).api('charts/network', { limit: limit, span: 'day' })
+		])]);
+
+		const chart = {
+			perHour: [],
+			perDay: []
+		};
+
+		for (let i = 0; i < limit; i++) {
+			chart.perHour.push({
+				users: perHour[0][i],
+				notes: perHour[1][i],
+				drive: perHour[2][i],
+				network: perHour[3][i]
+			});
+			chart.perDay.push({
+				users: perDay[0][i],
+				notes: perDay[1][i],
+				drive: perDay[2][i],
+				network: perDay[3][i]
+			});
+		}
+
+		this.chart = chart;
 	},
 
 	methods: {
@@ -586,7 +616,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.incomingRequests }))
+					data: data.map(x => ({ t: x.date, y: x.incoming }))
 				}]
 			}];
 		},
@@ -594,7 +624,7 @@ export default Vue.extend({
 		networkTimeChart(): any {
 			const data = this.stats.slice().reverse().map(x => ({
 				date: new Date(x.date),
-				time: x.network.requests != 0 ? (x.network.totalTime / x.network.requests) : 0,
+				time: x.network.incomingRequests != 0 ? (x.network.totalTime / x.network.incomingRequests) : 0,
 			}));
 
 			return [{

@@ -17,7 +17,7 @@ import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
-import { coreChart } from '../stats';
+import { driveChart } from '../stats';
 
 const log = debug('misskey:drive:add-file');
 
@@ -389,7 +389,7 @@ export default async function(
 	});
 
 	// 統計を更新
-	coreChart.updateDriveStats(driveFile, true);
+	driveChart.update(driveFile, true);
 
 	return driveFile;
 }

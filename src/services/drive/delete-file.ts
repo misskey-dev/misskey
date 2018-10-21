@@ -2,7 +2,7 @@ import * as Minio from 'minio';
 import DriveFile, { DriveFileChunk, IDriveFile } from '../../models/drive-file';
 import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
 import config from '../../config';
-import { coreChart } from '../stats';
+import { driveChart } from '../stats';
 
 export default async function(file: IDriveFile, isExpired = false) {
 	if (file.metadata.storage == 'minio') {
@@ -48,5 +48,5 @@ export default async function(file: IDriveFile, isExpired = false) {
 	//#endregion
 
 	// 統計を更新
-	coreChart.updateDriveStats(file, false);
+	driveChart.update(file, false);
 }
