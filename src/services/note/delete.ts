@@ -6,7 +6,7 @@ import pack from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import Following from '../../models/following';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import { notesStats } from '../stats';
+import { notesStats, perUserNotesStats } from '../stats';
 import config from '../../config';
 import NoteUnread from '../../models/note-unread';
 import read from './read';
@@ -64,4 +64,5 @@ export default async function(user: IUser, note: INote) {
 
 	// 統計を更新
 	notesStats.update(note, false);
+	perUserNotesStats.update(user, note, false);
 }
