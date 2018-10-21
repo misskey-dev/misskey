@@ -6,9 +6,9 @@ const nestedProperty = require('nested-property');
 import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
-import { INote } from '../models/note';
-import { isLocalUser, IUser } from '../models/user';
-import { IDriveFile } from '../models/drive-file';
+import Note, { INote } from '../models/note';
+import User, { isLocalUser, IUser } from '../models/user';
+import DriveFile, { IDriveFile } from '../models/drive-file';
 import { ICollection } from 'monk';
 
 type Obj = { [key: string]: any };
@@ -58,11 +58,10 @@ type ChartDocument<T extends Obj> = {
  */
 abstract class Chart<T> {
 	protected collection: ICollection<ChartDocument<T>>;
-	protected abstract generateInitialStats(): T;
-	protected abstract generateEmptyStats(mostRecentStats: T): T;
+	protected abstract async generateTemplate(initial: boolean, mostRecentStats?: T): Promise<T>;
 
-	constructor(dbCollectionName: string) {
-		this.collection = db.get<ChartDocument<T>>(dbCollectionName);
+	constructor(name: string) {
+		this.collection = db.get<ChartDocument<T>>(`stats.${name}`);
 		this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
 		this.collection.createIndex('group');
 	}
@@ -127,7 +126,7 @@ abstract class Chart<T> {
 
 			if (mostRecentStats) {
 				// 現在の統計を初期挿入
-				const data = this.generateEmptyStats(mostRecentStats.data);
+				const data = await this.generateTemplate(false, mostRecentStats.data);
 
 				const stats = await this.collection.insert({
 					group: group,
@@ -142,7 +141,7 @@ abstract class Chart<T> {
 				// * Misskeyインスタンスを建てて初めてのチャート更新時など
 
 				// 空の統計を作成
-				const data = this.generateInitialStats();
+				const data = await this.generateTemplate(true);
 
 				const stats = await this.collection.insert({
 					group: group,
@@ -193,7 +192,7 @@ abstract class Chart<T> {
 
 	@autobind
 	public async getStats(span: Span, range: number, group?: Obj): Promise<ArrayValue<T>> {
-		const chart: T[] = [];
+		const promisedChart: Promise<T>[] = [];
 
 		const now = new Date();
 		const y = now.getFullYear();
@@ -229,16 +228,14 @@ abstract class Chart<T> {
 			const stat = stats.find(s => s.date.getTime() == current.getTime());
 
 			if (stat) {
-				chart.unshift(stat.data);
+				promisedChart.unshift(Promise.resolve(stat.data));
 			} else { // 隙間埋め
 				const mostRecent = stats.find(s => s.date.getTime() < current.getTime());
-				if (mostRecent) {
-					chart.unshift(this.generateEmptyStats(mostRecent.data));
-				} else {
-					chart.unshift(this.generateInitialStats());
-				}
+				promisedChart.unshift(this.generateTemplate(false, mostRecent ? mostRecent.data : null));
 			}
 		}
+
+		const chart = await Promise.all(promisedChart);
 
 		const res: ArrayValue<T> = {} as any;
 
@@ -323,35 +320,27 @@ type UsersStats = {
 
 class UsersChart extends Chart<UsersStats> {
 	constructor() {
-		super('usersStats');
+		super('users');
 	}
 
 	@autobind
-	protected generateInitialStats(): UsersStats {
+	protected async generateTemplate(initial: boolean, mostRecentStats?: UsersStats): Promise<UsersStats> {
+		const [localCount, remoteCount] = initial ? await Promise.all([
+			User.count({ host: null }),
+			User.count({ host: { $ne: null } })
+		]) : [
+			mostRecentStats ? mostRecentStats.local.total : 0,
+			mostRecentStats ? mostRecentStats.remote.total : 0
+		];
+
 		return {
 			local: {
-				total: 0,
+				total: localCount,
 				inc: 0,
 				dec: 0
 			},
 			remote: {
-				total: 0,
-				inc: 0,
-				dec: 0
-			}
-		};
-	}
-
-	@autobind
-	protected generateEmptyStats(mostRecentStats: UsersStats): UsersStats {
-		return {
-			local: {
-				total: mostRecentStats.local.total,
-				inc: 0,
-				dec: 0
-			},
-			remote: {
-				total: mostRecentStats.remote.total,
+				total: remoteCount,
 				inc: 0,
 				dec: 0
 			}
@@ -454,14 +443,22 @@ type NotesStats = {
 
 class NotesChart extends Chart<NotesStats> {
 	constructor() {
-		super('notesStats');
+		super('notes');
 	}
 
 	@autobind
-	protected generateInitialStats(): NotesStats {
+	protected async generateTemplate(initial: boolean, mostRecentStats?: NotesStats): Promise<NotesStats> {
+		const [localCount, remoteCount] = initial ? await Promise.all([
+			Note.count({ '_user.host': null }),
+			Note.count({ '_user.host': { $ne: null } })
+		]) : [
+			mostRecentStats ? mostRecentStats.local.total : 0,
+			mostRecentStats ? mostRecentStats.remote.total : 0
+		];
+
 		return {
 			local: {
-				total: 0,
+				total: localCount,
 				inc: 0,
 				dec: 0,
 				diffs: {
@@ -471,33 +468,7 @@ class NotesChart extends Chart<NotesStats> {
 				}
 			},
 			remote: {
-				total: 0,
-				inc: 0,
-				dec: 0,
-				diffs: {
-					normal: 0,
-					reply: 0,
-					renote: 0
-				}
-			}
-		};
-	}
-
-	@autobind
-	protected generateEmptyStats(mostRecentStats: NotesStats): NotesStats {
-		return {
-			local: {
-				total: mostRecentStats.local.total,
-				inc: 0,
-				dec: 0,
-				diffs: {
-					normal: 0,
-					reply: 0,
-					renote: 0
-				}
-			},
-			remote: {
-				total: mostRecentStats.remote.total,
+				total: remoteCount,
 				inc: 0,
 				dec: 0,
 				diffs: {
@@ -612,45 +583,53 @@ type DriveStats = {
 
 class DriveChart extends Chart<DriveStats> {
 	constructor() {
-		super('driveStats');
+		super('drive');
 	}
 
 	@autobind
-	protected generateInitialStats(): DriveStats {
+	protected async generateTemplate(initial: boolean, mostRecentStats?: DriveStats): Promise<DriveStats> {
+		const calcSize = (local: boolean) => DriveFile
+			.aggregate([{
+				$match: {
+					'metadata._user.host': local ? null : { $ne: null },
+					'metadata.deletedAt': { $exists: false }
+				}
+			}, {
+				$project: {
+					length: true
+				}
+			}, {
+				$group: {
+					_id: null,
+					usage: { $sum: '$length' }
+				}
+			}])
+			.then(res => res.length > 0 ? res[0].usage : 0);
+
+		const [localCount, remoteCount, localSize, remoteSize] = initial ? await Promise.all([
+			DriveFile.count({ 'metadata._user.host': null }),
+			DriveFile.count({ 'metadata._user.host': { $ne: null } }),
+			calcSize(true),
+			calcSize(false)
+		]) : [
+			mostRecentStats ? mostRecentStats.local.totalCount : 0,
+			mostRecentStats ? mostRecentStats.remote.totalCount : 0,
+			mostRecentStats ? mostRecentStats.local.totalSize : 0,
+			mostRecentStats ? mostRecentStats.remote.totalSize : 0
+		];
+
 		return {
 			local: {
-				totalCount: 0,
-				totalSize: 0,
+				totalCount: localCount,
+				totalSize: localSize,
 				incCount: 0,
 				incSize: 0,
 				decCount: 0,
 				decSize: 0
 			},
 			remote: {
-				totalCount: 0,
-				totalSize: 0,
-				incCount: 0,
-				incSize: 0,
-				decCount: 0,
-				decSize: 0
-			}
-		};
-	}
-
-	@autobind
-	protected generateEmptyStats(mostRecentStats: DriveStats): DriveStats {
-		return {
-			local: {
-				totalCount: mostRecentStats.local.totalCount,
-				totalSize: mostRecentStats.local.totalSize,
-				incCount: 0,
-				incSize: 0,
-				decCount: 0,
-				decSize: 0
-			},
-			remote: {
-				totalCount: mostRecentStats.remote.totalCount,
-				totalSize: mostRecentStats.remote.totalSize,
+				totalCount: remoteCount,
+				totalSize: remoteSize,
 				incCount: 0,
 				incSize: 0,
 				decCount: 0,
@@ -716,22 +695,11 @@ type NetworkStats = {
 
 class NetworkChart extends Chart<NetworkStats> {
 	constructor() {
-		super('networkStats');
+		super('network');
 	}
 
 	@autobind
-	protected generateInitialStats(): NetworkStats {
-		return {
-			incomingRequests: 0,
-			outgoingRequests: 0,
-			totalTime: 0,
-			incomingBytes: 0,
-			outgoingBytes: 0
-		};
-	}
-
-	@autobind
-	protected generateEmptyStats(mostRecentStats: NetworkStats): NetworkStats {
+	protected async generateTemplate(initial: boolean, mostRecentStats?: NetworkStats): Promise<NetworkStats> {
 		return {
 			incomingRequests: 0,
 			outgoingRequests: 0,
