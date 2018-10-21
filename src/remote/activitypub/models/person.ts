@@ -190,7 +190,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(user, img)
+			: resolveImage(user, img).catch(() => null)
 	)));
 
 	const avatarId = avatar ? avatar._id : null;
@@ -276,7 +276,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(exist, img)
+			: resolveImage(exist, img).catch(() => null)
 	)));
 
 	// Update user
