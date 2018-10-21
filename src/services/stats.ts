@@ -108,50 +108,50 @@ abstract class Chart<T> {
 
 		if (currentStats) {
 			return currentStats;
-		} else {
-			// 集計期間が変わってから、初めてのチャート更新なら
-			// 最も最近の統計を持ってくる
-			// * 例えば集計期間が「日」である場合で考えると、
-			// * 昨日何もチャートを更新するような出来事がなかった場合は、
-			// * 統計がそもそも作られずドキュメントが存在しないということがあり得るため、
-			// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
-			const mostRecentStats = await this.collection.findOne({
+		}
+
+		// 集計期間が変わってから、初めてのチャート更新なら
+		// 最も最近の統計を持ってくる
+		// * 例えば集計期間が「日」である場合で考えると、
+		// * 昨日何もチャートを更新するような出来事がなかった場合は、
+		// * 統計がそもそも作られずドキュメントが存在しないということがあり得るため、
+		// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
+		const mostRecentStats = await this.collection.findOne({
+			group: group,
+			span: span
+		}, {
+			sort: {
+				date: -1
+			}
+		});
+
+		if (mostRecentStats) {
+			// 現在の統計を初期挿入
+			const data = await this.generateTemplate(false, mostRecentStats.data);
+
+			const stats = await this.collection.insert({
 				group: group,
-				span: span
-			}, {
-				sort: {
-					date: -1
-				}
+				span: span,
+				date: current,
+				data: data
 			});
 
-			if (mostRecentStats) {
-				// 現在の統計を初期挿入
-				const data = await this.generateTemplate(false, mostRecentStats.data);
+			return stats;
+		} else {
+			// 統計が存在しなかったら
+			// * Misskeyインスタンスを建てて初めてのチャート更新時など
 
-				const stats = await this.collection.insert({
-					group: group,
-					span: span,
-					date: current,
-					data: data
-				});
+			// 空の統計を作成
+			const data = await this.generateTemplate(true);
 
-				return stats;
-			} else {
-				// 統計が存在しなかったら
-				// * Misskeyインスタンスを建てて初めてのチャート更新時など
+			const stats = await this.collection.insert({
+				group: group,
+				span: span,
+				date: current,
+				data: data
+			});
 
-				// 空の統計を作成
-				const data = await this.generateTemplate(true);
-
-				const stats = await this.collection.insert({
-					group: group,
-					span: span,
-					date: current,
-					data: data
-				});
-
-				return stats;
-			}
+			return stats;
 		}
 	}
 
