@@ -22,8 +22,7 @@
 				:key="note.id"
 				@update:note="onNoteUpdated(i, $event)"
 				:media-view="mediaView"
-				:mini="true"
-				@parentFocus="parentFocus"/>
+				:mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
 				<span>%fa:angle-up%{{ note._datetext }}</span>
 				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
@@ -109,10 +108,6 @@ export default Vue.extend({
 	methods: {
 		focus() {
 			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
-		},
-
-		parentFocus(direction) {
-			this.$emit('parentFocus', direction);
 		},
 
 		onNoteUpdated(i, note) {

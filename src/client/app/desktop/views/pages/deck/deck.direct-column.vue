@@ -2,7 +2,7 @@
 <x-column :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">%fa:envelope R%{{ name }}</span>
 
-	<x-direct @parentFocus="parentFocus"/>
+	<x-direct/>
 </x-column>
 </template>
 
@@ -38,11 +38,7 @@ export default Vue.extend({
 	methods: {
 		focus() {
 			this.$refs.tl.focus();
-		},
-
-		parentFocus(direction) {
-			this.$emit('parentFocus', direction);
-		},
+		}
 	}
 });
 </script>

@@ -2,7 +2,8 @@
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
 		@dragover.prevent.stop="onDragover"
 		@dragleave="onDragleave"
-		@drop.prevent.stop="onDrop">
+		@drop.prevent.stop="onDrop"
+		v-hotkey="keymap">
 	<header :class="{ indicate: count > 0 }"
 			draggable="true"
 			@click="goTop"
@@ -66,6 +67,15 @@ export default Vue.extend({
 	computed: {
 		isTemporaryColumn(): boolean {
 			return this.column == null;
+		},
+
+		keymap(): any {
+			return {
+				'shift+up': () => this.$parent.$emit('parentFocus', 'up'),
+				'shift+down': () => this.$parent.$emit('parentFocus', 'down'),
+				'shift+left': () => this.$parent.$emit('parentFocus', 'left'),
+				'shift+right': () => this.$parent.$emit('parentFocus', 'right'),
+			};
 		}
 	},
 

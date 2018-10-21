@@ -2,7 +2,7 @@
 <x-column :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">%fa:at%{{ name }}</span>
 
-	<x-mentions ref="tl" @parentFocus="parentFocus"/>
+	<x-mentions ref="tl"/>
 </x-column>
 </template>
 
@@ -38,11 +38,7 @@ export default Vue.extend({
 	methods: {
 		focus() {
 			this.$refs.tl.focus();
-		},
-
-		parentFocus(direction) {
-			this.$emit('parentFocus', direction);
-		},
+		}
 	}
 });
 </script>

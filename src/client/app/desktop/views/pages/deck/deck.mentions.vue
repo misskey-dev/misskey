@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null" @parentFocus="parentFocus"/>
+	<x-notes ref="timeline" :more="existMore ? more : null"/>
 </template>
 
 <script lang="ts">
@@ -89,11 +89,7 @@ export default Vue.extend({
 
 		focus() {
 			this.$refs.timeline.focus();
-		},
-
-		parentFocus(direction) {
-			this.$emit('parentFocus', direction);
-		},
+		}
 	}
 });
 </script>
