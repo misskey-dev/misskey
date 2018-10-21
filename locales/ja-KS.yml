@@ -1020,8 +1020,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "よう話すツレは居らん"
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーはあかんわ。凍結されとる。"
-desktop/views/pages/user/user.home.vue:
-  last-used-at: "最後いつ来た？"
+  last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
   title: "写真"
   loading: "読み込んどります"
@@ -1301,6 +1300,7 @@ mobile/views/pages/settings.vue:
   signout: "さいなら"
   sound: "サウンド"
   enable-sounds: "サウンド鳴らす"
+  mark-as-read-all-unread-notes: "すべての通知を既読にしますか？"
 mobile/views/pages/user.vue:
   follows-you: "フォローされとるで"
   following: "フォロー"
