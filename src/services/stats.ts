@@ -61,10 +61,13 @@ abstract class Stats<T> {
 	protected collection: ICollection<Log<T>>;
 	protected abstract async getTemplate(init: boolean, latest?: T, group?: any): Promise<T>;
 
-	constructor(name: string) {
+	constructor(name: string, grouped = false) {
 		this.collection = db.get<Log<T>>(`stats.${name}`);
-		this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
-		this.collection.createIndex('group');
+		if (grouped) {
+			this.collection.createIndex({ span: -1, date: -1, group: -1 }, { unique: true });
+		} else {
+			this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
+		}
 	}
 
 	@autobind
@@ -668,7 +671,7 @@ type HashtagLog = {
 
 class HashtagStats extends Stats<HashtagLog> {
 	constructor() {
-		super('hashtag');
+		super('hashtag', true);
 	}
 
 	@autobind
@@ -743,7 +746,7 @@ type FollowingLog = {
 
 class FollowingStats extends Stats<FollowingLog> {
 	constructor() {
-		super('following');
+		super('following', true);
 	}
 
 	@autobind
