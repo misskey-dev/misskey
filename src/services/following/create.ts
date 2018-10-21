@@ -1,7 +1,5 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
 import Following from '../../models/following';
-import FollowingLog from '../../models/following-log';
-import FollowedLog from '../../models/followed-log';
 import { publishMainStream } from '../../stream';
 import notify from '../../notify';
 import pack from '../../remote/activitypub/renderer';
@@ -20,7 +18,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		return;
 	}
 
-	const following = await Following.insert({
+	await Following.insert({
 		createdAt: new Date(),
 		followerId: follower._id,
 		followeeId: followee._id,
@@ -44,12 +42,6 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 			followingCount: 1
 		}
 	});
-
-	FollowingLog.insert({
-		createdAt: following.createdAt,
-		userId: follower._id,
-		count: follower.followingCount + 1
-	});
 	//#endregion
 
 	//#region Increment followers count
@@ -57,11 +49,6 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		$inc: {
 			followersCount: 1
 		}
-	});
-	FollowedLog.insert({
-		createdAt: following.createdAt,
-		userId: followee._id,
-		count: followee.followersCount + 1
 	});
 	//#endregion
 
