@@ -807,10 +807,10 @@ class FollowingStats extends Stats<FollowingLog> {
 
 		this.inc({
 			[isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
-		});
+		}, follower._id);
 		this.inc({
 			[isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
-		});
+		}, followee._id);
 	}
 }
 
