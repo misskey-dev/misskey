@@ -159,8 +159,14 @@ abstract class Chart<T> {
 	protected commit(query: Obj, group?: Obj, uniqueKey?: string, uniqueValue?: string): void {
 		const update = (stats: ChartDocument<T>) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
-			if (uniqueKey && stats.unique && stats.unique[uniqueKey] && stats.unique[uniqueKey].includes(uniqueValue)) return;
+			if (
+				uniqueKey &&
+				stats.unique &&
+				stats.unique[uniqueKey] &&
+				stats.unique[uniqueKey].includes(uniqueValue)
+			) return;
 
+			// ユニークインクリメントの指定のキーに値を追加
 			if (uniqueKey) {
 				query['$push'] = {
 					[`unique.${uniqueKey}`]: uniqueValue
@@ -241,21 +247,21 @@ abstract class Chart<T> {
 
 		/**
 		 * [{
-		 * 	x: 1,
-		 * 	y: 5
+		 * 	xxxxx: 1,
+		 * 	yyyyy: 5
 		 * }, {
-		 * 	x: 2,
-		 * 	y: 6
+		 * 	xxxxx: 2,
+		 * 	yyyyy: 6
 		 * }, {
-		 * 	x: 3,
-		 * 	y: 7
+		 * 	xxxxx: 3,
+		 * 	yyyyy: 7
 		 * }]
 		 *
 		 * を
 		 *
 		 * {
-		 * 	x: [1, 2, 3],
-		 * 	y: [5, 6, 7]
+		 * 	xxxxx: [1, 2, 3],
+		 * 	yyyyy: [5, 6, 7]
 		 * }
 		 *
 		 * にする
