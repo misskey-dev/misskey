@@ -748,7 +748,12 @@ class FollowingStats extends Stats<FollowingLog> {
 
 	@autobind
 	protected async getTemplate(init: boolean, latestLog?: FollowingLog, group?: any): Promise<FollowingLog> {
-		const [localFollowings, localFollowers, remoteFollowings, remoteFollowers] = init ? await Promise.all([
+		const [
+			localFollowingsCount,
+			localFollowersCount,
+			remoteFollowingsCount,
+			remoteFollowersCount
+		] = init ? await Promise.all([
 			Following.count({ followerId: group, '_followee.host': null }),
 			Following.count({ followeeId: group, '_user.host': null }),
 			Following.count({ followerId: group, '_followee.host': { $ne: null } }),
@@ -763,24 +768,24 @@ class FollowingStats extends Stats<FollowingLog> {
 		return {
 			local: {
 				followings: {
-					total: localFollowings,
+					total: localFollowingsCount,
 					inc: 0,
 					dec: 0
 				},
 				followers: {
-					total: localFollowers,
+					total: localFollowersCount,
 					inc: 0,
 					dec: 0
 				}
 			},
 			remote: {
 				followings: {
-					total: remoteFollowings,
+					total: remoteFollowingsCount,
 					inc: 0,
 					dec: 0
 				},
 				followers: {
-					total: remoteFollowers,
+					total: remoteFollowersCount,
 					inc: 0,
 					dec: 0
 				}
