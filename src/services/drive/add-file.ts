@@ -185,6 +185,10 @@ export default async function(
 					// 種類が同定できなかったら application/octet-stream にする
 					res(['application/octet-stream', null]);
 				}
+			})
+			.on('end', () => {
+				// maybe 0 bytes
+				res(['application/octet-stream', null]);
 			});
 	});
 
