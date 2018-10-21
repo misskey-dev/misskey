@@ -7,6 +7,8 @@ const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'インスタンス情報を取得します。',
 		'en-US': 'Get the information of this instance.'

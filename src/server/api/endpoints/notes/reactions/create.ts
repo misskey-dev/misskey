@@ -6,6 +6,8 @@ import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定した投稿にリアクションします。',
 		'en-US': 'React to a note.'

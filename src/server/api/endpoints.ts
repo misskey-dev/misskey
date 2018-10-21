@@ -2,6 +2,8 @@ import * as path from 'path';
 import * as glob from 'glob';
 
 export interface IEndpointMeta {
+	stability?: 'deprecated' | 'experimental' | 'stable';
+
 	desc?: any;
 
 	params?: any;
