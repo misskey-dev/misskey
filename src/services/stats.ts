@@ -860,7 +860,7 @@ type PerUserNotesLog = {
 
 class PerUserNotesStats extends Stats<PerUserNotesLog> {
 	constructor() {
-		super('perUserNotes');
+		super('perUserNotes', true);
 	}
 
 	@autobind
