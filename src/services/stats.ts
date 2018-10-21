@@ -228,6 +228,7 @@ abstract class Chart<T> {
 		 */
 		const dive = (x: Obj, path?: string) => {
 			Object.entries(x).forEach(([k, v]) => {
+				const p = path ? `${path}.${k}` : k;
 				if (typeof v == 'object') {
 					dive(v, p);
 				} else {

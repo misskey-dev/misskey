@@ -56,6 +56,8 @@ const rgba = (color: string): string => {
 	return color.replace('rgb', 'rgba').replace(')', ', 0.1)');
 };
 
+const limit = 35;
+
 export default Vue.extend({
 	components: {
 		XChart
@@ -63,6 +65,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			now: null,
 			chart: null,
 			chartType: 'notes',
 			span: 'hour'
@@ -90,30 +93,17 @@ export default Vue.extend({
 		},
 
 		stats(): any[] {
-			const now = new Date();
-			const y = now.getFullYear();
-			const m = now.getMonth();
-			const d = now.getDate();
-			const h = now.getHours();
-
 			const stats =
 				this.span == 'day' ? this.chart.perDay :
 				this.span == 'hour' ? this.chart.perHour :
 				null;
-
-			stats.forEach((s, i) => {
-				s.date =
-					this.span == 'day' ? new Date(y, m, d - i) :
-					this.span == 'hour' ? new Date(y, m, d, h - i) :
-					null;
-			});
 
 			return stats;
 		}
 	},
 
 	async created() {
-		const limit = 35;
+		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([Promise.all([
 			(this as any).api('charts/users', { limit: limit, span: 'hour' }),
@@ -128,37 +118,49 @@ export default Vue.extend({
 		])]);
 
 		const chart = {
-			perHour: [],
-			perDay: []
+			perHour: {
+				users: perHour[0],
+				notes: perHour[1],
+				drive: perHour[2],
+				network: perHour[3]
+			},
+			perDay: {
+				users: perDay[0],
+				notes: perDay[1],
+				drive: perDay[2],
+				network: perDay[3]
+			}
 		};
-
-		for (let i = 0; i < limit; i++) {
-			chart.perHour.push({
-				users: perHour[0][i],
-				notes: perHour[1][i],
-				drive: perHour[2][i],
-				network: perHour[3][i]
-			});
-			chart.perDay.push({
-				users: perDay[0][i],
-				notes: perDay[1][i],
-				drive: perDay[2][i],
-				network: perDay[3][i]
-			});
-		}
 
 		this.chart = chart;
 	},
 
 	methods: {
+		getDate(i: number) {
+			const y = this.now.getFullYear();
+			const m = this.now.getMonth();
+			const d = this.now.getDate();
+			const h = this.now.getHours();
+
+			return (
+				this.span == 'day' ? new Date(y, m, d - i) :
+				this.span == 'hour' ? new Date(y, m, d, h - i) :
+				null
+			);
+		},
+
 		notesChart(type: string): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				normal: type == 'local' ? x.notes.local.diffs.normal : type == 'remote' ? x.notes.remote.diffs.normal : x.notes.local.diffs.normal + x.notes.remote.diffs.normal,
-				reply: type == 'local' ? x.notes.local.diffs.reply : type == 'remote' ? x.notes.remote.diffs.reply : x.notes.local.diffs.reply + x.notes.remote.diffs.reply,
-				renote: type == 'local' ? x.notes.local.diffs.renote : type == 'remote' ? x.notes.remote.diffs.renote : x.notes.local.diffs.renote + x.notes.remote.diffs.renote,
-				all: type == 'local' ? (x.notes.local.inc + -x.notes.local.dec) : type == 'remote' ? (x.notes.remote.inc + -x.notes.remote.dec) : (x.notes.local.inc + -x.notes.local.dec) + (x.notes.remote.inc + -x.notes.remote.dec)
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					normal: type == 'local' ? this.stats.notes.local.diffs.normal[i] : type == 'remote' ? this.stats.notes.remote.diffs.normal[i] : this.stats.notes.local.diffs.normal[i] + this.stats.notes.remote.diffs.normal[i],
+					reply: type == 'local' ? this.stats.notes.local.diffs.reply[i] : type == 'remote' ? this.stats.notes.remote.diffs.reply[i] : this.stats.notes.local.diffs.reply[i] + this.stats.notes.remote.diffs.reply[i],
+					renote: type == 'local' ? this.stats.notes.local.diffs.renote[i] : type == 'remote' ? this.stats.notes.remote.diffs.renote[i] : this.stats.notes.local.diffs.renote[i] + this.stats.notes.remote.diffs.renote[i],
+					all: type == 'local' ? (this.stats.notes.local.inc[i] + -this.stats.notes.local.dec[i]) : type == 'remote' ? (this.stats.notes.remote.inc[i] + -this.stats.notes.remote.dec[i]) : (this.stats.notes.local.inc[i] + -this.stats.notes.local.dec[i]) + (this.stats.notes.remote.inc[i] + -this.stats.notes.remote.dec[i])
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -220,11 +222,15 @@ export default Vue.extend({
 		},
 
 		notesTotalChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localCount: x.notes.local.total,
-				remoteCount: x.notes.remote.total
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					localCount: this.stats.notes.local.total[i],
+					remoteCount: this.stats.notes.remote.total[i]
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -277,11 +283,15 @@ export default Vue.extend({
 		},
 
 		usersChart(total: boolean): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localCount: total ? x.users.local.total : (x.users.local.inc + -x.users.local.dec),
-				remoteCount: total ? x.users.remote.total : (x.users.remote.inc + -x.users.remote.dec)
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					localCount: total ? this.stats.users.local.total[i] : (this.stats.users.local.inc[i] + -this.stats.users.local.dec[i]),
+					remoteCount: total ? this.stats.users.remote.total[i] : (this.stats.users.remote.inc[i] + -this.stats.users.remote.dec[i])
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -334,13 +344,17 @@ export default Vue.extend({
 		},
 
 		driveChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localInc: x.drive.local.incSize,
-				localDec: -x.drive.local.decSize,
-				remoteInc: x.drive.remote.incSize,
-				remoteDec: -x.drive.remote.decSize,
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					localInc: this.stats.drive.local.incSize[i],
+					localDec: -this.stats.drive.local.decSize[i],
+					remoteInc: this.stats.drive.remote.incSize[i],
+					remoteDec: -this.stats.drive.remote.decSize[i],
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -411,11 +425,15 @@ export default Vue.extend({
 		},
 
 		driveTotalChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localSize: x.drive.local.totalSize,
-				remoteSize: x.drive.remote.totalSize
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					localSize: this.stats.drive.local.totalSize[i],
+					remoteSize: this.stats.drive.remote.totalSize[i]
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -468,13 +486,17 @@ export default Vue.extend({
 		},
 
 		driveFilesChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localInc: x.drive.local.incCount,
-				localDec: -x.drive.local.decCount,
-				remoteInc: x.drive.remote.incCount,
-				remoteDec: -x.drive.remote.decCount
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					localInc: this.stats.drive.local.incCount[i],
+					localDec: -this.stats.drive.local.decCount[i],
+					remoteInc: this.stats.drive.remote.incCount[i],
+					remoteDec: -this.stats.drive.remote.decCount[i]
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -545,11 +567,15 @@ export default Vue.extend({
 		},
 
 		driveFilesTotalChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localCount: x.drive.local.totalCount,
-				remoteCount: x.drive.remote.totalCount,
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					localCount: this.stats.drive.local.totalCount[i],
+					remoteCount: this.stats.drive.remote.totalCount[i],
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -602,10 +628,14 @@ export default Vue.extend({
 		},
 
 		networkRequestsChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				incoming: x.network.incomingRequests
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					incoming: this.stats.network.incomingRequests[i]
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -622,10 +652,14 @@ export default Vue.extend({
 		},
 
 		networkTimeChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				time: x.network.incomingRequests != 0 ? (x.network.totalTime / x.network.incomingRequests) : 0,
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					time: this.stats.network.incomingRequests[i] != 0 ? (this.stats.network.totalTime[i] / this.stats.network.incomingRequests[i]) : 0,
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -642,11 +676,15 @@ export default Vue.extend({
 		},
 
 		networkUsageChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				incoming: x.network.incomingBytes,
-				outgoing: x.network.outgoingBytes
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push({
+					date: this.getDate(i),
+					incoming: this.stats.network.incomingBytes[i],
+					outgoing: this.stats.network.outgoingBytes[i]
+				});
+			}
 
 			return [{
 				datasets: [{
@@ -693,8 +731,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .gkgckalzgidaygcxnugepioremxvxvpt
 	padding 32px
 	background #fff
