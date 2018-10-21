@@ -3,6 +3,7 @@
  */
 
 const nestedProperty = require('nested-property');
+import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import { INote } from '../models/note';
@@ -45,6 +46,11 @@ type ChartDocument<T extends Obj> = {
 	 * データ
 	 */
 	data: T;
+
+	/**
+	 * ユニークインクリメント用
+	 */
+	unique?: Obj;
 };
 
 /**
@@ -61,7 +67,28 @@ abstract class Chart<T> {
 		this.collection.createIndex('group');
 	}
 
-	protected async getCurrentStats(span: Span, group?: Obj): Promise<ChartDocument<T>> {
+	@autobind
+	private convertQuery(x: Obj, path: string): Obj {
+		const query: Obj = {};
+
+		const dive = (x: Obj, path: string) => {
+			Object.entries(x).forEach(([k, v]) => {
+				const p = path ? `${path}.${k}` : k;
+				if (typeof v === 'number') {
+					query[p] = v;
+				} else {
+					dive(v, p);
+				}
+			});
+		};
+
+		dive(x, path);
+
+		return query;
+	}
+
+	@autobind
+	private async getCurrentStats(span: Span, group?: Obj): Promise<ChartDocument<T>> {
 		const now = new Date();
 		const y = now.getFullYear();
 		const m = now.getMonth();
@@ -129,39 +156,42 @@ abstract class Chart<T> {
 		}
 	}
 
-	protected inc(inc: Partial<T>, group?: Obj): void {
-		const query: Obj = {};
+	@autobind
+	protected commit(query: Obj, group?: Obj, uniqueKey?: string, uniqueValue?: string): void {
+		const update = (stats: ChartDocument<T>) => {
+			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
+			if (uniqueKey && stats.unique && stats.unique[uniqueKey] && stats.unique[uniqueKey].includes(uniqueValue)) return;
 
-		const dive = (x: Obj, path?: string) => {
-			Object.entries(x).forEach(([k, v]) => {
-				const p = path ? `${path}.${k}` : k;
-				if (typeof v === 'number') {
-					query[`data.${p}`] = v;
-				} else {
-					dive(v, p);
-				}
-			});
+			if (uniqueKey) {
+				query['$push'] = {
+					[`unique.${uniqueKey}`]: uniqueValue
+				};
+			}
+
+			this.collection.update({
+				_id: stats._id
+			}, query);
 		};
 
-		dive(inc);
-
-		this.getCurrentStats('day', group).then(stats => {
-			this.collection.findOneAndUpdate({
-				_id: stats._id
-			}, {
-				$inc: query
-			});
-		});
-
-		this.getCurrentStats('hour', group).then(stats => {
-			this.collection.findOneAndUpdate({
-				_id: stats._id
-			}, {
-				$inc: query
-			});
-		});
+		this.getCurrentStats('day', group).then(stats => update(stats));
+		this.getCurrentStats('hour', group).then(stats => update(stats));
 	}
 
+	@autobind
+	protected inc(inc: Partial<T>, group?: Obj): void {
+		this.commit({
+			$inc: this.convertQuery(inc, 'data')
+		}, group);
+	}
+
+	@autobind
+	protected incIfUnique(inc: Partial<T>, key: string, value: string, group?: Obj): void {
+		this.commit({
+			$inc: this.convertQuery(inc, 'data')
+		}, group, key, value);
+	}
+
+	@autobind
 	public async getStats(span: Span, range: number, group?: Obj): Promise<ArrayValue<T>> {
 		const chart: T[] = [];
 
@@ -296,6 +326,7 @@ class UsersChart extends Chart<UsersStats> {
 		super('usersStats');
 	}
 
+	@autobind
 	protected generateInitialStats(): UsersStats {
 		return {
 			local: {
@@ -311,6 +342,7 @@ class UsersChart extends Chart<UsersStats> {
 		};
 	}
 
+	@autobind
 	protected generateEmptyStats(mostRecentStats: UsersStats): UsersStats {
 		return {
 			local: {
@@ -326,6 +358,7 @@ class UsersChart extends Chart<UsersStats> {
 		};
 	}
 
+	@autobind
 	public async update(user: IUser, isAdditional: boolean) {
 		const update: Obj = {};
 
@@ -424,6 +457,7 @@ class NotesChart extends Chart<NotesStats> {
 		super('notesStats');
 	}
 
+	@autobind
 	protected generateInitialStats(): NotesStats {
 		return {
 			local: {
@@ -449,6 +483,7 @@ class NotesChart extends Chart<NotesStats> {
 		};
 	}
 
+	@autobind
 	protected generateEmptyStats(mostRecentStats: NotesStats): NotesStats {
 		return {
 			local: {
@@ -474,8 +509,11 @@ class NotesChart extends Chart<NotesStats> {
 		};
 	}
 
+	@autobind
 	public async update(note: INote, isAdditional: boolean) {
-		const update: Obj = {};
+		const update: Obj = {
+			diffs: {}
+		};
 
 		update.total = isAdditional ? 1 : -1;
 
@@ -577,6 +615,7 @@ class DriveChart extends Chart<DriveStats> {
 		super('driveStats');
 	}
 
+	@autobind
 	protected generateInitialStats(): DriveStats {
 		return {
 			local: {
@@ -598,6 +637,7 @@ class DriveChart extends Chart<DriveStats> {
 		};
 	}
 
+	@autobind
 	protected generateEmptyStats(mostRecentStats: DriveStats): DriveStats {
 		return {
 			local: {
@@ -619,6 +659,7 @@ class DriveChart extends Chart<DriveStats> {
 		};
 	}
 
+	@autobind
 	public async update(file: IDriveFile, isAdditional: boolean) {
 		const update: Obj = {};
 
@@ -678,6 +719,7 @@ class NetworkChart extends Chart<NetworkStats> {
 		super('networkStats');
 	}
 
+	@autobind
 	protected generateInitialStats(): NetworkStats {
 		return {
 			incomingRequests: 0,
@@ -688,6 +730,7 @@ class NetworkChart extends Chart<NetworkStats> {
 		};
 	}
 
+	@autobind
 	protected generateEmptyStats(mostRecentStats: NetworkStats): NetworkStats {
 		return {
 			incomingRequests: 0,
@@ -698,6 +741,7 @@ class NetworkChart extends Chart<NetworkStats> {
 		};
 	}
 
+	@autobind
 	public async update(incomingRequests: number, time: number, incomingBytes: number, outgoingBytes: number) {
 		const inc: Partial<NetworkStats> = {
 			incomingRequests: incomingRequests,
