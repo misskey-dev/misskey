@@ -1,3 +1,4 @@
+const nestedProperty = require('nested-property');
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import { INote } from '../models/note';
@@ -11,8 +12,13 @@ type Partial<T> = {
 	[P in keyof T]?: Partial<T[P]>;
 };
 
+type ArrayValue<T> = {
+	[P in keyof T]: T[P] extends number ? Array<T[P]> : ArrayValue<T[P]>;
+};
+
 type Span = 'day' | 'hour';
 
+//#region Chart Core
 type ChartDocument<T extends Obj> = {
 	_id: mongo.ObjectID;
 
@@ -119,17 +125,18 @@ abstract class Chart<T> {
 	protected inc(inc: Partial<T>, group?: Obj): void {
 		const query: Obj = {};
 
-		const dive = (path: string, x: Obj) => {
+		const dive = (x: Obj, path?: string) => {
 			Object.entries(x).forEach(([k, v]) => {
+				const p = path ? `${path}.${k}` : k;
 				if (typeof v === 'number') {
-					query[path == null ? `data.${k}` : `data.${path}.${k}`] = v;
+					query[`data.${p}`] = v;
 				} else {
-					dive(path == null ? k : `${path}.${k}`, v);
+					dive(v, p);
 				}
 			});
 		};
 
-		dive(null, inc);
+		dive(inc);
 
 		this.getCurrentStats('day', group).then(stats => {
 			this.collection.findOneAndUpdate({
@@ -148,7 +155,7 @@ abstract class Chart<T> {
 		});
 	}
 
-	public async getStats(span: Span, range: number, group?: Obj): Promise<T[]> {
+	public async getStats(span: Span, range: number, group?: Obj): Promise<ArrayValue<T>> {
 		const chart: T[] = [];
 
 		const now = new Date();
@@ -196,9 +203,45 @@ abstract class Chart<T> {
 			}
 		}
 
-		return chart;
+		const res: ArrayValue<T> = {} as any;
+
+		/**
+		 * [{
+		 * 	x: 1,
+		 * 	y: 5
+		 * }, {
+		 * 	x: 2,
+		 * 	y: 6
+		 * }, {
+		 * 	x: 3,
+		 * 	y: 7
+		 * }]
+		 *
+		 * を
+		 *
+		 * {
+		 * 	x: [1, 2, 3],
+		 * 	y: [5, 6, 7]
+		 * }
+		 *
+		 * にする
+		 */
+		const dive = (x: Obj, path?: string) => {
+			Object.entries(x).forEach(([k, v]) => {
+				if (typeof v == 'object') {
+					dive(v, p);
+				} else {
+					nestedProperty.set(res, p, chart.map(s => nestedProperty.get(s, p)));
+				}
+			});
+		};
+
+		dive(chart[0]);
+
+		return res;
 	}
 }
+//#endregion
 
 //#region Users stats
 /**
