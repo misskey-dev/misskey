@@ -1020,8 +1020,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Brak użytkowników"
 desktop/views/pages/user/user.vue:
   is-suspended: "To konto zostało zawieszone."
-desktop/views/pages/user/user.home.vue:
-  last-used-at: "Ostatnio aktywny"
+  last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
   title: "Zdjęcia"
   loading: "Ładowanie"
@@ -1301,6 +1300,7 @@ mobile/views/pages/settings.vue:
   signout: "Wyloguj"
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
+  mark-as-read-all-unread-notes: "すべての通知を既読にしますか？"
 mobile/views/pages/user.vue:
   follows-you: "Śledzi Cię"
   following: "Śledzeni"
