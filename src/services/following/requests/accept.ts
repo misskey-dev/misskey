@@ -6,6 +6,7 @@ import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
 import Following from '../../../models/following';
 import { publishMainStream } from '../../../stream';
+import { followingStats } from '../../stats';
 
 export default async function(followee: IUser, follower: IUser) {
 	await Following.insert({
@@ -56,6 +57,8 @@ export default async function(followee: IUser, follower: IUser) {
 		}
 	});
 	//#endregion
+
+	followingStats.update(follower, followee, true);
 
 	await User.update({ _id: followee._id }, {
 		$inc: {

@@ -10,6 +10,7 @@ import Note, { INote } from '../models/note';
 import User, { isLocalUser, IUser } from '../models/user';
 import DriveFile, { IDriveFile } from '../models/drive-file';
 import { ICollection } from 'monk';
+import Following from '../models/following';
 
 type Obj = { [key: string]: any };
 
@@ -58,7 +59,7 @@ type Log<T extends Obj> = {
  */
 abstract class Stats<T> {
 	protected collection: ICollection<Log<T>>;
-	protected abstract async generateTemplate(init: boolean, latestLog?: T): Promise<T>;
+	protected abstract async getTemplate(init: boolean, latestLog?: T, group?: any): Promise<T>;
 
 	constructor(name: string) {
 		this.collection = db.get<Log<T>>(`stats.${name}`);
@@ -127,7 +128,7 @@ abstract class Stats<T> {
 
 		if (latestLog) {
 			// 現在の統計を初期挿入
-			const data = await this.generateTemplate(false, latestLog.data);
+			const data = await this.getTemplate(false, latestLog.data);
 
 			const log = await this.collection.insert({
 				group: group,
@@ -142,7 +143,7 @@ abstract class Stats<T> {
 			// * Misskeyインスタンスを建てて初めてのチャート更新時など
 
 			// 空の統計を作成
-			const data = await this.generateTemplate(true);
+			const data = await this.getTemplate(true, null, group);
 
 			const log = await this.collection.insert({
 				group: group,
@@ -237,7 +238,7 @@ abstract class Stats<T> {
 				promisedChart.unshift(Promise.resolve(log.data));
 			} else { // 隙間埋め
 				const latest = logs.find(l => l.date.getTime() < current.getTime());
-				promisedChart.unshift(this.generateTemplate(false, latest ? latest.data : null));
+				promisedChart.unshift(this.getTemplate(false, latest ? latest.data : null));
 			}
 		}
 
@@ -315,7 +316,7 @@ class UsersStats extends Stats<UsersLog> {
 	}
 
 	@autobind
-	protected async generateTemplate(init: boolean, latestLog?: UsersLog): Promise<UsersLog> {
+	protected async getTemplate(init: boolean, latestLog?: UsersLog): Promise<UsersLog> {
 		const [localCount, remoteCount] = init ? await Promise.all([
 			User.count({ host: null }),
 			User.count({ host: { $ne: null } })
@@ -406,7 +407,7 @@ class NotesStats extends Stats<NotesLog> {
 	}
 
 	@autobind
-	protected async generateTemplate(init: boolean, latestLog?: NotesLog): Promise<NotesLog> {
+	protected async getTemplate(init: boolean, latestLog?: NotesLog): Promise<NotesLog> {
 		const [localCount, remoteCount] = init ? await Promise.all([
 			Note.count({ '_user.host': null }),
 			Note.count({ '_user.host': { $ne: null } })
@@ -516,7 +517,7 @@ class DriveStats extends Stats<DriveLog> {
 	}
 
 	@autobind
-	protected async generateTemplate(init: boolean, latestLog?: DriveLog): Promise<DriveLog> {
+	protected async getTemplate(init: boolean, latestLog?: DriveLog): Promise<DriveLog> {
 		const calcSize = (local: boolean) => DriveFile
 			.aggregate([{
 				$match: {
@@ -628,7 +629,7 @@ class NetworkStats extends Stats<NetworkLog> {
 	}
 
 	@autobind
-	protected async generateTemplate(init: boolean, latestLog?: NetworkLog): Promise<NetworkLog> {
+	protected async getTemplate(init: boolean, latestLog?: NetworkLog): Promise<NetworkLog> {
 		return {
 			incomingRequests: 0,
 			outgoingRequests: 0,
@@ -671,7 +672,7 @@ class HashtagStats extends Stats<HashtagLog> {
 	}
 
 	@autobind
-	protected async generateTemplate(init: boolean, latestLog?: HashtagLog): Promise<HashtagLog> {
+	protected async getTemplate(init: boolean, latestLog?: HashtagLog): Promise<HashtagLog> {
 		return {
 			count: 0
 		};
@@ -689,4 +690,124 @@ class HashtagStats extends Stats<HashtagLog> {
 
 export const hashtagStats = new HashtagStats();
 //#endregion
+
+//#region Following stats
+/**
+ * ユーザーごとのフォローに関する統計
+ */
+type FollowingLog = {
+	local: {
+		/**
+		 * フォローしている
+		 */
+		followings: {
+			/**
+			 * 合計
+			 */
+			total: number;
+
+			/**
+			 * フォローした数
+			 */
+			inc: number;
+
+			/**
+			 * フォロー解除した数
+			 */
+			dec: number;
+		};
+
+		/**
+		 * フォローされている
+		 */
+		followers: {
+			/**
+			 * 合計
+			 */
+			total: number;
+
+			/**
+			 * フォローされた数
+			 */
+			inc: number;
+
+			/**
+			 * フォロー解除された数
+			 */
+			dec: number;
+		};
+	};
+
+	remote: FollowingLog['local'];
+};
+
+class FollowingStats extends Stats<FollowingLog> {
+	constructor() {
+		super('following');
+	}
+
+	@autobind
+	protected async getTemplate(init: boolean, latestLog?: FollowingLog, group?: any): Promise<FollowingLog> {
+		const [localFollowings, localFollowers, remoteFollowings, remoteFollowers] = init ? await Promise.all([
+			Following.count({ followerId: group, '_followee.host': null }),
+			Following.count({ followeeId: group, '_user.host': null }),
+			Following.count({ followerId: group, '_followee.host': { $ne: null } }),
+			Following.count({ followeeId: group, '_user.host': { $ne: null } })
+		]) : [
+			latestLog ? latestLog.local.followings.total : 0,
+			latestLog ? latestLog.local.followers.total : 0,
+			latestLog ? latestLog.remote.followings.total : 0,
+			latestLog ? latestLog.remote.followers.total : 0
+		];
+
+		return {
+			local: {
+				followings: {
+					total: localFollowings,
+					inc: 0,
+					dec: 0
+				},
+				followers: {
+					total: localFollowers,
+					inc: 0,
+					dec: 0
+				}
+			},
+			remote: {
+				followings: {
+					total: remoteFollowings,
+					inc: 0,
+					dec: 0
+				},
+				followers: {
+					total: remoteFollowers,
+					inc: 0,
+					dec: 0
+				}
+			}
+		};
+	}
+
+	@autobind
+	public async update(follower: IUser, followee: IUser, isFollow: boolean) {
+		const update: Obj = {};
+
+		update.total = isFollow ? 1 : -1;
+
+		if (isFollow) {
+			update.inc = 1;
+		} else {
+			update.dec = 1;
+		}
+
+		this.inc({
+			[isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
+		});
+		this.inc({
+			[isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
+		});
+	}
+}
+
+export const followingStats = new FollowingStats();
 //#endregion
