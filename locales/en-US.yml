@@ -1041,9 +1041,9 @@ desktop/views/pages/user/user.header.vue:
   following: "Following"
   followers: "Followers"
   is-bot: "This account is a Bot"
-  years-old: "歳"
-  year: "年"
-  month: "月"
+  years-old: " years old"
+  year: "/"
+  month: "/"
   day: "日"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
