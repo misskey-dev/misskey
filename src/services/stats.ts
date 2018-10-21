@@ -755,9 +755,9 @@ class FollowingStats extends Stats<FollowingLog> {
 			remoteFollowersCount
 		] = init ? await Promise.all([
 			Following.count({ followerId: group, '_followee.host': null }),
-			Following.count({ followeeId: group, '_user.host': null }),
+			Following.count({ followeeId: group, '_follower.host': null }),
 			Following.count({ followerId: group, '_followee.host': { $ne: null } }),
-			Following.count({ followeeId: group, '_user.host': { $ne: null } })
+			Following.count({ followeeId: group, '_follower.host': { $ne: null } })
 		]) : [
 			latestLog ? latestLog.local.followings.total : 0,
 			latestLog ? latestLog.local.followers.total : 0,
