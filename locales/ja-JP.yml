@@ -1165,8 +1165,6 @@ desktop/views/pages/user/user.friends.vue:
 
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーは凍結されています。"
-
-desktop/views/pages/user/user.home.vue:
   last-used-at: "最終アクセス"
 
 desktop/views/pages/user/user.photos.vue:
@@ -1502,6 +1500,7 @@ mobile/views/pages/settings.vue:
   signout: "サインアウト"
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
+  mark-as-read-all-unread-notes: "すべての通知を既読にしますか？"
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
