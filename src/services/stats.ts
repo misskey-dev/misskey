@@ -291,37 +291,22 @@ abstract class Stats<T> {
 type UsersLog = {
 	local: {
 		/**
-		 * 集計期間時点での、全ユーザー数 (ローカル)
+		 * 集計期間時点での、全ユーザー数
 		 */
 		total: number;
 
 		/**
-		 * 増加したユーザー数 (ローカル)
+		 * 増加したユーザー数
 		 */
 		inc: number;
 
 		/**
-		 * 減少したユーザー数 (ローカル)
+		 * 減少したユーザー数
 		 */
 		dec: number;
 	};
 
-	remote: {
-		/**
-		 * 集計期間時点での、全ユーザー数 (リモート)
-		 */
-		total: number;
-
-		/**
-		 * 増加したユーザー数 (リモート)
-		 */
-		inc: number;
-
-		/**
-		 * 減少したユーザー数 (リモート)
-		 */
-		dec: number;
-	};
+	remote: UsersLog['local'];
 };
 
 class UsersStats extends Stats<UsersLog> {
@@ -380,71 +365,39 @@ export const usersStats = new UsersStats();
 type NotesLog = {
 	local: {
 		/**
-		 * 集計期間時点での、全投稿数 (ローカル)
+		 * 集計期間時点での、全投稿数
 		 */
 		total: number;
 
 		/**
-		 * 増加した投稿数 (ローカル)
+		 * 増加した投稿数
 		 */
 		inc: number;
 
 		/**
-		 * 減少した投稿数 (ローカル)
+		 * 減少した投稿数
 		 */
 		dec: number;
 
 		diffs: {
 			/**
-			 * 通常の投稿数の差分 (ローカル)
+			 * 通常の投稿数の差分
 			 */
 			normal: number;
 
 			/**
-			 * リプライの投稿数の差分 (ローカル)
+			 * リプライの投稿数の差分
 			 */
 			reply: number;
 
 			/**
-			 * Renoteの投稿数の差分 (ローカル)
+			 * Renoteの投稿数の差分
 			 */
 			renote: number;
 		};
 	};
 
-	remote: {
-		/**
-		 * 集計期間時点での、全投稿数 (リモート)
-		 */
-		total: number;
-
-		/**
-		 * 増加した投稿数 (リモート)
-		 */
-		inc: number;
-
-		/**
-		 * 減少した投稿数 (リモート)
-		 */
-		dec: number;
-
-		diffs: {
-			/**
-			 * 通常の投稿数の差分 (リモート)
-			 */
-			normal: number;
-
-			/**
-			 * リプライの投稿数の差分 (リモート)
-			 */
-			reply: number;
-
-			/**
-			 * Renoteの投稿数の差分 (リモート)
-			 */
-			renote: number;
-		};
-	};
+	remote: NotesLog['local'];
 };
 
 class NotesStats extends Stats<NotesLog> {
@@ -524,67 +477,37 @@ export const notesStats = new NotesStats();
 type DriveLog = {
 	local: {
 		/**
-		 * 集計期間時点での、全ドライブファイル数 (ローカル)
+		 * 集計期間時点での、全ドライブファイル数
 		 */
 		totalCount: number;
 
 		/**
-		 * 集計期間時点での、全ドライブファイルの合計サイズ (ローカル)
+		 * 集計期間時点での、全ドライブファイルの合計サイズ
 		 */
 		totalSize: number;
 
 		/**
-		 * 増加したドライブファイル数 (ローカル)
+		 * 増加したドライブファイル数
 		 */
 		incCount: number;
 
 		/**
-		 * 増加したドライブ使用量 (ローカル)
+		 * 増加したドライブ使用量
 		 */
 		incSize: number;
 
 		/**
-		 * 減少したドライブファイル数 (ローカル)
+		 * 減少したドライブファイル数
 		 */
 		decCount: number;
 
 		/**
-		 * 減少したドライブ使用量 (ローカル)
+		 * 減少したドライブ使用量
 		 */
 		decSize: number;
 	};
 
-	remote: {
-		/**
-		 * 集計期間時点での、全ドライブファイル数 (リモート)
-		 */
-		totalCount: number;
-
-		/**
-		 * 集計期間時点での、全ドライブファイルの合計サイズ (リモート)
-		 */
-		totalSize: number;
-
-		/**
-		 * 増加したドライブファイル数 (リモート)
-		 */
-		incCount: number;
-
-		/**
-		 * 増加したドライブ使用量 (リモート)
-		 */
-		incSize: number;
-
-		/**
-		 * 減少したドライブファイル数 (リモート)
-		 */
-		decCount: number;
-
-		/**
-		 * 減少したドライブ使用量 (リモート)
-		 */
-		decSize: number;
-	};
+	remote: DriveLog['local'];
 };
 
 class DriveStats extends Stats<DriveLog> {
@@ -765,4 +688,5 @@ class HashtagStats extends Stats<HashtagLog> {
 }
 
 export const hashtagStats = new HashtagStats();
+//#endregion
 //#endregion
