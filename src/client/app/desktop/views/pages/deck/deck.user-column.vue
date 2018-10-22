@@ -297,7 +297,7 @@ export default Vue.extend({
 	> .images
 		display grid
 		grid-template-columns 1fr 1fr 1fr
-		gap 4px
+		gap 8px
 		padding 16px
 		margin-bottom 16px
 		background var(--face)
@@ -307,6 +307,7 @@ export default Vue.extend({
 			background-position center center
 			background-size cover
 			background-clip content-box
+			border-radius 4px
 
 	> .tl
 		background var(--face)
