@@ -37,7 +37,13 @@ async function save(path: string, name: string, type: string, hash: string, size
 	if (config.drive && config.drive.storage == 'minio') {
 		const minio = new Minio.Client(config.drive.config);
 
-		const [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
+		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
+
+		if (ext === '') {
+			if (type === 'image/jpeg') ext = '.jpg';
+			if (type === 'image/png') ext = '.png';
+			if (type === 'image/webp') ext = '.webp';
+		}
 
 		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
 		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.jpg`;
