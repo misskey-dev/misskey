@@ -33,7 +33,7 @@ export default Vue.extend({
 				},
 				tooltips: {
 					intersect: false,
-					mode: 'x',
+					mode: 'index',
 					position: 'nearest'
 				}
 			}, this.opts || {}));
