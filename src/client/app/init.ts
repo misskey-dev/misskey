@@ -167,6 +167,12 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				}
 			}, false);
 
+			window.addEventListener('scroll', () => {
+				if (window.scrollY <= 8) {
+					os.store.commit('clearBehindNotes');
+				}
+			}, { passive: true });
+
 			Vue.mixin({
 				data() {
 					return {
