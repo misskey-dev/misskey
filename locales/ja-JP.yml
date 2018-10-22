@@ -114,7 +114,6 @@ common:
     f: "あなたが書くのを待っています..."
 
   search: "検索"
-  save: "保存"
   delete: "削除"
   loading: "読み込み中"
   ok: "わかった"
@@ -491,6 +490,7 @@ common/views/components/profile-editor.vue:
   careful-bot: "Botからのフォローだけ承認制にする"
   advanced: "その他"
   privacy: "プライバシー"
+  save: "保存"
   saved: "プロフィールを保存しました"
   uploading: "アップロード中"
   upload-failed: "アップロードに失敗しました"
@@ -531,6 +531,7 @@ common/views/widgets/server.vue:
 common/views/widgets/memo.vue:
   title: "付箋"
   memo: "ここに書いて！"
+  save: "保存"
 
 common/views/widgets/slideshow.vue:
   folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"
