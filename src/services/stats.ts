@@ -694,11 +694,11 @@ class HashtagStats extends Stats<HashtagLog> {
 export const hashtagStats = new HashtagStats();
 //#endregion
 
-//#region Following stats
+//#region Per user following stats
 /**
  * ユーザーごとのフォローに関する統計
  */
-type FollowingLog = {
+type PerUserFollowingLog = {
 	local: {
 		/**
 		 * フォローしている
@@ -741,16 +741,16 @@ type FollowingLog = {
 		};
 	};
 
-	remote: FollowingLog['local'];
+	remote: PerUserFollowingLog['local'];
 };
 
-class FollowingStats extends Stats<FollowingLog> {
+class PerUserFollowingStats extends Stats<PerUserFollowingLog> {
 	constructor() {
-		super('following', true);
+		super('perUserFollowing', true);
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: FollowingLog, group?: any): Promise<FollowingLog> {
+	protected async getTemplate(init: boolean, latest?: PerUserFollowingLog, group?: any): Promise<PerUserFollowingLog> {
 		const [
 			localFollowingsCount,
 			localFollowersCount,
@@ -817,7 +817,7 @@ class FollowingStats extends Stats<FollowingLog> {
 	}
 }
 
-export const followingStats = new FollowingStats();
+export const perUserFollowingStats = new PerUserFollowingStats();
 //#endregion
 
 //#region Per user notes stats

@@ -7,7 +7,7 @@ import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
 import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
-import { followingStats } from '../stats';
+import { perUserFollowingStats } from '../stats';
 
 export default async function(follower: IUser, followee: IUser, requestId?: string) {
 	// フォロー対象が鍵アカウントである or
@@ -53,7 +53,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	});
 	//#endregion
 
-	followingStats.update(follower, followee, true);
+	perUserFollowingStats.update(follower, followee, true);
 
 	// Publish follow event
 	if (isLocalUser(follower)) {
