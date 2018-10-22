@@ -8,6 +8,7 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import pack from '../../../remote/activitypub/renderer';
+import { perUserReactionsStats } from '../../stats';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself
@@ -42,6 +43,8 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	await Note.update({ _id: note._id }, {
 		$inc: inc
 	});
+
+	perUserReactionsStats.update(user, note);
 
 	publishNoteStream(note._id, 'reacted', {
 		reaction: reaction,

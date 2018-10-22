@@ -912,6 +912,49 @@ class PerUserNotesStats extends Stats<PerUserNotesLog> {
 export const perUserNotesStats = new PerUserNotesStats();
 //#endregion
 
+//#region Per user reactions stats
+/**
+ * ユーザーごとのリアクションに関する統計
+ */
+type PerUserReactionsLog = {
+	local: {
+		/**
+		 * リアクションされた数
+		 */
+		count: number;
+	};
+
+	remote: PerUserReactionsLog['local'];
+};
+
+class PerUserReactionsStats extends Stats<PerUserReactionsLog> {
+	constructor() {
+		super('perUserReaction', true);
+	}
+
+	@autobind
+	protected async getTemplate(init: boolean, latest?: PerUserReactionsLog, group?: any): Promise<PerUserReactionsLog> {
+		return {
+			local: {
+				count: 0
+			},
+			remote: {
+				count: 0
+			}
+		};
+	}
+
+	@autobind
+	public async update(user: IUser, note: INote) {
+		this.inc({
+			[isLocalUser(user) ? 'local' : 'remote']: { count: 1 }
+		}, note.userId);
+	}
+}
+
+export const perUserReactionsStats = new PerUserReactionsStats();
+//#endregion
+
 //#region Per user drive stats
 /**
  * ユーザーごとのドライブに関する統計
