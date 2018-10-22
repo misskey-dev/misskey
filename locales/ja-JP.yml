@@ -1063,6 +1063,8 @@ desktop/views/pages/admin/admin.vue:
   drive: "ドライブ"
   users: "ユーザー"
   update: "更新"
+  announcements: "お知らせ"
+  hashtags: "ハッシュタグ"
 
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
@@ -1071,6 +1073,9 @@ desktop/views/pages/admin/admin.dashboard.vue:
   all-notes: "全ての投稿"
   original-notes: "このインスタンスの投稿"
   invite: "招待"
+  banner-url: "Banner URL"
+  disableRegistration: "Disable new user registration"
+  disableLocalTimeline: "Disable the local timeline"
 
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "ユーザーの凍結"
@@ -1091,6 +1096,12 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
+
+desktop/views/pages/admin/admin.announcements.vue:
+  announcements: "お知らせ"
+
+desktop/views/pages/admin/admin.hashtags.vue:
+  hided-tags: "Hidden Tags"
 
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
