@@ -10,7 +10,7 @@ export const meta = {
 	params: {
 		span: $.str.or(['day', 'hour']).note({
 			desc: {
-				'ja-JP': '集計のスパン'
+				'ja-JP': '集計のスパン (day または hour)'
 			}
 		}),
 
