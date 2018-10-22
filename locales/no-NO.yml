@@ -184,6 +184,7 @@ common:
     rename: "Endre navn"
     stack-left: "左に重ねる"
     pop-right: "Til høyre"
+  dev: "アプリの作成に失敗しました。再度お試しください。"
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
@@ -967,6 +968,7 @@ desktop/views/pages/deck/deck.tl-column.vue:
   edit: "オプション"
 desktop/views/pages/deck/deck.user-column.vue:
   pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 desktop/views/pages/stats/stats.vue:
   all-users: "全てのユーザー"
   original-users: "このインスタンスのユーザー"
@@ -1019,7 +1021,6 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "よく話すユーザーはいません"
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーは凍結されています。"
-desktop/views/pages/user/user.home.vue:
   last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
   title: "Bilder"
@@ -1040,6 +1041,10 @@ desktop/views/pages/user/user.header.vue:
   following: "Følger"
   followers: "フォロワー"
   is-bot: "このアカウントはBotです"
+  years-old: "歳"
+  year: "年"
+  month: "月"
+  day: "日"
 desktop/views/pages/user/user.timeline.vue:
   default: "Innlegg"
   with-replies: "Innlegg og svar"
@@ -1296,6 +1301,7 @@ mobile/views/pages/settings.vue:
   signout: "サインアウト"
   sound: "Lyder"
   enable-sounds: "サウンドを有効にする"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
   following: "Følger"
@@ -1350,3 +1356,29 @@ docs:
       description: "Beskrivelse"
 dev/views/index.vue:
   manage-apps: "アプリの管理"
+dev/views/apps.vue:
+  manage-apps: "アプリを管理"
+  create-app: "アプリ作成"
+  app-missing: "アプリなし"
+dev/views/new-app.vue:
+  create-app: "アプリケーションの作成"
+  app-name: "アプリケーション名"
+  app-name-desc: "あなたのアプリの名称。"
+  app-name-ex: "ex) Misskey for iOS"
+  app-overview: "アプリの概要"
+  app-desc: "あなたのアプリの簡単な説明や紹介。"
+  app-desc-ex: "ex) Misskey iOSクライアント。"
+  callback-url: "コールバックURL (オプション)"
+  callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
+  authority: "権限"
+  authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
+  authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  reaction-write: "リアクションしたりリアクションをキャンセルする。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"

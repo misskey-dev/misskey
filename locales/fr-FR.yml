@@ -184,6 +184,7 @@ common:
     rename: "Renommer"
     stack-left: "Vers la gauche"
     pop-right: "Vers la droite"
+  dev: "アプリの作成に失敗しました。再度お試しください。"
 auth/views/form.vue:
   share-access: "Désirez-vous <b>autoriser</b> <i>{{ app.name }}</i> à avoir accès à votre compte ?"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
@@ -967,6 +968,7 @@ desktop/views/pages/deck/deck.tl-column.vue:
   edit: "Options"
 desktop/views/pages/deck/deck.user-column.vue:
   pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 desktop/views/pages/stats/stats.vue:
   all-users: "Toutes les utilisateurrices"
   original-users: "Utilisateur·rice·s sur cette instance"
@@ -1019,8 +1021,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.vue:
   is-suspended: "Ce compte a été suspendu."
-desktop/views/pages/user/user.home.vue:
-  last-used-at: "Last used at"
+  last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Chargement en cours"
@@ -1040,6 +1041,10 @@ desktop/views/pages/user/user.header.vue:
   following: "Suit"
   followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
+  years-old: "歳"
+  year: "年"
+  month: "月"
+  day: "日"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
@@ -1296,6 +1301,7 @@ mobile/views/pages/settings.vue:
   signout: "Déconnexion"
   sound: "Sons"
   enable-sounds: "Activer les sons"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
 mobile/views/pages/user.vue:
   follows-you: "Vous suit"
   following: "Abonnements"
@@ -1350,3 +1356,29 @@ docs:
       description: "Description"
 dev/views/index.vue:
   manage-apps: "Gestion des applications"
+dev/views/apps.vue:
+  manage-apps: "アプリを管理"
+  create-app: "アプリ作成"
+  app-missing: "アプリなし"
+dev/views/new-app.vue:
+  create-app: "アプリケーションの作成"
+  app-name: "アプリケーション名"
+  app-name-desc: "あなたのアプリの名称。"
+  app-name-ex: "ex) Misskey for iOS"
+  app-overview: "アプリの概要"
+  app-desc: "あなたのアプリの簡単な説明や紹介。"
+  app-desc-ex: "ex) Misskey iOSクライアント。"
+  callback-url: "コールバックURL (オプション)"
+  callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
+  authority: "権限"
+  authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
+  authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  reaction-write: "リアクションしたりリアクションをキャンセルする。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"
