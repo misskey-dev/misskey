@@ -39,6 +39,9 @@
 				:title="`${image.name}\n${(new Date(image.createdAt)).toLocaleString()}`"
 			></router-link>
 		</div>
+		<div class="activity">
+			<div ref="chart"></div>
+		</div>
 		<div class="tl">
 			<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 		</div>
@@ -56,6 +59,7 @@ import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 import Ok from '../../../../common/views/components/ok.vue';
 import { concat } from '../../../../../../prelude/array';
+import * as G2 from '@antv/g2';
 
 const fetchLimit = 10;
 
@@ -126,6 +130,56 @@ export default Vue.extend({
 				});
 				const files = concat(notes.map((n: any): any[] => n.files));
 				this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
+			});
+
+			(this as any).api('charts/user/notes', {
+				userId: this.user.id,
+				span: 'day',
+				limit: 30
+			}).then(stats => {
+				const data = [];
+
+				const now = new Date();
+				const y = now.getFullYear();
+				const m = now.getMonth();
+				const d = now.getDate();
+
+				for (let i = 0; i < 30; i++) {
+					const x = new Date(y, m, d - i + 1);
+					data.push({
+						x: x,
+						type: 'normal',
+						count: stats.diffs.normal[i]
+					});
+					data.push({
+						x: x,
+						type: 'reply',
+						count: stats.diffs.reply[i]
+					});
+					data.push({
+						x: x,
+						type: 'renote',
+						count: stats.diffs.renote[i]
+					});
+				}
+
+				const chart = new G2.Chart({
+					container: this.$refs.chart as HTMLDivElement,
+					forceFit: true,
+					height: 100,
+					padding: 16,
+					renderer: 'svg'
+				});
+
+				chart.intervalStack().position('x*count').color('type');
+				chart.legend(false);
+				chart.axis('x', false);
+				chart.axis('count', false);
+				chart.tooltip(true, {
+					showTitle: false,
+				});
+				chart.source(data);
+				chart.render();
 			});
 		});
 	},
@@ -205,7 +259,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .zubukjlciycdsyynicqrnlsmdwmymzqu
-	background var(--deckUserColumnBg)
+	background var(--deckColumnBg)
 
 	> .is-remote
 		padding 8px 16px
@@ -283,7 +337,7 @@ export default Vue.extend({
 
 	> .pinned
 		padding-bottom 16px
-		background var(--deckUserColumnBg)
+		background var(--deckColumnBg)
 
 		> p
 			margin 0
@@ -308,6 +362,11 @@ export default Vue.extend({
 			background-size cover
 			background-clip content-box
 			border-radius 4px
+
+	> .activity
+		margin-bottom 16px
+		background var(--face)
+		line-height 0
 
 	> .tl
 		background var(--face)

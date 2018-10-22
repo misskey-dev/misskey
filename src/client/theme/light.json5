@@ -174,7 +174,7 @@
 		desktopSettingsNavItemHover: ':darken<10<$text',
 
 		deckAcrylicColumnBg: 'rgba(0, 0, 0, 0.1)',
-		deckUserColumnBg: ':darken<4<@face',
+		deckColumnBg: ':darken<4<@face',
 
 		mobileHeaderBg: ':lighten<5<$secondary',
 		mobileHeaderFg: '$text',
