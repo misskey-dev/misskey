@@ -135,7 +135,7 @@ export default Vue.extend({
 			(this as any).api('charts/user/notes', {
 				userId: this.user.id,
 				span: 'day',
-				limit: 30
+				limit: 21
 			}).then(stats => {
 				const normal = [];
 				const reply = [];
@@ -146,7 +146,7 @@ export default Vue.extend({
 				const m = now.getMonth();
 				const d = now.getDate();
 
-				for (let i = 0; i < 30; i++) {
+				for (let i = 0; i < 21; i++) {
 					const x = new Date(y, m, d - i);
 					normal.push([
 						x,
