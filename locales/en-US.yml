@@ -939,6 +939,8 @@ desktop/views/pages/admin/admin.vue:
   drive: "Drive"
   users: "Users"
   update: "Updates"
+  announcements: "お知らせ"
+  hashtags: "ハッシュタグ"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Dashboard"
   all-users: "All Users"
@@ -946,6 +948,9 @@ desktop/views/pages/admin/admin.dashboard.vue:
   all-notes: "All the posts"
   original-notes: "Posts on this instance"
   invite: "Invite"
+  banner-url: "Banner URL"
+  disableRegistration: "Disable new user registration"
+  disableLocalTimeline: "Disable the local timeline"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspend a user"
   suspend: "Suspend"
@@ -962,6 +967,10 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "User account unverification settings"
   unverify: "Unverify account"
   unverified: "The account is now being unverified"
+desktop/views/pages/admin/admin.announcements.vue:
+  announcements: "お知らせ"
+desktop/views/pages/admin/admin.hashtags.vue:
+  hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
