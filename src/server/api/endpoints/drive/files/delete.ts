@@ -45,8 +45,8 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Delete
 	await del(file);
 
-	// Publish file_deleted event
-	publishDriveStream(user._id, 'file_deleted', file._id);
+	// Publish fileDeleted event
+	publishDriveStream(user._id, 'fileDeleted', file._id);
 
 	res();
 });

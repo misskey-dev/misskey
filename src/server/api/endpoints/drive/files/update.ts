@@ -114,6 +114,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Response
 	res(fileObj);
 
-	// Publish file_updated event
-	publishDriveStream(user._id, 'file_updated', fileObj);
+	// Publish fileUpdated event
+	publishDriveStream(user._id, 'fileUpdated', fileObj);
 });

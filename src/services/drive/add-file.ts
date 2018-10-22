@@ -396,7 +396,7 @@ export default async function(
 	pack(driveFile).then(packedFile => {
 		// Publish driveFileCreated event
 		publishMainStream(user._id, 'driveFileCreated', packedFile);
-		publishDriveStream(user._id, 'file_created', packedFile);
+		publishDriveStream(user._id, 'fileCreated', packedFile);
 	});
 
 	// 統計を更新

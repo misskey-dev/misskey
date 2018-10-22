@@ -96,6 +96,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Response
 	res(folderObj);
 
-	// Publish folder_updated event
-	publishDriveStream(user._id, 'folder_updated', folderObj);
+	// Publish folderUpdated event
+	publishDriveStream(user._id, 'folderUpdated', folderObj);
 });

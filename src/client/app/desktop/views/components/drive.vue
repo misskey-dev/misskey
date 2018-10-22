@@ -117,11 +117,11 @@ export default Vue.extend({
 	mounted() {
 		this.connection = (this as any).os.stream.useSharedConnection('drive');
 
-		this.connection.on('file_created', this.onStreamDriveFileCreated);
-		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
-		this.connection.on('file_deleted', this.onStreamDriveFileDeleted);
-		this.connection.on('folder_created', this.onStreamDriveFolderCreated);
-		this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
+		this.connection.on('fileCreated', this.onStreamDriveFileCreated);
+		this.connection.on('fileUpdated', this.onStreamDriveFileUpdated);
+		this.connection.on('fileDeleted', this.onStreamDriveFileDeleted);
+		this.connection.on('folderCreated', this.onStreamDriveFolderCreated);
+		this.connection.on('folderUpdated', this.onStreamDriveFolderUpdated);
 
 		if (this.initFolder) {
 			this.move(this.initFolder);
