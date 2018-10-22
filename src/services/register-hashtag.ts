@@ -1,6 +1,6 @@
 import { IUser } from '../models/user';
 import Hashtag from '../models/hashtag';
-import { hashtagStats } from './stats';
+import hashtagChart from '../chart/hashtag';
 
 export default async function(user: IUser, tag: string) {
 	tag = tag.toLowerCase();
@@ -27,5 +27,5 @@ export default async function(user: IUser, tag: string) {
 		});
 	}
 
-	hashtagStats.update(tag, user._id);
+	hashtagChart.update(tag, user._id);
 }

@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import getParams from '../../../get-params';
-import { perUserFollowingStats } from '../../../../../services/stats';
+import perUserFollowingChart from '../../../../../chart/per-user-following';
 import ID from '../../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'ユーザーごとのフォロー/フォロワーの統計を取得します。'
+		'ja-JP': 'ユーザーごとのフォロー/フォロワーのチャートを取得します。'
 	},
 
 	params: {
@@ -35,7 +35,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) throw psErr;
 
-	const stats = await perUserFollowingStats.getChart(ps.span as any, ps.limit, ps.userId);
+	const stats = await perUserFollowingChart.getChart(ps.span as any, ps.limit, ps.userId);
 
 	res(stats);
 });

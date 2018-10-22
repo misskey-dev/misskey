@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import getParams from '../../../get-params';
-import { perUserNotesStats } from '../../../../../services/stats';
+import perUserNotesChart from '../../../../../chart/per-user-notes';
 import ID from '../../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'ユーザーごとの投稿の統計を取得します。'
+		'ja-JP': 'ユーザーごとの投稿のチャートを取得します。'
 	},
 
 	params: {
@@ -35,7 +35,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) throw psErr;
 
-	const stats = await perUserNotesStats.getChart(ps.span as any, ps.limit, ps.userId);
+	const stats = await perUserNotesChart.getChart(ps.span as any, ps.limit, ps.userId);
 
 	res(stats);
 });

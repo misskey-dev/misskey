@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import getParams from '../../get-params';
-import { hashtagStats } from '../../../../services/stats';
+import hashtagChart from '../../../../chart/hashtag';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'ハッシュタグごとの統計を取得します。'
+		'ja-JP': 'ハッシュタグごとのチャートを取得します。'
 	},
 
 	params: {
@@ -33,7 +33,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) throw psErr;
 
-	const stats = await hashtagStats.getChart(ps.span as any, ps.limit, ps.tag);
+	const stats = await hashtagChart.getChart(ps.span as any, ps.limit, ps.tag);
 
 	res(stats);
 });

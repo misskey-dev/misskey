@@ -17,7 +17,7 @@ const requestStats = require('request-stats');
 import activityPub from './activitypub';
 import webFinger from './webfinger';
 import config from '../config';
-import { networkStats } from '../services/stats';
+import networkChart from '../chart/network';
 import apiServer from './api';
 
 // Init app
@@ -104,7 +104,7 @@ export default () => new Promise(resolve => {
 		const outgoingBytes = queue.reduce((a, b) => a + b.res.bytes, 0);
 		queue = [];
 
-		networkStats.update(requests, time, incomingBytes, outgoingBytes);
+		networkChart.update(requests, time, incomingBytes, outgoingBytes);
 	}, 5000);
 	//#endregion
 });

@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import getParams from '../../../get-params';
-import { perUserReactionsStats } from '../../../../../services/stats';
+import perUserReactionsChart from '../../../../../chart/per-user-reactions';
 import ID from '../../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'ユーザーごとの被リアクション数の統計を取得します。'
+		'ja-JP': 'ユーザーごとの被リアクション数のチャートを取得します。'
 	},
 
 	params: {
@@ -35,7 +35,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) throw psErr;
 
-	const stats = await perUserReactionsStats.getChart(ps.span as any, ps.limit, ps.userId);
+	const stats = await perUserReactionsChart.getChart(ps.span as any, ps.limit, ps.userId);
 
 	res(stats);
 });

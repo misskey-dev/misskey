@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import getParams from '../../get-params';
-import { driveStats } from '../../../../services/stats';
+import driveChart from '../../../../chart/drive';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'ドライブの統計を取得します。'
+		'ja-JP': 'ドライブのチャートを取得します。'
 	},
 
 	params: {
@@ -27,7 +27,7 @@ export default (params: any) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) throw psErr;
 
-	const stats = await driveStats.getChart(ps.span as any, ps.limit);
+	const stats = await driveChart.getChart(ps.span as any, ps.limit);
 
 	res(stats);
 });

@@ -6,7 +6,7 @@ import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
 import Following from '../../../models/following';
 import { publishMainStream } from '../../../stream';
-import { perUserFollowingStats } from '../../stats';
+import perUserFollowingChart from '../../../chart/per-user-following';
 
 export default async function(followee: IUser, follower: IUser) {
 	await Following.insert({
@@ -58,7 +58,7 @@ export default async function(followee: IUser, follower: IUser) {
 	});
 	//#endregion
 
-	perUserFollowingStats.update(follower, followee, true);
+	perUserFollowingChart.update(follower, followee, true);
 
 	await User.update({ _id: followee._id }, {
 		$inc: {

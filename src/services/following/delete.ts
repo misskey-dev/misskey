@@ -5,7 +5,7 @@ import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
-import { perUserFollowingStats } from '../stats';
+import perUserFollowingChart from '../../chart/per-user-following';
 
 export default async function(follower: IUser, followee: IUser) {
 	const following = await Following.findOne({
@@ -38,7 +38,7 @@ export default async function(follower: IUser, followee: IUser) {
 	});
 	//#endregion
 
-	perUserFollowingStats.update(follower, followee, false);
+	perUserFollowingChart.update(follower, followee, false);
 
 	// Publish unfollow event
 	if (isLocalUser(follower)) {
