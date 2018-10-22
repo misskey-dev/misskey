@@ -26,13 +26,13 @@ common:
   close: "さいなら"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
   BSoD:
-    fatal-error: ":( 致命的な問題が発生しました。"
-    update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
+    fatal-error: "あかん、やってもうたわ… (致命的なエラー"
+    update-browser-os: "ブラウザ(またはOS)のバージョン更新してくれへん？なおるかもしれんわ。"
     error-code: "エラーコード"
     browser-version: "ブラウザ バージョン"
     client-version: "クライアント バージョン"
-    email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
-    thanks: "Thank you for using Misskey."
+    email-support: "それでもあかん？せやったら syuilotan@yahoo.co.jp に連絡してや！"
+    thanks: "Thank you おおきに。Misskey"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -125,10 +125,10 @@ common:
   do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
-  view-on-remote: "正確な情報を見る"
+  view-on-remote: "ちゃんとした情報見せてや！"
   error:
-    title: '問題が発生しました'
-    retry: 'やり直す'
+    title: '問題が起こったわ'
+    retry: 'もっぺん'
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
@@ -184,6 +184,7 @@ common:
     rename: "名前を変更や！"
     stack-left: "左に重ねんで！"
     pop-right: "右に出すで！"
+  dev: "アプリの作成あかんかったわ。もっぺんやってみて。"
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があんさんのアカウントにアクセスすんのを<b>許可</b>してもええか？"
   permission-ask: "このアプリは次の権限を要求してんで:"
@@ -439,16 +440,16 @@ common/views/components/profile-editor.vue:
   birthday: "誕生日"
   avatar: "アイコン"
   banner: "バナー"
-  is-cat: "このアカウントはCatです"
-  is-bot: "このアカウントはBotです"
-  is-locked: "フォローを承認制にする"
-  careful-bot: "Botからのフォローだけ承認制にする"
+  is-cat: "このアカウントはCatやで"
+  is-bot: "このアカウントはBotやで"
+  is-locked: "他人のフォローは許可してからや！"
+  careful-bot: "Botからのフォローだけは許可制や"
   advanced: "その他"
-  privacy: "プライバシー"
+  privacy: "プライバシーってなんや？オカンの年齢か？"
   save: "保存"
-  saved: "プロフィールを保存しました"
-  uploading: "アップロード中"
-  upload-failed: "アップロードに失敗しました"
+  saved: "プロフィールを保存したで"
+  uploading: "アップロードしとります"
+  upload-failed: "これアップロードでけへんわ"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
   no-broadcasts: "お知らせはあらへんで"
@@ -675,12 +676,12 @@ desktop/views/components/note-detail.vue:
   add-reaction: "リアクション"
 desktop/views/components/note.vue:
   reposted-by: "{}がRenote"
-  reply: "返信"
+  reply: "返す"
   renote: "Renote"
   add-reaction: "リアクション"
-  detail: "詳細"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  detail: "もっと"
+  private: "この投稿は見せられへんわ"
+  deleted: "この投稿なんか無くなってもうたわ"
 desktop/views/components/notes.vue:
   error: "あかん、読み込めへんわ"
   retry: "もっぺん"
@@ -760,7 +761,7 @@ desktop/views/components/settings.vue:
   api-via-stream: "ストリームを経由したAPIリクエスト"
   api-via-stream-desc: "この設定をオンにすると、WebSocket接続を経由してAPIリクエストが行われんで(パフォーマンス向上するかも、知らんけど)。オフにすると、ネイティブの fetch API が利用されるで。この設定はこのデバイスのみ有効やで。"
   deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
+  deck-nav-desc: "デッキを使うとるとき、ナビゲーションが発生するときにページ移動せんで、一時的なカラムで受けれるようにするで"
   deck-default: "デッキをデフォルトのUIにする"
   display: "見た感じ"
   customize: "ホームをカスタマイズ"
@@ -782,7 +783,7 @@ desktop/views/components/settings.vue:
   show-local-renotes: "ローカル投稿のRenoteも見たいんや"
   show-maps: "地図勝手にバァーって開いてくれ"
   deck-column-align: "デッキのカラムの位置"
-  deck-column-align-center: "中央"
+  deck-column-align-center: "真ん中"
   deck-column-align-left: "左"
   sound: "サウンド"
   enable-sounds: "サウンド鳴らす"
@@ -967,6 +968,7 @@ desktop/views/pages/deck/deck.tl-column.vue:
   edit: "オプション"
 desktop/views/pages/deck/deck.user-column.vue:
   pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 desktop/views/pages/stats/stats.vue:
   all-users: "全てのユーザー"
   original-users: "ここの人らだけ"
@@ -1019,8 +1021,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "よう話すツレは居らん"
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーはあかんわ。凍結されとる。"
-desktop/views/pages/user/user.home.vue:
-  last-used-at: "最後いつ来た？"
+  last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
   title: "写真"
   loading: "読み込んどります"
@@ -1040,6 +1041,10 @@ desktop/views/pages/user/user.header.vue:
   following: "フォロー"
   followers: "フォロワー"
   is-bot: "このアカウントはBotや"
+  years-old: "歳"
+  year: "年"
+  month: "月"
+  day: "日"
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
@@ -1296,6 +1301,7 @@ mobile/views/pages/settings.vue:
   signout: "さいなら"
   sound: "サウンド"
   enable-sounds: "サウンド鳴らす"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
 mobile/views/pages/user.vue:
   follows-you: "フォローされとるで"
   following: "フォロー"
@@ -1350,3 +1356,29 @@ docs:
       description: "説明"
 dev/views/index.vue:
   manage-apps: "アプリの管理"
+dev/views/apps.vue:
+  manage-apps: "アプリを管理"
+  create-app: "アプリ作成"
+  app-missing: "アプリなし"
+dev/views/new-app.vue:
+  create-app: "アプリケーションの作成"
+  app-name: "アプリケーション名"
+  app-name-desc: "あなたのアプリの名称。"
+  app-name-ex: "ex) Misskey for iOS"
+  app-overview: "アプリの概要"
+  app-desc: "あなたのアプリの簡単な説明や紹介。"
+  app-desc-ex: "ex) Misskey iOSクライアント。"
+  callback-url: "コールバックURL (オプション)"
+  callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
+  authority: "権限"
+  authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
+  authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  reaction-write: "リアクションしたりリアクションをキャンセルする。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"

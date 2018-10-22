@@ -184,6 +184,7 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+  dev: "Failed to create the application. Please try again."
 auth/views/form.vue:
   share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
@@ -759,8 +760,8 @@ desktop/views/components/settings.vue:
   advanced: "Advanced settings"
   api-via-stream: "API request via stream"
   api-via-stream-desc: "API request is performed via the WebSocket connection instead of native fetch API (for better performance). This setting is stored in the browser."
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
+  deck-nav: "Transitionless deck navigation"
+  deck-nav-desc: "You get a temporary column without page transitions during navigation when using the deck."
   deck-default: "Use Deck as default UI"
   display: "Design and display"
   customize: "Customize home layout"
@@ -778,7 +779,7 @@ desktop/views/components/settings.vue:
   show-reply-target: "Display reply target"
   timeline: "Timeline"
   show-my-renotes: "Show my renotes in the timeline"
-  show-renoted-my-notes: "Show renoted my posts in timelines"
+  show-renoted-my-notes: "Show renoted posts of mine in timelines"
   show-local-renotes: "Show renoted local posts in timelines"
   show-maps: "Display a map to show the location"
   deck-column-align: "Deck column alignment"
@@ -967,6 +968,7 @@ desktop/views/pages/deck/deck.tl-column.vue:
   edit: "Options"
 desktop/views/pages/deck/deck.user-column.vue:
   pinned-notes: "Pinned posts"
+  push-to-a-list: "Add to list"
 desktop/views/pages/stats/stats.vue:
   all-users: "All Users"
   original-users: "Users on this instance"
@@ -1019,8 +1021,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-desktop/views/pages/user/user.home.vue:
-  last-used-at: "Last active:"
+  last-used-at: "Last active"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
@@ -1040,6 +1041,10 @@ desktop/views/pages/user/user.header.vue:
   following: "Following"
   followers: "Followers"
   is-bot: "This account is a Bot"
+  years-old: " years old"
+  year: "/"
+  month: "/"
+  day: "-"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
@@ -1188,7 +1193,7 @@ mobile/views/components/user-timeline.vue:
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
-  known: "You know"
+  known: "In common"
   load-more: "More"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
@@ -1262,7 +1267,7 @@ mobile/views/pages/settings.vue:
   timeline: "Timeline"
   show-reply-target: "Show reply target"
   show-my-renotes: "Show my reposts"
-  show-renoted-my-notes: "Show renoted my posts"
+  show-renoted-my-notes: "Show renoted posts of mine"
   show-local-renotes: "Show renoted local posts"
   post-style: "Post design"
   post-style-standard: "Standard"
@@ -1296,6 +1301,7 @@ mobile/views/pages/settings.vue:
   signout: "Sign out"
   sound: "Sounds"
   enable-sounds: "Enable sounds"
+  mark-as-read-all-unread-notes: "Mark all posts as read"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
@@ -1350,3 +1356,29 @@ docs:
       description: "Description"
 dev/views/index.vue:
   manage-apps: "Manage apps"
+dev/views/apps.vue:
+  manage-apps: "Manage apps"
+  create-app: "Create app"
+  app-missing: "No apps"
+dev/views/new-app.vue:
+  create-app: "Creating application"
+  app-name: "Application name"
+  app-name-desc: "The name of your app"
+  app-name-ex: "ex) Misskey for iOS"
+  app-overview: "Application summary"
+  app-desc: "A brief description or introduction of your app."
+  app-desc-ex: "ex) Misskey iOS client."
+  callback-url: "The callback URL (optional)"
+  callback-url-desc: "The URL to redirect to after the user is authenticated via the authentication form."
+  authority: "Permissions"
+  authority-desc: "Only the functions requested here can be accessed via the API."
+  authority-warning: "You can change it even after creating the application, but if you give different permissions, all user keys associated at that time will be invalidated."
+  account-read: "View account information."
+  account-write: "Modify account information."
+  note-write: "Post."
+  reaction-write: "Add or remove reactions."
+  following-write: "Follow and unfollow."
+  drive-read: "Read the drive."
+  drive-write: "Upload/delete files in the drive."
+  notification-read: "Read your notifications."
+  notification-write: "Manage your notifications."
