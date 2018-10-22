@@ -1096,10 +1096,10 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
 
-desktop/views/pages/admin/admin.announcements.vue
+desktop/views/pages/admin/admin.announcements.vue:
   announcements: "お知らせ"
 
-desktop/views/pages/admin/admin.hashtags.vue
+desktop/views/pages/admin/admin.hashtags.vue:
   hided-tags: "Hidden Tags"
 
 desktop/views/pages/deck/deck.tl-column.vue:
