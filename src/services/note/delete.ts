@@ -11,6 +11,7 @@ import perUserNotesChart from '../../chart/per-user-notes';
 import config from '../../config';
 import NoteUnread from '../../models/note-unread';
 import read from './read';
+import DriveFile from '../../models/drive-file';
 
 /**
  * 投稿を削除します。
@@ -47,6 +48,17 @@ export default async function(user: IUser, note: INote) {
 			read(unread.userId, unread.noteId);
 		});
 	});
+
+	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティからこの投稿を削除
+	if (note.fileIds) {
+		note.fileIds.forEach(fileId => {
+			DriveFile.update({ _id: fileId }, {
+				$pull: {
+					'metadata.attachedNoteIds': note._id
+				}
+			});
+		});
+	}
 
 	//#region ローカルの投稿なら削除アクティビティを配送
 	if (isLocalUser(user)) {

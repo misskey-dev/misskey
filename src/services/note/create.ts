@@ -8,7 +8,7 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import packAp from '../../remote/activitypub/renderer';
-import { IDriveFile } from '../../models/drive-file';
+import DriveFile, { IDriveFile } from '../../models/drive-file';
 import notify from '../../notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
@@ -172,6 +172,17 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// ハッシュタグ登録
 	tags.map(tag => registerHashtag(user, tag));
+
+	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加
+	if (data.files) {
+		data.files.forEach(file => {
+			DriveFile.update({ _id: file._id }, {
+				$push: {
+					'metadata.attachedNoteIds': note._id
+				}
+			});
+		});
+	}
 
 	// Increment notes count
 	incNotesCount(user);

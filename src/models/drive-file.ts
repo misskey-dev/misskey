@@ -43,6 +43,11 @@ export type IMetadata = {
 	isSensitive?: boolean;
 
 	/**
+	 * このファイルが添付された投稿のID一覧
+	 */
+	attachedNoteIds?: mongo.ObjectID[];
+
+	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か
 	 */
 	isRemote?: boolean;
