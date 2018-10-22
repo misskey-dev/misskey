@@ -15,7 +15,7 @@
 import Vue from 'vue';
 import XColumn from './deck.column.vue';
 import XHashtagTl from './deck.hashtag-tl.vue';
-import * as G2 from '@antv/g2';
+import * as ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
 
 export default Vue.extend({
@@ -43,7 +43,7 @@ export default Vue.extend({
 		(this as any).api('charts/hashtag', {
 			tag: this.tag,
 			span: 'hour',
-			limit: 30
+			limit: 24
 		}).then(stats => {
 			const data = [];
 
@@ -53,36 +53,35 @@ export default Vue.extend({
 			const d = now.getDate();
 			const h = now.getHours();
 
-			for (let i = 0; i < 30; i++) {
-				const x = new Date(y, m, d, h - i + 1);
-				data.push({
-					x: x,
-					count: stats.count[i]
-				});
+			for (let i = 0; i < 24; i++) {
+				const x = new Date(y, m, d, h - i);
+				data.push([x, stats.count[i]]);
 			}
 
-			const chart = new G2.Chart({
-				container: this.$refs.chart as HTMLDivElement,
-				forceFit: true,
-				height: 70,
-				padding: 8,
-				renderer: 'svg'
+			const color = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--primary'));
+
+			const chart = new ApexCharts(this.$refs.chart, {
+				chart: {
+					type: 'area',
+					height: 60,
+					sparkline: {
+						enabled: true
+					},
+				},
+				stroke: {
+					curve: 'straight',
+					width: 2
+				},
+				series: [{
+					name: 'count',
+					data: data
+				}],
+				xaxis: {
+					type: 'datetime',
+				},
+				colors: [`#${color.clone().toHex()}`]
 			});
 
-			const text = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--primary'));
-
-			chart.area().position('x*count').color(`l(100) 0:${text.clone().setAlpha(0.5).toRgbString()} 1:${text.clone().setAlpha(0.25).toRgbString()}`);
-			chart.line().position('x*count').color(`#${text.clone().toHex()}`).size(2);
-			chart.legend(false);
-			chart.axis('x', false);
-			chart.axis('count', false);
-			chart.tooltip(true, {
-				showTitle: false,
-				crosshairs: {
-					type: 'line'
-				}
-			});
-			chart.source(data);
 			chart.render();
 		});
 	}
@@ -94,7 +93,8 @@ export default Vue.extend({
 	background var(--deckColumnBg)
 
 	> .chart
-		margin 16px 0
+		padding 16px
+		margin-bottom 16px
 		background var(--face)
 
 	> .tl

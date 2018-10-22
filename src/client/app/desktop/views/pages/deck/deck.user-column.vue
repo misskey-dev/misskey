@@ -59,7 +59,7 @@ import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 import Ok from '../../../../common/views/components/ok.vue';
 import { concat } from '../../../../../../prelude/array';
-import * as G2 from '@antv/g2';
+import * as ApexCharts from 'apexcharts';
 
 const fetchLimit = 10;
 
@@ -137,7 +137,9 @@ export default Vue.extend({
 				span: 'day',
 				limit: 30
 			}).then(stats => {
-				const data = [];
+				const normal = [];
+				const reply = [];
+				const renote = [];
 
 				const now = new Date();
 				const y = now.getFullYear();
@@ -145,40 +147,49 @@ export default Vue.extend({
 				const d = now.getDate();
 
 				for (let i = 0; i < 30; i++) {
-					const x = new Date(y, m, d - i + 1);
-					data.push({
-						x: x,
-						type: 'normal',
-						count: stats.diffs.normal[i]
-					});
-					data.push({
-						x: x,
-						type: 'reply',
-						count: stats.diffs.reply[i]
-					});
-					data.push({
-						x: x,
-						type: 'renote',
-						count: stats.diffs.renote[i]
-					});
+					const x = new Date(y, m, d - i);
+					normal.push([
+						x,
+						stats.diffs.normal[i]
+					]);
+					reply.push([
+						x,
+						stats.diffs.reply[i]
+					]);
+					renote.push([
+						x,
+						stats.diffs.renote[i]
+					]);
 				}
 
-				const chart = new G2.Chart({
-					container: this.$refs.chart as HTMLDivElement,
-					forceFit: true,
-					height: 100,
-					padding: 16,
-					renderer: 'svg'
+				const chart = new ApexCharts(this.$refs.chart, {
+					chart: {
+						type: 'bar',
+						stacked: true,
+						height: 60,
+						sparkline: {
+							enabled: true
+						},
+					},
+					tooltip: {
+						shared: true,
+						intersect: false
+					},
+					series: [{
+						name: 'Normal',
+						data: normal
+					}, {
+						name: 'Reply',
+						data: reply
+					}, {
+						name: 'Renote',
+						data: renote
+					}],
+					xaxis: {
+						type: 'datetime'
+					}
 				});
 
-				chart.intervalStack().position('x*count').color('type');
-				chart.legend(false);
-				chart.axis('x', false);
-				chart.axis('count', false);
-				chart.tooltip(true, {
-					showTitle: false,
-				});
-				chart.source(data);
 				chart.render();
 			});
 		});
@@ -364,9 +375,9 @@ export default Vue.extend({
 			border-radius 4px
 
 	> .activity
+		padding 16px
 		margin-bottom 16px
 		background var(--face)
-		line-height 0
 
 	> .tl
 		background var(--face)

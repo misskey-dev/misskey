@@ -20,7 +20,6 @@
 		"format": "gulp format"
 	},
 	"dependencies": {
-		"@antv/g2": "3.3.1",
 		"@fortawesome/fontawesome-svg-core": "1.2.6",
 		"@fortawesome/free-brands-svg-icons": "5.4.1",
 		"@fortawesome/free-regular-svg-icons": "5.4.1",
@@ -85,6 +84,7 @@
 		"@types/websocket": "0.0.40",
 		"@types/ws": "6.0.1",
 		"animejs": "2.2.0",
+		"apexcharts": "2.1.5",
 		"autobind-decorator": "2.1.0",
 		"autosize": "4.0.2",
 		"autwh": "0.1.0",
