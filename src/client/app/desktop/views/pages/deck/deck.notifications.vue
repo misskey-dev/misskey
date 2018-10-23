@@ -178,9 +178,9 @@ export default Vue.extend({
 		> .date
 			display block
 			margin 0
-			line-height 32px
+			line-height 28px
 			text-align center
-			font-size 0.8em
+			font-size 12px
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)
 			border-bottom solid 1px var(--faceDivider)
