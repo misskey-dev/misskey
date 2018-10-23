@@ -166,10 +166,25 @@ export default Vue.extend({
 					chart: {
 						type: 'bar',
 						stacked: true,
-						height: 60,
+						height: 100,
 						sparkline: {
 							enabled: true
 						},
+					},
+					plotOptions: {
+						bar: {
+							columnWidth: '90%',
+							endingShape: 'rounded'
+						}
+					},
+					grid: {
+						clipMarkers: false,
+						padding: {
+							top: 16,
+							right: 16,
+							bottom: 16,
+							left: 16
+						}
 					},
 					tooltip: {
 						shared: true,
@@ -186,7 +201,11 @@ export default Vue.extend({
 						data: renote
 					}],
 					xaxis: {
-						type: 'datetime'
+						type: 'datetime',
+						crosshairs: {
+							width: 1,
+							opacity: 1
+						}
 					}
 				});
 
@@ -375,7 +394,6 @@ export default Vue.extend({
 			border-radius 4px
 
 	> .activity
-		padding 16px
 		margin-bottom 16px
 		background var(--face)
 

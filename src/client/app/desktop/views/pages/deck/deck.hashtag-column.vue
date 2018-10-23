@@ -63,10 +63,19 @@ export default Vue.extend({
 			const chart = new ApexCharts(this.$refs.chart, {
 				chart: {
 					type: 'area',
-					height: 60,
+					height: 70,
 					sparkline: {
 						enabled: true
 					},
+				},
+				grid: {
+					clipMarkers: false,
+					padding: {
+						top: 16,
+						right: 16,
+						bottom: 16,
+						left: 16
+					}
 				},
 				stroke: {
 					curve: 'straight',
@@ -93,7 +102,6 @@ export default Vue.extend({
 	background var(--deckColumnBg)
 
 	> .chart
-		padding 16px
 		margin-bottom 16px
 		background var(--face)
 
