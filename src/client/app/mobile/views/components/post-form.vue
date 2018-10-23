@@ -4,7 +4,7 @@
 		<header>
 			<button class="cancel" @click="cancel">%fa:times%</button>
 			<div>
-				<span class="text-count" :class="{ over: trimmedLength(text) > 1000 }">{{ 1000 - trimmedLength(text) }}</span>
+				<span class="text-count" :class="{ over: trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
@@ -102,8 +102,15 @@ export default Vue.extend({
 			visibleUsers: [],
 			useCw: false,
 			cw: null,
-			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]')
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			maxNoteTextLength: 1000
 		};
+	},
+
+	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.maxNoteTextLength = meta.maxNoteTextLength;
+		});
 	},
 
 	computed: {
@@ -144,7 +151,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(this.text.trim().length <= 1000);
+				(this.text.trim().length <= this.maxNoteTextLength);
 		}
 	},
 

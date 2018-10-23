@@ -45,7 +45,7 @@
 		<span v-if="visibility === 'specified'">%fa:envelope%</span>
 		<span v-if="visibility === 'private'">%fa:lock%</span>
 	</button>
-	<p class="text-count" :class="{ over: this.trimmedLength(text) > 1000 }">{{ 1000 - this.trimmedLength(text) }}</p>
+	<p class="text-count" :class="{ over: this.trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - this.trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -107,8 +107,15 @@ export default Vue.extend({
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
-			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]')
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			maxNoteTextLength: 1000
 		};
+	},
+
+	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.maxNoteTextLength = meta.maxNoteTextLength;
+		});
 	},
 
 	computed: {
@@ -149,7 +156,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= 1000);
+				(length(this.text.trim()) <= this.maxNoteTextLength);
 		}
 	},
 
