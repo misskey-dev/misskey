@@ -16,7 +16,6 @@ import Vue from 'vue';
 import XColumn from './deck.column.vue';
 import XHashtagTl from './deck.hashtag-tl.vue';
 import * as ApexCharts from 'apexcharts';
-import * as tinycolor from 'tinycolor2';
 
 export default Vue.extend({
 	components: {
@@ -45,7 +44,8 @@ export default Vue.extend({
 			span: 'hour',
 			limit: 24
 		}).then(stats => {
-			const data = [];
+			const local = [];
+			const remote = [];
 
 			const now = new Date();
 			const y = now.getFullYear();
@@ -55,10 +55,9 @@ export default Vue.extend({
 
 			for (let i = 0; i < 24; i++) {
 				const x = new Date(y, m, d, h - i);
-				data.push([x, stats.count[i]]);
+				local.push([x, stats.local.count[i]]);
+				remote.push([x, stats.remote.count[i]]);
 			}
-
-			const color = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--primary'));
 
 			const chart = new ApexCharts(this.$refs.chart, {
 				chart: {
@@ -82,13 +81,15 @@ export default Vue.extend({
 					width: 2
 				},
 				series: [{
-					name: 'count',
-					data: data
+					name: 'Local',
+					data: local
+				}, {
+					name: 'Remote',
+					data: remote
 				}],
 				xaxis: {
 					type: 'datetime',
-				},
-				colors: [`#${color.clone().toHex()}`]
+				}
 			});
 
 			chart.render();

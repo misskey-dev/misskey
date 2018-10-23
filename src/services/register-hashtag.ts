@@ -27,5 +27,5 @@ export default async function(user: IUser, tag: string) {
 		});
 	}
 
-	hashtagChart.update(tag, user._id);
+	hashtagChart.update(tag, user);
 }

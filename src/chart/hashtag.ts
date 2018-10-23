@@ -1,36 +1,55 @@
 import autobind from 'autobind-decorator';
-import * as mongo from 'mongodb';
-import Chart, { Partial } from './';
+import Chart, { Obj } from './';
+import { IUser, isLocalUser } from '../models/user';
+import db from '../db/mongodb';
 
 /**
  * ハッシュタグに関するチャート
  */
 type HashtagLog = {
-	/**
-	 * 投稿された数
-	 */
-	count: number;
+	local: {
+		/**
+		 * 投稿された数
+		 */
+		count: number;
+	};
+
+	remote: HashtagLog['local'];
 };
 
 class HashtagChart extends Chart<HashtagLog> {
 	constructor() {
 		super('hashtag', true);
+
+		// 後方互換性のため
+		db.get('chart.hashtag').findOne().then(doc => {
+			if (doc != null && doc.data.local == null) {
+				db.get('chart.hashtag').drop();
+			}
+		});
 	}
 
 	@autobind
 	protected async getTemplate(init: boolean, latest?: HashtagLog): Promise<HashtagLog> {
 		return {
-			count: 0
+			local: {
+				count: 0
+			},
+			remote: {
+				count: 0
+			}
 		};
 	}
 
 	@autobind
-	public async update(hashtag: string, userId: mongo.ObjectId) {
-		const inc: Partial<HashtagLog> = {
+	public async update(hashtag: string, user: IUser) {
+		const update: Obj = {
 			count: 1
 		};
 
-		await this.incIfUnique(inc, 'users', userId.toHexString(), hashtag);
+		await this.incIfUnique({
+			[isLocalUser(user) ? 'local' : 'remote']: update
+		}, 'users', user._id.toHexString(), hashtag);
 	}
 }
 
