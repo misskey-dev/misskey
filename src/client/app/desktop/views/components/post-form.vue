@@ -156,7 +156,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= 1000);
+				(length(this.text.trim()) <= this.maxNoteTextLength);
 		}
 	},
 
