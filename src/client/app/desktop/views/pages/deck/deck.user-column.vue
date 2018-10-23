@@ -393,7 +393,6 @@ export default Vue.extend({
 		color var(--text)
 		text-align center
 		background var(--face)
-		border-bottom solid 1px var(--faceDivider)
 
 		&:before
 			content ""
