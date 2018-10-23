@@ -3,7 +3,7 @@
 	<header>Set balance</header>
 	<input v-model="username" type="text" class="ui" @input="onChangeUsername"/>
 	<input v-model="amount" type="text" class="ui"/>
-	<button class="ui" @click="setBalance" :disabled="processing">Set</button>
+	<button class="ui submit" @click="setBalance" :disabled="processing">Set</button>
 </div>
 </template>
 
@@ -39,6 +39,7 @@ export default Vue.extend({
 		},
 
 		async onChangeUsername() {
+			this.amount = "";
 			const user = await (this as any).os.api(
 				"users/show",
 				parseAcct(this.username)
@@ -56,5 +57,9 @@ header
 
 button
 	margin 16px 0
+
+.submit
+	background-color #EEEEEE
+	margin-left 15px
 
 </style>

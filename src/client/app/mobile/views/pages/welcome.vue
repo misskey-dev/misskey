@@ -3,16 +3,18 @@
 	<div class="banner" :style="{ backgroundImage: banner ? `url(${banner})` : null }"></div>
 
 	<div>
-		<img svg-inline src="../../../../assets/title.svg" :alt="name">
-		<p class="host">{{ host }}</p>
+		<!-- <img svg-inline src="../../../../assets/title.svg" :alt="name"> -->
+		<!-- <p class="host">{{ host }}</p> -->
 		<div class="about">
+			<img src="/static/trillion-logo-95.png" style="margin-top:10px;">
 			<h2>{{ name }}</h2>
-			<p v-html="description || '%i18n:common.about%'"></p>
+			<!-- <p v-html="description || '%i18n:common.about%'"></p> -->
+			<p v-html="description || '%i18n:common.intro.about%'"></p>
 			<router-link class="signup" to="/signup">%i18n:@signup%</router-link>
 		</div>
 		<div class="login">
 			<mk-signin :with-avatar="false"/>
-		</div>
+		</div> 
 		<div class="tl">
 			<mk-welcome-timeline/>
 		</div>
@@ -22,10 +24,10 @@
 		<div class="photos">
 			<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
 		</div>
-		<div class="stats" v-if="stats">
+		<!-- <div class="stats" v-if="stats">
 			<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
 			<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
-		</div>
+		</div> -->
 		<div class="announcements" v-if="announcements && announcements.length > 0">
 			<article v-for="announcement in announcements">
 				<span class="title" v-html="announcement.title"></span>
@@ -39,32 +41,34 @@
 				<h2>%i18n:common.intro.features%</h2>
 				<section>
 					<h3>%i18n:common.intro.rich-contents%</h3>
-					<div class="image"><img src="/assets/about/post.png" alt=""></div>
+					<div class="image"><img src="/static/about/post.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.rich-contents-desc%'"></p>
 				</section>
 				<section>
 					<h3>%i18n:common.intro.reaction%</h3>
-					<div class="image"><img src="/assets/about/reaction.png" alt=""></div>
+					<div class="image"><img src="/static/about/reaction.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.reaction-desc%'"></p>
 				</section>
 				<section>
 					<h3>%i18n:common.intro.ui%</h3>
-					<div class="image"><img src="/assets/about/ui.png" alt=""></div>
+					<div class="image"><img src="/static/about/ui.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.ui-desc%'"></p>
 				</section>
 				<section>
 					<h3>%i18n:common.intro.drive%</h3>
-					<div class="image"><img src="/assets/about/drive.png" alt=""></div>
+					<div class="image"><img src="/static/about/drive.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.drive-desc%'"></p>
 				</section>
 			</section>
 			<p v-html="'%i18n:common.intro.outro%'"></p>
+			<img src="/static/about/Rinko_Japanese.png" width="100%">
 		</article>
 		<div class="info" v-if="meta">
 			<p>Version: <b>{{ meta.version }}</b></p>
 			<p>Maintainer: <b><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></b></p>
 		</div>
 		<footer>
+			<p><a href="/news/wp/about">About</a></p>
 			<small>{{ copyright }}</small>
 		</footer>
 	</div>
@@ -84,7 +88,7 @@ export default Vue.extend({
 			stats: null,
 			banner: null,
 			host,
-			name: 'Misskey',
+			name: 'Trillion',
 			description: '',
 			photos: [],
 			announcements: []
@@ -124,6 +128,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .wgwfgvvimdjvhjfwxropcwksnzftjqes
 	text-align center
+				  
 
 	> .banner
 		position absolute
@@ -315,5 +320,11 @@ export default Vue.extend({
 				display block
 				margin 16px 0 0 0
 				opacity 0.7
+
+												
+		   
+
+													  
+			
 
 </style>

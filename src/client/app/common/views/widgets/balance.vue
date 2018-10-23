@@ -16,19 +16,40 @@
 					<b>{{ $store.state.i.balance | number }}</b>
 					<div>TOTAL</div>
 				</div>
-				<span class="credits">CREDITS</span>
-				<span class="x"><b>■</b><i>TEXT</i></span>
+				<span class="credits">Balance</span>
+				<span class="x"><b>■</b><i>Coins</i></span>
 			</div>
 			<div v-show="props.view == 1" class="b">
 				<div class="line"></div>
 				<div>
 					<b>{{ $store.state.i.balance | number }}</b>
 				</div>
-				<span class="credits">CREDITS</span>
-				<span class="x"><b>■</b><i>TEXT</i></span>
+				<span class="credits">Balance</span>
+				<span class="x"><b>■</b><i>Coins</i></span>
 			</div>
 			<div v-show="props.view == 2" class="c">
-				<p>text</p>
+<details>
+	<summary>Rewards:</summary>
+	<p>Trillion rewards you with coins for signing up and using Trillion. You can amass coins, trade them, or later use them on the platform for various activities and services. You earn coins in a similar way to how rewards are earned playing a video game. For example, video games have virtual items and currency which can be collected and traded among users, or bought and sold on game markets.</p>
+</details>
+<details>
+	<summary>Signup Bonus:</summary>
+	<p>1000 coins. Each unique person receives a starting balance of 1000 coins.</p>
+</details>
+<details>
+	<summary>Activity Bonuses:</summary>
+	<p>Your activity automatically increases your coin balance.</p>   
+</details>
+
+<details>
+	<summary>Community:</summary>
+	<p>Using and promoting Trillion within your own social circles will help increase the value of your coins!</p>
+</details>
+
+<details>
+	<summary>Contact:</summary>
+	<p>If you have suggestions, etc., please contact us at <a href="mailto:hello@tri.cash">hello@tri.cash</a></p>
+</details>
 			</div>
 		</div>
 	</mk-widget-container>
@@ -160,5 +181,22 @@ export default define({
 
 				> i
 					opacity 0.5
+
+		> div.c
+			cursor pointer
+			color #666666
+			text-align left
+			max-height 250px
+			overflow auto
+
+			> details p
+				color #666666
+				font-size small
+				margin-left 15px
+				margin-top 3px
+
+				&:hover
+					color #000000
+
 
 </style>

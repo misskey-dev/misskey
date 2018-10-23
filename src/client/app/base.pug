@@ -2,24 +2,22 @@ block vars
 
 doctype html
 
-!= '\n<!-- Thank you for using Misskey! @syuilo -->\n'
-
 html
 
 	head
 		meta(charset='utf-8')
-		meta(name='application-name' content='Misskey')
+		meta(name='application-name' content='Trillion')
 		meta(name='theme-color' content=themeColor)
 		meta(name='referrer' content='origin')
-		meta(property='og:site_name' content='Misskey')
+		meta(property='og:site_name' content='Trillion')
 		link(rel='manifest' href='/manifest.json')
 
 		title
 			block title
-				| Misskey
+				| Trillion
 
 		block desc
-			meta(name='description' content='A planet of fediverse')
+			meta(name='description' content='Trillion')
 
 		block meta
 
@@ -36,9 +34,7 @@ html
 
 	body
 		noscript: p
-			| JavaScriptを有効にしてください
-			br
-			| Please turn on your JavaScript
+			Please turn on your JavaScript
 		div#ini.
 			<svg viewBox="0 0 50 50">
 				<path fill=#{themeColor} d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" />

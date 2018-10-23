@@ -11,7 +11,7 @@
 				</div>
 				<div class="center">
 					<div class="icon" @click="goToTop">
-						<img svg-inline src="../../assets/header-icon.svg"/>
+						<img src='/static/trillion-logo-34.png'/>
 					</div>
 				</div>
 				<div class="right">
@@ -129,14 +129,15 @@ export default Vue.extend({
 					> .icon
 						margin auto
 						display block
-						width 48px
+						height 34px
+						margin-top 7px
 						text-align center
 						cursor pointer
-						opacity 0.5
+						//opacity 0.5
 
 						> svg
 							width 24px
-							height 48px
+							height 34px
 							vertical-align top
 							fill var(--desktopHeaderFg)
 

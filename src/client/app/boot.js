@@ -130,8 +130,6 @@
 			localStorage.setItem('v', meta.clientVersion);
 
 			alert(
-				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
-				'\n\n' +
 				'New version of Misskey available. The page will be reloaded.');
 
 			refresh();

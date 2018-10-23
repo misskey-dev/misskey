@@ -1,16 +1,22 @@
 <template>
 <span class="mk-nav">
-	<a :href="aboutUrl">%i18n:@about%</a>
+	<a href="https://tri.cash/register" target="_blank">Register Coins</a>
 	<i>・</i>
-	<a href="/stats">%i18n:@stats%</a>
+	<a href="https://tri.cash/news/wp/about" target="_blank">%i18n:@about%</a>
 	<i>・</i>
-	<a :href="repositoryUrl">%i18n:@repository%</a>
+	<a href="https://tri.cash/news" target="_blank">News</a>
 	<i>・</i>
-	<a :href="feedbackUrl" target="_blank">%i18n:@feedback%</a>
+	<a href="https://tri.cash/news/about" target="_blank">Contact</a>
 	<i>・</i>
-	<a href="/dev">%i18n:@develop%</a>
+	<a href="https://tri.cash/news/terms" target="_blank">Terms</a>
 	<i>・</i>
-	<a href="https://twitter.com/misskey_xyz" target="_blank">Follow us on %fa:B twitter%</a>
+	<a href="https://tri.cash/buycrypto.html" target="_blank">Buy Crypto</a>
+	<i>・</i>
+	<a href="https://tri.cash/market" target="_blank">Market Data</a>
+	<i>・</i>
+	<a href="https://tri.cash/static/source.zip" target="_blank">Source Code</a>
+	<!-- <i>・</i>
+	<a href="https://twitter.com/trillionICO" target="_blank">Follow us on %fa:B twitter%</a> -->
 </span>
 </template>
 

@@ -36,7 +36,7 @@
 			</div>
 		</ui-input>
 		<div v-if="meta.recaptchaSitekey != null" class="g-recaptcha" :data-sitekey="meta.recaptchaSitekey" style="margin: 16px 0;"></div>
-		<ui-button type="submit">%i18n:@create%</ui-button>
+		<ui-button id="submit" type="submit">%i18n:@create%</ui-button>
 	</template>
 </form>
 </template>
@@ -89,7 +89,7 @@ export default Vue.extend({
 
 			const err =
 				!this.username.match(/^[a-zA-Z0-9_]+$/) ? 'invalid-format' :
-				this.username.length < 1 ? 'min-range' :
+				this.username.length < 4 ? 'min-range' :
 				this.username.length > 20 ? 'max-range' :
 				null;
 
@@ -126,6 +126,19 @@ export default Vue.extend({
 			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
 		},
 		onSubmit() {
+			var filtered = this.username.replace(/(\w)\1*/ig, '$1');  
+			var filtered1 = filtered.replace(/_/g, "");
+			// alert(filtered1) ;
+			if (filtered1.match(/fuck/i)) {
+				this.username = "";
+				this.password = "";
+				this.retypedPassword = '';
+			}
+			if (filtered1.match(/shit/i)) {
+				this.username = "";
+				this.password = "";
+				this.retypedPassword = '';
+			}
 			(this as any).api('signup', {
 				username: this.username,
 				password: this.password,
@@ -152,7 +165,14 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 
-
 .mk-signup
 	min-width 302px
+
+#submit 
+	color white
+	background-color #FB4E4E
+
+	&:hover
+		background-color red
+		
 </style>

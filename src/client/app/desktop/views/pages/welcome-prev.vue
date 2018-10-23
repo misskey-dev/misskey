@@ -15,7 +15,7 @@
 				<div style="text-align:center;">
 					<div style="margin-right:150px;">
 						<img src="/static/trillion-logo-95.png">
-					<h1 style="margin-top:5px;margin-bottom:5px;" v-if="name != 'Misskey'">{{ name }}<span style="font-size:30%;vertical-align:top;">TM</span></h1>
+					<h1 style="margin-top:5px;margin-bottom:5px;" v-if="name != 'Misskey'">{{ name }}</h1>
 					<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" :alt="name"></h1>
 					</div>
 
@@ -39,7 +39,7 @@
 					</p>
 					<p style="margin-right:150px;color:black;"><a class="about" @click="about">%i18n:@about%</a></p>
 
-					<img src="/static/images/Anime_Girl_Blond_trans_1.png" alt="" title="User uploaded artwork" class="char">
+					<img src="/assets/Anime_Girl_Blond_trans_1.png" alt="" title="User uploaded artwork" class="char">
 				</div>
 			</div>
 
@@ -99,7 +99,7 @@
 		</div>
 	</main>
 
-	<modal name="about" class="about modal" width="800px" height="auto" scrollable>
+	<modal name="about" :class="$store.state.device.darkmode ? ['about', 'modal-dark'] : ['about', 'modal-light']" width="800px" height="auto" scrollable>
 		<article class="fpdezooorhntlzyeszemrsqdlgbysvxq">
 			<h1>%i18n:common.intro.title%</h1>
 			<p v-html="'%i18n:common.intro.about%'"></p>
@@ -139,12 +139,12 @@
 		</article>
 	</modal>
 
-	<modal name="signup" class="modal" width="450px" height="auto" scrollable>
+	<modal name="signup" :class="$store.state.device.darkmode ? 'modal-dark' : 'modal-light'" width="450px" height="auto" scrollable>
 		<header class="formHeader">%i18n:@signup%</header>
 		<mk-signup class="form"/>
 	</modal>
 
-	<modal name="signin" class="modal" width="450px" height="auto" scrollable>
+	<modal name="signin" :class="$store.state.device.darkmode ? 'modal-dark' : 'modal-light'" width="450px" height="auto" scrollable>
 		<header class="formHeader">%i18n:@signin%</header>
 		<mk-signin class="form"/>
 	</modal>
@@ -161,7 +161,6 @@ export default Vue.extend({
 		return {
 			meta: null,
 			stats: null,
-			banner: null,
 			copyright,
 			host,
 			name: 'Trillion',
@@ -177,7 +176,6 @@ export default Vue.extend({
 			this.name = meta.name;
 			this.description = meta.description;
 			this.announcements = meta.broadcasts;
-			this.banner = meta.bannerUrl;
 		});
 
 		(this as any).api('stats').then(stats => {
@@ -192,7 +190,6 @@ export default Vue.extend({
 
 		(this as any).api('notes/local-timeline', {
 			fileType: image,
-			excludeNsfw: true,
 			limit: 6
 		}).then((notes: any[]) => {
 			const files = concat(notes.map((n: any): any[] => n.files));
@@ -231,7 +228,23 @@ export default Vue.extend({
 .v--modal-overlay
 	background rgba(0, 0, 0, 0.6)
 
-.modal
+.modal-light
+	.v--modal-box
+		color #777
+
+		.formHeader
+			border-bottom solid 1px #eee
+
+.modal-dark
+	.v--modal-box
+		background #313543
+		color #fff
+
+		.formHeader
+			border-bottom solid 1px rgba(#000, 0.2)
+
+.modal-light
+.modal-dark
 	.form
 		padding 24px 48px 48px 48px
 
@@ -240,13 +253,6 @@ export default Vue.extend({
 		padding 48px 0 12px 0
 		margin 0 48px
 		font-size 1.5em
-
-	.v--modal-box
-		background var(--face)
-		color var(--text)
-
-		.formHeader
-			border-bottom solid 1px rgba(#000, 0.2)
 
 .v--modal-overlay.about
 	.v--modal-box.v--modal
@@ -263,7 +269,7 @@ export default Vue.extend({
 
 	> section
 		> h2
-			border-bottom 1px solid var(--faceDivider)
+			border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
 
 		> section
 			display grid
@@ -272,7 +278,7 @@ export default Vue.extend({
 			gap 32px
 			margin-bottom 32px
 			padding-bottom 32px
-			border-bottom 1px solid var(--faceDivider)
+			border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
 
 			&:nth-child(odd)
 				grid-template-columns 1fr 180px
@@ -299,30 +305,14 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
-.mk-welcome
+
+root(isDark)
 	display flex
 	min-height 100vh
-
-	> .banner
-		position absolute
-		top 0
-		left 0
-		width 100%
-		//height 400px
-		height 100%
-		background-position center
-		background-size cover
-		//opacity 0.7
-
-		&:after
-			content ""
-			display block
-			position absolute
-			bottom 0
-			left 0
-			width 100%
-			height 100px
-			//background linear-gradient(transparent, var(--bg))
+	//background-color #00070F
+	background-image url('/assets/desktop/bahama-mama.jpg')
+	background-position center
+	background-size cover
 
 	> .forkit
 		position absolute
@@ -336,7 +326,7 @@ export default Vue.extend({
 		left 16px
 		padding 16px
 		font-size 18px
-		color var(--text)
+		color isDark ? #fff : #444
 
 	> main
 		margin 0 auto
@@ -345,9 +335,9 @@ export default Vue.extend({
 		max-width 1200px
 
 		.block
-			color var(--text)
-			background var(--face)
-			box-shadow var(--shadow)
+			color isDark ? #fff : #444
+			background isDark ? #282C37 : #fff
+			box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 			//border-radius 8px
 			overflow auto
 
@@ -355,8 +345,10 @@ export default Vue.extend({
 				z-index 1
 				padding 0 16px
 				line-height 48px
-				background var(--faceHeader)
-				box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+				background isDark ? #313543 : #fff
+
+				if !isDark
+					box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
 
 				& + div
 					max-height calc(100% - 48px)
@@ -374,20 +366,18 @@ export default Vue.extend({
 			> .main
 				grid-row 1
 				grid-column 1 / 3
-				border-top solid 5px var(--primary)
+				border-top solid 5px $theme-color
 
 				> div
-					padding 32px
+					padding 20px
 					min-height 100%
 
 					> h1
 						margin 0
 
-						> svg
+						> img
 							margin -8px 0 0 -16px
-							width 280px
-							height 100px
-							fill currentColor
+							max-width 280px
 
 					> .info
 						margin 0 auto 16px auto
@@ -397,7 +387,7 @@ export default Vue.extend({
 						> .stats
 							margin-left 16px
 							padding-left 16px
-							border-left solid 1px var(--faceDivider)
+							border-left solid 1px isDark ? #fff : #444
 
 							> *
 								margin-right 16px
@@ -418,15 +408,13 @@ export default Vue.extend({
 							width 100px
 							height 30px
 							vertical-align middle
-							//color $theme-color
-							color #FB4E4E
+							color $theme-color
 							cursor pointer
 							transition-duration 0.5s
 							font-weight bold
 
 							&:hover
 								font-size 130%
-								color var(--primary)
 
 					> .char
 						display block
@@ -434,7 +422,7 @@ export default Vue.extend({
 						right 16px
 						bottom 0
 						height 320px
-						//opacity 0.7
+						opacity 1.0
 
 					> *:not(.char)
 						z-index 1
@@ -449,7 +437,7 @@ export default Vue.extend({
 					> div
 						padding 0 0 16px 0
 						margin 0 0 16px 0
-						border-bottom 1px solid var(--faceDivider)
+						border-bottom 1px solid isDark ? rgba(#000, 0.2) : rgba(#000, 0.05)
 
 						> h1
 							margin 0
@@ -517,5 +505,11 @@ export default Vue.extend({
 							> p
 								display block
 								margin 0
+
+.mk-welcome[data-darkmode]
+	root(true)
+
+.mk-welcome:not([data-darkmode])
+	root(false)
 
 </style>

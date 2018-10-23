@@ -81,7 +81,7 @@ export default Vue.extend({
 		background-size cover
 		background-position center
 		background-attachment fixed
-		opacity 0.3
+		//opacity 0.3
 
 	> .header
 		@media (max-width 1000px)
