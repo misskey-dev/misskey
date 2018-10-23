@@ -541,12 +541,12 @@ desktop/views/components/charts.vue:
   title: "Diagrammer"
   per-day: "per dag"
   per-hour: "1時間ごと"
+  federation: "フェデレーション"
   notes: "Innlegg"
   users: "Brukere"
   drive: "Disk"
   network: "ネットワーク"
   charts:
-    federation: "フェデレーション"
     federation-instances: "インスタンスの増減"
     federation-instances-total: "インスタンスの積算"
     notes: "投稿の増減 (統合)"
