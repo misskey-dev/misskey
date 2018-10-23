@@ -606,6 +606,9 @@ desktop/views/components/charts.vue:
   drive: "ドライブ"
   network: "ネットワーク"
   charts:
+    federation: "フェデレーション"
+    federation-instances: "インスタンスの増減"
+    federation-instances-total: "インスタンスの積算"
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
     remote-notes: "投稿の増減 (リモート)"

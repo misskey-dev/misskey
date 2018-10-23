@@ -3,6 +3,10 @@
 	<header>
 		<b>%i18n:@title%:</b>
 		<select v-model="chartType">
+			<optgroup label="%i18n:@federation%">
+				<option value="federation-instances">%i18n:@charts.federation-instances%</option>
+				<option value="federation-instances-total">%i18n:@charts.federation-instances-total%</option>
+			</optgroup>
 			<optgroup label="%i18n:@users%">
 				<option value="users">%i18n:@charts.users%</option>
 				<option value="users-total">%i18n:@charts.users-total%</option>
@@ -79,6 +83,8 @@ export default Vue.extend({
 		data(): any {
 			if (this.chart == null) return null;
 			switch (this.chartType) {
+				case 'federation-instances': return this.federationInstancesChart(false);
+				case 'federation-instances-total': return this.federationInstancesChart(true);
 				case 'users': return this.usersChart(false);
 				case 'users-total': return this.usersChart(true);
 				case 'notes': return this.notesChart('combined');
@@ -109,11 +115,13 @@ export default Vue.extend({
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([Promise.all([
+			(this as any).api('charts/federation', { limit: limit, span: 'hour' }),
 			(this as any).api('charts/users', { limit: limit, span: 'hour' }),
 			(this as any).api('charts/notes', { limit: limit, span: 'hour' }),
 			(this as any).api('charts/drive', { limit: limit, span: 'hour' }),
 			(this as any).api('charts/network', { limit: limit, span: 'hour' })
 		]), Promise.all([
+			(this as any).api('charts/federation', { limit: limit, span: 'day' }),
 			(this as any).api('charts/users', { limit: limit, span: 'day' }),
 			(this as any).api('charts/notes', { limit: limit, span: 'day' }),
 			(this as any).api('charts/drive', { limit: limit, span: 'day' }),
@@ -122,16 +130,18 @@ export default Vue.extend({
 
 		const chart = {
 			perHour: {
-				users: perHour[0],
-				notes: perHour[1],
-				drive: perHour[2],
-				network: perHour[3]
+				federation: perHour[0],
+				users: perHour[1],
+				notes: perHour[2],
+				drive: perHour[3],
+				network: perHour[4]
 			},
 			perDay: {
-				users: perDay[0],
-				notes: perDay[1],
-				drive: perDay[2],
-				network: perDay[3]
+				federation: perDay[0],
+				users: perDay[1],
+				notes: perDay[2],
+				drive: perDay[3],
+				network: perDay[4]
 			}
 		};
 
@@ -154,6 +164,23 @@ export default Vue.extend({
 
 		format(arr) {
 			return arr.map((v, i) => ({ t: this.getDate(i).getTime(), y: v }));
+		},
+
+		federationInstancesChart(total: boolean): any {
+			return [{
+				datasets: [{
+					label: 'Instances',
+					fill: true,
+					backgroundColor: rgba(colors.localPlus),
+					borderColor: colors.localPlus,
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: this.format(total
+						? this.stats.federation.instance.total
+						: sum(this.stats.federation.instance.inc, negate(this.stats.federation.instance.dec)))
+				}]
+			}];
 		},
 
 		notesChart(type: string): any {
