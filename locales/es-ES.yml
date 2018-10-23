@@ -546,6 +546,9 @@ desktop/views/components/charts.vue:
   drive: "Unidad"
   network: "ネットワーク"
   charts:
+    federation: "フェデレーション"
+    federation-instances: "インスタンスの増減"
+    federation-instances-total: "インスタンスの積算"
     notes: "Número de publicaciones: aumentar/disminuir (Combinado)"
     local-notes: "Número de publicaciones: aumentar/disminuir (Local)"
     remote-notes: "Número de publicaciones: aumentar/disminuir (Remoto)"
