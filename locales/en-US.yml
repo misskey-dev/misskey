@@ -41,6 +41,14 @@ common:
   application-authorization: "Application authorizations"
   close: "Close"
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
+  BSoD:
+    fatal-error: "A fatal error has occurred :("
+    update-browser-os: "You might resolve to update the version of your browser (or OS)."
+    error-code: "Error code"
+    browser-version: "Browser version"
+    client-version: "Client version"
+    email-support: "If the problem persists, contact syuilotan@yahoo.co.jp please on the above information."
+    thanks: "Thank you for using Misskey."
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -125,12 +133,24 @@ common:
   use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
+<<<<<<< HEAD
   always-show-nsfw: "Always use content warning on all media posts"
   always-mark-nsfw: "Always post with a warning about media attachment"
   show-full-acct: "Show the instance name in the username"
+=======
+  always-show-nsfw: "Always show NSFW contents"
+  always-mark-nsfw: "Always mark posts with media attachments as NSFW"
+  show-full-acct: "Do not omit the hostname from the username"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
+  is-remote-user: "This user information is copied."
+  is-remote-post: "This post information is a copy."
+  view-on-remote: "View it on remote"
+  error:
+    title: 'Something happened :('
+    retry: 'Retry'
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
@@ -186,6 +206,7 @@ common:
     rename: "Rename"
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
+  dev: "Failed to create the application. Please try again."
 auth/views/form.vue:
   share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
@@ -281,6 +302,7 @@ common/views/components/media-banner.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
 common/views/components/theme.vue:
+<<<<<<< HEAD
   light-theme: "Theme used in non-dark mode"
   dark-theme: "Theme used in dark mode"
   light-themes: "Bright theme"
@@ -291,6 +313,18 @@ common/views/components/theme.vue:
   installed: "Theme {} successfully installed"
   create-a-theme: "Create theme"
   save-created-theme: "Save theme"
+=======
+  light-theme: "Theme"
+  dark-theme: "Theme during dark mode"
+  light-themes: "Light theme"
+  dark-themes: "Dark theme"
+  install-a-theme: "Install a theme"
+  theme-code: "Theme code"
+  install: "Install"
+  installed: "\"{}\" has been installed"
+  create-a-theme: "Create a theme"
+  save-created-theme: "Save a theme"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   primary-color: "Primary color"
   secondary-color: "Secondary color"
   text-color: "Text color"
@@ -298,6 +332,7 @@ common/views/components/theme.vue:
   base-theme-light: "Light"
   base-theme-dark: "Dark"
   theme-name: "Theme name"
+<<<<<<< HEAD
   preview-created-theme: "Preview theme"
   invalid-theme: "The theme is incorrect"
   already-installed: "This theme is already installed"
@@ -309,11 +344,28 @@ common/views/components/theme.vue:
   select-theme: "Please select a theme"
   uninstall: "Uninstall theme"
   uninstalled: "Theme {} successfully uninstalled"
+=======
+  preview-created-theme: "Preview"
+  invalid-theme: "Not valid theme"
+  already-installed: "This theme is already installed."
+  saved: "Saved"
+  manage-themes: "Themes manager"
+  builtin-themes: "Standard themes"
+  my-themes: "My themes"
+  installed-themes: "Installed themes"
+  select-theme: "Select your theme"
+  uninstall: "Uninstall"
+  uninstalled: "\"{}\" has been uninstalled"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   author: "Author"
   desc: "Description"
   export: "Export"
   import: "Import"
+<<<<<<< HEAD
   import-by-code: "Or paste theme code"
+=======
+  import-by-code: "or paste code"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   theme-name-required: "Theme name is required"
 common/views/components/cw-button.vue:
   hide: "Hide"
@@ -351,8 +403,13 @@ common/views/components/note-menu.vue:
   detail: "Details"
   copy-link: "Copy link"
   favorite: "Favorite this note"
+  unfavorite: "Unfavorite"
   pin: "Pin to your profile"
+<<<<<<< HEAD
   unpin: "ピン留め解除"                           
+=======
+  unpin: "Unpin"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   delete: "Delete"
   delete-confirm: "Delete this post?"
   remote: "Show original note"
@@ -431,6 +488,25 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{} users mentioned"
   empty: "No popular hashtag trends"
+common/views/components/profile-editor.vue:
+  title: "Profile"
+  name: "Name"
+  account: "Account"
+  location: "Location"
+  description: "About me"
+  birthday: "Birthday"
+  avatar: "Avatar"
+  banner: "Banner"
+  is-cat: "This account is a Cat"
+  is-bot: "This account is a Bot"
+  is-locked: "Follower requests require approval"
+  careful-bot: "Follower requests from bots require approval"
+  advanced: "Advanced"
+  privacy: "Privacy"
+  save: "Update profile"
+  saved: "Profile updated successfully"
+  uploading: "Uploading"
+  upload-failed: "Failed to upload"
 common/views/widgets/broadcast.vue:
   fetching: "Fetching"
   no-broadcasts: "No announcements"
@@ -478,7 +554,7 @@ common/views/widgets/tips.vue:
   tips-line10: "Using the Time Machine widget makes it easy to trace back to the past timeline."
   tips-line11: "You can pin posts to user page by clicking on \"...\""
   tips-line13: "All the files attached to the post are saved to Drive."
-  tips-line14: "While customizing the home, you can right click on the widget and change the design."
+  tips-line14: "While customizing your home layout, you can right click on a widget to change its design."
   tips-line17: "Surrounding the text with ** ** will highlight it."
   tips-line19: "Several windows can be detached outside the browser."
   tips-line20: "The percentage of the calendar widget shows the percentage of time elapsed."
@@ -530,6 +606,7 @@ desktop/views/components/charts.vue:
     notes: "The number of posts: increase/decrease (Combined)"
     local-notes: "The number of posts: increase/decrease (Local)"
     remote-notes: "The number of posts: increase/decrease (Remote)"
+<<<<<<< HEAD
     notes-total: "The number of posts: cumulative total"
     users: "The number of users: increase/decrease"
     users-total: "The number of users: cumulative total"
@@ -537,6 +614,15 @@ desktop/views/components/charts.vue:
     drive-total: "Capacity used as the storage: cumulative total"
     drive-files: "The number of files on the storage: increase/decrease"
     drive-files-total: "The number of files on the storage: cumulative total"
+=======
+    notes-total: "Total posts"
+    users: "The number of users: increase/decrease"
+    users-total: "Total users"
+    drive: "Capacity used as the storage: increase/decrease"
+    drive-total: "Total usage of Drive"
+    drive-files: "The number of files on the storage: increase/decrease"
+    drive-files-total: "Total number of files on Drive"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
     network-requests: "Requests"
     network-time: "Response time"
     network-usage: "Traffic"
@@ -655,14 +741,14 @@ desktop/views/components/note-detail.vue:
   location: "Location"
   renote: "Repost"
   add-reaction: "Add a reaction"
-desktop/views/components/notes.note.vue:
+desktop/views/components/note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
-  renote: "Repost"
+  renote: "Renote"
   add-reaction: "Add a reaction"
-  detail: "Show details"
-  private: "Post is private"
-  deleted: "Post has been deleted"
+  detail: "Details"
+  private: "This post is private"
+  deleted: "This post has been deleted"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
@@ -741,13 +827,22 @@ desktop/views/components/settings.vue:
   advanced: "Advanced settings"
   api-via-stream: "API request via stream"
   api-via-stream-desc: "API request is performed via the WebSocket connection instead of native fetch API (for better performance). This setting is stored in the browser."
+  deck-nav: "Transitionless deck navigation"
+  deck-nav-desc: "You get a temporary column without page transitions during navigation when using the deck."
+  deck-default: "Use Deck as default UI"
   display: "Design and display"
   customize: "Customize home layout"
+  wallpaper: "Wallpaper"
   choose-wallpaper: "Choose a background"
   delete-wallpaper: "Remove background"
   dark-mode: "Dark Mode"
+<<<<<<< HEAD
   use-shadow: "Use shadows in UI"
   rounded-corners: "Use rounded corners in UI"
+=======
+  use-shadow: "Use shadows in the UI"
+  rounded-corners: "Round corners of UI"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   circle-icons: "Use circle icons"
   contrasted-acct: "Add contrast to username"
   gradient-window-header: "Use gradients on window headers"
@@ -755,18 +850,23 @@ desktop/views/components/settings.vue:
   suggest-recent-hashtags: "Show recent popular hashtags on the post form"
   show-clock-on-header: "Show clock on upper-right"
   show-reply-target: "Display reply target"
+  timeline: "Timeline"
   show-my-renotes: "Show my renotes in the timeline"
-  show-renoted-my-notes: "Show renoted my posts in timelines"
+  show-renoted-my-notes: "Show renoted posts of mine in timelines"
   show-local-renotes: "Show renoted local posts in timelines"
   show-maps: "Display a map to show the location"
+<<<<<<< HEAD
   show-maps-desc: "If there comes a post contains location information, show a map to display the location."
+=======
+  deck-column-align: "Deck column alignment"
+  deck-column-align-center: "Center"
+  deck-column-align-left: "Left"
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   sound: "Sound"
   enable-sounds: "Enable sound"
   enable-sounds-desc: "Play a sound when you receive a post/message. This setting is stored in the browser."
   volume: "Volume"
   test: "Test"
-  mobile: "Mobile"
-  disable-via-mobile: "Don't mark the post as 'from mobile'"
   language: "Language"
   pick-language: "Select a language"
   recommended: "Recommended"
@@ -802,6 +902,10 @@ desktop/views/components/settings.vue:
   tools: "Tools"
   task-manager: "Task Manager"
   third-parties: "Third-parties"
+  navbar-position: "Navigation bar position"
+  navbar-position-top: "Top"
+  navbar-position-left: "Left"
+  navbar-position-right: "Right"
 desktop/views/components/settings.2fa.vue:
   intro: "If you set up 2-step verification, you will not only need a password at sign-in, but also a pre-registered physical device (such as your smartphone), which will improve security."
   detail: "Details…"
@@ -841,20 +945,6 @@ desktop/views/components/settings.password.vue:
   enter-new-password-again: "Enter new password again"
   not-match: "The new passwords do not match"
   changed: "Password updated"
-desktop/views/components/settings.profile.vue:
-  avatar: "Avatar"
-  choice-avatar: "Select an image"
-  name: "Name"
-  location: "Location"
-  description: "Description"
-  birthday: "Birthday"
-  save: "Update profile"
-  locked-account: "Protect your account"
-  is-locked: "Follow request needs approval"
-  other: "Other"
-  is-bot: "This account is a Bot"
-  is-cat: "This account is a Cat"
-  profile-updated: "Your profile has been updated"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -887,7 +977,7 @@ desktop/views/components/ui.header.account.vue:
   admin: "Admin"
   settings: "Settings"
   signout: "Sign out"
-  dark: "Submerge in dark"
+  dark: "Toggle dark mode"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
@@ -926,6 +1016,8 @@ desktop/views/pages/admin/admin.vue:
   drive: "Drive"
   users: "Users"
   update: "Updates"
+  announcements: "Announcements"
+  hashtags: "Hashtags"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Dashboard"
   all-users: "All Users"
@@ -933,6 +1025,9 @@ desktop/views/pages/admin/admin.dashboard.vue:
   all-notes: "All the posts"
   original-notes: "Posts on this instance"
   invite: "Invite"
+  banner-url: "Banner URL"
+  disableRegistration: "Disable new user registration"
+  disableLocalTimeline: "Disable the local timeline"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspend a user"
   suspend: "Suspend"
@@ -949,14 +1044,23 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "User account unverification settings"
   unverify: "Unverify account"
   unverified: "The account is now being unverified"
+desktop/views/pages/admin/admin.announcements.vue:
+  announcements: "Announcements"
+desktop/views/pages/admin/admin.hashtags.vue:
+  hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
   edit: "Options"
-desktop/views/pages/deck/deck.note.vue:
-  reposted-by: "Reposted by {}"
-  private: "This post is private"
-  deleted: "This post has been deleted"
+desktop/views/pages/deck/deck.user-column.vue:
+  posts: "Posts"
+  following: "Following"
+  followers: "Followers"
+  images: "Images"
+  activity: "Activity"
+  timeline: "Timeline"
+  pinned-notes: "Pinned posts"
+  push-to-a-list: "Add to list"
 desktop/views/pages/stats/stats.vue:
   all-users: "All Users"
   original-users: "Users on this instance"
@@ -971,8 +1075,13 @@ desktop/views/pages/welcome.vue:
   signup-button: "Sign up"
   timeline: "Timeline"
   announcements: "Announcements"
+<<<<<<< HEAD
   photos: "Recent uploaded"
   powered-by-misskey: "Powered by <b>Trillion</b>."
+=======
+  photos: "Recent Images"
+  powered-by-misskey: "Powered by <b>Misskey</b>."
+>>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   info: "Information"
 desktop/views/pages/drive.vue:
   title: "Trillion storage"
@@ -1009,10 +1118,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No frequent mentions"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "This profile belongs to a remote user. The profile that you see here may not be complete. "
-  view-remote: "See their complete profile"
-desktop/views/pages/user/user.home.vue:
-  last-used-at: "Last active:"
+  last-used-at: "Last active"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
@@ -1032,6 +1138,10 @@ desktop/views/pages/user/user.header.vue:
   following: "Following"
   followers: "Followers"
   is-bot: "This account is a Bot"
+  years-old: " years old"
+  year: "/"
+  month: "/"
+  day: "-"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
@@ -1091,6 +1201,8 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
   nsfw: "NSFW"
+  mark-as-sensitive: "Mark as 'sensitive'"
+  unmark-as-sensitive: "Unmark as 'sensitive'"
 mobile/views/components/media-image.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
@@ -1174,11 +1286,11 @@ mobile/views/components/ui.nav.vue:
   about: "About Trillion"
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
-  no-notes-with-media: "There are no posts attaching media"
+  no-notes-with-media: "There are no notes with media attachments"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
-  known: "You know"
+  known: "In common"
   load-more: "More"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
@@ -1231,23 +1343,6 @@ mobile/views/pages/notifications.vue:
   read-all: "Do you wish to mark all notifications as read?"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
-mobile/views/pages/settings/settings.profile.vue:
-  title: "Profile"
-  name: "Name"
-  account: "Account"
-  location: "Location"
-  description: "Biography"
-  birthday: "Birthday"
-  avatar: "Avatar"
-  banner: "Banner"
-  is-cat: "This account is a Cat"
-  is-locked: "Follow request needs approval"
-  advanced: "Advanced"
-  privacy: "Privacy"
-  save: "Update profile"
-  saved: "Profile updated"
-  uploading: "Uploading"
-  upload-failed: "Failed to upload"
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
@@ -1269,7 +1364,7 @@ mobile/views/pages/settings.vue:
   timeline: "Timeline"
   show-reply-target: "Show reply target"
   show-my-renotes: "Show my reposts"
-  show-renoted-my-notes: "Show renoted my posts"
+  show-renoted-my-notes: "Show renoted posts of mine"
   show-local-renotes: "Show renoted local posts"
   post-style: "Post design"
   post-style-standard: "Standard"
@@ -1302,6 +1397,7 @@ mobile/views/pages/settings.vue:
   signout: "Sign out"
   sound: "Sounds"
   enable-sounds: "Enable sounds"
+  mark-as-read-all-unread-notes: "Mark all posts as read"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
@@ -1311,8 +1407,6 @@ mobile/views/pages/user.vue:
   timeline: "Timeline"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "The user is a remote user. The profile that you see here may not complete."
-  view-remote: "See his/her complete profile"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"
@@ -1358,3 +1452,29 @@ docs:
       description: "Description"
 dev/views/index.vue:
   manage-apps: "Manage apps"
+dev/views/apps.vue:
+  manage-apps: "Manage apps"
+  create-app: "Create app"
+  app-missing: "No apps"
+dev/views/new-app.vue:
+  create-app: "Creating application"
+  app-name: "Application name"
+  app-name-desc: "The name of your app"
+  app-name-ex: "ex) Misskey for iOS"
+  app-overview: "Application summary"
+  app-desc: "A brief description or introduction of your app."
+  app-desc-ex: "ex) Misskey iOS client."
+  callback-url: "The callback URL (optional)"
+  callback-url-desc: "The URL to redirect to after the user is authenticated via the authentication form."
+  authority: "Permissions"
+  authority-desc: "Only the functions requested here can be accessed via the API."
+  authority-warning: "You can change it even after creating the application, but if you give different permissions, all user keys associated at that time will be invalidated."
+  account-read: "View account information."
+  account-write: "Modify account information."
+  note-write: "Post."
+  reaction-write: "Add or remove reactions."
+  following-write: "Follow and unfollow."
+  drive-read: "Read the drive."
+  drive-write: "Upload/delete files in the drive."
+  notification-read: "Read your notifications."
+  notification-write: "Manage your notifications."

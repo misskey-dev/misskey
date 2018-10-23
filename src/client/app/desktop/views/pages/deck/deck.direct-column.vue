@@ -34,5 +34,11 @@ export default Vue.extend({
 			return '%i18n:common.deck.direct%';
 		}
 	},
+
+	methods: {
+		focus() {
+			this.$refs.tl.focus();
+		}
+	}
 });
 </script>

@@ -7,6 +7,8 @@ const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'インスタンス情報を取得します。',
 		'en-US': 'Get the information of this instance.'
@@ -47,6 +49,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		swPublickey: config.sw ? config.sw.public_key : null,
 		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
 		bannerUrl: meta.bannerUrl,
+		maxNoteTextLength: config.maxNoteTextLength,
 
 		features: {
 			registration: !meta.disableRegistration,
@@ -55,7 +58,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			recaptcha: config.recaptcha ? true : false,
 			objectStorage: config.drive && config.drive.storage === 'minio',
 			twitter: config.twitter ? true : false,
-			serviceWorker: config.sw ? true : false
+			serviceWorker: config.sw ? true : false,
+			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
 		}
 	});
 });

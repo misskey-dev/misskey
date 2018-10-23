@@ -5,7 +5,7 @@
 		<span v-if="note.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
 		<a class="reply" v-if="note.replyId">%fa:reply%</a>
 		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i"/>
-		<a class="rp" v-if="note.renoteId" :href="`/notes/${note.renoteId}`">RP: ...</a>
+		<a class="rp" v-if="note.renoteId" :href="`/notes/${note.renoteId}`">RN: ...</a>
 	</div>
 	<details v-if="note.files.length > 0">
 		<summary>({{ '%i18n:@media-count%'.replace('{}', note.files.length) }})</summary>

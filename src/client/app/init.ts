@@ -124,11 +124,17 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 
 			//#region shadow
 			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
+			const shadowRight = '4px 0 4px rgba(0, 0, 0, 0.1)';
+			const shadowLeft = '-4px 0 4px rgba(0, 0, 0, 0.1)';
 			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadow', shadow);
+			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadowRight', shadowRight);
+			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadowLeft', shadowLeft);
 			os.store.watch(s => {
 				return s.settings.useShadow;
 			}, v => {
 				document.documentElement.style.setProperty('--shadow', v ? shadow : 'none');
+				document.documentElement.style.setProperty('--shadowRight', v ? shadowRight : 'none');
+				document.documentElement.style.setProperty('--shadowLeft', v ? shadowLeft : 'none');
 			});
 			//#endregion
 
@@ -141,6 +147,31 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				document.documentElement.style.setProperty('--round', v ? round : '0');
 			});
 			//#endregion
+
+			// Navigation hook
+			router.beforeEach((to, from, next) => {
+				if (os.store.state.navHook) {
+					if (os.store.state.navHook(to)) {
+						next(false);
+					} else {
+						next();
+					}
+				} else {
+					next();
+				}
+			});
+
+			document.addEventListener('visibilitychange', () => {
+				if (!document.hidden) {
+					os.store.commit('clearBehindNotes');
+				}
+			}, false);
+
+			window.addEventListener('scroll', () => {
+				if (window.scrollY <= 8) {
+					os.store.commit('clearBehindNotes');
+				}
+			}, { passive: true });
 
 			Vue.mixin({
 				data() {
@@ -191,15 +222,15 @@ function panic(e) {
 	document.documentElement.style.background = '#1269e2';
 	document.body.innerHTML =
 		'<div id="error">'
-			+ '<h1>:( 致命的な問題が発生しました。</h1>'
-			+ '<p>お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。</p>'
+			+ '<h1>%i18n.common.BSoD.fatal-error%</h1>'
+			+ '<p>%i18n.common.BSoD.update-browser-os%</p>'
 			+ '<hr>'
-			+ `<p>エラーコード: ${e.toString()}</p>`
-			+ `<p>ブラウザ バージョン: ${navigator.userAgent}</p>`
-			+ `<p>クライアント バージョン: ${version}</p>`
+			+ `<p>%i18n.common.BSoD.error-code%: ${e.toString()}</p>`
+			+ `<p>%i18n.common.BSoD.browser-version%: ${navigator.userAgent}</p>`
+			+ `<p>%i18n.common.BSoD.client-version%: ${version}</p>`
 			+ '<hr>'
-			+ '<p>問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>'
-			+ '<p>Thank you for using Misskey.</p>'
+			+ '<p>%i18n.common.BSoD.email-support%</p>'
+			+ '<p>%i18n.common.BSoD.thanks%</p>'
 		+ '</div>';
 
 	// TODO: Report the bug

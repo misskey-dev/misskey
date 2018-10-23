@@ -2,6 +2,8 @@ import User, { pack, ILocalUser } from '../../../models/user';
 import { IApp } from '../../../models/app';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '自分のアカウント情報を取得します。'
 	},

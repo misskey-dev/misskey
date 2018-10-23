@@ -92,7 +92,7 @@ export default Vue.extend({
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
 		this.connection.send('requestLog', {
-			id: Math.random().toString()
+			id: Math.random().toString().substr(2, 8)
 		});
 	},
 	beforeDestroy() {

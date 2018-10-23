@@ -60,9 +60,6 @@ export default Vue.extend({
 			margin-right 4px
 
 	> .stream
-		display -webkit-flex
-		display -moz-flex
-		display -ms-flex
 		display flex
 		justify-content center
 		flex-wrap wrap

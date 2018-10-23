@@ -3,6 +3,7 @@ const deepcopy = require('deepcopy');
 const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import Note, { packMany as packNoteMany, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
@@ -17,8 +18,6 @@ import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
 import DriveFile, { deleteDriveFile } from './drive-file';
 import DriveFolder, { deleteDriveFolder } from './drive-folder';
 import PollVote, { deletePollVote } from './poll-vote';
-import FollowingLog, { deleteFollowingLog } from './following-log';
-import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
 import UserList, { deleteUserList } from './user-list';
@@ -93,6 +92,16 @@ type IUserBase = {
 	isLocked: boolean;
 
 	/**
+	 * Botか否か
+	 */
+	isBot: boolean;
+
+	/**
+	 * Botからのフォローを承認制にするか
+	 */
+	carefulBot: boolean;
+
+	/**
 	 * このアカウントに届いているフォローリクエストの数
 	 */
 	pendingReceivedFollowRequestsCount: number;
@@ -121,7 +130,6 @@ export interface ILocalUser extends IUserBase {
 		tags: string[];
 	};
 	lastUsedAt: Date;
-	isBot: boolean;
 	isCat: boolean;
 	isAdmin?: boolean;
 	isVerified?: boolean;
@@ -194,7 +202,7 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	let u: IUser;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+	if (isObjectId(user)) {
 		u = await User.findOne({
 			_id: user
 		});
@@ -295,16 +303,6 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		await FollowRequest.find({ followeeId: u._id })
 	).map(x => deleteFollowRequest(x)));
 
-	// このユーザーのFollowingLogをすべて削除
-	await Promise.all((
-		await FollowingLog.find({ userId: u._id })
-	).map(x => deleteFollowingLog(x)));
-
-	// このユーザーのFollowedLogをすべて削除
-	await Promise.all((
-		await FollowedLog.find({ userId: u._id })
-	).map(x => deleteFollowedLog(x)));
-
 	// このユーザーのSwSubscriptionをすべて削除
 	await Promise.all((
 		await SwSubscription.find({ userId: u._id })
@@ -359,7 +357,6 @@ export const pack = (
 		includeHasUnreadNotes?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
-
 	const opts = Object.assign({
 		detail: false,
 		includeSecrets: false
@@ -377,7 +374,7 @@ export const pack = (
 	};
 
 	// Populate the user if 'user' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+	if (isObjectId(user)) {
 		_user = await User.findOne({
 			_id: user
 		}, { fields });
@@ -397,7 +394,7 @@ export const pack = (
 
 	// Me
 	const meId: mongo.ObjectID = me
-		? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? isObjectId(me)
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)

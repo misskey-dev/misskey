@@ -23,6 +23,7 @@ export type Source = {
 	url: string;
 	port: number;
 	https?: { [x: string]: string };
+	disableHsts?: boolean;
 	mongodb: {
 		host: string;
 		port: number;
@@ -61,6 +62,8 @@ export type Source = {
 	 * ゴーストアカウントのID
 	 */
 	ghost?: string;
+
+	proxy?: string;
 
 	summalyProxy?: string;
 
@@ -102,6 +105,8 @@ export type Source = {
 		engine: string;
 		timeout: number;
 	};
+
+	maxNoteTextLength?: number;
 };
 
 /**

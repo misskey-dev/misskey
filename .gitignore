@@ -16,3 +16,4 @@ api-docs.json
 /redis
 /mongo
 /elasticsearch
+*.code-workspace

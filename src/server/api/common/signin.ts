@@ -8,7 +8,9 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 	ctx.cookies.set('i', user.token, {
 		path: '/',
 		domain: config.hostname,
-		secure: config.url.startsWith('https'),
+		// SEE: https://github.com/koajs/koa/issues/974
+		//secure: config.url.startsWith('https'),
+		secure: false,
 		httpOnly: false,
 		expires: new Date(Date.now() + expires),
 		maxAge: expires

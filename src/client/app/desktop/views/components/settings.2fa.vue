@@ -2,10 +2,10 @@
 <div class="2fa">
 	<p>%i18n:@intro%<a href="%i18n:@url%" target="_blank">%i18n:@detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:@caution%</p></div>
-	<p v-if="!data && !$store.state.i.twoFactorEnabled"><button @click="register" class="ui primary">%i18n:@register%</button></p>
+	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">%i18n:@register%</ui-button></p>
 	<template v-if="$store.state.i.twoFactorEnabled">
 		<p>%i18n:@already-registered%</p>
-		<button @click="unregister" class="ui">%i18n:@unregister%</button>
+		<ui-button @click="unregister">%i18n:@unregister%</ui-button>
 	</template>
 	<div v-if="data">
 		<ol>
@@ -13,7 +13,7 @@
 			<li>%i18n:@scan%<br><img :src="data.qr"></li>
 			<li>%i18n:@done%<br>
 				<input type="number" v-model="token" class="ui">
-				<button @click="submit" class="ui primary">%i18n:@submit%</button>
+				<ui-button primary @click="submit">%i18n:@submit%</ui-button>
 			</li>
 		</ol>
 		<div class="ui info"><p>%fa:info-circle%%i18n:@info%</p></div>

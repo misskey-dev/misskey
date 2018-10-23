@@ -1,7 +1,7 @@
 <template>
 <div class="root">
 	<template v-if="!fetching">
-		<p><b>{{ capacity | bytes }}</b>%i18n:max%<b>{{ usage | bytes }}</b>%i18n:in-use%</p>
+		<p><b>{{ capacity | bytes }}</b>%i18n:@max%<b>{{ usage | bytes }}</b>%i18n:@in-use%</p>
 	</template>
 </div>
 </template>

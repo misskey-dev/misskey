@@ -12,7 +12,7 @@
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 			<b>%i18n:@recent-tags%:</b>
-			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%@click-to-tagging%">#{{ tag }}</a>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%i18n:@click-to-tagging%">#{{ tag }}</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="%i18n:@annotations%">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -45,7 +45,7 @@
 		<span v-if="visibility === 'specified'">%fa:envelope%</span>
 		<span v-if="visibility === 'private'">%fa:lock%</span>
 	</button>
-	<p class="text-count" :class="{ over: this.trimmedLength(text) > 1000 }">{{ 1000 - this.trimmedLength(text) }}</p>
+	<p class="text-count" :class="{ over: this.trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - this.trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -65,6 +65,7 @@ import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import parseAcct from '../../../../../misc/acct/parse';
+import { toASCII } from 'punycode';
 
 export default Vue.extend({
 	components: {
@@ -106,8 +107,15 @@ export default Vue.extend({
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
-			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]')
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			maxNoteTextLength: 1000
 		};
+	},
+
+	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.maxNoteTextLength = meta.maxNoteTextLength;
+		});
 	},
 
 	computed: {
@@ -148,7 +156,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= 1000);
+				(length(this.text.trim()) <= this.maxNoteTextLength);
 		}
 	},
 
@@ -158,14 +166,14 @@ export default Vue.extend({
 		}
 
 		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
 
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
 			ast.filter(t => t.type == 'mention').forEach(x => {
-				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
 				if (this.$store.state.i.username == x.username && x.host == null) return;

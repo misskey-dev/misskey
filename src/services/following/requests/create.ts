@@ -6,11 +6,12 @@ import renderFollow from '../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../queue';
 import FollowRequest from '../../../models/follow-request';
 
-export default async function(follower: IUser, followee: IUser) {
+export default async function(follower: IUser, followee: IUser, requestId?: string) {
 	await FollowRequest.insert({
 		createdAt: new Date(),
 		followerId: follower._id,
 		followeeId: followee._id,
+		requestId,
 
 		// 非正規化
 		_follower: {

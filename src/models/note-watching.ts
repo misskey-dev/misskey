@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const NoteWatching = db.get<INoteWatching>('noteWatching');
 NoteWatching.createIndex(['userId', 'noteId'], { unique: true });
@@ -19,7 +20,7 @@ export async function deleteNoteWatching(noteWatching: string | mongo.ObjectID |
 	let n: INoteWatching;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(noteWatching)) {
+	if (isObjectId(noteWatching)) {
 		n = await NoteWatching.findOne({
 			_id: noteWatching
 		});

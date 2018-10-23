@@ -3,6 +3,10 @@
 	<header>
 		<b>%i18n:@title%:</b>
 		<select v-model="chartType">
+			<optgroup label="%i18n:@federation%">
+				<option value="federation-instances">%i18n:@charts.federation-instances%</option>
+				<option value="federation-instances-total">%i18n:@charts.federation-instances-total%</option>
+			</optgroup>
 			<optgroup label="%i18n:@users%">
 				<option value="users">%i18n:@charts.users%</option>
 				<option value="users-total">%i18n:@charts.users-total%</option>
@@ -56,6 +60,11 @@ const rgba = (color: string): string => {
 	return color.replace('rgb', 'rgba').replace(')', ', 0.1)');
 };
 
+const limit = 35;
+
+const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
+const negate = arr => arr.map(x => -x);
+
 export default Vue.extend({
 	components: {
 		XChart
@@ -63,6 +72,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			now: null,
 			chart: null,
 			chartType: 'notes',
 			span: 'hour'
@@ -73,6 +83,8 @@ export default Vue.extend({
 		data(): any {
 			if (this.chart == null) return null;
 			switch (this.chartType) {
+				case 'federation-instances': return this.federationInstancesChart(false);
+				case 'federation-instances-total': return this.federationInstancesChart(true);
 				case 'users': return this.usersChart(false);
 				case 'users-total': return this.usersChart(true);
 				case 'notes': return this.notesChart('combined');
@@ -90,32 +102,88 @@ export default Vue.extend({
 		},
 
 		stats(): any[] {
-			return (
+			const stats =
 				this.span == 'day' ? this.chart.perDay :
 				this.span == 'hour' ? this.chart.perHour :
-				null
-			);
+				null;
+
+			return stats;
 		}
 	},
 
-	created() {
-		(this as any).api('chart', {
-			limit: 35
-		}).then(chart => {
-			this.chart = chart;
-		});
+	async created() {
+		this.now = new Date();
+
+		const [perHour, perDay] = await Promise.all([Promise.all([
+			(this as any).api('charts/federation', { limit: limit, span: 'hour' }),
+			(this as any).api('charts/users', { limit: limit, span: 'hour' }),
+			(this as any).api('charts/notes', { limit: limit, span: 'hour' }),
+			(this as any).api('charts/drive', { limit: limit, span: 'hour' }),
+			(this as any).api('charts/network', { limit: limit, span: 'hour' })
+		]), Promise.all([
+			(this as any).api('charts/federation', { limit: limit, span: 'day' }),
+			(this as any).api('charts/users', { limit: limit, span: 'day' }),
+			(this as any).api('charts/notes', { limit: limit, span: 'day' }),
+			(this as any).api('charts/drive', { limit: limit, span: 'day' }),
+			(this as any).api('charts/network', { limit: limit, span: 'day' })
+		])]);
+
+		const chart = {
+			perHour: {
+				federation: perHour[0],
+				users: perHour[1],
+				notes: perHour[2],
+				drive: perHour[3],
+				network: perHour[4]
+			},
+			perDay: {
+				federation: perDay[0],
+				users: perDay[1],
+				notes: perDay[2],
+				drive: perDay[3],
+				network: perDay[4]
+			}
+		};
+
+		this.chart = chart;
 	},
 
 	methods: {
-		notesChart(type: string): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				normal: type == 'local' ? x.notes.local.diffs.normal : type == 'remote' ? x.notes.remote.diffs.normal : x.notes.local.diffs.normal + x.notes.remote.diffs.normal,
-				reply: type == 'local' ? x.notes.local.diffs.reply : type == 'remote' ? x.notes.remote.diffs.reply : x.notes.local.diffs.reply + x.notes.remote.diffs.reply,
-				renote: type == 'local' ? x.notes.local.diffs.renote : type == 'remote' ? x.notes.remote.diffs.renote : x.notes.local.diffs.renote + x.notes.remote.diffs.renote,
-				all: type == 'local' ? (x.notes.local.inc + -x.notes.local.dec) : type == 'remote' ? (x.notes.remote.inc + -x.notes.remote.dec) : (x.notes.local.inc + -x.notes.local.dec) + (x.notes.remote.inc + -x.notes.remote.dec)
-			}));
+		getDate(i: number) {
+			const y = this.now.getFullYear();
+			const m = this.now.getMonth();
+			const d = this.now.getDate();
+			const h = this.now.getHours();
 
+			return (
+				this.span == 'day' ? new Date(y, m, d - i) :
+				this.span == 'hour' ? new Date(y, m, d, h - i) :
+				null
+			);
+		},
+
+		format(arr) {
+			return arr.map((v, i) => ({ t: this.getDate(i).getTime(), y: v }));
+		},
+
+		federationInstancesChart(total: boolean): any {
+			return [{
+				datasets: [{
+					label: 'Instances',
+					fill: true,
+					backgroundColor: rgba(colors.localPlus),
+					borderColor: colors.localPlus,
+					borderWidth: 2,
+					pointBackgroundColor: '#fff',
+					lineTension: 0,
+					data: this.format(total
+						? this.stats.federation.instance.total
+						: sum(this.stats.federation.instance.inc, negate(this.stats.federation.instance.dec)))
+				}]
+			}];
+		},
+
+		notesChart(type: string): any {
 			return [{
 				datasets: [{
 					label: 'All',
@@ -125,7 +193,10 @@ export default Vue.extend({
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.all }))
+					data: this.format(type == 'combined'
+						? sum(this.stats.notes.local.inc, negate(this.stats.notes.local.dec), this.stats.notes.remote.inc, negate(this.stats.notes.remote.dec))
+						: sum(this.stats.notes[type].inc, negate(this.stats.notes[type].dec))
+					)
 				}, {
 					label: 'Renotes',
 					fill: true,
@@ -134,7 +205,10 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.renote }))
+					data: this.format(type == 'combined'
+						? sum(this.stats.notes.local.diffs.renote, this.stats.notes.remote.diffs.renote)
+						: this.stats.notes[type].diffs.renote
+					)
 				}, {
 					label: 'Replies',
 					fill: true,
@@ -143,7 +217,10 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.reply }))
+					data: this.format(type == 'combined'
+						? sum(this.stats.notes.local.diffs.reply, this.stats.notes.remote.diffs.reply)
+						: this.stats.notes[type].diffs.reply
+					)
 				}, {
 					label: 'Normal',
 					fill: true,
@@ -152,7 +229,10 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.normal }))
+					data: this.format(type == 'combined'
+						? sum(this.stats.notes.local.diffs.normal, this.stats.notes.remote.diffs.normal)
+						: this.stats.notes[type].diffs.normal
+					)
 				}]
 			}, {
 				scales: {
@@ -176,12 +256,6 @@ export default Vue.extend({
 		},
 
 		notesTotalChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localCount: x.notes.local.total,
-				remoteCount: x.notes.remote.total
-			}));
-
 			return [{
 				datasets: [{
 					label: 'Combined',
@@ -191,7 +265,7 @@ export default Vue.extend({
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
+					data: this.format(sum(this.stats.notes.local.total, this.stats.notes.remote.total))
 				}, {
 					label: 'Local',
 					fill: true,
@@ -200,7 +274,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localCount }))
+					data: this.format(this.stats.notes.local.total)
 				}, {
 					label: 'Remote',
 					fill: true,
@@ -209,7 +283,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
+					data: this.format(this.stats.notes.remote.total)
 				}]
 			}, {
 				scales: {
@@ -233,12 +307,6 @@ export default Vue.extend({
 		},
 
 		usersChart(total: boolean): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localCount: total ? x.users.local.total : (x.users.local.inc + -x.users.local.dec),
-				remoteCount: total ? x.users.remote.total : (x.users.remote.inc + -x.users.remote.dec)
-			}));
-
 			return [{
 				datasets: [{
 					label: 'Combined',
@@ -248,7 +316,10 @@ export default Vue.extend({
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteCount + x.localCount }))
+					data: this.format(total
+						? sum(this.stats.users.local.total, this.stats.users.remote.total)
+						: sum(this.stats.users.local.inc, negate(this.stats.users.local.dec), this.stats.users.remote.inc, negate(this.stats.users.remote.dec))
+					)
 				}, {
 					label: 'Local',
 					fill: true,
@@ -257,7 +328,10 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localCount }))
+					data: this.format(total
+						? this.stats.users.local.total
+						: sum(this.stats.users.local.inc, negate(this.stats.users.local.dec))
+					)
 				}, {
 					label: 'Remote',
 					fill: true,
@@ -266,7 +340,10 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
+					data: this.format(total
+						? this.stats.users.remote.total
+						: sum(this.stats.users.remote.inc, negate(this.stats.users.remote.dec))
+					)
 				}]
 			}, {
 				scales: {
@@ -290,14 +367,6 @@ export default Vue.extend({
 		},
 
 		driveChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localInc: x.drive.local.incSize,
-				localDec: -x.drive.local.decSize,
-				remoteInc: x.drive.remote.incSize,
-				remoteDec: -x.drive.remote.decSize,
-			}));
-
 			return [{
 				datasets: [{
 					label: 'All',
@@ -307,7 +376,7 @@ export default Vue.extend({
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localInc + x.localDec + x.remoteInc + x.remoteDec }))
+					data: this.format(sum(this.stats.drive.local.incSize, negate(this.stats.drive.local.decSize), this.stats.drive.remote.incSize, negate(this.stats.drive.remote.decSize)))
 				}, {
 					label: 'Local +',
 					fill: true,
@@ -316,7 +385,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localInc }))
+					data: this.format(this.stats.drive.local.incSize)
 				}, {
 					label: 'Local -',
 					fill: true,
@@ -325,7 +394,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localDec }))
+					data: this.format(negate(this.stats.drive.local.decSize))
 				}, {
 					label: 'Remote +',
 					fill: true,
@@ -334,7 +403,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteInc }))
+					data: this.format(this.stats.drive.remote.incSize)
 				}, {
 					label: 'Remote -',
 					fill: true,
@@ -343,7 +412,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteDec }))
+					data: this.format(negate(this.stats.drive.remote.decSize))
 				}]
 			}, {
 				scales: {
@@ -367,12 +436,6 @@ export default Vue.extend({
 		},
 
 		driveTotalChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localSize: x.drive.local.totalSize,
-				remoteSize: x.drive.remote.totalSize
-			}));
-
 			return [{
 				datasets: [{
 					label: 'Combined',
@@ -382,7 +445,7 @@ export default Vue.extend({
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteSize + x.localSize }))
+					data: this.format(sum(this.stats.drive.local.totalSize, this.stats.drive.remote.totalSize))
 				}, {
 					label: 'Local',
 					fill: true,
@@ -391,7 +454,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localSize }))
+					data: this.format(this.stats.drive.local.totalSize)
 				}, {
 					label: 'Remote',
 					fill: true,
@@ -400,7 +463,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteSize }))
+					data: this.format(this.stats.drive.remote.totalSize)
 				}]
 			}, {
 				scales: {
@@ -424,14 +487,6 @@ export default Vue.extend({
 		},
 
 		driveFilesChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localInc: x.drive.local.incCount,
-				localDec: -x.drive.local.decCount,
-				remoteInc: x.drive.remote.incCount,
-				remoteDec: -x.drive.remote.decCount
-			}));
-
 			return [{
 				datasets: [{
 					label: 'All',
@@ -441,7 +496,7 @@ export default Vue.extend({
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localInc + x.localDec + x.remoteInc + x.remoteDec }))
+					data: this.format(sum(this.stats.drive.local.incCount, negate(this.stats.drive.local.decCount), this.stats.drive.remote.incCount, negate(this.stats.drive.remote.decCount)))
 				}, {
 					label: 'Local +',
 					fill: true,
@@ -450,7 +505,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localInc }))
+					data: this.format(this.stats.drive.local.incCount)
 				}, {
 					label: 'Local -',
 					fill: true,
@@ -459,7 +514,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localDec }))
+					data: this.format(negate(this.stats.drive.local.decCount))
 				}, {
 					label: 'Remote +',
 					fill: true,
@@ -468,7 +523,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteInc }))
+					data: this.format(this.stats.drive.remote.incCount)
 				}, {
 					label: 'Remote -',
 					fill: true,
@@ -477,7 +532,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteDec }))
+					data: this.format(negate(this.stats.drive.remote.decCount))
 				}]
 			}, {
 				scales: {
@@ -501,12 +556,6 @@ export default Vue.extend({
 		},
 
 		driveFilesTotalChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				localCount: x.drive.local.totalCount,
-				remoteCount: x.drive.remote.totalCount,
-			}));
-
 			return [{
 				datasets: [{
 					label: 'Combined',
@@ -516,7 +565,7 @@ export default Vue.extend({
 					borderDash: [4, 4],
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localCount + x.remoteCount }))
+					data: this.format(sum(this.stats.drive.local.totalCount, this.stats.drive.remote.totalCount))
 				}, {
 					label: 'Local',
 					fill: true,
@@ -525,7 +574,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.localCount }))
+					data: this.format(this.stats.drive.local.totalCount)
 				}, {
 					label: 'Remote',
 					fill: true,
@@ -534,7 +583,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.remoteCount }))
+					data: this.format(this.stats.drive.remote.totalCount)
 				}]
 			}, {
 				scales: {
@@ -558,30 +607,26 @@ export default Vue.extend({
 		},
 
 		networkRequestsChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				requests: x.network.requests
-			}));
-
 			return [{
 				datasets: [{
-					label: 'Requests',
+					label: 'Incoming',
 					fill: true,
 					backgroundColor: rgba(colors.localPlus),
 					borderColor: colors.localPlus,
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.requests }))
+					data: this.format(this.stats.network.incomingRequests)
 				}]
 			}];
 		},
 
 		networkTimeChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				time: x.network.requests != 0 ? (x.network.totalTime / x.network.requests) : 0,
-			}));
+			const data = [];
+
+			for (let i = 0; i < limit; i++) {
+				data.push(this.stats.network.incomingRequests[i] != 0 ? (this.stats.network.totalTime[i] / this.stats.network.incomingRequests[i]) : 0);
+			}
 
 			return [{
 				datasets: [{
@@ -592,18 +637,12 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.time }))
+					data: this.format(data)
 				}]
 			}];
 		},
 
 		networkUsageChart(): any {
-			const data = this.stats.slice().reverse().map(x => ({
-				date: new Date(x.date),
-				incoming: x.network.incomingBytes,
-				outgoing: x.network.outgoingBytes
-			}));
-
 			return [{
 				datasets: [{
 					label: 'Incoming',
@@ -613,7 +652,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.incoming }))
+					data: this.format(this.stats.network.incomingBytes)
 				}, {
 					label: 'Outgoing',
 					fill: true,
@@ -622,7 +661,7 @@ export default Vue.extend({
 					borderWidth: 2,
 					pointBackgroundColor: '#fff',
 					lineTension: 0,
-					data: data.map(x => ({ t: x.date, y: x.outgoing }))
+					data: this.format(this.stats.network.outgoingBytes)
 				}]
 			}, {
 				scales: {
@@ -649,8 +688,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .gkgckalzgidaygcxnugepioremxvxvpt
 	padding 32px
 	background #fff

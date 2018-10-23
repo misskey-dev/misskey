@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const UserList = db.get<IUserList>('userList');
 export default UserList;
@@ -20,7 +21,7 @@ export async function deleteUserList(userList: string | mongo.ObjectID | IUserLi
 	let u: IUserList;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(userList)) {
+	if (isObjectId(userList)) {
 		u = await UserList.findOne({
 			_id: userList
 		});
@@ -45,7 +46,7 @@ export const pack = (
 ) => new Promise<any>(async (resolve, reject) => {
 	let _userList: any;
 
-	if (mongo.ObjectID.prototype.isPrototypeOf(userList)) {
+	if (isObjectId(userList)) {
 		_userList = await UserList.findOne({
 			_id: userList
 		});

@@ -5,6 +5,8 @@ import { addPinned } from '../../../../services/i/pin';
 import getParams from '../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定した投稿をピン留めします。'
 	},
@@ -16,7 +18,8 @@ export const meta = {
 	params: {
 		noteId: $.type(ID).note({
 			desc: {
-				'ja-JP': '対象の投稿のID'
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID'
 			}
 		})
 	}

@@ -28,7 +28,7 @@ Please install and setup these softwares:
 ##### Optional
 * [Redis](https://redis.io/)
   * Redis is optional, but we strongly recommended to install it
-* [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB
+* [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 
 *3.* Setup MongoDB
 ----------------------------------------------------------------

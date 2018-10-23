@@ -1,6 +1,5 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
 import readNotification from '../common/read-notification';
@@ -11,8 +10,6 @@ import readNote from '../../../services/note/read';
 import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
-
-const log = debug('misskey');
 
 /**
  * Main stream connection
@@ -146,9 +143,8 @@ export default class Connection {
 	 */
 	@autobind
 	private onChannelConnectRequested(payload: any) {
-		const { channel, id, params } = payload;
-		log(`CH CONNECT: ${id} ${channel} by @${this.user.username}`);
-		this.connectChannel(id, params, channel);
+		const { channel, id, params, pong } = payload;
+		this.connectChannel(id, params, channel, pong);
 	}
 
 	/**
@@ -157,7 +153,6 @@ export default class Connection {
 	@autobind
 	private onChannelDisconnectRequested(payload: any) {
 		const { id } = payload;
-		log(`CH DISCONNECT: ${id} by @${this.user.username}`);
 		this.disconnectChannel(id);
 	}
 
@@ -177,7 +172,7 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@autobind
-	public connectChannel(id: string, params: any, channel: string) {
+	public connectChannel(id: string, params: any, channel: string, pong = false) {
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
 		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
@@ -186,9 +181,12 @@ export default class Connection {
 		const ch: Channel = new (channels as any)[channel](id, this);
 		this.channels.push(ch);
 		ch.init(params);
-		this.sendMessageToWs('connected', {
-			id: id
-		});
+
+		if (pong) {
+			this.sendMessageToWs('connected', {
+				id: id
+			});
+		}
 	}
 
 	/**

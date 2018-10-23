@@ -2,8 +2,11 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
 import User, { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定した投稿を削除します。',
 		'en-US': 'Delete a note.'
@@ -11,17 +14,25 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'note-write'
+	kind: 'note-write',
+
+	params: {
+		noteId: $.type(ID).note({
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID.'
+			}
+		})
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch note
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {

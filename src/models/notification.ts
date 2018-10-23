@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
 
@@ -57,7 +58,7 @@ export async function deleteNotification(notification: string | mongo.ObjectID |
 	let n: INotification;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(notification)) {
+	if (isObjectId(notification)) {
 		n = await Notification.findOne({
 			_id: notification
 		});
@@ -90,7 +91,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 	let _notification: any;
 
 	// Populate the notification if 'notification' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(notification)) {
+	if (isObjectId(notification)) {
 		_notification = await Notification.findOne({
 			_id: notification
 		});

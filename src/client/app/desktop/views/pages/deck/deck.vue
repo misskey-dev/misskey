@@ -1,13 +1,18 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :style="style">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" ref="body" :style="style" :class="{ center: $store.state.device.deckColumnAlign == 'center' }" v-hotkey.global="keymap">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
-					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true"/>
+					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true" @parentFocus="moveFocus(id, $event)"/>
 				</template>
 			</div>
-			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
+			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])" @parentFocus="moveFocus(ids[0], $event)"/>
+		</template>
+		<template v-if="temporaryColumn">
+			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
+			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
+			<x-hashtag-column v-else-if="temporaryColumn.type == 'tag'" :tag="temporaryColumn.tag" :key="temporaryColumn.tag"/>
 		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
@@ -19,11 +24,18 @@ import Vue from 'vue';
 import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
+import XUserColumn from './deck.user-column.vue';
+import XNoteColumn from './deck.note-column.vue';
+import XHashtagColumn from './deck.hashtag-column.vue';
+
 import * as uuid from 'uuid';
 
 export default Vue.extend({
 	components: {
-		XColumnCore
+		XColumnCore,
+		XUserColumn,
+		XNoteColumn,
+		XHashtagColumn
 	},
 
 	computed: {
@@ -31,15 +43,40 @@ export default Vue.extend({
 			if (this.$store.state.settings.deck == null) return [];
 			return this.$store.state.settings.deck.columns;
 		},
+
 		layout(): any[] {
 			if (this.$store.state.settings.deck == null) return [];
 			if (this.$store.state.settings.deck.layout == null) return this.$store.state.settings.deck.columns.map(c => [c.id]);
 			return this.$store.state.settings.deck.layout;
 		},
+
 		style(): any {
 			return {
 				height: `calc(100vh - ${this.$store.state.uiHeaderHeight}px)`
 			};
+		},
+
+		temporaryColumn(): any {
+			return this.$store.state.device.deckTemporaryColumn;
+		},
+
+		keymap(): any {
+			return {
+				't': this.focus
+			};
+		}
+	},
+
+	watch: {
+		temporaryColumn() {
+			if (this.temporaryColumn != null) {
+				this.$nextTick(() => {
+					this.$refs.body.scrollTo({
+						left: this.$refs.body.scrollWidth - this.$refs.body.clientWidth,
+						behavior: 'smooth'
+					});
+				});
+			}
 		}
 	},
 
@@ -50,6 +87,8 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$store.commit('navHook', this.onNav);
+
 		if (this.$store.state.settings.deck == null) {
 			const deck = {
 				columns: [/*{
@@ -95,12 +134,47 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
+		this.$store.commit('navHook', null);
+
 		document.documentElement.style.overflow = 'auto';
 	},
 
 	methods: {
 		getColumnVm(id) {
 			return this.$refs[id][0];
+		},
+
+		onNav(to) {
+			if (!this.$store.state.settings.deckNav) return false;
+
+			if (to.name == 'user') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'user',
+						acct: to.params.user
+					}
+				});
+				return true;
+			} else if (to.name == 'note') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'note',
+						noteId: to.params.note
+					}
+				});
+				return true;
+			} else if (to.name == 'tag') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'tag',
+						tag: to.params.tag
+					}
+				});
+				return true;
+			}
 		},
 
 		add() {
@@ -210,6 +284,71 @@ export default Vue.extend({
 					}
 				}]
 			});
+		},
+
+		focus() {
+			// Flatten array of arrays
+			const ids = [].concat.apply([], this.layout);
+			const firstTl = ids.find(id => this.isTlColumn(id));
+
+			if (firstTl) {
+				this.$refs[firstTl][0].focus();
+			}
+		},
+
+		moveFocus(id, direction) {
+			let targetColumn;
+
+			if (direction == 'right') {
+				const currentColumnIndex = this.layout.findIndex(ids => ids.includes(id));
+				this.layout.some((ids, i) => {
+					if (i <= currentColumnIndex) return false;
+					const tl = ids.find(id => this.isTlColumn(id));
+					if (tl) {
+						targetColumn = tl;
+						return true;
+					}
+				});
+			} else if (direction == 'left') {
+				const currentColumnIndex = [...this.layout].reverse().findIndex(ids => ids.includes(id));
+				[...this.layout].reverse().some((ids, i) => {
+					if (i <= currentColumnIndex) return false;
+					const tl = ids.find(id => this.isTlColumn(id));
+					if (tl) {
+						targetColumn = tl;
+						return true;
+					}
+				});
+			} else if (direction == 'down') {
+				const currentColumn = this.layout.find(ids => ids.includes(id));
+				const currentIndex = currentColumn.indexOf(id);
+				currentColumn.some((_id, i) => {
+					if (i <= currentIndex) return false;
+					if (this.isTlColumn(_id)) {
+						targetColumn = _id;
+						return true;
+					}
+				});
+			} else if (direction == 'up') {
+				const currentColumn = [...this.layout.find(ids => ids.includes(id))].reverse();
+				const currentIndex = currentColumn.indexOf(id);
+				currentColumn.some((_id, i) => {
+					if (i <= currentIndex) return false;
+					if (this.isTlColumn(_id)) {
+						targetColumn = _id;
+						return true;
+					}
+				});
+			}
+
+			if (targetColumn) {
+				this.$refs[targetColumn][0].focus();
+			}
+		},
+
+		isTlColumn(id) {
+			const column = this.columns.find(c => c.id === id);
+			return ['home', 'local', 'hybrid', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(column.type);
 		}
 	}
 });
@@ -240,12 +379,13 @@ export default Vue.extend({
 			> *:not(:last-child)
 				margin-bottom 8px
 
-	> *
-		&:first-child
-			margin-left auto
+	&.center
+		> *
+			&:first-child
+				margin-left auto
 
-		&:last-child
-			margin-right auto
+			&:last-child
+				margin-right auto
 
 	> button
 		padding 0 16px

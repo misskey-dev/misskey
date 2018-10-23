@@ -38,9 +38,9 @@ const summarize = (note: any): string => {
 	// Renoteのとき
 	if (note.renoteId) {
 		if (note.renote) {
-			summary += ` RP: ${summarize(note.renote)}`;
+			summary += ` RN: ${summarize(note.renote)}`;
 		} else {
-			summary += ' RP: ...';
+			summary += ' RN: ...';
 		}
 	}
 

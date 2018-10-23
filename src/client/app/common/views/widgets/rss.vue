@@ -44,7 +44,6 @@ export default define({
 		},
 		fetch() {
 			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.props.url}`, {
-				cache: 'no-cache'
 			}).then(res => {
 				res.json().then(feed => {
 					this.items = feed.items;

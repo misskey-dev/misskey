@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const Mute = db.get<IMute>('mute');
 Mute.createIndex(['muterId', 'muteeId'], { unique: true });
@@ -19,7 +20,7 @@ export async function deleteMute(mute: string | mongo.ObjectID | IMute) {
 	let m: IMute;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(mute)) {
+	if (isObjectId(mute)) {
 		m = await Mute.findOne({
 			_id: mute
 		});

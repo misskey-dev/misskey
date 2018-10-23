@@ -71,6 +71,8 @@ export default async (params: any, user: ILocalUser) => {
 	};
 
 	const query = {
+		deletedAt: null,
+
 		// public only
 		visibility: 'public',
 

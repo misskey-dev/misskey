@@ -5,12 +5,11 @@ import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
 import Following from '../../../models/following';
-import FollowingLog from '../../../models/following-log';
-import FollowedLog from '../../../models/followed-log';
 import { publishMainStream } from '../../../stream';
+import perUserFollowingChart from '../../../chart/per-user-following';
 
 export default async function(followee: IUser, follower: IUser) {
-	const following = await Following.insert({
+	await Following.insert({
 		createdAt: new Date(),
 		followerId: follower._id,
 		followeeId: followee._id,
@@ -29,7 +28,12 @@ export default async function(followee: IUser, follower: IUser) {
 	});
 
 	if (isRemoteUser(follower)) {
-		const content = pack(renderAccept(renderFollow(follower, followee)));
+		const request = await FollowRequest.findOne({
+			followeeId: followee._id,
+			followerId: follower._id
+		});
+
+		const content = pack(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
@@ -44,12 +48,6 @@ export default async function(followee: IUser, follower: IUser) {
 			followingCount: 1
 		}
 	});
-
-	FollowingLog.insert({
-		createdAt: following.createdAt,
-		userId: follower._id,
-		count: follower.followingCount + 1
-	});
 	//#endregion
 
 	//#region Increment followers count
@@ -58,13 +56,9 @@ export default async function(followee: IUser, follower: IUser) {
 			followersCount: 1
 		}
 	});
-
-	FollowedLog.insert({
-		createdAt: following.createdAt,
-		userId: followee._id,
-		count: followee.followersCount + 1
-	});
 	//#endregion
+
+	perUserFollowingChart.update(follower, followee, true);
 
 	await User.update({ _id: followee._id }, {
 		$inc: {

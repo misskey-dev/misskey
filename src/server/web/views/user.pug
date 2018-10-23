@@ -3,7 +3,7 @@ extends ../../../../src/client/app/base
 block vars
 	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
 	- const url = `${config.url}/@${(user.host ? `${user.username}@${user.host}` : user.username)}`;
-	- const img = user.avatarId ? `${config.drive_url}/${user.avatarId}` : null;
+	- const img = user.avatarUrl || null;
 
 block title
 	= `${title} | ${config.name}`

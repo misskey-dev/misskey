@@ -2,6 +2,7 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import AccessToken from './access-token';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import config from '../config';
 
 const App = db.get<IApp>('apps');
@@ -43,7 +44,7 @@ export const pack = (
 	let _app: any;
 
 	// Populate the app if 'app' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(app)) {
+	if (isObjectId(app)) {
 		_app = await App.findOne({
 			_id: app
 		});
@@ -56,7 +57,7 @@ export const pack = (
 	}
 
 	// Me
-	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
+	if (me && !isObjectId(me)) {
 		if (typeof me === 'string') {
 			me = new mongo.ObjectID(me);
 		} else {

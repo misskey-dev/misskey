@@ -4,8 +4,10 @@
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div class="init" v-if="fetching">
-		%fa:spinner .pulse%%i18n:common.loading%
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
 	</div>
 
 	<div v-if="!fetching && requestInitPromise != null">
@@ -35,7 +37,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../misc/get-note-summary';
 
 const displayLimit = 30;
 
@@ -52,7 +53,6 @@ export default Vue.extend({
 			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
-			unreadCount: 0,
 			fetching: true,
 			moreFetching: false
 		};
@@ -81,12 +81,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 		window.addEventListener('scroll', this.onScroll, { passive: true });
 	},
 
 	beforeDestroy() {
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		window.removeEventListener('scroll', this.onScroll);
 	},
 
@@ -144,10 +142,9 @@ export default Vue.extend({
 			}
 			//#endregion
 
-			// 投稿が自分のものではないかつ、タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
-			if ((document.hidden || !this.isScrollTop()) && note.userId !== this.$store.state.i.id) {
-				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
+			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+			if (document.hidden || !this.isScrollTop()) {
+				this.$store.commit('pushBehindNote', note);
 			}
 
 			if (this.isScrollTop()) {
@@ -185,21 +182,9 @@ export default Vue.extend({
 			this.moreFetching = false;
 		},
 
-		clearNotification() {
-			this.unreadCount = 0;
-			document.title = (this as any).os.instanceName;
-		},
-
-		onVisibilitychange() {
-			if (!document.hidden) {
-				this.clearNotification();
-			}
-		},
-
 		onScroll() {
 			if (this.isScrollTop()) {
 				this.releaseQueue();
-				this.clearNotification();
 			}
 
 			if (this.$store.state.settings.fetchOnScroll !== false) {
@@ -251,13 +236,12 @@ export default Vue.extend({
 			[data-fa]
 				margin-right 8px
 
-	> .init
-		padding 64px 0
-		text-align center
-		color #999
+	> .placeholder
+		padding 16px
+		opacity 0.3
 
-		> [data-fa]
-			margin-right 4px
+		@media (min-width 500px)
+			padding 32px
 
 	> .empty
 		margin 0 auto

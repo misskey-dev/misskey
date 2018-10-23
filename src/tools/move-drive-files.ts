@@ -31,7 +31,7 @@ async function job(file: IDriveFile): Promise<any> {
 
 	const minio = new Minio.Client(config.drive.config);
 
-	const name = file.filename;
+	const name = file.filename.substr(0, 50);
 	const keyDir = `${config.drive.prefix}/${uuid.v4()}`;
 	const key = `${keyDir}/${name}`;
 	const thumbnailKeyDir = `${config.drive.prefix}/${uuid.v4()}`;

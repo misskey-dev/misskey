@@ -1,6 +1,6 @@
 <template>
 <div>
-	<button @click="reset" class="ui primary">%i18n:@reset%</button>
+	<ui-button @click="reset">%i18n:@reset%</ui-button>
 </div>
 </template>
 

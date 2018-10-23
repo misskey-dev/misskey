@@ -1,9 +1,9 @@
 <template>
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
 		@dragover.prevent.stop="onDragover"
-		@dragenter.prevent="onDragenter"
 		@dragleave="onDragleave"
-		@drop.prevent.stop="onDrop">
+		@drop.prevent.stop="onDrop"
+		v-hotkey="keymap">
 	<header :class="{ indicate: count > 0 }"
 			draggable="true"
 			@click="goTop"
@@ -16,7 +16,8 @@
 		</button>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
-		<button class="menu" ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
+		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
+		<button v-else class="close" @click.stop="close">%fa:times%</button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -34,11 +35,13 @@ export default Vue.extend({
 	props: {
 		column: {
 			type: Object,
-			required: true
+			required: false,
+			default: null
 		},
 		isStacked: {
 			type: Boolean,
-			required: true
+			required: false,
+			default: false
 		},
 		name: {
 			type: String,
@@ -58,6 +61,21 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		}
+	},
+
+	computed: {
+		isTemporaryColumn(): boolean {
+			return this.column == null;
+		},
+
+		keymap(): any {
+			return {
+				'shift+up': () => this.$parent.$emit('parentFocus', 'up'),
+				'shift+down': () => this.$parent.$emit('parentFocus', 'down'),
+				'shift+left': () => this.$parent.$emit('parentFocus', 'left'),
+				'shift+right': () => this.$parent.$emit('parentFocus', 'right'),
+			};
 		}
 	},
 
@@ -96,14 +114,20 @@ export default Vue.extend({
 
 	mounted() {
 		this.$refs.body.addEventListener('scroll', this.onScroll, { passive: true });
-		this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
-		this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
+
+		if (!this.isTemporaryColumn) {
+			this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
+			this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
+		}
 	},
 
 	beforeDestroy() {
 		this.$refs.body.removeEventListener('scroll', this.onScroll);
-		this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
-		this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
+
+		if (!this.isTemporaryColumn) {
+			this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
+			this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
+		}
 	},
 
 	methods: {
@@ -203,6 +227,7 @@ export default Vue.extend({
 		},
 
 		onContextmenu(e) {
+			if (this.isTemporaryColumn) return;
 			contextmenu((this as any).os)(e, this.getMenu());
 		},
 
@@ -214,6 +239,13 @@ export default Vue.extend({
 			});
 		},
 
+		close() {
+			this.$store.commit('device/set', {
+				key: 'deckTemporaryColumn',
+				value: null
+			});
+		},
+
 		goTop() {
 			this.$refs.body.scrollTo({
 				top: 0,
@@ -222,6 +254,12 @@ export default Vue.extend({
 		},
 
 		onDragstart(e) {
+			// テンポラリカラムはドラッグさせない
+			if (this.isTemporaryColumn) {
+				e.preventDefault();
+				return;
+			}
+
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData('mk-deck-column', this.column.id);
 			this.dragging = true;
@@ -232,6 +270,12 @@ export default Vue.extend({
 		},
 
 		onDragover(e) {
+			// テンポラリカラムにはドロップさせない
+			if (this.isTemporaryColumn) {
+				e.dataTransfer.dropEffect = 'none';
+				return;
+			}
+
 			// 自分自身がドラッグされている場合
 			if (this.dragging) {
 				// 自分自身にはドロップさせない
@@ -242,9 +286,7 @@ export default Vue.extend({
 			const isDeckColumn = e.dataTransfer.types[0] == 'mk-deck-column';
 
 			e.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
-		},
 
-		onDragenter() {
 			if (!this.dragging) this.draghover = true;
 		},
 
@@ -276,12 +318,23 @@ export default Vue.extend({
 	min-width 330px
 	height 100%
 	background var(--face)
-	border-radius 6px
-	//box-shadow 0 2px 16px rgba(#000, 0.1)
+	border-radius var(--round)
+	box-shadow var(--shadow)
 	overflow hidden
 
 	&.draghover
 		box-shadow 0 0 0 2px var(--primaryAlpha08)
+
+		&:after
+			content ""
+			display block
+			position absolute
+			z-index 1000
+			top 0
+			left 0
+			width 100%
+			height 100%
+			background var(--primaryAlpha02)
 
 	&.dragging
 		box-shadow 0 0 0 2px var(--primaryAlpha04)
@@ -310,7 +363,7 @@ export default Vue.extend({
 
 	> header
 		display flex
-		z-index 1
+		z-index 2
 		line-height $header-height
 		padding 0 16px
 		font-size 14px
@@ -338,6 +391,8 @@ export default Vue.extend({
 
 		> .toggleActive
 		> .menu
+		> .close
+			padding 0
 			width $header-height
 			line-height $header-height
 			font-size 16px
@@ -353,6 +408,7 @@ export default Vue.extend({
 			margin-left -16px
 
 		> .menu
+		> .close
 			margin-left auto
 			margin-right -16px
 

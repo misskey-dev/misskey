@@ -3,9 +3,6 @@
 	<header :class="$style.header">
 		<h1>#{{ $route.params.tag }}</h1>
 	</header>
-	<div :class="$style.loading" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
 	<p :class="$style.empty" v-if="!fetching && empty">%fa:search% {{ '%i18n:no-posts-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:no-posts-found%'.split('{}')[1] }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
@@ -107,9 +104,6 @@ export default Vue.extend({
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 	overflow hidden
-
-.loading
-	padding 64px 0
 
 .empty
 	display block

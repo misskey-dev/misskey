@@ -56,7 +56,8 @@ header
 	margin 10px 0
 
 button
-	margin 16px 0
+	margin 16px
+	background-color #EEEEEE
 
 .submit
 	background-color #EEEEEE

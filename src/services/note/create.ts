@@ -8,7 +8,7 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import packAp from '../../remote/activitypub/renderer';
-import { IDriveFile } from '../../models/drive-file';
+import DriveFile, { IDriveFile } from '../../models/drive-file';
 import notify from '../../notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
@@ -23,9 +23,13 @@ import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
-import { updateNoteStats } from '../update-chart';
+import notesChart from '../../chart/notes';
+import perUserNotesChart from '../../chart/per-user-notes';
+
 import { erase, unique } from '../../prelude/array';
 import insertNoteUnread from './unread';
+import registerInstance from '../register-instance';
+import Instance from '../../models/instance';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -165,10 +169,36 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	}
 
 	// 統計を更新
-	updateNoteStats(note, true);
+	notesChart.update(note, true);
+	perUserNotesChart.update(user, note, true);
+
+	// Register host
+	if (isRemoteUser(user)) {
+		registerInstance(user.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					notesCount: 1
+				}
+			});
+
+			// TODO
+			//perInstanceChart.newNote();
+		});
+	}
 
 	// ハッシュタグ登録
 	tags.map(tag => registerHashtag(user, tag));
+
+	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加
+	if (data.files) {
+		data.files.forEach(file => {
+			DriveFile.update({ _id: file._id }, {
+				$push: {
+					'metadata.attachedNoteIds': note._id
+				}
+			});
+		});
+	}
 
 	// Increment notes count
 	incNotesCount(user);
