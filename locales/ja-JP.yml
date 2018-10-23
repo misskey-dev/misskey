@@ -1109,6 +1109,12 @@ desktop/views/pages/deck/deck.tl-column.vue:
   edit: "オプション"
 
 desktop/views/pages/deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
   pinned-notes: "ピン留めされた投稿"
   push-to-a-list: "リストに追加"
 

@@ -24,26 +24,55 @@
 			<div class="description">
 				<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 			</div>
+			<div class="counts">
+				<div>
+					<b>{{ user.notesCount | number }}</b>
+					<span>%i18n:@posts%</span>
+				</div>
+				<div>
+					<b>{{ user.followingCount | number }}</b>
+					<span>%i18n:@following%</span>
+				</div>
+				<div>
+					<b>{{ user.followersCount | number }}</b>
+					<span>%i18n:@followers%</span>
+				</div>
+			</div>
 		</div>
 		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-			<p>%fa:thumbtack% %i18n:@pinned-notes%</p>
-			<div class="notes">
+			<p class="caption" @click="toggleShowPinned">%fa:thumbtack% %i18n:@pinned-notes%</p>
+			<span class="angle" v-if="showPinned">%fa:angle-up%</span>
+			<span class="angle" v-else>%fa:angle-down%</span>
+			<div class="notes" v-show="showPinned">
 				<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
 			</div>
 		</div>
 		<div class="images" v-if="images.length > 0">
-			<router-link v-for="image in images"
-				:style="`background-image: url(${image.thumbnailUrl})`"
-				:key="`${image.id}:${image._note.id}`"
-				:to="image._note | notePage"
-				:title="`${image.name}\n${(new Date(image.createdAt)).toLocaleString()}`"
-			></router-link>
+			<p class="caption" @click="toggleShowImages">%fa:images R% %i18n:@images%</p>
+			<span class="angle" v-if="showImages">%fa:angle-up%</span>
+			<span class="angle" v-else>%fa:angle-down%</span>
+			<div v-show="showImages">
+				<router-link v-for="image in images"
+					:style="`background-image: url(${image.thumbnailUrl})`"
+					:key="`${image.id}:${image._note.id}`"
+					:to="image._note | notePage"
+					:title="`${image.name}\n${(new Date(image.createdAt)).toLocaleString()}`"
+				></router-link>
+			</div>
 		</div>
 		<div class="activity">
-			<div ref="chart"></div>
+			<p class="caption" @click="toggleShowActivity">%fa:chart-bar R% %i18n:@activity%</p>
+			<span class="angle" v-if="showActivity">%fa:angle-up%</span>
+			<span class="angle" v-else>%fa:angle-down%</span>
+			<div v-show="showActivity">
+				<div ref="chart"></div>
+			</div>
 		</div>
 		<div class="tl">
-			<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
+			<p class="caption">%fa:comment-alt R% %i18n:@timeline%</p>
+			<div>
+				<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
+			</div>
 		</div>
 	</div>
 </x-column>
@@ -84,7 +113,10 @@ export default Vue.extend({
 			existMore: false,
 			moreFetching: false,
 			withFiles: false,
-			images: []
+			images: [],
+			showPinned: true,
+			showImages: true,
+			showActivity: true
 		};
 	},
 
@@ -282,6 +314,18 @@ export default Vue.extend({
 				compact: false,
 				items: menu
 			});
+		},
+
+		toggleShowPinned() {
+			this.showPinned = !this.showPinned;
+		},
+
+		toggleShowImages() {
+			this.showImages = !this.showImages;
+		},
+
+		toggleShowActivity() {
+			this.showActivity = !this.showActivity;
 		}
 	}
 });
@@ -365,39 +409,65 @@ export default Vue.extend({
 			border-right solid 16px transparent
 			border-bottom solid 16px var(--face)
 
-	> .pinned
-		padding-bottom 16px
-		background var(--deckColumnBg)
+		> .counts
+			display grid
+			grid-template-columns 1fr 1fr 1fr
+			margin-top 8px
+			border-top solid 1px var(--faceDivider)
 
-		> p
+			> div
+				padding 8px 8px 0 8px
+				text-align center
+
+				> b
+					display block
+					font-size 120%
+
+				> span
+					display block
+					font-size 90%
+					opacity 0.7
+
+	> *
+		> p.caption
 			margin 0
 			padding 8px 16px
 			font-size 12px
 			color var(--text)
 
+			& + .angle
+				position absolute
+				top 0
+				right 8px
+				padding 6px
+				font-size 14px
+				color var(--text)
+
+	> .pinned
 		> .notes
 			background var(--face)
 
 	> .images
-		display grid
-		grid-template-columns 1fr 1fr 1fr
-		gap 8px
-		padding 16px
-		margin-bottom 16px
-		background var(--face)
+		> div
+			display grid
+			grid-template-columns 1fr 1fr 1fr
+			gap 8px
+			padding 16px
+			background var(--face)
 
-		> *
-			height 70px
-			background-position center center
-			background-size cover
-			background-clip content-box
-			border-radius 4px
+			> *
+				height 70px
+				background-position center center
+				background-size cover
+				background-clip content-box
+				border-radius 4px
 
 	> .activity
-		margin-bottom 16px
-		background var(--face)
+		> div
+			background var(--face)
 
 	> .tl
-		background var(--face)
+		> div
+			background var(--face)
 
 </style>
