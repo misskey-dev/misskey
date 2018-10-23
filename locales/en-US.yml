@@ -133,15 +133,9 @@ common:
   use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
-<<<<<<< HEAD
   always-show-nsfw: "Always use content warning on all media posts"
   always-mark-nsfw: "Always post with a warning about media attachment"
   show-full-acct: "Show the instance name in the username"
-=======
-  always-show-nsfw: "Always show NSFW contents"
-  always-mark-nsfw: "Always mark posts with media attachments as NSFW"
-  show-full-acct: "Do not omit the hostname from the username"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
@@ -302,7 +296,6 @@ common/views/components/media-banner.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
 common/views/components/theme.vue:
-<<<<<<< HEAD
   light-theme: "Theme used in non-dark mode"
   dark-theme: "Theme used in dark mode"
   light-themes: "Bright theme"
@@ -313,18 +306,6 @@ common/views/components/theme.vue:
   installed: "Theme {} successfully installed"
   create-a-theme: "Create theme"
   save-created-theme: "Save theme"
-=======
-  light-theme: "Theme"
-  dark-theme: "Theme during dark mode"
-  light-themes: "Light theme"
-  dark-themes: "Dark theme"
-  install-a-theme: "Install a theme"
-  theme-code: "Theme code"
-  install: "Install"
-  installed: "\"{}\" has been installed"
-  create-a-theme: "Create a theme"
-  save-created-theme: "Save a theme"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   primary-color: "Primary color"
   secondary-color: "Secondary color"
   text-color: "Text color"
@@ -332,7 +313,6 @@ common/views/components/theme.vue:
   base-theme-light: "Light"
   base-theme-dark: "Dark"
   theme-name: "Theme name"
-<<<<<<< HEAD
   preview-created-theme: "Preview theme"
   invalid-theme: "The theme is incorrect"
   already-installed: "This theme is already installed"
@@ -344,28 +324,11 @@ common/views/components/theme.vue:
   select-theme: "Please select a theme"
   uninstall: "Uninstall theme"
   uninstalled: "Theme {} successfully uninstalled"
-=======
-  preview-created-theme: "Preview"
-  invalid-theme: "Not valid theme"
-  already-installed: "This theme is already installed."
-  saved: "Saved"
-  manage-themes: "Themes manager"
-  builtin-themes: "Standard themes"
-  my-themes: "My themes"
-  installed-themes: "Installed themes"
-  select-theme: "Select your theme"
-  uninstall: "Uninstall"
-  uninstalled: "\"{}\" has been uninstalled"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   author: "Author"
   desc: "Description"
   export: "Export"
   import: "Import"
-<<<<<<< HEAD
   import-by-code: "Or paste theme code"
-=======
-  import-by-code: "or paste code"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   theme-name-required: "Theme name is required"
 common/views/components/cw-button.vue:
   hide: "Hide"
@@ -405,11 +368,7 @@ common/views/components/note-menu.vue:
   favorite: "Favorite this note"
   unfavorite: "Unfavorite"
   pin: "Pin to your profile"
-<<<<<<< HEAD
-  unpin: "ピン留め解除"                           
-=======
-  unpin: "Unpin"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
+  unpin: "ピン留め解除"
   delete: "Delete"
   delete-confirm: "Delete this post?"
   remote: "Show original note"
@@ -606,7 +565,6 @@ desktop/views/components/charts.vue:
     notes: "The number of posts: increase/decrease (Combined)"
     local-notes: "The number of posts: increase/decrease (Local)"
     remote-notes: "The number of posts: increase/decrease (Remote)"
-<<<<<<< HEAD
     notes-total: "The number of posts: cumulative total"
     users: "The number of users: increase/decrease"
     users-total: "The number of users: cumulative total"
@@ -614,15 +572,6 @@ desktop/views/components/charts.vue:
     drive-total: "Capacity used as the storage: cumulative total"
     drive-files: "The number of files on the storage: increase/decrease"
     drive-files-total: "The number of files on the storage: cumulative total"
-=======
-    notes-total: "Total posts"
-    users: "The number of users: increase/decrease"
-    users-total: "Total users"
-    drive: "Capacity used as the storage: increase/decrease"
-    drive-total: "Total usage of Drive"
-    drive-files: "The number of files on the storage: increase/decrease"
-    drive-files-total: "Total number of files on Drive"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
     network-requests: "Requests"
     network-time: "Response time"
     network-usage: "Traffic"
@@ -836,13 +785,8 @@ desktop/views/components/settings.vue:
   choose-wallpaper: "Choose a background"
   delete-wallpaper: "Remove background"
   dark-mode: "Dark Mode"
-<<<<<<< HEAD
   use-shadow: "Use shadows in UI"
   rounded-corners: "Use rounded corners in UI"
-=======
-  use-shadow: "Use shadows in the UI"
-  rounded-corners: "Round corners of UI"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   circle-icons: "Use circle icons"
   contrasted-acct: "Add contrast to username"
   gradient-window-header: "Use gradients on window headers"
@@ -855,13 +799,7 @@ desktop/views/components/settings.vue:
   show-renoted-my-notes: "Show renoted posts of mine in timelines"
   show-local-renotes: "Show renoted local posts in timelines"
   show-maps: "Display a map to show the location"
-<<<<<<< HEAD
   show-maps-desc: "If there comes a post contains location information, show a map to display the location."
-=======
-  deck-column-align: "Deck column alignment"
-  deck-column-align-center: "Center"
-  deck-column-align-left: "Left"
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   sound: "Sound"
   enable-sounds: "Enable sound"
   enable-sounds-desc: "Play a sound when you receive a post/message. This setting is stored in the browser."
@@ -1075,13 +1013,8 @@ desktop/views/pages/welcome.vue:
   signup-button: "Sign up"
   timeline: "Timeline"
   announcements: "Announcements"
-<<<<<<< HEAD
   photos: "Recent uploaded"
   powered-by-misskey: "Powered by <b>Trillion</b>."
-=======
-  photos: "Recent Images"
-  powered-by-misskey: "Powered by <b>Misskey</b>."
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
   info: "Information"
 desktop/views/pages/drive.vue:
   title: "Trillion storage"
