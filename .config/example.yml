@@ -164,3 +164,6 @@ drive:
 #  external: true
 #  engine: http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}
 #  timeout: 300000
+
+# Max allowed note text length in charactors
+maxNoteTextLength: 1000

@@ -14,6 +14,7 @@ import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
 import Notification, { deleteNotification } from './notification';
 import Following from './following';
+import config from '../config';
 
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
@@ -29,7 +30,7 @@ Note.createIndex({
 export default Note;
 
 export function isValidText(text: string): boolean {
-	return length(text.trim()) <= 1000 && text.trim() != '';
+	return length(text.trim()) <= config.maxNoteTextLength && text.trim() != '';
 }
 
 export function isValidCw(text: string): boolean {

@@ -49,6 +49,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		swPublickey: config.sw ? config.sw.public_key : null,
 		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
 		bannerUrl: meta.bannerUrl,
+		maxNoteTextLength: config.maxNoteTextLength,
 
 		features: {
 			registration: !meta.disableRegistration,
