@@ -421,11 +421,11 @@ export default Vue.extend({
 
 				> b
 					display block
-					font-size 120%
+					font-size 110%
 
 				> span
 					display block
-					font-size 90%
+					font-size 80%
 					opacity 0.7
 
 	> *
