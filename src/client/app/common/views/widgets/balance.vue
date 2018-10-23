@@ -13,7 +13,7 @@
 						stroke="#0ff"/>
 				</svg>
 				<div>
-					<b>{{ $store.state.i.balance | number }}</b>
+					<b>{{ balance | number }}</b>
 					<div>TOTAL</div>
 				</div>
 				<span class="credits">CREDITS</span>
@@ -22,7 +22,7 @@
 			<div v-show="props.view == 1" class="b">
 				<div class="line"></div>
 				<div>
-					<b>{{ $store.state.i.balance | number }}</b>
+					<b>{{ balance | number }}</b>
 				</div>
 				<span class="credits">CREDITS</span>
 				<span class="x"><b>■</b><i>TEXT</i></span>
@@ -44,6 +44,14 @@ export default define({
 		view: 0
 	})
 }).extend({
+	computed: {
+		balance(): number {
+			const dailyInc = 2;
+			const ageInDays = Math.floor((new Date().getTime() - new Date(this.$store.state.i.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+			return this.$store.state.i.balance + (dailyInc * ageInDays);
+		}
+	},
+
 	methods: {
 		toggle() {
 			if (this.props.view == 2) {
