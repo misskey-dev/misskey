@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import isObjectId from '../../../misc/is-objectid';
 import { default as Notification, INotification } from '../../../models/notification';
 import { publishMainStream } from '../../../stream';
 import Mute from '../../../models/mute';
@@ -12,17 +13,17 @@ export default (
 	message: string | string[] | INotification | INotification[] | mongo.ObjectID | mongo.ObjectID[]
 ) => new Promise<any>(async (resolve, reject) => {
 
-	const userId = mongo.ObjectID.prototype.isPrototypeOf(user)
+	const userId = isObjectId(user)
 		? user
 		: new mongo.ObjectID(user);
 
 	const ids: mongo.ObjectID[] = Array.isArray(message)
-		? mongo.ObjectID.prototype.isPrototypeOf(message[0])
+		? isObjectId(message[0])
 			? (message as mongo.ObjectID[])
 			: typeof message[0] === 'string'
 				? (message as string[]).map(m => new mongo.ObjectID(m))
 				: (message as INotification[]).map(m => m._id)
-		: mongo.ObjectID.prototype.isPrototypeOf(message)
+		: isObjectId(message)
 			? [(message as mongo.ObjectID)]
 			: typeof message === 'string'
 				? [new mongo.ObjectID(message)]

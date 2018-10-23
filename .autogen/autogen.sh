@@ -30,7 +30,7 @@ while :
   touch patreon.cache && \
   rm patreon.cache && \
   cat patreon.raw.cache | \
-  jq -r '(.data|map(select(.relationships.currently_entitled_tiers.data[]))|map(.relationships.user.data.id))as$data|.included|map(select(.attributes.hide_pledges==false))|map(select(.id as$id|$data|contains([$id])))|map(.attributes|[.full_name,.thumb_url,.url]|@tsv)|.[]|@text' >> patreon.cache && \
+  jq -r '(.data|map(select(.relationships.currently_entitled_tiers.data[]))|map(.relationships.user.data.id))as$data|.included|map(select(.id as$id|$data|contains([$id])))|map(.attributes|[.full_name,.thumb_url,.url]|@tsv)|.[]|@text' >> patreon.cache && \
   echo '<table><tr>' >> patreon.md.cache && \
   cat patreon.cache | \
   awk -F'\t' '{print $2,$1}' | \

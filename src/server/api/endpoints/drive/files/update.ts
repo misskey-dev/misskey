@@ -100,8 +100,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}).then(notes => {
 		notes.forEach(note => {
 			note._files[note._files.findIndex(f => f._id.equals(file._id))] = file;
-			Note.findOneAndUpdate({ _id: note._id }, {
-				_files: note._files
+			Note.update({ _id: note._id }, {
+				$set: {
+					_files: note._files
+				}
 			});
 		});
 	});
@@ -112,6 +114,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Response
 	res(fileObj);
 
-	// Publish file_updated event
-	publishDriveStream(user._id, 'file_updated', fileObj);
+	// Publish fileUpdated event
+	publishDriveStream(user._id, 'fileUpdated', fileObj);
 });

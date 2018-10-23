@@ -5,6 +5,8 @@ import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定した投稿をお気に入りに登録します。',
 		'en-US': 'Favorite a note.'
@@ -17,7 +19,8 @@ export const meta = {
 	params: {
 		noteId: $.type(ID).note({
 			desc: {
-				'ja-JP': '対象の投稿のID'
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID.'
 			}
 		})
 	}

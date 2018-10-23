@@ -21,6 +21,7 @@ import updateAvatar from './api/update-avatar';
 import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
+import MkHome from './views/pages/home.vue';
 import MkDeck from './views/pages/deck/deck.vue';
 import MkAdmin from './views/pages/admin/admin.vue';
 import MkStats from './views/pages/stats/stats.vue';
@@ -54,6 +55,7 @@ init(async (launch) => {
 		mode: 'history',
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
+			{ path: '/home', name: 'home', component: MkHome },
 			{ path: '/deck', name: 'deck', component: MkDeck },
 			{ path: '/admin', name: 'admin', component: MkAdmin },
 			{ path: '/stats', name: 'stats', component: MkStats },
@@ -64,11 +66,11 @@ init(async (launch) => {
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
-			{ path: '/tags/:tag', component: MkTag },
+			{ path: '/tags/:tag', name: 'tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/reversi/:game?', component: MkReversi },
-			{ path: '/@:user', component: MkUser },
-			{ path: '/notes/:note', component: MkNote },
+			{ path: '/@:user', name: 'user', component: MkUser },
+			{ path: '/notes/:note', name: 'note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow }
 		]
 	});

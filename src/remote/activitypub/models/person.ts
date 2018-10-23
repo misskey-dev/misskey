@@ -10,9 +10,11 @@ import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type'
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import htmlToMFM from '../../../mfm/html-to-mfm';
-import { updateUserStats } from '../../../services/update-chart';
+import usersChart from '../../../chart/users';
 import { URL } from 'url';
 import { resolveNote } from './note';
+import registerInstance from '../../../services/register-instance';
+import Instance from '../../../models/instance';
 
 const log = debug('misskey:activitypub');
 
@@ -173,6 +175,18 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 		throw e;
 	}
 
+	// Register host
+	registerInstance(host).then(i => {
+		Instance.update({ _id: i._id }, {
+			$inc: {
+				usersCount: 1
+			}
+		});
+
+		// TODO
+		//perInstanceChart.newUser();
+	});
+
 	//#region Increment users count
 	Meta.update({}, {
 		$inc: {
@@ -180,7 +194,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 		}
 	}, { upsert: true });
 
-	updateUserStats(user, true);
+	usersChart.update(user, true);
 	//#endregion
 
 	//#region アイコンとヘッダー画像をフェッチ
@@ -190,7 +204,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(user, img)
+			: resolveImage(user, img).catch(() => null)
 	)));
 
 	const avatarId = avatar ? avatar._id : null;
@@ -214,6 +228,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	//#endregion
 
 	await updateFeatured(user._id).catch(err => console.log(err));
+
 	return user;
 }
 
@@ -276,7 +291,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(exist, img)
+			: resolveImage(exist, img).catch(() => null)
 	)));
 
 	// Update user

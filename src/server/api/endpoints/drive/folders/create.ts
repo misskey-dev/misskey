@@ -52,6 +52,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Response
 	res(folderObj);
 
-	// Publish folder_created event
-	publishDriveStream(user._id, 'folder_created', folderObj);
+	// Publish folderCreated event
+	publishDriveStream(user._id, 'folderCreated', folderObj);
 });

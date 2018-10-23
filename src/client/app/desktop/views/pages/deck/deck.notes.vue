@@ -2,16 +2,27 @@
 <div class="eamppglmnmimdhrlzhplwpvyeaqmmhxu">
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div v-if="!fetching && requestInitPromise != null">
-		<p>%i18n:@error%</p>
-		<button @click="resolveInitPromise">%i18n:@retry%</button>
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
+	</div>
+
+	<div v-if="!fetching && requestInitPromise != null" class="error">
+		<p>%fa:exclamation-triangle% %i18n:common.error.title%</p>
+		<ui-button @click="resolveInitPromise">%i18n:common.error.retry%</ui-button>
 	</div>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<!--<transition-group name="mk-notes" class="transition">-->
-	<div class="notes">
+	<!--<transition-group name="mk-notes" class="transition" ref="notes">-->
+	<div class="notes" ref="notes">
 		<template v-for="(note, i) in _notes">
-			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" :media-view="mediaView"/>
+			<x-note
+				:note="note"
+				:key="note.id"
+				@update:note="onNoteUpdated(i, $event)"
+				:media-view="mediaView"
+				:mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
 				<span>%fa:angle-up%{{ note._datetext }}</span>
 				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
@@ -32,7 +43,7 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import XNote from './deck.note.vue';
+import XNote from '../../components/note.vue';
 
 const displayLimit = 20;
 
@@ -96,7 +107,7 @@ export default Vue.extend({
 
 	methods: {
 		focus() {
-			(this.$el as any).children[0].focus();
+			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
 		},
 
 		onNoteUpdated(i, note) {
@@ -147,6 +158,11 @@ export default Vue.extend({
 				}
 			}
 			//#endregion
+
+			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+			if (document.hidden || !this.isScrollTop()) {
+				this.$store.commit('pushBehindNote', note);
+			}
 
 			if (this.isScrollTop()) {
 				// Prepend the note
@@ -205,12 +221,23 @@ export default Vue.extend({
 		> *
 			transition transform .3s ease, opacity .3s ease
 
+	> .error
+		max-width 300px
+		margin 0 auto
+		padding 16px
+		text-align center
+		color var(--text)
+
+	> .placeholder
+		padding 16px
+		opacity 0.3
+
 	> .notes
 		> .date
 			display block
 			margin 0
-			line-height 32px
-			font-size 14px
+			line-height 28px
+			font-size 12px
 			text-align center
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)

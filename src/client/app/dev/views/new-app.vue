@@ -1,34 +1,34 @@
 <template>
 <mk-ui>
-	<b-card header="アプリケーションの作成">
+	<b-card header="%i18n:@create-app%">
 		<b-form @submit.prevent="onSubmit" autocomplete="off">
-			<b-form-group label="アプリケーション名" description="あなたのアプリの名称。">
-				<b-form-input v-model="name" type="text" placeholder="ex) Misskey for iOS" autocomplete="off" required/>
+			<b-form-group label="%i18n:@app-name%" description="%i18n:@app-name-desc%">
+				<b-form-input v-model="name" type="text" placeholder="%i18n:@app-name-ex%" autocomplete="off" required/>
 			</b-form-group>
-			<b-form-group label="アプリの概要" description="あなたのアプリの簡単な説明や紹介。">
-				<b-textarea v-model="description" placeholder="ex) Misskey iOSクライアント。" autocomplete="off" required></b-textarea>
+			<b-form-group label="%i18n:@app-overview%" description="%i18n:@app-desc%">
+				<b-textarea v-model="description" placeholder="%i18n:@app-desc-ex%" autocomplete="off" required></b-textarea>
 			</b-form-group>
-			<b-form-group label="コールバックURL (オプション)" description="ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。">
+			<b-form-group label="%i18n:@callback-url%" description="%i18n:@callback-url-desc%">
 				<b-input v-model="cb" type="url" placeholder="ex) https://your.app.example.com/callback.php" autocomplete="off"/>
 			</b-form-group>
-			<b-card header="権限">
-				<b-form-group description="ここで要求した機能だけがAPIからアクセスできます。">
-					<b-alert show variant="warning">%fa:exclamation-triangle%アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。</b-alert>
+			<b-card header="%i18n:@authority%">
+				<b-form-group description="%i18n:@authority-desc%">
+					<b-alert show variant="warning">%fa:exclamation-triangle% %i18n:@authority-warning%</b-alert>
 					<b-form-checkbox-group v-model="permission" stacked>
-						<b-form-checkbox value="account-read">アカウントの情報を見る。</b-form-checkbox>
-						<b-form-checkbox value="account-write">アカウントの情報を操作する。</b-form-checkbox>
-						<b-form-checkbox value="note-write">投稿する。</b-form-checkbox>
-						<b-form-checkbox value="reaction-write">リアクションしたりリアクションをキャンセルする。</b-form-checkbox>
-						<b-form-checkbox value="following-write">フォローしたりフォロー解除する。</b-form-checkbox>
-						<b-form-checkbox value="drive-read">ドライブを見る。</b-form-checkbox>
-						<b-form-checkbox value="drive-write">ドライブを操作する。</b-form-checkbox>
-						<b-form-checkbox value="notification-read">通知を見る。</b-form-checkbox>
-						<b-form-checkbox value="notification-write">通知を操作する。</b-form-checkbox>
+						<b-form-checkbox value="account-read">%i18n:@account-read%</b-form-checkbox>
+						<b-form-checkbox value="account-write">%i18n:@account-write%</b-form-checkbox>
+						<b-form-checkbox value="note-write">%i18n:@note-write%</b-form-checkbox>
+						<b-form-checkbox value="reaction-write">%i18n:@reaction-write%</b-form-checkbox>
+						<b-form-checkbox value="following-write">%i18n:@following-write%</b-form-checkbox>
+						<b-form-checkbox value="drive-read">%i18n:@drive-read%</b-form-checkbox>
+						<b-form-checkbox value="drive-write">%i18n:@drive-write%</b-form-checkbox>
+						<b-form-checkbox value="notification-read">%i18n:@notification-read%</b-form-checkbox>
+						<b-form-checkbox value="notification-write">%i18n:@notification-write%</b-form-checkbox>
 					</b-form-checkbox-group>
 				</b-form-group>
 			</b-card>
 			<hr>
-			<b-button type="submit" variant="primary">アプリ作成</b-button>
+			<b-button type="submit" variant="primary">%i18n:@create-app%</b-button>
 		</b-form>
 	</b-card>
 </mk-ui>
@@ -56,7 +56,7 @@ export default Vue.extend({
 			}).then(() => {
 				location.href = '/dev/apps';
 			}).catch(() => {
-				alert('アプリの作成に失敗しました。再度お試しください。');
+				alert('%i18n:common.dev.failed-to-create%');
 			});
 		}
 	}

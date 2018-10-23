@@ -15,6 +15,8 @@ export default class extends Channel {
 
 		const q: Array<string[]> = params.q;
 
+		if (q == null) return;
+
 		// Subscribe stream
 		this.subscriber.on('hashtag', async note => {
 			const matched = q.some(tags => tags.every(tag => note.tags.map((t: string) => t.toLowerCase()).includes(tag.toLowerCase())));

@@ -2,18 +2,22 @@
 <div class="nav">
 	<ul>
 		<template v-if="$store.getters.isSignedIn">
-			<li class="home" :class="{ active: $route.name == 'index' }" @click="goToTop">
-				<router-link to="/">
-					%fa:home%
-					<p>%i18n:@home%</p>
-				</router-link>
-			</li>
-			<li class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-				<router-link to="/deck">
-					%fa:columns%
-					<p>%i18n:@deck%</p>
-				</router-link>
-			</li>
+			<template v-if="$store.state.device.deckDefault">
+				<li class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
+					<router-link to="/">%fa:columns%<p>%i18n:@deck%</p></router-link>
+				</li>
+				<li class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
+					<router-link to="/home">%fa:home%<p>%i18n:@home%</p></router-link>
+				</li>
+			</template>
+			<template v-else>
+				<li class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
+					<router-link to="/">%fa:home%<p>%i18n:@home%</p></router-link>
+				</li>
+				<li class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
+					<router-link to="/deck">%fa:columns%<p>%i18n:@deck%</p></router-link>
+				</li>
+			</template>
 			<li class="messaging">
 				<a @click="messaging">
 					%fa:comments%

@@ -137,6 +137,8 @@ export default async (params: any, user: ILocalUser) => {
 
 	const query = {
 		$and: [{
+			deletedAt: null,
+
 			// リストに入っている人のタイムラインへの投稿
 			$or: listQuery,
 

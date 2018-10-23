@@ -99,6 +99,12 @@ export const meta = {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		}),
+
+		fileType: $.arr($.str).optional.note({
+			desc: {
+				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
+			}
+		}),
 	}
 };
 
@@ -136,7 +142,9 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	};
 
 	const query = {
-		userId: user._id
+		deletedAt: null,
+		userId: user._id,
+		visibility: { $in: ['public', 'home'] }
 	} as any;
 
 	if (ps.sinceId) {
@@ -169,6 +177,14 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		query.fileIds = {
 			$exists: true,
 			$ne: []
+		};
+	}
+
+	if (ps.fileType) {
+		query.fileIds = { $exists: true, $ne: [] };
+
+		query['_files.contentType'] = {
+			$in: ps.fileType
 		};
 	}
 	//#endregion

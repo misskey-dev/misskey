@@ -8,6 +8,8 @@ import { IApp } from '../../../../models/app';
 import getParams from '../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '投稿します。'
 	},

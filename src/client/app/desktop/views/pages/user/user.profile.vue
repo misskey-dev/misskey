@@ -9,11 +9,11 @@
 		</p>
 	</div>
 	<div class="action-form">
-		<button class="mute ui" @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
+		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
 			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
 			<span v-if="!user.isMuted">%fa:eye-slash% %i18n:@mute%</span>
-		</button>
-		<button class="mute ui" @click="list">%fa:list% %i18n:@push-to-a-list%</button>
+		</ui-button>
+		<ui-button @click="list">%fa:list% %i18n:@push-to-a-list%</ui-button>
 	</div>
 </div>
 </template>

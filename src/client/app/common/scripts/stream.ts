@@ -9,7 +9,7 @@ import MiOS from '../../mios';
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
-	private state: string;
+	public state: string;
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
@@ -156,7 +156,7 @@ class Pool {
 		this.channel = channel;
 		this.stream = stream;
 
-		this.id = Math.random().toString();
+		this.id = Math.random().toString().substr(2, 8);
 
 		this.stream.on('_disconnected_', this.onStreamDisconnected);
 	}
@@ -275,7 +275,7 @@ class NonSharedConnection extends Connection {
 		super(stream, channel);
 
 		this.params = params;
-		this.id = Math.random().toString();
+		this.id = Math.random().toString().substr(2, 8);
 
 		this.connect();
 	}

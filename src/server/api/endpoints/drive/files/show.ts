@@ -1,8 +1,11 @@
 import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定したドライブのファイルの情報を取得します。',
 		'en-US': 'Get specified file of drive.'
@@ -10,24 +13,32 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-read'
+	kind: 'drive-read',
+
+	params: {
+		fileId: $.type(ID).note({
+			desc: {
+				'ja-JP': '対象のファイルID',
+				'en-US': 'Target file ID'
+			}
+		})
+	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
-	if (fileIdErr) throw 'invalid fileId param';
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: fileId,
+			_id: ps.fileId,
 			'metadata.userId': user._id,
 			'metadata.deletedAt': { $exists: false }
 		});
 
 	if (file === null) {
-		throw 'file-not-found';
+		return rej('file-not-found');
 	}
 
 	// Serialize
@@ -35,5 +46,5 @@ export default async (params: any, user: ILocalUser) => {
 		detail: true
 	});
 
-	return _file;
-};
+	res(_file);
+});

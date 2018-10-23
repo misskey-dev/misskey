@@ -41,6 +41,8 @@
 			<ui-button link :href="`${file.url}?download`" :download="file.name">%fa:download% %i18n:@download%</ui-button>
 			<ui-button @click="rename">%fa:pencil-alt% %i18n:@rename%</ui-button>
 			<ui-button @click="move">%fa:R folder-open% %i18n:@move%</ui-button>
+			<ui-button @click="toggleSensitive" v-if="file.isSensitive">%fa:R eye% %i18n:@unmark-as-sensitive%</ui-button>
+			<ui-button @click="toggleSensitive" v-else>%fa:R eye-slash% %i18n:@mark-as-sensitive%</ui-button>
 			<ui-button @click="del">%fa:trash-alt R% %i18n:@delete%</ui-button>
 		</div>
 	</div>
@@ -71,25 +73,30 @@ import { gcd } from '../../../../../prelude/math';
 
 export default Vue.extend({
 	props: ['file'],
+
 	data() {
 		return {
 			gcd,
 			exif: null
 		};
 	},
+
 	computed: {
 		browser(): any {
 			return this.$parent;
 		},
+
 		kind(): string {
 			return this.file.type.split('/')[0];
 		},
+
 		style(): any {
 			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3 ? {
 				'background-color': `rgb(${ this.file.properties.avgColor.join(',') })`
 			} : {};
 		}
 	},
+
 	methods: {
 		rename() {
 			const name = window.prompt('%i18n:@rename%', this.file.name);
@@ -101,6 +108,7 @@ export default Vue.extend({
 				this.browser.cf(this.file, true);
 			});
 		},
+
 		move() {
 			(this as any).apis.chooseDriveFolder().then(folder => {
 				(this as any).api('drive/files/update', {
@@ -111,6 +119,7 @@ export default Vue.extend({
 				});
 			});
 		},
+
 		del() {
 			(this as any).api('drive/files/delete', {
 				fileId: this.file.id
@@ -118,9 +127,20 @@ export default Vue.extend({
 				this.browser.cd(this.file.folderId, true);
 			});
 		},
+
+		toggleSensitive() {
+			(this as any).api('drive/files/update', {
+				fileId: this.file.id,
+				isSensitive: !this.file.isSensitive
+			});
+
+			this.file.isSensitive = !this.file.isSensitive;
+		},
+
 		showCreatedAt() {
 			alert(new Date(this.file.createdAt).toLocaleString());
 		},
+
 		onImageLoaded() {
 			const self = this;
 			EXIF.getData(this.$refs.img, function(this: any) {

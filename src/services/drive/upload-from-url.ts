@@ -37,6 +37,7 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
 		request({
 			url: requestUrl,
+			proxy: config.proxy,
 			headers: {
 				'User-Agent': config.user_agent
 			}

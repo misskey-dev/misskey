@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const PollVote = db.get<IPollVote>('pollVotes');
 export default PollVote;
@@ -19,7 +20,7 @@ export async function deletePollVote(pollVote: string | mongo.ObjectID | IPollVo
 	let p: IPollVote;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(pollVote)) {
+	if (isObjectId(pollVote)) {
 		p = await PollVote.findOne({
 			_id: pollVote
 		});

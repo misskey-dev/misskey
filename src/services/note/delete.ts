@@ -6,8 +6,12 @@ import pack from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import Following from '../../models/following';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import { updateNoteStats } from '../update-chart';
+import notesChart from '../../chart/notes';
+import perUserNotesChart from '../../chart/per-user-notes';
 import config from '../../config';
+import NoteUnread from '../../models/note-unread';
+import read from './read';
+import DriveFile from '../../models/drive-file';
 
 /**
  * 投稿を削除します。
@@ -36,6 +40,26 @@ export default async function(user: IUser, note: INote) {
 		deletedAt: deletedAt
 	});
 
+	// この投稿が関わる未読通知を削除
+	NoteUnread.find({
+		noteId: note._id
+	}).then(unreads => {
+		unreads.forEach(unread => {
+			read(unread.userId, unread.noteId);
+		});
+	});
+
+	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティからこの投稿を削除
+	if (note.fileIds) {
+		note.fileIds.forEach(fileId => {
+			DriveFile.update({ _id: fileId }, {
+				$pull: {
+					'metadata.attachedNoteIds': note._id
+				}
+			});
+		});
+	}
+
 	//#region ローカルの投稿なら削除アクティビティを配送
 	if (isLocalUser(user)) {
 		const content = pack(renderDelete(renderTombstone(`${config.url}/notes/${note._id}`), user));
@@ -52,5 +76,6 @@ export default async function(user: IUser, note: INote) {
 	//#endregion
 
 	// 統計を更新
-	updateNoteStats(note, false);
+	notesChart.update(note, false);
+	perUserNotesChart.update(user, note, false);
 }

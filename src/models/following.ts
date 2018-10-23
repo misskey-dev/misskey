@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const Following = db.get<IFollowing>('following');
 Following.createIndex(['followerId', 'followeeId'], { unique: true });
@@ -32,7 +33,7 @@ export async function deleteFollowing(following: string | mongo.ObjectID | IFoll
 	let f: IFollowing;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(following)) {
+	if (isObjectId(following)) {
 		f = await Following.findOne({
 			_id: following
 		});

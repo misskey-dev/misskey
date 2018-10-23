@@ -17,7 +17,8 @@ import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
-import { updateDriveStats } from '../update-chart';
+import driveChart from '../../chart/drive';
+import perUserDriveChart from '../../chart/per-user-drive';
 
 const log = debug('misskey:drive:add-file');
 
@@ -37,10 +38,16 @@ async function save(path: string, name: string, type: string, hash: string, size
 	if (config.drive && config.drive.storage == 'minio') {
 		const minio = new Minio.Client(config.drive.config);
 
-		const keyDir = `${config.drive.prefix}/${uuid.v4()}`;
-		const key = `${keyDir}/${name}`;
-		const thumbnailKeyDir = `${config.drive.prefix}/${uuid.v4()}`;
-		const thumbnailKey = `${thumbnailKeyDir}/${name}.thumbnail.jpg`;
+		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
+
+		if (ext === '') {
+			if (type === 'image/jpeg') ext = '.jpg';
+			if (type === 'image/png') ext = '.png';
+			if (type === 'image/webp') ext = '.webp';
+		}
+
+		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.jpg`;
 
 		const baseUrl = config.drive.baseUrl
 			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
@@ -64,8 +71,8 @@ async function save(path: string, name: string, type: string, hash: string, size
 				key: key,
 				thumbnailKey: thumbnailKey
 			},
-			url: `${ baseUrl }/${ keyDir }/${ encodeURIComponent(name) }`,
-			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKeyDir }/${ encodeURIComponent(name) }.thumbnail.jpg` : null
+			url: `${ baseUrl }/${ key }`,
+			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKey }` : null
 		});
 
 		const file = await DriveFile.insert({
@@ -185,6 +192,10 @@ export default async function(
 					// 種類が同定できなかったら application/octet-stream にする
 					res(['application/octet-stream', null]);
 				}
+			})
+			.on('end', () => {
+				// maybe 0 bytes
+				res(['application/octet-stream', null]);
 			});
 	});
 
@@ -385,11 +396,12 @@ export default async function(
 	pack(driveFile).then(packedFile => {
 		// Publish driveFileCreated event
 		publishMainStream(user._id, 'driveFileCreated', packedFile);
-		publishDriveStream(user._id, 'file_created', packedFile);
+		publishDriveStream(user._id, 'fileCreated', packedFile);
 	});
 
 	// 統計を更新
-	updateDriveStats(driveFile, true);
+	driveChart.update(driveFile, true);
+	perUserDriveChart.update(driveFile, true);
 
 	return driveFile;
 }

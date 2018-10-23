@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { pack as packUser } from './user';
 
 const FollowRequest = db.get<IFollowRequest>('followRequests');
@@ -12,6 +13,7 @@ export type IFollowRequest = {
 	createdAt: Date;
 	followeeId: mongo.ObjectID;
 	followerId: mongo.ObjectID;
+	requestId?: string;	// id of Follow Activity
 
 	// 非正規化
 	_followee: {
@@ -33,7 +35,7 @@ export async function deleteFollowRequest(followRequest: string | mongo.ObjectID
 	let f: IFollowRequest;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(followRequest)) {
+	if (isObjectId(followRequest)) {
 		f = await FollowRequest.findOne({
 			_id: followRequest
 		});
@@ -63,7 +65,7 @@ export const pack = (
 	let _request: any;
 
 	// Populate the request if 'request' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(request)) {
+	if (isObjectId(request)) {
 		_request = await FollowRequest.findOne({
 			_id: request
 		});

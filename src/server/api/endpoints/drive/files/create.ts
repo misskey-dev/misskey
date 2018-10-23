@@ -31,19 +31,23 @@ export const meta = {
 			}
 		}),
 
-		isSensitive: $.bool.optional.nullable.note({
-			default: null,
+		isSensitive: $.bool.optional.note({
+			default: false,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'
+			}
+		}),
+
+		force: $.bool.optional.note({
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
 			}
 		})
 	}
 };
 
-/**
- * Create a file
- */
 export default async (file: any, params: any, user: ILocalUser): Promise<any> => {
 	if (file == null) {
 		throw 'file is required';
@@ -76,7 +80,7 @@ export default async (file: any, params: any, user: ILocalUser): Promise<any> =>
 
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, ps.folderId, false, false, null, null, ps.isSensitive);
+		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
 
 		cleanup();
 

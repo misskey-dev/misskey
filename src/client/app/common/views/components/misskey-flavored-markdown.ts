@@ -114,25 +114,23 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'mention': {
-					return (createElement as any)('a', {
+					return (createElement as any)('router-link', {
 						attrs: {
-							href: `${url}/@${getAcct(token)}`,
-							target: '_blank',
+							to: `/${token.canonical}`,
 							dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token),
 							style: 'color:var(--mfmMention);'
 						},
 						directives: [{
 							name: 'user-preview',
-							value: token.content
+							value: token.canonical
 						}]
-					}, token.content);
+					}, token.canonical);
 				}
 
 				case 'hashtag': {
-					return [createElement('a', {
+					return [createElement('router-link', {
 						attrs: {
-							href: `${url}/tags/${encodeURIComponent(token.hashtag)}`,
-							target: '_blank',
+							to: `/tags/${encodeURIComponent(token.hashtag)}`,
 							style: 'color:var(--mfmHashtag);'
 						}
 					}, token.content)];

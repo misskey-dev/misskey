@@ -1,12 +1,12 @@
 <template>
 <mk-ui>
-	<b-card header="アプリを管理">
-		<b-button to="/app/new" variant="primary">アプリ作成</b-button>
+	<b-card header="%i18n:@manage-apps%">
+		<b-button to="/app/new" variant="primary">%i18n:@create-app%</b-button>
 		<hr>
 		<div class="apps">
-			<p v-if="fetching">読み込み中</p>
+			<p v-if="fetching">%i18n:common.loading%</p>
 			<template v-if="!fetching">
-				<b-alert v-if="apps.length == 0">アプリなし</b-alert>
+				<b-alert v-if="apps.length == 0">%i18n:@app-missing%</b-alert>
 				<b-list-group v-else>
 					<b-list-group-item v-for="app in apps" :key="app.id" :to="`/app/${app.id}`">
 						{{ app.name }}

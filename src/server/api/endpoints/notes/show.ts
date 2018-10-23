@@ -1,18 +1,35 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note, { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
-/**
- * Show a note
- */
+export const meta = {
+	stability: 'stable',
+
+	desc: {
+		'ja-JP': '指定した投稿を取得します。',
+		'en-US': 'Get a note.'
+	},
+
+	requireCredential: false,
+
+	params: {
+		noteId: $.type(ID).note({
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID.'
+			}
+		})
+	}
+};
+
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Get note
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {

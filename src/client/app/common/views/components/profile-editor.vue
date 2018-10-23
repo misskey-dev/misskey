@@ -49,6 +49,7 @@
 
 		<div>
 			<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
+			<ui-switch v-model="isBot" @change="save(false)">%i18n:@is-bot%</ui-switch>
 			<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
 		</div>
 	</section>
@@ -58,6 +59,7 @@
 
 		<div>
 			<ui-switch v-model="isLocked" @change="save(false)">%i18n:@is-locked%</ui-switch>
+			<ui-switch v-model="carefulBot" @change="save(false)">%i18n:@careful-bot%</ui-switch>
 		</div>
 	</section>
 </ui-card>
@@ -65,7 +67,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, host } from '../../../../config';
+import { apiUrl, host } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -79,7 +81,9 @@ export default Vue.extend({
 			avatarId: null,
 			bannerId: null,
 			isCat: false,
+			isBot: false,
 			isLocked: false,
+			carefulBot: false,
 			saving: false,
 			avatarUploading: false,
 			bannerUploading: false
@@ -102,7 +106,9 @@ export default Vue.extend({
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isCat = this.$store.state.i.isCat;
+		this.isBot = this.$store.state.i.isBot;
 		this.isLocked = this.$store.state.i.isLocked;
+		this.carefulBot = this.$store.state.i.carefulBot;
 	},
 
 	methods: {
@@ -161,7 +167,9 @@ export default Vue.extend({
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
 				isCat: this.isCat,
-				isLocked: this.isLocked
+				isBot: this.isBot,
+				isLocked: this.isLocked,
+				carefulBot: this.carefulBot
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;

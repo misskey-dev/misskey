@@ -4,7 +4,7 @@
 		<header>
 			<button class="cancel" @click="cancel">%fa:times%</button>
 			<div>
-				<span class="text-count" :class="{ over: trimmedLength(text) > 1000 }">{{ 1000 - trimmedLength(text) }}</span>
+				<span class="text-count" :class="{ over: trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
@@ -62,6 +62,7 @@ import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import parseAcct from '../../../../../misc/acct/parse';
+import { toASCII } from 'punycode';
 
 export default Vue.extend({
 	components: {
@@ -101,8 +102,15 @@ export default Vue.extend({
 			visibleUsers: [],
 			useCw: false,
 			cw: null,
-			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]')
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			maxNoteTextLength: 1000
 		};
+	},
+
+	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.maxNoteTextLength = meta.maxNoteTextLength;
+		});
 	},
 
 	computed: {
@@ -143,7 +151,7 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(this.text.trim().length <= 1000);
+				(this.text.trim().length <= this.maxNoteTextLength);
 		}
 	},
 
@@ -153,14 +161,14 @@ export default Vue.extend({
 		}
 
 		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
 
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
 			ast.filter(t => t.type == 'mention').forEach(x => {
-				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
 				if (this.$store.state.i.username == x.username && x.host == null) return;

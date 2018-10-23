@@ -1,7 +1,7 @@
 import config from '../../config';
 import * as mongo from 'mongodb';
 import User, { isLocalUser, isRemoteUser, ILocalUser, IUser } from '../../models/user';
-import Note from '../../models/note';
+import Note, { packMany } from '../../models/note';
 import Following from '../../models/following';
 import renderAdd from '../../remote/activitypub/renderer/add';
 import renderRemove from '../../remote/activitypub/renderer/remove';
@@ -27,11 +27,11 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 	let pinnedNoteIds = user.pinnedNoteIds || [];
 
 	//#region 現在ピン留め投稿している投稿が実際にデータベースに存在しているのかチェック
-	// データベースの欠損などで存在していない場合があるので。
+	// データベースの欠損などで存在していない(または破損している)場合があるので。
 	// 存在していなかったらピン留め投稿から外す
-	const pinnedNotes = (await Promise.all(pinnedNoteIds.map(id => Note.findOne({ _id: id })))).filter(x => x != null);
+	const pinnedNotes = await packMany(pinnedNoteIds, null, { detail: true });
 
-	pinnedNoteIds = pinnedNoteIds.filter(id => pinnedNotes.some(n => n._id.equals(id)));
+	pinnedNoteIds = pinnedNoteIds.filter(id => pinnedNotes.some(n => n.id.toString() === id.toHexString()));
 	//#endregion
 
 	if (pinnedNoteIds.length >= 5) {

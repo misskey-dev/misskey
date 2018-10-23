@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 
 const AccessToken = db.get<IAccessToken>('accessTokens');
 AccessToken.createIndex('token');
@@ -22,7 +23,7 @@ export async function deleteAccessToken(accessToken: string | mongo.ObjectID | I
 	let a: IAccessToken;
 
 	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(accessToken)) {
+	if (isObjectId(accessToken)) {
 		a = await AccessToken.findOne({
 			_id: accessToken
 		});

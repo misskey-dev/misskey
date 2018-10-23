@@ -66,15 +66,15 @@
 	</div>
 
 	<template v-if="notification.type == 'quote'">
-		<x-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<x-note :note="notification.note" @update:note="onNoteUpdated" :mini="true"/>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
-		<x-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<x-note :note="notification.note" @update:note="onNoteUpdated" :mini="true"/>
 	</template>
 
 	<template v-if="notification.type == 'mention'">
-		<x-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<x-note :note="notification.note" @update:note="onNoteUpdated" :mini="true"/>
 	</template>
 </div>
 </template>
@@ -82,7 +82,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getNoteSummary from '../../../../../../misc/get-note-summary';
-import XNote from './deck.note.vue';
+import XNote from '../../components/note.vue';
 
 export default Vue.extend({
 	components: {
