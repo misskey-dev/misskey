@@ -1,13 +1,8 @@
 {
 	"name": "Trillion",
 	"author": "syuilo <i@syuilo.com>",
-<<<<<<< HEAD
-	"version": "10.9.2",
-	"clientVersion": "1.0.10448-tri-18",
-=======
-	"version": "10.31.0-tri",
-	"clientVersion": "1.0.11051-tri",
->>>>>>> 0cd340c29daf4fc27db217abaaa0889d0eb005e0
+	"version": "10.31.0-tri2",
+	"clientVersion": "1.0.11051-tri2",
 	"codename": "nighthike",
 	"main": "./built/index.js",
 	"private": true,
