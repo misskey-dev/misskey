@@ -541,12 +541,12 @@ desktop/views/components/charts.vue:
   title: "Graphiques"
   per-day: "par jour"
   per-hour: "par heure"
+  federation: "フェデレーション"
   notes: "Publications"
   users: "Utilisateurs"
   drive: "Drive"
   network: "Réseau"
   charts:
-    federation: "フェデレーション"
     federation-instances: "インスタンスの増減"
     federation-instances-total: "インスタンスの積算"
     notes: "投稿の増減 (統合)"
