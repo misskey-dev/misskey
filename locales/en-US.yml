@@ -976,6 +976,12 @@ desktop/views/pages/deck/deck.tl-column.vue:
   is-media-view: "Media view"
   edit: "Options"
 desktop/views/pages/deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
   pinned-notes: "Pinned posts"
   push-to-a-list: "Add to list"
 desktop/views/pages/stats/stats.vue:
