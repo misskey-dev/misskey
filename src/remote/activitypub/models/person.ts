@@ -13,6 +13,8 @@ import htmlToMFM from '../../../mfm/html-to-mfm';
 import usersChart from '../../../chart/users';
 import { URL } from 'url';
 import { resolveNote } from './note';
+import registerInstance from '../../../services/register-instance';
+import Instance from '../../../models/instance';
 
 const log = debug('misskey:activitypub');
 
@@ -173,6 +175,18 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 		throw e;
 	}
 
+	// Register host
+	registerInstance(host).then(i => {
+		Instance.update({ _id: i._id }, {
+			$inc: {
+				usersCount: 1
+			}
+		});
+
+		// TODO
+		//perInstanceChart.newUser();
+	});
+
 	//#region Increment users count
 	Meta.update({}, {
 		$inc: {
@@ -214,6 +228,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	//#endregion
 
 	await updateFeatured(user._id).catch(err => console.log(err));
+
 	return user;
 }
 

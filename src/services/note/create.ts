@@ -28,6 +28,8 @@ import perUserNotesChart from '../../chart/per-user-notes';
 
 import { erase, unique } from '../../prelude/array';
 import insertNoteUnread from './unread';
+import registerInstance from '../register-instance';
+import Instance from '../../models/instance';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -169,6 +171,20 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// 統計を更新
 	notesChart.update(note, true);
 	perUserNotesChart.update(user, note, true);
+
+	// Register host
+	if (isRemoteUser(user)) {
+		registerInstance(user.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					notesCount: 1
+				}
+			});
+
+			// TODO
+			//perInstanceChart.newNote();
+		});
+	}
 
 	// ハッシュタグ登録
 	tags.map(tag => registerHashtag(user, tag));
