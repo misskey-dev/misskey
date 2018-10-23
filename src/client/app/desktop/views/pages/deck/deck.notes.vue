@@ -236,7 +236,7 @@ export default Vue.extend({
 		> .date
 			display block
 			margin 0
-			line-height 32px
+			line-height 28px
 			font-size 12px
 			text-align center
 			color var(--dateDividerFg)
