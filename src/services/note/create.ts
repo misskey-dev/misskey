@@ -568,8 +568,7 @@ function saveQuote(renote: INote, note: INote) {
 	Note.update({ _id: renote._id }, {
 		$push: {
 			_quoteIds: note._id
-		},
-
+		}
 	});
 }
 
