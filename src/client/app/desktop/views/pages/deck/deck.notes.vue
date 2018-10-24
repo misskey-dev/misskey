@@ -159,8 +159,8 @@ export default Vue.extend({
 			}
 			//#endregion
 
-			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
-			if (document.hidden || !this.isScrollTop()) {
+			// タブが非表示ならタイトルで通知
+			if (document.hidden) {
 				this.$store.commit('pushBehindNote', note);
 			}
 
