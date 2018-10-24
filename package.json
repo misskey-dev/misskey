@@ -109,7 +109,7 @@
 		"elasticsearch": "15.1.1",
 		"emojilib": "2.3.0",
 		"escape-regexp": "0.0.1",
-		"eslint": "5.0.1",
+		"eslint": "5.7.0",
 		"eslint-plugin-vue": "4.7.1",
 		"eventemitter3": "3.1.0",
 		"exif-js": "2.3.0",
