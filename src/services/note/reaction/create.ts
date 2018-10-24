@@ -36,12 +36,12 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 
 	res();
 
-	const inc: {[key: string]: number} = {};
-	inc[`reactionCounts.${reaction}`] = 1;
-
 	// Increment reactions count
 	await Note.update({ _id: note._id }, {
-		$inc: inc
+		$inc: {
+			[`reactionCounts.${reaction}`]: 1,
+			score: 1
+		}
 	});
 
 	perUserReactionsChart.update(user, note);

@@ -22,11 +22,11 @@ Note.createIndex('userId');
 Note.createIndex('mentions');
 Note.createIndex('visibleUserIds');
 Note.createIndex('tagsLower');
+Note.createIndex('_user.host');
 Note.createIndex('_files._id');
 Note.createIndex('_files.contentType');
-Note.createIndex({
-	createdAt: -1
-});
+Note.createIndex({ createdAt: -1 });
+Note.createIndex({ score: -1 }, { sparse: true });
 export default Note;
 
 export function isValidText(text: string): boolean {
@@ -85,7 +85,13 @@ export type INote = {
 		heading: number;
 		speed: number;
 	};
+
 	uri: string;
+
+	/**
+	 * 人気の投稿度合いを表すスコア
+	 */
+	score: number;
 
 	// 非正規化
 	_reply?: {
@@ -298,6 +304,7 @@ export const pack = async (
 	delete _note.prev;
 	delete _note.next;
 	delete _note.tagsLower;
+	delete _note.score;
 	delete _note._user;
 	delete _note._reply;
 	delete _note._renote;
