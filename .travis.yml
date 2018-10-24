@@ -11,7 +11,7 @@ branches:
 language: node_js
 
 node_js:
-  - 10.1.0
+  - 11.0.0
 
 env:
   - CXX=g++-4.8 NODE_ENV=production

@@ -3,7 +3,7 @@
 
 environment:
   matrix:
-    - nodejs_version: 10.1.0
+    - nodejs_version: 11.0.0
 
 platform:
   - x64
