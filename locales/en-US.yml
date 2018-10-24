@@ -541,7 +541,7 @@ desktop/views/components/charts.vue:
   title: "Charts"
   per-day: "per Day"
   per-hour: "per Hour"
-  federation: "フェデレーション"
+  federation: "Federation"
   notes: "Posts"
   users: "Users"
   drive: "Drive"
