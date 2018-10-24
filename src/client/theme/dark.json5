@@ -34,7 +34,7 @@
 		faceClearButtonHover: 'rgba(0, 0, 0, 0.1)',
 		faceClearButtonActive: 'rgba(0, 0, 0, 0.2)',
 		popupBg: ':lighten<5<$secondary',
-		popupFg: '#d6dce2',
+		popupFg: '$text',
 
 		subNoteBg: 'rgba(0, 0, 0, 0.18)',
 		subNoteText: ':alpha<0.7<$text',
