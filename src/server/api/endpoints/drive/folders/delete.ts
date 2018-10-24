@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
-import DriveFolder, { pack } from '../../../../../models/drive-folder';
+import DriveFolder from '../../../../../models/drive-folder';
 import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
 import { publishDriveStream } from '../../../../../stream';
