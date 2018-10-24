@@ -7,23 +7,29 @@ Dockerを使ったMisskey構築方法
 
 ----------------------------------------------------------------
 
-*1.* 設定ファイルを作成する
+*1.* Misskeyのダウンロード
+----------------------------------------------------------------
+1. `git clone -b master git://github.com/syuilo/misskey.git` masterブランチからMisskeyレポジトリをクローン
+2. `cd misskey` misskeyディレクトリに移動
+3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+
+*2.* 設定ファイルを作成する
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする
 2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` `.config/mongo_initdb_example.js`をコピーし名前を`mongo_initdb.js`にする
 3. `default.yml`と`mongo_initdb.js`を編集する
 
-*2.* Dockerの設定
+*3.* Dockerの設定
 ----------------------------------------------------------------
 `docker-compose.yml`を編集してください。
 
-*3.* Misskeyのビルド
+*4.* Misskeyのビルド
 ----------------------------------------------------------------
 次のコマンドでMisskeyをビルドしてください:
 
 `docker-compose build`
 
-*4.* 以上です！
+*5.* 以上です！
 ----------------------------------------------------------------
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
 
