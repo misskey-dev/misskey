@@ -6,7 +6,7 @@ services:
     restart: always
     links:
       - mongo
-      - redis
+#      - redis
 #      - es
     ports:
       - "127.0.0.1:3000:3000"
@@ -14,18 +14,18 @@ services:
       - internal_network
       - external_network
 
-  redis:
-    restart: always
-    image: redis:4.0-alpine
-    networks:
-      - internal_network
+#  redis:
+#    restart: always
+#    image: redis:4.0-alpine
+#    networks:
+#      - internal_network
 ### Uncomment to enable Redis persistance
-#    volumes:
-#      - ./redis:/data
+##    volumes:
+##      - ./redis:/data
 
   mongo:
     restart: always
-    image: mongo:4.1-bionic
+    image: mongo:4.1
     networks:
       - internal_network
     environment:
