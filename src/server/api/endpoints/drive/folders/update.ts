@@ -2,8 +2,11 @@ import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定したドライブのフォルダの情報を更新します。',
 		'en-US': 'Update specified folder of drive.'
@@ -11,18 +14,40 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-write'
+	kind: 'drive-write',
+
+	params: {
+		folderId: $.type(ID).note({
+			desc: {
+				'ja-JP': '対象のフォルダID',
+				'en-US': 'Target folder ID'
+			}
+		}),
+
+		name: $.str.optional.pipe(isValidFolderName).note({
+			desc: {
+				'ja-JP': 'フォルダ名',
+				'en-US': 'Folder name'
+			}
+		}),
+
+		parentId: $.type(ID).optional.nullable.note({
+			desc: {
+				'ja-JP': '親フォルダID',
+				'en-US': 'Parent folder ID'
+			}
+		})
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
-	if (folderIdErr) return rej('invalid folderId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: folderId,
+			_id: ps.folderId,
 			userId: user._id
 		});
 
@@ -30,22 +55,16 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('folder-not-found');
 	}
 
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional.pipe(isValidFolderName).get(params.name);
-	if (nameErr) return rej('invalid name param');
-	if (name) folder.name = name;
+	if (ps.name) folder.name = ps.name;
 
-	// Get 'parentId' parameter
-	const [parentId, parentIdErr] = $.type(ID).optional.nullable.get(params.parentId);
-	if (parentIdErr) return rej('invalid parentId param');
-	if (parentId !== undefined) {
-		if (parentId === null) {
+	if (ps.parentId !== undefined) {
+		if (ps.parentId === null) {
 			folder.parentId = null;
 		} else {
 			// Get parent folder
 			const parent = await DriveFolder
 				.findOne({
-					_id: parentId,
+					_id: ps.parentId,
 					userId: user._id
 				});
 

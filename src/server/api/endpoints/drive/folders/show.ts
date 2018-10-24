@@ -1,26 +1,38 @@
 import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
-		'ja-JP': '指定したドライブのフォルダの情報を取得します。'
+		'ja-JP': '指定したドライブのフォルダの情報を取得します。',
+		'en-US': 'Get specified folder of drive.'
 	},
 
 	requireCredential: true,
 
-	kind: 'drive-read'
+	kind: 'drive-read',
+
+	params: {
+		folderId: $.type(ID).note({
+			desc: {
+				'ja-JP': '対象のフォルダID',
+				'en-US': 'Target folder ID'
+			}
+		})
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
-	if (folderIdErr) return rej('invalid folderId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Get folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: folderId,
+			_id: ps.folderId,
 			userId: user._id
 		});
 
