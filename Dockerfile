@@ -1,16 +1,26 @@
-FROM alpine:edge AS base
+FROM alpine:3.8 AS base
 
 ENV NODE_ENV=production
 
-RUN apk add --no-cache nodejs nodejs-npm
-RUN apk add vips fftw --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
+RUN apk add --no-cache nodejs nodejs-npm zlib
 WORKDIR /misskey
 COPY . ./
 
 FROM base AS builder
 
-RUN apk add --no-cache	gcc g++ python autoconf automake file make nasm
-RUN apk add vips-dev fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
+RUN apk add --no-cache \
+    gcc \
+    g++ \
+    libc-dev \
+    python \
+    autoconf \
+    automake \
+    file \
+    make \
+    nasm \
+    pkgconfig \
+    libtool \
+    zlib-dev
 RUN npm install \
     && npm install -g node-gyp \
     && node-gyp configure \
