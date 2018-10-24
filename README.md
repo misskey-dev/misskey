@@ -5,7 +5,7 @@
 
 [![][travis-badge]][travis-link]
 [![][dependencies-badge]][dependencies-link]
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/syuilo/misskey.svg)](https://greenkeeper.io/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 **Sophisticated microblogging platform, evolving forever.**
 
