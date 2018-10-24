@@ -5,6 +5,10 @@ environment:
   matrix:
     - nodejs_version: 10.1.0
 
+platform:
+  - x64
+  - Any CPU
+
 build: off
 
 install:
