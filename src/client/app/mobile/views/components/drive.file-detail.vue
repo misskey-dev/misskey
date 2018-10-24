@@ -5,7 +5,6 @@
 			:src="file.url"
 			:alt="file.name"
 			:title="file.name"
-			@load="onImageLoaded"
 			:style="style">
 		<template v-if="kind != 'image'">%fa:file%</template>
 		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
@@ -46,14 +45,6 @@
 			<ui-button @click="del">%fa:trash-alt R% %i18n:@delete%</ui-button>
 		</div>
 	</div>
-	<div class="exif" v-show="exif">
-		<div>
-			<p>
-				%fa:camera%%i18n:@exif%
-			</p>
-			<pre ref="exif" class="json">{{ exif ? JSON.stringify(exif, null, 2) : '' }}</pre>
-		</div>
-	</div>
 	<div class="hash">
 		<div>
 			<p>
@@ -67,8 +58,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as EXIF from 'exif-js';
-import * as hljs from 'highlight.js';
 import { gcd } from '../../../../../prelude/math';
 
 export default Vue.extend({
@@ -139,15 +128,6 @@ export default Vue.extend({
 
 		showCreatedAt() {
 			alert(new Date(this.file.createdAt).toLocaleString());
-		},
-
-		onImageLoaded() {
-			const self = this;
-			EXIF.getData(this.$refs.img, function(this: any) {
-				const allMetaData = EXIF.getAllTags(this);
-				self.exif = allMetaData;
-				hljs.highlightBlock(self.$refs.exif);
-			});
 		}
 	}
 });
@@ -252,36 +232,6 @@ export default Vue.extend({
 				overflow auto
 				font-size 0.8em
 				color #222
-				border solid 1px #dfdfdf
-				border-radius 2px
-				background #f5f5f5
-
-	> .exif
-		padding 14px
-		border-top solid 1px var(--faceDivider)
-
-		> div
-			max-width 500px
-			margin 0 auto
-
-			> p
-				display block
-				margin 0
-				padding 0
-				color var(--text)
-				font-size 0.9em
-
-				> [data-fa]
-					margin-right 4px
-
-			> pre
-				display block
-				width 100%
-				margin 6px 0 0 0
-				padding 8px
-				height 128px
-				overflow auto
-				font-size 0.9em
 				border solid 1px #dfdfdf
 				border-radius 2px
 				background #f5f5f5
