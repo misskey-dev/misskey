@@ -13,7 +13,3 @@ redis:
   host: localhost
   port: 6379
   pass: ''
-elasticsearch:
-  host: localhost
-  port: 9200
-  pass: ''
