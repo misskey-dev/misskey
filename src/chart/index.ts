@@ -20,7 +20,6 @@ type ArrayValue<T> = {
 
 type Span = 'day' | 'hour';
 
-//#region Chart Core
 type Log<T extends Obj> = {
 	_id: mongo.ObjectID;
 
@@ -87,12 +86,32 @@ export default abstract class Chart<T> {
 	}
 
 	@autobind
-	private async getCurrentLog(span: Span, group?: any): Promise<Log<T>> {
+	private getCurrentDate(): [number, number, number, number] {
 		const now = new Date();
+
 		const y = now.getFullYear();
 		const m = now.getMonth();
 		const d = now.getDate();
 		const h = now.getHours();
+
+		return [y, m, d, h];
+	}
+
+	@autobind
+	private getLatestLog(span: Span, group?: any): Promise<Log<T>> {
+		return this.collection.findOne({
+			group: group,
+			span: span
+		}, {
+			sort: {
+				date: -1
+			}
+		});
+	}
+
+	@autobind
+	private async getCurrentLog(span: Span, group?: any): Promise<Log<T>> {
+		const [y, m, d, h] = this.getCurrentDate();
 
 		const current =
 			span == 'day' ? new Date(y, m, d) :
@@ -106,9 +125,13 @@ export default abstract class Chart<T> {
 			date: current
 		});
 
-		if (currentLog) {
+		// ログがあればそれを返して終了
+		if (currentLog != null) {
 			return currentLog;
 		}
+
+		let log: Log<T>;
+		let data: T;
 
 		// 集計期間が変わってから、初めてのチャート更新なら
 		// 最も最近のログを持ってくる
@@ -116,43 +139,41 @@ export default abstract class Chart<T> {
 		// * 昨日何もチャートを更新するような出来事がなかった場合は、
 		// * ログがそもそも作られずドキュメントが存在しないということがあり得るため、
 		// * 「昨日の」と決め打ちせずに「もっとも最近の」とします
-		const latest = await this.collection.findOne({
-			group: group,
-			span: span
-		}, {
-			sort: {
-				date: -1
-			}
-		});
+		const latest = await this.getLatestLog(span, group);
 
-		if (latest) {
-			// 現在のログを初期挿入
-			const data = await this.getTemplate(false, latest.data);
-
-			const log = await this.collection.insert({
-				group: group,
-				span: span,
-				date: current,
-				data: data
-			});
-
-			return log;
+		if (latest != null) {
+			// 空ログデータを作成
+			data = await this.getTemplate(false, latest.data);
 		} else {
 			// ログが存在しなかったら
-			// * Misskeyインスタンスを建てて初めてのチャート更新時など
+			// (Misskeyインスタンスを建てて初めてのチャート更新時など
+			// または何らかの理由でチャートコレクションを抹消した場合)
 
-			// 空のログを作成
-			const data = await this.getTemplate(true, null, group);
+			// 初期ログデータを作成
+			data = await this.getTemplate(true, null, group);
+		}
 
-			const log = await this.collection.insert({
+		try {
+			// 新規ログ挿入
+			log = await this.collection.insert({
 				group: group,
 				span: span,
 				date: current,
 				data: data
 			});
-
-			return log;
+		} catch (e) {
+			// 11000 is duplicate key error
+			// 並列動作している他のチャートエンジンプロセスと処理が重なる場合がある
+			// その場合は再度最も新しいログを持ってくる
+			if (e.code === 11000) {
+				log = await this.getLatestLog(span, group);
+			} else {
+				console.error(e);
+				throw e;
+			}
 		}
+
+		return log;
 	}
 
 	@autobind
@@ -173,6 +194,7 @@ export default abstract class Chart<T> {
 				};
 			}
 
+			// ログ更新
 			this.collection.update({
 				_id: log._id
 			}, query);
@@ -200,16 +222,14 @@ export default abstract class Chart<T> {
 	public async getChart(span: Span, range: number, group?: any): Promise<ArrayValue<T>> {
 		const promisedChart: Promise<T>[] = [];
 
-		const now = new Date();
-		const y = now.getFullYear();
-		const m = now.getMonth();
-		const d = now.getDate();
-		const h = now.getHours();
+		const [y, m, d, h] = this.getCurrentDate();
 
 		const gt =
 			span == 'day' ? new Date(y, m, d - range) :
-			span == 'hour' ? new Date(y, m, d, h - range) : null;
+			span == 'hour' ? new Date(y, m, d, h - range) :
+			null;
 
+		// ログ取得
 		const logs = await this.collection.find({
 			group: group,
 			span: span,
@@ -225,6 +245,7 @@ export default abstract class Chart<T> {
 			}
 		});
 
+		// 整形
 		for (let i = (range - 1); i >= 0; i--) {
 			const current =
 				span == 'day' ? new Date(y, m, d - i) :
@@ -235,7 +256,8 @@ export default abstract class Chart<T> {
 
 			if (log) {
 				promisedChart.unshift(Promise.resolve(log.data));
-			} else { // 隙間埋め
+			} else {
+				// 隙間埋め
 				const latest = logs.find(l => l.date.getTime() < current.getTime());
 				promisedChart.unshift(this.getTemplate(false, latest ? latest.data : null));
 			}
@@ -282,4 +304,3 @@ export default abstract class Chart<T> {
 		return res;
 	}
 }
-//#endregion
