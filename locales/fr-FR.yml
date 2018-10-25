@@ -847,13 +847,20 @@ desktop/views/components/settings.2fa.vue:
   success: "L'operation a été complétée avec succès!"
   failed: "L'operation a échoué. Veuillez vous assurer que le token a été entrer correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connecter entrez votre mot de passe ainsi que le token généré sur votre appareil."
-desktop/views/components/settings.api.vue:
+common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "Si votre jeton est compromis, vous pouvez le régénérer."
-  regenerate-token: "Regenerer le token"
-  token: "Jeton :"
-  enter-password: "Veuillez entrer le mot de passe"
+  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  regenerate-token: "トークンを再生成"
+  token: "Token:"
+  enter-password: "パスワードを入力してください"
+  console:
+    title: 'APIコンソール'
+    endpoint: 'エンドポイント'
+    parameter: 'パラメータ'
+    send: '送信'
+    sending: '応答待ち'
+    response: '結果'
 desktop/views/components/settings.apps.vue:
   no-apps: "Aucune application autorisée"
 common/views/components/drive-settings.vue:
