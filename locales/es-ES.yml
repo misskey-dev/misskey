@@ -857,7 +857,7 @@ desktop/views/components/settings.api.vue:
 desktop/views/components/settings.apps.vue:
   no-apps: "No hay aplicaciones asociadas"
 common/views/components/drive-settings.vue:
-  max: "中"
+  max: "容量"
   in-use: "使用中"
   stats: "統計"
 desktop/views/components/settings.mute.vue:
