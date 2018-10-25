@@ -12,14 +12,8 @@ platform:
 build: off
 
 install:
-  # Update Node.js
-  # 標準で入っている Node.js を更新します (2014/11/13 時点では、v0.10.32 が標準)
-  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version)
-  - node --version
-
-  # Update NPM
-  - npm install -g npm
-  - npm --version
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
 
   # Update node-gyp
   # 必須! node-gyp のバージョンを上げないと、ネイティブモジュールのコンパイルに失敗します
@@ -39,4 +33,6 @@ before_test:
   - npm run build
 
 test_script:
+  - node --version
+  - npm --version
   - npm test
