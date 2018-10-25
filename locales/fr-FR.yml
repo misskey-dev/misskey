@@ -62,6 +62,7 @@ common:
     years_ago: "Il y a {} an·s"
   month-and-day: "{month} mois/{day} jour"
   trash: "Corbeille"
+  drive: "ドライブ"
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -578,7 +579,6 @@ desktop/views/components/crop-window.vue:
   ok: "OK"
 desktop/views/components/drive-window.vue:
   used: "utilisé"
-  drive: "Drive"
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Bannière"
@@ -608,8 +608,6 @@ desktop/views/components/drive.folder.vue:
     rename: "Renommer"
     rename-folder: "Renommer le dossier"
     input-new-folder-name: "Entrer un nouveau nom"
-desktop/views/components/drive.nav-folder.vue:
-  drive: "Drive"
 desktop/views/components/drive.vue:
   search: "Rechercher"
   load-more: "Afficher plus"
@@ -744,7 +742,6 @@ desktop/views/components/settings.vue:
   notification: "Notification"
   apps: "Applications"
   mute: "Mettre en sourdine"
-  drive: "Drive"
   security: "Sécurité"
   signin: "Historique de connexion"
   password: "Mot de Passe"
@@ -859,9 +856,10 @@ desktop/views/components/settings.api.vue:
   enter-password: "Veuillez entrer le mot de passe"
 desktop/views/components/settings.apps.vue:
   no-apps: "Aucune application autorisée"
-desktop/views/components/settings.drive.vue:
-  max: "Maximum"
-  in-use: "en cours d’utilisation"
+common/views/components/drive-settings.vue:
+  max: "中"
+  in-use: "使用中"
+  stats: "統計"
 desktop/views/components/settings.mute.vue:
   no-users: "Aucun utilisateurs mis en sourdine"
 desktop/views/components/settings.password.vue:
@@ -895,7 +893,6 @@ desktop/views/components/ui.header.vue:
   adjective: "M."
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
-  drive: "Drive"
   favorites: "Favorites"
   lists: "Listes"
   follow-requests: "Demandes de suivi"
@@ -939,7 +936,6 @@ desktop/views/components/window.vue:
   close: "Fermer"
 desktop/views/pages/admin/admin.vue:
   dashboard: "Tableau de bord"
-  drive: "Drive"
   users: "Utilisateur·rice·s"
   update: "Mises à jour"
   announcements: "お知らせ"
@@ -1092,7 +1088,6 @@ desktop/views/widgets/users.vue:
   refresh: "Afficher d'autres"
   no-one: "Personne"
 mobile/views/components/drive.vue:
-  drive: "Drive"
   used: "utilisé"
   folder-count: "Dossier(s)"
   count-separator: ", "
@@ -1196,7 +1191,6 @@ mobile/views/components/ui.nav.vue:
   messaging: "Messages"
   follow-requests: "Demandes d'abonnement"
   search: "Rechercher"
-  drive: "Drive"
   favorites: "Favoris"
   user-lists: "Listes"
   widgets: "Modules"
@@ -1219,7 +1213,6 @@ mobile/views/pages/user-lists.vue:
   title: "Listes"
   enter-list-name: "Nom de la liste"
 mobile/views/pages/drive.vue:
-  drive: "Drive"
   more: "Afficher plus ..."
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
