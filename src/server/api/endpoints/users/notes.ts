@@ -110,7 +110,7 @@ export const meta = {
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
+	if (psErr) return rej(psErr);
 
 	if (ps.userId === undefined && ps.username === undefined) {
 		return rej('userId or username is required');

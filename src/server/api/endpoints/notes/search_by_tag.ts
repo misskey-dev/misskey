@@ -111,7 +111,7 @@ export const meta = {
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
+	if (psErr) return rej(psErr);
 
 	if (ps.includeUserUsernames != null) {
 		const ids = erase(null, await Promise.all(ps.includeUserUsernames.map(async (username) => {

@@ -62,7 +62,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 		}
 	} catch (e) {
-		rej(e);
+		rej(e.message);
 		return;
 	}
 

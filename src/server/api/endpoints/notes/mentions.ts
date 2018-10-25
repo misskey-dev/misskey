@@ -36,7 +36,7 @@ export const meta = {
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
+	if (psErr) return rej(psErr);
 
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {

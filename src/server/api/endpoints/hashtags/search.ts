@@ -35,7 +35,7 @@ export const meta = {
 
 export default (params: any) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
+	if (psErr) return rej(psErr);
 
 	const hashtags = await Hashtag
 		.find({

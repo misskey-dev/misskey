@@ -32,7 +32,7 @@ export const meta = {
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
+	if (psErr) return rej(psErr);
 
 	// Fetch the list
 	const userList = await UserList.findOne({
