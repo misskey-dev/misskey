@@ -847,13 +847,20 @@ desktop/views/components/settings.2fa.vue:
   success: "Instellen voltooid!"
   failed: "Instellen mislukt. Zorg ervoor dat de sleutel juist is."
   info: "Vanaf nu moet je ook de op je apparaat getoonde sleutel tonen bij het inloggen op Misskey."
-desktop/views/components/settings.api.vue:
-  intro: "Als je toegang wilt tot de API, stel deze sleutel dan in als 'i' bij de verzoekparameters."
-  caution: "Laat deze sleutel niet zien aan derde partijen (en voer hem nergens anders in dan hier), anders kan je account gehackt worden."
-  regeneration-of-token: "Mocht deze sleutel tóch uitlekken, dan kun je hem opnieuw genereren."
-  regenerate-token: "Sleutel opnieuw genereren"
-  token: "Sleutel:"
-  enter-password: "Voer je wachtwoord in"
+common/views/components/api-settings.vue:
+  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  regenerate-token: "トークンを再生成"
+  token: "Token:"
+  enter-password: "パスワードを入力してください"
+  console:
+    title: 'APIコンソール'
+    endpoint: 'エンドポイント'
+    parameter: 'パラメータ'
+    send: '送信'
+    sending: '応答待ち'
+    response: '結果'
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 common/views/components/drive-settings.vue:
