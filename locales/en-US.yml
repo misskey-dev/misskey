@@ -62,6 +62,7 @@ common:
     years_ago: "{}year(s) ago"
   month-and-day: "{month}/{day}"
   trash: "Trash"
+  drive: "ドライブ"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -578,7 +579,6 @@ desktop/views/components/crop-window.vue:
   ok: "OK"
 desktop/views/components/drive-window.vue:
   used: "used"
-  drive: "Media storage"
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Banner"
@@ -608,8 +608,6 @@ desktop/views/components/drive.folder.vue:
     rename: "Rename"
     rename-folder: "Rename folder"
     input-new-folder-name: "Enter new name"
-desktop/views/components/drive.nav-folder.vue:
-  drive: "Media storage"
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
@@ -744,7 +742,6 @@ desktop/views/components/settings.vue:
   notification: "Notification"
   apps: "Apps"
   mute: "Mute"
-  drive: "Drive"
   security: "Security"
   signin: "Sign in history"
   password: "Password"
@@ -859,9 +856,10 @@ desktop/views/components/settings.api.vue:
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
-desktop/views/components/settings.drive.vue:
-  max: "Max"
-  in-use: "In use"
+common/views/components/drive-settings.vue:
+  max: "中"
+  in-use: "使用中"
+  stats: "統計"
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
@@ -895,7 +893,6 @@ desktop/views/components/ui.header.vue:
   adjective: "-san"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
-  drive: "Media storage"
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
@@ -939,7 +936,6 @@ desktop/views/components/window.vue:
   close: "Close"
 desktop/views/pages/admin/admin.vue:
   dashboard: "Dashboard"
-  drive: "Drive"
   users: "Users"
   update: "Updates"
   announcements: "Announcements"
@@ -1092,7 +1088,6 @@ desktop/views/widgets/users.vue:
   refresh: "refresh"
   no-one: "Anyone!"
 mobile/views/components/drive.vue:
-  drive: "Media storage"
   used: "used"
   folder-count: "Folder(s)"
   count-separator: ", "
@@ -1196,7 +1191,6 @@ mobile/views/components/ui.nav.vue:
   messaging: "Messages"
   follow-requests: "Follow requests"
   search: "Search"
-  drive: "Drive"
   favorites: "Favorites"
   user-lists: "Lists"
   widgets: "Widgets"
@@ -1219,7 +1213,6 @@ mobile/views/pages/user-lists.vue:
   title: "Lists"
   enter-list-name: "Enter a name of the list to make"
 mobile/views/pages/drive.vue:
-  drive: "Drive"
   more: "Load more"
 mobile/views/pages/signup.vue:
   lets-start: "Your account is now ready! 📦"
