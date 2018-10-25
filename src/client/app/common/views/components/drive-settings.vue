@@ -4,7 +4,7 @@
 
 	<section v-if="!fetching" class="juakhbxthdewydyreaphkepoxgxvfogn">
 		<div class="meter"><div :style="meterStyle"></div></div>
-		<p><b>{{ capacity | bytes }}</b>%i18n:@max%<b>{{ usage | bytes }}</b>%i18n:@in-use%</p>
+		<p>%i18n:@max%: <b>{{ capacity | bytes }}</b> %i18n:@in-use%: <b>{{ usage | bytes }}</b></p>
 	</section>
 
 	<section>
@@ -167,8 +167,5 @@ export default Vue.extend({
 
 	> p
 		margin 0
-
-		> b
-			margin 0 8px
 
 </style>
