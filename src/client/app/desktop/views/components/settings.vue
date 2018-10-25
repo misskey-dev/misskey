@@ -5,7 +5,7 @@
 		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'">%fa:palette .fw%%i18n:@theme%</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'">%fa:desktop .fw%Web</p>
 		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'">%fa:R bell .fw%%i18n:@notification%</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:@drive%</p>
+		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:common.drive%</p>
 		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'">%fa:hashtag .fw%%i18n:@tags%</p>
 		<p :class="{ active: page == 'mute' }" @mousedown="page = 'mute'">%fa:ban .fw%%i18n:@mute%</p>
 		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'">%fa:puzzle-piece .fw%%i18n:@apps%</p>
@@ -189,12 +189,9 @@
 			</section>
 		</ui-card>
 
-		<ui-card class="drive" v-show="page == 'drive'">
-			<div slot="title">%fa:cloud% %i18n:@drive%</div>
-			<section>
-				<x-drive/>
-			</section>
-		</ui-card>
+		<div class="drive" v-if="page == 'drive'">
+			<mk-drive-settings/>
+		</div>
 
 		<ui-card class="hashtags" v-show="page == 'hashtags'">
 			<div slot="title">%fa:hashtag% %i18n:@tags%</div>
@@ -301,7 +298,6 @@ import X2fa from './settings.2fa.vue';
 import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
-import XDrive from './settings.drive.vue';
 import XTags from './settings.tags.vue';
 import { url, langs, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
@@ -314,7 +310,6 @@ export default Vue.extend({
 		XApi,
 		XApps,
 		XSignins,
-		XDrive,
 		XTags
 	},
 	props: {

@@ -25,7 +25,7 @@
 					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:R calendar-alt%%i18n:@widgets%%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'">%fa:star%%i18n:@favorites%%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'">%fa:list%%i18n:@user-lists%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'">%fa:cloud%%i18n:@drive%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'">%fa:cloud%%i18n:common.drive%%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
 					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>

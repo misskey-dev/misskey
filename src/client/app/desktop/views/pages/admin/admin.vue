@@ -13,7 +13,7 @@
 			<li v-if="this.$store.state.i && this.$store.state.i.isAdmin"
 				@click="nav('hashtags')" :class="{ active: page == 'hashtags' }">%fa:hashtag .fw%%i18n:@hashtags%</li>
 
-			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:@drive%</li> -->
+			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:common.drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
 	</nav>

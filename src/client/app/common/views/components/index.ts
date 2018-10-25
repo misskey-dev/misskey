@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import driveSettings from './drive-settings.vue';
 import profileEditor from './profile-editor.vue';
 import noteSkeleton from './note-skeleton.vue';
 import theme from './theme.vue';
@@ -46,6 +47,7 @@ import uiSelect from './ui/select.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
+Vue.component('mk-drive-settings', driveSettings);
 Vue.component('mk-profile-editor', profileEditor);
 Vue.component('mk-note-skeleton', noteSkeleton);
 Vue.component('mk-theme', theme);

@@ -80,6 +80,8 @@
 				</section>
 			</ui-card>
 
+			<mk-drive-settings/>
+
 			<ui-card>
 				<div slot="title">%fa:volume-up% %i18n:@sound%</div>
 

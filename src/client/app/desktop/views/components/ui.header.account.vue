@@ -11,7 +11,7 @@
 					<router-link :to="`/@${ $store.state.i.username }`">%fa:user%<span>%i18n:@profile%</span>%fa:angle-right%</router-link>
 				</li>
 				<li @click="drive">
-					<p>%fa:cloud%<span>%i18n:@drive%</span>%fa:angle-right%</p>
+					<p>%fa:cloud%<span>%i18n:common.drive%</span>%fa:angle-right%</p>
 				</li>
 				<li>
 					<router-link to="/i/favorites">%fa:star%<span>%i18n:@favorites%</span>%fa:angle-right%</router-link>

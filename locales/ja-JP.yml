@@ -64,6 +64,7 @@ common:
   month-and-day: "{month}月 {day}日"
 
   trash: "ゴミ箱"
+  drive: "ドライブ"
 
   weekday-short:
     sunday: "日"
@@ -642,7 +643,6 @@ desktop/views/components/crop-window.vue:
 
 desktop/views/components/drive-window.vue:
   used: "使用中"
-  drive: "ドライブ"
 
 desktop/views/components/drive.file.vue:
   avatar: "アイコン"
@@ -674,9 +674,6 @@ desktop/views/components/drive.folder.vue:
     rename: "名前を変更"
     rename-folder: "フォルダ名の変更"
     input-new-folder-name: "新しいフォルダ名を入力してください"
-
-desktop/views/components/drive.nav-folder.vue:
-  drive: "ドライブ"
 
 desktop/views/components/drive.vue:
   search: "検索"
@@ -836,7 +833,6 @@ desktop/views/components/settings.vue:
   notification: "通知"
   apps: "アプリ"
   mute: "ミュート"
-  drive: "ドライブ"
   security: "セキュリティ"
   signin: "サインイン履歴"
   password: "パスワード"
@@ -965,9 +961,10 @@ desktop/views/components/settings.api.vue:
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 
-desktop/views/components/settings.drive.vue:
+common/views/components/drive-settings.vue:
   max: "中"
   in-use: "使用中"
+  stats: "統計"
 
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
@@ -1008,7 +1005,6 @@ desktop/views/components/ui.header.vue:
 
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
-  drive: "ドライブ"
   favorites: "お気に入り"
   lists: "リスト"
   follow-requests: "フォロー申請"
@@ -1063,7 +1059,6 @@ desktop/views/components/window.vue:
 
 desktop/views/pages/admin/admin.vue:
   dashboard: "ダッシュボード"
-  drive: "ドライブ"
   users: "ユーザー"
   update: "更新"
   announcements: "お知らせ"
@@ -1251,7 +1246,6 @@ desktop/views/widgets/users.vue:
   no-one: "いません！"
 
 mobile/views/components/drive.vue:
-  drive: "ドライブ"
   used: "使用中"
   folder-count: "フォルダ"
   count-separator: "、"
@@ -1375,7 +1369,6 @@ mobile/views/components/ui.nav.vue:
   messaging: "メッセージ"
   follow-requests: "フォロー申請"
   search: "検索"
-  drive: "ドライブ"
   favorites: "お気に入り"
   user-lists: "リスト"
   widgets: "ウィジェット"
@@ -1403,7 +1396,6 @@ mobile/views/pages/user-lists.vue:
   enter-list-name: "リスト名を入力してください"
 
 mobile/views/pages/drive.vue:
-  drive: "ドライブ"
   more: "もっと見る"
 
 mobile/views/pages/signup.vue:
