@@ -131,6 +131,9 @@
 		remoteInfoBg: '#fff0db',
 		remoteInfoFg: '#573c08',
 
+		infoWarnBg: '#fff0db',
+		infoWarnFg: '#573c08',
+
 		messagingRoomBg: '#fff',
 		messagingRoomInfo: '#000',
 		messagingRoomDateDividerLine: 'rgba(0, 0, 0, 0.1)',

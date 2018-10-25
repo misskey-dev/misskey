@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import apiSettings from './api-settings.vue';
 import driveSettings from './drive-settings.vue';
 import profileEditor from './profile-editor.vue';
 import noteSkeleton from './note-skeleton.vue';
@@ -44,9 +45,11 @@ import uiTextarea from './ui/textarea.vue';
 import uiSwitch from './ui/switch.vue';
 import uiRadio from './ui/radio.vue';
 import uiSelect from './ui/select.vue';
+import uiInfo from './ui/info.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
+Vue.component('mk-api-settings', apiSettings);
 Vue.component('mk-drive-settings', driveSettings);
 Vue.component('mk-profile-editor', profileEditor);
 Vue.component('mk-note-skeleton', noteSkeleton);
@@ -91,5 +94,6 @@ Vue.component('ui-textarea', uiTextarea);
 Vue.component('ui-switch', uiSwitch);
 Vue.component('ui-radio', uiRadio);
 Vue.component('ui-select', uiSelect);
+Vue.component('ui-info', uiInfo);
 Vue.component('form-button', formButton);
 Vue.component('form-radio', formRadio);

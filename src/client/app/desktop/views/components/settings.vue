@@ -235,12 +235,9 @@
 			</section>
 		</ui-card>
 
-		<ui-card class="api" v-show="page == 'api'">
-			<div slot="title">%fa:key% API</div>
-			<section class="fit-top">
-				<x-api/>
-			</section>
-		</ui-card>
+		<div class="api" v-show="page == 'api'">
+			<mk-api-settings/>
+		</div>
 
 		<ui-card class="other" v-show="page == 'other'">
 			<div slot="title">%fa:info-circle% %i18n:@about%</div>
@@ -295,7 +292,6 @@ import Vue from 'vue';
 import XMute from './settings.mute.vue';
 import XPassword from './settings.password.vue';
 import X2fa from './settings.2fa.vue';
-import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XTags from './settings.tags.vue';
@@ -307,7 +303,6 @@ export default Vue.extend({
 		XMute,
 		XPassword,
 		X2fa,
-		XApi,
 		XApps,
 		XSignins,
 		XTags

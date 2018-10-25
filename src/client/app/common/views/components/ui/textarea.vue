@@ -66,6 +66,9 @@ export default Vue.extend({
 root(fill)
 	margin 42px 0 32px 0
 
+	&:last-child
+		margin-bottom 0
+
 	> .input
 		padding 12px
 

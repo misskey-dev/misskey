@@ -120,6 +120,8 @@
 				</section>
 			</ui-card>
 
+			<mk-api-settings />
+
 			<ui-card>
 				<div slot="title">%fa:sync-alt% %i18n:@update%</div>
 

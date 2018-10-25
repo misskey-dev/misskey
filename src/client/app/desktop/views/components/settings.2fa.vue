@@ -1,7 +1,7 @@
 <template>
 <div class="2fa">
 	<p>%i18n:@intro%<a href="%i18n:@url%" target="_blank">%i18n:@detail%</a></p>
-	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:@caution%</p></div>
+	<ui-info warn>%i18n:@caution%</ui-info>
 	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">%i18n:@register%</ui-button></p>
 	<template v-if="$store.state.i.twoFactorEnabled">
 		<p>%i18n:@already-registered%</p>
