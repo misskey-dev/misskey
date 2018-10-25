@@ -858,7 +858,7 @@ desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはあらへんで"
 common/views/components/drive-settings.vue:
   max: "容量"
-  in-use: "使用中"
+  in-use: "使うとる"
   stats: "統計"
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはおらんで"
@@ -938,7 +938,7 @@ desktop/views/pages/admin/admin.vue:
   dashboard: "ダッシュボード"
   users: "ユーザー"
   update: "更新"
-  announcements: "お知らせ"
+  announcements: "知っといてや"
   hashtags: "ハッシュタグ"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "ダッシュボード"
@@ -967,7 +967,7 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify: "公式アカウントにはさせへんで"
   unverified: "公式アカウントを解除したで"
 desktop/views/pages/admin/admin.announcements.vue:
-  announcements: "お知らせ"
+  announcements: "知っといてや"
 desktop/views/pages/admin/admin.hashtags.vue:
   hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
@@ -979,10 +979,10 @@ desktop/views/pages/deck/deck.user-column.vue:
   following: "フォロー"
   followers: "フォロワー"
   images: "画像"
-  activity: "アクティビティ"
+  activity: "やっとること"
   timeline: "タイムライン"
-  pinned-notes: "ピン留めされた投稿"
-  push-to-a-list: "リストに追加"
+  pinned-notes: "ピン留めしはった投稿"
+  push-to-a-list: "リストに入れたる"
 desktop/views/pages/stats/stats.vue:
   all-users: "全てのユーザー"
   original-users: "ここの人らだけ"
@@ -1035,7 +1035,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "よう話すツレは居らん"
 desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーはあかんわ。凍結されとる。"
-  last-used-at: "最終アクセス"
+  last-used-at: "最後いつ来はった？"
 desktop/views/pages/user/user.photos.vue:
   title: "写真"
   loading: "読み込んどります"
@@ -1117,8 +1117,8 @@ mobile/views/components/drive.file-detail.vue:
   hash: "ハッシュ(md5)"
   exif: "EXIF"
   nsfw: "ちょっと見せられへんわ"
-  mark-as-sensitive: "閲覧注意に設定"
-  unmark-as-sensitive: "閲覧注意を解除"
+  mark-as-sensitive: "見たらあかん感じにしとく"
+  unmark-as-sensitive: "やっぱ見せたるわ"
 mobile/views/components/media-image.vue:
   sensitive: "見たらあかんで"
   click-to-show: "押してみ、見せたるわ"
@@ -1312,7 +1312,7 @@ mobile/views/pages/settings.vue:
   signout: "さいなら"
   sound: "サウンド"
   enable-sounds: "サウンド鳴らす"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  mark-as-read-all-unread-notes: "全部もう読んだわ"
 mobile/views/pages/user.vue:
   follows-you: "フォローされとるで"
   following: "フォロー"
@@ -1369,12 +1369,12 @@ dev/views/index.vue:
   manage-apps: "アプリの管理"
 dev/views/apps.vue:
   manage-apps: "アプリを管理"
-  create-app: "アプリ作成"
-  app-missing: "アプリなし"
+  create-app: "アプリ作る"
+  app-missing: "アプリあらへん"
 dev/views/new-app.vue:
-  create-app: "アプリケーションの作成"
-  app-name: "アプリケーション名"
-  app-name-desc: "あなたのアプリの名称。"
+  create-app: "アプリケーション作る"
+  app-name: "アプリケーションの名前"
+  app-name-desc: "あんたのアプリの名前。"
   app-name-ex: "ex) Misskey for iOS"
   app-overview: "アプリの概要"
   app-desc: "あなたのアプリの簡単な説明や紹介。"
