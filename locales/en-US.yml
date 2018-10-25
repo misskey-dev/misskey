@@ -62,7 +62,7 @@ common:
     years_ago: "{}year(s) ago"
   month-and-day: "{month}/{day}"
   trash: "Trash"
-  drive: "ドライブ"
+  drive: "Drive"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -548,8 +548,8 @@ desktop/views/components/charts.vue:
   drive: "Drive"
   network: "Network"
   charts:
-    federation-instances: "インスタンスの増減"
-    federation-instances-total: "インスタンスの積算"
+    federation-instances: "The number of instances: increase/decrease"
+    federation-instances-total: "Total number of instances"
     notes: "The number of posts: increase/decrease (Combined)"
     local-notes: "The number of posts: increase/decrease (Local)"
     remote-notes: "The number of posts: increase/decrease (Remote)"
@@ -857,9 +857,9 @@ desktop/views/components/settings.api.vue:
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
 common/views/components/drive-settings.vue:
-  max: "中"
-  in-use: "使用中"
-  stats: "統計"
+  max: "容量"
+  in-use: "In use"
+  stats: "Statistics"
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
