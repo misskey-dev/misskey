@@ -84,7 +84,7 @@
 		"@types/websocket": "0.0.40",
 		"@types/ws": "6.0.1",
 		"animejs": "2.2.0",
-		"apexcharts": "2.1.5",
+		"apexcharts": "2.1.6",
 		"autobind-decorator": "2.1.0",
 		"autosize": "4.0.2",
 		"autwh": "0.1.0",
