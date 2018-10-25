@@ -847,13 +847,20 @@ desktop/views/components/settings.2fa.vue:
   success: "設定が完了しました！"
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
-desktop/views/components/settings.api.vue:
+common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
   regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
   regenerate-token: "トークンを再生成"
   token: "Token:"
   enter-password: "パスワードを入力してください"
+  console:
+    title: 'APIコンソール'
+    endpoint: 'エンドポイント'
+    parameter: 'パラメータ'
+    send: '送信'
+    sending: '応答待ち'
+    response: '結果'
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 common/views/components/drive-settings.vue:
