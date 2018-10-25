@@ -847,13 +847,20 @@ desktop/views/components/settings.2fa.vue:
   success: "¡Configuraciones guardadas!"
   failed: "Error al configurar. Por favor asegúrate de que el token es correcto."
   info: "Desde ahora, ingresa el token que se muestra en tu dispositivo adicionalmente a tu contraseña cuando inicies sesión en Misskey"
-desktop/views/components/settings.api.vue:
-  intro: "Para acceder al API, configura este token como la letra \"i\" de los parámetros requeridos."
-  caution: "Por favor no muestres este token a otros (no lo ingreses en otro lugar que no sea aquí). De otra forma, tu cuenta puede llegar a ser comprometida."
-  regeneration-of-token: "En el caso no deseado de que este token lo tenga otra persona, puedes regenerarlo."
-  regenerate-token: "Regenerar el token"
+common/views/components/api-settings.vue:
+  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  regenerate-token: "トークンを再生成"
   token: "Token:"
-  enter-password: "Por favor ingresa tu contraseña"
+  enter-password: "パスワードを入力してください"
+  console:
+    title: 'APIコンソール'
+    endpoint: 'エンドポイント'
+    parameter: 'パラメータ'
+    send: '送信'
+    sending: '応答待ち'
+    response: '結果'
 desktop/views/components/settings.apps.vue:
   no-apps: "No hay aplicaciones asociadas"
 common/views/components/drive-settings.vue:

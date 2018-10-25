@@ -847,13 +847,20 @@ desktop/views/components/settings.2fa.vue:
   success: "Pomyślnie ukończono konfigurację!"
   failed: "Nie udało się skonfigurować uwierzytelniania dwuetapowego, upewnij się że wprowadziłeś prawidłowy token."
   info: "Od teraz, wprowadzaj token wyświetlany na urządzeniu przy każdym logowaniu do Misskey."
-desktop/views/components/settings.api.vue:
-  intro: "Aby uzyskać dostęp do API, ustaw ten token jako klucz 'i' parametrów żądań."
-  caution: "Nie pokazuj tego tokenu osobom trzecim (nie wprowadzaj go nigdzie indziej), aby konto nie trafiło w niepowołane ręce."
-  regeneration-of-token: "W przypadku wycieku tokenu, możesz wygenerować nowy."
-  regenerate-token: "Wygeneruj nowy token"
+common/views/components/api-settings.vue:
+  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  regenerate-token: "トークンを再生成"
   token: "Token:"
-  enter-password: "Wprowadź hasło"
+  enter-password: "パスワードを入力してください"
+  console:
+    title: 'APIコンソール'
+    endpoint: 'エンドポイント'
+    parameter: 'パラメータ'
+    send: '送信'
+    sending: '応答待ち'
+    response: '結果'
 desktop/views/components/settings.apps.vue:
   no-apps: "Brak zautoryzowanych aplikacji"
 common/views/components/drive-settings.vue:
