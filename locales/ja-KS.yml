@@ -847,13 +847,20 @@ desktop/views/components/settings.2fa.vue:
   success: "設定が完了したで！"
   failed: "なんか設定に失敗したで。トークンを間違えとらんか確認してや。"
   info: "次のサインインからは、パスワードに加えてデバイスに出とるトークンを入力してな。"
-desktop/views/components/settings.api.vue:
-  intro: "APIを利用するには、上記のトークンを「i」っちゅうキーでパラメータに付加してリクエストしてや。"
-  caution: "アカウントを不正利用されるかも知れんから、このトークンは第三者に教えたらあかんで(アプリなどにも入力しんといてな)。"
-  regeneration-of-token: "万が一このトークンが漏れたとかその可能性があったらトークンを再生成できるで。"
+common/views/components/api-settings.vue:
+  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
   regenerate-token: "トークンを再生成"
-  token: "トークン:"
-  enter-password: "パスワードを入力してや"
+  token: "Token:"
+  enter-password: "パスワードを入力してください"
+  console:
+    title: 'APIコンソール'
+    endpoint: 'エンドポイント'
+    parameter: 'パラメータ'
+    send: '送信'
+    sending: '応答待ち'
+    response: '結果'
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはあらへんで"
 common/views/components/drive-settings.vue:
