@@ -129,7 +129,7 @@
 		"gulp-uglify": "3.0.1",
 		"gulp-util": "3.0.8",
 		"hard-source-webpack-plugin": "0.12.0",
-		"html-minifier": "3.5.20",
+		"html-minifier": "3.5.21",
 		"http-signature": "1.2.0",
 		"insert-text-at-cursor": "0.1.1",
 		"is-root": "2.0.0",
