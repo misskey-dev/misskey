@@ -82,6 +82,7 @@ import * as uuid from 'uuid';
 const defaultDesktopHomeWidgets = {
 	left: [
 		'profile',
+		'balance',
 		'calendar',
 		'activity',
 		'rss',
