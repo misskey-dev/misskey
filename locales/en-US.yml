@@ -848,19 +848,19 @@ desktop/views/components/settings.2fa.vue:
   failed: "Failed to setup. Please ensure that the token is correct."
   info: "From the next time you sign in to Misskey, the token displayed on your device will be necessary too, as well as the password."
 common/views/components/api-settings.vue:
-  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
-  regenerate-token: "トークンを再生成"
+  intro: "To access the API, set this token as the key 'i' of request parameters."
+  caution: "Do not enter this token to any apps nor tell this token to others otherwise your account may get compromised."
+  regeneration-of-token: "If your token gets leaked, you can regenerate it."
+  regenerate-token: "Regenerate the token"
   token: "Token:"
-  enter-password: "パスワードを入力してください"
+  enter-password: "Enter the password"
   console:
-    title: 'APIコンソール'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    title: 'API console'
+    endpoint: 'Endpoint'
+    parameter: 'Parameters'
+    send: 'Send'
+    sending: 'Sending'
+    response: 'Result'
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
 common/views/components/drive-settings.vue:
