@@ -67,12 +67,12 @@ export default Vue.extend({
 				text: '%i18n:@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
 				action: this.rename
-			}/*, null, {
+			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
 				icon: '%fa:R trash-alt%',
 				action: this.deleteFolder
-			}*/], {
+			}], {
 					closed: () => {
 						this.isContextmenuShowing = false;
 					}
@@ -207,7 +207,9 @@ export default Vue.extend({
 		},
 
 		deleteFolder() {
-			alert('not implemented yet');
+			(this as any).api('drive/folders/delete', {
+				folderId: this.folder.id
+			});
 		}
 	}
 });

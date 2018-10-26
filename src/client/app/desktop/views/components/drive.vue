@@ -98,7 +98,7 @@ export default Vue.extend({
 			hierarchyFolders: [],
 			selectedFiles: [],
 			uploadings: [],
-			connection: null
+			connection: null,
 
 			/**
 			 * ドロップされようとしているか
@@ -122,6 +122,7 @@ export default Vue.extend({
 		this.connection.on('fileDeleted', this.onStreamDriveFileDeleted);
 		this.connection.on('folderCreated', this.onStreamDriveFolderCreated);
 		this.connection.on('folderUpdated', this.onStreamDriveFolderUpdated);
+		this.connection.on('folderDeleted', this.onStreamDriveFolderDeleted);
 
 		if (this.initFolder) {
 			this.move(this.initFolder);
@@ -180,6 +181,10 @@ export default Vue.extend({
 			} else {
 				this.addFolder(folder, true);
 			}
+		},
+
+		onStreamDriveFolderDeleted(folderId) {
+			this.removeFolder(folderId);
 		},
 
 		onChangeUploaderUploads(uploads) {
