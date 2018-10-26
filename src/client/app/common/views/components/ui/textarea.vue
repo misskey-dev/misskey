@@ -3,15 +3,15 @@
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
 		<textarea ref="input"
-				:value="value"
-				:required="required"
-				:readonly="readonly"
-				:pattern="pattern"
-				:autocomplete="autocomplete"
-				@input="$emit('input', $event.target.value)"
-				@focus="focused = true"
-				@blur="focused = false">
-		</textarea>
+			:value="value"
+			:required="required"
+			:readonly="readonly"
+			:pattern="pattern"
+			:autocomplete="autocomplete"
+			@input="$emit('input', $event.target.value)"
+			@focus="focused = true"
+			@blur="focused = false"
+		></textarea>
 	</div>
 	<div class="text"><slot name="text"></slot></div>
 </div>
