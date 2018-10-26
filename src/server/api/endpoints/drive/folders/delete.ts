@@ -44,7 +44,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	const [childFoldersCount, childFilesCount] = await Promise.all([
 		DriveFolder.count({ parentId: folder._id }),
-		DriveFile.count({ folderId: folder._id })
+		DriveFile.count({ 'metadata.folderId': folder._id })
 	]);
 
 	if (childFoldersCount !== 0 || childFilesCount !== 0) {
