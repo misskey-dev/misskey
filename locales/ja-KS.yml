@@ -850,17 +850,17 @@ desktop/views/components/settings.2fa.vue:
 common/views/components/api-settings.vue:
   intro: "API使うんやったらこのトークンを「i」っちゅうパラメータにくっつけてリクエストできるで。"
   caution: "アカウント勝手にいじられるかも知れんから、このトークンは教えたらあかんし、アプリにも書いたらあかんで(これはフリちゃうで)"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
-  regenerate-token: "トークンを再生成"
+  regeneration-of-token: "トークン漏れてもうたんやったらもっかい生成できるで。"
+  regenerate-token: "トークンもっかい生成"
   token: "Token:"
-  enter-password: "パスワードを入力してください"
+  enter-password: "パスワードを入れてや"
   console:
     title: 'APIコンソール'
     endpoint: 'エンドポイント'
     parameter: 'パラメータ'
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    send: '送る'
+    sending: '応答待っとる'
+    response: 'こんなん返ってきたわ'
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはあらへんで"
 common/views/components/drive-settings.vue:
