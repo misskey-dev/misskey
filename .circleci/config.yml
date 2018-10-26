@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  webpack-build:
+    working_directory: /misskey
+    docker:
+      - image: yukimochi/misskey-builder:latest
+    steps:
+      - checkout
+      - run:
+          name: Setup Dependencies
+          command: |
+            yarn install
+            yarn global add web-push
+      - run:
+          name: Import default.yml
+          command: |
+            echo ${IMPORT_DEFAULT_YML} | base64 -d | gzip -d > .config/default.yml
+      - run:
+          name: Build Webpack
+          command: |
+            yarn run build
+      - run:
+          name: Compress clients
+          command: |
+            find ./built/client -name "*.js" -or -name "*.js.map" -or -name "*.css" -or -name "*.svg" -or -name "*.html" -or -name "*.json" | xargs -t gzip -k -9
+            find ./built/client -name "*.js" -or -name "*.js.map" -or -name "*.css" -or -name "*.svg" -or -name "*.html" -or -name "*.json" | xargs -t brotli -q 10
+            tar cfz ~/built-${CIRCLE_SHA1}.tar.gz built
+      - run:
+          name: Send built s3
+          command: |
+            mc config host add ykmc ${s3_endpoint} ${s3_accesskey} ${s3_secretkey}
+            mc cp ~/built-${CIRCLE_SHA1}.tar.gz ${backet}/${CIRCLE_BRANCH}/
+  docker-build:
+    docker:
+      - image: docker:17-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build docker image
+          command: |
+            docker build -t ${DOCKER_USER}/misskey:latest .
+      - run:
+          name: upload image to docker hub.
+          command: |
+            docker login --username=${DOCKER_USER} --password=${DOCKER_PASS}
+            docker push ${DOCKER_USER}/misskey:latest
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - webpack-build
+      - docker-build
