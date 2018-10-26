@@ -1,6 +1,6 @@
 <template>
 <div class="2fa">
-	<p>%i18n:@intro%<a href="%i18n:@url%" target="_blank">%i18n:@detail%</a></p>
+	<p style="margin-top:0;">%i18n:@intro%<a href="%i18n:@url%" target="_blank">%i18n:@detail%</a></p>
 	<ui-info warn>%i18n:@caution%</ui-info>
 	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">%i18n:@register%</ui-button></p>
 	<template v-if="$store.state.i.twoFactorEnabled">
@@ -72,9 +72,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.2fa
-	color #4a535a
-
-</style>
