@@ -24,7 +24,7 @@
 			<template v-if="sending">%i18n:@console.sending%</template>
 			<template v-else>%fa:paper-plane% %i18n:@console.send%</template>
 		</ui-button>
-		<ui-textarea v-if="res" v-model="res" readonly>
+		<ui-textarea v-if="res" v-model="res" readonly tall>
 			<span>%i18n:@console.response%</span>
 		</ui-textarea>
 	</section>
