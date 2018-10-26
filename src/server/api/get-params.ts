@@ -12,7 +12,9 @@ export default function <T extends Defs>(defs: T, params: any): [{
 	Object.keys(defs.params).some(k => {
 		const [v, e] = defs.params[k].get(params[k]);
 		if (e) {
-			err = e;
+			err = new Error(e.message);
+			err.name = 'INVALID_PARAM';
+			(err as any).param = k;
 			return true;
 		} else {
 			if (v === undefined && defs.params[k].data.default) {
