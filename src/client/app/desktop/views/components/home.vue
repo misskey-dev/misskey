@@ -35,7 +35,7 @@
 			</div>
 			<div class="trash">
 				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
-				<p>%i18n:common.trash%</p>
+				<p><img src="/assets/garbage.png"> %i18n:common.trash%</p>
 			</div>
 		</div>
 	</div>
@@ -82,7 +82,6 @@ import * as uuid from 'uuid';
 const defaultDesktopHomeWidgets = {
 	left: [
 		'profile',
-		'balance',
 		'calendar',
 		'activity',
 		'rss',
@@ -91,6 +90,7 @@ const defaultDesktopHomeWidgets = {
 		'version'
 	],
 	right: [
+		'balance',
 		'broadcast',
 		'notifications',
 		'users',
@@ -316,9 +316,14 @@ export default Vue.extend({
 					> p
 						display inline
 						line-height 48px
+					> button 
+						color var(--primaryForeground)
+						background var(--primary)
+						margin-left 15px
+						padding 2px 8px
 
 				&.trash
-					border-left solid 1px var(--faceDivider)
+					border dashed 1px var(--text)
 
 					> div
 						width 100%
@@ -333,6 +338,11 @@ export default Vue.extend({
 						margin 0
 						text-align center
 						pointer-events none
+
+						> img
+							margin 0px 20px
+							height 20px
+							vertical-align middle
 
 	> .main
 		display flex
