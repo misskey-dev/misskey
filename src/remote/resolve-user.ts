@@ -8,7 +8,7 @@ export default async (username: string, _host: string, option?: any): Promise<IU
 	const usernameLower = username.toLowerCase();
 
 	if (_host == null) {
-		return await User.findOne({ usernameLower });
+		return await User.findOne({ usernameLower, host: null });
 	}
 
 	const hostAscii = toASCII(_host).toLowerCase();
