@@ -26,6 +26,10 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	const [host, hostErr] = $.str.optional.nullable.get(params.host);
 	if (hostErr) return rej('invalid host param');
 
+	// Get 'resync' parameter
+	const [resync = false, resyncErr] = $.bool.optional.get(params.resync);
+	if (resyncErr) return rej('invalid resync param');
+
 	if (userIds) {
 		const users = await User.find({
 			_id: {
@@ -40,7 +44,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		// Lookup user
 		if (typeof host === 'string') {
 			try {
-				user = await resolveRemoteUser(username, host, cursorOption);
+				user = await resolveRemoteUser(username, host, cursorOption, resync);
 			} catch (e) {
 				console.warn(`failed to resolve remote user: ${e}`);
 				return rej('failed to resolve remote user');
