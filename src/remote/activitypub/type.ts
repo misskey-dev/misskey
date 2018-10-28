@@ -108,6 +108,10 @@ export interface IAnnounce extends IActivity {
 	type: 'Announce';
 }
 
+export interface IBlock extends IActivity {
+	type: 'Block';
+}
+
 export type Object =
 	ICollection |
 	IOrderedCollection |
@@ -120,4 +124,5 @@ export type Object =
 	IAdd |
 	IRemove |
 	ILike |
-	IAnnounce;
+	IAnnounce |
+	IBlock;

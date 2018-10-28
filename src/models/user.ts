@@ -6,6 +6,7 @@ import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import Note, { packMany as packNoteMany, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
+import Blocking, { deleteBlocking } from './blocking';
 import Mute, { deleteMute } from './mute';
 import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
@@ -275,6 +276,16 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		await FollowRequest.find({ followeeId: u._id })
 	).map(x => deleteFollowRequest(x)));
 
+	// このユーザーのBlockingをすべて削除
+	await Promise.all((
+		await Blocking.find({ blockerId: u._id })
+	).map(x => deleteBlocking(x)));
+
+	// このユーザーへのBlockingをすべて削除
+	await Promise.all((
+		await Blocking.find({ blockeeId: u._id })
+	).map(x => deleteBlocking(x)));
+
 	// このユーザーのSwSubscriptionをすべて削除
 	await Promise.all((
 		await SwSubscription.find({ userId: u._id })
@@ -427,7 +438,7 @@ export const pack = (
 	}
 
 	if (meId && !meId.equals(_user.id)) {
-		const [following1, following2, followReq1, followReq2, mute] = await Promise.all([
+		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Following.findOne({
 				followerId: meId,
 				followeeId: _user.id
@@ -443,6 +454,14 @@ export const pack = (
 			FollowRequest.findOne({
 				followerId: _user.id,
 				followeeId: meId
+			}),
+			Blocking.findOne({
+				blockerId: meId,
+				blockeeId: _user.id
+			}),
+			Blocking.findOne({
+				blockerId: _user.id,
+				blockeeId: meId
 			}),
 			Mute.findOne({
 				muterId: meId,
@@ -459,6 +478,12 @@ export const pack = (
 
 		// Whether the user is followed
 		_user.isFollowed = following2 !== null;
+
+		// Whether the user is blocking
+		_user.isBlocking = toBlocking !== null;
+
+		// Whether the user is blocked
+		_user.isBlocked = fromBlocked !== null;
 
 		// Whether the user is muted
 		_user.isMuted = mute !== null;
