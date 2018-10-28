@@ -7,6 +7,8 @@ import Reaction from './note-reaction';
 import { pack as packUser } from './user';
 
 const NoteReaction = db.get<INoteReaction>('noteReactions');
+NoteReaction.createIndex('noteId');
+NoteReaction.createIndex('userId');
 NoteReaction.createIndex(['userId', 'noteId'], { unique: true });
 export default NoteReaction;
 
