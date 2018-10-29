@@ -13,7 +13,7 @@ import perUserFollowingChart from '../../chart/per-user-following';
 
 export default async function(follower: IUser, followee: IUser, requestId?: string) {
 	// check blocking
-	const [ blocking, blocked ] = await Promise.all([
+	const [blocking, blocked] = await Promise.all([
 		Blocking.findOne({
 			blockerId: follower._id,
 			blockeeId: followee._id,
