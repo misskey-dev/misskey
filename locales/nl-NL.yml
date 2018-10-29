@@ -1055,6 +1055,9 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Dempen"
   muted: "Dempend"
   unmute: "Ontdempen"
+  block: "ブロックする"
+  unblock: "ブロック解除"
+  block-confirm: "このユーザーをブロックしますか？"
   push-to-a-list: "リストに追加"
   list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
