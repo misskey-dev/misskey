@@ -4,10 +4,6 @@ import { pack as packFolder } from './drive-folder';
 import config from '../config';
 import monkDb, { nativeDbConn } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
-import Note, { deleteNote } from './note';
-import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
-import User from './user';
-import DriveFileThumbnail, { deleteDriveFileThumbnail } from './drive-file-thumbnail';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
@@ -75,64 +71,6 @@ export function validateFileName(name: string): boolean {
 		(name.indexOf('/') === -1) &&
 		(name.indexOf('..') === -1)
 	);
-}
-
-/**
- * DriveFileを物理削除します
- */
-export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriveFile) {
-	let d: IDriveFile;
-
-	// Populate
-	if (isObjectId(driveFile)) {
-		d = await DriveFile.findOne({
-			_id: driveFile
-		});
-	} else if (typeof driveFile === 'string') {
-		d = await DriveFile.findOne({
-			_id: new mongo.ObjectID(driveFile)
-		});
-	} else {
-		d = driveFile as IDriveFile;
-	}
-
-	if (d == null) return;
-
-	// このDriveFileを添付しているNoteをすべて削除
-	await Promise.all((
-		await Note.find({ fileIds: d._id })
-	).map(x => deleteNote(x)));
-
-	// このDriveFileを添付しているMessagingMessageをすべて削除
-	await Promise.all((
-		await MessagingMessage.find({ fileId: d._id })
-	).map(x => deleteMessagingMessage(x)));
-
-	// このDriveFileがアバターやバナーに使われていたらそれらのプロパティをnullにする
-	const u = await User.findOne({ _id: d.metadata.userId });
-	if (u) {
-		if (u.avatarId && u.avatarId.equals(d._id)) {
-			await User.update({ _id: u._id }, { $set: { avatarId: null } });
-		}
-		if (u.bannerId && u.bannerId.equals(d._id)) {
-			await User.update({ _id: u._id }, { $set: { bannerId: null } });
-		}
-	}
-
-	// このDriveFileのDriveFileThumbnailをすべて削除
-	await Promise.all((
-		await DriveFileThumbnail.find({ 'metadata.originalId': d._id })
-	).map(x => deleteDriveFileThumbnail(x)));
-
-	// このDriveFileのチャンクをすべて削除
-	await DriveFileChunk.remove({
-		files_id: d._id
-	});
-
-	// このDriveFileを削除
-	await DriveFile.remove({
-		_id: d._id
-	});
 }
 
 export const packMany = async (

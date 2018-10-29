@@ -51,33 +51,6 @@ export interface INotification {
 	isRead: Boolean;
 }
 
-/**
- * Notificationを物理削除します
- */
-export async function deleteNotification(notification: string | mongo.ObjectID | INotification) {
-	let n: INotification;
-
-	// Populate
-	if (isObjectId(notification)) {
-		n = await Notification.findOne({
-			_id: notification
-		});
-	} else if (typeof notification === 'string') {
-		n = await Notification.findOne({
-			_id: new mongo.ObjectID(notification)
-		});
-	} else {
-		n = notification as INotification;
-	}
-
-	if (n == null) return;
-
-	// このNotificationを削除
-	await Notification.remove({
-		_id: n._id
-	});
-}
-
 export const packMany = async (
 	notifications: any[]
 ) => {

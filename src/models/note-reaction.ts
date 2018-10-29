@@ -34,33 +34,6 @@ export const validateReaction = $.str.or([
 ]);
 
 /**
- * NoteReactionを物理削除します
- */
-export async function deleteNoteReaction(noteReaction: string | mongo.ObjectID | INoteReaction) {
-	let n: INoteReaction;
-
-	// Populate
-	if (isObjectId(noteReaction)) {
-		n = await NoteReaction.findOne({
-			_id: noteReaction
-		});
-	} else if (typeof noteReaction === 'string') {
-		n = await NoteReaction.findOne({
-			_id: new mongo.ObjectID(noteReaction)
-		});
-	} else {
-		n = noteReaction as INoteReaction;
-	}
-
-	if (n == null) return;
-
-	// このNoteReactionを削除
-	await NoteReaction.remove({
-		_id: n._id
-	});
-}
-
-/**
  * Pack a reaction for API response
  */
 export const pack = (

@@ -15,33 +15,6 @@ export type IFavorite = {
 	noteId: mongo.ObjectID;
 };
 
-/**
- * Favoriteを物理削除します
- */
-export async function deleteFavorite(favorite: string | mongo.ObjectID | IFavorite) {
-	let f: IFavorite;
-
-	// Populate
-	if (isObjectId(favorite)) {
-		f = await Favorite.findOne({
-			_id: favorite
-		});
-	} else if (typeof favorite === 'string') {
-		f = await Favorite.findOne({
-			_id: new mongo.ObjectID(favorite)
-		});
-	} else {
-		f = favorite as IFavorite;
-	}
-
-	if (f == null) return;
-
-	// このFavoriteを削除
-	await Favorite.remove({
-		_id: f._id
-	});
-}
-
 export const packMany = async (
 	favorites: any[],
 	me: any

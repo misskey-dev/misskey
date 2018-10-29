@@ -29,33 +29,6 @@ export type IFollowRequest = {
 };
 
 /**
- * FollowRequestを物理削除します
- */
-export async function deleteFollowRequest(followRequest: string | mongo.ObjectID | IFollowRequest) {
-	let f: IFollowRequest;
-
-	// Populate
-	if (isObjectId(followRequest)) {
-		f = await FollowRequest.findOne({
-			_id: followRequest
-		});
-	} else if (typeof followRequest === 'string') {
-		f = await FollowRequest.findOne({
-			_id: new mongo.ObjectID(followRequest)
-		});
-	} else {
-		f = followRequest as IFollowRequest;
-	}
-
-	if (f == null) return;
-
-	// このFollowingを削除
-	await FollowRequest.remove({
-		_id: f._id
-	});
-}
-
-/**
  * Pack a request for API response
  */
 export const pack = (
