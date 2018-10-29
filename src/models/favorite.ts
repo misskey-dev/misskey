@@ -5,6 +5,7 @@ import isObjectId from '../misc/is-objectid';
 import { pack as packNote } from './note';
 
 const Favorite = db.get<IFavorite>('favorites');
+Favorite.createIndex('userId');
 Favorite.createIndex(['userId', 'noteId'], { unique: true });
 export default Favorite;
 

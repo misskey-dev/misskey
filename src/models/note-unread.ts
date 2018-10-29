@@ -2,6 +2,8 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 
 const NoteUnread = db.get<INoteUnread>('noteUnreads');
+NoteUnread.createIndex('userId');
+NoteUnread.createIndex('noteId');
 NoteUnread.createIndex(['userId', 'noteId'], { unique: true });
 export default NoteUnread;
 

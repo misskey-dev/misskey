@@ -5,6 +5,8 @@ import isObjectId from '../misc/is-objectid';
 import { pack as packUser } from './user';
 
 const FollowRequest = db.get<IFollowRequest>('followRequests');
+FollowRequest.createIndex('followerId');
+FollowRequest.createIndex('followeeId');
 FollowRequest.createIndex(['followerId', 'followeeId'], { unique: true });
 export default FollowRequest;
 
