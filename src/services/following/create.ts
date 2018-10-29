@@ -1,15 +1,45 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
 import Following from '../../models/following';
+import Blocking from '../../models/blocking';
 import { publishMainStream } from '../../stream';
 import notify from '../../notify';
 import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
+import renderReject from '../../remote/activitypub/renderer/reject';
 import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 import perUserFollowingChart from '../../chart/per-user-following';
 
 export default async function(follower: IUser, followee: IUser, requestId?: string) {
+	// check blocking
+	const [ blocking, blocked ] = await Promise.all([
+		Blocking.findOne({
+			blockerId: follower._id,
+			blockeeId: followee._id,
+		}),
+		Blocking.findOne({
+			blockerId: followee._id,
+			blockeeId: follower._id,
+		})
+	]);
+
+	if (isRemoteUser(follower) && isLocalUser(followee) && blocked) {
+		// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
+		const content = pack(renderReject(renderFollow(follower, followee, requestId), followee));
+		deliver(followee , content, follower.inbox);
+		return;
+	} else if (isRemoteUser(follower) && isLocalUser(followee) && blocking) {
+		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
+		await Blocking.remove({
+			_id: blocking._id
+		});
+	} else {
+		// それ以外は単純に例外
+		if (blocking != null) throw new Error('blocking');
+		if (blocked != null) throw new Error('blocked');
+	}
+
 	// フォロー対象が鍵アカウントである or
 	// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
 	// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである

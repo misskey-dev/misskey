@@ -5,8 +5,24 @@ import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../queue';
 import FollowRequest from '../../../models/follow-request';
+import Blocking from '../../../models/blocking';
 
 export default async function(follower: IUser, followee: IUser, requestId?: string) {
+	// check blocking
+	const [ blocking, blocked ] = await Promise.all([
+		Blocking.findOne({
+			blockerId: follower._id,
+			blockeeId: followee._id,
+		}),
+		Blocking.findOne({
+			blockerId: followee._id,
+			blockeeId: follower._id,
+		})
+	]);
+
+	if (blocking != null) throw new Error('blocking');
+	if (blocked != null) throw new Error('blocked');
+
 	await FollowRequest.insert({
 		createdAt: new Date(),
 		followerId: follower._id,
