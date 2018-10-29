@@ -1334,8 +1334,8 @@ mobile/views/pages/user.vue:
   is-suspended: "This account has been suspended."
   mute: "Mute"
   unmute: "Unmute"
-  block: "ブロック"
-  unblock: "ブロック解除"
+  block: "Block"
+  unblock: "Unblock"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"
