@@ -14,6 +14,8 @@ export const meta = {
 
 	params: {
 		noteId: $.type(ID).note({
+			'ja-JP': '対象の投稿のID',
+			'en-US': 'The ID of the target note'
 		}),
 
 		limit: $.num.optional.range(1, 100).note({
