@@ -139,7 +139,6 @@ export default Vue.extend({
 	> .action-form
 		padding 16px
 		text-align center
-		border-bottom solid 1px var(--faceDivider)
 
 		> *
 			width 100%
