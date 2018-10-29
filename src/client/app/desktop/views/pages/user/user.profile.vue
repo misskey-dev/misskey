@@ -11,11 +11,11 @@
 	<div class="action-form">
 		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
 			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
-			<span v-if="!user.isMuted">%fa:eye-slash% %i18n:@mute%</span>
+			<span v-else>%fa:eye-slash% %i18n:@mute%</span>
 		</ui-button>
 		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
 			<span v-if="user.isBlocking">%fa:user% %i18n:@unblock%</span>
-			<span v-if="!user.isBlocking">%fa:user-slash% %i18n:@block%</span>
+			<span v-else>%fa:user-slash% %i18n:@block%</span>
 		</ui-button>
 		<ui-button @click="list">%fa:list% %i18n:@push-to-a-list%</ui-button>
 	</div>
