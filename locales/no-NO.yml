@@ -1332,6 +1332,10 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "Media"
   is-suspended: "このユーザーは凍結されています。"
+  mute: "ミュート"
+  unmute: "ミュート解除"
+  block: "ブロック"
+  unblock: "ブロック解除"
 mobile/views/pages/user/home.vue:
   recent-notes: "Nylige innlegg"
   images: "Bilder"
