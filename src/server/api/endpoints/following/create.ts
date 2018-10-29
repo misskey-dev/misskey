@@ -68,7 +68,11 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	// Create following
-	await create(follower, followee);
+	try {
+		await create(follower, followee);
+	} catch (e) {
+		return rej(e && e.message ? e.message : e);
+	}
 
 	// Send response
 	res(await pack(followee._id, user));
