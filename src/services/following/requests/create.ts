@@ -10,11 +10,11 @@ import Blocking from '../../../models/blocking';
 export default async function(follower: IUser, followee: IUser, requestId?: string) {
 	// check blocking
 	const [ blocking, blocked ] = await Promise.all([
-		await Blocking.findOne({
+		Blocking.findOne({
 			blockerId: follower._id,
 			blockeeId: followee._id,
 		}),
-		await Blocking.findOne({
+		Blocking.findOne({
 			blockerId: followee._id,
 			blockeeId: follower._id,
 		})
