@@ -3,7 +3,7 @@ import User, { IRemoteUser } from '../../../../models/user';
 import config from '../../../../config';
 import * as debug from 'debug';
 import { IBlock } from '../../type';
-import unBlock from '../../../../services/blocking/delete';
+import unblock from '../../../../services/blocking/delete';
 
 const log = debug('misskey:activitypub');
 
@@ -30,5 +30,5 @@ export default async (actor: IRemoteUser, activity: IBlock): Promise<void> => {
 		throw new Error('ブロック解除しようとしているユーザーはローカルユーザーではありません');
 	}
 
-	unBlock(actor, blockee);
+	unblock(actor, blockee);
 };
