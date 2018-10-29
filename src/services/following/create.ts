@@ -24,14 +24,13 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		})
 	]);
 
-	// ブロック判定処理
 	if (isRemoteUser(follower) && isLocalUser(followee) && blocked) {
-		// リモートフォローを受けて(remote => local)ブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
+		// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
 		const content = pack(renderReject(renderFollow(follower, followee, requestId), followee));
 		deliver(followee , content, follower.inbox);
 		return;
 	} else if (isRemoteUser(follower) && isLocalUser(followee) && blocking) {
-		// リモートフォローを受けて(remote => local)ブロックされているはずの場合だったら、ブロック解除しておく。
+		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
 		await Blocking.remove({
 			_id: blocking._id
 		});
