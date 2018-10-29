@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Reaction, { pack } from '../../../../models/note-reaction';
 import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
@@ -9,46 +10,70 @@ export const meta = {
 		'en-US': 'Show reactions of a note.'
 	},
 
-	requireCredential: true
+	requireCredential: false,
+
+	params: {
+		noteId: $.type(ID).note({
+		}),
+
+		limit: $.num.optional.range(1, 100).note({
+			default: 10
+		}),
+
+		offset: $.num.optional.note({
+			default: 0
+		}),
+
+		sinceId: $.type(ID).optional.note({
+		}),
+
+		untilId: $.type(ID).optional.note({
+		}),
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional.min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
-
-	// Get 'sort' parameter
-	const [sort = 'desc', sortError] = $.str.optional.or('desc asc').get(params.sort);
-	if (sortError) return rej('invalid sort param');
+	// Check if both of sinceId and untilId is specified
+	if (ps.sinceId && ps.untilId) {
+		return rej('cannot set sinceId and untilId');
+	}
 
 	// Lookup note
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
 		return rej('note not found');
 	}
 
-	// Issue query
+	const query = {
+		noteId: note._id
+	} as any;
+
+	const sort = {
+		_id: -1
+	};
+
+	if (ps.sinceId) {
+		sort._id = 1;
+		query._id = {
+			$gt: ps.sinceId
+		};
+	} else if (ps.untilId) {
+		query._id = {
+			$lt: ps.untilId
+		};
+	}
+
 	const reactions = await Reaction
-		.find({
-			noteId: note._id,
-			deletedAt: { $exists: false }
-		}, {
-			limit: limit,
-			skip: offset,
-			sort: {
-				_id: sort == 'asc' ? 1 : -1
-			}
+		.find(query, {
+			limit: ps.limit,
+			skip: ps.offset,
+			sort: sort
 		});
 
 	// Serialize
