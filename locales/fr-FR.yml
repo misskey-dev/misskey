@@ -1332,6 +1332,10 @@ mobile/views/pages/user.vue:
   timeline: "Fil d'actualité"
   media: "Media"
   is-suspended: "This account has been suspended."
+  mute: "ミュート"
+  unmute: "ミュート解除"
+  block: "ブロック"
+  unblock: "ブロック解除"
 mobile/views/pages/user/home.vue:
   recent-notes: "Notes récentes"
   images: "Images"
