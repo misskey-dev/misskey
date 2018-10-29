@@ -1332,6 +1332,10 @@ mobile/views/pages/user.vue:
   timeline: "Tijdlijn"
   media: "Media"
   is-suspended: "Dit account is geschorst."
+  mute: "ミュート"
+  unmute: "ミュート解除"
+  block: "ブロック"
+  unblock: "ブロック解除"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recente notities"
   images: "Afbeeldingen"
