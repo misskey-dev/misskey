@@ -1,4 +1,10 @@
 version: 2
+
+general:
+  branches:
+    ignore:
+      - l10n_develop
+
 jobs:
   webpack-build:
     working_directory: /misskey
