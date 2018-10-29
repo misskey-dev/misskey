@@ -1055,6 +1055,9 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+  block: "ブロックする"
+  unblock: "ブロック解除"
+  block-confirm: "このユーザーをブロックしますか？"
   push-to-a-list: "リストに追加"
   list-pushed: "{user}を{list}に追加しました。"
 desktop/views/pages/user/user.header.vue:
@@ -1329,6 +1332,10 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "メディア"
   is-suspended: "このユーザーは凍結されています。"
+  mute: "ミュート"
+  unmute: "ミュート解除"
+  block: "ブロック"
+  unblock: "ブロック解除"
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
   images: "画像"
