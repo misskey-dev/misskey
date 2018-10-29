@@ -43,7 +43,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('cannot set sinceId and untilId');
 	}
 
-	// Construct query
 	const query = {
 		deletedAt: null,
 
@@ -81,15 +80,13 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		};
 	}
 
-	// Issue query
 	const mentions = await Note
 		.find(query, {
 			limit: ps.limit,
 			sort: sort
 		});
 
-	mentions.forEach(note => read(user._id, note._id));
-
-	// Serialize
 	res(await packMany(mentions, user));
+
+	mentions.forEach(note => read(user._id, note._id));
 });
