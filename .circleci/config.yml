@@ -8,7 +8,6 @@ general:
 
 executors:
   default:
-    parallelism: 4
     working_directory: /tmp/workspace
     docker:
       - image: misskey/ci:latest
