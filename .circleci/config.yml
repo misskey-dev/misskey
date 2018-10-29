@@ -4,57 +4,43 @@ general:
   branches:
     ignore:
       - l10n_develop
+      - imgbot
 
 jobs:
-  webpack-build:
-    working_directory: /misskey
+  build:
     docker:
       - image: yukimochi/misskey-builder:latest
     steps:
       - checkout
+      - restore_cache:
+          name: Restore npm package caches
+          keys:
+            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}
+            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-
+            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-
+            - npm-v1-arch-{{ arch }}-
+            - npm-v1-
       - run:
-          name: Setup Dependencies
+          name: Install Dependencies
           command: |
-            yarn install
-            yarn global add web-push
+            npm install
+      - save_cache:
+          name: Cache npm packages
+          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
       - run:
-          name: Import default.yml
+          name: Configure
           command: |
-            echo ${IMPORT_DEFAULT_YML} | base64 -d | gzip -d > .config/default.yml
+            cp .travis/default.yml .config
+            cp .travis/test.yml .config
       - run:
           name: Build Webpack
           command: |
-            yarn run build
-      - run:
-          name: Compress clients
-          command: |
-            find ./built/client -name "*.js" -or -name "*.js.map" -or -name "*.css" -or -name "*.svg" -or -name "*.html" -or -name "*.json" | xargs -t gzip -k -9
-            find ./built/client -name "*.js" -or -name "*.js.map" -or -name "*.css" -or -name "*.svg" -or -name "*.html" -or -name "*.json" | xargs -t brotli -q 10
-            tar cfz ~/built-${CIRCLE_SHA1}.tar.gz built
-      - run:
-          name: Send built s3
-          command: |
-            mc config host add ykmc ${s3_endpoint} ${s3_accesskey} ${s3_secretkey}
-            mc cp ~/built-${CIRCLE_SHA1}.tar.gz ${backet}/${CIRCLE_BRANCH}/
-  docker-build:
-    docker:
-      - image: docker:17-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: build docker image
-          command: |
-            docker build -t misskey:latest .
-      - run:
-          name: upload image to docker hub.
-          command: |
-            docker login --username=${DOCKER_USER} --password=${DOCKER_PASS}
-            docker push ${DOCKER_USER}/misskey:latest
+            npm run build
 
 workflows:
   version: 2
   build:
     jobs:
-      - webpack-build
-      - docker-build
+      - build
