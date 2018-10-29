@@ -1537,7 +1537,7 @@ mobile/views/pages/user.vue:
   mute: "ミュート"
   unmute: "ミュート解除"
   block: "ブロック"
-  unblobk: "ブロック解除"
+  unblock: "ブロック解除"
 
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
