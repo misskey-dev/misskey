@@ -1332,6 +1332,10 @@ mobile/views/pages/user.vue:
   timeline: "Oś czasu"
   media: "Multimedia"
   is-suspended: "To konto zostało zablokowane"
+  mute: "ミュート"
+  unmute: "ミュート解除"
+  block: "ブロック"
+  unblock: "ブロック解除"
 mobile/views/pages/user/home.vue:
   recent-notes: "Ostatnie wpisy"
   images: "Zdjęcia"
