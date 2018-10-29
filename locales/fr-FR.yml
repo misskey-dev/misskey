@@ -28,11 +28,11 @@ common:
   BSoD:
     fatal-error: ":( 致命的な問題が発生しました。"
     update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
-    error-code: "エラーコード"
-    browser-version: "ブラウザ バージョン"
-    client-version: "クライアント バージョン"
+    error-code: "Code d’erreur"
+    browser-version: "Version du navigateur"
+    client-version: "La version du client"
     email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
-    thanks: "Thank you for using Misskey."
+    thanks: "Merci d’avoir choisi d’utiliser Misskey."
   got-it: "J'ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -62,7 +62,7 @@ common:
     years_ago: "Il y a {} an·s"
   month-and-day: "{month} mois/{day} jour"
   trash: "Corbeille"
-  drive: "ドライブ"
+  drive: "Drive"
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -124,12 +124,12 @@ common:
   reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
-  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-user: "Ces informations utilisateur ont été copiées."
   is-remote-post: "この投稿情報はコピーです。"
-  view-on-remote: "正確な情報を見る"
+  view-on-remote: "Consulter le profil complet"
   error:
-    title: '問題が発生しました'
-    retry: 'やり直す'
+    title: 'Une erreur est survenue'
+    retry: 'Réessayer'
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
@@ -185,7 +185,7 @@ common:
     rename: "Renommer"
     stack-left: "Vers la gauche"
     pop-right: "Vers la droite"
-  dev: "アプリの作成に失敗しました。再度お試しください。"
+  dev: "Échec lors de la création de l’application. Veuillez réessayer."
 auth/views/form.vue:
   share-access: "Désirez-vous <b>autoriser</b> <i>{{ app.name }}</i> à avoir accès à votre compte ?"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
@@ -542,7 +542,7 @@ desktop/views/components/charts.vue:
   title: "Graphiques"
   per-day: "par jour"
   per-hour: "par heure"
-  federation: "フェデレーション"
+  federation: "Fédération"
   notes: "Publications"
   users: "Utilisateurs"
   drive: "Drive"
@@ -555,7 +555,7 @@ desktop/views/components/charts.vue:
     remote-notes: "投稿の増減 (リモート)"
     notes-total: "Total des notes"
     users: "Nombre d’utilisateurs·trices : augmentation/diminution"
-    users-total: "ユーザーの積算"
+    users-total: "Nombre total des utilisateurs·rices"
     drive: "ドライブ使用量の増減"
     drive-total: "ドライブ使用量の積算"
     drive-files: "ドライブのファイル数の増減"
@@ -679,10 +679,10 @@ desktop/views/components/note.vue:
   reposted-by: "Partagé par {}"
   reply: "Répondre"
   renote: "Partager"
-  add-reaction: "リアクション"
-  detail: "詳細"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  add-reaction: "Ajouter votre réaction"
+  detail: "Détails"
+  private: "Cette publication est privée"
+  deleted: "Cette publication a été supprimée"
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
@@ -852,21 +852,21 @@ common/views/components/api-settings.vue:
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
   regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
   regenerate-token: "トークンを再生成"
-  token: "Token:"
-  enter-password: "パスワードを入力してください"
+  token: "Jeton :"
+  enter-password: "Entrez le mot de passe"
   console:
-    title: 'APIコンソール'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    title: 'Console API'
+    endpoint: 'Point de terminaison'
+    parameter: 'Paramètres'
+    send: 'Envoyer'
+    sending: 'Envoi en cours'
+    response: 'Résultat'
 desktop/views/components/settings.apps.vue:
   no-apps: "Aucune application autorisée"
 common/views/components/drive-settings.vue:
   max: "容量"
-  in-use: "使用中"
-  stats: "統計"
+  in-use: "utilisé"
+  stats: "Statistiques"
 desktop/views/components/settings.mute.vue:
   no-users: "Aucun utilisateurs mis en sourdine"
 desktop/views/components/settings.password.vue:
@@ -945,8 +945,8 @@ desktop/views/pages/admin/admin.vue:
   dashboard: "Tableau de bord"
   users: "Utilisateur·rice·s"
   update: "Mises à jour"
-  announcements: "お知らせ"
-  hashtags: "ハッシュタグ"
+  announcements: "Annonces"
+  hashtags: "Hashtags"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Tableau de bord"
   all-users: "Toutes les utilisateurrices"
@@ -954,9 +954,9 @@ desktop/views/pages/admin/admin.dashboard.vue:
   all-notes: "Toutes les publications"
   original-notes: "Publications sur cette instance"
   invite: "Invitation"
-  banner-url: "Banner URL"
-  disableRegistration: "Disable new user registration"
-  disableLocalTimeline: "Disable the local timeline"
+  banner-url: "URL de la bannière"
+  disableRegistration: "Désactiver l’enregistrement de nouveaux utilisateurs·rices"
+  disableLocalTimeline: "Désactiver le fil local"
 desktop/views/pages/admin/admin.suspend-user.vue:
   suspend-user: "Suspendre un·e utilisateur·rice"
   suspend: "Suspendre"
@@ -974,21 +974,21 @@ desktop/views/pages/admin/admin.unverify-user.vue:
   unverify: "Ôter la vérification du compte"
   unverified: "Ce compte n'est pas vérifié"
 desktop/views/pages/admin/admin.announcements.vue:
-  announcements: "お知らせ"
+  announcements: "Annonces"
 desktop/views/pages/admin/admin.hashtags.vue:
-  hided-tags: "Hidden Tags"
+  hided-tags: "Tags cachés"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
   edit: "Options"
 desktop/views/pages/deck/deck.user-column.vue:
-  posts: "投稿"
-  following: "フォロー"
-  followers: "フォロワー"
-  images: "画像"
-  activity: "アクティビティ"
-  timeline: "タイムライン"
-  pinned-notes: "ピン留めされた投稿"
+  posts: "Publications"
+  following: "Suit"
+  followers: "Abonné·e·s"
+  images: "Images"
+  activity: "Activité"
+  timeline: "Chronologie"
+  pinned-notes: "Publications épinglées"
   push-to-a-list: "リストに追加"
 desktop/views/pages/stats/stats.vue:
   all-users: "Toutes les utilisateurrices"
