@@ -39,7 +39,7 @@ jobs:
       - run:
           name: build docker image
           command: |
-            docker build -t ${DOCKER_USER}/misskey:latest .
+            docker build -t misskey:latest .
       - run:
           name: upload image to docker hub.
           command: |
