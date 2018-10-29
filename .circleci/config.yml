@@ -32,8 +32,8 @@ jobs:
       - run:
           name: Configure
           command: |
-            cp .travis/default.yml .config
-            cp .travis/test.yml .config
+            cp .ci/default.yml .config
+            cp .ci/test.yml .config
       - run:
           name: Build Webpack
           command: |
