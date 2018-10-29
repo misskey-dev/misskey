@@ -269,7 +269,7 @@ export const pack = (
 		delete _user.hasUnreadNotification;
 	}
 
-	if (meId && !meId.equals(_user.id)) {
+	if (meId && !meId.equals(_user.id) && opts.detail) {
 		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Following.findOne({
 				followerId: meId,
