@@ -17,7 +17,8 @@ export default function(text: string, index: number) {
 	const quote = match[1]
 		.split('\n')
 		.map(line => line.replace(/^>+/g, '').trim())
-		.join('\n');
+		.join('\n')
+		.trim();
 
 	return {
 		type: 'quote',
