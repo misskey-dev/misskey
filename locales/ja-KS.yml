@@ -1055,6 +1055,9 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしとるで"
   unmute: "ミュート解除"
+  block: "ブロックする"
+  unblock: "ブロック解除"
+  block-confirm: "このユーザーをブロックしますか？"
   push-to-a-list: "リストに追加"
   list-pushed: "{user}を{list}に追加したで。"
 desktop/views/pages/user/user.header.vue:
