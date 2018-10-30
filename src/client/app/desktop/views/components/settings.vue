@@ -8,6 +8,7 @@
 		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:common.drive%</p>
 		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'">%fa:hashtag .fw%%i18n:@tags%</p>
 		<p :class="{ active: page == 'mute' }" @mousedown="page = 'mute'">%fa:ban .fw%%i18n:@mute%</p>
+		<p :class="{ active: page == 'blocking' }" @mousedown="page = 'blocking'">%fa:ban .fw%%i18n:@blocking%</p>
 		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'">%fa:puzzle-piece .fw%%i18n:@apps%</p>
 		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'">%fa:unlock-alt .fw%%i18n:@security%</p>
 		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'">%fa:key .fw%API</p>
@@ -207,6 +208,13 @@
 			</section>
 		</ui-card>
 
+		<ui-card class="blocking" v-show="page == 'blocking'">
+			<div slot="title">%fa:ban% %i18n:@blocking%</div>
+			<section>
+				<x-blocking/>
+			</section>
+		</ui-card>
+
 		<ui-card class="apps" v-show="page == 'apps'">
 			<div slot="title">%fa:puzzle-piece% %i18n:@apps%</div>
 			<section>
@@ -290,6 +298,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import XMute from './settings.mute.vue';
+import XBlocking from './settings.blocking.vue';
 import XPassword from './settings.password.vue';
 import X2fa from './settings.2fa.vue';
 import XApps from './settings.apps.vue';
@@ -301,6 +310,7 @@ import checkForUpdate from '../../../common/scripts/check-for-update';
 export default Vue.extend({
 	components: {
 		XMute,
+		XBlocking,
 		XPassword,
 		X2fa,
 		XApps,

@@ -833,6 +833,7 @@ desktop/views/components/settings.vue:
   notification: "通知"
   apps: "アプリ"
   mute: "ミュート"
+  blocking: "ブロック"
   security: "セキュリティ"
   signin: "サインイン履歴"
   password: "パスワード"
@@ -975,6 +976,9 @@ common/views/components/drive-settings.vue:
 
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
+
+desktop/views/components/settings.blocking.vue:
+  no-users: "ブロックしているユーザーはいません"
 
 desktop/views/components/settings.password.vue:
   reset: "パスワードを変更する"
