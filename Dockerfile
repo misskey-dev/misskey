@@ -21,11 +21,12 @@ RUN apk add --no-cache \
     pkgconfig \
     libtool \
     zlib-dev
-RUN npm install \
-    && npm install -g node-gyp \
-    && node-gyp configure \
-    && node-gyp build \
-    && npm run build
+RUN npm i -g npm@latest \
+ && npm i \
+ && npm i -g node-gyp \
+ && node-gyp configure \
+ && node-gyp build \
+ && npm run build
 
 FROM base AS runner
 

@@ -1,60 +1,129 @@
-version: 2
+version: 2.1
 
 general:
   branches:
     ignore:
       - l10n_develop
+      - imgbot
+
+executors:
+  default:
+    working_directory: /tmp/workspace
+    docker:
+      - image: misskey/ci:latest
+      - image: circleci/mongo:latest
+      - image: circleci/redis:latest
+  docker:
+    working_directory: /tmp/workspace
+    docker:
+      - image: docker:latest
 
 jobs:
-  webpack-build:
-    working_directory: /misskey
-    docker:
-      - image: yukimochi/misskey-builder:latest
+  build:
+    executor: default
     steps:
       - checkout
+      - restore_cache:
+          name: Restore npm package caches
+          keys:
+            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-
+            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-
+            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-
+            - npm-v1-arch-{{ arch }}-
+            - npm-v1-
       - run:
-          name: Setup Dependencies
+          name: Install Dependencies
           command: |
-            yarn install
-            yarn global add web-push
+            npm install
       - run:
-          name: Import default.yml
+          name: Configure
           command: |
-            echo ${IMPORT_DEFAULT_YML} | base64 -d | gzip -d > .config/default.yml
+            cp .ci/default.yml .config
+            cp .ci/test.yml .config
       - run:
-          name: Build Webpack
+          name: Build
           command: |
-            yarn run build
+            npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)
+            ls -1ARl node_modules > ls
+      - save_cache:
+          name: Cache npm packages
+          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-ls-{{ checksum "ls" }}
+          paths:
+            - node_modules
+      - store_artifacts:
+          path: built
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  test:
+    parameters:
+      without_redis:
+        type: string
+        default: ""
+    executor: default
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - when:
+          condition: <<parameters.without_redis>>
+          steps:
+            - run:
+                name: Configure
+                command: |
+                  mv .config/test.yml .config/test_redis.yml
+                  touch .config/test.yml
+                  cat .config/test_redis.yml | while IFS= read line; do if [[ "$line" = '# __REDIS__' ]]; then break; else echo "$line" >> .config/test.yml; fi; done
       - run:
-          name: Compress clients
+          name: Test
           command: |
-            find ./built/client -name "*.js" -or -name "*.js.map" -or -name "*.css" -or -name "*.svg" -or -name "*.html" -or -name "*.json" | xargs -t gzip -k -9
-            find ./built/client -name "*.js" -or -name "*.js.map" -or -name "*.css" -or -name "*.svg" -or -name "*.html" -or -name "*.json" | xargs -t brotli -q 10
-            tar cfz ~/built-${CIRCLE_SHA1}.tar.gz built
-      - run:
-          name: Send built s3
-          command: |
-            mc config host add ykmc ${s3_endpoint} ${s3_accesskey} ${s3_secretkey}
-            mc cp ~/built-${CIRCLE_SHA1}.tar.gz ${backet}/${CIRCLE_BRANCH}/
-  docker-build:
-    docker:
-      - image: docker:17-git
+            npm run test || (npm rebuild && npm run test) || ((node-gyp configure && node-gyp build && npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)) && npm run test)
+            ls -1ARl node_modules > ls
+      - save_cache:
+          name: Cache npm packages
+          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-ls-{{ checksum "ls" }}
+          paths:
+            - node_modules
+
+  docker:
+    parameters:
+      with_deploy:
+        type: string
+        default: ""
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: build docker image
+          name: Build
           command: |
-            docker build -t misskey:latest .
-      - run:
-          name: upload image to docker hub.
-          command: |
-            docker login --username=${DOCKER_USER} --password=${DOCKER_PASS}
-            docker push ${DOCKER_USER}/misskey:latest
+            docker build .
+      - when:
+          condition: <<parameters.with_deploy>>
+          steps:
+            - run:
+                name: Deploy
+                command: |
+                  docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD && docker push misskey/misskey
 
 workflows:
   version: 2
-  build:
+  build-and-test:
     jobs:
-      - webpack-build
-      - docker-build
+      - build
+      - test:
+          requires:
+            - build
+      - test:
+          without_redis: "true"
+          requires:
+            - build
+      - docker:
+          filters:
+            branches:
+              ignore: master
+      - docker:
+          with_deploy: "true"
+          filters:
+            branches:
+              only: master
