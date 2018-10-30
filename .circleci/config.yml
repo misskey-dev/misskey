@@ -86,17 +86,25 @@ jobs:
             - node_modules
 
   docker:
+    parameters:
+      with_deploy:
+        type: string
+        default: ""
     executor: docker
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Build
           command: |
             docker build .
-      - run:
-          name: Deploy
-          command: |
-            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD && docker push misskey/misskey
+      - when:
+          condition: <<parameters.with_deploy>>
+          steps:
+            - run:
+                name: Deploy
+                command: |
+                  docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD && docker push misskey/misskey
 
 workflows:
   version: 2
@@ -110,4 +118,12 @@ workflows:
           without_redis: "true"
           requires:
             - build
-      - docker
+      - docker:
+          filters:
+            branches:
+              ignore: master
+      - docker:
+          with_deploy: "true"
+          filters:
+            branches:
+              only: master
