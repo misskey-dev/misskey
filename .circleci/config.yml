@@ -73,7 +73,7 @@ jobs:
       - run:
           name: Test
           command: |
-            npm run test || (node-gyp configure && node-gyp build && npm run test)
+            npm run test || (npm rebuild && npm run test)
 
 workflows:
   version: 2
