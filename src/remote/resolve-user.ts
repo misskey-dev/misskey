@@ -58,15 +58,15 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 					uri: self.href
 				}
 			});
-
-			await updatePerson(self.href);
-
-			log(`return resynced remote user: ${acctLower}`);
-			return await User.findOne({ uri: self.href });
 		} else {
 			log(`uri is fine: ${acctLower}`);
 		}
-	}
+
+		await updatePerson(self.href);
+
+		log(`return resynced remote user: ${acctLower}`);
+		return await User.findOne({ uri: self.href });
+}
 
 	log(`return existing remote user: ${acctLower}`);
 	return user;
