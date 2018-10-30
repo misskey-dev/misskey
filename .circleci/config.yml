@@ -70,15 +70,7 @@ jobs:
       - run:
           name: Test
           command: |
-            npm run test
-      - when:
-          condition: <<parameters.without_redis>>
-          steps:
-            - run:
-                name: Restore
-                command: |
-                  rm .config/test.yml
-                  mv .config/test_redis.yml .config/test.yml
+            npm run test || (npm run build && npm run test)
 
 workflows:
   version: 2
