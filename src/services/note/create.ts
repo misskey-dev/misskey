@@ -611,19 +611,21 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentionTokens = unique(
-		tokens
-			.filter(t => t.type == 'mention') as TextElementMention[]
-	);
+	const mentionTokens = tokens
+		.filter(t => t.type == 'mention') as TextElementMention[];
 
-	const mentionedUsers = unique(
+	let mentionedUsers =
 		erase(null, await Promise.all(mentionTokens.map(async m => {
 			try {
 				return await resolveUser(m.username, m.host);
 			} catch (e) {
 				return null;
 			}
-		})))
+		})));
+
+	// Drop duplicate users
+	mentionedUsers = mentionedUsers.filter((u, i, self) =>
+		i === self.findIndex(u2 => u._id.equals(u2._id))
 	);
 
 	return mentionedUsers;

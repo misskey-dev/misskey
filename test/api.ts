@@ -508,6 +508,24 @@ describe('API', () => {
 			}, me);
 			expect(res).have.status(400);
 		}));
+
+		it('同じユーザーに複数メンションしても内部的にまとめられる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+			const post = {
+				text: '@bob @bob @bob yo'
+			};
+
+			const res = await request('/notes/create', post, alice);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('createdNote');
+			expect(res.body.createdNote).have.property('text').eql(post.text);
+
+			const noteDoc = await db.get('notes').findOne({ _id: res.body.createdNote.id });
+			expect(noteDoc.mentions.map((id: any) => id.toString())).eql([bob.id.toString()]);
+		}));
 	});
 
 	describe('notes/show', () => {
