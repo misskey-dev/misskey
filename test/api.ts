@@ -94,7 +94,7 @@ describe('API', () => {
 		setTimeout(async () => {
 			await Promise.all([
 				db.get('users').drop(),
-				db.get('posts').drop(),
+				db.get('notes').drop(),
 				db.get('driveFiles.files').drop(),
 				db.get('driveFiles.chunks').drop(),
 				db.get('driveFolders').drop(),
