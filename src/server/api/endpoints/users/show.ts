@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import User, { pack, ILocalUser } from '../../../../models/user';
+import User, { pack, ILocalUser, isRemoteUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 
 const cursorOption = { fields: { data: false } };
@@ -61,5 +61,11 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		res(await pack(user, me, {
 			detail: true
 		}));
+
+		if (isRemoteUser(user)) {
+			if (user.updatedAt == null || Date.now() - user.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
+				resolveRemoteUser(username, host, { }, true);
+			}
+		}
 	}
 });
