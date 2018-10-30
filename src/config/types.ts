@@ -14,11 +14,13 @@ export type Source = {
 		 * メンテナの連絡先(URLかmailto形式のURL)
 		 */
 		url: string;
+		email?: string;
 		repository_url?: string;
 		feedback_url?: string;
 	};
 	name?: string;
 	description?: string;
+	languages?: string[];
 	welcome_bg_url?: string;
 	url: string;
 	port: number;
