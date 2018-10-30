@@ -70,5 +70,7 @@ export default async function(followee: IUser, follower: IUser) {
 		detail: true
 	}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
 
-	packUser(followee, follower).then(packed => publishMainStream(follower._id, 'follow', packed));
+	packUser(followee, follower, {
+		detail: true
+	}).then(packed => publishMainStream(follower._id, 'follow', packed));
 }

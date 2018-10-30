@@ -87,7 +87,9 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 
 	// Publish follow event
 	if (isLocalUser(follower)) {
-		packUser(followee, follower).then(packed => publishMainStream(follower._id, 'follow', packed));
+		packUser(followee, follower, {
+			detail: true
+		}).then(packed => publishMainStream(follower._id, 'follow', packed));
 	}
 
 	// Publish followed event

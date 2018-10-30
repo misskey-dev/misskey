@@ -60,7 +60,9 @@ async function cancelRequest(follower: IUser, followee: IUser) {
 	}
 
 	if (isLocalUser(follower)) {
-		packUser(followee, follower).then(packed => publishMainStream(follower._id, 'unfollow', packed));
+		packUser(followee, follower, {
+			detail: true
+		}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
 	}
 
 	// リモートにフォローリクエストをしていたらUndoFollow送信
@@ -110,7 +112,9 @@ async function unFollow(follower: IUser, followee: IUser) {
 
 	// Publish unfollow event
 	if (isLocalUser(follower)) {
-		packUser(followee, follower).then(packed => publishMainStream(follower._id, 'unfollow', packed));
+		packUser(followee, follower, {
+			detail: true
+		}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
 	}
 
 	// リモートにフォローをしていたらUndoFollow送信

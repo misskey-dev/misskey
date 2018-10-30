@@ -28,5 +28,7 @@ export default async function(followee: IUser, follower: IUser) {
 		}
 	});
 
-	packUser(followee, follower).then(packed => publishMainStream(follower._id, 'unfollow', packed));
+	packUser(followee, follower, {
+		detail: true
+	}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
 }
