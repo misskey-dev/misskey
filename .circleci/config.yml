@@ -74,10 +74,16 @@ jobs:
           name: Test
           command: |
             npm run test || (npm rebuild && npm run test)
+            ls -1ARl node_modules > ls
+      - save_cache:
+          name: Cache npm packages
+          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-ls-{{ checksum "ls" }}
+          paths:
+            - node_modules
 
 workflows:
   version: 2
-  build:
+  build-and-test:
     jobs:
       - build
       - test:
