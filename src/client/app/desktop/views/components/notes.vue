@@ -4,10 +4,7 @@
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div v-if="!fetching && requestInitPromise != null" class="error">
-		<p>%fa:exclamation-triangle% %i18n:common.error.title%</p>
-		<ui-button @click="resolveInitPromise">%i18n:common.error.retry%</ui-button>
-	</div>
+	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<div class="placeholder" v-if="fetching">
 		<template v-for="i in 10">
@@ -214,16 +211,6 @@ export default Vue.extend({
 
 		> *
 			transition transform .3s ease, opacity .3s ease
-
-	> .error
-		max-width 300px
-		margin 0 auto
-		padding 32px
-		text-align center
-		color var(--text)
-
-		> p
-			margin 0 0 8px 0
 
 	> .placeholder
 		padding 32px

@@ -8,10 +8,7 @@
 		</template>
 	</div>
 
-	<div v-if="!fetching && requestInitPromise != null" class="error">
-		<p>%fa:exclamation-triangle% %i18n:common.error.title%</p>
-		<ui-button @click="resolveInitPromise">%i18n:common.error.retry%</ui-button>
-	</div>
+	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<!--<transition-group name="mk-notes" class="transition" ref="notes">-->
@@ -220,13 +217,6 @@ export default Vue.extend({
 
 		> *
 			transition transform .3s ease, opacity .3s ease
-
-	> .error
-		max-width 300px
-		margin 0 auto
-		padding 16px
-		text-align center
-		color var(--text)
 
 	> .placeholder
 		padding 16px
