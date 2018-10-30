@@ -45,6 +45,8 @@ jobs:
           key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+      - store_artifacts:
+          path: built
       - persist_to_workspace:
           root: .
           paths:
