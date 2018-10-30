@@ -62,10 +62,9 @@ export default Vue.extend({
 	},
 	methods: {
 		fetch() {
-			const params = Object.assign({ resync: true }, parseAcct(this.$route.params.user));
 			this.fetching = true;
 			Progress.start();
-			(this as any).api('users/show', params).then(user => {
+			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 				Progress.done();
