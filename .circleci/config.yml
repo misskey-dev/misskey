@@ -13,6 +13,10 @@ executors:
       - image: misskey/ci:latest
       - image: circleci/mongo:latest
       - image: circleci/redis:latest
+  docker:
+    working_directory: /tmp/workspace
+    docker:
+      - image: docker:latest
 
 jobs:
   build:
@@ -82,7 +86,17 @@ jobs:
             - node_modules
 
   docker:
-    
+    executor: docker
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            docker build .
+      - run:
+          name: Deploy
+          command: |
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD && docker push misskey/misskey
 
 workflows:
   version: 2
