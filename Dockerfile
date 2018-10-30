@@ -3,6 +3,8 @@ FROM alpine:3.8 AS base
 ENV NODE_ENV=production
 
 RUN apk add --no-cache nodejs nodejs-npm zlib
+RUN npm i -g npm@latest
+
 WORKDIR /misskey
 
 FROM base AS builder
@@ -20,9 +22,8 @@ RUN apk add --no-cache \
     pkgconfig \
     libtool \
     zlib-dev
+RUN npm i -g node-gyp
 
-RUN npm i -g npm@latest \
- && npm i -g node-gyp
 COPY ./package.json ./
 RUN npm i
 
