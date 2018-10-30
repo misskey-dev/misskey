@@ -31,11 +31,6 @@ jobs:
           name: Install Dependencies
           command: |
             npm install
-      - save_cache:
-          name: Cache npm packages
-          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
       - run:
           name: Configure
           command: |
@@ -44,7 +39,12 @@ jobs:
       - run:
           name: Build
           command: |
-            npm run build
+            npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)
+      - save_cache:
+          name: Cache npm packages
+          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
       - persist_to_workspace:
           root: .
           paths:
