@@ -6,13 +6,10 @@ import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
-import PollVote, { deletePollVote } from './poll-vote';
-import Reaction, { deleteNoteReaction } from './note-reaction';
+import PollVote from './poll-vote';
+import Reaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
-import NoteWatching, { deleteNoteWatching } from './note-watching';
-import NoteReaction from './note-reaction';
-import Favorite, { deleteFavorite } from './favorite';
-import Notification, { deleteNotification } from './notification';
+import Favorite from './favorite';
 import Following from './following';
 import config from '../config';
 
@@ -107,72 +104,6 @@ export type INote = {
 	_replyIds?: mongo.ObjectID[];
 	_files?: IDriveFile[];
 };
-
-/**
- * Noteを物理削除します
- */
-export async function deleteNote(note: string | mongo.ObjectID | INote) {
-	let n: INote;
-
-	// Populate
-	if (isObjectId(note)) {
-		n = await Note.findOne({
-			_id: note
-		});
-	} else if (typeof note === 'string') {
-		n = await Note.findOne({
-			_id: new mongo.ObjectID(note)
-		});
-	} else {
-		n = note as INote;
-	}
-
-	console.log(n == null ? `Note: delete skipped ${note}` : `Note: deleting ${n._id}`);
-
-	if (n == null) return;
-
-	// このNoteへの返信をすべて削除
-	await Promise.all((
-		await Note.find({ replyId: n._id })
-	).map(x => deleteNote(x)));
-
-	// このNoteのRenoteをすべて削除
-	await Promise.all((
-		await Note.find({ renoteId: n._id })
-	).map(x => deleteNote(x)));
-
-	// この投稿に対するNoteWatchingをすべて削除
-	await Promise.all((
-		await NoteWatching.find({ noteId: n._id })
-	).map(x => deleteNoteWatching(x)));
-
-	// この投稿に対するNoteReactionをすべて削除
-	await Promise.all((
-		await NoteReaction.find({ noteId: n._id })
-	).map(x => deleteNoteReaction(x)));
-
-	// この投稿に対するPollVoteをすべて削除
-	await Promise.all((
-		await PollVote.find({ noteId: n._id })
-	).map(x => deletePollVote(x)));
-
-	// この投稿に対するFavoriteをすべて削除
-	await Promise.all((
-		await Favorite.find({ noteId: n._id })
-	).map(x => deleteFavorite(x)));
-
-	// この投稿に対するNotificationをすべて削除
-	await Promise.all((
-		await Notification.find({ noteId: n._id })
-	).map(x => deleteNotification(x)));
-
-	// このNoteを削除
-	await Note.remove({
-		_id: n._id
-	});
-
-	console.log(`Note: deleted ${n._id}`);
-}
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;

@@ -11,7 +11,7 @@
 					<a class="avatar">
 						<img :src="user.avatarUrl" alt="avatar"/>
 					</a>
-					<mk-mute-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
+					<button class="menu" ref="menu" @click="menu">%fa:ellipsis-h%</button>
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
@@ -67,6 +67,7 @@ import Vue from 'vue';
 import * as age from 's-age';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
+import Menu from '../../../common/views/components/menu.vue';
 import XHome from './user/home.vue';
 
 export default Vue.extend({
@@ -109,7 +110,61 @@ export default Vue.extend({
 				Progress.done();
 				document.title = `${Vue.filter('userName')(this.user)} | ${(this as any).os.instanceName}`;
 			});
-		}
+		},
+
+		menu() {
+			let menu = [{
+				icon: this.user.isMuted ? '%fa:eye%' : '%fa:eye-slash%',
+				text: this.user.isMuted ? '%i18n:@unmute%' : '%i18n:@mute%',
+				action: () => {
+					if (this.user.isMuted) {
+						(this as any).api('mute/delete', {
+							userId: this.user.id
+						}).then(() => {
+							this.user.isMuted = false;
+						}, () => {
+							alert('error');
+						});
+					} else {
+						(this as any).api('mute/create', {
+							userId: this.user.id
+						}).then(() => {
+							this.user.isMuted = true;
+						}, () => {
+							alert('error');
+						});
+					}
+				}
+			}, {
+				icon: this.user.isBlocking ? '%fa:user%' : '%fa:user-slash%',
+				text: this.user.isBlocking ? '%i18n:@unblock%' : '%i18n:@block%',
+				action: () => {
+					if (this.user.isBlocking) {
+						(this as any).api('blocking/delete', {
+							userId: this.user.id
+						}).then(() => {
+							this.user.isBlocking = false;
+						}, () => {
+							alert('error');
+						});
+					} else {
+						(this as any).api('blocking/create', {
+							userId: this.user.id
+						}).then(() => {
+							this.user.isBlocking = true;
+						}, () => {
+							alert('error');
+						});
+					}
+				}
+			}];
+
+			this.os.new(Menu, {
+				source: this.$refs.menu,
+				compact: true,
+				items: menu
+			});
+		},
 	}
 });
 </script>
@@ -156,14 +211,10 @@ main
 			max-width 600px
 
 			> .top
-				&:after
-					content ''
-					display block
-					clear both
+				display flex
 
 				> .avatar
 					display block
-					float left
 					width 25%
 					height 40px
 
@@ -183,11 +234,15 @@ main
 							border 4px solid $bg
 							border-radius 12px
 
-				> .mk-mute-button
-					float right
+				> .menu
+					margin 0 0 0 auto
+					padding 8px
+					margin-right 8px
+					font-size 18px
+					color var(--text)
 
 				> .mk-follow-button
-					float right
+					margin 0
 
 			> .title
 				margin 8px 0

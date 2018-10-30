@@ -35,7 +35,7 @@ before_script:
   - npm install
 
   # 設定ファイルを配置
-  - cp ./.travis/default.yml ./.config
-  - cp ./.travis/test.yml ./.config
+  - cp ./.ci/default.yml ./.config
+  - cp ./.ci/test.yml ./.config
 
   - travis_wait npm run build

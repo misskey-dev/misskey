@@ -4,7 +4,6 @@ import { pack as packUser } from './user';
 import { pack as packFile } from './drive-file';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
-import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
 import { length } from 'stringz';
 
 const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
@@ -22,38 +21,6 @@ export interface IMessagingMessage {
 
 export function isValidText(text: string): boolean {
 	return length(text.trim()) <= 1000 && text.trim() != '';
-}
-
-/**
- * MessagingMessageを物理削除します
- */
-export async function deleteMessagingMessage(messagingMessage: string | mongo.ObjectID | IMessagingMessage) {
-	let m: IMessagingMessage;
-
-	// Populate
-	if (isObjectId(messagingMessage)) {
-		m = await MessagingMessage.findOne({
-			_id: messagingMessage
-		});
-	} else if (typeof messagingMessage === 'string') {
-		m = await MessagingMessage.findOne({
-			_id: new mongo.ObjectID(messagingMessage)
-		});
-	} else {
-		m = messagingMessage as IMessagingMessage;
-	}
-
-	if (m == null) return;
-
-	// このMessagingMessageを指すMessagingHistoryをすべて削除
-	await Promise.all((
-		await MessagingHistory.find({ messageId: m._id })
-	).map(x => deleteMessagingHistory(x)));
-
-	// このMessagingMessageを削除
-	await MessagingMessage.remove({
-		_id: m._id
-	});
 }
 
 /**

@@ -1,27 +1,15 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
-const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
-import Note, { packMany as packNoteMany, deleteNote } from './note';
-import Following, { deleteFollowing } from './following';
-import Mute, { deleteMute } from './mute';
+import { packMany as packNoteMany } from './note';
+import Following from './following';
+import Blocking from './blocking';
+import Mute from './mute';
 import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
-import AccessToken, { deleteAccessToken } from './access-token';
-import NoteWatching, { deleteNoteWatching } from './note-watching';
-import Favorite, { deleteFavorite } from './favorite';
-import NoteReaction, { deleteNoteReaction } from './note-reaction';
-import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
-import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
-import DriveFile, { deleteDriveFile } from './drive-file';
-import DriveFolder, { deleteDriveFolder } from './drive-folder';
-import PollVote, { deletePollVote } from './poll-vote';
-import SwSubscription, { deleteSwSubscription } from './sw-subscription';
-import Notification, { deleteNotification } from './notification';
-import UserList, { deleteUserList } from './user-list';
-import FollowRequest, { deleteFollowRequest } from './follow-request';
+import FollowRequest from './follow-request';
 
 const User = db.get<IUser>('users');
 
@@ -168,151 +156,6 @@ export function isValidBirthday(birthday: string): boolean {
 //#endregion
 
 /**
- * Userを物理削除します
- */
-export async function deleteUser(user: string | mongo.ObjectID | IUser) {
-	let u: IUser;
-
-	// Populate
-	if (isObjectId(user)) {
-		u = await User.findOne({
-			_id: user
-		});
-	} else if (typeof user === 'string') {
-		u = await User.findOne({
-			_id: new mongo.ObjectID(user)
-		});
-	} else {
-		u = user as IUser;
-	}
-
-	console.log(u == null ? `User: delete skipped ${user}` : `User: deleting ${u._id}`);
-
-	if (u == null) return;
-
-	// このユーザーのAccessTokenをすべて削除
-	await Promise.all((
-		await AccessToken.find({ userId: u._id })
-	).map(x => deleteAccessToken(x)));
-
-	// このユーザーのNoteをすべて削除
-	await sequential((
-		await Note.find({ userId: u._id })
-	).map(x => () => deleteNote(x)));
-
-	// このユーザーのNoteReactionをすべて削除
-	await Promise.all((
-		await NoteReaction.find({ userId: u._id })
-	).map(x => deleteNoteReaction(x)));
-
-	// このユーザーのNoteWatchingをすべて削除
-	await Promise.all((
-		await NoteWatching.find({ userId: u._id })
-	).map(x => deleteNoteWatching(x)));
-
-	// このユーザーのPollVoteをすべて削除
-	await Promise.all((
-		await PollVote.find({ userId: u._id })
-	).map(x => deletePollVote(x)));
-
-	// このユーザーのFavoriteをすべて削除
-	await Promise.all((
-		await Favorite.find({ userId: u._id })
-	).map(x => deleteFavorite(x)));
-
-	// このユーザーのMessageをすべて削除
-	await Promise.all((
-		await MessagingMessage.find({ userId: u._id })
-	).map(x => deleteMessagingMessage(x)));
-
-	// このユーザーへのMessageをすべて削除
-	await Promise.all((
-		await MessagingMessage.find({ recipientId: u._id })
-	).map(x => deleteMessagingMessage(x)));
-
-	// このユーザーの関わるMessagingHistoryをすべて削除
-	await Promise.all((
-		await MessagingHistory.find({ $or: [{ partnerId: u._id }, { userId: u._id }] })
-	).map(x => deleteMessagingHistory(x)));
-
-	// このユーザーのDriveFileをすべて削除
-	await Promise.all((
-		await DriveFile.find({ 'metadata.userId': u._id })
-	).map(x => deleteDriveFile(x)));
-
-	// このユーザーのDriveFolderをすべて削除
-	await Promise.all((
-		await DriveFolder.find({ userId: u._id })
-	).map(x => deleteDriveFolder(x)));
-
-	// このユーザーのMuteをすべて削除
-	await Promise.all((
-		await Mute.find({ muterId: u._id })
-	).map(x => deleteMute(x)));
-
-	// このユーザーへのMuteをすべて削除
-	await Promise.all((
-		await Mute.find({ muteeId: u._id })
-	).map(x => deleteMute(x)));
-
-	// このユーザーのFollowingをすべて削除
-	await Promise.all((
-		await Following.find({ followerId: u._id })
-	).map(x => deleteFollowing(x)));
-
-	// このユーザーへのFollowingをすべて削除
-	await Promise.all((
-		await Following.find({ followeeId: u._id })
-	).map(x => deleteFollowing(x)));
-
-	// このユーザーのFollowRequestをすべて削除
-	await Promise.all((
-		await FollowRequest.find({ followerId: u._id })
-	).map(x => deleteFollowRequest(x)));
-
-	// このユーザーへのFollowRequestをすべて削除
-	await Promise.all((
-		await FollowRequest.find({ followeeId: u._id })
-	).map(x => deleteFollowRequest(x)));
-
-	// このユーザーのSwSubscriptionをすべて削除
-	await Promise.all((
-		await SwSubscription.find({ userId: u._id })
-	).map(x => deleteSwSubscription(x)));
-
-	// このユーザーのNotificationをすべて削除
-	await Promise.all((
-		await Notification.find({ notifieeId: u._id })
-	).map(x => deleteNotification(x)));
-
-	// このユーザーが原因となったNotificationをすべて削除
-	await Promise.all((
-		await Notification.find({ notifierId: u._id })
-	).map(x => deleteNotification(x)));
-
-	// このユーザーのUserListをすべて削除
-	await Promise.all((
-		await UserList.find({ userId: u._id })
-	).map(x => deleteUserList(x)));
-
-	// このユーザーが入っているすべてのUserListからこのユーザーを削除
-	await Promise.all((
-		await UserList.find({ userIds: u._id })
-	).map(x =>
-		UserList.update({ _id: x._id }, {
-			$pull: { userIds: u._id }
-		})
-	));
-
-	// このユーザーを削除
-	await User.remove({
-		_id: u._id
-	});
-
-	console.log(`User: deleted ${u._id}`);
-}
-
-/**
  * Pack a user for API response
  *
  * @param user target
@@ -426,8 +269,8 @@ export const pack = (
 		delete _user.hasUnreadNotification;
 	}
 
-	if (meId && !meId.equals(_user.id)) {
-		const [following1, following2, followReq1, followReq2, mute] = await Promise.all([
+	if (meId && !meId.equals(_user.id) && opts.detail) {
+		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Following.findOne({
 				followerId: meId,
 				followeeId: _user.id
@@ -443,6 +286,14 @@ export const pack = (
 			FollowRequest.findOne({
 				followerId: _user.id,
 				followeeId: meId
+			}),
+			Blocking.findOne({
+				blockerId: meId,
+				blockeeId: _user.id
+			}),
+			Blocking.findOne({
+				blockerId: _user.id,
+				blockeeId: meId
 			}),
 			Mute.findOne({
 				muterId: meId,
@@ -459,6 +310,12 @@ export const pack = (
 
 		// Whether the user is followed
 		_user.isFollowed = following2 !== null;
+
+		// Whether the user is blocking
+		_user.isBlocking = toBlocking !== null;
+
+		// Whether the user is blocked
+		_user.isBlocked = fromBlocked !== null;
 
 		// Whether the user is muted
 		_user.isMuted = mute !== null;

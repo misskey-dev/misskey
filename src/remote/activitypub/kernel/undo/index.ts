@@ -1,8 +1,9 @@
 import * as debug from 'debug';
 
 import { IRemoteUser } from '../../../../models/user';
-import { IUndo, IFollow } from '../../type';
+import { IUndo, IFollow, IBlock } from '../../type';
 import unfollow from './follow';
+import unblock from './block';
 import Resolver from '../../resolver';
 
 const log = debug('misskey:activitypub');
@@ -30,6 +31,9 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 	switch (object.type) {
 		case 'Follow':
 			unfollow(actor, object as IFollow);
+			break;
+		case 'Block':
+			unblock(actor, object as IBlock);
 			break;
 	}
 

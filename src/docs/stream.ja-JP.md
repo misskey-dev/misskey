@@ -8,7 +8,7 @@
 
 以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。例:
 ```
-%URL%/streaming?i=xxxxxxxxxxxxxxx
+%WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
 認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
@@ -22,7 +22,7 @@
 認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。例:
 
 ```
-%URL%/streaming
+%WS_URL%/streaming
 ```
 
 ---

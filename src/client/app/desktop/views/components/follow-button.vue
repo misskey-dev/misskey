@@ -40,8 +40,8 @@ export default Vue.extend({
 
 	mounted() {
 		this.connection = (this as any).os.stream.useSharedConnection('main');
-		this.connection.on('follow', this.onFollow);
-		this.connection.on('unfollow', this.onUnfollow);
+		this.connection.on('follow', this.onFollowChange);
+		this.connection.on('unfollow', this.onFollowChange);
 	},
 
 	beforeDestroy() {
@@ -49,17 +49,11 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onFollow(user) {
+		onFollowChange(user) {
 			if (user.id == this.u.id) {
 				this.u.isFollowing = user.isFollowing;
 				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
-			}
-		},
-
-		onUnfollow(user) {
-			if (user.id == this.u.id) {
-				this.u.isFollowing = user.isFollowing;
-				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
+				this.$forceUpdate();
 			}
 		},
 

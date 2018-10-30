@@ -11,7 +11,11 @@
 	<div class="action-form">
 		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
 			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
-			<span v-if="!user.isMuted">%fa:eye-slash% %i18n:@mute%</span>
+			<span v-else>%fa:eye-slash% %i18n:@mute%</span>
+		</ui-button>
+		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
+			<span v-if="user.isBlocking">%fa:user% %i18n:@unblock%</span>
+			<span v-else>%fa:user-slash% %i18n:@block%</span>
 		</ui-button>
 		<ui-button @click="list">%fa:list% %i18n:@push-to-a-list%</ui-button>
 	</div>
@@ -66,6 +70,27 @@ export default Vue.extend({
 			});
 		},
 
+		block() {
+			if (!window.confirm('%i18n:@block-confirm%')) return;
+			(this as any).api('blocking/create', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isBlocking = true;
+			}, () => {
+				alert('error');
+			});
+		},
+
+		unblock() {
+			(this as any).api('blocking/delete', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isBlocking = false;
+			}, () => {
+				alert('error');
+			});
+		},
+
 		list() {
 			const w = (this as any).os.new(MkUserListsWindow);
 			w.$once('choosen', async list => {
@@ -114,7 +139,6 @@ export default Vue.extend({
 	> .action-form
 		padding 16px
 		text-align center
-		border-bottom solid 1px var(--faceDivider)
 
 		> *
 			width 100%

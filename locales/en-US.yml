@@ -1055,6 +1055,9 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mute"
   muted: "Muting"
   unmute: "Unmute"
+  block: "Block"
+  unblock: "Unblock"
+  block-confirm: "Are you sure block this user?"
   push-to-a-list: "Add to list"
   list-pushed: "Successfully added {user} to {list}."
 desktop/views/pages/user/user.header.vue:
@@ -1329,6 +1332,10 @@ mobile/views/pages/user.vue:
   timeline: "Timeline"
   media: "Media"
   is-suspended: "This account has been suspended."
+  mute: "Mute"
+  unmute: "Unmute"
+  block: "Block"
+  unblock: "Unblock"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"

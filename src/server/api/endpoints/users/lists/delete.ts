@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID from '../../../../../misc/cafy-id';
-import UserList, { deleteUserList } from '../../../../../models/user-list';
+import UserList from '../../../../../models/user-list';
 import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
 
@@ -37,7 +37,9 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('list not found');
 	}
 
-	deleteUserList(userList);
+	await UserList.remove({
+		_id: userList._id
+	});
 
 	res();
 });

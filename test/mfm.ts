@@ -152,6 +152,11 @@ describe('Text', () => {
 			assert.deepEqual([
 				{ type: 'quote', content: '> foo\n> bar\n> baz', quote: 'foo\nbar\nbaz' }
 			], tokens4);
+
+			const tokens5 = analyze('"\nfoo\nbar\nbaz\n"');
+			assert.deepEqual([
+				{ type: 'quote', content: '"\nfoo\nbar\nbaz\n"', quote: 'foo\nbar\nbaz' }
+			], tokens5);
 		});
 
 		it('url', () => {

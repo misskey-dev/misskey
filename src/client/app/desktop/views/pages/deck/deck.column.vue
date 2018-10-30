@@ -1,6 +1,6 @@
 <template>
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
-		@dragover.prevent.stop="onDragover"
+		@dragenter.prevent.stop="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
 		v-hotkey="keymap">
@@ -269,7 +269,7 @@ export default Vue.extend({
 			this.dragging = false;
 		},
 
-		onDragover(e) {
+		onDragenter(e) {
 			// テンポラリカラムにはドロップさせない
 			if (this.isTemporaryColumn) {
 				e.dataTransfer.dropEffect = 'none';
@@ -287,7 +287,7 @@ export default Vue.extend({
 
 			e.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
 
-			if (!this.dragging) this.draghover = true;
+			if (!this.dragging && isDeckColumn) this.draghover = true;
 		},
 
 		onDragleave() {

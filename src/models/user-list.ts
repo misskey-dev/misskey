@@ -14,33 +14,6 @@ export interface IUserList {
 	userIds: mongo.ObjectID[];
 }
 
-/**
- * UserListを物理削除します
- */
-export async function deleteUserList(userList: string | mongo.ObjectID | IUserList) {
-	let u: IUserList;
-
-	// Populate
-	if (isObjectId(userList)) {
-		u = await UserList.findOne({
-			_id: userList
-		});
-	} else if (typeof userList === 'string') {
-		u = await UserList.findOne({
-			_id: new mongo.ObjectID(userList)
-		});
-	} else {
-		u = userList as IUserList;
-	}
-
-	if (u == null) return;
-
-	// このUserListを削除
-	await UserList.remove({
-		_id: u._id
-	});
-}
-
 export const pack = (
 	userList: string | mongo.ObjectID | IUserList
 ) => new Promise<any>(async (resolve, reject) => {

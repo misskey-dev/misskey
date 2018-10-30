@@ -216,6 +216,12 @@ router.get('/*/*', async ctx => {
 		replace: config.url
 	}));
 
+	showdown.extension('wsUrlExtension', () => ({
+		type: 'output',
+		regex: /%WS_URL%/g,
+		replace: config.ws_url
+	}));
+
 	showdown.extension('apiUrlExtension', () => ({
 		type: 'output',
 		regex: /%API_URL%/g,

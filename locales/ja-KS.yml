@@ -848,19 +848,19 @@ desktop/views/components/settings.2fa.vue:
   failed: "なんか設定に失敗したで。トークンを間違えとらんか確認してや。"
   info: "次のサインインからは、パスワードに加えてデバイスに出とるトークンを入力してな。"
 common/views/components/api-settings.vue:
-  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
-  regenerate-token: "トークンを再生成"
+  intro: "API使うんやったらこのトークンを「i」っちゅうパラメータにくっつけてリクエストできるで。"
+  caution: "アカウント勝手にいじられるかも知れんから、このトークンは教えたらあかんし、アプリにも書いたらあかんで(これはフリちゃうで)"
+  regeneration-of-token: "トークン漏れてもうたんやったらもっかい生成できるで。"
+  regenerate-token: "トークンもっかい生成"
   token: "Token:"
-  enter-password: "パスワードを入力してください"
+  enter-password: "パスワードを入れてや"
   console:
     title: 'APIコンソール'
     endpoint: 'エンドポイント'
     parameter: 'パラメータ'
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    send: '送る'
+    sending: '応答待っとる'
+    response: 'こんなん返ってきたわ'
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはあらへんで"
 common/views/components/drive-settings.vue:
@@ -1055,6 +1055,9 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしとるで"
   unmute: "ミュート解除"
+  block: "ブロックする"
+  unblock: "ブロック解除"
+  block-confirm: "このユーザーをブロックしますか？"
   push-to-a-list: "リストに追加"
   list-pushed: "{user}を{list}に追加したで。"
 desktop/views/pages/user/user.header.vue:
@@ -1329,6 +1332,10 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "メディア"
   is-suspended: "このユーザーはあかんわ。凍結されとる。"
+  mute: "ミュート"
+  unmute: "ミュート解除"
+  block: "ブロック"
+  unblock: "ブロック解除"
 mobile/views/pages/user/home.vue:
   recent-notes: "最近儲かりまっか？"
   images: "画像"
