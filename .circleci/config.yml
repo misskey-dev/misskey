@@ -8,7 +8,7 @@ general:
 
 executors:
   default:
-    working_directory: /tmp/workspace
+    working_directory: /tmp/misskey
     docker:
       - image: misskey/ci:latest
       - image: circleci/mongo:latest
