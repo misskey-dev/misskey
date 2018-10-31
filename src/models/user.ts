@@ -261,6 +261,16 @@ export const pack = (
 
 	if (_user.avatarUrl == null) {
 		_user.avatarUrl = `${config.drive_url}/default-avatar.jpg`;
+
+		// 互換性のため
+		if (_user.avatarId) {
+			_user.avatarUrl = `${config.drive_url}/${_user.avatarId}`;
+		}
+	}
+
+	// 互換性のため
+	if (_user.bannerId && _user.bannerUrl == null) {
+		_user.bannerUrl = `${config.drive_url}/${_user.bannerId}`;
 	}
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
