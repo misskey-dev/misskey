@@ -259,11 +259,6 @@ export const pack = async (
 
 	// When requested a detailed note data
 	if (opts.detail) {
-		//#region 重いので廃止
-		_note.prev = null;
-		_note.next = null;
-		//#endregion
-
 		if (_note.replyId) {
 			// Populate reply to note
 			_note.reply = pack(_note.replyId, meId, {
