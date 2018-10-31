@@ -4,9 +4,9 @@ import { publishMainStream } from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';
-import config from '../../../../config';
 import { publishToFollowers } from '../../../../services/i/update';
 import getParams from '../../get-params';
+import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 
 export const meta = {
 	desc: {
@@ -129,7 +129,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		if (avatar == null) return rej('avatar not found');
 		if (!avatar.contentType.startsWith('image/')) return rej('avatar not an image');
 
-		updates.avatarUrl = avatar.metadata.thumbnailUrl || avatar.metadata.url || `${config.drive_url}/${avatar._id}`;
+		updates.avatarUrl = getDriveFileUrl(avatar, true);
 
 		if (avatar.metadata.properties.avgColor) {
 			updates.avatarColor = avatar.metadata.properties.avgColor;
@@ -144,7 +144,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		if (banner == null) return rej('banner not found');
 		if (!banner.contentType.startsWith('image/')) return rej('banner not an image');
 
-		updates.bannerUrl = banner.metadata.url || `${config.drive_url}/${banner._id}`;
+		updates.bannerUrl = getDriveFileUrl(banner, true);
 
 		if (banner.metadata.properties.avgColor) {
 			updates.bannerColor = banner.metadata.properties.avgColor;
@@ -162,7 +162,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 
 			if (wallpaper == null) return rej('wallpaper not found');
 
-			updates.wallpaperUrl = wallpaper.metadata.url || `${config.drive_url}/${wallpaper._id}`;
+			updates.wallpaperUrl = getDriveFileUrl(wallpaper);
 
 			if (wallpaper.metadata.properties.avgColor) {
 				updates.wallpaperColor = wallpaper.metadata.properties.avgColor;

@@ -1,9 +1,9 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import { pack as packFolder } from './drive-folder';
-import config from '../config';
 import monkDb, { nativeDbConn } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
+import getDriveFileUrl from '../misc/get-drive-file-url';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
@@ -33,7 +33,14 @@ export type IMetadata = {
 	thumbnailUrl?: string;
 	src?: string;
 	deletedAt?: Date;
+
+	/**
+	 * このファイルの中身データがMongoDB内に保存されているのか否か
+	 * オブジェクトストレージを利用している or リモートサーバーへの直リンクである
+	 * な場合は false になります
+	 */
 	withoutChunks?: boolean;
+
 	storage?: string;
 	storageProps?: any;
 	isSensitive?: boolean;
@@ -128,8 +135,8 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
-	_target.url = _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
-	_target.thumbnailUrl = _file.metadata.thumbnailUrl ? _file.metadata.thumbnailUrl : _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}?thumbnail`;
+	_target.url = getDriveFileUrl(file);
+	_target.thumbnailUrl = getDriveFileUrl(file, true);
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};

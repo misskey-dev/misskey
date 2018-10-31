@@ -15,6 +15,7 @@ import { URL } from 'url';
 import { resolveNote } from './note';
 import registerInstance from '../../../services/register-instance';
 import Instance from '../../../models/instance';
+import getDriveFileUrl from '../../../misc/get-drive-file-url';
 
 const log = debug('misskey:activitypub');
 
@@ -303,8 +304,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			featured: person.featured,
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
-			avatarUrl: (avatar && avatar.metadata.thumbnailUrl) ? avatar.metadata.thumbnailUrl : (avatar && avatar.metadata.url) ? avatar.metadata.url : null,
-			bannerUrl: banner && banner.metadata.url ? banner.metadata.url : null,
+			avatarUrl: getDriveFileUrl(avatar, true),
+			bannerUrl: getDriveFileUrl(banner, true),
 			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,
