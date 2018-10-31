@@ -9,6 +9,7 @@ mongodb:
   db: test-misskey
   user: admin
   pass: ''
+# __REDIS__
 redis:
   host: localhost
   port: 6379
