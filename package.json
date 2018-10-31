@@ -205,7 +205,7 @@
 		"ts-node": "7.0.1",
 		"tslint": "5.10.0",
 		"typescript": "3.1.4",
-		"typescript-eslint-parser": "20.0.0",
+		"typescript-eslint-parser": "20.1.1",
 		"uglify-es": "3.3.9",
 		"url-loader": "1.1.2",
 		"uuid": "3.3.2",
