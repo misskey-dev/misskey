@@ -1,8 +1,6 @@
 <template>
 <div class="root">
-	<div class="none ui info" v-if="!fetching && apps.length == 0">
-		<p>%fa:info-circle%%i18n:@no-apps%</p>
-	</div>
+	<ui-info v-if="!fetching && apps.length == 0">%i18n:@no-apps%</ui-info>
 	<div class="apps" v-if="apps.length != 0">
 		<div v-for="app in apps">
 			<p><b>{{ app.name }}</b></p>

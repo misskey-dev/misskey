@@ -131,6 +131,8 @@
 		remoteInfoBg: '#fff0db',
 		remoteInfoFg: '#573c08',
 
+		infoBg: '#e5f5ff',
+		infoFg: '#72818a',
 		infoWarnBg: '#fff0db',
 		infoWarnFg: '#573c08',
 

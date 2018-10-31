@@ -1,6 +1,7 @@
 <template>
 <div class="ymxyweixqwsxauxldgpvecjepnwxbylu" :class="{ warn }">
 	<i v-if="warn">%fa:exclamation-triangle%</i>
+	<i v-else>%fa:info-circle%</i>
 	<slot></slot>
 </div>
 </template>
@@ -23,11 +24,20 @@ export default Vue.extend({
 	margin 16px 0
 	padding 16px
 	font-size 90%
-
-	> i
-		margin-right 4px
+	background var(--infoBg)
+	color var(--infoFg)
 
 	&.warn
 		background var(--infoWarnBg)
 		color var(--infoWarnFg)
+
+	&:first-child
+		margin-top 0
+
+	&:last-child
+		margin-bottom 0
+
+	> i
+		margin-right 4px
+
 </style>

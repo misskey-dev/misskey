@@ -4,9 +4,7 @@
 
 	<section>
 		<header>%i18n:@mute%</header>
-		<ui-info v-if="!muteFetching && mute.length == 0">
-			<p>%i18n:@no-muted-users%</p>
-		</ui-info>
+		<ui-info v-if="!muteFetching && mute.length == 0">%i18n:@no-muted-users%</ui-info>
 		<div class="users" v-if="mute.length != 0">
 			<div v-for="user in mute" :key="user.id">
 				<p><b>{{ user | userName }}</b> @{{ user | acct }}</p>
@@ -16,9 +14,7 @@
 
 	<section>
 		<header>%i18n:@block%</header>
-		<ui-info v-if="!blockFetching && block.length == 0">
-			<p>%i18n:@no-blocked-users%</p>
-		</ui-info>
+		<ui-info v-if="!blockFetching && block.length == 0">%i18n:@no-blocked-users%</ui-info>
 		<div class="users" v-if="block.length != 0">
 			<div v-for="user in block" :key="user.id">
 				<p><b>{{ user | userName }}</b> @{{ user | acct }}</p>
