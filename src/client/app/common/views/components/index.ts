@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import muteAndBlock from './mute-and-block.vue';
 import error from './error.vue';
 import apiSettings from './api-settings.vue';
 import driveSettings from './drive-settings.vue';
@@ -50,6 +51,7 @@ import uiInfo from './ui/info.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
+Vue.component('mk-mute-and-block', muteAndBlock);
 Vue.component('mk-error', error);
 Vue.component('mk-api-settings', apiSettings);
 Vue.component('mk-drive-settings', driveSettings);

@@ -1,17 +1,17 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import Mute, { packMany } from '../../../../models/mute';
+import Blocking, { packMany } from '../../../../models/blocking';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'ミュートしているユーザー一覧を取得します。',
-		'en-US': 'Get muted users.'
+		'ja-JP': 'ブロックしているユーザー一覧を取得します。',
+		'en-US': 'Get blocking users.'
 	},
 
 	requireCredential: true,
 
-	kind: 'account/read',
+	kind: 'following-read',
 
 	params: {
 		limit: $.num.optional.range(1, 100).note({
@@ -36,7 +36,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	}
 
 	const query = {
-		muterId: me._id
+		blockerId: me._id
 	} as any;
 
 	const sort = {
@@ -54,11 +54,11 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		};
 	}
 
-	const mutes = await Mute
+	const blockings = await Blocking
 		.find(query, {
 			limit: ps.limit,
 			sort: sort
 		});
 
-	res(await packMany(mutes, me));
+	res(await packMany(blockings, me));
 });

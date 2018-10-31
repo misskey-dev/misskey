@@ -7,7 +7,7 @@
 		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'">%fa:R bell .fw%%i18n:@notification%</p>
 		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:common.drive%</p>
 		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'">%fa:hashtag .fw%%i18n:@tags%</p>
-		<p :class="{ active: page == 'mute' }" @mousedown="page = 'mute'">%fa:ban .fw%%i18n:@mute%</p>
+		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'">%fa:ban .fw%%i18n:@mute-and-block%</p>
 		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'">%fa:puzzle-piece .fw%%i18n:@apps%</p>
 		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'">%fa:unlock-alt .fw%%i18n:@security%</p>
 		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'">%fa:key .fw%API</p>
@@ -200,12 +200,9 @@
 			</section>
 		</ui-card>
 
-		<ui-card class="mute" v-show="page == 'mute'">
-			<div slot="title">%fa:ban% %i18n:@mute%</div>
-			<section>
-				<x-mute/>
-			</section>
-		</ui-card>
+		<div class="muteAndBlock" v-show="page == 'muteAndBlock'">
+			<mk-mute-and-block/>
+		</div>
 
 		<ui-card class="apps" v-show="page == 'apps'">
 			<div slot="title">%fa:puzzle-piece% %i18n:@apps%</div>
@@ -289,7 +286,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XMute from './settings.mute.vue';
 import XPassword from './settings.password.vue';
 import X2fa from './settings.2fa.vue';
 import XApps from './settings.apps.vue';
@@ -300,7 +296,6 @@ import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
 	components: {
-		XMute,
 		XPassword,
 		X2fa,
 		XApps,
