@@ -54,7 +54,7 @@ export interface INotification {
 export const packMany = async (
 	notifications: any[]
 ) => {
-	return (await Promise.all(notifications.map(n => pack(n)))).filter(x => x != null);
+	return (await Promise.all(notifications.map(n => pack(n))));
 };
 
 /**

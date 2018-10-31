@@ -20,7 +20,7 @@ export const packMany = async (
 	favorites: any[],
 	me: any
 ) => {
-	return (await Promise.all(favorites.map(f => pack(f, me)))).filter(x => x != null);
+	return (await Promise.all(favorites.map(f => pack(f, me))));
 };
 
 /**

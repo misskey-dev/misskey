@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 const deepcopy = require('deepcopy');
-import { pack as packUser } from './user';
+import { pack as packUser, IUser } from './user';
 
 const Mute = db.get<IMute>('mute');
 Mute.createIndex('muterId');
@@ -21,7 +21,7 @@ export const packMany = async (
 	mutes: (string | mongo.ObjectID | IMute)[],
 	me?: string | mongo.ObjectID | IUser
 ) => {
-	return (await Promise.all(mutes.map(x => pack(x, me)))).filter(x => x != null);
+	return (await Promise.all(mutes.map(x => pack(x, me))));
 };
 
 export const pack = (

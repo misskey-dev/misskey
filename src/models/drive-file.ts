@@ -79,7 +79,7 @@ export const packMany = async (
 		detail: boolean
 	}
 ) => {
-	return (await Promise.all(files.map(f => pack(f, options)))).filter(x => x != null);
+	return (await Promise.all(files.map(f => pack(f, options))));
 };
 
 /**

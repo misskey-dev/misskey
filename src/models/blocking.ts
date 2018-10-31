@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 const deepcopy = require('deepcopy');
-import { pack as packUser } from './user';
+import { pack as packUser, IUser } from './user';
 
 const Blocking = db.get<IBlocking>('blocking');
 Blocking.createIndex('blockerId');
@@ -21,7 +21,7 @@ export const packMany = async (
 	blockings: (string | mongo.ObjectID | IBlocking)[],
 	me?: string | mongo.ObjectID | IUser
 ) => {
-	return (await Promise.all(blockings.map(x => pack(x, me)))).filter(x => x != null);
+	return (await Promise.all(blockings.map(x => pack(x, me))));
 };
 
 export const pack = (

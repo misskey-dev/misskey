@@ -172,7 +172,7 @@ export const packMany = async (
 		skipHide?: boolean;
 	}
 ) => {
-	return (await Promise.all(notes.map(n => pack(n, me, options)))).filter(x => x != null);
+	return (await Promise.all(notes.map(n => pack(n, me, options))));
 };
 
 /**
