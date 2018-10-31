@@ -48,7 +48,9 @@ export const pack = (
 	delete _blocking._id;
 
 	// Populate blockee
-	_blocking.blockee = await packUser(_blocking.blockeeId, me);
+	_blocking.blockee = await packUser(_blocking.blockeeId, me, {
+		detail: true
+	});
 
 	resolve(_blocking);
 });

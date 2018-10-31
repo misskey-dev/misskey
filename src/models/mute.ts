@@ -48,7 +48,9 @@ export const pack = (
 	delete _mute._id;
 
 	// Populate mutee
-	_mute.mutee = await packUser(_mute.muteeId, me);
+	_mute.mutee = await packUser(_mute.muteeId, me, {
+		detail: true
+	});
 
 	resolve(_mute);
 });
