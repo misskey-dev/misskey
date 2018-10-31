@@ -7,6 +7,8 @@ export const meta = {
 		'ja-JP': 'ユーザー間のリレーションを取得します。'
 	},
 
+	requireCredential: true,
+
 	params: {
 		userId: $.or($.type(ID), $.arr($.type(ID)).unique()).note({
 			desc: {
