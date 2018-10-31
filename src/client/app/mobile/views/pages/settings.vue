@@ -85,6 +85,8 @@
 
 			<mk-drive-settings/>
 
+			<mk-mute-and-block/>
+
 			<ui-card>
 				<div slot="title">%fa:volume-up% %i18n:@sound%</div>
 

@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import Blocking from '../../../../models/blocking';
-import { pack, ILocalUser } from '../../../../models/user';
+import Blocking, { packMany } from '../../../../models/blocking';
+import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
@@ -10,50 +11,54 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-read'
+	kind: 'following-read',
+
+	params: {
+		limit: $.num.optional.range(1, 100).note({
+			default: 30
+		}),
+
+		sinceId: $.type(ID).optional.note({
+		}),
+
+		untilId: $.type(ID).optional.note({
+		}),
+	}
 };
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 30, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
-	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.type(ID).optional.get(params.cursor);
-	if (cursorErr) return rej('invalid cursor param');
+	// Check if both of sinceId and untilId is specified
+	if (ps.sinceId && ps.untilId) {
+		return rej('cannot set sinceId and untilId');
+	}
 
-	// Construct query
 	const query = {
 		blockerId: me._id
 	} as any;
 
-	// カーソルが指定されている場合
-	if (cursor) {
+	const sort = {
+		_id: -1
+	};
+
+	if (ps.sinceId) {
+		sort._id = 1;
 		query._id = {
-			$lt: cursor
+			$gt: ps.sinceId
+		};
+	} else if (ps.untilId) {
+		query._id = {
+			$lt: ps.untilId
 		};
 	}
 
-	// Get blockings
 	const blockings = await Blocking
 		.find(query, {
-			limit: limit + 1,
-			sort: { _id: -1 }
+			limit: ps.limit,
+			sort: sort
 		});
 
-	// 「次のページ」があるかどうか
-	const inStock = blockings.length === limit + 1;
-	if (inStock) {
-		blockings.pop();
-	}
-
-	// Serialize
-	const users = await Promise.all(blockings.map(async m =>
-		await pack(m.blockeeId, me, { detail: true })));
-
-	// Response
-	res({
-		users: users,
-		next: inStock ? blockings[blockings.length - 1]._id : null,
-	});
+	res(await packMany(blockings, me));
 });
