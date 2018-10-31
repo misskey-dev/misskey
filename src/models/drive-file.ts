@@ -135,8 +135,8 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
-	_target.url = getDriveFileUrl(file);
-	_target.thumbnailUrl = getDriveFileUrl(file, true);
+	_target.url = getDriveFileUrl(_file);
+	_target.thumbnailUrl = getDriveFileUrl(_file, true);
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
