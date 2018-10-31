@@ -181,12 +181,22 @@ export const pack = (
 
 	const fields = opts.detail ? {
 	} : {
+		bannerColor: false,
+		bannerUrl: false,
+		description: false,
+		notesCount: false,
+		followersCount: false,
+		followingCount: false,
+		lastUsedAt: false,
 		settings: false,
 		clientSettings: false,
 		profile: false,
 		keywords: false,
 		domains: false,
-		pinnedNoteIds: false
+		pinnedNoteIds: false,
+		wallpaperColor: false,
+		wallpaperId: false,
+		wallpaperUrl: false
 	};
 
 	// Populate the user if 'user' is ID
