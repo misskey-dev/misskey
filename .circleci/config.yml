@@ -97,14 +97,22 @@ jobs:
       - run:
           name: Build
           command: |
-            docker build .
+            docker build . | tee docker.log
+            tail -n 1 docker.log | read __Successfully __built tag
       - when:
           condition: <<parameters.with_deploy>>
           steps:
             - run:
                 name: Deploy
                 command: |
-                  docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD && docker push misskey/misskey
+                  if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
+                   then
+                    docker tag $tag misskey/misskey
+                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+                    docker push misskey/misskey
+                   else
+                    echo -e '\033[0;33mAborted deploying to Docker Hub\033[0;39m'
+                  fi
 
 workflows:
   version: 2
