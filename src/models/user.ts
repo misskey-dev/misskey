@@ -155,6 +155,50 @@ export function isValidBirthday(birthday: string): boolean {
 }
 //#endregion
 
+export async function getRelation(me: mongo.ObjectId, target: mongo.ObjectId) {
+	const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
+		Following.findOne({
+			followerId: me,
+			followeeId: target
+		}),
+		Following.findOne({
+			followerId: target,
+			followeeId: me
+		}),
+		FollowRequest.findOne({
+			followerId: me,
+			followeeId: target
+		}),
+		FollowRequest.findOne({
+			followerId: target,
+			followeeId: me
+		}),
+		Blocking.findOne({
+			blockerId: me,
+			blockeeId: target
+		}),
+		Blocking.findOne({
+			blockerId: target,
+			blockeeId: me
+		}),
+		Mute.findOne({
+			muterId: me,
+			muteeId: target
+		})
+	]);
+
+	return {
+		isFollowing: following1 !== null,
+		isStalking: following1 && following1.stalk,
+		hasPendingFollowRequestFromYou: followReq1 !== null,
+		hasPendingFollowRequestToYou: followReq2 !== null,
+		isFollowed: following2 !== null,
+		isBlocking: toBlocking !== null,
+		isBlocked: fromBlocked !== null,
+		isMuted: mute !== null
+	};
+}
+
 /**
  * Pack a user for API response
  *
@@ -271,55 +315,16 @@ export const pack = (
 	}
 
 	if (meId && !meId.equals(_user.id) && opts.detail) {
-		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
-			Following.findOne({
-				followerId: meId,
-				followeeId: _user.id
-			}),
-			Following.findOne({
-				followerId: _user.id,
-				followeeId: meId
-			}),
-			FollowRequest.findOne({
-				followerId: meId,
-				followeeId: _user.id
-			}),
-			FollowRequest.findOne({
-				followerId: _user.id,
-				followeeId: meId
-			}),
-			Blocking.findOne({
-				blockerId: meId,
-				blockeeId: _user.id
-			}),
-			Blocking.findOne({
-				blockerId: _user.id,
-				blockeeId: meId
-			}),
-			Mute.findOne({
-				muterId: meId,
-				muteeId: _user.id
-			})
-		]);
+		const relation = await getRelation(meId, _user.id);
 
-		// Whether the user is following
-		_user.isFollowing = following1 !== null;
-		_user.isStalking = following1 && following1.stalk;
-
-		_user.hasPendingFollowRequestFromYou = followReq1 !== null;
-		_user.hasPendingFollowRequestToYou = followReq2 !== null;
-
-		// Whether the user is followed
-		_user.isFollowed = following2 !== null;
-
-		// Whether the user is blocking
-		_user.isBlocking = toBlocking !== null;
-
-		// Whether the user is blocked
-		_user.isBlocked = fromBlocked !== null;
-
-		// Whether the user is muted
-		_user.isMuted = mute !== null;
+		_user.isFollowing = relation.isFollowing;
+		_user.isFollowed = relation.isFollowed;
+		_user.isStalking = relation.isStalking;
+		_user.hasPendingFollowRequestFromYou = relation.hasPendingFollowRequestFromYou;
+		_user.hasPendingFollowRequestToYou = relation.hasPendingFollowRequestToYou;
+		_user.isBlocking = relation.isBlocking;
+		_user.isBlocked = relation.isBlocked;
+		_user.isMuted = relation.isMuted;
 	}
 
 	if (opts.detail) {
