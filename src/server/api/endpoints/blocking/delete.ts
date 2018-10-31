@@ -71,5 +71,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	await deleteBlocking(blocker, blockee);
 
 	// Send response
-	res(await pack(blockee._id, user));
+	res(await pack(blockee._id, user, {
+		detail: true
+	}));
 });
