@@ -88,7 +88,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 </tr></table>
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13039004/509d0c412eb14ae08d6a812a3054f7d6/1?token-time=2145916800&token-hash=zwSu01tOtn5xTUucDZHuPsCxF2HBEMVs9ROJKTlEV_o%3D" alt="nemu"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/3?token-time=2145916800&token-hash=qsdn0-e6yLaLI6hUX9JAkyTR6a5UdnSp7T1foniBvGQ%3D" alt="Naoki Kosaka"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/3?token-time=2145916800&token-hash=qsdn0-e6yLaLI6hUX9JAkyTR6a5UdnSp7T1foniBvGQ%3D" alt="YUKIMOCHI"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/8241184/39e18850e87a449e9c9a71acb3310ebd/2?token-time=2145916800&token-hash=iUXOQzRyJDv3PJxwS7Mjwg1459dzh2trOq6NFtXu_OM%3D" alt="Acid Chicken"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13034746/c711c7f58e204ecfbc2fd646bc8a4eee/1?token-time=2145916800&token-hash=UERBN4OyP7Nh5XwwdDg0N0IE5cD6_qUQMO81Z5Wizso%3D" alt="Hiratake"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/10789744/97175095d8f04c0f86225ff47cb98d40/1?token-time=2145916800&token-hash=P4BIzCX2I1CkEP66ottfhsC8Wr6BUSamjA-vq3pLqFI%3D" alt="Naoki Hirayama"></td>
@@ -98,7 +98,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1?token-time=2145916800&token-hash=tMosUojzUYJCH_3t--tvYA-SMCyrS__hzSndyaRSnbo%3D" alt="Takashi Shibuya"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/user?u=13039004">nemu</a></td>
-<td><a href="https://www.patreon.com/user?u=5881381">Naoki Kosaka</a></td>
+<td><a href="https://www.patreon.com/yukimochi">YUKIMOCHI</a></td>
 <td><a href="https://www.patreon.com/acid_chicken">Acid Chicken</a></td>
 <td><a href="https://www.patreon.com/hiratake">Hiratake</a></td>
 <td><a href="https://www.patreon.com/spinlock">Naoki Hirayama</a></td>
@@ -111,7 +111,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 </tr><tr>
 </tr></table>
 
-**Last updated:** Wed, 31 Oct 2018 21:10:06 UTC
+**Last updated:** Wed, 31 Oct 2018 23:21:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
