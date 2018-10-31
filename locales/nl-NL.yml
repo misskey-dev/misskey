@@ -741,7 +741,8 @@ desktop/views/components/settings.vue:
   profile: "Profiel"
   notification: "Melding"
   apps: "Apps"
-  mute: "Dempen"
+  mute-and-block: "ミュート/ブロック"
+  blocking: "ブロック"
   security: "Beveiliging"
   signin: "Inloggeschiedenis"
   password: "Wachtwoord"
@@ -867,8 +868,12 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "使用中"
   stats: "統計"
-desktop/views/components/settings.mute.vue:
-  no-users: "Geen gedempte gebruikers"
+common/views/components/mute-and-block.vue:
+  mute-and-block: "ミュートとブロック"
+  mute: "ミュート"
+  block: "ブロック"
+  no-muted-users: "ミュートしているユーザーはいません"
+  no-blocked-users: "ブロックしているユーザーはいません"
 desktop/views/components/settings.password.vue:
   reset: "Wachtwoord wijzigen"
   enter-current-password: "Voer je huidige wachtwoord in"

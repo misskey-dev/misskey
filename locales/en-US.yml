@@ -741,7 +741,8 @@ desktop/views/components/settings.vue:
   profile: "Profile"
   notification: "Notification"
   apps: "Apps"
-  mute: "Mute"
+  mute-and-block: "Mute / Block"
+  blocking: "Blocking"
   security: "Security"
   signin: "Sign in history"
   password: "Password"
@@ -867,8 +868,12 @@ common/views/components/drive-settings.vue:
   max: "Max"
   in-use: "In use"
   stats: "Statistics"
-desktop/views/components/settings.mute.vue:
-  no-users: "No muted users"
+common/views/components/mute-and-block.vue:
+  mute-and-block: "Mute / Block"
+  mute: "Mute"
+  block: "Blocking"
+  no-muted-users: "No muted users"
+  no-blocked-users: "No blocked users"
 desktop/views/components/settings.password.vue:
   reset: "Change password"
   enter-current-password: "Enter the current password"

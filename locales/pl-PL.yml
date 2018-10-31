@@ -741,7 +741,8 @@ desktop/views/components/settings.vue:
   profile: "Profil"
   notification: "Powiadomienia"
   apps: "Aplikacje"
-  mute: "Wyciszanie"
+  mute-and-block: "ミュート/ブロック"
+  blocking: "ブロック"
   security: "Bezpieczeństwo"
   signin: "Historia logowań"
   password: "Hasło"
@@ -867,8 +868,12 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "使用中"
   stats: "統計"
-desktop/views/components/settings.mute.vue:
-  no-users: "Brak wyciszonych użytkowników"
+common/views/components/mute-and-block.vue:
+  mute-and-block: "ミュートとブロック"
+  mute: "ミュート"
+  block: "ブロック"
+  no-muted-users: "ミュートしているユーザーはいません"
+  no-blocked-users: "ブロックしているユーザーはいません"
 desktop/views/components/settings.password.vue:
   reset: "Zmień hasło"
   enter-current-password: "Wprowadź obecne hasło"
