@@ -3,6 +3,7 @@
 [![Misskey](/assets/title.png)](https://misskey.xyz/)
 ================================================================
 
+[![CircleCI](https://circleci.com/gh/syuilo/misskey.svg?style=svg)](https://circleci.com/gh/syuilo/misskey)
 [![][travis-badge]][travis-link]
 [![][dependencies-badge]][dependencies-link]
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
