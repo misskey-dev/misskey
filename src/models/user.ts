@@ -185,7 +185,8 @@ export const pack = (
 		clientSettings: false,
 		profile: false,
 		keywords: false,
-		domains: false
+		domains: false,
+		pinnedNoteIds: false
 	};
 
 	// Populate the user if 'user' is ID
