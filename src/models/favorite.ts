@@ -16,11 +16,11 @@ export type IFavorite = {
 	noteId: mongo.ObjectID;
 };
 
-export const packMany = async (
+export const packMany = (
 	favorites: any[],
 	me: any
 ) => {
-	return (await Promise.all(favorites.map(f => pack(f, me))));
+	return Promise.all(favorites.map(f => pack(f, me)));
 };
 
 /**

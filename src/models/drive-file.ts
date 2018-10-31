@@ -73,13 +73,13 @@ export function validateFileName(name: string): boolean {
 	);
 }
 
-export const packMany = async (
+export const packMany = (
 	files: any[],
 	options?: {
 		detail: boolean
 	}
 ) => {
-	return (await Promise.all(files.map(f => pack(f, options))));
+	return Promise.all(files.map(f => pack(f, options)));
 };
 
 /**

@@ -17,11 +17,11 @@ export type IBlocking = {
 	blockerId: mongo.ObjectID;
 };
 
-export const packMany = async (
+export const packMany = (
 	blockings: (string | mongo.ObjectID | IBlocking)[],
 	me?: string | mongo.ObjectID | IUser
 ) => {
-	return (await Promise.all(blockings.map(x => pack(x, me))));
+	return Promise.all(blockings.map(x => pack(x, me)));
 };
 
 export const pack = (

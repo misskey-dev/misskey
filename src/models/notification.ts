@@ -51,10 +51,10 @@ export interface INotification {
 	isRead: Boolean;
 }
 
-export const packMany = async (
+export const packMany = (
 	notifications: any[]
 ) => {
-	return (await Promise.all(notifications.map(n => pack(n))));
+	return Promise.all(notifications.map(n => pack(n)));
 };
 
 /**

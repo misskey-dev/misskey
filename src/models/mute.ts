@@ -17,11 +17,11 @@ export interface IMute {
 	muteeId: mongo.ObjectID;
 }
 
-export const packMany = async (
+export const packMany = (
 	mutes: (string | mongo.ObjectID | IMute)[],
 	me?: string | mongo.ObjectID | IUser
 ) => {
-	return (await Promise.all(mutes.map(x => pack(x, me))));
+	return Promise.all(mutes.map(x => pack(x, me)));
 };
 
 export const pack = (
