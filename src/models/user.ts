@@ -240,7 +240,8 @@ export const pack = (
 		pinnedNoteIds: false,
 		wallpaperColor: false,
 		wallpaperId: false,
-		wallpaperUrl: false
+		wallpaperUrl: false,
+		twitter: false
 	};
 
 	// Populate the user if 'user' is ID
