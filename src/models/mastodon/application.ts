@@ -1,5 +1,5 @@
 // !WIP: Don't use these functions
-// TODO: Implement Mastodon media attachment
+// TODO: Implement Mastodon application
 
 export type IMastodonApplication = {
 	name: string,
