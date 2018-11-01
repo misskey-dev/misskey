@@ -512,6 +512,14 @@ export default class MiOS extends EventEmitter {
 
 	/**
 	 * Misskeyのメタ情報を取得します
+	 */
+	@autobind
+	public getMetaSync() {
+		return this.meta ? this.meta.data : null;
+	}
+
+	/**
+	 * Misskeyのメタ情報を取得します
 	 * @param force キャッシュを無視するか否か
 	 */
 	@autobind

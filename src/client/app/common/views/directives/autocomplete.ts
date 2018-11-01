@@ -222,13 +222,15 @@ class Autocomplete {
 			const trimmedBefore = before.substring(0, before.lastIndexOf(':'));
 			const after = source.substr(caret);
 
+			if (value.startsWith(':')) value = value + ' ';
+
 			// 挿入
 			this.text = trimmedBefore + value + after;
 
 			// キャレットを戻す
 			this.vm.$nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + 1;
+				const pos = trimmedBefore.length + (value.startsWith(':') ? value.length : 1);
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		}

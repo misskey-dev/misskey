@@ -17,6 +17,12 @@ export const meta = {
 			}
 		}),
 
+		emojis: $.arr($.obj()).optional.note({
+			desc: {
+				'ja-JP': 'カスタム絵文字定義'
+			}
+		}),
+
 		disableRegistration: $.bool.optional.nullable.note({
 			desc: {
 				'ja-JP': '招待制か否か'
@@ -51,6 +57,10 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	if (ps.broadcasts) {
 		set.broadcasts = ps.broadcasts;
+	}
+
+	if (ps.emojis) {
+		set.emojis = ps.emojis;
 	}
 
 	if (typeof ps.disableRegistration === 'boolean') {
