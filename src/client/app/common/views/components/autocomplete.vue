@@ -14,7 +14,8 @@
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
-			<span class="emoji">{{ emoji.emoji }}</span>
+			<span class="emoji" v-if="emoji.url"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-else>{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
 			<span class="alias" v-if="emoji.alias">({{ emoji.alias }})</span>
 		</li>
@@ -169,22 +170,45 @@ export default Vue.extend({
 				}
 			} else if (this.type == 'emoji') {
 				const matched = [];
+				const max = 30;
+
+				const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis;
+				customEmojis.some(x => {
+					if (x.name.startsWith(this.q)) matched.push({
+						name: x.name,
+						emoji: `:${x.name}:`,
+						url: x.url
+					});
+					return matched.length == max;
+				});
+				customEmojis.some(x => {
+					const alias = (x.aliases || []).find(a => a.startsWith(this.q));
+					if (alias) matched.push({
+						alias: x.name,
+						name: alias,
+						emoji: `:${x.name}:`,
+						url: x.url
+					});
+					return matched.length == max;
+				});
+
 				emjdb.some(x => {
 					if (x.name.indexOf(this.q) == 0 && !x.alias && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-					return matched.length == 30;
+					return matched.length == max;
 				});
-				if (matched.length < 30) {
+				if (matched.length < max) {
 					emjdb.some(x => {
 						if (x.name.indexOf(this.q) == 0 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-						return matched.length == 30;
+						return matched.length == max;
 					});
 				}
-				if (matched.length < 30) {
+				if (matched.length < max) {
 					emjdb.some(x => {
 						if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-						return matched.length == 30;
+						return matched.length == max;
 					});
 				}
+
 				this.emojis = matched;
 			}
 		},
@@ -339,6 +363,10 @@ export default Vue.extend({
 			display inline-block
 			margin 0 4px 0 0
 			width 24px
+
+			> img
+				width 24px
+				vertical-align bottom
 
 		.name
 			color var(--autocompleteItemText)

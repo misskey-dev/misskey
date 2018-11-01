@@ -50,6 +50,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
 		bannerUrl: meta.bannerUrl,
 		maxNoteTextLength: config.maxNoteTextLength,
+		emojis: meta.emojis,
 
 		features: {
 			registration: !meta.disableRegistration,
