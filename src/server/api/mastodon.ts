@@ -51,7 +51,7 @@ router.get('/v1/instance', async ctx => { // TODO: This is a temporary implement
 			status_count: originalNotesCount,
 			domain_count: domains.length
 		},
-		languages: config.languages || [ 'ja' ],
+		languages: config.languages || [ 'und' ],
 		contact_account: {
 			id: maintainer._id,
 			username: maintainer.username,
