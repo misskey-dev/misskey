@@ -2,6 +2,7 @@ import * as os from 'os';
 import config from '../../../config';
 import Meta from '../../../models/meta';
 import { ILocalUser } from '../../../models/user';
+import Emoji from '../../../models/emoji';
 
 const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
@@ -21,6 +22,8 @@ export const meta = {
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	const meta: any = (await Meta.findOne()) || {};
+
+	const emojis = await Emoji.find({ host: null });
 
 	res({
 		maintainer: config.maintainer,
@@ -50,7 +53,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
 		bannerUrl: meta.bannerUrl,
 		maxNoteTextLength: config.maxNoteTextLength,
-		emojis: meta.emojis,
+		emojis: emojis,
 
 		features: {
 			registration: !meta.disableRegistration,

@@ -1,12 +1,16 @@
 import renderDocument from './document';
 import renderHashtag from './hashtag';
 import renderMention from './mention';
+import renderEmoji from './emoji';
 import config from '../../../config';
 import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 import parseMfm from '../../../mfm/parse';
+import getEmojiNames from '../misc/get-emoji-names';
+import Emoji, { IEmoji } from '../../../models/emoji';
+import { unique } from '../../../prelude/array';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
 	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
@@ -75,10 +79,6 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	const hashtagTags = (note.tags || []).map(tag => renderHashtag(tag));
 	const mentionTags = mentionedUsers.map(u => renderMention(u));
-	const tag = [
-		...hashtagTags,
-		...mentionTags,
-	];
 
 	const files = await promisedFiles;
 
@@ -108,12 +108,24 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		}).join('');
 	}
 
+	const content = toHtml(Object.assign({}, note, { text }));
+
+	const emojiNames = unique(getEmojiNames(content));
+	const emojis = await getEmojis(emojiNames);
+	const apemojis = emojis.map(emoji => renderEmoji(emoji));
+
+	const tag = [
+		...hashtagTags,
+		...mentionTags,
+		...apemojis,
+	];
+
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
 		summary: note.cw,
-		content: toHtml(Object.assign({}, note, { text })),
+		content,
 		_misskey_content: text,
 		published: note.createdAt.toISOString(),
 		to,
@@ -123,4 +135,19 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		sensitive: files.some(file => file.metadata.isSensitive),
 		tag
 	};
+}
+
+async function getEmojis(names: string[]): Promise<IEmoji[]> {
+	if (names == null || names.length < 1) return [];
+
+	const emojis = await Promise.all(
+		names.map(async name => {
+			return await Emoji.findOne({
+				name,
+				host: null
+			});
+		})
+	);
+
+	return emojis.filter(emoji => emoji != null);
 }

@@ -45,7 +45,7 @@
 				<div class="text">
 					<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
 					<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
-					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
+					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i" :customEmojis="p.emojis" />
 				</div>
 				<div class="files" v-if="p.files.length > 0">
 					<mk-media-list :media-list="p.files" :raw="true"/>

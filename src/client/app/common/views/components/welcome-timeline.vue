@@ -14,7 +14,7 @@
 					</div>
 				</header>
 				<div class="text">
-					<misskey-flavored-markdown v-if="note.text" :text="note.text"/>
+					<misskey-flavored-markdown v-if="note.text" :text="note.text" :customEmojis="p.emojis"/>
 				</div>
 			</div>
 		</div>

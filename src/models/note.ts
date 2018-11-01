@@ -12,6 +12,7 @@ import { packMany as packFileMany, IDriveFile } from './drive-file';
 import Favorite from './favorite';
 import Following from './following';
 import config from '../config';
+import { packEmojis } from './emoji';
 
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
@@ -227,6 +228,11 @@ export const pack = async (
 	}
 
 	const id = _note._id;
+
+	// _note._userを消す前か、_note.userを解決した後でないとホストがわからない
+	if (_note._user) {
+		_note.emojis = packEmojis(_note._user.host);
+	}
 
 	// Rename _id to id
 	_note.id = _note._id;
