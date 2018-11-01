@@ -24,6 +24,9 @@ export default Vue.component('misskey-flavored-markdown', {
 		i: {
 			type: Object,
 			default: null
+		},
+		customEmojis: {
+			required: false,
 		}
 	},
 
@@ -186,17 +189,18 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'emoji': {
 					//#region カスタム絵文字
-					const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis || [];
-					const customEmoji = customEmojis.find(e => e.name == token.emoji || (e.aliases || []).includes(token.emoji));
-					if (customEmoji) {
-						return [createElement('img', {
-							attrs: {
-								src: customEmoji.url,
-								alt: token.emoji,
-								title: token.emoji,
-								style: 'height: 2.5em; vertical-align: middle;'
-							}
-						})];
+					if (this.customEmojis != null) {
+						const customEmoji = this.customEmojis.find(e => e.name == token.emoji || (e.aliases || []).includes(token.emoji));
+						if (customEmoji) {
+							return [createElement('img', {
+								attrs: {
+									src: customEmoji.url,
+									alt: token.emoji,
+									title: token.emoji,
+									style: 'height: 2.5em; vertical-align: middle;'
+								}
+							})];
+						}
 					}
 					//#endregion
 

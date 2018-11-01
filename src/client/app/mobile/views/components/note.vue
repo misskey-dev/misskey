@@ -30,7 +30,7 @@
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
 						<a class="reply" v-if="appearNote.reply">%fa:reply%</a>
-						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text"/>
+						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :customEmojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">

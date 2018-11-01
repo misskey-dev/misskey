@@ -10,6 +10,9 @@ import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
 import htmlToMFM from '../../../mfm/html-to-mfm';
+import Emoji from '../../../models/emoji';
+import { ITag } from './tag';
+import { toUnicode } from 'punycode';
 
 const log = debug('misskey:activitypub');
 
@@ -93,6 +96,10 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// テキストのパース
 	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
+	await extractEmojis(note.tag, actor.host).catch(e => {
+		console.log(`extractEmojis: ${e}`);
+	});
+
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
 		updatePerson(note.attributedTo);
@@ -134,4 +141,36 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
 	// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
 	return await createNote(uri, resolver);
+}
+
+async function extractEmojis(tags: ITag[], host_: string) {
+	const host = toUnicode(host_.toLowerCase());
+
+	if (!tags) return [];
+
+	const eomjiTags = tags.filter(tag => tag.type === 'Emoji' && tag.icon && tag.icon.url);
+
+	return await Promise.all(
+		eomjiTags.map(async tag => {
+			const name = tag.name.replace(/^:/, '').replace(/:$/, '');
+
+			const exists = await Emoji.findOne({
+				host,
+				name
+			});
+
+			if (exists) {
+				return exists;
+			}
+
+			log(`register emoji host=${host}, name=${name}`);
+
+			return await Emoji.insert({
+				host,
+				name,
+				url: tag.icon.url,
+				aliases: [],
+			});
+		})
+	);
 }
