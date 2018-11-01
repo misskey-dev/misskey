@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Blocking, { packMany } from '../../../../models/blocking';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
@@ -14,15 +14,20 @@ export const meta = {
 	kind: 'following-read',
 
 	params: {
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 30
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({
-		}),
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		untilId: $.type(ID).optional.note({
-		}),
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 	}
 };
 

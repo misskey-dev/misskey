@@ -1,13 +1,12 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-import Note from '../../../../models/note';
-import Reaction, { pack } from '../../../../models/note-reaction';
+import Note, { packMany } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
-		'ja-JP': '指定した投稿のリアクション一覧を取得します。',
-		'en-US': 'Show reactions of a note.'
+		'ja-JP': '指定した投稿のRenote一覧を取得します。',
+		'en-US': 'Show a renotes of a note.'
 	},
 
 	requireCredential: false,
@@ -16,20 +15,11 @@ export const meta = {
 		noteId: {
 			validator: $.type(ID),
 			transform: transform,
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'The ID of the target note'
-			}
 		},
 
 		limit: {
 			validator: $.num.optional.range(1, 100),
 			default: 10
-		},
-
-		offset: {
-			validator: $.num.optional,
-			default: 0
 		},
 
 		sinceId: {
@@ -40,7 +30,7 @@ export const meta = {
 		untilId: {
 			validator: $.type(ID).optional,
 			transform: transform,
-		},
+		}
 	}
 };
 
@@ -62,13 +52,13 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('note not found');
 	}
 
-	const query = {
-		noteId: note._id
-	} as any;
-
 	const sort = {
 		_id: -1
 	};
+
+	const query = {
+		renoteId: note._id
+	} as any;
 
 	if (ps.sinceId) {
 		sort._id = 1;
@@ -81,13 +71,11 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		};
 	}
 
-	const reactions = await Reaction
+	const renotes = await Note
 		.find(query, {
 			limit: ps.limit,
-			skip: ps.offset,
 			sort: sort
 		});
 
-	// Serialize
-	res(await Promise.all(reactions.map(reaction => pack(reaction, user))));
+	res(await packMany(renotes, user));
 });

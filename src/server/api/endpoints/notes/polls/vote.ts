@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Vote from '../../../../../models/poll-vote';
 import Note from '../../../../../models/note';
 import Watching from '../../../../../models/note-watching';
@@ -6,6 +6,7 @@ import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../stream';
 import notify from '../../../../../notify';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
@@ -15,17 +16,27 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'vote-write'
+	kind: 'vote-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+
+		choice: {
+			validator: $.num
+		},
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Get votee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -36,12 +47,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('poll not found');
 	}
 
-	// Get 'choice' parameter
-	const [choice, choiceError] =
-		$.num
-			.pipe(c => note.poll.choices.some(x => x.id == c))
-			.get(params.choice);
-	if (choiceError) return rej('invalid choice param');
+	if (!note.poll.choices.some(x => x.id == ps.choice)) return rej('invalid choice param');
 
 	// if already voted
 	const exist = await Vote.findOne({
@@ -58,14 +64,14 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		createdAt: new Date(),
 		noteId: note._id,
 		userId: user._id,
-		choice: choice
+		choice: ps.choice
 	});
 
 	// Send response
 	res();
 
 	const inc: any = {};
-	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == choice)}.votes`] = 1;
+	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == ps.choice)}.votes`] = 1;
 
 	// Increment votes count
 	await Note.update({ _id: note._id }, {
@@ -73,14 +79,14 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	});
 
 	publishNoteStream(note._id, 'pollVoted', {
-		choice: choice,
+		choice: ps.choice,
 		userId: user._id.toHexString()
 	});
 
 	// Notify
 	notify(note.userId, user._id, 'poll_vote', {
 		noteId: note._id,
-		choice: choice
+		choice: ps.choice
 	});
 
 	// Fetch watchers
@@ -99,7 +105,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			watchers.forEach(watcher => {
 				notify(watcher.userId, user._id, 'poll_vote', {
 					noteId: note._id,
-					choice: choice
+					choice: ps.choice
 				});
 			});
 		});

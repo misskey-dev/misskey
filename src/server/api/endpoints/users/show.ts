@@ -1,35 +1,54 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 import User, { pack, ILocalUser, isRemoteUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
+import getParams from '../../get-params';
 
 const cursorOption = { fields: { data: false } };
 
-/**
- * Show user(s)
- */
+export const meta = {
+	desc: {
+		'ja-JP': '指定したユーザーの情報を取得します。'
+	},
+
+	requireCredential: false,
+
+	params: {
+		userId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+			desc: {
+				'ja-JP': 'ユーザーID'
+			}
+		},
+
+		userIds: {
+			validator: $.arr($.type(ID)).optional.unique(),
+			transform: transformMany,
+			desc: {
+				'ja-JP': 'ユーザーID (配列)'
+			}
+		},
+
+		username: {
+			validator: $.str.optional
+		},
+
+		host: {
+			validator: $.str.optional.nullable
+		}
+	}
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
+
 	let user;
 
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).optional.get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
-	// Get 'userIds' parameter
-	const [userIds, userIdsErr] = $.arr($.type(ID)).optional.get(params.userIds);
-	if (userIdsErr) return rej('invalid userIds param');
-
-	// Get 'username' parameter
-	const [username, usernameErr] = $.str.optional.get(params.username);
-	if (usernameErr) return rej('invalid username param');
-
-	// Get 'host' parameter
-	const [host, hostErr] = $.str.optional.nullable.get(params.host);
-	if (hostErr) return rej('invalid host param');
-
-	if (userIds) {
+	if (ps.userIds) {
 		const users = await User.find({
 			_id: {
-				$in: userIds
+				$in: ps.userIds
 			}
 		});
 
@@ -38,17 +57,17 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		}))));
 	} else {
 		// Lookup user
-		if (typeof host === 'string') {
+		if (typeof ps.host === 'string') {
 			try {
-				user = await resolveRemoteUser(username, host, cursorOption);
+				user = await resolveRemoteUser(ps.username, ps.host, cursorOption);
 			} catch (e) {
 				console.warn(`failed to resolve remote user: ${e}`);
 				return rej('failed to resolve remote user');
 			}
 		} else {
-			const q: any = userId !== undefined
-				? { _id: userId }
-				: { usernameLower: username.toLowerCase(), host: null };
+			const q: any = ps.userId != null
+				? { _id: ps.userId }
+				: { usernameLower: ps.username.toLowerCase(), host: null };
 
 			user = await User.findOne(q, cursorOption);
 
@@ -64,7 +83,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 		if (isRemoteUser(user)) {
 			if (user.updatedAt == null || Date.now() - user.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
-				resolveRemoteUser(username, host, { }, true);
+				resolveRemoteUser(ps.username, ps.host, { }, true);
 			}
 		}
 	}

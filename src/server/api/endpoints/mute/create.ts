@@ -1,6 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import User, { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
+import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
@@ -10,24 +11,30 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account/write'
+	kind: 'account/write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
+
 	const muter = user;
 
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
 	// 自分自身
-	if (user._id.equals(userId)) {
+	if (user._id.equals(ps.userId)) {
 		return rej('mutee is yourself');
 	}
 
 	// Get mutee
 	const mutee = await User.findOne({
-		_id: userId
+		_id: ps.userId
 	}, {
 		fields: {
 			data: false,
@@ -56,6 +63,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		muteeId: mutee._id,
 	});
 
-	// Send response
 	res();
 });

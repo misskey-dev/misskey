@@ -1,8 +1,9 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Message from '../../../../models/messaging-message';
 import User, { ILocalUser } from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
+import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
@@ -12,17 +13,48 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-read'
+	kind: 'messaging-read',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+
+		markAsRead: {
+			validator: $.bool.optional,
+			default: true
+		}
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);
-	if (recipientIdErr) return rej('invalid userId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
+
+	// Check if both of sinceId and untilId is specified
+	if (ps.sinceId && ps.untilId) {
+		return rej('cannot set sinceId and untilId');
+	}
 
 	// Fetch recipient
 	const recipient = await User.findOne({
-		_id: recipientId
+		_id: ps.userId
 	}, {
 			fields: {
 				_id: true
@@ -31,27 +63,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	if (recipient === null) {
 		return rej('user not found');
-	}
-
-	// Get 'markAsRead' parameter
-	const [markAsRead = true, markAsReadErr] = $.bool.optional.get(params.markAsRead);
-	if (markAsReadErr) return rej('invalid markAsRead param');
-
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
-	if (sinceIdErr) return rej('invalid sinceId param');
-
-	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
-	if (untilIdErr) return rej('invalid untilId param');
-
-	// Check if both of sinceId and untilId is specified
-	if (sinceId && untilId) {
-		return rej('cannot set sinceId and untilId');
 	}
 
 	const query = {
@@ -68,36 +79,33 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		_id: -1
 	};
 
-	if (sinceId) {
+	if (ps.sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: sinceId
+			$gt: ps.sinceId
 		};
-	} else if (untilId) {
+	} else if (ps.untilId) {
 		query._id = {
-			$lt: untilId
+			$lt: ps.untilId
 		};
 	}
 
-	// Issue query
 	const messages = await Message
 		.find(query, {
-			limit: limit,
+			limit: ps.limit,
 			sort: sort
 		});
 
-	// Serialize
-	res(await Promise.all(messages.map(async message =>
-		await pack(message, user, {
-			populateRecipient: false
-		}))));
+	res(await Promise.all(messages.map(message => pack(message, user, {
+		populateRecipient: false
+	}))));
 
 	if (messages.length === 0) {
 		return;
 	}
 
 	// Mark all as read
-	if (markAsRead) {
+	if (ps.markAsRead) {
 		read(user._id, recipient._id, messages);
 	}
 });

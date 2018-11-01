@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { ILocalUser } from '../../../../../models/user';
 import read from '../../../common/read-messaging-message';
@@ -15,12 +15,14 @@ export const meta = {
 	kind: 'messaging-write',
 
 	params: {
-		messageId: $.type(ID).note({
+		messageId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '既読にするメッセージのID',
 				'en-US': 'The ID of a message that you want to mark as read'
 			}
-		})
+		}
 	}
 };
 

@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
 import { ILocalUser, getRelation } from '../../../../models/user';
 import getParams from '../../get-params';
 
@@ -10,11 +10,13 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		userId: $.or($.type(ID), $.arr($.type(ID)).unique()).note({
+		userId: {
+			validator: $.or($.type(ID), $.arr($.type(ID)).unique()),
+			transform: (v: any): ObjectId | ObjectId[] => Array.isArray(v) ? v.map(x => transform(x)) : transform(v),
 			desc: {
 				'ja-JP': 'ユーザーID (配列でも可)'
 			}
-		})
+		}
 	}
 };
 

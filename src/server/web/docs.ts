@@ -181,7 +181,7 @@ router.get('/*/api/endpoints/*', async ctx => {
 		},
 		// @ts-ignore
 		params: ep.meta.params ? sortParams(Object.entries(ep.meta.params).map(([k, v]) => parseParamDefinition(k, v))) : null,
-		paramDefs: ep.meta.params ? extractParamDefRef(Object.values(ep.meta.params)) : null,
+		paramDefs: ep.meta.params ? extractParamDefRef(Object.values(ep.meta.params).map(x => x.validator)) : null,
 		res: ep.meta.res,
 		resProps: ep.meta.res && ep.meta.res.props ? sortParams(Object.entries(ep.meta.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
 		resDefs: null as any, //extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))

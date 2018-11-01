@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
-import $ from 'cafy'; import ID from '../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
 import pack from '../../remote/activitypub/renderer';
@@ -49,7 +49,7 @@ export default async (ctx: Router.IRouterContext) => {
 		// カーソルが指定されている場合
 		if (cursor) {
 			query._id = {
-				$lt: cursor
+				$lt: transform(cursor)
 			};
 		}
 

@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
@@ -12,42 +12,57 @@ export const meta = {
 	},
 
 	params: {
-		withFiles: $.bool.optional.note({
+		withFiles: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
 			}
-		}),
+		},
 
-		mediaOnly: $.bool.optional.note({
+		mediaOnly: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
-		}),
+		},
 
-		fileType: $.arr($.str).optional.note({
+		fileType: {
+			validator: $.arr($.str).optional,
 			desc: {
 				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
 			}
-		}),
+		},
 
-		excludeNsfw: $.bool.optional.note({
+		excludeNsfw: {
+			validator: $.bool.optional,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
 			}
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({}),
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		untilId: $.type(ID).optional.note({}),
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		sinceDate: $.num.optional.note({}),
+		sinceDate: {
+			validator: $.num.optional,
+		},
 
-		untilDate: $.num.optional.note({}),
+		untilDate: {
+			validator: $.num.optional,
+		},
 	}
 };
 

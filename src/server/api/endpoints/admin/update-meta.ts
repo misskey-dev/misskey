@@ -11,41 +11,47 @@ export const meta = {
 	requireAdmin: true,
 
 	params: {
-		broadcasts: $.arr($.obj()).optional.nullable.note({
+		broadcasts: {
+			validator: $.arr($.obj()).optional.nullable,
 			desc: {
 				'ja-JP': 'ブロードキャスト'
 			}
-		}),
+		},
 
-		emojis: $.arr($.obj()).optional.note({
+		emojis: {
+			validator: $.arr($.obj()).optional,
 			desc: {
 				'ja-JP': 'カスタム絵文字定義'
 			}
-		}),
+		},
 
-		disableRegistration: $.bool.optional.nullable.note({
+		disableRegistration: {
+			validator: $.bool.optional.nullable,
 			desc: {
 				'ja-JP': '招待制か否か'
 			}
-		}),
+		},
 
-		disableLocalTimeline: $.bool.optional.nullable.note({
+		disableLocalTimeline: {
+			validator: $.bool.optional.nullable,
 			desc: {
 				'ja-JP': 'ローカルタイムライン(とソーシャルタイムライン)を無効にするか否か'
 			}
-		}),
+		},
 
-		hidedTags: $.arr($.str).optional.nullable.note({
+		hidedTags: {
+			validator: $.arr($.str).optional.nullable,
 			desc: {
 				'ja-JP': '統計などで無視するハッシュタグ'
 			}
-		}),
+		},
 
-		bannerUrl: $.str.optional.nullable.note({
+		bannerUrl: {
+			validator: $.str.optional.nullable,
 			desc: {
 				'ja-JP': 'インスタンスのバナー画像URL'
 			}
-		}),
+		},
 	}
 };
 

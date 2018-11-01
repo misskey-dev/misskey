@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 const ms = require('ms');
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
 import { ILocalUser } from '../../../../../models/user';
@@ -24,27 +24,31 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		folderId: $.type(ID).optional.nullable.note({
-			default: null,
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: null as any,
 			desc: {
 				'ja-JP': 'フォルダID'
 			}
-		}),
+		},
 
-		isSensitive: $.bool.optional.note({
+		isSensitive: {
+			validator: $.bool.optional,
 			default: false,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'
 			}
-		}),
+		},
 
-		force: $.bool.optional.note({
+		force: {
+			validator: $.bool.optional,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
 			}
-		})
+		}
 	}
 };
 

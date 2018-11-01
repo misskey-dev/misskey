@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID from '../../../../../misc/cafy-id';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
@@ -15,12 +15,14 @@ export const meta = {
 	kind: 'account-write',
 
 	params: {
-		listId: $.type(ID).note({
+		listId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象となるユーザーリストのID',
 				'en-US': 'ID of target user list'
 			}
-		})
+		}
 	}
 };
 

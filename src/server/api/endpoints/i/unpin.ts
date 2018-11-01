@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import { ILocalUser } from '../../../../models/user';
 import { pack } from '../../../../models/user';
 import { removePinned } from '../../../../services/i/pin';
@@ -16,12 +16,14 @@ export const meta = {
 	kind: 'account-write',
 
 	params: {
-		noteId: $.type(ID).note({
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'
 			}
-		})
+		}
 	}
 };
 

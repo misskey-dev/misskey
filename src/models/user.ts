@@ -189,7 +189,7 @@ export async function getRelation(me: mongo.ObjectId, target: mongo.ObjectId) {
 
 	return {
 		isFollowing: following1 !== null,
-		isStalking: following1 && following1.stalk,
+		isStalking: following1 ? following1.stalk : false,
 		hasPendingFollowRequestFromYou: followReq1 !== null,
 		hasPendingFollowRequestToYou: followReq2 !== null,
 		isFollowed: following2 !== null,

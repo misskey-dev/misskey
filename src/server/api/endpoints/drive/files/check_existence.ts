@@ -13,11 +13,12 @@ export const meta = {
 	kind: 'drive-read',
 
 	params: {
-		md5: $.str.note({
+		md5: {
+			validator: $.str,
 			desc: {
 				'ja-JP': 'ファイルのMD5ハッシュ'
 			}
-		})
+		}
 	}
 };
 

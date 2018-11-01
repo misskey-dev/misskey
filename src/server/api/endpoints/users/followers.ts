@@ -1,32 +1,49 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import User, { ILocalUser } from '../../../../models/user';
 import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
+import getParams from '../../get-params';
 
-/**
- * Get followers of a user
- */
+export const meta = {
+	desc: {
+		'ja-JP': '指定したユーザーのフォロワー一覧を取得します。',
+		'en-US': 'Get followers of a user.'
+	},
+
+	requireCredential: false,
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		cursor: {
+			validator: $.type(ID).optional,
+			default: null as any,
+			transform: transform,
+		},
+
+		iknow: {
+			validator: $.bool.optional,
+			default: false,
+		}
+	}
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
-	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = $.bool.optional.get(params.iknow);
-	if (iknowErr) return rej('invalid iknow param');
-
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.type(ID).optional.get(params.cursor);
-	if (cursorErr) return rej('invalid cursor param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Lookup user
 	const user = await User.findOne({
-		_id: userId
+		_id: ps.userId
 	}, {
 		fields: {
 			_id: true
@@ -43,7 +60,7 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	} as any;
 
 	// ログインしていてかつ iknow フラグがあるとき
-	if (me && iknow) {
+	if (me && ps.iknow) {
 		// Get my friends
 		const myFriends = await getFriendIds(me._id);
 
@@ -53,29 +70,27 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	}
 
 	// カーソルが指定されている場合
-	if (cursor) {
+	if (ps.cursor) {
 		query._id = {
-			$lt: cursor
+			$lt: ps.cursor
 		};
 	}
 
 	// Get followers
 	const following = await Following
 		.find(query, {
-			limit: limit + 1,
+			limit: ps.limit + 1,
 			sort: { _id: -1 }
 		});
 
 	// 「次のページ」があるかどうか
-	const inStock = following.length === limit + 1;
+	const inStock = following.length === ps.limit + 1;
 	if (inStock) {
 		following.pop();
 	}
 
-	// Serialize
 	const users = await Promise.all(following.map(f => pack(f.followerId, me, { detail: true })));
 
-	// Response
 	res({
 		users: users,
 		next: inStock ? following[following.length - 1]._id : null,

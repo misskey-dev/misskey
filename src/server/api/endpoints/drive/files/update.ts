@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
 import { publishDriveStream } from '../../../../../stream';
@@ -17,34 +17,40 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		fileId: $.type(ID).note({
+		fileId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のファイルID'
 			}
-		}),
+		},
 
-		folderId: $.type(ID).optional.nullable.note({
-			default: undefined,
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: undefined as any,
 			desc: {
 				'ja-JP': 'フォルダID'
 			}
-		}),
+		},
 
-		name: $.str.optional.pipe(validateFileName).note({
-			default: undefined,
+		name: {
+			validator: $.str.optional.pipe(validateFileName),
+			default: undefined as any,
 			desc: {
 				'ja-JP': 'ファイル名',
 				'en-US': 'Name of the file'
 			}
-		}),
+		},
 
-		isSensitive: $.bool.optional.note({
-			default: undefined,
+		isSensitive: {
+			validator: $.bool.optional,
+			default: undefined as any,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'
 			}
-		})
+		}
 	}
 };
 

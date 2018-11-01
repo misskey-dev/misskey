@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
@@ -18,12 +18,14 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		folderId: $.type(ID).note({
+		folderId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のフォルダID',
 				'en-US': 'Target folder ID'
 			}
-		})
+		}
 	}
 };
 

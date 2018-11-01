@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 const ms = require('ms');
 import User, { pack, ILocalUser } from '../../../../models/user';
 import Following from '../../../../models/following';
@@ -23,12 +23,14 @@ export const meta = {
 	kind: 'following-write',
 
 	params: {
-		userId: $.type(ID).note({
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}
-		})
+		}
 	}
 };
 

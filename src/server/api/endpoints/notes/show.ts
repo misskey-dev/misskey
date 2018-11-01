@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import getParams from '../../get-params';
@@ -14,12 +14,14 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		noteId: $.type(ID).note({
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
 			}
-		})
+		}
 	}
 };
 

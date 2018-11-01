@@ -1,31 +1,39 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
 	requireCredential: true,
 
-	kind: 'drive-read'
+	kind: 'drive-read',
+
+	params: {
+		name: {
+			validator: $.str
+		},
+
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: null as any,
+			desc: {
+				'ja-JP': 'フォルダID'
+			}
+		},
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.get(params.name);
-	if (nameErr) return rej('invalid name param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
-	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional.nullable.get(params.folderId);
-	if (folderIdErr) return rej('invalid folderId param');
-
-	// Issue query
 	const files = await DriveFile
 		.find({
 			filename: name,
 			'metadata.userId': user._id,
-			'metadata.folderId': folderId
+			'metadata.folderId': ps.folderId
 		});
 
-	// Serialize
-	res(await Promise.all(files.map(async file =>
-		await pack(file))));
+	res(await Promise.all(files.map(file => pack(file))));
 });

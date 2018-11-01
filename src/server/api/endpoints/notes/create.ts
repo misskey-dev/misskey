@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 const ms = require('ms');
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
 import User, { ILocalUser, IUser } from '../../../../models/user';
@@ -24,84 +24,106 @@ export const meta = {
 	kind: 'note-write',
 
 	params: {
-		visibility: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']).note({
+		visibility: {
+			validator: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']),
 			default: 'public',
 			desc: {
 				'ja-JP': '投稿の公開範囲'
 			}
-		}),
+		},
 
-		visibleUserIds: $.arr($.type(ID)).optional.unique().min(1).note({
+		visibleUserIds: {
+			validator: $.arr($.type(ID)).optional.unique().min(1),
+			transform: transformMany,
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
 			}
-		}),
+		},
 
-		text: $.str.optional.nullable.pipe(isValidText).note({
-			default: null,
+		text: {
+			validator: $.str.optional.nullable.pipe(isValidText),
+			default: null as any,
 			desc: {
 				'ja-JP': '投稿内容'
 			}
-		}),
+		},
 
-		cw: $.str.optional.nullable.pipe(isValidCw).note({
+		cw: {
+			validator: $.str.optional.nullable.pipe(isValidCw),
 			desc: {
 				'ja-JP': 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
 			}
-		}),
+		},
 
-		viaMobile: $.bool.optional.note({
+		viaMobile: {
+			validator: $.bool.optional,
 			default: false,
 			desc: {
 				'ja-JP': 'モバイルデバイスからの投稿か否か。'
 			}
-		}),
+		},
 
-		geo: $.obj({
-			coordinates: $.arr().length(2)
-				.item(0, $.num.range(-180, 180))
-				.item(1, $.num.range(-90, 90)),
-			altitude: $.num.nullable,
-			accuracy: $.num.nullable,
-			altitudeAccuracy: $.num.nullable,
-			heading: $.num.nullable.range(0, 360),
-			speed: $.num.nullable
-		}).optional.nullable.strict().note({
+		geo: {
+			validator: $.obj({
+				coordinates: $.arr().length(2)
+					.item(0, $.num.range(-180, 180))
+					.item(1, $.num.range(-90, 90)),
+				altitude: $.num.nullable,
+				accuracy: $.num.nullable,
+				altitudeAccuracy: $.num.nullable,
+				heading: $.num.nullable.range(0, 360),
+				speed: $.num.nullable
+			}).optional.nullable.strict(),
 			desc: {
 				'ja-JP': '位置情報'
 			},
 			ref: 'geo'
-		}),
+		},
 
-		fileIds: $.arr($.type(ID)).optional.unique().range(1, 4).note({
+		fileIds: {
+			validator: $.arr($.type(ID)).optional.unique().range(1, 4),
+			transform: transformMany,
 			desc: {
 				'ja-JP': '添付するファイル'
 			}
-		}),
+		},
 
-		mediaIds: $.arr($.type(ID)).optional.unique().range(1, 4).note({
+		mediaIds: {
+			validator: $.arr($.type(ID)).optional.unique().range(1, 4),
+			transform: transformMany,
 			desc: {
 				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
 			}
-		}),
+		},
 
-		renoteId: $.type(ID).optional.note({
+		replyId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+			desc: {
+				'ja-JP': '返信対象'
+			}
+		},
+
+		renoteId: {
+			validator: $.type(ID).optional,
+			transform: transform,
 			desc: {
 				'ja-JP': 'Renote対象'
 			}
-		}),
+		},
 
-		poll: $.obj({
-			choices: $.arr($.str)
-				.unique()
-				.range(2, 10)
-				.each(c => c.length > 0 && c.length < 50)
-		}).optional.strict().note({
+		poll: {
+			validator: $.obj({
+				choices: $.arr($.str)
+					.unique()
+					.range(2, 10)
+					.each(c => c.length > 0 && c.length < 50)
+			}).optional.strict(),
 			desc: {
 				'ja-JP': 'アンケート'
 			},
 			ref: 'poll'
-		})
+		}
 	},
 
 	res: {
@@ -117,15 +139,12 @@ export const meta = {
 	}
 };
 
-/**
- * Create a note
- */
 export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) return rej(psErr);
 
 	let visibleUsers: IUser[] = [];
-	if (ps.visibleUserIds !== undefined) {
+	if (ps.visibleUserIds) {
 		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => User.findOne({
 			_id: id
 		})));
@@ -145,7 +164,7 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 	}
 
 	let renote: INote = null;
-	if (ps.renoteId !== undefined) {
+	if (ps.renoteId != null) {
 		// Fetch renote to note
 		renote = await Note.findOne({
 			_id: ps.renoteId
@@ -158,15 +177,11 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 		}
 	}
 
-	// Get 'replyId' parameter
-	const [replyId, replyIdErr] = $.type(ID).optional.get(params.replyId);
-	if (replyIdErr) return rej('invalid replyId');
-
 	let reply: INote = null;
-	if (replyId !== undefined) {
+	if (ps.replyId != null) {
 		// Fetch reply
 		reply = await Note.findOne({
-			_id: replyId
+			_id: ps.replyId
 		});
 
 		if (reply === null) {
@@ -188,7 +203,7 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
-	if ((ps.text === undefined || ps.text === null) && files === null && renote === null && ps.poll === undefined) {
+	if ((ps.text == null) && files === null && renote === null && ps.poll == null) {
 		return rej('text, fileIds, renoteId or poll is required');
 	}
 

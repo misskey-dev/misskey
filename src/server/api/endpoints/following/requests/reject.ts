@@ -1,6 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import rejectFollowRequest from '../../../../../services/following/requests/reject';
 import User, { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
@@ -10,17 +11,23 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-write'
+	kind: 'following-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+		}
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [followerId, followerIdErr] = $.type(ID).get(params.userId);
-	if (followerIdErr) return rej('invalid userId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch follower
 	const follower = await User.findOne({
-		_id: followerId
+		_id: ps.userId
 	});
 
 	if (follower === null) {
@@ -29,6 +36,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	await rejectFollowRequest(user, follower);
 
-	// Send response
 	res();
 });

@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
@@ -17,26 +17,31 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		folderId: $.type(ID).note({
+		folderId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のフォルダID',
 				'en-US': 'Target folder ID'
 			}
-		}),
+		},
 
-		name: $.str.optional.pipe(isValidFolderName).note({
+		name: {
+			validator: $.str.optional.pipe(isValidFolderName),
 			desc: {
 				'ja-JP': 'フォルダ名',
 				'en-US': 'Folder name'
 			}
-		}),
+		},
 
-		parentId: $.type(ID).optional.nullable.note({
+		parentId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'
 			}
-		})
+		}
 	}
 };
 

@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import { ILocalUser } from '../../../../../models/user';
 import getParams from '../../../get-params';
@@ -17,12 +17,14 @@ export const meta = {
 	kind: 'drive-read',
 
 	params: {
-		fileId: $.type(ID).note({
+		fileId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'
 			}
-		})
+		}
 	}
 };
 

@@ -1,11 +1,10 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import User, { ILocalUser } from '../../../../models/user';
+import { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import getParams from '../../get-params';
-import { erase } from '../../../../prelude/array';
 
 export const meta = {
 	desc: {
@@ -13,127 +12,100 @@ export const meta = {
 	},
 
 	params: {
-		tag: $.str.optional.note({
+		tag: {
+			validator: $.str.optional,
 			desc: {
 				'ja-JP': 'タグ'
 			}
-		}),
+		},
 
-		query: $.arr($.arr($.str)).optional.note({
+		query: {
+			validator: $.arr($.arr($.str)).optional,
 			desc: {
 				'ja-JP': 'クエリ'
 			}
-		}),
+		},
 
-		includeUserIds: $.arr($.type(ID)).optional.note({
-			default: []
-		}),
+		following: {
+			validator: $.bool.optional.nullable,
+			default: null as any
+		},
 
-		excludeUserIds: $.arr($.type(ID)).optional.note({
-			default: []
-		}),
-
-		includeUserUsernames: $.arr($.str).optional.note({
-			default: []
-		}),
-
-		excludeUserUsernames: $.arr($.str).optional.note({
-			default: []
-		}),
-
-		following: $.bool.optional.nullable.note({
-			default: null
-		}),
-
-		mute: $.str.optional.note({
+		mute: {
+			validator: $.str.optional,
 			default: 'mute_all'
-		}),
+		},
 
-		reply: $.bool.optional.nullable.note({
-			default: null,
-
+		reply: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
 			desc: {
 				'ja-JP': '返信に限定するか否か'
 			}
-		}),
+		},
 
-		renote: $.bool.optional.nullable.note({
-			default: null,
-
+		renote: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
 			desc: {
 				'ja-JP': 'Renoteに限定するか否か'
 			}
-		}),
+		},
 
-		withFiles: $.bool.optional.note({
+		withFiles: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
-		}),
+		},
 
-		media: $.bool.optional.nullable.note({
-			default: null,
-
+		media: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
-		}),
+		},
 
-		poll: $.bool.optional.nullable.note({
-			default: null,
-
+		poll: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
 			desc: {
 				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
 			}
-		}),
+		},
 
-		untilId: $.type(ID).optional.note({
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
 			}
-		}),
+		},
 
-		sinceDate: $.num.optional.note({
-		}),
+		sinceDate: {
+			validator: $.num.optional,
+		},
 
-		untilDate: $.num.optional.note({
-		}),
+		untilDate: {
+			validator: $.num.optional,
+		},
 
-		offset: $.num.optional.min(0).note({
+		offset: {
+			validator: $.num.optional.min(0),
 			default: 0
-		}),
+		},
 
-		limit: $.num.optional.range(1, 30).note({
+		limit: {
+			validator: $.num.optional.range(1, 30),
 			default: 10
-		}),
+		},
 	}
 };
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) return rej(psErr);
-
-	if (ps.includeUserUsernames != null) {
-		const ids = erase(null, await Promise.all(ps.includeUserUsernames.map(async (username) => {
-			const _user = await User.findOne({
-				usernameLower: username.toLowerCase()
-			});
-			return _user ? _user._id : null;
-		})));
-
-		ids.forEach(id => ps.includeUserIds.push(id));
-	}
-
-	if (ps.excludeUserUsernames != null) {
-		const ids = erase(null, await Promise.all(ps.excludeUserUsernames.map(async (username) => {
-			const _user = await User.findOne({
-				usernameLower: username.toLowerCase()
-			});
-			return _user ? _user._id : null;
-		})));
-
-		ids.forEach(id => ps.excludeUserIds.push(id));
-	}
 
 	const q: any = {
 		$and: [ps.tag ? {
@@ -149,20 +121,6 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	};
 
 	const push = (x: any) => q.$and.push(x);
-
-	if (ps.includeUserIds && ps.includeUserIds.length != 0) {
-		push({
-			userId: {
-				$in: ps.includeUserIds
-			}
-		});
-	} else if (ps.excludeUserIds && ps.excludeUserIds.length != 0) {
-		push({
-			userId: {
-				$nin: ps.excludeUserIds
-			}
-		});
-	}
 
 	if (ps.following != null && me != null) {
 		const ids = await getFriendIds(me._id, false);

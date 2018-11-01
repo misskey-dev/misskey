@@ -13,12 +13,13 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		limit: $.num.optional.range(1, 30).note({
+		limit: {
+			validator: $.num.optional.range(1, 30),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
 			}
-		})
+		}
 	}
 };
 

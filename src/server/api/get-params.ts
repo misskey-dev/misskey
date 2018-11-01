@@ -1,27 +1,26 @@
-import { Context } from 'cafy';
+import { IEndpointMeta } from './endpoints';
 
-type Defs = {
-	params: { [key: string]: Context<any> }
-};
-
-export default function <T extends Defs>(defs: T, params: any): [{
-	[P in keyof T['params']]: ReturnType<T['params'][P]['get']>[0];
+export default function <T extends IEndpointMeta>(defs: T, params: any): [{
+	[P in keyof T['params']]: T['params'][P]['transform'] extends Function
+		? ReturnType<T['params'][P]['transform']>
+		: ReturnType<T['params'][P]['validator']['get']>[0];
 }, Error] {
 	const x: any = {};
 	let err: Error = null;
-	Object.keys(defs.params).some(k => {
-		const [v, e] = defs.params[k].get(params[k]);
+	Object.entries(defs.params).some(([k, def]) => {
+		const [v, e] = def.validator.get(params[k]);
 		if (e) {
 			err = new Error(e.message);
 			err.name = 'INVALID_PARAM';
 			(err as any).param = k;
 			return true;
 		} else {
-			if (v === undefined && defs.params[k].data.default) {
-				x[k] = defs.params[k].data.default;
+			if (v === undefined && def.default) {
+				x[k] = def.default;
 			} else {
 				x[k] = v;
 			}
+			if (def.transform) x[k] = def.transform(x[k]);
 			return false;
 		}
 	});

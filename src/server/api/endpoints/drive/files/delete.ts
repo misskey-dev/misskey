@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../stream';
@@ -18,12 +18,14 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		fileId: $.type(ID).note({
+		fileId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'
 			}
-		})
+		}
 	}
 };
 

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID from '../../../../misc/cafy-id';
+import ID, { transform } from '../../../../misc/cafy-id';
 import getParams from '../../get-params';
 import User from '../../../../models/user';
 
@@ -13,12 +13,14 @@ export const meta = {
 	requireAdmin: true,
 
 	params: {
-		userId: $.type(ID).note({
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID which you want to suspend'
 			}
-		}),
+		},
 	}
 };
 

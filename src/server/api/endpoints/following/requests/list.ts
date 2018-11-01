@@ -1,4 +1,4 @@
-//import $ from 'cafy'; import ID from '../../../../../cafy-id';
+//import $ from 'cafy'; import ID, { transform } from '../../../../../cafy-id';
 import FollowRequest, { pack } from '../../../../../models/follow-request';
 import { ILocalUser } from '../../../../../models/user';
 

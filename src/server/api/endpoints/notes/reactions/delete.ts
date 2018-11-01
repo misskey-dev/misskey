@@ -1,7 +1,8 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
@@ -11,17 +12,23 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'reaction-write'
+	kind: 'reaction-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch unreactee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -48,7 +55,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 			}
 		});
 
-	// Send response
 	res();
 
 	const dec: any = {};

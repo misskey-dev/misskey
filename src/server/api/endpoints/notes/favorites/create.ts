@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Favorite from '../../../../../models/favorite';
 import Note from '../../../../../models/note';
 import { ILocalUser } from '../../../../../models/user';
@@ -17,12 +17,14 @@ export const meta = {
 	kind: 'favorite-write',
 
 	params: {
-		noteId: $.type(ID).note({
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
 			}
-		})
+		}
 	}
 };
 

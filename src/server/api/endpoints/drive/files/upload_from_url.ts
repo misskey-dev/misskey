@@ -1,8 +1,9 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 const ms = require('ms');
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
@@ -16,21 +17,25 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-write'
+	kind: 'drive-write',
+
+	params: {
+		url: {
+			// TODO: Validate this url
+			validator: $.str,
+		},
+
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			default: null as any as any,
+			transform: transform
+		},
+	}
 };
 
-/**
- * Create a file from a URL
- */
 export default async (params: any, user: ILocalUser): Promise<any> => {
-	// Get 'url' parameter
-	// TODO: Validate this url
-	const [url, urlErr] = $.str.get(params.url);
-	if (urlErr) throw 'invalid url param';
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) throw psErr;
 
-	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional.nullable.get(params.folderId);
-	if (folderIdErr) throw 'invalid folderId param';
-
-	return pack(await uploadFromUrl(url, user, folderId));
+	return pack(await uploadFromUrl(ps.url, user, ps.folderId));
 };

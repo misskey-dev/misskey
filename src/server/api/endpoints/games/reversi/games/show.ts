@@ -1,14 +1,23 @@
-import $ from 'cafy'; import ID from '../../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
 import Reversi from '../../../../../../games/reversi/core';
 import { ILocalUser } from '../../../../../../models/user';
+import getParams from '../../../../get-params';
+
+export const meta = {
+	params: {
+		gameId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+	}
+};
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'gameId' parameter
-	const [gameId, gameIdErr] = $.type(ID).get(params.gameId);
-	if (gameIdErr) return rej('invalid gameId param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
-	const game = await ReversiGame.findOne({ _id: gameId });
+	const game = await ReversiGame.findOne({ _id: ps.gameId });
 
 	if (game == null) {
 		return rej('game not found');

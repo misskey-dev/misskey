@@ -16,11 +16,12 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		uri: $.str.note({
+		uri: {
+			validator: $.str,
 			desc: {
 				'ja-JP': 'ActivityPubオブジェクトのURI'
 			}
-		}),
+		},
 	},
 };
 

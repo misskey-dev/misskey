@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
@@ -18,17 +18,20 @@ export const meta = {
 	kind: 'reaction-write',
 
 	params: {
-		noteId: $.type(ID).note({
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿'
 			}
-		}),
+		},
 
-		reaction: $.str.pipe(validateReaction.ok).note({
+		reaction: {
+			validator: $.str.pipe(validateReaction.ok),
 			desc: {
 				'ja-JP': 'リアクションの種類'
 			}
-		})
+		}
 	}
 };
 

@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
@@ -15,22 +15,29 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		following: $.bool.optional.note({
+		following: {
+			validator: $.bool.optional,
 			default: false
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({
-		}),
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		untilId: $.type(ID).optional.note({
-		}),
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		visibility: $.str.optional.note({
-		}),
+		visibility: {
+			validator: $.str.optional,
+		},
 	}
 };
 

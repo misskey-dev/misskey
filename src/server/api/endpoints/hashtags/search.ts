@@ -11,25 +11,28 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
 			}
-		}),
+		},
 
-		query: $.str.note({
+		query: {
+			validator: $.str,
 			desc: {
 				'ja-JP': 'クエリ'
 			}
-		}),
+		},
 
-		offset: $.num.optional.min(0).note({
+		offset: {
+			validator: $.num.optional.min(0),
 			default: 0,
 			desc: {
 				'ja-JP': 'オフセット'
 			}
-		})
+		}
 	}
 };
 
