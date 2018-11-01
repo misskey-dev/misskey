@@ -186,7 +186,8 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'emoji': {
 					//#region カスタム絵文字
-					const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis;
+					const response = (this as any).api('emoji');
+					const customEmojis = response ? response.data : [];
 					const customEmoji = customEmojis.find(e => e.name == token.emoji || (e.aliases || []).includes(token.emoji));
 					if (customEmoji) {
 						return [createElement('img', {
