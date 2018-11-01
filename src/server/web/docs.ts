@@ -61,11 +61,11 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 }
 
 // WIP type
-const parseParamDefinition = (key: string, param: Context) => {
+const parseParamDefinition = (key: string, x: any) => {
 	return Object.assign({
 		name: key,
-		type: param.getType()
-	}, param.data);
+		type: x.validator.getType()
+	}, x);
 };
 
 const parsePropDefinition = (key: string, prop: any) => {
