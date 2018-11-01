@@ -5,6 +5,7 @@ import config from '../../config';
 import Meta, { IMeta } from '../../models/meta';
 import { ObjectID } from 'bson';
 import { toMastodonEmojis } from '../../models/mastodon/emoji';
+import { customEmojisPath } from './endpoints/emoji';
 
 // Init router
 const router = new Router();
@@ -13,7 +14,6 @@ async function getMeta(): Promise<IMeta> {
 	return await Meta.findOne() || {};
 }
 
-export const customEmojisPath = '/v1/custom_emojis';
 router.get(customEmojisPath, async ctx => {
 	const meta = await getMeta();
 	if (meta)

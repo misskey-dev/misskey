@@ -1,4 +1,3 @@
-import { aliases } from './../../client/app/common/keycode';
 export type IMastodonEmoji = {
 	shortcode: string,
 	url: string,
@@ -24,7 +23,7 @@ export function toMisskeyEmojiSync(emoji: IMastodonEmoji) {
 	return {
 		name: emoji.shortcode,
 		url: emoji.url
-	}
+	};
 }
 
 export function toMisskeyEmojiWithAliasesSync(emoji: IMastodonEmoji, ...aliases: string[]) {
@@ -32,5 +31,5 @@ export function toMisskeyEmojiWithAliasesSync(emoji: IMastodonEmoji, ...aliases:
 		name: emoji.shortcode,
 		aliases,
 		url: emoji.url
-	}
+	};
 }
