@@ -163,6 +163,7 @@ export const pack = (
 	delete _target.storage;
 	delete _target.storageProps;
 	delete _target.isRemote;
+	delete _target._user;
 
 	resolve(_target);
 });
