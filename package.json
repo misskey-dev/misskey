@@ -98,7 +98,7 @@
 		"chart.js": "2.7.3",
 		"commander": "2.19.0",
 		"crc-32": "1.2.0",
-		"css-loader": "1.0.0",
+		"css-loader": "1.0.1",
 		"dateformat": "3.0.3",
 		"debug": "4.1.0",
 		"deep-equal": "1.0.1",
