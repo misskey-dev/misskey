@@ -44,6 +44,7 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 
 	// Response
 	res(await pack(app, null, {
+		detail: true,
 		includeSecret: true
 	}));
 });

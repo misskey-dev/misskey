@@ -34,6 +34,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	// Serialize
-	res(await Promise.all(tokens.map(async token =>
-		await pack(token.appId))));
+	res(await Promise.all(tokens.map(token => pack(token.appId, user, {
+		detail: true
+	}))));
 });

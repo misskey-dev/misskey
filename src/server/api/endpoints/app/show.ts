@@ -21,6 +21,7 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 
 	// Send response
 	res(await pack(ap, user, {
+		detail: true,
 		includeSecret: isSecure && ap.userId.equals(user._id)
 	}));
 });

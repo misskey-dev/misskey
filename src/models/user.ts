@@ -223,33 +223,16 @@ export const pack = (
 
 	let _user: any;
 
-	const fields = opts.detail ? {
-	} : {
-		usernameLower: false,
-		bannerColor: false,
-		bannerUrl: false,
-		description: false,
-		notesCount: false,
-		followersCount: false,
-		followingCount: false,
-		lastUsedAt: false,
-		settings: false,
-		clientSettings: false,
-		profile: false,
-		keywords: false,
-		domains: false,
-		pinnedNoteIds: false,
-		wallpaperColor: false,
-		wallpaperId: false,
-		wallpaperUrl: false,
-		twitter: false,
-		pendingReceivedFollowRequestsCount: false,
-		featured: false,
-		sharedInbox: false,
-		endpoints: false,
-		inbox: false,
-		twoFactorTempSecret: false,
-		twoFactorSecret: false
+	const fields = opts.detail ? {} : {
+		name: true,
+		username: true,
+		host: true,
+		avatarColor: true,
+		avatarUrl: true,
+		isCat: true,
+		isBot: true,
+		isAdmin: true,
+		isVerified: true
 	};
 
 	// Populate the user if 'user' is ID

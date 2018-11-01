@@ -35,6 +35,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	// Reply
-	res(await Promise.all(apps.map(async app =>
-		await pack(app))));
+	res(await Promise.all(apps.map(app => pack(app, user, {
+		detail: true
+	}))));
 });
