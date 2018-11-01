@@ -5,19 +5,7 @@ import config from '../../config';
 
 module.exports = async (ctx: Koa.Context) => {
 	try {
-		const summary = config.summalyProxy ? await request.get({
-			url: config.summalyProxy,
-			proxy: config.proxy,
-			qs: {
-				url: ctx.query.url
-			},
-			json: true
-		}) : await summaly(ctx.query.url, {
-			followRedirects: false
-		});
-
-		summary.icon = wrap(summary.icon);
-		summary.thumbnail = wrap(summary.thumbnail);
+		const summary = await getSummary(ctx.query.url);
 
 		// Cache 7days
 		ctx.set('Cache-Control', 'max-age=604800, immutable');
@@ -29,6 +17,24 @@ module.exports = async (ctx: Koa.Context) => {
 		ctx.body = '{}';
 	}
 };
+
+export async function getSummary(url: string) {
+	const summary = config.summalyProxy ? await request.get({
+		url: config.summalyProxy,
+		proxy: config.proxy,
+		qs: {
+			url: url
+		},
+		json: true
+	}) : await summaly(url, {
+		followRedirects: false
+	});
+
+	summary.icon = wrap(summary.icon);
+	summary.thumbnail = wrap(summary.thumbnail);
+
+	return summary;
+}
 
 function wrap(url: string): string {
 	return url != null
