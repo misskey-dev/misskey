@@ -210,8 +210,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const avatarId = avatar ? avatar._id : null;
 	const bannerId = banner ? banner._id : null;
-	const avatarUrl = (avatar && avatar.metadata.thumbnailUrl) ? avatar.metadata.thumbnailUrl : (avatar && avatar.metadata.url) ? avatar.metadata.url : null;
-	const bannerUrl = (banner && banner.metadata.url) ? banner.metadata.url : null;
+	const avatarUrl = getDriveFileUrl(avatar, true);
+	const bannerUrl = getDriveFileUrl(banner, false);
 
 	await User.update({ _id: user._id }, {
 		$set: {
@@ -305,7 +305,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
 			avatarUrl: getDriveFileUrl(avatar, true),
-			bannerUrl: getDriveFileUrl(banner, true),
+			bannerUrl: getDriveFileUrl(banner, false),
 			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,

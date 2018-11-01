@@ -144,7 +144,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		if (banner == null) return rej('banner not found');
 		if (!banner.contentType.startsWith('image/')) return rej('banner not an image');
 
-		updates.bannerUrl = getDriveFileUrl(banner, true);
+		updates.bannerUrl = getDriveFileUrl(banner, false);
 
 		if (banner.metadata.properties.avgColor) {
 			updates.bannerColor = banner.metadata.properties.avgColor;
