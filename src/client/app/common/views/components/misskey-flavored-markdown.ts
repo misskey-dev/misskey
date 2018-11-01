@@ -193,6 +193,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							attrs: {
 								src: customEmoji.url,
 								alt: token.emoji,
+								title: token.emoji,
 								style: 'height: 2.5em; vertical-align: middle;'
 							}
 						})];
