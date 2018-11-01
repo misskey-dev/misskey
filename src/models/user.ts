@@ -225,6 +225,7 @@ export const pack = (
 
 	const fields = opts.detail ? {
 	} : {
+		usernameLower: false,
 		bannerColor: false,
 		bannerUrl: false,
 		description: false,
@@ -241,7 +242,14 @@ export const pack = (
 		wallpaperColor: false,
 		wallpaperId: false,
 		wallpaperUrl: false,
-		twitter: false
+		twitter: false,
+		pendingReceivedFollowRequestsCount: false,
+		featured: false,
+		sharedInbox: false,
+		endpoints: false,
+		inbox: false,
+		twoFactorTempSecret: false,
+		twoFactorSecret: false
 	};
 
 	// Populate the user if 'user' is ID
@@ -276,6 +284,8 @@ export const pack = (
 	_user.id = _user._id;
 	delete _user._id;
 
+	delete _user.usernameLower;
+
 	if (_user.host == null) {
 		// Remove private properties
 		delete _user.keypair;
@@ -283,7 +293,6 @@ export const pack = (
 		delete _user.token;
 		delete _user.twoFactorTempSecret;
 		delete _user.twoFactorSecret;
-		delete _user.usernameLower;
 		if (_user.twitter) {
 			delete _user.twitter.accessToken;
 			delete _user.twitter.accessTokenSecret;
