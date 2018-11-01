@@ -193,18 +193,18 @@ export default Vue.extend({
 				});
 
 				emjdb.some(x => {
-					if (x.name.indexOf(this.q) == 0 && !x.alias && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+					if (x.name.startsWith(this.q) && !x.alias && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 					return matched.length == max;
 				});
 				if (matched.length < max) {
 					emjdb.some(x => {
-						if (x.name.indexOf(this.q) == 0 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+						if (x.name.startsWith(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 						return matched.length == max;
 					});
 				}
 				if (matched.length < max) {
 					emjdb.some(x => {
-						if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+						if (x.name.includes(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 						return matched.length == max;
 					});
 				}
