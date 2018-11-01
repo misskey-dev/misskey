@@ -172,7 +172,7 @@ export default Vue.extend({
 				const matched = [];
 				const max = 30;
 
-				const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis;
+				const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis || [];
 				customEmojis.some(x => {
 					if (x.name.startsWith(this.q)) matched.push({
 						name: x.name,
