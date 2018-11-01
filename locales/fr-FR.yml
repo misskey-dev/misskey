@@ -954,7 +954,7 @@ desktop/views/pages/admin/admin.vue:
   hashtags: "Hashtags"
 desktop/views/pages/admin/admin.dashboard.vue:
   dashboard: "Tableau de bord"
-  all-users: "Toutes les utilisateurrices"
+  all-users: "Tout·es les utilisateurs·rices"
   original-users: "Utilisateur·rice·s sur cette instance"
   all-notes: "Toutes les publications"
   original-notes: "Publications sur cette instance"
