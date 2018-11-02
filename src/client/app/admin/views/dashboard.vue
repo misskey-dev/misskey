@@ -1,5 +1,12 @@
 <template>
 <div class="obdskegsannmntldydackcpzezagxqfy">
+	<header v-if="meta">
+		<p><b>Misskey</b><span>{{ meta.version }}</span></p>
+		<p><b>Machine</b><span>{{ meta.machine }}</span></p>
+		<p><b>OS</b><span>{{ meta.os }}</span></p>
+		<p><b>Node</b><span>{{ meta.node }}</span></p>
+		<p>藍ちゃかわいい</p>
+	</header>
 	<div v-if="stats" class="stats">
 		<div>
 			<div>
@@ -74,16 +81,15 @@ export default Vue.extend({
 	data() {
 		return {
 			stats: null,
-			connection: null
+			connection: null,
+			meta: null
 		};
 	},
 	created() {
 		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
 
 		(this as any).os.getMeta().then(meta => {
-			this.disableRegistration = meta.disableRegistration;
-			this.disableLocalTimeline = meta.disableLocalTimeline;
-			this.bannerUrl = meta.bannerUrl;
+			this.meta = meta;
 		});
 
 		(this as any).api('stats').then(stats => {
@@ -98,6 +104,27 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .obdskegsannmntldydackcpzezagxqfy
+	> header
+		display flex
+		margin-bottom 16px
+		padding-bottom 16px
+		border-bottom solid 1px #ccc
+		color #777
+		font-size 14px
+
+		> p
+			display inline
+			margin 0 32px 0 0
+
+			> b
+				&:after
+					content ':'
+					margin-right 8px
+
+			&:last-child
+				margin-left auto
+				margin-right 0
+
 	> .stats
 		display flex
 		justify-content space-between
