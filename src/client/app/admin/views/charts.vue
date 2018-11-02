@@ -403,7 +403,7 @@ export default Vue.extend({
 	display block
 	flex 1
 	padding 32px
-	padding-bottom 8px
+	padding-bottom 0
 	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
 	background var(--face)
 	border-radius 8px

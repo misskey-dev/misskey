@@ -44,7 +44,7 @@ export default Vue.extend({
 		const chartOpts = {
 			chart: {
 				type: 'area',
-				height: 300,
+				height: 200,
 				animations: {
 					dynamicAnimation: {
 						enabled: false
@@ -123,7 +123,7 @@ export default Vue.extend({
 	> div
 		display block
 		flex 1
-		padding 32px
+		padding 24px 16px 12px 16px
 		box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
 		background var(--face)
 		border-radius 8px
