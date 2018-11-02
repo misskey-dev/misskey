@@ -2,7 +2,6 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 const ms = require('ms');
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
-import { ILocalUser } from '../../../../../models/user';
 import define from '../../../define';
 
 export const meta = {

@@ -1,9 +1,8 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack, ILocalUser } from '../../../../models/user';
+import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
-import { IApp } from '../../../../models/app';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';

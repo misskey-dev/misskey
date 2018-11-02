@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import User, { pack, ILocalUser } from '../../../models/user';
+import User, { pack } from '../../../models/user';
 import define from '../define';
 
 export const meta = {
