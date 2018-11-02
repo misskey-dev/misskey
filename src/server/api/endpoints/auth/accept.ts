@@ -5,23 +5,27 @@ import App from '../../../../models/app';
 import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';
 import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
 export const meta = {
 	requireCredential: true,
-	secure: true
+
+	secure: true,
+
+	params: {
+		token: {
+			validator: $.str
+		}
+	}
 };
 
-/**
- * Accept
- */
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'token' parameter
-	const [token, tokenErr] = $.str.get(params.token);
-	if (tokenErr) return rej('invalid token param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch token
 	const session = await AuthSess
-		.findOne({ token: token });
+		.findOne({ token: ps.token });
 
 	if (session === null) {
 		return rej('session not found');

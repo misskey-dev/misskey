@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
@@ -23,11 +24,11 @@ export const meta = {
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [md5, md5Err] = $.str.get(params.md5);
-	if (md5Err) return rej('invalid md5 param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	const file = await DriveFile.findOne({
-		md5: md5,
+		md5: ps.md5,
 		'metadata.userId': user._id,
 		'metadata.deletedAt': { $exists: false }
 	});

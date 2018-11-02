@@ -1,30 +1,38 @@
 import $ from 'cafy';
 import User, { pack, ILocalUser } from '../../../models/user';
+import getParams from '../get-params';
 
-/**
- * Lists all users
- */
+export const meta = {
+	requireCredential: false,
+
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		},
+
+		sort: {
+			validator: $.str.optional.or('+follower|-follower'),
+		}
+	}
+};
+
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional.min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
-
-	// Get 'sort' parameter
-	const [sort, sortError] = $.str.optional.or('+follower|-follower').get(params.sort);
-	if (sortError) return rej('invalid sort param');
-
-	// Construct query
 	let _sort;
-	if (sort) {
-		if (sort == '+follower') {
+	if (ps.sort) {
+		if (ps.sort == '+follower') {
 			_sort = {
 				followersCount: -1
 			};
-		} else if (sort == '-follower') {
+		} else if (ps.sort == '-follower') {
 			_sort = {
 				followersCount: 1
 			};
@@ -35,17 +43,14 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		};
 	}
 
-	// Issue query
 	const users = await User
 		.find({
 			host: null
 		}, {
-			limit: limit,
+			limit: ps.limit,
 			sort: _sort,
-			skip: offset
+			skip: ps.offset
 		});
 
-	// Serialize
-	res(await Promise.all(users.map(async user =>
-		await pack(user, me))));
+	res(await Promise.all(users.map(user => pack(user, me))));
 });

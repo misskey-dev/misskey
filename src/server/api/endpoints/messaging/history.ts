@@ -3,6 +3,7 @@ import History from '../../../../models/messaging-history';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/messaging-message';
 import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
@@ -12,13 +13,19 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-read'
+	kind: 'messaging-read',
+
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		}
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	const mute = await Mute.find({
 		muterId: user._id,
@@ -33,12 +40,11 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 				$nin: mute.map(m => m.muteeId)
 			}
 		}, {
-			limit: limit,
+			limit: ps.limit,
 			sort: {
 				updatedAt: -1
 			}
 		});
 
-	// Serialize
 	res(await Promise.all(history.map(h => pack(h.messageId, user))));
 });

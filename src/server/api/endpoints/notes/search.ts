@@ -4,19 +4,36 @@ import Note from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';
+import getParams from '../../get-params';
+
+export const meta = {
+	desc: {
+		'ja-JP': '投稿を検索します。',
+		'en-US': 'Search notes.'
+	},
+
+	requireCredential: false,
+
+	params: {
+		query: {
+			validator: $.str
+		},
+
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		}
+	}
+};
 
 export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'query' parameter
-	const [query, queryError] = $.str.get(params.query);
-	if (queryError) return rej('invalid query param');
-
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional.min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
-
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 30).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	if (es == null) return rej('searching not available');
 
@@ -24,12 +41,12 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		index: 'misskey',
 		type: 'note',
 		body: {
-			size: limit,
-			from: offset,
+			size: ps.limit,
+			from: ps.offset,
 			query: {
 				simple_query_string: {
 					fields: ['text'],
-					query: query,
+					query: ps.query,
 					default_operator: 'and'
 				}
 			},

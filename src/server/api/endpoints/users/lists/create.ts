@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import UserList, { pack } from '../../../../../models/user-list';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
 export const meta = {
 	desc: {
@@ -10,19 +11,24 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write'
+	kind: 'account-write',
+
+	params: {
+		title: {
+			validator: $.str.range(1, 100)
+		}
+	}
 };
 
 export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'title' parameter
-	const [title, titleErr] = $.str.range(1, 100).get(params.title);
-	if (titleErr) return rej('invalid title param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// insert
 	const userList = await UserList.insert({
 		createdAt: new Date(),
 		userId: user._id,
-		title: title,
+		title: ps.title,
 		userIds: []
 	});
 

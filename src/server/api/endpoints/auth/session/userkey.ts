@@ -1,40 +1,41 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import App from '../../../../../models/app';
 import AuthSess from '../../../../../models/auth-session';
 import AccessToken from '../../../../../models/access-token';
 import { pack } from '../../../../../models/user';
+import getParams from '../../../get-params';
 
-/**
- * Generate a session
- *
- * @param {any} params
- * @return {Promise<any>}
- */
+export const meta = {
+	requireCredential: false,
+
+	params: {
+		appSecret: {
+			validator: $.str
+		},
+
+		token: {
+			validator: $.str
+		}
+	}
+};
+
 export default (params: any) => new Promise(async (res, rej) => {
-	// Get 'appSecret' parameter
-	const [appSecret, appSecretErr] = $.str.get(params.appSecret);
-	if (appSecretErr) return rej('invalid appSecret param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Lookup app
 	const app = await App.findOne({
-		secret: appSecret
+		secret: ps.appSecret
 	});
 
 	if (app == null) {
 		return rej('app not found');
 	}
 
-	// Get 'token' parameter
-	const [token, tokenErr] = $.str.get(params.token);
-	if (tokenErr) return rej('invalid token param');
-
 	// Fetch token
 	const session = await AuthSess
 		.findOne({
-			token: token,
+			token: ps.token,
 			appId: app._id
 		});
 

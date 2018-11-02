@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import App, { pack } from '../../../../models/app';
 import { ILocalUser } from '../../../../models/user';
+import getParams from '../../get-params';
 
 export const meta = {
 	desc: {
@@ -8,17 +9,24 @@ export const meta = {
 		'en-US': 'Get my apps'
 	},
 
-	requireCredential: true
+	requireCredential: true,
+
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		}
+	}
 };
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional.min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	const query = {
 		userId: user._id
@@ -27,8 +35,8 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Execute query
 	const apps = await App
 		.find(query, {
-			limit: limit,
-			skip: offset,
+			limit: ps.limit,
+			skip: ps.offset,
 			sort: {
 				_id: -1
 			}
