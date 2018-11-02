@@ -68,4 +68,4 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	tags = tags.slice(0, 30);
 
 	res(tags);
-});
+}));
