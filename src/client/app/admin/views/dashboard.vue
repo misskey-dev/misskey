@@ -51,6 +51,10 @@
 		</div>
 	</div>
 
+	<div class="charts">
+		<x-charts/>
+	</div>
+
 	<div class="cpu-memory">
 		<x-cpu-memory :connection="connection"/>
 	</div>
@@ -60,10 +64,12 @@
 <script lang="ts">
 import Vue from "vue";
 import XCpuMemory from "./cpu-memory.vue";
+import XCharts from "./charts.vue";
 
 export default Vue.extend({
 	components: {
-		XCpuMemory
+		XCpuMemory,
+		XCharts
 	},
 	data() {
 		return {
@@ -143,6 +149,9 @@ export default Vue.extend({
 				> span
 					font-size 70%
 					opacity 0.7
+
+	> .charts
+		margin-bottom 16px
 
 	> .cpu-memory
 		margin-bottom 16px
