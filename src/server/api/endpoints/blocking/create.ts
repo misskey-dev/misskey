@@ -1,9 +1,9 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 const ms = require('ms');
-import User, { pack, ILocalUser } from '../../../../models/user';
+import User, { pack } from '../../../../models/user';
 import Blocking from '../../../../models/blocking';
 import create from '../../../../services/blocking/create';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -34,10 +34,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const blocker = user;
 
 	// 自分自身
@@ -76,4 +73,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	res(await pack(blockee._id, user, {
 		detail: true
 	}));
-});
+}));

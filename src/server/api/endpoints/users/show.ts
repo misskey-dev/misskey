@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
-import User, { pack, ILocalUser, isRemoteUser } from '../../../../models/user';
+import User, { pack, isRemoteUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 const cursorOption = { fields: { data: false } };
 
@@ -39,10 +39,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	let user;
 
 	if (ps.userIds) {
@@ -87,4 +84,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			}
 		}
 	}
-});
+}));

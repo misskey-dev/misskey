@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import User, { ILocalUser } from '../../../../models/user';
+import User from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	requireCredential: true,
@@ -19,10 +19,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	await User.update(user._id, {
 		$set: {
 			'clientSettings.mobileHome': ps.home
@@ -32,4 +29,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	res();
 
 	publishMainStream(user._id, 'mobileHomeUpdated', ps.home);
-});
+}));

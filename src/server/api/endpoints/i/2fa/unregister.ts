@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User, { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import User from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	requireCredential: true,
@@ -15,10 +15,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Compare password
 	const same = await bcrypt.compare(ps.password, user.password);
 
@@ -34,4 +31,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	});
 
 	res();
-});
+}));

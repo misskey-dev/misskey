@@ -1,7 +1,6 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 import { packMany } from '../../../../../models/note';
 
 export const meta = {
@@ -28,10 +27,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
@@ -47,4 +43,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	res(await packMany(file.metadata.attachedNoteIds || [], user, {
 		detail: true
 	}));
-});
+}));

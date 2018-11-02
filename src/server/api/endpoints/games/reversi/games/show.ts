@@ -1,8 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
 import Reversi from '../../../../../../games/reversi/core';
-import { ILocalUser } from '../../../../../../models/user';
-import getParams from '../../../../get-params';
+import define from '../../../../define';
 
 export const meta = {
 	params: {
@@ -13,10 +12,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const game = await ReversiGame.findOne({ _id: ps.gameId });
 
 	if (game == null) {
@@ -39,4 +35,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		board: o.board,
 		turn: o.turn
 	}, packed));
-});
+}));

@@ -1,6 +1,6 @@
 import $ from 'cafy'; import ID, { transform } from '../../../misc/cafy-id';
 import Note, { packMany } from '../../../models/note';
-import getParams from '../get-params';
+import define from '../define';
 
 export const meta = {
 	desc: {
@@ -67,10 +67,7 @@ export const meta = {
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
@@ -130,4 +127,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await packMany(notes));
-});
+}));

@@ -2,9 +2,8 @@ import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
 import Meta from '../../../models/meta';
-import { ILocalUser } from '../../../models/user';
 import Emoji from '../../../models/emoji';
-import getParams from '../get-params';
+import define from '../define';
 
 const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
@@ -27,10 +26,7 @@ export const meta = {
 	},
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const met: any = (await Meta.findOne()) || {};
 
 	const emojis = await Emoji.find({ host: null });
@@ -76,4 +72,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
 		} : undefined
 	});
-});
+}));

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
 import { validateUsername } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	requireCredential: false,
@@ -13,10 +13,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	// Get exist
 	const exist = await User
 		.count({
@@ -30,4 +27,4 @@ export default async (params: any) => new Promise(async (res, rej) => {
 	res({
 		available: exist === 0
 	});
-});
+}));

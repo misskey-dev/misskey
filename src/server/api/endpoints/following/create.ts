@@ -1,9 +1,9 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 const ms = require('ms');
-import User, { pack, ILocalUser } from '../../../../models/user';
+import User, { pack } from '../../../../models/user';
 import Following from '../../../../models/following';
 import create from '../../../../services/following/create';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -34,10 +34,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// 自分自身
@@ -78,4 +75,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Send response
 	res(await pack(followee._id, user));
-});
+}));

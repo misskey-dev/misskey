@@ -1,6 +1,7 @@
 import Note from '../../../../models/note';
 import { erase } from '../../../../prelude/array';
 import Meta from '../../../../models/meta';
+import define from '../../define';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -14,10 +15,11 @@ const requiredUsers = 3; // 最低何人がそのタグを投稿している必�
 
 const max = 5;
 
-/**
- * Get trends of hashtags
- */
-export default () => new Promise(async (res, rej) => {
+export const meta = {
+	requireCredential: false,
+};
+
+export default define(meta, () => new Promise(async (res, rej) => {
 	const meta = await Meta.findOne({});
 	const hidedTags = meta ? (meta.hidedTags || []).map(t => t.toLowerCase()) : [];
 
@@ -143,4 +145,4 @@ export default () => new Promise(async (res, rej) => {
 	}));
 
 	res(stats);
-});
+}));

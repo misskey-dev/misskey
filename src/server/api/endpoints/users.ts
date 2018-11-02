@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import User, { pack, ILocalUser } from '../../../models/user';
-import getParams from '../get-params';
+import define from '../define';
 
 export const meta = {
 	requireCredential: false,
@@ -22,10 +22,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	let _sort;
 	if (ps.sort) {
 		if (ps.sort == '+follower') {
@@ -53,4 +50,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		});
 
 	res(await Promise.all(users.map(user => pack(user, me))));
-});
+}));

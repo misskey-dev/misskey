@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import User, { pack, ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import User, { pack } from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
 	requireCredential: false,
@@ -19,10 +19,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Lookup user
 	const user = await User.findOne({
 		_id: ps.userId
@@ -104,4 +101,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 	})));
 
 	res(repliesObj);
-});
+}));

@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import App, { pack } from '../../../../models/app';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -24,10 +23,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const query = {
 		userId: user._id
 	};
@@ -46,4 +42,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	res(await Promise.all(apps.map(app => pack(app, user, {
 		detail: true
 	}))));
-});
+}));

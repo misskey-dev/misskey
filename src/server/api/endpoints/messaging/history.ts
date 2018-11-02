@@ -2,8 +2,7 @@ import $ from 'cafy';
 import History from '../../../../models/messaging-history';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/messaging-message';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -23,10 +22,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const mute = await Mute.find({
 		muterId: user._id,
 		deletedAt: { $exists: false }
@@ -47,4 +43,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	res(await Promise.all(history.map(h => pack(h.messageId, user))));
-});
+}));

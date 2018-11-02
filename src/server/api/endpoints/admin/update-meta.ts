@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import Meta from '../../../../models/meta';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -55,10 +55,7 @@ export const meta = {
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const set = {} as any;
 
 	if (ps.broadcasts) {
@@ -90,4 +87,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 	}, { upsert: true });
 
 	res();
-});
+}));

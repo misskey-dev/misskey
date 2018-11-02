@@ -1,10 +1,9 @@
 import $ from 'cafy';
 import * as mongo from 'mongodb';
 import Note from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
 import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -31,10 +30,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	if (es == null) return rej('searching not available');
 
 	es.search({
@@ -79,4 +75,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 		res(await packMany(notes, me));
 	});
-});
+}));

@@ -1,11 +1,10 @@
 import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 const ms = require('ms');
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
-import User, { ILocalUser, IUser } from '../../../../models/user';
+import User, { IUser } from '../../../../models/user';
 import DriveFile, { IDriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
-import { IApp } from '../../../../models/app';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -139,10 +138,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	let visibleUsers: IUser[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => User.findOne({
@@ -229,4 +225,4 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 	res({
 		createdNote: noteObj
 	});
-});
+}));

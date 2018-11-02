@@ -3,7 +3,7 @@ import $ from 'cafy';
 import App from '../../../../../models/app';
 import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	requireCredential: false,
@@ -15,10 +15,7 @@ export const meta = {
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	// Lookup app
 	const app = await App.findOne({
 		secret: ps.appSecret
@@ -43,4 +40,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 		token: doc.token,
 		url: `${config.auth_url}/${doc.token}`
 	});
-});
+}));

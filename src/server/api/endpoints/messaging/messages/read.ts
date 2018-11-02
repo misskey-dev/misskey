@@ -1,8 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
-import { ILocalUser } from '../../../../../models/user';
 import read from '../../../common/read-messaging-message';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -26,10 +25,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const message = await Message.findOne({
 		_id: ps.messageId,
 		recipientId: user._id
@@ -42,4 +38,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	read(user._id, message.userId, message);
 
 	res();
-});
+}));

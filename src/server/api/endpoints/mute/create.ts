@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-import User, { ILocalUser } from '../../../../models/user';
+import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -21,10 +21,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const muter = user;
 
 	// 自分自身
@@ -64,4 +61,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	});
 
 	res();
-});
+}));

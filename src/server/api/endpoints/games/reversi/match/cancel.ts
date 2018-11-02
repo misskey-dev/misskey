@@ -1,14 +1,14 @@
 import Matching from '../../../../../../models/games/reversi/matching';
-import { ILocalUser } from '../../../../../../models/user';
+import define from '../../../../define';
 
 export const meta = {
 	requireCredential: true
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	await Matching.remove({
 		parentId: user._id
 	});
 
 	res();
-});
+}));

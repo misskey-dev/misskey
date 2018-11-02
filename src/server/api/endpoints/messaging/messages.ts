@@ -1,9 +1,9 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Message from '../../../../models/messaging-message';
-import User, { ILocalUser } from '../../../../models/user';
+import User from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -43,10 +43,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
@@ -108,4 +105,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	if (ps.markAsRead) {
 		read(user._id, recipient._id, messages);
 	}
-});
+}));

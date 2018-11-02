@@ -5,8 +5,7 @@ import Watching from '../../../../../models/note-watching';
 import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../stream';
 import notify from '../../../../../notify';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -30,10 +29,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Get votee
 	const note = await Note.findOne({
 		_id: ps.noteId
@@ -114,4 +110,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	if (user.settings.autoWatch !== false) {
 		watch(user._id, note);
 	}
-});
+}));

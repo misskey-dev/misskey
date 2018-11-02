@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import getParams from '../../get-params';
+import define from '../../define';
 import usersChart from '../../../../chart/users';
 
 export const meta = {
@@ -25,11 +25,8 @@ export const meta = {
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const stats = await usersChart.getChart(ps.span as any, ps.limit);
 
 	res(stats);
-});
+}));

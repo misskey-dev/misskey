@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import Hashtag from '../../../../models/hashtag';
-import getParams from '../../get-params';
+import define from '../../define';
 const escapeRegexp = require('escape-regexp');
 
 export const meta = {
@@ -36,10 +36,7 @@ export const meta = {
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const hashtags = await Hashtag
 		.find({
 			tag: new RegExp('^' + escapeRegexp(ps.query.toLowerCase()))
@@ -52,4 +49,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 		});
 
 	res(hashtags.map(tag => tag.tag));
-});
+}));

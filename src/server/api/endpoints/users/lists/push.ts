@@ -1,11 +1,11 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
-import User, { pack as packUser, isRemoteUser, getGhost, ILocalUser } from '../../../../../models/user';
+import User, { pack as packUser, isRemoteUser, getGhost } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../stream';
 import ap from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -30,10 +30,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
@@ -74,4 +71,4 @@ export default async (params: any, me: ILocalUser) => new Promise(async (res, re
 		const content = ap(renderFollow(ghost, user));
 		deliver(ghost, content, user.inbox);
 	}
-});
+}));

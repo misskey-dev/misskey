@@ -3,8 +3,7 @@ import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -101,10 +100,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const [list, mutedUserIds] = await Promise.all([
 		// リストを取得
 		// Fetch the list
@@ -120,7 +116,8 @@ export default async (params: any, user: ILocalUser) => {
 	]);
 
 	if (list.userIds.length == 0) {
-		return [];
+		res([]);
+		return;
 	}
 
 	//#region Construct query
@@ -258,5 +255,5 @@ export default async (params: any, user: ILocalUser) => {
 		});
 
 	// Serialize
-	return await packMany(timeline, user);
-};
+	res(await packMany(timeline, user));
+}));

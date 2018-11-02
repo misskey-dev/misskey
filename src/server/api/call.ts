@@ -42,18 +42,12 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		}
 	}
 
-	let exec = ep.exec;
-
-	if (ep.meta.requireFile && file) {
-		exec = exec.bind(null, file);
-	}
-
 	let res;
 
 	// API invoking
 	try {
 		const before = performance.now();
-		res = await exec(data, user, app);
+		res = await ep.exec(data, user, app, file);
 		const after = performance.now();
 
 		const time = after - before;

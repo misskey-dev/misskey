@@ -1,7 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import acceptFollowRequest from '../../../../../services/following/requests/accept';
-import User, { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import User from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -21,10 +21,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch follower
 	const follower = await User.findOne({
 		_id: ps.userId
@@ -37,4 +34,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	await acceptFollowRequest(user, follower);
 
 	res();
-});
+}));

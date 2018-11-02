@@ -1,8 +1,7 @@
 import rndstr from 'rndstr';
 import $ from 'cafy';
 import App, { pack } from '../../../../models/app';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	requireCredential: false,
@@ -28,10 +27,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 
@@ -51,4 +47,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		detail: true,
 		includeSecret: true
 	}));
-});
+}));

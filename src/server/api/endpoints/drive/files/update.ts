@@ -2,8 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
 import { publishDriveStream } from '../../../../../stream';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 import Note from '../../../../../models/note';
 
 export const meta = {
@@ -54,10 +53,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
@@ -122,4 +118,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Publish fileUpdated event
 	publishDriveStream(user._id, 'fileUpdated', fileObj);
-});
+}));

@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import DriveFile, { pack } from '../../../../../models/drive-file';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -23,10 +22,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const file = await DriveFile.findOne({
 		md5: ps.md5,
 		'metadata.userId': user._id,
@@ -38,4 +34,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	} else {
 		res({ file: await pack(file) });
 	}
-});
+}));

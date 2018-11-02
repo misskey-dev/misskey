@@ -1,8 +1,8 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import getHostLower from '../../common/get-host-lower';
 import Note, { packMany } from '../../../../models/note';
-import User, { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import User from '../../../../models/user';
+import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 
 export const meta = {
@@ -126,10 +126,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	if (ps.userId === undefined && ps.username === undefined) {
 		return rej('userId or username is required');
 	}
@@ -215,4 +212,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 	// Serialize
 	res(await packMany(notes, me));
-});
+}));

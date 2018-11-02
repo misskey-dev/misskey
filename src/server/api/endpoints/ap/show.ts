@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import getParams from '../../get-params';
+import define from '../../define';
 import config from '../../../../config';
 import * as mongo from 'mongodb';
 import User, { pack as packUser, IUser } from '../../../../models/user';
@@ -25,15 +25,12 @@ export const meta = {
 	},
 };
 
-export default async (params: any) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const object = await fetchAny(ps.uri);
-	if (object !== null) return object;
+	if (object == null) return rej('object not found');
 
-	throw new Error('object not found');
-};
+	res(object);
+}));
 
 /***
  * URIからUserかNoteを解決する

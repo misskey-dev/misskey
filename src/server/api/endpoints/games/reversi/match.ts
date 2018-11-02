@@ -1,10 +1,10 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
 import ReversiGame, { pack as packGame } from '../../../../../models/games/reversi/game';
-import User, { ILocalUser } from '../../../../../models/user';
+import User from '../../../../../models/user';
 import { publishMainStream, publishReversiStream } from '../../../../../stream';
 import { eighteight } from '../../../../../games/reversi/maps';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	requireCredential: true,
@@ -17,10 +17,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Myself
 	if (ps.userId.equals(user._id)) {
 		return rej('invalid userId param');
@@ -103,4 +100,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 		publishMainStream(child._id, 'reversiInvited', packed);
 	}
-});
+}));

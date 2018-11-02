@@ -1,7 +1,6 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import DriveFile, { packMany } from '../../../../models/drive-file';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -41,13 +40,10 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {
-		throw 'cannot set sinceId and untilId';
+		return rej('cannot set sinceId and untilId');
 	}
 
 	const sort = {
@@ -81,5 +77,5 @@ export default async (params: any, user: ILocalUser) => {
 			sort: sort
 		});
 
-	return await packMany(files);
-};
+	res(await packMany(files));
+}));

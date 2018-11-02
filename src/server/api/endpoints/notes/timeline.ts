@@ -3,8 +3,7 @@ import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 
 export const meta = {
@@ -94,13 +93,11 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
+		rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
+		return;
 	}
 
 	const [followings, mutedUserIds] = await Promise.all([
@@ -251,5 +248,5 @@ export default async (params: any, user: ILocalUser) => {
 		});
 
 	// Serialize
-	return await packMany(timeline, user);
-};
+	res(await packMany(timeline, user));
+}));

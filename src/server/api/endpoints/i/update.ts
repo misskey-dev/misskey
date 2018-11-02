@@ -5,7 +5,7 @@ import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';
 import { publishToFollowers } from '../../../../services/i/update';
-import getParams from '../../get-params';
+import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 
 export const meta = {
@@ -115,10 +115,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	const updates = {} as any;
@@ -209,4 +206,4 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 
 	// フォロワーにUpdateを配信
 	publishToFollowers(user._id);
-});
+}));

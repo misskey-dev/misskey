@@ -1,5 +1,5 @@
-import User, { pack, ILocalUser } from '../../../models/user';
-import { IApp } from '../../../models/app';
+import User, { pack } from '../../../models/user';
+import define from '../define';
 
 export const meta = {
 	stability: 'stable',
@@ -18,7 +18,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
+export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	// Serialize
@@ -34,4 +34,4 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 			lastUsedAt: new Date()
 		}
 	});
-});
+}));

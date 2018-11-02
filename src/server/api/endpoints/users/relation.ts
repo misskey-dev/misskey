@@ -1,6 +1,6 @@
 import $ from 'cafy'; import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
-import { ILocalUser, getRelation } from '../../../../models/user';
-import getParams from '../../get-params';
+import { getRelation } from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -20,13 +20,10 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
 	const relations = await Promise.all(ids.map(id => getRelation(me._id, id)));
 
 	res(Array.isArray(ps.userId) ? relations : relations[0]);
-});
+}));

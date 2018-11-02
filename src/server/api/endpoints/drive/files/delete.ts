@@ -2,8 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../stream';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -29,10 +28,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
@@ -51,4 +47,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	publishDriveStream(user._id, 'fileDeleted', file._id);
 
 	res();
-});
+}));

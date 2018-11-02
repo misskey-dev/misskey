@@ -2,8 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 
 export const meta = {
@@ -66,13 +65,10 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
+		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
 	// ミュートしているユーザーを取得
@@ -150,13 +146,11 @@ export default async (params: any, user: ILocalUser) => {
 	}
 	//#endregion
 
-	// Issue query
 	const timeline = await Note
 		.find(query, {
 			limit: ps.limit,
 			sort: sort
 		});
 
-	// Serialize
-	return await packMany(timeline, user);
-};
+	res(await packMany(timeline, user));
+}));

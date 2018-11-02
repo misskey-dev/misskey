@@ -1,7 +1,6 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	requireCredential: true,
@@ -24,10 +23,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const folders = await DriveFolder
 		.find({
 			name: name,
@@ -36,4 +32,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 
 	res(await Promise.all(folders.map(folder => pack(folder))));
-});
+}));

@@ -1,8 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-import { ILocalUser } from '../../../../models/user';
 import { pack } from '../../../../models/user';
 import { addPinned } from '../../../../services/i/pin';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -27,10 +26,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Processing
 	try {
 		await addPinned(user, ps.noteId);
@@ -45,4 +41,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 
 	// Send response
 	res(iObj);
-});
+}));

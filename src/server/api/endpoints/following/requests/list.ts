@@ -1,6 +1,6 @@
 //import $ from 'cafy'; import ID, { transform } from '../../../../../cafy-id';
 import FollowRequest, { pack } from '../../../../../models/follow-request';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -13,11 +13,11 @@ export const meta = {
 	kind: 'following-read'
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const reqs = await FollowRequest.find({
 		followeeId: user._id
 	});
 
 	// Send response
 	res(await Promise.all(reqs.map(req => pack(req))));
-});
+}));

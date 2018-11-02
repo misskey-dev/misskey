@@ -3,7 +3,7 @@ const ms = require('ms');
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -33,9 +33,6 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser): Promise<any> => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
-	return pack(await uploadFromUrl(ps.url, user, ps.folderId));
-};
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	res(pack(await uploadFromUrl(ps.url, user, ps.folderId)));
+}));

@@ -1,8 +1,7 @@
 import $ from 'cafy';
 import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -23,10 +22,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const day = 1000 * 60 * 60 * 24;
 
 	const notes = await Note
@@ -46,5 +42,5 @@ export default async (params: any, user: ILocalUser) => {
 			}
 		});
 
-	return await packMany(notes, user);
-};
+	res(await packMany(notes, user));
+}));

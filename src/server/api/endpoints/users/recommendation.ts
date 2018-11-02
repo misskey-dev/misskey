@@ -1,11 +1,11 @@
 const ms = require('ms');
 import $ from 'cafy';
-import User, { pack, ILocalUser } from '../../../../models/user';
+import User, { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';
 import * as request from 'request';
 import config from '../../../../config';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -29,22 +29,19 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	if (config.user_recommendation && config.user_recommendation.external) {
 		const userName = me.username;
 		const hostName = config.hostname;
-		const limit = params.limit;
-		const offset = params.offset;
+		const limit = ps.limit;
+		const offset = ps.offset;
 		const timeout = config.user_recommendation.timeout;
 		const engine = config.user_recommendation.engine;
 		const url = engine
 			.replace('{{host}}', hostName)
 			.replace('{{user}}', userName)
-			.replace('{{limit}}', limit)
-			.replace('{{offset}}', offset);
+			.replace('{{limit}}', limit.toString())
+			.replace('{{offset}}', offset.toString());
 
 		request({
 			url: url,
@@ -89,4 +86,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 		res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
 	}
-});
+}));

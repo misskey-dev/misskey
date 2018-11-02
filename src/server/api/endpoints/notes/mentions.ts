@@ -2,8 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 import read from '../../../../services/note/read';
 
 export const meta = {
@@ -41,10 +40,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
@@ -96,4 +92,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	res(await packMany(mentions, user));
 
 	mentions.forEach(note => read(user._id, note._id));
-});
+}));

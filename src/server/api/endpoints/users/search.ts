@@ -1,7 +1,7 @@
 import $ from 'cafy';
 const escapeRegexp = require('escape-regexp');
-import User, { pack, ILocalUser, validateUsername, IUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import User, { pack, validateUsername, IUser } from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -44,13 +44,7 @@ export const meta = {
 	},
 };
 
-/**
- * Search a user
- */
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const isUsername = validateUsername(ps.query.replace('@', ''));
 
 	let users: IUser[] = [];
@@ -158,4 +152,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 	// Serialize
 	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
-});
+}));

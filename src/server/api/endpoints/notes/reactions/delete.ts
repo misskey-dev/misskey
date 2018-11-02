@@ -1,8 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -22,10 +21,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch unreactee
 	const note = await Note.findOne({
 		_id: ps.noteId
@@ -64,4 +60,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	Note.update({ _id: note._id }, {
 		$inc: dec
 	});
-});
+}));

@@ -2,14 +2,14 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import History from '../../../../../models/messaging-history';
-import User, { ILocalUser } from '../../../../../models/user';
+import User from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
 import { publishMainStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -38,10 +38,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Myself
 	if (ps.userId.equals(user._id)) {
 		return rej('cannot send message to myself');
@@ -155,4 +152,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}, {
 		upsert: true
 	});
-});
+}));

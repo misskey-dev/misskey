@@ -1,10 +1,9 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -103,10 +102,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const q: any = {
 		$and: [ps.tag ? {
 			tagsLower: ps.tag.toLowerCase()
@@ -322,4 +318,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 	// Serialize
 	res(await packMany(notes, me));
-});
+}));

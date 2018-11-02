@@ -1,7 +1,6 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-import App, { pack, IApp } from '../../../../models/app';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import App, { pack } from '../../../../models/app';
+import define from '../../define';
 
 export const meta = {
 	params: {
@@ -12,10 +11,7 @@ export const meta = {
 	}
 };
 
-export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	// Lookup app
@@ -30,4 +26,4 @@ export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (
 		detail: true,
 		includeSecret: isSecure && ap.userId.equals(user._id)
 	}));
-});
+}));
