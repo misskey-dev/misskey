@@ -1,8 +1,12 @@
 <template>
-<div class="qldxjjsrseehkusjuoooapmsprvfrxyl mk-admin-card">
-	<header>%i18n:@announcements%</header>
-	<textarea v-model="broadcasts" placeholder='[ { "title": "Title1", "text": "Text1" }, { "title": "Title2", "text": "Text2" } ]'></textarea>
-	<button class="ui" @click="save">%i18n:@save%</button>
+<div>
+	<ui-card>
+		<div slot="title">%i18n:@announcements%</div>
+		<section>
+			<textarea class="qldxjjsrseehkusjuoooapmsprvfrxyl" v-model="broadcasts" placeholder='[ { "title": "Title1", "text": "Text1" }, { "title": "Title2", "text": "Text2" } ]'></textarea>
+			<ui-button @click="save">%i18n:@save%</ui-button>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -45,8 +49,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .qldxjjsrseehkusjuoooapmsprvfrxyl
-	textarea
-		width 100%
-		min-height 300px
+	width 100%
+	min-height 300px
 
 </style>
