@@ -946,41 +946,49 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Close"
-desktop/views/pages/admin/admin.vue:
-  dashboard: "Dashboard"
-  users: "Users"
-  update: "Updates"
-  announcements: "Announcements"
-  hashtags: "Hashtags"
-desktop/views/pages/admin/admin.dashboard.vue:
-  dashboard: "Dashboard"
-  all-users: "All Users"
-  original-users: "Users on this instance"
-  all-notes: "All the posts"
-  original-notes: "Posts on this instance"
-  invite: "Invite"
+admin/views/index.vue:
+  dashboard: "ダッシュボード"
+  instance: "インスタンス"
+  emoji: "カスタム絵文字"
+  users: "ユーザー"
+  update: "更新"
+  announcements: "お知らせ"
+  hashtags: "ハッシュタグ"
+admin/views/dashboard.vue:
+  dashboard: "ダッシュボード"
+  all-users: "全てのユーザー"
+  original-users: "このインスタンスのユーザー"
+  all-notes: "全ての投稿"
+  original-notes: "このインスタンスの投稿"
+  invite: "招待"
   banner-url: "Banner URL"
   disableRegistration: "Disable new user registration"
   disableLocalTimeline: "Disable the local timeline"
-desktop/views/pages/admin/admin.suspend-user.vue:
-  suspend-user: "Suspend a user"
-  suspend: "Suspend"
-  suspended: "Successfully suspended."
-desktop/views/pages/admin/admin.unsuspend-user.vue:
-  unsuspend-user: "Unsuspend users"
-  unsuspend: "Unsuspend"
-  unsuspended: "The user has successfully unsuspended."
-desktop/views/pages/admin/admin.verify-user.vue:
-  verify-user: "User account verification settings"
-  verify: "Verify account"
-  verified: "The account is now being verified"
-desktop/views/pages/admin/admin.unverify-user.vue:
-  unverify-user: "User account unverification settings"
-  unverify: "Unverify account"
-  unverified: "The account is now being unverified"
-desktop/views/pages/admin/admin.announcements.vue:
-  announcements: "Announcements"
-desktop/views/pages/admin/admin.hashtags.vue:
+admin/views/users.vue:
+  suspend-user: "ユーザーの凍結"
+  suspend: "凍結"
+  suspended: "凍結しました"
+  unsuspend-user: "ユーザーの凍結の解除"
+  unsuspend: "凍結の解除"
+  unsuspended: "凍結を解除しました"
+  verify-user: "ユーザーの公式アカウント設定"
+  verify: "公式アカウントにする"
+  verified: "公式アカウントにしました"
+  unverify-user: "ユーザーの公式アカウント解除"
+  unverify: "公式アカウントを解除する"
+  unverified: "公式アカウントを解除しました"
+admin/views/emoji.vue:
+  add-emoji:
+    title: "絵文字の登録"
+    name: "絵文字名"
+    name-desc: "a~z 0~9 _ の文字が使えます。"
+    aliases: "エイリアス"
+    aliases-desc: "スペースで区切って複数設定できます。"
+    url: "絵文字画像URL"
+    add: "追加"
+admin/views/announcements.vue:
+  announcements: "お知らせ"
+admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
