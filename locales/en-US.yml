@@ -249,7 +249,7 @@ common/views/components/games/reversi/reversi.room.vue:
   this-game-is-started-soon: "The game will begin in seconds"
   waiting-for-other: "Waiting for the opponent"
   waiting-for-me: "Waiting for the your preparation"
-  waiting-for-both: "Prepareing"
+  waiting-for-both: "Preparing"
   cancel: "Cancel"
   ready: "Ready"
   cancel-ready: "Cancel \"Ready\""
