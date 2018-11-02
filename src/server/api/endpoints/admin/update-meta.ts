@@ -18,13 +18,6 @@ export const meta = {
 			}
 		},
 
-		emojis: {
-			validator: $.arr($.obj()).optional,
-			desc: {
-				'ja-JP': 'カスタム絵文字定義'
-			}
-		},
-
 		disableRegistration: {
 			validator: $.bool.optional.nullable,
 			desc: {
@@ -60,10 +53,6 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.broadcasts) {
 		set.broadcasts = ps.broadcasts;
-	}
-
-	if (ps.emojis) {
-		set.emojis = ps.emojis;
 	}
 
 	if (typeof ps.disableRegistration === 'boolean') {

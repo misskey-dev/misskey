@@ -2,7 +2,6 @@ import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
 import Meta from '../../../models/meta';
-import Emoji from '../../../models/emoji';
 import define from '../define';
 
 const pkg = require('../../../../package.json');
@@ -28,8 +27,6 @@ export const meta = {
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const met: any = (await Meta.findOne()) || {};
-
-	const emojis = await Emoji.find({ host: null });
 
 	res({
 		maintainer: config.maintainer,
@@ -59,7 +56,6 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		hidedTags: (me && me.isAdmin) ? met.hidedTags : undefined,
 		bannerUrl: met.bannerUrl,
 		maxNoteTextLength: config.maxNoteTextLength,
-		emojis: emojis,
 
 		features: ps.detail ? {
 			registration: !met.disableRegistration,
