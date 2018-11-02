@@ -29,7 +29,11 @@ export const meta = {
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const met: any = (await Meta.findOne()) || {};
 
-	const emojis = await Emoji.find({ host: null });
+	const emojis = await Emoji.find({ host: null }, {
+		fields: {
+			_id: false
+		}
+	});
 
 	res({
 		maintainer: config.maintainer,

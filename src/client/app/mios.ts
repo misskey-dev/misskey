@@ -537,7 +537,9 @@ export default class MiOS extends EventEmitter {
 			// forceが有効, meta情報を保持していない or 期限切れ
 			if (force || this.meta == null || Date.now() - this.meta.chachedAt.getTime() > expire) {
 				this.isMetaFetching = true;
-				const meta = await this.api('meta');
+				const meta = await this.api('meta', {
+					detail: false
+				});
 				this.meta = {
 					data: meta,
 					chachedAt: new Date()
