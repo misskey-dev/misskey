@@ -1010,9 +1010,9 @@ admin/views/emoji.vue:
   add-emoji:
     title: "Add emoji"
     name: "Emoji name"
-    name-desc: "a~z 0~9 _ の文字が使えます。"
+    name-desc: "You can use the characters a~z 0~9 _"
     aliases: "Aliases"
-    aliases-desc: "スペースで区切って複数設定できます。"
+    aliases-desc: "You can add more than one, separated by spaces."
     url: "Image URL"
     add: "Add"
 admin/views/announcements.vue:
