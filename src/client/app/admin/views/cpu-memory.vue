@@ -2,14 +2,15 @@
 <div class="zyknedwtlthezamcjlolyusmipqmjgxz">
 	<div>
 		<header>
-			<span>CPU <span>{{ cpuP }}%</span></span>
+			<span>%fa:microchip% CPU <span>{{ cpuP }}%</span></span>
 			<span v-if="meta">{{ meta.cpu.model }}</span>
 		</header>
 		<div ref="cpu"></div>
 	</div>
 	<div>
 		<header>
-			<span>MEM <span>{{ memP }}%</span></span>
+			<span>%fa:memory% MEM <span>{{ memP }}%</span></span>
+			<span v-if="meta"></span>
 		</header>
 		<div ref="mem"></div>
 	</div>

@@ -79,11 +79,11 @@ export default Vue.extend({
 		color #555
 
 		thead
-			font-weight bold
 			border-bottom solid 2px #eee
 
 			tr
 				th
+					font-weight normal
 					text-align left
 
 		tbody
