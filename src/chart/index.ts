@@ -290,14 +290,11 @@ export default abstract class Chart<T> {
 
 		/**
 		 * [{
-		 * 	xxxxx: 1,
-		 * 	yyyyy: 5
+		 * 	xxxxx: 1, yyyyy: 5
 		 * }, {
-		 * 	xxxxx: 2,
-		 * 	yyyyy: 6
+		 * 	xxxxx: 2, yyyyy: 6
 		 * }, {
-		 * 	xxxxx: 3,
-		 * 	yyyyy: 7
+		 * 	xxxxx: 3, yyyyy: 7
 		 * }]
 		 *
 		 * を
