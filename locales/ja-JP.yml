@@ -201,6 +201,7 @@ common:
     pop-right: "右に出す"
 
   dev: "アプリの作成に失敗しました。再度お試しください。"
+  ai-chan-kawaii: "藍ちゃかわいい"
 
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
