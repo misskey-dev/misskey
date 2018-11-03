@@ -16,6 +16,9 @@
 			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:common.drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
+		<div class="back-to-misskey">
+			<a href="/">%fa:arrow-left% %i18n:@back-to-misskey%</a>
+		</div>
 		<div class="version">
 			<small>Misskey {{ version }}</small>
 		</div>
@@ -103,8 +106,26 @@ export default Vue.extend({
 				white-space nowrap
 				font-size 15px
 
+		> .back-to-misskey
+			margin 16px 16px 0 16px
+			padding 0
+			border-top solid 1px #555
+
+			> a
+				display block
+				padding 16px 4px
+				color inherit
+				text-decoration none
+				color #eee
+
+				&:hover
+					color #fff
+
+				> [data-fa]
+					margin-right 6px
+
 		> .version
-			margin 16px
+			margin 0 16px 16px 16px
 			padding-top 16px
 			border-top solid 1px #555
 			text-align center

@@ -1077,6 +1077,7 @@ admin/views/index.vue:
   update: "更新"
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
+  back-to-misskey: "Misskeyに戻る"
 
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
