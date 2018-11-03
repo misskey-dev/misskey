@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import Emoji from '../../../../models/emoji';
-import define from '../../define';
+import Emoji from '../../../../../models/emoji';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
