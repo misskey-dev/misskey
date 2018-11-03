@@ -1,10 +1,21 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title">%i18n:@announcements%</div>
+		<div slot="title">%fa:broadcast-tower% %i18n:@announcements%</div>
+		<section v-for="(announcement, i) in announcements" class="fit-top">
+			<ui-input v-model="announcement.title" @change="save">
+				<span>%i18n:@title%</span>
+			</ui-input>
+			<ui-textarea v-model="announcement.text">
+				<span>%i18n:@text%</span>
+			</ui-textarea>
+			<ui-button-group>
+				<ui-button inline @click="save">%fa:save R% %i18n:@save%</ui-button>
+				<ui-button inline @click="remove(i)">%fa:trash-alt R% %i18n:@remove%</ui-button>
+			</ui-button-group>
+		</section>
 		<section>
-			<textarea class="qldxjjsrseehkusjuoooapmsprvfrxyl" v-model="broadcasts" placeholder='[ { "title": "Title1", "text": "Text1" }, { "title": "Title2", "text": "Text2" } ]'></textarea>
-			<ui-button @click="save">%i18n:@save%</ui-button>
+			<ui-button @click="add">%fa:plus% %i18n:@add%</ui-button>
 		</section>
 	</ui-card>
 </div>
@@ -16,40 +27,38 @@ import Vue from "vue";
 export default Vue.extend({
 	data() {
 		return {
-			broadcasts: '',
+			announcements: [],
 		};
 	},
+
 	created() {
 		(this as any).os.getMeta().then(meta => {
-			this.broadcasts = JSON.stringify(meta.broadcasts, null, '  ');
+			this.announcements = meta.broadcasts;
 		});
 	},
+
 	methods: {
+		add() {
+			this.announcements.push({
+				title: '',
+				text: ''
+			});
+		},
+
+		remove(i) {
+			this.announcements = this.announcements.filter((_, j) => j !== i);
+			this.save();
+		},
+
 		save() {
-			let json;
-
-			try {
-				json = JSON.parse(this.broadcasts);
-			} catch (e) {
-				(this as any).os.apis.dialog({ text: `Failed: ${e}` });
-				return;
-			}
-
 			(this as any).api('admin/update-meta', {
-				broadcasts: json
+				broadcasts: this.announcements
 			}).then(() => {
 				(this as any).os.apis.dialog({ text: `Saved` });
-			}.catch(e => {
+			}).catch(e => {
 				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.qldxjjsrseehkusjuoooapmsprvfrxyl
-	width 100%
-	min-height 300px
-
-</style>

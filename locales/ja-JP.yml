@@ -1145,6 +1145,11 @@ admin/views/emoji.vue:
 
 admin/views/announcements.vue:
   announcements: "お知らせ"
+  save: "保存"
+  remove: "削除"
+  add: "追加"
+  title: "タイトル"
+  text: "内容"
 
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
