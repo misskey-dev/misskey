@@ -1,6 +1,9 @@
 <template>
 <div class="mk-admin">
 	<nav>
+		<div class="mi">
+			<img svg-inline src="../assets/header-icon.svg"/>
+		</div>
 		<div class="me">
 			<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
 			<p class="name">{{ $store.state.i | userName }}</p>
@@ -85,11 +88,22 @@ export default Vue.extend({
 		background #333
 		color #fff
 
+		> .mi
+			text-align center
+
+			> svg
+				width 24px
+				height 82px
+				vertical-align top
+				fill #fff
+				opacity 0.7
+
 		> .me
 			display flex
-			margin 16px
-			padding-bottom 16px
+			margin 0 16px 16px 16px
+			padding 16px 0
 			align-items center
+			border-top solid 1px #555
 			border-bottom solid 1px #555
 
 			> .avatar
