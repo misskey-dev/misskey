@@ -1016,9 +1016,9 @@ admin/views/emoji.vue:
     url: "Image URL"
     add: "Add"
   emojis:
-    title: "絵文字一覧"
-    update: "更新"
-    remove: "削除"
+    title: "Emojis"
+    update: "Update"
+    remove: "Remove"
 admin/views/announcements.vue:
   announcements: "Announcements"
   save: "Save"
