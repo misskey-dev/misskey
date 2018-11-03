@@ -186,6 +186,7 @@ common:
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
   dev: "Failed to create the application. Please try again."
+  ai-chan-kawaii: "Ai-chan kawaii!"
 auth/views/form.vue:
   share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
@@ -874,13 +875,13 @@ common/views/components/mute-and-block.vue:
   block: "Blocking"
   no-muted-users: "No muted users"
   no-blocked-users: "No blocked users"
-desktop/views/components/settings.password.vue:
+common/views/components/password-settings.vue:
   reset: "Change password"
   enter-current-password: "Enter the current password"
   enter-new-password: "Enter the new password"
-  enter-new-password-again: "Enter new password again"
+  enter-new-password-again: "Enter the new password again"
   not-match: "The new passwords do not match"
-  changed: "Password updated"
+  changed: "Password changed"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -954,6 +955,7 @@ admin/views/index.vue:
   update: "Update"
   announcements: "Announcements"
   hashtags: "Hashtags"
+  back-to-misskey: "Back to Misskey"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "Accounts"
@@ -1015,6 +1017,11 @@ admin/views/emoji.vue:
     add: "Add"
 admin/views/announcements.vue:
   announcements: "Announcements"
+  save: "Save"
+  remove: "Remove"
+  add: "Add"
+  title: "Title"
+  text: "Content"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
@@ -1363,6 +1370,7 @@ mobile/views/pages/settings.vue:
   sound: "Sounds"
   enable-sounds: "Enable sounds"
   mark-as-read-all-unread-notes: "Mark all posts as read"
+  password: "Password"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"

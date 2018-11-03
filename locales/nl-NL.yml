@@ -186,6 +186,7 @@ common:
     stack-left: "左に重ねる"
     pop-right: "右に出す"
   dev: "アプリの作成に失敗しました。再度お試しください。"
+  ai-chan-kawaii: "藍ちゃかわいい"
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
@@ -874,13 +875,13 @@ common/views/components/mute-and-block.vue:
   block: "ブロック"
   no-muted-users: "ミュートしているユーザーはいません"
   no-blocked-users: "ブロックしているユーザーはいません"
-desktop/views/components/settings.password.vue:
-  reset: "Wachtwoord wijzigen"
-  enter-current-password: "Voer je huidige wachtwoord in"
-  enter-new-password: "Voer je nieuwe wachtwoord in"
-  enter-new-password-again: "Voer je nieuwe wachtwoord nogmaals in"
-  not-match: "Het nieuwe wachtwoord komt niet overeen"
-  changed: "Wachtwoord bijgewerkt"
+common/views/components/password-settings.vue:
+  reset: "パスワードを変更する"
+  enter-current-password: "現在のパスワードを入力してください"
+  enter-new-password: "新しいパスワードを入力してください"
+  enter-new-password-again: "もう一度新しいパスワードを入力してください"
+  not-match: "新しいパスワードが一致しません"
+  changed: "パスワードを変更しました"
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
@@ -954,6 +955,7 @@ admin/views/index.vue:
   update: "更新"
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
+  back-to-misskey: "Misskeyに戻る"
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
   accounts: "アカウント"
@@ -1015,6 +1017,11 @@ admin/views/emoji.vue:
     add: "追加"
 admin/views/announcements.vue:
   announcements: "お知らせ"
+  save: "保存"
+  remove: "削除"
+  add: "追加"
+  title: "タイトル"
+  text: "内容"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
@@ -1363,6 +1370,7 @@ mobile/views/pages/settings.vue:
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
   mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  password: "パスワード"
 mobile/views/pages/user.vue:
   follows-you: "Volgt jou"
   following: "Volgend"
