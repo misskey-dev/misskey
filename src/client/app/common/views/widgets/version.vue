@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { version, codename } from '../../../config';
+import { clientVersion as version, codename } from '../../../config';
 import define from '../../../common/define-widget';
 export default define({
 	name: 'version'

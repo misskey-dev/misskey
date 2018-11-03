@@ -154,7 +154,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, version, codename, langs } from '../../../config';
+import { apiUrl, clientVersion as version, codename, langs } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({

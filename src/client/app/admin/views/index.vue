@@ -16,6 +16,9 @@
 			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:common.drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
+		<div class="version">
+			<small>Misskey {{ version }}</small>
+		</div>
 	</nav>
 	<main>
 		<div v-show="page == 'dashboard'"><x-dashboard/></div>
@@ -32,6 +35,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { version } from '../../config';
 import XDashboard from "./dashboard.vue";
 import XInstance from "./instance.vue";
 import XEmoji from "./emoji.vue";
@@ -50,7 +54,8 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			page: 'dashboard'
+			page: 'dashboard',
+			version
 		};
 	},
 	methods: {
@@ -98,6 +103,15 @@ export default Vue.extend({
 				white-space nowrap
 				font-size 15px
 
+		> .version
+			margin 16px
+			padding-top 16px
+			border-top solid 1px #555
+			text-align center
+
+			> small
+				opacity 0.7
+
 		> ul
 			margin 0
 			padding 0
@@ -110,10 +124,14 @@ export default Vue.extend({
 				margin 0
 				cursor pointer
 				user-select none
+				color #eee
 				transition margin-left 0.2s ease
 
+				&:hover
+					color #fff
+
 				> [data-fa]
-					margin-right 4px
+					margin-right 6px
 
 				&.active
 					margin-left 8px

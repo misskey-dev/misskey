@@ -14,7 +14,7 @@ import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './mios';
-import { version, codename, lang } from './config';
+import { clientVersion as version, codename, lang } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
 
 if (localStorage.getItem('theme') == null) {
