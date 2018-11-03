@@ -23,8 +23,6 @@ export default define(meta, () => new Promise(async (res, rej) => {
 	stats.driveUsageLocal = driveStats.local.totalSize[0];
 	stats.driveUsageRemote = driveStats.remote.totalSize[0];
 
-	console.log(driveStats);
-
 	const federationStats = await federationChart.getChart('hour', 1);
 	stats.instances = federationStats.instance.total[0];
 
