@@ -13,6 +13,9 @@ import Favorite from './favorite';
 import Following from './following';
 import config from '../config';
 import { packEmojis } from './emoji';
+import { unique } from '../prelude/array';
+import getNoteHtml from '../remote/activitypub/misc/get-note-html';
+import getEmojiNames from '../remote/activitypub/misc/get-emoji-names';
 
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
@@ -231,7 +234,14 @@ export const pack = async (
 
 	// _note._userを消す前か、_note.userを解決した後でないとホストがわからない
 	if (_note._user) {
-		_note.emojis = packEmojis(_note._user.host);
+		try {
+			const content = getNoteHtml(_note);
+			const emojiNames = unique(getEmojiNames(content));
+			_note.emojis = packEmojis(_note._user.host, emojiNames);
+		} catch (e) {
+			console.warn(`emojis failed for noteId=${id}, ${e}`);
+			_note.emojis = [];
+		}
 	}
 
 	// Rename _id to id

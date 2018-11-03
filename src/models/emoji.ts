@@ -17,9 +17,17 @@ export type IEmoji = {
 
 export const packEmojis = async (
 	host: string,
-	// MeiTODO: filter
+	names?: string[]
 ) => {
-	return await Emoji.find({ host }, {
+	const query = {
+		host
+	} as any;
+
+	if (names != null) {
+		query.name = { $in: names };
+	}
+
+	return await Emoji.find(query, {
 		fields: {
 			_id: false
 		}
