@@ -16,14 +16,3 @@ export type IEmoji = {
 	aliases?: string[];
 	updatedAt?: Date;
 };
-
-export const packEmojis = async (
-	host: string,
-	// MeiTODO: filter
-) => {
-	return await Emoji.find({ host }, {
-		fields: {
-			_id: false
-		}
-	});
-};

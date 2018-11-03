@@ -30,6 +30,7 @@ import { erase, unique } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import registerInstance from '../register-instance';
 import Instance from '../../models/instance';
+import { TextElementEmoji } from '../../mfm/parse/elements/emoji';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -146,6 +147,8 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const tags = extractHashtags(tokens);
 
+	const emojis = extractEmojis(tokens);
+
 	const mentionedUsers = await extractMentionedUsers(tokens);
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
@@ -160,7 +163,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		});
 	}
 
-	const note = await insertNote(user, data, tags, mentionedUsers);
+	const note = await insertNote(user, data, tags, emojis, mentionedUsers);
 
 	res(note);
 
@@ -371,7 +374,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 	publishToUserLists(note, noteObj);
 }
 
-async function insertNote(user: IUser, data: Option, tags: string[], mentionedUsers: IUser[]) {
+async function insertNote(user: IUser, data: Option, tags: string[], emojis: string[], mentionedUsers: IUser[]) {
 	const insert: any = {
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file._id) : [],
@@ -382,6 +385,7 @@ async function insertNote(user: IUser, data: Option, tags: string[], mentionedUs
 		cw: data.cw == null ? null : data.cw,
 		tags,
 		tagsLower: tags.map(tag => tag.toLowerCase()),
+		emojis,
 		userId: user._id,
 		viaMobile: data.viaMobile,
 		geo: data.geo || null,
@@ -447,6 +451,16 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 		.filter(tag => tag.length <= 100);
 
 	return unique(hashtags);
+}
+
+function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
+	// Extract emojis
+	const emojis = tokens
+		.filter(t => t.type == 'emoji')
+		.map(t => (t as TextElementEmoji).emoji)
+		.filter(emoji => emoji.length <= 100);
+
+	return unique(emojis);
 }
 
 function index(note: INote) {
