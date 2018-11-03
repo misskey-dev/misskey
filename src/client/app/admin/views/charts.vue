@@ -41,7 +41,7 @@
 import Vue from 'vue';
 import * as ApexCharts from 'apexcharts';
 
-const limit = 80;
+const limit = 90;
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -409,7 +409,7 @@ export default Vue.extend({
 .qvgidhudpqhjttdhxubzuyrhyzgslujw
 	display block
 	flex 1
-	padding 32px
+	padding 32px 24px
 	padding-bottom 0
 	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
 	background var(--face)
@@ -417,6 +417,7 @@ export default Vue.extend({
 
 	> header
 		display flex
+		margin 0 8px
 		padding 0 0 8px 0
 		font-size 1em
 		color #555

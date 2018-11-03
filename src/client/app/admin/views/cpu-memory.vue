@@ -141,7 +141,7 @@ export default Vue.extend({
 	> div
 		display block
 		flex 1
-		padding 20px 16px 0 16px
+		padding 20px 12px 0 12px
 		box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
 		background var(--face)
 		border-radius 8px
@@ -151,8 +151,8 @@ export default Vue.extend({
 
 		> header
 			display flex
-			padding 0 4px
-			margin-bottom -8px
+			padding 0 8px
+			margin-bottom -16px
 			color #555
 			font-size 14px
 
@@ -165,6 +165,6 @@ export default Vue.extend({
 					opacity 0.7
 
 		> div
-			margin-bottom -8px
+			margin-bottom -10px
 
 </style>
