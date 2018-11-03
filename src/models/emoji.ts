@@ -19,5 +19,9 @@ export const packEmojis = async (
 	host: string,
 	// MeiTODO: filter
 ) => {
-	return await Emoji.find({ host });
+	return await Emoji.find({ host }, {
+		fields: {
+			_id: false
+		}
+	});
 };
