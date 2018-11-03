@@ -15,7 +15,8 @@ export const meta = {
 			validator: $.type(ID).optional,
 			transform: transform,
 			desc: {
-				'ja-JP': 'ユーザーID'
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
 			}
 		},
 

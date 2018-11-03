@@ -21,6 +21,10 @@ export const meta = {
 		noteId: {
 			validator: $.type(ID),
 			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID'
+			}
 		},
 
 		choice: {
