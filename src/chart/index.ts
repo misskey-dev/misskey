@@ -230,7 +230,7 @@ export default abstract class Chart<T> {
 			null;
 
 		// ログ取得
-		const logs = await this.collection.find({
+		let logs = await this.collection.find({
 			group: group,
 			span: span,
 			date: {
@@ -244,6 +244,27 @@ export default abstract class Chart<T> {
 				_id: 0
 			}
 		});
+
+		// 要求された範囲にログがひとつもなかったら
+		if (logs.length == 0) {
+			// もっとも新しいログを持ってくる
+			// (すくなくともひとつログが無いと隙間埋めできないため)
+			const recentLog = await this.collection.findOne({
+				group: group,
+				span: span
+			}, {
+				sort: {
+					date: -1
+				},
+				fields: {
+					_id: 0
+				}
+			});
+
+			if (recentLog) {
+				logs = [recentLog];
+			}
+		}
 
 		// 整形
 		for (let i = (range - 1); i >= 0; i--) {
