@@ -41,7 +41,7 @@
 import Vue from 'vue';
 import * as ApexCharts from 'apexcharts';
 
-const limit = 60;
+const limit = 80;
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -208,24 +208,28 @@ export default Vue.extend({
 			return {
 				series: [{
 					name: 'All',
+					type: 'line',
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.inc, negate(this.stats.notes.local.dec), this.stats.notes.remote.inc, negate(this.stats.notes.remote.dec))
 						: sum(this.stats.notes[type].inc, negate(this.stats.notes[type].dec))
 					)
 				}, {
 					name: 'Renotes',
+					type: 'area',
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.diffs.renote, this.stats.notes.remote.diffs.renote)
 						: this.stats.notes[type].diffs.renote
 					)
 				}, {
 					name: 'Replies',
+					type: 'area',
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.diffs.reply, this.stats.notes.remote.diffs.reply)
 						: this.stats.notes[type].diffs.reply
 					)
 				}, {
 					name: 'Normal',
+					type: 'area',
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.diffs.normal, this.stats.notes.remote.diffs.normal)
 						: this.stats.notes[type].diffs.normal
