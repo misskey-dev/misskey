@@ -958,6 +958,8 @@ admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "Accounts"
   notes: "Notes"
+  drive: "ドライブ"
+  instances: "インスタンス"
   this-instance: "This instance"
   federated: "Federated"
   invite: "Invite"
