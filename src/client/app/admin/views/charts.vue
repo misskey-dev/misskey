@@ -154,6 +154,9 @@ export default Vue.extend({
 					},
 					toolbar: {
 						show: false
+					},
+					zoom: {
+						enabled: false
 					}
 				},
 				dataLabels: {

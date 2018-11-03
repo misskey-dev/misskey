@@ -1,7 +1,18 @@
 <template>
 <div class="zyknedwtlthezamcjlolyusmipqmjgxz">
-	<div ref="cpu"></div>
-	<div ref="mem"></div>
+	<div>
+		<header>
+			<span>CPU <span>{{ cpuP }}%</span></span>
+			<span v-if="meta">{{ meta.cpu.model }}</span>
+		</header>
+		<div ref="cpu"></div>
+	</div>
+	<div>
+		<header>
+			<span>MEM <span>{{ memP }}%</span></span>
+		</header>
+		<div ref="mem"></div>
+	</div>
 </div>
 </template>
 
@@ -18,7 +29,8 @@ export default Vue.extend({
 			cpuChart: null,
 			memChart: null,
 			cpuP: '',
-			memP: ''
+			memP: '',
+			meta: null
 		};
 	},
 
@@ -34,6 +46,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		(this as any).os.getMeta().then(meta => {
+			this.meta = meta;
+		});
+
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
 		this.connection.send('requestLog', {
@@ -52,6 +68,9 @@ export default Vue.extend({
 				},
 				toolbar: {
 					show: false
+				},
+				zoom: {
+					enabled: false
 				}
 			},
 			dataLabels: {
@@ -64,6 +83,9 @@ export default Vue.extend({
 				curve: 'straight',
 				width: 2
 			},
+			tooltip: {
+				enabled: false
+			},
 			series: [{
 				data: []
 			}],
@@ -71,6 +93,9 @@ export default Vue.extend({
 				type: 'numeric',
 				labels: {
 					show: false
+				},
+				tooltip: {
+					enabled: false
 				}
 			},
 			yaxis: {
@@ -80,16 +105,8 @@ export default Vue.extend({
 			}
 		};
 
-		this.cpuChart = new ApexCharts(this.$refs.cpu, Object.assign({}, chartOpts, {
-			title: {
-				text: 'CPU'
-			}
-		}));
-		this.memChart = new ApexCharts(this.$refs.mem, Object.assign({}, chartOpts, {
-			title: {
-				text: 'MEM'
-			}
-		}));
+		this.cpuChart = new ApexCharts(this.$refs.cpu, chartOpts);
+		this.memChart = new ApexCharts(this.$refs.mem, chartOpts);
 
 		this.cpuChart.render();
 		this.memChart.render();
@@ -123,12 +140,30 @@ export default Vue.extend({
 	> div
 		display block
 		flex 1
-		padding 24px 16px 12px 16px
+		padding 20px 16px 0 16px
 		box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
 		background var(--face)
 		border-radius 8px
 
 		&:first-child
 			margin-right 16px
+
+		> header
+			display flex
+			padding 0 4px
+			margin-bottom -8px
+			color #555
+			font-size 14px
+
+			> span
+				&:last-child
+					margin-left auto
+					opacity 0.7
+
+				> span
+					opacity 0.7
+
+		> div
+			margin-bottom -8px
 
 </style>
