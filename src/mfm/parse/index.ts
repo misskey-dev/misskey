@@ -46,7 +46,7 @@ export type TextElement = { type: 'text', content: string }
 	| TextElementTitle
 	| TextElementUrl
 	| TextElementMotion;
-export type TextElementProcessor = (text: string, i: number) => TextElement | TextElement[];
+export type TextElementProcessor = (text: string, isBegin: boolean) => TextElement | TextElement[];
 
 export default (source: string): TextElement[] => {
 	if (source == null || source == '') {
@@ -67,7 +67,7 @@ export default (source: string): TextElement[] => {
 	// パース
 	while (source != '') {
 		const parsed = elements.some(el => {
-			let _tokens = el(source, i);
+			let _tokens = el(source, i == 0);
 			if (_tokens) {
 				if (!Array.isArray(_tokens)) {
 					_tokens = [_tokens];

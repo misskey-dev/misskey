@@ -8,8 +8,8 @@ export type TextElementTitle = {
 	title: string;
 };
 
-export default function(text: string, i: number) {
-	const match = i == 0 ? text.match(/^(【|\[)(.+?)(】|])\n/) : text.match(/^\n(【|\[)(.+?)(】|])\n/);
+export default function(text: string, isBegin: boolean) {
+	const match = isBegin ? text.match(/^(【|\[)(.+?)(】|])\n/) : text.match(/^\n(【|\[)(.+?)(】|])\n/);
 	if (!match) return null;
 	const title = match[0];
 	return {
