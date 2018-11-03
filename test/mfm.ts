@@ -230,6 +230,11 @@ describe('Text', () => {
 			assert.deepEqual(
 				{ type: 'title', content: '[yee]\n', title: 'yee'}
 			, tokens2[0]);
+
+			const tokens3 = analyze('a [a]\nb [b]\nc [c]');
+			assert.deepEqual(
+				{ type: 'text', content: 'a [a]\nb [b]\nc [c]' }
+			, tokens2[0]);
 		});
 	});
 
