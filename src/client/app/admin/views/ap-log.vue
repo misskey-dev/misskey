@@ -40,15 +40,6 @@ export default Vue.extend({
 			id: Math.random().toString().substr(2, 8),
 			length: 50
 		});
-
-		setInterval(() => {
-			this.onLog({
-				direction: ['in', 'out'][Math.floor(Math.random() * 2)],
-				activity: 'Create',
-				host: 'misskey.ai',
-				actor: 'foobar'
-			});
-		}, 1000);
 	},
 
 	beforeDestroy() {
