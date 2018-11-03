@@ -168,7 +168,7 @@ export default Vue.extend({
 						margin auto 0
 						height 0
 						border-top solid 16px transparent
-						border-right solid 16px #EBEBEB
+						border-right solid 16px var(--bg)
 						border-bottom solid 16px transparent
 						border-left solid 16px transparent
 
