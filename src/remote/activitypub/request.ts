@@ -6,6 +6,7 @@ const crypto = require('crypto');
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
+import { publishApLogStream } from '../../stream';
 
 const log = debug('misskey:activitypub:deliver');
 
@@ -64,4 +65,13 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 	});
 
 	req.end(data);
+
+	//#region Log
+	publishApLogStream({
+		direction: 'out',
+		activity: object.type,
+		host: null,
+		actor: user.username
+	});
+	//#endregion
 });

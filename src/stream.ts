@@ -100,6 +100,10 @@ class Publisher {
 	public publishHashtagStream = (note: any): void => {
 		this.publish('hashtag', null, note);
 	}
+
+	public publishApLogStream = (log: any): void => {
+		this.publish('apLog', null, log);
+	}
 }
 
 const publisher = new Publisher();
@@ -119,3 +123,4 @@ export const publishLocalTimelineStream = publisher.publishLocalTimelineStream;
 export const publishHybridTimelineStream = publisher.publishHybridTimelineStream;
 export const publishGlobalTimelineStream = publisher.publishGlobalTimelineStream;
 export const publishHashtagStream = publisher.publishHashtagStream;
+export const publishApLogStream = publisher.publishApLogStream;

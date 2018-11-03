@@ -8,6 +8,7 @@ import perform from '../../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
+import { publishApLogStream } from '../../../stream';
 
 const log = debug('misskey:queue:inbox');
 
@@ -60,6 +61,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			'publicKey.id': signature.keyId
 		}) as IRemoteUser;
 	}
+
+	//#region Log
+	publishApLogStream({
+		direction: 'in',
+		activity: activity.type,
+		host: user.host,
+		actor: user.username
+	});
+	//#endregion
 
 	// Update activityの場合は、ここで署名検証/更新処理まで実施して終了
 	if (activity.type === 'Update') {

@@ -1082,6 +1082,8 @@ admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
   accounts: "アカウント"
   notes: "投稿"
+  drive: "ドライブ"
+  instances: "インスタンス"
   this-instance: "このインスタンス"
   federated: "連合"
   invite: "招待"

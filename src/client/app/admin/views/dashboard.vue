@@ -7,6 +7,7 @@
 		<p><b>Node</b><span>{{ meta.node }}</span></p>
 		<p>藍ちゃかわいい</p>
 	</header>
+
 	<div v-if="stats" class="stats">
 		<div>
 			<div>
@@ -34,22 +35,22 @@
 		</div>
 		<div>
 			<div>
-				<div>%fa:user%</div>
+				<div>%fa:database%</div>
 				<div>
-					<span>%i18n:@accounts%</span>
-					<b>{{ stats.usersCount | number }}</b>
+					<span>%i18n:@drive%</span>
+					<b>{{ stats.driveUsageLocal | bytes }}</b>
 				</div>
 			</div>
 			<div>
-				<span>%fa:globe% %i18n:@federated%</span>
+				<span>%fa:home% %i18n:@this-instance%</span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div>%fa:pencil-alt%</div>
+				<div>%fa:hdd R%</div>
 				<div>
-					<span>%i18n:@notes%</span>
-					<b>{{ stats.notesCount | number }}</b>
+					<span>%i18n:@instances%</span>
+					<b>{{ stats.instances | number }}</b>
 				</div>
 			</div>
 			<div>
@@ -65,6 +66,10 @@
 	<div class="cpu-memory">
 		<x-cpu-memory :connection="connection"/>
 	</div>
+
+	<div class="ap">
+		<x-ap-log/>
+	</div>
 </div>
 </template>
 
@@ -72,11 +77,13 @@
 import Vue from "vue";
 import XCpuMemory from "./cpu-memory.vue";
 import XCharts from "./charts.vue";
+import XApLog from "./ap-log.vue";
 
 export default Vue.extend({
 	components: {
 		XCpuMemory,
-		XCharts
+		XCharts,
+		XApLog
 	},
 	data() {
 		return {
