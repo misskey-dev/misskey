@@ -131,6 +131,7 @@ export default Vue.extend({
 				color inherit
 				text-decoration none
 				color #eee
+				font-size 15px
 
 				&:hover
 					color #fff
