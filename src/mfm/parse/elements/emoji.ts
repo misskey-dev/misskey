@@ -3,9 +3,9 @@
  */
 
 export type TextElementEmoji = {
-	type: 'emoji'
-	content: string
-	emoji: string
+	type: 'emoji';
+	content: string;
+	emoji: string;
 };
 
 export default function(text: string) {

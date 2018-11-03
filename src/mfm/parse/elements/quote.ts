@@ -3,9 +3,9 @@
  */
 
 export type TextElementQuote = {
-	type: 'quote'
-	content: string
-	quote: string
+	type: 'quote';
+	content: string;
+	quote: string;
 };
 
 export default function(text: string, index: number) {

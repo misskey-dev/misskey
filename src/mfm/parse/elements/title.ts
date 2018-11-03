@@ -3,9 +3,9 @@
  */
 
 export type TextElementTitle = {
-	type: 'title'
-	content: string
-	title: string
+	type: 'title';
+	content: string;
+	title: string;
 };
 
 export default function(text: string, i: number) {

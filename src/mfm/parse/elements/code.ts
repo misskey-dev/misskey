@@ -5,10 +5,10 @@
 import genHtml from '../core/syntax-highlighter';
 
 export type TextElementCode = {
-	type: 'code'
-	content: string
-	code: string
-	html: string
+	type: 'code';
+	content: string;
+	code: string;
+	html: string;
 };
 
 export default function(text: string) {

@@ -3,9 +3,9 @@
  */
 
 export type TextElementSearch = {
-	type: 'search'
-	content: string
-	query: string
+	type: 'search';
+	content: string;
+	query: string;
 };
 
 export default function(text: string) {
