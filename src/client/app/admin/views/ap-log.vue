@@ -34,8 +34,8 @@ export default Vue.extend({
 
 	mounted() {
 		this.connection = (this as any).os.stream.useSharedConnection('apLog');
-		this.connection.on('stats', this.onLog);
-		this.connection.on('statsLog', this.onLogs);
+		this.connection.on('log', this.onLog);
+		this.connection.on('logs', this.onLogs);
 		this.connection.send('requestLog', {
 			id: Math.random().toString().substr(2, 8),
 			length: 50
