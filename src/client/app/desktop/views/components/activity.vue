@@ -43,11 +43,17 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('aggregation/users/activity', {
+		(this as any).api('charts/user/notes', {
 			userId: this.user.id,
-			limit: 20 * 7
+			span: 'day',
+			limit: 7 * 20
 		}).then(activity => {
-			this.activity = activity;
+			this.activity = activity.diffs.normal.map((_, i) => ({
+				total: activity.diffs.normal[i] + activity.diffs.reply[i] + activity.diffs.renote[i],
+				notes: activity.diffs.normal[i],
+				replies: activity.diffs.reply[i],
+				renotes: activity.diffs.renote[i]
+			}));
 			this.fetching = false;
 		});
 	},
