@@ -1015,6 +1015,10 @@ admin/views/emoji.vue:
     aliases-desc: "スペースで区切って複数設定できます。"
     url: "絵文字画像URL"
     add: "追加"
+  emojis:
+    title: "絵文字一覧"
+    update: "更新"
+    remove: "削除"
 admin/views/announcements.vue:
   announcements: "お知らせ"
   save: "保存"
