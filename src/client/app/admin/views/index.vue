@@ -1,6 +1,10 @@
 <template>
 <div class="mk-admin">
 	<nav>
+		<div class="me">
+			<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
+			<p class="name">{{ $store.state.i | userName }}</p>
+		</div>
 		<ul>
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }">%fa:home .fw%%i18n:@dashboard%</li>
 			<li @click="nav('instance')" :class="{ active: page == 'instance' }">%fa:cog .fw%%i18n:@instance%</li>
@@ -69,15 +73,36 @@ export default Vue.extend({
 		left 0
 		width 250px
 		height 100vh
-		padding 16px 0 0 0
 		overflow auto
 		background #333
 		color #fff
+
+		> .me
+			display flex
+			margin 16px
+			padding-bottom 16px
+			align-items center
+			border-bottom solid 1px #555
+
+			> .avatar
+				height 48px
+				border-radius 100%
+				vertical-align middle
+
+			> .name
+				margin 0 16px
+				padding 0
+				color #fff
+				overflow hidden
+				text-overflow ellipsis
+				white-space nowrap
+				font-size 15px
 
 		> ul
 			margin 0
 			padding 0
 			list-style none
+			font-size 15px
 
 			> li
 				display block
@@ -94,8 +119,23 @@ export default Vue.extend({
 					margin-left 8px
 					color var(--primary) !important
 
+					&:after
+						content ""
+						display block
+						position absolute
+						top 0
+						right 0
+						bottom 0
+						margin auto 0
+						height 0
+						border-top solid 16px transparent
+						border-right solid 16px #EBEBEB
+						border-bottom solid 16px transparent
+						border-left solid 16px transparent
+
 	> main
 		width 100%
 		padding 32px 32px 32px calc(32px + 250px)
+		max-width 1300px
 
 </style>
