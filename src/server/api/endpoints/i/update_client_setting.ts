@@ -21,7 +21,7 @@ export const meta = {
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const x: any = {};
-	x[`clientSettings.${name}`] = ps.value;
+	x[`clientSettings.${ps.name}`] = ps.value;
 
 	await User.update(user._id, {
 		$set: x
@@ -31,7 +31,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	// Publish event
 	publishMainStream(user._id, 'clientSettingUpdated', {
-		key: name,
+		key: ps.name,
 		value: ps.value
 	});
 }));
