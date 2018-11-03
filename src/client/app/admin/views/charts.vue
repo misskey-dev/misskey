@@ -138,6 +138,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		setSrc(src) {
+			this.src = src;
+		},
+
 		render() {
 			if (this.chartInstance) {
 				this.chartInstance.destroy();

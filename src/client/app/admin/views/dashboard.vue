@@ -19,6 +19,7 @@
 			</div>
 			<div>
 				<span>%fa:home% %i18n:@this-instance%</span>
+				<span @click="setChartSrc('users')">%fa:chart-bar R%</span>
 			</div>
 		</div>
 		<div>
@@ -31,6 +32,7 @@
 			</div>
 			<div>
 				<span>%fa:home% %i18n:@this-instance%</span>
+				<span @click="setChartSrc('notes')">%fa:chart-bar R%</span>
 			</div>
 		</div>
 		<div>
@@ -43,6 +45,7 @@
 			</div>
 			<div>
 				<span>%fa:home% %i18n:@this-instance%</span>
+				<span @click="setChartSrc('drive')">%fa:chart-bar R%</span>
 			</div>
 		</div>
 		<div>
@@ -55,12 +58,13 @@
 			</div>
 			<div>
 				<span>%fa:globe% %i18n:@federated%</span>
+				<span @click="setChartSrc('federation-instances-total')">%fa:chart-bar R%</span>
 			</div>
 		</div>
 	</div>
 
 	<div class="charts">
-		<x-charts/>
+		<x-charts ref="charts"/>
 	</div>
 
 	<div class="cpu-memory">
@@ -85,6 +89,7 @@ export default Vue.extend({
 		XCharts,
 		XApLog
 	},
+
 	data() {
 		return {
 			stats: null,
@@ -92,6 +97,7 @@ export default Vue.extend({
 			meta: null
 		};
 	},
+
 	created() {
 		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
 
@@ -103,8 +109,15 @@ export default Vue.extend({
 			this.stats = stats;
 		});
 	},
+
 	beforeDestroy() {
 		this.connection.dispose();
+	},
+
+	methods: {
+		setChartSrc(src) {
+			this.$refs.charts.setSrc(src);
+		}
 	}
 });
 </script>
@@ -177,12 +190,17 @@ export default Vue.extend({
 							color var(--primary)
 
 			> div:last-child
+				display flex
 				padding 6px 16px
 				border-top solid 1px #eee
 
 				> span
 					font-size 70%
 					opacity 0.7
+
+					&:last-child
+						margin-left auto
+						cursor pointer
 
 	> .charts
 		margin-bottom 16px
