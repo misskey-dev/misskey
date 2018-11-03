@@ -1,7 +1,7 @@
 <template>
 <div class="qvgidhudpqhjttdhxubzuyrhyzgslujw">
 	<header>
-		<b>%i18n:@title%:</b>
+		<b>%fa:chart-bar R% %i18n:@title%:</b>
 		<select v-model="src">
 			<optgroup label="%i18n:@federation%">
 				<option value="federation-instances">%i18n:@charts.federation-instances%</option>
