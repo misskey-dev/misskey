@@ -549,7 +549,7 @@ desktop/views/components/charts.vue:
   drive: "Drive"
   network: "Réseau"
   charts:
-    federation-instances: "インスタンスの増減"
+    federation-instances: "Nombre d’instances : augmentation/diminution"
     federation-instances-total: "Nombre total d’instances"
     notes: "投稿の増減 (統合)"
     local-notes: "投稿の増減 (ローカル)"
