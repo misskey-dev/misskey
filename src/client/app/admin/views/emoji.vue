@@ -17,6 +17,28 @@
 			<ui-button @click="add">%i18n:@add-emoji.add%</ui-button>
 		</section>
 	</ui-card>
+
+	<ui-card>
+		<div slot="title">%fa:grin R% %i18n:@emojis.title%</div>
+		<section v-for="emoji in emojis">
+			<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
+			<ui-input v-model="emoji.name">
+				<span>%i18n:@add-emoji.name%</span>
+				<span slot="text">%i18n:@add-emoji.name-desc%</span>
+			</ui-input>
+			<ui-input v-model="emoji.aliases">
+				<span>%i18n:@add-emoji.aliases%</span>
+				<span slot="text">%i18n:@add-emoji.aliases-desc%</span>
+			</ui-input>
+			<ui-input v-model="emoji.url">
+				<span>%i18n:@add-emoji.url%</span>
+			</ui-input>
+			<ui-button-group>
+				<ui-button inline @click="updateEmoji(emoji)">%fa:save R% %i18n:@emojis.update%</ui-button>
+				<ui-button inline @click="removeEmoji(emoji)">%fa:trash-alt R% %i18n:@emojis.remove%</ui-button>
+			</ui-button-group>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -29,16 +51,54 @@ export default Vue.extend({
 			name: '',
 			url: '',
 			aliases: '',
+			emojis: []
 		};
 	},
+
+	mounted() {
+		this.fetchEmojis();
+	},
+
 	methods: {
 		add() {
-			(this as any).api('admin/add-emoji', {
+			(this as any).api('admin/emoji/add', {
 				name: this.name,
 				url: this.url,
 				aliases: this.aliases.split(' ')
 			}).then(() => {
 				(this as any).os.apis.dialog({ text: `Added` });
+				this.fetchEmojis();
+			}).catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+			});
+		},
+
+		fetchEmojis() {
+			(this as any).api('admin/emoji/list').then(emojis => {
+				emojis.forEach(e => e.aliases = (e.aliases || []).join(' '));
+				this.emojis = emojis;
+			});
+		},
+
+		updateEmoji(emoji) {
+			(this as any).api('admin/emoji/update', {
+				id: emoji.id,
+				name: emoji.name,
+				url: emoji.url,
+				aliases: emoji.aliases.split(' ')
+			}).then(() => {
+				(this as any).os.apis.dialog({ text: `Updated` });
+			}).catch(e => {
+				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+			});
+		},
+
+		removeEmoji(emoji) {
+			(this as any).api('admin/emoji/remove', {
+				id: emoji.id
+			}).then(() => {
+				(this as any).os.apis.dialog({ text: `Removed` });
+				this.fetchEmojis();
 			}).catch(e => {
 				(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
