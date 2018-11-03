@@ -128,6 +128,13 @@
 			<mk-api-settings />
 
 			<ui-card>
+				<div slot="title">%fa:unlock-alt% %i18n:@password%</div>
+				<section>
+					<mk-password-settings/>
+				</section>
+			</ui-card>
+
+			<ui-card>
 				<div slot="title">%fa:sync-alt% %i18n:@update%</div>
 
 				<section>

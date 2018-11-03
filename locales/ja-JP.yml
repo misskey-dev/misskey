@@ -981,7 +981,7 @@ common/views/components/mute-and-block.vue:
   no-muted-users: "ミュートしているユーザーはいません"
   no-blocked-users: "ブロックしているユーザーはいません"
 
-desktop/views/components/settings.password.vue:
+common/views/components/password-settings.vue:
   reset: "パスワードを変更する"
   enter-current-password: "現在のパスワードを入力してください"
   enter-new-password: "新しいパスワードを入力してください"
@@ -1564,6 +1564,7 @@ mobile/views/pages/settings.vue:
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
   mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  password: "パスワード"
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
