@@ -124,6 +124,11 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .obdskegsannmntldydackcpzezagxqfy
+	padding 16px
+
+	@media (min-width 500px)
+		padding 32px
+
 	> header
 		display flex
 		margin-bottom 16px
@@ -131,6 +136,9 @@ export default Vue.extend({
 		border-bottom solid 1px var(--adminDashboardHeaderBorder)
 		color var(--adminDashboardHeaderFg)
 		font-size 14px
+
+		@media (max-width 1000px)
+			display none
 
 		> p
 			display inline
@@ -152,7 +160,6 @@ export default Vue.extend({
 
 		> div
 			flex 1
-			max-width 300px
 			margin-right 16px
 			color var(--adminDashboardCardFg)
 			box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
@@ -201,6 +208,21 @@ export default Vue.extend({
 					&:last-child
 						margin-left auto
 						cursor pointer
+
+		@media (max-width 900px)
+			display grid
+			grid-template-columns 1fr 1fr
+			grid-template-rows 1fr 1fr
+			gap 16px
+
+			> div
+				margin-right 0
+
+		@media (max-width 500px)
+			display block
+
+			> div:not(:last-child)
+				margin-bottom 16px
 
 	> .charts
 		margin-bottom 16px

@@ -168,4 +168,13 @@ export default Vue.extend({
 		> div
 			margin-bottom -10px
 
+	@media (max-width 1000px)
+		display block
+		margin-bottom 26px
+
+		> div
+			&:first-child
+				margin-right 0
+				margin-bottom 26px
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="ucnffhbtogqgscfmqcymwmmupoknpfsw">
 	<ui-card>
 		<div slot="title">%i18n:@verify-user%</div>
 		<section class="fit-top">
@@ -127,3 +127,10 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.ucnffhbtogqgscfmqcymwmmupoknpfsw
+	@media (min-width 500px)
+		padding 16px
+
+</style>

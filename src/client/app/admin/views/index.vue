@@ -1,6 +1,15 @@
 <template>
-<div class="mk-admin">
-	<nav>
+<div class="mk-admin" :class="{ isMobile }">
+	<header v-show="isMobile">
+		<button class="nav" @click="navOpend = true">%fa:bars%</button>
+		<span>MisskeyMyAdmin</span>
+	</header>
+	<div class="nav-backdrop"
+		v-if="navOpend && isMobile"
+		@click="navOpend = false"
+		@touchstart="navOpend = false"
+	></div>
+	<nav v-show="navOpend">
 		<div class="mi">
 			<img svg-inline src="../assets/header-icon.svg"/>
 		</div>
@@ -49,6 +58,10 @@ import XAnnouncements from "./announcements.vue";
 import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
 
+// Detect the user agent
+const ua = navigator.userAgent.toLowerCase();
+const isMobile = /mobile|iphone|ipad|android/.test(ua);
+
 export default Vue.extend({
 	components: {
 		XDashboard,
@@ -58,10 +71,15 @@ export default Vue.extend({
 		XHashtags,
 		XUsers
 	},
+	provide: {
+		isMobile
+	},
 	data() {
 		return {
 			page: 'dashboard',
-			version
+			version,
+			isMobile,
+			navOpend: !isMobile
 		};
 	},
 	methods: {
@@ -74,12 +92,46 @@ export default Vue.extend({
 
 <style lang="stylus">
 .mk-admin
+	$headerHeight = 48px
+
 	display flex
 	height 100%
 
+	> header
+		position fixed
+		top 0
+		z-index 10000
+		width 100%
+		color var(--mobileHeaderFg)
+		background-color var(--mobileHeaderBg)
+		box-shadow 0 1px 0 rgba(#000, 0.075)
+
+		&, *
+			user-select none
+
+		> span
+			display block
+			line-height $headerHeight
+			text-align center
+
+		> .nav
+			display block
+			position absolute
+			top 0
+			left 0
+			z-index 10001
+			padding 0
+			width $headerHeight
+			font-size 1.4em
+			line-height $headerHeight
+			border-right solid 1px rgba(#000, 0.1)
+
+			> [data-fa]
+				transition all 0.2s ease
+
 	> nav
 		position fixed
-		z-index 10000
+		z-index 20001
 		top 0
 		left 0
 		width 250px
@@ -187,9 +239,22 @@ export default Vue.extend({
 						border-bottom solid 16px transparent
 						border-left solid 16px transparent
 
+	> .nav-backdrop
+		position fixed
+		top 0
+		left 0
+		z-index 20000
+		width 100%
+		height 100%
+		background var(--mobileNavBackdrop)
+
 	> main
 		width 100%
-		padding 32px 32px 32px calc(32px + 250px)
+		padding 0 0 0 250px
 		max-width 1300px
+
+	&.isMobile
+		> main
+			padding $headerHeight 0 0 0
 
 </style>

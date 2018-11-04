@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="axbwjelsbymowqjyywpirzhdlszoncqs">
 	<ui-card>
 		<div slot="title">%i18n:@banner-url%</div>
 		<section class="fit-top">
@@ -60,3 +60,10 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.axbwjelsbymowqjyywpirzhdlszoncqs
+	@media (min-width 500px)
+		padding 16px
+
+</style>
