@@ -1,5 +1,5 @@
 <template>
-<div class="ui-input" :class="[{ focused, filled }, styl]">
+<div class="ui-input" :class="[{ focused, filled, inline }, styl]">
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
 	<div class="input">
 		<div class="password-meter" v-if="withPasswordMeter" v-show="passwordStrength != ''" :data-strength="passwordStrength">
@@ -41,6 +41,7 @@ import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
+	inject: ['horizonGrouped'],
 	props: {
 		value: {
 			required: false
@@ -71,6 +72,13 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		inline: {
+			type: Boolean,
+			required: false,
+			default(): boolean {
+				return this.horizonGrouped;
+			}
 		},
 		styl: {
 			type: String,
@@ -336,5 +344,9 @@ root(fill)
 		root(true)
 	&:not(.fill)
 		root(false)
+
+	&.inline
+		display inline-block
+		margin 0
 
 </style>

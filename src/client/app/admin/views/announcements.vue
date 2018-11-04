@@ -9,10 +9,10 @@
 			<ui-textarea v-model="announcement.text">
 				<span>%i18n:@text%</span>
 			</ui-textarea>
-			<ui-button-group>
-				<ui-button inline @click="save">%fa:save R% %i18n:@save%</ui-button>
-				<ui-button inline @click="remove(i)">%fa:trash-alt R% %i18n:@remove%</ui-button>
-			</ui-button-group>
+			<ui-horizon-group>
+				<ui-button @click="save">%fa:save R% %i18n:@save%</ui-button>
+				<ui-button @click="remove(i)">%fa:trash-alt R% %i18n:@remove%</ui-button>
+			</ui-horizon-group>
 		</section>
 		<section>
 			<ui-button @click="add">%fa:plus% %i18n:@add%</ui-button>
