@@ -31,7 +31,7 @@
 					<p>%fa:cog%<span>%i18n:@settings%</span>%fa:angle-right%</p>
 				</li>
 				<li v-if="$store.state.i.isAdmin">
-					<router-link to="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</router-link>
+					<a href="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</a>
 				</li>
 			</ul>
 			<ul>
