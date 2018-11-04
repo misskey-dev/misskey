@@ -25,7 +25,7 @@ url: https://example.tld/
 #   +------+      |+-------------+      +----------------+|
 #                 +---------------------------------------+
 #
-#   You need to setup reverse proxy. (eg. Nginx)
+#   You need to setup reverse proxy. (eg. nginx)
 #   You do not define 'https' section.
 
 # Option 2: Standalone
