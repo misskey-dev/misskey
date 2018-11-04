@@ -23,13 +23,6 @@
 					<mk-twitter-setting/>
 				</section>
 			</ui-card>
-
-			<ui-card>
-				<div slot="title">%fa:B github% %i18n:@github%</div>
-				<section>
-					<mk-github-setting/>
-				</section>
-			</ui-card>
 		</div>
 
 		<ui-card class="theme" v-show="page == 'theme'">

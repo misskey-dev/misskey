@@ -73,7 +73,6 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			recaptcha: config.recaptcha ? true : false,
 			objectStorage: config.drive && config.drive.storage === 'minio',
 			twitter: config.twitter ? true : false,
-			github: config.github ? true : false,
 			serviceWorker: config.sw ? true : false,
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
 		} : undefined
