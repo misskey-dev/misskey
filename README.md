@@ -44,7 +44,7 @@ Easiest way to tell your emotions. Misskey allows you to add various type of rea
 
 <h3 align="left">Interface</h3>
 <p align="left">
-No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. You can edit layouts of your timeline, place selectable widgets you can easily move and create your unique home as this place will be your home.
+Highly customizable UI for your taste. We understand no UI fits for everyone. You can edit layouts of your timeline, place selectable widgets you can easily move and create your unique home as this place will be your home.
 </p>
 
 ---
