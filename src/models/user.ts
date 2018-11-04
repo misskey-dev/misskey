@@ -82,6 +82,11 @@ export interface ILocalUser extends IUserBase {
 		userId: string;
 		screenName: string;
 	};
+	github: {
+		accessToken: string;
+		id: string;
+		login: string;
+	};
 	line: {
 		userId: string;
 	};
@@ -279,6 +284,9 @@ export const pack = (
 		if (_user.twitter) {
 			delete _user.twitter.accessToken;
 			delete _user.twitter.accessTokenSecret;
+		}
+		if (_user.github) {
+			delete _user.github.accessToken;
 		}
 		delete _user.line;
 

@@ -148,6 +148,12 @@ drive:
 #  consumer_key: example-twitter-consumer-key
 #  consumer_secret: example-twitter-consumer-secret-key
 
+# GitHub integration
+# You need to set the oauth callback url as : https://<your-misskey-instance>/api/gh/cb
+#github:
+#  client_id: example-github-client-id
+#  client_secret: example-github-client-secret
+
 # Ghost
 # Ghost account is an account used for the purpose of delegating
 # followers when putting users in the list.
