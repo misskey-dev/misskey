@@ -136,13 +136,16 @@ export default Vue.extend({
 		border-bottom solid 1px var(--adminDashboardHeaderBorder)
 		color var(--adminDashboardHeaderFg)
 		font-size 14px
+		white-space nowrap
 
 		@media (max-width 1000px)
 			display none
 
 		> p
-			display inline
+			display block
 			margin 0 32px 0 0
+			overflow hidden
+			text-overflow ellipsis
 
 			> b
 				&:after
