@@ -1,6 +1,3 @@
-name: example-instance-name # Name of your instance
-description: example-description # Description of your instance
-
 maintainer:
   name: example-maitainer-name # Your name
   url: http://example.com/ # Your contact (http or mailto)

@@ -41,8 +41,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		version: pkg.version,
 		clientVersion: client.version,
 
-		name: config.name || 'Misskey',
-		description: config.description,
+		name: met.name || 'Misskey',
+		description: met.description,
 
 		secure: config.https != null,
 		machine: os.hostname(),

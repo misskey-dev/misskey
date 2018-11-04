@@ -1071,10 +1071,16 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "このインスタンス"
   federated: "連合"
+
+admin/views/instance.vue:
+  instance: "インスタンス"
+  instance-name: "インスタンス名"
+  instance-description: "インスタンスの紹介"
+  banner-url: "バナー画像URL"
+  disableRegistration: "ユーザー登録の受付を停止する"
+  disableLocalTimeline: "ローカルタイムラインを無効にする"
   invite: "招待"
-  banner-url: "Banner URL"
-  disableRegistration: "Disable new user registration"
-  disableLocalTimeline: "Disable the local timeline"
+  save: "保存"
 
 admin/views/charts.vue:
   title: "チャート"

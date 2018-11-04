@@ -51,8 +51,6 @@ export default function load() {
 
 	if (config.maxNoteTextLength == null) config.maxNoteTextLength = 1000;
 
-	if (config.name == null) config.name = 'Misskey';
-
 	return Object.assign(config, mixin);
 }
 

@@ -45,6 +45,20 @@ export const meta = {
 				'ja-JP': 'インスタンスのバナー画像URL'
 			}
 		},
+
+		name: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'インスタンス名'
+			}
+		},
+
+		description: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'インスタンスの紹介文'
+			}
+		},
 	}
 };
 
@@ -69,6 +83,14 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.bannerUrl !== undefined) {
 		set.bannerUrl = ps.bannerUrl;
+	}
+
+	if (ps.name !== undefined) {
+		set.name = ps.name;
+	}
+
+	if (ps.description !== undefined) {
+		set.description = ps.description;
 	}
 
 	await Meta.update({}, {

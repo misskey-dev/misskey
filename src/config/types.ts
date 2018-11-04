@@ -18,8 +18,6 @@ export type Source = {
 		repository_url?: string;
 		feedback_url?: string;
 	};
-	name?: string;
-	description?: string;
 	languages?: string[];
 	welcome_bg_url?: string;
 	url: string;

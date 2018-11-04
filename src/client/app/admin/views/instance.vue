@@ -1,9 +1,11 @@
 <template>
 <div class="axbwjelsbymowqjyywpirzhdlszoncqs">
 	<ui-card>
-		<div slot="title">%i18n:@banner-url%</div>
+		<div slot="title">%i18n:@instance%</div>
 		<section class="fit-top">
-			<ui-input v-model="bannerUrl"/>
+			<ui-input v-model="name">%i18n:@instance-name%</ui-input>
+			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>
+			<ui-input v-model="bannerUrl">%i18n:@banner-url%</ui-input>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
 		</section>
 	</ui-card>
@@ -35,9 +37,20 @@ export default Vue.extend({
 			disableRegistration: false,
 			disableLocalTimeline: false,
 			bannerUrl: null,
+			name: null,
+			description: null,
 			inviteCode: null,
 		};
 	},
+
+	created() {
+		(this as any).os.getMeta().then(meta => {
+			this.bannerUrl = meta.bannerUrl;
+			this.name = meta.name;
+			this.description = meta.description;
+		});
+	},
+
 	methods: {
 		invite() {
 			(this as any).api('admin/invite').then(x => {
@@ -46,11 +59,14 @@ export default Vue.extend({
 				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		},
+
 		updateMeta() {
 			(this as any).api('admin/update-meta', {
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
-				bannerUrl: this.bannerUrl
+				bannerUrl: this.bannerUrl,
+				name: this.name,
+				description: this.description
 			}).then(() => {
 				//(this as any).os.apis.dialog({ text: `Saved` });
 			}).catch(e => {
