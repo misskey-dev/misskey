@@ -381,6 +381,7 @@ common/views/components/signin.vue:
   signin: "Logg inn"
   or: "Eller"
   signin-with-twitter: "Twitterでログイン"
+  signin-with-github: "GitHubでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 common/views/components/signup.vue:
   invitation-code: "招待コード"
@@ -419,6 +420,13 @@ common/views/components/twitter-setting.vue:
   reconnect: "Koble til på nytt"
   connect: "Twitterと接続する"
   disconnect: "Koble fra"
+common/views/components/github-setting.vue:
+  description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のGitHubアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "GitHubと接続する"
+  disconnect: "切断する"
 common/views/components/uploader.vue:
   waiting: "Venter"
 common/views/components/visibility-chooser.vue:
@@ -1360,6 +1368,10 @@ mobile/views/pages/settings.vue:
   twitter-connect: "Twitterアカウントに接続する"
   twitter-reconnect: "Koble til på nytt"
   twitter-disconnect: "Koble fra"
+  github: "GitHub連携"
+  github-connect: "GitHubアカウントに接続する"
+  github-reconnect: "再接続する"
+  github-disconnect: "切断する"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"
