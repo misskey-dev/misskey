@@ -1131,6 +1131,7 @@ admin/views/emoji.vue:
     aliases-desc: "スペースで区切って複数設定できます。"
     url: "絵文字画像URL"
     add: "追加"
+    info: "50KB以下のPNG画像をおすすめします。"
   emojis:
     title: "絵文字一覧"
     update: "更新"

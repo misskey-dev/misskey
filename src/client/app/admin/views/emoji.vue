@@ -16,6 +16,7 @@
 			<ui-input v-model="url">
 				<span>%i18n:@add-emoji.url%</span>
 			</ui-input>
+			<ui-info>%i18n:@add-emoji.info%</ui-info>
 			<ui-button @click="add">%i18n:@add-emoji.add%</ui-button>
 		</section>
 	</ui-card>
