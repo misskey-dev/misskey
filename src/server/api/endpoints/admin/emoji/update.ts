@@ -39,6 +39,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	await Emoji.update({ _id: emoji._id }, {
 		$set: {
+			updatedAt: new Date(),
 			name: ps.name,
 			aliases: ps.aliases,
 			url: ps.url

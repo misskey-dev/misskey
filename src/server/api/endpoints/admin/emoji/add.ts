@@ -28,6 +28,7 @@ export const meta = {
 
 export default define(meta, (ps) => new Promise(async (res, rej) => {
 	await Emoji.insert({
+		updatedAt: new Date(),
 		name: ps.name,
 		host: null,
 		aliases: ps.aliases,
