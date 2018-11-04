@@ -128,8 +128,8 @@ export default Vue.extend({
 		display flex
 		margin-bottom 16px
 		padding-bottom 16px
-		border-bottom solid 1px #ccc
-		color #777
+		border-bottom solid 1px var(--adminDashboardHeaderBorder)
+		color var(--adminDashboardHeaderFg)
 		font-size 14px
 
 		> p
@@ -154,9 +154,9 @@ export default Vue.extend({
 			flex 1
 			max-width 300px
 			margin-right 16px
-			color var(--text)
+			color var(--adminDashboardCardFg)
 			box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
-			background var(--face)
+			background var(--adminDashboardCardBg)
 			border-radius 8px
 
 			&:last-child
@@ -192,7 +192,7 @@ export default Vue.extend({
 			> div:last-child
 				display flex
 				padding 6px 16px
-				border-top solid 1px #eee
+				border-top solid 1px var(--adminDashboardCardDivider)
 
 				> span
 					font-size 70%

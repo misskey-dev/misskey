@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as tinycolor from 'tinycolor2';
 import * as ApexCharts from 'apexcharts';
 
 const limit = 90;
@@ -147,7 +148,7 @@ export default Vue.extend({
 				this.chartInstance.destroy();
 			}
 
-			this.chartInstance = new ApexCharts(this.$refs.chart, Object.assign({
+			this.chartInstance = new ApexCharts(this.$refs.chart, {
 				chart: {
 					type: 'area',
 					height: 300,
@@ -168,17 +169,41 @@ export default Vue.extend({
 				},
 				grid: {
 					clipMarkers: false,
+					borderColor: 'rgba(0, 0, 0, 0.1)'
 				},
 				stroke: {
 					curve: 'straight',
 					width: 2
 				},
+				legend: {
+					labels: {
+						color: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+					},
+				},
 				xaxis: {
-					type: 'datetime'
+					type: 'datetime',
+					labels: {
+						style: {
+							colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+						}
+					},
+					axisBorder: {
+						color: 'rgba(0, 0, 0, 0.1)'
+					},
+					axisTicks: {
+						color: 'rgba(0, 0, 0, 0.1)'
+					},
 				},
 				yaxis: {
-				}
-			}, this.data));
+					labels: {
+						formatter: this.data.bytes ? v => Vue.filter('bytes')(v, 0) : v => Vue.filter('number')(v),
+						style: {
+							color: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+						}
+					}
+				},
+				series: this.data.series
+			});
 
 			this.chartInstance.render();
 		},
@@ -286,6 +311,7 @@ export default Vue.extend({
 
 		driveChart(): any {
 			return {
+				bytes: true,
 				series: [{
 					name: 'All',
 					data: this.format(
@@ -314,6 +340,7 @@ export default Vue.extend({
 
 		driveTotalChart(): any {
 			return {
+				bytes: true,
 				series: [{
 					name: 'Combined',
 					data: this.format(sum(this.stats.drive.local.totalSize, this.stats.drive.remote.totalSize))
@@ -396,6 +423,7 @@ export default Vue.extend({
 
 		networkUsageChart(): any {
 			return {
+				bytes: true,
 				series: [{
 					name: 'Incoming',
 					data: this.format(this.stats.network.incomingBytes)
@@ -424,8 +452,8 @@ export default Vue.extend({
 		margin 0 8px
 		padding 0 0 8px 0
 		font-size 1em
-		color #555
-		border-bottom solid 1px #eee
+		color var(--adminDashboardCardFg)
+		border-bottom solid 1px var(--adminDashboardCardDivider)
 
 		> b
 			margin-right 8px
