@@ -599,32 +599,6 @@ desktop/views/components/calendar.vue:
   next: "次の月"
   go: "クリックして時間遡行"
 
-desktop/views/components/charts.vue:
-  title: "チャート"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  federation: "フェデレーション"
-  notes: "投稿"
-  users: "ユーザー"
-  drive: "ドライブ"
-  network: "ネットワーク"
-  charts:
-    federation-instances: "インスタンスの増減"
-    federation-instances-total: "インスタンスの積算"
-    notes: "投稿の増減 (統合)"
-    local-notes: "投稿の増減 (ローカル)"
-    remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の積算"
-    users: "ユーザーの増減"
-    users-total: "ユーザーの積算"
-    drive: "ドライブ使用量の増減"
-    drive-total: "ドライブ使用量の積算"
-    drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "ドライブのファイル数の積算"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
-    network-usage: "通信量"
-
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
@@ -1172,12 +1146,6 @@ desktop/views/pages/deck/deck.user-column.vue:
   timeline: "タイムライン"
   pinned-notes: "ピン留めされた投稿"
   push-to-a-list: "リストに追加"
-
-desktop/views/pages/stats/stats.vue:
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
