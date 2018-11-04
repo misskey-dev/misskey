@@ -40,7 +40,7 @@ function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, E
 			(err as any).param = k;
 			return true;
 		} else {
-			if (v === undefined && def.default) {
+			if (v === undefined && def.hasOwnProperty('default')) {
 				x[k] = def.default;
 			} else {
 				x[k] = v;
