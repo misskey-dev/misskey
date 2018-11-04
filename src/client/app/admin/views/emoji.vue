@@ -27,11 +27,9 @@
 			<ui-horizon-group inputs>
 				<ui-input v-model="emoji.name">
 					<span>%i18n:@add-emoji.name%</span>
-					<span slot="text">%i18n:@add-emoji.name-desc%</span>
 				</ui-input>
 				<ui-input v-model="emoji.aliases">
 					<span>%i18n:@add-emoji.aliases%</span>
-					<span slot="text">%i18n:@add-emoji.aliases-desc%</span>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="emoji.url">
