@@ -43,7 +43,7 @@ export default Vue.extend({
 			(this as any).api('admin/invite').then(x => {
 				this.inviteCode = x.code;
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		},
 		updateMeta() {
@@ -52,9 +52,9 @@ export default Vue.extend({
 				disableLocalTimeline: this.disableLocalTimeline,
 				bannerUrl: this.bannerUrl
 			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Saved` });
+				//(this as any).os.apis.dialog({ text: `Saved` });
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}

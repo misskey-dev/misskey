@@ -70,10 +70,10 @@ export default Vue.extend({
 				url: this.url,
 				aliases: this.aliases.split(' ')
 			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Added` });
+				//(this as any).os.apis.dialog({ text: `Added` });
 				this.fetchEmojis();
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		},
 
@@ -91,9 +91,9 @@ export default Vue.extend({
 				url: emoji.url,
 				aliases: emoji.aliases.split(' ')
 			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Updated` });
+				//(this as any).os.apis.dialog({ text: `Updated` });
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		},
 
@@ -101,10 +101,10 @@ export default Vue.extend({
 			(this as any).api('admin/emoji/remove', {
 				id: emoji.id
 			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Removed` });
+				//(this as any).os.apis.dialog({ text: `Removed` });
 				this.fetchEmojis();
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}
