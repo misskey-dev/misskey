@@ -74,6 +74,10 @@ export type Source = {
 		consumer_key: string;
 		consumer_secret: string;
 	};
+	github?: {
+		client_id: string;
+		client_secret: string;
+	};
 	github_bot?: {
 		hook_secret: string;
 		username: string;

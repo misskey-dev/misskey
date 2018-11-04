@@ -125,6 +125,19 @@
 				</section>
 			</ui-card>
 
+			<ui-card>
+				<div slot="title">%fa:B github% %i18n:@github%</div>
+
+				<section>
+					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
+					<p>
+						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? '%i18n:@github-reconnect%' : '%i18n:@github-connect%' }}</a>
+						<span v-if="$store.state.i.github"> or </span>
+						<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github">%i18n:@github-disconnect%</a>
+					</p>
+				</section>
+			</ui-card>
+
 			<mk-api-settings />
 
 			<ui-card>
