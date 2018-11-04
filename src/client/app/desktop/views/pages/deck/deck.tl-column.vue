@@ -1,12 +1,12 @@
 <template>
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">
-		<template v-if="column.type == 'home'">%fa:home%</template>
-		<template v-if="column.type == 'local'">%fa:R comments%</template>
-		<template v-if="column.type == 'hybrid'">%fa:share-alt%</template>
-		<template v-if="column.type == 'global'">%fa:globe%</template>
-		<template v-if="column.type == 'list'">%fa:list%</template>
-		<template v-if="column.type == 'hashtag'">%fa:hashtag%</template>
+		<template v-if="column.type == 'home'"><font-awesome-icon icon="home"/></template>
+		<template v-if="column.type == 'local'"><font-awesome-icon icon="R comments"/></template>
+		<template v-if="column.type == 'hybrid'"><font-awesome-icon icon="share-alt"/></template>
+		<template v-if="column.type == 'global'"><font-awesome-icon icon="globe"/></template>
+		<template v-if="column.type == 'list'"><font-awesome-icon icon="list"/></template>
+		<template v-if="column.type == 'hashtag'"><font-awesome-icon icon="hashtag"/></template>
 		<span>{{ name }}</span>
 	</span>
 
@@ -66,7 +66,7 @@ export default Vue.extend({
 		return {
 			edit: false,
 			menu: [{
-				icon: '%fa:cog%',
+				icon: '<font-awesome-icon icon="cog"/>',
 				text: '%i18n:@edit%',
 				action: () => {
 					this.edit = !this.edit;

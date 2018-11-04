@@ -1,10 +1,10 @@
 <template>
 <div class="tcrwdhwpuxrwmcttxjcsehgpagpstqey">
 	<div v-if="stats" class="stats">
-		<div><b>%fa:user% {{ stats.originalUsersCount | number }}</b><span>%i18n:@original-users%</span></div>
-		<div><span>%fa:user% {{ stats.usersCount | number }}</span><span>%i18n:@all-users%</span></div>
-		<div><b>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</b><span>%i18n:@original-notes%</span></div>
-		<div><span>%fa:pencil-alt% {{ stats.notesCount | number }}</span><span>%i18n:@all-notes%</span></div>
+		<div><b><font-awesome-icon icon="user"/> {{ stats.originalUsersCount | number }}</b><span>%i18n:@original-users%</span></div>
+		<div><span><font-awesome-icon icon="user"/> {{ stats.usersCount | number }}</span><span>%i18n:@all-users%</span></div>
+		<div><b><font-awesome-icon icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</b><span>%i18n:@original-notes%</span></div>
+		<div><span><font-awesome-icon icon="pencil-alt"/> {{ stats.notesCount | number }}</span><span>%i18n:@all-notes%</span></div>
 	</div>
 	<div>
 		<x-charts/>

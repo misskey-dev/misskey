@@ -15,23 +15,23 @@
 			</router-link>
 			<div class="links">
 				<ul>
-					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@timeline%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotification">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'">%fa:R envelope%%i18n:@follow-requests%<template v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'">%fa:gamepad%%i18n:@game%<template v-if="hasGameInvitation">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/" :data-active="$route.name == 'index'"><font-awesome-icon icon="home"/>%i18n:@timeline%<font-awesome-icon icon="angle-right"/></router-link></li>
+					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><font-awesome-icon icon="R bell"/>%i18n:@notifications%<template v-if="hasUnreadNotification"><font-awesome-icon icon="circle"/></template><font-awesome-icon icon="angle-right"/></router-link></li>
+					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><font-awesome-icon icon="R comments"/>%i18n:@messaging%<template v-if="hasUnreadMessagingMessage"><font-awesome-icon icon="circle"/></template><font-awesome-icon icon="angle-right"/></router-link></li>
+					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><font-awesome-icon icon="R envelope"/>%i18n:@follow-requests%<template v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount"><font-awesome-icon icon="circle"/></template><font-awesome-icon icon="angle-right"/></router-link></li>
+					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'"><font-awesome-icon icon="gamepad"/>%i18n:@game%<template v-if="hasGameInvitation"><font-awesome-icon icon="circle"/></template><font-awesome-icon icon="angle-right"/></router-link></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:R calendar-alt%%i18n:@widgets%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'">%fa:star%%i18n:@favorites%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'">%fa:list%%i18n:@user-lists%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'">%fa:cloud%%i18n:common.drive%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><font-awesome-icon icon="R calendar-alt"/>%i18n:@widgets%<font-awesome-icon icon="angle-right"/></router-link></li>
+					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><font-awesome-icon icon="star"/>%i18n:@favorites%<font-awesome-icon icon="angle-right"/></router-link></li>
+					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'"><font-awesome-icon icon="list"/>%i18n:@user-lists%<font-awesome-icon icon="angle-right"/></router-link></li>
+					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><font-awesome-icon icon="cloud"/>%i18n:common.drive%<font-awesome-icon icon="angle-right"/></router-link></li>
 				</ul>
 				<ul>
-					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
-					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
-					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><router-link to="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</router-link></li>
-					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>%i18n:@darkmode%</span></p></li>
+					<li><a @click="search"><font-awesome-icon icon="search"/>%i18n:@search%<font-awesome-icon icon="angle-right"/></a></li>
+					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><font-awesome-icon icon="cog"/>%i18n:@settings%<font-awesome-icon icon="angle-right"/></router-link></li>
+					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><router-link to="/admin"><font-awesome-icon icon="terminal"/><span>%i18n:@admin%</span><font-awesome-icon icon="angle-right"/></router-link></li>
+					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><font-awesome-icon icon="moon"/></template><template v-else><font-awesome-icon icon="R moon"/></template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>
 			<div class="announcements" v-if="announcements && announcements.length > 0">

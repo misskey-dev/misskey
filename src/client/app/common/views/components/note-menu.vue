@@ -15,18 +15,18 @@ export default Vue.extend({
 	computed: {
 		items() {
 			const items = [{
-				icon: '%fa:info-circle%',
+				icon: '<font-awesome-icon icon="info-circle"/>',
 				text: '%i18n:@detail%',
 				action: this.detail
 			}, {
-				icon: '%fa:link%',
+				icon: '<font-awesome-icon icon="link"/>',
 				text: '%i18n:@copy-link%',
 				action: this.copyLink
 			}];
 
 			if (this.note.uri) {
 				items.push({
-					icon: '%fa:external-link-square-alt%',
+					icon: '<font-awesome-icon icon="external-link-square-alt"/>',
 					text: '%i18n:@remote%',
 					action: () => {
 						window.open(this.note.uri, '_blank');
@@ -38,13 +38,13 @@ export default Vue.extend({
 
 			if (this.note.isFavorited) {
 				items.push({
-					icon: '%fa:star%',
+					icon: '<font-awesome-icon icon="star"/>',
 					text: '%i18n:@unfavorite%',
 					action: this.unfavorite
 				});
 			} else {
 				items.push({
-					icon: '%fa:star%',
+					icon: '<font-awesome-icon icon="star"/>',
 					text: '%i18n:@favorite%',
 					action: this.favorite
 				});
@@ -53,13 +53,13 @@ export default Vue.extend({
 			if (this.note.userId == this.$store.state.i.id) {
 				if ((this.$store.state.i.pinnedNoteIds || []).includes(this.note.id)) {
 					items.push({
-						icon: '%fa:thumbtack%',
+						icon: '<font-awesome-icon icon="thumbtack"/>',
 						text: '%i18n:@unpin%',
 						action: this.unpin
 					});
 				} else {
 					items.push({
-						icon: '%fa:thumbtack%',
+						icon: '<font-awesome-icon icon="thumbtack"/>',
 						text: '%i18n:@pin%',
 						action: this.pin
 					});
@@ -69,7 +69,7 @@ export default Vue.extend({
 			if (this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin) {
 				items.push(null);
 				items.push({
-					icon: '%fa:trash-alt R%',
+					icon: '<font-awesome-icon icon="trash-alt R"/>',
 					text: '%i18n:@delete%',
 					action: this.del
 				});

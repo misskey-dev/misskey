@@ -4,10 +4,10 @@
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<x-nav-folder :class="{ current: folder == null }"/>
 			<template v-for="folder in hierarchyFolders">
-				<span class="separator">%fa:angle-right%</span>
+				<span class="separator"><font-awesome-icon icon="angle-right"/></span>
 				<x-nav-folder :folder="folder" :key="folder.id"/>
 			</template>
-			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
+			<span class="separator" v-if="folder != null"><font-awesome-icon icon="angle-right"/></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 		<!--
@@ -138,17 +138,17 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.create-folder%',
-				icon: '%fa:R folder%',
+				icon: '<font-awesome-icon icon="R folder"/>',
 				action: this.createFolder
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.upload%',
-				icon: '%fa:upload%',
+				icon: '<font-awesome-icon icon="upload"/>',
 				action: this.selectLocalFile
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.url-upload%',
-				icon: '%fa:cloud-upload-alt%',
+				icon: '<font-awesome-icon icon="cloud-upload-alt"/>',
 				action: this.urlUpload
 			}]);
 		},
@@ -313,7 +313,7 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
+								title: '<font-awesome-icon icon="exclamation-triangle"/>%i18n:@unable-to-process%',
 								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'
@@ -343,7 +343,7 @@ export default Vue.extend({
 				});
 
 				(this as any).apis.dialog({
-					title: '%fa:check%%i18n:@url-upload-requested%',
+					title: '<font-awesome-icon icon="check"/>%i18n:@url-upload-requested%',
 					text: '%i18n:@may-take-time%',
 					actions: [{
 						text: '%i18n:common.ok%'

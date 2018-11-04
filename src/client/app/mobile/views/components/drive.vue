@@ -1,17 +1,17 @@
 <template>
 <div class="kmmwchoexgckptowjmjgfsygeltxfeqs">
 	<nav ref="nav">
-		<a @click.prevent="goRoot()" href="/i/drive">%fa:cloud%%i18n:common.drive%</a>
+		<a @click.prevent="goRoot()" href="/i/drive"><font-awesome-icon icon="cloud"/>%i18n:common.drive%</a>
 		<template v-for="folder in hierarchyFolders">
-			<span :key="folder.id + '>'">%fa:angle-right%</span>
+			<span :key="folder.id + '>'"><font-awesome-icon icon="angle-right"/></span>
 			<a :key="folder.id" @click.prevent="cd(folder)" :href="`/i/drive/folder/${folder.id}`">{{ folder.name }}</a>
 		</template>
 		<template v-if="folder != null">
-			<span>%fa:angle-right%</span>
+			<span><font-awesome-icon icon="angle-right"/></span>
 			<p>{{ folder.name }}</p>
 		</template>
 		<template v-if="file != null">
-			<span>%fa:angle-right%</span>
+			<span><font-awesome-icon icon="angle-right"/></span>
 			<p>{{ file.name }}</p>
 		</template>
 	</nav>

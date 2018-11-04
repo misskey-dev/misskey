@@ -13,7 +13,6 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 import I18nReplacer from './src/misc/i18n';
 import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
-import { pattern as faPattern, replacement as faReplacement } from './src/misc/fa';
 const constants = require('./src/const.json');
 
 const locales = require('./locales');
@@ -22,15 +21,12 @@ const version = meta.clientVersion;
 const codename = meta.codename;
 
 declare var global: {
-	faReplacement: typeof faReplacement;
 	collapseSpacesReplacement: any;
 	base64replacement: any;
 	i18nReplacement: typeof i18nReplacement;
 };
 
 //#region Replacer definitions
-global['faReplacement'] = faReplacement;
-
 global['collapseSpacesReplacement'] = (html: string) => {
 	return minifyHtml(html, {
 		collapseWhitespace: true,
@@ -149,9 +145,6 @@ module.exports = {
 						replace: 'i18nReplacement',
 						i18n: true
 					}, {
-						search: faPattern.toString(),
-						replace: 'faReplacement'
-					}, {
 						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
 						replace: 'collapseSpacesReplacement'
 					}]
@@ -218,9 +211,6 @@ module.exports = {
 						search: i18nPattern.toString(),
 						replace: 'i18nReplacement',
 						i18n: true
-					}, {
-						search: faPattern.toString(),
-						replace: 'faReplacement'
 					}]
 				}
 			}]

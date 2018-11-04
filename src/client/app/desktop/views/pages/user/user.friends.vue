@@ -1,7 +1,7 @@
 <template>
 <div class="hozptpaliadatkehcmcayizwzwwctpbc">
-	<p class="title">%fa:users%%i18n:@title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="title"><font-awesome-icon icon="users"/>%i18n:@title%</p>
+	<p class="initializing" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:@loading%<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
 			<mk-avatar class="avatar" :user="friend"/>

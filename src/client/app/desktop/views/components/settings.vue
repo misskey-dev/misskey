@@ -1,24 +1,24 @@
 <template>
 <div class="mk-settings">
 	<div class="nav">
-		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'">%fa:user .fw%%i18n:@profile%</p>
-		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'">%fa:palette .fw%%i18n:@theme%</p>
-		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'">%fa:desktop .fw%Web</p>
-		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'">%fa:R bell .fw%%i18n:@notification%</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:common.drive%</p>
-		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'">%fa:hashtag .fw%%i18n:@tags%</p>
-		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'">%fa:ban .fw%%i18n:@mute-and-block%</p>
-		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'">%fa:puzzle-piece .fw%%i18n:@apps%</p>
-		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'">%fa:unlock-alt .fw%%i18n:@security%</p>
-		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'">%fa:key .fw%API</p>
-		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'">%fa:cogs .fw%%i18n:@other%</p>
+		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><font-awesome-icon icon="user .fw"/>%i18n:@profile%</p>
+		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><font-awesome-icon icon="palette .fw"/>%i18n:@theme%</p>
+		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><font-awesome-icon icon="desktop .fw"/>Web</p>
+		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><font-awesome-icon icon="R bell .fw"/>%i18n:@notification%</p>
+		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><font-awesome-icon icon="cloud .fw"/>%i18n:common.drive%</p>
+		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><font-awesome-icon icon="hashtag .fw"/>%i18n:@tags%</p>
+		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><font-awesome-icon icon="ban .fw"/>%i18n:@mute-and-block%</p>
+		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'"><font-awesome-icon icon="puzzle-piece .fw"/>%i18n:@apps%</p>
+		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'"><font-awesome-icon icon="unlock-alt .fw"/>%i18n:@security%</p>
+		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'"><font-awesome-icon icon="key .fw"/>API</p>
+		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'"><font-awesome-icon icon="cogs .fw"/>%i18n:@other%</p>
 	</div>
 	<div class="pages">
 		<div class="profile" v-show="page == 'profile'">
 			<mk-profile-editor/>
 
 			<ui-card>
-				<div slot="title">%fa:B twitter% %i18n:@twitter%</div>
+				<div slot="title"><font-awesome-icon icon="B twitter"/> %i18n:@twitter%</div>
 				<section>
 					<mk-twitter-setting/>
 				</section>
@@ -26,7 +26,7 @@
 		</div>
 
 		<ui-card class="theme" v-show="page == 'theme'">
-			<div slot="title">%fa:palette% %i18n:@theme%</div>
+			<div slot="title"><font-awesome-icon icon="palette"/> %i18n:@theme%</div>
 
 			<section>
 				<mk-theme/>
@@ -34,7 +34,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title">%fa:sliders-h% %i18n:@behaviour%</div>
+			<div slot="title"><font-awesome-icon icon="sliders-h"/> %i18n:@behaviour%</div>
 
 			<section>
 				<ui-switch v-model="fetchOnScroll">
@@ -80,7 +80,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title">%fa:desktop% %i18n:@display%</div>
+			<div slot="title"><font-awesome-icon icon="desktop"/> %i18n:@display%</div>
 
 			<section>
 				<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
@@ -130,7 +130,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title">%fa:volume-up% %i18n:@sound%</div>
+			<div slot="title"><font-awesome-icon icon="volume-up"/> %i18n:@sound%</div>
 
 			<section>
 				<ui-switch v-model="enableSounds">
@@ -144,12 +144,12 @@
 					max="1"
 					step="0.1"
 				/>
-				<ui-button @click="soundTest">%fa:volume-up% %i18n:@test%</ui-button>
+				<ui-button @click="soundTest"><font-awesome-icon icon="volume-up"/> %i18n:@test%</ui-button>
 			</section>
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title">%fa:language% %i18n:@language%</div>
+			<div slot="title"><font-awesome-icon icon="language"/> %i18n:@language%</div>
 			<section class="fit-top">
 				<ui-select v-model="lang" placeholder="%i18n:@pick-language%">
 					<optgroup label="%i18n:@recommended%">
@@ -161,23 +161,23 @@
 					</optgroup>
 				</ui-select>
 				<div class="none ui info">
-					<p>%fa:info-circle%%i18n:@language-desc%</p>
+					<p><font-awesome-icon icon="info-circle"/>%i18n:@language-desc%</p>
 				</div>
 			</section>
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title">%fa:trash-alt R% %i18n:@cache%</div>
+			<div slot="title"><font-awesome-icon icon="trash-alt R"/> %i18n:@cache%</div>
 			<section>
 				<ui-button @click="clean">%i18n:@clean-cache%</ui-button>
 				<div class="none ui info warn">
-					<p>%fa:exclamation-triangle%%i18n:@cache-warn%</p>
+					<p><font-awesome-icon icon="exclamation-triangle"/>%i18n:@cache-warn%</p>
 				</div>
 			</section>
 		</ui-card>
 
 		<ui-card class="notification" v-show="page == 'notification'">
-			<div slot="title">%fa:bell R% %i18n:@notification%</div>
+			<div slot="title"><font-awesome-icon icon="bell R"/> %i18n:@notification%</div>
 			<section>
 				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
 					%i18n:@auto-watch%
@@ -194,7 +194,7 @@
 		</div>
 
 		<ui-card class="hashtags" v-show="page == 'hashtags'">
-			<div slot="title">%fa:hashtag% %i18n:@tags%</div>
+			<div slot="title"><font-awesome-icon icon="hashtag"/> %i18n:@tags%</div>
 			<section>
 				<x-tags/>
 			</section>
@@ -205,28 +205,28 @@
 		</div>
 
 		<ui-card class="apps" v-show="page == 'apps'">
-			<div slot="title">%fa:puzzle-piece% %i18n:@apps%</div>
+			<div slot="title"><font-awesome-icon icon="puzzle-piece"/> %i18n:@apps%</div>
 			<section>
 				<x-apps/>
 			</section>
 		</ui-card>
 
 		<ui-card class="password" v-show="page == 'security'">
-			<div slot="title">%fa:unlock-alt% %i18n:@password%</div>
+			<div slot="title"><font-awesome-icon icon="unlock-alt"/> %i18n:@password%</div>
 			<section>
 				<mk-password-settings/>
 			</section>
 		</ui-card>
 
 		<ui-card class="2fa" v-show="page == 'security'">
-			<div slot="title">%fa:mobile-alt% %i18n:@2fa%</div>
+			<div slot="title"><font-awesome-icon icon="mobile-alt"/> %i18n:@2fa%</div>
 			<section>
 				<x-2fa/>
 			</section>
 		</ui-card>
 
 		<ui-card class="signin" v-show="page == 'security'">
-			<div slot="title">%fa:sign-in-alt% %i18n:@signin%</div>
+			<div slot="title"><font-awesome-icon icon="sign-in-alt"/> %i18n:@signin%</div>
 			<section>
 				<x-signins/>
 			</section>
@@ -237,14 +237,14 @@
 		</div>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<div slot="title">%fa:info-circle% %i18n:@about%</div>
+			<div slot="title"><font-awesome-icon icon="info-circle"/> %i18n:@about%</div>
 			<section>
 				<p v-if="meta">%i18n:@operator%: <i><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></i></p>
 			</section>
 		</ui-card>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<div slot="title">%fa:sync-alt% %i18n:@update%</div>
+			<div slot="title"><font-awesome-icon icon="sync-alt"/> %i18n:@update%</div>
 			<section>
 				<p>
 					<span>%i18n:@version% <i>{{ version }}</i></span>
@@ -268,7 +268,7 @@
 		</ui-card>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<div slot="title">%fa:cogs% %i18n:@advanced-settings%</div>
+			<div slot="title"><font-awesome-icon icon="cogs"/> %i18n:@advanced-settings%</div>
 			<section>
 				<ui-switch v-model="debug">
 					%i18n:@debug-mode%

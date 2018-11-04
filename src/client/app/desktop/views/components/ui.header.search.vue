@@ -1,6 +1,6 @@
 <template>
 <form class="search" @submit.prevent="onSubmit">
-	%fa:search%
+	<font-awesome-icon icon="search"/>
 	<input v-model="q" type="search" placeholder="%i18n:@placeholder%"/>
 	<div class="result"></div>
 </form>

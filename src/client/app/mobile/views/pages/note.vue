@@ -1,13 +1,13 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;">%fa:R sticky-note%</span>%i18n:@title%</span>
+	<span slot="header"><span style="margin-right:4px;"><font-awesome-icon icon="R sticky-note"/></span>%i18n:@title%</span>
 	<main v-if="!fetching">
 		<div>
 			<mk-note-detail :note="note"/>
 		</div>
 		<footer>
-			<router-link v-if="note.prev" :to="note.prev">%fa:angle-left% %i18n:@prev%</router-link>
-			<router-link v-if="note.next" :to="note.next">%i18n:@next% %fa:angle-right%</router-link>
+			<router-link v-if="note.prev" :to="note.prev"><font-awesome-icon icon="angle-left"/> %i18n:@prev%</router-link>
+			<router-link v-if="note.next" :to="note.next">%i18n:@next% <font-awesome-icon icon="angle-right"/></router-link>
 		</footer>
 	</main>
 </mk-ui>

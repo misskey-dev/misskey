@@ -4,20 +4,20 @@
 		<mk-follow-button :user="user" size="big"/>
 		<p class="followed" v-if="user.isFollowed">%i18n:@follows-you%</p>
 		<p class="stalk" v-if="user.isFollowing">
-			<span v-if="user.isStalking">%i18n:@stalking% <a @click="unstalk">%fa:meh% %i18n:@unstalk%</a></span>
-			<span v-if="!user.isStalking"><a @click="stalk">%fa:user-secret% %i18n:@stalk%</a></span>
+			<span v-if="user.isStalking">%i18n:@stalking% <a @click="unstalk"><font-awesome-icon icon="meh"/> %i18n:@unstalk%</a></span>
+			<span v-if="!user.isStalking"><a @click="stalk"><font-awesome-icon icon="user-secret"/> %i18n:@stalk%</a></span>
 		</p>
 	</div>
 	<div class="action-form">
 		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
-			<span v-else>%fa:eye-slash% %i18n:@mute%</span>
+			<span v-if="user.isMuted"><font-awesome-icon icon="eye"/> %i18n:@unmute%</span>
+			<span v-else><font-awesome-icon icon="eye-slash"/> %i18n:@mute%</span>
 		</ui-button>
 		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isBlocking">%fa:user% %i18n:@unblock%</span>
-			<span v-else>%fa:user-slash% %i18n:@block%</span>
+			<span v-if="user.isBlocking"><font-awesome-icon icon="user"/> %i18n:@unblock%</span>
+			<span v-else><font-awesome-icon icon="user-slash"/> %i18n:@block%</span>
 		</ui-button>
-		<ui-button @click="list">%fa:list% %i18n:@push-to-a-list%</ui-button>
+		<ui-button @click="list"><font-awesome-icon icon="list"/> %i18n:@push-to-a-list%</ui-button>
 	</div>
 </div>
 </template>

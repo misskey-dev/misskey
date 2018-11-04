@@ -1,17 +1,17 @@
 <template>
 <div class="mkw-polls">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:chart-pie%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
+		<template slot="header"><font-awesome-icon icon="chart-pie"/>%i18n:@title%</template>
+		<button slot="func" title="%i18n:@refresh%" @click="fetch"><font-awesome-icon icon="sync"/></button>
 
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
 				<p v-if="poll.text"><router-link :to="poll | notePage">{{ poll.text }}</router-link></p>
-				<p v-if="!poll.text"><router-link :to="poll | notePage">%fa:link%</router-link></p>
+				<p v-if="!poll.text"><router-link :to="poll | notePage"><font-awesome-icon icon="link"/></router-link></p>
 				<mk-poll :note="poll"/>
 			</div>
 			<p class="empty" v-if="!fetching && poll == null">%i18n:@nothing%</p>
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
 		</div>
 	</mk-widget-container>
 </div>

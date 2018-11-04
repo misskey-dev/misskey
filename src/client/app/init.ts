@@ -21,6 +21,82 @@ if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }
 
+//#region FontAwesome
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {
+	faRetweet,
+	faPlus,
+	faUser,
+	faCog,
+	faCheck,
+	faStar,
+	faReply,
+	faEllipsisH,
+	faQuoteLeft,
+	faQuoteRight,
+	faAngleUp,
+	faAngleDown,
+	faAt,
+	faHashtag,
+	faHome,
+	faGlobe,
+	faCircle,
+	faList,
+	faHeart,
+	faUnlock,
+	faRssSquare,
+	faSort,
+	faChartPie,
+	faChartBar,
+	faPencilAlt,
+	faColumns,
+	faComments,
+	faGamepad,
+	faCloud,
+	faPowerOff,
+	faChevronCircleLeft,
+	faChevronCircleRight,
+	faShareAlt,
+} from '@fortawesome/free-solid-svg-icons';
+
+library.add(
+	faRetweet,
+	faPlus,
+	faUser,
+	faCog,
+	faCheck,
+	faStar,
+	faReply,
+	faEllipsisH,
+	faQuoteLeft,
+	faQuoteRight,
+	faAngleUp,
+	faAngleDown,
+	faAt,
+	faHashtag,
+	faHome,
+	faGlobe,
+	faCircle,
+	faList,
+	faHeart,
+	faUnlock,
+	faRssSquare,
+	faSort,
+	faChartPie,
+	faChartBar,
+	faPencilAlt,
+	faColumns,
+	faComments,
+	faGamepad,
+	faCloud,
+	faPowerOff,
+	faChevronCircleLeft,
+	faChevronCircleRight,
+	faShareAlt,
+);
+//#endregion
+
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(TreeView);
@@ -28,6 +104,8 @@ Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
 Vue.use(VueSweetalert2);
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 // Register global directives
 require('./common/views/directives');

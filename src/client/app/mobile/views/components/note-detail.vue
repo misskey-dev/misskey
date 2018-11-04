@@ -6,8 +6,8 @@
 		@click="fetchConversation"
 		:disabled="conversationFetching"
 	>
-		<template v-if="!conversationFetching">%fa:ellipsis-v%</template>
-		<template v-if="conversationFetching">%fa:spinner .pulse%</template>
+		<template v-if="!conversationFetching"><font-awesome-icon icon="ellipsis-v"/></template>
+		<template v-if="conversationFetching"><font-awesome-icon icon="spinner .pulse"/></template>
 	</button>
 	<div class="conversation">
 		<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
@@ -18,7 +18,7 @@
 	<div class="renote" v-if="isRenote">
 		<p>
 			<mk-avatar class="avatar" :user="note.user"/>
-			%fa:retweet%
+			<font-awesome-icon icon="retweet"/>
 			<router-link class="name" :href="note.user | userPage">{{ note.user | userName }}</router-link>
 			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
 			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
@@ -50,7 +50,7 @@
 				</div>
 				<mk-poll v-if="p.poll" :note="p"/>
 				<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
-				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
+				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank"><font-awesome-icon icon="map-marker-alt"/> %i18n:@location%</a>
 				<div class="map" v-if="p.geo" ref="map"></div>
 				<div class="renote" v-if="p.renote">
 					<mk-note-preview :note="p.renote"/>
@@ -63,18 +63,18 @@
 		<footer>
 			<mk-reactions-viewer :note="p"/>
 			<button @click="reply" title="%i18n:@reply%">
-				<template v-if="p.reply">%fa:reply-all%</template>
-				<template v-else>%fa:reply%</template>
+				<template v-if="p.reply"><font-awesome-icon icon="reply-all"/></template>
+				<template v-else><font-awesome-icon icon="reply"/></template>
 				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
 			<button @click="renote" title="Renote">
-				%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
+				<font-awesome-icon icon="retweet"/><p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
 			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@reaction%">
-				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
+				<font-awesome-icon icon="plus"/><p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">
-				%fa:ellipsis-h%
+				<font-awesome-icon icon="ellipsis-h"/>
 			</button>
 		</footer>
 	</article>

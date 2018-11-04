@@ -32,18 +32,18 @@
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
-	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
-	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
-	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll">%fa:chart-pie%</button>
-	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw">%fa:eye-slash%</button>
-	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
+	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile"><font-awesome-icon icon="upload"/></button>
+	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive"><font-awesome-icon icon="cloud"/></button>
+	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao"><font-awesome-icon icon="R smile"/></button>
+	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll"><font-awesome-icon icon="chart-pie"/></button>
+	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw"><font-awesome-icon icon="eye-slash"/></button>
+	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()"><font-awesome-icon icon="map-marker-alt"/></button>
 	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
-		<span v-if="visibility === 'public'">%fa:globe%</span>
-		<span v-if="visibility === 'home'">%fa:home%</span>
-		<span v-if="visibility === 'followers'">%fa:unlock%</span>
-		<span v-if="visibility === 'specified'">%fa:envelope%</span>
-		<span v-if="visibility === 'private'">%fa:lock%</span>
+		<span v-if="visibility === 'public'"><font-awesome-icon icon="globe"/></span>
+		<span v-if="visibility === 'home'"><font-awesome-icon icon="home"/></span>
+		<span v-if="visibility === 'followers'"><font-awesome-icon icon="unlock"/></span>
+		<span v-if="visibility === 'specified'"><font-awesome-icon icon="envelope"/></span>
+		<span v-if="visibility === 'private'"><font-awesome-icon icon="lock"/></span>
 	</button>
 	<p class="text-count" :class="{ over: this.trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - this.trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">

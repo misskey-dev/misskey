@@ -1,7 +1,7 @@
 <template>
 <div class="mk-home" :data-customize="customize">
 	<div class="customize" v-if="customize">
-		<router-link to="/">%fa:check%%i18n:@done%</router-link>
+		<router-link to="/"><font-awesome-icon icon="check"/>%i18n:@done%</router-link>
 		<div>
 			<div class="adder">
 				<p>%i18n:@add-widget%</p>
@@ -185,7 +185,7 @@ export default Vue.extend({
 	methods: {
 		hint() {
 			(this as any).apis.dialog({
-				title: '%fa:info-circle%%i18n:common.customization-tips.title%',
+				title: '<font-awesome-icon icon="info-circle"/>%i18n:common.customization-tips.title%',
 				text: '<p>%i18n:common.customization-tips.paragraph1%</p>' +
 					'<p>%i18n:common.customization-tips.paragraph2%</p>' +
 					'<p>%i18n:common.customization-tips.paragraph3%</p>' +

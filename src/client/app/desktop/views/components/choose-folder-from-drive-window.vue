@@ -21,7 +21,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: {
 		title: {
-			default: '%fa:R folder%%i18n:@choose-prompt%'
+			default: '<font-awesome-icon icon="R folder"/>%i18n:@choose-prompt%'
 		}
 	},
 	methods: {

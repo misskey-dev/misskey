@@ -5,13 +5,13 @@
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked">%fa:hourglass-half% %i18n:@request-pending%</template>
-		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked">%fa:hourglass-start% %i18n:@follow-processing%</template>
-		<template v-else-if="u.isFollowing">%fa:minus% %i18n:@following%</template>
-		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus% %i18n:@follow-request%</template>
-		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus% %i18n:@follow%</template>
+		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked"><font-awesome-icon icon="hourglass-half"/> %i18n:@request-pending%</template>
+		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked"><font-awesome-icon icon="hourglass-start"/> %i18n:@follow-processing%</template>
+		<template v-else-if="u.isFollowing"><font-awesome-icon icon="minus"/> %i18n:@following%</template>
+		<template v-else-if="!u.isFollowing && u.isLocked"><font-awesome-icon icon="plus"/> %i18n:@follow-request%</template>
+		<template v-else-if="!u.isFollowing && !u.isLocked"><font-awesome-icon icon="plus"/> %i18n:@follow%</template>
 	</template>
-	<template v-else>%fa:spinner .pulse .fw%</template>
+	<template v-else><font-awesome-icon icon="spinner .pulse .fw"/></template>
 </button>
 </template>
 

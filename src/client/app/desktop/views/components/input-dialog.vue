@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" is-modal width="500px" @before-close="beforeClose" @closed="destroyDom">
 	<span slot="header" :class="$style.header">
-		%fa:i-cursor%{{ title }}
+		<font-awesome-icon icon="i-cursor"/>{{ title }}
 	</span>
 
 	<div :class="$style.body">

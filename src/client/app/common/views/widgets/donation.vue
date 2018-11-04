@@ -2,7 +2,7 @@
 <div>
 	<mk-widget-container :show-header="false">
 		<article class="dolfvtibguprpxxhfndqaosjitixjohx">
-			<h1>%fa:heart%%i18n:@title%</h1>
+			<h1><font-awesome-icon icon="heart"/>%i18n:@title%</h1>
 			<p v-if="meta">
 				{{ '%i18n:@text%'.substr(0, '%i18n:@text%'.indexOf('{')) }}
 				<a :href="meta.maintainer.url">{{ meta.maintainer.name }}</a>

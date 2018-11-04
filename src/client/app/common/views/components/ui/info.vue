@@ -1,7 +1,7 @@
 <template>
 <div class="ymxyweixqwsxauxldgpvecjepnwxbylu" :class="{ warn }">
-	<i v-if="warn">%fa:exclamation-triangle%</i>
-	<i v-else>%fa:info-circle%</i>
+	<i v-if="warn"><font-awesome-icon icon="exclamation-triangle"/></i>
+	<i v-else><font-awesome-icon icon="info-circle"/></i>
 	<slot></slot>
 </div>
 </template>

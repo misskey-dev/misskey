@@ -1,6 +1,6 @@
 <template>
 <x-column :name="name" :column="column" :is-stacked="isStacked">
-	<span slot="header">%fa:envelope R%{{ name }}</span>
+	<span slot="header"><font-awesome-icon icon="envelope R"/>{{ name }}</span>
 
 	<x-direct/>
 </x-column>

@@ -16,8 +16,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover">%fa:R folder-open .fw%</template>
-		<template v-if="!hover">%fa:R folder .fw%</template>
+		<template v-if="hover"><font-awesome-icon icon="R folder-open .fw"/></template>
+		<template v-if="!hover"><font-awesome-icon icon="R folder .fw"/></template>
 		{{ folder.name }}
 	</p>
 </div>
@@ -55,22 +55,22 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.move-to-this-folder%',
-				icon: '%fa:arrow-right%',
+				icon: '<font-awesome-icon icon="arrow-right"/>',
 				action: this.go
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.show-in-new-window%',
-				icon: '%fa:R window-restore%',
+				icon: '<font-awesome-icon icon="R window-restore"/>',
 				action: this.newWindow
 			}, null, {
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
-				icon: '%fa:i-cursor%',
+				icon: '<font-awesome-icon icon="i-cursor"/>',
 				action: this.rename
 			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
-				icon: '%fa:R trash-alt%',
+				icon: '<font-awesome-icon icon="R trash-alt"/>',
 				action: this.deleteFolder
 			}], {
 					closed: () => {
@@ -155,7 +155,7 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
+								title: '<font-awesome-icon icon="exclamation-triangle"/>%i18n:@unable-to-process%',
 								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'

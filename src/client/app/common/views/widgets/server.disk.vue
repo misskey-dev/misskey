@@ -2,7 +2,7 @@
 <div class="disk">
 	<x-pie class="pie" :value="usage"/>
 	<div>
-		<p>%fa:R hdd%Storage</p>
+		<p><font-awesome-icon icon="R hdd"/>Storage</p>
 		<p>Total: {{ total | bytes(1) }}</p>
 		<p>Free: {{ available | bytes(1) }}</p>
 		<p>Used: {{ used | bytes(1) }}</p>

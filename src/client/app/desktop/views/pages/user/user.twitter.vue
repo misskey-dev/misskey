@@ -1,6 +1,6 @@
 <template>
 <div class="adsvaidqfznoartcbplullnejvxjphcn">
-	<span>%fa:B twitter%<a :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">@{{ user.twitter.screenName }}</a></span>
+	<span><font-awesome-icon icon="B twitter"/><a :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">@{{ user.twitter.screenName }}</a></span>
 </div>
 </template>
 

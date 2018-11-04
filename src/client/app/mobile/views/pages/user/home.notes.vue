@@ -1,6 +1,6 @@
 <template>
 <div class="root notes">
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:@loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && notes.length > 0">
 		<mk-note-card v-for="note in notes" :key="note.id" :note="note"/>
 	</div>

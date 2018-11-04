@@ -1,7 +1,7 @@
 <template>
 <div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
-	<p class="title">%fa:camera%%i18n:@title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="title"><font-awesome-icon icon="camera"/>%i18n:@title%</p>
+	<p class="initializing" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:@loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<div v-for="image in images" class="img"
 			:style="`background-image: url(${image.thumbnailUrl})`"

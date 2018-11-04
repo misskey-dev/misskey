@@ -9,7 +9,7 @@
 				<a :href="item.href" :target="item.target" @click="click(item)"><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</a>
 			</template>
 			<template v-else-if="item.type == 'nest'">
-				<p><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}...<span class="caret">%fa:caret-right%</span></p>
+				<p><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}...<span class="caret"><font-awesome-icon icon="caret-right"/></span></p>
 				<me-nu :menu="item.menu" @x="click"/>
 			</template>
 		</template>
