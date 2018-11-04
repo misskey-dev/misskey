@@ -14,7 +14,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .aqooishiizumijmihokohinatamihoaz
-.adsvaidqfznoartcbplullnejvxjphcn
 	padding 32px
 	background #171515
 	border-radius 6px
