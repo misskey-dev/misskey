@@ -40,18 +40,20 @@ const lib = Object.entries(emojilib.lib).filter((x: any) => {
 });
 
 const emjdb: EmojiDef[] = lib.map((x: any) => ({
-	emoji: x[1].char,
+	emoji: `:${x[0]}:`,
 	name: x[0],
-	aliasOf: null
+	aliasOf: null,
+	url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
 }));
 
 lib.forEach((x: any) => {
 	if (x[1].keywords) {
 		x[1].keywords.forEach(k => {
 			emjdb.push({
-				emoji: x[1].char,
+				emoji: `:${x[0]}:`,
 				name: k,
-				aliasOf: x[0]
+				aliasOf: x[0],
+				url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
 			});
 		});
 	}

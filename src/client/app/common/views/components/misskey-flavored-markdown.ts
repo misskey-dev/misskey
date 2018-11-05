@@ -188,24 +188,10 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					//#region カスタム絵文字
-					if (this.customEmojis != null) {
-						const customEmoji = this.customEmojis.find(e => e.name == token.emoji || (e.aliases || []).includes(token.emoji));
-						if (customEmoji) {
-							return [createElement('img', {
-								attrs: {
-									src: customEmoji.url,
-									alt: token.emoji,
-									title: token.emoji,
-									style: 'height: 2.5em; vertical-align: middle;'
-								}
-							})];
-						}
-					}
-					//#endregion
-
-					const emoji = emojilib.lib[token.emoji];
-					return [createElement('span', emoji ? emoji.char : token.content)];
+					const { emoji } = token;
+					return [createElement('mk-emoji', {
+						attrs: { emoji }
+					})];
 				}
 
 				case 'search': {
