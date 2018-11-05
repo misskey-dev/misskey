@@ -43,8 +43,8 @@ jobs:
       - run:
           name: Configure
           command: |
-            cp .ci/default.yml .config
-            cp .ci/test.yml .config
+            cp .circleci/misskey/default.yml .config
+            cp .circleci/misskey/test.yml .config
       - run:
           name: Build
           command: |
