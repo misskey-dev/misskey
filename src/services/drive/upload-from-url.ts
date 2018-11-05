@@ -35,20 +35,32 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	await new Promise((res, rej) => {
 		const writable = fs.createWriteStream(path);
 		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
-		request({
+
+		const req = request({
 			url: requestUrl,
 			proxy: config.proxy,
+			timeout: 10 * 1000,
 			headers: {
 				'User-Agent': config.user_agent
 			}
-		})
-			.on('error', rej)
-			.on('end', () => {
-				writable.close();
-				res();
-			})
-			.pipe(writable)
-			.on('error', rej);
+		});
+
+		req.pipe(writable);
+
+		req.on('response', response => {
+			if (response.statusCode !== 200) {
+				rej(response.statusCode);
+			}
+		});
+
+		req.on('error', error => {
+			rej(error);
+		});
+
+		req.on('end', () => {
+			writable.close();
+			res();
+		});
 	});
 
 	let driveFile: IDriveFile;
