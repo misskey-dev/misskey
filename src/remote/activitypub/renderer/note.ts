@@ -138,12 +138,10 @@ async function getEmojis(names: string[]): Promise<IEmoji[]> {
 	if (names == null || names.length < 1) return [];
 
 	const emojis = await Promise.all(
-		names.map(async name => {
-			return await Emoji.findOne({
-				name,
-				host: null
-			});
-		})
+		names.map(name => Emoji.findOne({
+			name,
+			host: null
+		}))
 	);
 
 	return emojis.filter(emoji => emoji != null);
