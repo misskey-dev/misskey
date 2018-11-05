@@ -21,7 +21,6 @@ import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 
 const locales = require('./locales');
-import { fa } from './src/misc/fa';
 
 const uglify = uglifyComposer(uglifyes, console);
 
@@ -164,8 +163,7 @@ gulp.task('build:client:pug', [
 		gulp.src('./src/client/app/base.pug')
 			.pipe(pug({
 				locals: {
-					themeColor: constants.themeColor,
-					facss: fa.dom.css()
+					themeColor: constants.themeColor
 				}
 			}))
 			.pipe(htmlmin({
