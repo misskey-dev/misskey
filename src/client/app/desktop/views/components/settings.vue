@@ -115,6 +115,7 @@
 				<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion%</ui-switch>
 				<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
 				<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
+				<ui-switch v-model="useOsDefaultEmojis">%i18n:common.use-os-default-emojis%</ui-switch>
 				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 			</section>
 			<section>
@@ -324,6 +325,11 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		useOsDefaultEmojis: {
+			get() { return this.$store.state.device.useOsDefaultEmojis; },
+			set(value) { this.$store.commit('device/set', { key: 'useOsDefaultEmojis', value }); }
+		},
+
 		reduceMotion: {
 			get() { return this.$store.state.device.reduceMotion; },
 			set(value) { this.$store.commit('device/set', { key: 'reduceMotion', value }); }

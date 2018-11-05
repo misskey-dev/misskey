@@ -145,6 +145,7 @@ class Autocomplete {
 		} else {
 			// サジェスト要素作成
 			this.suggestion = new MkAutocomplete({
+				parent: this.vm,
 				propsData: {
 					textarea: this.textarea,
 					complete: this.complete,

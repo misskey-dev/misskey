@@ -131,6 +131,7 @@ common:
   show-full-acct: "ユーザー名のホストを省略しない"
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
+  use-os-default-emojis: "OS標準の絵文字を使用"
 
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
 

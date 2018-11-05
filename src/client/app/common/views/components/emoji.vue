@@ -1,59 +1,77 @@
 <template>
-<img class="mk-emoji" :src="url" :alt="alt || name" :title="name">
+<img v-if="customEmoji" class="fvgwvorwhxigeolkkrcderjzcawqrscl custom" :src="url" :alt="alt" :title="alt"/>
+<img v-else-if="char && !useOsDefaultEmojis" class="fvgwvorwhxigeolkkrcderjzcawqrscl" :src="url" :alt="alt" :title="alt"/>
+<span v-else-if="char && useOsDefaultEmojis">{{ char }}</span>
+<span v-else>:{{ name }}:</span>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { lib } from 'emojilib';
 
-const findCustomEmoji = (x, emoji) =>
-	x.name === emoji ||
-	x.aliases && x.aliases.includes(emoji);
-
 export default Vue.extend({
 	props: {
+		name: {
+			type: String,
+			required: false
+		},
 		emoji: {
 			type: String,
 			required: false
 		},
-		raw: {
-			type: String,
-			required: false
-		},
 		customEmojis: {
-			required: false
+			required: false,
+			default: []
 		}
 	},
+
 	data() {
 		return {
 			url: null,
-			alt: null,
-			name: null
+			char: null,
+			customEmoji: null
 		}
 	},
-	mounted() {
-		this.$nextTick(() => this.exec());
+
+	computed: {
+		alt(): string {
+			return this.customEmoji ? this.customEmoji.name : this.char;
+		},
+
+		useOsDefaultEmojis(): boolean {
+			return this.$store.state.device.useOsDefaultEmojis;
+		}
 	},
-	methods: {
-		exec() {
-			const { emoji, raw, customEmojis } = this;
-			this.name = emoji ? `:${emoji}:` : raw;
-			if (!raw && customEmojis && customEmojis.length) {
-				this.url = customEmojis.find(x => findCustomEmoji(x, emoji)).url;
-			} else { // *MEM: `customEmojis` always has a emoji named `emoji`
-				const char = raw || lib[emoji] && lib[emoji].char;
-				if (char) {
-					this.url = `https://twemoji.maxcdn.com/2/svg/${char.codePointAt(0).toString(16)}.svg`;
-					this.alt = char;
+
+	created() {
+		if (this.name) {
+			const customEmoji = this.customEmojis.find(x => x.name == this.name);
+			if (customEmoji) {
+				this.customEmoji = customEmoji;
+				this.url = customEmoji.url;
+			} else {
+				const emoji = lib[this.name];
+				if (emoji) {
+					this.char = emoji.char;
 				}
 			}
+		} else {
+			this.char = this.emoji;
+		}
+
+		if (this.char) {
+			this.url = `https://twemoji.maxcdn.com/2/svg/${this.char.codePointAt(0).toString(16)}.svg`;
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.mk-emoji
-	height 2.5em
-	vertical-align middle
+.fvgwvorwhxigeolkkrcderjzcawqrscl
+	height 1em
+
+	&.custom
+		height 2.5em
+		vertical-align middle
+
 </style>

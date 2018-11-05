@@ -14,7 +14,8 @@
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
-			<span class="emoji" v-if="emoji.url"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-else-if="!useOsDefaultEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else>{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
 			<span class="alias" v-if="emoji.aliasOf">({{ emoji.aliasOf }})</span>
@@ -33,6 +34,7 @@ type EmojiDef = {
 	name: string;
 	aliasOf?: string;
 	url?: string;
+	isCustomEmoji?: boolean;
 };
 
 const lib = Object.entries(emojilib.lib).filter((x: any) => {
@@ -40,7 +42,7 @@ const lib = Object.entries(emojilib.lib).filter((x: any) => {
 });
 
 const emjdb: EmojiDef[] = lib.map((x: any) => ({
-	emoji: `:${x[0]}:`,
+	emoji: x[1].char,
 	name: x[0],
 	aliasOf: null,
 	url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
@@ -50,7 +52,7 @@ lib.forEach((x: any) => {
 	if (x[1].keywords) {
 		x[1].keywords.forEach(k => {
 			emjdb.push({
-				emoji: `:${x[0]}:`,
+				emoji: x[1].char,
 				name: k,
 				aliasOf: x[0],
 				url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
@@ -79,6 +81,10 @@ export default Vue.extend({
 	computed: {
 		items(): HTMLCollection {
 			return (this.$refs.suggests as Element).children;
+		},
+
+		useOsDefaultEmojis(): boolean {
+			return this.$store.state.device.useOsDefaultEmojis;
 		}
 	},
 
@@ -109,7 +115,8 @@ export default Vue.extend({
 			emojiDefinitions.push({
 				name: x.name,
 				emoji: `:${x.name}:`,
-				url: x.url
+				url: x.url,
+				isCustomEmoji: true
 			});
 
 			if (x.aliases) {
@@ -118,7 +125,8 @@ export default Vue.extend({
 						name: alias,
 						aliasOf: x.name,
 						emoji: `:${x.name}:`,
-						url: x.url
+						url: x.url,
+						isCustomEmoji: true
 					});
 				});
 			}

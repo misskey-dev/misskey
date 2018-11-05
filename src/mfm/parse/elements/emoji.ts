@@ -8,26 +8,25 @@ export type TextElementEmoji = {
 	type: 'emoji';
 	content: string;
 	emoji?: string;
-	raw?: string;
+	name?: string;
 };
 
 export default function(text: string) {
 	const name = text.match(/^:([a-zA-Z0-9+_-]+):/);
 	if (name) {
-		const [content, emoji] = name;
 		return {
 			type: 'emoji',
-			content,
-			emoji
+			content: name[0],
+			name: name[1]
 		} as TextElementEmoji;
 	}
 	const unicode = text.match(emojiRegex);
 	if (unicode) {
-		const [content, raw] = unicode;
+		const [content, emoji] = unicode;
 		return {
 			type: 'emoji',
 			content,
-			raw
+			emoji
 		} as TextElementEmoji;
 	}
 	return null;
