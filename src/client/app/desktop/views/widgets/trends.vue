@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-trends">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:fire%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
+		<template slot="header"><fa icon="fire"/>%i18n:@title%</template>
+		<button slot="func" title="%i18n:@refresh%" @click="fetch"><fa icon="sync"/></button>
 
 		<div class="mkw-trends--body">
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 			<div class="note" v-else-if="note != null">
 				<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
 				<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>
@@ -95,7 +95,7 @@ export default define({
 			text-align center
 			color #aaa
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 </style>

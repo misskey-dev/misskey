@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;">%fa:star%</span>%i18n:@title%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>%i18n:@title%</span>
 
 	<main>
 		<template v-for="favorite in favorites">

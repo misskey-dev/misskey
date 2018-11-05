@@ -4,7 +4,7 @@
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p :class="$style.empty" slot="empty">
-			%fa:R comments%%i18n:@empty%
+			<fa :icon="['far', 'comments']"/>%i18n:@empty%
 		</p>
 	</mk-notes>
 </div>
@@ -182,7 +182,7 @@ export default Vue.extend({
 	text-align center
 	color #999
 
-	> [data-fa]
+	> [data-icon]
 		display block
 		margin-bottom 16px
 		font-size 3em

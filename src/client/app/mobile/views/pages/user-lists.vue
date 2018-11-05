@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:list%%i18n:@title%</span>
-	<template slot="func"><button @click="fn">%fa:plus%</button></template>
+	<span slot="header"><fa icon="list"/>%i18n:@title%</span>
+	<template slot="func"><button @click="fn"><fa icon="plus"/></button></template>
 
 	<main>
 		<ul>

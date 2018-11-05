@@ -2,31 +2,31 @@
 <div class="root home">
 	<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 	<section class="recent-notes">
-		<h2>%fa:R comments%%i18n:@recent-notes%</h2>
+		<h2><fa :icon="['far', 'comments']"/>%i18n:@recent-notes%</h2>
 		<div>
 			<x-notes :user="user"/>
 		</div>
 	</section>
 	<section class="images">
-		<h2>%fa:image%%i18n:@images%</h2>
+		<h2><fa icon="image"/>%i18n:@images%</h2>
 		<div>
 			<x-photos :user="user"/>
 		</div>
 	</section>
 	<section class="activity">
-		<h2>%fa:chart-bar%%i18n:@activity%</h2>
+		<h2><fa icon="chart-bar"/>%i18n:@activity%</h2>
 		<div>
 			<mk-activity :user="user"/>
 		</div>
 	</section>
 	<section class="frequently-replied-users">
-		<h2>%fa:users%%i18n:@frequently-replied-users%</h2>
+		<h2><fa icon="users"/>%i18n:@frequently-replied-users%</h2>
 		<div>
 			<x-friends :user="user"/>
 		</div>
 	</section>
 	<section class="followers-you-know" v-if="$store.getters.isSignedIn && $store.state.i.id !== user.id">
-		<h2>%fa:users%%i18n:@followers-you-know%</h2>
+		<h2><fa icon="users"/>%i18n:@followers-you-know%</h2>
 		<div>
 			<x-followers-you-know :user="user"/>
 		</div>

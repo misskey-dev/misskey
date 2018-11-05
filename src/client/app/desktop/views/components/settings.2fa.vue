@@ -16,7 +16,7 @@
 				<ui-button primary @click="submit">%i18n:@submit%</ui-button>
 			</li>
 		</ol>
-		<div class="ui info"><p>%fa:info-circle%%i18n:@info%</p></div>
+		<div class="ui info"><p><fa icon="info-circle"/>%i18n:@info%</p></div>
 	</div>
 </div>
 </template>

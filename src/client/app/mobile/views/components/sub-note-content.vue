@@ -3,7 +3,7 @@
 	<div class="body">
 		<span v-if="note.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
-		<a class="reply" v-if="note.replyId">%fa:reply%</a>
+		<a class="reply" v-if="note.replyId"><fa icon="reply"/></a>
 		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i" :customEmojis="note.emojis"/>
 		<a class="rp" v-if="note.renoteId">RN: ...</a>
 	</div>

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-admin" :class="{ isMobile }">
 	<header v-show="isMobile">
-		<button class="nav" @click="navOpend = true">%fa:bars%</button>
+		<button class="nav" @click="navOpend = true"><fa icon="bars"/></button>
 		<span>MisskeyMyAdmin</span>
 	</header>
 	<div class="nav-backdrop"
@@ -18,18 +18,18 @@
 			<p class="name">{{ $store.state.i | userName }}</p>
 		</div>
 		<ul>
-			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }">%fa:home .fw%%i18n:@dashboard%</li>
-			<li @click="nav('instance')" :class="{ active: page == 'instance' }">%fa:cog .fw%%i18n:@instance%</li>
-			<li @click="nav('users')" :class="{ active: page == 'users' }">%fa:users .fw%%i18n:@users%</li>
-			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }">%fa:grin R .fw%%i18n:@emoji%</li>
-			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }">%fa:broadcast-tower .fw%%i18n:@announcements%</li>
-			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }">%fa:hashtag .fw%%i18n:@hashtags%</li>
+			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>%i18n:@dashboard%</li>
+			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>%i18n:@instance%</li>
+			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>%i18n:@users%</li>
+			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa icon="grin R" fixed-width/>%i18n:@emoji%</li>
+			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>%i18n:@announcements%</li>
+			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>%i18n:@hashtags%</li>
 
-			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }">%fa:cloud .fw%%i18n:common.drive%</li> -->
+			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>%i18n:common.drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
 		<div class="back-to-misskey">
-			<a href="/">%fa:arrow-left% %i18n:@back-to-misskey%</a>
+			<a href="/"><fa icon="arrow-left"/> %i18n:@back-to-misskey%</a>
 		</div>
 		<div class="version">
 			<small>Misskey {{ version }}</small>
@@ -126,7 +126,7 @@ export default Vue.extend({
 			line-height $headerHeight
 			border-right solid 1px rgba(#000, 0.1)
 
-			> [data-fa]
+			> [data-icon]
 				transition all 0.2s ease
 
 	> nav
@@ -188,7 +188,7 @@ export default Vue.extend({
 				&:hover
 					color #fff
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 6px
 
 		> .version
@@ -218,7 +218,7 @@ export default Vue.extend({
 				&:hover
 					color #fff
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 6px
 
 				&.active

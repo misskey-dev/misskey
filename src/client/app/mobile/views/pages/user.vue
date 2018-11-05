@@ -2,8 +2,8 @@
 <mk-ui>
 	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">{{ user | userName }}</template>
 	<main v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
-		<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:common.is-remote-user%<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a></p></div>
+		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> %i18n:@is-suspended%</p></div>
+		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> %i18n:common.is-remote-user%<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a></p></div>
 		<header>
 			<div class="banner" :style="style"></div>
 			<div class="body">
@@ -11,7 +11,7 @@
 					<a class="avatar">
 						<img :src="user.avatarUrl" alt="avatar"/>
 					</a>
-					<button class="menu" ref="menu" @click="menu">%fa:ellipsis-h%</button>
+					<button class="menu" ref="menu" @click="menu"><fa icon="ellipsis-h"/></button>
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
@@ -24,10 +24,10 @@
 				</div>
 				<div class="info">
 					<p class="location" v-if="user.host === null && user.profile.location">
-						%fa:map-marker%{{ user.profile.location }}
+						<fa icon="map-marker"/>{{ user.profile.location }}
 					</p>
 					<p class="birthday" v-if="user.host === null && user.profile.birthday">
-						%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)
+						<fa icon="birthday-cake"/>{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)
 					</p>
 				</div>
 				<div class="status">
@@ -48,9 +48,9 @@
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-active="page == 'home'" @click="page = 'home'">%fa:home% %i18n:@overview%</a>
-				<a :data-active="page == 'notes'" @click="page = 'notes'">%fa:R comment-alt% %i18n:@timeline%</a>
-				<a :data-active="page == 'media'" @click="page = 'media'">%fa:image% %i18n:@media%</a>
+				<a :data-active="page == 'home'" @click="page = 'home'"><fa icon="home"/> %i18n:@overview%</a>
+				<a :data-active="page == 'notes'" @click="page = 'notes'"><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</a>
+				<a :data-active="page == 'media'" @click="page = 'media'"><fa icon="image"/> %i18n:@media%</a>
 			</div>
 		</nav>
 		<div class="body">
@@ -114,7 +114,7 @@ export default Vue.extend({
 
 		menu() {
 			let menu = [{
-				icon: this.user.isMuted ? '%fa:eye%' : '%fa:eye-slash%',
+				icon: this.user.isMuted ? '<fa icon="eye"/>' : '<fa icon="eye-slash"/>',
 				text: this.user.isMuted ? '%i18n:@unmute%' : '%i18n:@mute%',
 				action: () => {
 					if (this.user.isMuted) {
@@ -136,7 +136,7 @@ export default Vue.extend({
 					}
 				}
 			}, {
-				icon: this.user.isBlocking ? '%fa:user%' : '%fa:user-slash%',
+				icon: this.user.isBlocking ? '<fa icon="user"/>' : '<fa icon="user-slash"/>',
 				text: this.user.isBlocking ? '%i18n:@unblock%' : '%i18n:@block%',
 				action: () => {
 					if (this.user.isBlocking) {

@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;">%fa:cog%</span>%i18n:@settings%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa icon="cog"/></span>%i18n:@settings%</span>
 	<main>
 		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${name}</b>`)"></div>
 
@@ -8,14 +8,14 @@
 			<mk-profile-editor/>
 
 			<ui-card>
-				<div slot="title">%fa:palette% %i18n:@theme%</div>
+				<div slot="title"><fa icon="palette"/> %i18n:@theme%</div>
 				<section>
 					<mk-theme/>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:poll-h% %i18n:@design%</div>
+				<div slot="title"><fa icon="poll-h"/> %i18n:@design%</div>
 
 				<section>
 					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
@@ -58,7 +58,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:sliders-h% %i18n:@behavior%</div>
+				<div slot="title"><fa icon="sliders-h"/> %i18n:@behavior%</div>
 
 				<section>
 					<ui-switch v-model="fetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
@@ -89,7 +89,7 @@
 			<mk-mute-and-block/>
 
 			<ui-card>
-				<div slot="title">%fa:volume-up% %i18n:@sound%</div>
+				<div slot="title"><fa icon="volume-up"/> %i18n:@sound%</div>
 
 				<section>
 					<ui-switch v-model="enableSounds">%i18n:@enable-sounds%</ui-switch>
@@ -97,7 +97,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:language% %i18n:@lang%</div>
+				<div slot="title"><fa icon="language"/> %i18n:@lang%</div>
 
 				<section class="fit-top">
 					<ui-select v-model="lang" placeholder="%i18n:@auto%">
@@ -109,12 +109,12 @@
 							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 						</optgroup>
 					</ui-select>
-					<span>%fa:info-circle% %i18n:@lang-tip%</span>
+					<span><fa icon="info-circle"/> %i18n:@lang-tip%</span>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:B twitter% %i18n:@twitter%</div>
+				<div slot="title"><fa :icon="['fab', 'twitter']"/> %i18n:@twitter%</div>
 
 				<section>
 					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
@@ -127,7 +127,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:B github% %i18n:@github%</div>
+				<div slot="title"><fa :icon="['fab', 'github']"/> %i18n:@github%</div>
 
 				<section>
 					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
@@ -142,14 +142,14 @@
 			<mk-api-settings />
 
 			<ui-card>
-				<div slot="title">%fa:unlock-alt% %i18n:@password%</div>
+				<div slot="title"><fa icon="unlock-alt"/> %i18n:@password%</div>
 				<section>
 					<mk-password-settings/>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:sync-alt% %i18n:@update%</div>
+				<div slot="title"><fa icon="sync-alt"/> %i18n:@update%</div>
 
 				<section>
 					<div>%i18n:@version% <i>{{ version }}</i></div>

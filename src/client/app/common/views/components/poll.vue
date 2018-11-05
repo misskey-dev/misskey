@@ -4,7 +4,7 @@
 		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? '%i18n:@vote-to%'.replace('{}', choice.text) : ''">
 			<div class="backdrop" :style="{ 'width': (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
-				<template v-if="choice.isVoted">%fa:check%</template>
+				<template v-if="choice.isVoted"><fa icon="check"/></template>
 				<span>{{ choice.text }}</span>
 				<span class="votes" v-if="showResult">({{ '%i18n:@vote-count%'.replace('{}', choice.votes) }})</span>
 			</span>
@@ -100,7 +100,7 @@ export default Vue.extend({
 				transition width 1s ease
 
 			> span
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 				> .votes

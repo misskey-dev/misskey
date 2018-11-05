@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-hashtags">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:hashtag%%i18n:@title%</template>
+		<template slot="header"><fa icon="hashtag"/>%i18n:@title%</template>
 
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<mk-trends/>

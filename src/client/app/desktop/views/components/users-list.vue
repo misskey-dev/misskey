@@ -18,7 +18,7 @@
 	<p class="no" v-if="!fetching && users.length == 0">
 		<slot></slot>
 	</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@fetching%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@fetching%<mk-ellipsis/></p>
 </div>
 </template>
 
@@ -139,7 +139,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 </style>

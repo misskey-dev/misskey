@@ -1,6 +1,6 @@
 <template>
 <div class="root followers-you-know">
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<a v-for="user in users" :key="user.id" :href="user | userPage">
 			<img :src="user.avatarUrl" :alt="user | userName"/>

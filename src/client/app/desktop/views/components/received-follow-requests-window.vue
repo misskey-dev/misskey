@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
-	<span slot="header">%fa:envelope R% %i18n:@title%</span>
+	<span slot="header"><fa :icon="['far', 'envelope']"/> %i18n:@title%</span>
 
 	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc">
 		<div v-for="req in requests">

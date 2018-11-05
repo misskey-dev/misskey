@@ -7,7 +7,7 @@
 			<p class="name">{{ user | userName }}</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
-				<span v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</span>
+				<span v-if="user.isBot" title="%i18n:@is-bot%"><fa icon="robot"/></span>
 			</div>
 		</div>
 	</div>
@@ -17,8 +17,8 @@
 			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 		</div>
 		<div class="info">
-			<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
-			<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '%i18n:@year%').replace('-', '%i18n:@month%') + '%i18n:@day%' }} ({{ age }}%i18n:@years-old%)</span>
+			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>
+			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', '%i18n:@year%').replace('-', '%i18n:@month%') + '%i18n:@day%' }} ({{ age }}%i18n:@years-old%)</span>
 		</div>
 		<div class="status">
 			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>

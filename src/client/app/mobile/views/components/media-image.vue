@@ -1,7 +1,7 @@
 <template>
 <div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
-		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
+		<b><fa icon="exclamation-triangle"/> %i18n:@sensitive%</b>
 		<span>%i18n:@click-to-show%</span>
 	</div>
 </div>

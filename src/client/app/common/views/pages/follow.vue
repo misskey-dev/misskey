@@ -19,13 +19,13 @@
 			@click="onClick"
 			:disabled="followWait">
 		<template v-if="!followWait">
-			<template v-if="user.hasPendingFollowRequestFromYou && user.isLocked">%fa:hourglass-half% %i18n:@request-pending%</template>
-			<template v-else-if="user.hasPendingFollowRequestFromYou && !user.isLocked">%fa:hourglass-start% %i18n:@follow-processing%</template>
-			<template v-else-if="user.isFollowing">%fa:minus% %i18n:@following%</template>
-			<template v-else-if="!user.isFollowing && user.isLocked">%fa:plus% %i18n:@follow-request%</template>
-			<template v-else-if="!user.isFollowing && !user.isLocked">%fa:plus% %i18n:@follow%</template>
+			<template v-if="user.hasPendingFollowRequestFromYou && user.isLocked"><fa icon="hourglass-half"/> %i18n:@request-pending%</template>
+			<template v-else-if="user.hasPendingFollowRequestFromYou && !user.isLocked"><fa icon="hourglass-start"/> %i18n:@follow-processing%</template>
+			<template v-else-if="user.isFollowing"><fa icon="minus"/> %i18n:@following%</template>
+			<template v-else-if="!user.isFollowing && user.isLocked"><fa icon="plus"/> %i18n:@follow-request%</template>
+			<template v-else-if="!user.isFollowing && !user.isLocked"><fa icon="plus"/> %i18n:@follow%</template>
 		</template>
-		<template v-else>%fa:spinner .pulse .fw%</template>
+		<template v-else><fa icon="spinner .pulse" fixed-width/></template>
 	</button>
 </div>
 </template>

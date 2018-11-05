@@ -2,7 +2,7 @@
 <div class="mk-messaging" :data-compact="compact">
 	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
-			<label for="search-input">%fa:search%</label>
+			<label for="search-input"><i><fa icon="search"/></i></label>
 			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:@search-user%"/>
 		</div>
 		<div class="result">
@@ -45,7 +45,7 @@
 		</template>
 	</div>
 	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:@no-history%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>
 
@@ -213,7 +213,7 @@ export default Vue.extend({
 				width 38px
 				pointer-events none
 
-				> [data-fa]
+				> i
 					display block
 					position absolute
 					top 0
@@ -418,7 +418,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	// TODO: element base media query

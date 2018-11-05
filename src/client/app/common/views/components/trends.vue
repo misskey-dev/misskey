@@ -1,7 +1,7 @@
 <template>
 <div class="csqvmxybqbycalfhkxvyfrgbrdalkaoc">
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<p class="empty" v-else-if="stats.length == 0">%fa:exclamation-circle%%i18n:@empty%</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-else-if="stats.length == 0"><fa icon="exclamation-circle"/>%i18n:@empty%</p>
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<transition-group v-else tag="div" name="chart">
 		<div v-for="stat in stats" :key="stat.tag">
@@ -58,7 +58,7 @@ export default Vue.extend({
 		color var(--text)
 		opacity 0.7
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> div

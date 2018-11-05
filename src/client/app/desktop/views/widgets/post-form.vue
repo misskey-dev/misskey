@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-post-form">
 	<template v-if="props.design == 0">
-		<p class="title">%fa:pencil-alt%%i18n:@title%</p>
+		<p class="title"><fa icon="pencil-alt"/>%i18n:@title%</p>
 	</template>
 	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" :placeholder="placeholder"></textarea>
 	<button @click="post" :disabled="posting">%i18n:@note%</button>
@@ -86,7 +86,7 @@ export default define({
 		color #888
 		box-shadow 0 1px rgba(#000, 0.07)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> textarea

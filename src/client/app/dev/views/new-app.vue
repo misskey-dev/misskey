@@ -13,7 +13,7 @@
 			</b-form-group>
 			<b-card header="%i18n:@authority%">
 				<b-form-group description="%i18n:@authority-desc%">
-					<b-alert show variant="warning">%fa:exclamation-triangle% %i18n:@authority-warning%</b-alert>
+					<b-alert show variant="warning"><fa icon="exclamation-triangle"/> %i18n:@authority-warning%</b-alert>
 					<b-form-checkbox-group v-model="permission" stacked>
 						<b-form-checkbox value="account-read">%i18n:@account-read%</b-form-checkbox>
 						<b-form-checkbox value="account-write">%i18n:@account-write%</b-form-checkbox>

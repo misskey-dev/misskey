@@ -4,32 +4,32 @@
 		<template v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.device.deckDefault">
 				<li class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/">%fa:columns%<p>%i18n:@deck%</p></router-link>
+					<router-link to="/"><fa icon="columns"/><p>%i18n:@deck%</p></router-link>
 				</li>
 				<li class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
-					<router-link to="/home">%fa:home%<p>%i18n:@home%</p></router-link>
+					<router-link to="/home"><fa icon="home"/><p>%i18n:@home%</p></router-link>
 				</li>
 			</template>
 			<template v-else>
 				<li class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/">%fa:home%<p>%i18n:@home%</p></router-link>
+					<router-link to="/"><fa icon="home"/><p>%i18n:@home%</p></router-link>
 				</li>
 				<li class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-					<router-link to="/deck">%fa:columns%<p>%i18n:@deck%</p></router-link>
+					<router-link to="/deck"><fa icon="columns"/><p>%i18n:@deck%</p></router-link>
 				</li>
 			</template>
 			<li class="messaging">
 				<a @click="messaging">
-					%fa:comments%
+					<fa icon="comments"/>
 					<p>%i18n:@messaging%</p>
-					<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>
+					<template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template>
 				</a>
 			</li>
 			<li class="game">
 				<a @click="game">
-					%fa:gamepad%
+					<fa icon="gamepad"/>
 					<p>%i18n:@game%</p>
-					<template v-if="hasGameInvitations">%fa:circle%</template>
+					<template v-if="hasGameInvitations"><fa icon="circle"/></template>
 				</a>
 			</li>
 		</template>
@@ -139,10 +139,10 @@ export default Vue.extend({
 					color var(--desktopHeaderHoverFg)
 					text-decoration none
 
-				> [data-fa]:first-child
+				> [data-icon]:first-child
 					margin-right 8px
 
-				> [data-fa]:last-child
+				> [data-icon]:last-child
 					margin-left 5px
 					font-size 10px
 					color var(--primary)

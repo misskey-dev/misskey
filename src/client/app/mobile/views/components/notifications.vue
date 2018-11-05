@@ -11,14 +11,14 @@
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
 			<p class="date" :key="notification.id + '_date'" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
-				<span>%fa:angle-up%{{ notification._datetext }}</span>
-				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ notification._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</component>
 
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>
 		{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
 
@@ -165,7 +165,7 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			i
+			[data-icon]
 				margin-right 8px
 
 	> .more
@@ -175,7 +175,7 @@ export default Vue.extend({
 		color var(--text)
 		border-top solid 1px rgba(#000, 0.05)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .empty

@@ -21,7 +21,7 @@
 								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage">
-								%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
+								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 							</router-link>
 						</div>
 					</template>
@@ -29,11 +29,11 @@
 					<template v-if="notification.type == 'renote'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p>%fa:retweet%
+							<p><fa icon="retweet"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage">
-								%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
+								<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
 							</router-link>
 						</div>
 					</template>
@@ -41,7 +41,7 @@
 					<template v-if="notification.type == 'quote'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p>%fa:quote-left%
+							<p><fa icon="quote-left"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
 							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
@@ -51,7 +51,7 @@
 					<template v-if="notification.type == 'follow'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p>%fa:user-plus%
+							<p><fa icon="user-plus"/>
 								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
 							</p>
 						</div>
@@ -60,7 +60,7 @@
 					<template v-if="notification.type == 'receiveFollowRequest'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p>%fa:user-clock%
+							<p><fa icon="user-clock"/>
 								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
 							</p>
 						</div>
@@ -69,7 +69,7 @@
 					<template v-if="notification.type == 'reply'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p>%fa:reply%
+							<p><fa icon="reply"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
 							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
@@ -79,7 +79,7 @@
 					<template v-if="notification.type == 'mention'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p>%fa:at%
+							<p><fa icon="at"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
 							<a class="note-preview" :href="notification.note | notePage">{{ getNoteSummary(notification.note) }}</a>
@@ -89,23 +89,23 @@
 					<template v-if="notification.type == 'poll_vote'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p>%fa:chart-pie%<a :href="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</a></p>
+							<p><fa icon="chart-pie"/><a :href="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</a></p>
 							<router-link class="note-ref" :to="notification.note | notePage">
-								%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
+								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 							</router-link>
 						</div>
 					</template>
 				</div>
 
 				<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date" :key="notification.id + '-time'">
-					<span>%fa:angle-up%{{ notification._datetext }}</span>
-					<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
+					<span><fa icon="angle-up"/>{{ notification._datetext }}</span>
+					<span><fa icon="angle-down"/>{{ _notifications[i + 1]._datetext }}</span>
 				</p>
 			</template>
 		</component>
 	</div>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
 	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
 </div>
@@ -264,7 +264,7 @@ export default Vue.extend({
 				.note-ref
 					color var(--noteText)
 
-					[data-fa]
+					[data-icon]
 						font-size 1em
 						font-weight normal
 						font-style normal
@@ -300,7 +300,7 @@ export default Vue.extend({
 				span
 					margin 0 16px
 
-				[data-fa]
+				[data-icon]
 					margin-right 8px
 
 	> .more
@@ -319,7 +319,7 @@ export default Vue.extend({
 		&.fetching
 			cursor wait
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .empty

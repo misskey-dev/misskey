@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="destroyDom">
-	<span slot="header" :class="$style.header">%fa:gamepad%%i18n:@game%</span>
+	<span slot="header" :class="$style.header"><fa icon="gamepad"/>%i18n:@game%</span>
 	<mk-reversi :class="$style.content" @gamed="g => game = g"/>
 </mk-window>
 </template>
@@ -27,7 +27,7 @@ export default Vue.extend({
 
 <style lang="stylus" module>
 .header
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .content

@@ -4,7 +4,7 @@
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<div slot="empty">
-			%fa:R comments%
+			<fa :icon="['far', 'comments']"/>
 			%i18n:@empty%
 		</div>
 	</mk-notes>

@@ -1,6 +1,6 @@
 <template>
 	<mk-window ref="window" is-modal width="800px" :can-close="false">
-		<span slot="header">%fa:crop%{{ title }}</span>
+		<span slot="header"><fa icon="crop"/>{{ title }}</span>
 		<div class="body">
 			<vue-cropper ref="cropper"
 				:src="image.url"
@@ -64,7 +64,7 @@ export default Vue.extend({
 
 
 .header
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .img

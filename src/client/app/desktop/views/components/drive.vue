@@ -4,10 +4,10 @@
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<x-nav-folder :class="{ current: folder == null }"/>
 			<template v-for="folder in hierarchyFolders">
-				<span class="separator">%fa:angle-right%</span>
+				<span class="separator"><fa icon="angle-right"/></span>
 				<x-nav-folder :folder="folder" :key="folder.id"/>
 			</template>
-			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
+			<span class="separator" v-if="folder != null"><fa icon="angle-right"/></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 		<!--
@@ -138,17 +138,17 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.create-folder%',
-				icon: '%fa:R folder%',
+				icon: ['far', 'folder'],
 				action: this.createFolder
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.upload%',
-				icon: '%fa:upload%',
+				icon: 'upload',
 				action: this.selectLocalFile
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.url-upload%',
-				icon: '%fa:cloud-upload-alt%',
+				icon: 'cloud-upload-alt',
 				action: this.urlUpload
 			}]);
 		},
@@ -313,7 +313,7 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
+								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
 								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'
@@ -343,7 +343,7 @@ export default Vue.extend({
 				});
 
 				(this as any).apis.dialog({
-					title: '%fa:check%%i18n:@url-upload-requested%',
+					title: '<fa icon="check"/>%i18n:@url-upload-requested%',
 					text: '%i18n:@may-take-time%',
 					actions: [{
 						text: '%i18n:common.ok%'
@@ -613,9 +613,6 @@ export default Vue.extend({
 				line-height 38px
 				cursor pointer
 
-				i
-					margin-right 4px
-
 				*
 					pointer-events none
 
@@ -635,7 +632,7 @@ export default Vue.extend({
 					opacity 0.5
 					cursor default
 
-					> [data-fa]
+					> [data-icon]
 						margin 0
 
 		> .search

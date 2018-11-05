@@ -1,12 +1,12 @@
 <template>
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">
-		<template v-if="column.type == 'home'">%fa:home%</template>
-		<template v-if="column.type == 'local'">%fa:R comments%</template>
-		<template v-if="column.type == 'hybrid'">%fa:share-alt%</template>
-		<template v-if="column.type == 'global'">%fa:globe%</template>
-		<template v-if="column.type == 'list'">%fa:list%</template>
-		<template v-if="column.type == 'hashtag'">%fa:hashtag%</template>
+		<template v-if="column.type == 'home'"><fa icon="home"/></template>
+		<template v-if="column.type == 'local'"><fa :icon="['far', 'comments']"/></template>
+		<template v-if="column.type == 'hybrid'"><fa icon="share-alt"/></template>
+		<template v-if="column.type == 'global'"><fa icon="globe"/></template>
+		<template v-if="column.type == 'list'"><fa icon="list"/></template>
+		<template v-if="column.type == 'hashtag'"><fa icon="hashtag"/></template>
 		<span>{{ name }}</span>
 	</span>
 
@@ -66,7 +66,7 @@ export default Vue.extend({
 		return {
 			edit: false,
 			menu: [{
-				icon: '%fa:cog%',
+				icon: 'cog',
 				text: '%i18n:@edit%',
 				action: () => {
 					this.edit = !this.edit;

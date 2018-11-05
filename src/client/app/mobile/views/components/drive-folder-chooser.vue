@@ -3,8 +3,8 @@
 	<div class="body">
 		<header>
 			<h1>%i18n:@select-folder%</h1>
-			<button class="close" @click="cancel">%fa:times%</button>
-			<button class="ok" @click="ok">%fa:check%</button>
+			<button class="close" @click="cancel"><fa icon="times"/></button>
+			<button class="ok" @click="ok"><fa icon="check"/></button>
 		</header>
 		<mk-drive ref="browser"
 			select-folder

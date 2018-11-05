@@ -3,8 +3,8 @@
 	<div class="banner" :style="{ backgroundImage: banner ? `url(${banner})` : null }"></div>
 
 	<button @click="dark">
-		<template v-if="$store.state.device.darkmode">%fa:moon%</template>
-		<template v-else>%fa:R moon%</template>
+		<template v-if="$store.state.device.darkmode"><fa icon="moon"/></template>
+		<template v-else><fa :icon="['far', 'moon']"/></template>
 	</button>
 
 	<mk-forkit class="forkit"/>
@@ -19,8 +19,8 @@
 					<div class="info">
 						<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
 						<span class="stats" v-if="stats">
-							<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
-							<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
+							<span><fa icon="user"/> {{ stats.originalUsersCount | number }}</span>
+							<span><fa icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</span>
 						</span>
 					</div>
 
@@ -40,7 +40,7 @@
 			</div>
 
 			<div class="announcements block">
-				<header>%fa:broadcast-tower% %i18n:@announcements%</header>
+				<header><fa icon="broadcast-tower"/> %i18n:@announcements%</header>
 				<div v-if="announcements && announcements.length > 0">
 					<div v-for="announcement in announcements">
 						<h1 v-html="announcement.title"></h1>
@@ -50,7 +50,7 @@
 			</div>
 
 			<div class="photos block">
-				<header>%fa:images% %i18n:@photos%</header>
+				<header><fa icon="images"/> %i18n:@photos%</header>
 				<div>
 					<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
 				</div>
@@ -76,14 +76,14 @@
 				</div>
 
 				<div class="tl block">
-					<header>%fa:comment-alt R% %i18n:@timeline%</header>
+					<header><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</header>
 					<div>
 						<mk-welcome-timeline class="tl" :max="20"/>
 					</div>
 				</div>
 
 				<div class="info block">
-					<header>%fa:info-circle% %i18n:@info%</header>
+					<header><fa icon="info-circle"/> %i18n:@info%</header>
 					<div>
 						<div v-if="meta" class="body">
 							<p>Version: <b>{{ meta.version }}</b></p>

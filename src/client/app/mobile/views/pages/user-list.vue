@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header" v-if="!fetching">%fa:list%{{ list.title }}</span>
+	<span slot="header" v-if="!fetching"><fa icon="list"/>{{ list.title }}</span>
 
 	<main v-if="!fetching">
 		<ul>

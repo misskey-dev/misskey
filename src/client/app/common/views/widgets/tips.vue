@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-tips">
-	<p ref="tip">%fa:R lightbulb%<span v-html="tip"></span></p>
+	<p ref="tip"><fa :icon="['far', 'lightbulb']"/><span v-html="tip"></span></p>
 </div>
 </template>
 
@@ -88,7 +88,7 @@ export default define({
 		font-size 0.7em
 		color #999
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 		kbd

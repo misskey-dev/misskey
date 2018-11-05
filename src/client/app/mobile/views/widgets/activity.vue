@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-activity">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:chart-bar%%i18n:@activity%</template>
+		<template slot="header"><fa icon="chart-bar"/>%i18n:@activity%</template>
 		<div :class="$style.body">
 			<mk-activity :user="$store.state.i"/>
 		</div>

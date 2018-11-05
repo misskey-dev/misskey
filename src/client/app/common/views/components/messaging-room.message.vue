@@ -24,7 +24,7 @@
 		<footer>
 			<span class="read" v-if="isMe && message.isRead">%i18n:@is-read%</span>
 			<mk-time :time="message.createdAt"/>
-			<template v-if="message.is_edited">%fa:pencil-alt%</template>
+			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
 		</footer>
 	</div>
 </div>
@@ -179,7 +179,7 @@ export default Vue.extend({
 			font-size 10px
 			color var(--messagingRoomMessageInfo)
 
-			> [data-fa]
+			> [data-icon]
 				margin-left 4px
 
 	&:not([data-is-me])

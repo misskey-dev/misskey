@@ -8,7 +8,7 @@
 	</ui-input>
 	<ui-input v-model="password" type="password" required styl="fill">
 		<span>%i18n:@password%</span>
-		<span slot="prefix">%fa:lock%</span>
+		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>
 	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
 	<ui-button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</ui-button>

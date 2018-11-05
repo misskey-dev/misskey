@@ -1,6 +1,6 @@
 <template>
 <x-column :menu="menu" :naked="true" :narrow="true" :name="name" :column="column" :is-stacked="isStacked" class="wtdtxvecapixsepjtcupubtsmometobz">
-	<span slot="header">%fa:calculator%{{ name }}</span>
+	<span slot="header"><fa icon="calculator"/>{{ name }}</span>
 
 	<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
 		<template v-if="edit">
@@ -37,7 +37,7 @@
 				@sort="onWidgetSort"
 			>
 				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="widgetFunc(widget.id)">
-					<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
+					<button class="remove" @click="removeWidget(widget)"><fa icon="times"/></button>
 					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="deck"/>
 				</div>
 			</x-draggable>
@@ -89,7 +89,7 @@ export default Vue.extend({
 
 	created() {
 		this.menu = [{
-			icon: '%fa:cog%',
+			icon: 'cog',
 			text: '%i18n:@edit%',
 			action: () => {
 				this.edit = !this.edit;

@@ -1,7 +1,7 @@
 <template>
 <div class="cdeuzmsthagexbkpofbmatmugjuvogfb">
 	<ui-card>
-		<div slot="title">%fa:broadcast-tower% %i18n:@announcements%</div>
+		<div slot="title"><fa icon="broadcast-tower"/> %i18n:@announcements%</div>
 		<section v-for="(announcement, i) in announcements" class="fit-top">
 			<ui-input v-model="announcement.title" @change="save">
 				<span>%i18n:@title%</span>
@@ -15,7 +15,7 @@
 			</ui-horizon-group>
 		</section>
 		<section>
-			<ui-button @click="add">%fa:plus% %i18n:@add%</ui-button>
+			<ui-button @click="add"><fa icon="plus"/> %i18n:@add%</ui-button>
 		</section>
 	</ui-card>
 </div>

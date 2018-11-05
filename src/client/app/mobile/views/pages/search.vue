@@ -1,9 +1,9 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:search% {{ q }}</span>
+	<span slot="header"><fa icon="search"/> {{ q }}</span>
 
 	<main>
-		<p :class="$style.empty" v-if="!fetching && empty">%fa:search% {{ '%i18n:not-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:not-found%'.split('{}')[1] }}</p>
+		<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ '%i18n:not-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:not-found%'.split('{}')[1] }}</p>
 		<mk-notes ref="timeline" :more="existMore ? more : null"/>
 	</main>
 </mk-ui>

@@ -71,27 +71,27 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
-				icon: '%fa:i-cursor%',
+				icon: 'i-cursor',
 				action: this.rename
 			}, {
 				type: 'item',
 				text: this.file.isSensitive ? '%i18n:@contextmenu.unmark-as-sensitive%' : '%i18n:@contextmenu.mark-as-sensitive%',
-				icon: this.file.isSensitive ? '%fa:R eye%' : '%fa:R eye-slash%',
+				icon: this.file.isSensitive ? ['far', 'eye'] : ['far', 'eye-slash'],
 				action: this.toggleSensitive
 			}, null, {
 				type: 'item',
 				text: '%i18n:@contextmenu.copy-url%',
-				icon: '%fa:link%',
+				icon: 'link',
 				action: this.copyUrl
 			}, {
 				type: 'link',
 				href: `${this.file.url}?download`,
 				text: '%i18n:@contextmenu.download%',
-				icon: '%fa:download%',
+				icon: 'download',
 			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
-				icon: '%fa:R trash-alt%',
+				icon: ['far', 'trash-alt'],
 				action: this.deleteFile
 			}, null, {
 				type: 'nest',
@@ -170,7 +170,7 @@ export default Vue.extend({
 		copyUrl() {
 			copyToClipboard(this.file.url);
 			(this as any).apis.dialog({
-				title: '%fa:check%%i18n:@contextmenu.copied%',
+				title: '<fa icon="check"/>%i18n:@contextmenu.copied%',
 				text: '%i18n:@contextmenu.copied-url-to-clipboard%',
 				actions: [{
 					text: '%i18n:common.ok%'

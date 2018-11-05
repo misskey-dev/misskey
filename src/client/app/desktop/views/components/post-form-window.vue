@@ -1,7 +1,7 @@
 <template>
 <mk-window class="mk-post-form-window" ref="window" is-modal @closed="onWindowClosed" :animation="animation">
 	<span slot="header" class="mk-post-form-window--header">
-		<span class="icon" v-if="geo">%fa:map-marker-alt%</span>
+		<span class="icon" v-if="geo"><fa icon="map-marker-alt"/></span>
 		<span v-if="!reply">%i18n:@note%</span>
 		<span v-if="reply">%i18n:@reply%</span>
 		<span class="count" v-if="files.length != 0">{{ '%i18n:@attaches%'.replace('{}', files.length) }}</span>

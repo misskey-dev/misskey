@@ -3,7 +3,7 @@
 	<header :class="$style.header">
 		<h1>#{{ $route.params.tag }}</h1>
 	</header>
-	<p :class="$style.empty" v-if="!fetching && empty">%fa:search% {{ '%i18n:no-posts-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:no-posts-found%'.split('{}')[1] }}</p>
+	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ '%i18n:no-posts-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:no-posts-found%'.split('{}')[1] }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
@@ -113,7 +113,7 @@ export default Vue.extend({
 	text-align center
 	color #999
 
-	> [data-fa]
+	> [data-icon]
 		display block
 		margin-bottom 16px
 		font-size 3em

@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
-	<span slot="header">%fa:list% %i18n:@title%</span>
+	<span slot="header"><fa icon="list"/> %i18n:@title%</span>
 
 	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
 		<button class="ui" @click="add">%i18n:@create-list%</button>

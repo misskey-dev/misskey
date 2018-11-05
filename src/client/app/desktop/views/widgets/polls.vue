@@ -1,17 +1,17 @@
 <template>
 <div class="mkw-polls">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:chart-pie%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
+		<template slot="header"><fa icon="chart-pie"/>%i18n:@title%</template>
+		<button slot="func" title="%i18n:@refresh%" @click="fetch"><fa icon="sync"/></button>
 
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
 				<p v-if="poll.text"><router-link :to="poll | notePage">{{ poll.text }}</router-link></p>
-				<p v-if="!poll.text"><router-link :to="poll | notePage">%fa:link%</router-link></p>
+				<p v-if="!poll.text"><router-link :to="poll | notePage"><fa icon="link"/></router-link></p>
 				<mk-poll :note="poll"/>
 			</div>
 			<p class="empty" v-if="!fetching && poll == null">%i18n:@nothing%</p>
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 		</div>
 	</mk-widget-container>
 </div>
@@ -88,7 +88,7 @@ export default define({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 </style>

@@ -15,7 +15,7 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
-		%fa:retweet%
+		<fa icon="retweet"/>
 		<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
 		<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
 		<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
@@ -33,7 +33,7 @@
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">%i18n:@private%</span>
-						<a class="reply" v-if="appearNote.reply">%fa:reply%</a>
+						<a class="reply" v-if="appearNote.reply"><fa icon="reply"/></a>
 						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :customEmojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote">RN:</a>
 					</div>
@@ -41,7 +41,7 @@
 						<mk-media-list :media-list="appearNote.files"/>
 					</div>
 					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
-					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> 位置情報</a>
 					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote" :mini="mini"/></div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :mini="mini"/>
 				</div>
@@ -49,18 +49,18 @@
 			<footer>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button class="replyButton" @click="reply()" title="%i18n:@reply%">
-					<template v-if="appearNote.reply">%fa:reply-all%</template>
-					<template v-else>%fa:reply%</template>
+					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
+					<template v-else><fa icon="reply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
 				<button class="renoteButton" @click="renote()" title="%i18n:@renote%">
-					%fa:retweet%<p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" title="%i18n:@add-reaction%">
-					%fa:plus%<p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
+					<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
 				</button>
 				<button @click="menu()" ref="menuButton">
-					%fa:ellipsis-h%
+					<fa icon="ellipsis-h"/>
 				</button>
 			</footer>
 		</div>
@@ -190,7 +190,7 @@ export default Vue.extend({
 			margin 0 8px 0 0
 			border-radius 6px
 
-		[data-fa]
+		[data-icon]
 			margin-right 4px
 
 		> span
