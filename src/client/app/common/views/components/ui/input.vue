@@ -41,7 +41,11 @@ import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
-	inject: ['horizonGrouped'],
+	inject: {
+		horizonGrouped: {
+			default: false
+		}
+	},
 	props: {
 		value: {
 			required: false

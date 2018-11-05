@@ -12,7 +12,11 @@
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
-	inject: ['horizonGrouped'],
+	inject: {
+		horizonGrouped: {
+			default: false
+		}
+	},
 	props: {
 		type: {
 			type: String,
