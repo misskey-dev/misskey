@@ -1,11 +1,11 @@
 import * as Router from 'koa-router';
-import User from '../../models/user';
+import User from '../../../models/user';
 import { toASCII } from 'punycode';
-import config from '../../config';
-import Meta from '../../models/meta';
+import config from '../../../config';
+import Meta from '../../../models/meta';
 import { ObjectID } from 'bson';
-import Emoji from '../../models/emoji';
-import { toMastodonEmojis } from '../../models/mastodon/emoji';
+import Emoji from '../../../models/emoji';
+import { toMastodonEmojis } from './emoji';
 const pkg = require('../../../package.json');
 
 // Init router
