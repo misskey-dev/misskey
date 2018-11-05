@@ -37,10 +37,10 @@ export default Vue.extend({
 	methods: {
 		exec() {
 			const { emoji, raw, customEmojis } = this;
-			this.name = emoji || raw;
-			if (!raw && customEmojis && customEmojis.length)
+			this.name = emoji ? `:${emoji}:` : raw;
+			if (!raw && customEmojis && customEmojis.length) {
 				this.url = customEmojis.find(x => findCustomEmoji(x, emoji)).url;
-			if (!this.url) {
+			} else { // *MEM: `customEmojis` always has a emoji named `emoji`
 				const char = raw || lib[emoji] && lib[emoji].char;
 				if (char) {
 					this.url = `https://twemoji.maxcdn.com/2/svg/${char.codePointAt(0).toString(16)}.svg`;
