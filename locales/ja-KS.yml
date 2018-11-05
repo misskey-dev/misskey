@@ -123,6 +123,7 @@ common:
   show-full-acct: "ユーザー名のホストも出したる"
   reduce-motion: "UI、動き過ぎや、静かにしてや"
   this-setting-is-this-device-only: "このデバイスのみ"
+  use-os-default-emojis: "OS標準の絵文字を使用"
   do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
