@@ -58,7 +58,6 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 		});
 
 		req.on('end', () => {
-			writable.close();
 			res();
 		});
 	});
