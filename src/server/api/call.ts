@@ -18,7 +18,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 	}
 
 	if (ep.meta.requireCredential && user == null) {
-		return rej('SIGNIN_REQUIRED');
+		return rej('CREDENTIAL_REQUIRED');
 	}
 
 	if (ep.meta.requireCredential && user.isSuspended) {
