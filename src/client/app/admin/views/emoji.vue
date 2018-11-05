@@ -14,6 +14,7 @@
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="url">
+				<i slot="icon"><fa icon="link"/></i>
 				<span>%i18n:@add-emoji.url%</span>
 			</ui-input>
 			<ui-info>%i18n:@add-emoji.info%</ui-info>
@@ -34,6 +35,7 @@
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="emoji.url">
+				<i slot="icon"><fa icon="link"/></i>
 				<span>%i18n:@add-emoji.url%</span>
 			</ui-input>
 			<ui-horizon-group>
