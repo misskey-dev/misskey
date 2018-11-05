@@ -1,6 +1,6 @@
 <template>
 <div class="wjqjnyhzogztorhrdgcpqlkxhkmuetgj">
-	<p><font-awesome-icon icon="exclamation-triangle"/> %i18n:common.error.title%</p>
+	<p><f-a icon="exclamation-triangle"/> %i18n:common.error.title%</p>
 	<ui-button @click="() => $emit('retry')">%i18n:common.error.retry%</ui-button>
 </div>
 </template>

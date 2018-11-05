@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-tips">
-	<p ref="tip"><font-awesome-icon icon="R lightbulb"/><span v-html="tip"></span></p>
+	<p ref="tip"><f-a icon="R lightbulb"/><span v-html="tip"></span></p>
 </div>
 </template>
 

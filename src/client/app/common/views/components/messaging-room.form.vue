@@ -14,13 +14,13 @@
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader" @uploaded="onUploaded"/>
 	<button class="send" @click="send" :disabled="!canSend || sending" title="%i18n:@send%">
-		<template v-if="!sending"><font-awesome-icon icon="paper-plane"/></template><template v-if="sending"><font-awesome-icon icon="spinner .spin"/></template>
+		<template v-if="!sending"><f-a icon="paper-plane"/></template><template v-if="sending"><f-a icon="spinner .spin"/></template>
 	</button>
 	<button class="attach-from-local" @click="chooseFile" title="%i18n:@attach-from-local%">
-		<font-awesome-icon icon="upload"/>
+		<f-a icon="upload"/>
 	</button>
 	<button class="attach-from-drive" @click="chooseFileFromDrive" title="%i18n:@attach-from-drive%">
-		<font-awesome-icon icon="R folder-open"/>
+		<f-a icon="R folder-open"/>
 	</button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>

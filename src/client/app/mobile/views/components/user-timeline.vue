@@ -2,7 +2,7 @@
 <div class="mk-user-timeline">
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<div slot="empty">
-			<font-awesome-icon icon="R comments"/>
+			<f-a icon="R comments"/>
 			{{ withMedia ? '%i18n:@no-notes-with-media%' : '%i18n:@no-notes%' }}
 		</div>
 	</mk-notes>

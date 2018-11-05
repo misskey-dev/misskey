@@ -1,34 +1,34 @@
 <template>
 <div class="account" v-hotkey.global="keymap">
 	<button class="header" :data-active="isOpen" @click="toggle">
-		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen"><font-awesome-icon icon="angle-down"/></template><template v-if="isOpen"><font-awesome-icon icon="angle-up"/></template></span>
+		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen"><f-a icon="angle-down"/></template><template v-if="isOpen"><f-a icon="angle-up"/></template></span>
 		<mk-avatar class="avatar" :user="$store.state.i"/>
 	</button>
 	<transition name="zoom-in-top">
 		<div class="menu" v-if="isOpen">
 			<ul>
 				<li>
-					<router-link :to="`/@${ $store.state.i.username }`"><font-awesome-icon icon="user"/><span>%i18n:@profile%</span><font-awesome-icon icon="angle-right"/></router-link>
+					<router-link :to="`/@${ $store.state.i.username }`"><f-a icon="user"/><span>%i18n:@profile%</span><f-a icon="angle-right"/></router-link>
 				</li>
 				<li @click="drive">
-					<p><font-awesome-icon icon="cloud"/><span>%i18n:common.drive%</span><font-awesome-icon icon="angle-right"/></p>
+					<p><f-a icon="cloud"/><span>%i18n:common.drive%</span><f-a icon="angle-right"/></p>
 				</li>
 				<li>
-					<router-link to="/i/favorites"><font-awesome-icon icon="star"/><span>%i18n:@favorites%</span><font-awesome-icon icon="angle-right"/></router-link>
+					<router-link to="/i/favorites"><f-a icon="star"/><span>%i18n:@favorites%</span><f-a icon="angle-right"/></router-link>
 				</li>
 				<li @click="list">
-					<p><font-awesome-icon icon="list"/><span>%i18n:@lists%</span><font-awesome-icon icon="angle-right"/></p>
+					<p><f-a icon="list"/><span>%i18n:@lists%</span><f-a icon="angle-right"/></p>
 				</li>
 				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
-					<p><font-awesome-icon icon="envelope R"/><span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span><font-awesome-icon icon="angle-right"/></p>
+					<p><f-a icon="envelope R"/><span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span><f-a icon="angle-right"/></p>
 				</li>
 			</ul>
 			<ul>
 				<li>
-					<router-link to="/i/customize-home"><font-awesome-icon icon="wrench"/><span>%i18n:@customize%</span><font-awesome-icon icon="angle-right"/></router-link>
+					<router-link to="/i/customize-home"><f-a icon="wrench"/><span>%i18n:@customize%</span><f-a icon="angle-right"/></router-link>
 				</li>
 				<li @click="settings">
-					<p><font-awesome-icon icon="cog"/><span>%i18n:@settings%</span><font-awesome-icon icon="angle-right"/></p>
+					<p><f-a icon="cog"/><span>%i18n:@settings%</span><f-a icon="angle-right"/></p>
 				</li>
 				<li v-if="$store.state.i.isAdmin">
 					<a href="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</a>
@@ -36,12 +36,12 @@
 			</ul>
 			<ul>
 				<li @click="dark">
-					<p><span>%i18n:@dark%</span><template v-if="$store.state.device.darkmode"><font-awesome-icon icon="moon"/></template><template v-else><font-awesome-icon icon="R moon"/></template></p>
+					<p><span>%i18n:@dark%</span><template v-if="$store.state.device.darkmode"><f-a icon="moon"/></template><template v-else><f-a icon="R moon"/></template></p>
 				</li>
 			</ul>
 			<ul>
 				<li @click="signout">
-					<p class="signout"><font-awesome-icon icon="power-off"/><span>%i18n:@signout%</span></p>
+					<p class="signout"><f-a icon="power-off"/><span>%i18n:@signout%</span></p>
 				</li>
 			</ul>
 		</div>

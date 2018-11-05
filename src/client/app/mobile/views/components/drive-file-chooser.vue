@@ -3,8 +3,8 @@
 	<div class="body">
 		<header>
 			<h1>%i18n:@select-file%<span class="count" v-if="files.length > 0">({{ files.length }})</span></h1>
-			<button class="close" @click="cancel"><font-awesome-icon icon="times"/></button>
-			<button v-if="multiple" class="ok" @click="ok"><font-awesome-icon icon="check"/></button>
+			<button class="close" @click="cancel"><f-a icon="times"/></button>
+			<button v-if="multiple" class="ok" @click="ok"><f-a icon="check"/></button>
 		</header>
 		<mk-drive class="drive" ref="browser"
 			:select-file="true"

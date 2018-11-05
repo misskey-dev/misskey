@@ -7,7 +7,7 @@
 			<p class="name">{{ user | userName }}</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
-				<span v-if="user.isBot" title="%i18n:@is-bot%"><font-awesome-icon icon="robot"/></span>
+				<span v-if="user.isBot" title="%i18n:@is-bot%"><f-a icon="robot"/></span>
 			</div>
 		</div>
 	</div>
@@ -17,8 +17,8 @@
 			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 		</div>
 		<div class="info">
-			<span class="location" v-if="user.host === null && user.profile.location"><font-awesome-icon icon="map-marker"/> {{ user.profile.location }}</span>
-			<span class="birthday" v-if="user.host === null && user.profile.birthday"><font-awesome-icon icon="birthday-cake"/> {{ user.profile.birthday.replace('-', '%i18n:@year%').replace('-', '%i18n:@month%') + '%i18n:@day%' }} ({{ age }}%i18n:@years-old%)</span>
+			<span class="location" v-if="user.host === null && user.profile.location"><f-a icon="map-marker"/> {{ user.profile.location }}</span>
+			<span class="birthday" v-if="user.host === null && user.profile.birthday"><f-a icon="birthday-cake"/> {{ user.profile.birthday.replace('-', '%i18n:@year%').replace('-', '%i18n:@month%') + '%i18n:@day%' }} ({{ age }}%i18n:@years-old%)</span>
 		</div>
 		<div class="status">
 			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>

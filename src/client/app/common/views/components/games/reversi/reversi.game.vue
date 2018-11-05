@@ -1,6 +1,6 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
-	<button class="go-index" v-if="selfNav" @click="goIndex"><font-awesome-icon icon="arrow-left"/></button>
+	<button class="go-index" v-if="selfNav" @click="goIndex"><f-a icon="arrow-left"/></button>
 	<header><b><router-link :to="blackUser | userPage">{{ blackUser | userName }}</router-link></b>(%i18n:common.reversi.black%) vs <b><router-link :to="whiteUser | userPage">{{ whiteUser | userName }}</router-link></b>(%i18n:common.reversi.white%)</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
@@ -51,13 +51,13 @@
 
 	<div class="player" v-if="game.isEnded">
 		<div>
-			<button @click="logPos = 0" :disabled="logPos == 0"><font-awesome-icon icon="angle-double-left"/></button>
-			<button @click="logPos--" :disabled="logPos == 0"><font-awesome-icon icon="angle-left"/></button>
+			<button @click="logPos = 0" :disabled="logPos == 0"><f-a icon="angle-double-left"/></button>
+			<button @click="logPos--" :disabled="logPos == 0"><f-a icon="angle-left"/></button>
 		</div>
 		<span>{{ logPos }} / {{ logs.length }}</span>
 		<div>
-			<button @click="logPos++" :disabled="logPos == logs.length"><font-awesome-icon icon="angle-right"/></button>
-			<button @click="logPos = logs.length" :disabled="logPos == logs.length"><font-awesome-icon icon="angle-double-right"/></button>
+			<button @click="logPos++" :disabled="logPos == logs.length"><f-a icon="angle-right"/></button>
+			<button @click="logPos = logs.length" :disabled="logPos == logs.length"><f-a icon="angle-double-right"/></button>
 		</div>
 	</div>
 

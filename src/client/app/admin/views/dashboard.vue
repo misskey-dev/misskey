@@ -11,54 +11,54 @@
 	<div v-if="stats" class="stats">
 		<div>
 			<div>
-				<div><font-awesome-icon icon="user"/></div>
+				<div><f-a icon="user"/></div>
 				<div>
 					<span>%i18n:@accounts%</span>
 					<b class="primary">{{ stats.originalUsersCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><font-awesome-icon icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('users')"><font-awesome-icon icon="chart-bar R"/></span>
+				<span><f-a icon="home"/> %i18n:@this-instance%</span>
+				<span @click="setChartSrc('users')"><f-a icon="chart-bar R"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><font-awesome-icon icon="pencil-alt"/></div>
+				<div><f-a icon="pencil-alt"/></div>
 				<div>
 					<span>%i18n:@notes%</span>
 					<b class="primary">{{ stats.originalNotesCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><font-awesome-icon icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('notes')"><font-awesome-icon icon="chart-bar R"/></span>
+				<span><f-a icon="home"/> %i18n:@this-instance%</span>
+				<span @click="setChartSrc('notes')"><f-a icon="chart-bar R"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><font-awesome-icon icon="database"/></div>
+				<div><f-a icon="database"/></div>
 				<div>
 					<span>%i18n:@drive%</span>
 					<b>{{ stats.driveUsageLocal | bytes }}</b>
 				</div>
 			</div>
 			<div>
-				<span><font-awesome-icon icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('drive')"><font-awesome-icon icon="chart-bar R"/></span>
+				<span><f-a icon="home"/> %i18n:@this-instance%</span>
+				<span @click="setChartSrc('drive')"><f-a icon="chart-bar R"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><font-awesome-icon icon="hdd R"/></div>
+				<div><f-a icon="hdd R"/></div>
 				<div>
 					<span>%i18n:@instances%</span>
 					<b>{{ stats.instances | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><font-awesome-icon icon="globe"/> %i18n:@federated%</span>
-				<span @click="setChartSrc('federation-instances-total')"><font-awesome-icon icon="chart-bar R"/></span>
+				<span><f-a icon="globe"/> %i18n:@federated%</span>
+				<span @click="setChartSrc('federation-instances-total')"><f-a icon="chart-bar R"/></span>
 			</div>
 		</div>
 	</div>

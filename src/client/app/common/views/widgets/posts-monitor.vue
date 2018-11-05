@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-posts-monitor">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header"><font-awesome-icon icon="chart-line"/>%i18n:@title%</template>
-		<button slot="func" @click="toggle" title="%i18n:@toggle%"><font-awesome-icon icon="sort"/></button>
+		<template slot="header"><f-a icon="chart-line"/>%i18n:@title%</template>
+		<button slot="func" @click="toggle" title="%i18n:@toggle%"><f-a icon="sort"/></button>
 
 		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }">
 			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" v-show="props.view != 2">

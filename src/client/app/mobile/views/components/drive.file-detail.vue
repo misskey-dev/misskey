@@ -6,7 +6,7 @@
 			:alt="file.name"
 			:title="file.name"
 			:style="style">
-		<template v-if="kind != 'image'"><font-awesome-icon icon="file"/></template>
+		<template v-if="kind != 'image'"><f-a icon="file"/></template>
 		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
 			<span class="size">
 				<span class="width">{{ file.properties.width }}</span>
@@ -28,27 +28,27 @@
 			<span class="separator"></span>
 			<span class="data-size">{{ file.datasize | bytes }}</span>
 			<span class="separator"></span>
-			<span class="created-at" @click="showCreatedAt"><font-awesome-icon icon="R clock"/><mk-time :time="file.createdAt"/></span>
+			<span class="created-at" @click="showCreatedAt"><f-a icon="R clock"/><mk-time :time="file.createdAt"/></span>
 			<template v-if="file.isSensitive">
 				<span class="separator"></span>
-				<span class="nsfw"><font-awesome-icon icon="eye-slash"/> %i18n:@nsfw%</span>
+				<span class="nsfw"><f-a icon="eye-slash"/> %i18n:@nsfw%</span>
 			</template>
 		</div>
 	</div>
 	<div class="menu">
 		<div>
-			<ui-button link :href="`${file.url}?download`" :download="file.name"><font-awesome-icon icon="download"/> %i18n:@download%</ui-button>
-			<ui-button @click="rename"><font-awesome-icon icon="pencil-alt"/> %i18n:@rename%</ui-button>
-			<ui-button @click="move"><font-awesome-icon icon="R folder-open"/> %i18n:@move%</ui-button>
-			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><font-awesome-icon icon="R eye"/> %i18n:@unmark-as-sensitive%</ui-button>
-			<ui-button @click="toggleSensitive" v-else><font-awesome-icon icon="R eye-slash"/> %i18n:@mark-as-sensitive%</ui-button>
-			<ui-button @click="del"><font-awesome-icon icon="trash-alt R"/> %i18n:@delete%</ui-button>
+			<ui-button link :href="`${file.url}?download`" :download="file.name"><f-a icon="download"/> %i18n:@download%</ui-button>
+			<ui-button @click="rename"><f-a icon="pencil-alt"/> %i18n:@rename%</ui-button>
+			<ui-button @click="move"><f-a icon="R folder-open"/> %i18n:@move%</ui-button>
+			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><f-a icon="R eye"/> %i18n:@unmark-as-sensitive%</ui-button>
+			<ui-button @click="toggleSensitive" v-else><f-a icon="R eye-slash"/> %i18n:@mark-as-sensitive%</ui-button>
+			<ui-button @click="del"><f-a icon="trash-alt R"/> %i18n:@delete%</ui-button>
 		</div>
 	</div>
 	<div class="hash">
 		<div>
 			<p>
-				<font-awesome-icon icon="hashtag"/>%i18n:@hash%
+				<f-a icon="hashtag"/>%i18n:@hash%
 			</p>
 			<code>{{ file.md5 }}</code>
 		</div>

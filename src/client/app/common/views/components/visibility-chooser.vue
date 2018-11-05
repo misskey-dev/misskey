@@ -3,34 +3,34 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
 		<div @click="choose('public')" :class="{ active: v == 'public' }">
-			<div><font-awesome-icon icon="globe"/></div>
+			<div><f-a icon="globe"/></div>
 			<div>
 				<span>%i18n:@public%</span>
 			</div>
 		</div>
 		<div @click="choose('home')" :class="{ active: v == 'home' }">
-			<div><font-awesome-icon icon="home"/></div>
+			<div><f-a icon="home"/></div>
 			<div>
 				<span>%i18n:@home%</span>
 				<span>%i18n:@home-desc%</span>
 			</div>
 		</div>
 		<div @click="choose('followers')" :class="{ active: v == 'followers' }">
-			<div><font-awesome-icon icon="unlock"/></div>
+			<div><f-a icon="unlock"/></div>
 			<div>
 				<span>%i18n:@followers%</span>
 				<span>%i18n:@followers-desc%</span>
 			</div>
 		</div>
 		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
-			<div><font-awesome-icon icon="envelope"/></div>
+			<div><f-a icon="envelope"/></div>
 			<div>
 				<span>%i18n:@specified%</span>
 				<span>%i18n:@specified-desc%</span>
 			</div>
 		</div>
 		<div @click="choose('private')" :class="{ active: v == 'private' }">
-			<div><font-awesome-icon icon="lock"/></div>
+			<div><f-a icon="lock"/></div>
 			<div>
 				<span>%i18n:@private%</span>
 			</div>

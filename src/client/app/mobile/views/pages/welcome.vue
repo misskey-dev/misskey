@@ -23,8 +23,8 @@
 			<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
 		</div>
 		<div class="stats" v-if="stats">
-			<span><font-awesome-icon icon="user"/> {{ stats.originalUsersCount | number }}</span>
-			<span><font-awesome-icon icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</span>
+			<span><f-a icon="user"/> {{ stats.originalUsersCount | number }}</span>
+			<span><f-a icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</span>
 		</div>
 		<div class="announcements" v-if="announcements && announcements.length > 0">
 			<article v-for="announcement in announcements">

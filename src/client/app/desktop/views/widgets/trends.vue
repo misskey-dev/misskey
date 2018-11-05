@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-trends">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><font-awesome-icon icon="fire"/>%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="fetch"><font-awesome-icon icon="sync"/></button>
+		<template slot="header"><f-a icon="fire"/>%i18n:@title%</template>
+		<button slot="func" title="%i18n:@refresh%" @click="fetch"><f-a icon="sync"/></button>
 
 		<div class="mkw-trends--body">
-			<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
 			<div class="note" v-else-if="note != null">
 				<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
 				<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>

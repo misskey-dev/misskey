@@ -105,7 +105,7 @@ Vue.use(VModal);
 Vue.use(VueHotkey);
 Vue.use(VueSweetalert2);
 
-Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.component('f-a', FontAwesomeIcon);
 
 // Register global directives
 require('./common/views/directives');

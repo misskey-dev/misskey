@@ -1,12 +1,12 @@
 <template>
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">
-		<template v-if="column.type == 'home'"><font-awesome-icon icon="home"/></template>
-		<template v-if="column.type == 'local'"><font-awesome-icon icon="R comments"/></template>
-		<template v-if="column.type == 'hybrid'"><font-awesome-icon icon="share-alt"/></template>
-		<template v-if="column.type == 'global'"><font-awesome-icon icon="globe"/></template>
-		<template v-if="column.type == 'list'"><font-awesome-icon icon="list"/></template>
-		<template v-if="column.type == 'hashtag'"><font-awesome-icon icon="hashtag"/></template>
+		<template v-if="column.type == 'home'"><f-a icon="home"/></template>
+		<template v-if="column.type == 'local'"><f-a icon="R comments"/></template>
+		<template v-if="column.type == 'hybrid'"><f-a icon="share-alt"/></template>
+		<template v-if="column.type == 'global'"><f-a icon="globe"/></template>
+		<template v-if="column.type == 'list'"><f-a icon="list"/></template>
+		<template v-if="column.type == 'hashtag'"><f-a icon="hashtag"/></template>
 		<span>{{ name }}</span>
 	</span>
 
@@ -66,7 +66,7 @@ export default Vue.extend({
 		return {
 			edit: false,
 			menu: [{
-				icon: '<font-awesome-icon icon="cog"/>',
+				icon: '<f-a icon="cog"/>',
 				text: '%i18n:@edit%',
 				action: () => {
 					this.edit = !this.edit;

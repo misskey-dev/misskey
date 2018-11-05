@@ -8,7 +8,7 @@
 	<i>・</i>
 	<a href="/dev">%i18n:@develop%</a>
 	<i>・</i>
-	<a href="https://twitter.com/misskey_xyz" target="_blank">Follow us on <font-awesome-icon icon="B twitter"/></a>
+	<a href="https://twitter.com/misskey_xyz" target="_blank">Follow us on <f-a icon="B twitter"/></a>
 </span>
 </template>
 

@@ -6,7 +6,7 @@
 		@change-selection="onChangeSelection"
 	/>
 	<footer>
-		<button class="upload" title="%i18n:@upload%" @click="upload"><font-awesome-icon icon="upload"/></button>
+		<button class="upload" title="%i18n:@upload%" @click="upload"><f-a icon="upload"/></button>
 		<button class="cancel" @click="close">%i18n:@cancel%</button>
 		<button class="ok" @click="ok">%i18n:@ok%</button>
 	</footer>

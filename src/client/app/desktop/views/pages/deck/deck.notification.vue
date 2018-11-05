@@ -9,8 +9,8 @@
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				<font-awesome-icon icon="quote-left"/>{{ getNoteSummary(notification.note) }}
-				<font-awesome-icon icon="quote-right"/>
+				<f-a icon="quote-left"/>{{ getNoteSummary(notification.note) }}
+				<f-a icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -19,12 +19,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<font-awesome-icon icon="retweet"/>
+				<f-a icon="retweet"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				<font-awesome-icon icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<font-awesome-icon icon="quote-right"/>
+				<f-a icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<f-a icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<font-awesome-icon icon="user-plus"/>
+				<f-a icon="user-plus"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -44,7 +44,7 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<font-awesome-icon icon="user-clock"/>
+				<f-a icon="user-clock"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -55,12 +55,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<font-awesome-icon icon="chart-pie"/>
+				<f-a icon="chart-pie"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				<font-awesome-icon icon="quote-left"/>{{ getNoteSummary(notification.note) }}<font-awesome-icon icon="quote-right"/>
+				<f-a icon="quote-left"/>{{ getNoteSummary(notification.note) }}<f-a icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>

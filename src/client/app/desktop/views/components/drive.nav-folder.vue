@@ -7,7 +7,7 @@
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<template v-if="folder == null"><font-awesome-icon icon="cloud"/></template>
+	<template v-if="folder == null"><f-a icon="cloud"/></template>
 	<span>{{ folder == null ? '%i18n:common.drive%' : folder.name }}</span>
 </div>
 </template>

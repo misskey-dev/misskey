@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title"><font-awesome-icon icon="ban"/> %i18n:@mute-and-block%</div>
+	<div slot="title"><f-a icon="ban"/> %i18n:@mute-and-block%</div>
 
 	<section>
 		<header>%i18n:@mute%</header>

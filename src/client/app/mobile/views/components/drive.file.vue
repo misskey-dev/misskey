@@ -12,10 +12,10 @@
 				<span class="separator"></span>
 				<span class="data-size">{{ file.datasize | bytes }}</span>
 				<span class="separator"></span>
-				<span class="created-at"><font-awesome-icon icon="R clock"/><mk-time :time="file.createdAt"/></span>
+				<span class="created-at"><f-a icon="R clock"/><mk-time :time="file.createdAt"/></span>
 				<template v-if="file.isSensitive">
 					<span class="separator"></span>
-					<span class="nsfw"><font-awesome-icon icon="eye-slash"/> %i18n:@nsfw%</span>
+					<span class="nsfw"><f-a icon="eye-slash"/> %i18n:@nsfw%</span>
 				</template>
 			</footer>
 		</div>

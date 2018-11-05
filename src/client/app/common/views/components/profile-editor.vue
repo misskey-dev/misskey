@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title"><font-awesome-icon icon="user"/> %i18n:@title%</div>
+	<div slot="title"><f-a icon="user"/> %i18n:@title%</div>
 
 	<section class="fit-top">
 		<ui-form :disabled="saving">
@@ -16,12 +16,12 @@
 
 			<ui-input v-model="location">
 				<span>%i18n:@location%</span>
-				<span slot="prefix"><font-awesome-icon icon="map-marker-alt"/></span>
+				<span slot="prefix"><f-a icon="map-marker-alt"/></span>
 			</ui-input>
 
 			<ui-input v-model="birthday" type="date">
 				<span>%i18n:@birthday%</span>
-				<span slot="prefix"><font-awesome-icon icon="birthday-cake"/></span>
+				<span slot="prefix"><f-a icon="birthday-cake"/></span>
 			</ui-input>
 
 			<ui-textarea v-model="description" :max="500">
@@ -30,13 +30,13 @@
 
 			<ui-input type="file" @change="onAvatarChange">
 				<span>%i18n:@avatar%</span>
-				<span slot="icon"><font-awesome-icon icon="image"/></span>
+				<span slot="icon"><f-a icon="image"/></span>
 				<span slot="text" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
 			</ui-input>
 
 			<ui-input type="file" @change="onBannerChange">
 				<span>%i18n:@banner%</span>
-				<span slot="icon"><font-awesome-icon icon="image"/></span>
+				<span slot="icon"><f-a icon="image"/></span>
 				<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
 			</ui-input>
 

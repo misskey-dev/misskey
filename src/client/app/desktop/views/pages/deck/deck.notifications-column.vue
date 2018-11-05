@@ -1,6 +1,6 @@
 <template>
 <x-column :name="name" :column="column" :is-stacked="isStacked">
-	<span slot="header"><font-awesome-icon icon="bell R"/>{{ name }}</span>
+	<span slot="header"><f-a icon="bell R"/>{{ name }}</span>
 
 	<x-notifications/>
 </x-column>

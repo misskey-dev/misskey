@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><font-awesome-icon icon="R comments"/></span>%i18n:@messaging%</span>
+	<span slot="header"><span style="margin-right:4px;"><f-a icon="R comments"/></span>%i18n:@messaging%</span>
 	<mk-messaging @navigate="navigate" :header-top="48"/>
 </mk-ui>
 </template>

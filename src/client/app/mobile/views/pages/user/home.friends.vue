@@ -1,6 +1,6 @@
 <template>
 <div class="root friends">
-	<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:@loading%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:@loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<mk-user-card v-for="user in users" :key="user.id" :user="user"/>
 	</div>

@@ -4,11 +4,11 @@
 	@drop.prevent.stop="onDrop"
 >
 	<div class="body">
-		<p class="init" v-if="init"><font-awesome-icon icon="spinner .spin"/>%i18n:common.loading%</p>
-		<p class="empty" v-if="!init && messages.length == 0"><font-awesome-icon icon="info-circle"/>%i18n:@empty%</p>
-		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages"><font-awesome-icon icon="flag"/>%i18n:@no-history%</p>
+		<p class="init" v-if="init"><f-a icon="spinner .spin"/>%i18n:common.loading%</p>
+		<p class="empty" v-if="!init && messages.length == 0"><f-a icon="info-circle"/>%i18n:@empty%</p>
+		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages"><f-a icon="flag"/>%i18n:@no-history%</p>
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages"><font-awesome-icon icon="spinner .pulse .fw"/></template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:@more%' }}
+			<template v-if="fetchingMoreMessages"><f-a icon="spinner .pulse .fw"/></template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:@more%' }}
 		</button>
 		<template v-for="(message, i) in _messages">
 			<x-message :message="message" :key="message.id"/>
@@ -20,7 +20,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button @click="onIndicatorClick"><font-awesome-icon icon="arrow-circle-down"/>%i18n:@new-message%</button>
+				<button @click="onIndicatorClick"><f-a icon="arrow-circle-down"/>%i18n:@new-message%</button>
 			</div>
 		</transition>
 		<x-form :user="user" ref="form"/>

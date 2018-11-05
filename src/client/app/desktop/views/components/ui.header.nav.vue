@@ -4,32 +4,32 @@
 		<template v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.device.deckDefault">
 				<li class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><font-awesome-icon icon="columns"/><p>%i18n:@deck%</p></router-link>
+					<router-link to="/"><f-a icon="columns"/><p>%i18n:@deck%</p></router-link>
 				</li>
 				<li class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
-					<router-link to="/home"><font-awesome-icon icon="home"/><p>%i18n:@home%</p></router-link>
+					<router-link to="/home"><f-a icon="home"/><p>%i18n:@home%</p></router-link>
 				</li>
 			</template>
 			<template v-else>
 				<li class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><font-awesome-icon icon="home"/><p>%i18n:@home%</p></router-link>
+					<router-link to="/"><f-a icon="home"/><p>%i18n:@home%</p></router-link>
 				</li>
 				<li class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-					<router-link to="/deck"><font-awesome-icon icon="columns"/><p>%i18n:@deck%</p></router-link>
+					<router-link to="/deck"><f-a icon="columns"/><p>%i18n:@deck%</p></router-link>
 				</li>
 			</template>
 			<li class="messaging">
 				<a @click="messaging">
-					<font-awesome-icon icon="comments"/>
+					<f-a icon="comments"/>
 					<p>%i18n:@messaging%</p>
-					<template v-if="hasUnreadMessagingMessage"><font-awesome-icon icon="circle"/></template>
+					<template v-if="hasUnreadMessagingMessage"><f-a icon="circle"/></template>
 				</a>
 			</li>
 			<li class="game">
 				<a @click="game">
-					<font-awesome-icon icon="gamepad"/>
+					<f-a icon="gamepad"/>
 					<p>%i18n:@game%</p>
-					<template v-if="hasGameInvitations"><font-awesome-icon icon="circle"/></template>
+					<template v-if="hasGameInvitations"><f-a icon="circle"/></template>
 				</a>
 			</li>
 		</template>

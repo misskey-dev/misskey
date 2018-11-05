@@ -2,7 +2,7 @@
 <div class="mk-messaging" :data-compact="compact">
 	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
-			<label for="search-input"><font-awesome-icon icon="search"/></label>
+			<label for="search-input"><f-a icon="search"/></label>
 			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:@search-user%"/>
 		</div>
 		<div class="result">
@@ -45,7 +45,7 @@
 		</template>
 	</div>
 	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:@no-history%</p>
-	<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>
 

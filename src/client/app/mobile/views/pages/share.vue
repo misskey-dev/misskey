@@ -4,7 +4,7 @@
 	<div>
 		<mk-signin v-if="!$store.getters.isSignedIn"/>
 		<mk-post-form v-else-if="!posted" :initial-text="text" :instant="true" @posted="posted = true"/>
-		<p v-if="posted" class="posted"><font-awesome-icon icon="check"/></p>
+		<p v-if="posted" class="posted"><f-a icon="check"/></p>
 	</div>
 	<ui-button class="close" v-if="posted" @click="close">%i18n:common.close%</ui-button>
 </div>

@@ -2,7 +2,7 @@
 <div class="cpu">
 	<x-pie class="pie" :value="usage"/>
 	<div>
-		<p><font-awesome-icon icon="microchip"/>CPU</p>
+		<p><f-a icon="microchip"/>CPU</p>
 		<p>{{ meta.cpu.cores }} Cores</p>
 		<p>{{ meta.cpu.model }}</p>
 	</div>

@@ -1,7 +1,7 @@
 <template>
 <div class="csqvmxybqbycalfhkxvyfrgbrdalkaoc">
-	<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
-	<p class="empty" v-else-if="stats.length == 0"><font-awesome-icon icon="exclamation-circle"/>%i18n:@empty%</p>
+	<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-else-if="stats.length == 0"><f-a icon="exclamation-circle"/>%i18n:@empty%</p>
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<transition-group v-else tag="div" name="chart">
 		<div v-for="stat in stats" :key="stat.tag">

@@ -1,17 +1,17 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-active="src == 'home'" @click="src = 'home'"><font-awesome-icon icon="home"/> %i18n:@home%</span>
-		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><font-awesome-icon icon="R comments"/> %i18n:@local%</span>
-		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><font-awesome-icon icon="share-alt"/> %i18n:@hybrid%</span>
-		<span :data-active="src == 'global'" @click="src = 'global'"><font-awesome-icon icon="globe"/> %i18n:@global%</span>
-		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><font-awesome-icon icon="hashtag"/> {{ tagTl.title }}</span>
-		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><font-awesome-icon icon="list"/> {{ list.title }}</span>
+		<span :data-active="src == 'home'" @click="src = 'home'"><f-a icon="home"/> %i18n:@home%</span>
+		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><f-a icon="R comments"/> %i18n:@local%</span>
+		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><f-a icon="share-alt"/> %i18n:@hybrid%</span>
+		<span :data-active="src == 'global'" @click="src = 'global'"><f-a icon="globe"/> %i18n:@global%</span>
+		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><f-a icon="hashtag"/> {{ tagTl.title }}</span>
+		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><f-a icon="list"/> {{ list.title }}</span>
 		<div class="buttons">
-			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%"><font-awesome-icon icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><font-awesome-icon icon="circle"/></i></button>
-			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%"><font-awesome-icon icon="envelope R"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><font-awesome-icon icon="circle"/></i></button>
-			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton"><font-awesome-icon icon="hashtag"/></button>
-			<button @click="chooseList" title="%i18n:@list%" ref="listButton"><font-awesome-icon icon="list"/></button>
+			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%"><f-a icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><f-a icon="circle"/></i></button>
+			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%"><f-a icon="envelope R"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><f-a icon="circle"/></i></button>
+			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton"><f-a icon="hashtag"/></button>
+			<button @click="chooseList" title="%i18n:@list%" ref="listButton"><f-a icon="list"/></button>
 		</div>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
@@ -104,7 +104,7 @@ export default Vue.extend({
 			const lists = await (this as any).api('users/lists/list');
 
 			let menu = [{
-				icon: '<font-awesome-icon icon="plus"/>',
+				icon: '<f-a icon="plus"/>',
 				text: '%i18n:@add-list%',
 				action: () => {
 					(this as any).apis.input({
@@ -125,7 +125,7 @@ export default Vue.extend({
 			}
 
 			menu = menu.concat(lists.map(list => ({
-				icon: '<font-awesome-icon icon="list"/>',
+				icon: '<f-a icon="list"/>',
 				text: list.title,
 				action: () => {
 					this.list = list;
@@ -142,7 +142,7 @@ export default Vue.extend({
 
 		chooseTag() {
 			let menu = [{
-				icon: '<font-awesome-icon icon="plus"/>',
+				icon: '<f-a icon="plus"/>',
 				text: '%i18n:@add-tag-timeline%',
 				action: () => {
 					(this as any).os.new(MkSettingsWindow, {
@@ -156,7 +156,7 @@ export default Vue.extend({
 			}
 
 			menu = menu.concat(this.$store.state.settings.tagTimelines.map(t => ({
-				icon: '<font-awesome-icon icon="hashtag"/>',
+				icon: '<f-a icon="hashtag"/>',
 				text: t.title,
 				action: () => {
 					this.tagTl = t;

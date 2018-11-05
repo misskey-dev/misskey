@@ -1,7 +1,7 @@
 <template>
 <div class="uofhebxjdgksfmltszlxurtjnjjsvioh" v-if="video.isSensitive && hide" @click="hide = false">
 	<div>
-		<b><font-awesome-icon icon="exclamation-triangle"/> %i18n:@sensitive%</b>
+		<b><f-a icon="exclamation-triangle"/> %i18n:@sensitive%</b>
 		<span>%i18n:@click-to-show%</span>
 	</div>
 </div>
@@ -12,7 +12,7 @@
 		@click.prevent="onClick"
 		:title="video.name"
 	>
-		<font-awesome-icon icon="R play-circle"/>
+		<f-a icon="R play-circle"/>
 	</a>
 </div>
 </template>

@@ -2,43 +2,43 @@
 <div class="header" :class="navbar">
 	<div class="body">
 		<div class="post">
-			<button @click="post" title="%i18n:@post%"><font-awesome-icon icon="pencil-alt"/></button>
+			<button @click="post" title="%i18n:@post%"><f-a icon="pencil-alt"/></button>
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.device.deckDefault">
 				<div class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><font-awesome-icon icon="columns"/></router-link>
+					<router-link to="/"><f-a icon="columns"/></router-link>
 				</div>
 				<div class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
-					<router-link to="/home"><font-awesome-icon icon="home"/></router-link>
+					<router-link to="/home"><f-a icon="home"/></router-link>
 				</div>
 			</template>
 			<template v-else>
 				<div class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><font-awesome-icon icon="home"/></router-link>
+					<router-link to="/"><f-a icon="home"/></router-link>
 				</div>
 				<div class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-					<router-link to="/deck"><font-awesome-icon icon="columns"/></router-link>
+					<router-link to="/deck"><f-a icon="columns"/></router-link>
 				</div>
 			</template>
 			<div class="messaging">
-				<a @click="messaging"><font-awesome-icon icon="comments"/><template v-if="hasUnreadMessagingMessage"><font-awesome-icon icon="circle"/></template></a>
+				<a @click="messaging"><f-a icon="comments"/><template v-if="hasUnreadMessagingMessage"><f-a icon="circle"/></template></a>
 			</div>
 			<div class="game">
-				<a @click="game"><font-awesome-icon icon="gamepad"/><template v-if="hasGameInvitations"><font-awesome-icon icon="circle"/></template></a>
+				<a @click="game"><f-a icon="gamepad"/><template v-if="hasGameInvitations"><f-a icon="circle"/></template></a>
 			</div>
 		</div>
 
 		<div class="nav bottom" v-if="$store.getters.isSignedIn">
 			<div>
-				<a @click="drive"><font-awesome-icon icon="cloud"/></a>
+				<a @click="drive"><f-a icon="cloud"/></a>
 			</div>
 			<div ref="notificationsButton" :class="{ active: showNotifications }">
-				<a @click="notifications"><font-awesome-icon icon="R bell"/></a>
+				<a @click="notifications"><f-a icon="R bell"/></a>
 			</div>
 			<div>
-				<a @click="settings"><font-awesome-icon icon="cog"/></a>
+				<a @click="settings"><f-a icon="cog"/></a>
 			</div>
 		</div>
 
@@ -49,20 +49,20 @@
 
 			<div class="nav menu">
 				<div class="signout">
-					<a @click="signout"><font-awesome-icon icon="power-off"/></a>
+					<a @click="signout"><f-a icon="power-off"/></a>
 				</div>
 				<div>
-					<router-link to="/i/favorites"><font-awesome-icon icon="star"/></router-link>
+					<router-link to="/i/favorites"><f-a icon="star"/></router-link>
 				</div>
 				<div v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
-					<a @click="followRequests"><font-awesome-icon icon="envelope R"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
+					<a @click="followRequests"><f-a icon="envelope R"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
 				</div>
 			</div>
 		</div>
 
 		<div class="nav dark">
 			<div>
-				<a @click="dark"><template v-if="$store.state.device.darkmode"><font-awesome-icon icon="moon"/></template><template v-else><font-awesome-icon icon="R moon"/></template></a>
+				<a @click="dark"><template v-if="$store.state.device.darkmode"><f-a icon="moon"/></template><template v-else><f-a icon="R moon"/></template></a>
 			</div>
 		</div>
 	</div>

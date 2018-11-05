@@ -11,13 +11,13 @@
 			@dragend="onDragend"
 			@contextmenu.prevent.stop="onContextmenu">
 		<button class="toggleActive" @click="toggleActive" v-if="isStacked">
-			<template v-if="active"><font-awesome-icon icon="angle-up"/></template>
-			<template v-else><font-awesome-icon icon="angle-down"/></template>
+			<template v-if="active"><f-a icon="angle-up"/></template>
+			<template v-else><f-a icon="angle-down"/></template>
 		</button>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
-		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu"><font-awesome-icon icon="caret-down"/></button>
-		<button v-else class="close" @click.stop="close"><font-awesome-icon icon="times"/></button>
+		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu"><f-a icon="caret-down"/></button>
+		<button v-else class="close" @click.stop="close"><f-a icon="times"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -163,7 +163,7 @@ export default Vue.extend({
 
 		getMenu() {
 			const items = [{
-				icon: '<font-awesome-icon icon="pencil-alt"/>',
+				icon: '<f-a icon="pencil-alt"/>',
 				text: '%i18n:common.deck.rename%',
 				action: () => {
 					(this as any).apis.input({
@@ -175,43 +175,43 @@ export default Vue.extend({
 					});
 				}
 			}, null, {
-				icon: '<font-awesome-icon icon="arrow-left"/>',
+				icon: '<f-a icon="arrow-left"/>',
 				text: '%i18n:common.deck.swap-left%',
 				action: () => {
 					this.$store.dispatch('settings/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
-				icon: '<font-awesome-icon icon="arrow-right"/>',
+				icon: '<f-a icon="arrow-right"/>',
 				text: '%i18n:common.deck.swap-right%',
 				action: () => {
 					this.$store.dispatch('settings/swapRightDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: '<font-awesome-icon icon="arrow-up"/>',
+				icon: '<f-a icon="arrow-up"/>',
 				text: '%i18n:common.deck.swap-up%',
 				action: () => {
 					this.$store.dispatch('settings/swapUpDeckColumn', this.column.id);
 				}
 			} : undefined, this.isStacked ? {
-				icon: '<font-awesome-icon icon="arrow-down"/>',
+				icon: '<f-a icon="arrow-down"/>',
 				text: '%i18n:common.deck.swap-down%',
 				action: () => {
 					this.$store.dispatch('settings/swapDownDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				icon: '<font-awesome-icon icon="window-restore R"/>',
+				icon: '<f-a icon="window-restore R"/>',
 				text: '%i18n:common.deck.stack-left%',
 				action: () => {
 					this.$store.dispatch('settings/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: '<font-awesome-icon icon="window-maximize R"/>',
+				icon: '<f-a icon="window-maximize R"/>',
 				text: '%i18n:common.deck.pop-right%',
 				action: () => {
 					this.$store.dispatch('settings/popRightDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				icon: '<font-awesome-icon icon="trash-alt R"/>',
+				icon: '<f-a icon="trash-alt R"/>',
 				text: '%i18n:common.deck.remove%',
 				action: () => {
 					this.$store.dispatch('settings/removeDeckColumn', this.column.id);

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-admin" :class="{ isMobile }">
 	<header v-show="isMobile">
-		<button class="nav" @click="navOpend = true"><font-awesome-icon icon="bars"/></button>
+		<button class="nav" @click="navOpend = true"><f-a icon="bars"/></button>
 		<span>MisskeyMyAdmin</span>
 	</header>
 	<div class="nav-backdrop"
@@ -18,18 +18,18 @@
 			<p class="name">{{ $store.state.i | userName }}</p>
 		</div>
 		<ul>
-			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><font-awesome-icon icon="home .fw"/>%i18n:@dashboard%</li>
-			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><font-awesome-icon icon="cog .fw"/>%i18n:@instance%</li>
-			<li @click="nav('users')" :class="{ active: page == 'users' }"><font-awesome-icon icon="users .fw"/>%i18n:@users%</li>
-			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><font-awesome-icon icon="grin R .fw"/>%i18n:@emoji%</li>
-			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><font-awesome-icon icon="broadcast-tower .fw"/>%i18n:@announcements%</li>
-			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><font-awesome-icon icon="hashtag .fw"/>%i18n:@hashtags%</li>
+			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><f-a icon="home .fw"/>%i18n:@dashboard%</li>
+			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><f-a icon="cog .fw"/>%i18n:@instance%</li>
+			<li @click="nav('users')" :class="{ active: page == 'users' }"><f-a icon="users .fw"/>%i18n:@users%</li>
+			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><f-a icon="grin R .fw"/>%i18n:@emoji%</li>
+			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><f-a icon="broadcast-tower .fw"/>%i18n:@announcements%</li>
+			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><f-a icon="hashtag .fw"/>%i18n:@hashtags%</li>
 
-			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }"><font-awesome-icon icon="cloud .fw"/>%i18n:common.drive%</li> -->
+			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }"><f-a icon="cloud .fw"/>%i18n:common.drive%</li> -->
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
 		</ul>
 		<div class="back-to-misskey">
-			<a href="/"><font-awesome-icon icon="arrow-left"/> %i18n:@back-to-misskey%</a>
+			<a href="/"><f-a icon="arrow-left"/> %i18n:@back-to-misskey%</a>
 		</div>
 		<div class="version">
 			<small>Misskey {{ version }}</small>

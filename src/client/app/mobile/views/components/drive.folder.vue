@@ -1,7 +1,7 @@
 <template>
 <a class="jvwxssxsytqlqvrpiymarjlzlsxskqsr" @click.prevent="onClick" :href="`/i/drive/folder/${ folder.id }`">
 	<div class="container">
-		<p class="name"><font-awesome-icon icon="folder"/>{{ folder.name }}</p><font-awesome-icon icon="angle-right"/>
+		<p class="name"><f-a icon="folder"/>{{ folder.name }}</p><f-a icon="angle-right"/>
 	</div>
 </a>
 </template>

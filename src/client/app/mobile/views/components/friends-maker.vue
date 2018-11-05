@@ -5,9 +5,9 @@
 		<mk-user-card v-for="user in users" :key="user.id" :user="user"/>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@empty%</p>
-	<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:@fetching%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:@fetching%<mk-ellipsis/></p>
 	<a class="refresh" @click="refresh">%i18n:@refresh%</a>
-	<button class="close" @click="close" title="%i18n:@close%"><font-awesome-icon icon="times"/></button>
+	<button class="close" @click="close" title="%i18n:@close%"><f-a icon="times"/></button>
 </div>
 </template>
 

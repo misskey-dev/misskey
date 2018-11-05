@@ -1,15 +1,15 @@
 <template>
 <div class="mk-stream-indicator">
 	<p v-if="stream.state == 'initializing'">
-		<font-awesome-icon icon="spinner .pulse"/>
+		<f-a icon="spinner .pulse"/>
 		<span>%i18n:@connecting%<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'reconnecting'">
-		<font-awesome-icon icon="spinner .pulse"/>
+		<f-a icon="spinner .pulse"/>
 		<span>%i18n:@reconnecting%<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'connected'">
-		<font-awesome-icon icon="check"/>
+		<f-a icon="check"/>
 		<span>%i18n:@connected%</span>
 	</p>
 </div>

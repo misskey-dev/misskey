@@ -1,6 +1,6 @@
 <template>
 	<mk-window ref="window" is-modal width="800px" :can-close="false">
-		<span slot="header"><font-awesome-icon icon="crop"/>{{ title }}</span>
+		<span slot="header"><f-a icon="crop"/>{{ title }}</span>
 		<div class="body">
 			<vue-cropper ref="cropper"
 				:src="image.url"

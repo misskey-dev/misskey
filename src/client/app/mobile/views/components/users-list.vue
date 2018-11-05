@@ -14,7 +14,7 @@
 	<p class="no" v-if="!fetching && users.length == 0">
 		<slot></slot>
 	</p>
-	<p class="fetching" v-if="fetching"><font-awesome-icon icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>
 

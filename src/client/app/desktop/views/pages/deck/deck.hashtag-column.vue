@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<span slot="header">
-		<font-awesome-icon icon="hashtag"/><span>{{ tag }}</span>
+		<f-a icon="hashtag"/><span>{{ tag }}</span>
 	</span>
 
 	<div class="xroyrflcmhhtmlwmyiwpfqiirqokfueb">

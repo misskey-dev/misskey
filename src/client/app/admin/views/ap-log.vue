@@ -3,10 +3,10 @@
 	<table>
 		<thead>
 			<tr>
-				<th><font-awesome-icon icon="exchange-alt"/> In/Out</th>
-				<th><font-awesome-icon icon="server"/> Host</th>
-				<th><font-awesome-icon icon="bolt"/> Activity</th>
-				<th><font-awesome-icon icon="user"/> Actor</th>
+				<th><f-a icon="exchange-alt"/> In/Out</th>
+				<th><f-a icon="server"/> Host</th>
+				<th><f-a icon="bolt"/> Activity</th>
+				<th><f-a icon="user"/> Actor</th>
 			</tr>
 		</thead>
 		<tbody>

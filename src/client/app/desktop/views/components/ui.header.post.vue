@@ -1,6 +1,6 @@
 <template>
 <div class="note">
-	<button @click="post" title="%i18n:@post%"><font-awesome-icon icon="pencil-alt"/></button>
+	<button @click="post" title="%i18n:@post%"><f-a icon="pencil-alt"/></button>
 </div>
 </template>
 

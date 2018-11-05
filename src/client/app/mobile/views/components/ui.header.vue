@@ -5,8 +5,8 @@
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="content" ref="mainContainer">
-			<button class="nav" @click="$parent.isDrawerOpening = true"><font-awesome-icon icon="bars"/></button>
-			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation"><font-awesome-icon icon="circle"/></template>
+			<button class="nav" @click="$parent.isDrawerOpening = true"><f-a icon="bars"/></button>
+			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation"><f-a icon="circle"/></template>
 			<h1>
 				<slot>{{ os.instanceName }}</slot>
 			</h1>
