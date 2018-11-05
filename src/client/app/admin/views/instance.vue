@@ -56,7 +56,10 @@ export default Vue.extend({
 			(this as any).api('admin/invite').then(x => {
 				this.inviteCode = x.code;
 			}).catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				this.$swal({
+					type: 'error',
+					text: e
+				});
 			});
 		},
 
@@ -68,9 +71,15 @@ export default Vue.extend({
 				name: this.name,
 				description: this.description
 			}).then(() => {
-				//(this as any).os.apis.dialog({ text: `Saved` });
+				this.$swal({
+					type: 'success',
+					text: '%i18n:@saved%'
+				});
 			}).catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				this.$swal({
+					type: 'error',
+					text: e
+				});
 			});
 		}
 	}

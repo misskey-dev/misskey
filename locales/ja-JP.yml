@@ -1081,6 +1081,7 @@ admin/views/instance.vue:
   disableLocalTimeline: "ローカルタイムラインを無効にする"
   invite: "招待"
   save: "保存"
+  saved: "保存しました"
 
 admin/views/charts.vue:
   title: "チャート"
@@ -1132,10 +1133,15 @@ admin/views/emoji.vue:
     url: "絵文字画像URL"
     add: "追加"
     info: "50KB以下のPNG画像をおすすめします。"
+    added: "絵文字を登録しました"
   emojis:
     title: "絵文字一覧"
     update: "更新"
     remove: "削除"
+  updated: "更新しました"
+  remove-emoji:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 
 admin/views/announcements.vue:
   announcements: "お知らせ"
@@ -1144,6 +1150,7 @@ admin/views/announcements.vue:
   add: "追加"
   title: "タイトル"
   text: "内容"
+  saved: "保存しました"
 
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"

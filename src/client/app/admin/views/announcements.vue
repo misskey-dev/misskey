@@ -54,9 +54,15 @@ export default Vue.extend({
 			(this as any).api('admin/update-meta', {
 				broadcasts: this.announcements
 			}).then(() => {
-				//(this as any).os.apis.dialog({ text: `Saved` });
+				this.$swal({
+					type: 'success',
+					text: '%i18n:@saved%'
+				});
 			}).catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				this.$swal({
+					type: 'error',
+					text: e
+				});
 			});
 		}
 	}
