@@ -11,9 +11,9 @@
 		</div>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@empty%</p>
-	<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:@fetching%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@fetching%<mk-ellipsis/></p>
 	<a class="refresh" @click="refresh">%i18n:@refresh%</a>
-	<button class="close" @click="destroyDom()" title="%i18n:@close%"><f-a icon="times"/></button>
+	<button class="close" @click="destroyDom()" title="%i18n:@close%"><fa icon="times"/></button>
 </div>
 </template>
 

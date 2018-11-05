@@ -1,12 +1,12 @@
 <template>
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">
-		<template v-if="column.type == 'home'"><f-a icon="home"/></template>
-		<template v-if="column.type == 'local'"><f-a :icon="['far', 'comments']"/></template>
-		<template v-if="column.type == 'hybrid'"><f-a icon="share-alt"/></template>
-		<template v-if="column.type == 'global'"><f-a icon="globe"/></template>
-		<template v-if="column.type == 'list'"><f-a icon="list"/></template>
-		<template v-if="column.type == 'hashtag'"><f-a icon="hashtag"/></template>
+		<template v-if="column.type == 'home'"><fa icon="home"/></template>
+		<template v-if="column.type == 'local'"><fa :icon="['far', 'comments']"/></template>
+		<template v-if="column.type == 'hybrid'"><fa icon="share-alt"/></template>
+		<template v-if="column.type == 'global'"><fa icon="globe"/></template>
+		<template v-if="column.type == 'list'"><fa icon="list"/></template>
+		<template v-if="column.type == 'hashtag'"><fa icon="hashtag"/></template>
 		<span>{{ name }}</span>
 	</span>
 

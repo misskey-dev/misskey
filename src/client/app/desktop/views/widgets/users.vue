@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-users">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><f-a icon="users"/>%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="refresh"><f-a icon="sync"/></button>
+		<template slot="header"><fa icon="users"/>%i18n:@title%</template>
+		<button slot="func" title="%i18n:@refresh%" @click="refresh"><fa icon="sync"/></button>
 
 		<div class="mkw-users--body">
-			<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 			<template v-else-if="users.length != 0">
 				<div class="user" v-for="_user in users">
 					<mk-avatar class="avatar" :user="_user"/>

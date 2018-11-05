@@ -4,10 +4,10 @@
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<x-nav-folder :class="{ current: folder == null }"/>
 			<template v-for="folder in hierarchyFolders">
-				<span class="separator"><f-a icon="angle-right"/></span>
+				<span class="separator"><fa icon="angle-right"/></span>
 				<x-nav-folder :folder="folder" :key="folder.id"/>
 			</template>
-			<span class="separator" v-if="folder != null"><f-a icon="angle-right"/></span>
+			<span class="separator" v-if="folder != null"><fa icon="angle-right"/></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 		<!--
@@ -313,7 +313,7 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '<f-a icon="exclamation-triangle"/>%i18n:@unable-to-process%',
+								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
 								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'
@@ -343,7 +343,7 @@ export default Vue.extend({
 				});
 
 				(this as any).apis.dialog({
-					title: '<f-a icon="check"/>%i18n:@url-upload-requested%',
+					title: '<fa icon="check"/>%i18n:@url-upload-requested%',
 					text: '%i18n:@may-take-time%',
 					actions: [{
 						text: '%i18n:common.ok%'

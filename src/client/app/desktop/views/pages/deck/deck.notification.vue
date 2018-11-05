@@ -9,8 +9,8 @@
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				<f-a icon="quote-left"/>{{ getNoteSummary(notification.note) }}
-				<f-a icon="quote-right"/>
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}
+				<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -19,12 +19,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<f-a icon="retweet"/>
+				<fa icon="retweet"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				<f-a icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<f-a icon="quote-right"/>
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<f-a icon="user-plus"/>
+				<fa icon="user-plus"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -44,7 +44,7 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<f-a icon="user-clock"/>
+				<fa icon="user-clock"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -55,12 +55,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				<f-a icon="chart-pie"/>
+				<fa icon="chart-pie"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				<f-a icon="quote-left"/>{{ getNoteSummary(notification.note) }}<f-a icon="quote-right"/>
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>

@@ -14,7 +14,7 @@
 			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
 			<x-hashtag-column v-else-if="temporaryColumn.type == 'tag'" :tag="temporaryColumn.tag" :key="temporaryColumn.tag"/>
 		</template>
-		<button ref="add" @click="add" title="%i18n:common.deck.add-column%"><f-a icon="plus"/></button>
+		<button ref="add" @click="add" title="%i18n:common.deck.add-column%"><fa icon="plus"/></button>
 	</div>
 </mk-ui>
 </template>

@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="700px" height="550px" @closed="destroyDom">
-	<span slot="header" :class="$style.header"><f-a icon="cog"/>%i18n:@settings%</span>
+	<span slot="header" :class="$style.header"><fa icon="cog"/>%i18n:@settings%</span>
 	<mk-settings :initial-page="initialPage" @done="close"/>
 </mk-window>
 </template>

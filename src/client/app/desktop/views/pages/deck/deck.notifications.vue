@@ -11,13 +11,13 @@
 		<template v-for="(notification, i) in _notifications">
 			<x-notification class="notification" :notification="notification" :key="notification.id"/>
 			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date" :key="notification.id + '-time'">
-				<span><f-a icon="angle-up"/>{{ notification._datetext }}</span>
-				<span><f-a icon="angle-down"/>{{ _notifications[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ notification._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</component>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications"><f-a icon="spinner .pulse .fw"/></template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
 	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
 </div>

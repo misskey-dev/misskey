@@ -16,8 +16,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover"><f-a :icon="['far', 'folder-open .fw']"/></template>
-		<template v-if="!hover"><f-a :icon="['far', 'folder .fw']"/></template>
+		<template v-if="hover"><fa :icon="['far', 'folder-open']" fixed-width/></template>
+		<template v-if="!hover"><fa :icon="['far', 'folder']" fixed-width/></template>
 		{{ folder.name }}
 	</p>
 </div>
@@ -155,7 +155,7 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '<f-a icon="exclamation-triangle"/>%i18n:@unable-to-process%',
+								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
 								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'

@@ -1,13 +1,13 @@
 <template>
 <x-column>
 	<span slot="header">
-		<f-a :icon="['far', 'comment-alt']"/><span>{{ title }}</span>
+		<fa :icon="['far', 'comment-alt']"/><span>{{ title }}</span>
 	</span>
 
 	<div class="rvtscbadixhhbsczoorqoaygovdeecsx" v-if="note">
 		<div class="is-remote" v-if="note.user.host != null">
 			<details>
-				<summary><f-a icon="exclamation-triangle"/> %i18n:common.is-remote-post%</summary>
+				<summary><fa icon="exclamation-triangle"/> %i18n:common.is-remote-post%</summary>
 				<a :href="note.url || note.uri" target="_blank">%i18n:common.view-on-remote%</a>
 			</details>
 		</div>

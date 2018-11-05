@@ -11,54 +11,54 @@
 	<div v-if="stats" class="stats">
 		<div>
 			<div>
-				<div><f-a icon="user"/></div>
+				<div><fa icon="user"/></div>
 				<div>
 					<span>%i18n:@accounts%</span>
 					<b class="primary">{{ stats.originalUsersCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><f-a icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('users')"><f-a :icon="['far', 'chart-bar']"/></span>
+				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span @click="setChartSrc('users')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><f-a icon="pencil-alt"/></div>
+				<div><fa icon="pencil-alt"/></div>
 				<div>
 					<span>%i18n:@notes%</span>
 					<b class="primary">{{ stats.originalNotesCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><f-a icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('notes')"><f-a :icon="['far', 'chart-bar']"/></span>
+				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span @click="setChartSrc('notes')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><f-a icon="database"/></div>
+				<div><fa icon="database"/></div>
 				<div>
 					<span>%i18n:@drive%</span>
 					<b>{{ stats.driveUsageLocal | bytes }}</b>
 				</div>
 			</div>
 			<div>
-				<span><f-a icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('drive')"><f-a :icon="['far', 'chart-bar']"/></span>
+				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span @click="setChartSrc('drive')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><f-a :icon="['far', 'hdd']"/></div>
+				<div><fa :icon="['far', 'hdd']"/></div>
 				<div>
 					<span>%i18n:@instances%</span>
 					<b>{{ stats.instances | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><f-a icon="globe"/> %i18n:@federated%</span>
-				<span @click="setChartSrc('federation-instances-total')"><f-a :icon="['far', 'chart-bar']"/></span>
+				<span><fa icon="globe"/> %i18n:@federated%</span>
+				<span @click="setChartSrc('federation-instances-total')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 	</div>

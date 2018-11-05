@@ -1,7 +1,7 @@
 <template>
 <div class="account" v-hotkey.global="keymap">
 	<button class="header" :data-active="isOpen" @click="toggle">
-		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen"><f-a icon="angle-down"/></template><template v-if="isOpen"><f-a icon="angle-up"/></template></span>
+		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen"><fa icon="angle-down"/></template><template v-if="isOpen"><fa icon="angle-up"/></template></span>
 		<mk-avatar class="avatar" :user="$store.state.i"/>
 	</button>
 	<transition name="zoom-in-top">
@@ -9,60 +9,60 @@
 			<ul>
 				<li>
 					<router-link :to="`/@${ $store.state.i.username }`">
-						<i><f-a icon="user"/></i>
+						<i><fa icon="user"/></i>
 						<span>%i18n:@profile%</span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="drive">
 					<p>
-						<i><f-a icon="cloud"/></i>
+						<i><fa icon="cloud"/></i>
 						<span>%i18n:common.drive%</span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li>
 					<router-link to="/i/favorites">
-						<i><f-a icon="star"/></i>
+						<i><fa icon="star"/></i>
 						<span>%i18n:@favorites%</span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="list">
 					<p>
-						<i><f-a icon="list"/></i>
+						<i><fa icon="list"/></i>
 						<span>%i18n:@lists%</span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<p>
-						<i><f-a :icon="['far', 'envelope']"/></i>
+						<i><fa :icon="['far', 'envelope']"/></i>
 						<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 			</ul>
 			<ul>
 				<li>
 					<router-link to="/i/customize-home">
-						<i><f-a icon="wrench"/></i>
+						<i><fa icon="wrench"/></i>
 						<span>%i18n:@customize%</span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="settings">
 					<p>
-						<i><f-a icon="cog"/></i>
+						<i><fa icon="cog"/></i>
 						<span>%i18n:@settings%</span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li v-if="$store.state.i.isAdmin">
 					<a href="/admin">
-						<i><f-a icon="terminal"/></i>
+						<i><fa icon="terminal"/></i>
 						<span>%i18n:@admin%</span>
-						<i><f-a icon="angle-right"/></i>
+						<i><fa icon="angle-right"/></i>
 					</a>
 				</li>
 			</ul>
@@ -70,15 +70,15 @@
 				<li @click="dark">
 					<p>
 						<span>%i18n:@dark%</span>
-						<template v-if="$store.state.device.darkmode"><i><f-a icon="moon"/></i></template>
-						<template v-else><i><f-a :icon="['far', 'moon']"/></i></template>
+						<template v-if="$store.state.device.darkmode"><i><fa icon="moon"/></i></template>
+						<template v-else><i><fa :icon="['far', 'moon']"/></i></template>
 					</p>
 				</li>
 			</ul>
 			<ul>
 				<li @click="signout">
 					<p class="signout">
-						<i><f-a icon="power-off"/></i>
+						<i><fa icon="power-off"/></i>
 						<span>%i18n:@signout%</span>
 					</p>
 				</li>

@@ -1,10 +1,10 @@
 <template>
 <div class="mk-activity">
 	<mk-widget-container :show-header="design == 0" :naked="design == 2">
-		<template slot="header"><f-a icon="chart-bar"/>%i18n:@title%</template>
-		<button slot="func" title="%i18n:@toggle%" @click="toggle"><f-a icon="sort"/></button>
+		<template slot="header"><fa icon="chart-bar"/>%i18n:@title%</template>
+		<button slot="func" title="%i18n:@toggle%" @click="toggle"><fa icon="sort"/></button>
 
-		<p :class="$style.fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 		<template v-else>
 			<x-calendar v-show="view == 0" :data="[].concat(activity)"/>
 			<x-chart v-show="view == 1" :data="[].concat(activity)"/>

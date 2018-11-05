@@ -2,43 +2,43 @@
 <div class="header" :class="navbar">
 	<div class="body">
 		<div class="post">
-			<button @click="post" title="%i18n:@post%"><f-a icon="pencil-alt"/></button>
+			<button @click="post" title="%i18n:@post%"><fa icon="pencil-alt"/></button>
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.device.deckDefault">
 				<div class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><f-a icon="columns"/></router-link>
+					<router-link to="/"><fa icon="columns"/></router-link>
 				</div>
 				<div class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
-					<router-link to="/home"><f-a icon="home"/></router-link>
+					<router-link to="/home"><fa icon="home"/></router-link>
 				</div>
 			</template>
 			<template v-else>
 				<div class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><f-a icon="home"/></router-link>
+					<router-link to="/"><fa icon="home"/></router-link>
 				</div>
 				<div class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-					<router-link to="/deck"><f-a icon="columns"/></router-link>
+					<router-link to="/deck"><fa icon="columns"/></router-link>
 				</div>
 			</template>
 			<div class="messaging">
-				<a @click="messaging"><f-a icon="comments"/><template v-if="hasUnreadMessagingMessage"><f-a icon="circle"/></template></a>
+				<a @click="messaging"><fa icon="comments"/><template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template></a>
 			</div>
 			<div class="game">
-				<a @click="game"><f-a icon="gamepad"/><template v-if="hasGameInvitations"><f-a icon="circle"/></template></a>
+				<a @click="game"><fa icon="gamepad"/><template v-if="hasGameInvitations"><fa icon="circle"/></template></a>
 			</div>
 		</div>
 
 		<div class="nav bottom" v-if="$store.getters.isSignedIn">
 			<div>
-				<a @click="drive"><f-a icon="cloud"/></a>
+				<a @click="drive"><fa icon="cloud"/></a>
 			</div>
 			<div ref="notificationsButton" :class="{ active: showNotifications }">
-				<a @click="notifications"><f-a :icon="['far', 'bell']"/></a>
+				<a @click="notifications"><fa :icon="['far', 'bell']"/></a>
 			</div>
 			<div>
-				<a @click="settings"><f-a icon="cog"/></a>
+				<a @click="settings"><fa icon="cog"/></a>
 			</div>
 		</div>
 
@@ -49,20 +49,20 @@
 
 			<div class="nav menu">
 				<div class="signout">
-					<a @click="signout"><f-a icon="power-off"/></a>
+					<a @click="signout"><fa icon="power-off"/></a>
 				</div>
 				<div>
-					<router-link to="/i/favorites"><f-a icon="star"/></router-link>
+					<router-link to="/i/favorites"><fa icon="star"/></router-link>
 				</div>
 				<div v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
-					<a @click="followRequests"><f-a :icon="['far', 'envelope']"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
+					<a @click="followRequests"><fa :icon="['far', 'envelope']"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
 				</div>
 			</div>
 		</div>
 
 		<div class="nav dark">
 			<div>
-				<a @click="dark"><template v-if="$store.state.device.darkmode"><f-a icon="moon"/></template><template v-else><f-a :icon="['far', 'moon']"/></template></a>
+				<a @click="dark"><template v-if="$store.state.device.darkmode"><fa icon="moon"/></template><template v-else><fa :icon="['far', 'moon']"/></template></a>
 			</div>
 		</div>
 	</div>

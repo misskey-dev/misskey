@@ -24,7 +24,7 @@
 		<footer>
 			<span class="read" v-if="isMe && message.isRead">%i18n:@is-read%</span>
 			<mk-time :time="message.createdAt"/>
-			<template v-if="message.is_edited"><f-a icon="pencil-alt"/></template>
+			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
 		</footer>
 	</div>
 </div>

@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-notifications">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><f-a :icon="['far', 'bell']"/>%i18n:@title%</template>
-		<!-- <button slot="func" title="%i18n:@settings%" @click="settings"><f-a icon="cog"/></button> -->
+		<template slot="header"><fa :icon="['far', 'bell']"/>%i18n:@title%</template>
+		<!-- <button slot="func" title="%i18n:@settings%" @click="settings"><fa icon="cog"/></button> -->
 
 		<mk-notifications :class="$style.notifications"/>
 	</mk-widget-container>

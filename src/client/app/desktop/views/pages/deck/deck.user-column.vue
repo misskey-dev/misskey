@@ -1,19 +1,19 @@
 <template>
 <x-column>
 	<span slot="header">
-		<f-a icon="user"/><span>{{ title }}</span>
+		<fa icon="user"/><span>{{ title }}</span>
 	</span>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
 		<div class="is-remote" v-if="user.host != null">
 			<details>
-				<summary><f-a icon="exclamation-triangle"/> %i18n:common.is-remote-user%</summary>
+				<summary><fa icon="exclamation-triangle"/> %i18n:common.is-remote-user%</summary>
 				<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a>
 			</details>
 		</div>
 		<header :style="bannerStyle">
 			<div>
-				<button class="menu" @click="menu" ref="menu"><f-a icon="ellipsis-h"/></button>
+				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow"/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 				<span class="name">{{ user | userName }}</span>
@@ -40,17 +40,17 @@
 			</div>
 		</div>
 		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-			<p class="caption" @click="toggleShowPinned"><f-a icon="thumbtack"/> %i18n:@pinned-notes%</p>
-			<span class="angle" v-if="showPinned"><f-a icon="angle-up"/></span>
-			<span class="angle" v-else><f-a icon="angle-down"/></span>
+			<p class="caption" @click="toggleShowPinned"><fa icon="thumbtack"/> %i18n:@pinned-notes%</p>
+			<span class="angle" v-if="showPinned"><fa icon="angle-up"/></span>
+			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div class="notes" v-show="showPinned">
 				<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
 			</div>
 		</div>
 		<div class="images" v-if="images.length > 0">
-			<p class="caption" @click="toggleShowImages"><f-a :icon="['far', 'images']"/> %i18n:@images%</p>
-			<span class="angle" v-if="showImages"><f-a icon="angle-up"/></span>
-			<span class="angle" v-else><f-a icon="angle-down"/></span>
+			<p class="caption" @click="toggleShowImages"><fa :icon="['far', 'images']"/> %i18n:@images%</p>
+			<span class="angle" v-if="showImages"><fa icon="angle-up"/></span>
+			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div v-show="showImages">
 				<router-link v-for="image in images"
 					:style="`background-image: url(${image.thumbnailUrl})`"
@@ -61,15 +61,15 @@
 			</div>
 		</div>
 		<div class="activity">
-			<p class="caption" @click="toggleShowActivity"><f-a :icon="['far', 'chart-bar']"/> %i18n:@activity%</p>
-			<span class="angle" v-if="showActivity"><f-a icon="angle-up"/></span>
-			<span class="angle" v-else><f-a icon="angle-down"/></span>
+			<p class="caption" @click="toggleShowActivity"><fa :icon="['far', 'chart-bar']"/> %i18n:@activity%</p>
+			<span class="angle" v-if="showActivity"><fa icon="angle-up"/></span>
+			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div v-show="showActivity">
 				<div ref="chart"></div>
 			</div>
 		</div>
 		<div class="tl">
-			<p class="caption"><f-a :icon="['far', 'comment-alt']"/> %i18n:@timeline%</p>
+			<p class="caption"><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</p>
 			<div>
 				<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 			</div>

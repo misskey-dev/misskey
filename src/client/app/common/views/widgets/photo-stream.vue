@@ -1,9 +1,9 @@
 <template>
 <div class="mkw-photo-stream" :class="$style.root" :data-melt="props.design == 2">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header"><f-a icon="camera"/>%i18n:@title%</template>
+		<template slot="header"><fa icon="camera"/>%i18n:@title%</template>
 
-		<p :class="$style.fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 		<div :class="$style.stream" v-if="!fetching && images.length > 0">
 			<div v-for="image in images" :class="$style.img" :style="`background-image: url(${image.thumbnailUrl || image.url})`"></div>
 		</div>

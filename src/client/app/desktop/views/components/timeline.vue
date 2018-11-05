@@ -1,17 +1,17 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-active="src == 'home'" @click="src = 'home'"><f-a icon="home"/> %i18n:@home%</span>
-		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><f-a :icon="['far', 'comments']"/> %i18n:@local%</span>
-		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><f-a icon="share-alt"/> %i18n:@hybrid%</span>
-		<span :data-active="src == 'global'" @click="src = 'global'"><f-a icon="globe"/> %i18n:@global%</span>
-		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><f-a icon="hashtag"/> {{ tagTl.title }}</span>
-		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><f-a icon="list"/> {{ list.title }}</span>
+		<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> %i18n:@home%</span>
+		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> %i18n:@local%</span>
+		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> %i18n:@hybrid%</span>
+		<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> %i18n:@global%</span>
+		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><fa icon="hashtag"/> {{ tagTl.title }}</span>
+		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.title }}</span>
 		<div class="buttons">
-			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%"><f-a icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><f-a icon="circle"/></i></button>
-			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%"><f-a :icon="['far', 'envelope']"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><f-a icon="circle"/></i></button>
-			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton"><f-a icon="hashtag"/></button>
-			<button @click="chooseList" title="%i18n:@list%" ref="listButton"><f-a icon="list"/></button>
+			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%"><fa icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></button>
+			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%"><fa :icon="['far', 'envelope']"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></button>
+			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton"><fa icon="hashtag"/></button>
+			<button @click="chooseList" title="%i18n:@list%" ref="listButton"><fa icon="list"/></button>
 		</div>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>

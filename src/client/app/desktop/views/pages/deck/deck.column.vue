@@ -11,13 +11,13 @@
 			@dragend="onDragend"
 			@contextmenu.prevent.stop="onContextmenu">
 		<button class="toggleActive" @click="toggleActive" v-if="isStacked">
-			<template v-if="active"><f-a icon="angle-up"/></template>
-			<template v-else><f-a icon="angle-down"/></template>
+			<template v-if="active"><fa icon="angle-up"/></template>
+			<template v-else><fa icon="angle-down"/></template>
 		</button>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
-		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu"><f-a icon="caret-down"/></button>
-		<button v-else class="close" @click.stop="close"><f-a icon="times"/></button>
+		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu"><fa icon="caret-down"/></button>
+		<button v-else class="close" @click.stop="close"><fa icon="times"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>

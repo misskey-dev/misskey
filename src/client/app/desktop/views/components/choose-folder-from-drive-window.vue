@@ -21,7 +21,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: {
 		title: {
-			default: '<f-a :icon="['far', 'folder']"/>%i18n:@choose-prompt%'
+			default: '<fa :icon="['far', 'folder']"/>%i18n:@choose-prompt%'
 		}
 	},
 	methods: {

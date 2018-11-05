@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-rss">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><f-a icon="rss-square"/>RSS</template>
-		<button slot="func" title="設定" @click="setting"><f-a icon="cog"/></button>
+		<template slot="header"><fa icon="rss-square"/>RSS</template>
+		<button slot="func" title="設定" @click="setting"><fa icon="cog"/></button>
 
 		<div class="mkw-rss--body" :data-mobile="platform == 'mobile'">
-			<p class="fetching" v-if="fetching"><f-a icon="spinner .pulse .fw"/>%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 			<div class="feed" v-else>
 				<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
 			</div>

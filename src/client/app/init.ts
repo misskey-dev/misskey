@@ -24,6 +24,7 @@ if (localStorage.getItem('theme') == null) {
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+/* なぜか動かない
 import faRetweet from '@fortawesome/free-solid-svg-icons/faRetweet';
 import faPlus from '@fortawesome/free-solid-svg-icons/faPlus';
 import faUser from '@fortawesome/free-solid-svg-icons/faUser';
@@ -106,6 +107,12 @@ library.add(
 	farEnvelope,
 	farComments,
 );
+*/
+
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+
+library.add(fas, far);
 //#endregion
 
 Vue.use(Vuex);
@@ -115,7 +122,7 @@ Vue.use(VModal);
 Vue.use(VueHotkey);
 Vue.use(VueSweetalert2);
 
-Vue.component('f-a', FontAwesomeIcon);
+Vue.component('fa', FontAwesomeIcon);
 
 // Register global directives
 require('./common/views/directives');

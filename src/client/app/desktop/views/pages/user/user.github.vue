@@ -1,6 +1,6 @@
 <template>
 <div class="aqooishiizumijmihokohinatamihoaz">
-	<span>%fa:B github%<a :href="`https://github.com/${user.github.login}`" target="_blank">@{{ user.github.login }}</a></span>
+	<span><fa :icon="['fab', 'github']"/><a :href="`https://github.com/${user.github.login}`" target="_blank">@{{ user.github.login }}</a></span>
 </div>
 </template>
 
