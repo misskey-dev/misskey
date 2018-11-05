@@ -35,21 +35,39 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	// write content at URL to temp file
 	await new Promise((res, rej) => {
 		const writable = fs.createWriteStream(path);
+
+		writable.on('finish', () => {
+			res();
+		});
+
+		writable.on('error', error => {
+			rej(error);
+		});
+
 		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
-		request({
+
+		const req = request({
 			url: requestUrl,
 			proxy: config.proxy,
+			timeout: 10 * 1000,
 			headers: {
 				'User-Agent': config.user_agent
 			}
-		})
-			.on('error', rej)
-			.on('end', () => {
+		});
+
+		req.pipe(writable);
+
+		req.on('response', response => {
+			if (response.statusCode !== 200) {
 				writable.close();
-				res();
-			})
-			.pipe(writable)
-			.on('error', rej);
+				rej(response.statusCode);
+			}
+		});
+
+		req.on('error', error => {
+			writable.close();
+			rej(error);
+		});
 	});
 
 	const instance = await fetchMeta();
