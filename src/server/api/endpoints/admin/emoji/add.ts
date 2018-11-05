@@ -12,15 +12,15 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str
+			validator: $.str.min(1)
 		},
 
 		url: {
-			validator: $.str
+			validator: $.str.min(1)
 		},
 
 		aliases: {
-			validator: $.arr($.str).optional,
+			validator: $.arr($.str.min(1)).optional,
 			default: [] as string[]
 		}
 	}
