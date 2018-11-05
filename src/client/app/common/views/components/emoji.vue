@@ -35,7 +35,7 @@ export default Vue.extend({
 
 	computed: {
 		alt(): string {
-			return this.customEmoji ? this.customEmoji.name : this.char;
+			return this.customEmoji ? `:${this.customEmoji.name}:` : this.char;
 		},
 
 		useOsDefaultEmojis(): boolean {
