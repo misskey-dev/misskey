@@ -67,7 +67,7 @@ export default Vue.extend({
 			(this as any).api('admin/emoji/add', {
 				name: this.name,
 				url: this.url,
-				aliases: this.aliases.split(' ')
+				aliases: this.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
 				this.$swal({
 					type: 'success',
@@ -95,7 +95,7 @@ export default Vue.extend({
 				id: emoji.id,
 				name: emoji.name,
 				url: emoji.url,
-				aliases: emoji.aliases.split(' ')
+				aliases: emoji.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
 				this.$swal({
 					type: 'success',
