@@ -6,6 +6,7 @@
 			<ui-input v-model="name">%i18n:@instance-name%</ui-input>
 			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>
 			<ui-input v-model="bannerUrl">%i18n:@banner-url%</ui-input>
+			<ui-input v-model="maxNoteTextLength">%i18n:@max-note-text-length%</ui-input>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
 		</section>
 	</ui-card>
@@ -39,6 +40,7 @@ export default Vue.extend({
 			bannerUrl: null,
 			name: null,
 			description: null,
+			maxNoteTextLength: null,
 			inviteCode: null,
 		};
 	},
@@ -48,6 +50,7 @@ export default Vue.extend({
 			this.bannerUrl = meta.bannerUrl;
 			this.name = meta.name;
 			this.description = meta.description;
+			this.maxNoteTextLength = meta.maxNoteTextLength;
 		});
 	},
 
@@ -69,7 +72,8 @@ export default Vue.extend({
 				disableLocalTimeline: this.disableLocalTimeline,
 				bannerUrl: this.bannerUrl,
 				name: this.name,
-				description: this.description
+				description: this.description,
+				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10)
 			}).then(() => {
 				this.$swal({
 					type: 'success',

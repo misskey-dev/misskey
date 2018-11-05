@@ -43,4 +43,9 @@ export type IMeta = {
 	disableLocalTimeline?: boolean;
 	hidedTags?: string[];
 	bannerUrl?: string;
+
+	/**
+	 * Max allowed note text length in charactors
+	 */
+	maxNoteTextLength?: number;
 };

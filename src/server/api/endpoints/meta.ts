@@ -62,7 +62,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		swPublickey: config.sw ? config.sw.public_key : null,
 		hidedTags: (me && me.isAdmin) ? met.hidedTags : undefined,
 		bannerUrl: met.bannerUrl,
-		maxNoteTextLength: config.maxNoteTextLength,
+		maxNoteTextLength: met.maxNoteTextLength || 1000,
 
 		emojis: emojis,
 

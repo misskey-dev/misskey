@@ -1077,6 +1077,7 @@ admin/views/instance.vue:
   instance-name: "インスタンス名"
   instance-description: "インスタンスの紹介"
   banner-url: "バナー画像URL"
+  max-note-text-length: "投稿の最大文字数"
   disableRegistration: "ユーザー登録の受付を停止する"
   disableLocalTimeline: "ローカルタイムラインを無効にする"
   invite: "招待"

@@ -59,6 +59,13 @@ export const meta = {
 				'ja-JP': 'インスタンスの紹介文'
 			}
 		},
+
+		maxNoteTextLength: {
+			validator: $.num.optional.min(1),
+			desc: {
+				'ja-JP': '投稿の最大文字数'
+			}
+		}
 	}
 };
 
@@ -91,6 +98,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.description !== undefined) {
 		set.description = ps.description;
+	}
+
+	if (ps.maxNoteTextLength) {
+		set.maxNoteTextLength = ps.maxNoteTextLength;
 	}
 
 	await Meta.update({}, {
