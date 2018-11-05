@@ -35,6 +35,7 @@ jobs:
           name: Install Dependencies
           command: |
             npm install
+            npm prune
       - run:
           name: Configure
           command: |
