@@ -16,7 +16,7 @@ describe('Text', () => {
 			{ type: 'text', content: ' '},
 			{ type: 'mention', content: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
 			{ type: 'text', content: ' お腹ペコい ' },
-			{ type: 'emoji', content: ':cat:', emoji: 'cat'},
+			{ type: 'emoji', content: ':cat:', name: 'cat'},
 			{ type: 'text', content: ' '},
 			{ type: 'hashtag', content: '#yryr', hashtag: 'yryr' }
 		], tokens);
