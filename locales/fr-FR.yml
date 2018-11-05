@@ -421,8 +421,8 @@ common/views/components/twitter-setting.vue:
   connect: "Lier votre compte Twitter"
   disconnect: "Déconnexion"
 common/views/components/github-setting.vue:
-  description: "Si vous liez votre compte Github à votre compte Misskey, vous verrez ensuite votre compte Github s’afficher sur votre profil, vous aurez aussi la possibilité de vous connecter à Misskey en utilisant votre compte Github."
-  connected-to: "Vous êtes connecté à votre compte Github"
+  description: "Si vous liez votre compte GitHub à votre compte Misskey, vous verrez ensuite votre compte GitHub s’afficher sur votre profil, vous aurez aussi la possibilité de vous connecter à Misskey en utilisant votre compte GitHub."
+  connected-to: "Vous êtes connecté à votre compte GitHub"
   detail: "Détails …"
   reconnect: "Reconnexion"
   connect: "Se connecter avec GitHub"
@@ -956,6 +956,7 @@ admin/views/instance.vue:
   disableLocalTimeline: "ローカルタイムラインを無効にする"
   invite: "Inviter"
   save: "Sauvegarder"
+  saved: "保存しました"
 admin/views/charts.vue:
   title: "Graph"
   per-day: "par jour"
@@ -1004,10 +1005,15 @@ admin/views/emoji.vue:
     url: "URL de l’image"
     add: "Ajouter"
     info: "50KB以下のPNG画像をおすすめします。"
+    added: "絵文字を登録しました"
   emojis:
     title: "Émojis"
     update: "Mise à jour"
     remove: "Supprimer"
+  updated: "更新しました"
+  remove-emoji:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 admin/views/announcements.vue:
   announcements: "Annonces"
   save: "Enregistrer"
@@ -1015,6 +1021,10 @@ admin/views/announcements.vue:
   add: "Ajouter"
   title: "Titre"
   text: "Contenu"
+  saved: "保存しました"
+  _remove:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 admin/views/hashtags.vue:
   hided-tags: "Tags cachés"
 desktop/views/pages/deck/deck.tl-column.vue:
@@ -1345,7 +1355,7 @@ mobile/views/pages/settings.vue:
   twitter-reconnect: "Reconnecter"
   twitter-disconnect: "Déconnexion"
   github: "Avec GitHub"
-  github-connect: "Se connecter à votre compte Github"
+  github-connect: "Se connecter à votre compte GitHub"
   github-reconnect: "Reconnexion"
   github-disconnect: "Déconnexion"
   update: "Mise à jour de Misskey"
@@ -1399,7 +1409,7 @@ mobile/views/pages/user/home.photos.vue:
   no-photos: "Pas de photos"
 docs:
   edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation?"
-  edit-this-page-on-github-link: "Éditez cette page sur Github !"
+  edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
   api:
     entities:
       properties: "Propriétés"
