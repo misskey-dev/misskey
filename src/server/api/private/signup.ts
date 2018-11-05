@@ -75,8 +75,8 @@ export default async (ctx: Koa.Context) => {
 			usernameLower: username.toLowerCase(),
 			host: null
 		}, {
-				limit: 1
-			});
+			limit: 1
+		});
 
 	// Check username already used
 	if (usernameExist !== 0) {
@@ -106,18 +106,12 @@ export default async (ctx: Koa.Context) => {
 		host: null,
 		keypair: generateKeypair(),
 		token: secret,
-		email: null,
 		password: hash,
 		isAdmin: config.autoAdmin && usersCount === 0,
 		profile: {
 			bio: null,
 			birthday: null,
-			blood: null,
-			gender: null,
-			handedness: null,
-			height: null,
-			location: null,
-			weight: null
+			location: null
 		},
 		settings: {
 			autoWatch: false
