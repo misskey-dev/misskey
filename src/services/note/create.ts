@@ -456,8 +456,8 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
 	// Extract emojis
 	const emojis = tokens
-		.filter(t => t.type == 'emoji')
-		.map(t => (t as TextElementEmoji).emoji)
+		.filter(t => t.type == 'emoji' && t.name)
+		.map(t => (t as TextElementEmoji).name)
 		.filter(emoji => emoji.length <= 100);
 
 	return unique(emojis);

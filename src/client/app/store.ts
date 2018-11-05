@@ -62,7 +62,8 @@ const defaultDeviceSettings = {
 	deckColumnAlign: 'center',
 	mobileNotificationPosition: 'bottom',
 	deckTemporaryColumn: null,
-	deckDefault: false
+	deckDefault: false,
+	useOsDefaultEmojis: false
 };
 
 export default (os: MiOS) => new Vuex.Store({
