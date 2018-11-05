@@ -114,7 +114,7 @@ async function init(): Promise<Config> {
 	Logger.info(`<<< Misskey v${pkg.version} >>>`);
 
 	new Logger('Deps').info(`Node.js ${process.version}`);
-	MachineInfo.show();
+	await MachineInfo.show();
 	EnvironmentInfo.show();
 
 	const configLogger = new Logger('Config');
