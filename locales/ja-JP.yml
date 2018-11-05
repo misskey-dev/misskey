@@ -1151,6 +1151,9 @@ admin/views/announcements.vue:
   title: "タイトル"
   text: "内容"
   saved: "保存しました"
+  _remove:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"

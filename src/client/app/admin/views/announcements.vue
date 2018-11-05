@@ -10,7 +10,7 @@
 				<span>%i18n:@text%</span>
 			</ui-textarea>
 			<ui-horizon-group>
-				<ui-button @click="save">%fa:save R% %i18n:@save%</ui-button>
+				<ui-button @click="save()">%fa:save R% %i18n:@save%</ui-button>
 				<ui-button @click="remove(i)">%fa:trash-alt R% %i18n:@remove%</ui-button>
 			</ui-horizon-group>
 		</section>
@@ -46,18 +46,31 @@ export default Vue.extend({
 		},
 
 		remove(i) {
-			this.announcements = this.announcements.filter((_, j) => j !== i);
-			this.save();
+			this.$swal({
+				type: 'warning',
+				text: '%i18n:@_remove.are-you-sure%'.replace('$1', this.announcements.find((_, j) => j == i).title),
+				showCancelButton: true
+			}).then(res => {
+				if (!res.value) return;
+				this.announcements = this.announcements.filter((_, j) => j !== i);
+				this.save(true);
+				this.$swal({
+					type: 'success',
+					text: '%i18n:@_remove.removed%'
+				});
+			});
 		},
 
-		save() {
+		save(silent) {
 			(this as any).api('admin/update-meta', {
 				broadcasts: this.announcements
 			}).then(() => {
-				this.$swal({
-					type: 'success',
-					text: '%i18n:@saved%'
-				});
+				if (!silent) {
+					this.$swal({
+						type: 'success',
+						text: '%i18n:@saved%'
+					});
+				}
 			}).catch(e => {
 				this.$swal({
 					type: 'error',
