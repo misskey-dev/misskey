@@ -1,7 +1,7 @@
 <template>
 <div class="axbwjelsbymowqjyywpirzhdlszoncqs">
 	<ui-card>
-		<div slot="title">%fa:cog% %i18n:@instance%</div>
+		<div slot="title"><fa icon="cog"/> %i18n:@instance%</div>
 		<section class="fit-top">
 			<ui-input v-model="name">%i18n:@instance-name%</ui-input>
 			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>

@@ -10,8 +10,8 @@
 				<span>%i18n:@text%</span>
 			</ui-textarea>
 			<ui-horizon-group>
-				<ui-button @click="save()">%fa:save R% %i18n:@save%</ui-button>
-				<ui-button @click="remove(i)">%fa:trash-alt R% %i18n:@remove%</ui-button>
+				<ui-button @click="save()"><fa :icon="['far', 'save']"/> %i18n:@save%</ui-button>
+				<ui-button @click="remove(i)"><fa :icon="['far', 'trash-alt']"/> %i18n:@remove%</ui-button>
 			</ui-horizon-group>
 		</section>
 		<section>
