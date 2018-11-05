@@ -82,6 +82,13 @@ export const meta = {
 				'en-US': 'Drive capacity of a remote user (MB)'
 			}
 		},
+
+		cacheRemoteFiles: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'リモートのファイルをキャッシュするか否か'
+			}
+		}
 	}
 };
 
@@ -126,6 +133,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.remoteDriveCapacityMb !== undefined) {
 		set.remoteDriveCapacityMb = ps.remoteDriveCapacityMb;
+	}
+
+	if (ps.cacheRemoteFiles !== undefined) {
+		set.cacheRemoteFiles = ps.cacheRemoteFiles;
 	}
 
 	await Meta.update({}, {

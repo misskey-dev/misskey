@@ -2,6 +2,7 @@ import Meta, { IMeta } from '../models/meta';
 
 const defaultMeta: any = {
 	name: 'Misskey',
+	cacheRemoteFiles: true,
 	localDriveCapacityMb: 256,
 	remoteDriveCapacityMb: 8,
 	hidedTags: [],

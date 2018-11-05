@@ -10,6 +10,7 @@ import create from './add-file';
 import config from '../../config';
 import { IUser } from '../../models/user';
 import * as mongodb from 'mongodb';
+import fetchMeta from '../../misc/fetch-meta';
 
 const log = debug('misskey:drive:upload-from-url');
 
@@ -51,11 +52,13 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 			.on('error', rej);
 	});
 
+	const instance = await fetchMeta();
+
 	let driveFile: IDriveFile;
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, false, config.preventCacheRemoteFiles, url, uri, sensitive);
+		driveFile = await create(user, path, name, null, folderId, false, !instance.cacheRemoteFiles, url, uri, sensitive);
 		log(`got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;

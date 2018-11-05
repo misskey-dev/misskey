@@ -46,8 +46,6 @@ export type Source = {
 		secret_key: string;
 	};
 
-	preventCacheRemoteFiles: boolean;
-
 	drive?: {
 		storage: string;
 		bucket?: string;

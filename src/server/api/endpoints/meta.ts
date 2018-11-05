@@ -59,6 +59,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		disableLocalTimeline: instance.disableLocalTimeline,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+		cacheRemoteFiles: instance.cacheRemoteFiles,
 		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
 		swPublickey: config.sw ? config.sw.public_key : null,
 		hidedTags: (me && me.isAdmin) ? instance.hidedTags : undefined,

@@ -50,6 +50,17 @@ if ((config as any).remoteDriveCapacityMb) {
 		}
 	});
 }
+if ((config as any).preventCacheRemoteFiles) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.cacheRemoteFiles == null) {
+			Meta.update({}, {
+				$set: {
+					cacheRemoteFiles: !(config as any).preventCacheRemoteFiles
+				}
+			});
+		}
+	});
+}
 
 export type IMeta = {
 	name?: string;
@@ -65,6 +76,8 @@ export type IMeta = {
 	disableLocalTimeline?: boolean;
 	hidedTags?: string[];
 	bannerUrl?: string;
+
+	cacheRemoteFiles?: boolean;
 
 	/**
 	 * Drive capacity of a local user (MB)

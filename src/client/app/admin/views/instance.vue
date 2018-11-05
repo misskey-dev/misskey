@@ -12,6 +12,7 @@
 		</section>
 		<section class="fit-bottom">
 			<header><fa icon="cloud"/> %i18n:@drive-config%</header>
+			<ui-switch v-model="cacheRemoteFiles">%i18n:@cache-remote-files%<span slot="desc">%i18n:@cache-remote-files-desc%</span></ui-switch>
 			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="text">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
 			<ui-input v-model="remoteDriveCapacityMb">%i18n:@remote-drive-capacity-mb%<span slot="text">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
 		</section>
@@ -49,6 +50,7 @@ export default Vue.extend({
 			bannerUrl: null,
 			name: null,
 			description: null,
+			cacheRemoteFiles: false,
 			localDriveCapacityMb: null,
 			remoteDriveCapacityMb: null,
 			maxNoteTextLength: null,
@@ -61,6 +63,7 @@ export default Vue.extend({
 			this.bannerUrl = meta.bannerUrl;
 			this.name = meta.name;
 			this.description = meta.description;
+			this.cacheRemoteFiles = meta.cacheRemoteFiles;
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.maxNoteTextLength = meta.maxNoteTextLength;
@@ -86,6 +89,7 @@ export default Vue.extend({
 				bannerUrl: this.bannerUrl,
 				name: this.name,
 				description: this.description,
+				cacheRemoteFiles: this.cacheRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10)
