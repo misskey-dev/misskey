@@ -34,6 +34,11 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	// write content at URL to temp file
 	await new Promise((res, rej) => {
 		const writable = fs.createWriteStream(path);
+		writable.on('finish', () => {
+			console.log("writable finish");
+			res();
+		});
+
 		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
 
 		const req = request({
@@ -49,16 +54,18 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 
 		req.on('response', response => {
 			if (response.statusCode !== 200) {
+				writable.close();
 				rej(response.statusCode);
 			}
 		});
 
 		req.on('error', error => {
+			writable.close();
 			rej(error);
 		});
-
 		req.on('end', () => {
-			res();
+			console.log("req end");
+			//res();
 		});
 	});
 
