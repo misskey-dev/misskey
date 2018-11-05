@@ -4,12 +4,18 @@ import { toASCII } from 'punycode';
 import config from '../../config';
 import Meta from '../../models/meta';
 import { ObjectID } from 'bson';
+import Emoji from '../../models/emoji';
 const pkg = require('../../../package.json');
 
 // Init router
 const router = new Router();
 
-router.get('/v1/custom_emojis', async ctx => ctx.body = {});
+router.get('/v1/custom_emojis', async ctx => ctx.body =
+	await Emoji.find({ host: null }, {
+		fields: {
+			_id: false
+		}
+	}));
 
 router.get('/v1/instance', async ctx => { // TODO: This is a temporary implementation. Consider creating helper methods!
 	const meta = await Meta.findOne() || {};
