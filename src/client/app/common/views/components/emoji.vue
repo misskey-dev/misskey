@@ -5,6 +5,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { lib } from 'emojilib';
+
+const findCustomEmoji = (x, emoji) =>
+	x.name === emoji ||
+	x.aliases && x.aliases.includes(emoji);
+
 export default Vue.extend({
 	props: {
 		emoji: {
@@ -33,7 +38,8 @@ export default Vue.extend({
 		exec() {
 			const { emoji, raw, customEmojis } = this;
 			this.name = emoji || raw;
-			this.url = !raw && customEmojis && customEmojis.length ? customEmojis.find(e => e.name === emoji || e.aliases && e.aliases.includes(emoji)).url : null;
+			if (!raw && customEmojis && customEmojis.length)
+				this.url = customEmojis.find(x => findCustomEmoji(x, emoji)).url;
 			if (!this.url) {
 				const char = raw || lib[emoji] && lib[emoji].char;
 				if (char) {
