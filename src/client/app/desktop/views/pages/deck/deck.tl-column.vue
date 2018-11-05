@@ -2,7 +2,7 @@
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">
 		<template v-if="column.type == 'home'"><f-a icon="home"/></template>
-		<template v-if="column.type == 'local'"><f-a icon="R comments"/></template>
+		<template v-if="column.type == 'local'"><f-a :icon="['far', 'comments']"/></template>
 		<template v-if="column.type == 'hybrid'"><f-a icon="share-alt"/></template>
 		<template v-if="column.type == 'global'"><f-a icon="globe"/></template>
 		<template v-if="column.type == 'list'"><f-a icon="list"/></template>
@@ -66,7 +66,7 @@ export default Vue.extend({
 		return {
 			edit: false,
 			menu: [{
-				icon: '<f-a icon="cog"/>',
+				icon: 'cog',
 				text: '%i18n:@edit%',
 				action: () => {
 					this.edit = !this.edit;

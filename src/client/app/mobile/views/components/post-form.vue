@@ -30,7 +30,7 @@
 			<footer>
 				<button class="upload" @click="chooseFile"><f-a icon="upload"/></button>
 				<button class="drive" @click="chooseFileFromDrive"><f-a icon="cloud"/></button>
-				<button class="kao" @click="kao"><f-a icon="R smile"/></button>
+				<button class="kao" @click="kao"><f-a :icon="['far', 'smile']"/></button>
 				<button class="poll" @click="poll = true"><f-a icon="chart-pie"/></button>
 				<button class="poll" @click="useCw = !useCw"><f-a icon="eye-slash"/></button>
 				<button class="geo" @click="geo ? removeGeo() : setGeo()"><f-a icon="map-marker-alt"/></button>

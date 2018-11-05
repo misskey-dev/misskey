@@ -19,7 +19,7 @@
 			</div>
 			<div>
 				<span><f-a icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('users')"><f-a icon="chart-bar R"/></span>
+				<span @click="setChartSrc('users')"><f-a :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 		<div>
@@ -32,7 +32,7 @@
 			</div>
 			<div>
 				<span><f-a icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('notes')"><f-a icon="chart-bar R"/></span>
+				<span @click="setChartSrc('notes')"><f-a :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 		<div>
@@ -45,12 +45,12 @@
 			</div>
 			<div>
 				<span><f-a icon="home"/> %i18n:@this-instance%</span>
-				<span @click="setChartSrc('drive')"><f-a icon="chart-bar R"/></span>
+				<span @click="setChartSrc('drive')"><f-a :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><f-a icon="hdd R"/></div>
+				<div><f-a :icon="['far', 'hdd']"/></div>
 				<div>
 					<span>%i18n:@instances%</span>
 					<b>{{ stats.instances | number }}</b>
@@ -58,7 +58,7 @@
 			</div>
 			<div>
 				<span><f-a icon="globe"/> %i18n:@federated%</span>
-				<span @click="setChartSrc('federation-instances-total')"><f-a icon="chart-bar R"/></span>
+				<span @click="setChartSrc('federation-instances-total')"><f-a :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 	</div>

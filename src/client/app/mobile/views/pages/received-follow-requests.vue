@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><f-a icon="envelope R"/>%i18n:@title%</span>
+	<span slot="header"><f-a :icon="['far', 'envelope']"/>%i18n:@title%</span>
 
 	<main>
 		<div v-for="req in requests">

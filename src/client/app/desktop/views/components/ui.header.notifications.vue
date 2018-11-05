@@ -1,7 +1,7 @@
 <template>
 <div class="notifications" v-hotkey.global="keymap">
 	<button :data-active="isOpen" @click="toggle" title="%i18n:@title%">
-		<i class="bell"><f-a icon="R bell"/></i>
+		<i class="bell"><f-a :icon="['far', 'bell']"/></i>
 		<i class="circle" v-if="hasUnreadNotification"><f-a icon="circle"/></i>
 	</button>
 	<div class="pop" v-if="isOpen">

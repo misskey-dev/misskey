@@ -22,8 +22,8 @@
 					<div v-for="(x, i) in game.settings.map.join('')"
 							:data-none="x == ' '"
 							@click="onPixelClick(i, x)">
-						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode"><f-a icon="circle R"/></template><template v-else><f-a icon="circle"/></template></template>
-						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode"><f-a icon="circle"/></template><template v-else><f-a icon="circle R"/></template></template>
+						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode"><f-a :icon="['far', 'circle']"/></template><template v-else><f-a icon="circle"/></template></template>
+						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode"><f-a :icon="['far', 'circle']"/></template><template v-else><f-a icon="circle"/></template></template>
 					</div>
 				</div>
 			</div>

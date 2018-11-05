@@ -62,6 +62,11 @@ import {
 	faThumbtack,
 	faSearch,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+	faBell as farBell,
+	faEnvelope as farEnvelope,
+	faComments as farComments,
+} from '@fortawesome/free-regular-svg-icons';
 
 library.add(
 	faRetweet,
@@ -100,6 +105,9 @@ library.add(
 	faTimes,
 	faThumbtack,
 	faSearch,
+	farBell,
+	farEnvelope,
+	farComments,
 );
 //#endregion
 

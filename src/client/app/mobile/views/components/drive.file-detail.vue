@@ -28,7 +28,7 @@
 			<span class="separator"></span>
 			<span class="data-size">{{ file.datasize | bytes }}</span>
 			<span class="separator"></span>
-			<span class="created-at" @click="showCreatedAt"><f-a icon="R clock"/><mk-time :time="file.createdAt"/></span>
+			<span class="created-at" @click="showCreatedAt"><f-a :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
 			<template v-if="file.isSensitive">
 				<span class="separator"></span>
 				<span class="nsfw"><f-a icon="eye-slash"/> %i18n:@nsfw%</span>
@@ -39,10 +39,10 @@
 		<div>
 			<ui-button link :href="`${file.url}?download`" :download="file.name"><f-a icon="download"/> %i18n:@download%</ui-button>
 			<ui-button @click="rename"><f-a icon="pencil-alt"/> %i18n:@rename%</ui-button>
-			<ui-button @click="move"><f-a icon="R folder-open"/> %i18n:@move%</ui-button>
-			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><f-a icon="R eye"/> %i18n:@unmark-as-sensitive%</ui-button>
-			<ui-button @click="toggleSensitive" v-else><f-a icon="R eye-slash"/> %i18n:@mark-as-sensitive%</ui-button>
-			<ui-button @click="del"><f-a icon="trash-alt R"/> %i18n:@delete%</ui-button>
+			<ui-button @click="move"><f-a :icon="['far', 'folder-open']"/> %i18n:@move%</ui-button>
+			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><f-a :icon="['far', 'eye']"/> %i18n:@unmark-as-sensitive%</ui-button>
+			<ui-button @click="toggleSensitive" v-else><f-a :icon="['far', 'eye-slash']"/> %i18n:@mark-as-sensitive%</ui-button>
+			<ui-button @click="del"><f-a :icon="['far', 'trash-alt']"/> %i18n:@delete%</ui-button>
 		</div>
 	</div>
 	<div class="hash">

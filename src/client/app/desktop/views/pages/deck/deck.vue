@@ -182,7 +182,7 @@ export default Vue.extend({
 				source: this.$refs.add,
 				compact: true,
 				items: [{
-					icon: '<f-a icon="home"/>',
+					icon: 'home',
 					text: '%i18n:common.deck.home%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -191,7 +191,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="comments R"/>',
+					icon: ['far', 'comments'],
 					text: '%i18n:common.deck.local%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -200,7 +200,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="share-alt"/>',
+					icon: 'share-alt',
 					text: '%i18n:common.deck.hybrid%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -209,7 +209,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="globe"/>',
+					icon: 'globe',
 					text: '%i18n:common.deck.global%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -218,7 +218,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="at"/>',
+					icon: 'at',
 					text: '%i18n:common.deck.mentions%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -227,7 +227,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="envelope R"/>',
+					icon: ['far', 'envelope'],
 					text: '%i18n:common.deck.direct%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -236,7 +236,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="list"/>',
+					icon: 'list',
 					text: '%i18n:common.deck.list%',
 					action: () => {
 						const w = (this as any).os.new(MkUserListsWindow);
@@ -250,7 +250,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="hashtag"/>',
+					icon: 'hashtag',
 					text: '%i18n:common.deck.hashtag%',
 					action: () => {
 						(this as any).apis.input({
@@ -264,7 +264,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="bell R"/>',
+					icon: ['far', 'bell'],
 					text: '%i18n:common.deck.notifications%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -273,7 +273,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '<f-a icon="calculator"/>',
+					icon: 'calculator',
 					text: '%i18n:common.deck.widgets%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {

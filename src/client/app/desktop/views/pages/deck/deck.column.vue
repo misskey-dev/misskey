@@ -163,7 +163,7 @@ export default Vue.extend({
 
 		getMenu() {
 			const items = [{
-				icon: '<f-a icon="pencil-alt"/>',
+				icon: 'pencil-alt',
 				text: '%i18n:common.deck.rename%',
 				action: () => {
 					(this as any).apis.input({
@@ -175,43 +175,43 @@ export default Vue.extend({
 					});
 				}
 			}, null, {
-				icon: '<f-a icon="arrow-left"/>',
+				icon: 'arrow-left',
 				text: '%i18n:common.deck.swap-left%',
 				action: () => {
 					this.$store.dispatch('settings/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
-				icon: '<f-a icon="arrow-right"/>',
+				icon: 'arrow-right',
 				text: '%i18n:common.deck.swap-right%',
 				action: () => {
 					this.$store.dispatch('settings/swapRightDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: '<f-a icon="arrow-up"/>',
+				icon: 'arrow-up',
 				text: '%i18n:common.deck.swap-up%',
 				action: () => {
 					this.$store.dispatch('settings/swapUpDeckColumn', this.column.id);
 				}
 			} : undefined, this.isStacked ? {
-				icon: '<f-a icon="arrow-down"/>',
+				icon: 'arrow-down',
 				text: '%i18n:common.deck.swap-down%',
 				action: () => {
 					this.$store.dispatch('settings/swapDownDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				icon: '<f-a icon="window-restore R"/>',
+				icon: ['far', 'window-restore'],
 				text: '%i18n:common.deck.stack-left%',
 				action: () => {
 					this.$store.dispatch('settings/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: '<f-a icon="window-maximize R"/>',
+				icon: ['far', 'window-maximize'],
 				text: '%i18n:common.deck.pop-right%',
 				action: () => {
 					this.$store.dispatch('settings/popRightDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				icon: '<f-a icon="trash-alt R"/>',
+				icon: ['far', 'trash-alt'],
 				text: '%i18n:common.deck.remove%',
 				action: () => {
 					this.$store.dispatch('settings/removeDeckColumn', this.column.id);

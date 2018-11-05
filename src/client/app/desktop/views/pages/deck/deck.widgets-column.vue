@@ -89,7 +89,7 @@ export default Vue.extend({
 
 	created() {
 		this.menu = [{
-			icon: '<f-a icon="cog"/>',
+			icon: 'cog',
 			text: '%i18n:@edit%',
 			action: () => {
 				this.edit = !this.edit;

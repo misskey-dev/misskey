@@ -11,7 +11,7 @@
 	:style="imageStyle"
 	:title="video.name"
 >
-	<f-a icon="R play-circle"/>
+	<f-a :icon="['far', 'play-circle']"/>
 </a>
 </template>
 

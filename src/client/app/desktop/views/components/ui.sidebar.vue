@@ -35,7 +35,7 @@
 				<a @click="drive"><f-a icon="cloud"/></a>
 			</div>
 			<div ref="notificationsButton" :class="{ active: showNotifications }">
-				<a @click="notifications"><f-a icon="R bell"/></a>
+				<a @click="notifications"><f-a :icon="['far', 'bell']"/></a>
 			</div>
 			<div>
 				<a @click="settings"><f-a icon="cog"/></a>
@@ -55,14 +55,14 @@
 					<router-link to="/i/favorites"><f-a icon="star"/></router-link>
 				</div>
 				<div v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
-					<a @click="followRequests"><f-a icon="envelope R"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
+					<a @click="followRequests"><f-a :icon="['far', 'envelope']"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
 				</div>
 			</div>
 		</div>
 
 		<div class="nav dark">
 			<div>
-				<a @click="dark"><template v-if="$store.state.device.darkmode"><f-a icon="moon"/></template><template v-else><f-a icon="R moon"/></template></a>
+				<a @click="dark"><template v-if="$store.state.device.darkmode"><f-a icon="moon"/></template><template v-else><f-a :icon="['far', 'moon']"/></template></a>
 			</div>
 		</div>
 	</div>

@@ -48,7 +48,7 @@
 			</div>
 		</div>
 		<div class="images" v-if="images.length > 0">
-			<p class="caption" @click="toggleShowImages"><f-a icon="images R"/> %i18n:@images%</p>
+			<p class="caption" @click="toggleShowImages"><f-a :icon="['far', 'images']"/> %i18n:@images%</p>
 			<span class="angle" v-if="showImages"><f-a icon="angle-up"/></span>
 			<span class="angle" v-else><f-a icon="angle-down"/></span>
 			<div v-show="showImages">
@@ -61,7 +61,7 @@
 			</div>
 		</div>
 		<div class="activity">
-			<p class="caption" @click="toggleShowActivity"><f-a icon="chart-bar R"/> %i18n:@activity%</p>
+			<p class="caption" @click="toggleShowActivity"><f-a :icon="['far', 'chart-bar']"/> %i18n:@activity%</p>
 			<span class="angle" v-if="showActivity"><f-a icon="angle-up"/></span>
 			<span class="angle" v-else><f-a icon="angle-down"/></span>
 			<div v-show="showActivity">
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 		<div class="tl">
-			<p class="caption"><f-a icon="comment-alt R"/> %i18n:@timeline%</p>
+			<p class="caption"><f-a :icon="['far', 'comment-alt']"/> %i18n:@timeline%</p>
 			<div>
 				<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 			</div>
@@ -294,7 +294,7 @@ export default Vue.extend({
 
 		menu() {
 			let menu = [{
-				icon: '<f-a icon="list"/>',
+				icon: 'list',
 				text: '%i18n:@push-to-a-list%',
 				action: () => {
 					const w = (this as any).os.new(MkUserListsWindow);

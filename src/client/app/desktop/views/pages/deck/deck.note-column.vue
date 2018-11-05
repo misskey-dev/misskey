@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<span slot="header">
-		<f-a icon="comment-alt R"/><span>{{ title }}</span>
+		<f-a :icon="['far', 'comment-alt']"/><span>{{ title }}</span>
 	</span>
 
 	<div class="rvtscbadixhhbsczoorqoaygovdeecsx" v-if="note">

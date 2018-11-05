@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header">
-		<template v-if="folder"><span style="margin-right:4px;"><f-a icon="R folder-open"/></span>{{ folder.name }}</template>
+		<template v-if="folder"><span style="margin-right:4px;"><f-a :icon="['far', 'folder-open']"/></span>{{ folder.name }}</template>
 		<template v-if="file"><mk-file-type-icon data-icon :type="file.type" style="margin-right:4px;"/>{{ file.name }}</template>
 		<template v-if="!folder && !file"><span style="margin-right:4px;"><f-a icon="cloud"/></span>%i18n:common.drive%</template>
 	</span>

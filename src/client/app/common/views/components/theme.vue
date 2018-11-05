@@ -52,7 +52,7 @@
 			<color-picker v-model="myThemeText"/>
 		</div>
 		<ui-button @click="preview()"><f-a icon="eye"/> %i18n:@preview-created-theme%</ui-button>
-		<ui-button primary @click="gen()"><f-a icon="save R"/> %i18n:@save-created-theme%</ui-button>
+		<ui-button primary @click="gen()"><f-a :icon="['far', 'save']"/> %i18n:@save-created-theme%</ui-button>
 	</details>
 
 	<details>
@@ -90,7 +90,7 @@
 				<span>%i18n:@theme-code%</span>
 			</ui-textarea>
 			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><f-a icon="box"/> %i18n:@export%</ui-button>
-			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><f-a icon="trash-alt R"/> %i18n:@uninstall%</ui-button>
+			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><f-a :icon="['far', 'trash-alt']"/> %i18n:@uninstall%</ui-button>
 		</template>
 	</details>
 </div>

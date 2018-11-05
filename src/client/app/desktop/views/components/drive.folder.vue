@@ -16,8 +16,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover"><f-a icon="R folder-open .fw"/></template>
-		<template v-if="!hover"><f-a icon="R folder .fw"/></template>
+		<template v-if="hover"><f-a :icon="['far', 'folder-open .fw']"/></template>
+		<template v-if="!hover"><f-a :icon="['far', 'folder .fw']"/></template>
 		{{ folder.name }}
 	</p>
 </div>
@@ -55,22 +55,22 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.move-to-this-folder%',
-				icon: '<f-a icon="arrow-right"/>',
+				icon: 'arrow-right',
 				action: this.go
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.show-in-new-window%',
-				icon: '<f-a icon="R window-restore"/>',
+				icon: ['far', 'window-restore'],
 				action: this.newWindow
 			}, null, {
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
-				icon: '<f-a icon="i-cursor"/>',
+				icon: 'i-cursor',
 				action: this.rename
 			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
-				icon: '<f-a icon="R trash-alt"/>',
+				icon: ['far', 'trash-alt'],
 				action: this.deleteFolder
 			}], {
 					closed: () => {

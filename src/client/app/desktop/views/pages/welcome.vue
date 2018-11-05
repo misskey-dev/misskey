@@ -4,7 +4,7 @@
 
 	<button @click="dark">
 		<template v-if="$store.state.device.darkmode"><f-a icon="moon"/></template>
-		<template v-else><f-a icon="R moon"/></template>
+		<template v-else><f-a :icon="['far', 'moon']"/></template>
 	</button>
 
 	<mk-forkit class="forkit"/>
@@ -76,7 +76,7 @@
 				</div>
 
 				<div class="tl block">
-					<header><f-a icon="comment-alt R"/> %i18n:@timeline%</header>
+					<header><f-a :icon="['far', 'comment-alt']"/> %i18n:@timeline%</header>
 					<div>
 						<mk-welcome-timeline class="tl" :max="20"/>
 					</div>

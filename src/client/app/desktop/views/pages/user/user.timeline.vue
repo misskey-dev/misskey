@@ -1,12 +1,12 @@
 <template>
 <div class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
 	<header>
-		<span :data-active="mode == 'default'" @click="mode = 'default'"><f-a icon="comment-alt R"/> %i18n:@default%</span>
+		<span :data-active="mode == 'default'" @click="mode = 'default'"><f-a :icon="['far', 'comment-alt']"/> %i18n:@default%</span>
 		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><f-a icon="comments"/> %i18n:@with-replies%</span>
 		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><f-a icon="images"/> %i18n:@with-media%</span>
 	</header>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
-		<p class="empty" slot="empty"><f-a icon="R comments"/>%i18n:@empty%</p>
+		<p class="empty" slot="empty"><f-a :icon="['far', 'comments']"/>%i18n:@empty%</p>
 	</mk-notes>
 </div>
 </template>

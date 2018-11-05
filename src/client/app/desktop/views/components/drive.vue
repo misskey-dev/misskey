@@ -138,17 +138,17 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.create-folder%',
-				icon: '<f-a icon="R folder"/>',
+				icon: ['far', 'folder'],
 				action: this.createFolder
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.upload%',
-				icon: '<f-a icon="upload"/>',
+				icon: 'upload',
 				action: this.selectLocalFile
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.url-upload%',
-				icon: '<f-a icon="cloud-upload-alt"/>',
+				icon: 'cloud-upload-alt',
 				action: this.urlUpload
 			}]);
 		},

@@ -71,27 +71,27 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
-				icon: '<f-a icon="i-cursor"/>',
+				icon: 'i-cursor',
 				action: this.rename
 			}, {
 				type: 'item',
 				text: this.file.isSensitive ? '%i18n:@contextmenu.unmark-as-sensitive%' : '%i18n:@contextmenu.mark-as-sensitive%',
-				icon: this.file.isSensitive ? '<f-a icon="R eye"/>' : '<f-a icon="R eye-slash"/>',
+				icon: this.file.isSensitive ? ['far', 'eye'] : ['far', 'eye-slash'],
 				action: this.toggleSensitive
 			}, null, {
 				type: 'item',
 				text: '%i18n:@contextmenu.copy-url%',
-				icon: '<f-a icon="link"/>',
+				icon: 'link',
 				action: this.copyUrl
 			}, {
 				type: 'link',
 				href: `${this.file.url}?download`,
 				text: '%i18n:@contextmenu.download%',
-				icon: '<f-a icon="download"/>',
+				icon: 'download',
 			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
-				icon: '<f-a icon="R trash-alt"/>',
+				icon: ['far', 'trash-alt'],
 				action: this.deleteFile
 			}, null, {
 				type: 'nest',

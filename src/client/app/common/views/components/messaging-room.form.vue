@@ -20,7 +20,7 @@
 		<f-a icon="upload"/>
 	</button>
 	<button class="attach-from-drive" @click="chooseFileFromDrive" title="%i18n:@attach-from-drive%">
-		<f-a icon="R folder-open"/>
+		<f-a :icon="['far', 'folder-open']"/>
 	</button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>

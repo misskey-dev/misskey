@@ -49,7 +49,7 @@
 		<nav>
 			<div class="nav-container">
 				<a :data-active="page == 'home'" @click="page = 'home'"><f-a icon="home"/> %i18n:@overview%</a>
-				<a :data-active="page == 'notes'" @click="page = 'notes'"><f-a icon="R comment-alt"/> %i18n:@timeline%</a>
+				<a :data-active="page == 'notes'" @click="page = 'notes'"><f-a :icon="['far', 'comment-alt']"/> %i18n:@timeline%</a>
 				<a :data-active="page == 'media'" @click="page = 'media'"><f-a icon="image"/> %i18n:@media%</a>
 			</div>
 		</nav>

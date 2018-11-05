@@ -34,7 +34,7 @@
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile"><f-a icon="upload"/></button>
 	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive"><f-a icon="cloud"/></button>
-	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao"><f-a icon="R smile"/></button>
+	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao"><f-a :icon="['far', 'smile']"/></button>
 	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll"><f-a icon="chart-pie"/></button>
 	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw"><f-a icon="eye-slash"/></button>
 	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()"><f-a icon="map-marker-alt"/></button>

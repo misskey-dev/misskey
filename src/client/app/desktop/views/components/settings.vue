@@ -4,7 +4,7 @@
 		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><f-a icon="user .fw"/>%i18n:@profile%</p>
 		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><f-a icon="palette .fw"/>%i18n:@theme%</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><f-a icon="desktop .fw"/>Web</p>
-		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><f-a icon="R bell .fw"/>%i18n:@notification%</p>
+		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><f-a :icon="['far', 'bell .fw']"/>%i18n:@notification%</p>
 		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><f-a icon="cloud .fw"/>%i18n:common.drive%</p>
 		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><f-a icon="hashtag .fw"/>%i18n:@tags%</p>
 		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><f-a icon="ban .fw"/>%i18n:@mute-and-block%</p>
@@ -175,7 +175,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><f-a icon="trash-alt R"/> %i18n:@cache%</div>
+			<div slot="title"><f-a :icon="['far', 'trash-alt']"/> %i18n:@cache%</div>
 			<section>
 				<ui-button @click="clean">%i18n:@clean-cache%</ui-button>
 				<div class="none ui info warn">
@@ -185,7 +185,7 @@
 		</ui-card>
 
 		<ui-card class="notification" v-show="page == 'notification'">
-			<div slot="title"><f-a icon="bell R"/> %i18n:@notification%</div>
+			<div slot="title"><f-a :icon="['far', 'bell']"/> %i18n:@notification%</div>
 			<section>
 				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
 					%i18n:@auto-watch%

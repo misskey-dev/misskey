@@ -37,7 +37,7 @@
 				</li>
 				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<p>
-						<i><f-a icon="envelope R"/></i>
+						<i><f-a :icon="['far', 'envelope']"/></i>
 						<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
 						<i><f-a icon="angle-right"/></i>
 					</p>
@@ -71,7 +71,7 @@
 					<p>
 						<span>%i18n:@dark%</span>
 						<template v-if="$store.state.device.darkmode"><i><f-a icon="moon"/></i></template>
-						<template v-else><i><f-a icon="R moon"/></i></template>
+						<template v-else><i><f-a :icon="['far', 'moon']"/></i></template>
 					</p>
 				</li>
 			</ul>

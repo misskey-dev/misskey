@@ -8,7 +8,7 @@
 			>
 				<h1><slot name="header"></slot></h1>
 				<div>
-					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%"><f-a icon="R window-restore"/></button>
+					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%"><f-a :icon="['far', 'window-restore']"/></button>
 					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%"><f-a icon="times"/></button>
 				</div>
 			</header>

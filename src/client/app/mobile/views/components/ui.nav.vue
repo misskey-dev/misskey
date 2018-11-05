@@ -16,13 +16,13 @@
 			<div class="links">
 				<ul>
 					<li><router-link to="/" :data-active="$route.name == 'index'"><i><f-a icon="home"/></i>%i18n:@timeline%<i><f-a icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><f-a icon="R bell"/></i>%i18n:@notifications%<i v-if="hasUnreadNotification" class="circle"><f-a icon="circle"/></i><i><f-a icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><f-a icon="R comments"/></i>%i18n:@messaging%<i v-if="hasUnreadMessagingMessage" class="circle"><f-a icon="circle"/></i><i><f-a icon="angle-right"/></i></router-link></li>
-					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><f-a icon="R envelope"/></i>%i18n:@follow-requests%<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><f-a icon="circle"/></i><i><f-a icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><f-a :icon="['far', 'bell']"/></i>%i18n:@notifications%<i v-if="hasUnreadNotification" class="circle"><f-a icon="circle"/></i><i><f-a icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><f-a :icon="['far', 'comments']"/></i>%i18n:@messaging%<i v-if="hasUnreadMessagingMessage" class="circle"><f-a icon="circle"/></i><i><f-a icon="angle-right"/></i></router-link></li>
+					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><f-a :icon="['far', 'envelope']"/></i>%i18n:@follow-requests%<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><f-a icon="circle"/></i><i><f-a icon="angle-right"/></i></router-link></li>
 					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'"><i><f-a icon="gamepad"/></i>%i18n:@game%<i v-if="hasGameInvitation" class="circle"><f-a icon="circle"/></i><i><f-a icon="angle-right"/></i></router-link></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><f-a icon="R calendar-alt"/></i>%i18n:@widgets%<i><f-a icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><f-a :icon="['far', 'calendar-alt']"/></i>%i18n:@widgets%<i><f-a icon="angle-right"/></i></router-link></li>
 					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><i><f-a icon="star"/></i>%i18n:@favorites%<i><f-a icon="angle-right"/></i></router-link></li>
 					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'"><i><f-a icon="list"/></i>%i18n:@user-lists%<i><f-a icon="angle-right"/></i></router-link></li>
 					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><i><f-a icon="cloud"/></i>%i18n:common.drive%<i><f-a icon="angle-right"/></i></router-link></li>
@@ -31,7 +31,7 @@
 					<li><a @click="search"><i><f-a icon="search"/></i>%i18n:@search%<i><f-a icon="angle-right"/></i></a></li>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><f-a icon="cog"/></i>%i18n:@settings%<i><f-a icon="angle-right"/></i></router-link></li>
 					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><a href="/admin"><i><f-a icon="terminal"/></i><span>%i18n:@admin%</span><i><f-a icon="angle-right"/></i></a></li>
-					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><i><f-a icon="moon"/></i></template><template v-else><i><f-a icon="R moon"/></i></template><span>%i18n:@darkmode%</span></p></li>
+					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><i><f-a icon="moon"/></i></template><template v-else><i><f-a :icon="['far', 'moon']"/></i></template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>
 			<div class="announcements" v-if="announcements && announcements.length > 0">

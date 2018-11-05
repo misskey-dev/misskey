@@ -28,7 +28,7 @@ export default Vue.extend({
 			default: false
 		},
 		title: {
-			default: '<f-a icon="R file"/>%i18n:@choose-prompt%'
+			default: '<f-a :icon="['far', 'file']"/>%i18n:@choose-prompt%'
 		}
 	},
 	data() {

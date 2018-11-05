@@ -2,7 +2,7 @@
 <div class="root home">
 	<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 	<section class="recent-notes">
-		<h2><f-a icon="R comments"/>%i18n:@recent-notes%</h2>
+		<h2><f-a :icon="['far', 'comments']"/>%i18n:@recent-notes%</h2>
 		<div>
 			<x-notes :user="user"/>
 		</div>

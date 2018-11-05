@@ -3,11 +3,11 @@
 	<span slot="header" @click="showNav = true">
 		<span :class="$style.title">
 			<span v-if="src == 'home'"><f-a icon="home"/>%i18n:@home%</span>
-			<span v-if="src == 'local'"><f-a icon="R comments"/>%i18n:@local%</span>
+			<span v-if="src == 'local'"><f-a :icon="['far', 'comments']"/>%i18n:@local%</span>
 			<span v-if="src == 'hybrid'"><f-a icon="share-alt"/>%i18n:@hybrid%</span>
 			<span v-if="src == 'global'"><f-a icon="globe"/>%i18n:@global%</span>
 			<span v-if="src == 'mentions'"><f-a icon="at"/>%i18n:@mentions%</span>
-			<span v-if="src == 'messages'"><f-a icon="envelope R"/>%i18n:@messages%</span>
+			<span v-if="src == 'messages'"><f-a :icon="['far', 'envelope']"/>%i18n:@messages%</span>
 			<span v-if="src == 'list'"><f-a icon="list"/>{{ list.title }}</span>
 			<span v-if="src == 'tag'"><f-a icon="hashtag"/>{{ tagTl.title }}</span>
 		</span>
@@ -29,12 +29,12 @@
 			<div class="body">
 				<div>
 					<span :data-active="src == 'home'" @click="src = 'home'"><f-a icon="home"/> %i18n:@home%</span>
-					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><f-a icon="R comments"/> %i18n:@local%</span>
+					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><f-a :icon="['far', 'comments']"/> %i18n:@local%</span>
 					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><f-a icon="share-alt"/> %i18n:@hybrid%</span>
 					<span :data-active="src == 'global'" @click="src = 'global'"><f-a icon="globe"/> %i18n:@global%</span>
 					<div class="hr"></div>
 					<span :data-active="src == 'mentions'" @click="src = 'mentions'"><f-a icon="at"/> %i18n:@mentions%<i class="badge" v-if="$store.state.i.hasUnreadMentions"><f-a icon="circle"/></i></span>
-					<span :data-active="src == 'messages'" @click="src = 'messages'"><f-a icon="envelope R"/> %i18n:@messages%<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><f-a icon="circle"/></i></span>
+					<span :data-active="src == 'messages'" @click="src = 'messages'"><f-a :icon="['far', 'envelope']"/> %i18n:@messages%<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><f-a icon="circle"/></i></span>
 					<template v-if="lists">
 						<div class="hr" v-if="lists.length > 0"></div>
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id"><f-a icon="list"/> {{ l.title }}</span>
