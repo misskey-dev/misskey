@@ -152,8 +152,6 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" module>
-
-
 .header
 	margin 0 0 1em 0
 	color var(--primary)
