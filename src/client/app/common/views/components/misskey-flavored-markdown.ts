@@ -187,11 +187,14 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					const { emoji, name } = token;
-					const { customEmojis } = this;
 					return [createElement('mk-emoji', {
-						attrs: { emoji, name },
-						props: { customEmojis }
+						attrs: {
+							emoji: token.emoji,
+							name: token.name
+						},
+						props: {
+							customEmojis: this.customEmojis
+						}
 					})];
 				}
 
