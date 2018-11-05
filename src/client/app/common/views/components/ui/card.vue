@@ -48,6 +48,9 @@ export default Vue.extend({
 		&.fit-top
 			padding-top 0
 
+		&.fit-bottom
+			padding-bottom 0
+
 		> header
 			margin-bottom 16px
 			font-weight bold

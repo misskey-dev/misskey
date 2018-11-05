@@ -1078,6 +1078,7 @@ admin/views/instance.vue:
   instance-name: "インスタンス名"
   instance-description: "インスタンスの紹介"
   banner-url: "バナー画像URL"
+  drive-config: "ドライブの設定"
   local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
   remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
   mb: "メガバイト単位"

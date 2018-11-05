@@ -6,9 +6,16 @@
 			<ui-input v-model="name">%i18n:@instance-name%</ui-input>
 			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>
 			<ui-input v-model="bannerUrl">%i18n:@banner-url%</ui-input>
+		</section>
+		<section class="fit-top fit-bottom">
+			<ui-input v-model="maxNoteTextLength">%i18n:@max-note-text-length%</ui-input>
+		</section>
+		<section class="fit-bottom">
+			<header>%i18n:@drive-config%</header>
 			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="text">%i18n:@mb%</span></ui-input>
 			<ui-input v-model="remoteDriveCapacityMb">%i18n:@remote-drive-capacity-mb%<span slot="text">%i18n:@mb%</span></ui-input>
-			<ui-input v-model="maxNoteTextLength">%i18n:@max-note-text-length%</ui-input>
+		</section>
+		<section>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
 		</section>
 	</ui-card>
