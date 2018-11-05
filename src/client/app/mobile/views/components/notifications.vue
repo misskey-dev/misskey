@@ -165,7 +165,7 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			i
+			[data-icon]
 				margin-right 8px
 
 	> .more

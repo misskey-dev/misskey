@@ -239,7 +239,7 @@ main
 
 <style lang="stylus" module>
 .title
-	i
+	[data-icon]
 		margin-right 4px
 
 .badge

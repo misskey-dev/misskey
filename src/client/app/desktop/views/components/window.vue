@@ -8,8 +8,12 @@
 			>
 				<h1><slot name="header"></slot></h1>
 				<div>
-					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%"><fa :icon="['far', 'window-restore']"/></button>
-					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%"><fa icon="times"/></button>
+					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%">
+						<i><fa :icon="['far', 'window-restore']"/></i>
+					</button>
+					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%">
+						<i><fa icon="times"/></i>
+					</button>
 				</div>
 			</header>
 			<div class="content">
@@ -613,6 +617,7 @@ export default Vue.extend({
 							color var(--faceTextButtonActive)
 
 						> i
+							display inline-block
 							padding 0
 							width $header-height
 							line-height $header-height

@@ -613,9 +613,6 @@ export default Vue.extend({
 				line-height 38px
 				cursor pointer
 
-				i
-					margin-right 4px
-
 				*
 					pointer-events none
 
