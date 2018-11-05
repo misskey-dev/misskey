@@ -16,7 +16,7 @@ router.get('/v1/custom_emojis', async ctx => ctx.body =
 		fields: {
 			_id: false
 		}
-	})).map(toMastodonEmojis));
+	})).map(x => toMastodonEmojis(x)));
 
 router.get('/v1/instance', async ctx => { // TODO: This is a temporary implementation. Consider creating helper methods!
 	const meta = await Meta.findOne() || {};
