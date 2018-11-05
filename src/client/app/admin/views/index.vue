@@ -36,12 +36,12 @@
 		</div>
 	</nav>
 	<main>
-		<div v-show="page == 'dashboard'"><x-dashboard/></div>
-		<div v-show="page == 'instance'"><x-instance/></div>
+		<div v-if="page == 'dashboard'"><x-dashboard/></div>
+		<div v-if="page == 'instance'"><x-instance/></div>
 		<div v-if="page == 'users'"><x-users/></div>
-		<div v-show="page == 'emoji'"><x-emoji/></div>
-		<div v-show="page == 'announcements'"><x-announcements/></div>
-		<div v-show="page == 'hashtags'"><x-hashtags/></div>
+		<div v-if="page == 'emoji'"><x-emoji/></div>
+		<div v-if="page == 'announcements'"><x-announcements/></div>
+		<div v-if="page == 'hashtags'"><x-hashtags/></div>
 		<div v-if="page == 'drive'"></div>
 		<div v-if="page == 'update'"></div>
 	</main>
