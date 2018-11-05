@@ -28,6 +28,8 @@ export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T
 }
 
 function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, Error] {
+	if (defs.params == null) return [params, null];
+
 	const x: any = {};
 	let err: Error = null;
 	Object.entries(defs.params).some(([k, def]) => {
@@ -38,7 +40,7 @@ function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, E
 			(err as any).param = k;
 			return true;
 		} else {
-			if (v === undefined && def.default) {
+			if (v === undefined && def.hasOwnProperty('default')) {
 				x[k] = def.default;
 			} else {
 				x[k] = v;

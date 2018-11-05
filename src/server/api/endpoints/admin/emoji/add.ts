@@ -12,22 +12,22 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str
+			validator: $.str.min(1)
 		},
 
 		url: {
-			validator: $.str
+			validator: $.str.min(1)
 		},
 
 		aliases: {
-			validator: $.arr($.str).optional,
+			validator: $.arr($.str.min(1)).optional,
 			default: [] as string[]
 		}
 	}
 };
 
 export default define(meta, (ps) => new Promise(async (res, rej) => {
-	await Emoji.insert({
+	const emoji = await Emoji.insert({
 		updatedAt: new Date(),
 		name: ps.name,
 		host: null,
@@ -35,5 +35,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		url: ps.url
 	});
 
-	res();
+	res({
+		id: emoji._id
+	});
 }));

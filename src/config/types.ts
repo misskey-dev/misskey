@@ -18,8 +18,6 @@ export type Source = {
 		repository_url?: string;
 		feedback_url?: string;
 	};
-	name?: string;
-	description?: string;
 	languages?: string[];
 	welcome_bg_url?: string;
 	url: string;
@@ -74,6 +72,10 @@ export type Source = {
 		consumer_key: string;
 		consumer_secret: string;
 	};
+	github?: {
+		client_id: string;
+		client_secret: string;
+	};
 	github_bot?: {
 		hook_secret: string;
 		username: string;
@@ -105,8 +107,6 @@ export type Source = {
 		engine: string;
 		timeout: number;
 	};
-
-	maxNoteTextLength?: number;
 };
 
 /**

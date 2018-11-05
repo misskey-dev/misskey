@@ -131,6 +131,7 @@ common:
   show-full-acct: "ユーザー名のホストを省略しない"
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
+  use-os-default-emojis: "OS標準の絵文字を使用"
 
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
 
@@ -417,6 +418,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "または"
   signin-with-twitter: "Twitterでログイン"
+  signin-with-github: "GitHubでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 
 common/views/components/signup.vue:
@@ -458,6 +460,14 @@ common/views/components/twitter-setting.vue:
   detail: "詳細..."
   reconnect: "再接続する"
   connect: "Twitterと接続する"
+  disconnect: "切断する"
+
+common/views/components/github-setting.vue:
+  description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のGitHubアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "GitHubと接続する"
   disconnect: "切断する"
 
 common/views/components/uploader.vue:
@@ -598,32 +608,6 @@ desktop/views/components/calendar.vue:
   prev: "前の月"
   next: "次の月"
   go: "クリックして時間遡行"
-
-desktop/views/components/charts.vue:
-  title: "チャート"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  federation: "フェデレーション"
-  notes: "投稿"
-  users: "ユーザー"
-  drive: "ドライブ"
-  network: "ネットワーク"
-  charts:
-    federation-instances: "インスタンスの増減"
-    federation-instances-total: "インスタンスの積算"
-    notes: "投稿の増減 (統合)"
-    local-notes: "投稿の増減 (ローカル)"
-    remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の積算"
-    users: "ユーザーの増減"
-    users-total: "ユーザーの積算"
-    drive: "ドライブ使用量の増減"
-    drive-total: "ドライブ使用量の積算"
-    drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "ドライブのファイル数の積算"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
-    network-usage: "通信量"
 
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
@@ -1088,10 +1072,18 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "このインスタンス"
   federated: "連合"
+
+admin/views/instance.vue:
+  instance: "インスタンス"
+  instance-name: "インスタンス名"
+  instance-description: "インスタンスの紹介"
+  banner-url: "バナー画像URL"
+  max-note-text-length: "投稿の最大文字数"
+  disable-registration: "ユーザー登録の受付を停止する"
+  disable-local-timeline: "ローカルタイムラインを無効にする"
   invite: "招待"
-  banner-url: "Banner URL"
-  disableRegistration: "Disable new user registration"
-  disableLocalTimeline: "Disable the local timeline"
+  save: "保存"
+  saved: "保存しました"
 
 admin/views/charts.vue:
   title: "チャート"
@@ -1142,10 +1134,16 @@ admin/views/emoji.vue:
     aliases-desc: "スペースで区切って複数設定できます。"
     url: "絵文字画像URL"
     add: "追加"
+    info: "50KB以下のPNG画像をおすすめします。"
+    added: "絵文字を登録しました"
   emojis:
     title: "絵文字一覧"
     update: "更新"
     remove: "削除"
+  updated: "更新しました"
+  remove-emoji:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 
 admin/views/announcements.vue:
   announcements: "お知らせ"
@@ -1154,6 +1152,10 @@ admin/views/announcements.vue:
   add: "追加"
   title: "タイトル"
   text: "内容"
+  saved: "保存しました"
+  _remove:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
@@ -1172,12 +1174,6 @@ desktop/views/pages/deck/deck.user-column.vue:
   timeline: "タイムライン"
   pinned-notes: "ピン留めされた投稿"
   push-to-a-list: "リストに追加"
-
-desktop/views/pages/stats/stats.vue:
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
@@ -1560,6 +1556,10 @@ mobile/views/pages/settings.vue:
   twitter-connect: "Twitterアカウントに接続する"
   twitter-reconnect: "再接続する"
   twitter-disconnect: "切断する"
+  github: "GitHub連携"
+  github-connect: "GitHubアカウントに接続する"
+  github-reconnect: "再接続する"
+  github-disconnect: "切断する"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"

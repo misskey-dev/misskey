@@ -8,9 +8,7 @@ import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 import parseMfm from '../../../mfm/parse';
-import getEmojiNames from '../misc/get-emoji-names';
 import Emoji, { IEmoji } from '../../../models/emoji';
-import { unique } from '../../../prelude/array';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
 	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
@@ -110,8 +108,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	const content = toHtml(Object.assign({}, note, { text }));
 
-	const emojiNames = unique(getEmojiNames(content));
-	const emojis = await getEmojis(emojiNames);
+	const emojis = await getEmojis(note.emojis);
 	const apemojis = emojis.map(emoji => renderEmoji(emoji));
 
 	const tag = [
@@ -141,12 +138,10 @@ async function getEmojis(names: string[]): Promise<IEmoji[]> {
 	if (names == null || names.length < 1) return [];
 
 	const emojis = await Promise.all(
-		names.map(async name => {
-			return await Emoji.findOne({
-				name,
-				host: null
-			});
-		})
+		names.map(name => Emoji.findOne({
+			name,
+			host: null
+		}))
 	);
 
 	return emojis.filter(emoji => emoji != null);

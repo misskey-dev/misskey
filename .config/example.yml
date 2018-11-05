@@ -1,6 +1,3 @@
-name: example-instance-name # Name of your instance
-description: example-description # Description of your instance
-
 maintainer:
   name: example-maitainer-name # Your name
   url: http://example.com/ # Your contact (http or mailto)
@@ -25,7 +22,7 @@ url: https://example.tld/
 #   +------+      |+-------------+      +----------------+|
 #                 +---------------------------------------+
 #
-#   You need to setup reverse proxy. (eg. Nginx)
+#   You need to setup reverse proxy. (eg. nginx)
 #   You do not define 'https' section.
 
 # Option 2: Standalone
@@ -148,6 +145,12 @@ drive:
 #  consumer_key: example-twitter-consumer-key
 #  consumer_secret: example-twitter-consumer-secret-key
 
+# GitHub integration
+# You need to set the oauth callback url as : https://<your-misskey-instance>/api/gh/cb
+#github:
+#  client_id: example-github-client-id
+#  client_secret: example-github-client-secret
+
 # Ghost
 # Ghost account is an account used for the purpose of delegating
 # followers when putting users in the list.
@@ -164,6 +167,3 @@ drive:
 #  external: true
 #  engine: http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}
 #  timeout: 300000
-
-# Max allowed note text length in charactors
-maxNoteTextLength: 1000

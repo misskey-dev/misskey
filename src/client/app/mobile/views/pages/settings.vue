@@ -23,6 +23,7 @@
 					<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
 					<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
 					<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
+					<ui-switch v-model="useOsDefaultEmojis">%i18n:common.use-os-default-emojis%</ui-switch>
 					<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 					<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
@@ -125,6 +126,19 @@
 				</section>
 			</ui-card>
 
+			<ui-card>
+				<div slot="title">%fa:B github% %i18n:@github%</div>
+
+				<section>
+					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
+					<p>
+						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? '%i18n:@github-reconnect%' : '%i18n:@github-connect%' }}</a>
+						<span v-if="$store.state.i.github"> or </span>
+						<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github">%i18n:@github-disconnect%</a>
+					</p>
+				</section>
+			</ui-card>
+
 			<mk-api-settings />
 
 			<ui-card>
@@ -184,6 +198,11 @@ export default Vue.extend({
 		darkmode: {
 			get() { return this.$store.state.device.darkmode; },
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
+		},
+
+		useOsDefaultEmojis: {
+			get() { return this.$store.state.device.useOsDefaultEmojis; },
+			set(value) { this.$store.commit('device/set', { key: 'useOsDefaultEmojis', value }); }
 		},
 
 		reduceMotion: {

@@ -22,7 +22,7 @@ adduser --disabled-password --disabled-login misskey
 Please install and setup these softwares:
 
 #### Dependencies :package:
-* **[Node.js](https://nodejs.org/en/)**
+* **[Node.js](https://nodejs.org/en/)** >= 10.0.0
 * **[MongoDB](https://www.mongodb.com/)** >= 3.6
 
 ##### Optional

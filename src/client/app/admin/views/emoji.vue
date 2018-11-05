@@ -16,6 +16,7 @@
 			<ui-input v-model="url">
 				<span>%i18n:@add-emoji.url%</span>
 			</ui-input>
+			<ui-info>%i18n:@add-emoji.info%</ui-info>
 			<ui-button @click="add">%i18n:@add-emoji.add%</ui-button>
 		</section>
 	</ui-card>
@@ -27,11 +28,9 @@
 			<ui-horizon-group inputs>
 				<ui-input v-model="emoji.name">
 					<span>%i18n:@add-emoji.name%</span>
-					<span slot="text">%i18n:@add-emoji.name-desc%</span>
 				</ui-input>
 				<ui-input v-model="emoji.aliases">
 					<span>%i18n:@add-emoji.aliases%</span>
-					<span slot="text">%i18n:@add-emoji.aliases-desc%</span>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="emoji.url">
@@ -68,17 +67,24 @@ export default Vue.extend({
 			(this as any).api('admin/emoji/add', {
 				name: this.name,
 				url: this.url,
-				aliases: this.aliases.split(' ')
+				aliases: this.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Added` });
+				this.$swal({
+					type: 'success',
+					text: '%i18n:@add-emoji.added%'
+				});
 				this.fetchEmojis();
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				this.$swal({
+					type: 'error',
+					text: e
+				});
 			});
 		},
 
 		fetchEmojis() {
 			(this as any).api('admin/emoji/list').then(emojis => {
+				emojis.reverse();
 				emojis.forEach(e => e.aliases = (e.aliases || []).join(' '));
 				this.emojis = emojis;
 			});
@@ -89,22 +95,42 @@ export default Vue.extend({
 				id: emoji.id,
 				name: emoji.name,
 				url: emoji.url,
-				aliases: emoji.aliases.split(' ')
+				aliases: emoji.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Updated` });
+				this.$swal({
+					type: 'success',
+					text: '%i18n:@updated%'
+				});
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				this.$swal({
+					type: 'error',
+					text: e
+				});
 			});
 		},
 
 		removeEmoji(emoji) {
-			(this as any).api('admin/emoji/remove', {
-				id: emoji.id
-			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Removed` });
-				this.fetchEmojis();
-			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+			this.$swal({
+				type: 'warning',
+				text: '%i18n:@remove-emoji.are-you-sure%'.replace('$1', emoji.name),
+				showCancelButton: true
+			}).then(res => {
+				if (!res.value) return;
+
+				(this as any).api('admin/emoji/remove', {
+					id: emoji.id
+				}).then(() => {
+					this.$swal({
+						type: 'success',
+						text: '%i18n:@remove-emoji.removed%'
+					});
+					this.fetchEmojis();
+				}).catch(e => {
+					this.$swal({
+						type: 'error',
+						text: e
+					});
+				});
 			});
 		}
 	}

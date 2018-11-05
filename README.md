@@ -4,7 +4,6 @@
 ================================================================
 
 [![CircleCI](https://circleci.com/gh/syuilo/misskey.svg?style=svg)](https://circleci.com/gh/syuilo/misskey)
-[![][travis-badge]][travis-link]
 [![][dependencies-badge]][dependencies-link]
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
@@ -44,7 +43,7 @@ Easiest way to tell your emotions. Misskey allows you to add various type of rea
 
 <h3 align="left">Interface</h3>
 <p align="left">
-No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. You can edit layouts of your timeline, place selectable widgets you can easily move and create your unique home as this place will be your home.
+Highly customizable UI for your taste. We understand no UI fits for everyone. You can edit layouts of your timeline, place selectable widgets you can easily move and create your unique home as this place will be your home.
 </p>
 
 ---
@@ -124,8 +123,6 @@ Misskey is an open-source software licensed under the [GNU AGPLv3](LICENSE).
 
 [agpl-3.0]:           https://www.gnu.org/licenses/agpl-3.0.en.html
 [agpl-3.0-badge]:     https://img.shields.io/badge/license-AGPL--3.0-444444.svg?style=flat-square
-[travis-link]:        https://travis-ci.org/syuilo/misskey
-[travis-badge]:       http://img.shields.io/travis/syuilo/misskey/master.svg?style=flat-square
 [dependencies-link]:  https://david-dm.org/syuilo/misskey
 [dependencies-badge]: https://img.shields.io/david/syuilo/misskey.svg?style=flat-square
 

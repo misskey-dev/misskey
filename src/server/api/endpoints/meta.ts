@@ -41,8 +41,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		version: pkg.version,
 		clientVersion: client.version,
 
-		name: config.name || 'Misskey',
-		description: config.description,
+		name: met.name || 'Misskey',
+		description: met.description,
 
 		secure: config.https != null,
 		machine: os.hostname(),
@@ -62,7 +62,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		swPublickey: config.sw ? config.sw.public_key : null,
 		hidedTags: (me && me.isAdmin) ? met.hidedTags : undefined,
 		bannerUrl: met.bannerUrl,
-		maxNoteTextLength: config.maxNoteTextLength,
+		maxNoteTextLength: met.maxNoteTextLength || 1000,
 
 		emojis: emojis,
 
@@ -73,6 +73,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			recaptcha: config.recaptcha ? true : false,
 			objectStorage: config.drive && config.drive.storage === 'minio',
 			twitter: config.twitter ? true : false,
+			github: config.github ? true : false,
 			serviceWorker: config.sw ? true : false,
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
 		} : undefined

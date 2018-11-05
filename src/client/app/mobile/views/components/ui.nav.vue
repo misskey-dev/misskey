@@ -30,7 +30,7 @@
 				<ul>
 					<li><a @click="search"><font-awesome-icon icon="search"/>%i18n:@search%<font-awesome-icon icon="angle-right"/></a></li>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><font-awesome-icon icon="cog"/>%i18n:@settings%<font-awesome-icon icon="angle-right"/></router-link></li>
-					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><router-link to="/admin"><font-awesome-icon icon="terminal"/><span>%i18n:@admin%</span><font-awesome-icon icon="angle-right"/></router-link></li>
+					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><a href="/admin"><font-awesome-icon icon="terminal"/><span>%i18n:@admin%</span><font-awesome-icon icon="angle-right"/></a></li>
 					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><font-awesome-icon icon="moon"/></template><template v-else><font-awesome-icon icon="R moon"/></template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>
