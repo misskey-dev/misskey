@@ -11,7 +11,6 @@ import Reaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
 import Favorite from './favorite';
 import Following from './following';
-import config from '../config';
 import Emoji from './emoji';
 
 const Note = db.get<INote>('notes');
@@ -26,10 +25,6 @@ Note.createIndex('_files.contentType');
 Note.createIndex({ createdAt: -1 });
 Note.createIndex({ score: -1 }, { sparse: true });
 export default Note;
-
-export function isValidText(text: string): boolean {
-	return length(text.trim()) <= config.maxNoteTextLength && text.trim() != '';
-}
 
 export function isValidCw(text: string): boolean {
 	return length(text.trim()) <= 100;

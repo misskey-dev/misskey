@@ -107,8 +107,6 @@ export type Source = {
 		engine: string;
 		timeout: number;
 	};
-
-	maxNoteTextLength?: number;
 };
 
 /**

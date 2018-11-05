@@ -1,10 +1,20 @@
 import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 const ms = require('ms');
-import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
+import { length } from 'stringz';
+import Note, { INote, isValidCw, pack } from '../../../../models/note';
 import User, { IUser } from '../../../../models/user';
 import DriveFile, { IDriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
+import Meta from '../../../../models/meta';
+
+let maxNoteTextLength = 1000;
+
+setInterval(() => {
+	Meta.findOne({}).then(m => {
+		if (m.maxNoteTextLength) maxNoteTextLength = m.maxNoteTextLength;
+	});
+}, 3000);
 
 export const meta = {
 	stability: 'stable',
@@ -40,7 +50,9 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.str.optional.nullable.pipe(isValidText),
+			validator: $.str.optional.nullable.pipe(text =>
+				length(text.trim()) <= maxNoteTextLength && text.trim() != ''
+			),
 			default: null as any,
 			desc: {
 				'ja-JP': '投稿内容'

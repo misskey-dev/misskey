@@ -23,5 +23,5 @@ Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
 * Test codes are located in `/test`.
 
 ## Continuous integration
-Misskey uses Travis for automated test.
-Configuration files are located in `/.travis`.
+Misskey uses CircleCI for automated test.
+Configuration files are located in `/.circleci`.

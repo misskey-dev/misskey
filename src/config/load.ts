@@ -49,8 +49,6 @@ export default function load() {
 	if (config.localDriveCapacityMb == null) config.localDriveCapacityMb = 256;
 	if (config.remoteDriveCapacityMb == null) config.remoteDriveCapacityMb = 8;
 
-	if (config.maxNoteTextLength == null) config.maxNoteTextLength = 1000;
-
 	return Object.assign(config, mixin);
 }
 
