@@ -255,7 +255,7 @@ export default Vue.extend({
 					p
 						margin 0
 
-						i, .mk-reaction-icon
+						[data-icon], .mk-reaction-icon
 							margin-right 4px
 
 				.note-preview
@@ -272,19 +272,19 @@ export default Vue.extend({
 						margin-right 3px
 
 				&.renote, &.quote
-					.text p i
+					.text p [data-icon]
 						color #77B255
 
 				&.follow
-					.text p i
+					.text p [data-icon]
 						color #53c7ce
 
 				&.receiveFollowRequest
-					.text p i
+					.text p [data-icon]
 						color #888
 
 				&.reply, &.mention
-					.text p i
+					.text p [data-icon]
 						color #555
 
 			> .date
