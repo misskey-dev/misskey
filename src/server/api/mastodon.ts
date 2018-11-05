@@ -5,18 +5,17 @@ import config from '../../config';
 import Meta from '../../models/meta';
 import { ObjectID } from 'bson';
 import Emoji from '../../models/emoji';
-import { toMastodonEmojis } from '../../models/mastodon/emoji';
 const pkg = require('../../../package.json');
 
 // Init router
 const router = new Router();
 
 router.get('/v1/custom_emojis', async ctx => ctx.body =
-	(await Emoji.find({ host: null }, {
+	await Emoji.find({ host: null }, {
 		fields: {
 			_id: false
 		}
-	})).map(toMastodonEmojis));
+	}));
 
 router.get('/v1/instance', async ctx => { // TODO: This is a temporary implementation. Consider creating helper methods!
 	const meta = await Meta.findOne() || {};
@@ -41,11 +40,6 @@ router.get('/v1/instance', async ctx => { // TODO: This is a temporary implement
 		notesCount: 0
 	};
 	const acct = maintainer.host ? `${maintainer.username}@${maintainer.host}` : maintainer.username;
-	const emojis = (await Emoji.find({ host: null }, {
-		fields: {
-			_id: false
-		}
-	})).map(toMastodonEmojis);
 
 	ctx.body = {
 		uri: config.hostname,
@@ -85,7 +79,7 @@ router.get('/v1/instance', async ctx => { // TODO: This is a temporary implement
 			followers_count: maintainer.followersCount,
 			following_count: maintainer.followingCount,
 			statuses_count: maintainer.notesCount,
-			emojis: emojis,
+			emojis: [],
 			moved: null,
 			fields: null
 		}
