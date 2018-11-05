@@ -191,6 +191,11 @@ describe('Text', () => {
 				{ type: 'emoji', content: ':cat:', name: 'cat'},
 				{ type: 'emoji', content: ':cat:', name: 'cat'}
 			], tokens2);
+
+			const tokens3 = analyze('🍎');
+			assert.deepEqual([
+				{ type: 'emoji', content: ':cat:', emoji: '🍎'}
+			], tokens3);
 		});
 
 		it('block code', () => {
