@@ -9,7 +9,11 @@ export default Vue.extend({
 	props: {
 		emoji: {
 			type: String,
-			required: true
+			required: false
+		},
+		raw: {
+			type: String,
+			required: false
 		},
 		customEmojis: {
 			required: false
@@ -27,12 +31,11 @@ export default Vue.extend({
 	},
 	methods: {
 		exec() {
-			const { emoji, customEmojis } = this;
-			this.name = emoji;
-			console.log(emoji, customEmojis)
-			this.url = customEmojis && customEmojis.length ? customEmojis.find(e => e.name === emoji || e.aliases && e.aliases.includes(emoji)).url : null;
+			const { emoji, raw, customEmojis } = this;
+			this.name = emoji || raw;
+			this.url = !raw && customEmojis && customEmojis.length ? customEmojis.find(e => e.name === emoji || e.aliases && e.aliases.includes(emoji)).url : null;
 			if (!this.url) {
-				const { char } = lib[emoji] || { char: null };
+				const char = raw || lib[emoji] && lib[emoji].char;
 				if (char) {
 					this.url = `https://twemoji.maxcdn.com/2/svg/${char.codePointAt(0).toString(16)}.svg`;
 					this.alt = char;
