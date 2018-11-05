@@ -6,6 +6,8 @@
 			<ui-input v-model="name">%i18n:@instance-name%</ui-input>
 			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>
 			<ui-input v-model="bannerUrl">%i18n:@banner-url%</ui-input>
+			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="text">%i18n:@mb%</span></ui-input>
+			<ui-input v-model="remoteDriveCapacityMb">%i18n:@remote-drive-capacity-mb%<span slot="text">%i18n:@mb%</span></ui-input>
 			<ui-input v-model="maxNoteTextLength">%i18n:@max-note-text-length%</ui-input>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
 		</section>
@@ -40,6 +42,8 @@ export default Vue.extend({
 			bannerUrl: null,
 			name: null,
 			description: null,
+			localDriveCapacityMb: null,
+			remoteDriveCapacityMb: null,
 			maxNoteTextLength: null,
 			inviteCode: null,
 		};
@@ -50,6 +54,8 @@ export default Vue.extend({
 			this.bannerUrl = meta.bannerUrl;
 			this.name = meta.name;
 			this.description = meta.description;
+			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
+			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.maxNoteTextLength = meta.maxNoteTextLength;
 		});
 	},
@@ -73,6 +79,8 @@ export default Vue.extend({
 				bannerUrl: this.bannerUrl,
 				name: this.name,
 				description: this.description,
+				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
+				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10)
 			}).then(() => {
 				this.$swal({

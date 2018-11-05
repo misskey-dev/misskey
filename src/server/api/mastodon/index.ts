@@ -2,10 +2,10 @@ import * as Router from 'koa-router';
 import User from '../../../models/user';
 import { toASCII } from 'punycode';
 import config from '../../../config';
-import Meta from '../../../models/meta';
 import { ObjectID } from 'bson';
 import Emoji from '../../../models/emoji';
 import { toMastodonEmojis } from './emoji';
+import fetchMeta from '../../../misc/fetch-meta';
 const pkg = require('../../../../package.json');
 
 // Init router
@@ -19,11 +19,8 @@ router.get('/v1/custom_emojis', async ctx => ctx.body =
 	})).map(x => toMastodonEmojis(x)));
 
 router.get('/v1/instance', async ctx => { // TODO: This is a temporary implementation. Consider creating helper methods!
-	const meta = await Meta.findOne() || {};
-	const { originalNotesCount, originalUsersCount } = meta.stats || {
-		originalNotesCount: 0,
-		originalUsersCount: 0
-	};
+	const meta = await fetchMeta();
+	const { originalNotesCount, originalUsersCount } = meta.stats;
 	const domains = await User.distinct('host', { host: { $ne: null } }) as any as [] || [];
 	const maintainer = await User.findOne({ isAdmin: true }) || {
 		_id: ObjectID.createFromTime(0),

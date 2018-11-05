@@ -46,8 +46,6 @@ export type Source = {
 		secret_key: string;
 	};
 
-	localDriveCapacityMb: number;
-	remoteDriveCapacityMb: number;
 	preventCacheRemoteFiles: boolean;
 
 	drive?: {

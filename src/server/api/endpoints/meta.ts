@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
-import Meta from '../../../models/meta';
 import Emoji from '../../../models/emoji';
 import define from '../define';
+import fetchMeta from '../../../misc/fetch-meta';
 
 const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
@@ -27,7 +27,7 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const met: any = (await Meta.findOne()) || {};
+	const instance = await fetchMeta();
 
 	const emojis = await Emoji.find({ host: null }, {
 		fields: {
@@ -41,8 +41,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		version: pkg.version,
 		clientVersion: client.version,
 
-		name: met.name || 'Misskey',
-		description: met.description,
+		name: instance.name,
+		description: instance.description,
 
 		secure: config.https != null,
 		machine: os.hostname(),
@@ -54,21 +54,22 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			cores: os.cpus().length
 		},
 
-		broadcasts: met.broadcasts || [],
-		disableRegistration: met.disableRegistration,
-		disableLocalTimeline: met.disableLocalTimeline,
-		driveCapacityPerLocalUserMb: config.localDriveCapacityMb,
+		broadcasts: instance.broadcasts || [],
+		disableRegistration: instance.disableRegistration,
+		disableLocalTimeline: instance.disableLocalTimeline,
+		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
+		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
 		swPublickey: config.sw ? config.sw.public_key : null,
-		hidedTags: (me && me.isAdmin) ? met.hidedTags : undefined,
-		bannerUrl: met.bannerUrl,
-		maxNoteTextLength: met.maxNoteTextLength || 1000,
+		hidedTags: (me && me.isAdmin) ? instance.hidedTags : undefined,
+		bannerUrl: instance.bannerUrl,
+		maxNoteTextLength: instance.maxNoteTextLength,
 
 		emojis: emojis,
 
 		features: ps.detail ? {
-			registration: !met.disableRegistration,
-			localTimeLine: !met.disableLocalTimeline,
+			registration: !instance.disableRegistration,
+			localTimeLine: !instance.disableLocalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
 			recaptcha: config.recaptcha ? true : false,
 			objectStorage: config.drive && config.drive.storage === 'minio',

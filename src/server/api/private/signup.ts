@@ -8,6 +8,7 @@ import config from '../../../config';
 import Meta from '../../../models/meta';
 import RegistrationTicket from '../../../models/registration-tickets';
 import usersChart from '../../../chart/users';
+import fetchMeta from '../../../misc/fetch-meta';
 
 if (config.recaptcha) {
 	recaptcha.init({
@@ -33,9 +34,9 @@ export default async (ctx: Koa.Context) => {
 	const password = body['password'];
 	const invitationCode = body['invitationCode'];
 
-	const meta = await Meta.findOne({});
+	const instance = await fetchMeta();
 
-	if (meta && meta.disableRegistration) {
+	if (instance && instance.disableRegistration) {
 		if (invitationCode == null || typeof invitationCode != 'string') {
 			ctx.status = 400;
 			return;

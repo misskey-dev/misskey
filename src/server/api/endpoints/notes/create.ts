@@ -6,13 +6,13 @@ import User, { IUser } from '../../../../models/user';
 import DriveFile, { IDriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
-import Meta from '../../../../models/meta';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 let maxNoteTextLength = 1000;
 
 setInterval(() => {
-	Meta.findOne({}).then(m => {
-		if (m.maxNoteTextLength) maxNoteTextLength = m.maxNoteTextLength;
+	fetchMeta().then(m => {
+		maxNoteTextLength = m.maxNoteTextLength;
 	});
 }, 3000);
 

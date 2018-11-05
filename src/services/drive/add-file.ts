@@ -19,6 +19,7 @@ import config from '../../config';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import driveChart from '../../chart/drive';
 import perUserDriveChart from '../../chart/per-user-drive';
+import fetchMeta from '../../misc/fetch-meta';
 
 const log = debug('misskey:drive:add-file');
 
@@ -255,7 +256,8 @@ export default async function(
 
 		log(`drive usage is ${usage}`);
 
-		const driveCapacity = 1024 * 1024 * (isLocalUser(user) ? config.localDriveCapacityMb : config.remoteDriveCapacityMb);
+		const instance = await fetchMeta();
+		const driveCapacity = 1024 * 1024 * (isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
 
 		// If usage limit exceeded
 		if (usage + size > driveCapacity) {

@@ -1,7 +1,7 @@
-import Meta from '../../../models/meta';
 import define from '../define';
 import driveChart from '../../../chart/drive';
 import federationChart from '../../../chart/federation';
+import fetchMeta from '../../../misc/fetch-meta';
 
 export const meta = {
 	requireCredential: false,
@@ -15,9 +15,9 @@ export const meta = {
 };
 
 export default define(meta, () => new Promise(async (res, rej) => {
-	const meta = await Meta.findOne();
+	const instance = await fetchMeta();
 
-	const stats: any = meta ? meta.stats : {};
+	const stats: any = instance.stats;
 
 	const driveStats = await driveChart.getChart('hour', 1);
 	stats.driveUsageLocal = driveStats.local.totalSize[0];

@@ -1,14 +1,14 @@
 import Note from '../../../../models/note';
-import Meta from '../../../../models/meta';
 import define from '../../define';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
 	requireCredential: false,
 };
 
 export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const meta = await Meta.findOne({});
-	const hidedTags = meta ? (meta.hidedTags || []).map(t => t.toLowerCase()) : [];
+	const instance = await fetchMeta();
+	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
 
 	const span = 1000 * 60 * 60 * 24 * 7; // 1週間
 

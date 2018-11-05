@@ -1,7 +1,8 @@
 import * as mongo from 'mongodb';
 import redis from './db/redis';
 import Xev from 'xev';
-import Meta, { IMeta } from './models/meta';
+import { IMeta } from './models/meta';
+import fetchMeta from './misc/fetch-meta';
 
 type ID = string | mongo.ObjectID;
 
@@ -16,14 +17,14 @@ class Publisher {
 		}
 
 		setInterval(async () => {
-			this.meta = await Meta.findOne({});
+			this.meta = await fetchMeta();
 		}, 5000);
 	}
 
-	public getMeta = async () => {
+	public fetchMeta = async () => {
 		if (this.meta != null) return this.meta;
 
-		this.meta = await Meta.findOne({});
+		this.meta = await fetchMeta();
 		return this.meta;
 	}
 
@@ -82,13 +83,13 @@ class Publisher {
 	}
 
 	public publishLocalTimelineStream = async (note: any): Promise<void> => {
-		const meta = await this.getMeta();
+		const meta = await this.fetchMeta();
 		if (meta.disableLocalTimeline) return;
 		this.publish('localTimeline', null, note);
 	}
 
 	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => {
-		const meta = await this.getMeta();
+		const meta = await this.fetchMeta();
 		if (meta.disableLocalTimeline) return;
 		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
 	}
