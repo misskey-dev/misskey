@@ -23,6 +23,10 @@ jobs:
     executor: default
     steps:
       - checkout
+      - run:
+          name: Ensure package-lock.json
+          command: |
+            [ ! -e package-lock.json ] && echo '{}' > package-lock.json
       - restore_cache:
           name: Restore npm package caches
           keys:
