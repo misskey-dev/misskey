@@ -274,12 +274,15 @@ export default Vue.extend({
 			return {
 				series: [{
 					name: 'Combined',
+					type: 'line',
 					data: this.format(sum(this.stats.notes.local.total, this.stats.notes.remote.total))
 				}, {
 					name: 'Local',
+					type: 'area',
 					data: this.format(this.stats.notes.local.total)
 				}, {
 					name: 'Remote',
+					type: 'area',
 					data: this.format(this.stats.notes.remote.total)
 				}]
 			};
@@ -289,18 +292,21 @@ export default Vue.extend({
 			return {
 				series: [{
 					name: 'Combined',
+					type: 'line',
 					data: this.format(total
 						? sum(this.stats.users.local.total, this.stats.users.remote.total)
 						: sum(this.stats.users.local.inc, negate(this.stats.users.local.dec), this.stats.users.remote.inc, negate(this.stats.users.remote.dec))
 					)
 				}, {
 					name: 'Local',
+					type: 'area',
 					data: this.format(total
 						? this.stats.users.local.total
 						: sum(this.stats.users.local.inc, negate(this.stats.users.local.dec))
 					)
 				}, {
 					name: 'Remote',
+					type: 'area',
 					data: this.format(total
 						? this.stats.users.remote.total
 						: sum(this.stats.users.remote.inc, negate(this.stats.users.remote.dec))
@@ -314,6 +320,7 @@ export default Vue.extend({
 				bytes: true,
 				series: [{
 					name: 'All',
+					type: 'line',
 					data: this.format(
 						sum(
 							this.stats.drive.local.incSize,
@@ -324,15 +331,19 @@ export default Vue.extend({
 					)
 				}, {
 					name: 'Local +',
+					type: 'area',
 					data: this.format(this.stats.drive.local.incSize)
 				}, {
 					name: 'Local -',
+					type: 'area',
 					data: this.format(negate(this.stats.drive.local.decSize))
 				}, {
 					name: 'Remote +',
+					type: 'area',
 					data: this.format(this.stats.drive.remote.incSize)
 				}, {
 					name: 'Remote -',
+					type: 'area',
 					data: this.format(negate(this.stats.drive.remote.decSize))
 				}]
 			};
@@ -343,12 +354,15 @@ export default Vue.extend({
 				bytes: true,
 				series: [{
 					name: 'Combined',
+					type: 'line',
 					data: this.format(sum(this.stats.drive.local.totalSize, this.stats.drive.remote.totalSize))
 				}, {
 					name: 'Local',
+					type: 'area',
 					data: this.format(this.stats.drive.local.totalSize)
 				}, {
 					name: 'Remote',
+					type: 'area',
 					data: this.format(this.stats.drive.remote.totalSize)
 				}]
 			};
@@ -358,6 +372,7 @@ export default Vue.extend({
 			return {
 				series: [{
 					name: 'All',
+					type: 'line',
 					data: this.format(
 						sum(
 							this.stats.drive.local.incCount,
@@ -368,15 +383,19 @@ export default Vue.extend({
 					)
 				}, {
 					name: 'Local +',
+					type: 'area',
 					data: this.format(this.stats.drive.local.incCount)
 				}, {
 					name: 'Local -',
+					type: 'area',
 					data: this.format(negate(this.stats.drive.local.decCount))
 				}, {
 					name: 'Remote +',
+					type: 'area',
 					data: this.format(this.stats.drive.remote.incCount)
 				}, {
 					name: 'Remote -',
+					type: 'area',
 					data: this.format(negate(this.stats.drive.remote.decCount))
 				}]
 			};
@@ -386,12 +405,15 @@ export default Vue.extend({
 			return {
 				series: [{
 					name: 'Combined',
+					type: 'line',
 					data: this.format(sum(this.stats.drive.local.totalCount, this.stats.drive.remote.totalCount))
 				}, {
 					name: 'Local',
+					type: 'area',
 					data: this.format(this.stats.drive.local.totalCount)
 				}, {
 					name: 'Remote',
+					type: 'area',
 					data: this.format(this.stats.drive.remote.totalCount)
 				}]
 			};
