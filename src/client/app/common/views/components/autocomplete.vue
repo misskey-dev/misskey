@@ -215,6 +215,11 @@ export default Vue.extend({
 					}
 				}
 			} else if (this.type == 'emoji') {
+				if (this.q == null || this.q == '') {
+					this.emojis = this.emojiDb.filter(x => x.isCustomEmoji && !x.aliasOf);
+					return;
+				}
+
 				const matched = [];
 				const max = 30;
 
