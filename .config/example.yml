@@ -110,6 +110,10 @@ drive:
   #   accessKey: XXX
   #   secretKey: YYY
 
+# If enabled:
+#  The first account created is automatically marked as Admin.
+autoAdmin: true
+
 #
 # Below settings are optional
 #

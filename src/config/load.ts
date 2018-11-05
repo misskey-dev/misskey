@@ -49,6 +49,8 @@ export default function load() {
 	if (config.localDriveCapacityMb == null) config.localDriveCapacityMb = 256;
 	if (config.remoteDriveCapacityMb == null) config.remoteDriveCapacityMb = 8;
 
+	if (config.autoAdmin == null) config.autoAdmin = false;
+
 	return Object.assign(config, mixin);
 }
 

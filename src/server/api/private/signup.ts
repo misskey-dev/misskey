@@ -67,6 +67,8 @@ export default async (ctx: Koa.Context) => {
 		return;
 	}
 
+	const usersCount = await User.count({});
+
 	// Fetch exist user that same username
 	const usernameExist = await User
 		.count({
@@ -106,6 +108,7 @@ export default async (ctx: Koa.Context) => {
 		token: secret,
 		email: null,
 		password: hash,
+		isAdmin: config.autoAdmin && usersCount === 0,
 		profile: {
 			bio: null,
 			birthday: null,

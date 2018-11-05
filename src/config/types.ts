@@ -58,6 +58,8 @@ export type Source = {
 		config?: any;
 	};
 
+	autoAdmin?: boolean;
+
 	/**
 	 * ゴーストアカウントのID
 	 */
