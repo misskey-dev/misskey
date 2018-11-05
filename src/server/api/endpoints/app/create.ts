@@ -35,7 +35,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const app = await App.insert({
 		createdAt: new Date(),
 		userId: user && user._id,
-		name: name,
+		name: ps.name,
 		description: ps.description,
 		permission: ps.permission,
 		callbackUrl: ps.callbackUrl,
