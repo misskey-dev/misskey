@@ -109,7 +109,7 @@ if (!config.github || !redis) {
 		}
 
 		const params = {
-			redirect_uri: `${config.url}:8089/api/gh/cb`,
+			redirect_uri: `${config.url}/api/gh/cb`,
 			scope: ['read:user'],
 			state: uuid()
 		};
@@ -122,7 +122,7 @@ if (!config.github || !redis) {
 		const sessid = uuid();
 
 		const params = {
-			redirect_uri: `${config.url}:8089/api/gh/cb`,
+			redirect_uri: `${config.url}/api/gh/cb`,
 			scope: ['read:user'],
 			state: uuid()
 		};
