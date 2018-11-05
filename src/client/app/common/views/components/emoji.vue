@@ -68,7 +68,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .fvgwvorwhxigeolkkrcderjzcawqrscl
-	height 1em
+	height 1.2em
+	vertical-align -0.125em
 
 	&.custom
 		height 2.5em
