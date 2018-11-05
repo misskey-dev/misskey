@@ -222,8 +222,6 @@ class Autocomplete {
 			const trimmedBefore = before.substring(0, before.lastIndexOf(':'));
 			const after = source.substr(caret);
 
-			if (value.startsWith(':')) value = value + ' ';
-
 			// 挿入
 			this.text = trimmedBefore + value + after;
 
