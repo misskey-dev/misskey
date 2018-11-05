@@ -142,7 +142,7 @@ export default Vue.extend({
 				> .created-at
 					opacity 0.7
 
-					> [data-fa]
+					> [data-icon]
 						margin-right 2px
 
 				> .nsfw

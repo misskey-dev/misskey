@@ -58,7 +58,7 @@ export default Vue.extend({
 		color var(--text)
 		opacity 0.7
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> div

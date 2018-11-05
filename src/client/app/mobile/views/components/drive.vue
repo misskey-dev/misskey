@@ -497,7 +497,7 @@ export default Vue.extend({
 			&:last-child
 				font-weight bold
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 		> span

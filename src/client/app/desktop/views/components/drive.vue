@@ -635,7 +635,7 @@ export default Vue.extend({
 					opacity 0.5
 					cursor default
 
-					> [data-fa]
+					> [data-icon]
 						margin 0
 
 		> .search

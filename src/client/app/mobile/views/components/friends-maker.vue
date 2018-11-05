@@ -89,7 +89,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .refresh
@@ -121,7 +121,7 @@ export default Vue.extend({
 		&:active
 			color #222
 
-		> [data-fa]
+		> [data-icon]
 			padding 10px
 
 </style>

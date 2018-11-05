@@ -100,7 +100,7 @@ export default Vue.extend({
 				transition width 1s ease
 
 			> span
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 				> .votes

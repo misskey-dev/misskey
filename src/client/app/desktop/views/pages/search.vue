@@ -124,12 +124,11 @@ export default Vue.extend({
 	text-align center
 	color #999
 
-	> [data-fa]
+	> [data-icon]
 		display block
 		margin-bottom 16px
 		font-size 3em
 		color #ccc
-
 
 .notAvailable
 	display block
@@ -139,7 +138,7 @@ export default Vue.extend({
 	text-align center
 	color #999
 
-	> [data-fa]
+	> [data-icon]
 		display block
 		margin-bottom 16px
 		font-size 3em

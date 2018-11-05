@@ -299,7 +299,7 @@ export default Vue.extend({
 				background var(--primaryDarken10)
 				transition background 0s ease
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 8px
 
 		> div

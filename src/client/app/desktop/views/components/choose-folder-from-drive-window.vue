@@ -40,7 +40,7 @@ export default Vue.extend({
 
 
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .browser

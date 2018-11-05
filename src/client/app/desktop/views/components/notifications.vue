@@ -264,7 +264,7 @@ export default Vue.extend({
 				.note-ref
 					color var(--noteText)
 
-					[data-fa]
+					[data-icon]
 						font-size 1em
 						font-weight normal
 						font-style normal
@@ -300,7 +300,7 @@ export default Vue.extend({
 				span
 					margin 0 16px
 
-				[data-fa]
+				[data-icon]
 					margin-right 8px
 
 	> .more
@@ -319,7 +319,7 @@ export default Vue.extend({
 		&.fetching
 			cursor wait
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .empty

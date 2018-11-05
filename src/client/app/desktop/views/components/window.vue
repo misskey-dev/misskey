@@ -612,7 +612,7 @@ export default Vue.extend({
 						&:active
 							color var(--faceTextButtonActive)
 
-						> [data-fa]
+						> i
 							padding 0
 							width $header-height
 							line-height $header-height

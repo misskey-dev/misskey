@@ -45,7 +45,7 @@ export default Vue.extend({
 			background var(--faceHeader)
 			border-radius 8px 8px 0 0
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 6px
 
 			&:empty

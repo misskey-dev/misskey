@@ -110,7 +110,7 @@ export default Vue.extend({
 
 	.note-ref
 
-		[data-fa]
+		[data-icon]
 			font-size 1em
 			font-weight normal
 			font-style normal

@@ -155,7 +155,7 @@ export default Vue.extend({
 				text-overflow ellipsis
 				overflow hidden
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 			> .status

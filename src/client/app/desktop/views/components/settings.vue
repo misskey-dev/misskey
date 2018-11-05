@@ -595,7 +595,7 @@ export default Vue.extend({
 			user-select none
 			transition margin-left 0.2s ease
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 			&:hover

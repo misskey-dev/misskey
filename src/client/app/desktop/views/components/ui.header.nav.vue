@@ -139,10 +139,10 @@ export default Vue.extend({
 					color var(--desktopHeaderHoverFg)
 					text-decoration none
 
-				> [data-fa]:first-child
+				> [data-icon]:first-child
 					margin-right 8px
 
-				> [data-fa]:last-child
+				> [data-icon]:last-child
 					margin-left 5px
 					font-size 10px
 					color var(--primary)

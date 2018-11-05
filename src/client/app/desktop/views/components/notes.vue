@@ -230,7 +230,7 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			[data-fa]
+			[data-icon]
 				margin-right 8px
 
 	> .newer-indicator

@@ -40,7 +40,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-url
 	word-break break-all
-	> [data-fa]
+	> [data-icon]
 		padding-left 2px
 		font-size .9em
 		font-weight 400

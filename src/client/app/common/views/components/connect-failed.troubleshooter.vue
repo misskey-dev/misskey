@@ -100,7 +100,7 @@ export default Vue.extend({
 			color #444
 			border-bottom solid 1px #eee
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 0.25em
 
 		> div
@@ -115,7 +115,7 @@ export default Vue.extend({
 				&[data-wip]
 					color #888
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 0.25em
 
 					&.times
@@ -132,7 +132,7 @@ export default Vue.extend({
 			border-top solid 1px #eee
 
 			> b
-				> [data-fa]
+				> [data-icon]
 					margin-right 0.25em
 
 			&.success

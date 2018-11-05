@@ -76,7 +76,7 @@ export default Vue.extend({
 		font-size 0.8em
 		color #f00
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> ul

@@ -41,7 +41,7 @@ export default define({
 		margin 0 0 5px 0
 		font-size 1em
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 0.25em
 
 	> p

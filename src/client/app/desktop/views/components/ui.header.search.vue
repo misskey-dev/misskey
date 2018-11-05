@@ -1,6 +1,6 @@
 <template>
 <form class="search" @submit.prevent="onSubmit">
-	<f-a icon="search"/>
+	<i><f-a icon="search"/></i>
 	<input v-model="q" type="search" placeholder="%i18n:@placeholder%"/>
 	<div class="result"></div>
 </form>
@@ -32,7 +32,7 @@ export default Vue.extend({
 	@media (max-width 800px)
 		display none !important
 
-	> [data-fa]
+	> i
 		display block
 		position absolute
 		top 0

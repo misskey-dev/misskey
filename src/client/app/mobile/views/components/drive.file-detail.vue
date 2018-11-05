@@ -191,7 +191,7 @@ export default Vue.extend({
 
 			> .created-at
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 2px
 
 			> .nsfw
@@ -220,7 +220,7 @@ export default Vue.extend({
 				color var(--text)
 				font-size 0.9em
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 			> code

@@ -58,6 +58,9 @@ import {
 	faChevronCircleLeft,
 	faChevronCircleRight,
 	faShareAlt,
+	faTimes,
+	faThumbtack,
+	faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -94,6 +97,9 @@ library.add(
 	faChevronCircleLeft,
 	faChevronCircleRight,
 	faShareAlt,
+	faTimes,
+	faThumbtack,
+	faSearch,
 );
 //#endregion
 

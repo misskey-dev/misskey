@@ -163,7 +163,7 @@ export default Vue.extend({
 			> .note-ref
 				color var(--noteText)
 
-				[data-fa]
+				[data-icon]
 					font-size 1em
 					font-weight normal
 					font-style normal

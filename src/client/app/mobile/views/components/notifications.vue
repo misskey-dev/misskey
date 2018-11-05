@@ -175,7 +175,7 @@ export default Vue.extend({
 		color var(--text)
 		border-top solid 1px rgba(#000, 0.05)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .empty

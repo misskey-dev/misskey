@@ -382,7 +382,7 @@ export default Vue.extend({
 			box-shadow 0 3px 0 0 var(--primary)
 
 		> span
-			[data-fa]
+			[data-icon]
 				margin-right 8px
 
 		> .count

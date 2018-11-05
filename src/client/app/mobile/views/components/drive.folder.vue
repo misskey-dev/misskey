@@ -43,10 +43,10 @@ export default Vue.extend({
 			margin 0
 			padding 0
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 6px
 
-		> [data-fa]
+		> [data-icon]
 			position absolute
 			top 0
 			bottom 0

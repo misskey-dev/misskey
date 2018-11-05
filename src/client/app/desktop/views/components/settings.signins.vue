@@ -62,7 +62,7 @@ export default Vue.extend({
 				line-height 32px
 				cursor pointer
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 8px
 					text-align left
 

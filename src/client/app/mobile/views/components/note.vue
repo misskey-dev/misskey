@@ -155,7 +155,7 @@ export default Vue.extend({
 				width 28px
 				height 28px
 
-		[data-fa]
+		[data-icon]
 			margin-right 4px
 
 		> span

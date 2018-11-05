@@ -86,7 +86,7 @@ export default define({
 		color #888
 		box-shadow 0 1px rgba(#000, 0.07)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> textarea

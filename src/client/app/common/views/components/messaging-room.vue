@@ -20,7 +20,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button @click="onIndicatorClick"><f-a icon="arrow-circle-down"/>%i18n:@new-message%</button>
+				<button @click="onIndicatorClick"><i><f-a icon="arrow-circle-down"/></i>%i18n:@new-message%</button>
 			</div>
 		</transition>
 		<x-form :user="user" ref="form"/>
@@ -280,7 +280,7 @@ export default Vue.extend({
 			color var(--messagingRoomInfo)
 			opacity 0.5
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 		> .no-history
@@ -292,7 +292,7 @@ export default Vue.extend({
 			color var(--messagingRoomInfo)
 			opacity 0.5
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 		> .more
@@ -313,7 +313,7 @@ export default Vue.extend({
 			&.fetching
 				cursor wait
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 		> .message
@@ -381,7 +381,7 @@ export default Vue.extend({
 				&:active
 					background var(--primaryDarken10)
 
-				> [data-fa]
+				> i
 					position absolute
 					top 0
 					left 10px

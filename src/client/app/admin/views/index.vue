@@ -126,7 +126,7 @@ export default Vue.extend({
 			line-height $headerHeight
 			border-right solid 1px rgba(#000, 0.1)
 
-			> [data-fa]
+			> [data-icon]
 				transition all 0.2s ease
 
 	> nav
@@ -188,7 +188,7 @@ export default Vue.extend({
 				&:hover
 					color #fff
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 6px
 
 		> .version
@@ -218,7 +218,7 @@ export default Vue.extend({
 				&:hover
 					color #fff
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 6px
 
 				&.active

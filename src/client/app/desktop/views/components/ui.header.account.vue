@@ -8,40 +8,79 @@
 		<div class="menu" v-if="isOpen">
 			<ul>
 				<li>
-					<router-link :to="`/@${ $store.state.i.username }`"><f-a icon="user"/><span>%i18n:@profile%</span><f-a icon="angle-right"/></router-link>
+					<router-link :to="`/@${ $store.state.i.username }`">
+						<i><f-a icon="user"/></i>
+						<span>%i18n:@profile%</span>
+						<i><f-a icon="angle-right"/></i>
+					</router-link>
 				</li>
 				<li @click="drive">
-					<p><f-a icon="cloud"/><span>%i18n:common.drive%</span><f-a icon="angle-right"/></p>
+					<p>
+						<i><f-a icon="cloud"/></i>
+						<span>%i18n:common.drive%</span>
+						<i><f-a icon="angle-right"/></i>
+					</p>
 				</li>
 				<li>
-					<router-link to="/i/favorites"><f-a icon="star"/><span>%i18n:@favorites%</span><f-a icon="angle-right"/></router-link>
+					<router-link to="/i/favorites">
+						<i><f-a icon="star"/></i>
+						<span>%i18n:@favorites%</span>
+						<i><f-a icon="angle-right"/></i>
+					</router-link>
 				</li>
 				<li @click="list">
-					<p><f-a icon="list"/><span>%i18n:@lists%</span><f-a icon="angle-right"/></p>
+					<p>
+						<i><f-a icon="list"/></i>
+						<span>%i18n:@lists%</span>
+						<i><f-a icon="angle-right"/></i>
+					</p>
 				</li>
 				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
-					<p><f-a icon="envelope R"/><span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span><f-a icon="angle-right"/></p>
+					<p>
+						<i><f-a icon="envelope R"/></i>
+						<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
+						<i><f-a icon="angle-right"/></i>
+					</p>
 				</li>
 			</ul>
 			<ul>
 				<li>
-					<router-link to="/i/customize-home"><f-a icon="wrench"/><span>%i18n:@customize%</span><f-a icon="angle-right"/></router-link>
+					<router-link to="/i/customize-home">
+						<i><f-a icon="wrench"/></i>
+						<span>%i18n:@customize%</span>
+						<i><f-a icon="angle-right"/></i>
+					</router-link>
 				</li>
 				<li @click="settings">
-					<p><f-a icon="cog"/><span>%i18n:@settings%</span><f-a icon="angle-right"/></p>
+					<p>
+						<i><f-a icon="cog"/></i>
+						<span>%i18n:@settings%</span>
+						<i><f-a icon="angle-right"/></i>
+					</p>
 				</li>
 				<li v-if="$store.state.i.isAdmin">
-					<a href="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</a>
+					<a href="/admin">
+						<i><f-a icon="terminal"/></i>
+						<span>%i18n:@admin%</span>
+						<i><f-a icon="angle-right"/></i>
+					</a>
 				</li>
 			</ul>
 			<ul>
 				<li @click="dark">
-					<p><span>%i18n:@dark%</span><template v-if="$store.state.device.darkmode"><f-a icon="moon"/></template><template v-else><f-a icon="R moon"/></template></p>
+					<p>
+						<span>%i18n:@dark%</span>
+						<template v-if="$store.state.device.darkmode"><i><f-a icon="moon"/></i></template>
+						<template v-else><i><f-a icon="R moon"/></i></template>
+					</p>
 				</li>
 			</ul>
 			<ul>
 				<li @click="signout">
-					<p class="signout"><f-a icon="power-off"/><span>%i18n:@signout%</span></p>
+					<p class="signout">
+						<i><f-a icon="power-off"/></i>
+						<span>%i18n:@signout%</span>
+					</p>
 				</li>
 			</ul>
 		</div>
@@ -160,7 +199,7 @@ export default Vue.extend({
 			@media (max-width 1100px)
 				display none
 
-			[data-fa]
+			[data-icon]
 				margin-left 8px
 
 		> .avatar
@@ -254,11 +293,11 @@ export default Vue.extend({
 							color var(--primaryForeground)
 							border-radius 8px
 
-					> [data-fa]:first-child
+					> i:first-child
 						margin-right 6px
 						width 16px
 
-					> [data-fa]:last-child
+					> i:last-child
 						display block
 						position absolute
 						top 0

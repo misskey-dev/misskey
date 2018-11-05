@@ -88,7 +88,7 @@ export default define({
 		font-size 0.7em
 		color #999
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 		kbd

@@ -255,7 +255,7 @@ export default Vue.extend({
 		font-size 0.9em
 		color var(--desktopDriveFolderFg)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 			margin-left 2px
 			text-align left

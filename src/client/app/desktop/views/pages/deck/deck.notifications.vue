@@ -207,7 +207,7 @@ export default Vue.extend({
 		&.fetching
 			cursor wait
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .empty

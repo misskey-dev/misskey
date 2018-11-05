@@ -281,7 +281,7 @@ export default Vue.extend({
 				margin 0 8px 0 0
 				border-radius 6px
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 			.name

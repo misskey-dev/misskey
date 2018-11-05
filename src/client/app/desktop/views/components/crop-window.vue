@@ -64,7 +64,7 @@ export default Vue.extend({
 
 
 .header
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .img

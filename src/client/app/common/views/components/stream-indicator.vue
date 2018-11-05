@@ -80,7 +80,7 @@ export default Vue.extend({
 		display block
 		margin 0
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 0.25em
 
 </style>

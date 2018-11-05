@@ -65,7 +65,7 @@ export default Vue.extend({
 			&:first-child
 				font-weight bold
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 	&:after
