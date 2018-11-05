@@ -957,7 +957,7 @@ admin/views/instance.vue:
   disable-local-timeline: "ローカルタイムラインを無効にする"
   invite: "Inviter"
   save: "Sauvegarder"
-  saved: "保存しました"
+  saved: "Enregistré"
 admin/views/charts.vue:
   title: "Graph"
   per-day: "par jour"
@@ -1011,7 +1011,7 @@ admin/views/emoji.vue:
     title: "Émojis"
     update: "Mise à jour"
     remove: "Supprimer"
-  updated: "更新しました"
+  updated: "À été mis à jour"
   remove-emoji:
     are-you-sure: "「$1」を削除しますか？"
     removed: "削除しました"
@@ -1025,7 +1025,7 @@ admin/views/announcements.vue:
   saved: "保存しました"
   _remove:
     are-you-sure: "「$1」を削除しますか？"
-    removed: "削除しました"
+    removed: "Supprimé"
 admin/views/hashtags.vue:
   hided-tags: "Tags cachés"
 desktop/views/pages/deck/deck.tl-column.vue:
