@@ -35,7 +35,6 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	await new Promise((res, rej) => {
 		const writable = fs.createWriteStream(path);
 		writable.on('finish', () => {
-			console.log("writable finish");
 			res();
 		});
 
@@ -62,10 +61,6 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 		req.on('error', error => {
 			writable.close();
 			rej(error);
-		});
-		req.on('end', () => {
-			console.log("req end");
-			//res();
 		});
 	});
 
