@@ -952,9 +952,9 @@ admin/views/instance.vue:
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
   banner-url: "Url de l’image de la bannière"
-  max-note-text-length: "投稿の最大文字数"
-  disable-registration: "ユーザー登録の受付を停止する"
-  disable-local-timeline: "ローカルタイムラインを無効にする"
+  max-note-text-length: "Nombre maximal de caractères pour les messages"
+  disable-registration: "Désactiver les inscriptions"
+  disable-local-timeline: "Désactiver l’heure locale"
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
@@ -1000,13 +1000,13 @@ admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
     name: "Nom de l’émoji"
-    name-desc: "a~z 0~9 _ の文字が使えます。"
+    name-desc: "Vous pouvez utiliser les caractères a~z 0~9 _"
     aliases: "Aliases"
     aliases-desc: "Vous pouvez définir plus d’un, séparés par des espaces."
     url: "URL de l’image"
     add: "Ajouter"
-    info: "50KB以下のPNG画像をおすすめします。"
-    added: "絵文字を登録しました"
+    info: "Nous recommandons l’usage d’images PNG moins de 50 Ko."
+    added: "Émoji ajouté avec succès"
   emojis:
     title: "Émojis"
     update: "Mise à jour"
@@ -1014,7 +1014,7 @@ admin/views/emoji.vue:
   updated: "À été mis à jour"
   remove-emoji:
     are-you-sure: "「$1」を削除しますか？"
-    removed: "削除しました"
+    removed: "Supprimé"
 admin/views/announcements.vue:
   announcements: "Annonces"
   save: "Enregistrer"
@@ -1022,7 +1022,7 @@ admin/views/announcements.vue:
   add: "Ajouter"
   title: "Titre"
   text: "Contenu"
-  saved: "保存しました"
+  saved: "Sauvegardé"
   _remove:
     are-you-sure: "「$1」を削除しますか？"
     removed: "Supprimé"
