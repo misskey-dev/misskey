@@ -23,6 +23,10 @@ jobs:
     executor: default
     steps:
       - checkout
+      - run:
+          name: Ensure package-lock.json
+          command: |
+            [ ! -e package-lock.json ] && echo '{}' > package-lock.json
       - restore_cache:
           name: Restore npm package caches
           keys:
@@ -35,6 +39,7 @@ jobs:
           name: Install Dependencies
           command: |
             npm install
+            npm prune
       - run:
           name: Configure
           command: |
@@ -50,8 +55,8 @@ jobs:
           key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-ls-{{ checksum "ls" }}
           paths:
             - node_modules
-      - store_artifacts:
-          path: built
+#      - store_artifacts:
+#          path: built
       - persist_to_workspace:
           root: .
           paths:
@@ -98,7 +103,6 @@ jobs:
           name: Build
           command: |
             docker build . | tee docker.log
-            tail -n 1 docker.log | read __Successfully __built tag
       - when:
           condition: <<parameters.with_deploy>>
           steps:
@@ -107,6 +111,7 @@ jobs:
                 command: |
                   if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
                    then
+                    tail -n 1 docker.log | read __Successfully __built tag
                     docker tag $tag misskey/misskey
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
                     docker push misskey/misskey
@@ -126,10 +131,13 @@ workflows:
           without_redis: "true"
           requires:
             - build
-      - docker:
           filters:
             branches:
-              ignore: master
+              only: master
+#      - docker:
+#          filters:
+#            branches:
+#              ignore: master
       - docker:
           with_deploy: "true"
           filters:
