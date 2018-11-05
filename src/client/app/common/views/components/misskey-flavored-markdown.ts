@@ -1,5 +1,4 @@
 import Vue, { VNode } from 'vue';
-import * as emojilib from 'emojilib';
 import { length } from 'stringz';
 import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../misc/acct/render';
@@ -189,8 +188,10 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'emoji': {
 					const { emoji } = token;
+					const { customEmojis } = this;
 					return [createElement('mk-emoji', {
-						attrs: { emoji }
+						attrs: { emoji },
+						props: { customEmojis }
 					})];
 				}
 

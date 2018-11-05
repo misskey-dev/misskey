@@ -6,7 +6,15 @@
 import Vue from 'vue';
 import { lib } from 'emojilib';
 export default Vue.extend({
-	props: ['emoji'],
+	props: {
+		emoji: {
+			type: String,
+			required: true
+		},
+		customEmojis: {
+			required: false
+		}
+	},
 	data() {
 		return {
 			url: null,
@@ -19,10 +27,10 @@ export default Vue.extend({
 	},
 	methods: {
 		exec() {
-			const { emoji } = this;
+			const { emoji, customEmojis } = this;
 			this.name = emoji;
-			(this as any).api('meta').then(meta =>
-				this.url = meta && meta.emojis ? meta.emojis.find(e => e.name === emoji || e.aliases && e.aliases.includes(emoji)).url : null);
+			console.log(emoji, customEmojis)
+			this.url = customEmojis && customEmojis.length ? customEmojis.find(e => e.name === emoji || e.aliases && e.aliases.includes(emoji)).url : null;
 			if (!this.url) {
 				const { char } = lib[emoji] || { char: null };
 				if (char) {
