@@ -1,6 +1,6 @@
 <template>
 <div class="mk-connect-failed">
-	<img src="data:image/jpeg;base64,%base64:/assets/error.jpg%" alt=""/>
+	<img src="https://raw.githubusercontent.com/syuilo/misskey/develop/src/client/assets/error.jpg" alt=""/>
 	<h1>%i18n:@title%</h1>
 	<p class="text">
 		<span>{{ '%i18n:@description%'.substr(0, '%i18n:@description%'.indexOf('{')) }}</span>

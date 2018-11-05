@@ -22,7 +22,6 @@ const codename = meta.codename;
 
 declare var global: {
 	collapseSpacesReplacement: any;
-	base64replacement: any;
 	i18nReplacement: typeof i18nReplacement;
 };
 
@@ -33,10 +32,6 @@ global['collapseSpacesReplacement'] = (html: string) => {
 		collapseInlineTagWhitespace: true,
 		keepClosingSlash: true
 	}).replace(/\t/g, '');
-};
-
-global['base64replacement'] = (_: any, key: string) => {
-	return fs.readFileSync(`${__dirname}/src/client/${key}`, 'base64');
 };
 
 global['i18nReplacement'] = i18nReplacement;
@@ -138,9 +133,6 @@ module.exports = {
 				loader: 'replace',
 				query: {
 					qs: [{
-						search: /%base64:(.+?)%/g.toString(),
-						replace: 'base64replacement'
-					}, {
 						search: i18nPattern.toString(),
 						replace: 'i18nReplacement',
 						i18n: true
