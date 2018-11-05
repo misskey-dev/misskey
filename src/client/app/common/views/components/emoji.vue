@@ -73,5 +73,9 @@ export default Vue.extend({
 	&.custom
 		height 2.5em
 		vertical-align middle
+		transition transform 0.2s ease
+
+		&:hover
+			transform scale(1.2)
 
 </style>
