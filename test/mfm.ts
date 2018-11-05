@@ -194,7 +194,7 @@ describe('Text', () => {
 
 			const tokens3 = analyze('🍎');
 			assert.deepEqual([
-				{ type: 'emoji', content: ':cat:', emoji: '🍎' }
+				{ type: 'emoji', content: '🍎', emoji: '🍎' }
 			], tokens3);
 		});
 
