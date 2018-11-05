@@ -5,7 +5,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
-import * as TreeView from 'vue-json-tree-view';
 import VAnimateCss from 'v-animate-css';
 import VModal from 'vue-js-modal';
 import VueSweetalert2 from 'vue-sweetalert2';
@@ -111,7 +110,6 @@ library.add(
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
-Vue.use(TreeView);
 Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
