@@ -24,23 +24,21 @@
 			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>%i18n:@recaptcha-secret-key%</ui-input>
 		</section>
 		<section>
+			<ui-switch v-model="disableRegistration">%i18n:@disable-registration%</ui-switch>
+		</section>
+		<section>
+			<ui-switch v-model="disableLocalTimeline">%i18n:@disable-local-timeline%</ui-switch>
+		</section>
+		<section>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@disable-registration%</div>
+		<div slot="title">%i18n:@invite%</div>
 		<section>
-			<input type="checkbox" v-model="disableRegistration" @change="updateMeta">
-			<button class="ui" @click="invite">%i18n:@invite%</button>
+			<ui-button @click="invite">%i18n:@invite%</ui-button>
 			<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<div slot="title">%i18n:@disable-local-timeline%</div>
-		<section>
-			<input type="checkbox" v-model="disableLocalTimeline" @change="updateMeta">
 		</section>
 	</ui-card>
 </div>
