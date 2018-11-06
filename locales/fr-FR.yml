@@ -620,7 +620,7 @@ desktop/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 desktop/views/components/follow-button.vue:
-  following: "Abonnements"
+  following: "Abonné·e"
   follow: "Suivre"
   request-pending: "En attente d'approbation"
   follow-processing: "Continuer l’abonnement"
@@ -1190,7 +1190,7 @@ mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 mobile/views/components/follow-button.vue:
-  following: "Abonnements"
+  following: "Abonné·e"
   follow: "Suivre"
   request-pending: "En attente d'approbation"
   follow-processing: "フォロー処理中"
@@ -1283,7 +1283,7 @@ mobile/views/pages/signup.vue:
 mobile/views/pages/followers.vue:
   followers-of: "Abonné·e·s de {}"
 mobile/views/pages/following.vue:
-  following-of: "Abonnements de {}"
+  following-of: "Abonnement à {}"
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
