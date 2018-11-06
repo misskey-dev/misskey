@@ -1,33 +1,33 @@
 import rndstr from 'rndstr';
 import $ from 'cafy';
 import App, { pack } from '../../../../models/app';
-import { ILocalUser } from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
-	requireCredential: false
+	requireCredential: false,
+
+	params: {
+		name: {
+			validator: $.str
+		},
+
+		description: {
+			validator: $.str
+		},
+
+		permission: {
+			validator: $.arr($.str).unique()
+		},
+
+		// TODO: Check it is valid url
+		callbackUrl: {
+			validator: $.str.optional.nullable,
+			default: null as any
+		},
+	}
 };
 
-/**
- * Create an app
- */
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.get(params.name);
-	if (nameErr) return rej('invalid name param');
-
-	// Get 'description' parameter
-	const [description, descriptionErr] = $.str.get(params.description);
-	if (descriptionErr) return rej('invalid description param');
-
-	// Get 'permission' parameter
-	const [permission, permissionErr] = $.arr($.str).unique().get(params.permission);
-	if (permissionErr) return rej('invalid permission param');
-
-	// Get 'callbackUrl' parameter
-	// TODO: Check it is valid url
-	const [callbackUrl = null, callbackUrlErr] = $.str.optional.nullable.get(params.callbackUrl);
-	if (callbackUrlErr) return rej('invalid callbackUrl param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 
@@ -35,10 +35,10 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	const app = await App.insert({
 		createdAt: new Date(),
 		userId: user && user._id,
-		name: name,
-		description: description,
-		permission: permission,
-		callbackUrl: callbackUrl,
+		name: ps.name,
+		description: ps.description,
+		permission: ps.permission,
+		callbackUrl: ps.callbackUrl,
 		secret: secret
 	});
 
@@ -47,4 +47,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 		detail: true,
 		includeSecret: true
 	}));
-});
+}));

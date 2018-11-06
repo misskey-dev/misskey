@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-server">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header">%fa:server%%i18n:@title%</template>
-		<button slot="func" @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
+		<template slot="header"><fa icon="server"/>%i18n:@title%</template>
+		<button slot="func" @click="toggle" title="%i18n:@toggle%"><fa icon="sort"/></button>
 
-		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 		<template v-if="!fetching">
 			<x-cpu-memory v-show="props.view == 0" :connection="connection"/>
 			<x-cpu v-show="props.view == 1" :connection="connection" :meta="meta"/>
@@ -87,7 +87,7 @@ export default define({
 	text-align center
 	color #aaa
 
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 </style>

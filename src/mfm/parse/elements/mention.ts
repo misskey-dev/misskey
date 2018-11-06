@@ -5,11 +5,11 @@ import parseAcct from '../../../misc/acct/parse';
 import { toUnicode } from 'punycode';
 
 export type TextElementMention = {
-	type: 'mention'
-	content: string
-	canonical: string
-	username: string
-	host: string
+	type: 'mention';
+	content: string;
+	canonical: string;
+	username: string;
+	host: string;
 };
 
 export default function(text: string) {

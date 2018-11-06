@@ -3,11 +3,11 @@
  */
 
 export type TextElementLink = {
-	type: 'link'
-	content: string
-	title: string
-	url: string
-	silent: boolean
+	type: 'link';
+	content: string;
+	title: string;
+	url: string;
+	silent: boolean;
 };
 
 export default function(text: string) {

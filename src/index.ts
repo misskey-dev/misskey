@@ -17,7 +17,6 @@ import * as program from 'commander';
 import mongo from './db/mongodb';
 
 import Logger from './misc/logger';
-import ProgressBar from './misc/cli/progressbar';
 import EnvironmentInfo from './misc/environmentInfo';
 import MachineInfo from './misc/machineInfo';
 import serverStats from './daemons/server-stats';
@@ -87,10 +86,9 @@ async function masterMain() {
 
 	if (!program.disableClustering) {
 		await spawnWorkers(config.clusterLimit);
-		Logger.succ('All workers started');
 	}
 
-	Logger.info(`Now listening on port ${config.port} on ${config.url}`);
+	Logger.succ(`Now listening on port ${config.port} on ${config.url}`);
 }
 
 /**
@@ -114,7 +112,7 @@ async function init(): Promise<Config> {
 	Logger.info(`<<< Misskey v${pkg.version} >>>`);
 
 	new Logger('Deps').info(`Node.js ${process.version}`);
-	MachineInfo.show();
+	await MachineInfo.show();
 	EnvironmentInfo.show();
 
 	const configLogger = new Logger('Config');
@@ -168,28 +166,30 @@ function checkMongoDb(config: Config) {
 }
 
 function spawnWorkers(limit: number) {
+	Logger.info('Starting workers...');
+
 	return new Promise(res => {
 		// Count the machine's CPUs
 		const cpuCount = os.cpus().length;
 
 		const count = limit || cpuCount;
-
-		const progress = new ProgressBar(count, 'Starting workers');
+		let started = 0;
 
 		// Create a worker for each CPU
 		for (let i = 0; i < count; i++) {
 			const worker = cluster.fork();
+
 			worker.on('message', message => {
-				if (message === 'ready') {
-					progress.increment();
+				if (message !== 'ready') return;
+				started++;
+
+				// When all workers started
+				if (started == count) {
+					Logger.succ('All workers started');
+					res();
 				}
 			});
 		}
-
-		// On all workers started
-		progress.on('complete', () => {
-			res();
-		});
 	});
 }
 

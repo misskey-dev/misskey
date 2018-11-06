@@ -1,8 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../stream';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -17,27 +16,27 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		name: $.str.optional.pipe(isValidFolderName).note({
+		name: {
+			validator: $.str.optional.pipe(isValidFolderName),
 			default: 'Untitled',
 			desc: {
 				'ja-JP': 'フォルダ名',
 				'en-US': 'Folder name'
 			}
-		}),
+		},
 
-		parentId: $.type(ID).optional.nullable.note({
+		parentId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// If the parent folder is specified
 	let parent = null;
 	if (ps.parentId) {
@@ -69,4 +68,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Publish folderCreated event
 	publishDriveStream(user._id, 'folderCreated', folderObj);
-});
+}));

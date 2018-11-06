@@ -1,6 +1,7 @@
-import User, { ILocalUser } from '../../../../models/user';
+import User from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
 import NoteUnread from '../../../../models/note-unread';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -16,7 +17,7 @@ export const meta = {
 	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Remove documents
 	await NoteUnread.remove({
 		userId: user._id
@@ -34,4 +35,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	publishMainStream(user._id, 'readAllUnreadSpecifiedNotes');
 
 	res();
-});
+}));

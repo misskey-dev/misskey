@@ -6,18 +6,18 @@
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="is-cat" v-if="note.user.isCat">cat</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
-	<span class="is-verified" v-if="note.user.isVerified" title="%i18n:common.verified-user%">%fa:star%</span>
+	<span class="is-verified" v-if="note.user.isVerified" title="%i18n:common.verified-user%"><fa icon="star"/></span>
 	<div class="info">
 		<span class="app" v-if="note.app && !mini">via <b>{{ note.app.name }}</b></span>
-		<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
+		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>
 		<router-link class="created-at" :to="note | notePage">
 			<mk-time :time="note.createdAt"/>
 		</router-link>
 		<span class="visibility" v-if="note.visibility != 'public'">
-			<template v-if="note.visibility == 'home'">%fa:home%</template>
-			<template v-if="note.visibility == 'followers'">%fa:unlock%</template>
-			<template v-if="note.visibility == 'specified'">%fa:envelope%</template>
-			<template v-if="note.visibility == 'private'">%fa:lock%</template>
+			<template v-if="note.visibility == 'home'"><fa icon="home"/></template>
+			<template v-if="note.visibility == 'followers'"><fa icon="unlock"/></template>
+			<template v-if="note.visibility == 'specified'"><fa icon="envelope"/></template>
+			<template v-if="note.visibility == 'private'"><fa icon="lock"/></template>
 		</span>
 	</div>
 </header>

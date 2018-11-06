@@ -1,5 +1,4 @@
 import Vue, { VNode } from 'vue';
-import * as emojilib from 'emojilib';
 import { length } from 'stringz';
 import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../misc/acct/render';
@@ -24,6 +23,9 @@ export default Vue.component('misskey-flavored-markdown', {
 		i: {
 			type: Object,
 			default: null
+		},
+		customEmojis: {
+			required: false,
 		}
 	},
 
@@ -185,23 +187,16 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					//#region カスタム絵文字
-					const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis;
-					const customEmoji = customEmojis.find(e => e.name == token.emoji || (e.aliases || []).includes(token.emoji));
-					if (customEmoji) {
-						return [createElement('img', {
-							attrs: {
-								src: customEmoji.url,
-								alt: token.emoji,
-								title: token.emoji,
-								style: 'height: 2.5em; vertical-align: middle;'
-							}
-						})];
-					}
-					//#endregion
-
-					const emoji = emojilib.lib[token.emoji];
-					return [createElement('span', emoji ? emoji.char : token.content)];
+					const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis || [];
+					return [createElement('mk-emoji', {
+						attrs: {
+							emoji: token.emoji,
+							name: token.name
+						},
+						props: {
+							customEmojis: this.customEmojis || customEmojis
+						}
+					})];
 				}
 
 				case 'search': {

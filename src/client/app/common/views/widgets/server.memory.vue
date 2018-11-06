@@ -2,7 +2,7 @@
 <div class="memory">
 	<x-pie class="pie" :value="usage"/>
 	<div>
-		<p>%fa:flask%Memory</p>
+		<p><fa icon="flask"/>Memory</p>
 		<p>Total: {{ total | bytes(1) }}</p>
 		<p>Used: {{ used | bytes(1) }}</p>
 		<p>Free: {{ free | bytes(1) }}</p>
@@ -65,7 +65,7 @@ export default Vue.extend({
 			&:first-child
 				font-weight bold
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 	&:after

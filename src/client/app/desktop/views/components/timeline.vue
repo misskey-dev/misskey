@@ -1,17 +1,17 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% %i18n:@home%</span>
-		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline">%fa:R comments% %i18n:@local%</span>
-		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline">%fa:share-alt% %i18n:@hybrid%</span>
-		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
-		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl">%fa:hashtag% {{ tagTl.title }}</span>
-		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
+		<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> %i18n:@home%</span>
+		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> %i18n:@local%</span>
+		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> %i18n:@hybrid%</span>
+		<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> %i18n:@global%</span>
+		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><fa icon="hashtag"/> {{ tagTl.title }}</span>
+		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.title }}</span>
 		<div class="buttons">
-			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%">%fa:at%<i class="badge" v-if="$store.state.i.hasUnreadMentions">%fa:circle%</i></button>
-			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%">%fa:envelope R%<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes">%fa:circle%</i></button>
-			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton">%fa:hashtag%</button>
-			<button @click="chooseList" title="%i18n:@list%" ref="listButton">%fa:list%</button>
+			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%"><fa icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></button>
+			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%"><fa :icon="['far', 'envelope']"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></button>
+			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton"><fa icon="hashtag"/></button>
+			<button @click="chooseList" title="%i18n:@list%" ref="listButton"><fa icon="list"/></button>
 		</div>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
@@ -104,7 +104,7 @@ export default Vue.extend({
 			const lists = await (this as any).api('users/lists/list');
 
 			let menu = [{
-				icon: '%fa:plus%',
+				icon: 'plus',
 				text: '%i18n:@add-list%',
 				action: () => {
 					(this as any).apis.input({
@@ -125,7 +125,7 @@ export default Vue.extend({
 			}
 
 			menu = menu.concat(lists.map(list => ({
-				icon: '%fa:list%',
+				icon: 'list',
 				text: list.title,
 				action: () => {
 					this.list = list;
@@ -142,7 +142,7 @@ export default Vue.extend({
 
 		chooseTag() {
 			let menu = [{
-				icon: '%fa:plus%',
+				icon: 'plus',
 				text: '%i18n:@add-tag-timeline%',
 				action: () => {
 					(this as any).os.new(MkSettingsWindow, {
@@ -156,7 +156,7 @@ export default Vue.extend({
 			}
 
 			menu = menu.concat(this.$store.state.settings.tagTimelines.map(t => ({
-				icon: '%fa:hashtag%',
+				icon: 'hashtag',
 				text: t.title,
 				action: () => {
 					this.tagTl = t;

@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
-import $ from 'cafy'; import ID from '../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import pack from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
@@ -61,11 +61,11 @@ export default async (ctx: Router.IRouterContext) => {
 		if (sinceId) {
 			sort._id = 1;
 			query._id = {
-				$gt: sinceId
+				$gt: transform(sinceId)
 			};
 		} else if (untilId) {
 			query._id = {
-				$lt: untilId
+				$lt: transform(untilId)
 			};
 		}
 		//#endregion

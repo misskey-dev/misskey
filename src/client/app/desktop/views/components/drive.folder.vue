@@ -16,8 +16,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover">%fa:R folder-open .fw%</template>
-		<template v-if="!hover">%fa:R folder .fw%</template>
+		<template v-if="hover"><fa :icon="['far', 'folder-open']" fixed-width/></template>
+		<template v-if="!hover"><fa :icon="['far', 'folder']" fixed-width/></template>
 		{{ folder.name }}
 	</p>
 </div>
@@ -55,22 +55,22 @@ export default Vue.extend({
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.move-to-this-folder%',
-				icon: '%fa:arrow-right%',
+				icon: 'arrow-right',
 				action: this.go
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.show-in-new-window%',
-				icon: '%fa:R window-restore%',
+				icon: ['far', 'window-restore'],
 				action: this.newWindow
 			}, null, {
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
-				icon: '%fa:i-cursor%',
+				icon: 'i-cursor',
 				action: this.rename
 			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
-				icon: '%fa:R trash-alt%',
+				icon: ['far', 'trash-alt'],
 				action: this.deleteFolder
 			}], {
 					closed: () => {
@@ -155,7 +155,7 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
+								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
 								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'
@@ -255,7 +255,7 @@ export default Vue.extend({
 		font-size 0.9em
 		color var(--desktopDriveFolderFg)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 			margin-left 2px
 			text-align left

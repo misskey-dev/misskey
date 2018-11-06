@@ -11,7 +11,7 @@ import Reaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
 import Favorite from './favorite';
 import Following from './following';
-import config from '../config';
+import Emoji from './emoji';
 
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
@@ -25,10 +25,6 @@ Note.createIndex('_files.contentType');
 Note.createIndex({ createdAt: -1 });
 Note.createIndex({ score: -1 }, { sparse: true });
 export default Note;
-
-export function isValidText(text: string): boolean {
-	return length(text.trim()) <= config.maxNoteTextLength && text.trim() != '';
-}
 
 export function isValidCw(text: string): boolean {
 	return length(text.trim()) <= 100;
@@ -49,6 +45,7 @@ export type INote = {
 	text: string;
 	tags: string[];
 	tagsLower: string[];
+	emojis: string[];
 	cw: string;
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;
@@ -227,6 +224,26 @@ export const pack = async (
 	}
 
 	const id = _note._id;
+
+	// _note._userを消す前か、_note.userを解決した後でないとホストがわからない
+	if (_note._user) {
+		const host = _note._user.host;
+		// 互換性のため。(古いMisskeyではNoteにemojisが無い)
+		if (_note.emojis == null) {
+			_note.emojis = Emoji.find({
+				host: host
+			}, {
+				fields: { _id: false }
+			});
+		} else {
+			_note.emojis = Emoji.find({
+				name: { $in: _note.emojis },
+				host: host
+			}, {
+				fields: { _id: false }
+			});
+		}
+	}
 
 	// Rename _id to id
 	_note.id = _note._id;

@@ -1,5 +1,5 @@
 import * as Router from 'koa-router';
-import User from '../../models/user';
+import User from '../../../models/user';
 import { toASCII } from 'punycode';
 import config from '../../config';
 import Meta from '../../models/meta';
@@ -10,7 +10,8 @@ import parse from '../../mfm/parse';
 import { TextElementLink } from '../../mfm/parse/elements/link';
 import { getSummary } from '../web/url-preview';
 import { ObjectID } from 'bson';
-import { toMastodonStatus } from '../../models/mastodon/status';
+import Emoji from '../../../models/emoji';
+import { toMastodonEmojis } from './emoji';
 
 // Init router
 const router = new Router();
@@ -28,7 +29,12 @@ router.get('/v1/accounts/:id', async ctx => {
 		ctx.status = 404;
 });
 
-router.get('/v1/custom_emojis', async ctx => ctx.body = {});
+router.get('/v1/custom_emojis', async ctx => ctx.body =
+	(await Emoji.find({ host: null }, {
+		fields: {
+			_id: false
+		}
+	})).map(toMastodonEmojis));
 
 router.get('/v1/instance', async ctx => {
 	const meta = await Meta.findOne() || {};
@@ -41,8 +47,8 @@ router.get('/v1/instance', async ctx => {
 
 	ctx.body = {
 		uri: config.hostname,
-		title: config.name || 'Misskey',
-		description: config.description || '',
+		title: meta.name || 'Misskey',
+		description: meta.description || '',
 		email: config.maintainer.email || config.maintainer.url.startsWith('mailto:') ? config.maintainer.url.slice(7) : '',
 		version: `0.0.0 (compatible; ${config.user_agent})`, // TODO: How to tell about that this is an api for compatibility?
 		thumbnail: meta.bannerUrl,

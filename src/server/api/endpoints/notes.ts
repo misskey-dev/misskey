@@ -1,6 +1,6 @@
-import $ from 'cafy'; import ID from '../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../misc/cafy-id';
 import Note, { packMany } from '../../../models/note';
-import getParams from '../get-params';
+import define from '../define';
 
 export const meta = {
 	desc: {
@@ -8,56 +8,66 @@ export const meta = {
 	},
 
 	params: {
-		local: $.bool.optional.note({
+		local: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'ローカルの投稿に限定するか否か'
 			}
-		}),
+		},
 
-		reply: $.bool.optional.note({
+		reply: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': '返信に限定するか否か'
 			}
-		}),
+		},
 
-		renote: $.bool.optional.note({
+		renote: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'Renoteに限定するか否か'
 			}
-		}),
+		},
 
-		withFiles: $.bool.optional.note({
+		withFiles: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
 			}
-		}),
+		},
 
-		media: $.bool.optional.note({
+		media: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
-		}),
+		},
 
-		poll: $.bool.optional.note({
+		poll: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
 			}
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({}),
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		untilId: $.type(ID).optional.note({}),
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
@@ -117,4 +127,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await packMany(notes));
-});
+}));

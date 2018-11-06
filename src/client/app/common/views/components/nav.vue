@@ -2,15 +2,11 @@
 <span class="mk-nav">
 	<a :href="aboutUrl">%i18n:@about%</a>
 	<i>・</i>
-	<a href="/stats">%i18n:@stats%</a>
-	<i>・</i>
 	<a :href="repositoryUrl">%i18n:@repository%</a>
 	<i>・</i>
 	<a :href="feedbackUrl" target="_blank">%i18n:@feedback%</a>
 	<i>・</i>
 	<a href="/dev">%i18n:@develop%</a>
-	<i>・</i>
-	<a href="https://twitter.com/misskey_xyz" target="_blank">Follow us on %fa:B twitter%</a>
 </span>
 </template>
 

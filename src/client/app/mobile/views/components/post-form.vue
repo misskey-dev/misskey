@@ -2,10 +2,10 @@
 <div class="mk-post-form">
 	<div class="form">
 		<header>
-			<button class="cancel" @click="cancel">%fa:times%</button>
+			<button class="cancel" @click="cancel"><fa icon="times"/></button>
 			<div>
 				<span class="text-count" :class="{ over: trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - trimmedLength(text) }}</span>
-				<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
+				<span class="geo" v-if="geo"><fa icon="map-marker-alt"/></span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
 		</header>
@@ -28,18 +28,18 @@
 			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 			<footer>
-				<button class="upload" @click="chooseFile">%fa:upload%</button>
-				<button class="drive" @click="chooseFileFromDrive">%fa:cloud%</button>
-				<button class="kao" @click="kao">%fa:R smile%</button>
-				<button class="poll" @click="poll = true">%fa:chart-pie%</button>
-				<button class="poll" @click="useCw = !useCw">%fa:eye-slash%</button>
-				<button class="geo" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
+				<button class="upload" @click="chooseFile"><fa icon="upload"/></button>
+				<button class="drive" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
+				<button class="kao" @click="kao"><fa :icon="['far', 'smile']"/></button>
+				<button class="poll" @click="poll = true"><fa icon="chart-pie"/></button>
+				<button class="poll" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
+				<button class="geo" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
 				<button class="visibility" @click="setVisibility" ref="visibilityButton">
-					<span v-if="visibility === 'public'">%fa:globe%</span>
-					<span v-if="visibility === 'home'">%fa:home%</span>
-					<span v-if="visibility === 'followers'">%fa:unlock%</span>
-					<span v-if="visibility === 'specified'">%fa:envelope%</span>
-					<span v-if="visibility === 'private'">%fa:lock%</span>
+					<span v-if="visibility === 'public'"><fa icon="globe"/></span>
+					<span v-if="visibility === 'home'"><fa icon="home"/></span>
+					<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
+					<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
+					<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 				</button>
 			</footer>
 			<input ref="file" class="file" type="file" multiple="multiple" @change="onChangeFile"/>

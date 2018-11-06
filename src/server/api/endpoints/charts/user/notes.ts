@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import getParams from '../../../get-params';
+import define from '../../../define';
 import perUserNotesChart from '../../../../../chart/per-user-notes';
-import ID from '../../../../../misc/cafy-id';
+import ID, { transform } from '../../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
@@ -9,33 +9,34 @@ export const meta = {
 	},
 
 	params: {
-		span: $.str.or(['day', 'hour']).note({
+		span: {
+			validator: $.str.or(['day', 'hour']),
 			desc: {
 				'ja-JP': '集計のスパン (day または hour)'
 			}
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 500),
 			default: 30,
 			desc: {
 				'ja-JP': '最大数。例えば 30 を指定したとすると、スパンが"day"の場合は30日分のデータが、スパンが"hour"の場合は30時間分のデータが返ります。'
 			}
-		}),
+		},
 
-		userId: $.type(ID).note({
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const stats = await perUserNotesChart.getChart(ps.span as any, ps.limit, ps.userId);
 
 	res(stats);
-});
+}));

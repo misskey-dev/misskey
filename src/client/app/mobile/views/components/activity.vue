@@ -1,23 +1,13 @@
 <template>
 <div class="mk-activity">
-	<svg v-if="data" ref="canvas" viewBox="0 0 30 1" preserveAspectRatio="none">
-		<g v-for="(d, i) in data">
-			<rect width="0.8" :height="d.notesH"
-				:x="i + 0.1" :y="1 - d.notesH - d.repliesH - d.renotesH"
-				fill="#41ddde"/>
-			<rect width="0.8" :height="d.repliesH"
-				:x="i + 0.1" :y="1 - d.repliesH - d.renotesH"
-				fill="#f7796c"/>
-			<rect width="0.8" :height="d.renotesH"
-				:x="i + 0.1" :y="1 - d.renotesH"
-				fill="#a1de41"/>
-			</g>
-	</svg>
+	<div ref="chart"></div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import * as ApexCharts from 'apexcharts';
+
 export default Vue.extend({
 	props: ['user'],
 	data() {
@@ -28,19 +18,84 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('aggregation/users/activity', {
+		(this as any).api('charts/user/notes', {
 			userId: this.user.id,
-			limit: 30
-		}).then(data => {
-			data.forEach(d => d.total = d.notes + d.replies + d.renotes);
-			this.peak = Math.max.apply(null, data.map(d => d.total));
-			data.forEach(d => {
-				d.notesH = d.notes / this.peak;
-				d.repliesH = d.replies / this.peak;
-				d.renotesH = d.renotes / this.peak;
+			span: 'day',
+			limit: 21
+		}).then(stats => {
+			const normal = [];
+			const reply = [];
+			const renote = [];
+
+			const now = new Date();
+			const y = now.getFullYear();
+			const m = now.getMonth();
+			const d = now.getDate();
+
+			for (let i = 0; i < 21; i++) {
+				const x = new Date(y, m, d - i);
+				normal.push([
+					x,
+					stats.diffs.normal[i]
+				]);
+				reply.push([
+					x,
+					stats.diffs.reply[i]
+				]);
+				renote.push([
+					x,
+					stats.diffs.renote[i]
+				]);
+			}
+
+			const chart = new ApexCharts(this.$refs.chart, {
+				chart: {
+					type: 'bar',
+					stacked: true,
+					height: 100,
+					sparkline: {
+						enabled: true
+					},
+				},
+				plotOptions: {
+					bar: {
+						columnWidth: '90%',
+						endingShape: 'rounded'
+					}
+				},
+				grid: {
+					clipMarkers: false,
+					padding: {
+						top: 0,
+						right: 8,
+						bottom: 0,
+						left: 8
+					}
+				},
+				tooltip: {
+					shared: true,
+					intersect: false
+				},
+				series: [{
+					name: 'Normal',
+					data: normal
+				}, {
+					name: 'Reply',
+					data: reply
+				}, {
+					name: 'Renote',
+					data: renote
+				}],
+				xaxis: {
+					type: 'datetime',
+					crosshairs: {
+						width: 1,
+						opacity: 1
+					}
+				}
 			});
-			data.reverse();
-			this.data = data;
+
+			chart.render();
 		});
 	}
 });
@@ -50,13 +105,5 @@ export default Vue.extend({
 .mk-activity
 	max-width 600px
 	margin 0 auto
-
-	> svg
-		display block
-		width 100%
-		height 80px
-
-		> rect
-			transform-origin center
 
 </style>

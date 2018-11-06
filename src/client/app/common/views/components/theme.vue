@@ -25,7 +25,7 @@
 	</label>
 
 	<details class="creator">
-		<summary>%fa:palette% %i18n:@create-a-theme%</summary>
+		<summary><fa icon="palette"/> %i18n:@create-a-theme%</summary>
 		<div>
 			<span>%i18n:@base-theme%:</span>
 			<ui-radio v-model="myThemeBase" value="light">%i18n:@base-theme-light%</ui-radio>
@@ -51,23 +51,23 @@
 			<div style="padding-bottom:8px;">%i18n:@text-color%:</div>
 			<color-picker v-model="myThemeText"/>
 		</div>
-		<ui-button @click="preview()">%fa:eye% %i18n:@preview-created-theme%</ui-button>
-		<ui-button primary @click="gen()">%fa:save R% %i18n:@save-created-theme%</ui-button>
+		<ui-button @click="preview()"><fa icon="eye"/> %i18n:@preview-created-theme%</ui-button>
+		<ui-button primary @click="gen()"><fa :icon="['far', 'save']"/> %i18n:@save-created-theme%</ui-button>
 	</details>
 
 	<details>
-		<summary>%fa:download% %i18n:@install-a-theme%</summary>
-		<ui-button @click="import_()">%fa:file-import% %i18n:@import%</ui-button>
+		<summary><fa icon="download"/> %i18n:@install-a-theme%</summary>
+		<ui-button @click="import_()"><fa icon="file-import"/> %i18n:@import%</ui-button>
 		<input ref="file" type="file" accept=".misskeytheme" style="display:none;" @change="onUpdateImportFile"/>
 		<p>%i18n:@import-by-code%:</p>
 		<ui-textarea v-model="installThemeCode">
 			<span>%i18n:@theme-code%</span>
 		</ui-textarea>
-		<ui-button @click="() => install(this.installThemeCode)">%fa:check% %i18n:@install%</ui-button>
+		<ui-button @click="() => install(this.installThemeCode)"><fa icon="check"/> %i18n:@install%</ui-button>
 	</details>
 
 	<details>
-		<summary>%fa:folder-open% %i18n:@manage-themes%</summary>
+		<summary><fa icon="folder-open"/> %i18n:@manage-themes%</summary>
 		<ui-select v-model="selectedThemeId" placeholder="%i18n:@select-theme%">
 			<optgroup label="%i18n:@builtin-themes%">
 				<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -89,8 +89,8 @@
 			<ui-textarea readonly :value="selectedThemeCode">
 				<span>%i18n:@theme-code%</span>
 			</ui-textarea>
-			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export">%fa:box% %i18n:@export%</ui-button>
-			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)">%fa:trash-alt R% %i18n:@uninstall%</ui-button>
+			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><fa icon="box"/> %i18n:@export%</ui-button>
+			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> %i18n:@uninstall%</ui-button>
 		</template>
 	</details>
 </div>

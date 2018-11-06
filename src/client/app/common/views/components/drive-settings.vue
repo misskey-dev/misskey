@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title">%fa:cloud% %i18n:common.drive%</div>
+	<div slot="title"><fa icon="cloud"/> %i18n:common.drive%</div>
 
 	<section v-if="!fetching" class="juakhbxthdewydyreaphkepoxgxvfogn">
 		<div class="meter"><div :style="meterStyle"></div></div>

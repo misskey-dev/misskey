@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import Meta from '../../../../models/meta';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -11,56 +11,92 @@ export const meta = {
 	requireAdmin: true,
 
 	params: {
-		broadcasts: $.arr($.obj()).optional.nullable.note({
+		broadcasts: {
+			validator: $.arr($.obj()).optional.nullable,
 			desc: {
 				'ja-JP': 'ブロードキャスト'
 			}
-		}),
+		},
 
-		emojis: $.arr($.obj()).optional.note({
-			desc: {
-				'ja-JP': 'カスタム絵文字定義'
-			}
-		}),
-
-		disableRegistration: $.bool.optional.nullable.note({
+		disableRegistration: {
+			validator: $.bool.optional.nullable,
 			desc: {
 				'ja-JP': '招待制か否か'
 			}
-		}),
+		},
 
-		disableLocalTimeline: $.bool.optional.nullable.note({
+		disableLocalTimeline: {
+			validator: $.bool.optional.nullable,
 			desc: {
 				'ja-JP': 'ローカルタイムライン(とソーシャルタイムライン)を無効にするか否か'
 			}
-		}),
+		},
 
-		hidedTags: $.arr($.str).optional.nullable.note({
+		hidedTags: {
+			validator: $.arr($.str).optional.nullable,
 			desc: {
 				'ja-JP': '統計などで無視するハッシュタグ'
 			}
-		}),
+		},
 
-		bannerUrl: $.str.optional.nullable.note({
+		bannerUrl: {
+			validator: $.str.optional.nullable,
 			desc: {
 				'ja-JP': 'インスタンスのバナー画像URL'
 			}
-		}),
+		},
+
+		name: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'インスタンス名'
+			}
+		},
+
+		description: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'インスタンスの紹介文'
+			}
+		},
+
+		maxNoteTextLength: {
+			validator: $.num.optional.min(1),
+			desc: {
+				'ja-JP': '投稿の最大文字数'
+			}
+		},
+
+		localDriveCapacityMb: {
+			validator: $.num.optional.min(0),
+			desc: {
+				'ja-JP': 'ローカルユーザーひとりあたりのドライブ容量 (メガバイト単位)',
+				'en-US': 'Drive capacity of a local user (MB)'
+			}
+		},
+
+		remoteDriveCapacityMb: {
+			validator: $.num.optional.min(0),
+			desc: {
+				'ja-JP': 'リモートユーザーひとりあたりのドライブ容量 (メガバイト単位)',
+				'en-US': 'Drive capacity of a remote user (MB)'
+			}
+		},
+
+		cacheRemoteFiles: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'リモートのファイルをキャッシュするか否か'
+			}
+		}
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const set = {} as any;
 
 	if (ps.broadcasts) {
 		set.broadcasts = ps.broadcasts;
-	}
-
-	if (ps.emojis) {
-		set.emojis = ps.emojis;
 	}
 
 	if (typeof ps.disableRegistration === 'boolean') {
@@ -79,9 +115,33 @@ export default (params: any) => new Promise(async (res, rej) => {
 		set.bannerUrl = ps.bannerUrl;
 	}
 
+	if (ps.name !== undefined) {
+		set.name = ps.name;
+	}
+
+	if (ps.description !== undefined) {
+		set.description = ps.description;
+	}
+
+	if (ps.maxNoteTextLength) {
+		set.maxNoteTextLength = ps.maxNoteTextLength;
+	}
+
+	if (ps.localDriveCapacityMb !== undefined) {
+		set.localDriveCapacityMb = ps.localDriveCapacityMb;
+	}
+
+	if (ps.remoteDriveCapacityMb !== undefined) {
+		set.remoteDriveCapacityMb = ps.remoteDriveCapacityMb;
+	}
+
+	if (ps.cacheRemoteFiles !== undefined) {
+		set.cacheRemoteFiles = ps.cacheRemoteFiles;
+	}
+
 	await Meta.update({}, {
 		$set: set
 	}, { upsert: true });
 
 	res();
-});
+}));

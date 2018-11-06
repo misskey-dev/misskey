@@ -131,6 +131,7 @@ common:
   show-full-acct: "ユーザー名のホストを省略しない"
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
+  use-os-default-emojis: "OS標準の絵文字を使用"
 
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
 
@@ -201,6 +202,7 @@ common:
     pop-right: "右に出す"
 
   dev: "アプリの作成に失敗しました。再度お試しください。"
+  ai-chan-kawaii: "藍ちゃかわいい"
 
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
@@ -416,6 +418,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "または"
   signin-with-twitter: "Twitterでログイン"
+  signin-with-github: "GitHubでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 
 common/views/components/signup.vue:
@@ -457,6 +460,14 @@ common/views/components/twitter-setting.vue:
   detail: "詳細..."
   reconnect: "再接続する"
   connect: "Twitterと接続する"
+  disconnect: "切断する"
+
+common/views/components/github-setting.vue:
+  description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のGitHubアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "GitHubと接続する"
   disconnect: "切断する"
 
 common/views/components/uploader.vue:
@@ -597,32 +608,6 @@ desktop/views/components/calendar.vue:
   prev: "前の月"
   next: "次の月"
   go: "クリックして時間遡行"
-
-desktop/views/components/charts.vue:
-  title: "チャート"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  federation: "フェデレーション"
-  notes: "投稿"
-  users: "ユーザー"
-  drive: "ドライブ"
-  network: "ネットワーク"
-  charts:
-    federation-instances: "インスタンスの増減"
-    federation-instances-total: "インスタンスの積算"
-    notes: "投稿の増減 (統合)"
-    local-notes: "投稿の増減 (ローカル)"
-    remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の積算"
-    users: "ユーザーの増減"
-    users-total: "ユーザーの積算"
-    drive: "ドライブ使用量の増減"
-    drive-total: "ドライブ使用量の積算"
-    drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "ドライブのファイル数の積算"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
-    network-usage: "通信量"
 
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "ファイル選択中"
@@ -981,7 +966,7 @@ common/views/components/mute-and-block.vue:
   no-muted-users: "ミュートしているユーザーはいません"
   no-blocked-users: "ブロックしているユーザーはいません"
 
-desktop/views/components/settings.password.vue:
+common/views/components/password-settings.vue:
   reset: "パスワードを変更する"
   enter-current-password: "現在のパスワードを入力してください"
   enter-new-password: "新しいパスワードを入力してください"
@@ -1069,48 +1054,116 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 
-desktop/views/pages/admin/admin.vue:
+admin/views/index.vue:
   dashboard: "ダッシュボード"
+  instance: "インスタンス"
+  emoji: "カスタム絵文字"
   users: "ユーザー"
   update: "更新"
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
+  back-to-misskey: "Misskeyに戻る"
 
-desktop/views/pages/admin/admin.dashboard.vue:
+admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
-  invite: "招待"
-  banner-url: "Banner URL"
-  disableRegistration: "Disable new user registration"
-  disableLocalTimeline: "Disable the local timeline"
+  accounts: "アカウント"
+  notes: "投稿"
+  drive: "ドライブ"
+  instances: "インスタンス"
+  this-instance: "このインスタンス"
+  federated: "連合"
 
-desktop/views/pages/admin/admin.suspend-user.vue:
+admin/views/instance.vue:
+  instance: "インスタンス"
+  instance-name: "インスタンス名"
+  instance-description: "インスタンスの紹介"
+  banner-url: "バナー画像URL"
+  drive-config: "ドライブの設定"
+  cache-remote-files: "リモートのファイルをキャッシュする"
+  cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
+  local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
+  remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
+  mb: "メガバイト単位"
+  max-note-text-length: "投稿の最大文字数"
+  disable-registration: "ユーザー登録の受付を停止する"
+  disable-local-timeline: "ローカルタイムラインを無効にする"
+  invite: "招待"
+  save: "保存"
+  saved: "保存しました"
+
+admin/views/charts.vue:
+  title: "チャート"
+  per-day: "1日ごと"
+  per-hour: "1時間ごと"
+  federation: "フェデレーション"
+  notes: "投稿"
+  users: "ユーザー"
+  drive: "ドライブ"
+  network: "ネットワーク"
+  charts:
+    federation-instances: "インスタンスの増減"
+    federation-instances-total: "インスタンスの積算"
+    notes: "投稿の増減 (統合)"
+    local-notes: "投稿の増減 (ローカル)"
+    remote-notes: "投稿の増減 (リモート)"
+    notes-total: "投稿の積算"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの積算"
+    drive: "ドライブ使用量の増減"
+    drive-total: "ドライブ使用量の積算"
+    drive-files: "ドライブのファイル数の増減"
+    drive-files-total: "ドライブのファイル数の積算"
+    network-requests: "リクエスト"
+    network-time: "応答時間"
+    network-usage: "通信量"
+
+admin/views/users.vue:
   suspend-user: "ユーザーの凍結"
   suspend: "凍結"
   suspended: "凍結しました"
-
-desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend-user: "ユーザーの凍結の解除"
   unsuspend: "凍結の解除"
   unsuspended: "凍結を解除しました"
-
-desktop/views/pages/admin/admin.verify-user.vue:
   verify-user: "ユーザーの公式アカウント設定"
   verify: "公式アカウントにする"
   verified: "公式アカウントにしました"
-
-desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
 
-desktop/views/pages/admin/admin.announcements.vue:
-  announcements: "お知らせ"
+admin/views/emoji.vue:
+  add-emoji:
+    title: "絵文字の登録"
+    name: "絵文字名"
+    name-desc: "a~z 0~9 _ の文字が使えます。"
+    aliases: "エイリアス"
+    aliases-desc: "スペースで区切って複数設定できます。"
+    url: "絵文字画像URL"
+    add: "追加"
+    info: "50KB以下のPNG画像をおすすめします。"
+    added: "絵文字を登録しました"
+  emojis:
+    title: "絵文字一覧"
+    update: "更新"
+    remove: "削除"
+  updated: "更新しました"
+  remove-emoji:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 
-desktop/views/pages/admin/admin.hashtags.vue:
+admin/views/announcements.vue:
+  announcements: "お知らせ"
+  save: "保存"
+  remove: "削除"
+  add: "追加"
+  title: "タイトル"
+  text: "内容"
+  saved: "保存しました"
+  _remove:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
+
+admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 
 desktop/views/pages/deck/deck.tl-column.vue:
@@ -1127,12 +1180,6 @@ desktop/views/pages/deck/deck.user-column.vue:
   timeline: "タイムライン"
   pinned-notes: "ピン留めされた投稿"
   push-to-a-list: "リストに追加"
-
-desktop/views/pages/stats/stats.vue:
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
@@ -1515,6 +1562,10 @@ mobile/views/pages/settings.vue:
   twitter-connect: "Twitterアカウントに接続する"
   twitter-reconnect: "再接続する"
   twitter-disconnect: "切断する"
+  github: "GitHub連携"
+  github-connect: "GitHubアカウントに接続する"
+  github-reconnect: "再接続する"
+  github-disconnect: "切断する"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"
@@ -1529,6 +1580,7 @@ mobile/views/pages/settings.vue:
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
   mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  password: "パスワード"
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"

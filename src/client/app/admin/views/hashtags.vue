@@ -1,8 +1,12 @@
 <template>
-<div class="jdnqwkzlnxcfftthoybjxrebyolvoucw mk-admin-card">
-	<header>%i18n:@hided-tags%</header>
-	<textarea v-model="hidedTags"></textarea>
-	<button class="ui" @click="save">%i18n:@save%</button>
+<div>
+	<ui-card>
+		<div slot="title">%i18n:@hided-tags%</div>
+		<section>
+			<textarea class="jdnqwkzlnxcfftthoybjxrebyolvoucw" v-model="hidedTags"></textarea>
+			<ui-button @click="save">%i18n:@save%</ui-button>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -25,9 +29,9 @@ export default Vue.extend({
 			(this as any).api('admin/update-meta', {
 				hidedTags: this.hidedTags.split('\n')
 			}).then(() => {
-				(this as any).os.apis.dialog({ text: `Saved` });
+				//(this as any).os.apis.dialog({ text: `Saved` });
 			}).catch(e => {
-				(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}
@@ -35,11 +39,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .jdnqwkzlnxcfftthoybjxrebyolvoucw
-	textarea
-		width 100%
-		min-height 300px
+	width 100%
+	min-height 300px
 
 </style>

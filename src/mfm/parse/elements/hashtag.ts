@@ -3,13 +3,13 @@
  */
 
 export type TextElementHashtag = {
-	type: 'hashtag'
-	content: string
-	hashtag: string
+	type: 'hashtag';
+	content: string;
+	hashtag: string;
 };
 
-export default function(text: string, i: number) {
-	if (!(/^\s#[^\s\.,!\?#]+/.test(text) || (i == 0 && /^#[^\s\.,!\?#]+/.test(text)))) return null;
+export default function(text: string, isBegin: boolean) {
+	if (!(/^\s#[^\s\.,!\?#]+/.test(text) || (isBegin && /^#[^\s\.,!\?#]+/.test(text)))) return null;
 	const isHead = text.startsWith('#');
 	const hashtag = text.match(/^\s?#[^\s\.,!\?#]+/)[0];
 	const res: any[] = !isHead ? [{

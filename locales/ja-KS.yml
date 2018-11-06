@@ -186,6 +186,7 @@ common:
     stack-left: "左に重ねんで！"
     pop-right: "右に出すで！"
   dev: "アプリの作成あかんかったわ。もっぺんやってみて。"
+  ai-chan-kawaii: "藍ちゃめっさべっぴんさんや"
 auth/views/form.vue:
   share-access: "<i>{{ app.name }}</i>があんさんのアカウントにアクセスすんのを<b>許可</b>してもええか？"
   permission-ask: "このアプリは次の権限を要求してんで:"
@@ -743,7 +744,7 @@ desktop/views/components/settings.vue:
   apps: "アプリ"
   mute-and-block: "ミュート/ブロック"
   blocking: "ブロック"
-  security: "守護神セキュリティ"
+  security: "セキュリティ"
   signin: "こんな感じでサインインしたらしいで"
   password: "パスワード"
   2fa: "二段階認証"
@@ -872,13 +873,13 @@ common/views/components/mute-and-block.vue:
   mute-and-block: "ミュートとブロック"
   mute: "ミュート"
   block: "ブロック"
-  no-muted-users: "ミュートしているユーザーはいません"
-  no-blocked-users: "ブロックしているユーザーはいません"
-desktop/views/components/settings.password.vue:
-  reset: "パスワードを変更する"
+  no-muted-users: "ミュートしとるユーザーはおらんで"
+  no-blocked-users: "ブロックしとるユーザーはおらんで"
+common/views/components/password-settings.vue:
+  reset: "パスワード変える"
   enter-current-password: "今のパスワードを入れてや"
-  enter-new-password: "さらのパスワード入れてや"
-  enter-new-password-again: "もういっぺんさらのパスワードを入れてや"
+  enter-new-password: "こんどのパスワード入れてや"
+  enter-new-password-again: "もっぺん入れてや"
   not-match: "パスワードがおうとらん"
   changed: "パスワード変えたわ"
 desktop/views/components/sub-note-content.vue:
@@ -946,41 +947,86 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "さいなら"
-desktop/views/pages/admin/admin.vue:
+admin/views/index.vue:
   dashboard: "ダッシュボード"
+  instance: "インスタンス"
+  emoji: "カスタム絵文字"
   users: "ユーザー"
   update: "更新"
   announcements: "知っといてや"
   hashtags: "ハッシュタグ"
-desktop/views/pages/admin/admin.dashboard.vue:
+  back-to-misskey: "Misskeyに戻る"
+admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
-  all-users: "知り合い全員や"
-  original-users: "ここの人らだけ"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
+  accounts: "アカウント"
+  notes: "投稿"
+  drive: "ドライブ"
+  instances: "インスタンス"
+  this-instance: "ワイのインスタンス"
+  federated: "連合"
   invite: "来てや"
   banner-url: "Banner URL"
   disableRegistration: "Disable new user registration"
   disableLocalTimeline: "Disable the local timeline"
-desktop/views/pages/admin/admin.suspend-user.vue:
+admin/views/charts.vue:
+  title: "チャート"
+  per-day: "1日ごと"
+  per-hour: "1時間ごと"
+  federation: "フェデレーション"
+  notes: "投稿"
+  users: "ユーザー"
+  drive: "ドライブ"
+  network: "ネットワーク"
+  charts:
+    federation-instances: "インスタンスの増減"
+    federation-instances-total: "インスタンスの積算"
+    notes: "投稿の増減(統合)"
+    local-notes: "投稿の増減 (ローカル)"
+    remote-notes: "投稿の増減 (リモート)"
+    notes-total: "投稿の積算"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの積算"
+    drive: "ドライブ使用量の増減"
+    drive-total: "ドライブ使用量の積算"
+    drive-files: "ドライブのファイル数の増減"
+    drive-files-total: "ドライブのファイル数の積算"
+    network-requests: "リクエスト"
+    network-time: "応答時間"
+    network-usage: "通信量"
+admin/views/users.vue:
   suspend-user: "ユーザーの凍結"
   suspend: "凍結"
-  suspended: "凍結したで"
-desktop/views/pages/admin/admin.unsuspend-user.vue:
+  suspended: "凍結しました"
   unsuspend-user: "ユーザーの凍結の解除"
   unsuspend: "凍結の解除"
-  unsuspended: "凍結を解除したで"
-desktop/views/pages/admin/admin.verify-user.vue:
+  unsuspended: "凍結を解除しました"
   verify-user: "ユーザーの公式アカウント設定"
   verify: "公式アカウントにする"
-  verified: "公式アカウントにしたで"
-desktop/views/pages/admin/admin.unverify-user.vue:
-  unverify-user: "ユーザーの公式アカウントにせーへん"
-  unverify: "公式アカウントにはさせへんで"
-  unverified: "公式アカウントを解除したで"
-desktop/views/pages/admin/admin.announcements.vue:
-  announcements: "知っといてや"
-desktop/views/pages/admin/admin.hashtags.vue:
+  verified: "公式アカウントにしました"
+  unverify-user: "ユーザーの公式アカウント解除"
+  unverify: "公式アカウントを解除する"
+  unverified: "公式アカウントを解除しました"
+admin/views/emoji.vue:
+  add-emoji:
+    title: "絵文字の登録"
+    name: "絵文字名"
+    name-desc: "a~z 0~9 _ の文字が使えます。"
+    aliases: "エイリアス"
+    aliases-desc: "スペースで区切って複数設定できます。"
+    url: "絵文字画像URL"
+    add: "追加"
+  emojis:
+    title: "絵文字一覧"
+    update: "更新"
+    remove: "削除"
+admin/views/announcements.vue:
+  announcements: "お知らせ"
+  save: "保存"
+  remove: "削除"
+  add: "追加"
+  title: "タイトル"
+  text: "内容"
+admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿だけや"
@@ -1328,6 +1374,7 @@ mobile/views/pages/settings.vue:
   sound: "サウンド"
   enable-sounds: "サウンド鳴らす"
   mark-as-read-all-unread-notes: "全部もう読んだわ"
+  password: "パスワード"
 mobile/views/pages/user.vue:
   follows-you: "フォローされとるで"
   following: "フォロー"
@@ -1340,7 +1387,7 @@ mobile/views/pages/user.vue:
   mute: "ミュート"
   unmute: "ミュート解除"
   block: "ブロック"
-  unblock: "ブロック解除"
+  unblock: "ブロックやめたる"
 mobile/views/pages/user/home.vue:
   recent-notes: "最近儲かりまっか？"
   images: "画像"

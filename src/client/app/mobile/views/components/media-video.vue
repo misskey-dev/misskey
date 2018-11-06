@@ -1,7 +1,7 @@
 <template>
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="video.isSensitive && hide" @click="hide = false">
 	<div>
-		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
+		<b><fa icon="exclamation-triangle"/> %i18n:@sensitive%</b>
 		<span>%i18n:@click-to-show%</span>
 	</div>
 </div>
@@ -11,7 +11,7 @@
 	:style="imageStyle"
 	:title="video.name"
 >
-	%fa:R play-circle%
+	<fa :icon="['far', 'play-circle']"/>
 </a>
 </template>
 

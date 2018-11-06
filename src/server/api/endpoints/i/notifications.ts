@@ -1,38 +1,52 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Notification from '../../../../models/notification';
 import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/notification';
 import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
-import { ILocalUser } from '../../../../models/user';
+import define from '../../define';
 
-/**
- * Get notifications
- */
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'following' parameter
-	const [following = false, followingError] =
-		$.bool.optional.get(params.following);
-	if (followingError) return rej('invalid following param');
+export const meta = {
+	desc: {
+		'ja-JP': '通知一覧を取得します。',
+		'en-US': 'Get notifications.'
+	},
 
-	// Get 'markAsRead' parameter
-	const [markAsRead = true, markAsReadErr] = $.bool.optional.get(params.markAsRead);
-	if (markAsReadErr) return rej('invalid markAsRead param');
+	requireCredential: true,
 
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	kind: 'account-read',
 
-	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
-	if (sinceIdErr) return rej('invalid sinceId param');
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
 
-	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
-	if (untilIdErr) return rej('invalid untilId param');
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+
+		following: {
+			validator: $.bool.optional,
+			default: false
+		},
+
+		markAsRead: {
+			validator: $.bool.optional,
+			default: true
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
-	if (sinceId && untilId) {
+	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
 	}
 
@@ -53,7 +67,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		_id: -1
 	};
 
-	if (following) {
+	if (ps.following) {
 		// ID list of the user itself and other users who the user follows
 		const followingIds = await getFriendIds(user._id);
 
@@ -64,29 +78,27 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		});
 	}
 
-	if (sinceId) {
+	if (ps.sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: sinceId
+			$gt: ps.sinceId
 		};
-	} else if (untilId) {
+	} else if (ps.untilId) {
 		query._id = {
-			$lt: untilId
+			$lt: ps.untilId
 		};
 	}
 
-	// Issue query
 	const notifications = await Notification
 		.find(query, {
-			limit: limit,
+			limit: ps.limit,
 			sort: sort
 		});
 
-	// Serialize
 	res(await packMany(notifications));
 
 	// Mark all as read
-	if (notifications.length > 0 && markAsRead) {
+	if (notifications.length > 0 && ps.markAsRead) {
 		read(user._id, notifications);
 	}
-});
+}));

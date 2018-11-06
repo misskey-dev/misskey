@@ -1,9 +1,70 @@
 import db from '../db/mongodb';
+import config from '../config';
 
 const Meta = db.get<IMeta>('meta');
 export default Meta;
 
+// 後方互換性のため。
+// 過去のMisskeyではインスタンス名や紹介を設定ファイルに記述していたのでそれを移行
+if ((config as any).name) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.name == null) {
+			Meta.update({}, {
+				$set: {
+					name: (config as any).name
+				}
+			});
+		}
+	});
+}
+if ((config as any).description) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.description == null) {
+			Meta.update({}, {
+				$set: {
+					description: (config as any).description
+				}
+			});
+		}
+	});
+}
+if ((config as any).localDriveCapacityMb) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.localDriveCapacityMb == null) {
+			Meta.update({}, {
+				$set: {
+					localDriveCapacityMb: (config as any).localDriveCapacityMb
+				}
+			});
+		}
+	});
+}
+if ((config as any).remoteDriveCapacityMb) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.remoteDriveCapacityMb == null) {
+			Meta.update({}, {
+				$set: {
+					remoteDriveCapacityMb: (config as any).remoteDriveCapacityMb
+				}
+			});
+		}
+	});
+}
+if ((config as any).preventCacheRemoteFiles) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.cacheRemoteFiles == null) {
+			Meta.update({}, {
+				$set: {
+					cacheRemoteFiles: !(config as any).preventCacheRemoteFiles
+				}
+			});
+		}
+	});
+}
+
 export type IMeta = {
+	name?: string;
+	description?: string;
 	broadcasts?: any[];
 	stats?: {
 		notesCount: number;
@@ -16,23 +77,20 @@ export type IMeta = {
 	hidedTags?: string[];
 	bannerUrl?: string;
 
+	cacheRemoteFiles?: boolean;
+
 	/**
-	 * カスタム絵文字定義
+	 * Drive capacity of a local user (MB)
 	 */
-	emojis?: {
-		/**
-		 * 絵文字名 (例: thinking_ai)
-		 */
-		name: string;
+	localDriveCapacityMb?: number;
 
-		/**
-		 * エイリアス
-		 */
-		aliases?: string[];
+	/**
+	 * Drive capacity of a remote user (MB)
+	 */
+	remoteDriveCapacityMb?: number;
 
-		/**
-		 * 絵文字画像のURL
-		 */
-		url: string;
-	}[];
+	/**
+	 * Max allowed note text length in charactors
+	 */
+	maxNoteTextLength?: number;
 };

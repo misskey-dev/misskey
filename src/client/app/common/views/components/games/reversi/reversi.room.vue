@@ -17,13 +17,13 @@
 			</header>
 
 			<div>
-				<div class="random" v-if="game.settings.map == null">%fa:dice%</div>
+				<div class="random" v-if="game.settings.map == null"><fa icon="dice"/></div>
 				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 					<div v-for="(x, i) in game.settings.map.join('')"
 							:data-none="x == ' '"
 							@click="onPixelClick(i, x)">
-						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode">%fa:circle R%</template><template v-else>%fa:circle%</template></template>
-						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode">%fa:circle%</template><template v-else>%fa:circle R%</template></template>
+						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode"><fa :icon="['far', 'circle']"/></template><template v-else><fa icon="circle"/></template></template>
+						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode"><fa :icon="['far', 'circle']"/></template><template v-else><fa icon="circle"/></template></template>
 					</div>
 				</div>
 			</div>

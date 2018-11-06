@@ -4,11 +4,11 @@
 	@drop.prevent.stop="onDrop"
 >
 	<div class="body">
-		<p class="init" v-if="init">%fa:spinner .spin%%i18n:common.loading%</p>
-		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:@empty%</p>
-		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:@no-history%</p>
+		<p class="init" v-if="init"><fa icon="spinner .spin"/>%i18n:common.loading%</p>
+		<p class="empty" v-if="!init && messages.length == 0"><fa icon="info-circle"/>%i18n:@empty%</p>
+		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages"><fa icon="flag"/>%i18n:@no-history%</p>
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:@more%' }}
+			<template v-if="fetchingMoreMessages"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:@more%' }}
 		</button>
 		<template v-for="(message, i) in _messages">
 			<x-message :message="message" :key="message.id"/>
@@ -20,7 +20,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button @click="onIndicatorClick">%fa:arrow-circle-down%%i18n:@new-message%</button>
+				<button @click="onIndicatorClick"><i><fa icon="arrow-circle-down"/></i>%i18n:@new-message%</button>
 			</div>
 		</transition>
 		<x-form :user="user" ref="form"/>
@@ -280,7 +280,7 @@ export default Vue.extend({
 			color var(--messagingRoomInfo)
 			opacity 0.5
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 		> .no-history
@@ -292,7 +292,7 @@ export default Vue.extend({
 			color var(--messagingRoomInfo)
 			opacity 0.5
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 		> .more
@@ -313,7 +313,7 @@ export default Vue.extend({
 			&.fetching
 				cursor wait
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 		> .message
@@ -381,7 +381,7 @@ export default Vue.extend({
 				&:active
 					background var(--primaryDarken10)
 
-				> [data-fa]
+				> i
 					position absolute
 					top 0
 					left 10px

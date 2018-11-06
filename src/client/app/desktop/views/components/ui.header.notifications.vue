@@ -1,7 +1,8 @@
 <template>
 <div class="notifications" v-hotkey.global="keymap">
 	<button :data-active="isOpen" @click="toggle" title="%i18n:@title%">
-		%fa:R bell%<template v-if="hasUnreadNotification">%fa:circle%</template>
+		<i class="bell"><fa :icon="['far', 'bell']"/></i>
+		<i class="circle" v-if="hasUnreadNotification"><fa icon="circle"/></i>
 	</button>
 	<div class="pop" v-if="isOpen">
 		<mk-notifications/>
@@ -79,11 +80,11 @@ export default Vue.extend({
 		&[data-active='true']
 			color var(--desktopHeaderHoverFg)
 
-		> [data-fa].bell
+		> i.bell
 			font-size 1.2em
 			line-height 48px
 
-		> [data-fa].circle
+		> i.circle
 			margin-left -5px
 			vertical-align super
 			font-size 10px

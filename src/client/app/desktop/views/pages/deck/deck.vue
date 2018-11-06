@@ -14,7 +14,7 @@
 			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
 			<x-hashtag-column v-else-if="temporaryColumn.type == 'tag'" :tag="temporaryColumn.tag" :key="temporaryColumn.tag"/>
 		</template>
-		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
+		<button ref="add" @click="add" title="%i18n:common.deck.add-column%"><fa icon="plus"/></button>
 	</div>
 </mk-ui>
 </template>
@@ -182,7 +182,7 @@ export default Vue.extend({
 				source: this.$refs.add,
 				compact: true,
 				items: [{
-					icon: '%fa:home%',
+					icon: 'home',
 					text: '%i18n:common.deck.home%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -191,7 +191,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:comments R%',
+					icon: ['far', 'comments'],
 					text: '%i18n:common.deck.local%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -200,7 +200,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:share-alt%',
+					icon: 'share-alt',
 					text: '%i18n:common.deck.hybrid%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -209,7 +209,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:globe%',
+					icon: 'globe',
 					text: '%i18n:common.deck.global%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -218,7 +218,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:at%',
+					icon: 'at',
 					text: '%i18n:common.deck.mentions%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -227,7 +227,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:envelope R%',
+					icon: ['far', 'envelope'],
 					text: '%i18n:common.deck.direct%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -236,7 +236,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:list%',
+					icon: 'list',
 					text: '%i18n:common.deck.list%',
 					action: () => {
 						const w = (this as any).os.new(MkUserListsWindow);
@@ -250,7 +250,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:hashtag%',
+					icon: 'hashtag',
 					text: '%i18n:common.deck.hashtag%',
 					action: () => {
 						(this as any).apis.input({
@@ -264,7 +264,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:bell R%',
+					icon: ['far', 'bell'],
 					text: '%i18n:common.deck.notifications%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
@@ -273,7 +273,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:calculator%',
+					icon: 'calculator',
 					text: '%i18n:common.deck.widgets%',
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {

@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title">%fa:key% API</div>
+	<div slot="title"><fa icon="key"/> API</div>
 
 	<section class="fit-top">
 		<ui-input :value="$store.state.i.token" readonly>
@@ -9,11 +9,11 @@
 		<p>%i18n:@intro%</p>
 		<ui-info warn>%i18n:@caution%</ui-info>
 		<p>%i18n:@regeneration-of-token%</p>
-		<ui-button @click="regenerateToken">%fa:sync-alt% %i18n:@regenerate-token%</ui-button>
+		<ui-button @click="regenerateToken"><fa icon="sync-alt"/> %i18n:@regenerate-token%</ui-button>
 	</section>
 
 	<section>
-		<header>%fa:terminal% %i18n:@console.title%</header>
+		<header><fa icon="terminal"/> %i18n:@console.title%</header>
 		<ui-input v-model="endpoint">
 			<span>%i18n:@console.endpoint%</span>
 		</ui-input>
@@ -22,7 +22,7 @@
 		</ui-textarea>
 		<ui-button @click="send" :disabled="sending">
 			<template v-if="sending">%i18n:@console.sending%</template>
-			<template v-else>%fa:paper-plane% %i18n:@console.send%</template>
+			<template v-else><fa icon="paper-plane"/> %i18n:@console.send%</template>
 		</ui-button>
 		<ui-textarea v-if="res" v-model="res" readonly tall>
 			<span>%i18n:@console.response%</span>

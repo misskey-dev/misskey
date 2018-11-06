@@ -1,8 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
-import { ILocalUser } from '../../../../../../models/user';
-import getParams from '../../../../get-params';
 import { publishReversiGameStream } from '../../../../../../stream';
+import define from '../../../../define';
 
 export const meta = {
 	desc: {
@@ -12,18 +11,17 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		gameId: $.type(ID).note({
+		gameId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '投了したい対局'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const game = await ReversiGame.findOne({ _id: ps.gameId });
 
 	if (game == null) {
@@ -56,4 +54,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	});
 
 	res();
-});
+}));

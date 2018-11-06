@@ -4,24 +4,24 @@ import $ from 'cafy';
 import App from '../../../../models/app';
 import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';
-import { ILocalUser } from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
 	requireCredential: true,
-	secure: true
+
+	secure: true,
+
+	params: {
+		token: {
+			validator: $.str
+		}
+	}
 };
 
-/**
- * Accept
- */
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'token' parameter
-	const [token, tokenErr] = $.str.get(params.token);
-	if (tokenErr) return rej('invalid token param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch token
 	const session = await AuthSess
-		.findOne({ token: token });
+		.findOne({ token: ps.token });
 
 	if (session === null) {
 		return rej('session not found');
@@ -66,4 +66,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Response
 	res();
-});
+}));

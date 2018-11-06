@@ -18,8 +18,6 @@ export type Source = {
 		repository_url?: string;
 		feedback_url?: string;
 	};
-	name?: string;
-	description?: string;
 	languages?: string[];
 	welcome_bg_url?: string;
 	url: string;
@@ -48,10 +46,6 @@ export type Source = {
 		secret_key: string;
 	};
 
-	localDriveCapacityMb: number;
-	remoteDriveCapacityMb: number;
-	preventCacheRemoteFiles: boolean;
-
 	drive?: {
 		storage: string;
 		bucket?: string;
@@ -59,6 +53,8 @@ export type Source = {
 		baseUrl?: string;
 		config?: any;
 	};
+
+	autoAdmin?: boolean;
 
 	/**
 	 * ゴーストアカウントのID
@@ -73,6 +69,10 @@ export type Source = {
 	twitter?: {
 		consumer_key: string;
 		consumer_secret: string;
+	};
+	github?: {
+		client_id: string;
+		client_secret: string;
 	};
 	github_bot?: {
 		hook_secret: string;
@@ -105,8 +105,6 @@ export type Source = {
 		engine: string;
 		timeout: number;
 	};
-
-	maxNoteTextLength?: number;
 };
 
 /**

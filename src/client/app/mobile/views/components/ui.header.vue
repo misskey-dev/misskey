@@ -5,8 +5,8 @@
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="content" ref="mainContainer">
-			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
-			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation">%fa:circle%</template>
+			<button class="nav" @click="$parent.isDrawerOpening = true"><fa icon="bars"/></button>
+			<i v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation" class="circle"><fa icon="circle"/></i>
 			<h1>
 				<slot>{{ os.instanceName }}</slot>
 			</h1>
@@ -147,10 +147,10 @@ export default Vue.extend({
 				line-height $height
 				border-right solid 1px rgba(#000, 0.1)
 
-				> [data-fa]
+				> [data-icon]
 					transition all 0.2s ease
 
-			> [data-fa].circle
+			> i.circle
 				position absolute
 				top 8px
 				left 8px

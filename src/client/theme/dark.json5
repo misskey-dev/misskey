@@ -215,5 +215,11 @@
 		reversiGameEmptyCell: ':lighten<2<$secondary',
 		reversiGameEmptyCellMyTurn: ':lighten<5<$secondary',
 		reversiGameEmptyCellCanPut: ':lighten<4<$secondary',
+
+		adminDashboardHeaderFg: ':alpha<0.9<$text',
+		adminDashboardHeaderBorder: 'rgba(0, 0, 0, 0.3)',
+		adminDashboardCardBg: '$secondary',
+		adminDashboardCardFg: '$text',
+		adminDashboardCardDivider: 'rgba(0, 0, 0, 0.3)',
 	},
 }

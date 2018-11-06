@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import Hashtag from '../../../../models/hashtag';
-import getParams from '../../get-params';
+import define from '../../define';
 const escapeRegexp = require('escape-regexp');
 
 export const meta = {
@@ -11,32 +11,32 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
 			}
-		}),
+		},
 
-		query: $.str.note({
+		query: {
+			validator: $.str,
 			desc: {
 				'ja-JP': 'クエリ'
 			}
-		}),
+		},
 
-		offset: $.num.optional.min(0).note({
+		offset: {
+			validator: $.num.optional.min(0),
 			default: 0,
 			desc: {
 				'ja-JP': 'オフセット'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const hashtags = await Hashtag
 		.find({
 			tag: new RegExp('^' + escapeRegexp(ps.query.toLowerCase()))
@@ -49,4 +49,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 		});
 
 	res(hashtags.map(tag => tag.tag));
-});
+}));

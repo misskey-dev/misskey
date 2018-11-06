@@ -1,7 +1,7 @@
 <template>
 <div class="jtivnzhfwquxpsfidertopbmwmchmnmo">
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<p class="empty" v-else-if="tags.length == 0">%fa:exclamation-circle%%i18n:@empty%</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-else-if="tags.length == 0"><fa icon="exclamation-circle"/>%i18n:@empty%</p>
 	<div v-else>
 		<vue-word-cloud
 				:words="tags.slice(0, 20).map(x => [x.name, x.count])"
@@ -74,7 +74,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> div

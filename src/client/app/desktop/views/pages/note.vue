@@ -3,8 +3,8 @@
 	<main v-if="!fetching">
 		<mk-note-detail :note="note"/>
 		<footer>
-			<router-link v-if="note.next" :to="note.next">%fa:angle-left% %i18n:@next%</router-link>
-			<router-link v-if="note.prev" :to="note.prev">%i18n:@prev% %fa:angle-right%</router-link>
+			<router-link v-if="note.next" :to="note.next"><fa icon="angle-left"/> %i18n:@next%</router-link>
+			<router-link v-if="note.prev" :to="note.prev">%i18n:@prev% <fa icon="angle-right"/></router-link>
 		</footer>
 	</main>
 </mk-ui>

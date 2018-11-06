@@ -1,7 +1,9 @@
+import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
-import Meta from '../../../models/meta';
-import { ILocalUser } from '../../../models/user';
+import Emoji from '../../../models/emoji';
+import define from '../define';
+import fetchMeta from '../../../misc/fetch-meta';
 
 const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
@@ -16,11 +18,22 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {},
+	params: {
+		detail: {
+			validator: $.bool.optional,
+			default: true
+		}
+	},
 };
 
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const meta: any = (await Meta.findOne()) || {};
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	const instance = await fetchMeta();
+
+	const emojis = await Emoji.find({ host: null }, {
+		fields: {
+			_id: false
+		}
+	});
 
 	res({
 		maintainer: config.maintainer,
@@ -28,8 +41,8 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 		version: pkg.version,
 		clientVersion: client.version,
 
-		name: config.name || 'Misskey',
-		description: config.description,
+		name: instance.name,
+		description: instance.description,
 
 		secure: config.https != null,
 		machine: os.hostname(),
@@ -41,26 +54,30 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 			cores: os.cpus().length
 		},
 
-		broadcasts: meta.broadcasts || [],
-		disableRegistration: meta.disableRegistration,
-		disableLocalTimeline: meta.disableLocalTimeline,
-		driveCapacityPerLocalUserMb: config.localDriveCapacityMb,
+		broadcasts: instance.broadcasts || [],
+		disableRegistration: instance.disableRegistration,
+		disableLocalTimeline: instance.disableLocalTimeline,
+		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
+		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+		cacheRemoteFiles: instance.cacheRemoteFiles,
 		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
 		swPublickey: config.sw ? config.sw.public_key : null,
-		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
-		bannerUrl: meta.bannerUrl,
-		maxNoteTextLength: config.maxNoteTextLength,
-		emojis: meta.emojis,
+		hidedTags: (me && me.isAdmin) ? instance.hidedTags : undefined,
+		bannerUrl: instance.bannerUrl,
+		maxNoteTextLength: instance.maxNoteTextLength,
 
-		features: {
-			registration: !meta.disableRegistration,
-			localTimeLine: !meta.disableLocalTimeline,
+		emojis: emojis,
+
+		features: ps.detail ? {
+			registration: !instance.disableRegistration,
+			localTimeLine: !instance.disableLocalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
 			recaptcha: config.recaptcha ? true : false,
 			objectStorage: config.drive && config.drive.storage === 'minio',
 			twitter: config.twitter ? true : false,
+			github: config.github ? true : false,
 			serviceWorker: config.sw ? true : false,
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
-		}
+		} : undefined
 	});
-});
+}));

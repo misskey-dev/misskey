@@ -20,8 +20,8 @@
 		<template v-for="(note, i) in _notes">
 			<mk-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
-				<span>%fa:angle-up%{{ note._datetext }}</span>
-				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ note._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</component>
@@ -29,7 +29,7 @@
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
+			<template v-if="moreFetching"><fa icon="spinner .pulse" fixed-width/></template>
 		</button>
 	</footer>
 </div>
@@ -233,7 +233,7 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			[data-fa]
+			[data-icon]
 				margin-right 8px
 
 	> .placeholder
@@ -250,7 +250,7 @@ export default Vue.extend({
 		text-align center
 		color #999
 
-		> [data-fa]
+		> [data-icon]
 			display block
 			margin-bottom 16px
 			font-size 3em

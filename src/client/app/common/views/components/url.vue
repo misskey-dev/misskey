@@ -6,7 +6,7 @@
 	<span class="pathname" v-if="pathname != ''">{{ pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
-	%fa:external-link-square-alt%
+	<fa icon="external-link-square-alt"/>
 </a>
 </template>
 
@@ -40,7 +40,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-url
 	word-break break-all
-	> [data-fa]
+	> [data-icon]
 		padding-left 2px
 		font-size .9em
 		font-weight 400

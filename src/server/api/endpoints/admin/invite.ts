@@ -1,5 +1,6 @@
 import rndstr from 'rndstr';
 import RegistrationTicket from '../../../../models/registration-tickets';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -12,7 +13,7 @@ export const meta = {
 	params: {}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const code = rndstr({ length: 5, chars: '0-9' });
 
 	await RegistrationTicket.insert({
@@ -23,4 +24,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 	res({
 		code: code
 	});
-});
+}));

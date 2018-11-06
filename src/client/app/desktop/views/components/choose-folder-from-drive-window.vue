@@ -21,7 +21,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: {
 		title: {
-			default: '%fa:R folder%%i18n:@choose-prompt%'
+			default: '<fa :icon="['far', 'folder']"/>%i18n:@choose-prompt%'
 		}
 	},
 	methods: {
@@ -40,7 +40,7 @@ export default Vue.extend({
 
 
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .browser

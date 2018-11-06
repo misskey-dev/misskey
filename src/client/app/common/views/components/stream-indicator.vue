@@ -1,15 +1,15 @@
 <template>
 <div class="mk-stream-indicator">
 	<p v-if="stream.state == 'initializing'">
-		%fa:spinner .pulse%
+		<fa icon="spinner .pulse"/>
 		<span>%i18n:@connecting%<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'reconnecting'">
-		%fa:spinner .pulse%
+		<fa icon="spinner .pulse"/>
 		<span>%i18n:@reconnecting%<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'connected'">
-		%fa:check%
+		<fa icon="check"/>
 		<span>%i18n:@connected%</span>
 	</p>
 </div>
@@ -80,7 +80,7 @@ export default Vue.extend({
 		display block
 		margin 0
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 0.25em
 
 </style>

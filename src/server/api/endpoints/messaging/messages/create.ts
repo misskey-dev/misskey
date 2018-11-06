@@ -1,14 +1,15 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import History from '../../../../../models/messaging-history';
-import User, { ILocalUser } from '../../../../../models/user';
+import User from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
 import { publishMainStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -18,22 +19,38 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-write'
+	kind: 'messaging-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		},
+
+		text: {
+			validator: $.str.optional.pipe(isValidText)
+		},
+
+		fileId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		}
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);
-	if (recipientIdErr) return rej('invalid userId param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Myself
-	if (recipientId.equals(user._id)) {
+	if (ps.userId.equals(user._id)) {
 		return rej('cannot send message to myself');
 	}
 
 	// Fetch recipient
 	const recipient = await User.findOne({
-		_id: recipientId
+		_id: ps.userId
 	}, {
 		fields: {
 			_id: true
@@ -44,18 +61,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej('user not found');
 	}
 
-	// Get 'text' parameter
-	const [text, textErr] = $.str.optional.pipe(isValidText).get(params.text);
-	if (textErr) return rej('invalid text');
-
-	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $.type(ID).optional.get(params.fileId);
-	if (fileIdErr) return rej('invalid fileId param');
-
 	let file = null;
-	if (fileId !== undefined) {
+	if (ps.fileId != null) {
 		file = await DriveFile.findOne({
-			_id: fileId,
+			_id: ps.fileId,
 			'metadata.userId': user._id
 		});
 
@@ -65,7 +74,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
-	if (text === undefined && file === null) {
+	if (ps.text == null && file == null) {
 		return rej('text or file is required');
 	}
 
@@ -74,7 +83,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		createdAt: new Date(),
 		fileId: file ? file._id : undefined,
 		recipientId: recipient._id,
-		text: text ? text.trim() : undefined,
+		text: ps.text ? ps.text.trim() : undefined,
 		userId: user._id,
 		isRead: false
 	});
@@ -147,4 +156,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}, {
 		upsert: true
 	});
-});
+}));

@@ -1,8 +1,8 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
-import User, { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import User from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -17,19 +17,18 @@ export const meta = {
 	kind: 'note-write',
 
 	params: {
-		noteId: $.type(ID).note({
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch note
 	const note = await Note.findOne({
 		_id: ps.noteId
@@ -46,4 +45,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	await deleteNote(await User.findOne({ _id: note.userId }), note);
 
 	res();
-});
+}));

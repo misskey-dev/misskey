@@ -1,23 +1,27 @@
 import $ from 'cafy';
-import User, { ILocalUser } from '../../../../models/user';
+import User from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
+import define from '../../define';
 
 export const meta = {
 	requireCredential: true,
-	secure: true
+
+	secure: true,
+
+	params: {
+		name: {
+			validator: $.str
+		},
+
+		value: {
+			validator: $.any.nullable
+		}
+	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.get(params.name);
-	if (nameErr) return rej('invalid name param');
-
-	// Get 'value' parameter
-	const [value, valueErr] = $.any.nullable.get(params.value);
-	if (valueErr) return rej('invalid value param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const x: any = {};
-	x[`clientSettings.${name}`] = value;
+	x[`clientSettings.${ps.name}`] = ps.value;
 
 	await User.update(user._id, {
 		$set: x
@@ -27,7 +31,7 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 
 	// Publish event
 	publishMainStream(user._id, 'clientSettingUpdated', {
-		key: name,
-		value
+		key: ps.name,
+		value: ps.value
 	});
-});
+}));

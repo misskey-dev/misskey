@@ -1,12 +1,12 @@
 <template>
 <div class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
 	<header>
-		<span :data-active="mode == 'default'" @click="mode = 'default'">%fa:comment-alt R% %i18n:@default%</span>
-		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'">%fa:comments% %i18n:@with-replies%</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'">%fa:images% %i18n:@with-media%</span>
+		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> %i18n:@default%</span>
+		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> %i18n:@with-replies%</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa icon="images"/> %i18n:@with-media%</span>
 	</header>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
-		<p class="empty" slot="empty">%fa:R comments%%i18n:@empty%</p>
+		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>%i18n:@empty%</p>
 	</mk-notes>
 </div>
 </template>
@@ -157,7 +157,7 @@ export default Vue.extend({
 		text-align center
 		color #999
 
-		> [data-fa]
+		> [data-icon]
 			display block
 			margin-bottom 16px
 			font-size 3em

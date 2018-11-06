@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-memo">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:R sticky-note%%i18n:@title%</template>
+		<template slot="header"><fa :icon="['far', 'sticky-note']"/>%i18n:@title%</template>
 
 		<div class="mkw-memo--body">
 			<textarea v-model="text" placeholder="%i18n:@memo%" @input="onChange"></textarea>

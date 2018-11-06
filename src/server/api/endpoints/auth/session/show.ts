@@ -1,18 +1,21 @@
 import $ from 'cafy';
 import AuthSess, { pack } from '../../../../../models/auth-session';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
-/**
- * Show a session
- */
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'token' parameter
-	const [token, tokenErr] = $.str.get(params.token);
-	if (tokenErr) return rej('invalid token param');
+export const meta = {
+	requireCredential: false,
 
+	params: {
+		token: {
+			validator: $.str
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Lookup session
 	const session = await AuthSess.findOne({
-		token: token
+		token: ps.token
 	});
 
 	if (session == null) {
@@ -21,4 +24,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Response
 	res(await pack(session, user));
-});
+}));

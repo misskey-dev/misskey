@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;">%fa:R bell%</span>%i18n:@notifications%</span>
-	<template slot="func"><button @click="fn">%fa:check%</button></template>
+	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>%i18n:@notifications%</span>
+	<template slot="func"><button @click="fn"><fa icon="check"/></button></template>
 
 	<main>
 		<mk-notifications @fetched="onFetched"/>

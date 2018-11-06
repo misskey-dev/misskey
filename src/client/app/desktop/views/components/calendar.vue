@@ -1,9 +1,9 @@
 <template>
 <div class="mk-calendar" :data-melt="design == 4 || design == 5">
 	<template v-if="design == 0 || design == 1">
-		<button @click="prev" title="%i18n:@prev%">%fa:chevron-circle-left%</button>
+		<button @click="prev" title="%i18n:@prev%"><fa icon="chevron-circle-left"/></button>
 		<p class="title">{{ '%i18n:@title%'.replace('{1}', year).replace('{2}', month) }}</p>
-		<button @click="next" title="%i18n:@next%">%fa:chevron-circle-right%</button>
+		<button @click="next" title="%i18n:@next%"><fa icon="chevron-circle-right"/></button>
 	</template>
 
 	<div class="calendar">
@@ -151,7 +151,7 @@ export default Vue.extend({
 		background var(--faceHeader)
 		box-shadow 0 1px rgba(#000, 0.07)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> button

@@ -1,8 +1,7 @@
 import $ from 'cafy';
-import ID from '../../../../../misc/cafy-id';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -15,19 +14,18 @@ export const meta = {
 	kind: 'account-write',
 
 	params: {
-		listId: $.type(ID).note({
+		listId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象となるユーザーリストのID',
 				'en-US': 'ID of target user list'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const userList = await UserList.findOne({
 		_id: ps.listId,
 		userId: user._id
@@ -42,4 +40,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	});
 
 	res();
-});
+}));

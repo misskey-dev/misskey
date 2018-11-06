@@ -1,10 +1,9 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -15,82 +14,93 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		listId: $.type(ID).note({
+		listId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': 'リストのID'
 			}
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
 			}
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
 			}
-		}),
+		},
 
-		untilId: $.type(ID).optional.note({
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
 			}
-		}),
+		},
 
-		sinceDate: $.num.optional.note({
+		sinceDate: {
+			validator: $.num.optional,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
-		}),
+		},
 
-		untilDate: $.num.optional.note({
+		untilDate: {
+			validator: $.num.optional,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
-		}),
+		},
 
-		includeMyRenotes: $.bool.optional.note({
+		includeMyRenotes: {
+			validator: $.bool.optional,
 			default: true,
 			desc: {
 				'ja-JP': '自分の行ったRenoteを含めるかどうか'
 			}
-		}),
+		},
 
-		includeRenotedMyNotes: $.bool.optional.note({
+		includeRenotedMyNotes: {
+			validator: $.bool.optional,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
 			}
-		}),
+		},
 
-		includeLocalRenotes: $.bool.optional.note({
+		includeLocalRenotes: {
+			validator: $.bool.optional,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
 			}
-		}),
+		},
 
-		withFiles: $.bool.optional.note({
+		withFiles: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
-		}),
+		},
 
-		mediaOnly: $.bool.optional.note({
+		mediaOnly: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
-		}),
+		},
 	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const [list, mutedUserIds] = await Promise.all([
 		// リストを取得
 		// Fetch the list
@@ -106,7 +116,8 @@ export default async (params: any, user: ILocalUser) => {
 	]);
 
 	if (list.userIds.length == 0) {
-		return [];
+		res([]);
+		return;
 	}
 
 	//#region Construct query
@@ -244,5 +255,5 @@ export default async (params: any, user: ILocalUser) => {
 		});
 
 	// Serialize
-	return await packMany(timeline, user);
-};
+	res(await packMany(timeline, user));
+}));

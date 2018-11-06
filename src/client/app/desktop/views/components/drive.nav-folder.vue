@@ -7,7 +7,7 @@
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<template v-if="folder == null">%fa:cloud%</template>
+	<i v-if="folder == null" class="cloud"><fa icon="cloud"/></i>
 	<span>{{ folder == null ? '%i18n:common.drive%' : folder.name }}</span>
 </div>
 </template>
@@ -110,7 +110,7 @@ export default Vue.extend({
 	&[data-draghover]
 		background #eee
 
-	[data-fa].cloud
+	i.cloud
 		margin-right 4px
 
 </style>

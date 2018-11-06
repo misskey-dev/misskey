@@ -3,13 +3,13 @@
 	<li v-for="(item, i) in menu" :class="item ? item.type : item === null ? 'divider' : null">
 		<template v-if="item">
 			<template v-if="item.type == null || item.type == 'item'">
-				<p @click="click(item)"><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</p>
+				<p @click="click(item)"><i v-if="item.icon" :class="$style.icon"><fa :icon="item.icon"/></i>{{ item.text }}</p>
 			</template>
 			<template v-else-if="item.type == 'link'">
-				<a :href="item.href" :target="item.target" @click="click(item)"><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</a>
+				<a :href="item.href" :target="item.target" @click="click(item)"><i v-if="item.icon" :class="$style.icon"><fa :icon="item.icon"/></i>{{ item.text }}</a>
 			</template>
 			<template v-else-if="item.type == 'nest'">
-				<p><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}...<span class="caret">%fa:caret-right%</span></p>
+				<p><i v-if="item.icon" :class="$style.icon"><fa :icon="item.icon"/></i>{{ item.text }}...<span class="caret"><fa icon="caret-right"/></span></p>
 				<me-nu :menu="item.menu" @x="click"/>
 			</template>
 		</template>
@@ -113,9 +113,9 @@ export default Vue.extend({
 
 <style lang="stylus" module>
 .icon
-	> *
-		width 28px
-		margin-left -28px
-		text-align center
+	display inline-block
+	width 28px
+	margin-left -28px
+	text-align center
 </style>
 

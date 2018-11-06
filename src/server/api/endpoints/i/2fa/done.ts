@@ -1,18 +1,22 @@
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
-import User, { ILocalUser } from '../../../../../models/user';
+import User from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	requireCredential: true,
-	secure: true
+
+	secure: true,
+
+	params: {
+		token: {
+			validator: $.str
+		}
+	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'token' parameter
-	const [token, tokenErr] = $.str.get(params.token);
-	if (tokenErr) return rej('invalid token param');
-
-	const _token = token.replace(/\s/g, '');
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	const _token = ps.token.replace(/\s/g, '');
 
 	if (user.twoFactorTempSecret == null) {
 		return rej('二段階認証の設定が開始されていません');
@@ -36,4 +40,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 	});
 
 	res();
-});
+}));

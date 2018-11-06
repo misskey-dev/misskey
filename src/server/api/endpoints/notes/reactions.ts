@@ -1,8 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Reaction, { pack } from '../../../../models/note-reaction';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -13,33 +12,38 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		noteId: $.type(ID).note({
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'The ID of the target note'
 			}
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10
-		}),
+		},
 
-		offset: $.num.optional.note({
+		offset: {
+			validator: $.num.optional,
 			default: 0
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({
-		}),
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		untilId: $.type(ID).optional.note({
-		}),
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
@@ -82,4 +86,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Serialize
 	res(await Promise.all(reactions.map(reaction => pack(reaction, user))));
-});
+}));

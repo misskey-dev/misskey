@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;">%fa:cog%</span>%i18n:@settings%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa icon="cog"/></span>%i18n:@settings%</span>
 	<main>
 		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${name}</b>`)"></div>
 
@@ -8,14 +8,14 @@
 			<mk-profile-editor/>
 
 			<ui-card>
-				<div slot="title">%fa:palette% %i18n:@theme%</div>
+				<div slot="title"><fa icon="palette"/> %i18n:@theme%</div>
 				<section>
 					<mk-theme/>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:poll-h% %i18n:@design%</div>
+				<div slot="title"><fa icon="poll-h"/> %i18n:@design%</div>
 
 				<section>
 					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
@@ -23,6 +23,7 @@
 					<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
 					<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
 					<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
+					<ui-switch v-model="useOsDefaultEmojis">%i18n:common.use-os-default-emojis%</ui-switch>
 					<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 					<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
@@ -57,7 +58,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:sliders-h% %i18n:@behavior%</div>
+				<div slot="title"><fa icon="sliders-h"/> %i18n:@behavior%</div>
 
 				<section>
 					<ui-switch v-model="fetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
@@ -88,7 +89,7 @@
 			<mk-mute-and-block/>
 
 			<ui-card>
-				<div slot="title">%fa:volume-up% %i18n:@sound%</div>
+				<div slot="title"><fa icon="volume-up"/> %i18n:@sound%</div>
 
 				<section>
 					<ui-switch v-model="enableSounds">%i18n:@enable-sounds%</ui-switch>
@@ -96,7 +97,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:language% %i18n:@lang%</div>
+				<div slot="title"><fa icon="language"/> %i18n:@lang%</div>
 
 				<section class="fit-top">
 					<ui-select v-model="lang" placeholder="%i18n:@auto%">
@@ -108,12 +109,12 @@
 							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 						</optgroup>
 					</ui-select>
-					<span>%fa:info-circle% %i18n:@lang-tip%</span>
+					<span><fa icon="info-circle"/> %i18n:@lang-tip%</span>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title">%fa:B twitter% %i18n:@twitter%</div>
+				<div slot="title"><fa :icon="['fab', 'twitter']"/> %i18n:@twitter%</div>
 
 				<section>
 					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
@@ -125,10 +126,30 @@
 				</section>
 			</ui-card>
 
+			<ui-card>
+				<div slot="title"><fa :icon="['fab', 'github']"/> %i18n:@github%</div>
+
+				<section>
+					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
+					<p>
+						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? '%i18n:@github-reconnect%' : '%i18n:@github-connect%' }}</a>
+						<span v-if="$store.state.i.github"> or </span>
+						<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github">%i18n:@github-disconnect%</a>
+					</p>
+				</section>
+			</ui-card>
+
 			<mk-api-settings />
 
 			<ui-card>
-				<div slot="title">%fa:sync-alt% %i18n:@update%</div>
+				<div slot="title"><fa icon="unlock-alt"/> %i18n:@password%</div>
+				<section>
+					<mk-password-settings/>
+				</section>
+			</ui-card>
+
+			<ui-card>
+				<div slot="title"><fa icon="sync-alt"/> %i18n:@update%</div>
 
 				<section>
 					<div>%i18n:@version% <i>{{ version }}</i></div>
@@ -154,7 +175,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, version, codename, langs } from '../../../config';
+import { apiUrl, clientVersion as version, codename, langs } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
@@ -177,6 +198,11 @@ export default Vue.extend({
 		darkmode: {
 			get() { return this.$store.state.device.darkmode; },
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
+		},
+
+		useOsDefaultEmojis: {
+			get() { return this.$store.state.device.useOsDefaultEmojis; },
+			set(value) { this.$store.commit('device/set', { key: 'useOsDefaultEmojis', value }); }
 		},
 
 		reduceMotion: {

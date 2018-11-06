@@ -1,26 +1,24 @@
-/**
- * Module dependencies
- */
 import * as uuid from 'uuid';
 import $ from 'cafy';
 import App from '../../../../../models/app';
 import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
+import define from '../../../define';
 
-/**
- * Generate a session
- *
- * @param {any} params
- * @return {Promise<any>}
- */
-export default (params: any) => new Promise(async (res, rej) => {
-	// Get 'appSecret' parameter
-	const [appSecret, appSecretErr] = $.str.get(params.appSecret);
-	if (appSecretErr) return rej('invalid appSecret param');
+export const meta = {
+	requireCredential: false,
 
+	params: {
+		appSecret: {
+			validator: $.str
+		}
+	}
+};
+
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	// Lookup app
 	const app = await App.findOne({
-		secret: appSecret
+		secret: ps.appSecret
 	});
 
 	if (app == null) {
@@ -42,4 +40,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 		token: doc.token,
 		url: `${config.auth_url}/${doc.token}`
 	});
-});
+}));

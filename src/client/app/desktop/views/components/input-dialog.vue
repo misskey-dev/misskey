@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" is-modal width="500px" @before-close="beforeClose" @closed="destroyDom">
 	<span slot="header" :class="$style.header">
-		%fa:i-cursor%{{ title }}
+		<fa icon="i-cursor"/>{{ title }}
 	</span>
 
 	<div :class="$style.body">
@@ -76,10 +76,8 @@ export default Vue.extend({
 
 
 <style lang="stylus" module>
-
-
 .header
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .body

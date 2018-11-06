@@ -186,6 +186,7 @@ common:
     stack-left: "Stack to the left"
     pop-right: "Dock on the right"
   dev: "Failed to create the application. Please try again."
+  ai-chan-kawaii: "Ai-chan kawaii!"
 auth/views/form.vue:
   share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
@@ -249,7 +250,7 @@ common/views/components/games/reversi/reversi.room.vue:
   this-game-is-started-soon: "The game will begin in seconds"
   waiting-for-other: "Waiting for the opponent"
   waiting-for-me: "Waiting for the your preparation"
-  waiting-for-both: "Prepareing"
+  waiting-for-both: "Preparing"
   cancel: "Cancel"
   ready: "Ready"
   cancel-ready: "Cancel \"Ready\""
@@ -874,13 +875,13 @@ common/views/components/mute-and-block.vue:
   block: "Blocking"
   no-muted-users: "No muted users"
   no-blocked-users: "No blocked users"
-desktop/views/components/settings.password.vue:
+common/views/components/password-settings.vue:
   reset: "Change password"
   enter-current-password: "Enter the current password"
   enter-new-password: "Enter the new password"
-  enter-new-password-again: "Enter new password again"
+  enter-new-password-again: "Enter the new password again"
   not-match: "The new passwords do not match"
-  changed: "Password updated"
+  changed: "Password changed"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -946,41 +947,86 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Close"
-desktop/views/pages/admin/admin.vue:
+admin/views/index.vue:
   dashboard: "Dashboard"
+  instance: "Instance"
+  emoji: "Emoji"
   users: "Users"
-  update: "Updates"
+  update: "Update"
   announcements: "Announcements"
   hashtags: "Hashtags"
-desktop/views/pages/admin/admin.dashboard.vue:
+  back-to-misskey: "Back to Misskey"
+admin/views/dashboard.vue:
   dashboard: "Dashboard"
-  all-users: "All Users"
-  original-users: "Users on this instance"
-  all-notes: "All the posts"
-  original-notes: "Posts on this instance"
+  accounts: "Accounts"
+  notes: "Notes"
+  drive: "Drive"
+  instances: "Instances"
+  this-instance: "This instance"
+  federated: "Federated"
   invite: "Invite"
   banner-url: "Banner URL"
   disableRegistration: "Disable new user registration"
   disableLocalTimeline: "Disable the local timeline"
-desktop/views/pages/admin/admin.suspend-user.vue:
+admin/views/charts.vue:
+  title: "Chart"
+  per-day: "per Day"
+  per-hour: "per Hour"
+  federation: "Federation"
+  notes: "Posts"
+  users: "Users"
+  drive: "Drive"
+  network: "Network"
+  charts:
+    federation-instances: "The number of instances: increase/decrease"
+    federation-instances-total: "Total number of instances"
+    notes: "The number of posts: increase/decrease (Combined)"
+    local-notes: "The number of posts: increase/decrease (Local)"
+    remote-notes: "The number of posts: increase/decrease (Remote)"
+    notes-total: "Total posts"
+    users: "The number of users: increase/decrease"
+    users-total: "Total users"
+    drive: "Capacity used as the storage: increase/decrease"
+    drive-total: "Total usage of Drive"
+    drive-files: "The number of files on the storage: increase/decrease"
+    drive-files-total: "Total number of files on Drive"
+    network-requests: "Requests"
+    network-time: "Response time"
+    network-usage: "Traffic"
+admin/views/users.vue:
   suspend-user: "Suspend a user"
   suspend: "Suspend"
   suspended: "Successfully suspended."
-desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend-user: "Unsuspend users"
   unsuspend: "Unsuspend"
   unsuspended: "The user has successfully unsuspended."
-desktop/views/pages/admin/admin.verify-user.vue:
   verify-user: "User account verification settings"
   verify: "Verify account"
   verified: "The account is now being verified"
-desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "User account unverification settings"
   unverify: "Unverify account"
   unverified: "The account is now being unverified"
-desktop/views/pages/admin/admin.announcements.vue:
+admin/views/emoji.vue:
+  add-emoji:
+    title: "Add emoji"
+    name: "Emoji name"
+    name-desc: "You can use the characters a~z 0~9 _"
+    aliases: "Aliases"
+    aliases-desc: "You can add more than one, separated by spaces."
+    url: "Image URL"
+    add: "Add"
+  emojis:
+    title: "Emojis"
+    update: "Update"
+    remove: "Remove"
+admin/views/announcements.vue:
   announcements: "Announcements"
-desktop/views/pages/admin/admin.hashtags.vue:
+  save: "Save"
+  remove: "Remove"
+  add: "Add"
+  title: "Title"
+  text: "Content"
+admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
@@ -1328,6 +1374,7 @@ mobile/views/pages/settings.vue:
   sound: "Sounds"
   enable-sounds: "Enable sounds"
   mark-as-read-all-unread-notes: "Mark all posts as read"
+  password: "Password"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"

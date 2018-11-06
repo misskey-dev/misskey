@@ -2,6 +2,8 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 
 const PollVote = db.get<IPollVote>('pollVotes');
+PollVote.createIndex('userId');
+PollVote.createIndex('noteId');
 export default PollVote;
 
 export interface IPollVote {

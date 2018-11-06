@@ -1,8 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import { ILocalUser } from '../../../../models/user';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import { pack } from '../../../../models/user';
 import { removePinned } from '../../../../services/i/pin';
-import getParams from '../../get-params';
+import define from '../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -16,19 +15,18 @@ export const meta = {
 	kind: 'account-write',
 
 	params: {
-		noteId: $.type(ID).note({
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'
 			}
-		})
+		}
 	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Processing
 	try {
 		await removePinned(user, ps.noteId);
@@ -43,4 +41,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 
 	// Send response
 	res(iObj);
-});
+}));

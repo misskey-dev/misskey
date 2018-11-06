@@ -13,7 +13,6 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 import I18nReplacer from './src/misc/i18n';
 import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
-import { pattern as faPattern, replacement as faReplacement } from './src/misc/fa';
 const constants = require('./src/const.json');
 
 const locales = require('./locales');
@@ -22,25 +21,17 @@ const version = meta.clientVersion;
 const codename = meta.codename;
 
 declare var global: {
-	faReplacement: typeof faReplacement;
 	collapseSpacesReplacement: any;
-	base64replacement: any;
 	i18nReplacement: typeof i18nReplacement;
 };
 
 //#region Replacer definitions
-global['faReplacement'] = faReplacement;
-
 global['collapseSpacesReplacement'] = (html: string) => {
 	return minifyHtml(html, {
 		collapseWhitespace: true,
 		collapseInlineTagWhitespace: true,
 		keepClosingSlash: true
 	}).replace(/\t/g, '');
-};
-
-global['base64replacement'] = (_: any, key: string) => {
-	return fs.readFileSync(`${__dirname}/src/client/${key}`, 'base64');
 };
 
 global['i18nReplacement'] = i18nReplacement;
@@ -57,6 +48,7 @@ const entry = {
 	mobile: './src/client/app/mobile/script.ts',
 	dev: './src/client/app/dev/script.ts',
 	auth: './src/client/app/auth/script.ts',
+	admin: './src/client/app/admin/script.ts',
 	sw: './src/client/app/sw.js'
 };
 
@@ -69,7 +61,8 @@ const output = {
 const consts = {
 	_THEME_COLOR_: constants.themeColor,
 	_COPYRIGHT_: constants.copyright,
-	_VERSION_: version,
+	_VERSION_: meta.version,
+	_CLIENT_VERSION_: version,
 	_CODENAME_: codename,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
@@ -140,15 +133,9 @@ module.exports = {
 				loader: 'replace',
 				query: {
 					qs: [{
-						search: /%base64:(.+?)%/g.toString(),
-						replace: 'base64replacement'
-					}, {
 						search: i18nPattern.toString(),
 						replace: 'i18nReplacement',
 						i18n: true
-					}, {
-						search: faPattern.toString(),
-						replace: 'faReplacement'
 					}, {
 						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
 						replace: 'collapseSpacesReplacement'
@@ -216,9 +203,6 @@ module.exports = {
 						search: i18nPattern.toString(),
 						replace: 'i18nReplacement',
 						i18n: true
-					}, {
-						search: faPattern.toString(),
-						replace: 'faReplacement'
 					}]
 				}
 			}]

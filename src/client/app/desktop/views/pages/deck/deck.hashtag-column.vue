@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<span slot="header">
-		%fa:hashtag%<span>{{ tag }}</span>
+		<fa icon="hashtag"/><span>{{ tag }}</span>
 	</span>
 
 	<div class="xroyrflcmhhtmlwmyiwpfqiirqokfueb">

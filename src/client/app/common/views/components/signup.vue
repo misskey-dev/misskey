@@ -3,36 +3,36 @@
 	<template v-if="meta">
 		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required styl="fill">
 			<span>%i18n:@invitation-code%</span>
-			<span slot="prefix">%fa:id-card-alt%</span>
+			<span slot="prefix"><fa icon="id-card-alt"/></span>
 			<p slot="text" v-html="'%i18n:@invitation-info%'.replace('{}', meta.maintainer.url)"></p>
 		</ui-input>
 		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername" styl="fill">
 			<span>%i18n:@username%</span>
 			<span slot="prefix">@</span>
 			<span slot="suffix">@{{ host }}</span>
-			<p slot="text" v-if="usernameState == 'wait'" style="color:#999">%fa:spinner .pulse .fw% %i18n:@checking%</p>
-			<p slot="text" v-if="usernameState == 'ok'" style="color:#3CB7B5">%fa:check .fw% %i18n:@available%</p>
-			<p slot="text" v-if="usernameState == 'unavailable'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@unavailable%</p>
-			<p slot="text" v-if="usernameState == 'error'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@error%</p>
-			<p slot="text" v-if="usernameState == 'invalid-format'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@invalid-format%</p>
-			<p slot="text" v-if="usernameState == 'min-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-short%</p>
-			<p slot="text" v-if="usernameState == 'max-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-long%</p>
+			<p slot="text" v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner .pulse" fixed-width/> %i18n:@checking%</p>
+			<p slot="text" v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@available%</p>
+			<p slot="text" v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@unavailable%</p>
+			<p slot="text" v-if="usernameState == 'error'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@error%</p>
+			<p slot="text" v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@invalid-format%</p>
+			<p slot="text" v-if="usernameState == 'min-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@too-short%</p>
+			<p slot="text" v-if="usernameState == 'max-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@too-long%</p>
 		</ui-input>
 		<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true" styl="fill">
 			<span>%i18n:@password%</span>
-			<span slot="prefix">%fa:lock%</span>
+			<span slot="prefix"><fa icon="lock"/></span>
 			<div slot="text">
-				<p slot="text" v-if="passwordStrength == 'low'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@weak-password%</p>
-				<p slot="text" v-if="passwordStrength == 'medium'" style="color:#3CB7B5">%fa:check .fw% %i18n:@normal-password%</p>
-				<p slot="text" v-if="passwordStrength == 'high'" style="color:#3CB7B5">%fa:check .fw% %i18n:@strong-password%</p>
+				<p slot="text" v-if="passwordStrength == 'low'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@weak-password%</p>
+				<p slot="text" v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@normal-password%</p>
+				<p slot="text" v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@strong-password%</p>
 			</div>
 		</ui-input>
 		<ui-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype" styl="fill">
 			<span>%i18n:@password% (%i18n:@retype%)</span>
-			<span slot="prefix">%fa:lock%</span>
+			<span slot="prefix"><fa icon="lock"/></span>
 			<div slot="text">
-				<p slot="text" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5">%fa:check .fw% %i18n:@password-matched%</p>
-				<p slot="text" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@password-not-matched%</p>
+				<p slot="text" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@password-matched%</p>
+				<p slot="text" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@password-not-matched%</p>
 			</div>
 		</ui-input>
 		<div v-if="meta.recaptchaSitekey != null" class="g-recaptcha" :data-sitekey="meta.recaptchaSitekey" style="margin: 16px 0;"></div>

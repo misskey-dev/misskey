@@ -13,7 +13,7 @@
 		@change-selection="onChangeSelection"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.upload" title="%i18n:@upload%" @click="upload">%fa:upload%</button>
+		<button :class="$style.upload" title="%i18n:@upload%" @click="upload"><fa icon="upload"/></button>
 		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
 		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">%i18n:@ok%</button>
 	</div>
@@ -28,7 +28,7 @@ export default Vue.extend({
 			default: false
 		},
 		title: {
-			default: '%fa:R file%%i18n:@choose-prompt%'
+			default: '<fa :icon="['far', 'file']"/>%i18n:@choose-prompt%'
 		}
 	},
 	data() {
@@ -62,7 +62,7 @@ export default Vue.extend({
 
 
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .count

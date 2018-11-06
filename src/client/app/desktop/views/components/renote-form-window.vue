@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal @closed="onWindowClosed" :animation="animation">
-	<span slot="header" :class="$style.header">%fa:retweet%%i18n:@title%</span>
+	<span slot="header" :class="$style.header"><fa icon="retweet"/>%i18n:@title%</span>
 	<mk-renote-form ref="form" :note="note" @posted="onPosted" @canceled="onCanceled" v-hotkey.global="keymap"/>
 </mk-window>
 </template>
@@ -58,7 +58,7 @@ export default Vue.extend({
 
 <style lang="stylus" module>
 .header
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 </style>

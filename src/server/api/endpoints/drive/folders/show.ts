@@ -1,7 +1,6 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	stability: 'stable',
@@ -16,19 +15,18 @@ export const meta = {
 	kind: 'drive-read',
 
 	params: {
-		folderId: $.type(ID).note({
+		folderId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のフォルダID',
 				'en-US': 'Target folder ID'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Get folder
 	const folder = await DriveFolder
 		.findOne({
@@ -44,4 +42,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	res(await pack(folder, {
 		detail: true
 	}));
-});
+}));

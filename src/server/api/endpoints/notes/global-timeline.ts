@@ -1,9 +1,8 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 
 export const meta = {
@@ -12,39 +11,49 @@ export const meta = {
 	},
 
 	params: {
-		withFiles: $.bool.optional.note({
+		withFiles: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
 			}
-		}),
+		},
 
-		mediaOnly: $.bool.optional.note({
+		mediaOnly: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({}),
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		untilId: $.type(ID).optional.note({}),
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		sinceDate: $.num.optional.note({}),
+		sinceDate: {
+			validator: $.num.optional
+		},
 
-		untilDate: $.num.optional.note({}),
+		untilDate: {
+			validator: $.num.optional
+		},
 	}
 };
 
-export default async (params: any, user: ILocalUser) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
+		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
 	// ミュートしているユーザーを取得
@@ -107,13 +116,11 @@ export default async (params: any, user: ILocalUser) => {
 	}
 	//#endregion
 
-	// Issue query
 	const timeline = await Note
 		.find(query, {
 			limit: ps.limit,
 			sort: sort
 		});
 
-	// Serialize
-	return await packMany(timeline, user);
-};
+	res(await packMany(timeline, user));
+}));

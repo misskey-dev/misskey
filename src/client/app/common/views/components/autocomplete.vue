@@ -14,10 +14,11 @@
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
-			<span class="emoji" v-if="emoji.url"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-else-if="!useOsDefaultEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else>{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
-			<span class="alias" v-if="emoji.alias">({{ emoji.alias }})</span>
+			<span class="alias" v-if="emoji.aliasOf">({{ emoji.aliasOf }})</span>
 		</li>
 	</ol>
 </div>
@@ -28,14 +29,23 @@ import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
 
+type EmojiDef = {
+	emoji: string;
+	name: string;
+	aliasOf?: string;
+	url?: string;
+	isCustomEmoji?: boolean;
+};
+
 const lib = Object.entries(emojilib.lib).filter((x: any) => {
 	return x[1].category != 'flags';
 });
 
-const emjdb = lib.map((x: any) => ({
+const emjdb: EmojiDef[] = lib.map((x: any) => ({
 	emoji: x[1].char,
 	name: x[0],
-	alias: null
+	aliasOf: null,
+	url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
 }));
 
 lib.forEach((x: any) => {
@@ -44,7 +54,8 @@ lib.forEach((x: any) => {
 			emjdb.push({
 				emoji: x[1].char,
 				name: k,
-				alias: x[0]
+				aliasOf: x[0],
+				url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
 			});
 		});
 	}
@@ -62,13 +73,18 @@ export default Vue.extend({
 			hashtags: [],
 			emojis: [],
 			select: -1,
-			emojilib
+			emojilib,
+			emojiDb: [] as EmojiDef[]
 		}
 	},
 
 	computed: {
 		items(): HTMLCollection {
 			return (this.$refs.suggests as Element).children;
+		},
+
+		useOsDefaultEmojis(): boolean {
+			return this.$store.state.device.useOsDefaultEmojis;
 		}
 	},
 
@@ -91,6 +107,36 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		//#region Construct Emoji DB
+		const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis || [];
+		const emojiDefinitions: EmojiDef[] = [];
+
+		customEmojis.forEach(x => {
+			emojiDefinitions.push({
+				name: x.name,
+				emoji: `:${x.name}:`,
+				url: x.url,
+				isCustomEmoji: true
+			});
+
+			if (x.aliases) {
+				x.aliases.forEach(alias => {
+					emojiDefinitions.push({
+						name: alias,
+						aliasOf: x.name,
+						emoji: `:${x.name}:`,
+						url: x.url,
+						isCustomEmoji: true
+					});
+				});
+			}
+		});
+
+		emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
+
+		this.emojiDb = emojiDefinitions.concat(emjdb);
+		//#endregion
+
 		this.textarea.addEventListener('keydown', this.onKeydown);
 
 		Array.from(document.querySelectorAll('body *')).forEach(el => {
@@ -169,42 +215,31 @@ export default Vue.extend({
 					}
 				}
 			} else if (this.type == 'emoji') {
+				if (this.q == null || this.q == '') {
+					this.emojis = this.emojiDb.filter(x => x.isCustomEmoji && !x.aliasOf).sort((a, b) => {
+						var textA = a.name.toUpperCase();
+						var textB = b.name.toUpperCase();
+						return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+					});
+					return;
+				}
+
 				const matched = [];
 				const max = 30;
 
-				const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis;
-				customEmojis.some(x => {
-					if (x.name.startsWith(this.q)) matched.push({
-						name: x.name,
-						emoji: `:${x.name}:`,
-						url: x.url
-					});
-					return matched.length == max;
-				});
-				customEmojis.some(x => {
-					const alias = (x.aliases || []).find(a => a.startsWith(this.q));
-					if (alias) matched.push({
-						alias: x.name,
-						name: alias,
-						emoji: `:${x.name}:`,
-						url: x.url
-					});
-					return matched.length == max;
-				});
-
-				emjdb.some(x => {
-					if (x.name.indexOf(this.q) == 0 && !x.alias && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+				this.emojiDb.some(x => {
+					if (x.name.startsWith(this.q) && !x.aliasOf && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 					return matched.length == max;
 				});
 				if (matched.length < max) {
-					emjdb.some(x => {
-						if (x.name.indexOf(this.q) == 0 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+					this.emojiDb.some(x => {
+						if (x.name.startsWith(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 						return matched.length == max;
 					});
 				}
 				if (matched.length < max) {
-					emjdb.some(x => {
-						if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+					this.emojiDb.some(x => {
+						if (x.name.includes(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 						return matched.length == max;
 					});
 				}
