@@ -115,11 +115,6 @@ autoAdmin: true
 #  port: 9200
 #  pass: null
 
-# reCAPTCHA
-#recaptcha:
-#  site_key: example-site-key
-#  secret_key: example-secret-key
-
 # ServiceWorker
 #sw:
 #  # Public key of VAPID
