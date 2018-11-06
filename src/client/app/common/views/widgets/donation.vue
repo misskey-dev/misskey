@@ -5,7 +5,7 @@
 			<h1><fa icon="heart"/>%i18n:@title%</h1>
 			<p v-if="meta">
 				{{ '%i18n:@text%'.substr(0, '%i18n:@text%'.indexOf('{')) }}
-				<a :href="meta.maintainer.url">{{ meta.maintainer.name }}</a>
+				<a :href="'mailto:' + meta.maintainer.email">{{ meta.maintainer.name }}</a>
 				{{ '%i18n:@text%'.substr('%i18n:@text%'.indexOf('}') + 1) }}
 			</p>
 		</article>

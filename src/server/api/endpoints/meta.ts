@@ -36,7 +36,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	});
 
 	const response: any = {
-		maintainer: config.maintainer,
+		maintainer: instance.maintainer,
 
 		version: pkg.version,
 		clientVersion: client.version,

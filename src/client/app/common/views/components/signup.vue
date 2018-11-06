@@ -4,7 +4,7 @@
 		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required styl="fill">
 			<span>%i18n:@invitation-code%</span>
 			<span slot="prefix"><fa icon="id-card-alt"/></span>
-			<p slot="desc" v-html="'%i18n:@invitation-info%'.replace('{}', meta.maintainer.url)"></p>
+			<p slot="desc" v-html="'%i18n:@invitation-info%'.replace('{}', 'mailto:' + meta.maintainer.email)"></p>
 		</ui-input>
 		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername" styl="fill">
 			<span>%i18n:@username%</span>

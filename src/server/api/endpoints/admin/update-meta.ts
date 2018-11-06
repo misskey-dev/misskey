@@ -114,7 +114,21 @@ export const meta = {
 		proxyAccount: {
 			validator: $.str.optional.nullable,
 			desc: {
-				'ja-JP': 'Proxy account username'
+				'ja-JP': 'プロキシアカウントのユーザー名'
+			}
+		},
+
+		maintainerName: {
+			validator: $.str.optional,
+			desc: {
+				'ja-JP': 'インスタンスの管理者名'
+			}
+		},
+
+		maintainerEmail: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'インスタンス管理者の連絡先メールアドレス'
 			}
 		}
 	}
@@ -181,6 +195,14 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.proxyAccount !== undefined) {
 		set.proxyAccount = ps.proxyAccount;
+	}
+
+	if (ps.maintainerName !== undefined) {
+		set['maintainer.name'] = ps.maintainerName;
+	}
+
+	if (ps.maintainerEmail !== undefined) {
+		set['maintainer.email'] = ps.maintainerEmail;
 	}
 
 	await Meta.update({}, {

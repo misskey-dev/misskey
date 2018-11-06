@@ -88,17 +88,46 @@ if ((config as any).ghost) {
 		}
 	});
 }
+if ((config as any).maintainer) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.maintainer == null) {
+			Meta.update({}, {
+				$set: {
+					maintainer: (config as any).maintainer
+				}
+			});
+		}
+	});
+}
 
 export type IMeta = {
 	name?: string;
 	description?: string;
+
+	/**
+	 * メンテナ情報
+	 */
+	maintainer: {
+		/**
+		 * メンテナの名前
+		 */
+		name: string;
+
+		/**
+		 * メンテナの連絡先
+		 */
+		email?: string;
+	};
+
 	broadcasts?: any[];
+
 	stats?: {
 		notesCount: number;
 		originalNotesCount: number;
 		usersCount: number;
 		originalUsersCount: number;
 	};
+
 	disableRegistration?: boolean;
 	disableLocalTimeline?: boolean;
 	hidedTags?: string[];

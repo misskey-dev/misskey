@@ -6,7 +6,7 @@ import config from './config';
 if (config.sw) {
 	// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
 	push.setVapidDetails(
-		config.maintainer.url,
+		config.url,
 		config.sw.public_key,
 		config.sw.private_key);
 }

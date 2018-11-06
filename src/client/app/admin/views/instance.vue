@@ -7,6 +7,11 @@
 			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>
 			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>%i18n:@banner-url%</ui-input>
 		</section>
+		<section class="fit-bottom">
+			<header><fa icon="headset"/> %i18n:@maintainer-config%</header>
+			<ui-input v-model="maintainerName">%i18n:@maintainer-name%</ui-input>
+			<ui-input v-model="maintainerEmail">%i18n:@maintainer-email%</ui-input>
+		</section>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="maxNoteTextLength">%i18n:@max-note-text-length%</ui-input>
 		</section>
@@ -56,6 +61,8 @@ import Vue from "vue";
 export default Vue.extend({
 	data() {
 		return {
+			maintainerName: null,
+			maintainerEmail: null,
 			disableRegistration: false,
 			disableLocalTimeline: false,
 			bannerUrl: null,
@@ -75,6 +82,8 @@ export default Vue.extend({
 
 	created() {
 		(this as any).os.getMeta().then(meta => {
+			this.maintainerName = meta.maintainer.name;
+			this.maintainerEmail = meta.maintainer.email;
 			this.bannerUrl = meta.bannerUrl;
 			this.name = meta.name;
 			this.description = meta.description;
@@ -103,6 +112,8 @@ export default Vue.extend({
 
 		updateMeta() {
 			(this as any).api('admin/update-meta', {
+				maintainerName: this.maintainerName,
+				maintainerEmail: this.maintainerEmail,
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
 				bannerUrl: this.bannerUrl,

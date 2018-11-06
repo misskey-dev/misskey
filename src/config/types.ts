@@ -2,22 +2,8 @@
  * ユーザーが設定する必要のある情報
  */
 export type Source = {
-	/**
-	 * メンテナ情報
-	 */
-	maintainer: {
-		/**
-		 * メンテナの名前
-		 */
-		name: string;
-		/**
-		 * メンテナの連絡先(URLかmailto形式のURL)
-		 */
-		url: string;
-		email?: string;
-		repository_url?: string;
-		feedback_url?: string;
-	};
+	repository_url?: string;
+	feedback_url?: string;
 	languages?: string[];
 	url: string;
 	port: number;
