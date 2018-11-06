@@ -844,6 +844,7 @@ common/views/components/api-settings.vue:
     title: 'API console'
     endpoint: 'Endpoint'
     parameter: 'Parameters'
+    credential-info: "「i」パラメータは自動で付与されます。"
     send: 'Send'
     sending: 'Sending'
     response: 'Result'
