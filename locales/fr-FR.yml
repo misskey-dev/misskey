@@ -422,12 +422,12 @@ common/views/components/twitter-setting.vue:
   connect: "Lier votre compte Twitter"
   disconnect: "Déconnexion"
 common/views/components/github-setting.vue:
-  description: "Si vous liez votre compte GitHub à votre compte Misskey, vous verrez ensuite votre compte GitHub s’afficher sur votre profil, vous aurez aussi la possibilité de vous connecter à Misskey en utilisant votre compte GitHub."
+  description: "Si vous liez votre compte GitHub à votre compte Misskey, vous verrez votre compte GitHub s’afficher sur votre profil, vous aurez également la possibilité de vous connecter à Misskey en utilisant ce dernier."
   connected-to: "Vous êtes connecté à votre compte GitHub"
   detail: "Détails …"
-  reconnect: "Reconnexion"
+  reconnect: "Reconnecter"
   connect: "Se connecter avec GitHub"
-  disconnect: "Déconnexion"
+  disconnect: "Déconnecter"
 common/views/components/uploader.vue:
   waiting: "Veuillez patienter"
 common/views/components/visibility-chooser.vue:
@@ -1365,8 +1365,8 @@ mobile/views/pages/settings.vue:
   twitter-disconnect: "Déconnexion"
   github: "Avec GitHub"
   github-connect: "Se connecter à votre compte GitHub"
-  github-reconnect: "Reconnexion"
-  github-disconnect: "Déconnexion"
+  github-reconnect: "Reconnecter"
+  github-disconnect: "Déconnecter"
   update: "Mise à jour de Misskey"
   version: "Version :"
   latest-version: "Dernière version :"
@@ -1417,7 +1417,7 @@ mobile/views/pages/user/home.photos.vue:
   loading: "Chargement"
   no-photos: "Pas de photos"
 docs:
-  edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation?"
+  edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation ?"
   edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
   api:
     entities:
