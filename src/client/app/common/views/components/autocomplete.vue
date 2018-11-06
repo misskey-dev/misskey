@@ -41,11 +41,17 @@ const lib = Object.entries(emojilib.lib).filter((x: any) => {
 	return x[1].category != 'flags';
 });
 
+const char2file = (char: string) => {
+	let codes = [...char].map(x => x.codePointAt(0).toString(16));
+	if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
+	return codes.join('-');
+};
+
 const emjdb: EmojiDef[] = lib.map((x: any) => ({
 	emoji: x[1].char,
 	name: x[0],
 	aliasOf: null,
-	url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
+	url: `https://twemoji.maxcdn.com/2/svg/${char2file(x[1].char)}.svg`
 }));
 
 lib.forEach((x: any) => {
@@ -55,7 +61,7 @@ lib.forEach((x: any) => {
 				emoji: x[1].char,
 				name: k,
 				aliasOf: x[0],
-				url: `https://twemoji.maxcdn.com/2/svg/${x[1].char.codePointAt(0).toString(16)}.svg`
+				url: `https://twemoji.maxcdn.com/2/svg/${char2file(x[1].char)}.svg`
 			});
 		});
 	}

@@ -60,7 +60,10 @@ export default Vue.extend({
 		}
 
 		if (this.char) {
-			this.url = `https://twemoji.maxcdn.com/2/svg/${this.char.codePointAt(0).toString(16)}.svg`;
+			let codes = [...this.char].map(x => x.codePointAt(0).toString(16));
+			if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
+
+			this.url = `https://twemoji.maxcdn.com/2/svg/${codes.join('-')}.svg`;
 		}
 	}
 });
