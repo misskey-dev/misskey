@@ -70,6 +70,9 @@ export type Source = {
 		consumer_secret: string;
 	};
 	github?: {
+		access_tokens?: {
+			github_data?: string;
+		}
 		client_id: string;
 		client_secret: string;
 	};

@@ -10,6 +10,7 @@ import Mute from './mute';
 import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
 import FollowRequest from './follow-request';
+import Contributor from './contributor';
 
 const User = db.get<IUser>('users');
 
@@ -96,6 +97,7 @@ export interface ILocalUser extends IUserBase {
 		tags: string[];
 	};
 	lastUsedAt: Date;
+	showContribution?: boolean;
 	isCat: boolean;
 	isAdmin?: boolean;
 	isVerified?: boolean;
@@ -234,6 +236,7 @@ export const pack = (
 		host: true,
 		avatarColor: true,
 		avatarUrl: true,
+		showContribution: true,
 		isCat: true,
 		isBot: true,
 		isAdmin: true,
@@ -287,6 +290,12 @@ export const pack = (
 		}
 		if (_user.github) {
 			delete _user.github.accessToken;
+			if (opts.detail) {
+				const contributor = await Contributor.findOne({ userId: _user.github.id }) || { type: '' };
+				_user.isOwner = contributor.type === 'owner';
+				_user.isCollaborator = contributor.type === 'collaborator';
+				_user.isContributor = contributor.type === 'contributor';
+			}
 		}
 		delete _user.line;
 

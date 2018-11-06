@@ -31,6 +31,7 @@ export default async (user: ILocalUser) => {
 		image: user.bannerId && renderImage(banner),
 		manuallyApprovesFollowers: user.isLocked,
 		publicKey: renderKey(user),
+		showContribution: user.showContribution,
 		isCat: user.isCat
 	};
 };

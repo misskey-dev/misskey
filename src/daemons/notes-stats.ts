@@ -19,8 +19,7 @@ export default function() {
 		ev.emit(`notesStatsLog:${id}`, log.toArray());
 	});
 
-	process.on('exit', code => {
+	process.on('exit', _ => {
 		process.kill(p.pid);
 	});
-
 }

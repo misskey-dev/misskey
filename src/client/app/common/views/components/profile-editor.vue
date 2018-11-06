@@ -48,6 +48,7 @@
 		<header>%i18n:@advanced%</header>
 
 		<div>
+			<ui-switch v-model="showContribution" @change="save(false)">%i18n:@show-contribution%</ui-switch>
 			<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
 			<ui-switch v-model="isBot" @change="save(false)">%i18n:@is-bot%</ui-switch>
 			<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
@@ -80,6 +81,7 @@ export default Vue.extend({
 			birthday: null,
 			avatarId: null,
 			bannerId: null,
+			showContribution: false,
 			isCat: false,
 			isBot: false,
 			isLocked: false,
@@ -105,6 +107,7 @@ export default Vue.extend({
 		this.birthday = this.$store.state.i.profile.birthday;
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
+		this.showContribution = this.$store.state.i.showContribution;
 		this.isCat = this.$store.state.i.isCat;
 		this.isBot = this.$store.state.i.isBot;
 		this.isLocked = this.$store.state.i.isLocked;
@@ -166,6 +169,7 @@ export default Vue.extend({
 				birthday: this.birthday || null,
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
+				showContribution: this.showContribution,
 				isCat: this.isCat,
 				isBot: this.isBot,
 				isLocked: this.isLocked,

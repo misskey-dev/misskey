@@ -2,11 +2,14 @@
 <header class="bvonvjxbwzaiskogyhbwgyxvcgserpmu">
 	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle == 'smart'"/>
 	<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
-	<span class="is-admin" v-if="note.user.isAdmin">admin</span>
-	<span class="is-bot" v-if="note.user.isBot">bot</span>
-	<span class="is-cat" v-if="note.user.isCat">cat</span>
+	<span class="is admin" v-if="note.user.isAdmin">admin</span>
+	<span class="is owner" v-if="note.user.isOwner">owner</span>
+	<span class="is collaborator" v-if="note.user.isCollaborator">collaborator</span>
+	<span class="is contributor" v-if="note.user.isContributor">contributor</span>
+	<span class="is bot" v-if="note.user.isBot">bot</span>
+	<span class="is cat" v-if="note.user.isCat">cat</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
-	<span class="is-verified" v-if="note.user.isVerified" title="%i18n:common.verified-user%"><fa icon="star"/></span>
+	<span class="verified" v-if="note.user.isVerified" title="%i18n:common.verified-user%"><fa icon="star"/></span>
 	<div class="info">
 		<span class="app" v-if="note.app && !mini">via <b>{{ note.app.name }}</b></span>
 		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>
@@ -68,9 +71,7 @@ export default Vue.extend({
 		&:hover
 			text-decoration underline
 
-	> .is-admin
-	> .is-bot
-	> .is-cat
+	> .is
 		flex-shrink 0
 		align-self center
 		margin 0 .5em 0 0
@@ -80,7 +81,7 @@ export default Vue.extend({
 		background var(--noteHeaderBadgeBg)
 		border-radius 3px
 
-		&.is-admin
+		&.admin
 			background var(--noteHeaderAdminBg)
 			color var(--noteHeaderAdminFg)
 
@@ -91,7 +92,7 @@ export default Vue.extend({
 		color var(--noteHeaderAcct)
 		flex-shrink 2147483647
 
-	> .is-verified
+	> .verified
 		margin 0 .5em 0 0
 		color #4dabf7
 

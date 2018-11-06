@@ -137,6 +137,8 @@ autoAdmin: true
 # GitHub integration
 # You need to set the oauth callback url as : https://<your-misskey-instance>/api/gh/cb
 #github:
+#  access_tokens:
+#    github_data: catch-github-token-from-collaborator
 #  client_id: example-github-client-id
 #  client_secret: example-github-client-secret
 

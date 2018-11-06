@@ -163,6 +163,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
+			showContribution: (person as any).showContribution === true ? true : false,
 			isBot: isBot,
 			isCat: (person as any).isCat === true ? true : false
 		}) as IRemoteUser;
@@ -313,6 +314,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			name: person.name,
 			url: person.url,
 			endpoints: person.endpoints,
+			showContribution: (person as any).showContribution === true ? true : false,
 			isBot: object.type == 'Service',
 			isCat: (person as any).isCat === true ? true : false,
 			isLocked: person.manuallyApprovesFollowers,

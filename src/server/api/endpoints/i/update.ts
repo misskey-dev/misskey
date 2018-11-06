@@ -98,6 +98,13 @@ export const meta = {
 			}
 		},
 
+		showContribution: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': '貢献情報を表示するか否か'
+			}
+		},
+
 		autoWatch: {
 			validator: $.bool.optional,
 			desc: {
@@ -130,6 +137,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
+	if (typeof ps.showContribution == 'boolean') updates.showContribution = ps.showContribution;
 	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
 	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
 

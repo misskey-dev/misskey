@@ -19,6 +19,7 @@ import mongo from './db/mongodb';
 import Logger from './misc/logger';
 import EnvironmentInfo from './misc/environmentInfo';
 import MachineInfo from './misc/machineInfo';
+import githubData from './daemons/github-data';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
@@ -57,6 +58,7 @@ function main() {
 		}
 
 		if (program.daemons) {
+			githubData();
 			serverStats();
 			notesStats();
 		}
