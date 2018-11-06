@@ -10,7 +10,7 @@
 		<section class="fit-bottom">
 			<header><fa icon="headset"/> %i18n:@maintainer-config%</header>
 			<ui-input v-model="maintainerName">%i18n:@maintainer-name%</ui-input>
-			<ui-input v-model="maintainerEmail">%i18n:@maintainer-email%</ui-input>
+			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="['far', 'envelope']"/></i>%i18n:@maintainer-email%</ui-input>
 		</section>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="maxNoteTextLength">%i18n:@max-note-text-length%</ui-input>
