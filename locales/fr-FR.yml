@@ -31,7 +31,7 @@ common:
     error-code: "Code d’erreur"
     browser-version: "Version du navigateur"
     client-version: "La version du client"
-    email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
+    email-support: "Si le problème persiste, veuillez contacter syuilotan@yahoo.co.jp en remplissant les informations ci-dessus."
     thanks: "Merci d’avoir choisi d’utiliser Misskey."
   got-it: "J'ai compris !"
   customization-tips:
@@ -187,7 +187,7 @@ common:
     stack-left: "Vers la gauche"
     pop-right: "Vers la droite"
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
-  ai-chan-kawaii: "藍ちゃかわいい"
+  ai-chan-kawaii: "Ai-Chan est mignone !"
 auth/views/form.vue:
   share-access: "Désirez-vous <b>autoriser</b> <i>{{ app.name }}</i> à avoir accès à votre compte ?"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
@@ -219,7 +219,7 @@ common/views/components/games/reversi/reversi.vue:
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Se rendre"
   surrendered: "Par abandon"
-  is-llotheo: "石の少ない方が勝ち(ロセオ)"
+  is-llotheo: "Celui ou celle qui a moins de pierres gagne (Roseo)"
   looped-map: "Carte en boucle"
   can-put-everywhere: "Peut poser partout"
 common/views/components/games/reversi/reversi.index.vue:
