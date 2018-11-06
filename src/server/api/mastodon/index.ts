@@ -1,17 +1,18 @@
 import * as Router from 'koa-router';
-import User from '../../../models/user';
-import { toASCII } from 'punycode';
-import config from '../../config';
-import Meta from '../../models/meta';
-import { toMastodonAccount } from '../../models/mastodon/account';
-import Note from '../../models/note';
-import Reaction from '../../models/note-reaction';
-import parse from '../../mfm/parse';
-import { TextElementLink } from '../../mfm/parse/elements/link';
-import { getSummary } from '../web/url-preview';
 import { ObjectID } from 'bson';
+import { toASCII } from 'punycode';
+import { getSummary } from '../../web/url-preview';
+import config from '../../../config';
 import Emoji from '../../../models/emoji';
-import { toMastodonEmojis } from './emoji';
+import Meta from '../../../models/meta';
+import Note from '../../../models/note';
+import Reaction from '../../../models/note-reaction';
+import User from '../../../models/user';
+import { toMastodonAccount } from '../../../models/mastodon/account';
+import { toMastodonCard } from '../../../models/mastodon/card';
+import { toMastodonEmojis } from '../../../models/mastodon/emoji';
+import parse from '../../../mfm/parse';
+import { TextElementLink } from '../../../mfm/parse/elements/link';
 
 // Init router
 const router = new Router();
@@ -134,20 +135,7 @@ router.get('/v1/statuses/:id/card', async ctx => {
 		const height = player ? player.height : null;
 
 		if (link && url) {
-			ctx.body = {
-				url,
-				title,
-				description,
-				image: thumbnail,
-				type: player ? 'video' : 'link', // TODO: Support 'photo' and 'rich'
-				author_name: null, // TODO: Return correct value (maybe not always null)
-				author_url: null, // TODO: Return correct value (maybe not always null)
-				provider_name: null, // TODO: Return correct value (maybe not always null)
-				provider_url: null, // TODO: Return correct value (maybe not always null)
-				html: player ? `<iframe src=\"${player.url}\"${width ? ` width="${width}"` : ''}${height ? ` height="${height}"` : ''} allowtransparency=\"true\" scrolling=\"no\" frameborder=\"0\"></iframe>` : null,
-				width,
-				height
-			};
+			ctx.body = await toMastodonCard(card);
 			return;
 		}
 	}
