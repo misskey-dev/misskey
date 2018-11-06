@@ -123,7 +123,7 @@ common:
   show-full-acct: "Afficher l’adresse complète de l’utilisateur"
   reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
-  use-os-default-emojis: "OS標準の絵文字を使用"
+  use-os-default-emojis: "Utiliser les émojis standards du système"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
   is-remote-user: "Ces informations utilisateur ont été copiées."
   is-remote-post: "この投稿情報はコピーです。"
@@ -521,7 +521,7 @@ common/views/pages/follow.vue:
   following: "Suit"
   follow: "Suivre"
   request-pending: "Demande d'abonnement en attente"
-  follow-processing: "フォロー処理中"
+  follow-processing: "En cours d’abonnement"
   follow-request: "Demande d'abonnement"
 desktop:
   banner-crop-title: "Découpez la partie qui apparaitra comme bannière"
@@ -623,7 +623,7 @@ desktop/views/components/follow-button.vue:
   following: "Abonnements"
   follow: "Suivre"
   request-pending: "En attente d'approbation"
-  follow-processing: "フォロー処理中"
+  follow-processing: "Continuer l’abonnement"
   follow-request: "Demande d'abonnement"
 desktop/views/components/followers-window.vue:
   followers: "{} abonné·e·s"
@@ -954,8 +954,8 @@ admin/views/instance.vue:
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
   banner-url: "Url de l’image de la bannière"
-  drive-config: "ドライブの設定"
-  cache-remote-files: "リモートのファイルをキャッシュする"
+  drive-config: "Paramètres du lecteur"
+  cache-remote-files: "Mettre en cache des fichiers distants"
   cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
   local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
   remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
