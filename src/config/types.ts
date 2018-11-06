@@ -40,11 +40,6 @@ export type Source = {
 		port: number;
 		pass: string;
 	};
-	recaptcha?: {
-		site_key: string;
-		secret_key: string;
-	};
-
 	drive?: {
 		storage: string;
 		bucket?: string;

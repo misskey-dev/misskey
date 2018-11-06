@@ -47,11 +47,6 @@ In root :
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Install misskey dependencies.
 
-*(optional)* reCAPTCHA tokens
-----------------------------------------------------------------
-If you want to enable reCAPTCHA, you need to generate reCAPTCHA tokens:
-Please visit https://www.google.com/recaptcha/intro/ and generate keys.
-
 *(optional)* Generating VAPID keys
 ----------------------------------------------------------------
 If you want to enable ServiceWorker, you need to generate VAPID keys:

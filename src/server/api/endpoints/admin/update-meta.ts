@@ -88,6 +88,27 @@ export const meta = {
 			desc: {
 				'ja-JP': 'リモートのファイルをキャッシュするか否か'
 			}
+		},
+
+		enableRecaptcha: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'reCAPTCHAを使用するか否か'
+			}
+		},
+
+		recaptchaSiteKey: {
+			validator: $.str.optional,
+			desc: {
+				'ja-JP': 'reCAPTCHA site key'
+			}
+		},
+
+		recaptchaSecretKey: {
+			validator: $.str.optional,
+			desc: {
+				'ja-JP': 'reCAPTCHA secret key'
+			}
 		}
 	}
 };
@@ -137,6 +158,18 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.cacheRemoteFiles !== undefined) {
 		set.cacheRemoteFiles = ps.cacheRemoteFiles;
+	}
+
+	if (ps.enableRecaptcha !== undefined) {
+		set.enableRecaptcha = ps.enableRecaptcha;
+	}
+
+	if (ps.recaptchaSiteKey !== undefined) {
+		set.recaptchaSiteKey = ps.recaptchaSiteKey;
+	}
+
+	if (ps.recaptchaSecretKey !== undefined) {
+		set.recaptchaSecretKey = ps.recaptchaSecretKey;
 	}
 
 	await Meta.update({}, {

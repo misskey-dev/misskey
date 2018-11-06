@@ -16,6 +16,13 @@
 			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="desc">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
 			<ui-input v-model="remoteDriveCapacityMb" :disabled="!cacheRemoteFiles">%i18n:@remote-drive-capacity-mb%<span slot="desc">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
 		</section>
+		<section class="fit-bottom">
+			<header><fa icon="shield-alt"/> %i18n:@recaptcha-config%</header>
+			<ui-switch v-model="enableRecaptcha">%i18n:@enable-recaptcha%</ui-switch>
+			<ui-info>%i18n:@recaptcha-info%</ui-info>
+			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>%i18n:@recaptcha-site-key%</ui-input>
+			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>%i18n:@recaptcha-secret-key%</ui-input>
+		</section>
 		<section>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
 		</section>
@@ -54,6 +61,9 @@ export default Vue.extend({
 			localDriveCapacityMb: null,
 			remoteDriveCapacityMb: null,
 			maxNoteTextLength: null,
+			enableRecaptcha: false,
+			recaptchaSiteKey: null,
+			recaptchaSecretKey: null,
 			inviteCode: null,
 		};
 	},
@@ -67,6 +77,9 @@ export default Vue.extend({
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.maxNoteTextLength = meta.maxNoteTextLength;
+			this.enableRecaptcha = meta.enableRecaptcha;
+			this.recaptchaSiteKey = meta.recaptchaSiteKey;
+			this.recaptchaSecretKey = meta.recaptchaSecretKey;
 		});
 	},
 
@@ -92,7 +105,10 @@ export default Vue.extend({
 				cacheRemoteFiles: this.cacheRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
-				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10)
+				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10),
+				enableRecaptcha: this.enableRecaptcha,
+				recaptchaSiteKey: this.recaptchaSiteKey,
+				recaptchaSecretKey: this.recaptchaSecretKey
 			}).then(() => {
 				this.$swal({
 					type: 'success',

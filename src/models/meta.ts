@@ -61,6 +61,19 @@ if ((config as any).preventCacheRemoteFiles) {
 		}
 	});
 }
+if ((config as any).recaptcha) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.enableRecaptcha == null) {
+			Meta.update({}, {
+				$set: {
+					enableRecaptcha: (config as any).recaptcha != null,
+					recaptchaSiteKey: (config as any).recaptcha.site_key,
+					recaptchaSecretKey: (config as any).recaptcha.secret_key,
+				}
+			});
+		}
+	});
+}
 
 export type IMeta = {
 	name?: string;
@@ -78,6 +91,10 @@ export type IMeta = {
 	bannerUrl?: string;
 
 	cacheRemoteFiles?: boolean;
+
+	enableRecaptcha?: boolean;
+	recaptchaSiteKey?: string;
+	recaptchaSecretKey?: string;
 
 	/**
 	 * Drive capacity of a local user (MB)

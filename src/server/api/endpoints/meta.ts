@@ -35,7 +35,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	});
 
-	res({
+	const response: any = {
 		maintainer: config.maintainer,
 
 		version: pkg.version,
@@ -60,24 +60,32 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
-		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
+		recaptchaSiteKey: instance.enableRecaptcha ? instance.recaptchaSiteKey : null,
 		swPublickey: config.sw ? config.sw.public_key : null,
-		hidedTags: (me && me.isAdmin) ? instance.hidedTags : undefined,
 		bannerUrl: instance.bannerUrl,
 		maxNoteTextLength: instance.maxNoteTextLength,
 
 		emojis: emojis,
+	};
 
-		features: ps.detail ? {
+	if (ps.detail) {
+		response.features = {
 			registration: !instance.disableRegistration,
 			localTimeLine: !instance.disableLocalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
-			recaptcha: config.recaptcha ? true : false,
+			recaptcha: instance.enableRecaptcha,
 			objectStorage: config.drive && config.drive.storage === 'minio',
 			twitter: config.twitter ? true : false,
 			github: config.github ? true : false,
 			serviceWorker: config.sw ? true : false,
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
-		} : undefined
-	});
+		};
+	}
+
+	if (me && me.isAdmin) {
+		response.hidedTags = instance.hidedTags;
+		response.recaptchaSecretKey = instance.recaptchaSecretKey;
+	}
+
+	res(response);
 }));
