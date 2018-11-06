@@ -2,6 +2,8 @@
  * Emoji
  */
 
+import { emojiRegex } from "./emoji.regex";
+
 export type TextElementEmoji = {
 	type: 'emoji';
 	content: string;
