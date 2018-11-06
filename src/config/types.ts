@@ -19,7 +19,6 @@ export type Source = {
 		feedback_url?: string;
 	};
 	languages?: string[];
-	welcome_bg_url?: string;
 	url: string;
 	port: number;
 	https?: { [x: string]: string };
@@ -77,17 +76,6 @@ export type Source = {
 	github_bot?: {
 		hook_secret: string;
 		username: string;
-	};
-	reversi_ai?: {
-		id: string;
-		i: string;
-	};
-	line_bot?: {
-		channel_secret: string;
-		channel_access_token: string;
-	};
-	analysis?: {
-		mecab_command?: string;
 	};
 
 	/**
