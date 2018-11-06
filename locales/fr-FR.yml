@@ -257,7 +257,7 @@ common/views/components/games/reversi/reversi.room.vue:
   cancel-ready: "Annuler « Prêt »"
 common/views/components/connect-failed.vue:
   title: "Échec de connexion au serveur"
-  description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
+  description: "Il se peut qu’il y est un problème avec votre connexion internet, ou le serveur est hors-ligne ou en maintenance. Veuillez {réessayer} plus tard."
   thanks: "On vous remercie d'utiliser Misskey."
   troubleshoot: "Dépanner"
 common/views/components/connect-failed.troubleshooter.vue:
