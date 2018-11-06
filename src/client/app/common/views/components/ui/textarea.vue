@@ -13,7 +13,7 @@
 			@blur="focused = false"
 		></textarea>
 	</div>
-	<div class="text"><slot name="text"></slot></div>
+	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -139,7 +139,7 @@ root(fill)
 			outline none
 			box-shadow none
 
-	> .text
+	> .desc
 		margin 6px 0
 		font-size 13px
 

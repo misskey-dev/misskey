@@ -31,13 +31,13 @@
 			<ui-input type="file" @change="onAvatarChange">
 				<span>%i18n:@avatar%</span>
 				<span slot="icon"><fa icon="image"/></span>
-				<span slot="text" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
+				<span slot="desc" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
 			</ui-input>
 
 			<ui-input type="file" @change="onBannerChange">
 				<span>%i18n:@banner%</span>
 				<span slot="icon"><fa icon="image"/></span>
-				<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
+				<span slot="desc" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
 			</ui-input>
 
 			<ui-button @click="save(true)">%i18n:@save%</ui-button>

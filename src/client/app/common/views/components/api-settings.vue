@@ -19,6 +19,7 @@
 		</ui-input>
 		<ui-textarea v-model="body">
 			<span>%i18n:@console.parameter% (JSON or JSON5)</span>
+			<span slot="desc">%i18n:@console.credential-info%</span>
 		</ui-textarea>
 		<ui-button @click="send" :disabled="sending">
 			<template v-if="sending">%i18n:@console.sending%</template>

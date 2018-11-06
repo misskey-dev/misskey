@@ -33,7 +33,7 @@
 		</template>
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
-	<div class="text"><slot name="text"></slot></div>
+	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -321,7 +321,7 @@ root(fill)
 			if fill
 				padding-right 12px
 
-	> .text
+	> .desc
 		margin 6px 0
 		font-size 13px
 

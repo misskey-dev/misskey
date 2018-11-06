@@ -13,8 +13,8 @@
 		<section class="fit-bottom">
 			<header><fa icon="cloud"/> %i18n:@drive-config%</header>
 			<ui-switch v-model="cacheRemoteFiles">%i18n:@cache-remote-files%<span slot="desc">%i18n:@cache-remote-files-desc%</span></ui-switch>
-			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="text">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
-			<ui-input v-model="remoteDriveCapacityMb" :disabled="!cacheRemoteFiles">%i18n:@remote-drive-capacity-mb%<span slot="text">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
+			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="desc">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
+			<ui-input v-model="remoteDriveCapacityMb" :disabled="!cacheRemoteFiles">%i18n:@remote-drive-capacity-mb%<span slot="desc">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
 		</section>
 		<section>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>

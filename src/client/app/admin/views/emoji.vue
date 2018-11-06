@@ -6,11 +6,11 @@
 			<ui-horizon-group inputs>
 				<ui-input v-model="name">
 					<span>%i18n:@add-emoji.name%</span>
-					<span slot="text">%i18n:@add-emoji.name-desc%</span>
+					<span slot="desc">%i18n:@add-emoji.name-desc%</span>
 				</ui-input>
 				<ui-input v-model="aliases">
 					<span>%i18n:@add-emoji.aliases%</span>
-					<span slot="text">%i18n:@add-emoji.aliases-desc%</span>
+					<span slot="desc">%i18n:@add-emoji.aliases-desc%</span>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="url">
