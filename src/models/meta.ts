@@ -1,5 +1,7 @@
 import db from '../db/mongodb';
 import config from '../config';
+import User from './user';
+import { transform } from '../misc/cafy-id';
 
 const Meta = db.get<IMeta>('meta');
 export default Meta;
@@ -74,6 +76,18 @@ if ((config as any).recaptcha) {
 		}
 	});
 }
+if ((config as any).ghost) {
+	Meta.findOne({}).then(async m => {
+		if (m != null && m.proxyAccount == null) {
+			const account = await User.findOne({ _id: transform((config as any).ghost) });
+			Meta.update({}, {
+				$set: {
+					proxyAccount: account.username
+				}
+			});
+		}
+	});
+}
 
 export type IMeta = {
 	name?: string;
@@ -91,6 +105,8 @@ export type IMeta = {
 	bannerUrl?: string;
 
 	cacheRemoteFiles?: boolean;
+
+	proxyAccount?: string;
 
 	enableRecaptcha?: boolean;
 	recaptchaSiteKey?: string;

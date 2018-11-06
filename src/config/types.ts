@@ -50,11 +50,6 @@ export type Source = {
 
 	autoAdmin?: boolean;
 
-	/**
-	 * ゴーストアカウントのID
-	 */
-	ghost?: string;
-
 	proxy?: string;
 
 	summalyProxy?: string;

@@ -13,8 +13,8 @@
 		<section class="fit-bottom">
 			<header><fa icon="cloud"/> %i18n:@drive-config%</header>
 			<ui-switch v-model="cacheRemoteFiles">%i18n:@cache-remote-files%<span slot="desc">%i18n:@cache-remote-files-desc%</span></ui-switch>
-			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="desc">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
-			<ui-input v-model="remoteDriveCapacityMb" :disabled="!cacheRemoteFiles">%i18n:@remote-drive-capacity-mb%<span slot="desc">%i18n:@mb%</span><span slot="suffix">MB</span></ui-input>
+			<ui-input v-model="localDriveCapacityMb">%i18n:@local-drive-capacity-mb%<span slot="suffix">MB</span><span slot="desc">%i18n:@mb%</span></ui-input>
+			<ui-input v-model="remoteDriveCapacityMb" :disabled="!cacheRemoteFiles">%i18n:@remote-drive-capacity-mb%<span slot="suffix">MB</span><span slot="desc">%i18n:@mb%</span></ui-input>
 		</section>
 		<section class="fit-bottom">
 			<header><fa icon="shield-alt"/> %i18n:@recaptcha-config%</header>
@@ -22,6 +22,12 @@
 			<ui-info>%i18n:@recaptcha-info%</ui-info>
 			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>%i18n:@recaptcha-site-key%</ui-input>
 			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>%i18n:@recaptcha-secret-key%</ui-input>
+		</section>
+		<section>
+			<header><fa icon="ghost"/> %i18n:@proxy-account-config%</header>
+			<ui-info>%i18n:@proxy-account-info%</ui-info>
+			<ui-input v-model="proxyAccount"><i slot="prefix">@</i>%i18n:@proxy-account-username%<span slot="desc">%i18n:@proxy-account-username-desc%</span></ui-input>
+			<ui-info warn>%i18n:@proxy-account-warn%</ui-info>
 		</section>
 		<section>
 			<ui-switch v-model="disableRegistration">%i18n:@disable-registration%</ui-switch>
@@ -62,6 +68,7 @@ export default Vue.extend({
 			enableRecaptcha: false,
 			recaptchaSiteKey: null,
 			recaptchaSecretKey: null,
+			proxyAccount: null,
 			inviteCode: null,
 		};
 	},
@@ -78,6 +85,7 @@ export default Vue.extend({
 			this.enableRecaptcha = meta.enableRecaptcha;
 			this.recaptchaSiteKey = meta.recaptchaSiteKey;
 			this.recaptchaSecretKey = meta.recaptchaSecretKey;
+			this.proxyAccount = meta.proxyAccount;
 		});
 	},
 
@@ -106,7 +114,8 @@ export default Vue.extend({
 				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10),
 				enableRecaptcha: this.enableRecaptcha,
 				recaptchaSiteKey: this.recaptchaSiteKey,
-				recaptchaSecretKey: this.recaptchaSecretKey
+				recaptchaSecretKey: this.recaptchaSecretKey,
+				proxyAccount: this.proxyAccount,
 			}).then(() => {
 				this.$swal({
 					type: 'success',

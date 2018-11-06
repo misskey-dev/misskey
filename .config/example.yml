@@ -135,11 +135,6 @@ autoAdmin: true
 #  client_id: example-github-client-id
 #  client_secret: example-github-client-secret
 
-# Ghost
-# Ghost account is an account used for the purpose of delegating
-# followers when putting users in the list.
-#ghost: user-id-of-your-ghost-account
-
 # Clustering
 #clusterLimit: 1
 

@@ -98,16 +98,23 @@ export const meta = {
 		},
 
 		recaptchaSiteKey: {
-			validator: $.str.optional,
+			validator: $.str.optional.nullable,
 			desc: {
 				'ja-JP': 'reCAPTCHA site key'
 			}
 		},
 
 		recaptchaSecretKey: {
-			validator: $.str.optional,
+			validator: $.str.optional.nullable,
 			desc: {
 				'ja-JP': 'reCAPTCHA secret key'
+			}
+		},
+
+		proxyAccount: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'Proxy account username'
 			}
 		}
 	}
@@ -170,6 +177,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.recaptchaSecretKey !== undefined) {
 		set.recaptchaSecretKey = ps.recaptchaSecretKey;
+	}
+
+	if (ps.proxyAccount !== undefined) {
+		set.proxyAccount = ps.proxyAccount;
 	}
 
 	await Meta.update({}, {
