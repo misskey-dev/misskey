@@ -6,6 +6,7 @@
 			<ui-input v-model="name">%i18n:@instance-name%</ui-input>
 			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>
 			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>%i18n:@banner-url%</ui-input>
+			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>%i18n:@languages%<span slot="desc">%i18n:@languages-desc%</span></ui-input>
 		</section>
 		<section class="fit-bottom">
 			<header><fa icon="headset"/> %i18n:@maintainer-config%</header>
@@ -31,7 +32,7 @@
 		<section>
 			<header><fa icon="ghost"/> %i18n:@proxy-account-config%</header>
 			<ui-info>%i18n:@proxy-account-info%</ui-info>
-			<ui-input v-model="proxyAccount"><i slot="prefix">@</i>%i18n:@proxy-account-username%<span slot="desc">%i18n:@proxy-account-username-desc%</span></ui-input>
+			<ui-input v-model="proxyAccount"><span slot="prefix">@</span>%i18n:@proxy-account-username%<span slot="desc">%i18n:@proxy-account-username-desc%</span></ui-input>
 			<ui-info warn>%i18n:@proxy-account-warn%</ui-info>
 		</section>
 		<section>
@@ -68,6 +69,7 @@ export default Vue.extend({
 			bannerUrl: null,
 			name: null,
 			description: null,
+			languages: null,
 			cacheRemoteFiles: false,
 			localDriveCapacityMb: null,
 			remoteDriveCapacityMb: null,
@@ -87,6 +89,7 @@ export default Vue.extend({
 			this.bannerUrl = meta.bannerUrl;
 			this.name = meta.name;
 			this.description = meta.description;
+			this.languages = meta.langs.join(' ');
 			this.cacheRemoteFiles = meta.cacheRemoteFiles;
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
@@ -119,6 +122,7 @@ export default Vue.extend({
 				bannerUrl: this.bannerUrl,
 				name: this.name,
 				description: this.description,
+				langs: this.languages.split(' '),
 				cacheRemoteFiles: this.cacheRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),

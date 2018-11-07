@@ -130,6 +130,13 @@ export const meta = {
 			desc: {
 				'ja-JP': 'インスタンス管理者の連絡先メールアドレス'
 			}
+		},
+
+		langs: {
+			validator: $.arr($.str).optional,
+			desc: {
+				'ja-JP': 'インスタンスの対象言語'
+			}
 		}
 	}
 };
@@ -203,6 +210,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.maintainerEmail !== undefined) {
 		set['maintainer.email'] = ps.maintainerEmail;
+	}
+
+	if (ps.langs !== undefined) {
+		set.langs = ps.langs;
 	}
 
 	await Meta.update({}, {

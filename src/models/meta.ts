@@ -119,6 +119,8 @@ export type IMeta = {
 		email?: string;
 	};
 
+	langs?: string[];
+
 	broadcasts?: any[];
 
 	stats?: {

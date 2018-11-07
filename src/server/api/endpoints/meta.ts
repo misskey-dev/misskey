@@ -43,6 +43,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 
 		name: instance.name,
 		description: instance.description,
+		langs: instance.langs,
 
 		secure: config.https != null,
 		machine: os.hostname(),
