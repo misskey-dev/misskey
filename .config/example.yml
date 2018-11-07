@@ -116,18 +116,6 @@ autoAdmin: true
 #  # Private key of VAPID
 #  private_key: example-sw-private-key
 
-# Twitter integration
-# You need to set the oauth callback url as : https://<your-misskey-instance>/api/tw/cb
-#twitter:
-#  consumer_key: example-twitter-consumer-key
-#  consumer_secret: example-twitter-consumer-secret-key
-
-# GitHub integration
-# You need to set the oauth callback url as : https://<your-misskey-instance>/api/gh/cb
-#github:
-#  client_id: example-github-client-id
-#  client_secret: example-github-client-secret
-
 # Clustering
 #clusterLimit: 1
 
