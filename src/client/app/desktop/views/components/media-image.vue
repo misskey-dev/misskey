@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkMediaImageDialog from './media-image-dialog.vue';
+import ImageViewer from '../../../common/views/components/image-viewer.vue';
 
 export default Vue.extend({
 	props: {
@@ -58,7 +58,7 @@ export default Vue.extend({
 		},
 
 		onClick() {
-			(this as any).os.new(MkMediaImageDialog, {
+			(this as any).os.new(ImageViewer, {
 				image: this.image
 			});
 		}

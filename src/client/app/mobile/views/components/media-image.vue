@@ -5,11 +5,12 @@
 		<span>%i18n:@click-to-show%</span>
 	</div>
 </div>
-<a class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else :href="image.url" target="_blank" :style="style" :title="image.name"></a>
+<a class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else :href="image.url" target="_blank" :style="style" :title="image.name" @click.prevent="onClick"></a>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import ImageViewer from '../../../common/views/components/image-viewer.vue';
 
 export default Vue.extend({
 	props: {
@@ -40,6 +41,13 @@ export default Vue.extend({
 				'background-color': this.image.properties.avgColor && this.image.properties.avgColor.length == 3 ? `rgb(${this.image.properties.avgColor.join(',')})` : 'transparent',
 				'background-image': url
 			};
+		}
+	},
+	methods: {
+		onClick() {
+			(this as any).os.new(ImageViewer, {
+				image: this.image
+			});
 		}
 	}
 });
