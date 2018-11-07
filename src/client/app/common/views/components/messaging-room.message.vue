@@ -179,6 +179,9 @@ export default Vue.extend({
 			font-size 10px
 			color var(--messagingRoomMessageInfo)
 
+			> .read
+				margin 0 8px
+
 			> [data-icon]
 				margin-left 4px
 
