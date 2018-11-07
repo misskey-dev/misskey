@@ -4,7 +4,6 @@
 export type Source = {
 	repository_url?: string;
 	feedback_url?: string;
-	languages?: string[];
 	url: string;
 	port: number;
 	https?: { [x: string]: string };
