@@ -954,6 +954,8 @@ admin/views/instance.vue:
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
   banner-url: "Url de l’image de la bannière"
+  languages: "インスタンスの対象言語"
+  languages-desc: "スペースで区切って複数設定できます。"
   maintainer-config: "Informations de l’administrateur"
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
