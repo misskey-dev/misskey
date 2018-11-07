@@ -123,7 +123,7 @@ common:
   show-full-acct: "Do not omit the hostname from the username"
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
-  use-os-default-emojis: "OS標準の絵文字を使用"
+  use-os-default-emojis: "Use the OS default Emojis"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
@@ -382,7 +382,7 @@ common/views/components/signin.vue:
   signin: "Sign in"
   or: "Or"
   signin-with-twitter: "Log in with Twitter"
-  signin-with-github: "GitHubでログイン"
+  signin-with-github: "Log in with GitHub"
   login-failed: "Log in failed. Make sure you have entered your correct username and password."
 common/views/components/signup.vue:
   invitation-code: "Invitation code"
@@ -422,12 +422,12 @@ common/views/components/twitter-setting.vue:
   connect: "Link your Twitter account"
   disconnect: "Disconnect"
 common/views/components/github-setting.vue:
-  description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
-  connected-to: "次のGitHubアカウントに接続されています"
-  detail: "詳細..."
-  reconnect: "再接続する"
-  connect: "GitHubと接続する"
-  disconnect: "切断する"
+  description: "Once you connect your GitHub account to your Misskey account, you will be able to see information about your GitHub account on your profile, and you will be able to sign-in via GitHub."
+  connected-to: "You are connected to this GitHub account"
+  detail: "More..."
+  reconnect: "Reconnect"
+  connect: "Connect to GitHub"
+  disconnect: "Disconnect"
 common/views/components/uploader.vue:
   waiting: "Waiting"
 common/views/components/visibility-chooser.vue:
@@ -844,7 +844,7 @@ common/views/components/api-settings.vue:
     title: 'API console'
     endpoint: 'Endpoint'
     parameter: 'Parameters'
-    credential-info: "「i」パラメータは自動で付与されます。"
+    credential-info: "Parameter \"i\" is not required at this console."
     send: 'Send'
     sending: 'Sending'
     response: 'Result'
@@ -954,7 +954,7 @@ admin/views/instance.vue:
   instance-name: "Instance name"
   instance-description: "Instance description"
   banner-url: "Banner image URL"
-  languages: "インスタンスの対象言語"
+  languages: "Language of this instance"
   languages-desc: "スペースで区切って複数設定できます。"
   maintainer-config: "管理者情報"
   maintainer-name: "管理者名"
