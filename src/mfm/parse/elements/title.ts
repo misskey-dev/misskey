@@ -11,10 +11,9 @@ export type TextElementTitle = {
 export default function(text: string, isBegin: boolean) {
 	const match = isBegin ? text.match(/^(【|\[)(.+?)(】|])\n/) : text.match(/^\n(【|\[)(.+?)(】|])\n/);
 	if (!match) return null;
-	const title = match[0];
 	return {
 		type: 'title',
-		content: title,
-		title: title.substr(1, title.length - 3)
+		content: match[0],
+		title: match[2]
 	} as TextElementTitle;
 }
