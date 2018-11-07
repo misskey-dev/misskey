@@ -53,6 +53,28 @@
 			<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
 		</section>
 	</ui-card>
+
+	<ui-card>
+		<div slot="title"><fa :icon="['fab', 'twitter']"/> %i18n:@twitter-integration-config%</div>
+		<section>
+			<ui-switch v-model="enableTwitterIntegration">%i18n:@enable-twitter-integration%</ui-switch>
+			<ui-info>%i18n:@twitter-integration-info%</ui-info>
+			<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@twitter-integration-consumer-key%</ui-input>
+			<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@twitter-integration-consumer-secret%</ui-input>
+			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<div slot="title"><fa :icon="['fab', 'github']"/> %i18n:@github-integration-config%</div>
+		<section>
+			<ui-switch v-model="enableGithubIntegration">%i18n:@enable-github-integration%</ui-switch>
+			<ui-info>%i18n:@github-integration-info%</ui-info>
+			<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@github-integration-client-id%</ui-input>
+			<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@github-integration-client-secret%</ui-input>
+			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -77,6 +99,12 @@ export default Vue.extend({
 			enableRecaptcha: false,
 			recaptchaSiteKey: null,
 			recaptchaSecretKey: null,
+			enableTwitterIntegration: false,
+			twitterConsumerKey: null,
+			twitterConsumerSecret: null,
+			enableGithubIntegration: false,
+			githubClientId: null,
+			githubClientSecret: null,
 			proxyAccount: null,
 			inviteCode: null,
 		};
@@ -98,6 +126,12 @@ export default Vue.extend({
 			this.recaptchaSiteKey = meta.recaptchaSiteKey;
 			this.recaptchaSecretKey = meta.recaptchaSecretKey;
 			this.proxyAccount = meta.proxyAccount;
+			this.enableTwitterIntegration = meta.enableTwitterIntegration;
+			this.twitterConsumerKey = meta.twitterConsumerKey;
+			this.twitterConsumerSecret = meta.twitterConsumerSecret;
+			this.enableGithubIntegration = meta.enableGithubIntegration;
+			this.githubClientId = meta.githubClientId;
+			this.githubClientSecret = meta.githubClientSecret;
 		});
 	},
 
@@ -131,6 +165,12 @@ export default Vue.extend({
 				recaptchaSiteKey: this.recaptchaSiteKey,
 				recaptchaSecretKey: this.recaptchaSecretKey,
 				proxyAccount: this.proxyAccount,
+				enableTwitterIntegration: this.enableTwitterIntegration,
+				twitterConsumerKey: this.twitterConsumerKey,
+				twitterConsumerSecret: this.twitterConsumerSecret,
+				enableGithubIntegration: this.enableGithubIntegration,
+				githubClientId: this.githubClientId,
+				githubClientSecret: this.githubClientSecret,
 			}).then(() => {
 				this.$swal({
 					type: 'success',

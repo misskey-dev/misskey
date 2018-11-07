@@ -137,7 +137,49 @@ export const meta = {
 			desc: {
 				'ja-JP': 'インスタンスの対象言語'
 			}
-		}
+		},
+
+		enableTwitterIntegration: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'Twitter連携機能を有効にするか否か'
+			}
+		},
+
+		twitterConsumerKey: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'TwitterアプリのConsumer key'
+			}
+		},
+
+		twitterConsumerSecret: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'TwitterアプリのConsumer secret'
+			}
+		},
+
+		enableGithubIntegration: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'GitHub連携機能を有効にするか否か'
+			}
+		},
+
+		githubClientId: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'GitHubアプリのClient ID'
+			}
+		},
+
+		githubClientSecret: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'GitHubアプリのClient secret'
+			}
+		},
 	}
 };
 
@@ -214,6 +256,30 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.langs !== undefined) {
 		set.langs = ps.langs;
+	}
+
+	if (ps.enableTwitterIntegration !== undefined) {
+		set.enableTwitterIntegration = ps.enableTwitterIntegration;
+	}
+
+	if (ps.twitterConsumerKey !== undefined) {
+		set.twitterConsumerKey = ps.twitterConsumerKey;
+	}
+
+	if (ps.twitterConsumerSecret !== undefined) {
+		set.twitterConsumerSecret = ps.twitterConsumerSecret;
+	}
+
+	if (ps.enableGithubIntegration !== undefined) {
+		set.enableGithubIntegration = ps.enableGithubIntegration;
+	}
+
+	if (ps.githubClientId !== undefined) {
+		set.githubClientId = ps.githubClientId;
+	}
+
+	if (ps.githubClientSecret !== undefined) {
+		set.githubClientSecret = ps.githubClientSecret;
 	}
 
 	await Meta.update({}, {

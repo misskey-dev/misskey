@@ -77,8 +77,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			elasticsearch: config.elasticsearch ? true : false,
 			recaptcha: instance.enableRecaptcha,
 			objectStorage: config.drive && config.drive.storage === 'minio',
-			twitter: config.twitter ? true : false,
-			github: config.github ? true : false,
+			twitter: instance.enableTwitterIntegration,
+			github: instance.enableGithubIntegration,
 			serviceWorker: config.sw ? true : false,
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
 		};

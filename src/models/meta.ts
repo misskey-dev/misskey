@@ -99,6 +99,32 @@ if ((config as any).maintainer) {
 		}
 	});
 }
+if ((config as any).twitter) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.enableTwitterIntegration == null) {
+			Meta.update({}, {
+				$set: {
+					enableTwitterIntegration: true,
+					twitterConsumerKey: (config as any).twitter.consumer_key,
+					twitterConsumerSecret: (config as any).twitter.consumer_secret
+				}
+			});
+		}
+	});
+}
+if ((config as any).github) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.enableGithubIntegration == null) {
+			Meta.update({}, {
+				$set: {
+					enableGithubIntegration: true,
+					githubClientId: (config as any).github.client_id,
+					githubClientSecret: (config as any).github.client_secret
+				}
+			});
+		}
+	});
+}
 
 export type IMeta = {
 	name?: string;
@@ -157,4 +183,12 @@ export type IMeta = {
 	 * Max allowed note text length in charactors
 	 */
 	maxNoteTextLength?: number;
+
+	enableTwitterIntegration?: boolean;
+	twitterConsumerKey?: string;
+	twitterConsumerSecret?: string;
+
+	enableGithubIntegration?: boolean;
+	githubClientId?: string;
+	githubClientSecret?: string;
 };
