@@ -250,9 +250,9 @@ describe('Text', () => {
 
 			const tokens4 = analyze('foo\n【bar】\nbuzz');
 			assert.deepEqual([
-				{ type: 'foo', content: 'foo\n' },
-				{ type: 'title', content: '【bar】\n', title: 'bar' },
-				{ type: 'foo', content: 'buzz' },
+				{ type: 'text', content: 'foo' },
+				{ type: 'title', content: '\n【bar】\n', title: 'bar' },
+				{ type: 'text', content: 'buzz' },
 			], tokens4);
 		});
 	});
