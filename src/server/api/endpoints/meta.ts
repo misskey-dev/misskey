@@ -88,6 +88,12 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.hidedTags = instance.hidedTags;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;
+		response.enableTwitterIntegration = instance.enableTwitterIntegration;
+		response.twitterConsumerKey = instance.twitterConsumerKey;
+		response.twitterConsumerSecret = instance.twitterConsumerSecret;
+		response.enableGithubIntegration = instance.enableGithubIntegration;
+		response.githubClientId = instance.githubClientId;
+		response.githubClientSecret = instance.githubClientSecret;
 	}
 
 	res(response);
