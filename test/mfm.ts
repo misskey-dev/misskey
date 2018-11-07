@@ -213,40 +213,47 @@ describe('Text', () => {
 		it('search', () => {
 			const tokens1 = analyze('a b c 検索');
 			assert.deepEqual([
-				{ type: 'search', content: 'a b c 検索', query: 'a b c'}
+				{ type: 'search', content: 'a b c 検索', query: 'a b c' }
 			], tokens1);
 
 			const tokens2 = analyze('a b c Search');
 			assert.deepEqual([
-				{ type: 'search', content: 'a b c Search', query: 'a b c'}
+				{ type: 'search', content: 'a b c Search', query: 'a b c' }
 			], tokens2);
 
 			const tokens3 = analyze('a b c search');
 			assert.deepEqual([
-				{ type: 'search', content: 'a b c search', query: 'a b c'}
+				{ type: 'search', content: 'a b c search', query: 'a b c' }
 			], tokens3);
 
 			const tokens4 = analyze('a b c SEARCH');
 			assert.deepEqual([
-				{ type: 'search', content: 'a b c SEARCH', query: 'a b c'}
+				{ type: 'search', content: 'a b c SEARCH', query: 'a b c' }
 			], tokens4);
 		});
 
 		it('title', () => {
 			const tokens1 = analyze('【yee】\nhaw');
 			assert.deepEqual(
-				{ type: 'title', content: '【yee】\n', title: 'yee'}
+				{ type: 'title', content: '【yee】\n', title: 'yee' }
 			, tokens1[0]);
 
 			const tokens2 = analyze('[yee]\nhaw');
 			assert.deepEqual(
-				{ type: 'title', content: '[yee]\n', title: 'yee'}
+				{ type: 'title', content: '[yee]\n', title: 'yee' }
 			, tokens2[0]);
 
 			const tokens3 = analyze('a [a]\nb [b]\nc [c]');
 			assert.deepEqual(
 				{ type: 'text', content: 'a [a]\nb [b]\nc [c]' }
 			, tokens3[0]);
+
+			const tokens4 = analyze('foo\n【bar】\nbuzz');
+			assert.deepEqual([
+				{ type: 'foo', content: 'foo\n' },
+				{ type: 'title', content: '【bar】\n', title: 'bar' },
+				{ type: 'foo', content: 'buzz' },
+			], tokens4);
 		});
 	});
 
