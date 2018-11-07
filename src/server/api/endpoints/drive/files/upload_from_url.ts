@@ -11,7 +11,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 10
+		max: 60
 	},
 
 	requireCredential: true,
@@ -29,9 +29,26 @@ export const meta = {
 			default: null as any as any,
 			transform: transform
 		},
+
+		isSensitive: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
+				'en-US': 'Whether this media is NSFW'
+			}
+		},
+
+		force: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
+			}
+		}
 	}
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	res(pack(await uploadFromUrl(ps.url, user, ps.folderId)));
+	res(pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force)));
 }));

@@ -14,7 +14,14 @@ import fetchMeta from '../../misc/fetch-meta';
 
 const log = debug('misskey:drive:upload-from-url');
 
-export default async (url: string, user: IUser, folderId: mongodb.ObjectID = null, uri: string = null, sensitive = false): Promise<IDriveFile> => {
+export default async (
+	url: string,
+	user: IUser,
+	folderId: mongodb.ObjectID = null,
+	uri: string = null,
+	sensitive = false,
+	force = false
+): Promise<IDriveFile> => {
 	log(`REQUESTED: ${url}`);
 
 	let name = URL.parse(url).pathname.split('/').pop();
@@ -76,7 +83,7 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, false, !instance.cacheRemoteFiles, url, uri, sensitive);
+		driveFile = await create(user, path, name, null, folderId, force, !instance.cacheRemoteFiles, url, uri, sensitive);
 		log(`got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;
