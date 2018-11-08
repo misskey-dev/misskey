@@ -56,7 +56,7 @@ import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/widgets.vue'),
 	components: {
 		XDraggable
 	},

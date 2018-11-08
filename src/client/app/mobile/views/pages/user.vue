@@ -72,7 +72,7 @@ import Menu from '../../../common/views/components/menu.vue';
 import XHome from './user/home.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/user.vue'),
 	components: {
 		XHome
 	},

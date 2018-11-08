@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'activity',
@@ -18,6 +19,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n(),
 	methods: {
 		func() {
 			this.props.compact = !this.props.compact;

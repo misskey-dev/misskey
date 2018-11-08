@@ -21,7 +21,7 @@
 			<li class="messaging">
 				<a @click="messaging">
 					<fa icon="comments"/>
-					<p>{{ $t('messaging') }}</p>
+					<p>{{ $t('@common.messaging') }}</p>
 					<template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template>
 				</a>
 			</li>

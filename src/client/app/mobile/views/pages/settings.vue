@@ -180,7 +180,7 @@ import { apiUrl, clientVersion as version, codename, langs } from '../../../conf
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/settings.vue'),
 	data() {
 		return {
 			apiUrl,

@@ -2,7 +2,7 @@
 <div class="mk-calendar" :data-melt="design == 4 || design == 5">
 	<template v-if="design == 0 || design == 1">
 		<button @click="prev" :title="$t('prev')"><fa icon="chevron-circle-left"/></button>
-		<p class="title">{{ this.$t('title').replace('{1}', year).replace('{2}', month) }}</p>
+		<p class="title">{{ $t('title', { year, month }) }}</p>
 		<button @click="next" :title="$t('next')"><fa icon="chevron-circle-right"/></button>
 	</template>
 
@@ -21,7 +21,7 @@
 			:data-is-out-of-range="isOutOfRange(i + 1)"
 			:data-is-donichi="isDonichi(i + 1)"
 			@click="go(i + 1)"
-			:title="isOutOfRange(i + 1) ? null : this.$t('go')"
+			:title="isOutOfRange(i + 1) ? null : $t('go')"
 		>
 			<div>{{ i + 1 }}</div>
 		</div>
@@ -57,13 +57,13 @@ export default Vue.extend({
 			month: new Date().getMonth() + 1,
 			selected: new Date(),
 			weekdayText: [
-				'%i18n:common.weekday-short.sunday%',
-				'%i18n:common.weekday-short.monday%',
-				'%i18n:common.weekday-short.tuesday%',
-				'%i18n:common.weekday-short.wednesday%',
-				'%i18n:common.weekday-short.thursday%',
-				'%i18n:common.weekday-short.friday%',
-				'%i18n:common.weekday-short.saturday%'
+				this.$t('@common.weekday-short.sunday'),
+				this.$t('@common.weekday-short.monday'),
+				this.$t('@common.weekday-short.tuesday'),
+				this.$t('@common.weekday-short.wednesday'),
+				this.$t('@common.weekday-short.thursday'),
+				this.$t('@common.weekday-short.friday'),
+				this.$t('@common.weekday-short.saturday')
 			]
 		};
 	},

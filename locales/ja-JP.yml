@@ -66,6 +66,7 @@ common:
 
   trash: "ゴミ箱"
   drive: "ドライブ"
+  messaging: "トーク"
 
   weekday-short:
     sunday: "日"
@@ -174,7 +175,6 @@ common:
     users: "おすすめユーザー"
     polls: "アンケート"
     post-form: "投稿フォーム"
-    messaging: "メッセージ"
     server: "サーバー情報"
     donation: "寄付のお願い"
     nav: "ナビゲーション"
@@ -583,7 +583,7 @@ desktop/views/components/activity.vue:
   toggle: "表示を切り替え"
 
 desktop/views/components/calendar.vue:
-  title: "{1}年 {2}月"
+  title: "{year}年 {month}月"
   prev: "前の月"
   next: "次の月"
   go: "クリックして時間遡行"
@@ -994,7 +994,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
   deck: "デッキ"
-  messaging: "メッセージ"
   game: "ゲーム"
 
 desktop/views/components/ui.header.notifications.vue:
@@ -1400,7 +1399,6 @@ mobile/views/components/ui.header.vue:
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
-  messaging: "メッセージ"
   follow-requests: "フォロー申請"
   search: "検索"
   favorites: "お気に入り"
@@ -1445,7 +1443,7 @@ mobile/views/pages/home.vue:
   messages: "メッセージ"
 
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
@@ -1460,13 +1458,7 @@ mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
-
-mobile/views/pages/messaging.vue:
-  messaging: "メッセージ"
-
-mobile/views/pages/messaging-room.vue:
-  messaging: "メッセージ"
+  share-with: "{name}で共有"
 
 mobile/views/pages/received-follow-requests.vue:
   title: "フォロー申請"
@@ -1487,8 +1479,7 @@ mobile/views/pages/games/reversi.vue:
 
 mobile/views/pages/search.vue:
   search: "検索"
-  empty: "「{}」に関する投稿は見つかりませんでした。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"

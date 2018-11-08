@@ -3,7 +3,7 @@
 	<span slot="header"><fa icon="search"/> {{ q }}</span>
 
 	<main>
-		<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ '%i18n:not-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:not-found%'.split('{}')[1] }}</p>
+		<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('not-found', { q }) }}</p>
 		<mk-notes ref="timeline" :more="existMore ? more : null"/>
 	</main>
 </mk-ui>
@@ -17,7 +17,7 @@ import Progress from '../../../common/scripts/loading';
 const limit = 20;
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/search.vue'),
 	data() {
 		return {
 			fetching: true,

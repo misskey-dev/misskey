@@ -78,7 +78,7 @@ import { copyright, host } from '../../../config';
 import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/welcome.vue'),
 	data() {
 		return {
 			meta: null,

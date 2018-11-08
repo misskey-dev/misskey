@@ -66,7 +66,8 @@ import Progress from '../../../common/scripts/loading';
 import XTl from './home.timeline.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/home.vue'),
+
 	components: {
 		XTl
 	},

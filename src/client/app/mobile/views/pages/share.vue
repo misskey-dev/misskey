@@ -1,6 +1,6 @@
 <template>
 <div class="azibmfpleajagva420swmu4c3r7ni7iw">
-	<h1>{{ this.$t('share-with').replace('{}', name) }}</h1>
+	<h1>{{ $t('share-with', { name }) }}</h1>
 	<div>
 		<mk-signin v-if="!$store.getters.isSignedIn"/>
 		<mk-post-form v-else-if="!posted" :initial-text="text" :instant="true" @posted="posted = true"/>
@@ -15,7 +15,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/share.vue'),
 	data() {
 		return {
 			name: null,
