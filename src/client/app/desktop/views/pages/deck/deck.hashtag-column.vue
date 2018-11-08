@@ -13,11 +13,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
 import XHashtagTl from './deck.hashtag-tl.vue';
 import * as ApexCharts from 'apexcharts';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XColumn,
 		XHashtagTl

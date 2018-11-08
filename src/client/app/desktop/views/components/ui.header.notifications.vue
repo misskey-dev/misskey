@@ -12,9 +12,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	data() {
 		return {
 			isOpen: false

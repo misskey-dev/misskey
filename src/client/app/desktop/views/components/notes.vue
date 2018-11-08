@@ -34,6 +34,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as config from '../../../config';
 
 import XNote from './note.vue';
@@ -41,6 +42,7 @@ import XNote from './note.vue';
 const displayLimit = 30;
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XNote
 	},

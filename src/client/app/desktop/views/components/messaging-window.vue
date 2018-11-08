@@ -7,9 +7,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkMessagingRoomWindow from './messaging-room-window.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	methods: {
 		navigate(user) {
 			(this as any).os.new(MkMessagingRoomWindow, {

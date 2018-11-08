@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 function dragListen(fn) {
 	window.addEventListener('mousemove',  fn);
@@ -41,6 +42,7 @@ function dragClear(fn) {
 }
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	props: ['data'],
 	data() {
 		return {

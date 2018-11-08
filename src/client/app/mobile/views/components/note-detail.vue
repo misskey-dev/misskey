@@ -86,6 +86,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import parse from '../../../../../mfm/parse';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
@@ -95,6 +96,7 @@ import { sum } from '../../../../../prelude/array';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XSub
 	},

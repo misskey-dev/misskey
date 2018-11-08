@@ -21,11 +21,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 
-const placeholder = this.$t('choose-reaction');
-
 export default Vue.extend({
+	i18n: i18n('common/views/components/reaction-picker.vue'),
 	props: {
 		note: {
 			type: Object,
@@ -67,7 +67,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			title: placeholder,
+			title: this.$t('choose-reaction'),
 			focus: null
 		};
 	},
@@ -160,7 +160,7 @@ export default Vue.extend({
 		},
 
 		onMouseout(e) {
-			this.title = placeholder;
+			this.title = this.$t('choose-reaction');
 		},
 
 		close() {

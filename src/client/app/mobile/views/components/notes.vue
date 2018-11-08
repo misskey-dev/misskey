@@ -37,10 +37,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const displayLimit = 30;
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	props: {
 		more: {
 			type: Function,

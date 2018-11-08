@@ -294,6 +294,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import X2fa from './settings.2fa.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
@@ -302,6 +303,7 @@ import { url, langs, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		X2fa,
 		XApps,

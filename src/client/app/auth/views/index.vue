@@ -33,9 +33,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XForm from './form.vue';
 
 export default Vue.extend({
+	i18n: i18n('auth/views/index.vue'),
 	components: {
 		XForm
 	},

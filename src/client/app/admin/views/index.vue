@@ -49,7 +49,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../../i18n';
 import { version } from '../../config';
 import XDashboard from "./dashboard.vue";
 import XInstance from "./instance.vue";
@@ -63,6 +64,7 @@ const ua = navigator.userAgent.toLowerCase();
 const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 export default Vue.extend({
+	i18n: i18n('admin/views/index.vue'),
 	components: {
 		XDashboard,
 		XInstance,

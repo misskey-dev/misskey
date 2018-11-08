@@ -27,11 +27,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XCore from './timeline.core.vue';
 import Menu from '../../../common/views/components/menu.vue';
 import MkSettingsWindow from './settings-window.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XCore
 	},

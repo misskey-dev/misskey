@@ -175,10 +175,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { apiUrl, clientVersion as version, codename, langs } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	data() {
 		return {
 			apiUrl,

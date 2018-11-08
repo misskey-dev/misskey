@@ -29,6 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
@@ -41,6 +42,7 @@ import XTwitter from './user.twitter.vue';
 import XGithub from './user.github.vue'; // ?MEM: Don't fix the intentional typo. (XGitHub -> `<x-git-hub>`)
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XHeader,
 		XTimeline,

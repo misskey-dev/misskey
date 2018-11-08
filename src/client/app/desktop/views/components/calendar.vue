@@ -31,6 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const eachMonthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -39,6 +40,7 @@ function isLeapYear(year) {
 }
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	props: {
 		design: {
 			default: 0

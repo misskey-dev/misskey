@@ -61,10 +61,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 import XTl from './home.timeline.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XTl
 	},

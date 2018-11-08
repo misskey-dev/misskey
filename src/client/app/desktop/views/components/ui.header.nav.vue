@@ -39,10 +39,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkMessagingWindow from './messaging-window.vue';
 import MkGameWindow from './game-window.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	data() {
 		return {
 			hasGameInvitations: false,

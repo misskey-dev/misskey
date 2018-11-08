@@ -8,10 +8,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
 import XNotifications from './deck.notifications.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XColumn,
 		XNotifications

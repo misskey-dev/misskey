@@ -12,9 +12,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { lang } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/nav.vue'),
 	data() {
 		return {
 			aboutUrl: `/docs/${lang}/about`,

@@ -64,6 +64,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as age from 's-age';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
@@ -71,6 +72,7 @@ import Menu from '../../../common/views/components/menu.vue';
 import XHome from './user/home.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XHome
 	},

@@ -7,7 +7,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-export default Vue.extend({});
+import i18n from '../../../i18n';
+export default Vue.extend({
+	i18n: i18n('.vue'),});
 </script>
 
 <style lang="stylus" scoped>

@@ -73,10 +73,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { copyright, host } from '../../../config';
 import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	data() {
 		return {
 			meta: null,

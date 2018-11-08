@@ -14,11 +14,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkNotify from './notify.vue';
 import XHeader from './ui.header.vue';
 import XNav from './ui.nav.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XHeader,
 		XNav

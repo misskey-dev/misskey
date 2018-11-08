@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XTlColumn from './deck.tl-column.vue';
 import XNotificationsColumn from './deck.notifications-column.vue';
 import XWidgetsColumn from './deck.widgets-column.vue';
@@ -20,6 +21,7 @@ import XMentionsColumn from './deck.mentions-column.vue';
 import XDirectColumn from './deck.direct-column.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XTlColumn,
 		XNotificationsColumn,

@@ -15,10 +15,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XCalendar,
 		XChart

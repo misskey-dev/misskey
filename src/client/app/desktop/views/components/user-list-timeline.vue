@@ -6,10 +6,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	props: ['list'],
 	data() {
 		return {

@@ -37,12 +37,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XNotes from './home.notes.vue';
 import XPhotos from './home.photos.vue';
 import XFriends from './home.friends.vue';
 import XFollowersYouKnow from './home.followers-you-know.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XNotes,
 		XPhotos,

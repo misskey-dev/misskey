@@ -53,11 +53,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import XFileDetail from './drive.file-detail.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XFolder,
 		XFile,

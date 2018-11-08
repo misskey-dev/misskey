@@ -7,10 +7,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { url } from '../../../config';
 import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	props: ['user'],
 	computed: {
 		popout(): string {

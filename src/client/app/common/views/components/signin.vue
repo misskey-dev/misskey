@@ -11,7 +11,7 @@
 		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>
 	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
-	<ui-button type="submit" :disabled="signing">{{ signing ? this.$t('signing-in') : this.$t('signin') }}</ui-button>
+	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
 	<p style="margin: 8px 0;">{{ $t('or% <a :href="`${apiUrl}/signin/twitter`">%i18n:@signin-with-twitter') }}</a></p>
 	<p style="margin: 8px 0;">{{ $t('or% <a :href="`${apiUrl}/signin/github`">%i18n:@signin-with-github') }}</a></p>
 </form>
@@ -19,9 +19,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/signin.vue'),
 	props: {
 		withAvatar: {
 			type: Boolean,

@@ -8,10 +8,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
 import XMentions from './deck.mentions.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XColumn,
 		XMentions

@@ -20,11 +20,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XGameroom from './reversi.gameroom.vue';
 import XIndex from './reversi.index.vue';
 import Progress from '../../../../scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/games/reversi/reversi.vue'),
 	components: {
 		XGameroom,
 		XIndex

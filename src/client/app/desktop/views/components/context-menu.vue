@@ -6,11 +6,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import contains from '../../../common/scripts/contains';
 import XMenu from './context-menu.menu.vue';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XMenu
 	},

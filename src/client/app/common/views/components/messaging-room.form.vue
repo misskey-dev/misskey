@@ -28,9 +28,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as autosize from 'autosize';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging-room.form.vue'),
 	props: ['user'],
 	data() {
 		return {

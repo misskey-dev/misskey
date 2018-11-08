@@ -115,9 +115,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as maps from '../../../../../../../games/reversi/maps';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/games/reversi/reversi.room.vue'),
 	props: ['game', 'connection'],
 
 	data() {

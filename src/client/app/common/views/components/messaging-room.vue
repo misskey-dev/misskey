@@ -30,11 +30,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { url } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging-room.vue'),
 	components: {
 		XMessage,
 		XForm

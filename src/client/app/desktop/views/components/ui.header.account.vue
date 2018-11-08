@@ -90,6 +90,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkUserListsWindow from './user-lists-window.vue';
 import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
@@ -97,6 +98,7 @@ import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	data() {
 		return {
 			isOpen: false

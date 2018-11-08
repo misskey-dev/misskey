@@ -4,8 +4,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/cw-button.vue'),
 	props: {
 		value: {
 			type: Boolean,

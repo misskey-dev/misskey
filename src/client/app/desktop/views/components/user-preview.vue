@@ -26,10 +26,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	props: {
 		user: {
 			type: [Object, String],

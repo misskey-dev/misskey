@@ -17,9 +17,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XChart from './trends.chart.vue';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/trends.vue'),
 	components: {
 		XChart
 	},

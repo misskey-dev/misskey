@@ -59,6 +59,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkDriveWindow from './drive-window.vue';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
@@ -68,6 +69,7 @@ import contextmenu from '../../api/contextmenu';
 import { url } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XNavFolder,
 		XFolder,

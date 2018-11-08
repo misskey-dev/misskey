@@ -56,6 +56,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import getFace from '../../../common/scripts/get-face';
@@ -68,6 +69,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import { toASCII } from 'punycode';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	components: {
 		XDraggable,
 		MkVisibilityChooser

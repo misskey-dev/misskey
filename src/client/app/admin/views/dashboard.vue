@@ -78,12 +78,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../../i18n';
 import XCpuMemory from "./cpu-memory.vue";
 import XCharts from "./charts.vue";
 import XApLog from "./ap-log.vue";
 
 export default Vue.extend({
+	i18n: i18n('admin/views/dashboard.vue'),
 	components: {
 		XCpuMemory,
 		XCharts,

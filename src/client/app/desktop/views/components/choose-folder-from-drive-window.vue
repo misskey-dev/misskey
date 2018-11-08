@@ -18,7 +18,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('.vue'),
 	props: {
 		title: {
 			default: '<fa :icon="['far', 'folder']"/>%i18n:@choose-prompt%'
