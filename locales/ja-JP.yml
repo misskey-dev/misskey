@@ -334,7 +334,6 @@ common/views/components/messaging.vue:
 
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはありません"
-  more: "もっと読む"
   no-history: "これより過去の履歴はありません"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
@@ -713,7 +712,6 @@ desktop/views/components/messaging-window.vue:
   title: "メッセージ"
 
 desktop/views/components/note-detail.vue:
-  more: "会話をもっと読み込む"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   reposted-by: "{}がRenote"
@@ -735,7 +733,6 @@ desktop/views/components/notes.vue:
   retry: "リトライ"
 
 desktop/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 
 desktop/views/components/post-form.vue:
@@ -1189,9 +1186,6 @@ desktop/views/pages/welcome.vue:
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 
-desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
-
 desktop/views/pages/home-customize.vue:
   title: "ホームのカスタマイズ"
 
@@ -1229,10 +1223,6 @@ desktop/views/pages/user/user.friends.vue:
   title: "よく話すユーザー"
   loading: "読み込み中"
   no-users: "よく話すユーザーはいません"
-
-desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーは凍結されています。"
-  last-used-at: "最終アクセス"
 
 desktop/views/pages/user/user.photos.vue:
   title: "フォト"
@@ -1387,7 +1377,6 @@ mobile/views/components/notes.vue:
   retry: "リトライ"
 
 mobile/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 
 mobile/views/components/post-form.vue:
@@ -1444,9 +1433,6 @@ mobile/views/pages/favorites.vue:
 mobile/views/pages/user-lists.vue:
   title: "リスト"
   enter-list-name: "リスト名を入力してください"
-
-mobile/views/pages/drive.vue:
-  more: "もっと見る"
 
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"

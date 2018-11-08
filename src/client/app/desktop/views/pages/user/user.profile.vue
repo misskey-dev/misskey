@@ -28,7 +28,7 @@ import i18n from '../../../../i18n';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/pages/user/user.profile.vue'),
 	props: ['user'],
 
 	methods: {

@@ -21,7 +21,7 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/pages/user/user.friends.vue'),
 	props: ['user'],
 	data() {
 		return {

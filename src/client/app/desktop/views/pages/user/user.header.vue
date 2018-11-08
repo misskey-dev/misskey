@@ -35,7 +35,7 @@ import i18n from '../../../../i18n';
 import * as age from 's-age';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/pages/user/user.header.vue'),
 	props: ['user'],
 	computed: {
 		style(): any {
