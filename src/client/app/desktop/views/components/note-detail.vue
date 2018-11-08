@@ -60,6 +60,7 @@
 			</div>
 		</div>
 		<footer>
+			<span class="app" v-if="note.app">via <b>{{ note.app.name }}</b></span>
 			<mk-reactions-viewer :note="p"/>
 			<button class="replyButton" @click="reply" title="">
 				<template v-if="p.reply"><fa icon="reply-all"/></template>
@@ -388,6 +389,12 @@ export default Vue.extend({
 
 		> footer
 			font-size 1.2em
+
+			> .app
+				display block
+				font-size 0.8em
+				margin-left 0.5em
+				color var(--noteHeaderInfo)
 
 			> button
 				margin 0 28px 0 0

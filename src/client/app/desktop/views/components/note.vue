@@ -24,7 +24,7 @@
 	<article>
 		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
-			<mk-note-header class="header" :note="appearNote"/>
+			<mk-note-header class="header" :note="appearNote" :mini="mini"/>
 			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
 					<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
@@ -47,6 +47,7 @@
 				</div>
 			</div>
 			<footer>
+				<span class="app" v-if="appearNote.app && mini">via <b>{{ appearNote.app.name }}</b></span>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button class="replyButton" @click="reply()" title="%i18n:@reply%">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
@@ -318,6 +319,12 @@ export default Vue.extend({
 							border-radius 8px
 
 			> footer
+				> .app
+					display block
+					margin-top 0.5em
+					margin-left 0.5em
+					color var(--noteHeaderInfo)
+					font-size 0.8em
 				> button
 					margin 0 28px 0 0
 					padding 0 8px
