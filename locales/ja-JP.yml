@@ -586,7 +586,7 @@ desktop/views/components/calendar.vue:
   go: "クリックして時間遡行"
 
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択中"
+  chosen-files: "{count}ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
   cancel: "キャンセル"
   ok: "決定"

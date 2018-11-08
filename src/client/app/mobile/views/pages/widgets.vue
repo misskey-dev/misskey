@@ -24,8 +24,8 @@
 					<option value="nav">{{ $t('@.widgets.nav') }}</option>
 					<option value="tips">{{ $t('@.widgets.tips') }}</option>
 				</select>
-				<button @click="addWidget">%i18n:add-widget%</button>
-				<p><a @click="hint">%i18n:customization-tips%</a></p>
+				<button @click="addWidget">{{ $t('add-widget') }}</button>
+				<p><a @click="hint">{{ $t('customization-tips') }}</a></p>
 			</header>
 			<x-draggable
 				:list="widgets"

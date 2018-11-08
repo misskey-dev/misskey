@@ -12,8 +12,8 @@
 	</ui-input>
 	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
 	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
-	<p style="margin: 8px 0;">{{ $t('or% <a :href="`${apiUrl}/signin/twitter`">%i18n:@signin-with-twitter') }}</a></p>
-	<p style="margin: 8px 0;">{{ $t('or% <a :href="`${apiUrl}/signin/github`">%i18n:@signin-with-github') }}</a></p>
+	<p style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`">{{ $t('signin-with-twitter') }}</a></p>
+	<p style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`">{{ $t('signin-with-github') }}</a></p>
 </form>
 </template>
 
