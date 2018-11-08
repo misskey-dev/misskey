@@ -4,7 +4,7 @@
 		<mk-note-detail :note="note"/>
 		<footer>
 			<router-link v-if="note.next" :to="note.next"><fa icon="angle-left"/> {{ $t('next') }}</router-link>
-			<router-link v-if="note.prev" :to="note.prev">%i18n:@prev% <fa icon="angle-right"/></router-link>
+			<router-link v-if="note.prev" :to="note.prev">{{ $t('prev') }} <fa icon="angle-right"/></router-link>
 		</footer>
 	</main>
 </mk-ui>
@@ -16,7 +16,7 @@ import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/pages/note.vue'),
 	data() {
 		return {
 			fetching: true,

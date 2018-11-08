@@ -6,7 +6,7 @@
 		@change-selection="onChangeSelection"
 	/>
 	<footer>
-		<button class="upload" :title="$t('title')" @click="upload"><fa icon="upload"/></button>
+		<button class="upload" :title="$t('upload')" @click="upload"><fa icon="upload"/></button>
 		<button class="cancel" @click="close">{{ $t('cancel') }}</button>
 		<button class="ok" @click="ok">{{ $t('ok') }}</button>
 	</footer>
@@ -18,7 +18,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/pages/selectdrive.vue'),
 	data() {
 		return {
 			files: []

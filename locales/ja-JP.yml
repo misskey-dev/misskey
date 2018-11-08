@@ -1201,13 +1201,13 @@ desktop/views/pages/selectdrive.vue:
 
 desktop/views/pages/search.vue:
   not-available: "検索機能はインスタンスの設定で無効になっています。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "{name}で共有"
 
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"

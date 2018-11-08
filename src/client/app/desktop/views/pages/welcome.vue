@@ -17,7 +17,7 @@
 					<h1 v-else><img svg-inline src="../../../../assets/title.svg" :alt="name"></h1>
 
 					<div class="info">
-						<span><b>{{ host }}</b> - <span v-html="this.$t('powered-by-misskey')"></span></span>
+						<span><b>{{ host }}</b> - <span v-html="$t('powered-by-misskey')"></span></span>
 						<span class="stats" v-if="stats">
 							<span><fa icon="user"/> {{ stats.originalUsersCount | number }}</span>
 							<span><fa icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</span>
@@ -25,7 +25,7 @@
 					</div>
 
 					<div class="desc">
-						<span class="desc" v-html="description || '%i18n:common.about%'"></span>
+						<span class="desc" v-html="description || $t('@common.about')"></span>
 						<a class="about" @click="about">{{ $t('about') }}</a>
 					</div>
 
@@ -153,7 +153,7 @@ import { host, copyright } from '../../../config';
 import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/pages/welcome.vue'),
 	data() {
 		return {
 			meta: null,
