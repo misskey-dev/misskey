@@ -25,6 +25,7 @@ common:
   application-authorization: "Aplicativos autorizados"
   close: "Fechar"
   do-not-copy-paste: "Por favor, não digite ou copie o código aqui. A conta pode ser comprometida."
+  load-more: "もっと読み込む"
   BSoD:
     fatal-error: ":( 致命的な問題が発生しました。"
     update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
@@ -36,10 +37,7 @@ common:
   got-it: "Entendi!"
   customization-tips:
     title: "Dicas de personalização"
-    paragraph1: "Personalização da página inicial permite adicionar/remover, arrastar e soltar e reorganizar widgets."
-    paragraph2: "Você pode mudar a visualização de alguns widgets <strong>clicando com o botão <strong>direito.</strong></strong>"
-    paragraph3: "Para apagar um widget, o arraste e solte <strong>na área chamada \"Lixo\"</strong> no cabeçalho."
-    paragraph4: "Para terminar a personalização clique em \"Terminar\" acima e à direita."
+    paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
     gotit: "Entendi!"
   notification:
     file-uploaded: "Arquivo enviado!"
@@ -63,6 +61,7 @@ common:
   month-and-day: "{day}/{month}"
   trash: "Lixo"
   drive: "ドライブ"
+  messaging: "トーク"
   weekday-short:
     sunday: "Dom"
     monday: "Seg"
@@ -135,13 +134,13 @@ common:
     drawn: "Empatado"
     my-turn: "Seu turno"
     opponent-turn: "Turno do oponente"
-    turn-of: "turno de {}"
-    past-turn-of: "turno de {}"
-    won: "{} venceu"
+    turn-of: "{name}のターンです"
+    past-turn-of: "{name}のターン"
+    won: "{name}の勝ち"
     black: "Pretas"
     white: "Brancas"
     total: "Total"
-    this-turn: "Turno de {}"
+    this-turn: "{count}ターン目"
   widgets:
     analog-clock: "Relógio analógico"
     profile: "Perfil"
@@ -160,32 +159,11 @@ common:
     users: "Usuário sugeridos"
     polls: "Enquetes"
     post-form: "Formulário de publicação"
-    messaging: "Mensagens"
     server: "Informações do servidor"
     donation: "Doações"
     nav: "Navegação"
     tips: "Dicas"
     hashtags: "Hashtags"
-  deck:
-    widgets: "Widgets"
-    home: "Início"
-    local: "Local"
-    hybrid: "Social"
-    hashtag: "ハッシュタグ"
-    global: "Global"
-    mentions: "あなた宛て"
-    direct: "ダイレクト投稿"
-    notifications: "Notificações"
-    list: "Listas"
-    swap-left: "Mover para a esquerda"
-    swap-right: "Mover para a direita"
-    swap-up: "Mover para cima"
-    swap-down: "Mover para baixo"
-    remove: "Remover"
-    add-column: "Adicionar coluna"
-    rename: "Renomear"
-    stack-left: "左に重ねる"
-    pop-right: "Acoplar à direita"
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
 auth/views/form.vue:
@@ -326,7 +304,6 @@ common/views/components/messaging.vue:
   no-history: "履歴はありません"
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはありません"
-  more: "もっと読む"
   no-history: "これより過去の履歴はありません"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
@@ -544,12 +521,12 @@ desktop/views/components/activity.vue:
   title: "アクティビティ"
   toggle: "表示を切り替え"
 desktop/views/components/calendar.vue:
-  title: "{1}年 {2}月"
+  title: "{year}年 {month}月"
   prev: "前の月"
   next: "次の月"
   go: "クリックして時間遡行"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択中"
+  chosen-files: "{count}ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
   cancel: "キャンセル"
   ok: "決定"
@@ -595,7 +572,6 @@ desktop/views/components/drive.folder.vue:
     input-new-folder-name: "新しいフォルダ名を入力してください"
 desktop/views/components/drive.vue:
   search: "検索"
-  load-more: "もっと読み込む"
   empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
   empty-drive: "ドライブには何もありません。"
   empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
@@ -653,7 +629,6 @@ desktop/views/components/messaging-room-window.vue:
 desktop/views/components/messaging-window.vue:
   title: "メッセージ"
 desktop/views/components/note-detail.vue:
-  more: "会話をもっと読み込む"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   reposted-by: "{}がRenote"
@@ -671,9 +646,7 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
   retry: "リトライ"
-  load-more: "もっと読み込む"
 desktop/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 desktop/views/components/post-form.vue:
   add-visible-user: "+ユーザーを追加"
@@ -905,7 +878,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
   deck: "デッキ"
-  messaging: "メッセージ"
   game: "ゲーム"
 desktop/views/components/ui.header.notifications.vue:
   title: "通知"
@@ -928,7 +900,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
-  load-more: "もっと"
   fetching: "読み込んでいます"
 desktop/views/components/users-list-item.vue:
   followed: "フォローされています"
@@ -1064,19 +1035,6 @@ admin/views/announcements.vue:
     removed: "削除しました"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "メディア投稿のみ"
-  is-media-view: "メディアビュー"
-  edit: "オプション"
-desktop/views/pages/deck/deck.user-column.vue:
-  posts: "投稿"
-  following: "フォロー"
-  followers: "フォロワー"
-  images: "画像"
-  activity: "アクティビティ"
-  timeline: "タイムライン"
-  pinned-notes: "ピン留めされた投稿"
-  push-to-a-list: "リストに追加"
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"
@@ -1091,8 +1049,6 @@ desktop/views/pages/welcome.vue:
   info: "情報"
 desktop/views/pages/drive.vue:
   title: "Drive Misskey"
-desktop/views/pages/favorites.vue:
-  more: "Carregar mais"
 desktop/views/pages/home-customize.vue:
   title: "Personalizar a página inicial"
 desktop/views/pages/note.vue:
@@ -1105,11 +1061,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "Envie arquivos do seu dispositivo"
 desktop/views/pages/search.vue:
   not-available: "A pesquisa está desligada nas configurações desta instância."
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "{name}で共有"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
   add-user: "ユーザーを追加"
@@ -1122,9 +1078,6 @@ desktop/views/pages/user/user.friends.vue:
   title: "よく話すユーザー"
   loading: "読み込み中"
   no-users: "よく話すユーザーはいません"
-desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーは凍結されています。"
-  last-used-at: "最終アクセス"
 desktop/views/pages/user/user.photos.vue:
   title: "フォト"
   loading: "読み込み中"
@@ -1184,7 +1137,6 @@ mobile/views/components/drive.vue:
   folder-count: "フォルダ"
   count-separator: "、"
   file-count: "ファイル"
-  load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
@@ -1194,8 +1146,6 @@ mobile/views/components/drive.vue:
   root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
-mobile/views/components/drive-file-detail.vue:
-  rename: "名前を変更"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1249,11 +1199,7 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "cat"
-mobile/views/components/notes.vue:
-  failed: "読み込みに失敗しました。"
-  retry: "リトライ"
 mobile/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 mobile/views/components/post-form.vue:
   add-visible-user: "ユーザーを追加"
@@ -1273,14 +1219,12 @@ mobile/views/components/sub-note-content.vue:
   poll: "アンケート"
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
-  load-more: "もっと"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
   adjective: "さん"
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
-  messaging: "メッセージ"
   follow-requests: "フォロー申請"
   search: "検索"
   favorites: "お気に入り"
@@ -1294,24 +1238,20 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
-  load-more: "もっと"
 mobile/views/components/users-list.vue:
   all: "すべて"
   known: "知り合い"
-  load-more: "もっと"
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 mobile/views/pages/user-lists.vue:
   title: "リスト"
   enter-list-name: "リスト名を入力してください"
-mobile/views/pages/drive.vue:
-  more: "もっと見る"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
 mobile/views/pages/followers.vue:
-  followers-of: "{}のフォロワー"
+  followers-of: "{name}のフォロワー"
 mobile/views/pages/following.vue:
-  following-of: "{}のフォロー"
+  following-of: "{name}のフォロー"
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
@@ -1320,7 +1260,7 @@ mobile/views/pages/home.vue:
   mentions: "あなた宛て"
   messages: "メッセージ"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
 mobile/views/pages/widgets.vue:
@@ -1331,11 +1271,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
-mobile/views/pages/messaging.vue:
-  messaging: "メッセージ"
-mobile/views/pages/messaging-room.vue:
-  messaging: "メッセージ"
+  share-with: "{name}で共有"
 mobile/views/pages/received-follow-requests.vue:
   title: "フォロー申請"
   accept: "承認"
@@ -1351,8 +1287,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/search.vue:
   search: "Pesquisar"
-  empty: "「{}」に関する投稿は見つかりませんでした。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
 mobile/views/pages/settings.vue:
@@ -1433,17 +1368,46 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "Seguidores que você conhece"
   last-used-at: "Ativo pela última vez"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "Carregando"
   no-users: "知り合いのユーザーはいません"
 mobile/views/pages/user/home.friends.vue:
-  loading: "Carregando"
   no-users: "よく会話するユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
-  loading: "Carregando"
   no-notes: "Nenhuma mensagem"
 mobile/views/pages/user/home.photos.vue:
-  loading: "Carregando"
   no-photos: "Sem fotos"
+deck:
+  widgets: "ウィジェット"
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  hashtag: "ハッシュタグ"
+  global: "グローバル"
+  mentions: "あなた宛て"
+  direct: "ダイレクト投稿"
+  notifications: "通知"
+  list: "リスト"
+  swap-left: "左に移動"
+  swap-right: "右に移動"
+  swap-up: "上に移動"
+  swap-down: "下に移動"
+  remove: "カラムを削除"
+  add-column: "カラムを追加"
+  rename: "名前を変更"
+  stack-left: "左に重ねる"
+  pop-right: "右に出す"
+deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+  edit: "オプション"
+deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
+  pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "Edite esta página no GitHub!"
