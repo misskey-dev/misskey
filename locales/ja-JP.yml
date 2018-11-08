@@ -146,13 +146,13 @@ common:
     drawn: "引き分け"
     my-turn: "あなたのターンです"
     opponent-turn: "相手のターンです"
-    turn-of: "{}のターンです"
-    past-turn-of: "{}のターン"
-    won: "{}の勝ち"
+    turn-of: "{name}のターンです"
+    past-turn-of: "{name}のターン"
+    won: "{name}の勝ち"
     black: "黒"
     white: "白"
     total: "合計"
-    this-turn: "{}ターン目"
+    this-turn: "{count}ターン目"
 
   widgets:
     analog-clock: "アナログ時計"
