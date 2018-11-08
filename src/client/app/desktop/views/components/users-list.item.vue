@@ -2,6 +2,7 @@
 <div class="zvdbznxvfixtmujpsigoccczftvpiwqh">
 	<div class="banner" :style="bannerStyle"></div>
 	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+	<mk-follow-button :user="user" class="follow"/>
 	<div class="body">
 		<router-link :to="user | userPage" class="name">{{ user | userName }}</router-link>
 		<span class="username">@{{ user | acct }}</span>
@@ -9,7 +10,6 @@
 			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 		</div>
 		<p class="followed" v-if="user.isFollowed">%i18n:@followed%</p>
-		<mk-follow-button :user="user" :size="'big'"/>
 	</div>
 </div>
 </template>
@@ -57,6 +57,11 @@ export default Vue.extend({
 		border-radius 100%
 		border solid 4px $bg
 
+	> .follow
+		position absolute
+		top 16px
+		right 16px
+
 	> .body
 		padding 4px 32px 32px 32px
 
@@ -75,7 +80,7 @@ export default Vue.extend({
 			margin 16px 0
 
 		> .followed
-			margin 0 0 16px 0
+			margin 0
 			padding 0
 			line-height 24px
 			font-size 0.8em
