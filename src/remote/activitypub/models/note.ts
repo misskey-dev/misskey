@@ -82,7 +82,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 	//#endergion
 
-	const mentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
+	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
 
 	// 添付ファイル
 	// TODO: attachmentは必ずしもImageではない
@@ -119,7 +119,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		geo: undefined,
 		visibility,
 		visibleUsers,
-		mentions,
+		apMentions,
 		uri: note.id
 	}, silent);
 }
@@ -189,9 +189,9 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	uris = uris.filter(x => x !== `${actor.uri}/followers`);
 	uris = unique(uris);
 
-	return await Promise.all(
-		uris.map(async uri => {
-			return await resolvePerson(uri, null, resolver);
-		})
+	const users = await Promise.all(
+		uris.map(async uri => await resolvePerson(uri, null, resolver).catch(() => null))
 	);
+
+	return users.filter(x => x != null);
 }
