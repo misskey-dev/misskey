@@ -6,9 +6,6 @@ Feature suggestions and bug reports are filed in https://github.com/syuilo/missk
 Before creating a new issue, please search existing issues to avoid duplication.
 If you find the existing issue, please add your reaction or comment to the issue.
 
-## Internationalization (i18n)
-Please see [Translation guide](./docs/translate.en.md).
-
 ## Localization (l10n)
 Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
 
