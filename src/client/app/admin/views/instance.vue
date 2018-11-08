@@ -113,7 +113,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.maintainerName = meta.maintainer.name;
 			this.maintainerEmail = meta.maintainer.email;
 			this.bannerUrl = meta.bannerUrl;
@@ -139,7 +139,7 @@ export default Vue.extend({
 
 	methods: {
 		invite() {
-			(this as any).api('admin/invite').then(x => {
+			this.$root.api('admin/invite').then(x => {
 				this.inviteCode = x.code;
 			}).catch(e => {
 				this.$swal({
@@ -150,7 +150,7 @@ export default Vue.extend({
 		},
 
 		updateMeta() {
-			(this as any).api('admin/update-meta', {
+			this.$root.api('admin/update-meta', {
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
 				disableRegistration: this.disableRegistration,

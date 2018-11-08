@@ -169,7 +169,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 			this.name = meta.name;
 			this.description = meta.description;
@@ -177,7 +177,7 @@ export default Vue.extend({
 			this.banner = meta.bannerUrl;
 		});
 
-		(this as any).api('stats').then(stats => {
+		this.$root.api('stats').then(stats => {
 			this.stats = stats;
 		});
 
@@ -187,7 +187,7 @@ export default Vue.extend({
 			'image/gif'
 		];
 
-		(this as any).api('notes/local-timeline', {
+		this.$root.api('notes/local-timeline', {
 			fileType: image,
 			excludeNsfw: true,
 			limit: 6

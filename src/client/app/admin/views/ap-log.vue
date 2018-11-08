@@ -33,7 +33,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('apLog');
+		this.connection = this.$root.stream.useSharedConnection('apLog');
 		this.connection.on('log', this.onLog);
 		this.connection.on('logs', this.onLogs);
 		this.connection.send('requestLog', {

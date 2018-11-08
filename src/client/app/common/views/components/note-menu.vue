@@ -91,16 +91,16 @@ export default Vue.extend({
 		},
 
 		pin() {
-			(this as any).api('i/pin', {
+			this.$root.api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
-				(this as any).os.new(Ok);
+				this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},
 
 		unpin() {
-			(this as any).api('i/unpin', {
+			this.$root.api('i/unpin', {
 				noteId: this.note.id
 			}).then(() => {
 				this.destroyDom();
@@ -109,7 +109,7 @@ export default Vue.extend({
 
 		del() {
 			if (!window.confirm(this.$t('delete-confirm'))) return;
-			(this as any).api('notes/delete', {
+			this.$root.api('notes/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.destroyDom();
@@ -117,19 +117,19 @@ export default Vue.extend({
 		},
 
 		favorite() {
-			(this as any).api('notes/favorites/create', {
+			this.$root.api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
-				(this as any).os.new(Ok);
+				this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},
 
 		unfavorite() {
-			(this as any).api('notes/favorites/delete', {
+			this.$root.api('notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
-				(this as any).os.new(Ok);
+				this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},

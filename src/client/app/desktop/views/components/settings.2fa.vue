@@ -39,7 +39,7 @@ export default Vue.extend({
 				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
-				(this as any).api('i/2fa/register', {
+				this.$root.api('i/2fa/register', {
 					password: password
 				}).then(data => {
 					this.data = data;
@@ -52,7 +52,7 @@ export default Vue.extend({
 				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
-				(this as any).api('i/2fa/unregister', {
+				this.$root.api('i/2fa/unregister', {
 					password: password
 				}).then(() => {
 					(this as any).apis.notify(this.$t('unregistered'));
@@ -62,7 +62,7 @@ export default Vue.extend({
 		},
 
 		submit() {
-			(this as any).api('i/2fa/done', {
+			this.$root.api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
 				(this as any).apis.notify(this.$t('success'));

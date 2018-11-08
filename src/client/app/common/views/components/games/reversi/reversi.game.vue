@@ -291,7 +291,7 @@ export default Vue.extend({
 		},
 
 		surrender() {
-			(this as any).api('games/reversi/games/surrender', {
+			this.$root.api('games/reversi/games/surrender', {
 				gameId: this.game.id
 			});
 		},

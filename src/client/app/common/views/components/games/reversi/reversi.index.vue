@@ -67,22 +67,22 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('gamesReversi');
+			this.connection = this.$root.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('invited', this.onInvited);
 
-			(this as any).api('games/reversi/games', {
+			this.$root.api('games/reversi/games', {
 				my: true
 			}).then(games => {
 				this.myGames = games;
 			});
 
-			(this as any).api('games/reversi/invitations').then(invitations => {
+			this.$root.api('games/reversi/invitations').then(invitations => {
 				this.invitations = this.invitations.concat(invitations);
 			});
 		}
 
-		(this as any).api('games/reversi/games').then(games => {
+		this.$root.api('games/reversi/games').then(games => {
 			this.games = games;
 			this.gamesFetching = false;
 		});
@@ -103,10 +103,10 @@ export default Vue.extend({
 			(this as any).apis.input({
 				title: this.$t('enter-username')
 			}).then(username => {
-				(this as any).api('users/show', {
+				this.$root.api('users/show', {
 					username
 				}).then(user => {
-					(this as any).api('games/reversi/match', {
+					this.$root.api('games/reversi/match', {
 						userId: user.id
 					}).then(res => {
 						if (res == null) {
@@ -120,7 +120,7 @@ export default Vue.extend({
 		},
 
 		accept(invitation) {
-			(this as any).api('games/reversi/match', {
+			this.$root.api('games/reversi/match', {
 				userId: invitation.parent.id
 			}).then(game => {
 				if (game) {

@@ -30,7 +30,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('my/apps').then(apps => {
+		this.$root.api('my/apps').then(apps => {
 			this.apps = apps;
 			this.fetching = false;
 		});

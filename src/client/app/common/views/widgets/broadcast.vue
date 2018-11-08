@@ -46,7 +46,7 @@ export default define({
 		};
 	},
 	mounted() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.announcements = meta.broadcasts;
 			this.fetching = false;
 		});

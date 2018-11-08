@@ -22,18 +22,18 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.hidedTags = meta.hidedTags.join('\n');
 		});
 	},
 	methods: {
 		save() {
-			(this as any).api('admin/update-meta', {
+			this.$root.api('admin/update-meta', {
 				hidedTags: this.hidedTags.split('\n')
 			}).then(() => {
-				//(this as any).os.apis.dialog({ text: `Saved` });
+				//this.$root.os.apis.dialog({ text: `Saved` });
 			}).catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//this.$root.os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}

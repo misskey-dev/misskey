@@ -22,7 +22,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/lists/list').then(lists => {
+		this.$root.api('users/lists/list').then(lists => {
 			this.fetching = false;
 			this.lists = lists;
 		});
@@ -32,7 +32,7 @@ export default Vue.extend({
 			(this as any).apis.input({
 				title: this.$t('list-name'),
 			}).then(async title => {
-				const list = await (this as any).api('users/lists/create', {
+				const list = await this.$root.api('users/lists/create', {
 					title
 				});
 

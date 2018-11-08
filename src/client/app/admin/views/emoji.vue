@@ -68,7 +68,7 @@ export default Vue.extend({
 
 	methods: {
 		add() {
-			(this as any).api('admin/emoji/add', {
+			this.$root.api('admin/emoji/add', {
 				name: this.name,
 				url: this.url,
 				aliases: this.aliases.split(' ').filter(x => x.length > 0)
@@ -87,7 +87,7 @@ export default Vue.extend({
 		},
 
 		fetchEmojis() {
-			(this as any).api('admin/emoji/list').then(emojis => {
+			this.$root.api('admin/emoji/list').then(emojis => {
 				emojis.reverse();
 				emojis.forEach(e => e.aliases = (e.aliases || []).join(' '));
 				this.emojis = emojis;
@@ -95,7 +95,7 @@ export default Vue.extend({
 		},
 
 		updateEmoji(emoji) {
-			(this as any).api('admin/emoji/update', {
+			this.$root.api('admin/emoji/update', {
 				id: emoji.id,
 				name: emoji.name,
 				url: emoji.url,
@@ -121,7 +121,7 @@ export default Vue.extend({
 			}).then(res => {
 				if (!res.value) return;
 
-				(this as any).api('admin/emoji/remove', {
+				this.$root.api('admin/emoji/remove', {
 					id: emoji.id
 				}).then(() => {
 					this.$swal({

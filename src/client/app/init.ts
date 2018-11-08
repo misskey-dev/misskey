@@ -270,23 +270,6 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				}
 			}, { passive: true });
 
-			Vue.mixin({
-				data() {
-					return {
-						//os,
-						os: {
-							stream: os.stream,
-							getMeta: os.getMeta,
-							getMetaSync: os.getMetaSync,
-							new: os.new,
-							windows: os.windows
-						},
-						api: os.api,
-						apis: os.apis
-					};
-				}
-			});
-
 			const app = new Vue({
 				i18n: new VueI18n({
 					sync: false,
@@ -296,6 +279,21 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 					}
 				}),
 				store: os.store,
+				data() {
+					return {
+						os: {
+							windows: os.windows
+						},
+						stream: os.stream,
+						apis: os.apis
+					};
+				},
+				methods: {
+					api: os.api,
+					getMeta: os.getMeta,
+					getMetaSync: os.getMetaSync,
+					new: os.new,
+				},
 				router,
 				render: createEl => createEl(App)
 			});
@@ -308,11 +306,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			return [app, os] as [Vue, MiOS];
 		};
 
-		try {
-			callback(launch);
-		} catch (e) {
-			panic(e);
-		}
+		callback(launch);
 
 		//#region 更新チェック
 		const preventUpdate = os.store.state.device.preventUpdate;
@@ -324,25 +318,3 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 		//#endregion
 	});
 };
-
-// BSoD
-function panic(e) {
-	console.error(e);
-
-	// Display blue screen
-	document.documentElement.style.background = '#1269e2';
-	document.body.innerHTML =
-		'<div id="error">'
-			+ '<h1>%i18n.common.BSoD.fatal-error%</h1>'
-			+ '<p>%i18n.common.BSoD.update-browser-os%</p>'
-			+ '<hr>'
-			+ `<p>%i18n.common.BSoD.error-code%: ${e.toString()}</p>`
-			+ `<p>%i18n.common.BSoD.browser-version%: ${navigator.userAgent}</p>`
-			+ `<p>%i18n.common.BSoD.client-version%: ${version}</p>`
-			+ '<hr>'
-			+ '<p>%i18n.common.BSoD.email-support%</p>'
-			+ '<p>%i18n.common.BSoD.thanks%</p>'
-		+ '</div>';
-
-	// TODO: Report the bug
-}

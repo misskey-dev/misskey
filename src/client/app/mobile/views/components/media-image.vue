@@ -47,7 +47,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onClick() {
-			(this as any).os.new(ImageViewer, {
+			this.$root.new(ImageViewer, {
 				image: this.image
 			});
 		}

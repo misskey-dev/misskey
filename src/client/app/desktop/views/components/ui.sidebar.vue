@@ -108,7 +108,7 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
@@ -131,11 +131,11 @@ export default Vue.extend({
 		},
 
 		messaging() {
-			(this as any).os.new(MkMessagingWindow);
+			this.$root.new(MkMessagingWindow);
 		},
 
 		game() {
-			(this as any).os.new(MkGameWindow);
+			this.$root.new(MkGameWindow);
 		},
 
 		post() {
@@ -143,26 +143,26 @@ export default Vue.extend({
 		},
 
 		drive() {
-			(this as any).os.new(MkDriveWindow);
+			this.$root.new(MkDriveWindow);
 		},
 
 		list() {
-			const w = (this as any).os.new(MkUserListsWindow);
+			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', list => {
 				this.$router.push(`i/lists/${ list.id }`);
 			});
 		},
 
 		followRequests() {
-			(this as any).os.new(MkFollowRequestsWindow);
+			this.$root.new(MkFollowRequestsWindow);
 		},
 
 		settings() {
-			(this as any).os.new(MkSettingsWindow);
+			this.$root.new(MkSettingsWindow);
 		},
 
 		signout() {
-			(this as any).os.signout();
+			this.$root.os.signout();
 		},
 
 		notifications() {

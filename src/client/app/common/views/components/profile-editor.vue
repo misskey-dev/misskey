@@ -95,7 +95,7 @@ export default Vue.extend({
 	computed: {
 		alwaysMarkNsfw: {
 			get() { return this.$store.state.i.settings.alwaysMarkNsfw; },
-			set(value) { (this as any).api('i/update', { alwaysMarkNsfw: value }); }
+			set(value) { this.$root.api('i/update', { alwaysMarkNsfw: value }); }
 		},
 	},
 
@@ -161,7 +161,7 @@ export default Vue.extend({
 		save(notify) {
 			this.saving = true;
 
-			(this as any).api('i/update', {
+			this.$root.api('i/update', {
 				name: this.name || null,
 				location: this.location || null,
 				description: this.description || null,

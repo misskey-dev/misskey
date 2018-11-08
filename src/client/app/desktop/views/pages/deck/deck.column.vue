@@ -234,7 +234,7 @@ export default Vue.extend({
 		},
 
 		showMenu() {
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.menu,
 				compact: false,
 				items: this.getMenu()

@@ -33,14 +33,14 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = (this as any).os.instanceName;
+		document.title = this.$root.os.instanceName;
 	},
 	methods: {
 		fetch() {
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('notes/show', {
+			this.$root.api('notes/show', {
 				noteId: this.$route.params.note
 			}).then(note => {
 				this.note = note;

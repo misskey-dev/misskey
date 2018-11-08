@@ -45,18 +45,18 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `${this.$t('followers-of').replace('{}', this.name)} | ${(this as any).os.instanceName}`;
+				document.title = `${this.$t('followers-of').replace('{}', this.name)} | ${this.$root.os.instanceName}`;
 			});
 		},
 		onLoaded() {
 			Progress.done();
 		},
 		fetchUsers(iknow, limit, cursor, cb) {
-			(this as any).api('users/following', {
+			this.$root.api('users/following', {
 				userId: this.user.id,
 				iknow: iknow,
 				limit: limit,

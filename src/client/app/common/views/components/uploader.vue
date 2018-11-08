@@ -36,7 +36,7 @@ export default Vue.extend({
 				const data = new FormData();
 				data.append('md5', getMD5(fileData));
 
-				(this as any).api('drive/files/check_existence', {
+				this.$root.api('drive/files/check_existence', {
 					md5: getMD5(fileData)
 				}).then(resp => {
 					resolve(resp.file);

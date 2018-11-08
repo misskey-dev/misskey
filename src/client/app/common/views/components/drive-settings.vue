@@ -44,7 +44,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this as any).api('drive').then(info => {
+		this.$root.api('drive').then(info => {
 			this.capacity = info.capacity;
 			this.usage = info.usage;
 			this.fetching = false;
@@ -57,7 +57,7 @@ export default Vue.extend({
 
 	methods: {
 		renderChart() {
-			(this as any).api('charts/user/drive', {
+			this.$root.api('charts/user/drive', {
 				userId: this.$store.state.i.id,
 				span: 'day',
 				limit: 21

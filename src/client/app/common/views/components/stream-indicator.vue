@@ -24,12 +24,12 @@ export default Vue.extend({
 	i18n: i18n('common/views/components/stream-indicator.vue'),
 	computed: {
 		stream() {
-			return (this as any).os.stream;
+			return this.$root.stream;
 		}
 	},
 	created() {
-		(this as any).os.stream.on('_connected_', this.onConnected);
-		(this as any).os.stream.on('_disconnected_', this.onDisconnected);
+		this.$root.stream.on('_connected_', this.onConnected);
+		this.$root.stream.on('_disconnected_', this.onDisconnected);
 
 		this.$nextTick(() => {
 			if (this.stream.state == 'connected') {
@@ -38,8 +38,8 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		(this as any).os.stream.off('_connected_', this.onConnected);
-		(this as any).os.stream.off('_disconnected_', this.onDisconnected);
+		this.$root.stream.off('_connected_', this.onConnected);
+		this.$root.stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {
 		onConnected() {

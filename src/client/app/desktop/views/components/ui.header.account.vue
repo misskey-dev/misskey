@@ -137,25 +137,25 @@ export default Vue.extend({
 		},
 		drive() {
 			this.close();
-			(this as any).os.new(MkDriveWindow);
+			this.$root.new(MkDriveWindow);
 		},
 		list() {
 			this.close();
-			const w = (this as any).os.new(MkUserListsWindow);
+			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', list => {
 				this.$router.push(`i/lists/${ list.id }`);
 			});
 		},
 		followRequests() {
 			this.close();
-			(this as any).os.new(MkFollowRequestsWindow);
+			this.$root.new(MkFollowRequestsWindow);
 		},
 		settings() {
 			this.close();
-			(this as any).os.new(MkSettingsWindow);
+			this.$root.new(MkSettingsWindow);
 		},
 		signout() {
-			(this as any).os.signout();
+			this.$root.os.signout();
 		},
 		dark() {
 			this.$store.commit('device/set', {

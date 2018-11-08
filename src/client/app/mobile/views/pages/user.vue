@@ -105,12 +105,12 @@ export default Vue.extend({
 		fetch() {
 			Progress.start();
 
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 
 				Progress.done();
-				document.title = `${Vue.filter('userName')(this.user)} | ${(this as any).os.instanceName}`;
+				document.title = `${Vue.filter('userName')(this.user)} | ${this.$root.os.instanceName}`;
 			});
 		},
 
@@ -120,7 +120,7 @@ export default Vue.extend({
 				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
 				action: () => {
 					if (this.user.isMuted) {
-						(this as any).api('mute/delete', {
+						this.$root.api('mute/delete', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isMuted = false;
@@ -128,7 +128,7 @@ export default Vue.extend({
 							alert('error');
 						});
 					} else {
-						(this as any).api('mute/create', {
+						this.$root.api('mute/create', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isMuted = true;
@@ -142,7 +142,7 @@ export default Vue.extend({
 				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
 				action: () => {
 					if (this.user.isBlocking) {
-						(this as any).api('blocking/delete', {
+						this.$root.api('blocking/delete', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isBlocking = false;
@@ -150,7 +150,7 @@ export default Vue.extend({
 							alert('error');
 						});
 					} else {
-						(this as any).api('blocking/create', {
+						this.$root.api('blocking/create', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isBlocking = true;
@@ -161,7 +161,7 @@ export default Vue.extend({
 				}
 			}];
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.menu,
 				compact: true,
 				items: menu

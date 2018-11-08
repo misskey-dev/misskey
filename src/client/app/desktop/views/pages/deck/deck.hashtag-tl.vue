@@ -47,7 +47,7 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.connection) this.connection.close();
-		this.connection = (this as any).os.stream.connectToChannel('hashtag', {
+		this.connection = this.$root.stream.connectToChannel('hashtag', {
 			q: this.tagTl.query
 		});
 		this.connection.on('note', this.onNote);
@@ -64,7 +64,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/search_by_tag', {
+				this.$root.api('notes/search_by_tag', {
 					limit: fetchLimit + 1,
 					withFiles: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -86,7 +86,7 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('notes/search_by_tag', {
+			const promise = this.$root.api('notes/search_by_tag', {
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
 				withFiles: this.mediaOnly,

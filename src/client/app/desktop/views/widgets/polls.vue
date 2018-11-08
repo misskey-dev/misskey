@@ -47,7 +47,7 @@ export default define({
 			this.fetching = true;
 			this.poll = null;
 
-			(this as any).api('notes/polls/recommendation', {
+			this.$root.api('notes/polls/recommendation', {
 				limit: 1,
 				offset: this.offset
 			}).then(notes => {

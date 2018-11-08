@@ -48,7 +48,7 @@ export default Vue.extend({
 	},
 	methods: {
 		cancel() {
-			(this as any).api('auth/deny', {
+			this.$root.api('auth/deny', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('denied');
@@ -56,7 +56,7 @@ export default Vue.extend({
 		},
 
 		accept() {
-			(this as any).api('auth/accept', {
+			this.$root.api('auth/accept', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('accepted');

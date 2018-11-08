@@ -43,7 +43,7 @@ export default Vue.extend({
 		this.$el.style.paddingTop = this.$store.state.uiHeaderHeight + 'px';
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('notification', this.onNotification);
 		}
@@ -58,11 +58,11 @@ export default Vue.extend({
 	methods: {
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			(this as any).os.stream.send('readNotification', {
+			this.$root.stream.send('readNotification', {
 				id: notification.id
 			});
 
-			(this as any).os.new(MkNotify, {
+			this.$root.new(MkNotify, {
 				notification
 			});
 		}

@@ -53,7 +53,7 @@ export default Vue.extend({
 				start = videoTag.currentTime
 				videoTag.pause()
 			}
-			(this as any).os.new(MkMediaVideoDialog, {
+			this.$root.new(MkMediaVideoDialog, {
 				video: this.video,
 				start,
 			})

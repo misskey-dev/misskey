@@ -33,7 +33,7 @@ export default Vue.extend({
 
 	methods: {
 		stalk() {
-			(this as any).api('following/stalk', {
+			this.$root.api('following/stalk', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isStalking = true;
@@ -43,7 +43,7 @@ export default Vue.extend({
 		},
 
 		unstalk() {
-			(this as any).api('following/unstalk', {
+			this.$root.api('following/unstalk', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isStalking = false;
@@ -53,7 +53,7 @@ export default Vue.extend({
 		},
 
 		mute() {
-			(this as any).api('mute/create', {
+			this.$root.api('mute/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = true;
@@ -63,7 +63,7 @@ export default Vue.extend({
 		},
 
 		unmute() {
-			(this as any).api('mute/delete', {
+			this.$root.api('mute/delete', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = false;
@@ -74,7 +74,7 @@ export default Vue.extend({
 
 		block() {
 			if (!window.confirm(this.$t('block-confirm'))) return;
-			(this as any).api('blocking/create', {
+			this.$root.api('blocking/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isBlocking = true;
@@ -84,7 +84,7 @@ export default Vue.extend({
 		},
 
 		unblock() {
-			(this as any).api('blocking/delete', {
+			this.$root.api('blocking/delete', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isBlocking = false;
@@ -94,10 +94,10 @@ export default Vue.extend({
 		},
 
 		list() {
-			const w = (this as any).os.new(MkUserListsWindow);
+			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', async list => {
 				w.close();
-				await (this as any).api('users/lists/push', {
+				await this.$root.api('users/lists/push', {
 					listId: list.id,
 					userId: this.user.id
 				});

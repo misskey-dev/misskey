@@ -20,7 +20,7 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	}

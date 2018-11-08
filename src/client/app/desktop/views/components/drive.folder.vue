@@ -132,7 +132,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				(this as any).api('drive/files/update', {
+				this.$root.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder.id
 				});
@@ -148,7 +148,7 @@ export default Vue.extend({
 				if (folder.id == this.folder.id) return;
 
 				this.browser.removeFolder(folder.id);
-				(this as any).api('drive/folders/update', {
+				this.$root.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder.id
 				}).then(() => {
@@ -201,7 +201,7 @@ export default Vue.extend({
 				placeholder: this.$t('contextmenu.input-new-folder-name'),
 				default: this.folder.name
 			}).then(name => {
-				(this as any).api('drive/folders/update', {
+				this.$root.api('drive/folders/update', {
 					folderId: this.folder.id,
 					name: name
 				});
@@ -209,7 +209,7 @@ export default Vue.extend({
 		},
 
 		deleteFolder() {
-			(this as any).api('drive/folders/delete', {
+			this.$root.api('drive/folders/delete', {
 				folderId: this.folder.id
 			});
 		}

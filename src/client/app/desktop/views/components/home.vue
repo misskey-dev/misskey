@@ -168,7 +168,7 @@ export default Vue.extend({
 
 	created() {
 		if (this.$store.state.settings.home == null) {
-			this.api('i/update_home', {
+			this.$root.api('i/update_home', {
 				home: _defaultDesktopHomeWidgets
 			}).then(() => {
 				this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
@@ -177,7 +177,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 	},
 
 	beforeDestroy() {
@@ -227,7 +227,7 @@ export default Vue.extend({
 			this.$store.commit('settings/setHome', left.concat(right));
 			left.forEach(w => w.place = 'left');
 			right.forEach(w => w.place = 'right');
-			(this as any).api('i/update_home', {
+			this.$root.api('i/update_home', {
 				home: this.home
 			});
 		},

@@ -101,7 +101,7 @@ export default define({
 		fetch() {
 			this.fetching = true;
 
-			(this as any).api('drive/files', {
+			this.$root.api('drive/files', {
 				folderId: this.props.folder,
 				type: 'image/*',
 				limit: 100

@@ -54,9 +54,9 @@ export default Vue.extend({
 		fetch() {
 			this.fetching = true;
 			Progress.start();
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
-				(this as any).api(this.endpoint, {
+				this.$root.api(this.endpoint, {
 					userId: this.user.id,
 					iknow: false,
 					limit: limit
@@ -70,7 +70,7 @@ export default Vue.extend({
 		},
 
 		fetchMore() {
-			(this as any).api(this.endpoint, {
+			this.$root.api(this.endpoint, {
 				userId: this.user.id,
 				iknow: false,
 				limit: limit,

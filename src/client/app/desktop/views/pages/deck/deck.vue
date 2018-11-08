@@ -131,7 +131,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = (this as any).os.instanceName;
+		document.title = this.$root.os.instanceName;
 		document.documentElement.style.overflow = 'hidden';
 	},
 
@@ -180,7 +180,7 @@ export default Vue.extend({
 		},
 
 		add() {
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.add,
 				compact: true,
 				items: [{
@@ -241,7 +241,7 @@ export default Vue.extend({
 					icon: 'list',
 					text: this.$t('@deck.list'),
 					action: () => {
-						const w = (this as any).os.new(MkUserListsWindow);
+						const w = this.$root.new(MkUserListsWindow);
 						w.$once('choosen', list => {
 							this.$store.dispatch('settings/addDeckColumn', {
 								id: uuid(),

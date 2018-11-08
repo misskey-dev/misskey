@@ -105,17 +105,17 @@ export default Vue.extend({
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([Promise.all([
-			(this as any).api('charts/federation', { limit: limit, span: 'hour' }),
-			(this as any).api('charts/users', { limit: limit, span: 'hour' }),
-			(this as any).api('charts/notes', { limit: limit, span: 'hour' }),
-			(this as any).api('charts/drive', { limit: limit, span: 'hour' }),
-			(this as any).api('charts/network', { limit: limit, span: 'hour' })
+			this.$root.api('charts/federation', { limit: limit, span: 'hour' }),
+			this.$root.api('charts/users', { limit: limit, span: 'hour' }),
+			this.$root.api('charts/notes', { limit: limit, span: 'hour' }),
+			this.$root.api('charts/drive', { limit: limit, span: 'hour' }),
+			this.$root.api('charts/network', { limit: limit, span: 'hour' })
 		]), Promise.all([
-			(this as any).api('charts/federation', { limit: limit, span: 'day' }),
-			(this as any).api('charts/users', { limit: limit, span: 'day' }),
-			(this as any).api('charts/notes', { limit: limit, span: 'day' }),
-			(this as any).api('charts/drive', { limit: limit, span: 'day' }),
-			(this as any).api('charts/network', { limit: limit, span: 'day' })
+			this.$root.api('charts/federation', { limit: limit, span: 'day' }),
+			this.$root.api('charts/users', { limit: limit, span: 'day' }),
+			this.$root.api('charts/notes', { limit: limit, span: 'day' }),
+			this.$root.api('charts/drive', { limit: limit, span: 'day' }),
+			this.$root.api('charts/network', { limit: limit, span: 'day' })
 		])]);
 
 		const chart = {

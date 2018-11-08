@@ -24,12 +24,12 @@ export default define({
 	i18n: i18n('desktop/views/widgets/messaging.vue'),
 	methods: {
 		navigate(user) {
-			(this as any).os.new(MkMessagingRoomWindow, {
+			this.$root.new(MkMessagingRoomWindow, {
 				user: user
 			});
 		},
 		add() {
-			(this as any).os.new(MkMessagingWindow);
+			this.$root.new(MkMessagingWindow);
 		},
 		func() {
 			if (this.props.design == 1) {

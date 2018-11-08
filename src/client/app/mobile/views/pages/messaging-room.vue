@@ -45,11 +45,11 @@ export default Vue.extend({
 	methods: {
 		fetch() {
 			this.fetching = true;
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `${this.$t('@.messaging')}: ${Vue.filter('userName')(this.user)} | ${(this as any).os.instanceName}`;
+				document.title = `${this.$t('@.messaging')}: ${Vue.filter('userName')(this.user)} | ${this.$root.os.instanceName}`;
 			});
 		}
 	}

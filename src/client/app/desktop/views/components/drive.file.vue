@@ -155,7 +155,7 @@ export default Vue.extend({
 				default: this.file.name,
 				allowEmpty: false
 			}).then(name => {
-				(this as any).api('drive/files/update', {
+				this.$root.api('drive/files/update', {
 					fileId: this.file.id,
 					name: name
 				});
@@ -163,7 +163,7 @@ export default Vue.extend({
 		},
 
 		toggleSensitive() {
-			(this as any).api('drive/files/update', {
+			this.$root.api('drive/files/update', {
 				fileId: this.file.id,
 				isSensitive: !this.file.isSensitive
 			});
@@ -193,7 +193,7 @@ export default Vue.extend({
 		},
 
 		deleteFile() {
-			(this as any).api('drive/files/delete', {
+			this.$root.api('drive/files/delete', {
 				fileId: this.file.id
 			});
 		}

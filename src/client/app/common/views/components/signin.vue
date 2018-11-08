@@ -44,7 +44,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onUsernameChange() {
-			(this as any).api('users/show', {
+			this.$root.api('users/show', {
 				username: this.username
 			}).then(user => {
 				this.user = user;
@@ -55,7 +55,7 @@ export default Vue.extend({
 		onSubmit() {
 			this.signing = true;
 
-			(this as any).api('signin', {
+			this.$root.api('signin', {
 				username: this.username,
 				password: this.password,
 				token: this.user && this.user.twoFactorEnabled ? this.token : undefined

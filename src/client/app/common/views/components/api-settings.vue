@@ -54,7 +54,7 @@ export default Vue.extend({
 				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
-				(this as any).api('i/regenerate_token', {
+				this.$root.api('i/regenerate_token', {
 					password: password
 				});
 			});
@@ -62,7 +62,7 @@ export default Vue.extend({
 
 		send() {
 			this.sending = true;
-			(this as any).api(this.endpoint, JSON5.parse(this.body)).then(res => {
+			this.$root.api(this.endpoint, JSON5.parse(this.body)).then(res => {
 				this.sending = false;
 				this.res = JSON5.stringify(res, null, 2);
 			}, err => {

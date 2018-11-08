@@ -110,7 +110,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.maxNoteTextLength = meta.maxNoteTextLength;
 		});
 	},
@@ -190,7 +190,7 @@ export default Vue.extend({
 
 		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
 		if (this.reply && this.reply.visibility === 'specified') {
-			(this as any).api('users/show', {	userId: this.reply.userId }).then(user => {
+			this.$root.api('users/show', {	userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
 		}
@@ -269,7 +269,7 @@ export default Vue.extend({
 		},
 
 		setVisibility() {
-			const w = (this as any).os.new(MkVisibilityChooser, {
+			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
 				compact: true
 			});
@@ -283,7 +283,7 @@ export default Vue.extend({
 				title: this.$t('username-prompt')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
-				(this as any).api('users/show', parseAcct(acct)).then(user => {
+				this.$root.api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
@@ -303,7 +303,7 @@ export default Vue.extend({
 		post() {
 			this.posting = true;
 			const viaMobile = this.$store.state.settings.disableViaMobile !== true;
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,

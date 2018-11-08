@@ -117,14 +117,14 @@ export default Vue.extend({
 
 	created() {
 		if (this.detail) {
-			(this as any).api('notes/replies', {
+			this.$root.api('notes/replies', {
 				noteId: this.appearNote.id,
 				limit: 8
 			}).then(replies => {
 				this.replies = replies;
 			});
 
-			(this as any).api('notes/conversation', {
+			this.$root.api('notes/conversation', {
 				noteId: this.appearNote.replyId
 			}).then(conversation => {
 				this.conversation = conversation.reverse();

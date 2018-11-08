@@ -79,7 +79,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				(this as any).api('drive/files/update', {
+				this.$root.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder ? this.folder.id : null
 				});
@@ -93,7 +93,7 @@ export default Vue.extend({
 				// 移動先が自分自身ならreject
 				if (this.folder && folder.id == this.folder.id) return;
 				this.browser.removeFolder(folder.id);
-				(this as any).api('drive/folders/update', {
+				this.$root.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder ? this.folder.id : null
 				});

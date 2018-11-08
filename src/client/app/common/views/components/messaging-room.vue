@@ -73,7 +73,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.connectToChannel('messaging', { otherparty: this.user.id });
+		this.connection = this.$root.stream.connectToChannel('messaging', { otherparty: this.user.id });
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
@@ -139,7 +139,7 @@ export default Vue.extend({
 			return new Promise((resolve, reject) => {
 				const max = this.existMoreMessages ? 20 : 10;
 
-				(this as any).api('messaging/messages', {
+				this.$root.api('messaging/messages', {
 					userId: this.user.id,
 					limit: max + 1,
 					untilId: this.existMoreMessages ? this.messages[0].id : undefined

@@ -103,7 +103,7 @@ export default Vue.extend({
 
 		showNav(v) {
 			if (v && this.lists === null) {
-				(this as any).api('users/lists/list').then(lists => {
+				this.$root.api('users/lists/list').then(lists => {
 					this.lists = lists;
 				});
 			}
@@ -111,7 +111,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
 		});
 
@@ -128,7 +128,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = (this as any).os.instanceName;
+		document.title = this.$root.os.instanceName;
 
 		Progress.start();
 

@@ -35,7 +35,7 @@ export default Vue.extend({
 	},
 	created() {
 		this.g = this.game;
-		this.connection = (this as any).os.stream.connectToChannel('gamesReversiGame', {
+		this.connection = this.$root.stream.connectToChannel('gamesReversiGame', {
 			gameId: this.game.id
 		});
 		this.connection.on('started', this.onStarted);

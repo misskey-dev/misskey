@@ -50,7 +50,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onSubmit() {
-			(this as any).api('app/create', {
+			this.$root.api('app/create', {
 				name: this.name,
 				description: this.description,
 				callbackUrl: this.cb,

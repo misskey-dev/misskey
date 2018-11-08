@@ -57,7 +57,7 @@ export default Vue.extend({
 		if (!this.$store.getters.isSignedIn) return;
 
 		// Fetch session
-		(this as any).api('auth/session/show', {
+		this.$root.api('auth/session/show', {
 			token: this.token
 		}).then(session => {
 			this.session = session;
@@ -65,7 +65,7 @@ export default Vue.extend({
 
 			// 既に連携していた場合
 			if (this.session.app.isAuthorized) {
-				(this as any).api('auth/accept', {
+				this.$root.api('auth/accept', {
 					token: this.session.token
 				}).then(() => {
 					this.accepted();

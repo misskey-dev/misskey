@@ -72,7 +72,7 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	},
@@ -102,7 +102,7 @@ export default Vue.extend({
 
 			this.usernameState = 'wait';
 
-			(this as any).api('username/available', {
+			this.$root.api('username/available', {
 				username: this.username
 			}).then(result => {
 				this.usernameState = result.available ? 'ok' : 'unavailable';
@@ -128,13 +128,13 @@ export default Vue.extend({
 			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
 		},
 		onSubmit() {
-			(this as any).api('signup', {
+			this.$root.api('signup', {
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
 			}, true).then(() => {
-				(this as any).api('signin', {
+				this.$root.api('signin', {
 					username: this.username,
 					password: this.password
 				}, true).then(() => {

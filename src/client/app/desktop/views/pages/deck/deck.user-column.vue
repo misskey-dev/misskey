@@ -138,7 +138,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).api('users/show', parseAcct(this.acct)).then(user => {
+		this.$root.api('users/show', parseAcct(this.acct)).then(user => {
 			this.user = user;
 			this.fetching = false;
 
@@ -152,7 +152,7 @@ export default Vue.extend({
 				'image/gif'
 			];
 
-			(this as any).api('users/notes', {
+			this.$root.api('users/notes', {
 				userId: this.user.id,
 				fileType: image,
 				limit: 9
@@ -166,7 +166,7 @@ export default Vue.extend({
 				this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
 			});
 
-			(this as any).api('charts/user/notes', {
+			this.$root.api('charts/user/notes', {
 				userId: this.user.id,
 				span: 'day',
 				limit: 21
@@ -251,7 +251,7 @@ export default Vue.extend({
 	methods: {
 		initTl() {
 			return new Promise((res, rej) => {
-				(this as any).api('users/notes', {
+				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
 					withFiles: this.withFiles,
@@ -271,7 +271,7 @@ export default Vue.extend({
 		fetchMoreNotes() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('users/notes', {
+			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
@@ -299,19 +299,19 @@ export default Vue.extend({
 				icon: 'list',
 				text: this.$t('push-to-a-list'),
 				action: () => {
-					const w = (this as any).os.new(MkUserListsWindow);
+					const w = this.$root.new(MkUserListsWindow);
 					w.$once('choosen', async list => {
 						w.close();
-						await (this as any).api('users/lists/push', {
+						await this.$root.api('users/lists/push', {
 							listId: list.id,
 							userId: this.user.id
 						});
-						(this as any).os.new(Ok);
+						this.$root.new(Ok);
 					});
 				}
 			}];
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.menu,
 				compact: false,
 				items: menu

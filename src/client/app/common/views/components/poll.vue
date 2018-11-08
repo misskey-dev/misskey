@@ -51,7 +51,7 @@ export default Vue.extend({
 		},
 		vote(id) {
 			if (this.poll.choices.some(c => c.isVoted)) return;
-			(this as any).api('notes/polls/vote', {
+			this.$root.api('notes/polls/vote', {
 				noteId: this.note.id,
 				choice: id
 			}).then(() => {

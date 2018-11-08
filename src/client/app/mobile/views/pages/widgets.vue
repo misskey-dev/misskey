@@ -104,7 +104,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = (this as any).os.instanceName;
+		document.title = this.$root.os.instanceName;
 	},
 
 	methods: {
@@ -135,7 +135,7 @@ export default Vue.extend({
 
 		saveHome() {
 			this.$store.commit('settings/setMobileHome', this.widgets);
-			(this as any).api('i/update_mobile_home', {
+			this.$root.api('i/update_mobile_home', {
 				home: this.widgets
 			});
 		}

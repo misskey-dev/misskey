@@ -101,13 +101,13 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
+		this.connection = this.$root.stream.useSharedConnection('serverStats');
 
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 
-		(this as any).api('stats').then(stats => {
+		this.$root.api('stats').then(stats => {
 			this.stats = stats;
 		});
 	},

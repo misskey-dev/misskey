@@ -53,7 +53,7 @@ export default define({
 			this.fetching = true;
 			this.users = [];
 
-			(this as any).api('users/recommendation', {
+			this.$root.api('users/recommendation', {
 				limit: limit,
 				offset: limit * this.page
 			}).then(users => {

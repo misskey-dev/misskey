@@ -32,11 +32,11 @@ export default define({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 
-		(this as any).api('drive/stream', {
+		this.$root.api('drive/stream', {
 			type: 'image/*',
 			limit: 9
 		}).then(images => {

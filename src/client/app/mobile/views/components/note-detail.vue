@@ -155,7 +155,7 @@ export default Vue.extend({
 	mounted() {
 		// Get replies
 		if (!this.compact) {
-			(this as any).api('notes/replies', {
+			this.$root.api('notes/replies', {
 				noteId: this.p.id,
 				limit: 8
 			}).then(replies => {
@@ -167,7 +167,7 @@ export default Vue.extend({
 		if (this.p.geo) {
 			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
 			if (shouldShowMap) {
-				(this as any).os.getGoogleMaps().then(maps => {
+				this.$root.os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
 					const map = new maps.Map(this.$refs.map, {
 						center: uluru,
@@ -187,7 +187,7 @@ export default Vue.extend({
 			this.conversationFetching = true;
 
 			// Fetch conversation
-			(this as any).api('notes/conversation', {
+			this.$root.api('notes/conversation', {
 				noteId: this.p.replyId
 			}).then(conversation => {
 				this.conversationFetching = false;
@@ -208,7 +208,7 @@ export default Vue.extend({
 		},
 
 		react() {
-			(this as any).os.new(MkReactionPicker, {
+			this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p,
 				compact: true,
@@ -217,7 +217,7 @@ export default Vue.extend({
 		},
 
 		menu() {
-			(this as any).os.new(MkNoteMenu, {
+			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.p,
 				compact: true

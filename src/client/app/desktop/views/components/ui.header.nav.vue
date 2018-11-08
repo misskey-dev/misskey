@@ -58,7 +58,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
@@ -79,11 +79,11 @@ export default Vue.extend({
 		},
 
 		messaging() {
-			(this as any).os.new(MkMessagingWindow);
+			this.$root.new(MkMessagingWindow);
 		},
 
 		game() {
-			(this as any).os.new(MkGameWindow);
+			this.$root.new(MkGameWindow);
 		},
 
 		goToTop() {

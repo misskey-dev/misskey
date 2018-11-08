@@ -334,7 +334,7 @@ export default Vue.extend({
 
 	methods: {
 		signout() {
-			(this as any).os.signout();
+			this.$root.os.signout();
 		},
 
 		checkForUpdate() {

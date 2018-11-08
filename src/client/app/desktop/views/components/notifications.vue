@@ -142,13 +142,13 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('notification', this.onNotification);
 
 		const max = 10;
 
-		(this as any).api('i/notifications', {
+		this.$root.api('i/notifications', {
 			limit: max + 1
 		}).then(notifications => {
 			if (notifications.length == max + 1) {
@@ -171,7 +171,7 @@ export default Vue.extend({
 
 			const max = 30;
 
-			(this as any).api('i/notifications', {
+			this.$root.api('i/notifications', {
 				limit: max + 1,
 				untilId: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {
@@ -188,7 +188,7 @@ export default Vue.extend({
 
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			(this as any).os.stream.send('readNotification', {
+			this.$root.stream.send('readNotification', {
 				id: notification.id
 			});
 

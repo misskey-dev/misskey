@@ -41,7 +41,7 @@ export default Vue.extend({
 	},
 	methods: {
 		fetch() {
-			(this as any).api('hashtags/trend').then(stats => {
+			this.$root.api('hashtags/trend').then(stats => {
 				this.stats = stats;
 				this.fetching = false;
 			});

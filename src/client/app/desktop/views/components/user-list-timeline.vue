@@ -31,7 +31,7 @@ export default Vue.extend({
 	methods: {
 		init() {
 			if (this.connection) this.connection.dispose();
-			this.connection = (this as any).os.stream.connectToChannel('userList', {
+			this.connection = this.$root.stream.connectToChannel('userList', {
 				listId: this.list.id
 			});
 			this.connection.on('note', this.onNote);
@@ -44,7 +44,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/user-list-timeline', {
+				this.$root.api('notes/user-list-timeline', {
 					listId: this.list.id,
 					limit: fetchLimit + 1,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -64,7 +64,7 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('notes/user-list-timeline', {
+			const promise = this.$root.api('notes/user-list-timeline', {
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,

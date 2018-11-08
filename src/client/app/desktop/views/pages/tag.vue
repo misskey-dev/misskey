@@ -52,7 +52,7 @@ export default Vue.extend({
 			Progress.start();
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/search_by_tag', {
+				this.$root.api('notes/search_by_tag', {
 					limit: limit + 1,
 					offset: this.offset,
 					tag: this.$route.params.tag
@@ -71,7 +71,7 @@ export default Vue.extend({
 		more() {
 			this.offset += limit;
 
-			const promise = (this as any).api('notes/search_by_tag', {
+			const promise = this.$root.api('notes/search_by_tag', {
 				limit: limit + 1,
 				offset: this.offset,
 				tag: this.$route.params.tag

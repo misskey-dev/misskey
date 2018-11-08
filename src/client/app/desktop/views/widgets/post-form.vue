@@ -53,7 +53,7 @@ export default define({
 		post() {
 			this.posting = true;
 
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				text: this.text
 			}).then(data => {
 				this.clear();

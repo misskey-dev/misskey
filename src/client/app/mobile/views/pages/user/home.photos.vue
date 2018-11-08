@@ -26,7 +26,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/notes', {
+		this.$root.api('users/notes', {
 			userId: this.user.id,
 			withFiles: true,
 			limit: 6

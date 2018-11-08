@@ -34,7 +34,7 @@ export default Vue.extend({
 							});
 							return;
 						}
-						(this as any).api('i/change_password', {
+						this.$root.api('i/change_password', {
 							currentPasword: currentPassword,
 							newPassword: newPassword
 						}).then(() => {

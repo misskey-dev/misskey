@@ -30,14 +30,14 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = `${(this as any).os.instanceName} | %i18n:@notifications%`;
+		document.title = `${this.$root.os.instanceName} | %i18n:@notifications%`;
 	},
 	methods: {
 		fetch() {
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('i/favorites', {
+			this.$root.api('i/favorites', {
 				limit: 11
 			}).then(favorites => {
 				if (favorites.length == 11) {
@@ -53,7 +53,7 @@ export default Vue.extend({
 		},
 		more() {
 			this.moreFetching = true;
-			(this as any).api('i/favorites', {
+			this.$root.api('i/favorites', {
 				limit: 11,
 				untilId: this.favorites[this.favorites.length - 1].id
 			}).then(favorites => {

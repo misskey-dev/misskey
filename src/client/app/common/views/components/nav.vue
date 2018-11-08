@@ -25,7 +25,7 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			if (meta.maintainer.repository_url) this.repositoryUrl = meta.maintainer.repository_url;
 			if (meta.maintainer.feedback_url) this.feedbackUrl = meta.maintainer.feedback_url;
 		});

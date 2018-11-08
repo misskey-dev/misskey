@@ -14,7 +14,7 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/components/messaging-window.vue'),
 	methods: {
 		navigate(user) {
-			(this as any).os.new(MkMessagingRoomWindow, {
+			this.$root.new(MkMessagingRoomWindow, {
 				user: user
 			});
 		}

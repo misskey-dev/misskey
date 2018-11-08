@@ -64,7 +64,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
 		});
 
@@ -103,7 +103,7 @@ export default Vue.extend({
 		},
 
 		async chooseList() {
-			const lists = await (this as any).api('users/lists/list');
+			const lists = await this.$root.api('users/lists/list');
 
 			let menu = [{
 				icon: 'plus',
@@ -112,7 +112,7 @@ export default Vue.extend({
 					(this as any).apis.input({
 						title: this.$t('list-name'),
 					}).then(async title => {
-						const list = await (this as any).api('users/lists/create', {
+						const list = await this.$root.api('users/lists/create', {
 							title
 						});
 
@@ -135,7 +135,7 @@ export default Vue.extend({
 				}
 			})));
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.listButton,
 				compact: false,
 				items: menu
@@ -147,7 +147,7 @@ export default Vue.extend({
 				icon: 'plus',
 				text: this.$t('add-tag-timeline'),
 				action: () => {
-					(this as any).os.new(MkSettingsWindow, {
+					this.$root.new(MkSettingsWindow, {
 						initialPage: 'hashtags'
 					});
 				}
@@ -166,7 +166,7 @@ export default Vue.extend({
 				}
 			})));
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.tagButton,
 				compact: false,
 				items: menu

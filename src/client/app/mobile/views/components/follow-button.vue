@@ -37,7 +37,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('follow', this.onFollowChange);
 		this.connection.on('unfollow', this.onFollowChange);
@@ -61,20 +61,20 @@ export default Vue.extend({
 
 			try {
 				if (this.u.isFollowing) {
-					this.u = await (this as any).api('following/delete', {
+					this.u = await this.$root.api('following/delete', {
 						userId: this.u.id
 					});
 				} else {
 					if (this.u.hasPendingFollowRequestFromYou) {
-						this.u = await (this as any).api('following/requests/cancel', {
+						this.u = await this.$root.api('following/requests/cancel', {
 							userId: this.u.id
 						});
 					} else if (this.u.isLocked) {
-						this.u = await (this as any).api('following/create', {
+						this.u = await this.$root.api('following/create', {
 							userId: this.u.id
 						});
 					} else {
-						this.u = await (this as any).api('following/create', {
+						this.u = await this.$root.api('following/create', {
 							userId: this.user.id
 						});
 					}

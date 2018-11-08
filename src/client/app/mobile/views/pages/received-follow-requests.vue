@@ -31,7 +31,7 @@ export default Vue.extend({
 
 		Progress.start();
 
-		(this as any).api('following/requests/list').then(requests => {
+		this.$root.api('following/requests/list').then(requests => {
 			this.fetching = false;
 			this.requests = requests;
 
@@ -40,12 +40,12 @@ export default Vue.extend({
 	},
 	methods: {
 		accept(user) {
-			(this as any).api('following/requests/accept', { userId: user.id }).then(() => {
+			this.$root.api('following/requests/accept', { userId: user.id }).then(() => {
 				this.requests = this.requests.filter(r => r.follower.id != user.id);
 			});
 		},
 		reject(user) {
-			(this as any).api('following/requests/reject', { userId: user.id }).then(() => {
+			this.$root.api('following/requests/reject', { userId: user.id }).then(() => {
 				this.requests = this.requests.filter(r => r.follower.id != user.id);
 			});
 		}

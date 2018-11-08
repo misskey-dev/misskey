@@ -500,13 +500,13 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	},
 	methods: {
 		readAllUnreadNotes() {
-			(this as any).api('i/read_all_unread_notes');
+			this.$root.api('i/read_all_unread_notes');
 		},
 		customizeHome() {
 			this.$router.push('/i/customize-home');
@@ -516,18 +516,18 @@ export default Vue.extend({
 			(this as any).apis.chooseDriveFile({
 				multiple: false
 			}).then(file => {
-				(this as any).api('i/update', {
+				this.$root.api('i/update', {
 					wallpaperId: file.id
 				});
 			});
 		},
 		deleteWallpaper() {
-			(this as any).api('i/update', {
+			this.$root.api('i/update', {
 				wallpaperId: null
 			});
 		},
 		onChangeAutoWatch(v) {
-			(this as any).api('i/update', {
+			this.$root.api('i/update', {
 				autoWatch: v
 			});
 		},

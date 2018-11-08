@@ -34,7 +34,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('notes/show', {
+			this.$root.api('notes/show', {
 				noteId: this.$route.params.note
 			}).then(note => {
 				this.note = note;

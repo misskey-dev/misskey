@@ -152,7 +152,7 @@ export default Vue.extend({
 
 		send() {
 			this.sending = true;
-			(this as any).api('messaging/messages/create', {
+			this.$root.api('messaging/messages/create', {
 				userId: this.user.id,
 				text: this.text ? this.text : undefined,
 				fileId: this.file ? this.file.id : undefined

@@ -46,7 +46,7 @@ export default define({
 			this.fetching = true;
 			this.note = null;
 
-			(this as any).api('notes/trend', {
+			this.$root.api('notes/trend', {
 				limit: 1,
 				offset: this.offset,
 				renote: false,

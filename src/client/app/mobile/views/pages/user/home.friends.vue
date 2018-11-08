@@ -21,7 +21,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/get_frequently_replied_users', {
+		this.$root.api('users/get_frequently_replied_users', {
 			userId: this.user.id
 		}).then(res => {
 			this.users = res.map(x => x.user);

@@ -22,7 +22,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('drive').then(info => {
+		this.$root.api('drive').then(info => {
 			this.usage = info.usage / info.capacity * 100;
 		});
 	},

@@ -67,7 +67,7 @@ export default Vue.extend({
 		this.fetch();
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('gamesReversi');
+			this.connection = this.$root.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('matched', this.onMatched);
 
@@ -94,7 +94,7 @@ export default Vue.extend({
 				this.game = null;
 			} else {
 				Progress.start();
-				(this as any).api('games/reversi/games/show', {
+				this.$root.api('games/reversi/games/show', {
 					gameId: this.gameId
 				}).then(game => {
 					this.game = game;
@@ -107,7 +107,7 @@ export default Vue.extend({
 			if (this.selfNav) {
 				// 受け取ったゲーム情報が省略されたものなら完全な情報を取得する
 				if (game != null && (game.settings == null || game.settings.map == null)) {
-					game = await (this as any).api('games/reversi/games/show', {
+					game = await this.$root.api('games/reversi/games/show', {
 						gameId: game.id
 					});
 				}
@@ -124,11 +124,11 @@ export default Vue.extend({
 
 		cancel() {
 			this.matching = null;
-			(this as any).api('games/reversi/match/cancel');
+			this.$root.api('games/reversi/match/cancel');
 		},
 
 		accept(invitation) {
-			(this as any).api('games/reversi/match', {
+			this.$root.api('games/reversi/match', {
 				userId: invitation.parent.id
 			}).then(game => {
 				if (game) {

@@ -32,7 +32,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('i/favorites', {
+			this.$root.api('i/favorites', {
 				limit: 11
 			}).then(favorites => {
 				if (favorites.length == 11) {
@@ -48,7 +48,7 @@ export default Vue.extend({
 		},
 		more() {
 			this.moreFetching = true;
-			(this as any).api('i/favorites', {
+			this.$root.api('i/favorites', {
 				limit: 11,
 				untilId: this.favorites[this.favorites.length - 1].id
 			}).then(favorites => {

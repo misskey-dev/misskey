@@ -40,12 +40,12 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this as any).api('mute/list').then(mute => {
+		this.$root.api('mute/list').then(mute => {
 			this.mute = mute.map(x => x.mutee);
 			this.muteFetching = false;
 		});
 
-		(this as any).api('blocking/list').then(blocking => {
+		this.$root.api('blocking/list').then(blocking => {
 			this.block = blocking.map(x => x.blockee);
 			this.blockFetching = false;
 		});

@@ -30,7 +30,7 @@ export default Vue.extend({
 	methods: {
 		ok() {
 			this.wait = true;
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				renoteId: this.note.id
 			}).then(data => {
 				this.$emit('posted');

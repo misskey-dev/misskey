@@ -54,7 +54,7 @@ export default Vue.extend({
 				parseAcct(this.user.substr(1)) :
 				{ userId: this.user };
 
-			(this as any).api('users/show', query).then(user => {
+			this.$root.api('users/show', query).then(user => {
 				this.u = user;
 				this.open();
 			});

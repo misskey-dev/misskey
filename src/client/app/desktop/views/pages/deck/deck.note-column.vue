@@ -52,7 +52,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).api('notes/show', { noteId: this.noteId }).then(note => {
+		this.$root.api('notes/show', { noteId: this.noteId }).then(note => {
 			this.note = note;
 			this.fetching = false;
 		});

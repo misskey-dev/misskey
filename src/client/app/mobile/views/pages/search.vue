@@ -36,7 +36,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = `%i18n:@search%: ${this.q} | ${(this as any).os.instanceName}`;
+		document.title = `%i18n:@search%: ${this.q} | ${this.$root.os.instanceName}`;
 
 		this.fetch();
 	},
@@ -46,7 +46,7 @@ export default Vue.extend({
 			Progress.start();
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/search', {
+				this.$root.api('notes/search', {
 					limit: limit + 1,
 					offset: this.offset,
 					query: this.q
@@ -65,7 +65,7 @@ export default Vue.extend({
 		more() {
 			this.offset += limit;
 
-			const promise = (this as any).api('notes/search', {
+			const promise = this.$root.api('notes/search', {
 				limit: limit + 1,
 				offset: this.offset,
 				query: this.q

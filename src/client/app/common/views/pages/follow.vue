@@ -69,7 +69,7 @@ export default Vue.extend({
 			const acct = new URL(location.href).searchParams.get('acct');
 			this.fetching = true;
 			Progress.start();
-			(this as any).api('users/show', parseAcct(acct)).then(user => {
+			this.$root.api('users/show', parseAcct(acct)).then(user => {
 				this.user = user;
 				this.fetching = false;
 				Progress.done();
@@ -81,20 +81,20 @@ export default Vue.extend({
 
 			try {
 				if (this.user.isFollowing) {
-					this.user = await (this as any).api('following/delete', {
+					this.user = await this.$root.api('following/delete', {
 						userId: this.user.id
 					});
 				} else {
 					if (this.user.hasPendingFollowRequestFromYou) {
-						this.user = await (this as any).api('following/requests/cancel', {
+						this.user = await this.$root.api('following/requests/cancel', {
 							userId: this.user.id
 						});
 					} else if (this.user.isLocked) {
-						this.user = await (this as any).api('following/create', {
+						this.user = await this.$root.api('following/create', {
 							userId: this.user.id
 						});
 					} else {
-						this.user = await (this as any).api('following/create', {
+						this.user = await this.$root.api('following/create', {
 							userId: this.user.id
 						});
 					}

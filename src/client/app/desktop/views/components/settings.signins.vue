@@ -28,12 +28,12 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this as any).api('i/signin_history').then(signins => {
+		this.$root.api('i/signin_history').then(signins => {
 			this.signins = signins;
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('signin', this.onSignin);
 	},

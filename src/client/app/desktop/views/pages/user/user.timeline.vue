@@ -60,7 +60,7 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('users/notes', {
+				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined,
@@ -81,7 +81,7 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('users/notes', {
+			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',

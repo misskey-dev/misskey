@@ -77,12 +77,12 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('messagingIndex');
+		this.connection = this.$root.stream.useSharedConnection('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		(this as any).api('messaging/history').then(messages => {
+		this.$root.api('messaging/history').then(messages => {
 			this.messages = messages;
 			this.fetching = false;
 		});
@@ -113,7 +113,7 @@ export default Vue.extend({
 				this.result = [];
 				return;
 			}
-			(this as any).api('users/search', {
+			this.$root.api('users/search', {
 				query: this.q,
 				max: 5
 			}).then(users => {

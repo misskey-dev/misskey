@@ -52,12 +52,12 @@ export default define({
 		};
 	},
 	mounted() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
+		this.connection = this.$root.stream.useSharedConnection('serverStats');
 	},
 	beforeDestroy() {
 		this.connection.dispose();

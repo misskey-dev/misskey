@@ -21,7 +21,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/notes', {
+		this.$root.api('users/notes', {
 			userId: this.user.id
 		}).then(notes => {
 			this.notes = notes;

@@ -92,7 +92,7 @@ export default Vue.extend({
 		rename() {
 			const name = window.prompt(this.$t('rename'), this.file.name);
 			if (name == null || name == '' || name == this.file.name) return;
-			(this as any).api('drive/files/update', {
+			this.$root.api('drive/files/update', {
 				fileId: this.file.id,
 				name: name
 			}).then(() => {
@@ -102,7 +102,7 @@ export default Vue.extend({
 
 		move() {
 			(this as any).apis.chooseDriveFolder().then(folder => {
-				(this as any).api('drive/files/update', {
+				this.$root.api('drive/files/update', {
 					fileId: this.file.id,
 					folderId: folder == null ? null : folder.id
 				}).then(() => {
@@ -112,7 +112,7 @@ export default Vue.extend({
 		},
 
 		del() {
-			(this as any).api('drive/files/delete', {
+			this.$root.api('drive/files/delete', {
 				fileId: this.file.id
 			}).then(() => {
 				this.browser.cd(this.file.folderId, true);
@@ -120,7 +120,7 @@ export default Vue.extend({
 		},
 
 		toggleSensitive() {
-			(this as any).api('drive/files/update', {
+			this.$root.api('drive/files/update', {
 				fileId: this.file.id,
 				isSensitive: !this.file.isSensitive
 			});

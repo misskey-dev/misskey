@@ -114,7 +114,7 @@ export default Vue.extend({
 
 	mounted() {
 		//#region Construct Emoji DB
-		const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis || [];
+		const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
 		const emojiDefinitions: EmojiDef[] = [];
 
 		customEmojis.forEach(x => {
@@ -185,7 +185,7 @@ export default Vue.extend({
 					this.users = users;
 					this.fetching = false;
 				} else {
-					(this as any).api('users/search', {
+					this.$root.api('users/search', {
 						query: this.q,
 						limit: 30
 					}).then(users => {
@@ -208,7 +208,7 @@ export default Vue.extend({
 						this.hashtags = hashtags;
 						this.fetching = false;
 					} else {
-						(this as any).api('hashtags/search', {
+						this.$root.api('hashtags/search', {
 							query: this.q,
 							limit: 30
 						}).then(hashtags => {
