@@ -62,7 +62,7 @@ import i18n from '../../../i18n';
 import { gcd } from '../../../../../prelude/math';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/components/drive.file-detail.vue'),
 	props: ['file'],
 
 	data() {

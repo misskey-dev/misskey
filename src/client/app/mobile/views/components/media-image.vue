@@ -14,7 +14,7 @@ import i18n from '../../../i18n';
 import ImageViewer from '../../../common/views/components/image-viewer.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/components/media-image.vue'),
 	props: {
 		image: {
 			type: Object,

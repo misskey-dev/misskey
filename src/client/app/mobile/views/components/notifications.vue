@@ -19,7 +19,7 @@
 
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>
-		{{ fetchingMoreNotifications ? '%i18n:common.loading%' : this.$t('@common.load-more') }}
+		{{ fetchingMoreNotifications ? $t('@common.loading') : $t('@common.load-more') }}
 	</button>
 
 	<p class="empty" v-if="notifications.length == 0 && !fetching">{{ $t('empty') }}</p>
@@ -31,7 +31,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/components/notifications.vue'),
 	data() {
 		return {
 			fetching: true,

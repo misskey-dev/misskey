@@ -59,7 +59,7 @@ import XFile from './drive.file.vue';
 import XFileDetail from './drive.file-detail.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/components/drive.vue'),
 	components: {
 		XFolder,
 		XFile,

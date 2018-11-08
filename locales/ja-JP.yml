@@ -1304,9 +1304,6 @@ mobile/views/components/drive.vue:
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
 
-mobile/views/components/drive-file-detail.vue:
-  rename: "名前を変更"
-
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
 
@@ -1371,10 +1368,6 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "cat"
-
-mobile/views/components/notes.vue:
-  failed: "読み込みに失敗しました。"
-  retry: "リトライ"
 
 mobile/views/components/notifications.vue:
   empty: "ありません！"

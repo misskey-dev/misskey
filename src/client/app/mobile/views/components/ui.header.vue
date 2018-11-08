@@ -23,7 +23,7 @@ import * as anime from 'animejs';
 import { env } from '../../../config';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n(),
 	props: ['func'],
 
 	data() {

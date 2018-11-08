@@ -16,7 +16,7 @@ import i18n from '../../../i18n';
 const fetchLimit = 10;
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/components/user-timeline.vue'),
 	props: ['user', 'withMedia'],
 
 	data() {

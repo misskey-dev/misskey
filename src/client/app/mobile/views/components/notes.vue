@@ -10,10 +10,7 @@
 		</template>
 	</div>
 
-	<div v-if="!fetching && requestInitPromise != null">
-		<p>{{ $t('failed') }}</p>
-		<button @click="resolveInitPromise">{{ $t('retry') }}</button>
-	</div>
+	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="transition" tag="div">
@@ -42,7 +39,7 @@ import i18n from '../../../i18n';
 const displayLimit = 30;
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n(),
 	props: {
 		more: {
 			type: Function,

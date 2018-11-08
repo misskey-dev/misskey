@@ -96,7 +96,7 @@ import { sum } from '../../../../../prelude/array';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/components/note-detail.vue'),
 	components: {
 		XSub
 	},
