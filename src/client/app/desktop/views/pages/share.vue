@@ -6,7 +6,7 @@
 		<mk-post-form v-else-if="!posted" :initial-text="text" :instant="true" @posted="posted = true"/>
 		<p v-if="posted" class="posted"><fa icon="check"/></p>
 	</div>
-	<button v-if="posted" class="ui button" @click="close">%i18n:common.close%</button>
+	<button v-if="posted" class="ui button" @click="close">{{ $t('@common.close') }}</button>
 </div>
 </template>
 

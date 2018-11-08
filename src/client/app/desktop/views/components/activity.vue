@@ -4,7 +4,7 @@
 		<template slot="header"><fa icon="chart-bar"/>{{ $t('title') }}</template>
 		<button slot="func" :title="$t('title')" @click="toggle"><fa icon="sort"/></button>
 
-		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@common.loading') }}<mk-ellipsis/></p>
 		<template v-else>
 			<x-calendar v-show="view == 0" :data="[].concat(activity)"/>
 			<x-chart v-show="view == 1" :data="[].concat(activity)"/>

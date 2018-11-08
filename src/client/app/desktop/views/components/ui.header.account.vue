@@ -17,7 +17,7 @@
 				<li @click="drive">
 					<p>
 						<i><fa icon="cloud"/></i>
-						<span>%i18n:common.drive%</span>
+						<span>{{ $t('@common.drive') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>

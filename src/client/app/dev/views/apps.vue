@@ -4,7 +4,7 @@
 		<b-button to="/app/new" variant="primary">{{ $t('create-app') }}</b-button>
 		<hr>
 		<div class="apps">
-			<p v-if="fetching">%i18n:common.loading%</p>
+			<p v-if="fetching">{{ $t('@common.loading') }}</p>
 			<template v-if="!fetching">
 				<b-alert v-if="apps.length == 0">{{ $t('app-missing') }}</b-alert>
 				<b-list-group v-else>

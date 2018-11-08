@@ -50,7 +50,7 @@
 		<div>
 			<ui-switch v-model="isCat" @change="save(false)">{{ $t('is-cat') }}</ui-switch>
 			<ui-switch v-model="isBot" @change="save(false)">{{ $t('is-bot') }}</ui-switch>
-			<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
+			<ui-switch v-model="alwaysMarkNsfw">{{ $t('@common.always-mark-nsfw') }}</ui-switch>
 		</div>
 	</section>
 

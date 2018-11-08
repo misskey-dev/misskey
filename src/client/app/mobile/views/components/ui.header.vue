@@ -1,6 +1,6 @@
 <template>
 <div class="header" ref="root">
-	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
+	<p class="warn" v-if="env != 'production'">{{ $t('@common.do-not-use-in-production') }}</p>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="content" ref="mainContainer">

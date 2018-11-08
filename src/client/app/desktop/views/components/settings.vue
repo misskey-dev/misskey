@@ -5,7 +5,7 @@
 		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><fa icon="palette" fixed-width/>{{ $t('theme') }}</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><fa icon="desktop" fixed-width/>Web</p>
 		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('notification') }}</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><fa icon="cloud" fixed-width/>%i18n:common.drive%</p>
+		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><fa icon="cloud" fixed-width/>{{ $t('@common.drive') }}</p>
 		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><fa icon="hashtag" fixed-width/>{{ $t('tags') }}</p>
 		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><fa icon="ban" fixed-width/>{{ $t('mute-and-block') }}</p>
 		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'"><fa icon="puzzle-piece" fixed-width/>{{ $t('apps') }}</p>
@@ -44,20 +44,17 @@
 			<div slot="title"><fa icon="sliders-h"/> {{ $t('behaviour') }}</div>
 
 			<section>
-				<ui-switch v-model="fetchOnScroll">
-					%i18n:@fetch-on-scroll%
+				<ui-switch v-model="fetchOnScroll">{{ $t('fetch-on-scroll') }}
 					<span slot="desc">{{ $t('fetch-on-scroll-desc') }}</span>
 				</ui-switch>
-				<ui-switch v-model="autoPopout">
-					%i18n:@auto-popout%
+				<ui-switch v-model="autoPopout">{{ $t('auto-popout') }}
 					<span slot="desc">{{ $t('auto-popout-desc') }}</span>
 				</ui-switch>
 				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}<span slot="desc">{{ $t('deck-nav-desc') }}</span></ui-switch>
 
 				<details>
 					<summary>{{ $t('advanced') }}</summary>
-					<ui-switch v-model="apiViaStream">
-						%i18n:@api-via-stream%
+					<ui-switch v-model="apiViaStream">{{ $t('api-via-stream') }}
 						<span slot="desc">{{ $t('api-via-stream-desc') }}</span>
 					</ui-switch>
 				</details>
@@ -76,11 +73,11 @@
 				<section>
 					<header>{{ $t('default-note-visibility') }}</header>
 					<ui-select v-model="defaultNoteVisibility">
-						<option value="public">%i18n:common.note-visibility.public%</option>
-						<option value="home">%i18n:common.note-visibility.home%</option>
-						<option value="followers">%i18n:common.note-visibility.followers%</option>
-						<option value="specified">%i18n:common.note-visibility.specified%</option>
-						<option value="private">%i18n:common.note-visibility.private%</option>
+						<option value="public">{{ $t('@common.note-visibility.public') }}</option>
+						<option value="home">{{ $t('@common.note-visibility.home') }}</option>
+						<option value="followers">{{ $t('@common.note-visibility.followers') }}</option>
+						<option value="specified">{{ $t('@common.note-visibility.specified') }}</option>
+						<option value="private">{{ $t('@common.note-visibility.private') }}</option>
 					</ui-select>
 				</section>
 			</section>
@@ -112,19 +109,19 @@
 				<ui-switch v-model="useShadow">{{ $t('use-shadow') }}</ui-switch>
 				<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
 				<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
-				<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion%</ui-switch>
+				<ui-switch v-model="reduceMotion">{{ $t('@common.reduce-motion') }}</ui-switch>
 				<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
-				<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
-				<ui-switch v-model="useOsDefaultEmojis">%i18n:common.use-os-default-emojis%</ui-switch>
-				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
+				<ui-switch v-model="showFullAcct">{{ $t('@common.show-full-acct') }}</ui-switch>
+				<ui-switch v-model="useOsDefaultEmojis">{{ $t('@common.use-os-default-emojis') }}</ui-switch>
+				<ui-switch v-model="iLikeSushi">{{ $t('@common.i-like-sushi') }}</ui-switch>
 			</section>
 			<section>
 				<ui-switch v-model="suggestRecentHashtags">{{ $t('suggest-recent-hashtags') }}</ui-switch>
 				<ui-switch v-model="showClockOnHeader">{{ $t('show-clock-on-header') }}</ui-switch>
-				<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw%</ui-switch>
+				<ui-switch v-model="alwaysShowNsfw">{{ $t('@common.always-show-nsfw') }}</ui-switch>
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
 				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
-				<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
+				<ui-switch v-model="disableAnimatedMfm">{{ $t('@common.disable-animated-mfm') }}</ui-switch>
 			</section>
 			<section>
 				<header>{{ $t('deck-column-align') }}</header>
@@ -132,8 +129,8 @@
 				<ui-radio v-model="deckColumnAlign" value="left">{{ $t('deck-column-align-left') }}</ui-radio>
 			</section>
 			<section>
-				<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
-				<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
+				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@common.show-reversi-board-labels') }}</ui-switch>
+				<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@common.use-contrast-reversi-stones') }}</ui-switch>
 			</section>
 		</ui-card>
 

@@ -6,29 +6,29 @@
 		<template v-if="edit">
 			<header>
 				<select v-model="widgetAdderSelected" @change="addWidget">
-					<option value="profile">%i18n:common.widgets.profile%</option>
-					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
-					<option value="calendar">%i18n:common.widgets.calendar%</option>
-					<option value="timemachine">%i18n:common.widgets.timemachine%</option>
-					<option value="activity">%i18n:common.widgets.activity%</option>
-					<option value="rss">%i18n:common.widgets.rss%</option>
-					<option value="trends">%i18n:common.widgets.trends%</option>
-					<option value="photo-stream">%i18n:common.widgets.photo-stream%</option>
-					<option value="slideshow">%i18n:common.widgets.slideshow%</option>
-					<option value="version">%i18n:common.widgets.version%</option>
-					<option value="broadcast">%i18n:common.widgets.broadcast%</option>
-					<option value="notifications">%i18n:common.widgets.notifications%</option>
-					<option value="users">%i18n:common.widgets.users%</option>
-					<option value="polls">%i18n:common.widgets.polls%</option>
-					<option value="post-form">%i18n:common.widgets.post-form%</option>
-					<option value="messaging">%i18n:common.widgets.messaging%</option>
-					<option value="memo">%i18n:common.widgets.memo%</option>
-					<option value="hashtags">%i18n:common.widgets.hashtags%</option>
-					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
-					<option value="server">%i18n:common.widgets.server%</option>
-					<option value="donation">%i18n:common.widgets.donation%</option>
-					<option value="nav">%i18n:common.widgets.nav%</option>
-					<option value="tips">%i18n:common.widgets.tips%</option>
+					<option value="profile">{{ $t('@common.widgets.profile') }}</option>
+					<option value="analog-clock">{{ $t('@common.widgets.analog-clock') }}</option>
+					<option value="calendar">{{ $t('@common.widgets.calendar') }}</option>
+					<option value="timemachine">{{ $t('@common.widgets.timemachine') }}</option>
+					<option value="activity">{{ $t('@common.widgets.activity') }}</option>
+					<option value="rss">{{ $t('@common.widgets.rss') }}</option>
+					<option value="trends">{{ $t('@common.widgets.trends') }}</option>
+					<option value="photo-stream">{{ $t('@common.widgets.photo-stream') }}</option>
+					<option value="slideshow">{{ $t('@common.widgets.slideshow') }}</option>
+					<option value="version">{{ $t('@common.widgets.version') }}</option>
+					<option value="broadcast">{{ $t('@common.widgets.broadcast') }}</option>
+					<option value="notifications">{{ $t('@common.widgets.notifications') }}</option>
+					<option value="users">{{ $t('@common.widgets.users') }}</option>
+					<option value="polls">{{ $t('@common.widgets.polls') }}</option>
+					<option value="post-form">{{ $t('@common.widgets.post-form') }}</option>
+					<option value="messaging">{{ $t('@common.widgets.messaging') }}</option>
+					<option value="memo">{{ $t('@common.widgets.memo') }}</option>
+					<option value="hashtags">{{ $t('@common.widgets.hashtags') }}</option>
+					<option value="posts-monitor">{{ $t('@common.widgets.posts-monitor') }}</option>
+					<option value="server">{{ $t('@common.widgets.server') }}</option>
+					<option value="donation">{{ $t('@common.widgets.donation') }}</option>
+					<option value="nav">{{ $t('@common.widgets.nav') }}</option>
+					<option value="tips">{{ $t('@common.widgets.tips') }}</option>
 				</select>
 			</header>
 			<x-draggable

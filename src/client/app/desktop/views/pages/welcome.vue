@@ -97,34 +97,34 @@
 
 	<modal name="about" class="about modal" width="800px" height="auto" scrollable>
 		<article class="fpdezooorhntlzyeszemrsqdlgbysvxq">
-			<h1>%i18n:common.intro.title%</h1>
+			<h1>{{ $t('@common.intro.title') }}</h1>
 			<p v-html="'%i18n:common.intro.about%'"></p>
 			<section>
-				<h2>%i18n:common.intro.features%</h2>
+				<h2>{{ $t('@common.intro.features') }}</h2>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.rich-contents%</h3>
+						<h3>{{ $t('@common.intro.rich-contents') }}</h3>
 						<p v-html="'%i18n:common.intro.rich-contents-desc%'"></p>
 					</div>
 					<div class="image"><img src="/assets/about/post.png" alt=""></div>
 				</section>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.reaction%</h3>
+						<h3>{{ $t('@common.intro.reaction') }}</h3>
 						<p v-html="'%i18n:common.intro.reaction-desc%'"></p>
 					</div>
 					<div class="image"><img src="/assets/about/reaction.png" alt=""></div>
 				</section>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.ui%</h3>
+						<h3>{{ $t('@common.intro.ui') }}</h3>
 						<p v-html="'%i18n:common.intro.ui-desc%'"></p>
 					</div>
 					<div class="image"><img src="/assets/about/ui.png" alt=""></div>
 				</section>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.drive%</h3>
+						<h3>{{ $t('@common.intro.drive') }}</h3>
 						<p v-html="'%i18n:common.intro.drive-desc%'"></p>
 					</div>
 					<div class="image"><img src="/assets/about/drive.png" alt=""></div>

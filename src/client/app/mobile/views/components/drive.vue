@@ -1,7 +1,7 @@
 <template>
 <div class="kmmwchoexgckptowjmjgfsygeltxfeqs">
 	<nav ref="nav">
-		<a @click.prevent="goRoot()" href="/i/drive"><fa icon="cloud"/>%i18n:common.drive%</a>
+		<a @click.prevent="goRoot()" href="/i/drive"><fa icon="cloud"/>{{ $t('@common.drive') }}</a>
 		<template v-for="folder in hierarchyFolders">
 			<span :key="folder.id + '>'"><fa icon="angle-right"/></span>
 			<a :key="folder.id" @click.prevent="cd(folder)" :href="`/i/drive/folder/${folder.id}`">{{ folder.name }}</a>
