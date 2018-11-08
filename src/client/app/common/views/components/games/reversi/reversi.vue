@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../../i18n';
 import XGameroom from './reversi.gameroom.vue';
 import XIndex from './reversi.index.vue';
 import Progress from '../../../../scripts/loading';

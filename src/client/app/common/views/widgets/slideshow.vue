@@ -15,6 +15,8 @@
 <script lang="ts">
 import * as anime from 'animejs';
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'slideshow',
 	props: () => ({
@@ -22,6 +24,8 @@ export default define({
 		size: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/slideshow.vue'),
+
 	data() {
 		return {
 			images: [],

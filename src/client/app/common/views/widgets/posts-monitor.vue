@@ -70,15 +70,18 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 import * as uuid from 'uuid';
 
 export default define({
-	name: 'server',
+	name: 'posts-monitor',
 	props: () => ({
 		design: 0,
 		view: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/posts-monitor.vue'),
+
 	data() {
 		return {
 			connection: null,

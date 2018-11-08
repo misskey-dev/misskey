@@ -37,7 +37,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('common/views/pages/follow.vue'),
 	data() {
 		return {
 			fetching: true,

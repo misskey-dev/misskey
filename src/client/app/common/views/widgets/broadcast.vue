@@ -29,6 +29,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'broadcast',
@@ -36,6 +37,7 @@ export default define({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/broadcast.vue'),
 	data() {
 		return {
 			i: 0,

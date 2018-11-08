@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 import XCpuMemory from './server.cpu-memory.vue';
 import XCpu from './server.cpu.vue';
 import XMemory from './server.memory.vue';
@@ -33,6 +34,8 @@ export default define({
 		view: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/server.vue'),
+
 	components: {
 		XCpuMemory,
 		XCpu,

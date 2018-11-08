@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../../i18n';
 import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../../../../../games/reversi/core';
 import { url } from '../../../../../config';

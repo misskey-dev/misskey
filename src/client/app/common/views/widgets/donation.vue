@@ -15,9 +15,12 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'donation'
 }).extend({
+	i18n: i18n('common/views/widgets/donation.vue'),
 	data() {
 		return {
 			meta: null

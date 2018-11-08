@@ -37,12 +37,15 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'calendar',
 	props: () => ({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/calendar.vue'),
 	data() {
 		return {
 			now: new Date(),

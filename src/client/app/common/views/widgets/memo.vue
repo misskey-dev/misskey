@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import define from '../../define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'memo',
@@ -20,6 +21,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/memo.vue'),
 	data() {
 		return {
 			text: null,

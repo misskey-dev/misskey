@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../../i18n';
 import XGame from './reversi.game.vue';
 import XRoom from './reversi.room.vue';
 
