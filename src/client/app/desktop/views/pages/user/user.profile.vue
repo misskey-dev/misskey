@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({

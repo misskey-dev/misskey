@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import XNotes from './home.notes.vue';
 import XPhotos from './home.photos.vue';
 import XFriends from './home.friends.vue';

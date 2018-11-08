@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';

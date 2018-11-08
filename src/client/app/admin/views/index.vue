@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../i18n';
 import { version } from '../../config';
 import XDashboard from "./dashboard.vue";
 import XInstance from "./instance.vue";
