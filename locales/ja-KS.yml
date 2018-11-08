@@ -26,14 +26,6 @@ common:
   close: "さいなら"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
   load-more: "もっと読み込む"
-  BSoD:
-    fatal-error: "あかん、やってもうたわ… (致命的なエラー"
-    update-browser-os: "ブラウザ(またはOS)のバージョン更新してくれへん？なおるかもしれんわ。"
-    error-code: "エラーコード"
-    browser-version: "ブラウザ バージョン"
-    client-version: "クライアント バージョン"
-    email-support: "それでもあかん？せやったら syuilotan@yahoo.co.jp に連絡してや！"
-    thanks: "Thank you おおきに。Misskey"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
