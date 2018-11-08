@@ -130,6 +130,12 @@ workflows:
   version: 2
   build-and-test:
     jobs:
+      - ok:
+          filters:
+            branches:
+              only:
+                - l10n_develop
+                - imgbot
       - build:
           filters:
             branches:
