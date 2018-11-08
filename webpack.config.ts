@@ -11,8 +11,6 @@ const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
-import I18nReplacer from './src/misc/i18n';
-import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
 const constants = require('./src/const.json');
 
 const locales = require('./locales');
@@ -22,7 +20,6 @@ const codename = meta.codename;
 
 declare var global: {
 	collapseSpacesReplacement: any;
-	i18nReplacement: typeof i18nReplacement;
 };
 
 //#region Replacer definitions
@@ -33,9 +30,6 @@ global['collapseSpacesReplacement'] = (html: string) => {
 		keepClosingSlash: true
 	}).replace(/\t/g, '');
 };
-
-global['i18nReplacement'] = i18nReplacement;
-
 //#endregion
 
 const langs = Object.keys(locales);
@@ -97,9 +91,6 @@ const plugins = [
 			Object.keys(entry).forEach(file => {
 				let src = fs.readFileSync(`${__dirname}/built/client/assets/${file}.${version}.-.js`, 'utf-8');
 
-				const i18nReplacer = new I18nReplacer(lang);
-
-				src = src.replace(i18nReplacer.pattern, i18nReplacer.replacement);
 				src = src.replace('%lang%', lang);
 				src = src.replace('"%locale%"', JSON.stringify(locales[lang]));
 
@@ -135,10 +126,6 @@ module.exports = {
 				loader: 'replace',
 				query: {
 					qs: [{
-						search: i18nPattern.toString(),
-						replace: 'i18nReplacement',
-						i18n: true
-					}, {
 						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
 						replace: 'collapseSpacesReplacement'
 					}]
@@ -197,15 +184,6 @@ module.exports = {
 					happyPackMode: true,
 					configFile: __dirname + '/src/client/app/tsconfig.json',
 					appendTsSuffixTo: [/\.vue$/]
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					qs: [{
-						search: i18nPattern.toString(),
-						replace: 'i18nReplacement',
-						i18n: true
-					}]
 				}
 			}]
 		}]
