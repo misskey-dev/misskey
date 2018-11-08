@@ -7,8 +7,8 @@
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
 		<div class="is-remote" v-if="user.host != null">
 			<details>
-				<summary><fa icon="exclamation-triangle"/> {{ $t('@common.is-remote-user') }}</summary>
-				<a :href="user.url || user.uri" target="_blank">{{ $t('@common.view-on-remote') }}</a>
+				<summary><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}</summary>
+				<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
 			</details>
 		</div>
 		<header :style="bannerStyle">

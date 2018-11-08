@@ -1,7 +1,7 @@
 <template>
 <div class="wjqjnyhzogztorhrdgcpqlkxhkmuetgj">
-	<p><fa icon="exclamation-triangle"/> {{ $t('@common.error.title') }}</p>
-	<ui-button @click="() => $emit('retry')">{{ $t('@common.error.retry') }}</ui-button>
+	<p><fa icon="exclamation-triangle"/> {{ $t('@.error.title') }}</p>
+	<ui-button @click="() => $emit('retry')">{{ $t('@.error.retry') }}</ui-button>
 </div>
 </template>
 

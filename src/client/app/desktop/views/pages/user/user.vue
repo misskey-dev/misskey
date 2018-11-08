@@ -1,8 +1,8 @@
 <template>
 <mk-ui>
 	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@common.is-suspended') }}</div>
-		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@common.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@common.view-on-remote') }}</a></div>
+		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.is-suspended') }}</div>
+		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
 		<main>
 			<div class="main">
 				<x-header :user="user"/>

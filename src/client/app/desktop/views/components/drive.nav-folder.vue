@@ -8,7 +8,7 @@
 	@drop.stop="onDrop"
 >
 	<i v-if="folder == null" class="cloud"><fa icon="cloud"/></i>
-	<span>{{ folder == null ? $t('@common.drive') : folder.name }}</span>
+	<span>{{ folder == null ? $t('@.drive') : folder.name }}</span>
 </div>
 </template>
 

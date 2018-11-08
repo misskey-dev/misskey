@@ -22,16 +22,16 @@
 					<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
 					<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
 					<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
-					<ui-switch v-model="showFullAcct">{{ $t('@common.show-full-acct') }}</ui-switch>
-					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@common.use-os-default-emojis') }}</ui-switch>
-					<ui-switch v-model="iLikeSushi">{{ $t('@common.i-like-sushi') }}</ui-switch>
-					<ui-switch v-model="disableAnimatedMfm">{{ $t('@common.disable-animated-mfm') }}</ui-switch>
+					<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
+					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
+					<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
+					<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
 					<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw% (%i18n:common.this-setting-is-this-device-only%)</ui-switch>
 				</section>
 
 				<section>
-					<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@common.show-reversi-board-labels') }}</ui-switch>
-					<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@common.use-contrast-reversi-stones') }}</ui-switch>
+					<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
+					<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@.use-contrast-reversi-stones') }}</ui-switch>
 				</section>
 
 				<section>
@@ -74,11 +74,11 @@
 					<section>
 						<header>{{ $t('default-note-visibility') }}</header>
 						<ui-select v-model="defaultNoteVisibility">
-							<option value="public">{{ $t('@common.note-visibility.public') }}</option>
-							<option value="home">{{ $t('@common.note-visibility.home') }}</option>
-							<option value="followers">{{ $t('@common.note-visibility.followers') }}</option>
-							<option value="specified">{{ $t('@common.note-visibility.specified') }}</option>
-							<option value="private">{{ $t('@common.note-visibility.private') }}</option>
+							<option value="public">{{ $t('@.note-visibility.public') }}</option>
+							<option value="home">{{ $t('@.note-visibility.home') }}</option>
+							<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
+							<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
+							<option value="private">{{ $t('@.note-visibility.private') }}</option>
 						</ui-select>
 					</section>
 				</section>

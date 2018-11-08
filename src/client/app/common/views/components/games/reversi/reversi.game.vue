@@ -6,14 +6,14 @@
 	<div style="overflow: hidden; line-height: 28px;">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
 		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ $t('@common.reversi.opponent-turn') }}<mk-ellipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">{{ $t('@common.reversi.my-turn') }}</p>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ $t('@.reversi.opponent-turn') }}<mk-ellipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">{{ $t('@.reversi.my-turn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
 				<span>{{ '%i18n:common.reversi.won%'.replace('{}', $options.filters.userName(game.winner)) }}</span>
 				<span v-if="game.surrendered != null"> (%i18n:@surrendered%)</span>
 			</template>
-			<template v-else>{{ $t('@common.reversi.drawn') }}</template>
+			<template v-else>{{ $t('@.reversi.drawn') }}</template>
 		</p>
 	</div>
 

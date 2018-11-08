@@ -33,27 +33,27 @@
 			</article>
 		</div>
 		<article class="about-misskey">
-			<h1>{{ $t('@common.intro.title') }}</h1>
+			<h1>{{ $t('@.intro.title') }}</h1>
 			<p v-html="'%i18n:common.intro.about%'"></p>
 			<section>
-				<h2>{{ $t('@common.intro.features') }}</h2>
+				<h2>{{ $t('@.intro.features') }}</h2>
 				<section>
-					<h3>{{ $t('@common.intro.rich-contents') }}</h3>
+					<h3>{{ $t('@.intro.rich-contents') }}</h3>
 					<div class="image"><img src="/assets/about/post.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.rich-contents-desc%'"></p>
 				</section>
 				<section>
-					<h3>{{ $t('@common.intro.reaction') }}</h3>
+					<h3>{{ $t('@.intro.reaction') }}</h3>
 					<div class="image"><img src="/assets/about/reaction.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.reaction-desc%'"></p>
 				</section>
 				<section>
-					<h3>{{ $t('@common.intro.ui') }}</h3>
+					<h3>{{ $t('@.intro.ui') }}</h3>
 					<div class="image"><img src="/assets/about/ui.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.ui-desc%'"></p>
 				</section>
 				<section>
-					<h3>{{ $t('@common.intro.drive') }}</h3>
+					<h3>{{ $t('@.intro.drive') }}</h3>
 					<div class="image"><img src="/assets/about/drive.png" alt=""></div>
 					<p v-html="'%i18n:common.intro.drive-desc%'"></p>
 				</section>

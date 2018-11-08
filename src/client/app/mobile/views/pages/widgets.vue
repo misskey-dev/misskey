@@ -8,21 +8,21 @@
 		<template v-if="customizing">
 			<header>
 				<select v-model="widgetAdderSelected">
-					<option value="profile">{{ $t('@common.widgets.profile') }}</option>
-					<option value="analog-clock">{{ $t('@common.widgets.analog-clock') }}</option>
-					<option value="calendar">{{ $t('@common.widgets.calendar') }}</option>
-					<option value="activity">{{ $t('@common.widgets.activity') }}</option>
-					<option value="rss">{{ $t('@common.widgets.rss') }}</option>
-					<option value="photo-stream">{{ $t('@common.widgets.photo-stream') }}</option>
-					<option value="slideshow">{{ $t('@common.widgets.slideshow') }}</option>
-					<option value="hashtags">{{ $t('@common.widgets.hashtags') }}</option>
-					<option value="posts-monitor">{{ $t('@common.widgets.posts-monitor') }}</option>
-					<option value="version">{{ $t('@common.widgets.version') }}</option>
-					<option value="server">{{ $t('@common.widgets.server') }}</option>
-					<option value="memo">{{ $t('@common.widgets.memo') }}</option>
-					<option value="donation">{{ $t('@common.widgets.donation') }}</option>
-					<option value="nav">{{ $t('@common.widgets.nav') }}</option>
-					<option value="tips">{{ $t('@common.widgets.tips') }}</option>
+					<option value="profile">{{ $t('@.widgets.profile') }}</option>
+					<option value="analog-clock">{{ $t('@.widgets.analog-clock') }}</option>
+					<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
+					<option value="activity">{{ $t('@.widgets.activity') }}</option>
+					<option value="rss">{{ $t('@.widgets.rss') }}</option>
+					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
+					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
+					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
+					<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
+					<option value="version">{{ $t('@.widgets.version') }}</option>
+					<option value="server">{{ $t('@.widgets.server') }}</option>
+					<option value="memo">{{ $t('@.widgets.memo') }}</option>
+					<option value="donation">{{ $t('@.widgets.donation') }}</option>
+					<option value="nav">{{ $t('@.widgets.nav') }}</option>
+					<option value="tips">{{ $t('@.widgets.tips') }}</option>
 				</select>
 				<button @click="addWidget">%i18n:add-widget%</button>
 				<p><a @click="hint">%i18n:customization-tips%</a></p>

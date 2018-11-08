@@ -5,7 +5,7 @@
 		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><fa icon="palette" fixed-width/>{{ $t('theme') }}</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><fa icon="desktop" fixed-width/>Web</p>
 		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('notification') }}</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><fa icon="cloud" fixed-width/>{{ $t('@common.drive') }}</p>
+		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</p>
 		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><fa icon="hashtag" fixed-width/>{{ $t('tags') }}</p>
 		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><fa icon="ban" fixed-width/>{{ $t('mute-and-block') }}</p>
 		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'"><fa icon="puzzle-piece" fixed-width/>{{ $t('apps') }}</p>
@@ -73,11 +73,11 @@
 				<section>
 					<header>{{ $t('default-note-visibility') }}</header>
 					<ui-select v-model="defaultNoteVisibility">
-						<option value="public">{{ $t('@common.note-visibility.public') }}</option>
-						<option value="home">{{ $t('@common.note-visibility.home') }}</option>
-						<option value="followers">{{ $t('@common.note-visibility.followers') }}</option>
-						<option value="specified">{{ $t('@common.note-visibility.specified') }}</option>
-						<option value="private">{{ $t('@common.note-visibility.private') }}</option>
+						<option value="public">{{ $t('@.note-visibility.public') }}</option>
+						<option value="home">{{ $t('@.note-visibility.home') }}</option>
+						<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
+						<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
+						<option value="private">{{ $t('@.note-visibility.private') }}</option>
 					</ui-select>
 				</section>
 			</section>
@@ -109,19 +109,19 @@
 				<ui-switch v-model="useShadow">{{ $t('use-shadow') }}</ui-switch>
 				<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
 				<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
-				<ui-switch v-model="reduceMotion">{{ $t('@common.reduce-motion') }}</ui-switch>
+				<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }}</ui-switch>
 				<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
-				<ui-switch v-model="showFullAcct">{{ $t('@common.show-full-acct') }}</ui-switch>
-				<ui-switch v-model="useOsDefaultEmojis">{{ $t('@common.use-os-default-emojis') }}</ui-switch>
-				<ui-switch v-model="iLikeSushi">{{ $t('@common.i-like-sushi') }}</ui-switch>
+				<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
+				<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
+				<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
 			</section>
 			<section>
 				<ui-switch v-model="suggestRecentHashtags">{{ $t('suggest-recent-hashtags') }}</ui-switch>
 				<ui-switch v-model="showClockOnHeader">{{ $t('show-clock-on-header') }}</ui-switch>
-				<ui-switch v-model="alwaysShowNsfw">{{ $t('@common.always-show-nsfw') }}</ui-switch>
+				<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }}</ui-switch>
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
 				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
-				<ui-switch v-model="disableAnimatedMfm">{{ $t('@common.disable-animated-mfm') }}</ui-switch>
+				<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
 			</section>
 			<section>
 				<header>{{ $t('deck-column-align') }}</header>
@@ -129,8 +129,8 @@
 				<ui-radio v-model="deckColumnAlign" value="left">{{ $t('deck-column-align-left') }}</ui-radio>
 			</section>
 			<section>
-				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@common.show-reversi-board-labels') }}</ui-switch>
-				<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@common.use-contrast-reversi-stones') }}</ui-switch>
+				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
+				<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@.use-contrast-reversi-stones') }}</ui-switch>
 			</section>
 		</ui-card>
 

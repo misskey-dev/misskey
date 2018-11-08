@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<p v-if="fetching">{{ $t('@common.loading') }}</p>
+	<p v-if="fetching">{{ $t('@.loading') }}</p>
 	<b-card v-if="!fetching" :header="app.name">
 		<b-form-group label="App Secret">
 			<b-input :value="app.secret" readonly/>

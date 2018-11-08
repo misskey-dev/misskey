@@ -18,7 +18,7 @@
 			<span>{{ $t('console.endpoint') }}</span>
 		</ui-input>
 		<ui-textarea v-model="body">
-			<span>%i18n:@console.parameter% (JSON or JSON5)</span>
+			<span>{{ $t('console.parameter') }} (JSON or JSON5)</span>
 			<span slot="desc">{{ $t('console.credential-info') }}</span>
 		</ui-textarea>
 		<ui-button @click="send" :disabled="sending">

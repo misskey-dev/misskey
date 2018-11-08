@@ -8,13 +8,13 @@
 		<mk-user-preview v-for="u in users" :user="u" :key="u.id"/>
 	</div>
 	<button class="more" v-if="!fetching && next != null" @click="more" :disabled="moreFetching">
-		<span v-if="!moreFetching">{{ $t('@common.load-more') }}</span>
-		<span v-if="moreFetching">{{ $t('@common.loading') }}<mk-ellipsis/></span>
+		<span v-if="!moreFetching">{{ $t('@.load-more') }}</span>
+		<span v-if="moreFetching">{{ $t('@.loading') }}<mk-ellipsis/></span>
 	</button>
 	<p class="no" v-if="!fetching && users.length == 0">
 		<slot></slot>
 	</p>
-	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@common.loading') }}<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 </div>
 </template>
 

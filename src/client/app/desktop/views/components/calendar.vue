@@ -57,13 +57,13 @@ export default Vue.extend({
 			month: new Date().getMonth() + 1,
 			selected: new Date(),
 			weekdayText: [
-				this.$t('@common.weekday-short.sunday'),
-				this.$t('@common.weekday-short.monday'),
-				this.$t('@common.weekday-short.tuesday'),
-				this.$t('@common.weekday-short.wednesday'),
-				this.$t('@common.weekday-short.thursday'),
-				this.$t('@common.weekday-short.friday'),
-				this.$t('@common.weekday-short.saturday')
+				this.$t('@.weekday-short.sunday'),
+				this.$t('@.weekday-short.monday'),
+				this.$t('@.weekday-short.tuesday'),
+				this.$t('@.weekday-short.wednesday'),
+				this.$t('@.weekday-short.thursday'),
+				this.$t('@.weekday-short.friday'),
+				this.$t('@.weekday-short.saturday')
 			]
 		};
 	},

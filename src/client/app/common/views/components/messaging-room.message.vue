@@ -3,7 +3,7 @@
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<!-- <button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
+			<!-- <button class="delete-button" v-if="isMe" :title="$t('@.delete')">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button> -->
 			<div class="content" v-if="!message.isDeleted">
