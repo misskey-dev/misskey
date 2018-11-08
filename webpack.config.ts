@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
-const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
@@ -17,20 +16,6 @@ const locales = require('./locales');
 const meta = require('./package.json');
 const version = meta.clientVersion;
 const codename = meta.codename;
-
-declare var global: {
-	collapseSpacesReplacement: any;
-};
-
-//#region Replacer definitions
-global['collapseSpacesReplacement'] = (html: string) => {
-	return minifyHtml(html, {
-		collapseWhitespace: true,
-		collapseInlineTagWhitespace: true,
-		keepClosingSlash: true
-	}).replace(/\t/g, '');
-};
-//#endregion
 
 const langs = Object.keys(locales);
 
@@ -122,14 +107,6 @@ module.exports = {
 				}
 			}, {
 				loader: 'vue-svg-inline-loader'
-			}, {
-				loader: 'replace',
-				query: {
-					qs: [{
-						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
-						replace: 'collapseSpacesReplacement'
-					}]
-				}
 			}]
 		}, {
 			test: /\.styl(us)?$/,
@@ -199,7 +176,7 @@ module.exports = {
 		}
 	},
 	resolveLoader: {
-		modules: ['node_modules', './webpack/loaders']
+		modules: ['node_modules']
 	},
 	cache: true,
 	devtool: false, //'source-map',
