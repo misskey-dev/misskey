@@ -721,8 +721,8 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "Do you want to Repost it?"
 desktop/views/pages/user-following-or-followers.vue:
-  following: "{user}のフォロー"
-  followers: "{user}のフォロワー"
+  following: "{user}'s following"
+  followers: "{user}'s follower"
 desktop/views/components/settings-window.vue:
   settings: "Settings"
 desktop/views/components/settings.vue:
@@ -984,9 +984,9 @@ admin/views/instance.vue:
   github-integration-client-id: "Client ID"
   github-integration-client-secret: "Client secret"
   proxy-account-config: "Proxy account"
-  proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
-  proxy-account-username: "プロキシアカウントのユーザー名"
-  proxy-account-username-desc: "プロキシとして使用するアカウントのユーザー名を指定してください。"
+  proxy-account-info: "Proxy account can follow a remote user to deliver activities if no one in this instance follow him or her. When you add a remote user who is followed by nobody in this instance to your list, in order to get his or her data, proxy account follow him or her instead of your following."
+  proxy-account-username: "Proxy account user name"
+  proxy-account-username-desc: "Specify the user name of the account that is used as a proxy."
   proxy-account-warn: "アカウントは自動で作られないため、そのユーザー名のアカウントを予め作成しておく必要があります。"
   max-note-text-length: "投稿の最大文字数"
   disable-registration: "ユーザー登録の受付を停止する"
