@@ -23,7 +23,7 @@ import i18n from '../../../i18n';
 import VueCropper from 'vue-cropperjs';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/crop-window.vue'),
 	components: {
 		VueCropper
 	},

@@ -29,7 +29,7 @@ import i18n from '../../../i18n';
 import contextmenu from '../../api/contextmenu';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/drive.folder.vue'),
 	props: ['folder'],
 	data() {
 		return {

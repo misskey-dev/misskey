@@ -20,7 +20,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/choose-folder-from-drive-window.vue'),
 	props: {
 		title: {
 			default: '<fa :icon="['far', 'folder']"/>%i18n:@choose-prompt%'

@@ -23,7 +23,7 @@ import i18n from '../../../i18n';
 import MkMediaVideoDialog from './media-video-dialog.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/media-video.vue'),
 	props: {
 		video: {
 			type: Object,

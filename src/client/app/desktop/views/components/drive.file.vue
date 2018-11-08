@@ -39,7 +39,7 @@ import contextmenu from '../../api/contextmenu';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/drive.file.vue'),
 	props: ['file'],
 	data() {
 		return {

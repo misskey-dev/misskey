@@ -69,7 +69,7 @@ import contextmenu from '../../api/contextmenu';
 import { url } from '../../../config';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/drive.vue'),
 	components: {
 		XNavFolder,
 		XFolder,

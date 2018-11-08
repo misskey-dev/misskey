@@ -124,7 +124,7 @@ defaultDesktopHomeWidgets.right.forEach(widget => {
 //#endregion
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/home.vue'),
 	components: {
 		XDraggable
 	},

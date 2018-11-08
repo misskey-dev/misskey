@@ -40,7 +40,7 @@ function isLeapYear(year) {
 }
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/calendar.vue'),
 	props: {
 		design: {
 			default: 0

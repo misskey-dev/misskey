@@ -20,7 +20,7 @@ import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/activity.vue'),
 	components: {
 		XCalendar,
 		XChart
