@@ -28,7 +28,7 @@ import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n(),
 	data() {
 		return {
 			Progress,

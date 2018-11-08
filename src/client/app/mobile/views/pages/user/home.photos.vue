@@ -1,6 +1,6 @@
 <template>
 <div class="root photos">
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@common.loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images"
 			class="img"
@@ -17,7 +17,7 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/user/home.photos.vue'),
 	props: ['user'],
 	data() {
 		return {

@@ -1,6 +1,6 @@
 <template>
 <div class="root followers-you-know">
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@common.loading') }}<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<a v-for="user in users" :key="user.id" :href="user | userPage">
 			<img :src="user.avatarUrl" :alt="user | userName"/>
@@ -15,7 +15,7 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/user/home.followers-you-know.vue'),
 	props: ['user'],
 	data() {
 		return {

@@ -1,8 +1,7 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="user.avatarUrl" alt="">
-		{{ this.$t('followers-of').replace('{}', name) }}
+		<img :src="user.avatarUrl" alt="">{{ $t('followers-of', { name }) }}
 	</template>
 	<mk-users-list
 		v-if="!fetching"
@@ -24,7 +23,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import getUserName from '../../../../../misc/get-user-name';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/followers.vue'),
 	data() {
 		return {
 			fetching: true,

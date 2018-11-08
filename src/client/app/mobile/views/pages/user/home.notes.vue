@@ -1,6 +1,6 @@
 <template>
 <div class="root notes">
-	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@common.loading') }}<mk-ellipsis/></p>
 	<div v-if="!fetching && notes.length > 0">
 		<mk-note-card v-for="note in notes" :key="note.id" :note="note"/>
 	</div>
@@ -12,7 +12,7 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/user/home.notes.vue'),
 	props: ['user'],
 	data() {
 		return {

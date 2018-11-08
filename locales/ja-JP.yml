@@ -1431,10 +1431,10 @@ mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
 
 mobile/views/pages/followers.vue:
-  followers-of: "{}のフォロワー"
+  followers-of: "{name}のフォロワー"
 
 mobile/views/pages/following.vue:
-  following-of: "{}のフォロー"
+  following-of: "{name}のフォロー"
 
 mobile/views/pages/home.vue:
   home: "ホーム"
@@ -1574,19 +1574,15 @@ mobile/views/pages/user/home.vue:
   last-used-at: "最終ログイン"
 
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込み中"
   no-users: "知り合いのユーザーはいません"
 
 mobile/views/pages/user/home.friends.vue:
-  loading: "読み込み中"
   no-users: "よく会話するユーザーはいません"
 
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込み中"
   no-notes: "投稿はありません"
 
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込み中"
   no-photos: "写真はありません"
 
 deck:

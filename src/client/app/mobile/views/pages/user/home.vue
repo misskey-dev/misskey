@@ -44,7 +44,7 @@ import XFriends from './home.friends.vue';
 import XFollowersYouKnow from './home.followers-you-know.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('mobile/views/pages/user/home.vue'),
 	components: {
 		XNotes,
 		XPhotos,
