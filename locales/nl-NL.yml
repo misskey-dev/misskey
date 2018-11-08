@@ -720,6 +720,9 @@ desktop/views/components/renote-form.vue:
   failure: "Renote mislukt"
 desktop/views/components/renote-form-window.vue:
   title: "Weet je zeker dat je deze notitie wilt renoten?"
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
 desktop/views/components/settings-window.vue:
   settings: "設定"
 desktop/views/components/settings.vue:
