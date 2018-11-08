@@ -1,7 +1,7 @@
 <template>
 <div class="form">
 	<header>
-		<h1>{{ $t('share-access') }}</h1>
+		<h1 v-html="$t('share-access', { name: app.name })"></h1>
 		<img :src="app.iconUrl"/>
 	</header>
 	<div class="app">

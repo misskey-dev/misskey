@@ -174,7 +174,7 @@ common:
   ai-chan-kawaii: "藍ちゃかわいい"
 
 auth/views/form.vue:
-  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
+  share-access: "<i>{{name}}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
   account-read: "アカウントの情報を見る。"
   account-write: "アカウントの情報を操作する。"
