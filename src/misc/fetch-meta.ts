@@ -2,6 +2,8 @@ import Meta, { IMeta } from '../models/meta';
 
 const defaultMeta: any = {
 	name: 'Misskey',
+	maintainer: {},
+	langs: [],
 	cacheRemoteFiles: true,
 	localDriveCapacityMb: 256,
 	remoteDriveCapacityMb: 8,
@@ -10,7 +12,9 @@ const defaultMeta: any = {
 		originalNotesCount: 0,
 		originalUsersCount: 0
 	},
-	maxNoteTextLength: 1000
+	maxNoteTextLength: 1000,
+	enableTwitterIntegration: false,
+	enableGithubIntegration: false,
 };
 
 export default async function(): Promise<IMeta> {

@@ -359,7 +359,7 @@ export default Vue.extend({
 			}).then(name => {
 				(this as any).api('drive/folders/create', {
 					name: name,
-					folderId: this.folder ? this.folder.id : undefined
+					parentId: this.folder ? this.folder.id : undefined
 				}).then(folder => {
 					this.addFolder(folder, true);
 				});

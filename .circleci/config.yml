@@ -102,7 +102,7 @@ jobs:
       - run:
           name: Build
           command: |
-            docker build . | tee docker.log
+            docker build -t misskey/misskey .
       - when:
           condition: <<parameters.with_deploy>>
           steps:
@@ -111,8 +111,6 @@ jobs:
                 command: |
                   if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
                    then
-                    tail -n 1 docker.log | read __Successfully __built tag
-                    docker tag $tag misskey/misskey
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
                     docker push misskey/misskey
                    else

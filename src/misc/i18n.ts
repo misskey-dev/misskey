@@ -54,7 +54,7 @@ export default class Replacer {
 			if (this.lang === 'ja-JP') console.warn(`key '${key}' is not string in '${path}'`);
 			return key; // Fallback
 		} else {
-			return text;
+			return text.replace(/\n/g, ' ');
 		}
 	}
 

@@ -48,7 +48,7 @@ router.get('/v1/instance', async ctx => { // TODO: This is a temporary implement
 		uri: config.hostname,
 		title: meta.name || 'Misskey',
 		description: meta.description || '',
-		email: config.maintainer.email || config.maintainer.url.startsWith('mailto:') ? config.maintainer.url.slice(7) : '',
+		email: meta.maintainer.email,
 		version: `0.0.0:compatible:misskey:${pkg.version}`, // TODO: How to tell about that this is an api for compatibility?
 		thumbnail: meta.bannerUrl,
 		/*
@@ -60,7 +60,7 @@ router.get('/v1/instance', async ctx => { // TODO: This is a temporary implement
 			status_count: originalNotesCount,
 			domain_count: domains.length
 		},
-		languages: config.languages || [ 'ja' ],
+		languages: meta.langs || [ 'ja' ],
 		contact_account: {
 			id: maintainer._id,
 			username: maintainer.username,

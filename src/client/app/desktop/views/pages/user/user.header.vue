@@ -22,8 +22,8 @@
 		</div>
 		<div class="status">
 			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
-			<span class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>%i18n:@following%</span>
-			<span class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</span>
+			<router-link :to="user | userPage('following')" class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>%i18n:@following%</router-link>
+			<router-link :to="user | userPage('followers')" class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</router-link>
 		</div>
 	</div>
 </div>
@@ -31,8 +31,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkFollowingWindow from '../../components/following-window.vue';
-import MkFollowersWindow from '../../components/followers-window.vue';
 import * as age from 's-age';
 
 export default Vue.extend({
@@ -84,19 +82,7 @@ export default Vue.extend({
 			(this as any).apis.updateBanner().then(i => {
 				this.user.bannerUrl = i.bannerUrl;
 			});
-		},
-
-		showFollowing() {
-			(this as any).os.new(MkFollowingWindow, {
-				user: this.user
-			});
-		},
-
-		showFollowers() {
-			(this as any).os.new(MkFollowersWindow, {
-				user: this.user
-			});
-		},
+		}
 	}
 });
 </script>

@@ -4,6 +4,7 @@ import uploadFromUrl from '../../../services/drive/upload-from-url';
 import { IRemoteUser } from '../../../models/user';
 import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Resolver from '../resolver';
+import fetchMeta from '../../../misc/fetch-meta';
 
 const log = debug('misskey:activitypub');
 
@@ -24,7 +25,10 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 
 	log(`Creating the Image: ${image.url}`);
 
-	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive);
+	const instance = await fetchMeta();
+	const cache = instance.cacheRemoteFiles;
+
+	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
 
 	if (file.metadata.isRemote) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、

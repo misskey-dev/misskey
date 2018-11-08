@@ -1,6 +1,3 @@
-maintainer:
-  name: syuilo
-  url: 'https://syuilo.com'
 url: 'http://misskey.local'
 port: 80
 mongodb:

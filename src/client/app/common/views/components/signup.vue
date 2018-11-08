@@ -4,7 +4,7 @@
 		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required styl="fill">
 			<span>%i18n:@invitation-code%</span>
 			<span slot="prefix"><fa icon="id-card-alt"/></span>
-			<p slot="desc" v-html="'%i18n:@invitation-info%'.replace('{}', meta.maintainer.url)"></p>
+			<p slot="desc" v-html="'%i18n:@invitation-info%'.replace('{}', 'mailto:' + meta.maintainer.email)"></p>
 		</ui-input>
 		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername" styl="fill">
 			<span>%i18n:@username%</span>
@@ -35,7 +35,7 @@
 				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@password-not-matched%</p>
 			</div>
 		</ui-input>
-		<div v-if="meta.recaptchaSitekey != null" class="g-recaptcha" :data-sitekey="meta.recaptchaSitekey" style="margin: 16px 0;"></div>
+		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
 		<ui-button type="submit">%i18n:@create%</ui-button>
 	</template>
 </form>
@@ -130,7 +130,7 @@ export default Vue.extend({
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
-				'g-recaptcha-response': this.meta.recaptchaSitekey != null ? (window as any).grecaptcha.getResponse() : null
+				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
 			}, true).then(() => {
 				(this as any).api('signin', {
 					username: this.username,
@@ -141,7 +141,7 @@ export default Vue.extend({
 			}).catch(() => {
 				alert('%i18n:@some-error%');
 
-				if (this.meta.recaptchaSitekey != null) {
+				if (this.meta.enableRecaptcha) {
 					(window as any).grecaptcha.reset();
 				}
 			});

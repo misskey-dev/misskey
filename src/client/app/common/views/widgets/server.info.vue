@@ -1,6 +1,6 @@
 <template>
 <div class="info">
-	<p>Maintainer: <b><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></b></p>
+	<p>Maintainer: <b><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></b></p>
 	<p>Machine: {{ meta.machine }}</p>
 	<p>Node: {{ meta.node }}</p>
 </div>

@@ -247,7 +247,7 @@
 		<ui-card class="other" v-show="page == 'other'">
 			<div slot="title"><fa icon="info-circle"/> %i18n:@about%</div>
 			<section>
-				<p v-if="meta">%i18n:@operator%: <i><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></i></p>
+				<p v-if="meta">%i18n:@operator%: <i><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></i></p>
 			</section>
 		</ui-card>
 

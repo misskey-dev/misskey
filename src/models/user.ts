@@ -11,6 +11,7 @@ import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
 import FollowRequest from './follow-request';
 import Contributor from './contributor';
+import fetchMeta from '../misc/fetch-meta';
 
 const User = db.get<IUser>('users');
 
@@ -385,6 +386,7 @@ function img(url) {
 }
 */
 
-export function getGhost(): Promise<ILocalUser> {
-	return User.findOne({ _id: new mongo.ObjectId(config.ghost) });
+export async function fetchProxyAccount(): Promise<ILocalUser> {
+	const meta = await fetchMeta();
+	return await User.findOne({ username: meta.proxyAccount, host: null }) as ILocalUser;
 }

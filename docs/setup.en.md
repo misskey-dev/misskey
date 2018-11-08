@@ -47,11 +47,6 @@ In root :
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Install misskey dependencies.
 
-*(optional)* reCAPTCHA tokens
-----------------------------------------------------------------
-If you want to enable reCAPTCHA, you need to generate reCAPTCHA tokens:
-Please visit https://www.google.com/recaptcha/intro/ and generate keys.
-
 *(optional)* Generating VAPID keys
 ----------------------------------------------------------------
 If you want to enable ServiceWorker, you need to generate VAPID keys:
@@ -61,13 +56,6 @@ Unless you have set your global node_modules location elsewhere, you need to run
 npm install web-push -g
 web-push generate-vapid-keys
 ```
-
-*(optional)* Create a twitter application
-----------------------------------------------------------------
-If you want to enable the twitter integration, you need to create a twitter app at [https://developer.twitter.com/en/apply/user](https://developer.twitter.com/en/apply/user).
-
-In the app you need to set the oauth callback url as : https://misskey-instance/api/tw/cb
-
 
 *5.* Make configuration file
 ----------------------------------------------------------------
