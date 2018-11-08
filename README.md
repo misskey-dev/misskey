@@ -9,10 +9,12 @@
 
 **Sophisticated microblogging platform, evolving forever.**
 
-[Misskey](https://misskey.xyz) is a decentralized microblogging platform born on Earth.
+<p align="justify">
+<a href="https://misskey.xyz">Misskey</a> is a decentralized microblogging platform born on Earth.
 Since it exists within the Fediverse (a universe where various social media platforms are organized),
 it is mutually linked with other social media platforms.
-Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? [Find instance!](https://joinmisskey.github.io/)
+Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? <a href="https://joinmisskey.github.io/">Find instance!</a>
+</p>
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
@@ -24,7 +26,7 @@ Why don't you take a short break from the hustle and bustle of the city, and div
 <img src="/assets/about/post.png" align="left" height="200px"/>
 
 <h3 align="left">Posting</h3>
-<p align="left">
+<p align="justify">
 Just post your idea, hot topics and anything you want to share. You may decorate your words, attach your favorite pictures or movies, and create a poll - those are all supported in Misskey!
 </p>
 
@@ -33,7 +35,7 @@ Just post your idea, hot topics and anything you want to share. You may decorate
 <img src="/assets/about/reaction.png" align="right" height="200px"/>
 
 <h3 align="right">Reactions</h3>
-<p align="left">
+<p align="justify">
 The simplest way to tell your emotions to the posts. You can choose the best reaction from various reactions. Reactions on Misskey has much more expressive than other social media which only allows pushing “likes”.
 </p>
 
@@ -42,7 +44,7 @@ The simplest way to tell your emotions to the posts. You can choose the best rea
 <img src="/assets/about/ui.png" align="left" height="200px"/>
 
 <h3 align="left">Interface</h3>
-<p align="left">
+<p align="justify">
 Highly customizable UI for your taste. We understand no UI fits for everyone. Make your graceful home by editing, adjusting layouts of timeline, and placing widgets.
 </p>
 
@@ -51,7 +53,7 @@ Highly customizable UI for your taste. We understand no UI fits for everyone. Ma
 <img src="/assets/about/drive.png" align="right" width="300px"/>
 
 <h3 align="right">Misskey Drive</h3>
-<p align="left">
+<p align="justify">
 Organized uploaded files. Wanna post a picture you have already uploaded? Wish to create a folder for your files? Misskey Drive is the best solution for you.
 </p>
 
