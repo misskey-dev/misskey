@@ -159,7 +159,7 @@ common:
   dev: "アプリの作成あかんかったわ。もっぺんやってみて。"
   ai-chan-kawaii: "藍ちゃめっさべっぴんさんや"
 auth/views/form.vue:
-  share-access: "<i>{{ app.name }}</i>があんさんのアカウントにアクセスすんのを<b>許可</b>してもええか？"
+  share-access: "<i>{{name}}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "このアプリは次の権限を要求してんで:"
   account-read: "アカウントの情報を見させてもらうで。"
   account-write: "アカウントの情報を操作させてもらうで。"
