@@ -11,7 +11,7 @@
 			<mk-user-card v-for="user in users" :user="user" :key="user.id"/>
 		</div>
 		<div class="more" v-if="next">
-			<ui-button inline @click="fetchMore">{{ $t('load-more') }}</ui-button>
+			<ui-button inline @click="fetchMore">{{ $t('@common.load-more') }}</ui-button>
 		</div>
 	</div>
 </mk-ui>

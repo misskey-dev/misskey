@@ -16,6 +16,8 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'rss',
 	props: () => ({
@@ -23,6 +25,7 @@ export default define({
 		url: 'http://news.yahoo.co.jp/pickup/rss.xml'
 	})
 }).extend({
+	i18n: i18n(),
 	data() {
 		return {
 			items: [],

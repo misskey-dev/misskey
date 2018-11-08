@@ -27,12 +27,12 @@
 		</div>
 		<div class="folders" v-if="folders.length > 0">
 			<x-folder class="folder" v-for="folder in folders" :key="folder.id" :folder="folder"/>
-			<p v-if="moreFolders">{{ $t('load-more') }}</p>
+			<p v-if="moreFolders">{{ $t('@common.load-more') }}</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
 			<x-file class="file" v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
-				{{ fetchingMoreFiles ? '%i18n:common.loading%' : this.$t('load-more') }}
+				{{ fetchingMoreFiles ? '%i18n:common.loading%' : this.$t('@common.load-more') }}
 			</button>
 		</div>
 		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">

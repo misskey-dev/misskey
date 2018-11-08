@@ -25,6 +25,7 @@ common:
   application-authorization: "アプリの連携"
   close: "閉じる"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  load-more: "もっと読み込む"
   BSoD:
     fatal-error: ":( 致命的な問題が発生しました。"
     update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
@@ -641,7 +642,6 @@ desktop/views/components/drive.folder.vue:
 
 desktop/views/components/drive.vue:
   search: "検索"
-  load-more: "もっと読み込む"
   empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
   empty-drive: "ドライブには何もありません。"
   empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
@@ -733,7 +733,6 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
   retry: "リトライ"
-  load-more: "もっと読み込む"
 
 desktop/views/components/notifications.vue:
   more: "もっと見る"
@@ -1028,7 +1027,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
-  load-more: "もっと"
   fetching: "読み込んでいます"
 
 desktop/views/components/users-list-item.vue:
@@ -1306,7 +1304,6 @@ mobile/views/components/drive.vue:
   folder-count: "フォルダ"
   count-separator: "、"
   file-count: "ファイル"
-  load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
@@ -1413,7 +1410,6 @@ mobile/views/components/sub-note-content.vue:
 
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
-  load-more: "もっと"
 
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
@@ -1437,12 +1433,10 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
-  load-more: "もっと"
 
 mobile/views/components/users-list.vue:
   all: "すべて"
   known: "知り合い"
-  load-more: "もっと"
 
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
