@@ -720,6 +720,9 @@ desktop/views/components/renote-form.vue:
   failure: "Failed to Repost"
 desktop/views/components/renote-form-window.vue:
   title: "Do you want to Repost it?"
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
 desktop/views/components/settings-window.vue:
   settings: "Settings"
 desktop/views/components/settings.vue:
