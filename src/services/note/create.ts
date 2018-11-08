@@ -98,6 +98,7 @@ type Option = {
 	cw?: string;
 	visibility?: string;
 	visibleUsers?: IUser[];
+	apMentions?: IUser[];
 	uri?: string;
 	app?: IApp;
 };
@@ -149,7 +150,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const emojis = extractEmojis(tokens);
 
-	const mentionedUsers = await extractMentionedUsers(tokens);
+	const mentionedUsers = data.apMentions || await extractMentionedUsers(tokens);
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
