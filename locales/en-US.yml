@@ -25,6 +25,7 @@ common:
   application-authorization: "Application authorizations"
   close: "Close"
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
+  load-more: "もっと読み込む"
   BSoD:
     fatal-error: "A fatal error has occurred :("
     update-browser-os: "You might resolve to update the version of your browser (or OS)."
@@ -36,10 +37,7 @@ common:
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
-    paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
-    paragraph2: "You can change the display by <strong><strong>right</strong> clicking</strong> on some widgets."
-    paragraph3: "To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header."
-    paragraph4: "To finish the customization, click \"Finish\" on the upper right."
+    paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
     gotit: "Got it!"
   notification:
     file-uploaded: "File uploaded!"
@@ -63,6 +61,7 @@ common:
   month-and-day: "{month}/{day}"
   trash: "Trash"
   drive: "Drive"
+  messaging: "トーク"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -135,13 +134,13 @@ common:
     drawn: "Draw"
     my-turn: "Your turn"
     opponent-turn: "Opponent's turn"
-    turn-of: "{}'s turn"
-    past-turn-of: "{}'s turn"
-    won: "{} won"
+    turn-of: "{name}のターンです"
+    past-turn-of: "{name}のターン"
+    won: "{name}の勝ち"
     black: "Black"
     white: "White"
     total: "Total"
-    this-turn: "Turn {}"
+    this-turn: "{count}ターン目"
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
@@ -160,32 +159,11 @@ common:
     users: "Recommended users"
     polls: "Polls"
     post-form: "Post form"
-    messaging: "Messages"
     server: "Server info"
     donation: "Request for donations"
     nav: "Navigation"
     tips: "Tips"
     hashtags: "Hashtags"
-  deck:
-    widgets: "Widgets"
-    home: "Home"
-    local: "Local"
-    hybrid: "Social"
-    hashtag: "Hashtag"
-    global: "Global"
-    mentions: "Mentions"
-    direct: "Direct post"
-    notifications: "Notifications"
-    list: "Lists"
-    swap-left: "Move to the left"
-    swap-right: "Move to the right"
-    swap-up: "Move up"
-    swap-down: "Move downward"
-    remove: "Remove"
-    add-column: "Add a column"
-    rename: "Rename"
-    stack-left: "Stack to the left"
-    pop-right: "Dock on the right"
   dev: "Failed to create the application. Please try again."
   ai-chan-kawaii: "Ai-chan kawaii!"
 auth/views/form.vue:
@@ -326,7 +304,6 @@ common/views/components/messaging.vue:
   no-history: "Without history"
 common/views/components/messaging-room.vue:
   empty: "No conversations"
-  more: "Read more"
   no-history: "There is no further history"
   resize-form: "Drag to resize"
   new-message: "New message"
@@ -544,12 +521,12 @@ desktop/views/components/activity.vue:
   title: "Activity"
   toggle: "Toggle views"
 desktop/views/components/calendar.vue:
-  title: "{1} / {2}"
+  title: "{year}年 {month}月"
   prev: "Previous month"
   next: "Next month"
   go: "Click to navigate"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "Choose files"
+  chosen-files: "{count}ファイル選択中"
   upload: "Upload files from your device"
   cancel: "Cancel"
   ok: "OK"
@@ -595,7 +572,6 @@ desktop/views/components/drive.folder.vue:
     input-new-folder-name: "Enter new name"
 desktop/views/components/drive.vue:
   search: "Search"
-  load-more: "Load more"
   empty-draghover: "Drop it here! Yep, cuz you know I'm cute, right?"
   empty-drive: "Your media storage is empty"
   empty-drive-description: "Right-click to open the menu, or drag and drop a file onto here for uploading."
@@ -653,7 +629,6 @@ desktop/views/components/messaging-room-window.vue:
 desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/note-detail.vue:
-  more: "Load more conversations"
   private: "Post is private"
   deleted: "Post has been removed"
   reposted-by: "Reposted by {}"
@@ -671,9 +646,7 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
-  load-more: "Read more"
 desktop/views/components/notifications.vue:
-  more: "More"
   empty: "No notifications!"
 desktop/views/components/post-form.vue:
   add-visible-user: "+Add a user"
@@ -905,7 +878,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
-  messaging: "Messages"
   game: "Games"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -928,7 +900,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "All"
   iknow: "You know"
-  load-more: "More"
   fetching: "Loading…"
 desktop/views/components/users-list-item.vue:
   followed: "Follows you"
@@ -1064,19 +1035,6 @@ admin/views/announcements.vue:
     removed: "Deleted"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "Only media posts"
-  is-media-view: "Media view"
-  edit: "Options"
-desktop/views/pages/deck/deck.user-column.vue:
-  posts: "Posts"
-  following: "Following"
-  followers: "Followers"
-  images: "Images"
-  activity: "Activity"
-  timeline: "Timeline"
-  pinned-notes: "Pinned posts"
-  push-to-a-list: "Add to list"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
@@ -1091,8 +1049,6 @@ desktop/views/pages/welcome.vue:
   info: "Information"
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
-desktop/views/pages/favorites.vue:
-  more: "Load more"
 desktop/views/pages/home-customize.vue:
   title: "Customize home layout"
 desktop/views/pages/note.vue:
@@ -1105,11 +1061,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
   not-available: "Search feature is turned off in the settings for this instance."
-  not-found: "No posts were found for '{}'"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
-  share-with: "Share with {}."
+  share-with: "{name}で共有"
 desktop/views/pages/tag.vue:
-  no-posts-found: "No posts contains \"{}\" found."
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -1122,9 +1078,6 @@ desktop/views/pages/user/user.friends.vue:
   title: "Frequent mentions"
   loading: "Loading"
   no-users: "No frequent mentions"
-desktop/views/pages/user/user.vue:
-  is-suspended: "This account has been suspended."
-  last-used-at: "Last active"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
@@ -1184,7 +1137,6 @@ mobile/views/components/drive.vue:
   folder-count: "Folder(s)"
   count-separator: ", "
   file-count: "File(s)"
-  load-more: "Load more"
   nothing-in-drive: "There's nothing stored."
   folder-is-empty: "This folder is empty"
   prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
@@ -1194,8 +1146,6 @@ mobile/views/components/drive.vue:
   root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
   url-prompt: "URL of the file you want to upload"
   uploading: "Upload requested. It may take a while for the upload to finish."
-mobile/views/components/drive-file-detail.vue:
-  rename: "Rename"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose files"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1249,11 +1199,7 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "cat"
-mobile/views/components/notes.vue:
-  failed: "Failed to load"
-  retry: "Retry"
 mobile/views/components/notifications.vue:
-  more: "See more"
   empty: "No notifications"
 mobile/views/components/post-form.vue:
   add-visible-user: "Add a user"
@@ -1273,14 +1219,12 @@ mobile/views/components/sub-note-content.vue:
   poll: "Poll"
 mobile/views/components/timeline.vue:
   empty: "No notes"
-  load-more: "More"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
   adjective: "Sir"
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
-  messaging: "Messages"
   follow-requests: "Follow requests"
   search: "Search"
   favorites: "Favorites"
@@ -1294,24 +1238,20 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
   no-notes-with-media: "There are no notes with media attachments"
-  load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
   known: "In common"
-  load-more: "More"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
 mobile/views/pages/user-lists.vue:
   title: "Lists"
   enter-list-name: "Enter a name of the list to make"
-mobile/views/pages/drive.vue:
-  more: "Load more"
 mobile/views/pages/signup.vue:
   lets-start: "Your account is now ready! 📦"
 mobile/views/pages/followers.vue:
-  followers-of: "Followers of {}"
+  followers-of: "{name}のフォロワー"
 mobile/views/pages/following.vue:
-  following-of: "Following of {}"
+  following-of: "{name}のフォロー"
 mobile/views/pages/home.vue:
   home: "Home"
   local: "Local"
@@ -1320,7 +1260,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "Messages"
 mobile/views/pages/tag.vue:
-  no-posts-found: "No posts \"{}\" found."
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
@@ -1331,11 +1271,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
-  share-with: "Share with {}."
-mobile/views/pages/messaging.vue:
-  messaging: "Messaging"
-mobile/views/pages/messaging-room.vue:
-  messaging: "Messaging"
+  share-with: "{name}で共有"
 mobile/views/pages/received-follow-requests.vue:
   title: "Follow requests"
   accept: "Accept"
@@ -1351,8 +1287,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Search"
-  empty: "No posts were found for '{}'"
-  not-found: "No posts were found for \"{}\"."
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:
@@ -1433,17 +1368,46 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "Loading"
   no-users: "No users you know"
 mobile/views/pages/user/home.friends.vue:
-  loading: "Loading"
   no-users: "There are no users that you know"
 mobile/views/pages/user/home.notes.vue:
-  loading: "Loading"
   no-notes: "No notes"
 mobile/views/pages/user/home.photos.vue:
-  loading: "Loading"
   no-photos: "No photos"
+deck:
+  widgets: "ウィジェット"
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  hashtag: "ハッシュタグ"
+  global: "グローバル"
+  mentions: "あなた宛て"
+  direct: "ダイレクト投稿"
+  notifications: "通知"
+  list: "リスト"
+  swap-left: "左に移動"
+  swap-right: "右に移動"
+  swap-up: "上に移動"
+  swap-down: "下に移動"
+  remove: "カラムを削除"
+  add-column: "カラムを追加"
+  rename: "名前を変更"
+  stack-left: "左に重ねる"
+  pop-right: "右に出す"
+deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+  edit: "オプション"
+deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
+  pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 docs:
   edit-this-page-on-github: "Found a mistake or want to contribute for the documentation?"
   edit-this-page-on-github-link: "Edit this page at GitHub!"
