@@ -114,7 +114,7 @@ export default define({
 			});
 		},
 		choose() {
-			(this as any).apis.chooseDriveFolder().then(folder => {
+			this.$root.apis.chooseDriveFolder().then(folder => {
 				this.props.folder = folder ? folder.id : null;
 				this.save();
 				this.fetch();

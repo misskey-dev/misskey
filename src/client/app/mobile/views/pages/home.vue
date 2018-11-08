@@ -128,7 +128,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = this.$root.os.instanceName;
+		document.title = this.$root.instanceName;
 
 		Progress.start();
 
@@ -139,7 +139,7 @@ export default Vue.extend({
 
 	methods: {
 		fn() {
-			(this as any).apis.post();
+			this.$root.apis.post();
 		},
 
 		saveSrc() {

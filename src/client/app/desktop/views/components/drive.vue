@@ -314,7 +314,7 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							(this as any).apis.dialog({
+							this.$root.apis.dialog({
 								title: this.$t('unable-to-process'),
 								text: this.$t('circular-reference-detected'),
 								actions: [{
@@ -335,7 +335,7 @@ export default Vue.extend({
 		},
 
 		urlUpload() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('url-upload'),
 				placeholder: this.$t('url-of-file')
 			}).then(url => {
@@ -344,7 +344,7 @@ export default Vue.extend({
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				(this as any).apis.dialog({
+				this.$root.apis.dialog({
 					title: this.$t('url-upload-requested'),
 					text: this.$t('may-take-time'),
 					actions: [{
@@ -355,7 +355,7 @@ export default Vue.extend({
 		},
 
 		createFolder() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('create-folder'),
 				placeholder: this.$t('folder-name')
 			}).then(name => {

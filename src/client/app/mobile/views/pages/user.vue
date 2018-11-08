@@ -110,7 +110,7 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
-				document.title = `${Vue.filter('userName')(this.user)} | ${this.$root.os.instanceName}`;
+				document.title = `${Vue.filter('userName')(this.user)} | ${this.$root.instanceName}`;
 			});
 		},
 

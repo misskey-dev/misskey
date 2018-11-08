@@ -101,7 +101,7 @@ export default Vue.extend({
 		},
 
 		move() {
-			(this as any).apis.chooseDriveFolder().then(folder => {
+			this.$root.apis.chooseDriveFolder().then(folder => {
 				this.$root.api('drive/files/update', {
 					fileId: this.file.id,
 					folderId: folder == null ? null : folder.id

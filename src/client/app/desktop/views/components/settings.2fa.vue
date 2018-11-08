@@ -35,7 +35,7 @@ export default Vue.extend({
 	},
 	methods: {
 		register() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
@@ -48,14 +48,14 @@ export default Vue.extend({
 		},
 
 		unregister() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
 				this.$root.api('i/2fa/unregister', {
 					password: password
 				}).then(() => {
-					(this as any).apis.notify(this.$t('unregistered'));
+					this.$root.apis.notify(this.$t('unregistered'));
 					this.$store.state.i.twoFactorEnabled = false;
 				});
 			});
@@ -65,10 +65,10 @@ export default Vue.extend({
 			this.$root.api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
-				(this as any).apis.notify(this.$t('success'));
+				this.$root.apis.notify(this.$t('success'));
 				this.$store.state.i.twoFactorEnabled = true;
 			}).catch(() => {
-				(this as any).apis.notify(this.$t('failed'));
+				this.$root.apis.notify(this.$t('failed'));
 			});
 		}
 	}

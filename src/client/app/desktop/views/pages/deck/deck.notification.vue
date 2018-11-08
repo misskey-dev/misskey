@@ -137,7 +137,7 @@ export default Vue.extend({
 				align-items baseline
 				white-space nowrap
 
-				i, .mk-reaction-icon
+				[data-icon], .mk-reaction-icon
 					margin-right 4px
 
 				> .mk-time
@@ -159,15 +159,15 @@ export default Vue.extend({
 					margin-right 3px
 
 		&.renote
-			> div > header i
+			> div > header [data-icon]
 				color #77B255
 
 		&.follow
-			> div > header i
+			> div > header [data-icon]
 				color #53c7ce
 
 		&.receiveFollowRequest
-			> div > header i
+			> div > header [data-icon]
 				color #888
 
 </style>

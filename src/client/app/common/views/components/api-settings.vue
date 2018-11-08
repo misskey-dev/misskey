@@ -50,7 +50,7 @@ export default Vue.extend({
 
 	methods: {
 		regenerateToken() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {

@@ -49,7 +49,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `${this.$t('followers-of').replace('{}', this.name)} | ${this.$root.os.instanceName}`;
+				document.title = `${this.$t('followers-of').replace('{}', this.name)} | ${this.$root.instanceName}`;
 			});
 		},
 		onLoaded() {

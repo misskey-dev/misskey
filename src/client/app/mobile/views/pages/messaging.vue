@@ -13,7 +13,7 @@ import getAcct from '../../../../../misc/acct/render';
 export default Vue.extend({
 	i18n: i18n(),
 	mounted() {
-		document.title = `${this.$root.os.instanceName} ${this.$t('@.messaging')}`;
+		document.title = `${this.$root.instanceName} ${this.$t('@.messaging')}`;
 	},
 	methods: {
 		navigate(user) {

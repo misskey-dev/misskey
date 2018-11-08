@@ -88,7 +88,7 @@ export default (opts: Opts = {}) => ({
 
 	methods: {
 		reply(viaKeyboard = false) {
-			(this as any).apis.post({
+			this.$root.apis.post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
 				cb: () => {
@@ -98,7 +98,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		renote(viaKeyboard = false) {
-			(this as any).apis.post({
+			this.$root.apis.post({
 				renote: this.appearNote,
 				animation: !viaKeyboard,
 				cb: () => {

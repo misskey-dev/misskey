@@ -131,7 +131,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = this.$root.os.instanceName;
+		document.title = this.$root.instanceName;
 		document.documentElement.style.overflow = 'hidden';
 	},
 
@@ -255,7 +255,7 @@ export default Vue.extend({
 					icon: 'hashtag',
 					text: this.$t('@deck.hashtag'),
 					action: () => {
-						(this as any).apis.input({
+						this.$root.apis.input({
 							title: this.$t('enter-hashtag-tl-title')
 						}).then(title => {
 							this.$store.dispatch('settings/addDeckColumn', {

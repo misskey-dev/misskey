@@ -33,7 +33,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = this.$root.os.instanceName;
+		document.title = this.$root.instanceName;
 	},
 	methods: {
 		fetch() {

@@ -131,7 +131,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			(this as any).apis.chooseDriveFile({
+			this.$root.apis.chooseDriveFile({
 				multiple: false
 			}).then(file => {
 				this.file = file;

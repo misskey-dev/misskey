@@ -109,7 +109,7 @@ export default Vue.extend({
 				icon: 'plus',
 				text: this.$t('add-list'),
 				action: () => {
-					(this as any).apis.input({
+					this.$root.apis.input({
 						title: this.$t('list-name'),
 					}).then(async title => {
 						const list = await this.$root.api('users/lists/create', {

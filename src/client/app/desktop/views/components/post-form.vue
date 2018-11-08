@@ -36,7 +36,7 @@
 	<button class="drive" :title="$t('attach-media-from-drive')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
 	<button class="kao" :title="$t('insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
 	<button class="poll" :title="$t('create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
-	<button class="cw%" :title="$t('hide-contents%')" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
+	<button class="cw" :title="$t('hide-contents%')" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
 	<button class="geo" :title="$t('attach-location-information')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
 	<button class="visibility" :title="$t('visibility')" @click="setVisibility" ref="visibilityButton">
 		<span v-if="visibility === 'public'"><fa icon="globe"/></span>
@@ -45,9 +45,9 @@
 		<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
 		<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 	</button>
-	<p class="text-count" :class="{ over: this.trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - this.trimmedLength(text) }}</p>
+	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
-		{{ posting ? this.$t('posting') : submitText }}<mk-ellipsis v-if="posting"/>
+		{{ posting ? $t('posting') : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
 	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
@@ -245,7 +245,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			(this as any).apis.chooseDriveFile({
+			this.$root.apis.chooseDriveFile({
 				multiple: true
 			}).then(files => {
 				files.forEach(this.attachMedia);
@@ -363,7 +363,7 @@ export default Vue.extend({
 		},
 
 		addVisibleUser() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('enter-username')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
@@ -401,13 +401,13 @@ export default Vue.extend({
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
-				(this as any).apis.notify(this.renote
+				this.$root.apis.notify(this.renote
 					? this.$t('reposted')
 					: this.reply
 						? this.$t('replied')
 						: this.$t('posted'));
 			}).catch(err => {
-				(this as any).apis.notify(this.renote
+				this.$root.apis.notify(this.renote
 					? this.$t('renote-failed')
 					: this.reply
 						? this.$t('reply-failed')
@@ -689,6 +689,7 @@ export default Vue.extend({
 	> .drive
 	> .kao
 	> .poll
+	> .cw
 	> .geo
 	> .visibility
 		display inline-block

@@ -100,7 +100,7 @@ export default Vue.extend({
 		},
 
 		match() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('enter-username')
 			}).then(username => {
 				this.$root.api('users/show', {

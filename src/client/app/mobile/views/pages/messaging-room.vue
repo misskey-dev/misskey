@@ -49,7 +49,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `${this.$t('@.messaging')}: ${Vue.filter('userName')(this.user)} | ${this.$root.os.instanceName}`;
+				document.title = `${this.$t('@.messaging')}: ${Vue.filter('userName')(this.user)} | ${this.$root.instanceName}`;
 			});
 		}
 	}

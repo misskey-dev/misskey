@@ -104,7 +104,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = this.$root.os.instanceName;
+		document.title = this.$root.instanceName;
 	},
 
 	methods: {

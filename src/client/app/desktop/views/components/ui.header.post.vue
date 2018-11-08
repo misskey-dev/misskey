@@ -12,7 +12,7 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.post.vue'),
 	methods: {
 		post() {
-			(this as any).apis.post();
+			this.$root.apis.post();
 		}
 	}
 });

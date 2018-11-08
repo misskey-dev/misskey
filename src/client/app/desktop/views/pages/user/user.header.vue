@@ -81,7 +81,7 @@ export default Vue.extend({
 		onBannerClick() {
 			if (!this.$store.getters.isSignedIn || this.$store.state.i.id != this.user.id) return;
 
-			(this as any).apis.updateBanner().then(i => {
+			this.$root.apis.updateBanner().then(i => {
 				this.user.bannerUrl = i.bannerUrl;
 			});
 		}

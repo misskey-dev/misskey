@@ -139,7 +139,7 @@ export default Vue.extend({
 		},
 
 		post() {
-			(this as any).apis.post();
+			this.$root.apis.post();
 		},
 
 		drive() {

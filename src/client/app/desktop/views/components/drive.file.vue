@@ -149,7 +149,7 @@ export default Vue.extend({
 		},
 
 		rename() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('contextmenu.rename-file'),
 				placeholder: this.$t('contextmenu.input-new-file-name'),
 				default: this.file.name,
@@ -171,7 +171,7 @@ export default Vue.extend({
 
 		copyUrl() {
 			copyToClipboard(this.file.url);
-			(this as any).apis.dialog({
+			this.$root.apis.dialog({
 				title: this.$t('contextmenu.copied'),
 				text: this.$t('contextmenu.copied-url-to-clipboard'),
 				actions: [{
@@ -181,11 +181,11 @@ export default Vue.extend({
 		},
 
 		setAsAvatar() {
-			(this as any).apis.updateAvatar(this.file);
+			this.$root.apis.updateAvatar(this.file);
 		},
 
 		setAsBanner() {
-			(this as any).apis.updateBanner(this.file);
+			this.$root.apis.updateBanner(this.file);
 		},
 
 		addApp() {

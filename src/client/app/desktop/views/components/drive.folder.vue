@@ -156,7 +156,7 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							(this as any).apis.dialog({
+							this.$root.apis.dialog({
 								title: this.$t('unable-to-process'),
 								text: this.$t('circular-reference-detected'),
 								actions: [{
@@ -196,7 +196,7 @@ export default Vue.extend({
 		},
 
 		rename() {
-			(this as any).apis.input({
+			this.$root.apis.input({
 				title: this.$t('contextmenu.rename-folder'),
 				placeholder: this.$t('contextmenu.input-new-folder-name'),
 				default: this.folder.name

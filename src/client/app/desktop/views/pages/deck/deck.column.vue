@@ -168,7 +168,7 @@ export default Vue.extend({
 				icon: 'pencil-alt',
 				text: this.$t('rename'),
 				action: () => {
-					(this as any).apis.input({
+					this.$root.apis.input({
 						title: this.$t('rename'),
 						default: this.name,
 						allowEmpty: false
