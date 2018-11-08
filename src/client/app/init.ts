@@ -273,7 +273,12 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			Vue.mixin({
 				data() {
 					return {
-						os,
+						//os,
+						os: {
+							stream: os.stream,
+							getMeta: os.getMeta,
+							getMetaSync: os.getMetaSync
+						},
 						api: os.api,
 						apis: os.apis
 					};
@@ -281,6 +286,13 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			});
 
 			const app = new Vue({
+				i18n: new VueI18n({
+					sync: false,
+					locale: lang,
+					messages: {
+						[lang]: {}
+					}
+				}),
 				store: os.store,
 				router,
 				render: createEl => createEl(App)

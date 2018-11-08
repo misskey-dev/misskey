@@ -1,7 +1,6 @@
 <template>
 <div class="header" :style="style">
 	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
-	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="main">
