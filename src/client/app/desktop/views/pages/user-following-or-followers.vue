@@ -4,7 +4,7 @@
 		<div class="users">
 			<mk-user-card v-for="user in users" :user="user" :key="user.id"/>
 		</div>
-		<div class="more">
+		<div class="more" v-if="next">
 			<ui-button inline @click="fetchMore">%i18n:@load-more%</ui-button>
 		</div>
 	</div>
@@ -24,8 +24,16 @@ export default Vue.extend({
 			fetching: true,
 			user: null,
 			users: [],
-			cursor: undefined
+			next: undefined
 		};
+	},
+	computed: {
+		isFollowing(): boolean {
+			return this.$route.name == 'userFollowing';
+		},
+		endpoint(): string {
+			return this.isFollowing ? 'users/following' : 'users/followers';
+		}
 	},
 	watch: {
 		$route: 'fetch'
@@ -39,12 +47,13 @@ export default Vue.extend({
 			Progress.start();
 			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
-				(this as any).api('users/following', {
+				(this as any).api(this.endpoint, {
 					userId: this.user.id,
 					iknow: false,
 					limit: limit
 				}).then(x => {
 					this.users = x.users;
+					this.next = x.next;
 					this.fetching = false;
 					Progress.done();
 				});
@@ -52,13 +61,14 @@ export default Vue.extend({
 		},
 
 		fetchMore() {
-			(this as any).api('users/following', {
+			(this as any).api(this.endpoint, {
 				userId: this.user.id,
 				iknow: false,
 				limit: limit,
-				cursor: this.cursor
+				cursor: this.next
 			}).then(x => {
 				this.users = this.users.concat(x.users);
+				this.next = x.next;
 			});
 		}
 	}
