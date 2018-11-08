@@ -33,7 +33,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .zvdbznxvfixtmujpsigoccczftvpiwqh
-	$bg = #fff
+	$bg = var(--face)
 
 	height 280px
 	overflow hidden
@@ -41,6 +41,7 @@ export default Vue.extend({
 	text-align center
 	background $bg
 	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
+	color var(--faceText)
 
 	> .banner
 		height 90px
