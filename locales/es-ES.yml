@@ -720,6 +720,9 @@ desktop/views/components/renote-form.vue:
   failure: "La publicación ha fallado"
 desktop/views/components/renote-form-window.vue:
   title: "¿Seguro qué quieres volver a publicarlo?"
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
 desktop/views/components/settings-window.vue:
   settings: "Configuración"
 desktop/views/components/settings.vue:
