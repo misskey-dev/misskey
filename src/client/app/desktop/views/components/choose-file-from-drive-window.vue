@@ -30,7 +30,7 @@ export default Vue.extend({
 			default: false
 		},
 		title: {
-			default: '<fa :icon="['far', 'file']"/>%i18n:@choose-prompt%'
+			default: () => this.$t('choose-prompt')
 		}
 	},
 	data() {
@@ -61,8 +61,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-
-
 .title
 	> [data-icon]
 		margin-right 4px

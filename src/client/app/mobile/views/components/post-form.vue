@@ -14,7 +14,7 @@
 			<mk-note-preview class="preview" v-if="renote" :note="renote"/>
 			<div v-if="visibility == 'specified'" class="visibleUsers">
 				<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-				<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
+				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
 			</div>
 			<input v-show="useCw" v-model="cw" :placeholder="$t('placeholder')">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
@@ -126,12 +126,12 @@ export default Vue.extend({
 
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 

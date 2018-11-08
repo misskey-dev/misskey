@@ -48,7 +48,7 @@
 	<div class="hash">
 		<div>
 			<p>
-				<fa icon="hashtag"/>%i18n:@hash%
+				<fa icon="hashtag"/>{{ $t('hash') }}
 			</p>
 			<code>{{ file.md5 }}</code>
 		</div>

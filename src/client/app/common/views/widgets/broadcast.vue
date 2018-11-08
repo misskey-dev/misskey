@@ -21,7 +21,7 @@
 				<span v-if="announcements.length != 0" v-html="announcements[i].text"></span>
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>
 			</p>
-			<a v-if="announcements.length > 1" @click="next">%i18n:@next% &gt;&gt;</a>
+			<a v-if="announcements.length > 1" @click="next">{{ $t('next') }} &gt;&gt;</a>
 		</div>
 	</mk-widget-container>
 </div>

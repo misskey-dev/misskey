@@ -28,12 +28,12 @@ export default define({
 	computed: {
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			return xs[Math.floor(Math.random() * xs.length)];
 		}

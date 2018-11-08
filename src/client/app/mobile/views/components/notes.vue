@@ -63,7 +63,7 @@ export default Vue.extend({
 				const date = new Date(note.createdAt).getDate();
 				const month = new Date(note.createdAt).getMonth() + 1;
 				note._date = date;
-				note._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return note;
 			});
 		}

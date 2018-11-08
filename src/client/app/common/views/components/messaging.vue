@@ -38,7 +38,7 @@
 						<mk-time :time="message.createdAt"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">%i18n:@you%:</span>{{ message.text }}</p>
+						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
 					</div>
 				</div>
 			</a>

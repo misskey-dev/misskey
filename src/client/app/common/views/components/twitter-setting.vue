@@ -1,7 +1,7 @@
 <template>
 <div class="mk-twitter-setting">
 	<p>{{ $t('description') }}<a :href="`${docsUrl}/link-to-twitter`" target="_blank">{{ $t('detail') }}</a></p>
-	<p class="account" v-if="$store.state.i.twitter" :title="`Twitter ID: ${$store.state.i.twitter.userId}`">%i18n:@connected-to%: <a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
+	<p class="account" v-if="$store.state.i.twitter" :title="`Twitter ID: ${$store.state.i.twitter.userId}`">{{ $t('connected-to') }}: <a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
 	<p>
 		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ $store.state.i.twitter ? this.$t('reconnect') : this.$t('connect') }}</a>
 		<span v-if="$store.state.i.twitter"> or </span>

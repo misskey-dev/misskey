@@ -17,7 +17,7 @@
 		</template>
 	</component>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : this.$t('@.load-more') }}
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreNotifications ? this.$t('@.loading') : this.$t('@.load-more') }}
 	</button>
 	<p class="empty" v-if="notifications.length == 0 && !fetching">{{ $t('empty') }}</p>
 </div>
@@ -55,7 +55,7 @@ export default Vue.extend({
 				const date = new Date(notification.createdAt).getDate();
 				const month = new Date(notification.createdAt).getMonth() + 1;
 				notification._date = date;
-				notification._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				notification._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return notification;
 			});
 		}

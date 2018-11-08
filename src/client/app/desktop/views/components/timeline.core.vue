@@ -4,7 +4,7 @@
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p :class="$style.empty" slot="empty">
-			<fa :icon="['far', 'comments']"/>%i18n:@empty%
+			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</p>
 	</mk-notes>
 </div>

@@ -18,11 +18,11 @@
 	<mk-uploader ref="uploader"/>
 	<div class="browser" :class="{ fetching }" v-if="file == null">
 		<div class="info" v-if="info">
-			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:@used%</p>
+			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% {{ $t('used') }}</p>
 			<p v-if="folder != null && (folder.foldersCount > 0 || folder.filesCount > 0)">
-				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} %i18n:@folder-count%</template>
+				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} {{ $t('folder-count') }}</template>
 				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">{{ $t('count-separator') }}</template>
-				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} %i18n:@file-count%</template>
+				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} {{ $t('file-count') }}</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
@@ -32,7 +32,7 @@
 		<div class="files" v-if="files.length > 0">
 			<x-file class="file" v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
-				{{ fetchingMoreFiles ? '%i18n:common.loading%' : this.$t('@.load-more') }}
+				{{ fetchingMoreFiles ? this.$t('@.loading') : this.$t('@.load-more') }}
 			</button>
 		</div>
 		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">

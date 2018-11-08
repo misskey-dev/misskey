@@ -28,7 +28,7 @@
 			</div>
 		</ui-input>
 		<ui-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype" styl="fill">
-			<span>%i18n:@password% (%i18n:@retype%)</span>
+			<span>{{ $t('password') }} ({{ $t('retype') }})</span>
 			<span slot="prefix"><fa icon="lock"/></span>
 			<div slot="desc">
 				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('password-matched') }}</p>

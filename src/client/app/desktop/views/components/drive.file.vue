@@ -92,7 +92,7 @@ export default Vue.extend({
 				icon: 'download',
 			}, null, {
 				type: 'item',
-				text: '%i18n:common.delete%',
+				text: this.$t('@.delete'),
 				icon: ['far', 'trash-alt'],
 				action: this.deleteFile
 			}, null, {
@@ -172,10 +172,10 @@ export default Vue.extend({
 		copyUrl() {
 			copyToClipboard(this.file.url);
 			(this as any).apis.dialog({
-				title: '<fa icon="check"/>%i18n:@contextmenu.copied%',
+				title: this.$t('contextmenu.copied'),
 				text: this.$t('contextmenu.copied-url-to-clipboard'),
 				actions: [{
-					text: '%i18n:common.ok%'
+					text: this.$t('@.ok')
 				}]
 			});
 		},

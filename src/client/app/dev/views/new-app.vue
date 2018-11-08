@@ -58,7 +58,7 @@ export default Vue.extend({
 			}).then(() => {
 				location.href = '/dev/apps';
 			}).catch(() => {
-				alert('%i18n:common.dev.failed-to-create%');
+				alert(this.$t('@.dev.failed-to-create'));
 			});
 		}
 	}

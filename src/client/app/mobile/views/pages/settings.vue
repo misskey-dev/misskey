@@ -152,9 +152,9 @@
 				<div slot="title"><fa icon="sync-alt"/> {{ $t('update') }}</div>
 
 				<section>
-					<div>%i18n:@version% <i>{{ version }}</i></div>
+					<div>{{ $t('version') }} <i>{{ version }}</i></div>
 					<template v-if="latestVersion !== undefined">
-						<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
+						<div>{{ $t('latest-version') }} <i>{{ latestVersion ? latestVersion : version }}</i></div>
 					</template>
 					<ui-button @click="checkForUpdate" :disabled="checkingForUpdate">
 						<template v-if="checkingForUpdate">{{ $t('update-checking') }}<mk-ellipsis/></template>

@@ -88,13 +88,13 @@ export default define({
 			this.month = nm + 1;
 			this.day = nd;
 			this.weekDay = [
-				'%i18n:common.weekday.sunday%',
-				'%i18n:common.weekday.monday%',
-				'%i18n:common.weekday.tuesday%',
-				'%i18n:common.weekday.wednesday%',
-				'%i18n:common.weekday.thursday%',
-				'%i18n:common.weekday.friday%',
-				'%i18n:common.weekday.saturday%'
+				this.$t('@.weekday.sunday'),
+				this.$t('@.weekday.monday'),
+				this.$t('@.weekday.tuesday'),
+				this.$t('@.weekday.wednesday'),
+				this.$t('@.weekday.thursday'),
+				this.$t('@.weekday.friday'),
+				this.$t('@.weekday.saturday')
 			][now.getDay()];
 
 			const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();

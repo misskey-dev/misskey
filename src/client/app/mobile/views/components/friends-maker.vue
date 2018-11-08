@@ -1,6 +1,6 @@
 <template>
 <div class="mk-friends-maker">
-	<p class="title">%i18n:@title%:</p>
+	<p class="title">{{ $t('title') }}:</p>
 	<div class="users" v-if="!fetching && users.length > 0">
 		<mk-user-card v-for="user in users" :key="user.id" :user="user"/>
 	</div>

@@ -315,10 +315,10 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
+								title: this.$t('unable-to-process'),
 								text: this.$t('circular-reference-detected'),
 								actions: [{
-									text: '%i18n:common.ok%'
+									text: this.$t('@.ok')
 								}]
 							});
 							break;
@@ -345,10 +345,10 @@ export default Vue.extend({
 				});
 
 				(this as any).apis.dialog({
-					title: '<fa icon="check"/>%i18n:@url-upload-requested%',
+					title: this.$t('url-upload-requested'),
 					text: this.$t('may-take-time'),
 					actions: [{
-						text: '%i18n:common.ok%'
+						text: this.$t('@.ok')
 					}]
 				});
 			});

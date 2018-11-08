@@ -3,7 +3,7 @@
 	<div class="banner" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }"></div>
 
 	<h1>{{ meta.name }}</h1>
-	<p v-html="meta.description || '%i18n:common.about%'"></p>
+	<p v-html="meta.description || this.$t('@.about')"></p>
 	<router-link to="/">{{ $t('start') }}</router-link>
 </div>
 </template>

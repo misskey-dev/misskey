@@ -23,7 +23,7 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/components/choose-folder-from-drive-window.vue'),
 	props: {
 		title: {
-			default: '<fa :icon="['far', 'folder']"/>%i18n:@choose-prompt%'
+			default: () => this.$t('choose-prompt')
 		}
 	},
 	methods: {

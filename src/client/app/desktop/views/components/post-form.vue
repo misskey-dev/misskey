@@ -11,7 +11,7 @@
 			<a @click="addVisibleUser">{{ $t('add-visible-user') }}</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
-			<b>%i18n:@recent-tags%:</b>
+			<b>{{ $t('recent-tags') }}:</b>
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
 		<input v-show="useCw" v-model="cw" :placeholder="$t('placeholder')">
@@ -131,12 +131,12 @@ export default Vue.extend({
 
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 

@@ -4,14 +4,14 @@
 	<header><b><router-link :to="blackUser | userPage">{{ blackUser | userName }}</router-link></b>(%i18n:common.reversi.black%) vs <b><router-link :to="whiteUser | userPage">{{ whiteUser | userName }}</router-link></b>(%i18n:common.reversi.white%)</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
-		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}</p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ this.$t('@.reversi.turn-of').replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
+		<p class="turn" v-if="logPos != logs.length">{{ this.$t('@.reversi.past-turn-of').replace('{}', $options.filters.userName(turnUser)) }}</p>
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ $t('@.reversi.opponent-turn') }}<mk-ellipsis/></p>
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">{{ $t('@.reversi.my-turn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
-				<span>{{ '%i18n:common.reversi.won%'.replace('{}', $options.filters.userName(game.winner)) }}</span>
-				<span v-if="game.surrendered != null"> (%i18n:@surrendered%)</span>
+				<span>{{ this.$t('@.reversi.won').replace('{}', $options.filters.userName(game.winner)) }}</span>
+				<span v-if="game.surrendered != null"> ({{ $t('surrendered') }})</span>
 			</template>
 			<template v-else>{{ $t('@.reversi.drawn') }}</template>
 		</p>
@@ -43,7 +43,7 @@
 		</div>
 	</div>
 
-	<p class="status"><b>{{ '%i18n:common.reversi.this-turn%'.split('{}')[0] }}{{ logPos }}{{ '%i18n:common.reversi.this-turn%'.split('{}')[1] }}</b> %i18n:common.reversi.black%:{{ o.blackCount }} %i18n:common.reversi.white%:{{ o.whiteCount }} %i18n:common.reversi.total%:{{ o.blackCount + o.whiteCount }}</p>
+	<p class="status"><b>{{ this.$t('@.reversi.this-turn').split('{}')[0] }}{{ logPos }}{{ this.$t('@.reversi.this-turn').split('{}')[1] }}</b> %i18n:common.reversi.black%:{{ o.blackCount }} %i18n:common.reversi.white%:{{ o.whiteCount }} %i18n:common.reversi.total%:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
 		<form-button @click="surrender">{{ $t('surrender') }}</form-button>

@@ -244,7 +244,7 @@
 		<ui-card class="other" v-show="page == 'other'">
 			<div slot="title"><fa icon="info-circle"/> {{ $t('about') }}</div>
 			<section>
-				<p v-if="meta">%i18n:@operator%: <i><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></i></p>
+				<p v-if="meta">{{ $t('operator') }}: <i><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></i></p>
 			</section>
 		</ui-card>
 
@@ -252,10 +252,10 @@
 			<div slot="title"><fa icon="sync-alt"/> {{ $t('update') }}</div>
 			<section>
 				<p>
-					<span>%i18n:@version% <i>{{ version }}</i></span>
+					<span>{{ $t('version') }} <i>{{ version }}</i></span>
 					<template v-if="latestVersion !== undefined">
 						<br>
-						<span>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></span>
+						<span>{{ $t('latest-version') }} <i>{{ latestVersion ? latestVersion : version }}</i></span>
 					</template>
 				</p>
 				<button class="ui button block" @click="checkForUpdate" :disabled="checkingForUpdate">

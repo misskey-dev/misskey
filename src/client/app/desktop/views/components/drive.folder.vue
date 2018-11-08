@@ -71,7 +71,7 @@ export default Vue.extend({
 				action: this.rename
 			}, null, {
 				type: 'item',
-				text: '%i18n:common.delete%',
+				text: this.$t('@.delete'),
 				icon: ['far', 'trash-alt'],
 				action: this.deleteFolder
 			}], {
@@ -157,10 +157,10 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
+								title: this.$t('unable-to-process'),
 								text: this.$t('circular-reference-detected'),
 								actions: [{
-									text: '%i18n:common.ok%'
+									text: this.$t('@.ok')
 								}]
 							});
 							break;

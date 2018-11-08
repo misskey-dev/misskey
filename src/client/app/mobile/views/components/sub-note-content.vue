@@ -1,8 +1,8 @@
 <template>
 <div class="mk-sub-note-content">
 	<div class="body">
-		<span v-if="note.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
-		<span v-if="note.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
+		<span v-if="note.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
+		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
 		<a class="reply" v-if="note.replyId"><fa icon="reply"/></a>
 		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i" :custom-emojis="note.emojis"/>
 		<a class="rp" v-if="note.renoteId">RN: ...</a>
