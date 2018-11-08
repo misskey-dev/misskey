@@ -53,7 +53,7 @@ export default Vue.extend({
 	display block
 	width 100%
 	margin 0
-	padding 8px
+	padding 8px 10px
 	text-align center
 	font-weight normal
 	font-size 16px
