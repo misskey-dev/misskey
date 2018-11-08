@@ -168,10 +168,10 @@ export default Vue.extend({
 				birthday: this.birthday || null,
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
-				isCat: this.isCat,
-				isBot: this.isBot,
-				isLocked: this.isLocked,
-				carefulBot: this.carefulBot
+				isCat: !!this.isCat,
+				isBot: !!this.isBot,
+				isLocked: !!this.isLocked,
+				carefulBot: !!this.carefulBot
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;
