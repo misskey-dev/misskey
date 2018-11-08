@@ -180,27 +180,6 @@ common:
     tips: "ヒント"
     hashtags: "ハッシュタグ"
 
-  deck:
-    widgets: "ウィジェット"
-    home: "ホーム"
-    local: "ローカル"
-    hybrid: "ソーシャル"
-    hashtag: "ハッシュタグ"
-    global: "グローバル"
-    mentions: "あなた宛て"
-    direct: "ダイレクト投稿"
-    notifications: "通知"
-    list: "リスト"
-    swap-left: "左に移動"
-    swap-right: "右に移動"
-    swap-up: "上に移動"
-    swap-down: "下に移動"
-    remove: "カラムを削除"
-    add-column: "カラムを追加"
-    rename: "名前を変更"
-    stack-left: "左に重ねる"
-    pop-right: "右に出す"
-
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
 
@@ -1196,21 +1175,6 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "メディア投稿のみ"
-  is-media-view: "メディアビュー"
-  edit: "オプション"
-
-desktop/views/pages/deck/deck.user-column.vue:
-  posts: "投稿"
-  following: "フォロー"
-  followers: "フォロワー"
-  images: "画像"
-  activity: "アクティビティ"
-  timeline: "タイムライン"
-  pinned-notes: "ピン留めされた投稿"
-  push-to-a-list: "リストに追加"
-
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"
@@ -1651,6 +1615,42 @@ mobile/views/pages/user/home.notes.vue:
 mobile/views/pages/user/home.photos.vue:
   loading: "読み込み中"
   no-photos: "写真はありません"
+
+deck:
+  widgets: "ウィジェット"
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  hashtag: "ハッシュタグ"
+  global: "グローバル"
+  mentions: "あなた宛て"
+  direct: "ダイレクト投稿"
+  notifications: "通知"
+  list: "リスト"
+  swap-left: "左に移動"
+  swap-right: "右に移動"
+  swap-up: "上に移動"
+  swap-down: "下に移動"
+  remove: "カラムを削除"
+  add-column: "カラムを追加"
+  rename: "名前を変更"
+  stack-left: "左に重ねる"
+  pop-right: "右に出す"
+
+deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+  edit: "オプション"
+
+deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
+  pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"

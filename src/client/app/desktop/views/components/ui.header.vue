@@ -41,7 +41,7 @@ import XPost from './ui.header.post.vue';
 import XClock from './ui.header.clock.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n(),
 	components: {
 		XNav,
 		XSearch,

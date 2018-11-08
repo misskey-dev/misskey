@@ -44,7 +44,7 @@ import MkMessagingWindow from './messaging-window.vue';
 import MkGameWindow from './game-window.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/ui.header.nav.vue'),
 	data() {
 		return {
 			hasGameInvitations: false,

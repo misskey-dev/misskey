@@ -87,7 +87,7 @@ import MkGameWindow from './game-window.vue';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/ui.sidebar.vue'),
 	data() {
 		return {
 			hasGameInvitations: false,

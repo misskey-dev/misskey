@@ -38,14 +38,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import XColumn from './deck.column.vue';
 import XTl from './deck.tl.vue';
 import XListTl from './deck.list-tl.vue';
 import XHashtagTl from './deck.hashtag-tl.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('deck/deck.tl-column.vue'),
 	components: {
 		XColumn,
 		XTl,

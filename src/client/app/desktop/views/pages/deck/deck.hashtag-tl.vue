@@ -4,13 +4,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
 import XNotes from './deck.notes.vue';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
 	components: {
 		XNotes
 	},

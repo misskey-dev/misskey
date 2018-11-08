@@ -42,7 +42,7 @@ import XNote from './note.vue';
 const displayLimit = 30;
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n(),
 	components: {
 		XNote
 	},

@@ -4,7 +4,7 @@
 		<span v-if="note.isHidden" style="opacity: 0.5">{{ $t('private') }}</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">{{ $t('deleted') }}</span>
 		<a class="reply" v-if="note.replyId"><fa icon="reply"/></a>
-		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i" :customEmojis="note.emojis"/>
+		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i" :custom-emojis="note.emojis"/>
 		<a class="rp" v-if="note.renoteId" :href="`/notes/${note.renoteId}`">RN: ...</a>
 	</div>
 	<details v-if="note.files.length > 0">
@@ -23,7 +23,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/sub-note-content.vue'),
 	props: ['note']
 });
 </script>

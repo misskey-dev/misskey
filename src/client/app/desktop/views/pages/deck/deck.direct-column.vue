@@ -8,12 +8,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import XColumn from './deck.column.vue';
 import XDirect from './deck.direct.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('deck'),
 	components: {
 		XColumn,
 		XDirect

@@ -16,7 +16,7 @@ import i18n from '../../../i18n';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/ui.header.notifications.vue'),
 	data() {
 		return {
 			isOpen: false

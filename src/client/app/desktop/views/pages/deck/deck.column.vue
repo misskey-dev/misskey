@@ -27,13 +27,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import Menu from '../../../../common/views/components/menu.vue';
 import contextmenu from '../../../api/contextmenu';
 import { countIf } from '../../../../../../prelude/array';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('deck'),
 	props: {
 		column: {
 			type: Object,

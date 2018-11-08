@@ -25,13 +25,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import XNotification from './deck.notification.vue';
 
 const displayLimit = 20;
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n(),
 	components: {
 		XNotification
 	},

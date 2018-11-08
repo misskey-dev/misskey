@@ -56,7 +56,7 @@ function dragClear(fn) {
 }
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/window.vue'),
 	props: {
 		isModal: {
 			type: Boolean,

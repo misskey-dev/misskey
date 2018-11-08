@@ -98,7 +98,7 @@ import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/ui.header.account.vue'),
 	data() {
 		return {
 			isOpen: false

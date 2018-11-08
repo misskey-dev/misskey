@@ -19,7 +19,7 @@ import i18n from '../../../i18n';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/settings.tags.vue'),
 	data() {
 		return {
 			timelines: this.$store.state.settings.tagTimelines

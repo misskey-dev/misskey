@@ -303,7 +303,7 @@ import { url, langs, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/settings.vue'),
 	components: {
 		X2fa,
 		XApps,

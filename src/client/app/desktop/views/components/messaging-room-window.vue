@@ -12,7 +12,7 @@ import { url } from '../../../config';
 import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/messaging-room-window.vue'),
 	props: ['user'],
 	computed: {
 		popout(): string {

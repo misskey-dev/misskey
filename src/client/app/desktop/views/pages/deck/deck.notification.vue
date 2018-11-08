@@ -81,12 +81,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
 import getNoteSummary from '../../../../../../misc/get-note-summary';
 import XNote from '../../components/note.vue';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
 	components: {
 		XNote
 	},

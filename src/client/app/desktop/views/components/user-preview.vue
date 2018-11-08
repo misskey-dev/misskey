@@ -31,7 +31,7 @@ import * as anime from 'animejs';
 import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/user-preview.vue'),
 	props: {
 		user: {
 			type: [Object, String],

@@ -69,7 +69,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import { toASCII } from 'punycode';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n('desktop/views/components/post-form.vue'),
 	components: {
 		XDraggable,
 		MkVisibilityChooser
