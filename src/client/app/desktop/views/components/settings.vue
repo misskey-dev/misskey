@@ -138,8 +138,7 @@
 			<div slot="title"><fa icon="volume-up"/> {{ $t('sound') }}</div>
 
 			<section>
-				<ui-switch v-model="enableSounds">
-					%i18n:@enable-sounds%
+				<ui-switch v-model="enableSounds">{{ $t('enable-sounds') }}
 					<span slot="desc">{{ $t('enable-sounds-desc') }}</span>
 				</ui-switch>
 				<label>{{ $t('volume') }}</label>
@@ -185,8 +184,7 @@
 			<div slot="title"><fa :icon="['far', 'bell']"/> {{ $t('notification') }}</div>
 			<section>
 				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
-					%i18n:@auto-watch%
-					<span slot="desc">{{ $t('auto-watch-desc') }}</span>
+					{{ $t('auto-watch') }}<span slot="desc">{{ $t('auto-watch-desc') }}</span>
 				</ui-switch>
 				<section>
 					<ui-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</ui-button>
@@ -265,8 +263,7 @@
 				<details>
 					<summary>{{ $t('update-settings') }}</summary>
 					<ui-switch v-model="preventUpdate">
-						%i18n:@prevent-update%
-						<span slot="desc">{{ $t('prevent-update-desc') }}</span>
+						{{ $t('prevent-update') }}<span slot="desc">{{ $t('prevent-update-desc') }}</span>
 					</ui-switch>
 				</details>
 			</section>
@@ -276,12 +273,10 @@
 			<div slot="title"><fa icon="cogs"/> {{ $t('advanced-settings') }}</div>
 			<section>
 				<ui-switch v-model="debug">
-					%i18n:@debug-mode%
-					<span slot="desc">{{ $t('debug-mode-desc') }}</span>
+					{{ $t('debug-mode') }}<span slot="desc">{{ $t('debug-mode-desc') }}</span>
 				</ui-switch>
 				<ui-switch v-model="enableExperimentalFeatures">
-					%i18n:@experimental%
-					<span slot="desc">{{ $t('experimental-desc') }}</span>
+					{{ $t('experimental') }}<span slot="desc">{{ $t('experimental-desc') }}</span>
 				</ui-switch>
 			</section>
 		</ui-card>
