@@ -26,14 +26,6 @@ common:
   close: "Fermer"
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte peut être compromis."
   load-more: "もっと読み込む"
-  BSoD:
-    fatal-error: ":( 致命的な問題が発生しました。"
-    update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
-    error-code: "Code d’erreur"
-    browser-version: "Version du navigateur"
-    client-version: "La version du client"
-    email-support: "Si le problème persiste, veuillez contacter syuilotan@yahoo.co.jp en remplissant les informations ci-dessus."
-    thanks: "Merci d’avoir choisi d’utiliser Misskey."
   got-it: "J'ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
