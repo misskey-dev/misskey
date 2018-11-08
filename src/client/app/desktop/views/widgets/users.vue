@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-users">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa icon="users"/>%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="refresh"><fa icon="sync"/></button>
+		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
+		<button slot="func" :title="$t('title')" @click="refresh"><fa icon="sync"/></button>
 
 		<div class="mkw-users--body">
-			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 			<template v-else-if="users.length != 0">
 				<div class="user" v-for="_user in users">
 					<mk-avatar class="avatar" :user="_user"/>
@@ -15,7 +15,7 @@
 					</div>
 				</div>
 			</template>
-			<p class="empty" v-else>%i18n:@no-one%</p>
+			<p class="empty" v-else>{{ $t('no-one') }}</p>
 		</div>
 	</mk-widget-container>
 </div>
@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 const limit = 3;
 
@@ -32,6 +33,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/users.vue'),
 	data() {
 		return {
 			users: [],

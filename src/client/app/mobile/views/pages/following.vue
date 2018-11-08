@@ -1,8 +1,7 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="user.avatarUrl" alt="">
-		{{ '%i18n:@following-of%'.replace('{}', name) }}
+		<img :src="user.avatarUrl" alt="">{{ $t('following-of', { name }) }}
 	</template>
 	<mk-users-list
 		v-if="!fetching"
@@ -18,10 +17,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/following.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -48,7 +49,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `${'%i18n:@followers-of%'.replace('{}', this.name)} | ${(this as any).os.instanceName}`;
+				document.title = `${this.$t('followers-of').replace('{}', this.name)} | ${(this as any).os.instanceName}`;
 			});
 		},
 		onLoaded() {

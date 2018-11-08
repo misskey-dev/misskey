@@ -7,8 +7,8 @@
 		<p class="host">{{ host }}</p>
 		<div class="about">
 			<h2>{{ name }}</h2>
-			<p v-html="description || '%i18n:common.about%'"></p>
-			<router-link class="signup" to="/signup">%i18n:@signup%</router-link>
+			<p v-html="description || this.$t('@.about')"></p>
+			<router-link class="signup" to="/signup">{{ $t('signup') }}</router-link>
 		</div>
 		<div class="login">
 			<mk-signin :with-avatar="false"/>
@@ -33,32 +33,32 @@
 			</article>
 		</div>
 		<article class="about-misskey">
-			<h1>%i18n:common.intro.title%</h1>
-			<p v-html="'%i18n:common.intro.about%'"></p>
+			<h1>{{ $t('@.intro.title') }}</h1>
+			<p v-html="this.$t('@.intro.about')"></p>
 			<section>
-				<h2>%i18n:common.intro.features%</h2>
+				<h2>{{ $t('@.intro.features') }}</h2>
 				<section>
-					<h3>%i18n:common.intro.rich-contents%</h3>
+					<h3>{{ $t('@.intro.rich-contents') }}</h3>
 					<div class="image"><img src="/assets/about/post.png" alt=""></div>
-					<p v-html="'%i18n:common.intro.rich-contents-desc%'"></p>
+					<p v-html="this.$t('@.intro.rich-contents-desc')"></p>
 				</section>
 				<section>
-					<h3>%i18n:common.intro.reaction%</h3>
+					<h3>{{ $t('@.intro.reaction') }}</h3>
 					<div class="image"><img src="/assets/about/reaction.png" alt=""></div>
-					<p v-html="'%i18n:common.intro.reaction-desc%'"></p>
+					<p v-html="this.$t('@.intro.reaction-desc')"></p>
 				</section>
 				<section>
-					<h3>%i18n:common.intro.ui%</h3>
+					<h3>{{ $t('@.intro.ui') }}</h3>
 					<div class="image"><img src="/assets/about/ui.png" alt=""></div>
-					<p v-html="'%i18n:common.intro.ui-desc%'"></p>
+					<p v-html="this.$t('@.intro.ui-desc')"></p>
 				</section>
 				<section>
-					<h3>%i18n:common.intro.drive%</h3>
+					<h3>{{ $t('@.intro.drive') }}</h3>
 					<div class="image"><img src="/assets/about/drive.png" alt=""></div>
-					<p v-html="'%i18n:common.intro.drive-desc%'"></p>
+					<p v-html="this.$t('@.intro.drive-desc')"></p>
 				</section>
 			</section>
-			<p v-html="'%i18n:common.intro.outro%'"></p>
+			<p v-html="this.$t('@.intro.outro')"></p>
 		</article>
 		<div class="info" v-if="meta">
 			<p>Version: <b>{{ meta.version }}</b></p>
@@ -73,10 +73,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { copyright, host } from '../../../config';
 import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/welcome.vue'),
 	data() {
 		return {
 			meta: null,

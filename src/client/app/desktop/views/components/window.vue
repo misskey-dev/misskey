@@ -8,10 +8,10 @@
 			>
 				<h1><slot name="header"></slot></h1>
 				<div>
-					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%">
+					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" :title="$t('title')">
 						<i><fa :icon="['far', 'window-restore']"/></i>
 					</button>
-					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%">
+					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" :title="$t('title')">
 						<i><fa icon="times"/></i>
 					</button>
 				</div>
@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import contains from '../../../common/scripts/contains';
 
@@ -55,6 +56,7 @@ function dragClear(fn) {
 }
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/window.vue'),
 	props: {
 		isModal: {
 			type: Boolean,

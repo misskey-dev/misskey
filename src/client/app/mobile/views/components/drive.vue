@@ -1,7 +1,7 @@
 <template>
 <div class="kmmwchoexgckptowjmjgfsygeltxfeqs">
 	<nav ref="nav">
-		<a @click.prevent="goRoot()" href="/i/drive"><fa icon="cloud"/>%i18n:common.drive%</a>
+		<a @click.prevent="goRoot()" href="/i/drive"><fa icon="cloud"/>{{ $t('@.drive') }}</a>
 		<template v-for="folder in hierarchyFolders">
 			<span :key="folder.id + '>'"><fa icon="angle-right"/></span>
 			<a :key="folder.id" @click.prevent="cd(folder)" :href="`/i/drive/folder/${folder.id}`">{{ folder.name }}</a>
@@ -18,26 +18,26 @@
 	<mk-uploader ref="uploader"/>
 	<div class="browser" :class="{ fetching }" v-if="file == null">
 		<div class="info" v-if="info">
-			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:@used%</p>
+			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% {{ $t('used') }}</p>
 			<p v-if="folder != null && (folder.foldersCount > 0 || folder.filesCount > 0)">
-				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} %i18n:@folder-count%</template>
-				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">%i18n:@count-separator%</template>
-				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} %i18n:@file-count%</template>
+				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} {{ $t('folder-count') }}</template>
+				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">{{ $t('count-separator') }}</template>
+				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} {{ $t('file-count') }}</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
 			<x-folder class="folder" v-for="folder in folders" :key="folder.id" :folder="folder"/>
-			<p v-if="moreFolders">%i18n:@load-more%</p>
+			<p v-if="moreFolders">{{ $t('@.load-more') }}</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
 			<x-file class="file" v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
-				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:@load-more%' }}
+				{{ fetchingMoreFiles ? this.$t('@.loading') : this.$t('@.load-more') }}
 			</button>
 		</div>
 		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
-			<p v-if="folder == null">%i18n:@nothing-in-drive%</p>
-			<p v-if="folder != null">%i18n:@folder-is-empty%</p>
+			<p v-if="folder == null">{{ $t('nothing-in-drive') }}</p>
+			<p v-if="folder != null">{{ $t('folder-is-empty') }}</p>
 		</div>
 	</div>
 	<div class="fetching" v-if="fetching && file == null && files.length == 0 && folders.length == 0">
@@ -53,11 +53,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import XFileDetail from './drive.file-detail.vue';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/drive.vue'),
 	components: {
 		XFolder,
 		XFile,
@@ -378,7 +380,7 @@ export default Vue.extend({
 		},
 
 		openContextMenu() {
-			const fn = window.prompt('%i18n:@prompt%');
+			const fn = window.prompt(this.$t('prompt'));
 			if (fn == null || fn == '') return;
 			switch (fn) {
 				case '1':
@@ -397,7 +399,7 @@ export default Vue.extend({
 					this.moveFolder();
 					break;
 				case '6':
-					alert('%i18n:@deletion-alert%');
+					alert(this.$t('deletion-alert'));
 					break;
 			}
 		},
@@ -407,7 +409,7 @@ export default Vue.extend({
 		},
 
 		createFolder() {
-			const name = window.prompt('%i18n:@folder-name%');
+			const name = window.prompt(this.$t('folder-name'));
 			if (name == null || name == '') return;
 			(this as any).api('drive/folders/create', {
 				name: name,
@@ -419,10 +421,10 @@ export default Vue.extend({
 
 		renameFolder() {
 			if (this.folder == null) {
-				alert('%i18n:@root-rename-alert%');
+				alert(this.$t('root-rename-alert'));
 				return;
 			}
-			const name = window.prompt('%i18n:@folder-name%', this.folder.name);
+			const name = window.prompt(this.$t('folder-name'), this.folder.name);
 			if (name == null || name == '') return;
 			(this as any).api('drive/folders/update', {
 				name: name,
@@ -434,7 +436,7 @@ export default Vue.extend({
 
 		moveFolder() {
 			if (this.folder == null) {
-				alert('%i18n:@root-move-alert%');
+				alert(this.$t('root-move-alert'));
 				return;
 			}
 			(this as any).apis.chooseDriveFolder().then(folder => {
@@ -448,13 +450,13 @@ export default Vue.extend({
 		},
 
 		urlUpload() {
-			const url = window.prompt('%i18n:@url-prompt%');
+			const url = window.prompt(this.$t('url-prompt'));
 			if (url == null || url == '') return;
 			(this as any).api('drive/files/upload_from_url', {
 				url: url,
 				folderId: this.folder ? this.folder.id : undefined
 			});
-			alert('%i18n:@uploading%');
+			alert(this.$t('uploading'));
 		},
 
 		onChangeLocalFile() {

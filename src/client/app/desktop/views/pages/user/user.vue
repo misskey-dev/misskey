@@ -1,8 +1,8 @@
 <template>
 <mk-ui>
 	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> %i18n:@is-suspended%</div>
-		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> %i18n:common.is-remote-user%<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a></div>
+		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.is-suspended') }}</div>
+		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
 		<main>
 			<div class="main">
 				<x-header :user="user"/>
@@ -20,7 +20,6 @@
 				<x-friends :user="user"/>
 				<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				<div class="nav"><mk-nav/></div>
-				<p v-if="!user.host">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
 			</div>
 		</main>
 	</div>
@@ -29,6 +28,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
@@ -41,6 +41,7 @@ import XTwitter from './user.twitter.vue';
 import XGithub from './user.github.vue'; // ?MEM: Don't fix the intentional typo. (XGitHub -> `<x-git-hub>`)
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XHeader,
 		XTimeline,

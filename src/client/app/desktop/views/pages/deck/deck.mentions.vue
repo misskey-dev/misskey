@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null"/>
+<x-notes ref="timeline" :more="existMore ? more : null"/>
 </template>
 
 <script lang="ts">

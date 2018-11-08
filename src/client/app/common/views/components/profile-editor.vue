@@ -1,65 +1,65 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="user"/> %i18n:@title%</div>
+	<div slot="title"><fa icon="user"/> {{ $t('title') }}</div>
 
 	<section class="fit-top">
 		<ui-form :disabled="saving">
 			<ui-input v-model="name" :max="30">
-				<span>%i18n:@name%</span>
+				<span>{{ $t('name') }}</span>
 			</ui-input>
 
 			<ui-input v-model="username" readonly>
-				<span>%i18n:@account%</span>
+				<span>{{ $t('account') }}</span>
 				<span slot="prefix">@</span>
 				<span slot="suffix">@{{ host }}</span>
 			</ui-input>
 
 			<ui-input v-model="location">
-				<span>%i18n:@location%</span>
+				<span>{{ $t('location') }}</span>
 				<span slot="prefix"><fa icon="map-marker-alt"/></span>
 			</ui-input>
 
 			<ui-input v-model="birthday" type="date">
-				<span>%i18n:@birthday%</span>
+				<span>{{ $t('birthday') }}</span>
 				<span slot="prefix"><fa icon="birthday-cake"/></span>
 			</ui-input>
 
 			<ui-textarea v-model="description" :max="500">
-				<span>%i18n:@description%</span>
+				<span>{{ $t('description') }}</span>
 			</ui-textarea>
 
 			<ui-input type="file" @change="onAvatarChange">
-				<span>%i18n:@avatar%</span>
+				<span>{{ $t('avatar') }}</span>
 				<span slot="icon"><fa icon="image"/></span>
-				<span slot="desc" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
+				<span slot="desc" v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></span>
 			</ui-input>
 
 			<ui-input type="file" @change="onBannerChange">
-				<span>%i18n:@banner%</span>
+				<span>{{ $t('banner') }}</span>
 				<span slot="icon"><fa icon="image"/></span>
-				<span slot="desc" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
+				<span slot="desc" v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></span>
 			</ui-input>
 
-			<ui-button @click="save(true)">%i18n:@save%</ui-button>
+			<ui-button @click="save(true)">{{ $t('save') }}</ui-button>
 		</ui-form>
 	</section>
 
 	<section>
-		<header>%i18n:@advanced%</header>
+		<header>{{ $t('advanced') }}</header>
 
 		<div>
-			<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
-			<ui-switch v-model="isBot" @change="save(false)">%i18n:@is-bot%</ui-switch>
-			<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
+			<ui-switch v-model="isCat" @change="save(false)">{{ $t('is-cat') }}</ui-switch>
+			<ui-switch v-model="isBot" @change="save(false)">{{ $t('is-bot') }}</ui-switch>
+			<ui-switch v-model="alwaysMarkNsfw">{{ $t('@.always-mark-nsfw') }}</ui-switch>
 		</div>
 	</section>
 
 	<section>
-		<header>%i18n:@privacy%</header>
+		<header>{{ $t('privacy') }}</header>
 
 		<div>
-			<ui-switch v-model="isLocked" @change="save(false)">%i18n:@is-locked%</ui-switch>
-			<ui-switch v-model="carefulBot" @change="save(false)">%i18n:@careful-bot%</ui-switch>
+			<ui-switch v-model="isLocked" @change="save(false)">{{ $t('is-locked') }}</ui-switch>
+			<ui-switch v-model="carefulBot" @change="save(false)">{{ $t('careful-bot') }}</ui-switch>
 		</div>
 	</section>
 </ui-card>
@@ -67,9 +67,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/profile-editor.vue'),
 	data() {
 		return {
 			host,
@@ -180,7 +182,7 @@ export default Vue.extend({
 				if (notify) {
 					this.$swal({
 						type: 'success',
-						text: '%i18n:@saved%'
+						text: this.$t('saved')
 					});
 				}
 			});

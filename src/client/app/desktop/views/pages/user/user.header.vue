@@ -7,7 +7,7 @@
 			<p class="name">{{ user | userName }}</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
-				<span v-if="user.isBot" title="%i18n:@is-bot%"><fa icon="robot"/></span>
+				<span v-if="user.isBot" :title="$t('title')"><fa icon="robot"/></span>
 			</div>
 		</div>
 	</div>
@@ -18,12 +18,12 @@
 		</div>
 		<div class="info">
 			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>
-			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', '%i18n:@year%').replace('-', '%i18n:@month%') + '%i18n:@day%' }} ({{ age }}%i18n:@years-old%)</span>
+			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', this.$t('year')).replace('-', this.$t('month')) + this.$t('day') }} ({{ age }}%i18n:@years-old%)</span>
 		</div>
 		<div class="status">
-			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
-			<router-link :to="user | userPage('following')" class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>%i18n:@following%</router-link>
-			<router-link :to="user | userPage('followers')" class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</router-link>
+			<span class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</span>
+			<router-link :to="user | userPage('following')" class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
+			<router-link :to="user | userPage('followers')" class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
 		</div>
 	</div>
 </div>
@@ -31,9 +31,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import * as age from 's-age';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.header.vue'),
 	props: ['user'],
 	computed: {
 		style(): any {

@@ -2,24 +2,26 @@
 <div class="mk-stream-indicator">
 	<p v-if="stream.state == 'initializing'">
 		<fa icon="spinner .pulse"/>
-		<span>%i18n:@connecting%<mk-ellipsis/></span>
+		<span>{{ $t('connecting') }}<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'reconnecting'">
 		<fa icon="spinner .pulse"/>
-		<span>%i18n:@reconnecting%<mk-ellipsis/></span>
+		<span>{{ $t('reconnecting') }}<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'connected'">
 		<fa icon="check"/>
-		<span>%i18n:@connected%</span>
+		<span>{{ $t('connected') }}</span>
 	</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/stream-indicator.vue'),
 	computed: {
 		stream() {
 			return (this as any).os.stream;

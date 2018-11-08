@@ -1,21 +1,23 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>%i18n:@title%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('title') }}</span>
 
 	<main>
 		<template v-for="favorite in favorites">
 			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
 		</template>
-		<a v-if="existMore" @click="more">%i18n:@more%</a>
+		<a v-if="existMore" @click="more">{{ $t('@.load-more') }}</a>
 	</main>
 </mk-ui>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/favorites.vue'),
 	data() {
 		return {
 			fetching: true,

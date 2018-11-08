@@ -16,9 +16,9 @@
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa icon="retweet"/>
-		<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+		<span>{{ this.$t('reposted-by').substr(0, this.$t('reposted-by').indexOf('{')) }}</span>
 		<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
-		<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+		<span>{{ this.$t('reposted-by').substr(this.$t('reposted-by').indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
@@ -32,7 +32,7 @@
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">%i18n:@private%</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">{{ $t('private') }}</span>
 						<a class="reply" v-if="appearNote.reply"><fa icon="reply"/></a>
 						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :customEmojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote">RN:</a>
@@ -49,15 +49,15 @@
 			<footer>
 				<span class="app" v-if="appearNote.app && mini">via <b>{{ appearNote.app.name }}</b></span>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
-				<button class="replyButton" @click="reply()" title="%i18n:@reply%">
+				<button class="replyButton" @click="reply()" :title="$t('reply')">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 					<template v-else><fa icon="reply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button class="renoteButton" @click="renote()" title="%i18n:@renote%">
+				<button class="renoteButton" @click="renote()" :title="$t('renote')">
 					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" title="%i18n:@add-reaction%">
+				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 					<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
 				</button>
 				<button @click="menu()" ref="menuButton">
@@ -74,12 +74,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 import XSub from './note.sub.vue';
 import noteMixin from '../../../common/scripts/note-mixin';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/note.vue'),
 	components: {
 		XSub
 	},

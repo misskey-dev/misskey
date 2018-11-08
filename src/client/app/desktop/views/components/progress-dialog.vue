@@ -2,7 +2,7 @@
 <mk-window ref="window" :is-modal="false" :can-close="false" width="500px" @closed="destroyDom">
 	<span slot="header">{{ title }}<mk-ellipsis/></span>
 	<div :class="$style.body">
-		<p :class="$style.init" v-if="isNaN(value)">%i18n:@waiting%<mk-ellipsis/></p>
+		<p :class="$style.init" v-if="isNaN(value)">{{ $t('waiting') }}<mk-ellipsis/></p>
 		<p :class="$style.percentage" v-if="!isNaN(value)">{{ Math.floor((value / max) * 100) }}</p>
 		<progress :class="$style.progress"
 			v-if="!isNaN(value) && value < max"
@@ -16,7 +16,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
+
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/progress-dialog.vue'),
 	props: ['title', 'initValue', 'initMax'],
 	data() {
 		return {

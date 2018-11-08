@@ -4,7 +4,7 @@
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p :class="$style.empty" slot="empty">
-			<fa :icon="['far', 'comments']"/>%i18n:@empty%
+			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</p>
 	</mk-notes>
 </div>
@@ -12,10 +12,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/timeline.core.vue'),
 	props: {
 		src: {
 			type: String,

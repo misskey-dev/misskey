@@ -1,25 +1,29 @@
 <template>
 <div class="mkw-photo-stream" :class="$style.root" :data-melt="props.design == 2">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header"><fa icon="camera"/>%i18n:@title%</template>
+		<template slot="header"><fa icon="camera"/>{{ $t('title') }}</template>
 
-		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<div :class="$style.stream" v-if="!fetching && images.length > 0">
 			<div v-for="image in images" :class="$style.img" :style="`background-image: url(${image.thumbnailUrl || image.url})`"></div>
 		</div>
-		<p :class="$style.empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
+		<p :class="$style.empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 	</mk-widget-container>
 </div>
 </template>
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'photo-stream',
 	props: () => ({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/photo-stream.vue'),
+
 	data() {
 		return {
 			images: [],

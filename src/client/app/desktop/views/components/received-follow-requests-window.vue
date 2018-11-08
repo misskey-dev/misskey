@@ -1,12 +1,12 @@
 <template>
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
-	<span slot="header"><fa :icon="['far', 'envelope']"/> %i18n:@title%</span>
+	<span slot="header"><fa :icon="['far', 'envelope']"/> {{ $t('title') }}</span>
 
 	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc">
 		<div v-for="req in requests">
 			<router-link :key="req.id" :to="req.follower | userPage">{{ req.follower | userName }}</router-link>
 			<span>
-				<a @click="accept(req.follower)">%i18n:@accept%</a>|<a @click="reject(req.follower)">%i18n:@reject%</a>
+				<a @click="accept(req.follower)">{{ $t('accept') }}</a>|<a @click="reject(req.follower)">{{ $t('reject') }}</a>
 			</span>
 		</div>
 	</div>
@@ -15,7 +15,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
+
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/received-follow-requests-window.vue'),
 	data() {
 		return {
 			fetching: true,

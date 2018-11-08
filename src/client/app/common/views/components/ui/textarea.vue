@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
 	props: {

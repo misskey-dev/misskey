@@ -3,7 +3,7 @@
 	<span slot="header">
 		<template v-if="folder"><span style="margin-right:4px;"><fa :icon="['far', 'folder-open']"/></span>{{ folder.name }}</template>
 		<template v-if="file"><mk-file-type-icon data-icon :type="file.type" style="margin-right:4px;"/>{{ file.name }}</template>
-		<template v-if="!folder && !file"><span style="margin-right:4px;"><fa icon="cloud"/></span>%i18n:common.drive%</template>
+		<template v-if="!folder && !file"><span style="margin-right:4px;"><fa icon="cloud"/></span>{{ $t('@.drive') }}</template>
 	</span>
 	<template slot="func"><button @click="fn"><fa icon="ellipsis-h"/></button></template>
 	<mk-drive
@@ -24,9 +24,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n(),
 	data() {
 		return {
 			Progress,

@@ -1,13 +1,15 @@
 <template>
 <div class="note">
-	<button @click="post" title="%i18n:@post%"><fa icon="pencil-alt"/></button>
+	<button @click="post" :title="$t('post')"><fa icon="pencil-alt"/></button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.header.post.vue'),
 	methods: {
 		post() {
 			(this as any).apis.post();

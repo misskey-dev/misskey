@@ -11,7 +11,7 @@
 			<mk-user-card v-for="user in users" :user="user" :key="user.id"/>
 		</div>
 		<div class="more" v-if="next">
-			<ui-button inline @click="fetchMore">%i18n:@load-more%</ui-button>
+			<ui-button inline @click="fetchMore">{{ $t('@.load-more') }}</ui-button>
 		</div>
 	</div>
 </mk-ui>
@@ -19,22 +19,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import i18n from '../../../i18n';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
-import { lang, locale } from '../../../config';
 
 const limit = 16;
 
-const i18n = new VueI18n({
-	locale: lang,
-	messages: {
-		[lang]: locale['desktop/views/pages/user-following-or-followers.vue']
-	}
-});
-
 export default Vue.extend({
-	i18n,
+	i18n: i18n('desktop/views/pages/user-following-or-followers.vue'),
 
 	data() {
 		return {

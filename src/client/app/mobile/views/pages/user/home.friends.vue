@@ -1,16 +1,18 @@
 <template>
 <div class="root friends">
-	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@loading%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<mk-user-card v-for="user in users" :key="user.id" :user="user"/>
 	</div>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('no-users') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/user/home.friends.vue'),
 	props: ['user'],
 	data() {
 		return {

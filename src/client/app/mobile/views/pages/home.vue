@@ -2,12 +2,12 @@
 <mk-ui>
 	<span slot="header" @click="showNav = true">
 		<span :class="$style.title">
-			<span v-if="src == 'home'"><fa icon="home"/>%i18n:@home%</span>
-			<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>%i18n:@local%</span>
-			<span v-if="src == 'hybrid'"><fa icon="share-alt"/>%i18n:@hybrid%</span>
-			<span v-if="src == 'global'"><fa icon="globe"/>%i18n:@global%</span>
-			<span v-if="src == 'mentions'"><fa icon="at"/>%i18n:@mentions%</span>
-			<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>%i18n:@messages%</span>
+			<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
+			<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
+			<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
+			<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
+			<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
+			<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
 			<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
 			<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
 		</span>
@@ -28,13 +28,13 @@
 			<div class="pointer"></div>
 			<div class="body">
 				<div>
-					<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> %i18n:@home%</span>
-					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> %i18n:@local%</span>
-					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> %i18n:@hybrid%</span>
-					<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> %i18n:@global%</span>
+					<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
+					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
+					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
+					<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> {{ $t('global') }}</span>
 					<div class="hr"></div>
-					<span :data-active="src == 'mentions'" @click="src = 'mentions'"><fa icon="at"/> %i18n:@mentions%<i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></span>
-					<span :data-active="src == 'messages'" @click="src = 'messages'"><fa :icon="['far', 'envelope']"/> %i18n:@messages%<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></span>
+					<span :data-active="src == 'mentions'" @click="src = 'mentions'"><fa icon="at"/> {{ $t('mentions') }}<i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></span>
+					<span :data-active="src == 'messages'" @click="src = 'messages'"><fa :icon="['far', 'envelope']"/> {{ $t('messages') }}<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></span>
 					<template v-if="lists">
 						<div class="hr" v-if="lists.length > 0"></div>
 						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id"><fa icon="list"/> {{ l.title }}</span>
@@ -61,10 +61,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 import XTl from './home.timeline.vue';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/home.vue'),
+
 	components: {
 		XTl
 	},

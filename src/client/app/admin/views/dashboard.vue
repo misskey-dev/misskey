@@ -5,7 +5,7 @@
 		<p><b>Machine</b><span>{{ meta.machine }}</span></p>
 		<p><b>OS</b><span>{{ meta.os }}</span></p>
 		<p><b>Node</b><span>{{ meta.node }}</span></p>
-		<p>%i18n:common.ai-chan-kawaii%</p>
+		<p>{{ $t('@.ai-chan-kawaii') }}</p>
 	</header>
 
 	<div v-if="stats" class="stats">
@@ -13,12 +13,12 @@
 			<div>
 				<div><fa icon="user"/></div>
 				<div>
-					<span>%i18n:@accounts%</span>
+					<span>{{ $t('accounts') }}</span>
 					<b class="primary">{{ stats.originalUsersCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span><fa icon="home"/> {{ $t('this-instance') }}</span>
 				<span @click="setChartSrc('users')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
@@ -26,12 +26,12 @@
 			<div>
 				<div><fa icon="pencil-alt"/></div>
 				<div>
-					<span>%i18n:@notes%</span>
+					<span>{{ $t('notes') }}</span>
 					<b class="primary">{{ stats.originalNotesCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span><fa icon="home"/> {{ $t('this-instance') }}</span>
 				<span @click="setChartSrc('notes')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
@@ -39,12 +39,12 @@
 			<div>
 				<div><fa icon="database"/></div>
 				<div>
-					<span>%i18n:@drive%</span>
+					<span>{{ $t('drive') }}</span>
 					<b>{{ stats.driveUsageLocal | bytes }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span><fa icon="home"/> {{ $t('this-instance') }}</span>
 				<span @click="setChartSrc('drive')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
@@ -52,12 +52,12 @@
 			<div>
 				<div><fa :icon="['far', 'hdd']"/></div>
 				<div>
-					<span>%i18n:@instances%</span>
+					<span>{{ $t('instances') }}</span>
 					<b>{{ stats.instances | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="globe"/> %i18n:@federated%</span>
+				<span><fa icon="globe"/> {{ $t('federated') }}</span>
 				<span @click="setChartSrc('federation-instances-total')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
@@ -78,12 +78,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../i18n';
 import XCpuMemory from "./cpu-memory.vue";
 import XCharts from "./charts.vue";
 import XApLog from "./ap-log.vue";
 
 export default Vue.extend({
+	i18n: i18n('admin/views/dashboard.vue'),
 	components: {
 		XCpuMemory,
 		XCharts,

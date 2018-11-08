@@ -25,6 +25,7 @@ common:
   application-authorization: "アプリの連携"
   close: "閉じる"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  load-more: "もっと読み込む"
   BSoD:
     fatal-error: ":( 致命的な問題が発生しました。"
     update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
@@ -37,10 +38,7 @@ common:
   got-it: "わかった"
   customization-tips:
     title: "カスタマイズのヒント"
-    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
-    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
-    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
-    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
     gotit: "Got it!"
   notification:
     file-uploaded: "ファイルがアップロードされました"
@@ -65,6 +63,7 @@ common:
 
   trash: "ゴミ箱"
   drive: "ドライブ"
+  messaging: "トーク"
 
   weekday-short:
     sunday: "日"
@@ -147,13 +146,13 @@ common:
     drawn: "引き分け"
     my-turn: "あなたのターンです"
     opponent-turn: "相手のターンです"
-    turn-of: "{}のターンです"
-    past-turn-of: "{}のターン"
-    won: "{}の勝ち"
+    turn-of: "{name}のターンです"
+    past-turn-of: "{name}のターン"
+    won: "{name}の勝ち"
     black: "黒"
     white: "白"
     total: "合計"
-    this-turn: "{}ターン目"
+    this-turn: "{count}ターン目"
 
   widgets:
     analog-clock: "アナログ時計"
@@ -173,33 +172,11 @@ common:
     users: "おすすめユーザー"
     polls: "アンケート"
     post-form: "投稿フォーム"
-    messaging: "メッセージ"
     server: "サーバー情報"
     donation: "寄付のお願い"
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
-
-  deck:
-    widgets: "ウィジェット"
-    home: "ホーム"
-    local: "ローカル"
-    hybrid: "ソーシャル"
-    hashtag: "ハッシュタグ"
-    global: "グローバル"
-    mentions: "あなた宛て"
-    direct: "ダイレクト投稿"
-    notifications: "通知"
-    list: "リスト"
-    swap-left: "左に移動"
-    swap-right: "右に移動"
-    swap-up: "上に移動"
-    swap-down: "下に移動"
-    remove: "カラムを削除"
-    add-column: "カラムを追加"
-    rename: "名前を変更"
-    stack-left: "左に重ねる"
-    pop-right: "右に出す"
 
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
@@ -354,7 +331,6 @@ common/views/components/messaging.vue:
 
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはありません"
-  more: "もっと読む"
   no-history: "これより過去の履歴はありません"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
@@ -604,13 +580,13 @@ desktop/views/components/activity.vue:
   toggle: "表示を切り替え"
 
 desktop/views/components/calendar.vue:
-  title: "{1}年 {2}月"
+  title: "{year}年 {month}月"
   prev: "前の月"
   next: "次の月"
   go: "クリックして時間遡行"
 
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択中"
+  chosen-files: "{count}ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
   cancel: "キャンセル"
   ok: "決定"
@@ -662,7 +638,6 @@ desktop/views/components/drive.folder.vue:
 
 desktop/views/components/drive.vue:
   search: "検索"
-  load-more: "もっと読み込む"
   empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
   empty-drive: "ドライブには何もありません。"
   empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
@@ -734,7 +709,6 @@ desktop/views/components/messaging-window.vue:
   title: "メッセージ"
 
 desktop/views/components/note-detail.vue:
-  more: "会話をもっと読み込む"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   reposted-by: "{}がRenote"
@@ -754,10 +728,8 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
   retry: "リトライ"
-  load-more: "もっと読み込む"
 
 desktop/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 
 desktop/views/components/post-form.vue:
@@ -1019,7 +991,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
   deck: "デッキ"
-  messaging: "メッセージ"
   game: "ゲーム"
 
 desktop/views/components/ui.header.notifications.vue:
@@ -1049,7 +1020,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
-  load-more: "もっと"
   fetching: "読み込んでいます"
 
 desktop/views/components/users-list-item.vue:
@@ -1196,21 +1166,6 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "メディア投稿のみ"
-  is-media-view: "メディアビュー"
-  edit: "オプション"
-
-desktop/views/pages/deck/deck.user-column.vue:
-  posts: "投稿"
-  following: "フォロー"
-  followers: "フォロワー"
-  images: "画像"
-  activity: "アクティビティ"
-  timeline: "タイムライン"
-  pinned-notes: "ピン留めされた投稿"
-  push-to-a-list: "リストに追加"
-
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"
@@ -1227,9 +1182,6 @@ desktop/views/pages/welcome.vue:
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 
-desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
-
 desktop/views/pages/home-customize.vue:
   title: "ホームのカスタマイズ"
 
@@ -1245,13 +1197,13 @@ desktop/views/pages/selectdrive.vue:
 
 desktop/views/pages/search.vue:
   not-available: "検索機能はインスタンスの設定で無効になっています。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "{name}で共有"
 
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
@@ -1267,10 +1219,6 @@ desktop/views/pages/user/user.friends.vue:
   title: "よく話すユーザー"
   loading: "読み込み中"
   no-users: "よく話すユーザーはいません"
-
-desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーは凍結されています。"
-  last-used-at: "最終アクセス"
 
 desktop/views/pages/user/user.photos.vue:
   title: "フォト"
@@ -1342,7 +1290,6 @@ mobile/views/components/drive.vue:
   folder-count: "フォルダ"
   count-separator: "、"
   file-count: "ファイル"
-  load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
@@ -1352,9 +1299,6 @@ mobile/views/components/drive.vue:
   root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
-
-mobile/views/components/drive-file-detail.vue:
-  rename: "名前を変更"
 
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
@@ -1421,12 +1365,7 @@ mobile/views/components/note-sub.vue:
   bot: "bot"
   cat: "cat"
 
-mobile/views/components/notes.vue:
-  failed: "読み込みに失敗しました。"
-  retry: "リトライ"
-
 mobile/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 
 mobile/views/components/post-form.vue:
@@ -1449,7 +1388,6 @@ mobile/views/components/sub-note-content.vue:
 
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
-  load-more: "もっと"
 
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
@@ -1458,7 +1396,6 @@ mobile/views/components/ui.header.vue:
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
-  messaging: "メッセージ"
   follow-requests: "フォロー申請"
   search: "検索"
   favorites: "お気に入り"
@@ -1473,12 +1410,10 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
-  load-more: "もっと"
 
 mobile/views/components/users-list.vue:
   all: "すべて"
   known: "知り合い"
-  load-more: "もっと"
 
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
@@ -1487,17 +1422,14 @@ mobile/views/pages/user-lists.vue:
   title: "リスト"
   enter-list-name: "リスト名を入力してください"
 
-mobile/views/pages/drive.vue:
-  more: "もっと見る"
-
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
 
 mobile/views/pages/followers.vue:
-  followers-of: "{}のフォロワー"
+  followers-of: "{name}のフォロワー"
 
 mobile/views/pages/following.vue:
-  following-of: "{}のフォロー"
+  following-of: "{name}のフォロー"
 
 mobile/views/pages/home.vue:
   home: "ホーム"
@@ -1508,7 +1440,7 @@ mobile/views/pages/home.vue:
   messages: "メッセージ"
 
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
@@ -1523,13 +1455,7 @@ mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
-
-mobile/views/pages/messaging.vue:
-  messaging: "メッセージ"
-
-mobile/views/pages/messaging-room.vue:
-  messaging: "メッセージ"
+  share-with: "{name}で共有"
 
 mobile/views/pages/received-follow-requests.vue:
   title: "フォロー申請"
@@ -1550,8 +1476,7 @@ mobile/views/pages/games/reversi.vue:
 
 mobile/views/pages/search.vue:
   search: "検索"
-  empty: "「{}」に関する投稿は見つかりませんでした。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
@@ -1637,20 +1562,52 @@ mobile/views/pages/user/home.vue:
   last-used-at: "最終ログイン"
 
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込み中"
   no-users: "知り合いのユーザーはいません"
 
 mobile/views/pages/user/home.friends.vue:
-  loading: "読み込み中"
   no-users: "よく会話するユーザーはいません"
 
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込み中"
   no-notes: "投稿はありません"
 
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込み中"
   no-photos: "写真はありません"
+
+deck:
+  widgets: "ウィジェット"
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  hashtag: "ハッシュタグ"
+  global: "グローバル"
+  mentions: "あなた宛て"
+  direct: "ダイレクト投稿"
+  notifications: "通知"
+  list: "リスト"
+  swap-left: "左に移動"
+  swap-right: "右に移動"
+  swap-up: "上に移動"
+  swap-down: "下に移動"
+  remove: "カラムを削除"
+  add-column: "カラムを追加"
+  rename: "名前を変更"
+  stack-left: "左に重ねる"
+  pop-right: "右に出す"
+
+deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+  edit: "オプション"
+
+deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
+  pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"

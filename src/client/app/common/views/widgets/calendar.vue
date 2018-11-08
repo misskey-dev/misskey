@@ -4,27 +4,27 @@
 		<div class="mkw-calendar--body">
 			<div class="calendar" :data-is-holiday="isHoliday">
 				<p class="month-and-year">
-					<span class="year">{{ '%i18n:@year%'.split('{}')[0] }}{{ year }}{{ '%i18n:@year%'.split('{}')[1] }}</span>
-					<span class="month">{{ '%i18n:@month%'.split('{}')[0] }}{{ month }}{{ '%i18n:@month%'.split('{}')[1] }}</span>
+					<span class="year">{{ this.$t('year').split('{}')[0] }}{{ year }}{{ this.$t('year').split('{}')[1] }}</span>
+					<span class="month">{{ this.$t('month').split('{}')[0] }}{{ month }}{{ this.$t('month').split('{}')[1] }}</span>
 				</p>
-				<p class="day">{{ '%i18n:@day%'.split('{}')[0] }}{{ day }}{{ '%i18n:@day%'.split('{}')[1] }}</p>
+				<p class="day">{{ this.$t('day').split('{}')[0] }}{{ day }}{{ this.$t('day').split('{}')[1] }}</p>
 				<p class="week-day">{{ weekDay }}</p>
 			</div>
 			<div class="info">
 				<div>
-					<p>%i18n:@today%<b>{{ dayP.toFixed(1) }}%</b></p>
+					<p>{{ $t('today') }}<b>{{ dayP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${dayP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>%i18n:@this-month%<b>{{ monthP.toFixed(1) }}%</b></p>
+					<p>{{ $t('this-month') }}<b>{{ monthP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${monthP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>%i18n:@this-year%<b>{{ yearP.toFixed(1) }}%</b></p>
+					<p>{{ $t('this-year') }}<b>{{ yearP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${yearP}%` }"></div>
 					</div>
@@ -37,12 +37,15 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'calendar',
 	props: () => ({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/calendar.vue'),
 	data() {
 		return {
 			now: new Date(),
@@ -85,13 +88,13 @@ export default define({
 			this.month = nm + 1;
 			this.day = nd;
 			this.weekDay = [
-				'%i18n:common.weekday.sunday%',
-				'%i18n:common.weekday.monday%',
-				'%i18n:common.weekday.tuesday%',
-				'%i18n:common.weekday.wednesday%',
-				'%i18n:common.weekday.thursday%',
-				'%i18n:common.weekday.friday%',
-				'%i18n:common.weekday.saturday%'
+				this.$t('@.weekday.sunday'),
+				this.$t('@.weekday.monday'),
+				this.$t('@.weekday.tuesday'),
+				this.$t('@.weekday.wednesday'),
+				this.$t('@.weekday.thursday'),
+				this.$t('@.weekday.friday'),
+				this.$t('@.weekday.saturday')
 			][now.getDay()];
 
 			const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();

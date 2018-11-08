@@ -4,29 +4,29 @@
 
 	<section class="fit-top">
 		<ui-input :value="$store.state.i.token" readonly>
-			<span>%i18n:@token%</span>
+			<span>{{ $t('token') }}</span>
 		</ui-input>
-		<p>%i18n:@intro%</p>
-		<ui-info warn>%i18n:@caution%</ui-info>
-		<p>%i18n:@regeneration-of-token%</p>
-		<ui-button @click="regenerateToken"><fa icon="sync-alt"/> %i18n:@regenerate-token%</ui-button>
+		<p>{{ $t('intro') }}</p>
+		<ui-info warn>{{ $t('caution') }}</ui-info>
+		<p>{{ $t('regeneration-of-token') }}</p>
+		<ui-button @click="regenerateToken"><fa icon="sync-alt"/> {{ $t('regenerate-token') }}</ui-button>
 	</section>
 
 	<section>
-		<header><fa icon="terminal"/> %i18n:@console.title%</header>
+		<header><fa icon="terminal"/> {{ $t('console.title') }}</header>
 		<ui-input v-model="endpoint">
-			<span>%i18n:@console.endpoint%</span>
+			<span>{{ $t('console.endpoint') }}</span>
 		</ui-input>
 		<ui-textarea v-model="body">
-			<span>%i18n:@console.parameter% (JSON or JSON5)</span>
-			<span slot="desc">%i18n:@console.credential-info%</span>
+			<span>{{ $t('console.parameter') }} (JSON or JSON5)</span>
+			<span slot="desc">{{ $t('console.credential-info') }}</span>
 		</ui-textarea>
 		<ui-button @click="send" :disabled="sending">
-			<template v-if="sending">%i18n:@console.sending%</template>
-			<template v-else><fa icon="paper-plane"/> %i18n:@console.send%</template>
+			<template v-if="sending">{{ $t('console.sending') }}</template>
+			<template v-else><fa icon="paper-plane"/> {{ $t('console.send') }}</template>
 		</ui-button>
 		<ui-textarea v-if="res" v-model="res" readonly tall>
-			<span>%i18n:@console.response%</span>
+			<span>{{ $t('console.response') }}</span>
 		</ui-textarea>
 	</section>
 </ui-card>
@@ -34,9 +34,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as JSON5 from 'json5';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/api-settings.vue'),
 	data() {
 		return {
 			endpoint: '',
@@ -49,7 +51,7 @@ export default Vue.extend({
 	methods: {
 		regenerateToken() {
 			(this as any).apis.input({
-				title: '%i18n:@enter-password%',
+				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
 				(this as any).api('i/regenerate_token', {

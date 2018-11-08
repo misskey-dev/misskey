@@ -6,7 +6,7 @@
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="is-cat" v-if="note.user.isCat">cat</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
-	<span class="is-verified" v-if="note.user.isVerified" title="%i18n:common.verified-user%"><fa icon="star"/></span>
+	<span class="is-verified" v-if="note.user.isVerified" :title="$t('@.verified-user')"><fa icon="star"/></span>
 	<div class="info">
 		<span class="app" v-if="note.app && !mini">via <b>{{ note.app.name }}</b></span>
 		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>
@@ -25,8 +25,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n(),
 	props: {
 		note: {
 			type: Object,

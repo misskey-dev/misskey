@@ -1,20 +1,22 @@
 <template>
 <span class="mk-nav">
-	<a :href="aboutUrl">%i18n:@about%</a>
+	<a :href="aboutUrl">{{ $t('about') }}</a>
 	<i>・</i>
-	<a :href="repositoryUrl">%i18n:@repository%</a>
+	<a :href="repositoryUrl">{{ $t('repository') }}</a>
 	<i>・</i>
-	<a :href="feedbackUrl" target="_blank">%i18n:@feedback%</a>
+	<a :href="feedbackUrl" target="_blank">{{ $t('feedback') }}</a>
 	<i>・</i>
-	<a href="/dev">%i18n:@develop%</a>
+	<a href="/dev">{{ $t('develop') }}</a>
 </span>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { lang } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/nav.vue'),
 	data() {
 		return {
 			aboutUrl: `/docs/${lang}/about`,

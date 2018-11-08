@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-server">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header"><fa icon="server"/>%i18n:@title%</template>
-		<button slot="func" @click="toggle" title="%i18n:@toggle%"><fa icon="sort"/></button>
+		<template slot="header"><fa icon="server"/>{{ $t('title') }}</template>
+		<button slot="func" @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button>
 
-		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<template v-if="!fetching">
 			<x-cpu-memory v-show="props.view == 0" :connection="connection"/>
 			<x-cpu v-show="props.view == 1" :connection="connection" :meta="meta"/>
@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 import XCpuMemory from './server.cpu-memory.vue';
 import XCpu from './server.cpu.vue';
 import XMemory from './server.memory.vue';
@@ -33,6 +34,8 @@ export default define({
 		view: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/server.vue'),
+
 	components: {
 		XCpuMemory,
 		XCpu,

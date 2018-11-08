@@ -1,7 +1,6 @@
 <template>
 <div class="header" ref="root">
-	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
-	<mk-special-message/>
+	<p class="warn" v-if="env != 'production'">{{ $t('@.do-not-use-in-production') }}</p>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="content" ref="mainContainer">
@@ -19,10 +18,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import { env } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n(),
 	props: ['func'],
 
 	data() {

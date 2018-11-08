@@ -4,9 +4,9 @@
 		<x-gameroom :game="game" :self-nav="selfNav" @go-index="goIndex"/>
 	</div>
 	<div class="matching" v-else-if="matching">
-		<h1>{{ '%i18n:@matching.waiting-for%'.split('{}')[0] }}<b>{{ matching | userName }}</b>{{ '%i18n:@matching.waiting-for%'.split('{}')[1] }}<mk-ellipsis/></h1>
+		<h1>{{ this.$t('matching.waiting-for').split('{}')[0] }}<b>{{ matching | userName }}</b>{{ this.$t('matching.waiting-for').split('{}')[1] }}<mk-ellipsis/></h1>
 		<div class="cancel">
-			<form-button round @click="cancel">%i18n:@matching.cancel%</form-button>
+			<form-button round @click="cancel">{{ $t('matching.cancel') }}</form-button>
 		</div>
 	</div>
 	<div v-else-if="gameId">
@@ -20,11 +20,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../../i18n';
 import XGameroom from './reversi.gameroom.vue';
 import XIndex from './reversi.index.vue';
 import Progress from '../../../../scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/games/reversi/reversi.vue'),
 	components: {
 		XGameroom,
 		XIndex

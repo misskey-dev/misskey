@@ -1,22 +1,24 @@
 <template>
 <div class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
 	<header>
-		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> %i18n:@default%</span>
-		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> %i18n:@with-replies%</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa icon="images"/> %i18n:@with-media%</span>
+		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
+		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa icon="images"/> {{ $t('with-media') }}</span>
 	</header>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
-		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>%i18n:@empty%</p>
+		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>
 	</mk-notes>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.timeline.vue'),
 	props: ['user'],
 
 	data() {

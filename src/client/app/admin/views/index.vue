@@ -18,18 +18,18 @@
 			<p class="name">{{ $store.state.i | userName }}</p>
 		</div>
 		<ul>
-			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>%i18n:@dashboard%</li>
-			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>%i18n:@instance%</li>
-			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>%i18n:@users%</li>
-			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="['far', 'grin']" fixed-width/>%i18n:@emoji%</li>
-			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>%i18n:@announcements%</li>
-			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>%i18n:@hashtags%</li>
+			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</li>
+			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>{{ $t('instance') }}</li>
+			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
+			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="['far', 'grin']" fixed-width/>{{ $t('emoji') }}</li>
+			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
+			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('hashtags') }}</li>
 
-			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>%i18n:common.drive%</li> -->
-			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">%i18n:@update%</li> -->
+			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</li> -->
+			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">{{ $t('update') }}</li> -->
 		</ul>
 		<div class="back-to-misskey">
-			<a href="/"><fa icon="arrow-left"/> %i18n:@back-to-misskey%</a>
+			<a href="/"><fa icon="arrow-left"/> {{ $t('back-to-misskey') }}</a>
 		</div>
 		<div class="version">
 			<small>Misskey {{ version }}</small>
@@ -49,7 +49,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../i18n';
 import { version } from '../../config';
 import XDashboard from "./dashboard.vue";
 import XInstance from "./instance.vue";
@@ -63,6 +64,7 @@ const ua = navigator.userAgent.toLowerCase();
 const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 export default Vue.extend({
+	i18n: i18n('admin/views/index.vue'),
 	components: {
 		XDashboard,
 		XInstance,

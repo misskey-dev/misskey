@@ -30,18 +30,18 @@
 				<x-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<button v-if="moreFolders">%i18n:@load-more%</button>
+				<button v-if="moreFolders">{{ $t('@.load-more') }}</button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:@load-more%</button>
+				<button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('@.load-more') }}</button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
-				<p v-if="draghover">%i18n:@empty-draghover%</p>
-				<p v-if="!draghover && folder == null"><strong>%i18n:@empty-drive%</strong><br/>%i18n:@empty-drive-description%</p>
-				<p v-if="!draghover && folder != null">%i18n:@empty-folder%</p>
+				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
+				<p v-if="!draghover && folder == null"><strong>{{ $t('empty-drive') }}</strong><br/>{{ $t('empty-drive-description') }}</p>
+				<p v-if="!draghover && folder != null">{{ $t('empty-folder') }}</p>
 			</div>
 		</div>
 		<div class="fetching" v-if="fetching">
@@ -59,6 +59,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkDriveWindow from './drive-window.vue';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
@@ -68,6 +69,7 @@ import contextmenu from '../../api/contextmenu';
 import { url } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/drive.vue'),
 	components: {
 		XNavFolder,
 		XFolder,
@@ -137,17 +139,17 @@ export default Vue.extend({
 		onContextmenu(e) {
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
-				text: '%i18n:@contextmenu.create-folder%',
+				text: this.$t('contextmenu.create-folder'),
 				icon: ['far', 'folder'],
 				action: this.createFolder
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.upload%',
+				text: this.$t('contextmenu.upload'),
 				icon: 'upload',
 				action: this.selectLocalFile
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.url-upload%',
+				text: this.$t('contextmenu.url-upload'),
 				icon: 'cloud-upload-alt',
 				action: this.urlUpload
 			}]);
@@ -313,10 +315,10 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
-								text: '%i18n:@circular-reference-detected%',
+								title: this.$t('unable-to-process'),
+								text: this.$t('circular-reference-detected'),
 								actions: [{
-									text: '%i18n:common.ok%'
+									text: this.$t('@.ok')
 								}]
 							});
 							break;
@@ -334,8 +336,8 @@ export default Vue.extend({
 
 		urlUpload() {
 			(this as any).apis.input({
-				title: '%i18n:@url-upload%',
-				placeholder: '%i18n:@url-of-file%'
+				title: this.$t('url-upload'),
+				placeholder: this.$t('url-of-file')
 			}).then(url => {
 				(this as any).api('drive/files/upload_from_url', {
 					url: url,
@@ -343,10 +345,10 @@ export default Vue.extend({
 				});
 
 				(this as any).apis.dialog({
-					title: '<fa icon="check"/>%i18n:@url-upload-requested%',
-					text: '%i18n:@may-take-time%',
+					title: this.$t('url-upload-requested'),
+					text: this.$t('may-take-time'),
 					actions: [{
-						text: '%i18n:common.ok%'
+						text: this.$t('@.ok')
 					}]
 				});
 			});
@@ -354,8 +356,8 @@ export default Vue.extend({
 
 		createFolder() {
 			(this as any).apis.input({
-				title: '%i18n:@create-folder%',
-				placeholder: '%i18n:@folder-name%'
+				title: this.$t('create-folder'),
+				placeholder: this.$t('folder-name')
 			}).then(name => {
 				(this as any).api('drive/folders/create', {
 					name: name,

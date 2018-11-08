@@ -1,8 +1,8 @@
 <template>
 <div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
-		<b><fa icon="exclamation-triangle"/> %i18n:@sensitive%</b>
-		<span>%i18n:@click-to-show%</span>
+		<b><fa icon="exclamation-triangle"/> {{ $t('sensitive') }}</b>
+		<span>{{ $t('click-to-show') }}</span>
 	</div>
 </div>
 <a class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else :href="image.url" target="_blank" :style="style" :title="image.name" @click.prevent="onClick"></a>
@@ -10,9 +10,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import ImageViewer from '../../../common/views/components/image-viewer.vue';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/media-image.vue'),
 	props: {
 		image: {
 			type: Object,

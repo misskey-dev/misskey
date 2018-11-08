@@ -1,36 +1,36 @@
 <template>
 <div class="qvgidhudpqhjttdhxubzuyrhyzgslujw">
 	<header>
-		<b><fa :icon="['far', 'chart-bar']"/> %i18n:@title%:</b>
+		<b><fa :icon="['far', 'chart-bar']"/> {{ $t('title') }}:</b>
 		<select v-model="src">
-			<optgroup label="%i18n:@federation%">
-				<option value="federation-instances">%i18n:@charts.federation-instances%</option>
-				<option value="federation-instances-total">%i18n:@charts.federation-instances-total%</option>
+			<optgroup :label="$t('label')">
+				<option value="federation-instances">{{ $t('charts.federation-instances') }}</option>
+				<option value="federation-instances-total">{{ $t('charts.federation-instances-total') }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@users%">
-				<option value="users">%i18n:@charts.users%</option>
-				<option value="users-total">%i18n:@charts.users-total%</option>
+			<optgroup :label="$t('label')">
+				<option value="users">{{ $t('charts.users') }}</option>
+				<option value="users-total">{{ $t('charts.users-total') }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@notes%">
-				<option value="notes">%i18n:@charts.notes%</option>
-				<option value="local-notes">%i18n:@charts.local-notes%</option>
-				<option value="remote-notes">%i18n:@charts.remote-notes%</option>
-				<option value="notes-total">%i18n:@charts.notes-total%</option>
+			<optgroup :label="$t('label')">
+				<option value="notes">{{ $t('charts.notes') }}</option>
+				<option value="local-notes">{{ $t('charts.local-notes') }}</option>
+				<option value="remote-notes">{{ $t('charts.remote-notes') }}</option>
+				<option value="notes-total">{{ $t('charts.notes-total') }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@drive%">
-				<option value="drive-files">%i18n:@charts.drive-files%</option>
-				<option value="drive-files-total">%i18n:@charts.drive-files-total%</option>
-				<option value="drive">%i18n:@charts.drive%</option>
-				<option value="drive-total">%i18n:@charts.drive-total%</option>
+			<optgroup :label="$t('label')">
+				<option value="drive-files">{{ $t('charts.drive-files') }}</option>
+				<option value="drive-files-total">{{ $t('charts.drive-files-total') }}</option>
+				<option value="drive">{{ $t('charts.drive') }}</option>
+				<option value="drive-total">{{ $t('charts.drive-total') }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@network%">
-				<option value="network-requests">%i18n:@charts.network-requests%</option>
-				<option value="network-time">%i18n:@charts.network-time%</option>
-				<option value="network-usage">%i18n:@charts.network-usage%</option>
+			<optgroup :label="$t('label')">
+				<option value="network-requests">{{ $t('charts.network-requests') }}</option>
+				<option value="network-time">{{ $t('charts.network-time') }}</option>
+				<option value="network-usage">{{ $t('charts.network-usage') }}</option>
 			</optgroup>
 		</select>
 		<div>
-			<span @click="span = 'day'" :class="{ active: span == 'day' }">%i18n:@per-day%</span> | <span @click="span = 'hour'" :class="{ active: span == 'hour' }">%i18n:@per-hour%</span>
+			<span @click="span = 'day'" :class="{ active: span == 'day' }">{{ $t('per-day') }}</span> | <span @click="span = 'hour'" :class="{ active: span == 'hour' }">{{ $t('per-hour') }}</span>
 		</div>
 	</header>
 	<div ref="chart"></div>
@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../i18n';
 import * as tinycolor from 'tinycolor2';
 import * as ApexCharts from 'apexcharts';
 
@@ -48,6 +49,7 @@ const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
 
 export default Vue.extend({
+	i18n: i18n('admin/views/charts.vue'),
 	data() {
 		return {
 			chart: null,

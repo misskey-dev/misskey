@@ -1,96 +1,96 @@
 <template>
 <div class="nicnklzforebnpfgasiypmpdaaglujqm">
 	<label>
-		<span>%i18n:@light-theme%</span>
-		<ui-select v-model="light" placeholder="%i18n:@light-theme%">
-			<optgroup label="%i18n:@light-themes%">
+		<span>{{ $t('light-theme') }}</span>
+		<ui-select v-model="light" :placeholder="$t('placeholder')">
+			<optgroup :label="$t('label')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@dark-themes%">
+			<optgroup :label="$t('label')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</ui-select>
 	</label>
 
 	<label>
-		<span>%i18n:@dark-theme%</span>
-		<ui-select v-model="dark" placeholder="%i18n:@dark-theme%">
-			<optgroup label="%i18n:@dark-themes%">
+		<span>{{ $t('dark-theme') }}</span>
+		<ui-select v-model="dark" :placeholder="$t('placeholder')">
+			<optgroup :label="$t('label')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@light-themes%">
+			<optgroup :label="$t('label')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</ui-select>
 	</label>
 
 	<details class="creator">
-		<summary><fa icon="palette"/> %i18n:@create-a-theme%</summary>
+		<summary><fa icon="palette"/> {{ $t('create-a-theme') }}</summary>
 		<div>
-			<span>%i18n:@base-theme%:</span>
-			<ui-radio v-model="myThemeBase" value="light">%i18n:@base-theme-light%</ui-radio>
-			<ui-radio v-model="myThemeBase" value="dark">%i18n:@base-theme-dark%</ui-radio>
+			<span>{{ $t('base-theme') }}:</span>
+			<ui-radio v-model="myThemeBase" value="light">{{ $t('base-theme-light') }}</ui-radio>
+			<ui-radio v-model="myThemeBase" value="dark">{{ $t('base-theme-dark') }}</ui-radio>
 		</div>
 		<div>
 			<ui-input v-model="myThemeName">
-				<span>%i18n:@theme-name%</span>
+				<span>{{ $t('theme-name') }}</span>
 			</ui-input>
 			<ui-textarea v-model="myThemeDesc">
-				<span>%i18n:@desc%</span>
+				<span>{{ $t('desc') }}</span>
 			</ui-textarea>
 		</div>
 		<div>
-			<div style="padding-bottom:8px;">%i18n:@primary-color%:</div>
+			<div style="padding-bottom:8px;">{{ $t('primary-color') }}:</div>
 			<color-picker v-model="myThemePrimary"/>
 		</div>
 		<div>
-			<div style="padding-bottom:8px;">%i18n:@secondary-color%:</div>
+			<div style="padding-bottom:8px;">{{ $t('secondary-color') }}:</div>
 			<color-picker v-model="myThemeSecondary"/>
 		</div>
 		<div>
-			<div style="padding-bottom:8px;">%i18n:@text-color%:</div>
+			<div style="padding-bottom:8px;">{{ $t('text-color') }}:</div>
 			<color-picker v-model="myThemeText"/>
 		</div>
-		<ui-button @click="preview()"><fa icon="eye"/> %i18n:@preview-created-theme%</ui-button>
-		<ui-button primary @click="gen()"><fa :icon="['far', 'save']"/> %i18n:@save-created-theme%</ui-button>
+		<ui-button @click="preview()"><fa icon="eye"/> {{ $t('preview-created-theme') }}</ui-button>
+		<ui-button primary @click="gen()"><fa :icon="['far', 'save']"/> {{ $t('save-created-theme') }}</ui-button>
 	</details>
 
 	<details>
-		<summary><fa icon="download"/> %i18n:@install-a-theme%</summary>
-		<ui-button @click="import_()"><fa icon="file-import"/> %i18n:@import%</ui-button>
+		<summary><fa icon="download"/> {{ $t('install-a-theme') }}</summary>
+		<ui-button @click="import_()"><fa icon="file-import"/> {{ $t('import') }}</ui-button>
 		<input ref="file" type="file" accept=".misskeytheme" style="display:none;" @change="onUpdateImportFile"/>
-		<p>%i18n:@import-by-code%:</p>
+		<p>{{ $t('import-by-code') }}:</p>
 		<ui-textarea v-model="installThemeCode">
-			<span>%i18n:@theme-code%</span>
+			<span>{{ $t('theme-code') }}</span>
 		</ui-textarea>
-		<ui-button @click="() => install(this.installThemeCode)"><fa icon="check"/> %i18n:@install%</ui-button>
+		<ui-button @click="() => install(this.installThemeCode)"><fa icon="check"/> {{ $t('install') }}</ui-button>
 	</details>
 
 	<details>
-		<summary><fa icon="folder-open"/> %i18n:@manage-themes%</summary>
-		<ui-select v-model="selectedThemeId" placeholder="%i18n:@select-theme%">
-			<optgroup label="%i18n:@builtin-themes%">
+		<summary><fa icon="folder-open"/> {{ $t('manage-themes') }}</summary>
+		<ui-select v-model="selectedThemeId" :placeholder="$t('placeholder')">
+			<optgroup :label="$t('label')">
 				<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@my-themes%">
+			<optgroup :label="$t('label')">
 				<option v-for="x in installedThemes.filter(t => t.author == this.$store.state.i.username)" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup label="%i18n:@installed-themes%">
+			<optgroup :label="$t('label')">
 				<option v-for="x in installedThemes.filter(t => t.author != this.$store.state.i.username)" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</ui-select>
 		<template v-if="selectedTheme">
 			<ui-input readonly :value="selectedTheme.author">
-				<span>%i18n:@author%</span>
+				<span>{{ $t('author') }}</span>
 			</ui-input>
 			<ui-textarea v-if="selectedTheme.desc" readonly :value="selectedTheme.desc">
-				<span>%i18n:@desc%</span>
+				<span>{{ $t('desc') }}</span>
 			</ui-textarea>
 			<ui-textarea readonly :value="selectedThemeCode">
-				<span>%i18n:@theme-code%</span>
+				<span>{{ $t('theme-code') }}</span>
 			</ui-textarea>
-			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><fa icon="box"/> %i18n:@export%</ui-button>
-			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> %i18n:@uninstall%</ui-button>
+			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><fa icon="box"/> {{ $t('export') }}</ui-button>
+			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> {{ $t('uninstall') }}</ui-button>
 		</template>
 	</details>
 </div>
@@ -98,6 +98,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { lightTheme, darkTheme, builtinThemes, applyTheme, Theme } from '../../../theme';
 import { Chrome } from 'vue-color';
 import * as uuid from 'uuid';
@@ -119,6 +120,7 @@ function convertOldThemedefinition(t) {
 }
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/theme.vue'),
 	components: {
 		ColorPicker: Chrome
 	},
@@ -221,7 +223,7 @@ export default Vue.extend({
 			} catch (e) {
 				this.$swal({
 					type: 'error',
-					text: '%i18n:@invalid-theme%'
+					text: this.$t('invalid-theme')
 				});
 				return;
 			}
@@ -234,7 +236,7 @@ export default Vue.extend({
 			if (theme.id == null) {
 				this.$swal({
 					type: 'error',
-					text: '%i18n:@invalid-theme%'
+					text: this.$t('invalid-theme')
 				});
 				return;
 			}
@@ -242,7 +244,7 @@ export default Vue.extend({
 			if (this.$store.state.device.themes.some(t => t.id == theme.id)) {
 				this.$swal({
 					type: 'info',
-					text: '%i18n:@already-installed%'
+					text: this.$t('already-installed')
 				});
 				return;
 			}
@@ -254,7 +256,7 @@ export default Vue.extend({
 
 			this.$swal({
 				type: 'success',
-				text: '%i18n:@installed%'.replace('{}', theme.name)
+				text: this.$t('installed').replace('{}', theme.name)
 			});
 		},
 
@@ -267,7 +269,7 @@ export default Vue.extend({
 
 			this.$swal({
 				type: 'info',
-				text: '%i18n:@uninstalled%'.replace('{}', theme.name)
+				text: this.$t('uninstalled').replace('{}', theme.name)
 			});
 		},
 
@@ -304,7 +306,7 @@ export default Vue.extend({
 			if (theme.name == null || theme.name.trim() == '') {
 				this.$swal({
 					type: 'warning',
-					text: '%i18n:@theme-name-required%'
+					text: this.$t('theme-name-required')
 				});
 				return;
 			}
@@ -318,7 +320,7 @@ export default Vue.extend({
 
 			this.$swal({
 				type: 'success',
-				text: '%i18n:@saved%'
+				text: this.$t('saved')
 			});
 		}
 	}

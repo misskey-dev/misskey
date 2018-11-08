@@ -1,19 +1,19 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
 	<button class="go-index" v-if="selfNav" @click="goIndex"><fa icon="arrow-left"/></button>
-	<header><b><router-link :to="blackUser | userPage">{{ blackUser | userName }}</router-link></b>(%i18n:common.reversi.black%) vs <b><router-link :to="whiteUser | userPage">{{ whiteUser | userName }}</router-link></b>(%i18n:common.reversi.white%)</header>
+	<header><b><router-link :to="blackUser | userPage">{{ blackUser | userName }}</router-link></b>({{ $t('@.reversi.black') }}) vs <b><router-link :to="whiteUser | userPage">{{ whiteUser | userName }}</router-link></b>({{ $t('@.reversi.white') }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}<mk-ellipsis/></p>
-		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', $options.filters.userName(turnUser)) }}</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">%i18n:common.reversi.my-turn%</p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ $t('@.reversi.turn-of', { name: $options.filters.userName(turnUser) }) }}<mk-ellipsis/></p>
+		<p class="turn" v-if="logPos != logs.length">{{ $t('@.reversi.past-turn-of', { name: $options.filters.userName(turnUser) }) }}</p>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ $t('@.reversi.opponent-turn') }}<mk-ellipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">{{ $t('@.reversi.my-turn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
-				<span>{{ '%i18n:common.reversi.won%'.replace('{}', $options.filters.userName(game.winner)) }}</span>
-				<span v-if="game.surrendered != null"> (%i18n:@surrendered%)</span>
+				<span>{{ $t('@.reversi.won', { name: $options.filters.userName(game.winner) }) }}</span>
+				<span v-if="game.surrendered != null"> ({{ $t('surrendered') }})</span>
 			</template>
-			<template v-else>%i18n:common.reversi.drawn%</template>
+			<template v-else>{{ $t('@.reversi.drawn') }}</template>
 		</p>
 	</div>
 
@@ -43,10 +43,10 @@
 		</div>
 	</div>
 
-	<p class="status"><b>{{ '%i18n:common.reversi.this-turn%'.split('{}')[0] }}{{ logPos }}{{ '%i18n:common.reversi.this-turn%'.split('{}')[1] }}</b> %i18n:common.reversi.black%:{{ o.blackCount }} %i18n:common.reversi.white%:{{ o.whiteCount }} %i18n:common.reversi.total%:{{ o.blackCount + o.whiteCount }}</p>
+	<p class="status"><b>{{ $t('@.reversi.this-turn', { count: logPos }) }}</b> {{ $t('@.reversi.black') }}:{{ o.blackCount }} {{ $t('@.reversi.white') }}:{{ o.whiteCount }} {{ $t('@.reversi.total') }}:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<form-button @click="surrender">%i18n:@surrender%</form-button>
+		<form-button @click="surrender">{{ $t('surrender') }}</form-button>
 	</div>
 
 	<div class="player" v-if="game.isEnded">
@@ -62,20 +62,22 @@
 	</div>
 
 	<div class="info">
-		<p v-if="game.settings.isLlotheo">%i18n:@is-llotheo%</p>
-		<p v-if="game.settings.loopedBoard">%i18n:@looped-map%</p>
-		<p v-if="game.settings.canPutEverywhere">%i18n:@can-put-everywhere%</p>
+		<p v-if="game.settings.isLlotheo">{{ $t('is-llotheo') }}</p>
+		<p v-if="game.settings.loopedBoard">{{ $t('looped-map') }}</p>
+		<p v-if="game.settings.canPutEverywhere">{{ $t('can-put-everywhere') }}</p>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../../i18n';
 import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../../../../../games/reversi/core';
 import { url } from '../../../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/games/reversi/reversi.game.vue'),
 	props: {
 		initGame: {
 			type: Object,

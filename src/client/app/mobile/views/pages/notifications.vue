@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>%i18n:@notifications%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>{{ $t('notifications') }}</span>
 	<template slot="func"><button @click="fn"><fa icon="check"/></button></template>
 
 	<main>
@@ -11,17 +11,19 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/notifications.vue'),
 	mounted() {
-		document.title = '%i18n:@notifications%';
+		document.title = this.$t('notifications');
 
 		Progress.start();
 	},
 	methods: {
 		fn() {
-			const ok = window.confirm('%i18n:@read-all%');
+			const ok = window.confirm(this.$t('read-all'));
 			if (!ok) return;
 
 			(this as any).api('notifications/mark_all_as_read');

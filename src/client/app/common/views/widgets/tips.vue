@@ -7,35 +7,37 @@
 <script lang="ts">
 import * as anime from 'animejs';
 import define from '../../../common/define-widget';
-
-const tips = [
-	'%i18n:@tips-line1%',
-	'%i18n:@tips-line2%',
-	'%i18n:@tips-line3%',
-	'%i18n:@tips-line4%',
-	'%i18n:@tips-line5%',
-	'%i18n:@tips-line6%',
-	'%i18n:@tips-line7%',
-	'%i18n:@tips-line8%',
-	'%i18n:@tips-line9%',
-	'%i18n:@tips-line10%',
-	'%i18n:@tips-line11%',
-	'%i18n:@tips-line13%',
-	'%i18n:@tips-line14%',
-	'%i18n:@tips-line17%',
-	'%i18n:@tips-line19%',
-	'%i18n:@tips-line20%',
-	'%i18n:@tips-line21%',
-	'%i18n:@tips-line23%',
-	'%i18n:@tips-line24%',
-	'%i18n:@tips-line25%'
-]
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'tips'
 }).extend({
+	i18n: i18n('common/views/widgets/tips.vue'),
+
 	data() {
 		return {
+			tips: [
+				this.$t('tips-line1'),
+				this.$t('tips-line2'),
+				this.$t('tips-line3'),
+				this.$t('tips-line4'),
+				this.$t('tips-line5'),
+				this.$t('tips-line6'),
+				this.$t('tips-line7'),
+				this.$t('tips-line8'),
+				this.$t('tips-line9'),
+				this.$t('tips-line10'),
+				this.$t('tips-line11'),
+				this.$t('tips-line13'),
+				this.$t('tips-line14'),
+				this.$t('tips-line17'),
+				this.$t('tips-line19'),
+				this.$t('tips-line20'),
+				this.$t('tips-line21'),
+				this.$t('tips-line23'),
+				this.$t('tips-line24'),
+				this.$t('tips-line25')
+			],
 			tip: null,
 			clock: null
 		};

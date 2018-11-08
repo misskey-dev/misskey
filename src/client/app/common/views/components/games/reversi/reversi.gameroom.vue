@@ -7,10 +7,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../../i18n';
 import XGame from './reversi.game.vue';
 import XRoom from './reversi.room.vue';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/games/reversi/reversi.gameroom.vue'),
 	components: {
 		XGame,
 		XRoom

@@ -17,7 +17,7 @@
 					<h1 v-else><img svg-inline src="../../../../assets/title.svg" :alt="name"></h1>
 
 					<div class="info">
-						<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
+						<span><b>{{ host }}</b> - <span v-html="$t('powered-by-misskey')"></span></span>
 						<span class="stats" v-if="stats">
 							<span><fa icon="user"/> {{ stats.originalUsersCount | number }}</span>
 							<span><fa icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</span>
@@ -25,14 +25,14 @@
 					</div>
 
 					<div class="desc">
-						<span class="desc" v-html="description || '%i18n:common.about%'"></span>
-						<a class="about" @click="about">%i18n:@about%</a>
+						<span class="desc" v-html="description || $t('@.about')"></span>
+						<a class="about" @click="about">{{ $t('about') }}</a>
 					</div>
 
 					<p class="sign">
-						<span class="signup" @click="signup">%i18n:@signup%</span>
+						<span class="signup" @click="signup">{{ $t('signup') }}</span>
 						<span class="divider">|</span>
-						<span class="signin" @click="signin">%i18n:@signin%</span>
+						<span class="signin" @click="signin">{{ $t('signin') }}</span>
 					</p>
 
 					<img src="/assets/ai.png" alt="" title="藍" class="char">
@@ -40,7 +40,7 @@
 			</div>
 
 			<div class="announcements block">
-				<header><fa icon="broadcast-tower"/> %i18n:@announcements%</header>
+				<header><fa icon="broadcast-tower"/> {{ $t('announcements') }}</header>
 				<div v-if="announcements && announcements.length > 0">
 					<div v-for="announcement in announcements">
 						<h1 v-html="announcement.title"></h1>
@@ -50,7 +50,7 @@
 			</div>
 
 			<div class="photos block">
-				<header><fa icon="images"/> %i18n:@photos%</header>
+				<header><fa icon="images"/> {{ $t('photos') }}</header>
 				<div>
 					<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
 				</div>
@@ -76,14 +76,14 @@
 				</div>
 
 				<div class="tl block">
-					<header><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</header>
+					<header><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</header>
 					<div>
 						<mk-welcome-timeline class="tl" :max="20"/>
 					</div>
 				</div>
 
 				<div class="info block">
-					<header><fa icon="info-circle"/> %i18n:@info%</header>
+					<header><fa icon="info-circle"/> {{ $t('info') }}</header>
 					<div>
 						<div v-if="meta" class="body">
 							<p>Version: <b>{{ meta.version }}</b></p>
@@ -97,50 +97,50 @@
 
 	<modal name="about" class="about modal" width="800px" height="auto" scrollable>
 		<article class="fpdezooorhntlzyeszemrsqdlgbysvxq">
-			<h1>%i18n:common.intro.title%</h1>
-			<p v-html="'%i18n:common.intro.about%'"></p>
+			<h1>{{ $t('@.intro.title') }}</h1>
+			<p v-html="this.$t('@.intro.about')"></p>
 			<section>
-				<h2>%i18n:common.intro.features%</h2>
+				<h2>{{ $t('@.intro.features') }}</h2>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.rich-contents%</h3>
-						<p v-html="'%i18n:common.intro.rich-contents-desc%'"></p>
+						<h3>{{ $t('@.intro.rich-contents') }}</h3>
+						<p v-html="this.$t('@.intro.rich-contents-desc')"></p>
 					</div>
 					<div class="image"><img src="/assets/about/post.png" alt=""></div>
 				</section>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.reaction%</h3>
-						<p v-html="'%i18n:common.intro.reaction-desc%'"></p>
+						<h3>{{ $t('@.intro.reaction') }}</h3>
+						<p v-html="this.$t('@.intro.reaction-desc')"></p>
 					</div>
 					<div class="image"><img src="/assets/about/reaction.png" alt=""></div>
 				</section>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.ui%</h3>
-						<p v-html="'%i18n:common.intro.ui-desc%'"></p>
+						<h3>{{ $t('@.intro.ui') }}</h3>
+						<p v-html="this.$t('@.intro.ui-desc')"></p>
 					</div>
 					<div class="image"><img src="/assets/about/ui.png" alt=""></div>
 				</section>
 				<section>
 					<div class="body">
-						<h3>%i18n:common.intro.drive%</h3>
-						<p v-html="'%i18n:common.intro.drive-desc%'"></p>
+						<h3>{{ $t('@.intro.drive') }}</h3>
+						<p v-html="this.$t('@.intro.drive-desc')"></p>
 					</div>
 					<div class="image"><img src="/assets/about/drive.png" alt=""></div>
 				</section>
 			</section>
-			<p v-html="'%i18n:common.intro.outro%'"></p>
+			<p v-html="this.$t('@.intro.outro')"></p>
 		</article>
 	</modal>
 
 	<modal name="signup" class="modal" width="450px" height="auto" scrollable>
-		<header class="formHeader">%i18n:@signup%</header>
+		<header class="formHeader">{{ $t('signup') }}</header>
 		<mk-signup class="form"/>
 	</modal>
 
 	<modal name="signin" class="modal" width="450px" height="auto" scrollable>
-		<header class="formHeader">%i18n:@signin%</header>
+		<header class="formHeader">{{ $t('signin') }}</header>
 		<mk-signin class="form"/>
 	</modal>
 </div>
@@ -148,10 +148,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { host, copyright } from '../../../config';
 import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/welcome.vue'),
 	data() {
 		return {
 			meta: null,

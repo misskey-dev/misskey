@@ -1,9 +1,9 @@
 <template>
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
-	<span slot="header"><fa icon="list"/> %i18n:@title%</span>
+	<span slot="header"><fa icon="list"/> {{ $t('title') }}</span>
 
 	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
-		<button class="ui" @click="add">%i18n:@create-list%</button>
+		<button class="ui" @click="add">{{ $t('create-list') }}</button>
 		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
 	</div>
 </mk-window>
@@ -11,7 +11,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
+
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/user-lists-window.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -27,7 +30,7 @@ export default Vue.extend({
 	methods: {
 		add() {
 			(this as any).apis.input({
-				title: '%i18n:@list-name%',
+				title: this.$t('list-name'),
 			}).then(async title => {
 				const list = await (this as any).api('users/lists/create', {
 					title

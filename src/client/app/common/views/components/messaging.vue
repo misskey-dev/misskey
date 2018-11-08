@@ -3,7 +3,7 @@
 	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
 			<label for="search-input"><i><fa icon="search"/></i></label>
-			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:@search-user%"/>
+			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" :placeholder="$t('placeholder')"/>
 		</div>
 		<div class="result">
 			<ol class="users" v-if="result.length > 0" ref="searchResult">
@@ -38,22 +38,24 @@
 						<mk-time :time="message.createdAt"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">%i18n:@you%:</span>{{ message.text }}</p>
+						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
 					</div>
 				</div>
 			</a>
 		</template>
 	</div>
-	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:@no-history%</p>
-	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging.vue'),
 	props: {
 		compact: {
 			type: Boolean,

@@ -4,31 +4,31 @@
 		<template v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.device.deckDefault">
 				<li class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><fa icon="columns"/><p>%i18n:@deck%</p></router-link>
+					<router-link to="/"><fa icon="columns"/><p>{{ $t('deck') }}</p></router-link>
 				</li>
 				<li class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
-					<router-link to="/home"><fa icon="home"/><p>%i18n:@home%</p></router-link>
+					<router-link to="/home"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
 				</li>
 			</template>
 			<template v-else>
 				<li class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><fa icon="home"/><p>%i18n:@home%</p></router-link>
+					<router-link to="/"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
 				</li>
 				<li class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-					<router-link to="/deck"><fa icon="columns"/><p>%i18n:@deck%</p></router-link>
+					<router-link to="/deck"><fa icon="columns"/><p>{{ $t('deck') }}</p></router-link>
 				</li>
 			</template>
 			<li class="messaging">
 				<a @click="messaging">
 					<fa icon="comments"/>
-					<p>%i18n:@messaging%</p>
+					<p>{{ $t('@.messaging') }}</p>
 					<template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template>
 				</a>
 			</li>
 			<li class="game">
 				<a @click="game">
 					<fa icon="gamepad"/>
-					<p>%i18n:@game%</p>
+					<p>{{ $t('game') }}</p>
 					<template v-if="hasGameInvitations"><fa icon="circle"/></template>
 				</a>
 			</li>
@@ -39,10 +39,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkMessagingWindow from './messaging-window.vue';
 import MkGameWindow from './game-window.vue';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.header.nav.vue'),
 	data() {
 		return {
 			hasGameInvitations: false,

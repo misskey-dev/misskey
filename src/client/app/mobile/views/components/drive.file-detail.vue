@@ -31,24 +31,24 @@
 			<span class="created-at" @click="showCreatedAt"><fa :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
 			<template v-if="file.isSensitive">
 				<span class="separator"></span>
-				<span class="nsfw"><fa icon="eye-slash"/> %i18n:@nsfw%</span>
+				<span class="nsfw"><fa icon="eye-slash"/> {{ $t('nsfw') }}</span>
 			</template>
 		</div>
 	</div>
 	<div class="menu">
 		<div>
-			<ui-button link :href="`${file.url}?download`" :download="file.name"><fa icon="download"/> %i18n:@download%</ui-button>
-			<ui-button @click="rename"><fa icon="pencil-alt"/> %i18n:@rename%</ui-button>
-			<ui-button @click="move"><fa :icon="['far', 'folder-open']"/> %i18n:@move%</ui-button>
-			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><fa :icon="['far', 'eye']"/> %i18n:@unmark-as-sensitive%</ui-button>
-			<ui-button @click="toggleSensitive" v-else><fa :icon="['far', 'eye-slash']"/> %i18n:@mark-as-sensitive%</ui-button>
-			<ui-button @click="del"><fa :icon="['far', 'trash-alt']"/> %i18n:@delete%</ui-button>
+			<ui-button link :href="`${file.url}?download`" :download="file.name"><fa icon="download"/> {{ $t('download') }}</ui-button>
+			<ui-button @click="rename"><fa icon="pencil-alt"/> {{ $t('rename') }}</ui-button>
+			<ui-button @click="move"><fa :icon="['far', 'folder-open']"/> {{ $t('move') }}</ui-button>
+			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><fa :icon="['far', 'eye']"/> {{ $t('unmark-as-sensitive') }}</ui-button>
+			<ui-button @click="toggleSensitive" v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mark-as-sensitive') }}</ui-button>
+			<ui-button @click="del"><fa :icon="['far', 'trash-alt']"/> {{ $t('delete') }}</ui-button>
 		</div>
 	</div>
 	<div class="hash">
 		<div>
 			<p>
-				<fa icon="hashtag"/>%i18n:@hash%
+				<fa icon="hashtag"/>{{ $t('hash') }}
 			</p>
 			<code>{{ file.md5 }}</code>
 		</div>
@@ -58,9 +58,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { gcd } from '../../../../../prelude/math';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/drive.file-detail.vue'),
 	props: ['file'],
 
 	data() {
@@ -88,7 +90,7 @@ export default Vue.extend({
 
 	methods: {
 		rename() {
-			const name = window.prompt('%i18n:@rename%', this.file.name);
+			const name = window.prompt(this.$t('rename'), this.file.name);
 			if (name == null || name == '' || name == this.file.name) return;
 			(this as any).api('drive/files/update', {
 				fileId: this.file.id,

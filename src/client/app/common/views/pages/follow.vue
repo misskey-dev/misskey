@@ -1,6 +1,6 @@
 <template>
 <div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching">
-	<div class="signed-in-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${myName}`)"></div>
+	<div class="signed-in-as" v-html="this.$t('signed-in-as').replace('{}', `<b>${myName}`)"></div>
 
 	<main>
 		<div class="banner" :style="bannerStyle"></div>
@@ -19,11 +19,11 @@
 			@click="onClick"
 			:disabled="followWait">
 		<template v-if="!followWait">
-			<template v-if="user.hasPendingFollowRequestFromYou && user.isLocked"><fa icon="hourglass-half"/> %i18n:@request-pending%</template>
-			<template v-else-if="user.hasPendingFollowRequestFromYou && !user.isLocked"><fa icon="hourglass-start"/> %i18n:@follow-processing%</template>
-			<template v-else-if="user.isFollowing"><fa icon="minus"/> %i18n:@following%</template>
-			<template v-else-if="!user.isFollowing && user.isLocked"><fa icon="plus"/> %i18n:@follow-request%</template>
-			<template v-else-if="!user.isFollowing && !user.isLocked"><fa icon="plus"/> %i18n:@follow%</template>
+			<template v-if="user.hasPendingFollowRequestFromYou && user.isLocked"><fa icon="hourglass-half"/> {{ $t('request-pending') }}</template>
+			<template v-else-if="user.hasPendingFollowRequestFromYou && !user.isLocked"><fa icon="hourglass-start"/> {{ $t('follow-processing') }}</template>
+			<template v-else-if="user.isFollowing"><fa icon="minus"/> {{ $t('following') }}</template>
+			<template v-else-if="!user.isFollowing && user.isLocked"><fa icon="plus"/> {{ $t('follow-request') }}</template>
+			<template v-else-if="!user.isFollowing && !user.isLocked"><fa icon="plus"/> {{ $t('follow') }}</template>
 		</template>
 		<template v-else><fa icon="spinner .pulse" fixed-width/></template>
 	</button>
@@ -32,10 +32,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('common/views/pages/follow.vue'),
 	data() {
 		return {
 			fetching: true,

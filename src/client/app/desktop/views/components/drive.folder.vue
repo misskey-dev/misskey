@@ -25,9 +25,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import contextmenu from '../../api/contextmenu';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/drive.folder.vue'),
 	props: ['folder'],
 	data() {
 		return {
@@ -54,22 +56,22 @@ export default Vue.extend({
 			this.isContextmenuShowing = true;
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
-				text: '%i18n:@contextmenu.move-to-this-folder%',
+				text: this.$t('contextmenu.move-to-this-folder'),
 				icon: 'arrow-right',
 				action: this.go
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.show-in-new-window%',
+				text: this.$t('contextmenu.show-in-new-window'),
 				icon: ['far', 'window-restore'],
 				action: this.newWindow
 			}, null, {
 				type: 'item',
-				text: '%i18n:@contextmenu.rename%',
+				text: this.$t('contextmenu.rename'),
 				icon: 'i-cursor',
 				action: this.rename
 			}, null, {
 				type: 'item',
-				text: '%i18n:common.delete%',
+				text: this.$t('@.delete'),
 				icon: ['far', 'trash-alt'],
 				action: this.deleteFolder
 			}], {
@@ -155,15 +157,15 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
-								text: '%i18n:@circular-reference-detected%',
+								title: this.$t('unable-to-process'),
+								text: this.$t('circular-reference-detected'),
 								actions: [{
-									text: '%i18n:common.ok%'
+									text: this.$t('@.ok')
 								}]
 							});
 							break;
 						default:
-							alert(`%i18n:@unhandled-error% ${err}`);
+							alert(this.$t('unhandled-error'));
 					}
 				});
 			}
@@ -195,8 +197,8 @@ export default Vue.extend({
 
 		rename() {
 			(this as any).apis.input({
-				title: '%i18n:@contextmenu.rename-folder%',
-				placeholder: '%i18n:@contextmenu.input-new-folder-name%',
+				title: this.$t('contextmenu.rename-folder'),
+				placeholder: this.$t('contextmenu.input-new-folder-name'),
 				default: this.folder.name
 			}).then(name => {
 				(this as any).api('drive/folders/update', {

@@ -5,11 +5,11 @@
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked"><fa icon="hourglass-half"/><template v-if="size == 'big'"> %i18n:@request-pending%</template></template>
-		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked"><fa icon="hourglass-start"/><template v-if="size == 'big'"> %i18n:@follow-processing%</template></template>
-		<template v-else-if="u.isFollowing"><fa icon="minus"/><template v-if="size == 'big'"> %i18n:@following%</template></template>
-		<template v-else-if="!u.isFollowing && u.isLocked"><fa icon="plus"/><template v-if="size == 'big'"> %i18n:@follow-request%</template></template>
-		<template v-else-if="!u.isFollowing && !u.isLocked"><fa icon="plus"/><template v-if="size == 'big'"> %i18n:@follow%</template></template>
+		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked"><fa icon="hourglass-half"/><template v-if="size == 'big'"> {{ $t('request-pending') }}</template></template>
+		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked"><fa icon="hourglass-start"/><template v-if="size == 'big'"> {{ $t('follow-processing') }}</template></template>
+		<template v-else-if="u.isFollowing"><fa icon="minus"/><template v-if="size == 'big'"> {{ $t('following') }}</template></template>
+		<template v-else-if="!u.isFollowing && u.isLocked"><fa icon="plus"/><template v-if="size == 'big'"> {{ $t('follow-request') }}</template></template>
+		<template v-else-if="!u.isFollowing && !u.isLocked"><fa icon="plus"/><template v-if="size == 'big'"> {{ $t('follow') }}</template></template>
 	</template>
 	<template v-else><fa icon="spinner .pulse" fixed-width/></template>
 </button>
@@ -17,8 +17,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/follow-button.vue'),
 	props: {
 		user: {
 			type: Object,

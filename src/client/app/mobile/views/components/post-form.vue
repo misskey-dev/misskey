@@ -14,9 +14,9 @@
 			<mk-note-preview class="preview" v-if="renote" :note="renote"/>
 			<div v-if="visibility == 'specified'" class="visibleUsers">
 				<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-				<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
+				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
 			</div>
-			<input v-show="useCw" v-model="cw" placeholder="%i18n:@cw-placeholder%">
+			<input v-show="useCw" v-model="cw" :placeholder="$t('placeholder')">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
@@ -53,6 +53,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
@@ -65,6 +66,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import { toASCII } from 'punycode';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/post-form.vue'),
 	components: {
 		XDraggable,
 		MkVisibilityChooser
@@ -124,28 +126,28 @@ export default Vue.extend({
 
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
 			return this.renote
-				? '%i18n:@quote-placeholder%'
+				? this.$t('quote-placeholder')
 				: this.reply
-					? '%i18n:@reply-placeholder%'
+					? this.$t('reply-placeholder')
 					: x;
 		},
 
 		submitText(): string {
 			return this.renote
-				? '%i18n:@renote%'
+				? this.$t('renote')
 				: this.reply
-					? '%i18n:@reply%'
-					: '%i18n:@submit%';
+					? this.$t('reply')
+					: this.$t('submit');
 		},
 
 		canPost(): boolean {
@@ -249,7 +251,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('%i18n:@location-alert%');
+				alert(this.$t('location-alert'));
 				return;
 			}
 
@@ -278,7 +280,7 @@ export default Vue.extend({
 
 		addVisibleUser() {
 			(this as any).apis.input({
-				title: '%i18n:@username-prompt%'
+				title: this.$t('username-prompt')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
 				(this as any).api('users/show', parseAcct(acct)).then(user => {

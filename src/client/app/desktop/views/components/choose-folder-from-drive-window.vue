@@ -10,18 +10,20 @@
 		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/choose-folder-from-drive-window.vue'),
 	props: {
 		title: {
-			default: '<fa :icon="['far', 'folder']"/>%i18n:@choose-prompt%'
+			default: () => this.$t('choose-prompt')
 		}
 	},
 	methods: {

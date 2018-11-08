@@ -10,35 +10,35 @@
 				<li>
 					<router-link :to="`/@${ $store.state.i.username }`">
 						<i><fa icon="user"/></i>
-						<span>%i18n:@profile%</span>
+						<span>{{ $t('profile') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="drive">
 					<p>
 						<i><fa icon="cloud"/></i>
-						<span>%i18n:common.drive%</span>
+						<span>{{ $t('@.drive') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li>
 					<router-link to="/i/favorites">
 						<i><fa icon="star"/></i>
-						<span>%i18n:@favorites%</span>
+						<span>{{ $t('favorites') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="list">
 					<p>
 						<i><fa icon="list"/></i>
-						<span>%i18n:@lists%</span>
+						<span>{{ $t('lists') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<p>
 						<i><fa :icon="['far', 'envelope']"/></i>
-						<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
+						<span>{{ $t('follow-requests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
@@ -47,21 +47,21 @@
 				<li>
 					<router-link to="/i/customize-home">
 						<i><fa icon="wrench"/></i>
-						<span>%i18n:@customize%</span>
+						<span>{{ $t('customize') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="settings">
 					<p>
 						<i><fa icon="cog"/></i>
-						<span>%i18n:@settings%</span>
+						<span>{{ $t('settings') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li v-if="$store.state.i.isAdmin">
 					<a href="/admin">
 						<i><fa icon="terminal"/></i>
-						<span>%i18n:@admin%</span>
+						<span>{{ $t('admin') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</a>
 				</li>
@@ -69,7 +69,7 @@
 			<ul>
 				<li @click="dark">
 					<p>
-						<span>%i18n:@dark%</span>
+						<span>{{ $t('dark') }}</span>
 						<template v-if="$store.state.device.darkmode"><i><fa icon="moon"/></i></template>
 						<template v-else><i><fa :icon="['far', 'moon']"/></i></template>
 					</p>
@@ -79,7 +79,7 @@
 				<li @click="signout">
 					<p class="signout">
 						<i><fa icon="power-off"/></i>
-						<span>%i18n:@signout%</span>
+						<span>{{ $t('signout') }}</span>
 					</p>
 				</li>
 			</ul>
@@ -90,6 +90,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkUserListsWindow from './user-lists-window.vue';
 import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
@@ -97,6 +98,7 @@ import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.header.account.vue'),
 	data() {
 		return {
 			isOpen: false

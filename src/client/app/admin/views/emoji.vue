@@ -1,46 +1,46 @@
 <template>
 <div class="tumhkfkmgtvzljezfvmgkeurkfncshbe">
 	<ui-card>
-		<div slot="title"><fa icon="plus"/> %i18n:@add-emoji.title%</div>
+		<div slot="title"><fa icon="plus"/> {{ $t('add-emoji.title') }}</div>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-input v-model="name">
-					<span>%i18n:@add-emoji.name%</span>
-					<span slot="desc">%i18n:@add-emoji.name-desc%</span>
+					<span>{{ $t('add-emoji.name') }}</span>
+					<span slot="desc">{{ $t('add-emoji.name-desc') }}</span>
 				</ui-input>
 				<ui-input v-model="aliases">
-					<span>%i18n:@add-emoji.aliases%</span>
-					<span slot="desc">%i18n:@add-emoji.aliases-desc%</span>
+					<span>{{ $t('add-emoji.aliases') }}</span>
+					<span slot="desc">{{ $t('add-emoji.aliases-desc') }}</span>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="url">
 				<i slot="icon"><fa icon="link"/></i>
-				<span>%i18n:@add-emoji.url%</span>
+				<span>{{ $t('add-emoji.url') }}</span>
 			</ui-input>
-			<ui-info>%i18n:@add-emoji.info%</ui-info>
-			<ui-button @click="add">%i18n:@add-emoji.add%</ui-button>
+			<ui-info>{{ $t('add-emoji.info') }}</ui-info>
+			<ui-button @click="add">{{ $t('add-emoji.add') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['far', 'grin']"/> %i18n:@emojis.title%</div>
+		<div slot="title"><fa :icon="['far', 'grin']"/> {{ $t('emojis.title') }}</div>
 		<section v-for="emoji in emojis">
 			<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
 			<ui-horizon-group inputs>
 				<ui-input v-model="emoji.name">
-					<span>%i18n:@add-emoji.name%</span>
+					<span>{{ $t('add-emoji.name') }}</span>
 				</ui-input>
 				<ui-input v-model="emoji.aliases">
-					<span>%i18n:@add-emoji.aliases%</span>
+					<span>{{ $t('add-emoji.aliases') }}</span>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="emoji.url">
 				<i slot="icon"><fa icon="link"/></i>
-				<span>%i18n:@add-emoji.url%</span>
+				<span>{{ $t('add-emoji.url') }}</span>
 			</ui-input>
 			<ui-horizon-group>
-				<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> %i18n:@emojis.update%</ui-button>
-				<ui-button @click="removeEmoji(emoji)"><fa :icon="['far', 'trash-alt']"/> %i18n:@emojis.remove%</ui-button>
+				<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> {{ $t('emojis.update') }}</ui-button>
+				<ui-button @click="removeEmoji(emoji)"><fa :icon="['far', 'trash-alt']"/> {{ $t('emojis.remove') }}</ui-button>
 			</ui-horizon-group>
 		</section>
 	</ui-card>
@@ -48,9 +48,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('admin/views/emoji.vue'),
 	data() {
 		return {
 			name: '',
@@ -73,7 +75,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$swal({
 					type: 'success',
-					text: '%i18n:@add-emoji.added%'
+					text: this.$t('add-emoji.added')
 				});
 				this.fetchEmojis();
 			}).catch(e => {
@@ -101,7 +103,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$swal({
 					type: 'success',
-					text: '%i18n:@updated%'
+					text: this.$t('updated')
 				});
 			}).catch(e => {
 				this.$swal({
@@ -114,7 +116,7 @@ export default Vue.extend({
 		removeEmoji(emoji) {
 			this.$swal({
 				type: 'warning',
-				text: '%i18n:@remove-emoji.are-you-sure%'.replace('$1', emoji.name),
+				text: this.$t('remove-emoji.are-you-sure').replace('$1', emoji.name),
 				showCancelButton: true
 			}).then(res => {
 				if (!res.value) return;
@@ -124,7 +126,7 @@ export default Vue.extend({
 				}).then(() => {
 					this.$swal({
 						type: 'success',
-						text: '%i18n:@remove-emoji.removed%'
+						text: this.$t('remove-emoji.removed')
 					});
 					this.fetchEmojis();
 				}).catch(e => {

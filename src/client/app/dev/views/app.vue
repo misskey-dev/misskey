@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<p v-if="fetching">%i18n:common.loading%</p>
+	<p v-if="fetching">{{ $t('@.loading') }}</p>
 	<b-card v-if="!fetching" :header="app.name">
 		<b-form-group label="App Secret">
 			<b-input :value="app.secret" readonly/>
@@ -11,7 +11,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../i18n';
 export default Vue.extend({
+	i18n: i18n(),
 	data() {
 		return {
 			fetching: true,

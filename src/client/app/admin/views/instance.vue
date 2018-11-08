@@ -1,87 +1,89 @@
 <template>
 <div class="axbwjelsbymowqjyywpirzhdlszoncqs">
 	<ui-card>
-		<div slot="title"><fa icon="cog"/> %i18n:@instance%</div>
+		<div slot="title"><fa icon="cog"/> {{ $t('instance') }}</div>
 		<section class="fit-top fit-bottom">
-			<ui-input v-model="name">%i18n:@instance-name%</ui-input>
-			<ui-textarea v-model="description">%i18n:@instance-description%</ui-textarea>
-			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>%i18n:@banner-url%</ui-input>
-			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>%i18n:@languages%<span slot="desc">%i18n:@languages-desc%</span></ui-input>
+			<ui-input v-model="name">{{ $t('instance-name') }}</ui-input>
+			<ui-textarea v-model="description">{{ $t('instance-description') }}</ui-textarea>
+			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('banner-url') }}</ui-input>
+			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>{{ $t('languages') }}<span slot="desc">{{ $t('languages-desc') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="headset"/> %i18n:@maintainer-config%</header>
-			<ui-input v-model="maintainerName">%i18n:@maintainer-name%</ui-input>
-			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="['far', 'envelope']"/></i>%i18n:@maintainer-email%</ui-input>
+			<header><fa icon="headset"/> {{ $t('maintainer-config') }}</header>
+			<ui-input v-model="maintainerName">{{ $t('maintainer-name') }}</ui-input>
+			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="['far', 'envelope']"/></i>{{ $t('maintainer-email') }}</ui-input>
 		</section>
 		<section class="fit-top fit-bottom">
-			<ui-input v-model="maxNoteTextLength">%i18n:@max-note-text-length%</ui-input>
+			<ui-input v-model="maxNoteTextLength">{{ $t('max-note-text-length') }}</ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="cloud"/> %i18n:@drive-config%</header>
-			<ui-switch v-model="cacheRemoteFiles">%i18n:@cache-remote-files%<span slot="desc">%i18n:@cache-remote-files-desc%</span></ui-switch>
-			<ui-input v-model="localDriveCapacityMb" type="number">%i18n:@local-drive-capacity-mb%<span slot="suffix">MB</span><span slot="desc">%i18n:@mb%</span></ui-input>
-			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">%i18n:@remote-drive-capacity-mb%<span slot="suffix">MB</span><span slot="desc">%i18n:@mb%</span></ui-input>
+			<header><fa icon="cloud"/> {{ $t('drive-config') }}</header>
+			<ui-switch v-model="cacheRemoteFiles">{{ $t('cache-remote-files') }}<span slot="desc">{{ $t('cache-remote-files-desc') }}</span></ui-switch>
+			<ui-input v-model="localDriveCapacityMb" type="number">{{ $t('local-drive-capacity-mb') }}<span slot="suffix">MB</span><span slot="desc">{{ $t('mb') }}</span></ui-input>
+			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('remote-drive-capacity-mb') }}<span slot="suffix">MB</span><span slot="desc">{{ $t('mb') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="shield-alt"/> %i18n:@recaptcha-config%</header>
-			<ui-switch v-model="enableRecaptcha">%i18n:@enable-recaptcha%</ui-switch>
-			<ui-info>%i18n:@recaptcha-info%</ui-info>
-			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>%i18n:@recaptcha-site-key%</ui-input>
-			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>%i18n:@recaptcha-secret-key%</ui-input>
+			<header><fa icon="shield-alt"/> {{ $t('recaptcha-config') }}</header>
+			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
+			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
+			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-site-key') }}</ui-input>
+			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-secret-key') }}</ui-input>
 		</section>
 		<section>
-			<header><fa icon="ghost"/> %i18n:@proxy-account-config%</header>
-			<ui-info>%i18n:@proxy-account-info%</ui-info>
-			<ui-input v-model="proxyAccount"><span slot="prefix">@</span>%i18n:@proxy-account-username%<span slot="desc">%i18n:@proxy-account-username-desc%</span></ui-input>
-			<ui-info warn>%i18n:@proxy-account-warn%</ui-info>
+			<header><fa icon="ghost"/> {{ $t('proxy-account-config') }}</header>
+			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
+			<ui-input v-model="proxyAccount"><span slot="prefix">@</span>{{ $t('proxy-account-username') }}<span slot="desc">{{ $t('proxy-account-username-desc') }}</span></ui-input>
+			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
 		</section>
 		<section>
-			<ui-switch v-model="disableRegistration">%i18n:@disable-registration%</ui-switch>
+			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
 		</section>
 		<section>
-			<ui-switch v-model="disableLocalTimeline">%i18n:@disable-local-timeline%</ui-switch>
+			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
 		</section>
 		<section>
-			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
+			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@invite%</div>
+		<div slot="title">{{ $t('invite') }}</div>
 		<section>
-			<ui-button @click="invite">%i18n:@invite%</ui-button>
+			<ui-button @click="invite">{{ $t('invite') }}</ui-button>
 			<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['fab', 'twitter']"/> %i18n:@twitter-integration-config%</div>
+		<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter-integration-config') }}</div>
 		<section>
-			<ui-switch v-model="enableTwitterIntegration">%i18n:@enable-twitter-integration%</ui-switch>
-			<ui-info>%i18n:@twitter-integration-info%</ui-info>
-			<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@twitter-integration-consumer-key%</ui-input>
-			<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@twitter-integration-consumer-secret%</ui-input>
-			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
+			<ui-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</ui-switch>
+			<ui-info>{{ $t('twitter-integration-info') }}</ui-info>
+			<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('twitter-integration-consumer-key') }}</ui-input>
+			<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('twitter-integration-consumer-secret') }}</ui-input>
+			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['fab', 'github']"/> %i18n:@github-integration-config%</div>
+		<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github-integration-config') }}</div>
 		<section>
-			<ui-switch v-model="enableGithubIntegration">%i18n:@enable-github-integration%</ui-switch>
-			<ui-info>%i18n:@github-integration-info%</ui-info>
-			<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@github-integration-client-id%</ui-input>
-			<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@github-integration-client-secret%</ui-input>
-			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
+			<ui-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</ui-switch>
+			<ui-info>{{ $t('github-integration-info') }}</ui-info>
+			<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('github-integration-client-id') }}</ui-input>
+			<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('github-integration-client-secret') }}</ui-input>
+			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('admin/views/instance.vue'),
 	data() {
 		return {
 			maintainerName: null,
@@ -174,7 +176,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$swal({
 					type: 'success',
-					text: '%i18n:@saved%'
+					text: this.$t('saved')
 				});
 			}).catch(e => {
 				this.$swal({

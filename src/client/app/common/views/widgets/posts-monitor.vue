@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-posts-monitor">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header"><fa icon="chart-line"/>%i18n:@title%</template>
-		<button slot="func" @click="toggle" title="%i18n:@toggle%"><fa icon="sort"/></button>
+		<template slot="header"><fa icon="chart-line"/>{{ $t('title') }}</template>
+		<button slot="func" @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button>
 
 		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }">
 			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" v-show="props.view != 2">
@@ -70,15 +70,18 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 import * as uuid from 'uuid';
 
 export default define({
-	name: 'server',
+	name: 'posts-monitor',
 	props: () => ({
 		design: 0,
 		view: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/posts-monitor.vue'),
+
 	data() {
 		return {
 			connection: null,

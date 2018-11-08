@@ -12,9 +12,9 @@
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa icon="retweet"/>
-		<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+		<span>{{ this.$t('reposted-by').substr(0, this.$t('reposted-by').indexOf('{')) }}</span>
 		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-		<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+		<span>{{ this.$t('reposted-by').substr(this.$t('reposted-by').indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
@@ -28,7 +28,7 @@
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 						<a class="reply" v-if="appearNote.reply"><fa icon="reply"/></a>
 						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :customEmojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
@@ -38,7 +38,7 @@
 					</div>
 					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> %i18n:@location%</a>
+					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
 					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote"/></div>
 				</div>
 				<span class="app" v-if="appearNote.app">via <b>{{ appearNote.app.name }}</b></span>
@@ -67,12 +67,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 import XSub from './note.sub.vue';
 import noteMixin from '../../../common/scripts/note-mixin';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/note.vue'),
 	components: {
 		XSub
 	},
