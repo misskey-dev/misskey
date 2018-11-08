@@ -1,6 +1,12 @@
 <template>
 <mk-ui>
 	<div class="yyyocnobkvdlnyapyauyopbskldsnipz" v-if="!fetching">
+		<header>
+			<mk-avatar class="avatar" :user="user"/>
+			<i18n :path="isFollowing ? 'following' : 'followers'" tag="p">
+				<span place="user">{{ user | userName }}</span>
+			</i18n>
+		</header>
 		<div class="users">
 			<mk-user-card v-for="user in users" :user="user" :key="user.id"/>
 		</div>
@@ -13,12 +19,23 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import VueI18n from 'vue-i18n';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
+import { lang, locale } from '../../../config';
 
 const limit = 16;
 
+const i18n = new VueI18n({
+	locale: lang,
+	messages: {
+		[lang]: locale['desktop/views/pages/user-following-or-followers.vue']
+	}
+});
+
 export default Vue.extend({
+	i18n,
+
 	data() {
 		return {
 			fetching: true,
@@ -81,6 +98,21 @@ export default Vue.extend({
 	max-width 1280px
 	padding 16px
 	margin 0 auto
+
+	> header
+		display flex
+		align-items center
+		margin 0 0 16px 0
+		color var(--text)
+
+		> .avatar
+			width 64px
+			height 64px
+
+		> p
+			margin 0 16px
+			font-size 24px
+			font-weight bold
 
 	> .users
 		display grid

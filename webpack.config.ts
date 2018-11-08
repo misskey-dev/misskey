@@ -66,6 +66,7 @@ const consts = {
 	_CODENAME_: codename,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
+	_LOCALE_: '%locale%',
 	_ENV_: process.env.NODE_ENV
 };
 
@@ -100,6 +101,7 @@ const plugins = [
 
 				src = src.replace(i18nReplacer.pattern, i18nReplacer.replacement);
 				src = src.replace('%lang%', lang);
+				src = src.replace('"%locale%"', JSON.stringify(locales[lang]));
 
 				fs.writeFileSync(`${__dirname}/built/client/assets/${file}.${version}.${lang}.js`, src, 'utf-8');
 			});
