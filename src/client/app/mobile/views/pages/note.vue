@@ -6,7 +6,7 @@
 			<mk-note-detail :note="note"/>
 		</div>
 		<footer>
-			<router-link v-if="note.prev" :to="note.prev"><fa icon="angle-left"/> %i18n:@prev%</router-link>
+			<router-link v-if="note.prev" :to="note.prev"><fa icon="angle-left"/> {{ $t('prev') }}</router-link>
 			<router-link v-if="note.next" :to="note.next">%i18n:@next% <fa icon="angle-right"/></router-link>
 		</footer>
 	</main>

@@ -137,17 +137,17 @@ export default Vue.extend({
 		onContextmenu(e) {
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
-				text: '%i18n:@contextmenu.create-folder%',
+				text: this.$t('contextmenu.create-folder'),
 				icon: ['far', 'folder'],
 				action: this.createFolder
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.upload%',
+				text: this.$t('contextmenu.upload'),
 				icon: 'upload',
 				action: this.selectLocalFile
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.url-upload%',
+				text: this.$t('contextmenu.url-upload'),
 				icon: 'cloud-upload-alt',
 				action: this.urlUpload
 			}]);
@@ -314,7 +314,7 @@ export default Vue.extend({
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
 								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
-								text: '%i18n:@circular-reference-detected%',
+								text: this.$t('circular-reference-detected'),
 								actions: [{
 									text: '%i18n:common.ok%'
 								}]
@@ -334,8 +334,8 @@ export default Vue.extend({
 
 		urlUpload() {
 			(this as any).apis.input({
-				title: '%i18n:@url-upload%',
-				placeholder: '%i18n:@url-of-file%'
+				title: this.$t('url-upload'),
+				placeholder: this.$t('url-of-file')
 			}).then(url => {
 				(this as any).api('drive/files/upload_from_url', {
 					url: url,
@@ -344,7 +344,7 @@ export default Vue.extend({
 
 				(this as any).apis.dialog({
 					title: '<fa icon="check"/>%i18n:@url-upload-requested%',
-					text: '%i18n:@may-take-time%',
+					text: this.$t('may-take-time'),
 					actions: [{
 						text: '%i18n:common.ok%'
 					}]
@@ -354,8 +354,8 @@ export default Vue.extend({
 
 		createFolder() {
 			(this as any).apis.input({
-				title: '%i18n:@create-folder%',
-				placeholder: '%i18n:@folder-name%'
+				title: this.$t('create-folder'),
+				placeholder: this.$t('folder-name')
 			}).then(name => {
 				(this as any).api('drive/folders/create', {
 					name: name,

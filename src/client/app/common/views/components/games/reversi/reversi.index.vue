@@ -30,7 +30,7 @@
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
-			<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
+			<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : this.$t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</a>
 	</section>
@@ -40,7 +40,7 @@
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
-			<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : '%i18n:@game-state.playing%' }}</span>
+			<span class="state">{{ g.isEnded ? '%i18n:@game-state.ended%' : this.$t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</a>
 	</section>
@@ -99,7 +99,7 @@ export default Vue.extend({
 
 		match() {
 			(this as any).apis.input({
-				title: '%i18n:@enter-username%'
+				title: this.$t('enter-username')
 			}).then(username => {
 				(this as any).api('users/show', {
 					username

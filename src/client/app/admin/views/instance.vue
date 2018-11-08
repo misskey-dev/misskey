@@ -1,7 +1,7 @@
 <template>
 <div class="axbwjelsbymowqjyywpirzhdlszoncqs">
 	<ui-card>
-		<div slot="title"><fa icon="cog"/> %i18n:@instance%</div>
+		<div slot="title"><fa icon="cog"/> {{ $t('instance') }}</div>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="name">{{ $t('instance-name') }}</ui-input>
 			<ui-textarea v-model="description">{{ $t('instance-description') }}</ui-textarea>
@@ -9,7 +9,7 @@
 			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>{{ $t('languages') }}<span slot="desc">{{ $t('languages-desc') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="headset"/> %i18n:@maintainer-config%</header>
+			<header><fa icon="headset"/> {{ $t('maintainer-config') }}</header>
 			<ui-input v-model="maintainerName">{{ $t('maintainer-name') }}</ui-input>
 			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="['far', 'envelope']"/></i>{{ $t('maintainer-email') }}</ui-input>
 		</section>
@@ -17,20 +17,20 @@
 			<ui-input v-model="maxNoteTextLength">{{ $t('max-note-text-length') }}</ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="cloud"/> %i18n:@drive-config%</header>
+			<header><fa icon="cloud"/> {{ $t('drive-config') }}</header>
 			<ui-switch v-model="cacheRemoteFiles">{{ $t('cache-remote-files') }}<span slot="desc">{{ $t('cache-remote-files-desc') }}</span></ui-switch>
 			<ui-input v-model="localDriveCapacityMb" type="number">{{ $t('local-drive-capacity-mb') }}<span slot="suffix">MB</span><span slot="desc">{{ $t('mb') }}</span></ui-input>
 			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('remote-drive-capacity-mb') }}<span slot="suffix">MB</span><span slot="desc">{{ $t('mb') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="shield-alt"/> %i18n:@recaptcha-config%</header>
+			<header><fa icon="shield-alt"/> {{ $t('recaptcha-config') }}</header>
 			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
 			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
 			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-site-key') }}</ui-input>
 			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-secret-key') }}</ui-input>
 		</section>
 		<section>
-			<header><fa icon="ghost"/> %i18n:@proxy-account-config%</header>
+			<header><fa icon="ghost"/> {{ $t('proxy-account-config') }}</header>
 			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
 			<ui-input v-model="proxyAccount"><span slot="prefix">@</span>{{ $t('proxy-account-username') }}<span slot="desc">{{ $t('proxy-account-username-desc') }}</span></ui-input>
 			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
@@ -55,7 +55,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['fab', 'twitter']"/> %i18n:@twitter-integration-config%</div>
+		<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter-integration-config') }}</div>
 		<section>
 			<ui-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</ui-switch>
 			<ui-info>{{ $t('twitter-integration-info') }}</ui-info>
@@ -66,7 +66,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['fab', 'github']"/> %i18n:@github-integration-config%</div>
+		<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github-integration-config') }}</div>
 		<section>
 			<ui-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</ui-switch>
 			<ui-info>{{ $t('github-integration-info') }}</ui-info>
@@ -174,7 +174,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$swal({
 					type: 'success',
-					text: '%i18n:@saved%'
+					text: this.$t('saved')
 				});
 			}).catch(e => {
 				this.$swal({

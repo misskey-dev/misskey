@@ -9,11 +9,11 @@
 		<p>{{ $t('intro') }}</p>
 		<ui-info warn>{{ $t('caution') }}</ui-info>
 		<p>{{ $t('regeneration-of-token') }}</p>
-		<ui-button @click="regenerateToken"><fa icon="sync-alt"/> %i18n:@regenerate-token%</ui-button>
+		<ui-button @click="regenerateToken"><fa icon="sync-alt"/> {{ $t('regenerate-token') }}</ui-button>
 	</section>
 
 	<section>
-		<header><fa icon="terminal"/> %i18n:@console.title%</header>
+		<header><fa icon="terminal"/> {{ $t('console.title') }}</header>
 		<ui-input v-model="endpoint">
 			<span>{{ $t('console.endpoint') }}</span>
 		</ui-input>
@@ -23,7 +23,7 @@
 		</ui-textarea>
 		<ui-button @click="send" :disabled="sending">
 			<template v-if="sending">{{ $t('console.sending') }}</template>
-			<template v-else><fa icon="paper-plane"/> %i18n:@console.send%</template>
+			<template v-else><fa icon="paper-plane"/> {{ $t('console.send') }}</template>
 		</ui-button>
 		<ui-textarea v-if="res" v-model="res" readonly tall>
 			<span>{{ $t('console.response') }}</span>
@@ -49,7 +49,7 @@ export default Vue.extend({
 	methods: {
 		regenerateToken() {
 			(this as any).apis.input({
-				title: '%i18n:@enter-password%',
+				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
 				(this as any).api('i/regenerate_token', {

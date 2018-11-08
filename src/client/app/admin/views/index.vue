@@ -29,7 +29,7 @@
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">{{ $t('update') }}</li> -->
 		</ul>
 		<div class="back-to-misskey">
-			<a href="/"><fa icon="arrow-left"/> %i18n:@back-to-misskey%</a>
+			<a href="/"><fa icon="arrow-left"/> {{ $t('back-to-misskey') }}</a>
 		</div>
 		<div class="version">
 			<small>Misskey {{ version }}</small>

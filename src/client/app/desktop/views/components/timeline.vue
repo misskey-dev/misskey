@@ -1,10 +1,10 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> %i18n:@home%</span>
-		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> %i18n:@local%</span>
-		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> %i18n:@hybrid%</span>
-		<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> %i18n:@global%</span>
+		<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
+		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
+		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
+		<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> {{ $t('global') }}</span>
 		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><fa icon="hashtag"/> {{ tagTl.title }}</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.title }}</span>
 		<div class="buttons">
@@ -105,10 +105,10 @@ export default Vue.extend({
 
 			let menu = [{
 				icon: 'plus',
-				text: '%i18n:@add-list%',
+				text: this.$t('add-list'),
 				action: () => {
 					(this as any).apis.input({
-						title: '%i18n:@list-name%',
+						title: this.$t('list-name'),
 					}).then(async title => {
 						const list = await (this as any).api('users/lists/create', {
 							title
@@ -143,7 +143,7 @@ export default Vue.extend({
 		chooseTag() {
 			let menu = [{
 				icon: 'plus',
-				text: '%i18n:@add-tag-timeline%',
+				text: this.$t('add-tag-timeline'),
 				action: () => {
 					(this as any).os.new(MkSettingsWindow, {
 						initialPage: 'hashtags'

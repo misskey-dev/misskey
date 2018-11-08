@@ -21,7 +21,7 @@
 			:data-is-out-of-range="isOutOfRange(i + 1)"
 			:data-is-donichi="isDonichi(i + 1)"
 			@click="go(i + 1)"
-			:title="isOutOfRange(i + 1) ? null : '%i18n:@go%'"
+			:title="isOutOfRange(i + 1) ? null : this.$t('go')"
 		>
 			<div>{{ i + 1 }}</div>
 		</div>

@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="user"/> %i18n:@title%</div>
+	<div slot="title"><fa icon="user"/> {{ $t('title') }}</div>
 
 	<section class="fit-top">
 		<ui-form :disabled="saving">
@@ -180,7 +180,7 @@ export default Vue.extend({
 				if (notify) {
 					this.$swal({
 						type: 'success',
-						text: '%i18n:@saved%'
+						text: this.$t('saved')
 					});
 				}
 			});

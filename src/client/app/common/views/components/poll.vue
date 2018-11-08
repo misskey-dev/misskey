@@ -13,7 +13,7 @@
 	<p v-if="total > 0">
 		<span>{{ '%i18n:@total-users%'.replace('{}', total) }}</span>
 		<span>・</span>
-		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? '%i18n:@vote%' : '%i18n:@show-result%' }}</a>
+		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? '%i18n:@vote%' : this.$t('show-result') }}</a>
 		<span v-if="isVoted">{{ $t('voted') }}</span>
 	</p>
 </div>

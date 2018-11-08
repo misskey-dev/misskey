@@ -3,7 +3,7 @@
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<div slot="empty">
 			<fa :icon="['far', 'comments']"/>
-			{{ withMedia ? '%i18n:@no-notes-with-media%' : '%i18n:@no-notes%' }}
+			{{ withMedia ? '%i18n:@no-notes-with-media%' : this.$t('no-notes') }}
 		</div>
 	</mk-notes>
 </div>

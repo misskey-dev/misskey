@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> %i18n:@is-suspended%</div>
+		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</div>
 		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> %i18n:common.is-remote-user%<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a></div>
 		<main>
 			<div class="main">

@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="ban"/> %i18n:@mute-and-block%</div>
+	<div slot="title"><fa icon="ban"/> {{ $t('mute-and-block') }}</div>
 
 	<section>
 		<header>{{ $t('mute') }}</header>

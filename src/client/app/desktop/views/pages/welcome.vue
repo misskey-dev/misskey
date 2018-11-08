@@ -40,7 +40,7 @@
 			</div>
 
 			<div class="announcements block">
-				<header><fa icon="broadcast-tower"/> %i18n:@announcements%</header>
+				<header><fa icon="broadcast-tower"/> {{ $t('announcements') }}</header>
 				<div v-if="announcements && announcements.length > 0">
 					<div v-for="announcement in announcements">
 						<h1 v-html="announcement.title"></h1>
@@ -50,7 +50,7 @@
 			</div>
 
 			<div class="photos block">
-				<header><fa icon="images"/> %i18n:@photos%</header>
+				<header><fa icon="images"/> {{ $t('photos') }}</header>
 				<div>
 					<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
 				</div>
@@ -76,14 +76,14 @@
 				</div>
 
 				<div class="tl block">
-					<header><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</header>
+					<header><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</header>
 					<div>
 						<mk-welcome-timeline class="tl" :max="20"/>
 					</div>
 				</div>
 
 				<div class="info block">
-					<header><fa icon="info-circle"/> %i18n:@info%</header>
+					<header><fa icon="info-circle"/> {{ $t('info') }}</header>
 					<div>
 						<div v-if="meta" class="body">
 							<p>Version: <b>{{ meta.version }}</b></p>

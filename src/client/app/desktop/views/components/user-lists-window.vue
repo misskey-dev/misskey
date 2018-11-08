@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
-	<span slot="header"><fa icon="list"/> %i18n:@title%</span>
+	<span slot="header"><fa icon="list"/> {{ $t('title') }}</span>
 
 	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
 		<button class="ui" @click="add">{{ $t('create-list') }}</button>
@@ -27,7 +27,7 @@ export default Vue.extend({
 	methods: {
 		add() {
 			(this as any).apis.input({
-				title: '%i18n:@list-name%',
+				title: this.$t('list-name'),
 			}).then(async title => {
 				const list = await (this as any).api('users/lists/create', {
 					title

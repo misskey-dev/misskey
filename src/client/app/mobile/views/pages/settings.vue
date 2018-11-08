@@ -8,14 +8,14 @@
 			<mk-profile-editor/>
 
 			<ui-card>
-				<div slot="title"><fa icon="palette"/> %i18n:@theme%</div>
+				<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
 				<section>
 					<mk-theme/>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa icon="poll-h"/> %i18n:@design%</div>
+				<div slot="title"><fa icon="poll-h"/> {{ $t('design') }}</div>
 
 				<section>
 					<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
@@ -58,7 +58,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa icon="sliders-h"/> %i18n:@behavior%</div>
+				<div slot="title"><fa icon="sliders-h"/> {{ $t('behavior') }}</div>
 
 				<section>
 					<ui-switch v-model="fetchOnScroll">{{ $t('fetch-on-scroll') }}</ui-switch>
@@ -89,7 +89,7 @@
 			<mk-mute-and-block/>
 
 			<ui-card>
-				<div slot="title"><fa icon="volume-up"/> %i18n:@sound%</div>
+				<div slot="title"><fa icon="volume-up"/> {{ $t('sound') }}</div>
 
 				<section>
 					<ui-switch v-model="enableSounds">{{ $t('enable-sounds') }}</ui-switch>
@@ -97,7 +97,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa icon="language"/> %i18n:@lang%</div>
+				<div slot="title"><fa icon="language"/> {{ $t('lang') }}</div>
 
 				<section class="fit-top">
 					<ui-select v-model="lang" placeholder="%i18n:@auto%">
@@ -109,17 +109,17 @@
 							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 						</optgroup>
 					</ui-select>
-					<span><fa icon="info-circle"/> %i18n:@lang-tip%</span>
+					<span><fa icon="info-circle"/> {{ $t('lang-tip') }}</span>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'twitter']"/> %i18n:@twitter%</div>
+				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
 
 				<section>
 					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
 					<p>
-						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
+						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : this.$t('twitter-connect') }}</a>
 						<span v-if="$store.state.i.twitter"> or </span>
 						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">{{ $t('twitter-disconnect') }}</a>
 					</p>
@@ -127,12 +127,12 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'github']"/> %i18n:@github%</div>
+				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
 
 				<section>
 					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
 					<p>
-						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? '%i18n:@github-reconnect%' : '%i18n:@github-connect%' }}</a>
+						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? '%i18n:@github-reconnect%' : this.$t('github-connect') }}</a>
 						<span v-if="$store.state.i.github"> or </span>
 						<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github">{{ $t('github-disconnect') }}</a>
 					</p>
@@ -142,14 +142,14 @@
 			<mk-api-settings />
 
 			<ui-card>
-				<div slot="title"><fa icon="unlock-alt"/> %i18n:@password%</div>
+				<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
 				<section>
 					<mk-password-settings/>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa icon="sync-alt"/> %i18n:@update%</div>
+				<div slot="title"><fa icon="sync-alt"/> {{ $t('update') }}</div>
 
 				<section>
 					<div>%i18n:@version% <i>{{ version }}</i></div>
@@ -342,13 +342,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					(this as any).apis.dialog({
-						title: '%i18n:@no-updates%',
-						text: '%i18n:@no-updates-desc%'
+						title: this.$t('no-updates'),
+						text: this.$t('no-updates-desc')
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '%i18n:@update-available%',
-						text: '%i18n:@update-available-desc%'
+						title: this.$t('update-available'),
+						text: this.$t('update-available-desc')
 					});
 				}
 			});

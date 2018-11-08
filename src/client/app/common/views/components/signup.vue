@@ -10,29 +10,29 @@
 			<span>{{ $t('username') }}</span>
 			<span slot="prefix">@</span>
 			<span slot="suffix">@{{ host }}</span>
-			<p slot="desc" v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner .pulse" fixed-width/> %i18n:@checking%</p>
-			<p slot="desc" v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@available%</p>
-			<p slot="desc" v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@unavailable%</p>
-			<p slot="desc" v-if="usernameState == 'error'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@error%</p>
-			<p slot="desc" v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@invalid-format%</p>
-			<p slot="desc" v-if="usernameState == 'min-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@too-short%</p>
-			<p slot="desc" v-if="usernameState == 'max-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@too-long%</p>
+			<p slot="desc" v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner .pulse" fixed-width/> {{ $t('checking') }}</p>
+			<p slot="desc" v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('available') }}</p>
+			<p slot="desc" v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('unavailable') }}</p>
+			<p slot="desc" v-if="usernameState == 'error'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('error') }}</p>
+			<p slot="desc" v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('invalid-format') }}</p>
+			<p slot="desc" v-if="usernameState == 'min-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-short') }}</p>
+			<p slot="desc" v-if="usernameState == 'max-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-long') }}</p>
 		</ui-input>
 		<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true" styl="fill">
 			<span>{{ $t('password') }}</span>
 			<span slot="prefix"><fa icon="lock"/></span>
 			<div slot="desc">
-				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@weak-password%</p>
-				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@normal-password%</p>
-				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@strong-password%</p>
+				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('weak-password') }}</p>
+				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('normal-password') }}</p>
+				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('strong-password') }}</p>
 			</div>
 		</ui-input>
 		<ui-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype" styl="fill">
 			<span>%i18n:@password% (%i18n:@retype%)</span>
 			<span slot="prefix"><fa icon="lock"/></span>
 			<div slot="desc">
-				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa icon="check" fixed-width/> %i18n:@password-matched%</p>
-				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@password-not-matched%</p>
+				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('password-matched') }}</p>
+				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('password-not-matched') }}</p>
 			</div>
 		</ui-input>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>

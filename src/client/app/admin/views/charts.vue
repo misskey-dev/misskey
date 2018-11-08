@@ -1,7 +1,7 @@
 <template>
 <div class="qvgidhudpqhjttdhxubzuyrhyzgslujw">
 	<header>
-		<b><fa :icon="['far', 'chart-bar']"/> %i18n:@title%:</b>
+		<b><fa :icon="['far', 'chart-bar']"/> {{ $t('title') }}:</b>
 		<select v-model="src">
 			<optgroup label="%i18n:@federation%">
 				<option value="federation-instances">{{ $t('charts.federation-instances') }}</option>

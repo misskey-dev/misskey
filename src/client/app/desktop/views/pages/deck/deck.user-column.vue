@@ -40,7 +40,7 @@
 			</div>
 		</div>
 		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-			<p class="caption" @click="toggleShowPinned"><fa icon="thumbtack"/> %i18n:@pinned-notes%</p>
+			<p class="caption" @click="toggleShowPinned"><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</p>
 			<span class="angle" v-if="showPinned"><fa icon="angle-up"/></span>
 			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div class="notes" v-show="showPinned">
@@ -48,7 +48,7 @@
 			</div>
 		</div>
 		<div class="images" v-if="images.length > 0">
-			<p class="caption" @click="toggleShowImages"><fa :icon="['far', 'images']"/> %i18n:@images%</p>
+			<p class="caption" @click="toggleShowImages"><fa :icon="['far', 'images']"/> {{ $t('images') }}</p>
 			<span class="angle" v-if="showImages"><fa icon="angle-up"/></span>
 			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div v-show="showImages">
@@ -61,7 +61,7 @@
 			</div>
 		</div>
 		<div class="activity">
-			<p class="caption" @click="toggleShowActivity"><fa :icon="['far', 'chart-bar']"/> %i18n:@activity%</p>
+			<p class="caption" @click="toggleShowActivity"><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</p>
 			<span class="angle" v-if="showActivity"><fa icon="angle-up"/></span>
 			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div v-show="showActivity">
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 		<div class="tl">
-			<p class="caption"><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</p>
+			<p class="caption"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</p>
 			<div>
 				<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 			</div>
@@ -295,7 +295,7 @@ export default Vue.extend({
 		menu() {
 			let menu = [{
 				icon: 'list',
-				text: '%i18n:@push-to-a-list%',
+				text: this.$t('push-to-a-list'),
 				action: () => {
 					const w = (this as any).os.new(MkUserListsWindow);
 					w.$once('choosen', async list => {

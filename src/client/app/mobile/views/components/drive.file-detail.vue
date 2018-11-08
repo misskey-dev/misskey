@@ -31,18 +31,18 @@
 			<span class="created-at" @click="showCreatedAt"><fa :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
 			<template v-if="file.isSensitive">
 				<span class="separator"></span>
-				<span class="nsfw"><fa icon="eye-slash"/> %i18n:@nsfw%</span>
+				<span class="nsfw"><fa icon="eye-slash"/> {{ $t('nsfw') }}</span>
 			</template>
 		</div>
 	</div>
 	<div class="menu">
 		<div>
-			<ui-button link :href="`${file.url}?download`" :download="file.name"><fa icon="download"/> %i18n:@download%</ui-button>
-			<ui-button @click="rename"><fa icon="pencil-alt"/> %i18n:@rename%</ui-button>
-			<ui-button @click="move"><fa :icon="['far', 'folder-open']"/> %i18n:@move%</ui-button>
-			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><fa :icon="['far', 'eye']"/> %i18n:@unmark-as-sensitive%</ui-button>
-			<ui-button @click="toggleSensitive" v-else><fa :icon="['far', 'eye-slash']"/> %i18n:@mark-as-sensitive%</ui-button>
-			<ui-button @click="del"><fa :icon="['far', 'trash-alt']"/> %i18n:@delete%</ui-button>
+			<ui-button link :href="`${file.url}?download`" :download="file.name"><fa icon="download"/> {{ $t('download') }}</ui-button>
+			<ui-button @click="rename"><fa icon="pencil-alt"/> {{ $t('rename') }}</ui-button>
+			<ui-button @click="move"><fa :icon="['far', 'folder-open']"/> {{ $t('move') }}</ui-button>
+			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><fa :icon="['far', 'eye']"/> {{ $t('unmark-as-sensitive') }}</ui-button>
+			<ui-button @click="toggleSensitive" v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mark-as-sensitive') }}</ui-button>
+			<ui-button @click="del"><fa :icon="['far', 'trash-alt']"/> {{ $t('delete') }}</ui-button>
 		</div>
 	</div>
 	<div class="hash">

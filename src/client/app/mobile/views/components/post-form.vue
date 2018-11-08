@@ -145,7 +145,7 @@ export default Vue.extend({
 				? '%i18n:@renote%'
 				: this.reply
 					? '%i18n:@reply%'
-					: '%i18n:@submit%';
+					: this.$t('submit');
 		},
 
 		canPost(): boolean {
@@ -278,7 +278,7 @@ export default Vue.extend({
 
 		addVisibleUser() {
 			(this as any).apis.input({
-				title: '%i18n:@username-prompt%'
+				title: this.$t('username-prompt')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
 				(this as any).api('users/show', parseAcct(acct)).then(user => {

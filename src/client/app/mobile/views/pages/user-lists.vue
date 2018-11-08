@@ -37,7 +37,7 @@ export default Vue.extend({
 	methods: {
 		fn() {
 			(this as any).apis.input({
-				title: '%i18n:@enter-list-name%',
+				title: this.$t('enter-list-name'),
 			}).then(async title => {
 				const list = await (this as any).api('users/lists/create', {
 					title

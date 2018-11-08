@@ -70,23 +70,23 @@ export default Vue.extend({
 			this.isContextmenuShowing = true;
 			contextmenu((this as any).os)(e, [{
 				type: 'item',
-				text: '%i18n:@contextmenu.rename%',
+				text: this.$t('contextmenu.rename'),
 				icon: 'i-cursor',
 				action: this.rename
 			}, {
 				type: 'item',
-				text: this.file.isSensitive ? '%i18n:@contextmenu.unmark-as-sensitive%' : '%i18n:@contextmenu.mark-as-sensitive%',
+				text: this.file.isSensitive ? '%i18n:@contextmenu.unmark-as-sensitive%' : this.$t('contextmenu.mark-as-sensitive'),
 				icon: this.file.isSensitive ? ['far', 'eye'] : ['far', 'eye-slash'],
 				action: this.toggleSensitive
 			}, null, {
 				type: 'item',
-				text: '%i18n:@contextmenu.copy-url%',
+				text: this.$t('contextmenu.copy-url'),
 				icon: 'link',
 				action: this.copyUrl
 			}, {
 				type: 'link',
 				href: `${this.file.url}?download`,
-				text: '%i18n:@contextmenu.download%',
+				text: this.$t('contextmenu.download'),
 				icon: 'download',
 			}, null, {
 				type: 'item',
@@ -95,19 +95,19 @@ export default Vue.extend({
 				action: this.deleteFile
 			}, null, {
 				type: 'nest',
-				text: '%i18n:@contextmenu.else-files%',
+				text: this.$t('contextmenu.else-files'),
 				menu: [{
 					type: 'item',
-					text: '%i18n:@contextmenu.set-as-avatar%',
+					text: this.$t('contextmenu.set-as-avatar'),
 					action: this.setAsAvatar
 				}, {
 					type: 'item',
-					text: '%i18n:@contextmenu.set-as-banner%',
+					text: this.$t('contextmenu.set-as-banner'),
 					action: this.setAsBanner
 				}]
 			}, /*{
 				type: 'nest',
-				text: '%i18n:@contextmenu.open-in-app%',
+				text: this.$t('contextmenu.open-in-app'),
 				menu: [{
 					type: 'item',
 					text: '%i18n:@contextmenu.add-app%...',
@@ -148,8 +148,8 @@ export default Vue.extend({
 
 		rename() {
 			(this as any).apis.input({
-				title: '%i18n:@contextmenu.rename-file%',
-				placeholder: '%i18n:@contextmenu.input-new-file-name%',
+				title: this.$t('contextmenu.rename-file'),
+				placeholder: this.$t('contextmenu.input-new-file-name'),
 				default: this.file.name,
 				allowEmpty: false
 			}).then(name => {
@@ -171,7 +171,7 @@ export default Vue.extend({
 			copyToClipboard(this.file.url);
 			(this as any).apis.dialog({
 				title: '<fa icon="check"/>%i18n:@contextmenu.copied%',
-				text: '%i18n:@contextmenu.copied-url-to-clipboard%',
+				text: this.$t('contextmenu.copied-url-to-clipboard'),
 				actions: [{
 					text: '%i18n:common.ok%'
 				}]

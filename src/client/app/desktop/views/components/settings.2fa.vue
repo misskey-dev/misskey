@@ -34,7 +34,7 @@ export default Vue.extend({
 	methods: {
 		register() {
 			(this as any).apis.input({
-				title: '%i18n:@enter-password%',
+				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
 				(this as any).api('i/2fa/register', {
@@ -47,7 +47,7 @@ export default Vue.extend({
 
 		unregister() {
 			(this as any).apis.input({
-				title: '%i18n:@enter-password%',
+				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
 				(this as any).api('i/2fa/unregister', {

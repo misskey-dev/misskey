@@ -25,7 +25,7 @@
 	</label>
 
 	<details class="creator">
-		<summary><fa icon="palette"/> %i18n:@create-a-theme%</summary>
+		<summary><fa icon="palette"/> {{ $t('create-a-theme') }}</summary>
 		<div>
 			<span>%i18n:@base-theme%:</span>
 			<ui-radio v-model="myThemeBase" value="light">{{ $t('base-theme-light') }}</ui-radio>
@@ -51,23 +51,23 @@
 			<div style="padding-bottom:8px;">%i18n:@text-color%:</div>
 			<color-picker v-model="myThemeText"/>
 		</div>
-		<ui-button @click="preview()"><fa icon="eye"/> %i18n:@preview-created-theme%</ui-button>
-		<ui-button primary @click="gen()"><fa :icon="['far', 'save']"/> %i18n:@save-created-theme%</ui-button>
+		<ui-button @click="preview()"><fa icon="eye"/> {{ $t('preview-created-theme') }}</ui-button>
+		<ui-button primary @click="gen()"><fa :icon="['far', 'save']"/> {{ $t('save-created-theme') }}</ui-button>
 	</details>
 
 	<details>
-		<summary><fa icon="download"/> %i18n:@install-a-theme%</summary>
-		<ui-button @click="import_()"><fa icon="file-import"/> %i18n:@import%</ui-button>
+		<summary><fa icon="download"/> {{ $t('install-a-theme') }}</summary>
+		<ui-button @click="import_()"><fa icon="file-import"/> {{ $t('import') }}</ui-button>
 		<input ref="file" type="file" accept=".misskeytheme" style="display:none;" @change="onUpdateImportFile"/>
 		<p>%i18n:@import-by-code%:</p>
 		<ui-textarea v-model="installThemeCode">
 			<span>{{ $t('theme-code') }}</span>
 		</ui-textarea>
-		<ui-button @click="() => install(this.installThemeCode)"><fa icon="check"/> %i18n:@install%</ui-button>
+		<ui-button @click="() => install(this.installThemeCode)"><fa icon="check"/> {{ $t('install') }}</ui-button>
 	</details>
 
 	<details>
-		<summary><fa icon="folder-open"/> %i18n:@manage-themes%</summary>
+		<summary><fa icon="folder-open"/> {{ $t('manage-themes') }}</summary>
 		<ui-select v-model="selectedThemeId" placeholder="%i18n:@select-theme%">
 			<optgroup label="%i18n:@builtin-themes%">
 				<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -89,8 +89,8 @@
 			<ui-textarea readonly :value="selectedThemeCode">
 				<span>{{ $t('theme-code') }}</span>
 			</ui-textarea>
-			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><fa icon="box"/> %i18n:@export%</ui-button>
-			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> %i18n:@uninstall%</ui-button>
+			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><fa icon="box"/> {{ $t('export') }}</ui-button>
+			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> {{ $t('uninstall') }}</ui-button>
 		</template>
 	</details>
 </div>
@@ -221,7 +221,7 @@ export default Vue.extend({
 			} catch (e) {
 				this.$swal({
 					type: 'error',
-					text: '%i18n:@invalid-theme%'
+					text: this.$t('invalid-theme')
 				});
 				return;
 			}
@@ -234,7 +234,7 @@ export default Vue.extend({
 			if (theme.id == null) {
 				this.$swal({
 					type: 'error',
-					text: '%i18n:@invalid-theme%'
+					text: this.$t('invalid-theme')
 				});
 				return;
 			}
@@ -242,7 +242,7 @@ export default Vue.extend({
 			if (this.$store.state.device.themes.some(t => t.id == theme.id)) {
 				this.$swal({
 					type: 'info',
-					text: '%i18n:@already-installed%'
+					text: this.$t('already-installed')
 				});
 				return;
 			}
@@ -254,7 +254,7 @@ export default Vue.extend({
 
 			this.$swal({
 				type: 'success',
-				text: '%i18n:@installed%'.replace('{}', theme.name)
+				text: this.$t('installed').replace('{}', theme.name)
 			});
 		},
 
@@ -267,7 +267,7 @@ export default Vue.extend({
 
 			this.$swal({
 				type: 'info',
-				text: '%i18n:@uninstalled%'.replace('{}', theme.name)
+				text: this.$t('uninstalled').replace('{}', theme.name)
 			});
 		},
 
@@ -304,7 +304,7 @@ export default Vue.extend({
 			if (theme.name == null || theme.name.trim() == '') {
 				this.$swal({
 					type: 'warning',
-					text: '%i18n:@theme-name-required%'
+					text: this.$t('theme-name-required')
 				});
 				return;
 			}
@@ -318,7 +318,7 @@ export default Vue.extend({
 
 			this.$swal({
 				type: 'success',
-				text: '%i18n:@saved%'
+				text: this.$t('saved')
 			});
 		}
 	}

@@ -18,14 +18,14 @@
 			<mk-profile-editor/>
 
 			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'twitter']"/> %i18n:@twitter%</div>
+				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
 				<section>
 					<mk-twitter-setting/>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'github']"/> %i18n:@github%</div>
+				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
 				<section>
 					<mk-github-setting/>
 				</section>
@@ -33,7 +33,7 @@
 		</div>
 
 		<ui-card class="theme" v-show="page == 'theme'">
-			<div slot="title"><fa icon="palette"/> %i18n:@theme%</div>
+			<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
 
 			<section>
 				<mk-theme/>
@@ -41,7 +41,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><fa icon="sliders-h"/> %i18n:@behaviour%</div>
+			<div slot="title"><fa icon="sliders-h"/> {{ $t('behaviour') }}</div>
 
 			<section>
 				<ui-switch v-model="fetchOnScroll">
@@ -87,7 +87,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><fa icon="desktop"/> %i18n:@display%</div>
+			<div slot="title"><fa icon="desktop"/> {{ $t('display') }}</div>
 
 			<section>
 				<ui-switch v-model="showPostFormOnTopOfTl">{{ $t('post-form-on-timeline') }}</ui-switch>
@@ -138,7 +138,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><fa icon="volume-up"/> %i18n:@sound%</div>
+			<div slot="title"><fa icon="volume-up"/> {{ $t('sound') }}</div>
 
 			<section>
 				<ui-switch v-model="enableSounds">
@@ -152,12 +152,12 @@
 					max="1"
 					step="0.1"
 				/>
-				<ui-button @click="soundTest"><fa icon="volume-up"/> %i18n:@test%</ui-button>
+				<ui-button @click="soundTest"><fa icon="volume-up"/> {{ $t('test') }}</ui-button>
 			</section>
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><fa icon="language"/> %i18n:@language%</div>
+			<div slot="title"><fa icon="language"/> {{ $t('language') }}</div>
 			<section class="fit-top">
 				<ui-select v-model="lang" placeholder="%i18n:@pick-language%">
 					<optgroup label="%i18n:@recommended%">
@@ -175,7 +175,7 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><fa :icon="['far', 'trash-alt']"/> %i18n:@cache%</div>
+			<div slot="title"><fa :icon="['far', 'trash-alt']"/> {{ $t('cache') }}</div>
 			<section>
 				<ui-button @click="clean">{{ $t('clean-cache') }}</ui-button>
 				<div class="none ui info warn">
@@ -185,7 +185,7 @@
 		</ui-card>
 
 		<ui-card class="notification" v-show="page == 'notification'">
-			<div slot="title"><fa :icon="['far', 'bell']"/> %i18n:@notification%</div>
+			<div slot="title"><fa :icon="['far', 'bell']"/> {{ $t('notification') }}</div>
 			<section>
 				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
 					%i18n:@auto-watch%
@@ -202,7 +202,7 @@
 		</div>
 
 		<ui-card class="hashtags" v-show="page == 'hashtags'">
-			<div slot="title"><fa icon="hashtag"/> %i18n:@tags%</div>
+			<div slot="title"><fa icon="hashtag"/> {{ $t('tags') }}</div>
 			<section>
 				<x-tags/>
 			</section>
@@ -213,28 +213,28 @@
 		</div>
 
 		<ui-card class="apps" v-show="page == 'apps'">
-			<div slot="title"><fa icon="puzzle-piece"/> %i18n:@apps%</div>
+			<div slot="title"><fa icon="puzzle-piece"/> {{ $t('apps') }}</div>
 			<section>
 				<x-apps/>
 			</section>
 		</ui-card>
 
 		<ui-card class="password" v-show="page == 'security'">
-			<div slot="title"><fa icon="unlock-alt"/> %i18n:@password%</div>
+			<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
 			<section>
 				<mk-password-settings/>
 			</section>
 		</ui-card>
 
 		<ui-card class="2fa" v-show="page == 'security'">
-			<div slot="title"><fa icon="mobile-alt"/> %i18n:@2fa%</div>
+			<div slot="title"><fa icon="mobile-alt"/> {{ $t('2fa') }}</div>
 			<section>
 				<x-2fa/>
 			</section>
 		</ui-card>
 
 		<ui-card class="signin" v-show="page == 'security'">
-			<div slot="title"><fa icon="sign-in-alt"/> %i18n:@signin%</div>
+			<div slot="title"><fa icon="sign-in-alt"/> {{ $t('signin') }}</div>
 			<section>
 				<x-signins/>
 			</section>
@@ -245,14 +245,14 @@
 		</div>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<div slot="title"><fa icon="info-circle"/> %i18n:@about%</div>
+			<div slot="title"><fa icon="info-circle"/> {{ $t('about') }}</div>
 			<section>
 				<p v-if="meta">%i18n:@operator%: <i><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></i></p>
 			</section>
 		</ui-card>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<div slot="title"><fa icon="sync-alt"/> %i18n:@update%</div>
+			<div slot="title"><fa icon="sync-alt"/> {{ $t('update') }}</div>
 			<section>
 				<p>
 					<span>%i18n:@version% <i>{{ version }}</i></span>
@@ -276,7 +276,7 @@
 		</ui-card>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<div slot="title"><fa icon="cogs"/> %i18n:@advanced-settings%</div>
+			<div slot="title"><fa icon="cogs"/> {{ $t('advanced-settings') }}</div>
 			<section>
 				<ui-switch v-model="debug">
 					%i18n:@debug-mode%
@@ -544,13 +544,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					(this as any).apis.dialog({
-						title: '%i18n:@no-updates%',
-						text: '%i18n:@no-updates-desc%'
+						title: this.$t('no-updates'),
+						text: this.$t('no-updates-desc')
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '%i18n:@update-available%',
-						text: '%i18n:@update-available-desc%'
+						title: this.$t('update-available'),
+						text: this.$t('update-available-desc')
 					});
 				}
 			});
@@ -558,8 +558,8 @@ export default Vue.extend({
 		clean() {
 			localStorage.clear();
 			(this as any).apis.dialog({
-				title: '%i18n:@cache-cleared%',
-				text: '%i18n:@cache-cleared-desc%'
+				title: this.$t('cache-cleared'),
+				text: this.$t('cache-cleared-desc')
 			});
 		},
 		soundTest() {

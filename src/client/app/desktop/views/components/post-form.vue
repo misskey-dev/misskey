@@ -150,7 +150,7 @@ export default Vue.extend({
 				? '%i18n:@renote%'
 				: this.reply
 					? '%i18n:@reply%'
-					: '%i18n:@submit%';
+					: this.$t('submit');
 		},
 
 		canPost(): boolean {
@@ -362,7 +362,7 @@ export default Vue.extend({
 
 		addVisibleUser() {
 			(this as any).apis.input({
-				title: '%i18n:@enter-username%'
+				title: this.$t('enter-username')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
 				(this as any).api('users/show', parseAcct(acct)).then(user => {
@@ -403,13 +403,13 @@ export default Vue.extend({
 					? '%i18n:@reposted%'
 					: this.reply
 						? '%i18n:@replied%'
-						: '%i18n:@posted%');
+						: this.$t('posted'));
 			}).catch(err => {
 				(this as any).apis.notify(this.renote
 					? '%i18n:@renote-failed%'
 					: this.reply
 						? '%i18n:@reply-failed%'
-						: '%i18n:@note-failed%');
+						: this.$t('note-failed'));
 			}).then(() => {
 				this.posting = false;
 			});

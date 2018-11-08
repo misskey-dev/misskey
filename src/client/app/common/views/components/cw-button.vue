@@ -1,5 +1,5 @@
 <template>
-<button class="nrvgflfuaxwgkxoynpnumyookecqrrvh" @click="toggle">{{ value ? '%i18n:@hide%' : '%i18n:@show%' }}</button>
+<button class="nrvgflfuaxwgkxoynpnumyookecqrrvh" @click="toggle">{{ value ? '%i18n:@hide%' : this.$t('show') }}</button>
 </template>
 
 <script lang="ts">

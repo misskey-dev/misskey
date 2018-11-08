@@ -67,7 +67,7 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await (this as any).os.api('users/show', parseAcct(this.verifyUsername));
 				await (this as any).os.api('admin/verify-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@verified%' });
+				//(this as any).os.apis.dialog({ text: this.$t('verified') });
 			};
 
 			await process().catch(e => {
@@ -83,7 +83,7 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await (this as any).os.api('users/show', parseAcct(this.unverifyUsername));
 				await (this as any).os.api('admin/unverify-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@unverified%' });
+				//(this as any).os.apis.dialog({ text: this.$t('unverified') });
 			};
 
 			await process().catch(e => {
@@ -99,7 +99,7 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await (this as any).os.api('users/show', parseAcct(this.suspendUsername));
 				await (this as any).os.api('admin/suspend-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@suspended%' });
+				//(this as any).os.apis.dialog({ text: this.$t('suspended') });
 			};
 
 			await process().catch(e => {
@@ -115,7 +115,7 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await (this as any).os.api('users/show', parseAcct(this.unsuspendUsername));
 				await (this as any).os.api('admin/unsuspend-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@unsuspended%' });
+				//(this as any).os.apis.dialog({ text: this.$t('unsuspended') });
 			};
 
 			await process().catch(e => {

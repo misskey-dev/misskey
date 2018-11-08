@@ -1,7 +1,7 @@
 <template>
 <div class="cdeuzmsthagexbkpofbmatmugjuvogfb">
 	<ui-card>
-		<div slot="title"><fa icon="broadcast-tower"/> %i18n:@announcements%</div>
+		<div slot="title"><fa icon="broadcast-tower"/> {{ $t('announcements') }}</div>
 		<section v-for="(announcement, i) in announcements" class="fit-top">
 			<ui-input v-model="announcement.title" @change="save">
 				<span>{{ $t('title') }}</span>
@@ -10,12 +10,12 @@
 				<span>{{ $t('text') }}</span>
 			</ui-textarea>
 			<ui-horizon-group>
-				<ui-button @click="save()"><fa :icon="['far', 'save']"/> %i18n:@save%</ui-button>
-				<ui-button @click="remove(i)"><fa :icon="['far', 'trash-alt']"/> %i18n:@remove%</ui-button>
+				<ui-button @click="save()"><fa :icon="['far', 'save']"/> {{ $t('save') }}</ui-button>
+				<ui-button @click="remove(i)"><fa :icon="['far', 'trash-alt']"/> {{ $t('remove') }}</ui-button>
 			</ui-horizon-group>
 		</section>
 		<section>
-			<ui-button @click="add"><fa icon="plus"/> %i18n:@add%</ui-button>
+			<ui-button @click="add"><fa icon="plus"/> {{ $t('add') }}</ui-button>
 		</section>
 	</ui-card>
 </div>
@@ -48,7 +48,7 @@ export default Vue.extend({
 		remove(i) {
 			this.$swal({
 				type: 'warning',
-				text: '%i18n:@_remove.are-you-sure%'.replace('$1', this.announcements.find((_, j) => j == i).title),
+				text: this.$t('_remove.are-you-sure').replace('$1', this.announcements.find((_, j) => j == i).title),
 				showCancelButton: true
 			}).then(res => {
 				if (!res.value) return;
@@ -56,7 +56,7 @@ export default Vue.extend({
 				this.save(true);
 				this.$swal({
 					type: 'success',
-					text: '%i18n:@_remove.removed%'
+					text: this.$t('_remove.removed')
 				});
 			});
 		},
@@ -68,7 +68,7 @@ export default Vue.extend({
 				if (!silent) {
 					this.$swal({
 						type: 'success',
-						text: '%i18n:@saved%'
+						text: this.$t('saved')
 					});
 				}
 			}).catch(e => {

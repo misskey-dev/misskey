@@ -1,7 +1,7 @@
 <template>
 <div class="tumhkfkmgtvzljezfvmgkeurkfncshbe">
 	<ui-card>
-		<div slot="title"><fa icon="plus"/> %i18n:@add-emoji.title%</div>
+		<div slot="title"><fa icon="plus"/> {{ $t('add-emoji.title') }}</div>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-input v-model="name">
@@ -23,7 +23,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['far', 'grin']"/> %i18n:@emojis.title%</div>
+		<div slot="title"><fa :icon="['far', 'grin']"/> {{ $t('emojis.title') }}</div>
 		<section v-for="emoji in emojis">
 			<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
 			<ui-horizon-group inputs>
@@ -39,8 +39,8 @@
 				<span>{{ $t('add-emoji.url') }}</span>
 			</ui-input>
 			<ui-horizon-group>
-				<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> %i18n:@emojis.update%</ui-button>
-				<ui-button @click="removeEmoji(emoji)"><fa :icon="['far', 'trash-alt']"/> %i18n:@emojis.remove%</ui-button>
+				<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> {{ $t('emojis.update') }}</ui-button>
+				<ui-button @click="removeEmoji(emoji)"><fa :icon="['far', 'trash-alt']"/> {{ $t('emojis.remove') }}</ui-button>
 			</ui-horizon-group>
 		</section>
 	</ui-card>
@@ -73,7 +73,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$swal({
 					type: 'success',
-					text: '%i18n:@add-emoji.added%'
+					text: this.$t('add-emoji.added')
 				});
 				this.fetchEmojis();
 			}).catch(e => {
@@ -101,7 +101,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$swal({
 					type: 'success',
-					text: '%i18n:@updated%'
+					text: this.$t('updated')
 				});
 			}).catch(e => {
 				this.$swal({
@@ -114,7 +114,7 @@ export default Vue.extend({
 		removeEmoji(emoji) {
 			this.$swal({
 				type: 'warning',
-				text: '%i18n:@remove-emoji.are-you-sure%'.replace('$1', emoji.name),
+				text: this.$t('remove-emoji.are-you-sure').replace('$1', emoji.name),
 				showCancelButton: true
 			}).then(res => {
 				if (!res.value) return;
@@ -124,7 +124,7 @@ export default Vue.extend({
 				}).then(() => {
 					this.$swal({
 						type: 'success',
-						text: '%i18n:@remove-emoji.removed%'
+						text: this.$t('remove-emoji.removed')
 					});
 					this.fetchEmojis();
 				}).catch(e => {

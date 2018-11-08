@@ -2,7 +2,7 @@
 <mk-ui>
 	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">{{ user | userName }}</template>
 	<main v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> %i18n:@is-suspended%</p></div>
+		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</p></div>
 		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> %i18n:common.is-remote-user%<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a></p></div>
 		<header>
 			<div class="banner" :style="style"></div>
@@ -48,9 +48,9 @@
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-active="page == 'home'" @click="page = 'home'"><fa icon="home"/> %i18n:@overview%</a>
-				<a :data-active="page == 'notes'" @click="page = 'notes'"><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</a>
-				<a :data-active="page == 'media'" @click="page = 'media'"><fa icon="image"/> %i18n:@media%</a>
+				<a :data-active="page == 'home'" @click="page = 'home'"><fa icon="home"/> {{ $t('overview') }}</a>
+				<a :data-active="page == 'notes'" @click="page = 'notes'"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</a>
+				<a :data-active="page == 'media'" @click="page = 'media'"><fa icon="image"/> {{ $t('media') }}</a>
 			</div>
 		</nav>
 		<div class="body">
@@ -115,7 +115,7 @@ export default Vue.extend({
 		menu() {
 			let menu = [{
 				icon: this.user.isMuted ? '<fa icon="eye"/>' : '<fa icon="eye-slash"/>',
-				text: this.user.isMuted ? '%i18n:@unmute%' : '%i18n:@mute%',
+				text: this.user.isMuted ? '%i18n:@unmute%' : this.$t('mute'),
 				action: () => {
 					if (this.user.isMuted) {
 						(this as any).api('mute/delete', {
@@ -137,7 +137,7 @@ export default Vue.extend({
 				}
 			}, {
 				icon: this.user.isBlocking ? '<fa icon="user"/>' : '<fa icon="user-slash"/>',
-				text: this.user.isBlocking ? '%i18n:@unblock%' : '%i18n:@block%',
+				text: this.user.isBlocking ? '%i18n:@unblock%' : this.$t('block'),
 				action: () => {
 					if (this.user.isBlocking) {
 						(this as any).api('blocking/delete', {
