@@ -70,6 +70,7 @@ export default class MiOS extends EventEmitter {
 
 	public app: Vue;
 
+	@autobind
 	public new(vm, props) {
 		const x = new vm({
 			parent: this.app,

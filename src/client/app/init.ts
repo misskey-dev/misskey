@@ -277,7 +277,9 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 						os: {
 							stream: os.stream,
 							getMeta: os.getMeta,
-							getMetaSync: os.getMetaSync
+							getMetaSync: os.getMetaSync,
+							new: os.new,
+							windows: os.windows
 						},
 						api: os.api,
 						apis: os.apis
