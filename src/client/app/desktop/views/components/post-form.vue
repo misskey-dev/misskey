@@ -12,9 +12,9 @@
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 			<b>%i18n:@recent-tags%:</b>
-			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%i18n:@click-to-tagging%">#{{ tag }}</a>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('title')">#{{ tag }}</a>
 		</div>
-		<input v-show="useCw" v-model="cw" placeholder="%i18n:@annotations%">
+		<input v-show="useCw" v-model="cw" :placeholder="$t('placeholder')">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
@@ -24,7 +24,7 @@
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
-					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:@attach-cancel%" alt=""/>
+					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('title')" alt=""/>
 				</div>
 			</x-draggable>
 			<p class="remain">{{ 4 - files.length }}/4</p>
@@ -32,13 +32,13 @@
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile"><fa icon="upload"/></button>
-	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
-	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao"><fa :icon="['far', 'smile']"/></button>
-	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll"><fa icon="chart-pie"/></button>
-	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
-	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
-	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
+	<button class="upload" :title="$t('title')" @click="chooseFile"><fa icon="upload"/></button>
+	<button class="drive" :title="$t('title')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
+	<button class="kao" :title="$t('title')" @click="kao"><fa :icon="['far', 'smile']"/></button>
+	<button class="poll" :title="$t('title')" @click="poll = !poll"><fa icon="chart-pie"/></button>
+	<button class="poll" :title="$t('title')" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
+	<button class="geo" :title="$t('title')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
+	<button class="visibility" :title="$t('title')" @click="setVisibility" ref="visibilityButton">
 		<span v-if="visibility === 'public'"><fa icon="globe"/></span>
 		<span v-if="visibility === 'home'"><fa icon="home"/></span>
 		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
@@ -47,7 +47,7 @@
 	</button>
 	<p class="text-count" :class="{ over: this.trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - this.trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
-		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
+		{{ posting ? this.$t('posting') : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
 	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
@@ -139,17 +139,17 @@ export default Vue.extend({
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
 			return this.renote
-				? '%i18n:@quote-placeholder%'
+				? this.$t('quote-placeholder')
 				: this.reply
-					? '%i18n:@reply-placeholder%'
+					? this.$t('reply-placeholder')
 					: x;
 		},
 
 		submitText(): string {
 			return this.renote
-				? '%i18n:@renote%'
+				? this.$t('renote')
 				: this.reply
-					? '%i18n:@reply%'
+					? this.$t('reply')
 					: this.$t('submit');
 		},
 
@@ -332,7 +332,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('%i18n:@geolocation-alert%');
+				alert(this.$t('geolocation-alert'));
 				return;
 			}
 
@@ -400,15 +400,15 @@ export default Vue.extend({
 				this.deleteDraft();
 				this.$emit('posted');
 				(this as any).apis.notify(this.renote
-					? '%i18n:@reposted%'
+					? this.$t('reposted')
 					: this.reply
-						? '%i18n:@replied%'
+						? this.$t('replied')
 						: this.$t('posted'));
 			}).catch(err => {
 				(this as any).apis.notify(this.renote
-					? '%i18n:@renote-failed%'
+					? this.$t('renote-failed')
 					: this.reply
-						? '%i18n:@reply-failed%'
+						? this.$t('reply-failed')
 						: this.$t('note-failed'));
 			}).then(() => {
 				this.posting = false;

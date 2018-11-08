@@ -115,7 +115,7 @@ export default Vue.extend({
 		menu() {
 			let menu = [{
 				icon: this.user.isMuted ? '<fa icon="eye"/>' : '<fa icon="eye-slash"/>',
-				text: this.user.isMuted ? '%i18n:@unmute%' : this.$t('mute'),
+				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
 				action: () => {
 					if (this.user.isMuted) {
 						(this as any).api('mute/delete', {
@@ -137,7 +137,7 @@ export default Vue.extend({
 				}
 			}, {
 				icon: this.user.isBlocking ? '<fa icon="user"/>' : '<fa icon="user-slash"/>',
-				text: this.user.isBlocking ? '%i18n:@unblock%' : this.$t('block'),
+				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
 				action: () => {
 					if (this.user.isBlocking) {
 						(this as any).api('blocking/delete', {

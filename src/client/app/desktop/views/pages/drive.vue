@@ -16,11 +16,11 @@ export default Vue.extend({
 		this.folder = this.$route.params.folder;
 	},
 	mounted() {
-		document.title = '%i18n:@title%';
+		document.title = this.$t('title');
 	},
 	methods: {
 		onMoveRoot() {
-			const title = '%i18n:@title%';
+			const title = this.$t('title');
 
 			// Rewrite URL
 			history.pushState(null, title, '/i/drive');

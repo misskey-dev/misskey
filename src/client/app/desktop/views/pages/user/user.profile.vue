@@ -71,7 +71,7 @@ export default Vue.extend({
 		},
 
 		block() {
-			if (!window.confirm('%i18n:@block-confirm%')) return;
+			if (!window.confirm(this.$t('block-confirm'))) return;
 			(this as any).api('blocking/create', {
 				userId: this.user.id
 			}).then(() => {

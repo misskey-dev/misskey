@@ -5,7 +5,7 @@
 		<footer>
 			<a class="quote" v-if="!quote" @click="onQuote">{{ $t('quote') }}</a>
 			<ui-button class="button cancel" inline @click="cancel">{{ $t('cancel') }}</ui-button>
-			<ui-button class="button ok" inline primary @click="ok" :disabled="wait">{{ wait ? '%i18n:@reposting%' : this.$t('renote') }}</ui-button>
+			<ui-button class="button ok" inline primary @click="ok" :disabled="wait">{{ wait ? this.$t('reposting') : this.$t('renote') }}</ui-button>
 		</footer>
 	</template>
 	<template v-if="quote">
@@ -32,9 +32,9 @@ export default Vue.extend({
 				renoteId: this.note.id
 			}).then(data => {
 				this.$emit('posted');
-				(this as any).apis.notify('%i18n:@success%');
+				(this as any).apis.notify(this.$t('success'));
 			}).catch(err => {
-				(this as any).apis.notify('%i18n:@failure%');
+				(this as any).apis.notify(this.$t('failure'));
 			}).then(() => {
 				this.wait = false;
 			});

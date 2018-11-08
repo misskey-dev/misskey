@@ -11,7 +11,7 @@
 		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>
 	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
-	<ui-button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : this.$t('signin') }}</ui-button>
+	<ui-button type="submit" :disabled="signing">{{ signing ? this.$t('signing-in') : this.$t('signin') }}</ui-button>
 	<p style="margin: 8px 0;">{{ $t('or% <a :href="`${apiUrl}/signin/twitter`">%i18n:@signin-with-twitter') }}</a></p>
 	<p style="margin: 8px 0;">{{ $t('or% <a :href="`${apiUrl}/signin/github`">%i18n:@signin-with-github') }}</a></p>
 </form>
@@ -60,7 +60,7 @@ export default Vue.extend({
 			}, true).then(() => {
 				location.reload();
 			}).catch(() => {
-				alert('%i18n:@login-failed%');
+				alert(this.$t('login-failed'));
 				this.signing = false;
 			});
 		}

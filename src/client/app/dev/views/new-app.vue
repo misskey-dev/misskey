@@ -1,18 +1,18 @@
 <template>
 <mk-ui>
-	<b-card header="%i18n:@create-app%">
+	<b-card :header="$t('header')">
 		<b-form @submit.prevent="onSubmit" autocomplete="off">
-			<b-form-group label="%i18n:@app-name%" description="%i18n:@app-name-desc%">
-				<b-form-input v-model="name" type="text" placeholder="%i18n:@app-name-ex%" autocomplete="off" required/>
+			<b-form-group :label="$t('label')" :description="$t('description')">
+				<b-form-input v-model="name" type="text" :placeholder="$t('placeholder')" autocomplete="off" required/>
 			</b-form-group>
-			<b-form-group label="%i18n:@app-overview%" description="%i18n:@app-desc%">
-				<b-textarea v-model="description" placeholder="%i18n:@app-desc-ex%" autocomplete="off" required></b-textarea>
+			<b-form-group :label="$t('label')" :description="$t('description')">
+				<b-textarea v-model="description" :placeholder="$t('placeholder')" autocomplete="off" required></b-textarea>
 			</b-form-group>
-			<b-form-group label="%i18n:@callback-url%" description="%i18n:@callback-url-desc%">
+			<b-form-group :label="$t('label')" :description="$t('description')">
 				<b-input v-model="cb" type="url" placeholder="ex) https://your.app.example.com/callback.php" autocomplete="off"/>
 			</b-form-group>
-			<b-card header="%i18n:@authority%">
-				<b-form-group description="%i18n:@authority-desc%">
+			<b-card :header="$t('header')">
+				<b-form-group :description="$t('description')">
 					<b-alert show variant="warning"><fa icon="exclamation-triangle"/> {{ $t('authority-warning') }}</b-alert>
 					<b-form-checkbox-group v-model="permission" stacked>
 						<b-form-checkbox value="account-read">{{ $t('account-read') }}</b-form-checkbox>

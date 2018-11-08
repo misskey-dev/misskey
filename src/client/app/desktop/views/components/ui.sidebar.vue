@@ -2,7 +2,7 @@
 <div class="header" :class="navbar">
 	<div class="body">
 		<div class="post">
-			<button @click="post" title="%i18n:@post%"><fa icon="pencil-alt"/></button>
+			<button @click="post" :title="$t('title')"><fa icon="pencil-alt"/></button>
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">

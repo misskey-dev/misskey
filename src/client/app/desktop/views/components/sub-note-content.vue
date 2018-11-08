@@ -8,7 +8,7 @@
 		<a class="rp" v-if="note.renoteId" :href="`/notes/${note.renoteId}`">RN: ...</a>
 	</div>
 	<details v-if="note.files.length > 0">
-		<summary>({{ '%i18n:@media-count%'.replace('{}', note.files.length) }})</summary>
+		<summary>({{ this.$t('media-count').replace('{}', note.files.length) }})</summary>
 		<mk-media-list :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">

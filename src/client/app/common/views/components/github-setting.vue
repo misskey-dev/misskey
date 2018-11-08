@@ -3,7 +3,7 @@
 	<p>{{ $t('description') }}<a :href="`${docsUrl}/link-to-github`" target="_blank">{{ $t('detail') }}</a></p>
 	<p class="account" v-if="$store.state.i.github" :title="`GitHub ID: ${$store.state.i.github.id}`">%i18n:@connected-to%: <a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
 	<p>
-		<a :href="`${apiUrl}/connect/github`" target="_blank" @click.prevent="connect">{{ $store.state.i.github ? '%i18n:@reconnect%' : this.$t('connect') }}</a>
+		<a :href="`${apiUrl}/connect/github`" target="_blank" @click.prevent="connect">{{ $store.state.i.github ? this.$t('reconnect') : this.$t('connect') }}</a>
 		<span v-if="$store.state.i.github"> or </span>
 		<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github" @click.prevent="disconnect">{{ $t('disconnect') }}</a>
 	</p>

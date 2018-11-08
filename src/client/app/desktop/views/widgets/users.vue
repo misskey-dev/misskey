@@ -2,7 +2,7 @@
 <div class="mkw-users">
 	<mk-widget-container :show-header="!props.compact">
 		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
-		<button slot="func" title="%i18n:@refresh%" @click="refresh"><fa icon="sync"/></button>
+		<button slot="func" :title="$t('title')" @click="refresh"><fa icon="sync"/></button>
 
 		<div class="mkw-users--body">
 			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>

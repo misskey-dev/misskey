@@ -1,19 +1,19 @@
 <template>
 <div class="mk-poll" :data-is-voted="isVoted">
 	<ul>
-		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? '%i18n:@vote-to%'.replace('{}', choice.text) : ''">
+		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? this.$t('vote-to').replace('{}', choice.text) : ''">
 			<div class="backdrop" :style="{ 'width': (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
 				<template v-if="choice.isVoted"><fa icon="check"/></template>
 				<span>{{ choice.text }}</span>
-				<span class="votes" v-if="showResult">({{ '%i18n:@vote-count%'.replace('{}', choice.votes) }})</span>
+				<span class="votes" v-if="showResult">({{ this.$t('vote-count').replace('{}', choice.votes) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="total > 0">
-		<span>{{ '%i18n:@total-users%'.replace('{}', total) }}</span>
+		<span>{{ this.$t('total-users').replace('{}', total) }}</span>
 		<span>・</span>
-		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? '%i18n:@vote%' : this.$t('show-result') }}</a>
+		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? this.$t('vote') : this.$t('show-result') }}</a>
 		<span v-if="isVoted">{{ $t('voted') }}</span>
 	</p>
 </div>

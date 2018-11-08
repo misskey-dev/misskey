@@ -4,7 +4,7 @@
 		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required styl="fill">
 			<span>{{ $t('invitation-code') }}</span>
 			<span slot="prefix"><fa icon="id-card-alt"/></span>
-			<p slot="desc" v-html="'%i18n:@invitation-info%'.replace('{}', 'mailto:' + meta.maintainer.email)"></p>
+			<p slot="desc" v-html="this.$t('invitation-info').replace('{}', 'mailto:' + meta.maintainer.email)"></p>
 		</ui-input>
 		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername" styl="fill">
 			<span>{{ $t('username') }}</span>
@@ -139,7 +139,7 @@ export default Vue.extend({
 					location.href = '/';
 				});
 			}).catch(() => {
-				alert('%i18n:@some-error%');
+				alert(this.$t('some-error'));
 
 				if (this.meta.enableRecaptcha) {
 					(window as any).grecaptcha.reset();

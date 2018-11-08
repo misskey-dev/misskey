@@ -16,7 +16,7 @@
 				</svg>
 			</div>
 			<p class="fetching" v-if="fetching">{{ $t('fetching') }}<mk-ellipsis/></p>
-			<h1 v-if="!fetching">{{ announcements.length == 0 ? '%i18n:@no-broadcasts%' : announcements[i].title }}</h1>
+			<h1 v-if="!fetching">{{ announcements.length == 0 ? this.$t('no-broadcasts') : announcements[i].title }}</h1>
 			<p v-if="!fetching">
 				<span v-if="announcements.length != 0" v-html="announcements[i].text"></span>
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>

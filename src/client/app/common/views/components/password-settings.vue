@@ -36,7 +36,7 @@ export default Vue.extend({
 							currentPasword: currentPassword,
 							newPassword: newPassword
 						}).then(() => {
-							(this as any).apis.notify('%i18n:@changed%');
+							(this as any).apis.notify(this.$t('changed'));
 						});
 					});
 				});

@@ -3,9 +3,9 @@
 	<img src="https://raw.githubusercontent.com/syuilo/misskey/develop/src/client/assets/error.jpg" alt=""/>
 	<h1>{{ $t('title') }}</h1>
 	<p class="text">
-		<span>{{ '%i18n:@description%'.substr(0, '%i18n:@description%'.indexOf('{')) }}</span>
-		<a @click="reload">{{ '%i18n:@description%'.match(/\{(.+?)\}/)[1] }}</a>
-		<span>{{ '%i18n:@description%'.substr('%i18n:@description%'.indexOf('}') + 1) }}</span>
+		<span>{{ this.$t('description').substr(0, this.$t('description').indexOf('{')) }}</span>
+		<a @click="reload">{{ this.$t('description').match(/\{(.+?)\}/)[1] }}</a>
+		<span>{{ this.$t('description').substr(this.$t('description').indexOf('}') + 1) }}</span>
 	</p>
 	<button v-if="!troubleshooting" @click="troubleshooting = true">{{ $t('troubleshoot') }}</button>
 	<x-troubleshooter v-if="troubleshooting"/>

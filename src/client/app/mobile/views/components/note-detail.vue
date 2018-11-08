@@ -20,9 +20,9 @@
 			<mk-avatar class="avatar" :user="note.user"/>
 			<fa icon="retweet"/>
 			<router-link class="name" :href="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+			<span>{{ this.$t('reposted-by').substr(0, this.$t('reposted-by').indexOf('{')) }}</span>
 			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-			<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+			<span>{{ this.$t('reposted-by').substr(this.$t('reposted-by').indexOf('}') + 1) }}</span>
 			<mk-time :time="note.createdAt"/>
 		</p>
 	</div>
@@ -62,7 +62,7 @@
 		</router-link>
 		<footer>
 			<mk-reactions-viewer :note="p"/>
-			<button @click="reply" title="%i18n:@reply%">
+			<button @click="reply" :title="$t('title')">
 				<template v-if="p.reply"><fa icon="reply-all"/></template>
 				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
@@ -70,7 +70,7 @@
 			<button @click="renote" title="Renote">
 				<fa icon="retweet"/><p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
-			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@reaction%">
+			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" :title="$t('title')">
 				<fa icon="plus"/><p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">

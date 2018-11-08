@@ -2,7 +2,7 @@
 <div class="mkw-polls">
 	<mk-widget-container :show-header="!props.compact">
 		<template slot="header"><fa icon="chart-pie"/>{{ $t('title') }}</template>
-		<button slot="func" title="%i18n:@refresh%" @click="fetch"><fa icon="sync"/></button>
+		<button slot="func" :title="$t('title')" @click="fetch"><fa icon="sync"/></button>
 
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">

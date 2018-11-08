@@ -2,7 +2,7 @@
 <mk-ui>
 	<span slot="header"><span style="margin-right:4px;"><fa icon="cog"/></span>{{ $t('settings') }}</span>
 	<main>
-		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${name}</b>`)"></div>
+		<div class="signin-as" v-html="this.$t('signed-in-as').replace('{}', `<b>${name}</b>`)"></div>
 
 		<div>
 			<mk-profile-editor/>
@@ -100,12 +100,12 @@
 				<div slot="title"><fa icon="language"/> {{ $t('lang') }}</div>
 
 				<section class="fit-top">
-					<ui-select v-model="lang" placeholder="%i18n:@auto%">
-						<optgroup label="%i18n:@recommended%">
+					<ui-select v-model="lang" :placeholder="$t('placeholder')">
+						<optgroup :label="$t('label')">
 							<option value="">{{ $t('auto') }}</option>
 						</optgroup>
 
-						<optgroup label="%i18n:@specify-language%">
+						<optgroup :label="$t('label')">
 							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 						</optgroup>
 					</ui-select>
@@ -119,7 +119,7 @@
 				<section>
 					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
 					<p>
-						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : this.$t('twitter-connect') }}</a>
+						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? this.$t('twitter-reconnect') : this.$t('twitter-connect') }}</a>
 						<span v-if="$store.state.i.twitter"> or </span>
 						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">{{ $t('twitter-disconnect') }}</a>
 					</p>
@@ -132,7 +132,7 @@
 				<section>
 					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
 					<p>
-						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? '%i18n:@github-reconnect%' : this.$t('github-connect') }}</a>
+						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? this.$t('github-reconnect') : this.$t('github-connect') }}</a>
 						<span v-if="$store.state.i.github"> or </span>
 						<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github">{{ $t('github-disconnect') }}</a>
 					</p>
@@ -327,7 +327,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.title = '%i18n:@settings%';
+		document.title = this.$t('settings');
 	},
 
 	methods: {

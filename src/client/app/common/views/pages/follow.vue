@@ -1,6 +1,6 @@
 <template>
 <div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching">
-	<div class="signed-in-as" v-html="'%i18n:@signed-in-as%'.replace('{}', `<b>${myName}`)"></div>
+	<div class="signed-in-as" v-html="this.$t('signed-in-as').replace('{}', `<b>${myName}`)"></div>
 
 	<main>
 		<div class="banner" :style="bannerStyle"></div>

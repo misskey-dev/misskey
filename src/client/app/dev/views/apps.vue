@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<b-card header="%i18n:@manage-apps%">
+	<b-card :header="$t('header')">
 		<b-button to="/app/new" variant="primary">{{ $t('create-app') }}</b-button>
 		<hr>
 		<div class="apps">

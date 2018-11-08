@@ -3,7 +3,7 @@
 	<button
 		class="read-more"
 		v-if="p.reply && p.reply.replyId && conversation.length == 0"
-		title="%i18n:@more%"
+		:title="$t('title')"
 		@click="fetchConversation"
 		:disabled="conversationFetching"
 	>
@@ -21,9 +21,9 @@
 			<mk-avatar class="avatar" :user="note.user"/>
 			<fa icon="retweet"/>
 			<router-link class="name" :href="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+			<span>{{ this.$t('reposted-by').substr(0, this.$t('reposted-by').indexOf('{')) }}</span>
 			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-			<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+			<span>{{ this.$t('reposted-by').substr(this.$t('reposted-by').indexOf('}') + 1) }}</span>
 			<mk-time :time="note.createdAt"/>
 		</p>
 	</div>
@@ -67,10 +67,10 @@
 				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
-			<button class="renoteButton" @click="renote" title="%i18n:@renote%">
+			<button class="renoteButton" @click="renote" :title="$t('title')">
 				<fa icon="retweet"/><p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
-			<button class="reactionButton" :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@add-reaction%">
+			<button class="reactionButton" :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" :title="$t('title')">
 				<fa icon="plus"/><p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">

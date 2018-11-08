@@ -15,13 +15,13 @@ import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
 	mounted() {
-		document.title = '%i18n:@notifications%';
+		document.title = this.$t('notifications');
 
 		Progress.start();
 	},
 	methods: {
 		fn() {
-			const ok = window.confirm('%i18n:@read-all%');
+			const ok = window.confirm(this.$t('read-all'));
 			if (!ok) return;
 
 			(this as any).api('notifications/mark_all_as_read');

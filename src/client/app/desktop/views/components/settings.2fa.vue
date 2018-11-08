@@ -1,6 +1,6 @@
 <template>
 <div class="2fa">
-	<p style="margin-top:0;">{{ $t('intro') }}<a href="%i18n:@url%" target="_blank">{{ $t('detail') }}</a></p>
+	<p style="margin-top:0;">{{ $t('intro') }}<a :href="$t('href')" target="_blank">{{ $t('detail') }}</a></p>
 	<ui-info warn>{{ $t('caution') }}</ui-info>
 	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">{{ $t('register') }}</ui-button></p>
 	<template v-if="$store.state.i.twoFactorEnabled">
@@ -53,7 +53,7 @@ export default Vue.extend({
 				(this as any).api('i/2fa/unregister', {
 					password: password
 				}).then(() => {
-					(this as any).apis.notify('%i18n:@unregistered%');
+					(this as any).apis.notify(this.$t('unregistered'));
 					this.$store.state.i.twoFactorEnabled = false;
 				});
 			});
@@ -63,10 +63,10 @@ export default Vue.extend({
 			(this as any).api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
-				(this as any).apis.notify('%i18n:@success%');
+				(this as any).apis.notify(this.$t('success'));
 				this.$store.state.i.twoFactorEnabled = true;
 			}).catch(() => {
-				(this as any).apis.notify('%i18n:@failed%');
+				(this as any).apis.notify(this.$t('failed'));
 			});
 		}
 	}

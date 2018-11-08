@@ -4,8 +4,8 @@
 		<span class="icon" v-if="geo"><fa icon="map-marker-alt"/></span>
 		<span v-if="!reply">{{ $t('note') }}</span>
 		<span v-if="reply">{{ $t('reply') }}</span>
-		<span class="count" v-if="files.length != 0">{{ '%i18n:@attaches%'.replace('{}', files.length) }}</span>
-		<span class="count" v-if="uploadings.length != 0">{{ '%i18n:@uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
+		<span class="count" v-if="files.length != 0">{{ this.$t('attaches').replace('{}', files.length) }}</span>
+		<span class="count" v-if="uploadings.length != 0">{{ this.$t('uploading-media').replace('{}', uploadings.length) }}<mk-ellipsis/></span>
 	</span>
 
 	<div class="mk-post-form-window--body">

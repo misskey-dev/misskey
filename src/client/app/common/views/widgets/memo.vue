@@ -4,7 +4,7 @@
 		<template slot="header"><fa :icon="['far', 'sticky-note']"/>{{ $t('title') }}</template>
 
 		<div class="mkw-memo--body">
-			<textarea v-model="text" placeholder="%i18n:@memo%" @input="onChange"></textarea>
+			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
 			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
 		</div>
 	</mk-widget-container>

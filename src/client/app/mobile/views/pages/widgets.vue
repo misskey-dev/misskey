@@ -107,7 +107,7 @@ export default Vue.extend({
 
 	methods: {
 		hint() {
-			alert('%i18n:@widgets-hints%');
+			alert(this.$t('widgets-hints'));
 		},
 
 		widgetFunc(id) {

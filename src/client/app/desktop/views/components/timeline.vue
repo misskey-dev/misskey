@@ -8,10 +8,10 @@
 		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><fa icon="hashtag"/> {{ tagTl.title }}</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.title }}</span>
 		<div class="buttons">
-			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%"><fa icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></button>
-			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%"><fa :icon="['far', 'envelope']"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></button>
-			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton"><fa icon="hashtag"/></button>
-			<button @click="chooseList" title="%i18n:@list%" ref="listButton"><fa icon="list"/></button>
+			<button :data-active="src == 'mentions'" @click="src = 'mentions'" :title="$t('title')"><fa icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></button>
+			<button :data-active="src == 'messages'" @click="src = 'messages'" :title="$t('title')"><fa :icon="['far', 'envelope']"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></button>
+			<button @click="chooseTag" :title="$t('title')" ref="tagButton"><fa icon="hashtag"/></button>
+			<button @click="chooseList" :title="$t('title')" ref="listButton"><fa icon="list"/></button>
 		</div>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>

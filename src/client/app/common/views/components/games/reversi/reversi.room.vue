@@ -7,9 +7,9 @@
 
 		<div class="card map">
 			<header>
-				<select v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
+				<select v-model="mapName" :placeholder="$t('placeholder')" @change="onMapChange">
 					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
-					<option label="%i18n:@random%" :value="null"/>
+					<option :label="$t('label')" :value="null"/>
 					<optgroup v-for="c in mapCategories" :key="c" :label="c">
 						<option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
 					</optgroup>
@@ -36,8 +36,8 @@
 
 			<div>
 				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">{{ $t('random') }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user1 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user2 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b>{{ game.user1 | userName }}</b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b>{{ game.user2 | userName }}</b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
 			</div>
 		</div>
 

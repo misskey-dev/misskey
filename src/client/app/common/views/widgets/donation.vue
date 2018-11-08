@@ -4,9 +4,9 @@
 		<article class="dolfvtibguprpxxhfndqaosjitixjohx">
 			<h1><fa icon="heart"/>{{ $t('title') }}</h1>
 			<p v-if="meta">
-				{{ '%i18n:@text%'.substr(0, '%i18n:@text%'.indexOf('{')) }}
+				{{ this.$t('text').substr(0, this.$t('text').indexOf('{')) }}
 				<a :href="'mailto:' + meta.maintainer.email">{{ meta.maintainer.name }}</a>
-				{{ '%i18n:@text%'.substr('%i18n:@text%'.indexOf('}') + 1) }}
+				{{ this.$t('text').substr(this.$t('text').indexOf('}') + 1) }}
 			</p>
 		</article>
 	</mk-widget-container>

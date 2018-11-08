@@ -3,7 +3,7 @@
 	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
 			<label for="search-input"><i><fa icon="search"/></i></label>
-			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:@search-user%"/>
+			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" :placeholder="$t('placeholder')"/>
 		</div>
 		<div class="result">
 			<ol class="users" v-if="result.length > 0" ref="searchResult">

@@ -23,7 +23,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		document.title = '%i18n:@title%';
+		document.title = this.$t('title');
 
 		Progress.start();
 

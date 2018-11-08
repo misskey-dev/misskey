@@ -13,7 +13,7 @@
 	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('empty') }}</p>
 	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('fetching') }}<mk-ellipsis/></p>
 	<a class="refresh" @click="refresh">{{ $t('refresh') }}</a>
-	<button class="close" @click="destroyDom()" title="%i18n:@close%"><fa icon="times"/></button>
+	<button class="close" @click="destroyDom()" :title="$t('title')"><fa icon="times"/></button>
 </div>
 </template>
 

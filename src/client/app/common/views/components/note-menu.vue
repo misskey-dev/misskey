@@ -106,7 +106,7 @@ export default Vue.extend({
 		},
 
 		del() {
-			if (!window.confirm('%i18n:@delete-confirm%')) return;
+			if (!window.confirm(this.$t('delete-confirm'))) return;
 			(this as any).api('notes/delete', {
 				noteId: this.note.id
 			}).then(() => {

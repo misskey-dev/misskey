@@ -17,7 +17,7 @@
 					<h1 v-else><img svg-inline src="../../../../assets/title.svg" :alt="name"></h1>
 
 					<div class="info">
-						<span><b>{{ host }}</b> - <span v-html="'%i18n:@powered-by-misskey%'"></span></span>
+						<span><b>{{ host }}</b> - <span v-html="this.$t('powered-by-misskey')"></span></span>
 						<span class="stats" v-if="stats">
 							<span><fa icon="user"/> {{ stats.originalUsersCount | number }}</span>
 							<span><fa icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</span>

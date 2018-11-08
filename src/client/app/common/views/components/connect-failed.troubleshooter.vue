@@ -8,21 +8,21 @@
 					<template v-if="network"><fa icon="check"/></template>
 					<template v-if="!network"><fa icon="times"/></template>
 				</template>
-				{{ network == null ? '%i18n:@checking-network%' : this.$t('network') }}<mk-ellipsis v-if="network == null"/>
+				{{ network == null ? this.$t('checking-network') : this.$t('network') }}<mk-ellipsis v-if="network == null"/>
 			</p>
 			<p v-if="network == true" :data-wip="internet == null">
 				<template v-if="internet != null">
 					<template v-if="internet"><fa icon="check"/></template>
 					<template v-if="!internet"><fa icon="times"/></template>
 				</template>
-				{{ internet == null ? '%i18n:@checking-internet%' : this.$t('internet') }}<mk-ellipsis v-if="internet == null"/>
+				{{ internet == null ? this.$t('checking-internet') : this.$t('internet') }}<mk-ellipsis v-if="internet == null"/>
 			</p>
 			<p v-if="internet == true" :data-wip="server == null">
 				<template v-if="server != null">
 					<template v-if="server"><fa icon="check"/></template>
 					<template v-if="!server"><fa icon="times"/></template>
 				</template>
-				{{ server == null ? '%i18n:@checking-server%' : this.$t('server') }}<mk-ellipsis v-if="server == null"/>
+				{{ server == null ? this.$t('checking-server') : this.$t('server') }}<mk-ellipsis v-if="server == null"/>
 			</p>
 		</div>
 		<p v-if="!end">{{ $t('finding') }}<mk-ellipsis/></p>

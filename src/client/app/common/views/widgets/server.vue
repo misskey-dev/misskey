@@ -2,7 +2,7 @@
 <div class="mkw-server">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
 		<template slot="header"><fa icon="server"/>{{ $t('title') }}</template>
-		<button slot="func" @click="toggle" title="%i18n:@toggle%"><fa icon="sort"/></button>
+		<button slot="func" @click="toggle" :title="$t('title')"><fa icon="sort"/></button>
 
 		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 		<template v-if="!fetching">

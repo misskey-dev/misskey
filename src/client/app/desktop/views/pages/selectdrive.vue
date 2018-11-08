@@ -6,7 +6,7 @@
 		@change-selection="onChangeSelection"
 	/>
 	<footer>
-		<button class="upload" title="%i18n:@upload%" @click="upload"><fa icon="upload"/></button>
+		<button class="upload" :title="$t('title')" @click="upload"><fa icon="upload"/></button>
 		<button class="cancel" @click="close">{{ $t('cancel') }}</button>
 		<button class="ok" @click="ok">{{ $t('ok') }}</button>
 	</footer>
@@ -29,7 +29,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = '%i18n:@title%';
+		document.title = this.$t('title');
 	},
 	methods: {
 		onSelected(file) {

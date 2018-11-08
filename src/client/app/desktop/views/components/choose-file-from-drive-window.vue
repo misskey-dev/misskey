@@ -13,7 +13,7 @@
 		@change-selection="onChangeSelection"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.upload" title="%i18n:@upload%" @click="upload"><fa icon="upload"/></button>
+		<button :class="$style.upload" :title="$t('title')" @click="upload"><fa icon="upload"/></button>
 		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
 		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">{{ $t('ok') }}</button>
 	</div>
