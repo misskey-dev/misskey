@@ -1,7 +1,7 @@
 <template>
 <div class="mk-special-message">
-	<p v-if="m == 1 && d == 1">%i18n:@new-year%</p>
-	<p v-if="m == 12 && d == 25">%i18n:@christmas%</p>
+	<p v-if="m == 1 && d == 1">{{ $t('new-year') }}</p>
+	<p v-if="m == 12 && d == 25">{{ $t('christmas') }}</p>
 </div>
 </template>
 

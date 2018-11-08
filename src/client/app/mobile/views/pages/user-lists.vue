@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><fa icon="list"/>%i18n:@title%</span>
+	<span slot="header"><fa icon="list"/>{{ $t('title') }}</span>
 	<template slot="func"><button @click="fn"><fa icon="plus"/></button></template>
 
 	<main>

@@ -1,42 +1,42 @@
 <template>
 <div class="ucnffhbtogqgscfmqcymwmmupoknpfsw">
 	<ui-card>
-		<div slot="title">%i18n:@verify-user%</div>
+		<div slot="title">{{ $t('verify-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="verifyUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="verifyUser" :disabled="verifying">%i18n:@verify%</ui-button>
+			<ui-button @click="verifyUser" :disabled="verifying">{{ $t('verify') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@unverify-user%</div>
+		<div slot="title">{{ $t('unverify-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="unverifyUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="unverifyUser" :disabled="unverifying">%i18n:@unverify%</ui-button>
+			<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@suspend-user%</div>
+		<div slot="title">{{ $t('suspend-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="suspendUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="suspendUser" :disabled="suspending">%i18n:@suspend%</ui-button>
+			<ui-button @click="suspendUser" :disabled="suspending">{{ $t('suspend') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@unsuspend-user%</div>
+		<div slot="title">{{ $t('unsuspend-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="unsuspendUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="unsuspendUser" :disabled="unsuspending">%i18n:@unsuspend%</ui-button>
+			<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
 		</section>
 	</ui-card>
 </div>

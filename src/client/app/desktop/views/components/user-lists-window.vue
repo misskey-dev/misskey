@@ -3,7 +3,7 @@
 	<span slot="header"><fa icon="list"/> %i18n:@title%</span>
 
 	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
-		<button class="ui" @click="add">%i18n:@create-list%</button>
+		<button class="ui" @click="add">{{ $t('create-list') }}</button>
 		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
 	</div>
 </mk-window>

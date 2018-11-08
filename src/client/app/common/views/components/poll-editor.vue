@@ -11,7 +11,7 @@
 			</button>
 		</li>
 	</ul>
-	<button class="add" v-if="choices.length < 10" @click="add">%i18n:@add%</button>
+	<button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</button>
 	<button class="destroy" @click="destroy" title="%i18n:@destroy%">
 		<fa icon="times"/>
 	</button>

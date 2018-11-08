@@ -1,6 +1,6 @@
 <template>
 <svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" @mousedown.prevent="onMousedown">
-	<title>%i18n:@total%<br/>%i18n:@notes%<br/>%i18n:@replies%<br/>%i18n:@renotes%</title>
+	<title>{{ $t('total') }}<br/>{{ $t('notes') }}<br/>{{ $t('replies') }}<br/>{{ $t('renotes') }}</title>
 	<polyline
 		:points="pointsNote"
 		fill="none"

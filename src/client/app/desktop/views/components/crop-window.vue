@@ -10,9 +10,9 @@
 			/>
 		</div>
 		<div :class="$style.actions">
-			<button :class="$style.skip" @click="skip">%i18n:@skip%</button>
-			<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-			<button :class="$style.ok" @click="ok">%i18n:@ok%</button>
+			<button :class="$style.skip" @click="skip">{{ $t('skip') }}</button>
+			<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+			<button :class="$style.ok" @click="ok">{{ $t('ok') }}</button>
 		</div>
 	</mk-window>
 </template>

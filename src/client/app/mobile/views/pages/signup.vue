@@ -1,6 +1,6 @@
 <template>
 <div class="signup">
-	<h1>%i18n:@lets-start%</h1>
+	<h1>{{ $t('lets-start') }}</h1>
 	<mk-signup/>
 </div>
 </template>

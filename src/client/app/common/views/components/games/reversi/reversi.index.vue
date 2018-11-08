@@ -1,22 +1,22 @@
 <template>
 <div class="phgnkghfpyvkrvwiajkiuoxyrdaqpzcx">
-	<h1>%i18n:@title%</h1>
-	<p>%i18n:@sub-title%</p>
+	<h1>{{ $t('title') }}</h1>
+	<p>{{ $t('sub-title') }}</p>
 	<div class="play">
-		<form-button primary round @click="match">%i18n:@invite%</form-button>
+		<form-button primary round @click="match">{{ $t('invite') }}</form-button>
 		<details>
-			<summary>%i18n:@rule%</summary>
+			<summary>{{ $t('rule') }}</summary>
 			<div>
-				<p>%i18n:@rule-desc%</p>
+				<p>{{ $t('rule-desc') }}</p>
 				<dl>
-					<dt><b>%i18n:@mode-invite%</b></dt>
-					<dd>%i18n:@mode-invite-desc%</dd>
+					<dt><b>{{ $t('mode-invite') }}</b></dt>
+					<dd>{{ $t('mode-invite-desc') }}</dd>
 				</dl>
 			</div>
 		</details>
 	</div>
 	<section v-if="invitations.length > 0">
-		<h2>%i18n:@invitations%</h2>
+		<h2>{{ $t('invitations') }}</h2>
 		<div class="invitation" v-for="i in invitations" tabindex="-1" @click="accept(i)">
 			<mk-avatar class="avatar" :user="i.parent"/>
 			<span class="name"><b>{{ i.parent | userName }}</b></span>
@@ -25,7 +25,7 @@
 		</div>
 	</section>
 	<section v-if="myGames.length > 0">
-		<h2>%i18n:@my-games%</h2>
+		<h2>{{ $t('my-games') }}</h2>
 		<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
@@ -35,7 +35,7 @@
 		</a>
 	</section>
 	<section v-if="games.length > 0">
-		<h2>%i18n:@all-games%</h2>
+		<h2>{{ $t('all-games') }}</h2>
 		<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>

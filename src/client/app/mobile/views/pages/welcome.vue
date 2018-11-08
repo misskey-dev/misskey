@@ -8,7 +8,7 @@
 		<div class="about">
 			<h2>{{ name }}</h2>
 			<p v-html="description || '%i18n:common.about%'"></p>
-			<router-link class="signup" to="/signup">%i18n:@signup%</router-link>
+			<router-link class="signup" to="/signup">{{ $t('signup') }}</router-link>
 		</div>
 		<div class="login">
 			<mk-signin :with-avatar="false"/>

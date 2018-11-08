@@ -1,7 +1,7 @@
 <template>
 <div class="troubleshooter">
 	<div class="body">
-		<h1><fa icon="wrench"/>%i18n:@title%</h1>
+		<h1><fa icon="wrench"/>{{ $t('title') }}</h1>
 		<div>
 			<p :data-wip="network == null">
 				<template v-if="network != null">
@@ -25,14 +25,14 @@
 				{{ server == null ? '%i18n:@checking-server%' : '%i18n:@server%' }}<mk-ellipsis v-if="server == null"/>
 			</p>
 		</div>
-		<p v-if="!end">%i18n:@finding%<mk-ellipsis/></p>
-		<p v-if="network === false"><b><fa icon="exclamation-triangle"/>%i18n:@no-network%</b><br>%i18n:@no-network-desc%</p>
-		<p v-if="internet === false"><b><fa icon="exclamation-triangle"/>%i18n:@no-internet%</b><br>%i18n:@no-internet-desc%</p>
-		<p v-if="server === false"><b><fa icon="exclamation-triangle"/>%i18n:@no-server%</b><br>%i18n:@no-server-desc%</p>
-		<p v-if="server === true" class="success"><b><fa icon="info-circle"/>%i18n:@success%</b><br>%i18n:@success-desc%</p>
+		<p v-if="!end">{{ $t('finding') }}<mk-ellipsis/></p>
+		<p v-if="network === false"><b><fa icon="exclamation-triangle"/>{{ $t('no-network') }}</b><br>{{ $t('no-network-desc') }}</p>
+		<p v-if="internet === false"><b><fa icon="exclamation-triangle"/>{{ $t('no-internet') }}</b><br>{{ $t('no-internet-desc') }}</p>
+		<p v-if="server === false"><b><fa icon="exclamation-triangle"/>{{ $t('no-server') }}</b><br>{{ $t('no-server-desc') }}</p>
+		<p v-if="server === true" class="success"><b><fa icon="info-circle"/>{{ $t('success') }}</b><br>{{ $t('success-desc') }}</p>
 	</div>
 	<footer>
-		<a href="/assets/flush.html">%i18n:@flush%</a> | <a href="/assets/version.html">%i18n:@set-version%</a>
+		<a href="/assets/flush.html">{{ $t('flush') }}</a> | <a href="/assets/version.html">{{ $t('set-version') }}</a>
 	</footer>
 </div>
 </template>

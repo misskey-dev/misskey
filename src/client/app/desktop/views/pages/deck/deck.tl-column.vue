@@ -11,8 +11,8 @@
 	</span>
 
 	<div class="editor" style="padding:0 12px" v-if="edit">
-		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">%i18n:@is-media-only%</ui-switch>
-		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">%i18n:@is-media-view%</ui-switch>
+		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">{{ $t('is-media-only') }}</ui-switch>
+		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">{{ $t('is-media-view') }}</ui-switch>
 	</div>
 
 	<x-list-tl v-if="column.type == 'list'"

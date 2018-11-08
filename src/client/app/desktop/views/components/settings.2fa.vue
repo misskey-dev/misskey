@@ -1,22 +1,22 @@
 <template>
 <div class="2fa">
-	<p style="margin-top:0;">%i18n:@intro%<a href="%i18n:@url%" target="_blank">%i18n:@detail%</a></p>
-	<ui-info warn>%i18n:@caution%</ui-info>
-	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">%i18n:@register%</ui-button></p>
+	<p style="margin-top:0;">{{ $t('intro') }}<a href="%i18n:@url%" target="_blank">{{ $t('detail') }}</a></p>
+	<ui-info warn>{{ $t('caution') }}</ui-info>
+	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">{{ $t('register') }}</ui-button></p>
 	<template v-if="$store.state.i.twoFactorEnabled">
-		<p>%i18n:@already-registered%</p>
-		<ui-button @click="unregister">%i18n:@unregister%</ui-button>
+		<p>{{ $t('already-registered') }}</p>
+		<ui-button @click="unregister">{{ $t('unregister') }}</ui-button>
 	</template>
 	<div v-if="data">
 		<ol>
-			<li>%i18n:@authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:@howtoinstall%</a></li>
-			<li>%i18n:@scan%<br><img :src="data.qr"></li>
-			<li>%i18n:@done%<br>
+			<li>{{ $t('authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:@howtoinstall') }}</a></li>
+			<li>{{ $t('scan') }}<br><img :src="data.qr"></li>
+			<li>{{ $t('done') }}<br>
 				<input type="number" v-model="token" class="ui">
-				<ui-button primary @click="submit">%i18n:@submit%</ui-button>
+				<ui-button primary @click="submit">{{ $t('submit') }}</ui-button>
 			</li>
 		</ol>
-		<div class="ui info"><p><fa icon="info-circle"/>%i18n:@info%</p></div>
+		<div class="ui info"><p><fa icon="info-circle"/>{{ $t('info') }}</p></div>
 	</div>
 </div>
 </template>

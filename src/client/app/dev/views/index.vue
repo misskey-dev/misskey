@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<b-button to="/apps" variant="primary">%i18n:@manage-apps%</b-button>
+	<b-button to="/apps" variant="primary">{{ $t('manage-apps') }}</b-button>
 </mk-ui>
 </template>
 

@@ -12,19 +12,19 @@
 			</div>
 			<div class="info">
 				<div>
-					<p>%i18n:@today%<b>{{ dayP.toFixed(1) }}%</b></p>
+					<p>{{ $t('today') }}<b>{{ dayP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${dayP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>%i18n:@this-month%<b>{{ monthP.toFixed(1) }}%</b></p>
+					<p>{{ $t('this-month') }}<b>{{ monthP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${monthP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>%i18n:@this-year%<b>{{ yearP.toFixed(1) }}%</b></p>
+					<p>{{ $t('this-year') }}<b>{{ yearP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${yearP}%` }"></div>
 					</div>

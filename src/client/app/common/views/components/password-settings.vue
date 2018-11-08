@@ -1,6 +1,6 @@
 <template>
 <div>
-	<ui-button @click="reset">%i18n:@reset%</ui-button>
+	<ui-button @click="reset">{{ $t('reset') }}</ui-button>
 </div>
 </template>
 

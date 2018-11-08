@@ -2,7 +2,7 @@
 <div class="mk-drive-folder-chooser">
 	<div class="body">
 		<header>
-			<h1>%i18n:@select-folder%</h1>
+			<h1>{{ $t('select-folder') }}</h1>
 			<button class="close" @click="cancel"><fa icon="times"/></button>
 			<button class="ok" @click="ok"><fa icon="check"/></button>
 		</header>

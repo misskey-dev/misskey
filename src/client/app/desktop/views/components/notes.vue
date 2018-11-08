@@ -25,7 +25,7 @@
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
+			<template v-if="!moreFetching">{{ $t('load-more') }}</template>
 			<template v-if="moreFetching"><fa icon="spinner .pulse" fixed-width/></template>
 		</button>
 	</footer>

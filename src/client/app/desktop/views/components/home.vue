@@ -1,10 +1,10 @@
 <template>
 <div class="mk-home" :data-customize="customize">
 	<div class="customize" v-if="customize">
-		<router-link to="/"><fa icon="check"/>%i18n:@done%</router-link>
+		<router-link to="/"><fa icon="check"/>{{ $t('done') }}</router-link>
 		<div>
 			<div class="adder">
-				<p>%i18n:@add-widget%</p>
+				<p>{{ $t('add-widget') }}</p>
 				<select v-model="widgetAdderSelected">
 					<option value="profile">%i18n:common.widgets.profile%</option>
 					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
@@ -30,7 +30,7 @@
 					<option value="nav">%i18n:common.widgets.nav%</option>
 					<option value="tips">%i18n:common.widgets.tips%</option>
 				</select>
-				<button @click="addWidget">%i18n:@add%</button>
+				<button @click="addWidget">{{ $t('add') }}</button>
 			</div>
 			<div class="trash">
 				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>

@@ -4,10 +4,10 @@
 		<div slot="title"><fa icon="broadcast-tower"/> %i18n:@announcements%</div>
 		<section v-for="(announcement, i) in announcements" class="fit-top">
 			<ui-input v-model="announcement.title" @change="save">
-				<span>%i18n:@title%</span>
+				<span>{{ $t('title') }}</span>
 			</ui-input>
 			<ui-textarea v-model="announcement.text">
-				<span>%i18n:@text%</span>
+				<span>{{ $t('text') }}</span>
 			</ui-textarea>
 			<ui-horizon-group>
 				<ui-button @click="save()"><fa :icon="['far', 'save']"/> %i18n:@save%</ui-button>

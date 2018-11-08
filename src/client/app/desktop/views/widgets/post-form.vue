@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-post-form">
 	<template v-if="props.design == 0">
-		<p class="title"><fa icon="pencil-alt"/>%i18n:@title%</p>
+		<p class="title"><fa icon="pencil-alt"/>{{ $t('title') }}</p>
 	</template>
 	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" :placeholder="placeholder"></textarea>
-	<button @click="post" :disabled="posting">%i18n:@note%</button>
+	<button @click="post" :disabled="posting">{{ $t('note') }}</button>
 </div>
 </template>
 

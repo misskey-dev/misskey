@@ -6,7 +6,7 @@
 		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa icon="images"/> %i18n:@with-media%</span>
 	</header>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
-		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>%i18n:@empty%</p>
+		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>
 	</mk-notes>
 </div>
 </template>

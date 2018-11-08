@@ -3,8 +3,8 @@
 	<mk-note-preview class="preview" :note="note"/>
 	<template v-if="!quote">
 		<footer>
-			<a class="quote" v-if="!quote" @click="onQuote">%i18n:@quote%</a>
-			<ui-button class="button cancel" inline @click="cancel">%i18n:@cancel%</ui-button>
+			<a class="quote" v-if="!quote" @click="onQuote">{{ $t('quote') }}</a>
+			<ui-button class="button cancel" inline @click="cancel">{{ $t('cancel') }}</ui-button>
 			<ui-button class="button ok" inline primary @click="ok" :disabled="wait">{{ wait ? '%i18n:@reposting%' : '%i18n:@renote%' }}</ui-button>
 		</footer>
 	</template>

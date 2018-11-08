@@ -26,13 +26,13 @@
 
 					<div class="desc">
 						<span class="desc" v-html="description || '%i18n:common.about%'"></span>
-						<a class="about" @click="about">%i18n:@about%</a>
+						<a class="about" @click="about">{{ $t('about') }}</a>
 					</div>
 
 					<p class="sign">
-						<span class="signup" @click="signup">%i18n:@signup%</span>
+						<span class="signup" @click="signup">{{ $t('signup') }}</span>
 						<span class="divider">|</span>
-						<span class="signin" @click="signin">%i18n:@signin%</span>
+						<span class="signin" @click="signin">{{ $t('signin') }}</span>
 					</p>
 
 					<img src="/assets/ai.png" alt="" title="藍" class="char">
@@ -135,12 +135,12 @@
 	</modal>
 
 	<modal name="signup" class="modal" width="450px" height="auto" scrollable>
-		<header class="formHeader">%i18n:@signup%</header>
+		<header class="formHeader">{{ $t('signup') }}</header>
 		<mk-signup class="form"/>
 	</modal>
 
 	<modal name="signin" class="modal" width="450px" height="auto" scrollable>
-		<header class="formHeader">%i18n:@signin%</header>
+		<header class="formHeader">{{ $t('signin') }}</header>
 		<mk-signin class="form"/>
 	</modal>
 </div>

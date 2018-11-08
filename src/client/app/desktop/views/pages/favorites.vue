@@ -4,7 +4,7 @@
 		<template v-for="favorite in favorites">
 			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
 		</template>
-		<a v-if="existMore" @click="more">%i18n:@more%</a>
+		<a v-if="existMore" @click="more">{{ $t('more') }}</a>
 	</main>
 </mk-ui>
 </template>

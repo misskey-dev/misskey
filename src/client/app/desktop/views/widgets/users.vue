@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-users">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa icon="users"/>%i18n:@title%</template>
+		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
 		<button slot="func" title="%i18n:@refresh%" @click="refresh"><fa icon="sync"/></button>
 
 		<div class="mkw-users--body">
@@ -15,7 +15,7 @@
 					</div>
 				</div>
 			</template>
-			<p class="empty" v-else>%i18n:@no-one%</p>
+			<p class="empty" v-else>{{ $t('no-one') }}</p>
 		</div>
 	</mk-widget-container>
 </div>

@@ -2,12 +2,12 @@
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
 		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required styl="fill">
-			<span>%i18n:@invitation-code%</span>
+			<span>{{ $t('invitation-code') }}</span>
 			<span slot="prefix"><fa icon="id-card-alt"/></span>
 			<p slot="desc" v-html="'%i18n:@invitation-info%'.replace('{}', 'mailto:' + meta.maintainer.email)"></p>
 		</ui-input>
 		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername" styl="fill">
-			<span>%i18n:@username%</span>
+			<span>{{ $t('username') }}</span>
 			<span slot="prefix">@</span>
 			<span slot="suffix">@{{ host }}</span>
 			<p slot="desc" v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner .pulse" fixed-width/> %i18n:@checking%</p>
@@ -19,7 +19,7 @@
 			<p slot="desc" v-if="usernameState == 'max-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@too-long%</p>
 		</ui-input>
 		<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true" styl="fill">
-			<span>%i18n:@password%</span>
+			<span>{{ $t('password') }}</span>
 			<span slot="prefix"><fa icon="lock"/></span>
 			<div slot="desc">
 				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> %i18n:@weak-password%</p>
@@ -36,7 +36,7 @@
 			</div>
 		</ui-input>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<ui-button type="submit">%i18n:@create%</ui-button>
+		<ui-button type="submit">{{ $t('create') }}</ui-button>
 	</template>
 </form>
 </template>

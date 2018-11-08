@@ -21,13 +21,13 @@
 			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:@used%</p>
 			<p v-if="folder != null && (folder.foldersCount > 0 || folder.filesCount > 0)">
 				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} %i18n:@folder-count%</template>
-				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">%i18n:@count-separator%</template>
+				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">{{ $t('count-separator') }}</template>
 				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} %i18n:@file-count%</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
 			<x-folder class="folder" v-for="folder in folders" :key="folder.id" :folder="folder"/>
-			<p v-if="moreFolders">%i18n:@load-more%</p>
+			<p v-if="moreFolders">{{ $t('load-more') }}</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
 			<x-file class="file" v-for="file in files" :key="file.id" :file="file"/>
@@ -36,8 +36,8 @@
 			</button>
 		</div>
 		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
-			<p v-if="folder == null">%i18n:@nothing-in-drive%</p>
-			<p v-if="folder != null">%i18n:@folder-is-empty%</p>
+			<p v-if="folder == null">{{ $t('nothing-in-drive') }}</p>
+			<p v-if="folder != null">{{ $t('folder-is-empty') }}</p>
 		</div>
 	</div>
 	<div class="fetching" v-if="fetching && file == null && files.length == 0 && folders.length == 0">

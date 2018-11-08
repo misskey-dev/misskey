@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa icon="home"/></span>%i18n:@dashboard%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa icon="home"/></span>{{ $t('dashboard') }}</span>
 	<template slot="func">
 		<button @click="customizing = !customizing"><fa icon="cog"/></button>
 	</template>

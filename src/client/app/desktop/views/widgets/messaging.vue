@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-messaging">
 	<mk-widget-container :show-header="props.design == 0">
-		<template slot="header"><fa icon="comments"/>%i18n:@title%</template>
+		<template slot="header"><fa icon="comments"/>{{ $t('title') }}</template>
 		<button slot="func" @click="add"><fa icon="plus"/></button>
 
 		<mk-messaging ref="index" compact @navigate="navigate"/>

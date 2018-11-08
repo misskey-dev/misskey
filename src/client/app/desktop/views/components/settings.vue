@@ -1,17 +1,17 @@
 <template>
 <div class="mk-settings">
 	<div class="nav">
-		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><fa icon="user" fixed-width/>%i18n:@profile%</p>
-		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><fa icon="palette" fixed-width/>%i18n:@theme%</p>
+		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><fa icon="user" fixed-width/>{{ $t('profile') }}</p>
+		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><fa icon="palette" fixed-width/>{{ $t('theme') }}</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><fa icon="desktop" fixed-width/>Web</p>
-		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><fa :icon="['far', 'bell']" fixed-width/>%i18n:@notification%</p>
+		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('notification') }}</p>
 		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><fa icon="cloud" fixed-width/>%i18n:common.drive%</p>
-		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><fa icon="hashtag" fixed-width/>%i18n:@tags%</p>
-		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><fa icon="ban" fixed-width/>%i18n:@mute-and-block%</p>
-		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'"><fa icon="puzzle-piece" fixed-width/>%i18n:@apps%</p>
-		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'"><fa icon="unlock-alt" fixed-width/>%i18n:@security%</p>
+		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><fa icon="hashtag" fixed-width/>{{ $t('tags') }}</p>
+		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><fa icon="ban" fixed-width/>{{ $t('mute-and-block') }}</p>
+		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'"><fa icon="puzzle-piece" fixed-width/>{{ $t('apps') }}</p>
+		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'"><fa icon="unlock-alt" fixed-width/>{{ $t('security') }}</p>
 		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'"><fa icon="key" fixed-width/>API</p>
-		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'"><fa icon="cogs" fixed-width/>%i18n:@other%</p>
+		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'"><fa icon="cogs" fixed-width/>{{ $t('other') }}</p>
 	</div>
 	<div class="pages">
 		<div class="profile" v-show="page == 'profile'">
@@ -46,35 +46,35 @@
 			<section>
 				<ui-switch v-model="fetchOnScroll">
 					%i18n:@fetch-on-scroll%
-					<span slot="desc">%i18n:@fetch-on-scroll-desc%</span>
+					<span slot="desc">{{ $t('fetch-on-scroll-desc') }}</span>
 				</ui-switch>
 				<ui-switch v-model="autoPopout">
 					%i18n:@auto-popout%
-					<span slot="desc">%i18n:@auto-popout-desc%</span>
+					<span slot="desc">{{ $t('auto-popout-desc') }}</span>
 				</ui-switch>
-				<ui-switch v-model="deckNav">%i18n:@deck-nav%<span slot="desc">%i18n:@deck-nav-desc%</span></ui-switch>
+				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}<span slot="desc">{{ $t('deck-nav-desc') }}</span></ui-switch>
 
 				<details>
-					<summary>%i18n:@advanced%</summary>
+					<summary>{{ $t('advanced') }}</summary>
 					<ui-switch v-model="apiViaStream">
 						%i18n:@api-via-stream%
-						<span slot="desc">%i18n:@api-via-stream-desc%</span>
+						<span slot="desc">{{ $t('api-via-stream-desc') }}</span>
 					</ui-switch>
 				</details>
 			</section>
 
 			<section>
-				<header>%i18n:@timeline%</header>
-				<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
-				<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
-				<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
+				<header>{{ $t('timeline') }}</header>
+				<ui-switch v-model="showMyRenotes">{{ $t('show-my-renotes') }}</ui-switch>
+				<ui-switch v-model="showRenotedMyNotes">{{ $t('show-renoted-my-notes') }}</ui-switch>
+				<ui-switch v-model="showLocalRenotes">{{ $t('show-local-renotes') }}</ui-switch>
 			</section>
 
 			<section>
-				<header>%i18n:@note-visibility%</header>
-				<ui-switch v-model="rememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
+				<header>{{ $t('note-visibility') }}</header>
+				<ui-switch v-model="rememberNoteVisibility">{{ $t('remember-note-visibility') }}</ui-switch>
 				<section>
-					<header>%i18n:@default-note-visibility%</header>
+					<header>{{ $t('default-note-visibility') }}</header>
 					<ui-select v-model="defaultNoteVisibility">
 						<option value="public">%i18n:common.note-visibility.public%</option>
 						<option value="home">%i18n:common.note-visibility.home%</option>
@@ -90,46 +90,46 @@
 			<div slot="title"><fa icon="desktop"/> %i18n:@display%</div>
 
 			<section>
-				<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
-				<ui-button @click="customizeHome">%i18n:@customize%</ui-button>
+				<ui-switch v-model="showPostFormOnTopOfTl">{{ $t('post-form-on-timeline') }}</ui-switch>
+				<ui-button @click="customizeHome">{{ $t('customize') }}</ui-button>
 			</section>
 			<section>
-				<header>%i18n:@wallpaper%</header>
-				<ui-button @click="updateWallpaper">%i18n:@choose-wallpaper%</ui-button>
-				<ui-button @click="deleteWallpaper">%i18n:@delete-wallpaper%</ui-button>
+				<header>{{ $t('wallpaper') }}</header>
+				<ui-button @click="updateWallpaper">{{ $t('choose-wallpaper') }}</ui-button>
+				<ui-button @click="deleteWallpaper">{{ $t('delete-wallpaper') }}</ui-button>
 			</section>
 			<section>
-				<header>%i18n:@navbar-position%</header>
-				<ui-radio v-model="navbar" value="top">%i18n:@navbar-position-top%</ui-radio>
-				<ui-radio v-model="navbar" value="left">%i18n:@navbar-position-left%</ui-radio>
-				<ui-radio v-model="navbar" value="right">%i18n:@navbar-position-right%</ui-radio>
+				<header>{{ $t('navbar-position') }}</header>
+				<ui-radio v-model="navbar" value="top">{{ $t('navbar-position-top') }}</ui-radio>
+				<ui-radio v-model="navbar" value="left">{{ $t('navbar-position-left') }}</ui-radio>
+				<ui-radio v-model="navbar" value="right">{{ $t('navbar-position-right') }}</ui-radio>
 			</section>
 			<section>
-				<ui-switch v-model="deckDefault">%i18n:@deck-default%</ui-switch>
+				<ui-switch v-model="deckDefault">{{ $t('deck-default') }}</ui-switch>
 			</section>
 			<section>
-				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
-				<ui-switch v-model="useShadow">%i18n:@use-shadow%</ui-switch>
-				<ui-switch v-model="roundedCorners">%i18n:@rounded-corners%</ui-switch>
-				<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
+				<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
+				<ui-switch v-model="useShadow">{{ $t('use-shadow') }}</ui-switch>
+				<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
+				<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
 				<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion%</ui-switch>
-				<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
+				<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
 				<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
 				<ui-switch v-model="useOsDefaultEmojis">%i18n:common.use-os-default-emojis%</ui-switch>
 				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 			</section>
 			<section>
-				<ui-switch v-model="suggestRecentHashtags">%i18n:@suggest-recent-hashtags%</ui-switch>
-				<ui-switch v-model="showClockOnHeader">%i18n:@show-clock-on-header%</ui-switch>
+				<ui-switch v-model="suggestRecentHashtags">{{ $t('suggest-recent-hashtags') }}</ui-switch>
+				<ui-switch v-model="showClockOnHeader">{{ $t('show-clock-on-header') }}</ui-switch>
 				<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw%</ui-switch>
-				<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>
-				<ui-switch v-model="showMaps">%i18n:@show-maps%</ui-switch>
+				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
+				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
 				<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
 			</section>
 			<section>
-				<header>%i18n:@deck-column-align%</header>
-				<ui-radio v-model="deckColumnAlign" value="center">%i18n:@deck-column-align-center%</ui-radio>
-				<ui-radio v-model="deckColumnAlign" value="left">%i18n:@deck-column-align-left%</ui-radio>
+				<header>{{ $t('deck-column-align') }}</header>
+				<ui-radio v-model="deckColumnAlign" value="center">{{ $t('deck-column-align-center') }}</ui-radio>
+				<ui-radio v-model="deckColumnAlign" value="left">{{ $t('deck-column-align-left') }}</ui-radio>
 			</section>
 			<section>
 				<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
@@ -143,9 +143,9 @@
 			<section>
 				<ui-switch v-model="enableSounds">
 					%i18n:@enable-sounds%
-					<span slot="desc">%i18n:@enable-sounds-desc%</span>
+					<span slot="desc">{{ $t('enable-sounds-desc') }}</span>
 				</ui-switch>
-				<label>%i18n:@volume%</label>
+				<label>{{ $t('volume') }}</label>
 				<input type="range"
 					v-model="soundVolume"
 					:disabled="!enableSounds"
@@ -161,7 +161,7 @@
 			<section class="fit-top">
 				<ui-select v-model="lang" placeholder="%i18n:@pick-language%">
 					<optgroup label="%i18n:@recommended%">
-						<option value="">%i18n:@auto%</option>
+						<option value="">{{ $t('auto') }}</option>
 					</optgroup>
 
 					<optgroup label="%i18n:@specify-language%">
@@ -169,7 +169,7 @@
 					</optgroup>
 				</ui-select>
 				<div class="none ui info">
-					<p><fa icon="info-circle"/>%i18n:@language-desc%</p>
+					<p><fa icon="info-circle"/>{{ $t('language-desc') }}</p>
 				</div>
 			</section>
 		</ui-card>
@@ -177,9 +177,9 @@
 		<ui-card class="web" v-show="page == 'web'">
 			<div slot="title"><fa :icon="['far', 'trash-alt']"/> %i18n:@cache%</div>
 			<section>
-				<ui-button @click="clean">%i18n:@clean-cache%</ui-button>
+				<ui-button @click="clean">{{ $t('clean-cache') }}</ui-button>
 				<div class="none ui info warn">
-					<p><fa icon="exclamation-triangle"/>%i18n:@cache-warn%</p>
+					<p><fa icon="exclamation-triangle"/>{{ $t('cache-warn') }}</p>
 				</div>
 			</section>
 		</ui-card>
@@ -189,10 +189,10 @@
 			<section>
 				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
 					%i18n:@auto-watch%
-					<span slot="desc">%i18n:@auto-watch-desc%</span>
+					<span slot="desc">{{ $t('auto-watch-desc') }}</span>
 				</ui-switch>
 				<section>
-					<ui-button @click="readAllUnreadNotes">%i18n:@mark-as-read-all-unread-notes%</ui-button>
+					<ui-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</ui-button>
 				</section>
 			</section>
 		</ui-card>
@@ -262,14 +262,14 @@
 					</template>
 				</p>
 				<button class="ui button block" @click="checkForUpdate" :disabled="checkingForUpdate">
-					<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
-					<template v-else>%i18n:@do-update%</template>
+					<template v-if="checkingForUpdate">{{ $t('update-checking') }}<mk-ellipsis/></template>
+					<template v-else>{{ $t('do-update') }}</template>
 				</button>
 				<details>
-					<summary>%i18n:@update-settings%</summary>
+					<summary>{{ $t('update-settings') }}</summary>
 					<ui-switch v-model="preventUpdate">
 						%i18n:@prevent-update%
-						<span slot="desc">%i18n:@prevent-update-desc%</span>
+						<span slot="desc">{{ $t('prevent-update-desc') }}</span>
 					</ui-switch>
 				</details>
 			</section>
@@ -280,11 +280,11 @@
 			<section>
 				<ui-switch v-model="debug">
 					%i18n:@debug-mode%
-					<span slot="desc">%i18n:@debug-mode-desc%</span>
+					<span slot="desc">{{ $t('debug-mode-desc') }}</span>
 				</ui-switch>
 				<ui-switch v-model="enableExperimentalFeatures">
 					%i18n:@experimental%
-					<span slot="desc">%i18n:@experimental-desc%</span>
+					<span slot="desc">{{ $t('experimental-desc') }}</span>
 				</ui-switch>
 			</section>
 		</ui-card>

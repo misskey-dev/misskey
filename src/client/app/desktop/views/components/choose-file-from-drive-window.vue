@@ -14,8 +14,8 @@
 	/>
 	<div :class="$style.footer">
 		<button :class="$style.upload" title="%i18n:@upload%" @click="upload"><fa icon="upload"/></button>
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>

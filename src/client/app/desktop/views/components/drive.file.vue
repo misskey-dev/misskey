@@ -11,15 +11,15 @@
 >
 	<div class="label" v-if="$store.state.i.avatarId == file.id">
 		<img src="/assets/label.svg"/>
-		<p>%i18n:@avatar%</p>
+		<p>{{ $t('avatar') }}</p>
 	</div>
 	<div class="label" v-if="$store.state.i.bannerId == file.id">
 		<img src="/assets/label.svg"/>
-		<p>%i18n:@banner%</p>
+		<p>{{ $t('banner') }}</p>
 	</div>
 	<div class="label red" v-if="file.isSensitive">
 		<img src="/assets/label-red.svg"/>
-		<p>%i18n:@nsfw%</p>
+		<p>{{ $t('nsfw') }}</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
 		<img :src="file.thumbnailUrl" alt="" @load="onThumbnailLoaded"/>

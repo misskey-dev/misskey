@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-memo">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa :icon="['far', 'sticky-note']"/>%i18n:@title%</template>
+		<template slot="header"><fa :icon="['far', 'sticky-note']"/>{{ $t('title') }}</template>
 
 		<div class="mkw-memo--body">
 			<textarea v-model="text" placeholder="%i18n:@memo%" @input="onChange"></textarea>
-			<button @click="saveMemo" :disabled="!changed">%i18n:@save%</button>
+			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
 		</div>
 	</mk-widget-container>
 </div>

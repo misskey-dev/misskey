@@ -44,7 +44,7 @@
 			</a>
 		</template>
 	</div>
-	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:@no-history%</p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
 	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>

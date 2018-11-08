@@ -13,7 +13,7 @@
 			<div>
 				<div><fa icon="user"/></div>
 				<div>
-					<span>%i18n:@accounts%</span>
+					<span>{{ $t('accounts') }}</span>
 					<b class="primary">{{ stats.originalUsersCount | number }}</b>
 				</div>
 			</div>
@@ -26,7 +26,7 @@
 			<div>
 				<div><fa icon="pencil-alt"/></div>
 				<div>
-					<span>%i18n:@notes%</span>
+					<span>{{ $t('notes') }}</span>
 					<b class="primary">{{ stats.originalNotesCount | number }}</b>
 				</div>
 			</div>
@@ -39,7 +39,7 @@
 			<div>
 				<div><fa icon="database"/></div>
 				<div>
-					<span>%i18n:@drive%</span>
+					<span>{{ $t('drive') }}</span>
 					<b>{{ stats.driveUsageLocal | bytes }}</b>
 				</div>
 			</div>
@@ -52,7 +52,7 @@
 			<div>
 				<div><fa :icon="['far', 'hdd']"/></div>
 				<div>
-					<span>%i18n:@instances%</span>
+					<span>{{ $t('instances') }}</span>
 					<b>{{ stats.instances | number }}</b>
 				</div>
 			</div>

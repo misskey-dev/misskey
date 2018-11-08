@@ -46,7 +46,7 @@
 	<p class="status"><b>{{ '%i18n:common.reversi.this-turn%'.split('{}')[0] }}{{ logPos }}{{ '%i18n:common.reversi.this-turn%'.split('{}')[1] }}</b> %i18n:common.reversi.black%:{{ o.blackCount }} %i18n:common.reversi.white%:{{ o.whiteCount }} %i18n:common.reversi.total%:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<form-button @click="surrender">%i18n:@surrender%</form-button>
+		<form-button @click="surrender">{{ $t('surrender') }}</form-button>
 	</div>
 
 	<div class="player" v-if="game.isEnded">
@@ -62,9 +62,9 @@
 	</div>
 
 	<div class="info">
-		<p v-if="game.settings.isLlotheo">%i18n:@is-llotheo%</p>
-		<p v-if="game.settings.loopedBoard">%i18n:@looped-map%</p>
-		<p v-if="game.settings.canPutEverywhere">%i18n:@can-put-everywhere%</p>
+		<p v-if="game.settings.isLlotheo">{{ $t('is-llotheo') }}</p>
+		<p v-if="game.settings.loopedBoard">{{ $t('looped-map') }}</p>
+		<p v-if="game.settings.canPutEverywhere">{{ $t('can-put-everywhere') }}</p>
 	</div>
 </div>
 </template>

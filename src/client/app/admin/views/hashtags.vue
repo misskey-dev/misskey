@@ -1,10 +1,10 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title">%i18n:@hided-tags%</div>
+		<div slot="title">{{ $t('hided-tags') }}</div>
 		<section>
 			<textarea class="jdnqwkzlnxcfftthoybjxrebyolvoucw" v-model="hidedTags"></textarea>
-			<ui-button @click="save">%i18n:@save%</ui-button>
+			<ui-button @click="save">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 </div>

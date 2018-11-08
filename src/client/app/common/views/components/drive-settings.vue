@@ -8,7 +8,7 @@
 	</section>
 
 	<section>
-		<header>%i18n:@stats%</header>
+		<header>{{ $t('stats') }}</header>
 		<div ref="chart" style="margin-bottom: -16px; color: #000;"></div>
 	</section>
 </ui-card>

@@ -10,8 +10,8 @@
 		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>

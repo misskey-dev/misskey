@@ -6,7 +6,7 @@
 		<div v-for="req in requests">
 			<router-link :key="req.id" :to="req.follower | userPage">{{ req.follower | userName }}</router-link>
 			<span>
-				<a @click="accept(req.follower)">%i18n:@accept%</a>|<a @click="reject(req.follower)">%i18n:@reject%</a>
+				<a @click="accept(req.follower)">{{ $t('accept') }}</a>|<a @click="reject(req.follower)">{{ $t('reject') }}</a>
 			</span>
 		</div>
 	</div>

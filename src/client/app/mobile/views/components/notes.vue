@@ -11,8 +11,8 @@
 	</div>
 
 	<div v-if="!fetching && requestInitPromise != null">
-		<p>%i18n:@failed%</p>
-		<button @click="resolveInitPromise">%i18n:@retry%</button>
+		<p>{{ $t('failed') }}</p>
+		<button @click="resolveInitPromise">{{ $t('retry') }}</button>
 	</div>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
@@ -28,7 +28,7 @@
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
+			<template v-if="!moreFetching">{{ $t('load-more') }}</template>
 			<template v-if="moreFetching"><fa icon="spinner .pulse" fixed-width/></template>
 		</button>
 	</footer>

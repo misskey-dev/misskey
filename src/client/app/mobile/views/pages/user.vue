@@ -17,7 +17,7 @@
 				<div class="title">
 					<h1>{{ user | userName }}</h1>
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
-					<span class="followed" v-if="user.isFollowed">%i18n:@follows-you%</span>
+					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
 					<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
@@ -33,15 +33,15 @@
 				<div class="status">
 					<a>
 						<b>{{ user.notesCount | number }}</b>
-						<i>%i18n:@notes%</i>
+						<i>{{ $t('notes') }}</i>
 					</a>
 					<a :href="user | userPage('following')">
 						<b>{{ user.followingCount | number }}</b>
-						<i>%i18n:@following%</i>
+						<i>{{ $t('following') }}</i>
 					</a>
 					<a :href="user | userPage('followers')">
 						<b>{{ user.followersCount | number }}</b>
-						<i>%i18n:@followers%</i>
+						<i>{{ $t('followers') }}</i>
 					</a>
 				</div>
 			</div>

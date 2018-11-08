@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="destroyDom">
-	<span slot="header" :class="$style.header"><fa icon="gamepad"/>%i18n:@game%</span>
+	<span slot="header" :class="$style.header"><fa icon="gamepad"/>{{ $t('game') }}</span>
 	<x-reversi :class="$style.content" @gamed="g => game = g"/>
 </mk-window>
 </template>

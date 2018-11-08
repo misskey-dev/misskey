@@ -4,7 +4,7 @@
 
 	<h1>{{ meta.name }}</h1>
 	<p v-html="meta.description || '%i18n:common.about%'"></p>
-	<router-link to="/">%i18n:@start%</router-link>
+	<router-link to="/">{{ $t('start') }}</router-link>
 </div>
 </template>
 

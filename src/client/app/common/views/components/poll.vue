@@ -14,7 +14,7 @@
 		<span>{{ '%i18n:@total-users%'.replace('{}', total) }}</span>
 		<span>・</span>
 		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? '%i18n:@vote%' : '%i18n:@show-result%' }}</a>
-		<span v-if="isVoted">%i18n:@voted%</span>
+		<span v-if="isVoted">{{ $t('voted') }}</span>
 	</p>
 </div>
 </template>

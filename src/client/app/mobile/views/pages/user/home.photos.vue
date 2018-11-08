@@ -1,6 +1,6 @@
 <template>
 <div class="root photos">
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@loading%<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images"
 			class="img"
@@ -8,7 +8,7 @@
 			:href="image.note | notePage"
 		></a>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 </div>
 </template>
 

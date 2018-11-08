@@ -2,7 +2,7 @@
 <div class="uofhebxjdgksfmltszlxurtjnjjsvioh" v-if="video.isSensitive && hide" @click="hide = false">
 	<div>
 		<b><fa icon="exclamation-triangle"/> %i18n:@sensitive%</b>
-		<span>%i18n:@click-to-show%</span>
+		<span>{{ $t('click-to-show') }}</span>
 	</div>
 </div>
 <div class="vwxdhznewyashiknzolsoihtlpicqepe" v-else>

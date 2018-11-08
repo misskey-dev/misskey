@@ -1,7 +1,7 @@
 <template>
 <div class="hozptpaliadatkehcmcayizwzwwctpbc">
-	<p class="title"><fa icon="users"/>%i18n:@title%</p>
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@loading%<mk-ellipsis/></p>
+	<p class="title"><fa icon="users"/>{{ $t('title') }}</p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
 			<mk-avatar class="avatar" :user="friend"/>
@@ -12,7 +12,7 @@
 			<mk-follow-button :user="friend"/>
 		</div>
 	</template>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('no-users') }}</p>
 </div>
 </template>
 

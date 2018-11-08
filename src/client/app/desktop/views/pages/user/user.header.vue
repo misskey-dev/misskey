@@ -21,9 +21,9 @@
 			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', '%i18n:@year%').replace('-', '%i18n:@month%') + '%i18n:@day%' }} ({{ age }}%i18n:@years-old%)</span>
 		</div>
 		<div class="status">
-			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
-			<router-link :to="user | userPage('following')" class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>%i18n:@following%</router-link>
-			<router-link :to="user | userPage('followers')" class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</router-link>
+			<span class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</span>
+			<router-link :to="user | userPage('following')" class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
+			<router-link :to="user | userPage('followers')" class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
 		</div>
 	</div>
 </div>

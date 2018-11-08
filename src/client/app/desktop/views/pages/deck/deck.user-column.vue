@@ -27,15 +27,15 @@
 			<div class="counts">
 				<div>
 					<b>{{ user.notesCount | number }}</b>
-					<span>%i18n:@posts%</span>
+					<span>{{ $t('posts') }}</span>
 				</div>
 				<div>
 					<b>{{ user.followingCount | number }}</b>
-					<span>%i18n:@following%</span>
+					<span>{{ $t('following') }}</span>
 				</div>
 				<div>
 					<b>{{ user.followersCount | number }}</b>
-					<span>%i18n:@followers%</span>
+					<span>{{ $t('followers') }}</span>
 				</div>
 			</div>
 		</div>

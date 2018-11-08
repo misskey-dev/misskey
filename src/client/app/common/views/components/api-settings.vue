@@ -4,29 +4,29 @@
 
 	<section class="fit-top">
 		<ui-input :value="$store.state.i.token" readonly>
-			<span>%i18n:@token%</span>
+			<span>{{ $t('token') }}</span>
 		</ui-input>
-		<p>%i18n:@intro%</p>
-		<ui-info warn>%i18n:@caution%</ui-info>
-		<p>%i18n:@regeneration-of-token%</p>
+		<p>{{ $t('intro') }}</p>
+		<ui-info warn>{{ $t('caution') }}</ui-info>
+		<p>{{ $t('regeneration-of-token') }}</p>
 		<ui-button @click="regenerateToken"><fa icon="sync-alt"/> %i18n:@regenerate-token%</ui-button>
 	</section>
 
 	<section>
 		<header><fa icon="terminal"/> %i18n:@console.title%</header>
 		<ui-input v-model="endpoint">
-			<span>%i18n:@console.endpoint%</span>
+			<span>{{ $t('console.endpoint') }}</span>
 		</ui-input>
 		<ui-textarea v-model="body">
 			<span>%i18n:@console.parameter% (JSON or JSON5)</span>
-			<span slot="desc">%i18n:@console.credential-info%</span>
+			<span slot="desc">{{ $t('console.credential-info') }}</span>
 		</ui-textarea>
 		<ui-button @click="send" :disabled="sending">
-			<template v-if="sending">%i18n:@console.sending%</template>
+			<template v-if="sending">{{ $t('console.sending') }}</template>
 			<template v-else><fa icon="paper-plane"/> %i18n:@console.send%</template>
 		</ui-button>
 		<ui-textarea v-if="res" v-model="res" readonly tall>
-			<span>%i18n:@console.response%</span>
+			<span>{{ $t('console.response') }}</span>
 		</ui-textarea>
 	</section>
 </ui-card>

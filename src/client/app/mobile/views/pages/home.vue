@@ -2,12 +2,12 @@
 <mk-ui>
 	<span slot="header" @click="showNav = true">
 		<span :class="$style.title">
-			<span v-if="src == 'home'"><fa icon="home"/>%i18n:@home%</span>
-			<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>%i18n:@local%</span>
-			<span v-if="src == 'hybrid'"><fa icon="share-alt"/>%i18n:@hybrid%</span>
-			<span v-if="src == 'global'"><fa icon="globe"/>%i18n:@global%</span>
-			<span v-if="src == 'mentions'"><fa icon="at"/>%i18n:@mentions%</span>
-			<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>%i18n:@messages%</span>
+			<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
+			<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
+			<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
+			<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
+			<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
+			<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
 			<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
 			<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
 		</span>

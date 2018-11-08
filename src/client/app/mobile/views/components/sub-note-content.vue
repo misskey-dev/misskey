@@ -12,7 +12,7 @@
 		<mk-media-list :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
-		<summary>%i18n:@poll%</summary>
+		<summary>{{ $t('poll') }}</summary>
 		<mk-poll :note="note"/>
 	</details>
 </div>

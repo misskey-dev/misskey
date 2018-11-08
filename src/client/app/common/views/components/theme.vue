@@ -1,7 +1,7 @@
 <template>
 <div class="nicnklzforebnpfgasiypmpdaaglujqm">
 	<label>
-		<span>%i18n:@light-theme%</span>
+		<span>{{ $t('light-theme') }}</span>
 		<ui-select v-model="light" placeholder="%i18n:@light-theme%">
 			<optgroup label="%i18n:@light-themes%">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -13,7 +13,7 @@
 	</label>
 
 	<label>
-		<span>%i18n:@dark-theme%</span>
+		<span>{{ $t('dark-theme') }}</span>
 		<ui-select v-model="dark" placeholder="%i18n:@dark-theme%">
 			<optgroup label="%i18n:@dark-themes%">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -28,15 +28,15 @@
 		<summary><fa icon="palette"/> %i18n:@create-a-theme%</summary>
 		<div>
 			<span>%i18n:@base-theme%:</span>
-			<ui-radio v-model="myThemeBase" value="light">%i18n:@base-theme-light%</ui-radio>
-			<ui-radio v-model="myThemeBase" value="dark">%i18n:@base-theme-dark%</ui-radio>
+			<ui-radio v-model="myThemeBase" value="light">{{ $t('base-theme-light') }}</ui-radio>
+			<ui-radio v-model="myThemeBase" value="dark">{{ $t('base-theme-dark') }}</ui-radio>
 		</div>
 		<div>
 			<ui-input v-model="myThemeName">
-				<span>%i18n:@theme-name%</span>
+				<span>{{ $t('theme-name') }}</span>
 			</ui-input>
 			<ui-textarea v-model="myThemeDesc">
-				<span>%i18n:@desc%</span>
+				<span>{{ $t('desc') }}</span>
 			</ui-textarea>
 		</div>
 		<div>
@@ -61,7 +61,7 @@
 		<input ref="file" type="file" accept=".misskeytheme" style="display:none;" @change="onUpdateImportFile"/>
 		<p>%i18n:@import-by-code%:</p>
 		<ui-textarea v-model="installThemeCode">
-			<span>%i18n:@theme-code%</span>
+			<span>{{ $t('theme-code') }}</span>
 		</ui-textarea>
 		<ui-button @click="() => install(this.installThemeCode)"><fa icon="check"/> %i18n:@install%</ui-button>
 	</details>
@@ -81,13 +81,13 @@
 		</ui-select>
 		<template v-if="selectedTheme">
 			<ui-input readonly :value="selectedTheme.author">
-				<span>%i18n:@author%</span>
+				<span>{{ $t('author') }}</span>
 			</ui-input>
 			<ui-textarea v-if="selectedTheme.desc" readonly :value="selectedTheme.desc">
-				<span>%i18n:@desc%</span>
+				<span>{{ $t('desc') }}</span>
 			</ui-textarea>
 			<ui-textarea readonly :value="selectedThemeCode">
-				<span>%i18n:@theme-code%</span>
+				<span>{{ $t('theme-code') }}</span>
 			</ui-textarea>
 			<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><fa icon="box"/> %i18n:@export%</ui-button>
 			<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> %i18n:@uninstall%</ui-button>

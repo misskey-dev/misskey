@@ -1,12 +1,12 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>%i18n:@title%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('title') }}</span>
 
 	<main>
 		<template v-for="favorite in favorites">
 			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
 		</template>
-		<a v-if="existMore" @click="more">%i18n:@more%</a>
+		<a v-if="existMore" @click="more">{{ $t('more') }}</a>
 	</main>
 </mk-ui>
 </template>

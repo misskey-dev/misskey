@@ -1,12 +1,12 @@
 <template>
 <div class="root followers-you-know">
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@loading%<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<a v-for="user in users" :key="user.id" :href="user | userPage">
 			<img :src="user.avatarUrl" :alt="user | userName"/>
 		</a>
 	</div>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('no-users') }}</p>
 </div>
 </template>
 

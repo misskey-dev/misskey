@@ -5,20 +5,20 @@
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-input v-model="name">
-					<span>%i18n:@add-emoji.name%</span>
-					<span slot="desc">%i18n:@add-emoji.name-desc%</span>
+					<span>{{ $t('add-emoji.name') }}</span>
+					<span slot="desc">{{ $t('add-emoji.name-desc') }}</span>
 				</ui-input>
 				<ui-input v-model="aliases">
-					<span>%i18n:@add-emoji.aliases%</span>
-					<span slot="desc">%i18n:@add-emoji.aliases-desc%</span>
+					<span>{{ $t('add-emoji.aliases') }}</span>
+					<span slot="desc">{{ $t('add-emoji.aliases-desc') }}</span>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="url">
 				<i slot="icon"><fa icon="link"/></i>
-				<span>%i18n:@add-emoji.url%</span>
+				<span>{{ $t('add-emoji.url') }}</span>
 			</ui-input>
-			<ui-info>%i18n:@add-emoji.info%</ui-info>
-			<ui-button @click="add">%i18n:@add-emoji.add%</ui-button>
+			<ui-info>{{ $t('add-emoji.info') }}</ui-info>
+			<ui-button @click="add">{{ $t('add-emoji.add') }}</ui-button>
 		</section>
 	</ui-card>
 
@@ -28,15 +28,15 @@
 			<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
 			<ui-horizon-group inputs>
 				<ui-input v-model="emoji.name">
-					<span>%i18n:@add-emoji.name%</span>
+					<span>{{ $t('add-emoji.name') }}</span>
 				</ui-input>
 				<ui-input v-model="emoji.aliases">
-					<span>%i18n:@add-emoji.aliases%</span>
+					<span>{{ $t('add-emoji.aliases') }}</span>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="emoji.url">
 				<i slot="icon"><fa icon="link"/></i>
-				<span>%i18n:@add-emoji.url%</span>
+				<span>{{ $t('add-emoji.url') }}</span>
 			</ui-input>
 			<ui-horizon-group>
 				<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> %i18n:@emojis.update%</ui-button>

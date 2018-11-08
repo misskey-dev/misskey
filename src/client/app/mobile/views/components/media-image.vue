@@ -2,7 +2,7 @@
 <div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
 		<b><fa icon="exclamation-triangle"/> %i18n:@sensitive%</b>
-		<span>%i18n:@click-to-show%</span>
+		<span>{{ $t('click-to-show') }}</span>
 	</div>
 </div>
 <a class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else :href="image.url" target="_blank" :style="style" :title="image.name" @click.prevent="onClick"></a>

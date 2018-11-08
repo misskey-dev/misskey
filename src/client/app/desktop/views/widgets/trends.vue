@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-trends">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa icon="fire"/>%i18n:@title%</template>
+		<template slot="header"><fa icon="fire"/>{{ $t('title') }}</template>
 		<button slot="func" title="%i18n:@refresh%" @click="fetch"><fa icon="sync"/></button>
 
 		<div class="mkw-trends--body">
@@ -10,7 +10,7 @@
 				<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
 				<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>
 			</div>
-			<p class="empty" v-else>%i18n:@nothing%</p>
+			<p class="empty" v-else>{{ $t('nothing') }}</p>
 		</div>
 	</mk-widget-container>
 </div>

@@ -6,7 +6,7 @@
 	<div class="matching" v-else-if="matching">
 		<h1>{{ '%i18n:@matching.waiting-for%'.split('{}')[0] }}<b>{{ matching | userName }}</b>{{ '%i18n:@matching.waiting-for%'.split('{}')[1] }}<mk-ellipsis/></h1>
 		<div class="cancel">
-			<form-button round @click="cancel">%i18n:@matching.cancel%</form-button>
+			<form-button round @click="cancel">{{ $t('matching.cancel') }}</form-button>
 		</div>
 	</div>
 	<div v-else-if="gameId">

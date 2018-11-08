@@ -8,7 +8,7 @@
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">%i18n:@add-visible-user%</a>
+			<a @click="addVisibleUser">{{ $t('add-visible-user') }}</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 			<b>%i18n:@recent-tags%:</b>

@@ -22,7 +22,7 @@
 		{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
 
-	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
+	<p class="empty" v-if="notifications.length == 0 && !fetching">{{ $t('empty') }}</p>
 </div>
 </template>
 

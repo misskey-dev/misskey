@@ -2,14 +2,14 @@
 <div class="vfcitkilproprqtbnpoertpsziierwzi">
 	<div v-for="timeline in timelines" class="timeline">
 		<ui-input v-model="timeline.title" @change="save">
-			<span>%i18n:@title%</span>
+			<span>{{ $t('title') }}</span>
 		</ui-input>
 		<ui-textarea :value="timeline.query ? timeline.query.map(tags => tags.join(' ')).join('\n') : ''" @input="onQueryChange(timeline, $event)">
-			<span>%i18n:@query%</span>
+			<span>{{ $t('query') }}</span>
 		</ui-textarea>
-		<ui-button class="save" @click="save">%i18n:@save%</ui-button>
+		<ui-button class="save" @click="save">{{ $t('save') }}</ui-button>
 	</div>
-	<ui-button class="add" @click="add">%i18n:@add%</ui-button>
+	<ui-button class="add" @click="add">{{ $t('add') }}</ui-button>
 </div>
 </template>
 
