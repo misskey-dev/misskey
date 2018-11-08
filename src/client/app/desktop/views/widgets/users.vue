@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 const limit = 3;
 
@@ -32,6 +33,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/users.vue'),
 	data() {
 		return {
 			users: [],

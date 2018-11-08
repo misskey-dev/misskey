@@ -12,7 +12,7 @@
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
 			<b>%i18n:@recent-tags%:</b>
-			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('title')">#{{ tag }}</a>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
 		<input v-show="useCw" v-model="cw" :placeholder="$t('placeholder')">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -24,7 +24,7 @@
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
-					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('title')" alt=""/>
+					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
 				</div>
 			</x-draggable>
 			<p class="remain">{{ 4 - files.length }}/4</p>
@@ -32,13 +32,13 @@
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button class="upload" :title="$t('title')" @click="chooseFile"><fa icon="upload"/></button>
-	<button class="drive" :title="$t('title')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
-	<button class="kao" :title="$t('title')" @click="kao"><fa :icon="['far', 'smile']"/></button>
-	<button class="poll" :title="$t('title')" @click="poll = !poll"><fa icon="chart-pie"/></button>
-	<button class="poll" :title="$t('title')" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
-	<button class="geo" :title="$t('title')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
-	<button class="visibility" :title="$t('title')" @click="setVisibility" ref="visibilityButton">
+	<button class="upload" :title="$t('attach-media-from-local')" @click="chooseFile"><fa icon="upload"/></button>
+	<button class="drive" :title="$t('attach-media-from-drive')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
+	<button class="kao" :title="$t('insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
+	<button class="poll" :title="$t('create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
+	<button class="cw%" :title="$t('hide-contents%')" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
+	<button class="geo" :title="$t('attach-location-information')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
+	<button class="visibility" :title="$t('visibility')" @click="setVisibility" ref="visibilityButton">
 		<span v-if="visibility === 'public'"><fa icon="globe"/></span>
 		<span v-if="visibility === 'home'"><fa icon="home"/></span>
 		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>

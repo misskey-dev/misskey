@@ -1,6 +1,6 @@
 <template>
 <div class="notifications" v-hotkey.global="keymap">
-	<button :data-active="isOpen" @click="toggle" :title="$t('title')">
+	<button :data-active="isOpen" @click="toggle" :title="$t('toggle')">
 		<i class="bell"><fa :icon="['far', 'bell']"/></i>
 		<i class="circle" v-if="hasUnreadNotification"><fa icon="circle"/></i>
 	</button>

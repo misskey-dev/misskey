@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 import MkMessagingRoomWindow from '../components/messaging-room-window.vue';
 import MkMessagingWindow from '../components/messaging-window.vue';
 
@@ -20,6 +21,7 @@ export default define({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/messaging.vue'),
 	methods: {
 		navigate(user) {
 			(this as any).os.new(MkMessagingRoomWindow, {

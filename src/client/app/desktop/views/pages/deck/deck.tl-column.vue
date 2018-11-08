@@ -82,10 +82,10 @@ export default Vue.extend({
 			if (this.column.name) return this.column.name;
 
 			switch (this.column.type) {
-				case 'home': return '%i18n:common.deck.home%';
-				case 'local': return '%i18n:common.deck.local%';
-				case 'hybrid': return '%i18n:common.deck.hybrid%';
-				case 'global': return '%i18n:common.deck.global%';
+				case 'home': return this.$t('@deck.home');
+				case 'local': return this.$t('@deck.local');
+				case 'hybrid': return this.$t('@deck.hybrid');
+				case 'global': return this.$t('@deck.global');
 				case 'list': return this.column.list.title;
 				case 'hashtag': return this.$store.state.settings.tagTimelines.find(x => x.id == this.column.tagTlId).title;
 			}

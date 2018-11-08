@@ -13,13 +13,13 @@
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader" @uploaded="onUploaded"/>
-	<button class="send" @click="send" :disabled="!canSend || sending" :title="$t('title')">
+	<button class="send" @click="send" :disabled="!canSend || sending" :title="$t('send')">
 		<template v-if="!sending"><fa icon="paper-plane"/></template><template v-if="sending"><fa icon="spinner .spin"/></template>
 	</button>
-	<button class="attach-from-local" @click="chooseFile" :title="$t('title')">
+	<button class="attach-from-local" @click="chooseFile" :title="$t('attach-from-local')">
 		<fa icon="upload"/>
 	</button>
-	<button class="attach-from-drive" @click="chooseFileFromDrive" :title="$t('title')">
+	<button class="attach-from-drive" @click="chooseFileFromDrive" :title="$t('attach-from-drive')">
 		<fa :icon="['far', 'folder-open']"/>
 	</button>
 	<input ref="file" type="file" @change="onChangeFile"/>

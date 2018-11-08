@@ -6,13 +6,13 @@
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices">
 			<input :value="choice" @input="onInput(i, $event)" :placeholder="this.$t('choice-n').replace('{}', i + 1)">
-			<button @click="remove(i)" :title="$t('title')">
+			<button @click="remove(i)" :title="$t('remove')">
 				<fa icon="times"/>
 			</button>
 		</li>
 	</ul>
 	<button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</button>
-	<button class="destroy" @click="destroy" :title="$t('title')">
+	<button class="destroy" @click="destroy" :title="$t('destroy')">
 		<fa icon="times"/>
 	</button>
 </div>

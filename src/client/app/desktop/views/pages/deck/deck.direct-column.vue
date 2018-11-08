@@ -13,7 +13,7 @@ import XColumn from './deck.column.vue';
 import XDirect from './deck.direct.vue';
 
 export default Vue.extend({
-	i18n: i18n('deck'),
+	i18n: i18n(),
 	components: {
 		XColumn,
 		XDirect
@@ -33,7 +33,7 @@ export default Vue.extend({
 	computed: {
 		name(): string {
 			if (this.column.name) return this.column.name;
-			return '%i18n:common.deck.direct%';
+			return this.$t('@deck.direct');
 		}
 	},
 

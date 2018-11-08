@@ -85,7 +85,7 @@ export default Vue.extend({
 	computed: {
 		name(): string {
 			if (this.column.name) return this.column.name;
-			return '%i18n:common.deck.widgets%';
+			return this.$t('@deck.widgets');
 		}
 	},
 
