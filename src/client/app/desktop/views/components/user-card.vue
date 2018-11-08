@@ -9,7 +9,6 @@
 		<div class="description">
 			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 		</div>
-		<p class="followed" v-if="user.isFollowed">%i18n:@followed%</p>
 	</div>
 </div>
 </template>
@@ -34,17 +33,18 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .zvdbznxvfixtmujpsigoccczftvpiwqh
-	$bg = #fff
+	$bg = var(--face)
 
-	margin 16px auto
-	max-width calc(100% - 32px)
-	font-size 16px
+	height 280px
+	overflow hidden
+	font-size 14px
 	text-align center
 	background $bg
 	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
+	color var(--faceText)
 
 	> .banner
-		height 100px
+		height 90px
 		background-color #f9f4f4
 		background-position center
 		background-size cover
@@ -63,13 +63,10 @@ export default Vue.extend({
 		right 16px
 
 	> .body
-		padding 4px 32px 32px 32px
-
-		@media (max-width 400px)
-			padding 4px 16px 16px 16px
+		padding 0px 24px
 
 		> .name
-			font-size 20px
+			font-size 120%
 			font-weight bold
 
 		> .username
@@ -77,15 +74,6 @@ export default Vue.extend({
 			opacity 0.7
 
 		> .description
-			margin 16px 0
-
-		> .followed
-			margin 0
-			padding 0
-			line-height 24px
-			font-size 0.8em
-			color #71afc7
-			background #eefaff
-			border-radius 4px
+			margin 8px 0 16px 0
 
 </style>

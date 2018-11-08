@@ -810,6 +810,10 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしますか？"
 
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
+
 desktop/views/components/settings-window.vue:
   settings: "設定"
 

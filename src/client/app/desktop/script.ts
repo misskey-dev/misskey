@@ -24,6 +24,7 @@ import MkIndex from './views/pages/index.vue';
 import MkHome from './views/pages/home.vue';
 import MkDeck from './views/pages/deck/deck.vue';
 import MkUser from './views/pages/user/user.vue';
+import MkUserFollowingOrFollowers from './views/pages/user-following-or-followers.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
@@ -66,6 +67,8 @@ init(async (launch) => {
 			{ path: '/share', component: MkShare },
 			{ path: '/reversi/:game?', component: MkReversi },
 			{ path: '/@:user', name: 'user', component: MkUser },
+			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
+			{ path: '/@:user/followers', name: 'userFollowers', component: MkUserFollowingOrFollowers },
 			{ path: '/notes/:note', name: 'note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow }
 		]
