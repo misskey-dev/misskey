@@ -27,7 +27,7 @@
 						<fa icon="map-marker"/>{{ user.profile.location }}
 					</p>
 					<p class="birthday" v-if="user.host === null && user.profile.birthday">
-						<fa icon="birthday-cake"/>{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)
+						<fa icon="birthday-cake"/>{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ $t('years-old', { age }) }})
 					</p>
 				</div>
 				<div class="status">
