@@ -11,6 +11,9 @@ Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
+## Internationalization (i18n)
+Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
+
 ## Documentation
 * Documents for contributors are located in `/docs`.
 * Documents for instance admins are located in `/docs`.
