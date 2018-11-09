@@ -88,7 +88,7 @@ export default Vue.extend({
 .yyyocnobkvdlnyapyauyopbskldsnipz
 	width 100%
 	max-width 1280px
-	padding 16px
+	padding 32px
 	margin 0 auto
 
 	> header
