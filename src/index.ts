@@ -23,6 +23,7 @@ import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
 import { Config } from './config/types';
+import { lessThan } from './prelude/array';
 
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
@@ -158,9 +159,9 @@ function checkMongoDb(config: Config) {
 	mongoDBLogger.info(`Connecting to ${uri}`);
 
 	mongo.then(() => {
-		nativeDbConn().then(db => db.admin().serverInfo()).then(x => x.version).then(version => {
+		nativeDbConn().then(db => db.admin().serverInfo()).then(x => x.version).then((version: string) => {
 			mongoDBLogger.info(`Version: ${version}`);
-			if (version < '3.6') {
+			if (lessThan(version.split('.').map(x => parseInt(x, 10)), [3, 6])) {
 				mongoDBLogger.error(`MongoDB version is less than 3.6. Please upgrade it.`);
 				process.exit(1);
 			}
