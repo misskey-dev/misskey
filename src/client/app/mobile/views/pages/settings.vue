@@ -23,6 +23,7 @@
 					<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }} ({{ $t('@.this-setting-is-this-device-only') }})</ui-switch>
 					<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
 					<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
+					<ui-switch v-model="showFullVia">{{ $t('@.show-via') }}</ui-switch>
 					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
 					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
 					<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
@@ -282,6 +283,12 @@ export default Vue.extend({
 			get() { return this.$store.state.settings.showFullAcct; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'showFullAcct', value }); }
 		},
+
+		showVia: {
+			get() { return this.$store.state.settings.showVia; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showVia', value }); }
+		},
+
 
 		iLikeSushi: {
 			get() { return this.$store.state.settings.iLikeSushi; },
