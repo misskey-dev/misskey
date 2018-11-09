@@ -112,6 +112,7 @@ common:
   always-show-nsfw: "Toujours afficher les contenus sensibles"
   always-mark-nsfw: "Toujours marquer les notes ayant des attachements comme sensibles"
   show-full-acct: "Afficher l’adresse complète de l’utilisateur"
+  show-via: "viaを表示する"
   reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   use-os-default-emojis: "Utiliser les émojis standards du système"
