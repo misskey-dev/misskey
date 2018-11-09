@@ -1093,7 +1093,7 @@ desktop/views/pages/user/user.header.vue:
   following: "Following"
   followers: "Followers"
   is-bot: "This account is a Bot"
-  years-old: " years old"
+  years-old: "{age}歳"
   year: "/"
   month: "/"
   day: "-"
@@ -1351,6 +1351,7 @@ mobile/views/pages/user.vue:
   unmute: "Unmute"
   block: "Block"
   unblock: "Unblock"
+  years-old: "{age}歳"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"
