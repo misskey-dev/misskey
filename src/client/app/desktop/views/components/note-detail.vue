@@ -62,15 +62,15 @@
 		<footer>
 			<span class="app" v-if="note.app">via <b>{{ note.app.name }}</b></span>
 			<mk-reactions-viewer :note="p"/>
-			<button class="replyButton" @click="reply" title="">
+			<button class="replyButton" @click="reply" :title="$t('reply')">
 				<template v-if="p.reply"><fa icon="reply-all"/></template>
 				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
-			<button class="renoteButton" @click="renote" :title="$t('title')">
+			<button class="renoteButton" @click="renote" :title="$t('renote')">
 				<fa icon="retweet"/><p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
-			<button class="reactionButton" :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" :title="$t('title')">
+			<button class="reactionButton" :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" :title="$t('add-reaction')">
 				<fa icon="plus"/><p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">
