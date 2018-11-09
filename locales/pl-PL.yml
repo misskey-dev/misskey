@@ -160,7 +160,7 @@ common:
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
 auth/views/form.vue:
-  share-access: "<i>{{name}}</i>があなたのアカウントにアクセスすることを許可しますか？"
+  share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "Ta aplikacja wymaga następujących uprawnień:"
   account-read: "Wyświetlanie informacji o koncie:"
   account-write: "Modyfikowanie informacji o koncie:"
