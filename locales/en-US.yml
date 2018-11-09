@@ -29,7 +29,7 @@ common:
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
-    paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
+    paragraph: "<p>Home customization allows you to add/delete, drag and drop and rearrange widgets.</p><p>You can change the display by <strong><strong>right</strong> clicking</strong> on some widgets.</p><p>To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header.</p><p>To finish the customization, click \"Finish\" on the upper right.</p>"
     gotit: "Got it!"
   notification:
     file-uploaded: "File uploaded!"
@@ -112,7 +112,7 @@ common:
   always-show-nsfw: "Always show NSFW contents"
   always-mark-nsfw: "Always mark posts with media attachments as NSFW"
   show-full-acct: "Do not omit the hostname from the username"
-  show-via: "viaを表示する"
+  show-via: "Show via"
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   use-os-default-emojis: "Use the OS default Emojis"
@@ -127,13 +127,13 @@ common:
     drawn: "Draw"
     my-turn: "Your turn"
     opponent-turn: "Opponent's turn"
-    turn-of: "{name}のターンです"
-    past-turn-of: "{name}のターン"
-    won: "{name}の勝ち"
+    turn-of: "{name}'s turn"
+    past-turn-of: "{name}'s turn"
+    won: "{name} won"
     black: "Black"
     white: "White"
     total: "Total"
-    this-turn: "{count}ターン目"
+    this-turn: "Turn {count}"
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
@@ -160,7 +160,7 @@ common:
   dev: "Failed to create the application. Please try again."
   ai-chan-kawaii: "Ai-chan kawaii!"
 auth/views/form.vue:
-  share-access: "<i>{{name}}</i>があなたのアカウントにアクセスすることを許可しますか？"
+  share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "This application requires the following permissions:"
   account-read: "View account information."
   account-write: "Modify account information."
@@ -519,7 +519,7 @@ desktop/views/components/calendar.vue:
   next: "Next month"
   go: "Click to navigate"
 desktop/views/components/choose-file-from-drive-window.vue:
-  chosen-files: "{count}ファイル選択中"
+  chosen-files: "{count} File(s) selected"
   upload: "Upload files from your device"
   cancel: "Cancel"
   ok: "OK"
@@ -1054,11 +1054,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
   not-available: "Search feature is turned off in the settings for this instance."
-  not-found: "「{q}」に関する投稿は見つかりませんでした。"
+  not-found: "No posts were found for '{q}'"
 desktop/views/pages/share.vue:
   share-with: "Share on {name}"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts contains \"{q}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -1253,7 +1253,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "Messages"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
@@ -1264,7 +1264,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
-  share-with: "{name}で共有"
+  share-with: "Share on {name}"
 mobile/views/pages/received-follow-requests.vue:
   title: "Follow requests"
   accept: "Accept"
@@ -1280,7 +1280,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Search"
-  not-found: "「{q}」に関する投稿は見つかりませんでした。"
+  not-found: "No posts were found for '{q}'"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:
