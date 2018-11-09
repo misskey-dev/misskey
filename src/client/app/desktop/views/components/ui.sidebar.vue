@@ -162,7 +162,7 @@ export default Vue.extend({
 		},
 
 		signout() {
-			this.$root.os.signout();
+			this.$root.signout();
 		},
 
 		notifications() {

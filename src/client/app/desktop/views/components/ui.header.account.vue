@@ -155,7 +155,7 @@ export default Vue.extend({
 			this.$root.new(MkSettingsWindow);
 		},
 		signout() {
-			this.$root.os.signout();
+			this.$root.signout();
 		},
 		dark() {
 			this.$store.commit('device/set', {

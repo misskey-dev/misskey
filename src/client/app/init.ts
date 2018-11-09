@@ -290,6 +290,7 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 					api: os.api,
 					getMeta: os.getMeta,
 					getMetaSync: os.getMetaSync,
+					signout: os.signout,
 					new(vm, props) {
 						const x = new vm({
 							parent: this,
