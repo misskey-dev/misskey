@@ -339,16 +339,16 @@ export default Vue.extend({
 
 		checkForUpdate() {
 			this.checkingForUpdate = true;
-			checkForUpdate((this as any).os, true, true).then(newer => {
+			checkForUpdate(this.$root, true, true).then(newer => {
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					this.$root.apis.dialog({
+					this.$dialog({
 						title: this.$t('no-updates'),
 						text: this.$t('no-updates-desc')
 					});
 				} else {
-					this.$root.apis.dialog({
+					this.$dialog({
 						title: this.$t('update-available'),
 						text: this.$t('update-available-desc')
 					});

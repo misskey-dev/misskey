@@ -139,7 +139,7 @@ export default Vue.extend({
 
 	methods: {
 		fn() {
-			this.$root.apis.post();
+			this.$post();
 		},
 
 		saveSrc() {

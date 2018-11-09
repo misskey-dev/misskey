@@ -2,19 +2,13 @@
  * Mobile Client
  */
 
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
 import './style.styl';
 
 import init from '../init';
-
-import chooseDriveFolder from './api/choose-drive-folder';
-import chooseDriveFile from './api/choose-drive-file';
-import dialog from './api/dialog';
-import input from './api/input';
-import post from './api/post';
-import notify from './api/notify';
 
 import MkIndex from './views/pages/index.vue';
 import MkSignup from './views/pages/signup.vue';
@@ -39,10 +33,94 @@ import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
 
+import PostForm from './views/components/post-form-dialog.vue';
+import FileChooser from './views/components/drive-file-chooser.vue';
+import FolderChooser from './views/components/drive-folder-chooser.vue';
+import Dialog from './views/components/dialog.vue';
+
 /**
  * init
  */
 init((launch) => {
+	Vue.mixin({
+		methods: {
+			$post(opts) {
+				const o = opts || {};
+
+				document.documentElement.style.overflow = 'hidden';
+
+				function recover() {
+					document.documentElement.style.overflow = 'auto';
+				}
+
+				const vm = this.$root.new(PostForm, {
+					reply: o.reply,
+					renote: o.renote
+				});
+
+				vm.$once('cancel', recover);
+				vm.$once('posted', recover);
+				if (o.cb) vm.$once('closed', o.cb);
+				(vm as any).focus();
+			},
+
+			$chooseDriveFile(opts) {
+				return new Promise((res, rej) => {
+					const o = opts || {};
+					const vm = this.$root.new(FileChooser, {
+						title: o.title,
+						multiple: o.multiple,
+						initFolder: o.currentFolder
+					});
+					vm.$once('selected', file => {
+						res(file);
+					});
+				});
+			},
+
+			$chooseDriveFolder(opts) {
+				return new Promise((res, rej) => {
+					const o = opts || {};
+					const vm = this.$root.new(FolderChooser, {
+						title: o.title,
+						initFolder: o.currentFolder
+					});
+					vm.$once('selected', folder => {
+						res(folder);
+					});
+				});
+			},
+
+			$input(opts) {
+				return new Promise<string>((res, rej) => {
+					const x = window.prompt(opts.title);
+					if (x) {
+						res(x);
+					}
+				});
+			},
+
+			$dialog(opts) {
+				return new Promise<string>((res, rej) => {
+					const o = opts || {};
+					const d = this.$root.new(Dialog, {
+						title: o.title,
+						text: o.text,
+						modal: o.modal,
+						buttons: o.actions
+					});
+					d.$once('clicked', id => {
+						res(id);
+					});
+				});
+			},
+
+			$notify(message) {
+				alert(message);
+			}
+		}
+	});
+
 	// Register directives
 	require('./views/directives');
 
@@ -85,12 +163,5 @@ init((launch) => {
 	});
 
 	// Launch the app
-	launch(router, os => ({
-		chooseDriveFolder,
-		chooseDriveFile,
-		dialog: dialog(os),
-		input,
-		post: post(os),
-		notify
-	}));
+	launch(router);
 }, true);

@@ -513,7 +513,7 @@ export default Vue.extend({
 			this.$emit('done');
 		},
 		updateWallpaper() {
-			this.$root.apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: false
 			}).then(file => {
 				this.$root.api('i/update', {
@@ -533,16 +533,16 @@ export default Vue.extend({
 		},
 		checkForUpdate() {
 			this.checkingForUpdate = true;
-			checkForUpdate((this as any).os, true, true).then(newer => {
+			checkForUpdate(this.$root, true, true).then(newer => {
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					this.$root.apis.dialog({
+					this.$dialog({
 						title: this.$t('no-updates'),
 						text: this.$t('no-updates-desc')
 					});
 				} else {
-					this.$root.apis.dialog({
+					this.$dialog({
 						title: this.$t('update-available'),
 						text: this.$t('update-available-desc')
 					});
@@ -551,7 +551,7 @@ export default Vue.extend({
 		},
 		clean() {
 			localStorage.clear();
-			this.$root.apis.dialog({
+			this.$dialog({
 				title: this.$t('cache-cleared'),
 				text: this.$t('cache-cleared-desc')
 			});

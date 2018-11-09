@@ -29,7 +29,7 @@ export default Vue.extend({
 	},
 	methods: {
 		add() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('list-name'),
 			}).then(async title => {
 				const list = await this.$root.api('users/lists/create', {

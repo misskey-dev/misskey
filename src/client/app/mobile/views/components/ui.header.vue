@@ -7,7 +7,7 @@
 			<button class="nav" @click="$parent.isDrawerOpening = true"><fa icon="bars"/></button>
 			<i v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation" class="circle"><fa icon="circle"/></i>
 			<h1>
-				<slot>{{ os.instanceName }}</slot>
+				<slot>{{ $root.instanceName }}</slot>
 			</h1>
 			<slot name="func"></slot>
 		</div>

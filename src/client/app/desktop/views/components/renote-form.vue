@@ -34,9 +34,9 @@ export default Vue.extend({
 				renoteId: this.note.id
 			}).then(data => {
 				this.$emit('posted');
-				this.$root.apis.notify(this.$t('success'));
+				this.$notify(this.$t('success'));
 			}).catch(err => {
-				this.$root.apis.notify(this.$t('failure'));
+				this.$notify(this.$t('failure'));
 			}).then(() => {
 				this.wait = false;
 			});

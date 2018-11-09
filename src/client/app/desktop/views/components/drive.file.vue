@@ -35,7 +35,6 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as anime from 'animejs';
-import contextmenu from '../../api/contextmenu';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 
 export default Vue.extend({
@@ -70,7 +69,7 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			this.isContextmenuShowing = true;
-			contextmenu((this as any).os)(e, [{
+			this.$contextmenu(e, [{
 				type: 'item',
 				text: this.$t('contextmenu.rename'),
 				icon: 'i-cursor',
@@ -116,10 +115,10 @@ export default Vue.extend({
 					action: this.addApp
 				}]
 			}*/], {
-					closed: () => {
-						this.isContextmenuShowing = false;
-					}
-				});
+				closed: () => {
+					this.isContextmenuShowing = false;
+				}
+			});
 		},
 
 		onDragstart(e) {
@@ -149,7 +148,7 @@ export default Vue.extend({
 		},
 
 		rename() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('contextmenu.rename-file'),
 				placeholder: this.$t('contextmenu.input-new-file-name'),
 				default: this.file.name,
@@ -171,7 +170,7 @@ export default Vue.extend({
 
 		copyUrl() {
 			copyToClipboard(this.file.url);
-			this.$root.apis.dialog({
+			this.$dialog({
 				title: this.$t('contextmenu.copied'),
 				text: this.$t('contextmenu.copied-url-to-clipboard'),
 				actions: [{
@@ -181,11 +180,11 @@ export default Vue.extend({
 		},
 
 		setAsAvatar() {
-			this.$root.apis.updateAvatar(this.file);
+			this.$updateAvatar(this.file);
 		},
 
 		setAsBanner() {
-			this.$root.apis.updateBanner(this.file);
+			this.$updateBanner(this.file);
 		},
 
 		addApp() {

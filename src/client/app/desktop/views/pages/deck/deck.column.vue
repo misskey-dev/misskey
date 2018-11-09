@@ -29,7 +29,6 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import Menu from '../../../../common/views/components/menu.vue';
-import contextmenu from '../../../api/contextmenu';
 import { countIf } from '../../../../../../prelude/array';
 
 export default Vue.extend({
@@ -168,7 +167,7 @@ export default Vue.extend({
 				icon: 'pencil-alt',
 				text: this.$t('rename'),
 				action: () => {
-					this.$root.apis.input({
+					this.$input({
 						title: this.$t('rename'),
 						default: this.name,
 						allowEmpty: false
@@ -230,7 +229,7 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			if (this.isTemporaryColumn) return;
-			contextmenu((this as any).os)(e, this.getMenu());
+			this.$contextmenu(e, this.getMenu());
 		},
 
 		showMenu() {

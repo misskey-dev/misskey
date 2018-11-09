@@ -26,7 +26,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import contextmenu from '../../api/contextmenu';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/drive.folder.vue'),
@@ -54,7 +53,7 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			this.isContextmenuShowing = true;
-			contextmenu((this as any).os)(e, [{
+			this.$contextmenu(e, [{
 				type: 'item',
 				text: this.$t('contextmenu.move-to-this-folder'),
 				icon: 'arrow-right',
@@ -75,10 +74,10 @@ export default Vue.extend({
 				icon: ['far', 'trash-alt'],
 				action: this.deleteFolder
 			}], {
-					closed: () => {
-						this.isContextmenuShowing = false;
-					}
-				});
+				closed: () => {
+					this.isContextmenuShowing = false;
+				}
+			});
 		},
 
 		onMouseover() {
@@ -156,7 +155,7 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$root.apis.dialog({
+							this.$dialog({
 								title: this.$t('unable-to-process'),
 								text: this.$t('circular-reference-detected'),
 								actions: [{
@@ -196,7 +195,7 @@ export default Vue.extend({
 		},
 
 		rename() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('contextmenu.rename-folder'),
 				placeholder: this.$t('contextmenu.input-new-folder-name'),
 				default: this.folder.name

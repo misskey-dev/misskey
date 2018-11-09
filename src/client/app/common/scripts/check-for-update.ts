@@ -1,8 +1,7 @@
-import MiOS from '../../mios';
 import { clientVersion as current } from '../../config';
 
-export default async function(mios: MiOS, force = false, silent = false) {
-	const meta = await mios.getMeta(force);
+export default async function($root: any, force = false, silent = false) {
+	const meta = await $root.getMeta(force);
 	const newer = meta.clientVersion;
 
 	if (newer != current) {
@@ -23,7 +22,7 @@ export default async function(mios: MiOS, force = false, silent = false) {
 		}
 
 		if (!silent) {
-			mios.apis.dialog({
+			$root.$dialog({
 				title: '%i18n:common.update-available-title%',
 				text: '%i18n:common.update-available%'.replace('{newer}', newer).replace('{current}', current)
 			});

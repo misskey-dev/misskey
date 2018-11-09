@@ -13,7 +13,7 @@ import VueI18n from 'vue-i18n';
 import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
-import MiOS, { API } from './mios';
+import MiOS from './mios';
 import { clientVersion as version, codename, lang } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
 
@@ -180,16 +180,14 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
+export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
-			os.apis = api ? api(os) : null;
-
+		const launch = (router: VueRouter) => {
 			//#region theme
 			os.store.watch(s => {
 				return s.device.darkmode;
@@ -285,7 +283,6 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 							windows: os.windows
 						},
 						stream: os.stream,
-						apis: os.apis,
 						instanceName: os.instanceName
 					};
 				},
@@ -293,7 +290,14 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 					api: os.api,
 					getMeta: os.getMeta,
 					getMetaSync: os.getMetaSync,
-					new: os.new,
+					new(vm, props) {
+						const x = new vm({
+							parent: this,
+							propsData: props
+						}).$mount();
+						document.body.appendChild(x.$el);
+						return x;
+					},
 				},
 				router,
 				render: createEl => createEl(App)
@@ -304,18 +308,18 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			// マウント
 			app.$mount('#app');
 
+			//#region 更新チェック
+			const preventUpdate = os.store.state.device.preventUpdate;
+			if (!preventUpdate) {
+				setTimeout(() => {
+					checkForUpdate(app);
+				}, 3000);
+			}
+			//#endregion
+
 			return [app, os] as [Vue, MiOS];
 		};
 
 		callback(launch);
-
-		//#region 更新チェック
-		const preventUpdate = os.store.state.device.preventUpdate;
-		if (!preventUpdate) {
-			setTimeout(() => {
-				checkForUpdate(os);
-			}, 3000);
-		}
-		//#endregion
 	});
 };
