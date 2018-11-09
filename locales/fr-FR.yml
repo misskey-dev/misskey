@@ -519,7 +519,7 @@ desktop/views/components/calendar.vue:
   next: "Mois prochain"
   go: "Cliquez pour naviguer"
 desktop/views/components/choose-file-from-drive-window.vue:
-  chosen-files: "{count}ファイル選択中"
+  chosen-files: "{count} fichier·s sélectionné·s"
   upload: "Téléverser des fichiers à partir de votre ordinateur"
   cancel: "Annuler"
   ok: "OK"
@@ -687,8 +687,8 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
 desktop/views/pages/user-following-or-followers.vue:
-  following: "{user}のフォロー"
-  followers: "{user}のフォロワー"
+  following: "{user} suit"
+  followers: "Abonné·e·s de {user}"
 desktop/views/components/settings-window.vue:
   settings: "Paramètres"
 desktop/views/components/settings.vue:
@@ -942,8 +942,8 @@ admin/views/instance.vue:
   enable-twitter-integration: "Activer la connection à Twitter"
   twitter-integration-consumer-key: "Clé du consommateur"
   twitter-integration-consumer-secret: "Secret du consommateur"
-  github-integration-config: "GitHub連携の設定"
-  github-integration-info: "コールバックURLは /api/gh/cb に設定します。"
+  github-integration-config: "Paramètres d’authentification GitHub"
+  github-integration-info: "L’URL callback est définit sur /api/gh/cb"
   enable-github-integration: "Activer l’authentification avec Github"
   github-integration-client-id: "ID client"
   github-integration-client-secret: "Secret client"
@@ -1244,7 +1244,7 @@ mobile/views/pages/signup.vue:
 mobile/views/pages/followers.vue:
   followers-of: "Abonné·e·s de {name}"
 mobile/views/pages/following.vue:
-  following-of: "{name}のフォロー"
+  following-of: "Abonné·e·s de {name}"
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
@@ -1253,7 +1253,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "Messages"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Aucune publication ayant pour hashtag « {q} » n’a été trouvée."
 mobile/views/pages/welcome.vue:
   signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
@@ -1391,7 +1391,7 @@ deck:
 deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
-  edit: "オプション"
+  edit: "Option"
 deck/deck.user-column.vue:
   posts: "Notes"
   following: "Suit"
