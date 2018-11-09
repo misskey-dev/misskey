@@ -37,7 +37,7 @@ export default Vue.extend({
 
 	height 280px
 	overflow hidden
-	font-size 14px
+	font-size 13px
 	text-align center
 	background $bg
 	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
