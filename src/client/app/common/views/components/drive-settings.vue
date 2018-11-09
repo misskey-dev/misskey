@@ -9,7 +9,7 @@
 
 	<section>
 		<header>{{ $t('stats') }}</header>
-		<div ref="chart" style="margin-bottom: -16px; color: #000;"></div>
+		<div ref="chart" style="margin-bottom: -16px; margin-left: -8px; color: #000;"></div>
 	</section>
 </ui-card>
 </template>
