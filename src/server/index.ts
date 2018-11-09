@@ -19,6 +19,7 @@ import webFinger from './webfinger';
 import config from '../config';
 import networkChart from '../chart/network';
 import apiServer from './api';
+import { sum } from '../prelude/array';
 
 // Init app
 const app = new Koa();
@@ -99,9 +100,9 @@ export default () => new Promise(resolve => {
 		if (queue.length == 0) return;
 
 		const requests = queue.length;
-		const time = queue.reduce((a, b) => a + b.time, 0);
-		const incomingBytes = queue.reduce((a, b) => a + b.req.bytes, 0);
-		const outgoingBytes = queue.reduce((a, b) => a + b.res.bytes, 0);
+		const time = sum(queue.map(x => x.time));
+		const incomingBytes = sum(queue.map(x => x.req.byets));
+		const outgoingBytes = sum(queue.map(x => x.res.byets));
 		queue = [];
 
 		networkChart.update(requests, time, incomingBytes, outgoingBytes);
