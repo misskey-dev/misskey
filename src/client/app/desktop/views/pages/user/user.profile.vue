@@ -4,7 +4,7 @@
 		<mk-follow-button :user="user" size="big"/>
 		<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
 		<p class="stalk" v-if="user.isFollowing">
-			<span v-if="user.isStalking">{{ $t('stalking% <a @click="unstalk"><fa icon="meh"/> %i18n:@unstalk') }}</a></span>
+			<span v-if="user.isStalking">{{ $t('stalking') }} <a @click="unstalk"><fa icon="meh"/> {{ $t('unstalk') }}</a></span>
 			<span v-if="!user.isStalking"><a @click="stalk"><fa icon="user-secret"/> {{ $t('stalk') }}</a></span>
 		</p>
 	</div>
