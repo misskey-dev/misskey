@@ -7,8 +7,6 @@
 </div>
 <a class="lcjomzwbohoelkxsnuqjiaccdbdfiazy" v-else
 	:href="image.url"
-	@mousemove="onMousemove"
-	@mouseleave="onMouseleave"
 	@click.prevent="onClick"
 	:style="style"
 	:title="image.name"
@@ -45,20 +43,6 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		onMousemove(e) {
-			const rect = this.$el.getBoundingClientRect();
-			const mouseX = e.clientX - rect.left;
-			const mouseY = e.clientY - rect.top;
-			const xp = mouseX / this.$el.offsetWidth * 100;
-			const yp = mouseY / this.$el.offsetHeight * 100;
-			this.$el.style.backgroundPosition = `${xp}% ${yp}%`;
-			this.$el.style.backgroundImage = `url("${this.image.url}")`;
-		},
-
-		onMouseleave() {
-			this.$el.style.backgroundPosition = '';
-		},
-
 		onClick() {
 			this.$root.new(ImageViewer, {
 				image: this.image
@@ -76,9 +60,8 @@ export default Vue.extend({
 	width 100%
 	height 100%
 	background-position center
-
-	&:not(:hover)
-		background-size cover
+	background-size contain
+	background-repeat no-repeat
 
 .ldwbgwstjsdgcjruamauqdrffetqudry
 	display flex
