@@ -29,3 +29,19 @@ export function unique<T>(xs: T[]): T[] {
 export function sum(xs: number[]): number {
 	return xs.reduce((a, b) => a + b, 0);
 }
+
+export function groupBy<T>(f: (x: T, y: T) => boolean, xs: T[]): T[][] {
+	const groups = [] as T[][];
+	for (const x of xs) {
+		if (groups.length !== 0 && f(groups[groups.length - 1][0], x)) {
+			groups[groups.length - 1].push(x);
+		} else {
+			groups.push([x]);
+		}
+	}
+	return groups;
+}
+
+export function groupOn<T, S>(f: (x: T) => S, xs: T[]): T[][] {
+	return groupBy((a, b) => f(a) === f(b), xs);
+}
