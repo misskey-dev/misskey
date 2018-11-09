@@ -186,13 +186,13 @@ init(async (launch) => {
 	});
 
 	// Launch the app
-	const [, os] = launch(router);
+	const [app, os] = launch(router);
 
 	if (os.store.getters.isSignedIn) {
 		/**
 		 * Fuck AD Block
 		 */
-		fuckAdBlock(os);
+		fuckAdBlock(app);
 	}
 
 	/**

@@ -339,7 +339,7 @@ export default Vue.extend({
 
 		checkForUpdate() {
 			this.checkingForUpdate = true;
-			checkForUpdate((this as any).os, true, true).then(newer => {
+			checkForUpdate(this.$root, true, true).then(newer => {
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
