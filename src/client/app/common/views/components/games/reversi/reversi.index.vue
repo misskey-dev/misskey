@@ -30,7 +30,7 @@
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
-			<span class="state">{{ g.isEnded ? this.$t('game-state.ended') : this.$t('game-state.playing') }}</span>
+			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</a>
 	</section>
@@ -40,7 +40,7 @@
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
-			<span class="state">{{ g.isEnded ? this.$t('game-state.ended') : this.$t('game-state.playing') }}</span>
+			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</a>
 	</section>
