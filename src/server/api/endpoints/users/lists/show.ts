@@ -1,6 +1,6 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -10,17 +10,20 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-read'
+	kind: 'account-read',
+
+	params: {
+		listId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+	}
 };
 
-export default async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'listId' parameter
-	const [listId, listIdErr] = $.type(ID).get(params.listId);
-	if (listIdErr) return rej('invalid listId param');
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
-		_id: listId,
+		_id: ps.listId,
 		userId: me._id,
 	});
 
@@ -29,4 +32,4 @@ export default async (params: any, me: ILocalUser) => new Promise(async (res, re
 	}
 
 	res(await pack(userList));
-});
+}));

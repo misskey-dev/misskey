@@ -4,7 +4,9 @@
 	<div class="popover" :class="{ hukidasi }" ref="popover">
 		<template v-for="item, i in items">
 			<div v-if="item === null"></div>
-			<button v-if="item" @click="clicked(item.action)" v-html="item.icon ? item.icon + ' ' + item.text : item.text" :tabindex="i"></button>
+			<button v-if="item" @click="clicked(item.action)" :tabindex="i">
+				<fa v-if="item.icon" :icon="item.icon"/>{{ item.text }}
+			</button>
 		</template>
 	</div>
 </div>
@@ -187,6 +189,9 @@ export default Vue.extend({
 			&:active
 				color var(--primaryForeground)
 				background var(--primaryDarken10)
+
+			> [data-icon]
+				margin-right 4px
 
 		> div
 			margin 8px 0

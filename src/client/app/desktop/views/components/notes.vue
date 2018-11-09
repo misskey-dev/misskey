@@ -4,9 +4,12 @@
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div v-if="!fetching && requestInitPromise != null">
-		<p>%i18n:@error%</p>
-		<button @click="resolveInitPromise">%i18n:@retry%</button>
+	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
+
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
 	</div>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
@@ -14,16 +17,16 @@
 		<template v-for="(note, i) in _notes">
 			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" ref="note"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
-				<span>%fa:angle-up%{{ note._datetext }}</span>
-				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ note._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</component>
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
+			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
+			<template v-if="moreFetching"><fa icon="spinner .pulse" fixed-width/></template>
 		</button>
 	</footer>
 </div>
@@ -31,14 +34,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as config from '../../../config';
-import getNoteSummary from '../../../../../misc/get-note-summary';
 
-import XNote from './notes.note.vue';
+import XNote from './note.vue';
 
 const displayLimit = 30;
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XNote
 	},
@@ -55,7 +59,6 @@ export default Vue.extend({
 			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
-			unreadCount: 0,
 			fetching: true,
 			moreFetching: false
 		};
@@ -67,19 +70,17 @@ export default Vue.extend({
 				const date = new Date(note.createdAt).getDate();
 				const month = new Date(note.createdAt).getMonth() + 1;
 				note._date = date;
-				note._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return note;
 			});
 		}
 	},
 
 	mounted() {
-		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 		window.addEventListener('scroll', this.onScroll, { passive: true });
 	},
 
 	beforeDestroy() {
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		window.removeEventListener('scroll', this.onScroll);
 	},
 
@@ -141,10 +142,9 @@ export default Vue.extend({
 			}
 			//#endregion
 
-			// 投稿が自分のものではないかつ、タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
-			if ((document.hidden || !this.isScrollTop()) && note.userId !== this.$store.state.i.id) {
-				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
+			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+			if (document.hidden || !this.isScrollTop()) {
+				this.$store.commit('pushBehindNote', note);
 			}
 
 			if (this.isScrollTop()) {
@@ -189,21 +189,9 @@ export default Vue.extend({
 			this.moreFetching = false;
 		},
 
-		clearNotification() {
-			this.unreadCount = 0;
-			document.title = (this as any).os.instanceName;
-		},
-
-		onVisibilitychange() {
-			if (!document.hidden) {
-				this.clearNotification();
-			}
-		},
-
 		onScroll() {
 			if (this.isScrollTop()) {
 				this.releaseQueue();
-				this.clearNotification();
 			}
 
 			if (this.$store.state.settings.fetchOnScroll !== false) {
@@ -226,6 +214,10 @@ export default Vue.extend({
 		> *
 			transition transform .3s ease, opacity .3s ease
 
+	> .placeholder
+		padding 32px
+		opacity 0.3
+
 	> .notes
 		> .date
 			display block
@@ -240,7 +232,7 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			[data-fa]
+			[data-icon]
 				margin-right 8px
 
 	> .newer-indicator

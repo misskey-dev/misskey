@@ -1,13 +1,13 @@
 <template>
 <div class="csqvmxybqbycalfhkxvyfrgbrdalkaoc">
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<p class="empty" v-else-if="stats.length == 0">%fa:exclamation-circle%%i18n:@empty%</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<p class="empty" v-else-if="stats.length == 0"><fa icon="exclamation-circle"/>{{ $t('empty') }}</p>
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<transition-group v-else tag="div" name="chart">
 		<div v-for="stat in stats" :key="stat.tag">
 			<div class="tag">
 				<router-link :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
-				<p>{{ '%i18n:@count%'.replace('{}', stat.usersCount) }}</p>
+				<p>{{ $t('count').replace('{}', stat.usersCount) }}</p>
 			</div>
 			<x-chart class="chart" :src="stat.chart"/>
 		</div>
@@ -17,9 +17,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XChart from './trends.chart.vue';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/trends.vue'),
 	components: {
 		XChart
 	},
@@ -39,7 +41,7 @@ export default Vue.extend({
 	},
 	methods: {
 		fetch() {
-			(this as any).api('hashtags/trend').then(stats => {
+			this.$root.api('hashtags/trend').then(stats => {
 				this.stats = stats;
 				this.fetching = false;
 			});
@@ -58,7 +60,7 @@ export default Vue.extend({
 		color var(--text)
 		opacity 0.7
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> div

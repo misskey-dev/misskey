@@ -1,8 +1,7 @@
 import $ from 'cafy';
-import ID from '../../../../../misc/cafy-id';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -15,25 +14,26 @@ export const meta = {
 	kind: 'account-write',
 
 	params: {
-		listId: $.type(ID).note({
+		listId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象となるユーザーリストのID',
 				'en-US': 'ID of target user list'
 			}
-		}),
-		title: $.str.range(1, 100).note({
+		},
+
+		title: {
+			validator: $.str.range(1, 100),
 			desc: {
 				'ja-JP': 'このユーザーリストの名前',
 				'en-US': 'name of this user list'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
@@ -53,4 +53,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Response
 	res(await pack(userList._id));
-});
+}));

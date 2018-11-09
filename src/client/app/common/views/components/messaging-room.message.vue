@@ -3,7 +3,7 @@
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<!-- <button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
+			<!-- <button class="delete-button" v-if="isMe" :title="$t('@.delete')">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button> -->
 			<div class="content" v-if="!message.isDeleted">
@@ -16,15 +16,15 @@
 				</div>
 			</div>
 			<div class="content" v-if="message.isDeleted">
-				<p class="is-deleted">%i18n:@deleted%</p>
+				<p class="is-deleted">{{ $t('deleted') }}</p>
 			</div>
 		</div>
 		<div></div>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
-			<span class="read" v-if="isMe && message.isRead">%i18n:@is-read%</span>
+			<span class="read" v-if="isMe && message.isRead">{{ $t('is-read') }}</span>
 			<mk-time :time="message.createdAt"/>
-			<template v-if="message.is_edited">%fa:pencil-alt%</template>
+			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
 		</footer>
 	</div>
 </div>
@@ -32,9 +32,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import parse from '../../../../../mfm/parse';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging-room.message.vue'),
 	props: {
 		message: {
 			required: true
@@ -179,7 +181,10 @@ export default Vue.extend({
 			font-size 10px
 			color var(--messagingRoomMessageInfo)
 
-			> [data-fa]
+			> .read
+				margin 0 8px
+
+			> [data-icon]
 				margin-left 4px
 
 	&:not([data-is-me])

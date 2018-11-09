@@ -1,28 +1,16 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
-const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import Note, { packMany as packNoteMany, deleteNote } from './note';
-import Following, { deleteFollowing } from './following';
-import Mute, { deleteMute } from './mute';
+import isObjectId from '../misc/is-objectid';
+import { packMany as packNoteMany } from './note';
+import Following from './following';
+import Blocking from './blocking';
+import Mute from './mute';
 import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
-import AccessToken, { deleteAccessToken } from './access-token';
-import NoteWatching, { deleteNoteWatching } from './note-watching';
-import Favorite, { deleteFavorite } from './favorite';
-import NoteReaction, { deleteNoteReaction } from './note-reaction';
-import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
-import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
-import DriveFile, { deleteDriveFile } from './drive-file';
-import DriveFolder, { deleteDriveFolder } from './drive-folder';
-import PollVote, { deletePollVote } from './poll-vote';
-import FollowingLog, { deleteFollowingLog } from './following-log';
-import FollowedLog, { deleteFollowedLog } from './followed-log';
-import SwSubscription, { deleteSwSubscription } from './sw-subscription';
-import Notification, { deleteNotification } from './notification';
-import UserList, { deleteUserList } from './user-list';
-import FollowRequest, { deleteFollowRequest } from './follow-request';
+import FollowRequest from './follow-request';
+import fetchMeta from '../misc/fetch-meta';
 
 const User = db.get<IUser>('users');
 
@@ -66,6 +54,16 @@ type IUserBase = {
 	isLocked: boolean;
 
 	/**
+	 * Botか否か
+	 */
+	isBot: boolean;
+
+	/**
+	 * Botからのフォローを承認制にするか
+	 */
+	carefulBot: boolean;
+
+	/**
 	 * このアカウントに届いているフォローリクエストの数
 	 */
 	pendingReceivedFollowRequestsCount: number;
@@ -85,6 +83,11 @@ export interface ILocalUser extends IUserBase {
 		userId: string;
 		screenName: string;
 	};
+	github: {
+		accessToken: string;
+		id: string;
+		login: string;
+	};
 	line: {
 		userId: string;
 	};
@@ -94,7 +97,6 @@ export interface ILocalUser extends IUserBase {
 		tags: string[];
 	};
 	lastUsedAt: Date;
-	isBot: boolean;
 	isCat: boolean;
 	isAdmin?: boolean;
 	isVerified?: boolean;
@@ -159,159 +161,48 @@ export function isValidBirthday(birthday: string): boolean {
 }
 //#endregion
 
-/**
- * Userを物理削除します
- */
-export async function deleteUser(user: string | mongo.ObjectID | IUser) {
-	let u: IUser;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
-		u = await User.findOne({
-			_id: user
-		});
-	} else if (typeof user === 'string') {
-		u = await User.findOne({
-			_id: new mongo.ObjectID(user)
-		});
-	} else {
-		u = user as IUser;
-	}
-
-	console.log(u == null ? `User: delete skipped ${user}` : `User: deleting ${u._id}`);
-
-	if (u == null) return;
-
-	// このユーザーのAccessTokenをすべて削除
-	await Promise.all((
-		await AccessToken.find({ userId: u._id })
-	).map(x => deleteAccessToken(x)));
-
-	// このユーザーのNoteをすべて削除
-	await sequential((
-		await Note.find({ userId: u._id })
-	).map(x => () => deleteNote(x)));
-
-	// このユーザーのNoteReactionをすべて削除
-	await Promise.all((
-		await NoteReaction.find({ userId: u._id })
-	).map(x => deleteNoteReaction(x)));
-
-	// このユーザーのNoteWatchingをすべて削除
-	await Promise.all((
-		await NoteWatching.find({ userId: u._id })
-	).map(x => deleteNoteWatching(x)));
-
-	// このユーザーのPollVoteをすべて削除
-	await Promise.all((
-		await PollVote.find({ userId: u._id })
-	).map(x => deletePollVote(x)));
-
-	// このユーザーのFavoriteをすべて削除
-	await Promise.all((
-		await Favorite.find({ userId: u._id })
-	).map(x => deleteFavorite(x)));
-
-	// このユーザーのMessageをすべて削除
-	await Promise.all((
-		await MessagingMessage.find({ userId: u._id })
-	).map(x => deleteMessagingMessage(x)));
-
-	// このユーザーへのMessageをすべて削除
-	await Promise.all((
-		await MessagingMessage.find({ recipientId: u._id })
-	).map(x => deleteMessagingMessage(x)));
-
-	// このユーザーの関わるMessagingHistoryをすべて削除
-	await Promise.all((
-		await MessagingHistory.find({ $or: [{ partnerId: u._id }, { userId: u._id }] })
-	).map(x => deleteMessagingHistory(x)));
-
-	// このユーザーのDriveFileをすべて削除
-	await Promise.all((
-		await DriveFile.find({ 'metadata.userId': u._id })
-	).map(x => deleteDriveFile(x)));
-
-	// このユーザーのDriveFolderをすべて削除
-	await Promise.all((
-		await DriveFolder.find({ userId: u._id })
-	).map(x => deleteDriveFolder(x)));
-
-	// このユーザーのMuteをすべて削除
-	await Promise.all((
-		await Mute.find({ muterId: u._id })
-	).map(x => deleteMute(x)));
-
-	// このユーザーへのMuteをすべて削除
-	await Promise.all((
-		await Mute.find({ muteeId: u._id })
-	).map(x => deleteMute(x)));
-
-	// このユーザーのFollowingをすべて削除
-	await Promise.all((
-		await Following.find({ followerId: u._id })
-	).map(x => deleteFollowing(x)));
-
-	// このユーザーへのFollowingをすべて削除
-	await Promise.all((
-		await Following.find({ followeeId: u._id })
-	).map(x => deleteFollowing(x)));
-
-	// このユーザーのFollowRequestをすべて削除
-	await Promise.all((
-		await FollowRequest.find({ followerId: u._id })
-	).map(x => deleteFollowRequest(x)));
-
-	// このユーザーへのFollowRequestをすべて削除
-	await Promise.all((
-		await FollowRequest.find({ followeeId: u._id })
-	).map(x => deleteFollowRequest(x)));
-
-	// このユーザーのFollowingLogをすべて削除
-	await Promise.all((
-		await FollowingLog.find({ userId: u._id })
-	).map(x => deleteFollowingLog(x)));
-
-	// このユーザーのFollowedLogをすべて削除
-	await Promise.all((
-		await FollowedLog.find({ userId: u._id })
-	).map(x => deleteFollowedLog(x)));
-
-	// このユーザーのSwSubscriptionをすべて削除
-	await Promise.all((
-		await SwSubscription.find({ userId: u._id })
-	).map(x => deleteSwSubscription(x)));
-
-	// このユーザーのNotificationをすべて削除
-	await Promise.all((
-		await Notification.find({ notifieeId: u._id })
-	).map(x => deleteNotification(x)));
-
-	// このユーザーが原因となったNotificationをすべて削除
-	await Promise.all((
-		await Notification.find({ notifierId: u._id })
-	).map(x => deleteNotification(x)));
-
-	// このユーザーのUserListをすべて削除
-	await Promise.all((
-		await UserList.find({ userId: u._id })
-	).map(x => deleteUserList(x)));
-
-	// このユーザーが入っているすべてのUserListからこのユーザーを削除
-	await Promise.all((
-		await UserList.find({ userIds: u._id })
-	).map(x =>
-		UserList.update({ _id: x._id }, {
-			$pull: { userIds: u._id }
+export async function getRelation(me: mongo.ObjectId, target: mongo.ObjectId) {
+	const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
+		Following.findOne({
+			followerId: me,
+			followeeId: target
+		}),
+		Following.findOne({
+			followerId: target,
+			followeeId: me
+		}),
+		FollowRequest.findOne({
+			followerId: me,
+			followeeId: target
+		}),
+		FollowRequest.findOne({
+			followerId: target,
+			followeeId: me
+		}),
+		Blocking.findOne({
+			blockerId: me,
+			blockeeId: target
+		}),
+		Blocking.findOne({
+			blockerId: target,
+			blockeeId: me
+		}),
+		Mute.findOne({
+			muterId: me,
+			muteeId: target
 		})
-	));
+	]);
 
-	// このユーザーを削除
-	await User.remove({
-		_id: u._id
-	});
-
-	console.log(`User: deleted ${u._id}`);
+	return {
+		isFollowing: following1 !== null,
+		isStalking: following1 ? following1.stalk : false,
+		hasPendingFollowRequestFromYou: followReq1 !== null,
+		hasPendingFollowRequestToYou: followReq2 !== null,
+		isFollowed: following2 !== null,
+		isBlocking: toBlocking !== null,
+		isBlocked: fromBlocked !== null,
+		isMuted: mute !== null
+	};
 }
 
 /**
@@ -331,7 +222,6 @@ export const pack = (
 		includeHasUnreadNotes?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
-
 	const opts = Object.assign({
 		detail: false,
 		includeSecrets: false
@@ -339,17 +229,20 @@ export const pack = (
 
 	let _user: any;
 
-	const fields = opts.detail ? {
-	} : {
-		settings: false,
-		clientSettings: false,
-		profile: false,
-		keywords: false,
-		domains: false
+	const fields = opts.detail ? {} : {
+		name: true,
+		username: true,
+		host: true,
+		avatarColor: true,
+		avatarUrl: true,
+		isCat: true,
+		isBot: true,
+		isAdmin: true,
+		isVerified: true
 	};
 
 	// Populate the user if 'user' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+	if (isObjectId(user)) {
 		_user = await User.findOne({
 			_id: user
 		}, { fields });
@@ -369,7 +262,7 @@ export const pack = (
 
 	// Me
 	const meId: mongo.ObjectID = me
-		? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? isObjectId(me)
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
@@ -380,6 +273,8 @@ export const pack = (
 	_user.id = _user._id;
 	delete _user._id;
 
+	delete _user.usernameLower;
+
 	if (_user.host == null) {
 		// Remove private properties
 		delete _user.keypair;
@@ -387,10 +282,12 @@ export const pack = (
 		delete _user.token;
 		delete _user.twoFactorTempSecret;
 		delete _user.twoFactorSecret;
-		delete _user.usernameLower;
 		if (_user.twitter) {
 			delete _user.twitter.accessToken;
 			delete _user.twitter.accessTokenSecret;
+		}
+		if (_user.github) {
+			delete _user.github.accessToken;
 		}
 		delete _user.line;
 
@@ -410,16 +307,6 @@ export const pack = (
 
 	if (_user.avatarUrl == null) {
 		_user.avatarUrl = `${config.drive_url}/default-avatar.jpg`;
-
-		// 互換性のため
-		if (_user.avatarId) {
-			_user.avatarUrl = `${config.drive_url}/${_user.avatarId}`;
-		}
-	}
-
-	// 互換性のため
-	if (_user.bannerId && _user.bannerUrl == null) {
-		_user.bannerUrl = `${config.drive_url}/${_user.bannerId}`;
 	}
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
@@ -429,42 +316,17 @@ export const pack = (
 		delete _user.hasUnreadNotification;
 	}
 
-	if (meId && !meId.equals(_user.id)) {
-		const [following1, following2, followReq1, followReq2, mute] = await Promise.all([
-			Following.findOne({
-				followerId: meId,
-				followeeId: _user.id
-			}),
-			Following.findOne({
-				followerId: _user.id,
-				followeeId: meId
-			}),
-			FollowRequest.findOne({
-				followerId: meId,
-				followeeId: _user.id
-			}),
-			FollowRequest.findOne({
-				followerId: _user.id,
-				followeeId: meId
-			}),
-			Mute.findOne({
-				muterId: meId,
-				muteeId: _user.id
-			})
-		]);
+	if (meId && !meId.equals(_user.id) && opts.detail) {
+		const relation = await getRelation(meId, _user.id);
 
-		// Whether the user is following
-		_user.isFollowing = following1 !== null;
-		_user.isStalking = following1 && following1.stalk;
-
-		_user.hasPendingFollowRequestFromYou = followReq1 !== null;
-		_user.hasPendingFollowRequestToYou = followReq2 !== null;
-
-		// Whether the user is followed
-		_user.isFollowed = following2 !== null;
-
-		// Whether the user is muted
-		_user.isMuted = mute !== null;
+		_user.isFollowing = relation.isFollowing;
+		_user.isFollowed = relation.isFollowed;
+		_user.isStalking = relation.isStalking;
+		_user.hasPendingFollowRequestFromYou = relation.hasPendingFollowRequestFromYou;
+		_user.hasPendingFollowRequestToYou = relation.hasPendingFollowRequestToYou;
+		_user.isBlocking = relation.isBlocking;
+		_user.isBlocked = relation.isBlocked;
+		_user.isMuted = relation.isMuted;
 	}
 
 	if (opts.detail) {
@@ -515,6 +377,7 @@ function img(url) {
 }
 */
 
-export function getGhost(): Promise<ILocalUser> {
-	return User.findOne({ _id: new mongo.ObjectId(config.ghost) });
+export async function fetchProxyAccount(): Promise<ILocalUser> {
+	const meta = await fetchMeta();
+	return await User.findOne({ username: meta.proxyAccount, host: null }) as ILocalUser;
 }

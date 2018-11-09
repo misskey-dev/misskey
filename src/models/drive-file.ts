@@ -1,16 +1,15 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import { pack as packFolder } from './drive-folder';
-import config from '../config';
 import monkDb, { nativeDbConn } from '../db/mongodb';
-import Note, { deleteNote } from './note';
-import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
-import User from './user';
-import DriveFileThumbnail, { deleteDriveFileThumbnail } from './drive-file-thumbnail';
+import isObjectId from '../misc/is-objectid';
+import getDriveFileUrl from '../misc/get-drive-file-url';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
 DriveFile.createIndex('metadata.uri');
+DriveFile.createIndex('metadata.userId');
+DriveFile.createIndex('metadata.folderId');
 export default DriveFile;
 
 export const DriveFileChunk = monkDb.get('driveFiles.chunks');
@@ -34,10 +33,22 @@ export type IMetadata = {
 	thumbnailUrl?: string;
 	src?: string;
 	deletedAt?: Date;
+
+	/**
+	 * このファイルの中身データがMongoDB内に保存されているのか否か
+	 * オブジェクトストレージを利用している or リモートサーバーへの直リンクである
+	 * な場合は false になります
+	 */
 	withoutChunks?: boolean;
+
 	storage?: string;
 	storageProps?: any;
 	isSensitive?: boolean;
+
+	/**
+	 * このファイルが添付された投稿のID一覧
+	 */
+	attachedNoteIds?: mongo.ObjectID[];
 
 	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か
@@ -69,71 +80,13 @@ export function validateFileName(name: string): boolean {
 	);
 }
 
-/**
- * DriveFileを物理削除します
- */
-export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriveFile) {
-	let d: IDriveFile;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(driveFile)) {
-		d = await DriveFile.findOne({
-			_id: driveFile
-		});
-	} else if (typeof driveFile === 'string') {
-		d = await DriveFile.findOne({
-			_id: new mongo.ObjectID(driveFile)
-		});
-	} else {
-		d = driveFile as IDriveFile;
-	}
-
-	if (d == null) return;
-
-	// このDriveFileを添付しているNoteをすべて削除
-	await Promise.all((
-		await Note.find({ fileIds: d._id })
-	).map(x => deleteNote(x)));
-
-	// このDriveFileを添付しているMessagingMessageをすべて削除
-	await Promise.all((
-		await MessagingMessage.find({ fileId: d._id })
-	).map(x => deleteMessagingMessage(x)));
-
-	// このDriveFileがアバターやバナーに使われていたらそれらのプロパティをnullにする
-	const u = await User.findOne({ _id: d.metadata.userId });
-	if (u) {
-		if (u.avatarId && u.avatarId.equals(d._id)) {
-			await User.update({ _id: u._id }, { $set: { avatarId: null } });
-		}
-		if (u.bannerId && u.bannerId.equals(d._id)) {
-			await User.update({ _id: u._id }, { $set: { bannerId: null } });
-		}
-	}
-
-	// このDriveFileのDriveFileThumbnailをすべて削除
-	await Promise.all((
-		await DriveFileThumbnail.find({ 'metadata.originalId': d._id })
-	).map(x => deleteDriveFileThumbnail(x)));
-
-	// このDriveFileのチャンクをすべて削除
-	await DriveFileChunk.remove({
-		files_id: d._id
-	});
-
-	// このDriveFileを削除
-	await DriveFile.remove({
-		_id: d._id
-	});
-}
-
-export const packMany = async (
+export const packMany = (
 	files: any[],
 	options?: {
 		detail: boolean
 	}
 ) => {
-	return (await Promise.all(files.map(f => pack(f, options)))).filter(x => x != null);
+	return Promise.all(files.map(f => pack(f, options)));
 };
 
 /**
@@ -152,7 +105,7 @@ export const pack = (
 	let _file: any;
 
 	// Populate the file if 'file' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
+	if (isObjectId(file)) {
 		_file = await DriveFile.findOne({
 			_id: file
 		});
@@ -166,7 +119,7 @@ export const pack = (
 
 	// (データベースの欠損などで)ファイルがデータベース上に見つからなかったとき
 	if (_file == null) {
-		console.warn(`in packaging driveFile: driveFile not found on database: ${_file}`);
+		console.warn(`[DAMAGED DB] (missing) pkg: driveFile :: ${file}`);
 		return resolve(null);
 	}
 
@@ -182,8 +135,8 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
-	_target.url = _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
-	_target.thumbnailUrl = _file.metadata.thumbnailUrl ? _file.metadata.thumbnailUrl : _file.metadata.url ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}?thumbnail`;
+	_target.url = getDriveFileUrl(_file);
+	_target.thumbnailUrl = getDriveFileUrl(_file, true);
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
@@ -210,6 +163,7 @@ export const pack = (
 	delete _target.storage;
 	delete _target.storageProps;
 	delete _target.isRemote;
+	delete _target._user;
 
 	resolve(_target);
 });

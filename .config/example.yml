@@ -1,13 +1,3 @@
-name: example-instance-name # Name of your instance
-description: example-description # Description of your instance
-
-maintainer:
-  name: example-maitainer-name # Your name
-  url: http://example.com/ # Your contact (http or mailto)
-  repository_url: https://github.com/syuilo/misskey # Repository URL
-  feedback_url: https://github.com/syuilo/misskey/issues # Feedback URL (e.g. github issue)
-
-
 # Final accessible URL seen by a user.
 url: https://example.tld/
 
@@ -25,7 +15,7 @@ url: https://example.tld/
 #   +------+      |+-------------+      +----------------+|
 #                 +---------------------------------------+
 #
-#   You need to setup reverse proxy. (eg. Nginx)
+#   You need to setup reverse proxy. (eg. nginx)
 #   You do not define 'https' section.
 
 # Option 2: Standalone
@@ -59,26 +49,6 @@ mongodb:
   db: misskey
   user: example-misskey-user
   pass: example-misskey-pass
-
-redis:
-  host: localhost
-  port: 6379
-  pass: example-pass
-
-# Drive capacity of a local user (MB)
-localDriveCapacityMb: 256
-
-# Drive capacity of a remote user (MB)
-remoteDriveCapacityMb: 8
-
-# If enabled:
-#  Server will not cache remote files (Using direct link instead).
-#  You can save your storage.
-#
-#  NOTE:
-#  * Users cannot see remote images when they turn off "Show media from a remote server" setting.
-#  * Since thumbnails are not provided, traffic increases.
-preventCacheRemoteFiles: false
 
 drive:
   storage: 'db'
@@ -118,44 +88,42 @@ drive:
   #   accessKey: XXX
   #   secretKey: YYY
 
+# If enabled:
+#  The first account created is automatically marked as Admin.
+autoAdmin: true
+
 #
 # Below settings are optional
 #
 
-# Elasticsearch
-# elasticsearch:
-#   host: localhost
-#   port: 9200
-#   pass: null
+# Redis
+#redis:
+#  host: localhost
+#  port: 6379
+#  pass: example-pass
 
-# reCAPTCHA
-# recaptcha:
-#   site_key: example-site-key
-#  secret_key: example-secret-key
+# Elasticsearch
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  pass: null
 
 # ServiceWorker
-# sw:
-#   # Public key of VAPID
-#   public_key: example-sw-public-key
-
-#   # Private key of VAPID
-#   private_key: example-sw-private-key
-
-# google_maps_api_key: example-google-maps-api-key
-
-# Twitter integration
-# You need to set the oauth callback url as : https://<your-misskey-instance>/api/tw/cb
-# twitter:
-#   consumer_key: example-twitter-consumer-key
-#   consumer_secret: example-twitter-consumer-secret-key
-
-# Ghost
-# Ghost account is an account used for the purpose of delegating
-# followers when putting users in the list.
-# ghost: user-id-of-your-ghost-account
+#sw:
+#  # Public key of VAPID
+#  public_key: example-sw-public-key
+#
+#  # Private key of VAPID
+#  private_key: example-sw-private-key
 
 # Clustering
-# clusterLimit: 1
+#clusterLimit: 1
 
 # Summaly proxy
-# summalyProxy: "http://example.com"
+#summalyProxy: "http://example.com"
+
+# User recommendation
+#user_recommendation:
+#  external: true
+#  engine: http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}
+#  timeout: 300000

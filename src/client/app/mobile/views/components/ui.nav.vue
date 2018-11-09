@@ -15,23 +15,23 @@
 			</router-link>
 			<div class="links">
 				<ul>
-					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@timeline%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotification">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li v-if="$store.getters.isSignedIn && $store.state.i.isLocked"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'">%fa:R envelope%%i18n:@follow-requests%<template v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'">%fa:gamepad%%i18n:@game%<template v-if="hasGameInvitation">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/" :data-active="$route.name == 'index'"><i><fa icon="home"/></i>{{ $t('timeline') }}<i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><fa :icon="['far', 'bell']"/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']"/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><fa :icon="['far', 'envelope']"/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad"/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:R calendar-alt%%i18n:@widgets%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'">%fa:star%%i18n:@favorites%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'">%fa:list%%i18n:@user-lists%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'">%fa:cloud%%i18n:@drive%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']"/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><i><fa icon="star"/></i>{{ $t('favorites') }}<i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'"><i><fa icon="list"/></i>{{ $t('user-lists') }}<i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><i><fa icon="cloud"/></i>{{ $t('@.drive') }}<i><fa icon="angle-right"/></i></router-link></li>
 				</ul>
 				<ul>
-					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
-					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
-					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><router-link to="/admin">%fa:terminal%<span>%i18n:@admin%</span>%fa:angle-right%</router-link></li>
-					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>%i18n:@darkmode%</span></p></li>
+					<li><a @click="search"><i><fa icon="search"/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
+					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog"/></i>{{ $t('settings') }}<i><fa icon="angle-right"/></i></router-link></li>
+					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><a href="/admin"><i><fa icon="terminal"/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
+					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><i><fa icon="moon"/></i></template><template v-else><i><fa :icon="['far', 'moon']"/></i></template><span>{{ $t('darkmode') }}</span></p></li>
 				</ul>
 			</div>
 			<div class="announcements" v-if="announcements && announcements.length > 0">
@@ -40,7 +40,7 @@
 					<div v-html="announcement.text"></div>
 				</article>
 			</div>
-			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
+			<a :href="aboutUrl"><p class="about">{{ $t('about') }}</p></a>
 		</div>
 	</transition>
 </div>
@@ -48,9 +48,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { lang } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/ui.nav.vue'),
 	props: ['isOpen'],
 
 	data() {
@@ -73,12 +75,12 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.announcements = meta.broadcasts;
 		});
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
@@ -93,7 +95,7 @@ export default Vue.extend({
 
 	methods: {
 		search() {
-			const query = window.prompt('%i18n:@search%');
+			const query = window.prompt(this.$t('search'));
 			if (query == null || query == '') return;
 			this.$router.push(`/search?q=${encodeURIComponent(query)}`);
 		},
@@ -195,20 +197,20 @@ export default Vue.extend({
 					color var(--primaryForeground)
 					background var(--primary)
 
-					> [data-fa]:last-child
+					> i:last-child
 						color var(--primaryForeground)
 
-				> [data-fa]:first-child
+				> i:first-child
 					margin-right 0.5em
 					width 20px
 					text-align center
 
-				> [data-fa].circle
+				> i.circle
 					margin-left 6px
 					font-size 10px
 					color var(--primary)
 
-				> [data-fa]:last-child
+				> i:last-child
 					position absolute
 					top 0
 					right 0

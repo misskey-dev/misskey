@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
+<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
 </template>
 
 <script lang="ts">
@@ -47,14 +47,16 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.connection) this.connection.close();
-		this.connection = (this as any).os.stream.connectToChannel('hashtag', this.tagTl.query);
+		this.connection = this.$root.stream.connectToChannel('hashtag', {
+			q: this.tagTl.query
+		});
 		this.connection.on('note', this.onNote);
 
 		this.fetch();
 	},
 
 	beforeDestroy() {
-		this.connection.close();
+		this.connection.dispose();
 	},
 
 	methods: {
@@ -62,7 +64,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/search_by_tag', {
+				this.$root.api('notes/search_by_tag', {
 					limit: fetchLimit + 1,
 					withFiles: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -80,10 +82,11 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
+
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('notes/search_by_tag', {
+			const promise = this.$root.api('notes/search_by_tag', {
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
 				withFiles: this.mediaOnly,
@@ -105,11 +108,16 @@ export default Vue.extend({
 
 			return promise;
 		},
+
 		onNote(note) {
 			if (this.mediaOnly && note.files.length == 0) return;
 
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
+		},
+
+		focus() {
+			this.$refs.timeline.focus();
 		}
 	}
 });

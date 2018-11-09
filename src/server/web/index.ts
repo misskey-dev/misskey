@@ -12,7 +12,6 @@ import * as views from 'koa-views';
 import docs from './docs';
 import User from '../../models/user';
 import parseAcct from '../../misc/acct/parse';
-import { fa } from '../../misc/fa';
 import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
 import getNoteSummary from '../../misc/get-note-summary';
@@ -28,8 +27,7 @@ app.use(views(__dirname + '/views', {
 	extension: 'pug',
 	options: {
 		config,
-		themeColor: consts.themeColor,
-		facss: fa.dom.css()
+		themeColor: consts.themeColor
 	}
 }));
 

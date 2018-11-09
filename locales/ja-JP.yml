@@ -25,13 +25,12 @@ common:
   application-authorization: "アプリの連携"
   close: "閉じる"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
+  load-more: "もっと読み込む"
+
   got-it: "わかった"
   customization-tips:
     title: "カスタマイズのヒント"
-    paragraph1: "ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。"
-    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。"
-    paragraph3: "ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。"
-    paragraph4: "カスタマイズを終了するには、右上の「完了」をクリックします。"
+    paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
     gotit: "Got it!"
   notification:
     file-uploaded: "ファイルがアップロードされました"
@@ -55,6 +54,8 @@ common:
   month-and-day: "{month}月 {day}日"
 
   trash: "ゴミ箱"
+  drive: "ドライブ"
+  messaging: "トーク"
 
   weekday-short:
     sunday: "日"
@@ -119,22 +120,32 @@ common:
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "ユーザー名のホストを省略しない"
+  show-via: "viaを表示する"
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
+  use-os-default-emojis: "OS標準の絵文字を使用"
 
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+
+  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-post: "この投稿情報はコピーです。"
+  view-on-remote: "正確な情報を見る"
+
+  error:
+    title: '問題が発生しました'
+    retry: 'やり直す'
 
   reversi:
     drawn: "引き分け"
     my-turn: "あなたのターンです"
     opponent-turn: "相手のターンです"
-    turn-of: "{}のターンです"
-    past-turn-of: "{}のターン"
-    won: "{}の勝ち"
+    turn-of: "{name}のターンです"
+    past-turn-of: "{name}のターン"
+    won: "{name}の勝ち"
     black: "黒"
     white: "白"
     total: "合計"
-    this-turn: "{}ターン目"
+    this-turn: "{count}ターン目"
 
   widgets:
     analog-clock: "アナログ時計"
@@ -154,36 +165,17 @@ common:
     users: "おすすめユーザー"
     polls: "アンケート"
     post-form: "投稿フォーム"
-    messaging: "メッセージ"
     server: "サーバー情報"
     donation: "寄付のお願い"
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
 
-  deck:
-    widgets: "ウィジェット"
-    home: "ホーム"
-    local: "ローカル"
-    hybrid: "ソーシャル"
-    hashtag: "ハッシュタグ"
-    global: "グローバル"
-    mentions: "あなた宛て"
-    direct: "ダイレクト投稿"
-    notifications: "通知"
-    list: "リスト"
-    swap-left: "左に移動"
-    swap-right: "右に移動"
-    swap-up: "上に移動"
-    swap-down: "下に移動"
-    remove: "カラムを削除"
-    add-column: "カラムを追加"
-    rename: "名前を変更"
-    stack-left: "左に重ねる"
-    pop-right: "右に出す"
+  dev: "アプリの作成に失敗しました。再度お試しください。"
+  ai-chan-kawaii: "藍ちゃかわいい"
 
 auth/views/form.vue:
-  share-access: "<i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？"
+  share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
   account-read: "アカウントの情報を見る。"
   account-write: "アカウントの情報を操作する。"
@@ -307,6 +299,9 @@ common/views/components/theme.vue:
   invalid-theme: "テーマが正しくありません。"
   already-installed: "既にそのテーマはインストールされています。"
   saved: "保存しました"
+  manage-themes: "テーマの管理"
+  builtin-themes: "標準テーマ"
+  my-themes: "マイテーマ"
   installed-themes: "インストールされたテーマ"
   select-theme: "テーマを選択してください"
   uninstall: "アンインストール"
@@ -329,7 +324,6 @@ common/views/components/messaging.vue:
 
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはありません"
-  more: "もっと読む"
   no-history: "これより過去の履歴はありません"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
@@ -360,6 +354,7 @@ common/views/components/note-menu.vue:
   detail: "詳細"
   copy-link: "リンクをコピー"
   favorite: "お気に入り"
+  unfavorite: "お気に入り解除"
   pin: "ピン留め"
   unpin: "ピン留め解除"
   delete: "削除"
@@ -392,6 +387,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "または"
   signin-with-twitter: "Twitterでログイン"
+  signin-with-github: "GitHubでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 
 common/views/components/signup.vue:
@@ -435,6 +431,14 @@ common/views/components/twitter-setting.vue:
   connect: "Twitterと接続する"
   disconnect: "切断する"
 
+common/views/components/github-setting.vue:
+  description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のGitHubアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "GitHubと接続する"
+  disconnect: "切断する"
+
 common/views/components/uploader.vue:
   waiting: "待機中"
 
@@ -451,6 +455,26 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
+
+common/views/components/profile-editor.vue:
+  title: "プロフィール"
+  name: "名前"
+  account: "アカウント"
+  location: "場所"
+  description: "自己紹介"
+  birthday: "誕生日"
+  avatar: "アイコン"
+  banner: "バナー"
+  is-cat: "このアカウントはCatです"
+  is-bot: "このアカウントはBotです"
+  is-locked: "フォローを承認制にする"
+  careful-bot: "Botからのフォローだけ承認制にする"
+  advanced: "その他"
+  privacy: "プライバシー"
+  save: "保存"
+  saved: "プロフィールを保存しました"
+  uploading: "アップロード中"
+  upload-failed: "アップロードに失敗しました"
 
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
@@ -549,36 +573,13 @@ desktop/views/components/activity.vue:
   toggle: "表示を切り替え"
 
 desktop/views/components/calendar.vue:
-  title: "{1}年 {2}月"
+  title: "{year}年 {month}月"
   prev: "前の月"
   next: "次の月"
   go: "クリックして時間遡行"
 
-desktop/views/components/charts.vue:
-  title: "チャート"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  notes: "投稿"
-  users: "ユーザー"
-  drive: "ドライブ"
-  network: "ネットワーク"
-  charts:
-    notes: "投稿の増減 (統合)"
-    local-notes: "投稿の増減 (ローカル)"
-    remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の積算"
-    users: "ユーザーの増減"
-    users-total: "ユーザーの積算"
-    drive: "ドライブ使用量の増減"
-    drive-total: "ドライブ使用量の積算"
-    drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "ドライブのファイル数の積算"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
-    network-usage: "通信量"
-
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択中"
+  chosen-files: "{count}ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
   cancel: "キャンセル"
   ok: "決定"
@@ -596,7 +597,6 @@ desktop/views/components/crop-window.vue:
 
 desktop/views/components/drive-window.vue:
   used: "使用中"
-  drive: "ドライブ"
 
 desktop/views/components/drive.file.vue:
   avatar: "アイコン"
@@ -629,12 +629,8 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "フォルダ名の変更"
     input-new-folder-name: "新しいフォルダ名を入力してください"
 
-desktop/views/components/drive.nav-folder.vue:
-  drive: "ドライブ"
-
 desktop/views/components/drive.vue:
   search: "検索"
-  load-more: "もっと読み込む"
   empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
   empty-drive: "ドライブには何もありません。"
   empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
@@ -706,7 +702,6 @@ desktop/views/components/messaging-window.vue:
   title: "メッセージ"
 
 desktop/views/components/note-detail.vue:
-  more: "会話をもっと読み込む"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   reposted-by: "{}がRenote"
@@ -714,7 +709,7 @@ desktop/views/components/note-detail.vue:
   renote: "Renote"
   add-reaction: "リアクション"
 
-desktop/views/components/notes.note.vue:
+desktop/views/components/note.vue:
   reposted-by: "{}がRenote"
   reply: "返信"
   renote: "Renote"
@@ -726,10 +721,8 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
   retry: "リトライ"
-  load-more: "もっと読み込む"
 
 desktop/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 
 desktop/views/components/post-form.vue:
@@ -782,6 +775,10 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしますか？"
 
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
+
 desktop/views/components/settings-window.vue:
   settings: "設定"
 
@@ -789,8 +786,8 @@ desktop/views/components/settings.vue:
   profile: "プロフィール"
   notification: "通知"
   apps: "アプリ"
-  mute: "ミュート"
-  drive: "ドライブ"
+  mute-and-block: "ミュート/ブロック"
+  blocking: "ブロック"
   security: "セキュリティ"
   signin: "サインイン履歴"
   password: "パスワード"
@@ -810,9 +807,13 @@ desktop/views/components/settings.vue:
   advanced: "詳細設定"
   api-via-stream: "ストリームを経由したAPIリクエスト"
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
+  deck-nav: "デッキ内ナビゲーション"
+  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
+  deck-default: "デッキをデフォルトのUIにする"
 
   display: "デザインと表示"
   customize: "ホームをカスタマイズ"
+  wallpaper: "壁紙"
   choose-wallpaper: "壁紙を選択"
   delete-wallpaper: "壁紙を削除"
   dark-mode: "ダークモード"
@@ -824,19 +825,20 @@ desktop/views/components/settings.vue:
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "リプライ先を表示する"
+  timeline: "タイムライン"
   show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
   show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
   show-maps: "マップの自動展開"
+  deck-column-align: "デッキのカラムの位置"
+  deck-column-align-center: "中央"
+  deck-column-align-left: "左"
 
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
   enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
   volume: "ボリューム"
   test: "テスト"
-
-  mobile: "モバイル"
-  disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
 
   language: "言語"
   pick-language: "言語を選択"
@@ -879,6 +881,11 @@ desktop/views/components/settings.vue:
   task-manager: "タスクマネージャ"
   third-parties: "サードパーティ"
 
+  navbar-position: "ナビゲーションバーの位置"
+  navbar-position-top: "上"
+  navbar-position-left: "左"
+  navbar-position-right: "右"
+
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
   detail: "詳細..."
@@ -898,46 +905,44 @@ desktop/views/components/settings.2fa.vue:
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
 
-desktop/views/components/settings.api.vue:
+common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
   regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
   regenerate-token: "トークンを再生成"
   token: "Token:"
   enter-password: "パスワードを入力してください"
+  console:
+    title: 'APIコンソール'
+    endpoint: 'エンドポイント'
+    parameter: 'パラメータ'
+    credential-info: "「i」パラメータは自動で付与されます。"
+    send: '送信'
+    sending: '応答待ち'
+    response: '結果'
 
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 
-desktop/views/components/settings.drive.vue:
-  max: "中"
+common/views/components/drive-settings.vue:
+  max: "容量"
   in-use: "使用中"
+  stats: "統計"
 
-desktop/views/components/settings.mute.vue:
-  no-users: "ミュートしているユーザーはいません"
+common/views/components/mute-and-block.vue:
+  mute-and-block: "ミュートとブロック"
+  mute: "ミュート"
+  block: "ブロック"
+  no-muted-users: "ミュートしているユーザーはいません"
+  no-blocked-users: "ブロックしているユーザーはいません"
 
-desktop/views/components/settings.password.vue:
+common/views/components/password-settings.vue:
   reset: "パスワードを変更する"
   enter-current-password: "現在のパスワードを入力してください"
   enter-new-password: "新しいパスワードを入力してください"
   enter-new-password-again: "もう一度新しいパスワードを入力してください"
   not-match: "新しいパスワードが一致しません"
   changed: "パスワードを変更しました"
-
-desktop/views/components/settings.profile.vue:
-  avatar: "アイコン"
-  choice-avatar: "画像を選択"
-  name: "名前"
-  location: "場所"
-  description: "自己紹介"
-  birthday: "誕生日"
-  save: "保存"
-  locked-account: "アカウントの保護"
-  is-locked: "フォローを承認制にする"
-  other: "その他"
-  is-bot: "このアカウントはBotです"
-  is-cat: "このアカウントはCatです"
-  profile-updated: "プロフィールを更新しました"
 
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
@@ -967,7 +972,6 @@ desktop/views/components/ui.header.vue:
 
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
-  drive: "ドライブ"
   favorites: "お気に入り"
   lists: "リスト"
   follow-requests: "フォロー申請"
@@ -980,7 +984,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
   deck: "デッキ"
-  messaging: "メッセージ"
   game: "ゲーム"
 
 desktop/views/components/ui.header.notifications.vue:
@@ -1010,7 +1013,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
-  load-more: "もっと"
   fetching: "読み込んでいます"
 
 desktop/views/components/users-list-item.vue:
@@ -1020,55 +1022,142 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 
-desktop/views/pages/admin/admin.vue:
+admin/views/index.vue:
   dashboard: "ダッシュボード"
-  drive: "ドライブ"
+  instance: "インスタンス"
+  emoji: "カスタム絵文字"
   users: "ユーザー"
   update: "更新"
+  announcements: "お知らせ"
+  hashtags: "ハッシュタグ"
+  back-to-misskey: "Misskeyに戻る"
 
-desktop/views/pages/admin/admin.dashboard.vue:
+admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
-  invite: "招待"
+  accounts: "アカウント"
+  notes: "投稿"
+  drive: "ドライブ"
+  instances: "インスタンス"
+  this-instance: "このインスタンス"
+  federated: "連合"
 
-desktop/views/pages/admin/admin.suspend-user.vue:
+admin/views/instance.vue:
+  instance: "インスタンス"
+  instance-name: "インスタンス名"
+  instance-description: "インスタンスの紹介"
+  banner-url: "バナー画像URL"
+  languages: "インスタンスの対象言語"
+  languages-desc: "スペースで区切って複数設定できます。"
+  maintainer-config: "管理者情報"
+  maintainer-name: "管理者名"
+  maintainer-email: "管理者の連絡先"
+  drive-config: "ドライブの設定"
+  cache-remote-files: "リモートのファイルをキャッシュする"
+  cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
+  local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
+  remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
+  mb: "メガバイト単位"
+  recaptcha-config: "reCAPTCHAの設定"
+  recaptcha-info: "reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。"
+  enable-recaptcha: "reCAPTCHAを有効にする"
+  recaptcha-site-key: "reCAPTCHA site key"
+  recaptcha-secret-key: "reCAPTCHA secret key"
+  twitter-integration-config: "Twitter連携の設定"
+  twitter-integration-info: "コールバックURLは /api/tw/cb に設定します。"
+  enable-twitter-integration: "Twitter連携を有効にする"
+  twitter-integration-consumer-key: "Consumer key"
+  twitter-integration-consumer-secret: "Consumer secret"
+  github-integration-config: "GitHub連携の設定"
+  github-integration-info: "コールバックURLは /api/gh/cb に設定します。"
+  enable-github-integration: "GitHub連携を有効にする"
+  github-integration-client-id: "Client ID"
+  github-integration-client-secret: "Client secret"
+  proxy-account-config: "プロキシアカウントの設定"
+  proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
+  proxy-account-username: "プロキシアカウントのユーザー名"
+  proxy-account-username-desc: "プロキシとして使用するアカウントのユーザー名を指定してください。"
+  proxy-account-warn: "アカウントは自動で作られないため、そのユーザー名のアカウントを予め作成しておく必要があります。"
+  max-note-text-length: "投稿の最大文字数"
+  disable-registration: "ユーザー登録の受付を停止する"
+  disable-local-timeline: "ローカルタイムラインを無効にする"
+  invite: "招待"
+  save: "保存"
+  saved: "保存しました"
+
+admin/views/charts.vue:
+  title: "チャート"
+  per-day: "1日ごと"
+  per-hour: "1時間ごと"
+  federation: "フェデレーション"
+  notes: "投稿"
+  users: "ユーザー"
+  drive: "ドライブ"
+  network: "ネットワーク"
+  charts:
+    federation-instances: "インスタンスの増減"
+    federation-instances-total: "インスタンスの積算"
+    notes: "投稿の増減 (統合)"
+    local-notes: "投稿の増減 (ローカル)"
+    remote-notes: "投稿の増減 (リモート)"
+    notes-total: "投稿の積算"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの積算"
+    drive: "ドライブ使用量の増減"
+    drive-total: "ドライブ使用量の積算"
+    drive-files: "ドライブのファイル数の増減"
+    drive-files-total: "ドライブのファイル数の積算"
+    network-requests: "リクエスト"
+    network-time: "応答時間"
+    network-usage: "通信量"
+
+admin/views/users.vue:
   suspend-user: "ユーザーの凍結"
   suspend: "凍結"
   suspended: "凍結しました"
-
-desktop/views/pages/admin/admin.unsuspend-user.vue:
   unsuspend-user: "ユーザーの凍結の解除"
   unsuspend: "凍結の解除"
   unsuspended: "凍結を解除しました"
-
-desktop/views/pages/admin/admin.verify-user.vue:
   verify-user: "ユーザーの公式アカウント設定"
   verify: "公式アカウントにする"
   verified: "公式アカウントにしました"
-
-desktop/views/pages/admin/admin.unverify-user.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
 
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "メディア投稿のみ"
-  is-media-view: "メディアビュー"
-  edit: "オプション"
+admin/views/emoji.vue:
+  add-emoji:
+    title: "絵文字の登録"
+    name: "絵文字名"
+    name-desc: "a~z 0~9 _ の文字が使えます。"
+    aliases: "エイリアス"
+    aliases-desc: "スペースで区切って複数設定できます。"
+    url: "絵文字画像URL"
+    add: "追加"
+    info: "50KB以下のPNG画像をおすすめします。"
+    added: "絵文字を登録しました"
+  emojis:
+    title: "絵文字一覧"
+    update: "更新"
+    remove: "削除"
+  updated: "更新しました"
+  remove-emoji:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 
-desktop/views/pages/deck/deck.note.vue:
-  reposted-by: "{}がRenote"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+admin/views/announcements.vue:
+  announcements: "お知らせ"
+  save: "保存"
+  remove: "削除"
+  add: "追加"
+  title: "タイトル"
+  text: "内容"
+  saved: "保存しました"
+  _remove:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 
-desktop/views/pages/stats/stats.vue:
-  all-users: "全てのユーザー"
-  original-users: "このインスタンスのユーザー"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
+admin/views/hashtags.vue:
+  hided-tags: "Hidden Tags"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
@@ -1086,9 +1175,6 @@ desktop/views/pages/welcome.vue:
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 
-desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
-
 desktop/views/pages/home-customize.vue:
   title: "ホームのカスタマイズ"
 
@@ -1104,13 +1190,13 @@ desktop/views/pages/selectdrive.vue:
 
 desktop/views/pages/search.vue:
   not-available: "検索機能はインスタンスの設定で無効になっています。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "{name}で共有"
 
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
@@ -1127,14 +1213,6 @@ desktop/views/pages/user/user.friends.vue:
   loading: "読み込み中"
   no-users: "よく話すユーザーはいません"
 
-desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーは凍結されています。"
-  is-remote: "このユーザーはリモートユーザーです。"
-  view-remote: "正確な情報を見る"
-
-desktop/views/pages/user/user.home.vue:
-  last-used-at: "最終アクセス"
-
 desktop/views/pages/user/user.photos.vue:
   title: "フォト"
   loading: "読み込み中"
@@ -1148,6 +1226,9 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+  block: "ブロックする"
+  unblock: "ブロック解除"
+  block-confirm: "このユーザーをブロックしますか？"
   push-to-a-list: "リストに追加"
   list-pushed: "{user}を{list}に追加しました。"
 
@@ -1156,6 +1237,10 @@ desktop/views/pages/user/user.header.vue:
   following: "フォロー"
   followers: "フォロワー"
   is-bot: "このアカウントはBotです"
+  years-old: "{age}歳"
+  year: "年"
+  month: "月"
+  day: "日"
 
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
@@ -1194,12 +1279,10 @@ desktop/views/widgets/users.vue:
   no-one: "いません！"
 
 mobile/views/components/drive.vue:
-  drive: "ドライブ"
   used: "使用中"
   folder-count: "フォルダ"
   count-separator: "、"
   file-count: "ファイル"
-  load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
@@ -1209,9 +1292,6 @@ mobile/views/components/drive.vue:
   root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
-
-mobile/views/components/drive-file-detail.vue:
-  rename: "名前を変更"
 
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
@@ -1229,6 +1309,8 @@ mobile/views/components/drive.file-detail.vue:
   hash: "ハッシュ (md5)"
   exif: "EXIF"
   nsfw: "閲覧注意"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
 
 mobile/views/components/media-image.vue:
   sensitive: "閲覧注意"
@@ -1276,12 +1358,7 @@ mobile/views/components/note-sub.vue:
   bot: "bot"
   cat: "cat"
 
-mobile/views/components/notes.vue:
-  failed: "読み込みに失敗しました。"
-  retry: "リトライ"
-
 mobile/views/components/notifications.vue:
-  more: "もっと見る"
   empty: "ありません！"
 
 mobile/views/components/post-form.vue:
@@ -1304,7 +1381,6 @@ mobile/views/components/sub-note-content.vue:
 
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
-  load-more: "もっと"
 
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
@@ -1313,10 +1389,8 @@ mobile/views/components/ui.header.vue:
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
-  messaging: "メッセージ"
   follow-requests: "フォロー申請"
   search: "検索"
-  drive: "ドライブ"
   favorites: "お気に入り"
   user-lists: "リスト"
   widgets: "ウィジェット"
@@ -1329,12 +1403,10 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
-  load-more: "もっと"
 
 mobile/views/components/users-list.vue:
   all: "すべて"
   known: "知り合い"
-  load-more: "もっと"
 
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
@@ -1343,18 +1415,14 @@ mobile/views/pages/user-lists.vue:
   title: "リスト"
   enter-list-name: "リスト名を入力してください"
 
-mobile/views/pages/drive.vue:
-  drive: "ドライブ"
-  more: "もっと見る"
-
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
 
 mobile/views/pages/followers.vue:
-  followers-of: "{}のフォロワー"
+  followers-of: "{name}のフォロワー"
 
 mobile/views/pages/following.vue:
-  following-of: "{}のフォロー"
+  following-of: "{name}のフォロー"
 
 mobile/views/pages/home.vue:
   home: "ホーム"
@@ -1365,7 +1433,7 @@ mobile/views/pages/home.vue:
   messages: "メッセージ"
 
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
@@ -1380,13 +1448,7 @@ mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 
 mobile/views/pages/share.vue:
-  share-with: "{}で共有"
-
-mobile/views/pages/messaging.vue:
-  messaging: "メッセージ"
-
-mobile/views/pages/messaging-room.vue:
-  messaging: "メッセージ"
+  share-with: "{name}で共有"
 
 mobile/views/pages/received-follow-requests.vue:
   title: "フォロー申請"
@@ -1405,28 +1467,9 @@ mobile/views/pages/notifications.vue:
 mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 
-mobile/views/pages/settings/settings.profile.vue:
-  title: "プロフィール"
-  name: "名前"
-  account: "アカウント"
-  location: "場所"
-  description: "自己紹介"
-  birthday: "誕生日"
-  avatar: "アイコン"
-  banner: "バナー"
-  is-cat: "このアカウントはCatです"
-  is-locked: "フォローを承認制にする"
-  advanced: "その他"
-  privacy: "プライバシー"
-  save: "保存"
-  saved: "プロフィールを保存しました"
-  uploading: "アップロード中"
-  upload-failed: "アップロードに失敗しました"
-
 mobile/views/pages/search.vue:
   search: "検索"
-  empty: "「{}」に関する投稿は見つかりませんでした。"
-  not-found: "「{}」に関する投稿は見つかりませんでした。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
@@ -1467,6 +1510,10 @@ mobile/views/pages/settings.vue:
   twitter-connect: "Twitterアカウントに接続する"
   twitter-reconnect: "再接続する"
   twitter-disconnect: "切断する"
+  github: "GitHub連携"
+  github-connect: "GitHubアカウントに接続する"
+  github-reconnect: "再接続する"
+  github-disconnect: "切断する"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"
@@ -1480,6 +1527,8 @@ mobile/views/pages/settings.vue:
   signout: "サインアウト"
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  password: "パスワード"
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
@@ -1490,8 +1539,11 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "メディア"
   is-suspended: "このユーザーは凍結されています。"
-  is-remote: "このユーザーはリモートユーザーです。"
-  view-remote: "正確な情報を見る"
+  mute: "ミュート"
+  unmute: "ミュート解除"
+  block: "ブロック"
+  unblock: "ブロック解除"
+  years-old: "{age}歳"
 
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
@@ -1504,20 +1556,52 @@ mobile/views/pages/user/home.vue:
   last-used-at: "最終ログイン"
 
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込み中"
   no-users: "知り合いのユーザーはいません"
 
 mobile/views/pages/user/home.friends.vue:
-  loading: "読み込み中"
   no-users: "よく会話するユーザーはいません"
 
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込み中"
   no-notes: "投稿はありません"
 
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込み中"
   no-photos: "写真はありません"
+
+deck:
+  widgets: "ウィジェット"
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  hashtag: "ハッシュタグ"
+  global: "グローバル"
+  mentions: "あなた宛て"
+  direct: "ダイレクト投稿"
+  notifications: "通知"
+  list: "リスト"
+  swap-left: "左に移動"
+  swap-right: "右に移動"
+  swap-up: "上に移動"
+  swap-down: "下に移動"
+  remove: "カラムを削除"
+  add-column: "カラムを追加"
+  rename: "名前を変更"
+  stack-left: "左に重ねる"
+  pop-right: "右に出す"
+
+deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+  edit: "オプション"
+
+deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
+  pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
@@ -1545,3 +1629,31 @@ docs:
 
 dev/views/index.vue:
   manage-apps: "アプリの管理"
+
+dev/views/apps.vue:
+  manage-apps: "アプリを管理"
+  create-app: "アプリ作成"
+  app-missing: "アプリなし"
+
+dev/views/new-app.vue:
+  create-app: "アプリケーションの作成"
+  app-name: "アプリケーション名"
+  app-name-desc: "あなたのアプリの名称。"
+  app-name-ex: "ex) Misskey for iOS"
+  app-overview: "アプリの概要"
+  app-desc: "あなたのアプリの簡単な説明や紹介。"
+  app-desc-ex: "ex) Misskey iOSクライアント。"
+  callback-url: "コールバックURL (オプション)"
+  callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
+  authority: "権限"
+  authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
+  authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
+  account-read: "アカウントの情報を見る。"
+  account-write: "アカウントの情報を操作する。"
+  note-write: "投稿する。"
+  reaction-write: "リアクションしたりリアクションをキャンセルする。"
+  following-write: "フォローしたりフォロー解除する。"
+  drive-read: "ドライブを見る。"
+  drive-write: "ドライブを操作する。"
+  notification-read: "通知を見る。"
+  notification-write: "通知を操作する。"

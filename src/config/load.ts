@@ -46,10 +46,7 @@ export default function load() {
 	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
 	mixin.user_agent = `Misskey/${pkg.version} (${config.url})`;
 
-	if (config.localDriveCapacityMb == null) config.localDriveCapacityMb = 256;
-	if (config.remoteDriveCapacityMb == null) config.remoteDriveCapacityMb = 8;
-
-	if (config.name == null) config.name = 'Misskey';
+	if (config.autoAdmin == null) config.autoAdmin = false;
 
 	return Object.assign(config, mixin);
 }

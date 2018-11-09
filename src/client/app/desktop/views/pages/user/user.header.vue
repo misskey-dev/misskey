@@ -7,9 +7,7 @@
 			<p class="name">{{ user | userName }}</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
-				<span v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</span>
-				<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
-				<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</span>
+				<span v-if="user.isBot" :title="$t('title')"><fa icon="robot"/></span>
 			</div>
 		</div>
 	</div>
@@ -18,10 +16,14 @@
 		<div class="description">
 			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 		</div>
+		<div class="info">
+			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>
+			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', $t('year')).replace('-', $t('month')) + $t('day') }} ({{ $t('years-old', { age }) }})</span>
+		</div>
 		<div class="status">
-			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
-			<span class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>%i18n:@following%</span>
-			<span class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</span>
+			<span class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</span>
+			<router-link :to="user | userPage('following')" class="following clickable"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
+			<router-link :to="user | userPage('followers')" class="followers clickable"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
 		</div>
 	</div>
 </div>
@@ -29,11 +31,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkFollowingWindow from '../../components/following-window.vue';
-import MkFollowersWindow from '../../components/followers-window.vue';
+import i18n from '../../../../i18n';
 import * as age from 's-age';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.header.vue'),
 	props: ['user'],
 	computed: {
 		style(): any {
@@ -79,22 +81,10 @@ export default Vue.extend({
 		onBannerClick() {
 			if (!this.$store.getters.isSignedIn || this.$store.state.i.id != this.user.id) return;
 
-			(this as any).apis.updateBanner().then(i => {
+			this.$updateBanner().then(i => {
 				this.user.bannerUrl = i.bannerUrl;
 			});
-		},
-
-		showFollowing() {
-			(this as any).os.new(MkFollowingWindow, {
-				user: this.user
-			});
-		},
-
-		showFollowers() {
-			(this as any).os.new(MkFollowersWindow, {
-				user: this.user
-			});
-		},
+		}
 	}
 });
 </script>
@@ -182,6 +172,14 @@ export default Vue.extend({
 		padding 16px 16px 16px 154px
 		color var(--text)
 
+		> .info
+			margin-top 16px
+			padding-top 16px
+			border-top solid 1px var(--faceDivider)
+
+			> *
+				margin-right 16px
+
 		> .status
 			margin-top 16px
 			padding-top 16px
@@ -192,6 +190,7 @@ export default Vue.extend({
 				display inline-block
 				padding-right 16px
 				margin-right 16px
+				color inherit
 
 				&:not(:last-child)
 					border-right solid 1px var(--faceDivider)

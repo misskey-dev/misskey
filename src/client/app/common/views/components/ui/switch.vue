@@ -129,5 +129,6 @@ export default Vue.extend({
 		> p
 			margin 0
 			opacity 0.7
+			font-size 90%
 
 </style>

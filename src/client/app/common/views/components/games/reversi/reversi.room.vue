@@ -3,13 +3,13 @@
 	<header><b>{{ game.user1 | userName }}</b> vs <b>{{ game.user2 | userName }}</b></header>
 
 	<div>
-		<p>%i18n:@settings-of-the-game%</p>
+		<p>{{ $t('settings-of-the-game') }}</p>
 
 		<div class="card map">
 			<header>
-				<select v-model="mapName" placeholder="%i18n:@choose-map%" @change="onMapChange">
+				<select v-model="mapName" :placeholder="$t('choose-map')" @change="onMapChange">
 					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
-					<option label="%i18n:@random%" :value="null"/>
+					<option :label="$t('random')" :value="null"/>
 					<optgroup v-for="c in mapCategories" :key="c" :label="c">
 						<option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
 					</optgroup>
@@ -17,13 +17,13 @@
 			</header>
 
 			<div>
-				<div class="random" v-if="game.settings.map == null">%fa:dice%</div>
+				<div class="random" v-if="game.settings.map == null"><fa icon="dice"/></div>
 				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 					<div v-for="(x, i) in game.settings.map.join('')"
 							:data-none="x == ' '"
 							@click="onPixelClick(i, x)">
-						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode">%fa:circle R%</template><template v-else>%fa:circle%</template></template>
-						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode">%fa:circle%</template><template v-else>%fa:circle R%</template></template>
+						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode"><fa :icon="['far', 'circle']"/></template><template v-else><fa icon="circle"/></template></template>
+						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode"><fa :icon="['far', 'circle']"/></template><template v-else><fa icon="circle"/></template></template>
 					</div>
 				</div>
 			</div>
@@ -31,31 +31,31 @@
 
 		<div class="card">
 			<header>
-				<span>%i18n:@black-or-white%</span>
+				<span>{{ $t('black-or-white') }}</span>
 			</header>
 
 			<div>
-				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">%i18n:@random%</form-radio>
-				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user1 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ '%i18n:@black-is%'.split('{}')[0] }}<b>{{ game.user2 | userName }}</b>{{ '%i18n:@black-is%'.split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">{{ $t('random') }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b>{{ game.user1 | userName }}</b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b>{{ game.user2 | userName }}</b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
 			</div>
 		</div>
 
 		<div class="card">
 			<header>
-				<span>%i18n:@rules%</span>
+				<span>{{ $t('rules') }}</span>
 			</header>
 
 			<div>
-				<ui-switch v-model="game.settings.isLlotheo" @change="updateSettings">%i18n:@is-llotheo%</ui-switch>
-				<ui-switch v-model="game.settings.loopedBoard" @change="updateSettings">%i18n:@looped-map%</ui-switch>
-				<ui-switch v-model="game.settings.canPutEverywhere" @change="updateSettings">%i18n:@can-put-everywhere%</ui-switch>
+				<ui-switch v-model="game.settings.isLlotheo" @change="updateSettings">{{ $t('is-llotheo') }}</ui-switch>
+				<ui-switch v-model="game.settings.loopedBoard" @change="updateSettings">{{ $t('looped-map') }}</ui-switch>
+				<ui-switch v-model="game.settings.canPutEverywhere" @change="updateSettings">{{ $t('can-put-everywhere') }}</ui-switch>
 			</div>
 		</div>
 
 		<div class="card form" v-if="form">
 			<header>
-				<span>%i18n:@settings-of-the-bot%</span>
+				<span>{{ $t('settings-of-the-bot') }}</span>
 			</header>
 
 			<div>
@@ -98,16 +98,16 @@
 
 	<footer>
 		<p class="status">
-			<template v-if="isAccepted && isOpAccepted">%i18n:@this-game-is-started-soon%<mk-ellipsis/></template>
-			<template v-if="isAccepted && !isOpAccepted">%i18n:@waiting-for-other%<mk-ellipsis/></template>
-			<template v-if="!isAccepted && isOpAccepted">%i18n:@waiting-for-me%</template>
-			<template v-if="!isAccepted && !isOpAccepted">%i18n:@waiting-for-both%<mk-ellipsis/></template>
+			<template v-if="isAccepted && isOpAccepted">{{ $t('this-game-is-started-soon') }}<mk-ellipsis/></template>
+			<template v-if="isAccepted && !isOpAccepted">{{ $t('waiting-for-other') }}<mk-ellipsis/></template>
+			<template v-if="!isAccepted && isOpAccepted">{{ $t('waiting-for-me') }}</template>
+			<template v-if="!isAccepted && !isOpAccepted">{{ $t('waiting-for-both') }}<mk-ellipsis/></template>
 		</p>
 
 		<div class="actions">
-			<form-button @click="exit">%i18n:@cancel%</form-button>
-			<form-button primary @click="accept" v-if="!isAccepted">%i18n:@ready%</form-button>
-			<form-button primary @click="cancel" v-if="isAccepted">%i18n:@cancel-ready%</form-button>
+			<form-button @click="exit">{{ $t('cancel') }}</form-button>
+			<form-button primary @click="accept" v-if="!isAccepted">{{ $t('ready') }}</form-button>
+			<form-button primary @click="cancel" v-if="isAccepted">{{ $t('cancel-ready') }}</form-button>
 		</div>
 	</footer>
 </div>
@@ -115,9 +115,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../../i18n';
 import * as maps from '../../../../../../../games/reversi/maps';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/games/reversi/reversi.room.vue'),
 	props: ['game', 'connection'],
 
 	data() {
@@ -149,9 +151,9 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.connection.on('change-accepts', this.onChangeAccepts);
-		this.connection.on('update-settings', this.onUpdateSettings);
-		this.connection.on('init-form', this.onInitForm);
+		this.connection.on('changeAccepts', this.onChangeAccepts);
+		this.connection.on('updateSettings', this.onUpdateSettings);
+		this.connection.on('initForm', this.onInitForm);
 		this.connection.on('message', this.onMessage);
 
 		if (this.game.user1Id != this.$store.state.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
@@ -159,9 +161,9 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('change-accepts', this.onChangeAccepts);
-		this.connection.off('update-settings', this.onUpdateSettings);
-		this.connection.off('init-form', this.onInitForm);
+		this.connection.off('changeAccepts', this.onChangeAccepts);
+		this.connection.off('updateSettings', this.onUpdateSettings);
+		this.connection.off('initForm', this.onInitForm);
 		this.connection.off('message', this.onMessage);
 	},
 
@@ -171,15 +173,11 @@ export default Vue.extend({
 		},
 
 		accept() {
-			this.connection.send({
-				type: 'accept'
-			});
+			this.connection.send('accept', {});
 		},
 
 		cancel() {
-			this.connection.send({
-				type: 'cancel-accept'
-			});
+			this.connection.send('cancelAccept', {});
 		},
 
 		onChangeAccepts(accepts) {
@@ -189,8 +187,7 @@ export default Vue.extend({
 		},
 
 		updateSettings() {
-			this.connection.send({
-				type: 'update-settings',
+			this.connection.send('updateSettings', {
 				settings: this.game.settings
 			});
 		},
@@ -216,8 +213,7 @@ export default Vue.extend({
 		},
 
 		onChangeForm(item) {
-			this.connection.send({
-				type: 'update-form',
+			this.connection.send('updateForm', {
 				id: item.id,
 				value: item.value
 			});
@@ -238,9 +234,9 @@ export default Vue.extend({
 			const y = Math.floor(pos / this.game.settings.map[0].length);
 			const newPixel =
 				pixel == ' ' ? '-' :
-					pixel == '-' ? 'b' :
-						pixel == 'b' ? 'w' :
-							' ';
+				pixel == '-' ? 'b' :
+				pixel == 'b' ? 'w' :
+				' ';
 			const line = this.game.settings.map[y].split('');
 			line[x] = newPixel;
 			this.$set(this.game.settings.map, y, line.join(''));

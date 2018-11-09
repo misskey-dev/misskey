@@ -1,9 +1,12 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
-import User, { ILocalUser } from '../../../../models/user';
+import User from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定した投稿を削除します。',
 		'en-US': 'Delete a note.'
@@ -11,17 +14,24 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'note-write'
+	kind: 'note-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID.'
+			}
+		}
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch note
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -35,4 +45,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	await deleteNote(await User.findOne({ _id: note.userId }), note);
 
 	res();
-});
+}));

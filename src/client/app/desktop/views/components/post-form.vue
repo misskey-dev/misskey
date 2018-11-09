@@ -8,13 +8,13 @@
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">%i18n:@add-visible-user%</a>
+			<a @click="addVisibleUser">{{ $t('add-visible-user') }}</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
-			<b>%i18n:@recent-tags%:</b>
-			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%@click-to-tagging%">#{{ tag }}</a>
+			<b>{{ $t('recent-tags') }}:</b>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
-		<input v-show="useCw" v-model="cw" placeholder="%i18n:@annotations%">
+		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
@@ -24,7 +24,7 @@
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
-					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:@attach-cancel%" alt=""/>
+					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
 				</div>
 			</x-draggable>
 			<p class="remain">{{ 4 - files.length }}/4</p>
@@ -32,22 +32,22 @@
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
-	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
-	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
-	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll">%fa:chart-pie%</button>
-	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw">%fa:eye-slash%</button>
-	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
-		<span v-if="visibility === 'public'">%fa:globe%</span>
-		<span v-if="visibility === 'home'">%fa:home%</span>
-		<span v-if="visibility === 'followers'">%fa:unlock%</span>
-		<span v-if="visibility === 'specified'">%fa:envelope%</span>
-		<span v-if="visibility === 'private'">%fa:lock%</span>
+	<button class="upload" :title="$t('attach-media-from-local')" @click="chooseFile"><fa icon="upload"/></button>
+	<button class="drive" :title="$t('attach-media-from-drive')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
+	<button class="kao" :title="$t('insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
+	<button class="poll" :title="$t('create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
+	<button class="cw" :title="$t('hide-contents')" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
+	<button class="geo" :title="$t('attach-location-information')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
+	<button class="visibility" :title="$t('visibility')" @click="setVisibility" ref="visibilityButton">
+		<span v-if="visibility === 'public'"><fa icon="globe"/></span>
+		<span v-if="visibility === 'home'"><fa icon="home"/></span>
+		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
+		<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
+		<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 	</button>
-	<p class="text-count" :class="{ over: this.trimmedLength(text) > 1000 }">{{ 1000 - this.trimmedLength(text) }}</p>
+	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
-		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
+		{{ posting ? $t('posting') : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
 	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
@@ -56,6 +56,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import getFace from '../../../common/scripts/get-face';
@@ -65,8 +66,10 @@ import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import parseAcct from '../../../../../misc/acct/parse';
+import { toASCII } from 'punycode';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/post-form.vue'),
 	components: {
 		XDraggable,
 		MkVisibilityChooser
@@ -106,8 +109,15 @@ export default Vue.extend({
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
-			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]')
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			maxNoteTextLength: 1000
 		};
+	},
+
+	created() {
+		this.$root.getMeta().then(meta => {
+			this.maxNoteTextLength = meta.maxNoteTextLength;
+		});
 	},
 
 	computed: {
@@ -121,34 +131,34 @@ export default Vue.extend({
 
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
 			return this.renote
-				? '%i18n:@quote-placeholder%'
+				? this.$t('quote-placeholder')
 				: this.reply
-					? '%i18n:@reply-placeholder%'
+					? this.$t('reply-placeholder')
 					: x;
 		},
 
 		submitText(): string {
 			return this.renote
-				? '%i18n:@renote%'
+				? this.$t('renote')
 				: this.reply
-					? '%i18n:@reply%'
-					: '%i18n:@submit%';
+					? this.$t('reply')
+					: this.$t('submit');
 		},
 
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= 1000);
+				(length(this.text.trim()) <= this.maxNoteTextLength);
 		}
 	},
 
@@ -158,14 +168,14 @@ export default Vue.extend({
 		}
 
 		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
 
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
 			ast.filter(t => t.type == 'mention').forEach(x => {
-				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
 				if (this.$store.state.i.username == x.username && x.host == null) return;
@@ -185,7 +195,7 @@ export default Vue.extend({
 
 		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
 		if (this.reply && this.reply.visibility === 'specified') {
-			(this as any).api('users/show', {	userId: this.reply.userId }).then(user => {
+			this.$root.api('users/show', {	userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
 		}
@@ -235,7 +245,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			(this as any).apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
 				files.forEach(this.attachMedia);
@@ -324,7 +334,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('%i18n:@geolocation-alert%');
+				alert(this.$t('geolocation-alert'));
 				return;
 			}
 
@@ -344,7 +354,7 @@ export default Vue.extend({
 		},
 
 		setVisibility() {
-			const w = (this as any).os.new(MkVisibilityChooser, {
+			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton
 			});
 			w.$once('chosen', v => {
@@ -353,11 +363,11 @@ export default Vue.extend({
 		},
 
 		addVisibleUser() {
-			(this as any).apis.input({
-				title: '%i18n:@enter-username%'
+			this.$input({
+				title: this.$t('enter-username')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
-				(this as any).api('users/show', parseAcct(acct)).then(user => {
+				this.$root.api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
@@ -370,7 +380,7 @@ export default Vue.extend({
 		post() {
 			this.posting = true;
 
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
@@ -391,17 +401,17 @@ export default Vue.extend({
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
-				(this as any).apis.notify(this.renote
-					? '%i18n:@reposted%'
+				this.$notify(this.renote
+					? this.$t('reposted')
 					: this.reply
-						? '%i18n:@replied%'
-						: '%i18n:@posted%');
+						? this.$t('replied')
+						: this.$t('posted'));
 			}).catch(err => {
-				(this as any).apis.notify(this.renote
-					? '%i18n:@renote-failed%'
+				this.$notify(this.renote
+					? this.$t('renote-failed')
 					: this.reply
-						? '%i18n:@reply-failed%'
-						: '%i18n:@note-failed%');
+						? this.$t('reply-failed')
+						: this.$t('note-failed'));
 			}).then(() => {
 				this.posting = false;
 			});
@@ -679,6 +689,7 @@ export default Vue.extend({
 	> .drive
 	> .kao
 	> .poll
+	> .cw
 	> .geo
 	> .visibility
 		display inline-block

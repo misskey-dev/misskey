@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import getParams from '../../get-params';
+import define from '../../define';
 import config from '../../../../config';
 import * as mongo from 'mongodb';
 import User, { pack as packUser, IUser } from '../../../../models/user';
@@ -16,23 +16,21 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		uri: $.str.note({
+		uri: {
+			validator: $.str,
 			desc: {
 				'ja-JP': 'ActivityPubオブジェクトのURI'
 			}
-		}),
+		},
 	},
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const object = await fetchAny(ps.uri);
-	if (object !== null) return res(object);
+	if (object == null) return rej('object not found');
 
-	return rej('object not found');
-});
+	res(object);
+}));
 
 /***
  * URIからUserかNoteを解決する
@@ -41,7 +39,7 @@ async function fetchAny(uri: string) {
 	// URIがこのサーバーを指しているなら、ローカルユーザーIDとしてDBからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = new mongo.ObjectID(uri.split('/').pop());
-		const [ user, note ] = await Promise.all([
+		const [user, note] = await Promise.all([
 			User.findOne({ _id: id }),
 			Note.findOne({ _id: id })
 		]);
@@ -52,7 +50,7 @@ async function fetchAny(uri: string) {
 
 	// URI(AP Object id)としてDB検索
 	{
-		const [ user, note ] = await Promise.all([
+		const [user, note] = await Promise.all([
 			User.findOne({ uri: uri }),
 			Note.findOne({ uri: uri })
 		]);
@@ -68,7 +66,7 @@ async function fetchAny(uri: string) {
 	// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
 	// これはDBに存在する可能性があるため再度DB検索
 	if (uri !== object.id) {
-		const [ user, note ] = await Promise.all([
+		const [user, note] = await Promise.all([
 			User.findOne({ uri: object.id }),
 			Note.findOne({ uri: object.id })
 		]);

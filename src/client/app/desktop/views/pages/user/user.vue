@@ -1,8 +1,8 @@
 <template>
 <mk-ui>
 	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
-		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
+		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.is-suspended') }}</div>
+		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
 		<main>
 			<div class="main">
 				<x-header :user="user"/>
@@ -12,14 +12,14 @@
 			<div class="side">
 				<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 				<x-profile :user="user"/>
-				<x-twitter :user="user" v-if="user.host === null && user.twitter"/>
+				<x-twitter :user="user" v-if="!user.host && user.twitter"/>
+				<x-github :user="user" v-if="!user.host && user.github"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>
 				<x-friends :user="user"/>
 				<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				<div class="nav"><mk-nav/></div>
-				<p v-if="user.host === null">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
 			</div>
 		</main>
 	</div>
@@ -28,6 +28,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
@@ -37,8 +38,10 @@ import XPhotos from './user.photos.vue';
 import XFollowersYouKnow from './user.followers-you-know.vue';
 import XFriends from './user.friends.vue';
 import XTwitter from './user.twitter.vue';
+import XGithub from './user.github.vue'; // ?MEM: Don't fix the intentional typo. (XGitHub -> `<x-git-hub>`)
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XHeader,
 		XTimeline,
@@ -46,7 +49,8 @@ export default Vue.extend({
 		XPhotos,
 		XFollowersYouKnow,
 		XFriends,
-		XTwitter
+		XTwitter,
+		XGithub // ?MEM: Don't fix the intentional typo. (see L41)
 	},
 	data() {
 		return {
@@ -64,7 +68,7 @@ export default Vue.extend({
 		fetch() {
 			this.fetching = true;
 			Progress.start();
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 				Progress.done();

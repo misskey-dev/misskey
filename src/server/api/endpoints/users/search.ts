@@ -1,7 +1,7 @@
 import $ from 'cafy';
 const escapeRegexp = require('escape-regexp');
-import User, { pack, ILocalUser, validateUsername, IUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import User, { pack, validateUsername, IUser } from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -11,42 +11,40 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		query: $.str.note({
+		query: {
+			validator: $.str,
 			desc: {
 				'ja-JP': 'クエリ'
 			}
-		}),
+		},
 
-		offset: $.num.optional.min(0).note({
+		offset: {
+			validator: $.num.optional.min(0),
 			default: 0,
 			desc: {
 				'ja-JP': 'オフセット'
 			}
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '取得する数'
 			}
-		}),
+		},
 
-		localOnly: $.bool.optional.note({
+		localOnly: {
+			validator: $.bool.optional,
 			default: false,
 			desc: {
 				'ja-JP': 'ローカルユーザーのみ検索対象にするか否か'
 			}
-		}),
+		},
 	},
 };
 
-/**
- * Search a user
- */
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const isUsername = validateUsername(ps.query.replace('@', ''));
 
 	let users: IUser[] = [];
@@ -154,4 +152,4 @@ export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => 
 
 	// Serialize
 	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
-});
+}));

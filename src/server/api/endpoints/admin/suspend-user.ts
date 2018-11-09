@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import ID from '../../../../misc/cafy-id';
-import getParams from '../../get-params';
+import ID, { transform } from '../../../../misc/cafy-id';
+import define from '../../define';
 import User from '../../../../models/user';
 
 export const meta = {
@@ -13,19 +13,18 @@ export const meta = {
 	requireAdmin: true,
 
 	params: {
-		userId: $.type(ID).note({
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID which you want to suspend'
 			}
-		}),
+		},
 	}
 };
 
-export default (params: any) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const user = await User.findOne({
 		_id: ps.userId
 	});
@@ -47,4 +46,4 @@ export default (params: any) => new Promise(async (res, rej) => {
 		});
 
 	res();
-});
+}));

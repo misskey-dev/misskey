@@ -1,5 +1,10 @@
 <template>
-<component class="dmtdnykelhudezerjlfpbhgovrgnqqgr" :is="link ? 'a' : 'button'" :class="[styl, { inline, primary }]" :type="type" @click="$emit('click')">
+<component class="dmtdnykelhudezerjlfpbhgovrgnqqgr"
+	:is="link ? 'a' : 'button'"
+	:class="[styl, { inline, primary }]"
+	:type="type"
+	@click="$emit('click')"
+>
 	<slot></slot>
 </component>
 </template>
@@ -7,6 +12,11 @@
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
+	inject: {
+		horizonGrouped: {
+			default: false
+		}
+	},
 	props: {
 		type: {
 			type: String,
@@ -20,7 +30,9 @@ export default Vue.extend({
 		inline: {
 			type: Boolean,
 			required: false,
-			default: false
+			default(): boolean {
+				return this.horizonGrouped;
+			}
 		},
 		link: {
 			type: Boolean,
@@ -41,7 +53,7 @@ export default Vue.extend({
 	display block
 	width 100%
 	margin 0
-	padding 8px
+	padding 8px 10px
 	text-align center
 	font-weight normal
 	font-size 16px

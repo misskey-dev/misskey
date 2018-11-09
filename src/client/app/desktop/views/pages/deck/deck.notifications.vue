@@ -1,30 +1,37 @@
 <template>
 <div class="oxynyeqmfvracxnglgulyqfgqxnxmehl">
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
+	</div>
+
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notifications" class="transition notifications">
 		<template v-for="(notification, i) in _notifications">
 			<x-notification class="notification" :notification="notification" :key="notification.id"/>
 			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date" :key="notification.id + '-time'">
-				<span>%fa:angle-up%{{ notification._datetext }}</span>
-				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ notification._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</component>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreNotifications ? this.$t('@.loading') : this.$t('@.load-more') }}
 	</button>
-	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
-	<p class="loading" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-if="notifications.length == 0 && !fetching">{{ $t('empty') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import XNotification from './deck.notification.vue';
 
 const displayLimit = 20;
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XNotification
 	},
@@ -48,7 +55,7 @@ export default Vue.extend({
 				const date = new Date(notification.createdAt).getDate();
 				const month = new Date(notification.createdAt).getMonth() + 1;
 				notification._date = date;
-				notification._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				notification._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return notification;
 			});
 		}
@@ -61,7 +68,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('notification', this.onNotification);
 
@@ -70,7 +77,7 @@ export default Vue.extend({
 
 		const max = 10;
 
-		(this as any).api('i/notifications', {
+		this.$root.api('i/notifications', {
 			limit: max + 1
 		}).then(notifications => {
 			if (notifications.length == max + 1) {
@@ -96,7 +103,7 @@ export default Vue.extend({
 
 			const max = 20;
 
-			(this as any).api('i/notifications', {
+			this.$root.api('i/notifications', {
 				limit: max + 1,
 				untilId: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {
@@ -113,8 +120,7 @@ export default Vue.extend({
 
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.connection.send({
-				type: 'readNotification',
+			this.$root.stream.send('readNotification', {
 				id: notification.id
 			});
 
@@ -162,6 +168,10 @@ export default Vue.extend({
 		> *
 			transition transform .3s ease, opacity .3s ease
 
+	> .placeholder
+		padding 16px
+		opacity 0.3
+
 	> .notifications
 
 		> .notification:not(:last-child)
@@ -170,9 +180,9 @@ export default Vue.extend({
 		> .date
 			display block
 			margin 0
-			line-height 32px
+			line-height 28px
 			text-align center
-			font-size 0.8em
+			font-size 12px
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)
 			border-bottom solid 1px var(--faceDivider)
@@ -180,7 +190,7 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			i
+			[data-icon]
 				margin-right 8px
 
 	> .more
@@ -199,7 +209,7 @@ export default Vue.extend({
 		&.fetching
 			cursor wait
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .empty
@@ -207,14 +217,5 @@ export default Vue.extend({
 		padding 16px
 		text-align center
 		color #aaa
-
-	> .loading
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
-
-		> [data-fa]
-			margin-right 4px
 
 </style>

@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;">%fa:R bell%</span>%i18n:@notifications%</span>
-	<template slot="func"><button @click="fn">%fa:check%</button></template>
+	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>{{ $t('notifications') }}</span>
+	<template slot="func"><button @click="fn"><fa icon="check"/></button></template>
 
 	<main>
 		<mk-notifications @fetched="onFetched"/>
@@ -11,20 +11,22 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/notifications.vue'),
 	mounted() {
-		document.title = '%i18n:@notifications%';
+		document.title = this.$t('notifications');
 
 		Progress.start();
 	},
 	methods: {
 		fn() {
-			const ok = window.confirm('%i18n:@read-all%');
+			const ok = window.confirm(this.$t('read-all'));
 			if (!ok) return;
 
-			(this as any).api('notifications/mark_all_as_read');
+			this.$root.api('notifications/mark_all_as_read');
 		},
 		onFetched() {
 			Progress.done();

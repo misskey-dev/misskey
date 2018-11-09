@@ -1,14 +1,16 @@
 <template>
 <mk-window ref="window" is-modal @closed="onWindowClosed" :animation="animation">
-	<span slot="header" :class="$style.header">%fa:retweet%%i18n:@title%</span>
+	<span slot="header" :class="$style.header"><fa icon="retweet"/>{{ $t('title') }}</span>
 	<mk-renote-form ref="form" :note="note" @posted="onPosted" @canceled="onCanceled" v-hotkey.global="keymap"/>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/renote-form-window.vue'),
 	props: {
 		note: {
 			type: Object,
@@ -58,7 +60,7 @@ export default Vue.extend({
 
 <style lang="stylus" module>
 .header
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 </style>

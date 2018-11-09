@@ -91,8 +91,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .mk-dialog
 	> .bg
 		display block

@@ -1,10 +1,21 @@
+import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
 
 export interface IEndpointMeta {
-	desc?: any;
+	stability?: string; //'deprecated' | 'experimental' | 'stable';
 
-	params?: any;
+	desc?: { [key: string]: string };
+
+	params?: {
+		[key: string]: {
+			validator: Context<any>;
+			transform?: any;
+			default?: any;
+			desc?: { [key: string]: string };
+			ref?: string;
+		};
+	};
 
 	res?: any;
 

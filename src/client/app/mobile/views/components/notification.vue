@@ -9,8 +9,8 @@
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				%fa:quote-left%{{ getNoteSummary(notification.note) }}
-				%fa:quote-right%
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}
+				<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -19,12 +19,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:retweet%
+				<fa icon="retweet"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:user-plus%
+				<fa icon="user-plus"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -44,7 +44,7 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:user-clock%
+				<fa icon="user-clock"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -55,12 +55,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:chart-pie%
+				<fa icon="chart-pie"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
-				%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -149,7 +149,7 @@ export default Vue.extend({
 				align-items baseline
 				white-space nowrap
 
-				i, .mk-reaction-icon
+				[data-icon], .mk-reaction-icon
 					margin-right 4px
 
 				> .mk-time
@@ -163,7 +163,7 @@ export default Vue.extend({
 			> .note-ref
 				color var(--noteText)
 
-				[data-fa]
+				[data-icon]
 					font-size 1em
 					font-weight normal
 					font-style normal
@@ -171,15 +171,15 @@ export default Vue.extend({
 					margin-right 3px
 
 		&.renote
-			> div > header i
+			> div > header [data-icon]
 				color #77B255
 
 		&.follow
-			> div > header i
+			> div > header [data-icon]
 				color #53c7ce
 
 		&.receiveFollowRequest
-			> div > header i
+			> div > header [data-icon]
 				color #888
 
 </style>

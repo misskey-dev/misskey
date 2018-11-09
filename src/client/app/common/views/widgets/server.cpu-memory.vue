@@ -91,9 +91,8 @@ export default Vue.extend({
 	mounted() {
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
-		this.connection.send({
-			type: 'requestLog',
-			id: Math.random().toString()
+		this.connection.send('requestLog', {
+			id: Math.random().toString().substr(2, 8)
 		});
 	},
 	beforeDestroy() {

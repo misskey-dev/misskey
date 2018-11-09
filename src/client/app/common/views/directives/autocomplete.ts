@@ -1,6 +1,6 @@
 import * as getCaretCoordinates from 'textarea-caret';
 import MkAutocomplete from '../components/autocomplete.vue';
-import renderAcct from '../../../../../misc/acct/render';
+import { toASCII } from 'punycode';
 
 export default {
 	bind(el, binding, vn) {
@@ -109,7 +109,7 @@ class Autocomplete {
 
 		if (isEmoji && opened == false) {
 			const emoji = text.substr(emojiIndex + 1);
-			if (emoji != '' && emoji.match(/^[\+\-a-z0-9_]+$/)) {
+			if (!emoji.includes(' ')) {
 				this.open('emoji', emoji);
 				opened = true;
 			}
@@ -145,6 +145,7 @@ class Autocomplete {
 		} else {
 			// サジェスト要素作成
 			this.suggestion = new MkAutocomplete({
+				parent: this.vm,
 				propsData: {
 					textarea: this.textarea,
 					complete: this.complete,
@@ -188,7 +189,7 @@ class Autocomplete {
 			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
 			const after = source.substr(caret);
 
-			const acct = renderAcct(value);
+			const acct = value.host === null ? value.username : `${value.username}@${toASCII(value.host)}`;
 
 			// 挿入
 			this.text = `${trimmedBefore}@${acct} ${after}`;
@@ -228,7 +229,7 @@ class Autocomplete {
 			// キャレットを戻す
 			this.vm.$nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + 1;
+				const pos = trimmedBefore.length + (value.startsWith(':') ? value.length : 1);
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		}

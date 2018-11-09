@@ -1,33 +1,51 @@
 <template>
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
 	<span slot="header">
-		<template v-if="column.type == 'home'">%fa:home%</template>
-		<template v-if="column.type == 'local'">%fa:R comments%</template>
-		<template v-if="column.type == 'hybrid'">%fa:share-alt%</template>
-		<template v-if="column.type == 'global'">%fa:globe%</template>
-		<template v-if="column.type == 'list'">%fa:list%</template>
-		<template v-if="column.type == 'hashtag'">%fa:hashtag%</template>
+		<template v-if="column.type == 'home'"><fa icon="home"/></template>
+		<template v-if="column.type == 'local'"><fa :icon="['far', 'comments']"/></template>
+		<template v-if="column.type == 'hybrid'"><fa icon="share-alt"/></template>
+		<template v-if="column.type == 'global'"><fa icon="globe"/></template>
+		<template v-if="column.type == 'list'"><fa icon="list"/></template>
+		<template v-if="column.type == 'hashtag'"><fa icon="hashtag"/></template>
 		<span>{{ name }}</span>
 	</span>
 
 	<div class="editor" style="padding:0 12px" v-if="edit">
-		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">%i18n:@is-media-only%</ui-switch>
-		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">%i18n:@is-media-view%</ui-switch>
+		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">{{ $t('is-media-only') }}</ui-switch>
+		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">{{ $t('is-media-view') }}</ui-switch>
 	</div>
-	<x-list-tl v-if="column.type == 'list'" :list="column.list" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
-	<x-hashtag-tl v-if="column.type == 'hashtag'" :tag-tl="$store.state.settings.tagTimelines.find(x => x.id == column.tagTlId)" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
-	<x-tl v-else :src="column.type" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
+
+	<x-list-tl v-if="column.type == 'list'"
+		:list="column.list"
+		:media-only="column.isMediaOnly"
+		:media-view="column.isMediaView"
+		ref="tl"
+	/>
+	<x-hashtag-tl v-else-if="column.type == 'hashtag'"
+		:tag-tl="$store.state.settings.tagTimelines.find(x => x.id == column.tagTlId)"
+		:media-only="column.isMediaOnly"
+		:media-view="column.isMediaView"
+		ref="tl"
+	/>
+	<x-tl v-else
+		:src="column.type"
+		:media-only="column.isMediaOnly"
+		:media-view="column.isMediaView"
+		ref="tl"
+	/>
 </x-column>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import XColumn from './deck.column.vue';
 import XTl from './deck.tl.vue';
 import XListTl from './deck.list-tl.vue';
 import XHashtagTl from './deck.hashtag-tl.vue';
 
 export default Vue.extend({
+	i18n: i18n('deck/deck.tl-column.vue'),
 	components: {
 		XColumn,
 		XTl,
@@ -50,8 +68,8 @@ export default Vue.extend({
 		return {
 			edit: false,
 			menu: [{
-				icon: '%fa:cog%',
-				text: '%i18n:@edit%',
+				icon: 'cog',
+				text: this.$t('edit'),
 				action: () => {
 					this.edit = !this.edit;
 				}
@@ -64,10 +82,10 @@ export default Vue.extend({
 			if (this.column.name) return this.column.name;
 
 			switch (this.column.type) {
-				case 'home': return '%i18n:common.deck.home%';
-				case 'local': return '%i18n:common.deck.local%';
-				case 'hybrid': return '%i18n:common.deck.hybrid%';
-				case 'global': return '%i18n:common.deck.global%';
+				case 'home': return this.$t('@deck.home');
+				case 'local': return this.$t('@deck.local');
+				case 'hybrid': return this.$t('@deck.hybrid');
+				case 'global': return this.$t('@deck.global');
 				case 'list': return this.column.list.title;
 				case 'hashtag': return this.$store.state.settings.tagTimelines.find(x => x.id == this.column.tagTlId).title;
 			}
@@ -77,6 +95,10 @@ export default Vue.extend({
 	methods: {
 		onChangeSettings(v) {
 			this.$store.dispatch('settings/saveDeck');
+		},
+
+		focus() {
+			this.$refs.tl.focus();
 		}
 	}
 });

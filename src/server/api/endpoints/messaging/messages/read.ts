@@ -1,8 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
-import { ILocalUser } from '../../../../../models/user';
 import read from '../../../common/read-messaging-message';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -15,19 +14,18 @@ export const meta = {
 	kind: 'messaging-write',
 
 	params: {
-		messageId: $.type(ID).note({
+		messageId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '既読にするメッセージのID',
 				'en-US': 'The ID of a message that you want to mark as read'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const message = await Message.findOne({
 		_id: ps.messageId,
 		recipientId: user._id
@@ -40,4 +38,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	read(user._id, message.userId, message);
 
 	res();
-});
+}));

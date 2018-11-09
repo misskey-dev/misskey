@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-hashtags">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:hashtag%%i18n:@title%</template>
+		<template slot="header"><fa icon="hashtag"/>{{ $t('title') }}</template>
 
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<mk-trends/>
@@ -12,6 +12,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'hashtags',
@@ -19,6 +20,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/hashtags.vue'),
 	methods: {
 		func() {
 			this.props.compact = !this.props.compact;

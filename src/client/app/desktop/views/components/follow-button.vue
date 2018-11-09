@@ -5,20 +5,22 @@
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked">%fa:hourglass-half%<template v-if="size == 'big'"> %i18n:@request-pending%</template></template>
-		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked">%fa:hourglass-start%<template v-if="size == 'big'"> %i18n:@follow-processing%</template></template>
-		<template v-else-if="u.isFollowing">%fa:minus%<template v-if="size == 'big'"> %i18n:@following%</template></template>
-		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow-request%</template></template>
-		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow%</template></template>
+		<template v-if="u.hasPendingFollowRequestFromYou && u.isLocked"><fa icon="hourglass-half"/><template v-if="size == 'big'"> {{ $t('request-pending') }}</template></template>
+		<template v-else-if="u.hasPendingFollowRequestFromYou && !u.isLocked"><fa icon="hourglass-start"/><template v-if="size == 'big'"> {{ $t('follow-processing') }}</template></template>
+		<template v-else-if="u.isFollowing"><fa icon="minus"/><template v-if="size == 'big'"> {{ $t('following') }}</template></template>
+		<template v-else-if="!u.isFollowing && u.isLocked"><fa icon="plus"/><template v-if="size == 'big'"> {{ $t('follow-request') }}</template></template>
+		<template v-else-if="!u.isFollowing && !u.isLocked"><fa icon="plus"/><template v-if="size == 'big'"> {{ $t('follow') }}</template></template>
 	</template>
-	<template v-else>%fa:spinner .pulse .fw%</template>
+	<template v-else><fa icon="spinner .pulse" fixed-width/></template>
 </button>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/follow-button.vue'),
 	props: {
 		user: {
 			type: Object,
@@ -39,9 +41,9 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
-		this.connection.on('follow', this.onFollow);
-		this.connection.on('unfollow', this.onUnfollow);
+		this.connection = this.$root.stream.useSharedConnection('main');
+		this.connection.on('follow', this.onFollowChange);
+		this.connection.on('unfollow', this.onFollowChange);
 	},
 
 	beforeDestroy() {
@@ -49,17 +51,11 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onFollow(user) {
+		onFollowChange(user) {
 			if (user.id == this.u.id) {
 				this.u.isFollowing = user.isFollowing;
 				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
-			}
-		},
-
-		onUnfollow(user) {
-			if (user.id == this.u.id) {
-				this.u.isFollowing = user.isFollowing;
-				this.u.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
+				this.$forceUpdate();
 			}
 		},
 
@@ -68,20 +64,20 @@ export default Vue.extend({
 
 			try {
 				if (this.u.isFollowing) {
-					this.u = await (this as any).api('following/delete', {
+					this.u = await this.$root.api('following/delete', {
 						userId: this.u.id
 					});
 				} else {
 					if (this.u.hasPendingFollowRequestFromYou) {
-						this.u = await (this as any).api('following/requests/cancel', {
+						this.u = await this.$root.api('following/requests/cancel', {
 							userId: this.u.id
 						});
 					} else if (this.u.isLocked) {
-						this.u = await (this as any).api('following/create', {
+						this.u = await this.$root.api('following/create', {
 							userId: this.u.id
 						});
 					} else {
-						this.u = await (this as any).api('following/create', {
+						this.u = await this.$root.api('following/create', {
 							userId: this.user.id
 						});
 					}

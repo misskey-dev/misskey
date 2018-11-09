@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-memo">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:R sticky-note%%i18n:@title%</template>
+		<template slot="header"><fa :icon="['far', 'sticky-note']"/>{{ $t('title') }}</template>
 
 		<div class="mkw-memo--body">
-			<textarea v-model="text" placeholder="%i18n:@memo%" @input="onChange"></textarea>
-			<button @click="saveMemo" :disabled="!changed">%i18n:@save%</button>
+			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
+			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
 		</div>
 	</mk-widget-container>
 </div>
@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import define from '../../define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'memo',
@@ -20,6 +21,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/memo.vue'),
 	data() {
 		return {
 			text: null,

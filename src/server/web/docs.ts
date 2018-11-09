@@ -13,10 +13,11 @@ import { Context, ObjectContext } from 'cafy';
 import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import config from '../../config';
-import I18n from '../../misc/i18n';
 import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
 import endpoints from '../api/endpoints';
+const locales = require('../../../locales');
+const nestedProperty = require('nested-property');
 
 async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const vars = {} as { [key: string]: any };
@@ -54,18 +55,17 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	vars['license'] = licenseHtml;
 
-	const i18n = new I18n(lang);
-	vars['i18n'] = (key: string) => i18n.get(null, key);
+	vars['i18n'] = (key: string) => nestedProperty.get(locales[lang], key);
 
 	return vars;
 }
 
 // WIP type
-const parseParamDefinition = (key: string, param: Context) => {
+const parseParamDefinition = (key: string, x: any) => {
 	return Object.assign({
 		name: key,
-		type: param.getType()
-	}, param.data);
+		type: x.validator.getType()
+	}, x);
 };
 
 const parsePropDefinition = (key: string, prop: any) => {
@@ -181,7 +181,7 @@ router.get('/*/api/endpoints/*', async ctx => {
 		},
 		// @ts-ignore
 		params: ep.meta.params ? sortParams(Object.entries(ep.meta.params).map(([k, v]) => parseParamDefinition(k, v))) : null,
-		paramDefs: ep.meta.params ? extractParamDefRef(Object.values(ep.meta.params)) : null,
+		paramDefs: ep.meta.params ? extractParamDefRef(Object.values(ep.meta.params).map(x => x.validator)) : null,
 		res: ep.meta.res,
 		resProps: ep.meta.res && ep.meta.res.props ? sortParams(Object.entries(ep.meta.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
 		resDefs: null as any, //extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
@@ -214,6 +214,12 @@ router.get('/*/*', async ctx => {
 		type: 'output',
 		regex: /%URL%/g,
 		replace: config.url
+	}));
+
+	showdown.extension('wsUrlExtension', () => ({
+		type: 'output',
+		regex: /%WS_URL%/g,
+		replace: config.ws_url
 	}));
 
 	showdown.extension('apiUrlExtension', () => ({

@@ -1,6 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
-import User, { pack, ILocalUser } from '../../../../../models/user';
+import User, { pack } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -10,17 +11,24 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-write'
+	kind: 'following-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		}
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [followeeId, followeeIdErr] = $.type(ID).get(params.userId);
-	if (followeeIdErr) return rej('invalid userId param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch followee
 	const followee = await User.findOne({
-		_id: followeeId
+		_id: ps.userId
 	});
 
 	if (followee === null) {
@@ -33,6 +41,5 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		return rej(e);
 	}
 
-	// Send response
 	res(await pack(followee._id, user));
-});
+}));

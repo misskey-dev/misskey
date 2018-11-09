@@ -1,7 +1,12 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
+const deepcopy = require('deepcopy');
+import { pack as packUser, IUser } from './user';
 
 const Mute = db.get<IMute>('mute');
+Mute.createIndex('muterId');
+Mute.createIndex('muteeId');
 Mute.createIndex(['muterId', 'muteeId'], { unique: true });
 export default Mute;
 
@@ -12,29 +17,40 @@ export interface IMute {
 	muteeId: mongo.ObjectID;
 }
 
-/**
- * Muteを物理削除します
- */
-export async function deleteMute(mute: string | mongo.ObjectID | IMute) {
-	let m: IMute;
+export const packMany = (
+	mutes: (string | mongo.ObjectID | IMute)[],
+	me?: string | mongo.ObjectID | IUser
+) => {
+	return Promise.all(mutes.map(x => pack(x, me)));
+};
 
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(mute)) {
-		m = await Mute.findOne({
+export const pack = (
+	mute: any,
+	me?: any
+) => new Promise<any>(async (resolve, reject) => {
+	let _mute: any;
+
+	// Populate the mute if 'mute' is ID
+	if (isObjectId(mute)) {
+		_mute = await Mute.findOne({
 			_id: mute
 		});
 	} else if (typeof mute === 'string') {
-		m = await Mute.findOne({
+		_mute = await Mute.findOne({
 			_id: new mongo.ObjectID(mute)
 		});
 	} else {
-		m = mute as IMute;
+		_mute = deepcopy(mute);
 	}
 
-	if (m == null) return;
+	// Rename _id to id
+	_mute.id = _mute._id;
+	delete _mute._id;
 
-	// このMuteを削除
-	await Mute.remove({
-		_id: m._id
+	// Populate mutee
+	_mute.mutee = await packUser(_mute.muteeId, me, {
+		detail: true
 	});
-}
+
+	resolve(_mute);
+});

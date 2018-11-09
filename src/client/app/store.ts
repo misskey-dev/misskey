@@ -5,11 +5,13 @@ import * as nestedProperty from 'nested-property';
 import MiOS from './mios';
 import { hostname } from './config';
 import { erase } from '../../prelude/array';
+import getNoteSummary from '../../misc/get-note-summary';
 
 const defaultSettings = {
 	home: null,
 	mobileHome: [],
 	deck: null,
+	deckNav: true,
 	tagTimelines: [],
 	fetchOnScroll: true,
 	showMaps: true,
@@ -21,6 +23,7 @@ const defaultSettings = {
 	circleIcons: true,
 	contrastedAcct: true,
 	showFullAcct: false,
+	showVia: true,
 	showReplyTarget: true,
 	showMyRenotes: true,
 	showRenotedMyNotes: true,
@@ -56,7 +59,12 @@ const defaultDeviceSettings = {
 	loadRawImages: false,
 	alwaysShowNsfw: false,
 	postStyle: 'standard',
-	mobileNotificationPosition: 'bottom'
+	navbar: 'top',
+	deckColumnAlign: 'center',
+	mobileNotificationPosition: 'bottom',
+	deckTemporaryColumn: null,
+	deckDefault: false,
+	useOsDefaultEmojis: false
 };
 
 export default (os: MiOS) => new Vuex.Store({
@@ -67,7 +75,9 @@ export default (os: MiOS) => new Vuex.Store({
 	state: {
 		i: null,
 		indicate: false,
-		uiHeaderHeight: 0
+		uiHeaderHeight: 0,
+		navHook: null,
+		behindNotes: []
 	},
 
 	getters: {
@@ -89,6 +99,22 @@ export default (os: MiOS) => new Vuex.Store({
 
 		setUiHeaderHeight(state, height) {
 			state.uiHeaderHeight = height;
+		},
+
+		navHook(state, callback) {
+			state.navHook = callback;
+		},
+
+		pushBehindNote(state, note) {
+			if (note.userId === state.i.id) return;
+			if (state.behindNotes.some(n => n.id === note.id)) return;
+			state.behindNotes.push(note);
+			document.title = `(${state.behindNotes.length}) ${getNoteSummary(note)}`;
+		},
+
+		clearBehindNotes(state) {
+			state.behindNotes = [];
+			document.title = os.instanceName;
 		}
 	},
 

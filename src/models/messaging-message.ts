@@ -3,7 +3,7 @@ const deepcopy = require('deepcopy');
 import { pack as packUser } from './user';
 import { pack as packFile } from './drive-file';
 import db from '../db/mongodb';
-import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
+import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
 
 const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
@@ -24,38 +24,6 @@ export function isValidText(text: string): boolean {
 }
 
 /**
- * MessagingMessageを物理削除します
- */
-export async function deleteMessagingMessage(messagingMessage: string | mongo.ObjectID | IMessagingMessage) {
-	let m: IMessagingMessage;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(messagingMessage)) {
-		m = await MessagingMessage.findOne({
-			_id: messagingMessage
-		});
-	} else if (typeof messagingMessage === 'string') {
-		m = await MessagingMessage.findOne({
-			_id: new mongo.ObjectID(messagingMessage)
-		});
-	} else {
-		m = messagingMessage as IMessagingMessage;
-	}
-
-	if (m == null) return;
-
-	// このMessagingMessageを指すMessagingHistoryをすべて削除
-	await Promise.all((
-		await MessagingHistory.find({ messageId: m._id })
-	).map(x => deleteMessagingHistory(x)));
-
-	// このMessagingMessageを削除
-	await MessagingMessage.remove({
-		_id: m._id
-	});
-}
-
-/**
  * Pack a messaging message for API response
  */
 export const pack = (
@@ -72,7 +40,7 @@ export const pack = (
 	let _message: any;
 
 	// Populate the message if 'message' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(message)) {
+	if (isObjectId(message)) {
 		_message = await MessagingMessage.findOne({
 			_id: message
 		});

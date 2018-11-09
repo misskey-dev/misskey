@@ -1,10 +1,11 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
-import User, { pack as packUser, isRemoteUser, getGhost, ILocalUser } from '../../../../../models/user';
+import User, { pack as packUser, isRemoteUser, fetchProxyAccount } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../stream';
 import ap from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -14,20 +15,29 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write'
+	kind: 'account-write',
+
+	params: {
+		listId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		},
+	}
 };
 
-/**
- * Add a user to a user list
- */
-export default async (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'listId' parameter
-	const [listId, listIdErr] = $.type(ID).get(params.listId);
-	if (listIdErr) return rej('invalid listId param');
-
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
-		_id: listId,
+		_id: ps.listId,
 		userId: me._id,
 	});
 
@@ -35,13 +45,9 @@ export default async (params: any, me: ILocalUser) => new Promise(async (res, re
 		return rej('list not found');
 	}
 
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
 	// Fetch the user
 	const user = await User.findOne({
-		_id: userId
+		_id: ps.userId
 	});
 
 	if (user == null) {
@@ -65,8 +71,8 @@ export default async (params: any, me: ILocalUser) => new Promise(async (res, re
 
 	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 	if (isRemoteUser(user)) {
-		const ghost = await getGhost();
-		const content = ap(renderFollow(ghost, user));
-		deliver(ghost, content, user.inbox);
+		const proxy = await fetchProxyAccount();
+		const content = ap(renderFollow(proxy, user));
+		deliver(proxy, content, user.inbox);
 	}
-});
+}));

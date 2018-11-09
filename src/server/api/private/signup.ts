@@ -1,26 +1,28 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
-const recaptcha = require('recaptcha-promise');
 import User, { IUser, validateUsername, validatePassword, pack } from '../../../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';
 import RegistrationTicket from '../../../models/registration-tickets';
-import { updateUserStats } from '../../../services/update-chart';
-
-if (config.recaptcha) {
-	recaptcha.init({
-		secret_key: config.recaptcha.secret_key
-	});
-}
+import usersChart from '../../../chart/users';
+import fetchMeta from '../../../misc/fetch-meta';
 
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body as any;
 
+	const instance = await fetchMeta();
+
+	const recaptcha = require('recaptcha-promise');
+
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
-	if (process.env.NODE_ENV !== 'test' && config.recaptcha != null) {
+	if (process.env.NODE_ENV !== 'test' && instance.enableRecaptcha) {
+		recaptcha.init({
+			secret_key: instance.recaptchaSecretKey
+		});
+
 		const success = await recaptcha(body['g-recaptcha-response']);
 
 		if (!success) {
@@ -33,9 +35,7 @@ export default async (ctx: Koa.Context) => {
 	const password = body['password'];
 	const invitationCode = body['invitationCode'];
 
-	const meta = await Meta.findOne({});
-
-	if (meta && meta.disableRegistration) {
+	if (instance && instance.disableRegistration) {
 		if (invitationCode == null || typeof invitationCode != 'string') {
 			ctx.status = 400;
 			return;
@@ -67,14 +67,16 @@ export default async (ctx: Koa.Context) => {
 		return;
 	}
 
+	const usersCount = await User.count({});
+
 	// Fetch exist user that same username
 	const usernameExist = await User
 		.count({
 			usernameLower: username.toLowerCase(),
 			host: null
 		}, {
-				limit: 1
-			});
+			limit: 1
+		});
 
 	// Check username already used
 	if (usernameExist !== 0) {
@@ -104,17 +106,12 @@ export default async (ctx: Koa.Context) => {
 		host: null,
 		keypair: generateKeypair(),
 		token: secret,
-		email: null,
 		password: hash,
+		isAdmin: config.autoAdmin && usersCount === 0,
 		profile: {
 			bio: null,
 			birthday: null,
-			blood: null,
-			gender: null,
-			handedness: null,
-			height: null,
-			location: null,
-			weight: null
+			location: null
 		},
 		settings: {
 			autoWatch: false
@@ -130,8 +127,14 @@ export default async (ctx: Koa.Context) => {
 	}, { upsert: true });
 	//#endregion
 
-	updateUserStats(account, true);
+	usersChart.update(account, true);
 
-	// Response
-	ctx.body = await pack(account);
+	const res = await pack(account, account, {
+		detail: true,
+		includeSecrets: true
+	});
+
+	res.token = secret;
+
+	ctx.body = res;
 };

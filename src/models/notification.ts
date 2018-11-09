@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
 
@@ -50,37 +51,10 @@ export interface INotification {
 	isRead: Boolean;
 }
 
-/**
- * Notificationを物理削除します
- */
-export async function deleteNotification(notification: string | mongo.ObjectID | INotification) {
-	let n: INotification;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(notification)) {
-		n = await Notification.findOne({
-			_id: notification
-		});
-	} else if (typeof notification === 'string') {
-		n = await Notification.findOne({
-			_id: new mongo.ObjectID(notification)
-		});
-	} else {
-		n = notification as INotification;
-	}
-
-	if (n == null) return;
-
-	// このNotificationを削除
-	await Notification.remove({
-		_id: n._id
-	});
-}
-
-export const packMany = async (
+export const packMany = (
 	notifications: any[]
 ) => {
-	return (await Promise.all(notifications.map(n => pack(n)))).filter(x => x != null);
+	return Promise.all(notifications.map(n => pack(n)));
 };
 
 /**
@@ -90,7 +64,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 	let _notification: any;
 
 	// Populate the notification if 'notification' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(notification)) {
+	if (isObjectId(notification)) {
 		_notification = await Notification.findOne({
 			_id: notification
 		});
@@ -132,7 +106,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 
 			// (データベースの不具合などで)投稿が見つからなかったら
 			if (_notification.note == null) {
-				console.warn(`in packaging notification: note not found on database: ${_notification.noteId}`);
+				console.warn(`[DAMAGED DB] (missing) pkg: notification -> note :: ${_notification.id} (note ${_notification.noteId})`);
 				return resolve(null);
 			}
 			break;

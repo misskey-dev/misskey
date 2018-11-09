@@ -22,12 +22,19 @@ adduser --disabled-password --disabled-login misskey
 これらのソフトウェアをインストール・設定してください:
 
 #### 依存関係 :package:
-* **[Node.js](https://nodejs.org/en/)**
+* **[Node.js](https://nodejs.org/en/)** (10.0.0以上)
 * **[MongoDB](https://www.mongodb.com/)** (3.6以上)
-* **[Redis](https://redis.io/)**
 
 ##### オプション
-* [Elasticsearch](https://www.elastic.co/) - 検索機能を向上させるために用います。
+* [Redis](https://redis.io/)
+	* Redisはオプションですが、インストールすることを強く推奨します。
+	* インストールしなくていいのは、あなたのインスタンスが自分専用のときだけとお考えください。
+	* 具体的には、Redisをインストールしないと、次の事が出来なくなります:
+		* Misskeyプロセスを複数起動しての負荷分散
+		* レートリミット
+		* Twitter連携
+* [Elasticsearch](https://www.elastic.co/)
+	* 検索機能を有効にするためにはインストールが必要です。
 
 *3.* MongoDBの設定
 ----------------------------------------------------------------
@@ -45,11 +52,6 @@ adduser --disabled-password --disabled-login misskey
 3. `cd misskey` misskeyディレクトリに移動
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 5. `npm install` Misskeyの依存パッケージをインストール
-
-*(オプション)* reCAPTCHAトークン
-----------------------------------------------------------------
-reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。
-https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。
 
 *(オプション)* VAPIDキーペアの生成
 ----------------------------------------------------------------

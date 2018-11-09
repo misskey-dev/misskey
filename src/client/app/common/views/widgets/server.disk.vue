@@ -2,7 +2,7 @@
 <div class="disk">
 	<x-pie class="pie" :value="usage"/>
 	<div>
-		<p>%fa:R hdd%Storage</p>
+		<p><fa :icon="['far', 'hdd']"/>Storage</p>
 		<p>Total: {{ total | bytes(1) }}</p>
 		<p>Free: {{ available | bytes(1) }}</p>
 		<p>Used: {{ used | bytes(1) }}</p>
@@ -65,7 +65,7 @@ export default Vue.extend({
 			&:first-child
 				font-weight bold
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 	&:after

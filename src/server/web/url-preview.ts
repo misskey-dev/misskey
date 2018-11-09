@@ -7,6 +7,7 @@ module.exports = async (ctx: Koa.Context) => {
 	try {
 		const summary = config.summalyProxy ? await request.get({
 			url: config.summalyProxy,
+			proxy: config.proxy,
 			qs: {
 				url: ctx.query.url
 			},

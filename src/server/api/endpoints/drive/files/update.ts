@@ -1,9 +1,8 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
 import { publishDriveStream } from '../../../../../stream';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 import Note from '../../../../../models/note';
 
 export const meta = {
@@ -17,41 +16,44 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		fileId: $.type(ID).note({
+		fileId: {
+			validator: $.type(ID),
+			transform: transform,
 			desc: {
 				'ja-JP': '対象のファイルID'
 			}
-		}),
+		},
 
-		folderId: $.type(ID).optional.nullable.note({
-			default: undefined,
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: undefined as any,
 			desc: {
 				'ja-JP': 'フォルダID'
 			}
-		}),
+		},
 
-		name: $.str.optional.pipe(validateFileName).note({
-			default: undefined,
+		name: {
+			validator: $.str.optional.pipe(validateFileName),
+			default: undefined as any,
 			desc: {
 				'ja-JP': 'ファイル名',
 				'en-US': 'Name of the file'
 			}
-		}),
+		},
 
-		isSensitive: $.bool.optional.note({
-			default: undefined,
+		isSensitive: {
+			validator: $.bool.optional,
+			default: undefined as any,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) return rej(psErr);
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
@@ -100,8 +102,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}).then(notes => {
 		notes.forEach(note => {
 			note._files[note._files.findIndex(f => f._id.equals(file._id))] = file;
-			Note.findOneAndUpdate({ _id: note._id }, {
-				_files: note._files
+			Note.update({ _id: note._id }, {
+				$set: {
+					_files: note._files
+				}
 			});
 		});
 	});
@@ -112,6 +116,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Response
 	res(fileObj);
 
-	// Publish file_updated event
-	publishDriveStream(user._id, 'file_updated', fileObj);
-});
+	// Publish fileUpdated event
+	publishDriveStream(user._id, 'fileUpdated', fileObj);
+}));

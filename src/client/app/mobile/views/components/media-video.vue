@@ -1,8 +1,8 @@
 <template>
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="video.isSensitive && hide" @click="hide = false">
 	<div>
-		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
-		<span>%i18n:@click-to-show%</span>
+		<b><fa icon="exclamation-triangle"/> {{ $t('sensitive') }}</b>
+		<span>{{ $t('click-to-show') }}</span>
 	</div>
 </div>
 <a class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else
@@ -11,14 +11,16 @@
 	:style="imageStyle"
 	:title="video.name"
 >
-	%fa:R play-circle%
+	<fa :icon="['far', 'play-circle']"/>
 </a>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/media-video.vue'),
 	props: {
 		video: {
 			type: Object,

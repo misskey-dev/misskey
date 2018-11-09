@@ -8,6 +8,12 @@ import { IUser } from '../../models/user';
 const log = debug('misskey:limitter');
 
 export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) => {
+	// Redisがインストールされてない場合は常に許可
+	if (limiterDB == null) {
+		ok();
+		return;
+	}
+
 	const limitation = endpoint.meta.limit;
 
 	const key = limitation.hasOwnProperty('key')

@@ -8,6 +8,7 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import pack from '../../../remote/activitypub/renderer';
+import perUserReactionsChart from '../../../chart/per-user-reactions';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself
@@ -26,7 +27,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	} catch (e) {
 		// duplicate key error
 		if (e.code === 11000) {
-			return res(null);
+			return rej('already reacted');
 		}
 
 		console.error(e);
@@ -35,16 +36,19 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 
 	res();
 
-	const inc: {[key: string]: number} = {};
-	inc[`reactionCounts.${reaction}`] = 1;
-
 	// Increment reactions count
 	await Note.update({ _id: note._id }, {
-		$inc: inc
+		$inc: {
+			[`reactionCounts.${reaction}`]: 1,
+			score: 1
+		}
 	});
 
+	perUserReactionsChart.update(user, note);
+
 	publishNoteStream(note._id, 'reacted', {
-		reaction: reaction
+		reaction: reaction,
+		userId: user._id
 	});
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成

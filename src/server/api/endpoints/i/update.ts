@@ -1,12 +1,11 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
-import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack, ILocalUser } from '../../../../models/user';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
-import { IApp } from '../../../../models/app';
-import config from '../../../../config';
 import { publishToFollowers } from '../../../../services/i/update';
-import getParams from '../../get-params';
+import define from '../../define';
+import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 
 export const meta = {
 	desc: {
@@ -19,84 +18,103 @@ export const meta = {
 	kind: 'account-write',
 
 	params: {
-		name: $.str.optional.nullable.pipe(isValidName).note({
+		name: {
+			validator: $.str.optional.nullable.pipe(isValidName),
 			desc: {
 				'ja-JP': '名前(ハンドルネームやニックネーム)'
 			}
-		}),
+		},
 
-		description: $.str.optional.nullable.pipe(isValidDescription).note({
+		description: {
+			validator: $.str.optional.nullable.pipe(isValidDescription),
 			desc: {
 				'ja-JP': 'アカウントの説明や自己紹介'
 			}
-		}),
+		},
 
-		location: $.str.optional.nullable.pipe(isValidLocation).note({
+		location: {
+			validator: $.str.optional.nullable.pipe(isValidLocation),
 			desc: {
 				'ja-JP': '住んでいる地域、所在'
 			}
-		}),
+		},
 
-		birthday: $.str.optional.nullable.pipe(isValidBirthday).note({
+		birthday: {
+			validator: $.str.optional.nullable.pipe(isValidBirthday),
 			desc: {
 				'ja-JP': '誕生日 (YYYY-MM-DD形式)'
 			}
-		}),
+		},
 
-		avatarId: $.type(ID).optional.nullable.note({
+		avatarId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
 			desc: {
 				'ja-JP': 'アイコンに設定する画像のドライブファイルID'
 			}
-		}),
+		},
 
-		bannerId: $.type(ID).optional.nullable.note({
+		bannerId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
 			desc: {
 				'ja-JP': 'バナーに設定する画像のドライブファイルID'
 			}
-		}),
+		},
 
-		wallpaperId: $.type(ID).optional.nullable.note({
+		wallpaperId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
 			desc: {
 				'ja-JP': '壁紙に設定する画像のドライブファイルID'
 			}
-		}),
+		},
 
-		isLocked: $.bool.optional.note({
+		isLocked: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': '鍵アカウントか否か'
 			}
-		}),
+		},
 
-		isBot: $.bool.optional.note({
+		carefulBot: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'Botからのフォローを承認制にするか'
+			}
+		},
+
+		isBot: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'Botか否か'
 			}
-		}),
+		},
 
-		isCat: $.bool.optional.note({
+		isCat: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': '猫か否か'
 			}
-		}),
+		},
 
-		autoWatch: $.bool.optional.note({
+		autoWatch: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': '投稿の自動ウォッチをするか否か'
 			}
-		}),
+		},
 
-		alwaysMarkNsfw: $.bool.optional.note({
+		alwaysMarkNsfw: {
+			validator: $.bool.optional,
 			desc: {
 				'ja-JP': 'アップロードするメディアをデフォルトで「閲覧注意」として設定するか'
 			}
-		}),
+		},
 	}
 };
 
-export default async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	const updates = {} as any;
@@ -110,6 +128,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 	if (ps.wallpaperId !== undefined) updates.wallpaperId = ps.wallpaperId;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
+	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
 	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
 	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
@@ -122,7 +141,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		if (avatar == null) return rej('avatar not found');
 		if (!avatar.contentType.startsWith('image/')) return rej('avatar not an image');
 
-		updates.avatarUrl = avatar.metadata.thumbnailUrl || avatar.metadata.url || `${config.drive_url}/${avatar._id}`;
+		updates.avatarUrl = getDriveFileUrl(avatar, true);
 
 		if (avatar.metadata.properties.avgColor) {
 			updates.avatarColor = avatar.metadata.properties.avgColor;
@@ -137,7 +156,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 		if (banner == null) return rej('banner not found');
 		if (!banner.contentType.startsWith('image/')) return rej('banner not an image');
 
-		updates.bannerUrl = banner.metadata.url || `${config.drive_url}/${banner._id}`;
+		updates.bannerUrl = getDriveFileUrl(banner, false);
 
 		if (banner.metadata.properties.avgColor) {
 			updates.bannerColor = banner.metadata.properties.avgColor;
@@ -155,7 +174,7 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 
 			if (wallpaper == null) return rej('wallpaper not found');
 
-			updates.wallpaperUrl = wallpaper.metadata.url || `${config.drive_url}/${wallpaper._id}`;
+			updates.wallpaperUrl = getDriveFileUrl(wallpaper);
 
 			if (wallpaper.metadata.properties.avgColor) {
 				updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
@@ -186,4 +205,4 @@ export default async (params: any, user: ILocalUser, app: IApp) => new Promise(a
 
 	// フォロワーにUpdateを配信
 	publishToFollowers(user._id);
-});
+}));

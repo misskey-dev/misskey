@@ -1,9 +1,9 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:search% {{ q }}</span>
+	<span slot="header"><fa icon="search"/> {{ q }}</span>
 
 	<main>
-		<p :class="$style.empty" v-if="!fetching && empty">%fa:search% {{ '%i18n:not-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:not-found%'.split('{}')[1] }}</p>
+		<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('not-found', { q }) }}</p>
 		<mk-notes ref="timeline" :more="existMore ? more : null"/>
 	</main>
 </mk-ui>
@@ -11,11 +11,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 const limit = 20;
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/search.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -34,7 +36,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = `%i18n:@search%: ${this.q} | ${(this as any).os.instanceName}`;
+		document.title = `%i18n:@search%: ${this.q} | ${this.$root.instanceName}`;
 
 		this.fetch();
 	},
@@ -44,7 +46,7 @@ export default Vue.extend({
 			Progress.start();
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/search', {
+				this.$root.api('notes/search', {
 					limit: limit + 1,
 					offset: this.offset,
 					query: this.q
@@ -63,7 +65,7 @@ export default Vue.extend({
 		more() {
 			this.offset += limit;
 
-			const promise = (this as any).api('notes/search', {
+			const promise = this.$root.api('notes/search', {
 				limit: limit + 1,
 				offset: this.offset,
 				query: this.q

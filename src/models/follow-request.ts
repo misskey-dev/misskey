@@ -1,9 +1,12 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { pack as packUser } from './user';
 
 const FollowRequest = db.get<IFollowRequest>('followRequests');
+FollowRequest.createIndex('followerId');
+FollowRequest.createIndex('followeeId');
 FollowRequest.createIndex(['followerId', 'followeeId'], { unique: true });
 export default FollowRequest;
 
@@ -12,6 +15,7 @@ export type IFollowRequest = {
 	createdAt: Date;
 	followeeId: mongo.ObjectID;
 	followerId: mongo.ObjectID;
+	requestId?: string;	// id of Follow Activity
 
 	// 非正規化
 	_followee: {
@@ -27,33 +31,6 @@ export type IFollowRequest = {
 };
 
 /**
- * FollowRequestを物理削除します
- */
-export async function deleteFollowRequest(followRequest: string | mongo.ObjectID | IFollowRequest) {
-	let f: IFollowRequest;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(followRequest)) {
-		f = await FollowRequest.findOne({
-			_id: followRequest
-		});
-	} else if (typeof followRequest === 'string') {
-		f = await FollowRequest.findOne({
-			_id: new mongo.ObjectID(followRequest)
-		});
-	} else {
-		f = followRequest as IFollowRequest;
-	}
-
-	if (f == null) return;
-
-	// このFollowingを削除
-	await FollowRequest.remove({
-		_id: f._id
-	});
-}
-
-/**
  * Pack a request for API response
  */
 export const pack = (
@@ -63,7 +40,7 @@ export const pack = (
 	let _request: any;
 
 	// Populate the request if 'request' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(request)) {
+	if (isObjectId(request)) {
 		_request = await FollowRequest.findOne({
 			_id: request
 		});

@@ -18,7 +18,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 	}
 
 	if (ep.meta.requireCredential && user == null) {
-		return rej('SIGNIN_REQUIRED');
+		return rej('CREDENTIAL_REQUIRED');
 	}
 
 	if (ep.meta.requireCredential && user.isSuspended) {
@@ -42,18 +42,12 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		}
 	}
 
-	let exec = ep.exec;
-
-	if (ep.meta.requireFile && file) {
-		exec = exec.bind(null, file);
-	}
-
 	let res;
 
 	// API invoking
 	try {
 		const before = performance.now();
-		res = await exec(data, user, app);
+		res = await ep.exec(data, user, app, file);
 		const after = performance.now();
 
 		const time = after - before;
@@ -62,7 +56,15 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 		}
 	} catch (e) {
-		rej(e);
+		if (e.name == 'INVALID_PARAM') {
+			rej({
+				code: e.name,
+				param: e.param,
+				reason: e.message
+			});
+		} else {
+			rej(e);
+		}
 		return;
 	}
 

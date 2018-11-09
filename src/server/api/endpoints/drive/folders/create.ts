@@ -1,9 +1,11 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../stream';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'ドライブのフォルダを作成します。',
 		'en-US': 'Create a folder of drive.'
@@ -11,25 +13,37 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-write'
+	kind: 'drive-write',
+
+	params: {
+		name: {
+			validator: $.str.optional.pipe(isValidFolderName),
+			default: 'Untitled',
+			desc: {
+				'ja-JP': 'フォルダ名',
+				'en-US': 'Folder name'
+			}
+		},
+
+		parentId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			desc: {
+				'ja-JP': '親フォルダID',
+				'en-US': 'Parent folder ID'
+			}
+		}
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	const [name = '無題のフォルダー', nameErr] = $.str.optional.pipe(isValidFolderName).get(params.name);
-	if (nameErr) return rej('invalid name param');
-
-	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $.type(ID).optional.nullable.get(params.parentId);
-	if (parentIdErr) return rej('invalid parentId param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// If the parent folder is specified
 	let parent = null;
-	if (parentId) {
+	if (ps.parentId) {
 		// Fetch parent folder
 		parent = await DriveFolder
 			.findOne({
-				_id: parentId,
+				_id: ps.parentId,
 				userId: user._id
 			});
 
@@ -41,7 +55,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Create folder
 	const folder = await DriveFolder.insert({
 		createdAt: new Date(),
-		name: name,
+		name: ps.name,
 		parentId: parent !== null ? parent._id : null,
 		userId: user._id
 	});
@@ -52,6 +66,6 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	// Response
 	res(folderObj);
 
-	// Publish folder_created event
-	publishDriveStream(user._id, 'folder_created', folderObj);
-});
+	// Publish folderCreated event
+	publishDriveStream(user._id, 'folderCreated', folderObj);
+}));

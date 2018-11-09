@@ -2,27 +2,12 @@
  * ユーザーが設定する必要のある情報
  */
 export type Source = {
-	/**
-	 * メンテナ情報
-	 */
-	maintainer: {
-		/**
-		 * メンテナの名前
-		 */
-		name: string;
-		/**
-		 * メンテナの連絡先(URLかmailto形式のURL)
-		 */
-		url: string;
-		repository_url?: string;
-		feedback_url?: string;
-	};
-	name?: string;
-	description?: string;
-	welcome_bg_url?: string;
+	repository_url?: string;
+	feedback_url?: string;
 	url: string;
 	port: number;
 	https?: { [x: string]: string };
+	disableHsts?: boolean;
 	mongodb: {
 		host: string;
 		port: number;
@@ -40,15 +25,6 @@ export type Source = {
 		port: number;
 		pass: string;
 	};
-	recaptcha?: {
-		site_key: string;
-		secret_key: string;
-	};
-
-	localDriveCapacityMb: number;
-	remoteDriveCapacityMb: number;
-	preventCacheRemoteFiles: boolean;
-
 	drive?: {
 		storage: string;
 		bucket?: string;
@@ -57,32 +33,17 @@ export type Source = {
 		config?: any;
 	};
 
-	/**
-	 * ゴーストアカウントのID
-	 */
-	ghost?: string;
+	autoAdmin?: boolean;
+
+	proxy?: string;
 
 	summalyProxy?: string;
 
 	accesslog?: string;
-	twitter?: {
-		consumer_key: string;
-		consumer_secret: string;
-	};
+
 	github_bot?: {
 		hook_secret: string;
 		username: string;
-	};
-	reversi_ai?: {
-		id: string;
-		i: string;
-	};
-	line_bot?: {
-		channel_secret: string;
-		channel_access_token: string;
-	};
-	analysis?: {
-		mecab_command?: string;
 	};
 
 	/**
@@ -93,9 +54,13 @@ export type Source = {
 		private_key: string;
 	};
 
-	google_maps_api_key: string;
-
 	clusterLimit?: number;
+
+	user_recommendation?: {
+		external: boolean;
+		engine: string;
+		timeout: number;
+	};
 };
 
 /**

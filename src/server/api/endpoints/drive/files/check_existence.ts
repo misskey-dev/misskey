@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import DriveFile, { pack } from '../../../../../models/drive-file';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -13,21 +13,20 @@ export const meta = {
 	kind: 'drive-read',
 
 	params: {
-		md5: $.str.note({
+		md5: {
+			validator: $.str,
 			desc: {
 				'ja-JP': 'ファイルのMD5ハッシュ'
 			}
-		})
+		}
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [md5, md5Err] = $.str.get(params.md5);
-	if (md5Err) return rej('invalid md5 param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const file = await DriveFile.findOne({
-		md5: md5,
-		'metadata.userId': user._id
+		md5: ps.md5,
+		'metadata.userId': user._id,
+		'metadata.deletedAt': { $exists: false }
 	});
 
 	if (file === null) {
@@ -35,4 +34,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	} else {
 		res({ file: await pack(file) });
 	}
-});
+}));

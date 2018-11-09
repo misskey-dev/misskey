@@ -3,9 +3,9 @@
 	<mk-note-preview class="preview" :note="note"/>
 	<template v-if="!quote">
 		<footer>
-			<a class="quote" v-if="!quote" @click="onQuote">%i18n:@quote%</a>
-			<ui-button class="button cancel" inline @click="cancel">%i18n:@cancel%</ui-button>
-			<ui-button class="button ok" inline primary @click="ok" :disabled="wait">{{ wait ? '%i18n:@reposting%' : '%i18n:@renote%' }}</ui-button>
+			<a class="quote" v-if="!quote" @click="onQuote">{{ $t('quote') }}</a>
+			<ui-button class="button cancel" inline @click="cancel">{{ $t('cancel') }}</ui-button>
+			<ui-button class="button ok" inline primary @click="ok" :disabled="wait">{{ wait ? this.$t('reposting') : this.$t('renote') }}</ui-button>
 		</footer>
 	</template>
 	<template v-if="quote">
@@ -16,8 +16,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/renote-form.vue'),
 	props: ['note'],
 	data() {
 		return {
@@ -28,13 +30,13 @@ export default Vue.extend({
 	methods: {
 		ok() {
 			this.wait = true;
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				renoteId: this.note.id
 			}).then(data => {
 				this.$emit('posted');
-				(this as any).apis.notify('%i18n:@success%');
+				this.$notify(this.$t('success'));
 			}).catch(err => {
-				(this as any).apis.notify('%i18n:@failure%');
+				this.$notify(this.$t('failure'));
 			}).then(() => {
 				this.wait = false;
 			});

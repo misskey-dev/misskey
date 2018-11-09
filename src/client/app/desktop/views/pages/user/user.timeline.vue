@@ -1,25 +1,24 @@
 <template>
 <div class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
 	<header>
-		<span :data-active="mode == 'default'" @click="mode = 'default'">%fa:comment-alt R% %i18n:@default%</span>
-		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'">%fa:comments% %i18n:@with-replies%</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'">%fa:images% %i18n:@with-media%</span>
+		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
+		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa icon="images"/> {{ $t('with-media') }}</span>
 	</header>
-	<div class="loading" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
-		<p class="empty" slot="empty">%fa:R comments%%i18n:@empty%</p>
+		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>
 	</mk-notes>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.timeline.vue'),
 	props: ['user'],
 
 	data() {
@@ -61,7 +60,7 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('users/notes', {
+				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined,
@@ -82,7 +81,7 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('users/notes', {
+			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',
@@ -152,9 +151,6 @@ export default Vue.extend({
 				&:hover
 					color var(--desktopTimelineSrcHover)
 
-	> .loading
-		padding 64px 0
-
 	> .empty
 		display block
 		margin 0 auto
@@ -163,7 +159,7 @@ export default Vue.extend({
 		text-align center
 		color #999
 
-		> [data-fa]
+		> [data-icon]
 			display block
 			margin-bottom 16px
 			font-size 3em

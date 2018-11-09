@@ -1,259 +1,306 @@
 <template>
 <div class="mk-settings">
 	<div class="nav">
-		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'">%fa:user .fw%%i18n:@profile%</p>
-		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'">%fa:desktop .fw%Web</p>
-		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'">%fa:R bell .fw%%i18n:@notification%</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:@drive%</p>
-		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'">%fa:hashtag .fw%%i18n:@tags%</p>
-		<p :class="{ active: page == 'mute' }" @mousedown="page = 'mute'">%fa:ban .fw%%i18n:@mute%</p>
-		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'">%fa:puzzle-piece .fw%%i18n:@apps%</p>
-		<p :class="{ active: page == 'twitter' }" @mousedown="page = 'twitter'">%fa:B twitter .fw%Twitter</p>
-		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'">%fa:unlock-alt .fw%%i18n:@security%</p>
-		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'">%fa:key .fw%API</p>
-		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'">%fa:cogs .fw%%i18n:@other%</p>
+		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><fa icon="user" fixed-width/>{{ $t('profile') }}</p>
+		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><fa icon="palette" fixed-width/>{{ $t('theme') }}</p>
+		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><fa icon="desktop" fixed-width/>Web</p>
+		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('notification') }}</p>
+		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</p>
+		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><fa icon="hashtag" fixed-width/>{{ $t('tags') }}</p>
+		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><fa icon="ban" fixed-width/>{{ $t('mute-and-block') }}</p>
+		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'"><fa icon="puzzle-piece" fixed-width/>{{ $t('apps') }}</p>
+		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'"><fa icon="unlock-alt" fixed-width/>{{ $t('security') }}</p>
+		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'"><fa icon="key" fixed-width/>API</p>
+		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'"><fa icon="cogs" fixed-width/>{{ $t('other') }}</p>
 	</div>
 	<div class="pages">
-		<section class="profile" v-show="page == 'profile'">
-			<h1>%i18n:@profile%</h1>
-			<x-profile/>
-		</section>
+		<div class="profile" v-show="page == 'profile'">
+			<mk-profile-editor/>
 
-		<section class="web" v-show="page == 'web'">
-			<h1>%i18n:@theme%</h1>
-			<mk-theme/>
-		</section>
+			<ui-card>
+				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
+				<section>
+					<mk-twitter-setting/>
+				</section>
+			</ui-card>
 
-		<section class="web" v-show="page == 'web'">
-			<h1>%i18n:@behaviour%</h1>
-			<ui-switch v-model="fetchOnScroll">
-				%i18n:@fetch-on-scroll%
-				<span slot="desc">%i18n:@fetch-on-scroll-desc%</span>
-			</ui-switch>
-			<ui-switch v-model="autoPopout">
-				%i18n:@auto-popout%
-				<span slot="desc">%i18n:@auto-popout-desc%</span>
-			</ui-switch>
+			<ui-card>
+				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
+				<section>
+					<mk-github-setting/>
+				</section>
+			</ui-card>
+		</div>
+
+		<ui-card class="theme" v-show="page == 'theme'">
+			<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
 
 			<section>
-				<header>%i18n:@note-visibility%</header>
-				<ui-switch v-model="rememberNoteVisibility">%i18n:@remember-note-visibility%</ui-switch>
+				<mk-theme/>
+			</section>
+		</ui-card>
+
+		<ui-card class="web" v-show="page == 'web'">
+			<div slot="title"><fa icon="sliders-h"/> {{ $t('behaviour') }}</div>
+
+			<section>
+				<ui-switch v-model="fetchOnScroll">{{ $t('fetch-on-scroll') }}
+					<span slot="desc">{{ $t('fetch-on-scroll-desc') }}</span>
+				</ui-switch>
+				<ui-switch v-model="autoPopout">{{ $t('auto-popout') }}
+					<span slot="desc">{{ $t('auto-popout-desc') }}</span>
+				</ui-switch>
+				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}<span slot="desc">{{ $t('deck-nav-desc') }}</span></ui-switch>
+
+				<details>
+					<summary>{{ $t('advanced') }}</summary>
+					<ui-switch v-model="apiViaStream">{{ $t('api-via-stream') }}
+						<span slot="desc">{{ $t('api-via-stream-desc') }}</span>
+					</ui-switch>
+				</details>
+			</section>
+
+			<section>
+				<header>{{ $t('timeline') }}</header>
+				<ui-switch v-model="showMyRenotes">{{ $t('show-my-renotes') }}</ui-switch>
+				<ui-switch v-model="showRenotedMyNotes">{{ $t('show-renoted-my-notes') }}</ui-switch>
+				<ui-switch v-model="showLocalRenotes">{{ $t('show-local-renotes') }}</ui-switch>
+			</section>
+
+			<section>
+				<header>{{ $t('note-visibility') }}</header>
+				<ui-switch v-model="rememberNoteVisibility">{{ $t('remember-note-visibility') }}</ui-switch>
 				<section>
-					<header>%i18n:@default-note-visibility%</header>
+					<header>{{ $t('default-note-visibility') }}</header>
 					<ui-select v-model="defaultNoteVisibility">
-						<option value="public">%i18n:common.note-visibility.public%</option>
-						<option value="home">%i18n:common.note-visibility.home%</option>
-						<option value="followers">%i18n:common.note-visibility.followers%</option>
-						<option value="specified">%i18n:common.note-visibility.specified%</option>
-						<option value="private">%i18n:common.note-visibility.private%</option>
+						<option value="public">{{ $t('@.note-visibility.public') }}</option>
+						<option value="home">{{ $t('@.note-visibility.home') }}</option>
+						<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
+						<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
+						<option value="private">{{ $t('@.note-visibility.private') }}</option>
 					</ui-select>
 				</section>
 			</section>
+		</ui-card>
 
-			<details>
-				<summary>%i18n:@advanced%</summary>
-				<ui-switch v-model="apiViaStream">
-					%i18n:@api-via-stream%
-					<span slot="desc">%i18n:@api-via-stream-desc%</span>
+		<ui-card class="web" v-show="page == 'web'">
+			<div slot="title"><fa icon="desktop"/> {{ $t('display') }}</div>
+
+			<section>
+				<ui-switch v-model="showPostFormOnTopOfTl">{{ $t('post-form-on-timeline') }}</ui-switch>
+				<ui-button @click="customizeHome">{{ $t('customize') }}</ui-button>
+			</section>
+			<section>
+				<header>{{ $t('wallpaper') }}</header>
+				<ui-button @click="updateWallpaper">{{ $t('choose-wallpaper') }}</ui-button>
+				<ui-button @click="deleteWallpaper">{{ $t('delete-wallpaper') }}</ui-button>
+			</section>
+			<section>
+				<header>{{ $t('navbar-position') }}</header>
+				<ui-radio v-model="navbar" value="top">{{ $t('navbar-position-top') }}</ui-radio>
+				<ui-radio v-model="navbar" value="left">{{ $t('navbar-position-left') }}</ui-radio>
+				<ui-radio v-model="navbar" value="right">{{ $t('navbar-position-right') }}</ui-radio>
+			</section>
+			<section>
+				<ui-switch v-model="deckDefault">{{ $t('deck-default') }}</ui-switch>
+			</section>
+			<section>
+				<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
+				<ui-switch v-model="useShadow">{{ $t('use-shadow') }}</ui-switch>
+				<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
+				<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
+				<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }}</ui-switch>
+				<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
+				<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
+				<ui-switch v-model="showVia">{{ $t('@.show-via') }}</ui-switch>
+				<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
+				<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
+			</section>
+			<section>
+				<ui-switch v-model="suggestRecentHashtags">{{ $t('suggest-recent-hashtags') }}</ui-switch>
+				<ui-switch v-model="showClockOnHeader">{{ $t('show-clock-on-header') }}</ui-switch>
+				<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }}</ui-switch>
+				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
+				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
+				<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
+			</section>
+			<section>
+				<header>{{ $t('deck-column-align') }}</header>
+				<ui-radio v-model="deckColumnAlign" value="center">{{ $t('deck-column-align-center') }}</ui-radio>
+				<ui-radio v-model="deckColumnAlign" value="left">{{ $t('deck-column-align-left') }}</ui-radio>
+			</section>
+			<section>
+				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
+				<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@.use-contrast-reversi-stones') }}</ui-switch>
+			</section>
+		</ui-card>
+
+		<ui-card class="web" v-show="page == 'web'">
+			<div slot="title"><fa icon="volume-up"/> {{ $t('sound') }}</div>
+
+			<section>
+				<ui-switch v-model="enableSounds">{{ $t('enable-sounds') }}
+					<span slot="desc">{{ $t('enable-sounds-desc') }}</span>
 				</ui-switch>
-			</details>
-		</section>
+				<label>{{ $t('volume') }}</label>
+				<input type="range"
+					v-model="soundVolume"
+					:disabled="!enableSounds"
+					max="1"
+					step="0.1"
+				/>
+				<ui-button @click="soundTest"><fa icon="volume-up"/> {{ $t('test') }}</ui-button>
+			</section>
+		</ui-card>
 
-		<section class="web" v-show="page == 'web'">
-			<h1>%i18n:@display%</h1>
-			<div class="div">
-				<button class="ui button" @click="customizeHome" style="margin-bottom: 16px">%i18n:@customize%</button>
-			</div>
-			<div class="div">
-				<button class="ui" @click="updateWallpaper">%i18n:@choose-wallpaper%</button>
-				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
-				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
-				<ui-switch v-model="useShadow">%i18n:@use-shadow%</ui-switch>
-				<ui-switch v-model="roundedCorners">%i18n:@rounded-corners%</ui-switch>
-				<ui-switch v-model="circleIcons">%i18n:@circle-icons%</ui-switch>
-				<ui-switch v-model="reduceMotion">%i18n:common.reduce-motion%</ui-switch>
-				<ui-switch v-model="contrastedAcct">%i18n:@contrasted-acct%</ui-switch>
-				<ui-switch v-model="showFullAcct">%i18n:common.show-full-acct%</ui-switch>
-				<ui-switch v-model="iLikeSushi">%i18n:common.i-like-sushi%</ui-switch>
-			</div>
-			<ui-switch v-model="showPostFormOnTopOfTl">%i18n:@post-form-on-timeline%</ui-switch>
-			<ui-switch v-model="suggestRecentHashtags">%i18n:@suggest-recent-hashtags%</ui-switch>
-			<ui-switch v-model="showClockOnHeader">%i18n:@show-clock-on-header%</ui-switch>
-			<ui-switch v-model="alwaysShowNsfw">%i18n:common.always-show-nsfw%</ui-switch>
-			<ui-switch v-model="showReplyTarget">%i18n:@show-reply-target%</ui-switch>
-			<ui-switch v-model="showMyRenotes">%i18n:@show-my-renotes%</ui-switch>
-			<ui-switch v-model="showRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
-			<ui-switch v-model="showLocalRenotes">%i18n:@show-local-renotes%</ui-switch>
-			<ui-switch v-model="showMaps">%i18n:@show-maps%</ui-switch>
-			<ui-switch v-model="disableAnimatedMfm">%i18n:common.disable-animated-mfm%</ui-switch>
-			<ui-switch v-model="games_reversi_showBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
-			<ui-switch v-model="games_reversi_useContrastStones">%i18n:common.use-contrast-reversi-stones%</ui-switch>
-		</section>
+		<ui-card class="web" v-show="page == 'web'">
+			<div slot="title"><fa icon="language"/> {{ $t('language') }}</div>
+			<section class="fit-top">
+				<ui-select v-model="lang" :placeholder="$t('pick-language')">
+					<optgroup :label="$t('recommended')">
+						<option value="">{{ $t('auto') }}</option>
+					</optgroup>
 
-		<section class="web" v-show="page == 'web'">
-			<h1>%i18n:@sound%</h1>
-			<ui-switch v-model="enableSounds">
-				%i18n:@enable-sounds%
-				<span slot="desc">%i18n:@enable-sounds-desc%</span>
-			</ui-switch>
-			<label>%i18n:@volume%</label>
-			<input type="range"
-				v-model="soundVolume"
-				:disabled="!enableSounds"
-				max="1"
-				step="0.1"
-			/>
-			<button class="ui button" @click="soundTest">%fa:volume-up% %i18n:@test%</button>
-		</section>
+					<optgroup :label="$t('specify-language')">
+						<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+					</optgroup>
+				</ui-select>
+				<div class="none ui info">
+					<p><fa icon="info-circle"/>{{ $t('language-desc') }}</p>
+				</div>
+			</section>
+		</ui-card>
 
-		<section class="web" v-show="page == 'web'">
-			<h1>%i18n:@mobile%</h1>
-			<ui-switch v-model="disableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
-		</section>
+		<ui-card class="web" v-show="page == 'web'">
+			<div slot="title"><fa :icon="['far', 'trash-alt']"/> {{ $t('cache') }}</div>
+			<section>
+				<ui-button @click="clean">{{ $t('clean-cache') }}</ui-button>
+				<div class="none ui info warn">
+					<p><fa icon="exclamation-triangle"/>{{ $t('cache-warn') }}</p>
+				</div>
+			</section>
+		</ui-card>
 
-		<section class="web" v-show="page == 'web'">
-			<h1>%i18n:@language%</h1>
-			<select v-model="lang" placeholder="%i18n:@pick-language%">
-				<optgroup label="%i18n:@recommended%">
-					<option value="">%i18n:@auto%</option>
-				</optgroup>
-
-				<optgroup label="%i18n:@specify-language%">
-					<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-				</optgroup>
-			</select>
-			<div class="none ui info">
-				<p>%fa:info-circle%%i18n:@language-desc%</p>
-			</div>
-		</section>
-
-		<section class="web" v-show="page == 'web'">
-			<h1>%i18n:@cache%</h1>
-			<button class="ui button" @click="clean">%i18n:@clean-cache%</button>
-			<div class="none ui info warn">
-				<p>%fa:exclamation-triangle%%i18n:@cache-warn%</p>
-			</div>
-		</section>
-
-		<section class="notification" v-show="page == 'notification'">
-			<h1>%i18n:@notification%</h1>
-			<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
-				%i18n:@auto-watch%
-				<span slot="desc">%i18n:@auto-watch-desc%</span>
-			</ui-switch>
-		</section>
-
-		<section class="drive" v-show="page == 'drive'">
-			<h1>%i18n:@drive%</h1>
-			<x-drive/>
-		</section>
-
-		<section class="hashtags" v-show="page == 'hashtags'">
-			<h1>%i18n:@tags%</h1>
-			<x-tags/>
-		</section>
-
-		<section class="mute" v-show="page == 'mute'">
-			<h1>%i18n:@mute%</h1>
-			<x-mute/>
-		</section>
-
-		<section class="apps" v-show="page == 'apps'">
-			<h1>%i18n:@apps%</h1>
-			<x-apps/>
-		</section>
-
-		<section class="twitter" v-show="page == 'twitter'">
-			<h1>Twitter</h1>
-			<mk-twitter-setting/>
-		</section>
-
-		<section class="password" v-show="page == 'security'">
-			<h1>%i18n:@password%</h1>
-			<x-password/>
-		</section>
-
-		<section class="2fa" v-show="page == 'security'">
-			<h1>%i18n:@2fa%</h1>
-			<x-2fa/>
-		</section>
-
-		<section class="signin" v-show="page == 'security'">
-			<h1>%i18n:@signin%</h1>
-			<x-signins/>
-		</section>
-
-		<section class="api" v-show="page == 'api'">
-			<h1>API</h1>
-			<x-api/>
-		</section>
-
-		<section class="other" v-show="page == 'other'">
-			<h1>%i18n:@about%</h1>
-			<p v-if="meta">%i18n:@operator%: <i><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></i></p>
-		</section>
-
-		<section class="other" v-show="page == 'other'">
-			<h1>%i18n:@update%</h1>
-			<p>
-				<span>%i18n:@version% <i>{{ version }}</i></span>
-				<template v-if="latestVersion !== undefined">
-					<br>
-					<span>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></span>
-				</template>
-			</p>
-			<button class="ui button block" @click="checkForUpdate" :disabled="checkingForUpdate">
-				<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
-				<template v-else>%i18n:@do-update%</template>
-			</button>
-			<details>
-				<summary>%i18n:@update-settings%</summary>
-				<ui-switch v-model="preventUpdate">
-					%i18n:@prevent-update%
-					<span slot="desc">%i18n:@prevent-update-desc%</span>
+		<ui-card class="notification" v-show="page == 'notification'">
+			<div slot="title"><fa :icon="['far', 'bell']"/> {{ $t('notification') }}</div>
+			<section>
+				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
+					{{ $t('auto-watch') }}<span slot="desc">{{ $t('auto-watch-desc') }}</span>
 				</ui-switch>
-			</details>
-		</section>
+				<section>
+					<ui-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</ui-button>
+				</section>
+			</section>
+		</ui-card>
 
-		<section class="other" v-show="page == 'other'">
-			<h1>%i18n:@advanced-settings%</h1>
-			<ui-switch v-model="debug">
-				%i18n:@debug-mode%
-				<span slot="desc">%i18n:@debug-mode-desc%</span>
-			</ui-switch>
-			<ui-switch v-model="enableExperimentalFeatures">
-				%i18n:@experimental%
-				<span slot="desc">%i18n:@experimental-desc%</span>
-			</ui-switch>
-		</section>
+		<div class="drive" v-if="page == 'drive'">
+			<mk-drive-settings/>
+		</div>
+
+		<ui-card class="hashtags" v-show="page == 'hashtags'">
+			<div slot="title"><fa icon="hashtag"/> {{ $t('tags') }}</div>
+			<section>
+				<x-tags/>
+			</section>
+		</ui-card>
+
+		<div class="muteAndBlock" v-show="page == 'muteAndBlock'">
+			<mk-mute-and-block/>
+		</div>
+
+		<ui-card class="apps" v-show="page == 'apps'">
+			<div slot="title"><fa icon="puzzle-piece"/> {{ $t('apps') }}</div>
+			<section>
+				<x-apps/>
+			</section>
+		</ui-card>
+
+		<ui-card class="password" v-show="page == 'security'">
+			<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
+			<section>
+				<mk-password-settings/>
+			</section>
+		</ui-card>
+
+		<ui-card class="2fa" v-show="page == 'security'">
+			<div slot="title"><fa icon="mobile-alt"/> {{ $t('2fa') }}</div>
+			<section>
+				<x-2fa/>
+			</section>
+		</ui-card>
+
+		<ui-card class="signin" v-show="page == 'security'">
+			<div slot="title"><fa icon="sign-in-alt"/> {{ $t('signin') }}</div>
+			<section>
+				<x-signins/>
+			</section>
+		</ui-card>
+
+		<div class="api" v-show="page == 'api'">
+			<mk-api-settings/>
+		</div>
+
+		<ui-card class="other" v-show="page == 'other'">
+			<div slot="title"><fa icon="info-circle"/> {{ $t('about') }}</div>
+			<section>
+				<p v-if="meta">{{ $t('operator') }}: <i><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></i></p>
+			</section>
+		</ui-card>
+
+		<ui-card class="other" v-show="page == 'other'">
+			<div slot="title"><fa icon="sync-alt"/> {{ $t('update') }}</div>
+			<section>
+				<p>
+					<span>{{ $t('version') }} <i>{{ version }}</i></span>
+					<template v-if="latestVersion !== undefined">
+						<br>
+						<span>{{ $t('latest-version') }} <i>{{ latestVersion ? latestVersion : version }}</i></span>
+					</template>
+				</p>
+				<button class="ui button block" @click="checkForUpdate" :disabled="checkingForUpdate">
+					<template v-if="checkingForUpdate">{{ $t('update-checking') }}<mk-ellipsis/></template>
+					<template v-else>{{ $t('do-update') }}</template>
+				</button>
+				<details>
+					<summary>{{ $t('update-settings') }}</summary>
+					<ui-switch v-model="preventUpdate">
+						{{ $t('prevent-update') }}<span slot="desc">{{ $t('prevent-update-desc') }}</span>
+					</ui-switch>
+				</details>
+			</section>
+		</ui-card>
+
+		<ui-card class="other" v-show="page == 'other'">
+			<div slot="title"><fa icon="cogs"/> {{ $t('advanced-settings') }}</div>
+			<section>
+				<ui-switch v-model="debug">
+					{{ $t('debug-mode') }}<span slot="desc">{{ $t('debug-mode-desc') }}</span>
+				</ui-switch>
+				<ui-switch v-model="enableExperimentalFeatures">
+					{{ $t('experimental') }}<span slot="desc">{{ $t('experimental-desc') }}</span>
+				</ui-switch>
+			</section>
+		</ui-card>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import XProfile from './settings.profile.vue';
-import XMute from './settings.mute.vue';
-import XPassword from './settings.password.vue';
+import i18n from '../../../i18n';
 import X2fa from './settings.2fa.vue';
-import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
-import XDrive from './settings.drive.vue';
 import XTags from './settings.tags.vue';
-import { url, langs, version } from '../../../config';
+import { url, langs, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/settings.vue'),
 	components: {
-		XProfile,
-		XMute,
-		XPassword,
 		X2fa,
-		XApi,
 		XApps,
 		XSignins,
-		XDrive,
 		XTags
 	},
 	props: {
@@ -273,6 +320,11 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		useOsDefaultEmojis: {
+			get() { return this.$store.state.device.useOsDefaultEmojis; },
+			set(value) { this.$store.commit('device/set', { key: 'useOsDefaultEmojis', value }); }
+		},
+
 		reduceMotion: {
 			get() { return this.$store.state.device.reduceMotion; },
 			set(value) { this.$store.commit('device/set', { key: 'reduceMotion', value }); }
@@ -288,9 +340,29 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'autoPopout', value }); }
 		},
 
+		deckNav: {
+			get() { return this.$store.state.settings.deckNav; },
+			set(value) { this.$store.commit('settings/set', { key: 'deckNav', value }); }
+		},
+
 		darkmode: {
 			get() { return this.$store.state.device.darkmode; },
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
+		},
+
+		navbar: {
+			get() { return this.$store.state.device.navbar; },
+			set(value) { this.$store.commit('device/set', { key: 'navbar', value }); }
+		},
+
+		deckColumnAlign: {
+			get() { return this.$store.state.device.deckColumnAlign; },
+			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
+		},
+
+		deckDefault: {
+			get() { return this.$store.state.device.deckDefault; },
+			set(value) { this.$store.commit('device/set', { key: 'deckDefault', value }); }
 		},
 
 		enableSounds: {
@@ -408,6 +480,11 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'showFullAcct', value }); }
 		},
 
+		showVia: {
+			get() { return this.$store.state.settings.showVia; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'showVia', value }); }
+		},
+
 		iLikeSushi: {
 			get() { return this.$store.state.settings.iLikeSushi; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'iLikeSushi', value }); }
@@ -426,65 +503,63 @@ export default Vue.extend({
 		disableAnimatedMfm: {
 			get() { return this.$store.state.settings.disableAnimatedMfm; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
-		},
-
-		disableViaMobile: {
-			get() { return this.$store.state.settings.disableViaMobile; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
 		}
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	},
 	methods: {
+		readAllUnreadNotes() {
+			this.$root.api('i/read_all_unread_notes');
+		},
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
 		},
 		updateWallpaper() {
-			(this as any).apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: false
 			}).then(file => {
-				(this as any).api('i/update', {
+				this.$root.api('i/update', {
 					wallpaperId: file.id
 				});
 			});
 		},
 		deleteWallpaper() {
-			(this as any).api('i/update', {
+			this.$root.api('i/update', {
 				wallpaperId: null
 			});
 		},
 		onChangeAutoWatch(v) {
-			(this as any).api('i/update', {
+			this.$root.api('i/update', {
 				autoWatch: v
 			});
 		},
 		checkForUpdate() {
 			this.checkingForUpdate = true;
-			checkForUpdate((this as any).os, true, true).then(newer => {
+			checkForUpdate(this.$root, true, true).then(newer => {
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					(this as any).apis.dialog({
-						title: '%i18n:@no-updates%',
-						text: '%i18n:@no-updates-desc%'
+					this.$dialog({
+						title: this.$t('no-updates'),
+						text: this.$t('no-updates-desc')
 					});
 				} else {
-					(this as any).apis.dialog({
-						title: '%i18n:@update-available%',
-						text: '%i18n:@update-available-desc%'
+					this.$dialog({
+						title: this.$t('update-available'),
+						text: this.$t('update-available-desc')
 					});
 				}
 			});
 		},
 		clean() {
 			localStorage.clear();
-			(this as any).apis.dialog({
-				title: '%i18n:@cache-cleared%',
-				text: '%i18n:@cache-cleared-desc%'
+			this.$dialog({
+				title: this.$t('cache-cleared'),
+				text: this.$t('cache-cleared-desc')
 			});
 		},
 		soundTest() {
@@ -508,7 +583,8 @@ export default Vue.extend({
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		border-right solid 1px var(--faceDivider)
+		box-shadow var(--shadowRight)
+		z-index 1
 
 		> p
 			display block
@@ -519,7 +595,7 @@ export default Vue.extend({
 			user-select none
 			transition margin-left 0.2s ease
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 			&:hover
@@ -534,34 +610,10 @@ export default Vue.extend({
 		height 100%
 		flex auto
 		overflow auto
+		background var(--bg)
 
 		> section
 			margin 32px
 			color var(--text)
-
-			> h1
-				margin 0 0 1em 0
-				padding 0 0 8px 0
-				font-size 1em
-				border-bottom solid 1px var(--faceDivider)
-
-			&, >>> *
-				.ui.button.block
-					margin 16px 0
-
-				> section
-					margin 32px 0
-
-					> h2
-						margin 0 0 1em 0
-						padding 0 0 8px 0
-						font-size 1em
-						color var(--text)
-						border-bottom solid 1px var(--faceDivider)
-
-		> .web
-			> .div
-				border-bottom solid 1px var(--faceDivider)
-				margin 16px 0
 
 </style>

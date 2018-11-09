@@ -1,28 +1,30 @@
 <template>
 <div class="mk-poll" :data-is-voted="isVoted">
 	<ul>
-		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? '%i18n:@vote-to%'.replace('{}', choice.text) : ''">
+		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? $t('vote-to').replace('{}', choice.text) : ''">
 			<div class="backdrop" :style="{ 'width': (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
-				<template v-if="choice.isVoted">%fa:check%</template>
+				<template v-if="choice.isVoted"><fa icon="check"/></template>
 				<span>{{ choice.text }}</span>
-				<span class="votes" v-if="showResult">({{ '%i18n:@vote-count%'.replace('{}', choice.votes) }})</span>
+				<span class="votes" v-if="showResult">({{ $t('vote-count').replace('{}', choice.votes) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="total > 0">
-		<span>{{ '%i18n:@total-users%'.replace('{}', total) }}</span>
+		<span>{{ $t('total-users').replace('{}', total) }}</span>
 		<span>・</span>
-		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? '%i18n:@vote%' : '%i18n:@show-result%' }}</a>
-		<span v-if="isVoted">%i18n:@voted%</span>
+		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? $t('vote') : $t('show-result') }}</a>
+		<span v-if="isVoted">{{ $t('voted') }}</span>
 	</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { sum } from '../../../../../prelude/array';
 export default Vue.extend({
+	i18n: i18n('common/views/components/poll.vue'),
 	props: ['note'],
 	data() {
 		return {
@@ -49,7 +51,7 @@ export default Vue.extend({
 		},
 		vote(id) {
 			if (this.poll.choices.some(c => c.isVoted)) return;
-			(this as any).api('notes/polls/vote', {
+			this.$root.api('notes/polls/vote', {
 				noteId: this.note.id,
 				choice: id
 			}).then(() => {
@@ -100,7 +102,7 @@ export default Vue.extend({
 				transition width 1s ease
 
 			> span
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 				> .votes

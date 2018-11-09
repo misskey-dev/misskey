@@ -9,8 +9,8 @@ import MiOS from '../../mios';
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
-	private state: string;
-	private buffer: any[];
+	public state: string;
+	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
 
@@ -18,7 +18,6 @@ export default class Stream extends EventEmitter {
 		super();
 
 		this.state = 'initializing';
-		this.buffer = [];
 
 		const user = os.store.state.i;
 
@@ -26,114 +25,34 @@ export default class Stream extends EventEmitter {
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
-
-		if (user) {
-			const main = this.useSharedConnection('main');
-
-			// 自分の情報が更新されたとき
-			main.on('meUpdated', i => {
-				os.store.dispatch('mergeMe', i);
-			});
-
-			main.on('readAllNotifications', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadNotification: false
-				});
-			});
-
-			main.on('unreadNotification', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadNotification: true
-				});
-			});
-
-			main.on('readAllMessagingMessages', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadMessagingMessage: false
-				});
-			});
-
-			main.on('unreadMessagingMessage', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadMessagingMessage: true
-				});
-			});
-
-			main.on('unreadMention', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadMentions: true
-				});
-			});
-
-			main.on('readAllUnreadMentions', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadMentions: false
-				});
-			});
-
-			main.on('unreadSpecifiedNote', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadSpecifiedNotes: true
-				});
-			});
-
-			main.on('readAllUnreadSpecifiedNotes', () => {
-				os.store.dispatch('mergeMe', {
-					hasUnreadSpecifiedNotes: false
-				});
-			});
-
-			main.on('clientSettingUpdated', x => {
-				os.store.commit('settings/set', {
-					key: x.key,
-					value: x.value
-				});
-			});
-
-			main.on('homeUpdated', x => {
-				os.store.commit('settings/setHome', x);
-			});
-
-			main.on('mobileHomeUpdated', x => {
-				os.store.commit('settings/setMobileHome', x);
-			});
-
-			main.on('widgetUpdated', x => {
-				os.store.commit('settings/setWidget', {
-					id: x.id,
-					data: x.data
-				});
-			});
-
-			// トークンが再生成されたとき
-			// このままではMisskeyが利用できないので強制的にサインアウトさせる
-			main.on('myTokenRegenerated', () => {
-				alert('%i18n:common.my-token-regenerated%');
-				os.signout();
-			});
-		}
 	}
 
-	public useSharedConnection = (channel: string): SharedConnection => {
-		const existConnection = this.sharedConnections.find(c => c.channel === channel);
+	@autobind
+	public useSharedConnection(channel: string): SharedConnection {
+		let pool = this.sharedConnectionPools.find(p => p.channel === channel);
 
-		if (existConnection) {
-			existConnection.use();
-			return existConnection;
-		} else {
-			const connection = new SharedConnection(this, channel);
-			connection.use();
-			this.sharedConnections.push(connection);
-			return connection;
+		if (pool == null) {
+			pool = new Pool(this, channel);
+			this.sharedConnectionPools.push(pool);
 		}
+
+		const connection = new SharedConnection(this, channel, pool);
+		this.sharedConnections.push(connection);
+		return connection;
 	}
 
 	@autobind
 	public removeSharedConnection(connection: SharedConnection) {
-		this.sharedConnections = this.sharedConnections.filter(c => c.id !== connection.id);
+		this.sharedConnections = this.sharedConnections.filter(c => c !== connection);
 	}
 
-	public connectToChannel = (channel: string, params?: any): NonSharedConnection => {
+	@autobind
+	public removeSharedConnectionPool(pool: Pool) {
+		this.sharedConnectionPools = this.sharedConnectionPools.filter(p => p !== pool);
+	}
+
+	@autobind
+	public connectToChannel(channel: string, params?: any): NonSharedConnection {
 		const connection = new NonSharedConnection(this, channel, params);
 		this.nonSharedConnections.push(connection);
 		return connection;
@@ -141,7 +60,7 @@ export default class Stream extends EventEmitter {
 
 	@autobind
 	public disconnectToChannel(connection: NonSharedConnection) {
-		this.nonSharedConnections = this.nonSharedConnections.filter(c => c.id !== connection.id);
+		this.nonSharedConnections = this.nonSharedConnections.filter(c => c !== connection);
 	}
 
 	/**
@@ -154,17 +73,10 @@ export default class Stream extends EventEmitter {
 		this.state = 'connected';
 		this.emit('_connected_');
 
-		// バッファーを処理
-		const _buffer = [].concat(this.buffer); // Shallow copy
-		this.buffer = []; // Clear buffer
-		_buffer.forEach(data => {
-			this.send(data); // Resend each buffered messages
-		});
-
 		// チャンネル再接続
 		if (isReconnect) {
-			this.sharedConnections.forEach(c => {
-				c.connect();
+			this.sharedConnectionPools.forEach(p => {
+				p.connect();
 			});
 			this.nonSharedConnections.forEach(c => {
 				c.connect();
@@ -177,8 +89,10 @@ export default class Stream extends EventEmitter {
 	 */
 	@autobind
 	private onClose() {
-		this.state = 'reconnecting';
-		this.emit('_disconnected_');
+		if (this.state == 'connected') {
+			this.state = 'reconnecting';
+			this.emit('_disconnected_');
+		}
 	}
 
 	/**
@@ -190,8 +104,18 @@ export default class Stream extends EventEmitter {
 
 		if (type == 'channel') {
 			const id = body.id;
-			const connection = this.sharedConnections.find(c => c.id === id) || this.nonSharedConnections.find(c => c.id === id);
-			connection.emit(body.type, body.body);
+
+			let connections: Connection[];
+
+			connections = this.sharedConnections.filter(c => c.id === id);
+
+			if (connections.length === 0) {
+				connections = [this.nonSharedConnections.find(c => c.id === id)];
+			}
+
+			connections.filter(c => c != null).forEach(c => {
+				c.emit(body.type, body.body);
+			});
 		} else {
 			this.emit(type, body);
 		}
@@ -207,12 +131,6 @@ export default class Stream extends EventEmitter {
 			body: payload
 		};
 
-		// まだ接続が確立されていなかったらバッファリングして次に接続した時に送信する
-		if (this.state != 'connected') {
-			this.buffer.push(data);
-			return;
-		}
-
 		this.stream.send(JSON.stringify(data));
 	}
 
@@ -226,19 +144,139 @@ export default class Stream extends EventEmitter {
 	}
 }
 
-abstract class Connection extends EventEmitter {
+class Pool {
 	public channel: string;
 	public id: string;
-	protected params: any;
 	protected stream: Stream;
+	public users = 0;
+	private disposeTimerId: any;
+	private isConnected = false;
 
-	constructor(stream: Stream, channel: string, params?: any) {
+	constructor(stream: Stream, channel: string) {
+		this.channel = channel;
+		this.stream = stream;
+
+		this.id = Math.random().toString().substr(2, 8);
+
+		this.stream.on('_disconnected_', this.onStreamDisconnected);
+	}
+
+	@autobind
+	private onStreamDisconnected() {
+		this.isConnected = false;
+	}
+
+	@autobind
+	public inc() {
+		if (this.users === 0 && !this.isConnected) {
+			this.connect();
+		}
+
+		this.users++;
+
+		// タイマー解除
+		if (this.disposeTimerId) {
+			clearTimeout(this.disposeTimerId);
+			this.disposeTimerId = null;
+		}
+	}
+
+	@autobind
+	public dec() {
+		this.users--;
+
+		// そのコネクションの利用者が誰もいなくなったら
+		if (this.users === 0) {
+			// また直ぐに再利用される可能性があるので、一定時間待ち、
+			// 新たな利用者が現れなければコネクションを切断する
+			this.disposeTimerId = setTimeout(() => {
+				this.disconnect();
+			}, 3000);
+		}
+	}
+
+	@autobind
+	public connect() {
+		if (this.isConnected) return;
+		this.isConnected = true;
+		this.stream.send('connect', {
+			channel: this.channel,
+			id: this.id
+		});
+	}
+
+	@autobind
+	private disconnect() {
+		this.stream.off('_disconnected_', this.onStreamDisconnected);
+		this.stream.send('disconnect', { id: this.id });
+		this.stream.removeSharedConnectionPool(this);
+	}
+}
+
+abstract class Connection extends EventEmitter {
+	public channel: string;
+	protected stream: Stream;
+	public abstract id: string;
+
+	constructor(stream: Stream, channel: string) {
 		super();
 
 		this.stream = stream;
 		this.channel = channel;
+	}
+
+	@autobind
+	public send(id: string, typeOrPayload, payload?) {
+		const type = payload === undefined ? typeOrPayload.type : typeOrPayload;
+		const body = payload === undefined ? typeOrPayload.body : payload;
+
+		this.stream.send('ch', {
+			id: id,
+			type: type,
+			body: body
+		});
+	}
+
+	public abstract dispose(): void;
+}
+
+class SharedConnection extends Connection {
+	private pool: Pool;
+
+	public get id(): string {
+		return this.pool.id;
+	}
+
+	constructor(stream: Stream, channel: string, pool: Pool) {
+		super(stream, channel);
+
+		this.pool = pool;
+		this.pool.inc();
+	}
+
+	@autobind
+	public send(typeOrPayload, payload?) {
+		super.send(this.pool.id, typeOrPayload, payload);
+	}
+
+	@autobind
+	public dispose() {
+		this.pool.dec();
+		this.removeAllListeners();
+		this.stream.removeSharedConnection(this);
+	}
+}
+
+class NonSharedConnection extends Connection {
+	public id: string;
+	protected params: any;
+
+	constructor(stream: Stream, channel: string, params?: any) {
+		super(stream, channel);
+
 		this.params = params;
-		this.id = Math.random().toString();
+		this.id = Math.random().toString().substr(2, 8);
+
 		this.connect();
 	}
 
@@ -253,60 +291,7 @@ abstract class Connection extends EventEmitter {
 
 	@autobind
 	public send(typeOrPayload, payload?) {
-		const data = payload === undefined ? typeOrPayload : {
-			type: typeOrPayload,
-			body: payload
-		};
-
-		this.stream.send('channel', {
-			id: this.id,
-			body: data
-		});
-	}
-
-	public abstract dispose: () => void;
-}
-
-class SharedConnection extends Connection {
-	private users = 0;
-	private disposeTimerId: any;
-
-	constructor(stream: Stream, channel: string) {
-		super(stream, channel);
-	}
-
-	@autobind
-	public use() {
-		this.users++;
-
-		// タイマー解除
-		if (this.disposeTimerId) {
-			clearTimeout(this.disposeTimerId);
-			this.disposeTimerId = null;
-		}
-	}
-
-	@autobind
-	public dispose() {
-		this.users--;
-
-		// そのコネクションの利用者が誰もいなくなったら
-		if (this.users === 0) {
-			// また直ぐに再利用される可能性があるので、一定時間待ち、
-			// 新たな利用者が現れなければコネクションを切断する
-			this.disposeTimerId = setTimeout(() => {
-				this.disposeTimerId = null;
-				this.removeAllListeners();
-				this.stream.send('disconnect', { id: this.id });
-				this.stream.removeSharedConnection(this);
-			}, 3000);
-		}
-	}
-}
-
-class NonSharedConnection extends Connection {
-	constructor(stream: Stream, channel: string, params?: any) {
-		super(stream, channel, params);
+		super.send(this.id, typeOrPayload, payload);
 	}
 
 	@autobind

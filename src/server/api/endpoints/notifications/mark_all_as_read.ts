@@ -1,6 +1,7 @@
 import Notification from '../../../../models/notification';
 import { publishMainStream } from '../../../../stream';
-import User, { ILocalUser } from '../../../../models/user';
+import User from '../../../../models/user';
+import define from '../../define';
 
 export const meta = {
 	desc: {
@@ -13,10 +14,7 @@ export const meta = {
 	kind: 'notification-write'
 };
 
-/**
- * Mark all notifications as read
- */
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Update documents
 	await Notification.update({
 		notifieeId: user._id,
@@ -41,4 +39,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// 全ての通知を読みましたよというイベントを発行
 	publishMainStream(user._id, 'readAllNotifications');
-});
+}));

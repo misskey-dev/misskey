@@ -1,34 +1,33 @@
 import $ from 'cafy';
 import Subscription from '../../../../models/sw-subscription';
-import { ILocalUser } from '../../../../models/user';
 import config from '../../../../config';
+import define from '../../define';
 
 export const meta = {
-	requireCredential: true
+	requireCredential: true,
+
+	params: {
+		endpoint: {
+			validator: $.str
+		},
+
+		auth: {
+			validator: $.str
+		},
+
+		publickey: {
+			validator: $.str
+		}
+	}
 };
 
-/**
- * subscribe service worker
- */
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'endpoint' parameter
-	const [endpoint, endpointErr] = $.str.get(params.endpoint);
-	if (endpointErr) return rej('invalid endpoint param');
-
-	// Get 'auth' parameter
-	const [auth, authErr] = $.str.get(params.auth);
-	if (authErr) return rej('invalid auth param');
-
-	// Get 'publickey' parameter
-	const [publickey, publickeyErr] = $.str.get(params.publickey);
-	if (publickeyErr) return rej('invalid publickey param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// if already subscribed
 	const exist = await Subscription.findOne({
 		userId: user._id,
-		endpoint: endpoint,
-		auth: auth,
-		publickey: publickey,
+		endpoint: ps.endpoint,
+		auth: ps.auth,
+		publickey: ps.publickey,
 		deletedAt: { $exists: false }
 	});
 
@@ -41,13 +40,13 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 
 	await Subscription.insert({
 		userId: user._id,
-		endpoint: endpoint,
-		auth: auth,
-		publickey: publickey
+		endpoint: ps.endpoint,
+		auth: ps.auth,
+		publickey: ps.publickey
 	});
 
 	res({
 		state: 'subscribed',
 		key: config.sw.public_key
 	});
-});
+}));

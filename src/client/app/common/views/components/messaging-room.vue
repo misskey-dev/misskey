@@ -4,11 +4,11 @@
 	@drop.prevent.stop="onDrop"
 >
 	<div class="body">
-		<p class="init" v-if="init">%fa:spinner .spin%%i18n:common.loading%</p>
-		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:@empty%</p>
-		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:@no-history%</p>
+		<p class="init" v-if="init"><fa icon="spinner .spin"/>{{ $t('@.loading') }}</p>
+		<p class="empty" v-if="!init && messages.length == 0"><fa icon="info-circle"/>{{ $t('empty') }}</p>
+		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages"><fa icon="flag"/>{{ $t('no-history') }}</p>
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:@more%' }}
+			<template v-if="fetchingMoreMessages"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreMessages ? $t('@.loading') : $t('@.load-more') }}
 		</button>
 		<template v-for="(message, i) in _messages">
 			<x-message :message="message" :key="message.id"/>
@@ -20,7 +20,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button @click="onIndicatorClick">%fa:arrow-circle-down%%i18n:@new-message%</button>
+				<button @click="onIndicatorClick"><i><fa icon="arrow-circle-down"/></i>{{ $t('new-message') }}</button>
 			</div>
 		</transition>
 		<x-form :user="user" ref="form"/>
@@ -30,11 +30,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { url } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging-room.vue'),
 	components: {
 		XMessage,
 		XForm
@@ -60,7 +62,7 @@ export default Vue.extend({
 				const date = new Date(message.createdAt).getDate();
 				const month = new Date(message.createdAt).getMonth() + 1;
 				message._date = date;
-				message._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				message._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return message;
 			});
 		},
@@ -71,7 +73,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection =((this as any).os.stream.connectToChannel('messaging', { otherparty: this.user.id });
+		this.connection = this.$root.stream.connectToChannel('messaging', { otherparty: this.user.id });
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
@@ -120,7 +122,7 @@ export default Vue.extend({
 				this.form.upload(e.dataTransfer.files[0]);
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
-				alert('%i18n:@only-one-file-attached%');
+				alert(this.$t('only-one-file-attached'));
 				return;
 			}
 
@@ -137,7 +139,7 @@ export default Vue.extend({
 			return new Promise((resolve, reject) => {
 				const max = this.existMoreMessages ? 20 : 10;
 
-				(this as any).api('messaging/messages', {
+				this.$root.api('messaging/messages', {
 					userId: this.user.id,
 					limit: max + 1,
 					untilId: this.existMoreMessages ? this.messages[0].id : undefined
@@ -174,8 +176,7 @@ export default Vue.extend({
 
 			this.messages.push(message);
 			if (message.userId != this.$store.state.i.id && !document.hidden) {
-				this.connection.send({
-					type: 'read',
+				this.connection.send('read', {
 					id: message.id
 				});
 			}
@@ -247,8 +248,7 @@ export default Vue.extend({
 			if (document.hidden) return;
 			this.messages.forEach(message => {
 				if (message.userId !== this.$store.state.i.id && !message.isRead) {
-					this.connection.send({
-						type: 'read',
+					this.connection.send('read', {
 						id: message.id
 					});
 				}
@@ -282,7 +282,7 @@ export default Vue.extend({
 			color var(--messagingRoomInfo)
 			opacity 0.5
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 		> .no-history
@@ -294,7 +294,7 @@ export default Vue.extend({
 			color var(--messagingRoomInfo)
 			opacity 0.5
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 		> .more
@@ -315,7 +315,7 @@ export default Vue.extend({
 			&.fetching
 				cursor wait
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 		> .message
@@ -356,7 +356,7 @@ export default Vue.extend({
 		max-width 600px
 		margin 0 auto
 		padding 0
-		//background rgba(var(--face), 0.95)
+		background var(--messagingRoomBg)
 		background-clip content-box
 
 		> .new-message
@@ -383,7 +383,7 @@ export default Vue.extend({
 				&:active
 					background var(--primaryDarken10)
 
-				> [data-fa]
+				> i
 					position absolute
 					top 0
 					left 10px

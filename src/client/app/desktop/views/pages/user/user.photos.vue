@@ -1,19 +1,21 @@
 <template>
 <div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
-	<p class="title">%fa:camera%%i18n:@title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="title"><fa icon="camera"/>{{ $t('title') }}</p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<div v-for="image in images" class="img"
 			:style="`background-image: url(${image.thumbnailUrl})`"
 		></div>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.photos.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -22,7 +24,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/notes', {
+		this.$root.api('users/notes', {
 			userId: this.user.id,
 			withFiles: true,
 			limit: 9
@@ -60,9 +62,6 @@ export default Vue.extend({
 			margin-right 4px
 
 	> .stream
-		display -webkit-flex
-		display -moz-flex
-		display -ms-flex
 		display flex
 		justify-content center
 		flex-wrap wrap

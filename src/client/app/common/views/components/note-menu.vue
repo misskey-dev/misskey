@@ -6,84 +6,86 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { url } from '../../../config';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
+import Ok from './ok.vue';
+import { concat, intersperse } from '../../../../../prelude/array';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/note-menu.vue'),
 	props: ['note', 'source', 'compact'],
 	computed: {
-		items() {
-			const items = [{
-				icon: '%fa:info-circle%',
-				text: '%i18n:@detail%',
-				action: this.detail
-			}, {
-				icon: '%fa:link%',
-				text: '%i18n:@copy-link%',
-				action: this.copyLink
-			}, null, {
-				icon: '%fa:star%',
-				text: '%i18n:@favorite%',
-				action: this.favorite
-			}];
-
-			if (this.note.userId == this.$store.state.i.id) {
-				if ((this.$store.state.i.pinnedNoteIds || []).includes(this.note.id)) {
-					items.push({
-						icon: '%fa:thumbtack%',
-						text: '%i18n:@unpin%',
-						action: this.unpin
-					});
-				} else {
-					items.push({
-						icon: '%fa:thumbtack%',
-						text: '%i18n:@pin%',
-						action: this.pin
-					});
-				}
-			}
-
-			if (this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin) {
-				items.push({
-					icon: '%fa:trash-alt R%',
-					text: '%i18n:@delete%',
-					action: this.del
-				});
-			}
-
-			if (this.note.uri) {
-				items.push({
-					icon: '%fa:external-link-square-alt%',
-					text: '%i18n:@remote%',
-					action: () => {
-						window.open(this.note.uri, '_blank');
-					}
-				});
-			}
-
-			return items;
+		items(): any[] {
+			return concat(intersperse([null], [
+				[
+					[{
+						icon: 'info-circle',
+						text: this.$t('detail'),
+						action: this.detail
+					}], [{
+						icon: 'link',
+						text: this.$t('copy-link'),
+						action: this.copyLink
+					}], this.note.uri ? [{
+						icon: 'external-link-square-alt',
+						text: this.$t('remote'),
+						action: () => {
+							window.open(this.note.uri, '_blank');
+						}
+					}] : []
+				],
+				[
+					this.note.isFavorited ? [{
+						icon: 'star',
+						text: this.$t('unfavorite'),
+						action: this.unfavorite
+					}] : [{
+						icon: 'star',
+						text: this.$t('favorite'),
+						action: this.favorite
+					}], this.note.userId == this.$store.state.i.id ? [
+						(this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
+							icon: 'thumbtack',
+							text: this.$t('unpin'),
+							action: this.unpin
+						} : {
+								icon: 'thumbtack',
+								text: this.$t('pin'),
+								action: this.pin
+							}
+					] : []
+				], [
+					this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin ? [{
+						icon: ['far', 'trash-alt'],
+						text: this.$t('delete'),
+						action: this.del
+					}] : []
+				]
+			].map(concat).filter(x => x.length > 0)));
 		}
 	},
 
 	methods: {
 		detail() {
-			this.$router.push(`/notes/${ this.note.id }`);
+			this.$router.push(`/notes/${this.note.id}`);
 		},
 
 		copyLink() {
-			copyToClipboard(`${url}/notes/${ this.note.id }`);
+			copyToClipboard(`${url}/notes/${this.note.id}`);
 		},
 
 		pin() {
-			(this as any).api('i/pin', {
+			this.$root.api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
+				this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},
 
 		unpin() {
-			(this as any).api('i/unpin', {
+			this.$root.api('i/unpin', {
 				noteId: this.note.id
 			}).then(() => {
 				this.destroyDom();
@@ -91,8 +93,8 @@ export default Vue.extend({
 		},
 
 		del() {
-			if (!window.confirm('%i18n:@delete-confirm%')) return;
-			(this as any).api('notes/delete', {
+			if (!window.confirm(this.$t('delete-confirm'))) return;
+			this.$root.api('notes/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.destroyDom();
@@ -100,9 +102,19 @@ export default Vue.extend({
 		},
 
 		favorite() {
-			(this as any).api('notes/favorites/create', {
+			this.$root.api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
+				this.$root.new(Ok);
+				this.destroyDom();
+			});
+		},
+
+		unfavorite() {
+			this.$root.api('notes/favorites/delete', {
+				noteId: this.note.id
+			}).then(() => {
+				this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},

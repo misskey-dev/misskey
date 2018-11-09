@@ -1,25 +1,24 @@
 <template>
-<div class="ui-textarea" :class="{ focused, filled }">
+<div class="ui-textarea" :class="{ focused, filled, tall }">
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
 		<textarea ref="input"
-				:value="value"
-				:required="required"
-				:readonly="readonly"
-				:pattern="pattern"
-				:autocomplete="autocomplete"
-				@input="$emit('input', $event.target.value)"
-				@focus="focused = true"
-				@blur="focused = false">
-		</textarea>
+			:value="value"
+			:required="required"
+			:readonly="readonly"
+			:pattern="pattern"
+			:autocomplete="autocomplete"
+			@input="$emit('input', $event.target.value)"
+			@focus="focused = true"
+			@blur="focused = false"
+		></textarea>
 	</div>
-	<div class="text"><slot name="text"></slot></div>
+	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
 	props: {
@@ -41,7 +40,12 @@ export default Vue.extend({
 		autocomplete: {
 			type: String,
 			required: false
-		}
+		},
+		tall: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -65,6 +69,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 root(fill)
 	margin 42px 0 32px 0
+
+	&:last-child
+		margin-bottom 0
 
 	> .input
 		padding 12px
@@ -131,7 +138,7 @@ root(fill)
 			outline none
 			box-shadow none
 
-	> .text
+	> .desc
 		margin 6px 0
 		font-size 13px
 
@@ -156,6 +163,11 @@ root(fill)
 				top -24px
 				left 0 !important
 				transform scale(0.75)
+
+	&.tall
+		> .input
+			> textarea
+				min-height 200px
 
 .ui-textarea.fill
 	root(true)

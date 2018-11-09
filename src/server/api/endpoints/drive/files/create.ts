@@ -1,10 +1,8 @@
-import * as fs from 'fs';
 const ms = require('ms');
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
-import { ILocalUser } from '../../../../../models/user';
-import getParams from '../../../get-params';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -16,7 +14,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 100
+		max: 120
 	},
 
 	requireFile: true,
@@ -24,31 +22,37 @@ export const meta = {
 	kind: 'drive-write',
 
 	params: {
-		folderId: $.type(ID).optional.nullable.note({
-			default: null,
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: null as any,
 			desc: {
 				'ja-JP': 'フォルダID'
 			}
-		}),
+		},
 
-		isSensitive: $.bool.optional.nullable.note({
-			default: null,
+		isSensitive: {
+			validator: $.or($.bool, $.str).optional,
+			default: false,
+			transform: (v: any): boolean => v === true || v === 'true',
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'
 			}
-		})
+		},
+
+		force: {
+			validator: $.or($.bool, $.str).optional,
+			default: false,
+			transform: (v: any): boolean => v === true || v === 'true',
+			desc: {
+				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
+			}
+		}
 	}
 };
 
-/**
- * Create a file
- */
-export default async (file: any, params: any, user: ILocalUser): Promise<any> => {
-	if (file == null) {
-		throw 'file is required';
-	}
-
+export default define(meta, (ps, user, app, file, cleanup) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	let name = file.originalname;
 	if (name !== undefined && name !== null) {
@@ -58,35 +62,24 @@ export default async (file: any, params: any, user: ILocalUser): Promise<any> =>
 		} else if (name === 'blob') {
 			name = null;
 		} else if (!validateFileName(name)) {
-			throw 'invalid name';
+			return rej('invalid name');
 		}
 	} else {
 		name = null;
 	}
 
-	function cleanup() {
-		fs.unlink(file.path, () => {});
-	}
-
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) {
-		cleanup();
-		throw psErr;
-	}
-
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, ps.folderId, false, false, null, null, ps.isSensitive);
+		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
 
 		cleanup();
 
-		// Serialize
-		return pack(driveFile);
+		res(pack(driveFile));
 	} catch (e) {
 		console.error(e);
 
 		cleanup();
 
-		throw e;
+		rej(e);
 	}
-};
+}));

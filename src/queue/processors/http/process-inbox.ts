@@ -8,6 +8,7 @@ import perform from '../../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
+import { publishApLogStream } from '../../../stream';
 
 const log = debug('misskey:queue:inbox');
 
@@ -91,6 +92,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		done();
 		return;
 	}
+	
+	//#region Log
+	publishApLogStream({
+		direction: 'in',
+		activity: activity.type,
+		host: user.host,
+		actor: user.username
+	});
+	//#endregion
 
 	// アクティビティを処理
 	try {

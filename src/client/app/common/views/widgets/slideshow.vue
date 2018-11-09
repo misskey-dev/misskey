@@ -2,10 +2,10 @@
 <div class="mkw-slideshow" :data-mobile="platform == 'mobile'">
 	<div @click="choose">
 		<p v-if="props.folder === undefined">
-			<template v-if="isCustomizeMode">%i18n:@folder-customize-mode%</template>
-			<template v-else>%i18n:@folder%</template>
+			<template v-if="isCustomizeMode">{{ $t('folder-customize-mode') }}</template>
+			<template v-else>{{ $t('folder') }}</template>
 		</p>
-		<p v-if="props.folder !== undefined && images.length == 0 && !fetching">%i18n:@no-image%</p>
+		<p v-if="props.folder !== undefined && images.length == 0 && !fetching">{{ $t('no-image') }}</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
@@ -15,6 +15,8 @@
 <script lang="ts">
 import * as anime from 'animejs';
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'slideshow',
 	props: () => ({
@@ -22,6 +24,8 @@ export default define({
 		size: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/slideshow.vue'),
+
 	data() {
 		return {
 			images: [],
@@ -97,7 +101,7 @@ export default define({
 		fetch() {
 			this.fetching = true;
 
-			(this as any).api('drive/files', {
+			this.$root.api('drive/files', {
 				folderId: this.props.folder,
 				type: 'image/*',
 				limit: 100
@@ -110,7 +114,7 @@ export default define({
 			});
 		},
 		choose() {
-			(this as any).apis.chooseDriveFolder().then(folder => {
+			this.$chooseDriveFolder().then(folder => {
 				this.props.folder = folder ? folder.id : null;
 				this.save();
 				this.fetch();

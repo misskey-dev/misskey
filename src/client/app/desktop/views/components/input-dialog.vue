@@ -1,22 +1,24 @@
 <template>
 <mk-window ref="window" is-modal width="500px" @before-close="beforeClose" @closed="destroyDom">
 	<span slot="header" :class="$style.header">
-		%fa:i-cursor%{{ title }}
+		<fa icon="i-cursor"/>{{ title }}
 	</span>
 
 	<div :class="$style.body">
 		<input ref="text" v-model="text" :type="type" @keydown="onKeydown" :placeholder="placeholder"/>
 	</div>
 	<div :class="$style.actions">
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" :disabled="!allowEmpty && text.length == 0" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" :disabled="!allowEmpty && text.length == 0" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('desktop/views/input-dialog.vue'),
 	props: {
 		title: {
 			type: String
@@ -76,10 +78,8 @@ export default Vue.extend({
 
 
 <style lang="stylus" module>
-
-
 .header
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .body

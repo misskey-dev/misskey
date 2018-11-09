@@ -1,33 +1,35 @@
 <template>
 <div class="mk-stream-indicator">
 	<p v-if="stream.state == 'initializing'">
-		%fa:spinner .pulse%
-		<span>%i18n:@connecting%<mk-ellipsis/></span>
+		<fa icon="spinner .pulse"/>
+		<span>{{ $t('connecting') }}<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'reconnecting'">
-		%fa:spinner .pulse%
-		<span>%i18n:@reconnecting%<mk-ellipsis/></span>
+		<fa icon="spinner .pulse"/>
+		<span>{{ $t('reconnecting') }}<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'connected'">
-		%fa:check%
-		<span>%i18n:@connected%</span>
+		<fa icon="check"/>
+		<span>{{ $t('connected') }}</span>
 	</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/stream-indicator.vue'),
 	computed: {
 		stream() {
-			return (this as any).os.stream;
+			return this.$root.stream;
 		}
 	},
 	created() {
-		(this as any).os.stream.on('_connected_', this.onConnected);
-		(this as any).os.stream.on('_disconnected_', this.onDisconnected);
+		this.$root.stream.on('_connected_', this.onConnected);
+		this.$root.stream.on('_disconnected_', this.onDisconnected);
 
 		this.$nextTick(() => {
 			if (this.stream.state == 'connected') {
@@ -36,8 +38,8 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		(this as any).os.stream.off('_connected_', this.onConnected);
-		(this as any).os.stream.off('_disconnected_', this.onDisconnected);
+		this.$root.stream.off('_connected_', this.onConnected);
+		this.$root.stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {
 		onConnected() {
@@ -80,7 +82,7 @@ export default Vue.extend({
 		display block
 		margin 0
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 0.25em
 
 </style>

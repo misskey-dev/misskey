@@ -66,7 +66,7 @@ router.get('/notes/:note', async (ctx, next) => {
 
 	const note = await Note.findOne({
 		_id: new mongo.ObjectID(ctx.params.note),
-		$or: [ { visibility: 'public' }, { visibility: 'home' } ]
+		visibility: { $in: ['public', 'home'] }
 	});
 
 	if (note === null) {

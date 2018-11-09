@@ -1,8 +1,8 @@
 <template>
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
 	<span slot="header">
-		<span v-html="title" :class="$style.title"></span>
-		<span :class="$style.count" v-if="multiple && files.length > 0">({{ files.length }}%i18n:@choose-file%)</span>
+		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
+		<span :class="$style.count" v-if="multiple && files.length > 0">({{ $t('chosen-files', { count: files.length }) }})</span>
 	</span>
 
 	<mk-drive
@@ -13,22 +13,21 @@
 		@change-selection="onChangeSelection"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.upload" title="%i18n:@upload%" @click="upload">%fa:upload%</button>
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.upload" :title="$t('title')" @click="upload"><fa icon="upload"/></button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/choose-file-from-drive-window.vue'),
 	props: {
 		multiple: {
 			default: false
-		},
-		title: {
-			default: '%fa:R file%%i18n:@choose-prompt%'
 		}
 	},
 	data() {
@@ -59,10 +58,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-
-
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .count

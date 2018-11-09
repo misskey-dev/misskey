@@ -1,20 +1,22 @@
 <template>
 <div class="vahgrswmbzfdlmomxnqftuueyvwaafth">
-	<p class="title">%fa:users%%i18n:@title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="title"><fa icon="users"/>{{ $t('title') }}</p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 	<router-link v-for="user in users" :to="user | userPage" :key="user.id">
 		<img :src="user.avatarUrl" :alt="user | userName" v-user-preview="user.id"/>
 	</router-link>
 	</div>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('no-users') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.followers-you-know.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -23,7 +25,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/followers', {
+		this.$root.api('users/followers', {
 			userId: this.user.id,
 			iknow: true,
 			limit: 16

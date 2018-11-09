@@ -1,27 +1,35 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
 import ReversiGame, { pack as packGame } from '../../../../../models/games/reversi/game';
-import User, { ILocalUser } from '../../../../../models/user';
+import User from '../../../../../models/user';
 import { publishMainStream, publishReversiStream } from '../../../../../stream';
 import { eighteight } from '../../../../../games/reversi/maps';
+import define from '../../../define';
 
 export const meta = {
-	requireCredential: true
+	requireCredential: true,
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		},
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [childId, childIdErr] = $.type(ID).get(params.userId);
-	if (childIdErr) return rej('invalid userId param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Myself
-	if (childId.equals(user._id)) {
+	if (ps.userId.equals(user._id)) {
 		return rej('invalid userId param');
 	}
 
 	// Find session
 	const exist = await Matching.findOne({
-		parentId: childId,
+		parentId: ps.userId,
 		childId: user._id
 	});
 
@@ -63,7 +71,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	} else {
 		// Fetch child
 		const child = await User.findOne({
-			_id: childId
+			_id: ps.userId
 		}, {
 			fields: {
 				_id: true
@@ -96,4 +104,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 		publishMainStream(child._id, 'reversiInvited', packed);
 	}
-});
+}));

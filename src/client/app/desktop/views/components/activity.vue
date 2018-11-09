@@ -1,10 +1,10 @@
 <template>
 <div class="mk-activity">
 	<mk-widget-container :show-header="design == 0" :naked="design == 2">
-		<template slot="header">%fa:chart-bar%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@toggle%" @click="toggle">%fa:sort%</button>
+		<template slot="header"><fa icon="chart-bar"/>{{ $t('title') }}</template>
+		<button slot="func" :title="$t('toggle')" @click="toggle"><fa icon="sort"/></button>
 
-		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<template v-else>
 			<x-calendar v-show="view == 0" :data="[].concat(activity)"/>
 			<x-chart v-show="view == 1" :data="[].concat(activity)"/>
@@ -15,10 +15,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/activity.vue'),
 	components: {
 		XCalendar,
 		XChart
@@ -43,11 +45,17 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('aggregation/users/activity', {
+		this.$root.api('charts/user/notes', {
 			userId: this.user.id,
-			limit: 20 * 7
+			span: 'day',
+			limit: 7 * 20
 		}).then(activity => {
-			this.activity = activity;
+			this.activity = activity.diffs.normal.map((_, i) => ({
+				total: activity.diffs.normal[i] + activity.diffs.reply[i] + activity.diffs.renote[i],
+				notes: activity.diffs.normal[i],
+				replies: activity.diffs.reply[i],
+				renotes: activity.diffs.renote[i]
+			}));
 			this.fetching = false;
 		});
 	},
@@ -72,7 +80,7 @@ export default Vue.extend({
 	text-align center
 	color #aaa
 
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 </style>

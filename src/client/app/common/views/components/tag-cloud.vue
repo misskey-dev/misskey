@@ -1,7 +1,7 @@
 <template>
 <div class="jtivnzhfwquxpsfidertopbmwmchmnmo">
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<p class="empty" v-else-if="tags.length == 0">%fa:exclamation-circle%%i18n:@empty%</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<p class="empty" v-else-if="tags.length == 0"><fa icon="exclamation-circle"/>{{ $t('empty') }}</p>
 	<div v-else>
 		<vue-word-cloud
 				:words="tags.slice(0, 20).map(x => [x.name, x.count])"
@@ -19,9 +19,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as VueWordCloud from 'vuewordcloud';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/tag-cloud.vue'),
 	components: {
 		[VueWordCloud.name]: VueWordCloud
 	},
@@ -41,7 +43,7 @@ export default Vue.extend({
 	},
 	methods: {
 		fetch() {
-			(this as any).api('aggregation/hashtags').then(tags => {
+			this.$root.api('aggregation/hashtags').then(tags => {
 				this.tags = tags;
 				this.fetching = false;
 			});
@@ -74,7 +76,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> div

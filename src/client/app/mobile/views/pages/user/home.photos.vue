@@ -1,6 +1,6 @@
 <template>
 <div class="root photos">
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images"
 			class="img"
@@ -8,14 +8,16 @@
 			:href="image.note | notePage"
 		></a>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/user/home.photos.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -24,7 +26,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/notes', {
+		this.$root.api('users/notes', {
 			userId: this.user.id,
 			withFiles: true,
 			limit: 6

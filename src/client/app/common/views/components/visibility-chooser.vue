@@ -3,36 +3,36 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
 		<div @click="choose('public')" :class="{ active: v == 'public' }">
-			<div>%fa:globe%</div>
+			<div><fa icon="globe"/></div>
 			<div>
-				<span>%i18n:@public%</span>
+				<span>{{ $t('public') }}</span>
 			</div>
 		</div>
 		<div @click="choose('home')" :class="{ active: v == 'home' }">
-			<div>%fa:home%</div>
+			<div><fa icon="home"/></div>
 			<div>
-				<span>%i18n:@home%</span>
-				<span>%i18n:@home-desc%</span>
+				<span>{{ $t('home') }}</span>
+				<span>{{ $t('home-desc') }}</span>
 			</div>
 		</div>
 		<div @click="choose('followers')" :class="{ active: v == 'followers' }">
-			<div>%fa:unlock%</div>
+			<div><fa icon="unlock"/></div>
 			<div>
-				<span>%i18n:@followers%</span>
-				<span>%i18n:@followers-desc%</span>
+				<span>{{ $t('followers') }}</span>
+				<span>{{ $t('followers-desc') }}</span>
 			</div>
 		</div>
 		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
-			<div>%fa:envelope%</div>
+			<div><fa icon="envelope"/></div>
 			<div>
-				<span>%i18n:@specified%</span>
-				<span>%i18n:@specified-desc%</span>
+				<span>{{ $t('specified') }}</span>
+				<span>{{ $t('specified-desc') }}</span>
 			</div>
 		</div>
 		<div @click="choose('private')" :class="{ active: v == 'private' }">
-			<div>%fa:lock%</div>
+			<div><fa icon="lock"/></div>
 			<div>
-				<span>%i18n:@private%</span>
+				<span>{{ $t('private') }}</span>
 			</div>
 		</div>
 	</div>
@@ -41,9 +41,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/visibility-chooser.vue'),
 	props: ['source', 'compact'],
 	data() {
 		return {

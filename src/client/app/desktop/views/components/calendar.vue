@@ -1,9 +1,9 @@
 <template>
 <div class="mk-calendar" :data-melt="design == 4 || design == 5">
 	<template v-if="design == 0 || design == 1">
-		<button @click="prev" title="%i18n:@prev%">%fa:chevron-circle-left%</button>
-		<p class="title">{{ '%i18n:@title%'.replace('{1}', year).replace('{2}', month) }}</p>
-		<button @click="next" title="%i18n:@next%">%fa:chevron-circle-right%</button>
+		<button @click="prev" :title="$t('prev')"><fa icon="chevron-circle-left"/></button>
+		<p class="title">{{ $t('title', { year, month }) }}</p>
+		<button @click="next" :title="$t('next')"><fa icon="chevron-circle-right"/></button>
 	</template>
 
 	<div class="calendar">
@@ -21,7 +21,7 @@
 			:data-is-out-of-range="isOutOfRange(i + 1)"
 			:data-is-donichi="isDonichi(i + 1)"
 			@click="go(i + 1)"
-			:title="isOutOfRange(i + 1) ? null : '%i18n:@go%'"
+			:title="isOutOfRange(i + 1) ? null : $t('go')"
 		>
 			<div>{{ i + 1 }}</div>
 		</div>
@@ -31,6 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const eachMonthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -39,6 +40,7 @@ function isLeapYear(year) {
 }
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/calendar.vue'),
 	props: {
 		design: {
 			default: 0
@@ -55,13 +57,13 @@ export default Vue.extend({
 			month: new Date().getMonth() + 1,
 			selected: new Date(),
 			weekdayText: [
-				'%i18n:common.weekday-short.sunday%',
-				'%i18n:common.weekday-short.monday%',
-				'%i18n:common.weekday-short.tuesday%',
-				'%i18n:common.weekday-short.wednesday%',
-				'%i18n:common.weekday-short.thursday%',
-				'%i18n:common.weekday-short.friday%',
-				'%i18n:common.weekday-short.saturday%'
+				this.$t('@.weekday-short.sunday'),
+				this.$t('@.weekday-short.monday'),
+				this.$t('@.weekday-short.tuesday'),
+				this.$t('@.weekday-short.wednesday'),
+				this.$t('@.weekday-short.thursday'),
+				this.$t('@.weekday-short.friday'),
+				this.$t('@.weekday-short.saturday')
 			]
 		};
 	},
@@ -151,7 +153,7 @@ export default Vue.extend({
 		background var(--faceHeader)
 		box-shadow 0 1px rgba(#000, 0.07)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> button

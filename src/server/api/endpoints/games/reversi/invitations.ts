@@ -1,11 +1,11 @@
 import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	requireCredential: true
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Find session
 	const invitations = await Matching.find({
 		childId: user._id
@@ -17,4 +17,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Reponse
 	res(Promise.all(invitations.map(async (i) => await packMatching(i, user))));
-});
+}));

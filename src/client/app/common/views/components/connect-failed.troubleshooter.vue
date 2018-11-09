@@ -1,47 +1,49 @@
 <template>
 <div class="troubleshooter">
 	<div class="body">
-		<h1>%fa:wrench%%i18n:@title%</h1>
+		<h1><fa icon="wrench"/>{{ $t('title') }}</h1>
 		<div>
 			<p :data-wip="network == null">
 				<template v-if="network != null">
-					<template v-if="network">%fa:check%</template>
-					<template v-if="!network">%fa:times%</template>
+					<template v-if="network"><fa icon="check"/></template>
+					<template v-if="!network"><fa icon="times"/></template>
 				</template>
-				{{ network == null ? '%i18n:@checking-network%' : '%i18n:@network%' }}<mk-ellipsis v-if="network == null"/>
+				{{ network == null ? this.$t('checking-network') : this.$t('network') }}<mk-ellipsis v-if="network == null"/>
 			</p>
 			<p v-if="network == true" :data-wip="internet == null">
 				<template v-if="internet != null">
-					<template v-if="internet">%fa:check%</template>
-					<template v-if="!internet">%fa:times%</template>
+					<template v-if="internet"><fa icon="check"/></template>
+					<template v-if="!internet"><fa icon="times"/></template>
 				</template>
-				{{ internet == null ? '%i18n:@checking-internet%' : '%i18n:@internet%' }}<mk-ellipsis v-if="internet == null"/>
+				{{ internet == null ? this.$t('checking-internet') : this.$t('internet') }}<mk-ellipsis v-if="internet == null"/>
 			</p>
 			<p v-if="internet == true" :data-wip="server == null">
 				<template v-if="server != null">
-					<template v-if="server">%fa:check%</template>
-					<template v-if="!server">%fa:times%</template>
+					<template v-if="server"><fa icon="check"/></template>
+					<template v-if="!server"><fa icon="times"/></template>
 				</template>
-				{{ server == null ? '%i18n:@checking-server%' : '%i18n:@server%' }}<mk-ellipsis v-if="server == null"/>
+				{{ server == null ? this.$t('checking-server') : this.$t('server') }}<mk-ellipsis v-if="server == null"/>
 			</p>
 		</div>
-		<p v-if="!end">%i18n:@finding%<mk-ellipsis/></p>
-		<p v-if="network === false"><b>%fa:exclamation-triangle%%i18n:@no-network%</b><br>%i18n:@no-network-desc%</p>
-		<p v-if="internet === false"><b>%fa:exclamation-triangle%%i18n:@no-internet%</b><br>%i18n:@no-internet-desc%</p>
-		<p v-if="server === false"><b>%fa:exclamation-triangle%%i18n:@no-server%</b><br>%i18n:@no-server-desc%</p>
-		<p v-if="server === true" class="success"><b>%fa:info-circle%%i18n:@success%</b><br>%i18n:@success-desc%</p>
+		<p v-if="!end">{{ $t('finding') }}<mk-ellipsis/></p>
+		<p v-if="network === false"><b><fa icon="exclamation-triangle"/>{{ $t('no-network') }}</b><br>{{ $t('no-network-desc') }}</p>
+		<p v-if="internet === false"><b><fa icon="exclamation-triangle"/>{{ $t('no-internet') }}</b><br>{{ $t('no-internet-desc') }}</p>
+		<p v-if="server === false"><b><fa icon="exclamation-triangle"/>{{ $t('no-server') }}</b><br>{{ $t('no-server-desc') }}</p>
+		<p v-if="server === true" class="success"><b><fa icon="info-circle"/>{{ $t('success') }}</b><br>{{ $t('success-desc') }}</p>
 	</div>
 	<footer>
-		<a href="/assets/flush.html">%i18n:@flush%</a> | <a href="/assets/version.html">%i18n:@set-version%</a>
+		<a href="/assets/flush.html">{{ $t('flush') }}</a> | <a href="/assets/version.html">{{ $t('set-version') }}</a>
 	</footer>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { apiUrl } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/connect-failed.troubleshooter.vue'),
 	data() {
 		return {
 			network: navigator.onLine,
@@ -100,7 +102,7 @@ export default Vue.extend({
 			color #444
 			border-bottom solid 1px #eee
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 0.25em
 
 		> div
@@ -115,7 +117,7 @@ export default Vue.extend({
 				&[data-wip]
 					color #888
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 0.25em
 
 					&.times
@@ -132,7 +134,7 @@ export default Vue.extend({
 			border-top solid 1px #eee
 
 			> b
-				> [data-fa]
+				> [data-icon]
 					margin-right 0.25em
 
 			&.success

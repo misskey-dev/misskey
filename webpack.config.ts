@@ -6,46 +6,16 @@ import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
-const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
-import I18nReplacer from './src/misc/i18n';
-import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
-import { pattern as faPattern, replacement as faReplacement } from './src/misc/fa';
 const constants = require('./src/const.json');
 
 const locales = require('./locales');
 const meta = require('./package.json');
 const version = meta.clientVersion;
 const codename = meta.codename;
-
-declare var global: {
-	faReplacement: typeof faReplacement;
-	collapseSpacesReplacement: any;
-	base64replacement: any;
-	i18nReplacement: typeof i18nReplacement;
-};
-
-//#region Replacer definitions
-global['faReplacement'] = faReplacement;
-
-global['collapseSpacesReplacement'] = (html: string) => {
-	return minifyHtml(html, {
-		collapseWhitespace: true,
-		collapseInlineTagWhitespace: true,
-		keepClosingSlash: true
-	}).replace(/\t/g, '');
-};
-
-global['base64replacement'] = (_: any, key: string) => {
-	return fs.readFileSync(`${__dirname}/src/client/${key}`, 'base64');
-};
-
-global['i18nReplacement'] = i18nReplacement;
-
-//#endregion
 
 const langs = Object.keys(locales);
 
@@ -57,6 +27,7 @@ const entry = {
 	mobile: './src/client/app/mobile/script.ts',
 	dev: './src/client/app/dev/script.ts',
 	auth: './src/client/app/auth/script.ts',
+	admin: './src/client/app/admin/script.ts',
 	sw: './src/client/app/sw.js'
 };
 
@@ -69,10 +40,12 @@ const output = {
 const consts = {
 	_THEME_COLOR_: constants.themeColor,
 	_COPYRIGHT_: constants.copyright,
-	_VERSION_: version,
+	_VERSION_: meta.version,
+	_CLIENT_VERSION_: version,
 	_CODENAME_: codename,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
+	_LOCALE_: '%locale%',
 	_ENV_: process.env.NODE_ENV
 };
 
@@ -103,10 +76,8 @@ const plugins = [
 			Object.keys(entry).forEach(file => {
 				let src = fs.readFileSync(`${__dirname}/built/client/assets/${file}.${version}.-.js`, 'utf-8');
 
-				const i18nReplacer = new I18nReplacer(lang);
-
-				src = src.replace(i18nReplacer.pattern, i18nReplacer.replacement);
 				src = src.replace('%lang%', lang);
+				src = src.replace('"%locale%"', JSON.stringify(locales[lang]));
 
 				fs.writeFileSync(`${__dirname}/built/client/assets/${file}.${version}.${lang}.js`, src, 'utf-8');
 			});
@@ -136,24 +107,6 @@ module.exports = {
 				}
 			}, {
 				loader: 'vue-svg-inline-loader'
-			}, {
-				loader: 'replace',
-				query: {
-					qs: [{
-						search: /%base64:(.+?)%/g.toString(),
-						replace: 'base64replacement'
-					}, {
-						search: i18nPattern.toString(),
-						replace: 'i18nReplacement',
-						i18n: true
-					}, {
-						search: faPattern.toString(),
-						replace: 'faReplacement'
-					}, {
-						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
-						replace: 'collapseSpacesReplacement'
-					}]
-				}
 			}]
 		}, {
 			test: /\.styl(us)?$/,
@@ -209,18 +162,6 @@ module.exports = {
 					configFile: __dirname + '/src/client/app/tsconfig.json',
 					appendTsSuffixTo: [/\.vue$/]
 				}
-			}, {
-				loader: 'replace',
-				query: {
-					qs: [{
-						search: i18nPattern.toString(),
-						replace: 'i18nReplacement',
-						i18n: true
-					}, {
-						search: faPattern.toString(),
-						replace: 'faReplacement'
-					}]
-				}
 			}]
 		}]
 	},
@@ -235,7 +176,7 @@ module.exports = {
 		}
 	},
 	resolveLoader: {
-		modules: ['node_modules', './webpack/loaders']
+		modules: ['node_modules']
 	},
 	cache: true,
 	devtool: false, //'source-map',

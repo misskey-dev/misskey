@@ -1,8 +1,8 @@
 <template>
 <div class="uofhebxjdgksfmltszlxurtjnjjsvioh" v-if="video.isSensitive && hide" @click="hide = false">
 	<div>
-		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
-		<span>%i18n:@click-to-show%</span>
+		<b><fa icon="exclamation-triangle"/> {{ $t('sensitive') }}</b>
+		<span>{{ $t('click-to-show') }}</span>
 	</div>
 </div>
 <div class="vwxdhznewyashiknzolsoihtlpicqepe" v-else>
@@ -12,16 +12,18 @@
 		@click.prevent="onClick"
 		:title="video.name"
 	>
-		%fa:R play-circle%
+		<fa :icon="['far', 'play-circle']"/>
 	</a>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkMediaVideoDialog from './media-video-dialog.vue';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/media-video.vue'),
 	props: {
 		video: {
 			type: Object,
@@ -51,7 +53,7 @@ export default Vue.extend({
 				start = videoTag.currentTime
 				videoTag.pause()
 			}
-			(this as any).os.new(MkMediaVideoDialog, {
+			this.$root.new(MkMediaVideoDialog, {
 				video: this.video,
 				start,
 			})

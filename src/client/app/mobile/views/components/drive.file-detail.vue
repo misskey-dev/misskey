@@ -5,9 +5,8 @@
 			:src="file.url"
 			:alt="file.name"
 			:title="file.name"
-			@load="onImageLoaded"
 			:style="style">
-		<template v-if="kind != 'image'">%fa:file%</template>
+		<template v-if="kind != 'image'"><fa icon="file"/></template>
 		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
 			<span class="size">
 				<span class="width">{{ file.properties.width }}</span>
@@ -29,33 +28,27 @@
 			<span class="separator"></span>
 			<span class="data-size">{{ file.datasize | bytes }}</span>
 			<span class="separator"></span>
-			<span class="created-at" @click="showCreatedAt">%fa:R clock%<mk-time :time="file.createdAt"/></span>
+			<span class="created-at" @click="showCreatedAt"><fa :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
 			<template v-if="file.isSensitive">
 				<span class="separator"></span>
-				<span class="nsfw">%fa:eye-slash% %i18n:@nsfw%</span>
+				<span class="nsfw"><fa icon="eye-slash"/> {{ $t('nsfw') }}</span>
 			</template>
 		</div>
 	</div>
 	<div class="menu">
 		<div>
-			<ui-button link :href="`${file.url}?download`" :download="file.name">%fa:download% %i18n:@download%</ui-button>
-			<ui-button @click="rename">%fa:pencil-alt% %i18n:@rename%</ui-button>
-			<ui-button @click="move">%fa:R folder-open% %i18n:@move%</ui-button>
-			<ui-button @click="del">%fa:trash-alt R% %i18n:@delete%</ui-button>
-		</div>
-	</div>
-	<div class="exif" v-show="exif">
-		<div>
-			<p>
-				%fa:camera%%i18n:@exif%
-			</p>
-			<pre ref="exif" class="json">{{ exif ? JSON.stringify(exif, null, 2) : '' }}</pre>
+			<ui-button link :href="`${file.url}?download`" :download="file.name"><fa icon="download"/> {{ $t('download') }}</ui-button>
+			<ui-button @click="rename"><fa icon="pencil-alt"/> {{ $t('rename') }}</ui-button>
+			<ui-button @click="move"><fa :icon="['far', 'folder-open']"/> {{ $t('move') }}</ui-button>
+			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><fa :icon="['far', 'eye']"/> {{ $t('unmark-as-sensitive') }}</ui-button>
+			<ui-button @click="toggleSensitive" v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mark-as-sensitive') }}</ui-button>
+			<ui-button @click="del"><fa :icon="['far', 'trash-alt']"/> {{ $t('delete') }}</ui-button>
 		</div>
 	</div>
 	<div class="hash">
 		<div>
 			<p>
-				%fa:hashtag%%i18n:@hash%
+				<fa icon="hashtag"/>{{ $t('hash') }}
 			</p>
 			<code>{{ file.md5 }}</code>
 		</div>
@@ -65,45 +58,51 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as EXIF from 'exif-js';
-import * as hljs from 'highlight.js';
+import i18n from '../../../i18n';
 import { gcd } from '../../../../../prelude/math';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/drive.file-detail.vue'),
 	props: ['file'],
+
 	data() {
 		return {
 			gcd,
 			exif: null
 		};
 	},
+
 	computed: {
 		browser(): any {
 			return this.$parent;
 		},
+
 		kind(): string {
 			return this.file.type.split('/')[0];
 		},
+
 		style(): any {
 			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3 ? {
 				'background-color': `rgb(${ this.file.properties.avgColor.join(',') })`
 			} : {};
 		}
 	},
+
 	methods: {
 		rename() {
-			const name = window.prompt('%i18n:@rename%', this.file.name);
+			const name = window.prompt(this.$t('rename'), this.file.name);
 			if (name == null || name == '' || name == this.file.name) return;
-			(this as any).api('drive/files/update', {
+			this.$root.api('drive/files/update', {
 				fileId: this.file.id,
 				name: name
 			}).then(() => {
 				this.browser.cf(this.file, true);
 			});
 		},
+
 		move() {
-			(this as any).apis.chooseDriveFolder().then(folder => {
-				(this as any).api('drive/files/update', {
+			this.$chooseDriveFolder().then(folder => {
+				this.$root.api('drive/files/update', {
 					fileId: this.file.id,
 					folderId: folder == null ? null : folder.id
 				}).then(() => {
@@ -111,23 +110,26 @@ export default Vue.extend({
 				});
 			});
 		},
+
 		del() {
-			(this as any).api('drive/files/delete', {
+			this.$root.api('drive/files/delete', {
 				fileId: this.file.id
 			}).then(() => {
 				this.browser.cd(this.file.folderId, true);
 			});
 		},
+
+		toggleSensitive() {
+			this.$root.api('drive/files/update', {
+				fileId: this.file.id,
+				isSensitive: !this.file.isSensitive
+			});
+
+			this.file.isSensitive = !this.file.isSensitive;
+		},
+
 		showCreatedAt() {
 			alert(new Date(this.file.createdAt).toLocaleString());
-		},
-		onImageLoaded() {
-			const self = this;
-			EXIF.getData(this.$refs.img, function(this: any) {
-				const allMetaData = EXIF.getAllTags(this);
-				self.exif = allMetaData;
-				hljs.highlightBlock(self.$refs.exif);
-			});
 		}
 	}
 });
@@ -191,7 +193,7 @@ export default Vue.extend({
 
 			> .created-at
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 2px
 
 			> .nsfw
@@ -220,7 +222,7 @@ export default Vue.extend({
 				color var(--text)
 				font-size 0.9em
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 			> code
@@ -232,36 +234,6 @@ export default Vue.extend({
 				overflow auto
 				font-size 0.8em
 				color #222
-				border solid 1px #dfdfdf
-				border-radius 2px
-				background #f5f5f5
-
-	> .exif
-		padding 14px
-		border-top solid 1px var(--faceDivider)
-
-		> div
-			max-width 500px
-			margin 0 auto
-
-			> p
-				display block
-				margin 0
-				padding 0
-				color var(--text)
-				font-size 0.9em
-
-				> [data-fa]
-					margin-right 4px
-
-			> pre
-				display block
-				width 100%
-				margin 6px 0 0 0
-				padding 8px
-				height 128px
-				overflow auto
-				font-size 0.9em
 				border solid 1px #dfdfdf
 				border-radius 2px
 				background #f5f5f5

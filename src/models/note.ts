@@ -2,17 +2,16 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
-import PollVote, { deletePollVote } from './poll-vote';
-import Reaction, { deleteNoteReaction } from './note-reaction';
+import PollVote from './poll-vote';
+import Reaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
-import NoteWatching, { deleteNoteWatching } from './note-watching';
-import NoteReaction from './note-reaction';
-import Favorite, { deleteFavorite } from './favorite';
-import Notification, { deleteNotification } from './notification';
+import Favorite from './favorite';
 import Following from './following';
+import Emoji from './emoji';
 
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
@@ -20,16 +19,12 @@ Note.createIndex('userId');
 Note.createIndex('mentions');
 Note.createIndex('visibleUserIds');
 Note.createIndex('tagsLower');
+Note.createIndex('_user.host');
 Note.createIndex('_files._id');
 Note.createIndex('_files.contentType');
-Note.createIndex({
-	createdAt: -1
-});
+Note.createIndex({ createdAt: -1 });
+Note.createIndex({ score: -1 }, { sparse: true });
 export default Note;
-
-export function isValidText(text: string): boolean {
-	return length(text.trim()) <= 1000 && text.trim() != '';
-}
 
 export function isValidCw(text: string): boolean {
 	return length(text.trim()) <= 100;
@@ -50,6 +45,7 @@ export type INote = {
 	text: string;
 	tags: string[];
 	tagsLower: string[];
+	emojis: string[];
 	cw: string;
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;
@@ -83,7 +79,13 @@ export type INote = {
 		heading: number;
 		speed: number;
 	};
+
 	uri: string;
+
+	/**
+	 * 人気の投稿度合いを表すスコア
+	 */
+	score: number;
 
 	// 非正規化
 	_reply?: {
@@ -99,72 +101,6 @@ export type INote = {
 	_replyIds?: mongo.ObjectID[];
 	_files?: IDriveFile[];
 };
-
-/**
- * Noteを物理削除します
- */
-export async function deleteNote(note: string | mongo.ObjectID | INote) {
-	let n: INote;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(note)) {
-		n = await Note.findOne({
-			_id: note
-		});
-	} else if (typeof note === 'string') {
-		n = await Note.findOne({
-			_id: new mongo.ObjectID(note)
-		});
-	} else {
-		n = note as INote;
-	}
-
-	console.log(n == null ? `Note: delete skipped ${note}` : `Note: deleting ${n._id}`);
-
-	if (n == null) return;
-
-	// このNoteへの返信をすべて削除
-	await Promise.all((
-		await Note.find({ replyId: n._id })
-	).map(x => deleteNote(x)));
-
-	// このNoteのRenoteをすべて削除
-	await Promise.all((
-		await Note.find({ renoteId: n._id })
-	).map(x => deleteNote(x)));
-
-	// この投稿に対するNoteWatchingをすべて削除
-	await Promise.all((
-		await NoteWatching.find({ noteId: n._id })
-	).map(x => deleteNoteWatching(x)));
-
-	// この投稿に対するNoteReactionをすべて削除
-	await Promise.all((
-		await NoteReaction.find({ noteId: n._id })
-	).map(x => deleteNoteReaction(x)));
-
-	// この投稿に対するPollVoteをすべて削除
-	await Promise.all((
-		await PollVote.find({ noteId: n._id })
-	).map(x => deletePollVote(x)));
-
-	// この投稿に対するFavoriteをすべて削除
-	await Promise.all((
-		await Favorite.find({ noteId: n._id })
-	).map(x => deleteFavorite(x)));
-
-	// この投稿に対するNotificationをすべて削除
-	await Promise.all((
-		await Notification.find({ noteId: n._id })
-	).map(x => deleteNotification(x)));
-
-	// このNoteを削除
-	await Note.remove({
-		_id: n._id
-	});
-
-	console.log(`Note: deleted ${n._id}`);
-}
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;
@@ -225,7 +161,7 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	}
 };
 
-export const packMany = async (
+export const packMany = (
 	notes: (string | mongo.ObjectID | INote)[],
 	me?: string | mongo.ObjectID | IUser,
 	options?: {
@@ -233,7 +169,7 @@ export const packMany = async (
 		skipHide?: boolean;
 	}
 ) => {
-	return (await Promise.all(notes.map(n => pack(n, me, options)))).filter(x => x != null);
+	return Promise.all(notes.map(n => pack(n, me, options)));
 };
 
 /**
@@ -259,7 +195,7 @@ export const pack = async (
 
 	// Me
 	const meId: mongo.ObjectID = me
-		? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? isObjectId(me)
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
@@ -269,7 +205,7 @@ export const pack = async (
 	let _note: any;
 
 	// Populate the note if 'note' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(note)) {
+	if (isObjectId(note)) {
 		_note = await Note.findOne({
 			_id: note
 		});
@@ -281,13 +217,33 @@ export const pack = async (
 		_note = deepcopy(note);
 	}
 
-	// 投稿がデータベース上に見つからなかったとき
+	// (データベースの欠損などで)投稿がデータベース上に見つからなかったとき
 	if (_note == null) {
-		console.warn(`note not found on database: ${note}`);
+		console.warn(`[DAMAGED DB] (missing) pkg: note :: ${note}`);
 		return null;
 	}
 
 	const id = _note._id;
+
+	// _note._userを消す前か、_note.userを解決した後でないとホストがわからない
+	if (_note._user) {
+		const host = _note._user.host;
+		// 互換性のため。(古いMisskeyではNoteにemojisが無い)
+		if (_note.emojis == null) {
+			_note.emojis = Emoji.find({
+				host: host
+			}, {
+				fields: { _id: false }
+			});
+		} else {
+			_note.emojis = Emoji.find({
+				name: { $in: _note.emojis },
+				host: host
+			}, {
+				fields: { _id: false }
+			});
+		}
+	}
 
 	// Rename _id to id
 	_note.id = _note._id;
@@ -296,6 +252,7 @@ export const pack = async (
 	delete _note.prev;
 	delete _note.next;
 	delete _note.tagsLower;
+	delete _note.score;
 	delete _note._user;
 	delete _note._reply;
 	delete _note._renote;
@@ -319,11 +276,6 @@ export const pack = async (
 
 	// When requested a detailed note data
 	if (opts.detail) {
-		//#region 重いので廃止
-		_note.prev = null;
-		_note.next = null;
-		//#endregion
-
 		if (_note.replyId) {
 			// Populate reply to note
 			_note.reply = pack(_note.replyId, meId, {
@@ -358,8 +310,8 @@ export const pack = async (
 			})(_note.poll);
 		}
 
-		// Fetch my reaction
 		if (meId) {
+			// Fetch my reaction
 			_note.myReaction = (async () => {
 				const reaction = await Reaction
 					.findOne({
@@ -374,17 +326,43 @@ export const pack = async (
 
 				return null;
 			})();
+
+			// isFavorited
+			_note.isFavorited = (async () => {
+				const favorite = await Favorite
+					.count({
+						userId: meId,
+						noteId: id
+					}, {
+						limit: 1
+					});
+
+				return favorite === 1;
+			})();
 		}
 	}
 
 	// resolve promises in _note object
 	_note = await rap(_note);
 
-	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
+	//#region (データベースの欠損などで)参照しているデータがデータベース上に見つからなかったとき
 	if (_note.user == null) {
-		console.warn(`in packaging note: note user not found on database: note(${_note.id})`);
+		console.warn(`[DAMAGED DB] (missing) pkg: note -> user :: ${_note.id} (user ${_note.userId})`);
 		return null;
 	}
+
+	if (opts.detail) {
+		if (_note.replyId != null && _note.reply == null) {
+			console.warn(`[DAMAGED DB] (missing) pkg: note -> reply :: ${_note.id} (reply ${_note.replyId})`);
+			return null;
+		}
+
+		if (_note.renoteId != null && _note.renote == null) {
+			console.warn(`[DAMAGED DB] (missing) pkg: note -> renote :: ${_note.id} (renote ${_note.renoteId})`);
+			return null;
+		}
+	}
+	//#endregion
 
 	if (_note.user.isCat && _note.text) {
 		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');

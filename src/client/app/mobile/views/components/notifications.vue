@@ -1,30 +1,37 @@
 <template>
 <div class="mk-notifications">
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
+	</div>
+
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notifications" class="transition notifications">
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
 			<p class="date" :key="notification.id + '_date'" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
-				<span>%fa:angle-up%{{ notification._datetext }}</span>
-				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ notification._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</component>
 
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>
-		{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>
+		{{ fetchingMoreNotifications ? $t('@.loading') : $t('@.load-more') }}
 	</button>
 
-	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-if="notifications.length == 0 && !fetching">{{ $t('empty') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/notifications.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -41,20 +48,22 @@ export default Vue.extend({
 				const date = new Date(notification.createdAt).getDate();
 				const month = new Date(notification.createdAt).getMonth() + 1;
 				notification._date = date;
-				notification._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				notification._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return notification;
 			});
 		}
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		window.addEventListener('scroll', this.onScroll, { passive: true });
+
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('notification', this.onNotification);
 
 		const max = 10;
 
-		(this as any).api('i/notifications', {
+		this.$root.api('i/notifications', {
 			limit: max + 1
 		}).then(notifications => {
 			if (notifications.length == max + 1) {
@@ -69,16 +78,19 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
+		window.removeEventListener('scroll', this.onScroll);
 		this.connection.dispose();
 	},
 
 	methods: {
 		fetchMoreNotifications() {
+			if (this.fetchingMoreNotifications) return;
+
 			this.fetchingMoreNotifications = true;
 
 			const max = 30;
 
-			(this as any).api('i/notifications', {
+			this.$root.api('i/notifications', {
 				limit: max + 1,
 				untilId: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {
@@ -95,12 +107,23 @@ export default Vue.extend({
 
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.connection.send({
-				type: 'readNotification',
+			this.$root.stream.send('readNotification', {
 				id: notification.id
 			});
 
 			this.notifications.unshift(notification);
+		},
+
+		onScroll() {
+			if (this.$store.state.settings.fetchOnScroll !== false) {
+				// 親要素が display none だったら弾く
+				// https://github.com/syuilo/misskey/issues/1569
+				// http://d.hatena.ne.jp/favril/20091105/1257403319
+				if (this.$el.offsetHeight == 0) return;
+
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.fetchMoreNotifications();
+			}
 		}
 	}
 });
@@ -144,17 +167,17 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			i
+			[data-icon]
 				margin-right 8px
 
 	> .more
 		display block
 		width 100%
 		padding 16px
-		color #555
+		color var(--text)
 		border-top solid 1px rgba(#000, 0.05)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .empty
@@ -163,13 +186,11 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-	> .fetching
-		margin 0
+	> .placeholder
 		padding 16px
-		text-align center
-		color #aaa
+		opacity 0.3
 
-		> [data-fa]
-			margin-right 4px
+		@media (min-width 500px)
+			padding 32px
 
 </style>

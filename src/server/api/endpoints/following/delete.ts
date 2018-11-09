@@ -1,10 +1,13 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 const ms = require('ms');
-import User, { pack, ILocalUser } from '../../../../models/user';
+import User, { pack } from '../../../../models/user';
 import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
+import define from '../../define';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': '指定したユーザーのフォローを解除します。',
 		'en-US': 'Unfollow a user.'
@@ -17,24 +20,31 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-write'
+	kind: 'following-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		}
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
 	// Check if the followee is yourself
-	if (user._id.equals(userId)) {
+	if (user._id.equals(ps.userId)) {
 		return rej('followee is yourself');
 	}
 
 	// Get followee
 	const followee = await User.findOne({
-		_id: userId
+		_id: ps.userId
 	}, {
 		fields: {
 			data: false,
@@ -61,4 +71,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 
 	// Send response
 	res(await pack(followee._id, user));
-});
+}));

@@ -1,7 +1,5 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import Xev from 'xev';
-import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
 import readNotification from '../common/read-notification';
@@ -11,8 +9,7 @@ import readNote from '../../../services/note/read';
 
 import Channel from './channel';
 import channels from './channels';
-
-const log = debug('misskey');
+import { EventEmitter } from 'events';
 
 /**
  * Main stream connection
@@ -21,14 +18,14 @@ export default class Connection {
 	public user?: IUser;
 	public app: IApp;
 	private wsConnection: websocket.connection;
-	public subscriber: Xev;
+	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
 	public sendMessageToWsOverride: any = null; // 後方互換性のため
 
 	constructor(
 		wsConnection: websocket.connection,
-		subscriber: Xev,
+		subscriber: EventEmitter,
 		user: IUser,
 		app: IApp
 	) {
@@ -58,6 +55,7 @@ export default class Connection {
 			case 'connect': this.onChannelConnectRequested(body); break;
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
 			case 'channel': this.onChannelMessageRequested(body); break;
+			case 'ch': this.onChannelMessageRequested(body); break; // alias
 		}
 	}
 
@@ -145,9 +143,8 @@ export default class Connection {
 	 */
 	@autobind
 	private onChannelConnectRequested(payload: any) {
-		const { channel, id, params } = payload;
-		log(`CH CONNECT: ${id} ${channel} by @${this.user.username}`);
-		this.connectChannel(id, params, (channels as any)[channel]);
+		const { channel, id, params, pong } = payload;
+		this.connectChannel(id, params, channel, pong);
 	}
 
 	/**
@@ -156,7 +153,6 @@ export default class Connection {
 	@autobind
 	private onChannelDisconnectRequested(payload: any) {
 		const { id } = payload;
-		log(`CH DISCONNECT: ${id} by @${this.user.username}`);
 		this.disconnectChannel(id);
 	}
 
@@ -176,10 +172,21 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@autobind
-	public connectChannel(id: string, params: any, channelClass: { new(id: string, connection: Connection): Channel }) {
-		const channel = new channelClass(id, this);
-		this.channels.push(channel);
-		channel.init(params);
+	public connectChannel(id: string, params: any, channel: string, pong = false) {
+		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
+		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
+			return;
+		}
+
+		const ch: Channel = new (channels as any)[channel](id, this);
+		this.channels.push(ch);
+		ch.init(params);
+
+		if (pong) {
+			this.sendMessageToWs('connected', {
+				id: id
+			});
+		}
 	}
 
 	/**

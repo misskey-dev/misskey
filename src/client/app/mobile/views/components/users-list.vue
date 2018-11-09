@@ -1,26 +1,28 @@
 <template>
 <div class="mk-users-list">
 	<nav>
-		<span :data-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
-		<span v-if="$store.getters.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@known%<span>{{ youKnowCount }}</span></span>
+		<span :data-active="mode == 'all'" @click="mode = 'all'">{{ $t('all') }}<span>{{ count }}</span></span>
+		<span v-if="$store.getters.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">{{ $t('known') }}<span>{{ youKnowCount }}</span></span>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
 		<mk-user-preview v-for="u in users" :user="u" :key="u.id"/>
 	</div>
 	<button class="more" v-if="!fetching && next != null" @click="more" :disabled="moreFetching">
-		<span v-if="!moreFetching">%i18n:@load-more%</span>
-		<span v-if="moreFetching">%i18n:common.loading%<mk-ellipsis/></span>
+		<span v-if="!moreFetching">{{ $t('@.load-more') }}</span>
+		<span v-if="moreFetching">{{ $t('@.loading') }}<mk-ellipsis/></span>
 	</button>
 	<p class="no" v-if="!fetching && users.length == 0">
 		<slot></slot>
 	</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/users-list.vue'),
 	props: ['fetch', 'count', 'youKnowCount'],
 	data() {
 		return {
@@ -127,7 +129,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 </style>

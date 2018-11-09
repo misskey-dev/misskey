@@ -48,7 +48,7 @@ export default Vue.extend({
 			color var(--faceHeaderText)
 			box-shadow 0 1px rgba(#000, 0.07)
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 6px
 
 			&:empty

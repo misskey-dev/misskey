@@ -10,13 +10,13 @@
 		<div class="description">{{ u.description }}</div>
 		<div class="status">
 			<div>
-				<p>%i18n:@notes%</p><span>{{ u.notesCount }}</span>
+				<p>{{ $t('notes') }}</p><span>{{ u.notesCount }}</span>
 			</div>
 			<div>
-				<p>%i18n:@following%</p><span>{{ u.followingCount }}</span>
+				<p>{{ $t('following') }}</p><span>{{ u.followingCount }}</span>
 			</div>
 			<div>
-				<p>%i18n:@followers%</p><span>{{ u.followersCount }}</span>
+				<p>{{ $t('followers') }}</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
 		<mk-follow-button v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u"/>
@@ -26,10 +26,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/user-preview.vue'),
 	props: {
 		user: {
 			type: [Object, String],
@@ -52,7 +54,7 @@ export default Vue.extend({
 				parseAcct(this.user.substr(1)) :
 				{ userId: this.user };
 
-			(this as any).api('users/show', query).then(user => {
+			this.$root.api('users/show', query).then(user => {
 				this.u = user;
 				this.open();
 			});

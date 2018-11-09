@@ -4,22 +4,22 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
 			<p><mk-reaction-icon :reaction="notification.reaction"/>{{ notification.user | userName }}</p>
-			<p class="note-ref">%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%</p>
+			<p class="note-ref"><fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/></p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'renote'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p>%fa:retweet%{{ notification.note.user | userName }}</p>
-			<p class="note-ref">%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%</p>
+			<p><fa icon="retweet"/>{{ notification.note.user | userName }}</p>
+			<p class="note-ref"><fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/></p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'quote'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p>%fa:quote-left%{{ notification.note.user | userName }}</p>
+			<p><fa icon="quote-left"/>{{ notification.note.user | userName }}</p>
 			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
@@ -27,21 +27,21 @@
 	<template v-if="notification.type == 'follow'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
-			<p>%fa:user-plus%{{ notification.user | userName }}</p>
+			<p><fa icon="user-plus"/>{{ notification.user | userName }}</p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'receiveFollowRequest'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
-			<p>%fa:user-clock%{{ notification.user | userName }}</p>
+			<p><fa icon="user-clock"/>{{ notification.user | userName }}</p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p>%fa:reply%{{ notification.note.user | userName }}</p>
+			<p><fa icon="reply"/>{{ notification.note.user | userName }}</p>
 			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
@@ -49,7 +49,7 @@
 	<template v-if="notification.type == 'mention'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p>%fa:at%{{ notification.note.user | userName }}</p>
+			<p><fa icon="at"/>{{ notification.note.user | userName }}</p>
 			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
@@ -57,8 +57,8 @@
 	<template v-if="notification.type == 'poll_vote'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
-			<p>%fa:chart-pie%{{ notification.user | userName }}</p>
-			<p class="note-ref">%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%</p>
+			<p><fa icon="chart-pie"/>{{ notification.user | userName }}</p>
+			<p class="note-ref"><fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/></p>
 		</div>
 	</template>
 </div>
@@ -105,12 +105,12 @@ export default Vue.extend({
 		p
 			margin 0
 
-			i, mk-reaction-icon
+			[data-icon], mk-reaction-icon
 				margin-right 4px
 
 	.note-ref
 
-		[data-fa]
+		[data-icon]
 			font-size 1em
 			font-weight normal
 			font-style normal
@@ -118,19 +118,19 @@ export default Vue.extend({
 			margin-right 3px
 
 	&.renote, &.quote
-		.text p i
+		.text p [data-icon]
 			color #77B255
 
 	&.follow
-		.text p i
+		.text p [data-icon]
 			color #53c7ce
 
 	&.receiveFollowRequest
-		.text p i
+		.text p [data-icon]
 			color #888
 
 	&.reply, &.mention
-		.text p i
+		.text p [data-icon]
 			color #fff
 
 </style>

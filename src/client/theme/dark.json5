@@ -26,7 +26,7 @@
 		face: '$secondary',
 		faceText: '#fff',
 		faceHeader: ':lighten<5<$secondary',
-		faceHeaderText: '#e3e5e8',
+		faceHeaderText: '$text',
 		faceDivider: 'rgba(0, 0, 0, 0.3)',
 		faceTextButton: '$text',
 		faceTextButtonHover: ':lighten<10<$text',
@@ -34,7 +34,7 @@
 		faceClearButtonHover: 'rgba(0, 0, 0, 0.1)',
 		faceClearButtonActive: 'rgba(0, 0, 0, 0.2)',
 		popupBg: ':lighten<5<$secondary',
-		popupFg: '#d6dce2',
+		popupFg: '$text',
 
 		subNoteBg: 'rgba(0, 0, 0, 0.18)',
 		subNoteText: ':alpha<0.7<$text',
@@ -84,7 +84,8 @@
 
 		reactionPickerButtonHoverBg: 'rgba(255, 255, 255, 0.18)',
 
-		reactionViewerBorder: 'rgba(255, 255, 255, 0.1)',
+		reactionViewerButtonBg: 'rgba(255, 255, 255, 0.1)',
+		reactionViewerButtonHoverBg: 'rgba(255, 255, 255, 0.2)',
 
 		pollEditorInputBg: 'rgba(0, 0, 0, 0.25)',
 
@@ -121,11 +122,19 @@
 		mfmTitleBg: 'rgba(0, 0, 0, 0.2)',
 		mfmQuote: ':alpha<0.7<$text',
 		mfmQuoteLine: ':alpha<0.6<$text',
+		mfmLink: '$primary',
+		mfmMention: '$primary',
+		mfmHashtag: '$primary',
 
 		suspendedInfoBg: '#611d1d',
 		suspendedInfoFg: '#ffb4b4',
 		remoteInfoBg: '#42321c',
 		remoteInfoFg: '#ffbd3e',
+
+		infoBg: '#253142',
+		infoFg: '#fff',
+		infoWarnBg: '#42321c',
+		infoWarnFg: '#ffbd3e',
 
 		messagingRoomBg: '@bg',
 		messagingRoomInfo: '#fff',
@@ -170,6 +179,7 @@
 		desktopSettingsNavItemHover: ':lighten<10<$text',
 
 		deckAcrylicColumnBg: 'rgba(0, 0, 0, 0.25)',
+		deckColumnBg: ':darken<3<@face',
 
 		mobileHeaderBg: ':lighten<5<$secondary',
 		mobileHeaderFg: '$text',
@@ -205,5 +215,11 @@
 		reversiGameEmptyCell: ':lighten<2<$secondary',
 		reversiGameEmptyCellMyTurn: ':lighten<5<$secondary',
 		reversiGameEmptyCellCanPut: ':lighten<4<$secondary',
+
+		adminDashboardHeaderFg: ':alpha<0.9<$text',
+		adminDashboardHeaderBorder: 'rgba(0, 0, 0, 0.3)',
+		adminDashboardCardBg: '$secondary',
+		adminDashboardCardFg: '$text',
+		adminDashboardCardDivider: 'rgba(0, 0, 0, 0.3)',
 	},
 }

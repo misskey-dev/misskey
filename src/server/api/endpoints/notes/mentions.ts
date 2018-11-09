@@ -1,9 +1,8 @@
-import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
-import getParams from '../../get-params';
+import define from '../../define';
 import read from '../../../../services/note/read';
 
 export const meta = {
@@ -15,36 +14,41 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		following: $.bool.optional.note({
+		following: {
+			validator: $.bool.optional,
 			default: false
-		}),
+		},
 
-		limit: $.num.optional.range(1, 100).note({
+		limit: {
+			validator: $.num.optional.range(1, 100),
 			default: 10
-		}),
+		},
 
-		sinceId: $.type(ID).optional.note({
-		}),
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		untilId: $.type(ID).optional.note({
-		}),
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
 
-		visibility: $.str.optional.note({
-		}),
+		visibility: {
+			validator: $.str.optional,
+		},
 	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	const [ps, psErr] = getParams(meta, params);
-	if (psErr) throw psErr;
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
 	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
 	}
 
-	// Construct query
 	const query = {
+		deletedAt: null,
+
 		$or: [{
 			mentions: user._id
 		}, {
@@ -79,15 +83,13 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 		};
 	}
 
-	// Issue query
 	const mentions = await Note
 		.find(query, {
 			limit: ps.limit,
 			sort: sort
 		});
 
-	mentions.forEach(note => read(user._id, note._id));
-
-	// Serialize
 	res(await packMany(mentions, user));
-});
+
+	mentions.forEach(note => read(user._id, note._id));
+}));

@@ -2,8 +2,8 @@
 <div class="mk-messaging" :data-compact="compact">
 	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
-			<label for="search-input">%fa:search%</label>
-			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:@search-user%"/>
+			<label for="search-input"><i><fa icon="search"/></i></label>
+			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" :placeholder="$t('search-user')"/>
 		</div>
 		<div class="result">
 			<ol class="users" v-if="result.length > 0" ref="searchResult">
@@ -38,22 +38,24 @@
 						<mk-time :time="message.createdAt"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">%i18n:@you%:</span>{{ message.text }}</p>
+						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
 					</div>
 				</div>
 			</a>
 		</template>
 	</div>
-	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:@no-history%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging.vue'),
 	props: {
 		compact: {
 			type: Boolean,
@@ -75,12 +77,12 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('messagingIndex');
+		this.connection = this.$root.stream.useSharedConnection('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		(this as any).api('messaging/history').then(messages => {
+		this.$root.api('messaging/history').then(messages => {
 			this.messages = messages;
 			this.fetching = false;
 		});
@@ -111,7 +113,7 @@ export default Vue.extend({
 				this.result = [];
 				return;
 			}
-			(this as any).api('users/search', {
+			this.$root.api('users/search', {
 				query: this.q,
 				max: 5
 			}).then(users => {
@@ -213,7 +215,7 @@ export default Vue.extend({
 				width 38px
 				pointer-events none
 
-				> [data-fa]
+				> i
 					display block
 					position absolute
 					top 0
@@ -418,7 +420,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	// TODO: element base media query

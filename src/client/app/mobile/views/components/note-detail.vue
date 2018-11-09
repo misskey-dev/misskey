@@ -6,8 +6,8 @@
 		@click="fetchConversation"
 		:disabled="conversationFetching"
 	>
-		<template v-if="!conversationFetching">%fa:ellipsis-v%</template>
-		<template v-if="conversationFetching">%fa:spinner .pulse%</template>
+		<template v-if="!conversationFetching"><fa icon="ellipsis-v"/></template>
+		<template v-if="conversationFetching"><fa icon="spinner .pulse"/></template>
 	</button>
 	<div class="conversation">
 		<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
@@ -18,11 +18,11 @@
 	<div class="renote" v-if="isRenote">
 		<p>
 			<mk-avatar class="avatar" :user="note.user"/>
-			%fa:retweet%
+			<fa icon="retweet"/>
 			<router-link class="name" :href="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+			<span>{{ this.$t('reposted-by').substr(0, this.$t('reposted-by').indexOf('{')) }}</span>
 			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-			<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+			<span>{{ this.$t('reposted-by').substr(this.$t('reposted-by').indexOf('}') + 1) }}</span>
 			<mk-time :time="note.createdAt"/>
 		</p>
 	</div>
@@ -41,16 +41,16 @@
 			</p>
 			<div class="content" v-show="p.cw == null || showContent">
 				<div class="text">
-					<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
-					<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
-					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
+					<span v-if="p.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
+					<span v-if="p.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
+					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i" :customEmojis="p.emojis"/>
 				</div>
 				<div class="files" v-if="p.files.length > 0">
 					<mk-media-list :media-list="p.files" :raw="true"/>
 				</div>
 				<mk-poll v-if="p.poll" :note="p"/>
 				<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
-				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
+				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
 				<div class="map" v-if="p.geo" ref="map"></div>
 				<div class="renote" v-if="p.renote">
 					<mk-note-preview :note="p.renote"/>
@@ -62,19 +62,19 @@
 		</router-link>
 		<footer>
 			<mk-reactions-viewer :note="p"/>
-			<button @click="reply" title="%i18n:@reply%">
-				<template v-if="p.reply">%fa:reply-all%</template>
-				<template v-else>%fa:reply%</template>
+			<button @click="reply" :title="$t('title')">
+				<template v-if="p.reply"><fa icon="reply-all"/></template>
+				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
 			<button @click="renote" title="Renote">
-				%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
+				<fa icon="retweet"/><p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
-			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@reaction%">
-				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
+			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" :title="$t('title')">
+				<fa icon="plus"/><p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">
-				%fa:ellipsis-h%
+				<fa icon="ellipsis-h"/>
 			</button>
 		</footer>
 	</article>
@@ -86,6 +86,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import parse from '../../../../../mfm/parse';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
@@ -95,6 +96,7 @@ import { sum } from '../../../../../prelude/array';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/note-detail.vue'),
 	components: {
 		XSub
 	},
@@ -153,7 +155,7 @@ export default Vue.extend({
 	mounted() {
 		// Get replies
 		if (!this.compact) {
-			(this as any).api('notes/replies', {
+			this.$root.api('notes/replies', {
 				noteId: this.p.id,
 				limit: 8
 			}).then(replies => {
@@ -165,7 +167,7 @@ export default Vue.extend({
 		if (this.p.geo) {
 			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
 			if (shouldShowMap) {
-				(this as any).os.getGoogleMaps().then(maps => {
+				this.$root.os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
 					const map = new maps.Map(this.$refs.map, {
 						center: uluru,
@@ -185,7 +187,7 @@ export default Vue.extend({
 			this.conversationFetching = true;
 
 			// Fetch conversation
-			(this as any).api('notes/conversation', {
+			this.$root.api('notes/conversation', {
 				noteId: this.p.replyId
 			}).then(conversation => {
 				this.conversationFetching = false;
@@ -194,19 +196,19 @@ export default Vue.extend({
 		},
 
 		reply() {
-			(this as any).apis.post({
+			this.$post({
 				reply: this.p
 			});
 		},
 
 		renote() {
-			(this as any).apis.post({
+			this.$post({
 				renote: this.p
 			});
 		},
 
 		react() {
-			(this as any).os.new(MkReactionPicker, {
+			this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p,
 				compact: true,
@@ -215,7 +217,7 @@ export default Vue.extend({
 		},
 
 		menu() {
-			(this as any).os.new(MkNoteMenu, {
+			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.p,
 				compact: true
@@ -281,7 +283,7 @@ export default Vue.extend({
 				margin 0 8px 0 0
 				border-radius 6px
 
-			[data-fa]
+			[data-icon]
 				margin-right 4px
 
 			.name

@@ -1,34 +1,34 @@
 <template>
 <x-column :menu="menu" :naked="true" :narrow="true" :name="name" :column="column" :is-stacked="isStacked" class="wtdtxvecapixsepjtcupubtsmometobz">
-	<span slot="header">%fa:calculator%{{ name }}</span>
+	<span slot="header"><fa icon="calculator"/>{{ name }}</span>
 
 	<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
 		<template v-if="edit">
 			<header>
 				<select v-model="widgetAdderSelected" @change="addWidget">
-					<option value="profile">%i18n:common.widgets.profile%</option>
-					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
-					<option value="calendar">%i18n:common.widgets.calendar%</option>
-					<option value="timemachine">%i18n:common.widgets.timemachine%</option>
-					<option value="activity">%i18n:common.widgets.activity%</option>
-					<option value="rss">%i18n:common.widgets.rss%</option>
-					<option value="trends">%i18n:common.widgets.trends%</option>
-					<option value="photo-stream">%i18n:common.widgets.photo-stream%</option>
-					<option value="slideshow">%i18n:common.widgets.slideshow%</option>
-					<option value="version">%i18n:common.widgets.version%</option>
-					<option value="broadcast">%i18n:common.widgets.broadcast%</option>
-					<option value="notifications">%i18n:common.widgets.notifications%</option>
-					<option value="users">%i18n:common.widgets.users%</option>
-					<option value="polls">%i18n:common.widgets.polls%</option>
-					<option value="post-form">%i18n:common.widgets.post-form%</option>
-					<option value="messaging">%i18n:common.widgets.messaging%</option>
-					<option value="memo">%i18n:common.widgets.memo%</option>
-					<option value="hashtags">%i18n:common.widgets.hashtags%</option>
-					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
-					<option value="server">%i18n:common.widgets.server%</option>
-					<option value="donation">%i18n:common.widgets.donation%</option>
-					<option value="nav">%i18n:common.widgets.nav%</option>
-					<option value="tips">%i18n:common.widgets.tips%</option>
+					<option value="profile">{{ $t('@.widgets.profile') }}</option>
+					<option value="analog-clock">{{ $t('@.widgets.analog-clock') }}</option>
+					<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
+					<option value="timemachine">{{ $t('@.widgets.timemachine') }}</option>
+					<option value="activity">{{ $t('@.widgets.activity') }}</option>
+					<option value="rss">{{ $t('@.widgets.rss') }}</option>
+					<option value="trends">{{ $t('@.widgets.trends') }}</option>
+					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
+					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
+					<option value="version">{{ $t('@.widgets.version') }}</option>
+					<option value="broadcast">{{ $t('@.widgets.broadcast') }}</option>
+					<option value="notifications">{{ $t('@.widgets.notifications') }}</option>
+					<option value="users">{{ $t('@.widgets.users') }}</option>
+					<option value="polls">{{ $t('@.widgets.polls') }}</option>
+					<option value="post-form">{{ $t('@.widgets.post-form') }}</option>
+					<option value="messaging">{{ $t('@.widgets.messaging') }}</option>
+					<option value="memo">{{ $t('@.widgets.memo') }}</option>
+					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
+					<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
+					<option value="server">{{ $t('@.widgets.server') }}</option>
+					<option value="donation">{{ $t('@.widgets.donation') }}</option>
+					<option value="nav">{{ $t('@.widgets.nav') }}</option>
+					<option value="tips">{{ $t('@.widgets.tips') }}</option>
 				</select>
 			</header>
 			<x-draggable
@@ -37,7 +37,7 @@
 				@sort="onWidgetSort"
 			>
 				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="widgetFunc(widget.id)">
-					<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
+					<button class="remove" @click="removeWidget(widget)"><fa icon="times"/></button>
 					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="deck"/>
 				</div>
 			</x-draggable>
@@ -51,11 +51,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import XColumn from './deck.column.vue';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XColumn,
 		XDraggable
@@ -83,14 +85,14 @@ export default Vue.extend({
 	computed: {
 		name(): string {
 			if (this.column.name) return this.column.name;
-			return '%i18n:common.deck.widgets%';
+			return this.$t('@deck.widgets');
 		}
 	},
 
 	created() {
 		this.menu = [{
-			icon: '%fa:cog%',
-			text: '%i18n:@edit%',
+			icon: 'cog',
+			text: this.$t('edit'),
 			action: () => {
 				this.edit = !this.edit;
 			}

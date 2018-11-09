@@ -2,11 +2,11 @@
 <div>
 	<mk-widget-container :show-header="false">
 		<article class="dolfvtibguprpxxhfndqaosjitixjohx">
-			<h1>%fa:heart%%i18n:@title%</h1>
+			<h1><fa icon="heart"/>{{ $t('title') }}</h1>
 			<p v-if="meta">
-				{{ '%i18n:@text%'.substr(0, '%i18n:@text%'.indexOf('{')) }}
-				<a :href="meta.maintainer.url">{{ meta.maintainer.name }}</a>
-				{{ '%i18n:@text%'.substr('%i18n:@text%'.indexOf('}') + 1) }}
+				{{ this.$t('text').substr(0, this.$t('text').indexOf('{')) }}
+				<a :href="'mailto:' + meta.maintainer.email">{{ meta.maintainer.name }}</a>
+				{{ this.$t('text').substr(this.$t('text').indexOf('}') + 1) }}
 			</p>
 		</article>
 	</mk-widget-container>
@@ -15,16 +15,19 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'donation'
 }).extend({
+	i18n: i18n('common/views/widgets/donation.vue'),
 	data() {
 		return {
 			meta: null
 		};
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	}
@@ -41,7 +44,7 @@ export default define({
 		margin 0 0 5px 0
 		font-size 1em
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 0.25em
 
 	> p

@@ -1,15 +1,17 @@
 <template>
 <form class="search" @submit.prevent="onSubmit">
-	%fa:search%
-	<input v-model="q" type="search" placeholder="%i18n:@placeholder%"/>
+	<i><fa icon="search"/></i>
+	<input v-model="q" type="search" :placeholder="$t('placeholder')"/>
 	<div class="result"></div>
 </form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.header.search.vue'),
 	data() {
 		return {
 			q: ''
@@ -29,7 +31,10 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .search
-	> [data-fa]
+	@media (max-width 800px)
+		display none !important
+
+	> i
 		display block
 		position absolute
 		top 0
@@ -57,6 +62,9 @@ export default Vue.extend({
 		border-radius 16px
 		transition color 0.5s ease, border 0.5s ease
 		color var(--desktopHeaderSearchFg)
+
+		@media (max-width 1000px)
+			width 10em
 
 		&::placeholder
 			color var(--desktopHeaderFg)

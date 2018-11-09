@@ -2,19 +2,27 @@
 <div class="eamppglmnmimdhrlzhplwpvyeaqmmhxu">
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div v-if="!fetching && requestInitPromise != null">
-		<p>%i18n:@error%</p>
-		<button @click="resolveInitPromise">%i18n:@retry%</button>
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
 	</div>
 
+	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
+
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<!--<transition-group name="mk-notes" class="transition">-->
-	<div class="notes">
+	<!--<transition-group name="mk-notes" class="transition" ref="notes">-->
+	<div class="notes" ref="notes">
 		<template v-for="(note, i) in _notes">
-			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" :media-view="mediaView"/>
+			<x-note
+				:note="note"
+				:key="note.id"
+				@update:note="onNoteUpdated(i, $event)"
+				:media-view="mediaView"
+				:mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
-				<span>%fa:angle-up%{{ note._datetext }}</span>
-				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ note._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</div>
@@ -22,8 +30,8 @@
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
+			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
+			<template v-if="moreFetching"><fa icon="spinner .pulse" fixed-width/></template>
 		</button>
 	</footer>
 </div>
@@ -31,12 +39,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
-import XNote from './deck.note.vue';
+import XNote from '../../components/note.vue';
 
 const displayLimit = 20;
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XNote
 	},
@@ -72,7 +82,7 @@ export default Vue.extend({
 				const date = new Date(note.createdAt).getDate();
 				const month = new Date(note.createdAt).getMonth() + 1;
 				note._date = date;
-				note._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return note;
 			});
 		}
@@ -96,7 +106,7 @@ export default Vue.extend({
 
 	methods: {
 		focus() {
-			(this.$el as any).children[0].focus();
+			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
 		},
 
 		onNoteUpdated(i, note) {
@@ -147,6 +157,11 @@ export default Vue.extend({
 				}
 			}
 			//#endregion
+
+			// タブが非表示ならタイトルで通知
+			if (document.hidden) {
+				this.$store.commit('pushBehindNote', note);
+			}
 
 			if (this.isScrollTop()) {
 				// Prepend the note
@@ -205,12 +220,16 @@ export default Vue.extend({
 		> *
 			transition transform .3s ease, opacity .3s ease
 
+	> .placeholder
+		padding 16px
+		opacity 0.3
+
 	> .notes
 		> .date
 			display block
 			margin 0
-			line-height 32px
-			font-size 14px
+			line-height 28px
+			font-size 12px
 			text-align center
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)
@@ -219,7 +238,7 @@ export default Vue.extend({
 			span
 				margin 0 16px
 
-			[data-fa]
+			[data-icon]
 				margin-right 8px
 
 	> footer

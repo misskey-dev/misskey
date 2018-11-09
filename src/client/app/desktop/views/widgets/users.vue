@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-users">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:users%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="refresh">%fa:sync%</button>
+		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
+		<button slot="func" :title="$t('title')" @click="refresh"><fa icon="sync"/></button>
 
 		<div class="mkw-users--body">
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 			<template v-else-if="users.length != 0">
 				<div class="user" v-for="_user in users">
 					<mk-avatar class="avatar" :user="_user"/>
@@ -13,10 +13,9 @@
 						<router-link class="name" :to="_user | userPage" v-user-preview="_user.id">{{ _user | userName }}</router-link>
 						<p class="username">@{{ _user | acct }}</p>
 					</div>
-					<mk-follow-button :user="_user"/>
 				</div>
 			</template>
-			<p class="empty" v-else>%i18n:@no-one%</p>
+			<p class="empty" v-else>{{ $t('no-one') }}</p>
 		</div>
 	</mk-widget-container>
 </div>
@@ -24,6 +23,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 const limit = 3;
 
@@ -33,6 +33,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/users.vue'),
 	data() {
 		return {
 			users: [],
@@ -52,7 +53,7 @@ export default define({
 			this.fetching = true;
 			this.users = [];
 
-			(this as any).api('users/recommendation', {
+			this.$root.api('users/recommendation', {
 				limit: limit,
 				offset: limit * this.page
 			}).then(users => {
@@ -130,7 +131,7 @@ export default define({
 			text-align center
 			color #aaa
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 </style>

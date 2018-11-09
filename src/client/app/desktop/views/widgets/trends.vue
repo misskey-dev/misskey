@@ -1,16 +1,16 @@
 <template>
 <div class="mkw-trends">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:fire%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
+		<template slot="header"><fa icon="fire"/>{{ $t('title') }}</template>
+		<button slot="func" :title="$t('title')" @click="fetch"><fa icon="sync"/></button>
 
 		<div class="mkw-trends--body">
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 			<div class="note" v-else-if="note != null">
 				<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
 				<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>
 			</div>
-			<p class="empty" v-else>%i18n:@nothing%</p>
+			<p class="empty" v-else>{{ $t('nothing') }}</p>
 		</div>
 	</mk-widget-container>
 </div>
@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'trends',
@@ -25,6 +26,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/trends.vue'),
 	data() {
 		return {
 			note: null,
@@ -44,7 +46,7 @@ export default define({
 			this.fetching = true;
 			this.note = null;
 
-			(this as any).api('notes/trend', {
+			this.$root.api('notes/trend', {
 				limit: 1,
 				offset: this.offset,
 				renote: false,
@@ -95,7 +97,7 @@ export default define({
 			text-align center
 			color #aaa
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 </style>

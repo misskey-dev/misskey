@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
 	<span slot="header">
-		<span v-html="title" :class="$style.title"></span>
+		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
 	</span>
 
 	<mk-drive
@@ -10,20 +10,17 @@
 		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
-	props: {
-		title: {
-			default: '%fa:R folder%%i18n:@choose-prompt%'
-		}
-	},
+	i18n: i18n('desktop/views/components/choose-folder-from-drive-window.vue'),
 	methods: {
 		ok() {
 			this.$emit('selected', (this.$refs.browser as any).folder);
@@ -40,7 +37,7 @@ export default Vue.extend({
 
 
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .browser

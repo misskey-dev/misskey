@@ -1,53 +1,100 @@
-/**
- * Module dependencies
- */
+import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
-import Meta from '../../../models/meta';
-import { ILocalUser } from '../../../models/user';
+import Emoji from '../../../models/emoji';
+import define from '../define';
+import fetchMeta from '../../../misc/fetch-meta';
 
 const pkg = require('../../../../package.json');
 const client = require('../../../../built/client/meta.json');
 
-/**
- * Show core info
- */
-export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
-	const meta: any = (await Meta.findOne()) || {};
+export const meta = {
+	stability: 'stable',
 
-	res({
-		maintainer: config.maintainer,
+	desc: {
+		'ja-JP': 'インスタンス情報を取得します。',
+		'en-US': 'Get the information of this instance.'
+	},
+
+	requireCredential: false,
+
+	params: {
+		detail: {
+			validator: $.bool.optional,
+			default: true
+		}
+	},
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	const instance = await fetchMeta();
+
+	const emojis = await Emoji.find({ host: null }, {
+		fields: {
+			_id: false
+		}
+	});
+
+	const response: any = {
+		maintainer: instance.maintainer,
 
 		version: pkg.version,
 		clientVersion: client.version,
 
-		name: config.name || 'Misskey',
-		description: config.description,
+		name: instance.name,
+		description: instance.description,
+		langs: instance.langs,
 
 		secure: config.https != null,
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,
+
 		cpu: {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
 		},
-		broadcasts: meta.broadcasts || [],
-		disableRegistration: meta.disableRegistration,
-		disableLocalTimeline: meta.disableLocalTimeline,
-		driveCapacityPerLocalUserMb: config.localDriveCapacityMb,
-		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
+
+		broadcasts: instance.broadcasts || [],
+		disableRegistration: instance.disableRegistration,
+		disableLocalTimeline: instance.disableLocalTimeline,
+		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
+		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+		cacheRemoteFiles: instance.cacheRemoteFiles,
+		enableRecaptcha: instance.enableRecaptcha,
+		recaptchaSiteKey: instance.recaptchaSiteKey,
 		swPublickey: config.sw ? config.sw.public_key : null,
-		hidedTags: (me && me.isAdmin) ? meta.hidedTags : undefined,
-		bannerUrl: meta.bannerUrl,
-		features: {
-			registration: !meta.disableRegistration,
-			localTimeLine: !meta.disableLocalTimeline,
+		bannerUrl: instance.bannerUrl,
+		maxNoteTextLength: instance.maxNoteTextLength,
+
+		emojis: emojis,
+	};
+
+	if (ps.detail) {
+		response.features = {
+			registration: !instance.disableRegistration,
+			localTimeLine: !instance.disableLocalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
-			recaptcha: config.recaptcha ? true : false,
+			recaptcha: instance.enableRecaptcha,
 			objectStorage: config.drive && config.drive.storage === 'minio',
-			twitter: config.twitter ? true : false,
-			serviceWorker: config.sw ? true : false
-		}
-	});
-});
+			twitter: instance.enableTwitterIntegration,
+			github: instance.enableGithubIntegration,
+			serviceWorker: config.sw ? true : false,
+			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
+		};
+	}
+
+	if (me && me.isAdmin) {
+		response.hidedTags = instance.hidedTags;
+		response.recaptchaSecretKey = instance.recaptchaSecretKey;
+		response.proxyAccount = instance.proxyAccount;
+		response.enableTwitterIntegration = instance.enableTwitterIntegration;
+		response.twitterConsumerKey = instance.twitterConsumerKey;
+		response.twitterConsumerSecret = instance.twitterConsumerSecret;
+		response.enableGithubIntegration = instance.enableGithubIntegration;
+		response.githubClientId = instance.githubClientId;
+		response.githubClientSecret = instance.githubClientSecret;
+	}
+
+	res(response);
+}));

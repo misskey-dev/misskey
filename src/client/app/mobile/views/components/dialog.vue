@@ -91,8 +91,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .mk-dialog
 	> .bg
 		display block
@@ -154,8 +152,6 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" module>
-
-
 .header
 	margin 0 0 1em 0
 	color var(--primary)

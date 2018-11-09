@@ -3,21 +3,20 @@
 	<header :class="$style.header">
 		<h1>#{{ $route.params.tag }}</h1>
 	</header>
-	<div :class="$style.loading" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
-	<p :class="$style.empty" v-if="!fetching && empty">%fa:search% {{ '%i18n:no-posts-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:no-posts-found%'.split('{}')[1] }}</p>
+	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q }) }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 const limit = 20;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/tag.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -53,7 +52,7 @@ export default Vue.extend({
 			Progress.start();
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/search_by_tag', {
+				this.$root.api('notes/search_by_tag', {
 					limit: limit + 1,
 					offset: this.offset,
 					tag: this.$route.params.tag
@@ -72,7 +71,7 @@ export default Vue.extend({
 		more() {
 			this.offset += limit;
 
-			const promise = (this as any).api('notes/search_by_tag', {
+			const promise = this.$root.api('notes/search_by_tag', {
 				limit: limit + 1,
 				offset: this.offset,
 				tag: this.$route.params.tag
@@ -108,9 +107,6 @@ export default Vue.extend({
 	border-radius 6px
 	overflow hidden
 
-.loading
-	padding 64px 0
-
 .empty
 	display block
 	margin 0 auto
@@ -119,7 +115,7 @@ export default Vue.extend({
 	text-align center
 	color #999
 
-	> [data-fa]
+	> [data-icon]
 		display block
 		margin-bottom 16px
 		font-size 3em

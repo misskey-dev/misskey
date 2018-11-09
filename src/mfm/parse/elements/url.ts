@@ -3,9 +3,9 @@
  */
 
 export type TextElementUrl = {
-	type: 'url'
-	content: string
-	url: string
+	type: 'url';
+	content: string;
+	url: string;
 };
 
 export default function(text: string) {

@@ -1,8 +1,8 @@
-import config from '../../../config';
 import { IDriveFile } from '../../../models/drive-file';
+import getDriveFileUrl from '../../../misc/get-drive-file-url';
 
 export default (file: IDriveFile) => ({
 	type: 'Image',
-	url: file.metadata.url || `${config.drive_url}/${file._id}`,
+	url: getDriveFileUrl(file),
 	sensitive: file.metadata.isSensitive
 });

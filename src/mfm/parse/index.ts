@@ -15,6 +15,9 @@ import { TextElementSearch } from './elements/search';
 import { TextElementTitle } from './elements/title';
 import { TextElementUrl } from './elements/url';
 import { TextElementMotion } from './elements/motion';
+import { groupOn } from '../../prelude/array';
+import * as A from '../../prelude/array';
+import * as S from '../../prelude/string';
 
 const elements = [
 	require('./elements/big'),
@@ -46,7 +49,7 @@ export type TextElement = { type: 'text', content: string }
 	| TextElementTitle
 	| TextElementUrl
 	| TextElementMotion;
-export type TextElementProcessor = (text: string, i: number) => TextElement | TextElement[];
+export type TextElementProcessor = (text: string, isBegin: boolean) => TextElement | TextElement[];
 
 export default (source: string): TextElement[] => {
 	if (source == null || source == '') {
@@ -67,7 +70,7 @@ export default (source: string): TextElement[] => {
 	// パース
 	while (source != '') {
 		const parsed = elements.some(el => {
-			let _tokens = el(source, i);
+			let _tokens = el(source, i == 0);
 			if (_tokens) {
 				if (!Array.isArray(_tokens)) {
 					_tokens = [_tokens];
@@ -89,16 +92,10 @@ export default (source: string): TextElement[] => {
 		i++;
 	}
 
-	// テキストを纏める
-	return tokens.reduce((a, b) => {
-		if (a.length && a[a.length - 1].type == 'text' && b.type == 'text') {
-			const tail = a.pop();
-			return a.concat({
-				type: 'text',
-				content: tail.content + b.content
-			});
-		} else {
-			return a.concat(b);
-		}
-	}, [] as TextElement[]);
+	const combineText = (es: TextElement[]): TextElement =>
+		({ type: 'text', content: S.concat(es.map(e => e.content)) });
+
+	return A.concat(groupOn(x => x.type, tokens).map(es =>
+		es[0].type === 'text' ? [combineText(es)] : es
+	));
 };

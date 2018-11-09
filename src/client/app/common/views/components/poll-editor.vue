@@ -1,27 +1,29 @@
 <template>
 <div class="mk-poll-editor">
 	<p class="caution" v-if="choices.length < 2">
-		%fa:exclamation-triangle%%i18n:@no-only-one-choice%
+		<fa icon="exclamation-triangle"/>{{ $t('no-only-one-choice') }}
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices">
-			<input :value="choice" @input="onInput(i, $event)" :placeholder="'%i18n:@choice-n%'.replace('{}', i + 1)">
-			<button @click="remove(i)" title="%i18n:@remove%">
-				%fa:times%
+			<input :value="choice" @input="onInput(i, $event)" :placeholder="$t('choice-n').replace('{}', i + 1)">
+			<button @click="remove(i)" :title="$t('remove')">
+				<fa icon="times"/>
 			</button>
 		</li>
 	</ul>
-	<button class="add" v-if="choices.length < 10" @click="add">%i18n:@add%</button>
-	<button class="destroy" @click="destroy" title="%i18n:@destroy%">
-		%fa:times%
+	<button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</button>
+	<button class="destroy" @click="destroy" :title="$t('destroy')">
+		<fa icon="times"/>
 	</button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { erase } from '../../../../../prelude/array';
 export default Vue.extend({
+	i18n: i18n('common/views/components/poll-editor.vue'),
 	data() {
 		return {
 			choices: ['', '']
@@ -76,7 +78,7 @@ export default Vue.extend({
 		font-size 0.8em
 		color #f00
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> ul

@@ -10,9 +10,12 @@ import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type'
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import htmlToMFM from '../../../mfm/html-to-mfm';
-import { updateUserStats } from '../../../services/update-chart';
+import usersChart from '../../../chart/users';
 import { URL } from 'url';
 import { resolveNote } from './note';
+import registerInstance from '../../../services/register-instance';
+import Instance from '../../../models/instance';
+import getDriveFileUrl from '../../../misc/get-drive-file-url';
 
 const log = debug('misskey:activitypub');
 
@@ -173,6 +176,18 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 		throw e;
 	}
 
+	// Register host
+	registerInstance(host).then(i => {
+		Instance.update({ _id: i._id }, {
+			$inc: {
+				usersCount: 1
+			}
+		});
+
+		// TODO
+		//perInstanceChart.newUser();
+	});
+
 	//#region Increment users count
 	Meta.update({}, {
 		$inc: {
@@ -180,7 +195,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 		}
 	}, { upsert: true });
 
-	updateUserStats(user, true);
+	usersChart.update(user, true);
 	//#endregion
 
 	//#region アイコンとヘッダー画像をフェッチ
@@ -190,13 +205,13 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(user, img)
+			: resolveImage(user, img).catch(() => null)
 	)));
 
 	const avatarId = avatar ? avatar._id : null;
 	const bannerId = banner ? banner._id : null;
-	const avatarUrl = (avatar && avatar.metadata.thumbnailUrl) ? avatar.metadata.thumbnailUrl : (avatar && avatar.metadata.url) ? avatar.metadata.url : null;
-	const bannerUrl = (banner && banner.metadata.url) ? banner.metadata.url : null;
+	const avatarUrl = getDriveFileUrl(avatar, true);
+	const bannerUrl = getDriveFileUrl(banner, false);
 
 	await User.update({ _id: user._id }, {
 		$set: {
@@ -214,6 +229,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	//#endregion
 
 	await updateFeatured(user._id).catch(err => console.log(err));
+
 	return user;
 }
 
@@ -276,7 +292,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(exist, img)
+			: resolveImage(exist, img).catch(() => null)
 	)));
 
 	// Update user
@@ -288,8 +304,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			featured: person.featured,
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
-			avatarUrl: (avatar && avatar.metadata.thumbnailUrl) ? avatar.metadata.thumbnailUrl : (avatar && avatar.metadata.url) ? avatar.metadata.url : null,
-			bannerUrl: banner && banner.metadata.url ? banner.metadata.url : null,
+			avatarUrl: getDriveFileUrl(avatar, true),
+			bannerUrl: getDriveFileUrl(banner, false),
 			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,

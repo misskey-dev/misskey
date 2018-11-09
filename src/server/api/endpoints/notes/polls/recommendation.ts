@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import Vote from '../../../../../models/poll-vote';
 import Note, { pack } from '../../../../../models/note';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -10,17 +10,21 @@ export const meta = {
 	},
 
 	requireCredential: true,
+
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		}
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional.min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Get votes
 	const votes = await Vote.find({
 		userId: user._id
@@ -46,14 +50,14 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 				$ne: null
 			}
 		}, {
-			limit: limit,
-			skip: offset,
+			limit: ps.limit,
+			skip: ps.offset,
 			sort: {
 				_id: -1
 			}
 		});
 
-	// Serialize
-	res(await Promise.all(notes.map(async note =>
-		await pack(note, user, { detail: true }))));
-});
+	res(await Promise.all(notes.map(note => pack(note, user, {
+		detail: true
+	}))));
+}));

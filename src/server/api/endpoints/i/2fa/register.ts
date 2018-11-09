@@ -2,21 +2,25 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import User, { ILocalUser } from '../../../../../models/user';
+import User from '../../../../../models/user';
 import config from '../../../../../config';
+import define from '../../../define';
 
 export const meta = {
 	requireCredential: true,
-	secure: true
+
+	secure: true,
+
+	params: {
+		password: {
+			validator: $.str
+		}
+	}
 };
 
-export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'password' parameter
-	const [password, passwordErr] = $.str.get(params.password);
-	if (passwordErr) return rej('invalid password param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = await bcrypt.compare(ps.password, user.password);
 
 	if (!same) {
 		return rej('incorrect password');
@@ -47,4 +51,4 @@ export default async (params: any, user: ILocalUser) => new Promise(async (res, 
 			issuer: config.host
 		});
 	});
-});
+}));

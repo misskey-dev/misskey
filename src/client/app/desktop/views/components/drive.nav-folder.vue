@@ -7,14 +7,16 @@
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<template v-if="folder == null">%fa:cloud%</template>
-	<span>{{ folder == null ? '%i18n:@drive%' : folder.name }}</span>
+	<i v-if="folder == null" class="cloud"><fa icon="cloud"/></i>
+	<span>{{ folder == null ? $t('@.drive') : folder.name }}</span>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n(),
 	props: ['folder'],
 	data() {
 		return {
@@ -77,7 +79,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				(this as any).api('drive/files/update', {
+				this.$root.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder ? this.folder.id : null
 				});
@@ -91,7 +93,7 @@ export default Vue.extend({
 				// 移動先が自分自身ならreject
 				if (this.folder && folder.id == this.folder.id) return;
 				this.browser.removeFolder(folder.id);
-				(this as any).api('drive/folders/update', {
+				this.$root.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder ? this.folder.id : null
 				});
@@ -110,7 +112,7 @@ export default Vue.extend({
 	&[data-draghover]
 		background #eee
 
-	[data-fa].cloud
+	i.cloud
 		margin-right 4px
 
 </style>

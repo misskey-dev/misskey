@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
+<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
 </template>
 
 <script lang="ts">
@@ -46,8 +46,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		if (this.connection) this.connection.close();
-		this.connection = new UserListStream((this as any).os, this.$store.state.i, this.list.id);
+		if (this.connection) this.connection.dispose();
+		this.connection = this.$root.stream.connectToChannel('userList', {
+			listId: this.list.id
+		});
 		this.connection.on('note', this.onNote);
 		this.connection.on('userAdded', this.onUserAdded);
 		this.connection.on('userRemoved', this.onUserRemoved);
@@ -56,7 +58,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.close();
+		this.connection.dispose();
 	},
 
 	methods: {
@@ -64,7 +66,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/user-list-timeline', {
+				this.$root.api('notes/user-list-timeline', {
 					listId: this.list.id,
 					limit: fetchLimit + 1,
 					withFiles: this.mediaOnly,
@@ -82,10 +84,11 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
+
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('notes/user-list-timeline', {
+			const promise = this.$root.api('notes/user-list-timeline', {
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
@@ -107,17 +110,24 @@ export default Vue.extend({
 
 			return promise;
 		},
+
 		onNote(note) {
 			if (this.mediaOnly && note.files.length == 0) return;
 
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
+
 		onUserAdded() {
 			this.fetch();
 		},
+
 		onUserRemoved() {
 			this.fetch();
+		},
+
+		focus() {
+			this.$refs.timeline.focus();
 		}
 	}
 });

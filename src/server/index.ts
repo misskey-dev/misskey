@@ -17,7 +17,9 @@ const requestStats = require('request-stats');
 import activityPub from './activitypub';
 import webFinger from './webfinger';
 import config from '../config';
-import { updateNetworkStats } from '../services/update-chart';
+import networkChart from '../chart/network';
+import apiServer from './api';
+import { sum } from '../prelude/array';
 
 // Init app
 const app = new Koa();
@@ -40,14 +42,14 @@ app.use(compress({
 
 // HSTS
 // 6months (15552000sec)
-if (config.url.startsWith('https')) {
+if (config.url.startsWith('https') && !config.disableHsts) {
 	app.use(async (ctx, next) => {
 		ctx.set('strict-transport-security', 'max-age=15552000; preload');
 		await next();
 	});
 }
 
-app.use(mount('/api', require('./api')));
+app.use(mount('/api', apiServer));
 app.use(mount('/files', require('./file')));
 
 // Init router
@@ -98,12 +100,12 @@ export default () => new Promise(resolve => {
 		if (queue.length == 0) return;
 
 		const requests = queue.length;
-		const time = queue.reduce((a, b) => a + b.time, 0);
-		const incomingBytes = queue.reduce((a, b) => a + b.req.bytes, 0);
-		const outgoingBytes = queue.reduce((a, b) => a + b.res.bytes, 0);
+		const time = sum(queue.map(x => x.time));
+		const incomingBytes = sum(queue.map(x => x.req.byets));
+		const outgoingBytes = sum(queue.map(x => x.res.byets));
 		queue = [];
 
-		updateNetworkStats(requests, time, incomingBytes, outgoingBytes);
+		networkChart.update(requests, time, incomingBytes, outgoingBytes);
 	}, 5000);
 	//#endregion
 });

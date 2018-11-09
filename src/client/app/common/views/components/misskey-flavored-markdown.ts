@@ -1,9 +1,7 @@
 import Vue, { VNode } from 'vue';
-import * as emojilib from 'emojilib';
 import { length } from 'stringz';
 import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../misc/acct/render';
-import { url } from '../../../config';
 import MkUrl from './url.vue';
 import MkGoogle from './google.vue';
 import { concat } from '../../../../../prelude/array';
@@ -25,6 +23,9 @@ export default Vue.component('misskey-flavored-markdown', {
 		i: {
 			type: Object,
 			default: null
+		},
+		customEmojis: {
+			required: false,
 		}
 	},
 
@@ -95,7 +96,8 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement(MkUrl, {
 						props: {
 							url: token.content,
-							target: '_blank'
+							target: '_blank',
+							style: 'color:var(--mfmLink);'
 						}
 					})];
 				}
@@ -106,30 +108,31 @@ export default Vue.component('misskey-flavored-markdown', {
 							class: 'link',
 							href: token.url,
 							target: '_blank',
-							title: token.url
+							title: token.url,
+							style: 'color:var(--mfmLink);'
 						}
 					}, token.title)];
 				}
 
 				case 'mention': {
-					return (createElement as any)('a', {
+					return (createElement as any)('router-link', {
 						attrs: {
-							href: `${url}/@${getAcct(token)}`,
-							target: '_blank',
-							dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token)
+							to: `/${token.canonical}`,
+							dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token),
+							style: 'color:var(--mfmMention);'
 						},
 						directives: [{
 							name: 'user-preview',
-							value: token.content
+							value: token.canonical
 						}]
-					}, token.content);
+					}, token.canonical);
 				}
 
 				case 'hashtag': {
-					return [createElement('a', {
+					return [createElement('router-link', {
 						attrs: {
-							href: `${url}/tags/${encodeURIComponent(token.hashtag)}`,
-							target: '_blank'
+							to: `/tags/${encodeURIComponent(token.hashtag)}`,
+							style: 'color:var(--mfmHashtag);'
 						}
 					}, token.content)];
 				}
@@ -184,8 +187,16 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					const emoji = emojilib.lib[token.emoji];
-					return [createElement('span', emoji ? emoji.char : token.content)];
+					const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
+					return [createElement('mk-emoji', {
+						attrs: {
+							emoji: token.emoji,
+							name: token.name
+						},
+						props: {
+							customEmojis: this.customEmojis || customEmojis
+						}
+					})];
 				}
 
 				case 'search': {

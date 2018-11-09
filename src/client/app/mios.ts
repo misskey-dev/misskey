@@ -4,7 +4,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 
 import initStore from './store';
-import { apiUrl, version, lang } from './config';
+import { apiUrl, clientVersion as version, lang } from './config';
 import Progress from './common/scripts/loading';
 
 import Err from './common/views/components/connect-failed.vue';
@@ -14,41 +14,6 @@ import Stream from './common/scripts/stream';
 let spinner = null;
 let pending = 0;
 //#endregion
-
-export type API = {
-	chooseDriveFile: (opts: {
-		title?: string;
-		currentFolder?: any;
-		multiple?: boolean;
-	}) => Promise<any>;
-
-	chooseDriveFolder: (opts: {
-		title?: string;
-		currentFolder?: any;
-	}) => Promise<any>;
-
-	dialog: (opts: {
-		title: string;
-		text: string;
-		actions?: Array<{
-			text: string;
-			id?: string;
-		}>;
-	}) => Promise<string>;
-
-	input: (opts: {
-		title: string;
-		placeholder?: string;
-		default?: string;
-	}) => Promise<string>;
-
-	post: (opts?: {
-		reply?: any;
-		renote?: any;
-	}) => void;
-
-	notify: (message: string) => void;
-};
 
 /**
  * Misskey Operating System
@@ -70,15 +35,6 @@ export default class MiOS extends EventEmitter {
 
 	public app: Vue;
 
-	public new(vm, props) {
-		const x = new vm({
-			parent: this.app,
-			propsData: props
-		}).$mount();
-		document.body.appendChild(x.$el);
-		return x;
-	}
-
 	/**
 	 * Whether is debug mode
 	 */
@@ -87,8 +43,6 @@ export default class MiOS extends EventEmitter {
 	}
 
 	public store: ReturnType<typeof initStore>;
-
-	public apis: API;
 
 	/**
 	 * A connection manager of home stream
@@ -212,7 +166,7 @@ export default class MiOS extends EventEmitter {
 		const fetched = () => {
 			this.emit('signedin');
 
-			this.stream = new Stream(this);
+			this.initStream();
 
 			// Finish init
 			callback();
@@ -244,11 +198,102 @@ export default class MiOS extends EventEmitter {
 					this.store.dispatch('login', me);
 					fetched();
 				} else {
+					this.initStream();
+
 					// Finish init
 					callback();
-
-					this.stream = new Stream(this);
 				}
+			});
+		}
+	}
+
+	@autobind
+	private initStream() {
+		this.stream = new Stream(this);
+
+		if (this.store.getters.isSignedIn) {
+			const main = this.stream.useSharedConnection('main');
+
+			// 自分の情報が更新されたとき
+			main.on('meUpdated', i => {
+				this.store.dispatch('mergeMe', i);
+			});
+
+			main.on('readAllNotifications', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadNotification: false
+				});
+			});
+
+			main.on('unreadNotification', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadNotification: true
+				});
+			});
+
+			main.on('readAllMessagingMessages', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMessagingMessage: false
+				});
+			});
+
+			main.on('unreadMessagingMessage', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMessagingMessage: true
+				});
+			});
+
+			main.on('unreadMention', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMentions: true
+				});
+			});
+
+			main.on('readAllUnreadMentions', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMentions: false
+				});
+			});
+
+			main.on('unreadSpecifiedNote', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadSpecifiedNotes: true
+				});
+			});
+
+			main.on('readAllUnreadSpecifiedNotes', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadSpecifiedNotes: false
+				});
+			});
+
+			main.on('clientSettingUpdated', x => {
+				this.store.commit('settings/set', {
+					key: x.key,
+					value: x.value
+				});
+			});
+
+			main.on('homeUpdated', x => {
+				this.store.commit('settings/setHome', x);
+			});
+
+			main.on('mobileHomeUpdated', x => {
+				this.store.commit('settings/setMobileHome', x);
+			});
+
+			main.on('widgetUpdated', x => {
+				this.store.commit('settings/setWidget', {
+					id: x.id,
+					data: x.data
+				});
+			});
+
+			// トークンが再生成されたとき
+			// このままではMisskeyが利用できないので強制的にサインアウトさせる
+			main.on('myTokenRegenerated', () => {
+				alert('%i18n:common.my-token-regenerated%');
+				this.signout();
 			});
 		}
 	}
@@ -352,10 +397,10 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream && this.store.state.device.apiViaStream && !forceFetch;
+			const viaStream = this.stream && this.stream.state == 'connected' && this.store.state.device.apiViaStream && !forceFetch;
 
 			if (viaStream) {
-				const id = Math.random().toString();
+				const id = Math.random().toString().substr(2, 8);
 
 				this.stream.once(`api:${id}`, res => {
 					if (res == null || Object.keys(res).length == 0) {
@@ -421,6 +466,14 @@ export default class MiOS extends EventEmitter {
 
 	/**
 	 * Misskeyのメタ情報を取得します
+	 */
+	@autobind
+	public getMetaSync() {
+		return this.meta ? this.meta.data : null;
+	}
+
+	/**
+	 * Misskeyのメタ情報を取得します
 	 * @param force キャッシュを無視するか否か
 	 */
 	@autobind
@@ -438,7 +491,9 @@ export default class MiOS extends EventEmitter {
 			// forceが有効, meta情報を保持していない or 期限切れ
 			if (force || this.meta == null || Date.now() - this.meta.chachedAt.getTime() > expire) {
 				this.isMetaFetching = true;
-				const meta = await this.api('meta');
+				const meta = await this.api('meta', {
+					detail: false
+				});
 				this.meta = {
 					data: meta,
 					chachedAt: new Date()

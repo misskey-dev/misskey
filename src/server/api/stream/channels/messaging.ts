@@ -3,6 +3,9 @@ import read from '../../common/read-messaging-message';
 import Channel from '../channel';
 
 export default class extends Channel {
+	public readonly chName = 'messaging';
+	public static shouldShare = false;
+
 	private otherpartyId: string;
 
 	@autobind

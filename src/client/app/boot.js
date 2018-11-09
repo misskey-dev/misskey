@@ -46,6 +46,7 @@
 	if (`${url.pathname}/`.startsWith('/docs/')) app = 'docs';
 	if (`${url.pathname}/`.startsWith('/dev/')) app = 'dev';
 	if (`${url.pathname}/`.startsWith('/auth/')) app = 'auth';
+	if (`${url.pathname}/`.startsWith('/admin/')) app = 'admin';
 	//#endregion
 
 	//#region Detect the user language
@@ -142,7 +143,7 @@
 		localStorage.setItem('shouldFlush', 'false');
 
 		// Random
-		localStorage.setItem('salt', Math.random().toString());
+		localStorage.setItem('salt', Math.random().toString().substr(2, 8));
 
 		// Clear cache (service worker)
 		try {

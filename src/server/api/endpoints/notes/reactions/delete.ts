@@ -1,7 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
-import { ILocalUser } from '../../../../../models/user';
+import define from '../../../define';
 
 export const meta = {
 	desc: {
@@ -11,17 +11,24 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'reaction-write'
+	kind: 'reaction-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID'
+			}
+		},
+	}
 };
 
-export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
-
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch unreactee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -40,15 +47,10 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}
 
 	// Delete reaction
-	await Reaction.update({
+	await Reaction.remove({
 		_id: exist._id
-	}, {
-			$set: {
-				deletedAt: new Date()
-			}
-		});
+	});
 
-	// Send response
 	res();
 
 	const dec: any = {};
@@ -58,4 +60,4 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	Note.update({ _id: note._id }, {
 		$inc: dec
 	});
-});
+}));

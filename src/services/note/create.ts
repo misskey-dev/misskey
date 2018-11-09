@@ -8,7 +8,7 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import packAp from '../../remote/activitypub/renderer';
-import { IDriveFile } from '../../models/drive-file';
+import DriveFile, { IDriveFile } from '../../models/drive-file';
 import notify from '../../notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
@@ -23,9 +23,14 @@ import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
-import { updateNoteStats } from '../update-chart';
+import notesChart from '../../chart/notes';
+import perUserNotesChart from '../../chart/per-user-notes';
+
 import { erase, unique } from '../../prelude/array';
 import insertNoteUnread from './unread';
+import registerInstance from '../register-instance';
+import Instance from '../../models/instance';
+import { TextElementEmoji } from '../../mfm/parse/elements/emoji';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -93,6 +98,7 @@ type Option = {
 	cw?: string;
 	visibility?: string;
 	visibleUsers?: IUser[];
+	apMentions?: IUser[];
 	uri?: string;
 	app?: IApp;
 };
@@ -142,7 +148,9 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const tags = extractHashtags(tokens);
 
-	const mentionedUsers = await extractMentionedUsers(tokens);
+	const emojis = extractEmojis(tokens);
+
+	const mentionedUsers = data.apMentions || await extractMentionedUsers(tokens);
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
@@ -156,7 +164,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		});
 	}
 
-	const note = await insertNote(user, data, tags, mentionedUsers);
+	const note = await insertNote(user, data, tags, emojis, mentionedUsers);
 
 	res(note);
 
@@ -165,10 +173,36 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	}
 
 	// 統計を更新
-	updateNoteStats(note, true);
+	notesChart.update(note, true);
+	perUserNotesChart.update(user, note, true);
+
+	// Register host
+	if (isRemoteUser(user)) {
+		registerInstance(user.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					notesCount: 1
+				}
+			});
+
+			// TODO
+			//perInstanceChart.newNote();
+		});
+	}
 
 	// ハッシュタグ登録
 	tags.map(tag => registerHashtag(user, tag));
+
+	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加
+	if (data.files) {
+		data.files.forEach(file => {
+			DriveFile.update({ _id: file._id }, {
+				$push: {
+					'metadata.attachedNoteIds': note._id
+				}
+			});
+		});
+	}
 
 	// Increment notes count
 	incNotesCount(user);
@@ -284,7 +318,8 @@ async function renderActivity(data: Option, note: INote) {
 function incRenoteCount(renote: INote) {
 	Note.update({ _id: renote._id }, {
 		$inc: {
-			renoteCount: 1
+			renoteCount: 1,
+			score: 1
 		}
 	});
 }
@@ -340,7 +375,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 	publishToUserLists(note, noteObj);
 }
 
-async function insertNote(user: IUser, data: Option, tags: string[], mentionedUsers: IUser[]) {
+async function insertNote(user: IUser, data: Option, tags: string[], emojis: string[], mentionedUsers: IUser[]) {
 	const insert: any = {
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file._id) : [],
@@ -351,6 +386,7 @@ async function insertNote(user: IUser, data: Option, tags: string[], mentionedUs
 		cw: data.cw == null ? null : data.cw,
 		tags,
 		tagsLower: tags.map(tag => tag.toLowerCase()),
+		emojis,
 		userId: user._id,
 		viaMobile: data.viaMobile,
 		geo: data.geo || null,
@@ -416,6 +452,16 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 		.filter(tag => tag.length <= 100);
 
 	return unique(hashtags);
+}
+
+function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
+	// Extract emojis
+	const emojis = tokens
+		.filter(t => t.type == 'emoji' && t.name)
+		.map(t => (t as TextElementEmoji).name)
+		.filter(emoji => emoji.length <= 100);
+
+	return unique(emojis);
 }
 
 function index(note: INote) {
@@ -537,8 +583,7 @@ function saveQuote(renote: INote, note: INote) {
 	Note.update({ _id: renote._id }, {
 		$push: {
 			_quoteIds: note._id
-		},
-
+		}
 	});
 }
 
@@ -581,19 +626,21 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentionTokens = unique(
-		tokens
-			.filter(t => t.type == 'mention') as TextElementMention[]
-	);
+	const mentionTokens = tokens
+		.filter(t => t.type == 'mention') as TextElementMention[];
 
-	const mentionedUsers = unique(
+	let mentionedUsers =
 		erase(null, await Promise.all(mentionTokens.map(async m => {
 			try {
 				return await resolveUser(m.username, m.host);
 			} catch (e) {
 				return null;
 			}
-		})))
+		})));
+
+	// Drop duplicate users
+	mentionedUsers = mentionedUsers.filter((u, i, self) =>
+		i === self.findIndex(u2 => u._id.equals(u2._id))
 	);
 
 	return mentionedUsers;

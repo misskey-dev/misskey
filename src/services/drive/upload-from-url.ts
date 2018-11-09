@@ -13,7 +13,15 @@ import * as mongodb from 'mongodb';
 
 const log = debug('misskey:drive:upload-from-url');
 
-export default async (url: string, user: IUser, folderId: mongodb.ObjectID = null, uri: string = null, sensitive = false): Promise<IDriveFile> => {
+export default async (
+	url: string,
+	user: IUser,
+	folderId: mongodb.ObjectID = null,
+	uri: string = null,
+	sensitive = false,
+	force = false,
+	link = false
+): Promise<IDriveFile> => {
 	log(`REQUESTED: ${url}`);
 
 	let name = URL.parse(url).pathname.split('/').pop();
@@ -34,27 +42,46 @@ export default async (url: string, user: IUser, folderId: mongodb.ObjectID = nul
 	// write content at URL to temp file
 	await new Promise((res, rej) => {
 		const writable = fs.createWriteStream(path);
+
+		writable.on('finish', () => {
+			res();
+		});
+
+		writable.on('error', error => {
+			rej(error);
+		});
+
 		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
-		request({
+
+		const req = request({
 			url: requestUrl,
+			proxy: config.proxy,
+			timeout: 10 * 1000,
 			headers: {
 				'User-Agent': config.user_agent
 			}
-		})
-			.on('error', rej)
-			.on('end', () => {
+		});
+
+		req.pipe(writable);
+
+		req.on('response', response => {
+			if (response.statusCode !== 200) {
 				writable.close();
-				res();
-			})
-			.pipe(writable)
-			.on('error', rej);
+				rej(response.statusCode);
+			}
+		});
+
+		req.on('error', error => {
+			writable.close();
+			rej(error);
+		});
 	});
 
 	let driveFile: IDriveFile;
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, false, config.preventCacheRemoteFiles, url, uri, sensitive);
+		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
 		log(`got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;

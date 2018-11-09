@@ -1,21 +1,24 @@
 <template>
 <div class="mkw-post-form">
 	<template v-if="props.design == 0">
-		<p class="title">%fa:pencil-alt%%i18n:@title%</p>
+		<p class="title"><fa icon="pencil-alt"/>{{ $t('title') }}</p>
 	</template>
 	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" :placeholder="placeholder"></textarea>
-	<button @click="post" :disabled="posting">%i18n:@note%</button>
+	<button @click="post" :disabled="posting">{{ $t('note') }}</button>
 </div>
 </template>
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'post-form',
 	props: () => ({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/post-form.vue'),
 	data() {
 		return {
 			posting: false,
@@ -25,12 +28,12 @@ export default define({
 	computed: {
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			return xs[Math.floor(Math.random() * xs.length)];
 		}
@@ -50,7 +53,7 @@ export default define({
 		post() {
 			this.posting = true;
 
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				text: this.text
 			}).then(data => {
 				this.clear();
@@ -86,7 +89,7 @@ export default define({
 		color #888
 		box-shadow 0 1px rgba(#000, 0.07)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> textarea

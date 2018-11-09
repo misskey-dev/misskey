@@ -1,14 +1,12 @@
 <template>
 <div class="ldwbgwstjsdgcjruamauqdrffetqudry" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
-		<b>%fa:exclamation-triangle% %i18n:@sensitive%</b>
-		<span>%i18n:@click-to-show%</span>
+		<b><fa icon="exclamation-triangle"/> {{ $t('sensitive') }}</b>
+		<span>{{ $t('click-to-show') }}</span>
 	</div>
 </div>
 <a class="lcjomzwbohoelkxsnuqjiaccdbdfiazy" v-else
 	:href="image.url"
-	@mousemove="onMousemove"
-	@mouseleave="onMouseleave"
 	@click.prevent="onClick"
 	:style="style"
 	:title="image.name"
@@ -17,9 +15,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkMediaImageDialog from './media-image-dialog.vue';
+import i18n from '../../../i18n';
+import ImageViewer from '../../../common/views/components/image-viewer.vue';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/media-image.vue'),
 	props: {
 		image: {
 			type: Object,
@@ -43,22 +43,8 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		onMousemove(e) {
-			const rect = this.$el.getBoundingClientRect();
-			const mouseX = e.clientX - rect.left;
-			const mouseY = e.clientY - rect.top;
-			const xp = mouseX / this.$el.offsetWidth * 100;
-			const yp = mouseY / this.$el.offsetHeight * 100;
-			this.$el.style.backgroundPosition = `${xp}% ${yp}%`;
-			this.$el.style.backgroundImage = `url("${this.image.url}")`;
-		},
-
-		onMouseleave() {
-			this.$el.style.backgroundPosition = '';
-		},
-
 		onClick() {
-			(this as any).os.new(MkMediaImageDialog, {
+			this.$root.new(ImageViewer, {
 				image: this.image
 			});
 		}
@@ -74,9 +60,8 @@ export default Vue.extend({
 	width 100%
 	height 100%
 	background-position center
-
-	&:not(:hover)
-		background-size cover
+	background-size contain
+	background-repeat no-repeat
 
 .ldwbgwstjsdgcjruamauqdrffetqudry
 	display flex

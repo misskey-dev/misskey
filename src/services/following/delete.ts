@@ -1,12 +1,11 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
 import Following from '../../models/following';
-import FollowingLog from '../../models/following-log';
-import FollowedLog from '../../models/followed-log';
 import { publishMainStream } from '../../stream';
 import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
+import perUserFollowingChart from '../../chart/per-user-following';
 
 export default async function(follower: IUser, followee: IUser) {
 	const following = await Following.findOne({
@@ -29,12 +28,6 @@ export default async function(follower: IUser, followee: IUser) {
 			followingCount: -1
 		}
 	});
-
-	FollowingLog.insert({
-		createdAt: following.createdAt,
-		userId: follower._id,
-		count: follower.followingCount - 1
-	});
 	//#endregion
 
 	//#region Decrement followers count
@@ -43,16 +36,15 @@ export default async function(follower: IUser, followee: IUser) {
 			followersCount: -1
 		}
 	});
-	FollowedLog.insert({
-		createdAt: following.createdAt,
-		userId: followee._id,
-		count: followee.followersCount - 1
-	});
 	//#endregion
+
+	perUserFollowingChart.update(follower, followee, false);
 
 	// Publish unfollow event
 	if (isLocalUser(follower)) {
-		packUser(followee, follower).then(packed => publishMainStream(follower._id, 'unfollow', packed));
+		packUser(followee, follower, {
+			detail: true
+		}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {

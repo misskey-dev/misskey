@@ -1,5 +1,6 @@
 import autobind from 'autobind-decorator';
 import * as CRC32 from 'crc-32';
+import * as mongo from 'mongodb';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../../stream';
 import Reversi from '../../../../../games/reversi/core';
@@ -7,11 +8,14 @@ import * as maps from '../../../../../games/reversi/maps';
 import Channel from '../../channel';
 
 export default class extends Channel {
-	private gameId: string;
+	public readonly chName = 'gamesReversiGame';
+	public static shouldShare = false;
+
+	private gameId: mongo.ObjectID;
 
 	@autobind
 	public async init(params: any) {
-		this.gameId = params.gameId as string;
+		this.gameId = new mongo.ObjectID(params.gameId as string);
 
 		// Subscribe game stream
 		this.subscriber.on(`reversiGameStream:${this.gameId}`, data => {
@@ -23,10 +27,10 @@ export default class extends Channel {
 	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'accept': this.accept(true); break;
-			case 'cancel-accept': this.accept(false); break;
-			case 'update-settings': this.updateSettings(body.settings); break;
-			case 'init-form': this.initForm(body); break;
-			case 'update-form': this.updateForm(body.id, body.value); break;
+			case 'cancelAccept': this.accept(false); break;
+			case 'updateSettings': this.updateSettings(body.settings); break;
+			case 'initForm': this.initForm(body); break;
+			case 'updateForm': this.updateForm(body.id, body.value); break;
 			case 'message': this.message(body); break;
 			case 'set': this.set(body.pos); break;
 			case 'check': this.check(body.crc32); break;

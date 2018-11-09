@@ -1,5 +1,5 @@
 <template>
-<div class="ui-input" :class="[{ focused, filled }, styl]">
+<div class="ui-input" :class="[{ focused, filled, inline, disabled }, styl]">
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
 	<div class="input">
 		<div class="password-meter" v-if="withPasswordMeter" v-show="passwordStrength != ''" :data-strength="passwordStrength">
@@ -11,6 +11,7 @@
 			<input ref="input"
 					:type="type"
 					v-model="v"
+					:disabled="disabled"
 					:required="required"
 					:readonly="readonly"
 					:pattern="pattern"
@@ -32,7 +33,7 @@
 		</template>
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
-	<div class="text"><slot name="text"></slot></div>
+	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -41,6 +42,11 @@ import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
+	inject: {
+		horizonGrouped: {
+			default: false
+		}
+	},
 	props: {
 		value: {
 			required: false
@@ -54,6 +60,10 @@ export default Vue.extend({
 			required: false
 		},
 		readonly: {
+			type: Boolean,
+			required: false
+		},
+		disabled: {
 			type: Boolean,
 			required: false
 		},
@@ -71,6 +81,13 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		inline: {
+			type: Boolean,
+			required: false,
+			default(): boolean {
+				return this.horizonGrouped;
+			}
 		},
 		styl: {
 			type: String,
@@ -122,17 +139,19 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		if (this.$refs.prefix) {
-			this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
-			if (this.$refs.prefix.offsetWidth) {
-				this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
+		this.$nextTick(() => {
+			if (this.$refs.prefix) {
+				this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
+				if (this.$refs.prefix.offsetWidth) {
+					this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
+				}
 			}
-		}
-		if (this.$refs.suffix) {
-			if (this.$refs.suffix.offsetWidth) {
-				this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+			if (this.$refs.suffix) {
+				if (this.$refs.suffix.offsetWidth) {
+					this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+				}
 			}
-		}
+		});
 	},
 	methods: {
 		focus() {
@@ -302,7 +321,7 @@ root(fill)
 			if fill
 				padding-right 12px
 
-	> .text
+	> .desc
 		margin 6px 0
 		font-size 13px
 
@@ -334,5 +353,15 @@ root(fill)
 		root(true)
 	&:not(.fill)
 		root(false)
+
+	&.inline
+		display inline-block
+		margin 0
+
+	&.disabled
+		opacity 0.7
+
+		&, *
+			cursor not-allowed !important
 
 </style>

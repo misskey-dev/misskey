@@ -1,6 +1,8 @@
 import * as mongo from 'mongodb';
+import redis from './db/redis';
 import Xev from 'xev';
-import Meta, { IMeta } from './models/meta';
+import { IMeta } from './models/meta';
+import fetchMeta from './misc/fetch-meta';
 
 type ID = string | mongo.ObjectID;
 
@@ -9,17 +11,20 @@ class Publisher {
 	private meta: IMeta;
 
 	constructor() {
-		this.ev = new Xev();
+		// Redisがインストールされてないときはプロセス間通信を使う
+		if (redis == null) {
+			this.ev = new Xev();
+		}
 
 		setInterval(async () => {
-			this.meta = await Meta.findOne({});
+			this.meta = await fetchMeta();
 		}, 5000);
 	}
 
-	public getMeta = async () => {
+	public fetchMeta = async () => {
 		if (this.meta != null) return this.meta;
 
-		this.meta = await Meta.findOne({});
+		this.meta = await fetchMeta();
 		return this.meta;
 	}
 
@@ -28,7 +33,14 @@ class Publisher {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		this.ev.emit(channel, message);
+		if (this.ev) {
+			this.ev.emit(channel, message);
+		} else {
+			redis.publish('misskey', JSON.stringify({
+				channel: channel,
+				message: message
+			}));
+		}
 	}
 
 	public publishMainStream = (userId: ID, type: string, value?: any): void => {
@@ -71,13 +83,13 @@ class Publisher {
 	}
 
 	public publishLocalTimelineStream = async (note: any): Promise<void> => {
-		const meta = await this.getMeta();
+		const meta = await this.fetchMeta();
 		if (meta.disableLocalTimeline) return;
 		this.publish('localTimeline', null, note);
 	}
 
 	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => {
-		const meta = await this.getMeta();
+		const meta = await this.fetchMeta();
 		if (meta.disableLocalTimeline) return;
 		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
 	}
@@ -88,6 +100,10 @@ class Publisher {
 
 	public publishHashtagStream = (note: any): void => {
 		this.publish('hashtag', null, note);
+	}
+
+	public publishApLogStream = (log: any): void => {
+		this.publish('apLog', null, log);
 	}
 }
 
@@ -108,3 +124,4 @@ export const publishLocalTimelineStream = publisher.publishLocalTimelineStream;
 export const publishHybridTimelineStream = publisher.publishHybridTimelineStream;
 export const publishGlobalTimelineStream = publisher.publishGlobalTimelineStream;
 export const publishHashtagStream = publisher.publishHashtagStream;
+export const publishApLogStream = publisher.publishApLogStream;
