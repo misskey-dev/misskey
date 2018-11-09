@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
 	<span slot="header">
-		<span v-html="title" :class="$style.title"></span>
+		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
 		<span :class="$style.count" v-if="multiple && files.length > 0">({{ $t('chosen-files', { count: files.length }) }})</span>
 	</span>
 
@@ -28,9 +28,6 @@ export default Vue.extend({
 	props: {
 		multiple: {
 			default: false
-		},
-		title: {
-			default: () => this.$t('choose-prompt')
 		}
 	},
 	data() {

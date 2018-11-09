@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
 	<span slot="header">
-		<span v-html="title" :class="$style.title"></span>
+		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
 	</span>
 
 	<mk-drive
@@ -21,11 +21,6 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/choose-folder-from-drive-window.vue'),
-	props: {
-		title: {
-			default: () => this.$t('choose-prompt')
-		}
-	},
 	methods: {
 		ok() {
 			this.$emit('selected', (this.$refs.browser as any).folder);
