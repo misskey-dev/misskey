@@ -14,7 +14,7 @@ import * as portscanner from 'portscanner';
 import isRoot = require('is-root');
 import Xev from 'xev';
 import * as program from 'commander';
-import mongo from './db/mongodb';
+import mongo, { nativeDbConn } from './db/mongodb';
 
 import Logger from './misc/logger';
 import EnvironmentInfo from './misc/environmentInfo';
@@ -158,11 +158,19 @@ function checkMongoDb(config: Config) {
 	mongoDBLogger.info(`Connecting to ${uri}`);
 
 	mongo.then(() => {
+		nativeDbConn().then(db => db.admin().serverInfo()).then(x => x.version).then(version => {
+			mongoDBLogger.info(`Version: ${version}`);
+			if (version < '3.6') {
+				mongoDBLogger.error(`MongoDB version is less than 3.6. Please upgrade it.`);
+				process.exit(1);
+			}
+		});
+
 		mongoDBLogger.succ('Connectivity confirmed');
 	})
-	.catch(err => {
-		mongoDBLogger.error(err.message);
-	});
+		.catch(err => {
+			mongoDBLogger.error(err.message);
+		});
 }
 
 function spawnWorkers(limit: number) {
