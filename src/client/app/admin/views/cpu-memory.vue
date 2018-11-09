@@ -117,6 +117,9 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('stats', this.onStats);
 		this.connection.off('statsLog', this.onStatsLog);
+
+		this.cpuChart.destroy();
+		this.memChart.destroy();
 	},
 
 	methods: {
