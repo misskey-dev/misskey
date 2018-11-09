@@ -76,7 +76,7 @@ init(async (launch) => {
 				}
 			},
 
-			$chooseDriveFiles(opts) {
+			$chooseDriveFile(opts) {
 				return new Promise((res, rej) => {
 					const o = opts || {};
 
