@@ -47,7 +47,7 @@
 				</div>
 			</div>
 			<footer>
-				<span class="app" v-if="appearNote.app && mini">via <b>{{ appearNote.app.name }}</b></span>
+				<span class="app" v-if="appearNote.app && mini && $store.state.settings.showVia">via <b>{{ appearNote.app.name }}</b></span>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button class="replyButton" @click="reply()" :title="$t('reply')">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>

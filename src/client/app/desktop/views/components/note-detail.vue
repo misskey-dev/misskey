@@ -60,7 +60,7 @@
 			</div>
 		</div>
 		<footer>
-			<span class="app" v-if="note.app">via <b>{{ note.app.name }}</b></span>
+			<span class="app" v-if="note.app && $store.state.settings.showVia">via <b>{{ note.app.name }}</b></span>
 			<mk-reactions-viewer :note="p"/>
 			<button class="replyButton" @click="reply" :title="$t('reply')">
 				<template v-if="p.reply"><fa icon="reply-all"/></template>

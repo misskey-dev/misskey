@@ -23,6 +23,7 @@ const defaultSettings = {
 	circleIcons: true,
 	contrastedAcct: true,
 	showFullAcct: false,
+	showVia: true,
 	showReplyTarget: true,
 	showMyRenotes: true,
 	showRenotedMyNotes: true,
