@@ -160,7 +160,7 @@ common:
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
   ai-chan-kawaii: "Ai-Chan est mignone !"
 auth/views/form.vue:
-  share-access: "Désirez-vous autoriser <i>{{name}}</i> à avoir accès à votre compte ?"
+  share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
   account-read: "Afficher les informations du compte :"
   account-write: "Modifications des informations du compte :"
