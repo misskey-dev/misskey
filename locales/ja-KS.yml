@@ -112,6 +112,7 @@ common:
   always-show-nsfw: "閲覧注意？見せたらあかん？そんなん知らんわ、見せろや！"
   always-mark-nsfw: "わからんからとりあえずメディアは見せたらあかん"
   show-full-acct: "ユーザー名のホストも出したる"
+  show-via: "viaを表示する"
   reduce-motion: "UI、動き過ぎや、静かにしてや"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "OS標準の絵文字を使用"
