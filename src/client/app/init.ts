@@ -283,7 +283,6 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 							windows: os.windows
 						},
 						stream: os.stream,
-						apis: os.apis,
 						instanceName: os.instanceName
 					};
 				},
