@@ -22,8 +22,8 @@
 		</div>
 		<div class="status">
 			<span class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</span>
-			<router-link :to="user | userPage('following')" class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
-			<router-link :to="user | userPage('followers')" class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
+			<router-link :to="user | userPage('following')" class="following clickable"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
+			<router-link :to="user | userPage('followers')" class="followers clickable"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
 		</div>
 	</div>
 </div>
@@ -190,6 +190,7 @@ export default Vue.extend({
 				display inline-block
 				padding-right 16px
 				margin-right 16px
+				color inherit
 
 				&:not(:last-child)
 					border-right solid 1px var(--faceDivider)
