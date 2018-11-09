@@ -2,7 +2,11 @@
 <ui-card>
 	<div slot="title"><fa icon="user"/> {{ $t('title') }}</div>
 
-	<section class="fit-top">
+	<section class="esokaraujimuwfttfzgocmutcihewscl">
+		<div class="header" :style="bannerStyle">
+			<mk-avatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true"/>
+		</div>
+
 		<ui-form :disabled="saving">
 			<ui-input v-model="name" :max="30">
 				<span>{{ $t('name') }}</span>
@@ -97,6 +101,14 @@ export default Vue.extend({
 			get() { return this.$store.state.i.settings.alwaysMarkNsfw; },
 			set(value) { this.$root.api('i/update', { alwaysMarkNsfw: value }); }
 		},
+
+		bannerStyle(): any {
+			if (this.$store.state.i.bannerUrl == null) return {};
+			return {
+				backgroundColor: this.$store.state.i.bannerColor && this.$store.state.i.bannerColor.length == 3 ? `rgb(${ this.$store.state.i.bannerColor.join(',') })` : null,
+				backgroundImage: `url(${ this.$store.state.i.bannerUrl })`
+			};
+		},
 	},
 
 	created() {
@@ -190,3 +202,26 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.esokaraujimuwfttfzgocmutcihewscl
+	> .header
+		height 150px
+		overflow hidden
+		background-size cover
+		background-position center
+		border-radius 4px
+
+		> .avatar
+			position absolute
+			top 0
+			bottom 0
+			left 0
+			right 0
+			display block
+			width 72px
+			height 72px
+			margin auto
+			box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
+
+</style>
