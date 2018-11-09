@@ -45,15 +45,15 @@ export default Vue.extend({
 						text: this.$t('favorite'),
 						action: this.favorite
 					}], this.note.userId == this.$store.state.i.id ? [
-						(this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? [{
+						(this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
 							icon: 'thumbtack',
 							text: this.$t('unpin'),
 							action: this.unpin
-						}] : [{
-							icon: 'thumbtack',
-							text: this.$t('pin'),
-							action: this.pin
-						}]
+						} : {
+								icon: 'thumbtack',
+								text: this.$t('pin'),
+								action: this.pin
+							}
 					] : []
 				], [
 					this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin ? [{
