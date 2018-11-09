@@ -16,31 +16,34 @@ export default define({
 
 	data() {
 		return {
-			tips: [
-				this.$t('tips-line1'),
-				this.$t('tips-line2'),
-				this.$t('tips-line3'),
-				this.$t('tips-line4'),
-				this.$t('tips-line5'),
-				this.$t('tips-line6'),
-				this.$t('tips-line7'),
-				this.$t('tips-line8'),
-				this.$t('tips-line9'),
-				this.$t('tips-line10'),
-				this.$t('tips-line11'),
-				this.$t('tips-line13'),
-				this.$t('tips-line14'),
-				this.$t('tips-line17'),
-				this.$t('tips-line19'),
-				this.$t('tips-line20'),
-				this.$t('tips-line21'),
-				this.$t('tips-line23'),
-				this.$t('tips-line24'),
-				this.$t('tips-line25')
-			],
+			tips: [],
 			tip: null,
 			clock: null
 		};
+	},
+	created() {
+		this.tips =  [
+			this.$t('tips-line1'),
+			this.$t('tips-line2'),
+			this.$t('tips-line3'),
+			this.$t('tips-line4'),
+			this.$t('tips-line5'),
+			this.$t('tips-line6'),
+			this.$t('tips-line7'),
+			this.$t('tips-line8'),
+			this.$t('tips-line9'),
+			this.$t('tips-line10'),
+			this.$t('tips-line11'),
+			this.$t('tips-line13'),
+			this.$t('tips-line14'),
+			this.$t('tips-line17'),
+			this.$t('tips-line19'),
+			this.$t('tips-line20'),
+			this.$t('tips-line21'),
+			this.$t('tips-line23'),
+			this.$t('tips-line24'),
+			this.$t('tips-line25')
+		];
 	},
 	mounted() {
 		this.$nextTick(() => {
@@ -54,7 +57,7 @@ export default define({
 	},
 	methods: {
 		set() {
-			this.tip = tips[Math.floor(Math.random() * tips.length)];
+			this.tip = this.tips[Math.floor(Math.random() * this.tips.length)];
 		},
 		change() {
 			anime({
