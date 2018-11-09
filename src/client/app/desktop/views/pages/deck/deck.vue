@@ -255,7 +255,7 @@ export default Vue.extend({
 					icon: 'hashtag',
 					text: this.$t('@deck.hashtag'),
 					action: () => {
-						this.$root.apis.input({
+						this.$input({
 							title: this.$t('enter-hashtag-tl-title')
 						}).then(title => {
 							this.$store.dispatch('settings/addDeckColumn', {

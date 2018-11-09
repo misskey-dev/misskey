@@ -196,13 +196,13 @@ export default Vue.extend({
 		},
 
 		reply() {
-			this.$root.apis.post({
+			this.$post({
 				reply: this.p
 			});
 		},
 
 		renote() {
-			this.$root.apis.post({
+			this.$post({
 				renote: this.p
 			});
 		},

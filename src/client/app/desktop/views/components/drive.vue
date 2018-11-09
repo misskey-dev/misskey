@@ -65,7 +65,6 @@ import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import contains from '../../../common/scripts/contains';
-import contextmenu from '../../api/contextmenu';
 import { url } from '../../../config';
 
 export default Vue.extend({
@@ -137,7 +136,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onContextmenu(e) {
-			contextmenu((this as any).os)(e, [{
+			this.$contextmenu(e, [{
 				type: 'item',
 				text: this.$t('contextmenu.create-folder'),
 				icon: ['far', 'folder'],
@@ -314,7 +313,7 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$root.apis.dialog({
+							this.$dialog({
 								title: this.$t('unable-to-process'),
 								text: this.$t('circular-reference-detected'),
 								actions: [{
@@ -335,7 +334,7 @@ export default Vue.extend({
 		},
 
 		urlUpload() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('url-upload'),
 				placeholder: this.$t('url-of-file')
 			}).then(url => {
@@ -344,7 +343,7 @@ export default Vue.extend({
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				this.$root.apis.dialog({
+				this.$dialog({
 					title: this.$t('url-upload-requested'),
 					text: this.$t('may-take-time'),
 					actions: [{
@@ -355,7 +354,7 @@ export default Vue.extend({
 		},
 
 		createFolder() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('create-folder'),
 				placeholder: this.$t('folder-name')
 			}).then(name => {

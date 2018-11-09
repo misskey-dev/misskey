@@ -2,6 +2,7 @@
  * Desktop Client
  */
 
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
@@ -10,15 +11,6 @@ import './style.styl';
 import init from '../init';
 import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import composeNotification from '../common/scripts/compose-notification';
-
-import chooseDriveFolder from './api/choose-drive-folder';
-import chooseDriveFile from './api/choose-drive-file';
-import dialog from './api/dialog';
-import input from './api/input';
-import post from './api/post';
-import notify from './api/notify';
-import updateAvatar from './api/update-avatar';
-import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
 import MkHome from './views/pages/home.vue';
@@ -36,12 +28,50 @@ import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
+
+import Ctx from './views/components/context-menu.vue';
+import PostFormWindow from './views/components/post-form-window.vue';
+import RenoteFormWindow from './views/components/renote-form-window.vue';
+
 import MiOS from '../mios';
 
 /**
  * init
  */
 init(async (launch) => {
+	Vue.mixin({
+		methods: {
+			$contextmenu(e, menu, opts?) {
+				const o = opts || {};
+				const vm = this.$root.new(Ctx, {
+					menu,
+					x: e.pageX - window.pageXOffset,
+					y: e.pageY - window.pageYOffset,
+				});
+				vm.$once('closed', () => {
+					if (o.closed) o.closed();
+				});
+			},
+
+			$post(opts) {
+				const o = opts || {};
+				if (o.renote) {
+					const vm = this.$root.new(RenoteFormWindow, {
+						note: o.renote,
+						animation: o.animation == null ? true : o.animation
+					});
+					if (o.cb) vm.$once('closed', o.cb);
+				} else {
+					const vm = this.$root.new(PostFormWindow, {
+						reply: o.reply,
+						animation: o.animation == null ? true : o.animation
+					});
+					if (o.cb) vm.$once('closed', o.cb);
+				}
+			}
+		}
+	});
+
 	// Register directives
 	require('./views/directives');
 
@@ -75,16 +105,7 @@ init(async (launch) => {
 	});
 
 	// Launch the app
-	const [, os] = launch(router, os => ({
-		chooseDriveFolder: chooseDriveFolder(os),
-		chooseDriveFile: chooseDriveFile(os),
-		dialog: dialog(os),
-		input: input(os),
-		post: post(os),
-		notify: notify(os),
-		updateAvatar: updateAvatar(os),
-		updateBanner: updateBanner(os)
-	}));
+	const [, os] = launch(router);
 
 	if (os.store.getters.isSignedIn) {
 		/**

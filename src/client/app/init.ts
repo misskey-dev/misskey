@@ -180,16 +180,14 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
+export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
-			os.apis = api ? api(os) : null;
-
+		const launch = (router: VueRouter) => {
 			//#region theme
 			os.store.watch(s => {
 				return s.device.darkmode;
@@ -293,7 +291,14 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 					api: os.api,
 					getMeta: os.getMeta,
 					getMetaSync: os.getMetaSync,
-					new: os.new,
+					new(vm, props) {
+						const x = new vm({
+							parent: this,
+							propsData: props
+						}).$mount();
+						document.body.appendChild(x.$el);
+						return x;
+					},
 				},
 				router,
 				render: createEl => createEl(App)

@@ -1,8 +1,7 @@
-import OS from '../../mios';
 import Notification from '../views/components/ui-notification.vue';
 
-export default (os: OS) => message => {
-	const vm = os.new(Notification, {
+export default (ne: Function) => message => {
+	const vm = ne(Notification, {
 		message
 	});
 	document.body.appendChild(vm.$el);

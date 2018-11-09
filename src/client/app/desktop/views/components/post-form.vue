@@ -245,7 +245,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			this.$root.apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
 				files.forEach(this.attachMedia);
@@ -363,7 +363,7 @@ export default Vue.extend({
 		},
 
 		addVisibleUser() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('enter-username')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
@@ -401,13 +401,13 @@ export default Vue.extend({
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
-				this.$root.apis.notify(this.renote
+				this.$notify(this.renote
 					? this.$t('reposted')
 					: this.reply
 						? this.$t('replied')
 						: this.$t('posted'));
 			}).catch(err => {
-				this.$root.apis.notify(this.renote
+				this.$notify(this.renote
 					? this.$t('renote-failed')
 					: this.reply
 						? this.$t('reply-failed')

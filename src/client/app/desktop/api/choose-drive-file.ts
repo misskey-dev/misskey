@@ -1,13 +1,12 @@
-import OS from '../../mios';
 import { url } from '../../config';
 import MkChooseFileFromDriveWindow from '../views/components/choose-file-from-drive-window.vue';
 
-export default (os: OS) => opts => {
+export default (ne: Function) => opts => {
 	return new Promise((res, rej) => {
 		const o = opts || {};
 
 		if (document.body.clientWidth > 800) {
-			const w = os.new(MkChooseFileFromDriveWindow, {
+			const w = ne(MkChooseFileFromDriveWindow, {
 				title: o.title,
 				multiple: o.multiple,
 				initFolder: o.currentFolder

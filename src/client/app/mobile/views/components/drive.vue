@@ -439,7 +439,7 @@ export default Vue.extend({
 				alert(this.$t('root-move-alert'));
 				return;
 			}
-			this.$root.apis.chooseDriveFolder().then(folder => {
+			this.$chooseDriveFolder().then(folder => {
 				this.$root.api('drive/folders/update', {
 					parentId: folder ? folder.id : null,
 					folderId: this.folder.id

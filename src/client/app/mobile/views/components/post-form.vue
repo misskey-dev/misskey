@@ -220,7 +220,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			this.$root.apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
 				files.forEach(this.attachMedia);
@@ -279,7 +279,7 @@ export default Vue.extend({
 		},
 
 		addVisibleUser() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('username-prompt')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);

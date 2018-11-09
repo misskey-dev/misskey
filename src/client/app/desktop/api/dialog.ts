@@ -1,10 +1,9 @@
-import OS from '../../mios';
 import Dialog from '../views/components/dialog.vue';
 
-export default (os: OS) => opts => {
+export default (ne: Function) => opts => {
 	return new Promise<string>((res, rej) => {
 		const o = opts || {};
-		const d = os.new(Dialog, {
+		const d = ne(Dialog, {
 			title: o.title,
 			text: o.text,
 			modal: o.modal,

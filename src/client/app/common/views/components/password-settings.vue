@@ -12,20 +12,20 @@ export default Vue.extend({
 	i18n: i18n('common/views/components/password-settings.vue'),
 	methods: {
 		reset() {
-			this.$root.apis.input({
+			this.$input({
 				title: this.$t('enter-current-password'),
 				type: 'password'
 			}).then(currentPassword => {
-				this.$root.apis.input({
+				this.$input({
 					title: this.$t('enter-new-password'),
 					type: 'password'
 				}).then(newPassword => {
-					this.$root.apis.input({
+					this.$input({
 						title: this.$t('enter-new-password-again'),
 						type: 'password'
 					}).then(newPassword2 => {
 						if (newPassword !== newPassword2) {
-							this.$root.apis.dialog({
+							this.$dialog({
 								title: null,
 								text: this.$t('not-match'),
 								actions: [{
@@ -38,7 +38,7 @@ export default Vue.extend({
 							currentPasword: currentPassword,
 							newPassword: newPassword
 						}).then(() => {
-							this.$root.apis.notify(this.$t('changed'));
+							this.$notify(this.$t('changed'));
 						});
 					});
 				});

@@ -1,9 +1,8 @@
-import OS from '../../mios';
 import { apiUrl } from '../../config';
 import CropWindow from '../views/components/crop-window.vue';
 import ProgressDialog from '../views/components/progress-dialog.vue';
 
-export default (os: OS) => {
+export default (ne: Funtcion) => {
 
 	const cropImage = file => new Promise((resolve, reject) => {
 
