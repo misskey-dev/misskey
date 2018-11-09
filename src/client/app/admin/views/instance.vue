@@ -3,6 +3,7 @@
 	<ui-card>
 		<div slot="title"><fa icon="cog"/> {{ $t('instance') }}</div>
 		<section class="fit-top fit-bottom">
+			<ui-input :value="host" readonly>{{ $t('domain') }}</ui-input>
 			<ui-input v-model="name">{{ $t('instance-name') }}</ui-input>
 			<ui-textarea v-model="description">{{ $t('instance-description') }}</ui-textarea>
 			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('banner-url') }}</ui-input>
@@ -81,11 +82,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
+import { host } from '../../config';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/instance.vue'),
 	data() {
 		return {
+			host,
 			maintainerName: null,
 			maintainerEmail: null,
 			disableRegistration: false,
