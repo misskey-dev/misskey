@@ -7,9 +7,9 @@
 
 		<div class="card map">
 			<header>
-				<select v-model="mapName" :placeholder="$t('placeholder')" @change="onMapChange">
+				<select v-model="mapName" :placeholder="$t('choose-map')" @change="onMapChange">
 					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
-					<option :label="$t('label')" :value="null"/>
+					<option :label="$t('random')" :value="null"/>
 					<optgroup v-for="c in mapCategories" :key="c" :label="c">
 						<option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
 					</optgroup>

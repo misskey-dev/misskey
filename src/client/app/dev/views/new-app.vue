@@ -2,13 +2,13 @@
 <mk-ui>
 	<b-card :header="$t('header')">
 		<b-form @submit.prevent="onSubmit" autocomplete="off">
-			<b-form-group :label="$t('label')" :description="$t('description')">
+			<b-form-group :label="$t('app-name')" :description="$t('description')">
 				<b-form-input v-model="name" type="text" :placeholder="$t('placeholder')" autocomplete="off" required/>
 			</b-form-group>
-			<b-form-group :label="$t('label')" :description="$t('description')">
+			<b-form-group :label="$t('app-overview')" :description="$t('description')">
 				<b-textarea v-model="description" :placeholder="$t('placeholder')" autocomplete="off" required></b-textarea>
 			</b-form-group>
-			<b-form-group :label="$t('label')" :description="$t('description')">
+			<b-form-group :label="$t('callback-url')" :description="$t('description')">
 				<b-input v-model="cb" type="url" placeholder="ex) https://your.app.example.com/callback.php" autocomplete="off"/>
 			</b-form-group>
 			<b-card :header="$t('header')">

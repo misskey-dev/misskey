@@ -14,7 +14,7 @@
 			<b>{{ $t('recent-tags') }}:</b>
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
-		<input v-show="useCw" v-model="cw" :placeholder="$t('placeholder')">
+		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"

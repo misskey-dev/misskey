@@ -8,7 +8,7 @@
 		ref="textarea"
 		@keypress="onKeypress"
 		@paste="onPaste"
-		:placeholder="$t('placeholder')"
+		:placeholder="$t('input-message-here')"
 		v-autocomplete="'text'"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>

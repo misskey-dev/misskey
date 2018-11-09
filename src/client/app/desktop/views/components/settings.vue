@@ -155,12 +155,12 @@
 		<ui-card class="web" v-show="page == 'web'">
 			<div slot="title"><fa icon="language"/> {{ $t('language') }}</div>
 			<section class="fit-top">
-				<ui-select v-model="lang" :placeholder="$t('placeholder')">
-					<optgroup :label="$t('label')">
+				<ui-select v-model="lang" :placeholder="$t('pick-language')">
+					<optgroup :label="$t('recommended')">
 						<option value="">{{ $t('auto') }}</option>
 					</optgroup>
 
-					<optgroup :label="$t('label')">
+					<optgroup :label="$t('specify-language')">
 						<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 					</optgroup>
 				</ui-select>

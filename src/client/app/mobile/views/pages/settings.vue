@@ -100,12 +100,12 @@
 				<div slot="title"><fa icon="language"/> {{ $t('lang') }}</div>
 
 				<section class="fit-top">
-					<ui-select v-model="lang" :placeholder="$t('placeholder')">
-						<optgroup :label="$t('label')">
+					<ui-select v-model="lang" :placeholder="$t('auto')">
+						<optgroup :label="$t('recommended')">
 							<option value="">{{ $t('auto') }}</option>
 						</optgroup>
 
-						<optgroup :label="$t('label')">
+						<optgroup :label="$t('specify-language')">
 							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 						</optgroup>
 					</ui-select>

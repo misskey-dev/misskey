@@ -3,27 +3,27 @@
 	<header>
 		<b><fa :icon="['far', 'chart-bar']"/> {{ $t('title') }}:</b>
 		<select v-model="src">
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('federation')">
 				<option value="federation-instances">{{ $t('charts.federation-instances') }}</option>
 				<option value="federation-instances-total">{{ $t('charts.federation-instances-total') }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('users')">
 				<option value="users">{{ $t('charts.users') }}</option>
 				<option value="users-total">{{ $t('charts.users-total') }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('notes')">
 				<option value="notes">{{ $t('charts.notes') }}</option>
 				<option value="local-notes">{{ $t('charts.local-notes') }}</option>
 				<option value="remote-notes">{{ $t('charts.remote-notes') }}</option>
 				<option value="notes-total">{{ $t('charts.notes-total') }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('drive')">
 				<option value="drive-files">{{ $t('charts.drive-files') }}</option>
 				<option value="drive-files-total">{{ $t('charts.drive-files-total') }}</option>
 				<option value="drive">{{ $t('charts.drive') }}</option>
 				<option value="drive-total">{{ $t('charts.drive-total') }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('network')">
 				<option value="network-requests">{{ $t('charts.network-requests') }}</option>
 				<option value="network-time">{{ $t('charts.network-time') }}</option>
 				<option value="network-usage">{{ $t('charts.network-usage') }}</option>

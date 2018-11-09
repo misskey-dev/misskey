@@ -2,11 +2,11 @@
 <div class="nicnklzforebnpfgasiypmpdaaglujqm">
 	<label>
 		<span>{{ $t('light-theme') }}</span>
-		<ui-select v-model="light" :placeholder="$t('placeholder')">
-			<optgroup :label="$t('label')">
+		<ui-select v-model="light" :placeholder="$t('light-theme')">
+			<optgroup :label="$t('light-themes')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('dark-themes')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</ui-select>
@@ -14,11 +14,11 @@
 
 	<label>
 		<span>{{ $t('dark-theme') }}</span>
-		<ui-select v-model="dark" :placeholder="$t('placeholder')">
-			<optgroup :label="$t('label')">
+		<ui-select v-model="dark" :placeholder="$t('dark-theme')">
+			<optgroup :label="$t('dark-themes')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('light-themes')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</ui-select>
@@ -68,14 +68,14 @@
 
 	<details>
 		<summary><fa icon="folder-open"/> {{ $t('manage-themes') }}</summary>
-		<ui-select v-model="selectedThemeId" :placeholder="$t('placeholder')">
-			<optgroup :label="$t('label')">
+		<ui-select v-model="selectedThemeId" :placeholder="$t('select-theme')">
+			<optgroup :label="$t('builtin-themes')">
 				<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('my-themes')">
 				<option v-for="x in installedThemes.filter(t => t.author == this.$store.state.i.username)" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup :label="$t('label')">
+			<optgroup :label="$t('installed-themes')">
 				<option v-for="x in installedThemes.filter(t => t.author != this.$store.state.i.username)" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</ui-select>

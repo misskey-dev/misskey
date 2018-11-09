@@ -4,7 +4,7 @@
 		<header>
 			<button class="cancel" @click="cancel"><fa icon="times"/></button>
 			<div>
-				<span class="text-count" :class="{ over: trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - trimmedLength(text) }}</span>
+				<span class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo"><fa icon="map-marker-alt"/></span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
@@ -16,7 +16,7 @@
 				<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
 				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
 			</div>
-			<input v-show="useCw" v-model="cw" :placeholder="$t('placeholder')">
+			<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
