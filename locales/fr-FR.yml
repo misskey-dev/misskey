@@ -25,21 +25,11 @@ common:
   application-authorization: "Permissions de l'application"
   close: "Fermer"
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte peut être compromis."
-  BSoD:
-    fatal-error: ":( 致命的な問題が発生しました。"
-    update-browser-os: "お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。"
-    error-code: "Code d’erreur"
-    browser-version: "Version du navigateur"
-    client-version: "La version du client"
-    email-support: "問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。"
-    thanks: "Merci d’avoir choisi d’utiliser Misskey."
+  load-more: "Charger plus"
   got-it: "J'ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
-    paragraph1: "La personnalisation à la maison vous permet d'ajouter / supprimer, glisser et déposer et réorganiser les widgets."
-    paragraph2: "Vous pouvez changer l'affichage en <strong>cliquant droit</strong> sur certains widgets."
-    paragraph3: "Pour supprimer un widget, <strong>glissez et déposez le widget sur la zone étiquetée « Corbeille »</strong> dans l'en-tête."
-    paragraph4: "Pour terminer la personnalisation, cliquez sur \"Terminer\" dans le coin supérieur droit."
+    paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
     gotit: "Compris !"
   notification:
     file-uploaded: "Le fichier a été transféré !"
@@ -56,13 +46,14 @@ common:
     seconds_ago: "Il y a {} seconde·s"
     minutes_ago: "Il y a {} minute·s"
     hours_ago: "Il y a {} heure·s"
-    days_ago: "Il y a {} jour·s"
+    days_ago: "Il y a {} jours"
     weeks_ago: "Il y a {} semaines·s"
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
-  month-and-day: "{month} mois/{day} jour"
+  month-and-day: "{day}/{month}"
   trash: "Corbeille"
   drive: "Drive"
+  messaging: "Conversations"
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -121,11 +112,13 @@ common:
   always-show-nsfw: "Toujours afficher les contenus sensibles"
   always-mark-nsfw: "Toujours marquer les notes ayant des attachements comme sensibles"
   show-full-acct: "Afficher l’adresse complète de l’utilisateur"
+  show-via: "Visualiser via"
   reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
+  use-os-default-emojis: "Utiliser les émojis standards du système"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
   is-remote-user: "Ces informations utilisateur ont été copiées."
-  is-remote-post: "この投稿情報はコピーです。"
+  is-remote-post: "Ceci est une publication distante"
   view-on-remote: "Consulter le profil complet"
   error:
     title: 'Une erreur est survenue'
@@ -134,13 +127,13 @@ common:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
     opponent-turn: "Tour de l’adversaire"
-    turn-of: "C’est le tour de {}"
-    past-turn-of: "C’est au tour de {}"
-    won: "{} a gagné"
+    turn-of: "Tour de {name}"
+    past-turn-of: "{name}のターン"
+    won: "{name} a gagné"
     black: "Noirs"
     white: "Blancs"
     total: "Total"
-    this-turn: "Tour {}"
+    this-turn: "{count}ターン目"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
@@ -159,36 +152,15 @@ common:
     users: "Utilisateur·rice·s"
     polls: "Sondages"
     post-form: "Formulaire de publication"
-    messaging: "Messagerie"
     server: "Info sur le serveur"
     donation: "Dons"
     nav: "Navigation"
     tips: "Conseils"
     hashtags: "Hashtags"
-  deck:
-    widgets: "Widgets"
-    home: "Accueil"
-    local: "Local"
-    hybrid: "Social"
-    hashtag: "Hashtag"
-    global: "Global"
-    mentions: "Mentions"
-    direct: "Messages directs"
-    notifications: "Notifications"
-    list: "Liste"
-    swap-left: "Déplacer à gauche"
-    swap-right: "Déplacer à droite"
-    swap-up: "Vers le haut"
-    swap-down: "Vers le bas"
-    remove: "Supprimer"
-    add-column: "Ajouter une colonne"
-    rename: "Renommer"
-    stack-left: "Vers la gauche"
-    pop-right: "Vers la droite"
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
-  ai-chan-kawaii: "藍ちゃかわいい"
+  ai-chan-kawaii: "Ai-Chan est mignone !"
 auth/views/form.vue:
-  share-access: "Désirez-vous <b>autoriser</b> <i>{{ app.name }}</i> à avoir accès à votre compte ?"
+  share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
   account-read: "Afficher les informations du compte :"
   account-write: "Modifications des informations du compte :"
@@ -218,7 +190,7 @@ common/views/components/games/reversi/reversi.vue:
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Se rendre"
   surrendered: "Par abandon"
-  is-llotheo: "石の少ない方が勝ち(ロセオ)"
+  is-llotheo: "Celui ou celle qui a moins de pierres gagne (Roseo)"
   looped-map: "Carte en boucle"
   can-put-everywhere: "Peut poser partout"
 common/views/components/games/reversi/reversi.index.vue:
@@ -245,7 +217,7 @@ common/views/components/games/reversi/reversi.room.vue:
   rules: "Règles"
   is-llotheo: "石の少ない方が勝ち(ロセオ)"
   looped-map: "Carte en boucle"
-  can-put-everywhere: "どこでも置けるモード"
+  can-put-everywhere: "Peut poser partout"
   settings-of-the-bot: "Configuration du bot"
   this-game-is-started-soon: "La partie commencera dans quelques instants"
   waiting-for-other: "En attente que l'adversaire soit prêt"
@@ -256,9 +228,9 @@ common/views/components/games/reversi/reversi.room.vue:
   cancel-ready: "Annuler « Prêt »"
 common/views/components/connect-failed.vue:
   title: "Échec de connexion au serveur"
-  description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
+  description: "Il se peut qu’il y est un problème avec votre connexion internet, ou le serveur est hors-ligne ou en maintenance. Veuillez {réessayer} plus tard."
   thanks: "On vous remercie d'utiliser Misskey."
-  troubleshoot: "dépanner"
+  troubleshoot: "Dépanner"
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Dépannage"
   network: "Connexion au réseau"
@@ -325,7 +297,6 @@ common/views/components/messaging.vue:
   no-history: "Pas d'historique"
 common/views/components/messaging-room.vue:
   empty: "Pas de conversations"
-  more: "Voir plus"
   no-history: "Il n'y a pas plus d'historique"
   resize-form: "Faites glisser pour redimensionner"
   new-message: "Nouveau message"
@@ -381,6 +352,7 @@ common/views/components/signin.vue:
   signin: "Se connecter"
   or: "Ou"
   signin-with-twitter: "Se connecter via Twitter"
+  signin-with-github: "Se connecter avec GitHub"
   login-failed: "Échec d'authentification. Veuillez vérifier que votre nom d'utilisateur et mot de passe sont corrects."
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
@@ -419,6 +391,13 @@ common/views/components/twitter-setting.vue:
   reconnect: "Reconnexion"
   connect: "Lier votre compte Twitter"
   disconnect: "Déconnexion"
+common/views/components/github-setting.vue:
+  description: "Si vous liez votre compte GitHub à votre compte Misskey, vous verrez votre compte GitHub s’afficher sur votre profil, vous aurez également la possibilité de vous connecter à Misskey en utilisant ce dernier."
+  connected-to: "Vous êtes connecté à votre compte GitHub"
+  detail: "Détails …"
+  reconnect: "Reconnecter"
+  connect: "Se connecter avec GitHub"
+  disconnect: "Déconnecter"
 common/views/components/uploader.vue:
   waiting: "Veuillez patienter"
 common/views/components/visibility-chooser.vue:
@@ -459,7 +438,7 @@ common/views/widgets/broadcast.vue:
   next: "Suivant"
 common/views/widgets/calendar.vue:
   year: "Année {}"
-  month: "Mois {}"
+  month: "{},"
   day: "Jour {}"
   today: "Aujourd'hui :"
   this-month: "Ce mois-ci :"
@@ -512,7 +491,7 @@ common/views/pages/follow.vue:
   following: "Suit"
   follow: "Suivre"
   request-pending: "Demande d'abonnement en attente"
-  follow-processing: "フォロー処理中"
+  follow-processing: "En cours d’abonnement"
   follow-request: "Demande d'abonnement"
 desktop:
   banner-crop-title: "Découpez la partie qui apparaitra comme bannière"
@@ -535,37 +514,12 @@ desktop/views/components/activity.vue:
   title: "Activité"
   toggle: "Afficher les vues"
 desktop/views/components/calendar.vue:
-  title: "{1} / {2}"
+  title: "{year} / {month}"
   prev: "Mois dernier"
   next: "Mois prochain"
   go: "Cliquez pour naviguer"
-desktop/views/components/charts.vue:
-  title: "Graphiques"
-  per-day: "par jour"
-  per-hour: "par heure"
-  federation: "Fédération"
-  notes: "Publications"
-  users: "Utilisateurs"
-  drive: "Drive"
-  network: "Réseau"
-  charts:
-    federation-instances: "Nombre d’instances : augmentation/diminution"
-    federation-instances-total: "Nombre total d’instances"
-    notes: "投稿の増減 (統合)"
-    local-notes: "投稿の増減 (ローカル)"
-    remote-notes: "投稿の増減 (リモート)"
-    notes-total: "Total des notes"
-    users: "Nombre d’utilisateurs·trices : augmentation/diminution"
-    users-total: "Nombre total des utilisateurs·rices"
-    drive: "ドライブ使用量の増減"
-    drive-total: "Utilisation totale du lecteur"
-    drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "Nombre total de fichiers sur le lecteur"
-    network-requests: "Requêtes"
-    network-time: "Temps de réponse"
-    network-usage: "Traffic"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "Sélection de fichiers"
+  chosen-files: "{count}ファイル選択中"
   upload: "Téléverser des fichiers à partir de votre ordinateur"
   cancel: "Annuler"
   ok: "OK"
@@ -611,7 +565,6 @@ desktop/views/components/drive.folder.vue:
     input-new-folder-name: "Entrer un nouveau nom"
 desktop/views/components/drive.vue:
   search: "Rechercher"
-  load-more: "Afficher plus"
   empty-draghover: "Drop Welcome!"
   empty-drive: "Votre Drive est vide"
   empty-drive-description: "Vous pouvez également uploader le fichier en faisant un clic droit et en choisissant 'Uploader' ou tout simplement en faisant glisser votre fichier."
@@ -636,10 +589,10 @@ desktop/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 desktop/views/components/follow-button.vue:
-  following: "Abonnements"
+  following: "Abonné·e"
   follow: "Suivre"
   request-pending: "En attente d'approbation"
-  follow-processing: "フォロー処理中"
+  follow-processing: "Continuer l’abonnement"
   follow-request: "Demande d'abonnement"
 desktop/views/components/followers-window.vue:
   followers: "{} abonné·e·s"
@@ -669,7 +622,6 @@ desktop/views/components/messaging-room-window.vue:
 desktop/views/components/messaging-window.vue:
   title: "Messagerie"
 desktop/views/components/note-detail.vue:
-  more: "Charger davantage de conversations"
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
   reposted-by: "Republié par {}"
@@ -687,9 +639,7 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
-  load-more: "Afficher plus"
 desktop/views/components/notifications.vue:
-  more: "Plus"
   empty: "Pas de notifications"
 desktop/views/components/post-form.vue:
   add-visible-user: "+Ajouter un utilisateur"
@@ -736,14 +686,17 @@ desktop/views/components/renote-form.vue:
   failure: "La renote a échoué"
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
 desktop/views/components/settings-window.vue:
   settings: "Paramètres"
 desktop/views/components/settings.vue:
   profile: "Profil"
   notification: "Notification"
   apps: "Applications"
-  mute-and-block: "ミュート/ブロック"
-  blocking: "ブロック"
+  mute-and-block: "Silencé·e·s / Bloqué·e·s"
+  blocking: "En cours de blocage"
   security: "Sécurité"
   signin: "Historique de connexion"
   password: "Mot de Passe"
@@ -860,6 +813,7 @@ common/views/components/api-settings.vue:
     title: 'Console API'
     endpoint: 'Point de terminaison'
     parameter: 'Paramètres'
+    credential-info: "「i」パラメータは自動で付与されます。"
     send: 'Envoyer'
     sending: 'Envoi en cours'
     response: 'Résultat'
@@ -917,7 +871,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "Accueil"
   deck: "デッキ"
-  messaging: "Messages"
   game: "Jeux"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -940,7 +893,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "Tout"
   iknow: "Vous connaissez"
-  load-more: "Afficher plus"
   fetching: "Chargement ..."
 desktop/views/components/users-list-item.vue:
   followed: "vous suit"
@@ -964,10 +916,48 @@ admin/views/dashboard.vue:
   instances: "Instances"
   this-instance: "Cette instance"
   federated: "Fédérées"
+admin/views/instance.vue:
+  instance: "Instance"
+  instance-name: "Nom de l’instance"
+  instance-description: "Description de l’instance"
+  banner-url: "Url de l’image de la bannière"
+  languages: "インスタンスの対象言語"
+  languages-desc: "スペースで区切って複数設定できます。"
+  maintainer-config: "Informations de l’administrateur"
+  maintainer-name: "Nom de l’administrateur"
+  maintainer-email: "Contact administratif"
+  drive-config: "Paramètres du lecteur"
+  cache-remote-files: "Mettre en cache des fichiers distants"
+  cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
+  local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
+  remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
+  mb: "en mégaoctets"
+  recaptcha-config: "Paramètres de reCAPTCHA"
+  recaptcha-info: "reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。"
+  enable-recaptcha: "Activation de reCAPTCHA"
+  recaptcha-site-key: "Clé reCAPTCHA du site"
+  recaptcha-secret-key: "Clé secrète reCAPTCHA"
+  twitter-integration-config: "Paramètres de connexion à Twitter"
+  twitter-integration-info: "コールバックURLは /api/tw/cb に設定します。"
+  enable-twitter-integration: "Activer la connection à Twitter"
+  twitter-integration-consumer-key: "Clé du consommateur"
+  twitter-integration-consumer-secret: "Secret du consommateur"
+  github-integration-config: "GitHub連携の設定"
+  github-integration-info: "コールバックURLは /api/gh/cb に設定します。"
+  enable-github-integration: "Activer l’authentification avec Github"
+  github-integration-client-id: "ID client"
+  github-integration-client-secret: "Secret client"
+  proxy-account-config: "Compte proxy"
+  proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
+  proxy-account-username: "Nom d’utilisateur du compte proxy"
+  proxy-account-username-desc: "Spécifiez le nom d’utilisateur du compte utilisé comme proxy."
+  proxy-account-warn: "アカウントは自動で作られないため、そのユーザー名のアカウントを予め作成しておく必要があります。"
+  max-note-text-length: "Nombre maximal de caractères pour les messages"
+  disable-registration: "Désactiver les inscriptions"
+  disable-local-timeline: "Désactiver l’heure locale"
   invite: "Inviter"
-  banner-url: "URL de la bannière"
-  disableRegistration: "Désactiver l’enregistrement de nouveaux utilisateur·rice·s"
-  disableLocalTimeline: "Désactiver le fil local"
+  save: "Sauvegarder"
+  saved: "Enregistré"
 admin/views/charts.vue:
   title: "Graph"
   per-day: "par jour"
@@ -1001,8 +991,8 @@ admin/views/users.vue:
   unsuspend: "Suspension levée"
   unsuspended: "La suspension de l’utilisateur·rice a été levée avec succès"
   verify-user: "Paramètres de vérification du compte utilisateur"
-  verify: "公式アカウントにする"
-  verified: "公式アカウントにしました"
+  verify: "Vérification du compte"
+  verified: "Le compte a été vérifié"
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "Ôter la vérification du compte"
   unverified: "Ce compte n'est plus vérifié"
@@ -1010,15 +1000,21 @@ admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
     name: "Nom de l’émoji"
-    name-desc: "a~z 0~9 _ の文字が使えます。"
+    name-desc: "Vous pouvez utiliser les caractères a~z 0~9 _"
     aliases: "Aliases"
     aliases-desc: "Vous pouvez définir plus d’un, séparés par des espaces."
     url: "URL de l’image"
     add: "Ajouter"
+    info: "Nous recommandons l’usage d’images PNG moins de 50 Ko."
+    added: "Émoji ajouté avec succès"
   emojis:
-    title: "絵文字一覧"
-    update: "更新"
-    remove: "削除"
+    title: "Émojis"
+    update: "Mise à jour"
+    remove: "Supprimer"
+  updated: "À été mis à jour"
+  remove-emoji:
+    are-you-sure: "Supprimer « %1$s » ?"
+    removed: "Supprimé"
 admin/views/announcements.vue:
   announcements: "Annonces"
   save: "Enregistrer"
@@ -1026,26 +1022,12 @@ admin/views/announcements.vue:
   add: "Ajouter"
   title: "Titre"
   text: "Contenu"
+  saved: "Sauvegardé"
+  _remove:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "Supprimé"
 admin/views/hashtags.vue:
   hided-tags: "Tags cachés"
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "Les publications médias uniquement"
-  is-media-view: "Vue média"
-  edit: "Options"
-desktop/views/pages/deck/deck.user-column.vue:
-  posts: "Publications"
-  following: "Suit"
-  followers: "Abonné·e·s"
-  images: "Images"
-  activity: "Activité"
-  timeline: "Chronologie"
-  pinned-notes: "Publications épinglées"
-  push-to-a-list: "Ajouter à la liste"
-desktop/views/pages/stats/stats.vue:
-  all-users: "Toutes les utilisateurrices"
-  original-users: "Utilisateur·rice·s sur cette instance"
-  all-notes: "Toutes les publications"
-  original-notes: "Publications sur cette instance"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   gotit: "J'ai compris !"
@@ -1060,8 +1042,6 @@ desktop/views/pages/welcome.vue:
   info: "Informations"
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
-desktop/views/pages/favorites.vue:
-  more: "Plus de résultats"
 desktop/views/pages/home-customize.vue:
   title: "Personnaliser l'Accueil"
 desktop/views/pages/note.vue:
@@ -1074,11 +1054,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "Téléverser des fichiers à partir de votre ordinateur"
 desktop/views/pages/search.vue:
   not-available: "La fonction de recherche est désactivée dans les paramètres de l’instance."
-  not-found: "Aucun message trouvé pour '{}'"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
-  share-with: "Partager avec {}"
+  share-with: "Partager avec {name}"
 desktop/views/pages/tag.vue:
-  no-posts-found: "Pas de message avec un hashtag {} trouvé."
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "Utilisateurs"
   add-user: "Ajouter un utilisateur"
@@ -1091,9 +1071,6 @@ desktop/views/pages/user/user.friends.vue:
   title: "Mentions fréquentes"
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
-desktop/views/pages/user/user.vue:
-  is-suspended: "Ce compte a été suspendu."
-  last-used-at: "Actif·ive pour la dernière fois"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Chargement en cours"
@@ -1118,8 +1095,8 @@ desktop/views/pages/user/user.header.vue:
   is-bot: "Ce compte est un Bot"
   years-old: "ans d’âge"
   year: "Année"
-  month: "Mois"
-  day: "Jour"
+  month: "/"
+  day: "-"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
@@ -1153,7 +1130,6 @@ mobile/views/components/drive.vue:
   folder-count: "Dossier(s)"
   count-separator: ", "
   file-count: "Fichiers(s)"
-  load-more: "Charger plus"
   nothing-in-drive: "Rien"
   folder-is-empty: "Ce dossier est vide"
   prompt: "Que veux-tu faire ? (Entrez un nombre): <1 → Télécharger le fichier | 2 → Télécharger le fichier avec l'URL | 3 → Créer le dossier | 4 → Modifier le nom du dossier | 5 → Déplacer ce dossier | 6 → Supprimer ce dossier >"
@@ -1163,8 +1139,6 @@ mobile/views/components/drive.vue:
   root-move-alert: "L'emplacement actuel est la racine, ce n'est pas un dossier et il ne peut pas être déplacé. Veuillez vous déplacer dans le dossier que vous souhaitez déplacer."
   url-prompt: "URL du fichier que vous souhaitez téléverser"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
-mobile/views/components/drive-file-detail.vue:
-  rename: "Renommer"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choisissez un fichier"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1187,10 +1161,10 @@ mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 mobile/views/components/follow-button.vue:
-  following: "Abonnements"
+  following: "Abonné·e"
   follow: "Suivre"
   request-pending: "En attente d'approbation"
-  follow-processing: "フォロー処理中"
+  follow-processing: "En cours d’abonnement"
   follow-request: "Demande d'abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
@@ -1218,11 +1192,7 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "chat"
-mobile/views/components/notes.vue:
-  failed: "Échec du chargement."
-  retry: "Réessayer"
 mobile/views/components/notifications.vue:
-  more: "Plus"
   empty: "Pas de notifications"
 mobile/views/components/post-form.vue:
   add-visible-user: "Ajouter un utilisateur"
@@ -1242,14 +1212,12 @@ mobile/views/components/sub-note-content.vue:
   poll: "Sondage"
 mobile/views/components/timeline.vue:
   empty: "Pas de notes"
-  load-more: "Afficher plus"
 mobile/views/components/ui.header.vue:
   welcome-back: "Content de vous revoir ! "
   adjective: "M."
 mobile/views/components/ui.nav.vue:
   timeline: "Fil d'actualité"
   notifications: "Notifications"
-  messaging: "Messages"
   follow-requests: "Demandes d'abonnement"
   search: "Rechercher"
   favorites: "Favoris"
@@ -1263,24 +1231,20 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "Cette utilisateur semble n'avoir rien poster pour le moment"
   no-notes-with-media: "Aucune notes avec des médias"
-  load-more: "Afficher Plus"
 mobile/views/components/users-list.vue:
   all: "Tout"
   known: "Vous connaissez"
-  load-more: "Afficher plus"
 mobile/views/pages/favorites.vue:
   title: "Favoris"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
   enter-list-name: "Nom de la liste"
-mobile/views/pages/drive.vue:
-  more: "Afficher plus ..."
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
-  followers-of: "Abonné·e·s de {}"
+  followers-of: "Abonné·e·s de {name}"
 mobile/views/pages/following.vue:
-  following-of: "Abonnements de {}"
+  following-of: "{name}のフォロー"
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
@@ -1289,7 +1253,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "Messages"
 mobile/views/pages/tag.vue:
-  no-posts-found: "Pas de message avec un hashtag {} trouvé."
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
   signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
@@ -1300,11 +1264,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "Activité"
 mobile/views/pages/share.vue:
-  share-with: "Partager avec {}"
-mobile/views/pages/messaging.vue:
-  messaging: "Messagerie"
-mobile/views/pages/messaging-room.vue:
-  messaging: "Messagerie"
+  share-with: "Partager avec {name}"
 mobile/views/pages/received-follow-requests.vue:
   title: "Demandes d'abonnement"
   accept: "Approuver"
@@ -1320,8 +1280,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Chercher"
-  empty: "Aucun message trouvé pour '{}' "
-  not-found: "Aucun post pour {} n'a été trouvé."
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
@@ -1360,6 +1319,10 @@ mobile/views/pages/settings.vue:
   twitter-connect: "Se connecter à votre compte Twitter"
   twitter-reconnect: "Reconnecter"
   twitter-disconnect: "Déconnexion"
+  github: "Avec GitHub"
+  github-connect: "Se connecter à votre compte GitHub"
+  github-reconnect: "Reconnecter"
+  github-disconnect: "Déconnecter"
   update: "Mise à jour de Misskey"
   version: "Version :"
   latest-version: "Dernière version :"
@@ -1398,20 +1361,49 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "Chargement"
   no-users: "Pas d'utilisateurs"
 mobile/views/pages/user/home.friends.vue:
-  loading: "Chargement"
   no-users: "Pass d'utilisateurs"
 mobile/views/pages/user/home.notes.vue:
-  loading: "Chargement"
   no-notes: "Pas de notes"
 mobile/views/pages/user/home.photos.vue:
-  loading: "Chargement"
   no-photos: "Pas de photos"
+deck:
+  widgets: "Widgets"
+  home: "Principal"
+  local: "Local"
+  hybrid: "Social"
+  hashtag: "Hashtags"
+  global: "Global"
+  mentions: "Mentions"
+  direct: "Messages directs"
+  notifications: "Notifications"
+  list: "Listes"
+  swap-left: "Déplacer à gauche"
+  swap-right: "Déplacer à droite"
+  swap-up: "Déplacer vers le haut"
+  swap-down: "Déplacer vers le bas"
+  remove: "Supprimer la colonne"
+  add-column: "Ajouter une colonne"
+  rename: "Renommer"
+  stack-left: "Vers la gauche"
+  pop-right: "Vers la droite"
+deck/deck.tl-column.vue:
+  is-media-only: "Les publications médias uniquement"
+  is-media-view: "Vue média"
+  edit: "オプション"
+deck/deck.user-column.vue:
+  posts: "Notes"
+  following: "Suit"
+  followers: "Abonné·e·s"
+  images: "Images"
+  activity: "Activité"
+  timeline: "Fil d’actualité"
+  pinned-notes: "Notes épinglées"
+  push-to-a-list: "Ajouter à une liste"
 docs:
-  edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation?"
-  edit-this-page-on-github-link: "Éditez cette page sur Github !"
+  edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation ?"
+  edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
   api:
     entities:
       properties: "Propriétés"
@@ -1445,10 +1437,10 @@ dev/views/new-app.vue:
   app-overview: "Description courte de l’application"
   app-desc: "Brève description introductive à votre application."
   app-desc-ex: "p. ex) Misskey pour iOS"
-  callback-url: "コールバックURL (オプション)"
+  callback-url: "L’Url de callback (facultatif)"
   callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
   authority: "Autorisations "
-  authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
+  authority-desc: "Sont accessibles via l’API, uniquement les fonctionnalités demandées ici."
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
   account-read: "Afficher les informations du compte"
   account-write: "Modifications des informations du compte"

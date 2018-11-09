@@ -25,21 +25,11 @@ common:
   application-authorization: "アプリの連携"
   close: "さいなら"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
-  BSoD:
-    fatal-error: "あかん、やってもうたわ… (致命的なエラー"
-    update-browser-os: "ブラウザ(またはOS)のバージョン更新してくれへん？なおるかもしれんわ。"
-    error-code: "エラーコード"
-    browser-version: "ブラウザ バージョン"
-    client-version: "クライアント バージョン"
-    email-support: "それでもあかん？せやったら syuilotan@yahoo.co.jp に連絡してや！"
-    thanks: "Thank you おおきに。Misskey"
+  load-more: "もっと読み込む"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
-    paragraph1: "ホームのカスタマイズやと、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりできんねやわ。"
-    paragraph2: "一部のウィジェットは、<strong><strong>右</strong>クリック</strong>したったら表示を変更できんねやわ。"
-    paragraph3: "ウィジェットを削除するんやったら、ヘッダーの<strong>「ゴミ箱」</strong>と書いたぁるエリアにウィジェットをドラッグ&ドロップしてな。"
-    paragraph4: "カスタマイズを終了するんやったら、右上の「完了」をクリックしてな。"
+    paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
     gotit: "Got it!"
   notification:
     file-uploaded: "ファイルがアップロードされたで"
@@ -63,6 +53,7 @@ common:
   month-and-day: "{month}月 {day}日"
   trash: "ゴミ箱"
   drive: "ドライブ"
+  messaging: "トーク"
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -121,8 +112,10 @@ common:
   always-show-nsfw: "閲覧注意？見せたらあかん？そんなん知らんわ、見せろや！"
   always-mark-nsfw: "わからんからとりあえずメディアは見せたらあかん"
   show-full-acct: "ユーザー名のホストも出したる"
+  show-via: "viaを表示する"
   reduce-motion: "UI、動き過ぎや、静かにしてや"
   this-setting-is-this-device-only: "このデバイスのみ"
+  use-os-default-emojis: "OS標準の絵文字を使用"
   do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
@@ -134,13 +127,13 @@ common:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
     opponent-turn: "相手のターンや"
-    turn-of: "{}のターンや"
-    past-turn-of: "{}のターン"
-    won: "{}の勝ちや！"
+    turn-of: "{name}のターンです"
+    past-turn-of: "{name}のターン"
+    won: "{name}の勝ち"
     black: "黒"
     white: "白"
     total: "合計"
-    this-turn: "{}ターン目"
+    this-turn: "{count}ターン目"
   widgets:
     analog-clock: "アナログ時計"
     profile: "プロフィール"
@@ -159,36 +152,15 @@ common:
     users: "おすすめユーザー"
     polls: "アンケート"
     post-form: "投稿フォーム"
-    messaging: "メッセージ"
     server: "サーバー情報"
     donation: "寄付のお願い"
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
-  deck:
-    widgets: "ウィジェット"
-    home: "うち"
-    local: "ローカル"
-    hybrid: "ソーシャル"
-    hashtag: "ハッシュタグ"
-    global: "グローバル"
-    mentions: "あんた宛て"
-    direct: "ダイレクト投稿"
-    notifications: "通知"
-    list: "リスト"
-    swap-left: "左に移動や！"
-    swap-right: "右に移動や！"
-    swap-up: "上に移動！"
-    swap-down: "下に移動！"
-    remove: "カラムを削除や！"
-    add-column: "カラムを追加！"
-    rename: "名前を変更や！"
-    stack-left: "左に重ねんで！"
-    pop-right: "右に出すで！"
   dev: "アプリの作成あかんかったわ。もっぺんやってみて。"
   ai-chan-kawaii: "藍ちゃめっさべっぴんさんや"
 auth/views/form.vue:
-  share-access: "<i>{{ app.name }}</i>があんさんのアカウントにアクセスすんのを<b>許可</b>してもええか？"
+  share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "このアプリは次の権限を要求してんで:"
   account-read: "アカウントの情報を見させてもらうで。"
   account-write: "アカウントの情報を操作させてもらうで。"
@@ -325,7 +297,6 @@ common/views/components/messaging.vue:
   no-history: "履歴はあらへんで"
 common/views/components/messaging-room.vue:
   empty: "このユーザーと話したことはあらへんで"
-  more: "もっと読む"
   no-history: "これより過去の履歴はあらへんで"
   resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあるで"
@@ -381,6 +352,7 @@ common/views/components/signin.vue:
   signin: "サインイン"
   or: "それか"
   signin-with-twitter: "Twitterでサインイン"
+  signin-with-github: "GitHubでログイン"
   login-failed: "なんかログインできんかったわ。ユーザー名とパスワードとかを確認してや。"
 common/views/components/signup.vue:
   invitation-code: "招待コード"
@@ -419,6 +391,13 @@ common/views/components/twitter-setting.vue:
   reconnect: "つなぎ直す"
   connect: "Twitterと接続する"
   disconnect: "さいならする"
+common/views/components/github-setting.vue:
+  description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のGitHubアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "GitHubと接続する"
+  disconnect: "切断する"
 common/views/components/uploader.vue:
   waiting: "待っとる"
 common/views/components/visibility-chooser.vue:
@@ -535,37 +514,12 @@ desktop/views/components/activity.vue:
   title: "アクティビティ"
   toggle: "表示変える"
 desktop/views/components/calendar.vue:
-  title: "{1}年 {2} 月"
+  title: "{year}年 {month}月"
   prev: "前の月"
   next: "次の月"
   go: "クリックしてタイムリープ"
-desktop/views/components/charts.vue:
-  title: "チャート"
-  per-day: "1日ごと"
-  per-hour: "1時間ごと"
-  federation: "フェデレーション"
-  notes: "投稿"
-  users: "ユーザー"
-  drive: "ドライブ"
-  network: "ネットワーク"
-  charts:
-    federation-instances: "インスタンスの増減"
-    federation-instances-total: "インスタンスの積算"
-    notes: "投稿の増減(統合)"
-    local-notes: "投稿の増減 (ローカル)"
-    remote-notes: "投稿の増減 (リモート)"
-    notes-total: "投稿の積算"
-    users: "ユーザーの増減"
-    users-total: "ユーザーの積算"
-    drive: "ドライブ使用量の増減"
-    drive-total: "ドライブ使用量の積算"
-    drive-files: "ドライブのファイル数の増減"
-    drive-files-total: "ドライブのファイル数の積算"
-    network-requests: "リクエスト"
-    network-time: "応答時間"
-    network-usage: "通信量"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択しとる"
+  chosen-files: "{count}ファイル選択中"
   upload: "PCからドライブにファイル上げる"
   cancel: "やめとくわ"
   ok: "そうする"
@@ -611,7 +565,6 @@ desktop/views/components/drive.folder.vue:
     input-new-folder-name: "新しいフォルダ名を入力してや"
 desktop/views/components/drive.vue:
   search: "検索"
-  load-more: "もっとあらへんのか！"
   empty-draghover: "ドロップするにゃ！お魚以外なら何でもいいにゃ！"
   empty-drive: "ドライブには何もあらへんで。"
   empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできんねん。"
@@ -669,7 +622,6 @@ desktop/views/components/messaging-room-window.vue:
 desktop/views/components/messaging-window.vue:
   title: "メッセージ"
 desktop/views/components/note-detail.vue:
-  more: "もっと会話あるやろ！"
   private: "この投稿は見せられへんわ"
   deleted: "この投稿なんか無くなってもうたわ"
   reposted-by: "{}がRenote"
@@ -687,9 +639,7 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "あかん、読み込めへんわ"
   retry: "もっぺん"
-  load-more: "もっとあらへんのか！"
 desktop/views/components/notifications.vue:
-  more: "もっとあるやろ！"
   empty: "あらへん！"
 desktop/views/components/post-form.vue:
   add-visible-user: "+ユーザー増やす"
@@ -736,6 +686,9 @@ desktop/views/components/renote-form.vue:
   failure: "Renoteでけへん"
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしてもええか？"
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
 desktop/views/components/settings-window.vue:
   settings: "設定"
 desktop/views/components/settings.vue:
@@ -860,6 +813,7 @@ common/views/components/api-settings.vue:
     title: 'APIコンソール'
     endpoint: 'エンドポイント'
     parameter: 'パラメータ'
+    credential-info: "「i」パラメータは自動で付与されます。"
     send: '送る'
     sending: '応答待っとる'
     response: 'こんなん返ってきたわ'
@@ -917,7 +871,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
   deck: "デッキ"
-  messaging: "メッセージ"
   game: "ゲーム"
 desktop/views/components/ui.header.notifications.vue:
   title: "通知"
@@ -940,7 +893,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知っとる"
-  load-more: "もっと"
   fetching: "読み込んどります"
 desktop/views/components/users-list-item.vue:
   followed: "フォローされとるで"
@@ -964,10 +916,48 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "ワイのインスタンス"
   federated: "連合"
-  invite: "来てや"
-  banner-url: "Banner URL"
-  disableRegistration: "Disable new user registration"
-  disableLocalTimeline: "Disable the local timeline"
+admin/views/instance.vue:
+  instance: "インスタンス"
+  instance-name: "インスタンス名"
+  instance-description: "インスタンスの紹介"
+  banner-url: "バナー画像URL"
+  languages: "インスタンスの対象言語"
+  languages-desc: "スペースで区切って複数設定できます。"
+  maintainer-config: "管理者情報"
+  maintainer-name: "管理者名"
+  maintainer-email: "管理者の連絡先"
+  drive-config: "ドライブの設定"
+  cache-remote-files: "リモートのファイルをキャッシュする"
+  cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
+  local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
+  remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
+  mb: "メガバイト単位"
+  recaptcha-config: "reCAPTCHAの設定"
+  recaptcha-info: "reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。"
+  enable-recaptcha: "reCAPTCHAを有効にする"
+  recaptcha-site-key: "reCAPTCHA site key"
+  recaptcha-secret-key: "reCAPTCHA secret key"
+  twitter-integration-config: "Twitter連携の設定"
+  twitter-integration-info: "コールバックURLは /api/tw/cb に設定します。"
+  enable-twitter-integration: "Twitter連携を有効にする"
+  twitter-integration-consumer-key: "Consumer key"
+  twitter-integration-consumer-secret: "Consumer secret"
+  github-integration-config: "GitHub連携の設定"
+  github-integration-info: "コールバックURLは /api/gh/cb に設定します。"
+  enable-github-integration: "GitHub連携を有効にする"
+  github-integration-client-id: "Client ID"
+  github-integration-client-secret: "Client secret"
+  proxy-account-config: "プロキシアカウントの設定"
+  proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
+  proxy-account-username: "プロキシアカウントのユーザー名"
+  proxy-account-username-desc: "プロキシとして使用するアカウントのユーザー名を指定してください。"
+  proxy-account-warn: "アカウントは自動で作られないため、そのユーザー名のアカウントを予め作成しておく必要があります。"
+  max-note-text-length: "投稿の最大文字数"
+  disable-registration: "ユーザー登録の受付を停止する"
+  disable-local-timeline: "ローカルタイムラインを無効にする"
+  invite: "招待"
+  save: "保存"
+  saved: "保存しました"
 admin/views/charts.vue:
   title: "チャート"
   per-day: "1日ごと"
@@ -1015,10 +1005,16 @@ admin/views/emoji.vue:
     aliases-desc: "スペースで区切って複数設定できます。"
     url: "絵文字画像URL"
     add: "追加"
+    info: "50KB以下のPNG画像をおすすめします。"
+    added: "絵文字を登録しました"
   emojis:
     title: "絵文字一覧"
     update: "更新"
     remove: "削除"
+  updated: "更新しました"
+  remove-emoji:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 admin/views/announcements.vue:
   announcements: "お知らせ"
   save: "保存"
@@ -1026,26 +1022,12 @@ admin/views/announcements.vue:
   add: "追加"
   title: "タイトル"
   text: "内容"
+  saved: "保存しました"
+  _remove:
+    are-you-sure: "「$1」を削除しますか？"
+    removed: "削除しました"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "メディア投稿だけや"
-  is-media-view: "メディアビュー"
-  edit: "オプション"
-desktop/views/pages/deck/deck.user-column.vue:
-  posts: "投稿"
-  following: "フォロー"
-  followers: "フォロワー"
-  images: "画像"
-  activity: "やっとること"
-  timeline: "タイムライン"
-  pinned-notes: "ピン留めしはった投稿"
-  push-to-a-list: "リストに入れたる"
-desktop/views/pages/stats/stats.vue:
-  all-users: "全てのユーザー"
-  original-users: "ここの人らだけ"
-  all-notes: "全ての投稿"
-  original-notes: "このインスタンスの投稿"
 desktop/views/pages/welcome.vue:
   about: "もうちょい……"
   gotit: "ほい"
@@ -1060,8 +1042,6 @@ desktop/views/pages/welcome.vue:
   info: "情報"
 desktop/views/pages/drive.vue:
   title: "ドライブ"
-desktop/views/pages/favorites.vue:
-  more: "もっと読み込んでくで"
 desktop/views/pages/home-customize.vue:
   title: "ホームをカスタマイズ"
 desktop/views/pages/note.vue:
@@ -1074,11 +1054,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "PCからドライブにファイル上げる"
 desktop/views/pages/search.vue:
   not-available: "検索機能は使えへんわ。管理者がそう言うとる。"
-  not-found: "「{}」に関する投稿はあらへん。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 desktop/views/pages/share.vue:
-  share-with: "{}で共有"
+  share-with: "{name}で共有"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿はあらへん。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 desktop/views/pages/user-list.users.vue:
   users: "ユーザー"
   add-user: "ユーザー増やす"
@@ -1091,9 +1071,6 @@ desktop/views/pages/user/user.friends.vue:
   title: "よう話すツレ"
   loading: "読み込んどります"
   no-users: "よう話すツレは居らん"
-desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーはあかんわ。凍結されとる。"
-  last-used-at: "最後いつ来はった？"
 desktop/views/pages/user/user.photos.vue:
   title: "写真"
   loading: "読み込んどります"
@@ -1153,7 +1130,6 @@ mobile/views/components/drive.vue:
   folder-count: "フォルダ"
   count-separator: "、"
   file-count: "ファイル"
-  load-more: "もっとあらへんのか！"
   nothing-in-drive: "ドライブには何もあらへんで。"
   folder-is-empty: "このフォルダ何もないわ"
   prompt: "何すんの？(数字を入れてや): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
@@ -1163,8 +1139,6 @@ mobile/views/components/drive.vue:
   root-move-alert: "現在おる場所はルートで、フォルダとちゃうから移動はできへん。移動したいフォルダに移動してからやってな。"
   url-prompt: "このURLのファイルをアップロードしたいねん"
   uploading: "アップロードをリクエストしたで。アップロードが完了するまで時間がかかるかも分からん、知らんけど。"
-mobile/views/components/drive-file-detail.vue:
-  rename: "名前を変えるで"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイル選んでや"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1218,11 +1192,7 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "cat"
-mobile/views/components/notes.vue:
-  failed: "あかん、読み込めへんわ"
-  retry: "もっぺん"
 mobile/views/components/notifications.vue:
-  more: "もっとあるやろ！"
   empty: "あらへん！"
 mobile/views/components/post-form.vue:
   add-visible-user: "ユーザー増やす"
@@ -1242,14 +1212,12 @@ mobile/views/components/sub-note-content.vue:
   poll: "アンケート"
 mobile/views/components/timeline.vue:
   empty: "投稿はあらへん"
-  load-more: "もっと"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえり、"
   adjective: "はん"
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
-  messaging: "メッセージ"
   follow-requests: "フォロー許してくれや！言うてみる"
   search: "検索"
   favorites: "お気に入り"
@@ -1263,24 +1231,20 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿しとらんようや。"
   no-notes-with-media: "メディア付き投稿はあらへん。"
-  load-more: "もっと"
 mobile/views/components/users-list.vue:
   all: "すべて"
   known: "知っとる"
-  load-more: "もっと"
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 mobile/views/pages/user-lists.vue:
   title: "リスト"
   enter-list-name: "リスト名を入力してや"
-mobile/views/pages/drive.vue:
-  more: "もっとあるやろ！"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めようや"
 mobile/views/pages/followers.vue:
-  followers-of: "{}のフォロワー"
+  followers-of: "{name}のフォロワー"
 mobile/views/pages/following.vue:
-  following-of: "{}のフォロー"
+  following-of: "{name}のフォロー"
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
@@ -1289,7 +1253,7 @@ mobile/views/pages/home.vue:
   mentions: "あんた宛て"
   messages: "メッセージ"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{}」が付けられた投稿はあらへんで。"
+  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
   signup: "新規登録"
 mobile/views/pages/widgets.vue:
@@ -1300,11 +1264,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "やっとること"
 mobile/views/pages/share.vue:
-  share-with: "{}で「わけわけ」"
-mobile/views/pages/messaging.vue:
-  messaging: "メッセージ"
-mobile/views/pages/messaging-room.vue:
-  messaging: "メッセージ"
+  share-with: "{name}で共有"
 mobile/views/pages/received-follow-requests.vue:
   title: "フォロー許してくれや！"
   accept: "許す"
@@ -1320,8 +1280,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/search.vue:
   search: "探す"
-  empty: "ワイは「{}」なんて投稿知らんわ、無いんちゃう？知らんけど。"
-  not-found: "ワイは「{}」なんて投稿知らんわ、無いんちゃう？知らんけど。"
+  not-found: "「{q}」に関する投稿は見つかりませんでした。"
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイル選んでや"
 mobile/views/pages/settings.vue:
@@ -1360,6 +1319,10 @@ mobile/views/pages/settings.vue:
   twitter-connect: "鳥さん邪魔すんで"
   twitter-reconnect: "もっぺん繋ぎ直すで"
   twitter-disconnect: "邪魔するんやったら帰って"
+  github: "GitHub連携"
+  github-connect: "GitHubアカウントに接続する"
+  github-reconnect: "再接続する"
+  github-disconnect: "切断する"
   update: "あんたのMisskeyいつのや？"
   version: "バージョン:"
   latest-version: "いっちゃん新しいやつ:"
@@ -1398,17 +1361,46 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "知っとるフォロワー"
   last-used-at: "最後いつ来た？"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "読み込んどります"
   no-users: "知っとるユーザーは居らん"
 mobile/views/pages/user/home.friends.vue:
-  loading: "読み込んどります"
   no-users: "よう話すユーザーは居らん"
 mobile/views/pages/user/home.notes.vue:
-  loading: "読み込んどります"
   no-notes: "投稿はあらへん"
 mobile/views/pages/user/home.photos.vue:
-  loading: "読み込んどります"
   no-photos: "写真はあらへんで"
+deck:
+  widgets: "ウィジェット"
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  hashtag: "ハッシュタグ"
+  global: "グローバル"
+  mentions: "あなた宛て"
+  direct: "ダイレクト投稿"
+  notifications: "通知"
+  list: "リスト"
+  swap-left: "左に移動"
+  swap-right: "右に移動"
+  swap-up: "上に移動"
+  swap-down: "下に移動"
+  remove: "カラムを削除"
+  add-column: "カラムを追加"
+  rename: "名前を変更"
+  stack-left: "左に重ねる"
+  pop-right: "右に出す"
+deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+  edit: "オプション"
+deck/deck.user-column.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "画像"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
+  pinned-notes: "ピン留めされた投稿"
+  push-to-a-list: "リストに追加"
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "このページをGitHubで編集"
