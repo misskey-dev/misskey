@@ -112,6 +112,7 @@ common:
   always-show-nsfw: "항상 열람주의 미디어를 표시"
   always-mark-nsfw: "항상 미디어를 열람주의로 설정하여 게시"
   show-full-acct: "ユーザー名のホストを省略しない"
+  show-via: "viaを表示する"
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "이 장치만"
   use-os-default-emojis: "OS標準の絵文字を使用"
