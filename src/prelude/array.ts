@@ -18,6 +18,10 @@ export function erase<T>(x: T, xs: T[]): T[] {
 	return xs.filter(y => x !== y);
 }
 
+export function setDifference<T>(xs: T[], ys: T[]): T[] {
+	return xs.filter(x => !ys.includes(x));
+}
+
 export function unique<T>(xs: T[]): T[] {
 	return [...new Set(xs)];
 }
