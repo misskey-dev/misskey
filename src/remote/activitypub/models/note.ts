@@ -13,7 +13,7 @@ import htmlToMFM from '../../../mfm/html-to-mfm';
 import Emoji from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
-import { unique, concat, setDifference } from '../../../prelude/array';
+import { unique, concat, difference } from '../../../prelude/array';
 
 const log = debug('misskey:activitypub');
 
@@ -181,7 +181,7 @@ async function extractEmojis(tags: ITag[], host_: string) {
 
 async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: string[], resolver: Resolver) {
 	const ignoreUris = ['https://www.w3.org/ns/activitystreams#Public', `${actor.uri}/followers`];
-	const uris = setDifference(unique(concat([to || [], cc || []])), ignoreUris);
+	const uris = difference(unique(concat([to || [], cc || []])), ignoreUris);
 
 	const users = await Promise.all(
 		uris.map(async uri => await resolvePerson(uri, null, resolver).catch(() => null))
