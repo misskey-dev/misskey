@@ -1440,7 +1440,7 @@ dev/views/new-app.vue:
   app-desc: "Brève description introductive à votre application."
   app-desc-ex: "p. ex) Misskey pour iOS"
   callback-url: "L’Url de callback (facultatif)"
-  callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
+  callback-url-desc: "Vous pouvez définir l’URL de redirection lorsque l’utilisateur s’est authentifié via formulaire d’authentification."
   authority: "Autorisations "
   authority-desc: "Sont accessibles via l’API, uniquement les fonctionnalités demandées ici."
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
