@@ -5,6 +5,7 @@ import Channel from '../channel';
 export default class extends Channel {
 	public readonly chName = 'messaging';
 	public static shouldShare = false;
+	public static requireCredential = true;
 
 	private otherpartyId: string;
 
