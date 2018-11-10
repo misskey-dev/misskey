@@ -128,12 +128,12 @@ common:
     my-turn: "C’est votre tour"
     opponent-turn: "Tour de l’adversaire"
     turn-of: "Tour de {name}"
-    past-turn-of: "{name}のターン"
+    past-turn-of: "Tour de {name}"
     won: "{name} a gagné"
     black: "Noirs"
     white: "Blancs"
     total: "Total"
-    this-turn: "{count}ターン目"
+    this-turn: "Tour {count}"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
@@ -717,7 +717,7 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
-  deck-default: "デッキをデフォルトのUIにする"
+  deck-default: "Utiliser le Deck comme IU par défaut"
   display: "Affichage et design"
   customize: "Personnaliser l'Accueil"
   wallpaper: "Arrière plan"
@@ -737,7 +737,7 @@ desktop/views/components/settings.vue:
   show-renoted-my-notes: "Afficher mes republications dans les fils"
   show-local-renotes: "Afficher les partages locaux sur les fils"
   show-maps: "Afficher la carte"
-  deck-column-align: "デッキのカラムの位置"
+  deck-column-align: "Alignement des colonnes du Deck"
   deck-column-align-center: "Centrer"
   deck-column-align-left: "À gauche"
   sound: "Son"
@@ -870,7 +870,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "Fall in dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Accueil"
-  deck: "デッキ"
+  deck: "Deck"
   game: "Jeux"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -1025,7 +1025,7 @@ admin/views/announcements.vue:
   text: "Contenu"
   saved: "Sauvegardé"
   _remove:
-    are-you-sure: "「$1」を削除しますか？"
+    are-you-sure: "Supprimer « %1$s » ?"
     removed: "Supprimé"
 admin/views/hashtags.vue:
   hided-tags: "Tags cachés"
@@ -1059,7 +1059,7 @@ desktop/views/pages/search.vue:
 desktop/views/pages/share.vue:
   share-with: "Partager avec {name}"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Aucune publication contenant « {q} » n’a été trouvée."
 desktop/views/pages/user-list.users.vue:
   users: "Utilisateurs"
   add-user: "Ajouter un utilisateur"
@@ -1094,7 +1094,7 @@ desktop/views/pages/user/user.header.vue:
   following: "Suit"
   followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
-  years-old: "{age}歳"
+  years-old: "{age} ans"
   year: "Année"
   month: "/"
   day: "-"
@@ -1352,7 +1352,7 @@ mobile/views/pages/user.vue:
   unmute: "Enlever la sourdine"
   block: "Bloquer"
   unblock: "Débloquer"
-  years-old: "{age}歳"
+  years-old: "{age} ans"
 mobile/views/pages/user/home.vue:
   recent-notes: "Notes récentes"
   images: "Images"
