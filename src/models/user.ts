@@ -296,10 +296,10 @@ export const pack = (
 		if (_user.github) {
 			delete _user.github.accessToken;
 			if (_user.showContribution) {
-				const contributor = await Contributor.findOne({ userId: _user.github.id }) || { type: '' };
-				_user.isOwner = contributor.type === 'owner';
-				_user.isCollaborator = contributor.type === 'collaborator';
-				_user.isContributor = contributor.type === 'contributor';
+				const { type } = await Contributor.findOne({ userId: _user.github.id }) || { type: null };
+				_user.isOwner = type === 'owner';
+				_user.isCollaborator = type === 'collaborator';
+				_user.isContributor = type === 'contributor';
 			}
 		}
 		delete _user.line;
