@@ -119,7 +119,8 @@ if ((config as any).github) {
 				$set: {
 					enableGithubIntegration: true,
 					githubClientId: (config as any).github.client_id,
-					githubClientSecret: (config as any).github.client_secret
+					githubClientSecret: (config as any).github.client_secret,
+					githubAccessToken: (config as any).github.access_token
 				}
 			});
 		}

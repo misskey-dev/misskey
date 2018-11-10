@@ -1,15 +1,12 @@
 import * as request from 'request-promise-native';
 import config from '../config';
+import fetchMeta from '../misc/fetch-meta';
 
 const interval = 60000;
 
-function github(type: string, suffix: string = '') {
-	const token =
-		config.github &&
-		config.github.access_tokens &&
-		config.github.access_tokens.github_data ?
-		config.github.access_tokens.github_data : null;
+let token: string;
 
+function github(type: string, suffix: string = '') {
 	return token ? new Promise<any>((res, rej) => request(`https://api.github.com/${type}/syuilo${suffix}`, {
 		headers: {
 			'Accept': 'application/vnd.github.v3+json',
@@ -20,6 +17,15 @@ function github(type: string, suffix: string = '') {
 }
 
 async function tick() {
+	if (!token) {
+		const meta = await fetchMeta();
+		if (meta) {
+			const { githubAccessToken } = meta;
+			if (githubAccessToken)
+				token = githubAccessToken;
+		}
+	}
+
 	const [usersOwner, reposCollaborators, reposContributors] = await Promise.all([
 		github('users'),
 		github('repos', '/misskey/collaborators'),

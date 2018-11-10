@@ -180,6 +180,13 @@ export const meta = {
 				'ja-JP': 'GitHubアプリのClient secret'
 			}
 		},
+
+		githubAccessToken: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'GitHub API接続用のトークン'
+			}
+		}
 	}
 };
 
@@ -280,6 +287,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.githubClientSecret !== undefined) {
 		set.githubClientSecret = ps.githubClientSecret;
+	}
+
+	if (ps.githubAccessToken !== undefined) {
+		set.githubAccessToken = ps.githubAccessToken;
 	}
 
 	await Meta.update({}, {

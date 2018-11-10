@@ -14,32 +14,32 @@ export default function() {
 		let contributors: {
 			[key: number]: {
 				_id: mongo.ObjectID
-				id: number;
+				userId: number;
 				type: 'owner' | 'collaborator' | 'contributor';
 				session: string;
 			}
 		} = {};
-		contributors = contributors.concat(data.owners
+		contributors = Object.assign(data.owners
 			.filter(x => !contributors[x.id])
 			.map(x => ({
-				id: x.id,
+				userId: x.id,
 				type: 'owner',
 				session
-			})));
-		contributors = contributors.concat(data.collaborators
+			})), contributors);
+		contributors = Object.assign(data.collaborators
 			.filter(x => !contributors[x.id])
 			.map(x => ({
-				id: x.id,
+				userId: x.id,
 				type: 'collaborator',
 				session
-			})));
-		contributors = contributors.concat(data.contributors
+			})), contributors);
+		contributors = Object.assign(data.contributors
 			.filter(x => !contributors[x.id])
 			.map(x => ({
-				id: x.id,
+				userId: x.id,
 				type: 'contributor',
 				session
-			})));
+			})), contributors);
 		if (!lock) {
 			lock = true;
 			Contributor.insert(Object.values(contributors)).then(_ =>

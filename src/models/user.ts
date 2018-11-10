@@ -99,6 +99,9 @@ export interface ILocalUser extends IUserBase {
 	};
 	lastUsedAt: Date;
 	showContribution?: boolean;
+	isOwner?: boolean;
+	isCollaborator?: boolean;
+	isContributor?: boolean;
 	isCat: boolean;
 	isAdmin?: boolean;
 	isVerified?: boolean;
@@ -237,6 +240,7 @@ export const pack = (
 		host: true,
 		avatarColor: true,
 		avatarUrl: true,
+		github: true,
 		showContribution: true,
 		isCat: true,
 		isBot: true,
@@ -291,7 +295,7 @@ export const pack = (
 		}
 		if (_user.github) {
 			delete _user.github.accessToken;
-			if (opts.detail) {
+			if (_user.showContribution) {
 				const contributor = await Contributor.findOne({ userId: _user.github.id }) || { type: '' };
 				_user.isOwner = contributor.type === 'owner';
 				_user.isCollaborator = contributor.type === 'collaborator';

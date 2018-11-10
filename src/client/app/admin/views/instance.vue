@@ -72,6 +72,7 @@
 			<ui-info>%i18n:@github-integration-info%</ui-info>
 			<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@github-integration-client-id%</ui-input>
 			<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@github-integration-client-secret%</ui-input>
+			<ui-input v-model="githubAccessToken" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>%i18n:@github-integration-access-token%</ui-input>
 			<ui-button @click="updateMeta">%i18n:@save%</ui-button>
 		</section>
 	</ui-card>
@@ -105,6 +106,7 @@ export default Vue.extend({
 			enableGithubIntegration: false,
 			githubClientId: null,
 			githubClientSecret: null,
+			githubAccessToken: null,
 			proxyAccount: null,
 			inviteCode: null,
 		};
@@ -132,6 +134,7 @@ export default Vue.extend({
 			this.enableGithubIntegration = meta.enableGithubIntegration;
 			this.githubClientId = meta.githubClientId;
 			this.githubClientSecret = meta.githubClientSecret;
+			this.githubAccessToken = meta.githubAccessToken;
 		});
 	},
 
@@ -171,6 +174,7 @@ export default Vue.extend({
 				enableGithubIntegration: this.enableGithubIntegration,
 				githubClientId: this.githubClientId,
 				githubClientSecret: this.githubClientSecret,
+				githubAccessToken: this.githubAccessToken,
 			}).then(() => {
 				this.$swal({
 					type: 'success',

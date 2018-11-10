@@ -94,6 +94,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.enableGithubIntegration = instance.enableGithubIntegration;
 		response.githubClientId = instance.githubClientId;
 		response.githubClientSecret = instance.githubClientSecret;
+		response.githubAccessToken = instance.githubAccessToken;
 	}
 
 	res(response);
