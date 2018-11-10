@@ -920,7 +920,7 @@ admin/views/instance.vue:
   instance: "Instance"
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
-  domain: "Domaine"
+  host: "ホスト"
   banner-url: "Url de l’image de la bannière"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
