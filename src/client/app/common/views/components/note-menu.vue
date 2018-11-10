@@ -79,6 +79,7 @@ export default Vue.extend({
 			this.$root.api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
+				this.$store.state.i.pinnedNoteIds.push(this.note.id);
 				this.$root.new(Ok);
 				this.destroyDom();
 			});
@@ -88,6 +89,8 @@ export default Vue.extend({
 			this.$root.api('i/unpin', {
 				noteId: this.note.id
 			}).then(() => {
+				const pinned = this.$store.state.i.pinnedNoteIds.indexOf(this.note.id);
+				if (pinned !== -1) delete this.$store.state.i.pinnedNoteIds[pinned];
 				this.destroyDom();
 			});
 		},
@@ -105,6 +108,7 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
+				this.note.isFavorited = true;
 				this.$root.new(Ok);
 				this.destroyDom();
 			});
@@ -114,6 +118,7 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
+				this.note.isFavorited = false;
 				this.$root.new(Ok);
 				this.destroyDom();
 			});
