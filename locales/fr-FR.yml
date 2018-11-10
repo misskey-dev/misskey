@@ -920,7 +920,7 @@ admin/views/instance.vue:
   instance: "Instance"
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
-  host: "ホスト"
+  host: "Hôte"
   banner-url: "Url de l’image de la bannière"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
@@ -1281,7 +1281,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Chercher"
-  not-found: "「{q}」に関する投稿は見つかりませんでした。"
+  not-found: "Aucune publication trouvée pour « {q} »."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
