@@ -17,19 +17,21 @@
 		</template>
 	</component>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>{{ fetchingMoreNotifications ? this.$t('@.loading') : this.$t('@.load-more') }}
 	</button>
-	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
+	<p class="empty" v-if="notifications.length == 0 && !fetching">{{ $t('empty') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import XNotification from './deck.notification.vue';
 
 const displayLimit = 20;
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XNotification
 	},
@@ -53,7 +55,7 @@ export default Vue.extend({
 				const date = new Date(notification.createdAt).getDate();
 				const month = new Date(notification.createdAt).getMonth() + 1;
 				notification._date = date;
-				notification._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				notification._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return notification;
 			});
 		}
@@ -66,7 +68,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('notification', this.onNotification);
 
@@ -75,7 +77,7 @@ export default Vue.extend({
 
 		const max = 10;
 
-		(this as any).api('i/notifications', {
+		this.$root.api('i/notifications', {
 			limit: max + 1
 		}).then(notifications => {
 			if (notifications.length == max + 1) {
@@ -101,7 +103,7 @@ export default Vue.extend({
 
 			const max = 20;
 
-			(this as any).api('i/notifications', {
+			this.$root.api('i/notifications', {
 				limit: max + 1,
 				untilId: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {
@@ -118,7 +120,7 @@ export default Vue.extend({
 
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			(this as any).os.stream.send('readNotification', {
+			this.$root.stream.send('readNotification', {
 				id: notification.id
 			});
 

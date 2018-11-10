@@ -88,7 +88,7 @@ export default (opts: Opts = {}) => ({
 
 	methods: {
 		reply(viaKeyboard = false) {
-			(this as any).apis.post({
+			this.$root.$post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
 				cb: () => {
@@ -98,7 +98,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		renote(viaKeyboard = false) {
-			(this as any).apis.post({
+			this.$root.$post({
 				renote: this.appearNote,
 				animation: !viaKeyboard,
 				cb: () => {
@@ -115,7 +115,7 @@ export default (opts: Opts = {}) => ({
 
 		react(viaKeyboard = false) {
 			this.blur();
-			(this as any).os.new(MkReactionPicker, {
+			this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.appearNote,
 				showFocus: viaKeyboard,
@@ -126,28 +126,28 @@ export default (opts: Opts = {}) => ({
 		},
 
 		reactDirectly(reaction) {
-			(this as any).api('notes/reactions/create', {
+			(this.$root.api('notes/reactions/create', {
 				noteId: this.appearNote.id,
 				reaction: reaction
 			});
 		},
 
 		favorite() {
-			(this as any).api('notes/favorites/create', {
+			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				(this as any).os.new(Ok);
+				this.$root.new(Ok);
 			});
 		},
 
 		del() {
-			(this as any).api('notes/delete', {
+			this.$root.api('notes/delete', {
 				noteId: this.appearNote.id
 			});
 		},
 
 		menu(viaKeyboard = false) {
-			(this as any).os.new(MkNoteMenu, {
+			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
 				animation: !viaKeyboard,

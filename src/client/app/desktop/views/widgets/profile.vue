@@ -7,13 +7,13 @@
 		>
 			<div class="banner"
 				:style="$store.state.i.bannerUrl ? `background-image: url(${$store.state.i.bannerUrl})` : ''"
-				title="%i18n:@update-banner%"
+				:title="$t('update-banner')"
 				@click="() => os.apis.updateBanner()"
 			></div>
 			<mk-avatar class="avatar" :user="$store.state.i"
 				:disable-link="true"
 				@click="() => os.apis.updateAvatar()"
-				title="%i18n:@update-avatar%"
+				:title="$t('update-avatar')"
 			/>
 			<router-link class="name" :to="$store.state.i | userPage">{{ $store.state.i | userName }}</router-link>
 			<p class="username">@{{ $store.state.i | acct }}</p>
@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'profile',
@@ -31,6 +32,7 @@ export default define({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/profile.vue'),
 	methods: {
 		func() {
 			if (this.props.design == 2) {

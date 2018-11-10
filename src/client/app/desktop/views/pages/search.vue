@@ -3,19 +3,21 @@
 	<header :class="$style.header">
 		<h1>{{ q }}</h1>
 	</header>
-	<p :class="$style.notAvailable" v-if="!fetching && notAvailable">%i18n:@not-available%</p>
-	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ '%i18n:not-found%'.split('{}')[0] }}{{ q }}{{ '%i18n:not-found%'.split('{}')[1] }}</p>
+	<p :class="$style.notAvailable" v-if="!fetching && notAvailable">{{ $t('not-available') }}</p>
+	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('not-found', { q }) }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 const limit = 20;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/search.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -57,7 +59,7 @@ export default Vue.extend({
 			Progress.start();
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/search', {
+				this.$root.api('notes/search', {
 					limit: limit + 1,
 					offset: this.offset,
 					query: this.q
@@ -80,7 +82,7 @@ export default Vue.extend({
 		more() {
 			this.offset += limit;
 
-			const promise = (this as any).api('notes/search', {
+			const promise = this.$root.api('notes/search', {
 				limit: limit + 1,
 				offset: this.offset,
 				query: this.q

@@ -13,7 +13,7 @@ import VueI18n from 'vue-i18n';
 import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
-import MiOS, { API } from './mios';
+import MiOS from './mios';
 import { clientVersion as version, codename, lang } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
 
@@ -180,16 +180,14 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
+export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
-			os.apis = api ? api(os) : null;
-
+		const launch = (router: VueRouter) => {
 			//#region theme
 			os.store.watch(s => {
 				return s.device.darkmode;
@@ -270,18 +268,38 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				}
 			}, { passive: true });
 
-			Vue.mixin({
+			const app = new Vue({
+				i18n: new VueI18n({
+					sync: false,
+					locale: lang,
+					messages: {
+						[lang]: {}
+					}
+				}),
+				store: os.store,
 				data() {
 					return {
-						os,
-						api: os.api,
-						apis: os.apis
+						os: {
+							windows: os.windows
+						},
+						stream: os.stream,
+						instanceName: os.instanceName
 					};
-				}
-			});
-
-			const app = new Vue({
-				store: os.store,
+				},
+				methods: {
+					api: os.api,
+					getMeta: os.getMeta,
+					getMetaSync: os.getMetaSync,
+					signout: os.signout,
+					new(vm, props) {
+						const x = new vm({
+							parent: this,
+							propsData: props
+						}).$mount();
+						document.body.appendChild(x.$el);
+						return x;
+					},
+				},
 				router,
 				render: createEl => createEl(App)
 			});
@@ -291,44 +309,18 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			// マウント
 			app.$mount('#app');
 
+			//#region 更新チェック
+			const preventUpdate = os.store.state.device.preventUpdate;
+			if (!preventUpdate) {
+				setTimeout(() => {
+					checkForUpdate(app);
+				}, 3000);
+			}
+			//#endregion
+
 			return [app, os] as [Vue, MiOS];
 		};
 
-		try {
-			callback(launch);
-		} catch (e) {
-			panic(e);
-		}
-
-		//#region 更新チェック
-		const preventUpdate = os.store.state.device.preventUpdate;
-		if (!preventUpdate) {
-			setTimeout(() => {
-				checkForUpdate(os);
-			}, 3000);
-		}
-		//#endregion
+		callback(launch);
 	});
 };
-
-// BSoD
-function panic(e) {
-	console.error(e);
-
-	// Display blue screen
-	document.documentElement.style.background = '#1269e2';
-	document.body.innerHTML =
-		'<div id="error">'
-			+ '<h1>%i18n.common.BSoD.fatal-error%</h1>'
-			+ '<p>%i18n.common.BSoD.update-browser-os%</p>'
-			+ '<hr>'
-			+ `<p>%i18n.common.BSoD.error-code%: ${e.toString()}</p>`
-			+ `<p>%i18n.common.BSoD.browser-version%: ${navigator.userAgent}</p>`
-			+ `<p>%i18n.common.BSoD.client-version%: ${version}</p>`
-			+ '<hr>'
-			+ '<p>%i18n.common.BSoD.email-support%</p>'
-			+ '<p>%i18n.common.BSoD.thanks%</p>'
-		+ '</div>';
-
-	// TODO: Report the bug
-}

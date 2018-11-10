@@ -7,7 +7,7 @@
 			<p class="name">{{ user | userName }}</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
-				<span v-if="user.isBot" title="%i18n:@is-bot%"><fa icon="robot"/></span>
+				<span v-if="user.isBot" :title="$t('title')"><fa icon="robot"/></span>
 			</div>
 		</div>
 	</div>
@@ -18,12 +18,12 @@
 		</div>
 		<div class="info">
 			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>
-			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', '%i18n:@year%').replace('-', '%i18n:@month%') + '%i18n:@day%' }} ({{ age }}%i18n:@years-old%)</span>
+			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', $t('year')).replace('-', $t('month')) + $t('day') }} ({{ $t('years-old', { age }) }})</span>
 		</div>
 		<div class="status">
-			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
-			<router-link :to="user | userPage('following')" class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>%i18n:@following%</router-link>
-			<router-link :to="user | userPage('followers')" class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</router-link>
+			<span class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</span>
+			<router-link :to="user | userPage('following')" class="following clickable"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
+			<router-link :to="user | userPage('followers')" class="followers clickable"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
 		</div>
 	</div>
 </div>
@@ -31,9 +31,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import * as age from 's-age';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.header.vue'),
 	props: ['user'],
 	computed: {
 		style(): any {
@@ -79,7 +81,7 @@ export default Vue.extend({
 		onBannerClick() {
 			if (!this.$store.getters.isSignedIn || this.$store.state.i.id != this.user.id) return;
 
-			(this as any).apis.updateBanner().then(i => {
+			this.$updateBanner().then(i => {
 				this.user.bannerUrl = i.bannerUrl;
 			});
 		}
@@ -188,6 +190,7 @@ export default Vue.extend({
 				display inline-block
 				padding-right 16px
 				margin-right 16px
+				color inherit
 
 				&:not(:last-child)
 					border-right solid 1px var(--faceDivider)

@@ -39,7 +39,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this as any).api('charts/hashtag', {
+		this.$root.api('charts/hashtag', {
 			tag: this.tag,
 			span: 'hour',
 			limit: 24

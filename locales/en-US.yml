@@ -25,21 +25,11 @@ common:
   application-authorization: "Application authorizations"
   close: "Close"
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
-  BSoD:
-    fatal-error: "A fatal error has occurred :("
-    update-browser-os: "You might resolve to update the version of your browser (or OS)."
-    error-code: "Error code"
-    browser-version: "Browser version"
-    client-version: "Client version"
-    email-support: "If the problem persists, contact syuilotan@yahoo.co.jp please on the above information."
-    thanks: "Thank you for using Misskey."
+  load-more: "Load more"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
-    paragraph1: "Home customization allows you to add/delete, drag and drop and rearrange widgets."
-    paragraph2: "You can change the display by <strong><strong>right</strong> clicking</strong> on some widgets."
-    paragraph3: "To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header."
-    paragraph4: "To finish the customization, click \"Finish\" on the upper right."
+    paragraph: "<p>Home customization allows you to add/delete, drag and drop and rearrange widgets.</p><p>You can change the display by <strong><strong>right</strong> clicking</strong> on some widgets.</p><p>To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header.</p><p>To finish the customization, click \"Finish\" on the upper right.</p>"
     gotit: "Got it!"
   notification:
     file-uploaded: "File uploaded!"
@@ -63,6 +53,7 @@ common:
   month-and-day: "{month}/{day}"
   trash: "Trash"
   drive: "Drive"
+  messaging: "Talk"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -121,8 +112,10 @@ common:
   always-show-nsfw: "Always show NSFW contents"
   always-mark-nsfw: "Always mark posts with media attachments as NSFW"
   show-full-acct: "Do not omit the hostname from the username"
+  show-via: "Show via"
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
+  use-os-default-emojis: "Use the OS default Emojis"
   do-not-use-in-production: 'As this is for development, do not use this in production.'
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
@@ -134,13 +127,13 @@ common:
     drawn: "Draw"
     my-turn: "Your turn"
     opponent-turn: "Opponent's turn"
-    turn-of: "{}'s turn"
-    past-turn-of: "{}'s turn"
-    won: "{} won"
+    turn-of: "{name}'s turn"
+    past-turn-of: "{name}'s turn"
+    won: "{name} won"
     black: "Black"
     white: "White"
     total: "Total"
-    this-turn: "Turn {}"
+    this-turn: "Turn {count}"
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
@@ -159,36 +152,15 @@ common:
     users: "Recommended users"
     polls: "Polls"
     post-form: "Post form"
-    messaging: "Messages"
     server: "Server info"
     donation: "Request for donations"
     nav: "Navigation"
     tips: "Tips"
     hashtags: "Hashtags"
-  deck:
-    widgets: "Widgets"
-    home: "Home"
-    local: "Local"
-    hybrid: "Social"
-    hashtag: "Hashtag"
-    global: "Global"
-    mentions: "Mentions"
-    direct: "Direct post"
-    notifications: "Notifications"
-    list: "Lists"
-    swap-left: "Move to the left"
-    swap-right: "Move to the right"
-    swap-up: "Move up"
-    swap-down: "Move downward"
-    remove: "Remove"
-    add-column: "Add a column"
-    rename: "Rename"
-    stack-left: "Stack to the left"
-    pop-right: "Dock on the right"
   dev: "Failed to create the application. Please try again."
   ai-chan-kawaii: "Ai-chan kawaii!"
 auth/views/form.vue:
-  share-access: "Would you <b>allow</b> <i>{{ app.name }}</i> to access your account?"
+  share-access: "Would you allow <i>{name}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
   account-read: "View account information."
   account-write: "Modify account information."
@@ -325,7 +297,6 @@ common/views/components/messaging.vue:
   no-history: "Without history"
 common/views/components/messaging-room.vue:
   empty: "No conversations"
-  more: "Read more"
   no-history: "There is no further history"
   resize-form: "Drag to resize"
   new-message: "New message"
@@ -381,6 +352,7 @@ common/views/components/signin.vue:
   signin: "Sign in"
   or: "Or"
   signin-with-twitter: "Log in with Twitter"
+  signin-with-github: "Log in with GitHub"
   login-failed: "Log in failed. Make sure you have entered your correct username and password."
 common/views/components/signup.vue:
   invitation-code: "Invitation code"
@@ -418,6 +390,13 @@ common/views/components/twitter-setting.vue:
   detail: "Details..."
   reconnect: "Reconnect"
   connect: "Link your Twitter account"
+  disconnect: "Disconnect"
+common/views/components/github-setting.vue:
+  description: "Once you connect your GitHub account to your Misskey account, you will be able to see information about your GitHub account on your profile, and you will be able to sign-in via GitHub."
+  connected-to: "You are connected to this GitHub account"
+  detail: "More..."
+  reconnect: "Reconnect"
+  connect: "Connect to GitHub"
   disconnect: "Disconnect"
 common/views/components/uploader.vue:
   waiting: "Waiting"
@@ -535,37 +514,12 @@ desktop/views/components/activity.vue:
   title: "Activity"
   toggle: "Toggle views"
 desktop/views/components/calendar.vue:
-  title: "{1} / {2}"
+  title: "{year} / {month}"
   prev: "Previous month"
   next: "Next month"
   go: "Click to navigate"
-desktop/views/components/charts.vue:
-  title: "Charts"
-  per-day: "per Day"
-  per-hour: "per Hour"
-  federation: "Federation"
-  notes: "Posts"
-  users: "Users"
-  drive: "Drive"
-  network: "Network"
-  charts:
-    federation-instances: "The number of instances: increase/decrease"
-    federation-instances-total: "Total number of instances"
-    notes: "The number of posts: increase/decrease (Combined)"
-    local-notes: "The number of posts: increase/decrease (Local)"
-    remote-notes: "The number of posts: increase/decrease (Remote)"
-    notes-total: "Total posts"
-    users: "The number of users: increase/decrease"
-    users-total: "Total users"
-    drive: "Capacity used as the storage: increase/decrease"
-    drive-total: "Total usage of Drive"
-    drive-files: "The number of files on the storage: increase/decrease"
-    drive-files-total: "Total number of files on Drive"
-    network-requests: "Requests"
-    network-time: "Response time"
-    network-usage: "Traffic"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "Choose files"
+  chosen-files: "{count} File(s) selected"
   upload: "Upload files from your device"
   cancel: "Cancel"
   ok: "OK"
@@ -611,7 +565,6 @@ desktop/views/components/drive.folder.vue:
     input-new-folder-name: "Enter new name"
 desktop/views/components/drive.vue:
   search: "Search"
-  load-more: "Load more"
   empty-draghover: "Drop it here! Yep, cuz you know I'm cute, right?"
   empty-drive: "Your media storage is empty"
   empty-drive-description: "Right-click to open the menu, or drag and drop a file onto here for uploading."
@@ -669,7 +622,6 @@ desktop/views/components/messaging-room-window.vue:
 desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/note-detail.vue:
-  more: "Load more conversations"
   private: "Post is private"
   deleted: "Post has been removed"
   reposted-by: "Reposted by {}"
@@ -687,9 +639,7 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
-  load-more: "Read more"
 desktop/views/components/notifications.vue:
-  more: "More"
   empty: "No notifications!"
 desktop/views/components/post-form.vue:
   add-visible-user: "+Add a user"
@@ -736,6 +686,9 @@ desktop/views/components/renote-form.vue:
   failure: "Failed to Repost"
 desktop/views/components/renote-form-window.vue:
   title: "Do you want to Repost it?"
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}'s following"
+  followers: "{user}'s follower"
 desktop/views/components/settings-window.vue:
   settings: "Settings"
 desktop/views/components/settings.vue:
@@ -860,6 +813,7 @@ common/views/components/api-settings.vue:
     title: 'API console'
     endpoint: 'Endpoint'
     parameter: 'Parameters'
+    credential-info: "Parameter \"i\" is not required at this console."
     send: 'Send'
     sending: 'Sending'
     response: 'Result'
@@ -917,7 +871,6 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
-  messaging: "Messages"
   game: "Games"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -940,7 +893,6 @@ desktop/views/components/user-preview.vue:
 desktop/views/components/users-list.vue:
   all: "All"
   iknow: "You know"
-  load-more: "More"
   fetching: "Loading…"
 desktop/views/components/users-list-item.vue:
   followed: "Follows you"
@@ -964,10 +916,48 @@ admin/views/dashboard.vue:
   instances: "Instances"
   this-instance: "This instance"
   federated: "Federated"
+admin/views/instance.vue:
+  instance: "Instance"
+  instance-name: "Instance name"
+  instance-description: "Instance description"
+  banner-url: "Banner image URL"
+  languages: "Language of this instance"
+  languages-desc: "You can add more than one, separated by spaces."
+  maintainer-config: "Administrator information"
+  maintainer-name: "Administrator name"
+  maintainer-email: "Contact Administrator"
+  drive-config: "Drive settings"
+  cache-remote-files: "Cache remote files"
+  cache-remote-files-desc: "Without this parameter, all remote files are linked to their host server directly. This will be an effective solution to save your server storage, however make remote files invisible to users who set direct-link disabled, since no thumbnail will be generated, increase traffic. It is recommended that this parameter set enabled."
+  local-drive-capacity-mb: "Volume of Drive per user"
+  remote-drive-capacity-mb: "Volume of Drive per remote user"
+  mb: "In megabytes"
+  recaptcha-config: "the reCAPTCHA settings"
+  recaptcha-info: "reCAPTCHA token is required. Please get it on https://www.google.com/recaptcha/intro/"
+  enable-recaptcha: "enable reCAPTCHA"
+  recaptcha-site-key: "reCAPTCHA site key"
+  recaptcha-secret-key: "reCAPTCHA secret key"
+  twitter-integration-config: "Settings of connecting to Twitter"
+  twitter-integration-info: "The callback URL is set on /api/tw/cb."
+  enable-twitter-integration: "Enable connection to Twitter"
+  twitter-integration-consumer-key: "Consumer key"
+  twitter-integration-consumer-secret: "Consumer Secret"
+  github-integration-config: "Setting of connecting to GitHub"
+  github-integration-info: "The callback URL is set on /api/gh/cb."
+  enable-github-integration: "Enable connection to GitHub"
+  github-integration-client-id: "Client ID"
+  github-integration-client-secret: "Client secret"
+  proxy-account-config: "Proxy account"
+  proxy-account-info: "Proxy account can follow a remote user to deliver activities if no one in this instance follow him or her. When you add a remote user who is followed by nobody in this instance to your list, in order to get his or her data, proxy account follow him or her instead of your following."
+  proxy-account-username: "Proxy account user name"
+  proxy-account-username-desc: "Specify the user name of the account that is used as a proxy."
+  proxy-account-warn: "You must make an account having this username before this action."
+  max-note-text-length: "Maximum numbers of post characters"
+  disable-registration: "Stop user registration"
+  disable-local-timeline: "Make Local Timeline disabled"
   invite: "Invite"
-  banner-url: "Banner URL"
-  disableRegistration: "Disable new user registration"
-  disableLocalTimeline: "Disable the local timeline"
+  save: "Save"
+  saved: "Saved"
 admin/views/charts.vue:
   title: "Chart"
   per-day: "per Day"
@@ -1015,10 +1005,16 @@ admin/views/emoji.vue:
     aliases-desc: "You can add more than one, separated by spaces."
     url: "Image URL"
     add: "Add"
+    info: "We recommend PNG images under 50KB."
+    added: "Emoji was added"
   emojis:
     title: "Emojis"
     update: "Update"
     remove: "Remove"
+  updated: "Updated"
+  remove-emoji:
+    are-you-sure: "Delete \"%1$s\"?"
+    removed: "Deleted"
 admin/views/announcements.vue:
   announcements: "Announcements"
   save: "Save"
@@ -1026,26 +1022,12 @@ admin/views/announcements.vue:
   add: "Add"
   title: "Title"
   text: "Content"
+  saved: "Saved"
+  _remove:
+    are-you-sure: "Delete \"%1$s\"?"
+    removed: "Deleted"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
-desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "Only media posts"
-  is-media-view: "Media view"
-  edit: "Options"
-desktop/views/pages/deck/deck.user-column.vue:
-  posts: "Posts"
-  following: "Following"
-  followers: "Followers"
-  images: "Images"
-  activity: "Activity"
-  timeline: "Timeline"
-  pinned-notes: "Pinned posts"
-  push-to-a-list: "Add to list"
-desktop/views/pages/stats/stats.vue:
-  all-users: "All Users"
-  original-users: "Users on this instance"
-  all-notes: "All the posts"
-  original-notes: "Posts on this instance"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
@@ -1060,8 +1042,6 @@ desktop/views/pages/welcome.vue:
   info: "Information"
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
-desktop/views/pages/favorites.vue:
-  more: "Load more"
 desktop/views/pages/home-customize.vue:
   title: "Customize home layout"
 desktop/views/pages/note.vue:
@@ -1074,11 +1054,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "Upload files from your device"
 desktop/views/pages/search.vue:
   not-available: "Search feature is turned off in the settings for this instance."
-  not-found: "No posts were found for '{}'"
+  not-found: "No posts were found for '{q}'"
 desktop/views/pages/share.vue:
-  share-with: "Share with {}."
+  share-with: "Share on {name}"
 desktop/views/pages/tag.vue:
-  no-posts-found: "No posts contains \"{}\" found."
+  no-posts-found: "No posts contains \"{q}\" found."
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -1091,9 +1071,6 @@ desktop/views/pages/user/user.friends.vue:
   title: "Frequent mentions"
   loading: "Loading"
   no-users: "No frequent mentions"
-desktop/views/pages/user/user.vue:
-  is-suspended: "This account has been suspended."
-  last-used-at: "Last active"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
@@ -1153,7 +1130,6 @@ mobile/views/components/drive.vue:
   folder-count: "Folder(s)"
   count-separator: ", "
   file-count: "File(s)"
-  load-more: "Load more"
   nothing-in-drive: "There's nothing stored."
   folder-is-empty: "This folder is empty"
   prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
@@ -1163,8 +1139,6 @@ mobile/views/components/drive.vue:
   root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
   url-prompt: "URL of the file you want to upload"
   uploading: "Upload requested. It may take a while for the upload to finish."
-mobile/views/components/drive-file-detail.vue:
-  rename: "Rename"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose files"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1218,11 +1192,7 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "cat"
-mobile/views/components/notes.vue:
-  failed: "Failed to load"
-  retry: "Retry"
 mobile/views/components/notifications.vue:
-  more: "See more"
   empty: "No notifications"
 mobile/views/components/post-form.vue:
   add-visible-user: "Add a user"
@@ -1242,14 +1212,12 @@ mobile/views/components/sub-note-content.vue:
   poll: "Poll"
 mobile/views/components/timeline.vue:
   empty: "No notes"
-  load-more: "More"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
   adjective: "Sir"
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
-  messaging: "Messages"
   follow-requests: "Follow requests"
   search: "Search"
   favorites: "Favorites"
@@ -1263,24 +1231,20 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
   no-notes-with-media: "There are no notes with media attachments"
-  load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
   known: "In common"
-  load-more: "More"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
 mobile/views/pages/user-lists.vue:
   title: "Lists"
   enter-list-name: "Enter a name of the list to make"
-mobile/views/pages/drive.vue:
-  more: "Load more"
 mobile/views/pages/signup.vue:
   lets-start: "Your account is now ready! 📦"
 mobile/views/pages/followers.vue:
-  followers-of: "Followers of {}"
+  followers-of: "{name}'s followers"
 mobile/views/pages/following.vue:
-  following-of: "Following of {}"
+  following-of: "{name}'s following"
 mobile/views/pages/home.vue:
   home: "Home"
   local: "Local"
@@ -1289,7 +1253,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "Messages"
 mobile/views/pages/tag.vue:
-  no-posts-found: "No posts \"{}\" found."
+  no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/welcome.vue:
   signup: "Sign up"
 mobile/views/pages/widgets.vue:
@@ -1300,11 +1264,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
-  share-with: "Share with {}."
-mobile/views/pages/messaging.vue:
-  messaging: "Messaging"
-mobile/views/pages/messaging-room.vue:
-  messaging: "Messaging"
+  share-with: "Share on {name}"
 mobile/views/pages/received-follow-requests.vue:
   title: "Follow requests"
   accept: "Accept"
@@ -1320,8 +1280,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Search"
-  empty: "No posts were found for '{}'"
-  not-found: "No posts were found for \"{}\"."
+  not-found: "No posts were found for '{q}'"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:
@@ -1360,6 +1319,10 @@ mobile/views/pages/settings.vue:
   twitter-connect: "Connect to your Twitter account"
   twitter-reconnect: "Reconnect"
   twitter-disconnect: "Disconnect"
+  github: "GitHub Integration"
+  github-connect: "Connect to your GitHub account"
+  github-reconnect: "Reconnect"
+  github-disconnect: "Disconnect"
   update: "Misskey Update"
   version: "Current version:"
   latest-version: "Latest version:"
@@ -1398,17 +1361,46 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
 mobile/views/pages/user/home.followers-you-know.vue:
-  loading: "Loading"
   no-users: "No users you know"
 mobile/views/pages/user/home.friends.vue:
-  loading: "Loading"
   no-users: "There are no users that you know"
 mobile/views/pages/user/home.notes.vue:
-  loading: "Loading"
   no-notes: "No notes"
 mobile/views/pages/user/home.photos.vue:
-  loading: "Loading"
   no-photos: "No photos"
+deck:
+  widgets: "Widgets"
+  home: "Home"
+  local: "Local"
+  hybrid: "Social"
+  hashtag: "Hashtag"
+  global: "Global"
+  mentions: "Mentions"
+  direct: "Direct posts"
+  notifications: "Notifications"
+  list: "List"
+  swap-left: "Move left"
+  swap-right: "Move right"
+  swap-up: "Move up"
+  swap-down: "Move down"
+  remove: "Remove"
+  add-column: "Add a column"
+  rename: "Rename"
+  stack-left: "Stack to the left"
+  pop-right: "Dock on the right"
+deck/deck.tl-column.vue:
+  is-media-only: "Only media posts"
+  is-media-view: "Media view"
+  edit: "Option"
+deck/deck.user-column.vue:
+  posts: "Posts"
+  following: "Following"
+  followers: "Followers"
+  images: "Images"
+  activity: "Activity"
+  timeline: "Timeline"
+  pinned-notes: "Pinned posts"
+  push-to-a-list: "Add to list"
 docs:
   edit-this-page-on-github: "Found a mistake or want to contribute for the documentation?"
   edit-this-page-on-github-link: "Edit this page at GitHub!"

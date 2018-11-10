@@ -1,52 +1,54 @@
 <template>
 <div class="ucnffhbtogqgscfmqcymwmmupoknpfsw">
 	<ui-card>
-		<div slot="title">%i18n:@verify-user%</div>
+		<div slot="title">{{ $t('verify-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="verifyUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="verifyUser" :disabled="verifying">%i18n:@verify%</ui-button>
+			<ui-button @click="verifyUser" :disabled="verifying">{{ $t('verify') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@unverify-user%</div>
+		<div slot="title">{{ $t('unverify-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="unverifyUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="unverifyUser" :disabled="unverifying">%i18n:@unverify%</ui-button>
+			<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@suspend-user%</div>
+		<div slot="title">{{ $t('suspend-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="suspendUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="suspendUser" :disabled="suspending">%i18n:@suspend%</ui-button>
+			<ui-button @click="suspendUser" :disabled="suspending">{{ $t('suspend') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">%i18n:@unsuspend-user%</div>
+		<div slot="title">{{ $t('unsuspend-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="unsuspendUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="unsuspendUser" :disabled="unsuspending">%i18n:@unsuspend%</ui-button>
+			<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
 		</section>
 	</ui-card>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../i18n';
 import parseAcct from "../../../../misc/acct/parse";
 
 export default Vue.extend({
+	i18n: i18n('admin/views/users.vue'),
 	data() {
 		return {
 			verifyUsername: null,
@@ -65,13 +67,13 @@ export default Vue.extend({
 			this.verifying = true;
 
 			const process = async () => {
-				const user = await (this as any).os.api('users/show', parseAcct(this.verifyUsername));
-				await (this as any).os.api('admin/verify-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@verified%' });
+				const user = await this.$root.os.api('users/show', parseAcct(this.verifyUsername));
+				await this.$root.os.api('admin/verify-user', { userId: user.id });
+				//this.$root.os.apis.dialog({ text: this.$t('verified') });
 			};
 
 			await process().catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed: ${e}` });
+				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
 			});
 
 			this.verifying = false;
@@ -81,13 +83,13 @@ export default Vue.extend({
 			this.unverifying = true;
 
 			const process = async () => {
-				const user = await (this as any).os.api('users/show', parseAcct(this.unverifyUsername));
-				await (this as any).os.api('admin/unverify-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@unverified%' });
+				const user = await this.$root.os.api('users/show', parseAcct(this.unverifyUsername));
+				await this.$root.os.api('admin/unverify-user', { userId: user.id });
+				//this.$root.os.apis.dialog({ text: this.$t('unverified') });
 			};
 
 			await process().catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed: ${e}` });
+				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
 			});
 
 			this.unverifying = false;
@@ -97,13 +99,13 @@ export default Vue.extend({
 			this.suspending = true;
 
 			const process = async () => {
-				const user = await (this as any).os.api('users/show', parseAcct(this.suspendUsername));
-				await (this as any).os.api('admin/suspend-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@suspended%' });
+				const user = await this.$root.os.api('users/show', parseAcct(this.suspendUsername));
+				await this.$root.os.api('admin/suspend-user', { userId: user.id });
+				//this.$root.os.apis.dialog({ text: this.$t('suspended') });
 			};
 
 			await process().catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed: ${e}` });
+				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
 			});
 
 			this.suspending = false;
@@ -113,13 +115,13 @@ export default Vue.extend({
 			this.unsuspending = true;
 
 			const process = async () => {
-				const user = await (this as any).os.api('users/show', parseAcct(this.unsuspendUsername));
-				await (this as any).os.api('admin/unsuspend-user', { userId: user.id });
-				//(this as any).os.apis.dialog({ text: '%i18n:@unsuspended%' });
+				const user = await this.$root.os.api('users/show', parseAcct(this.unsuspendUsername));
+				await this.$root.os.api('admin/unsuspend-user', { userId: user.id });
+				//this.$root.os.apis.dialog({ text: this.$t('unsuspended') });
 			};
 
 			await process().catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed: ${e}` });
+				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
 			});
 
 			this.unsuspending = false;

@@ -4,16 +4,16 @@
 	<div class="popover" :class="{ compact, big }" ref="popover">
 		<p v-if="!compact">{{ title }}</p>
 		<div ref="buttons" :class="{ showFocus }">
-			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" title="%i18n:common.reactions.like%"><mk-reaction-icon reaction='like'/></button>
-			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" title="%i18n:common.reactions.love%"><mk-reaction-icon reaction='love'/></button>
-			<button @click="react('laugh')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="3" title="%i18n:common.reactions.laugh%"><mk-reaction-icon reaction='laugh'/></button>
-			<button @click="react('hmm')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="4" title="%i18n:common.reactions.hmm%"><mk-reaction-icon reaction='hmm'/></button>
-			<button @click="react('surprise')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="5" title="%i18n:common.reactions.surprise%"><mk-reaction-icon reaction='surprise'/></button>
-			<button @click="react('congrats')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" title="%i18n:common.reactions.congrats%"><mk-reaction-icon reaction='congrats'/></button>
-			<button @click="react('angry')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="7" title="%i18n:common.reactions.angry%"><mk-reaction-icon reaction='angry'/></button>
-			<button @click="react('confused')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="8" title="%i18n:common.reactions.confused%"><mk-reaction-icon reaction='confused'/></button>
-			<button @click="react('rip')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="9" title="%i18n:common.reactions.rip%"><mk-reaction-icon reaction='rip'/></button>
-			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" title="%i18n:common.reactions.pudding%"><mk-reaction-icon reaction='pudding'/></button>
+			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" :title="$t('@.reactions.like')"><mk-reaction-icon reaction='like'/></button>
+			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" :title="$t('@.reactions.love')"><mk-reaction-icon reaction='love'/></button>
+			<button @click="react('laugh')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="3" :title="$t('@.reactions.laugh')"><mk-reaction-icon reaction='laugh'/></button>
+			<button @click="react('hmm')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="4" :title="$t('@.reactions.hmm')"><mk-reaction-icon reaction='hmm'/></button>
+			<button @click="react('surprise')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="5" :title="$t('@.reactions.surprise')"><mk-reaction-icon reaction='surprise'/></button>
+			<button @click="react('congrats')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" :title="$t('@.reactions.congrats')"><mk-reaction-icon reaction='congrats'/></button>
+			<button @click="react('angry')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="7" :title="$t('@.reactions.angry')"><mk-reaction-icon reaction='angry'/></button>
+			<button @click="react('confused')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="8" :title="$t('@.reactions.confused')"><mk-reaction-icon reaction='confused'/></button>
+			<button @click="react('rip')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="9" :title="$t('@.reactions.rip')"><mk-reaction-icon reaction='rip'/></button>
+			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" :title="$t('@.reactions.pudding')"><mk-reaction-icon reaction='pudding'/></button>
 		</div>
 	</div>
 </div>
@@ -21,11 +21,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 
-const placeholder = '%i18n:@choose-reaction%';
-
 export default Vue.extend({
+	i18n: i18n('common/views/components/reaction-picker.vue'),
 	props: {
 		note: {
 			type: Object,
@@ -67,7 +67,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			title: placeholder,
+			title: this.$t('choose-reaction'),
 			focus: null
 		};
 	},
@@ -145,7 +145,7 @@ export default Vue.extend({
 
 	methods: {
 		react(reaction) {
-			(this as any).api('notes/reactions/create', {
+			this.$root.api('notes/reactions/create', {
 				noteId: this.note.id,
 				reaction: reaction
 			}).then(() => {
@@ -160,7 +160,7 @@ export default Vue.extend({
 		},
 
 		onMouseout(e) {
-			this.title = placeholder;
+			this.title = this.$t('choose-reaction');
 		},
 
 		close() {

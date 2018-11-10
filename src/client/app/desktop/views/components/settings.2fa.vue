@@ -1,30 +1,32 @@
 <template>
 <div class="2fa">
-	<p style="margin-top:0;">%i18n:@intro%<a href="%i18n:@url%" target="_blank">%i18n:@detail%</a></p>
-	<ui-info warn>%i18n:@caution%</ui-info>
-	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">%i18n:@register%</ui-button></p>
+	<p style="margin-top:0;">{{ $t('intro') }}<a :href="$t('href')" target="_blank">{{ $t('detail') }}</a></p>
+	<ui-info warn>{{ $t('caution') }}</ui-info>
+	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">{{ $t('register') }}</ui-button></p>
 	<template v-if="$store.state.i.twoFactorEnabled">
-		<p>%i18n:@already-registered%</p>
-		<ui-button @click="unregister">%i18n:@unregister%</ui-button>
+		<p>{{ $t('already-registered') }}</p>
+		<ui-button @click="unregister">{{ $t('unregister') }}</ui-button>
 	</template>
 	<div v-if="data">
 		<ol>
-			<li>%i18n:@authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:@howtoinstall%</a></li>
-			<li>%i18n:@scan%<br><img :src="data.qr"></li>
-			<li>%i18n:@done%<br>
+			<li>{{ $t('authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:@howtoinstall') }}</a></li>
+			<li>{{ $t('scan') }}<br><img :src="data.qr"></li>
+			<li>{{ $t('done') }}<br>
 				<input type="number" v-model="token" class="ui">
-				<ui-button primary @click="submit">%i18n:@submit%</ui-button>
+				<ui-button primary @click="submit">{{ $t('submit') }}</ui-button>
 			</li>
 		</ol>
-		<div class="ui info"><p><fa icon="info-circle"/>%i18n:@info%</p></div>
+		<div class="ui info"><p><fa icon="info-circle"/>{{ $t('info') }}</p></div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/settings.2fa.vue'),
 	data() {
 		return {
 			data: null,
@@ -33,11 +35,11 @@ export default Vue.extend({
 	},
 	methods: {
 		register() {
-			(this as any).apis.input({
-				title: '%i18n:@enter-password%',
+			this.$input({
+				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
-				(this as any).api('i/2fa/register', {
+				this.$root.api('i/2fa/register', {
 					password: password
 				}).then(data => {
 					this.data = data;
@@ -46,27 +48,27 @@ export default Vue.extend({
 		},
 
 		unregister() {
-			(this as any).apis.input({
-				title: '%i18n:@enter-password%',
+			this.$input({
+				title: this.$t('enter-password'),
 				type: 'password'
 			}).then(password => {
-				(this as any).api('i/2fa/unregister', {
+				this.$root.api('i/2fa/unregister', {
 					password: password
 				}).then(() => {
-					(this as any).apis.notify('%i18n:@unregistered%');
+					this.$notify(this.$t('unregistered'));
 					this.$store.state.i.twoFactorEnabled = false;
 				});
 			});
 		},
 
 		submit() {
-			(this as any).api('i/2fa/done', {
+			this.$root.api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
-				(this as any).apis.notify('%i18n:@success%');
+				this.$notify(this.$t('success'));
 				this.$store.state.i.twoFactorEnabled = true;
 			}).catch(() => {
-				(this as any).apis.notify('%i18n:@failed%');
+				this.$notify(this.$t('failed'));
 			});
 		}
 	}

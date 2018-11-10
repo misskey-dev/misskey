@@ -1,8 +1,7 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="user.avatarUrl" alt="">
-		{{ '%i18n:@followers-of%'.replace('{}', name) }}
+		<img :src="user.avatarUrl" alt="">{{ $t('followers-of', { name }) }}
 	</template>
 	<mk-users-list
 		v-if="!fetching"
@@ -18,11 +17,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 import parseAcct from '../../../../../misc/acct/parse';
 import getUserName from '../../../../../misc/get-user-name';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/followers.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -45,18 +46,18 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `${'%i18n:@followers-of%'.replace('{}', this.name)} | ${(this as any).os.instanceName}`;
+				document.title = `${this.$t('followers-of').replace('{}', this.name)} | ${this.$root.instanceName}`;
 			});
 		},
 		onLoaded() {
 			Progress.done();
 		},
 		fetchUsers(iknow, limit, cursor, cb) {
-			(this as any).api('users/followers', {
+			this.$root.api('users/followers', {
 				userId: this.user.id,
 				iknow: iknow,
 				limit: limit,

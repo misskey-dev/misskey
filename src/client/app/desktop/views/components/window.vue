@@ -8,10 +8,10 @@
 			>
 				<h1><slot name="header"></slot></h1>
 				<div>
-					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%">
+					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" :title="$t('popout')">
 						<i><fa :icon="['far', 'window-restore']"/></i>
 					</button>
-					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%">
+					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" :title="$t('close')">
 						<i><fa icon="times"/></i>
 					</button>
 				</div>
@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import contains from '../../../common/scripts/contains';
 
@@ -55,6 +56,7 @@ function dragClear(fn) {
 }
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/window.vue'),
 	props: {
 		isModal: {
 			type: Boolean,
@@ -108,7 +110,7 @@ export default Vue.extend({
 			this.preventMount = true;
 		} else {
 			// ウィンドウをウィンドウシステムに登録
-			(this as any).os.windows.add(this);
+			this.$root.os.windows.add(this);
 		}
 	},
 
@@ -131,7 +133,7 @@ export default Vue.extend({
 
 	destroyed() {
 		// ウィンドウをウィンドウシステムから削除
-		(this as any).os.windows.remove(this);
+		this.$root.os.windows.remove(this);
 
 		window.removeEventListener('resize', this.onBrowserResize);
 	},
@@ -232,7 +234,7 @@ export default Vue.extend({
 		top() {
 			let z = 0;
 
-			(this as any).os.windows.getAll().forEach(w => {
+			this.$root.os.windows.getAll().forEach(w => {
 				if (w == this) return;
 				const m = w.$refs.main;
 				const mz = Number(document.defaultView.getComputedStyle(m, null).zIndex);

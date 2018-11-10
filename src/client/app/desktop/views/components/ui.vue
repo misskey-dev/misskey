@@ -67,7 +67,7 @@ export default Vue.extend({
 
 	methods: {
 		post() {
-			(this as any).apis.post();
+			this.$post();
 		},
 
 		toggleZenMode() {

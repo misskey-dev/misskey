@@ -18,7 +18,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('charts/user/notes', {
+		this.$root.api('charts/user/notes', {
 			userId: this.user.id,
 			span: 'day',
 			limit: 21

@@ -15,7 +15,7 @@
 				<span class="created-at"><fa :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
 				<template v-if="file.isSensitive">
 					<span class="separator"></span>
-					<span class="nsfw"><fa icon="eye-slash"/> %i18n:@nsfw%</span>
+					<span class="nsfw"><fa icon="eye-slash"/> {{ $t('nsfw') }}</span>
 				</template>
 			</footer>
 		</div>
@@ -25,7 +25,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/drive.file.vue'),
 	props: ['file'],
 	data() {
 		return {

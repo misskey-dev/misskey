@@ -3,7 +3,7 @@
 	<span slot="header">
 		<template v-if="folder"><span style="margin-right:4px;"><fa :icon="['far', 'folder-open']"/></span>{{ folder.name }}</template>
 		<template v-if="file"><mk-file-type-icon data-icon :type="file.type" style="margin-right:4px;"/>{{ file.name }}</template>
-		<template v-if="!folder && !file"><span style="margin-right:4px;"><fa icon="cloud"/></span>%i18n:common.drive%</template>
+		<template v-if="!folder && !file"><span style="margin-right:4px;"><fa icon="cloud"/></span>{{ $t('@.drive') }}</template>
 	</span>
 	<template slot="func"><button @click="fn"><fa icon="ellipsis-h"/></button></template>
 	<mk-drive
@@ -24,9 +24,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n(),
 	data() {
 		return {
 			Progress,
@@ -43,7 +45,7 @@ export default Vue.extend({
 		window.addEventListener('popstate', this.onPopState);
 	},
 	mounted() {
-		document.title = `${(this as any).os.instanceName} Drive`;
+		document.title = `${this.$root.instanceName} Drive`;
 	},
 	beforeDestroy() {
 		window.removeEventListener('popstate', this.onPopState);
@@ -62,7 +64,7 @@ export default Vue.extend({
 			(this.$refs as any).browser.openContextMenu();
 		},
 		onMoveRoot(silent) {
-			const title = `${(this as any).os.instanceName} Drive`;
+			const title = `${this.$root.instanceName} Drive`;
 
 			if (!silent) {
 				// Rewrite URL
@@ -75,7 +77,7 @@ export default Vue.extend({
 			this.folder = null;
 		},
 		onOpenFolder(folder, silent) {
-			const title = `${folder.name} | ${(this as any).os.instanceName} Drive`;
+			const title = `${folder.name} | ${this.$root.instanceName} Drive`;
 
 			if (!silent) {
 				// Rewrite URL
@@ -88,7 +90,7 @@ export default Vue.extend({
 			this.folder = folder;
 		},
 		onOpenFile(file, silent) {
-			const title = `${file.name} | ${(this as any).os.instanceName} Drive`;
+			const title = `${file.name} | ${this.$root.instanceName} Drive`;
 
 			if (!silent) {
 				// Rewrite URL

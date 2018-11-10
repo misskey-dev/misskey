@@ -1,7 +1,7 @@
 <template>
 <div class="form">
 	<header>
-		<h1>%i18n:@share-access%</h1>
+		<h1 v-html="$t('share-access', { name: app.name })"></h1>
 		<img :src="app.iconUrl"/>
 	</header>
 	<div class="app">
@@ -11,32 +11,35 @@
 			<p class="description">{{ app.description }}</p>
 		</section>
 		<section>
-			<h2>%i18n:@permission-ask%</h2>
+			<h2>{{ $t('permission-ask') }}</h2>
 			<ul>
 				<template v-for="p in app.permission">
-					<li v-if="p == 'account-read'">%i18n:@account-read%</li>
-					<li v-if="p == 'account-write'">%i18n:@account-write%</li>
-					<li v-if="p == 'note-write'">%i18n:@note-write%</li>
-					<li v-if="p == 'like-write'">%i18n:@like-write%</li>
-					<li v-if="p == 'following-write'">%i18n:@following-write%</li>
-					<li v-if="p == 'drive-read'">%i18n:@drive-read%</li>
-					<li v-if="p == 'drive-write'">%i18n:@drive-write%</li>
-					<li v-if="p == 'notification-read'">%i18n:@notification-read%</li>
-					<li v-if="p == 'notification-write'">%i18n:@notification-write%</li>
+					<li v-if="p == 'account-read'">{{ $t('account-read') }}</li>
+					<li v-if="p == 'account-write'">{{ $t('account-write') }}</li>
+					<li v-if="p == 'note-write'">{{ $t('note-write') }}</li>
+					<li v-if="p == 'like-write'">{{ $t('like-write') }}</li>
+					<li v-if="p == 'following-write'">{{ $t('following-write') }}</li>
+					<li v-if="p == 'drive-read'">{{ $t('drive-read') }}</li>
+					<li v-if="p == 'drive-write'">{{ $t('drive-write') }}</li>
+					<li v-if="p == 'notification-read'">{{ $t('notification-read') }}</li>
+					<li v-if="p == 'notification-write'">{{ $t('notification-write') }}</li>
 				</template>
 			</ul>
 		</section>
 	</div>
 	<div class="action">
-		<button @click="cancel">%i18n:@cancel%</button>
-		<button @click="accept">%i18n:@accept%</button>
+		<button @click="cancel">{{ $t('cancel') }}</button>
+		<button @click="accept">{{ $t('accept') }}</button>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../i18n';
+
 export default Vue.extend({
+	i18n: i18n('auth/views/form.vue'),
 	props: ['session'],
 	computed: {
 		app(): any {
@@ -45,7 +48,7 @@ export default Vue.extend({
 	},
 	methods: {
 		cancel() {
-			(this as any).api('auth/deny', {
+			this.$root.api('auth/deny', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('denied');
@@ -53,7 +56,7 @@ export default Vue.extend({
 		},
 
 		accept() {
-			(this as any).api('auth/accept', {
+			this.$root.api('auth/accept', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('accepted');

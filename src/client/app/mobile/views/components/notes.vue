@@ -10,10 +10,7 @@
 		</template>
 	</div>
 
-	<div v-if="!fetching && requestInitPromise != null">
-		<p>%i18n:@failed%</p>
-		<button @click="resolveInitPromise">%i18n:@retry%</button>
-	</div>
+	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="transition" tag="div">
@@ -28,7 +25,7 @@
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
+			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
 			<template v-if="moreFetching"><fa icon="spinner .pulse" fixed-width/></template>
 		</button>
 	</footer>
@@ -37,10 +34,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const displayLimit = 30;
 
 export default Vue.extend({
+	i18n: i18n(),
 	props: {
 		more: {
 			type: Function,
@@ -64,7 +63,7 @@ export default Vue.extend({
 				const date = new Date(note.createdAt).getDate();
 				const month = new Date(note.createdAt).getMonth() + 1;
 				note._date = date;
-				note._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return note;
 			});
 		}

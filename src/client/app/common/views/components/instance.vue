@@ -3,22 +3,24 @@
 	<div class="banner" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }"></div>
 
 	<h1>{{ meta.name }}</h1>
-	<p v-html="meta.description || '%i18n:common.about%'"></p>
-	<router-link to="/">%i18n:@start%</router-link>
+	<p v-html="meta.description || this.$t('@.about')"></p>
+	<router-link to="/">{{ $t('start') }}</router-link>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/instance.vue'),
 	data() {
 		return {
 			meta: null
 		}
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	}

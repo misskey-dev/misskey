@@ -47,7 +47,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 
@@ -117,6 +117,9 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('stats', this.onStats);
 		this.connection.off('statsLog', this.onStatsLog);
+
+		this.cpuChart.destroy();
+		this.memChart.destroy();
 	},
 
 	methods: {

@@ -2,7 +2,7 @@
 <div class="header" :class="navbar">
 	<div class="body">
 		<div class="post">
-			<button @click="post" title="%i18n:@post%"><fa icon="pencil-alt"/></button>
+			<button @click="post" :title="$t('title')"><fa icon="pencil-alt"/></button>
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">
@@ -77,6 +77,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkUserListsWindow from './user-lists-window.vue';
 import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
@@ -86,6 +87,7 @@ import MkGameWindow from './game-window.vue';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.sidebar.vue'),
 	data() {
 		return {
 			hasGameInvitations: false,
@@ -106,7 +108,7 @@ export default Vue.extend({
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
@@ -129,38 +131,38 @@ export default Vue.extend({
 		},
 
 		messaging() {
-			(this as any).os.new(MkMessagingWindow);
+			this.$root.new(MkMessagingWindow);
 		},
 
 		game() {
-			(this as any).os.new(MkGameWindow);
+			this.$root.new(MkGameWindow);
 		},
 
 		post() {
-			(this as any).apis.post();
+			this.$post();
 		},
 
 		drive() {
-			(this as any).os.new(MkDriveWindow);
+			this.$root.new(MkDriveWindow);
 		},
 
 		list() {
-			const w = (this as any).os.new(MkUserListsWindow);
+			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', list => {
 				this.$router.push(`i/lists/${ list.id }`);
 			});
 		},
 
 		followRequests() {
-			(this as any).os.new(MkFollowRequestsWindow);
+			this.$root.new(MkFollowRequestsWindow);
 		},
 
 		settings() {
-			(this as any).os.new(MkSettingsWindow);
+			this.$root.new(MkSettingsWindow);
 		},
 
 		signout() {
-			(this as any).os.signout();
+			this.$root.signout();
 		},
 
 		notifications() {

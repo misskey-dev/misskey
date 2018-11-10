@@ -11,7 +11,7 @@
 			<mk-user-card v-for="user in users" :user="user" :key="user.id"/>
 		</div>
 		<div class="more" v-if="next">
-			<ui-button inline @click="fetchMore">%i18n:@load-more%</ui-button>
+			<ui-button inline @click="fetchMore">{{ $t('@.load-more') }}</ui-button>
 		</div>
 	</div>
 </mk-ui>
@@ -19,22 +19,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import i18n from '../../../i18n';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
-import { lang, locale } from '../../../config';
 
 const limit = 16;
 
-const i18n = new VueI18n({
-	locale: lang,
-	messages: {
-		[lang]: locale['desktop/views/pages/user-following-or-followers.vue']
-	}
-});
-
 export default Vue.extend({
-	i18n,
+	i18n: i18n('desktop/views/pages/user-following-or-followers.vue'),
 
 	data() {
 		return {
@@ -62,9 +54,9 @@ export default Vue.extend({
 		fetch() {
 			this.fetching = true;
 			Progress.start();
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
-				(this as any).api(this.endpoint, {
+				this.$root.api(this.endpoint, {
 					userId: this.user.id,
 					iknow: false,
 					limit: limit
@@ -78,7 +70,7 @@ export default Vue.extend({
 		},
 
 		fetchMore() {
-			(this as any).api(this.endpoint, {
+			this.$root.api(this.endpoint, {
 				userId: this.user.id,
 				iknow: false,
 				limit: limit,
@@ -96,7 +88,7 @@ export default Vue.extend({
 .yyyocnobkvdlnyapyauyopbskldsnipz
 	width 100%
 	max-width 1280px
-	padding 16px
+	padding 32px
 	margin 0 auto
 
 	> header

@@ -2,6 +2,7 @@
  * Desktop Client
  */
 
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
@@ -10,15 +11,6 @@ import './style.styl';
 import init from '../init';
 import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import composeNotification from '../common/scripts/compose-notification';
-
-import chooseDriveFolder from './api/choose-drive-folder';
-import chooseDriveFile from './api/choose-drive-file';
-import dialog from './api/dialog';
-import input from './api/input';
-import post from './api/post';
-import notify from './api/notify';
-import updateAvatar from './api/update-avatar';
-import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
 import MkHome from './views/pages/home.vue';
@@ -36,12 +28,131 @@ import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
+
+import Ctx from './views/components/context-menu.vue';
+import PostFormWindow from './views/components/post-form-window.vue';
+import RenoteFormWindow from './views/components/renote-form-window.vue';
+import MkChooseFileFromDriveWindow from './views/components/choose-file-from-drive-window.vue';
+import MkChooseFolderFromDriveWindow from './views/components/choose-folder-from-drive-window.vue';
+import Dialog from './views/components/dialog.vue';
+import InputDialog from './views/components/input-dialog.vue';
+import Notification from './views/components/ui-notification.vue';
+
+import { url } from '../config';
 import MiOS from '../mios';
 
 /**
  * init
  */
 init(async (launch) => {
+	Vue.mixin({
+		methods: {
+			$contextmenu(e, menu, opts?) {
+				const o = opts || {};
+				const vm = this.$root.new(Ctx, {
+					menu,
+					x: e.pageX - window.pageXOffset,
+					y: e.pageY - window.pageYOffset,
+				});
+				vm.$once('closed', () => {
+					if (o.closed) o.closed();
+				});
+			},
+
+			$post(opts) {
+				const o = opts || {};
+				if (o.renote) {
+					const vm = this.$root.new(RenoteFormWindow, {
+						note: o.renote,
+						animation: o.animation == null ? true : o.animation
+					});
+					if (o.cb) vm.$once('closed', o.cb);
+				} else {
+					const vm = this.$root.new(PostFormWindow, {
+						reply: o.reply,
+						animation: o.animation == null ? true : o.animation
+					});
+					if (o.cb) vm.$once('closed', o.cb);
+				}
+			},
+
+			$chooseDriveFile(opts) {
+				return new Promise((res, rej) => {
+					const o = opts || {};
+
+					if (document.body.clientWidth > 800) {
+						const w = this.$root.new(MkChooseFileFromDriveWindow, {
+							title: o.title,
+							multiple: o.multiple,
+							initFolder: o.currentFolder
+						});
+						w.$once('selected', file => {
+							res(file);
+						});
+					} else {
+						window['cb'] = file => {
+							res(file);
+						};
+
+						window.open(url + `/selectdrive?multiple=${o.multiple}`,
+							'choose_drive_window',
+							'height=500, width=800');
+					}
+				});
+			},
+
+			$chooseDriveFolder(opts) {
+				return new Promise((res, rej) => {
+					const o = opts || {};
+					const w = this.$root.new(MkChooseFolderFromDriveWindow, {
+						title: o.title,
+						initFolder: o.currentFolder
+					});
+					w.$once('selected', folder => {
+						res(folder);
+					});
+				});
+			},
+
+			$dialog(opts) {
+				return new Promise<string>((res, rej) => {
+					const o = opts || {};
+					const d = this.$root.new(Dialog, {
+						title: o.title,
+						text: o.text,
+						modal: o.modal,
+						buttons: o.actions
+					});
+					d.$once('clicked', id => {
+						res(id);
+					});
+				});
+			},
+
+			$input(opts) {
+				return new Promise<string>((res, rej) => {
+					const o = opts || {};
+					const d = this.$root.new(InputDialog, {
+						title: o.title,
+						placeholder: o.placeholder,
+						default: o.default,
+						type: o.type || 'text',
+						allowEmpty: o.allowEmpty
+					});
+					d.$once('done', text => {
+						res(text);
+					});
+				});
+			},
+
+			$notify(message) {
+				this.$root.new(Notification, {
+					message
+				});
+			}
+		}
+	});
+
 	// Register directives
 	require('./views/directives');
 
@@ -75,22 +186,13 @@ init(async (launch) => {
 	});
 
 	// Launch the app
-	const [, os] = launch(router, os => ({
-		chooseDriveFolder: chooseDriveFolder(os),
-		chooseDriveFile: chooseDriveFile(os),
-		dialog: dialog(os),
-		input: input(os),
-		post: post(os),
-		notify: notify(os),
-		updateAvatar: updateAvatar(os),
-		updateBanner: updateBanner(os)
-	}));
+	const [app, os] = launch(router);
 
 	if (os.store.getters.isSignedIn) {
 		/**
 		 * Fuck AD Block
 		 */
-		fuckAdBlock(os);
+		fuckAdBlock(app);
 	}
 
 	/**

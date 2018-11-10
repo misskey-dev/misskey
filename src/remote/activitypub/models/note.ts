@@ -13,6 +13,7 @@ import htmlToMFM from '../../../mfm/html-to-mfm';
 import Emoji from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
+import { unique, concat, difference } from '../../../prelude/array';
 
 const log = debug('misskey:activitypub');
 
@@ -81,6 +82,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 	//#endergion
 
+	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
+
 	// 添付ファイル
 	// TODO: attachmentは必ずしもImageではない
 	// TODO: attachmentは必ずしも配列ではない
@@ -116,6 +119,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		geo: undefined,
 		visibility,
 		visibleUsers,
+		apMentions,
 		uri: note.id
 	}, silent);
 }
@@ -173,4 +177,15 @@ async function extractEmojis(tags: ITag[], host_: string) {
 			});
 		})
 	);
+}
+
+async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: string[], resolver: Resolver) {
+	const ignoreUris = ['https://www.w3.org/ns/activitystreams#Public', `${actor.uri}/followers`];
+	const uris = difference(unique(concat([to || [], cc || []])), ignoreUris);
+
+	const users = await Promise.all(
+		uris.map(async uri => await resolvePerson(uri, null, resolver).catch(() => null))
+	);
+
+	return users.filter(x => x != null);
 }

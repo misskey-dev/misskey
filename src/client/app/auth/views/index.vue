@@ -1,7 +1,7 @@
 <template>
 <div class="index">
 	<main v-if="$store.getters.isSignedIn">
-		<p class="fetching" v-if="fetching">%i18n:@loading%<mk-ellipsis/></p>
+		<p class="fetching" v-if="fetching">{{ $t('loading') }}<mk-ellipsis/></p>
 		<x-form
 			class="form"
 			ref="form"
@@ -11,20 +11,20 @@
 			@accepted="accepted"
 		/>
 		<div class="denied" v-if="state == 'denied'">
-			<h1>%i18n:@denied%</h1>
-			<p>%i18n:@denied-paragraph%</p>
+			<h1>{{ $t('denied') }}</h1>
+			<p>{{ $t('denied-paragraph') }}</p>
 		</div>
 		<div class="accepted" v-if="state == 'accepted'">
-			<h1>{{ session.app.isAuthorized ? '%i18n:@already-authorized%' : '%i18n:@allowed%' }}</h1>
-			<p v-if="session.app.callbackUrl">%i18n:@callback-url%<mk-ellipsis/></p>
-			<p v-if="!session.app.callbackUrl">%i18n:@please-go-back%</p>
+			<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
+			<p v-if="session.app.callbackUrl">{{ $t('callback-url') }}<mk-ellipsis/></p>
+			<p v-if="!session.app.callbackUrl">{{ $t('please-go-back') }}</p>
 		</div>
 		<div class="error" v-if="state == 'fetch-session-error'">
-			<p>%i18n:@error%</p>
+			<p>{{ $t('error') }}</p>
 		</div>
 	</main>
 	<main class="signin" v-if="!$store.getters.isSignedIn">
-		<h1>%i18n:@sign-in%</h1>
+		<h1>{{ $t('sign-in') }}</h1>
 		<mk-signin/>
 	</main>
 	<footer><img src="/assets/auth/icon.svg" alt="Misskey"/></footer>
@@ -33,9 +33,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../i18n';
 import XForm from './form.vue';
 
 export default Vue.extend({
+	i18n: i18n('auth/views/index.vue'),
 	components: {
 		XForm
 	},
@@ -55,7 +57,7 @@ export default Vue.extend({
 		if (!this.$store.getters.isSignedIn) return;
 
 		// Fetch session
-		(this as any).api('auth/session/show', {
+		this.$root.api('auth/session/show', {
 			token: this.token
 		}).then(session => {
 			this.session = session;
@@ -63,7 +65,7 @@ export default Vue.extend({
 
 			// 既に連携していた場合
 			if (this.session.app.isAuthorized) {
-				(this as any).api('auth/accept', {
+				this.$root.api('auth/accept', {
 					token: this.session.token
 				}).then(() => {
 					this.accepted();

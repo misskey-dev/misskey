@@ -30,18 +30,18 @@
 				<x-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<button v-if="moreFolders">%i18n:@load-more%</button>
+				<button v-if="moreFolders">{{ $t('@.load-more') }}</button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:@load-more%</button>
+				<button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('@.load-more') }}</button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
-				<p v-if="draghover">%i18n:@empty-draghover%</p>
-				<p v-if="!draghover && folder == null"><strong>%i18n:@empty-drive%</strong><br/>%i18n:@empty-drive-description%</p>
-				<p v-if="!draghover && folder != null">%i18n:@empty-folder%</p>
+				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
+				<p v-if="!draghover && folder == null"><strong>{{ $t('empty-drive') }}</strong><br/>{{ $t('empty-drive-description') }}</p>
+				<p v-if="!draghover && folder != null">{{ $t('empty-folder') }}</p>
 			</div>
 		</div>
 		<div class="fetching" v-if="fetching">
@@ -59,15 +59,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkDriveWindow from './drive-window.vue';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import contains from '../../../common/scripts/contains';
-import contextmenu from '../../api/contextmenu';
 import { url } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/drive.vue'),
 	components: {
 		XNavFolder,
 		XFolder,
@@ -115,7 +116,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('drive');
+		this.connection = this.$root.stream.useSharedConnection('drive');
 
 		this.connection.on('fileCreated', this.onStreamDriveFileCreated);
 		this.connection.on('fileUpdated', this.onStreamDriveFileUpdated);
@@ -135,19 +136,19 @@ export default Vue.extend({
 	},
 	methods: {
 		onContextmenu(e) {
-			contextmenu((this as any).os)(e, [{
+			this.$contextmenu(e, [{
 				type: 'item',
-				text: '%i18n:@contextmenu.create-folder%',
+				text: this.$t('contextmenu.create-folder'),
 				icon: ['far', 'folder'],
 				action: this.createFolder
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.upload%',
+				text: this.$t('contextmenu.upload'),
 				icon: 'upload',
 				action: this.selectLocalFile
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.url-upload%',
+				text: this.$t('contextmenu.url-upload'),
 				icon: 'cloud-upload-alt',
 				action: this.urlUpload
 			}]);
@@ -288,7 +289,7 @@ export default Vue.extend({
 				const file = JSON.parse(driveFile);
 				if (this.files.some(f => f.id == file.id)) return;
 				this.removeFile(file.id);
-				(this as any).api('drive/files/update', {
+				this.$root.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder ? this.folder.id : null
 				});
@@ -304,7 +305,7 @@ export default Vue.extend({
 				if (this.folder && folder.id == this.folder.id) return false;
 				if (this.folders.some(f => f.id == folder.id)) return false;
 				this.removeFolder(folder.id);
-				(this as any).api('drive/folders/update', {
+				this.$root.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder ? this.folder.id : null
 				}).then(() => {
@@ -312,11 +313,11 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							(this as any).apis.dialog({
-								title: '<fa icon="exclamation-triangle"/>%i18n:@unable-to-process%',
-								text: '%i18n:@circular-reference-detected%',
+							this.$dialog({
+								title: this.$t('unable-to-process'),
+								text: this.$t('circular-reference-detected'),
 								actions: [{
-									text: '%i18n:common.ok%'
+									text: this.$t('@.ok')
 								}]
 							});
 							break;
@@ -333,31 +334,31 @@ export default Vue.extend({
 		},
 
 		urlUpload() {
-			(this as any).apis.input({
-				title: '%i18n:@url-upload%',
-				placeholder: '%i18n:@url-of-file%'
+			this.$input({
+				title: this.$t('url-upload'),
+				placeholder: this.$t('url-of-file')
 			}).then(url => {
-				(this as any).api('drive/files/upload_from_url', {
+				this.$root.api('drive/files/upload_from_url', {
 					url: url,
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				(this as any).apis.dialog({
-					title: '<fa icon="check"/>%i18n:@url-upload-requested%',
-					text: '%i18n:@may-take-time%',
+				this.$dialog({
+					title: this.$t('url-upload-requested'),
+					text: this.$t('may-take-time'),
 					actions: [{
-						text: '%i18n:common.ok%'
+						text: this.$t('@.ok')
 					}]
 				});
 			});
 		},
 
 		createFolder() {
-			(this as any).apis.input({
-				title: '%i18n:@create-folder%',
-				placeholder: '%i18n:@folder-name%'
+			this.$input({
+				title: this.$t('create-folder'),
+				placeholder: this.$t('folder-name')
 			}).then(name => {
-				(this as any).api('drive/folders/create', {
+				this.$root.api('drive/folders/create', {
 					name: name,
 					parentId: this.folder ? this.folder.id : undefined
 				}).then(folder => {
@@ -398,7 +399,7 @@ export default Vue.extend({
 
 		newWindow(folder) {
 			if (document.body.clientWidth > 800) {
-				(this as any).os.new(MkDriveWindow, {
+				this.$root.new(MkDriveWindow, {
 					folder: folder
 				});
 			} else {
@@ -418,7 +419,7 @@ export default Vue.extend({
 
 			this.fetching = true;
 
-			(this as any).api('drive/folders/show', {
+			this.$root.api('drive/folders/show', {
 				folderId: target
 			}).then(folder => {
 				this.folder = folder;
@@ -520,7 +521,7 @@ export default Vue.extend({
 			const filesMax = 30;
 
 			// フォルダ一覧取得
-			(this as any).api('drive/folders', {
+			this.$root.api('drive/folders', {
 				folderId: this.folder ? this.folder.id : null,
 				limit: foldersMax + 1
 			}).then(folders => {
@@ -533,7 +534,7 @@ export default Vue.extend({
 			});
 
 			// ファイル一覧取得
-			(this as any).api('drive/files', {
+			this.$root.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
 				limit: filesMax + 1
 			}).then(files => {
@@ -563,7 +564,7 @@ export default Vue.extend({
 			const max = 30;
 
 			// ファイル一覧取得
-			(this as any).api('drive/files', {
+			this.$root.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
 				untilId: this.files[this.files.length - 1].id,
 				limit: max + 1

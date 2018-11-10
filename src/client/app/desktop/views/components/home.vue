@@ -1,40 +1,40 @@
 <template>
 <div class="mk-home" :data-customize="customize">
 	<div class="customize" v-if="customize">
-		<router-link to="/"><fa icon="check"/>%i18n:@done%</router-link>
+		<router-link to="/"><fa icon="check"/>{{ $t('done') }}</router-link>
 		<div>
 			<div class="adder">
-				<p>%i18n:@add-widget%</p>
+				<p>{{ $t('add-widget') }}</p>
 				<select v-model="widgetAdderSelected">
-					<option value="profile">%i18n:common.widgets.profile%</option>
-					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
-					<option value="calendar">%i18n:common.widgets.calendar%</option>
-					<option value="timemachine">%i18n:common.widgets.timemachine%</option>
-					<option value="activity">%i18n:common.widgets.activity%</option>
-					<option value="rss">%i18n:common.widgets.rss%</option>
-					<option value="trends">%i18n:common.widgets.trends%</option>
-					<option value="photo-stream">%i18n:common.widgets.photo-stream%</option>
-					<option value="slideshow">%i18n:common.widgets.slideshow%</option>
-					<option value="version">%i18n:common.widgets.version%</option>
-					<option value="broadcast">%i18n:common.widgets.broadcast%</option>
-					<option value="notifications">%i18n:common.widgets.notifications%</option>
-					<option value="users">%i18n:common.widgets.users%</option>
-					<option value="polls">%i18n:common.widgets.polls%</option>
-					<option value="post-form">%i18n:common.widgets.post-form%</option>
-					<option value="messaging">%i18n:common.widgets.messaging%</option>
-					<option value="memo">%i18n:common.widgets.memo%</option>
-					<option value="hashtags">%i18n:common.widgets.hashtags%</option>
-					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
-					<option value="server">%i18n:common.widgets.server%</option>
-					<option value="donation">%i18n:common.widgets.donation%</option>
-					<option value="nav">%i18n:common.widgets.nav%</option>
-					<option value="tips">%i18n:common.widgets.tips%</option>
+					<option value="profile">{{ $t('@.widgets.profile') }}</option>
+					<option value="analog-clock">{{ $t('@.widgets.analog-clock') }}</option>
+					<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
+					<option value="timemachine">{{ $t('@.widgets.timemachine') }}</option>
+					<option value="activity">{{ $t('@.widgets.activity') }}</option>
+					<option value="rss">{{ $t('@.widgets.rss') }}</option>
+					<option value="trends">{{ $t('@.widgets.trends') }}</option>
+					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
+					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
+					<option value="version">{{ $t('@.widgets.version') }}</option>
+					<option value="broadcast">{{ $t('@.widgets.broadcast') }}</option>
+					<option value="notifications">{{ $t('@.widgets.notifications') }}</option>
+					<option value="users">{{ $t('@.widgets.users') }}</option>
+					<option value="polls">{{ $t('@.widgets.polls') }}</option>
+					<option value="post-form">{{ $t('@.widgets.post-form') }}</option>
+					<option value="messaging">{{ $t('@.widgets.messaging') }}</option>
+					<option value="memo">{{ $t('@.widgets.memo') }}</option>
+					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
+					<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
+					<option value="server">{{ $t('@.widgets.server') }}</option>
+					<option value="donation">{{ $t('@.widgets.donation') }}</option>
+					<option value="nav">{{ $t('@.widgets.nav') }}</option>
+					<option value="tips">{{ $t('@.widgets.tips') }}</option>
 				</select>
-				<button @click="addWidget">%i18n:@add%</button>
+				<button @click="addWidget">{{ $t('add') }}</button>
 			</div>
 			<div class="trash">
 				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
-				<p>%i18n:common.trash%</p>
+				<p>{{ $t('@.trash') }}</p>
 			</div>
 		</div>
 	</div>
@@ -53,7 +53,7 @@
 				</div>
 			</x-draggable>
 			<div class="main">
-				<a @click="hint">%i18n:common.customization-tips.title%</a>
+				<a @click="hint">{{ $t('@.customization-tips.title') }}</a>
 				<div>
 					<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
 					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
@@ -75,6 +75,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
 
@@ -123,6 +124,7 @@ defaultDesktopHomeWidgets.right.forEach(widget => {
 //#endregion
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/home.vue'),
 	components: {
 		XDraggable
 	},
@@ -166,7 +168,7 @@ export default Vue.extend({
 
 	created() {
 		if (this.$store.state.settings.home == null) {
-			this.api('i/update_home', {
+			this.$root.api('i/update_home', {
 				home: _defaultDesktopHomeWidgets
 			}).then(() => {
 				this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
@@ -175,7 +177,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 	},
 
 	beforeDestroy() {
@@ -184,14 +186,11 @@ export default Vue.extend({
 
 	methods: {
 		hint() {
-			(this as any).apis.dialog({
-				title: '<fa icon="info-circle"/>%i18n:common.customization-tips.title%',
-				text: '<p>%i18n:common.customization-tips.paragraph1%</p>' +
-					'<p>%i18n:common.customization-tips.paragraph2%</p>' +
-					'<p>%i18n:common.customization-tips.paragraph3%</p>' +
-					'<p>%i18n:common.customization-tips.paragraph4%</p>',
+			this.$dialog({
+				title: this.$t('@.customization-tips.title'),
+				text: this.$t('@.customization-tips.paragraph'),
 				actions: [{
-					text: '%i18n:common.customization-tips.gotit%'
+					text: this.$t('@.customization-tips.gotit')
 				}]
 			});
 		},
@@ -228,7 +227,7 @@ export default Vue.extend({
 			this.$store.commit('settings/setHome', left.concat(right));
 			left.forEach(w => w.place = 'left');
 			right.forEach(w => w.place = 'right');
-			(this as any).api('i/update_home', {
+			this.$root.api('i/update_home', {
 				home: this.home
 			});
 		},

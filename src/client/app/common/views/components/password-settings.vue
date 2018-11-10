@@ -1,42 +1,44 @@
 <template>
 <div>
-	<ui-button @click="reset">%i18n:@reset%</ui-button>
+	<ui-button @click="reset">{{ $t('reset') }}</ui-button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/password-settings.vue'),
 	methods: {
 		reset() {
-			(this as any).apis.input({
-				title: '%i18n:@enter-current-password%',
+			this.$input({
+				title: this.$t('enter-current-password'),
 				type: 'password'
 			}).then(currentPassword => {
-				(this as any).apis.input({
-					title: '%i18n:@enter-new-password%',
+				this.$input({
+					title: this.$t('enter-new-password'),
 					type: 'password'
 				}).then(newPassword => {
-					(this as any).apis.input({
-						title: '%i18n:@enter-new-password-again%',
+					this.$input({
+						title: this.$t('enter-new-password-again'),
 						type: 'password'
 					}).then(newPassword2 => {
 						if (newPassword !== newPassword2) {
-							(this as any).apis.dialog({
+							this.$dialog({
 								title: null,
-								text: '%i18n:@not-match%',
+								text: this.$t('not-match'),
 								actions: [{
 									text: 'OK'
 								}]
 							});
 							return;
 						}
-						(this as any).api('i/change_password', {
+						this.$root.api('i/change_password', {
 							currentPasword: currentPassword,
 							newPassword: newPassword
 						}).then(() => {
-							(this as any).apis.notify('%i18n:@changed%');
+							this.$notify(this.$t('changed'));
 						});
 					});
 				});

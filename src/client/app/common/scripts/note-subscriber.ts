@@ -26,7 +26,7 @@ export default prop => ({
 
 	created() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream;
+			this.connection = this.$root.stream;
 		}
 	},
 

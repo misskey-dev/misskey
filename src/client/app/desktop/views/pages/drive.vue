@@ -6,7 +6,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
+
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/drive.vue'),
 	data() {
 		return {
 			folder: null
@@ -16,11 +19,11 @@ export default Vue.extend({
 		this.folder = this.$route.params.folder;
 	},
 	mounted() {
-		document.title = '%i18n:@title%';
+		document.title = this.$t('title');
 	},
 	methods: {
 		onMoveRoot() {
-			const title = '%i18n:@title%';
+			const title = this.$t('title');
 
 			// Rewrite URL
 			history.pushState(null, title, '/i/drive');
