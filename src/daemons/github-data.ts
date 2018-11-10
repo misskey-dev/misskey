@@ -20,22 +20,22 @@ export default function() {
 			}
 		} = {};
 		contributors = Object.assign(data.owners
-			.filter(x => !contributors[x.id])
-			.map(x => ({
+			.filter((x: any) => !contributors[x.id])
+			.map((x: any) => ({
 				userId: x.id,
 				type: 'owner',
 				session
 			})), contributors);
 		contributors = Object.assign(data.collaborators
-			.filter(x => !contributors[x.id])
-			.map(x => ({
+			.filter((x: any) => !contributors[x.id])
+			.map((x: any) => ({
 				userId: x.id,
 				type: 'collaborator',
 				session
 			})), contributors);
 		contributors = Object.assign(data.contributors
-			.filter(x => !contributors[x.id])
-			.map(x => ({
+			.filter((x: any) => !contributors[x.id])
+			.map((x: any) => ({
 				userId: x.id,
 				type: 'contributor',
 				session
