@@ -1055,7 +1055,7 @@ desktop/views/pages/selectdrive.vue:
   upload: "Téléverser des fichiers à partir de votre ordinateur"
 desktop/views/pages/search.vue:
   not-available: "La fonction de recherche est désactivée dans les paramètres de l’instance."
-  not-found: "「{q}」に関する投稿は見つかりませんでした。"
+  not-found: "Aucune publication trouvée pour « {q} »."
 desktop/views/pages/share.vue:
   share-with: "Partager avec {name}"
 desktop/views/pages/tag.vue:
