@@ -3,15 +3,9 @@
  * (ENTRY POINT)
  */
 
-/**
- * ドメインに基づいて適切なスクリプトを読み込みます。
- * ユーザーの言語およびモバイル端末か否かも考慮します。
- * webpackは介さないためrequireやimportは使えません。
- */
-
 'use strict';
 
-(function() {
+(async function() {
 	// キャッシュ削除要求があれば従う
 	if (localStorage.getItem('shouldFlush') == 'true') {
 		refresh();
@@ -67,7 +61,17 @@
 		langs.includes(settings.device.lang)) {
 		lang = settings.device.lang;
 	}
+
+	window.lang = lang;
 	//#endregion
+
+	let locale = localStorage.getItem('locale');
+	if (locale == null) {
+		const locale = await fetch(`/assets/locales/${lang}.json`)
+			.then(response => response.json());
+
+			localStorage.setItem('locale', JSON.stringify(locale));
+	}
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
@@ -106,7 +110,7 @@
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.js${salt}`);
+	script.setAttribute('src', `/assets/${app}.${ver}.js${salt}`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);

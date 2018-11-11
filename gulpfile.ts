@@ -5,6 +5,7 @@
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
+const yaml = require('gulp-yaml');
 const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
 const cssnano = require('gulp-cssnano');
@@ -39,6 +40,7 @@ gulp.task('build', [
 	'build:ts',
 	'build:copy',
 	'build:client',
+	'locales',
 	'doc'
 ]);
 
@@ -190,6 +192,12 @@ gulp.task('build:client:pug', [
 				minifyCSS: true
 			}))
 			.pipe(gulp.dest('./built/client/app/'))
+);
+
+gulp.task('locales', () =>
+	gulp.src('./locales/*.yml')
+		.pipe(yaml({ schema: 'DEFAULT_SAFE_SCHEMA' }))
+		.pipe(gulp.dest('./built/client/assets/locales/'))
 );
 
 gulp.task('doc', () =>

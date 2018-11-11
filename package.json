@@ -129,6 +129,7 @@
 		"gulp-typescript": "4.0.2",
 		"gulp-uglify": "3.0.1",
 		"gulp-util": "3.0.8",
+		"gulp-yaml": "2.0.2",
 		"hard-source-webpack-plugin": "0.12.0",
 		"html-minifier": "3.5.21",
 		"http-signature": "1.2.0",

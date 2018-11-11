@@ -30,7 +30,7 @@ const postcss = {
 	},
 };
 
-module.exports = Object.keys(locales).map(lang => ({
+module.exports = {
 	entry: {
 		desktop: './src/client/app/desktop/script.ts',
 		mobile: './src/client/app/mobile/script.ts',
@@ -116,9 +116,7 @@ module.exports = Object.keys(locales).map(lang => ({
 			_VERSION_: JSON.stringify(meta.version),
 			_CLIENT_VERSION_: JSON.stringify(version),
 			_CODENAME_: JSON.stringify(codename),
-			_LANG_: JSON.stringify(lang),
 			_LANGS_: JSON.stringify(Object.keys(locales).map(l => [l, locales[l].meta.lang])),
-			_LOCALE_: JSON.stringify(locales[lang]),
 			_ENV_: JSON.stringify(process.env.NODE_ENV)
 		}),
 		new webpack.DefinePlugin({
@@ -134,7 +132,7 @@ module.exports = Object.keys(locales).map(lang => ({
 	],
 	output: {
 		path: __dirname + '/built/client/assets',
-		filename: `[name].${version}.${lang}.js`,
+		filename: `[name].${version}.js`,
 		publicPath: `/assets/`
 	},
 	resolve: {
@@ -151,4 +149,4 @@ module.exports = Object.keys(locales).map(lang => ({
 	cache: true,
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'
-}));
+};
