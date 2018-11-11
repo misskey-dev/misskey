@@ -23,8 +23,8 @@ export default async function($root: any, force = false, silent = false) {
 
 		if (!silent) {
 			$root.$dialog({
-				title: '%i18n:common.update-available-title%',
-				text: '%i18n:common.update-available%'.replace('{newer}', newer).replace('{current}', current)
+				title: $root.$t('@.update-available-title'),
+				text: $root.$t('@.update-available', { newer, current })
 			});
 		}
 
