@@ -8,11 +8,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { host } from '../../../config';
+import { toUnicode } from 'punycode';
 export default Vue.extend({
 	props: ['user', 'detail'],
 	data() {
 		return {
-			host
+			host: toUnicode(host)
 		};
 	}
 });
