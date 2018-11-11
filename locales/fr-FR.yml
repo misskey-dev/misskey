@@ -128,12 +128,12 @@ common:
     my-turn: "C’est votre tour"
     opponent-turn: "Tour de l’adversaire"
     turn-of: "Tour de {name}"
-    past-turn-of: "{name}のターン"
+    past-turn-of: "Tour de {name}"
     won: "{name} a gagné"
     black: "Noirs"
     white: "Blancs"
     total: "Total"
-    this-turn: "{count}ターン目"
+    this-turn: "Tour {count}"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
@@ -160,7 +160,7 @@ common:
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
   ai-chan-kawaii: "Ai-Chan est mignone !"
 auth/views/form.vue:
-  share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
+  share-access: "Désirez-vous autoriser <i>{name}</i> à avoir accès à votre compte ?"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
   account-read: "Afficher les informations du compte :"
   account-write: "Modifications des informations du compte :"
@@ -519,7 +519,7 @@ desktop/views/components/calendar.vue:
   next: "Mois prochain"
   go: "Cliquez pour naviguer"
 desktop/views/components/choose-file-from-drive-window.vue:
-  chosen-files: "{count}ファイル選択中"
+  chosen-files: "{count} fichier·s sélectionné·s"
   upload: "Téléverser des fichiers à partir de votre ordinateur"
   cancel: "Annuler"
   ok: "OK"
@@ -687,8 +687,8 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
 desktop/views/pages/user-following-or-followers.vue:
-  following: "{user}のフォロー"
-  followers: "{user}のフォロワー"
+  following: "{user} suit"
+  followers: "Abonné·e·s de {user}"
 desktop/views/components/settings-window.vue:
   settings: "Paramètres"
 desktop/views/components/settings.vue:
@@ -717,7 +717,7 @@ desktop/views/components/settings.vue:
   api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
-  deck-default: "デッキをデフォルトのUIにする"
+  deck-default: "Utiliser le Deck comme IU par défaut"
   display: "Affichage et design"
   customize: "Personnaliser l'Accueil"
   wallpaper: "Arrière plan"
@@ -737,7 +737,7 @@ desktop/views/components/settings.vue:
   show-renoted-my-notes: "Afficher mes republications dans les fils"
   show-local-renotes: "Afficher les partages locaux sur les fils"
   show-maps: "Afficher la carte"
-  deck-column-align: "デッキのカラムの位置"
+  deck-column-align: "Alignement des colonnes du Deck"
   deck-column-align-center: "Centrer"
   deck-column-align-left: "À gauche"
   sound: "Son"
@@ -870,7 +870,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "Fall in dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Accueil"
-  deck: "デッキ"
+  deck: "Deck"
   game: "Jeux"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -920,30 +920,31 @@ admin/views/instance.vue:
   instance: "Instance"
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
+  host: "Hôte"
   banner-url: "Url de l’image de la bannière"
-  languages: "インスタンスの対象言語"
-  languages-desc: "スペースで区切って複数設定できます。"
+  languages: "Langue de l’instance"
+  languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
   maintainer-config: "Informations de l’administrateur"
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
   drive-config: "Paramètres du lecteur"
   cache-remote-files: "Mettre en cache des fichiers distants"
   cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
-  local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
-  remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
+  local-drive-capacity-mb: "Volume du lecteur par utilisateur"
+  remote-drive-capacity-mb: "Volume du lecteur par utilisateur distant"
   mb: "en mégaoctets"
   recaptcha-config: "Paramètres de reCAPTCHA"
-  recaptcha-info: "reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。"
+  recaptcha-info: "Si activé, un jeton reCAPTCHA est requis. Vous pouvez en obtenir un sur https://www.google.com/recaptcha/intro/"
   enable-recaptcha: "Activation de reCAPTCHA"
   recaptcha-site-key: "Clé reCAPTCHA du site"
   recaptcha-secret-key: "Clé secrète reCAPTCHA"
   twitter-integration-config: "Paramètres de connexion à Twitter"
-  twitter-integration-info: "コールバックURLは /api/tw/cb に設定します。"
+  twitter-integration-info: "L’URL callback est définit sur /api/tw/cb"
   enable-twitter-integration: "Activer la connection à Twitter"
   twitter-integration-consumer-key: "Clé du consommateur"
   twitter-integration-consumer-secret: "Secret du consommateur"
-  github-integration-config: "GitHub連携の設定"
-  github-integration-info: "コールバックURLは /api/gh/cb に設定します。"
+  github-integration-config: "Paramètres d’authentification GitHub"
+  github-integration-info: "L’URL callback est définit sur /api/gh/cb"
   enable-github-integration: "Activer l’authentification avec Github"
   github-integration-client-id: "ID client"
   github-integration-client-secret: "Secret client"
@@ -951,7 +952,7 @@ admin/views/instance.vue:
   proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
   proxy-account-username: "Nom d’utilisateur du compte proxy"
   proxy-account-username-desc: "Spécifiez le nom d’utilisateur du compte utilisé comme proxy."
-  proxy-account-warn: "アカウントは自動で作られないため、そのユーザー名のアカウントを予め作成しておく必要があります。"
+  proxy-account-warn: "Avant d’entammer cette action, vous devez au préalable avoir créé un compte avec ce nom d’utilisateur."
   max-note-text-length: "Nombre maximal de caractères pour les messages"
   disable-registration: "Désactiver les inscriptions"
   disable-local-timeline: "Désactiver l’heure locale"
@@ -1024,7 +1025,7 @@ admin/views/announcements.vue:
   text: "Contenu"
   saved: "Sauvegardé"
   _remove:
-    are-you-sure: "「$1」を削除しますか？"
+    are-you-sure: "Supprimer « %1$s » ?"
     removed: "Supprimé"
 admin/views/hashtags.vue:
   hided-tags: "Tags cachés"
@@ -1054,11 +1055,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "Téléverser des fichiers à partir de votre ordinateur"
 desktop/views/pages/search.vue:
   not-available: "La fonction de recherche est désactivée dans les paramètres de l’instance."
-  not-found: "「{q}」に関する投稿は見つかりませんでした。"
+  not-found: "Aucune publication trouvée pour « {q} »."
 desktop/views/pages/share.vue:
   share-with: "Partager avec {name}"
 desktop/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Aucune publication contenant « {q} » n’a été trouvée."
 desktop/views/pages/user-list.users.vue:
   users: "Utilisateurs"
   add-user: "Ajouter un utilisateur"
@@ -1093,7 +1094,7 @@ desktop/views/pages/user/user.header.vue:
   following: "Suit"
   followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
-  years-old: "ans d’âge"
+  years-old: "{age} ans"
   year: "Année"
   month: "/"
   day: "-"
@@ -1244,7 +1245,7 @@ mobile/views/pages/signup.vue:
 mobile/views/pages/followers.vue:
   followers-of: "Abonné·e·s de {name}"
 mobile/views/pages/following.vue:
-  following-of: "{name}のフォロー"
+  following-of: "Abonné·e·s de {name}"
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
@@ -1253,7 +1254,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "Messages"
 mobile/views/pages/tag.vue:
-  no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
+  no-posts-found: "Aucune publication ayant pour hashtag « {q} » n’a été trouvée."
 mobile/views/pages/welcome.vue:
   signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
@@ -1280,7 +1281,7 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Chercher"
-  not-found: "「{q}」に関する投稿は見つかりませんでした。"
+  not-found: "Aucune publication trouvée pour « {q} »."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
@@ -1351,6 +1352,7 @@ mobile/views/pages/user.vue:
   unmute: "Enlever la sourdine"
   block: "Bloquer"
   unblock: "Débloquer"
+  years-old: "{age} ans"
 mobile/views/pages/user/home.vue:
   recent-notes: "Notes récentes"
   images: "Images"
@@ -1391,7 +1393,7 @@ deck:
 deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
-  edit: "オプション"
+  edit: "Option"
 deck/deck.user-column.vue:
   posts: "Notes"
   following: "Suit"
@@ -1438,7 +1440,7 @@ dev/views/new-app.vue:
   app-desc: "Brève description introductive à votre application."
   app-desc-ex: "p. ex) Misskey pour iOS"
   callback-url: "L’Url de callback (facultatif)"
-  callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
+  callback-url-desc: "Vous pouvez définir l’URL de redirection lorsque l’utilisateur s’est authentifié via formulaire d’authentification."
   authority: "Autorisations "
   authority-desc: "Sont accessibles via l’API, uniquement les fonctionnalités demandées ici."
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
