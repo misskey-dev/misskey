@@ -4,7 +4,9 @@
 		<template v-for="favorite in favorites">
 			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
 		</template>
-		<a v-if="existMore" @click="more">{{ $t('@.load-more') }}</a>
+		<div class="more" v-if="existMore">
+			<ui-button inline @click="more">{{ $t('@.load-more') }}</ui-button>
+		</div>
 	</main>
 </mk-ui>
 </template>
@@ -75,4 +77,9 @@ main
 
 	> .post
 		margin-bottom 16px
+
+	> .more
+		margin 32px 16px 16px 16px
+		text-align center
+
 </style>
