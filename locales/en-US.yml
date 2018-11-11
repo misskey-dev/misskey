@@ -829,6 +829,10 @@ common/views/components/mute-and-block.vue:
   block: "Blocking"
   no-muted-users: "No muted users"
   no-blocked-users: "No blocked users"
+  word-mute: "ワードミュート"
+  muted-words: "ミュートされたキーワード"
+  muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  save: "保存"
 common/views/components/password-settings.vue:
   reset: "Change password"
   enter-current-password: "Enter the current password"
