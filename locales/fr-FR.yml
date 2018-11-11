@@ -829,6 +829,10 @@ common/views/components/mute-and-block.vue:
   block: "En cours blocage"
   no-muted-users: "Aucun utilisateur·rice n’est mis·e en sourdine"
   no-blocked-users: "Aucun utilisateur·rice n’est bloqué·e"
+  word-mute: "ワードミュート"
+  muted-words: "ミュートされたキーワード"
+  muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  save: "保存"
 common/views/components/password-settings.vue:
   reset: "Modifier le mot de passe"
   enter-current-password: "Entrez votre mot de passe actuel"
