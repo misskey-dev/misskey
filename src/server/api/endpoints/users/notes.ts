@@ -28,7 +28,7 @@ export const meta = {
 		},
 
 		host: {
-			validator: $.str.optional,
+			validator: $.str.optional.nullable,
 		},
 
 		includeReplies: {
