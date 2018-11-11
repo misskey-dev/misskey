@@ -83,12 +83,13 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { host } from '../../config';
+import { toUnicode } from 'punycode';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/instance.vue'),
 	data() {
 		return {
-			host,
+			host: toUnicode(host),
 			maintainerName: null,
 			maintainerEmail: null,
 			disableRegistration: false,

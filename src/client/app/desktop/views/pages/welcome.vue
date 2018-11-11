@@ -151,6 +151,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { host, copyright } from '../../../config';
 import { concat } from '../../../../../prelude/array';
+import { toUnicode } from 'punycode';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/welcome.vue'),
@@ -160,7 +161,7 @@ export default Vue.extend({
 			stats: null,
 			banner: null,
 			copyright,
-			host,
+			host: toUnicode(host),
 			name: 'Misskey',
 			description: '',
 			announcements: [],
