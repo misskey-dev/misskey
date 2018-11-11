@@ -5,7 +5,7 @@
 		<button class="upload" @click="upload"><fa icon="upload"/></button>
 		<button v-if="multiple" class="ok" @click="ok"><fa icon="check"/></button>
 	</header>
-	<mk-drive ref="browser" select-file :multiple="multiple" is-naked :top="$store.state.uiHeaderHeight"/>
+	<x-drive ref="browser" select-file :multiple="multiple" is-naked :top="$store.state.uiHeaderHeight"/>
 </div>
 </template>
 
@@ -15,6 +15,9 @@ import i18n from '../../../i18n';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/selectdrive.vue'),
+	components: {
+		XDrive: () => import('../components/drive.vue').then(m => m.default),
+	},
 	data() {
 		return {
 			files: []

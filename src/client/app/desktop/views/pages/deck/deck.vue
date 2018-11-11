@@ -25,9 +25,6 @@ import i18n from '../../../../i18n';
 import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
-import XUserColumn from './deck.user-column.vue';
-import XNoteColumn from './deck.note-column.vue';
-import XHashtagColumn from './deck.hashtag-column.vue';
 
 import * as uuid from 'uuid';
 
@@ -35,9 +32,9 @@ export default Vue.extend({
 	i18n: i18n('deck'),
 	components: {
 		XColumnCore,
-		XUserColumn,
-		XNoteColumn,
-		XHashtagColumn
+		XUserColumn: () => import('./deck.user-column.vue').then(m => m.default),
+		XNoteColumn: () => import('./deck.note-column.vue').then(m => m.default),
+		XHashtagColumn: () => import('./deck.hashtag-column.vue').then(m => m.default)
 	},
 
 	computed: {

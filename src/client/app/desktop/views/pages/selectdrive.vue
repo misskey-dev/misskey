@@ -1,6 +1,6 @@
 <template>
 <div class="mkp-selectdrive">
-	<mk-drive ref="browser"
+	<x-drive ref="browser"
 		:multiple="multiple"
 		@selected="onSelected"
 		@change-selection="onChangeSelection"
@@ -19,6 +19,9 @@ import i18n from '../../../i18n';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/selectdrive.vue'),
+	components: {
+		XDrive: () => import('../components/drive.vue').then(m => m.default),
+	},
 	data() {
 		return {
 			files: []

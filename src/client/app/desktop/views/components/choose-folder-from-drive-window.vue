@@ -4,7 +4,7 @@
 		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
 	</span>
 
-	<mk-drive
+	<x-drive
 		ref="browser"
 		:class="$style.browser"
 		:multiple="false"
@@ -21,6 +21,9 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/choose-folder-from-drive-window.vue'),
+	components: {
+		XDrive: () => import('./drive.vue').then(m => m.default),
+	},
 	methods: {
 		ok() {
 			this.$emit('selected', (this.$refs.browser as any).folder);

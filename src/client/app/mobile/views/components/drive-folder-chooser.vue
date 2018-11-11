@@ -6,7 +6,7 @@
 			<button class="close" @click="cancel"><fa icon="times"/></button>
 			<button class="ok" @click="ok"><fa icon="check"/></button>
 		</header>
-		<mk-drive ref="browser"
+		<x-drive ref="browser"
 			select-folder
 		/>
 	</div>
@@ -18,6 +18,9 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/drive-folder-chooser.vue'),
+	components: {
+		XDrive: () => import('./drive.vue').then(m => m.default),
+	},
 	methods: {
 		cancel() {
 			this.$emit('canceled');

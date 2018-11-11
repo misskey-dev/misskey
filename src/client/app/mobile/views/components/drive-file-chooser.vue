@@ -6,7 +6,7 @@
 			<button class="close" @click="cancel"><fa icon="times"/></button>
 			<button v-if="multiple" class="ok" @click="ok"><fa icon="check"/></button>
 		</header>
-		<mk-drive class="drive" ref="browser"
+		<x-drive class="drive" ref="browser"
 			:select-file="true"
 			:multiple="multiple"
 			@change-selection="onChangeSelection"
@@ -22,6 +22,9 @@ import i18n from '../../../i18n';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/drive-file-chooser.vue'),
+	components: {
+		XDrive: () => import('./drive.vue').then(m => m.default),
+	},
 	props: ['multiple'],
 	data() {
 		return {

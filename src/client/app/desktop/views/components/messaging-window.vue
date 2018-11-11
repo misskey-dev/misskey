@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" @closed="destroyDom">
 	<span slot="header" :class="$style.header"><fa icon="comments"/>{{ $t('title') }}</span>
-	<mk-messaging :class="$style.content" @navigate="navigate"/>
+	<x-messaging :class="$style.content" @navigate="navigate"/>
 </mk-window>
 </template>
 
@@ -12,6 +12,9 @@ import MkMessagingRoomWindow from './messaging-room-window.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/messaging-window.vue'),
+	components: {
+		XMessaging: () => import('../../../common/views/components/messaging.vue').then(m => m.default)
+	},
 	methods: {
 		navigate(user) {
 			this.$root.new(MkMessagingRoomWindow, {
