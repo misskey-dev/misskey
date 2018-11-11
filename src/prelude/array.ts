@@ -49,3 +49,11 @@ export function groupBy<T>(f: (x: T, y: T) => boolean, xs: T[]): T[][] {
 export function groupOn<T, S>(f: (x: T) => S, xs: T[]): T[][] {
 	return groupBy((a, b) => f(a) === f(b), xs);
 }
+
+export function lessThan(xs: number[], ys: number[]): boolean {
+	for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+		if (xs[i] < ys[i]) return true;
+		if (xs[i] > ys[i]) return false;
+	}
+	return xs.length < ys.length;
+}
