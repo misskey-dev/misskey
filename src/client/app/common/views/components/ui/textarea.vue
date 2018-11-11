@@ -141,6 +141,7 @@ root(fill)
 	> .desc
 		margin 6px 0
 		font-size 13px
+		opacity 0.7
 
 		*
 			margin 0
