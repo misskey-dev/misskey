@@ -9,7 +9,7 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	components: {
-		XReversi: () => import('../../../../common/views/components/games/reversi/reversi.vue')
+		XReversi: () => import('../../../../common/views/components/games/reversi/reversi.vue').then(m => m.default)
 	},
 	props: {
 		ui: {

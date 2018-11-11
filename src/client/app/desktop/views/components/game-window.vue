@@ -13,7 +13,7 @@ import { url } from '../../../config';
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/game-window.vue'),
 	components: {
-		XReversi: () => import('../../../common/views/components/games/reversi/reversi.vue')
+		XReversi: () => import('../../../common/views/components/games/reversi/reversi.vue').then(m => m.default)
 	},
 	data() {
 		return {

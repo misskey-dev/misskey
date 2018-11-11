@@ -17,82 +17,28 @@ const meta = require('./package.json');
 const version = meta.clientVersion;
 const codename = meta.codename;
 
-const langs = Object.keys(locales);
-
 const isProduction = process.env.NODE_ENV == 'production';
 
-// Entries
-const entry = {
-	desktop: './src/client/app/desktop/script.ts',
-	mobile: './src/client/app/mobile/script.ts',
-	dev: './src/client/app/dev/script.ts',
-	auth: './src/client/app/auth/script.ts',
-	admin: './src/client/app/admin/script.ts',
-	sw: './src/client/app/sw.js'
+const postcss = {
+	loader: 'postcss-loader',
+	options: {
+		plugins: [
+			require('cssnano')({
+				preset: 'default'
+			})
+		]
+	},
 };
 
-const output = {
-	path: __dirname + '/built/client/assets',
-	filename: `[name].${version}.-.js`
-};
-
-//#region Define consts
-const consts = {
-	_THEME_COLOR_: constants.themeColor,
-	_COPYRIGHT_: constants.copyright,
-	_VERSION_: meta.version,
-	_CLIENT_VERSION_: version,
-	_CODENAME_: codename,
-	_LANG_: '%lang%',
-	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
-	_LOCALE_: '%locale%',
-	_ENV_: process.env.NODE_ENV
-};
-
-const _consts: { [ key: string ]: any } = {};
-
-Object.keys(consts).forEach(key => {
-	_consts[key] = JSON.stringify((consts as any)[key]);
-});
-//#endregion
-
-const plugins = [
-	//new HardSourceWebpackPlugin(),
-	new ProgressBarPlugin({
-		format: chalk`  {cyan.bold yes we can} {bold [}:bar{bold ]} {green.bold :percent} {gray (:current/:total)} :elapseds`,
-		clear: false
-	}),
-	new webpack.DefinePlugin(_consts),
-	new webpack.DefinePlugin({
-		'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
-	}),
-	new WebpackOnBuildPlugin((stats: any) => {
-		fs.writeFileSync('./built/client/meta.json', JSON.stringify({
-			version
-		}), 'utf-8');
-
-		//#region i18n
-		langs.forEach(lang => {
-			Object.keys(entry).forEach(file => {
-				let src = fs.readFileSync(`${__dirname}/built/client/assets/${file}.${version}.-.js`, 'utf-8');
-
-				src = src.replace('%lang%', lang);
-				src = src.replace('"%locale%"', JSON.stringify(locales[lang]));
-
-				fs.writeFileSync(`${__dirname}/built/client/assets/${file}.${version}.${lang}.js`, src, 'utf-8');
-			});
-		});
-		//#endregion
-	}),
-	new VueLoaderPlugin()
-];
-
-if (isProduction) {
-	plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
-}
-
-module.exports = {
-	entry,
+module.exports = Object.keys(locales).map(lang => ({
+	entry: {
+		desktop: './src/client/app/desktop/script.ts',
+		mobile: './src/client/app/mobile/script.ts',
+		dev: './src/client/app/dev/script.ts',
+		auth: './src/client/app/auth/script.ts',
+		admin: './src/client/app/admin/script.ts',
+		sw: './src/client/app/sw.js'
+	},
 	module: {
 		rules: [{
 			test: /\.vue$/,
@@ -118,21 +64,17 @@ module.exports = {
 				}, {
 					loader: 'css-loader',
 					options: {
-						modules: true,
-						minimize: true
+						modules: true
 					}
-				}, {
+				}, postcss, {
 					loader: 'stylus-loader'
 				}]
 			}, {
 				use: [{
 					loader: 'vue-style-loader'
 				}, {
-					loader: 'css-loader',
-					options: {
-						minimize: true
-					}
-				}, {
+					loader: 'css-loader'
+				}, postcss, {
 					loader: 'stylus-loader'
 				}]
 			}]
@@ -141,11 +83,8 @@ module.exports = {
 			use: [{
 				loader: 'vue-style-loader'
 			}, {
-				loader: 'css-loader',
-				options: {
-					minimize: true
-				}
-			}]
+				loader: 'css-loader'
+			}, postcss]
 		}, {
 			test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
 			loader: 'url-loader'
@@ -165,8 +104,39 @@ module.exports = {
 			}]
 		}]
 	},
-	plugins,
-	output,
+	plugins: [
+		//new HardSourceWebpackPlugin(),
+		new ProgressBarPlugin({
+			format: chalk`  {cyan.bold yes we can} {bold [}:bar{bold ]} {green.bold :percent} {gray (:current/:total)} :elapseds`,
+			clear: false
+		}),
+		new webpack.DefinePlugin({
+			_THEME_COLOR_: JSON.stringify(constants.themeColor),
+			_COPYRIGHT_: JSON.stringify(constants.copyright),
+			_VERSION_: JSON.stringify(meta.version),
+			_CLIENT_VERSION_: JSON.stringify(version),
+			_CODENAME_: JSON.stringify(codename),
+			_LANG_: JSON.stringify(lang),
+			_LANGS_: JSON.stringify(Object.keys(locales).map(l => [l, locales[l].meta.lang])),
+			_LOCALE_: JSON.stringify(locales[lang]),
+			_ENV_: JSON.stringify(process.env.NODE_ENV)
+		}),
+		new webpack.DefinePlugin({
+			'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
+		}),
+		new WebpackOnBuildPlugin((stats: any) => {
+			fs.writeFileSync('./built/client/meta.json', JSON.stringify({
+				version
+			}), 'utf-8');
+		}),
+		new VueLoaderPlugin(),
+		new webpack.optimize.ModuleConcatenationPlugin()
+	],
+	output: {
+		path: __dirname + '/built/client/assets',
+		filename: `[name].${version}.${lang}.js`,
+		publicPath: `/assets/`
+	},
 	resolve: {
 		extensions: [
 			'.js', '.ts', '.json'
@@ -181,4 +151,4 @@ module.exports = {
 	cache: true,
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'
-};
+}));

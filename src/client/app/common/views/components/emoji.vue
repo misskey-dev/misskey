@@ -7,7 +7,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { lib } from 'emojilib';
+// スクリプトサイズがデカい
+//import { lib } from 'emojilib';
 
 export default Vue.extend({
 	props: {
@@ -50,10 +51,10 @@ export default Vue.extend({
 				this.customEmoji = customEmoji;
 				this.url = customEmoji.url;
 			} else {
-				const emoji = lib[this.name];
-				if (emoji) {
-					this.char = emoji.char;
-				}
+				//const emoji = lib[this.name];
+				//if (emoji) {
+				//	this.char = emoji.char;
+				//}
 			}
 		} else {
 			this.char = this.emoji;

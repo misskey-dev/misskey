@@ -10,7 +10,7 @@
     "declaration": false,
     "sourceMap": false,
     "target": "es2017",
-    "module": "commonjs",
+    "module": "esnext",
     "removeComments": false,
     "noLib": false,
     "strict": true,
