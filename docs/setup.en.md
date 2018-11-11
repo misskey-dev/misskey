@@ -69,7 +69,7 @@ Build misskey with the following:
 
 `npm run build`
 
-If you're on Debian, you will need to install the `build-essential` package.
+If you're on Debian, you will need to install the `build-essential`, `python` package.
 
 If you're still encountering errors about some modules, use node-gyp:
 
