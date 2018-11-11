@@ -250,7 +250,7 @@ export default abstract class Chart<T> {
 			group: group,
 			span: span,
 			date: {
-				$gt: gt.toDate()
+				$gte: gt.toDate()
 			}
 		}, {
 			sort: {
@@ -279,6 +279,29 @@ export default abstract class Chart<T> {
 
 			if (recentLog) {
 				logs = [recentLog];
+			}
+
+		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
+		} else if (!utc(logs[logs.length - 1].date).isSame(gt)) {
+			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
+			// (隙間埋めできないため)
+			const outdatedLog = await this.collection.findOne({
+				group: group,
+				span: span,
+				date: {
+					$lt: gt.toDate()
+				}
+			}, {
+				sort: {
+					date: -1
+				},
+				fields: {
+					_id: 0
+				}
+			});
+
+			if (outdatedLog) {
+				logs.push(outdatedLog);
 			}
 		}
 
