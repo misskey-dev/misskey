@@ -241,8 +241,8 @@ export default abstract class Chart<T> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const gt =
-			span == 'day' ? utc([y, m, d - range]) :
-			span == 'hour' ? utc([y, m, d, h - range]) :
+			span == 'day' ? utc([y, m, d]).subtract(range, 'days') :
+			span == 'hour' ? utc([y, m, d, h]).subtract(range, 'hours') :
 			null;
 
 		// ログ取得
@@ -285,8 +285,8 @@ export default abstract class Chart<T> {
 		// 整形
 		for (let i = (range - 1); i >= 0; i--) {
 			const current =
-				span == 'day' ? utc([y, m, d - i]) :
-				span == 'hour' ? utc([y, m, d, h - i]) :
+				span == 'day' ? utc([y, m, d]).subtract(i, 'days') :
+				span == 'hour' ? utc([y, m, d, h]).subtract(i, 'hours') :
 				null;
 
 			const log = logs.find(l => utc(l.date).isSame(current));
