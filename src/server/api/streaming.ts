@@ -16,10 +16,10 @@ module.exports = (server: http.Server) => {
 	});
 
 	ws.on('request', async (request) => {
-		const connection = request.accept();
-
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
+
+		const connection = request.accept();
 
 		let ev: EventEmitter;
 
