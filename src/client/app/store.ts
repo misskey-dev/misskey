@@ -34,6 +34,7 @@ const defaultSettings = {
 	iLikeSushi: false,
 	rememberNoteVisibility: false,
 	defaultNoteVisibility: 'public',
+	mutedWords: [],
 	games: {
 		reversi: {
 			showBoardLabels: false,

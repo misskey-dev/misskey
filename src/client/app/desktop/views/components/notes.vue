@@ -36,7 +36,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as config from '../../../config';
-
+import shouldMuteNote from '../../../common/scripts/should-mute-note';
 import XNote from './note.vue';
 
 const displayLimit = 30;
@@ -119,28 +119,8 @@ export default Vue.extend({
 		},
 
 		prepend(note, silent = false) {
-			//#region 弾く
-			const isMyNote = note.userId == this.$store.state.i.id;
-			const isPureRenote = note.renoteId != null && note.text == null && note.fileIds.length == 0 && note.poll == null;
-
-			if (this.$store.state.settings.showMyRenotes === false) {
-				if (isMyNote && isPureRenote) {
-					return;
-				}
-			}
-
-			if (this.$store.state.settings.showRenotedMyNotes === false) {
-				if (isPureRenote && (note.renote.userId == this.$store.state.i.id)) {
-					return;
-				}
-			}
-
-			if (this.$store.state.settings.showLocalRenotes === false) {
-				if (isPureRenote && (note.renote.user.host == null)) {
-					return;
-				}
-			}
-			//#endregion
+			// 弾く
+			if (shouldMuteNote(this.$store.state.i, this.$store.state.settings, note)) return;
 
 			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
 			if (document.hidden || !this.isScrollTop()) {

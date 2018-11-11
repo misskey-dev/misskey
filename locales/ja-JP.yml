@@ -935,6 +935,10 @@ common/views/components/mute-and-block.vue:
   block: "ブロック"
   no-muted-users: "ミュートしているユーザーはいません"
   no-blocked-users: "ブロックしているユーザーはいません"
+  word-mute: "ワードミュート"
+  muted-words: "ミュートされたキーワード"
+  muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  save: "保存"
 
 common/views/components/password-settings.vue:
   reset: "パスワードを変更する"

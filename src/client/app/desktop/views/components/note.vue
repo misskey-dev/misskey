@@ -2,7 +2,7 @@
 <div
 	class="note"
 	:class="{ mini }"
-	v-show="appearNote.deletedAt == null"
+	v-show="appearNote.deletedAt == null && !hideThisNote"
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
 	v-hotkey="keymap"
 	:title="title"

@@ -1,7 +1,7 @@
 <template>
 <div
 	class="note"
-	v-show="appearNote.deletedAt == null"
+	v-show="appearNote.deletedAt == null && !hideThisNote"
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
 	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }"
 	v-hotkey="keymap"

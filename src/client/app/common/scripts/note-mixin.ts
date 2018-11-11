@@ -1,5 +1,6 @@
 import parse from '../../../../mfm/parse';
 import { sum } from '../../../../prelude/array';
+import shouldMuteNote from './should-mute-note';
 import MkNoteMenu from '../views/components/note-menu.vue';
 import MkReactionPicker from '../views/components/reaction-picker.vue';
 import Ok from '../views/components/ok.vue';
@@ -22,7 +23,8 @@ type Opts = {
 export default (opts: Opts = {}) => ({
 	data() {
 		return {
-			showContent: false
+			showContent: false,
+			hideThisNote: false
 		};
 	},
 
@@ -84,6 +86,10 @@ export default (opts: Opts = {}) => ({
 				return null;
 			}
 		}
+	},
+
+	created() {
+		this.hideThisNote = shouldMuteNote(this.$store.state.i, this.$store.state.settings, this.appearNote);
 	},
 
 	methods: {
