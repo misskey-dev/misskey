@@ -66,19 +66,6 @@ export default abstract class Chart<T> {
 		} else {
 			this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
 		}
-
-		//#region 後方互換性のため
-		this.collection.find({ span: 'day' }, { fields: { _id: true, date: true } }).then(logs => {
-			logs.forEach(log => {
-				this.collection.update({ _id: log._id }, { $set: { date: utc(log.date).hour(0).toDate() } });
-			});
-		});
-		this.collection.find({ span: 'hour' }, { fields: { _id: true, date: true } }).then(logs => {
-			logs.forEach(log => {
-				this.collection.update({ _id: log._id }, { $set: { date: utc(log.date).toDate() } });
-			});
-		});
-		//#endregion
 	}
 
 	@autobind
