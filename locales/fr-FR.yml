@@ -832,7 +832,7 @@ common/views/components/mute-and-block.vue:
   word-mute: "ワードミュート"
   muted-words: "ミュートされたキーワード"
   muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
-  save: "保存"
+  save: "Enregistrer"
 common/views/components/password-settings.vue:
   reset: "Modifier le mot de passe"
   enter-current-password: "Entrez votre mot de passe actuel"
