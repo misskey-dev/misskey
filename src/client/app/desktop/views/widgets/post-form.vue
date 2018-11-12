@@ -1,16 +1,48 @@
 <template>
-<div class="mkw-post-form">
-	<template v-if="props.design == 0">
-		<p class="title"><fa icon="pencil-alt"/>{{ $t('title') }}</p>
-	</template>
-	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" :placeholder="placeholder"></textarea>
-	<button @click="post" :disabled="posting">{{ $t('note') }}</button>
+<div>
+	<mk-widget-container :show-header="props.design == 0">
+		<template slot="header"><fa icon="pencil-alt"/>{{ $t('title') }}</template>
+
+		<div class="lhcuptdmcdkfwmipgazeawoiuxpzaclc-body">
+			<div class="textarea">
+				<textarea
+					:disabled="posting"
+					v-model="text"
+					@keydown="onKeydown"
+					@paste="onPaste"
+					:placeholder="placeholder"
+					ref="text"
+					v-autocomplete="'text'"
+				></textarea>
+				<button class="emoji" @click="emoji" ref="emoji">
+					<fa :icon="['far', 'laugh']"/>
+				</button>
+			</div>
+			<div class="files" v-show="files.length != 0">
+				<x-draggable :list="files" :options="{ animation: 150 }">
+					<div v-for="file in files" :key="file.id">
+						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
+						<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
+					</div>
+				</x-draggable>
+			</div>
+			<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
+			<mk-uploader ref="uploader" @uploaded="attachMedia"/>
+			<footer>
+				<button @click="chooseFile"><fa icon="upload"/></button>
+				<button @click="chooseFileFromDrive"><fa icon="cloud"/></button>
+				<button @click="post" :disabled="posting" class="post">{{ $t('note') }}</button>
+			</footer>
+		</div>
+	</mk-widget-container>
 </div>
 </template>
 
 <script lang="ts">
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
+import insertTextAtCursor from 'insert-text-at-cursor';
+import * as XDraggable from 'vuedraggable';
 
 export default define({
 	name: 'post-form',
@@ -19,12 +51,19 @@ export default define({
 	})
 }).extend({
 	i18n: i18n('desktop/views/widgets/post-form.vue'),
+
+	components: {
+		XDraggable
+	},
+
 	data() {
 		return {
 			posting: false,
-			text: ''
+			text: '',
+			files: [],
 		};
 	},
+
 	computed: {
 		placeholder(): string {
 			const xs = [
@@ -38,6 +77,7 @@ export default define({
 			return xs[Math.floor(Math.random() * xs.length)];
 		}
 	},
+
 	methods: {
 		func() {
 			if (this.props.design == 1) {
@@ -47,14 +87,68 @@ export default define({
 			}
 			this.save();
 		},
+
+		chooseFile() {
+			(this.$refs.file as any).click();
+		},
+
+		chooseFileFromDrive() {
+			this.$chooseDriveFile({
+				multiple: true
+			}).then(files => {
+				files.forEach(this.attachMedia);
+			});
+		},
+
+		attachMedia(driveFile) {
+			this.files.push(driveFile);
+			this.$emit('change-attached-files', this.files);
+		},
+
+		detachMedia(id) {
+			this.files = this.files.filter(x => x.id != id);
+			this.$emit('change-attached-files', this.files);
+		},
+
 		onKeydown(e) {
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && !this.posting && this.text) this.post();
 		},
+
+		onPaste(e) {
+			Array.from(e.clipboardData.items).forEach((item: any) => {
+				if (item.kind == 'file') {
+					this.upload(item.getAsFile());
+				}
+			});
+		},
+
+		onChangeFile() {
+			Array.from((this.$refs.file as any).files).forEach(this.upload);
+		},
+
+		upload(file) {
+			(this.$refs.uploader as any).upload(file);
+		},
+
+		async emoji() {
+			const Picker = await import('../components/emoji-picker-dialog.vue').then(m => m.default);
+			const button = this.$refs.emoji;
+			const rect = button.getBoundingClientRect();
+			const vm = this.$root.new(Picker, {
+				x: button.offsetWidth + rect.left + window.pageXOffset,
+				y: rect.top + window.pageYOffset
+			});
+			vm.$once('chosen', emoji => {
+				insertTextAtCursor(this.$refs.text, emoji);
+			});
+		},
+
 		post() {
 			this.posting = true;
 
 			this.$root.api('notes/create', {
-				text: this.text
+				text: this.text == '' ? undefined : this.text,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 			}).then(data => {
 				this.clear();
 			}).catch(err => {
@@ -63,66 +157,114 @@ export default define({
 				this.posting = false;
 			});
 		},
+
 		clear() {
 			this.text = '';
+			this.files = [];
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
+.lhcuptdmcdkfwmipgazeawoiuxpzaclc-body
+	> .textarea
+		> .emoji
+			position absolute
+			top 0
+			right 0
+			padding 10px
+			font-size 18px
+			color var(--text)
+			opacity 0.5
 
+			&:hover
+				color var(--textHighlighted)
+				opacity 1
 
-.mkw-post-form
-	background #fff
-	overflow hidden
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+			&:active
+				color var(--primary)
+				opacity 1
 
-	> .title
-		z-index 1
-		margin 0
-		padding 0 16px
-		line-height 42px
-		font-size 0.9em
-		font-weight bold
-		color #888
-		box-shadow 0 1px rgba(#000, 0.07)
+		> textarea
+			display block
+			width 100%
+			max-width 100%
+			min-width 100%
+			padding 16px
+			color var(--desktopPostFormTextareaFg)
+			outline none
+			background var(--desktopPostFormTextareaBg)
+			border none
+			border-bottom solid 1px var(--faceDivider)
 
-		> [data-icon]
-			margin-right 4px
+			&:focus
+				& + .emoji
+					opacity 0.7
 
-	> textarea
-		display block
-		width 100%
-		max-width 100%
-		min-width 100%
-		padding 16px
-		margin-bottom 28px + 16px
-		border none
-		border-bottom solid 1px #eee
+	> .files
+		> div
+			padding 4px
 
-	> button
-		display block
-		position absolute
-		bottom 8px
-		right 8px
-		margin 0
-		padding 0 10px
-		height 28px
-		color var(--primaryForeground)
-		background var(--primary) !important
-		outline none
-		border none
-		border-radius 4px
-		transition background 0.1s ease
-		cursor pointer
+			&:after
+				content ""
+				display block
+				clear both
 
-		&:hover
-			background var(--primaryLighten10) !important
+			> div
+				float left
+				border solid 4px transparent
+				cursor move
 
-		&:active
-			background var(--primaryDarken10) !important
-			transition background 0s ease
+				&:hover > .remove
+					display block
+
+				> .img
+					width 64px
+					height 64px
+					background-size cover
+					background-position center center
+
+				> .remove
+					display none
+					position absolute
+					top -6px
+					right -6px
+					width 16px
+					height 16px
+					cursor pointer
+
+	> input[type=file]
+		display none
+
+	> footer
+		display flex
+		padding 8px
+
+		> button:not(.post)
+			color var(--text)
+
+			&:hover
+				color var(--textHighlighted)
+
+		> .post
+			display block
+			margin 0 0 0 auto
+			padding 0 10px
+			height 28px
+			color var(--primaryForeground)
+			background var(--primary) !important
+			outline none
+			border none
+			border-radius 4px
+			transition background 0.1s ease
+			cursor pointer
+
+			&:hover
+				background var(--primaryLighten10) !important
+
+			&:active
+				background var(--primaryDarken10) !important
+				transition background 0s ease
 
 </style>
