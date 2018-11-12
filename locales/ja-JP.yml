@@ -379,6 +379,17 @@ common/views/components/poll-editor.vue:
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
 
+common/views/components/emoji-picker.vue:
+  custom-emoji: "カスタム絵文字"
+  people: "人"
+  animals-and-nature: "動物&自然"
+  food-and-drink: "食べ物&飲み物"
+  activity: "アクティビティ"
+  travel-and-places: "場所"
+  objects: "物"
+  symbols: "記号"
+  flags: "旗"
+
 common/views/components/signin.vue:
   username: "ユーザー名"
   password: "パスワード"

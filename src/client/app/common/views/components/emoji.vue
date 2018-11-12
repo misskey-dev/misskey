@@ -22,7 +22,7 @@ export default Vue.extend({
 		},
 		customEmojis: {
 			required: false,
-			default: []
+			default: () => []
 		}
 	},
 

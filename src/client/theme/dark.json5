@@ -18,6 +18,7 @@
 		secondary: '$secondary',
 		bg: ':darken<8<$secondary',
 		text: '$text',
+		textHighlighted: ':lighten<7<$text',
 
 		scrollbarTrack: ':darken<5<$secondary',
 		scrollbarHandle: ':lighten<5<$secondary',

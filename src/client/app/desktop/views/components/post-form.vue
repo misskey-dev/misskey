@@ -15,11 +15,16 @@
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
 		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
-		<textarea :class="{ with: (files.length != 0 || poll) }"
-			ref="text" v-model="text" :disabled="posting"
-			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
-			v-autocomplete="'text'"
-		></textarea>
+		<div class="textarea">
+			<textarea :class="{ with: (files.length != 0 || poll) }"
+				ref="text" v-model="text" :disabled="posting"
+				@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
+				v-autocomplete="'text'"
+			></textarea>
+			<button class="emoji" @click="emoji" ref="emoji">
+				<fa :icon="['far', 'laugh']"/>
+			</button>
+		</div>
 		<div class="files" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
@@ -377,6 +382,19 @@ export default Vue.extend({
 			this.visibleUsers = erase(user, this.visibleUsers);
 		},
 
+		async emoji() {
+			const Picker = await import('./emoji-picker-dialog.vue').then(m => m.default);
+			const button = this.$refs.emoji;
+			const rect = button.getBoundingClientRect();
+			const vm = this.$root.new(Picker, {
+				x: button.offsetWidth + rect.left + window.pageXOffset,
+				y: rect.top + window.pageYOffset
+			});
+			vm.$once('chosen', emoji => {
+				insertTextAtCursor(this.$refs.text, emoji);
+			});
+		},
+
 		post() {
 			this.posting = true;
 
@@ -469,7 +487,7 @@ export default Vue.extend({
 
 	> .content
 		> input
-		> textarea
+		> .textarea > textarea
 			display block
 			width 100%
 			padding 12px
@@ -498,27 +516,48 @@ export default Vue.extend({
 		> input
 			margin-bottom 8px
 
-		> textarea
-			margin 0
-			max-width 100%
-			min-width 100%
-			min-height 84px
+		> .textarea
+			> .emoji
+				position absolute
+				top 0
+				right 0
+				padding 10px
+				font-size 18px
+				color var(--text)
+				opacity 0.5
 
-			&:hover
-				& + *
-				& + * + *
-					border-color var(--primaryAlpha02)
-					transition border-color .1s ease
+				&:hover
+					color var(--textHighlighted)
+					opacity 1
 
-			&:focus
-				& + *
-				& + * + *
-					border-color var(--primaryAlpha05)
-					transition border-color 0s ease
+				&:active
+					color var(--primary)
+					opacity 1
 
-			&.with
-				border-bottom solid 1px var(--primaryAlpha01) !important
-				border-radius 4px 4px 0 0
+			> textarea
+				margin 0
+				max-width 100%
+				min-width 100%
+				min-height 84px
+
+				&:hover
+					& + *
+					& + * + *
+						border-color var(--primaryAlpha02)
+						transition border-color .1s ease
+
+				&:focus
+					& + *
+					& + * + *
+						border-color var(--primaryAlpha05)
+						transition border-color 0s ease
+
+					& + .emoji
+						opacity 0.7
+
+				&.with
+					border-bottom solid 1px var(--primaryAlpha01) !important
+					border-radius 4px 4px 0 0
 
 		> .visibleUsers
 			margin-bottom 8px
