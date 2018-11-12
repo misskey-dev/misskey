@@ -146,6 +146,8 @@
 	function refresh() {
 		localStorage.setItem('shouldFlush', 'false');
 
+		localStorage.removeItem('locale');
+
 		// Random
 		localStorage.setItem('salt', Math.random().toString().substr(2, 8));
 
