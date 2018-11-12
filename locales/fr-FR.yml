@@ -117,8 +117,8 @@ common:
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   use-os-default-emojis: "Utiliser les émojis standards du système"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
-  is-remote-user: "Ces informations utilisateur ont été copiées."
-  is-remote-post: "Ceci est une publication distante"
+  is-remote-user: "Ces informations appartiennent à un·e utilisateur·rice distant·e."
+  is-remote-post: "Ceci est une publication distante."
   view-on-remote: "Consulter le profil complet"
   error:
     title: 'Une erreur est survenue'
@@ -151,7 +151,7 @@ common:
     notifications: "Notifications"
     users: "Utilisateur·rice·s"
     polls: "Sondages"
-    post-form: "Formulaire de publication"
+    post-form: "Champs de publication"
     server: "Info sur le serveur"
     donation: "Dons"
     nav: "Navigation"
