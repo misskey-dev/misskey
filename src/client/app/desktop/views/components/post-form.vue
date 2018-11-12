@@ -24,17 +24,17 @@
 			<button class="emoji" @click="emoji" ref="emoji">
 				<fa :icon="['far', 'laugh']"/>
 			</button>
+			<div class="files" :class="{ with: poll }" v-show="files.length != 0">
+				<x-draggable :list="files" :options="{ animation: 150 }">
+					<div v-for="file in files" :key="file.id">
+						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
+						<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
+					</div>
+				</x-draggable>
+				<p class="remain">{{ 4 - files.length }}/4</p>
+			</div>
+			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 		</div>
-		<div class="files" :class="{ with: poll }" v-show="files.length != 0">
-			<x-draggable :list="files" :options="{ animation: 150 }">
-				<div v-for="file in files" :key="file.id">
-					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
-					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
-				</div>
-			</x-draggable>
-			<p class="remain">{{ 4 - files.length }}/4</p>
-		</div>
-		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 	<button class="upload" :title="$t('attach-media-from-local')" @click="chooseFile"><fa icon="upload"/></button>
@@ -541,14 +541,14 @@ export default Vue.extend({
 				min-height 84px
 
 				&:hover
-					& + *
 					& + * + *
+					& + * + * + *
 						border-color var(--primaryAlpha02)
 						transition border-color .1s ease
 
 				&:focus
-					& + *
 					& + * + *
+					& + * + * + *
 						border-color var(--primaryAlpha05)
 						transition border-color 0s ease
 
@@ -558,6 +558,66 @@ export default Vue.extend({
 				&.with
 					border-bottom solid 1px var(--primaryAlpha01) !important
 					border-radius 4px 4px 0 0
+
+			> .files
+				margin 0
+				padding 0
+				background var(--desktopPostFormTextareaBg)
+				border solid 1px var(--primaryAlpha01)
+				border-top none
+				border-radius 0 0 4px 4px
+				transition border-color .3s ease
+
+				&.with
+					border-bottom solid 1px var(--primaryAlpha01) !important
+					border-radius 0
+
+				> .remain
+					display block
+					position absolute
+					top 8px
+					right 8px
+					margin 0
+					padding 0
+					color var(--primaryAlpha04)
+
+				> div
+					padding 4px
+
+					&:after
+						content ""
+						display block
+						clear both
+
+					> div
+						float left
+						border solid 4px transparent
+						cursor move
+
+						&:hover > .remove
+							display block
+
+						> .img
+							width 64px
+							height 64px
+							background-size cover
+							background-position center center
+
+						> .remove
+							display none
+							position absolute
+							top -6px
+							right -6px
+							width 16px
+							height 16px
+							cursor pointer
+
+			> .mk-poll-editor
+				background var(--desktopPostFormTextareaBg)
+				border solid 1px var(--primaryAlpha01)
+				border-top none
+				border-radius 0 0 4px 4px
+				transition border-color .3s ease
 
 		> .visibleUsers
 			margin-bottom 8px
@@ -579,66 +639,6 @@ export default Vue.extend({
 			> *
 				margin-right 8px
 				white-space nowrap
-
-		> .files
-			margin 0
-			padding 0
-			background var(--desktopPostFormTextareaBg)
-			border solid 1px var(--primaryAlpha01)
-			border-top none
-			border-radius 0 0 4px 4px
-			transition border-color .3s ease
-
-			&.with
-				border-bottom solid 1px var(--primaryAlpha01) !important
-				border-radius 0
-
-			> .remain
-				display block
-				position absolute
-				top 8px
-				right 8px
-				margin 0
-				padding 0
-				color var(--primaryAlpha04)
-
-			> div
-				padding 4px
-
-				&:after
-					content ""
-					display block
-					clear both
-
-				> div
-					float left
-					border solid 4px transparent
-					cursor move
-
-					&:hover > .remove
-						display block
-
-					> .img
-						width 64px
-						height 64px
-						background-size cover
-						background-position center center
-
-					> .remove
-						display none
-						position absolute
-						top -6px
-						right -6px
-						width 16px
-						height 16px
-						cursor pointer
-
-		> .mk-poll-editor
-			background var(--desktopPostFormTextareaBg)
-			border solid 1px var(--primaryAlpha01)
-			border-top none
-			border-radius 0 0 4px 4px
-			transition border-color .3s ease
 
 	> .mk-uploader
 		margin 8px 0 0 0
