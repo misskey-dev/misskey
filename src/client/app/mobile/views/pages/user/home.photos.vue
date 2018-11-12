@@ -29,7 +29,8 @@ export default Vue.extend({
 		this.$root.api('users/notes', {
 			userId: this.user.id,
 			withFiles: true,
-			limit: 6
+			limit: 6,
+			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
 			notes.forEach(note => {
 				note.media.forEach(media => {

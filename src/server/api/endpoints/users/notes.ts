@@ -153,9 +153,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	}
 
 	//#region Construct query
-	const sort = {
-		_id: -1
-	};
+	const sort = { } as any;
 
 	const query = {
 		deletedAt: null,
@@ -168,15 +166,17 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
+		sort._id = -1;
 		query._id = {
 			$lt: ps.untilId
 		};
 	} else if (ps.sinceDate) {
-		sort._id = 1;
+		sort.createdAt = 1;
 		query.createdAt = {
 			$gt: new Date(ps.sinceDate)
 		};
 	} else if (ps.untilDate) {
+		sort.createdAt = -1;
 		query.createdAt = {
 			$lt: new Date(ps.untilDate)
 		};

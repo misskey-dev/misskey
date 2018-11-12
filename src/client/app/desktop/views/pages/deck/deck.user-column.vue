@@ -155,7 +155,8 @@ export default Vue.extend({
 			this.$root.api('users/notes', {
 				userId: this.user.id,
 				fileType: image,
-				limit: 9
+				limit: 9,
+				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
 				notes.forEach(note => {
 					note.files.forEach(file => {
@@ -254,6 +255,7 @@ export default Vue.extend({
 				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
+					untilDate: new Date().getTime() + 1000 * 86400 * 365,
 					withFiles: this.withFiles,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -274,7 +276,7 @@ export default Vue.extend({
 			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id,
+				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime(),
 				withFiles: this.withFiles,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
