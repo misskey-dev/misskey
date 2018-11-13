@@ -92,7 +92,7 @@ handler.on('push', event => {
 			const compare = event.compare;
 			const commits: any[] = event.commits;
 			post([
-				`Pushed by **${pusher.name}** with ?[${commits.length} commit${commits.length > 1 ? 's' : ''}](${compare}):`,
+				`🆕 Pushed by **${pusher.name}** with ?[${commits.length} commit${commits.length > 1 ? 's' : ''}](${compare}):`,
 				commits.reverse().map(commit => `・[?[${commit.id.substr(0, 7)}](${commit.url})] ${commit.message.split('\n')[0]}`).join('\n'),
 			].join('\n'));
 			break;
@@ -108,9 +108,9 @@ handler.on('issues', event => {
 	const action = event.action;
 	let title: string;
 	switch (action) {
-		case 'opened': title = 'Issue opened'; break;
-		case 'closed': title = 'Issue closed'; break;
-		case 'reopened': title = 'Issue reopened'; break;
+		case 'opened': title = '💥 Issue opened'; break;
+		case 'closed': title = '💮 Issue closed'; break;
+		case 'reopened': title = '🔥 Issue reopened'; break;
 		default: return;
 	}
 	post(`${title}: <${issue.number}>「${issue.title}」\n${issue.html_url}`);
@@ -122,7 +122,7 @@ handler.on('issue_comment', event => {
 	const action = event.action;
 	let text: string;
 	switch (action) {
-		case 'created': text = `Commented to「${issue.title}」:${comment.user.login}「${comment.body}」\n${comment.html_url}`; break;
+		case 'created': text = `💬 Commented to「${issue.title}」:${comment.user.login}「${comment.body}」\n${comment.html_url}`; break;
 		default: return;
 	}
 	post(text);
@@ -143,12 +143,12 @@ handler.on('pull_request', event => {
 	const action = event.action;
 	let text: string;
 	switch (action) {
-		case 'opened': text = `New Pull Request:「${pr.title}」\n${pr.html_url}`; break;
-		case 'reopened': text = `Pull Request Reopened:「${pr.title}」\n${pr.html_url}`; break;
+		case 'opened': text = `📦 New Pull Request:「${pr.title}」\n${pr.html_url}`; break;
+		case 'reopened': text = `🗿 Pull Request Reopened:「${pr.title}」\n${pr.html_url}`; break;
 		case 'closed':
 			text = pr.merged
-				? `Pull Request Merged!:「${pr.title}」\n${pr.html_url}`
-				: `Pull Request Closed:「${pr.title}」\n${pr.html_url}`;
+				? `💯 Pull Request Merged!:「${pr.title}」\n${pr.html_url}`
+				: `🚫 Pull Request Closed:「${pr.title}」\n${pr.html_url}`;
 			break;
 		default: return;
 	}
