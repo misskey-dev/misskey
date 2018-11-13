@@ -598,12 +598,6 @@ desktop/views/components/media-image.vue:
 desktop/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
-desktop/views/components/follow-button.vue:
-  following: "フォロー中"
-  follow: "Volgen"
-  request-pending: "フォロー許可待ち"
-  follow-processing: "フォロー処理中"
-  follow-request: "フォロー申請"
 desktop/views/components/followers-window.vue:
   followers: "Volgers van {}"
 desktop/views/components/followers.vue:
@@ -1175,9 +1169,9 @@ mobile/views/components/media-image.vue:
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
-mobile/views/components/follow-button.vue:
+common/views/components/follow-button.vue:
   following: "フォロー中"
-  follow: "Volgen"
+  follow: "フォロー"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
