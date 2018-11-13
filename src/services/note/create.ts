@@ -116,27 +116,27 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// リプライ対象が削除された投稿だったらreject
 	if (data.reply && data.reply.deletedAt != null) {
-		return rej();
+		return rej('Reply target has been deleted');
 	}
 
 	// Renote対象が削除された投稿だったらreject
 	if (data.renote && data.renote.deletedAt != null) {
-		return rej();
+		return rej('Renote target has been deleted');
 	}
 
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
 	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
-		return rej();
+		return rej('Renote target is not public or home');
 	}
 
 	// リプライ対象が自分以外の非公開の投稿なら禁止
 	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
-		return rej();
+		return rej('Reply target is private of others');
 	}
 
 	// Renote対象が自分以外の非公開の投稿なら禁止
 	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
-		return rej();
+		return rej('Renote target is private of others');
 	}
 
 	if (data.text) {
