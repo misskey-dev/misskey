@@ -27,7 +27,6 @@ import MkFollowing from './views/pages/following.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkUserLists from './views/pages/user-lists.vue';
 import MkUserList from './views/pages/user-list.vue';
-import MkSettings from './views/pages/settings.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
@@ -137,7 +136,7 @@ init((launch) => {
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
 			{ path: '/signup', name: 'signup', component: MkSignup },
-			{ path: '/i/settings', name: 'settings', component: MkSettings },
+			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
 			{ path: '/i/lists', name: 'user-lists', component: MkUserLists },
