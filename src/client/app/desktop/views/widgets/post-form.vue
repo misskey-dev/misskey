@@ -3,7 +3,10 @@
 	<mk-widget-container :show-header="props.design == 0">
 		<template slot="header"><fa icon="pencil-alt"/>{{ $t('title') }}</template>
 
-		<div class="lhcuptdmcdkfwmipgazeawoiuxpzaclc-body">
+		<div class="lhcuptdmcdkfwmipgazeawoiuxpzaclc-body"
+			@dragover.stop="onDragover"
+			@drop.stop="onDrop"
+		>
 			<div class="textarea">
 				<textarea
 					:disabled="posting"
@@ -128,6 +131,33 @@ export default define({
 
 		upload(file) {
 			(this.$refs.uploader as any).upload(file);
+		},
+
+		onDragover(e) {
+			const isFile = e.dataTransfer.items[0].kind == 'file';
+			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
+			if (isFile || isDriveFile) {
+				e.preventDefault();
+				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			}
+		},
+
+		onDrop(e): void {
+			// ファイルだったら
+			if (e.dataTransfer.files.length > 0) {
+				e.preventDefault();
+				Array.from(e.dataTransfer.files).forEach(this.upload);
+				return;
+			}
+
+			//#region ドライブのファイル
+			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			if (driveFile != null && driveFile != '') {
+				const file = JSON.parse(driveFile);
+				this.files.push(file);
+				e.preventDefault();
+			}
+			//#endregion
 		},
 
 		async emoji() {
