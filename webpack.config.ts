@@ -9,6 +9,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const constants = require('./src/const.json');
 
@@ -145,6 +146,9 @@ module.exports = {
 	},
 	resolveLoader: {
 		modules: ['node_modules']
+	},
+	optimization: {
+		minimizer: [new TerserPlugin()]
 	},
 	cache: true,
 	devtool: false, //'source-map',
