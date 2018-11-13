@@ -16,7 +16,7 @@
 	<section class="activity">
 		<h2><fa icon="chart-bar"/>{{ $t('activity') }}</h2>
 		<div>
-			<mk-activity :user="user"/>
+			<x-activity :user="user"/>
 		</div>
 	</section>
 	<section class="frequently-replied-users">
@@ -49,7 +49,8 @@ export default Vue.extend({
 		XNotes,
 		XPhotos,
 		XFriends,
-		XFollowersYouKnow
+		XFollowersYouKnow,
+		XActivity: () => import('../../components/activity.vue').then(m => m.default)
 	},
 	props: ['user']
 });

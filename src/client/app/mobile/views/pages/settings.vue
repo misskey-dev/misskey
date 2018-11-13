@@ -85,7 +85,7 @@
 				</section>
 			</ui-card>
 
-			<mk-drive-settings/>
+			<x-drive-settings/>
 
 			<mk-mute-and-block/>
 
@@ -182,6 +182,11 @@ import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
+
+	components: {
+		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue')
+	},
+
 	data() {
 		return {
 			apiUrl,

@@ -153,7 +153,7 @@ init((launch) => {
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/reversi/:game?', name: 'reversi', component: MkReversi },
-			{ path: '/@:user', component: MkUser },
+			{ path: '/@:user', component: () => import('./views/pages/user.vue').then(m => m.default) },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },
 			{ path: '/notes/:note', component: MkNote },

@@ -194,7 +194,7 @@
 		</ui-card>
 
 		<div class="drive" v-if="page == 'drive'">
-			<mk-drive-settings/>
+			<x-drive-settings/>
 		</div>
 
 		<ui-card class="hashtags" v-show="page == 'hashtags'">
@@ -301,7 +301,8 @@ export default Vue.extend({
 		X2fa,
 		XApps,
 		XSignins,
-		XTags
+		XTags,
+		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue')
 	},
 	props: {
 		initialPage: {
