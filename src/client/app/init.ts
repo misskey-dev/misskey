@@ -138,6 +138,7 @@ import {
 	faTwitter as fabTwitter,
 	faGithub as fabGithub,
 } from '@fortawesome/free-brands-svg-icons';
+import i18n from './i18n';
 
 library.add(
 	faRetweet,
@@ -403,13 +404,7 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			}, { passive: true });
 
 			const app = new Vue({
-				i18n: new VueI18n({
-					sync: false,
-					locale: lang,
-					messages: {
-						[lang]: {}
-					}
-				}),
+				i18n: i18n(),
 				store: os.store,
 				data() {
 					return {
