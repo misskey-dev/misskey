@@ -1,6 +1,6 @@
 <template>
 <div class="mk-github-setting">
-	<p>{{ $t('description') }}<a :href="`${docsUrl}/link-to-github`" target="_blank">{{ $t('detail') }}</a></p>
+	<p>{{ $t('description') }}</p>
 	<p class="account" v-if="$store.state.i.github" :title="`GitHub ID: ${$store.state.i.github.id}`">{{ $t('connected-to') }}: <a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
 	<p>
 		<a :href="`${apiUrl}/connect/github`" target="_blank" @click.prevent="connect">{{ $store.state.i.github ? this.$t('reconnect') : this.$t('connect') }}</a>
@@ -14,15 +14,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { apiUrl, docsUrl } from '../../../config';
+import { apiUrl } from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/github-setting.vue'),
 	data() {
 		return {
 			form: null,
-			apiUrl,
-			docsUrl
+			apiUrl
 		};
 	},
 	mounted() {

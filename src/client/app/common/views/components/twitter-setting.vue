@@ -1,6 +1,6 @@
 <template>
 <div class="mk-twitter-setting">
-	<p>{{ $t('description') }}<a :href="`${docsUrl}/link-to-twitter`" target="_blank">{{ $t('detail') }}</a></p>
+	<p>{{ $t('description') }}</p>
 	<p class="account" v-if="$store.state.i.twitter" :title="`Twitter ID: ${$store.state.i.twitter.userId}`">{{ $t('connected-to') }}: <a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
 	<p>
 		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ $store.state.i.twitter ? this.$t('reconnect') : this.$t('connect') }}</a>
@@ -14,15 +14,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { apiUrl, docsUrl } from '../../../config';
+import { apiUrl } from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/twitter-setting.vue'),
 	data() {
 		return {
 			form: null,
-			apiUrl,
-			docsUrl
+			apiUrl
 		};
 	},
 	mounted() {
