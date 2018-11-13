@@ -243,9 +243,6 @@ main
 					font-size 18px
 					color var(--text)
 
-				> .mk-follow-button
-					margin 0
-
 			> .title
 				margin 8px 0
 

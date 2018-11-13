@@ -114,11 +114,6 @@ export default define({
 					color var(--text)
 					opacity 0.7
 
-			> .mk-follow-button
-				position absolute
-				top 16px
-				right 16px
-
 		> .empty
 			margin 0
 			padding 16px

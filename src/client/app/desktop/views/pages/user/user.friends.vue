@@ -9,7 +9,7 @@
 				<router-link class="name" :to="friend | userPage" v-user-preview="friend.id">{{ friend.name }}</router-link>
 				<p class="username">@{{ friend | acct }}</p>
 			</div>
-			<mk-follow-button :user="friend"/>
+			<mk-follow-button class="follow-button" :user="friend"/>
 		</div>
 	</template>
 	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('no-users') }}</p>
@@ -110,7 +110,7 @@ export default Vue.extend({
 				color var(--text)
 				opacity 0.7
 
-		> .mk-follow-button
+		> .follow-button
 			position absolute
 			top 16px
 			right 16px

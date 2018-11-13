@@ -1,7 +1,7 @@
 <template>
 <div class="profile" v-if="$store.getters.isSignedIn">
 	<div class="friend-form" v-if="$store.state.i.id != user.id">
-		<mk-follow-button :user="user" size="big"/>
+		<mk-follow-button :user="user" block/>
 		<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
 		<p class="stalk" v-if="user.isFollowing">
 			<span v-if="user.isStalking">{{ $t('stalking') }} <a @click="unstalk"><fa icon="meh"/> {{ $t('unstalk') }}</a></span>
