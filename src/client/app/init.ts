@@ -133,6 +133,11 @@ import {
 	faHdd as farHdd,
 } from '@fortawesome/free-regular-svg-icons';
 
+import {
+	faTwitter as fabTwitter,
+	faGithub as fabGithub,
+} from '@fortawesome/free-brands-svg-icons';
+
 library.add(
 	faRetweet,
 	faPlus,
@@ -237,6 +242,9 @@ library.add(
 	farClock,
 	farCalendarAlt,
 	farHdd,
+
+	fabTwitter,
+	fabGithub
 );
 //#endregion
 
