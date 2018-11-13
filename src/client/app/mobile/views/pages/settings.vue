@@ -5,12 +5,12 @@
 		<div class="signin-as" v-html="this.$t('signed-in-as').replace('{}', `<b>${name}</b>`)"></div>
 
 		<div>
-			<mk-profile-editor/>
+			<x-profile-editor/>
 
 			<ui-card>
 				<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
 				<section>
-					<mk-theme/>
+					<x-theme/>
 				</section>
 			</ui-card>
 
@@ -87,7 +87,7 @@
 
 			<x-drive-settings/>
 
-			<mk-mute-and-block/>
+			<x-mute-and-block/>
 
 			<ui-card>
 				<div slot="title"><fa icon="volume-up"/> {{ $t('sound') }}</div>
@@ -140,12 +140,12 @@
 				</section>
 			</ui-card>
 
-			<mk-api-settings />
+			<x-api-settings />
 
 			<ui-card>
 				<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
 				<section>
-					<mk-password-settings/>
+					<x-password-settings/>
 				</section>
 			</ui-card>
 
@@ -184,7 +184,12 @@ export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
 
 	components: {
-		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue')
+		XTheme: () => import('../../../common/views/components/theme.vue'),
+		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue'),
+		XMuteAndBlock: () => import('../../../common/views/components/mute-and-block.vue'),
+		XPasswordSettings: () => import('../../../common/views/components/password-settings.vue'),
+		XProfileEditor: () => import('../../../common/views/components/profile-editor.vue'),
+		XApiSettings: () => import('../../../common/views/components/api-settings.vue'),
 	},
 
 	data() {

@@ -15,7 +15,7 @@
 	</div>
 	<div class="pages">
 		<div class="profile" v-show="page == 'profile'">
-			<mk-profile-editor/>
+			<x-profile-editor/>
 
 			<ui-card>
 				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
@@ -36,7 +36,7 @@
 			<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
 
 			<section>
-				<mk-theme/>
+				<x-theme/>
 			</section>
 		</ui-card>
 
@@ -205,7 +205,7 @@
 		</ui-card>
 
 		<div class="muteAndBlock" v-show="page == 'muteAndBlock'">
-			<mk-mute-and-block/>
+			<x-mute-and-block/>
 		</div>
 
 		<ui-card class="apps" v-show="page == 'apps'">
@@ -218,7 +218,7 @@
 		<ui-card class="password" v-show="page == 'security'">
 			<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
 			<section>
-				<mk-password-settings/>
+				<x-password-settings/>
 			</section>
 		</ui-card>
 
@@ -237,7 +237,7 @@
 		</ui-card>
 
 		<div class="api" v-show="page == 'api'">
-			<mk-api-settings/>
+			<x-api-settings/>
 		</div>
 
 		<ui-card class="other" v-show="page == 'other'">
@@ -302,7 +302,12 @@ export default Vue.extend({
 		XApps,
 		XSignins,
 		XTags,
-		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue')
+		XTheme: () => import('../../../common/views/components/theme.vue'),
+		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue'),
+		XMuteAndBlock: () => import('../../../common/views/components/mute-and-block.vue'),
+		XPasswordSettings: () => import('../../../common/views/components/password-settings.vue'),
+		XProfileEditor: () => import('../../../common/views/components/profile-editor.vue'),
+		XApiSettings: () => import('../../../common/views/components/api-settings.vue'),
 	},
 	props: {
 		initialPage: {
