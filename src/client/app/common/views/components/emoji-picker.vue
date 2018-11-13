@@ -37,6 +37,8 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { lib } from 'emojilib';
+import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faFlag } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/emoji-picker.vue'),
@@ -48,7 +50,7 @@ export default Vue.extend({
 			categories: [{
 				ref: 'customEmojiSection',
 				text: this.$t('custom-emoji'),
-				icon: ['fas', 'asterisk'],
+				icon: faAsterisk,
 				isActive: true
 			}, {
 				name: 'people',
@@ -60,43 +62,43 @@ export default Vue.extend({
 				name: 'animals_and_nature',
 				ref: 'animalsAndNatureSection',
 				text: this.$t('animals-and-nature'),
-				icon: ['fas', 'leaf'],
+				icon: faLeaf,
 				isActive: false
 			}, {
 				name: 'food_and_drink',
 				ref: 'foodAndDrinkSection',
 				text: this.$t('food-and-drink'),
-				icon: ['fas', 'utensils'],
+				icon: faUtensils,
 				isActive: false
 			}, {
 				name: 'activity',
 				ref: 'activitySection',
 				text: this.$t('activity'),
-				icon: ['fas', 'futbol'],
+				icon: faFutbol,
 				isActive: false
 			}, {
 				name: 'travel_and_places',
 				ref: 'travelAndPlacesSection',
 				text: this.$t('travel-and-places'),
-				icon: ['fas', 'city'],
+				icon: faCity,
 				isActive: false
 			}, {
 				name: 'objects',
 				ref: 'objectsSection',
 				text: this.$t('objects'),
-				icon: ['fas', 'poo-storm'],
+				icon: faDice,
 				isActive: false
 			}, {
 				name: 'symbols',
 				ref: 'symbolsSection',
 				text: this.$t('symbols'),
-				icon: ['far', 'heart'],
+				icon: faHeart,
 				isActive: false
 			}, {
 				name: 'flags',
 				ref: 'flagsSection',
 				text: this.$t('flags'),
-				icon: ['far', 'flag'],
+				icon: faFlag,
 				isActive: false
 			}]
 		}

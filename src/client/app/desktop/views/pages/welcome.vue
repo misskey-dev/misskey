@@ -50,7 +50,7 @@
 			</div>
 
 			<div class="photos block">
-				<header><fa icon="images"/> {{ $t('photos') }}</header>
+				<header><fa :icon="['far', 'images']"/> {{ $t('photos') }}</header>
 				<div>
 					<div v-for="photo in photos" :style="`background-image: url(${photo.thumbnailUrl})`"></div>
 				</div>

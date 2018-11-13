@@ -11,7 +11,7 @@
 	<div class="action-form">
 		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
 			<span v-if="user.isMuted"><fa icon="eye"/> {{ $t('unmute') }}</span>
-			<span v-else><fa icon="eye-slash"/> {{ $t('mute') }}</span>
+			<span v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mute') }}</span>
 		</ui-button>
 		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
 			<span v-if="user.isBlocking"><fa icon="user"/> {{ $t('unblock') }}</span>

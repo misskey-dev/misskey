@@ -3,7 +3,7 @@
 	<header>
 		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
 		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa icon="images"/> {{ $t('with-media') }}</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa :icon="['far', 'images']"/> {{ $t('with-media') }}</span>
 	</header>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>

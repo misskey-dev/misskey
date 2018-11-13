@@ -15,7 +15,7 @@
 				<span class="created-at"><fa :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
 				<template v-if="file.isSensitive">
 					<span class="separator"></span>
-					<span class="nsfw"><fa icon="eye-slash"/> {{ $t('nsfw') }}</span>
+					<span class="nsfw"><fa :icon="['far', 'eye-slash']"/> {{ $t('nsfw') }}</span>
 				</template>
 			</footer>
 		</div>
