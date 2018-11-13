@@ -66,7 +66,7 @@ export default function<T extends object>(data: {
 
 				this.bakeProps();
 
-				(this as any).api('i/update_widget', {
+				this.$root.api('i/update_widget', {
 					id: this.id,
 					data: this.props
 				});
