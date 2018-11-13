@@ -3,7 +3,7 @@
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
 		<template slot="header"><fa icon="camera"/>{{ $t('title') }}</template>
 
-		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<div :class="$style.stream" v-if="!fetching && images.length > 0">
 			<div v-for="image in images"
 				:class="$style.img"

@@ -10,7 +10,7 @@
 			<span>{{ $t('username') }}</span>
 			<span slot="prefix">@</span>
 			<span slot="suffix">@{{ host }}</span>
-			<p slot="desc" v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner .pulse" fixed-width/> {{ $t('checking') }}</p>
+			<p slot="desc" v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner" pulse fixed-width/> {{ $t('checking') }}</p>
 			<p slot="desc" v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('available') }}</p>
 			<p slot="desc" v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('unavailable') }}</p>
 			<p slot="desc" v-if="usernameState == 'error'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('error') }}</p>

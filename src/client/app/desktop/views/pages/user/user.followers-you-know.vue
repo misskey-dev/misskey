@@ -1,7 +1,7 @@
 <template>
 <div class="vahgrswmbzfdlmomxnqftuueyvwaafth">
 	<p class="title"><fa icon="users"/>{{ $t('title') }}</p>
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 	<router-link v-for="user in users" :to="user | userPage" :key="user.id">
 		<img :src="user.avatarUrl" :alt="user | userName" v-user-preview="user.id"/>

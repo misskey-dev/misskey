@@ -1,7 +1,7 @@
 <template>
 <div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
 	<p class="title"><fa icon="camera"/>{{ $t('title') }}</p>
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<div v-for="image in images" class="img"
 			:style="`background-image: url(${image.thumbnailUrl})`"

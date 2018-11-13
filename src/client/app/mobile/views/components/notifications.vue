@@ -18,7 +18,7 @@
 	</component>
 
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications"><fa icon="spinner .pulse" fixed-width/></template>
+		<template v-if="fetchingMoreNotifications"><fa icon="spinner" pulse fixed-width/></template>
 		{{ fetchingMoreNotifications ? $t('@.loading') : $t('@.load-more') }}
 	</button>
 

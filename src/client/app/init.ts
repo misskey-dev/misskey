@@ -110,6 +110,7 @@ import {
 	faMemory,
 	faServer,
 	faExclamationCircle,
+	faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -217,6 +218,7 @@ library.add(
 	faMemory,
 	faServer,
 	faExclamationCircle,
+	faSpinner,
 
 	farBell,
 	farEnvelope,

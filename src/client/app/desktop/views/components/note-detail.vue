@@ -8,7 +8,7 @@
 		:disabled="conversationFetching"
 	>
 		<template v-if="!conversationFetching"><fa icon="ellipsis-v"/></template>
-		<template v-if="conversationFetching"><fa icon="spinner .pulse"/></template>
+		<template v-if="conversationFetching"><fa icon="spinner" pulse/></template>
 	</button>
 	<div class="conversation">
 		<x-sub v-for="note in conversation" :key="note.id" :note="note"/>

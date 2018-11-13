@@ -1,7 +1,7 @@
 <template>
 <div class="hozptpaliadatkehcmcayizwzwwctpbc">
 	<p class="title"><fa icon="users"/>{{ $t('title') }}</p>
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
 			<mk-avatar class="avatar" :user="friend"/>
