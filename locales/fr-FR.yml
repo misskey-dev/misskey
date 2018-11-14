@@ -1173,8 +1173,8 @@ common/views/components/follow-button.vue:
   following: "Abonné·e"
   follow: "S’abonner"
   request-pending: "Demande en attente"
-  follow-processing: "フォロー処理中"
-  follow-request: "フォロー申請"
+  follow-processing: "En cours d’abonnement"
+  follow-request: "Demande d’abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
   empty: "Impossible de trouver des utilisateurs·trices à recommander."
