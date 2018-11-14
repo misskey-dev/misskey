@@ -14,8 +14,8 @@
 			<span v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mute') }}</span>
 		</ui-button>
 		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isBlocking"><fa icon="user"/> {{ $t('unblock') }}</span>
-			<span v-else><fa icon="user-slash"/> {{ $t('block') }}</span>
+			<span v-if="user.isBlocking"><fa icon="ban"/> {{ $t('unblock') }}</span>
+			<span v-else><fa icon="ban"/> {{ $t('block') }}</span>
 		</ui-button>
 		<ui-button @click="list"><fa icon="list"/> {{ $t('push-to-a-list') }}</ui-button>
 	</div>

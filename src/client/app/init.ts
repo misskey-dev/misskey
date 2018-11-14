@@ -113,6 +113,7 @@ import {
 	faSpinner,
 	faBroadcastTower,
 	faChartLine,
+	faEllipsisV,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -229,6 +230,7 @@ library.add(
 	faSpinner,
 	faBroadcastTower,
 	faChartLine,
+	faEllipsisV,
 
 	farBell,
 	farEnvelope,

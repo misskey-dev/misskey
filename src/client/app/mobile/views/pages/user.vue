@@ -138,7 +138,7 @@ export default Vue.extend({
 					}
 				}
 			}, {
-				icon: this.user.isBlocking ? ['fas', 'user'] : ['fas', 'user-slash'],
+				icon: 'ban',
 				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
 				action: () => {
 					if (this.user.isBlocking) {
