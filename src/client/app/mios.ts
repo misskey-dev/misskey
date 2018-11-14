@@ -365,7 +365,7 @@ export default class MiOS extends EventEmitter {
 		});
 
 		// The path of service worker script
-		const sw = `/sw.${version}.${lang}.js`;
+		const sw = `/sw.${version}.js`;
 
 		// Register service worker
 		navigator.serviceWorker.register(sw).then(registration => {
