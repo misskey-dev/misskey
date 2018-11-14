@@ -143,7 +143,7 @@ export default Vue.extend({
 		display block
 		position fixed
 		margin auto
-		padding 32px 42px
+		padding 32px
 		min-width 320px
 		max-width 480px
 		width calc(100% - 32px)
