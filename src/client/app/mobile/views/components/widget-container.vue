@@ -60,6 +60,6 @@ export default Vue.extend({
 			width 42px
 			height 100%
 			font-size 15px
-			color #465258
+			color var(--faceTextButton)
 
 </style>
