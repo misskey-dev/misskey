@@ -307,8 +307,10 @@ export default Vue.extend({
 							listId: list.id,
 							userId: this.user.id
 						});
-						// TODO
-						//this.$root.new(Ok);
+						this.$root.alert({
+							type: 'success',
+							splash: true
+						});
 					});
 				}
 			}];

@@ -141,11 +141,10 @@ export default (opts: Opts = {}) => ({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				// TODO
-				/*this.$root.alert({
-					pointer: false,
-					autoClose: true
-				});*/
+				this.$root.alert({
+					type: 'success',
+					splash: true
+				});
 			});
 		},
 

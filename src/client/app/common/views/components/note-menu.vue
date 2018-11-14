@@ -78,8 +78,10 @@ export default Vue.extend({
 			this.$root.api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
-				// TODO
-				//this.$root.new(Ok);
+				this.$root.alert({
+					type: 'success',
+					splash: true
+				});
 				this.destroyDom();
 			});
 		},
@@ -112,8 +114,10 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
-				// TODO
-				//this.$root.new(Ok);
+				this.$root.alert({
+					type: 'success',
+					splash: true
+				});
 				this.destroyDom();
 			});
 		},
@@ -122,8 +126,10 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
-				// TODO
-				//this.$root.new(Ok);
+				this.$root.alert({
+					type: 'success',
+					splash: true
+				});
 				this.destroyDom();
 			});
 		},

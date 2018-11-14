@@ -1,11 +1,11 @@
 <template>
-<div class="felqjxyj" :class="{ pointer }">
+<div class="felqjxyj" :class="{ splash }">
 	<div class="bg" ref="bg" @click="onBgClick"></div>
 	<div class="main" ref="main">
 		<div class="icon" :class="type"><fa :icon="icon"/></div>
 		<header v-if="title" v-html="title"></header>
 		<div class="body" v-if="text" v-html="text"></div>
-		<ui-horizon-group no-grow class="buttons">
+		<ui-horizon-group no-grow class="buttons" v-if="!splash">
 			<ui-button @click="ok" primary autofocus>OK</ui-button>
 			<ui-button @click="cancel" v-if="showCancelButton">Cancel</ui-button>
 		</ui-horizon-group>
@@ -31,15 +31,15 @@ export default Vue.extend({
 		},
 		text: {
 			type: String,
-			required: true
+			required: false
 		},
 		showCancelButton: {
 			type: Boolean,
 			default: false
 		},
-		pointer: {
+		splash: {
 			type: Boolean,
-			default: true
+			default: false
 		}
 	},
 
@@ -72,6 +72,12 @@ export default Vue.extend({
 				duration: 300,
 				easing: [0, 0.5, 0.5, 1]
 			});
+
+			if (this.splash) {
+				setTimeout(() => {
+					this.close();
+				}, 1000);
+			}
 		});
 	},
 
@@ -125,8 +131,13 @@ export default Vue.extend({
 	width 100%
 	height 100%
 
-	&:not(.pointer)
-		pointer-events none
+	&.splash
+		&, *
+			pointer-events none !important
+
+		> .main
+			min-width 0
+			width initial
 
 	> .bg
 		display block
