@@ -10,10 +10,7 @@ export default ($root: any) => {
 		if (!regex.test(file.name) ) {
 			$root.dialog({
 				title: '%fa:info-circle% %i18n:desktop.invalid-filetype%',
-				text: null,
-				actions: [{
-					text: '%i18n:common.got-it%'
-				}]
+				text: null
 			});
 			return reject('invalid-filetype');
 		}
@@ -90,12 +87,9 @@ export default ($root: any) => {
 				value: i.bannerUrl
 			});
 
-			$root.$dialog({
+			$root.alert({
 				title: '%fa:info-circle% %i18n:desktop.banner-updated%',
-				text: null,
-				actions: [{
-					text: '%i18n:common.got-it%'
-				}]
+				text: null
 			});
 
 			return i;

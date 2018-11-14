@@ -9,7 +9,6 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { url } from '../../../config';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
-import Ok from './ok.vue';
 import { concat, intersperse } from '../../../../../prelude/array';
 
 export default Vue.extend({
@@ -79,7 +78,8 @@ export default Vue.extend({
 			this.$root.api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$root.new(Ok);
+				// TODO
+				//this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},
@@ -105,7 +105,8 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$root.new(Ok);
+				// TODO
+				//this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},
@@ -114,7 +115,8 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$root.new(Ok);
+				// TODO
+				//this.$root.new(Ok);
 				this.destroyDom();
 			});
 		},

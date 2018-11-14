@@ -57,6 +57,7 @@ export default Vue.extend({
 	text-align center
 	font-weight normal
 	font-size 16px
+	line-height 24px
 	border none
 	border-radius 6px
 	outline none
@@ -85,6 +86,7 @@ export default Vue.extend({
 	&.inline
 		display inline-block
 		width auto
+		min-width 100px
 
 	&.primary
 		font-weight bold

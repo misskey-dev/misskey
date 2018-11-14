@@ -193,7 +193,7 @@ export default Vue.extend({
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
-					this.$swal({
+					this.$root.alert({
 						type: 'success',
 						text: this.$t('saved')
 					});

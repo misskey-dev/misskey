@@ -8,12 +8,9 @@ export default ($root: any) => {
 
 		const regex = RegExp('\.(jpg|jpeg|png|gif|webp|bmp|tiff)$');
 		if (!regex.test(file.name) ) {
-			$root.$dialog({
+			$root.alert({
 				title: '%fa:info-circle% %i18n:desktop.invalid-filetype%',
-				text: null,
-				actions: [{
-					text: '%i18n:common.got-it%'
-				}]
+				text: null
 			});
 			return reject('invalid-filetype');
 		}
@@ -90,12 +87,9 @@ export default ($root: any) => {
 				value: i.avatarUrl
 			});
 
-			$root.$dialog({
+			$root.alert({
 				title: '%fa:info-circle% %i18n:desktop.avatar-updated%',
-				text: null,
-				actions: [{
-					text: '%i18n:common.got-it%'
-				}]
+				text: null
 			});
 
 			return i;

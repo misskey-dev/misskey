@@ -1,5 +1,5 @@
 <template>
-<div class="pfzekjfwkwvadvlujpdnnxfggqgqjoze" :class="{ inputs }">
+<div class="vnxwkwuf" :class="{ inputs, noGrow }">
 	<slot></slot>
 </div>
 </template>
@@ -15,21 +15,27 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		noGrow: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.pfzekjfwkwvadvlujpdnnxfggqgqjoze
-	display flex
-
+.vnxwkwuf
 	&.inputs
 		margin 32px 0
 
-	> *
-		flex 1
+	&:not(.noGrow)
+		display flex
 
-		&:not(:last-child)
-			margin-right 16px
+		> *
+			flex 1
+
+	> *:not(:last-child)
+		margin-right 16px
 </style>

@@ -87,7 +87,6 @@ import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
-import Ok from '../../../../common/views/components/ok.vue';
 import { concat } from '../../../../../../prelude/array';
 import * as ApexCharts from 'apexcharts';
 
@@ -308,7 +307,8 @@ export default Vue.extend({
 							listId: list.id,
 							userId: this.user.id
 						});
-						this.$root.new(Ok);
+						// TODO
+						//this.$root.new(Ok);
 					});
 				}
 			}];

@@ -155,12 +155,9 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$dialog({
+							this.$root.alert({
 								title: this.$t('unable-to-process'),
-								text: this.$t('circular-reference-detected'),
-								actions: [{
-									text: this.$t('@.ok')
-								}]
+								text: this.$t('circular-reference-detected')
 							});
 							break;
 						default:

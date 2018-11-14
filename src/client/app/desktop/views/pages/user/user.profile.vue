@@ -101,7 +101,7 @@ export default Vue.extend({
 					listId: list.id,
 					userId: this.user.id
 				});
-				this.$dialog({
+				this.$root.alert({
 					title: 'Done!',
 					text: this.$t('list-pushed').replace('{user}', this.user.name).replace('{list}', list.title)
 				});

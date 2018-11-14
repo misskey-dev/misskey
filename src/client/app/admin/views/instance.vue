@@ -149,7 +149,7 @@ export default Vue.extend({
 			this.$root.api('admin/invite').then(x => {
 				this.inviteCode = x.code;
 			}).catch(e => {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: e
 				});
@@ -181,12 +181,12 @@ export default Vue.extend({
 				githubClientId: this.githubClientId,
 				githubClientSecret: this.githubClientSecret,
 			}).then(() => {
-				this.$swal({
+				this.$root.alert({
 					type: 'success',
 					text: this.$t('saved')
 				});
 			}).catch(e => {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: e
 				});

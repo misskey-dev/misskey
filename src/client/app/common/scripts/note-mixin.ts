@@ -3,7 +3,6 @@ import { sum } from '../../../../prelude/array';
 import shouldMuteNote from './should-mute-note';
 import MkNoteMenu from '../views/components/note-menu.vue';
 import MkReactionPicker from '../views/components/reaction-picker.vue';
-import Ok from '../views/components/ok.vue';
 
 function focus(el, fn) {
 	const target = fn(el);
@@ -142,7 +141,11 @@ export default (opts: Opts = {}) => ({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$root.new(Ok);
+				// TODO
+				/*this.$root.alert({
+					pointer: false,
+					autoClose: true
+				});*/
 			});
 		},
 

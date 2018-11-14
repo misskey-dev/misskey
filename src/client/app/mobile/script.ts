@@ -35,7 +35,6 @@ import MkFollow from '../common/views/pages/follow.vue';
 import PostForm from './views/components/post-form-dialog.vue';
 import FileChooser from './views/components/drive-file-chooser.vue';
 import FolderChooser from './views/components/drive-folder-chooser.vue';
-import Dialog from './views/components/dialog.vue';
 
 /**
  * init
@@ -96,21 +95,6 @@ init((launch) => {
 					if (x) {
 						res(x);
 					}
-				});
-			},
-
-			$dialog(opts) {
-				return new Promise<string>((res, rej) => {
-					const o = opts || {};
-					const d = this.$root.new(Dialog, {
-						title: o.title,
-						text: o.text,
-						modal: o.modal,
-						buttons: o.actions
-					});
-					d.$once('clicked', id => {
-						res(id);
-					});
 				});
 			},
 
