@@ -644,7 +644,7 @@ desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
 desktop/views/components/notifications.vue:
-  empty: "Pas de notifications"
+  empty: "Aucune de notification !"
 desktop/views/components/post-form.vue:
   add-visible-user: "+Ajouter un utilisateur"
   attach-location-information: "Attacher des informations de localisation"
@@ -1208,7 +1208,7 @@ mobile/views/components/note-sub.vue:
   bot: "bot"
   cat: "chat"
 mobile/views/components/notifications.vue:
-  empty: "Pas de notifications"
+  empty: "Aucune de notification !"
 mobile/views/components/post-form.vue:
   add-visible-user: "Ajouter un utilisateur"
   submit: "Publier"
@@ -1290,7 +1290,7 @@ mobile/views/pages/note.vue:
   next: "Note suivante"
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
-  read-all: "Êtes vous sûr de vouloir marqués toutes les notifications non-lus en tant que lus?"
+  read-all: "Êtes-vous sûr de vouloir marquer l’ensemble des notifications comme étant lues ?"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
