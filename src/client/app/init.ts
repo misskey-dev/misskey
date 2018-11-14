@@ -116,6 +116,7 @@ import {
 	faEllipsisV,
 	faStickyNote,
 	faUserPlus,
+	faExternalLinkSquareAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -235,6 +236,7 @@ library.add(
 	faEllipsisV,
 	faStickyNote,
 	faUserPlus,
+	faExternalLinkSquareAlt,
 
 	farBell,
 	farEnvelope,
