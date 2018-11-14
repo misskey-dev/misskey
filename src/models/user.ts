@@ -99,6 +99,7 @@ export interface ILocalUser extends IUserBase {
 	lastUsedAt: Date;
 	isCat: boolean;
 	isAdmin?: boolean;
+	isModerator?: boolean;
 	isVerified?: boolean;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;
@@ -125,6 +126,7 @@ export interface IRemoteUser extends IUserBase {
 	};
 	updatedAt: Date;
 	isAdmin: false;
+	isModerator: false;
 }
 
 export type IUser = ILocalUser | IRemoteUser;

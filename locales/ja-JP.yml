@@ -1034,6 +1034,7 @@ admin/views/index.vue:
   dashboard: "ダッシュボード"
   instance: "インスタンス"
   emoji: "カスタム絵文字"
+  moderators: "モデレーター"
   users: "ユーザー"
   update: "更新"
   announcements: "お知らせ"
@@ -1132,6 +1133,12 @@ admin/views/users.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
+
+admin/views/moderators.vue:
+  add-moderator:
+    title: "モデレーターの登録"
+    add: "登録"
+    added: "モデレーターを登録しました"
 
 admin/views/emoji.vue:
   add-emoji:

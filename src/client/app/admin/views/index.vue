@@ -20,6 +20,7 @@
 		<ul>
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</li>
 			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>{{ $t('instance') }}</li>
+			<li @click="nav('moderators')" :class="{ active: page == 'moderators' }"><fa :icon="faHeadset" fixed-width/>{{ $t('moderators') }}</li>
 			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
 			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
 			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
@@ -38,6 +39,7 @@
 	<main>
 		<div v-if="page == 'dashboard'"><x-dashboard/></div>
 		<div v-if="page == 'instance'"><x-instance/></div>
+		<div v-if="page == 'moderators'"><x-moderators/></div>
 		<div v-if="page == 'users'"><x-users/></div>
 		<div v-if="page == 'emoji'"><x-emoji/></div>
 		<div v-if="page == 'announcements'"><x-announcements/></div>
@@ -54,11 +56,12 @@ import i18n from '../../i18n';
 import { version } from '../../config';
 import XDashboard from "./dashboard.vue";
 import XInstance from "./instance.vue";
+import XModerators from "./moderators.vue";
 import XEmoji from "./emoji.vue";
 import XAnnouncements from "./announcements.vue";
 import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 // Detect the user agent
@@ -70,6 +73,7 @@ export default Vue.extend({
 	components: {
 		XDashboard,
 		XInstance,
+		XModerators,
 		XEmoji,
 		XAnnouncements,
 		XHashtags,
@@ -85,7 +89,8 @@ export default Vue.extend({
 			isMobile,
 			navOpend: !isMobile,
 			faGrin,
-			faArrowLeft
+			faArrowLeft,
+			faHeadset
 		};
 	},
 	methods: {

@@ -55,7 +55,7 @@ export default Vue.extend({
 							}
 					] : []
 				], [
-					this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin ? [{
+					this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [{
 						icon: ['far', 'trash-alt'],
 						text: this.$t('delete'),
 						action: this.del

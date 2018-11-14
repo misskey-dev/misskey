@@ -1,16 +1,16 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import define from '../../define';
-import User from '../../../../models/user';
+import ID, { transform } from '../../../../../misc/cafy-id';
+import define from '../../../define';
+import User from '../../../../../models/user';
 
 export const meta = {
 	desc: {
-		'ja-JP': '指定したユーザーの公式アカウントを解除します。',
-		'en-US': 'Mark a user as unverified.'
+		'ja-JP': '指定したユーザーをモデレーターにします。',
+		'en-US': 'Mark a user as moderator.'
 	},
 
 	requireCredential: true,
-	requireModerator: true,
+	requireAdmin: true,
 
 	params: {
 		userId: {
@@ -18,7 +18,7 @@ export const meta = {
 			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーID',
-				'en-US': 'The user ID which you want to unverify'
+				'en-US': 'The user ID'
 			}
 		},
 	}
@@ -33,13 +33,13 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	await User.findOneAndUpdate({
+	await User.update({
 		_id: user._id
 	}, {
-			$set: {
-				isVerified: false
-			}
-		});
+		$set: {
+			isModerator: true
+		}
+	});
 
 	res();
 }));

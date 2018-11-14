@@ -30,7 +30,7 @@
 				<ul>
 					<li><a @click="search"><i><fa icon="search"/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog"/></i>{{ $t('settings') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li v-if="$store.getters.isSignedIn && $store.state.i.isAdmin"><a href="/admin"><i><fa icon="terminal"/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
+					<li v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)"><a href="/admin"><i><fa icon="terminal"/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
 					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><i><fa icon="moon"/></i></template><template v-else><i><fa :icon="['far', 'moon']"/></i></template><span>{{ $t('darkmode') }}</span></p></li>
 				</ul>
 			</div>

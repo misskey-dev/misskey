@@ -84,7 +84,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		};
 	}
 
-	if (me && me.isAdmin) {
+	if (me && (me.isAdmin || me.isModerator)) {
 		response.hidedTags = instance.hidedTags;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;

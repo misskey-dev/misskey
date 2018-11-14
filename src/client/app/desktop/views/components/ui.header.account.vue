@@ -58,7 +58,7 @@
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
-				<li v-if="$store.state.i.isAdmin">
+				<li v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
 					<a href="/admin">
 						<i><fa icon="terminal"/></i>
 						<span>{{ $t('admin') }}</span>
