@@ -57,17 +57,11 @@ export default Vue.extend({
 						return;
 					}
 
-					// Upload if the file didn't exist yet
-					const buf = new Uint8Array(e.target.result);
-					let bin = '';
-					// We use for-of loop instead of apply() to avoid RangeError
-					// SEE: https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
-					for (const byte of buf) bin += String.fromCharCode(byte);
 					const ctx = {
 						id: id,
 						name: file.name || 'untitled',
 						progress: undefined,
-						img: 'data:*/*;base64,' + btoa(bin)
+						img: window.URL.createObjectURL(file)
 					};
 
 					this.uploads.push(ctx);
