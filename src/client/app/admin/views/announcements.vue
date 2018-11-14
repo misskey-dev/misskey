@@ -41,7 +41,7 @@ export default Vue.extend({
 
 	methods: {
 		add() {
-			this.announcements.push({
+			this.announcements.unshift({
 				title: '',
 				text: ''
 			});
