@@ -23,10 +23,15 @@ export default Vue.extend({
 	},
 	methods: {
 		fn() {
-			const ok = window.confirm(this.$t('read-all'));
-			if (!ok) return;
+			this.$root.alert({
+				type: 'warning',
+				text: this.$t('read-all'),
+				showCancelButton: true
+			}).then(res => {
+				if (!res) return;
 
-			this.$root.api('notifications/mark_all_as_read');
+				this.$root.api('notifications/mark_all_as_read');
+			});
 		},
 		onFetched() {
 			Progress.done();

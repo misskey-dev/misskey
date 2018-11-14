@@ -73,13 +73,20 @@ export default Vue.extend({
 		},
 
 		block() {
-			if (!window.confirm(this.$t('block-confirm'))) return;
-			this.$root.api('blocking/create', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isBlocking = true;
-			}, () => {
-				alert('error');
+			this.$root.alert({
+				type: 'warning',
+				text: this.$t('block-confirm'),
+				showCancelButton: true
+			}).then(res => {
+				if (!res) return;
+
+				this.$root.api('blocking/create', {
+					userId: this.user.id
+				}).then(() => {
+					this.user.isBlocking = true;
+				}, () => {
+					alert('error');
+				});
 			});
 		},
 

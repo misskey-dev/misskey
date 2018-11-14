@@ -93,11 +93,18 @@ export default Vue.extend({
 		},
 
 		del() {
-			if (!window.confirm(this.$t('delete-confirm'))) return;
-			this.$root.api('notes/delete', {
-				noteId: this.note.id
-			}).then(() => {
-				this.destroyDom();
+			this.$root.alert({
+				type: 'warning',
+				text: this.$t('delete-confirm'),
+				showCancelButton: true
+			}).then(res => {
+				if (!res) return;
+
+				this.$root.api('notes/delete', {
+					noteId: this.note.id
+				}).then(() => {
+					this.destroyDom();
+				});
 			});
 		},
 
