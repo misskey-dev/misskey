@@ -49,6 +49,7 @@ import parseAcct from "../../../../misc/acct/parse";
 
 export default Vue.extend({
 	i18n: i18n('admin/views/users.vue'),
+
 	data() {
 		return {
 			verifyUsername: null,
@@ -67,13 +68,19 @@ export default Vue.extend({
 			this.verifying = true;
 
 			const process = async () => {
-				const user = await this.$root.os.api('users/show', parseAcct(this.verifyUsername));
-				await this.$root.os.api('admin/verify-user', { userId: user.id });
-				//this.$root.os.apis.dialog({ text: this.$t('verified') });
+				const user = await this.$root.api('users/show', parseAcct(this.verifyUsername));
+				await this.$root.api('admin/verify-user', { userId: user.id });
+				this.$root.alert({
+					type: 'success',
+					text: this.$t('verified')
+				});
 			};
 
 			await process().catch(e => {
-				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
+				this.$root.alert({
+					type: 'error',
+					text: e.toString()
+				});
 			});
 
 			this.verifying = false;
@@ -83,13 +90,19 @@ export default Vue.extend({
 			this.unverifying = true;
 
 			const process = async () => {
-				const user = await this.$root.os.api('users/show', parseAcct(this.unverifyUsername));
-				await this.$root.os.api('admin/unverify-user', { userId: user.id });
-				//this.$root.os.apis.dialog({ text: this.$t('unverified') });
+				const user = await this.$root.api('users/show', parseAcct(this.unverifyUsername));
+				await this.$root.api('admin/unverify-user', { userId: user.id });
+				this.$root.alert({
+					type: 'success',
+					text: this.$t('unverified')
+				});
 			};
 
 			await process().catch(e => {
-				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
+				this.$root.alert({
+					type: 'error',
+					text: e.toString()
+				});
 			});
 
 			this.unverifying = false;
@@ -99,13 +112,19 @@ export default Vue.extend({
 			this.suspending = true;
 
 			const process = async () => {
-				const user = await this.$root.os.api('users/show', parseAcct(this.suspendUsername));
-				await this.$root.os.api('admin/suspend-user', { userId: user.id });
-				//this.$root.os.apis.dialog({ text: this.$t('suspended') });
+				const user = await this.$root.api('users/show', parseAcct(this.suspendUsername));
+				await this.$root.api('admin/suspend-user', { userId: user.id });
+				this.$root.alert({
+					type: 'success',
+					text: this.$t('suspended')
+				});
 			};
 
 			await process().catch(e => {
-				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
+				this.$root.alert({
+					type: 'error',
+					text: e.toString()
+				});
 			});
 
 			this.suspending = false;
@@ -115,13 +134,19 @@ export default Vue.extend({
 			this.unsuspending = true;
 
 			const process = async () => {
-				const user = await this.$root.os.api('users/show', parseAcct(this.unsuspendUsername));
-				await this.$root.os.api('admin/unsuspend-user', { userId: user.id });
-				//this.$root.os.apis.dialog({ text: this.$t('unsuspended') });
+				const user = await this.$root.api('users/show', parseAcct(this.unsuspendUsername));
+				await this.$root.api('admin/unsuspend-user', { userId: user.id });
+				this.$root.alert({
+					type: 'success',
+					text: this.$t('unsuspended')
+				});
 			};
 
 			await process().catch(e => {
-				//this.$root.os.apis.dialog({ text: `Failed: ${e}` });
+				this.$root.alert({
+					type: 'error',
+					text: e.toString()
+				});
 			});
 
 			this.unsuspending = false;

@@ -43,7 +43,7 @@ export default Vue.extend({
 			await process().catch(e => {
 				this.$root.alert({
 					type: 'error',
-					text: e
+					text: e.toString()
 				});
 			});
 
