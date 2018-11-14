@@ -911,6 +911,7 @@ admin/views/index.vue:
   dashboard: "Tableau de bord"
   instance: "Instance"
   emoji: "Emoji"
+  moderators: "モデレーター"
   users: "Utilisateur·rice·s"
   update: "Mise à jour"
   announcements: "Annonces"
@@ -1005,6 +1006,11 @@ admin/views/users.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "Ôter la vérification du compte"
   unverified: "Ce compte n'est plus vérifié"
+admin/views/moderators.vue:
+  add-moderator:
+    title: "モデレーターの登録"
+    add: "登録"
+    added: "モデレーターを登録しました"
 admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
@@ -1173,8 +1179,8 @@ common/views/components/follow-button.vue:
   following: "Abonné·e"
   follow: "S’abonner"
   request-pending: "Demande en attente"
-  follow-processing: "フォロー処理中"
-  follow-request: "フォロー申請"
+  follow-processing: "En cours d’abonnement"
+  follow-request: "Demande d’abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
   empty: "Impossible de trouver des utilisateurs·trices à recommander."
