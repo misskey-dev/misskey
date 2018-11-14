@@ -37,7 +37,7 @@
 		</div>
 	</nav>
 	<main>
-		<marquee-text v-if="instances.length > 0" v-show="!isMobile" class="instances" :repeat="10" :duration="10">
+		<marquee-text v-if="instances.length > 0" class="instances" :repeat="10" :duration="10">
 			<span v-for="instance in instances" class="instance"><b :style="{ background: instance.bg }">{{ instance.host }}</b>{{ instance.notesCount | number }}</span>
 		</marquee-text>
 		<div class="page">
