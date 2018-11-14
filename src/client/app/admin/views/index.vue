@@ -37,15 +37,20 @@
 		</div>
 	</nav>
 	<main>
-		<div v-if="page == 'dashboard'"><x-dashboard/></div>
-		<div v-if="page == 'instance'"><x-instance/></div>
-		<div v-if="page == 'moderators'"><x-moderators/></div>
-		<div v-if="page == 'users'"><x-users/></div>
-		<div v-if="page == 'emoji'"><x-emoji/></div>
-		<div v-if="page == 'announcements'"><x-announcements/></div>
-		<div v-if="page == 'hashtags'"><x-hashtags/></div>
-		<div v-if="page == 'drive'"></div>
-		<div v-if="page == 'update'"></div>
+		<marquee-text v-if="instances.length > 0" v-show="!isMobile" class="instances" :repeat="10" :duration="10">
+			<span v-for="instance in instances" class="instance"><b :style="{ background: instance.bg }">{{ instance.host }}</b>{{ instance.notesCount | number }}</span>
+		</marquee-text>
+		<div class="page">
+			<div v-if="page == 'dashboard'"><x-dashboard/></div>
+			<div v-if="page == 'instance'"><x-instance/></div>
+			<div v-if="page == 'moderators'"><x-moderators/></div>
+			<div v-if="page == 'users'"><x-users/></div>
+			<div v-if="page == 'emoji'"><x-emoji/></div>
+			<div v-if="page == 'announcements'"><x-announcements/></div>
+			<div v-if="page == 'hashtags'"><x-hashtags/></div>
+			<div v-if="page == 'drive'"></div>
+			<div v-if="page == 'update'"></div>
+		</div>
 	</main>
 </div>
 </template>
@@ -63,6 +68,8 @@ import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
 import { faHeadset, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
+import MarqueeText from 'vue-marquee-text-component';
+import randomColor from 'randomcolor';
 
 // Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
@@ -77,7 +84,8 @@ export default Vue.extend({
 		XEmoji,
 		XAnnouncements,
 		XHashtags,
-		XUsers
+		XUsers,
+		MarqueeText
 	},
 	provide: {
 		isMobile
@@ -88,10 +96,22 @@ export default Vue.extend({
 			version,
 			isMobile,
 			navOpend: !isMobile,
+			instances: [],
 			faGrin,
 			faArrowLeft,
 			faHeadset
 		};
+	},
+	created() {
+		this.$root.api('instances').then(instances => {
+			instances.forEach(i => {
+				i.bg = randomColor({
+					seed: i.host,
+					luminosity: 'dark'
+				});
+			});
+			this.instances = instances;
+		});
 	},
 	methods: {
 		nav(page: string) {
@@ -101,7 +121,7 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .mk-admin
 	$headerHeight = 48px
 
@@ -262,7 +282,23 @@ export default Vue.extend({
 	> main
 		width 100%
 		padding 0 0 0 250px
-		max-width 1300px
+
+		> .instances
+			padding 8px
+			background rgba(0, 0, 0, 0.7)
+			color #fff
+			font-size 14px
+
+			>>> .instance
+				margin 0 10px
+
+				> b
+					padding 0px 6px
+					margin-right 4px
+					border-radius 4px
+
+		> .page
+			max-width 1300px
 
 	&.isMobile
 		> main
