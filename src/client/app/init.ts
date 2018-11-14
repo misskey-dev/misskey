@@ -114,6 +114,7 @@ import {
 	faBroadcastTower,
 	faChartLine,
 	faEllipsisV,
+	faStickyNote,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -231,6 +232,7 @@ library.add(
 	faBroadcastTower,
 	faChartLine,
 	faEllipsisV,
+	faStickyNote,
 
 	farBell,
 	farEnvelope,
