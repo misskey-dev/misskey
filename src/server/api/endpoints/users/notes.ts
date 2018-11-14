@@ -180,6 +180,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		query.createdAt = {
 			$lt: new Date(ps.untilDate)
 		};
+	} else {
+		sort._id = -1;
 	}
 
 	if (!ps.includeReplies) {
