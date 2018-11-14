@@ -37,7 +37,7 @@
 		</div>
 	</nav>
 	<main>
-		<marquee-text v-if="instances.length > 0" class="instances" :repeat="10" :duration="10">
+		<marquee-text v-if="instances.length > 0" class="instances" :repeat="10" :duration="20">
 			<span v-for="instance in instances" class="instance"><b :style="{ background: instance.bg }">{{ instance.host }}</b>{{ instance.notesCount | number }}</span>
 		</marquee-text>
 		<div class="page">
@@ -103,7 +103,9 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.$root.api('instances').then(instances => {
+		this.$root.api('instances', {
+			sort: '+notes'
+		}).then(instances => {
 			instances.forEach(i => {
 				i.bg = randomColor({
 					seed: i.host,
