@@ -37,8 +37,10 @@
 		</div>
 	</nav>
 	<main>
-		<marquee-text v-if="instances.length > 0" class="instances" :repeat="10" :duration="20">
-			<span v-for="instance in instances" class="instance"><b :style="{ background: instance.bg }">{{ instance.host }}</b>{{ instance.notesCount | number }}</span>
+		<marquee-text v-if="instances.length > 0" class="instances" :repeat="10" :duration="30">
+			<span v-for="instance in instances" class="instance">
+				<b :style="{ background: instance.bg }">{{ instance.host }}</b>{{ instance.notesCount | number }} / {{ instance.usersCount | number }}
+			</span>
 		</marquee-text>
 		<div class="page">
 			<div v-if="page == 'dashboard'"><x-dashboard/></div>
@@ -286,10 +288,10 @@ export default Vue.extend({
 		padding 0 0 0 250px
 
 		> .instances
-			padding 8px
-			background rgba(0, 0, 0, 0.7)
+			padding 10px
+			background #000
 			color #fff
-			font-size 14px
+			font-size 13px
 
 			>>> .instance
 				margin 0 10px
