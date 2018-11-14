@@ -172,7 +172,7 @@ export default class MiOS extends EventEmitter {
 			callback();
 
 			// Init service worker
-			if (this.shouldRegisterSw) this.registerSw();
+			//if (this.shouldRegisterSw) this.registerSw();
 		};
 
 		// キャッシュがあったとき
