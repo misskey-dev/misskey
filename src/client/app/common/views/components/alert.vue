@@ -173,6 +173,9 @@ export default Vue.extend({
 			margin 16px 0
 			font-weight bold
 
+			& + .body
+				margin-top 8px
+
 		> .body
 			margin 16px 0
 
