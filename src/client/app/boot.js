@@ -43,6 +43,9 @@
 	if (`${url.pathname}/`.startsWith('/admin/')) app = 'admin';
 	//#endregion
 
+	// Script version
+	const ver = localStorage.getItem('v') || VERSION;
+
 	//#region Detect the user language
 	let lang = null;
 
@@ -67,7 +70,7 @@
 
 	let locale = localStorage.getItem('locale');
 	if (locale == null) {
-		const locale = await fetch(`/assets/locales/${lang}.json`)
+		const locale = await fetch(`/assets/locales/${lang}.json?ver=${ver}`)
 			.then(response => response.json());
 
 			localStorage.setItem('locale', JSON.stringify(locale));
@@ -97,9 +100,6 @@
 	if (app == null) {
 		app = isMobile ? 'mobile' : 'desktop';
 	}
-
-	// Script version
-	const ver = localStorage.getItem('v') || VERSION;
 
 	// Get salt query
 	const salt = localStorage.getItem('salt')
