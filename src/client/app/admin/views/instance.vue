@@ -10,7 +10,7 @@
 			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>{{ $t('languages') }}<span slot="desc">{{ $t('languages-desc') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="headset"/> {{ $t('maintainer-config') }}</header>
+			<header><fa :icon="faHeadset"/> {{ $t('maintainer-config') }}</header>
 			<ui-input v-model="maintainerName">{{ $t('maintainer-name') }}</ui-input>
 			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="['far', 'envelope']"/></i>{{ $t('maintainer-email') }}</ui-input>
 		</section>
@@ -24,14 +24,14 @@
 			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('remote-drive-capacity-mb') }}<span slot="suffix">MB</span><span slot="desc">{{ $t('mb') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="shield-alt"/> {{ $t('recaptcha-config') }}</header>
+			<header><fa :icon="faShieldAlt"/> {{ $t('recaptcha-config') }}</header>
 			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
 			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
 			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-site-key') }}</ui-input>
 			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-secret-key') }}</ui-input>
 		</section>
 		<section>
-			<header><fa icon="ghost"/> {{ $t('proxy-account-config') }}</header>
+			<header><fa :icon="faGhost"/> {{ $t('proxy-account-config') }}</header>
 			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
 			<ui-input v-model="proxyAccount"><span slot="prefix">@</span>{{ $t('proxy-account-username') }}<span slot="desc">{{ $t('proxy-account-username-desc') }}</span></ui-input>
 			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
@@ -84,9 +84,11 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import { host } from '../../config';
 import { toUnicode } from 'punycode';
+import { faHeadset, faShieldAlt, faGhost } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/instance.vue'),
+
 	data() {
 		return {
 			host: toUnicode(host),
@@ -113,6 +115,7 @@ export default Vue.extend({
 			githubClientSecret: null,
 			proxyAccount: null,
 			inviteCode: null,
+			faHeadset, faShieldAlt, faGhost
 		};
 	},
 

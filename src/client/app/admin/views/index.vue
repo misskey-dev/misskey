@@ -21,7 +21,7 @@
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</li>
 			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>{{ $t('instance') }}</li>
 			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
-			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="['far', 'grin']" fixed-width/>{{ $t('emoji') }}</li>
+			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
 			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
 			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('hashtags') }}</li>
 
@@ -29,7 +29,7 @@
 			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">{{ $t('update') }}</li> -->
 		</ul>
 		<div class="back-to-misskey">
-			<a href="/"><fa icon="arrow-left"/> {{ $t('back-to-misskey') }}</a>
+			<a href="/"><fa :icon="faArrowLeft"/> {{ $t('back-to-misskey') }}</a>
 		</div>
 		<div class="version">
 			<small>Misskey {{ version }}</small>
@@ -58,6 +58,8 @@ import XEmoji from "./emoji.vue";
 import XAnnouncements from "./announcements.vue";
 import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 // Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
@@ -81,7 +83,9 @@ export default Vue.extend({
 			page: 'dashboard',
 			version,
 			isMobile,
-			navOpend: !isMobile
+			navOpend: !isMobile,
+			faGrin,
+			faArrowLeft
 		};
 	},
 	methods: {

@@ -23,7 +23,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['far', 'grin']"/> {{ $t('emojis.title') }}</div>
+		<div slot="title"><fa :icon="faGrin"/> {{ $t('emojis.title') }}</div>
 		<section v-for="emoji in emojis">
 			<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
 			<ui-horizon-group inputs>
@@ -50,6 +50,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
+import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/emoji.vue'),
@@ -58,7 +59,8 @@ export default Vue.extend({
 			name: '',
 			url: '',
 			aliases: '',
-			emojis: []
+			emojis: [],
+			faGrin
 		};
 	},
 

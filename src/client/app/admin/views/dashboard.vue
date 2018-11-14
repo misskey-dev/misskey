@@ -37,7 +37,7 @@
 		</div>
 		<div>
 			<div>
-				<div><fa icon="database"/></div>
+				<div><fa :icon="faDatabase"/></div>
 				<div>
 					<span>{{ $t('drive') }}</span>
 					<b>{{ stats.driveUsageLocal | bytes }}</b>
@@ -83,9 +83,11 @@ import i18n from '../../i18n';
 import XCpuMemory from "./cpu-memory.vue";
 import XCharts from "./charts.vue";
 import XApLog from "./ap-log.vue";
+import { faDatabase } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/dashboard.vue'),
+
 	components: {
 		XCpuMemory,
 		XCharts,
@@ -96,7 +98,8 @@ export default Vue.extend({
 		return {
 			stats: null,
 			connection: null,
-			meta: null
+			meta: null,
+			faDatabase
 		};
 	},
 

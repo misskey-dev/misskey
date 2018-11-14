@@ -111,7 +111,8 @@ import {
 	faServer,
 	faExclamationCircle,
 	faSpinner,
-	faBroadcastTower
+	faBroadcastTower,
+	faChartLine,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -227,6 +228,7 @@ library.add(
 	faExclamationCircle,
 	faSpinner,
 	faBroadcastTower,
+	faChartLine,
 
 	farBell,
 	farEnvelope,
