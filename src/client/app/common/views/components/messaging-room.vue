@@ -20,7 +20,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button @click="onIndicatorClick"><i><fa icon="arrow-circle-down"/></i>{{ $t('new-message') }}</button>
+				<button @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i>{{ $t('new-message') }}</button>
 			</div>
 		</transition>
 		<x-form :user="user" ref="form"/>
@@ -34,6 +34,7 @@ import i18n from '../../../i18n';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { url } from '../../../config';
+import { faArrowCircleDown } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/messaging-room.vue'),
@@ -52,7 +53,8 @@ export default Vue.extend({
 			existMoreMessages: false,
 			connection: null,
 			showIndicator: false,
-			timer: null
+			timer: null,
+			faArrowCircleDown
 		};
 	},
 
