@@ -344,6 +344,16 @@ common/views/components/poll-editor.vue:
   destroy: "Usuń tę ankietę"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wybierz reakcję"
+common/views/components/emoji-picker.vue:
+  custom-emoji: "カスタム絵文字"
+  people: "人"
+  animals-and-nature: "動物&自然"
+  food-and-drink: "食べ物&飲み物"
+  activity: "アクティビティ"
+  travel-and-places: "場所"
+  objects: "物"
+  symbols: "記号"
+  flags: "旗"
 common/views/components/signin.vue:
   username: "Nazwa użytkownika"
   password: "Hasło"
@@ -588,12 +598,6 @@ desktop/views/components/media-image.vue:
 desktop/views/components/media-video.vue:
   sensitive: "To jest zawartość NSFW"
   click-to-show: "Naciśnij aby wyświetlić"
-desktop/views/components/follow-button.vue:
-  following: "Śledzisz"
-  follow: "Śledź"
-  request-pending: "Oczekiwanie na pozwolenie"
-  follow-processing: "フォロー処理中"
-  follow-request: "Poproś o śledzenie"
 desktop/views/components/followers-window.vue:
   followers: "Śledzący"
 desktop/views/components/followers.vue:
@@ -829,6 +833,10 @@ common/views/components/mute-and-block.vue:
   block: "ブロック"
   no-muted-users: "ミュートしているユーザーはいません"
   no-blocked-users: "ブロックしているユーザーはいません"
+  word-mute: "ワードミュート"
+  muted-words: "ミュートされたキーワード"
+  muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  save: "保存"
 common/views/components/password-settings.vue:
   reset: "パスワードを変更する"
   enter-current-password: "現在のパスワードを入力してください"
@@ -1161,12 +1169,12 @@ mobile/views/components/media-image.vue:
 mobile/views/components/media-video.vue:
   sensitive: "To jest zawartość NSFW"
   click-to-show: "Naciśnij aby wyświetlić"
-mobile/views/components/follow-button.vue:
-  following: "Śledzisz"
-  follow: "Śledź"
-  request-pending: "Oczekiwanie na pozwolenie"
+common/views/components/follow-button.vue:
+  following: "フォロー中"
+  follow: "フォロー"
+  request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
-  follow-request: "Poproś o śledzenie"
+  follow-request: "フォロー申請"
 mobile/views/components/friends-maker.vue:
   title: "Zacznij śledzić ludzi takich jak Ty"
   empty: "Nie znaleziono podobnych użytkowników."

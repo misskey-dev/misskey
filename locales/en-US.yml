@@ -344,6 +344,16 @@ common/views/components/poll-editor.vue:
   destroy: "Discard the poll"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Send a reaction"
+common/views/components/emoji-picker.vue:
+  custom-emoji: "Custom Emoji"
+  people: "People"
+  animals-and-nature: "Animals & Nature"
+  food-and-drink: "Food & drink"
+  activity: "Activity"
+  travel-and-places: "Travel & Places"
+  objects: "Objects"
+  symbols: "Symbols"
+  flags: "Flags"
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
@@ -588,12 +598,6 @@ desktop/views/components/media-image.vue:
 desktop/views/components/media-video.vue:
   sensitive: "The content is NSFW"
   click-to-show: "Click to show"
-desktop/views/components/follow-button.vue:
-  following: "Following"
-  follow: "Follow"
-  request-pending: "Pending follow request"
-  follow-processing: "Processing follow"
-  follow-request: "Follow request"
 desktop/views/components/followers-window.vue:
   followers: "{}'s followers"
 desktop/views/components/followers.vue:
@@ -829,6 +833,10 @@ common/views/components/mute-and-block.vue:
   block: "Blocking"
   no-muted-users: "No muted users"
   no-blocked-users: "No blocked users"
+  word-mute: "Word mute"
+  muted-words: "Muted keywords"
+  muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  save: "Save"
 common/views/components/password-settings.vue:
   reset: "Change password"
   enter-current-password: "Enter the current password"
@@ -1161,11 +1169,11 @@ mobile/views/components/media-image.vue:
 mobile/views/components/media-video.vue:
   sensitive: "The content is NSFW"
   click-to-show: "Click to show"
-mobile/views/components/follow-button.vue:
+common/views/components/follow-button.vue:
   following: "Following"
   follow: "Follow"
-  request-pending: "Pending follow request"
-  follow-processing: "Processing follow"
+  request-pending: "Pending"
+  follow-processing: "Processing"
   follow-request: "Follow request"
 mobile/views/components/friends-maker.vue:
   title: "Let's follow them"

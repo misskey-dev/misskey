@@ -71,7 +71,7 @@ common:
     friday: "Vendredi"
     saturday: "Samedi"
   reactions:
-    like: "J'aime"
+    like: "Bien"
     love: "Adore"
     laugh: "Rire"
     hmm: "Hmm … ?"
@@ -85,8 +85,8 @@ common:
     public: "Public"
     home: "Principal"
     home-desc: "Publier sur le fil principal uniquement"
-    followers: "Abonnés·es"
-    followers-desc: "Publier à vos abonnés·es uniquement"
+    followers: "Abonné·e·s"
+    followers-desc: "Publier à vos abonné·e·s uniquement"
     specified: "Direct"
     specified-desc: "Publier uniquement aux utilisateurs·rices mentionnés·es"
     private: "Privé"
@@ -99,7 +99,7 @@ common:
     f: "En attente de vos écrits"
   search: "Recherche"
   delete: "Supprimer"
-  loading: "Chargement"
+  loading: "Chargement en cours …"
   ok: "OK"
   update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
@@ -117,8 +117,8 @@ common:
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   use-os-default-emojis: "Utiliser les émojis standards du système"
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
-  is-remote-user: "Ces informations utilisateur ont été copiées."
-  is-remote-post: "Ceci est une publication distante"
+  is-remote-user: "Ces informations appartiennent à un·e utilisateur·rice distant·e."
+  is-remote-post: "Ceci est une publication distante."
   view-on-remote: "Consulter le profil complet"
   error:
     title: 'Une erreur est survenue'
@@ -151,7 +151,7 @@ common:
     notifications: "Notifications"
     users: "Utilisateur·rice·s"
     polls: "Sondages"
-    post-form: "Formulaire de publication"
+    post-form: "Champs de publication"
     server: "Info sur le serveur"
     donation: "Dons"
     nav: "Navigation"
@@ -166,7 +166,7 @@ auth/views/form.vue:
   account-write: "Modifications des informations du compte :"
   note-write: "Publier."
   like-write: "Réagir aux publications."
-  following-write: "S'abonner et se désabonner."
+  following-write: "S’abonner et se désabonner."
   drive-read: "Lire votre Drive"
   drive-write: "Téléverser/supprimer des fichiers dans votre Drive."
   notification-read: "Lire vos notifications."
@@ -344,6 +344,16 @@ common/views/components/poll-editor.vue:
   destroy: "Annuler ce sondage"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Choisissez votre réaction"
+common/views/components/emoji-picker.vue:
+  custom-emoji: "Émoji personnalisé"
+  people: "Personnes"
+  animals-and-nature: "Animaux et nature"
+  food-and-drink: "Nourriture et boisson"
+  activity: "Activités"
+  travel-and-places: "Lieux et voyages"
+  objects: "Objets"
+  symbols: "Symboles"
+  flags: "Drapeaux"
 common/views/components/signin.vue:
   username: "Nom d'utilisateur·rice"
   password: "Mot de passe"
@@ -491,8 +501,8 @@ common/views/pages/follow.vue:
   following: "Suit"
   follow: "Suivre"
   request-pending: "Demande d'abonnement en attente"
-  follow-processing: "En cours d’abonnement"
-  follow-request: "Demande d'abonnement"
+  follow-processing: "Demande en attente"
+  follow-request: "Demande d’abonnement"
 desktop:
   banner-crop-title: "Découpez la partie qui apparaitra comme bannière"
   banner: "Bannière"
@@ -588,12 +598,6 @@ desktop/views/components/media-image.vue:
 desktop/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
-desktop/views/components/follow-button.vue:
-  following: "Abonné·e"
-  follow: "Suivre"
-  request-pending: "En attente d'approbation"
-  follow-processing: "Continuer l’abonnement"
-  follow-request: "Demande d'abonnement"
 desktop/views/components/followers-window.vue:
   followers: "{} abonné·e·s"
 desktop/views/components/followers.vue:
@@ -829,6 +833,10 @@ common/views/components/mute-and-block.vue:
   block: "En cours blocage"
   no-muted-users: "Aucun utilisateur·rice n’est mis·e en sourdine"
   no-blocked-users: "Aucun utilisateur·rice n’est bloqué·e"
+  word-mute: "Filtre de mots"
+  muted-words: "Mots masqués"
+  muted-words-description: "Description des mots mis en sourdine"
+  save: "Enregistrer"
 common/views/components/password-settings.vue:
   reset: "Modifier le mot de passe"
   enter-current-password: "Entrez votre mot de passe actuel"
@@ -1067,7 +1075,7 @@ desktop/views/pages/user-list.users.vue:
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Abonné·e·s que vous connaissez"
   loading: "Chargement en cours"
-  no-users: "Pas d'utilisateurs"
+  no-users: "Aucun abonné connu"
 desktop/views/pages/user/user.friends.vue:
   title: "Mentions fréquentes"
   loading: "Chargement en cours"
@@ -1079,8 +1087,8 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Vous suit"
   stalk: "Traquer"
-  stalking: "ストーキングしています"
-  unstalk: "ストーク解除"
+  stalking: "Entrain de poursuivre"
+  unstalk: "Cesser la poursuite"
   mute: "Mettre en sourdine"
   muted: "Muting"
   unmute: "Enlever la sourdine"
@@ -1161,12 +1169,12 @@ mobile/views/components/media-image.vue:
 mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
-mobile/views/components/follow-button.vue:
+common/views/components/follow-button.vue:
   following: "Abonné·e"
-  follow: "Suivre"
-  request-pending: "En attente d'approbation"
-  follow-processing: "En cours d’abonnement"
-  follow-request: "Demande d'abonnement"
+  follow: "S’abonner"
+  request-pending: "Demande en attente"
+  follow-processing: "フォロー処理中"
+  follow-request: "フォロー申請"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
   empty: "Impossible de trouver des utilisateurs·trices à recommander."
@@ -1219,7 +1227,7 @@ mobile/views/components/ui.header.vue:
 mobile/views/components/ui.nav.vue:
   timeline: "Fil d'actualité"
   notifications: "Notifications"
-  follow-requests: "Demandes d'abonnement"
+  follow-requests: "Demandes d’abonnement"
   search: "Rechercher"
   favorites: "Favoris"
   user-lists: "Listes"
@@ -1267,8 +1275,8 @@ mobile/views/pages/widgets/activity.vue:
 mobile/views/pages/share.vue:
   share-with: "Partager avec {name}"
 mobile/views/pages/received-follow-requests.vue:
-  title: "Demandes d'abonnement"
-  accept: "Approuver"
+  title: "Demandes d’abonnement"
+  accept: "Accepter"
   reject: "Refuser"
 mobile/views/pages/note.vue:
   title: "Post"
@@ -1363,7 +1371,7 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Pas d'utilisateurs"
+  no-users: "Aucun utilisateur connu"
 mobile/views/pages/user/home.friends.vue:
   no-users: "Pass d'utilisateurs"
 mobile/views/pages/user/home.notes.vue:
