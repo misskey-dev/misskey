@@ -223,6 +223,5 @@ export default Vue.extend({
 			width 72px
 			height 72px
 			margin auto
-			box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
 
 </style>
