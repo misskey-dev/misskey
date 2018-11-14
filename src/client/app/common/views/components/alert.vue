@@ -6,7 +6,7 @@
 		<header v-if="title" v-html="title"></header>
 		<div class="body" v-if="text" v-html="text"></div>
 		<ui-horizon-group no-grow class="buttons">
-			<ui-button @click="ok" primary>OK</ui-button>
+			<ui-button @click="ok" primary autofocus>OK</ui-button>
 			<ui-button @click="cancel" v-if="showCancelButton">Cancel</ui-button>
 		</ui-horizon-group>
 	</div>
@@ -169,14 +169,18 @@ export default Vue.extend({
 				display block
 				margin 0 auto
 
-		> .header
-			margin 16px 0
+		> header
+			margin 16px 0 8px 0
 			font-weight bold
+			font-size 20px
 
 			& + .body
 				margin-top 8px
 
 		> .body
 			margin 16px 0
+
+		> .buttons
+			margin-top 16px
 
 </style>

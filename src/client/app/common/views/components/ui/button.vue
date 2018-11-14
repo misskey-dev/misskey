@@ -38,12 +38,24 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 	data() {
 		return {
 			styl: 'fill'
 		};
+	},
+	mounted() {
+		if (this.autofocus) {
+			this.$nextTick(() => {
+				this.$el.focus();
+			});
+		}
 	}
 });
 </script>
