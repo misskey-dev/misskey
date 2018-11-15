@@ -35,6 +35,24 @@
 				<span>{{ $t('private') }}</span>
 			</div>
 		</div>
+		<div @click="choose('local-public')" :class="{ active: v == 'local-public' }">
+			<div><fa icon="globe"/></div>
+			<div>
+				<span>{{ $t('local-public') }}</span>
+			</div>
+		</div>
+		<div @click="choose('local-home')" :class="{ active: v == 'local-home' }">
+			<div><fa icon="home"/></div>
+			<div>
+				<span>{{ $t('local-home') }}</span>
+			</div>
+		</div>
+		<div @click="choose('local-followers')" :class="{ active: v == 'local-followers' }">
+			<div><fa icon="unlock"/></div>
+			<div>
+				<span>{{ $t('local-followers') }}</span>
+			</div>
+		</div>
 	</div>
 </div>
 </template>

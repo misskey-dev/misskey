@@ -14,6 +14,7 @@
 			<b>{{ $t('recent-tags') }}:</b>
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
+		<div class="local-only" v-if="this.localOnly == true">{{ $t('local-only-message') }}</div>
 		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -112,6 +113,7 @@ export default Vue.extend({
 			geo: null,
 			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
+			localOnly: false,
 			autocomplete: null,
 			draghover: false,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
@@ -363,7 +365,14 @@ export default Vue.extend({
 				source: this.$refs.visibilityButton
 			});
 			w.$once('chosen', v => {
-				this.visibility = v;
+				const m = v.match(/^local-(.+)/);
+				if (m) {
+					this.localOnly = true;
+					this.visibility = m[1];
+				} else {
+					this.localOnly = false;
+					this.visibility = v;
+				}
 			});
 		},
 
@@ -407,6 +416,7 @@ export default Vue.extend({
 				cw: this.useCw ? this.cw || '' : undefined,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
+				localOnly: this.localOnly,
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
@@ -639,6 +649,10 @@ export default Vue.extend({
 			> *
 				margin-right 8px
 				white-space nowrap
+
+		> .local-only
+			margin 0 0 8px 0
+			color var(--primary)
 
 	> .mk-uploader
 		margin 8px 0 0 0

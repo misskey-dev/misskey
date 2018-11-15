@@ -102,6 +102,7 @@ export default Vue.extend({
 			geo: null,
 			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
+			localOnly: false,
 			useCw: false,
 			cw: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
@@ -274,7 +275,14 @@ export default Vue.extend({
 				compact: true
 			});
 			w.$once('chosen', v => {
-				this.visibility = v;
+				const m = v.match(/^local-(.+)/);
+				if (m) {
+					this.localOnly = true;
+					this.visibility = m[1];
+				} else {
+					this.localOnly = false;
+					this.visibility = v;
+				}
 			});
 		},
 
@@ -320,6 +328,7 @@ export default Vue.extend({
 				} : null,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
+				localOnly: this.localOnly,
 				viaMobile: viaMobile
 			}).then(data => {
 				this.$emit('posted');
