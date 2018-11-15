@@ -90,6 +90,9 @@ common:
     specified: "ダイレクト"
     specified-desc: "今から言うユーザー以外に見せんとってや"
     private: "非公開"
+    local-public: "公開(ローカルのみ)"
+    local-home: "ホーム(ローカルのみ)"
+    local-followers: "フォロワー(ローカルのみ)"
   note-placeholders:
     a: "今なにしてん？"
     b: "何かあったんか？"
@@ -427,6 +430,9 @@ common/views/components/visibility-chooser.vue:
   specified: "ダイレクト"
   specified-desc: "今から言うユーザー以外に見せんとってや"
   private: "非公開"
+  local-public: "公開(ローカルのみ)"
+  local-home: "ホーム(ローカルのみ)"
+  local-followers: "フォロワー(ローカルのみ)"
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "流行は自分で作るんや"
@@ -676,6 +682,7 @@ desktop/views/components/post-form.vue:
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
   recent-tags: "最近のタグ"
+  local-only-message: "この投稿はローカルにのみ公開されます"
   click-to-tagging: "クリックでタグ付け"
   visibility: "公開範囲"
   geolocation-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
