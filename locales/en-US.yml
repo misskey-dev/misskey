@@ -90,6 +90,9 @@ common:
     specified: "Direct"
     specified-desc: "Post to specified users only"
     private: "Private"
+    local-public: "公開(ローカルのみ)"
+    local-home: "ホーム(ローカルのみ)"
+    local-followers: "フォロワー(ローカルのみ)"
   note-placeholders:
     a: "What are you doing?"
     b: "What's happening?"
@@ -427,6 +430,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Direct"
   specified-desc: "Post to specified users only"
   private: "Private"
+  local-public: "公開(ローカルのみ)"
+  local-home: "ホーム(ローカルのみ)"
+  local-followers: "フォロワー(ローカルのみ)"
 common/views/components/trends.vue:
   count: "{} users mentioned"
   empty: "No popular hashtag trends"
@@ -676,6 +682,7 @@ desktop/views/components/post-form.vue:
   create-poll: "Create a poll"
   text-remain: "{} characters remaining"
   recent-tags: "Recent"
+  local-only-message: "この投稿はローカルにのみ公開されます"
   click-to-tagging: "Click to tagging"
   visibility: "Visibility"
   geolocation-alert: "Your device does not provide location services."
