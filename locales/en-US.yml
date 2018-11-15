@@ -407,14 +407,14 @@ common/views/components/github-setting.vue:
   connected-to: "You are connected to this GitHub account"
   detail: "More..."
   reconnect: "Reconnect"
-  connect: "Connect to GitHub"
+  connect: "Link your GitHub account"
   disconnect: "Disconnect"
 common/views/components/discord-setting.vue:
-  description: "お使いのDiscordアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでDiscordアカウント情報が表示されるようになったり、Discordを用いた便利なサインインを利用できるようになります。"
-  connected-to: "次のDiscordアカウントに接続されています"
-  detail: "詳細..."
+  description: "Once you connect your Discord account to your Misskey account, you will be able to see information about your Discord account on your profile, and you will be able to sign-in using Discord."
+  connected-to: "You are connected to this Discord account"
+  detail: "Details…"
   reconnect: "Reconnect"
-  connect: "Connect to Discord"
+  connect: "Link your Discord account"
   disconnect: "Disconnect"
 common/views/components/uploader.vue:
   waiting: "Waiting"
@@ -843,7 +843,7 @@ common/views/components/mute-and-block.vue:
   no-blocked-users: "No blocked users"
   word-mute: "Word mute"
   muted-words: "Muted keywords"
-  muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  muted-words-description: "Separating with spaces results in AND specifications, and delimiting with line breaks results in OR specifications"
   save: "Save"
 common/views/components/password-settings.vue:
   reset: "Change password"
@@ -1021,9 +1021,9 @@ admin/views/users.vue:
   unverified: "The account is now being unverified"
 admin/views/moderators.vue:
   add-moderator:
-    title: "モデレーターの登録"
-    add: "登録"
-    added: "モデレーターを登録しました"
+    title: "Register Moderator"
+    add: "Register"
+    added: "Registered a Moderator."
 admin/views/emoji.vue:
   add-emoji:
     title: "Add emoji"
@@ -1352,7 +1352,7 @@ mobile/views/pages/settings.vue:
   github-reconnect: "Reconnect"
   github-disconnect: "Disconnect"
   discord: "Discord Integration"
-  discord-connect: "Discordアカウントに接続する"
+  discord-connect: "Connect to your Discord account"
   discord-reconnect: "Reconnect"
   discord-disconnect: "Disconnect"
   update: "Misskey Update"
