@@ -500,7 +500,7 @@ common/views/pages/follow.vue:
   signed-in-as: "Connecté·e en tant que {}"
   following: "Suit"
   follow: "Suivre"
-  request-pending: "Demande d'abonnement en attente"
+  request-pending: "Demande d’abonnement en attente"
   follow-processing: "Demande en attente"
   follow-request: "Demande d’abonnement"
 desktop:
