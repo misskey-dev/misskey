@@ -74,6 +74,14 @@ export const meta = {
 			}
 		},
 
+		localOnly: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'ローカルのみに投稿か否か。'
+			}
+		},
+
 		geo: {
 			validator: $.obj({
 				coordinates: $.arr().length(2)
@@ -226,6 +234,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		cw: ps.cw,
 		app,
 		viaMobile: ps.viaMobile,
+		localOnly: ps.localOnly,
 		visibility: ps.visibility,
 		visibleUsers,
 		geo: ps.geo

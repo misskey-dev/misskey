@@ -19,6 +19,9 @@
 			<template v-if="note.visibility == 'specified'"><fa icon="envelope"/></template>
 			<template v-if="note.visibility == 'private'"><fa icon="lock"/></template>
 		</span>
+		<span class="localOnly" v-if="note.localOnly == true">
+			<template><fa icon="heart"/></template>
+		</span>
 	</div>
 </header>
 </template>
@@ -114,5 +117,8 @@ export default Vue.extend({
 
 		> .visibility
 			margin-left 8px
+
+		> .localOnly
+			margin-left 4px
 
 </style>

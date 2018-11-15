@@ -6,6 +6,8 @@ export function createHttpJob(data: any) {
 }
 
 export function deliver(user: ILocalUser, content: any, to: any) {
+	if (content == null) return;
+
 	createHttpJob({
 		type: 'deliver',
 		user,
