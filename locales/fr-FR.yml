@@ -366,7 +366,7 @@ common/views/components/signin.vue:
   or: "Ou"
   signin-with-twitter: "Se connecter via Twitter"
   signin-with-github: "Se connecter avec GitHub"
-  signin-with-discord: "Discordでログイン"
+  signin-with-discord: "Se connecter avec Discord"
   login-failed: "Échec d'authentification. Veuillez vérifier que votre nom d'utilisateur et mot de passe sont corrects."
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
