@@ -20,7 +20,7 @@
 				<div><fa icon="user"/></div>
 				<div>
 					<span>{{ $t('accounts') }}</span>
-					<b class="primary">{{ stats.originalUsersCount | number }}</b>
+					<b>{{ stats.originalUsersCount | number }}</b>
 				</div>
 			</div>
 			<div>
@@ -33,7 +33,7 @@
 				<div><fa icon="pencil-alt"/></div>
 				<div>
 					<span>{{ $t('notes') }}</span>
-					<b class="primary">{{ stats.originalNotesCount | number }}</b>
+					<b>{{ stats.originalNotesCount | number }}</b>
 				</div>
 			</div>
 			<div>
@@ -109,6 +109,7 @@ export default Vue.extend({
 			connection: null,
 			meta: null,
 			instances: [],
+			clock: null,
 			faDatabase
 		};
 	},
@@ -116,12 +117,11 @@ export default Vue.extend({
 	created() {
 		this.connection = this.$root.stream.useSharedConnection('serverStats');
 
+		this.updateStats();
+		this.clock = setInterval(this.updateStats, 1000);
+
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
-		});
-
-		this.$root.api('stats').then(stats => {
-			this.stats = stats;
 		});
 
 		this.$root.api('instances', {
@@ -139,11 +139,18 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		this.connection.dispose();
+		clearInterval(this.clock);
 	},
 
 	methods: {
 		setChartSrc(src) {
 			this.$refs.charts.setSrc(src);
+		},
+
+		updateStats() {
+			this.$root.api('stats').then(stats => {
+				this.stats = stats;
+			});
 		}
 	}
 });
@@ -235,9 +242,6 @@ export default Vue.extend({
 
 					> b
 						display block
-
-						&.primary
-							color var(--primary)
 
 			> div:last-child
 				display flex
