@@ -280,6 +280,7 @@ export default Vue.extend({
 					this.localOnly = true;
 					this.visibility = m[1];
 				} else {
+					this.localOnly = false;
 					this.visibility = v;
 				}
 			});

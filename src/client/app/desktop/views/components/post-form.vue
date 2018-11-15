@@ -14,6 +14,7 @@
 			<b>{{ $t('recent-tags') }}:</b>
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
+		<div class="local-only" v-if="this.localOnly == true">{{ $t('local-only-message') }}</div>
 		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -369,6 +370,7 @@ export default Vue.extend({
 					this.localOnly = true;
 					this.visibility = m[1];
 				} else {
+					this.localOnly = false;
 					this.visibility = v;
 				}
 			});
@@ -647,6 +649,10 @@ export default Vue.extend({
 			> *
 				margin-right 8px
 				white-space nowrap
+
+		> .local-only
+			margin 0 0 8px 0
+			color var(--primary)
 
 	> .mk-uploader
 		margin 8px 0 0 0
