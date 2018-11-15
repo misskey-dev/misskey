@@ -140,6 +140,11 @@ async function init(): Promise<Config> {
 
 	configLogger.succ('Loaded');
 
+	if (config.port == null) {
+		Logger.error('The port is not configured. Please configure port.');
+		process.exit(1);
+	}
+
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
 		Logger.error('You need root privileges to listen on port below 1024 on Linux');
 		process.exit(1);
