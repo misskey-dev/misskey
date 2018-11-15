@@ -20,21 +20,21 @@
 			<ui-card>
 				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
 				<section>
-					<mk-twitter-setting/>
+					<x-twitter-setting/>
 				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
 				<section>
-					<mk-github-setting/>
+					<x-github-setting/>
 				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
 				<section>
-					<mk-discord-setting/>
+					<x-discord-setting/>
 				</section>
 			</ui-card>
 		</div>
@@ -299,6 +299,16 @@ import X2fa from './settings.2fa.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XTags from './settings.tags.vue';
+import XTwitterSetting from '../../../common/views/components/twitter-setting.vue';
+import XGithubSetting from '../../../common/views/components/github-setting.vue';
+import XDiscordSetting from '../../../common/views/components/discord-setting.vue';
+import XTheme from '../../../common/views/components/theme.vue';
+import XDriveSettings from '../../../common/views/components/drive-settings.vue';
+import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
+import XPasswordSettings from '../../../common/views/components/password-settings.vue';
+import XProfileEditor from '../../../common/views/components/profile-editor.vue';
+import XApiSettings from '../../../common/views/components/api-settings.vue';
+
 import { url, langs, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
@@ -309,12 +319,15 @@ export default Vue.extend({
 		XApps,
 		XSignins,
 		XTags,
-		XTheme: () => import('../../../common/views/components/theme.vue').then(m => m.default),
-		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue').then(m => m.default),
-		XMuteAndBlock: () => import('../../../common/views/components/mute-and-block.vue').then(m => m.default),
-		XPasswordSettings: () => import('../../../common/views/components/password-settings.vue').then(m => m.default),
-		XProfileEditor: () => import('../../../common/views/components/profile-editor.vue').then(m => m.default),
-		XApiSettings: () => import('../../../common/views/components/api-settings.vue').then(m => m.default),
+		XTwitterSetting,
+		XGithubSetting,
+		XDiscordSetting,
+		XTheme,
+		XDriveSettings,
+		XMuteAndBlock,
+		XPasswordSettings,
+		XProfileEditor,
+		XApiSettings,
 	},
 	props: {
 		initialPage: {

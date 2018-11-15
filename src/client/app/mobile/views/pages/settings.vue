@@ -192,17 +192,23 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { apiUrl, clientVersion as version, codename, langs } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
+import XTheme from '../../../common/views/components/theme.vue';
+import XDriveSettings from '../../../common/views/components/drive-settings.vue';
+import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
+import XPasswordSettings from '../../../common/views/components/password-settings.vue';
+import XProfileEditor from '../../../common/views/components/profile-editor.vue';
+import XApiSettings from '../../../common/views/components/api-settings.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
 
 	components: {
-		XTheme: () => import('../../../common/views/components/theme.vue').then(m => m.default),
-		XDriveSettings: () => import('../../../common/views/components/drive-settings.vue').then(m => m.default),
-		XMuteAndBlock: () => import('../../../common/views/components/mute-and-block.vue').then(m => m.default),
-		XPasswordSettings: () => import('../../../common/views/components/password-settings.vue').then(m => m.default),
-		XProfileEditor: () => import('../../../common/views/components/profile-editor.vue').then(m => m.default),
-		XApiSettings: () => import('../../../common/views/components/api-settings.vue').then(m => m.default),
+		XTheme,
+		XDriveSettings,
+		XMuteAndBlock,
+		XPasswordSettings,
+		XProfileEditor,
+		XApiSettings,
 	},
 
 	data() {
