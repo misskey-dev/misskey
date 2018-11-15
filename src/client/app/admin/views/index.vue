@@ -22,12 +22,12 @@
 			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>{{ $t('instance') }}</li>
 			<li @click="nav('moderators')" :class="{ active: page == 'moderators' }"><fa :icon="faHeadset" fixed-width/>{{ $t('moderators') }}</li>
 			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
+			<!-- <li @click="nav('federation')" :class="{ active: page == 'federation' }"><fa :icon="faShareAlt" fixed-width/>{{ $t('federation') }}</li> -->
 			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
 			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
 			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('hashtags') }}</li>
 
 			<!-- <li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</li> -->
-			<!-- <li @click="nav('update')" :class="{ active: page == 'update' }">{{ $t('update') }}</li> -->
 		</ul>
 		<div class="back-to-misskey">
 			<a href="/"><fa :icon="faArrowLeft"/> {{ $t('back-to-misskey') }}</a>
@@ -63,7 +63,7 @@ import XEmoji from "./emoji.vue";
 import XAnnouncements from "./announcements.vue";
 import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
-import { faHeadset, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faArrowLeft, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 // Detect the user agent
@@ -92,7 +92,8 @@ export default Vue.extend({
 			navOpend: !isMobile,
 			faGrin,
 			faArrowLeft,
-			faHeadset
+			faHeadset,
+			faShareAlt
 		};
 	},
 	methods: {
