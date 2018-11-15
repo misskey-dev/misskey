@@ -133,10 +133,10 @@ common:
     black: "黑"
     white: "白"
     total: "合计"
-    this-turn: "{count}ターン目"
+    this-turn: "Turn {count}"
   widgets:
-    analog-clock: "アナログ時計"
-    profile: "プロフィール"
+    analog-clock: "指针时钟"
+    profile: "简介"
     calendar: "カレンダー"
     timemachine: "カレンダー(タイムマシン)"
     activity: "アクティビティ"
