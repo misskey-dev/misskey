@@ -90,6 +90,9 @@ common:
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
     private: "非公開"
+    local-public: "公開(ローカルのみ)"
+    local-home: "ホーム(ローカルのみ)"
+    local-followers: "フォロワー(ローカルのみ)"
   note-placeholders:
     a: "Co robisz?"
     b: "Co się wydarzyło?"
@@ -427,6 +430,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Bezpośredni"
   specified-desc: "Tylko dla określonych użytkowników"
   private: "Prywatny"
+  local-public: "公開(ローカルのみ)"
+  local-home: "ホーム(ローカルのみ)"
+  local-followers: "フォロワー(ローカルのみ)"
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
@@ -676,6 +682,7 @@ desktop/views/components/post-form.vue:
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
   recent-tags: "Ostatnie"
+  local-only-message: "この投稿はローカルにのみ公開されます"
   click-to-tagging: "Naciśnij aby oznaczyć"
   visibility: "Widoczność"
   geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
