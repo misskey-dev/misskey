@@ -1,4 +1,4 @@
-FROM alpine:3.8 AS base
+FROM alpine:edge AS base
 
 ENV NODE_ENV=production
 
