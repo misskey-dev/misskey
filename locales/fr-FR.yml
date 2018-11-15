@@ -601,7 +601,7 @@ desktop/views/components/media-video.vue:
 desktop/views/components/followers-window.vue:
   followers: "{} abonné·e·s"
 desktop/views/components/followers.vue:
-  empty: "Il semble que vous n'avez pas encore d'abonné·e·s."
+  empty: "Il semble que vous n’avez pas encore d’abonné·e·s."
 desktop/views/components/following-window.vue:
   following: "Suit {}"
 desktop/views/components/following.vue:
@@ -888,7 +888,7 @@ desktop/views/components/ui.header.search.vue:
   placeholder: "Chercher"
 desktop/views/components/received-follow-requests-window.vue:
   title: "Demandes de suivi"
-  accept: "Approuver"
+  accept: "Accepter"
   reject: "Refuser"
 desktop/views/components/user-lists-window.vue:
   title: "Listes de l'utilisateur"
@@ -1177,7 +1177,7 @@ mobile/views/components/media-video.vue:
   click-to-show: "Cliquer pour afficher"
 common/views/components/follow-button.vue:
   following: "Abonné·e"
-  follow: "S’abonner"
+  follow: " Suivre"
   request-pending: "Demande en attente"
   follow-processing: "En cours d’abonnement"
   follow-request: "Demande d’abonnement"
@@ -1377,7 +1377,7 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Aucun utilisateur connu"
+  no-users: "Aucun utilisateur·rice connu·e"
 mobile/views/pages/user/home.friends.vue:
   no-users: "Pass d'utilisateurs"
 mobile/views/pages/user/home.notes.vue:
