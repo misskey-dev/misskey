@@ -1,8 +1,7 @@
-FROM alpine:3.8 AS base
+FROM node:11-alpine AS base
 
 ENV NODE_ENV=production
 
-RUN apk add --no-cache nodejs nodejs-npm zlib
 RUN npm i -g npm@latest
 
 WORKDIR /misskey
