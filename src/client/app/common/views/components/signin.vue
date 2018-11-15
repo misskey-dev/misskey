@@ -14,6 +14,7 @@
 	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
 	<p style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`">{{ $t('signin-with-twitter') }}</a></p>
 	<p style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`">{{ $t('signin-with-github') }}</a></p>
+	<p style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`">{{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
 </form>
 </template>
 

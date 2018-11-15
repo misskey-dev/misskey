@@ -88,6 +88,14 @@ export interface ILocalUser extends IUserBase {
 		id: string;
 		login: string;
 	};
+	discord: {
+		accessToken: string;
+		refreshToken: string;
+		expiresDate: number;
+		id: string;
+		username: string;
+		discriminator: string;
+	};
 	line: {
 		userId: string;
 	};
@@ -290,6 +298,11 @@ export const pack = (
 		}
 		if (_user.github) {
 			delete _user.github.accessToken;
+		}
+		if (_user.discord) {
+			delete _user.discord.accessToken;
+			delete _user.discord.refreshToken;
+			delete _user.discord.expiresDate;
 		}
 		delete _user.line;
 

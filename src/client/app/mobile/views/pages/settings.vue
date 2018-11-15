@@ -140,6 +140,19 @@
 				</section>
 			</ui-card>
 
+			<ui-card>
+				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
+
+				<section>
+					<p class="account" v-if="$store.state.i.discord"><a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
+					<p>
+						<a :href="`${apiUrl}/connect/discord`" target="_blank">{{ $store.state.i.discord ? this.$t('discord-reconnect') : this.$t('discord-connect') }}</a>
+						<span v-if="$store.state.i.discord"> or </span>
+						<a :href="`${apiUrl}/disconnect/discord`" target="_blank" v-if="$store.state.i.discord">{{ $t('discord-disconnect') }}</a>
+					</p>
+				</section>
+			</ui-card>
+
 			<x-api-settings />
 
 			<ui-card>

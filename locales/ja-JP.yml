@@ -399,6 +399,7 @@ common/views/components/signin.vue:
   or: "または"
   signin-with-twitter: "Twitterでログイン"
   signin-with-github: "GitHubでログイン"
+  signin-with-discord: "Discordでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 
 common/views/components/signup.vue:
@@ -448,6 +449,14 @@ common/views/components/github-setting.vue:
   detail: "詳細..."
   reconnect: "再接続する"
   connect: "GitHubと接続する"
+  disconnect: "切断する"
+
+common/views/components/discord-setting.vue:
+  description: "お使いのDiscordアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでDiscordアカウント情報が表示されるようになったり、Discordを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のDiscordアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "Discordと接続する"
   disconnect: "切断する"
 
 common/views/components/uploader.vue:
@@ -1081,7 +1090,12 @@ admin/views/instance.vue:
   github-integration-info: "コールバックURLは /api/gh/cb に設定します。"
   enable-github-integration: "GitHub連携を有効にする"
   github-integration-client-id: "Client ID"
-  github-integration-client-secret: "Client secret"
+  github-integration-client-secret: "Client Secret"
+  discord-integration-config: "Discord連携の設定"
+  discord-integration-info: "コールバックURLは /api/dc/cb に設定します。"
+  enable-discord-integration: "Discord連携を有効にする"
+  discord-integration-client-id: "Client ID"
+  discord-integration-client-secret: "Client Secret"
   proxy-account-config: "プロキシアカウントの設定"
   proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
   proxy-account-username: "プロキシアカウントのユーザー名"
@@ -1530,6 +1544,10 @@ mobile/views/pages/settings.vue:
   github-connect: "GitHubアカウントに接続する"
   github-reconnect: "再接続する"
   github-disconnect: "切断する"
+  discord: "Discord連携"
+  discord-connect: "Discordアカウントに接続する"
+  discord-reconnect: "再接続する"
+  discord-disconnect: "切断する"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"

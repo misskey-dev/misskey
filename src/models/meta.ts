@@ -125,6 +125,19 @@ if ((config as any).github) {
 		}
 	});
 }
+if ((config as any).discord) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.enableDiscordIntegration == null) {
+			Meta.update({}, {
+				$set: {
+					enableDiscordIntegration: true,
+					discordClientId: (config as any).discord.client_id,
+					discordClientSecret: (config as any).discord.client_secret
+				}
+			});
+		}
+	});
+}
 
 export type IMeta = {
 	name?: string;
@@ -191,4 +204,8 @@ export type IMeta = {
 	enableGithubIntegration?: boolean;
 	githubClientId?: string;
 	githubClientSecret?: string;
+
+	enableDiscordIntegration?: boolean;
+	discordClientId?: string;
+	discordClientSecret?: string;
 };
