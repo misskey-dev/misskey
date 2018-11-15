@@ -363,6 +363,7 @@ common/views/components/signin.vue:
   or: "Ou"
   signin-with-twitter: "Se connecter via Twitter"
   signin-with-github: "Se connecter avec GitHub"
+  signin-with-discord: "Discordでログイン"
   login-failed: "Échec d'authentification. Veuillez vérifier que votre nom d'utilisateur et mot de passe sont corrects."
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
@@ -408,6 +409,13 @@ common/views/components/github-setting.vue:
   reconnect: "Reconnecter"
   connect: "Se connecter avec GitHub"
   disconnect: "Déconnecter"
+common/views/components/discord-setting.vue:
+  description: "お使いのDiscordアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでDiscordアカウント情報が表示されるようになったり、Discordを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のDiscordアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "Discordと接続する"
+  disconnect: "切断する"
 common/views/components/uploader.vue:
   waiting: "Veuillez patienter"
 common/views/components/visibility-chooser.vue:
@@ -500,7 +508,7 @@ common/views/pages/follow.vue:
   signed-in-as: "Connecté·e en tant que {}"
   following: "Suit"
   follow: "Suivre"
-  request-pending: "Demande d'abonnement en attente"
+  request-pending: "Demande d’abonnement en attente"
   follow-processing: "Demande en attente"
   follow-request: "Demande d’abonnement"
 desktop:
@@ -601,7 +609,7 @@ desktop/views/components/media-video.vue:
 desktop/views/components/followers-window.vue:
   followers: "{} abonné·e·s"
 desktop/views/components/followers.vue:
-  empty: "Il semble que vous n'avez pas encore d'abonné·e·s."
+  empty: "Il semble que vous n’avez pas encore d’abonné·e·s."
 desktop/views/components/following-window.vue:
   following: "Suit {}"
 desktop/views/components/following.vue:
@@ -644,7 +652,7 @@ desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
 desktop/views/components/notifications.vue:
-  empty: "Pas de notifications"
+  empty: "Aucune de notification !"
 desktop/views/components/post-form.vue:
   add-visible-user: "+Ajouter un utilisateur"
   attach-location-information: "Attacher des informations de localisation"
@@ -888,7 +896,7 @@ desktop/views/components/ui.header.search.vue:
   placeholder: "Chercher"
 desktop/views/components/received-follow-requests-window.vue:
   title: "Demandes de suivi"
-  accept: "Approuver"
+  accept: "Accepter"
   reject: "Refuser"
 desktop/views/components/user-lists-window.vue:
   title: "Listes de l'utilisateur"
@@ -911,6 +919,7 @@ admin/views/index.vue:
   dashboard: "Tableau de bord"
   instance: "Instance"
   emoji: "Emoji"
+  moderators: "モデレーター"
   users: "Utilisateur·rice·s"
   update: "Mise à jour"
   announcements: "Annonces"
@@ -955,7 +964,12 @@ admin/views/instance.vue:
   github-integration-info: "L’URL callback est définit sur /api/gh/cb"
   enable-github-integration: "Activer l’authentification avec Github"
   github-integration-client-id: "ID client"
-  github-integration-client-secret: "Secret client"
+  github-integration-client-secret: "Client Secret"
+  discord-integration-config: "Discord連携の設定"
+  discord-integration-info: "コールバックURLは /api/dc/cb に設定します。"
+  enable-discord-integration: "Discord連携を有効にする"
+  discord-integration-client-id: "Client ID"
+  discord-integration-client-secret: "Client Secret"
   proxy-account-config: "Compte proxy"
   proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
   proxy-account-username: "Nom d’utilisateur du compte proxy"
@@ -1005,6 +1019,11 @@ admin/views/users.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "Ôter la vérification du compte"
   unverified: "Ce compte n'est plus vérifié"
+admin/views/moderators.vue:
+  add-moderator:
+    title: "モデレーターの登録"
+    add: "登録"
+    added: "モデレーターを登録しました"
 admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
@@ -1171,10 +1190,10 @@ mobile/views/components/media-video.vue:
   click-to-show: "Cliquer pour afficher"
 common/views/components/follow-button.vue:
   following: "Abonné·e"
-  follow: "S’abonner"
+  follow: " Suivre"
   request-pending: "Demande en attente"
-  follow-processing: "フォロー処理中"
-  follow-request: "フォロー申請"
+  follow-processing: "En cours d’abonnement"
+  follow-request: "Demande d’abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
   empty: "Impossible de trouver des utilisateurs·trices à recommander."
@@ -1202,7 +1221,7 @@ mobile/views/components/note-sub.vue:
   bot: "bot"
   cat: "chat"
 mobile/views/components/notifications.vue:
-  empty: "Pas de notifications"
+  empty: "Aucune de notification !"
 mobile/views/components/post-form.vue:
   add-visible-user: "Ajouter un utilisateur"
   submit: "Publier"
@@ -1284,7 +1303,7 @@ mobile/views/pages/note.vue:
   next: "Note suivante"
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
-  read-all: "Êtes vous sûr de vouloir marqués toutes les notifications non-lus en tant que lus?"
+  read-all: "Êtes-vous sûr de vouloir marquer l’ensemble des notifications comme étant lues ?"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
@@ -1332,6 +1351,10 @@ mobile/views/pages/settings.vue:
   github-connect: "Se connecter à votre compte GitHub"
   github-reconnect: "Reconnecter"
   github-disconnect: "Déconnecter"
+  discord: "Discord連携"
+  discord-connect: "Discordアカウントに接続する"
+  discord-reconnect: "再接続する"
+  discord-disconnect: "切断する"
   update: "Mise à jour de Misskey"
   version: "Version :"
   latest-version: "Dernière version :"
@@ -1371,7 +1394,7 @@ mobile/views/pages/user/home.vue:
   followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Aucun utilisateur connu"
+  no-users: "Aucun utilisateur·rice connu·e"
 mobile/views/pages/user/home.friends.vue:
   no-users: "Pass d'utilisateurs"
 mobile/views/pages/user/home.notes.vue:
