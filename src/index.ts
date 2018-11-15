@@ -112,7 +112,12 @@ async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
 	Logger.info(`<<< Misskey v${pkg.version} >>>`);
 
-	new Logger('Deps').info(`Node.js ${process.version}`);
+	new Logger('Nodejs').info(`Version ${process.version}`);
+	if (lessThan(process.version.slice(1).split('.').map(x => parseInt(x, 10)), [10, 0, 0])) {
+		new Logger('Nodejs').error(`Node.js version is less than 10.0.0. Please upgrade it.`);
+		process.exit(1);
+	}
+
 	await MachineInfo.show();
 	EnvironmentInfo.show();
 
