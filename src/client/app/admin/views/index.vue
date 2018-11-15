@@ -37,11 +37,6 @@
 		</div>
 	</nav>
 	<main>
-		<marquee-text v-if="instances.length > 0" class="instances" :repeat="10" :duration="30">
-			<span v-for="instance in instances" class="instance">
-				<b :style="{ background: instance.bg }">{{ instance.host }}</b>{{ instance.notesCount | number }} / {{ instance.usersCount | number }}
-			</span>
-		</marquee-text>
 		<div class="page">
 			<div v-if="page == 'dashboard'"><x-dashboard/></div>
 			<div v-if="page == 'instance'"><x-instance/></div>
@@ -70,8 +65,6 @@ import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
 import { faHeadset, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
-import MarqueeText from 'vue-marquee-text-component';
-import randomColor from 'randomcolor';
 
 // Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
@@ -86,8 +79,7 @@ export default Vue.extend({
 		XEmoji,
 		XAnnouncements,
 		XHashtags,
-		XUsers,
-		MarqueeText
+		XUsers
 	},
 	provide: {
 		isMobile
@@ -98,24 +90,10 @@ export default Vue.extend({
 			version,
 			isMobile,
 			navOpend: !isMobile,
-			instances: [],
 			faGrin,
 			faArrowLeft,
 			faHeadset
 		};
-	},
-	created() {
-		this.$root.api('instances', {
-			sort: '+notes'
-		}).then(instances => {
-			instances.forEach(i => {
-				i.bg = randomColor({
-					seed: i.host,
-					luminosity: 'dark'
-				});
-			});
-			this.instances = instances;
-		});
 	},
 	methods: {
 		nav(page: string) {
@@ -287,22 +265,8 @@ export default Vue.extend({
 		width 100%
 		padding 0 0 0 250px
 
-		> .instances
-			padding 10px
-			background #000
-			color #fff
-			font-size 13px
-
-			>>> .instance
-				margin 0 10px
-
-				> b
-					padding 0px 6px
-					margin-right 4px
-					border-radius 4px
-
 		> .page
-			max-width 1300px
+			max-width 1150px
 
 	&.isMobile
 		> main
