@@ -148,7 +148,7 @@ export default Vue.extend({
 		},
 
 		updateStats() {
-			this.$root.api('stats').then(stats => {
+			this.$root.api('stats', {}, false, true).then(stats => {
 				this.stats = stats;
 			});
 		}

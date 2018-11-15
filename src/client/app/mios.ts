@@ -385,15 +385,19 @@ export default class MiOS extends EventEmitter {
 	 * @param data パラメータ
 	 */
 	@autobind
-	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false): Promise<{ [x: string]: any }> {
-		if (++pending === 1) {
-			spinner = document.createElement('div');
-			spinner.setAttribute('id', 'wait');
-			document.body.appendChild(spinner);
+	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false, silent = false): Promise<{ [x: string]: any }> {
+		if (!silent) {
+			if (++pending === 1) {
+				spinner = document.createElement('div');
+				spinner.setAttribute('id', 'wait');
+				document.body.appendChild(spinner);
+			}
 		}
 
 		const onFinally = () => {
-			if (--pending === 0) spinner.parentNode.removeChild(spinner);
+			if (!silent) {
+				if (--pending === 0) spinner.parentNode.removeChild(spinner);
+			}
 		};
 
 		const promise = new Promise((resolve, reject) => {
