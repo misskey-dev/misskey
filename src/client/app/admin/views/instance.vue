@@ -76,6 +76,17 @@
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
+
+	<ui-card>
+		<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord-integration-config') }}</div>
+		<section>
+			<ui-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</ui-switch>
+			<ui-info>{{ $t('discord-integration-info') }}</ui-info>
+			<ui-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-id') }}</ui-input>
+			<ui-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-secret') }}</ui-input>
+			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -113,6 +124,9 @@ export default Vue.extend({
 			enableGithubIntegration: false,
 			githubClientId: null,
 			githubClientSecret: null,
+			enableDiscordIntegration: false,
+			discordClientId: null,
+			discordClientSecret: null,
 			proxyAccount: null,
 			inviteCode: null,
 			faHeadset, faShieldAlt, faGhost
@@ -141,6 +155,9 @@ export default Vue.extend({
 			this.enableGithubIntegration = meta.enableGithubIntegration;
 			this.githubClientId = meta.githubClientId;
 			this.githubClientSecret = meta.githubClientSecret;
+			this.enableDiscordIntegration = meta.enableDiscordIntegration;
+			this.discordClientId = meta.discordClientId;
+			this.discordClientSecret = meta.discordClientSecret;
 		});
 	},
 
@@ -180,6 +197,9 @@ export default Vue.extend({
 				enableGithubIntegration: this.enableGithubIntegration,
 				githubClientId: this.githubClientId,
 				githubClientSecret: this.githubClientSecret,
+				enableDiscordIntegration: this.enableDiscordIntegration,
+				discordClientId: this.discordClientId,
+				discordClientSecret: this.discordClientSecret
 			}).then(() => {
 				this.$root.alert({
 					type: 'success',

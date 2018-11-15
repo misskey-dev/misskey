@@ -177,9 +177,30 @@ export const meta = {
 		githubClientSecret: {
 			validator: $.str.optional.nullable,
 			desc: {
-				'ja-JP': 'GitHubアプリのClient secret'
+				'ja-JP': 'GitHubアプリのClient Secret'
 			}
 		},
+
+		enableDiscordIntegration: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'Discord連携機能を有効にするか否か'
+			}
+		},
+
+		discordClientId: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'DiscordアプリのClient ID'
+			}
+		},
+
+		discordClientSecret: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'DiscordアプリのClient Secret'
+			}
+		}
 	}
 };
 
@@ -280,6 +301,18 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.githubClientSecret !== undefined) {
 		set.githubClientSecret = ps.githubClientSecret;
+	}
+
+	if (ps.enableDiscordIntegration !== undefined) {
+		set.enableDiscordIntegration = ps.enableDiscordIntegration;
+	}
+
+	if (ps.discordClientId !== undefined) {
+		set.discordClientId = ps.discordClientId;
+	}
+
+	if (ps.discordClientSecret !== undefined) {
+		set.discordClientSecret = ps.discordClientSecret;
 	}
 
 	await Meta.update({}, {

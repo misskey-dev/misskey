@@ -30,6 +30,13 @@
 					<mk-github-setting/>
 				</section>
 			</ui-card>
+
+			<ui-card>
+				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
+				<section>
+					<mk-discord-setting/>
+				</section>
+			</ui-card>
 		</div>
 
 		<ui-card class="theme" v-show="page == 'theme'">
