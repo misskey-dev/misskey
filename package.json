@@ -224,7 +224,7 @@
 		"vue-marquee-text-component": "1.1.0",
 		"vue-router": "3.0.1",
 		"vue-style-loader": "4.1.2",
-		"vue-svg-inline-loader": "1.2.1",
+		"vue-svg-inline-loader": "1.2.2",
 		"vue-template-compiler": "2.5.17",
 		"vuedraggable": "2.16.0",
 		"vuewordcloud": "18.7.11",
