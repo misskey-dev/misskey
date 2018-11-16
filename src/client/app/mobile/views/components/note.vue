@@ -28,7 +28,7 @@
 		<mk-avatar class="avatar" :user="appearNote.user" v-if="$store.state.device.postStyle != 'smart'"/>
 		<div class="main">
 			<mk-note-header class="header" :note="appearNote" :mini="true"/>
-			<div class="body">
+			<div class="body" v-if="appearNote.deletedAt == null">
 				<p v-if="appearNote.cw != null" class="cw">
 					<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
 					<mk-cw-button v-model="showContent"/>
@@ -50,7 +50,7 @@
 				</div>
 				<span class="app" v-if="appearNote.app && $store.state.settings.showVia">via <b>{{ appearNote.app.name }}</b></span>
 			</div>
-			<footer>
+			<footer v-if="appearNote.deletedAt == null">
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button @click="reply()">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
@@ -67,6 +67,7 @@
 					<fa icon="ellipsis-h"/>
 				</button>
 			</footer>
+			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
 </div>
@@ -354,6 +355,10 @@ export default Vue.extend({
 
 					&.reacted
 						color var(--primary)
+
+			> .deleted
+				color var(--noteText)
+				opacity 0.7
 
 </style>
 

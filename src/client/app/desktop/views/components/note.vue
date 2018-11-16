@@ -2,7 +2,7 @@
 <div
 	class="note"
 	:class="{ mini }"
-	v-show="appearNote.deletedAt == null && !hideThisNote"
+	v-show="(this.$store.state.settings.remainDeletedNote || appearNote.deletedAt == null) && !hideThisNote"
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
 	v-hotkey="keymap"
 	:title="title"
@@ -32,7 +32,7 @@
 		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<mk-note-header class="header" :note="appearNote" :mini="mini"/>
-			<div class="body">
+			<div class="body" v-if="appearNote.deletedAt == null">
 				<p v-if="appearNote.cw != null" class="cw">
 					<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
 					<mk-cw-button v-model="showContent"/>
@@ -53,7 +53,7 @@
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :mini="mini"/>
 				</div>
 			</div>
-			<footer>
+			<footer v-if="appearNote.deletedAt == null">
 				<span class="app" v-if="appearNote.app && mini && $store.state.settings.showVia">via <b>{{ appearNote.app.name }}</b></span>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button class="replyButton" @click="reply()" :title="$t('reply')">
@@ -71,6 +71,7 @@
 					<fa icon="ellipsis-h"/>
 				</button>
 			</footer>
+			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
 	<div class="replies" v-if="detail && replies.length > 0">
@@ -89,6 +90,7 @@ import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/note.vue'),
+
 	components: {
 		XSub
 	},
@@ -343,6 +345,7 @@ export default Vue.extend({
 					margin-left 0.5em
 					color var(--noteHeaderInfo)
 					font-size 0.8em
+
 				> button
 					margin 0 28px 0 0
 					padding 0 8px
@@ -375,6 +378,10 @@ export default Vue.extend({
 
 					&.reacted, &.reacted:hover
 						color var(--noteActionsReactionHover)
+
+			> .deleted
+				color var(--noteText)
+				opacity 0.7
 
 </style>
 
