@@ -129,7 +129,7 @@ handler.on('release', event => {
 	const release = event.release;
 	let text: string;
 	switch (action) {
-		case 'published': text = `🎁 **NEW RELEASE**: [${release.tag_name}](${release.html_url})`; break;
+		case 'published': text = `🎁 **NEW RELEASE**: [${release.tag_name}](${release.html_url}) is out now. Enjoy!`; break;
 		default: return;
 	}
 	post(text);
