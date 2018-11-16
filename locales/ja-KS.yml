@@ -700,6 +700,7 @@ desktop/views/components/renote-form.vue:
   quote: "取ってくる……"
   cancel: "やめとくわ"
   renote: "Renote"
+  renote-home: "Renote (ホーム)"
   reposting: "やっとります..."
   success: "Renoteしたで！"
   failure: "Renoteでけへん"
