@@ -10,7 +10,7 @@ This guide describes how to install and setup Misskey.
 
 *1.* Create Misskey user
 ----------------------------------------------------------------
-Running misskey on root is not a good idea so we create a user for that.
+Running misskey as root is not a good idea so we create a user for that.
 In debian for exemple :
 
 ```
@@ -32,7 +32,7 @@ Please install and setup these softwares:
 
 *3.* Setup MongoDB
 ----------------------------------------------------------------
-In root :
+As root:
 1. `mongo` Go to the mongo shell
 2. `use misskey` Use the misskey database
 3. `db.users.save( {dummy:"dummy"} )` Write dummy data to initialize the db.
@@ -50,7 +50,7 @@ In root :
 *(optional)* Generating VAPID keys
 ----------------------------------------------------------------
 If you want to enable ServiceWorker, you need to generate VAPID keys:
-Unless you have set your global node_modules location elsewhere, you need to run this in root.
+Unless you have set your global node_modules location elsewhere, you need to run this as root.
 
 ``` shell
 npm install web-push -g
