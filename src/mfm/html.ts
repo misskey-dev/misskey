@@ -53,6 +53,12 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 		document.body.appendChild(element);
 	},
 
+	math({ document }, { formula }) {
+		const element = document.createElement('code');
+		element.textContent = formula;
+		document.body.appendChild(element);
+	},
+
 	link({ document }, { url, title }) {
 		const a = document.createElement('a');
 		a.href = url;
