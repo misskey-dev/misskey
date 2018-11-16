@@ -124,6 +124,17 @@ handler.on('issue_comment', event => {
 	post(text);
 });
 
+handler.on('release', event => {
+	const action = event.action;
+	const release = event.release;
+	let text: string;
+	switch (action) {
+		case 'published': text = `🎁 **NEW RELEASE**: [${release.tag_name}](${release.html_url})`; break;
+		default: return;
+	}
+	post(text);
+});
+
 handler.on('watch', event => {
 	const sender = event.sender;
 	post(`(((⭐️))) Starred by **${sender.login}** (((⭐️)))`, false);
