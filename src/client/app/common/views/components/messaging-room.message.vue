@@ -34,6 +34,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import parse from '../../../../../mfm/parse';
+import { unique } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/messaging-room.message.vue'),
@@ -49,9 +50,9 @@ export default Vue.extend({
 		urls(): string[] {
 			if (this.message.text) {
 				const ast = parse(this.message.text);
-				return ast
+				return unique(ast
 					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
+					.map(t => t.url));
 			} else {
 				return null;
 			}

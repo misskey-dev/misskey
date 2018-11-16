@@ -94,7 +94,7 @@ import MkRenoteFormWindow from './renote-form-window.vue';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './note.sub.vue';
-import { sum } from '../../../../../prelude/array';
+import { sum, unique } from '../../../../../prelude/array';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
@@ -149,9 +149,9 @@ export default Vue.extend({
 		urls(): string[] {
 			if (this.p.text) {
 				const ast = parse(this.p.text);
-				return ast
+				return unique(ast
 					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
+					.map(t => t.url));
 			} else {
 				return null;
 			}
