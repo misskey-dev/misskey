@@ -96,10 +96,6 @@ handler.on('push', event => {
 				commits.reverse().map(commit => `・[?[${commit.id.substr(0, 7)}](${commit.url})] ${commit.message.split('\n')[0]}`).join('\n'),
 			].join('\n'));
 			break;
-		case 'refs/heads/release':
-			const commit = event.commits[0];
-			post(`RELEASED: ${commit.message}`);
-			break;
 	}
 });
 
