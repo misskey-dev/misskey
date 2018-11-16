@@ -326,6 +326,7 @@ try {
 // クライアントを更新すべきならする
 if (localStorage.getItem('should-refresh') == 'true') {
 	localStorage.removeItem('should-refresh');
+	localStorage.removeItem('locale');
 	location.reload(true);
 }
 
