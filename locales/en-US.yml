@@ -90,9 +90,9 @@ common:
     specified: "Direct"
     specified-desc: "Post to specified users only"
     private: "Private"
-    local-public: "公開(ローカルのみ)"
-    local-home: "ホーム(ローカルのみ)"
-    local-followers: "フォロワー(ローカルのみ)"
+    local-public: "Local (Public)"
+    local-home: "Local (Home)"
+    local-followers: "Local (Followers)"
   note-placeholders:
     a: "What are you doing?"
     b: "What's happening?"
