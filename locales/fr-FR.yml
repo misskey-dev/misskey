@@ -90,9 +90,9 @@ common:
     specified: "Direct"
     specified-desc: "Publier uniquement aux utilisateurs·rices mentionnés·es"
     private: "Privé"
-    local-public: "公開(ローカルのみ)"
+    local-public: "Local (Public)"
     local-home: "ホーム(ローカルのみ)"
-    local-followers: "フォロワー(ローカルのみ)"
+    local-followers: "Local (Abonnés)"
   note-placeholders:
     a: "Que faites-vous maintenant ?"
     b: "Quoi de neuf ?"
@@ -430,9 +430,9 @@ common/views/components/visibility-chooser.vue:
   specified: "Direct"
   specified-desc: "Publier uniquement aux utilisateurs·rices mentionné·e·s"
   private: "Privé"
-  local-public: "公開(ローカルのみ)"
+  local-public: "Local (Public)"
   local-home: "ホーム(ローカルのみ)"
-  local-followers: "フォロワー(ローカルのみ)"
+  local-followers: "Local (Abonnés)"
 common/views/components/trends.vue:
   count: "{} utilisateurs·rices mentionnés·es"
   empty: "Aucune tendance"
