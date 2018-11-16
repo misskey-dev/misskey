@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as katex from 'katex';
 
 export default Vue.extend({
 	props: {
@@ -12,14 +13,10 @@ export default Vue.extend({
 			required: true
 		}
 	},
-	data() {
-		return {
-			compiledFormula: null
-		};
-	},
-	async created() {
-		const katex = await import('katex').then(m => m.default);
-		this.compiledFormula = katex.renderToString(this.formula);
+	computed: {
+		compiledFormula(): any {
+			return katex.renderToString(this.formula);
+		}
 	}
 });
 </script>
