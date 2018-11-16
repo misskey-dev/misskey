@@ -1,18 +1,16 @@
 import * as Router from 'koa-router';
 import { ObjectID } from 'bson';
 import { toASCII } from 'punycode';
-import { getSummary } from '../../web/url-preview';
 import config from '../../../config';
+import { concat } from '../../../prelude/array';
 import Emoji from '../../../models/emoji';
-import Meta from '../../../models/meta';
+import Meta, { IMeta } from '../../../models/meta';
 import Note from '../../../models/note';
 import Reaction from '../../../models/note-reaction';
 import User from '../../../models/user';
 import { toMastodonAccount } from '../../../models/mastodon/account';
 import { toMastodonCard } from '../../../models/mastodon/card';
 import { toMastodonEmojis } from '../../../models/mastodon/emoji';
-import parse from '../../../mfm/parse';
-import { TextElementLink } from '../../../mfm/parse/elements/link';
 
 // Init router
 const router = new Router();
@@ -31,26 +29,28 @@ router.get('/v1/accounts/:id', async ctx => {
 });
 
 router.get('/v1/custom_emojis', async ctx => ctx.body =
-	(await Emoji.find({ host: null }, {
+	concat(await Promise.all((await Emoji.find({ host: null }, {
 		fields: {
 			_id: false
 		}
-	})).map(toMastodonEmojis));
+	})).map(toMastodonEmojis))));
 
 router.get('/v1/instance', async ctx => {
-	const meta = await Meta.findOne() || {};
+	const meta = await Meta.findOne() || {} as IMeta;
 	const { originalNotesCount, originalUsersCount } = meta.stats || {
 		originalNotesCount: 0,
 		originalUsersCount: 0
 	};
-	const domains = await User.distinct('host', { host: { $ne: null } }) as any as [] || [];
+	const domains = await User.distinct('host', {
+		host: { $ne: null }
+	}) as any as [] || [];
 	const maintainer = await User.findOne({ isAdmin: true });
 
 	ctx.body = {
 		uri: config.hostname,
 		title: meta.name || 'Misskey',
 		description: meta.description || '',
-		email: meta.maintainer.email || meta.maintainer.url.startsWith('mailto:') ? meta.maintainer.url.slice(7) : '',
+		email: meta.maintainer.email || '',
 		version: `0.0.0 (compatible; ${config.user_agent})`, // TODO: How to tell about that this is an api for compatibility?
 		thumbnail: meta.bannerUrl,
 		/*
@@ -62,13 +62,15 @@ router.get('/v1/instance', async ctx => {
 			status_count: originalNotesCount,
 			domain_count: domains.length
 		},
-		languages: meta.languages || [ 'ja' ],
-		contact_account: maintainer ? toMastodonAccount(maintainer) : {}
+		languages: meta.langs || [],
+		contact_account: maintainer ? await toMastodonAccount(maintainer) : {}
 	};
 });
 
 router.get('/v1/instance/peers', async ctx => {
-	const peers = await User.distinct('host', { host: { $ne: null } }) as any as string[];
+	const peers = await User.distinct('host', {
+		host: { $ne: null }
+	}) as any as string[];
 	const punyCodes = peers.map(peer => toASCII(peer));
 	ctx.body = punyCodes;
 });
@@ -129,15 +131,10 @@ router.get('/v1/statuses/:id/card', async ctx => {
 	});
 
 	if (note) {
-		const link = parse(note.text).find(x => x.type === 'link' && !(x as TextElementLink).silent) as TextElementLink;
-		const { url, title, description, thumbnail, player } = await getSummary(link.url);
-		const width = player ? player.width : null;
-		const height = player ? player.height : null;
+		ctx.body = await toMastodonCard(note);
 
-		if (link && url) {
-			ctx.body = await toMastodonCard(card);
+		if (ctx.body)
 			return;
-		}
 	}
 	ctx.status = 404;
 });
@@ -166,8 +163,8 @@ router.get(rebloggedByPath, async ctx => {
 		const start = max ? -min(max + limit, length) : since;
 
 		const curr = rebloggedBy.slice(start, end);
-		const [ head ] = curr;
-		const [ tail ] = curr.reverse();
+		const [head] = curr;
+		const [tail] = curr.reverse();
 
 		const next = rebloggedBy.slice(end).length;
 		const prev = rebloggedBy.slice(0, start).length;
@@ -211,8 +208,8 @@ router.get(favouritedByPath, async ctx => {
 		const start = max ? -min(max + limit, length) : since;
 
 		const curr = favouritedBy.slice(start, end);
-		const [ head ] = curr;
-		const [ tail ] = curr.reverse();
+		const [head] = curr;
+		const [tail] = curr.reverse();
 
 		const next = favouritedBy.slice(end).length;
 		const prev = favouritedBy.slice(0, start).length;
