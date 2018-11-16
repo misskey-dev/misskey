@@ -9,7 +9,7 @@ export type TextElementMath = {
 };
 
 export default function(text: string) {
-	const match = text.match(/^\$(.+?)\$/);
+	const match = text.match(/^\\\((.+?)\\\)/);
 	if (!match) return null;
 	const math = match[0];
 	return {
