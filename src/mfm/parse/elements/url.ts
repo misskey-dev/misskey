@@ -9,9 +9,11 @@ export type TextElementUrl = {
 };
 
 export default function(text: string) {
-	const match = text.match(/^https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.=\+\-]+/);
+	const match = text.match(/^https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.,=\+\-]+/);
 	if (!match) return null;
-	const url = match[0];
+	let url = match[0];
+	if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
+	if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
 	return {
 		type: 'url',
 		content: url,

@@ -160,12 +160,37 @@ describe('Text', () => {
 		});
 
 		it('url', () => {
-			const tokens = analyze('https://himasaku.net');
+			const tokens1 = analyze('https://example.com');
 			assert.deepEqual([{
 				type: 'url',
-				content: 'https://himasaku.net',
-				url: 'https://himasaku.net'
-			}], tokens);
+				content: 'https://example.com',
+				url: 'https://example.com'
+			}], tokens1);
+
+			const tokens2 = analyze('https://example.com.');
+			assert.deepEqual([{
+				type: 'url',
+				content: 'https://example.com',
+				url: 'https://example.com'
+			}, {
+				type: 'text', content: '.'
+			}], tokens2);
+
+			const tokens3 = analyze('https://example.com/foo?bar=a,b');
+			assert.deepEqual([{
+				type: 'url',
+				content: 'https://example.com/foo?bar=a,b',
+				url: 'https://example.com/foo?bar=a,b'
+			}], tokens3);
+
+			const tokens4 = analyze('https://example.com/foo, bar');
+			assert.deepEqual([{
+				type: 'url',
+				content: 'https://example.com/foo',
+				url: 'https://example.com/foo'
+			}, {
+				type: 'text', content: ', bar'
+			}], tokens4);
 		});
 
 		it('link', () => {
