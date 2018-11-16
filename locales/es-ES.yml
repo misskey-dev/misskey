@@ -714,6 +714,7 @@ desktop/views/components/settings.vue:
   profile: "Perfil"
   notification: "Notificación"
   apps: "Aplicaciones"
+  tags: "ハッシュタグ"
   mute-and-block: "ミュート/ブロック"
   blocking: "ブロック"
   security: "Seguridad"
