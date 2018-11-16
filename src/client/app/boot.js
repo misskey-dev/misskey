@@ -69,11 +69,14 @@
 	//#endregion
 
 	let locale = localStorage.getItem('locale');
-	if (locale == null) {
+	const localeKey = localStorage.getItem('localeKey');
+
+	if (locale == null || localeKey != `${ver}.${lang}`) {
 		const locale = await fetch(`/assets/locales/${lang}.json?ver=${ver}`)
 			.then(response => response.json());
 
 			localStorage.setItem('locale', JSON.stringify(locale));
+			localStorage.setItem('localeKey', `${ver}.${lang}`);
 	}
 
 	// Detect the user agent
