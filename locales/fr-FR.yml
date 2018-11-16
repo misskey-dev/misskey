@@ -122,7 +122,7 @@ common:
   do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
   is-remote-user: "Ces informations appartiennent à un·e utilisateur·rice distant·e."
   is-remote-post: "Ceci est une publication distante."
-  view-on-remote: "Consulter le profil complet"
+  view-on-remote: " Consulter le profil complet"
   error:
     title: 'Une erreur est survenue'
     retry: 'Réessayer'
@@ -538,7 +538,7 @@ desktop/views/components/activity.vue:
   title: "Activité"
   toggle: "Afficher les vues"
 desktop/views/components/calendar.vue:
-  title: "{year} / {month}"
+  title: "{month} / {year}"
   prev: "Mois précédent"
   next: "Mois suivant"
   go: "Cliquez pour naviguer"
@@ -621,7 +621,7 @@ desktop/views/components/following-window.vue:
 desktop/views/components/following.vue:
   empty: "Vous ne suivez aucun compte."
 desktop/views/components/friends-maker.vue:
-  title: "Utilisateurs recommandés :"
+  title: "Utilisateurs·rices recommandé·e·s :"
   empty: "Impossible de trouver des utilisateurs·trices à recommander."
   fetching: "Chargement"
   refresh: "Plus"
@@ -788,7 +788,7 @@ desktop/views/components/settings.vue:
   prevent-update: "Reporter les mises à jour (non recommandé)"
   prevent-update-desc: "この設定をオンにしてもアップデートが反映される場合があります。この設定はこのデバイスのみ有効です。"
   no-updates: "Aucune mise à jour disponible"
-  no-updates-desc: "Votre Misskey est à jour."
+  no-updates-desc: "Votre client Misskey est à jour."
   update-available: "Nouvelle version disponible !"
   update-available-desc: "Les mises à jour seront appliquées une fois la page est rechargée."
   advanced-settings: "Réglages avancés"
@@ -843,7 +843,7 @@ common/views/components/drive-settings.vue:
   in-use: "utilisé"
   stats: "Statistiques"
 common/views/components/mute-and-block.vue:
-  mute-and-block: "Silencer / Bloquer"
+  mute-and-block: "Silencés / Bloqués"
   mute: "Mettre en sourdine"
   block: "En cours blocage"
   no-muted-users: "Aucun utilisateur·rice n’est mis·e en sourdine"
@@ -1095,7 +1095,7 @@ desktop/views/pages/share.vue:
 desktop/views/pages/tag.vue:
   no-posts-found: "Aucune publication contenant « {q} » n’a été trouvée."
 desktop/views/pages/user-list.users.vue:
-  users: "Utilisateurs"
+  users: "Utilisateurs·rices"
   add-user: "Ajouter un utilisateur"
   username: "Nom d'utilisateur"
 desktop/views/pages/user/user.followers-you-know.vue:
