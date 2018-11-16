@@ -463,8 +463,8 @@ common/views/widgets/broadcast.vue:
 common/views/widgets/calendar.vue:
   year: "Année {}"
   month: "Mois {}"
-  day: "Jour {}"
-  today: "Aujourd'hui :"
+  day: "{}"
+  today: "Aujourd’hui :"
   this-month: "Ce mois-ci :"
   this-year: "Cette année :"
 common/views/widgets/donation.vue:
@@ -508,7 +508,7 @@ common/views/widgets/tips.vue:
   tips-line20: "Pourcentage sur le widget calendrier qui indique le pourcentage de temps passé"
   tips-line21: "Vous pouvez aussi utiliser l'API pour développer des Bots."
   tips-line23: "Mayu est mignone avec ses sourcils."
-  tips-line24: "Misskey a vu le jour en 2014"
+  tips-line24: "Misskey est fonctionnel depuis 2014"
   tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté·e en tant que {}"
@@ -521,12 +521,12 @@ desktop:
   banner-crop-title: "Découpez la partie qui apparaitra comme bannière"
   banner: "Bannière"
   uploading-banner: "Téléversement d'une nouvelle bannière"
-  banner-updated: "La bannière est mise à jour"
+  banner-updated: "Mise à jour de la bannière avec succès"
   choose-banner: "Choisir une bannière"
   avatar-crop-title: "Découpez la partie qui apparaitra comme avatar"
   avatar: "Avatar"
   uploading-avatar: "Téléversement du nouvel avatar"
-  avatar-updated: "L'avatar est mis à jour"
+  avatar-updated: "Mise à jour de l’avatar avec succès"
   choose-avatar: "Choisir un avatar"
   invalid-filetype: "Ce format de fichier n’est pas pris en charge"
 desktop/views/components/activity.chart.vue:
@@ -782,7 +782,7 @@ desktop/views/components/settings.vue:
   update: "Mise à jour de Misskey"
   version: "Version :"
   latest-version: "Dernière version :"
-  update-checking: "Recherche de mises à jour"
+  update-checking: "Vérification des mises à jour en cours …"
   do-update: "Rechercher des mises à jour"
   update-settings: "Paramètres avancés"
   prevent-update: "Reporter les mises à jour (non recommandé)"
