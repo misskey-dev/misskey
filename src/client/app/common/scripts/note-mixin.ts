@@ -1,5 +1,5 @@
 import parse from '../../../../mfm/parse';
-import { sum } from '../../../../prelude/array';
+import { sum, unique } from '../../../../prelude/array';
 import shouldMuteNote from './should-mute-note';
 import MkNoteMenu from '../views/components/note-menu.vue';
 import MkReactionPicker from '../views/components/reaction-picker.vue';
@@ -78,9 +78,9 @@ export default (opts: Opts = {}) => ({
 		urls(): string[] {
 			if (this.appearNote.text) {
 				const ast = parse(this.appearNote.text);
-				return ast
+				return unique(ast
 					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
+					.map(t => t.url));
 			} else {
 				return null;
 			}
