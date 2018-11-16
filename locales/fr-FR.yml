@@ -257,8 +257,8 @@ common/views/components/media-banner.vue:
   sensitive: "Contenu sensible"
   click-to-show: "Cliquer pour afficher"
 common/views/components/theme.vue:
-  light-theme: "Thème durant le mode clair"
-  dark-theme: "Thème durant le mode sombre"
+  light-theme: "Thème en mode jour"
+  dark-theme: "Thème en mode nuit"
   light-themes: "Thème clair"
   dark-themes: "Thème sombre"
   install-a-theme: "Installer un thème"
@@ -922,7 +922,7 @@ desktop/views/components/users-list.vue:
 desktop/views/components/users-list-item.vue:
   followed: "vous suit"
 desktop/views/components/window.vue:
-  popout: "ポップアウト"
+  popout: "Fenêtre contextuelle"
   close: "Fermer"
 admin/views/index.vue:
   dashboard: "Tableau de bord"
