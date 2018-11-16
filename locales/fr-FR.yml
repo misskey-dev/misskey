@@ -26,7 +26,7 @@ common:
   close: "Fermer"
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte peut être compromis."
   load-more: "Charger plus"
-  got-it: "J'ai compris !"
+  got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
     paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
@@ -1029,8 +1029,8 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     title: "モデレーターの登録"
-    add: "登録"
-    added: "モデレーターを登録しました"
+    add: "Ajouter"
+    added: "Ajouté en tant que modérateur"
 admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
@@ -1105,7 +1105,7 @@ desktop/views/pages/user/user.followers-you-know.vue:
 desktop/views/pages/user/user.friends.vue:
   title: "Mentions fréquentes"
   loading: "Chargement en cours"
-  no-users: "Pas d'utilisateurs"
+  no-users: "Aucune mention fréquente"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Chargement en cours"
@@ -1129,7 +1129,7 @@ desktop/views/pages/user/user.header.vue:
   followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
   years-old: "{age} ans"
-  year: "Année"
+  year: "/"
   month: "/"
   day: "-"
 desktop/views/pages/user/user.timeline.vue:
@@ -1157,7 +1157,7 @@ desktop/views/widgets/trends.vue:
   refresh: "Afficher d'autres"
   nothing: "Rien"
 desktop/views/widgets/users.vue:
-  title: "Utilisateurs"
+  title: "Utilisateurs·rices"
   refresh: "Afficher d'autres"
   no-one: "Personne"
 mobile/views/components/drive.vue:
@@ -1202,7 +1202,7 @@ common/views/components/follow-button.vue:
   follow-processing: "En cours d’abonnement"
   follow-request: "Demande d’abonnement"
 mobile/views/components/friends-maker.vue:
-  title: "Abonnez-vous aux utilisateurs"
+  title: "Abonnez-vous à"
   empty: "Impossible de trouver des utilisateurs·trices à recommander."
   fetching: "Chargement"
   refresh: "Voir plus"
@@ -1403,7 +1403,7 @@ mobile/views/pages/user/home.vue:
 mobile/views/pages/user/home.followers-you-know.vue:
   no-users: "Aucun utilisateur·rice connu·e"
 mobile/views/pages/user/home.friends.vue:
-  no-users: "Pass d'utilisateurs"
+  no-users: "Aucun utilisateur·rice connu·e"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "Pas de notes"
 mobile/views/pages/user/home.photos.vue:
