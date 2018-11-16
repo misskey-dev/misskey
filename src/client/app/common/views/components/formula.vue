@@ -1,26 +1,20 @@
 <template>
-<span v-html="compiledFormula"></span>
+<x-formula :formula="formula"/>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import * as katex from 'katex';
 
 export default Vue.extend({
+	components: {
+		XFormula: () => import('./formula-core.vue').then(m => m.default)
+	},
+
 	props: {
 		formula: {
 			type: String,
 			required: true
 		}
-	},
-	computed: {
-		compiledFormula(): any {
-			return katex.renderToString(this.formula);
-		}
 	}
 });
 </script>
-
-<style>
-@import "../../../../../../node_modules/katex/dist/katex.min.css";
-</style>
