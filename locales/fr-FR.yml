@@ -44,8 +44,8 @@ common:
     future: "à l’instant"
     just_now: "à l'instant"
     seconds_ago: "Il y a {} seconde·s"
-    minutes_ago: "Il y a {} minute·s"
-    hours_ago: "Il y a {} heure·s"
+    minutes_ago: "Il y a {} m"
+    hours_ago: "Il y a {} h"
     days_ago: "Il y a {} jours"
     weeks_ago: "Il y a {} semaines·s"
     months_ago: "Il y a {} mois"
@@ -462,7 +462,7 @@ common/views/widgets/broadcast.vue:
   next: "Suivant"
 common/views/widgets/calendar.vue:
   year: "Année {}"
-  month: "{},"
+  month: "Mois {}"
   day: "Jour {}"
   today: "Aujourd'hui :"
   this-month: "Ce mois-ci :"
@@ -539,8 +539,8 @@ desktop/views/components/activity.vue:
   toggle: "Afficher les vues"
 desktop/views/components/calendar.vue:
   title: "{year} / {month}"
-  prev: "Mois dernier"
-  next: "Mois prochain"
+  prev: "Mois précédent"
+  next: "Mois suivant"
   go: "Cliquez pour naviguer"
 desktop/views/components/choose-file-from-drive-window.vue:
   chosen-files: "{count} fichier·s sélectionné·s"
