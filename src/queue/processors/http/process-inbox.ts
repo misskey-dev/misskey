@@ -92,7 +92,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		done();
 		return;
 	}
-	
+
 	//#region Log
 	publishApLogStream({
 		direction: 'in',
