@@ -1431,7 +1431,7 @@ deck:
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
-  edit: "Option"
+  edit: "Options"
 deck/deck.user-column.vue:
   posts: "Posts"
   following: "Following"
