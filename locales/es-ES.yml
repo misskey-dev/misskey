@@ -700,6 +700,7 @@ desktop/views/components/renote-form.vue:
   quote: "Cita..."
   cancel: "Cancelar"
   renote: "Volver a publicar"
+  renote-home: "Renote (ホーム)"
   reposting: "Publicando de nuevo..."
   success: "¡Publicado!"
   failure: "La publicación ha fallado"
