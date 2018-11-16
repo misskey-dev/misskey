@@ -926,7 +926,7 @@ admin/views/index.vue:
   dashboard: "Tableau de bord"
   instance: "Instance"
   emoji: "Emoji"
-  moderators: "Modérateur"
+  moderators: "Modérateurs"
   users: "Utilisateur·rice·s"
   federation: "Fédération"
   announcements: "Annonces"
@@ -1028,7 +1028,7 @@ admin/views/users.vue:
   unverified: "Ce compte n'est plus vérifié"
 admin/views/moderators.vue:
   add-moderator:
-    title: "モデレーターの登録"
+    title: "Ajout d’un modérateur"
     add: "Ajouter"
     added: "Ajouté en tant que modérateur"
 admin/views/emoji.vue:
@@ -1131,7 +1131,7 @@ desktop/views/pages/user/user.header.vue:
   years-old: "{age} ans"
   year: "/"
   month: "/"
-  day: "-"
+  day: "/"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
