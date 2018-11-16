@@ -928,7 +928,7 @@ admin/views/index.vue:
   emoji: "Emoji"
   moderators: "Moderator"
   users: "Users"
-  federation: "連合"
+  federation: "Federation"
   announcements: "Announcements"
   hashtags: "Hashtags"
   back-to-misskey: "Back to Misskey"
