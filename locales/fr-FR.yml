@@ -21,7 +21,7 @@ common:
     outro: "他にもMisskeyにしかない機能はまだまだあるので、ぜひあなた自身の目で確かめてください。Misskeyは分散型SNSなので、このインスタンスが気に入らなければ他のインスタンスを試すこともできます。それでは、GLHF!"
   adblock:
     detected: "Veuillez désactiver votre bloqueur de publicités"
-    warning: "<strong>Misskey n'utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
+    warning: "<strong>Misskey n’utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
   application-authorization: "Autorisations de l’application"
   close: "Fermer"
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte peut être compromis."
@@ -232,7 +232,7 @@ common/views/components/games/reversi/reversi.room.vue:
 common/views/components/connect-failed.vue:
   title: "Échec de connexion au serveur"
   description: "Il se peut qu’il y est un problème avec votre connexion internet, ou le serveur est hors-ligne ou en maintenance. Veuillez {réessayer} plus tard."
-  thanks: "On vous remercie d'utiliser Misskey."
+  thanks: "On vous remercie d’avoir choisi d’utiliser Misskey."
   troubleshoot: "Dépanner"
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Dépannage"
@@ -300,7 +300,7 @@ common/views/components/messaging.vue:
   no-history: "Pas d'historique"
 common/views/components/messaging-room.vue:
   empty: "Pas de conversations"
-  no-history: "Il n'y a pas plus d'historique"
+  no-history: "Aucun historique"
   resize-form: "Faites glisser pour redimensionner"
   new-message: "Nouveau message"
   only-one-file-attached: "Un seul fichier peut être joint au message"
@@ -984,7 +984,7 @@ admin/views/instance.vue:
   proxy-account-warn: "Avant d’entammer cette action, vous devez au préalable avoir créé un compte avec ce nom d’utilisateur."
   max-note-text-length: "Nombre maximal de caractères pour les messages"
   disable-registration: "Désactiver les inscriptions"
-  disable-local-timeline: "Désactiver l’heure locale"
+  disable-local-timeline: "Désactiver le fil local"
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
@@ -1262,7 +1262,7 @@ mobile/views/components/ui.nav.vue:
   darkmode: "Mode nuit"
   settings: "Réglages"
   admin: "Admin"
-  about: "À propose de Misskey"
+  about: "À propos de Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "Cette utilisateur semble n'avoir rien poster pour le moment"
   no-notes-with-media: "Aucune notes avec des médias"
@@ -1397,7 +1397,7 @@ mobile/views/pages/user/home.vue:
   activity: "Activité"
   keywords: "Mot clés"
   domains: "Domaines"
-  frequently-replied-users: "Utilisateurs qui interagissent souvent"
+  frequently-replied-users: "Utilisateurs·rices mentionné·e·s souvent"
   followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
