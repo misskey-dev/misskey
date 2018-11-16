@@ -37,7 +37,7 @@
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 						<a class="reply" v-if="appearNote.reply"><fa icon="reply"/></a>
-						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :customEmojis="appearNote.emojis"/>
+						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
