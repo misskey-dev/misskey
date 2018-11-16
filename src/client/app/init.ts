@@ -118,6 +118,7 @@ import {
 	faUserPlus,
 	faExternalLinkSquareAlt,
 	faSync,
+	faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -241,6 +242,7 @@ library.add(
 	faUserPlus,
 	faExternalLinkSquareAlt,
 	faSync,
+	faArrowLeft,
 
 	farBell,
 	farEnvelope,
