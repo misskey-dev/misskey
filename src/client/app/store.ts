@@ -23,6 +23,7 @@ const defaultSettings = {
 	circleIcons: true,
 	contrastedAcct: true,
 	showFullAcct: false,
+	showVia: true,
 	showReplyTarget: true,
 	showMyRenotes: true,
 	showRenotedMyNotes: true,
@@ -33,6 +34,7 @@ const defaultSettings = {
 	iLikeSushi: false,
 	rememberNoteVisibility: false,
 	defaultNoteVisibility: 'public',
+	mutedWords: [],
 	games: {
 		reversi: {
 			showBoardLabels: false,

@@ -1,16 +1,21 @@
 <template>
 <div class="mk-messaging-room-page">
-	<mk-messaging-room v-if="user" :user="user" :is-naked="true"/>
+	<x-messaging-room v-if="user" :user="user" :is-naked="true"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 import parseAcct from '../../../../../misc/acct/parse';
 import getUserName from '../../../../../misc/get-user-name';
 
 export default Vue.extend({
+	i18n: i18n('.vue'),
+	components: {
+		XMessagingRoom: () => import('../../../common/views/components/messaging-room.vue').then(m => m.default)
+	},
 	data() {
 		return {
 			fetching: true,
@@ -42,7 +47,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 

@@ -3,17 +3,17 @@
 	<table>
 		<thead>
 			<tr>
-				<th><fa icon="exchange-alt"/> In/Out</th>
+				<th><fa :icon="faExchangeAlt"/> In/Out</th>
+				<th><fa :icon="faBolt"/> Activity</th>
 				<th><fa icon="server"/> Host</th>
-				<th><fa icon="bolt"/> Activity</th>
 				<th><fa icon="user"/> Actor</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr v-for="log in logs" :key="log.id">
 				<td :class="log.direction">{{ log.direction == 'in' ? '<' : '>' }} {{ log.direction }}</td>
-				<td>{{ log.host }}</td>
 				<td>{{ log.activity }}</td>
+				<td>{{ log.host }}</td>
 				<td>@{{ log.actor }}</td>
 			</tr>
 		</tbody>
@@ -23,17 +23,19 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faBolt, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	data() {
 		return {
 			logs: [],
-			connection: null
+			connection: null,
+			faBolt, faExchangeAlt
 		};
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('apLog');
+		this.connection = this.$root.stream.useSharedConnection('apLog');
 		this.connection.on('log', this.onLog);
 		this.connection.on('logs', this.onLogs);
 		this.connection.send('requestLog', {

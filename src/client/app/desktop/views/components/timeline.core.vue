@@ -4,7 +4,7 @@
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p :class="$style.empty" slot="empty">
-			<fa :icon="['far', 'comments']"/>%i18n:@empty%
+			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</p>
 	</mk-notes>
 </div>
@@ -12,10 +12,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/timeline.core.vue'),
 	props: {
 		src: {
 			type: String,
@@ -63,32 +65,32 @@ export default Vue.extend({
 			this.query = {
 				query: this.tagTl.query
 			};
-			this.connection = (this as any).os.stream.connectToChannel('hashtag', { q: this.tagTl.query });
+			this.connection = this.$root.stream.connectToChannel('hashtag', { q: this.tagTl.query });
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
 			this.endpoint = 'notes/timeline';
 			const onChangeFollowing = () => {
 				this.fetch();
 			};
-			this.connection = (this as any).os.stream.useSharedConnection('homeTimeline');
+			this.connection = this.$root.stream.useSharedConnection('homeTimeline');
 			this.connection.on('note', prepend);
 			this.connection.on('follow', onChangeFollowing);
 			this.connection.on('unfollow', onChangeFollowing);
 		} else if (this.src == 'local') {
 			this.endpoint = 'notes/local-timeline';
-			this.connection = (this as any).os.stream.useSharedConnection('localTimeline');
+			this.connection = this.$root.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'hybrid') {
 			this.endpoint = 'notes/hybrid-timeline';
-			this.connection = (this as any).os.stream.useSharedConnection('hybridTimeline');
+			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';
-			this.connection = (this as any).os.stream.useSharedConnection('globalTimeline');
+			this.connection = this.$root.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'mentions') {
 			this.endpoint = 'notes/mentions';
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('mention', prepend);
 		} else if (this.src == 'messages') {
 			this.endpoint = 'notes/mentions';
@@ -100,7 +102,7 @@ export default Vue.extend({
 					prepend(note);
 				}
 			};
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('mention', onNote);
 		}
 
@@ -116,7 +118,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api(this.endpoint, Object.assign({
+				this.$root.api(this.endpoint, Object.assign({
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined
 				}, this.baseQuery, this.query)).then(notes => {
@@ -136,7 +138,7 @@ export default Vue.extend({
 
 			this.moreFetching = true;
 
-			const promise = (this as any).api(this.endpoint, Object.assign({
+			const promise = this.$root.api(this.endpoint, Object.assign({
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id
 			}, this.baseQuery, this.query));

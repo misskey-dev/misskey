@@ -1,65 +1,69 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="user"/> %i18n:@title%</div>
+	<div slot="title"><fa icon="user"/> {{ $t('title') }}</div>
 
-	<section class="fit-top">
+	<section class="esokaraujimuwfttfzgocmutcihewscl">
+		<div class="header" :style="bannerStyle">
+			<mk-avatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true"/>
+		</div>
+
 		<ui-form :disabled="saving">
 			<ui-input v-model="name" :max="30">
-				<span>%i18n:@name%</span>
+				<span>{{ $t('name') }}</span>
 			</ui-input>
 
 			<ui-input v-model="username" readonly>
-				<span>%i18n:@account%</span>
+				<span>{{ $t('account') }}</span>
 				<span slot="prefix">@</span>
 				<span slot="suffix">@{{ host }}</span>
 			</ui-input>
 
 			<ui-input v-model="location">
-				<span>%i18n:@location%</span>
+				<span>{{ $t('location') }}</span>
 				<span slot="prefix"><fa icon="map-marker-alt"/></span>
 			</ui-input>
 
 			<ui-input v-model="birthday" type="date">
-				<span>%i18n:@birthday%</span>
+				<span>{{ $t('birthday') }}</span>
 				<span slot="prefix"><fa icon="birthday-cake"/></span>
 			</ui-input>
 
 			<ui-textarea v-model="description" :max="500">
-				<span>%i18n:@description%</span>
+				<span>{{ $t('description') }}</span>
 			</ui-textarea>
 
 			<ui-input type="file" @change="onAvatarChange">
-				<span>%i18n:@avatar%</span>
+				<span>{{ $t('avatar') }}</span>
 				<span slot="icon"><fa icon="image"/></span>
-				<span slot="text" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
+				<span slot="desc" v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></span>
 			</ui-input>
 
 			<ui-input type="file" @change="onBannerChange">
-				<span>%i18n:@banner%</span>
+				<span>{{ $t('banner') }}</span>
 				<span slot="icon"><fa icon="image"/></span>
-				<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
+				<span slot="desc" v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></span>
 			</ui-input>
 
-			<ui-button @click="save(true)">%i18n:@save%</ui-button>
+			<ui-button @click="save(true)">{{ $t('save') }}</ui-button>
 		</ui-form>
 	</section>
 
 	<section>
-		<header>%i18n:@advanced%</header>
+		<header>{{ $t('advanced') }}</header>
 
 		<div>
-			<ui-switch v-model="isCat" @change="save(false)">%i18n:@is-cat%</ui-switch>
-			<ui-switch v-model="isBot" @change="save(false)">%i18n:@is-bot%</ui-switch>
-			<ui-switch v-model="alwaysMarkNsfw">%i18n:common.always-mark-nsfw%</ui-switch>
+			<ui-switch v-model="isCat" @change="save(false)">{{ $t('is-cat') }}</ui-switch>
+			<ui-switch v-model="isBot" @change="save(false)">{{ $t('is-bot') }}</ui-switch>
+			<ui-switch v-model="alwaysMarkNsfw">{{ $t('@.always-mark-nsfw') }}</ui-switch>
 		</div>
 	</section>
 
 	<section>
-		<header>%i18n:@privacy%</header>
+		<header>{{ $t('privacy') }}</header>
 
 		<div>
-			<ui-switch v-model="isLocked" @change="save(false)">%i18n:@is-locked%</ui-switch>
-			<ui-switch v-model="carefulBot" @change="save(false)">%i18n:@careful-bot%</ui-switch>
+			<ui-switch v-model="isLocked" @change="save(false)">{{ $t('is-locked') }}</ui-switch>
+			<ui-switch v-model="carefulBot" @change="save(false)">{{ $t('careful-bot') }}</ui-switch>
 		</div>
 	</section>
 </ui-card>
@@ -67,12 +71,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
+import { toUnicode } from 'punycode';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/profile-editor.vue'),
 	data() {
 		return {
-			host,
+			host: toUnicode(host),
 			name: null,
 			username: null,
 			location: null,
@@ -93,7 +100,15 @@ export default Vue.extend({
 	computed: {
 		alwaysMarkNsfw: {
 			get() { return this.$store.state.i.settings.alwaysMarkNsfw; },
-			set(value) { (this as any).api('i/update', { alwaysMarkNsfw: value }); }
+			set(value) { this.$root.api('i/update', { alwaysMarkNsfw: value }); }
+		},
+
+		bannerStyle(): any {
+			if (this.$store.state.i.bannerUrl == null) return {};
+			return {
+				backgroundColor: this.$store.state.i.bannerColor && this.$store.state.i.bannerColor.length == 3 ? `rgb(${ this.$store.state.i.bannerColor.join(',') })` : null,
+				backgroundImage: `url(${ this.$store.state.i.bannerUrl })`
+			};
 		},
 	},
 
@@ -159,17 +174,17 @@ export default Vue.extend({
 		save(notify) {
 			this.saving = true;
 
-			(this as any).api('i/update', {
+			this.$root.api('i/update', {
 				name: this.name || null,
 				location: this.location || null,
 				description: this.description || null,
 				birthday: this.birthday || null,
 				avatarId: this.avatarId,
 				bannerId: this.bannerId,
-				isCat: this.isCat,
-				isBot: this.isBot,
-				isLocked: this.isLocked,
-				carefulBot: this.carefulBot
+				isCat: !!this.isCat,
+				isBot: !!this.isBot,
+				isLocked: !!this.isLocked,
+				carefulBot: !!this.carefulBot
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;
@@ -178,9 +193,9 @@ export default Vue.extend({
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
-					this.$swal({
+					this.$root.alert({
 						type: 'success',
-						text: '%i18n:@saved%'
+						text: this.$t('saved')
 					});
 				}
 			});
@@ -188,3 +203,25 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.esokaraujimuwfttfzgocmutcihewscl
+	> .header
+		height 150px
+		overflow hidden
+		background-size cover
+		background-position center
+		border-radius 4px
+
+		> .avatar
+			position absolute
+			top 0
+			bottom 0
+			left 0
+			right 0
+			display block
+			width 72px
+			height 72px
+			margin auto
+
+</style>

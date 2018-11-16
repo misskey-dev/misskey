@@ -35,14 +35,15 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	});
 
-	res({
-		maintainer: config.maintainer,
+	const response: any = {
+		maintainer: instance.maintainer,
 
 		version: pkg.version,
 		clientVersion: client.version,
 
 		name: instance.name,
 		description: instance.description,
+		langs: instance.langs,
 
 		secure: config.https != null,
 		machine: os.hostname(),
@@ -60,24 +61,44 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
-		recaptchaSitekey: config.recaptcha ? config.recaptcha.site_key : null,
+		enableRecaptcha: instance.enableRecaptcha,
+		recaptchaSiteKey: instance.recaptchaSiteKey,
 		swPublickey: config.sw ? config.sw.public_key : null,
-		hidedTags: (me && me.isAdmin) ? instance.hidedTags : undefined,
 		bannerUrl: instance.bannerUrl,
 		maxNoteTextLength: instance.maxNoteTextLength,
 
 		emojis: emojis,
+	};
 
-		features: ps.detail ? {
+	if (ps.detail) {
+		response.features = {
 			registration: !instance.disableRegistration,
 			localTimeLine: !instance.disableLocalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
-			recaptcha: config.recaptcha ? true : false,
+			recaptcha: instance.enableRecaptcha,
 			objectStorage: config.drive && config.drive.storage === 'minio',
-			twitter: config.twitter ? true : false,
-			github: config.github ? true : false,
+			twitter: instance.enableTwitterIntegration,
+			github: instance.enableGithubIntegration,
+			discord: instance.enableDiscordIntegration,
 			serviceWorker: config.sw ? true : false,
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
-		} : undefined
-	});
+		};
+	}
+
+	if (me && (me.isAdmin || me.isModerator)) {
+		response.hidedTags = instance.hidedTags;
+		response.recaptchaSecretKey = instance.recaptchaSecretKey;
+		response.proxyAccount = instance.proxyAccount;
+		response.enableTwitterIntegration = instance.enableTwitterIntegration;
+		response.twitterConsumerKey = instance.twitterConsumerKey;
+		response.twitterConsumerSecret = instance.twitterConsumerSecret;
+		response.enableGithubIntegration = instance.enableGithubIntegration;
+		response.githubClientId = instance.githubClientId;
+		response.githubClientSecret = instance.githubClientSecret;
+		response.enableDiscordIntegration = instance.enableDiscordIntegration;
+		response.discordClientId = instance.discordClientId;
+		response.discordClientSecret = instance.discordClientSecret;
+	}
+
+	res(response);
 }));

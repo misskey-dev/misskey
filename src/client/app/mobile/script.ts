@@ -2,19 +2,13 @@
  * Mobile Client
  */
 
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
 import './style.styl';
 
 import init from '../init';
-
-import chooseDriveFolder from './api/choose-drive-folder';
-import chooseDriveFile from './api/choose-drive-file';
-import dialog from './api/dialog';
-import input from './api/input';
-import post from './api/post';
-import notify from './api/notify';
 
 import MkIndex from './views/pages/index.vue';
 import MkSignup from './views/pages/signup.vue';
@@ -33,16 +27,83 @@ import MkFollowing from './views/pages/following.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkUserLists from './views/pages/user-lists.vue';
 import MkUserList from './views/pages/user-list.vue';
-import MkSettings from './views/pages/settings.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
 
+import PostForm from './views/components/post-form-dialog.vue';
+import FileChooser from './views/components/drive-file-chooser.vue';
+import FolderChooser from './views/components/drive-folder-chooser.vue';
+
 /**
  * init
  */
 init((launch) => {
+	Vue.mixin({
+		methods: {
+			$post(opts) {
+				const o = opts || {};
+
+				document.documentElement.style.overflow = 'hidden';
+
+				function recover() {
+					document.documentElement.style.overflow = 'auto';
+				}
+
+				const vm = this.$root.new(PostForm, {
+					reply: o.reply,
+					renote: o.renote
+				});
+
+				vm.$once('cancel', recover);
+				vm.$once('posted', recover);
+				if (o.cb) vm.$once('closed', o.cb);
+				(vm as any).focus();
+			},
+
+			$chooseDriveFile(opts) {
+				return new Promise((res, rej) => {
+					const o = opts || {};
+					const vm = this.$root.new(FileChooser, {
+						title: o.title,
+						multiple: o.multiple,
+						initFolder: o.currentFolder
+					});
+					vm.$once('selected', file => {
+						res(file);
+					});
+				});
+			},
+
+			$chooseDriveFolder(opts) {
+				return new Promise((res, rej) => {
+					const o = opts || {};
+					const vm = this.$root.new(FolderChooser, {
+						title: o.title,
+						initFolder: o.currentFolder
+					});
+					vm.$once('selected', folder => {
+						res(folder);
+					});
+				});
+			},
+
+			$input(opts) {
+				return new Promise<string>((res, rej) => {
+					const x = window.prompt(opts.title);
+					if (x) {
+						res(x);
+					}
+				});
+			},
+
+			$notify(message) {
+				alert(message);
+			}
+		}
+	});
+
 	// Register directives
 	require('./views/directives');
 
@@ -59,7 +120,7 @@ init((launch) => {
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
 			{ path: '/signup', name: 'signup', component: MkSignup },
-			{ path: '/i/settings', name: 'settings', component: MkSettings },
+			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
 			{ path: '/i/lists', name: 'user-lists', component: MkUserLists },
@@ -76,7 +137,7 @@ init((launch) => {
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/reversi/:game?', name: 'reversi', component: MkReversi },
-			{ path: '/@:user', component: MkUser },
+			{ path: '/@:user', component: () => import('./views/pages/user.vue').then(m => m.default) },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },
 			{ path: '/notes/:note', component: MkNote },
@@ -85,12 +146,5 @@ init((launch) => {
 	});
 
 	// Launch the app
-	launch(router, os => ({
-		chooseDriveFolder,
-		chooseDriveFile,
-		dialog: dialog(os),
-		input,
-		post: post(os),
-		notify
-	}));
+	launch(router);
 }, true);

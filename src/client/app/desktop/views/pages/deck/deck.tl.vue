@@ -43,10 +43,10 @@ export default Vue.extend({
 	computed: {
 		stream(): any {
 			switch (this.src) {
-				case 'home': return (this as any).os.stream.useSharedConnection('homeTimeline');
-				case 'local': return (this as any).os.stream.useSharedConnection('localTimeline');
-				case 'hybrid': return (this as any).os.stream.useSharedConnection('hybridTimeline');
-				case 'global': return (this as any).os.stream.useSharedConnection('globalTimeline');
+				case 'home': return this.$root.stream.useSharedConnection('homeTimeline');
+				case 'local': return this.$root.stream.useSharedConnection('localTimeline');
+				case 'hybrid': return this.$root.stream.useSharedConnection('hybridTimeline');
+				case 'global': return this.$root.stream.useSharedConnection('globalTimeline');
 			}
 		},
 
@@ -87,7 +87,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api(this.endpoint, {
+				this.$root.api(this.endpoint, {
 					limit: fetchLimit + 1,
 					withFiles: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -108,7 +108,7 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api(this.endpoint, {
+			const promise = this.$root.api(this.endpoint, {
 				limit: fetchLimit + 1,
 				withFiles: this.mediaOnly,
 				untilId: (this.$refs.timeline as any).tail().id,

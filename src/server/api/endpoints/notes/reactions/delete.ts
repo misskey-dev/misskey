@@ -47,13 +47,9 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 
 	// Delete reaction
-	await Reaction.update({
+	await Reaction.remove({
 		_id: exist._id
-	}, {
-			$set: {
-				deletedAt: new Date()
-			}
-		});
+	});
 
 	res();
 

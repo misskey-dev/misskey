@@ -17,6 +17,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
 export default Vue.extend({
 	props: ['note'],
 	computed: {
@@ -26,7 +27,7 @@ export default Vue.extend({
 	},
 	methods: {
 		react(reaction: string) {
-			(this as any).api('notes/reactions/create', {
+			this.$root.api('notes/reactions/create', {
 				noteId: this.note.id,
 				reaction: reaction
 			});

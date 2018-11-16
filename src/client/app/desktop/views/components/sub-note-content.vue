@@ -1,18 +1,18 @@
 <template>
 <div class="mk-sub-note-content">
 	<div class="body">
-		<span v-if="note.isHidden" style="opacity: 0.5">%i18n:@private%</span>
-		<span v-if="note.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
+		<span v-if="note.isHidden" style="opacity: 0.5">{{ $t('private') }}</span>
+		<span v-if="note.deletedAt" style="opacity: 0.5">{{ $t('deleted') }}</span>
 		<a class="reply" v-if="note.replyId"><fa icon="reply"/></a>
-		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i" :customEmojis="note.emojis"/>
+		<misskey-flavored-markdown v-if="note.text" :text="note.text" :i="$store.state.i" :custom-emojis="note.emojis"/>
 		<a class="rp" v-if="note.renoteId" :href="`/notes/${note.renoteId}`">RN: ...</a>
 	</div>
 	<details v-if="note.files.length > 0">
-		<summary>({{ '%i18n:@media-count%'.replace('{}', note.files.length) }})</summary>
+		<summary>({{ this.$t('media-count').replace('{}', note.files.length) }})</summary>
 		<mk-media-list :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
-		<summary>%i18n:@poll%</summary>
+		<summary>{{ $t('poll') }}</summary>
 		<mk-poll :note="note"/>
 	</details>
 </div>
@@ -20,8 +20,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/sub-note-content.vue'),
 	props: ['note']
 });
 </script>

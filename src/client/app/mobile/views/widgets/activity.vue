@@ -1,9 +1,9 @@
 <template>
 <div class="mkw-activity">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa icon="chart-bar"/>%i18n:@activity%</template>
+		<template slot="header"><fa icon="chart-bar"/>{{ $t('activity') }}</template>
 		<div :class="$style.body">
-			<mk-activity :user="$store.state.i"/>
+			<x-activity :user="$store.state.i"/>
 		</div>
 	</mk-widget-container>
 </div>
@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'activity',
@@ -18,6 +19,10 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n(),
+	components: {
+		XActivity: () => import('../components/activity.vue').then(m => m.default)
+	},
 	methods: {
 		func() {
 			this.props.compact = !this.props.compact;

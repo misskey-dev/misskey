@@ -8,8 +8,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n(),
 	props: {
 		time: {
 			type: [Date, String],
@@ -44,16 +46,16 @@ export default Vue.extend({
 			const time = this._time;
 			const ago = (this.now.getTime() - time.getTime()) / 1000/*ms*/;
 			return (
-				ago >= 31536000 ? '%i18n:common.time.years_ago%'  .replace('{}', (~~(ago / 31536000)).toString()) :
-				ago >= 2592000  ? '%i18n:common.time.months_ago%' .replace('{}', (~~(ago / 2592000)).toString()) :
-				ago >= 604800   ? '%i18n:common.time.weeks_ago%'  .replace('{}', (~~(ago / 604800)).toString()) :
-				ago >= 86400    ? '%i18n:common.time.days_ago%'   .replace('{}', (~~(ago / 86400)).toString()) :
-				ago >= 3600     ? '%i18n:common.time.hours_ago%'  .replace('{}', (~~(ago / 3600)).toString()) :
-				ago >= 60       ? '%i18n:common.time.minutes_ago%'.replace('{}', (~~(ago / 60)).toString()) :
-				ago >= 10       ? '%i18n:common.time.seconds_ago%'.replace('{}', (~~(ago % 60)).toString()) :
-				ago >= 0        ? '%i18n:common.time.just_now%' :
-				ago <  0        ? '%i18n:common.time.future%' :
-				'%i18n:common.time.unknown%');
+				ago >= 31536000 ? this.$t('@.time.years_ago')  .replace('{}', (~~(ago / 31536000)).toString()) :
+				ago >= 2592000  ? this.$t('@.time.months_ago') .replace('{}', (~~(ago / 2592000)).toString()) :
+				ago >= 604800   ? this.$t('@.time.weeks_ago')  .replace('{}', (~~(ago / 604800)).toString()) :
+				ago >= 86400    ? this.$t('@.time.days_ago')   .replace('{}', (~~(ago / 86400)).toString()) :
+				ago >= 3600     ? this.$t('@.time.hours_ago')  .replace('{}', (~~(ago / 3600)).toString()) :
+				ago >= 60       ? this.$t('@.time.minutes_ago').replace('{}', (~~(ago / 60)).toString()) :
+				ago >= 10       ? this.$t('@.time.seconds_ago').replace('{}', (~~(ago % 60)).toString()) :
+				ago >= 0        ? this.$t('@.time.just_now') :
+				ago <  0        ? this.$t('@.time.future') :
+				this.$t('@.time.unknown'));
 		}
 	},
 	created() {

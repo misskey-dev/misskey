@@ -10,6 +10,7 @@ import Channel from '../../channel';
 export default class extends Channel {
 	public readonly chName = 'gamesReversiGame';
 	public static shouldShare = false;
+	public static requireCredential = false;
 
 	private gameId: mongo.ObjectID;
 

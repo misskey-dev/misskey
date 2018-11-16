@@ -1,25 +1,27 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="cloud"/> %i18n:common.drive%</div>
+	<div slot="title"><fa icon="cloud"/> {{ $t('@.drive') }}</div>
 
 	<section v-if="!fetching" class="juakhbxthdewydyreaphkepoxgxvfogn">
 		<div class="meter"><div :style="meterStyle"></div></div>
-		<p>%i18n:@max%: <b>{{ capacity | bytes }}</b> %i18n:@in-use%: <b>{{ usage | bytes }}</b></p>
+		<p>{{ $t('max') }}: <b>{{ capacity | bytes }}</b> {{ $t('in-use') }}: <b>{{ usage | bytes }}</b></p>
 	</section>
 
 	<section>
-		<header>%i18n:@stats%</header>
-		<div ref="chart" style="margin-bottom: -16px; color: #000;"></div>
+		<header>{{ $t('stats') }}</header>
+		<div ref="chart" style="margin-bottom: -16px; margin-left: -8px; color: #000;"></div>
 	</section>
 </ui-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as tinycolor from 'tinycolor2';
 import * as ApexCharts from 'apexcharts';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/drive-settings.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -42,7 +44,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this as any).api('drive').then(info => {
+		this.$root.api('drive').then(info => {
 			this.capacity = info.capacity;
 			this.usage = info.usage;
 			this.fetching = false;
@@ -55,7 +57,7 @@ export default Vue.extend({
 
 	methods: {
 		renderChart() {
-			(this as any).api('charts/user/drive', {
+			this.$root.api('charts/user/drive', {
 				userId: this.$store.state.i.id,
 				span: 'day',
 				limit: 21

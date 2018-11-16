@@ -10,7 +10,7 @@ export const meta = {
 	},
 
 	requireCredential: true,
-	requireAdmin: true,
+	requireModerator: true,
 
 	params: {
 		userId: {

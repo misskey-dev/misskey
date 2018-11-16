@@ -96,7 +96,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	}
 
 	// 省略されたメンションのホストを復元する
-	if (text != null) {
+	if (text != null && text != '') {
 		text = parseMfm(text).map(x => {
 			if (x.type == 'mention' && x.host == null) {
 				return `${x.content}@${config.host}`;

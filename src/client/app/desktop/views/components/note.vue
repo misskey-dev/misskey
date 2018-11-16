@@ -2,7 +2,7 @@
 <div
 	class="note"
 	:class="{ mini }"
-	v-show="appearNote.deletedAt == null"
+	v-show="appearNote.deletedAt == null && !hideThisNote"
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
 	v-hotkey="keymap"
 	:title="title"
@@ -16,15 +16,22 @@
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa icon="retweet"/>
-		<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+		<span>{{ this.$t('reposted-by').substr(0, this.$t('reposted-by').indexOf('{')) }}</span>
 		<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
-		<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+		<span>{{ this.$t('reposted-by').substr(this.$t('reposted-by').indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
+		<span class="visibility" v-if="note.visibility != 'public'">
+			<fa v-if="note.visibility == 'home'" icon="home"/>
+			<fa v-if="note.visibility == 'followers'" icon="unlock"/>
+			<fa v-if="note.visibility == 'specified'" icon="envelope"/>
+			<fa v-if="note.visibility == 'private'" icon="lock"/>
+		</span>
+		<span class="localOnly" v-if="note.localOnly == true"><fa icon="heart"/></span>
 	</div>
 	<article>
 		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
-			<mk-note-header class="header" :note="appearNote"/>
+			<mk-note-header class="header" :note="appearNote" :mini="mini"/>
 			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
 					<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
@@ -32,7 +39,7 @@
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">%i18n:@private%</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">{{ $t('private') }}</span>
 						<a class="reply" v-if="appearNote.reply"><fa icon="reply"/></a>
 						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :customEmojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote">RN:</a>
@@ -47,16 +54,17 @@
 				</div>
 			</div>
 			<footer>
+				<span class="app" v-if="appearNote.app && mini && $store.state.settings.showVia">via <b>{{ appearNote.app.name }}</b></span>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
-				<button class="replyButton" @click="reply()" title="%i18n:@reply%">
+				<button class="replyButton" @click="reply()" :title="$t('reply')">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 					<template v-else><fa icon="reply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button class="renoteButton" @click="renote()" title="%i18n:@renote%">
+				<button class="renoteButton" @click="renote()" :title="$t('renote')">
 					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" title="%i18n:@add-reaction%">
+				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 					<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
 				</button>
 				<button @click="menu()" ref="menuButton">
@@ -73,12 +81,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 import XSub from './note.sub.vue';
 import noteMixin from '../../../common/scripts/note-mixin';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/note.vue'),
 	components: {
 		XSub
 	},
@@ -114,14 +124,14 @@ export default Vue.extend({
 
 	created() {
 		if (this.detail) {
-			(this as any).api('notes/replies', {
+			this.$root.api('notes/replies', {
 				noteId: this.appearNote.id,
 				limit: 8
 			}).then(replies => {
 				this.replies = replies;
 			});
 
-			(this as any).api('notes/conversation', {
+			this.$root.api('notes/conversation', {
 				noteId: this.appearNote.replyId
 			}).then(conversation => {
 				this.conversation = conversation.reverse();
@@ -196,9 +206,6 @@ export default Vue.extend({
 		> span
 			flex-shrink 0
 
-			&:last-of-type
-				margin-right 8px
-
 		.name
 			overflow hidden
 			flex-shrink 1
@@ -211,6 +218,18 @@ export default Vue.extend({
 			margin-left auto
 			flex-shrink 0
 			font-size 0.9em
+
+		> .visibility
+			margin-left 8px
+
+			[data-icon]
+				margin-right 0
+
+		> .localOnly
+			margin-left 4px
+
+			[data-icon]
+				margin-right 0
 
 		& + article
 			padding-top 8px
@@ -318,6 +337,12 @@ export default Vue.extend({
 							border-radius 8px
 
 			> footer
+				> .app
+					display block
+					margin-top 0.5em
+					margin-left 0.5em
+					color var(--noteHeaderInfo)
+					font-size 0.8em
 				> button
 					margin 0 28px 0 0
 					padding 0 8px

@@ -13,13 +13,12 @@
 			@blur="focused = false"
 		></textarea>
 	</div>
-	<div class="text"><slot name="text"></slot></div>
+	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
 	props: {
@@ -139,9 +138,10 @@ root(fill)
 			outline none
 			box-shadow none
 
-	> .text
+	> .desc
 		margin 6px 0
 		font-size 13px
+		opacity 0.7
 
 		*
 			margin 0

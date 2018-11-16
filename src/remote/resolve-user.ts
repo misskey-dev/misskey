@@ -16,10 +16,13 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 		return await User.findOne({ usernameLower, host: null });
 	}
 
+	const configHostAscii = toASCII(config.host).toLowerCase();
+	const configHost = toUnicode(configHostAscii);
+
 	const hostAscii = toASCII(_host).toLowerCase();
 	const host = toUnicode(hostAscii);
 
-	if (config.host == host) {
+	if (configHost == host) {
 		log(`return local user: ${usernameLower}`);
 		return await User.findOne({ usernameLower, host: null });
 	}

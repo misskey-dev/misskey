@@ -2,8 +2,8 @@
 <mk-ui>
 	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">{{ user | userName }}</template>
 	<main v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> %i18n:@is-suspended%</p></div>
-		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> %i18n:common.is-remote-user%<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a></p></div>
+		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</p></div>
+		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
 		<header>
 			<div class="banner" :style="style"></div>
 			<div class="body">
@@ -17,7 +17,7 @@
 				<div class="title">
 					<h1>{{ user | userName }}</h1>
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
-					<span class="followed" v-if="user.isFollowed">%i18n:@follows-you%</span>
+					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
 					<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
@@ -27,30 +27,30 @@
 						<fa icon="map-marker"/>{{ user.profile.location }}
 					</p>
 					<p class="birthday" v-if="user.host === null && user.profile.birthday">
-						<fa icon="birthday-cake"/>{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)
+						<fa icon="birthday-cake"/>{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ $t('years-old', { age }) }})
 					</p>
 				</div>
 				<div class="status">
 					<a>
 						<b>{{ user.notesCount | number }}</b>
-						<i>%i18n:@notes%</i>
+						<i>{{ $t('notes') }}</i>
 					</a>
 					<a :href="user | userPage('following')">
 						<b>{{ user.followingCount | number }}</b>
-						<i>%i18n:@following%</i>
+						<i>{{ $t('following') }}</i>
 					</a>
 					<a :href="user | userPage('followers')">
 						<b>{{ user.followersCount | number }}</b>
-						<i>%i18n:@followers%</i>
+						<i>{{ $t('followers') }}</i>
 					</a>
 				</div>
 			</div>
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-active="page == 'home'" @click="page = 'home'"><fa icon="home"/> %i18n:@overview%</a>
-				<a :data-active="page == 'notes'" @click="page = 'notes'"><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</a>
-				<a :data-active="page == 'media'" @click="page = 'media'"><fa icon="image"/> %i18n:@media%</a>
+				<a :data-active="page == 'home'" @click="page = 'home'"><fa icon="home"/> {{ $t('overview') }}</a>
+				<a :data-active="page == 'notes'" @click="page = 'notes'"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</a>
+				<a :data-active="page == 'media'" @click="page = 'media'"><fa icon="image"/> {{ $t('media') }}</a>
 			</div>
 		</nav>
 		<div class="body">
@@ -64,6 +64,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as age from 's-age';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
@@ -71,6 +72,7 @@ import Menu from '../../../common/views/components/menu.vue';
 import XHome from './user/home.vue';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/user.vue'),
 	components: {
 		XHome
 	},
@@ -103,22 +105,22 @@ export default Vue.extend({
 		fetch() {
 			Progress.start();
 
-			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 
 				Progress.done();
-				document.title = `${Vue.filter('userName')(this.user)} | ${(this as any).os.instanceName}`;
+				document.title = `${Vue.filter('userName')(this.user)} | ${this.$root.instanceName}`;
 			});
 		},
 
 		menu() {
 			let menu = [{
-				icon: this.user.isMuted ? '<fa icon="eye"/>' : '<fa icon="eye-slash"/>',
-				text: this.user.isMuted ? '%i18n:@unmute%' : '%i18n:@mute%',
+				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
+				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
 				action: () => {
 					if (this.user.isMuted) {
-						(this as any).api('mute/delete', {
+						this.$root.api('mute/delete', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isMuted = false;
@@ -126,7 +128,7 @@ export default Vue.extend({
 							alert('error');
 						});
 					} else {
-						(this as any).api('mute/create', {
+						this.$root.api('mute/create', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isMuted = true;
@@ -136,11 +138,11 @@ export default Vue.extend({
 					}
 				}
 			}, {
-				icon: this.user.isBlocking ? '<fa icon="user"/>' : '<fa icon="user-slash"/>',
-				text: this.user.isBlocking ? '%i18n:@unblock%' : '%i18n:@block%',
+				icon: 'ban',
+				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
 				action: () => {
 					if (this.user.isBlocking) {
-						(this as any).api('blocking/delete', {
+						this.$root.api('blocking/delete', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isBlocking = false;
@@ -148,7 +150,7 @@ export default Vue.extend({
 							alert('error');
 						});
 					} else {
-						(this as any).api('blocking/create', {
+						this.$root.api('blocking/create', {
 							userId: this.user.id
 						}).then(() => {
 							this.user.isBlocking = true;
@@ -159,7 +161,7 @@ export default Vue.extend({
 				}
 			}];
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.menu,
 				compact: true,
 				items: menu
@@ -240,9 +242,6 @@ main
 					margin-right 8px
 					font-size 18px
 					color var(--text)
-
-				> .mk-follow-button
-					margin 0
 
 			> .title
 				margin 8px 0

@@ -1,37 +1,39 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title">%i18n:@hided-tags%</div>
+		<div slot="title">{{ $t('hided-tags') }}</div>
 		<section>
 			<textarea class="jdnqwkzlnxcfftthoybjxrebyolvoucw" v-model="hidedTags"></textarea>
-			<ui-button @click="save">%i18n:@save%</ui-button>
+			<ui-button @click="save">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('admin/views/hashtags.vue'),
 	data() {
 		return {
 			hidedTags: '',
 		};
 	},
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.hidedTags = meta.hidedTags.join('\n');
 		});
 	},
 	methods: {
 		save() {
-			(this as any).api('admin/update-meta', {
+			this.$root.api('admin/update-meta', {
 				hidedTags: this.hidedTags.split('\n')
 			}).then(() => {
-				//(this as any).os.apis.dialog({ text: `Saved` });
+				//this.$root.os.apis.dialog({ text: `Saved` });
 			}).catch(e => {
-				//(this as any).os.apis.dialog({ text: `Failed ${e}` });
+				//this.$root.os.apis.dialog({ text: `Failed ${e}` });
 			});
 		}
 	}

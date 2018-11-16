@@ -1,7 +1,7 @@
 <template>
 <div class="hozptpaliadatkehcmcayizwzwwctpbc">
-	<p class="title"><fa icon="users"/>%i18n:@title%</p>
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>%i18n:@loading%<mk-ellipsis/></p>
+	<p class="title"><fa icon="users"/>{{ $t('title') }}</p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
 			<mk-avatar class="avatar" :user="friend"/>
@@ -9,17 +9,19 @@
 				<router-link class="name" :to="friend | userPage" v-user-preview="friend.id">{{ friend.name }}</router-link>
 				<p class="username">@{{ friend | acct }}</p>
 			</div>
-			<mk-follow-button :user="friend"/>
+			<mk-follow-button class="follow-button" :user="friend"/>
 		</div>
 	</template>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('no-users') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.friends.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -28,7 +30,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/get_frequently_replied_users', {
+		this.$root.api('users/get_frequently_replied_users', {
 			userId: this.user.id,
 			limit: 4
 		}).then(docs => {
@@ -108,7 +110,7 @@ export default Vue.extend({
 				color var(--text)
 				opacity 0.7
 
-		> .mk-follow-button
+		> .follow-button
 			position absolute
 			top 16px
 			right 16px

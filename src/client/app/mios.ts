@@ -15,41 +15,6 @@ let spinner = null;
 let pending = 0;
 //#endregion
 
-export type API = {
-	chooseDriveFile: (opts: {
-		title?: string;
-		currentFolder?: any;
-		multiple?: boolean;
-	}) => Promise<any>;
-
-	chooseDriveFolder: (opts: {
-		title?: string;
-		currentFolder?: any;
-	}) => Promise<any>;
-
-	dialog: (opts: {
-		title: string;
-		text: string;
-		actions?: Array<{
-			text: string;
-			id?: string;
-		}>;
-	}) => Promise<string>;
-
-	input: (opts: {
-		title: string;
-		placeholder?: string;
-		default?: string;
-	}) => Promise<string>;
-
-	post: (opts?: {
-		reply?: any;
-		renote?: any;
-	}) => void;
-
-	notify: (message: string) => void;
-};
-
 /**
  * Misskey Operating System
  */
@@ -70,15 +35,6 @@ export default class MiOS extends EventEmitter {
 
 	public app: Vue;
 
-	public new(vm, props) {
-		const x = new vm({
-			parent: this.app,
-			propsData: props
-		}).$mount();
-		document.body.appendChild(x.$el);
-		return x;
-	}
-
 	/**
 	 * Whether is debug mode
 	 */
@@ -87,8 +43,6 @@ export default class MiOS extends EventEmitter {
 	}
 
 	public store: ReturnType<typeof initStore>;
-
-	public apis: API;
 
 	/**
 	 * A connection manager of home stream
@@ -218,7 +172,7 @@ export default class MiOS extends EventEmitter {
 			callback();
 
 			// Init service worker
-			if (this.shouldRegisterSw) this.registerSw();
+			//if (this.shouldRegisterSw) this.registerSw();
 		};
 
 		// キャッシュがあったとき
@@ -411,7 +365,7 @@ export default class MiOS extends EventEmitter {
 		});
 
 		// The path of service worker script
-		const sw = `/sw.${version}.${lang}.js`;
+		const sw = `/sw.${version}.js`;
 
 		// Register service worker
 		navigator.serviceWorker.register(sw).then(registration => {
@@ -431,15 +385,19 @@ export default class MiOS extends EventEmitter {
 	 * @param data パラメータ
 	 */
 	@autobind
-	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false): Promise<{ [x: string]: any }> {
-		if (++pending === 1) {
-			spinner = document.createElement('div');
-			spinner.setAttribute('id', 'wait');
-			document.body.appendChild(spinner);
+	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false, silent = false): Promise<{ [x: string]: any }> {
+		if (!silent) {
+			if (++pending === 1) {
+				spinner = document.createElement('div');
+				spinner.setAttribute('id', 'wait');
+				document.body.appendChild(spinner);
+			}
 		}
 
 		const onFinally = () => {
-			if (--pending === 0) spinner.parentNode.removeChild(spinner);
+			if (!silent) {
+				if (--pending === 0) spinner.parentNode.removeChild(spinner);
+			}
 		};
 
 		const promise = new Promise((resolve, reject) => {

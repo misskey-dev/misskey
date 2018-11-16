@@ -1,5 +1,4 @@
 import * as getCaretCoordinates from 'textarea-caret';
-import MkAutocomplete from '../components/autocomplete.vue';
 import { toASCII } from 'punycode';
 
 export default {
@@ -123,7 +122,7 @@ class Autocomplete {
 	/**
 	 * サジェストを提示します。
 	 */
-	private open(type, q) {
+	private async open(type, q) {
 		if (type != this.currentType) {
 			this.close();
 		}
@@ -143,6 +142,8 @@ class Autocomplete {
 			this.suggestion.y = y;
 			this.suggestion.q = q;
 		} else {
+			const MkAutocomplete = await import('../components/autocomplete.vue').then(m => m.default);
+
 			// サジェスト要素作成
 			this.suggestion = new MkAutocomplete({
 				parent: this.vm,

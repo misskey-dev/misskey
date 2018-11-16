@@ -4,7 +4,7 @@
 		<header>
 			<button class="cancel" @click="cancel"><fa icon="times"/></button>
 			<div>
-				<span class="text-count" :class="{ over: trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - trimmedLength(text) }}</span>
+				<span class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo"><fa icon="map-marker-alt"/></span>
 				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 			</div>
@@ -14,9 +14,9 @@
 			<mk-note-preview class="preview" v-if="renote" :note="renote"/>
 			<div v-if="visibility == 'specified'" class="visibleUsers">
 				<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-				<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
+				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
 			</div>
-			<input v-show="useCw" v-model="cw" placeholder="%i18n:@cw-placeholder%">
+			<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
@@ -32,7 +32,7 @@
 				<button class="drive" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
 				<button class="kao" @click="kao"><fa :icon="['far', 'smile']"/></button>
 				<button class="poll" @click="poll = true"><fa icon="chart-pie"/></button>
-				<button class="poll" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
+				<button class="poll" @click="useCw = !useCw"><fa :icon="['far', 'eye-slash']"/></button>
 				<button class="geo" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
 				<button class="visibility" @click="setVisibility" ref="visibilityButton">
 					<span v-if="visibility === 'public'"><fa icon="globe"/></span>
@@ -53,6 +53,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
@@ -65,6 +66,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import { toASCII } from 'punycode';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/post-form.vue'),
 	components: {
 		XDraggable,
 		MkVisibilityChooser
@@ -100,6 +102,7 @@ export default Vue.extend({
 			geo: null,
 			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
+			localOnly: false,
 			useCw: false,
 			cw: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
@@ -108,7 +111,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.maxNoteTextLength = meta.maxNoteTextLength;
 		});
 	},
@@ -124,28 +127,28 @@ export default Vue.extend({
 
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
 			return this.renote
-				? '%i18n:@quote-placeholder%'
+				? this.$t('quote-placeholder')
 				: this.reply
-					? '%i18n:@reply-placeholder%'
+					? this.$t('reply-placeholder')
 					: x;
 		},
 
 		submitText(): string {
 			return this.renote
-				? '%i18n:@renote%'
+				? this.$t('renote')
 				: this.reply
-					? '%i18n:@reply%'
-					: '%i18n:@submit%';
+					? this.$t('reply')
+					: this.$t('submit');
 		},
 
 		canPost(): boolean {
@@ -188,7 +191,7 @@ export default Vue.extend({
 
 		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
 		if (this.reply && this.reply.visibility === 'specified') {
-			(this as any).api('users/show', {	userId: this.reply.userId }).then(user => {
+			this.$root.api('users/show', {	userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
 		}
@@ -218,7 +221,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			(this as any).apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
 				files.forEach(this.attachMedia);
@@ -249,7 +252,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('%i18n:@location-alert%');
+				alert(this.$t('location-alert'));
 				return;
 			}
 
@@ -267,21 +270,28 @@ export default Vue.extend({
 		},
 
 		setVisibility() {
-			const w = (this as any).os.new(MkVisibilityChooser, {
+			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
 				compact: true
 			});
 			w.$once('chosen', v => {
-				this.visibility = v;
+				const m = v.match(/^local-(.+)/);
+				if (m) {
+					this.localOnly = true;
+					this.visibility = m[1];
+				} else {
+					this.localOnly = false;
+					this.visibility = v;
+				}
 			});
 		},
 
 		addVisibleUser() {
-			(this as any).apis.input({
-				title: '%i18n:@username-prompt%'
+			this.$input({
+				title: this.$t('username-prompt')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
-				(this as any).api('users/show', parseAcct(acct)).then(user => {
+				this.$root.api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
@@ -301,7 +311,7 @@ export default Vue.extend({
 		post() {
 			this.posting = true;
 			const viaMobile = this.$store.state.settings.disableViaMobile !== true;
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
@@ -318,6 +328,7 @@ export default Vue.extend({
 				} : null,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
+				localOnly: this.localOnly,
 				viaMobile: viaMobile
 			}).then(data => {
 				this.$emit('posted');

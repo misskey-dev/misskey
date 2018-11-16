@@ -14,7 +14,7 @@ import * as portscanner from 'portscanner';
 import isRoot = require('is-root');
 import Xev from 'xev';
 import * as program from 'commander';
-import mongo from './db/mongodb';
+import mongo, { nativeDbConn } from './db/mongodb';
 
 import Logger from './misc/logger';
 import EnvironmentInfo from './misc/environmentInfo';
@@ -23,6 +23,7 @@ import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
 import { Config } from './config/types';
+import { lessThan } from './prelude/array';
 
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
@@ -111,7 +112,12 @@ async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
 	Logger.info(`<<< Misskey v${pkg.version} >>>`);
 
-	new Logger('Deps').info(`Node.js ${process.version}`);
+	new Logger('Nodejs').info(`Version ${process.version}`);
+	if (lessThan(process.version.slice(1).split('.').map(x => parseInt(x, 10)), [10, 0, 0])) {
+		new Logger('Nodejs').error(`Node.js version is less than 10.0.0. Please upgrade it.`);
+		process.exit(1);
+	}
+
 	await MachineInfo.show();
 	EnvironmentInfo.show();
 
@@ -133,6 +139,11 @@ async function init(): Promise<Config> {
 	}
 
 	configLogger.succ('Loaded');
+
+	if (config.port == null) {
+		Logger.error('The port is not configured. Please configure port.');
+		process.exit(1);
+	}
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
 		Logger.error('You need root privileges to listen on port below 1024 on Linux');
@@ -158,11 +169,19 @@ function checkMongoDb(config: Config) {
 	mongoDBLogger.info(`Connecting to ${uri}`);
 
 	mongo.then(() => {
+		nativeDbConn().then(db => db.admin().serverInfo()).then(x => x.version).then((version: string) => {
+			mongoDBLogger.info(`Version: ${version}`);
+			if (lessThan(version.split('.').map(x => parseInt(x, 10)), [3, 6])) {
+				mongoDBLogger.error(`MongoDB version is less than 3.6. Please upgrade it.`);
+				process.exit(1);
+			}
+		});
+
 		mongoDBLogger.succ('Connectivity confirmed');
 	})
-	.catch(err => {
-		mongoDBLogger.error(err.message);
-	});
+		.catch(err => {
+			mongoDBLogger.error(err.message);
+		});
 }
 
 function spawnWorkers(limit: number) {

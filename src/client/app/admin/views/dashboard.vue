@@ -5,20 +5,26 @@
 		<p><b>Machine</b><span>{{ meta.machine }}</span></p>
 		<p><b>OS</b><span>{{ meta.os }}</span></p>
 		<p><b>Node</b><span>{{ meta.node }}</span></p>
-		<p>%i18n:common.ai-chan-kawaii%</p>
+		<p>{{ $t('@.ai-chan-kawaii') }}</p>
 	</header>
+
+	<marquee-text v-if="instances.length > 0" class="instances" :repeat="10" :duration="60">
+		<span v-for="instance in instances" class="instance">
+			<b :style="{ background: instance.bg }">{{ instance.host }}</b>{{ instance.notesCount | number }} / {{ instance.usersCount | number }}
+		</span>
+	</marquee-text>
 
 	<div v-if="stats" class="stats">
 		<div>
 			<div>
 				<div><fa icon="user"/></div>
 				<div>
-					<span>%i18n:@accounts%</span>
-					<b class="primary">{{ stats.originalUsersCount | number }}</b>
+					<span>{{ $t('accounts') }}</span>
+					<b>{{ stats.originalUsersCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span><fa icon="home"/> {{ $t('this-instance') }}</span>
 				<span @click="setChartSrc('users')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
@@ -26,25 +32,25 @@
 			<div>
 				<div><fa icon="pencil-alt"/></div>
 				<div>
-					<span>%i18n:@notes%</span>
-					<b class="primary">{{ stats.originalNotesCount | number }}</b>
+					<span>{{ $t('notes') }}</span>
+					<b>{{ stats.originalNotesCount | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span><fa icon="home"/> {{ $t('this-instance') }}</span>
 				<span @click="setChartSrc('notes')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
 		<div>
 			<div>
-				<div><fa icon="database"/></div>
+				<div><fa :icon="faDatabase"/></div>
 				<div>
-					<span>%i18n:@drive%</span>
+					<span>{{ $t('drive') }}</span>
 					<b>{{ stats.driveUsageLocal | bytes }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="home"/> %i18n:@this-instance%</span>
+				<span><fa icon="home"/> {{ $t('this-instance') }}</span>
 				<span @click="setChartSrc('drive')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
@@ -52,12 +58,12 @@
 			<div>
 				<div><fa :icon="['far', 'hdd']"/></div>
 				<div>
-					<span>%i18n:@instances%</span>
+					<span>{{ $t('instances') }}</span>
 					<b>{{ stats.instances | number }}</b>
 				</div>
 			</div>
 			<div>
-				<span><fa icon="globe"/> %i18n:@federated%</span>
+				<span><fa icon="globe"/> {{ $t('federated') }}</span>
 				<span @click="setChartSrc('federation-instances-total')"><fa :icon="['far', 'chart-bar']"/></span>
 			</div>
 		</div>
@@ -78,45 +84,73 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import i18n from '../../i18n';
 import XCpuMemory from "./cpu-memory.vue";
 import XCharts from "./charts.vue";
 import XApLog from "./ap-log.vue";
+import { faDatabase } from '@fortawesome/free-solid-svg-icons';
+import MarqueeText from 'vue-marquee-text-component';
+import randomColor from 'randomcolor';
 
 export default Vue.extend({
+	i18n: i18n('admin/views/dashboard.vue'),
+
 	components: {
 		XCpuMemory,
 		XCharts,
-		XApLog
+		XApLog,
+		MarqueeText
 	},
 
 	data() {
 		return {
 			stats: null,
 			connection: null,
-			meta: null
+			meta: null,
+			instances: [],
+			clock: null,
+			faDatabase
 		};
 	},
 
 	created() {
-		this.connection = (this as any).os.stream.useSharedConnection('serverStats');
+		this.connection = this.$root.stream.useSharedConnection('serverStats');
 
-		(this as any).os.getMeta().then(meta => {
+		this.updateStats();
+		this.clock = setInterval(this.updateStats, 1000);
+
+		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 
-		(this as any).api('stats').then(stats => {
-			this.stats = stats;
+		this.$root.api('instances', {
+			sort: '+notes'
+		}).then(instances => {
+			instances.forEach(i => {
+				i.bg = randomColor({
+					seed: i.host,
+					luminosity: 'dark'
+				});
+			});
+			this.instances = instances;
 		});
 	},
 
 	beforeDestroy() {
 		this.connection.dispose();
+		clearInterval(this.clock);
 	},
 
 	methods: {
 		setChartSrc(src) {
 			this.$refs.charts.setSrc(src);
+		},
+
+		updateStats() {
+			this.$root.api('stats', {}, false, true).then(stats => {
+				this.stats = stats;
+			});
 		}
 	}
 });
@@ -131,7 +165,6 @@ export default Vue.extend({
 
 	> header
 		display flex
-		margin-bottom 16px
 		padding-bottom 16px
 		border-bottom solid 1px var(--adminDashboardHeaderBorder)
 		color var(--adminDashboardHeaderFg)
@@ -155,6 +188,20 @@ export default Vue.extend({
 			&:last-child
 				margin-left auto
 				margin-right 0
+
+	> .instances
+		padding 16px
+		color var(--adminDashboardHeaderFg)
+		font-size 13px
+
+		>>> .instance
+			margin 0 10px
+
+			> b
+				padding 2px 6px
+				margin-right 4px
+				border-radius 4px
+				color #fff
 
 	> .stats
 		display flex
@@ -195,9 +242,6 @@ export default Vue.extend({
 
 					> b
 						display block
-
-						&.primary
-							color var(--primary)
 
 			> div:last-child
 				display flex

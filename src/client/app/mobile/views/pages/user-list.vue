@@ -33,7 +33,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('users/lists/show', {
+			this.$root.api('users/lists/show', {
 				listId: this.$route.params.list
 			}).then(list => {
 				this.list = list;
@@ -41,7 +41,7 @@ export default Vue.extend({
 
 				Progress.done();
 
-				(this as any).api('users/show', {
+				this.$root.api('users/show', {
 					userIds: this.list.userIds
 				}).then(users => {
 					this.users = users;

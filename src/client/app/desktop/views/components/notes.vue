@@ -25,8 +25,8 @@
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching"><fa icon="spinner .pulse" fixed-width/></template>
+			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
+			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>
 		</button>
 	</footer>
 </div>
@@ -34,13 +34,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as config from '../../../config';
-
+import shouldMuteNote from '../../../common/scripts/should-mute-note';
 import XNote from './note.vue';
 
 const displayLimit = 30;
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XNote
 	},
@@ -68,7 +70,7 @@ export default Vue.extend({
 				const date = new Date(note.createdAt).getDate();
 				const month = new Date(note.createdAt).getMonth() + 1;
 				note._date = date;
-				note._datetext = '%i18n:common.month-and-day%'.replace('{month}', month.toString()).replace('{day}', date.toString());
+				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return note;
 			});
 		}
@@ -117,28 +119,8 @@ export default Vue.extend({
 		},
 
 		prepend(note, silent = false) {
-			//#region 弾く
-			const isMyNote = note.userId == this.$store.state.i.id;
-			const isPureRenote = note.renoteId != null && note.text == null && note.fileIds.length == 0 && note.poll == null;
-
-			if (this.$store.state.settings.showMyRenotes === false) {
-				if (isMyNote && isPureRenote) {
-					return;
-				}
-			}
-
-			if (this.$store.state.settings.showRenotedMyNotes === false) {
-				if (isPureRenote && (note.renote.userId == this.$store.state.i.id)) {
-					return;
-				}
-			}
-
-			if (this.$store.state.settings.showLocalRenotes === false) {
-				if (isPureRenote && (note.renote.user.host == null)) {
-					return;
-				}
-			}
-			//#endregion
+			// 弾く
+			if (shouldMuteNote(this.$store.state.i, this.$store.state.settings, note)) return;
 
 			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
 			if (document.hidden || !this.isScrollTop()) {

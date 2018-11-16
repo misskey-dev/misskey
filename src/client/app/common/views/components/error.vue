@@ -1,9 +1,18 @@
 <template>
 <div class="wjqjnyhzogztorhrdgcpqlkxhkmuetgj">
-	<p><fa icon="exclamation-triangle"/> %i18n:common.error.title%</p>
-	<ui-button @click="() => $emit('retry')">%i18n:common.error.retry%</ui-button>
+	<p><fa icon="exclamation-triangle"/> {{ $t('@.error.title') }}</p>
+	<ui-button @click="() => $emit('retry')">{{ $t('@.error.retry') }}</ui-button>
 </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+import i18n from '../../../i18n';
+
+export default Vue.extend({
+	i18n: i18n()
+});
+</script>
 
 <style lang="stylus" scoped>
 .wjqjnyhzogztorhrdgcpqlkxhkmuetgj

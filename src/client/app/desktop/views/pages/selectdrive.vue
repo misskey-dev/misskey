@@ -1,22 +1,27 @@
 <template>
 <div class="mkp-selectdrive">
-	<mk-drive ref="browser"
+	<x-drive ref="browser"
 		:multiple="multiple"
 		@selected="onSelected"
 		@change-selection="onChangeSelection"
 	/>
 	<footer>
-		<button class="upload" title="%i18n:@upload%" @click="upload"><fa icon="upload"/></button>
-		<button class="cancel" @click="close">%i18n:@cancel%</button>
-		<button class="ok" @click="ok">%i18n:@ok%</button>
+		<button class="upload" :title="$t('upload')" @click="upload"><fa icon="upload"/></button>
+		<button class="cancel" @click="close">{{ $t('cancel') }}</button>
+		<button class="ok" @click="ok">{{ $t('ok') }}</button>
 	</footer>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/selectdrive.vue'),
+	components: {
+		XDrive: () => import('../components/drive.vue').then(m => m.default),
+	},
 	data() {
 		return {
 			files: []
@@ -29,7 +34,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = '%i18n:@title%';
+		document.title = this.$t('title');
 	},
 	methods: {
 		onSelected(file) {

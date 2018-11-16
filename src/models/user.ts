@@ -10,6 +10,7 @@ import Mute from './mute';
 import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
 import FollowRequest from './follow-request';
+import fetchMeta from '../misc/fetch-meta';
 
 const User = db.get<IUser>('users');
 
@@ -87,6 +88,14 @@ export interface ILocalUser extends IUserBase {
 		id: string;
 		login: string;
 	};
+	discord: {
+		accessToken: string;
+		refreshToken: string;
+		expiresDate: number;
+		id: string;
+		username: string;
+		discriminator: string;
+	};
 	line: {
 		userId: string;
 	};
@@ -98,6 +107,7 @@ export interface ILocalUser extends IUserBase {
 	lastUsedAt: Date;
 	isCat: boolean;
 	isAdmin?: boolean;
+	isModerator?: boolean;
 	isVerified?: boolean;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;
@@ -124,6 +134,7 @@ export interface IRemoteUser extends IUserBase {
 	};
 	updatedAt: Date;
 	isAdmin: false;
+	isModerator: false;
 }
 
 export type IUser = ILocalUser | IRemoteUser;
@@ -288,6 +299,11 @@ export const pack = (
 		if (_user.github) {
 			delete _user.github.accessToken;
 		}
+		if (_user.discord) {
+			delete _user.discord.accessToken;
+			delete _user.discord.refreshToken;
+			delete _user.discord.expiresDate;
+		}
 		delete _user.line;
 
 		// Visible via only the official client
@@ -376,6 +392,7 @@ function img(url) {
 }
 */
 
-export function getGhost(): Promise<ILocalUser> {
-	return User.findOne({ _id: new mongo.ObjectId(config.ghost) });
+export async function fetchProxyAccount(): Promise<ILocalUser> {
+	const meta = await fetchMeta();
+	return await User.findOne({ username: meta.proxyAccount, host: null }) as ILocalUser;
 }

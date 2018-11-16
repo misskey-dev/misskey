@@ -50,6 +50,7 @@ export type INote = {
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;
 	viaMobile: boolean;
+	localOnly: boolean;
 	renoteCount: number;
 	repliesCount: number;
 	reactionCounts: any;

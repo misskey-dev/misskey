@@ -7,14 +7,14 @@
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
 		<div class="is-remote" v-if="user.host != null">
 			<details>
-				<summary><fa icon="exclamation-triangle"/> %i18n:common.is-remote-user%</summary>
-				<a :href="user.url || user.uri" target="_blank">%i18n:common.view-on-remote%</a>
+				<summary><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}</summary>
+				<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
 			</details>
 		</div>
 		<header :style="bannerStyle">
 			<div>
 				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
-				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow"/>
+				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 				<span class="name">{{ user | userName }}</span>
 				<span class="acct">@{{ user | acct }}</span>
@@ -27,20 +27,20 @@
 			<div class="counts">
 				<div>
 					<b>{{ user.notesCount | number }}</b>
-					<span>%i18n:@posts%</span>
+					<span>{{ $t('posts') }}</span>
 				</div>
 				<div>
 					<b>{{ user.followingCount | number }}</b>
-					<span>%i18n:@following%</span>
+					<span>{{ $t('following') }}</span>
 				</div>
 				<div>
 					<b>{{ user.followersCount | number }}</b>
-					<span>%i18n:@followers%</span>
+					<span>{{ $t('followers') }}</span>
 				</div>
 			</div>
 		</div>
 		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-			<p class="caption" @click="toggleShowPinned"><fa icon="thumbtack"/> %i18n:@pinned-notes%</p>
+			<p class="caption" @click="toggleShowPinned"><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</p>
 			<span class="angle" v-if="showPinned"><fa icon="angle-up"/></span>
 			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div class="notes" v-show="showPinned">
@@ -48,7 +48,7 @@
 			</div>
 		</div>
 		<div class="images" v-if="images.length > 0">
-			<p class="caption" @click="toggleShowImages"><fa :icon="['far', 'images']"/> %i18n:@images%</p>
+			<p class="caption" @click="toggleShowImages"><fa :icon="['far', 'images']"/> {{ $t('images') }}</p>
 			<span class="angle" v-if="showImages"><fa icon="angle-up"/></span>
 			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div v-show="showImages">
@@ -61,7 +61,7 @@
 			</div>
 		</div>
 		<div class="activity">
-			<p class="caption" @click="toggleShowActivity"><fa :icon="['far', 'chart-bar']"/> %i18n:@activity%</p>
+			<p class="caption" @click="toggleShowActivity"><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</p>
 			<span class="angle" v-if="showActivity"><fa icon="angle-up"/></span>
 			<span class="angle" v-else><fa icon="angle-down"/></span>
 			<div v-show="showActivity">
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 		<div class="tl">
-			<p class="caption"><fa :icon="['far', 'comment-alt']"/> %i18n:@timeline%</p>
+			<p class="caption"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</p>
 			<div>
 				<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 			</div>
@@ -80,19 +80,20 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
-import Ok from '../../../../common/views/components/ok.vue';
 import { concat } from '../../../../../../prelude/array';
 import * as ApexCharts from 'apexcharts';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('deck/deck.user-column.vue'),
 	components: {
 		XColumn,
 		XNotes,
@@ -136,7 +137,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).api('users/show', parseAcct(this.acct)).then(user => {
+		this.$root.api('users/show', parseAcct(this.acct)).then(user => {
 			this.user = user;
 			this.fetching = false;
 
@@ -150,10 +151,11 @@ export default Vue.extend({
 				'image/gif'
 			];
 
-			(this as any).api('users/notes', {
+			this.$root.api('users/notes', {
 				userId: this.user.id,
 				fileType: image,
-				limit: 9
+				limit: 9,
+				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
 				notes.forEach(note => {
 					note.files.forEach(file => {
@@ -164,7 +166,7 @@ export default Vue.extend({
 				this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
 			});
 
-			(this as any).api('charts/user/notes', {
+			this.$root.api('charts/user/notes', {
 				userId: this.user.id,
 				span: 'day',
 				limit: 21
@@ -249,9 +251,10 @@ export default Vue.extend({
 	methods: {
 		initTl() {
 			return new Promise((res, rej) => {
-				(this as any).api('users/notes', {
+				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
+					untilDate: new Date().getTime() + 1000 * 86400 * 365,
 					withFiles: this.withFiles,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -269,10 +272,10 @@ export default Vue.extend({
 		fetchMoreNotes() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('users/notes', {
+			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id,
+				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime(),
 				withFiles: this.withFiles,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -295,21 +298,24 @@ export default Vue.extend({
 		menu() {
 			let menu = [{
 				icon: 'list',
-				text: '%i18n:@push-to-a-list%',
+				text: this.$t('push-to-a-list'),
 				action: () => {
-					const w = (this as any).os.new(MkUserListsWindow);
+					const w = this.$root.new(MkUserListsWindow);
 					w.$once('choosen', async list => {
 						w.close();
-						await (this as any).api('users/lists/push', {
+						await this.$root.api('users/lists/push', {
 							listId: list.id,
 							userId: this.user.id
 						});
-						(this as any).os.new(Ok);
+						this.$root.alert({
+							type: 'success',
+							splash: true
+						});
 					});
 				}
 			}];
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.menu,
 				compact: false,
 				items: menu

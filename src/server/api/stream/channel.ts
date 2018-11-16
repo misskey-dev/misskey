@@ -9,6 +9,7 @@ export default abstract class Channel {
 	public id: string;
 	public abstract readonly chName: string;
 	public static readonly shouldShare: boolean;
+	public static readonly requireCredential: boolean;
 
 	protected get user() {
 		return this.connection.user;

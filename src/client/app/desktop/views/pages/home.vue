@@ -23,7 +23,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = (this as any).os.instanceName;
+		document.title = this.$root.instanceName;
 
 		Progress.start();
 	},

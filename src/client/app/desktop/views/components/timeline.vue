@@ -1,17 +1,17 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> %i18n:@home%</span>
-		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> %i18n:@local%</span>
-		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> %i18n:@hybrid%</span>
-		<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> %i18n:@global%</span>
+		<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
+		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
+		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
+		<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> {{ $t('global') }}</span>
 		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><fa icon="hashtag"/> {{ tagTl.title }}</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.title }}</span>
 		<div class="buttons">
-			<button :data-active="src == 'mentions'" @click="src = 'mentions'" title="%i18n:@mentions%"><fa icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></button>
-			<button :data-active="src == 'messages'" @click="src = 'messages'" title="%i18n:@messages%"><fa :icon="['far', 'envelope']"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></button>
-			<button @click="chooseTag" title="%i18n:@hashtag%" ref="tagButton"><fa icon="hashtag"/></button>
-			<button @click="chooseList" title="%i18n:@list%" ref="listButton"><fa icon="list"/></button>
+			<button :data-active="src == 'mentions'" @click="src = 'mentions'" :title="$t('mentions')"><fa icon="at"/><i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></button>
+			<button :data-active="src == 'messages'" @click="src = 'messages'" :title="$t('messages')"><fa :icon="['far', 'envelope']"/><i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></button>
+			<button @click="chooseTag" :title="$t('hashtag')" ref="tagButton"><fa icon="hashtag"/></button>
+			<button @click="chooseList" :title="$t('list')" ref="listButton"><fa icon="list"/></button>
 		</div>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
@@ -27,11 +27,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import XCore from './timeline.core.vue';
 import Menu from '../../../common/views/components/menu.vue';
 import MkSettingsWindow from './settings-window.vue';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/timeline.vue'),
 	components: {
 		XCore
 	},
@@ -62,7 +64,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
 		});
 
@@ -101,16 +103,16 @@ export default Vue.extend({
 		},
 
 		async chooseList() {
-			const lists = await (this as any).api('users/lists/list');
+			const lists = await this.$root.api('users/lists/list');
 
 			let menu = [{
 				icon: 'plus',
-				text: '%i18n:@add-list%',
+				text: this.$t('add-list'),
 				action: () => {
-					(this as any).apis.input({
-						title: '%i18n:@list-name%',
+					this.$input({
+						title: this.$t('list-name'),
 					}).then(async title => {
-						const list = await (this as any).api('users/lists/create', {
+						const list = await this.$root.api('users/lists/create', {
 							title
 						});
 
@@ -133,7 +135,7 @@ export default Vue.extend({
 				}
 			})));
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.listButton,
 				compact: false,
 				items: menu
@@ -143,9 +145,9 @@ export default Vue.extend({
 		chooseTag() {
 			let menu = [{
 				icon: 'plus',
-				text: '%i18n:@add-tag-timeline%',
+				text: this.$t('add-tag-timeline'),
 				action: () => {
-					(this as any).os.new(MkSettingsWindow, {
+					this.$root.new(MkSettingsWindow, {
 						initialPage: 'hashtags'
 					});
 				}
@@ -164,7 +166,7 @@ export default Vue.extend({
 				}
 			})));
 
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.tagButton,
 				compact: false,
 				items: menu

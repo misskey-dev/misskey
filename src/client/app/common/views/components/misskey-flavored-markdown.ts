@@ -187,7 +187,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					const customEmojis = (this.os.getMetaSync() || { emojis: [] }).emojis || [];
+					const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
 					return [createElement('mk-emoji', {
 						attrs: {
 							emoji: token.emoji,

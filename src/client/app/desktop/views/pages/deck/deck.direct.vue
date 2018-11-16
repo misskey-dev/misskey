@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null"/>
+<x-notes ref="timeline" :more="existMore ? more : null"/>
 </template>
 
 <script lang="ts">
@@ -26,7 +26,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.useSharedConnection('main');
+		this.connection = this.$root.stream.useSharedConnection('main');
 		this.connection.on('mention', this.onNote);
 
 		this.fetch();
@@ -41,7 +41,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/mentions', {
+				this.$root.api('notes/mentions', {
 					limit: fetchLimit + 1,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -62,7 +62,7 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('notes/mentions', {
+			const promise = this.$root.api('notes/mentions', {
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,

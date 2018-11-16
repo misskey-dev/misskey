@@ -50,7 +50,7 @@ router.get('/v1/instance', async ctx => {
 		uri: config.hostname,
 		title: meta.name || 'Misskey',
 		description: meta.description || '',
-		email: config.maintainer.email || config.maintainer.url.startsWith('mailto:') ? config.maintainer.url.slice(7) : '',
+		email: meta.maintainer.email || meta.maintainer.url.startsWith('mailto:') ? meta.maintainer.url.slice(7) : '',
 		version: `0.0.0 (compatible; ${config.user_agent})`, // TODO: How to tell about that this is an api for compatibility?
 		thumbnail: meta.bannerUrl,
 		/*
@@ -62,7 +62,7 @@ router.get('/v1/instance', async ctx => {
 			status_count: originalNotesCount,
 			domain_count: domains.length
 		},
-		languages: config.languages || [ 'ja' ],
+		languages: meta.languages || [ 'ja' ],
 		contact_account: maintainer ? toMastodonAccount(maintainer) : {}
 	};
 });

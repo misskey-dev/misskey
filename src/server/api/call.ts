@@ -29,6 +29,10 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		return rej('YOU_ARE_NOT_ADMIN');
 	}
 
+	if (ep.meta.requireModerator && !user.isAdmin && !user.isModerator) {
+		return rej('YOU_ARE_NOT_MODERATOR');
+	}
+
 	if (app && ep.meta.kind && !app.permission.some(p => p === ep.meta.kind)) {
 		return rej('PERMISSION_DENIED');
 	}
@@ -56,7 +60,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 		}
 	} catch (e) {
-		if (e.name == 'INVALID_PARAM') {
+		if (e && e.name == 'INVALID_PARAM') {
 			rej({
 				code: e.name,
 				param: e.param,

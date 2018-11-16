@@ -8,46 +8,52 @@
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">%i18n:@add-visible-user%</a>
+			<a @click="addVisibleUser">{{ $t('add-visible-user') }}</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
-			<b>%i18n:@recent-tags%:</b>
-			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" title="%i18n:@click-to-tagging%">#{{ tag }}</a>
+			<b>{{ $t('recent-tags') }}:</b>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
-		<input v-show="useCw" v-model="cw" placeholder="%i18n:@annotations%">
-		<textarea :class="{ with: (files.length != 0 || poll) }"
-			ref="text" v-model="text" :disabled="posting"
-			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
-			v-autocomplete="'text'"
-		></textarea>
-		<div class="files" :class="{ with: poll }" v-show="files.length != 0">
-			<x-draggable :list="files" :options="{ animation: 150 }">
-				<div v-for="file in files" :key="file.id">
-					<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
-					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:@attach-cancel%" alt=""/>
-				</div>
-			</x-draggable>
-			<p class="remain">{{ 4 - files.length }}/4</p>
+		<div class="local-only" v-if="this.localOnly == true">{{ $t('local-only-message') }}</div>
+		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
+		<div class="textarea">
+			<textarea :class="{ with: (files.length != 0 || poll) }"
+				ref="text" v-model="text" :disabled="posting"
+				@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
+				v-autocomplete="'text'"
+			></textarea>
+			<button class="emoji" @click="emoji" ref="emoji">
+				<fa :icon="['far', 'laugh']"/>
+			</button>
+			<div class="files" :class="{ with: poll }" v-show="files.length != 0">
+				<x-draggable :list="files" :options="{ animation: 150 }">
+					<div v-for="file in files" :key="file.id">
+						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
+						<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
+					</div>
+				</x-draggable>
+				<p class="remain">{{ 4 - files.length }}/4</p>
+			</div>
+			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 		</div>
-		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile"><fa icon="upload"/></button>
-	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
-	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao"><fa :icon="['far', 'smile']"/></button>
-	<button class="poll" title="%i18n:@create-poll%" @click="poll = !poll"><fa icon="chart-pie"/></button>
-	<button class="poll" title="%i18n:@hide-contents%" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
-	<button class="geo" title="%i18n:@attach-location-information%" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
-	<button class="visibility" title="%i18n:@visibility%" @click="setVisibility" ref="visibilityButton">
+	<button class="upload" :title="$t('attach-media-from-local')" @click="chooseFile"><fa icon="upload"/></button>
+	<button class="drive" :title="$t('attach-media-from-drive')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
+	<button class="kao" :title="$t('insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
+	<button class="poll" :title="$t('create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
+	<button class="cw" :title="$t('hide-contents')" @click="useCw = !useCw"><fa :icon="['far', 'eye-slash']"/></button>
+	<button class="geo" :title="$t('attach-location-information')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
+	<button class="visibility" :title="$t('visibility')" @click="setVisibility" ref="visibilityButton">
 		<span v-if="visibility === 'public'"><fa icon="globe"/></span>
 		<span v-if="visibility === 'home'"><fa icon="home"/></span>
 		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 		<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
 		<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 	</button>
-	<p class="text-count" :class="{ over: this.trimmedLength(text) > this.maxNoteTextLength }">{{ this.maxNoteTextLength - this.trimmedLength(text) }}</p>
+	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
-		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
+		{{ posting ? $t('posting') : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
 	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
@@ -56,6 +62,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import getFace from '../../../common/scripts/get-face';
@@ -68,6 +75,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import { toASCII } from 'punycode';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/post-form.vue'),
 	components: {
 		XDraggable,
 		MkVisibilityChooser
@@ -105,6 +113,7 @@ export default Vue.extend({
 			geo: null,
 			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
 			visibleUsers: [],
+			localOnly: false,
 			autocomplete: null,
 			draghover: false,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
@@ -113,7 +122,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		(this as any).os.getMeta().then(meta => {
+		this.$root.getMeta().then(meta => {
 			this.maxNoteTextLength = meta.maxNoteTextLength;
 		});
 	},
@@ -129,28 +138,28 @@ export default Vue.extend({
 
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
 			return this.renote
-				? '%i18n:@quote-placeholder%'
+				? this.$t('quote-placeholder')
 				: this.reply
-					? '%i18n:@reply-placeholder%'
+					? this.$t('reply-placeholder')
 					: x;
 		},
 
 		submitText(): string {
 			return this.renote
-				? '%i18n:@renote%'
+				? this.$t('renote')
 				: this.reply
-					? '%i18n:@reply%'
-					: '%i18n:@submit%';
+					? this.$t('reply')
+					: this.$t('submit');
 		},
 
 		canPost(): boolean {
@@ -193,7 +202,7 @@ export default Vue.extend({
 
 		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
 		if (this.reply && this.reply.visibility === 'specified') {
-			(this as any).api('users/show', {	userId: this.reply.userId }).then(user => {
+			this.$root.api('users/show', {	userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
 		}
@@ -243,7 +252,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			(this as any).apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
 				files.forEach(this.attachMedia);
@@ -332,7 +341,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('%i18n:@geolocation-alert%');
+				alert(this.$t('geolocation-alert'));
 				return;
 			}
 
@@ -352,20 +361,27 @@ export default Vue.extend({
 		},
 
 		setVisibility() {
-			const w = (this as any).os.new(MkVisibilityChooser, {
+			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton
 			});
 			w.$once('chosen', v => {
-				this.visibility = v;
+				const m = v.match(/^local-(.+)/);
+				if (m) {
+					this.localOnly = true;
+					this.visibility = m[1];
+				} else {
+					this.localOnly = false;
+					this.visibility = v;
+				}
 			});
 		},
 
 		addVisibleUser() {
-			(this as any).apis.input({
-				title: '%i18n:@enter-username%'
+			this.$input({
+				title: this.$t('enter-username')
 			}).then(acct => {
 				if (acct.startsWith('@')) acct = acct.substr(1);
-				(this as any).api('users/show', parseAcct(acct)).then(user => {
+				this.$root.api('users/show', parseAcct(acct)).then(user => {
 					this.visibleUsers.push(user);
 				});
 			});
@@ -375,10 +391,23 @@ export default Vue.extend({
 			this.visibleUsers = erase(user, this.visibleUsers);
 		},
 
+		async emoji() {
+			const Picker = await import('./emoji-picker-dialog.vue').then(m => m.default);
+			const button = this.$refs.emoji;
+			const rect = button.getBoundingClientRect();
+			const vm = this.$root.new(Picker, {
+				x: button.offsetWidth + rect.left + window.pageXOffset,
+				y: rect.top + window.pageYOffset
+			});
+			vm.$once('chosen', emoji => {
+				insertTextAtCursor(this.$refs.text, emoji);
+			});
+		},
+
 		post() {
 			this.posting = true;
 
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
@@ -387,6 +416,7 @@ export default Vue.extend({
 				cw: this.useCw ? this.cw || '' : undefined,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
+				localOnly: this.localOnly,
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
@@ -399,17 +429,17 @@ export default Vue.extend({
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
-				(this as any).apis.notify(this.renote
-					? '%i18n:@reposted%'
+				this.$notify(this.renote
+					? this.$t('reposted')
 					: this.reply
-						? '%i18n:@replied%'
-						: '%i18n:@posted%');
+						? this.$t('replied')
+						: this.$t('posted'));
 			}).catch(err => {
-				(this as any).apis.notify(this.renote
-					? '%i18n:@renote-failed%'
+				this.$notify(this.renote
+					? this.$t('renote-failed')
 					: this.reply
-						? '%i18n:@reply-failed%'
-						: '%i18n:@note-failed%');
+						? this.$t('reply-failed')
+						: this.$t('note-failed'));
 			}).then(() => {
 				this.posting = false;
 			});
@@ -467,7 +497,7 @@ export default Vue.extend({
 
 	> .content
 		> input
-		> textarea
+		> .textarea > textarea
 			display block
 			width 100%
 			padding 12px
@@ -496,27 +526,108 @@ export default Vue.extend({
 		> input
 			margin-bottom 8px
 
-		> textarea
-			margin 0
-			max-width 100%
-			min-width 100%
-			min-height 84px
+		> .textarea
+			> .emoji
+				position absolute
+				top 0
+				right 0
+				padding 10px
+				font-size 18px
+				color var(--text)
+				opacity 0.5
 
-			&:hover
-				& + *
-				& + * + *
-					border-color var(--primaryAlpha02)
-					transition border-color .1s ease
+				&:hover
+					color var(--textHighlighted)
+					opacity 1
 
-			&:focus
-				& + *
-				& + * + *
-					border-color var(--primaryAlpha05)
-					transition border-color 0s ease
+				&:active
+					color var(--primary)
+					opacity 1
 
-			&.with
-				border-bottom solid 1px var(--primaryAlpha01) !important
-				border-radius 4px 4px 0 0
+			> textarea
+				margin 0
+				max-width 100%
+				min-width 100%
+				min-height 84px
+
+				&:hover
+					& + * + *
+					& + * + * + *
+						border-color var(--primaryAlpha02)
+						transition border-color .1s ease
+
+				&:focus
+					& + * + *
+					& + * + * + *
+						border-color var(--primaryAlpha05)
+						transition border-color 0s ease
+
+					& + .emoji
+						opacity 0.7
+
+				&.with
+					border-bottom solid 1px var(--primaryAlpha01) !important
+					border-radius 4px 4px 0 0
+
+			> .files
+				margin 0
+				padding 0
+				background var(--desktopPostFormTextareaBg)
+				border solid 1px var(--primaryAlpha01)
+				border-top none
+				border-radius 0 0 4px 4px
+				transition border-color .3s ease
+
+				&.with
+					border-bottom solid 1px var(--primaryAlpha01) !important
+					border-radius 0
+
+				> .remain
+					display block
+					position absolute
+					top 8px
+					right 8px
+					margin 0
+					padding 0
+					color var(--primaryAlpha04)
+
+				> div
+					padding 4px
+
+					&:after
+						content ""
+						display block
+						clear both
+
+					> div
+						float left
+						border solid 4px transparent
+						cursor move
+
+						&:hover > .remove
+							display block
+
+						> .img
+							width 64px
+							height 64px
+							background-size cover
+							background-position center center
+
+						> .remove
+							display none
+							position absolute
+							top -6px
+							right -6px
+							width 16px
+							height 16px
+							cursor pointer
+
+			> .mk-poll-editor
+				background var(--desktopPostFormTextareaBg)
+				border solid 1px var(--primaryAlpha01)
+				border-top none
+				border-radius 0 0 4px 4px
+				transition border-color .3s ease
 
 		> .visibleUsers
 			margin-bottom 8px
@@ -539,65 +650,9 @@ export default Vue.extend({
 				margin-right 8px
 				white-space nowrap
 
-		> .files
-			margin 0
-			padding 0
-			background var(--desktopPostFormTextareaBg)
-			border solid 1px var(--primaryAlpha01)
-			border-top none
-			border-radius 0 0 4px 4px
-			transition border-color .3s ease
-
-			&.with
-				border-bottom solid 1px var(--primaryAlpha01) !important
-				border-radius 0
-
-			> .remain
-				display block
-				position absolute
-				top 8px
-				right 8px
-				margin 0
-				padding 0
-				color var(--primaryAlpha04)
-
-			> div
-				padding 4px
-
-				&:after
-					content ""
-					display block
-					clear both
-
-				> div
-					float left
-					border solid 4px transparent
-					cursor move
-
-					&:hover > .remove
-						display block
-
-					> .img
-						width 64px
-						height 64px
-						background-size cover
-						background-position center center
-
-					> .remove
-						display none
-						position absolute
-						top -6px
-						right -6px
-						width 16px
-						height 16px
-						cursor pointer
-
-		> .mk-poll-editor
-			background var(--desktopPostFormTextareaBg)
-			border solid 1px var(--primaryAlpha01)
-			border-top none
-			border-radius 0 0 4px 4px
-			transition border-color .3s ease
+		> .local-only
+			margin 0 0 8px 0
+			color var(--primary)
 
 	> .mk-uploader
 		margin 8px 0 0 0
@@ -687,6 +742,7 @@ export default Vue.extend({
 	> .drive
 	> .kao
 	> .poll
+	> .cw
 	> .geo
 	> .visibility
 		display inline-block

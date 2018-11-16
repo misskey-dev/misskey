@@ -1,14 +1,13 @@
 <template>
 <div class="header" ref="root">
-	<p class="warn" v-if="env != 'production'">%i18n:common.do-not-use-in-production%</p>
-	<mk-special-message/>
+	<p class="warn" v-if="env != 'production'">{{ $t('@.do-not-use-in-production') }}</p>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true"><fa icon="bars"/></button>
 			<i v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation" class="circle"><fa icon="circle"/></i>
 			<h1>
-				<slot>{{ os.instanceName }}</slot>
+				<slot>{{ $root.instanceName }}</slot>
 			</h1>
 			<slot name="func"></slot>
 		</div>
@@ -19,10 +18,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import { env } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n(),
 	props: ['func'],
 
 	data() {
@@ -47,7 +48,7 @@ export default Vue.extend({
 		this.$store.commit('setUiHeaderHeight', this.$refs.root.offsetHeight);
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.useSharedConnection('main');
+			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
 			this.connection.on('reversi_no_invites', this.onReversiNoInvites);

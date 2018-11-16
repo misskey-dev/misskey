@@ -45,7 +45,7 @@ export default Vue.extend({
 	mounted() {
 		this.fetch();
 
-		this.connection = (this as any).os.stream.useSharedConnection('localTimeline');
+		this.connection = this.$root.stream.useSharedConnection('localTimeline');
 
 		this.connection.on('note', this.onNote);
 	},
@@ -57,7 +57,7 @@ export default Vue.extend({
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
-			(this as any).api('notes', {
+			this.$root.api('notes', {
 				limit: this.max,
 				local: true,
 				reply: false,

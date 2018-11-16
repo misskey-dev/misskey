@@ -1,11 +1,5 @@
 version: 2.1
 
-general:
-  branches:
-    ignore:
-      - l10n_develop
-      - imgbot
-
 executors:
   default:
     working_directory: /tmp/workspace
@@ -17,8 +11,20 @@ executors:
     working_directory: /tmp/workspace
     docker:
       - image: docker:latest
+  alpine:
+    working_directory: /tmp/workspace
+    docker:
+      - image: alpine:latest
 
 jobs:
+  ok:
+    executor: alpine
+    steps:
+      - run:
+          name: OK
+          command: |
+            echo -e '\033[0;32mOK\033[0;39m'
+
   build:
     executor: default
     steps:
@@ -102,7 +108,7 @@ jobs:
       - run:
           name: Build
           command: |
-            docker build . | tee docker.log
+            docker build -t misskey/misskey .
       - when:
           condition: <<parameters.with_deploy>>
           steps:
@@ -111,8 +117,8 @@ jobs:
                 command: |
                   if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
                    then
-                    tail -n 1 docker.log | read __Successfully __built tag
-                    docker tag $tag misskey/misskey
+                    apk update && apk add jq
+                    docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
                     docker push misskey/misskey
                    else
@@ -123,10 +129,27 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
+      - ok:
+          filters:
+            branches:
+              only:
+                - l10n_develop
+                - imgbot
+      - build:
+          filters:
+            branches:
+              ignore:
+                - l10n_develop
+                - imgbot
       - test:
           requires:
             - build
+          filters:
+            branches:
+              ignore:
+#                - master
+                - l10n_develop
+                - imgbot
       - test:
           without_redis: "true"
           requires:

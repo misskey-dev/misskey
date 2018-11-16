@@ -6,27 +6,30 @@
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="is-cat" v-if="note.user.isCat">cat</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
-	<span class="is-verified" v-if="note.user.isVerified" title="%i18n:common.verified-user%"><fa icon="star"/></span>
+	<span class="is-verified" v-if="note.user.isVerified" :title="$t('@.verified-user')"><fa icon="star"/></span>
 	<div class="info">
-		<span class="app" v-if="note.app && !mini">via <b>{{ note.app.name }}</b></span>
+		<span class="app" v-if="note.app && !mini && $store.state.settings.showVia">via <b>{{ note.app.name }}</b></span>
 		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>
 		<router-link class="created-at" :to="note | notePage">
 			<mk-time :time="note.createdAt"/>
 		</router-link>
 		<span class="visibility" v-if="note.visibility != 'public'">
-			<template v-if="note.visibility == 'home'"><fa icon="home"/></template>
-			<template v-if="note.visibility == 'followers'"><fa icon="unlock"/></template>
-			<template v-if="note.visibility == 'specified'"><fa icon="envelope"/></template>
-			<template v-if="note.visibility == 'private'"><fa icon="lock"/></template>
+			<fa v-if="note.visibility == 'home'" icon="home"/>
+			<fa v-if="note.visibility == 'followers'" icon="unlock"/>
+			<fa v-if="note.visibility == 'specified'" icon="envelope"/>
+			<fa v-if="note.visibility == 'private'" icon="lock"/>
 		</span>
+		<span class="localOnly" v-if="note.localOnly == true"><fa icon="heart"/></span>
 	</div>
 </header>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n(),
 	props: {
 		note: {
 			type: Object,
@@ -112,5 +115,8 @@ export default Vue.extend({
 
 		> .visibility
 			margin-left 8px
+
+		> .localOnly
+			margin-left 4px
 
 </style>

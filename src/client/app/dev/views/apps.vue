@@ -1,12 +1,12 @@
 <template>
 <mk-ui>
-	<b-card header="%i18n:@manage-apps%">
-		<b-button to="/app/new" variant="primary">%i18n:@create-app%</b-button>
+	<b-card :header="$t('header')">
+		<b-button to="/app/new" variant="primary">{{ $t('create-app') }}</b-button>
 		<hr>
 		<div class="apps">
-			<p v-if="fetching">%i18n:common.loading%</p>
+			<p v-if="fetching">{{ $t('@.loading') }}</p>
 			<template v-if="!fetching">
-				<b-alert v-if="apps.length == 0">%i18n:@app-missing%</b-alert>
+				<b-alert v-if="apps.length == 0">{{ $t('app-missing') }}</b-alert>
 				<b-list-group v-else>
 					<b-list-group-item v-for="app in apps" :key="app.id" :to="`/app/${app.id}`">
 						{{ app.name }}
@@ -20,7 +20,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../i18n';
 export default Vue.extend({
+	i18n: i18n('dev/views/apps.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -28,7 +30,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('my/apps').then(apps => {
+		this.$root.api('my/apps').then(apps => {
 			this.apps = apps;
 			this.fetching = false;
 		});

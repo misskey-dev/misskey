@@ -7,10 +7,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../../i18n';
 import XGame from './reversi.game.vue';
 import XRoom from './reversi.room.vue';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/games/reversi/reversi.gameroom.vue'),
 	components: {
 		XGame,
 		XRoom
@@ -33,7 +35,7 @@ export default Vue.extend({
 	},
 	created() {
 		this.g = this.game;
-		this.connection = (this as any).os.stream.connectToChannel('gamesReversiGame', {
+		this.connection = this.$root.stream.connectToChannel('gamesReversiGame', {
 			gameId: this.game.id
 		});
 		this.connection.on('started', this.onStarted);

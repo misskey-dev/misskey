@@ -26,7 +26,7 @@ export const meta = {
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const files = await DriveFile
 		.find({
-			filename: name,
+			filename: ps.name,
 			'metadata.userId': user._id,
 			'metadata.folderId': ps.folderId
 		});

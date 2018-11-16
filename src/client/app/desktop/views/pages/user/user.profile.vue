@@ -1,37 +1,39 @@
 <template>
 <div class="profile" v-if="$store.getters.isSignedIn">
 	<div class="friend-form" v-if="$store.state.i.id != user.id">
-		<mk-follow-button :user="user" size="big"/>
-		<p class="followed" v-if="user.isFollowed">%i18n:@follows-you%</p>
+		<mk-follow-button :user="user" block/>
+		<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
 		<p class="stalk" v-if="user.isFollowing">
-			<span v-if="user.isStalking">%i18n:@stalking% <a @click="unstalk"><fa icon="meh"/> %i18n:@unstalk%</a></span>
-			<span v-if="!user.isStalking"><a @click="stalk"><fa icon="user-secret"/> %i18n:@stalk%</a></span>
+			<span v-if="user.isStalking">{{ $t('stalking') }} <a @click="unstalk"><fa icon="meh"/> {{ $t('unstalk') }}</a></span>
+			<span v-if="!user.isStalking"><a @click="stalk"><fa icon="user-secret"/> {{ $t('stalk') }}</a></span>
 		</p>
 	</div>
 	<div class="action-form">
 		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isMuted"><fa icon="eye"/> %i18n:@unmute%</span>
-			<span v-else><fa icon="eye-slash"/> %i18n:@mute%</span>
+			<span v-if="user.isMuted"><fa icon="eye"/> {{ $t('unmute') }}</span>
+			<span v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mute') }}</span>
 		</ui-button>
 		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isBlocking"><fa icon="user"/> %i18n:@unblock%</span>
-			<span v-else><fa icon="user-slash"/> %i18n:@block%</span>
+			<span v-if="user.isBlocking"><fa icon="ban"/> {{ $t('unblock') }}</span>
+			<span v-else><fa icon="ban"/> {{ $t('block') }}</span>
 		</ui-button>
-		<ui-button @click="list"><fa icon="list"/> %i18n:@push-to-a-list%</ui-button>
+		<ui-button @click="list"><fa icon="list"/> {{ $t('push-to-a-list') }}</ui-button>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.profile.vue'),
 	props: ['user'],
 
 	methods: {
 		stalk() {
-			(this as any).api('following/stalk', {
+			this.$root.api('following/stalk', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isStalking = true;
@@ -41,7 +43,7 @@ export default Vue.extend({
 		},
 
 		unstalk() {
-			(this as any).api('following/unstalk', {
+			this.$root.api('following/unstalk', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isStalking = false;
@@ -51,7 +53,7 @@ export default Vue.extend({
 		},
 
 		mute() {
-			(this as any).api('mute/create', {
+			this.$root.api('mute/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = true;
@@ -61,7 +63,7 @@ export default Vue.extend({
 		},
 
 		unmute() {
-			(this as any).api('mute/delete', {
+			this.$root.api('mute/delete', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = false;
@@ -71,18 +73,25 @@ export default Vue.extend({
 		},
 
 		block() {
-			if (!window.confirm('%i18n:@block-confirm%')) return;
-			(this as any).api('blocking/create', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isBlocking = true;
-			}, () => {
-				alert('error');
+			this.$root.alert({
+				type: 'warning',
+				text: this.$t('block-confirm'),
+				showCancelButton: true
+			}).then(res => {
+				if (!res) return;
+
+				this.$root.api('blocking/create', {
+					userId: this.user.id
+				}).then(() => {
+					this.user.isBlocking = true;
+				}, () => {
+					alert('error');
+				});
 			});
 		},
 
 		unblock() {
-			(this as any).api('blocking/delete', {
+			this.$root.api('blocking/delete', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isBlocking = false;
@@ -92,16 +101,16 @@ export default Vue.extend({
 		},
 
 		list() {
-			const w = (this as any).os.new(MkUserListsWindow);
+			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', async list => {
 				w.close();
-				await (this as any).api('users/lists/push', {
+				await this.$root.api('users/lists/push', {
 					listId: list.id,
 					userId: this.user.id
 				});
-				(this as any).apis.dialog({
+				this.$root.alert({
 					title: 'Done!',
-					text: '%i18n:@list-pushed%'.replace('{user}', this.user.name).replace('{list}', list.title)
+					text: this.$t('list-pushed').replace('{user}', this.user.name).replace('{list}', list.title)
 				});
 			});
 		}

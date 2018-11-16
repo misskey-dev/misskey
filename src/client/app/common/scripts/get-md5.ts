@@ -1,8 +1,10 @@
-const crypto = require('crypto');
+// スクリプトサイズがデカい
+//const crypto = require('crypto');
 
 export default (data: ArrayBuffer) => {
-  const buf = new Buffer(data);
-  const hash = crypto.createHash("md5");
-  hash.update(buf);
-  return hash.digest("hex");
+	//const buf = new Buffer(data);
+	//const hash = crypto.createHash("md5");
+	//hash.update(buf);
+	//return hash.digest("hex");
+	return '';
 };

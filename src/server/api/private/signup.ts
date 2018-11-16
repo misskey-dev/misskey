@@ -1,7 +1,6 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
-const recaptcha = require('recaptcha-promise');
 import User, { IUser, validateUsername, validatePassword, pack } from '../../../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
@@ -10,18 +9,20 @@ import RegistrationTicket from '../../../models/registration-tickets';
 import usersChart from '../../../chart/users';
 import fetchMeta from '../../../misc/fetch-meta';
 
-if (config.recaptcha) {
-	recaptcha.init({
-		secret_key: config.recaptcha.secret_key
-	});
-}
-
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body as any;
 
+	const instance = await fetchMeta();
+
+	const recaptcha = require('recaptcha-promise');
+
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
-	if (process.env.NODE_ENV !== 'test' && config.recaptcha != null) {
+	if (process.env.NODE_ENV !== 'test' && instance.enableRecaptcha) {
+		recaptcha.init({
+			secret_key: instance.recaptchaSecretKey
+		});
+
 		const success = await recaptcha(body['g-recaptcha-response']);
 
 		if (!success) {
@@ -33,8 +34,6 @@ export default async (ctx: Koa.Context) => {
 	const username = body['username'];
 	const password = body['password'];
 	const invitationCode = body['invitationCode'];
-
-	const instance = await fetchMeta();
 
 	if (instance && instance.disableRegistration) {
 		if (invitationCode == null || typeof invitationCode != 'string') {

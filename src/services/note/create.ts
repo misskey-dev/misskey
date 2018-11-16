@@ -95,9 +95,11 @@ type Option = {
 	geo?: any;
 	poll?: any;
 	viaMobile?: boolean;
+	localOnly?: boolean;
 	cw?: string;
 	visibility?: string;
 	visibleUsers?: IUser[];
+	apMentions?: IUser[];
 	uri?: string;
 	app?: IApp;
 };
@@ -108,6 +110,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
+	if (data.localOnly == null) data.localOnly = false;
 
 	if (data.visibleUsers) {
 		data.visibleUsers = erase(null, data.visibleUsers);
@@ -115,27 +118,37 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// リプライ対象が削除された投稿だったらreject
 	if (data.reply && data.reply.deletedAt != null) {
-		return rej();
+		return rej('Reply target has been deleted');
 	}
 
 	// Renote対象が削除された投稿だったらreject
 	if (data.renote && data.renote.deletedAt != null) {
-		return rej();
+		return rej('Renote target has been deleted');
 	}
 
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
 	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
-		return rej();
+		return rej('Renote target is not public or home');
 	}
 
 	// リプライ対象が自分以外の非公開の投稿なら禁止
 	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
-		return rej();
+		return rej('Reply target is private of others');
 	}
 
 	// Renote対象が自分以外の非公開の投稿なら禁止
 	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
-		return rej();
+		return rej('Renote target is private of others');
+	}
+
+	// ローカルのみをRenoteしたらローカルのみにする
+	if (data.renote && data.renote.localOnly) {
+		data.localOnly = true;
+	}
+
+	// ローカルのみにリプライしたらローカルのみにする
+	if (data.reply && data.reply.localOnly) {
+		data.localOnly = true;
 	}
 
 	if (data.text) {
@@ -149,7 +162,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const emojis = extractEmojis(tokens);
 
-	const mentionedUsers = await extractMentionedUsers(tokens);
+	const mentionedUsers = data.apMentions || await extractMentionedUsers(tokens);
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
@@ -307,6 +320,8 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 });
 
 async function renderActivity(data: Option, note: INote) {
+	if (data.localOnly) return null;
+
 	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
 		: renderCreate(await renderNote(note, false), note);
@@ -388,6 +403,7 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 		emojis,
 		userId: user._id,
 		viaMobile: data.viaMobile,
+		localOnly: data.localOnly,
 		geo: data.geo || null,
 		appId: data.app ? data.app._id : null,
 		visibility: data.visibility,
