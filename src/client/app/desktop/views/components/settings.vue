@@ -130,6 +130,7 @@
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
 				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
 				<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
+				<ui-switch v-model="remainDeletedNote">{{ $t('remain-deleted-note') }}</ui-switch>
 			</section>
 			<section>
 				<header>{{ $t('deck-column-align') }}</header>
@@ -529,6 +530,11 @@ export default Vue.extend({
 		disableAnimatedMfm: {
 			get() { return this.$store.state.settings.disableAnimatedMfm; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
+		},
+
+		remainDeletedNote: {
+			get() { return this.$store.state.settings.remainDeletedNote; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'remainDeletedNote', value }); }
 		}
 	},
 	created() {
