@@ -682,7 +682,7 @@ desktop/views/components/post-form.vue:
   create-poll: "Create a poll"
   text-remain: "{} characters remaining"
   recent-tags: "Recent"
-  local-only-message: "この投稿はローカルにのみ公開されます"
+  local-only-message: "This post will only be published locally"
   click-to-tagging: "Click to tagging"
   visibility: "Visibility"
   geolocation-alert: "Your device does not provide location services."
