@@ -508,6 +508,7 @@ export default Vue.extend({
 			border solid 1px var(--primaryAlpha01)
 			border-radius 4px
 			transition border-color .2s ease
+			padding-right 30px
 
 			&:hover
 				border-color var(--primaryAlpha02)

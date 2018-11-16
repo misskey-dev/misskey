@@ -227,6 +227,7 @@ export default define({
 			background var(--desktopPostFormTextareaBg)
 			border none
 			border-bottom solid 1px var(--faceDivider)
+			padding-right 30px
 
 			&:focus
 				& + .emoji
