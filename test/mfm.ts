@@ -13,11 +13,11 @@ describe('Text', () => {
 		const tokens = analyze('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
 		assert.deepEqual([
 			{ type: 'mention', content: '@himawari', canonical: '@himawari', username: 'himawari', host: null },
-			{ type: 'text', content: ' '},
+			{ type: 'text', content: ' ' },
 			{ type: 'mention', content: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
 			{ type: 'text', content: ' お腹ペコい ' },
-			{ type: 'emoji', content: ':cat:', name: 'cat'},
-			{ type: 'text', content: ' '},
+			{ type: 'emoji', content: ':cat:', name: 'cat' },
+			{ type: 'text', content: ' ' },
 			{ type: 'hashtag', content: '#yryr', hashtag: 'yryr' }
 		], tokens);
 	});
@@ -266,7 +266,7 @@ describe('Text', () => {
 
 		it('math', () => {
 			const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.';
-			const text = `$${fomula}$`;
+			const text = `\\(${fomula}\\)`;
 			const tokens = analyze(text);
 			assert.deepEqual([
 				{ type: 'math', content: text, formula: fomula }
@@ -299,17 +299,17 @@ describe('Text', () => {
 			const tokens1 = analyze('【yee】\nhaw');
 			assert.deepEqual(
 				{ type: 'title', content: '【yee】\n', title: 'yee' }
-			, tokens1[0]);
+				, tokens1[0]);
 
 			const tokens2 = analyze('[yee]\nhaw');
 			assert.deepEqual(
 				{ type: 'title', content: '[yee]\n', title: 'yee' }
-			, tokens2[0]);
+				, tokens2[0]);
 
 			const tokens3 = analyze('a [a]\nb [b]\nc [c]');
 			assert.deepEqual(
 				{ type: 'text', content: 'a [a]\nb [b]\nc [c]' }
-			, tokens3[0]);
+				, tokens3[0]);
 
 			const tokens4 = analyze('foo\n【bar】\nbuzz');
 			assert.deepEqual([
