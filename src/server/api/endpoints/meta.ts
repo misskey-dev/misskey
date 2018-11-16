@@ -68,6 +68,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		maxNoteTextLength: instance.maxNoteTextLength,
 
 		emojis: emojis,
+
+		enableTwitterIntegration: instance.enableTwitterIntegration,
+		enableGithubIntegration: instance.enableGithubIntegration,
+		enableDiscordIntegration: instance.enableDiscordIntegration,
 	};
 
 	if (ps.detail) {
@@ -89,13 +93,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.hidedTags = instance.hidedTags;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;
-		response.enableTwitterIntegration = instance.enableTwitterIntegration;
 		response.twitterConsumerKey = instance.twitterConsumerKey;
 		response.twitterConsumerSecret = instance.twitterConsumerSecret;
-		response.enableGithubIntegration = instance.enableGithubIntegration;
 		response.githubClientId = instance.githubClientId;
 		response.githubClientSecret = instance.githubClientSecret;
-		response.enableDiscordIntegration = instance.enableDiscordIntegration;
 		response.discordClientId = instance.discordClientId;
 		response.discordClientSecret = instance.discordClientSecret;
 	}
