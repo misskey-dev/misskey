@@ -806,6 +806,7 @@ desktop/views/components/settings.vue:
   profile: "プロフィール"
   notification: "通知"
   apps: "アプリ"
+  tags: "ハッシュタグ"
   mute-and-block: "ミュート/ブロック"
   blocking: "ブロック"
   security: "セキュリティ"
