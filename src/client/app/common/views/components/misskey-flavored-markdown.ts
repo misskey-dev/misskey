@@ -1,5 +1,6 @@
 import Vue, { VNode } from 'vue';
 import { length } from 'stringz';
+import MkFormula from './formula.vue';
 import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../misc/acct/render';
 import MkUrl from './url.vue';
@@ -195,6 +196,14 @@ export default Vue.component('misskey-flavored-markdown', {
 						},
 						props: {
 							customEmojis: this.customEmojis || customEmojis
+						}
+					})];
+				}
+
+				case 'math': {
+					return [createElement(MkFormula, {
+						props: {
+							formula: token.formula
 						}
 					})];
 				}

@@ -210,6 +210,15 @@ describe('Text', () => {
 			assert.equal(tokens[0].content, '`var x = "Strawberry Pasta";`');
 		});
 
+		it('math', () => {
+			const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.';
+			const text = `$${fomula}$`;
+			const tokens = analyze(text);
+			assert.deepEqual([
+				{ type: 'math', content: text, formula: fomula }
+			], tokens);
+		});
+
 		it('search', () => {
 			const tokens1 = analyze('a b c 検索');
 			assert.deepEqual([
