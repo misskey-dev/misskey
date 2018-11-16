@@ -119,6 +119,7 @@ import {
 	faExternalLinkSquareAlt,
 	faSync,
 	faArrowLeft,
+	faMapMarker,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -243,6 +244,7 @@ library.add(
 	faExternalLinkSquareAlt,
 	faSync,
 	faArrowLeft,
+	faMapMarker,
 
 	farBell,
 	farEnvelope,
