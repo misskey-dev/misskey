@@ -39,6 +39,7 @@
 			<div><fa icon="globe"/></div>
 			<div>
 				<span>{{ $t('local-public') }}</span>
+				<span>{{ $t('local-public-desc') }}</span>
 			</div>
 		</div>
 		<div @click="choose('local-home')" :class="{ active: v == 'local-home' }">
