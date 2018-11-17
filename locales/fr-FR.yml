@@ -510,7 +510,7 @@ common/views/widgets/tips.vue:
   tips-line21: "Vous pouvez aussi utiliser l'API pour développer des Bots."
   tips-line23: "Mayu est mignonne avec ses sourcils."
   tips-line24: "Misskey est fonctionnel depuis 2014"
-  tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
+  tips-line25: "Vous pouvez recevoir les notifications de Misskey dans un navigateur web compatible"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté·e en tant que {}"
   following: "Suit"
@@ -827,7 +827,7 @@ desktop/views/components/settings.2fa.vue:
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
 common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  caution: "Merci de ne pas introduire ce jeton dans aucune application ou le divulguer à quiconque. Ceci risque de compromettre votre compte."
   regeneration-of-token: "Si votre jeton est compromis, vous pouvez le régénérer."
   regenerate-token: "Régénérer le jeton"
   token: "Jeton :"
@@ -836,7 +836,7 @@ common/views/components/api-settings.vue:
     title: 'Console API'
     endpoint: 'Point de terminaison'
     parameter: 'Paramètres'
-    credential-info: "「i」パラメータは自動で付与されます。"
+    credential-info: "Le paramètre \"i\" est requis dans la console."
     send: 'Envoyer'
     sending: 'Envoi en cours'
     response: 'Résultat'
@@ -1004,9 +1004,9 @@ admin/views/charts.vue:
   charts:
     federation-instances: "Nombre d’instances : augmentation/diminution"
     federation-instances-total: "Nombre total d’instances"
-    notes: "投稿の増減 (統合)"
+    notes: "Nombre de publications : augmentation/diminution (combinés)"
     local-notes: "Nombre des publications : augmentation/diminution (Local)"
-    remote-notes: "投稿の増減 (リモート)"
+    remote-notes: "Nombre de publications : augmentation/diminution (distants)"
     notes-total: "Total des publications"
     users: "Nombre d’utilisateur·rice·s : augmentation/diminution"
     users-total: "Nombre total des utilisateur·rice·s"
@@ -1177,7 +1177,7 @@ mobile/views/components/drive.vue:
   root-rename-alert: "L'emplacement actuel est la racine, pas le dossier, vous ne pouvez donc pas le renommer. Veuillez vous déplacer dans le dossier dont vous souhaitez modifier le nom."
   root-move-alert: "L'emplacement actuel est la racine, ce n'est pas un dossier et il ne peut pas être déplacé. Veuillez vous déplacer dans le dossier que vous souhaitez déplacer."
   url-prompt: "URL du fichier que vous souhaitez téléverser"
-  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+  uploading: "Envoi demandé. Le téléversement pourrait prendre un certain temps avant de s'achever."
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choisissez un fichier"
 mobile/views/components/drive-folder-chooser.vue:
