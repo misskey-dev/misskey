@@ -625,7 +625,7 @@ desktop/views/components/friends-maker.vue:
   title: "気になるユーザーをフォロー:"
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "読み込んでいます"
-  refresh: "もっと見る"
+  refresh: "浏览更多"
   close: "閉じる"
 desktop/views/components/game-window.vue:
   game: "リバーシ"
