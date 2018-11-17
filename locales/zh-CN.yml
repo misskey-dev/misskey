@@ -618,41 +618,41 @@ desktop/views/components/followers-window.vue:
 desktop/views/components/followers.vue:
   empty: "看起来您没有关注者。"
 desktop/views/components/following-window.vue:
-  following: "{} のフォロー"
+  following: "正在关注 {}"
 desktop/views/components/following.vue:
-  empty: "フォロー中のユーザーはいないようです。"
+  empty: "看起来您没有正在关注的用户..."
 desktop/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー:"
-  empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
+  title: "推荐用户："
+  empty: "找不到推荐用户。"
+  fetching: "正在加载"
   refresh: "浏览更多"
-  close: "閉じる"
+  close: "关闭"
 desktop/views/components/game-window.vue:
-  game: "リバーシ"
+  game: "游戏"
 desktop/views/components/home.vue:
-  done: "完了"
-  add-widget: "ウィジェットを追加:"
-  add: "追加"
+  done: "完成"
+  add-widget: "添加小部件:"
+  add: "添加"
 desktop/views/input-dialog.vue:
-  cancel: "キャンセル"
-  ok: "決定"
+  cancel: "取消"
+  ok: "完成"
 desktop/views/components/messaging-room-window.vue:
-  title: "メッセージ:"
+  title: "信息："
 desktop/views/components/messaging-window.vue:
-  title: "メッセージ"
+  title: "正在聊天"
 desktop/views/components/note-detail.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
-  reposted-by: "{}がRenote"
-  location: "位置情報"
-  renote: "Renote"
-  add-reaction: "リアクション"
+  private: "私密投稿"
+  deleted: "投稿已删除"
+  reposted-by: "由{}转发"
+  location: "位置信息"
+  renote: "转发"
+  add-reaction: "添加一个反应"
 desktop/views/components/note.vue:
-  reposted-by: "{}がRenote"
-  reply: "返信"
+  reposted-by: "由{}转发"
+  reply: "回复"
   renote: "Renote"
-  add-reaction: "リアクション"
-  detail: "詳細"
+  add-reaction: "添加一个反应"
+  detail: "详细信息"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
