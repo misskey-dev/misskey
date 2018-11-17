@@ -168,7 +168,7 @@ describe('Text', () => {
 				}], tokens);
 			});
 
-			it('ignore trailing dot', () => {
+			it('ignore trailing period', () => {
 				const tokens = analyze('https://example.com.');
 				assert.deepEqual([{
 					type: 'url',
@@ -220,6 +220,19 @@ describe('Text', () => {
 					type: 'text', content: ')'
 				}], tokens);
 			});
+
+			it('ignore parent brackets with internal brackets', () => {
+				const tokens = analyze('(https://example.com/foo(bar))');
+				assert.deepEqual([{
+					type: 'text', content: '('
+				}, {
+					type: 'url',
+					content: 'https://example.com/foo(bar)',
+					url: 'https://example.com/foo(bar)'
+				}, {
+					type: 'text', content: ')'
+				}], tokens);
+			});
 		});
 
 		it('link', () => {
@@ -265,7 +278,7 @@ describe('Text', () => {
 		});
 
 		it('math', () => {
-			const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.';
+			const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}';
 			const text = `\\(${fomula}\\)`;
 			const tokens = analyze(text);
 			assert.deepEqual([
