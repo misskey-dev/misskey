@@ -100,7 +100,7 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
-			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
+			visibility: 'public',
 			visibleUsers: [],
 			localOnly: false,
 			useCw: false,
@@ -183,6 +183,9 @@ export default Vue.extend({
 				this.text += `${mention} `;
 			});
 		}
+
+		// デフォルト公開範囲
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
@@ -275,26 +278,19 @@ export default Vue.extend({
 				compact: true
 			});
 			w.$once('chosen', v => {
-				const m = v.match(/^local-(.+)/);
-				if (m) {
-					this.localOnly = true;
-					this.visibility = m[1];
-				} else {
-					this.localOnly = false;
-					this.visibility = v;
-				}
+				this.applyVisibility(v);
 			});
 		},
 
-		addVisibleUser() {
-			this.$input({
-				title: this.$t('username-prompt')
-			}).then(acct => {
-				if (acct.startsWith('@')) acct = acct.substr(1);
-				this.$root.api('users/show', parseAcct(acct)).then(user => {
-					this.visibleUsers.push(user);
-				});
-			});
+		applyVisibility(v :string) {
+			const m = v.match(/^local-(.+)/);
+			if (m) {
+				this.localOnly = true;
+				this.visibility = m[1];
+			} else {
+				this.localOnly = false;
+				this.visibility = v;
+			}
 		},
 
 		removeVisibleUser(user) {

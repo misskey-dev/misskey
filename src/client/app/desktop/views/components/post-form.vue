@@ -111,7 +111,7 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
-			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
+			visibility: 'public',
 			visibleUsers: [],
 			localOnly: false,
 			autocomplete: null,
@@ -194,6 +194,9 @@ export default Vue.extend({
 				this.text += `${mention} `;
 			});
 		}
+
+		// デフォルト公開範囲
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
@@ -365,15 +368,19 @@ export default Vue.extend({
 				source: this.$refs.visibilityButton
 			});
 			w.$once('chosen', v => {
-				const m = v.match(/^local-(.+)/);
-				if (m) {
-					this.localOnly = true;
-					this.visibility = m[1];
-				} else {
-					this.localOnly = false;
-					this.visibility = v;
-				}
+				this.applyVisibility(v);
 			});
+		},
+
+		applyVisibility(v :string) {
+			const m = v.match(/^local-(.+)/);
+			if (m) {
+				this.localOnly = true;
+				this.visibility = m[1];
+			} else {
+				this.localOnly = false;
+				this.visibility = v;
+			}
 		},
 
 		addVisibleUser() {
