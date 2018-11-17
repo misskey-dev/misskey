@@ -1118,7 +1118,7 @@ desktop/views/pages/user/user.profile.vue:
   stalk: "ストークする"
   stalking: "ストーキングしています"
   unstalk: "ストーク解除"
-  mute: "ミュートする"
+  mute: "Mute"
   muted: "ミュートしています"
   unmute: "ミュート解除"
   block: "ブロックする"
