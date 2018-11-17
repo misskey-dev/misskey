@@ -96,9 +96,9 @@ common:
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
     private: "非公開"
-    local-public: "公開(ローカルのみ)"
-    local-home: "ホーム(ローカルのみ)"
-    local-followers: "フォロワー(ローカルのみ)"
+    local-public: "公開 (ローカルのみ)"
+    local-home: "ホーム (ローカルのみ)"
+    local-followers: "フォロワー (ローカルのみ)"
 
   note-placeholders:
     a: "今どうしてる？"
@@ -474,9 +474,10 @@ common/views/components/visibility-chooser.vue:
   specified: "ダイレクト"
   specified-desc: "指定したユーザーにのみ公開"
   private: "非公開"
-  local-public: "公開(ローカルのみ)"
-  local-home: "ホーム(ローカルのみ)"
-  local-followers: "フォロワー(ローカルのみ)"
+  local-public: "公開 (ローカルのみ)"
+  local-public-desc: "リモートへは公開しない"
+  local-home: "ホーム (ローカルのみ)"
+  local-followers: "フォロワー (ローカルのみ)"
 
 common/views/components/trends.vue:
   count: "{}人が投稿"
@@ -788,7 +789,7 @@ desktop/views/components/renote-form.vue:
   quote: "引用する..."
   cancel: "キャンセル"
   renote: "Renote"
-  renote-home: "Renote (ホーム)"
+  renote-home: "Renote (Home)"
   reposting: "しています..."
   success: "Renoteしました！"
   failure: "Renoteに失敗しました"
