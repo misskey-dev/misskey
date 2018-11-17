@@ -119,7 +119,7 @@ common:
   reduce-motion: "减弱UI中的动画效果"
   this-setting-is-this-device-only: "设置仅在本设备中生效"
   use-os-default-emojis: "使用设备系统默认的 emojis"
-  do-not-use-in-production: '这是一个开发者测试版.  请勿在生产环境中使用.'
+  do-not-use-in-production: '这是一个开发者测试版. 请勿在生产环境中使用.'
   is-remote-user: "该用户的信息已被复制."
   is-remote-post: "该投稿已被复制."
   view-on-remote: "查看准确的信息"
@@ -967,17 +967,17 @@ admin/views/instance.vue:
   recaptcha-site-key: "reCAPTCHA site key"
   recaptcha-secret-key: "reCAPTCHA secret key"
   twitter-integration-config: "连接到Twitter的设置"
-  twitter-integration-info: "回调 URL 设置为 /api/tw/cb."
+  twitter-integration-info: "回调 URL 设置为 /api/tw/cb"
   enable-twitter-integration: "启用连接到Twitter"
   twitter-integration-consumer-key: "Consumer key"
   twitter-integration-consumer-secret: "Consumer Secret"
   github-integration-config: "连接到GitHub设置"
-  github-integration-info: "回调 URL 设置为 /api/gh/cb."
+  github-integration-info: "回调 URL 设置为 /api/gh/cb"
   enable-github-integration: "启用连接到GitHub"
   github-integration-client-id: "Client ID"
   github-integration-client-secret: "Client Secret"
   discord-integration-config: "设置 Discord Integration"
-  discord-integration-info: "回调 URL 为 /api/dc/cb."
+  discord-integration-info: "回调 URL 设置为 /api/dc/cb"
   enable-discord-integration: "启用 Discard 连接"
   discord-integration-client-id: "Client ID"
   discord-integration-client-secret: "Client Secret"
@@ -1126,9 +1126,9 @@ desktop/views/pages/user/user.profile.vue:
   unblock: "取消屏蔽"
   block-confirm: "您确定要屏蔽这个用户吗？"
   push-to-a-list: "添加至列表"
-  list-pushed: "{user}を{list}に追加しました。"
+  list-pushed: "成功添加{user}到{list}"
 desktop/views/pages/user/user.header.vue:
-  posts: "投稿"
+  posts: "帖子"
   following: "关注中"
   followers: "关注者"
   is-bot: "这个账户是Bot"
@@ -1149,7 +1149,7 @@ desktop/views/widgets/notifications.vue:
 desktop/views/widgets/polls.vue:
   title: "投票"
   refresh: "更多"
-  nothing: "没有投票哦! "
+  nothing: "没有投票哦!"
 desktop/views/widgets/post-form.vue:
   title: "帖子"
   note: "帖子"
@@ -1159,7 +1159,7 @@ desktop/views/widgets/profile.vue:
 desktop/views/widgets/trends.vue:
   title: "趋势"
   refresh: "更多"
-  nothing: "没有趋势图哦! "
+  nothing: "没有趋势图哦!"
 desktop/views/widgets/users.vue:
   title: "推荐用户"
   refresh: "更多"
