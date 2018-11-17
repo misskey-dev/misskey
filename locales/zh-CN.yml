@@ -616,7 +616,7 @@ desktop/views/components/media-video.vue:
 desktop/views/components/followers-window.vue:
   followers: "{} 的关注者"
 desktop/views/components/followers.vue:
-  empty: "フォロワーはいないようです。"
+  empty: "看起来您没有关注者。"
 desktop/views/components/following-window.vue:
   following: "{} のフォロー"
 desktop/views/components/following.vue:
