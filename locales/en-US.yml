@@ -29,7 +29,7 @@ common:
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
-    paragraph: "<p>Home customization allows you to add/delete, drag and drop and rearrange widgets.</p><p>You can change the display by <strong><strong>right</strong> clicking</strong> on some widgets.</p><p>To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header.</p><p>To finish the customization, click \"Finish\" on the upper right.</p>"
+    paragraph: "<p>Home customization allows you to add/delete, drag and drop and rearrange widgets.</p><p>You can change the display by <strong><strong>right</strong> clicking</strong> on some widgets.</p><p>To delete a widget, drag and drop the widget onto <strong>the area labeled \"Trash\"</strong> in the header.</p><p>To finish the customization, click \"Done\" on the upper right.</p>"
     gotit: "Got it!"
   notification:
     file-uploaded: "File uploaded!"
