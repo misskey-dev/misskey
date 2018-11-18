@@ -9,21 +9,7 @@
 	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="appearNote.reply"/>
 	</div>
-	<div class="renote" v-if="isRenote">
-		<mk-avatar class="avatar" :user="note.user"/>
-		<fa icon="retweet"/>
-		<span>{{ this.$t('reposted-by').substr(0, this.$t('reposted-by').indexOf('{')) }}</span>
-		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-		<span>{{ this.$t('reposted-by').substr(this.$t('reposted-by').indexOf('}') + 1) }}</span>
-		<mk-time :time="note.createdAt"/>
-		<span class="visibility" v-if="note.visibility != 'public'">
-			<fa v-if="note.visibility == 'home'" icon="home"/>
-			<fa v-if="note.visibility == 'followers'" icon="unlock"/>
-			<fa v-if="note.visibility == 'specified'" icon="envelope"/>
-			<fa v-if="note.visibility == 'private'" icon="lock"/>
-		</span>
-		<span class="localOnly" v-if="note.localOnly == true"><fa icon="heart"/></span>
-	</div>
+	<mk-renote class="renote" v-if="isRenote" :note="note" mini/>
 	<article>
 		<mk-avatar class="avatar" :user="appearNote.user" v-if="$store.state.device.postStyle != 'smart'"/>
 		<div class="main">
@@ -138,66 +124,8 @@ export default Vue.extend({
 					align-items center
 					margin-bottom 4px
 
-	> .renote
-		display flex
-		align-items center
-		padding 8px 16px
-		line-height 28px
-		white-space pre
-		color var(--renoteText)
-		background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
-
-		@media (min-width 500px)
-			padding 16px
-
-		@media (min-width 600px)
-			padding 16px 32px
-
-		.avatar
-			flex-shrink 0
-			display inline-block
-			width 20px
-			height 20px
-			margin 0 8px 0 0
-			border-radius 6px
-
-			@media (min-width 500px)
-				width 28px
-				height 28px
-
-		[data-icon]
-			margin-right 4px
-
-		> span
-			flex-shrink 0
-
-		.name
-			overflow hidden
-			flex-shrink 1
-			text-overflow ellipsis
-			white-space nowrap
-			font-weight bold
-
-		> .mk-time
-			display block
-			margin-left auto
-			flex-shrink 0
-			font-size 0.9em
-
-		> .visibility
-			margin-left 8px
-
-			[data-icon]
-				margin-right 0
-
-		> .localOnly
-			margin-left 4px
-
-			[data-icon]
-				margin-right 0
-
-		& + article
-			padding-top 8px
+	> .renote + article
+		padding-top 8px
 
 	> article
 		display flex
