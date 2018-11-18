@@ -28,7 +28,7 @@
 					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><i><fa icon="cloud"/></i>{{ $t('@.drive') }}<i><fa icon="angle-right"/></i></router-link></li>
 				</ul>
 				<ul>
-					<li><a @click="search"><i><fa icon="search"/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
+					<li v-if="isSearchAvailable"><a @click="search"><i><fa icon="search"/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog"/></i>{{ $t('settings') }}<i><fa icon="angle-right"/></i></router-link></li>
 					<li v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)"><a href="/admin"><i><fa icon="terminal"/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
 					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><i><fa icon="moon"/></i></template><template v-else><i><fa :icon="['far', 'moon']"/></i></template><span>{{ $t('darkmode') }}</span></p></li>
@@ -60,7 +60,8 @@ export default Vue.extend({
 			hasGameInvitation: false,
 			connection: null,
 			aboutUrl: `/docs/${lang}/about`,
-			announcements: []
+			announcements: [],
+			isSearchAvailable: true
 		};
 	},
 
@@ -74,11 +75,15 @@ export default Vue.extend({
 		}
 	},
 
-	mounted() {
-		this.$root.getMeta().then(meta => {
+	created() {
+		this.$root.api('meta', { detail: true }).then(meta => {
+			console.log(meta);
+			this.isSearchAvailable = meta.features.elasticsearch;
 			this.announcements = meta.broadcasts;
 		});
+	},
 
+	mounted() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
 

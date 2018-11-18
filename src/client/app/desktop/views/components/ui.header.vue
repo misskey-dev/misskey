@@ -14,7 +14,7 @@
 					</div>
 				</div>
 				<div class="right">
-					<x-search/>
+					<x-search v-if="isSearchAvailable"/>
 					<x-account v-if="$store.getters.isSignedIn"/>
 					<x-notifications v-if="$store.getters.isSignedIn"/>
 					<x-post v-if="$store.getters.isSignedIn"/>
@@ -52,7 +52,8 @@ export default Vue.extend({
 
 	data() {
 		return {
-			env: env
+			env: env,
+			isSearchAvailable: true
 		};
 	},
 
@@ -62,6 +63,12 @@ export default Vue.extend({
 				'box-shadow': this.$store.state.settings.useShadow ? '0 0px 8px rgba(0, 0, 0, 0.2)' : 'none'
 			};
 		}
+	},
+
+	created() {
+		this.$root.api('meta', { detail: true }).then(meta => {
+			this.isSearchAvailable = meta.features.elasticsearch;
+		});
 	},
 
 	mounted() {
