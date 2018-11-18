@@ -3,14 +3,14 @@
 	<ui-card>
 		<div slot="title"><fa icon="cog"/> {{ $t('instance') }}</div>
 		<section class="fit-top fit-bottom">
-			<ui-input :value="host" readonly>{{ $t('domain') }}</ui-input>
+			<ui-input :value="host" readonly>{{ $t('host') }}</ui-input>
 			<ui-input v-model="name">{{ $t('instance-name') }}</ui-input>
 			<ui-textarea v-model="description">{{ $t('instance-description') }}</ui-textarea>
 			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('banner-url') }}</ui-input>
 			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>{{ $t('languages') }}<span slot="desc">{{ $t('languages-desc') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="headset"/> {{ $t('maintainer-config') }}</header>
+			<header><fa :icon="faHeadset"/> {{ $t('maintainer-config') }}</header>
 			<ui-input v-model="maintainerName">{{ $t('maintainer-name') }}</ui-input>
 			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="['far', 'envelope']"/></i>{{ $t('maintainer-email') }}</ui-input>
 		</section>
@@ -24,14 +24,14 @@
 			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('remote-drive-capacity-mb') }}<span slot="suffix">MB</span><span slot="desc">{{ $t('mb') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
-			<header><fa icon="shield-alt"/> {{ $t('recaptcha-config') }}</header>
+			<header><fa :icon="faShieldAlt"/> {{ $t('recaptcha-config') }}</header>
 			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
 			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
 			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-site-key') }}</ui-input>
 			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-secret-key') }}</ui-input>
 		</section>
 		<section>
-			<header><fa icon="ghost"/> {{ $t('proxy-account-config') }}</header>
+			<header><fa :icon="faGhost"/> {{ $t('proxy-account-config') }}</header>
 			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
 			<ui-input v-model="proxyAccount"><span slot="prefix">@</span>{{ $t('proxy-account-username') }}<span slot="desc">{{ $t('proxy-account-username-desc') }}</span></ui-input>
 			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
@@ -77,6 +77,17 @@
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
+
+	<ui-card>
+		<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord-integration-config') }}</div>
+		<section>
+			<ui-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</ui-switch>
+			<ui-info>{{ $t('discord-integration-info') }}</ui-info>
+			<ui-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-id') }}</ui-input>
+			<ui-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-secret') }}</ui-input>
+			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -84,12 +95,15 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { host } from '../../config';
+import { toUnicode } from 'punycode';
+import { faHeadset, faShieldAlt, faGhost } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/instance.vue'),
+
 	data() {
 		return {
-			host,
+			host: toUnicode(host),
 			maintainerName: null,
 			maintainerEmail: null,
 			disableRegistration: false,
@@ -112,8 +126,12 @@ export default Vue.extend({
 			githubClientId: null,
 			githubClientSecret: null,
 			githubAccessToken: null,
+			enableDiscordIntegration: false,
+			discordClientId: null,
+			discordClientSecret: null,
 			proxyAccount: null,
 			inviteCode: null,
+			faHeadset, faShieldAlt, faGhost
 		};
 	},
 
@@ -140,6 +158,9 @@ export default Vue.extend({
 			this.githubClientId = meta.githubClientId;
 			this.githubClientSecret = meta.githubClientSecret;
 			this.githubAccessToken = meta.githubAccessToken;
+			this.enableDiscordIntegration = meta.enableDiscordIntegration;
+			this.discordClientId = meta.discordClientId;
+			this.discordClientSecret = meta.discordClientSecret;
 		});
 	},
 
@@ -148,7 +169,7 @@ export default Vue.extend({
 			this.$root.api('admin/invite').then(x => {
 				this.inviteCode = x.code;
 			}).catch(e => {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: e
 				});
@@ -180,13 +201,16 @@ export default Vue.extend({
 				githubClientId: this.githubClientId,
 				githubClientSecret: this.githubClientSecret,
 				githubAccessToken: this.githubAccessToken,
+				enableDiscordIntegration: this.enableDiscordIntegration,
+				discordClientId: this.discordClientId,
+				discordClientSecret: this.discordClientSecret
 			}).then(() => {
-				this.$swal({
+				this.$root.alert({
 					type: 'success',
 					text: this.$t('saved')
 				});
 			}).catch(e => {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: e
 				});

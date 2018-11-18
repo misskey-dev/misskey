@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="destroyDom">
 	<span slot="header" :class="$style.header"><fa icon="comments"/>{{ $t('title') }} {{ user | userName }}</span>
-	<mk-messaging-room :user="user" :class="$style.content"/>
+	<x-messaging-room :user="user" :class="$style.content"/>
 </mk-window>
 </template>
 
@@ -13,6 +13,9 @@ import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/messaging-room-window.vue'),
+	components: {
+		XMessagingRoom: () => import('../../../common/views/components/messaging-room.vue').then(m => m.default)
+	},
 	props: ['user'],
 	computed: {
 		popout(): string {

@@ -45,7 +45,7 @@
 		</template>
 	</div>
 	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
-	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 </div>
 </template>
 

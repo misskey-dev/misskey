@@ -2,7 +2,7 @@
 <div class="zvdbznxvfixtmujpsigoccczftvpiwqh">
 	<div class="banner" :style="bannerStyle"></div>
 	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
-	<mk-follow-button :user="user" class="follow"/>
+	<mk-follow-button :user="user" class="follow" mini/>
 	<div class="body">
 		<router-link :to="user | userPage" class="name">{{ user | userName }}</router-link>
 		<span class="username">@{{ user | acct }}</span>

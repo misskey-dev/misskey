@@ -15,6 +15,7 @@ const defaultSettings = {
 	tagTimelines: [],
 	fetchOnScroll: true,
 	showMaps: true,
+	remainDeletedNote: false,
 	showPostFormOnTopOfTl: false,
 	suggestRecentHashtags: true,
 	showClockOnHeader: true,
@@ -34,6 +35,7 @@ const defaultSettings = {
 	iLikeSushi: false,
 	rememberNoteVisibility: false,
 	defaultNoteVisibility: 'public',
+	mutedWords: [],
 	games: {
 		reversi: {
 			showBoardLabels: false,

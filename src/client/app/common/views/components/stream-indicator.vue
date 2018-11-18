@@ -1,11 +1,11 @@
 <template>
 <div class="mk-stream-indicator">
 	<p v-if="stream.state == 'initializing'">
-		<fa icon="spinner .pulse"/>
+		<fa icon="spinner" pulse/>
 		<span>{{ $t('connecting') }}<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'reconnecting'">
-		<fa icon="spinner .pulse"/>
+		<fa icon="spinner" pulse/>
 		<span>{{ $t('reconnecting') }}<mk-ellipsis/></span>
 	</p>
 	<p v-if="stream.state == 'connected'">

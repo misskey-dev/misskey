@@ -15,19 +15,26 @@
 	</div>
 	<div class="pages">
 		<div class="profile" v-show="page == 'profile'">
-			<mk-profile-editor/>
+			<x-profile-editor/>
 
 			<ui-card>
 				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
 				<section>
-					<mk-twitter-setting/>
+					<x-twitter-setting/>
 				</section>
 			</ui-card>
 
 			<ui-card>
 				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
 				<section>
-					<mk-github-setting/>
+					<x-github-setting/>
+				</section>
+			</ui-card>
+
+			<ui-card>
+				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
+				<section>
+					<x-discord-setting/>
 				</section>
 			</ui-card>
 		</div>
@@ -36,7 +43,7 @@
 			<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
 
 			<section>
-				<mk-theme/>
+				<x-theme/>
 			</section>
 		</ui-card>
 
@@ -78,6 +85,9 @@
 						<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
 						<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
 						<option value="private">{{ $t('@.note-visibility.private') }}</option>
+						<option value="local-public">{{ $t('@.note-visibility.local-public') }}</option>
+						<option value="local-home">{{ $t('@.note-visibility.local-home') }}</option>
+						<option value="local-followers">{{ $t('@.note-visibility.local-followers') }}</option>
 					</ui-select>
 				</section>
 			</section>
@@ -123,6 +133,7 @@
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
 				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
 				<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
+				<ui-switch v-model="remainDeletedNote">{{ $t('remain-deleted-note') }}</ui-switch>
 			</section>
 			<section>
 				<header>{{ $t('deck-column-align') }}</header>
@@ -194,7 +205,7 @@
 		</ui-card>
 
 		<div class="drive" v-if="page == 'drive'">
-			<mk-drive-settings/>
+			<x-drive-settings/>
 		</div>
 
 		<ui-card class="hashtags" v-show="page == 'hashtags'">
@@ -205,7 +216,7 @@
 		</ui-card>
 
 		<div class="muteAndBlock" v-show="page == 'muteAndBlock'">
-			<mk-mute-and-block/>
+			<x-mute-and-block/>
 		</div>
 
 		<ui-card class="apps" v-show="page == 'apps'">
@@ -218,7 +229,7 @@
 		<ui-card class="password" v-show="page == 'security'">
 			<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
 			<section>
-				<mk-password-settings/>
+				<x-password-settings/>
 			</section>
 		</ui-card>
 
@@ -237,7 +248,7 @@
 		</ui-card>
 
 		<div class="api" v-show="page == 'api'">
-			<mk-api-settings/>
+			<x-api-settings/>
 		</div>
 
 		<ui-card class="other" v-show="page == 'other'">
@@ -292,6 +303,16 @@ import X2fa from './settings.2fa.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XTags from './settings.tags.vue';
+import XTwitterSetting from '../../../common/views/components/twitter-setting.vue';
+import XGithubSetting from '../../../common/views/components/github-setting.vue';
+import XDiscordSetting from '../../../common/views/components/discord-setting.vue';
+import XTheme from '../../../common/views/components/theme.vue';
+import XDriveSettings from '../../../common/views/components/drive-settings.vue';
+import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
+import XPasswordSettings from '../../../common/views/components/password-settings.vue';
+import XProfileEditor from '../../../common/views/components/profile-editor.vue';
+import XApiSettings from '../../../common/views/components/api-settings.vue';
+
 import { url, langs, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
@@ -301,7 +322,16 @@ export default Vue.extend({
 		X2fa,
 		XApps,
 		XSignins,
-		XTags
+		XTags,
+		XTwitterSetting,
+		XGithubSetting,
+		XDiscordSetting,
+		XTheme,
+		XDriveSettings,
+		XMuteAndBlock,
+		XPasswordSettings,
+		XProfileEditor,
+		XApiSettings,
 	},
 	props: {
 		initialPage: {
@@ -503,6 +533,11 @@ export default Vue.extend({
 		disableAnimatedMfm: {
 			get() { return this.$store.state.settings.disableAnimatedMfm; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
+		},
+
+		remainDeletedNote: {
+			get() { return this.$store.state.settings.remainDeletedNote; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'remainDeletedNote', value }); }
 		}
 	},
 	created() {
@@ -543,12 +578,12 @@ export default Vue.extend({
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					this.$dialog({
+					this.$root.alert({
 						title: this.$t('no-updates'),
 						text: this.$t('no-updates-desc')
 					});
 				} else {
-					this.$dialog({
+					this.$root.alert({
 						title: this.$t('update-available'),
 						text: this.$t('update-available-desc')
 					});
@@ -557,7 +592,7 @@ export default Vue.extend({
 		},
 		clean() {
 			localStorage.clear();
-			this.$dialog({
+			this.$root.alert({
 				title: this.$t('cache-cleared'),
 				text: this.$t('cache-cleared-desc')
 			});

@@ -8,6 +8,7 @@ import { TextElementCode } from './elements/code';
 import { TextElementEmoji } from './elements/emoji';
 import { TextElementHashtag } from './elements/hashtag';
 import { TextElementInlineCode } from './elements/inline-code';
+import { TextElementMath } from './elements/math';
 import { TextElementLink } from './elements/link';
 import { TextElementMention } from './elements/mention';
 import { TextElementQuote } from './elements/quote';
@@ -29,6 +30,7 @@ const elements = [
 	require('./elements/hashtag'),
 	require('./elements/code'),
 	require('./elements/inline-code'),
+	require('./elements/math'),
 	require('./elements/quote'),
 	require('./elements/emoji'),
 	require('./elements/search'),
@@ -42,6 +44,7 @@ export type TextElement = { type: 'text', content: string }
 	| TextElementEmoji
 	| TextElementHashtag
 	| TextElementInlineCode
+	| TextElementMath
 	| TextElementLink
 	| TextElementMention
 	| TextElementQuote
@@ -49,7 +52,7 @@ export type TextElement = { type: 'text', content: string }
 	| TextElementTitle
 	| TextElementUrl
 	| TextElementMotion;
-export type TextElementProcessor = (text: string, isBegin: boolean) => TextElement | TextElement[];
+export type TextElementProcessor = (text: string, before: string) => TextElement | TextElement[];
 
 export default (source: string): TextElement[] => {
 	if (source == null || source == '') {
@@ -65,12 +68,10 @@ export default (source: string): TextElement[] => {
 		}
 	}
 
-	let i = 0;
-
 	// パース
 	while (source != '') {
 		const parsed = elements.some(el => {
-			let _tokens = el(source, i == 0);
+			let _tokens = el(source, tokens.map(token => token.content).join(''));
 			if (_tokens) {
 				if (!Array.isArray(_tokens)) {
 					_tokens = [_tokens];
@@ -88,8 +89,6 @@ export default (source: string): TextElement[] => {
 				content: source[0]
 			});
 		}
-
-		i++;
 	}
 
 	const combineText = (es: TextElement[]): TextElement =>

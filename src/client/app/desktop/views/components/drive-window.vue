@@ -4,7 +4,7 @@
 		<p v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> {{ $t('used') }}</p>
 		<span :class="$style.title"><fa icon="cloud"/>{{ $t('@.drive') }}</span>
 	</template>
-	<mk-drive :class="$style.browser" multiple :init-folder="folder" ref="browser"/>
+	<x-drive :class="$style.browser" multiple :init-folder="folder" ref="browser"/>
 </mk-window>
 </template>
 
@@ -15,6 +15,9 @@ import { url } from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/drive-window.vue'),
+	components: {
+		XDrive: () => import('./drive.vue').then(m => m.default),
+	},
 	props: ['folder'],
 	data() {
 		return {

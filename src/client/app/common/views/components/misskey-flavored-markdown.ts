@@ -3,8 +3,9 @@ import { length } from 'stringz';
 import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../misc/acct/render';
 import MkUrl from './url.vue';
-import MkGoogle from './google.vue';
 import { concat } from '../../../../../prelude/array';
+import MkFormula from './formula.vue';
+import MkGoogle from './google.vue';
 
 export default Vue.component('misskey-flavored-markdown', {
 	props: {
@@ -199,7 +200,17 @@ export default Vue.component('misskey-flavored-markdown', {
 					})];
 				}
 
+				case 'math': {
+					//const MkFormula = () => import('./formula.vue').then(m => m.default);
+					return [createElement(MkFormula, {
+						props: {
+							formula: token.formula
+						}
+					})];
+				}
+
 				case 'search': {
+					//const MkGoogle = () => import('./google.vue').then(m => m.default);
 					return [createElement(MkGoogle, {
 						props: {
 							q: token.query

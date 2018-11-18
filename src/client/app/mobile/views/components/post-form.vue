@@ -32,7 +32,7 @@
 				<button class="drive" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
 				<button class="kao" @click="kao"><fa :icon="['far', 'smile']"/></button>
 				<button class="poll" @click="poll = true"><fa icon="chart-pie"/></button>
-				<button class="poll" @click="useCw = !useCw"><fa icon="eye-slash"/></button>
+				<button class="poll" @click="useCw = !useCw"><fa :icon="['far', 'eye-slash']"/></button>
 				<button class="geo" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
 				<button class="visibility" @click="setVisibility" ref="visibilityButton">
 					<span v-if="visibility === 'public'"><fa icon="globe"/></span>
@@ -100,8 +100,9 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
-			visibility: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility,
+			visibility: 'public',
 			visibleUsers: [],
+			localOnly: false,
 			useCw: false,
 			cw: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
@@ -182,6 +183,9 @@ export default Vue.extend({
 				this.text += `${mention} `;
 			});
 		}
+
+		// デフォルト公開範囲
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
@@ -274,19 +278,19 @@ export default Vue.extend({
 				compact: true
 			});
 			w.$once('chosen', v => {
-				this.visibility = v;
+				this.applyVisibility(v);
 			});
 		},
 
-		addVisibleUser() {
-			this.$input({
-				title: this.$t('username-prompt')
-			}).then(acct => {
-				if (acct.startsWith('@')) acct = acct.substr(1);
-				this.$root.api('users/show', parseAcct(acct)).then(user => {
-					this.visibleUsers.push(user);
-				});
-			});
+		applyVisibility(v :string) {
+			const m = v.match(/^local-(.+)/);
+			if (m) {
+				this.localOnly = true;
+				this.visibility = m[1];
+			} else {
+				this.localOnly = false;
+				this.visibility = v;
+			}
 		},
 
 		removeVisibleUser(user) {
@@ -320,6 +324,7 @@ export default Vue.extend({
 				} : null,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
+				localOnly: this.localOnly,
 				viaMobile: viaMobile
 			}).then(data => {
 				this.$emit('posted');

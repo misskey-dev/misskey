@@ -1,7 +1,7 @@
 <template>
 <div class="nicnklzforebnpfgasiypmpdaaglujqm">
 	<label>
-		<span>{{ $t('light-theme') }}</span>
+		<span><fa :icon="faSun"/> {{ $t('light-theme') }}</span>
 		<ui-select v-model="light" :placeholder="$t('light-theme')">
 			<optgroup :label="$t('light-themes')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -13,7 +13,7 @@
 	</label>
 
 	<label>
-		<span>{{ $t('dark-theme') }}</span>
+		<span><fa :icon="faMoon"/> {{ $t('dark-theme') }}</span>
 		<ui-select v-model="dark" :placeholder="$t('dark-theme')">
 			<optgroup :label="$t('dark-themes')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -104,6 +104,7 @@ import { Chrome } from 'vue-color';
 import * as uuid from 'uuid';
 import * as tinycolor from 'tinycolor2';
 import * as JSON5 from 'json5';
+import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
 // 後方互換性のため
 function convertOldThemedefinition(t) {
@@ -135,7 +136,8 @@ export default Vue.extend({
 			myThemeDesc: '',
 			myThemePrimary: lightTheme.vars.primary,
 			myThemeSecondary: lightTheme.vars.secondary,
-			myThemeText: lightTheme.vars.text
+			myThemeText: lightTheme.vars.text,
+			faMoon, faSun
 		};
 	},
 
@@ -221,7 +223,7 @@ export default Vue.extend({
 			try {
 				theme = JSON5.parse(code);
 			} catch (e) {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: this.$t('invalid-theme')
 				});
@@ -234,7 +236,7 @@ export default Vue.extend({
 			}
 
 			if (theme.id == null) {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: this.$t('invalid-theme')
 				});
@@ -242,7 +244,7 @@ export default Vue.extend({
 			}
 
 			if (this.$store.state.device.themes.some(t => t.id == theme.id)) {
-				this.$swal({
+				this.$root.alert({
 					type: 'info',
 					text: this.$t('already-installed')
 				});
@@ -254,7 +256,7 @@ export default Vue.extend({
 				key: 'themes', value: themes
 			});
 
-			this.$swal({
+			this.$root.alert({
 				type: 'success',
 				text: this.$t('installed').replace('{}', theme.name)
 			});
@@ -267,7 +269,7 @@ export default Vue.extend({
 				key: 'themes', value: themes
 			});
 
-			this.$swal({
+			this.$root.alert({
 				type: 'info',
 				text: this.$t('uninstalled').replace('{}', theme.name)
 			});
@@ -304,7 +306,7 @@ export default Vue.extend({
 			const theme = this.myTheme;
 
 			if (theme.name == null || theme.name.trim() == '') {
-				this.$swal({
+				this.$root.alert({
 					type: 'warning',
 					text: this.$t('theme-name-required')
 				});
@@ -318,7 +320,7 @@ export default Vue.extend({
 				key: 'themes', value: themes
 			});
 
-			this.$swal({
+			this.$root.alert({
 				type: 'success',
 				text: this.$t('saved')
 			});

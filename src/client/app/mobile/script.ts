@@ -27,7 +27,6 @@ import MkFollowing from './views/pages/following.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkUserLists from './views/pages/user-lists.vue';
 import MkUserList from './views/pages/user-list.vue';
-import MkSettings from './views/pages/settings.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
@@ -36,7 +35,6 @@ import MkFollow from '../common/views/pages/follow.vue';
 import PostForm from './views/components/post-form-dialog.vue';
 import FileChooser from './views/components/drive-file-chooser.vue';
 import FolderChooser from './views/components/drive-folder-chooser.vue';
-import Dialog from './views/components/dialog.vue';
 
 /**
  * init
@@ -100,21 +98,6 @@ init((launch) => {
 				});
 			},
 
-			$dialog(opts) {
-				return new Promise<string>((res, rej) => {
-					const o = opts || {};
-					const d = this.$root.new(Dialog, {
-						title: o.title,
-						text: o.text,
-						modal: o.modal,
-						buttons: o.actions
-					});
-					d.$once('clicked', id => {
-						res(id);
-					});
-				});
-			},
-
 			$notify(message) {
 				alert(message);
 			}
@@ -137,7 +120,7 @@ init((launch) => {
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
 			{ path: '/signup', name: 'signup', component: MkSignup },
-			{ path: '/i/settings', name: 'settings', component: MkSettings },
+			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
 			{ path: '/i/lists', name: 'user-lists', component: MkUserLists },
@@ -154,7 +137,7 @@ init((launch) => {
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/reversi/:game?', name: 'reversi', component: MkReversi },
-			{ path: '/@:user', component: MkUser },
+			{ path: '/@:user', component: () => import('./views/pages/user.vue').then(m => m.default) },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },
 			{ path: '/notes/:note', component: MkNote },

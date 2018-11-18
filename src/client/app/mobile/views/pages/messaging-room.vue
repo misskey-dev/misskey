@@ -4,7 +4,7 @@
 		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ user | userName }}</template>
 		<template v-else><mk-ellipsis/></template>
 	</span>
-	<mk-messaging-room v-if="!fetching" :user="user" :is-naked="true"/>
+	<x-messaging-room v-if="!fetching" :user="user" :is-naked="true"/>
 </mk-ui>
 </template>
 
@@ -15,6 +15,9 @@ import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	i18n: i18n(),
+	components: {
+		XMessagingRoom: () => import('../../../common/views/components/messaging-room.vue').then(m => m.default)
+	},
 	data() {
 		return {
 			fetching: true,

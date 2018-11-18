@@ -313,16 +313,13 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$dialog({
+							this.$root.alert({
 								title: this.$t('unable-to-process'),
-								text: this.$t('circular-reference-detected'),
-								actions: [{
-									text: this.$t('@.ok')
-								}]
+								text: this.$t('circular-reference-detected')
 							});
 							break;
 						default:
-							alert(`%i18n:@unhandled-error% ${err}`);
+							alert(this.$t('unhandled-error'));
 					}
 				});
 			}
@@ -343,12 +340,9 @@ export default Vue.extend({
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				this.$dialog({
+				this.$root.alert({
 					title: this.$t('url-upload-requested'),
-					text: this.$t('may-take-time'),
-					actions: [{
-						text: this.$t('@.ok')
-					}]
+					text: this.$t('may-take-time')
 				});
 			});
 		},

@@ -7,6 +7,7 @@ import Channel from '../channel';
 export default class extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = true;
+	public static requireCredential = false;
 
 	private mutedUserIds: string[] = [];
 

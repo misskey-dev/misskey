@@ -8,7 +8,9 @@ export type TextElementHashtag = {
 	hashtag: string;
 };
 
-export default function(text: string, isBegin: boolean) {
+export default function(text: string, before: string) {
+	const isBegin = before == '';
+
 	if (!(/^\s#[^\s\.,!\?#]+/.test(text) || (isBegin && /^#[^\s\.,!\?#]+/.test(text)))) return null;
 	const isHead = text.startsWith('#');
 	const hashtag = text.match(/^\s?#[^\s\.,!\?#]+/)[0];

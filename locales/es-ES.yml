@@ -90,6 +90,9 @@ common:
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
     private: "非公開"
+    local-public: "公開 (ローカルのみ)"
+    local-home: "ホーム (ローカルのみ)"
+    local-followers: "フォロワー (ローカルのみ)"
   note-placeholders:
     a: "¿Qué haces?"
     b: "¿Qué está pasando?"
@@ -344,6 +347,16 @@ common/views/components/poll-editor.vue:
   destroy: "Cancelar la encuesta"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Escoge una reacción"
+common/views/components/emoji-picker.vue:
+  custom-emoji: "カスタム絵文字"
+  people: "人"
+  animals-and-nature: "動物&自然"
+  food-and-drink: "食べ物&飲み物"
+  activity: "アクティビティ"
+  travel-and-places: "場所"
+  objects: "物"
+  symbols: "記号"
+  flags: "旗"
 common/views/components/signin.vue:
   username: "Usuario"
   password: "Contraseña"
@@ -353,6 +366,7 @@ common/views/components/signin.vue:
   or: "O"
   signin-with-twitter: "Ingresar con Twitter"
   signin-with-github: "GitHubでログイン"
+  signin-with-discord: "Discordでログイン"
   login-failed: "Autenticación fallida. Asegúrate de haber usado el nombre de usuario y contraseña correctos."
 common/views/components/signup.vue:
   invitation-code: "Código de invitación"
@@ -398,6 +412,13 @@ common/views/components/github-setting.vue:
   reconnect: "再接続する"
   connect: "GitHubと接続する"
   disconnect: "切断する"
+common/views/components/discord-setting.vue:
+  description: "お使いのDiscordアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでDiscordアカウント情報が表示されるようになったり、Discordを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のDiscordアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "Discordと接続する"
+  disconnect: "切断する"
 common/views/components/uploader.vue:
   waiting: "Un momento"
 common/views/components/visibility-chooser.vue:
@@ -409,6 +430,10 @@ common/views/components/visibility-chooser.vue:
   specified: "Directo"
   specified-desc: "Publica solo para los seguidores que quieras"
   private: "Privada"
+  local-public: "公開 (ローカルのみ)"
+  local-public-desc: "リモートへは公開しない"
+  local-home: "ホーム (ローカルのみ)"
+  local-followers: "フォロワー (ローカルのみ)"
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
@@ -588,12 +613,6 @@ desktop/views/components/media-image.vue:
 desktop/views/components/media-video.vue:
   sensitive: "Este contenido no es apropiado para ver en el trabajo"
   click-to-show: "Click para mostrar"
-desktop/views/components/follow-button.vue:
-  following: "Siguiendo"
-  follow: "Sigue"
-  request-pending: "Pendiente de aprobación"
-  follow-processing: "フォロー処理中"
-  follow-request: "Solicitud de seguir"
 desktop/views/components/followers-window.vue:
   followers: "{} seguidores"
 desktop/views/components/followers.vue:
@@ -664,6 +683,7 @@ desktop/views/components/post-form.vue:
   create-poll: "Crea una encuesta"
   text-remain: "quedan {} caracteres"
   recent-tags: "Reciente"
+  local-only-message: "この投稿はローカルにのみ公開されます"
   click-to-tagging: "Click para etiquetar"
   visibility: "Visibilidad"
   geolocation-alert: "Tu dispositivo no tiene soporte de geolocalización."
@@ -681,6 +701,7 @@ desktop/views/components/renote-form.vue:
   quote: "Cita..."
   cancel: "Cancelar"
   renote: "Volver a publicar"
+  renote-home: "Renote (Home)"
   reposting: "Publicando de nuevo..."
   success: "¡Publicado!"
   failure: "La publicación ha fallado"
@@ -695,6 +716,7 @@ desktop/views/components/settings.vue:
   profile: "Perfil"
   notification: "Notificación"
   apps: "Aplicaciones"
+  tags: "ハッシュタグ"
   mute-and-block: "ミュート/ブロック"
   blocking: "ブロック"
   security: "Seguridad"
@@ -737,6 +759,7 @@ desktop/views/components/settings.vue:
   show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
   show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
   show-maps: "マップの自動展開"
+  remain-deleted-note: "削除された投稿を表示し続ける"
   deck-column-align: "デッキのカラムの位置"
   deck-column-align-center: "中央"
   deck-column-align-left: "左"
@@ -829,6 +852,10 @@ common/views/components/mute-and-block.vue:
   block: "ブロック"
   no-muted-users: "ミュートしているユーザーはいません"
   no-blocked-users: "ブロックしているユーザーはいません"
+  word-mute: "ワードミュート"
+  muted-words: "ミュートされたキーワード"
+  muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  save: "保存"
 common/views/components/password-settings.vue:
   reset: "パスワードを変更する"
   enter-current-password: "現在のパスワードを入力してください"
@@ -903,8 +930,9 @@ admin/views/index.vue:
   dashboard: "ダッシュボード"
   instance: "インスタンス"
   emoji: "カスタム絵文字"
+  moderators: "モデレーター"
   users: "ユーザー"
-  update: "更新"
+  federation: "連合"
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
   back-to-misskey: "Misskeyに戻る"
@@ -920,6 +948,7 @@ admin/views/instance.vue:
   instance: "インスタンス"
   instance-name: "インスタンス名"
   instance-description: "インスタンスの紹介"
+  host: "ホスト"
   banner-url: "バナー画像URL"
   languages: "インスタンスの対象言語"
   languages-desc: "スペースで区切って複数設定できます。"
@@ -946,7 +975,12 @@ admin/views/instance.vue:
   github-integration-info: "コールバックURLは /api/gh/cb に設定します。"
   enable-github-integration: "GitHub連携を有効にする"
   github-integration-client-id: "Client ID"
-  github-integration-client-secret: "Client secret"
+  github-integration-client-secret: "Client Secret"
+  discord-integration-config: "Discord連携の設定"
+  discord-integration-info: "コールバックURLは /api/dc/cb に設定します。"
+  enable-discord-integration: "Discord連携を有効にする"
+  discord-integration-client-id: "Client ID"
+  discord-integration-client-secret: "Client Secret"
   proxy-account-config: "プロキシアカウントの設定"
   proxy-account-info: "プロキシアカウントは、特定の条件下でユーザーのリモートフォローを代行するアカウントです。例えば、ユーザーがリモートユーザーをリストに入れたとき、リストに入れられたユーザーを誰もフォローしていないとアクティビティがサーバーに配達されないため、代わりにプロキシアカウントがフォローするようにします。"
   proxy-account-username: "プロキシアカウントのユーザー名"
@@ -996,6 +1030,11 @@ admin/views/users.vue:
   unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
+admin/views/moderators.vue:
+  add-moderator:
+    title: "モデレーターの登録"
+    add: "登録"
+    added: "モデレーターを登録しました"
 admin/views/emoji.vue:
   add-emoji:
     title: "絵文字の登録"
@@ -1093,7 +1132,7 @@ desktop/views/pages/user/user.header.vue:
   following: "フォロー"
   followers: "フォロワー"
   is-bot: "このアカウントはBotです"
-  years-old: "歳"
+  years-old: "{age}歳"
   year: "年"
   month: "月"
   day: "日"
@@ -1160,7 +1199,7 @@ mobile/views/components/media-image.vue:
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
-mobile/views/components/follow-button.vue:
+common/views/components/follow-button.vue:
   following: "フォロー中"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
@@ -1323,6 +1362,10 @@ mobile/views/pages/settings.vue:
   github-connect: "GitHubアカウントに接続する"
   github-reconnect: "再接続する"
   github-disconnect: "切断する"
+  discord: "Discord連携"
+  discord-connect: "Discordアカウントに接続する"
+  discord-reconnect: "再接続する"
+  discord-disconnect: "切断する"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"
@@ -1351,6 +1394,7 @@ mobile/views/pages/user.vue:
   unmute: "ミュート解除"
   block: "ブロック"
   unblock: "ブロック解除"
+  years-old: "{age}歳"
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
   images: "画像"

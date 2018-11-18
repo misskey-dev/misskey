@@ -1,6 +1,6 @@
 <template>
 <div class="root notes">
-	<p class="fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 	<div v-if="!fetching && notes.length > 0">
 		<mk-note-card v-for="note in notes" :key="note.id" :note="note"/>
 	</div>
@@ -22,7 +22,8 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.$root.api('users/notes', {
-			userId: this.user.id
+			userId: this.user.id,
+			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
 			this.notes = notes;
 			this.fetching = false;

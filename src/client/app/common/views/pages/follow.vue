@@ -25,7 +25,7 @@
 			<template v-else-if="!user.isFollowing && user.isLocked"><fa icon="plus"/> {{ $t('follow-request') }}</template>
 			<template v-else-if="!user.isFollowing && !user.isLocked"><fa icon="plus"/> {{ $t('follow') }}</template>
 		</template>
-		<template v-else><fa icon="spinner .pulse" fixed-width/></template>
+		<template v-else><fa icon="spinner" pulse fixed-width/></template>
 	</button>
 </div>
 </template>

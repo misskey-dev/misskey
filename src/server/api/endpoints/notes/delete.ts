@@ -38,7 +38,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('note not found');
 	}
 
-	if (!user.isAdmin && !note.userId.equals(user._id)) {
+	if (!user.isAdmin && !user.isModerator && !note.userId.equals(user._id)) {
 		return rej('access denied');
 	}
 

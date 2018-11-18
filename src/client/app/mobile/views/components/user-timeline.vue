@@ -44,7 +44,8 @@ export default Vue.extend({
 				this.$root.api('users/notes', {
 					userId: this.user.id,
 					withFiles: this.withMedia,
-					limit: fetchLimit + 1
+					limit: fetchLimit + 1,
+					untilDate: new Date().getTime() + 1000 * 86400 * 365
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -66,7 +67,7 @@ export default Vue.extend({
 				userId: this.user.id,
 				withFiles: this.withMedia,
 				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id
+				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime()
 			});
 
 			promise.then(notes => {

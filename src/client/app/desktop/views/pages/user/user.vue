@@ -14,6 +14,7 @@
 				<x-profile :user="user"/>
 				<x-twitter :user="user" v-if="!user.host && user.twitter"/>
 				<x-github :user="user" v-if="!user.host && user.github"/>
+				<x-discord :user="user" v-if="!user.host && user.discord"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>
@@ -39,6 +40,7 @@ import XFollowersYouKnow from './user.followers-you-know.vue';
 import XFriends from './user.friends.vue';
 import XTwitter from './user.twitter.vue';
 import XGithub from './user.github.vue'; // ?MEM: Don't fix the intentional typo. (XGitHub -> `<x-git-hub>`)
+import XDiscord from './user.discord.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -50,7 +52,8 @@ export default Vue.extend({
 		XFollowersYouKnow,
 		XFriends,
 		XTwitter,
-		XGithub // ?MEM: Don't fix the intentional typo. (see L41)
+		XGithub, // ?MEM: Don't fix the intentional typo. (see L41)
+		XDiscord
 	},
 	data() {
 		return {

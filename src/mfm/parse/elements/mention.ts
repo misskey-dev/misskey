@@ -12,9 +12,10 @@ export type TextElementMention = {
 	host: string;
 };
 
-export default function(text: string) {
+export default function(text: string, before: string) {
 	const match = text.match(/^@[a-z0-9_]+(?:@[a-z0-9\.\-]+[a-z0-9])?/i);
 	if (!match) return null;
+	if (/[a-zA-Z0-9]$/.test(before)) return null;
 	const mention = match[0];
 	const { username, host } = parseAcct(mention.substr(1));
 	const canonical = host != null ? `@${username}@${toUnicode(host)}` : mention;

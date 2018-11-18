@@ -19,7 +19,7 @@
 				<p>{{ $t('followers') }}</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
-		<mk-follow-button v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u"/>
+		<mk-follow-button class="follow-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
 	</template>
 </div>
 </template>
@@ -154,7 +154,7 @@ export default Vue.extend({
 				font-size 1em
 				color var(--primary)
 
-	> .mk-follow-button
+	> .follow-button
 		position absolute
 		top 92px
 		right 8px

@@ -68,6 +68,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		maxNoteTextLength: instance.maxNoteTextLength,
 
 		emojis: emojis,
+
+		enableTwitterIntegration: instance.enableTwitterIntegration,
+		enableGithubIntegration: instance.enableGithubIntegration,
+		enableDiscordIntegration: instance.enableDiscordIntegration,
 	};
 
 	if (ps.detail) {
@@ -79,22 +83,23 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			objectStorage: config.drive && config.drive.storage === 'minio',
 			twitter: instance.enableTwitterIntegration,
 			github: instance.enableGithubIntegration,
+			discord: instance.enableDiscordIntegration,
 			serviceWorker: config.sw ? true : false,
 			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
 		};
 	}
 
-	if (me && me.isAdmin) {
+	if (me && (me.isAdmin || me.isModerator)) {
 		response.hidedTags = instance.hidedTags;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;
-		response.enableTwitterIntegration = instance.enableTwitterIntegration;
 		response.twitterConsumerKey = instance.twitterConsumerKey;
 		response.twitterConsumerSecret = instance.twitterConsumerSecret;
-		response.enableGithubIntegration = instance.enableGithubIntegration;
 		response.githubClientId = instance.githubClientId;
 		response.githubClientSecret = instance.githubClientSecret;
 		response.githubAccessToken = instance.githubAccessToken;
+		response.discordClientId = instance.discordClientId;
+		response.discordClientSecret = instance.discordClientSecret;
 	}
 
 	res(response);

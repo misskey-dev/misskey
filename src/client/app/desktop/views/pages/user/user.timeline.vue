@@ -3,7 +3,7 @@
 	<header>
 		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
 		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa icon="images"/> {{ $t('with-media') }}</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa :icon="['far', 'images']"/> {{ $t('with-media') }}</span>
 	</header>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>
@@ -63,7 +63,7 @@ export default Vue.extend({
 				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
-					untilDate: this.date ? this.date.getTime() : undefined,
+					untilDate: this.date ? this.date.getTime() : new Date().getTime() + 1000 * 86400 * 365,
 					includeReplies: this.mode == 'with-replies',
 					withFiles: this.mode == 'with-media'
 				}).then(notes => {
@@ -86,7 +86,7 @@ export default Vue.extend({
 				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',
 				withFiles: this.mode == 'with-media',
-				untilId: (this.$refs.timeline as any).tail().id
+				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime()
 			});
 
 			promise.then(notes => {

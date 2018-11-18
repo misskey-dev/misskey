@@ -4,7 +4,7 @@
 		<template slot="header"><fa icon="server"/>{{ $t('title') }}</template>
 		<button slot="func" @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button>
 
-		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<template v-if="!fetching">
 			<x-cpu-memory v-show="props.view == 0" :connection="connection"/>
 			<x-cpu v-show="props.view == 1" :connection="connection" :meta="meta"/>

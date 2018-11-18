@@ -1,6 +1,6 @@
 <template>
 <div class="mk-messaging-room-page">
-	<mk-messaging-room v-if="user" :user="user" :is-naked="true"/>
+	<x-messaging-room v-if="user" :user="user" :is-naked="true"/>
 </div>
 </template>
 
@@ -13,6 +13,9 @@ import getUserName from '../../../../../misc/get-user-name';
 
 export default Vue.extend({
 	i18n: i18n('.vue'),
+	components: {
+		XMessagingRoom: () => import('../../../common/views/components/messaging-room.vue').then(m => m.default)
+	},
 	data() {
 		return {
 			fetching: true,

@@ -51,8 +51,6 @@ export default Vue.extend({
 			top 0
 			bottom 0
 			right 20px
-
-			> *
-				height 100%
+			height 100%
 
 </style>

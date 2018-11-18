@@ -13,11 +13,11 @@ describe('Text', () => {
 		const tokens = analyze('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
 		assert.deepEqual([
 			{ type: 'mention', content: '@himawari', canonical: '@himawari', username: 'himawari', host: null },
-			{ type: 'text', content: ' '},
+			{ type: 'text', content: ' ' },
 			{ type: 'mention', content: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
 			{ type: 'text', content: ' お腹ペコい ' },
-			{ type: 'emoji', content: ':cat:', name: 'cat'},
-			{ type: 'text', content: ' '},
+			{ type: 'emoji', content: ':cat:', name: 'cat' },
+			{ type: 'text', content: ' ' },
 			{ type: 'hashtag', content: '#yryr', hashtag: 'yryr' }
 		], tokens);
 	});
@@ -82,7 +82,7 @@ describe('Text', () => {
 					{ type: 'text', content: ' お腹ペコい' }
 				], tokens);
 			});
-/*
+
 			it('ignore', () => {
 				const tokens = analyze('idolm@ster');
 				assert.deepEqual([
@@ -91,20 +91,19 @@ describe('Text', () => {
 
 				const tokens2 = analyze('@a\n@b\n@c');
 				assert.deepEqual([
-					{ type: 'mention', content: '@a', username: 'a', host: null },
+					{ type: 'mention', content: '@a', canonical: '@a', username: 'a', host: null },
 					{ type: 'text', content: '\n' },
-					{ type: 'mention', content: '@b', username: 'b', host: null },
+					{ type: 'mention', content: '@b', canonical: '@b', username: 'b', host: null },
 					{ type: 'text', content: '\n' },
-					{ type: 'mention', content: '@c', username: 'c', host: null }
+					{ type: 'mention', content: '@c', canonical: '@c', username: 'c', host: null }
 				], tokens2);
 
 				const tokens3 = analyze('**x**@a');
 				assert.deepEqual([
 					{ type: 'bold', content: '**x**', bold: 'x' },
-					{ type: 'mention', content: '@a', username: 'a', host: null }
+					{ type: 'mention', content: '@a', canonical: '@a', username: 'a', host: null }
 				], tokens3);
 			});
-*/
 		});
 
 		it('hashtag', () => {
@@ -159,13 +158,81 @@ describe('Text', () => {
 			], tokens5);
 		});
 
-		it('url', () => {
-			const tokens = analyze('https://himasaku.net');
-			assert.deepEqual([{
-				type: 'url',
-				content: 'https://himasaku.net',
-				url: 'https://himasaku.net'
-			}], tokens);
+		describe('url', () => {
+			it('simple', () => {
+				const tokens = analyze('https://example.com');
+				assert.deepEqual([{
+					type: 'url',
+					content: 'https://example.com',
+					url: 'https://example.com'
+				}], tokens);
+			});
+
+			it('ignore trailing period', () => {
+				const tokens = analyze('https://example.com.');
+				assert.deepEqual([{
+					type: 'url',
+					content: 'https://example.com',
+					url: 'https://example.com'
+				}, {
+					type: 'text', content: '.'
+				}], tokens);
+			});
+
+			it('with comma', () => {
+				const tokens = analyze('https://example.com/foo?bar=a,b');
+				assert.deepEqual([{
+					type: 'url',
+					content: 'https://example.com/foo?bar=a,b',
+					url: 'https://example.com/foo?bar=a,b'
+				}], tokens);
+			});
+
+			it('ignore trailing comma', () => {
+				const tokens = analyze('https://example.com/foo, bar');
+				assert.deepEqual([{
+					type: 'url',
+					content: 'https://example.com/foo',
+					url: 'https://example.com/foo'
+				}, {
+					type: 'text', content: ', bar'
+				}], tokens);
+			});
+
+			it('with brackets', () => {
+				const tokens = analyze('https://example.com/foo(bar)');
+				assert.deepEqual([{
+					type: 'url',
+					content: 'https://example.com/foo(bar)',
+					url: 'https://example.com/foo(bar)'
+				}], tokens);
+			});
+
+			it('ignore parent brackets', () => {
+				const tokens = analyze('(https://example.com/foo)');
+				assert.deepEqual([{
+					type: 'text', content: '('
+				}, {
+					type: 'url',
+					content: 'https://example.com/foo',
+					url: 'https://example.com/foo'
+				}, {
+					type: 'text', content: ')'
+				}], tokens);
+			});
+
+			it('ignore parent brackets with internal brackets', () => {
+				const tokens = analyze('(https://example.com/foo(bar))');
+				assert.deepEqual([{
+					type: 'text', content: '('
+				}, {
+					type: 'url',
+					content: 'https://example.com/foo(bar)',
+					url: 'https://example.com/foo(bar)'
+				}, {
+					type: 'text', content: ')'
+				}], tokens);
+			});
 		});
 
 		it('link', () => {
@@ -210,6 +277,15 @@ describe('Text', () => {
 			assert.equal(tokens[0].content, '`var x = "Strawberry Pasta";`');
 		});
 
+		it('math', () => {
+			const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}';
+			const text = `\\(${fomula}\\)`;
+			const tokens = analyze(text);
+			assert.deepEqual([
+				{ type: 'math', content: text, formula: fomula }
+			], tokens);
+		});
+
 		it('search', () => {
 			const tokens1 = analyze('a b c 検索');
 			assert.deepEqual([
@@ -236,17 +312,17 @@ describe('Text', () => {
 			const tokens1 = analyze('【yee】\nhaw');
 			assert.deepEqual(
 				{ type: 'title', content: '【yee】\n', title: 'yee' }
-			, tokens1[0]);
+				, tokens1[0]);
 
 			const tokens2 = analyze('[yee]\nhaw');
 			assert.deepEqual(
 				{ type: 'title', content: '[yee]\n', title: 'yee' }
-			, tokens2[0]);
+				, tokens2[0]);
 
 			const tokens3 = analyze('a [a]\nb [b]\nc [c]');
 			assert.deepEqual(
 				{ type: 'text', content: 'a [a]\nb [b]\nc [c]' }
-			, tokens3[0]);
+				, tokens3[0]);
 
 			const tokens4 = analyze('foo\n【bar】\nbuzz');
 			assert.deepEqual([

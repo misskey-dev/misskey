@@ -25,12 +25,9 @@ export default Vue.extend({
 						type: 'password'
 					}).then(newPassword2 => {
 						if (newPassword !== newPassword2) {
-							this.$dialog({
+							this.$root.alert({
 								title: null,
-								text: this.$t('not-match'),
-								actions: [{
-									text: 'OK'
-								}]
+								text: this.$t('not-match')
 							});
 							return;
 						}

@@ -35,17 +35,11 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	log(`Creating the (Re)Note: ${uri}`);
 
 	//#region Visibility
-	let visibility = 'public';
+	const visibility = getVisibility(activity.to, activity.cc, actor);
+
 	let visibleUsers: IUser[] = [];
-	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
-		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
-			visibility = 'home';
-		} else if (note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
-			visibility = 'followers';
-		} else {
-			visibility = 'specified';
-			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
-		}
+	if (visibility == 'specified') {
+		visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
 	}
 	//#endergion
 
@@ -56,4 +50,23 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 		visibleUsers,
 		uri
 	});
+}
+
+type visibility = 'public' | 'home' | 'followers' | 'specified' | 'private';
+
+function getVisibility(to: string[], cc: string[], actor: IRemoteUser): visibility {
+	const PUBLIC = 'https://www.w3.org/ns/activitystreams#Public';
+
+	to = to || [];
+	cc = cc || [];
+
+	if (to.includes(PUBLIC)) {
+		return 'public';
+	} else if (cc.includes(PUBLIC)) {
+		return 'home';
+	} else if (to.includes(`${actor.uri}/followers`)) {
+		return 'followers';
+	} else {
+		return 'specified';
+	}
 }

@@ -173,6 +173,10 @@ export default class Connection {
 	 */
 	@autobind
 	public connectChannel(id: string, params: any, channel: string, pong = false) {
+		if ((channels as any)[channel].requireCredential && this.user == null) {
+			return;
+		}
+
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
 		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;

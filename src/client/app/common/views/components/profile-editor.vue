@@ -74,12 +74,13 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
+import { toUnicode } from 'punycode';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/profile-editor.vue'),
 	data() {
 		return {
-			host,
+			host: toUnicode(host),
 			name: null,
 			username: null,
 			location: null,
@@ -196,7 +197,7 @@ export default Vue.extend({
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
-					this.$swal({
+					this.$root.alert({
 						type: 'success',
 						text: this.$t('saved')
 					});
@@ -226,6 +227,5 @@ export default Vue.extend({
 			width 72px
 			height 72px
 			margin auto
-			box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
 
 </style>

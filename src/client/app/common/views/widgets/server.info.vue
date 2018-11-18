@@ -3,6 +3,7 @@
 	<p>Maintainer: <b><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></b></p>
 	<p>Machine: {{ meta.machine }}</p>
 	<p>Node: {{ meta.node }}</p>
+	<p>Version: {{ meta.version }} </p>
 </div>
 </template>
 

@@ -172,7 +172,7 @@ export default class MiOS extends EventEmitter {
 			callback();
 
 			// Init service worker
-			if (this.shouldRegisterSw) this.registerSw();
+			//if (this.shouldRegisterSw) this.registerSw();
 		};
 
 		// キャッシュがあったとき
@@ -365,7 +365,7 @@ export default class MiOS extends EventEmitter {
 		});
 
 		// The path of service worker script
-		const sw = `/sw.${version}.${lang}.js`;
+		const sw = `/sw.${version}.js`;
 
 		// Register service worker
 		navigator.serviceWorker.register(sw).then(registration => {
@@ -385,15 +385,19 @@ export default class MiOS extends EventEmitter {
 	 * @param data パラメータ
 	 */
 	@autobind
-	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false): Promise<{ [x: string]: any }> {
-		if (++pending === 1) {
-			spinner = document.createElement('div');
-			spinner.setAttribute('id', 'wait');
-			document.body.appendChild(spinner);
+	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false, silent = false): Promise<{ [x: string]: any }> {
+		if (!silent) {
+			if (++pending === 1) {
+				spinner = document.createElement('div');
+				spinner.setAttribute('id', 'wait');
+				document.body.appendChild(spinner);
+			}
 		}
 
 		const onFinally = () => {
-			if (--pending === 0) spinner.parentNode.removeChild(spinner);
+			if (!silent) {
+				if (--pending === 0) spinner.parentNode.removeChild(spinner);
+			}
 		};
 
 		const promise = new Promise((resolve, reject) => {

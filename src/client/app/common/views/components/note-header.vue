@@ -17,11 +17,12 @@
 			<mk-time :time="note.createdAt"/>
 		</router-link>
 		<span class="visibility" v-if="note.visibility != 'public'">
-			<template v-if="note.visibility == 'home'"><fa icon="home"/></template>
-			<template v-if="note.visibility == 'followers'"><fa icon="unlock"/></template>
-			<template v-if="note.visibility == 'specified'"><fa icon="envelope"/></template>
-			<template v-if="note.visibility == 'private'"><fa icon="lock"/></template>
+			<fa v-if="note.visibility == 'home'" icon="home"/>
+			<fa v-if="note.visibility == 'followers'" icon="unlock"/>
+			<fa v-if="note.visibility == 'specified'" icon="envelope"/>
+			<fa v-if="note.visibility == 'private'" icon="lock"/>
 		</span>
+		<span class="localOnly" v-if="note.localOnly == true"><fa icon="heart"/></span>
 	</div>
 </header>
 </template>
@@ -115,5 +116,8 @@ export default Vue.extend({
 
 		> .visibility
 			margin-left 8px
+
+		> .localOnly
+			margin-left 4px
 
 </style>

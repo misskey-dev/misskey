@@ -3,7 +3,7 @@
 	<ol v-if="uploads.length > 0">
 		<li v-for="ctx in uploads" :key="ctx.id">
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
-			<p class="name"><fa icon="spinner .pulse"/>{{ ctx.name }}</p>
+			<p class="name"><fa icon="spinner" pulse/>{{ ctx.name }}</p>
 			<p class="status">
 				<span class="initing" v-if="ctx.progress == undefined">{{ $t('waiting') }}<mk-ellipsis/></span>
 				<span class="kb" v-if="ctx.progress != undefined">{{ String(Math.floor(ctx.progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
@@ -57,17 +57,11 @@ export default Vue.extend({
 						return;
 					}
 
-					// Upload if the file didn't exist yet
-					const buf = new Uint8Array(e.target.result);
-					let bin = '';
-					// We use for-of loop instead of apply() to avoid RangeError
-					// SEE: https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
-					for (const byte of buf) bin += String.fromCharCode(byte);
 					const ctx = {
 						id: id,
 						name: file.name || 'untitled',
 						progress: undefined,
-						img: 'data:*/*;base64,' + btoa(bin)
+						img: window.URL.createObjectURL(file)
 					};
 
 					this.uploads.push(ctx);

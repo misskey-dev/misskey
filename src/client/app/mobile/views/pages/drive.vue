@@ -6,7 +6,7 @@
 		<template v-if="!folder && !file"><span style="margin-right:4px;"><fa icon="cloud"/></span>{{ $t('@.drive') }}</template>
 	</span>
 	<template slot="func"><button @click="fn"><fa icon="ellipsis-h"/></button></template>
-	<mk-drive
+	<x-drive
 		ref="browser"
 		:init-folder="initFolder"
 		:init-file="initFile"
@@ -29,6 +29,9 @@ import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
 	i18n: i18n(),
+	components: {
+		XDrive: () => import('../components/drive.vue').then(m => m.default),
+	},
 	data() {
 		return {
 			Progress,

@@ -38,12 +38,24 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 	data() {
 		return {
 			styl: 'fill'
 		};
+	},
+	mounted() {
+		if (this.autofocus) {
+			this.$nextTick(() => {
+				this.$el.focus();
+			});
+		}
 	}
 });
 </script>
@@ -57,6 +69,7 @@ export default Vue.extend({
 	text-align center
 	font-weight normal
 	font-size 16px
+	line-height 24px
 	border none
 	border-radius 6px
 	outline none
@@ -85,6 +98,7 @@ export default Vue.extend({
 	&.inline
 		display inline-block
 		width auto
+		min-width 100px
 
 	&.primary
 		font-weight bold

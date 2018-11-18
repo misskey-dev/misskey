@@ -2,11 +2,14 @@
  * チャートエンジン
  */
 
+import * as moment from 'moment';
 const nestedProperty = require('nested-property');
 import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import { ICollection } from 'monk';
+
+const utc = moment.utc;
 
 export type Obj = { [key: string]: any };
 
@@ -87,12 +90,12 @@ export default abstract class Chart<T> {
 
 	@autobind
 	private getCurrentDate(): [number, number, number, number] {
-		const now = new Date();
+		const now = moment().utc();
 
-		const y = now.getFullYear();
-		const m = now.getMonth();
-		const d = now.getDate();
-		const h = now.getHours();
+		const y = now.year();
+		const m = now.month();
+		const d = now.date();
+		const h = now.hour();
 
 		return [y, m, d, h];
 	}
@@ -114,15 +117,15 @@ export default abstract class Chart<T> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const current =
-			span == 'day' ? new Date(y, m, d) :
-			span == 'hour' ? new Date(y, m, d, h) :
+			span == 'day' ? utc([y, m, d]) :
+			span == 'hour' ? utc([y, m, d, h]) :
 			null;
 
 		// 現在(今日または今のHour)のログ
 		const currentLog = await this.collection.findOne({
 			group: group,
 			span: span,
-			date: current
+			date: current.toDate()
 		});
 
 		// ログがあればそれを返して終了
@@ -158,7 +161,7 @@ export default abstract class Chart<T> {
 			log = await this.collection.insert({
 				group: group,
 				span: span,
-				date: current,
+				date: current.toDate(),
 				data: data
 			});
 		} catch (e) {
@@ -225,8 +228,8 @@ export default abstract class Chart<T> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const gt =
-			span == 'day' ? new Date(y, m, d - range) :
-			span == 'hour' ? new Date(y, m, d, h - range) :
+			span == 'day' ? utc([y, m, d]).subtract(range, 'days') :
+			span == 'hour' ? utc([y, m, d, h]).subtract(range, 'hours') :
 			null;
 
 		// ログ取得
@@ -234,7 +237,7 @@ export default abstract class Chart<T> {
 			group: group,
 			span: span,
 			date: {
-				$gt: gt
+				$gte: gt.toDate()
 			}
 		}, {
 			sort: {
@@ -264,22 +267,45 @@ export default abstract class Chart<T> {
 			if (recentLog) {
 				logs = [recentLog];
 			}
+
+		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
+		} else if (!utc(logs[logs.length - 1].date).isSame(gt)) {
+			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
+			// (隙間埋めできないため)
+			const outdatedLog = await this.collection.findOne({
+				group: group,
+				span: span,
+				date: {
+					$lt: gt.toDate()
+				}
+			}, {
+				sort: {
+					date: -1
+				},
+				fields: {
+					_id: 0
+				}
+			});
+
+			if (outdatedLog) {
+				logs.push(outdatedLog);
+			}
 		}
 
 		// 整形
 		for (let i = (range - 1); i >= 0; i--) {
 			const current =
-				span == 'day' ? new Date(y, m, d - i) :
-				span == 'hour' ? new Date(y, m, d, h - i) :
+				span == 'day' ? utc([y, m, d]).subtract(i, 'days') :
+				span == 'hour' ? utc([y, m, d, h]).subtract(i, 'hours') :
 				null;
 
-			const log = logs.find(l => l.date.getTime() == current.getTime());
+			const log = logs.find(l => utc(l.date).isSame(current));
 
 			if (log) {
 				promisedChart.unshift(Promise.resolve(log.data));
 			} else {
 				// 隙間埋め
-				const latest = logs.find(l => l.date.getTime() < current.getTime());
+				const latest = logs.find(l => utc(l.date).isBefore(current));
 				promisedChart.unshift(this.getTemplate(false, latest ? latest.data : null));
 			}
 		}

@@ -23,7 +23,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="['far', 'grin']"/> {{ $t('emojis.title') }}</div>
+		<div slot="title"><fa :icon="faGrin"/> {{ $t('emojis.title') }}</div>
 		<section v-for="emoji in emojis">
 			<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
 			<ui-horizon-group inputs>
@@ -50,6 +50,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
+import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/emoji.vue'),
@@ -58,7 +59,8 @@ export default Vue.extend({
 			name: '',
 			url: '',
 			aliases: '',
-			emojis: []
+			emojis: [],
+			faGrin
 		};
 	},
 
@@ -73,13 +75,13 @@ export default Vue.extend({
 				url: this.url,
 				aliases: this.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
-				this.$swal({
+				this.$root.alert({
 					type: 'success',
 					text: this.$t('add-emoji.added')
 				});
 				this.fetchEmojis();
 			}).catch(e => {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: e
 				});
@@ -101,12 +103,12 @@ export default Vue.extend({
 				url: emoji.url,
 				aliases: emoji.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
-				this.$swal({
+				this.$root.alert({
 					type: 'success',
 					text: this.$t('updated')
 				});
 			}).catch(e => {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: e
 				});
@@ -114,23 +116,23 @@ export default Vue.extend({
 		},
 
 		removeEmoji(emoji) {
-			this.$swal({
+			this.$root.alert({
 				type: 'warning',
 				text: this.$t('remove-emoji.are-you-sure').replace('$1', emoji.name),
 				showCancelButton: true
 			}).then(res => {
-				if (!res.value) return;
+				if (!res) return;
 
 				this.$root.api('admin/emoji/remove', {
 					id: emoji.id
 				}).then(() => {
-					this.$swal({
+					this.$root.alert({
 						type: 'success',
 						text: this.$t('remove-emoji.removed')
 					});
 					this.fetchEmojis();
 				}).catch(e => {
-					this.$swal({
+					this.$root.alert({
 						type: 'error',
 						text: e
 					});

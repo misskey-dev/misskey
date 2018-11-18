@@ -5,12 +5,12 @@
 		<div class="signin-as" v-html="this.$t('signed-in-as').replace('{}', `<b>${name}</b>`)"></div>
 
 		<div>
-			<mk-profile-editor/>
+			<x-profile-editor/>
 
 			<ui-card>
 				<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
 				<section>
-					<mk-theme/>
+					<x-theme/>
 				</section>
 			</ui-card>
 
@@ -80,14 +80,17 @@
 							<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
 							<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
 							<option value="private">{{ $t('@.note-visibility.private') }}</option>
+							<option value="local-public">{{ $t('@.note-visibility.local-public') }}</option>
+							<option value="local-home">{{ $t('@.note-visibility.local-home') }}</option>
+							<option value="local-followers">{{ $t('@.note-visibility.local-followers') }}</option>
 						</ui-select>
 					</section>
 				</section>
 			</ui-card>
 
-			<mk-drive-settings/>
+			<x-drive-settings/>
 
-			<mk-mute-and-block/>
+			<x-mute-and-block/>
 
 			<ui-card>
 				<div slot="title"><fa icon="volume-up"/> {{ $t('sound') }}</div>
@@ -140,12 +143,25 @@
 				</section>
 			</ui-card>
 
-			<mk-api-settings />
+			<ui-card>
+				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
+
+				<section>
+					<p class="account" v-if="$store.state.i.discord"><a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
+					<p>
+						<a :href="`${apiUrl}/connect/discord`" target="_blank">{{ $store.state.i.discord ? this.$t('discord-reconnect') : this.$t('discord-connect') }}</a>
+						<span v-if="$store.state.i.discord"> or </span>
+						<a :href="`${apiUrl}/disconnect/discord`" target="_blank" v-if="$store.state.i.discord">{{ $t('discord-disconnect') }}</a>
+					</p>
+				</section>
+			</ui-card>
+
+			<x-api-settings />
 
 			<ui-card>
 				<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
 				<section>
-					<mk-password-settings/>
+					<x-password-settings/>
 				</section>
 			</ui-card>
 
@@ -179,9 +195,25 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { apiUrl, clientVersion as version, codename, langs } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
+import XTheme from '../../../common/views/components/theme.vue';
+import XDriveSettings from '../../../common/views/components/drive-settings.vue';
+import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
+import XPasswordSettings from '../../../common/views/components/password-settings.vue';
+import XProfileEditor from '../../../common/views/components/profile-editor.vue';
+import XApiSettings from '../../../common/views/components/api-settings.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
+
+	components: {
+		XTheme,
+		XDriveSettings,
+		XMuteAndBlock,
+		XPasswordSettings,
+		XProfileEditor,
+		XApiSettings,
+	},
+
 	data() {
 		return {
 			apiUrl,
@@ -350,12 +382,12 @@ export default Vue.extend({
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					this.$dialog({
+					this.$root.alert({
 						title: this.$t('no-updates'),
 						text: this.$t('no-updates-desc')
 					});
 				} else {
-					this.$dialog({
+					this.$root.alert({
 						title: this.$t('update-available'),
 						text: this.$t('update-available-desc')
 					});

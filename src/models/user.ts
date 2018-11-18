@@ -89,6 +89,14 @@ export interface ILocalUser extends IUserBase {
 		id: string;
 		login: string;
 	};
+	discord: {
+		accessToken: string;
+		refreshToken: string;
+		expiresDate: number;
+		id: string;
+		username: string;
+		discriminator: string;
+	};
 	line: {
 		userId: string;
 	};
@@ -104,6 +112,7 @@ export interface ILocalUser extends IUserBase {
 	isContributor?: boolean;
 	isCat: boolean;
 	isAdmin?: boolean;
+	isModerator?: boolean;
 	isVerified?: boolean;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;
@@ -130,6 +139,7 @@ export interface IRemoteUser extends IUserBase {
 	};
 	updatedAt: Date;
 	isAdmin: false;
+	isModerator: false;
 }
 
 export type IUser = ILocalUser | IRemoteUser;
@@ -301,6 +311,11 @@ export const pack = (
 				_user.isCollaborator = type === 'collaborator';
 				_user.isContributor = type === 'contributor';
 			}
+		}
+		if (_user.discord) {
+			delete _user.discord.accessToken;
+			delete _user.discord.refreshToken;
+			delete _user.discord.expiresDate;
 		}
 		delete _user.line;
 

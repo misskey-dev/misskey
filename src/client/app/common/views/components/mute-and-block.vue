@@ -21,6 +21,14 @@
 			</div>
 		</div>
 	</section>
+
+	<section>
+		<header>{{ $t('word-mute') }}</header>
+		<ui-textarea v-model="mutedWords">
+			{{ $t('muted-words') }}<span slot="desc">{{ $t('muted-words-description') }}</span>
+		</ui-textarea>
+		<ui-button @click="save">{{ $t('save') }}</ui-button>
+	</section>
 </ui-card>
 </template>
 
@@ -30,16 +38,27 @@ import i18n from '../../../i18n';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/mute-and-block.vue'),
+
 	data() {
 		return {
 			muteFetching: true,
 			blockFetching: true,
 			mute: [],
-			block: []
+			block: [],
+			mutedWords: ''
 		};
 	},
 
+	computed: {
+		_mutedWords: {
+			get() { return this.$store.state.settings.mutedWords; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'mutedWords', value }); }
+		},
+	},
+
 	mounted() {
+		this.mutedWords = this._mutedWords.map(words => words.join(' ')).join('\n');
+
 		this.$root.api('mute/list').then(mute => {
 			this.mute = mute.map(x => x.mutee);
 			this.muteFetching = false;
@@ -49,6 +68,12 @@ export default Vue.extend({
 			this.block = blocking.map(x => x.blockee);
 			this.blockFetching = false;
 		});
+	},
+
+	methods: {
+		save() {
+			this._mutedWords = this.mutedWords.split('\n').map(line => line.split(' '));
+		}
 	}
 });
 </script>

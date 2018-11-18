@@ -31,6 +31,11 @@ export interface IEndpointMeta {
 	requireAdmin?: boolean;
 
 	/**
+	 * 管理者またはモデレーターのみ使えるエンドポイントか否か
+	 */
+	requireModerator?: boolean;
+
+	/**
 	 * エンドポイントのリミテーションに関するやつ
 	 * 省略した場合はリミテーションは無いものとして解釈されます。
 	 * また、withCredential が false の場合はリミテーションを行うことはできません。

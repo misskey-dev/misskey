@@ -41,22 +41,22 @@ export default Vue.extend({
 
 	methods: {
 		add() {
-			this.announcements.push({
+			this.announcements.unshift({
 				title: '',
 				text: ''
 			});
 		},
 
 		remove(i) {
-			this.$swal({
+			this.$root.alert({
 				type: 'warning',
 				text: this.$t('_remove.are-you-sure').replace('$1', this.announcements.find((_, j) => j == i).title),
 				showCancelButton: true
 			}).then(res => {
-				if (!res.value) return;
+				if (!res) return;
 				this.announcements = this.announcements.filter((_, j) => j !== i);
 				this.save(true);
-				this.$swal({
+				this.$root.alert({
 					type: 'success',
 					text: this.$t('_remove.removed')
 				});
@@ -68,13 +68,13 @@ export default Vue.extend({
 				broadcasts: this.announcements
 			}).then(() => {
 				if (!silent) {
-					this.$swal({
+					this.$root.alert({
 						type: 'success',
 						text: this.$t('saved')
 					});
 				}
 			}).catch(e => {
-				this.$swal({
+				this.$root.alert({
 					type: 'error',
 					text: e
 				});

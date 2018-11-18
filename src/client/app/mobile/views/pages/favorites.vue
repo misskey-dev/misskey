@@ -6,7 +6,7 @@
 		<template v-for="favorite in favorites">
 			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
 		</template>
-		<a v-if="existMore" @click="more">{{ $t('@.load-more') }}</a>
+		<ui-button v-if="existMore" @click="more">{{ $t('@.load-more') }}</ui-button>
 	</main>
 </mk-ui>
 </template>
@@ -73,8 +73,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 main
 	width 100%
 	max-width 680px

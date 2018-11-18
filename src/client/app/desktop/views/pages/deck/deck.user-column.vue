@@ -14,7 +14,7 @@
 		<header :style="bannerStyle">
 			<div>
 				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
-				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow"/>
+				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 				<span class="name">{{ user | userName }}</span>
 				<span class="acct">@{{ user | acct }}</span>
@@ -87,7 +87,6 @@ import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
-import Ok from '../../../../common/views/components/ok.vue';
 import { concat } from '../../../../../../prelude/array';
 import * as ApexCharts from 'apexcharts';
 
@@ -155,7 +154,8 @@ export default Vue.extend({
 			this.$root.api('users/notes', {
 				userId: this.user.id,
 				fileType: image,
-				limit: 9
+				limit: 9,
+				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
 				notes.forEach(note => {
 					note.files.forEach(file => {
@@ -254,6 +254,7 @@ export default Vue.extend({
 				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
+					untilDate: new Date().getTime() + 1000 * 86400 * 365,
 					withFiles: this.withFiles,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -274,7 +275,7 @@ export default Vue.extend({
 			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id,
+				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime(),
 				withFiles: this.withFiles,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
@@ -306,7 +307,10 @@ export default Vue.extend({
 							listId: list.id,
 							userId: this.user.id
 						});
-						this.$root.new(Ok);
+						this.$root.alert({
+							type: 'success',
+							splash: true
+						});
 					});
 				}
 			}];

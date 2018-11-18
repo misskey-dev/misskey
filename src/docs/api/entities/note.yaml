@@ -26,6 +26,13 @@ props:
       ja-JP: "モバイル端末から投稿したか否か(自己申告であることに留意)"
       en-US: "Whether this note sent via a mobile device"
 
+  localOnly:
+    type: "boolean"
+    optional: true
+    desc:
+      ja-JP: "ローカルのみに公開する投稿か否か"
+      en-US: "Whether this note is no federation"
+
   text:
     type: "string"
     optional: true

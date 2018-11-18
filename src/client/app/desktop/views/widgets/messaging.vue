@@ -4,7 +4,7 @@
 		<template slot="header"><fa icon="comments"/>{{ $t('title') }}</template>
 		<button slot="func" @click="add"><fa icon="plus"/></button>
 
-		<mk-messaging ref="index" compact @navigate="navigate"/>
+		<x-messaging ref="index" compact @navigate="navigate"/>
 	</mk-widget-container>
 </div>
 </template>
@@ -22,6 +22,9 @@ export default define({
 	})
 }).extend({
 	i18n: i18n('desktop/views/widgets/messaging.vue'),
+	components: {
+		XMessaging: () => import('../../../common/views/components/messaging.vue').then(m => m.default)
+	},
 	methods: {
 		navigate(user) {
 			this.$root.new(MkMessagingRoomWindow, {

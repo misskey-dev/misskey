@@ -1,7 +1,7 @@
 <template>
 <div class="profile" v-if="$store.getters.isSignedIn">
 	<div class="friend-form" v-if="$store.state.i.id != user.id">
-		<mk-follow-button :user="user" size="big"/>
+		<mk-follow-button :user="user" block/>
 		<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
 		<p class="stalk" v-if="user.isFollowing">
 			<span v-if="user.isStalking">{{ $t('stalking') }} <a @click="unstalk"><fa icon="meh"/> {{ $t('unstalk') }}</a></span>
@@ -11,11 +11,11 @@
 	<div class="action-form">
 		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
 			<span v-if="user.isMuted"><fa icon="eye"/> {{ $t('unmute') }}</span>
-			<span v-else><fa icon="eye-slash"/> {{ $t('mute') }}</span>
+			<span v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mute') }}</span>
 		</ui-button>
 		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isBlocking"><fa icon="user"/> {{ $t('unblock') }}</span>
-			<span v-else><fa icon="user-slash"/> {{ $t('block') }}</span>
+			<span v-if="user.isBlocking"><fa icon="ban"/> {{ $t('unblock') }}</span>
+			<span v-else><fa icon="ban"/> {{ $t('block') }}</span>
 		</ui-button>
 		<ui-button @click="list"><fa icon="list"/> {{ $t('push-to-a-list') }}</ui-button>
 	</div>
@@ -73,13 +73,20 @@ export default Vue.extend({
 		},
 
 		block() {
-			if (!window.confirm(this.$t('block-confirm'))) return;
-			this.$root.api('blocking/create', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isBlocking = true;
-			}, () => {
-				alert('error');
+			this.$root.alert({
+				type: 'warning',
+				text: this.$t('block-confirm'),
+				showCancelButton: true
+			}).then(res => {
+				if (!res) return;
+
+				this.$root.api('blocking/create', {
+					userId: this.user.id
+				}).then(() => {
+					this.user.isBlocking = true;
+				}, () => {
+					alert('error');
+				});
 			});
 		},
 
@@ -101,7 +108,7 @@ export default Vue.extend({
 					listId: list.id,
 					userId: this.user.id
 				});
-				this.$dialog({
+				this.$root.alert({
 					title: 'Done!',
 					text: this.$t('list-pushed').replace('{user}', this.user.name).replace('{list}', list.title)
 				});

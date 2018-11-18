@@ -74,6 +74,14 @@ export const meta = {
 			}
 		},
 
+		localOnly: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'ローカルのみに投稿か否か。'
+			}
+		},
+
 		geo: {
 			validator: $.obj({
 				coordinates: $.arr().length(2)
@@ -216,7 +224,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// 投稿を作成
-	const note = await create(user, {
+	create(user, {
 		createdAt: new Date(),
 		files: files,
 		poll: ps.poll,
@@ -226,15 +234,18 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		cw: ps.cw,
 		app,
 		viaMobile: ps.viaMobile,
+		localOnly: ps.localOnly,
 		visibility: ps.visibility,
 		visibleUsers,
 		geo: ps.geo
-	});
-
-	const noteObj = await pack(note, user);
-
-	// Reponse
-	res({
-		createdNote: noteObj
+	})
+	.then(note => pack(note, user))
+	.then(noteObj => {
+		res({
+			createdNote: noteObj
+		});
+	})
+	.catch(e => {
+		rej(e);
 	});
 }));

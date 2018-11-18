@@ -193,4 +193,8 @@ export type IMeta = {
 	githubClientId?: string;
 	githubClientSecret?: string;
 	githubAccessToken?: string;
+
+	enableDiscordIntegration?: boolean;
+	discordClientId?: string;
+	discordClientSecret?: string;
 };

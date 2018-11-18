@@ -8,7 +8,9 @@ export type TextElementQuote = {
 	quote: string;
 };
 
-export default function(text: string, isBegin: boolean) {
+export default function(text: string, before: string) {
+	const isBegin = before == '';
+
 	const match = text.match(/^"([\s\S]+?)\n"/) || text.match(/^\n>([\s\S]+?)(\n\n|$)/) ||
 		(isBegin ? text.match(/^>([\s\S]+?)(\n\n|$)/) : null);
 

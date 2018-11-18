@@ -1,6 +1,6 @@
 <template>
 <div class="root photos">
-	<p class="initializing" v-if="fetching"><fa icon="spinner .pulse" fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images"
 			class="img"
@@ -29,7 +29,8 @@ export default Vue.extend({
 		this.$root.api('users/notes', {
 			userId: this.user.id,
 			withFiles: true,
-			limit: 6
+			limit: 6,
+			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
 			notes.forEach(note => {
 				note.media.forEach(media => {

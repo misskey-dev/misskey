@@ -116,7 +116,7 @@ export default Vue.extend({
 
 		menu() {
 			let menu = [{
-				icon: this.user.isMuted ? '<fa icon="eye"/>' : '<fa icon="eye-slash"/>',
+				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
 				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
 				action: () => {
 					if (this.user.isMuted) {
@@ -138,7 +138,7 @@ export default Vue.extend({
 					}
 				}
 			}, {
-				icon: this.user.isBlocking ? '<fa icon="user"/>' : '<fa icon="user-slash"/>',
+				icon: 'ban',
 				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
 				action: () => {
 					if (this.user.isBlocking) {
@@ -242,9 +242,6 @@ main
 					margin-right 8px
 					font-size 18px
 					color var(--text)
-
-				> .mk-follow-button
-					margin 0
 
 			> .title
 				margin 8px 0
