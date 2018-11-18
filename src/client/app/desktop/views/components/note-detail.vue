@@ -37,13 +37,13 @@
 					<mk-time :time="appearNote.createdAt"/>
 				</router-link>
 				<div class="visibility-info">
-					<span class="visibility" v-if="note.visibility != 'public'">
-						<fa v-if="note.visibility == 'home'" icon="home"/>
-						<fa v-if="note.visibility == 'followers'" icon="unlock"/>
-						<fa v-if="note.visibility == 'specified'" icon="envelope"/>
-						<fa v-if="note.visibility == 'private'" icon="lock"/>
+					<span class="visibility" v-if="appearNote.visibility != 'public'">
+						<fa v-if="appearNote.visibility == 'home'" icon="home"/>
+						<fa v-if="appearNote.visibility == 'followers'" icon="unlock"/>
+						<fa v-if="appearNote.visibility == 'specified'" icon="envelope"/>
+						<fa v-if="appearNote.visibility == 'private'" icon="lock"/>
 					</span>
-					<span class="localOnly" v-if="note.localOnly == true"><fa icon="heart"/></span>
+					<span class="localOnly" v-if="appearNote.localOnly == true"><fa icon="heart"/></span>
 				</div>
 			</div>
 		</header>
