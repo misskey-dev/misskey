@@ -123,6 +123,7 @@ common:
   is-remote-user: "Ces informations appartiennent à un·e utilisateur·rice distant·e."
   is-remote-post: "Ceci est une publication distante."
   view-on-remote: " Consulter le profil complet"
+  renoted-by: "{user}がRenote"
   error:
     title: 'Une erreur est survenue'
     retry: 'Réessayer'
@@ -643,12 +644,10 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
-  reposted-by: "Republié par {}"
   location: "Géolocalisation"
   renote: "Republier"
   add-reaction: "Ajouter votre reaction"
 desktop/views/components/note.vue:
-  reposted-by: "Partagé par {}"
   reply: "Répondre"
   renote: "Partager"
   add-reaction: "Ajouter votre réaction"
@@ -736,7 +735,7 @@ desktop/views/components/settings.vue:
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
   advanced: "Paramètres avancés"
   api-via-stream: "Requête API via le flux"
-  api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
+  api-via-stream-desc: "Lorsque ce paramètre est activé, une demande d'API est effectuée via une connexion WebSocket (pour une meilleure performance). Lorsqu'il est désactivé, l'API de récupération native est utilisée. Ce paramètre n'est valide que sur cet appareil."
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
   deck-default: "Utiliser le Deck comme IU par défaut"
@@ -790,7 +789,7 @@ desktop/views/components/settings.vue:
   do-update: "Rechercher des mises à jour"
   update-settings: "Paramètres avancés"
   prevent-update: "Reporter les mises à jour (non recommandé)"
-  prevent-update-desc: "この設定をオンにしてもアップデートが反映される場合があります。この設定はこのデバイスのみ有効です。"
+  prevent-update-desc: "Même si ce paramètre est activé, la mise à jour pourrait être appliquée. Ce paramètre n'est valide que sur cet appareil."
   no-updates: "Aucune mise à jour disponible"
   no-updates-desc: "Votre client Misskey est à jour."
   update-available: "Nouvelle version disponible !"
@@ -1212,14 +1211,12 @@ mobile/views/components/friends-maker.vue:
   refresh: "Voir plus"
   close: "Fermer"
 mobile/views/components/note.vue:
-  reposted-by: "Republié par {}"
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
   location: "Géolocalisation"
 mobile/views/components/note-detail.vue:
   reply: "Répondre"
   reaction: "Réaction"
-  reposted-by: "Republié par {}"
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
   location: "Lieu"
@@ -1459,7 +1456,7 @@ docs:
       require-permission: "Ce point de communication nécessite la permission {permission}."
       has-limit: "Il y’a un taux limite."
       duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
-      min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
+      min-interval-limit: "Vous ne pourrez pas effectuer une nouvelle requête si {interval} millisecondes ne se sont pas écoulées depuis la dernière demande."
       show-src: "Vous pouvez voir le code source ce point de communication."
       show-src-link: "Consulter le code sur GitHub"
       generated: "Ce document est généré à partir de la définition de l’API."
