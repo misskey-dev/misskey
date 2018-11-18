@@ -413,11 +413,11 @@ common/views/components/github-setting.vue:
   connect: "连接您的GitHub账户"
   disconnect: "未连接"
 common/views/components/discord-setting.vue:
-  description: "当您用Discard连接Misskey账户后，您将能够看到有关您自己的信息，并且您将能够使用Discard登录。"
-  connected-to: "此账户已连接Discard"
+  description: "当您用Discord连接Misskey账户后，您将能够看到有关您自己的信息，并且您将能够使用Discord登录。"
+  connected-to: "此账户已连接Discord"
   detail: "详细信息..."
   reconnect: "重新连接"
-  connect: "连接您的Discard账户"
+  connect: "连接您的Discord账户"
   disconnect: "未连接"
 common/views/components/uploader.vue:
   waiting: "等待中"
@@ -978,7 +978,7 @@ admin/views/instance.vue:
   github-integration-client-secret: "Client Secret"
   discord-integration-config: "设置 Discord Integration"
   discord-integration-info: "回调 URL 设置为 /api/dc/cb"
-  enable-discord-integration: "启用 Discard 连接"
+  enable-discord-integration: "启用 Discord 连接"
   discord-integration-client-id: "Client ID"
   discord-integration-client-secret: "Client Secret"
   proxy-account-config: "代理帐户设置"
