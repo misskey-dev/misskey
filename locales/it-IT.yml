@@ -123,6 +123,7 @@ common:
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
+  renoted-by: "{user}がRenote"
   error:
     title: '問題が発生しました'
     retry: 'やり直す'
@@ -643,12 +644,10 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  reposted-by: "{}がRenote"
   location: "位置情報"
   renote: "Renote"
   add-reaction: "リアクション"
 desktop/views/components/note.vue:
-  reposted-by: "{}がRenote"
   reply: "返信"
   renote: "Renote"
   add-reaction: "リアクション"
@@ -1212,14 +1211,12 @@ mobile/views/components/friends-maker.vue:
   refresh: "もっと見る"
   close: "閉じる"
 mobile/views/components/note.vue:
-  reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
 mobile/views/components/note-detail.vue:
   reply: "返信"
   reaction: "リアクション"
-  reposted-by: "{}がRenote"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
