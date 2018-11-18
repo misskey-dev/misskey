@@ -25,15 +25,33 @@ const log = debug('misskey:drive:add-file');
 
 async function save(path: string, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
 	let thumbnail: Buffer;
+	let thumbnailExt = 'jpg';
+	let thumbnailType = 'image/jpeg';
 
-	if (['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+	if (['image/jpeg', 'image/webp'].includes(type)) {
 		thumbnail = await sharp(path)
-			.resize(300)
+			.resize(498, 280, {
+				fit: 'inside',
+				withoutEnlargement: true
+			})
+			.rotate()
 			.jpeg({
-				quality: 50,
+				quality: 85,
 				progressive: true
 			})
 			.toBuffer();
+	} else if (['image/png'].includes(type)) {
+		thumbnail = await sharp(path)
+			.resize(498, 280, {
+				fit: 'inside',
+				withoutEnlargement: true
+			})
+			.rotate()
+			.png()
+			.toBuffer();
+
+		thumbnailExt = 'png';
+		thumbnailType = 'image/png';
 	}
 
 	if (config.drive && config.drive.storage == 'minio') {
@@ -48,7 +66,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 		}
 
 		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
-		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.jpg`;
+		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${thumbnailExt}`;
 
 		const baseUrl = config.drive.baseUrl
 			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
@@ -60,7 +78,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		if (thumbnail) {
 			await minio.putObject(config.drive.bucket, thumbnailKey, thumbnail, size, {
-				'Content-Type': 'image/jpeg',
+				'Content-Type': thumbnailType,
 				'Cache-Control': 'max-age=31536000, immutable'
 			});
 		}
@@ -107,7 +125,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 			await new Promise<IDriveFile>((resolve, reject) => {
 				const writeStream = thumbnailBucket.openUploadStream(name, {
-					contentType: 'image/jpeg',
+					contentType: thumbnailType,
 					metadata: {
 						originalId: file._id
 					}
@@ -149,6 +167,10 @@ async function deleteOldFile(user: IRemoteUser) {
  * @param comment Comment
  * @param folderId Folder ID
  * @param force If set to true, forcibly upload the file even if there is a file with the same hash.
+ * @param isLink Do not save file to local
+ * @param url URL of source (URLからアップロードされた場合(ローカル/リモート)の元URL)
+ * @param uri URL of source (リモートインスタンスのURLからアップロードされた場合の元URL)
+ * @param sensitive Mark file as sensitive
  * @return Created drive file
  */
 export default async function(
