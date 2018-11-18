@@ -2,7 +2,7 @@
 <div class="mk-note-detail">
 	<button
 		class="more"
-		v-if="p.reply && p.reply.replyId && conversation.length == 0"
+		v-if="appearNote.reply && appearNote.reply.replyId && conversation.length == 0"
 		@click="fetchConversation"
 		:disabled="conversationFetching"
 	>
@@ -12,8 +12,8 @@
 	<div class="conversation">
 		<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
 	</div>
-	<div class="reply-to" v-if="p.reply">
-		<x-sub :note="p.reply"/>
+	<div class="reply-to" v-if="appearNote.reply">
+		<x-sub :note="appearNote.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
@@ -28,50 +28,59 @@
 	</div>
 	<article>
 		<header>
-			<mk-avatar class="avatar" :user="p.user"/>
+			<mk-avatar class="avatar" :user="appearNote.user"/>
 			<div>
-				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
-				<span class="username"><mk-acct :user="p.user"/></span>
+				<router-link class="name" :to="appearNote.user | userPage">{{ appearNote.user | userName }}</router-link>
+				<span class="username"><mk-acct :user="appearNote.user"/></span>
 			</div>
 		</header>
 		<div class="body">
-			<p v-if="p.cw != null" class="cw">
-				<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+			<p v-if="appearNote.cw != null" class="cw">
+				<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
 				<mk-cw-button v-model="showContent"/>
 			</p>
-			<div class="content" v-show="p.cw == null || showContent">
+			<div class="content" v-show="appearNote.cw == null || showContent">
 				<div class="text">
-					<span v-if="p.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
-					<span v-if="p.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
-					<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i" :customEmojis="p.emojis"/>
+					<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
+					<span v-if="appearNote.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
+					<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :customEmojis="appearNote.emojis"/>
 				</div>
-				<div class="files" v-if="p.files.length > 0">
-					<mk-media-list :media-list="p.files" :raw="true"/>
+				<div class="files" v-if="appearNote.files.length > 0">
+					<mk-media-list :media-list="appearNote.files" :raw="true"/>
 				</div>
-				<mk-poll v-if="p.poll" :note="p"/>
+				<mk-poll v-if="appearNote.poll" :note="appearNote"/>
 				<mk-url-preview v-for="url in urls" :url="url" :key="url" :detail="true"/>
-				<a class="location" v-if="p.geo" :href="`https://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
-				<div class="map" v-if="p.geo" ref="map"></div>
-				<div class="renote" v-if="p.renote">
-					<mk-note-preview :note="p.renote"/>
+				<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
+				<div class="map" v-if="appearNote.geo" ref="map"></div>
+				<div class="renote" v-if="appearNote.renote">
+					<mk-note-preview :note="appearNote.renote"/>
 				</div>
 			</div>
 		</div>
-		<router-link class="time" :to="p | notePage">
-			<mk-time :time="p.createdAt" mode="detail"/>
+		<router-link class="time" :to="appearNote | notePage">
+			<mk-time :time="appearNote.createdAt" mode="detail"/>
 		</router-link>
+		<div class="visibility-info">
+			<span class="visibility" v-if="appearNote.visibility != 'public'">
+				<fa v-if="appearNote.visibility == 'home'" icon="home"/>
+				<fa v-if="appearNote.visibility == 'followers'" icon="unlock"/>
+				<fa v-if="appearNote.visibility == 'specified'" icon="envelope"/>
+				<fa v-if="appearNote.visibility == 'private'" icon="lock"/>
+			</span>
+			<span class="localOnly" v-if="appearNote.localOnly == true"><fa icon="heart"/></span>
+		</div>
 		<footer>
-			<mk-reactions-viewer :note="p"/>
+			<mk-reactions-viewer :note="appearNote"/>
 			<button @click="reply" :title="$t('title')">
-				<template v-if="p.reply"><fa icon="reply-all"/></template>
+				<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 				<template v-else><fa icon="reply"/></template>
-				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
+				<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 			</button>
 			<button @click="renote" title="Renote">
-				<fa icon="retweet"/><p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
+				<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 			</button>
-			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" :title="$t('title')">
-				<fa icon="plus"/><p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
+			<button :class="{ reacted: appearNote.myReaction != null }" @click="react" ref="reactButton" :title="$t('title')">
+				<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">
 				<fa icon="ellipsis-h"/>
@@ -130,19 +139,19 @@ export default Vue.extend({
 				this.note.poll == null);
 		},
 
-		p(): any {
+		appearNote(): any {
 			return this.isRenote ? this.note.renote : this.note;
 		},
 
 		reactionsCount(): number {
-			return this.p.reactionCounts
-				? sum(Object.values(this.p.reactionCounts))
+			return this.appearNote.reactionCounts
+				? sum(Object.values(this.appearNote.reactionCounts))
 				: 0;
 		},
 
 		urls(): string[] {
-			if (this.p.text) {
-				const ast = parse(this.p.text);
+			if (this.appearNote.text) {
+				const ast = parse(this.appearNote.text);
 				return unique(ast
 					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
 					.map(t => t.url));
@@ -156,7 +165,7 @@ export default Vue.extend({
 		// Get replies
 		if (!this.compact) {
 			this.$root.api('notes/replies', {
-				noteId: this.p.id,
+				noteId: this.appearNote.id,
 				limit: 8
 			}).then(replies => {
 				this.replies = replies;
@@ -164,11 +173,11 @@ export default Vue.extend({
 		}
 
 		// Draw map
-		if (this.p.geo) {
+		if (this.appearNote.geo) {
 			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
 			if (shouldShowMap) {
 				this.$root.os.getGoogleMaps().then(maps => {
-					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
+					const uluru = new maps.LatLng(this.appearNote.geo.coordinates[1], this.appearNote.geo.coordinates[0]);
 					const map = new maps.Map(this.$refs.map, {
 						center: uluru,
 						zoom: 15
@@ -188,7 +197,7 @@ export default Vue.extend({
 
 			// Fetch conversation
 			this.$root.api('notes/conversation', {
-				noteId: this.p.replyId
+				noteId: this.appearNote.replyId
 			}).then(conversation => {
 				this.conversationFetching = false;
 				this.conversation = conversation.reverse();
@@ -197,20 +206,20 @@ export default Vue.extend({
 
 		reply() {
 			this.$post({
-				reply: this.p
+				reply: this.appearNote
 			});
 		},
 
 		renote() {
 			this.$post({
-				renote: this.p
+				renote: this.appearNote
 			});
 		},
 
 		react() {
 			this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
-				note: this.p,
+				note: this.appearNote,
 				compact: true,
 				big: true
 			});
@@ -219,7 +228,7 @@ export default Vue.extend({
 		menu() {
 			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
-				note: this.p,
+				note: this.appearNote,
 				compact: true
 			});
 		}
@@ -399,6 +408,12 @@ export default Vue.extend({
 		> .time
 			font-size 16px
 			color var(--noteHeaderInfo)
+
+		> .visibility-info
+			color var(--noteHeaderInfo)
+
+			> .localOnly
+				margin-left 4px
 
 		> footer
 			font-size 1.2em
