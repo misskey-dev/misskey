@@ -123,7 +123,7 @@ common:
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
   view-on-remote: "View it on remote"
-  renoted-by: "{user}がRenote"
+  renoted-by: "Renoted by {user}"
   error:
     title: 'Something happened :('
     retry: 'Retry'
