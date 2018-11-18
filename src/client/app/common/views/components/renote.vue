@@ -6,6 +6,7 @@
 		<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId" place="user">{{ note.user | userName }}</router-link>
 	</i18n>
 	<div class="info">
+		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>
 		<mk-time :time="note.createdAt"/>
 		<span class="visibility" v-if="note.visibility != 'public'">
 			<fa v-if="note.visibility == 'home'" icon="home"/>
@@ -86,9 +87,10 @@ export default Vue.extend({
 		margin-left auto
 		font-size 0.9em
 
+		> .mobile
+			margin-right 8px
+
 		> .mk-time
-			display block
-			margin-left auto
 			flex-shrink 0
 
 		> .visibility
