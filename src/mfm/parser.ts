@@ -2,9 +2,9 @@ import * as P from 'parsimmon';
 import parseAcct from '../misc/acct/parse';
 import { toUnicode } from 'punycode';
 
-type Node = {
+export type Node = {
 	name: string,
-	children: Node[],
+	children?: Node[],
 	props?: any;
 };
 
@@ -157,6 +157,8 @@ const mfm = P.createLanguage({
 		.map(x => makeNode('url', { url: x })),
 	//#endregion
 });
+
+export default mfm;
 
 console.log(mfm.root.tryParse('aaa**important text @foo bar**bbb'));
 console.log(mfm.root.tryParse('```\naaa```bbb\n```'));
