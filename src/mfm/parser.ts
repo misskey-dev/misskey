@@ -70,6 +70,14 @@ const mfm = P.createLanguage({
 		})),
 	//#endregion
 
+	//#region Hashtag
+	hashtag: r =>
+		P.regexp(/^\s#([^\s\.,!\?#]+)/i, 1)
+		.map(x => makeNode('hashtag', {
+			hashtag: x
+		})),
+	//#endregion
+
 	//#region Mention
 	mention: r =>
 		P.regexp(/^[^a-z0-9](@[a-z0-9_]+(?:@[a-z0-9\.\-]+[a-z0-9])?)/i, 1)
