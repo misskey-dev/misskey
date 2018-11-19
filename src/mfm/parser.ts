@@ -2,6 +2,20 @@ import * as P from 'parsimmon';
 import parseAcct from '../misc/acct/parse';
 import { toUnicode } from 'punycode';
 
+type Node = {
+	name: string,
+	children: Node[],
+	props?: any;
+};
+
+function makeNode(name: string, children: Node[], props?: any): Node {
+	return {
+		name,
+		children,
+		props
+	};
+}
+
 const mfm = P.createLanguage({
 	root: r => P.alt(
 		r.bold,
@@ -20,12 +34,7 @@ const mfm = P.createLanguage({
 			P.any
 		).atLeast(1))
 		.skip(r.boldMarker)
-		.map(x => {
-			return {
-				type: 'bold',
-				children: x
-			};
-		}),
+		.map(x => makeNode('bold', x)),
 	//#endregion
 
 	//#region Mention
@@ -34,24 +43,20 @@ const mfm = P.createLanguage({
 		.map(x => {
 			const { username, host } = parseAcct(x.substr(1));
 			const canonical = host != null ? `@${username}@${toUnicode(host)}` : x;
-			return {
-				type: 'mention',
+			return makeNode('mention', null, {
 				canonical,
 				username,
 				host
-			};
+			});
 		}),
 	//#endregion
 
 	//#region Emoji
 	emoji: r =>
 		P.regexp(/^:([a-z0-9_+-]+):/i, 1)
-		.map(x => {
-			return {
-				type: 'emoji',
-				name: x
-			};
-		}),
+		.map(x => makeNode('emoji', null, {
+			name: x
+		})),
 	//#endregion
 });
 
