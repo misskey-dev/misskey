@@ -29,16 +29,17 @@ const mfm = P.createLanguage({
 	).many(),
 
 	//#region Bold
-	boldMarker: () => P.string('**'),
-	bold: r =>
-		r.boldMarker
-		.then(P.alt(
-			r.mention,
-			r.emoji,
-			text('**')
-		).atLeast(1))
-		.skip(r.boldMarker)
-		.map(x => makeNode('bold', x)),
+	bold: r => {
+		const marker = '**';
+		return P.string(marker)
+			.then(P.alt(
+				r.mention,
+				r.emoji,
+				text(marker)
+			).atLeast(1))
+			.skip(P.string(marker))
+			.map(x => makeNode('bold', x));
+	},
 	//#endregion
 
 	//#region Mention
@@ -62,6 +63,19 @@ const mfm = P.createLanguage({
 			name: x
 		})),
 	//#endregion
+
+	//#region Block code
+	blockCode: r => {
+		const marker = '```';
+		return P.string(marker)
+			.then(P.alt(
+				text(marker)
+			).atLeast(1))
+			.skip(P.string(marker))
+			.map(x => makeNode('blockCode', x));
+	},
+	//#endregion
 });
 
-console.log(mfm.root.tryParse('aaa**important text**bbb'));
+console.log(mfm.root.tryParse('aaa**important text @foo bar**bbb'));
+console.log(mfm.root.tryParse('```\naaa```bbb\n```'));
