@@ -29,8 +29,12 @@ const mfm = P.createLanguage({
 		r.big,
 		r.bold,
 		r.url,
+		r.link,
 		r.mention,
+		r.hashtag,
 		r.emoji,
+		r.blockCode,
+		r.inlineCode,
 		r.text
 	).many(),
 
@@ -78,6 +82,25 @@ const mfm = P.createLanguage({
 		})),
 	//#endregion
 
+	//#region Inline code
+	inlineCode: r =>
+		P.regexp(/^`(.+?)`/, 1)
+		.map(x => makeNode('inlineCode', x)),
+	//#endregion
+
+	//#region Link
+	link: r =>
+		P.seqObj(
+			P.string('['),
+			['text', P.regexp(/[^\n\[\]]+/)] as any,
+			P.string(']'),
+			P.string('('),
+			['url', r.url] as any,
+			P.string(')'),
+		)
+		.map(x => makeNode('link', x)),
+	//#endregion
+
 	//#region Mention
 	mention: r =>
 		P.regexp(/^[^a-z0-9](@[a-z0-9_]+(?:@[a-z0-9\.\-]+[a-z0-9])?)/i, 1)
@@ -101,6 +124,7 @@ const mfm = P.createLanguage({
 			if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
 			if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
 			if (url.endsWith(')') && before == '(') url = url.substr(0, url.lastIndexOf(')'));
+			if (url.endsWith(']') && before == '[') url = url.substr(0, url.lastIndexOf(']'));
 			return P.makeSuccess(i + url.length, url);
 		})
 		.map(x => makeNode('url', { url: x })),
@@ -110,3 +134,4 @@ const mfm = P.createLanguage({
 console.log(mfm.root.tryParse('aaa**important text @foo bar**bbb'));
 console.log(mfm.root.tryParse('```\naaa```bbb\n```'));
 console.log(mfm.root.tryParse('foo https://example.com. bar'));
+console.log(mfm.root.tryParse('f[oo [text](https://example.com) bar'));
