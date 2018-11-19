@@ -49,7 +49,7 @@ common:
     days_ago: "vor {} Tag(en)"
     weeks_ago: "vor {} Woche(n)"
     months_ago: "vor {} Monat(en)"
-    years_ago: "vor {} Jahr{0:en}"
+    years_ago: "vor {} Jahr(en)"
   month-and-day: "{day}/{month}"
   trash: "Papierkorb"
   drive: "ドライブ"
