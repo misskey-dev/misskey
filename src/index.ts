@@ -103,6 +103,10 @@ async function workerMain() {
 	}
 }
 
+const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseInt(x, 10));
+const requiredNodejsVersion = [10, 0, 0];
+const satisfyNodejsVersion = !lessThan(runningNodejsVersion, requiredNodejsVersion);
+
 /**
  * Init app
  */
@@ -110,9 +114,10 @@ async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
 	Logger.info(`<<< Misskey v${pkg.version} >>>`);
 
-	new Logger('Nodejs').info(`Version ${process.version}`);
-	if (lessThan(process.version.slice(1).split('.').map(x => parseInt(x, 10)), [10, 0, 0])) {
-		new Logger('Nodejs').error(`Node.js version is less than 10.0.0. Please upgrade it.`);
+	new Logger('Nodejs').info(`Version ${runningNodejsVersion.join('.')}`);
+
+	if (!satisfyNodejsVersion) {
+		new Logger('Nodejs').error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`);
 		process.exit(1);
 	}
 
