@@ -136,15 +136,15 @@ describe('Text', () => {
 			const tokens2 = analyze('Foo #bar, baz #piyo.');
 			assert.deepEqual([
 				text('Foo '),
-				node('hashtag', { hashtag: 'bar' })
+				node('hashtag', { hashtag: 'bar' }),
 				text(', baz '),
-				node('hashtag', { hashtag: 'piyo' })
+				node('hashtag', { hashtag: 'piyo' }),
 				text('.'),
 			], tokens2);
 
 			const tokens3 = analyze('#Foo!');
 			assert.deepEqual([
-				node('hashtag', { hashtag: 'Foo' })
+				node('hashtag', { hashtag: 'Foo' }),
 				text('!'),
 			], tokens3);
 		});
@@ -269,32 +269,34 @@ describe('Text', () => {
 		it('emoji', () => {
 			const tokens1 = analyze(':cat:');
 			assert.deepEqual([
-				node('emoji', name: 'cat' }
+				node('emoji', { name: 'cat' })
 			], tokens1);
 
 			const tokens2 = analyze(':cat::cat::cat:');
 			assert.deepEqual([
-				node('emoji', name: 'cat' },
-				node('emoji', name: 'cat' },
-				node('emoji', name: 'cat' }
+				node('emoji', { name: 'cat' }),
+				node('emoji', { name: 'cat' }),
+				node('emoji', { name: 'cat' })
 			], tokens2);
 
 			const tokens3 = analyze('🍎');
 			assert.deepEqual([
-				node('emoji', emoji: '🍎' }
+				node('emoji', { emoji: '🍎' })
 			], tokens3);
 		});
 
 		it('block code', () => {
 			const tokens = analyze('```\nvar x = "Strawberry Pasta";\n```');
-			assert.equal(tokens[0].type, 'code');
-			assert.equal(tokens[0].content, '```\nvar x = "Strawberry Pasta";\n```');
+			assert.deepEqual([
+				node('blockCode', { code: 'var x = "Strawberry Pasta";' })
+			], tokens);
 		});
 
 		it('inline code', () => {
 			const tokens = analyze('`var x = "Strawberry Pasta";`');
-			assert.equal(tokens[0].type, 'inline-code');
-			assert.equal(tokens[0].content, '`var x = "Strawberry Pasta";`');
+			assert.deepEqual([
+				node('inlineCode', { code: 'var x = "Strawberry Pasta";' })
+			], tokens);
 		});
 
 		it('math', () => {
@@ -302,53 +304,61 @@ describe('Text', () => {
 			const text = `\\(${fomula}\\)`;
 			const tokens = analyze(text);
 			assert.deepEqual([
-				node('math', content: text, formula: fomula }
+				node('math', { formula: fomula })
 			], tokens);
 		});
 
 		it('search', () => {
 			const tokens1 = analyze('a b c 検索');
 			assert.deepEqual([
-				node('search', query: 'a b c' }
+				node('search', { query: 'a b c' })
 			], tokens1);
 
 			const tokens2 = analyze('a b c Search');
 			assert.deepEqual([
-				node('search', query: 'a b c' }
+				node('search', { query: 'a b c' })
 			], tokens2);
 
 			const tokens3 = analyze('a b c search');
 			assert.deepEqual([
-				node('search', query: 'a b c' }
+				node('search', { query: 'a b c' })
 			], tokens3);
 
 			const tokens4 = analyze('a b c SEARCH');
 			assert.deepEqual([
-				node('search', query: 'a b c' }
+				node('search', { query: 'a b c' })
 			], tokens4);
 		});
 
 		it('title', () => {
 			const tokens1 = analyze('【yee】\nhaw');
-			assert.deepEqual(
-				node('title', title: 'yee' }
-				, tokens1[0]);
+			assert.deepEqual([
+				nodeWithChildren('title', [
+					text('yee')
+				]),
+				text('haw')
+			], tokens1[0]);
 
 			const tokens2 = analyze('[yee]\nhaw');
-			assert.deepEqual(
-				node('title', title: 'yee' }
-				, tokens2[0]);
+			assert.deepEqual([
+				nodeWithChildren('title', [
+					text('yee')
+				]),
+				text('haw')
+			], tokens2[0]);
 
 			const tokens3 = analyze('a [a]\nb [b]\nc [c]');
-			assert.deepEqual(
-				node('text' }
-				, tokens3[0]);
+			assert.deepEqual([
+				text('a [a]\nb [b]\nc [c]')
+			], tokens3[0]);
 
 			const tokens4 = analyze('foo\n【bar】\nbuzz');
 			assert.deepEqual([
-				node('text' },
-				node('title', title: 'bar' },
-				node('text' },
+				text('foo\n'),
+				nodeWithChildren('title', [
+					text('bar')
+				]),
+				text('\nbuzz'),
 			], tokens4);
 		});
 	});
