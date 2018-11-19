@@ -189,6 +189,8 @@ router.get('/*/api/endpoints/*', async ctx => {
 	};
 
 	await ctx.render('../../../../src/docs/api/endpoints/view', Object.assign(await genVars(lang), vars));
+
+	ctx.set('Cache-Control', 'public, max-age=300');
 });
 
 router.get('/*/api/entities/*', async ctx => {
@@ -204,6 +206,8 @@ router.get('/*/api/entities/*', async ctx => {
 		props: sortParams(Object.entries(x.props).map(([k, v]) => parsePropDefinition(k, v))),
 		propDefs: extractPropDefRef(x.props)
 	}));
+
+	ctx.set('Cache-Control', 'public, max-age=300');
 });
 
 router.get('/*/*', async ctx => {
@@ -240,6 +244,8 @@ router.get('/*/*', async ctx => {
 		title: md.match(/^# (.+?)\r?\n/)[1],
 		src: `https://github.com/syuilo/misskey/tree/master/src/docs/${doc}.${lang}.md`
 	}, await genVars(lang)));
+
+	ctx.set('Cache-Control', 'public, max-age=300');
 });
 
 export default router;
