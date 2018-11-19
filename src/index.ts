@@ -14,11 +14,10 @@ import * as portscanner from 'portscanner';
 import isRoot = require('is-root');
 import Xev from 'xev';
 import * as program from 'commander';
+import * as sysUtils from 'systeminformation';
 import mongo, { nativeDbConn } from './db/mongodb';
 
 import Logger from './misc/logger';
-import EnvironmentInfo from './misc/environmentInfo';
-import MachineInfo from './misc/machineInfo';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
@@ -107,6 +106,31 @@ const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseI
 const requiredNodejsVersion = [10, 0, 0];
 const satisfyNodejsVersion = !lessThan(runningNodejsVersion, requiredNodejsVersion);
 
+async function showMachine() {
+	const logger = new Logger('Machine');
+	logger.info(`Hostname: ${os.hostname()}`);
+	logger.info(`Platform: ${process.platform}`);
+	logger.info(`Architecture: ${process.arch}`);
+	logger.info(`CPU: ${os.cpus().length} core`);
+	const mem = await sysUtils.mem();
+	const totalmem = (mem.total / 1024 / 1024 / 1024).toFixed(1);
+	const availmem = (mem.available / 1024 / 1024 / 1024).toFixed(1);
+	logger.info(`MEM: ${totalmem}GB (available: ${availmem}GB)`);
+}
+
+function showEnvironment(): void {
+	const env = process.env.NODE_ENV;
+	const logger = new Logger('Env');
+	logger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
+
+	if (env !== 'production') {
+		logger.warn('The environment is not in production mode');
+		logger.warn('Do not use for production purpose');
+	}
+
+	logger.info(`You ${isRoot() ? '' : 'do not '}have root privileges`);
+}
+
 /**
  * Init app
  */
@@ -121,8 +145,8 @@ async function init(): Promise<Config> {
 		process.exit(1);
 	}
 
-	await MachineInfo.show();
-	EnvironmentInfo.show();
+	await showMachine();
+	showEnvironment();
 
 	const configLogger = new Logger('Config');
 	let config;
