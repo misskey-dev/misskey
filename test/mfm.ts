@@ -185,19 +185,14 @@ describe('Text', () => {
 
 			it('nested', () => {
 				const tokens = analyze('>> foo\n> bar');
-				assert.deepEqual([{
-					name: 'quote',
-					children: [{
-						name: 'quote',
-						children: [{
-							name: 'text',
-							text: 'foo'
-						}]
-					}, {
-						name: 'text',
-						text: 'bar'
-					}]
-				}], tokens);
+				assert.deepEqual([
+					nodeWithChildren('quote', [
+						nodeWithChildren('quote', [
+							node('text', { text: 'foo' })
+						]),
+						node('text', { text: 'bar' })
+					])
+				], tokens);
 			});
 		});
 
