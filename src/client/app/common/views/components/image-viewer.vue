@@ -65,5 +65,6 @@ export default Vue.extend({
 		max-height 100%
 		margin auto
 		cursor zoom-out
+		image-orientation from-image
 
 </style>
