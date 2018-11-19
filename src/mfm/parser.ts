@@ -21,8 +21,10 @@ const mfm = P.createLanguage({
 		r.bold,
 		r.mention,
 		r.emoji,
-		P.any
+		r.text
 	).many(),
+
+	text: () => P.any,
 
 	//#region Bold
 	boldMarker: () => P.string('**'),
@@ -31,7 +33,7 @@ const mfm = P.createLanguage({
 		.then(P.alt(
 			r.mention,
 			r.emoji,
-			P.any
+			r.text
 		).atLeast(1))
 		.skip(r.boldMarker)
 		.map(x => makeNode('bold', x)),
