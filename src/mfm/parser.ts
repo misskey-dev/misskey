@@ -24,7 +24,7 @@ const mfm = P.createLanguage({
 		r.text
 	).many(),
 
-	text: () => P.any,
+	text: () => P.any.map(x => makeNode('text', null, { text: x })),
 
 	//#region Bold
 	boldMarker: () => P.string('**'),
