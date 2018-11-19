@@ -29,17 +29,13 @@ const mfm = P.createLanguage({
 	).many(),
 
 	//#region Bold
-	bold: r => {
-		const marker = '**';
-		return P.string(marker)
-			.then(P.alt(
+	bold: r =>
+		P.regexp(/^\*\*([\s\S]+?)\*\*/, 1)
+			.map(x => makeNode('bold', P.alt(
 				r.mention,
 				r.emoji,
-				text(marker)
-			).atLeast(1))
-			.skip(P.string(marker))
-			.map(x => makeNode('bold', x));
-	},
+				text()
+			).atLeast(1).tryParse(x))),
 	//#endregion
 
 	//#region Mention
