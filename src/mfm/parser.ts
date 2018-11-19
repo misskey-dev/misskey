@@ -91,6 +91,7 @@ const mfm = P.createLanguage({
 	//#region Link
 	link: r =>
 		P.seqObj(
+			['silent', P.string('?').fallback(null).map(x => x != null)] as any,
 			P.string('['),
 			['text', P.regexp(/[^\n\[\]]+/)] as any,
 			P.string(']'),
