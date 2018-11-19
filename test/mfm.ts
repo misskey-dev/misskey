@@ -19,16 +19,20 @@ function nodeWithChildren(name: string, children: any[], props?: any) {
 	return _node(name, children, props);
 }
 
+function text(text: string) {
+	return node('text', { text });
+}
+
 describe('Text', () => {
 	it('can be analyzed', () => {
 		const tokens = analyze('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
 		assert.deepEqual([
 			node('mention', { canonical: '@himawari', username: 'himawari', host: null }),
-			node('text', { text: ' ' }),
+			text(' '),
 			node('mention', { canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
-			node('text', { text: ' ' }),
+			text(' '),
 			node('emoji', { name: 'cat' }),
-			node('text', { text: ' ' }),
+			text(' '),
 			node('hashtag', { hashtag: 'yryr' }),
 		], tokens);
 	});
@@ -38,9 +42,9 @@ describe('Text', () => {
 			const tokens = analyze('**Strawberry** Pasta');
 			assert.deepEqual([
 				nodeWithChildren('bold', [
-					node('text', { text: 'Strawberry' })
+					text('Strawberry')
 				]),
-				node('text', { text: ' Pasta' }),
+				text(' Pasta'),
 			], tokens);
 		});
 
@@ -48,9 +52,9 @@ describe('Text', () => {
 			const tokens = analyze('***Strawberry*** Pasta');
 			assert.deepEqual([
 				nodeWithChildren('big', [
-					node('text', { text: 'Strawberry' })
+					text('Strawberry')
 				]),
-				node('text', { text: ' Pasta' }),
+				text(' Pasta'),
 			], tokens);
 		});
 
@@ -58,17 +62,17 @@ describe('Text', () => {
 			const tokens1 = analyze('(((Strawberry))) Pasta');
 			assert.deepEqual([
 				nodeWithChildren('motion', [
-					node('text', { text: 'Strawberry' })
+					text('Strawberry')
 				]),
-				node('text', { text: ' Pasta' }),
+				text(' Pasta'),
 			], tokens1);
 
 			const tokens2 = analyze('<motion>Strawberry</motion> Pasta');
 			assert.deepEqual([
 				nodeWithChildren('motion', [
-					node('text', { text: 'Strawberry' })
+					text('Strawberry')
 				]),
-				node('text', { text: ' Pasta' }),
+				text(' Pasta'),
 			], tokens2);
 		});
 
@@ -77,7 +81,7 @@ describe('Text', () => {
 				const tokens = analyze('@himawari foo');
 				assert.deepEqual([
 					node('mention', { canonical: '@himawari', username: 'himawari', host: null }),
-					node('text', { text: ' foo' })
+					text(' foo')
 				], tokens);
 			});
 
@@ -85,7 +89,7 @@ describe('Text', () => {
 				const tokens = analyze('@hima_sub@namori.net foo');
 				assert.deepEqual([
 					node('mention', { canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
-					node('text', { text: ' foo' })
+					text(' foo')
 				], tokens);
 			});
 
@@ -93,29 +97,29 @@ describe('Text', () => {
 				const tokens = analyze('@hima_sub@xn--q9j5bya.xn--zckzah foo');
 				assert.deepEqual([
 					node('mention', { canonical: '@hima_sub@なもり.テスト', username: 'hima_sub', host: 'xn--q9j5bya.xn--zckzah' }),
-					node('text', { text: ' foo' })
+					text(' foo')
 				], tokens);
 			});
 
 			it('ignore', () => {
 				const tokens = analyze('idolm@ster');
 				assert.deepEqual([
-					node('text', { text: 'idolm@ster' })
+					text('idolm@ster')
 				], tokens);
 
 				const tokens2 = analyze('@a\n@b\n@c');
 				assert.deepEqual([
 					node('mention', { canonical: '@a', username: 'a', host: null }),
-					node('text', { text: '\n' }),
+					text('\n'),
 					node('mention', { canonical: '@b', username: 'b', host: null }),
-					node('text', { text: '\n' }),
+					text('\n'),
 					node('mention', { canonical: '@c', username: 'c', host: null })
 				], tokens2);
 
 				const tokens3 = analyze('**x**@a');
 				assert.deepEqual([
 					node('bold', [
-						node('text', { text: 'x' })
+						text('x')
 					]),
 					node('mention', { canonical: '@a', username: 'a', host: null })
 				], tokens3);
@@ -125,23 +129,23 @@ describe('Text', () => {
 		it('hashtag', () => {
 			const tokens1 = analyze('Strawberry Pasta #alice');
 			assert.deepEqual([
-				node('text', { text: 'Strawberry Pasta ' }),
+				text('Strawberry Pasta '),
 				node('hashtag', { hashtag: 'alice' })
 			], tokens1);
 
 			const tokens2 = analyze('Foo #bar, baz #piyo.');
 			assert.deepEqual([
-				node('text', { text: 'Foo ' }),
+				text('Foo '),
 				node('hashtag', { hashtag: 'bar' })
-				node('text', { text: ', baz ' }),
+				text(', baz '),
 				node('hashtag', { hashtag: 'piyo' })
-				node('text', { text: '.' }),
+				text('.'),
 			], tokens2);
 
 			const tokens3 = analyze('#Foo!');
 			assert.deepEqual([
 				node('hashtag', { hashtag: 'Foo' })
-				node('text', { text: '!' }),
+				text('!'),
 			], tokens3);
 		});
 
@@ -150,35 +154,35 @@ describe('Text', () => {
 				const tokens1 = analyze('> foo\nbar\nbaz');
 				assert.deepEqual([
 					nodeWithChildren('quote', [
-						node('text', { text: 'foo\nbar\nbaz' })
+						text('foo\nbar\nbaz')
 					])
 				], tokens1);
 
 				const tokens2 = analyze('before\n> foo\nbar\nbaz\n\nafter');
 				assert.deepEqual([
-					node('text', { text: 'before\n' }),
+					text('before\n'),
 					nodeWithChildren('quote', [
-						node('text', { text: 'foo\nbar\nbaz' })
+						text('foo\nbar\nbaz')
 					]),
-					node('text', { text: '\nafter' })
+					text('\nafter')
 				], tokens2);
 
 				const tokens3 = analyze('piyo> foo\nbar\nbaz');
 				assert.deepEqual([
-					node('text', { text: 'piyo> foo\nbar\nbaz' })
+					text('piyo> foo\nbar\nbaz')
 				], tokens3);
 
 				const tokens4 = analyze('> foo\n> bar\n> baz');
 				assert.deepEqual([
 					nodeWithChildren('quote', [
-						node('text', { text: 'foo\nbar\nbaz' })
+						text('foo\nbar\nbaz')
 					])
 				], tokens4);
 
 				const tokens5 = analyze('"\nfoo\nbar\nbaz\n"');
 				assert.deepEqual([
 					nodeWithChildren('quote', [
-						node('text', { text: 'foo\nbar\nbaz' })
+						text('foo\nbar\nbaz')
 					])
 				], tokens5);
 			});
@@ -188,9 +192,9 @@ describe('Text', () => {
 				assert.deepEqual([
 					nodeWithChildren('quote', [
 						nodeWithChildren('quote', [
-							node('text', { text: 'foo' })
+							text('foo')
 						]),
-						node('text', { text: 'bar' })
+						text('bar')
 					])
 				], tokens);
 			});
@@ -199,89 +203,67 @@ describe('Text', () => {
 		describe('url', () => {
 			it('simple', () => {
 				const tokens = analyze('https://example.com');
-				assert.deepEqual([{
-					name: 'url',
-					content: 'https://example.com',
-					url: 'https://example.com'
-				}], tokens);
+				assert.deepEqual([
+					node('url', { url: 'https://example.com' })
+				], tokens);
 			});
 
 			it('ignore trailing period', () => {
 				const tokens = analyze('https://example.com.');
-				assert.deepEqual([{
-					name: 'url',
-					content: 'https://example.com',
-					url: 'https://example.com'
-				}, {
-					name: 'text'
-				}], tokens);
+				assert.deepEqual([
+					node('url', { url: 'https://example.com' }),
+					text('.')
+				], tokens);
 			});
 
 			it('with comma', () => {
 				const tokens = analyze('https://example.com/foo?bar=a,b');
-				assert.deepEqual([{
-					name: 'url',
-					content: 'https://example.com/foo?bar=a,b',
-					url: 'https://example.com/foo?bar=a,b'
-				}], tokens);
+				assert.deepEqual([
+					node('url', { url: 'https://example.com/foo?bar=a,b' })
+				], tokens);
 			});
 
 			it('ignore trailing comma', () => {
 				const tokens = analyze('https://example.com/foo, bar');
-				assert.deepEqual([{
-					name: 'url',
-					content: 'https://example.com/foo',
-					url: 'https://example.com/foo'
-				}, {
-					name: 'text'
-				}], tokens);
+				assert.deepEqual([
+					node('url', { url: 'https://example.com/foo' }),
+					text(', bar')
+				], tokens);
 			});
 
 			it('with brackets', () => {
 				const tokens = analyze('https://example.com/foo(bar)');
-				assert.deepEqual([{
-					name: 'url',
-					content: 'https://example.com/foo(bar)',
-					url: 'https://example.com/foo(bar)'
-				}], tokens);
+				assert.deepEqual([
+					node('url', { url: 'https://example.com/foo(bar)' })
+				], tokens);
 			});
 
 			it('ignore parent brackets', () => {
 				const tokens = analyze('(https://example.com/foo)');
-				assert.deepEqual([{
-					name: 'text'
-				}, {
-					name: 'url',
-					content: 'https://example.com/foo',
-					url: 'https://example.com/foo'
-				}, {
-					name: 'text'
-				}], tokens);
+				assert.deepEqual([
+					text('('),
+					node('url', { url: 'https://example.com/foo' }),
+					text(')')
+				], tokens);
 			});
 
 			it('ignore parent brackets with internal brackets', () => {
 				const tokens = analyze('(https://example.com/foo(bar))');
-				assert.deepEqual([{
-					name: 'text'
-				}, {
-					name: 'url',
-					content: 'https://example.com/foo(bar)',
-					url: 'https://example.com/foo(bar)'
-				}, {
-					name: 'text'
-				}], tokens);
+				assert.deepEqual([
+					text('('),
+					node('url', { url: 'https://example.com/foo(bar)' }),
+					text(')')
+				], tokens);
 			});
 		});
 
 		it('link', () => {
-			const tokens = analyze('[ひまさく](https://himasaku.net)');
-			assert.deepEqual([{
-				name: 'link',
-				content: '[ひまさく](https://himasaku.net)',
-				title: 'ひまさく',
-				url: 'https://himasaku.net',
-				silent: false
-			}], tokens);
+			const tokens = analyze('[foo](https://example.com)');
+			assert.deepEqual([
+				nodeWithChildren('link', [
+					text('foo')
+				], { url: 'https://example.com', silent: false })
+			], tokens);
 		});
 
 		it('emoji', () => {
