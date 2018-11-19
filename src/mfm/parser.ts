@@ -35,6 +35,7 @@ const mfm = P.createLanguage({
 		r.emoji,
 		r.blockCode,
 		r.inlineCode,
+		r.quote,
 		r.text
 	).many(),
 
@@ -114,6 +115,27 @@ const mfm = P.createLanguage({
 		}),
 	//#endregion
 
+	//#region Quote
+	quote: r =>
+		P.regexp(/\n(>[\s\S]+?)\n[^>]/, 1)
+		.map(x => {
+			const q = x.replace(/^>( +?)/gm, '');
+			return makeNodeWithChildren('quote', P.alt(
+				r.big,
+				r.bold,
+				r.url,
+				r.link,
+				r.mention,
+				r.hashtag,
+				r.emoji,
+				r.blockCode,
+				r.inlineCode,
+				r.quote,
+				r.text
+			).atLeast(1).tryParse(q));
+		}),
+	//#endregion
+
 	//#region URL
 	url: r =>
 		P((input, i) => {
@@ -136,3 +158,5 @@ console.log(mfm.root.tryParse('aaa**important text @foo bar**bbb'));
 console.log(mfm.root.tryParse('```\naaa```bbb\n```'));
 console.log(mfm.root.tryParse('foo https://example.com. bar'));
 console.log(mfm.root.tryParse('f[oo [text](https://example.com) bar'));
+console.log(mfm.root.tryParse('foo\n> bar\nyoo'));
+console.log(mfm.root.tryParse('foo\n> bar\n> **aaa**\nyoo'));
