@@ -42,8 +42,6 @@ program
 	.parse(process.argv);
 //#endregion
 
-main();
-
 /**
  * Init process
  */
@@ -246,3 +244,5 @@ process.on('exit', code => {
 });
 
 //#endregion
+
+main();
