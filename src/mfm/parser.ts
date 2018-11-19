@@ -31,11 +31,11 @@ const mfm = P.createLanguage({
 	//#region Bold
 	bold: r =>
 		P.regexp(/^\*\*([\s\S]+?)\*\*/, 1)
-			.map(x => makeNode('bold', P.alt(
-				r.mention,
-				r.emoji,
-				text()
-			).atLeast(1).tryParse(x))),
+		.map(x => makeNode('bold', P.alt(
+			r.mention,
+			r.emoji,
+			text()
+		).atLeast(1).tryParse(x))),
 	//#endregion
 
 	//#region Mention
@@ -45,9 +45,7 @@ const mfm = P.createLanguage({
 			const { username, host } = parseAcct(x.substr(1));
 			const canonical = host != null ? `@${username}@${toUnicode(host)}` : x;
 			return makeNode('mention', null, {
-				canonical,
-				username,
-				host
+				canonical, username, host
 			});
 		}),
 	//#endregion
@@ -61,15 +59,9 @@ const mfm = P.createLanguage({
 	//#endregion
 
 	//#region Block code
-	blockCode: r => {
-		const marker = '\n```';
-		return P.string(marker)
-			.then(P.alt(
-				text(marker)
-			).atLeast(1))
-			.skip(P.string(marker))
-			.map(x => makeNode('blockCode', x));
-	},
+	blockCode: r =>
+		P.regexp(/^```([\s\S]+?)```/, 1)
+		.map(x => makeNode('blockCode', null, x)),
 	//#endregion
 });
 
