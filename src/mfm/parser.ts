@@ -117,10 +117,13 @@ const mfm = P.createLanguage({
 
 	//#region Quote
 	quote: r =>
-		P.regexp(/\n(>[\s\S]+?)\n[^>]/, 1)
-		.map(x => {
-			const q = x.replace(/^>( +?)/gm, '');
-			return makeNodeWithChildren('quote', P.alt(
+		P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^(>[\s\S]+?)((\n[^>])|$)/);
+			if (!match) return P.makeFailure(i, 'not a quote');
+			if (input[i - 1] != '\n' && input[i - 1] != null) return P.makeFailure(i, 'require line break before ">"');
+			const q = match[1].replace(/^>/gm, '');
+			const contents = P.alt(
 				r.big,
 				r.bold,
 				r.url,
@@ -132,7 +135,8 @@ const mfm = P.createLanguage({
 				r.inlineCode,
 				r.quote,
 				r.text
-			).atLeast(1).tryParse(q));
+			).atLeast(1).tryParse(q);
+			return P.makeSuccess(i + match[1].length, makeNodeWithChildren('quote', contents));
 		}),
 	//#endregion
 
@@ -160,3 +164,5 @@ console.log(mfm.root.tryParse('foo https://example.com. bar'));
 console.log(mfm.root.tryParse('f[oo [text](https://example.com) bar'));
 console.log(mfm.root.tryParse('foo\n> bar\nyoo'));
 console.log(mfm.root.tryParse('foo\n> bar\n> **aaa**\nyoo'));
+console.log(mfm.root.tryParse('> bar'));
+console.log(mfm.root.tryParse('>> foo\n>bar'));
