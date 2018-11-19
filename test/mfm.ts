@@ -15,7 +15,7 @@ function node(name: string, props?: any) {
 	return _node(name, null, props);
 }
 
-function nodeWithChildren(name: string, children: any[], props: any) {
+function nodeWithChildren(name: string, children: any[], props?: any) {
 	return _node(name, children, props);
 }
 
@@ -105,17 +105,19 @@ describe('Text', () => {
 
 				const tokens2 = analyze('@a\n@b\n@c');
 				assert.deepEqual([
-					node('mention', canonical: '@a', username: 'a', host: null },
-					node('text' },
-					node('mention', canonical: '@b', username: 'b', host: null },
-					node('text' },
-					node('mention', canonical: '@c', username: 'c', host: null }
+					node('mention', { canonical: '@a', username: 'a', host: null }),
+					node('text', { text: '\n' }),
+					node('mention', { canonical: '@b', username: 'b', host: null }),
+					node('text', { text: '\n' }),
+					node('mention', { canonical: '@c', username: 'c', host: null })
 				], tokens2);
 
 				const tokens3 = analyze('**x**@a');
 				assert.deepEqual([
-					node('bold', bold: 'x' },
-					node('mention', canonical: '@a', username: 'a', host: null }
+					node('bold', [
+						node('text', { text: 'x' })
+					]),
+					node('mention', { canonical: '@a', username: 'a', host: null })
 				], tokens3);
 			});
 		});
@@ -123,23 +125,23 @@ describe('Text', () => {
 		it('hashtag', () => {
 			const tokens1 = analyze('Strawberry Pasta #alice');
 			assert.deepEqual([
-				node('text' },
-				node('hashtag', hashtag: 'alice' }
+				node('text', { text: 'Strawberry Pasta ' }),
+				node('hashtag', { hashtag: 'alice' })
 			], tokens1);
 
 			const tokens2 = analyze('Foo #bar, baz #piyo.');
 			assert.deepEqual([
-				node('text' },
-				node('hashtag', hashtag: 'bar' },
-				node('text' },
-				node('hashtag', hashtag: 'piyo' },
-				node('text' }
+				node('text', { text: 'Foo ' }),
+				node('hashtag', { hashtag: 'bar' })
+				node('text', { text: ', baz ' }),
+				node('hashtag', { hashtag: 'piyo' })
+				node('text', { text: '.' }),
 			], tokens2);
 
 			const tokens3 = analyze('#Foo!');
 			assert.deepEqual([
-				node('hashtag', hashtag: 'Foo' },
-				node('text' },
+				node('hashtag', { hashtag: 'Foo' })
+				node('text', { text: '!' }),
 			], tokens3);
 		});
 
@@ -147,29 +149,37 @@ describe('Text', () => {
 			it('basic', () => {
 				const tokens1 = analyze('> foo\nbar\nbaz');
 				assert.deepEqual([
-					node('quote', quote: 'foo\nbar\nbaz' }
+					nodeWithChildren('quote', [
+						node('text', { text: 'foo\nbar\nbaz' })
+					])
 				], tokens1);
 
 				const tokens2 = analyze('before\n> foo\nbar\nbaz\n\nafter');
 				assert.deepEqual([
-					node('text' },
-					node('quote', quote: 'foo\nbar\nbaz' },
-					node('text' }
+					node('text', { text: 'before\n' }),
+					nodeWithChildren('quote', [
+						node('text', { text: 'foo\nbar\nbaz' })
+					]),
+					node('text', { text: '\nafter' })
 				], tokens2);
 
 				const tokens3 = analyze('piyo> foo\nbar\nbaz');
 				assert.deepEqual([
-					node('text' }
+					node('text', { text: 'piyo> foo\nbar\nbaz' })
 				], tokens3);
 
 				const tokens4 = analyze('> foo\n> bar\n> baz');
 				assert.deepEqual([
-					node('quote', quote: 'foo\nbar\nbaz' }
+					nodeWithChildren('quote', [
+						node('text', { text: 'foo\nbar\nbaz' })
+					])
 				], tokens4);
 
 				const tokens5 = analyze('"\nfoo\nbar\nbaz\n"');
 				assert.deepEqual([
-					node('quote', quote: 'foo\nbar\nbaz' }
+					nodeWithChildren('quote', [
+						node('text', { text: 'foo\nbar\nbaz' })
+					])
 				], tokens5);
 			});
 
