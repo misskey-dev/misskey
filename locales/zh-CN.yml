@@ -123,6 +123,7 @@ common:
   is-remote-user: "该用户的信息已被复制."
   is-remote-post: "该投稿已被复制."
   view-on-remote: "查看准确的信息"
+  renoted-by: "{user}がRenote"
   error:
     title: '哦不, 发生了一些问题! :('
     retry: '重试'
@@ -643,12 +644,10 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   private: "私密投稿"
   deleted: "投稿已删除"
-  reposted-by: "由{}转发"
   location: "位置信息"
   renote: "转发"
   add-reaction: "添加一个反应"
 desktop/views/components/note.vue:
-  reposted-by: "由{}转发"
   reply: "回复"
   renote: "Renote"
   add-reaction: "添加一个反应"
@@ -1212,14 +1211,12 @@ mobile/views/components/friends-maker.vue:
   refresh: "浏览更多"
   close: "关闭"
 mobile/views/components/note.vue:
-  reposted-by: "由{}转发"
   private: "私密帖子"
   deleted: "帖子已删除"
   location: "位置信息"
 mobile/views/components/note-detail.vue:
   reply: "回复"
   reaction: "反应"
-  reposted-by: "由{}Renote"
   private: "这个帖子是私密的"
   deleted: "帖子已删除"
   location: "位置信息"

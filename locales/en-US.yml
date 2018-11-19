@@ -123,6 +123,7 @@ common:
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
   view-on-remote: "View it on remote"
+  renoted-by: "Renoted by {user}"
   error:
     title: 'Something happened :('
     retry: 'Retry'
@@ -643,12 +644,10 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   private: "Post is private"
   deleted: "Post has been removed"
-  reposted-by: "Reposted by {}"
   location: "Location"
   renote: "Repost"
   add-reaction: "Add a reaction"
 desktop/views/components/note.vue:
-  reposted-by: "Reposted by {}"
   reply: "Reply"
   renote: "Renote"
   add-reaction: "Add a reaction"
@@ -1212,14 +1211,12 @@ mobile/views/components/friends-maker.vue:
   refresh: "See more"
   close: "Close"
 mobile/views/components/note.vue:
-  reposted-by: "Reposted by {}"
   private: "This post is private"
   deleted: "This post has been deleted"
   location: "Location"
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
-  reposted-by: "Reposted by {}"
   private: "This post is private"
   deleted: "This post has been deleted"
   location: "Location"
