@@ -66,7 +66,7 @@ const mfm = P.createLanguage({
 
 	//#region Block code
 	blockCode: r => {
-		const marker = '```';
+		const marker = '\n```';
 		return P.string(marker)
 			.then(P.alt(
 				text(marker)
