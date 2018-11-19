@@ -16,15 +16,17 @@ function makeNode(name: string, children: Node[], props?: any): Node {
 	};
 }
 
+function text(none?: string) {
+	return (none ? P.noneOf(none) : P.any).map(x => makeNode('text', null, { text: x }));
+}
+
 const mfm = P.createLanguage({
 	root: r => P.alt(
 		r.bold,
 		r.mention,
 		r.emoji,
-		r.text
+		text()
 	).many(),
-
-	text: () => P.any.map(x => makeNode('text', null, { text: x })),
 
 	//#region Bold
 	boldMarker: () => P.string('**'),
@@ -33,7 +35,7 @@ const mfm = P.createLanguage({
 		.then(P.alt(
 			r.mention,
 			r.emoji,
-			r.text
+			text('**')
 		).atLeast(1))
 		.skip(r.boldMarker)
 		.map(x => makeNode('bold', x)),
