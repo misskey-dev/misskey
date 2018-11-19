@@ -123,7 +123,7 @@ common:
   is-remote-user: "该用户的信息已被复制."
   is-remote-post: "该投稿已被复制."
   view-on-remote: "查看准确的信息"
-  renoted-by: "{user}がRenote"
+  renoted-by: "由 {user} Renote"
   error:
     title: '哦不, 发生了一些问题! :('
     retry: '重试'
