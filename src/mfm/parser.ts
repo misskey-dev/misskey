@@ -36,6 +36,7 @@ const mfm = P.createLanguage({
 		r.blockCode,
 		r.inlineCode,
 		r.quote,
+		r.title,
 		r.text
 	).many(),
 
@@ -134,9 +135,33 @@ const mfm = P.createLanguage({
 				r.blockCode,
 				r.inlineCode,
 				r.quote,
+				r.title,
 				r.text
 			).atLeast(1).tryParse(q);
 			return P.makeSuccess(i + match[1].length, makeNodeWithChildren('quote', contents));
+		}),
+	//#endregion
+
+	//#region Title
+	title: r =>
+		P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^((【|\[)(.+?)(】|]))((\n[^>])|$)/);
+			if (!match) return P.makeFailure(i, 'not a title');
+			if (input[i - 1] != '\n' && input[i - 1] != null) return P.makeFailure(i, 'require line break before title');
+			const q = match[1].substr(1, match[1].length - 2);
+			const contents = P.alt(
+				r.big,
+				r.bold,
+				r.url,
+				r.link,
+				r.mention,
+				r.hashtag,
+				r.emoji,
+				r.inlineCode,
+				r.text
+			).atLeast(1).tryParse(q);
+			return P.makeSuccess(i + match[1].length, makeNodeWithChildren('title', contents));
 		}),
 	//#endregion
 
