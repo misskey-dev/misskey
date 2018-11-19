@@ -3,7 +3,7 @@
 	<x-pie class="pie" :value="usage"/>
 	<div>
 		<p><fa icon="microchip"/>CPU</p>
-		<p>{{ meta.cpu.cores }} Cores</p>
+		<p>{{ meta.cpu.cores }} Logical cores</p>
 		<p>{{ meta.cpu.model }}</p>
 	</div>
 </div>
