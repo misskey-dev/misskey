@@ -68,6 +68,8 @@ router.get('/.well-known/webfinger', async ctx => {
 			template: `${config.url}/authorize-follow?acct={uri}`
 		}]
 	};
+
+	ctx.set('Cache-Control', 'public, max-age=180');
 });
 
 export default router;

@@ -94,6 +94,7 @@ router.get('/@:user', async (ctx, next) => {
 
 	if (user != null) {
 		await ctx.render('user', { user });
+		ctx.set('Cache-Control', 'public, max-age=180');
 	} else {
 		// リモートユーザーなので
 		await next();
@@ -110,6 +111,7 @@ router.get('/notes/:note', async ctx => {
 			note: _note,
 			summary: getNoteSummary(_note)
 		});
+		ctx.set('Cache-Control', 'public, max-age=180');
 	} else {
 		ctx.status = 404;
 	}
