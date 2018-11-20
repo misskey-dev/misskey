@@ -7,19 +7,23 @@ export default (source: string): Node[] => {
 		return null;
 	}
 
-	const nodes: Node[] = parser.root.tryParse(source);
+	let nodes: Node[] = parser.root.tryParse(source);
 
 	const combineText = (es: Node[]): Node =>
 		({ name: 'text', props: { text: S.concat(es.map(e => e.props.text)) } });
 
-	const concat = (es: Node[]): void =>
+	const concatText = (nodes: Node[]): Node[] =>
+		A.concat(A.groupOn(x => x.name, nodes).map(es =>
+			es[0].name === 'text' ? [combineText(es)] : es
+		));
+
+	const concatTextRecursive = (es: Node[]): void =>
 		es.filter(x => x.children).forEach(x => {
-			x.children = A.concat(A.groupOn(x => x.name, nodes).map(es =>
-				es[0].name === 'text' ? [combineText(es)] : es
-			));
+			x.children = concatText(x.children);
 		});
 
-	concat(nodes);
+	nodes = concatText(nodes);
+	concatTextRecursive(nodes);
 
 	return nodes;
 };

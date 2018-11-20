@@ -9,9 +9,12 @@ export type Node = {
 };
 
 function _makeNode(name: string, children?: Node[], props?: any): Node {
-	return {
+	return children ? {
 		name,
 		children,
+		props
+	} : {
+		name,
 		props
 	};
 }
@@ -101,7 +104,17 @@ const mfm = P.createLanguage({
 			['url', r.url] as any,
 			P.string(')'),
 		)
-		.map(x => makeNode('link', x)),
+		.map((x: any) => {
+			return makeNodeWithChildren('link', P.alt(
+				r.big,
+				r.bold,
+				r.emoji,
+				r.text
+			).atLeast(1).tryParse(x.text), {
+				silent: x.silent,
+				url: x.url.props.url
+			});
+		}),
 	//#endregion
 
 	//#region Mention

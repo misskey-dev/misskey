@@ -8,7 +8,7 @@ import analyze from '../src/mfm/parse';
 import toHtml from '../src/mfm/html';
 
 function _node(name: string, children: any[], props: any) {
-	return { name, children, props };
+	return children ? { name, children, props } : { name, props };
 }
 
 function node(name: string, props?: any) {
