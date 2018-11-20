@@ -20,6 +20,7 @@ export default (source: string): Node[] => {
 	const concatTextRecursive = (es: Node[]): void =>
 		es.filter(x => x.children).forEach(x => {
 			x.children = concatText(x.children);
+			concatTextRecursive(x.children);
 		});
 
 	nodes = concatText(nodes);

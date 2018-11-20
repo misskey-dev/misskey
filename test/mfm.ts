@@ -187,40 +187,87 @@ describe('Text', () => {
 
 		describe('quote', () => {
 			it('basic', () => {
-				const tokens1 = analyze('> foo\nbar\nbaz');
+				const tokens1 = analyze('> foo');
 				assert.deepEqual([
 					nodeWithChildren('quote', [
-						text('foo\nbar\nbaz')
+						text('foo')
 					])
 				], tokens1);
 
-				const tokens2 = analyze('before\n> foo\nbar\nbaz\n\nafter');
+				const tokens2 = analyze('>foo');
 				assert.deepEqual([
-					text('before\n'),
 					nodeWithChildren('quote', [
-						text('foo\nbar\nbaz')
-					]),
-					text('\nafter')
+						text('foo')
+					])
 				], tokens2);
+			});
 
-				const tokens3 = analyze('piyo> foo\nbar\nbaz');
-				assert.deepEqual([
-					text('piyo> foo\nbar\nbaz')
-				], tokens3);
-
-				const tokens4 = analyze('> foo\n> bar\n> baz');
+			it('trailing line break', () => {
+				const tokens1 = analyze('> foo\n');
 				assert.deepEqual([
 					nodeWithChildren('quote', [
-						text('foo\nbar\nbaz')
-					])
-				], tokens4);
+						text('foo')
+					]),
+				], tokens1);
 
-				const tokens5 = analyze('"\nfoo\nbar\nbaz\n"');
+				const tokens2 = analyze('> foo\n\n');
 				assert.deepEqual([
 					nodeWithChildren('quote', [
-						text('foo\nbar\nbaz')
+						text('foo')
+					]),
+					text('\n')
+				], tokens2);
+			});
+
+			it('multiline', () => {
+				const tokens1 = analyze('>foo\n>bar');
+				assert.deepEqual([
+					nodeWithChildren('quote', [
+						text('foo\nbar')
 					])
-				], tokens5);
+				], tokens1);
+
+				const tokens2 = analyze('> foo\n> bar');
+				assert.deepEqual([
+					nodeWithChildren('quote', [
+						text('foo\nbar')
+					])
+				], tokens2);
+			});
+
+			it('multiline with trailing line break', () => {
+				const tokens1 = analyze('> foo\n> bar\n');
+				assert.deepEqual([
+					nodeWithChildren('quote', [
+						text('foo\nbar')
+					]),
+				], tokens1);
+
+				const tokens2 = analyze('> foo\n> bar\n\n');
+				assert.deepEqual([
+					nodeWithChildren('quote', [
+						text('foo\nbar')
+					]),
+					text('\n')
+				], tokens2);
+			});
+
+			it('with before and after texts', () => {
+				const tokens = analyze('before\n> foo\nafter');
+				assert.deepEqual([
+					text('before'),
+					nodeWithChildren('quote', [
+						text('foo')
+					]),
+					text('after'),
+				], tokens);
+			});
+
+			it('require line break before ">"', () => {
+				const tokens = analyze('foo>bar');
+				assert.deepEqual([
+					text('foo>bar'),
+				], tokens);
 			});
 
 			it('nested', () => {
@@ -232,6 +279,24 @@ describe('Text', () => {
 						]),
 						text('bar')
 					])
+				], tokens);
+			});
+
+			it('trim line breaks', () => {
+				const tokens = analyze('foo\n\n>a\n>>b\n>>\n>>>\n>>>c\n>>>\n>d\n\n');
+				assert.deepEqual([
+					text('foo\n'),
+					nodeWithChildren('quote', [
+						text('a'),
+						nodeWithChildren('quote', [
+							text('b\n'),
+							nodeWithChildren('quote', [
+								text('\nc\n')
+							])
+						]),
+						text('d')
+					]),
+					text('\n'),
 				], tokens);
 			});
 		});
