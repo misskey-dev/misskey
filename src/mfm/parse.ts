@@ -40,10 +40,14 @@ export default (source: string): Node[] => {
 		return null;
 	}
 
+	function isBlockNode(node: Node): boolean {
+		return ['quote'].includes(node.name);
+	}
+
 	const removeNeedlessLineBreaks = (nodes: Node[]) => {
 		nodes.forEach((node, i) => {
 			if (node.children) removeNeedlessLineBreaks(node.children);
-			if (node.name == 'quote') {
+			if (isBlockNode(node)) {
 				const before = getBeforeTextNode(nodes[i - 1]);
 				const after = getAfterTextNode(nodes[i + 1]);
 				if (before && before.props.text.endsWith('\n')) {
