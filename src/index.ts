@@ -106,6 +106,14 @@ const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseI
 const requiredNodejsVersion = [10, 0, 0];
 const satisfyNodejsVersion = !lessThan(runningNodejsVersion, requiredNodejsVersion);
 
+function isWellKnownPort(port: number): boolean {
+	return port < 1024;
+}
+
+async function isPortAvailable(port: number): Promise<boolean> {
+	return await portscanner.checkPortStatus(port, '127.0.0.1') === 'closed';
+}
+
 async function showMachine() {
 	const logger = new Logger('Machine');
 	logger.info(`Hostname: ${os.hostname()}`);
@@ -172,12 +180,12 @@ async function init(): Promise<Config> {
 		process.exit(1);
 	}
 
-	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
-		Logger.error('You need root privileges to listen on port below 1024 on Linux');
+	if (process.platform === 'linux' && isWellKnownPort(config.port) && !isRoot()) {
+		Logger.error('You need root privileges to listen on well-known port on Linux');
 		process.exit(1);
 	}
 
-	if (await portscanner.checkPortStatus(config.port, '127.0.0.1') === 'open') {
+	if (!await isPortAvailable(config.port)) {
 		Logger.error(`Port ${config.port} is already in use`);
 		process.exit(1);
 	}
