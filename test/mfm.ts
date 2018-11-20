@@ -533,4 +533,15 @@ describe('Text', () => {
 			node('blockCode', { code: 'bar', lang: null })
 		], tokens);
 	});
+
+	it('quote between two code blocks', () => {
+		const tokens = analyze('```\nbefore\n```\n> foo\n```\nafter\n```');
+		assert.deepEqual([
+			node('blockCode', { code: 'before', lang: null }),
+			nodeWithChildren('quote', [
+				text('foo')
+			]),
+			node('blockCode', { code: 'after', lang: null })
+		], tokens);
+	});
 });
