@@ -150,7 +150,7 @@ const mfm = P.createLanguage({
 			const { username, host } = parseAcct(x.substr(1));
 			const canonical = host != null ? `@${username}@${toUnicode(host)}` : x;
 			return makeNode('mention', {
-				canonical, username, host
+				canonical, username, host, acct: x
 			});
 		}),
 	//#endregion
@@ -201,8 +201,7 @@ const mfm = P.createLanguage({
 			if (!match) return P.makeFailure(i, 'not a search');
 			const withLineBreak = match[0][0] == '\n';
 			if (!withLineBreak && input[i - 1] != null) return P.makeFailure(i, 'require line break before search');
-			const length = match[0].length;
-			return P.makeSuccess(i + length, makeNode('search', { query: match[1] }));
+			return P.makeSuccess(i + match[0].length, makeNode('search', { query: match[1], content: match[0].trim() }));
 		}),
 	//#endregion
 
@@ -226,8 +225,7 @@ const mfm = P.createLanguage({
 				r.inlineCode,
 				r.text
 			).atLeast(1).tryParse(q);
-			const length = withLineBreak ? match[0].length : match[0].length;
-			return P.makeSuccess(i + length, makeNodeWithChildren('title', contents));
+			return P.makeSuccess(i + match[0].length, makeNodeWithChildren('title', contents));
 		}),
 	//#endregion
 
