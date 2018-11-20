@@ -136,6 +136,7 @@ const mfm = P.createLanguage({
 			return makeNodeWithChildren('link', P.alt(
 				r.big,
 				r.bold,
+				r.motion,
 				r.emoji,
 				r.text
 			).atLeast(1).tryParse(x.text), {
