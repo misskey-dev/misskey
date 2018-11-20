@@ -10,7 +10,7 @@ In your shell:
 $ mongodump --archive=db-backup -u <YourUserName> -p <YourPassword>
 ```
 
-For details, plese see [mongodump docs](https://docs.mongodb.com/manual/reference/program/mongodump/).
+For details, please see [mongodump docs](https://docs.mongodb.com/manual/reference/program/mongodump/).
 
 Restore
 -------
