@@ -219,31 +219,21 @@ function checkMongoDb(config: Config) {
 		});
 }
 
-function spawnWorkers(limit: number) {
-	Logger.info('Starting workers...');
+async function spawnWorkers(limit: number) {
+	const workers = Math.min(limit, os.cpus().length);
+	Logger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
+	await Promise.all([...Array(workers)].map(spawnWorker));
+	Logger.succ('All workers started');
+}
 
+function spawnWorker(): Promise<void> {
 	return new Promise(res => {
-		// Count the machine's CPUs
-		const cpuCount = os.cpus().length;
-
-		const count = limit || cpuCount;
-		let started = 0;
-
-		// Create a worker for each CPU
-		for (let i = 0; i < count; i++) {
-			const worker = cluster.fork();
-
-			worker.on('message', message => {
-				if (message !== 'ready') return;
-				started++;
-
-				// When all workers started
-				if (started == count) {
-					Logger.succ('All workers started');
-					res();
-				}
-			});
-		}
+		const worker = cluster.fork();
+		worker.on('message', message => {
+			if (message !== 'ready') return;
+			Logger.succ('A worker started');
+			res();
+		});
 	});
 }
 
