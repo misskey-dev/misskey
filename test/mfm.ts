@@ -523,4 +523,14 @@ describe('Text', () => {
 			assert.equal(toHtml(analyze(input)), output);
 		});
 	});
+
+	it('code block with quote', () => {
+		const tokens = analyze('> foo\n```\nbar\n```');
+		assert.deepEqual([
+			nodeWithChildren('quote', [
+				text('foo')
+			]),
+			node('blockCode', { code: 'bar', lang: null })
+		], tokens);
+	});
 });
