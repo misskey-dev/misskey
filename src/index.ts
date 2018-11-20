@@ -23,6 +23,7 @@ import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
 import { Config } from './config/types';
 import { lessThan } from './prelude/array';
+import { Db } from 'mongodb';
 
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
@@ -191,32 +192,36 @@ async function init(): Promise<Config> {
 	}
 
 	// Try to connect to MongoDB
-	checkMongoDb(config);
+	await checkMongoDB(config);
 
 	return config;
 }
 
-function checkMongoDb(config: Config) {
+const requiredMongoDBVersion = [3, 6];
+
+function checkMongoDB(config: Config): Promise<void> {
 	const mongoDBLogger = new Logger('MongoDB');
 	const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
 	const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
 	const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
 	mongoDBLogger.info(`Connecting to ${uri}`);
 
-	mongo.then(() => {
-		nativeDbConn().then(db => db.admin().serverInfo()).then(x => x.version).then((version: string) => {
-			mongoDBLogger.info(`Version: ${version}`);
-			if (lessThan(version.split('.').map(x => parseInt(x, 10)), [3, 6])) {
-				mongoDBLogger.error(`MongoDB version is less than 3.6. Please upgrade it.`);
-				process.exit(1);
-			}
-		});
-
+	return mongo.then(async () => {
 		mongoDBLogger.succ('Connectivity confirmed');
-	})
-		.catch(err => {
-			mongoDBLogger.error(err.message);
-		});
+
+		const runningMongoDBVersion = (await nativeDbConn().then(getMongoDBVersion)).split('.').map(x => parseInt(x, 10));
+		mongoDBLogger.info(`Version: ${runningMongoDBVersion.join('.')}`);
+		if (lessThan(runningMongoDBVersion, requiredMongoDBVersion)) {
+			mongoDBLogger.error(`MongoDB version is less than ${requiredMongoDBVersion.join('.')}. Please upgrade it.`);
+			process.exit(1);
+		}
+	}).catch(err => {
+		mongoDBLogger.error(err.message);
+	});
+}
+
+async function getMongoDBVersion(db: Db): Promise<string> {
+	return (await db.admin().serverInfo()).version;
 }
 
 async function spawnWorkers(limit: number) {
