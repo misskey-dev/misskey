@@ -224,7 +224,7 @@ async function getMongoDBVersion(db: Db): Promise<string> {
 	return (await db.admin().serverInfo()).version;
 }
 
-async function spawnWorkers(limit: number) {
+async function spawnWorkers(limit: number = Infinity) {
 	const workers = Math.min(limit, os.cpus().length);
 	Logger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
 	await Promise.all([...Array(workers)].map(spawnWorker));
