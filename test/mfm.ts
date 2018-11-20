@@ -397,7 +397,7 @@ describe('Text', () => {
 			it('ignore internal marker', () => {
 				const tokens = analyze('```\naaa```bbb\n```');
 				assert.deepEqual([
-					node('blockCode', { code: 'naaa```bbb' })
+					node('blockCode', { code: 'aaa```bbb' })
 				], tokens);
 			});
 		});
@@ -440,36 +440,33 @@ describe('Text', () => {
 			], tokens4);
 		});
 
-		it('title', () => {
-			const tokens1 = analyze('【yee】\nhaw');
-			assert.deepEqual([
-				nodeWithChildren('title', [
-					text('yee')
-				]),
-				text('haw')
-			], tokens1[0]);
+		describe('title', () => {
+			it('simple', () => {
+				const tokens = analyze('【foo】');
+				assert.deepEqual([
+					nodeWithChildren('title', [
+						text('foo')
+					])
+				], tokens);
+			});
 
-			const tokens2 = analyze('[yee]\nhaw');
-			assert.deepEqual([
-				nodeWithChildren('title', [
-					text('yee')
-				]),
-				text('haw')
-			], tokens2[0]);
+			it('require line break', () => {
+				const tokens = analyze('a【foo】');
+				assert.deepEqual([
+					text('a【foo】')
+				], tokens);
+			});
 
-			const tokens3 = analyze('a [a]\nb [b]\nc [c]');
-			assert.deepEqual([
-				text('a [a]\nb [b]\nc [c]')
-			], tokens3[0]);
-
-			const tokens4 = analyze('foo\n【bar】\nbuzz');
-			assert.deepEqual([
-				text('foo'),
-				nodeWithChildren('title', [
-					text('bar')
-				]),
-				text('buzz'),
-			], tokens4);
+			it('with before and after texts', () => {
+				const tokens = analyze('before\n【foo】\nafter');
+				assert.deepEqual([
+					text('before'),
+					nodeWithChildren('title', [
+						text('foo')
+					]),
+					text('after')
+				], tokens);
+			});
 		});
 	});
 
