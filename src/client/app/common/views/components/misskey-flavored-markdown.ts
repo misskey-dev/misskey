@@ -1,5 +1,6 @@
 import Vue, { VNode } from 'vue';
 import { length } from 'stringz';
+import { Node } from '../../../../../mfm/parser';
 import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../misc/acct/render';
 import MkUrl from './url.vue';
@@ -31,23 +32,22 @@ export default Vue.component('misskey-flavored-markdown', {
 	},
 
 	render(createElement) {
-		let ast: any[];
+		let ast: Node[];
 
 		if (this.ast == null) {
 			// Parse text to ast
 			ast = parse(this.text);
 		} else {
-			ast = this.ast as any[];
+			ast = this.ast as Node[];
 		}
 
 		let bigCount = 0;
 		let motionCount = 0;
 
-		// Parse ast to DOM
-		const els = concat(ast.map((token): VNode[] => {
-			switch (token.type) {
+		const genEl = (ast: Node[]) => concat(ast.map((token): VNode[] => {
+			switch (token.name) {
 				case 'text': {
-					const text = token.content.replace(/(\r\n|\n|\r)/g, '\n');
+					const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (this.shouldBreak) {
 						const x = text.split('\n')
@@ -60,7 +60,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'bold': {
-					return [createElement('b', token.bold)];
+					return [createElement('b', genEl(token.children))];
 				}
 
 				case 'big': {
@@ -75,7 +75,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							name: 'animate-css',
 							value: { classes: 'tada', iteration: 'infinite' }
 						}]
-					}, token.big);
+					}, genEl(token.children));
 				}
 
 				case 'motion': {
@@ -90,7 +90,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							name: 'animate-css',
 							value: { classes: 'rubberBand', iteration: 'infinite' }
 						}]
-					}, token.motion);
+					}, genEl(token.children));
 				}
 
 				case 'url': {
@@ -112,7 +112,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							title: token.url,
 							style: 'color:var(--mfmLink);'
 						}
-					}, token.title)];
+					}, genEl(token.children))];
 				}
 
 				case 'mention': {
@@ -159,23 +159,18 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'quote': {
-					const text2 = token.quote.replace(/(\r\n|\n|\r)/g, '\n');
-
 					if (this.shouldBreak) {
-						const x = text2.split('\n')
-							.map(t => [createElement('span', t), createElement('br')]);
-						x[x.length - 1].pop();
 						return [createElement('div', {
 							attrs: {
 								class: 'quote'
 							}
-						}, x)];
+						}, genEl(token.children))];
 					} else {
 						return [createElement('span', {
 							attrs: {
 								class: 'quote'
 							}
-						}, text2.replace(/\n/g, ' '))];
+						}, genEl(token.children))];
 					}
 				}
 
@@ -184,7 +179,7 @@ export default Vue.component('misskey-flavored-markdown', {
 						attrs: {
 							class: 'title'
 						}
-					}, token.title)];
+					}, genEl(token.children))];
 				}
 
 				case 'emoji': {
@@ -225,6 +220,9 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 			}
 		}));
+
+		// Parse ast to DOM
+		const els = genEl(ast);
 
 		// el.tag === 'br' のとき i !== 0 が保証されるため、短絡評価により els[i - 1] は配列外参照しない
 		const _els = els.filter((el, i) => !(el.tag === 'br' && ['div', 'pre'].includes(els[i - 1].tag)));
