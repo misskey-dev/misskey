@@ -123,7 +123,7 @@ common:
   is-remote-user: "Ces informations appartiennent à un·e utilisateur·rice distant·e."
   is-remote-post: "Ceci est une publication distante."
   view-on-remote: " Consulter le profil complet"
-  renoted-by: "{user}がRenote"
+  renoted-by: "Renoté par {user}"
   error:
     title: 'Une erreur est survenue'
     retry: 'Réessayer'
