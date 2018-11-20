@@ -159,6 +159,7 @@ const mfm = P.createLanguage({
 	motion: r =>
 		P.alt(P.regexp(/\(\(\(([\s\S]+?)\)\)\)/, 1), P.regexp(/<motion>(.+?)<\/motion>/, 1))
 		.map(x => makeNodeWithChildren('motion', P.alt(
+			r.bold,
 			r.mention,
 			r.emoji,
 			r.text
