@@ -202,6 +202,18 @@ describe('Text', () => {
 				], tokens2);
 			});
 
+			it('series', () => {
+				const tokens = analyze('> foo\n\n> bar');
+				assert.deepEqual([
+					nodeWithChildren('quote', [
+						text('foo')
+					]),
+					nodeWithChildren('quote', [
+						text('bar')
+					]),
+				], tokens);
+			});
+
 			it('trailing line break', () => {
 				const tokens1 = analyze('> foo\n');
 				assert.deepEqual([
