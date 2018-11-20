@@ -54,7 +54,7 @@ const mfm = P.createLanguage({
 		r.search,
 		r.title,
 		r.text
-	).many(),
+	).atLeast(1),
 
 	text: () => P.any.map(x => makeNode('text', { text: x })),
 
@@ -195,20 +195,7 @@ const mfm = P.createLanguage({
 				}
 			});
 			const qInner = quote.join('\n').replace(/^>/gm, '').replace(/^ /gm, '');
-			const contents = P.alt(
-				r.big,
-				r.bold,
-				r.url,
-				r.link,
-				r.mention,
-				r.hashtag,
-				r.emoji,
-				r.blockCode,
-				r.inlineCode,
-				r.quote,
-				r.title,
-				r.text
-			).atLeast(1).tryParse(qInner);
+			const contents = r.root.tryParse(qInner);
 			return P.makeSuccess(i + quote.join('\n').length, makeNodeWithChildren('quote', contents));
 		})),
 	//#endregion
@@ -225,12 +212,10 @@ const mfm = P.createLanguage({
 
 	//#region Title
 	title: r =>
-		P((input, i) => {
+		newline.then(P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^\n?((【|\[)(.+?)(】|]))(\n|$)/);
+			const match = text.match(/^((【|\[)(.+?)(】|]))(\n|$)/);
 			if (!match) return P.makeFailure(i, 'not a title');
-			const withLineBreak = match[0][0] == '\n';
-			if (!withLineBreak && input[i - 1] != null) return P.makeFailure(i, 'require line break before title');
 			const q = match[1].trim().substring(1, match[1].length - 1);
 			const contents = P.alt(
 				r.big,
@@ -244,7 +229,7 @@ const mfm = P.createLanguage({
 				r.text
 			).atLeast(1).tryParse(q);
 			return P.makeSuccess(i + match[0].length, makeNodeWithChildren('title', contents));
-		}),
+		})),
 	//#endregion
 
 	//#region URL

@@ -41,7 +41,7 @@ export default (source: string): Node[] => {
 	}
 
 	function isBlockNode(node: Node): boolean {
-		return ['quote'].includes(node.name);
+		return ['blockCode', 'quote', 'title'].includes(node.name);
 	}
 
 	/**
