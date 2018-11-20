@@ -390,14 +390,48 @@ describe('Text', () => {
 			it('simple', () => {
 				const tokens = analyze('```\nvar x = "Strawberry Pasta";\n```');
 				assert.deepEqual([
-					node('blockCode', { code: 'var x = "Strawberry Pasta";' })
+					node('blockCode', { code: 'var x = "Strawberry Pasta";', lang: null })
+				], tokens);
+			});
+
+			it('can specify language', () => {
+				const tokens = analyze('``` json\n{ "x": 42 }\n```');
+				assert.deepEqual([
+					node('blockCode', { code: '{ "x": 42 }', lang: 'json' })
+				], tokens);
+			});
+
+			it('require line break before "```"', () => {
+				const tokens = analyze('before```\nfoo\n```');
+				assert.deepEqual([
+					text('before'),
+					node('inlineCode', { code: '`' }),
+					text('\nfoo\n'),
+					node('inlineCode', { code: '`' })
+				], tokens);
+			});
+
+			it('series', () => {
+				const tokens = analyze('```\nfoo\n```\n```\nbar\n```\n```\nbaz\n```');
+				assert.deepEqual([
+					node('blockCode', { code: 'foo', lang: null }),
+					node('blockCode', { code: 'bar', lang: null }),
+					node('blockCode', { code: 'baz', lang: null }),
 				], tokens);
 			});
 
 			it('ignore internal marker', () => {
 				const tokens = analyze('```\naaa```bbb\n```');
 				assert.deepEqual([
-					node('blockCode', { code: 'aaa```bbb' })
+					node('blockCode', { code: 'aaa```bbb', lang: null })
+				], tokens);
+			});
+
+			it('trim after line break', () => {
+				const tokens = analyze('```\nfoo\n```\nbar');
+				assert.deepEqual([
+					node('blockCode', { code: 'foo', lang: null }),
+					text('bar')
 				], tokens);
 			});
 		});

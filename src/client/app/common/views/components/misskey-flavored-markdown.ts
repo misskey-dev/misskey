@@ -7,6 +7,7 @@ import { concat } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
 import MkGoogle from './google.vue';
 import { toUnicode } from 'punycode';
+import syntaxHighlight from '../../../../../mfm/syntax-highlight';
 
 function getText(tokens: Node[]): string {
 	let text = '';
@@ -171,22 +172,22 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, `#${token.props.hashtag}`)];
 				}
 
-				case 'code': {
+				case 'blockCode': {
 					return [createElement('pre', {
 						class: 'code'
 					}, [
 						createElement('code', {
 							domProps: {
-								innerHTML: token.props.code
+								innerHTML: syntaxHighlight(token.props.code)
 							}
 						})
 					])];
 				}
 
-				case 'inline-code': {
+				case 'inlineCode': {
 					return [createElement('code', {
 						domProps: {
-							innerHTML: token.props.code
+							innerHTML: syntaxHighlight(token.props.code)
 						}
 					})];
 				}

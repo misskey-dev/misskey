@@ -62,8 +62,14 @@ const mfm = P.createLanguage({
 
 	//#region Block code
 	blockCode: r =>
-		P.regexp(/```\n([\s\S]+?)\n```/, 1)
-		.map(x => makeNode('blockCode', { code: x })),
+		P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^\n?```(.+?)?\n([\s\S]+?)\n```(\n|$)/i);
+			if (!match) return P.makeFailure(i, 'not a blockCode');
+			const withLineBreak = match[0][0] == '\n';
+			if (!withLineBreak && input[i - 1] != null) return P.makeFailure(i, 'require line break before blockCode');
+			return P.makeSuccess(i + match[0].length - (match[0].endsWith('\n') ? 1 : 0), makeNode('blockCode', { code: match[2], lang: match[1] ? match[1].trim() : null }));
+		}),
 	//#endregion
 
 	//#region Bold
