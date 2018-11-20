@@ -30,7 +30,7 @@ describe('Text', () => {
 			node('mention', { canonical: '@himawari', username: 'himawari', host: null }),
 			text(' '),
 			node('mention', { canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
-			text(' '),
+			text(' お腹ペコい '),
 			node('emoji', { name: 'cat' }),
 			text(' '),
 			node('hashtag', { hashtag: 'yryr' }),
@@ -386,11 +386,20 @@ describe('Text', () => {
 			], tokens3);
 		});
 
-		it('block code', () => {
-			const tokens = analyze('```\nvar x = "Strawberry Pasta";\n```');
-			assert.deepEqual([
-				node('blockCode', { code: 'var x = "Strawberry Pasta";' })
-			], tokens);
+		describe('block code', () => {
+			it('simple', () => {
+				const tokens = analyze('```\nvar x = "Strawberry Pasta";\n```');
+				assert.deepEqual([
+					node('blockCode', { code: 'var x = "Strawberry Pasta";' })
+				], tokens);
+			});
+
+			it('ignore internal marker', () => {
+				const tokens = analyze('```\naaa```bbb\n```');
+				assert.deepEqual([
+					node('blockCode', { code: 'naaa```bbb' })
+				], tokens);
+			});
 		});
 
 		it('inline code', () => {
@@ -455,11 +464,11 @@ describe('Text', () => {
 
 			const tokens4 = analyze('foo\n【bar】\nbuzz');
 			assert.deepEqual([
-				text('foo\n'),
+				text('foo'),
 				nodeWithChildren('title', [
 					text('bar')
 				]),
-				text('\nbuzz'),
+				text('buzz'),
 			], tokens4);
 		});
 	});

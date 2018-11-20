@@ -58,8 +58,8 @@ const mfm = P.createLanguage({
 
 	//#region Block code
 	blockCode: r =>
-		P.regexp(/^```([\s\S]+?)```/, 1)
-		.map(x => makeNode('blockCode', x)),
+		P.regexp(/^```\n([\s\S]+?)\n```/, 1)
+		.map(x => makeNode('blockCode', { code: x })),
 	//#endregion
 
 	//#region Bold
@@ -94,7 +94,7 @@ const mfm = P.createLanguage({
 	//#region Inline code
 	inlineCode: r =>
 		P.regexp(/^`(.+?)`/, 1)
-		.map(x => makeNode('inlineCode', x)),
+		.map(x => makeNode('inlineCode', { code: x })),
 	//#endregion
 
 	//#region Link
@@ -220,12 +220,3 @@ const mfm = P.createLanguage({
 });
 
 export default mfm;
-
-console.log(mfm.root.tryParse('aaa**important text @foo bar**bbb'));
-console.log(mfm.root.tryParse('```\naaa```bbb\n```'));
-console.log(mfm.root.tryParse('foo https://example.com. bar'));
-console.log(mfm.root.tryParse('f[oo [text](https://example.com) bar'));
-console.log(mfm.root.tryParse('foo\n> bar\nyoo'));
-console.log(mfm.root.tryParse('foo\n> bar\n> **aaa**\nyoo'));
-console.log(mfm.root.tryParse('> bar'));
-console.log(mfm.root.tryParse('>> foo\n>bar'));
