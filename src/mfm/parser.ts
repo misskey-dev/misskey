@@ -182,13 +182,19 @@ const mfm = P.createLanguage({
 
 	//#region Quote
 	quote: r =>
-		P((input, i) => {
+		newline.then(P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^\n?(>[\s\S]+?)((\n[^>])|$)/);
-			if (!match) return P.makeFailure(i, 'not a quote');
-			const withLineBreak = match[0][0] == '\n';
-			if (!withLineBreak && input[i - 1] != null) return P.makeFailure(i, 'require line break before ">"');
-			const qInner = match[1].trim().replace(/^>/gm, '').replace(/^ /gm, '');
+			if (!text.match(/^>[\s\S]+?/)) return P.makeFailure(i, 'not a quote');
+			const quote: string[] = [];
+			text.split('\n').some(line => {
+				if (line.startsWith('>')) {
+					quote.push(line);
+					return false;
+				} else {
+					return true;
+				}
+			});
+			const qInner = quote.join('\n').replace(/^>/gm, '').replace(/^ /gm, '');
 			const contents = P.alt(
 				r.big,
 				r.bold,
@@ -203,21 +209,18 @@ const mfm = P.createLanguage({
 				r.title,
 				r.text
 			).atLeast(1).tryParse(qInner);
-			const length = withLineBreak ? match[1].length + 1 : match[1].length;
-			return P.makeSuccess(i + length + 1, makeNodeWithChildren('quote', contents));
-		}),
+			return P.makeSuccess(i + quote.join('\n').length, makeNodeWithChildren('quote', contents));
+		})),
 	//#endregion
 
 	//#region Search
 	search: r =>
-		P((input, i) => {
+		newline.then(P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^\n?(.+?)( |　)(検索|\[検索\]|Search|\[Search\])(\n|$)/i);
+			const match = text.match(/^(.+?)( |　)(検索|\[検索\]|Search|\[Search\])(\n|$)/i);
 			if (!match) return P.makeFailure(i, 'not a search');
-			const withLineBreak = match[0][0] == '\n';
-			if (!withLineBreak && input[i - 1] != null) return P.makeFailure(i, 'require line break before search');
 			return P.makeSuccess(i + match[0].length, makeNode('search', { query: match[1], content: match[0].trim() }));
-		}),
+		})),
 	//#endregion
 
 	//#region Title

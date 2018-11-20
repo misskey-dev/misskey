@@ -26,5 +26,48 @@ export default (source: string): Node[] => {
 	nodes = concatText(nodes);
 	concatTextRecursive(nodes);
 
+	function getBeforeTextNode(node: Node): Node {
+		if (node == null) return null;
+		if (node.name == 'text') return node;
+		if (node.children) return getBeforeTextNode(node.children[node.children.length - 1]);
+		return null;
+	}
+
+	function getAfterTextNode(node: Node): Node {
+		if (node == null) return null;
+		if (node.name == 'text') return node;
+		if (node.children) return getBeforeTextNode(node.children[0]);
+		return null;
+	}
+
+	const removeNeedlessLineBreaks = (nodes: Node[]) => {
+		nodes.forEach((node, i) => {
+			if (node.children) removeNeedlessLineBreaks(node.children);
+			if (node.name == 'quote') {
+				const before = getBeforeTextNode(nodes[i - 1]);
+				const after = getAfterTextNode(nodes[i + 1]);
+				if (before && before.props.text.endsWith('\n')) {
+					before.props.text = before.props.text.substring(0, before.props.text.length - 1);
+				}
+				if (after && after.props.text.startsWith('\n')) {
+					after.props.text = after.props.text.substring(1);
+				}
+			}
+		});
+	};
+
+	const removeEmptyTextNodes = (nodes: Node[]) => {
+		nodes.forEach(n => {
+			if (n.children) {
+				n.children = removeEmptyTextNodes(n.children);
+			}
+		});
+		return nodes.filter(n => !(n.name == 'text' && n.props.text == ''));
+	};
+
+	removeNeedlessLineBreaks(nodes);
+
+	nodes = removeEmptyTextNodes(nodes);
+
 	return nodes;
 };
