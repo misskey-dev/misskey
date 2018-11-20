@@ -63,6 +63,7 @@ const mfm = P.createLanguage({
 		P.regexp(/^\*\*\*([\s\S]+?)\*\*\*/, 1)
 		.map(x => makeNodeWithChildren('big', P.alt(
 			r.mention,
+			r.hashtag,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x))),
@@ -85,6 +86,7 @@ const mfm = P.createLanguage({
 		P.regexp(/\*\*([\s\S]+?)\*\*/, 1)
 		.map(x => makeNodeWithChildren('bold', P.alt(
 			r.mention,
+			r.hashtag,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x))),
@@ -176,6 +178,7 @@ const mfm = P.createLanguage({
 		.map(x => makeNodeWithChildren('motion', P.alt(
 			r.bold,
 			r.mention,
+			r.hashtag,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x))),
