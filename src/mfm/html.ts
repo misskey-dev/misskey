@@ -1,127 +1,135 @@
-const { lib: emojilib } = require('emojilib');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 import config from '../config';
 import { INote } from '../models/note';
-import { TextElement } from './parse';
+import { Node } from './parser';
 import { intersperse } from '../prelude/array';
 
-const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers: INote['mentionedRemoteUsers']) => void } = {
-	bold({ document }, { bold }) {
-		const b = document.createElement('b');
-		b.textContent = bold;
-		document.body.appendChild(b);
-	},
-
-	big({ document }, { big }) {
-		const b = document.createElement('strong');
-		b.textContent = big;
-		document.body.appendChild(b);
-	},
-
-	motion({ document }, { big }) {
-		const b = document.createElement('strong');
-		b.textContent = big;
-		document.body.appendChild(b);
-	},
-
-	code({ document }, { code }) {
-		const pre = document.createElement('pre');
-		const inner = document.createElement('code');
-		inner.innerHTML = code;
-		pre.appendChild(inner);
-		document.body.appendChild(pre);
-	},
-
-	emoji({ document }, { content, emoji }) {
-		const found = emojilib[emoji];
-		const node = document.createTextNode(found ? found.char : content);
-		document.body.appendChild(node);
-	},
-
-	hashtag({ document }, { hashtag }) {
-		const a = document.createElement('a');
-		a.href = `${config.url}/tags/${hashtag}`;
-		a.textContent = `#${hashtag}`;
-		a.setAttribute('rel', 'tag');
-		document.body.appendChild(a);
-	},
-
-	'inline-code'({ document }, { code }) {
-		const element = document.createElement('code');
-		element.textContent = code;
-		document.body.appendChild(element);
-	},
-
-	math({ document }, { formula }) {
-		const element = document.createElement('code');
-		element.textContent = formula;
-		document.body.appendChild(element);
-	},
-
-	link({ document }, { url, title }) {
-		const a = document.createElement('a');
-		a.href = url;
-		a.textContent = title;
-		document.body.appendChild(a);
-	},
-
-	mention({ document }, { content, username, host }, mentionedRemoteUsers) {
-		const a = document.createElement('a');
-		const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
-		a.href = remoteUserInfo ? remoteUserInfo.uri : `${config.url}/${content}`;
-		a.textContent = content;
-		document.body.appendChild(a);
-	},
-
-	quote({ document }, { quote }) {
-		const blockquote = document.createElement('blockquote');
-		blockquote.textContent = quote;
-		document.body.appendChild(blockquote);
-	},
-
-	title({ document }, { content }) {
-		const h1 = document.createElement('h1');
-		h1.textContent = content;
-		document.body.appendChild(h1);
-	},
-
-	text({ document }, { content }) {
-		const nodes = (content as string).split('\n').map(x => document.createTextNode(x));
-		for (const x of intersperse('br', nodes)) {
-			if (x === 'br') {
-				document.body.appendChild(document.createElement('br'));
-			} else {
-				document.body.appendChild(x);
-			}
-		}
-	},
-
-	url({ document }, { url }) {
-		const a = document.createElement('a');
-		a.href = url;
-		a.textContent = url;
-		document.body.appendChild(a);
-	},
-
-	search({ document }, { content, query }) {
-		const a = document.createElement('a');
-		a.href = `https://www.google.com/?#q=${query}`;
-		a.textContent = content;
-		document.body.appendChild(a);
-	}
-};
-
-export default (tokens: TextElement[], mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
+export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
 	if (tokens == null) {
 		return null;
 	}
 
 	const { window } = new JSDOM('');
 
-	for (const token of tokens) {
-		handlers[token.type](window, token, mentionedRemoteUsers);
+	const doc = window.document;
+
+	function dive(nodes: Node[]): any[] {
+		return nodes.map(n => handlers[n.name](n));
 	}
 
-	return `<p>${window.document.body.innerHTML}</p>`;
+	const handlers: { [key: string]: (token: Node) => any } = {
+		bold(token) {
+			const el = doc.createElement('b');
+			dive(token.children).forEach(child => el.appendChild(child));
+			return el;
+		},
+
+		big(token) {
+			const el = doc.createElement('strong');
+			dive(token.children).forEach(child => el.appendChild(child));
+			return el;
+		},
+
+		motion(token) {
+			const el = doc.createElement('i');
+			dive(token.children).forEach(child => el.appendChild(child));
+			return el;
+		},
+
+		blockCode(token) {
+			const pre = doc.createElement('pre');
+			const inner = doc.createElement('code');
+			inner.innerHTML = token.props.code;
+			pre.appendChild(inner);
+			return pre;
+		},
+
+		emoji(token) {
+			return doc.createTextNode(token.props.emoji ? token.props.emoji : `:${token.props.name}:`);
+		},
+
+		hashtag(token) {
+			const a = doc.createElement('a');
+			a.href = `${config.url}/tags/${token.props.hashtag}`;
+			a.textContent = `#${token.props.hashtag}`;
+			a.setAttribute('rel', 'tag');
+			return a;
+		},
+
+		inlineCode(token) {
+			const el = doc.createElement('code');
+			el.textContent = token.props.code;
+			return el;
+		},
+
+		math(token) {
+			const el = doc.createElement('code');
+			el.textContent = token.props.formula;
+			return el;
+		},
+
+		link(token) {
+			const a = doc.createElement('a');
+			a.href = token.props.url;
+			dive(token.children).forEach(child => a.appendChild(child));
+			return a;
+		},
+
+		mention(token) {
+			const a = doc.createElement('a');
+			const { username, host, acct } = token.props;
+			const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
+			a.href = remoteUserInfo ? remoteUserInfo.uri : `${config.url}/${acct}`;
+			a.textContent = acct;
+			return a;
+		},
+
+		quote(token) {
+			const el = doc.createElement('blockquote');
+			dive(token.children).forEach(child => el.appendChild(child));
+			return el;
+		},
+
+		title(token) {
+			const el = doc.createElement('h1');
+			dive(token.children).forEach(child => el.appendChild(child));
+			return el;
+		},
+
+		text(token) {
+			const el = doc.createElement('span');
+			const nodes = (token.props.text as string).split('\n').map(x => doc.createTextNode(x));
+
+			for (const x of intersperse('br', nodes)) {
+				if (x === 'br') {
+					el.appendChild(doc.createElement('br'));
+				} else {
+					el.appendChild(x);
+				}
+			}
+
+			return el;
+		},
+
+		url(token) {
+			const a = doc.createElement('a');
+			a.href = token.props.url;
+			a.textContent = token.props.url;
+			return a;
+		},
+
+		search(token) {
+			const a = doc.createElement('a');
+			a.href = `https://www.google.com/?#q=${token.props.query}`;
+			a.textContent = token.props.content;
+			return a;
+		}
+	};
+
+	dive(tokens).forEach(x => {
+		doc.body.appendChild(x);
+	});
+
+	return `<p>${doc.body.innerHTML}</p>`;
 };

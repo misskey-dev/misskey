@@ -7,7 +7,6 @@ import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
-import parseMfm from '../../../mfm/parse';
 import Emoji, { IEmoji } from '../../../models/emoji';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
@@ -93,17 +92,6 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note.renoteId}`;
 		text += `\n\nRE: ${url}`;
-	}
-
-	// 省略されたメンションのホストを復元する
-	if (text != null && text != '') {
-		text = parseMfm(text).map(x => {
-			if (x.type == 'mention' && x.host == null) {
-				return `${x.content}@${config.host}`;
-			} else {
-				return x.content;
-			}
-		}).join('');
 	}
 
 	const content = toHtml(Object.assign({}, note, { text }));

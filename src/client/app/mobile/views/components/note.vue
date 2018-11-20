@@ -23,7 +23,7 @@
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 						<a class="reply" v-if="appearNote.reply"><fa icon="reply"/></a>
-						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :i="$store.state.i" :class="$style.text" :custom-emojis="appearNote.emojis"/>
+						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
@@ -188,24 +188,6 @@ export default Vue.extend({
 						overflow-wrap break-word
 						color var(--noteText)
 
-						>>> .title
-							display block
-							margin-bottom 4px
-							padding 4px
-							font-size 90%
-							text-align center
-							background var(--mfmTitleBg)
-							border-radius 4px
-
-						>>> .code
-							margin 8px 0
-
-						>>> .quote
-							margin 8px
-							padding 6px 12px
-							color var(--mfmQuote)
-							border-left solid 3px var(--mfmQuoteLine)
-
 						> .reply
 							margin-right 8px
 							color var(--noteText)
@@ -214,15 +196,6 @@ export default Vue.extend({
 							margin-left 4px
 							font-style oblique
 							color var(--renoteText)
-
-						[data-is-me]:after
-							content "you"
-							padding 0 4px
-							margin-left 4px
-							font-size 80%
-							color var(--primaryForeground)
-							background var(--primary)
-							border-radius 4px
 
 					.mk-url-preview
 						margin-top 8px
@@ -288,19 +261,4 @@ export default Vue.extend({
 				color var(--noteText)
 				opacity 0.7
 
-</style>
-
-<style lang="stylus" module>
-.text
-	code
-		padding 4px 8px
-		margin 0 0.5em
-		font-size 80%
-		color #525252
-		background #f8f8f8
-		border-radius 2px
-
-	pre > code
-		padding 16px
-		margin 0
 </style>
