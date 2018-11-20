@@ -126,6 +126,8 @@ root(fill)
 		> textarea
 			display block
 			width 100%
+			min-width 100%
+			max-width 100%
 			min-height 100px
 			padding 0
 			font inherit
