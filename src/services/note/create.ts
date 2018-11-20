@@ -21,8 +21,6 @@ import Meta from '../../models/meta';
 import config from '../../config';
 import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
-import { TextElementMention } from '../../mfm/parse/elements/mention';
-import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import notesChart from '../../chart/notes';
 import perUserNotesChart from '../../chart/per-user-notes';
 
@@ -30,7 +28,7 @@ import { erase, unique } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import registerInstance from '../register-instance';
 import Instance from '../../models/instance';
-import { TextElementEmoji } from '../../mfm/parse/elements/emoji';
+import { Node } from '../../mfm/parser';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -162,7 +160,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const emojis = extractEmojis(tokens);
 
-	const mentionedUsers = data.apMentions || await extractMentionedUsers(tokens);
+	const mentionedUsers = data.apMentions || await extractMentionedUsers(user, tokens);
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
@@ -460,21 +458,41 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 }
 
 function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
+	const hashtags: string[] = [];
+
+	const extract = (tokens: Node[]) => {
+		tokens.filter(x => x.name === 'hashtag').forEach(x => {
+			if (x.props.hashtag.length <= 100) {
+				hashtags.push(x.props.hashtag);
+			}
+		});
+		tokens.filter(x => x.children).forEach(x => {
+			extract(x.children);
+		});
+	};
+
 	// Extract hashtags
-	const hashtags = tokens
-		.filter(t => t.type == 'hashtag')
-		.map(t => (t as TextElementHashtag).hashtag)
-		.filter(tag => tag.length <= 100);
+	extract(tokens);
 
 	return unique(hashtags);
 }
 
 function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
+	const emojis: string[] = [];
+
+	const extract = (tokens: Node[]) => {
+		tokens.filter(x => x.name === 'emoji').forEach(x => {
+			if (x.props.name && x.props.name.length <= 100) {
+				emojis.push(x.props.name);
+			}
+		});
+		tokens.filter(x => x.children).forEach(x => {
+			extract(x.children);
+		});
+	};
+
 	// Extract emojis
-	const emojis = tokens
-		.filter(t => t.type == 'emoji' && t.name)
-		.map(t => (t as TextElementEmoji).name)
-		.filter(emoji => emoji.length <= 100);
+	extract(tokens);
 
 	return unique(emojis);
 }
@@ -638,16 +656,27 @@ function incNotesCount(user: IUser) {
 	}
 }
 
-async function extractMentionedUsers(tokens: ReturnType<typeof parse>): Promise<IUser[]> {
+async function extractMentionedUsers(user: IUser, tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentionTokens = tokens
-		.filter(t => t.type == 'mention') as TextElementMention[];
+	const mentions: any[] = [];
+
+	const extract = (tokens: Node[]) => {
+		tokens.filter(x => x.name === 'mention').forEach(x => {
+			mentions.push(x.props);
+		});
+		tokens.filter(x => x.children).forEach(x => {
+			extract(x.children);
+		});
+	};
+
+	// Extract hashtags
+	extract(tokens);
 
 	let mentionedUsers =
-		erase(null, await Promise.all(mentionTokens.map(async m => {
+		erase(null, await Promise.all(mentions.map(async m => {
 			try {
-				return await resolveUser(m.username, m.host);
+				return await resolveUser(m.username, m.host ? m.host : user.host);
 			} catch (e) {
 				return null;
 			}

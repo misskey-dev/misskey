@@ -14,7 +14,7 @@
 	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 	<div class="body">
 		<div class="description">
-			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+			<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
 		</div>
 		<div class="info">
 			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>

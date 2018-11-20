@@ -20,7 +20,7 @@
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
-					<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
 				</div>
 				<div class="info">
 					<p class="location" v-if="user.host === null && user.profile.location">

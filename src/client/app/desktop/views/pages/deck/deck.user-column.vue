@@ -22,7 +22,7 @@
 		</header>
 		<div class="info">
 			<div class="description">
-				<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
 			</div>
 			<div class="counts">
 				<div>

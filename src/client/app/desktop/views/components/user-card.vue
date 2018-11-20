@@ -7,7 +7,7 @@
 		<router-link :to="user | userPage" class="name">{{ user | userName }}</router-link>
 		<span class="username">@{{ user | acct }}</span>
 		<div class="description">
-			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+			<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
 		</div>
 	</div>
 </div>
