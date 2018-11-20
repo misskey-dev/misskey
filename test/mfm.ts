@@ -162,27 +162,48 @@ describe('Text', () => {
 			});
 		});
 
-		it('hashtag', () => {
-			const tokens1 = analyze('Strawberry Pasta #alice');
-			assert.deepEqual([
-				text('Strawberry Pasta '),
-				node('hashtag', { hashtag: 'alice' })
-			], tokens1);
+		describe('hashtag', () => {
+			it('simple', () => {
+				const tokens = analyze('#alice');
+				assert.deepEqual([
+					node('hashtag', { hashtag: 'alice' })
+				], tokens);
+			});
 
-			const tokens2 = analyze('Foo #bar, baz #piyo.');
-			assert.deepEqual([
-				text('Foo '),
-				node('hashtag', { hashtag: 'bar' }),
-				text(', baz '),
-				node('hashtag', { hashtag: 'piyo' }),
-				text('.'),
-			], tokens2);
+			it('after line break', () => {
+				const tokens = analyze('foo\n#alice');
+				assert.deepEqual([
+					text('foo\n'),
+					node('hashtag', { hashtag: 'alice' })
+				], tokens);
+			});
 
-			const tokens3 = analyze('#Foo!');
-			assert.deepEqual([
-				node('hashtag', { hashtag: 'Foo' }),
-				text('!'),
-			], tokens3);
+			it('with text', () => {
+				const tokens = analyze('Strawberry Pasta #alice');
+				assert.deepEqual([
+					text('Strawberry Pasta '),
+					node('hashtag', { hashtag: 'alice' })
+				], tokens);
+			});
+
+			it('ignore comma and period', () => {
+				const tokens = analyze('Foo #bar, baz #piyo.');
+				assert.deepEqual([
+					text('Foo '),
+					node('hashtag', { hashtag: 'bar' }),
+					text(', baz '),
+					node('hashtag', { hashtag: 'piyo' }),
+					text('.'),
+				], tokens);
+			});
+
+			it('ignore exclamation mark', () => {
+				const tokens = analyze('#Foo!');
+				assert.deepEqual([
+					node('hashtag', { hashtag: 'Foo' }),
+					text('!'),
+				], tokens);
+			});
 		});
 
 		describe('quote', () => {

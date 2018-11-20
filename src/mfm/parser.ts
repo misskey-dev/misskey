@@ -110,7 +110,7 @@ const mfm = P.createLanguage({
 			const text = input.substr(i);
 			const match = text.match(/^#([^\s\.,!\?#]+)/i);
 			if (!match) return P.makeFailure(i, 'not a hashtag');
-			if (input[i - 1] != ' ' && input[i - 1] != null) return P.makeFailure(i, 'require space before "#"');
+			if (input[i - 1] != '\n' && input[i - 1] != ' ' && input[i - 1] != null) return P.makeFailure(i, 'require space before "#"');
 			return P.makeSuccess(i + match[0].length, makeNode('hashtag', { hashtag: match[1] }));
 		}),
 	//#endregion
