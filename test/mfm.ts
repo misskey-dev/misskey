@@ -38,14 +38,26 @@ describe('Text', () => {
 	});
 
 	describe('elements', () => {
-		it('bold', () => {
-			const tokens = analyze('**Strawberry** Pasta');
-			assert.deepEqual([
-				nodeWithChildren('bold', [
-					text('Strawberry')
-				]),
-				text(' Pasta'),
-			], tokens);
+		describe('bold', () => {
+			it('simple', () => {
+				const tokens = analyze('**foo**');
+				assert.deepEqual([
+					nodeWithChildren('bold', [
+						text('foo')
+					]),
+				], tokens);
+			});
+
+			it('with other texts', () => {
+				const tokens = analyze('bar**foo**bar');
+				assert.deepEqual([
+					text('bar'),
+					nodeWithChildren('bold', [
+						text('foo')
+					]),
+					text('bar'),
+				], tokens);
+			});
 		});
 
 		it('big', () => {
@@ -58,22 +70,46 @@ describe('Text', () => {
 			], tokens);
 		});
 
-		it('motion', () => {
-			const tokens1 = analyze('(((Strawberry))) Pasta');
-			assert.deepEqual([
-				nodeWithChildren('motion', [
-					text('Strawberry')
-				]),
-				text(' Pasta'),
-			], tokens1);
+		describe('motion', () => {
+			it('by triple brackets', () => {
+				const tokens = analyze('(((foo)))');
+				assert.deepEqual([
+					nodeWithChildren('motion', [
+						text('foo')
+					]),
+				], tokens);
+			});
 
-			const tokens2 = analyze('<motion>Strawberry</motion> Pasta');
-			assert.deepEqual([
-				nodeWithChildren('motion', [
-					text('Strawberry')
-				]),
-				text(' Pasta'),
-			], tokens2);
+			it('by triple brackets (with other texts)', () => {
+				const tokens = analyze('bar(((foo)))bar');
+				assert.deepEqual([
+					text('bar'),
+					nodeWithChildren('motion', [
+						text('foo')
+					]),
+					text('bar'),
+				], tokens);
+			});
+
+			it('by <motion> tag', () => {
+				const tokens = analyze('<motion>foo</motion>');
+				assert.deepEqual([
+					nodeWithChildren('motion', [
+						text('foo')
+					]),
+				], tokens);
+			});
+
+			it('by <motion> tag (with other texts)', () => {
+				const tokens = analyze('bar<motion>foo</motion>bar');
+				assert.deepEqual([
+					text('bar'),
+					nodeWithChildren('motion', [
+						text('foo')
+					]),
+					text('bar'),
+				], tokens);
+			});
 		});
 
 		describe('mention', () => {
@@ -118,7 +154,7 @@ describe('Text', () => {
 
 				const tokens3 = analyze('**x**@a');
 				assert.deepEqual([
-					node('bold', [
+					nodeWithChildren('bold', [
 						text('x')
 					]),
 					node('mention', { canonical: '@a', username: 'a', host: null })

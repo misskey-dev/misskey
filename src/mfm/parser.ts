@@ -31,6 +31,7 @@ const mfm = P.createLanguage({
 	root: r => P.alt(
 		r.big,
 		r.bold,
+		r.motion,
 		r.url,
 		r.link,
 		r.mention,
@@ -122,7 +123,13 @@ const mfm = P.createLanguage({
 
 	//#region Mention
 	mention: r =>
-		P.regexp(/^[^a-z0-9](@[a-z0-9_]+(?:@[a-z0-9\.\-]+[a-z0-9])?)/i, 1)
+		P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^@[a-z0-9_]+(?:@[a-z0-9\.\-]+[a-z0-9])?/i);
+			if (!match) return P.makeFailure(i, 'not a mention');
+			if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a mention');
+			return P.makeSuccess(i + match[0].length, match[0]);
+		})
 		.map(x => {
 			const { username, host } = parseAcct(x.substr(1));
 			const canonical = host != null ? `@${username}@${toUnicode(host)}` : x;
@@ -130,6 +137,16 @@ const mfm = P.createLanguage({
 				canonical, username, host
 			});
 		}),
+	//#endregion
+
+	//#region Motion
+	motion: r =>
+		P.alt(P.regexp(/\(\(\(([\s\S]+?)\)\)\)/, 1), P.regexp(/<motion>(.+?)<\/motion>/, 1))
+		.map(x => makeNodeWithChildren('motion', P.alt(
+			r.mention,
+			r.emoji,
+			r.text
+		).atLeast(1).tryParse(x))),
 	//#endregion
 
 	//#region Quote
