@@ -145,6 +145,9 @@ root(fill)
 		font-size 13px
 		opacity 0.7
 
+		&:empty
+			display none
+
 		*
 			margin 0
 
