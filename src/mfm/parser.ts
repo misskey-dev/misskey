@@ -81,10 +81,13 @@ const mfm = P.createLanguage({
 
 	//#region Hashtag
 	hashtag: r =>
-		P.regexp(/^\s#([^\s\.,!\?#]+)/i, 1)
-		.map(x => makeNode('hashtag', {
-			hashtag: x
-		})),
+		P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^#([^\s\.,!\?#]+)/i);
+			if (!match) return P.makeFailure(i, 'not a hashtag');
+			if (input[i - 1] != ' ' && input[i - 1] != null) return P.makeFailure(i, 'require space before "#"');
+			return P.makeSuccess(i + match[0].length, makeNode('hashtag', { hashtag: match[1] }));
+		}),
 	//#endregion
 
 	//#region Inline code
