@@ -27,9 +27,9 @@ describe('Text', () => {
 	it('can be analyzed', () => {
 		const tokens = analyze('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
 		assert.deepEqual([
-			node('mention', { canonical: '@himawari', username: 'himawari', host: null }),
+			node('mention', { acct: '@himawari', canonical: '@himawari', username: 'himawari', host: null }),
 			text(' '),
-			node('mention', { canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
+			node('mention', { acct: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
 			text(' お腹ペコい '),
 			node('emoji', { name: 'cat' }),
 			text(' '),
@@ -116,7 +116,7 @@ describe('Text', () => {
 			it('local', () => {
 				const tokens = analyze('@himawari foo');
 				assert.deepEqual([
-					node('mention', { canonical: '@himawari', username: 'himawari', host: null }),
+					node('mention', { acct: '@himawari', canonical: '@himawari', username: 'himawari', host: null }),
 					text(' foo')
 				], tokens);
 			});
@@ -124,7 +124,7 @@ describe('Text', () => {
 			it('remote', () => {
 				const tokens = analyze('@hima_sub@namori.net foo');
 				assert.deepEqual([
-					node('mention', { canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
+					node('mention', { acct: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
 					text(' foo')
 				], tokens);
 			});
@@ -132,7 +132,7 @@ describe('Text', () => {
 			it('remote punycode', () => {
 				const tokens = analyze('@hima_sub@xn--q9j5bya.xn--zckzah foo');
 				assert.deepEqual([
-					node('mention', { canonical: '@hima_sub@なもり.テスト', username: 'hima_sub', host: 'xn--q9j5bya.xn--zckzah' }),
+					node('mention', { acct: '@hima_sub@xn--q9j5bya.xn--zckzah', canonical: '@hima_sub@なもり.テスト', username: 'hima_sub', host: 'xn--q9j5bya.xn--zckzah' }),
 					text(' foo')
 				], tokens);
 			});
@@ -145,11 +145,11 @@ describe('Text', () => {
 
 				const tokens2 = analyze('@a\n@b\n@c');
 				assert.deepEqual([
-					node('mention', { canonical: '@a', username: 'a', host: null }),
+					node('mention', { acct: '@a', canonical: '@a', username: 'a', host: null }),
 					text('\n'),
-					node('mention', { canonical: '@b', username: 'b', host: null }),
+					node('mention', { acct: '@b', canonical: '@b', username: 'b', host: null }),
 					text('\n'),
-					node('mention', { canonical: '@c', username: 'c', host: null })
+					node('mention', { acct: '@c', canonical: '@c', username: 'c', host: null })
 				], tokens2);
 
 				const tokens3 = analyze('**x**@a');
@@ -157,7 +157,7 @@ describe('Text', () => {
 					nodeWithChildren('bold', [
 						text('x')
 					]),
-					node('mention', { canonical: '@a', username: 'a', host: null })
+					node('mention', { acct: '@a', canonical: '@a', username: 'a', host: null })
 				], tokens3);
 			});
 		});
@@ -421,22 +421,22 @@ describe('Text', () => {
 		it('search', () => {
 			const tokens1 = analyze('a b c 検索');
 			assert.deepEqual([
-				node('search', { query: 'a b c' })
+				node('search', { content: 'a b c 検索', query: 'a b c' })
 			], tokens1);
 
 			const tokens2 = analyze('a b c Search');
 			assert.deepEqual([
-				node('search', { query: 'a b c' })
+				node('search', { content: 'a b c Search', query: 'a b c' })
 			], tokens2);
 
 			const tokens3 = analyze('a b c search');
 			assert.deepEqual([
-				node('search', { query: 'a b c' })
+				node('search', { content: 'a b c search', query: 'a b c' })
 			], tokens3);
 
 			const tokens4 = analyze('a b c SEARCH');
 			assert.deepEqual([
-				node('search', { query: 'a b c' })
+				node('search', { content: 'a b c SEARCH', query: 'a b c' })
 			], tokens4);
 		});
 
@@ -473,7 +473,7 @@ describe('Text', () => {
 	describe('toHtml', () => {
 		it('br', () => {
 			const input = 'foo\nbar\nbaz';
-			const output = '<p>foo<br>bar<br>baz</p>';
+			const output = '<p><span>foo<br>bar<br>baz</span></p>';
 			assert.equal(toHtml(analyze(input)), output);
 		});
 	});

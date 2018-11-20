@@ -51,7 +51,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 		hashtag(token) {
 			const a = doc.createElement('a');
-			a.href = `${config.url}/tags/${hashtag}`;
+			a.href = `${config.url}/tags/${token.props.hashtag}`;
 			a.textContent = `#${token.props.hashtag}`;
 			a.setAttribute('rel', 'tag');
 			return a;
@@ -121,7 +121,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 		search(token) {
 			const a = doc.createElement('a');
-			a.href = `https://www.google.com/?#q=${query}`;
+			a.href = `https://www.google.com/?#q=${token.props.query}`;
 			a.textContent = token.props.content;
 			return a;
 		}
