@@ -80,7 +80,7 @@ async function fetchAny(uri: string) {
 		const user = await createPerson(object.id);
 		return {
 			type: 'User',
-			object: user
+			object: await packUser(user, null, { detail: true })
 		};
 	}
 
@@ -88,7 +88,7 @@ async function fetchAny(uri: string) {
 		const note = await createNote(object.id);
 		return {
 			type: 'Note',
-			object: note
+			object: await packNote(note, null, { detail: true })
 		};
 	}
 
