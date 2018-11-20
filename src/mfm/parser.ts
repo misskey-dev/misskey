@@ -156,7 +156,6 @@ const mfm = P.createLanguage({
 			const match = text.match(/^\n(>[\s\S]+?)((\n[^>])|$)/) || text.match(/^(>[\s\S]+?)((\n[^>])|$)/);
 			if (!match) return P.makeFailure(i, 'not a quote');
 			if (match[0][0] != '\n' && input[i - 1] != null) return P.makeFailure(i, 'require line break before ">"');
-			//const q = match[1].endsWith('\n') ? match[1].substring(0, match[1].lastIndexOf('\n')) : match[1];
 			const qInner = match[1].trim().replace(/^>/gm, '').replace(/^ /gm, '');
 			const contents = P.alt(
 				r.big,
@@ -172,9 +171,8 @@ const mfm = P.createLanguage({
 				r.title,
 				r.text
 			).atLeast(1).tryParse(qInner);
-			const start = i;
 			const length = match[0][0] == '\n' ? match[1].length + 1 : match[1].length;
-			return P.makeSuccess(start + length + 1, makeNodeWithChildren('quote', contents));
+			return P.makeSuccess(i + length + 1, makeNodeWithChildren('quote', contents));
 		}),
 	//#endregion
 
