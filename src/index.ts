@@ -192,7 +192,7 @@ async function init(): Promise<Config> {
 	}
 
 	// Try to connect to MongoDB
-	await checkMongoDB(config);
+	//await checkMongoDB(config);
 
 	return config;
 }
