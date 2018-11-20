@@ -29,6 +29,14 @@ function makeNodeWithChildren(name: string, children: Node[], props?: any): Node
 	return _makeNode(name, children, props);
 }
 
+const newline = P((input, i) => {
+	if (i == 0 || input[i] == '\n' || input[i - 1] == '\n') {
+		return P.makeSuccess(i, null);
+	} else {
+		return P.makeFailure(i, 'not newline');
+	}
+});
+
 const mfm = P.createLanguage({
 	root: r => P.alt(
 		r.big,
@@ -62,14 +70,14 @@ const mfm = P.createLanguage({
 
 	//#region Block code
 	blockCode: r =>
-		P((input, i) => {
-			const text = input.substr(i);
-			const match = text.match(/^\n?```(.+?)?\n([\s\S]+?)\n```(\n|$)/i);
-			if (!match) return P.makeFailure(i, 'not a blockCode');
-			const withLineBreak = match[0][0] == '\n';
-			if (!withLineBreak && input[i - 1] != null) return P.makeFailure(i, 'require line break before blockCode');
-			return P.makeSuccess(i + match[0].length - (match[0].endsWith('\n') ? 1 : 0), makeNode('blockCode', { code: match[2], lang: match[1] ? match[1].trim() : null }));
-		}),
+		newline.then(
+			P((input, i) => {
+				const text = input.substr(i);
+				const match = text.match(/^```(.+?)?\n([\s\S]+?)\n```(\n|$)/i);
+				if (!match) return P.makeFailure(i, 'not a blockCode');
+				return P.makeSuccess(i + match[0].length, makeNode('blockCode', { code: match[2], lang: match[1] ? match[1].trim() : null }));
+			})
+		),
 	//#endregion
 
 	//#region Bold
