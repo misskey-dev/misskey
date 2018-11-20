@@ -17,7 +17,7 @@ import forkit from './forkit.vue';
 import acct from './acct.vue';
 import avatar from './avatar.vue';
 import nav from './nav.vue';
-import misskeyFlavoredMarkdown from './misskey-flavored-markdown';
+import misskeyFlavoredMarkdown from './misskey-flavored-markdown.vue';
 import poll from './poll.vue';
 import pollEditor from './poll-editor.vue';
 import reactionIcon from './reaction-icon.vue';

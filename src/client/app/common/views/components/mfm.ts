@@ -63,6 +63,8 @@ export default Vue.component('misskey-flavored-markdown', {
 	},
 
 	render(createElement) {
+		if (this.text == null || this.text == '') return;
+
 		let ast: Node[];
 
 		if (this.ast == null) {
@@ -126,6 +128,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'url': {
 					return [createElement(MkUrl, {
+						key: Math.random(),
 						props: {
 							url: token.props.url,
 							target: '_blank',
@@ -150,6 +153,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					const host = token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host;
 					const canonical = host != null ? `@${token.props.username}@${toUnicode(host)}` : `@${token.props.username}`;
 					return (createElement as any)('router-link', {
+						key: Math.random(),
 						attrs: {
 							to: `/${canonical}`,
 							// TODO
@@ -165,6 +169,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'hashtag': {
 					return [createElement('router-link', {
+						key: Math.random(),
 						attrs: {
 							to: `/tags/${encodeURIComponent(token.props.hashtag)}`,
 							style: 'color:var(--mfmHashtag);'
@@ -219,6 +224,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'emoji': {
 					const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
 					return [createElement('mk-emoji', {
+						key: Math.random(),
 						attrs: {
 							emoji: token.props.emoji,
 							name: token.props.name
@@ -232,6 +238,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'math': {
 					//const MkFormula = () => import('./formula.vue').then(m => m.default);
 					return [createElement(MkFormula, {
+						key: Math.random(),
 						props: {
 							formula: token.props.formula
 						}
@@ -241,6 +248,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'search': {
 					//const MkGoogle = () => import('./google.vue').then(m => m.default);
 					return [createElement(MkGoogle, {
+						key: Math.random(),
 						props: {
 							q: token.props.query
 						}
