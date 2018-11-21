@@ -1020,13 +1020,11 @@ admin/views/users.vue:
   suspend-user: "冻结用户"
   suspend: "被冻结"
   suspended: "成功冻结用户"
-  unsuspend-user: "解除用户冻结"
   unsuspend: "已解除冻结"
   unsuspended: "已成功解除用户冻结"
   verify-user: "用户账户认证设置"
   verify: "认证用户"
   verified: "此账户已被认证"
-  unverify-user: "用户账号解除认证设置"
   unverify: "解除账户认证"
   unverified: "该帐户未经认证"
 admin/views/moderators.vue:
