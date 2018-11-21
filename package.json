@@ -63,7 +63,7 @@
 		"@types/mocha": "5.2.5",
 		"@types/mongodb": "3.1.14",
 		"@types/ms": "0.7.30",
-		"@types/node": "10.12.2",
+		"@types/node": "10.12.10",
 		"@types/oauth": "0.9.1",
 		"@types/parsimmon": "1.10.0",
 		"@types/portscanner": "2.1.0",
