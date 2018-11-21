@@ -1,42 +1,28 @@
 <template>
 <div class="ucnffhbtogqgscfmqcymwmmupoknpfsw">
 	<ui-card>
-		<div slot="title">{{ $t('verify-user') }}</div>
+		<div slot="title"><fa :icon="faCertificate"/> {{ $t('verify-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="verifyUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="verifyUser" :disabled="verifying">{{ $t('verify') }}</ui-button>
+			<ui-horizon-group>
+				<ui-button @click="verifyUser" :disabled="verifying">{{ $t('verify') }}</ui-button>
+				<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
+			</ui-horizon-group>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">{{ $t('unverify-user') }}</div>
-		<section class="fit-top">
-			<ui-input v-model="unverifyUsername" type="text">
-				<span slot="prefix">@</span>
-			</ui-input>
-			<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<div slot="title">{{ $t('suspend-user') }}</div>
+		<div slot="title"><fa :icon="faSnowflake"/> {{ $t('suspend-user') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="suspendUsername" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="suspendUser" :disabled="suspending">{{ $t('suspend') }}</ui-button>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<div slot="title">{{ $t('unsuspend-user') }}</div>
-		<section class="fit-top">
-			<ui-input v-model="unsuspendUsername" type="text">
-				<span slot="prefix">@</span>
-			</ui-input>
-			<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
+			<ui-horizon-group>
+				<ui-button @click="suspendUser" :disabled="suspending">{{ $t('suspend') }}</ui-button>
+				<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
+			</ui-horizon-group>
 		</section>
 	</ui-card>
 </div>
@@ -46,6 +32,8 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import parseAcct from "../../../../misc/acct/parse";
+import { faCertificate } from '@fortawesome/free-solid-svg-icons';
+import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/users.vue'),
@@ -54,12 +42,11 @@ export default Vue.extend({
 		return {
 			verifyUsername: null,
 			verifying: false,
-			unverifyUsername: null,
 			unverifying: false,
 			suspendUsername: null,
 			suspending: false,
-			unsuspendUsername: null,
-			unsuspending: false
+			unsuspending: false,
+			faCertificate, faSnowflake
 		};
 	},
 
@@ -90,7 +77,7 @@ export default Vue.extend({
 			this.unverifying = true;
 
 			const process = async () => {
-				const user = await this.$root.api('users/show', parseAcct(this.unverifyUsername));
+				const user = await this.$root.api('users/show', parseAcct(this.verifyUsername));
 				await this.$root.api('admin/unverify-user', { userId: user.id });
 				this.$root.alert({
 					type: 'success',
@@ -134,7 +121,7 @@ export default Vue.extend({
 			this.unsuspending = true;
 
 			const process = async () => {
-				const user = await this.$root.api('users/show', parseAcct(this.unsuspendUsername));
+				const user = await this.$root.api('users/show', parseAcct(this.suspendUsername));
 				await this.$root.api('admin/unsuspend-user', { userId: user.id });
 				this.$root.alert({
 					type: 'success',

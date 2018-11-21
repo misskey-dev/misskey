@@ -1148,13 +1148,11 @@ admin/views/users.vue:
   suspend-user: "ユーザーの凍結"
   suspend: "凍結"
   suspended: "凍結しました"
-  unsuspend-user: "ユーザーの凍結の解除"
   unsuspend: "凍結の解除"
   unsuspended: "凍結を解除しました"
   verify-user: "ユーザーの公式アカウント設定"
   verify: "公式アカウントにする"
   verified: "公式アカウントにしました"
-  unverify-user: "ユーザーの公式アカウント解除"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
 
