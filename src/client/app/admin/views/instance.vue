@@ -43,13 +43,13 @@
 			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
 		</section>
 		<section>
-			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
-		</section>
-		<section>
 			<header><fa :icon="faUserPlus"/> {{ $t('user-recommendation-config') }}</header>
 			<ui-switch v-model="enableExternalUserRecommendation">{{ $t('enable-external-user-recommendation') }}</ui-switch>
-			<ui-input v-model="externalUserRecommendationEngine" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-engine') }}</ui-input>
-			<ui-input v-model="externalUserRecommendationTimeout" type="number" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-timeout') }}<span slot="suffix">ns</span><span slot="desc">{{ $t('ns') }}</span></ui-input>
+			<ui-input v-model="externalUserRecommendationEngine" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-engine') }}<span slot="desc">{{ $t('external-user-recommendation-engine-desc') }}</span></ui-input>
+			<ui-input v-model="externalUserRecommendationTimeout" type="number" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-timeout') }}<span slot="suffix">ms</span><span slot="desc">{{ $t('external-user-recommendation-timeout-desc') }}</span></ui-input>
+		</section>
+		<section>
+			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 
