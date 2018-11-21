@@ -1020,13 +1020,11 @@ admin/views/users.vue:
   suspend-user: "Suspendre un·e utilisateur·rice"
   suspend: "Suspendre"
   suspended: "Suspendu·e avec succès."
-  unsuspend-user: "Lever la suspension d’utilisateur·rice·s"
   unsuspend: "Suspension levée"
   unsuspended: "La suspension de l’utilisateur·rice a été levée avec succès"
   verify-user: "Paramètres de vérification du compte utilisateur"
   verify: "Vérification du compte"
   verified: "Le compte a été vérifié"
-  unverify-user: "Paramètres de non-vérification du compte utilisateur"
   unverify: "Ôter la vérification du compte"
   unverified: "Ce compte n'est plus vérifié"
 admin/views/moderators.vue:
