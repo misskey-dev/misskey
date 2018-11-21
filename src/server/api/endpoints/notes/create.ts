@@ -219,7 +219,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
-	if ((ps.text == null) && files === null && renote === null && ps.poll == null) {
+	if (!(ps.text || files.length || renote || ps.poll)) {
 		return rej('text, fileIds, renoteId or poll is required');
 	}
 
