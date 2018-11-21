@@ -72,6 +72,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		enableTwitterIntegration: instance.enableTwitterIntegration,
 		enableGithubIntegration: instance.enableGithubIntegration,
 		enableDiscordIntegration: instance.enableDiscordIntegration,
+
+		enableExternalUserRecommendation: instance.enableExternalUserRecommendation,
+		externalUserRecommendationEngine: instance.externalUserRecommendationEngine,
+		externalUserRecommendationTimeout: instance.externalUserRecommendationTimeout
 	};
 
 	if (ps.detail) {
