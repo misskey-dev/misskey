@@ -314,6 +314,7 @@ describe('API', () => {
 			const file = await uploadFile(bob);
 
 			const res = await request('/notes/create', {
+				text: 'test',
 				fileIds: [file.id]
 			}, me);
 
@@ -327,6 +328,7 @@ describe('API', () => {
 			const me = await signup();
 
 			const res = await request('/notes/create', {
+				text: 'test',
 				fileIds: ['000000000000000000000000']
 			}, me);
 
