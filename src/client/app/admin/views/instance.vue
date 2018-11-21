@@ -167,7 +167,7 @@ export default Vue.extend({
 			this.enableDiscordIntegration = meta.enableDiscordIntegration;
 			this.discordClientId = meta.discordClientId;
 			this.discordClientSecret = meta.discordClientSecret;
-			this.enableExternalUserRecommendation = meta.ebableExternalUserRecommendation;
+			this.enableExternalUserRecommendation = meta.enableExternalUserRecommendation;
 			this.externalUserRecommendationEngine = meta.externalUserRecommendationEngine;
 			this.externalUserRecommendationTimeout = meta.externalUserRecommendationTimeout;
 		});
@@ -214,7 +214,7 @@ export default Vue.extend({
 				discordClientSecret: this.discordClientSecret,
 				enableExternalUserRecommendation: this.enableExternalUserRecommendation,
 				externalUserRecommendationEngine: this.externalUserRecommendationEngine,
-				externalUserRecommenadtionTimeout: this.externalUserRecommendationTimeout
+				externalUserRecommendationTimeout: this.externalUserRecommendationTimeout
 			}).then(() => {
 				this.$root.alert({
 					type: 'success',
