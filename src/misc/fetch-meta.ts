@@ -17,7 +17,7 @@ const defaultMeta: any = {
 	enableGithubIntegration: false,
 	enableDiscordIntegration: false,
 	enableExternalUserRecommendation: false,
-	externalUserRecommendationEngine: "http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}",
+	externalUserRecommendationEngine: "https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}",
 	externalUserRecommendationTimeout: 300000
 };
 
