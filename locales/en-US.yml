@@ -1020,13 +1020,11 @@ admin/views/users.vue:
   suspend-user: "Suspend a user"
   suspend: "Suspend"
   suspended: "Successfully suspended."
-  unsuspend-user: "Unsuspend users"
   unsuspend: "Unsuspend"
   unsuspended: "The user has successfully unsuspended."
   verify-user: "User account verification settings"
   verify: "Verify account"
   verified: "The account is now being verified"
-  unverify-user: "User account unverification settings"
   unverify: "Unverify account"
   unverified: "The account is now being unverified"
 admin/views/moderators.vue:
