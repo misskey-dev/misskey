@@ -16,9 +16,9 @@ const defaultMeta: any = {
 	enableTwitterIntegration: false,
 	enableGithubIntegration: false,
 	enableDiscordIntegration: false,
-	enableExternalUserRecommendation: false;
-	externalUserRecommendationEngine: "http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}";
-	externalUserRecommendationTimeout: 300000;
+	enableExternalUserRecommendation: false,
+	externalUserRecommendationEngine: "http://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}",
+	externalUserRecommendationTimeout: 300000
 };
 
 export default async function(): Promise<IMeta> {

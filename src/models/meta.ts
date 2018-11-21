@@ -209,7 +209,7 @@ export type IMeta = {
 	discordClientId?: string;
 	discordClientSecret?: string;
 
-	enableExternalUserRecommendation? boolean;
-	externalUserRecommendationEngine? string;
-	externalUserRecommendationTimeout? number;
+	enableExternalUserRecommendation?: boolean;
+	externalUserRecommendationEngine?: string;
+	externalUserRecommendationTimeout?: number;
 };
