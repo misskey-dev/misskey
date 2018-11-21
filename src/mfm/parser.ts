@@ -245,11 +245,25 @@ const mfm = P.createLanguage({
 			const match = text.match(/^https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.,=\+\-]+/);
 			if (!match) return P.makeFailure(i, 'not a url');
 			let url = match[0];
-			const before = input[i - 1];
+			let pendingBracket = 0;
+			const end = url.split('').findIndex(char => {
+				if (char == ')') {
+					if (pendingBracket > 0) {
+						pendingBracket--;
+						return false;
+					} else {
+						return true;
+					}
+				} else if (char == '(') {
+					pendingBracket++;
+					return false;
+				} else {
+					return false;
+				}
+			});
+			if (end > 0) url = url.substr(0, end);
 			if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
 			if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
-			if (url.endsWith(')') && before == '(') url = url.substr(0, url.lastIndexOf(')'));
-			if (url.endsWith(']') && before == '[') url = url.substr(0, url.lastIndexOf(']'));
 			return P.makeSuccess(i + url.length, url);
 		})
 		.map(x => makeNode('url', { url: x })),

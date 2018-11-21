@@ -381,6 +381,15 @@ describe('Text', () => {
 				], tokens);
 			});
 
+			it('ignore parent brackets 2', () => {
+				const tokens = analyze('(foo https://example.com/foo)');
+				assert.deepEqual([
+					text('(foo '),
+					node('url', { url: 'https://example.com/foo' }),
+					text(')')
+				], tokens);
+			});
+
 			it('ignore parent brackets with internal brackets', () => {
 				const tokens = analyze('(https://example.com/foo(bar))');
 				assert.deepEqual([
@@ -391,13 +400,26 @@ describe('Text', () => {
 			});
 		});
 
-		it('link', () => {
-			const tokens = analyze('[foo](https://example.com)');
-			assert.deepEqual([
-				nodeWithChildren('link', [
-					text('foo')
-				], { url: 'https://example.com', silent: false })
-			], tokens);
+		describe('link', () => {
+			it('simple', () => {
+				const tokens = analyze('[foo](https://example.com)');
+				assert.deepEqual([
+					nodeWithChildren('link', [
+						text('foo')
+					], { url: 'https://example.com', silent: false })
+				], tokens);
+			});
+
+			it('in text', () => {
+				const tokens = analyze('before[foo](https://example.com)after');
+				assert.deepEqual([
+					text('before'),
+					nodeWithChildren('link', [
+						text('foo')
+					], { url: 'https://example.com', silent: false }),
+					text('after'),
+				], tokens);
+			});
 		});
 
 		it('emoji', () => {
