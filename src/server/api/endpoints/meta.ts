@@ -85,7 +85,11 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
 			serviceWorker: config.sw ? true : false,
-			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
+			userRecommendation: {
+				external: instance.enableExternalUserRecommendation,
+				engine: instance.externalUserRecommendationEngine,
+				timeout: instance.externalUserRecommendationTimeout
+			}
 		};
 	}
 

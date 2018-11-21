@@ -45,6 +45,12 @@
 		<section>
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
+		<section>
+			<header><fa :icon="faUserPlus"/> {{ $t('user-recommendation-config') }}</header>
+			<ui-switch v-model="enableExternalUserRecommendation">{{ $t('enable-external-user-recommendation') }}</ui-switch>
+			<ui-input v-model="externalUserRecommendationEngine" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-engine') }}</ui-input>
+			<ui-input v-model="externalUserRecommendationTimeout" type="number" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-timeout') }}<span slot="suffix">ns</span><span slot="desc">{{ $t('ns') }}</span></ui-input>
+		</section>
 	</ui-card>
 
 	<ui-card>
@@ -95,7 +101,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import { host } from '../../config';
 import { toUnicode } from 'punycode';
-import { faHeadset, faShieldAlt, faGhost } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faShieldAlt, faGhost, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/instance.vue'),
@@ -129,7 +135,10 @@ export default Vue.extend({
 			discordClientSecret: null,
 			proxyAccount: null,
 			inviteCode: null,
-			faHeadset, faShieldAlt, faGhost
+			enableExternalUserRecommendation: false,
+			externalUserRecommendationEngine: null,
+			externalUserRecommendationTimeout: null,
+			faHeadset, faShieldAlt, faGhost, faUserPlus
 		};
 	},
 
@@ -158,6 +167,9 @@ export default Vue.extend({
 			this.enableDiscordIntegration = meta.enableDiscordIntegration;
 			this.discordClientId = meta.discordClientId;
 			this.discordClientSecret = meta.discordClientSecret;
+			this.enableExternalUserRecommendation = meta.ebableExternalUserRecommendation;
+			this.externalUserRecommendationEngine = meta.externalUserRecommendationEngine;
+			this.externalUserRecommendationTimeout = meta.externalUserRecommendationTimeout;
 		});
 	},
 
@@ -199,7 +211,10 @@ export default Vue.extend({
 				githubClientSecret: this.githubClientSecret,
 				enableDiscordIntegration: this.enableDiscordIntegration,
 				discordClientId: this.discordClientId,
-				discordClientSecret: this.discordClientSecret
+				discordClientSecret: this.discordClientSecret,
+				enableExternalUserRecommendation: this.enableExternalUserRecommendation,
+				externalUserRecommendationEngine: this.externalUserRecommendationEngine,
+				externalUserRecommenadtionTimeout: this.externalUserRecommendationTimeout
 			}).then(() => {
 				this.$root.alert({
 					type: 'success',
