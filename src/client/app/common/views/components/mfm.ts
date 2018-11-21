@@ -9,18 +9,18 @@ import MkGoogle from './google.vue';
 import { toUnicode } from 'punycode';
 import syntaxHighlight from '../../../../../mfm/syntax-highlight';
 
-function getText(tokens: Node[]): string {
-	let text = '';
+function getTextCount(tokens: Node[]): number {
+	let count = 0;
 	const extract = (tokens: Node[]) => {
 		tokens.filter(x => x.name === 'text').forEach(x => {
-			text += x.props.text;
+			count += length(x.props.text);
 		});
 		tokens.filter(x => x.children).forEach(x => {
 			extract(x.children);
 		});
 	};
 	extract(tokens);
-	return text;
+	return count;
 }
 
 function getChildrenCount(tokens: Node[]): number {
@@ -98,7 +98,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'big': {
 					bigCount++;
-					const isLong = length(getText(token.children)) > 10 || getChildrenCount(token.children) > 5;
+					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;
 					const isMany = bigCount > 3;
 					return (createElement as any)('strong', {
 						attrs: {
@@ -113,7 +113,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'motion': {
 					motionCount++;
-					const isLong = length(getText(token.children)) > 10 || getChildrenCount(token.children) > 5;
+					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;
 					const isMany = motionCount > 3;
 					return (createElement as any)('span', {
 						attrs: {
