@@ -6,6 +6,8 @@ import Mute from '../../../../models/mute';
 import * as request from 'request';
 import config from '../../../../config';
 import define from '../../define';
+import fetchMeta from '../../../../misc/fetch-meta';
+
 
 export const meta = {
 	desc: {
@@ -30,13 +32,15 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	if (config.user_recommendation && config.user_recommendation.external) {
+	const instance = await fetchMeta();
+
+	if (instance.enableExternalUserRecommendation) {
 		const userName = me.username;
 		const hostName = config.hostname;
 		const limit = ps.limit;
 		const offset = ps.offset;
-		const timeout = config.user_recommendation.timeout;
-		const engine = config.user_recommendation.engine;
+		const timeout = instance.externalUserRecommendationTimeout;
+		const engine = instance.externalUserRecommendationEngine;
 		const url = engine
 			.replace('{{host}}', hostName)
 			.replace('{{user}}', userName)
