@@ -469,11 +469,27 @@ describe('Text', () => {
 			});
 		});
 
-		it('inline code', () => {
-			const tokens = analyze('`var x = "Strawberry Pasta";`');
-			assert.deepEqual([
-				node('inlineCode', { code: 'var x = "Strawberry Pasta";' })
-			], tokens);
+		describe('inline code', () => {
+			it('simple', () => {
+				const tokens = analyze('`var x = "Strawberry Pasta";`');
+				assert.deepEqual([
+					node('inlineCode', { code: 'var x = "Strawberry Pasta";' })
+				], tokens);
+			});
+
+			it('disallow line break', () => {
+				const tokens = analyze('`foo\nbar`');
+				assert.deepEqual([
+					text('`foo\nbar`')
+				], tokens);
+			});
+
+			it('disallow ´', () => {
+				const tokens = analyze('`foo´bar`');
+				assert.deepEqual([
+					text('`foo´bar`')
+				], tokens);
+			});
 		});
 
 		it('math', () => {

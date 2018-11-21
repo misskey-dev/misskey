@@ -119,7 +119,7 @@ const mfm = P.createLanguage({
 
 	//#region Inline code
 	inlineCode: r =>
-		P.regexp(/`(.+?)`/, 1)
+		P.regexp(/`([^´\n]+?)`/, 1)
 		.map(x => makeNode('inlineCode', { code: x })),
 	//#endregion
 
