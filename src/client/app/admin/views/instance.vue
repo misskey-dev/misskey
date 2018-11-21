@@ -214,7 +214,7 @@ export default Vue.extend({
 				discordClientSecret: this.discordClientSecret,
 				enableExternalUserRecommendation: this.enableExternalUserRecommendation,
 				externalUserRecommendationEngine: this.externalUserRecommendationEngine,
-				externalUserRecommendationTimeout: parseInt(this.externalUserRecommendationTimeout)
+				externalUserRecommendationTimeout: parseInt(this.externalUserRecommendationTimeout, 300000)
 			}).then(() => {
 				this.$root.alert({
 					type: 'success',
