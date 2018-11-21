@@ -26,7 +26,7 @@ export const meta = {
 
 		folderId: {
 			validator: $.type(ID).optional.nullable,
-			default: null as any as any,
+			default: null as any,
 			transform: transform
 		},
 
