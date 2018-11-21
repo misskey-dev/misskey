@@ -72,6 +72,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		enableTwitterIntegration: instance.enableTwitterIntegration,
 		enableGithubIntegration: instance.enableGithubIntegration,
 		enableDiscordIntegration: instance.enableDiscordIntegration,
+
+		enableExternalUserRecommendation: instance.enableExternalUserRecommendation,
+		externalUserRecommendationEngine: instance.externalUserRecommendationEngine,
+		externalUserRecommendationTimeout: instance.externalUserRecommendationTimeout
 	};
 
 	if (ps.detail) {
@@ -85,7 +89,11 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
 			serviceWorker: config.sw ? true : false,
-			userRecommendation: config.user_recommendation ? config.user_recommendation : {}
+			userRecommendation: {
+				external: instance.enableExternalUserRecommendation,
+				engine: instance.externalUserRecommendationEngine,
+				timeout: instance.externalUserRecommendationTimeout
+			}
 		};
 	}
 

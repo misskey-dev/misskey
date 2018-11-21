@@ -15,7 +15,10 @@ const defaultMeta: any = {
 	maxNoteTextLength: 1000,
 	enableTwitterIntegration: false,
 	enableGithubIntegration: false,
-	enableDiscordIntegration: false
+	enableDiscordIntegration: false,
+	enableExternalUserRecommendation: false,
+	externalUserRecommendationEngine: "https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}",
+	externalUserRecommendationTimeout: 300000
 };
 
 export default async function(): Promise<IMeta> {

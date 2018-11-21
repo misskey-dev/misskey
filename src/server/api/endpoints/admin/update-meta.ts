@@ -200,6 +200,27 @@ export const meta = {
 			desc: {
 				'ja-JP': 'DiscordアプリのClient Secret'
 			}
+		},
+
+		enableExternalUserRecommendation: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': '外部ユーザーレコメンデーションを有効にする'
+			}
+		},
+
+		externalUserRecommendationEngine: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': '外部ユーザーレコメンデーションのサードパーティエンジン'
+			}
+		},
+
+		externalUserRecommendationTimeout: {
+			validator: $.num.optional.nullable.min(0),
+			desc: {
+				'ja-JP': '外部ユーザーレコメンデーションのタイムアウト (ミリ秒)'
+			}
 		}
 	}
 };
@@ -313,6 +334,18 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.discordClientSecret !== undefined) {
 		set.discordClientSecret = ps.discordClientSecret;
+	}
+
+	if (ps.enableExternalUserRecommendation !== undefined) {
+		set.enableExternalUserRecommendation = ps.enableExternalUserRecommendation;
+	}
+
+	if (ps.externalUserRecommendationEngine !== undefined) {
+		set.externalUserRecommendationEngine = ps.externalUserRecommendationEngine;
+	}
+
+	if (ps.externalUserRecommendationTimeout !== undefined) {
+		set.externalUserRecommendationTimeout = ps.externalUserRecommendationTimeout;
 	}
 
 	await Meta.update({}, {
