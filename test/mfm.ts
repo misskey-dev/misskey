@@ -420,6 +420,26 @@ describe('Text', () => {
 					text('after'),
 				], tokens);
 			});
+
+			it('with brackets', () => {
+				const tokens = analyze('[foo](https://example.com/foo(bar))');
+				assert.deepEqual([
+					nodeWithChildren('link', [
+						text('foo')
+					], { url: 'https://example.com/foo(bar)', silent: false })
+				], tokens);
+			});
+
+			it('with parent brackets', () => {
+				const tokens = analyze('([foo](https://example.com/foo(bar)))');
+				assert.deepEqual([
+					text('('),
+					nodeWithChildren('link', [
+						text('foo')
+					], { url: 'https://example.com/foo(bar)', silent: false }),
+					text(')')
+				], tokens);
+			});
 		});
 
 		it('emoji', () => {
