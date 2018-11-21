@@ -991,6 +991,12 @@ admin/views/instance.vue:
   invite: "邀请"
   save: "保存"
   saved: "保存完毕"
+  user-recommendation-config: "おすすめユーザー"
+  enable-external-user-recommendation: "外部ユーザーレコメンデーションを有効にする"
+  external-user-recommendation-engine: "エンジン"
+  external-user-recommendation-engine-desc: "例: https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
+  external-user-recommendation-timeout: "タイムアウト"
+  external-user-recommendation-timeout-desc: "ミリ秒単位 (例: 300000)"
 admin/views/charts.vue:
   title: "历史记录"
   per-day: "每天"
