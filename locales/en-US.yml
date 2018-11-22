@@ -1023,16 +1023,35 @@ admin/views/charts.vue:
     network-time: "Response time"
     network-usage: "Traffic"
 admin/views/users.vue:
-  suspend-user: "Suspend a user"
+  operation: "操作"
+  username-or-userid: "ユーザー名またはユーザーID"
+  user-not-found: "ユーザーが見つかりません"
+  lookup: "照会"
+  reset-password: "パスワードをリセット"
+  password-updated: "パスワードは現在「{password}」です"
   suspend: "Suspend"
   suspended: "Successfully suspended."
   unsuspend: "Unsuspend"
   unsuspended: "The user has successfully unsuspended."
-  verify-user: "User account verification settings"
   verify: "Verify account"
   verified: "The account is now being verified"
   unverify: "Unverify account"
   unverified: "The account is now being unverified"
+  users:
+    title: "ユーザー"
+    sort:
+      title: "ソート"
+      createdAtAsc: "登録日時が古い順"
+      createdAtDesc: "登録日時が新しい順"
+      updatedAtAsc: "最終更新日時が古い順"
+      updatedAtDesc: "最終更新日時が新しい順"
+    origin:
+      title: "オリジン"
+      combined: "ローカル+リモート"
+      local: "ローカル"
+      remote: "リモート"
+    createdAt: "登録日時"
+    updatedAt: "更新日時"
 admin/views/moderators.vue:
   add-moderator:
     title: "Register Moderator"
