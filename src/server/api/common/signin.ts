@@ -9,8 +9,8 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 		path: '/',
 		domain: config.hostname,
 		// SEE: https://github.com/koajs/koa/issues/974
-		//secure: config.url.startsWith('https'),
-		secure: false,
+		// When using a SSL proxy it should be configured to add the "X-Forwarded-Proto: https" header
+		secure: config.url.startsWith('https'),
 		httpOnly: false,
 		expires: new Date(Date.now() + expires),
 		maxAge: expires
