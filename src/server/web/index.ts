@@ -111,7 +111,7 @@ router.get('/notes/:note', async ctx => {
 			note: _note,
 			summary: getNoteSummary(_note)
 		});
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 	} else {
 		ctx.status = 404;
 	}
