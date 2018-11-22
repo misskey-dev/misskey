@@ -1269,7 +1269,7 @@ mobile/views/components/ui.nav.vue:
   admin: "Admin"
   about: "À propos de Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "Cette utilisateur semble n'avoir rien poster pour le moment"
+  no-notes: "Il semble que cet·te utilisateur·rice n’a rien publié pour le moment."
   no-notes-with-media: "Aucune notes avec des médias"
 mobile/views/components/users-list.vue:
   all: "Tout"
