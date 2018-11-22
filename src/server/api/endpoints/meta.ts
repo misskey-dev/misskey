@@ -107,6 +107,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.githubClientSecret = instance.githubClientSecret;
 		response.discordClientId = instance.discordClientId;
 		response.discordClientSecret = instance.discordClientSecret;
+		response.summalyProxy = instance.summalyProxy;
 	}
 
 	res(response);

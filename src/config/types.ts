@@ -37,8 +37,6 @@ export type Source = {
 
 	proxy?: string;
 
-	summalyProxy?: string;
-
 	accesslog?: string;
 
 	github_bot?: {

@@ -43,6 +43,10 @@
 			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
 		</section>
 		<section>
+			<header>summaly Proxy</header>
+			<ui-input v-model="summalyProxy">URL</ui-input>
+		</section>
+		<section>
 			<header><fa :icon="faUserPlus"/> {{ $t('user-recommendation-config') }}</header>
 			<ui-switch v-model="enableExternalUserRecommendation">{{ $t('enable-external-user-recommendation') }}</ui-switch>
 			<ui-input v-model="externalUserRecommendationEngine" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-engine') }}<span slot="desc">{{ $t('external-user-recommendation-engine-desc') }}</span></ui-input>
@@ -138,6 +142,7 @@ export default Vue.extend({
 			enableExternalUserRecommendation: false,
 			externalUserRecommendationEngine: null,
 			externalUserRecommendationTimeout: null,
+			summalyProxy: null,
 			faHeadset, faShieldAlt, faGhost, faUserPlus
 		};
 	},
@@ -170,6 +175,7 @@ export default Vue.extend({
 			this.enableExternalUserRecommendation = meta.enableExternalUserRecommendation;
 			this.externalUserRecommendationEngine = meta.externalUserRecommendationEngine;
 			this.externalUserRecommendationTimeout = meta.externalUserRecommendationTimeout;
+			this.summalyProxy = meta.summalyProxy;
 		});
 	},
 
@@ -214,7 +220,8 @@ export default Vue.extend({
 				discordClientSecret: this.discordClientSecret,
 				enableExternalUserRecommendation: this.enableExternalUserRecommendation,
 				externalUserRecommendationEngine: this.externalUserRecommendationEngine,
-				externalUserRecommendationTimeout: parseInt(this.externalUserRecommendationTimeout, 10)
+				externalUserRecommendationTimeout: parseInt(this.externalUserRecommendationTimeout, 10),
+				summalyProxy: this.summalyProxy
 			}).then(() => {
 				this.$root.alert({
 					type: 'success',

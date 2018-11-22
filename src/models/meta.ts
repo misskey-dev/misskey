@@ -197,6 +197,8 @@ export type IMeta = {
 	 */
 	maxNoteTextLength?: number;
 
+	summalyProxy?: string;
+
 	enableTwitterIntegration?: boolean;
 	twitterConsumerKey?: string;
 	twitterConsumerSecret?: string;

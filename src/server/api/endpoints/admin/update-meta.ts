@@ -139,6 +139,13 @@ export const meta = {
 			}
 		},
 
+		summalyProxy: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'summalyプロキシURL'
+			}
+		},
+
 		enableTwitterIntegration: {
 			validator: $.bool.optional,
 			desc: {
@@ -298,6 +305,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.langs !== undefined) {
 		set.langs = ps.langs;
+	}
+
+	if (ps.summalyProxy !== undefined) {
+		set.summalyProxy = ps.summalyProxy;
 	}
 
 	if (ps.enableTwitterIntegration !== undefined) {
