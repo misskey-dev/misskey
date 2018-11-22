@@ -17,7 +17,23 @@ export const meta = {
 		},
 
 		sort: {
-			validator: $.str.optional.or('+follower|-follower'),
+			validator: $.str.optional.or([
+				'+follower',
+				'-follower',
+				'+createdAt',
+				'-createdAt',
+				'+updatedAt',
+				'-updatedAt',
+			]),
+		},
+
+		origin: {
+			validator: $.str.optional.or([
+				'combined',
+				'local',
+				'remote',
+			]),
+			default: 'local'
 		}
 	}
 };
@@ -33,6 +49,22 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			_sort = {
 				followersCount: 1
 			};
+		} else if (ps.sort == '+createdAt') {
+			_sort = {
+				createdAt: -1
+			};
+		} else if (ps.sort == '+updatedAt') {
+			_sort = {
+				updatedAt: -1
+			};
+		} else if (ps.sort == '-createdAt') {
+			_sort = {
+				createdAt: 1
+			};
+		} else if (ps.sort == '-updatedAt') {
+			_sort = {
+				updatedAt: 1
+			};
 		}
 	} else {
 		_sort = {
@@ -40,14 +72,17 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		};
 	}
 
+	const q =
+		ps.origin == 'local' ? { host: null } :
+		ps.origin == 'remote' ? { host: { $ne: null } } :
+		{};
+
 	const users = await User
-		.find({
-			host: null
-		}, {
+		.find(q, {
 			limit: ps.limit,
 			sort: _sort,
 			skip: ps.offset
 		});
 
-	res(await Promise.all(users.map(user => pack(user, me))));
+	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
 }));

@@ -9,7 +9,7 @@
 			<ui-textarea v-model="announcement.text">
 				<span>{{ $t('text') }}</span>
 			</ui-textarea>
-			<ui-horizon-group>
+			<ui-horizon-group class="fit-bottom">
 				<ui-button @click="save()"><fa :icon="['far', 'save']"/> {{ $t('save') }}</ui-button>
 				<ui-button @click="remove(i)"><fa :icon="['far', 'trash-alt']"/> {{ $t('remove') }}</ui-button>
 			</ui-horizon-group>

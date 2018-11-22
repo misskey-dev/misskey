@@ -80,7 +80,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}));
 
 		if (isRemoteUser(user)) {
-			if (user.updatedAt == null || Date.now() - user.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
+			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 				resolveRemoteUser(ps.username, ps.host, { }, true);
 			}
 		}

@@ -26,6 +26,7 @@ export default User;
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
+	updatedAt?: Date;
 	deletedAt?: Date;
 	followersCount: number;
 	followingCount: number;
@@ -104,7 +105,6 @@ export interface ILocalUser extends IUserBase {
 		birthday: string; // 'YYYY-MM-DD'
 		tags: string[];
 	};
-	lastUsedAt: Date;
 	isCat: boolean;
 	isAdmin?: boolean;
 	isModerator?: boolean;
@@ -132,7 +132,7 @@ export interface IRemoteUser extends IUserBase {
 		id: string;
 		publicKeyPem: string;
 	};
-	updatedAt: Date;
+	lastFetchedAt: Date;
 	isAdmin: false;
 	isModerator: false;
 }

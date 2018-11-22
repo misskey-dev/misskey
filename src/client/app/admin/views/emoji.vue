@@ -38,7 +38,7 @@
 				<i slot="icon"><fa icon="link"/></i>
 				<span>{{ $t('add-emoji.url') }}</span>
 			</ui-input>
-			<ui-horizon-group>
+			<ui-horizon-group class="fit-bottom">
 				<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> {{ $t('emojis.update') }}</ui-button>
 				<ui-button @click="removeEmoji(emoji)"><fa :icon="['far', 'trash-alt']"/> {{ $t('emojis.remove') }}</ui-button>
 			</ui-horizon-group>

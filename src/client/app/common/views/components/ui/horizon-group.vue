@@ -27,8 +27,16 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .vnxwkwuf
+	margin 16px 0
+
 	&.inputs
 		margin 32px 0
+
+	&.fit-top
+		margin-top 0
+
+	&.fit-bottom
+		margin-bottom 0
 
 	&:not(.noGrow)
 		display flex
@@ -37,5 +45,6 @@ export default Vue.extend({
 			flex 1
 
 	> *:not(:last-child)
-		margin-right 16px
+		margin-right 16px !important
+
 </style>

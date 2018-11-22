@@ -104,7 +104,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	});
 
 	// ユーザーの情報が古かったらついでに更新しておく
-	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
+	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 		updatePerson(note.attributedTo);
 	}
 

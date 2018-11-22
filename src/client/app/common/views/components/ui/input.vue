@@ -9,27 +9,30 @@
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
 			<input ref="input"
-					:type="type"
-					v-model="v"
-					:disabled="disabled"
-					:required="required"
-					:readonly="readonly"
-					:pattern="pattern"
-					:autocomplete="autocomplete"
-					:spellcheck="spellcheck"
-					@focus="focused = true"
-					@blur="focused = false">
+				:type="type"
+				v-model="v"
+				:disabled="disabled"
+				:required="required"
+				:readonly="readonly"
+				:pattern="pattern"
+				:autocomplete="autocomplete"
+				:spellcheck="spellcheck"
+				@focus="focused = true"
+				@blur="focused = false"
+			>
 		</template>
 		<template v-else>
 			<input ref="input"
-					type="text"
-					:value="placeholder"
-					readonly
-					@click="chooseFile">
+				type="text"
+				:value="placeholder"
+				readonly
+				@click="chooseFile"
+			>
 			<input ref="file"
-					type="file"
-					:value="value"
-					@change="onChangeFile">
+				type="file"
+				:value="value"
+				@change="onChangeFile"
+			>
 		</template>
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
@@ -324,6 +327,9 @@ root(fill)
 	> .desc
 		margin 6px 0
 		font-size 13px
+
+		&:empty
+			display none
 
 		*
 			margin 0

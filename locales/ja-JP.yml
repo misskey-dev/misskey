@@ -1151,16 +1151,35 @@ admin/views/charts.vue:
     network-usage: "通信量"
 
 admin/views/users.vue:
-  suspend-user: "ユーザーの凍結"
+  operation: "操作"
+  username-or-userid: "ユーザー名またはユーザーID"
+  user-not-found: "ユーザーが見つかりません"
+  lookup: "照会"
+  reset-password: "パスワードをリセット"
+  password-updated: "パスワードは現在「{password}」です"
   suspend: "凍結"
   suspended: "凍結しました"
   unsuspend: "凍結の解除"
   unsuspended: "凍結を解除しました"
-  verify-user: "ユーザーの公式アカウント設定"
   verify: "公式アカウントにする"
   verified: "公式アカウントにしました"
   unverify: "公式アカウントを解除する"
   unverified: "公式アカウントを解除しました"
+  users:
+    title: "ユーザー"
+    sort:
+      title: "ソート"
+      createdAtAsc: "登録日時が古い順"
+      createdAtDesc: "登録日時が新しい順"
+      updatedAtAsc: "最終更新日時が古い順"
+      updatedAtDesc: "最終更新日時が新しい順"
+    origin:
+      title: "オリジン"
+      combined: "ローカル+リモート"
+      local: "ローカル"
+      remote: "リモート"
+    createdAt: "登録日時"
+    updatedAt: "更新日時"
 
 admin/views/moderators.vue:
   add-moderator:

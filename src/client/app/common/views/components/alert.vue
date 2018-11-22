@@ -5,7 +5,7 @@
 		<div class="icon" :class="type"><fa :icon="icon"/></div>
 		<header v-if="title" v-html="title"></header>
 		<div class="body" v-if="text" v-html="text"></div>
-		<ui-horizon-group no-grow class="buttons" v-if="!splash">
+		<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash">
 			<ui-button @click="ok" primary autofocus>OK</ui-button>
 			<ui-button @click="cancel" v-if="showCancelButton">Cancel</ui-button>
 		</ui-horizon-group>

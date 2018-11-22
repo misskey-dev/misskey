@@ -143,7 +143,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			avatarId: null,
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
-			updatedAt: new Date(),
+			lastFetchedAt: new Date(),
 			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,
@@ -298,7 +298,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	// Update user
 	await User.update({ _id: exist._id }, {
 		$set: {
-			updatedAt: new Date(),
+			lastFetchedAt: new Date(),
 			inbox: person.inbox,
 			sharedInbox: person.sharedInbox,
 			featured: person.featured,
