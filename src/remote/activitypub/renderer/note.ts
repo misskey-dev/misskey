@@ -42,6 +42,18 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		inReplyTo = null;
 	}
 
+	let quote;
+
+	if (note.renoteId) {
+		const renote = await Note.findOne({
+			_id: note.renoteId,
+		});
+
+		if (renote) {
+			quote = renote.uri ? renote.uri : `${config.url}/notes/${renote._id}`;
+		}
+	}
+
 	const user = await User.findOne({
 		_id: note.userId
 	});
@@ -112,6 +124,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		summary: note.cw,
 		content,
 		_misskey_content: text,
+		_misskey_quote: quote,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,
