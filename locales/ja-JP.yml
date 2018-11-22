@@ -493,6 +493,7 @@ common/views/components/profile-editor.vue:
   birthday: "誕生日"
   avatar: "アイコン"
   banner: "バナー"
+  avatar-angle: "アイコンの角度"
   is-cat: "このアカウントはCatです"
   is-bot: "このアカウントはBotです"
   is-locked: "フォローを承認制にする"

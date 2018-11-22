@@ -109,6 +109,7 @@ export interface ILocalUser extends IUserBase {
 	isAdmin?: boolean;
 	isModerator?: boolean;
 	isVerified?: boolean;
+	avatarAngle?: string;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;
 	twoFactorTempSecret?: string;
@@ -168,6 +169,10 @@ export function isValidLocation(location: string): boolean {
 
 export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
+}
+
+export function isValidAngle(angle: string): boolean {
+	return typeof angle == 'string' && /^([+-]?(\d*\.)?\d+(deg|g?rad|turn)|0|initial|inherit|unset|revert)$/.test(angle);
 }
 //#endregion
 
@@ -245,6 +250,7 @@ export const pack = (
 		host: true,
 		avatarColor: true,
 		avatarUrl: true,
+		avatarAngle: true,
 		isCat: true,
 		isBot: true,
 		isAdmin: true,

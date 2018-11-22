@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
+import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, isValidAngle, pack } from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
@@ -70,6 +70,14 @@ export const meta = {
 			}
 		},
 
+		avatarAngle: {
+			validator: $.str.optional.nullable.pipe(isValidAngle),
+			transform: transform,
+			desc: {
+				'ja-JP': 'アイコンに設定する画像の角度'
+			}
+		},
+
 		isLocked: {
 			validator: $.bool.optional,
 			desc: {
@@ -126,6 +134,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (ps.wallpaperId !== undefined) updates.wallpaperId = ps.wallpaperId;
+	if (ps.avatarAngle !== undefined) updates.avatarAngle = ps.avatarAngle;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;

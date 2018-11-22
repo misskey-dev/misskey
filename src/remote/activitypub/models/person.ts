@@ -164,7 +164,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			uri: person.id,
 			url: person.url,
 			isBot: isBot,
-			isCat: (person as any).isCat === true ? true : false
+			isCat: (person as any).isCat === true,
+			avatarAngle: (person as any).avatarAngle
 		}) as IRemoteUser;
 	} catch (e) {
 		// duplicate key error
@@ -314,7 +315,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			url: person.url,
 			endpoints: person.endpoints,
 			isBot: object.type == 'Service',
-			isCat: (person as any).isCat === true ? true : false,
+			isCat: (person as any).isCat === true,
+			avatarAngle: (person as any).avatarAngle,
 			isLocked: person.manuallyApprovesFollowers,
 			createdAt: Date.parse(person.published) || null,
 			publicKey: {

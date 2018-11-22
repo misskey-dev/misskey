@@ -122,6 +122,7 @@ import {
 	faArrowLeft,
 	faMapMarker,
 	faRobot,
+	faDraftingCompass
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -248,7 +249,8 @@ library.add(
 	faSync,
 	faArrowLeft,
 	faMapMarker,
-  faRobot,
+	faRobot,
+	faDraftingCompass,
 
 	farBell,
 	farEnvelope,
