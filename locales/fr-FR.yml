@@ -123,7 +123,7 @@ common:
   is-remote-user: "Ces informations appartiennent à un·e utilisateur·rice distant·e."
   is-remote-post: "Ceci est une publication distante."
   view-on-remote: " Consulter le profil complet"
-  renoted-by: "{user}がRenote"
+  renoted-by: "Renoté par {user}"
   error:
     title: 'Une erreur est survenue'
     retry: 'Réessayer'
@@ -432,7 +432,7 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "Publier uniquement aux utilisateurs·rices mentionné·e·s"
   private: "Privé"
   local-public: "Local (Public)"
-  local-public-desc: "リモートへは公開しない"
+  local-public-desc: "Ne pas publier pour les distants"
   local-home: "Accueil (local uniquement)"
   local-followers: "Local (Abonnés)"
 common/views/components/trends.vue:
@@ -991,6 +991,12 @@ admin/views/instance.vue:
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
+  user-recommendation-config: "Utilisateur·rice·s"
+  enable-external-user-recommendation: "外部ユーザーレコメンデーションを有効にする"
+  external-user-recommendation-engine: "Moteur"
+  external-user-recommendation-engine-desc: "Exemple : https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
+  external-user-recommendation-timeout: "Délai d’expiration"
+  external-user-recommendation-timeout-desc: "En millisecondes (par exemple : 300000)"
 admin/views/charts.vue:
   title: "Graph"
   per-day: "par jour"
@@ -1017,18 +1023,35 @@ admin/views/charts.vue:
     network-time: "Temps de réponse"
     network-usage: "Traffic"
 admin/views/users.vue:
-  suspend-user: "Suspendre un·e utilisateur·rice"
+  operation: "操作"
+  username-or-userid: "ユーザー名またはユーザーID"
+  user-not-found: "ユーザーが見つかりません"
+  lookup: "照会"
+  reset-password: "パスワードをリセット"
+  password-updated: "パスワードは現在「{password}」です"
   suspend: "Suspendre"
   suspended: "Suspendu·e avec succès."
-  unsuspend-user: "Lever la suspension d’utilisateur·rice·s"
   unsuspend: "Suspension levée"
   unsuspended: "La suspension de l’utilisateur·rice a été levée avec succès"
-  verify-user: "Paramètres de vérification du compte utilisateur"
   verify: "Vérification du compte"
   verified: "Le compte a été vérifié"
-  unverify-user: "Paramètres de non-vérification du compte utilisateur"
   unverify: "Ôter la vérification du compte"
   unverified: "Ce compte n'est plus vérifié"
+  users:
+    title: "ユーザー"
+    sort:
+      title: "ソート"
+      createdAtAsc: "登録日時が古い順"
+      createdAtDesc: "登録日時が新しい順"
+      updatedAtAsc: "最終更新日時が古い順"
+      updatedAtDesc: "最終更新日時が新しい順"
+    origin:
+      title: "オリジン"
+      combined: "ローカル+リモート"
+      local: "ローカル"
+      remote: "リモート"
+    createdAt: "登録日時"
+    updatedAt: "更新日時"
 admin/views/moderators.vue:
   add-moderator:
     title: "Ajout d’un modérateur"
@@ -1265,7 +1288,7 @@ mobile/views/components/ui.nav.vue:
   admin: "Admin"
   about: "À propos de Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "Cette utilisateur semble n'avoir rien poster pour le moment"
+  no-notes: "Il semble que cet·te utilisateur·rice n’a rien publié pour le moment."
   no-notes-with-media: "Aucune notes avec des médias"
 mobile/views/components/users-list.vue:
   all: "Tout"
