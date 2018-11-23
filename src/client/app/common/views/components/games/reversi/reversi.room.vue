@@ -22,8 +22,8 @@
 					<div v-for="(x, i) in game.settings.map.join('')"
 							:data-none="x == ' '"
 							@click="onPixelClick(i, x)">
-						<template v-if="x == 'b'"><template v-if="$store.state.device.darkmode"><fa :icon="['far', 'circle']"/></template><template v-else><fa icon="circle"/></template></template>
-						<template v-if="x == 'w'"><template v-if="$store.state.device.darkmode"><fa :icon="['far', 'circle']"/></template><template v-else><fa icon="circle"/></template></template>
+						<fa v-if="x == 'b'" :icon="fasCircle"/>
+						<fa v-if="x == 'w'" :icon="farCircle"/>
 					</div>
 				</div>
 			</div>
@@ -117,6 +117,8 @@
 import Vue from 'vue';
 import i18n from '../../../../../i18n';
 import * as maps from '../../../../../../../games/reversi/maps';
+import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/games/reversi/reversi.room.vue'),
@@ -129,7 +131,8 @@ export default Vue.extend({
 			mapName: maps.eighteight.name,
 			maps: maps,
 			form: null,
-			messages: []
+			messages: [],
+			fasCircle, farCircle
 		};
 	},
 
