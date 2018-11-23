@@ -8,23 +8,11 @@ coming soon
 node cli/mark-admin (User-ID or Username)
 ```
 
-## Mark as 'verified' user
-``` shell
-node cli/mark-verified (User-ID or Username)
-```
-
-## Suspend users
-``` shell
-node cli/suspend (User-ID or Username)
-```
 e.g.
 ``` shell
-# Use id
-node cli/suspend 57d01a501fdf2d07be417afe
+# By id
+node cli/mark-admin 57d01a501fdf2d07be417afe
 
-# Use username
+# By username
 node cli/suspend @syuilo
-
-# Use username (remote)
-node cli/suspend @syuilo@misskey.xyz
 ```
