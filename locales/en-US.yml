@@ -119,7 +119,7 @@ common:
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   use-os-default-emojis: "Use the OS default Emojis"
-  do-not-use-in-production: 'As this is for development, do not use this in production.'
+  do-not-use-in-production: 'This is a development build. Do not use in production.'
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
   view-on-remote: "View it on remote"
@@ -1041,10 +1041,10 @@ admin/views/users.vue:
     title: "Users"
     sort:
       title: "Sort"
-      createdAtAsc: "登録日時が古い順"
-      createdAtDesc: "登録日時が新しい順"
-      updatedAtAsc: "最終更新日時が古い順"
-      updatedAtDesc: "最終更新日時が新しい順"
+      createdAtAsc: "Date Registered (Ascending)"
+      createdAtDesc: "Date Registered (Descending)"
+      updatedAtAsc: "Last Updated (Ascending)"
+      updatedAtDesc: "Last Updated (Descending)"
     origin:
       title: "Origin"
       combined: "Local + Remote"
@@ -1074,7 +1074,7 @@ admin/views/emoji.vue:
     remove: "Remove"
   updated: "Updated"
   remove-emoji:
-    are-you-sure: "Delete \"%1$s\"?"
+    are-you-sure: "Delete \"$1\"?"
     removed: "Deleted"
 admin/views/announcements.vue:
   announcements: "Announcements"
@@ -1085,7 +1085,7 @@ admin/views/announcements.vue:
   text: "Content"
   saved: "Saved"
   _remove:
-    are-you-sure: "Delete \"%1$s\"?"
+    are-you-sure: "Delete \"$1\"?"
     removed: "Deleted"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
