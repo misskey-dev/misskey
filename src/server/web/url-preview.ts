@@ -1,7 +1,6 @@
 import * as Koa from 'koa';
 import * as request from 'request-promise-native';
 import summaly from 'summaly';
-import config from '../../config';
 import fetchMeta from '../../misc/fetch-meta';
 
 module.exports = async (ctx: Koa.Context) => {
@@ -10,7 +9,6 @@ module.exports = async (ctx: Koa.Context) => {
 	try {
 		const summary = meta.summalyProxy ? await request.get({
 			url: meta.summalyProxy,
-			proxy: config.proxy,
 			qs: {
 				url: ctx.query.url
 			},
