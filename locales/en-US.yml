@@ -1043,8 +1043,8 @@ admin/views/users.vue:
       title: "Sort"
       createdAtAsc: "Date Registered (Ascending)"
       createdAtDesc: "Date Registered (Descending)"
-      updatedAtAsc: "Last Modified (Ascending)"
-      updatedAtDesc: "Last Modified (Descending)"
+      updatedAtAsc: "更新日時が古い順"
+      updatedAtDesc: "更新日時が新しい順"
     origin:
       title: "Origin"
       combined: "Local + Remote"
