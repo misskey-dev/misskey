@@ -27,11 +27,4 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		includeHasUnreadNotes: true,
 		includeSecrets: isSecure
 	}));
-
-	// Update lastUsedAt
-	User.update({ _id: user._id }, {
-		$set: {
-			lastUsedAt: new Date()
-		}
-	});
 }));

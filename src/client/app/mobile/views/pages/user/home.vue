@@ -31,7 +31,6 @@
 			<x-followers-you-know :user="user"/>
 		</div>
 	</section>
-	<p v-if="user.host === null">{{ $t('last-used-at') }}: <b><mk-time :time="user.lastUsedAt"/></b></p>
 </div>
 </template>
 

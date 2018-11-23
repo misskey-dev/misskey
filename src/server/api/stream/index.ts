@@ -46,7 +46,6 @@ export default class Connection {
 
 		switch (type) {
 			case 'api': this.onApiRequest(body); break;
-			case 'alive': this.onAlive(); break;
 			case 'readNotification': this.onReadNotification(body); break;
 			case 'subNote': this.onSubscribeNote(body); break;
 			case 'sn': this.onSubscribeNote(body); break; // alias
@@ -74,16 +73,6 @@ export default class Connection {
 			this.sendMessageToWs(`api:${payload.id}`, { res });
 		}).catch(e => {
 			this.sendMessageToWs(`api:${payload.id}`, { e });
-		});
-	}
-
-	@autobind
-	private onAlive() {
-		// Update lastUsedAt
-		User.update({ _id: this.user._id }, {
-			$set: {
-				'lastUsedAt': new Date()
-			}
 		});
 	}
 

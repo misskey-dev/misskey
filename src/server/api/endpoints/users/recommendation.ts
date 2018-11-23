@@ -76,7 +76,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 					$nin: followingIds.concat(mutedUserIds)
 				},
 				isLocked: { $ne: true },
-				lastUsedAt: {
+				updatedAt: {
 					$gte: new Date(Date.now() - ms('7days'))
 				},
 				host: null
