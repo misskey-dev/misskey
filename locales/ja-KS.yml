@@ -1043,8 +1043,8 @@ admin/views/users.vue:
       title: "ソート"
       createdAtAsc: "登録日時が古い順"
       createdAtDesc: "登録日時が新しい順"
-      updatedAtAsc: "最終更新日時が古い順"
-      updatedAtDesc: "最終更新日時が新しい順"
+      updatedAtAsc: "更新日時が古い順"
+      updatedAtDesc: "更新日時が新しい順"
     origin:
       title: "オリジン"
       combined: "ローカル+リモート"
