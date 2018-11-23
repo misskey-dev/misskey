@@ -45,7 +45,6 @@ router.post('/signin', require('./private/signin').default);
 
 router.use(require('./service/discord').routes());
 router.use(require('./service/github').routes());
-router.use(require('./service/github-bot').routes());
 router.use(require('./service/twitter').routes());
 
 router.use(require('./mastodon').routes());

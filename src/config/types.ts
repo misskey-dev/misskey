@@ -39,11 +39,6 @@ export type Source = {
 
 	accesslog?: string;
 
-	github_bot?: {
-		hook_secret: string;
-		username: string;
-	};
-
 	/**
 	 * Service Worker
 	 */
