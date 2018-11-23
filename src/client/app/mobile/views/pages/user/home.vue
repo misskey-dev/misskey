@@ -90,7 +90,7 @@ export default Vue.extend({
 			@media (min-width 500px)
 				padding 10px 16px
 
-			> i
+			> [data-icon]
 				margin-right 6px
 
 	> .activity
