@@ -28,8 +28,3 @@ node cli/suspend @syuilo
 # Use username (remote)
 node cli/suspend @syuilo@misskey.xyz
 ```
-
-## Reset password
-``` shell
-node cli/reset-password (User-ID or Username)
-```
