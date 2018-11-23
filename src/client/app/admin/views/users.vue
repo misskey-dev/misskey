@@ -50,10 +50,10 @@
 						<span class="username">@{{ user | acct }}</span>
 					</header>
 					<div>
-						<span>{{ $t('users.createdAt') }}: <mk-time :time="user.createdAt" mode="detail"/></span>
+						<span>{{ $t('users.updatedAt') }}: <mk-time :time="user.updatedAt" mode="detail"/></span>
 					</div>
 					<div>
-						<span>{{ $t('users.updatedAt') }}: <mk-time :time="user.updatedAt" mode="detail"/></span>
+						<span>{{ $t('users.createdAt') }}: <mk-time :time="user.createdAt" mode="detail"/></span>
 					</div>
 				</div>
 			</div>
