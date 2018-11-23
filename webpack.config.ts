@@ -5,20 +5,21 @@
 import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
+import rndstr from 'rndstr';
 const { VueLoaderPlugin } = require('vue-loader');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
+const isProduction = process.env.NODE_ENV == 'production';
+
 const constants = require('./src/const.json');
 
 const locales = require('./locales');
 const meta = require('./package.json');
-const version = meta.clientVersion;
+const version = isProduction ? meta.clientVersion : meta.clientVersion + '-' + rndstr({ length: 8, chars: '0-9a-z' });
 const codename = meta.codename;
-
-const isProduction = process.env.NODE_ENV == 'production';
 
 const postcss = {
 	loader: 'postcss-loader',
