@@ -622,9 +622,6 @@ function saveQuote(renote: INote, note: INote) {
 
 function saveReply(reply: INote, note: INote) {
 	Note.update({ _id: reply._id }, {
-		$push: {
-			_replyIds: note._id
-		},
 		$inc: {
 			repliesCount: 1
 		}

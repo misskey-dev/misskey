@@ -33,16 +33,13 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Lookup note
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
 
-	if (note === null) {
-		return rej('note not found');
-	}
+	const notes = await Note.find({
+			replyId: ps.noteId
+		}, {
+			limit: ps.limit,
+			skip: ps.offset
+		});
 
-	const ids = (note._replyIds || []).slice(ps.offset, ps.offset + ps.limit);
-
-	res(await packMany(ids, user));
+	res(await packMany(notes, user));
 }));

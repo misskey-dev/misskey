@@ -18,6 +18,7 @@ Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
 Note.createIndex('mentions');
 Note.createIndex('visibleUserIds');
+Note.createIndex('replyId');
 Note.createIndex('tagsLower');
 Note.createIndex('_user.host');
 Note.createIndex('_files._id');
@@ -99,7 +100,6 @@ export type INote = {
 		host: string;
 		inbox?: string;
 	};
-	_replyIds?: mongo.ObjectID[];
 	_files?: IDriveFile[];
 };
 
@@ -258,6 +258,8 @@ export const pack = async (
 	delete _note._reply;
 	delete _note._renote;
 	delete _note._files;
+	delete _note._replyIds;
+
 	if (_note.geo) delete _note.geo.type;
 
 	// Populate user
