@@ -8,23 +8,11 @@ coming soon
 node cli/mark-admin (ユーザーID または ユーザー名)
 ```
 
-## 'verified'ユーザーを設定する
-``` shell
-node cli/mark-verified (ユーザーID または ユーザー名)
-```
-
-## ユーザーを凍結する
-``` shell
-node cli/suspend (ユーザーID または ユーザー名)
-```
 例:
 ``` shell
 # ユーザーID
-node cli/suspend 57d01a501fdf2d07be417afe
+node cli/mark-admin 57d01a501fdf2d07be417afe
 
 # ユーザー名
-node cli/suspend @syuilo
-
-# ユーザー名 (リモート)
-node cli/suspend @syuilo@misskey.xyz
+node cli/mark-admin @syuilo
 ```
