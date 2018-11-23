@@ -204,6 +204,13 @@ describe('Text', () => {
 					text('!'),
 				], tokens);
 			});
+
+			it('disallow number only', () => {
+				const tokens = analyze('#123');
+				assert.deepEqual([
+					text('#123'),
+				], tokens);
+			});
 		});
 
 		describe('quote', () => {
