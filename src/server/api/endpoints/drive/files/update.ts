@@ -111,7 +111,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	// Serialize
-	const fileObj = await pack(file);
+	const fileObj = await pack(file, { self: true });
 
 	// Response
 	res(fileObj);

@@ -77,5 +77,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			sort: sort
 		});
 
-	res(await packMany(files));
+	res(await packMany(files, { detail: false, self: true }));
 }));

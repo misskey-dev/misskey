@@ -74,7 +74,7 @@ export default define(meta, (ps, user, app, file, cleanup) => new Promise(async 
 
 		cleanup();
 
-		res(pack(driveFile));
+		res(pack(driveFile, { self: true }));
 	} catch (e) {
 		console.error(e);
 

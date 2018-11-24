@@ -16,6 +16,7 @@ import { publishMainStream, publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
+import { getDriveFileOriginalBucket } from '../../models/drive-file-original';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import driveChart from '../../chart/drive';
 import perUserDriveChart from '../../chart/per-user-drive';
@@ -23,7 +24,65 @@ import fetchMeta from '../../misc/fetch-meta';
 
 const log = debug('misskey:drive:add-file');
 
-async function save(path: string, name: string, type: string, hash: string, size: number, metadata: any): Promise<IDriveFile> {
+/***
+ * Save file
+ * @param path Path for original
+ * @param name Name for original
+ * @param type Content-Type for original
+ * @param hash Hash for original
+ * @param size Size for original
+ * @param metadata
+ */
+async function save(path: string, name: string, type: string, hash: string, size: number, metadata: IMetadata): Promise<IDriveFile> {
+	// #region webpublic
+	let webpublic: Buffer;
+	let webpublicExt = 'jpg';
+	let webpublicType = 'image/jpeg';
+
+	if (!metadata.uri) {	// from local instance
+		if (['image/jpeg'].includes(type)) {
+			webpublic = await sharp(path)
+				.resize(2048, 2048, {
+					fit: 'inside',
+					withoutEnlargement: true
+				})
+				.rotate()
+				.jpeg({
+					quality: 85,
+					progressive: true
+				})
+				.toBuffer();
+		} else if (['image/webp'].includes(type)) {
+			webpublic = await sharp(path)
+				.resize(2048, 2048, {
+					fit: 'inside',
+					withoutEnlargement: true
+				})
+				.rotate()
+				.webp({
+					quality: 85
+				})
+				.toBuffer();
+
+				webpublicExt = 'webp';
+				webpublicType = 'image/webp';
+		} else if (['image/png'].includes(type)) {
+			webpublic = await sharp(path)
+				.resize(2048, 2048, {
+					fit: 'inside',
+					withoutEnlargement: true
+				})
+				.rotate()
+				.png()
+				.toBuffer();
+
+			webpublicExt = 'png';
+			webpublicType = 'image/png';
+		}
+	}
+	// #endregion webpublic
+
+	// #region thumbnail
 	let thumbnail: Buffer;
 	let thumbnailExt = 'jpg';
 	let thumbnailType = 'image/jpeg';
@@ -53,10 +112,9 @@ async function save(path: string, name: string, type: string, hash: string, size
 		thumbnailExt = 'png';
 		thumbnailType = 'image/png';
 	}
+	// #endregion thumbnail
 
 	if (config.drive && config.drive.storage == 'minio') {
-		const minio = new Minio.Client(config.drive.config);
-
 		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
 
 		if (ext === '') {
@@ -65,32 +123,40 @@ async function save(path: string, name: string, type: string, hash: string, size
 			if (type === 'image/webp') ext = '.webp';
 		}
 
-		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const originalKey  = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const webpublicKey = `${config.drive.prefix}/${uuid.v4()}.${webpublicExt}`;
 		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${thumbnailExt}`;
 
 		const baseUrl = config.drive.baseUrl
 			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
 
-		await minio.putObject(config.drive.bucket, key, fs.createReadStream(path), size, {
-			'Content-Type': type,
-			'Cache-Control': 'max-age=31536000, immutable'
-		});
+		log(`original: ${originalKey}`);
+		const uploads = [
+			upload(originalKey, fs.createReadStream(path), type)
+		];
+
+		if (webpublic) {
+			log(`webpublic: ${webpublicKey}`);
+			uploads.push(upload(webpublicKey, webpublic, webpublicType));
+		}
 
 		if (thumbnail) {
-			await minio.putObject(config.drive.bucket, thumbnailKey, thumbnail, size, {
-				'Content-Type': thumbnailType,
-				'Cache-Control': 'max-age=31536000, immutable'
-			});
+			log(`thumbnail: ${thumbnailKey}`);
+			uploads.push(upload(thumbnailKey, thumbnail, thumbnailType));
 		}
+
+		await Promise.all(uploads);
 
 		Object.assign(metadata, {
 			withoutChunks: true,
 			storage: 'minio',
 			storageProps: {
-				key: key,
-				thumbnailKey: thumbnailKey
+				key:          webpublic ? webpublicKey : originalKey,
+				originalKey:  webpublic ? originalKey  : null,
+				thumbnailKey: thumbnail ? thumbnailKey : null,
 			},
-			url: `${ baseUrl }/${ key }`,
+			url: `${ baseUrl }/${ webpublic ? webpublicKey : originalKey }`,
+			originalUrl:  webpublic ? `${ baseUrl }/${ originalKey }`  : null,
 			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKey }` : null
 		});
 
@@ -105,13 +171,34 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		return file;
 	} else {
-		// Get MongoDB GridFS bucket
-		const bucket = await getDriveFileBucket();
+		// store webpublic
+		let webFile: IDriveFile = null;
+		if (webpublic) {
+			const webDst = await getDriveFileBucket();
 
-		const file = await new Promise<IDriveFile>((resolve, reject) => {
-			const writeStream = bucket.openUploadStream(name, {
+			webFile = await new Promise<IDriveFile>((resolve, reject) => {
+				const writeStream = webDst.openUploadStream(name, {
+					contentType: webpublicType,
+					metadata
+				});
+
+				writeStream.once('finish', resolve);
+				writeStream.on('error', reject);
+				writeStream.end(webpublic);
+			});
+		}
+
+		/** destination bucket for original */
+		const originalDst = webFile ? await getDriveFileOriginalBucket() : await getDriveFileBucket();
+
+		// store original
+		const originalFile = await new Promise<IDriveFile>((resolve, reject) => {
+			const writeStream = originalDst.openUploadStream(name, {
 				contentType: type,
-				metadata
+				metadata: webFile ? {
+					originalId: webFile._id,
+					accessKey: `${uuid.v4()}`
+				} : metadata
 			});
 
 			writeStream.once('finish', resolve);
@@ -120,6 +207,8 @@ async function save(path: string, name: string, type: string, hash: string, size
 			fs.createReadStream(path).pipe(writeStream);
 		});
 
+		const mainFile = webFile || originalFile;
+
 		if (thumbnail) {
 			const thumbnailBucket = await getDriveFileThumbnailBucket();
 
@@ -127,7 +216,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 				const writeStream = thumbnailBucket.openUploadStream(name, {
 					contentType: thumbnailType,
 					metadata: {
-						originalId: file._id
+						originalId: mainFile._id
 					}
 				});
 
@@ -137,8 +226,17 @@ async function save(path: string, name: string, type: string, hash: string, size
 			});
 		}
 
-		return file;
+		return mainFile;
 	}
+}
+
+async function upload(key: string, stream: fs.ReadStream | Buffer, type: string) {
+	const minio = new Minio.Client(config.drive.config);
+
+	await minio.putObject(config.drive.bucket, key, stream, null, {
+		'Content-Type': type,
+		'Cache-Control': 'max-age=31536000, immutable'
+	});
 }
 
 async function deleteOldFile(user: IRemoteUser) {

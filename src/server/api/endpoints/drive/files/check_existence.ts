@@ -32,6 +32,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	if (file === null) {
 		res({ file: null });
 	} else {
-		res({ file: await pack(file) });
+		res({ file: await pack(file, { self: true }) });
 	}
 }));

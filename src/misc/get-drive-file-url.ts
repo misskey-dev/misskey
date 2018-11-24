@@ -1,5 +1,6 @@
 import { IDriveFile } from '../models/drive-file';
 import config from '../config';
+import DriveFileOriginal from '../models/drive-file-original';
 
 export default function(file: IDriveFile, thumbnail = false): string {
 	if (file == null) return null;
@@ -17,4 +18,21 @@ export default function(file: IDriveFile, thumbnail = false): string {
 			return `${config.drive_url}/${file._id}`;
 		}
 	}
+}
+
+export async function getOriginalUrl(file: IDriveFile) {
+	if (file.metadata && file.metadata.originalUrl) {
+		return file.metadata.originalUrl;
+	}
+
+	const original = await DriveFileOriginal.findOne({
+		'metadata.originalId': file._id
+	});
+
+	if (original) {
+		const accessKey = original.metadata ? original.metadata.accessKey : null;
+		return `${config.drive_url}/${file._id}${accessKey ? '?original=' + accessKey : ''}`;
+	}
+
+	return `${config.drive_url}/${file._id}`;
 }

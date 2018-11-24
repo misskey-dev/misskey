@@ -3,6 +3,7 @@ import * as send from 'koa-send';
 import * as mongodb from 'mongodb';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
+import DriveFileOriginal, { getDriveFileOriginalBucket } from '../../models/drive-file-original';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
@@ -57,6 +58,23 @@ export default async function(ctx: Koa.Context) {
 			ctx.set('Content-Type', 'image/jpeg');
 			const bucket = await getDriveFileThumbnailBucket();
 			ctx.body = bucket.openDownloadStream(thumb._id);
+		} else {
+			await sendRaw();
+		}
+	} else if ('original' in ctx.query) {
+		const original = await DriveFileOriginal.findOne({
+			'metadata.originalId': fileId
+		});
+
+		if (original != null) {
+			if (original.metadata && original.metadata.accessKey && original.metadata.accessKey != ctx.query['original']) {
+				ctx.status = 403;
+				return;
+			}
+
+			ctx.set('Content-Type', original.contentType);
+			const bucket = await getDriveFileOriginalBucket();
+			ctx.body = bucket.openDownloadStream(original._id);
 		} else {
 			await sendRaw();
 		}

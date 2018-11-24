@@ -4,6 +4,7 @@ import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-
 import config from '../../config';
 import driveChart from '../../chart/drive';
 import perUserDriveChart from '../../chart/per-user-drive';
+import DriveFileOriginal, { DriveFileOriginalChunk } from '../../models/drive-file-original';
 
 export default async function(file: IDriveFile, isExpired = false) {
 	if (file.metadata.storage == 'minio') {
@@ -19,6 +20,11 @@ export default async function(file: IDriveFile, isExpired = false) {
 			// 将来的には const thumbnailObj = file.metadata.storageProps.thumbnailKey; とします。
 			const thumbnailObj = file.metadata.storageProps.thumbnailKey ? file.metadata.storageProps.thumbnailKey : `${config.drive.prefix}/${file.metadata.storageProps.id}-thumbnail`;
 			await minio.removeObject(config.drive.bucket, thumbnailObj);
+		}
+
+		if (file.metadata.originalUrl) {
+			const originalObj = file.metadata.storageProps.originalKey ? file.metadata.storageProps.originalKey : `${config.drive.prefix}/${file.metadata.storageProps.id}-original`;
+			await minio.removeObject(config.drive.bucket, originalObj);
 		}
 	}
 
@@ -47,6 +53,18 @@ export default async function(file: IDriveFile, isExpired = false) {
 		await DriveFileThumbnail.remove({ _id: thumbnail._id });
 	}
 	//#endregion
+
+	const original = await DriveFileOriginal.findOne({
+		'metadata.originalId': file._id
+	});
+
+	if (original) {
+		await DriveFileOriginalChunk.remove({
+			files_id: original._id
+		});
+
+		await DriveFileOriginal.remove({ _id: original._id });
+	}
 
 	// 統計を更新
 	driveChart.update(file, false);
