@@ -1023,12 +1023,12 @@ admin/views/charts.vue:
     network-time: "Temps de réponse"
     network-usage: "Traffic"
 admin/views/users.vue:
-  operation: "操作"
-  username-or-userid: "ユーザー名またはユーザーID"
-  user-not-found: "ユーザーが見つかりません"
-  lookup: "照会"
-  reset-password: "パスワードをリセット"
-  password-updated: "パスワードは現在「{password}」です"
+  operation: "Opérations"
+  username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
+  user-not-found: "Utilisateur·rice non trouvé·e"
+  lookup: "Recherche"
+  reset-password: "Réinitialiser mot de passe"
+  password-updated: "Le mot de passe est « {password} »"
   suspend: "Suspendre"
   suspended: "Suspendu·e avec succès."
   unsuspend: "Suspension levée"
@@ -1038,7 +1038,7 @@ admin/views/users.vue:
   unverify: "Ôter la vérification du compte"
   unverified: "Ce compte n'est plus vérifié"
   users:
-    title: "ユーザー"
+    title: "Utilisateur·rice·s"
     sort:
       title: "ソート"
       createdAtAsc: "登録日時が古い順"
