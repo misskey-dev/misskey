@@ -50,15 +50,13 @@
 	</div>
 
 	<div class="player" v-if="game.isEnded">
-		<div>
-			<button @click="logPos = 0" :disabled="logPos == 0"><fa icon="angle-double-left"/></button>
-			<button @click="logPos--" :disabled="logPos == 0"><fa icon="angle-left"/></button>
-		</div>
 		<span>{{ logPos }} / {{ logs.length }}</span>
-		<div>
-			<button @click="logPos++" :disabled="logPos == logs.length"><fa icon="angle-right"/></button>
-			<button @click="logPos = logs.length" :disabled="logPos == logs.length"><fa icon="angle-double-right"/></button>
-		</div>
+		<ui-horizon-group>
+			<ui-button @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></ui-button>
+			<ui-button @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></ui-button>
+			<ui-button @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></ui-button>
+			<ui-button @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></ui-button>
+		</ui-horizon-group>
 	</div>
 
 	<div class="info">
@@ -75,6 +73,7 @@ import i18n from '../../../../../i18n';
 import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../../../../../games/reversi/core';
 import { url } from '../../../../../config';
+import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/games/reversi/reversi.game.vue'),
@@ -99,7 +98,8 @@ export default Vue.extend({
 			o: null as Reversi,
 			logs: [],
 			logPos: 0,
-			pollingClock: null
+			pollingClock: null,
+			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight
 		};
 	},
 
@@ -449,7 +449,9 @@ export default Vue.extend({
 		padding-bottom 16px
 
 	> .player
-		padding-bottom 32px
+		padding 0 16px 32px 16px
+		margin 0 auto
+		max-width 500px
 
 		> span
 			display inline-block

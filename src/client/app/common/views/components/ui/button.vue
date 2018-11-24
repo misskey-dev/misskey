@@ -79,6 +79,10 @@ export default Vue.extend({
 
 	*
 		pointer-events none
+		user-select none
+
+	&:disabled
+		opacity 0.7
 
 	&:focus
 		&:after
@@ -107,30 +111,30 @@ export default Vue.extend({
 		color var(--text)
 		background var(--buttonBg)
 
-		&:hover
+		&:not(:disabled):hover
 			background var(--buttonHoverBg)
 
-		&:active
+		&:not(:disabled):active
 			background var(--buttonActiveBg)
 
 		&.primary
 			color var(--primaryForeground)
 			background var(--primary)
 
-			&:hover
+			&:not(:disabled):hover
 				background var(--primaryLighten5)
 
-			&:active
+			&:not(:disabled):active
 				background var(--primaryDarken5)
 
 	&:not(.fill)
 		color var(--primary)
 		background none
 
-		&:hover
+		&:not(:disabled):hover
 			color var(--primaryDarken5)
 
-		&:active
+		&:not(:disabled):active
 			background var(--primaryAlpha03)
 
 </style>
