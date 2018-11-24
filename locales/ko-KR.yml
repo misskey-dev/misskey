@@ -53,7 +53,7 @@ common:
   month-and-day: "{month}월 {day}일"
   trash: "휴지통"
   drive: "드라이브"
-  messaging: "トーク"
+  messaging: "대화"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -72,7 +72,7 @@ common:
     saturday: "토요일"
   reactions:
     like: "좋아요"
-    love: "좋아"
+    love: "죠아"
     laugh: "크크"
     hmm: "음..."
     surprise: "와우"
