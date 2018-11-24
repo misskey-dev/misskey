@@ -78,6 +78,7 @@ export default (opts: Opts = {}) => ({
 		urls(): string[] {
 			if (this.appearNote.text) {
 				const ast = parse(this.appearNote.text);
+				// TODO: 再帰的にURL要素がないか調べる
 				return unique(ast
 					.filter(t => ((t.name == 'url' || t.name == 'link') && t.props.url && !t.silent))
 					.map(t => t.props.url));
