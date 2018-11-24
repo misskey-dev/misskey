@@ -992,7 +992,7 @@ admin/views/instance.vue:
   save: "Sauvegarder"
   saved: "Enregistré"
   user-recommendation-config: "Utilisateur·rice·s"
-  enable-external-user-recommendation: "外部ユーザーレコメンデーションを有効にする"
+  enable-external-user-recommendation: "Activer la recommandation des utilisateur·trice·s distant·e·s"
   external-user-recommendation-engine: "Moteur"
   external-user-recommendation-engine-desc: "Exemple : https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
   external-user-recommendation-timeout: "Délai d’expiration"
@@ -1023,7 +1023,7 @@ admin/views/charts.vue:
     network-time: "Temps de réponse"
     network-usage: "Traffic"
 admin/views/users.vue:
-  operation: "Opérations"
+  operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
   user-not-found: "Utilisateur·rice non trouvé·e"
   lookup: "Recherche"
@@ -1040,18 +1040,18 @@ admin/views/users.vue:
   users:
     title: "Utilisateur·rice·s"
     sort:
-      title: "ソート"
-      createdAtAsc: "登録日時が古い順"
-      createdAtDesc: "登録日時が新しい順"
-      updatedAtAsc: "更新日時が古い順"
+      title: "Trier par"
+      createdAtAsc: "Date d’inscription (Ascendant)"
+      createdAtDesc: "Date d’inscription (Descendant)"
+      updatedAtAsc: "Mis à jour récemment (Ascendant)"
       updatedAtDesc: "更新日時が新しい順"
     origin:
-      title: "オリジン"
-      combined: "ローカル+リモート"
-      local: "ローカル"
-      remote: "リモート"
-    createdAt: "登録日時"
-    updatedAt: "更新日時"
+      title: "Origine"
+      combined: "Locaux + distants"
+      local: "Locaux"
+      remote: "Distants"
+    createdAt: "Créé le"
+    updatedAt: "Mis à jour le"
 admin/views/moderators.vue:
   add-moderator:
     title: "Ajout d’un modérateur"
