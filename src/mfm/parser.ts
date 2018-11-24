@@ -112,9 +112,27 @@ const mfm = P.createLanguage({
 			const text = input.substr(i);
 			const match = text.match(/^#([^\s\.,!\?#]+)/i);
 			if (!match) return P.makeFailure(i, 'not a hashtag');
-			if (match[1].match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
-			if (input[i - 1] != '\n' && input[i - 1] != ' ' && input[i - 1] != null) return P.makeFailure(i, 'require space before "#"');
-			return P.makeSuccess(i + match[0].length, makeNode('hashtag', { hashtag: match[1] }));
+			let hashtag = match[1];
+			let pendingBracket = 0;
+			const end = hashtag.split('').findIndex(char => {
+				if (char == ')') {
+					if (pendingBracket > 0) {
+						pendingBracket--;
+						return false;
+					} else {
+						return true;
+					}
+				} else if (char == '(') {
+					pendingBracket++;
+					return false;
+				} else {
+					return false;
+				}
+			});
+			if (end > 0) hashtag = hashtag.substr(0, end);
+			if (hashtag.match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
+			if (!['\n', ' ', '(', null, undefined].includes(input[i - 1])) return P.makeFailure(i, 'require space before "#"');
+			return P.makeSuccess(i + ('#' + hashtag).length, makeNode('hashtag', { hashtag: hashtag }));
 		}),
 	//#endregion
 
