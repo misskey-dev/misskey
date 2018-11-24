@@ -205,6 +205,13 @@ describe('Text', () => {
 				], tokens);
 			});
 
+			it('allow including number', () => {
+				const tokens = analyze('#foo123');
+				assert.deepEqual([
+					node('hashtag', { hashtag: 'foo123' }),
+				], tokens);
+			});
+
 			it('disallow number only', () => {
 				const tokens = analyze('#123');
 				assert.deepEqual([
