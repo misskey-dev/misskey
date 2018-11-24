@@ -1,5 +1,5 @@
 <template>
-<div class="mk-note-detail">
+<div class="mk-note-detail" tabindex="-1">
 	<button
 		class="more"
 		v-if="appearNote.reply && appearNote.reply.replyId && conversation.length == 0"
@@ -61,18 +61,18 @@
 		</div>
 		<footer>
 			<mk-reactions-viewer :note="appearNote"/>
-			<button @click="reply" :title="$t('title')">
+			<button @click="reply()" :title="$t('title')">
 				<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 			</button>
-			<button @click="renote" title="Renote">
+			<button @click="renote()" title="Renote">
 				<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 			</button>
-			<button :class="{ reacted: appearNote.myReaction != null }" @click="react" ref="reactButton" :title="$t('title')">
+			<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('title')">
 				<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
 			</button>
-			<button @click="menu" ref="menuButton">
+			<button @click="menu()" ref="menuButton">
 				<fa icon="ellipsis-h"/>
 			</button>
 		</footer>
@@ -86,21 +86,18 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import parse from '../../../../../mfm/parse';
-
-import MkNoteMenu from '../../../common/views/components/note-menu.vue';
-import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './note.sub.vue';
-import { sum, unique } from '../../../../../prelude/array';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
+import noteMixin from '../../../common/scripts/note-mixin';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/note-detail.vue'),
+
 	components: {
 		XSub
 	},
 
-	mixins: [noteSubscriber('note')],
+	mixins: [noteMixin(), noteSubscriber('note')],
 
 	props: {
 		note: {
@@ -114,41 +111,10 @@ export default Vue.extend({
 
 	data() {
 		return {
-			showContent: false,
 			conversation: [],
 			conversationFetching: false,
 			replies: []
 		};
-	},
-
-	computed: {
-		isRenote(): boolean {
-			return (this.note.renote &&
-				this.note.text == null &&
-				this.note.fileIds.length == 0 &&
-				this.note.poll == null);
-		},
-
-		appearNote(): any {
-			return this.isRenote ? this.note.renote : this.note;
-		},
-
-		reactionsCount(): number {
-			return this.appearNote.reactionCounts
-				? sum(Object.values(this.appearNote.reactionCounts))
-				: 0;
-		},
-
-		urls(): string[] {
-			if (this.appearNote.text) {
-				const ast = parse(this.appearNote.text);
-				return unique(ast
-					.filter(t => ((t.name == 'url' || t.name == 'link') && t.props.url && !t.silent))
-					.map(t => t.props.url));
-			} else {
-				return null;
-			}
-		}
 	},
 
 	mounted() {
@@ -160,24 +126,6 @@ export default Vue.extend({
 			}).then(replies => {
 				this.replies = replies;
 			});
-		}
-
-		// Draw map
-		if (this.appearNote.geo) {
-			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
-			if (shouldShowMap) {
-				this.$root.os.getGoogleMaps().then(maps => {
-					const uluru = new maps.LatLng(this.appearNote.geo.coordinates[1], this.appearNote.geo.coordinates[0]);
-					const map = new maps.Map(this.$refs.map, {
-						center: uluru,
-						zoom: 15
-					});
-					new maps.Marker({
-						position: uluru,
-						map: map
-					});
-				});
-			}
 		}
 	},
 
@@ -191,35 +139,6 @@ export default Vue.extend({
 			}).then(conversation => {
 				this.conversationFetching = false;
 				this.conversation = conversation.reverse();
-			});
-		},
-
-		reply() {
-			this.$post({
-				reply: this.appearNote
-			});
-		},
-
-		renote() {
-			this.$post({
-				renote: this.appearNote
-			});
-		},
-
-		react() {
-			this.$root.new(MkReactionPicker, {
-				source: this.$refs.reactButton,
-				note: this.appearNote,
-				compact: true,
-				big: true
-			});
-		},
-
-		menu() {
-			this.$root.new(MkNoteMenu, {
-				source: this.$refs.menuButton,
-				note: this.appearNote,
-				compact: true
 			});
 		}
 	}
