@@ -79,8 +79,8 @@ export default (opts: Opts = {}) => ({
 			if (this.appearNote.text) {
 				const ast = parse(this.appearNote.text);
 				return unique(ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url));
+					.filter(t => ((t.name == 'url' || t.name == 'link') && t.props.url && !t.silent))
+					.map(t => t.props.url));
 			} else {
 				return null;
 			}
