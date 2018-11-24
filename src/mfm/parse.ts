@@ -45,7 +45,8 @@ export default (source: string): Node[] => {
 	}
 
 	/**
-	 * ブロック要素の前後にある改行を削除します(ブロック要素自体が改行の役割も果たすため、余計に改行されてしまうため)
+	 * ブロック要素の前後にある改行を削除します
+	 * (ブロック要素自体が改行の役割を果たすため、余計に改行されてしまう)
 	 * @param nodes
 	 */
 	const removeNeedlessLineBreaks = (nodes: Node[]) => {
