@@ -1,4 +1,4 @@
-import User, { pack } from '../../../models/user';
+import { pack } from '../../../models/user';
 import define from '../define';
 
 export const meta = {
