@@ -212,13 +212,17 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	const bannerId = banner ? banner._id : null;
 	const avatarUrl = getDriveFileUrl(avatar, true);
 	const bannerUrl = getDriveFileUrl(banner, false);
+	const avatarColor = avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
+	const bannerColor = banner && avatar.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
 
 	await User.update({ _id: user._id }, {
 		$set: {
 			avatarId,
 			bannerId,
 			avatarUrl,
-			bannerUrl
+			bannerUrl,
+			avatarColor,
+			bannerColor
 		}
 	});
 
@@ -226,6 +230,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	user.bannerId = bannerId;
 	user.avatarUrl = avatarUrl;
 	user.bannerUrl = bannerUrl;
+	user.avatarColor = avatarColor;
+	user.bannerColor = bannerColor;
 	//#endregion
 
 	await updateFeatured(user._id).catch(err => console.log(err));
@@ -306,6 +312,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			bannerId: banner ? banner._id : null,
 			avatarUrl: getDriveFileUrl(avatar, true),
 			bannerUrl: getDriveFileUrl(banner, false),
+			avatarColor: avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null,
+			bannerColor: banner && banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null,
 			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,
