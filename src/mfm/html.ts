@@ -45,6 +45,12 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 			return pre;
 		},
 
+		center(token) {
+			const el = doc.createElement('div');
+			dive(token.children).forEach(child => el.appendChild(child));
+			return el;
+		},
+
 		emoji(token) {
 			return doc.createTextNode(token.props.emoji ? token.props.emoji : `:${token.props.name}:`);
 		},

@@ -73,6 +73,7 @@ const mfm = P.createLanguage({
 		r.math,
 		r.search,
 		r.title,
+		r.center,
 		r.text
 	).atLeast(1),
 
@@ -109,6 +110,23 @@ const mfm = P.createLanguage({
 			r.mention,
 			r.hashtag,
 			r.emoji,
+			r.text
+		).atLeast(1).tryParse(x))),
+	//#endregion
+
+	//#region Center
+	center: r =>
+		P.regexp(/<center>([\s\S]+?)<\/center>/, 1)
+		.map(x => makeNodeWithChildren('center', P.alt(
+			r.big,
+			r.bold,
+			r.motion,
+			r.mention,
+			r.hashtag,
+			r.emoji,
+			r.math,
+			r.url,
+			r.link,
 			r.text
 		).atLeast(1).tryParse(x))),
 	//#endregion

@@ -641,6 +641,17 @@ describe('Text', () => {
 				], tokens);
 			});
 		});
+
+		describe('center', () => {
+			it('simple', () => {
+				const tokens = analyze('<center>foo</center>');
+				assert.deepEqual([
+					nodeWithChildren('center', [
+						text('foo')
+					]),
+				], tokens);
+			});
+		});
 	});
 
 	describe('toHtml', () => {

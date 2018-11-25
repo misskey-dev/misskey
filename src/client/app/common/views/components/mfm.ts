@@ -111,6 +111,14 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'center': {
+					return [createElement('div', {
+						attrs: {
+							style: 'text-align:center;'
+						}
+					}, genEl(token.children))];
+				}
+
 				case 'motion': {
 					motionCount++;
 					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;
