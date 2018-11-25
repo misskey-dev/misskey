@@ -449,6 +449,15 @@ describe('Text', () => {
 				], tokens);
 			});
 
+			it('simple (with silent flag)', () => {
+				const tokens = analyze('?[foo](https://example.com)');
+				assert.deepEqual([
+					nodeWithChildren('link', [
+						text('foo')
+					], { url: 'https://example.com', silent: true })
+				], tokens);
+			});
+
 			it('in text', () => {
 				const tokens = analyze('before[foo](https://example.com)after');
 				assert.deepEqual([
