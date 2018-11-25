@@ -29,7 +29,7 @@ export default Vue.extend({
 
 	>>> .quote
 		margin 8px
-		padding 6px 12px
+		padding 6px 0 6px 12px
 		color var(--mfmQuote)
 		border-left solid 3px var(--mfmQuoteLine)
 
