@@ -826,33 +826,33 @@ desktop/views/components/settings.2fa.vue:
   info: "다음 로그인부터는 이와 동일하게 비밀번호에 더해 장치에 표시된 토큰을 입력합니다."
 common/views/components/api-settings.vue:
   intro: "API를 사용하려면 위의 토큰을 \"i\" 라는 키의 값으로 매개변수를 추가하여 요청합니다."
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "토큰이 유출될 경우, 재생성할 수 있습니다."
+  caution: "계정을 부정 사용할 가능성이 있으므로, 이 토큰은 제 3자에게 알려주지 마십시오 (앱 등에 붙여넣지 마십시오)."
+  regeneration-of-token: "만일 이 토큰이 유출되었거나 그럴 가능성이 있는 경우 토큰을 재생성할 수 있습니다."
   regenerate-token: "토큰 재생성"
-  token: "토큰:"
-  enter-password: "암호 입력"
+  token: "Token:"
+  enter-password: "비밀번호를 입력하여 주십시오"
   console:
     title: 'API 콘솔'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
-    credential-info: "「i」パラメータは自動で付与されます。"
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    endpoint: '엔드포인트'
+    parameter: '매개변수'
+    credential-info: "\"i\" 패러미터는 자동으로 추가됩니다."
+    send: '전송'
+    sending: '응답을 기다리는 중'
+    response: '결과'
 desktop/views/components/settings.apps.vue:
-  no-apps: "連携しているアプリケーションはありません"
+  no-apps: "연결된 어플리케이션이 없습니다"
 common/views/components/drive-settings.vue:
-  max: "容量"
-  in-use: "使用中"
-  stats: "統計"
+  max: "최대 용량"
+  in-use: "사용중"
+  stats: "통계"
 common/views/components/mute-and-block.vue:
-  mute-and-block: "ミュートとブロック"
-  mute: "ミュート"
-  block: "ブロック"
-  no-muted-users: "ミュートしているユーザーはいません"
-  no-blocked-users: "ブロックしているユーザーはいません"
-  word-mute: "ワードミュート"
-  muted-words: "ミュートされたキーワード"
+  mute-and-block: "뮤트 및 차단"
+  mute: "뮤트"
+  block: "차단"
+  no-muted-users: "뮤트한 사용자가 없습니다"
+  no-blocked-users: "차단한 사용자가 없습니다"
+  word-mute: "단어 뮤트"
+  muted-words: "뮤트된 키워드"
   muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
   save: "保存"
 common/views/components/password-settings.vue:
