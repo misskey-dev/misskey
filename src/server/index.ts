@@ -59,6 +59,11 @@ const router = new Router();
 router.use(activityPub.routes());
 router.use(webFinger.routes());
 
+// Return 404 for other .well-known
+router.all('/.well-known/*', async ctx => {
+	ctx.status = 404;
+});
+
 // Register router
 app.use(router.routes());
 
