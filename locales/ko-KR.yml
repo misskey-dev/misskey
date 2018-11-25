@@ -366,7 +366,7 @@ common/views/components/signin.vue:
   signin: "로그인"
   or: "또는"
   signin-with-twitter: "Twitter로 로그인"
-  signin-with-github: "GitHub로 로그인"
+  signin-with-github: "GitHub으로 로그인"
   signin-with-discord: "Discord로 로그인"
   login-failed: "로그인할 수 없습니다. 사용자명과 비밀번호를 확인하여 주십시오."
 common/views/components/signup.vue:
@@ -774,9 +774,9 @@ desktop/views/components/settings.vue:
   specify-language: "言語を指定"
   language-desc: "변경사항을 적용하려면 페이지를 새로고침해야 합니다."
   cache: "캐시"
-  clean-cache: "캐시 제거"
+  clean-cache: "캐시 삭제"
   cache-warn: "クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。"
-  cache-cleared: "캐시 제거됨"
+  cache-cleared: "캐시 삭제됨"
   cache-cleared-desc: "페이지를 새로고침해 주십시오."
   auto-watch: "投稿の自動ウォッチ"
   auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
@@ -809,17 +809,17 @@ desktop/views/components/settings.vue:
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
   detail: "詳細..."
-  url: "https://www.google.co.jp/intl/ja/landing/2step/"
+  url: "https://www.google.com/intl/ko/landing/2step/"
   caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
   register: "デバイスを登録する"
   already-registered: "既に設定は完了しています。"
   unregister: "設定を解除"
   unregistered: "二段階認証が無効になりました。"
   enter-password: "パスワードを入力してください"
-  authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
+  authenticator: "먼저, 가지고 계신 장치에 Google Authenticator를 설치해야 합니다:"
   howtoinstall: "インストール方法はこちら"
   scan: "次に、表示されているQRコードをスキャンします:"
-  done: "お使いのデバイスに表示されているトークンを入力して完了します:"
+  done: "표시된 토큰을 장치에 입력해주세요:"
   submit: "完了"
   success: "設定が完了しました！"
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
@@ -827,12 +827,12 @@ desktop/views/components/settings.2fa.vue:
 common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
-  regenerate-token: "トークンを再生成"
-  token: "Token:"
-  enter-password: "パスワードを入力してください"
+  regeneration-of-token: "토큰이 유출될 경우, 재생성할 수 있습니다."
+  regenerate-token: "토큰 재생성"
+  token: "토큰:"
+  enter-password: "암호 입력"
   console:
-    title: 'APIコンソール'
+    title: 'API 콘솔'
     endpoint: 'エンドポイント'
     parameter: 'パラメータ'
     credential-info: "「i」パラメータは自動で付与されます。"
