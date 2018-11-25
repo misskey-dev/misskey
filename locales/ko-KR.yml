@@ -825,7 +825,7 @@ desktop/views/components/settings.2fa.vue:
   failed: "설정에 실패했습니다. 토큰이 잘못되었는지 확인해주십시오."
   info: "다음 로그인부터는 이와 동일하게 비밀번호에 더해 장치에 표시된 토큰을 입력합니다."
 common/views/components/api-settings.vue:
-  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  intro: "API를 사용하려면 위의 토큰을 \"i\" 라는 키의 값으로 매개변수를 추가하여 요청합니다."
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
   regeneration-of-token: "토큰이 유출될 경우, 재생성할 수 있습니다."
   regenerate-token: "토큰 재생성"
