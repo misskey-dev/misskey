@@ -109,6 +109,8 @@ const mfm = P.createLanguage({
 		.map(x => makeNodeWithChildren('bold', P.alt(
 			r.mention,
 			r.hashtag,
+			r.url,
+			r.link,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x))),
@@ -222,6 +224,8 @@ const mfm = P.createLanguage({
 			r.mention,
 			r.hashtag,
 			r.emoji,
+			r.url,
+			r.link,
 			r.math,
 			r.text
 		).atLeast(1).tryParse(x))),
