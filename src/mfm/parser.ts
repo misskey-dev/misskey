@@ -85,6 +85,7 @@ const mfm = P.createLanguage({
 			r.mention,
 			r.hashtag,
 			r.emoji,
+			r.math,
 			r.text
 		).atLeast(1).tryParse(x))),
 	//#endregion
@@ -203,6 +204,7 @@ const mfm = P.createLanguage({
 			r.mention,
 			r.hashtag,
 			r.emoji,
+			r.math,
 			r.text
 		).atLeast(1).tryParse(x))),
 	//#endregion
