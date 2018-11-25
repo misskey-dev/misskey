@@ -658,7 +658,7 @@ desktop/views/components/notes.vue:
   error: "불러오지 못했습니다"
   retry: "재시도"
 desktop/views/components/notifications.vue:
-  empty: "없습니다!"
+  empty: "비었습니다!"
 desktop/views/components/post-form.vue:
   add-visible-user: "+사용자 추가"
   attach-location-information: "위치정보를 첨부하기"
