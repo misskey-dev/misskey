@@ -41,7 +41,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	const _file = await pack(file, {
-		detail: true
+		detail: true,
+		self: true
 	});
 
 	res(_file);
