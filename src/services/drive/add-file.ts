@@ -16,7 +16,7 @@ import { publishMainStream, publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
-import { getDriveFileOriginalBucket } from '../../models/drive-file-original';
+import { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import driveChart from '../../chart/drive';
 import perUserDriveChart from '../../chart/per-user-drive';
@@ -129,16 +129,13 @@ async function save(path: string, name: string, type: string, hash: string, size
 			if (type === 'image/webp') ext = '.webp';
 		}
 
-		const originalKey  = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
 		const webpublicKey = `${config.drive.prefix}/${uuid.v4()}.${webpublicExt}`;
 		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${thumbnailExt}`;
 
-		const baseUrl = config.drive.baseUrl
-			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
-
-		log(`uploading original: ${originalKey}`);
+		log(`uploading original: ${key}`);
 		const uploads = [
-			upload(originalKey, fs.createReadStream(path), type)
+			upload(key, fs.createReadStream(path), type)
 		];
 
 		if (webpublic) {
@@ -153,18 +150,21 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		await Promise.all(uploads);
 
+		const baseUrl = config.drive.baseUrl
+			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
+
 		Object.assign(metadata, {
 			withoutChunks: true,
 			storage: 'minio',
 			storageProps: {
-				key:          webpublic ? webpublicKey : originalKey,
-				originalKey:  webpublic ? originalKey  : null,
+				key: key,
+				webpublicKey: webpublic ? webpublicKey : null,
 				thumbnailKey: thumbnail ? thumbnailKey : null,
 			},
-			url: `${ baseUrl }/${ webpublic ? webpublicKey : originalKey }`,
-			originalUrl:  webpublic ? `${ baseUrl }/${ originalKey }`  : null,
+			url: `${ baseUrl }/${ key }`,
+			webpublicUrl: webpublic ? `${ baseUrl }/${ webpublicKey }` : null,
 			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKey }` : null
-		});
+		} as IMetadata);
 
 		const file = await DriveFile.insert({
 			length: size,
@@ -177,16 +177,36 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		return file;
 	} else {
-		// #region store webpublic
-		// web用が存在する場合Mainに格納
-		let webFile: IDriveFile = null;
-		if (webpublic) {
-			const webDst = await getDriveFileBucket();
+		// #region store original
+		const originalDst = await getDriveFileBucket();
 
-			webFile = await new Promise<IDriveFile>((resolve, reject) => {
+		// web用(Exif削除済み)がある場合はオリジナルにアクセス制限
+		if (webpublic) metadata.accessKey = uuid.v4();
+
+		const originalFile = await new Promise<IDriveFile>((resolve, reject) => {
+			const writeStream = originalDst.openUploadStream(name, {
+				contentType: type,
+				metadata
+			});
+
+			writeStream.once('finish', resolve);
+			writeStream.on('error', reject);
+			fs.createReadStream(path).pipe(writeStream);
+		});
+
+		log(`original stored to ${originalFile._id}`);
+		// #endregion store original
+
+		// #region store webpublic
+		if (webpublic) {
+			const webDst = await getDriveFileWebpublicBucket();
+
+			const webFile = await new Promise<IDriveFile>((resolve, reject) => {
 				const writeStream = webDst.openUploadStream(name, {
 					contentType: webpublicType,
-					metadata
+					metadata: {
+						originalId: originalFile._id
+					}
 				});
 
 				writeStream.once('finish', resolve);
@@ -194,45 +214,18 @@ async function save(path: string, name: string, type: string, hash: string, size
 				writeStream.end(webpublic);
 			});
 
-			log(`web stored to main ${webFile._id}`);
+			log(`web stored ${webFile._id}`);
 		}
 		// #endregion store webpublic
-
-		// #region store original
-		// web用がMainとして格納されている場合、MainにではなくOriginalに格納する
-		const originalDst = webFile ? await getDriveFileOriginalBucket() : await getDriveFileBucket();
-
-		// Originalに格納する場合は、メイン用ではなくメイン参照用のメタデータにする
-		const originalMeta = webFile ? {
-			originalId: webFile._id,	// 名称がややこしいが、本質的にこれはmainIdの意味
-			accessKey: `${uuid.v4()}`	// originalアクセスに必要なキー
-		} : metadata;
-
-		const originalFile = await new Promise<IDriveFile>((resolve, reject) => {
-			const writeStream = originalDst.openUploadStream(name, {
-				contentType: type,
-				metadata: originalMeta
-			});
-
-			writeStream.once('finish', resolve);
-			writeStream.on('error', reject);
-
-			fs.createReadStream(path).pipe(writeStream);
-		});
-
-		log(`original stored to ${webFile ? 'original' : 'main' } ${originalFile._id}`);
-		// #endregion store original
-
-		const mainFile = webFile || originalFile;
 
 		if (thumbnail) {
 			const thumbnailBucket = await getDriveFileThumbnailBucket();
 
-			await new Promise<IDriveFile>((resolve, reject) => {
+			const tuhmFile = await new Promise<IDriveFile>((resolve, reject) => {
 				const writeStream = thumbnailBucket.openUploadStream(name, {
 					contentType: thumbnailType,
 					metadata: {
-						originalId: mainFile._id
+						originalId: originalFile._id
 					}
 				});
 
@@ -240,9 +233,11 @@ async function save(path: string, name: string, type: string, hash: string, size
 				writeStream.on('error', reject);
 				writeStream.end(thumbnail);
 			});
+
+			log(`thumbnail stored ${tuhmFile._id}`);
 		}
 
-		return mainFile;
+		return originalFile;
 	}
 }
 

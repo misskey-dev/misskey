@@ -3,7 +3,7 @@ import * as send from 'koa-send';
 import * as mongodb from 'mongodb';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
-import DriveFileOriginal, { getDriveFileOriginalBucket } from '../../models/drive-file-original';
+import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
@@ -42,6 +42,11 @@ export default async function(ctx: Koa.Context) {
 	}
 
 	const sendRaw = async () => {
+		if (file.metadata && file.metadata.accessKey && file.metadata.accessKey != ctx.query['original']) {
+			ctx.status = 403;
+			return;
+		}
+
 		const bucket = await getDriveFileBucket();
 		const readable = bucket.openDownloadStream(fileId);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
@@ -61,20 +66,16 @@ export default async function(ctx: Koa.Context) {
 		} else {
 			await sendRaw();
 		}
-	} else if ('original' in ctx.query) {
-		const original = await DriveFileOriginal.findOne({
+	} else if ('web' in ctx.query) {
+		const web = await DriveFileWebpublic.findOne({
 			'metadata.originalId': fileId
 		});
 
-		if (original != null) {
-			if (original.metadata && original.metadata.accessKey && original.metadata.accessKey != ctx.query['original']) {
-				ctx.status = 403;
-				return;
-			}
+		if (web != null) {
+			ctx.set('Content-Type', file.contentType);
 
-			ctx.set('Content-Type', original.contentType);
-			const bucket = await getDriveFileOriginalBucket();
-			ctx.body = bucket.openDownloadStream(original._id);
+			const bucket = await getDriveFileWebpublicBucket();
+			ctx.body = bucket.openDownloadStream(web._id);
 		} else {
 			await sendRaw();
 		}

@@ -50,7 +50,7 @@ export type IMetadata = {
 	 * URL for original (web用が生成されてない場合はurlがoriginalを指す)
 	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
 	 */
-	originalUrl?: string;
+	webpublicUrl?: string;
 
 	accessKey?: string;
 
@@ -85,7 +85,7 @@ export type IMetadata = {
 
 export type IStorageProps = {
 	/**
-	 * ObjectStorage key for web(生成されている場合) or original
+	 * ObjectStorage key for original
 	 */
 	key: string;
 
@@ -95,9 +95,9 @@ export type IStorageProps = {
 	thumbnailKey?: string;
 
 	/***
-	 * ObjectStorage key for original (web用が生成されてない場合はkeyがoriginalを指す)
+	 * ObjectStorage key for webpublic (webpublicがなければなし)
 	 */
-	originalKey?: string;
+	webpublicKey?: string;
 
 	id?: string;
 };
@@ -213,10 +213,9 @@ export const pack = (
 	delete _target.storageProps;
 	delete _target.isRemote;
 	delete _target._user;
-	delete _target.originalUrl;
 
 	if (opts.self) {
-		_target.url = await getOriginalUrl(_file);
+		_target.url = getOriginalUrl(_file);
 	}
 
 	resolve(_target);

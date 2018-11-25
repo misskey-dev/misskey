@@ -4,7 +4,7 @@ import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-
 import config from '../../config';
 import driveChart from '../../chart/drive';
 import perUserDriveChart from '../../chart/per-user-drive';
-import DriveFileOriginal, { DriveFileOriginalChunk } from '../../models/drive-file-original';
+import DriveFileWebpublic, { DriveFileWebpublicChunk } from '../../models/drive-file-webpublic';
 
 export default async function(file: IDriveFile, isExpired = false) {
 	if (file.metadata.storage == 'minio') {
@@ -22,9 +22,9 @@ export default async function(file: IDriveFile, isExpired = false) {
 			await minio.removeObject(config.drive.bucket, thumbnailObj);
 		}
 
-		if (file.metadata.originalUrl) {
-			const originalObj = file.metadata.storageProps.originalKey ? file.metadata.storageProps.originalKey : `${config.drive.prefix}/${file.metadata.storageProps.id}-original`;
-			await minio.removeObject(config.drive.bucket, originalObj);
+		if (file.metadata.webpublicUrl) {
+			const webpublicObj = file.metadata.storageProps.webpublicKey ? file.metadata.storageProps.webpublicKey : `${config.drive.prefix}/${file.metadata.storageProps.id}-original`;
+			await minio.removeObject(config.drive.bucket, webpublicObj);
 		}
 	}
 
@@ -54,17 +54,19 @@ export default async function(file: IDriveFile, isExpired = false) {
 	}
 	//#endregion
 
-	const original = await DriveFileOriginal.findOne({
+	//#region Web公開用もあれば削除
+	const webpublic = await DriveFileWebpublic.findOne({
 		'metadata.originalId': file._id
 	});
 
-	if (original) {
-		await DriveFileOriginalChunk.remove({
-			files_id: original._id
+	if (webpublic) {
+		await DriveFileWebpublicChunk.remove({
+			files_id: webpublic._id
 		});
 
-		await DriveFileOriginal.remove({ _id: original._id });
+		await DriveFileWebpublic.remove({ _id: webpublic._id });
 	}
+	//#endregion
 
 	// 統計を更新
 	driveChart.update(file, false);
