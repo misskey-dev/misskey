@@ -8,19 +8,8 @@ WORKDIR /misskey
 
 FROM base AS builder
 
-RUN apk add --no-cache \
-    gcc \
-    g++ \
-    libc-dev \
-    python \
-    autoconf \
-    automake \
-    file \
-    make \
-    nasm \
-    pkgconfig \
-    libtool \
-    zlib-dev
+RUN unlink /usr/bin/free
+RUN apk add --no-cache autoconf automake file g++ gcc libc-dev libtool make nasm pkgconfig procps python zlib-dev
 RUN npm i -g node-gyp
 
 COPY ./package.json ./
