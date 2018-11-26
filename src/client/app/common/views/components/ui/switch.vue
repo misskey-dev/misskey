@@ -123,7 +123,7 @@ export default Vue.extend({
 		> span
 			display block
 			line-height 20px
-			color currentColor
+			color var(--text)
 			transition inherit
 
 		> p
