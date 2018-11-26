@@ -9,7 +9,20 @@ WORKDIR /misskey
 FROM base AS builder
 
 RUN unlink /usr/bin/free
-RUN apk add --no-cache autoconf automake file g++ gcc libc-dev libtool make nasm pkgconfig procps python zlib-dev
+RUN apk add --no-cache \
+    autoconf \
+    automake \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    libtool \
+    make \
+    nasm \
+    pkgconfig \
+    procps \
+    python \
+    zlib-dev
 RUN npm i -g node-gyp
 
 COPY ./package.json ./
