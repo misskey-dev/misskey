@@ -73,21 +73,22 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 ----------------------------------------------------------------
 <!-- PATREON_START -->
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12190916/fb7fa7983c14425f890369535b1506a4/1?token-time=2145916800&token-hash=Zeh1u6l_Vmgoy8A1eT1Sltea-_SZSq8t8uOWDRZRh94%3D" alt="weep"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12731202/0995c46cdcb54153ab5f073f5869b70a/1?token-time=2145916800&token-hash=Yd60FK_SWfQO56SeiJpy1tDHOnCV4xdEywQe8gn5_Wo%3D" alt="negao"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/2?token-time=2145916800&token-hash=mgPdX9TqZxEg4TTPuc477dxhIgYk9246qafjWZEqZ7g%3D" alt="Melilot"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/3384329/8b713330cb27404ea6e9fac50ff96efe/1?token-time=2145916800&token-hash=0eu4-m1gTWA9PhptVZt6rdKcusqcD7RB87rJT23VVFI%3D" alt="べすれい"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12021162/963128bb8d14476dbd8407943db8f31a/1?token-time=2145916800&token-hash=GgJ_NmUB6_nnRNLVGUWjV-WX91On7BOu59LKncYV9fE%3D" alt="gutfuckllc"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/11357794/923ce94cd8c44ba788ee931907881839/1?token-time=2145916800&token-hash=I8lJVM8LeW6TSo5W6uIIRZ42cw83zp1wK_FsbzY0mcQ%3D" alt="mydarkstar"></td>
-<td><img src="https://c8.patreon.com/2/100/12718187" alt="Peter G."></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/weepjp">weep</a></td>
 <td><a href="https://www.patreon.com/negao">negao</a></td>
 <td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>
 <td><a href="https://www.patreon.com/user?u=3384329">べすれい</a></td>
 <td><a href="https://www.patreon.com/gutfuckllc">gutfuckllc</a></td>
 <td><a href="https://www.patreon.com/mydarkstar">mydarkstar</a></td>
-<td><a href="https://www.patreon.com/user?u=12718187">Peter G.</a></td>
 </tr></table>
 <table><tr>
+<td><img src="https://c8.patreon.com/2/100/12718187" alt="Peter G."></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13039004/509d0c412eb14ae08d6a812a3054f7d6/1?token-time=2145916800&token-hash=zwSu01tOtn5xTUucDZHuPsCxF2HBEMVs9ROJKTlEV_o%3D" alt="nemu"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/3?token-time=2145916800&token-hash=qsdn0-e6yLaLI6hUX9JAkyTR6a5UdnSp7T1foniBvGQ%3D" alt="YUKIMOCHI"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/8241184/39e18850e87a449e9c9a71acb3310ebd/2?token-time=2145916800&token-hash=iUXOQzRyJDv3PJxwS7Mjwg1459dzh2trOq6NFtXu_OM%3D" alt="Acid Chicken"></td>
@@ -95,8 +96,8 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/10789744/97175095d8f04c0f86225ff47cb98d40/1?token-time=2145916800&token-hash=P4BIzCX2I1CkEP66ottfhsC8Wr6BUSamjA-vq3pLqFI%3D" alt="Naoki Hirayama"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1?token-time=2145916800&token-hash=S1zP0QyLU52Dqq6dtc9qNYyWfW86XrYHiR4NMbeOrnA%3D" alt="dansup"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/619786/32cf01444db24e578cd1982c197f6fc6/1?token-time=2145916800&token-hash=tB1e_r8RlZ5sFL0KV_e8dugapxatNBRK1Z3h67TO1g8%3D" alt="Gargron"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/5731881/4b6038e6cda34c04b83a5fcce3806a93/1?token-time=2145916800&token-hash=VZUtwrjQa8Jml4twCjHYQQZ64wHEY4oIlGl7Kc-VYUQ%3D" alt="Nokotaro Takeda"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/user?u=12718187">Peter G.</a></td>
 <td><a href="https://www.patreon.com/user?u=13039004">nemu</a></td>
 <td><a href="https://www.patreon.com/yukimochi">YUKIMOCHI</a></td>
 <td><a href="https://www.patreon.com/acid_chicken">Acid Chicken</a></td>
@@ -104,15 +105,16 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/spinlock">Naoki Hirayama</a></td>
 <td><a href="https://www.patreon.com/dansup">dansup</a></td>
 <td><a href="https://www.patreon.com/mastodon">Gargron</a></td>
-<td><a href="https://www.patreon.com/takenoko">Nokotaro Takeda</a></td>
 </tr></table>
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/5731881/4b6038e6cda34c04b83a5fcce3806a93/1?token-time=2145916800&token-hash=VZUtwrjQa8Jml4twCjHYQQZ64wHEY4oIlGl7Kc-VYUQ%3D" alt="Nokotaro Takeda"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1?token-time=2145916800&token-hash=tMosUojzUYJCH_3t--tvYA-SMCyrS__hzSndyaRSnbo%3D" alt="Takashi Shibuya"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/takenoko">Nokotaro Takeda</a></td>
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Fri, 23 Nov 2018 14:09:04 UTC
+**Last updated:** Mon, 26 Nov 2018 18:06:05 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
