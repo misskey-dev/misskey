@@ -91,6 +91,11 @@
 					</ui-select>
 				</section>
 			</section>
+
+			<section>
+				<header>{{ $t('web-search-engine') }}</header>
+				<ui-input v-model="webSearchEngine">{{ $t('web-search-engine') }}<span slot="desc">{{ $t('web-search-engine-desc') }}</span></ui-input>
+			</section>
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
@@ -453,6 +458,11 @@ export default Vue.extend({
 		defaultNoteVisibility: {
 			get() { return this.$store.state.settings.defaultNoteVisibility; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
+		},
+
+		webSearchEngine: {
+			get() { return this.$store.state.settings.webSearchEngine; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'webSearchEngine', value }); }
 		},
 
 		showReplyTarget: {
