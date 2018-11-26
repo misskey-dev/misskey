@@ -19,6 +19,12 @@ app.use(cors({
 	origin: '*'
 }));
 
+// No caching
+app.use(async (ctx, next) => {
+	ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	await next();
+});
+
 app.use(bodyParser({
 	// リクエストが multipart/form-data でない限りはJSONだと見なす
 	detectJSON: ctx => !ctx.is('multipart/form-data')
