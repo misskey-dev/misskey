@@ -213,21 +213,44 @@ describe('Text', () => {
 			});
 
 			it('with brackets', () => {
-				const tokens = analyze('(#foo)');
+				const tokens1 = analyze('(#foo)');
 				assert.deepEqual([
 					text('('),
 					node('hashtag', { hashtag: 'foo' }),
 					text(')'),
+				], tokens1);
+
+				const tokens2 = analyze('「#foo」');
+				assert.deepEqual([
+					text('「'),
+					node('hashtag', { hashtag: 'foo' }),
+					text('」'),
+				], tokens2);
+			});
+
+			it('with mixed brackets', () => {
+				const tokens = analyze('「#foo(bar)」');
+				assert.deepEqual([
+					text('「'),
+					node('hashtag', { hashtag: 'foo(bar)' }),
+					text('」'),
 				], tokens);
 			});
 
 			it('with brackets (space before)', () => {
-				const tokens = analyze('(bar #foo)');
+				const tokens1 = analyze('(bar #foo)');
 				assert.deepEqual([
 					text('(bar '),
 					node('hashtag', { hashtag: 'foo' }),
 					text(')'),
-				], tokens);
+				], tokens1);
+
+				const tokens2 = analyze('「bar #foo」');
+				assert.deepEqual([
+					text('「bar '),
+					node('hashtag', { hashtag: 'foo' }),
+					text('」'),
+				], tokens2);
 			});
 
 			it('disallow number only', () => {

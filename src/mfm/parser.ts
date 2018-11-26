@@ -30,17 +30,23 @@ function makeNodeWithChildren(name: string, children: Node[], props?: any): Node
 }
 
 function getTrailingPosition(x: string): number {
-	let pendingBracket = 0;
+	const brackets = [
+		['(', ')'],
+		['「', '」'],
+	];
+	const pendingBrackets = [] as any;
 	const end = x.split('').findIndex(char => {
-		if (char == ')') {
-			if (pendingBracket > 0) {
-				pendingBracket--;
+		const closeMatch = brackets.map(x => x[1]).indexOf(char);
+		const openMatch = brackets.map(x => x[0]).indexOf(char);
+		if (closeMatch != -1) {
+			if (pendingBrackets[closeMatch] > 0) {
+				pendingBrackets[closeMatch]--;
 				return false;
 			} else {
 				return true;
 			}
-		} else if (char == '(') {
-			pendingBracket++;
+		} else if (openMatch != -1) {
+			pendingBrackets[openMatch] = (pendingBrackets[openMatch] || 0) + 1;
 			return false;
 		} else {
 			return false;
@@ -156,7 +162,7 @@ const mfm = P.createLanguage({
 			let hashtag = match[1];
 			hashtag = hashtag.substr(0, getTrailingPosition(hashtag));
 			if (hashtag.match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
-			if (!['\n', ' ', '(', null, undefined].includes(input[i - 1])) return P.makeFailure(i, 'require space before "#"');
+			if (!['\n', ' ', '(', '「', null, undefined].includes(input[i - 1])) return P.makeFailure(i, 'require space before "#"');
 			return P.makeSuccess(i + ('#' + hashtag).length, makeNode('hashtag', { hashtag: hashtag }));
 		}),
 	//#endregion
