@@ -165,6 +165,6 @@ export default Vue.extend({
 				display block
 				margin-bottom 16px
 				font-size 3em
-				var(--faceHeaderText);
+				color var(--faceHeaderText);
 
 </style>

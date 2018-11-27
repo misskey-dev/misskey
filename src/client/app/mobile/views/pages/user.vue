@@ -334,6 +334,7 @@ main
 		max-width 680px
 		margin 0 auto
 		padding 8px
+		color var(--text)
 
 		@media (min-width 500px)
 			padding 16px
