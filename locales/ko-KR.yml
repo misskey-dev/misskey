@@ -1012,7 +1012,7 @@ admin/views/charts.vue:
     notes: "글 증감 (통합)"
     local-notes: "글 증감 (로컬)"
     remote-notes: "글 증감 (원격)"
-    notes-total: "게시글 누적 수"
+    notes-total: "글 누적 수"
     users: "사용자 증감"
     users-total: "사용자 누적"
     drive: "드라이브 사용량 증감"
@@ -1106,8 +1106,8 @@ desktop/views/pages/drive.vue:
 desktop/views/pages/home-customize.vue:
   title: "홈 커스터마이징"
 desktop/views/pages/note.vue:
-  prev: "이전 게시글"
-  next: "다음 게시글"
+  prev: "이전 글"
+  next: "다음 글"
 desktop/views/pages/selectdrive.vue:
   title: "파일을 선택하여 주십시오"
   ok: "확인"
@@ -1115,11 +1115,11 @@ desktop/views/pages/selectdrive.vue:
   upload: "PC에서 드라이브에 파일을 업로드"
 desktop/views/pages/search.vue:
   not-available: "검색 기능은 인스턴스 설정에서 비활성화되어 있습니다."
-  not-found: "\"{q}\" 와 일치하는 게시글을 찾을 수 없습니다."
+  not-found: "\"{q}\" 와 일치하는 글을 찾을 수 없습니다."
 desktop/views/pages/share.vue:
   share-with: "{name}(으)로 공유"
 desktop/views/pages/tag.vue:
-  no-posts-found: "해시태그 \"{q}\"가 붙은 게시글을 찾을 수 없습니다."
+  no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 desktop/views/pages/user-list.users.vue:
   users: "사용자"
   add-user: "사용자 추가"
@@ -1150,7 +1150,7 @@ desktop/views/pages/user/user.profile.vue:
   push-to-a-list: "리스트에 추가"
   list-pushed: "{user}을(를) {list}에 추가하였습니다."
 desktop/views/pages/user/user.header.vue:
-  posts: "게시글"
+  posts: "글"
   following: "팔로잉"
   followers: "팔로워"
   is-bot: "이 계정은 Bot입니다"
@@ -1159,8 +1159,8 @@ desktop/views/pages/user/user.header.vue:
   month: "월"
   day: "일"
 desktop/views/pages/user/user.timeline.vue:
-  default: "게시글"
-  with-replies: "게시글과 답글"
+  default: "글"
+  with-replies: "글과 답글"
   with-media: "미디어"
   empty: "이 사용자는 아직 아무것도 게시하지 않은 것 같습니다."
 desktop/views/widgets/messaging.vue:
