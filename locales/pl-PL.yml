@@ -293,8 +293,8 @@ common/views/components/theme.vue:
   import-by-code: "またはコードをペースト"
   theme-name-required: "テーマ名は必須です。"
 common/views/components/cw-button.vue:
-  hide: "隠す"
-  show: "もっと見る"
+  hide: "Ukryj"
+  show: "Pokaż więcej"
 common/views/components/messaging.vue:
   search-user: "Znajdź użytkownika"
   you: "Ty"
@@ -1226,7 +1226,7 @@ common/views/components/follow-button.vue:
   follow: "Śledź"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
-  follow-request: "フォロー申請"
+  follow-request: "Poproś o śledzenie"
 mobile/views/components/friends-maker.vue:
   title: "Zacznij śledzić ludzi takich jak Ty"
   empty: "Nie znaleziono podobnych użytkowników."
