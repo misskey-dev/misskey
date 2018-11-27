@@ -4,6 +4,7 @@
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#313a42",
+	"theme_color": "#fb4e4e",
 	"icons": [
 		{
 			"src": "/assets/icons/16.png",
@@ -33,6 +34,11 @@
 		{
 			"src": "/assets/icons/256.png",
 			"sizes": "256x256",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/icons/512.png",
+			"sizes": "512x512",
 			"type": "image/png"
 		}
 	],
