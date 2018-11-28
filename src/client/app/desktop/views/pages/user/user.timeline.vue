@@ -151,18 +151,20 @@ export default Vue.extend({
 				&:hover
 					color var(--desktopTimelineSrcHover)
 
-	> .empty
-		display block
-		margin 0 auto
-		padding 32px
-		max-width 400px
-		text-align center
-		color #999
+	> .mk-notes
 
-		> [data-icon]
+		> .empty
 			display block
-			margin-bottom 16px
-			font-size 3em
-			color #ccc
+			margin 0 auto
+			padding 32px
+			max-width 400px
+			text-align center
+			color var(--text)
+
+			> [data-icon]
+				display block
+				margin-bottom 16px
+				font-size 3em
+				color var(--faceHeaderText);
 
 </style>

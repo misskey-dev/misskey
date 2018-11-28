@@ -306,6 +306,7 @@ export default Vue.extend({
 			padding 16px 0
 			border solid 2px rgba(0, 0, 0, 0.1)
 			border-radius 8px
+			color var(--text)
 
 			> *
 				margin 0 16px

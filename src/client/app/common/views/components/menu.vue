@@ -180,6 +180,7 @@ export default Vue.extend({
 			padding 8px 16px
 			width 100%
 			color var(--popupFg)
+			white-space nowrap
 
 			&:hover
 				color var(--primaryForeground)

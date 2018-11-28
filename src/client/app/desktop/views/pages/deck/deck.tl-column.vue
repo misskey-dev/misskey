@@ -10,7 +10,7 @@
 		<span>{{ name }}</span>
 	</span>
 
-	<div class="editor" style="padding:0 12px" v-if="edit">
+	<div class="editor" style="padding:12px" v-if="edit">
 		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">{{ $t('is-media-only') }}</ui-switch>
 		<ui-switch v-model="column.isMediaView" @change="onChangeSettings">{{ $t('is-media-view') }}</ui-switch>
 	</div>

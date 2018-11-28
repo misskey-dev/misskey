@@ -54,7 +54,25 @@ export default Vue.extend({
 	padding 16px
 
 	> button
+		display block
 		margin-bottom 16px
+		color var(--primaryForeground)
+		background var(--primary)
+		width 100%
+		border-radius 38px
+		user-select none
+		cursor pointer
+		padding 0 16px
+		min-width 100px
+		line-height 38px
+		font-size 14px
+		font-weight 700
+
+		&:hover
+			background var(--primaryLighten10)
+
+		&:active
+			background var(--primaryDarken10)
 
 	> a
 		display block
