@@ -192,7 +192,7 @@ describe('API', () => {
 				password: 'foo'
 			});
 
-			expect(res).have.status(204);
+			expect(res).have.status(200);
 		}));
 	});
 
