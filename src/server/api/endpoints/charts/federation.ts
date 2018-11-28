@@ -3,6 +3,8 @@ import define from '../../define';
 import federationChart from '../../../../chart/federation';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'フェデレーションのチャートを取得します。'
 	},

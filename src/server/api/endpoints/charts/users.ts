@@ -3,6 +3,8 @@ import define from '../../define';
 import usersChart from '../../../../chart/users';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'ユーザーのチャートを取得します。'
 	},

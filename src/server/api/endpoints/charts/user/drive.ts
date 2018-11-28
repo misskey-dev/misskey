@@ -4,6 +4,8 @@ import perUserDriveChart from '../../../../../chart/per-user-drive';
 import ID, { transform } from '../../../../../misc/cafy-id';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'ユーザーごとのドライブのチャートを取得します。'
 	},

@@ -3,6 +3,8 @@ import define from '../../define';
 import networkChart from '../../../../chart/network';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'ネットワークのチャートを取得します。'
 	},

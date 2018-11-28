@@ -4,6 +4,8 @@ import perUserNotesChart from '../../../../../chart/per-user-notes';
 import ID, { transform } from '../../../../../misc/cafy-id';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'ユーザーごとの投稿のチャートを取得します。'
 	},

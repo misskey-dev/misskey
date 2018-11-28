@@ -3,6 +3,8 @@ import define from '../../define';
 import hashtagChart from '../../../../chart/hashtag';
 
 export const meta = {
+	stability: 'stable',
+
 	desc: {
 		'ja-JP': 'ハッシュタグごとのチャートを取得します。'
 	},
