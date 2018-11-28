@@ -21,6 +21,7 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 
 		ctx.redirect(config.url);
 	} else {
-		ctx.status = 204;
+		ctx.body = { i: user.token };
+		ctx.status = 200;
 	}
 }

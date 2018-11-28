@@ -67,7 +67,8 @@ export default Vue.extend({
 				username: this.username,
 				password: this.password,
 				token: this.user && this.user.twoFactorEnabled ? this.token : undefined
-			}, true).then(() => {
+			}, true).then(res => {
+				localStorage.setItem('i', res.i);
 				location.reload();
 			}).catch(() => {
 				alert(this.$t('login-failed'));
