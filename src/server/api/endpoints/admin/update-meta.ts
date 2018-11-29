@@ -252,28 +252,28 @@ export const meta = {
 		},
 
 		smtpHost: {
-			validator: $.str.optional,
+			validator: $.str.optional.nullable,
 			desc: {
 				'ja-JP': 'SMTPサーバのホスト'
 			}
 		},
 
 		smtpPort: {
-			validator: $.num.optional,
+			validator: $.num.optional.nullable,
 			desc: {
 				'ja-JP': 'SMTPサーバのポート'
 			}
 		},
 
 		smtpUser: {
-			validator: $.str.optional,
+			validator: $.str.optional.nullable,
 			desc: {
 				'ja-JP': 'SMTPサーバのユーザー名'
 			}
 		},
 
 		smtpPass: {
-			validator: $.str.optional,
+			validator: $.str.optional.nullable,
 			desc: {
 				'ja-JP': 'SMTPサーバのパスワード'
 			}
