@@ -69,12 +69,14 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 		const meta = await fetchMeta();
 
+		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
+
 		const transporter = nodemailer.createTransport({
 			host: meta.smtpHost,
 			port: meta.smtpPort,
 			secure: meta.smtpSecure,
-			ignoreTLS: true,
-			auth: meta.smtpUser != null ? {
+			ignoreTLS: !enableAuth,
+			auth: enableAuth ? {
 				user: meta.smtpUser,
 				pass: meta.smtpPass
 			} : undefined
