@@ -20,7 +20,7 @@ export default function(me, settings, note) {
 		}
 	}
 
-	if (!isMyNote && note.text && settings.mutedWords.some(q => q.length > 0 && !q.some(word => word == '' || !note.text.includes(word)))) {
+	if (!isMyNote && note.text && settings.mutedWords.some(q => q.length > 0 && !q.some(word => !note.text.includes(word)))) {
 		return true;
 	}
 

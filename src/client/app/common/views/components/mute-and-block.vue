@@ -72,7 +72,7 @@ export default Vue.extend({
 
 	methods: {
 		save() {
-			this._mutedWords = this.mutedWords.split('\n').map(line => line.split(' '));
+			this._mutedWords = this.mutedWords.split('\n').map(line => line.split(' ').filter(x => x != ''));
 		}
 	}
 });
