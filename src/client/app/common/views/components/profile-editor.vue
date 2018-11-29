@@ -67,7 +67,7 @@
 		</div>
 	</section>
 
-	<section>
+	<section v-if="enableEmail">
 		<header>{{ $t('email') }}</header>
 
 		<div>
@@ -94,6 +94,7 @@ export default Vue.extend({
 	data() {
 		return {
 			host: toUnicode(host),
+			enableEmail: false,
 			email: null,
 			name: null,
 			username: null,
@@ -128,6 +129,9 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$root.getMeta().then(meta => {
+			this.enableEmail = meta.enableEmail;
+		});
 		this.email = this.$store.state.i.email;
 		this.name = this.$store.state.i.name;
 		this.username = this.$store.state.i.username;

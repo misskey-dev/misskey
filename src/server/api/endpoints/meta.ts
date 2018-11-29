@@ -66,16 +66,12 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		swPublickey: config.sw ? config.sw.public_key : null,
 		bannerUrl: instance.bannerUrl,
 		maxNoteTextLength: instance.maxNoteTextLength,
-
 		emojis: emojis,
+		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,
 		enableGithubIntegration: instance.enableGithubIntegration,
 		enableDiscordIntegration: instance.enableDiscordIntegration,
-
-		enableExternalUserRecommendation: instance.enableExternalUserRecommendation,
-		externalUserRecommendationEngine: instance.externalUserRecommendationEngine,
-		externalUserRecommendationTimeout: instance.externalUserRecommendationTimeout
 	};
 
 	if (ps.detail) {
@@ -107,8 +103,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.githubClientSecret = instance.githubClientSecret;
 		response.discordClientId = instance.discordClientId;
 		response.discordClientSecret = instance.discordClientSecret;
+		response.enableExternalUserRecommendation = instance.enableExternalUserRecommendation;
+		response.externalUserRecommendationEngine = instance.externalUserRecommendationEngine;
+		response.externalUserRecommendationTimeout = instance.externalUserRecommendationTimeout;
 		response.summalyProxy = instance.summalyProxy;
-		response.enableEmail = instance.enableEmail;
 		response.email = instance.email;
 		response.smtpSecure = instance.smtpSecure;
 		response.smtpHost = instance.smtpHost;
