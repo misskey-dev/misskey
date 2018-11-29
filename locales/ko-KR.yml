@@ -26,6 +26,7 @@ common:
   close: "닫기"
   do-not-copy-paste: "여기에 코드를 입력하거나 붙여넣지 마십시오. 계정이 무단으로 사용될 수 있습니다."
   load-more: "더보기"
+  enter-password: "パスワードを入力してください"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
