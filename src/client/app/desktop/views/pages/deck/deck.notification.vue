@@ -8,7 +8,7 @@
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
-			<router-link class="note-ref" :to="notification.note | notePage">
+			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}
 				<fa icon="quote-right"/>
 			</router-link>
@@ -23,7 +23,7 @@
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
-			<router-link class="note-ref" :to="notification.note | notePage">
+			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
 				<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
@@ -59,7 +59,7 @@
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
-			<router-link class="note-ref" :to="notification.note | notePage">
+			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
@@ -111,8 +111,8 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .dsfykdcjpuwfvpefwufddclpjhzktmpw
 	> .notification
-		padding 16px
-		font-size 13px
+		padding 12px 16px
+		font-size 12px
 		overflow-wrap break-word
 
 		&:after
@@ -150,6 +150,11 @@ export default Vue.extend({
 
 			> .note-ref
 				color var(--noteText)
+				display inline-block
+				width: 100%
+				overflow hidden
+				white-space: nowrap
+				text-overflow ellipsis
 
 				[data-icon]
 					font-size 1em
