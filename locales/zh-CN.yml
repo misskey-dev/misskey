@@ -26,6 +26,7 @@ common:
   close: "关闭"
   do-not-copy-paste: "请不要在这里输入或粘贴代码。您帐户可能会受到损害。"
   load-more: "加载更多"
+  enter-password: "パスワードを入力してください"
   got-it: "没问题"
   customization-tips:
     title: "客制化提示"
