@@ -80,7 +80,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			} : undefined
 		});
 
-		const link = `${config.url}/vefify-email/${code}`;
+		const link = `${config.url}/verify-email/${code}`;
 
 		transporter.sendMail({
 			from: meta.email,
