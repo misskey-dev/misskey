@@ -22,7 +22,10 @@ export default Vue.extend({
 	},
 	methods: {
 		search() {
-			window.open(`https://www.google.com/?#q=${this.query}`, '_blank');
+			const engine = this.$store.state.settings.webSearchEngine ||
+				'https://www.google.com/?#q={{query}}';
+			const url = engine.replace('{{query}}', this.query)
+			window.open(url, '_blank');
 		}
 	}
 });
