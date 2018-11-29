@@ -108,6 +108,13 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.discordClientId = instance.discordClientId;
 		response.discordClientSecret = instance.discordClientSecret;
 		response.summalyProxy = instance.summalyProxy;
+		response.enableEmail = instance.enableEmail;
+		response.email = instance.email;
+		response.smtpSecure = instance.smtpSecure;
+		response.smtpHost = instance.smtpHost;
+		response.smtpPort = instance.smtpPort;
+		response.smtpUser = instance.smtpUser;
+		response.smtpPass = instance.smtpPass;
 	}
 
 	res(response);

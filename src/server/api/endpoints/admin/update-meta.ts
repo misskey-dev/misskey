@@ -228,7 +228,56 @@ export const meta = {
 			desc: {
 				'ja-JP': '外部ユーザーレコメンデーションのタイムアウト (ミリ秒)'
 			}
-		}
+		},
+
+		enableEmail: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'メール配信を有効にするか否か'
+			}
+		},
+
+		email: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'メール配信する際に利用するメールアドレス'
+			}
+		},
+
+		smtpSecure: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'SMTPサーバがSSLを使用しているか否か'
+			}
+		},
+
+		smtpHost: {
+			validator: $.str.optional,
+			desc: {
+				'ja-JP': 'SMTPサーバのホスト'
+			}
+		},
+
+		smtpPort: {
+			validator: $.num.optional,
+			desc: {
+				'ja-JP': 'SMTPサーバのポート'
+			}
+		},
+
+		smtpUser: {
+			validator: $.str.optional,
+			desc: {
+				'ja-JP': 'SMTPサーバのユーザー名'
+			}
+		},
+
+		smtpPass: {
+			validator: $.str.optional,
+			desc: {
+				'ja-JP': 'SMTPサーバのパスワード'
+			}
+		},
 	}
 };
 
@@ -357,6 +406,34 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.externalUserRecommendationTimeout !== undefined) {
 		set.externalUserRecommendationTimeout = ps.externalUserRecommendationTimeout;
+	}
+
+	if (ps.enableEmail !== undefined) {
+		set.enableEmail = ps.enableEmail;
+	}
+
+	if (ps.email !== undefined) {
+		set.email = ps.email;
+	}
+
+	if (ps.smtpSecure !== undefined) {
+		set.smtpSecure = ps.smtpSecure;
+	}
+
+	if (ps.smtpHost !== undefined) {
+		set.smtpHost = ps.smtpHost;
+	}
+
+	if (ps.smtpPort !== undefined) {
+		set.smtpPort = ps.smtpPort;
+	}
+
+	if (ps.smtpUser !== undefined) {
+		set.smtpUser = ps.smtpUser;
+	}
+
+	if (ps.smtpPass !== undefined) {
+		set.smtpPass = ps.smtpPass;
 	}
 
 	await Meta.update({}, {

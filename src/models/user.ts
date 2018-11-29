@@ -78,6 +78,8 @@ export interface ILocalUser extends IUserBase {
 	host: null;
 	keypair: string;
 	email: string;
+	emailVerified?: boolean;
+	emailVerifyCode?: string;
 	password: string;
 	token: string;
 	twitter: {
@@ -98,9 +100,6 @@ export interface ILocalUser extends IUserBase {
 		id: string;
 		username: string;
 		discriminator: string;
-	};
-	line: {
-		userId: string;
 	};
 	profile: {
 		location: string;
@@ -286,6 +285,7 @@ export const pack = (
 	delete _user._id;
 
 	delete _user.usernameLower;
+	delete _user.emailVerifyCode;
 
 	if (_user.host == null) {
 		// Remove private properties
@@ -306,11 +306,11 @@ export const pack = (
 			delete _user.discord.refreshToken;
 			delete _user.discord.expiresDate;
 		}
-		delete _user.line;
 
 		// Visible via only the official client
 		if (!opts.includeSecrets) {
 			delete _user.email;
+			delete _user.emailVerified;
 			delete _user.settings;
 			delete _user.clientSettings;
 		}

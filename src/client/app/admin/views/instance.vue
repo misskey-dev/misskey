@@ -12,10 +12,14 @@
 		<section class="fit-bottom">
 			<header><fa :icon="faHeadset"/> {{ $t('maintainer-config') }}</header>
 			<ui-input v-model="maintainerName">{{ $t('maintainer-name') }}</ui-input>
-			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="['far', 'envelope']"/></i>{{ $t('maintainer-email') }}</ui-input>
+			<ui-input v-model="maintainerEmail" type="email"><i slot="icon"><fa :icon="farEnvelope"/></i>{{ $t('maintainer-email') }}</ui-input>
 		</section>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="maxNoteTextLength">{{ $t('max-note-text-length') }}</ui-input>
+		</section>
+		<section>
+			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
+			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
 		</section>
 		<section class="fit-bottom">
 			<header><fa icon="cloud"/> {{ $t('drive-config') }}</header>
@@ -37,10 +41,18 @@
 			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
 		</section>
 		<section>
-			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
-		</section>
-		<section>
-			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
+			<header><fa :icon="farEnvelope"/> {{ $t('email-config') }}</header>
+			<ui-switch v-model="enableEmail">{{ $t('enable-email') }}<span slot="desc">{{ $t('email-config-info') }}</span></ui-switch>
+			<ui-input v-model="email" type="email" :disabled="!enableEmail">{{ $t('email') }}</ui-input>
+			<ui-horizon-group inputs>
+				<ui-input v-model="smtpHost" :disabled="!enableEmail">{{ $t('smtp-host') }}</ui-input>
+				<ui-input v-model="smtpPort" type="number" :disabled="!enableEmail">{{ $t('smtp-port') }}</ui-input>
+			</ui-horizon-group>
+			<ui-horizon-group inputs>
+				<ui-input v-model="smtpUser" :disabled="!enableEmail">{{ $t('smtp-user') }}</ui-input>
+				<ui-input v-model="smtpPass" :disabled="!enableEmail">{{ $t('smtp-pass') }}</ui-input>
+			</ui-horizon-group>
+			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-use-ssl') }}</ui-switch>
 		</section>
 		<section>
 			<header>summaly Proxy</header>
@@ -106,6 +118,7 @@ import i18n from '../../i18n';
 import { url, host } from '../../config';
 import { toUnicode } from 'punycode';
 import { faHeadset, faShieldAlt, faGhost, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope as farEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/instance.vue'),
@@ -144,7 +157,14 @@ export default Vue.extend({
 			externalUserRecommendationEngine: null,
 			externalUserRecommendationTimeout: null,
 			summalyProxy: null,
-			faHeadset, faShieldAlt, faGhost, faUserPlus
+			enableEmail: false,
+			email: null,
+			smtpSecure: false,
+			smtpHost: null,
+			smtpPort: null,
+			smtpUser: null,
+			smtpPass: null,
+			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope
 		};
 	},
 
@@ -177,6 +197,13 @@ export default Vue.extend({
 			this.externalUserRecommendationEngine = meta.externalUserRecommendationEngine;
 			this.externalUserRecommendationTimeout = meta.externalUserRecommendationTimeout;
 			this.summalyProxy = meta.summalyProxy;
+			this.enableEmail = meta.enableEmail;
+			this.email = meta.email;
+			this.smtpSecure = meta.smtpSecure;
+			this.smtpHost = meta.smtpHost;
+			this.smtpPort = meta.smtpPort;
+			this.smtpUser = meta.smtpUser;
+			this.smtpPass = meta.smtpPass;
 		});
 	},
 
@@ -222,7 +249,14 @@ export default Vue.extend({
 				enableExternalUserRecommendation: this.enableExternalUserRecommendation,
 				externalUserRecommendationEngine: this.externalUserRecommendationEngine,
 				externalUserRecommendationTimeout: parseInt(this.externalUserRecommendationTimeout, 10),
-				summalyProxy: this.summalyProxy
+				summalyProxy: this.summalyProxy,
+				enableEmail: this.enableEmail,
+				email: this.email,
+				smtpSecure: this.smtpSecure,
+				smtpHost: this.smtpHost,
+				smtpPort: parseInt(this.smtpPort, 10),
+				smtpUser: this.smtpUser,
+				smtpPass: this.smtpPass
 			}).then(() => {
 				this.$root.alert({
 					type: 'success',

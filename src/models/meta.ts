@@ -214,4 +214,12 @@ export type IMeta = {
 	enableExternalUserRecommendation?: boolean;
 	externalUserRecommendationEngine?: string;
 	externalUserRecommendationTimeout?: number;
+
+	enableEmail?: boolean;
+	email?: string;
+	smtpSecure?: boolean;
+	smtpHost?: string;
+	smtpPort?: number;
+	smtpUser?: string;
+	smtpPass?: string;
 };

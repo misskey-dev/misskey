@@ -20,6 +20,7 @@ import config from '../config';
 import networkChart from '../chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
+import User from '../models/user';
 
 // Init app
 const app = new Koa();
@@ -58,6 +59,24 @@ const router = new Router();
 // Routing
 router.use(activityPub.routes());
 router.use(webFinger.routes());
+
+router.get('/verify-email/:code', async ctx => {
+	const user = await User.findOne({ emailVerifyCode: ctx.params.code });
+
+	if (user != null) {
+		ctx.body = 'Verify succeeded!';
+		ctx.status = 200;
+
+		User.update({ _id: user._id }, {
+			$set: {
+				emailVerified: true,
+				emailVerifyCode: null
+			}
+		});
+	} else {
+		ctx.status = 404;
+	}
+});
 
 // Return 404 for other .well-known
 router.all('/.well-known/*', async ctx => {
