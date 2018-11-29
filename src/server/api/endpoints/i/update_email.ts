@@ -73,10 +73,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			host: meta.smtpHost,
 			port: meta.smtpPort,
 			secure: meta.smtpSecure,
-			auth: {
+			ignoreTLS: true,
+			auth: meta.smtpUser != null ? {
 				user: meta.smtpUser,
 				pass: meta.smtpPass
-			}
+			} : undefined
 		});
 
 		const link = `${config.url}/vefify-email/${code}`;

@@ -52,7 +52,7 @@
 				<ui-input v-model="smtpUser" :disabled="!enableEmail">{{ $t('smtp-user') }}</ui-input>
 				<ui-input v-model="smtpPass" :disabled="!enableEmail">{{ $t('smtp-pass') }}</ui-input>
 			</ui-horizon-group>
-			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-use-ssl') }}</ui-switch>
+			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<span slot="desc">{{ $t('smtp-secure-info') }}</span></ui-switch>
 		</section>
 		<section>
 			<header>summaly Proxy</header>
