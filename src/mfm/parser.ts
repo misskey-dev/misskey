@@ -162,7 +162,7 @@ const mfm = P.createLanguage({
 			let hashtag = match[1];
 			hashtag = hashtag.substr(0, getTrailingPosition(hashtag));
 			if (hashtag.match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
-			if (!['\n', ' ', '(', '「', null, undefined].includes(input[i - 1])) return P.makeFailure(i, 'require space before "#"');
+			if (!['\n', ' ', '　', '(', '「', null, undefined].includes(input[i - 1])) return P.makeFailure(i, 'require space before "#"');
 			return P.makeSuccess(i + ('#' + hashtag).length, makeNode('hashtag', { hashtag: hashtag }));
 		}),
 	//#endregion

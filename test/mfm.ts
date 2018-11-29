@@ -186,6 +186,14 @@ describe('Text', () => {
 				], tokens);
 			});
 
+			it('with text (zenkaku)', () => {
+				const tokens = analyze('こんにちは　#世界');
+				assert.deepEqual([
+					text('こんにちは　'),
+					node('hashtag', { hashtag: '世界' })
+				], tokens);
+			});
+
 			it('ignore comma and period', () => {
 				const tokens = analyze('Foo #bar, baz #piyo.');
 				assert.deepEqual([
