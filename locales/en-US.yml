@@ -268,7 +268,7 @@ common/views/components/theme.vue:
   install: "Install"
   installed: "\"{}\" has been installed"
   create-a-theme: "Create a theme"
-  save-created-theme: "Save a theme"
+  save-created-theme: "Save theme"
   primary-color: "Primary color"
   secondary-color: "Secondary color"
   text-color: "Text color"
