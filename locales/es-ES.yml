@@ -26,6 +26,7 @@ common:
   close: "Cerrar"
   do-not-copy-paste: "Por favor no copies código aquí. Tu cuenta puede resultar comprometida."
   load-more: "もっと読み込む"
+  enter-password: "パスワードを入力してください"
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
