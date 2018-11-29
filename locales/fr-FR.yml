@@ -26,6 +26,7 @@ common:
   close: "Fermer"
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte peut être compromis."
   load-more: "Charger plus"
+  enter-password: "パスワードを入力してください"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
