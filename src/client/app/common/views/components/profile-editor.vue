@@ -218,8 +218,14 @@ export default Vue.extend({
 		},
 
 		updateEmail() {
-			this.$root.api('i/update_email', {
-				email: this.email == '' ? null : this.email
+			this.$input({
+				title: this.$t('@.enter-password'),
+				type: 'password'
+			}).then(password => {
+				this.$root.api('i/update_email', {
+					password: password,
+					email: this.email == '' ? null : this.email
+				});
 			});
 		}
 	}

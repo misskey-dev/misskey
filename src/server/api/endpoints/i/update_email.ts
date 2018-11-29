@@ -7,6 +7,7 @@ import fetchMeta from '../../../../misc/fetch-meta';
 import rndstr from 'rndstr';
 import config from '../../../../config';
 const ms = require('ms');
+import * as bcrypt from 'bcryptjs';
 
 export const meta = {
 	requireCredential: true,
@@ -19,6 +20,10 @@ export const meta = {
 	},
 
 	params: {
+		password: {
+			validator: $.str
+		},
+
 		email: {
 			validator: $.str.optional.nullable
 		},
@@ -26,6 +31,13 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	// Compare password
+	const same = await bcrypt.compare(ps.password, user.password);
+
+	if (!same) {
+		return rej('incorrect password');
+	}
+
 	await User.update(user._id, {
 		$set: {
 			email: ps.email,
