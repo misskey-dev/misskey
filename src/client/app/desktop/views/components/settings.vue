@@ -182,6 +182,7 @@
 					</optgroup>
 				</ui-select>
 				<div class="none ui info">
+					<div>Current: <i>{{ this.currentLanguage }}</i></div>
 					<p><fa icon="info-circle"/>{{ $t('language-desc') }}</p>
 				</div>
 			</section>
@@ -350,6 +351,7 @@ export default Vue.extend({
 			meta: null,
 			version,
 			langs,
+			currentLanguage: 'Unknown',
 			latestVersion: undefined,
 			checkingForUpdate: false
 		};
@@ -554,6 +556,12 @@ export default Vue.extend({
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
+
+		try {
+			const locale = JSON.parse(localStorage.getItem('locale') || "{}");
+			const localeKey = localStorage.getItem('localeKey');
+			this.currentLanguage = `${locale.meta.lang} (${localeKey})`;
+		} catch { }
 	},
 	methods: {
 		readAllUnreadNotes() {
