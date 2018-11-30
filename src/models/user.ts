@@ -147,15 +147,7 @@ export const isRemoteUser = (user: any): user is IRemoteUser =>
 	!isLocalUser(user);
 
 //#region Validators
-export function validateUsername(username: string, options?: {
-	remote?: boolean
-}): boolean {
-	const {
-		remote
-	} = Object.assign({
-		remote: false
-	}, options);
-
+export function validateUsername(username: string, remote?: boolean): boolean {
 	return typeof username == 'string' && (remote ? /^\w+([\w\.-]+\w+)?$/ : /^[a-zA-Z0-9_]{1,20}$/).test(username);
 }
 
