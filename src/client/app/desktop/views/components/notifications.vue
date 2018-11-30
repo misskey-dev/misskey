@@ -217,7 +217,7 @@ export default Vue.extend({
 		> div
 			> .notification
 				margin 0
-				padding 12px 16px
+				padding 16px
 				overflow-wrap break-word
 				font-size 12px
 				border-bottom solid 1px var(--faceDivider)
@@ -228,7 +228,7 @@ export default Vue.extend({
 				> .mk-time
 					display inline
 					position absolute
-					top 12px
+					top 16px
 					right 12px
 					vertical-align top
 					color var(--noteHeaderInfo)
