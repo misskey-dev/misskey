@@ -78,6 +78,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		_id: -1
 	};
 	const query = {
+		deletedAt: null,
 		visibility: 'public'
 	} as any;
 	if (ps.sinceId) {
