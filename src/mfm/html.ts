@@ -126,10 +126,9 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 		},
 
 		search(token) {
-			const a = doc.createElement('a');
-			a.href = `https://www.google.com/?#q=${token.props.query}`;
-			a.textContent = token.props.content;
-			return a;
+			const el = doc.createElement('span');
+			el.textContent = token.props.content;
+			return el;
 		}
 	};
 
