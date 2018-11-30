@@ -271,7 +271,7 @@ export default Vue.extend({
 					display inline-block
 					width: 100%
 					overflow hidden
-					white-space: nowrap
+					white-space nowrap
 					text-overflow ellipsis
 
 					[data-icon]
