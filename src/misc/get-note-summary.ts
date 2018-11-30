@@ -31,7 +31,7 @@ const summarize = (note: any): string => {
 		if (note.reply) {
 			summary += `\n\nRE: ${summarize(note.reply)}`;
 		} else {
-			summary += "\n\nRE: ...";
+			summary += '\n\nRE: ...';
 		}
 	}
 
@@ -40,7 +40,7 @@ const summarize = (note: any): string => {
 		if (note.renote) {
 			summary += `\n\nRN: ${summarize(note.renote)}`;
 		} else {
-			summary += "\n\nRN: ...";
+			summary += '\n\nRN: ...';
 		}
 	}
 
