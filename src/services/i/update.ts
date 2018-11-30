@@ -19,14 +19,14 @@ export async function publishToFollowers(userId: mongo.ObjectID) {
 
 	// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
 	if (isLocalUser(user)) {
-		followers.map(following => {
+		for (const following of followers) {
 			const follower = following._follower;
 
 			if (isRemoteUser(follower)) {
 				const inbox = follower.sharedInbox || follower.inbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
-		});
+		}
 
 		if (queue.length > 0) {
 			const content = packAp(renderUpdate(await renderPerson(user), user));

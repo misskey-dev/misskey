@@ -201,7 +201,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	}
 
 	// ハッシュタグ登録
-	tags.map(tag => registerHashtag(user, tag));
+	for (const tag of tags) registerHashtag(user, tag);
 
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加
 	if (data.files) {
@@ -562,7 +562,7 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 
 	const queue: string[] = [];
 
-	followers.map(following => {
+	for (const following of followers) {
 		const follower = following._follower;
 
 		if (isLocalUser(follower)) {
@@ -586,7 +586,7 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
 		}
-	});
+	}
 
 	queue.forEach(inbox => {
 		deliver(user as any, noteActivity, inbox);

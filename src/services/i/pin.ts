@@ -117,14 +117,14 @@ async function CreateRemoteInboxes(user: ILocalUser): Promise<string[]> {
 
 	const queue: string[] = [];
 
-	followers.map(following => {
+	for (const following of followers) {
 		const follower = following._follower;
 
 		if (isRemoteUser(follower)) {
 			const inbox = follower.sharedInbox || follower.inbox;
 			if (!queue.includes(inbox)) queue.push(inbox);
 		}
-	});
+	}
 
 	return queue;
 }
