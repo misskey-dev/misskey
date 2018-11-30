@@ -103,6 +103,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		quote = await resolveNote(note._misskey_quote).catch(() => null);
 	}
 
+	const cw = note.summary === '' ? null : note.summary;
+
 	// テキストのパース
 	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
@@ -120,7 +122,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		files: files,
 		reply,
 		renote: quote,
-		cw: note.summary,
+		cw: cw,
 		text: text,
 		viaMobile: false,
 		localOnly: false,
