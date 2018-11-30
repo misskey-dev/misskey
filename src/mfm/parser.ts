@@ -77,6 +77,7 @@ const mfm = P.createLanguage({
 		r.inlineCode,
 		r.quote,
 		r.math,
+		r.search,
 		r.title,
 		r.center,
 		r.text
@@ -254,6 +255,16 @@ const mfm = P.createLanguage({
 			if (qInner == '') return P.makeFailure(i, 'not a quote');
 			const contents = r.root.tryParse(qInner);
 			return P.makeSuccess(i + quote.join('\n').length, makeNodeWithChildren('quote', contents));
+		})),
+	//#endregion
+
+	//#region Search
+	search: r =>
+		newline.then(P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^(.+?)( |　)(検索|\[検索\]|Search|\[Search\])(\n|$)/i);
+			if (!match) return P.makeFailure(i, 'not a search');
+			return P.makeSuccess(i + match[0].length, makeNode('search', { query: match[1], content: match[0].trim() }));
 		})),
 	//#endregion
 
