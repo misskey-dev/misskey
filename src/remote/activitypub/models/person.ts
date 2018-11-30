@@ -43,7 +43,7 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: inbox is not a string');
 	}
 
-	if (!validateUsername(x.preferredUsername)) {
+	if (!validateUsername(x.preferredUsername, true)) {
 		return new Error('invalid person: invalid username');
 	}
 
