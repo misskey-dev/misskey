@@ -21,12 +21,12 @@ export default async function($root: any, force = false, silent = false) {
 			console.error(e);
 		}
 
-		if (!silent) {
+		/*if (!silent) {
 			$root.alert({
 				title: $root.$t('@.update-available-title'),
 				text: $root.$t('@.update-available', { newer, current })
 			});
-		}
+		}*/
 
 		return newer;
 	} else {
