@@ -45,7 +45,9 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const isUsername = validateUsername(ps.query.replace('@', ''));
+	const isUsername = validateUsername(ps.query.replace('@', ''), {
+		remote: true
+	});
 
 	let users: IUser[] = [];
 
