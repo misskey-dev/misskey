@@ -20,7 +20,7 @@
 								<mk-reaction-icon :reaction="notification.reaction"/>
 								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
 							</p>
-							<router-link class="note-ref" :to="notification.note | notePage">
+							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 							</router-link>
 						</div>
@@ -32,7 +32,7 @@
 							<p><fa icon="retweet"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
-							<router-link class="note-ref" :to="notification.note | notePage">
+							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
 								<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
 							</router-link>
 						</div>
@@ -44,7 +44,7 @@
 							<p><fa icon="quote-left"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
-							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
+							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</router-link>
 						</div>
 					</template>
 
@@ -72,7 +72,7 @@
 							<p><fa icon="reply"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
-							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
+							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</router-link>
 						</div>
 					</template>
 
@@ -82,7 +82,7 @@
 							<p><fa icon="at"/>
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 							</p>
-							<a class="note-preview" :href="notification.note | notePage">{{ getNoteSummary(notification.note) }}</a>
+							<a class="note-preview" :href="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</a>
 						</div>
 					</template>
 
@@ -90,7 +90,7 @@
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p><fa icon="chart-pie"/><a :href="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</a></p>
-							<router-link class="note-ref" :to="notification.note | notePage">
+							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 							</router-link>
 						</div>
@@ -219,7 +219,7 @@ export default Vue.extend({
 				margin 0
 				padding 16px
 				overflow-wrap break-word
-				font-size 13px
+				font-size 12px
 				border-bottom solid 1px var(--faceDivider)
 
 				&:last-child
@@ -262,9 +262,17 @@ export default Vue.extend({
 
 				.note-preview
 					color var(--noteText)
+					display inline-block
+					overflow hidden
+					max-height 48px
 
 				.note-ref
 					color var(--noteText)
+					display inline-block
+					width: 100%
+					overflow hidden
+					white-space nowrap
+					text-overflow ellipsis
 
 					[data-icon]
 						font-size 1em

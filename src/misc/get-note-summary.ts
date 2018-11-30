@@ -29,18 +29,18 @@ const summarize = (note: any): string => {
 	// 返信のとき
 	if (note.replyId) {
 		if (note.reply) {
-			summary += ` RE: ${summarize(note.reply)}`;
+			summary += `\n\nRE: ${summarize(note.reply)}`;
 		} else {
-			summary += ' RE: ...';
+			summary += '\n\nRE: ...';
 		}
 	}
 
 	// Renoteのとき
 	if (note.renoteId) {
 		if (note.renote) {
-			summary += ` RN: ${summarize(note.renote)}`;
+			summary += `\n\nRN: ${summarize(note.renote)}`;
 		} else {
-			summary += ' RN: ...';
+			summary += '\n\nRN: ...';
 		}
 	}
 
