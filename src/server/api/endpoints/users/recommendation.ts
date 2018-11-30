@@ -8,7 +8,6 @@ import config from '../../../../config';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 
-
 export const meta = {
 	desc: {
 		'ja-JP': 'おすすめのユーザー一覧を取得します。'
