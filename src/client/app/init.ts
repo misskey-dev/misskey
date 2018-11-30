@@ -143,6 +143,7 @@ import {
 	faCalendarAlt as farCalendarAlt,
 	faHdd as farHdd,
 	faMoon as farMoon,
+	faPlayCircle as farPlayCircle,
 } from '@fortawesome/free-regular-svg-icons';
 
 import {
@@ -268,6 +269,7 @@ library.add(
 	farCalendarAlt,
 	farHdd,
 	farMoon,
+	farPlayCircle,
 
 	fabTwitter,
 	fabGithub,
