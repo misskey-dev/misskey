@@ -106,6 +106,8 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		text += `\n\nRE: ${url}`;
 	}
 
+	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
+
 	const content = toHtml(Object.assign({}, note, { text }));
 
 	const emojis = await getEmojis(note.emojis);
@@ -121,7 +123,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
-		summary: note.cw,
+		summary,
 		content,
 		_misskey_content: text,
 		_misskey_quote: quote,
