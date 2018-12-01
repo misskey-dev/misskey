@@ -254,7 +254,7 @@ const mfm = P.createLanguage({
 			const qInner = quote.join('\n').replace(/^>/gm, '').replace(/^ /gm, '');
 			if (qInner == '') return P.makeFailure(i, 'not a quote');
 			const contents = r.root.tryParse(qInner);
-			return P.makeSuccess(i + quote.join('\n').length, makeNodeWithChildren('quote', contents));
+			return P.makeSuccess(i + quote.join('\n').length + 1, makeNodeWithChildren('quote', contents));
 		})),
 	//#endregion
 

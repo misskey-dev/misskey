@@ -299,6 +299,7 @@ describe('Text', () => {
 					nodeWithChildren('quote', [
 						text('foo')
 					]),
+					text('\n'),
 					nodeWithChildren('quote', [
 						text('bar')
 					]),
@@ -358,11 +359,29 @@ describe('Text', () => {
 			it('with before and after texts', () => {
 				const tokens = analyze('before\n> foo\nafter');
 				assert.deepEqual([
-					text('before'),
+					text('before\n'),
 					nodeWithChildren('quote', [
 						text('foo')
 					]),
 					text('after'),
+				], tokens);
+			});
+
+			it('multiple quotes', () => {
+				const tokens = analyze('> foo\nbar\n\n> foo\nbar\n\n> foo\nbar');
+				assert.deepEqual([
+					nodeWithChildren('quote', [
+						text('foo')
+					]),
+					text('bar\n\n'),
+					nodeWithChildren('quote', [
+						text('foo')
+					]),
+					text('bar\n\n'),
+					nodeWithChildren('quote', [
+						text('foo')
+					]),
+					text('bar'),
 				], tokens);
 			});
 
@@ -388,11 +407,11 @@ describe('Text', () => {
 			it('trim line breaks', () => {
 				const tokens = analyze('foo\n\n>a\n>>b\n>>\n>>>\n>>>c\n>>>\n>d\n\n');
 				assert.deepEqual([
-					text('foo\n'),
+					text('foo\n\n'),
 					nodeWithChildren('quote', [
-						text('a'),
+						text('a\n'),
 						nodeWithChildren('quote', [
-							text('b\n'),
+							text('b\n\n'),
 							nodeWithChildren('quote', [
 								text('\nc\n')
 							])
@@ -664,7 +683,7 @@ describe('Text', () => {
 			it('with before and after texts', () => {
 				const tokens = analyze('before\n【foo】\nafter');
 				assert.deepEqual([
-					text('before'),
+					text('before\n'),
 					nodeWithChildren('title', [
 						text('foo')
 					]),

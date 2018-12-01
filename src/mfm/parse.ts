@@ -26,45 +26,6 @@ export default (source: string): Node[] => {
 	nodes = concatText(nodes);
 	concatTextRecursive(nodes);
 
-	function getBeforeTextNode(node: Node): Node {
-		if (node == null) return null;
-		if (node.name == 'text') return node;
-		if (node.children) return getBeforeTextNode(node.children[node.children.length - 1]);
-		return null;
-	}
-
-	function getAfterTextNode(node: Node): Node {
-		if (node == null) return null;
-		if (node.name == 'text') return node;
-		if (node.children) return getBeforeTextNode(node.children[0]);
-		return null;
-	}
-
-	function isBlockNode(node: Node): boolean {
-		return ['blockCode', 'center', 'quote', 'title'].includes(node.name);
-	}
-
-	/**
-	 * ブロック要素の前後にある改行を削除します
-	 * (ブロック要素自体が改行の役割を果たすため、余計に改行されてしまう)
-	 * @param nodes
-	 */
-	const removeNeedlessLineBreaks = (nodes: Node[]) => {
-		nodes.forEach((node, i) => {
-			if (node.children) removeNeedlessLineBreaks(node.children);
-			if (isBlockNode(node)) {
-				const before = getBeforeTextNode(nodes[i - 1]);
-				const after = getAfterTextNode(nodes[i + 1]);
-				if (before && before.props.text.endsWith('\n')) {
-					before.props.text = before.props.text.substring(0, before.props.text.length - 1);
-				}
-				if (after && after.props.text.startsWith('\n')) {
-					after.props.text = after.props.text.substring(1);
-				}
-			}
-		});
-	};
-
 	const removeEmptyTextNodes = (nodes: Node[]) => {
 		nodes.forEach(n => {
 			if (n.children) {
@@ -73,8 +34,6 @@ export default (source: string): Node[] => {
 		});
 		return nodes.filter(n => !(n.name == 'text' && n.props.text == ''));
 	};
-
-	removeNeedlessLineBreaks(nodes);
 
 	nodes = removeEmptyTextNodes(nodes);
 
