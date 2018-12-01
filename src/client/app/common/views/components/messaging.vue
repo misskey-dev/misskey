@@ -116,7 +116,8 @@ export default Vue.extend({
 			this.$root.api('users/search', {
 				query: this.q,
 				localOnly: true,
-				limit: 10
+				limit: 10,
+				detail: false
 			}).then(users => {
 				this.result = users.filter(user => user.id != this.$store.state.i.id);
 			});
