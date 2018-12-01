@@ -16,7 +16,7 @@
 				<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
 				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
 			</div>
-			<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
+			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="'cw'">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">

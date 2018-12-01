@@ -15,7 +15,7 @@
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
 		<div class="local-only" v-if="this.localOnly == true">{{ $t('local-only-message') }}</div>
-		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
+		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="'cw'">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
 				ref="text" v-model="text" :disabled="posting"
