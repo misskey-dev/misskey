@@ -265,6 +265,7 @@ export default Vue.extend({
 					display inline-block
 					overflow hidden
 					max-height 48px
+					word-break break-all
 
 				.note-ref
 					color var(--noteText)
