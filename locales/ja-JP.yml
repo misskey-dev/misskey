@@ -252,6 +252,12 @@ common/views/components/games/reversi/reversi.room.vue:
   ready: "準備完了"
   cancel-ready: "準備続行"
 
+common/views/components/alert.vue:
+  ok: "OK"
+  cancel: "キャンセル"
+  yes: "はい"
+  no: "いいえ"
+
 common/views/components/connect-failed.vue:
   title: "サーバーに接続できません"
   description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
