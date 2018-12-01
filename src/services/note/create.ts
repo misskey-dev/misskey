@@ -155,12 +155,14 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// Parse MFM
 	const tokens = data.text ? parse(data.text) : [];
+	const cwTokens = data.cw ? parse(data.cw) : [];
+	const combinedTokens = tokens.concat(cwTokens);
 
-	const tags = extractHashtags(tokens);
+	const tags = extractHashtags(combinedTokens);
 
-	const emojis = extractEmojis(tokens);
+	const emojis = extractEmojis(combinedTokens);
 
-	const mentionedUsers = data.apMentions || await extractMentionedUsers(user, tokens);
+	const mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
