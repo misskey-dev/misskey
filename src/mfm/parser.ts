@@ -208,7 +208,7 @@ const mfm = P.createLanguage({
 	mention: r =>
 		P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^@(?:\w+|\w([\w-]*\w)?@[\w\.\-]+\w)/);
+			const match = text.match(/^@(?:\w([\w-]{0,18}\w)?@[a-z0-9][a-z0-9-]{1,61}[a-z0-9]\.[a-z]{2,}|\w+)/i);
 			if (!match) return P.makeFailure(i, 'not a mention');
 			if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a mention');
 			return P.makeSuccess(i + match[0].length, match[0]);
