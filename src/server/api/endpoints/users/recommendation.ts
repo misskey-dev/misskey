@@ -108,10 +108,10 @@ async function convertUsers(src: IRecommendUser[], me: ILocalUser) {
 				return null;
 			});
 
-		if (user == null) return null;
+		if (user == null) return x;
 
 		return await pack(user, me, { detail: true });
 	}));
 
-	return packed.filter(x => x != null);
+	return packed;
 }
