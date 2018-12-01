@@ -76,7 +76,6 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12190916/fb7fa7983c14425f890369535b1506a4/1?token-time=2145916800&token-hash=Zeh1u6l_Vmgoy8A1eT1Sltea-_SZSq8t8uOWDRZRh94%3D" alt="weep"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/13376668/71f3cf87ec6c4393a44b1b9df5ee3d12/1?token-time=2145916800&token-hash=7pSmWqgMfMSJHVIEcNsuuQoKeU3TRluew5p0EGTzWA4%3D" alt="Arctic"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12731202/0995c46cdcb54153ab5f073f5869b70a/1?token-time=2145916800&token-hash=Yd60FK_SWfQO56SeiJpy1tDHOnCV4xdEywQe8gn5_Wo%3D" alt="negao"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/2?token-time=2145916800&token-hash=mgPdX9TqZxEg4TTPuc477dxhIgYk9246qafjWZEqZ7g%3D" alt="Melilot"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/3384329/8b713330cb27404ea6e9fac50ff96efe/1?token-time=2145916800&token-hash=0eu4-m1gTWA9PhptVZt6rdKcusqcD7RB87rJT23VVFI%3D" alt="べすれい"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/12021162/963128bb8d14476dbd8407943db8f31a/1?token-time=2145916800&token-hash=GgJ_NmUB6_nnRNLVGUWjV-WX91On7BOu59LKncYV9fE%3D" alt="gutfuckllc"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJoIjoxMDAsInciOjEwMH0%3D/patreon-media/p/user/11357794/923ce94cd8c44ba788ee931907881839/1?token-time=2145916800&token-hash=I8lJVM8LeW6TSo5W6uIIRZ42cw83zp1wK_FsbzY0mcQ%3D" alt="mydarkstar"></td>
@@ -84,7 +83,6 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/weepjp">weep</a></td>
 <td><a href="https://www.patreon.com/user?u=13376668">Arctic</a></td>
 <td><a href="https://www.patreon.com/negao">negao</a></td>
-<td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>
 <td><a href="https://www.patreon.com/user?u=3384329">べすれい</a></td>
 <td><a href="https://www.patreon.com/gutfuckllc">gutfuckllc</a></td>
 <td><a href="https://www.patreon.com/mydarkstar">mydarkstar</a></td>
@@ -116,7 +114,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Tue, 27 Nov 2018 06:24:05 UTC
+**Last updated:** Sat, 01 Dec 2018 21:16:05 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
