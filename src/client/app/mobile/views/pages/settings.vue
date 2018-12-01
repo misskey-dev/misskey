@@ -412,7 +412,7 @@ export default Vue.extend({
 						text: this.$t('update-available-desc'),
 						showCancelButton: true,
 						useYesNo: true
-					}) && location.reload(true);
+					}).then(x => x && location.reload(true));
 				}
 			});
 		}
