@@ -603,8 +603,10 @@ export default Vue.extend({
 				} else {
 					this.$root.alert({
 						title: this.$t('update-available'),
-						text: this.$t('update-available-desc')
-					});
+						text: this.$t('update-available-desc'),
+						showCancelButton: true,
+						useYesNo: true
+					}) && location.reload(true);
 				}
 			});
 		},
