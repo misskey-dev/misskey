@@ -55,9 +55,9 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			followRedirect: true,
 			followAllRedirects: true
 		})
-		.then(body => convertUsers(body, me))
-		.then(packed => res(packed))
-		.catch(e => rej(e));
+			.then(body => convertUsers(body, me))
+			.then(packed => res(packed))
+			.catch(e => rej(e));
 	} else {
 		// ID list of the user itself and other users who the user follows
 		const followingIds = await getFriendIds(me._id);
