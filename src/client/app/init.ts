@@ -144,6 +144,8 @@ import {
 	faHdd as farHdd,
 	faMoon as farMoon,
 	faPlayCircle as farPlayCircle,
+	faLightbulb as farLightbulb,
+	faStickyNote as farStickyNote,
 } from '@fortawesome/free-regular-svg-icons';
 
 import {
@@ -249,7 +251,7 @@ library.add(
 	faSync,
 	faArrowLeft,
 	faMapMarker,
-  faRobot,
+	faRobot,
 
 	farBell,
 	farEnvelope,
@@ -270,6 +272,8 @@ library.add(
 	farHdd,
 	farMoon,
 	farPlayCircle,
+	farLightbulb,
+	farStickyNote,
 
 	fabTwitter,
 	fabGithub,
