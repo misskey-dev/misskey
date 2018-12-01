@@ -6,8 +6,8 @@
 		<header v-if="title" v-html="title"></header>
 		<div class="body" v-if="text" v-html="text"></div>
 		<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash">
-			<ui-button @click="ok" primary autofocus>OK</ui-button>
-			<ui-button @click="cancel" v-if="showCancelButton">Cancel</ui-button>
+			<ui-button @click="ok" primary :autofocus="!avoidAutoFocus">{{ useYesNo ? $t('yes') : $t('ok') }}</ui-button>
+			<ui-button @click="cancel" v-if="showCancelButton" :autofocus="avoidAutoFocus">{{ useYesNo ? $t('no') : $t('cancel') }}</ui-button>
 		</ui-horizon-group>
 	</div>
 </div>
@@ -15,10 +15,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/alert.vue'),
+
 	props: {
 		type: {
 			type: String,
@@ -38,6 +41,14 @@ export default Vue.extend({
 			default: false
 		},
 		splash: {
+			type: Boolean,
+			default: false
+		},
+		avoidAutoFocus: {
+			type: Boolean,
+			default: false
+		},
+		useYesNo: {
 			type: Boolean,
 			default: false
 		}
