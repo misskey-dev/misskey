@@ -101,8 +101,17 @@ type IRecommendUser = {
  * Resolve/Pack dummy users
  */
 async function convertUsers(src: IRecommendUser[], me: ILocalUser) {
-	return await Promise.all(src.map(async x => {
-		const user = await resolveUser(x.username, x.host);
+	const packed = await Promise.all(src.map(async x => {
+		const user = await resolveUser(x.username, x.host)
+			.catch(() => {
+				console.warn(`Can't resolve ${x.username}@${x.host}`);
+				return null;
+			});
+
+		if (user == null) return null;
+
 		return await pack(user, me, { detail: true });
 	}));
+
+	return packed.filter(x => x != null);
 }
