@@ -322,7 +322,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			url: person.url,
 			endpoints: person.endpoints,
 			isBot: object.type == 'Service',
-			isCat: (person as any).isCat === true
+			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
 			createdAt: Date.parse(person.published) || null,
 			publicKey: {
