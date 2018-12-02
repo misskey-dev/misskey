@@ -1434,6 +1434,9 @@ mobile/views/pages/user.vue:
   block: "Block"
   unblock: "Unblock"
   years-old: "{age} years old"
+  push-to-list: "リストに追加"
+  select-list: "リストを選択してください"
+  list-pushed: "{user}を{list}に追加しました"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"
