@@ -384,13 +384,12 @@ export default Vue.extend({
 		},
 
 		addVisibleUser() {
-			this.$input({
-				title: this.$t('enter-username')
-			}).then(acct => {
-				if (acct.startsWith('@')) acct = acct.substr(1);
-				this.$root.api('users/show', parseAcct(acct)).then(user => {
-					this.visibleUsers.push(user);
-				});
+			this.$root.dialog({
+				title: this.$t('enter-username'),
+				user: true
+			}).then(({ canceled, result: user }) => {
+				if (canceled) return;
+				this.visibleUsers.push(user);
 			});
 		},
 

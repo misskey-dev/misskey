@@ -99,23 +99,22 @@ export default Vue.extend({
 			this.$emit('go', game);
 		},
 
-		match() {
-			this.$input({
-				title: this.$t('enter-username')
-			}).then(username => {
-				this.$root.api('users/show', {
-					username
-				}).then(user => {
-					this.$root.api('games/reversi/match', {
-						userId: user.id
-					}).then(res => {
-						if (res == null) {
-							this.$emit('matching', user);
-						} else {
-							this.$emit('go', res);
-						}
-					});
-				});
+		async match() {
+			const { result: user } = await this.$root.dialog({
+				title: this.$t('enter-username'),
+				user: {
+					local: true
+				}
+			});
+			if (user == null) return;
+			this.$root.api('games/reversi/match', {
+				userId: user.id
+			}).then(res => {
+				if (res == null) {
+					this.$emit('matching', user);
+				} else {
+					this.$emit('go', res);
+				}
 			});
 		},
 

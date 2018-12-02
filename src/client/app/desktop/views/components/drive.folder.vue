@@ -192,11 +192,14 @@ export default Vue.extend({
 		},
 
 		rename() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('contextmenu.rename-folder'),
-				placeholder: this.$t('contextmenu.input-new-folder-name'),
-				default: this.folder.name
-			}).then(name => {
+				input: {
+					placeholder: this.$t('contextmenu.input-new-folder-name'),
+					default: this.folder.name
+				}
+			}).then(({ canceled, result: name }) => {
+				if (canceled) return;
 				this.$root.api('drive/folders/update', {
 					folderId: this.folder.id,
 					name: name

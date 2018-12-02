@@ -222,10 +222,13 @@ export default Vue.extend({
 		},
 
 		updateEmail() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('@.enter-password'),
-				type: 'password'
-			}).then(password => {
+				input: {
+					type: 'password'
+				}
+			}).then(({ canceled, result: password }) => {
+				if (canceled) return;
 				this.$root.api('i/update_email', {
 					password: password,
 					email: this.email == '' ? null : this.email

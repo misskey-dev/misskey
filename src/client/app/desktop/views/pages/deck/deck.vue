@@ -252,9 +252,11 @@ export default Vue.extend({
 					icon: 'hashtag',
 					text: this.$t('@deck.hashtag'),
 					action: () => {
-						this.$input({
-							title: this.$t('enter-hashtag-tl-title')
-						}).then(title => {
+						this.$root.dialog({
+							title: this.$t('enter-hashtag-tl-title'),
+							input: true
+						}).then(({ canceled, result: title }) => {
+							if (canceled) return;
 							this.$store.dispatch('settings/addDeckColumn', {
 								id: uuid(),
 								type: 'hashtag',

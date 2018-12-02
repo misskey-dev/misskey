@@ -331,10 +331,13 @@ export default Vue.extend({
 		},
 
 		urlUpload() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('url-upload'),
-				placeholder: this.$t('url-of-file')
-			}).then(url => {
+				input: {
+					placeholder: this.$t('url-of-file')
+				}
+			}).then(({ canceled, result: url }) => {
+				if (canceled) return;
 				this.$root.api('drive/files/upload_from_url', {
 					url: url,
 					folderId: this.folder ? this.folder.id : undefined
@@ -348,10 +351,13 @@ export default Vue.extend({
 		},
 
 		createFolder() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('create-folder'),
-				placeholder: this.$t('folder-name')
-			}).then(name => {
+				input: {
+					placeholder: this.$t('folder-name')
+				}
+			}).then(({ canceled, result: name }) => {
+				if (canceled) return;
 				this.$root.api('drive/folders/create', {
 					name: name,
 					parentId: this.folder ? this.folder.id : undefined

@@ -120,8 +120,8 @@ export default Vue.extend({
 				type: 'warning',
 				text: this.$t('remove-emoji.are-you-sure').replace('$1', emoji.name),
 				showCancelButton: true
-			}).then(res => {
-				if (!res) return;
+			}).then(({ canceled }) => {
+				if (canceled) return;
 
 				this.$root.api('admin/emoji/remove', {
 					id: emoji.id

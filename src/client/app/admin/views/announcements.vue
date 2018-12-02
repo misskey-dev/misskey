@@ -52,8 +52,8 @@ export default Vue.extend({
 				type: 'warning',
 				text: this.$t('_remove.are-you-sure').replace('$1', this.announcements.find((_, j) => j == i).title),
 				showCancelButton: true
-			}).then(res => {
-				if (!res) return;
+			}).then(({ canceled }) => {
+				if (canceled) return;
 				this.announcements = this.announcements.filter((_, j) => j !== i);
 				this.save(true);
 				this.$root.dialog({

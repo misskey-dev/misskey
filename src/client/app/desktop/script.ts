@@ -34,7 +34,6 @@ import PostFormWindow from './views/components/post-form-window.vue';
 import RenoteFormWindow from './views/components/renote-form-window.vue';
 import MkChooseFileFromDriveWindow from './views/components/choose-file-from-drive-window.vue';
 import MkChooseFolderFromDriveWindow from './views/components/choose-folder-from-drive-window.vue';
-import InputDialog from './views/components/input-dialog.vue';
 import Notification from './views/components/ui-notification.vue';
 
 import { url } from '../config';
@@ -109,22 +108,6 @@ init(async (launch) => {
 					});
 					w.$once('selected', folder => {
 						res(folder);
-					});
-				});
-			},
-
-			$input(opts) {
-				return new Promise<string>((res, rej) => {
-					const o = opts || {};
-					const d = this.$root.new(InputDialog, {
-						title: o.title,
-						placeholder: o.placeholder,
-						default: o.default,
-						type: o.type || 'text',
-						allowEmpty: o.allowEmpty
-					});
-					d.$once('done', text => {
-						res(text);
 					});
 				});
 			},

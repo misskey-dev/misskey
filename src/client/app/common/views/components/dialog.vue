@@ -2,15 +2,17 @@
 <div class="felqjxyj" :class="{ splash }">
 	<div class="bg" ref="bg" @click="onBgClick"></div>
 	<div class="main" ref="main">
-		<div class="icon" v-if="type" :class="type"><fa :icon="icon"/></div>
+		<div class="icon" v-if="!input && !select && !user" :class="type"><fa :icon="icon"/></div>
 		<header v-if="title" v-html="title"></header>
 		<div class="body" v-if="text" v-html="text"></div>
+		<ui-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></ui-input>
+		<ui-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><span slot="prefix">@</span></ui-input>
 		<ui-select v-if="select" v-model="selectedValue">
 			<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 		</ui-select>
 		<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash">
-			<ui-button @click="ok" primary autofocus>OK</ui-button>
-			<ui-button @click="cancel" v-if="showCancelButton">Cancel</ui-button>
+			<ui-button @click="ok" primary :autofocus="!input && !select && !user">OK</ui-button>
+			<ui-button @click="cancel" v-if="showCancelButton || input || select || user">Cancel</ui-button>
 		</ui-horizon-group>
 	</div>
 </div>
@@ -20,6 +22,7 @@
 import Vue from 'vue';
 import * as anime from 'animejs';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
+import parseAcct from "../../../../../misc/acct/parse";
 
 export default Vue.extend({
 	props: {
@@ -36,7 +39,13 @@ export default Vue.extend({
 			type: String,
 			required: false
 		},
+		input: {
+			required: false
+		},
 		select: {
+			required: false
+		},
+		user: {
 			required: false
 		},
 		showCancelButton: {
@@ -51,6 +60,8 @@ export default Vue.extend({
 
 	data() {
 		return {
+			inputValue: this.input && this.input.default ? this.input.default : null,
+			userInputValue: null,
 			selectedValue: null
 		};
 	},
@@ -94,10 +105,21 @@ export default Vue.extend({
 	},
 
 	methods: {
-		ok() {
-			const result = this.select ? this.selectedValue : true;
-			this.$emit('ok', result);
-			this.close();
+		async ok() {
+			if (this.user) {
+				const user = await this.$root.api('users/show', parseAcct(this.userInputValue));
+				if (user) {
+					this.$emit('ok', user);
+					this.close();
+				}
+			} else {
+				const result =
+					this.input ? this.inputValue :
+					this.select ? this.selectedValue :
+					true;
+				this.$emit('ok', result);
+				this.close();
+			}
 		},
 
 		cancel() {
@@ -127,6 +149,14 @@ export default Vue.extend({
 
 		onBgClick() {
 			this.cancel();
+		},
+
+		onInputKeydown(e) {
+			if (e.which == 13) { // Enter
+				e.preventDefault();
+				e.stopPropagation();
+				this.ok();
+			}
 		}
 	}
 });

@@ -120,7 +120,7 @@ export default Vue.extend({
 				text: this.$t('push-to-list'),
 				action: async () => {
 					const lists = await this.$root.api('users/lists/list');
-					const listId = await this.$root.dialog({
+					const { canceled, result: listId } = await this.$root.dialog({
 						type: null,
 						title: this.$t('select-list'),
 						select: {
@@ -130,7 +130,7 @@ export default Vue.extend({
 						},
 						showCancelButton: true
 					});
-					if (!listId) return;
+					if (canceled) return;
 					await this.$root.api('users/lists/push', {
 						listId: listId,
 						userId: this.user.id

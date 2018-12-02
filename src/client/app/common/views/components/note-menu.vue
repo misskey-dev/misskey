@@ -99,8 +99,8 @@ export default Vue.extend({
 				type: 'warning',
 				text: this.$t('delete-confirm'),
 				showCancelButton: true
-			}).then(res => {
-				if (!res) return;
+			}).then(({ canceled }) => {
+				if (canceled) return;
 
 				this.$root.api('notes/delete', {
 					noteId: this.note.id

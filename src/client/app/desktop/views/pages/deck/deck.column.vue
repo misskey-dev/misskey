@@ -167,11 +167,14 @@ export default Vue.extend({
 				icon: 'pencil-alt',
 				text: this.$t('rename'),
 				action: () => {
-					this.$input({
+					this.$root.dialog({
 						title: this.$t('rename'),
-						default: this.name,
-						allowEmpty: false
-					}).then(name => {
+						input: {
+							default: this.name,
+							allowEmpty: false
+						}
+					}).then(({ canceled, result: name }) => {
+						if (canceled) return;
 						this.$store.dispatch('settings/renameDeckColumn', { id: this.column.id, name });
 					});
 				}

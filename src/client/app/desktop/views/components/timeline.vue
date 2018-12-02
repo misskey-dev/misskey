@@ -109,9 +109,11 @@ export default Vue.extend({
 				icon: 'plus',
 				text: this.$t('add-list'),
 				action: () => {
-					this.$input({
+					this.$root.dialog({
 						title: this.$t('list-name'),
-					}).then(async title => {
+						input: true
+					}).then(async ({ canceled, result: title }) => {
+						if (canceled) return;
 						const list = await this.$root.api('users/lists/create', {
 							title
 						});

@@ -148,12 +148,15 @@ export default Vue.extend({
 		},
 
 		rename() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('contextmenu.rename-file'),
-				placeholder: this.$t('contextmenu.input-new-file-name'),
-				default: this.file.name,
-				allowEmpty: false
-			}).then(name => {
+				input: {
+					placeholder: this.$t('contextmenu.input-new-file-name'),
+					default: this.file.name,
+					allowEmpty: false
+				}
+			}).then(({ canceled, result: name }) => {
+				if (canceled) return;
 				this.$root.api('drive/files/update', {
 					fileId: this.file.id,
 					name: name

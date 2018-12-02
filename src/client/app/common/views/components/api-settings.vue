@@ -50,10 +50,13 @@ export default Vue.extend({
 
 	methods: {
 		regenerateToken() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('enter-password'),
-				type: 'password'
-			}).then(password => {
+				input: {
+					type: 'password'
+				}
+			}).then(({ canceled, result: password }) => {
+				if (canceled) return;
 				this.$root.api('i/regenerate_token', {
 					password: password
 				});
