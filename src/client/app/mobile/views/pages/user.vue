@@ -116,6 +116,34 @@ export default Vue.extend({
 
 		menu() {
 			let menu = [{
+				icon: ['far', 'list'],
+				text: this.$t('push-to-list'),
+				action: async () => {
+					const lists = await this.$root.api('users/lists/list');
+					const listId = await this.$root.alert({
+						type: null,
+						title: this.$t('select-list'),
+						select: {
+							items: lists.map(list => ({
+								value: list.id, text: list.title
+							}))
+						},
+						showCancelButton: true
+					});
+					if (listId == null) return;
+					await this.$root.api('users/lists/push', {
+						listId: listId,
+						userId: this.user.id
+					});
+					this.$root.alert({
+						type: 'success',
+						text: this.$t('list-pushed', {
+							user: this.user.name,
+							list: lists.find(l => l.id === listId).title
+						})
+					});
+				}
+			}, null, {
 				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
 				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
 				action: () => {

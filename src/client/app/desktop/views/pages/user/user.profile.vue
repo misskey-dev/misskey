@@ -109,8 +109,12 @@ export default Vue.extend({
 					userId: this.user.id
 				});
 				this.$root.alert({
+					type: 'success',
 					title: 'Done!',
-					text: this.$t('list-pushed').replace('{user}', this.user.name).replace('{list}', list.title)
+					text: this.$t('list-pushed', {
+						user: this.user.name,
+						list: list.title
+					})
 				});
 			});
 		}

@@ -2,9 +2,12 @@
 <div class="felqjxyj" :class="{ splash }">
 	<div class="bg" ref="bg" @click="onBgClick"></div>
 	<div class="main" ref="main">
-		<div class="icon" :class="type"><fa :icon="icon"/></div>
+		<div class="icon" v-if="type" :class="type"><fa :icon="icon"/></div>
 		<header v-if="title" v-html="title"></header>
 		<div class="body" v-if="text" v-html="text"></div>
+		<ui-select v-if="select" v-model="selectedValue">
+			<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
+		</ui-select>
 		<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash">
 			<ui-button @click="ok" primary autofocus>OK</ui-button>
 			<ui-button @click="cancel" v-if="showCancelButton">Cancel</ui-button>
@@ -33,6 +36,9 @@ export default Vue.extend({
 			type: String,
 			required: false
 		},
+		select: {
+			required: false
+		},
 		showCancelButton: {
 			type: Boolean,
 			default: false
@@ -41,6 +47,12 @@ export default Vue.extend({
 			type: Boolean,
 			default: false
 		}
+	},
+
+	data() {
+		return {
+			selectedValue: null
+		};
 	},
 
 	computed: {
@@ -83,7 +95,8 @@ export default Vue.extend({
 
 	methods: {
 		ok() {
-			this.$emit('ok');
+			const result = this.select ? this.selectedValue : true;
+			this.$emit('ok', result);
 			this.close();
 		},
 
@@ -180,8 +193,11 @@ export default Vue.extend({
 				display block
 				margin 0 auto
 
+			& + header
+				margin-top 16px
+
 		> header
-			margin 16px 0 8px 0
+			margin 0 0 8px 0
 			font-weight bold
 			font-size 20px
 

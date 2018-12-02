@@ -460,7 +460,7 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 					alert(opts) {
 						return new Promise((res) => {
 							const vm = this.new(Alert, opts);
-							vm.$once('ok', () => res(true));
+							vm.$once('ok', result => res(result));
 							vm.$once('cancel', () => res(false));
 						});
 					}
