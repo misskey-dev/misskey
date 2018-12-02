@@ -10,7 +10,7 @@ import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
 import htmlToMFM from '../../../mfm/html-to-mfm';
-import Emoji from '../../../models/emoji';
+import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
@@ -84,6 +84,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
 
+	const apHashtags = await extractHashtags(note.tag);
+
 	// 添付ファイル
 	// TODO: attachmentは必ずしもImageではない
 	// TODO: attachmentは必ずしも配列ではない
@@ -108,9 +110,12 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// テキストのパース
 	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
-	await extractEmojis(note.tag, actor.host).catch(e => {
+	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
 		console.log(`extractEmojis: ${e}`);
+		return [] as IEmoji[];
 	});
+
+	const apEmojis = emojis.map(emoji => emoji.name);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -130,6 +135,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		visibility,
 		visibleUsers,
 		apMentions,
+		apHashtags,
+		apEmojis,
 		uri: note.id
 	}, silent);
 }
@@ -198,4 +205,15 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	);
 
 	return users.filter(x => x != null);
+}
+
+function extractHashtags(tags: ITag[]) {
+	if (!tags) return [];
+
+	const hashtags = tags.filter(tag => tag.type === 'Hashtag' && typeof tag.name == 'string');
+
+	return hashtags.map(tag => {
+		const m = tag.name.match(/^#(.+)/);
+		return m ? m[1] : null;
+	}).filter(x => x != null);
 }

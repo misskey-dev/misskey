@@ -98,6 +98,8 @@ type Option = {
 	visibility?: string;
 	visibleUsers?: IUser[];
 	apMentions?: IUser[];
+	apHashtags?: string[];
+	apEmojis?: string[];
 	uri?: string;
 	app?: IApp;
 };
@@ -153,16 +155,22 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		data.text = data.text.trim();
 	}
 
-	// Parse MFM
-	const tokens = data.text ? parse(data.text) : [];
-	const cwTokens = data.cw ? parse(data.cw) : [];
-	const combinedTokens = tokens.concat(cwTokens);
+	let tags = data.apHashtags;
+	let emojis = data.apEmojis;
+	let mentionedUsers = data.apMentions;
 
-	const tags = extractHashtags(combinedTokens);
+	// Parse MFM if needed
+	if (!tags || !emojis || !mentionedUsers) {
+		const tokens = data.text ? parse(data.text) : [];
+		const cwTokens = data.cw ? parse(data.cw) : [];
+		const combinedTokens = tokens.concat(cwTokens);
 
-	const emojis = extractEmojis(combinedTokens);
+		tags = data.apHashtags || extractHashtags(combinedTokens);
 
-	const mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
+		emojis = data.apEmojis || extractEmojis(combinedTokens);
+
+		mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
+	}
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
