@@ -313,7 +313,7 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$root.alert({
+							this.$root.dialog({
 								title: this.$t('unable-to-process'),
 								text: this.$t('circular-reference-detected')
 							});
@@ -340,7 +340,7 @@ export default Vue.extend({
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				this.$root.alert({
+				this.$root.dialog({
 					title: this.$t('url-upload-requested'),
 					text: this.$t('may-take-time')
 				});

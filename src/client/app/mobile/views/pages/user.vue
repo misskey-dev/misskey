@@ -120,7 +120,7 @@ export default Vue.extend({
 				text: this.$t('push-to-list'),
 				action: async () => {
 					const lists = await this.$root.api('users/lists/list');
-					const listId = await this.$root.alert({
+					const listId = await this.$root.dialog({
 						type: null,
 						title: this.$t('select-list'),
 						select: {
@@ -135,7 +135,7 @@ export default Vue.extend({
 						listId: listId,
 						userId: this.user.id
 					});
-					this.$root.alert({
+					this.$root.dialog({
 						type: 'success',
 						text: this.$t('list-pushed', {
 							user: this.user.name,

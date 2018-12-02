@@ -23,7 +23,7 @@ export default Vue.extend({
 	},
 	methods: {
 		fn() {
-			this.$root.alert({
+			this.$root.dialog({
 				type: 'warning',
 				text: this.$t('read-all'),
 				showCancelButton: true

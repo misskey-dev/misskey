@@ -15,7 +15,7 @@ import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
 import { clientVersion as version, codename, lang } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
-import Alert from './common/views/components/alert.vue';
+import Dialog from './common/views/components/dialog.vue';
 
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
@@ -457,9 +457,9 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 						document.body.appendChild(x.$el);
 						return x;
 					},
-					alert(opts) {
+					dialog(opts) {
 						return new Promise((res) => {
-							const vm = this.new(Alert, opts);
+							const vm = this.new(Dialog, opts);
 							vm.$once('ok', result => res(result));
 							vm.$once('cancel', () => res(false));
 						});

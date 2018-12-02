@@ -115,12 +115,12 @@ export default Vue.extend({
 				return await this.$root.api('users/show', this.target.startsWith('@') ? parseAcct(this.target) : { userId: this.target });
 			} catch (e) {
 				if (e == 'user not found') {
-					this.$root.alert({
+					this.$root.dialog({
 						type: 'error',
 						text: this.$t('user-not-found')
 					});
 				} else {
-					this.$root.alert({
+					this.$root.dialog({
 						type: 'error',
 						text: e.toString()
 					});
@@ -138,7 +138,7 @@ export default Vue.extend({
 		async resetPassword() {
 			const user = await this.fetchUser();
 			this.$root.api('admin/reset-password', { userId: user.id }).then(res => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('password-updated', { password: res.password })
 				});
@@ -151,14 +151,14 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await this.fetchUser();
 				await this.$root.api('admin/verify-user', { userId: user.id });
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('verified')
 				});
 			};
 
 			await process().catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e.toString()
 				});
@@ -173,14 +173,14 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await this.fetchUser();
 				await this.$root.api('admin/unverify-user', { userId: user.id });
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('unverified')
 				});
 			};
 
 			await process().catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e.toString()
 				});
@@ -195,14 +195,14 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await this.fetchUser();
 				await this.$root.api('admin/suspend-user', { userId: user.id });
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('suspended')
 				});
 			};
 
 			await process().catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e.toString()
 				});
@@ -217,14 +217,14 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await this.fetchUser();
 				await this.$root.api('admin/unsuspend-user', { userId: user.id });
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('unsuspended')
 				});
 			};
 
 			await process().catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e.toString()
 				});

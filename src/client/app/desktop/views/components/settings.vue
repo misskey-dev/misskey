@@ -596,12 +596,12 @@ export default Vue.extend({
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					this.$root.alert({
+					this.$root.dialog({
 						title: this.$t('no-updates'),
 						text: this.$t('no-updates-desc')
 					});
 				} else {
-					this.$root.alert({
+					this.$root.dialog({
 						title: this.$t('update-available'),
 						text: this.$t('update-available-desc')
 					});
@@ -610,7 +610,7 @@ export default Vue.extend({
 		},
 		clean() {
 			localStorage.clear();
-			this.$root.alert({
+			this.$root.dialog({
 				title: this.$t('cache-cleared'),
 				text: this.$t('cache-cleared-desc')
 			});
