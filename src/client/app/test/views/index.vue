@@ -63,7 +63,7 @@ export default Vue.extend({
 
 	methods: {
 		showDialog() {
-			this.$root.alert({
+			this.$root.dialog({
 				type: this.dialogType,
 				title: this.dialogTitle,
 				text: this.dialogText,

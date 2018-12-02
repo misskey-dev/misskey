@@ -170,7 +170,7 @@ export default Vue.extend({
 
 		copyUrl() {
 			copyToClipboard(this.file.url);
-			this.$root.alert({
+			this.$root.dialog({
 				title: this.$t('contextmenu.copied'),
 				text: this.$t('contextmenu.copied-url-to-clipboard')
 			});

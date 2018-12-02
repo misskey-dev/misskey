@@ -186,7 +186,7 @@ export default Vue.extend({
 
 	methods: {
 		hint() {
-			this.$root.alert({
+			this.$root.dialog({
 				title: this.$t('@.customization-tips.title'),
 				text: this.$t('@.customization-tips.paragraph')
 			});

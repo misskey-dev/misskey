@@ -156,7 +156,7 @@ export default Vue.extend({
 
 	> .follow-button
 		position absolute
-		top 92px
+		top 8px
 		right 8px
 
 </style>

@@ -73,7 +73,7 @@ export default Vue.extend({
 		},
 
 		block() {
-			this.$root.alert({
+			this.$root.dialog({
 				type: 'warning',
 				text: this.$t('block-confirm'),
 				showCancelButton: true
@@ -108,9 +108,13 @@ export default Vue.extend({
 					listId: list.id,
 					userId: this.user.id
 				});
-				this.$root.alert({
+				this.$root.dialog({
+					type: 'success',
 					title: 'Done!',
-					text: this.$t('list-pushed').replace('{user}', this.user.name).replace('{list}', list.title)
+					text: this.$t('list-pushed', {
+						user: this.user.name,
+						list: list.title
+					})
 				});
 			});
 		}

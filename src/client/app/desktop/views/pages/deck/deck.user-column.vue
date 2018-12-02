@@ -307,7 +307,7 @@ export default Vue.extend({
 							listId: list.id,
 							userId: this.user.id
 						});
-						this.$root.alert({
+						this.$root.dialog({
 							type: 'success',
 							splash: true
 						});

@@ -116,7 +116,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Tue, 27 Nov 2018 06:24:05 UTC
+**Last updated:** Sat, 01 Dec 2018 22:05:05 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright

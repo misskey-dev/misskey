@@ -78,7 +78,7 @@ export default Vue.extend({
 			this.$root.api('i/pin', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					splash: true
 				});
@@ -95,7 +95,7 @@ export default Vue.extend({
 		},
 
 		del() {
-			this.$root.alert({
+			this.$root.dialog({
 				type: 'warning',
 				text: this.$t('delete-confirm'),
 				showCancelButton: true
@@ -114,7 +114,7 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					splash: true
 				});
@@ -126,7 +126,7 @@ export default Vue.extend({
 			this.$root.api('notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					splash: true
 				});

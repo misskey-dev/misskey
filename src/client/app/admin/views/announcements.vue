@@ -48,7 +48,7 @@ export default Vue.extend({
 		},
 
 		remove(i) {
-			this.$root.alert({
+			this.$root.dialog({
 				type: 'warning',
 				text: this.$t('_remove.are-you-sure').replace('$1', this.announcements.find((_, j) => j == i).title),
 				showCancelButton: true
@@ -56,7 +56,7 @@ export default Vue.extend({
 				if (!res) return;
 				this.announcements = this.announcements.filter((_, j) => j !== i);
 				this.save(true);
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('_remove.removed')
 				});
@@ -68,13 +68,13 @@ export default Vue.extend({
 				broadcasts: this.announcements
 			}).then(() => {
 				if (!silent) {
-					this.$root.alert({
+					this.$root.dialog({
 						type: 'success',
 						text: this.$t('saved')
 					});
 				}
 			}).catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e
 				});

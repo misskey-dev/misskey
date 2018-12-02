@@ -1,12 +1,13 @@
 const ms = require('ms');
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';
-import * as request from 'request';
+import * as request from 'request-promise-native';
 import config from '../../../../config';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
+import resolveUser from '../../../../remote/resolve-user';
 
 export const meta = {
 	desc: {
@@ -53,13 +54,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			json: true,
 			followRedirect: true,
 			followAllRedirects: true
-		}, (error: any, response: any, body: any) => {
-			if (!error && response.statusCode == 200) {
-				res(body);
-			} else {
-				res([]);
-			}
-		});
+		})
+			.then(body => convertUsers(body, me))
+			.then(packed => res(packed))
+			.catch(e => rej(e));
 	} else {
 		// ID list of the user itself and other users who the user follows
 		const followingIds = await getFriendIds(me._id);
@@ -90,3 +88,30 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
 	}
 }));
+
+type IRecommendUser = {
+	name: string;
+	username: string;
+	host: string;
+	description: string;
+	avatarUrl: string;
+};
+
+/**
+ * Resolve/Pack dummy users
+ */
+async function convertUsers(src: IRecommendUser[], me: ILocalUser) {
+	const packed = await Promise.all(src.map(async x => {
+		const user = await resolveUser(x.username, x.host)
+			.catch(() => {
+				console.warn(`Can't resolve ${x.username}@${x.host}`);
+				return null;
+			});
+
+		if (user == null) return x;
+
+		return await pack(user, me, { detail: true });
+	}));
+
+	return packed;
+}

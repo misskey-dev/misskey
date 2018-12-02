@@ -41,6 +41,12 @@ import FolderChooser from './views/components/drive-folder-chooser.vue';
  */
 init((launch) => {
 	Vue.mixin({
+		data() {
+			return {
+				isMobile: true
+			};
+		},
+
 		methods: {
 			$post(opts) {
 				const o = opts || {};

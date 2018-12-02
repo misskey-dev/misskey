@@ -142,7 +142,7 @@ export default (opts: Opts = {}) => ({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					splash: true
 				});

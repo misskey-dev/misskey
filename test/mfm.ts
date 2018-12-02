@@ -187,9 +187,9 @@ describe('Text', () => {
 			});
 
 			it('with text (zenkaku)', () => {
-				const tokens = analyze('こんにちは　#世界');
+				const tokens = analyze('こんにちは#世界');
 				assert.deepEqual([
-					text('こんにちは　'),
+					text('こんにちは'),
 					node('hashtag', { hashtag: '世界' })
 				], tokens);
 			});

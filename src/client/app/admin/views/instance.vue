@@ -212,7 +212,7 @@ export default Vue.extend({
 			this.$root.api('admin/invite').then(x => {
 				this.inviteCode = x.code;
 			}).catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e
 				});
@@ -258,12 +258,12 @@ export default Vue.extend({
 				smtpUser: this.smtpUser,
 				smtpPass: this.smtpPass
 			}).then(() => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('saved')
 				});
 			}).catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e
 				});

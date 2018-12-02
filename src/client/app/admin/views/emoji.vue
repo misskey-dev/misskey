@@ -75,13 +75,13 @@ export default Vue.extend({
 				url: this.url,
 				aliases: this.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('add-emoji.added')
 				});
 				this.fetchEmojis();
 			}).catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e
 				});
@@ -103,12 +103,12 @@ export default Vue.extend({
 				url: emoji.url,
 				aliases: emoji.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('updated')
 				});
 			}).catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e
 				});
@@ -116,7 +116,7 @@ export default Vue.extend({
 		},
 
 		removeEmoji(emoji) {
-			this.$root.alert({
+			this.$root.dialog({
 				type: 'warning',
 				text: this.$t('remove-emoji.are-you-sure').replace('$1', emoji.name),
 				showCancelButton: true
@@ -126,13 +126,13 @@ export default Vue.extend({
 				this.$root.api('admin/emoji/remove', {
 					id: emoji.id
 				}).then(() => {
-					this.$root.alert({
+					this.$root.dialog({
 						type: 'success',
 						text: this.$t('remove-emoji.removed')
 					});
 					this.fetchEmojis();
 				}).catch(e => {
-					this.$root.alert({
+					this.$root.dialog({
 						type: 'error',
 						text: e
 					});

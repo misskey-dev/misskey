@@ -41,6 +41,14 @@ export const meta = {
 				'ja-JP': 'ローカルユーザーのみ検索対象にするか否か'
 			}
 		},
+
+		detail: {
+			validator: $.bool.optional,
+			default: true,
+			desc: {
+				'ja-JP': '詳細なユーザー情報を含めるか否か'
+			}
+		},
 	},
 };
 
@@ -72,6 +80,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	}
 
-	// Serialize
-	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
+	res(await Promise.all(users.map(user => pack(user, me, { detail: ps.detail }))));
 }));
