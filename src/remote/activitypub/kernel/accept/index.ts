@@ -23,13 +23,9 @@ export default async (actor: IRemoteUser, activity: IAccept): Promise<void> => {
 		throw e;
 	}
 
-	switch (object.type) {
-	case 'Follow':
+	if (object.type === 'Follow') {
 		acceptFollow(actor, object as IFollow);
-		break;
-
-	default:
+	} else {
 		console.warn(`Unknown accept type: ${object.type}`);
-		break;
 	}
 };
