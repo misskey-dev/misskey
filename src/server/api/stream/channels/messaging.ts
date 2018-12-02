@@ -21,10 +21,8 @@ export default class extends Channel {
 
 	@autobind
 	public onMessage(type: string, body: any) {
-		switch (type) {
-			case 'read':
-				read(this.user._id, this.otherpartyId, body.id);
-				break;
+		if (type === 'read') {
+			read(this.user._id, this.otherpartyId, body.id);
 		}
 	}
 }

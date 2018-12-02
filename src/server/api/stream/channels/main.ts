@@ -16,12 +16,7 @@ export default class extends Channel {
 		this.subscriber.on(`mainStream:${this.user._id}`, async data => {
 			const { type, body } = data;
 
-			switch (type) {
-				case 'notification': {
-					if (mutedUserIds.includes(body.userId)) return;
-					break;
-				}
-			}
+			if (type === 'notification' && mutedUserIds.includes(body.userId)) return;
 
 			this.send(type, body);
 		});

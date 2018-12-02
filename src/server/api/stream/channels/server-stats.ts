@@ -21,16 +21,14 @@ export default class extends Channel {
 
 	@autobind
 	public onMessage(type: string, body: any) {
-		switch (type) {
-			case 'requestLog':
-				ev.once(`serverStatsLog:${body.id}`, statsLog => {
-					this.send('statsLog', statsLog);
-				});
-				ev.emit('requestServerStatsLog', {
-					id: body.id,
-					length: body.length
-				});
-				break;
+		if (type === 'requestLog') {
+			ev.once(`serverStatsLog:${body.id}`, statsLog => {
+				this.send('statsLog', statsLog);
+			});
+			ev.emit('requestServerStatsLog', {
+				id: body.id,
+				length: body.length
+			});
 		}
 	}
 

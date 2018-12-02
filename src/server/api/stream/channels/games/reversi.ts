@@ -19,16 +19,14 @@ export default class extends Channel {
 
 	@autobind
 	public async onMessage(type: string, body: any) {
-		switch (type) {
-			case 'ping':
-				if (body.id == null) return;
-				const matching = await Matching.findOne({
-					parentId: this.user._id,
-					childId: new mongo.ObjectID(body.id)
-				});
-				if (matching == null) return;
-				publishMainStream(matching.childId, 'reversiInvited', await pack(matching, matching.childId));
-				break;
+		if (type === 'ping') {
+			if (body.id == null) return;
+			const matching = await Matching.findOne({
+				parentId: this.user._id,
+				childId: new mongo.ObjectID(body.id)
+			});
+			if (matching == null) return;
+			publishMainStream(matching.childId, 'reversiInvited', await pack(matching, matching.childId));
 		}
 	}
 }
