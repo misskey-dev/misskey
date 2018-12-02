@@ -84,6 +84,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
 
+	const apHashtags = await extractHashtags(note.tag);
+
 	// 添付ファイル
 	// TODO: attachmentは必ずしもImageではない
 	// TODO: attachmentは必ずしも配列ではない
@@ -130,6 +132,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		visibility,
 		visibleUsers,
 		apMentions,
+		apHashtags,
 		uri: note.id
 	}, silent);
 }
@@ -198,4 +201,15 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	);
 
 	return users.filter(x => x != null);
+}
+
+function extractHashtags(tags: ITag[]) {
+	if (!tags) return [];
+
+	const hashtags = tags.filter(tag => tag.type === 'Hashtag' && typeof tag.name == 'string');
+
+	return hashtags.map(tag => {
+		const m = tag.name.match(/^#(.+)/);
+		return m ? m[1] : null;
+	}).filter(x => x != null);
 }

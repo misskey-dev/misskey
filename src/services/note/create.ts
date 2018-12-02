@@ -98,6 +98,7 @@ type Option = {
 	visibility?: string;
 	visibleUsers?: IUser[];
 	apMentions?: IUser[];
+	apHashtags?: string[];
 	uri?: string;
 	app?: IApp;
 };
@@ -158,7 +159,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	const cwTokens = data.cw ? parse(data.cw) : [];
 	const combinedTokens = tokens.concat(cwTokens);
 
-	const tags = extractHashtags(combinedTokens);
+	const tags = data.apHashtags || extractHashtags(combinedTokens);
 
 	const emojis = extractEmojis(combinedTokens);
 
