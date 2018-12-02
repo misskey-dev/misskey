@@ -219,6 +219,16 @@ export default Vue.extend({
 			(this.$refs.text as any).focus();
 		},
 
+		addVisibleUser() {
+			this.$root.dialog({
+				title: this.$t('enter-username'),
+				user: true
+			}).then(({ canceled, result: user }) => {
+				if (canceled) return;
+				this.visibleUsers.push(user);
+			});
+		},
+
 		chooseFile() {
 			(this.$refs.file as any).click();
 		},
