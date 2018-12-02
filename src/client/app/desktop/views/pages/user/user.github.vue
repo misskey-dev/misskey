@@ -1,7 +1,9 @@
 <template>
-<div class="aqooishiizumijmihokohinatamihoaz">
-	<span><fa :icon="['fab', 'github']"/><a :href="`https://github.com/${user.github.login}`" target="_blank">@{{ user.github.login }}</a></span>
-</div>
+<a class="aqooishiizumijmihokohinatamihoaz" :href="`https://github.com/${user.github.login}`" target="_blank">
+	<div>
+		<span><fa :icon="['fab', 'github']"/>@{{ user.github.login }}</span>
+	</div>
+</a>
 </template>
 
 <script lang="ts">
@@ -14,13 +16,13 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .aqooishiizumijmihokohinatamihoaz
-	padding 32px
-	background #171515
-	border-radius 6px
+	margin-left 8px
 	color #fff
 
-	a
-		margin-left 8px
+	div
+		padding 32px
+		background #171515
+		border-radius 6px
 		color #fff
 
 </style>

@@ -1,7 +1,9 @@
 <template>
-<div class="adsvaidqfznoartcbplullnejvxjphcn">
-	<span><fa :icon="['fab', 'twitter']"/><a :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">@{{ user.twitter.screenName }}</a></span>
-</div>
+<a class="adsvaidqfznoartcbplullnejvxjphcn" :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">
+	<div>
+		<span><fa :icon="['fab', 'twitter']"/>@{{ user.twitter.screenName }}</span>
+	</div>
+</a>
 </template>
 
 <script lang="ts">
@@ -14,13 +16,13 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .adsvaidqfznoartcbplullnejvxjphcn
-	padding 32px
-	background #1a94f2
-	border-radius 6px
+	margin-left 8px
 	color #fff
 
-	a
-		margin-left 8px
+	div
+		padding 32px
+		background #1a94f2
+		border-radius 6px
 		color #fff
 
 </style>
