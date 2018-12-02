@@ -10,7 +10,7 @@ import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
 import htmlToMFM from '../../../mfm/html-to-mfm';
-import Emoji from '../../../models/emoji';
+import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
@@ -110,9 +110,12 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// テキストのパース
 	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
-	await extractEmojis(note.tag, actor.host).catch(e => {
+	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
 		console.log(`extractEmojis: ${e}`);
+		return [] as IEmoji[];
 	});
+
+	const apEmojis = emojis.map(emoji => emoji.name);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -133,6 +136,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		visibleUsers,
 		apMentions,
 		apHashtags,
+		apEmojis,
 		uri: note.id
 	}, silent);
 }
