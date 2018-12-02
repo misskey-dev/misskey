@@ -116,7 +116,7 @@ export default Vue.extend({
 
 		menu() {
 			let menu = [{
-				icon: ['far', 'list'],
+				icon: ['fas', 'list'],
 				text: this.$t('push-to-list'),
 				action: async () => {
 					const lists = await this.$root.api('users/lists/list');
@@ -130,7 +130,7 @@ export default Vue.extend({
 						},
 						showCancelButton: true
 					});
-					if (listId == null) return;
+					if (!listId) return;
 					await this.$root.api('users/lists/push', {
 						listId: listId,
 						userId: this.user.id
