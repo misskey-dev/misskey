@@ -1436,7 +1436,7 @@ mobile/views/pages/user.vue:
   years-old: "{age}岁"
   push-to-list: "添加至列表"
   select-list: "选择一个列表"
-  list-pushed: "{user}を{list}に追加しました"
+  list-pushed: "成功添加{user}到{list}"
 mobile/views/pages/user/home.vue:
   recent-notes: "最近的帖子"
   images: "图片"
