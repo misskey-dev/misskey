@@ -1434,6 +1434,9 @@ mobile/views/pages/user.vue:
   block: "차단"
   unblock: "차단 해제"
   years-old: "{age}세"
+  push-to-list: "リストに追加"
+  select-list: "リストを選択してください"
+  list-pushed: "{user}を{list}に追加しました"
 mobile/views/pages/user/home.vue:
   recent-notes: "최근 글"
   images: "이미지"
