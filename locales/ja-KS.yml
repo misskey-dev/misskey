@@ -25,8 +25,8 @@ common:
   application-authorization: "アプリの連携"
   close: "さいなら"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
-  load-more: "もっと読み込む"
-  enter-password: "パスワードを入力してください"
+  load-more: "もっとあらへんのか！"
+  enter-password: "パスワードを入れてや"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
