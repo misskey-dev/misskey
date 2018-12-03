@@ -440,12 +440,12 @@ common/views/components/trends.vue:
   count: "{} 被提到"
   empty: "没有流行的标签"
 common/views/components/language-settings.vue:
-  title: "表示言語"
-  pick-language: "言語を選択"
-  recommended: "推奨"
-  auto: "自動"
-  specify-language: "言語を指定"
-  info: "変更はページの再度読み込み後に反映されます。"
+  title: "显示语言"
+  pick-language: "选择一个语言"
+  recommended: "推荐"
+  auto: "自动"
+  specify-language: "指定语言"
+  info: "你需要刷新这个页面来应用更改。"
 common/views/components/profile-editor.vue:
   title: "简况"
   name: "名称"
