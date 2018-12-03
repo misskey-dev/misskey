@@ -702,6 +702,17 @@ describe('Text', () => {
 				], tokens);
 			});
 		});
+
+		describe('strike', () => {
+			it('simple', () => {
+				const tokens = analyze('~~foo~~');
+				assert.deepEqual([
+					nodeWithChildren('strike', [
+						text('foo')
+					]),
+				], tokens);
+			});
+		});
 	});
 
 	describe('toHtml', () => {

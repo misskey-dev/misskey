@@ -96,6 +96,10 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('b', genEl(token.children))];
 				}
 
+				case 'strike': {
+					return [createElement('del', genEl(token.children))];
+				}
+
 				case 'big': {
 					bigCount++;
 					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;
