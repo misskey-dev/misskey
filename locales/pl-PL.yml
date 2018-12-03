@@ -439,6 +439,13 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
+common/views/components/language-settings.vue:
+  title: "表示言語"
+  pick-language: "言語を選択"
+  recommended: "推奨"
+  auto: "自動"
+  specify-language: "言語を指定"
+  info: "変更はページの再度読み込み後に反映されます。"
 common/views/components/profile-editor.vue:
   title: "プロフィール"
   name: "名前"
@@ -774,12 +781,6 @@ desktop/views/components/settings.vue:
   enable-sounds-desc: "Odtwarzaj dźwięk przy wstawianiu wpisów, wysyłaniu lub otrzymywaniu wiadomości. Opcja ta jest zapamiętywana przez przeglądarkę."
   volume: "Głośność"
   test: "Test"
-  language: "Język"
-  pick-language: "Wybierz język"
-  recommended: "Zalecane"
-  auto: "Automatycznie"
-  specify-language: "Wybierz język"
-  language-desc: "Aby zmiany zostały uwzględnione, odśwież stronę."
   cache: "Pamięć podręczna"
   clean-cache: "Wyczyść"
   cache-warn: "Pamięć podręczna informacji o koncie/wpisów/odpowiedzi/wiadomości/ustawień przechowywanych w przeglądarce zostanie usunięta. Będziesz musiał odświeżyć stronę po wyczyszczeniu."
@@ -1361,11 +1362,6 @@ mobile/views/pages/selectdrive.vue:
   select-file: "Wybierz plik"
 mobile/views/pages/settings.vue:
   signed-in-as: "Zalogowany jako {}"
-  lang: "Język"
-  lang-tip: "Aby zmiany zostały uwzględnione, odśwież stronę."
-  recommended: "Zalecany"
-  auto: "Automatycznie"
-  specify-language: "Wybierz język"
   design: "Wygląd i wyświetlanie"
   dark-mode: "Tryb ciemny"
   i-am-under-limited-internet: "Ograniczaj zużycie transferu"
