@@ -439,6 +439,13 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
+common/views/components/language-settings.vue:
+  title: "表示言語"
+  pick-language: "言語を選択"
+  recommended: "推奨"
+  auto: "自動"
+  specify-language: "言語を指定"
+  info: "変更はページの再度読み込み後に反映されます。"
 common/views/components/profile-editor.vue:
   title: "プロフィール"
   name: "名前"
@@ -774,12 +781,6 @@ desktop/views/components/settings.vue:
   enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
   volume: "Volum"
   test: "Test"
-  language: "Språk"
-  pick-language: "Velg språk"
-  recommended: "Anbefalt"
-  auto: "Automatisk"
-  specify-language: "Angi språk"
-  language-desc: "変更はページの再度読み込み後に反映されます。"
   cache: "Hurtiglager"
   clean-cache: "クリーンアップ"
   cache-warn: "クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。"
@@ -1361,11 +1362,6 @@ mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
 mobile/views/pages/settings.vue:
   signed-in-as: "{}としてサインイン中"
-  lang: "Språk"
-  lang-tip: "変更はページの再読み込み後に反映されます。"
-  recommended: "Anbefalt"
-  auto: "Automatisk"
-  specify-language: "Angi språk"
   design: "デザインと表示"
   dark-mode: "ダークモード"
   i-am-under-limited-internet: "私は通信を制限されている"
