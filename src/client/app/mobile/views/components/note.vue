@@ -43,8 +43,11 @@
 					<template v-else><fa icon="reply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button @click="renote()" title="Renote">
+				<button v-if="['public', 'home'].includes(appearNote.visibility)" @click="renote()" title="Renote">
 					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else>
+					<fa icon="ban"/>
 				</button>
 				<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton">
 					<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
