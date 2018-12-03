@@ -43,6 +43,7 @@ export default Vue.extend({
 
 		> *
 			flex 1
+			min-width 0 !important
 
 	> *:not(:last-child)
 		margin-right 16px !important
