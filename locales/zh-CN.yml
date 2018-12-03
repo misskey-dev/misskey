@@ -439,6 +439,13 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{} 被提到"
   empty: "没有流行的标签"
+common/views/components/language-settings.vue:
+  title: "表示言語"
+  pick-language: "言語を選択"
+  recommended: "推奨"
+  auto: "自動"
+  specify-language: "言語を指定"
+  info: "変更はページの再度読み込み後に反映されます。"
 common/views/components/profile-editor.vue:
   title: "简况"
   name: "名称"
@@ -774,12 +781,6 @@ desktop/views/components/settings.vue:
   enable-sounds-desc: "收到帖子/留言时播放声音。 此设置将被存储在浏览器中。"
   volume: "音量"
   test: "测试"
-  language: "语言"
-  pick-language: "选择一个语言"
-  recommended: "推荐"
-  auto: "自动"
-  specify-language: "指定语言"
-  language-desc: "你需要刷新这个页面来应用更改。"
   cache: "缓存"
   clean-cache: "清除缓存"
   cache-warn: "将删除存储在浏览器中的帐户信息/帖子/回复/消息/设置的缓存。 清理完毕后需要刷新页面。"
@@ -1361,11 +1362,6 @@ mobile/views/pages/selectdrive.vue:
   select-file: "选择文件"
 mobile/views/pages/settings.vue:
   signed-in-as: "以{}登录"
-  lang: "语言"
-  lang-tip: "你需要刷新这个页面来应用更改。"
-  recommended: "推荐"
-  auto: "自动"
-  specify-language: "选择语言"
   design: "设计与展示"
   dark-mode: "夜间模式"
   i-am-under-limited-internet: "我的带宽有限"
