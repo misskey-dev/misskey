@@ -169,24 +169,7 @@
 			</section>
 		</ui-card>
 
-		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><fa icon="language"/> {{ $t('language') }}</div>
-			<section class="fit-top">
-				<ui-select v-model="lang" :placeholder="$t('pick-language')">
-					<optgroup :label="$t('recommended')">
-						<option value="">{{ $t('auto') }}</option>
-					</optgroup>
-
-					<optgroup :label="$t('specify-language')">
-						<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-					</optgroup>
-				</ui-select>
-				<div class="none ui info">
-					<div>Current: <i>{{ this.currentLanguage }}</i></div>
-					<p><fa icon="info-circle"/>{{ $t('language-desc') }}</p>
-				</div>
-			</section>
-		</ui-card>
+		<x-language-settings/>
 
 		<ui-card class="web" v-show="page == 'web'">
 			<div slot="title"><fa :icon="['far', 'trash-alt']"/> {{ $t('cache') }}</div>
@@ -318,8 +301,9 @@ import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
 import XPasswordSettings from '../../../common/views/components/password-settings.vue';
 import XProfileEditor from '../../../common/views/components/profile-editor.vue';
 import XApiSettings from '../../../common/views/components/api-settings.vue';
+import XLanguageSettings from '../../../common/views/components/language-settings.vue';
 
-import { url, langs, clientVersion as version } from '../../../config';
+import { url, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
@@ -338,6 +322,7 @@ export default Vue.extend({
 		XPasswordSettings,
 		XProfileEditor,
 		XApiSettings,
+		XLanguageSettings,
 	},
 	props: {
 		initialPage: {
@@ -350,8 +335,6 @@ export default Vue.extend({
 			page: this.initialPage || 'profile',
 			meta: null,
 			version,
-			langs,
-			currentLanguage: 'Unknown',
 			latestVersion: undefined,
 			checkingForUpdate: false
 		};
@@ -410,11 +393,6 @@ export default Vue.extend({
 		soundVolume: {
 			get() { return this.$store.state.device.soundVolume; },
 			set(value) { this.$store.commit('device/set', { key: 'soundVolume', value }); }
-		},
-
-		lang: {
-			get() { return this.$store.state.device.lang; },
-			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
 		},
 
 		preventUpdate: {
@@ -556,12 +534,6 @@ export default Vue.extend({
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
-
-		try {
-			const locale = JSON.parse(localStorage.getItem('locale') || "{}");
-			const localeKey = localStorage.getItem('localeKey');
-			this.currentLanguage = `${locale.meta.lang} (${localeKey})`;
-		} catch { }
 	},
 	methods: {
 		readAllUnreadNotes() {

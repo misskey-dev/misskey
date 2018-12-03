@@ -105,23 +105,7 @@
 				</section>
 			</ui-card>
 
-			<ui-card>
-				<div slot="title"><fa icon="language"/> {{ $t('lang') }}</div>
-
-				<section class="fit-top">
-					<ui-select v-model="lang" :placeholder="$t('auto')">
-						<optgroup :label="$t('recommended')">
-							<option value="">{{ $t('auto') }}</option>
-						</optgroup>
-
-						<optgroup :label="$t('specify-language')">
-							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-						</optgroup>
-					</ui-select>
-					<div>Current: <i>{{ this.currentLanguage }}</i></div>
-					<p><fa icon="info-circle"/> {{ $t('lang-tip') }}</p>
-				</section>
-			</ui-card>
+			<x-language-settings/>
 
 			<ui-card>
 				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
@@ -199,7 +183,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { apiUrl, clientVersion as version, codename, langs } from '../../../config';
+import { apiUrl, clientVersion as version, codename } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 import XTheme from '../../../common/views/components/theme.vue';
 import XDriveSettings from '../../../common/views/components/drive-settings.vue';
@@ -207,6 +191,7 @@ import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
 import XPasswordSettings from '../../../common/views/components/password-settings.vue';
 import XProfileEditor from '../../../common/views/components/profile-editor.vue';
 import XApiSettings from '../../../common/views/components/api-settings.vue';
+import XLanguageSettings from '../../../common/views/components/language-settings.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
@@ -218,6 +203,7 @@ export default Vue.extend({
 		XPasswordSettings,
 		XProfileEditor,
 		XApiSettings,
+		XLanguageSettings,
 	},
 
 	data() {
@@ -225,8 +211,6 @@ export default Vue.extend({
 			apiUrl,
 			version,
 			codename,
-			langs,
-			currentLanguage: 'Unknown',
 			latestVersion: undefined,
 			checkingForUpdate: false
 		};
@@ -277,11 +261,6 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'loadRawImages', value }); }
 		},
 
-		lang: {
-			get() { return this.$store.state.device.lang; },
-			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
-		},
-
 		enableSounds: {
 			get() { return this.$store.state.device.enableSounds; },
 			set(value) { this.$store.commit('device/set', { key: 'enableSounds', value }); }
@@ -326,7 +305,6 @@ export default Vue.extend({
 			get() { return this.$store.state.settings.showVia; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'showVia', value }); }
 		},
-
 
 		iLikeSushi: {
 			get() { return this.$store.state.settings.iLikeSushi; },
@@ -377,14 +355,6 @@ export default Vue.extend({
 			get() { return this.$store.state.settings.webSearchEngine; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'webSearchEngine', value }); }
 		},
-	},
-
-	created() {
-		try {
-			const locale = JSON.parse(localStorage.getItem('locale') || "{}");
-			const localeKey = localStorage.getItem('localeKey');
-			this.currentLanguage = `${locale.meta.lang} (${localeKey})`;
-		} catch { }
 	},
 
 	mounted() {
