@@ -4,8 +4,12 @@
 	:class="[styl, { inline, primary }]"
 	:type="type"
 	@click="$emit('click')"
+	@mousedown="onMousedown"
 >
-	<slot></slot>
+	<div ref="ripples" class="ripples"></div>
+	<div class="content">
+		<slot></slot>
+	</div>
 </component>
 </template>
 
@@ -55,6 +59,47 @@ export default Vue.extend({
 			this.$nextTick(() => {
 				this.$el.focus();
 			});
+		}
+	},
+	methods: {
+		onMousedown(e: MouseEvent) {
+			function distance(p, q) {
+				const sqrt = Math.sqrt, pow = Math.pow;
+				return sqrt(pow(p.x - q.x, 2) + pow(p.y - q.y, 2));
+			}
+
+			function calcCircleScale(boxW, boxH, circleCenterX, circleCenterY) {
+				const origin = {x: circleCenterX, y: circleCenterY};
+				const dist1 = distance({x: 0, y: 0}, origin);
+				const dist2 = distance({x: boxW, y: 0}, origin);
+				const dist3 = distance({x: 0, y: boxH}, origin);
+				const dist4 = distance({x: boxW, y: boxH }, origin);
+				return Math.max(dist1, dist2, dist3, dist4) * 2;
+			}
+
+			const rect = e.target.getBoundingClientRect();
+
+			const ripple = document.createElement('div');
+			ripple.style.top = (e.clientY - rect.top - 1).toString() + 'px';
+			ripple.style.left = (e.clientX - rect.left - 1).toString() + 'px';
+
+			this.$refs.ripples.appendChild(ripple);
+
+			const circleCenterX = e.clientX - rect.left;
+			const circleCenterY = e.clientY - rect.top;
+
+			const scale = calcCircleScale(e.target.clientWidth, e.target.clientHeight, circleCenterX, circleCenterY);
+
+			setTimeout(() => {
+				ripple.style.transform = 'scale(' + (scale / 2) + ')';
+			}, 1);
+			setTimeout(() => {
+				ripple.style.transition = 'all 1s ease';
+				ripple.style.opacity = '0';
+			}, 1000);
+			setTimeout(() => {
+				if (this.$refs.ripples) this.$refs.ripples.removeChild(ripple);
+			}, 2000);
 		}
 	}
 });
@@ -136,5 +181,31 @@ export default Vue.extend({
 
 		&:not(:disabled):active
 			background var(--primaryAlpha03)
+
+	> .ripples
+		position absolute
+		z-index 0
+		top 0
+		left 0
+		width 100%
+		height 100%
+		border-radius 6px
+		overflow hidden
+
+		>>> div
+			position absolute
+			width 2px
+			height 2px
+			border-radius 100%
+			background rgba(0, 0, 0, 0.1)
+			opacity 1
+			transform scale(1)
+			transition all 0.5s cubic-bezier(0, .5, .5, 1)
+
+	&.primary > .ripples >>> div
+		background rgba(0, 0, 0, 0.15)
+
+	> .content
+		z-index 1
 
 </style>
