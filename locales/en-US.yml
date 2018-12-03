@@ -439,6 +439,13 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{} users mentioned"
   empty: "No popular hashtag trends"
+common/views/components/language-settings.vue:
+  title: "Display Language"
+  pick-language: "Select a language"
+  recommended: "Recommended"
+  auto: "Auto"
+  specify-language: "Specify language"
+  info: "You need to reload the page for the changes to take effect."
 common/views/components/profile-editor.vue:
   title: "Profile"
   name: "Name"
@@ -774,12 +781,6 @@ desktop/views/components/settings.vue:
   enable-sounds-desc: "Play a sound when you receive a post/message. This setting is stored in the browser."
   volume: "Volume"
   test: "Test"
-  language: "Language"
-  pick-language: "Select a language"
-  recommended: "Recommended"
-  auto: "Automatic"
-  specify-language: "Specify language"
-  language-desc: "You need to reload the page for the changes to take effect."
   cache: "Cache"
   clean-cache: "Clear cache"
   cache-warn: "The cache of account info/posts/replies/messages/settings stored in the browser will be deleted. You need to reload the page after cleaning up."
@@ -1361,11 +1362,6 @@ mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
 mobile/views/pages/settings.vue:
   signed-in-as: "Signed in as {}"
-  lang: "Language"
-  lang-tip: "You will need to reload the page for the changes to take effect."
-  recommended: "Recommended"
-  auto: "Auto"
-  specify-language: "Select your language"
   design: "Design and display"
   dark-mode: "Dark Mode"
   i-am-under-limited-internet: "I'm in limited bandwidth"

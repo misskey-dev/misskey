@@ -439,6 +439,13 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "流行は自分で作るんや"
+common/views/components/language-settings.vue:
+  title: "表示言語"
+  pick-language: "言語を選択"
+  recommended: "推奨"
+  auto: "自動"
+  specify-language: "言語を指定"
+  info: "変更はページの再度読み込み後に反映されます。"
 common/views/components/profile-editor.vue:
   title: "プロフィール"
   name: "名前"
@@ -774,12 +781,6 @@ desktop/views/components/settings.vue:
   enable-sounds-desc: "投稿やメッセージもろたとき、音鳴らしたるわ。大丈夫や、この設定はブラウザが覚えてくれとる。"
   volume: "ボリューム"
   test: "テスト"
-  language: "言語"
-  pick-language: "言語選んでや"
-  recommended: "おすすめ"
-  auto: "自動"
-  specify-language: "言語選んでくれ"
-  language-desc: "変更はページの再度読み込み後に反映されんで。"
   cache: "キャッシュ"
   clean-cache: "お掃除"
   cache-warn: "お掃除するとな、ブラウザが覚えてくれとるアカウントのあれこれや書きかけの投稿・返信・メッセージや設定情報なんかのデータが全部飛んでいくんや。これやったらページ再読込しといてな。"
@@ -1361,11 +1362,6 @@ mobile/views/pages/selectdrive.vue:
   select-file: "ファイル選んでや"
 mobile/views/pages/settings.vue:
   signed-in-as: "あんたは橋の下で拾った{}や！"
-  lang: "言語"
-  lang-tip: "ページもっぺん読み込んだら反映したるで。"
-  recommended: "これええで"
-  auto: "勝手にやる"
-  specify-language: "言語選びや"
   design: "見た感じ"
   dark-mode: "ナイトゲームや！"
   i-am-under-limited-internet: "電波と阪神がザコいんや"

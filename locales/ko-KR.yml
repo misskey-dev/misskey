@@ -439,6 +439,13 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{}명이 언급함"
   empty: "트렌드 없음"
+common/views/components/language-settings.vue:
+  title: "표시 언어"
+  pick-language: "언어 설정"
+  recommended: "추천"
+  auto: "자동"
+  specify-language: "언어 지정"
+  info: "변경사항은 페이지를 새로고침한 뒤에 반영됩니다."
 common/views/components/profile-editor.vue:
   title: "프로필"
   name: "이름"
@@ -774,12 +781,6 @@ desktop/views/components/settings.vue:
   enable-sounds-desc: "글이나 메시지를 송수신하였을 때 소리를 재생합니다. 이 설정은 브라우저에 저장됩니다."
   volume: "음량"
   test: "테스트"
-  language: "언어"
-  pick-language: "언어 설정"
-  recommended: "추천"
-  auto: "자동"
-  specify-language: "언어 지정"
-  language-desc: "변경사항은 페이지를 새로고침한 뒤에 반영됩니다."
   cache: "캐시"
   clean-cache: "지우기"
   cache-warn: "지우기를 실행하면 브라우저에 저장된 계정 정보 캐시, 글이나 답글 및 메시지의 임시 저장, 그 외 데이터 (설정 정보 포함) 가 삭제 됩니다. 지우기 작업을 수행한 후 페이지를 다시 로드해야 합니다."
@@ -1361,11 +1362,6 @@ mobile/views/pages/selectdrive.vue:
   select-file: "파일 선택"
 mobile/views/pages/settings.vue:
   signed-in-as: "{}(으)로 로그인"
-  lang: "언어"
-  lang-tip: "변경사항은 페이지를 새로고침한 뒤에 반영됩니다."
-  recommended: "추천"
-  auto: "자동"
-  specify-language: "언어 지정"
   design: "디자인 및 표시"
   dark-mode: "다크 모드"
   i-am-under-limited-internet: "저는 통신 대역폭이 제한되어 있습니다"
@@ -1434,7 +1430,7 @@ mobile/views/pages/user.vue:
   block: "차단"
   unblock: "차단 해제"
   years-old: "{age}세"
-  push-to-list: "リストに追加"
+  push-to-list: "리스트에 추가"
   select-list: "リストを選択してください"
   list-pushed: "{user}を{list}に追加しました"
 mobile/views/pages/user/home.vue:
