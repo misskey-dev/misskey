@@ -440,12 +440,12 @@ common/views/components/trends.vue:
   count: "{} users mentioned"
   empty: "No popular hashtag trends"
 common/views/components/language-settings.vue:
-  title: "表示言語"
-  pick-language: "言語を選択"
-  recommended: "推奨"
-  auto: "自動"
-  specify-language: "言語を指定"
-  info: "変更はページの再度読み込み後に反映されます。"
+  title: "Display Language"
+  pick-language: "Select a language"
+  recommended: "Recommended"
+  auto: "Auto"
+  specify-language: "Specify language"
+  info: "You need to reload the page for the changes to take effect."
 common/views/components/profile-editor.vue:
   title: "Profile"
   name: "Name"
