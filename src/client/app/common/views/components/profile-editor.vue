@@ -32,6 +32,12 @@
 				<span>{{ $t('description') }}</span>
 			</ui-textarea>
 
+			<ui-select v-model="lang">
+				<span slot="label">{{ $t('language') }}</span>
+				<span slot="icon"><fa icon="language"/></span>
+				<option v-for="lang in unique(Object.values(langmap).map(x => x.nativeName)).map(name => Object.keys(langmap).find(k => langmap[k].nativeName == name))" :value="lang" :key="lang">{{ langmap[lang].nativeName }}</option>
+			</ui-select>
+
 			<ui-input type="file" @change="onAvatarChange">
 				<span>{{ $t('avatar') }}</span>
 				<span slot="icon"><fa icon="image"/></span>
@@ -87,12 +93,16 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
 import { toUnicode } from 'punycode';
+import langmap from 'langmap';
+import { unique } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/profile-editor.vue'),
 
 	data() {
 		return {
+			unique,
+			langmap,
 			host: toUnicode(host),
 			enableEmail: false,
 			email: null,
@@ -100,6 +110,7 @@ export default Vue.extend({
 			username: null,
 			location: null,
 			description: null,
+			lang: null,
 			birthday: null,
 			avatarId: null,
 			bannerId: null,
@@ -137,6 +148,7 @@ export default Vue.extend({
 		this.username = this.$store.state.i.username;
 		this.location = this.$store.state.i.profile.location;
 		this.description = this.$store.state.i.description;
+		this.lang = this.$store.state.i.lang;
 		this.birthday = this.$store.state.i.profile.birthday;
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
@@ -198,6 +210,7 @@ export default Vue.extend({
 				name: this.name || null,
 				location: this.location || null,
 				description: this.description || null,
+				lang: this.lang,
 				birthday: this.birthday || null,
 				avatarId: this.avatarId || undefined,
 				bannerId: this.bannerId || undefined,

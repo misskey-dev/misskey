@@ -6,6 +6,7 @@ import acceptAllFollowRequests from '../../../../services/following/requests/acc
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
+const langmap = require('langmap');
 
 export const meta = {
 	desc: {
@@ -29,6 +30,13 @@ export const meta = {
 			validator: $.str.optional.nullable.pipe(isValidDescription),
 			desc: {
 				'ja-JP': 'アカウントの説明や自己紹介'
+			}
+		},
+
+		lang: {
+			validator: $.str.optional.nullable.or(Object.keys(langmap)),
+			desc: {
+				'ja-JP': '言語'
 			}
 		},
 
@@ -121,6 +129,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) updates.description = ps.description;
+	if (ps.lang !== undefined) updates.lang = ps.lang;
 	if (ps.location !== undefined) updates['profile.location'] = ps.location;
 	if (ps.birthday !== undefined) updates['profile.birthday'] = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;

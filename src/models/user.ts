@@ -44,6 +44,7 @@ type IUserBase = {
 	wallpaperUrl?: string;
 	data: any;
 	description: string;
+	lang?: string;
 	pinnedNoteIds: mongo.ObjectID[];
 
 	/**

@@ -156,6 +156,7 @@
 		"koa-send": "5.0.0",
 		"koa-slow": "2.1.0",
 		"koa-views": "6.1.4",
+		"langmap": "0.0.16",
 		"loader-utils": "1.1.0",
 		"minio": "7.0.1",
 		"mkdirp": "0.5.1",
