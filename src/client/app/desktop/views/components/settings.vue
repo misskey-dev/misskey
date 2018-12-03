@@ -16,27 +16,7 @@
 	<div class="pages">
 		<div class="profile" v-show="page == 'profile'">
 			<x-profile-editor/>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
-				<section>
-					<x-twitter-setting/>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
-				<section>
-					<x-github-setting/>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
-				<section>
-					<x-discord-setting/>
-				</section>
-			</ui-card>
+			<x-integration-settings/>
 		</div>
 
 		<ui-card class="theme" v-show="page == 'theme'">
@@ -169,7 +149,7 @@
 			</section>
 		</ui-card>
 
-		<x-language-settings/>
+		<x-language-settings v-show="page == 'web'"/>
 
 		<ui-card class="web" v-show="page == 'web'">
 			<div slot="title"><fa :icon="['far', 'trash-alt']"/> {{ $t('cache') }}</div>
@@ -292,9 +272,7 @@ import X2fa from './settings.2fa.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XTags from './settings.tags.vue';
-import XTwitterSetting from '../../../common/views/components/twitter-setting.vue';
-import XGithubSetting from '../../../common/views/components/github-setting.vue';
-import XDiscordSetting from '../../../common/views/components/discord-setting.vue';
+import XIntegrationSettings from '../../../common/views/components/integration-settings.vue';
 import XTheme from '../../../common/views/components/theme.vue';
 import XDriveSettings from '../../../common/views/components/drive-settings.vue';
 import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
@@ -313,9 +291,7 @@ export default Vue.extend({
 		XApps,
 		XSignins,
 		XTags,
-		XTwitterSetting,
-		XGithubSetting,
-		XDiscordSetting,
+		XIntegrationSettings,
 		XTheme,
 		XDriveSettings,
 		XMuteAndBlock,

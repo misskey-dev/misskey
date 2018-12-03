@@ -107,44 +107,7 @@
 
 			<x-language-settings/>
 
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
-
-				<section>
-					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
-					<p>
-						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? this.$t('twitter-reconnect') : this.$t('twitter-connect') }}</a>
-						<span v-if="$store.state.i.twitter"> or </span>
-						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">{{ $t('twitter-disconnect') }}</a>
-					</p>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
-
-				<section>
-					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
-					<p>
-						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? this.$t('github-reconnect') : this.$t('github-connect') }}</a>
-						<span v-if="$store.state.i.github"> or </span>
-						<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github">{{ $t('github-disconnect') }}</a>
-					</p>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
-
-				<section>
-					<p class="account" v-if="$store.state.i.discord"><a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
-					<p>
-						<a :href="`${apiUrl}/connect/discord`" target="_blank">{{ $store.state.i.discord ? this.$t('discord-reconnect') : this.$t('discord-connect') }}</a>
-						<span v-if="$store.state.i.discord"> or </span>
-						<a :href="`${apiUrl}/disconnect/discord`" target="_blank" v-if="$store.state.i.discord">{{ $t('discord-disconnect') }}</a>
-					</p>
-				</section>
-			</ui-card>
+			<x-integration-settings/>
 
 			<x-api-settings />
 
@@ -192,6 +155,7 @@ import XPasswordSettings from '../../../common/views/components/password-setting
 import XProfileEditor from '../../../common/views/components/profile-editor.vue';
 import XApiSettings from '../../../common/views/components/api-settings.vue';
 import XLanguageSettings from '../../../common/views/components/language-settings.vue';
+import XIntegrationSettings from '../../../common/views/components/integration-settings.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
@@ -204,6 +168,7 @@ export default Vue.extend({
 		XProfileEditor,
 		XApiSettings,
 		XLanguageSettings,
+		XIntegrationSettings,
 	},
 
 	data() {
