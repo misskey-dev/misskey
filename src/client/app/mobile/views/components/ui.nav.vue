@@ -95,9 +95,13 @@ export default Vue.extend({
 
 	methods: {
 		search() {
-			const query = window.prompt(this.$t('search'));
-			if (query == null || query == '') return;
-			this.$router.push(`/search?q=${encodeURIComponent(query)}`);
+			this.$root.dialog({
+				title: this.$t('search'),
+				input: true
+			}).then(({ canceled, result: query }) => {
+				if (canceled) return;
+				this.$router.push(`/search?q=${encodeURIComponent(query)}`);
+			});
 		},
 
 		onReversiInvited() {
