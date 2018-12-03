@@ -440,12 +440,12 @@ common/views/components/trends.vue:
   count: "{} utilisateurs·rices mentionnés·es"
   empty: "Aucune tendance"
 common/views/components/language-settings.vue:
-  title: "表示言語"
-  pick-language: "言語を選択"
-  recommended: "推奨"
-  auto: "自動"
-  specify-language: "言語を指定"
-  info: "変更はページの再度読み込み後に反映されます。"
+  title: "Langue "
+  pick-language: "Sélectionner une langue"
+  recommended: "Recommandé"
+  auto: "Automatique"
+  specify-language: "Spécifier la langue"
+  info: "Le rechargement de la page est requis afin d'appliquer les modifications."
 common/views/components/profile-editor.vue:
   title: "Profil"
   name: "Nom"
