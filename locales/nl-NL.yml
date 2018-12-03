@@ -439,6 +439,13 @@ common/views/components/visibility-chooser.vue:
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
+common/views/components/language-settings.vue:
+  title: "表示言語"
+  pick-language: "言語を選択"
+  recommended: "推奨"
+  auto: "自動"
+  specify-language: "言語を指定"
+  info: "変更はページの再度読み込み後に反映されます。"
 common/views/components/profile-editor.vue:
   title: "プロフィール"
   name: "名前"
@@ -774,12 +781,6 @@ desktop/views/components/settings.vue:
   enable-sounds-desc: "Een geluid afspelen bij het ontvangen van een bericht. Deze instelling wordt opgeslagen in je browser."
   volume: "Volume"
   test: "Testen"
-  language: "Taal"
-  pick-language: "Selecteer een taal"
-  recommended: "Aanbevolen"
-  auto: "Automatisch"
-  specify-language: "Taal opgeven"
-  language-desc: "Je moet de pagina herladen om de wijzigingen toe te passen."
   cache: "Cache"
   clean-cache: "Opschonen"
   cache-warn: "De cache van je accountinformatie/berichten/antwoorden/instellingen wordt verwijderd. Je moet de pagina herladen na het opschonen."
@@ -1361,11 +1362,6 @@ mobile/views/pages/selectdrive.vue:
   select-file: "Kies een bestand"
 mobile/views/pages/settings.vue:
   signed-in-as: "Ingelogd als {}"
-  lang: "Taal"
-  lang-tip: "Je moet de pagina herladen om de wijzigingen toe te passen."
-  recommended: "Aanbevolen"
-  auto: "Automatisch"
-  specify-language: "Taal opgeven"
   design: "Ontwerp en weergave"
   dark-mode: "Donkere modus"
   i-am-under-limited-internet: "Ik heb beperkt internet"
