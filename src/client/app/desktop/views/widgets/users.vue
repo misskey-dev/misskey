@@ -67,6 +67,7 @@ export default define({
 				this.users = [];
 				this.fetching = false;
 				this.more = false;
+				this.page = 0;
 			});
 		},
 		refresh() {
