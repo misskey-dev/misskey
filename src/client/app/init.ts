@@ -458,8 +458,8 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 						return x;
 					},
 					dialog(opts) {
+						const vm = this.new(Dialog, opts);
 						return new Promise((res) => {
-							const vm = this.new(Dialog, opts);
 							vm.$once('ok', result => res({ canceled: false, result }));
 							vm.$once('cancel', () => res({ canceled: true }));
 						});
