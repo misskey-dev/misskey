@@ -11,14 +11,14 @@
 
 	<section>
 		<header><fa :icon="['fab', 'discord']"/> Discord</header>
-		<p v-if="$store.state.i.discord">{{ $t('connected-to') }}: <a :href="`https://discord.com/${$store.state.i.discord.screenName}`" target="_blank">@{{ $store.state.i.discord.screenName }}</a></p>
+		<p v-if="$store.state.i.discord">{{ $t('connected-to') }}: <a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
 		<ui-button v-if="$store.state.i.discord" @click="disconnectDiscord">{{ $t('disconnect') }}</ui-button>
 		<ui-button v-else @click="connectDiscord">{{ $t('connect') }}</ui-button>
 	</section>
 
 	<section>
 		<header><fa :icon="['fab', 'github']"/> GitHub</header>
-		<p v-if="$store.state.i.github">{{ $t('connected-to') }}: <a :href="`https://github.com/${$store.state.i.github.screenName}`" target="_blank">@{{ $store.state.i.github.screenName }}</a></p>
+		<p v-if="$store.state.i.github">{{ $t('connected-to') }}: <a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
 		<ui-button v-if="$store.state.i.github" @click="disconnectGithub">{{ $t('disconnect') }}</ui-button>
 		<ui-button v-else @click="connectGithub">{{ $t('connect') }}</ui-button>
 	</section>
