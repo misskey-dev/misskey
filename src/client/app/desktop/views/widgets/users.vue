@@ -2,7 +2,10 @@
 <div class="mkw-users">
 	<mk-widget-container :show-header="!props.compact">
 		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
-		<button slot="func" :title="$t('title')" @click="refresh"><fa icon="sync"/></button>
+		<button slot="func" :title="$t('title')" @click="refresh">
+			<fa v-if="!fetching &&  more" icon="arrow-right"/>
+			<fa v-if="!fetching && !more" icon="sync"/>
+		</button>
 
 		<div class="mkw-users--body">
 			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
@@ -38,6 +41,7 @@ export default define({
 		return {
 			users: [],
 			fetching: true,
+			more: true,
 			page: 0
 		};
 	},
@@ -59,12 +63,19 @@ export default define({
 			}).then(users => {
 				this.users = users;
 				this.fetching = false;
+			}).catch(() => {
+				this.users = [];
+				this.fetching = false;
+				this.more = false;
+				this.page = 0;
 			});
 		},
 		refresh() {
 			if (this.users.length < limit) {
+				this.more = false;
 				this.page = 0;
 			} else {
+				this.more = true;
 				this.page++;
 			}
 			this.fetch();
