@@ -136,11 +136,6 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		return rej('Reply target is private of others');
 	}
 
-	// Renote対象が自分以外の非公開の投稿なら禁止
-	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
-		return rej('Renote target is private of others');
-	}
-
 	// ローカルのみをRenoteしたらローカルのみにする
 	if (data.renote && data.renote.localOnly) {
 		data.localOnly = true;
