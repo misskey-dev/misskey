@@ -440,12 +440,12 @@ common/views/components/trends.vue:
   count: "{}명이 언급함"
   empty: "트렌드 없음"
 common/views/components/language-settings.vue:
-  title: "表示言語"
-  pick-language: "言語を選択"
-  recommended: "推奨"
-  auto: "自動"
-  specify-language: "言語を指定"
-  info: "変更はページの再度読み込み後に反映されます。"
+  title: "표시 언어"
+  pick-language: "언어 설정"
+  recommended: "추천"
+  auto: "자동"
+  specify-language: "언어 지정"
+  info: "변경사항은 페이지를 새로고침한 뒤에 반영됩니다."
 common/views/components/profile-editor.vue:
   title: "프로필"
   name: "이름"
