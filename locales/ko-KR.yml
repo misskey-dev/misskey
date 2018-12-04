@@ -1418,8 +1418,8 @@ mobile/views/pages/user.vue:
   unblock: "차단 해제"
   years-old: "{age}세"
   push-to-list: "리스트에 추가"
-  select-list: "リストを選択してください"
-  list-pushed: "{user}を{list}に追加しました"
+  select-list: "목록을 선택하여 주십시오"
+  list-pushed: "{user}을(를) {list}에 추가하였습니다"
 mobile/views/pages/user/home.vue:
   recent-notes: "최근 글"
   images: "이미지"
