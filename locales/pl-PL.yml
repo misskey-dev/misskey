@@ -445,7 +445,7 @@ common/views/components/language-settings.vue:
   specify-language: "言語を指定"
   info: "変更はページの再度読み込み後に反映されます。"
 common/views/components/profile-editor.vue:
-  title: "プロフィール"
+  title: "Twój profil"
   name: "名前"
   account: "アカウント"
   location: "場所"
