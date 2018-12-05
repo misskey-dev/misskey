@@ -113,7 +113,7 @@ common:
   use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
-  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
+  suggest-recent-hashtags: "Suggest recently used hashtags within the post composition area"
   always-show-nsfw: "Always show NSFW contents"
   always-mark-nsfw: "Always mark posts with media attachments as NSFW"
   show-full-acct: "Do not omit the hostname from the username"
