@@ -158,7 +158,6 @@ common:
     polls: "Polls"
     post-form: "Post form"
     server: "Server info"
-    donation: "Request for donations"
     nav: "Navigation"
     tips: "Tips"
     hashtags: "Hashtags"
@@ -480,9 +479,6 @@ common/views/widgets/calendar.vue:
   today: "Today: "
   this-month: "This month: "
   this-year: "This year: "
-common/views/widgets/donation.vue:
-  title: "Request for donations"
-  text: "To keep Misskey up and running, there have to happen some expense for the domain name, the server and so on. Since our policy is not to display any advertisements, we count on your donations. If you're interested in helping, contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photo stream"
   no-photos: "No photos"
