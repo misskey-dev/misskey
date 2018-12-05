@@ -158,7 +158,6 @@ common:
     polls: "Sondages"
     post-form: "Champs de publication"
     server: "Info sur le serveur"
-    donation: "Dons"
     nav: "Navigation"
     tips: "Conseils"
     hashtags: "Hashtags"
@@ -480,9 +479,6 @@ common/views/widgets/calendar.vue:
   today: "Aujourd’hui :"
   this-month: "Ce mois-ci :"
   this-year: "Cette année :"
-common/views/widgets/donation.vue:
-  title: "Faire un don"
-  text: "Les frais pour faire fonctionner Misskey sortent directement de notre poche. Nous ne recevons pas d'argent issu de la publicité, si vous pouvez nous faire des dons, on vous serait éternellement reconnaissants. Si vous êtes intéressé·es veuillez contacter {}. Merci pour votre contribution !"
 common/views/widgets/photo-stream.vue:
   title: "Flux de photos"
   no-photos: "Pas de photo"
