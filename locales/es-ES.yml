@@ -158,7 +158,6 @@ common:
     polls: "Encuestas"
     post-form: "Formulario"
     server: "Información del servidor"
-    donation: "Donaciones"
     nav: "Navegación"
     tips: "Consejos"
     hashtags: "Etiquetas"
@@ -480,9 +479,6 @@ common/views/widgets/calendar.vue:
   today: "Hoy:"
   this-month: "Este mes:"
   this-year: "Este año:"
-common/views/widgets/donation.vue:
-  title: "Donaciones"
-  text: "Para mantener Misskey funcionando tenemos que pagar por el dominio, los costos de hospedaje y otros costos. Como no recibimos dinero de publicidad, contamos con el apoyo de todos ustedes. Si estás interesado en ayudar, contacta a {}. ¡Muchas gracias por tu contribución!"
 common/views/widgets/photo-stream.vue:
   title: "Galería de fotos"
   no-photos: "No hay fotos."
