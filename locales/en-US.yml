@@ -401,9 +401,9 @@ common/views/components/stream-indicator.vue:
   reconnecting: "Reconnecting"
   connected: "Connected"
 common/views/components/integration-settings.vue:
-  title: "サービス連携"
-  connect: "接続する"
-  disconnect: "切断する"
+  title: "Service cooperation"
+  connect: "Connect"
+  disconnect: "Disconnect"
   connected-to: "次のアカウントに接続されています"
 common/views/components/github-setting.vue:
   description: "Once you connect your GitHub account to your Misskey account, you will be able to see information about your GitHub account on your profile, and you will be able to sign-in via GitHub."
