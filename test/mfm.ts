@@ -70,6 +70,15 @@ describe('Text', () => {
 			], tokens);
 		});
 
+		it('small', () => {
+			const tokens = analyze('<small>smaller</small>');
+			assert.deepEqual([
+				nodeWithChildren('small', [
+					text('smaller')
+				]),
+			], tokens);
+		});
+
 		describe('motion', () => {
 			it('by triple brackets', () => {
 				const tokens = analyze('(((foo)))');
