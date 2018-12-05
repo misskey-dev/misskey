@@ -158,7 +158,6 @@ common:
     polls: "투표"
     post-form: "게시 양식"
     server: "서버 정보"
-    donation: "기부 요청"
     nav: "내비게이션"
     tips: "팁"
     hashtags: "해시태그"
@@ -480,9 +479,6 @@ common/views/widgets/calendar.vue:
   today: "오늘:"
   this-month: "이번 달:"
   this-year: "올해:"
-common/views/widgets/donation.vue:
-  title: "기부 요청"
-  text: "Misskey의 운영에는 도메인, 서버 등의 비용이 들어갑니다. Misskey는 광고를 게시하거나 하지 않으므로 수입을 여러분의 기부금에 의존하고 있습니다. 혹시 관심있으시다면 {}로 연락해주시기 바랍니다. 협력해주셔서 감사합니다."
 common/views/widgets/photo-stream.vue:
   title: "포토 스트림"
   no-photos: "사진이 없습니다"
