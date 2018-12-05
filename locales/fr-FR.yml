@@ -401,9 +401,9 @@ common/views/components/stream-indicator.vue:
   reconnecting: "Reconnexion en cours"
   connected: "Connecté"
 common/views/components/integration-settings.vue:
-  title: "サービス連携"
-  connect: "接続する"
-  disconnect: "切断する"
+  title: "Intégrations"
+  connect: "Connecter"
+  disconnect: "Déconnecter"
   connected-to: "次のアカウントに接続されています"
 common/views/components/github-setting.vue:
   description: "Si vous liez votre compte GitHub à votre compte Misskey, vous verrez votre compte GitHub s’afficher sur votre profil, vous aurez également la possibilité de vous connecter à Misskey en utilisant ce dernier."
@@ -450,7 +450,7 @@ common/views/components/profile-editor.vue:
   account: "Compte"
   location: "Lieu"
   description: "À propos de moi"
-  language: "言語"
+  language: "Langue"
   birthday: "Date de naissance"
   avatar: "Avatar"
   banner: "Bannière"
