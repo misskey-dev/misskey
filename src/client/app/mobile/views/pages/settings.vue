@@ -27,6 +27,7 @@
 					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
 					<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
 					<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
+					<ui-switch v-model="suggestRecentHashtags">{{ $t('@.suggest-recent-hashtags') }}</ui-switch>
 					<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }} ({{ $t('@.this-setting-is-this-device-only') }})</ui-switch>
 				</section>
 
@@ -199,6 +200,11 @@ export default Vue.extend({
 		reduceMotion: {
 			get() { return this.$store.state.device.reduceMotion; },
 			set(value) { this.$store.commit('device/set', { key: 'reduceMotion', value }); }
+		},
+
+		suggestRecentHashtags: {
+			get() { return this.$store.state.settings.suggestRecentHashtags; },
+			set(value) { this.$store.commit('device/set', { key: 'suggestRecentHashtags', value }); }
 		},
 
 		alwaysShowNsfw: {
