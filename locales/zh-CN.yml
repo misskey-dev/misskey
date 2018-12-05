@@ -158,7 +158,6 @@ common:
     polls: "投票"
     post-form: "投稿形式"
     server: "服务器信息"
-    donation: "捐助"
     nav: "导航"
     tips: "提示"
     hashtags: "标签"
@@ -480,9 +479,6 @@ common/views/widgets/calendar.vue:
   today: "今天:"
   this-month: "本月:"
   this-year: "今年:"
-common/views/widgets/donation.vue:
-  title: "请求捐助"
-  text: "为了保持 Misskey 持续运行, 这会对域名，服务器等产生一些费用。 如果您有兴趣提供捐助，请联系{}。感谢您的贡献!"
 common/views/widgets/photo-stream.vue:
   title: "图片轮播"
   no-photos: "没有图片"
