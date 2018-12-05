@@ -20,17 +20,17 @@ export default async (user: ILocalUser) => {
 		value: string,
 		verified_at?: string
 	}[] = [];
-	user.twitter && fields.push({
+	user.twitter && attachment.push({
 		type: 'PropertyValue',
 		name: 'Twitter',
 		value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`
 	});
-	user.github && fields.push({
+	user.github && attachment.push({
 		type: 'PropertyValue',
 		name: 'GitHub',
 		value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`
 	});
-	user.discord && fields.push({
+	user.discord && attachment.push({
 		type: 'PropertyValue',
 		name: 'Discord',
 		value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>@${user.discord.username}#${user.discord.discriminator}</span></a>`
