@@ -14,20 +14,24 @@ export default async (user: ILocalUser) => {
 		DriveFile.findOne({ _id: user.bannerId })
 	]);
 	
-	const fields: {
+	const attachment: {
+		type: string,
 		name: string,
 		value: string,
 		verified_at?: string
 	}[] = [];
 	user.twitter && fields.push({
+		type: 'PropertyValue',
 		name: 'Twitter',
 		value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`
 	});
 	user.github && fields.push({
+		type: 'PropertyValue',
 		name: 'GitHub',
 		value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`
 	});
 	user.discord && fields.push({
+		type: 'PropertyValue',
 		name: 'Discord',
 		value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>@${user.discord.username}#${user.discord.discriminator}</span></a>`
 	});
@@ -50,6 +54,6 @@ export default async (user: ILocalUser) => {
 		manuallyApprovesFollowers: user.isLocked,
 		publicKey: renderKey(user),
 		isCat: user.isCat,
-		fields: fields.length ? fields : undefined
+		attachment: attachment.length ? attachment : undefined
 	};
 };
