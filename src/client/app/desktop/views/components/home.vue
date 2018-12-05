@@ -26,7 +26,6 @@
 					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
 					<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
 					<option value="server">{{ $t('@.widgets.server') }}</option>
-					<option value="donation">{{ $t('@.widgets.donation') }}</option>
 					<option value="nav">{{ $t('@.widgets.nav') }}</option>
 					<option value="tips">{{ $t('@.widgets.tips') }}</option>
 				</select>
@@ -95,7 +94,6 @@ const defaultDesktopHomeWidgets = {
 		'users',
 		'polls',
 		'server',
-		'donation',
 		'nav',
 		'tips'
 	]

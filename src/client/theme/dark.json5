@@ -111,9 +111,6 @@
 		announcementsTitle: '#539eff',
 		announcementsText: '#fff',
 
-		donationBg: '#5d5242',
-		donationFg: '#e4dbce',
-
 		googleSearchBg: 'rgba(0, 0, 0, 0.2)',
 		googleSearchFg: '#dee4e8',
 		googleSearchBorder: 'rgba(255, 255, 255, 0.2)',
