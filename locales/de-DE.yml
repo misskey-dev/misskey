@@ -158,7 +158,6 @@ common:
     polls: "Umfrage"
     post-form: "Beitragsform"
     server: "Server-Info"
-    donation: "Spenden"
     nav: "Navigation"
     tips: "Tipps"
     hashtags: "Hashtags"
@@ -480,9 +479,6 @@ common/views/widgets/calendar.vue:
   today: "今日:"
   this-month: "今月:"
   this-year: "今年:"
-common/views/widgets/donation.vue:
-  title: "Spende"
-  text: "Um Misskey am Laufen zu halten geben wir Geld für Domain, Server usw. aus. Wir bekommen dafür kein Geld und würden uns freuen, wenn du spenden würdest. Wenn du interessiert bist, dann kontaktiere {}. Danke für deine Unterstützung!"
 common/views/widgets/photo-stream.vue:
   title: "Fotostream"
   no-photos: "Keine Fotos"
