@@ -404,7 +404,7 @@ common/views/components/integration-settings.vue:
   title: "Service cooperation"
   connect: "Connect"
   disconnect: "Disconnect"
-  connected-to: "次のアカウントに接続されています"
+  connected-to: "You are connected to next account"
 common/views/components/github-setting.vue:
   description: "Once you connect your GitHub account to your Misskey account, you will be able to see information about your GitHub account on your profile, and you will be able to sign-in via GitHub."
   connected-to: "You are connected to this GitHub account"
@@ -450,7 +450,7 @@ common/views/components/profile-editor.vue:
   account: "Account"
   location: "Location"
   description: "About me"
-  language: "言語"
+  language: "Language"
   birthday: "Birthday"
   avatar: "Icon"
   banner: "Banner"
