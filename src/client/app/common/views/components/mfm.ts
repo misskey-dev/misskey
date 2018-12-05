@@ -100,6 +100,14 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('del', genEl(token.children))];
 				}
 
+				case 'italic': {
+					return (createElement as any)('i', {
+						attrs: {
+							style: 'font-style: oblique;'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'big': {
 					bigCount++;
 					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;

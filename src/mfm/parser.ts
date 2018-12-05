@@ -69,6 +69,7 @@ const mfm = P.createLanguage({
 		r.big,
 		r.bold,
 		r.strike,
+		r.italic,
 		r.motion,
 		r.url,
 		r.link,
@@ -91,6 +92,8 @@ const mfm = P.createLanguage({
 	big: r =>
 		P.regexp(/^\*\*\*([\s\S]+?)\*\*\*/, 1)
 		.map(x => makeNodeWithChildren('big', P.alt(
+			r.strike,
+			r.italic,
 			r.mention,
 			r.hashtag,
 			r.emoji,
@@ -115,6 +118,8 @@ const mfm = P.createLanguage({
 	bold: r =>
 		P.regexp(/\*\*([\s\S]+?)\*\*/, 1)
 		.map(x => makeNodeWithChildren('bold', P.alt(
+			r.strike,
+			r.italic,
 			r.mention,
 			r.hashtag,
 			r.url,
@@ -131,6 +136,7 @@ const mfm = P.createLanguage({
 			r.big,
 			r.bold,
 			r.strike,
+			r.italic,
 			r.motion,
 			r.mention,
 			r.hashtag,
@@ -176,6 +182,21 @@ const mfm = P.createLanguage({
 		.map(x => makeNode('inlineCode', { code: x })),
 	//#endregion
 
+	//#region Italic
+	italic: r =>
+		P.regexp(/<i>([\s\S]+?)<\/i>/, 1)
+		.map(x => makeNodeWithChildren('italic', P.alt(
+			r.bold,
+			r.strike,
+			r.mention,
+			r.hashtag,
+			r.url,
+			r.link,
+			r.emoji,
+			r.text
+		).atLeast(1).tryParse(x))),
+	//#endregion
+
 	//#region Link
 	link: r =>
 		P.seqObj(
@@ -192,6 +213,7 @@ const mfm = P.createLanguage({
 				r.big,
 				r.bold,
 				r.strike,
+				r.italic,
 				r.motion,
 				r.emoji,
 				r.text
@@ -232,6 +254,7 @@ const mfm = P.createLanguage({
 		.map(x => makeNodeWithChildren('motion', P.alt(
 			r.bold,
 			r.strike,
+			r.italic,
 			r.mention,
 			r.hashtag,
 			r.emoji,
@@ -270,6 +293,7 @@ const mfm = P.createLanguage({
 		P.regexp(/~~(.+?)~~/, 1)
 		.map(x => makeNodeWithChildren('strike', P.alt(
 			r.bold,
+			r.italic,
 			r.mention,
 			r.hashtag,
 			r.url,
@@ -290,6 +314,7 @@ const mfm = P.createLanguage({
 				r.big,
 				r.bold,
 				r.strike,
+				r.italic,
 				r.motion,
 				r.url,
 				r.link,

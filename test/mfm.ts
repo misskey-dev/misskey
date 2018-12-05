@@ -713,6 +713,17 @@ describe('Text', () => {
 				], tokens);
 			});
 		});
+
+		describe('italic', () => {
+			it('simple', () => {
+				const tokens = analyze('<i>foo</i>');
+				assert.deepEqual([
+					nodeWithChildren('italic', [
+						text('foo')
+					]),
+				], tokens);
+			});
+		});
 	});
 
 	describe('toHtml', () => {

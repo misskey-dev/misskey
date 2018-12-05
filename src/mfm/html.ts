@@ -37,6 +37,12 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 			return el;
 		},
 
+		italic(token) {
+			const el = doc.createElement('i');
+			dive(token.children).forEach(child => el.appendChild(child));
+			return el;
+		},
+
 		motion(token) {
 			const el = doc.createElement('i');
 			dive(token.children).forEach(child => el.appendChild(child));
