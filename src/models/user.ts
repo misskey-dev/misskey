@@ -249,6 +249,7 @@ export const pack = (
 		host: true,
 		avatarColor: true,
 		avatarUrl: true,
+		emojis: true,
 		isCat: true,
 		isBot: true,
 		isAdmin: true,
