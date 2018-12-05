@@ -123,6 +123,10 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'small': {
+					return [createElement('small', genEl(token.children))];
+				}
+
 				case 'center': {
 					return [createElement('div', {
 						attrs: {
