@@ -318,8 +318,6 @@ export default Vue.extend({
 .dnpfarvgbnfmyzbdquhhzyxcmstpdqzs
 	$header-height = 42px
 
-	width 330px
-	min-width 330px
 	height 100%
 	background var(--face)
 	border-radius var(--round)
@@ -354,6 +352,7 @@ export default Vue.extend({
 	&:not(.isStacked).narrow
 		width 285px
 		min-width 285px
+		flex-grow 0 !important
 
 	&.naked
 		background var(--deckAcrylicColumnBg)
