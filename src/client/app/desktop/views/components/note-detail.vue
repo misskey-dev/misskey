@@ -20,7 +20,9 @@
 	<article>
 		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<header>
-			<router-link class="name" :to="appearNote.user | userPage" v-user-preview="appearNote.user.id">{{ appearNote.user | userName }}</router-link>
+			<router-link class="name" :to="appearNote.user | userPage" v-user-preview="appearNote.user.id">
+				<misskey-flavored-markdown :text="appearNote.user.name || appearNote.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="appearNote.user.emojis"/>
+			</router-link>
 			<span class="username"><mk-acct :user="appearNote.user"/></span>
 			<div class="info">
 				<router-link class="time" :to="appearNote | notePage">

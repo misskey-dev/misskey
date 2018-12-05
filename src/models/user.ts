@@ -11,6 +11,7 @@ import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
 import FollowRequest from './follow-request';
 import fetchMeta from '../misc/fetch-meta';
+import Emoji from './emoji';
 
 const User = db.get<IUser>('users');
 
@@ -46,6 +47,7 @@ type IUserBase = {
 	description: string;
 	lang?: string;
 	pinnedNoteIds: mongo.ObjectID[];
+	emojis?: string[];
 
 	/**
 	 * 凍結されているか否か
@@ -375,6 +377,16 @@ export const pack = (
 	if (!opts.includeHasUnreadNotes) {
 		delete _user.hasUnreadSpecifiedNotes;
 		delete _user.hasUnreadMentions;
+	}
+
+	// カスタム絵文字添付
+	if (_user.emojis) {
+		_user.emojis = Emoji.find({
+			name: { $in: _user.emojis },
+			host: _user.host
+		}, {
+			fields: { _id: false }
+		});
 	}
 
 	// resolve promises in _user object

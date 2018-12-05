@@ -12,10 +12,11 @@ import Meta from '../../../models/meta';
 import htmlToMFM from '../../../mfm/html-to-mfm';
 import usersChart from '../../../chart/users';
 import { URL } from 'url';
-import { resolveNote } from './note';
+import { resolveNote, extractEmojis } from './note';
 import registerInstance from '../../../services/register-instance';
 import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
+import { IEmoji } from '../../../models/emoji';
 
 const log = debug('misskey:activitypub');
 
@@ -234,6 +235,21 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	user.bannerColor = bannerColor;
 	//#endregion
 
+	//#region カスタム絵文字取得
+	const emojis = await extractEmojis(person.tag, host).catch(e => {
+		console.log(`extractEmojis: ${e}`);
+		return [] as IEmoji[];
+	});
+
+	const emojiNames = emojis.map(emoji => emoji.name);
+
+	await User.update({ _id: user._id }, {
+		$set: {
+			emojis: emojiNames
+		}
+	});
+	//#endregion
+
 	await updateFeatured(user._id).catch(err => console.log(err));
 
 	return user;
@@ -301,6 +317,14 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			: resolveImage(exist, img).catch(() => null)
 	)));
 
+	// カスタム絵文字取得
+	const emojis = await extractEmojis(person.tag, exist.host).catch(e => {
+		console.log(`extractEmojis: ${e}`);
+		return [] as IEmoji[];
+	});
+
+	const emojiNames = emojis.map(emoji => emoji.name);
+
 	// Update user
 	await User.update({ _id: exist._id }, {
 		$set: {
@@ -314,6 +338,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			bannerUrl: getDriveFileUrl(banner, false),
 			avatarColor: avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null,
 			bannerColor: banner && banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null,
+			emojis: emojiNames,
 			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,

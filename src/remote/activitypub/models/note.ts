@@ -164,7 +164,7 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	return await createNote(uri, resolver);
 }
 
-async function extractEmojis(tags: ITag[], host_: string) {
+export async function extractEmojis(tags: ITag[], host_: string) {
 	const host = toUnicode(host_.toLowerCase());
 
 	if (!tags) return [];

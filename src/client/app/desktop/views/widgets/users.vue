@@ -13,7 +13,9 @@
 				<div class="user" v-for="_user in users">
 					<mk-avatar class="avatar" :user="_user"/>
 					<div class="body">
-						<router-link class="name" :to="_user | userPage" v-user-preview="_user.id">{{ _user | userName }}</router-link>
+						<router-link class="name" :to="_user | userPage" v-user-preview="_user.id">
+							<misskey-flavored-markdown :text="_user.name || _user.username" :shouldBreak="false" :plainText="true" :custom-emojis="_user.emojis"/>
+						</router-link>
 						<p class="username">@{{ _user | acct }}</p>
 					</div>
 				</div>

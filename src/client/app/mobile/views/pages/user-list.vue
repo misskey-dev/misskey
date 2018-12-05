@@ -4,7 +4,9 @@
 
 	<main v-if="!fetching">
 		<ul>
-			<li v-for="user in users" :key="user.id"><router-link :to="user | userPage">{{ user | userName }}</router-link></li>
+			<li v-for="user in users" :key="user.id"><router-link :to="user | userPage">
+				<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+			</router-link></li>
 		</ul>
 	</main>
 </mk-ui>

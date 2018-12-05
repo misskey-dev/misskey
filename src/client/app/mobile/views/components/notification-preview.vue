@@ -3,7 +3,7 @@
 	<template v-if="notification.type == 'reaction'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
-			<p><mk-reaction-icon :reaction="notification.reaction"/>{{ notification.user | userName }}</p>
+			<p><mk-reaction-icon :reaction="notification.reaction"/><misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/></p>
 			<p class="note-ref"><fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/></p>
 		</div>
 	</template>
@@ -11,7 +11,7 @@
 	<template v-if="notification.type == 'renote'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p><fa icon="retweet"/>{{ notification.note.user | userName }}</p>
+			<p><fa icon="retweet"/><misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/></p>
 			<p class="note-ref"><fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/></p>
 		</div>
 	</template>
@@ -19,7 +19,7 @@
 	<template v-if="notification.type == 'quote'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p><fa icon="quote-left"/>{{ notification.note.user | userName }}</p>
+			<p><fa icon="quote-left"/><misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/></p>
 			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
@@ -27,21 +27,21 @@
 	<template v-if="notification.type == 'follow'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
-			<p><fa icon="user-plus"/>{{ notification.user | userName }}</p>
+			<p><fa icon="user-plus"/><misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/></p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'receiveFollowRequest'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
-			<p><fa icon="user-clock"/>{{ notification.user | userName }}</p>
+			<p><fa icon="user-clock"/><misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/></p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p><fa icon="reply"/>{{ notification.note.user | userName }}</p>
+			<p><fa icon="reply"/><misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/></p>
 			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
@@ -49,7 +49,7 @@
 	<template v-if="notification.type == 'mention'">
 		<mk-avatar class="avatar" :user="notification.note.user"/>
 		<div class="text">
-			<p><fa icon="at"/>{{ notification.note.user | userName }}</p>
+			<p><fa icon="at"/><misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/></p>
 			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
@@ -57,7 +57,7 @@
 	<template v-if="notification.type == 'poll_vote'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="text">
-			<p><fa icon="chart-pie"/>{{ notification.user | userName }}</p>
+			<p><fa icon="chart-pie"/><misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/></p>
 			<p class="note-ref"><fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/></p>
 		</div>
 	</template>

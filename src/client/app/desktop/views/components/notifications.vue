@@ -18,7 +18,9 @@
 						<div class="text">
 							<p>
 								<mk-reaction-icon :reaction="notification.reaction"/>
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
+									<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+								</router-link>
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
@@ -30,7 +32,9 @@
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p><fa icon="retweet"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+									<misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/>
+								</router-link>
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
 								<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
@@ -42,7 +46,9 @@
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p><fa icon="quote-left"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+									<misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/>
+								</router-link>
 							</p>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</router-link>
 						</div>
@@ -52,7 +58,9 @@
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p><fa icon="user-plus"/>
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
+									<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+								</router-link>
 							</p>
 						</div>
 					</template>
@@ -61,7 +69,9 @@
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p><fa icon="user-clock"/>
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
+									<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+								</router-link>
 							</p>
 						</div>
 					</template>
@@ -70,7 +80,9 @@
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p><fa icon="reply"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+									<misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/>
+								</router-link>
 							</p>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</router-link>
 						</div>
@@ -80,7 +92,9 @@
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p><fa icon="at"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+									<misskey-flavored-markdown :text="notification.note.user.name || notification.note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.note.user.emojis"/>
+								</router-link>
 							</p>
 							<a class="note-preview" :href="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</a>
 						</div>
@@ -89,7 +103,9 @@
 					<template v-if="notification.type == 'poll_vote'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p><fa icon="chart-pie"/><a :href="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</a></p>
+							<p><fa icon="chart-pie"/><a :href="notification.user | userPage" v-user-preview="notification.user.id">
+								<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+							</a></p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 							</router-link>
