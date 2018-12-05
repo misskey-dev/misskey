@@ -158,7 +158,6 @@ common:
     polls: "アンケート"
     post-form: "投稿フォーム"
     server: "サーバー情報"
-    donation: "寄付のお願い"
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
@@ -480,9 +479,6 @@ common/views/widgets/calendar.vue:
   today: "今日:"
   this-month: "今月:"
   this-year: "今年:"
-common/views/widgets/donation.vue:
-  title: "Donatie"
-  text: "Om Misskey draaiende te houden, geven we geld uit aan onze domeinnaam, servers, enz. We maken hier geen winst op, dus we zouden het fijn vinden als je een donatie wilt doen. Neem in dat geval contact op via {}. Bedankt voor je bijdrage!"
 common/views/widgets/photo-stream.vue:
   title: "Fotostream"
   no-photos: "Geen foto's"
