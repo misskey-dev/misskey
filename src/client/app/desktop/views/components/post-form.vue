@@ -282,7 +282,7 @@ export default Vue.extend({
 		onPollUpdate() {
 			this.pollChoices = this.$refs.poll.get().choices;
 			this.saveDraft();
-		}
+		},
 
 		upload(file) {
 			(this.$refs.uploader as any).upload(file);
