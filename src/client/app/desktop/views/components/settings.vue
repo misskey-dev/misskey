@@ -130,7 +130,7 @@
 				<header>{{ $t('deck-column-minwidth') }}</header>
 				<ui-radio v-model="deckColumnMinWidth" value="narrow">{{ $t('deck-column-minwidth-narrow') }}</ui-radio>
 				<ui-radio v-model="deckColumnMinWidth" value="narrower">{{ $t('deck-column-minwidth-narrower') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinWidth" value="w-default">{{ $t('deck-column-minwidth-default') }}</ui-radio>
+				<ui-radio v-model="deckColumnMinWidth" value="normal">{{ $t('deck-column-minwidth-default') }}</ui-radio>
 				<ui-radio v-model="deckColumnMinWidth" value="wider">{{ $t('deck-column-minwidth-wider') }}</ui-radio>
 				<ui-radio v-model="deckColumnMinWidth" value="wide">{{ $t('deck-column-minwidth-wide') }}</ui-radio>
 			</section>

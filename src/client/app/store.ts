@@ -64,7 +64,7 @@ const defaultDeviceSettings = {
 	postStyle: 'standard',
 	navbar: 'top',
 	deckColumnAlign: 'center',
-	deckColumnMinWidth: 'w-default',
+	deckColumnMinWidth: 'normal',
 	mobileNotificationPosition: 'bottom',
 	deckTemporaryColumn: null,
 	deckDefault: false,
