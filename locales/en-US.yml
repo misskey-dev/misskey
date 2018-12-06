@@ -110,6 +110,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
+  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
   use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
