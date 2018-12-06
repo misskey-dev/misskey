@@ -1,6 +1,6 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" ref="body" :style="style" :class="{ center: $store.state.device.deckColumnAlign == 'center' }" v-hotkey.global="keymap">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" ref="body" :style="style" :class="`${$store.state.device.deckColumnAlign} ${$store.state.device.deckColumnWidth}`" v-hotkey.global="keymap">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
@@ -369,6 +369,8 @@ export default Vue.extend({
 
 	> div
 		margin-right 8px
+		width 330px
+		min-width 330px
 
 		&:last-of-type
 			margin-right 0
@@ -380,6 +382,26 @@ export default Vue.extend({
 			> *:not(:last-child)
 				margin-bottom 8px
 
+	&.narrow
+		> div
+			width 303px
+			min-width 303px
+
+	&.narrower
+		> div
+			width 316.5px
+			min-width 316.5px
+
+	&.wider
+		> div
+			width 343.5px
+			min-width 343.5px
+
+	&.wide
+		> div
+			width 357px
+			min-width 357px
+
 	&.center
 		> *
 			&:first-child
@@ -388,9 +410,20 @@ export default Vue.extend({
 			&:last-child
 				margin-right auto
 
+	&.:not(.flexible)
+		> *
+			flex-grow 0
+			flex-shrink 0
+
+	&.flexible
+		> *
+			flex-grow 1
+			flex-shrink 0
+
 	> button
 		padding 0 16px
 		color var(--faceTextButton)
+		flex-grow 0 !important
 
 		&:hover
 			color var(--faceTextButtonHover)
