@@ -11,8 +11,7 @@
 	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<!--<transition-group name="mk-notes" class="transition" ref="notes">-->
-	<div class="notes" ref="notes">
+	<transition-group name="mk-notes" class="transition notes" ref="notes">
 		<template v-for="(note, i) in _notes">
 			<x-note
 				:note="note"
@@ -25,8 +24,7 @@
 				<span><fa icon="angle-down"/>{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</div>
-	<!--</transition-group>-->
+	</transition-group>
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
