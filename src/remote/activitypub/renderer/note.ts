@@ -100,15 +100,19 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		text += `\n\n[投票を見る](${url})`;
 	}
 
+	let apText = text;
+
 	if (note.renoteId != null) {
-		if (text == null) text = '';
+		if (apText == null) apText = '';
 		const url = `${config.url}/notes/${note.renoteId}`;
-		text += `\n\nRE: ${url}`;
+		apText += `\n\nRE: ${url}`;
 	}
 
 	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
 
-	const content = toHtml(Object.assign({}, note, { text }));
+	const content = toHtml(Object.assign({}, note, {
+		text: apText
+	}));
 
 	const emojis = await getEmojis(note.emojis);
 	const apemojis = emojis.map(emoji => renderEmoji(emoji));
