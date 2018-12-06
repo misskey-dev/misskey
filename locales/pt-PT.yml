@@ -110,6 +110,7 @@ common:
   my-token-regenerated: "Seu token foi recriado, portanto você foi deslogado."
   i-like-sushi: "Eu prefiro sushi a pudim"
   show-reversi-board-labels: "Mostrar etiquetas de colunas e linhas no Reversi"
+  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "Conta verificada"
   disable-animated-mfm: "Desativar texto animado nas publicações"
