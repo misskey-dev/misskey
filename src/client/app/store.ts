@@ -40,6 +40,7 @@ const defaultSettings = {
 	games: {
 		reversi: {
 			showBoardLabels: false,
+			useWhileBlackStones: false,
 			useContrastStones: false
 		}
 	}

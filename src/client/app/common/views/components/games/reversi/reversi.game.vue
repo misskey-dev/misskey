@@ -30,8 +30,14 @@
 						:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
 						@click="set(i)"
 						:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`">
-					<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black" :class="{ contrast: $store.state.settings.games.reversi.useContrastStones }">
-					<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white" :class="{ contrast: $store.state.settings.games.reversi.useContrastStones }">
+					<template v-if="!$store.state.settings.games.reversi.useWhiteBlackStones">
+						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black" :class="{ contrast: $store.state.settings.games.reversi.useContrastStones }">
+						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white" :class="{ contrast: $store.state.settings.games.reversi.useContrastStones }">
+					</template>
+					<template v-if="$store.state.settings.games.reversi.useWhiteBlackStones">
+						<fa v-if="stone === true" :icon="fasCircle"/>
+						<fa v-if="stone === false" :icon="farCircle"/>
+					</template>
 				</div>
 			</div>
 			<div class="labels-y" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
@@ -74,6 +80,8 @@ import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../../../../../games/reversi/core';
 import { url } from '../../../../../config';
 import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/games/reversi/reversi.game.vue'),
@@ -99,7 +107,7 @@ export default Vue.extend({
 			logs: [],
 			logPos: 0,
 			pollingClock: null,
-			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight
+			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle
 		};
 	},
 
@@ -411,6 +419,11 @@ export default Vue.extend({
 
 					&.none
 						border-color transparent !important
+
+					> svg
+						display block
+						width 100%
+						height 100%
 
 					> img
 						display block
