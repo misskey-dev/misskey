@@ -122,6 +122,7 @@ common:
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
+  preserve-posted-text: "投稿しても内容を投稿フォームに保持する"
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "ユーザー名のホストを省略しない"

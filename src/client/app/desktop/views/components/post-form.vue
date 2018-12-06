@@ -431,8 +431,10 @@ export default Vue.extend({
 					speed: this.geo.speed,
 				} : null
 			}).then(data => {
-				this.clear();
-				this.deleteDraft();
+				if (!this.$store.state.settings.preservePostedText) {
+					this.clear();
+					this.deleteDraft();
+				}
 				this.$emit('posted');
 				this.$notify(this.renote
 					? this.$t('reposted')

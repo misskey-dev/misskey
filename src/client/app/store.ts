@@ -18,6 +18,7 @@ const defaultSettings = {
 	remainDeletedNote: false,
 	showPostFormOnTopOfTl: false,
 	suggestRecentHashtags: true,
+	preservePostedText: false,
 	showClockOnHeader: true,
 	useShadow: true,
 	roundedCorners: false,

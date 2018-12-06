@@ -113,6 +113,7 @@
 			</section>
 			<section>
 				<ui-switch v-model="suggestRecentHashtags">{{ $t('@.suggest-recent-hashtags') }}</ui-switch>
+				<ui-switch v-model="preservePostedText">{{ $t('@.preserve-posted-text') }}</ui-switch>
 				<ui-switch v-model="showClockOnHeader">{{ $t('show-clock-on-header') }}</ui-switch>
 				<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }}</ui-switch>
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
@@ -449,6 +450,11 @@ export default Vue.extend({
 		suggestRecentHashtags: {
 			get() { return this.$store.state.settings.suggestRecentHashtags; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'suggestRecentHashtags', value }); }
+		},
+
+		preservePostedText: {
+			get() { return this.$store.state.settings.preservePostedText; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'preservePostedText', value }); }
 		},
 
 		showClockOnHeader: {
