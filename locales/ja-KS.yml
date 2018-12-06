@@ -110,6 +110,7 @@ common:
   my-token-regenerated: "あんさんのトークンが更新されたらしいわ。すまんがとりあえずサインアウトすんで。"
   i-like-sushi: "寿司(のほうがプリンよりむしろ)ウマい、タコ焼きはあらへんけど。"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示や！"
+  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストをつけんで！"
   verified-user: "アメちゃん付きアカウント"
   disable-animated-mfm: "投稿内のちょろちょろ動いてんのを止める"
