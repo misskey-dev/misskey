@@ -17,7 +17,7 @@
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 				<span class="name">
-					<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+					<mk-user-name :user="user"/>
 				</span>
 				<span class="acct">@{{ user | acct }}</span>
 			</div>

@@ -5,7 +5,7 @@
 		<div class="fade"></div>
 		<div class="title">
 			<p class="name">
-				<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+				<mk-user-name :user="user"/>
 			</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>

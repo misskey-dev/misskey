@@ -4,7 +4,7 @@
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
 			<img class="avatar" :src="user.avatarUrl" alt=""/>
 			<span class="name">
-				<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+				<mk-user-name :user="user"/>
 			</span>
 			<span class="username">@{{ user | acct }}</span>
 		</li>

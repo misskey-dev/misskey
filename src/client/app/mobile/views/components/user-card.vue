@@ -4,7 +4,7 @@
 		<mk-avatar class="avatar" :user="user"/>
 	</header>
 	<a class="name" :href="user | userPage" target="_blank">
-		<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+		<mk-user-name :user="user"/>
 	</a>
 	<p class="username"><mk-acct :user="user"/></p>
 	<mk-follow-button class="follow-button" :user="user"/>

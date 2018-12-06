@@ -5,7 +5,7 @@
 			<mk-avatar class="avatar" :user="user"/>
 			<i18n :path="isFollowing ? 'following' : 'followers'" tag="p">
 				<router-link :to="user | userPage" place="user">
-					<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+					<mk-user-name :user="user"/>
 				</router-link>
 			</i18n>
 		</header>

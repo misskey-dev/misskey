@@ -6,7 +6,7 @@
 			<mk-avatar class="avatar" :user="user" target="_blank"/>
 			<div class="body">
 				<router-link class="name" :to="user | userPage" v-user-preview="user.id">
-					<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+					<mk-user-name :user="user"/>
 				</router-link>
 				<p class="username">@{{ user | acct }}</p>
 			</div>

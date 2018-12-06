@@ -4,7 +4,7 @@
 	<div class="main">
 		<header>
 			<router-link class="name" :to="user | userPage">
-				<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+				<mk-user-name :user="user"/>
 			</router-link>
 			<span class="username"><mk-acct :user="user"/></span>
 		</header>

@@ -5,7 +5,7 @@
 	<mk-follow-button :user="user" class="follow" mini/>
 	<div class="body">
 		<router-link :to="user | userPage" class="name">
-			<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+			<mk-user-name :user="user"/>
 		</router-link>
 		<span class="username">@{{ user | acct }}</span>
 		<div class="description">

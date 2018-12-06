@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">
-		<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+		<mk-user-name :user="user"/>
 	</template>
 	<main v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</p></div>
@@ -17,7 +17,7 @@
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
-					<h1><misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/></h1>
+					<h1><mk-user-name :user="user"/></h1>
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
