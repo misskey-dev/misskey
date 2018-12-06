@@ -110,6 +110,7 @@ common:
   my-token-regenerated: "Votre jeton vient d’être généré, vous allez maintenant être déconnecté."
   i-like-sushi: "Je préfère les sushis plutôt que le pudding"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
+  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
   use-contrast-reversi-stones: "Icône avec contraste sur Reversi"
   verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
