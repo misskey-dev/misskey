@@ -37,7 +37,7 @@
 		</div>
 	</nav>
 	<main>
-		<p class="warn" v-if="!perm()">{{ $t('you-are-not-an-admin') }}</p>
+		<p class="warn" v-if="!perm()"><fa icon="exclamation-triangle"/> {{ $t('you-are-not-an-admin') }}</p>
 		<div class="page">
 			<div v-if="page == 'dashboard'"><x-dashboard/></div>
 			<div v-if="page == 'instance'"><x-instance/></div>
