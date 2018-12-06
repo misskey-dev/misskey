@@ -110,6 +110,7 @@ common:
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   i-like-sushi: "Wolę sushi od puddingu"
   show-reversi-board-labels: "Pokazuj podpisy wierszy i kolumn w Reversi"
+  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "公式アカウント"
   disable-animated-mfm: "Wyłącz animowany tekst we wpisach"
