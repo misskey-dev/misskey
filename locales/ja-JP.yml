@@ -1069,6 +1069,7 @@ admin/views/index.vue:
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
   back-to-misskey: "Misskeyに戻る"
+  you-are-not-an-admin: "あなたは管理者でもモデレーターでもないため、いくつかのメニューは隠されています。"
 
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"

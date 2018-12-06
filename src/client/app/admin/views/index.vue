@@ -37,6 +37,7 @@
 		</div>
 	</nav>
 	<main>
+		<p class="warn" v-if="!perm()">{{ $t('you-are-not-an-admin') }}</p>
 		<div class="page">
 			<div v-if="page == 'dashboard'"><x-dashboard/></div>
 			<div v-if="page == 'instance'"><x-instance/></div>
@@ -269,6 +270,17 @@ export default Vue.extend({
 	> main
 		width 100%
 		padding 0 0 0 250px
+
+		> .warn
+			display block
+			margin 0
+			padding 4px
+			text-align center
+			font-size 12px
+			color #000
+			background-size auto auto
+			background-color rgba(255, 225, 0, 1)
+			background-image repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(245, 216, 0, 1) 20px, rgba(245, 216, 0, 1) 40px )
 
 		> .page
 			max-width 1150px
