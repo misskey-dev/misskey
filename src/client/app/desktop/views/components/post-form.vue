@@ -36,7 +36,7 @@
 				</x-draggable>
 				<p class="remain">{{ 4 - files.length }}/4</p>
 			</div>
-			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
+			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		</div>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
@@ -109,6 +109,7 @@ export default Vue.extend({
 			files: [],
 			uploadings: [],
 			poll: false,
+			pollChoices: [],
 			useCw: false,
 			cw: null,
 			geo: null,
@@ -166,7 +167,8 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= this.maxNoteTextLength);
+				(length(this.text.trim()) <= this.maxNoteTextLength) &&
+				(!this.poll || this.pollChoices.length >= 2);
 		}
 	},
 
@@ -276,6 +278,11 @@ export default Vue.extend({
 		onChangeFile() {
 			Array.from((this.$refs.file as any).files).forEach(this.upload);
 		},
+
+		onPollUpdate() {
+			this.pollChoices = this.$refs.poll.get().choices;
+			this.saveDraft();
+		}
 
 		upload(file) {
 			(this.$refs.uploader as any).upload(file);
