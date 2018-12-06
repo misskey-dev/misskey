@@ -10,7 +10,6 @@
 				:style="`background-image: url(${image.thumbnailUrl || image.url})`"
 				draggable="true"
 				@dragstart="onDragstart(image, $event)"
-				@dragend="onDragend"
 			></div>
 		</div>
 		<p :class="$style.empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
@@ -77,10 +76,6 @@ export default define({
 		onDragstart(file, e) {
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData('mk_drive_file', JSON.stringify(file));
-		},
-
-		onDragend(e) {
-			this.browser.isDragSource = false;
 		},
 	}
 });
