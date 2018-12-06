@@ -110,6 +110,7 @@ common:
   my-token-regenerated: "당신의 토큰이 업데이트되었으므로 로그아웃합니다."
   i-like-sushi: "저는 (푸딩보다 차라리) 초밥이 좋아요"
   show-reversi-board-labels: "리버시 보드의 행과 열 레이블을 표시"
+  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
   use-contrast-reversi-stones: "리버시 아이콘의 대비를 높이기"
   verified-user: "공식 계정"
   disable-animated-mfm: "글의 문자 애니메이션을 비활성화"
