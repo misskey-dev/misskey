@@ -128,11 +128,11 @@
 			</section>
 			<section>
 				<header>{{ $t('deck-column-minwidth') }}</header>
-				<ui-radio v-model="deckColumnMinwidth" value="narrow">{{ $t('deck-column-minwidth-narrow') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinwidth" value="narrower">{{ $t('deck-column-minwidth-narrower') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinwidth" value="w-default">{{ $t('deck-column-minwidth-default') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinwidth" value="wider">{{ $t('deck-column-minwidth-wider') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinwidth" value="wide">{{ $t('deck-column-minwidth-wide') }}</ui-radio>
+				<ui-radio v-model="deckColumnMinWidth" value="narrow">{{ $t('deck-column-minwidth-narrow') }}</ui-radio>
+				<ui-radio v-model="deckColumnMinWidth" value="narrower">{{ $t('deck-column-minwidth-narrower') }}</ui-radio>
+				<ui-radio v-model="deckColumnMinWidth" value="w-default">{{ $t('deck-column-minwidth-default') }}</ui-radio>
+				<ui-radio v-model="deckColumnMinWidth" value="wider">{{ $t('deck-column-minwidth-wider') }}</ui-radio>
+				<ui-radio v-model="deckColumnMinWidth" value="wide">{{ $t('deck-column-minwidth-wide') }}</ui-radio>
 			</section>
 			<section>
 				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
@@ -365,9 +365,9 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
 		},
 
-		deckColumnMinwidth: {
-			get() { return this.$store.state.device.deckColumnMinwidth; },
-			set(value) { this.$store.commit('device/set', { key: 'deckColumnMinwidth', value }); }
+		deckColumnMinWidth: {
+			get() { return this.$store.state.device.deckColumnMinWidth; },
+			set(value) { this.$store.commit('device/set', { key: 'deckColumnMinWidth', value }); }
 		},
 
 		deckDefault: {
