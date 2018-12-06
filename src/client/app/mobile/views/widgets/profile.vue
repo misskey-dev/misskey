@@ -9,7 +9,7 @@
 			alt="avatar"
 		/>
 		<router-link :class="$style.name" :to="$store.state.i | userPage">
-			<misskey-flavored-markdown :text="$store.state.i.name || $store.state.i.username" :shouldBreak="false" :plainText="true" :custom-emojis="$store.state.i.emojis"/>
+			<mk-user-name :user="$store.state.i"/>
 		</router-link>
 	</mk-widget-container>
 </div>

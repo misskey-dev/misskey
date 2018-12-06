@@ -14,7 +14,7 @@
 			<mk-note-preview class="preview" v-if="renote" :note="renote"/>
 			<div v-if="visibility == 'specified'" class="visibleUsers">
 				<span v-for="u in visibleUsers">
-					<misskey-flavored-markdown :text="u.name || u.username" :shouldBreak="false" :plainText="true" :custom-emojis="u.emojis"/>
+					<mk-user-name :user="u"/>
 					<a @click="removeVisibleUser(u)">[x]</a>
 				</span>
 				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>

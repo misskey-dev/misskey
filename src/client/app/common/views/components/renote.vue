@@ -4,7 +4,7 @@
 	<fa icon="retweet"/>
 	<i18n path="@.renoted-by" tag="span">
 		<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId" place="user">
-				<misskey-flavored-markdown :text="note.user.name || note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="note.user.emojis"/>
+			<mk-user-name :user="note.user"/>
 		</router-link>
 	</i18n>
 	<div class="info">

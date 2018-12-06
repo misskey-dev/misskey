@@ -5,7 +5,7 @@
 	<main>
 		<div v-for="req in requests">
 			<router-link :key="req.id" :to="req.follower | userPage">
-				<misskey-flavored-markdown :text="req.follower.name || req.follower.username" :shouldBreak="false" :plainText="true" :custom-emojis="req.follower.emojis"/>
+				<mk-user-name :user="req.follower"/>
 			</router-link>
 			<span>
 				<a @click="accept(req.follower)">{{ $t('accept') }}</a>|<a @click="reject(req.follower)">{{ $t('reject') }}</a>

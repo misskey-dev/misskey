@@ -11,9 +11,7 @@
 		<div class="body" v-if="isOpen">
 			<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
 				<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
-				<p class="name">
-					<misskey-flavored-markdown :text="$store.state.i.name || $store.state.i.username" :shouldBreak="false" :plainText="true" :custom-emojis="$store.state.i.emojis"/>
-				</p>
+				<p class="name"><mk-user-name :user="$store.state.i"/></p>
 			</router-link>
 			<div class="links">
 				<ul>

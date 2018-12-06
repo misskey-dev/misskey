@@ -2,7 +2,7 @@
 <header class="bvonvjxbwzaiskogyhbwgyxvcgserpmu">
 	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle == 'smart'"/>
 	<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">
-		<misskey-flavored-markdown :text="note.user.name || note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="note.user.emojis"/>
+		<mk-user-name :user="note.user"/>
 	</router-link>
 	<span class="is-admin" v-if="note.user.isAdmin">admin</span>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>

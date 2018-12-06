@@ -6,7 +6,7 @@
 			<div class="body">
 				<header>
 					<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">
-						<misskey-flavored-markdown :text="note.user.name || note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="note.user.emojis"/>
+						<mk-user-name :user="note.user"/>
 					</router-link>
 					<span class="username">@{{ note.user | acct }}</span>
 					<div class="info">
