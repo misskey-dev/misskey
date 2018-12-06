@@ -3,7 +3,9 @@
 	<ol class="users" ref="suggests" v-if="users.length > 0">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
 			<img class="avatar" :src="user.avatarUrl" alt=""/>
-			<span class="name">{{ user | userName }}</span>
+			<span class="name">
+				<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+			</span>
 			<span class="username">@{{ user | acct }}</span>
 		</li>
 	</ol>

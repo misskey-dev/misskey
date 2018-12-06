@@ -4,10 +4,14 @@
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
-			<router-link class="name" :to="u | userPage">{{ u | userName }}</router-link>
+			<router-link class="name" :to="u | userPage">
+				<misskey-flavored-markdown :text="u.name || u.username" :shouldBreak="false" :plainText="true" :custom-emojis="u.emojis"/>
+			</router-link>
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
-		<div class="description">{{ u.description }}</div>
+		<div class="description">
+			<misskey-flavored-markdown v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+		</div>
 		<div class="status">
 			<div>
 				<p>{{ $t('notes') }}</p><span>{{ u.notesCount }}</span>

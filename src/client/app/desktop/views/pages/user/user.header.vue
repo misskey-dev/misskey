@@ -4,7 +4,9 @@
 		<div class="banner" ref="banner" :style="style" @click="onBannerClick"></div>
 		<div class="fade"></div>
 		<div class="title">
-			<p class="name">{{ user | userName }}</p>
+			<p class="name">
+				<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+			</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
 				<span v-if="user.isBot" :title="$t('title')"><fa icon="robot"/></span>
@@ -14,7 +16,7 @@
 	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 	<div class="body">
 		<div class="description">
-			<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
+			<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 		</div>
 		<div class="info">
 			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>

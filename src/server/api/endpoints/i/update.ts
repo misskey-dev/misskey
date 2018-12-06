@@ -6,6 +6,8 @@ import acceptAllFollowRequests from '../../../../services/following/requests/acc
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
+import parse from '../../../../mfm/parse';
+import { extractEmojis } from '../../../../services/note/create';
 const langmap = require('langmap');
 
 export const meta = {
@@ -190,6 +192,24 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 			}
 		}
 	}
+
+	//#region emojis
+	if (updates.name != null || updates.description != null) {
+		let emojis = [] as string[];
+
+		if (updates.name != null) {
+			const match = updates.name.match(/:\w{1,100}:/g) as string[];
+			if (match) emojis = emojis.concat(match.map(m => m.replace(/:(\w+):/, '$1')));
+		}
+
+		if (updates.description != null) {
+			const tokens = parse(updates.description);
+			emojis = emojis.concat(extractEmojis(tokens));
+		}
+
+		updates.emojis = emojis;
+	}
+	//#endregion
 
 	await User.update(user._id, {
 		$set: updates

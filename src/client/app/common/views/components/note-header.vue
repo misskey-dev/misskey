@@ -1,7 +1,9 @@
 <template>
 <header class="bvonvjxbwzaiskogyhbwgyxvcgserpmu">
 	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle == 'smart'"/>
-	<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
+	<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">
+		<misskey-flavored-markdown :text="note.user.name || note.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="note.user.emojis"/>
+	</router-link>
 	<span class="is-admin" v-if="note.user.isAdmin">admin</span>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="is-cat" v-if="note.user.isCat">cat</span>

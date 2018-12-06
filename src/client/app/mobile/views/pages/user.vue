@@ -1,6 +1,8 @@
 <template>
 <mk-ui>
-	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">{{ user | userName }}</template>
+	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">
+		<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+	</template>
 	<main v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</p></div>
 		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
@@ -15,12 +17,12 @@
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
-					<h1>{{ user | userName }}</h1>
+					<h1><misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/></h1>
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
-					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
+					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 				</div>
 				<div class="info">
 					<p class="location" v-if="user.host === null && user.profile.location">

@@ -482,7 +482,7 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 	return unique(hashtags);
 }
 
-function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
+export function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
 	const emojis: string[] = [];
 
 	const extract = (tokens: Node[]) => {

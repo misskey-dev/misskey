@@ -3,7 +3,9 @@
 	<header :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
 		<mk-avatar class="avatar" :user="user"/>
 	</header>
-	<a class="name" :href="user | userPage" target="_blank">{{ user | userName }}</a>
+	<a class="name" :href="user | userPage" target="_blank">
+		<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+	</a>
 	<p class="username"><mk-acct :user="user"/></p>
 	<mk-follow-button class="follow-button" :user="user"/>
 </div>

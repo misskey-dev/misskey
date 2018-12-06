@@ -137,7 +137,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	};
 }
 
-async function getEmojis(names: string[]): Promise<IEmoji[]> {
+export async function getEmojis(names: string[]): Promise<IEmoji[]> {
 	if (names == null || names.length < 1) return [];
 
 	const emojis = await Promise.all(

@@ -3,11 +3,15 @@
 	<mk-avatar class="avatar" :user="user"/>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="user | userPage">{{ user | userName }}</router-link>
+			<router-link class="name" :to="user | userPage">
+				<misskey-flavored-markdown :text="user.name || user.username" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+			</router-link>
 			<span class="username"><mk-acct :user="user"/></span>
 		</header>
 		<div class="body">
-			<div class="description">{{ user.description }}</div>
+			<div class="description">
+				<misskey-flavored-markdown v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+			</div>
 		</div>
 	</div>
 </div>

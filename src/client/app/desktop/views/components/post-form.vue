@@ -7,7 +7,9 @@
 >
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
-			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
+			<span v-for="u in visibleUsers">
+				<misskey-flavored-markdown :text="u.name || u.username" :shouldBreak="false" :plainText="true" :custom-emojis="u.emojis"/>
+				<a @click="removeVisibleUser(u)">[x]</a></span>
 			<a @click="addVisibleUser">{{ $t('add-visible-user') }}</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">

@@ -15,7 +15,9 @@
 				@click="() => os.apis.updateAvatar()"
 				:title="$t('update-avatar')"
 			/>
-			<router-link class="name" :to="$store.state.i | userPage">{{ $store.state.i | userName }}</router-link>
+			<router-link class="name" :to="$store.state.i | userPage">
+				<misskey-flavored-markdown :text="$store.state.i.name || $store.state.i.username" :shouldBreak="false" :plainText="true" :custom-emojis="$store.state.i.emojis"/>
+			</router-link>
 			<p class="username">@{{ $store.state.i | acct }}</p>
 		</div>
 	</mk-widget-container>

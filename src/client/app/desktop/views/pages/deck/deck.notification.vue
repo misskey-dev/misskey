@@ -5,7 +5,9 @@
 		<div>
 			<header>
 				<mk-reaction-icon :reaction="notification.reaction"/>
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<router-link :to="notification.user | userPage">
+					<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+				</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
@@ -20,7 +22,9 @@
 		<div>
 			<header>
 				<fa icon="retweet"/>
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<router-link :to="notification.user | userPage">
+					<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+				</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
@@ -34,7 +38,9 @@
 		<div>
 			<header>
 				<fa icon="user-plus"/>
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<router-link :to="notification.user | userPage">
+					<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+				</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 		</div>
@@ -45,7 +51,9 @@
 		<div>
 			<header>
 				<fa icon="user-clock"/>
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<router-link :to="notification.user | userPage">
+					<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+				</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 		</div>
@@ -56,7 +64,9 @@
 		<div>
 			<header>
 				<fa icon="chart-pie"/>
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<router-link :to="notification.user | userPage">
+					<misskey-flavored-markdown :text="notification.user.name || notification.user.username" :shouldBreak="false" :plainText="true" :custom-emojis="notification.user.emojis"/>
+				</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">

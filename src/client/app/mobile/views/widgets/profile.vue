@@ -8,7 +8,9 @@
 			:src="$store.state.i.avatarUrl"
 			alt="avatar"
 		/>
-		<router-link :class="$style.name" :to="$store.state.i | userPage">{{ $store.state.i | userName }}</router-link>
+		<router-link :class="$style.name" :to="$store.state.i | userPage">
+			<misskey-flavored-markdown :text="$store.state.i.name || $store.state.i.username" :shouldBreak="false" :plainText="true" :custom-emojis="$store.state.i.emojis"/>
+		</router-link>
 	</mk-widget-container>
 </div>
 </template>
