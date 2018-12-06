@@ -127,12 +127,12 @@
 				<ui-radio v-model="deckColumnAlign" value="flexible">{{ $t('deck-column-align-flexible') }}</ui-radio>
 			</section>
 			<section>
-				<header>{{ $t('deck-column-minwidth') }}</header>
-				<ui-radio v-model="deckColumnMinWidth" value="narrow">{{ $t('deck-column-minwidth-narrow') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinWidth" value="narrower">{{ $t('deck-column-minwidth-narrower') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinWidth" value="normal">{{ $t('deck-column-minwidth-default') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinWidth" value="wider">{{ $t('deck-column-minwidth-wider') }}</ui-radio>
-				<ui-radio v-model="deckColumnMinWidth" value="wide">{{ $t('deck-column-minwidth-wide') }}</ui-radio>
+				<header>{{ $t('deck-column-width') }}</header>
+				<ui-radio v-model="deckColumnWidth" value="narrow">{{ $t('deck-column-width-narrow') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="narrower">{{ $t('deck-column-width-narrower') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="normal">{{ $t('deck-column-width-normal') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="wider">{{ $t('deck-column-width-wider') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="wide">{{ $t('deck-column-width-wide') }}</ui-radio>
 			</section>
 			<section>
 				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
@@ -365,9 +365,9 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
 		},
 
-		deckColumnMinWidth: {
-			get() { return this.$store.state.device.deckColumnMinWidth; },
-			set(value) { this.$store.commit('device/set', { key: 'deckColumnMinWidth', value }); }
+		deckColumnWidth: {
+			get() { return this.$store.state.device.deckColumnWidth; },
+			set(value) { this.$store.commit('device/set', { key: 'deckColumnWidth', value }); }
 		},
 
 		deckDefault: {
