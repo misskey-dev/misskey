@@ -66,7 +66,7 @@ export default Vue.extend({
 		}
 
 		if (this.char) {
-			let codes = [...this.char].map(x => x.codePointAt(0).toString(16));
+			let codes = Array.from(this.char).map(x => x.codePointAt(0).toString(16));
 			if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
 			codes = codes.filter(x => x && x.length);
 
