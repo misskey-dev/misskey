@@ -44,10 +44,18 @@ export default Vue.extend({
 				return;
 			}
 			this.$root.api('i/change_password', {
-				currentPasword: currentPassword,
-				newPassword: newPassword
+				currentPassword,
+				newPassword
 			}).then(() => {
-				this.$notify(this.$t('changed'));
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('changed')
+				});
+			}).catch(() => {
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('failed')
+				});
 			});
 		}
 	}
