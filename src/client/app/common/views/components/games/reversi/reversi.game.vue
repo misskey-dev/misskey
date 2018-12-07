@@ -10,7 +10,7 @@
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">{{ $t('@.reversi.my-turn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
-				<span>{{ $t('@.reversi.won', { name: $options.filters.userName(game.winner) }) }}</span>
+				<misskey-flavored-markdown :text="$t('@.reversi.won', { name: $options.filters.userName(game.winner) })" :shouldBreak="false" :plainText="true" :custom-emojis="game.winner.emojis"/>
 				<span v-if="game.surrendered != null"> ({{ $t('surrendered') }})</span>
 			</template>
 			<template v-else>{{ $t('@.reversi.drawn') }}</template>
