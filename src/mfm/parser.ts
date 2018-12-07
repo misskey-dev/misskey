@@ -211,6 +211,7 @@ const mfm = P.createLanguage({
 			hashtag = hashtag.substr(0, getTrailingPosition(hashtag));
 			if (hashtag.match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
 			if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a hashtag');
+			if (hashtag.length > 30) return P.makeFailure(i, 'not a hashtag');
 			return P.makeSuccess(i + ('#' + hashtag).length, makeNode('hashtag', { hashtag: hashtag }));
 		}),
 	//#endregion
