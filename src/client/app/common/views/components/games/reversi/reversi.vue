@@ -4,7 +4,7 @@
 		<x-gameroom :game="game" :self-nav="selfNav" @go-index="goIndex"/>
 	</div>
 	<div class="matching" v-else-if="matching">
-		<h1>{{ this.$t('matching.waiting-for').split('{}')[0] }}<b>{{ matching | userName }}</b>{{ this.$t('matching.waiting-for').split('{}')[1] }}<mk-ellipsis/></h1>
+		<h1>{{ this.$t('matching.waiting-for').split('{}')[0] }}<b><mk-user-name :user="matching"/></b>{{ this.$t('matching.waiting-for').split('{}')[1] }}<mk-ellipsis/></h1>
 		<div class="cancel">
 			<form-button round @click="cancel">{{ $t('matching.cancel') }}</form-button>
 		</div>

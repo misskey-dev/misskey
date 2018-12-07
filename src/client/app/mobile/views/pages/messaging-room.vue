@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header">
-		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ user | userName }}</template>
+		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span><mk-user-name :user="user"/></template>
 		<template v-else><mk-ellipsis/></template>
 	</span>
 	<x-messaging-room v-if="!fetching" :user="user" :is-naked="true"/>

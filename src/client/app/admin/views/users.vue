@@ -46,7 +46,7 @@
 				</div>
 				<div>
 					<header>
-						<b>{{ user | userName }}</b>
+						<b><mk-user-name :user="user"/></b>
 						<span class="username">@{{ user | acct }}</span>
 					</header>
 					<div>
