@@ -198,8 +198,8 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		let emojis = [] as string[];
 
 		if (updates.name != null) {
-			const match = updates.name.match(/:\w{1,100}:/g) as string[];
-			if (match) emojis = emojis.concat(match.map(m => m.replace(/:(\w+):/, '$1')));
+			const tokens = parse(updates.name, true);
+			emojis = emojis.concat(extractEmojis(tokens));
 		}
 
 		if (updates.description != null) {
