@@ -45,7 +45,7 @@ export default Vue.extend({
 			}
 			this.$root.api('i/change_password', {
 				currentPassword,
-				newPassword: newPassword
+				newPassword
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
