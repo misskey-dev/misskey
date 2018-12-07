@@ -873,6 +873,7 @@ common/views/components/password-settings.vue:
   enter-new-password-again: "请再次输入新密码"
   not-match: "新密码不匹配"
   changed: "密码已更改"
+  failed: "パスワード変更に失敗しました"
 desktop/views/components/sub-note-content.vue:
   private: "这个帖子是私密的"
   deleted: "帖子已删除"
