@@ -44,8 +44,9 @@ const lib = Object.entries(emojilib.lib).filter((x: any) => {
 });
 
 const char2file = (char: string) => {
-	let codes = [...char].map(x => x.codePointAt(0).toString(16));
+	let codes = Array.from(char).map(x => x.codePointAt(0).toString(16));
 	if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
+	codes = codes.filter(x => x && x.length);
 	return codes.join('-');
 };
 
