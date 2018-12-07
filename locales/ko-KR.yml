@@ -873,6 +873,7 @@ common/views/components/password-settings.vue:
   enter-new-password-again: "다시 한 번 새 비밀번호를 입력하여 주십시오"
   not-match: "새 비밀번호가 일치하지 않습니다"
   changed: "비밀번호를 변경하였습니다"
+  failed: "パスワード変更に失敗しました"
 desktop/views/components/sub-note-content.vue:
   private: "이 글은 비공개입니다"
   deleted: "이 글은 삭제되었습니다"
