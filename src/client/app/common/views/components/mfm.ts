@@ -67,14 +67,9 @@ export default Vue.component('misskey-flavored-markdown', {
 	render(createElement) {
 		if (this.text == null || this.text == '') return;
 
-		let ast: Node[];
-
-		if (this.ast == null) {
-			// Parse text to ast
-			ast = parse(this.text, this.plainText);
-		} else {
-			ast = this.ast as Node[];
-		}
+		const ast = this.ast == null ?
+			parse(this.text, this.plainText) : // Parse text to ast
+			this.ast as Node[];
 
 		let bigCount = 0;
 		let motionCount = 0;
