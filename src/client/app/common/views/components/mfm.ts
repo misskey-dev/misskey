@@ -10,15 +10,9 @@ import { toUnicode } from 'punycode';
 import syntaxHighlight from '../../../../../mfm/syntax-highlight';
 
 function getTextCount(tokens: Node[]): number {
-	let count = 0;
-	const extract = (tokens: Node[]) => {
-		count += sum(tokens.filter(x => x.name === 'text').map(x => length(x.props.text)));
-		tokens.filter(x => x.children).forEach(x => {
-			extract(x.children);
-		});
-	};
-	extract(tokens);
-	return count;
+	const rootCount = sum(tokens.filter(x => x.name === 'text').map(x => length(x.props.text)));
+	const childrenCount = sum(tokens.filter(x => x.children).map(x => getTextCount(x.children)));
+	return rootCount + childrenCount;
 }
 
 function getChildrenCount(tokens: Node[]): number {
