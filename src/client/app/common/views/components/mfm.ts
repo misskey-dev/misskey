@@ -3,7 +3,7 @@ import { length } from 'stringz';
 import { Node } from '../../../../../mfm/parser';
 import parse from '../../../../../mfm/parse';
 import MkUrl from './url.vue';
-import { concat } from '../../../../../prelude/array';
+import { concat, sum } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
 import MkGoogle from './google.vue';
 import { toUnicode } from 'punycode';
@@ -12,9 +12,7 @@ import syntaxHighlight from '../../../../../mfm/syntax-highlight';
 function getTextCount(tokens: Node[]): number {
 	let count = 0;
 	const extract = (tokens: Node[]) => {
-		tokens.filter(x => x.name === 'text').forEach(x => {
-			count += length(x.props.text);
-		});
+		count += sum(tokens.filter(x => x.name === 'text').map(x => length(x.props.text)));
 		tokens.filter(x => x.children).forEach(x => {
 			extract(x.children);
 		});
