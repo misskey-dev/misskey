@@ -737,14 +737,16 @@ desktop/views/components/note-detail.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
+  reply: "返信"
   renote: "Renote"
-  add-reaction: "リアクション"
+  reaction: "リアクション"
 
 desktop/views/components/note.vue:
   reply: "返信"
   renote: "Renote"
-  add-reaction: "リアクション"
+  reaction: "リアクション"
   detail: "詳細"
+  location: "位置情報"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
 
@@ -1421,16 +1423,21 @@ mobile/views/components/friends-maker.vue:
   close: "閉じる"
 
 mobile/views/components/note.vue:
+  reply: "返信"
+  renote: "Renote"
+  reaction: "リアクション"
+  detail: "詳細"
+  location: "位置情報"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  location: "位置情報"
 
 mobile/views/components/note-detail.vue:
-  reply: "返信"
-  reaction: "リアクション"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
+  reply: "返信"
+  renote: "Renote"
+  reaction: "リアクション"
 
 mobile/views/components/note-preview.vue:
   admin: "admin"

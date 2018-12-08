@@ -34,7 +34,7 @@
 						<mk-media-list :media-list="appearNote.files"/>
 					</div>
 					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
-					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> 位置情報</a>
+					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
 					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote" :mini="mini"/></div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :mini="mini"/>
 				</div>
@@ -45,18 +45,23 @@
 				<button class="replyButton" @click="reply()" :title="$t('reply')">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 					<template v-else><fa icon="reply"/></template>
-					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
+					<p class="count" v-if="appearNote.repliesCount > 0 && appearNote.repliesCount < 10000">{{ appearNote.repliesCount }}</p>
+					<p class="count" v-else-if="appearNote.repliesCount >= 10000">{{ numeral(appearNote.repliesCount).format('0.0a') }}</p>
 				</button>
 				<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton" @click="renote()" :title="$t('renote')">
-					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+					<fa icon="retweet"/>
+					<p class="count" v-if="appearNote.renoteCount > 0 && appearNote.renoteCount < 10000">{{ appearNote.renoteCount }}</p>
+					<p class="count" v-else-if="appearNote.renoteCount >= 10000">{{ numeral(appearNote.renoteCount).format('0.0a') }}</p>
 				</button>
 				<button v-else class="inhibitedButton">
 					<fa icon="ban"/>
 				</button>
-				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
-					<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
+				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('reaction')">
+					<fa icon="plus"/>
+					<p class="count" v-if="appearNote.reactionsCount > 0 && appearNote.reactionsCount < 10000">{{ appearNote.reactionsCount }}</p>
+					<p class="count" v-else-if="appearNote.reactionsCount >= 10000">{{ numeral(appearNote.reactionsCount).format('0.0a') }}</p>
 				</button>
-				<button @click="menu()" ref="menuButton">
+				<button class="menu" @click="menu()" ref="menuButton">
 					<fa icon="ellipsis-h"/>
 				</button>
 			</footer>
@@ -72,6 +77,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
+import * as numeral from 'numeral';
 
 import XSub from './note.sub.vue';
 import noteMixin from '../../../common/scripts/note-mixin';
@@ -299,8 +305,8 @@ export default Vue.extend({
 
 					> .count
 						display inline
-						margin 0 0 0 8px
-						color #999
+						position absolute
+						margin 0 0 0 4px
 
 					&.reacted, &.reacted:hover
 						color var(--noteActionsReactionHover)

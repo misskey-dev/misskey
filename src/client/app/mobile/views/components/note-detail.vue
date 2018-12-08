@@ -61,21 +61,26 @@
 		</div>
 		<footer>
 			<mk-reactions-viewer :note="appearNote"/>
-			<button @click="reply()" :title="$t('title')">
+			<button class="replyButton" @click="reply()" :title="$t('reply')">
 				<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 				<template v-else><fa icon="reply"/></template>
-				<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
+				<p class="count" v-if="appearNote.repliesCount > 0 && appearNote.repliesCount < 10000">{{ appearNote.repliesCount }}</p>
+				<p class="count" v-else-if="appearNote.repliesCount >= 10000">{{ numeral(appearNote.repliesCount).format('0.0a') }}</p>
 			</button>
-			<button v-if="['public', 'home'].includes(appearNote.visibility)" @click="renote()" title="Renote">
-				<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+			<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton" @click="renote()" :title="$t('renote')">
+				<fa icon="retweet"/>
+				<p class="count" v-if="appearNote.renoteCount > 0 && appearNote.renoteCount < 10000">{{ appearNote.renoteCount }}</p>
+				<p class="count" v-else-if="appearNote.renoteCount >= 10000">{{ numeral(appearNote.renoteCount).format('0.0a') }}</p>
 			</button>
-			<button v-else>
+			<button v-else class="inhibitedButton">
 				<fa icon="ban"/>
 			</button>
-			<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('title')">
-				<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
+			<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('reaction')">
+				<fa icon="plus"/>
+				<p class="count" v-if="appearNote.reactionsCount > 0 && appearNote.reactionsCount < 10000">{{ appearNote.reactionsCount }}</p>
+				<p class="count" v-else-if="appearNote.reactionsCount >= 10000">{{ numeral(appearNote.reactionsCount).format('0.0a') }}</p>
 			</button>
-			<button @click="menu()" ref="menuButton">
+			<button class="menu" @click="menu()" ref="menuButton">
 				<fa icon="ellipsis-h"/>
 			</button>
 		</footer>
@@ -320,15 +325,28 @@ export default Vue.extend({
 				cursor pointer
 
 				&:not(:last-child)
-					margin-right 28px
+					margin-right 32px
 
 				&:hover
 					color var(--noteActionsHover)
 
+				&.replyButton:hover
+					color var(--noteActionsReplyHover)
+
+				&.renoteButton:hover
+					color var(--noteActionsRenoteHover)
+
+				&.reactionButton:hover
+					color var(--noteActionsReactionHover)
+
+				&.inhibitedButton
+					cursor not-allowed
+
 				> .count
 					display inline
-					margin 0 0 0 8px
-					color #999
+					position absolute
+					margin .03em 0 .07em 3px
+					font-size .9em
 
 				&.reacted
 					color var(--primary)
