@@ -107,7 +107,7 @@
 		"debug": "4.1.0",
 		"deep-equal": "1.0.1",
 		"deepcopy": "0.6.3",
-		"diskusage": "0.2.5",
+		"diskusage": "1.0.0",
 		"double-ended-queue": "2.1.0-0",
 		"elasticsearch": "15.2.0",
 		"emojilib": "2.4.0",
