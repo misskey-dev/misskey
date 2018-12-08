@@ -126,11 +126,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 			const nodes = (token.props.text as string).split('\n').map(x => doc.createTextNode(x));
 
 			for (const x of intersperse('br', nodes)) {
-				if (x === 'br') {
-					el.appendChild(doc.createElement('br'));
-				} else {
-					el.appendChild(x);
-				}
+				el.appendChild(x === 'br' ? doc.createElement('br') : x);
 			}
 
 			return el;
