@@ -5,6 +5,7 @@ import unfollow from '../../../../services/following/delete';
 import cancelRequest from '../../../../services/following/requests/cancel';
 import { IFollow } from '../../type';
 import FollowRequest from '../../../../models/follow-request';
+import Following from '../../../../models/following';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
@@ -30,9 +31,16 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		followeeId: followee._id
 	});
 
+	const following = await Following.findOne({
+		followerId: actor._id,
+		followeeId: followee._id
+	});
+
 	if (req) {
 		await cancelRequest(followee, actor);
-	} else {
+	}
+
+	if (following) {
 		await unfollow(actor, followee);
 	}
 };
