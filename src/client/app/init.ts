@@ -411,15 +411,7 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 
 			// Navigation hook
 			router.beforeEach((to, from, next) => {
-				if (os.store.state.navHook) {
-					if (os.store.state.navHook(to)) {
-						next(false);
-					} else {
-						next();
-					}
-				} else {
-					next();
-				}
+				next(os.store.state.navHook && os.store.state.navHook(to) ? false : undefined);
 			});
 
 			document.addEventListener('visibilitychange', () => {
