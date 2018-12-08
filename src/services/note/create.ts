@@ -161,6 +161,8 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		const combinedTokens = tokens.concat(cwTokens);
 
 		tags = data.apHashtags || extractHashtags(combinedTokens);
+
+		// MongoDBのインデックス対象は128文字以上にできない
 		tags = tags.filter(tag => tag.length <= 100);
 
 		emojis = data.apEmojis || extractEmojis(combinedTokens);
