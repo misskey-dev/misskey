@@ -47,7 +47,7 @@ export default Vue.extend({
 		XPhotos,
 		XFollowersYouKnow,
 		XFriends,
-		XIntegrations,
+		XIntegrations
 	},
 	data() {
 		return {
