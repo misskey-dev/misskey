@@ -77,11 +77,7 @@ export default {
 						const matched = match(e, action.patterns);
 
 						if (matched) {
-							if (el._hotkey_global) {
-								if (match(e, targetReservedKeys)) {
-									return;
-								}
-							}
+							if (el._hotkey_global && match(e, targetReservedKeys)) return;
 
 							e.preventDefault();
 							e.stopPropagation();
