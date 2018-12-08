@@ -12,9 +12,7 @@
 			<div class="side">
 				<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 				<x-profile :user="user"/>
-				<x-twitter :user="user" v-if="!user.host && user.twitter"/>
-				<x-github :user="user" v-if="!user.host && user.github"/>
-				<x-discord :user="user" v-if="!user.host && user.discord"/>
+				<x-integrations :user="user" v-if="!user.host"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>
@@ -38,9 +36,7 @@ import XProfile from './user.profile.vue';
 import XPhotos from './user.photos.vue';
 import XFollowersYouKnow from './user.followers-you-know.vue';
 import XFriends from './user.friends.vue';
-import XTwitter from './user.twitter.vue';
-import XGithub from './user.github.vue'; // ?MEM: Don't fix the intentional typo. (XGitHub -> `<x-git-hub>`)
-import XDiscord from './user.discord.vue';
+import XIntegrations from './user.integrations.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -51,9 +47,7 @@ export default Vue.extend({
 		XPhotos,
 		XFollowersYouKnow,
 		XFriends,
-		XTwitter,
-		XGithub, // ?MEM: Don't fix the intentional typo. (see L41)
-		XDiscord
+		XIntegrations
 	},
 	data() {
 		return {
@@ -87,7 +81,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .xygkxeaeontfaokvqmiblezmhvhostak
-	width 980px
+	max-width 980px
+	min-width 720px
 	padding 16px
 	margin 0 auto
 
