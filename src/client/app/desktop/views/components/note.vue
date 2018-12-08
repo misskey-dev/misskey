@@ -56,7 +56,7 @@
 				<button v-else class="inhibitedButton">
 					<fa icon="ban"/>
 				</button>
-				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('reaction')">
+				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 					<fa icon="plus"/>
 					<p class="count" v-if="appearNote.reactionsCount > 0 && appearNote.reactionsCount < 10000">{{ appearNote.reactionsCount }}</p>
 					<p class="count" v-else-if="appearNote.reactionsCount >= 10000">{{ numeral(appearNote.reactionsCount).format('0.0a') }}</p>
@@ -115,7 +115,8 @@ export default Vue.extend({
 	data() {
 		return {
 			conversation: [],
-			replies: []
+			replies: [],
+			numeral
 		};
 	},
 

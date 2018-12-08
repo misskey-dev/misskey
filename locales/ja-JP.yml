@@ -739,12 +739,12 @@ desktop/views/components/note-detail.vue:
   location: "位置情報"
   reply: "返信"
   renote: "Renote"
-  reaction: "リアクション"
+  add-reaction: "リアクション"
 
 desktop/views/components/note.vue:
   reply: "返信"
   renote: "Renote"
-  reaction: "リアクション"
+  add-reaction: "リアクション"
   detail: "詳細"
   location: "位置情報"
   private: "この投稿は非公開です"
@@ -1425,7 +1425,7 @@ mobile/views/components/friends-maker.vue:
 mobile/views/components/note.vue:
   reply: "返信"
   renote: "Renote"
-  reaction: "リアクション"
+  add-reaction: "リアクション"
   detail: "詳細"
   location: "位置情報"
   private: "この投稿は非公開です"
@@ -1437,7 +1437,7 @@ mobile/views/components/note-detail.vue:
   location: "位置情報"
   reply: "返信"
   renote: "Renote"
-  reaction: "リアクション"
+  add-reaction: "リアクション"
 
 mobile/views/components/note-preview.vue:
   admin: "admin"

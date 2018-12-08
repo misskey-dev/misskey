@@ -75,7 +75,7 @@
 			<button v-else class="inhibitedButton">
 				<fa icon="ban"/>
 			</button>
-			<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('reaction')">
+			<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 				<fa icon="plus"/>
 				<p class="count" v-if="appearNote.reactionsCount > 0 && appearNote.reactionsCount < 10000">{{ appearNote.reactionsCount }}</p>
 				<p class="count" v-else-if="appearNote.reactionsCount >= 10000">{{ numeral(appearNote.reactionsCount).format('0.0a') }}</p>
@@ -97,6 +97,7 @@ import i18n from '../../../i18n';
 import XSub from './note.sub.vue';
 import noteSubscriber from '../../../common/scripts/note-subscriber';
 import noteMixin from '../../../common/scripts/note-mixin';
+import * as numeral from 'numeral';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/note-detail.vue'),
@@ -121,7 +122,8 @@ export default Vue.extend({
 		return {
 			conversation: [],
 			conversationFetching: false,
-			replies: []
+			replies: [],
+			numeral
 		};
 	},
 
