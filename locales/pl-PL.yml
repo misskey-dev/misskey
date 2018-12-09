@@ -353,11 +353,11 @@ common/views/components/poll-editor.vue:
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wybierz reakcję"
 common/views/components/emoji-picker.vue:
-  custom-emoji: "カスタム絵文字"
+  custom-emoji: "Niestandardowe Emoji"
   people: "Ludzie"
   animals-and-nature: "動物&自然"
   food-and-drink: "食べ物&飲み物"
-  activity: "アクティビティ"
+  activity: "Aktywność"
   travel-and-places: "場所"
   objects: "物"
   symbols: "記号"
@@ -556,7 +556,7 @@ desktop/views/components/calendar.vue:
   next: "Następny miesiąc"
   go: "Naciśnij, aby przejść"
 desktop/views/components/choose-file-from-drive-window.vue:
-  chosen-files: "{count}ファイル選択中"
+  chosen-files: "Wybrano {count} Plik(ów)"
   upload: "Wyślij pliki z Twojego komputera"
   cancel: "Anuluj"
   ok: "OK"
