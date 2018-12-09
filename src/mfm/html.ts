@@ -96,7 +96,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 		link(token) {
 			const a = doc.createElement('a');
 			a.href = token.props.url;
-			appendChildren(token.children, el);
+			appendChildren(token.children, a);
 			return a;
 		},
 
