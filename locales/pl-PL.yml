@@ -405,21 +405,21 @@ common/views/components/stream-indicator.vue:
   connected: "Połączono"
 common/views/components/integration-settings.vue:
   title: "サービス連携"
-  connect: "接続する"
+  connect: "Połącz"
   disconnect: "切断する"
   connected-to: "次のアカウントに接続されています"
 common/views/components/github-setting.vue:
   description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のGitHubアカウントに接続されています"
   detail: "詳細..."
-  reconnect: "再接続する"
+  reconnect: "Połącz ponownie"
   connect: "GitHubと接続する"
   disconnect: "切断する"
 common/views/components/discord-setting.vue:
   description: "お使いのDiscordアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでDiscordアカウント情報が表示されるようになったり、Discordを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のDiscordアカウントに接続されています"
   detail: "詳細..."
-  reconnect: "再接続する"
+  reconnect: "Połącz ponownie"
   connect: "Discordと接続する"
   disconnect: "切断する"
 common/views/components/uploader.vue:
