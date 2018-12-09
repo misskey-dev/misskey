@@ -990,6 +990,12 @@ desktop/views/components/sub-note-content.vue:
   media-count: "{}つのメディア"
   poll: "アンケート"
 
+desktop/views/components/settings.tags.vue:
+  title: "タグ"
+  query: "クエリ (省略可)"
+  add: "追加"
+  save: "保存"
+
 desktop/views/components/taskmanager.vue:
   title: "タスクマネージャ"
 
