@@ -10,14 +10,14 @@ common:
     title: "Czym jest Misskey?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
     features: "特徴"
-    rich-contents: "投稿"
-    rich-contents-desc: "自分の考え、話題の出来事、皆と共有したいことについて発信してください。必要であれば、様々な構文を使って投稿を装飾したり、好きな画像、動画などのファイルやアンケートを添付することもできます。"
+    rich-contents: "Wpis"
+    rich-contents-desc: "Po prostu opublikuj swój pomysł, gorące tematy i wszystko, co chcesz udostępnić. Możesz ozdobić swoje słowa, dołączyć swoje ulubione zdjęcia, wysłać pliki, w tym filmy i utworzyć ankietę - to są rzeczy, które możesz zrobić w Misskey!"
     reaction: "Reakcje"
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
     ui: "Interfejs"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
     drive: "Dysk"
-    drive-desc: "以前投稿したことのある画像をまた投稿したくなったことはありませんか？もしくは、アップロードしたファイルをフォルダ分けして整理したくなったことはありませんか？Misskeyの根幹に組み込まれたドライブ機能によってそれらが解決します。ファイルの共有も簡単です。"
+    drive-desc: "Chcesz opublikować zdjęcie, które już przesłałeś? Chcesz uporządkować, nazwać i utworzyć folder dla przesłanych plików? Dysk Misskey to najlepsze rozwiązanie dla Ciebie. Bardzo łatwo udostępniać swoje pliki online."
     outro: "他にもMisskeyにしかない機能はまだまだあるので、ぜひあなた自身の目で確かめてください。Misskeyは分散型SNSなので、このインスタンスが気に入らなければ他のインスタンスを試すこともできます。それでは、GLHF!"
   adblock:
     detected: "Spróbuj wyłączyć blokadę reklam."
@@ -72,7 +72,7 @@ common:
     friday: "Piątek"
     saturday: "Sobota"
   reactions:
-    like: "いいね"
+    like: "Lubię"
     love: "Kocham"
     laugh: "Śmieszne"
     hmm: "Hmm…?"
@@ -126,7 +126,7 @@ common:
   is-remote-user: "Informacje o użytkowniku są kopiowane."
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
-  renoted-by: "{user}がRenote"
+  renoted-by: "{user} udostępnił(a)"
   error:
     title: 'Coś poszło nie tak'
     retry: 'Ponów próbę'
@@ -136,7 +136,7 @@ common:
     opponent-turn: "Kolej na przeciwnika"
     turn-of: "{name}のターンです"
     past-turn-of: "{name}のターン"
-    won: "{name}の勝ち"
+    won: "{name} wygrał(a)"
     black: "Czarny"
     white: "Biały"
     total: "Łącznie"
@@ -262,7 +262,7 @@ common/views/components/media-banner.vue:
 common/views/components/theme.vue:
   light-theme: "非ダークモード時に使用するテーマ"
   dark-theme: "ダークモード時に使用するテーマ"
-  light-themes: "明るいテーマ"
+  light-themes: "Jasny Motyw"
   dark-themes: "Ciemny motyw"
   install-a-theme: "Zainstaluj motyw"
   theme-code: "Kod motywu"
@@ -411,14 +411,14 @@ common/views/components/integration-settings.vue:
 common/views/components/github-setting.vue:
   description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のGitHubアカウントに接続されています"
-  detail: "詳細..."
+  detail: "Więcej..."
   reconnect: "Połącz ponownie"
   connect: "GitHubと接続する"
   disconnect: "切断する"
 common/views/components/discord-setting.vue:
   description: "お使いのDiscordアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでDiscordアカウント情報が表示されるようになったり、Discordを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のDiscordアカウントに接続されています"
-  detail: "詳細..."
+  detail: "Szczegóły…"
   reconnect: "Połącz ponownie"
   connect: "Discordと接続する"
   disconnect: "切断する"
@@ -662,7 +662,7 @@ desktop/views/components/note.vue:
   reply: "返信"
   renote: "Renote"
   add-reaction: "リアクション"
-  detail: "詳細"
+  detail: "Szczegóły"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
