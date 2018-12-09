@@ -67,7 +67,7 @@ export default abstract class Chart<T> {
 		};
 		if (grouped)
 			keys.group = -1;
-		this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
+		this.collection.createIndex(keys, { unique: true });
 	}
 
 	@autobind
