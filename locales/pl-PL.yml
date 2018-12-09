@@ -442,7 +442,7 @@ common/views/components/trends.vue:
   empty: "トレンドなし"
 common/views/components/language-settings.vue:
   title: "Język"
-  pick-language: "言語を選択"
+  pick-language: "Wybierz język"
   recommended: "Zalecane"
   auto: "Automatyczny"
   specify-language: "言語を指定"
