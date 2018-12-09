@@ -1,2 +1,2 @@
-export function extractPublic(keypair: String): String;
-export function generate(): String;
+export function extractPublic(keypair: string): string;
+export function generate(): string;
