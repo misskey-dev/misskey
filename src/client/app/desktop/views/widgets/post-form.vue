@@ -99,7 +99,7 @@ export default define({
 			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
-				files.forEach(this.attachMedia);
+				for (const x of files) this.attachMedia(x);
 			});
 		},
 
@@ -118,15 +118,15 @@ export default define({
 		},
 
 		onPaste(e) {
-			Array.from(e.clipboardData.items).forEach((item: any) => {
+			for (const item of Array.from(e.clipboardData.items)) {
 				if (item.kind == 'file') {
 					this.upload(item.getAsFile());
 				}
-			});
+			}
 		},
 
 		onChangeFile() {
-			Array.from((this.$refs.file as any).files).forEach(this.upload);
+			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
 		},
 
 		upload(file) {
@@ -146,7 +146,7 @@ export default define({
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
 				e.preventDefault();
-				Array.from(e.dataTransfer.files).forEach(this.upload);
+				for (const x of Array.from(e.dataTransfer.files)) this.upload(x);
 				return;
 			}
 

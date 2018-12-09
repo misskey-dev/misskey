@@ -41,10 +41,13 @@ const router = new Router();
 /**
  * Register endpoint handlers
  */
-endpoints.forEach(endpoint => endpoint.meta.requireFile
-	? router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint))
-	: router.post(`/${endpoint.name}`, handler.bind(null, endpoint))
-);
+for (const endpoint of endpoints) {
+	if (endpoint.meta.requireFile) {
+		router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint));
+	} else {
+		router.post(`/${endpoint.name}`, handler.bind(null, endpoint));
+	}
+}
 
 router.post('/signup', require('./private/signup').default);
 router.post('/signin', require('./private/signin').default);

@@ -65,8 +65,8 @@ class NotificationManager {
 		}
 	}
 
-	public deliver() {
-		this.queue.forEach(async x => {
+	public async deliver() {
+		for (const x of this.queue) {
 			// ミュート情報を取得
 			const mentioneeMutes = await Mute.find({
 				muterId: x.target
@@ -80,7 +80,7 @@ class NotificationManager {
 					noteId: this.note._id
 				});
 			}
-		});
+		}
 	}
 }
 
@@ -175,11 +175,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	}
 
 	if (data.visibility == 'specified') {
-		data.visibleUsers.forEach(u => {
+		for (const u of data.visibleUsers) {
 			if (!mentionedUsers.some(x => x._id.equals(u._id))) {
 				mentionedUsers.push(u);
 			}
-		});
+		}
 	}
 
 	const note = await insertNote(user, data, tags, emojis, mentionedUsers);
@@ -213,13 +213,13 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加
 	if (data.files) {
-		data.files.forEach(file => {
+		for (const file of data.files) {
 			DriveFile.update({ _id: file._id }, {
 				$push: {
 					'metadata.attachedNoteIds': note._id
 				}
 			});
-		});
+		}
 	}
 
 	// Increment notes count
@@ -230,13 +230,13 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// 未読通知を作成
 	if (data.visibility == 'specified') {
-		data.visibleUsers.forEach(u => {
+		for (const u of data.visibleUsers) {
 			insertNoteUnread(u, note, true);
-		});
+		}
 	} else {
-		mentionedUsers.forEach(u => {
+		for (const u of mentionedUsers) {
 			insertNoteUnread(u, note, false);
-		});
+		}
 	}
 
 	if (data.reply) {
@@ -469,12 +469,12 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 	const hashtags: string[] = [];
 
 	const extract = (tokens: Node[]) => {
-		tokens.filter(x => x.name === 'hashtag').forEach(x => {
+		for (const x of tokens.filter(x => x.name === 'hashtag')) {
 			hashtags.push(x.props.hashtag);
-		});
-		tokens.filter(x => x.children).forEach(x => {
+		}
+		for (const x of tokens.filter(x => x.children)) {
 			extract(x.children);
-		});
+		}
 	};
 
 	// Extract hashtags
@@ -487,14 +487,14 @@ export function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
 	const emojis: string[] = [];
 
 	const extract = (tokens: Node[]) => {
-		tokens.filter(x => x.name === 'emoji').forEach(x => {
+		for (const x of tokens.filter(x => x.name === 'emoji')) {
 			if (x.props.name && x.props.name.length <= 100) {
 				emojis.push(x.props.name);
 			}
-		});
-		tokens.filter(x => x.children).forEach(x => {
+		}
+		for (const x of tokens.filter(x => x.children)) {
 			extract(x.children);
-		});
+		}
 	};
 
 	// Extract emojis
@@ -526,9 +526,9 @@ async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: Notific
 			}
 		});
 
-	watchers.forEach(watcher => {
+	for (const watcher of watchers) {
 		nm.push(watcher.userId, type);
-	});
+	}
 }
 
 async function notifyToWatchersOfReplyee(reply: INote, user: IUser, nm: NotificationManager) {
@@ -541,9 +541,9 @@ async function notifyToWatchersOfReplyee(reply: INote, user: IUser, nm: Notifica
 			}
 		});
 
-	watchers.forEach(watcher => {
+	for (const watcher of watchers) {
 		nm.push(watcher.userId, 'reply');
-	});
+	}
 }
 
 async function publishToUserLists(note: INote, noteObj: any) {
@@ -551,9 +551,9 @@ async function publishToUserLists(note: INote, noteObj: any) {
 		userIds: note.userId
 	});
 
-	lists.forEach(list => {
+	for (const list of lists) {
 		publishUserListStream(list._id, 'note', noteObj);
-	});
+	}
 }
 
 async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
@@ -594,19 +594,19 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 		}
 	}
 
-	queue.forEach(inbox => {
+	for (const inbox of queue) {
 		deliver(user as any, noteActivity, inbox);
-	});
+	}
 }
 
 function deliverNoteToMentionedRemoteUsers(mentionedUsers: IUser[], user: ILocalUser, noteActivity: any) {
-	mentionedUsers.filter(u => isRemoteUser(u)).forEach(async (u) => {
+	for (const u of mentionedUsers.filter(u => isRemoteUser(u))) {
 		deliver(user, noteActivity, (u as IRemoteUser).inbox);
-	});
+	}
 }
 
-function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: NotificationManager) {
-	mentionedUsers.filter(u => isLocalUser(u)).forEach(async (u) => {
+async function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: NotificationManager) {
+	for (const u of mentionedUsers.filter(u => isLocalUser(u))) {
 		const detailPackedNote = await pack(note, u, {
 			detail: true
 		});
@@ -615,7 +615,7 @@ function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: Notific
 
 		// Create notification
 		nm.push(u._id, 'mention');
-	});
+	}
 }
 
 function saveQuote(renote: INote, note: INote) {
@@ -668,12 +668,12 @@ async function extractMentionedUsers(user: IUser, tokens: ReturnType<typeof pars
 	const mentions: any[] = [];
 
 	const extract = (tokens: Node[]) => {
-		tokens.filter(x => x.name === 'mention').forEach(x => {
+		for (const x of tokens.filter(x => x.name === 'mention')) {
 			mentions.push(x.props);
-		});
-		tokens.filter(x => x.children).forEach(x => {
+		}
+		for (const x of tokens.filter(x => x.children)) {
 			extract(x.children);
-		});
+		}
 	};
 
 	// Extract hashtags

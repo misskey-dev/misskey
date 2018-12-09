@@ -114,11 +114,11 @@ export default Vue.extend({
 		},
 
 		onScroll(e) {
-			const section = this.categories.forEach(x => {
+			for (const x of this.categories) {
 				const top = e.target.scrollTop;
 				const el = this.$refs[x.ref][0];
 				x.isActive = el.offsetTop <= top && el.offsetTop + el.offsetHeight > top;
-			});
+			}
 		},
 
 		chosen(emoji) {

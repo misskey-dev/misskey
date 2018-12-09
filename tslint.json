@@ -31,6 +31,10 @@
 		"member-ordering": [false],
 		"ban-types": [
 			"Object"
+		],
+		"ban": [
+			true,
+			{"name": ["*", "forEach"], "message": "Use for-of loop instead."}
 		]
 	},
 	"rulesDirectory": []

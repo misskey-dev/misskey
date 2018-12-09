@@ -44,20 +44,20 @@ export default async function(user: IUser, note: INote) {
 	NoteUnread.find({
 		noteId: note._id
 	}).then(unreads => {
-		unreads.forEach(unread => {
+		for (const unread of unreads) {
 			read(unread.userId, unread.noteId);
-		});
+		}
 	});
 
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティからこの投稿を削除
 	if (note.fileIds) {
-		note.fileIds.forEach(fileId => {
+		for (const fileId of note.fileIds) {
 			DriveFile.update({ _id: fileId }, {
 				$pull: {
 					'metadata.attachedNoteIds': note._id
 				}
 			});
-		});
+		}
 	}
 
 	//#region ローカルの投稿なら削除アクティビティを配送
@@ -69,9 +69,9 @@ export default async function(user: IUser, note: INote) {
 			'_follower.host': { $ne: null }
 		});
 
-		followings.forEach(following => {
+		for (const following of followings) {
 			deliver(user, content, following._follower.inbox);
-		});
+		}
 	}
 	//#endregion
 

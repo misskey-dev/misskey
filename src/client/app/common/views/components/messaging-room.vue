@@ -196,12 +196,12 @@ export default Vue.extend({
 
 		onRead(ids) {
 			if (!Array.isArray(ids)) ids = [ids];
-			ids.forEach(id => {
+			for (const id of ids) {
 				if (this.messages.some(x => x.id == id)) {
 					const exist = this.messages.map(x => x.id).indexOf(id);
 					this.messages[exist].isRead = true;
 				}
-			});
+			}
 		},
 
 		isBottom() {
@@ -248,13 +248,13 @@ export default Vue.extend({
 
 		onVisibilitychange() {
 			if (document.hidden) return;
-			this.messages.forEach(message => {
+			for (const message of this.messages) {
 				if (message.userId !== this.$store.state.i.id && !message.isRead) {
 					this.connection.send('read', {
 						id: message.id
 					});
 				}
-			});
+			}
 		}
 	}
 });

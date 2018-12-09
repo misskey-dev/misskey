@@ -53,11 +53,9 @@ export default function<T extends object>(data: {
 			mergeProps() {
 				if (data.props) {
 					const defaultProps = data.props();
-					Object.keys(defaultProps).forEach(prop => {
-						if (!this.props.hasOwnProperty(prop)) {
-							Vue.set(this.props, prop, defaultProps[prop]);
-						}
-					});
+					for (const prop of Object.keys(defaultProps).filter(this.props.hasOwnProperty)) {
+						Vue.set(this.props, prop, defaultProps[prop]);
+					}
 				}
 			},
 

@@ -297,8 +297,8 @@ export default Vue.extend({
 			let flag = false;
 			const complete = () => {
 				if (flag) {
-					fetchedFolders.forEach(this.appendFolder);
-					fetchedFiles.forEach(this.appendFile);
+					for (const x of fetchedFolders) this.appendFolder(x);
+					for (const x of fetchedFiles) this.appendFile(x);
 					this.fetching = false;
 
 					// 一連の読み込みが完了したイベントを発行
@@ -336,7 +336,7 @@ export default Vue.extend({
 				} else {
 					this.moreFiles = false;
 				}
-				files.forEach(this.appendFile);
+				for (const x of files) this.appendFile(x);
 				this.fetching = false;
 				this.fetchingMoreFiles = false;
 			});
@@ -460,8 +460,9 @@ export default Vue.extend({
 		},
 
 		onChangeLocalFile() {
-			Array.from((this.$refs.file as any).files)
-				.forEach(f => (this.$refs.uploader as any).upload(f, this.folder));
+			for (const f of Array.from((this.$refs.file as any).files)) {
+				(this.$refs.uploader as any).upload(f, this.folder);
+			}
 		}
 	}
 });

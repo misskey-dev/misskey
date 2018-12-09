@@ -42,16 +42,16 @@ export default Vue.extend({
 
 		open() {
 			this.isOpen = true;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.addEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 
 		close() {
 			this.isOpen = false;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.removeEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 
 		onMousedown(e) {

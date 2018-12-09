@@ -56,7 +56,9 @@ export default Vue.extend({
 		},
 
 		onLogs(logs) {
-			logs.reverse().forEach(log => this.onLog(log));
+			for (const log of logs.reverse()) {
+				this.onLog(log)
+			}
 		}
 	}
 });

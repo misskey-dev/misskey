@@ -32,14 +32,14 @@ export default Vue.extend({
 			limit: 6,
 			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
-			notes.forEach(note => {
-				note.media.forEach(media => {
-					if (this.images.length < 9) this.images.push({
+			for (const note of notes) {
+				for (const media of note.media.filter(this.images.length < 9)) {
+					this.images.push({
 						note,
 						media
 					});
-				});
-			});
+				}
+			}
 			this.fetching = false;
 		});
 	}

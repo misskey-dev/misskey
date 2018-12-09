@@ -277,9 +277,9 @@ export default Vue.extend({
 
 			// ドロップされてきたものがファイルだったら
 			if (e.dataTransfer.files.length > 0) {
-				Array.from(e.dataTransfer.files).forEach(file => {
+				for (const file of Array.from(e.dataTransfer.files)) {
 					this.upload(file, this.folder);
-				});
+				}
 				return;
 			}
 
@@ -368,9 +368,9 @@ export default Vue.extend({
 		},
 
 		onChangeFileInput() {
-			Array.from((this.$refs.fileInput as any).files).forEach(file => {
+			for (const file of Array.from((this.$refs.fileInput as any).files)) {
 				this.upload(file, this.folder);
-			});
+			}
 		},
 
 		upload(file, folder) {
@@ -549,8 +549,8 @@ export default Vue.extend({
 			let flag = false;
 			const complete = () => {
 				if (flag) {
-					fetchedFolders.forEach(this.appendFolder);
-					fetchedFiles.forEach(this.appendFile);
+					for (const x of fetchedFolders) this.appendFolder(x);
+					for (const x of fetchedFiles) this.appendFile(x);
 					this.fetching = false;
 				} else {
 					flag = true;
@@ -575,7 +575,7 @@ export default Vue.extend({
 				} else {
 					this.moreFiles = false;
 				}
-				files.forEach(this.appendFile);
+				for (const x of files) this.appendFile(x);
 				this.fetching = false;
 			});
 		}

@@ -242,9 +242,9 @@ export default class extends Channel {
 			loopedBoard: game.settings.loopedBoard
 		});
 
-		game.logs.forEach(log => {
+		for (const log of game.logs) {
 			o.put(log.color, log.pos);
-		});
+		}
 
 		const myColor =
 			(game.user1Id.equals(this.user._id) && game.black == 1) || (game.user2Id.equals(this.user._id) && game.black == 2)

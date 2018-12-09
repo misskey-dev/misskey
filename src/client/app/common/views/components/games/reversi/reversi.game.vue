@@ -185,9 +185,9 @@ export default Vue.extend({
 			loopedBoard: this.game.settings.loopedBoard
 		});
 
-		this.game.logs.forEach(log => {
+		for (const log of this.game.logs) {
 			this.o.put(log.color, log.pos);
-		});
+		}
 
 		this.logs = this.game.logs;
 		this.logPos = this.logs.length;
@@ -287,9 +287,9 @@ export default Vue.extend({
 				loopedBoard: this.game.settings.loopedBoard
 			});
 
-			this.game.logs.forEach(log => {
+			for (const log of this.game.logs) {
 				this.o.put(log.color, log.pos, true);
-			});
+			}
 
 			this.logs = this.game.logs;
 			this.logPos = this.logs.length;

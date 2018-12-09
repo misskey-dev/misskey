@@ -36,9 +36,9 @@ export function applyTheme(theme: Theme, persisted = true) {
 
 	const props = compile(_theme);
 
-	Object.entries(props).forEach(([k, v]) => {
+	for (const [k, v] of Object.entries(props)) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
-	});
+	}
 
 	if (persisted) {
 		localStorage.setItem('theme', JSON.stringify(props));
@@ -74,10 +74,9 @@ function compile(theme: Theme): { [key: string]: string } {
 
 	const props = {};
 
-	Object.entries(theme.props).forEach(([k, v]) => {
-		const c = getColor(v);
-		props[k] = genValue(c);
-	});
+	for (const [k, v] of Object.entries(theme.props)) {
+		props[k] = genValue(getColor(v));
+	}
 
 	const primary = getColor(props['primary']);
 

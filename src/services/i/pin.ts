@@ -101,9 +101,9 @@ export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.
 
 	const item = `${config.url}/notes/${noteId}`;
 	const content = packAp(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
-	queue.forEach(inbox => {
+	for (const inbox of queue) {
 		deliver(user, content, inbox);
-	});
+	}
 }
 
 /**

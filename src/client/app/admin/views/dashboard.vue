@@ -127,12 +127,12 @@ export default Vue.extend({
 		this.$root.api('instances', {
 			sort: '+notes'
 		}).then(instances => {
-			instances.forEach(i => {
+			for (const i of instances) {
 				i.bg = randomColor({
 					seed: i.host,
 					luminosity: 'dark'
 				});
-			});
+			}
 			this.instances = instances;
 		});
 	},

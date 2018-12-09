@@ -30,9 +30,9 @@ export async function publishToFollowers(userId: mongo.ObjectID) {
 
 		if (queue.length > 0) {
 			const content = packAp(renderUpdate(await renderPerson(user), user));
-			queue.forEach(inbox => {
+			for (const inbox of queue) {
 				deliver(user, content, inbox);
-			});
+			}
 		}
 	}
 }

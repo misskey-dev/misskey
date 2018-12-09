@@ -164,7 +164,7 @@ export default define({
 			this.draw();
 		},
 		onStatsLog(statsLog) {
-			statsLog.forEach(stats => this.onStats(stats));
+			for (const stats of statsLog) this.onStats(stats);
 		}
 	}
 });

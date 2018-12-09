@@ -68,9 +68,9 @@ export default Vue.extend({
 
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
-				Array.from(e.dataTransfer.files).forEach(file => {
+				for (const file of Array.from(e.dataTransfer.files)) {
 					this.browser.upload(file, this.folder);
-				});
+				}
 				return;
 			}
 

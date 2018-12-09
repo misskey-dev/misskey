@@ -142,7 +142,9 @@ export default Vue.extend({
 		},
 
 		releaseQueue() {
-			this.queue.forEach(n => this.prepend(n));
+			for (const n of this.queue) {
+				this.prepend(n);
+			}
 			this.queue = [];
 		},
 

@@ -17,21 +17,20 @@ export default (source: string, plainText = false): Node[] => {
 			es[0].name === 'text' ? [combineText(es)] : es
 		));
 
-	const concatTextRecursive = (es: Node[]): void =>
-		es.filter(x => x.children).forEach(x => {
+	const concatTextRecursive = (es: Node[]): void => {
+		for (const x of es.filter(x => x.children)) {
 			x.children = concatText(x.children);
 			concatTextRecursive(x.children);
-		});
+		}
+	};
 
 	nodes = concatText(nodes);
 	concatTextRecursive(nodes);
 
 	const removeEmptyTextNodes = (nodes: Node[]) => {
-		nodes.forEach(n => {
-			if (n.children) {
-				n.children = removeEmptyTextNodes(n.children);
-			}
-		});
+		for (const n of nodes.filter(n => n.children)) {
+			n.children = removeEmptyTextNodes(n.children);
+		}
 		return nodes.filter(n => !(n.name == 'text' && n.props.text == ''));
 	};
 

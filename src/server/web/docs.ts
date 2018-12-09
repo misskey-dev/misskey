@@ -36,7 +36,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	const docs = glob.sync(`src/docs/**/*.${lang}.md`, { cwd });
 	vars['docs'] = {};
-	docs.forEach(x => {
+	for (const x of docs) {
 		const [, name] = x.match(/docs\/(.+?)\.(.+?)\.md$/);
 		if (vars['docs'][name] == null) {
 			vars['docs'][name] = {
@@ -45,7 +45,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 			};
 		}
 		vars['docs'][name]['title'][lang] = fs.readFileSync(cwd + x, 'utf-8').match(/^# (.+?)\r?\n/)[1];
-	});
+	}
 
 	vars['kebab'] = (string: string) => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 
@@ -121,7 +121,7 @@ const sortParams = (params: Array<{ name: string }>) => {
 const extractParamDefRef = (params: Context[]) => {
 	let defs: any[] = [];
 
-	params.forEach(param => {
+	for (const param of params) {
 		if (param.data && param.data.ref) {
 			const props = (param as ObjectContext<any>).props;
 			defs.push({
@@ -133,7 +133,7 @@ const extractParamDefRef = (params: Context[]) => {
 
 			defs = defs.concat(childDefs);
 		}
-	});
+	}
 
 	return sortParams(defs);
 };
@@ -141,7 +141,7 @@ const extractParamDefRef = (params: Context[]) => {
 const extractPropDefRef = (props: any[]) => {
 	let defs: any[] = [];
 
-	Object.entries(props).forEach(([k, v]) => {
+	for (const [k, v] of Object.entries(props)) {
 		if (v.props) {
 			defs.push({
 				name: k,
@@ -152,7 +152,7 @@ const extractPropDefRef = (props: any[]) => {
 
 			defs = defs.concat(childDefs);
 		}
-	});
+	}
 
 	return sortParams(defs);
 };

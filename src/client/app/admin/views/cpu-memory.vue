@@ -132,7 +132,9 @@ export default Vue.extend({
 		},
 
 		onStatsLog(statsLog) {
-			statsLog.reverse().forEach(stats => this.onStats(stats));
+			for (const stats of statsLog.reverse()) {
+				this.onStats(stats);
+			}
 		}
 	}
 });

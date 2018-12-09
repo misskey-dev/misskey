@@ -103,10 +103,10 @@ export default Vue.extend({
 			this.messages.unshift(message);
 		},
 		onRead(ids) {
-			ids.forEach(id => {
+			for (const id of ids) {
 				const found = this.messages.find(m => m.id == id);
 				if (found) found.isRead = true;
-			});
+			}
 		},
 		search() {
 			if (this.q == '') {

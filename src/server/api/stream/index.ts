@@ -213,8 +213,8 @@ export default class Connection {
 	 */
 	@autobind
 	public dispose() {
-		this.channels.forEach(c => {
-			if (c.dispose) c.dispose();
-		});
+		for (const c of this.channels.filter(c => c.dispose)) {
+			c.dispose();
+		}
 	}
 }

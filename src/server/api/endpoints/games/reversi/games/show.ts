@@ -25,9 +25,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		loopedBoard: game.settings.loopedBoard
 	});
 
-	game.logs.forEach(log => {
+	for (const log of game.logs)
 		o.put(log.color, log.pos);
-	});
 
 	const packed = await pack(game, user);
 

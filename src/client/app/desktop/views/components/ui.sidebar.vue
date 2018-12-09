@@ -171,16 +171,16 @@ export default Vue.extend({
 
 		openNotifications() {
 			this.showNotifications = true;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.addEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 
 		closeNotifications() {
 			this.showNotifications = false;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.removeEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 
 		onMousedown(e) {

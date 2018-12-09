@@ -17,9 +17,9 @@
 	//#region Apply theme
 	const theme = localStorage.getItem('theme');
 	if (theme) {
-		Object.entries(JSON.parse(theme)).forEach(([k, v]) => {
+		for (const [k, v] of Object.entries(JSON.parse(theme))) {
 			document.documentElement.style.setProperty(`--${k}`, v.toString());
-		});
+		}
 	}
 	//#endregion
 
@@ -160,7 +160,7 @@
 			navigator.serviceWorker.controller.postMessage('clear');
 
 			navigator.serviceWorker.getRegistrations().then(registrations => {
-				registrations.forEach(registration => registration.unregister());
+				for (const registration of registrations) registration.unregister();
 			});
 		} catch (e) {
 			console.error(e);
