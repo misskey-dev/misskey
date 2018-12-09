@@ -882,10 +882,10 @@ desktop/views/components/sub-note-content.vue:
   media-count: "{} media attached"
   poll: "Poll"
 desktop/views/components/settings.tags.vue:
-  title: "タグ"
-  query: "クエリ (省略可)"
-  add: "追加"
-  save: "保存"
+  title: "Tags"
+  query: "Query (optional)"
+  add: "Add"
+  save: "Save"
 desktop/views/components/taskmanager.vue:
   title: "Task Manager"
 desktop/views/components/timeline.vue:
