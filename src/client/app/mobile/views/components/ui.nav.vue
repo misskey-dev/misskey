@@ -83,7 +83,7 @@ export default Vue.extend({
 			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
-			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
+			this.connection.on('reversiNoInvites', this.onReversiNoInvites);
 		}
 	},
 

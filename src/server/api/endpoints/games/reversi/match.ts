@@ -66,7 +66,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		});
 
 		if (other == 0) {
-			publishMainStream(user._id, 'reversi_no_invites');
+			publishMainStream(user._id, 'reversiNoInvites');
 		}
 	} else {
 		// Fetch child
