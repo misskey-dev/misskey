@@ -16,15 +16,8 @@ function getTextCount(tokens: Node[]): number {
 }
 
 function getChildrenCount(tokens: Node[]): number {
-	let count = 0;
-	const extract = (tokens: Node[]) => {
-		tokens.filter(x => x.children).forEach(x => {
-			count++;
-			extract(x.children);
-		});
-	};
-	extract(tokens);
-	return count;
+	const countTree = tokens.filter(x => x.children).map(x => getChildrenCount(x.children));
+	return countTree.length + sum(countTree);
 }
 
 export default Vue.component('misskey-flavored-markdown', {
