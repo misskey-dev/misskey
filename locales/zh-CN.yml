@@ -881,6 +881,11 @@ desktop/views/components/sub-note-content.vue:
   deleted: "帖子已删除"
   media-count: "附加{}媒体"
   poll: "投票"
+desktop/views/components/settings.tags.vue:
+  title: "タグ"
+  query: "クエリ (省略可)"
+  add: "追加"
+  save: "保存"
 desktop/views/components/taskmanager.vue:
   title: "任务管理器"
 desktop/views/components/timeline.vue:
