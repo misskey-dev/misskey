@@ -75,12 +75,10 @@ export default class Stream extends EventEmitter {
 
 		// チャンネル再接続
 		if (isReconnect) {
-			this.sharedConnectionPools.forEach(p => {
+			for (const p of this.sharedConnectionPools)
 				p.connect();
-			});
-			this.nonSharedConnections.forEach(c => {
+			for (const c of this.nonSharedConnections)
 				c.connect();
-			});
 		}
 	}
 
