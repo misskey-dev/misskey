@@ -61,11 +61,13 @@ export default abstract class Chart<T> {
 
 	constructor(name: string, grouped = false) {
 		this.collection = db.get<Log<T>>(`chart.${name}`);
-		if (grouped) {
-			this.collection.createIndex({ span: -1, date: -1, group: -1 }, { unique: true });
-		} else {
-			this.collection.createIndex({ span: -1, date: -1 }, { unique: true });
-		}
+		const keys = {
+			span: -1,
+			date: -1
+		};
+		if (grouped)
+			keys.group = -1;
+		this.collection.createIndex(keys, { unique: true });
 	}
 
 	@autobind
