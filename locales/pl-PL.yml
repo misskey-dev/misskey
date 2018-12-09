@@ -436,7 +436,7 @@ common/views/components/visibility-chooser.vue:
   local-public: "公開 (ローカルのみ)"
   local-public-desc: "リモートへは公開しない"
   local-home: "ホーム (ローカルのみ)"
-  local-followers: "フォロワー (ローカルのみ)"
+  local-followers: "Dla śledzących (tylko lokalnie)"
 common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
@@ -957,7 +957,7 @@ admin/views/index.vue:
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
   accounts: "Konta"
-  notes: "投稿"
+  notes: "Wpisy"
   drive: "ドライブ"
   instances: "インスタンス"
   this-instance: "このインスタンス"
@@ -1429,7 +1429,7 @@ mobile/views/pages/user.vue:
   block: "Zablokuj"
   unblock: "Odblokuj"
   years-old: "{age} lat"
-  push-to-list: "リストに追加"
+  push-to-list: "Dodaj do listy"
   select-list: "Wybierz listę"
   list-pushed: "{user}を{list}に追加しました"
 mobile/views/pages/user/home.vue:
@@ -1450,7 +1450,7 @@ mobile/views/pages/user/home.notes.vue:
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Brak zdjęć"
 deck:
-  widgets: "ウィジェット"
+  widgets: "Widżety"
   home: "Strona główna"
   local: "Lokalne"
   hybrid: "Społeczność"
@@ -1475,8 +1475,8 @@ deck/deck.tl-column.vue:
   edit: "Opcje"
 deck/deck.user-column.vue:
   posts: "Wpisy"
-  following: "フォロー"
-  followers: "フォロワー"
+  following: "Śledzeni"
+  followers: "Śledzący"
   images: "Zdjęcia"
   activity: "Aktywność"
   timeline: "Oś czasu"
