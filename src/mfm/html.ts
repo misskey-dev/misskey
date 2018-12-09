@@ -15,7 +15,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 	const doc = window.document;
 
 	function appendChildren(children: Node[], targetElement: any): void {
-		for(const child of children.map(n => handlers[n.name](n))) targetElement.appendChild(child)
+		for (const child of children.map(n => handlers[n.name](n))) targetElement.appendChild(child);
 	}
 
 	const handlers: { [key: string]: (token: Node) => any } = {
