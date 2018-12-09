@@ -10,7 +10,7 @@
 		</header>
 		<div class="body">
 			<div class="description">
-				<misskey-flavored-markdown v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
 		</div>
 	</div>
