@@ -1,15 +1,15 @@
 <template>
 <div class="vfcitkilproprqtbnpoertpsziierwzi">
-	<div v-for="timeline in timelines" class="timeline">
+	<div v-for="timeline in timelines" class="timeline" :key="timeline.id">
 		<ui-input v-model="timeline.title" @change="save">
 			<span>{{ $t('title') }}</span>
 		</ui-input>
-		<ui-textarea :value="timeline.query ? timeline.query.map(tags => tags.join(' ')).join('\n') : ''" @input="onQueryChange(timeline, $event)">
+		<ui-textarea :value="timeline.query ? timeline.query.map(tags => tags.join(' ')).join('\n') : ''" :pre="true" @input="onQueryChange(timeline, $event)">
 			<span>{{ $t('query') }}</span>
 		</ui-textarea>
-		<ui-button class="save" @click="save">{{ $t('save') }}</ui-button>
 	</div>
 	<ui-button class="add" @click="add">{{ $t('add') }}</ui-button>
+	<ui-button class="save" @click="save">{{ $t('save') }}</ui-button>
 </div>
 </template>
 
@@ -33,12 +33,19 @@ export default Vue.extend({
 				title: '',
 				query: ''
 			});
-
-			this.save();
 		},
 
 		save() {
-			this.$store.dispatch('settings/set', { key: 'tagTimelines', value: this.timelines });
+			const timelines = this.timelines
+				.filter(timeline => timeline.title)
+				.map(timeline => {
+					if (!(timeline.query && timeline.query[0] && timeline.query[0][0])) {
+						timeline.query = timeline.title.split('\n').map(tags => tags.split(' '));
+					}
+					return timeline;
+				});
+
+			this.$store.dispatch('settings/set', { key: 'tagTimelines', value: timelines });
 		},
 
 		onQueryChange(timeline, value) {

@@ -1,5 +1,5 @@
 <template>
-<div class="ui-textarea" :class="{ focused, filled, tall }">
+<div class="ui-textarea" :class="{ focused, filled, tall, pre }">
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
 		<textarea ref="input"
@@ -42,6 +42,11 @@ export default Vue.extend({
 			required: false
 		},
 		tall: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		pre: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -174,6 +179,11 @@ root(fill)
 		> .input
 			> textarea
 				min-height 200px
+
+	&.pre
+		> .input
+			> textarea
+				white-space pre
 
 .ui-textarea.fill
 	root(true)
