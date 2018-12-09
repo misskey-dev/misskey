@@ -468,7 +468,7 @@ common/views/components/profile-editor.vue:
   uploading: "アップロード中"
   upload-failed: "アップロードに失敗しました"
   email: "メール設定"
-  email-address: "メールアドレス"
+  email-address: "Adres e-mail"
   email-verified: "メールアドレスが確認されました"
   email-not-verified: "メールアドレスが確認されていません。メールボックスをご確認ください。"
 common/views/widgets/broadcast.vue:
@@ -661,7 +661,7 @@ desktop/views/components/note-detail.vue:
 desktop/views/components/note.vue:
   reply: "返信"
   renote: "Renote"
-  add-reaction: "リアクション"
+  add-reaction: "Dodaj reakcję"
   detail: "Szczegóły"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
@@ -884,8 +884,8 @@ desktop/views/components/sub-note-content.vue:
 desktop/views/components/settings.tags.vue:
   title: "タグ"
   query: "クエリ (省略可)"
-  add: "追加"
-  save: "保存"
+  add: "Dodaj"
+  save: "Zapisz"
 desktop/views/components/taskmanager.vue:
   title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
@@ -1084,17 +1084,17 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     title: "モデレーターの登録"
-    add: "登録"
+    add: "Zarejestruj się"
     added: "モデレーターを登録しました"
 admin/views/emoji.vue:
   add-emoji:
     title: "絵文字の登録"
-    name: "絵文字名"
+    name: "Nazwa Emoji"
     name-desc: "a~z 0~9 _ の文字が使えます。"
-    aliases: "エイリアス"
+    aliases: "Aliasy"
     aliases-desc: "スペースで区切って複数設定できます。"
     url: "絵文字画像URL"
-    add: "追加"
+    add: "Dodaj"
     info: "50KB以下のPNG画像をおすすめします。"
     added: "絵文字を登録しました"
   emojis:
