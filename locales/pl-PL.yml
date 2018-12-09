@@ -656,10 +656,10 @@ desktop/views/components/note-detail.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
   location: "Informacje o lokalizacji"
-  renote: "Udostępnienie"
+  renote: "Udostępnij"
   add-reaction: "Dodaj reakcję"
 desktop/views/components/note.vue:
-  reply: "返信"
+  reply: "Odpowiedz"
   renote: "Renote"
   add-reaction: "Dodaj reakcję"
   detail: "Szczegóły"
