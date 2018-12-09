@@ -43,9 +43,16 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		document.cookie = `i=${this.$store.state.i.token}`;
 		this.$watch('$store.state.i', () => {
 			if (this.$store.state.i.twitter) {
 				if (this.twitterForm) this.twitterForm.close();
+			}
+			if (this.$store.state.i.discord) {
+				if (this.discordForm) this.discordForm.close();
+			}
+			if (this.$store.state.i.github) {
+				if (this.githubForm) this.githubForm.close();
 			}
 		}, {
 			deep: true
