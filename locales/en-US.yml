@@ -881,6 +881,11 @@ desktop/views/components/sub-note-content.vue:
   deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
+desktop/views/components/settings.tags.vue:
+  title: "タグ"
+  query: "クエリ (省略可)"
+  add: "追加"
+  save: "保存"
 desktop/views/components/taskmanager.vue:
   title: "Task Manager"
 desktop/views/components/timeline.vue:
