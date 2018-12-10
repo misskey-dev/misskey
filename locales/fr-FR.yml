@@ -297,8 +297,8 @@ common/views/components/theme.vue:
 common/views/components/cw-button.vue:
   hide: "Masquer"
   show: "Voir plus"
-  chars: "{count}文字"
-  files: "{count}ファイル"
+  chars: "{count} caractères"
+  files: "{count} fichiers"
 common/views/components/messaging.vue:
   search-user: "Trouver un·e utilisateur·trice"
   you: "Vous"
@@ -882,10 +882,10 @@ desktop/views/components/sub-note-content.vue:
   media-count: "{} médias attachés"
   poll: "Sondage"
 desktop/views/components/settings.tags.vue:
-  title: "タグ"
-  query: "クエリ (省略可)"
-  add: "追加"
-  save: "保存"
+  title: "Étiquettes"
+  query: "Requête (optionnelle)"
+  add: "Ajouter"
+  save: "Enregistrer"
 desktop/views/components/taskmanager.vue:
   title: "Gestionnaire de tâches"
 desktop/views/components/timeline.vue:
