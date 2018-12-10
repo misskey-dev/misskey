@@ -172,6 +172,8 @@ export default Vue.extend({
 		this.$root.getMeta().then(meta => {
 			this.maintainerName = meta.maintainer.name;
 			this.maintainerEmail = meta.maintainer.email;
+			this.disableRegistration = meta.disableRegistration;
+			this.disableLocalTimeline = meta.disableLocalTimeline;
 			this.bannerUrl = meta.bannerUrl;
 			this.name = meta.name;
 			this.description = meta.description;
