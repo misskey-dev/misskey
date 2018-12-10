@@ -35,7 +35,7 @@ export default async (user: ILocalUser) => {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`
+			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>${user.github.login}</span></a>`
 		});
 	}
 
@@ -43,7 +43,7 @@ export default async (user: ILocalUser) => {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>@${user.discord.username}#${user.discord.discriminator}</span></a>`
+			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`
 		});
 	}
 
