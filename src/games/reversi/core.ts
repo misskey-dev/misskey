@@ -208,10 +208,10 @@ export default class Reversi {
 	 * @param pos 位置
 	 */
 	public canPut(color: Color, pos: number): boolean {
-		return false || // 改行用
+		return (
 			this.board[pos] !== null ? false : // 既に石が置いてある場所には打てない
 			this.opts.canPutEverywhere ? this.mapDataGet(pos) == 'empty' : // 挟んでなくても置けるモード
-			this.effects(color, pos).length !== 0; // 相手の石を1つでも反転させられるか
+			this.effects(color, pos).length !== 0); // 相手の石を1つでも反転させられるか
 	}
 
 	/**
