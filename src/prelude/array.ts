@@ -34,6 +34,10 @@ export function sum(xs: number[]): number {
 	return xs.reduce((a, b) => a + b, 0);
 }
 
+export function maximum(xs: number[]): number {
+	return Math.max(...xs);
+}
+
 export function groupBy<T>(f: (x: T, y: T) => boolean, xs: T[]): T[][] {
 	const groups = [] as T[][];
 	for (const x of xs) {
