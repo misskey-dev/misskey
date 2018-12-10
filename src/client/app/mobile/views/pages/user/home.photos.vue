@@ -33,11 +33,13 @@ export default Vue.extend({
 			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
 			for (const note of notes) {
-				for (const media of note.media.filter(this.images.length < 9)) {
-					this.images.push({
-						note,
-						media
-					});
+				for (const media of note.media) {
+					if (this.images.length < 9) {
+						this.images.push({
+							note,
+							media
+						});
+					}
 				}
 			}
 			this.fetching = false;
