@@ -234,7 +234,7 @@ export default Vue.extend({
 		top() {
 			let z = 0;
 
-			const ws = this.$root.os.windows.getAll().filter(w => w != this);
+			const ws = Array.from(this.$root.os.windows.getAll()).filter(w => w != this);
 			for (const w of ws) {
 				const m = w.$refs.main;
 				const mz = Number(document.defaultView.getComputedStyle(m, null).zIndex);
