@@ -18,6 +18,7 @@ import Apps from './views/apps.vue';
 import AppNew from './views/new-app.vue';
 import App from './views/app.vue';
 import ui from './views/ui.vue';
+import NotFound from '../common/views/pages/404.vue';
 
 Vue.use(BootstrapVue);
 
@@ -36,6 +37,7 @@ init(launch => {
 			{ path: '/apps', component: Apps },
 			{ path: '/app/new', component: AppNew },
 			{ path: '/app/:id', component: App },
+			{ path: '*', component: NotFound }
 		]
 	});
 
