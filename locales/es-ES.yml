@@ -523,6 +523,8 @@ common/views/widgets/tips.vue:
   tips-line23: "Mayu is tan bonito con sus cejas."
   tips-line24: "Misskey inició en 2014."
   tips-line25: "Puedes recibir notificaciones incluso si Misskey no está abierto en un navegador compatible."
+common/views/pages/404.vue:
+  page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "Autenticado como {}"
   following: "Siguiendo"
