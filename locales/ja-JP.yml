@@ -580,6 +580,9 @@ common/views/widgets/tips.vue:
   tips-line24: "Misskeyは2014年にサービスを開始しました"
   tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
 
+common/views/pages/404.vue:
+  page-not-found: "ページが見つかりませんでした"
+
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
   following: "フォロー中"
