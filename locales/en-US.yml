@@ -523,6 +523,8 @@ common/views/widgets/tips.vue:
   tips-line23: "Mayu is so cute with its eyebrows."
   tips-line24: "Misskey has been running since 2014."
   tips-line25: "In a browser compatible with notification features, you can receive notifications in case Misskey is not open"
+common/views/pages/404.vue:
+  page-not-found: "Page not found"
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -881,6 +883,11 @@ desktop/views/components/sub-note-content.vue:
   deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
+desktop/views/components/settings.tags.vue:
+  title: "Tags"
+  query: "Query (optional)"
+  add: "Add"
+  save: "Save"
 desktop/views/components/taskmanager.vue:
   title: "Task Manager"
 desktop/views/components/timeline.vue:
@@ -963,6 +970,7 @@ admin/views/instance.vue:
   instance-description: "Instance description"
   host: "Host"
   banner-url: "Banner image URL"
+  error-image-url: "Error image URL"
   languages: "Language of this instance"
   languages-desc: "You can add more than one, separated by spaces."
   maintainer-config: "Administrator information"

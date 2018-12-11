@@ -523,6 +523,8 @@ common/views/widgets/tips.vue:
   tips-line23: "Mayu的眉毛非常可爱。"
   tips-line24: "Misskey自2014年开始运营。"
   tips-line25: "在与通知功能兼容的浏览器中，您可以在Misskey未打开的情况下接收通知"
+common/views/pages/404.vue:
+  page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "用 {}登录"
   following: "正在关注"
@@ -881,6 +883,11 @@ desktop/views/components/sub-note-content.vue:
   deleted: "帖子已删除"
   media-count: "附加{}媒体"
   poll: "投票"
+desktop/views/components/settings.tags.vue:
+  title: "タグ"
+  query: "クエリ (省略可)"
+  add: "追加"
+  save: "保存"
 desktop/views/components/taskmanager.vue:
   title: "任务管理器"
 desktop/views/components/timeline.vue:
@@ -963,6 +970,7 @@ admin/views/instance.vue:
   instance-description: "实例介绍"
   host: "主机名"
   banner-url: "背景图片地址"
+  error-image-url: "エラー画像URL"
   languages: "实例语言"
   languages-desc: "您可以添加多个，以空格分隔。"
   maintainer-config: "管理员信息"

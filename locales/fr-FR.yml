@@ -297,8 +297,8 @@ common/views/components/theme.vue:
 common/views/components/cw-button.vue:
   hide: "Masquer"
   show: "Voir plus"
-  chars: "{count}文字"
-  files: "{count}ファイル"
+  chars: "{count} caractères"
+  files: "{count} fichiers"
 common/views/components/messaging.vue:
   search-user: "Trouver un·e utilisateur·trice"
   you: "Vous"
@@ -523,6 +523,8 @@ common/views/widgets/tips.vue:
   tips-line23: "Mayu est mignonne avec ses sourcils."
   tips-line24: "Misskey est fonctionnel depuis 2014"
   tips-line25: "Vous pouvez recevoir les notifications de Misskey dans un navigateur web compatible"
+common/views/pages/404.vue:
+  page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté·e en tant que {}"
   following: "Suit"
@@ -881,6 +883,11 @@ desktop/views/components/sub-note-content.vue:
   deleted: "cette publication a été supprimée"
   media-count: "{} médias attachés"
   poll: "Sondage"
+desktop/views/components/settings.tags.vue:
+  title: "Étiquettes"
+  query: "Requête (optionnelle)"
+  add: "Ajouter"
+  save: "Enregistrer"
 desktop/views/components/taskmanager.vue:
   title: "Gestionnaire de tâches"
 desktop/views/components/timeline.vue:
@@ -963,6 +970,7 @@ admin/views/instance.vue:
   instance-description: "Description de l’instance"
   host: "Hôte"
   banner-url: "Url de l’image de la bannière"
+  error-image-url: "エラー画像URL"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
   maintainer-config: "Informations de l’administrateur"
