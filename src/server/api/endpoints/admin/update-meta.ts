@@ -46,6 +46,13 @@ export const meta = {
 			}
 		},
 
+		errorImageUrl: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'インスタンスのエラー画像URL'
+			}
+		},
+
 		name: {
 			validator: $.str.optional.nullable,
 			desc: {
