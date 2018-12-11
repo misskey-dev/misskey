@@ -9,6 +9,7 @@ import './style.styl';
 
 import init from '../init';
 import Index from './views/index.vue';
+import NotFound from '../common/views/pages/404.vue';
 
 init(launch => {
 	document.title = 'Admin';
@@ -19,6 +20,7 @@ init(launch => {
 		base: '/admin/',
 		routes: [
 			{ path: '/', component: Index },
+			{ path: '*', component: NotFound }
 		]
 	});
 
