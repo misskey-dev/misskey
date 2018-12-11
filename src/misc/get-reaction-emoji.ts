@@ -1,15 +1,15 @@
+import { switchMap } from "../prelude/functional-syntax";
+
 export default function(reaction: string): string {
-	switch (reaction) {
-		case 'like': return '👍';
-		case 'love': return '❤️';
-		case 'laugh': return '😆';
-		case 'hmm': return '🤔';
-		case 'surprise': return '😮';
-		case 'congrats': return '🎉';
-		case 'angry': return '💢';
-		case 'confused': return '😥';
-		case 'rip': return '😇';
-		case 'pudding': return '🍮';
-		default: return '';
-	}
+	return switchMap(reaction, '',
+		['like', '👍'],
+		['love', '❤️'],
+		['laugh', '😆'],
+		['hmm', '🤔'],
+		['surprise', '😮'],
+		['congrats', '🎉'],
+		['angry', '💢'],
+		['confused', '😥'],
+		['rip', '😇'],
+		['pudding', '🍮']);
 }
