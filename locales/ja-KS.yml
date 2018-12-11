@@ -523,6 +523,8 @@ common/views/widgets/tips.vue:
   tips-line23: "ウチのタコちゃんかわええやろ…今の突っ込むところや！"
   tips-line24: "Misskeyは2014年にサービスを開始したんよ"
   tips-line25: "対応ブラウザやったらMisskeyを開いとらんでも通知を受け取れんで"
+common/views/pages/404.vue:
+  page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
   following: "フォローしとる"
