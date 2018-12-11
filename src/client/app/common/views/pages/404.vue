@@ -1,6 +1,6 @@
 <template>
 <figure>
-<img src="/assets/404.png" alt="">
+<img :src="src" alt="">
 <figcaption>
 <h1><span>404</span></h1>
 <p><span>{{ $t('page-not-found') }}</span></p>
@@ -13,7 +13,18 @@ import Vue from 'vue'
 import i18n from '../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('common/views/pages/404.vue')
+	i18n: i18n('common/views/pages/404.vue'),
+	data() {
+		return {
+			src: '/assets/error.jpg'
+		}
+	},
+	created() {
+		this.$root.getMeta().then(meta => {
+			if (meta.errorImageUrl)
+				this.src = meta.errorImageUrl;
+		});
+	}
 })
 </script>
 
@@ -28,11 +39,6 @@ figure
 	position fixed
 	right 0
 	top 0
-
-	img
-		height 384px
-		image-rendering crisp-edges
-		width 256px
 
 	figcaption
 		margin 8px
