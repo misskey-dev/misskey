@@ -100,14 +100,14 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	Note.find({
 		'_files._id': file._id
 	}).then(notes => {
-		notes.forEach(note => {
+		for (const note of notes) {
 			note._files[note._files.findIndex(f => f._id.equals(file._id))] = file;
 			Note.update({ _id: note._id }, {
 				$set: {
 					_files: note._files
 				}
 			});
-		});
+		}
 	});
 
 	// Serialize

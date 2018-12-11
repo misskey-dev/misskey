@@ -70,12 +70,12 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 			}
 		})
 		.then(watchers => {
-			watchers.forEach(watcher => {
+			for (const watcher of watchers) {
 				notify(watcher.userId, user._id, 'reaction', {
 					noteId: note._id,
 					reaction: reaction
 				});
-			});
+			}
 		});
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする

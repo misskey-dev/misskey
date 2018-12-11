@@ -184,7 +184,8 @@ export default Vue.extend({
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
-			ast.filter(t => t.type == 'mention').forEach(x => {
+			// TODO: 新しいMFMパーサに対応
+			for (const x of ast.filter(t => t.type == 'mention')) {
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
@@ -195,7 +196,7 @@ export default Vue.extend({
 				if (this.text.indexOf(`${mention} `) != -1) return;
 
 				this.text += `${mention} `;
-			});
+			}
 		}
 
 		// デフォルト公開範囲
@@ -261,7 +262,7 @@ export default Vue.extend({
 			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
-				files.forEach(this.attachMedia);
+				for (const x of files) this.attachMedia(x);
 			});
 		},
 
@@ -276,7 +277,7 @@ export default Vue.extend({
 		},
 
 		onChangeFile() {
-			Array.from((this.$refs.file as any).files).forEach(this.upload);
+			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
 		},
 
 		onPollUpdate() {
@@ -304,11 +305,11 @@ export default Vue.extend({
 		},
 
 		onPaste(e) {
-			Array.from(e.clipboardData.items).forEach((item: any) => {
+			for (const item of Array.from(e.clipboardData.items)) {
 				if (item.kind == 'file') {
 					this.upload(item.getAsFile());
 				}
-			});
+			}
 		},
 
 		onDragover(e) {
@@ -335,7 +336,7 @@ export default Vue.extend({
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
 				e.preventDefault();
-				Array.from(e.dataTransfer.files).forEach(this.upload);
+				for (const x of Array.from(e.dataTransfer.files)) this.upload(x);
 				return;
 			}
 

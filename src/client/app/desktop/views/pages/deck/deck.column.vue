@@ -224,7 +224,9 @@ export default Vue.extend({
 
 			if (this.menu) {
 				items.unshift(null);
-				this.menu.reverse().forEach(i => items.unshift(i));
+				for (const i of this.menu.reverse()) {
+					items.unshift(i);
+				}
 			}
 
 			return items;

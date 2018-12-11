@@ -59,11 +59,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	//#region Deck
 	if (widget == null && user.clientSettings.deck && user.clientSettings.deck.columns) {
 		const deck = user.clientSettings.deck;
-		deck.columns.filter((c: any) => c.type == 'widgets').forEach((c: any) => {
-			c.widgets.forEach((w: any) => {
-				if (w.id == ps.id) widget = w;
-			});
-		});
+		for (const c of deck.columns.filter((c: any) => c.type == 'widgets')) {
+			for (const w of c.widgets.filter((w: any) => w.id == ps.id)) {
+				widget = w;
+			}
+		}
 		if (widget) {
 				widget.data = ps.data;
 

@@ -234,12 +234,12 @@ export default Vue.extend({
 		top() {
 			let z = 0;
 
-			this.$root.os.windows.getAll().forEach(w => {
-				if (w == this) return;
+			const ws = this.$root.os.windows.getAll().filter(w => w != this);
+			for (const w of ws) {
 				const m = w.$refs.main;
 				const mz = Number(document.defaultView.getComputedStyle(m, null).zIndex);
 				if (mz > z) z = mz;
-			});
+			}
 
 			if (z > 0) {
 				(this.$refs.main as any).style.zIndex = z + 1;

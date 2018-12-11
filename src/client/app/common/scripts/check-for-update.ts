@@ -14,9 +14,10 @@ export default async function($root: any, force = false, silent = false) {
 				navigator.serviceWorker.controller.postMessage('clear');
 			}
 
-			navigator.serviceWorker.getRegistrations().then(registrations => {
-				registrations.forEach(registration => registration.unregister());
-			});
+			const registrations = await navigator.serviceWorker.getRegistrations();
+			for (const registration of registrations) {
+				registration.unregister();
+			}
 		} catch (e) {
 			console.error(e);
 		}

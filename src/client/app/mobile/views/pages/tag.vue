@@ -72,7 +72,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) {
+					(this.$refs.timeline as any).append(n);
+				}
 				this.moreFetching = false;
 			});
 

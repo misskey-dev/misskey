@@ -167,11 +167,11 @@ export default Vue.extend({
 				limit: 9,
 				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
-				notes.forEach(note => {
-					note.files.forEach(file => {
+				for (const note of notes) {
+					for (const file of note.files) {
 						file._note = note;
-					});
-				});
+					}
+				}
 				const files = concat(notes.map((n: any): any[] => n.files));
 				this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
 			});
@@ -298,7 +298,7 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) (this.$refs.timeline as any).append(n);
 				this.moreFetching = false;
 			});
 

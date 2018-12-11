@@ -23,7 +23,7 @@ export default async function(userId: mongo.ObjectID | string, type: string, bod
 		userId: userId
 	});
 
-	subscriptions.forEach(subscription => {
+	for (const subscription of subscriptions) {
 		const pushSubscription = {
 			endpoint: subscription.endpoint,
 			keys: {
@@ -48,5 +48,5 @@ export default async function(userId: mongo.ObjectID | string, type: string, bod
 				});
 			}
 		});
-	});
+	}
 }

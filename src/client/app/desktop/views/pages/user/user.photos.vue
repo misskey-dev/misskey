@@ -30,11 +30,11 @@ export default Vue.extend({
 			limit: 9,
 			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
-			notes.forEach(note => {
-				note.files.forEach(file => {
+			for (const note of notes) {
+				for (const file of note.files) {
 					if (this.images.length < 9) this.images.push(file);
-				});
-			});
+				}
+			}
 			this.fetching = false;
 		});
 	}

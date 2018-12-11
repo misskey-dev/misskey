@@ -74,14 +74,14 @@ export default abstract class Chart<T> {
 		const query: Obj = {};
 
 		const dive = (x: Obj, path: string) => {
-			Object.entries(x).forEach(([k, v]) => {
+			for (const [k, v] of Object.entries(x)) {
 				const p = path ? `${path}.${k}` : k;
 				if (typeof v === 'number') {
 					query[p] = v;
 				} else {
 					dive(v, p);
 				}
-			});
+			}
 		};
 
 		dive(x, path);
@@ -334,14 +334,14 @@ export default abstract class Chart<T> {
 		 * にする
 		 */
 		const dive = (x: Obj, path?: string) => {
-			Object.entries(x).forEach(([k, v]) => {
+			for (const [k, v] of Object.entries(x)) {
 				const p = path ? `${path}.${k}` : k;
 				if (typeof v == 'object') {
 					dive(v, p);
 				} else {
 					nestedProperty.set(res, p, chart.map(s => nestedProperty.get(s, p)));
 				}
-			});
+			}
 		};
 
 		dive(chart[0]);

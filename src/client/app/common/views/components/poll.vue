@@ -55,12 +55,12 @@ export default Vue.extend({
 				noteId: this.note.id,
 				choice: id
 			}).then(() => {
-				this.poll.choices.forEach(c => {
+				for (const c of this.poll.choices) {
 					if (c.id == id) {
 						c.votes++;
 						Vue.set(c, 'isVoted', true);
 					}
-				});
+				}
 				this.showResult = true;
 			});
 		}

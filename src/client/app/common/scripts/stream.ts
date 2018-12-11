@@ -111,9 +111,9 @@ export default class Stream extends EventEmitter {
 				connections = [this.nonSharedConnections.find(c => c.id === id)];
 			}
 
-			connections.filter(c => c != null).forEach(c => {
+			for (const c of connections.filter(c => c != null)) {
 				c.emit(body.type, body.body);
-			});
+			}
 		} else {
 			this.emit(type, body);
 		}

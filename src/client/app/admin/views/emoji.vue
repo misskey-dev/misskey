@@ -91,7 +91,9 @@ export default Vue.extend({
 		fetchEmojis() {
 			this.$root.api('admin/emoji/list').then(emojis => {
 				emojis.reverse();
-				emojis.forEach(e => e.aliases = (e.aliases || []).join(' '));
+				for (const e of emojis) {
+					e.aliases = (e.aliases || []).join(' ');
+				}
 				this.emojis = emojis;
 			});
 		},

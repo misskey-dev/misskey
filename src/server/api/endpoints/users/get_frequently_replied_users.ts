@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import User, { pack } from '../../../../models/user';
 import define from '../../define';
+import { maximum } from '../../../../prelude/array';
 
 export const meta = {
 	requireCredential: false,
@@ -77,20 +78,16 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const repliedUsers: any = {};
 
 	// Extract replies from recent notes
-	replyTargetNotes.forEach(note => {
-		const userId = note.userId.toString();
+	for (const userId of replyTargetNotes.map(x => x.userId.toString())) {
 		if (repliedUsers[userId]) {
 			repliedUsers[userId]++;
 		} else {
 			repliedUsers[userId] = 1;
 		}
-	});
+	}
 
 	// Calc peak
-	let peak = 0;
-	Object.keys(repliedUsers).forEach(user => {
-		if (repliedUsers[user] > peak) peak = repliedUsers[user];
-	});
+	const peak = maximum(Object.values(repliedUsers));
 
 	// Sort replies by frequency
 	const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);

@@ -91,9 +91,9 @@ app.use(mount(require('./web')));
 function createServer() {
 	if (config.https) {
 		const certs: any = {};
-		Object.keys(config.https).forEach(k => {
+		for (const k of Object.keys(config.https)) {
 			certs[k] = fs.readFileSync(config.https[k]);
-		});
+		}
 		certs['allowHTTP1'] = true;
 		return http2.createSecureServer(certs, app.callback());
 	} else {
