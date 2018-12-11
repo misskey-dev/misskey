@@ -35,8 +35,8 @@ export default async function(file: IDriveFile, isExpired = false) {
 
 	const set = {
 		metadata: {
-			deletedAt : new Date(),
-			isExpired : isExpired
+			deletedAt: new Date(),
+			isExpired: isExpired
 		}
 	} as any;
 
