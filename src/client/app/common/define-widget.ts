@@ -54,7 +54,7 @@ export default function <T extends object>(data: {
 				if (data.props) {
 					const defaultProps = data.props();
 					for (const prop of Object.keys(defaultProps)) {
-						if (this.bakeProps.hasOwnProperty(prop)) continue;
+						if (this.props.hasOwnProperty(prop)) continue;
 						Vue.set(this.props, prop, defaultProps[prop]);
 					}
 				}
