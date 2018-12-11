@@ -20,7 +20,9 @@
 		</div>
 		<div class="fields" v-if="user.fields">
 			<dl class="field" v-for="(field, i) in user.fields" :key="i">
-				<dt class="name">{{ field.name }}</dt>
+				<dt class="name">
+					<misskey-flavored-markdown :text="field.name" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+				</dt>
 				<dd class="value">
 					<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 				</dd>
@@ -189,6 +191,7 @@ export default Vue.extend({
 				display flex
 				padding 0
 				margin 0
+				align-items center
 
 				> .name
 					border-right solid 1px var(--faceDivider)
