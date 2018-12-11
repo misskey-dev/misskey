@@ -17,6 +17,7 @@ import registerInstance from '../../../services/register-instance';
 import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
+import { ITag } from './tag';
 
 const log = debug('misskey:activitypub');
 
@@ -135,6 +136,10 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
+	const fields = await extractFields(person.attachment).catch(e => {
+		console.log(`cat not extract fields: ${e}`);
+	});
+
 	const isBot = object.type == 'Service';
 
 	// Create user
@@ -164,6 +169,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
+			fields,
 			isBot: isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
@@ -325,6 +331,10 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
+	const fields = await extractFields(person.attachment).catch(e => {
+		console.log(`cat not extract fields: ${e}`);
+	});
+
 	// Update user
 	await User.update({ _id: exist._id }, {
 		$set: {
@@ -346,6 +356,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			name: person.name,
 			url: person.url,
 			endpoints: person.endpoints,
+			fields,
 			isBot: object.type == 'Service',
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
@@ -380,6 +391,18 @@ export async function resolvePerson(uri: string, verifier?: string, resolver?: R
 	// リモートサーバーからフェッチしてきて登録
 	if (resolver == null) resolver = new Resolver();
 	return await createPerson(uri, resolver);
+}
+
+export async function extractFields(attachments: ITag[]) {
+	if (!attachments) return [];
+
+	return attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value)
+		.map(a => {
+			return {
+				name: a.name,
+				value: htmlToMFM(a.value)
+			};
+		});
 }
 
 export async function updateFeatured(userId: mongo.ObjectID) {

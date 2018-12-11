@@ -109,6 +109,10 @@ export interface ILocalUser extends IUserBase {
 		birthday: string; // 'YYYY-MM-DD'
 		tags: string[];
 	};
+	fields?: {
+		name: string;
+		value: string;
+	}[];
 	isCat: boolean;
 	isAdmin?: boolean;
 	isModerator?: boolean;
