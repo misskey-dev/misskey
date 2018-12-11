@@ -64,9 +64,8 @@ export default abstract class Chart<T> {
 		const keys = {
 			span: -1,
 			date: -1
-		};
-		if (grouped)
-			keys.group = -1;
+		} as any;
+		if (grouped) keys.group = -1;
 		this.collection.createIndex(keys, { unique: true });
 	}
 
