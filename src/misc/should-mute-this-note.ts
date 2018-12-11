@@ -6,17 +6,8 @@ function toString(id: any) {
 }
 
 export default function(note: any, mutedUserIds: string[]): boolean {
-	if (mutedUserIds.includes(toString(note.userId))) {
-		return true;
-	}
-
-	if (note.reply != null && mutedUserIds.includes(toString(note.reply.userId))) {
-		return true;
-	}
-
-	if (note.renote != null && mutedUserIds.includes(toString(note.renote.userId))) {
-		return true;
-	}
-
-	return false;
+	return (
+		mutedUserIds.includes(toString(note.userId)) ||
+		note.reply && mutedUserIds.includes(toString(note.reply.userId)) ||
+		note.renote && mutedUserIds.includes(toString(note.renote.userId)));
 }
