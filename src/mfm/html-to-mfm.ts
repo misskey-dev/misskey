@@ -1,75 +1,42 @@
 const parse5 = require('parse5');
 import { URL } from 'url';
+import { switchMap } from '../prelude/functional-syntax';
 
 export default function(html: string): string {
 	if (html == null) return null;
 
-	const dom = parse5.parseFragment(html);
+	const nodes: any[] = parse5.parseFragment(html).childNodes;
 
-	let text = '';
+	return nodes.reduce((a: string, c: any) => a + analyze(c), '').trim();
 
-	dom.childNodes.forEach((n: any) => analyze(n));
-
-	return text.trim();
-
-	function getText(node: any) {
-		if (node.nodeName == '#text') return node.value;
-
-		if (node.childNodes) {
-			return node.childNodes.map((n: any) => getText(n)).join('');
-		}
-
-		return '';
+	function getText(node: any): string {
+		return (
+			node.nodeName == '#text' ? node.value :
+			node.childNodes ? node.childNodes.map(getText).join('') :
+			'');
 	}
 
-	function analyze(node: any) {
-		switch (node.nodeName) {
-			case '#text':
-				text += node.value;
-				break;
+	function analyzeChildren(node: any): string {
+		return node.childNodes ? (node.childNodes as any[]).reduce((a: string, c: any) => a + analyze(c), '') : '';
+	}
 
-			case 'br':
-				text += '\n';
-				break;
-
-			case 'a':
+	function analyze(node: any): string {
+		return switchMap(node.nodeName, analyzeChildren(node),
+			['#text', node.value as string],
+			['br', '\n'],
+			['a', (() => {
 				const txt = getText(node);
 				const rel = node.attrs.find((x: any) => x.name == 'rel');
 				const href = node.attrs.find((x: any) => x.name == 'href');
+				const part = txt.split('@');
 
-				// ハッシュタグ / hrefがない / txtがURL
-				if ((rel && rel.value.match('tag') !== null) || !href || href.value == txt) {
-					text += txt;
-				// メンション
-				} else if (txt.startsWith('@')) {
-					const part = txt.split('@');
-
-					if (part.length == 2) {
-						//#region ホスト名部分が省略されているので復元する
-						const acct = `${txt}@${(new URL(href.value)).hostname}`;
-						text += acct;
-						//#endregion
-					} else if (part.length == 3) {
-						text += txt;
-					}
-				// その他
-				} else {
-					text += `[${txt}](${href.value})`;
-				}
-				break;
-
-			case 'p':
-				text += '\n\n';
-				if (node.childNodes) {
-					node.childNodes.forEach((n: any) => analyze(n));
-				}
-				break;
-
-			default:
-				if (node.childNodes) {
-					node.childNodes.forEach((n: any) => analyze(n));
-				}
-				break;
-		}
+				return (
+					(rel && rel.value.match('tag') !== null) || !href || href.value == txt ? txt : // ハッシュタグ / hrefがない / txtがURL
+					part.length && !part[0].length ? switchMap(part.length, '', // メンション
+						[2, `${txt}@${(new URL(href.value)).hostname}`], // ホスト名部分が省略されているので復元する
+						[3, txt]) :
+					`[${txt}](${href.value})`); // その他
+			})()],
+			['p', `\n\n${analyzeChildren(node)}`]);
 	}
 }
