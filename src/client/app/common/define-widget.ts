@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-export default function<T extends object>(data: {
+export default function <T extends object>(data: {
 	name: string;
 	props?: () => T;
 }) {
@@ -53,7 +53,8 @@ export default function<T extends object>(data: {
 			mergeProps() {
 				if (data.props) {
 					const defaultProps = data.props();
-					for (const prop of Object.keys(defaultProps).filter(x => !this.props.hasOwnProperty(x))) {
+					for (const prop of Object.keys(defaultProps)) {
+						if (this.bakeProps.hasOwnProperty(prop)) continue;
 						Vue.set(this.props, prop, defaultProps[prop]);
 					}
 				}
