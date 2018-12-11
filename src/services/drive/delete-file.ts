@@ -40,8 +40,8 @@ export default async function(file: IDriveFile, isExpired = false) {
 		}
 	} as any;
 
-	// リモートファイル削除後は直リンクにする
-	if (file.metadata && file.metadata._user && file.metadata._user.host != null) {
+	// リモートファイル期限切れ削除後は直リンクにする
+	if (isExpired && file.metadata && file.metadata._user && file.metadata._user.host != null) {
 		set.metadata.withoutChunks = true;
 		set.metadata.isRemote = true;
 		set.metadata.url = file.metadata.uri;
