@@ -9,7 +9,7 @@
 	</template>
 	<div v-if="data">
 		<ol>
-			<li>{{ $t('authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:@howtoinstall') }}</a></li>
+			<li>{{ $t('authenticator') }}<a href="https://support.google.com/accounts/answer/1066447" target="_blank">{{ $t('howtoinstall') }}</a></li>
 			<li>{{ $t('scan') }}<br><img :src="data.qr"></li>
 			<li>{{ $t('done') }}<br>
 				<input type="number" v-model="token" class="ui">
