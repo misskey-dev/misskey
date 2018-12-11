@@ -28,6 +28,7 @@ import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
+import MkNotFound from '../common/views/pages/404.vue';
 
 import Ctx from './views/components/context-menu.vue';
 import PostFormWindow from './views/components/post-form-window.vue';
@@ -148,7 +149,8 @@ init(async (launch) => {
 			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
 			{ path: '/@:user/followers', name: 'userFollowers', component: MkUserFollowingOrFollowers },
 			{ path: '/notes/:note', name: 'note', component: MkNote },
-			{ path: '/authorize-follow', component: MkFollow }
+			{ path: '/authorize-follow', component: MkFollow },
+			{ path: '*', component: MkNotFound }
 		]
 	});
 
