@@ -1,5 +1,5 @@
 import { INote } from '../models/note';
 
 export default function(note: INote): boolean {
-	return note.renoteId != null && (note.text != null || note.poll != null || (note.fileIds != null && note.fileIds.length > 0));
+	return !!(note.renoteId && (note.text || note.poll || (note.fileIds && note.fileIds.length)));
 }
