@@ -135,11 +135,10 @@ const elements: Element[] = [
 	// block comment
 	code => {
 		const match = code.match(/^\/\*([\s\S]+?)\*\//);
-		if (!match) return null;
-		return {
+		return match ? {
 			html: `<span class="comment">${escape(match[0])}</span>`,
 			next: match[0].length
-		};
+		} : null;
 	},
 
 	// string
@@ -165,14 +164,10 @@ const elements: Element[] = [
 				str += char;
 			}
 		}
-		if (thisIsNotAString) {
-			return null;
-		} else {
-			return {
-				html: `<span class="string">${escape(str)}</span>`,
-				next: str.length
-			};
-		}
+		return thisIsNotAString ? null : {
+			html: `<span class="string">${escape(str)}</span>`,
+			next: str.length
+		};
 	},
 
 	// regexp
@@ -225,41 +220,28 @@ const elements: Element[] = [
 		if (prev && /[a-zA-Z]/.test(prev)) return null;
 		if (!/^[\-\+]?[0-9\.]+/.test(code)) return null;
 		const match = code.match(/^[\-\+]?[0-9\.]+/)[0];
-		if (match) {
-			return {
-				html: `<span class="number">${match}</span>`,
-				next: match.length
-			};
-		} else {
-			return null;
-		}
+		return match ? {
+			html: `<span class="number">${match}</span>`,
+			next: match.length
+		} : null;
 	},
 
 	// nan
 	(code, i, source) => {
 		const prev = source[i - 1];
-		if (prev && /[a-zA-Z]/.test(prev)) return null;
-		if (code.substr(0, 3) == 'NaN') {
-			return {
-				html: `<span class="nan">NaN</span>`,
-				next: 3
-			};
-		} else {
-			return null;
-		}
+		return !(prev && /[a-zA-Z]/.test(prev)) && code.substr(0, 3) == 'NaN' ? {
+			html: `<span class="nan">NaN</span>`,
+			next: 3
+		} : null;
 	},
 
 	// method
 	code => {
 		const match = code.match(/^([a-zA-Z_-]+?)\(/);
-		if (!match) return null;
-
-		if (match[1] == '-') return null;
-
-		return {
+		return match && match[1] !== '-' ? {
 			html: `<span class="method">${match[1]}</span>`,
 			next: match[1].length
-		};
+		} : null;
 	},
 
 	// property
@@ -268,12 +250,10 @@ const elements: Element[] = [
 		if (prev != '.') return null;
 
 		const match = code.match(/^[a-zA-Z0-9_-]+/);
-		if (!match) return null;
-
-		return {
+		return match ? {
 			html: `<span class="property">${match[0]}</span>`,
 			next: match[0].length
-		};
+		} : null;
 	},
 
 	// keyword
@@ -282,28 +262,19 @@ const elements: Element[] = [
 		if (prev && /[a-zA-Z]/.test(prev)) return null;
 
 		const match = keywords.filter(k => code.substr(0, k.length) == k)[0];
-		if (match) {
-			if (/^[a-zA-Z]/.test(code.substr(match.length))) return null;
-			return {
-				html: `<span class="keyword ${match}">${match}</span>`,
-				next: match.length
-			};
-		} else {
-			return null;
-		}
+		return match && !/^[a-zA-Z]/.test(code.substr(match.length)) ? {
+			html: `<span class="keyword ${match}">${match}</span>`,
+			next: match.length
+		} : null;
 	},
 
 	// symbol
 	code => {
 		const match = symbols.filter(s => code[0] == s)[0];
-		if (match) {
-			return {
-				html: `<span class="symbol">${match}</span>`,
-				next: 1
-			};
-		} else {
-			return null;
-		}
+		return match ? {
+			html: `<span class="symbol">${match}</span>`,
+			next: 1
+		} : null;
 	}
 ];
 
