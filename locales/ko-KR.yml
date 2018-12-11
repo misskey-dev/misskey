@@ -968,6 +968,7 @@ admin/views/instance.vue:
   instance-description: "인스턴스의 소개"
   host: "관리자"
   banner-url: "배너 이미지 URL"
+  error-image-url: "エラー画像URL"
   languages: "인스턴스의 대상 언어"
   languages-desc: "공백으로 구분하여 여러 개 설정할 수 있습니다."
   maintainer-config: "관리자 정보"
