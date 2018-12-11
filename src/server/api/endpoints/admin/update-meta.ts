@@ -443,6 +443,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		set.smtpPass = ps.smtpPass;
 	}
 
+	if (ps.errorImageUrl !== undefined) {
+		set.errorImageUrl = ps.errorImageUrl;
+	}
+
 	await Meta.update({}, {
 		$set: set
 	}, { upsert: true });

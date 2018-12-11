@@ -65,6 +65,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		recaptchaSiteKey: instance.recaptchaSiteKey,
 		swPublickey: config.sw ? config.sw.public_key : null,
 		bannerUrl: instance.bannerUrl,
+		errorImageUrl: instance.errorImageUrl,
 		maxNoteTextLength: instance.maxNoteTextLength,
 		emojis: emojis,
 		enableEmail: instance.enableEmail,

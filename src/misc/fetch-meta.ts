@@ -18,7 +18,8 @@ const defaultMeta: any = {
 	enableDiscordIntegration: false,
 	enableExternalUserRecommendation: false,
 	externalUserRecommendationEngine: "https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}",
-	externalUserRecommendationTimeout: 300000
+	externalUserRecommendationTimeout: 300000,
+	errorImageUrl: 'https://ai.misskey.xyz/aiart/yubitun.png'
 };
 
 export default async function(): Promise<IMeta> {

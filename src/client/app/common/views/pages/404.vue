@@ -1,10 +1,10 @@
 <template>
-<figure>
-<img :src="src" alt="">
-<figcaption>
-<h1><span>404</span></h1>
-<p><span>{{ $t('page-not-found') }}</span></p>
-</figcaption>
+<figure class="megtcxgu">
+	<img :src="src" alt="">
+	<figcaption>
+		<h1><span>Not found</span></h1>
+		<p><span>{{ $t('page-not-found') }}</span></p>
+	</figcaption>
 </figure>
 </template>
 
@@ -16,7 +16,7 @@ export default Vue.extend({
 	i18n: i18n('common/views/pages/404.vue'),
 	data() {
 		return {
-			src: '/assets/error.jpg'
+			src: ''
 		}
 	},
 	created() {
@@ -29,7 +29,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-figure
+.megtcxgu
 	align-items center
 	bottom 0
 	display flex
@@ -40,7 +40,10 @@ figure
 	right 0
 	top 0
 
-	figcaption
+	> img
+		width 500px
+
+	> figcaption
 		margin 8px
 
 		h1,
@@ -53,10 +56,10 @@ figure
 				position relative
 				width 100%
 
-@media (max-width: 767px)
-	figure
+	@media (max-width: 767px)
 		flex-flow column
 
-	figcaption
-		text-align center
+		> figcaption
+			text-align center
+
 </style>
