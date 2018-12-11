@@ -18,6 +18,14 @@
 		<div class="description">
 			<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 		</div>
+		<div class="fields" v-if="user.fields">
+			<dl class="field" v-for="(field, i) in user.fields" :key="i">
+				<dt class="name">{{ field.name }}</dt>
+				<dd class="value">
+					<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+				</dd>
+			</dl>
+		</div>
 		<div class="info">
 			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>
 			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', $t('year')).replace('-', $t('month')) + $t('day') }} ({{ $t('years-old', { age }) }})</span>
@@ -173,6 +181,33 @@ export default Vue.extend({
 	> .body
 		padding 16px 16px 16px 154px
 		color var(--text)
+
+		> .fields
+			margin-top 16px
+
+			> .field
+				display flex
+				padding 0
+				margin 0
+
+				> .name
+					border-right solid 1px var(--faceDivider)
+					padding 4px
+					margin 4px
+					width 30%
+					overflow hidden
+					white-space nowrap
+					text-overflow ellipsis
+					font-weight bold
+					text-align center
+
+				> .value
+					padding 4px
+					margin 4px
+					width 70%
+					overflow hidden
+					white-space nowrap
+					text-overflow ellipsis
 
 		> .info
 			margin-top 16px

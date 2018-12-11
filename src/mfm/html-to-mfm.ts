@@ -41,7 +41,7 @@ export default function(html: string): string {
 				if ((rel && rel.value.match('tag') !== null) || !href || href.value == txt) {
 					text += txt;
 				// メンション
-				} else if (txt.startsWith('@')) {
+				} else if (txt.startsWith('@') && !rel || !rel.value.match(/^me /)) {
 					const part = txt.split('@');
 
 					if (part.length == 2) {

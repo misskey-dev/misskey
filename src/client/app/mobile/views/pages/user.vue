@@ -24,6 +24,14 @@
 				<div class="description">
 					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 				</div>
+				<div class="fields" v-if="user.fields">
+					<dl class="field" v-for="(field, i) in user.fields" :key="i">
+						<dt class="name">{{ field.name }}</dt>
+						<dd class="value">
+							<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+						</dd>
+					</dl>
+				</div>
 				<div class="info">
 					<p class="location" v-if="user.host === null && user.profile.location">
 						<fa icon="map-marker"/>{{ user.profile.location }}
@@ -300,6 +308,33 @@ main
 			> .description
 				margin 8px 0
 				color var(--mobileUserPageDescription)
+
+			> .fields
+				margin 8px 0
+
+				> .field
+					display flex
+					padding 0
+					margin 0
+
+					> .name
+						padding 4px
+						margin 4px
+						width 30%
+						overflow hidden
+						white-space nowrap
+						text-overflow ellipsis
+						font-weight bold
+						color var(--mobileUserPageStatusHighlight)
+
+					> .value
+						padding 4px
+						margin 4px
+						width 70%
+						overflow hidden
+						white-space nowrap
+						text-overflow ellipsis
+						color var(--mobileUserPageStatusHighlight)
 
 			> .info
 				margin 8px 0
