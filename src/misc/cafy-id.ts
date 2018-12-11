@@ -19,7 +19,7 @@ export default class ID extends Context<string> {
 	constructor() {
 		super();
 
-		this.push((v: any) => isObjectId(v) && isNotAnId(v) ? true : new Error('must-be-an-id'));
+		this.push((v: any) => isObjectId(v) && !isNotAnId(v) ? true : new Error('must-be-an-id'));
 	}
 
 	public getType() {
