@@ -3,11 +3,12 @@ import { length } from 'stringz';
 import { Node } from '../../../../../mfm/parser';
 import parse from '../../../../../mfm/parse';
 import MkUrl from './url.vue';
+import MkMention from './mention.vue';
 import { concat, sum } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
 import MkGoogle from './google.vue';
-import { toUnicode } from 'punycode';
 import syntaxHighlight from '../../../../../mfm/syntax-highlight';
+import { host } from '../../../config';
 
 function getTextCount(tokens: Node[]): number {
 	const rootCount = sum(tokens.filter(x => x.name === 'text').map(x => length(x.props.text)));
@@ -158,21 +159,13 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'mention': {
-					const host = token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host;
-					const canonical = host != null ? `@${token.props.username}@${toUnicode(host)}` : `@${token.props.username}`;
-					return (createElement as any)('router-link', {
+					return [createElement(MkMention, {
 						key: Math.random(),
-						attrs: {
-							to: `/${canonical}`,
-							// TODO
-							//dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token),
-							style: 'color:var(--mfmMention);'
-						},
-						directives: [{
-							name: 'user-preview',
-							value: canonical
-						}]
-					}, canonical);
+						props: {
+							host: (token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host) || host,
+							username: token.props.username
+						}
+					})];
 				}
 
 				case 'hashtag': {

@@ -179,6 +179,7 @@ common:
 
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
+  you: "あなた"
 
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
