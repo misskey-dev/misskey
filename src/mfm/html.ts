@@ -103,8 +103,18 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 		mention(token) {
 			const a = doc.createElement('a');
 			const { username, host, acct } = token.props;
-			const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
-			a.href = remoteUserInfo ? remoteUserInfo.uri : `${config.url}/${acct}`;
+			switch (host) {
+				case 'github.com':
+					a.href = `https://github.com/${username}`;
+					break;
+				case 'twitter.com':
+					a.href = `https://twitter.com/${username}`;
+					break;
+				default:
+					const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
+					a.href = remoteUserInfo ? remoteUserInfo.uri : `${config.url}/${acct}`;
+					break;
+			}
 			a.textContent = acct;
 			return a;
 		},
