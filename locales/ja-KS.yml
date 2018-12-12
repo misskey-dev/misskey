@@ -165,6 +165,7 @@ common:
     hashtags: "ハッシュタグ"
   dev: "アプリの作成あかんかったわ。もっぺんやってみて。"
   ai-chan-kawaii: "藍ちゃめっさべっぴんさんや"
+  you: "あなた"
 auth/views/form.vue:
   share-access: "あんたのアカウントに<i>{name}</i>がアクセスしようとしてるで？ええか？"
   permission-ask: "このアプリは次の権限を要求してんで:"
