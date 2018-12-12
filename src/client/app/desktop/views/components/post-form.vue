@@ -16,7 +16,7 @@
 			<b>{{ $t('recent-tags') }}:</b>
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
-		<div class="local-only" v-if="this.localOnly == true">{{ $t('local-only-message') }}</div>
+		<div class="local-only" v-if="localOnly == true">{{ $t('local-only-message') }}</div>
 		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="'cw'">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -54,9 +54,9 @@
 		<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 	</button>
 	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
-	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
+	<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? $t('posting') : submitText }}<mk-ellipsis v-if="posting"/>
-	</button>
+	</ui-button>
 	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
 </div>
@@ -684,62 +684,8 @@ export default Vue.extend({
 		position absolute
 		bottom 16px
 		right 16px
-		cursor pointer
-		padding 0
-		margin 0
 		width 110px
 		height 40px
-		font-size 1em
-		color var(--primaryForeground)
-		background var(--primary)
-		outline none
-		border none
-		border-radius 4px
-
-		&:not(:disabled)
-			font-weight bold
-
-		&:hover:not(:disabled)
-			background var(--primaryLighten5)
-
-		&:active:not(:disabled)
-			background var(--primaryDarken5)
-
-		&:focus
-			&:after
-				content ""
-				pointer-events none
-				position absolute
-				top -5px
-				right -5px
-				bottom -5px
-				left -5px
-				border 2px solid var(--primaryAlpha03)
-				border-radius 8px
-
-		&:disabled
-			opacity 0.7
-			cursor default
-
-		&.wait
-			background linear-gradient(
-				45deg,
-				var(--primaryDarken10) 25%,
-				var(--primary)              25%,
-				var(--primary)              50%,
-				var(--primaryDarken10) 50%,
-				var(--primaryDarken10) 75%,
-				var(--primary)              75%,
-				var(--primary)
-			)
-			background-size 32px 32px
-			animation stripe-bg 1.5s linear infinite
-			opacity 0.7
-			cursor wait
-
-			@keyframes stripe-bg
-				from {background-position: 0 0;}
-				to   {background-position: -64px 32px;}
 
 	> .text-count
 		pointer-events none
