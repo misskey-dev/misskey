@@ -170,6 +170,9 @@ export default Vue.extend({
 			return;
 		}
 
+		if (url.hostname === 'music.youtube.com')
+			url.hostname = 'youtube.com';
+
 		fetch(`/url?url=${encodeURIComponent(this.url)}`).then(res => {
 			res.json().then(info => {
 				if (info.url == null) return;
