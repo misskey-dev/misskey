@@ -165,6 +165,7 @@ common:
     hashtags: "Hashtags"
   dev: "Failed to create the application. Please try again."
   ai-chan-kawaii: "Ai-chan kawaii!"
+  you: "あなた"
 auth/views/form.vue:
   share-access: "Would you allow <i>{name}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
