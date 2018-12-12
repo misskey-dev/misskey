@@ -47,7 +47,7 @@ common:
     seconds_ago: "Il y a {} seconde·s"
     minutes_ago: "Il y a {} min"
     hours_ago: "Il y a {} h"
-    days_ago: "Il y a {} jours"
+    days_ago: "Il y a {} j"
     weeks_ago: "Il y a {} semaines"
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
@@ -165,7 +165,7 @@ common:
     hashtags: "Hashtags"
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
   ai-chan-kawaii: "Ai-Chan est mignonne !"
-  you: "あなた"
+  you: "Vous"
 auth/views/form.vue:
   share-access: "Désirez-vous autoriser <i>{name}</i> à avoir accès à votre compte ?"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
@@ -525,7 +525,7 @@ common/views/widgets/tips.vue:
   tips-line24: "Misskey est fonctionnel depuis 2014"
   tips-line25: "Vous pouvez recevoir les notifications de Misskey dans un navigateur web compatible"
 common/views/pages/404.vue:
-  page-not-found: "ページが見つかりませんでした"
+  page-not-found: "La page demandée est introuvable !"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté·e en tant que {}"
   following: "Suit"
@@ -878,7 +878,7 @@ common/views/components/password-settings.vue:
   enter-new-password-again: "Entrez à nouveau le nouveau mot de passe"
   not-match: "Les nouveaux mots de passe ne sont pas identiques"
   changed: "Mot de passe modifié avec succès"
-  failed: "パスワード変更に失敗しました"
+  failed: "Échec lors de la modification du mot de passe"
 desktop/views/components/sub-note-content.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
@@ -971,7 +971,7 @@ admin/views/instance.vue:
   instance-description: "Description de l’instance"
   host: "Hôte"
   banner-url: "Url de l’image de la bannière"
-  error-image-url: "エラー画像URL"
+  error-image-url: "URL de l’image d’erreur"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
   maintainer-config: "Informations de l’administrateur"
@@ -1190,7 +1190,7 @@ desktop/views/pages/user/user.header.vue:
   years-old: "{age} ans"
   year: "/"
   month: "/"
-  day: "/"
+  day: "-"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
