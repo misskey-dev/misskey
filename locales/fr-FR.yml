@@ -1077,7 +1077,7 @@ admin/views/users.vue:
       createdAtAsc: "Date d’inscription (Ascendant)"
       createdAtDesc: "Date d’inscription (Descendant)"
       updatedAtAsc: "Mis à jour récemment (Ascendant)"
-      updatedAtDesc: "更新日時が新しい順"
+      updatedAtDesc: "Mis à jour récemment (descendant)"
     origin:
       title: "Origine"
       combined: "Locaux + distants"
@@ -1350,7 +1350,7 @@ mobile/views/pages/welcome.vue:
   signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
   dashboard: "Tableau de bord"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  widgets-hints: "Vous pouvez ajouter, supprimer et réaranger les widgets. Faites glisser « 三 » pour déplacer le widget. Appuyez sur « x » pour supprimer le widget. Certains widgets peuvent changer d’apparence en cliquant dessus."
   add-widget: "Ajouter"
   customization-tips: "Conseils de personnalisation"
 mobile/views/pages/widgets/activity.vue:
