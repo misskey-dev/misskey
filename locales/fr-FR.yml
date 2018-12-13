@@ -516,7 +516,7 @@ common/views/widgets/tips.vue:
   tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
   tips-line11: "Vous pouvez épingler des notes sur votre page en cliquant sur « … »"
   tips-line13: "Tous les fichiers attachés à cette publication sont sauvegardés dans le Drive"
-  tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できます"
+  tips-line14: "Lorsque vous personnalisez la disposition de votre page d’accueil, vous pouvez effectuer un clique droit sur un widget pour changer son apparence."
   tips-line17: "Vous pouvez mettre un texte en surbrillance en le mettant entre ** **"
   tips-line19: "Plusieurs fenêtres peuvent être détachées en dehors du navigateur."
   tips-line20: "Pourcentage sur le widget calendrier qui indique le pourcentage de temps passé"
