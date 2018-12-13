@@ -60,7 +60,7 @@
 
 			<div>
 				<template v-for="item in form">
-					<ui-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" :text="item.label" @change="onChangeForm(item)">{{ item.desc || '' }}</ui-switch>
+					<ui-switch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" @change="onChangeForm(item)">{{ item.label || item.desc || '' }}</ui-switch>
 
 					<div class="card" v-if="item.type == 'radio'" :key="item.id">
 						<header>
