@@ -1,0 +1,79 @@
+import $ from 'cafy';
+import File, { packMany } from '../../../../../models/drive-file';
+import define from '../../../define';
+
+export const meta = {
+	requireCredential: false,
+	requireModerator: true,
+
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		},
+
+		sort: {
+			validator: $.str.optional.or([
+				'+createdAt',
+				'-createdAt',
+				'+size',
+				'-size',
+			]),
+		},
+
+		origin: {
+			validator: $.str.optional.or([
+				'combined',
+				'local',
+				'remote',
+			]),
+			default: 'local'
+		}
+	}
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	let _sort;
+	if (ps.sort) {
+		if (ps.sort == '+createdAt') {
+			_sort = {
+				uploadDate: -1
+			};
+		} else if (ps.sort == '-createdAt') {
+			_sort = {
+				uploadDate: 1
+			};
+		} else if (ps.sort == '+size') {
+			_sort = {
+				length: -1
+			};
+		} else if (ps.sort == '+size') {
+			_sort = {
+				length: -1
+			};
+		}
+	} else {
+		_sort = {
+			_id: -1
+		};
+	}
+
+	const q =
+		ps.origin == 'local' ? { host: null } :
+		ps.origin == 'remote' ? { host: { $ne: null } } :
+		{};
+
+	const files = await File
+		.find(q, {
+			limit: ps.limit,
+			sort: _sort,
+			skip: ps.offset
+		});
+
+	res(await packMany(files, { detail: true, withUser: true }));
+}));

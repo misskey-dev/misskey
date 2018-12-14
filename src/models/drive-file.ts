@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import { pack as packFolder } from './drive-folder';
+import { pack as packUser } from './user';
 import monkDb, { nativeDbConn } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
@@ -131,6 +132,7 @@ export const packMany = (
 	options?: {
 		detail?: boolean
 		self?: boolean,
+		withUser?: boolean,
 	}
 ) => {
 	return Promise.all(files.map(f => pack(f, options)));
@@ -144,6 +146,7 @@ export const pack = (
 	options?: {
 		detail?: boolean,
 		self?: boolean,
+		withUser?: boolean,
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 	const opts = Object.assign({
@@ -206,6 +209,11 @@ export const pack = (
 			);
 		}
 		*/
+	}
+
+	if (opts.withUser) {
+		// Populate user
+		_target.user = await packUser(_file.metadata.userId);
 	}
 
 	delete _target.withoutChunks;
