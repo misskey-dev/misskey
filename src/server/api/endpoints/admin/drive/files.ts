@@ -63,10 +63,12 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		};
 	}
 
-	const q =
-		ps.origin == 'local' ? { host: null } :
-		ps.origin == 'remote' ? { host: { $ne: null } } :
-		{};
+	const q = {
+		'metadata.deletedAt': { $exists: false },
+	} as any;
+
+	if (ps.origin == 'local') q['metadata._user.host'] = null;
+	if (ps.origin == 'remote') q['metadata._user.host'] = { $ne: null };
 
 	const files = await File
 		.find(q, {

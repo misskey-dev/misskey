@@ -19,21 +19,26 @@
 				</ui-select>
 			</ui-horizon-group>
 			<div class="kidvdlkg" v-for="file in files">
-				<div>
-					<div class="thumbnail" :style="thumbnail(file)"></div>
-				</div>
-				<div>
-					<header>
-						<b>{{ file.name }}</b>
-						<span class="username">@{{ file.user | acct }}</span>
-					</header>
+				<div @click="file._open = !file._open">
 					<div>
-						<div>
-							<span style="margin-right:16px;">{{ file.type }}</span>
-							<span>{{ file.datasize | bytes }}</span>
-						</div>
-						<div><mk-time :time="file.createdAt" mode="detail"/></div>
+						<div class="thumbnail" :style="thumbnail(file)"></div>
 					</div>
+					<div>
+						<header>
+							<b>{{ file.name }}</b>
+							<span class="username">@{{ file.user | acct }}</span>
+						</header>
+						<div>
+							<div>
+								<span style="margin-right:16px;">{{ file.type }}</span>
+								<span>{{ file.datasize | bytes }}</span>
+							</div>
+							<div><mk-time :time="file.createdAt" mode="detail"/></div>
+						</div>
+					</div>
+				</div>
+				<div v-show="file._open">
+					<ui-button @click="del(file)"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
 				</div>
 			</div>
 			<ui-button v-if="existMore" @click="fetch">{{ $t('@.load-more') }}</ui-button>
@@ -46,6 +51,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/drive.vue'),
@@ -58,7 +64,7 @@ export default Vue.extend({
 			offset: 0,
 			files: [],
 			existMore: false,
-			faCloud
+			faCloud, faTrashAlt
 		};
 	},
 
@@ -94,6 +100,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
+				for (const x of files) {
+					x._open = false;
+				}
 				this.files = this.files.concat(files);
 				this.offset += this.limit;
 			});
@@ -104,6 +113,23 @@ export default Vue.extend({
 				'background-color': file.properties.avgColor && file.properties.avgColor.length == 3 ? `rgb(${file.properties.avgColor.join(',')})` : 'transparent',
 				'background-image': `url(${file.thumbnailUrl})`
 			};
+		},
+
+		async del(file: any) {
+			const process = async () => {
+				await this.$root.api('drive/files/delete', { fileId: file.id });
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('deleted')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
 		}
 	}
 });
@@ -115,30 +141,33 @@ export default Vue.extend({
 		padding 16px
 
 	.kidvdlkg
-		display flex
 		padding 16px 0
 		border-top solid 1px var(--faceDivider)
 
 		> div:first-child
-			> .thumbnail
-				display block
-				width 64px
-				height 64px
-				background-size cover
-				background-position center center
+			display flex
+			cursor pointer
 
-		> div:last-child
-			flex 1
-			padding-left 16px
+			> div:nth-child(1)
+				> .thumbnail
+					display block
+					width 64px
+					height 64px
+					background-size cover
+					background-position center center
 
-			@media (max-width 500px)
-				font-size 14px
+			> div:nth-child(2)
+				flex 1
+				padding-left 16px
 
-			> header
-				word-break break-word
+				@media (max-width 500px)
+					font-size 14px
 
-				> .username
-					margin-left 8px
-					opacity 0.7
+				> header
+					word-break break-word
+
+					> .username
+						margin-left 8px
+						opacity 0.7
 
 </style>
