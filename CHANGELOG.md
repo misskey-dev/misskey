@@ -1,9 +1,10 @@
 ChangeLog
 =========
 
-破壊的変更のみ記載。
-
-This document describes breaking changes only.
+10.62.2
+-------
+* バグ修正
+* ユーザビリティの向上
 
 10.0.0
 ------

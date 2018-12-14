@@ -3,7 +3,9 @@
 	<mk-avatar class="avatar" :user="note.user"/>
 	<fa icon="retweet"/>
 	<i18n path="@.renoted-by" tag="span">
-		<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId" place="user">{{ note.user | userName }}</router-link>
+		<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId" place="user">
+			<mk-user-name :user="note.user"/>
+		</router-link>
 	</i18n>
 	<div class="info">
 		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>

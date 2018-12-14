@@ -167,11 +167,14 @@ export default Vue.extend({
 				icon: 'pencil-alt',
 				text: this.$t('rename'),
 				action: () => {
-					this.$input({
+					this.$root.dialog({
 						title: this.$t('rename'),
-						default: this.name,
-						allowEmpty: false
-					}).then(name => {
+						input: {
+							default: this.name,
+							allowEmpty: false
+						}
+					}).then(({ canceled, result: name }) => {
+						if (canceled) return;
 						this.$store.dispatch('settings/renameDeckColumn', { id: this.column.id, name });
 					});
 				}
@@ -315,8 +318,6 @@ export default Vue.extend({
 .dnpfarvgbnfmyzbdquhhzyxcmstpdqzs
 	$header-height = 42px
 
-	width 330px
-	min-width 330px
 	height 100%
 	background var(--face)
 	border-radius var(--round)
@@ -351,6 +352,7 @@ export default Vue.extend({
 	&:not(.isStacked).narrow
 		width 285px
 		min-width 285px
+		flex-grow 0 !important
 
 	&.naked
 		background var(--deckAcrylicColumnBg)

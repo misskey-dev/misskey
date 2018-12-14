@@ -35,10 +35,13 @@ export default Vue.extend({
 	},
 	methods: {
 		register() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('enter-password'),
-				type: 'password'
-			}).then(password => {
+				input: {
+					type: 'password'
+				}
+			}).then(({ canceled, result: password }) => {
+				if (canceled) return;
 				this.$root.api('i/2fa/register', {
 					password: password
 				}).then(data => {
@@ -48,10 +51,13 @@ export default Vue.extend({
 		},
 
 		unregister() {
-			this.$input({
+			this.$root.dialog({
 				title: this.$t('enter-password'),
-				type: 'password'
-			}).then(password => {
+				input: {
+					type: 'password'
+				}
+			}).then(({ canceled, result: password }) => {
+				if (canceled) return;
 				this.$root.api('i/2fa/unregister', {
 					password: password
 				}).then(() => {

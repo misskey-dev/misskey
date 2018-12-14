@@ -14,26 +14,44 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 	const doc = window.document;
 
-	function dive(nodes: Node[]): any[] {
-		return nodes.map(n => handlers[n.name](n));
+	function appendChildren(children: Node[], targetElement: any): void {
+		for (const child of children.map(n => handlers[n.name](n))) targetElement.appendChild(child);
 	}
 
 	const handlers: { [key: string]: (token: Node) => any } = {
 		bold(token) {
 			const el = doc.createElement('b');
-			dive(token.children).forEach(child => el.appendChild(child));
+			appendChildren(token.children, el);
 			return el;
 		},
 
 		big(token) {
 			const el = doc.createElement('strong');
-			dive(token.children).forEach(child => el.appendChild(child));
+			appendChildren(token.children, el);
+			return el;
+		},
+
+		small(token) {
+			const el = doc.createElement('small');
+			appendChildren(token.children, el);
+			return el;
+		},
+
+		strike(token) {
+			const el = doc.createElement('del');
+			appendChildren(token.children, el);
+			return el;
+		},
+
+		italic(token) {
+			const el = doc.createElement('i');
+			appendChildren(token.children, el);
 			return el;
 		},
 
 		motion(token) {
 			const el = doc.createElement('i');
-			dive(token.children).forEach(child => el.appendChild(child));
+			appendChildren(token.children, el);
 			return el;
 		},
 
@@ -47,7 +65,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 		center(token) {
 			const el = doc.createElement('div');
-			dive(token.children).forEach(child => el.appendChild(child));
+			appendChildren(token.children, el);
 			return el;
 		},
 
@@ -78,7 +96,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 		link(token) {
 			const a = doc.createElement('a');
 			a.href = token.props.url;
-			dive(token.children).forEach(child => a.appendChild(child));
+			appendChildren(token.children, a);
 			return a;
 		},
 
@@ -93,13 +111,13 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 		quote(token) {
 			const el = doc.createElement('blockquote');
-			dive(token.children).forEach(child => el.appendChild(child));
+			appendChildren(token.children, el);
 			return el;
 		},
 
 		title(token) {
 			const el = doc.createElement('h1');
-			dive(token.children).forEach(child => el.appendChild(child));
+			appendChildren(token.children, el);
 			return el;
 		},
 
@@ -108,11 +126,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 			const nodes = (token.props.text as string).split('\n').map(x => doc.createTextNode(x));
 
 			for (const x of intersperse('br', nodes)) {
-				if (x === 'br') {
-					el.appendChild(doc.createElement('br'));
-				} else {
-					el.appendChild(x);
-				}
+				el.appendChild(x === 'br' ? doc.createElement('br') : x);
 			}
 
 			return el;
@@ -133,9 +147,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 		}
 	};
 
-	dive(tokens).forEach(x => {
-		doc.body.appendChild(x);
-	});
+	appendChildren(tokens, doc.body);
 
 	return `<p>${doc.body.innerHTML}</p>`;
 };

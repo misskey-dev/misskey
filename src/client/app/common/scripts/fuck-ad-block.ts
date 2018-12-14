@@ -4,7 +4,7 @@ export default ($root: any) => {
 	require('fuckadblock');
 
 	function adBlockDetected() {
-		$root.alert({
+		$root.dialog({
 			title: $root.$t('@.adblock.detected'),
 			text: $root.$t('@.adblock.warning')
 		});

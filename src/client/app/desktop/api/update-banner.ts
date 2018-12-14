@@ -87,7 +87,7 @@ export default ($root: any) => {
 				value: i.bannerUrl
 			});
 
-			$root.alert({
+			$root.dialog({
 				title: '%fa:info-circle% %i18n:desktop.banner-updated%',
 				text: null
 			});

@@ -34,14 +34,14 @@ export default Vue.extend({
 			const process = async () => {
 				const user = await this.$root.api('users/show', parseAcct(this.username));
 				await this.$root.api('admin/moderators/add', { userId: user.id });
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'success',
 					text: this.$t('add-moderator.added')
 				});
 			};
 
 			await process().catch(e => {
-				this.$root.alert({
+				this.$root.dialog({
 					type: 'error',
 					text: e.toString()
 				});

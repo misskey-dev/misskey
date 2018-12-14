@@ -3,36 +3,21 @@ import { length } from 'stringz';
 import { Node } from '../../../../../mfm/parser';
 import parse from '../../../../../mfm/parse';
 import MkUrl from './url.vue';
-import { concat } from '../../../../../prelude/array';
+import { concat, sum } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
 import MkGoogle from './google.vue';
 import { toUnicode } from 'punycode';
 import syntaxHighlight from '../../../../../mfm/syntax-highlight';
 
 function getTextCount(tokens: Node[]): number {
-	let count = 0;
-	const extract = (tokens: Node[]) => {
-		tokens.filter(x => x.name === 'text').forEach(x => {
-			count += length(x.props.text);
-		});
-		tokens.filter(x => x.children).forEach(x => {
-			extract(x.children);
-		});
-	};
-	extract(tokens);
-	return count;
+	const rootCount = sum(tokens.filter(x => x.name === 'text').map(x => length(x.props.text)));
+	const childrenCount = sum(tokens.filter(x => x.children).map(x => getTextCount(x.children)));
+	return rootCount + childrenCount;
 }
 
 function getChildrenCount(tokens: Node[]): number {
-	let count = 0;
-	const extract = (tokens: Node[]) => {
-		tokens.filter(x => x.children).forEach(x => {
-			count++;
-			extract(x.children);
-		});
-	};
-	extract(tokens);
-	return count;
+	const countTree = tokens.filter(x => x.children).map(x => getChildrenCount(x.children));
+	return countTree.length + sum(countTree);
 }
 
 export default Vue.component('misskey-flavored-markdown', {
@@ -48,6 +33,10 @@ export default Vue.component('misskey-flavored-markdown', {
 		shouldBreak: {
 			type: Boolean,
 			default: true
+		},
+		plainText: {
+			type: Boolean,
+			default: false
 		},
 		author: {
 			type: Object,
@@ -65,14 +54,9 @@ export default Vue.component('misskey-flavored-markdown', {
 	render(createElement) {
 		if (this.text == null || this.text == '') return;
 
-		let ast: Node[];
-
-		if (this.ast == null) {
-			// Parse text to ast
-			ast = parse(this.text);
-		} else {
-			ast = this.ast as Node[];
-		}
+		const ast = this.ast == null ?
+			parse(this.text, this.plainText) : // Parse text to ast
+			this.ast as Node[];
 
 		let bigCount = 0;
 		let motionCount = 0;
@@ -96,6 +80,18 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('b', genEl(token.children))];
 				}
 
+				case 'strike': {
+					return [createElement('del', genEl(token.children))];
+				}
+
+				case 'italic': {
+					return (createElement as any)('i', {
+						attrs: {
+							style: 'font-style: oblique;'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'big': {
 					bigCount++;
 					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;
@@ -109,6 +105,10 @@ export default Vue.component('misskey-flavored-markdown', {
 							value: { classes: 'tada', iteration: 'infinite' }
 						}]
 					}, genEl(token.children));
+				}
+
+				case 'small': {
+					return [createElement('small', genEl(token.children))];
 				}
 
 				case 'center': {
@@ -238,7 +238,8 @@ export default Vue.component('misskey-flavored-markdown', {
 							name: token.props.name
 						},
 						props: {
-							customEmojis: this.customEmojis || customEmojis
+							customEmojis: this.customEmojis || customEmojis,
+							normal: this.plainText
 						}
 					})];
 				}

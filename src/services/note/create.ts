@@ -98,6 +98,8 @@ type Option = {
 	visibility?: string;
 	visibleUsers?: IUser[];
 	apMentions?: IUser[];
+	apHashtags?: string[];
+	apEmojis?: string[];
 	uri?: string;
 	app?: IApp;
 };
@@ -134,11 +136,6 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		return rej('Reply target is private of others');
 	}
 
-	// Renote対象が自分以外の非公開の投稿なら禁止
-	if (data.renote && data.renote.visibility == 'private' && !data.renote.userId.equals(user._id)) {
-		return rej('Renote target is private of others');
-	}
-
 	// ローカルのみをRenoteしたらローカルのみにする
 	if (data.renote && data.renote.localOnly) {
 		data.localOnly = true;
@@ -153,14 +150,25 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		data.text = data.text.trim();
 	}
 
-	// Parse MFM
-	const tokens = data.text ? parse(data.text) : [];
+	let tags = data.apHashtags;
+	let emojis = data.apEmojis;
+	let mentionedUsers = data.apMentions;
 
-	const tags = extractHashtags(tokens);
+	// Parse MFM if needed
+	if (!tags || !emojis || !mentionedUsers) {
+		const tokens = data.text ? parse(data.text) : [];
+		const cwTokens = data.cw ? parse(data.cw) : [];
+		const combinedTokens = tokens.concat(cwTokens);
 
-	const emojis = extractEmojis(tokens);
+		tags = data.apHashtags || extractHashtags(combinedTokens);
 
-	const mentionedUsers = data.apMentions || await extractMentionedUsers(user, tokens);
+		// MongoDBのインデックス対象は128文字以上にできない
+		tags = tags.filter(tag => tag.length <= 100);
+
+		emojis = data.apEmojis || extractEmojis(combinedTokens);
+
+		mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
+	}
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
 		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
@@ -462,9 +470,7 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 
 	const extract = (tokens: Node[]) => {
 		tokens.filter(x => x.name === 'hashtag').forEach(x => {
-			if (x.props.hashtag.length <= 100) {
-				hashtags.push(x.props.hashtag);
-			}
+			hashtags.push(x.props.hashtag);
 		});
 		tokens.filter(x => x.children).forEach(x => {
 			extract(x.children);
@@ -477,7 +483,7 @@ function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
 	return unique(hashtags);
 }
 
-function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
+export function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
 	const emojis: string[] = [];
 
 	const extract = (tokens: Node[]) => {

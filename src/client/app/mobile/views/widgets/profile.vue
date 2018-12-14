@@ -8,7 +8,9 @@
 			:src="$store.state.i.avatarUrl"
 			alt="avatar"
 		/>
-		<router-link :class="$style.name" :to="$store.state.i | userPage">{{ $store.state.i | userName }}</router-link>
+		<router-link :class="$style.name" :to="$store.state.i | userPage">
+			<mk-user-name :user="$store.state.i"/>
+		</router-link>
 	</mk-widget-container>
 </div>
 </template>

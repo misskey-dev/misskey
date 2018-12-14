@@ -16,27 +16,7 @@
 	<div class="pages">
 		<div class="profile" v-show="page == 'profile'">
 			<x-profile-editor/>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
-				<section>
-					<x-twitter-setting/>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
-				<section>
-					<x-github-setting/>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
-				<section>
-					<x-discord-setting/>
-				</section>
-			</ui-card>
+			<x-integration-settings/>
 		</div>
 
 		<ui-card class="theme" v-show="page == 'theme'">
@@ -132,7 +112,7 @@
 				<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
 			</section>
 			<section>
-				<ui-switch v-model="suggestRecentHashtags">{{ $t('suggest-recent-hashtags') }}</ui-switch>
+				<ui-switch v-model="suggestRecentHashtags">{{ $t('@.suggest-recent-hashtags') }}</ui-switch>
 				<ui-switch v-model="showClockOnHeader">{{ $t('show-clock-on-header') }}</ui-switch>
 				<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }}</ui-switch>
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
@@ -144,9 +124,19 @@
 				<header>{{ $t('deck-column-align') }}</header>
 				<ui-radio v-model="deckColumnAlign" value="center">{{ $t('deck-column-align-center') }}</ui-radio>
 				<ui-radio v-model="deckColumnAlign" value="left">{{ $t('deck-column-align-left') }}</ui-radio>
+				<ui-radio v-model="deckColumnAlign" value="flexible">{{ $t('deck-column-align-flexible') }}</ui-radio>
+			</section>
+			<section>
+				<header>{{ $t('deck-column-width') }}</header>
+				<ui-radio v-model="deckColumnWidth" value="narrow">{{ $t('deck-column-width-narrow') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="narrower">{{ $t('deck-column-width-narrower') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="normal">{{ $t('deck-column-width-normal') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="wider">{{ $t('deck-column-width-wider') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="wide">{{ $t('deck-column-width-wide') }}</ui-radio>
 			</section>
 			<section>
 				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
+				<ui-switch v-model="games_reversi_useWhiteBlackStones">{{ $t('@.use-white-black-reversi-stones') }}</ui-switch>
 				<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@.use-contrast-reversi-stones') }}</ui-switch>
 			</section>
 		</ui-card>
@@ -169,24 +159,7 @@
 			</section>
 		</ui-card>
 
-		<ui-card class="web" v-show="page == 'web'">
-			<div slot="title"><fa icon="language"/> {{ $t('language') }}</div>
-			<section class="fit-top">
-				<ui-select v-model="lang" :placeholder="$t('pick-language')">
-					<optgroup :label="$t('recommended')">
-						<option value="">{{ $t('auto') }}</option>
-					</optgroup>
-
-					<optgroup :label="$t('specify-language')">
-						<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-					</optgroup>
-				</ui-select>
-				<div class="none ui info">
-					<div>Current: <i>{{ this.currentLanguage }}</i></div>
-					<p><fa icon="info-circle"/>{{ $t('language-desc') }}</p>
-				</div>
-			</section>
-		</ui-card>
+		<x-language-settings v-show="page == 'web'"/>
 
 		<ui-card class="web" v-show="page == 'web'">
 			<div slot="title"><fa :icon="['far', 'trash-alt']"/> {{ $t('cache') }}</div>
@@ -309,17 +282,16 @@ import X2fa from './settings.2fa.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XTags from './settings.tags.vue';
-import XTwitterSetting from '../../../common/views/components/twitter-setting.vue';
-import XGithubSetting from '../../../common/views/components/github-setting.vue';
-import XDiscordSetting from '../../../common/views/components/discord-setting.vue';
+import XIntegrationSettings from '../../../common/views/components/integration-settings.vue';
 import XTheme from '../../../common/views/components/theme.vue';
 import XDriveSettings from '../../../common/views/components/drive-settings.vue';
 import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
 import XPasswordSettings from '../../../common/views/components/password-settings.vue';
 import XProfileEditor from '../../../common/views/components/profile-editor.vue';
 import XApiSettings from '../../../common/views/components/api-settings.vue';
+import XLanguageSettings from '../../../common/views/components/language-settings.vue';
 
-import { url, langs, clientVersion as version } from '../../../config';
+import { url, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
@@ -329,15 +301,14 @@ export default Vue.extend({
 		XApps,
 		XSignins,
 		XTags,
-		XTwitterSetting,
-		XGithubSetting,
-		XDiscordSetting,
+		XIntegrationSettings,
 		XTheme,
 		XDriveSettings,
 		XMuteAndBlock,
 		XPasswordSettings,
 		XProfileEditor,
 		XApiSettings,
+		XLanguageSettings,
 	},
 	props: {
 		initialPage: {
@@ -350,8 +321,6 @@ export default Vue.extend({
 			page: this.initialPage || 'profile',
 			meta: null,
 			version,
-			langs,
-			currentLanguage: 'Unknown',
 			latestVersion: undefined,
 			checkingForUpdate: false
 		};
@@ -397,6 +366,11 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
 		},
 
+		deckColumnWidth: {
+			get() { return this.$store.state.device.deckColumnWidth; },
+			set(value) { this.$store.commit('device/set', { key: 'deckColumnWidth', value }); }
+		},
+
 		deckDefault: {
 			get() { return this.$store.state.device.deckDefault; },
 			set(value) { this.$store.commit('device/set', { key: 'deckDefault', value }); }
@@ -410,11 +384,6 @@ export default Vue.extend({
 		soundVolume: {
 			get() { return this.$store.state.device.soundVolume; },
 			set(value) { this.$store.commit('device/set', { key: 'soundVolume', value }); }
-		},
-
-		lang: {
-			get() { return this.$store.state.device.lang; },
-			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
 		},
 
 		preventUpdate: {
@@ -537,6 +506,11 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
 		},
 
+		games_reversi_useWhiteBlackStones: {
+			get() { return this.$store.state.settings.games.reversi.useWhiteBlackStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useWhiteBlackStones', value }); }
+		},
+
 		games_reversi_useContrastStones: {
 			get() { return this.$store.state.settings.games.reversi.useContrastStones; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useContrastStones', value }); }
@@ -556,12 +530,6 @@ export default Vue.extend({
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
-
-		try {
-			const locale = JSON.parse(localStorage.getItem('locale') || "{}");
-			const localeKey = localStorage.getItem('localeKey');
-			this.currentLanguage = `${locale.meta.lang} (${localeKey})`;
-		} catch { }
 	},
 	methods: {
 		readAllUnreadNotes() {
@@ -596,12 +564,12 @@ export default Vue.extend({
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					this.$root.alert({
+					this.$root.dialog({
 						title: this.$t('no-updates'),
 						text: this.$t('no-updates-desc')
 					});
 				} else {
-					this.$root.alert({
+					this.$root.dialog({
 						title: this.$t('update-available'),
 						text: this.$t('update-available-desc')
 					});
@@ -610,7 +578,7 @@ export default Vue.extend({
 		},
 		clean() {
 			localStorage.clear();
-			this.$root.alert({
+			this.$root.dialog({
 				title: this.$t('cache-cleared'),
 				text: this.$t('cache-cleared-desc')
 			});

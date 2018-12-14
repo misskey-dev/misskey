@@ -186,7 +186,7 @@ export default Vue.extend({
 	overflow hidden
 	background var(--face)
 	border-radius 8px
-	box-shadow 0 0 2px rgba(#000, 0.1)
+	box-shadow 0 4px 16px rgba(#000, 0.1)
 
 	@media (min-width 500px)
 		box-shadow 0 8px 32px rgba(#000, 0.1)

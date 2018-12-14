@@ -1,6 +1,6 @@
 <template>
 <div class="urbixznjwwuukfsckrwzwsqzsxornqij">
-	<header><b>{{ game.user1 | userName }}</b> vs <b>{{ game.user2 | userName }}</b></header>
+	<header><b><mk-user-name :user="game.user1"/></b> vs <b><mk-user-name :user="game.user2"/></b></header>
 
 	<div>
 		<p>{{ $t('settings-of-the-game') }}</p>
@@ -36,8 +36,8 @@
 
 			<div>
 				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">{{ $t('random') }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b>{{ game.user1 | userName }}</b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b>{{ game.user2 | userName }}</b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user1"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user2"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
 			</div>
 		</div>
 

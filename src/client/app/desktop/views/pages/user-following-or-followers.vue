@@ -4,7 +4,9 @@
 		<header>
 			<mk-avatar class="avatar" :user="user"/>
 			<i18n :path="isFollowing ? 'following' : 'followers'" tag="p">
-				<router-link :to="user | userPage" place="user">{{ user | userName }}</router-link>
+				<router-link :to="user | userPage" place="user">
+					<mk-user-name :user="user"/>
+				</router-link>
 			</i18n>
 		</header>
 		<div class="users">

@@ -1,13 +1,13 @@
-import parser, { Node } from './parser';
+import parser, { Node, plainParser } from './parser';
 import * as A from '../prelude/array';
 import * as S from '../prelude/string';
 
-export default (source: string): Node[] => {
+export default (source: string, plainText = false): Node[] => {
 	if (source == null || source == '') {
 		return null;
 	}
 
-	let nodes: Node[] = parser.root.tryParse(source);
+	let nodes: Node[] = plainText ? plainParser.root.tryParse(source) : parser.root.tryParse(source);
 
 	const combineText = (es: Node[]): Node =>
 		({ name: 'text', props: { text: S.concat(es.map(e => e.props.text)) } });

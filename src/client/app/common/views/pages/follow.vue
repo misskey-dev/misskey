@@ -6,10 +6,12 @@
 		<div class="banner" :style="bannerStyle"></div>
 		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 		<div class="body">
-			<router-link :to="user | userPage" class="name">{{ user | userName }}</router-link>
+			<router-link :to="user | userPage" class="name">
+				<mk-user-name :user="user"/>
+			</router-link>
 			<span class="username">@{{ user | acct }}</span>
 			<div class="description">
-				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
+				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
 		</div>
 	</main>

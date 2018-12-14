@@ -118,9 +118,11 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
+  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
   use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
+  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
   show-full-acct: "ユーザー名のホストを省略しない"
@@ -171,7 +173,6 @@ common:
     polls: "アンケート"
     post-form: "投稿フォーム"
     server: "サーバー情報"
-    donation: "寄付のお願い"
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
@@ -321,6 +322,8 @@ common/views/components/theme.vue:
 common/views/components/cw-button.vue:
   hide: "隠す"
   show: "もっと見る"
+  chars: "{count}文字"
+  files: "{count}ファイル"
 
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
@@ -440,13 +443,11 @@ common/views/components/stream-indicator.vue:
   reconnecting: "再接続中"
   connected: "接続完了"
 
-common/views/components/twitter-setting.vue:
-  description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-  connected-to: "次のTwitterアカウントに接続されています"
-  detail: "詳細..."
-  reconnect: "再接続する"
-  connect: "Twitterと接続する"
+common/views/components/integration-settings.vue:
+  title: "サービス連携"
+  connect: "接続する"
   disconnect: "切断する"
+  connected-to: "次のアカウントに接続されています"
 
 common/views/components/github-setting.vue:
   description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
@@ -485,12 +486,21 @@ common/views/components/trends.vue:
   count: "{}人が投稿"
   empty: "トレンドなし"
 
+common/views/components/language-settings.vue:
+  title: "表示言語"
+  pick-language: "言語を選択"
+  recommended: "推奨"
+  auto: "自動"
+  specify-language: "言語を指定"
+  info: "変更はページの再度読み込み後に反映されます。"
+
 common/views/components/profile-editor.vue:
   title: "プロフィール"
   name: "名前"
   account: "アカウント"
   location: "場所"
   description: "自己紹介"
+  language: "言語"
   birthday: "誕生日"
   avatar: "アイコン"
   banner: "バナー"
@@ -522,10 +532,6 @@ common/views/widgets/calendar.vue:
   today: "今日:"
   this-month: "今月:"
   this-year: "今年:"
-
-common/views/widgets/donation.vue:
-  title: "寄付のお願い"
-  text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
 
 common/views/widgets/photo-stream.vue:
   title: "フォトストリーム"
@@ -851,7 +857,6 @@ desktop/views/components/settings.vue:
   circle-icons: "円形のアイコンを使用"
   contrasted-acct: "ユーザー名にコントラストを付ける"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
-  suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "リプライ先を表示する"
   timeline: "タイムライン"
@@ -860,22 +865,22 @@ desktop/views/components/settings.vue:
   show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
   show-maps: "マップの自動展開"
   remain-deleted-note: "削除された投稿を表示し続ける"
-  deck-column-align: "デッキのカラムの位置"
+  deck-column-align: "デッキのカラムの配置"
   deck-column-align-center: "中央"
   deck-column-align-left: "左"
+  deck-column-align-flexible: "フレキシブル"
+  deck-column-width: "デッキのカラムの幅"
+  deck-column-width-narrow: "狭"
+  deck-column-width-narrower: "やや狭"
+  deck-column-width-normal: "普通"
+  deck-column-width-wider: "やや広"
+  deck-column-width-wide: "広"
 
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
   enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
   volume: "ボリューム"
   test: "テスト"
-
-  language: "言語"
-  pick-language: "言語を選択"
-  recommended: "推奨"
-  auto: "自動"
-  specify-language: "言語を指定"
-  language-desc: "変更はページの再度読み込み後に反映されます。"
 
   cache: "キャッシュ"
   clean-cache: "クリーンアップ"
@@ -977,12 +982,19 @@ common/views/components/password-settings.vue:
   enter-new-password-again: "もう一度新しいパスワードを入力してください"
   not-match: "新しいパスワードが一致しません"
   changed: "パスワードを変更しました"
+  failed: "パスワード変更に失敗しました"
 
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
   poll: "アンケート"
+
+desktop/views/components/settings.tags.vue:
+  title: "タグ"
+  query: "クエリ (省略可)"
+  add: "追加"
+  save: "保存"
 
 desktop/views/components/taskmanager.vue:
   title: "タスクマネージャ"
@@ -1082,6 +1094,7 @@ admin/views/instance.vue:
   instance-description: "インスタンスの紹介"
   host: "ホスト"
   banner-url: "バナー画像URL"
+  error-image-url: "エラー画像URL"
   languages: "インスタンスの対象言語"
   languages-desc: "スペースで区切って複数設定できます。"
   maintainer-config: "管理者情報"
@@ -1554,11 +1567,6 @@ mobile/views/pages/selectdrive.vue:
 
 mobile/views/pages/settings.vue:
   signed-in-as: "{}としてサインイン中"
-  lang: "言語"
-  lang-tip: "変更はページの再読み込み後に反映されます。"
-  recommended: "推奨"
-  auto: "自動"
-  specify-language: "言語を指定"
   design: "デザインと表示"
   dark-mode: "ダークモード"
   i-am-under-limited-internet: "私は通信を制限されている"
@@ -1586,18 +1594,6 @@ mobile/views/pages/settings.vue:
   disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
   load-raw-images: "添付された画像を高画質で表示する"
   load-remote-media: "リモートサーバーのメディアを表示する"
-  twitter: "Twitter連携"
-  twitter-connect: "Twitterアカウントに接続する"
-  twitter-reconnect: "再接続する"
-  twitter-disconnect: "切断する"
-  github: "GitHub連携"
-  github-connect: "GitHubアカウントに接続する"
-  github-reconnect: "再接続する"
-  github-disconnect: "切断する"
-  discord: "Discord連携"
-  discord-connect: "Discordアカウントに接続する"
-  discord-reconnect: "再接続する"
-  discord-disconnect: "切断する"
   update: "Misskey Update"
   version: "バージョン:"
   latest-version: "最新のバージョン:"
@@ -1628,6 +1624,9 @@ mobile/views/pages/user.vue:
   block: "ブロック"
   unblock: "ブロック解除"
   years-old: "{age}歳"
+  push-to-list: "リストに追加"
+  select-list: "リストを選択してください"
+  list-pushed: "{user}を{list}に追加しました"
 
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"

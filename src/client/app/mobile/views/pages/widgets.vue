@@ -20,7 +20,6 @@
 					<option value="version">{{ $t('@.widgets.version') }}</option>
 					<option value="server">{{ $t('@.widgets.server') }}</option>
 					<option value="memo">{{ $t('@.widgets.memo') }}</option>
-					<option value="donation">{{ $t('@.widgets.donation') }}</option>
 					<option value="nav">{{ $t('@.widgets.nav') }}</option>
 					<option value="tips">{{ $t('@.widgets.tips') }}</option>
 				</select>
@@ -89,9 +88,6 @@ export default Vue.extend({
 			}, {
 				name: 'photo-stream',
 				id: 'd', data: {}
-			}, {
-				name: 'donation',
-				id: 'e', data: {}
 			}, {
 				name: 'nav',
 				id: 'f', data: {}

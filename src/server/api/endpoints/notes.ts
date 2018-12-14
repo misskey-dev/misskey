@@ -106,9 +106,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	const withFiles = ps.withFiles != undefined ? ps.withFiles : ps.media;
 
-	if (withFiles) {
-		query.fileIds = withFiles ? { $exists: true, $ne: null } : [];
-	}
+	if (withFiles) query.fileIds = { $exists: true, $ne: null };
 
 	if (ps.poll != undefined) {
 		query.poll = ps.poll ? { $exists: true, $ne: null } : null;

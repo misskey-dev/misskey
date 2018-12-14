@@ -15,7 +15,7 @@ import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
 import { clientVersion as version, codename, lang } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
-import Alert from './common/views/components/alert.vue';
+import Dialog from './common/views/components/dialog.vue';
 
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
@@ -144,6 +144,8 @@ import {
 	faHdd as farHdd,
 	faMoon as farMoon,
 	faPlayCircle as farPlayCircle,
+	faLightbulb as farLightbulb,
+	faStickyNote as farStickyNote,
 } from '@fortawesome/free-regular-svg-icons';
 
 import {
@@ -249,7 +251,7 @@ library.add(
 	faSync,
 	faArrowLeft,
 	faMapMarker,
-  faRobot,
+	faRobot,
 
 	farBell,
 	farEnvelope,
@@ -270,6 +272,8 @@ library.add(
 	farHdd,
 	farMoon,
 	farPlayCircle,
+	farLightbulb,
+	farStickyNote,
 
 	fabTwitter,
 	fabGithub,
@@ -381,9 +385,11 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
 			const shadowRight = '4px 0 4px rgba(0, 0, 0, 0.1)';
 			const shadowLeft = '-4px 0 4px rgba(0, 0, 0, 0.1)';
-			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadow', shadow);
-			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadowRight', shadowRight);
-			if (os.store.state.settings.useShadow) document.documentElement.style.setProperty('--shadowLeft', shadowLeft);
+			if (os.store.state.settings.useShadow) {
+				document.documentElement.style.setProperty('--shadow', shadow);
+				document.documentElement.style.setProperty('--shadowRight', shadowRight);
+				document.documentElement.style.setProperty('--shadowLeft', shadowLeft);
+			}
 			os.store.watch(s => {
 				return s.settings.useShadow;
 			}, v => {
@@ -405,15 +411,7 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 
 			// Navigation hook
 			router.beforeEach((to, from, next) => {
-				if (os.store.state.navHook) {
-					if (os.store.state.navHook(to)) {
-						next(false);
-					} else {
-						next();
-					}
-				} else {
-					next();
-				}
+				next(os.store.state.navHook && os.store.state.navHook(to) ? false : undefined);
 			});
 
 			document.addEventListener('visibilitychange', () => {
@@ -453,11 +451,11 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 						document.body.appendChild(x.$el);
 						return x;
 					},
-					alert(opts) {
+					dialog(opts) {
+						const vm = this.new(Dialog, opts);
 						return new Promise((res) => {
-							const vm = this.new(Alert, opts);
-							vm.$once('ok', () => res(true));
-							vm.$once('cancel', () => res(false));
+							vm.$once('ok', result => res({ canceled: false, result }));
+							vm.$once('cancel', () => res({ canceled: true }));
 						});
 					}
 				},

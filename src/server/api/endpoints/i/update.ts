@@ -6,6 +6,9 @@ import acceptAllFollowRequests from '../../../../services/following/requests/acc
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
+import parse from '../../../../mfm/parse';
+import { extractEmojis } from '../../../../services/note/create';
+const langmap = require('langmap');
 
 export const meta = {
 	desc: {
@@ -29,6 +32,13 @@ export const meta = {
 			validator: $.str.optional.nullable.pipe(isValidDescription),
 			desc: {
 				'ja-JP': 'アカウントの説明や自己紹介'
+			}
+		},
+
+		lang: {
+			validator: $.str.optional.nullable.or(Object.keys(langmap)),
+			desc: {
+				'ja-JP': '言語'
 			}
 		},
 
@@ -121,6 +131,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) updates.description = ps.description;
+	if (ps.lang !== undefined) updates.lang = ps.lang;
 	if (ps.location !== undefined) updates['profile.location'] = ps.location;
 	if (ps.birthday !== undefined) updates['profile.birthday'] = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
@@ -181,6 +192,24 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 			}
 		}
 	}
+
+	//#region emojis
+	if (updates.name != null || updates.description != null) {
+		let emojis = [] as string[];
+
+		if (updates.name != null) {
+			const tokens = parse(updates.name, true);
+			emojis = emojis.concat(extractEmojis(tokens));
+		}
+
+		if (updates.description != null) {
+			const tokens = parse(updates.description);
+			emojis = emojis.concat(extractEmojis(tokens));
+		}
+
+		updates.emojis = emojis;
+	}
+	//#endregion
 
 	await User.update(user._id, {
 		$set: updates

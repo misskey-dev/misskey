@@ -10,7 +10,8 @@
 				<misskey-flavored-markdown class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" target="_blank" :title="message.file.name">
-						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
+						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"
+							:style="{ backgroundColor: message.file.properties.avgColor && message.file.properties.avgColor.length == 3 ? `rgb(${message.file.properties.avgColor.join(',')})` : 'transparent' }"/>
 						<p v-else>{{ message.file.name }}</p>
 					</a>
 				</div>
@@ -150,7 +151,6 @@ export default Vue.extend({
 					> a
 						display block
 						max-width 100%
-						max-height 512px
 						border-radius 16px
 						overflow hidden
 						text-decoration none
@@ -165,7 +165,8 @@ export default Vue.extend({
 							display block
 							margin 0
 							width 100%
-							height 100%
+							max-height 512px
+							object-fit contain
 
 						> p
 							padding 30px

@@ -27,6 +27,7 @@
 					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
 					<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
 					<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
+					<ui-switch v-model="suggestRecentHashtags">{{ $t('@.suggest-recent-hashtags') }}</ui-switch>
 					<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }} ({{ $t('@.this-setting-is-this-device-only') }})</ui-switch>
 				</section>
 
@@ -105,62 +106,9 @@
 				</section>
 			</ui-card>
 
-			<ui-card>
-				<div slot="title"><fa icon="language"/> {{ $t('lang') }}</div>
+			<x-language-settings/>
 
-				<section class="fit-top">
-					<ui-select v-model="lang" :placeholder="$t('auto')">
-						<optgroup :label="$t('recommended')">
-							<option value="">{{ $t('auto') }}</option>
-						</optgroup>
-
-						<optgroup :label="$t('specify-language')">
-							<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-						</optgroup>
-					</ui-select>
-					<div>Current: <i>{{ this.currentLanguage }}</i></div>
-					<p><fa icon="info-circle"/> {{ $t('lang-tip') }}</p>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter') }}</div>
-
-				<section>
-					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
-					<p>
-						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? this.$t('twitter-reconnect') : this.$t('twitter-connect') }}</a>
-						<span v-if="$store.state.i.twitter"> or </span>
-						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">{{ $t('twitter-disconnect') }}</a>
-					</p>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github') }}</div>
-
-				<section>
-					<p class="account" v-if="$store.state.i.github"><a :href="`https://github.com/${$store.state.i.github.login}`" target="_blank">@{{ $store.state.i.github.login }}</a></p>
-					<p>
-						<a :href="`${apiUrl}/connect/github`" target="_blank">{{ $store.state.i.github ? this.$t('github-reconnect') : this.$t('github-connect') }}</a>
-						<span v-if="$store.state.i.github"> or </span>
-						<a :href="`${apiUrl}/disconnect/github`" target="_blank" v-if="$store.state.i.github">{{ $t('github-disconnect') }}</a>
-					</p>
-				</section>
-			</ui-card>
-
-			<ui-card>
-				<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord') }}</div>
-
-				<section>
-					<p class="account" v-if="$store.state.i.discord"><a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
-					<p>
-						<a :href="`${apiUrl}/connect/discord`" target="_blank">{{ $store.state.i.discord ? this.$t('discord-reconnect') : this.$t('discord-connect') }}</a>
-						<span v-if="$store.state.i.discord"> or </span>
-						<a :href="`${apiUrl}/disconnect/discord`" target="_blank" v-if="$store.state.i.discord">{{ $t('discord-disconnect') }}</a>
-					</p>
-				</section>
-			</ui-card>
+			<x-integration-settings/>
 
 			<x-api-settings />
 
@@ -199,7 +147,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { apiUrl, clientVersion as version, codename, langs } from '../../../config';
+import { apiUrl, clientVersion as version, codename } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 import XTheme from '../../../common/views/components/theme.vue';
 import XDriveSettings from '../../../common/views/components/drive-settings.vue';
@@ -207,6 +155,8 @@ import XMuteAndBlock from '../../../common/views/components/mute-and-block.vue';
 import XPasswordSettings from '../../../common/views/components/password-settings.vue';
 import XProfileEditor from '../../../common/views/components/profile-editor.vue';
 import XApiSettings from '../../../common/views/components/api-settings.vue';
+import XLanguageSettings from '../../../common/views/components/language-settings.vue';
+import XIntegrationSettings from '../../../common/views/components/integration-settings.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
@@ -218,6 +168,8 @@ export default Vue.extend({
 		XPasswordSettings,
 		XProfileEditor,
 		XApiSettings,
+		XLanguageSettings,
+		XIntegrationSettings,
 	},
 
 	data() {
@@ -225,8 +177,6 @@ export default Vue.extend({
 			apiUrl,
 			version,
 			codename,
-			langs,
-			currentLanguage: 'Unknown',
 			latestVersion: undefined,
 			checkingForUpdate: false
 		};
@@ -252,6 +202,11 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'reduceMotion', value }); }
 		},
 
+		suggestRecentHashtags: {
+			get() { return this.$store.state.settings.suggestRecentHashtags; },
+			set(value) { this.$store.commit('device/set', { key: 'suggestRecentHashtags', value }); }
+		},
+
 		alwaysShowNsfw: {
 			get() { return this.$store.state.device.alwaysShowNsfw; },
 			set(value) { this.$store.commit('device/set', { key: 'alwaysShowNsfw', value }); }
@@ -275,11 +230,6 @@ export default Vue.extend({
 		loadRawImages: {
 			get() { return this.$store.state.device.loadRawImages; },
 			set(value) { this.$store.commit('device/set', { key: 'loadRawImages', value }); }
-		},
-
-		lang: {
-			get() { return this.$store.state.device.lang; },
-			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
 		},
 
 		enableSounds: {
@@ -326,7 +276,6 @@ export default Vue.extend({
 			get() { return this.$store.state.settings.showVia; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'showVia', value }); }
 		},
-
 
 		iLikeSushi: {
 			get() { return this.$store.state.settings.iLikeSushi; },
@@ -379,14 +328,6 @@ export default Vue.extend({
 		},
 	},
 
-	created() {
-		try {
-			const locale = JSON.parse(localStorage.getItem('locale') || "{}");
-			const localeKey = localStorage.getItem('localeKey');
-			this.currentLanguage = `${locale.meta.lang} (${localeKey})`;
-		} catch { }
-	},
-
 	mounted() {
 		document.title = this.$t('settings');
 	},
@@ -402,12 +343,12 @@ export default Vue.extend({
 				this.checkingForUpdate = false;
 				this.latestVersion = newer;
 				if (newer == null) {
-					this.$root.alert({
+					this.$root.dialog({
 						title: this.$t('no-updates'),
 						text: this.$t('no-updates-desc')
 					});
 				} else {
-					this.$root.alert({
+					this.$root.dialog({
 						title: this.$t('update-available'),
 						text: this.$t('update-available-desc')
 					});

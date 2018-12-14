@@ -23,7 +23,7 @@ export default function() {
 		const cpu = await cpuUsage();
 		const usedmem = await usedMem();
 		const totalmem = await totalMem();
-		const disk = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
+		const disk = await diskusage.check(os.platform() == 'win32' ? 'c:' : '/');
 
 		const stats = {
 			cpu_usage: cpu,

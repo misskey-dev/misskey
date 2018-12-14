@@ -5,7 +5,9 @@
 			<mk-avatar class="avatar" :user="note.user" target="_blank"/>
 			<div class="body">
 				<header>
-					<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
+					<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">
+						<mk-user-name :user="note.user"/>
+					</router-link>
 					<span class="username">@{{ note.user | acct }}</span>
 					<div class="info">
 						<router-link class="created-at" :to="note | notePage">

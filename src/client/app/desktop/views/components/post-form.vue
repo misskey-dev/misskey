@@ -7,7 +7,9 @@
 >
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
-			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
+			<span v-for="u in visibleUsers">
+				<mk-user-name :user="u"/><a @click="removeVisibleUser(u)">[x]</a>
+			</span>
 			<a @click="addVisibleUser">{{ $t('add-visible-user') }}</a>
 		</div>
 		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
@@ -15,7 +17,7 @@
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
 		<div class="local-only" v-if="this.localOnly == true">{{ $t('local-only-message') }}</div>
-		<input v-show="useCw" v-model="cw" :placeholder="$t('annotations')">
+		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="'cw'">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
 				ref="text" v-model="text" :disabled="posting"
@@ -34,7 +36,7 @@
 				</x-draggable>
 				<p class="remain">{{ 4 - files.length }}/4</p>
 			</div>
-			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
+			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		</div>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
@@ -71,7 +73,6 @@ import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
-import parseAcct from '../../../../../misc/acct/parse';
 import { toASCII } from 'punycode';
 
 export default Vue.extend({
@@ -108,6 +109,7 @@ export default Vue.extend({
 			files: [],
 			uploadings: [],
 			poll: false,
+			pollChoices: [],
 			useCw: false,
 			cw: null,
 			geo: null,
@@ -165,7 +167,8 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= this.maxNoteTextLength);
+				(length(this.text.trim()) <= this.maxNoteTextLength) &&
+				(!this.poll || this.pollChoices.length >= 2);
 		}
 	},
 
@@ -276,6 +279,11 @@ export default Vue.extend({
 			Array.from((this.$refs.file as any).files).forEach(this.upload);
 		},
 
+		onPollUpdate() {
+			this.pollChoices = this.$refs.poll.get().choices;
+			this.saveDraft();
+		},
+
 		upload(file) {
 			(this.$refs.uploader as any).upload(file);
 		},
@@ -384,13 +392,12 @@ export default Vue.extend({
 		},
 
 		addVisibleUser() {
-			this.$input({
-				title: this.$t('enter-username')
-			}).then(acct => {
-				if (acct.startsWith('@')) acct = acct.substr(1);
-				this.$root.api('users/show', parseAcct(acct)).then(user => {
-					this.visibleUsers.push(user);
-				});
+			this.$root.dialog({
+				title: this.$t('enter-username'),
+				user: true
+			}).then(({ canceled, result: user }) => {
+				if (canceled) return;
+				this.visibleUsers.push(user);
 			});
 		},
 

@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="destroyDom">
-	<span slot="header" :class="$style.header"><fa icon="comments"/>{{ $t('title') }} {{ user | userName }}</span>
+	<span slot="header" :class="$style.header"><fa icon="comments"/>{{ $t('title') }} <mk-user-name :user="user"/></span>
 	<x-messaging-room :user="user" :class="$style.content"/>
 </mk-window>
 </template>

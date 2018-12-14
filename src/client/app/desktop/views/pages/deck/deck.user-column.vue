@@ -16,13 +16,15 @@
 				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
-				<span class="name">{{ user | userName }}</span>
+				<span class="name">
+					<mk-user-name :user="user"/>
+				</span>
 				<span class="acct">@{{ user | acct }}</span>
 			</div>
 		</header>
 		<div class="info">
 			<div class="description">
-				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
+				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
 			<div class="counts">
 				<div>
@@ -307,7 +309,7 @@ export default Vue.extend({
 							listId: list.id,
 							userId: this.user.id
 						});
-						this.$root.alert({
+						this.$root.dialog({
 							type: 'success',
 							splash: true
 						});

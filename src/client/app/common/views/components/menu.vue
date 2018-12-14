@@ -1,5 +1,5 @@
 <template>
-<div class="onchrpzrvnoruiaenfcqvccjfuupzzwv">
+<div class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :class="{ big: $root.isMobile }">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ hukidasi }" ref="popover">
 		<template v-for="item, i in items">
@@ -124,6 +124,11 @@ export default Vue.extend({
 	$border-color = rgba(27, 31, 35, 0.15)
 
 	position initial
+
+	&.big
+		> .popover
+			> button
+				font-size 15px
 
 	> .backdrop
 		position fixed

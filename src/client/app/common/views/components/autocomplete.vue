@@ -3,7 +3,9 @@
 	<ol class="users" ref="suggests" v-if="users.length > 0">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
 			<img class="avatar" :src="user.avatarUrl" alt=""/>
-			<span class="name">{{ user | userName }}</span>
+			<span class="name">
+				<mk-user-name :user="user"/>
+			</span>
 			<span class="username">@{{ user | acct }}</span>
 		</li>
 	</ol>
@@ -42,8 +44,9 @@ const lib = Object.entries(emojilib.lib).filter((x: any) => {
 });
 
 const char2file = (char: string) => {
-	let codes = [...char].map(x => x.codePointAt(0).toString(16));
+	let codes = Array.from(char).map(x => x.codePointAt(0).toString(16));
 	if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
+	codes = codes.filter(x => x && x.length);
 	return codes.join('-');
 };
 
@@ -187,7 +190,8 @@ export default Vue.extend({
 				} else {
 					this.$root.api('users/search', {
 						query: this.q,
-						limit: 10
+						limit: 10,
+						detail: false
 					}).then(users => {
 						this.users = users;
 						this.fetching = false;

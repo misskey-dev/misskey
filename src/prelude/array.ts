@@ -57,3 +57,15 @@ export function lessThan(xs: number[], ys: number[]): boolean {
 	}
 	return xs.length < ys.length;
 }
+
+export function takeWhile<T>(f: (x: T) => boolean, xs: T[]): T[] {
+	const ys = [];
+	for (const x of xs) {
+		if (f(x)) {
+			ys.push(x);
+		} else {
+			break;
+		}
+	}
+	return ys;
+}

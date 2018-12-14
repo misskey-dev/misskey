@@ -2,7 +2,8 @@
 <div class="mk-note-card">
 	<a :href="note | notePage">
 		<header>
-			<img :src="note.user.avatarUrl" alt="avatar"/><h3>{{ note.user | userName }}</h3>
+			<img :src="note.user.avatarUrl" alt="avatar"/>
+			<h3><mk-user-name :user="note.user"/></h3>
 		</header>
 		<div>
 			{{ text }}

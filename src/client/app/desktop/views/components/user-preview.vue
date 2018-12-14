@@ -4,10 +4,12 @@
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
-			<router-link class="name" :to="u | userPage">{{ u | userName }}</router-link>
+			<router-link class="name" :to="u | userPage"><mk-user-name :user="u"/></router-link>
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
-		<div class="description">{{ u.description }}</div>
+		<div class="description">
+			<misskey-flavored-markdown v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+		</div>
 		<div class="status">
 			<div>
 				<p>{{ $t('notes') }}</p><span>{{ u.notesCount }}</span>
@@ -156,7 +158,7 @@ export default Vue.extend({
 
 	> .follow-button
 		position absolute
-		top 92px
+		top 8px
 		right 8px
 
 </style>

@@ -20,14 +20,14 @@
 		<header>
 			<mk-avatar class="avatar" :user="appearNote.user"/>
 			<div>
-				<router-link class="name" :to="appearNote.user | userPage">{{ appearNote.user | userName }}</router-link>
+				<router-link class="name" :to="appearNote.user | userPage"><mk-user-name :user="appearNote.user"/></router-link>
 				<span class="username"><mk-acct :user="appearNote.user"/></span>
 			</div>
 		</header>
 		<div class="body">
 			<p v-if="appearNote.cw != null" class="cw">
-				<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
-				<mk-cw-button v-model="showContent"/>
+				<misskey-flavored-markdown v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" />
+				<mk-cw-button v-model="showContent" :note="appearNote"/>
 			</p>
 			<div class="content" v-show="appearNote.cw == null || showContent">
 				<div class="text">
@@ -66,8 +66,11 @@
 				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 			</button>
-			<button @click="renote()" title="Renote">
+			<button v-if="['public', 'home'].includes(appearNote.visibility)" @click="renote()" title="Renote">
 				<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+			</button>
+			<button v-else>
+				<fa icon="ban"/>
 			</button>
 			<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('title')">
 				<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
@@ -152,7 +155,7 @@ export default Vue.extend({
 	text-align left
 	background var(--face)
 	border-radius 8px
-	box-shadow 0 0 2px rgba(#000, 0.1)
+	box-shadow 0 4px 16px rgba(#000, 0.1)
 
 	@media (min-width 500px)
 		box-shadow 0 8px 32px rgba(#000, 0.1)

@@ -20,7 +20,9 @@
 	<article>
 		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<header>
-			<router-link class="name" :to="appearNote.user | userPage" v-user-preview="appearNote.user.id">{{ appearNote.user | userName }}</router-link>
+			<router-link class="name" :to="appearNote.user | userPage" v-user-preview="appearNote.user.id">
+				<mk-user-name :user="appearNote.user"/>
+			</router-link>
 			<span class="username"><mk-acct :user="appearNote.user"/></span>
 			<div class="info">
 				<router-link class="time" :to="appearNote | notePage">
@@ -39,8 +41,8 @@
 		</header>
 		<div class="body">
 			<p v-if="appearNote.cw != null" class="cw">
-				<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
-				<mk-cw-button v-model="showContent"/>
+				<misskey-flavored-markdown v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" />
+				<mk-cw-button v-model="showContent" :note="appearNote"/>
 			</p>
 			<div class="content" v-show="appearNote.cw == null || showContent">
 				<div class="text">
@@ -68,9 +70,12 @@
 				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 			</button>
-			<button class="renoteButton" @click="renote()" :title="$t('renote')">
-				<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
-			</button>
+				<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton" @click="renote()" :title="$t('renote')">
+					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else class="inhibitedButton">
+					<fa icon="ban"/>
+				</button>
 			<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 				<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
 			</button>
@@ -323,6 +328,9 @@ export default Vue.extend({
 
 				&.reactionButton:hover
 					color var(--noteActionsReactionHover)
+
+				&.inhibitedButton
+					cursor not-allowed
 
 				> .count
 					display inline

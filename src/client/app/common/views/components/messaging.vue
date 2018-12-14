@@ -14,7 +14,7 @@
 					tabindex="-1"
 				>
 					<mk-avatar class="avatar" :user="user"/>
-					<span class="name">{{ user | userName }}</span>
+					<span class="name"><mk-user-name :user="user"/></span>
 					<span class="username">@{{ user | acct }}</span>
 				</li>
 			</ol>
@@ -33,7 +33,7 @@
 				<div>
 					<mk-avatar class="avatar" :user="isMe(message) ? message.recipient : message.user"/>
 					<header>
-						<span class="name">{{ isMe(message) ? message.recipient : message.user | userName }}</span>
+						<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
 						<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
 						<mk-time :time="message.createdAt"/>
 					</header>
@@ -116,7 +116,8 @@ export default Vue.extend({
 			this.$root.api('users/search', {
 				query: this.q,
 				localOnly: true,
-				limit: 10
+				limit: 10,
+				detail: false
 			}).then(users => {
 				this.result = users.filter(user => user.id != this.$store.state.i.id);
 			});

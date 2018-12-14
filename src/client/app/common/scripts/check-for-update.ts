@@ -22,7 +22,7 @@ export default async function($root: any, force = false, silent = false) {
 		}
 
 		/*if (!silent) {
-			$root.alert({
+			$root.dialog({
 				title: $root.$t('@.update-available-title'),
 				text: $root.$t('@.update-available', { newer, current })
 			});

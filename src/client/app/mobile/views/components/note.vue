@@ -16,8 +16,8 @@
 			<mk-note-header class="header" :note="appearNote" :mini="true"/>
 			<div class="body" v-if="appearNote.deletedAt == null">
 				<p v-if="appearNote.cw != null" class="cw">
-					<span class="text" v-if="appearNote.cw != ''">{{ appearNote.cw }}</span>
-					<mk-cw-button v-model="showContent"/>
+				<misskey-flavored-markdown v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" />
+					<mk-cw-button v-model="showContent" :note="appearNote"/>
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
@@ -43,8 +43,11 @@
 					<template v-else><fa icon="reply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button @click="renote()" title="Renote">
+				<button v-if="['public', 'home'].includes(appearNote.visibility)" @click="renote()" title="Renote">
 					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else>
+					<fa icon="ban"/>
 				</button>
 				<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton">
 					<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>

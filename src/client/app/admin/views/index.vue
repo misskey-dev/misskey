@@ -15,7 +15,7 @@
 		</div>
 		<div class="me">
 			<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
-			<p class="name">{{ $store.state.i | userName }}</p>
+			<p class="name"><mk-user-name :user="$store.state.i"/></p>
 		</div>
 		<ul>
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</li>

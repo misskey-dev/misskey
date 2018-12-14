@@ -2,7 +2,10 @@
 <div class="mkw-polls">
 	<mk-widget-container :show-header="!props.compact">
 		<template slot="header"><fa icon="chart-pie"/>{{ $t('title') }}</template>
-		<button slot="func" :title="$t('title')" @click="fetch"><fa icon="sync"/></button>
+		<button slot="func" :title="$t('title')" @click="fetch">
+			<fa v-if="!fetching &&  more" icon="arrow-right"/>
+			<fa v-if="!fetching && !more" icon="sync"/>
+		</button> 
 
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
@@ -32,6 +35,7 @@ export default define({
 		return {
 			poll: null,
 			fetching: true,
+			more: true,
 			offset: 0
 		};
 	},
@@ -53,12 +57,18 @@ export default define({
 			}).then(notes => {
 				const poll = notes ? notes[0] : null;
 				if (poll == null) {
+					this.more = false;
 					this.offset = 0;
 				} else {
+					this.more = true;
 					this.offset++;
 				}
 				this.poll = poll;
 				this.fetching = false;
+			}).catch(() => {
+				this.poll = null;
+				this.fetching = false;
+				this.more = false;
 			});
 		}
 	}

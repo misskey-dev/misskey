@@ -11,7 +11,7 @@
 		<div class="body" v-if="isOpen">
 			<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
 				<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
-				<p class="name">{{ $store.state.i | userName }}</p>
+				<p class="name"><mk-user-name :user="$store.state.i"/></p>
 			</router-link>
 			<div class="links">
 				<ul>
@@ -83,7 +83,7 @@ export default Vue.extend({
 			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('reversiInvited', this.onReversiInvited);
-			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
+			this.connection.on('reversiNoInvites', this.onReversiNoInvites);
 		}
 	},
 
@@ -95,9 +95,13 @@ export default Vue.extend({
 
 	methods: {
 		search() {
-			const query = window.prompt(this.$t('search'));
-			if (query == null || query == '') return;
-			this.$router.push(`/search?q=${encodeURIComponent(query)}`);
+			this.$root.dialog({
+				title: this.$t('search'),
+				input: true
+			}).then(({ canceled, result: query }) => {
+				if (canceled) return;
+				this.$router.push(`/search?q=${encodeURIComponent(query)}`);
+			});
 		},
 
 		onReversiInvited() {

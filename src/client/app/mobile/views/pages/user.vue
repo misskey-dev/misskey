@@ -1,6 +1,8 @@
 <template>
 <mk-ui>
-	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">{{ user | userName }}</template>
+	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">
+		<mk-user-name :user="user"/>
+	</template>
 	<main v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</p></div>
 		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
@@ -15,12 +17,12 @@
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
-					<h1>{{ user | userName }}</h1>
+					<h1><mk-user-name :user="user"/></h1>
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
-					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i"/>
+					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 				</div>
 				<div class="info">
 					<p class="location" v-if="user.host === null && user.profile.location">
@@ -116,6 +118,34 @@ export default Vue.extend({
 
 		menu() {
 			let menu = [{
+				icon: ['fas', 'list'],
+				text: this.$t('push-to-list'),
+				action: async () => {
+					const lists = await this.$root.api('users/lists/list');
+					const { canceled, result: listId } = await this.$root.dialog({
+						type: null,
+						title: this.$t('select-list'),
+						select: {
+							items: lists.map(list => ({
+								value: list.id, text: list.title
+							}))
+						},
+						showCancelButton: true
+					});
+					if (canceled) return;
+					await this.$root.api('users/lists/push', {
+						listId: listId,
+						userId: this.user.id
+					});
+					this.$root.dialog({
+						type: 'success',
+						text: this.$t('list-pushed', {
+							user: this.user.name,
+							list: lists.find(l => l.id === listId).title
+						})
+					});
+				}
+			}, null, {
 				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
 				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
 				action: () => {

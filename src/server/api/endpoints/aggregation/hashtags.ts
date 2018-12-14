@@ -63,7 +63,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	});
 
 	// タグを人気順に並べ替え
-	tags = tags.sort((a, b) => b.count - a.count);
+	tags.sort((a, b) => b.count - a.count);
 
 	tags = tags.slice(0, 30);
 

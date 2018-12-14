@@ -14,17 +14,19 @@
 				:disabled="disabled"
 				:required="required"
 				:readonly="readonly"
+				:placeholder="placeholder"
 				:pattern="pattern"
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
 				@focus="focused = true"
 				@blur="focused = false"
+				@keydown="$emit('keydown', $event)"
 			>
 		</template>
 		<template v-else>
 			<input ref="input"
 				type="text"
-				:value="placeholder"
+				:value="filePlaceholder"
 				readonly
 				@click="chooseFile"
 			>
@@ -74,6 +76,15 @@ export default Vue.extend({
 			type: String,
 			required: false
 		},
+		placeholder: {
+			type: String,
+			required: false
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 		autocomplete: {
 			required: false
 		},
@@ -109,7 +120,7 @@ export default Vue.extend({
 		filled(): boolean {
 			return this.v != '' && this.v != null;
 		},
-		placeholder(): string {
+		filePlaceholder(): string {
 			if (this.type != 'file') return null;
 			if (this.v == null) return null;
 
@@ -142,6 +153,12 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
+		if (this.autofocus) {
+			this.$nextTick(() => {
+				this.$refs.input.focus();
+			});
+		}
+
 		this.$nextTick(() => {
 			if (this.$refs.prefix) {
 				this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';

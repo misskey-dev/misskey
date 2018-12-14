@@ -19,7 +19,7 @@
 		<h2>{{ $t('invitations') }}</h2>
 		<div class="invitation" v-for="i in invitations" tabindex="-1" @click="accept(i)">
 			<mk-avatar class="avatar" :user="i.parent"/>
-			<span class="name"><b>{{ i.parent | userName }}</b></span>
+			<span class="name"><b><mk-user-name :user="i.parent"/></b></span>
 			<span class="username">@{{ i.parent.username }}</span>
 			<mk-time :time="i.createdAt"/>
 		</div>
@@ -29,7 +29,7 @@
 		<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
-			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
+			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>
 			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</a>
@@ -39,7 +39,7 @@
 		<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
-			<span><b>{{ g.user1 | userName }}</b> vs <b>{{ g.user2 | userName }}</b></span>
+			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>
 			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</a>
@@ -99,23 +99,22 @@ export default Vue.extend({
 			this.$emit('go', game);
 		},
 
-		match() {
-			this.$input({
-				title: this.$t('enter-username')
-			}).then(username => {
-				this.$root.api('users/show', {
-					username
-				}).then(user => {
-					this.$root.api('games/reversi/match', {
-						userId: user.id
-					}).then(res => {
-						if (res == null) {
-							this.$emit('matching', user);
-						} else {
-							this.$emit('go', res);
-						}
-					});
-				});
+		async match() {
+			const { result: user } = await this.$root.dialog({
+				title: this.$t('enter-username'),
+				user: {
+					local: true
+				}
+			});
+			if (user == null) return;
+			this.$root.api('games/reversi/match', {
+				userId: user.id
+			}).then(res => {
+				if (res == null) {
+					this.$emit('matching', user);
+				} else {
+					this.$emit('go', res);
+				}
 			});
 		},
 
