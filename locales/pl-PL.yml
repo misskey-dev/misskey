@@ -730,7 +730,7 @@ desktop/views/components/settings.vue:
   notification: "Powiadomienia"
   apps: "Aplikacje"
   tags: "Hashtagi"
-  mute-and-block: "ミュート/ブロック"
+  mute-and-block: "Wycisz / Zablokuj"
   blocking: "ブロック"
   security: "Bezpieczeństwo"
   signin: "Historia logowań"
@@ -885,7 +885,7 @@ desktop/views/components/sub-note-content.vue:
   media-count: "{}zawartości multimedialnej"
   poll: "Ankieta"
 desktop/views/components/settings.tags.vue:
-  title: "タグ"
+  title: "Tagi"
   query: "クエリ (省略可)"
   add: "Dodaj"
   save: "Zapisz"
