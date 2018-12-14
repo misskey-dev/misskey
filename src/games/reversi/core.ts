@@ -1,5 +1,4 @@
 import { count, concat } from "../../prelude/array";
-import { switchMap } from "../../prelude/functional-syntax";
 
 // MISSKEY REVERSI ENGINE
 
@@ -77,9 +76,9 @@ export default class Reversi {
 		this.mapHeight = map.length;
 		const mapData = map.join('');
 
-		this.board = mapData.split('').map(d => switchMap(d, undefined, ['-', null], ['b', BLACK], ['w', WHITE]));
+		this.board = mapData.split('').map(d => d === '-' ? null : d === 'b' ? BLACK : d === 'w' ? WHITE : undefined);
 
-		this.map = mapData.split('').map(d => d == '-' || d == 'b' || d == 'w' ? 'empty' : 'null');
+		this.map = mapData.split('').map(d => d === '-' || d === 'b' || d === 'w' ? 'empty' : 'null');
 		//#endregion
 
 		// ゲームが始まった時点で片方の色の石しかないか、始まった時点で勝敗が決定するようなマップの場合がある
