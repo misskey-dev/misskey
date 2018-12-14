@@ -274,6 +274,9 @@ export default Vue.extend({
 			flex 1
 			padding-left 16px
 
+			@media (max-width 500px)
+				font-size 14px
+
 			> header
 				> .username
 					margin-left 8px
