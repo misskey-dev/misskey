@@ -119,7 +119,7 @@ common:
   always-mark-nsfw: "Zawsze oznaczaj posty z multimediami jako NSFW"
   show-full-acct: "ユーザー名のホストを省略しない"
   show-via: "viaを表示する"
-  reduce-motion: "UIの動きを減らす"
+  reduce-motion: "Zredukuj ruch w UI"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "Użyj domyślnych Emoji systemowych"
   do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
@@ -165,7 +165,7 @@ common:
     hashtags: "Hashtagi"
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
-  you: "あなた"
+  you: "Ty"
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "Ta aplikacja wymaga następujących uprawnień:"
@@ -761,7 +761,7 @@ desktop/views/components/settings.vue:
   choose-wallpaper: "Wybierz tło"
   delete-wallpaper: "Usuń tło"
   dark-mode: "Tryb ciemny"
-  use-shadow: "UIに影を使用"
+  use-shadow: "Użyj cieni w UI"
   rounded-corners: "Zaokrąglaj rogi w UI"
   circle-icons: "Używaj okrągłych ikon"
   contrasted-acct: "ユーザー名にコントラストを付ける"
