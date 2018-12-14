@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Build
           command: |
-            npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)
+            npm run build || [ ! -e built/client/meta.json ] && echo '{"version":"unknown"}' > built/client/meta.json && npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)
             ls -1ARl node_modules > ls
       - save_cache:
           name: Cache npm packages
