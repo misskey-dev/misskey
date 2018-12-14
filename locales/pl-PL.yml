@@ -115,7 +115,7 @@ common:
   verified-user: "Zweryfikowane konto"
   disable-animated-mfm: "Wyłącz animowany tekst we wpisach"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
-  always-show-nsfw: "常に閲覧注意のメディアを表示する"
+  always-show-nsfw: "Zawszę pokazuj zawartość NSFW"
   always-mark-nsfw: "Zawsze oznaczaj posty z multimediami jako NSFW"
   show-full-acct: "ユーザー名のホストを省略しない"
   show-via: "viaを表示する"
@@ -299,7 +299,7 @@ common/views/components/cw-button.vue:
   hide: "Ukryj"
   show: "Pokaż więcej"
   chars: "{count} znaków"
-  files: "{count}ファイル"
+  files: "{count} plików"
 common/views/components/messaging.vue:
   search-user: "Znajdź użytkownika"
   you: "Ty"
@@ -577,7 +577,7 @@ desktop/views/components/drive-window.vue:
 desktop/views/components/drive.file.vue:
   avatar: "Awatar"
   banner: "Baner"
-  nsfw: "閲覧注意"
+  nsfw: "NSFW"
   contextmenu:
     rename: "Zmień nazwę"
     mark-as-sensitive: "Oznacz jako zawartość wrażliwą"
@@ -900,8 +900,8 @@ desktop/views/components/timeline.vue:
   messages: "Wiadomości"
   list: "Listy"
   hashtag: "Hashtag"
-  add-tag-timeline: "ハッシュタグを追加"
-  add-list: "リストを追加"
+  add-tag-timeline: "Dodaj hashtag"
+  add-list: "Dodaj listę"
   list-name: "リスト名"
 desktop/views/components/ui.header.vue:
   welcome-back: "Witaj ponownie,"
@@ -1238,14 +1238,14 @@ mobile/views/components/drive-file-chooser.vue:
 mobile/views/components/drive-folder-chooser.vue:
   select-folder: "Wybierz katalog"
 mobile/views/components/drive.file.vue:
-  nsfw: "閲覧注意"
+  nsfw: "NSFW"
 mobile/views/components/drive.file-detail.vue:
   download: "Pobierz"
   rename: "Zmień nazwę"
   move: "Przenieś"
   hash: "Hash (md5)"
   exif: "EXIF"
-  nsfw: "閲覧注意"
+  nsfw: "NSFW"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
 mobile/views/components/media-image.vue:
