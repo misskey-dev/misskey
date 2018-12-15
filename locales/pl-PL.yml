@@ -1063,11 +1063,11 @@ admin/views/drive.vue:
     sizeAsc: "サイズが小さい順"
     sizeDesc: "サイズが大きい順"
   origin:
-    title: "オリジン"
+    title: "Źródło"
     combined: "ローカル+リモート"
     local: "ローカル"
     remote: "リモート"
-  delete: "削除"
+  delete: "Usuń"
   deleted: "削除しました"
 admin/views/users.vue:
   operation: "操作"
