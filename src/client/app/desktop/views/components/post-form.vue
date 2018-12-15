@@ -17,12 +17,12 @@
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
 		<div class="local-only" v-if="localOnly == true">{{ $t('local-only-message') }}</div>
-		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="'cw'">
+		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="{ model: 'cw' }">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
 				ref="text" v-model="text" :disabled="posting"
 				@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
-				v-autocomplete="'text'"
+				v-autocomplete="{ model: 'text' }"
 			></textarea>
 			<button class="emoji" @click="emoji" ref="emoji">
 				<fa :icon="['far', 'laugh']"/>

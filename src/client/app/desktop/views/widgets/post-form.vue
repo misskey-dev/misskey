@@ -15,7 +15,7 @@
 					@paste="onPaste"
 					:placeholder="placeholder"
 					ref="text"
-					v-autocomplete="'text'"
+					v-autocomplete="{ model: 'text' }"
 				></textarea>
 				<button class="emoji" @click="emoji" ref="emoji">
 					<fa :icon="['far', 'laugh']"/>
