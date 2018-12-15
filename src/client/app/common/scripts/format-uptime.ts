@@ -1,6 +1,6 @@
 
 /***
- * The uptime command like format
+ * Format like uptime command
  */
 export default function(sec) {
 	if (!sec) return sec;
