@@ -21,6 +21,9 @@ block og
 block meta
 	meta(name='twitter:card' content='summary')
 
+	if user.twitter
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
+
 	if note.prev
 		link(rel='prev' href=`${config.url}/notes/${note.prev}`)
 	if note.next
