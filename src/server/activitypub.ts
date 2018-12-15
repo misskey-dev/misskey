@@ -65,7 +65,7 @@ router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
 	if (!ObjectID.isValid(ctx.params.note)) {
-		ctx.status = 400;
+		ctx.status = 404;
 		return;
 	}
 
@@ -88,7 +88,7 @@ router.get('/notes/:note', async (ctx, next) => {
 // note activity
 router.get('/notes/:note/activity', async ctx => {
 	if (!ObjectID.isValid(ctx.params.note)) {
-		ctx.status = 400;
+		ctx.status = 404;
 		return;
 	}
 
@@ -123,7 +123,7 @@ router.get('/users/:user/collections/featured', Featured);
 // publickey
 router.get('/users/:user/publickey', async ctx => {
 	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 400;
+		ctx.status = 404;
 		return;
 	}
 
@@ -161,10 +161,8 @@ async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 }
 
 router.get('/users/:user', async ctx => {
-	if (!isActivityPubReq(ctx)) ctx.redirect(`/@${ctx.params.user}`);
-
 	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 400;
+		ctx.status = 404;
 		return;
 	}
 
@@ -180,11 +178,6 @@ router.get('/users/:user', async ctx => {
 
 router.get('/@:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
-
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 400;
-		return;
-	}
 
 	const user = await User.findOne({
 		usernameLower: ctx.params.user.toLowerCase(),
