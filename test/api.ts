@@ -268,7 +268,7 @@ describe('API', () => {
 			const res = await request('/users/show', {
 				userId: '000000000000000000000000'
 			});
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
@@ -436,7 +436,7 @@ describe('API', () => {
 				replyId: '000000000000000000000000'
 			};
 			const res = await request('/notes/create', post, me);
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('存在しないrenote対象で怒られる', async(async () => {
@@ -445,7 +445,7 @@ describe('API', () => {
 				renoteId: '000000000000000000000000'
 			};
 			const res = await request('/notes/create', post, me);
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('不正なリプライ先IDで怒られる', async(async () => {
@@ -551,7 +551,7 @@ describe('API', () => {
 			const res = await request('/notes/show', {
 				noteId: '000000000000000000000000'
 			});
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
@@ -611,7 +611,7 @@ describe('API', () => {
 				reaction: 'like'
 			}, me);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('空のパラメータで怒られる', async(async () => {
@@ -667,7 +667,7 @@ describe('API', () => {
 				userId: '000000000000000000000000'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('自分自身はフォローできない', async(async () => {
@@ -732,7 +732,7 @@ describe('API', () => {
 				userId: '000000000000000000000000'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('自分自身はフォロー解除できない', async(async () => {
@@ -836,7 +836,7 @@ describe('API', () => {
 				name: 'いちごパスタ.png'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('親フォルダを更新できる', async(async () => {
@@ -892,7 +892,7 @@ describe('API', () => {
 				folderId: folder.id
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('存在しないフォルダで怒られる', async(async () => {
@@ -904,7 +904,7 @@ describe('API', () => {
 				folderId: '000000000000000000000000'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('不正なフォルダIDで怒られる', async(async () => {
@@ -985,7 +985,7 @@ describe('API', () => {
 				name: 'new name'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('親フォルダを更新できる', async(async () => {
@@ -1045,7 +1045,7 @@ describe('API', () => {
 				parentId: parentFolder.id
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('フォルダが循環するような構造にできない', async(async () => {
@@ -1108,7 +1108,7 @@ describe('API', () => {
 				parentId: '000000000000000000000000'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('不正な親フォルダIDで怒られる', async(async () => {
@@ -1132,7 +1132,7 @@ describe('API', () => {
 				folderId: '000000000000000000000000'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('不正なフォルダIDで怒られる', async(async () => {
@@ -1180,7 +1180,7 @@ describe('API', () => {
 				text: 'test'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('不正なユーザーIDで怒られる', async(async () => {
