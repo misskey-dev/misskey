@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { themeColor } from '../../../config';
+import * as tinycolor from 'tinycolor2';
 
 export default Vue.extend({
 	props: {
@@ -75,7 +75,7 @@ export default Vue.extend({
 			return this.dark ? '#fff' : '#777';
 		},
 		hHandColor(): string {
-			return themeColor;
+			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toHexString();
 		},
 
 		ms(): number {

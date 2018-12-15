@@ -1,4 +1,4 @@
-extends ../../../../src/client/app/base
+extends ./base
 
 block vars
 	- const user = note.user;
@@ -11,13 +11,15 @@ block title
 block desc
 	meta(name='description' content= summary)
 
-block meta
-	meta(name='twitter:card'       content='summary')
+block og
 	meta(property='og:type'        content='article')
 	meta(property='og:title'       content= title)
 	meta(property='og:description' content= summary)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= user.avatarUrl)
+
+block meta
+	meta(name='twitter:card' content='summary')
 
 	if note.prev
 		link(rel='prev' href=`${config.url}/notes/${note.prev}`)

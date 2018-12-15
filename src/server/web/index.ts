@@ -15,7 +15,7 @@ import parseAcct from '../../misc/acct/parse';
 import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
 import getNoteSummary from '../../misc/get-note-summary';
-const consts = require('../../const.json');
+import fetchMeta from '../../misc/fetch-meta';
 
 const client = `${__dirname}/../../client/`;
 
@@ -26,8 +26,7 @@ const app = new Koa();
 app.use(views(__dirname + '/views', {
 	extension: 'pug',
 	options: {
-		config,
-		themeColor: consts.themeColor
+		config
 	}
 }));
 
@@ -120,10 +119,11 @@ router.get('/notes/:note', async ctx => {
 
 // Render base html for all requests
 router.get('*', async ctx => {
-	await send(ctx, `app/base.html`, {
-		root: client,
-		maxage: ms('5m')
+	const meta = await fetchMeta();
+	await ctx.render('base', {
+		img: meta.bannerUrl
 	});
+	ctx.set('Cache-Control', 'public, max-age=86400');
 });
 
 // Register router

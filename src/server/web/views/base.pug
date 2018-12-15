@@ -9,7 +9,6 @@ html
 	head
 		meta(charset='utf-8')
 		meta(name='application-name' content='Misskey')
-		meta(name='theme-color' content=themeColor)
 		meta(name='referrer' content='origin')
 		meta(property='og:site_name' content='Misskey')
 		link(rel='manifest' href='/manifest.json')
@@ -23,16 +22,16 @@ html
 
 		block meta
 
+		block og
+			meta(property='og:image' content=img)
+
 		style
-			include ./../../../built/client/assets/init.css
+			include ./../../../../built/client/assets/init.css
 		script
-			include ./../../../built/client/assets/boot.js
+			include ./../../../../built/client/assets/boot.js
 
 		script
-			include ./../../../built/client/assets/safe.js
-
-		//- FontAwesome style
-		style #{facss}
+			include ./../../../../built/client/assets/safe.js
 
 	body
 		noscript: p
@@ -41,5 +40,5 @@ html
 			| Please turn on your JavaScript
 		div#ini.
 			<svg viewBox="0 0 50 50">
-				<path fill=#{themeColor} d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" />
+				<path fill=#fb4e4e d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" />
 			</svg>
