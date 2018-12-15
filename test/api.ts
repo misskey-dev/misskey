@@ -927,7 +927,7 @@ describe('API', () => {
 				name: 'いちごパスタ.png'
 			}, alice);
 
-			expect(res).have.status(400);
+			expect(res).have.status(404);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
