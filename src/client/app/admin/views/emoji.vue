@@ -24,24 +24,28 @@
 
 	<ui-card>
 		<div slot="title"><fa :icon="faGrin"/> {{ $t('emojis.title') }}</div>
-		<section v-for="emoji in emojis">
-			<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
-			<ui-horizon-group inputs>
-				<ui-input v-model="emoji.name">
-					<span>{{ $t('add-emoji.name') }}</span>
+		<section v-for="emoji in emojis" class="oryfrbft">
+			<div>
+				<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
+			</div>
+			<div>
+				<ui-horizon-group>
+					<ui-input v-model="emoji.name">
+						<span>{{ $t('add-emoji.name') }}</span>
+					</ui-input>
+					<ui-input v-model="emoji.aliases">
+						<span>{{ $t('add-emoji.aliases') }}</span>
+					</ui-input>
+				</ui-horizon-group>
+				<ui-input v-model="emoji.url">
+					<i slot="icon"><fa icon="link"/></i>
+					<span>{{ $t('add-emoji.url') }}</span>
 				</ui-input>
-				<ui-input v-model="emoji.aliases">
-					<span>{{ $t('add-emoji.aliases') }}</span>
-				</ui-input>
-			</ui-horizon-group>
-			<ui-input v-model="emoji.url">
-				<i slot="icon"><fa icon="link"/></i>
-				<span>{{ $t('add-emoji.url') }}</span>
-			</ui-input>
-			<ui-horizon-group class="fit-bottom">
-				<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> {{ $t('emojis.update') }}</ui-button>
-				<ui-button @click="removeEmoji(emoji)"><fa :icon="['far', 'trash-alt']"/> {{ $t('emojis.remove') }}</ui-button>
-			</ui-horizon-group>
+				<ui-horizon-group class="fit-bottom">
+					<ui-button @click="updateEmoji(emoji)"><fa :icon="['far', 'save']"/> {{ $t('emojis.update') }}</ui-button>
+					<ui-button @click="removeEmoji(emoji)"><fa :icon="['far', 'trash-alt']"/> {{ $t('emojis.remove') }}</ui-button>
+				</ui-horizon-group>
+			</div>
 		</section>
 	</ui-card>
 </div>
@@ -149,5 +153,22 @@ export default Vue.extend({
 .tumhkfkmgtvzljezfvmgkeurkfncshbe
 	@media (min-width 500px)
 		padding 16px
+
+	.oryfrbft
+		@media (min-width 500px)
+			display flex
+
+		> div:first-child
+			@media (max-width 500px)
+				padding-bottom 16px
+
+			> img
+				vertical-align bottom
+
+		> div:last-child
+			flex 1
+
+			@media (min-width 500px)
+				padding-left 16px
 
 </style>
