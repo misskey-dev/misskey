@@ -1,5 +1,5 @@
 
-/***
+/**
  * Format like the uptime command
  */
 export default function(sec) {
