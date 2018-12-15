@@ -1,13 +1,14 @@
 <template>
 <div class="uptimes">
 	<p>Uptimes</p>
-	<p>Process: {{ process ? process.toFixed(0) : '---' }}s</p>
-	<p>OS: {{ os ? os.toFixed(0) : '---' }}s</p>
+	<p>Process: {{ process }}</p>
+	<p>OS: {{ os }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import formatUptime from '../../scripts/format-uptime';
 
 export default Vue.extend({
 	props: ['connection'],
@@ -25,8 +26,8 @@ export default Vue.extend({
 	},
 	methods: {
 		onStats(stats) {
-			this.process = stats.process_uptime;
-			this.os = stats.os_uptime;
+			this.process = formatUptime(stats.process_uptime);
+			this.os = formatUptime(stats.os_uptime);
 		}
 	}
 });
