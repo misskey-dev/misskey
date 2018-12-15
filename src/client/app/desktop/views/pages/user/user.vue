@@ -1,5 +1,6 @@
 <template>
-<mk-ui>
+<mk-not-found v-if="notFound" />
+<mk-ui v-else>
 	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.is-suspended') }}</div>
 		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
@@ -52,7 +53,8 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			user: null
+			user: null,
+			notFound: false
 		};
 	},
 	watch: {
@@ -69,6 +71,10 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 				Progress.done();
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		},
 

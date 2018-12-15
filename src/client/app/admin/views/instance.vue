@@ -219,7 +219,7 @@ export default Vue.extend({
 			}).catch(e => {
 				this.$root.dialog({
 					type: 'error',
-					text: e
+					text: e.body
 				});
 			});
 		},

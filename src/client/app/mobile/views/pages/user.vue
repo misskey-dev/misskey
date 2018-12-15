@@ -1,5 +1,6 @@
 <template>
-<mk-ui>
+<mk-not-found v-if="notFound" />
+<mk-ui v-else>
 	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">
 		<mk-user-name :user="user"/>
 	</template>
@@ -92,7 +93,8 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			user: null,
-			page: 'home'
+			page: 'home',
+			notFound: false
 		};
 	},
 	computed: {
@@ -123,6 +125,10 @@ export default Vue.extend({
 
 				Progress.done();
 				document.title = `${Vue.filter('userName')(this.user)} | ${this.$root.instanceName}`;
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		},
 

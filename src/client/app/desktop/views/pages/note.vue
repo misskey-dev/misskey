@@ -1,5 +1,6 @@
 <template>
-<mk-ui>
+<mk-not-found v-if="notFound" />
+<mk-ui v-else>
 	<main v-if="!fetching">
 		<mk-note-detail :note="note"/>
 		<footer>
@@ -20,7 +21,8 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			note: null
+			note: null,
+			notFound: false
 		};
 	},
 	watch: {
@@ -41,6 +43,10 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		}
 	}

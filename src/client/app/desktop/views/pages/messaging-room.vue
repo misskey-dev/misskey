@@ -1,5 +1,6 @@
 <template>
-<div class="mk-messaging-room-page">
+<mk-not-found v-if="notFound" />
+<div class="mk-messaging-room-page" v-else>
 	<x-messaging-room v-if="user" :user="user" :is-naked="true"/>
 </div>
 </template>
@@ -19,7 +20,8 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			user: null
+			user: null,
+			notFound: false
 		};
 	},
 	watch: {
@@ -54,6 +56,10 @@ export default Vue.extend({
 				document.title = `メッセージ: ${getUserName(this.user)}`;
 
 				Progress.done();
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		}
 	}

@@ -1,5 +1,6 @@
 <template>
-<mk-ui>
+<mk-not-found v-if="notFound" />
+<mk-ui v-else>
 	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'sticky-note']"/></span>{{ $t('title') }}</span>
 	<main v-if="!fetching">
 		<div>
@@ -23,7 +24,8 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			note: null
+			note: null,
+			notFound: false
 		};
 	},
 	watch: {
@@ -47,6 +49,10 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		}
 	}

@@ -1,5 +1,6 @@
 <template>
-<mk-ui>
+<mk-not-found v-if="notFound" />
+<mk-ui v-else>
 	<p v-if="fetching">{{ $t('@.loading') }}</p>
 	<b-card v-if="!fetching" :header="app.name">
 		<b-form-group label="App Secret">
@@ -34,6 +35,10 @@ export default Vue.extend({
 			}).then(app => {
 				this.app = app;
 				this.fetching = false;
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		}
 	}

@@ -39,7 +39,7 @@ export default async (endpoint: IEndpoint, ctx: Koa.Context) => {
 	try {
 		res = await call(endpoint.name, user, app, body, (ctx.req as any).file);
 	} catch (e) {
-		reply(400, e);
+		reply(typeof e === 'string' && /^(.*[\s_-])?not[\s_-]found$/i.test(e) ? 404 : 400, e);
 		return;
 	}
 

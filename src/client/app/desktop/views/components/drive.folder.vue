@@ -153,7 +153,7 @@ export default Vue.extend({
 				}).then(() => {
 					// noop
 				}).catch(err => {
-					switch (err) {
+					switch (err.body) {
 						case 'detected-circular-definition':
 							this.$root.dialog({
 								title: this.$t('unable-to-process'),

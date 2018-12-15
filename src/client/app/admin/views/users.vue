@@ -114,7 +114,7 @@ export default Vue.extend({
 			try {
 				return await this.$root.api('users/show', this.target.startsWith('@') ? parseAcct(this.target) : { userId: this.target });
 			} catch (e) {
-				if (e == 'user not found') {
+				if (e.code === 404) {
 					this.$root.dialog({
 						type: 'error',
 						text: this.$t('user-not-found')
@@ -122,7 +122,7 @@ export default Vue.extend({
 				} else {
 					this.$root.dialog({
 						type: 'error',
-						text: e.toString()
+						text: e.body.toString()
 					});
 				}
 			}
@@ -182,7 +182,7 @@ export default Vue.extend({
 			await process().catch(e => {
 				this.$root.dialog({
 					type: 'error',
-					text: e.toString()
+					text: e.body.toString()
 				});
 			});
 
@@ -204,7 +204,7 @@ export default Vue.extend({
 			await process().catch(e => {
 				this.$root.dialog({
 					type: 'error',
-					text: e.toString()
+					text: e.body.toString()
 				});
 			});
 
@@ -226,7 +226,7 @@ export default Vue.extend({
 			await process().catch(e => {
 				this.$root.dialog({
 					type: 'error',
-					text: e.toString()
+					text: e.body.toString()
 				});
 			});
 

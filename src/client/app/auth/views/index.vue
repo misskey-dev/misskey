@@ -1,5 +1,6 @@
 <template>
-<div class="index">
+<mk-not-found v-if="notFound" />
+<div class="index" v-else>
 	<main v-if="$store.getters.isSignedIn">
 		<p class="fetching" v-if="fetching">{{ $t('loading') }}<mk-ellipsis/></p>
 		<x-form
@@ -45,7 +46,8 @@ export default Vue.extend({
 		return {
 			state: null,
 			session: null,
-			fetching: true
+			fetching: true,
+			notFound: false,
 		};
 	},
 	computed: {
@@ -74,8 +76,12 @@ export default Vue.extend({
 				this.state = 'waiting';
 			}
 		}).catch(error => {
-			this.state = 'fetch-session-error';
-			this.fetching = false;
+			if (error.code === 404) {
+				this.notFound = true;
+			} else {
+				this.state = 'fetch-session-error';
+				this.fetching = false;
+			}
 		});
 	},
 	methods: {

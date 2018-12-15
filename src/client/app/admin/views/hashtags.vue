@@ -33,7 +33,7 @@ export default Vue.extend({
 			}).then(() => {
 				//this.$root.os.apis.dialog({ text: `Saved` });
 			}).catch(e => {
-				//this.$root.os.apis.dialog({ text: `Failed ${e}` });
+				//this.$root.os.apis.dialog({ text: `Failed ${e.body}` });
 			});
 		}
 	}

@@ -1,5 +1,6 @@
 <template>
-<mk-ui>
+<mk-not-found v-if="notFound" />
+<mk-ui v-else>
 	<template slot="header" v-if="!fetching">
 		<img :src="user.avatarUrl" alt="">{{ $t('following-of', { name }) }}
 	</template>
@@ -26,7 +27,8 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			user: null
+			user: null,
+			notFound: false
 		};
 	},
 	computed: {
@@ -50,6 +52,10 @@ export default Vue.extend({
 				this.fetching = false;
 
 				document.title = `${this.$t('followers-of').replace('{}', this.name)} | ${this.$root.instanceName}`;
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		},
 		onLoaded() {

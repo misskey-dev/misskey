@@ -1,5 +1,6 @@
 <template>
-<mk-ui>
+<mk-not-found v-if="notFound" />
+<mk-ui v-else>
 	<span slot="header">
 		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span><mk-user-name :user="user"/></template>
 		<template v-else><mk-ellipsis/></template>
@@ -22,7 +23,8 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			user: null,
-			unwatchDarkmode: null
+			unwatchDarkmode: null,
+			notFound: false
 		};
 	},
 	watch: {
@@ -53,6 +55,10 @@ export default Vue.extend({
 				this.fetching = false;
 
 				document.title = `${this.$t('@.messaging')}: ${Vue.filter('userName')(this.user)} | ${this.$root.instanceName}`;
+			}).catch(error => {
+				if (error.code === 404) {
+					this.notFound = true;
+				}
 			});
 		}
 	}

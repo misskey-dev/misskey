@@ -457,7 +457,10 @@ export default class MiOS extends EventEmitter {
 					} else if (res.status === 204) {
 						resolve();
 					} else {
-						reject(body.error);
+						reject({
+							code: res.status,
+							body: body.error
+						});
 					}
 				}).catch(reject);
 			}
