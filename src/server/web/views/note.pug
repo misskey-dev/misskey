@@ -17,11 +17,12 @@ block og
 	meta(property='og:description' content= summary)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= user.avatarUrl)
-	if user.twitter
-		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
 
 block meta
 	meta(name='twitter:card' content='summary')
+
+	if user.twitter
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
 
 	if note.prev
 		link(rel='prev' href=`${config.url}/notes/${note.prev}`)
