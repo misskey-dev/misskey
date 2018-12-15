@@ -16,7 +16,7 @@ import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
 
 export default async (ctx: Router.IRouterContext) => {
-	if (!ObjectID.isValid(ctx.params.note)) {
+	if (!ObjectID.isValid(ctx.params.user)) {
 		ctx.status = 404;
 		return;
 	}

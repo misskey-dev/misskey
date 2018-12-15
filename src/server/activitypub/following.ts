@@ -12,7 +12,7 @@ import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
 import { setResponseType } from '../activitypub';
 
 export default async (ctx: Router.IRouterContext) => {
-	if (!ObjectID.isValid(ctx.params.note)) {
+	if (!ObjectID.isValid(ctx.params.user)) {
 		ctx.status = 404;
 		return;
 	}
