@@ -1055,6 +1055,20 @@ admin/views/charts.vue:
     network-requests: "Requêtes"
     network-time: "Temps de réponse"
     network-usage: "Traffic"
+admin/views/drive.vue:
+  sort:
+    title: "ソート"
+    createdAtAsc: "アップロード日時が古い順"
+    createdAtDesc: "アップロード日時が新しい順"
+    sizeAsc: "サイズが小さい順"
+    sizeDesc: "サイズが大きい順"
+  origin:
+    title: "オリジン"
+    combined: "ローカル+リモート"
+    local: "ローカル"
+    remote: "リモート"
+  delete: "削除"
+  deleted: "削除しました"
 admin/views/users.vue:
   operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
