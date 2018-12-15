@@ -19,7 +19,7 @@ block meta
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= img)
 	if user.twitter
-		meta(property='twitter:creator' content=`@${user.twitter.screenName}`)
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
 	if !user.host
 		link(rel='alternate' href=`${config.url}/users/${user._id}` type='application/activity+json')
 	if user.uri
