@@ -86,4 +86,5 @@ export default Vue.extend({
 					&.scroll
 						max-height 180px
 						overflow auto
+						padding 2px
 </style>
