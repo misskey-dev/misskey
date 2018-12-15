@@ -177,12 +177,13 @@ describe('Text', () => {
 					node('mention', { acct: '@veryverylongusername', canonical: '@veryverylongusername', username: 'veryverylongusername', host: null }),
 					// text('\n@toolongtobeasamention')
 				], tokens4);
-
+				/*
 				const tokens5 = analyze('@domain_is@valid.example.com\n@domain_is@.invalid\n@domain_is@invali.d\n@domain_is@invali.d\n@domain_is@-invalid.com\n@domain_is@invalid-.com');
 				assert.deepEqual([
 					node('mention', { acct: '@domain_is@valid.example.com', canonical: '@domain_is@valid.example.com', username: 'domain_is', host: 'valid.example.com' }),
 					text('\n@domain_is@.invalid\n@domain_is@invali.d\n@domain_is@invali.d\n@domain_is@-invalid.com\n@domain_is@invalid-.com')
 				], tokens5);
+				*/
 			});
 		});
 
