@@ -115,6 +115,7 @@
 				<ui-switch v-model="suggestRecentHashtags">{{ $t('@.suggest-recent-hashtags') }}</ui-switch>
 				<ui-switch v-model="showClockOnHeader">{{ $t('show-clock-on-header') }}</ui-switch>
 				<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }}</ui-switch>
+				<ui-switch v-model="scrollTallContents">{{ $t('@.scroll-tall-contents') }}</ui-switch>
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
 				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
 				<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
@@ -404,6 +405,11 @@ export default Vue.extend({
 		alwaysShowNsfw: {
 			get() { return this.$store.state.device.alwaysShowNsfw; },
 			set(value) { this.$store.commit('device/set', { key: 'alwaysShowNsfw', value }); }
+		},
+
+		scrollTallContents: {
+			get() { return this.$store.state.device.scrollTallContents; },
+			set(value) { this.$store.commit('device/set', { key: 'scrollTallContents', value }); }
 		},
 
 		useShadow: {

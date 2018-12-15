@@ -62,6 +62,7 @@ const defaultDeviceSettings = {
 	lightmode: false,
 	loadRawImages: false,
 	alwaysShowNsfw: false,
+	scrollTallContents: false,
 	postStyle: 'standard',
 	navbar: 'top',
 	deckColumnAlign: 'center',

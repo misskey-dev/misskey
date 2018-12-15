@@ -24,7 +24,7 @@
 					<mk-cw-button v-model="showContent" :note="appearNote"/>
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
-					<div class="text">
+					<div class="text" :class="{ scroll : $store.state.device.scrollTallContents }">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">{{ $t('private') }}</span>
 						<a class="reply" v-if="appearNote.reply"><fa icon="reply"/></a>
 						<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
@@ -225,6 +225,10 @@ export default Vue.extend({
 						padding 0
 						overflow-wrap break-word
 						color var(--noteText)
+
+						&.scroll
+							max-height 200px
+							overflow auto
 
 						> .reply
 							margin-right 8px

@@ -9,7 +9,7 @@
 				<mk-cw-button v-model="showContent" :note="note"/>
 			</p>
 			<div class="content" v-show="note.cw == null || showContent">
-				<mk-sub-note-content class="text" :note="note"/>
+				<mk-sub-note-content class="text" :class="{ scroll : $store.state.device.scrollTallContents }" :note="note"/>
 			</div>
 		</div>
 	</div>
@@ -83,4 +83,7 @@ export default Vue.extend({
 					padding 0
 					color var(--subNoteText)
 
+					&.scroll
+						max-height 180px
+						overflow auto
 </style>
