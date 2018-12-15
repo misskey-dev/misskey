@@ -1,7 +1,8 @@
-import * as mongo from 'mongodb';
+import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
-import $ from 'cafy'; import ID, { transform } from '../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
 import pack from '../../remote/activitypub/renderer';
@@ -11,7 +12,12 @@ import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
 import { setResponseType } from '../activitypub';
 
 export default async (ctx: Router.IRouterContext) => {
-	const userId = new mongo.ObjectID(ctx.params.user);
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'cursor' parameter
 	const [cursor = null, cursorErr] = $.type(ID).optional.get(ctx.request.query.cursor);

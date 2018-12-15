@@ -1,4 +1,4 @@
-import * as mongo from 'mongodb';
+import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
@@ -64,8 +64,13 @@ router.post('/users/:user/inbox', json(), inbox);
 router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
+	if (!ObjectID.isValid(ctx.params.note)) {
+		ctx.status = 404;
+		return;
+	}
+
 	const note = await Note.findOne({
-		_id: new mongo.ObjectID(ctx.params.note),
+		_id: new ObjectID(ctx.params.note),
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
 	});
@@ -82,8 +87,13 @@ router.get('/notes/:note', async (ctx, next) => {
 
 // note activity
 router.get('/notes/:note/activity', async ctx => {
+	if (!ObjectID.isValid(ctx.params.note)) {
+		ctx.status = 404;
+		return;
+	}
+
 	const note = await Note.findOne({
-		_id: new mongo.ObjectID(ctx.params.note),
+		_id: new ObjectID(ctx.params.note),
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
 	});
@@ -112,7 +122,12 @@ router.get('/users/:user/collections/featured', Featured);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
 
 	const user = await User.findOne({
 		_id: userId,
@@ -146,7 +161,12 @@ async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 }
 
 router.get('/users/:user', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
 
 	const user = await User.findOne({
 		_id: userId,

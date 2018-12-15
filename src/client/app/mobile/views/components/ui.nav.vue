@@ -100,7 +100,15 @@ export default Vue.extend({
 				input: true
 			}).then(({ canceled, result: query }) => {
 				if (canceled) return;
-				this.$router.push(`/search?q=${encodeURIComponent(query)}`);
+
+				const q = query.trim();
+				if (q.startsWith('@')) {
+					this.$router.push(`/${q}`);
+				} else if (q.startsWith('#')) {
+					this.$router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
+				} else {
+					this.$router.push(`/search?q=${encodeURIComponent(q)}`);
+				}
 			});
 		},
 

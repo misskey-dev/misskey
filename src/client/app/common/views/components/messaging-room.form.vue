@@ -9,7 +9,7 @@
 		@keypress="onKeypress"
 		@paste="onPaste"
 		:placeholder="$t('input-message-here')"
-		v-autocomplete="'text'"
+		v-autocomplete="{ model: 'text' }"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader" @uploaded="onUploaded"/>

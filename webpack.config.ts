@@ -114,7 +114,6 @@ module.exports = {
 			clear: false
 		}),
 		new webpack.DefinePlugin({
-			_THEME_COLOR_: JSON.stringify(constants.themeColor),
 			_COPYRIGHT_: JSON.stringify(constants.copyright),
 			_VERSION_: JSON.stringify(meta.version),
 			_CLIENT_VERSION_: JSON.stringify(version),

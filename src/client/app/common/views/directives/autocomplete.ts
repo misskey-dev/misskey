@@ -21,21 +21,23 @@ class Autocomplete {
 	private suggestion: any;
 	private textarea: any;
 	private vm: any;
-	private model: any;
 	private currentType: string;
+	private opts: {
+		model: string;
+	};
 
 	private get text(): string {
-		return this.vm[this.model];
+		return this.vm[this.opts.model];
 	}
 
 	private set text(text: string) {
-		this.vm[this.model] = text;
+		this.vm[this.opts.model] = text;
 	}
 
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
-	constructor(textarea, vm, model) {
+	constructor(textarea, vm, opts) {
 		//#region BIND
 		this.onInput = this.onInput.bind(this);
 		this.complete = this.complete.bind(this);
@@ -45,7 +47,7 @@ class Autocomplete {
 		this.suggestion = null;
 		this.textarea = textarea;
 		this.vm = vm;
-		this.model = model;
+		this.opts = opts;
 	}
 
 	/**

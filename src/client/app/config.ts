@@ -16,7 +16,6 @@ export const wsUrl = url.replace('http://', 'ws://').replace('https://', 'wss://
 export const lang = window.lang;
 export const langs = _LANGS_;
 export const locale = JSON.parse(localStorage.getItem('locale'));
-export const themeColor = _THEME_COLOR_;
 export const copyright = _COPYRIGHT_;
 export const version = _VERSION_;
 export const clientVersion = _CLIENT_VERSION_;

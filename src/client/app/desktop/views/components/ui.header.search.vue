@@ -1,7 +1,7 @@
 <template>
-<form class="search" @submit.prevent="onSubmit">
+<form class="wlvfdpkp" @submit.prevent="onSubmit">
 	<i><fa icon="search"/></i>
-	<input v-model="q" type="search" :placeholder="$t('placeholder')"/>
+	<input v-model="q" type="search" :placeholder="$t('placeholder')" v-autocomplete="{ model: 'q' }"/>
 	<div class="result"></div>
 </form>
 </template>
@@ -19,10 +19,13 @@ export default Vue.extend({
 	},
 	methods: {
 		onSubmit() {
-			if (this.q.startsWith('#')) {
-				this.$router.push(`/tags/${encodeURIComponent(this.q.substr(1))}`);
+			const q = this.q.trim();
+			if (q.startsWith('@')) {
+				this.$router.push(`/${q}`);
+			} else if (q.startsWith('#')) {
+				this.$router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
 			} else {
-				this.$router.push(`/search?q=${encodeURIComponent(this.q)}`);
+				this.$router.push(`/search?q=${encodeURIComponent(q)}`);
 			}
 		}
 	}
@@ -30,7 +33,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.search
+.wlvfdpkp
 	@media (max-width 800px)
 		display none !important
 
