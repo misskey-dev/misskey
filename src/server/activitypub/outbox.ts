@@ -1,7 +1,8 @@
-import * as mongo from 'mongodb';
+import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
-import $ from 'cafy'; import ID, { transform } from '../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import pack from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
@@ -15,7 +16,12 @@ import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
 
 export default async (ctx: Router.IRouterContext) => {
-	const userId = new mongo.ObjectID(ctx.params.user);
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'sinceId' parameter
 	const [sinceId, sinceIdErr] = $.type(ID).optional.get(ctx.request.query.since_id);
