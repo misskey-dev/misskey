@@ -47,11 +47,11 @@ common:
     seconds_ago: "Il y a {} seconde·s"
     minutes_ago: "Il y a {} min"
     hours_ago: "Il y a {} h"
-    days_ago: "Il y a {} jours"
-    weeks_ago: "Il y a {} semaines·s"
+    days_ago: "Il y a {} j"
+    weeks_ago: "Il y a {} semaines"
     months_ago: "Il y a {} mois"
     years_ago: "Il y a {} an·s"
-  month-and-day: "{day}/{month}"
+  month-and-day: "{day}-{month}"
   trash: "Corbeille"
   drive: "Drive"
   messaging: "Conversations"
@@ -165,6 +165,7 @@ common:
     hashtags: "Hashtags"
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
   ai-chan-kawaii: "Ai-Chan est mignonne !"
+  you: "Vous"
 auth/views/form.vue:
   share-access: "Désirez-vous autoriser <i>{name}</i> à avoir accès à votre compte ?"
   permission-ask: "Cette application nécessite les autorisations suivantes :"
@@ -478,7 +479,7 @@ common/views/widgets/broadcast.vue:
   next: "Suivant"
 common/views/widgets/calendar.vue:
   year: "Année {}"
-  month: "Mois {}"
+  month: "{},"
   day: "{}"
   today: "Aujourd’hui :"
   this-month: "Ce mois-ci :"
@@ -515,7 +516,7 @@ common/views/widgets/tips.vue:
   tips-line10: "タイムマシンウィジェットを利用すると、簡単に過去のタイムラインに遡れます"
   tips-line11: "Vous pouvez épingler des notes sur votre page en cliquant sur « … »"
   tips-line13: "Tous les fichiers attachés à cette publication sont sauvegardés dans le Drive"
-  tips-line14: "ホームのカスタマイズ中、ウィジェットを右クリックしてデザインを変更できます"
+  tips-line14: "Lorsque vous personnalisez la disposition de votre page d’accueil, vous pouvez effectuer un clique droit sur un widget pour changer son apparence."
   tips-line17: "Vous pouvez mettre un texte en surbrillance en le mettant entre ** **"
   tips-line19: "Plusieurs fenêtres peuvent être détachées en dehors du navigateur."
   tips-line20: "Pourcentage sur le widget calendrier qui indique le pourcentage de temps passé"
@@ -524,7 +525,7 @@ common/views/widgets/tips.vue:
   tips-line24: "Misskey est fonctionnel depuis 2014"
   tips-line25: "Vous pouvez recevoir les notifications de Misskey dans un navigateur web compatible"
 common/views/pages/404.vue:
-  page-not-found: "ページが見つかりませんでした"
+  page-not-found: "La page demandée est introuvable !"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté·e en tant que {}"
   following: "Suit"
@@ -553,7 +554,7 @@ desktop/views/components/activity.vue:
   title: "Activité"
   toggle: "Afficher les vues"
 desktop/views/components/calendar.vue:
-  title: "{month} / {year}"
+  title: "{month} - {year}"
   prev: "Mois précédent"
   next: "Mois suivant"
   go: "Cliquez pour naviguer"
@@ -877,7 +878,7 @@ common/views/components/password-settings.vue:
   enter-new-password-again: "Entrez à nouveau le nouveau mot de passe"
   not-match: "Les nouveaux mots de passe ne sont pas identiques"
   changed: "Mot de passe modifié avec succès"
-  failed: "パスワード変更に失敗しました"
+  failed: "Échec lors de la modification du mot de passe"
 desktop/views/components/sub-note-content.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
@@ -970,7 +971,7 @@ admin/views/instance.vue:
   instance-description: "Description de l’instance"
   host: "Hôte"
   banner-url: "Url de l’image de la bannière"
-  error-image-url: "エラー画像URL"
+  error-image-url: "URL de l’image d’erreur"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
   maintainer-config: "Informations de l’administrateur"
@@ -1054,6 +1055,20 @@ admin/views/charts.vue:
     network-requests: "Requêtes"
     network-time: "Temps de réponse"
     network-usage: "Traffic"
+admin/views/drive.vue:
+  sort:
+    title: "Tri"
+    createdAtAsc: "アップロード日時が古い順"
+    createdAtDesc: "アップロード日時が新しい順"
+    sizeAsc: "Taille - Ascendant"
+    sizeDesc: "Taille - Volumineux en premier"
+  origin:
+    title: "Origine"
+    combined: "Locaux et distants combinés"
+    local: "Local"
+    remote: "Distant"
+  delete: "Supprimer"
+  deleted: "Supprimé"
 admin/views/users.vue:
   operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
@@ -1076,7 +1091,7 @@ admin/views/users.vue:
       createdAtAsc: "Date d’inscription (Ascendant)"
       createdAtDesc: "Date d’inscription (Descendant)"
       updatedAtAsc: "Mis à jour récemment (Ascendant)"
-      updatedAtDesc: "更新日時が新しい順"
+      updatedAtDesc: "Mis à jour récemment (descendant)"
     origin:
       title: "Origine"
       combined: "Locaux + distants"
@@ -1189,7 +1204,7 @@ desktop/views/pages/user/user.header.vue:
   years-old: "{age} ans"
   year: "/"
   month: "/"
-  day: "/"
+  day: "-"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
@@ -1349,7 +1364,7 @@ mobile/views/pages/welcome.vue:
   signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
   dashboard: "Tableau de bord"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
+  widgets-hints: "Vous pouvez ajouter, supprimer et réaranger les widgets. Faites glisser « 三 » pour déplacer le widget. Appuyez sur « x » pour supprimer le widget. Certains widgets peuvent changer d’apparence en cliquant dessus."
   add-widget: "Ajouter"
   customization-tips: "Conseils de personnalisation"
 mobile/views/pages/widgets/activity.vue:

@@ -165,6 +165,7 @@ common:
     hashtags: "标签"
   dev: "构建应用程序失败，请再试一次。"
   ai-chan-kawaii: "Ai-chan kawaii!"
+  you: "あなた"
 auth/views/form.vue:
   share-access: "您要允许<i>{name}</i>来访问您的账户吗?"
   permission-ask: "这个应用程序需要以下权限:"
@@ -1054,6 +1055,20 @@ admin/views/charts.vue:
     network-requests: "请求"
     network-time: "响应时间"
     network-usage: "网络流量"
+admin/views/drive.vue:
+  sort:
+    title: "ソート"
+    createdAtAsc: "アップロード日時が古い順"
+    createdAtDesc: "アップロード日時が新しい順"
+    sizeAsc: "サイズが小さい順"
+    sizeDesc: "サイズが大きい順"
+  origin:
+    title: "オリジン"
+    combined: "ローカル+リモート"
+    local: "ローカル"
+    remote: "リモート"
+  delete: "削除"
+  deleted: "削除しました"
 admin/views/users.vue:
   operation: "操作"
   username-or-userid: "用户名或用户ID"
