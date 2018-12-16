@@ -8,6 +8,7 @@ import VueRouter from 'vue-router';
 import VAnimateCss from 'v-animate-css';
 import VModal from 'vue-js-modal';
 import VueI18n from 'vue-i18n';
+import SequentialEntrance from 'vue-sequential-entrance';
 
 import VueHotkey from './common/hotkey';
 import App from './app.vue';
@@ -287,6 +288,7 @@ Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
 Vue.use(VueI18n);
+Vue.use(SequentialEntrance);
 
 Vue.component('fa', FontAwesomeIcon);
 

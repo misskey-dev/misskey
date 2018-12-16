@@ -3,9 +3,11 @@
 	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('title') }}</span>
 
 	<main>
-		<template v-for="favorite in favorites">
-			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
-		</template>
+		<sequential-entrance animation="entranceFromTop" delay="25">
+			<template v-for="favorite in favorites">
+				<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
+			</template>
+		</sequential-entrance>
 		<ui-button v-if="existMore" @click="more">{{ $t('@.load-more') }}</ui-button>
 	</main>
 </mk-ui>
@@ -79,13 +81,13 @@ main
 	margin 0 auto
 	padding 8px
 
-	> .post
+	> * > .post
 		margin-bottom 8px
 
 	@media (min-width 500px)
 		padding 16px
 
-		> .post
+		> * > .post
 			margin-bottom 16px
 
 	@media (min-width 600px)

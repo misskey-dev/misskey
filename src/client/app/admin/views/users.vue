@@ -38,25 +38,27 @@
 					<option value="remote">{{ $t('users.origin.remote') }}</option>
 				</ui-select>
 			</ui-horizon-group>
-			<div class="kofvwchc" v-for="user in users">
-				<div>
-					<a :href="user | userPage(null, true)">
-						<mk-avatar class="avatar" :user="user" :disable-link="true"/>
-					</a>
-				</div>
-				<div>
-					<header>
-						<b><mk-user-name :user="user"/></b>
-						<span class="username">@{{ user | acct }}</span>
-					</header>
+			<sequential-entrance animation="entranceFromTop" delay="25">
+				<div class="kofvwchc" v-for="user in users">
 					<div>
-						<span>{{ $t('users.updatedAt') }}: <mk-time :time="user.updatedAt" mode="detail"/></span>
+						<a :href="user | userPage(null, true)">
+							<mk-avatar class="avatar" :user="user" :disable-link="true"/>
+						</a>
 					</div>
 					<div>
-						<span>{{ $t('users.createdAt') }}: <mk-time :time="user.createdAt" mode="detail"/></span>
+						<header>
+							<b><mk-user-name :user="user"/></b>
+							<span class="username">@{{ user | acct }}</span>
+						</header>
+						<div>
+							<span>{{ $t('users.updatedAt') }}: <mk-time :time="user.updatedAt" mode="detail"/></span>
+						</div>
+						<div>
+							<span>{{ $t('users.createdAt') }}: <mk-time :time="user.createdAt" mode="detail"/></span>
+						</div>
 					</div>
 				</div>
-			</div>
+			</sequential-entrance>
 			<ui-button v-if="existMore" @click="fetchUsers">{{ $t('@.load-more') }}</ui-button>
 		</section>
 	</ui-card>

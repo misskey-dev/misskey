@@ -18,29 +18,31 @@
 					<option value="remote">{{ $t('origin.remote') }}</option>
 				</ui-select>
 			</ui-horizon-group>
-			<div class="kidvdlkg" v-for="file in files">
-				<div @click="file._open = !file._open">
-					<div>
-						<div class="thumbnail" :style="thumbnail(file)"></div>
-					</div>
-					<div>
-						<header>
-							<b>{{ file.name }}</b>
-							<span class="username">@{{ file.user | acct }}</span>
-						</header>
+			<sequential-entrance animation="entranceFromTop" delay="25">
+				<div class="kidvdlkg" v-for="file in files">
+					<div @click="file._open = !file._open">
 						<div>
+							<div class="thumbnail" :style="thumbnail(file)"></div>
+						</div>
+						<div>
+							<header>
+								<b>{{ file.name }}</b>
+								<span class="username">@{{ file.user | acct }}</span>
+							</header>
 							<div>
-								<span style="margin-right:16px;">{{ file.type }}</span>
-								<span>{{ file.datasize | bytes }}</span>
+								<div>
+									<span style="margin-right:16px;">{{ file.type }}</span>
+									<span>{{ file.datasize | bytes }}</span>
+								</div>
+								<div><mk-time :time="file.createdAt" mode="detail"/></div>
 							</div>
-							<div><mk-time :time="file.createdAt" mode="detail"/></div>
 						</div>
 					</div>
+					<div v-show="file._open">
+						<ui-button @click="del(file)"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
+					</div>
 				</div>
-				<div v-show="file._open">
-					<ui-button @click="del(file)"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
-				</div>
-			</div>
+			</sequential-entrance>
 			<ui-button v-if="existMore" @click="fetch">{{ $t('@.load-more') }}</ui-button>
 		</section>
 	</ui-card>
