@@ -11,7 +11,7 @@
 	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<transition-group name="mk-notes" class="transition notes" ref="notes">
+	<transition-group name="mk-notes" class="transition notes" ref="notes" tag="div">
 		<template v-for="(note, i) in _notes">
 			<x-note
 				:note="note"
