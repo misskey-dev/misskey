@@ -111,7 +111,6 @@ common:
   i-like-sushi: "Je préfère les sushis plutôt que le pudding"
   show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
   use-white-black-reversi-stones: "Jouer avec des pions noirs et blancs sur Reversi"
-  use-contrast-reversi-stones: "Icône avec contraste sur Reversi"
   verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
