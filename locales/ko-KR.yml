@@ -1058,17 +1058,17 @@ admin/views/charts.vue:
 admin/views/drive.vue:
   sort:
     title: "정렬"
-    createdAtAsc: "アップロード日時が古い順"
-    createdAtDesc: "アップロード日時が新しい順"
-    sizeAsc: "サイズが小さい順"
-    sizeDesc: "サイズが大きい順"
+    createdAtAsc: "업로드 날짜 오랜 순"
+    createdAtDesc: "업로드 날짜 최신순"
+    sizeAsc: "크기가 작은 순"
+    sizeDesc: "크기가 큰 순"
   origin:
-    title: "オリジン"
-    combined: "ローカル+リモート"
-    local: "ローカル"
-    remote: "リモート"
-  delete: "削除"
-  deleted: "削除しました"
+    title: "출처"
+    combined: "로컬 + 리모트"
+    local: "로컬"
+    remote: "리모트"
+  delete: "삭제"
+  deleted: "삭제하였습니다"
 admin/views/users.vue:
   operation: "작업"
   username-or-userid: "사용자명 혹은 사용자 ID"
