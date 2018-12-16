@@ -111,7 +111,6 @@ common:
   i-like-sushi: "相比于布丁来说, 我更喜欢寿司。"
   show-reversi-board-labels: "在 Reversi 中显示行和列表签"
   use-white-black-reversi-stones: "リバーシに白黒の石を使う"
-  use-contrast-reversi-stones: "Make the stone color clear in Reversi"
   verified-user: "认证用户"
   disable-animated-mfm: "在帖子中禁用动画文本"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"

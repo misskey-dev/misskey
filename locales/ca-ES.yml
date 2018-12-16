@@ -111,7 +111,6 @@ common:
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
   use-white-black-reversi-stones: "リバーシに白黒の石を使う"
-  use-contrast-reversi-stones: "リバーシのアイコンにコントラストを付ける"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
