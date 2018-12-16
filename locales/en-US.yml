@@ -111,7 +111,6 @@ common:
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
   use-white-black-reversi-stones: "Use white-black stone in reversi"
-  use-contrast-reversi-stones: "Make the stone color clear in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
   suggest-recent-hashtags: "Suggest recently used hashtags within the post composition area"
