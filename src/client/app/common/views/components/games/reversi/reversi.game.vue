@@ -31,8 +31,8 @@
 						@click="set(i)"
 						:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`">
 					<template v-if="!$store.state.settings.games.reversi.useWhiteBlackStones">
-						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black" :class="{ contrast: $store.state.settings.games.reversi.useContrastStones }">
-						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white" :class="{ contrast: $store.state.settings.games.reversi.useContrastStones }">
+						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
+						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
 					</template>
 					<template v-if="$store.state.settings.games.reversi.useWhiteBlackStones">
 						<fa v-if="stone === true" :icon="fasCircle"/>
@@ -429,13 +429,6 @@ export default Vue.extend({
 						display block
 						width 100%
 						height 100%
-
-						&.contrast
-							&[alt="black"]
-								filter brightness(.5)
-
-							&[alt="white"]
-								filter brightness(2)
 
 	> .graph
 		display grid
