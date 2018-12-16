@@ -3,6 +3,7 @@ import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
 import User from '../../../../models/user';
 import define from '../../define';
+const ms = require('ms');
 
 export const meta = {
 	stability: 'stable',
@@ -15,6 +16,12 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'note-write',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 300,
+		minInterval: ms('1sec')
+	},
 
 	params: {
 		noteId: {
