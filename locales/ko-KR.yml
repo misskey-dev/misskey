@@ -1057,7 +1057,7 @@ admin/views/charts.vue:
     network-usage: "통신량"
 admin/views/drive.vue:
   sort:
-    title: "ソート"
+    title: "정렬"
     createdAtAsc: "アップロード日時が古い順"
     createdAtDesc: "アップロード日時が新しい順"
     sizeAsc: "サイズが小さい順"
