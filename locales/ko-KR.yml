@@ -165,6 +165,7 @@ common:
     hashtags: "해시태그"
   dev: "앱을 만드는 데 실패했습니다. 다시 시도하시기 바랍니다."
   ai-chan-kawaii: "아이쨩 귀여워"
+  you: "당신"
 auth/views/form.vue:
   share-access: "<i>{name}</i>가 당신의 계정에 엑세스하도록 허용하시겠습니까?"
   permission-ask: "이 앱은 다음의 권한을 요청합니다:"
@@ -1054,6 +1055,20 @@ admin/views/charts.vue:
     network-requests: "요청"
     network-time: "응답시간"
     network-usage: "통신량"
+admin/views/drive.vue:
+  sort:
+    title: "ソート"
+    createdAtAsc: "アップロード日時が古い順"
+    createdAtDesc: "アップロード日時が新しい順"
+    sizeAsc: "サイズが小さい順"
+    sizeDesc: "サイズが大きい順"
+  origin:
+    title: "オリジン"
+    combined: "ローカル+リモート"
+    local: "ローカル"
+    remote: "リモート"
+  delete: "削除"
+  deleted: "削除しました"
 admin/views/users.vue:
   operation: "작업"
   username-or-userid: "사용자명 혹은 사용자 ID"

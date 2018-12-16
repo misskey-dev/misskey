@@ -165,6 +165,7 @@ common:
     hashtags: "Hashtags"
   dev: "Failed to create the application. Please try again."
   ai-chan-kawaii: "Ai-chan kawaii!"
+  you: "You"
 auth/views/form.vue:
   share-access: "Would you allow <i>{name}</i> to access your account?"
   permission-ask: "This application requires the following permissions:"
@@ -1054,6 +1055,20 @@ admin/views/charts.vue:
     network-requests: "Requests"
     network-time: "Response time"
     network-usage: "Traffic"
+admin/views/drive.vue:
+  sort:
+    title: "Sort"
+    createdAtAsc: "アップロード日時が古い順"
+    createdAtDesc: "アップロード日時が新しい順"
+    sizeAsc: "サイズが小さい順"
+    sizeDesc: "サイズが大きい順"
+  origin:
+    title: "Origin"
+    combined: "Local + Remote"
+    local: "Local"
+    remote: "Remote"
+  delete: "Delete"
+  deleted: "Deleted successfully"
 admin/views/users.vue:
   operation: "Operations"
   username-or-userid: "Username or user ID"
