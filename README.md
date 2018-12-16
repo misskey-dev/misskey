@@ -3,9 +3,9 @@
 [![Misskey](/assets/title.png)](https://misskey.xyz/)
 ================================================================
 
-[![CircleCI](https://circleci.com/gh/syuilo/misskey.svg?style=svg)](https://circleci.com/gh/syuilo/misskey)
-[![][dependencies-badge]][dependencies-link]
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![CircleCI](https://img.shields.io/circleci/project/github/syuilo/misskey.svg?style=for-the-badge)](https://circleci.com/gh/syuilo/misskey)
+[![Dependencies](https://img.shields.io/david/syuilo/misskey.svg?style=for-the-badge)](https://david-dm.org/syuilo/misskey)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](http://makeapullrequest.com)
 
 **Sophisticated microblogging platform, evolving forever.**
 
@@ -130,9 +130,7 @@ Misskey is an open-source software licensed under the [GNU AGPLv3](LICENSE).
 [![][agpl-3.0-badge]][AGPL-3.0]
 
 [agpl-3.0]:           https://www.gnu.org/licenses/agpl-3.0.en.html
-[agpl-3.0-badge]:     https://img.shields.io/badge/license-AGPL--3.0-444444.svg?style=flat-square
-[dependencies-link]:  https://david-dm.org/syuilo/misskey
-[dependencies-badge]: https://img.shields.io/david/syuilo/misskey.svg?style=flat-square
+[agpl-3.0-badge]:     https://img.shields.io/badge/license-AGPL--3.0-444444.svg?style=for-the-badge
 
 [backer-url]: #backers
 [backer-badge]: https://opencollective.com/misskey/backers/badge.svg
