@@ -111,7 +111,6 @@ common:
   i-like-sushi: "저는 (푸딩보다 차라리) 초밥이 좋아요"
   show-reversi-board-labels: "리버시 보드의 행과 열 레이블을 표시"
   use-white-black-reversi-stones: "리버시에 흑백 돌을 사용"
-  use-contrast-reversi-stones: "리버시 아이콘의 대비를 높이기"
   verified-user: "공식 계정"
   disable-animated-mfm: "글의 문자 애니메이션을 비활성화"
   suggest-recent-hashtags: "최근 해시태그를 글 작성란에 표시"
