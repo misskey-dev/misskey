@@ -76,27 +76,14 @@ export default class Reversi {
 		this.mapHeight = map.length;
 		const mapData = map.join('');
 
-		this.board = mapData.split('').map(d => {
-			if (d == '-') return null;
-			if (d == 'b') return BLACK;
-			if (d == 'w') return WHITE;
-			return undefined;
-		});
+		this.board = mapData.split('').map(d => d === '-' ? null : d === 'b' ? BLACK : d === 'w' ? WHITE : undefined);
 
-		this.map = mapData.split('').map(d => {
-			if (d == '-' || d == 'b' || d == 'w') return 'empty';
-			return 'null';
-		});
+		this.map = mapData.split('').map(d => d === '-' || d === 'b' || d === 'w' ? 'empty' : 'null');
 		//#endregion
 
 		// ゲームが始まった時点で片方の色の石しかないか、始まった時点で勝敗が決定するようなマップの場合がある
-		if (!this.canPutSomewhere(BLACK)) {
-			if (!this.canPutSomewhere(WHITE)) {
-				this.turn = null;
-			} else {
-				this.turn = WHITE;
-			}
-		}
+		if (!this.canPutSomewhere(BLACK))
+			this.turn = this.canPutSomewhere(WHITE) ? WHITE : null;
 	}
 
 	/**
@@ -117,16 +104,14 @@ export default class Reversi {
 	 * 黒石の比率
 	 */
 	public get blackP() {
-		if (this.blackCount == 0 && this.whiteCount == 0) return 0;
-		return this.blackCount / (this.blackCount + this.whiteCount);
+		return this.blackCount == 0 && this.whiteCount == 0 ? 0 : this.blackCount / (this.blackCount + this.whiteCount);
 	}
 
 	/**
 	 * 白石の比率
 	 */
 	public get whiteP() {
-		if (this.blackCount == 0 && this.whiteCount == 0) return 0;
-		return this.whiteCount / (this.blackCount + this.whiteCount);
+		return this.blackCount == 0 && this.whiteCount == 0 ? 0 : this.whiteCount / (this.blackCount + this.whiteCount);
 	}
 
 	public transformPosToXy(pos: number): number[] {
@@ -172,13 +157,10 @@ export default class Reversi {
 
 	private calcTurn() {
 		// ターン計算
-		if (this.canPutSomewhere(!this.prevColor)) {
-			this.turn = !this.prevColor;
-		} else if (this.canPutSomewhere(this.prevColor)) {
-			this.turn = this.prevColor;
-		} else {
-			this.turn = null;
-		}
+		this.turn =
+			this.canPutSomewhere(!this.prevColor) ? !this.prevColor :
+			this.canPutSomewhere(this.prevColor) ? this.prevColor :
+			null;
 	}
 
 	public undo() {
@@ -199,8 +181,7 @@ export default class Reversi {
 	 */
 	public mapDataGet(pos: number): MapPixel {
 		const [x, y] = this.transformPosToXy(pos);
-		if (x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight) return 'null';
-		return this.map[pos];
+		return x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight ? 'null' : this.map[pos];
 	}
 
 	/**
@@ -223,16 +204,10 @@ export default class Reversi {
 	 * @param pos 位置
 	 */
 	public canPut(color: Color, pos: number): boolean {
-		// 既に石が置いてある場所には打てない
-		if (this.board[pos] !== null) return false;
-
-		if (this.opts.canPutEverywhere) {
-			// 挟んでなくても置けるモード
-			return this.mapDataGet(pos) == 'empty';
-		} else {
-			// 相手の石を1つでも反転させられるか
-			return this.effects(color, pos).length !== 0;
-		}
+		return (
+			this.board[pos] !== null ? false : // 既に石が置いてある場所には打てない
+			this.opts.canPutEverywhere ? this.mapDataGet(pos) == 'empty' : // 挟んでなくても置けるモード
+			this.effects(color, pos).length !== 0); // 相手の石を1つでも反転させられるか
 	}
 
 	/**
@@ -263,19 +238,13 @@ export default class Reversi {
 				[x, y] = nextPos(x, y);
 
 				// 座標が指し示す位置がボード外に出たとき
-				if (this.opts.loopedBoard) {
-					x = ((x % this.mapWidth) + this.mapWidth) % this.mapWidth;
-					y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight;
-
-					if (this.transformXyToPos(x, y) == initPos) {
+				if (this.opts.loopedBoard && this.transformXyToPos(
+					(x = ((x % this.mapWidth) + this.mapWidth) % this.mapWidth),
+					(y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight)) == initPos)
 						// 盤面の境界でループし、自分が石を置く位置に戻ってきたとき、挟めるようにしている (ref: Test4のマップ)
-						return found;
-					}
-				} else {
-					if (x == -1 || y == -1 || x == this.mapWidth || y == this.mapHeight) {
-						return []; // 挟めないことが確定 (盤面外に到達)
-					}
-				}
+					return found;
+				else if (x == -1 || y == -1 || x == this.mapWidth || y == this.mapHeight)
+					return []; // 挟めないことが確定 (盤面外に到達)
 
 				const pos = this.transformXyToPos(x, y);
 				if (this.mapDataGet(pos) === 'null') return []; // 挟めないことが確定 (配置不可能なマスに到達)
@@ -300,14 +269,9 @@ export default class Reversi {
 	 * ゲームの勝者 (null = 引き分け)
 	 */
 	public get winner(): Color {
-		if (!this.isEnded) return undefined;
-
-		if (this.blackCount == this.whiteCount) return null;
-
-		if (this.opts.isLlotheo) {
-			return this.blackCount > this.whiteCount ? WHITE : BLACK;
-		} else {
-			return this.blackCount > this.whiteCount ? BLACK : WHITE;
-		}
+		return this.isEnded ?
+			this.blackCount == this.whiteCount ? null :
+			this.opts.isLlotheo === this.blackCount > this.whiteCount　? WHITE : BLACK :
+			undefined;
 	}
 }

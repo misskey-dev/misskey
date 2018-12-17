@@ -53,7 +53,7 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const isUsername = validateUsername(ps.query.replace('@', ''), true);
+	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
 
 	let users: IUser[] = [];
 
