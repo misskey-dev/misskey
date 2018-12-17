@@ -50,7 +50,7 @@ common:
     days_ago: "Il y a {} j"
     weeks_ago: "Il y a {} semaines"
     months_ago: "Il y a {} mois"
-    years_ago: "Il y a {} an·s"
+    years_ago: "Il y a {} an(s)"
   month-and-day: "{day}-{month}"
   trash: "Corbeille"
   drive: "Drive"
