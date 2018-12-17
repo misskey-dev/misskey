@@ -20,9 +20,5 @@ export default {
 
 			document.body.appendChild(particle.$el);
 		});
-	},
-
-	unbind(el, binding, vn) {
-
 	}
 };
