@@ -14,7 +14,11 @@ const summarize = (note: any): string => {
 	let summary = '';
 
 	// 本文
-	summary += note.text ? note.text : '';
+	if (note.cw && note.cw != '') {
+		summary += note.cw;
+	} else {
+		summary += note.text ? note.text : '';
+	}
 
 	// ファイルが添付されているとき
 	if ((note.files || []).length != 0) {
