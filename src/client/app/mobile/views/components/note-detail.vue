@@ -327,7 +327,7 @@ export default Vue.extend({
 				cursor pointer
 
 				&:not(:last-child)
-					margin-right 32px
+					margin-right 34px
 
 				&:hover
 					color var(--noteActionsHover)

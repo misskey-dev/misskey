@@ -280,6 +280,7 @@ export default Vue.extend({
 						display inline
 						position absolute
 						margin 0 0 0 4px
+						font-size .9em
 
 					&.reacted
 						color var(--primary)
