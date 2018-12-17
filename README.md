@@ -86,7 +86,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=13376668">Arctic</a></td>
 <td><a href="https://www.patreon.com/negao">negao</a></td>
 <td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>
-<td><a href="https://www.patreon.com/AxellaMC">Xeltica</a></td>
+<td><a href="https://www.patreon.com/Xeltica">Xeltica</a></td>
 <td><a href="https://www.patreon.com/user?u=3384329">べすれい</a></td>
 <td><a href="https://www.patreon.com/gutfuckllc">gutfuckllc</a></td>
 <td><a href="https://www.patreon.com/mydarkstar">mydarkstar</a></td>
@@ -118,7 +118,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Sun, 16 Dec 2018 13:46:05 UTC
+**Last updated:** Sun, 16 Dec 2018 18:32:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
