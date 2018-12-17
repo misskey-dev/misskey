@@ -1,4 +1,3 @@
-
 /**
  * Return the number of matched items from target array by condition
  * @param condition Condition to match
