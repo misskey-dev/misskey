@@ -354,7 +354,7 @@ common/views/components/reaction-picker.vue:
   choose-reaction: "반응 선택"
 common/views/components/emoji-picker.vue:
   custom-emoji: "커스텀 이모지"
-  people: "명"
+  people: "사람들"
   animals-and-nature: "동물 & 자연"
   food-and-drink: "음식 & 음료"
   activity: "활동"
