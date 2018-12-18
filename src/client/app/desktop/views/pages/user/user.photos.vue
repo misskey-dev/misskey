@@ -24,9 +24,14 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		const image = [
+			'image/jpeg',
+			'image/png',
+			'image/gif'
+		];
 		this.$root.api('users/notes', {
 			userId: this.user.id,
-			withFiles: true,
+			fileType: image,
 			limit: 9,
 			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
