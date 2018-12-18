@@ -1,4 +1,4 @@
-# Sample Nginx configuration for Misskey
+# Sample nginx configuration for Misskey
 #
 # 1. Replace example.tld to your domain
 # 2. Copy to /etc/nginx/sites-enabled
