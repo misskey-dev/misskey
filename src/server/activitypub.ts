@@ -7,9 +7,11 @@ import { createHttpJob } from '../queue';
 import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
 import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
+import Emoji from '../models/emoji';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
+import renderEmoji from '../remote/activitypub/renderer/emoji';
 import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
 import Following from './activitypub/following';
@@ -187,5 +189,22 @@ router.get('/@:user', async (ctx, next) => {
 	await userInfo(ctx, user);
 });
 //#endregion
+
+// emoji
+router.get('/emojis/:emoji', async ctx => {
+	const emoji = await Emoji.findOne({
+		host: null,
+		name: ctx.params.emoji
+	});
+
+	if (emoji === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = pack(await renderEmoji(emoji));
+	ctx.set('Cache-Control', 'public, max-age=180');
+	setResponseType(ctx);
+});
 
 export default router;
