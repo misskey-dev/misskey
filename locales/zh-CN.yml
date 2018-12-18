@@ -471,6 +471,13 @@ common/views/components/profile-editor.vue:
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
   email-not-verified: "电子邮件地址还没有验证哦, 请检查一下收信箱吧~"
+common/views/components/user-list-editor.vue:
+  users: "ユーザー"
+  rename: "リスト名を変更"
+  delete: "リストを削除"
+  remove-user: "このリストから削除"
+  delete-are-you-sure: "リスト「$1」を削除しますか？"
+  deleted: "削除しました"
 common/views/widgets/broadcast.vue:
   fetching: "确认中"
   no-broadcasts: "没有公告"
