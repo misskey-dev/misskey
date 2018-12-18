@@ -471,6 +471,13 @@ common/views/components/profile-editor.vue:
   email-address: "메일 주소"
   email-verified: "매일 주소가 확인되었습니다"
   email-not-verified: "메일 주소가 확인되지 않았습니다. 받은 편지함을 확인하여 주시기 바랍니다."
+common/views/components/user-list-editor.vue:
+  users: "ユーザー"
+  rename: "リスト名を変更"
+  delete: "リストを削除"
+  remove-user: "このリストから削除"
+  delete-are-you-sure: "リスト「$1」を削除しますか？"
+  deleted: "削除しました"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
   no-broadcasts: "공지사항이 없습니다"
