@@ -39,7 +39,11 @@
 						</div>
 					</div>
 					<div v-show="file._open">
-						<ui-button @click="del(file)"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
+						<ui-horizon-group>
+							<ui-button @click="toggleSensitive(file)" v-if="file.isSensitive"><fa :icon="faEye"/> {{ $t('unmark-as-sensitive') }}</ui-button>
+							<ui-button @click="toggleSensitive(file)" v-else><fa :icon="faEyeSlash"/> {{ $t('mark-as-sensitive') }}</ui-button>
+							<ui-button @click="del(file)"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
+						</ui-horizon-group>
 					</div>
 				</div>
 			</sequential-entrance>
@@ -53,7 +57,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/drive.vue'),
@@ -66,7 +70,7 @@ export default Vue.extend({
 			offset: 0,
 			files: [],
 			existMore: false,
-			faCloud, faTrashAlt
+			faCloud, faTrashAlt, faEye, faEyeSlash
 		};
 	},
 
@@ -132,7 +136,16 @@ export default Vue.extend({
 					text: e.toString()
 				});
 			});
-		}
+		},
+
+		toggleSensitive(file: any) {
+			this.$root.api('drive/files/update', {
+				fileId: file.id,
+				isSensitive: !file.isSensitive
+			});
+
+			file.isSensitive = !file.isSensitive;
+		},
 	}
 });
 </script>
