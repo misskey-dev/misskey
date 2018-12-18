@@ -26,6 +26,7 @@ import { toUnicode } from 'punycode';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/signin.vue'),
+
 	props: {
 		withAvatar: {
 			type: Boolean,
@@ -33,6 +34,7 @@ export default Vue.extend({
 			default: true
 		}
 	},
+
 	data() {
 		return {
 			signing: false,
@@ -45,11 +47,13 @@ export default Vue.extend({
 			meta: null
 		};
 	},
+
 	created() {
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	},
+
 	methods: {
 		onUsernameChange() {
 			this.$root.api('users/show', {
@@ -60,6 +64,7 @@ export default Vue.extend({
 				this.user = null;
 			});
 		},
+
 		onSubmit() {
 			this.signing = true;
 
