@@ -1,5 +1,5 @@
 <template>
-<mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
+<mk-window ref="window" width="450px" height="500px" @closed="destroyDom">
 	<span slot="header"><fa icon="list"/> {{ $t('title') }}</span>
 
 	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
