@@ -471,6 +471,13 @@ common/views/components/profile-editor.vue:
   email-address: "Adresse de courrier électronique"
   email-verified: "L’adresse du courrier électronique a été vérifiée."
   email-not-verified: "Adresse de courriel n’est pas confirmée. Veuillez vérifier votre boite de réception."
+common/views/components/user-list-editor.vue:
+  users: "ユーザー"
+  rename: "リスト名を変更"
+  delete: "リストを削除"
+  remove-user: "このリストから削除"
+  delete-are-you-sure: "リスト「$1」を削除しますか？"
+  deleted: "削除しました"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
   no-broadcasts: "Aucune annonce"
