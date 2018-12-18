@@ -102,10 +102,9 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	let apText = text;
 
-	if (note.renoteId != null) {
+	if (quote) {
 		if (apText == null) apText = '';
-		const url = `${config.url}/notes/${note.renoteId}`;
-		apText += `\n\nRE: ${url}`;
+		apText += `\n\nRE: ${quote}`;
 	}
 
 	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
