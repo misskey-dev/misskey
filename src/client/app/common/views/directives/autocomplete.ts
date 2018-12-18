@@ -25,6 +25,9 @@ class Autocomplete {
 	private opts: {
 		model: string;
 	};
+	private timeoutms: number;
+	private timer: any;
+	private opening: boolean;
 
 	private get text(): string {
 		return this.vm[this.opts.model];
@@ -48,6 +51,9 @@ class Autocomplete {
 		this.textarea = textarea;
 		this.vm = vm;
 		this.opts = opts;
+		this.timeoutms = opts.timeoutms || 7000;
+		this.timer = null;
+		this.opening = false;
 	}
 
 	/**
@@ -128,6 +134,8 @@ class Autocomplete {
 		if (type != this.currentType) {
 			this.close();
 		}
+		if (this.opening) return void(0);
+		else this.opening = true;
 		this.currentType = type;
 
 		//#region サジェストを表示すべき位置を計算
@@ -143,9 +151,11 @@ class Autocomplete {
 			this.suggestion.x = x;
 			this.suggestion.y = y;
 			this.suggestion.q = q;
+
+			this.setCloserTimer();
+			this.opening = false;
 		} else {
 			const MkAutocomplete = await import('../components/autocomplete.vue').then(m => m.default);
-
 			// サジェスト要素作成
 			this.suggestion = new MkAutocomplete({
 				parent: this.vm,
@@ -159,9 +169,12 @@ class Autocomplete {
 					y
 				}
 			}).$mount();
-
+	
 			// 要素追加
 			document.body.appendChild(this.suggestion.$el);
+
+			this.setCloserTimer();
+			this.opening = false;
 		}
 	}
 
@@ -175,6 +188,18 @@ class Autocomplete {
 		this.suggestion = null;
 
 		this.textarea.focus();
+
+		this.deleteCloserTimer();
+	}
+
+	private deleteCloserTimer() {
+		if (this.timer) clearTimeout(this.timer);
+		this.timer = null;
+	}
+
+	private setCloserTimer() {
+		this.deleteCloserTimer()
+		this.timer = setTimeout(this.close, this.timeoutms)
 	}
 
 	/**
