@@ -1068,6 +1068,8 @@ admin/views/drive.vue:
     remote: "リモート"
   delete: "削除"
   deleted: "削除しました"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
 admin/views/users.vue:
   operation: "操作"
   username-or-userid: "用户名或用户ID"
