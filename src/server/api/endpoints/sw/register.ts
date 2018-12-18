@@ -34,7 +34,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	if (exist != null) {
 		return res({
 			state: 'already-subscribed',
-			key: config.sw.public_key
+			key: config.sw.publicKey
 		});
 	}
 
@@ -47,6 +47,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	res({
 		state: 'subscribed',
-		key: config.sw.public_key
+		key: config.sw.publicKey
 	});
 }));
