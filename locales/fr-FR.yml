@@ -206,7 +206,7 @@ common/views/components/games/reversi/reversi.index.vue:
   rule: "Comment jouer ?"
   rule-desc: "Reversi est un jeu qui se joue sur un tablier et dans lequel les joueurs placent des pions sur ce dernier, à tour de rôle avec l'adversaire. Le but du jeu est d'avoir plus de pions de sa couleur que l'adversaire à la fin de la partie, celle-ci s'achevant lorsque aucun des deux joueurs ne peut plus jouer de coup légal, généralement lorsque les 64 cases sont occupées."
   mode-invite: "Inviter"
-  mode-invite-desc: "Inviter un·e joueur·se."
+  mode-invite-desc: "Inviter un joueur."
   invitations: "Vous avez reçu une invitation !"
   my-games: "Mes jeux"
   all-games: "Tous les jeux"
@@ -1068,6 +1068,8 @@ admin/views/drive.vue:
     remote: "Distant"
   delete: "Supprimer"
   deleted: "Supprimé"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
 admin/views/users.vue:
   operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
