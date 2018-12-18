@@ -68,6 +68,7 @@ export default Vue.extend({
 		},
 		anime(reaction: string) {
 			if (this.$store.state.device.reduceMotion) return;
+			if (document.hidden) return;
 
 			this.$nextTick(() => {
 				const rect = this.$refs[reaction].$el.getBoundingClientRect();
