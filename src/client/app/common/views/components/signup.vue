@@ -146,8 +146,9 @@ export default Vue.extend({
 				this.$root.api('signin', {
 					username: this.username,
 					password: this.password
-				}, true).then(() => {
-					location.href = '/';
+				}, true).then(res => {
+					localStorage.setItem('i', res.i);
+					location.reload();
 				});
 			}).catch(() => {
 				alert(this.$t('some-error'));
