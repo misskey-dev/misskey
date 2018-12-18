@@ -43,17 +43,11 @@ export type Source = {
 	 * Service Worker
 	 */
 	sw?: {
-		public_key: string;
-		private_key: string;
+		publicKey: string;
+		privateKey: string;
 	};
 
 	clusterLimit?: number;
-
-	user_recommendation?: {
-		external: boolean;
-		engine: string;
-		timeout: number;
-	};
 };
 
 /**
