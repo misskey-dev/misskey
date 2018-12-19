@@ -301,6 +301,7 @@ export default Vue.extend({
 						display inline
 						margin 0 0 0 8px
 						color #999
+						position absolute
 
 					&.reacted, &.reacted:hover
 						color var(--noteActionsReactionHover)
