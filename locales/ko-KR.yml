@@ -1036,6 +1036,12 @@ admin/views/instance.vue:
   smtp-port: "SMTP 포트"
   smtp-user: "SMTP 사용자"
   smtp-pass: "SMTP 비밀번호"
+  serviceworker-config: "ServiceWorker"
+  enable-serviceworker: "ServiceWorkerを有効にする"
+  serviceworker-info: "プッシュ通知を行うには有効する必要があります。"
+  vapid-publickey: "VAPID公開鍵"
+  vapid-privatekey: "VAPID秘密鍵"
+  vapid-info: "ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります。シェルで次のようにします:"
 admin/views/charts.vue:
   title: "차트"
   per-day: "1일마다"
