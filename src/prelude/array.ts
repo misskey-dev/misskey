@@ -11,8 +11,8 @@ export function countIf<T>(f: Predicate<T>, xs: T[]): number {
 /**
  * Count the number of elements that is equal to the element
  */
-export function count<T>(x: T, xs: T[]): number {
-	return countIf(y => x === y, xs);
+export function count<T>(a: T, xs: T[]): number {
+	return countIf(x => x === a, xs);
 }
 
 /**
@@ -33,8 +33,8 @@ export function intersperse<T>(sep: T, xs: T[]): T[] {
 /**
  * Returns the array of elements that is not equal to the element
  */
-export function erase<T>(x: T, xs: T[]): T[] {
-	return xs.filter(y => x !== y);
+export function erase<T>(a: T, xs: T[]): T[] {
+	return xs.filter(x => x !== a);
 }
 
 /**
