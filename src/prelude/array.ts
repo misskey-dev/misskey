@@ -1,9 +1,10 @@
-import { EndoRelation } from "./relation";
+import { EndoRelation, Predicate } from './relation';
 
 /**
  * Count the number of elements that satisfy the predicate
  */
-export function countIf<T>(f: (x: T) => boolean, xs: T[]): number {
+
+export function countIf<T>(f: Predicate<T>, xs: T[]): number {
 	return xs.filter(f).length;
 }
 
@@ -97,7 +98,7 @@ export function lessThan(xs: number[], ys: number[]): boolean {
 /**
  * Returns the longest prefix of elements that satisfy the predicate
  */
-export function takeWhile<T>(f: (x: T) => boolean, xs: T[]): T[] {
+export function takeWhile<T>(f: Predicate<T>, xs: T[]): T[] {
 	const ys = [];
 	for (const x of xs) {
 		if (f(x)) {
