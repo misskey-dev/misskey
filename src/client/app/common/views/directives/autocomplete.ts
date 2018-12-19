@@ -25,6 +25,7 @@ class Autocomplete {
 	private opts: {
 		model: string;
 	};
+	private opening: boolean;
 
 	private get text(): string {
 		return this.vm[this.opts.model];
@@ -48,6 +49,7 @@ class Autocomplete {
 		this.textarea = textarea;
 		this.vm = vm;
 		this.opts = opts;
+		this.opening = false;
 	}
 
 	/**
@@ -128,6 +130,8 @@ class Autocomplete {
 		if (type != this.currentType) {
 			this.close();
 		}
+		if (this.opening) return;
+		this.opening = true;
 		this.currentType = type;
 
 		//#region サジェストを表示すべき位置を計算
@@ -143,6 +147,8 @@ class Autocomplete {
 			this.suggestion.x = x;
 			this.suggestion.y = y;
 			this.suggestion.q = q;
+
+			this.opening = false;
 		} else {
 			const MkAutocomplete = await import('../components/autocomplete.vue').then(m => m.default);
 
@@ -162,6 +168,8 @@ class Autocomplete {
 
 			// 要素追加
 			document.body.appendChild(this.suggestion.$el);
+
+			this.opening = false;
 		}
 	}
 
