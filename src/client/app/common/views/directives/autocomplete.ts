@@ -131,7 +131,7 @@ class Autocomplete {
 			this.close();
 		}
 		if (this.opening) return;
-		else this.opening = true;
+		this.opening = true;
 		this.currentType = type;
 
 		//#region サジェストを表示すべき位置を計算
