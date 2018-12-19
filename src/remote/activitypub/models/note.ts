@@ -181,6 +181,20 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 			});
 
 			if (exists) {
+				if ((tag.updated != null && exists.updatedAt == null)
+					|| (tag.id != null && exists.uri == null)
+					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)) {
+						return await Emoji.findOneAndUpdate({
+							host,
+							name,
+						}, {
+							$set: {
+								uri: tag.id,
+								url: tag.icon.url,
+								updatedAt: new Date(tag.updated),
+							}
+						});
+				}
 				return exists;
 			}
 
@@ -189,8 +203,10 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 			return await Emoji.insert({
 				host,
 				name,
+				uri: tag.id,
 				url: tag.icon.url,
-				aliases: [],
+				updatedAt: tag.updated ? new Date(tag.updated) : undefined,
+				aliases: []
 			});
 		})
 	);
