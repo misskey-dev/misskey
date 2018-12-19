@@ -22,8 +22,8 @@ export function erase<T>(x: T, xs: T[]): T[] {
  * Finds the array of all elements in the first array not contained in the second array.
  * The order of result values are determined by the first array.
  */
-export function difference<T>(includes: T[], excludes: T[]): T[] {
-	return includes.filter(x => !excludes.includes(x));
+export function difference<T>(xs: T[], ys: T[]): T[] {
+	return xs.filter(x => !ys.includes(x));
 }
 
 export function unique<T>(xs: T[]): T[] {
