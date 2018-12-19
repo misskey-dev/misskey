@@ -29,6 +29,7 @@ import insertNoteUnread from './unread';
 import registerInstance from '../register-instance';
 import Instance from '../../models/instance';
 import { Node } from '../../mfm/parser';
+import extractMentions from '../../misc/extract-mentions';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -665,19 +666,7 @@ function incNotesCount(user: IUser) {
 async function extractMentionedUsers(user: IUser, tokens: ReturnType<typeof parse>): Promise<IUser[]> {
 	if (tokens == null) return [];
 
-	const mentions: any[] = [];
-
-	const extract = (tokens: Node[]) => {
-		for (const x of tokens.filter(x => x.name === 'mention')) {
-			mentions.push(x.props);
-		}
-		for (const x of tokens.filter(x => x.children)) {
-			extract(x.children);
-		}
-	};
-
-	// Extract hashtags
-	extract(tokens);
+	const mentions = extractMentions(tokens);
 
 	let mentionedUsers =
 		erase(null, await Promise.all(mentions.map(async m => {

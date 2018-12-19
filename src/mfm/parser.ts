@@ -11,6 +11,15 @@ export type Node = {
 	props?: any;
 };
 
+export interface IMentionNode extends Node {
+	props: {
+		canonical: string;
+		username: string;
+		host: string;
+		acct: string;
+	};
+}
+
 function _makeNode(name: string, children?: Node[], props?: any): Node {
 	return children ? {
 		name,

@@ -74,6 +74,7 @@ import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
+import extractMentions from '../../../../../misc/extract-mentions';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/post-form.vue'),
@@ -184,8 +185,7 @@ export default Vue.extend({
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
-			// TODO: 新しいMFMパーサに対応
-			for (const x of ast.filter(t => t.type == 'mention')) {
+			for (const x of extractMentions(ast)) {
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
