@@ -1,4 +1,4 @@
-import { capitalize, toUpperCase } from "../prelude/string";
+import { capitalize, toUpperCase } from '../prelude/string';
 
 function escape(text: string) {
 	return text

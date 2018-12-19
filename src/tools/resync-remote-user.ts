@@ -1,4 +1,4 @@
-import parseAcct from "../misc/acct/parse";
+import parseAcct from '../misc/acct/parse';
 import resolveUser from '../remote/resolve-user';
 import * as debug from 'debug';
 

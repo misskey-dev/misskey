@@ -15,7 +15,7 @@ export default function(sec) {
 	const t
 		= tod < 60 ? `${Math.floor(tod)} sec`
 		: tod < 3600 ? `${Math.floor(tod / 60)} min`
-		: `${Math.floor(tod / 60 / 60)}:${Math.floor((tod / 60) % 60).toString().padStart(2, "0")}`;
+		: `${Math.floor(tod / 60 / 60)}:${Math.floor((tod / 60) % 60).toString().padStart(2, '0')}`;
 
 	let str = '';
 	if (d) str += `${d}, `;
