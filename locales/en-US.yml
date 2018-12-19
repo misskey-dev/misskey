@@ -1039,9 +1039,9 @@ admin/views/instance.vue:
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "ServiceWorkerを有効にする"
   serviceworker-info: "プッシュ通知を行うには有効する必要があります。"
-  vapid-publickey: "VAPID公開鍵"
-  vapid-privatekey: "VAPID秘密鍵"
-  vapid-info: "ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります。シェルで次のようにします:"
+  vapid-publickey: "VAPID public key"
+  vapid-privatekey: "VAPID private key"
+  vapid-info: "If you want to enable ServiceWorker, you need to generate VAPID keys. Unless you have set your global node_modules location elsewhere, you need to run this as root:"
 admin/views/charts.vue:
   title: "Chart"
   per-day: "per Day"
