@@ -51,7 +51,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	// Push the user
+	// Pull the user
 	await UserList.update({ _id: userList._id }, {
 		$pull: {
 			userIds: user._id
