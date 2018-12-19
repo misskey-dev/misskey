@@ -14,7 +14,7 @@ const summarize = (note: any): string => {
 	let summary = '';
 
 	// 本文
-	if (note.cw && note.cw != '') {
+	if (note.cw != null) {
 		summary += note.cw;
 	} else {
 		summary += note.text ? note.text : '';
