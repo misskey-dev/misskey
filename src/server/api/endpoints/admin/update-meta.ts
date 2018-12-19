@@ -285,6 +285,27 @@ export const meta = {
 				'ja-JP': 'SMTPサーバのパスワード'
 			}
 		},
+
+		enableServiceWorker: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'ServiceWorkerを有効にするか否か'
+			}
+		},
+
+		swPublicKey: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'ServiceWorkerのVAPIDキーペアの公開鍵'
+			}
+		},
+
+		swPrivateKey: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'ServiceWorkerのVAPIDキーペアの秘密鍵'
+			}
+		},
 	}
 };
 
@@ -445,6 +466,18 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.errorImageUrl !== undefined) {
 		set.errorImageUrl = ps.errorImageUrl;
+	}
+
+	if (ps.enableServiceWorker !== undefined) {
+		set.enableServiceWorker = ps.enableServiceWorker;
+	}
+
+	if (ps.swPublicKey !== undefined) {
+		set.swPublicKey = ps.swPublicKey;
+	}
+
+	if (ps.swPrivateKey !== undefined) {
+		set.swPrivateKey = ps.swPrivateKey;
 	}
 
 	await Meta.update({}, {

@@ -58,6 +58,15 @@
 			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<span slot="desc">{{ $t('smtp-secure-info') }}</span></ui-switch>
 		</section>
 		<section>
+			<header><fa :icon="faBolt"/> {{ $t('serviceworker-config') }}</header>
+			<ui-switch v-model="enableServiceWorker">{{ $t('enable-serviceworker') }}<span slot="desc">{{ $t('serviceworker-info') }}</span></ui-switch>
+			<ui-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></ui-info>
+			<ui-horizon-group inputs class="fit-bottom">
+				<ui-input v-model="swPublicKey" :disabled="!enableServiceWorker"><i slot="icon"><fa icon="key"/></i>{{ $t('vapid-publickey') }}</ui-input>
+				<ui-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><i slot="icon"><fa icon="key"/></i>{{ $t('vapid-privatekey') }}</ui-input>
+			</ui-horizon-group>
+		</section>
+		<section>
 			<header>summaly Proxy</header>
 			<ui-input v-model="summalyProxy">URL</ui-input>
 		</section>
@@ -126,7 +135,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import { url, host } from '../../config';
 import { toUnicode } from 'punycode';
-import { faHeadset, faShieldAlt, faGhost, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faShieldAlt, faGhost, faUserPlus, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope as farEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -174,7 +183,10 @@ export default Vue.extend({
 			smtpPort: null,
 			smtpUser: null,
 			smtpPass: null,
-			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope
+			enableServiceWorker: false,
+			swPublicKey: null,
+			swPrivateKey: null,
+			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt
 		};
 	},
 
@@ -217,6 +229,9 @@ export default Vue.extend({
 			this.smtpPort = meta.smtpPort;
 			this.smtpUser = meta.smtpUser;
 			this.smtpPass = meta.smtpPass;
+			this.enableServiceWorker = meta.enableServiceWorker;
+			this.swPublicKey = meta.swPublickey;
+			this.swPrivateKey = meta.swPrivateKey;
 		});
 	},
 
@@ -270,7 +285,10 @@ export default Vue.extend({
 				smtpHost: this.smtpHost,
 				smtpPort: parseInt(this.smtpPort, 10),
 				smtpUser: this.smtpUser,
-				smtpPass: this.smtpPass
+				smtpPass: this.smtpPass,
+				enableServiceWorker: this.enableServiceWorker,
+				swPublicKey: this.swPublicKey,
+				swPrivateKey: this.swPrivateKey
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',

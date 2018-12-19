@@ -2,17 +2,26 @@ const push = require('web-push');
 import * as mongo from 'mongodb';
 import Subscription from './models/sw-subscription';
 import config from './config';
+import fetchMeta from './misc/fetch-meta';
+import { IMeta } from './models/meta';
 
-if (config.sw) {
-	// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
-	push.setVapidDetails(
-		config.url,
-		config.sw.publicKey,
-		config.sw.privateKey);
-}
+let meta: IMeta = null;
+
+setInterval(() => {
+	fetchMeta().then(m => {
+		meta = m;
+
+		if (meta.enableServiceWorker) {
+			// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
+			push.setVapidDetails(config.url,
+				meta.swPublicKey,
+				meta.swPrivateKey);
+		}
+	});
+}, 3000);
 
 export default async function(userId: mongo.ObjectID | string, type: string, body?: any) {
-	if (!config.sw) return;
+	if (!meta.enableServiceWorker) return;
 
 	if (typeof userId === 'string') {
 		userId = new mongo.ObjectID(userId);

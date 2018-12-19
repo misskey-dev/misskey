@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import Subscription from '../../../../models/sw-subscription';
-import config from '../../../../config';
 import define from '../../define';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
 	requireCredential: true,
@@ -31,10 +31,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		deletedAt: { $exists: false }
 	});
 
+	const instance = await fetchMeta();
+
 	if (exist != null) {
 		return res({
 			state: 'already-subscribed',
-			key: config.sw.publicKey
+			key: instance.swPublicKey
 		});
 	}
 
@@ -47,6 +49,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	res({
 		state: 'subscribed',
-		key: config.sw.publicKey
+		key: instance.swPublicKey
 	});
 }));

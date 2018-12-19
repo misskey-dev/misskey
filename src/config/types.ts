@@ -39,14 +39,6 @@ export type Source = {
 
 	accesslog?: string;
 
-	/**
-	 * Service Worker
-	 */
-	sw?: {
-		publicKey: string;
-		privateKey: string;
-	};
-
 	clusterLimit?: number;
 };
 
