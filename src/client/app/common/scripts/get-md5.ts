@@ -3,8 +3,8 @@
 
 export default (data: ArrayBuffer) => {
 	//const buf = new Buffer(data);
-	//const hash = crypto.createHash("md5");
+	//const hash = crypto.createHash('md5');
 	//hash.update(buf);
-	//return hash.digest("hex");
+	//return hash.digest('hex');
 	return '';
 };
