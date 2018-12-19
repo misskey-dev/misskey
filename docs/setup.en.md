@@ -47,16 +47,6 @@ As root:
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Install misskey dependencies.
 
-*(optional)* Generate VAPID keys
-----------------------------------------------------------------
-If you want to enable ServiceWorker, you need to generate VAPID keys:
-Unless you have set your global node_modules location elsewhere, you need to run this as root.
-
-``` shell
-npm install web-push -g
-web-push generate-vapid-keys
-```
-
 *5.* Configure Misskey
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
