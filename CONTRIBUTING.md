@@ -25,3 +25,13 @@ Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 ## Continuous integration
 Misskey uses CircleCI for automated test.
 Configuration files are located in `/.circleci`.
+
+## Glossary
+### AP
+Stands for ***A**ctivity**P**ub*.
+
+### MFM
+Stands for ***M**isskey **F**lavored **M**arkdown*.
+
+### Mk
+Stands for ***M**iss**k**ey*.
