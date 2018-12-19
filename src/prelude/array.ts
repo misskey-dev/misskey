@@ -1,3 +1,5 @@
+import { EndoRelation } from "./relation";
+
 /**
  * Count the number of elements that satisfy the predicate
  */
@@ -61,7 +63,7 @@ export function maximum(xs: number[]): number {
  * Splits an array based on the equivalence relation.
  * The concatenation of the result is equal to the argument.
  */
-export function groupBy<T>(f: (x: T, y: T) => boolean, xs: T[]): T[][] {
+export function groupBy<T>(f: EndoRelation<T>, xs: T[]): T[][] {
 	const groups = [] as T[][];
 	for (const x of xs) {
 		if (groups.length !== 0 && f(groups[groups.length - 1][0], x)) {
