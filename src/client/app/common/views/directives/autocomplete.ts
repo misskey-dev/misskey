@@ -182,8 +182,6 @@ class Autocomplete {
 		this.suggestion = null;
 
 		this.textarea.focus();
-
-		this.deleteCloserTimer();
 	}
 
 	/**
