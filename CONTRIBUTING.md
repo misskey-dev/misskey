@@ -28,10 +28,10 @@ Configuration files are located in `/.circleci`.
 
 ## Glossary
 ### AP
-Stands for ***A**ctivity**P**ub*.
+Stands for _**A**ctivity**P**ub_.
 
 ### MFM
-Stands for ***M**isskey **F**lavored **M**arkdown*.
+Stands for _**M**isskey **F**lavored **M**arkdown_.
 
 ### Mk
-Stands for ***M**iss**k**ey*.
+Stands for _**M**iss**k**ey_.
