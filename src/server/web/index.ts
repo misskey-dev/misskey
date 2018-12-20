@@ -10,7 +10,7 @@ import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
 
 import docs from './docs';
-//import feed from './feed';
+import packFeed from './feed';
 import User from '../../models/user';
 import parseAcct from '../../misc/acct/parse';
 import config from '../../config';
@@ -83,21 +83,51 @@ router.use('/docs', docs.routes());
 // URL preview endpoint
 router.get('/url', require('./url-preview'));
 
-/*// Atom
-router.get('/@:user.atom', async ctx => {
-	const { username, host } = parseAcct(ctx.params.user);
+const getFeed = async (acct: string) => {
+	const { username, host } = parseAcct(acct);
 	const user = await User.findOne({
 		usernameLower: username.toLowerCase(),
 		host
 	});
 
-	if (user != null) {
-		const atom = await feed(user);
-		ctx.body = atom;
+	return user && await packFeed(user);
+};
+
+// Atom
+router.get('/@:user.atom', async ctx => {
+	const feed = await getFeed(ctx.params.user);
+
+	if (feed) {
+		ctx.set('Content-Type', 'application/atom+xml');
+		ctx.body = feed.atom1();
 	} else {
 		ctx.status = 404;
 	}
-});*/
+});
+
+// RSS
+router.get('/@:user.rss', async ctx => {
+	const feed = await getFeed(ctx.params.user);
+
+	if (feed) {
+		ctx.set('Content-Type', 'application/rss+xml');
+		ctx.body = feed.rss2();
+	} else {
+		ctx.status = 404;
+	}
+});
+
+// JSON
+router.get('/@:user.json', async ctx => {
+	const feed = await getFeed(ctx.params.user);
+
+	if (feed) {
+		ctx.set('Content-Type', 'application/json');
+		ctx.body = feed.json1();
+	} else {
+		ctx.status = 404;
+	}
+});
 
 //#region for crawlers
 // User

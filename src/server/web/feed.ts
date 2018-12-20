@@ -1,44 +1,50 @@
-import { IUser } from "../../models/user";
-import Note from "../../models/note";
-
-const Feed = require('feed');
+import { Feed } from 'feed';
+import config from '../../config';
+import Note from '../../models/note';
+import { IUser } from '../../models/user';
+import { getOriginalUrl } from '../../misc/get-drive-file-url';
 
 export default async function(user: IUser) {
-	let feed = new Feed({
-		title: user.name || user.username,
-		description: 'This is my personal feed!',
-		id: 'http://example.com/',
-		link: 'http://example.com/',
-		image: 'http://example.com/image.png',
-		generator: 'Misskey',
-		feedLinks: {
-			json: 'https://example.com/json',
-			atom: 'https://example.com/atom',
-		},
-		author: {
-			name: user.name || user.username,
-			link: 'https://example.com/johndoe'
-		}
-	});
+	const author: Author = {
+		link: `${config.scheme}://${config.host}/@${user.username}`,
+		name: user.name || user.username
+	};
 
 	const notes = await Note.find({
 		userId: user._id,
-		visibility: {
-			$or: ['public', 'home']
-		}
+		renoteId: null,
+		$or: [
+			{ visibility: 'public' },
+			{ visibility: 'home' }
+		]
 	});
 
-	notes.forEach(note => {
+	const feed = new Feed({
+		id: author.link,
+		title: `${author.name} (@${user.username}@${config.host})`,
+		updated: notes[0].createdAt,
+		generator: 'Misskey',
+		description: `${user.notesCount} Notes, ${user.followingCount} Following, ${user.followersCount} Followers${user.description ? ` · ${user.description}` : ''}`,
+		link: author.link,
+		image: user.avatarUrl,
+		feedLinks: {
+			json: `${author.link}.json`,
+			atom: `${author.link}.atom`,
+		},
+		author
+	} as FeedOptions);
+
+	for (const note of notes) {
+		const file = note._files && note._files.find(file => file.contentType.startsWith('image/'));
+
 		feed.addItem({
-			title: note.title,
-			id: note.url,
-			link: note.url,
-			description: note.description,
-			content: note.content,
+			title: `New note by ${author.name}`,
+			link: `${config.scheme}://${config.host}/notes/${note._id}`,
 			date: note.createdAt,
-			image: note.image
+			description: note.text,
+			image: file && getOriginalUrl(file)
 		});
-	});
+	}
 
-	return feed.atom1();
+	return feed;
 }
