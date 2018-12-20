@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-posts-monitor">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header">%fa:chart-line%%i18n:@title%</template>
-		<button slot="func" @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
+		<template slot="header"><fa icon="chart-line"/>{{ $t('title') }}</template>
+		<button slot="func" @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button>
 
-		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }" :data-darkmode="$store.state.device.darkmode">
+		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }">
 			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" v-show="props.view != 2">
 				<defs>
 					<linearGradient :id="localGradientId" x1="0" x2="0" y1="1" y2="0">
@@ -70,19 +70,21 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 import * as uuid from 'uuid';
 
 export default define({
-	name: 'server',
+	name: 'posts-monitor',
 	props: () => ({
 		design: 0,
 		view: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/posts-monitor.vue'),
+
 	data() {
 		return {
 			connection: null,
-			connectionId: null,
 			viewBoxY: 30,
 			stats: [],
 			fediGradientId: uuid(),
@@ -110,20 +112,16 @@ export default define({
 		}
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.notesStatsStream.getConnection();
-		this.connectionId = (this as any).os.streams.notesStatsStream.use();
+		this.connection = this.$root.stream.useSharedConnection('notesStats');
 
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
-		this.connection.send({
-			type: 'requestLog',
-			id: Math.random().toString()
+		this.connection.send('requestLog',{
+			id: Math.random().toString().substr(2, 8)
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('stats', this.onStats);
-		this.connection.off('statsLog', this.onStatsLog);
-		(this as any).os.streams.notesStatsStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		toggle() {
@@ -166,14 +164,14 @@ export default define({
 			this.draw();
 		},
 		onStatsLog(statsLog) {
-			statsLog.forEach(stats => this.onStats(stats));
+			for (const stats of statsLog) this.onStats(stats);
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.qpdmibaztplkylerhdbllwcokyrfxeyj
 	&.dual
 		> svg
 			width 50%
@@ -192,7 +190,7 @@ root(isDark)
 
 		> text
 			font-size 5px
-			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
+			fill var(--chartCaption)
 
 			> tspan
 				opacity 0.5
@@ -201,11 +199,5 @@ root(isDark)
 		content ""
 		display block
 		clear both
-
-.qpdmibaztplkylerhdbllwcokyrfxeyj[data-darkmode]
-	root(true)
-
-.qpdmibaztplkylerhdbllwcokyrfxeyj:not([data-darkmode])
-	root(false)
 
 </style>

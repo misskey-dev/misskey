@@ -1,28 +1,41 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
+import define from '../../define';
 
-/**
- * Unmute a user
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		'ja-JP': 'ユーザーのミュートを解除します。',
+		'en-US': 'Unmute a user'
+	},
+
+	requireCredential: true,
+
+	kind: 'account/write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		},
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const muter = user;
 
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
 	// Check if the mutee is yourself
-	if (user._id.equals(userId)) {
+	if (user._id.equals(ps.userId)) {
 		return rej('mutee is yourself');
 	}
 
 	// Get mutee
 	const mutee = await User.findOne({
-		_id: userId
+		_id: ps.userId
 	}, {
 		fields: {
 			data: false,
@@ -49,6 +62,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		_id: exist._id
 	});
 
-	// Send response
 	res();
-});
+}));

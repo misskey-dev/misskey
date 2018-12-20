@@ -1,27 +1,30 @@
 <template>
 <div class="mk-friends-maker">
-	<p class="title">%i18n:@title%</p>
+	<p class="title">{{ $t('title') }}</p>
 	<div class="users" v-if="!fetching && users.length > 0">
 		<div class="user" v-for="user in users" :key="user.id">
 			<mk-avatar class="avatar" :user="user" target="_blank"/>
 			<div class="body">
-				<router-link class="name" :to="user | userPage" v-user-preview="user.id">{{ user | userName }}</router-link>
+				<router-link class="name" :to="user | userPage" v-user-preview="user.id">
+					<mk-user-name :user="user"/>
+				</router-link>
 				<p class="username">@{{ user | acct }}</p>
 			</div>
-			<mk-follow-button :user="user"/>
 		</div>
 	</div>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@empty%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@fetching%<mk-ellipsis/></p>
-	<a class="refresh" @click="refresh">%i18n:@refresh%</a>
-	<button class="close" @click="$destroy()" title="%i18n:@close%">%fa:times%</button>
+	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('empty') }}</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('fetching') }}<mk-ellipsis/></p>
+	<a class="refresh" @click="refresh">{{ $t('refresh') }}</a>
+	<button class="close" @click="destroyDom()" :title="$t('title')"><fa icon="times"/></button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/friends-maker.vue'),
 	data() {
 		return {
 			users: [],
@@ -38,7 +41,7 @@ export default Vue.extend({
 			this.fetching = true;
 			this.users = [];
 
-			(this as any).api('users/recommendation', {
+			this.$root.api('users/recommendation', {
 				limit: this.limit,
 				offset: this.limit * this.page
 			}).then(users => {
@@ -125,7 +128,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	> .refresh
@@ -156,7 +159,7 @@ export default Vue.extend({
 		&:active
 			color #222
 
-		> [data-fa]
+		> [data-icon]
 			padding 14px
 
 </style>

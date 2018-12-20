@@ -91,9 +91,8 @@ export default Vue.extend({
 	mounted() {
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
-		this.connection.send({
-			type: 'requestLog',
-			id: Math.random().toString()
+		this.connection.send('requestLog', {
+			id: Math.random().toString().substr(2, 8)
 		});
 	},
 	beforeDestroy() {
@@ -102,7 +101,6 @@ export default Vue.extend({
 	},
 	methods: {
 		onStats(stats) {
-			stats.mem.used = stats.mem.total - stats.mem.free;
 			this.stats.push(stats);
 			if (this.stats.length > 50) this.stats.shift();
 
@@ -111,8 +109,8 @@ export default Vue.extend({
 			this.cpuPolylinePoints = cpuPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 			this.memPolylinePoints = memPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
-			this.cpuPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.cpuPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
-			this.memPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.memPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
+			this.cpuPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${this.viewBoxY} ${this.cpuPolylinePoints} ${this.viewBoxX},${this.viewBoxY}`;
+			this.memPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${this.viewBoxY} ${this.memPolylinePoints} ${this.viewBoxX},${this.viewBoxY}`;
 
 			this.cpuHeadX = cpuPolylinePoints[cpuPolylinePoints.length - 1][0];
 			this.cpuHeadY = cpuPolylinePoints[cpuPolylinePoints.length - 1][1];
@@ -123,14 +121,14 @@ export default Vue.extend({
 			this.memP = (stats.mem.used / stats.mem.total * 100).toFixed(0);
 		},
 		onStatsLog(statsLog) {
-			statsLog.forEach(stats => this.onStats(stats));
+			for (const stats of statsLog.reverse()) this.onStats(stats);
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.cpu-memory
 	> svg
 		display block
 		padding 10px
@@ -145,7 +143,7 @@ root(isDark)
 
 		> text
 			font-size 5px
-			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
+			fill var(--chartCaption)
 
 			> tspan
 				opacity 0.5
@@ -154,11 +152,5 @@ root(isDark)
 		content ""
 		display block
 		clear both
-
-.cpu-memory[data-darkmode]
-	root(true)
-
-.cpu-memory:not([data-darkmode])
-	root(false)
 
 </style>

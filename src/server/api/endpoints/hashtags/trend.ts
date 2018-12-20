@@ -1,4 +1,7 @@
 import Note from '../../../../models/note';
+import { erase } from '../../../../prelude/array';
+import define from '../../define';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -12,10 +15,14 @@ const requiredUsers = 3; // 最低何人がそのタグを投稿している必�
 
 const max = 5;
 
-/**
- * Get trends of hashtags
- */
-module.exports = () => new Promise(async (res, rej) => {
+export const meta = {
+	requireCredential: false,
+};
+
+export default define(meta, () => new Promise(async (res, rej) => {
+	const instance = await fetchMeta();
+	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
+
 	//#region 1. 直近Aの内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{
 		$match: {
@@ -45,10 +52,13 @@ module.exports = () => new Promise(async (res, rej) => {
 		return res([]);
 	}
 
-	const tags = [];
+	const tags: Array<{
+		name: string;
+		count: number;
+	}> = [];
 
 	// カウント
-	data.map(x => x._id).forEach(x => {
+	for (const x of data.map(x => x._id).filter(x => !hidedTags.includes(x.tag))) {
 		const i = tags.findIndex(tag => tag.name == x.tag);
 		if (i != -1) {
 			tags[i].count++;
@@ -58,7 +68,7 @@ module.exports = () => new Promise(async (res, rej) => {
 				count: 1
 			});
 		}
-	});
+	}
 
 	// 最低要求投稿者数を下回るならカットする
 	const limitedTags = tags.filter(tag => tag.count >= requiredUsers);
@@ -82,8 +92,7 @@ module.exports = () => new Promise(async (res, rej) => {
 	//#endregion
 
 	// タグを人気順に並べ替え
-	let hots = (await Promise.all(hotsPromises))
-		.filter(x => x != null)
+	let hots = erase(null, await Promise.all(hotsPromises))
 		.sort((a, b) => b.count - a.count)
 		.map(tag => tag.name)
 		.slice(0, max);
@@ -133,4 +142,4 @@ module.exports = () => new Promise(async (res, rej) => {
 	}));
 
 	res(stats);
-});
+}));

@@ -1,21 +1,29 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
-import recaptcha = require('recaptcha-promise');
 import User, { IUser, validateUsername, validatePassword, pack } from '../../../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';
-
-recaptcha.init({
-	secret_key: config.recaptcha.secret_key
-});
+import RegistrationTicket from '../../../models/registration-tickets';
+import usersChart from '../../../chart/users';
+import fetchMeta from '../../../misc/fetch-meta';
 
 export default async (ctx: Koa.Context) => {
+	const body = ctx.request.body as any;
+
+	const instance = await fetchMeta();
+
+	const recaptcha = require('recaptcha-promise');
+
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
-	if (process.env.NODE_ENV !== 'test') {
-		const success = await recaptcha(ctx.request.body['g-recaptcha-response']);
+	if (process.env.NODE_ENV !== 'test' && instance.enableRecaptcha) {
+		recaptcha.init({
+			secret_key: instance.recaptchaSecretKey
+		});
+
+		const success = await recaptcha(body['g-recaptcha-response']);
 
 		if (!success) {
 			ctx.throw(400, 'recaptcha-failed');
@@ -23,8 +31,29 @@ export default async (ctx: Koa.Context) => {
 		}
 	}
 
-	const username = ctx.request.body['username'];
-	const password = ctx.request.body['password'];
+	const username = body['username'];
+	const password = body['password'];
+	const invitationCode = body['invitationCode'];
+
+	if (instance && instance.disableRegistration) {
+		if (invitationCode == null || typeof invitationCode != 'string') {
+			ctx.status = 400;
+			return;
+		}
+
+		const ticket = await RegistrationTicket.findOne({
+			code: invitationCode
+		});
+
+		if (ticket == null) {
+			ctx.status = 400;
+			return;
+		}
+
+		RegistrationTicket.remove({
+			_id: ticket._id
+		});
+	}
 
 	// Validate username
 	if (!validateUsername(username)) {
@@ -37,6 +66,8 @@ export default async (ctx: Koa.Context) => {
 		ctx.status = 400;
 		return;
 	}
+
+	const usersCount = await User.count({});
 
 	// Fetch exist user that same username
 	const usernameExist = await User
@@ -70,27 +101,20 @@ export default async (ctx: Koa.Context) => {
 		followingCount: 0,
 		name: null,
 		notesCount: 0,
-		driveCapacity: 1024 * 1024 * 128, // 128MiB
 		username: username,
 		usernameLower: username.toLowerCase(),
 		host: null,
 		keypair: generateKeypair(),
 		token: secret,
-		email: null,
-		links: null,
 		password: hash,
+		isAdmin: config.autoAdmin && usersCount === 0,
 		profile: {
 			bio: null,
 			birthday: null,
-			blood: null,
-			gender: null,
-			handedness: null,
-			height: null,
-			location: null,
-			weight: null
+			location: null
 		},
 		settings: {
-			autoWatch: true
+			autoWatch: false
 		}
 	});
 
@@ -103,6 +127,14 @@ export default async (ctx: Koa.Context) => {
 	}, { upsert: true });
 	//#endregion
 
-	// Response
-	ctx.body = await pack(account);
+	usersChart.update(account, true);
+
+	const res = await pack(account, account, {
+		detail: true,
+		includeSecrets: true
+	});
+
+	res.token = secret;
+
+	ctx.body = res;
 };

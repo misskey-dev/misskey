@@ -34,9 +34,9 @@ export default Vue.extend({
 			this.$el.style.left = x + 'px';
 			this.$el.style.top = y + 'px';
 
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.addEventListener('mousedown', this.onMousedown);
-			});
+			}
 
 			this.$el.style.display = 'block';
 
@@ -59,19 +59,19 @@ export default Vue.extend({
 			this.close();
 		},
 		close() {
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.removeEventListener('mousedown', this.onMousedown);
-			});
+			}
 
 			this.$emit('closed');
-			this.$destroy();
+			this.destroyDom();
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.context-menu
 	$width = 240px
 	$item-height = 38px
 	$padding = 10px
@@ -82,15 +82,9 @@ root(isDark)
 	z-index 4096
 	width $width
 	font-size 0.8em
-	background isDark ? #282c37 : #fff
+	background var(--popupBg)
 	border-radius 0 4px 4px 4px
 	box-shadow 2px 2px 8px rgba(#000, 0.2)
 	opacity 0
-
-.context-menu[data-darkmode]
-	root(true)
-
-.context-menu:not([data-darkmode])
-	root(false)
 
 </style>

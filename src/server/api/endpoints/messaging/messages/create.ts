@@ -1,7 +1,4 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import History from '../../../../../models/messaging-history';
@@ -9,27 +6,51 @@ import User from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
-import publishUserStream from '../../../../../publishers/stream';
-import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../publishers/stream';
-import pushSw from '../../../../../publishers/push-sw';
-import config from '../../../../../config';
+import { publishMainStream } from '../../../../../stream';
+import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
+import pushSw from '../../../../../push-sw';
+import define from '../../../define';
 
-/**
- * Create a message
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);
-	if (recipientIdErr) return rej('invalid userId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定したユーザーへMessagingのメッセージを送信します。',
+		'en-US': 'Create a message of messaging.'
+	},
 
+	requireCredential: true,
+
+	kind: 'messaging-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		},
+
+		text: {
+			validator: $.str.optional.pipe(isValidText)
+		},
+
+		fileId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Myself
-	if (recipientId.equals(user._id)) {
+	if (ps.userId.equals(user._id)) {
 		return rej('cannot send message to myself');
 	}
 
 	// Fetch recipient
 	const recipient = await User.findOne({
-		_id: recipientId
+		_id: ps.userId
 	}, {
 		fields: {
 			_id: true
@@ -40,18 +61,10 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	// Get 'text' parameter
-	const [text, textErr] = $.str.optional().pipe(isValidText).get(params.text);
-	if (textErr) return rej('invalid text');
-
-	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $.type(ID).optional().get(params.fileId);
-	if (fileIdErr) return rej('invalid fileId param');
-
 	let file = null;
-	if (fileId !== undefined) {
+	if (ps.fileId != null) {
 		file = await DriveFile.findOne({
-			_id: fileId,
+			_id: ps.fileId,
 			'metadata.userId': user._id
 		});
 
@@ -61,7 +74,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
-	if (text === undefined && file === null) {
+	if (ps.text == null && file == null) {
 		return rej('text or file is required');
 	}
 
@@ -70,7 +83,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		createdAt: new Date(),
 		fileId: file ? file._id : undefined,
 		recipientId: recipient._id,
-		text: text ? text : undefined,
+		text: ps.text ? ps.text.trim() : undefined,
 		userId: user._id,
 		isRead: false
 	});
@@ -84,12 +97,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// 自分のストリーム
 	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
 	publishMessagingIndexStream(message.userId, 'message', messageObj);
-	publishUserStream(message.userId, 'messaging_message', messageObj);
+	publishMainStream(message.userId, 'messagingMessage', messageObj);
 
 	// 相手のストリーム
 	publishMessagingStream(message.recipientId, message.userId, 'message', messageObj);
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
-	publishUserStream(message.recipientId, 'messaging_message', messageObj);
+	publishMainStream(message.recipientId, 'messagingMessage', messageObj);
 
 	// Update flag
 	User.update({ _id: recipient._id }, {
@@ -98,7 +111,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		}
 	});
 
-	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
+	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { isRead: true });
 		if (!freshMessage.isRead) {
@@ -113,24 +126,10 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			}
 			//#endregion
 
-			publishUserStream(message.recipientId, 'unread_messaging_message', messageObj);
-			pushSw(message.recipientId, 'unread_messaging_message', messageObj);
+			publishMainStream(message.recipientId, 'unreadMessagingMessage', messageObj);
+			pushSw(message.recipientId, 'unreadMessagingMessage', messageObj);
 		}
-	}, 3000);
-
-	// Register to search database
-	if (message.text && config.elasticsearch.enable) {
-		const es = require('../../../db/elasticsearch');
-
-		es.index({
-			index: 'misskey',
-			type: 'messaging_message',
-			id: message._id.toString(),
-			body: {
-				text: message.text
-			}
-		});
-	}
+	}, 2000);
 
 	// 履歴作成(自分)
 	History.update({
@@ -157,4 +156,4 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}, {
 		upsert: true
 	});
-});
+}));

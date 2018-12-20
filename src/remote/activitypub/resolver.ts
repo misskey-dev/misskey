@@ -1,29 +1,30 @@
 import * as request from 'request-promise-native';
 import * as debug from 'debug';
 import { IObject } from './type';
-//import config from '../../config';
+import config from '../../config';
 
 const log = debug('misskey:activitypub:resolver');
 
 export default class Resolver {
 	private history: Set<string>;
+	private timeout = 10 * 1000;
 
 	constructor() {
 		this.history = new Set();
 	}
 
-	public async resolveCollection(value) {
+	public async resolveCollection(value: any) {
 		const collection = typeof value === 'string'
 			? await this.resolve(value)
 			: value;
 
 		switch (collection.type) {
 		case 'Collection':
-			collection.objects = collection.object.items;
+			collection.objects = collection.items;
 			break;
 
 		case 'OrderedCollection':
-			collection.objects = collection.object.orderedItems;
+			collection.objects = collection.orderedItems;
 			break;
 
 		default:
@@ -33,7 +34,7 @@ export default class Resolver {
 		return collection;
 	}
 
-	public async resolve(value): Promise<IObject> {
+	public async resolve(value: any): Promise<IObject> {
 		if (value == null) {
 			throw new Error('resolvee is null (or undefined)');
 		}
@@ -50,10 +51,15 @@ export default class Resolver {
 
 		const object = await request({
 			url: value,
+			proxy: config.proxy,
+			timeout: this.timeout,
 			headers: {
+				'User-Agent': config.user_agent,
 				Accept: 'application/activity+json, application/ld+json'
 			},
 			json: true
+		}).catch(e => {
+			throw new Error(`request error: ${e.message}`);
 		});
 
 		if (object === null || (

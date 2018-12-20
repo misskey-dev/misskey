@@ -1,13 +1,21 @@
 import UserList, { pack } from '../../../../../models/user-list';
+import define from '../../../define';
 
-/**
- * Add a user to a user list
- */
-module.exports = async (params, me) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		'ja-JP': '自分の作成したユーザーリスト一覧を取得します。'
+	},
+
+	requireCredential: true,
+
+	kind: 'account-read'
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Fetch lists
 	const userLists = await UserList.find({
 		userId: me._id,
 	});
 
 	res(await Promise.all(userLists.map(x => pack(x))));
-});
+}));

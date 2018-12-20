@@ -1,22 +1,33 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import User, { pack } from '../../../../models/user';
+import define from '../../define';
+import { maximum } from '../../../../prelude/array';
 
-module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
+export const meta = {
+	requireCredential: false,
 
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		},
 
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+	}
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Lookup user
 	const user = await User.findOne({
-		_id: userId
+		_id: ps.userId
 	}, {
 		fields: {
 			_id: true
@@ -64,29 +75,25 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		}
 	});
 
-	const repliedUsers = {};
+	const repliedUsers: any = {};
 
 	// Extract replies from recent notes
-	replyTargetNotes.forEach(note => {
-		const userId = note.userId.toString();
+	for (const userId of replyTargetNotes.map(x => x.userId.toString())) {
 		if (repliedUsers[userId]) {
 			repliedUsers[userId]++;
 		} else {
 			repliedUsers[userId] = 1;
 		}
-	});
+	}
 
 	// Calc peak
-	let peak = 0;
-	Object.keys(repliedUsers).forEach(user => {
-		if (repliedUsers[user] > peak) peak = repliedUsers[user];
-	});
+	const peak = maximum(Object.values(repliedUsers));
 
 	// Sort replies by frequency
 	const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);
 
 	// Extract top replied users
-	const topRepliedUsers = repliedUsersSorted.slice(0, limit);
+	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
 
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
@@ -94,6 +101,5 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		weight: repliedUsers[user] / peak
 	})));
 
-	// Response
 	res(repliesObj);
-});
+}));

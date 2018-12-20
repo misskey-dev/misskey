@@ -1,33 +1,45 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
-import Note, { pack } from '../../../../models/note';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import Note, { packMany } from '../../../../models/note';
+import define from '../../define';
 
-/**
- * Get replies of a note
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定した投稿への返信を取得します。',
+		'en-US': 'Get replies of a note.'
+	},
 
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	requireCredential: false,
 
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID'
+			}
+		},
 
-	// Lookup note
-	const note = await Note.findOne({
-		_id: noteId
-	});
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
 
-	if (note === null) {
-		return rej('note not found');
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		},
 	}
+};
 
-	const ids = (note._replyIds || []).slice(offset, offset + limit);
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
-	// Serialize
-	res(await Promise.all(ids.map(id => pack(id, user))));
-});
+	const notes = await Note.find({
+			replyId: ps.noteId
+		}, {
+			limit: ps.limit,
+			skip: ps.offset
+		});
+
+	res(await packMany(notes, user));
+}));

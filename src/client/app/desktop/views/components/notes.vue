@@ -4,25 +4,29 @@
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
-	<div v-if="!fetching && requestInitPromise != null">
-		<p>%i18n:@error%</p>
-		<button @click="resolveInitPromise">%i18n:@retry%</button>
+	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
+
+	<div class="placeholder" v-if="fetching">
+		<template v-for="i in 10">
+			<mk-note-skeleton :key="i"/>
+		</template>
 	</div>
 
-	<transition-group name="mk-notes" class="transition">
+	<!-- トランジションを有効にするとなぜかメモリリークする -->
+	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="notes transition" tag="div" ref="notes">
 		<template v-for="(note, i) in _notes">
-			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
+			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)" ref="note"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
-				<span>%fa:angle-up%{{ note._datetext }}</span>
-				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
+				<span><fa icon="angle-up"/>{{ note._datetext }}</span>
+				<span><fa icon="angle-down"/>{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</transition-group>
+	</component>
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
+			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
+			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>
 		</button>
 	</footer>
 </div>
@@ -30,14 +34,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { url } from '../../../config';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
-
-import XNote from './notes.note.vue';
+import i18n from '../../../i18n';
+import * as config from '../../../config';
+import shouldMuteNote from '../../../common/scripts/should-mute-note';
+import XNote from './note.vue';
 
 const displayLimit = 30;
 
 export default Vue.extend({
+	i18n: i18n(),
 	components: {
 		XNote
 	},
@@ -54,7 +59,6 @@ export default Vue.extend({
 			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
-			unreadCount: 0,
 			fetching: true,
 			moreFetching: false
 		};
@@ -66,19 +70,17 @@ export default Vue.extend({
 				const date = new Date(note.createdAt).getDate();
 				const month = new Date(note.createdAt).getMonth() + 1;
 				note._date = date;
-				note._datetext = `${month}月 ${date}日`;
+				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return note;
 			});
 		}
 	},
 
 	mounted() {
-		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 		window.addEventListener('scroll', this.onScroll, { passive: true });
 	},
 
 	beforeDestroy() {
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		window.removeEventListener('scroll', this.onScroll);
 	},
 
@@ -88,7 +90,7 @@ export default Vue.extend({
 		},
 
 		focus() {
-			(this.$el as any).children[0].focus();
+			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
 		},
 
 		onNoteUpdated(i, note) {
@@ -117,27 +119,12 @@ export default Vue.extend({
 		},
 
 		prepend(note, silent = false) {
-			//#region 弾く
-			const isMyNote = note.userId == this.$store.state.i.id;
-			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
+			// 弾く
+			if (shouldMuteNote(this.$store.state.i, this.$store.state.settings, note)) return;
 
-			if (this.$store.state.settings.showMyRenotes === false) {
-				if (isMyNote && isPureRenote) {
-					return;
-				}
-			}
-
-			if (this.$store.state.settings.showRenotedMyNotes === false) {
-				if (isPureRenote && (note.renote.userId == this.$store.state.i.id)) {
-					return;
-				}
-			}
-			//#endregion
-
-			// 投稿が自分のものではないかつ、タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
-			if ((document.hidden || !this.isScrollTop()) && note.userId !== this.$store.state.i.id) {
-				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
+			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+			if (document.hidden || !this.isScrollTop()) {
+				this.$store.commit('pushBehindNote', note);
 			}
 
 			if (this.isScrollTop()) {
@@ -146,7 +133,7 @@ export default Vue.extend({
 
 				// サウンドを再生する
 				if (this.$store.state.device.enableSounds && !silent) {
-					const sound = new Audio(`${url}/assets/post.mp3`);
+					const sound = new Audio(`${config.url}/assets/post.mp3`);
 					sound.volume = this.$store.state.device.soundVolume;
 					sound.play();
 				}
@@ -169,7 +156,9 @@ export default Vue.extend({
 		},
 
 		releaseQueue() {
-			this.queue.forEach(n => this.prepend(n, true));
+			for (const n of this.queue) {
+				this.prepend(n, true);
+			}
 			this.queue = [];
 		},
 
@@ -182,21 +171,9 @@ export default Vue.extend({
 			this.moreFetching = false;
 		},
 
-		clearNotification() {
-			this.unreadCount = 0;
-			document.title = 'Misskey';
-		},
-
-		onVisibilitychange() {
-			if (!document.hidden) {
-				this.clearNotification();
-			}
-		},
-
 		onScroll() {
 			if (this.isScrollTop()) {
 				this.releaseQueue();
-				this.clearNotification();
 			}
 
 			if (this.$store.state.settings.fetchOnScroll !== false) {
@@ -209,9 +186,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-notes
 	.transition
 		.mk-notes-enter
 		.mk-notes-leave-to
@@ -221,20 +196,25 @@ root(isDark)
 		> *
 			transition transform .3s ease, opacity .3s ease
 
+	> .placeholder
+		padding 32px
+		opacity 0.3
+
+	> .notes
 		> .date
 			display block
 			margin 0
 			line-height 32px
 			font-size 14px
 			text-align center
-			color isDark ? #666b79 : #aaa
-			background isDark ? #242731 : #fdfdfd
-			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
+			color var(--dateDividerFg)
+			background var(--dateDividerBg)
+			border-bottom solid 1px var(--faceDivider)
 
 			span
 				margin 0 16px
 
-			[data-fa]
+			[data-icon]
 				margin-right 8px
 
 	> .newer-indicator
@@ -242,7 +222,7 @@ root(isDark)
 		position sticky
 		z-index 100
 		height 3px
-		background $theme-color
+		background var(--primary)
 
 	> footer
 		> button
@@ -252,21 +232,15 @@ root(isDark)
 			width 100%
 			text-align center
 			color #ccc
-			background isDark ? #282C37 : #fff
-			border-top solid 1px isDark ? #1c2023 : #eaeaea
+			background var(--face)
+			border-top solid 1px var(--faceDivider)
 			border-bottom-left-radius 6px
 			border-bottom-right-radius 6px
 
 			&:hover
-				background isDark ? #2e3440 : #f5f5f5
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
 			&:active
-				background isDark ? #21242b : #eee
-
-.mk-notes[data-darkmode]
-	root(true)
-
-.mk-notes:not([data-darkmode])
-	root(false)
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 </style>

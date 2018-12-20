@@ -5,12 +5,12 @@
 		<div>
 			<header>
 				<mk-reaction-icon :reaction="notification.reaction"/>
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
-			<router-link class="note-ref" :to="notification.note | notePage">
-				%fa:quote-left%{{ getNoteSummary(notification.note) }}
-				%fa:quote-right%
+			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}
+				<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -19,12 +19,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:retweet%
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<fa icon="retweet"/>
+				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
-			<router-link class="note-ref" :to="notification.note | notePage">
-				%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
+			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -33,8 +33,8 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:user-plus%
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<fa icon="user-plus"/>
+				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 		</div>
@@ -44,8 +44,8 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:user-clock%
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<fa icon="user-clock"/>
+				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 		</div>
@@ -55,12 +55,12 @@
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
-				%fa:chart-pie%
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<fa icon="chart-pie"/>
+				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
-			<router-link class="note-ref" :to="notification.note | notePage">
-				%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
+			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
+import getNoteSummary from '../../../../../misc/get-note-summary';
 
 export default Vue.extend({
 	props: ['notification'],
@@ -105,7 +105,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-notification
 	> .notification
 		padding 16px
 		font-size 12px
@@ -149,21 +149,26 @@ root(isDark)
 				align-items baseline
 				white-space nowrap
 
-				i, .mk-reaction-icon
+				[data-icon], .mk-reaction-icon
 					margin-right 4px
 
 				> .mk-time
 					margin-left auto
-					color isDark ? #606984 : #c0c0c0
+					color var(--noteHeaderInfo)
 					font-size 0.9em
 
 			> .note-preview
-				color isDark ? #fff : #717171
+				color var(--noteText)
 
 			> .note-ref
-				color isDark ? #fff : #717171
+				color var(--noteText)
+				display inline-block
+				width: 100%
+				overflow hidden
+				white-space nowrap
+				text-overflow ellipsis
 
-				[data-fa]
+				[data-icon]
 					font-size 1em
 					font-weight normal
 					font-style normal
@@ -171,21 +176,15 @@ root(isDark)
 					margin-right 3px
 
 		&.renote
-			> div > header i
+			> div > header [data-icon]
 				color #77B255
 
 		&.follow
-			> div > header i
+			> div > header [data-icon]
 				color #53c7ce
 
 		&.receiveFollowRequest
-			> div > header i
+			> div > header [data-icon]
 				color #888
-
-.mk-notification[data-darkmode]
-	root(true)
-
-.mk-notification:not([data-darkmode])
-	root(false)
 
 </style>

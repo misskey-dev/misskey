@@ -29,12 +29,26 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: ['data'],
 	created() {
-		this.data.forEach(d => d.total = d.notes + d.replies + d.renotes);
+		for (const d of this.data) {
+			d.total = d.notes + d.replies + d.renotes;
+		}
 		const peak = Math.max.apply(null, this.data.map(d => d.total));
 
+		const now = new Date();
+		const year = now.getFullYear();
+		const month = now.getMonth();
+		const day = now.getDate();
+
 		let x = 0;
-		this.data.slice().reverse().forEach(d => {
+		this.data.slice().reverse().forEach((d, i) => {
 			d.x = x;
+
+			const date = new Date(year, month, day - i);
+			d.date = {
+				year: date.getFullYear(),
+				month: date.getMonth(),
+				day: date.getDate()
+			};
 			d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
 
 			d.v = peak == 0 ? 0 : d.total / (peak / 2);

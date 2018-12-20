@@ -1,28 +1,28 @@
 <template>
-<mk-window ref="window" is-modal width="800px" height="500px" @closed="$destroy">
+<mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
 	<span slot="header">
-		<span v-html="title" :class="$style.title"></span>
+		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
 	</span>
 
-	<mk-drive
+	<x-drive
 		ref="browser"
 		:class="$style.browser"
 		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
-	props: {
-		title: {
-			default: '%fa:R folder%%i18n:@choose-prompt%'
-		}
+	i18n: i18n('desktop/views/components/choose-folder-from-drive-window.vue'),
+	components: {
+		XDrive: () => import('./drive.vue').then(m => m.default),
 	},
 	methods: {
 		ok() {
@@ -37,10 +37,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-@import '~const.styl'
+
 
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .browser
@@ -48,7 +48,7 @@ export default Vue.extend({
 
 .footer
 	height 72px
-	background lighten($theme-color, 95%)
+	background var(--primaryLighten95)
 
 .ok
 .cancel
@@ -73,7 +73,7 @@ export default Vue.extend({
 			right -5px
 			bottom -5px
 			left -5px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 8px
 
 	&:disabled
@@ -82,20 +82,20 @@ export default Vue.extend({
 
 .ok
 	right 16px
-	color $theme-color-foreground
-	background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
-	border solid 1px lighten($theme-color, 15%)
+	color var(--primaryForeground)
+	background linear-gradient(to bottom, var(--primaryLighten25) 0%, var(--primaryLighten10) 100%)
+	border solid 1px var(--primaryLighten15)
 
 	&:not(:disabled)
 		font-weight bold
 
 	&:hover:not(:disabled)
-		background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-		border-color $theme-color
+		background linear-gradient(to bottom, var(--primaryLighten8) 0%, var(--primaryDarken8) 100%)
+		border-color var(--primary)
 
 	&:active:not(:disabled)
-		background $theme-color
-		border-color $theme-color
+		background var(--primary)
+		border-color var(--primary)
 
 .cancel
 	right 148px

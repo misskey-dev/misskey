@@ -1,5 +1,5 @@
 <template>
-<a class="file" @click.prevent="onClick" :href="`/i/drive/file/${ file.id }`" :data-is-selected="isSelected">
+<a class="vupkuhvjnjyqaqhsiogfbywvjxynrgsm" @click.prevent="onClick" :href="`/i/drive/file/${ file.id }`" :data-is-selected="isSelected">
 	<div class="container">
 		<div class="thumbnail" :style="thumbnail"></div>
 		<div class="body">
@@ -7,20 +7,16 @@
 				<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
 				<span class="ext" v-if="file.name.lastIndexOf('.') != -1">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
 			</p>
-			<!--
-			if file.tags.length > 0
-				ul.tags
-					each tag in file.tags
-						li.tag(style={background: tag.color, color: contrast(tag.color)})= tag.name
-			-->
 			<footer>
-				<p class="type"><mk-file-type-icon :type="file.type"/>{{ file.type }}</p>
-				<p class="separator"></p>
-				<p class="data-size">{{ file.datasize | bytes }}</p>
-				<p class="separator"></p>
-				<p class="created-at">
-					%fa:R clock%<mk-time :time="file.createdAt"/>
-				</p>
+				<span class="type"><mk-file-type-icon :type="file.type"/>{{ file.type }}</span>
+				<span class="separator"></span>
+				<span class="data-size">{{ file.datasize | bytes }}</span>
+				<span class="separator"></span>
+				<span class="created-at"><fa :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
+				<template v-if="file.isSensitive">
+					<span class="separator"></span>
+					<span class="nsfw"><fa :icon="['far', 'eye-slash']"/> {{ $t('nsfw') }}</span>
+				</template>
 			</footer>
 		</div>
 	</div>
@@ -29,7 +25,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/drive.file.vue'),
 	props: ['file'],
 	data() {
 		return {
@@ -43,7 +41,7 @@ export default Vue.extend({
 		thumbnail(): any {
 			return {
 				'background-color': this.file.properties.avgColor && this.file.properties.avgColor.length == 3 ? `rgb(${this.file.properties.avgColor.join(',')})` : 'transparent',
-				'background-image': `url(${this.file.url}?thumbnail&size=128)`
+				'background-image': `url(${this.file.thumbnailUrl})`
 			};
 		}
 	},
@@ -67,9 +65,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-.file
+.vupkuhvjnjyqaqhsiogfbywvjxynrgsm
 	display block
 	text-decoration none !important
 
@@ -107,7 +103,7 @@ export default Vue.extend({
 				padding 0
 				font-size 0.9em
 				font-weight bold
-				color #555
+				color var(--text)
 				text-overflow ellipsis
 				overflow-wrap break-word
 
@@ -131,39 +127,31 @@ export default Vue.extend({
 				display block
 				margin 4px 0 0 0
 				font-size 0.7em
+				color var(--text)
 
 				> .separator
-					display inline
-					margin 0
 					padding 0 4px
-					color #CDCDCD
 
 				> .type
-					display inline
-					margin 0
-					padding 0
-					color #9D9D9D
+					opacity 0.7
 
 					> .mk-file-type-icon
 						margin-right 4px
 
 				> .data-size
-					display inline
-					margin 0
-					padding 0
-					color #9D9D9D
+					opacity 0.7
 
 				> .created-at
-					display inline
-					margin 0
-					padding 0
-					color #BDBDBD
+					opacity 0.7
 
-					> [data-fa]
+					> [data-icon]
 						margin-right 2px
 
+				> .nsfw
+					color #bf4633
+
 	&[data-is-selected]
-		background $theme-color
+		background var(--primary)
 
 		&, *
 			color #fff !important

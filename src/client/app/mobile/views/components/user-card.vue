@@ -1,11 +1,13 @@
 <template>
 <div class="mk-user-card">
-	<header :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''">
+	<header :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
 		<mk-avatar class="avatar" :user="user"/>
 	</header>
-	<a class="name" :href="user | userPage" target="_blank">{{ user | userName }}</a>
+	<a class="name" :href="user | userPage" target="_blank">
+		<mk-user-name :user="user"/>
+	</a>
 	<p class="username"><mk-acct :user="user"/></p>
-	<mk-follow-button :user="user"/>
+	<mk-follow-button class="follow-button" :user="user"/>
 </div>
 </template>
 
@@ -53,7 +55,7 @@ export default Vue.extend({
 		font-size 15px
 		color #ccc
 
-	> .mk-follow-button
+	> .follow-button
 		display inline-block
 		margin 8px 0 16px 0
 

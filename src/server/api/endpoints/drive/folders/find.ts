@@ -1,29 +1,35 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
+import define from '../../../define';
 
-/**
- * Find a folder(s)
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.get(params.name);
-	if (nameErr) return rej('invalid name param');
+export const meta = {
+	requireCredential: true,
 
-	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $.type(ID).optional().nullable().get(params.parentId);
-	if (parentIdErr) return rej('invalid parentId param');
+	kind: 'drive-read',
 
-	// Issue query
+	params: {
+		name: {
+			validator: $.str
+		},
+
+		parentId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: null as any,
+			desc: {
+				'ja-JP': 'フォルダID'
+			}
+		},
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const folders = await DriveFolder
 		.find({
-			name: name,
+			name: ps.name,
 			userId: user._id,
-			parentId: parentId
+			parentId: ps.parentId
 		});
 
-	// Serialize
 	res(await Promise.all(folders.map(folder => pack(folder))));
-});
+}));

@@ -7,52 +7,77 @@
 >
 	<div class="content">
 		<div v-if="visibility == 'specified'" class="visibleUsers">
-			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">+ユーザーを追加</a>
+			<span v-for="u in visibleUsers">
+				<mk-user-name :user="u"/><a @click="removeVisibleUser(u)">[x]</a>
+			</span>
+			<a @click="addVisibleUser">{{ $t('add-visible-user') }}</a>
 		</div>
-		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
-		<textarea :class="{ with: (files.length != 0 || poll) }"
-			ref="text" v-model="text" :disabled="posting"
-			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
-			v-autocomplete="'text'"
-		></textarea>
-		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
-			<x-draggable :list="files" :options="{ animation: 150 }">
-				<div v-for="file in files" :key="file.id">
-					<div class="img" :style="{ backgroundImage: `url(${file.url}?thumbnail&size=64)` }" :title="file.name"></div>
-					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:@attach-cancel%" alt=""/>
-				</div>
-			</x-draggable>
-			<p class="remain">{{ 4 - files.length }}/4</p>
+		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
+			<b>{{ $t('recent-tags') }}:</b>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('click-to-tagging')">#{{ tag }}</a>
 		</div>
-		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
+		<div class="local-only" v-if="localOnly == true">{{ $t('local-only-message') }}</div>
+		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="{ model: 'cw' }">
+		<div class="textarea">
+			<textarea :class="{ with: (files.length != 0 || poll) }"
+				ref="text" v-model="text" :disabled="posting"
+				@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
+				v-autocomplete="{ model: 'text' }"
+			></textarea>
+			<button class="emoji" @click="emoji" ref="emoji">
+				<fa :icon="['far', 'laugh']"/>
+			</button>
+			<div class="files" :class="{ with: poll }" v-show="files.length != 0">
+				<x-draggable :list="files" :options="{ animation: 150 }">
+					<div v-for="file in files" :key="file.id">
+						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
+						<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
+					</div>
+				</x-draggable>
+				<p class="remain">{{ 4 - files.length }}/4</p>
+			</div>
+			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
+		</div>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
-	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
-	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
-	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
-	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
-	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
-	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
-	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
-		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
+	<button class="upload" :title="$t('attach-media-from-local')" @click="chooseFile"><fa icon="upload"/></button>
+	<button class="drive" :title="$t('attach-media-from-drive')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
+	<button class="kao" :title="$t('insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
+	<button class="poll" :title="$t('create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
+	<button class="cw" :title="$t('hide-contents')" @click="useCw = !useCw"><fa :icon="['far', 'eye-slash']"/></button>
+	<button class="geo" :title="$t('attach-location-information')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
+	<button class="visibility" :title="$t('visibility')" @click="setVisibility" ref="visibilityButton">
+		<span v-if="visibility === 'public'"><fa icon="globe"/></span>
+		<span v-if="visibility === 'home'"><fa icon="home"/></span>
+		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
+		<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
+		<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 	</button>
-	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
+	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
+	<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
+		{{ posting ? $t('posting') : submitText }}<mk-ellipsis v-if="posting"/>
+	</ui-button>
+	<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
+import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
-import getKao from '../../../common/scripts/get-kao';
+import getFace from '../../../common/scripts/get-face';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
-import parse from '../../../../../text/parse';
+import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
+import { erase, unique } from '../../../../../prelude/array';
+import { length } from 'stringz';
+import { toASCII } from 'punycode';
+import extractMentions from '../../../../../misc/extract-mentions';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/post-form.vue'),
 	components: {
 		XDraggable,
 		MkVisibilityChooser
@@ -85,53 +110,66 @@ export default Vue.extend({
 			files: [],
 			uploadings: [],
 			poll: false,
+			pollChoices: [],
 			useCw: false,
 			cw: null,
 			geo: null,
 			visibility: 'public',
 			visibleUsers: [],
+			localOnly: false,
 			autocomplete: null,
-			draghover: false
+			draghover: false,
+			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			maxNoteTextLength: 1000
 		};
+	},
+
+	created() {
+		this.$root.getMeta().then(meta => {
+			this.maxNoteTextLength = meta.maxNoteTextLength;
+		});
 	},
 
 	computed: {
 		draftId(): string {
 			return this.renote
-				? 'renote:' + this.renote.id
+				? `renote:${this.renote.id}`
 				: this.reply
-					? 'reply:' + this.reply.id
+					? `reply:${this.reply.id}`
 					: 'note';
 		},
 
 		placeholder(): string {
 			const xs = [
-				'%i18n:common.note-placeholders.a%',
-				'%i18n:common.note-placeholders.b%',
-				'%i18n:common.note-placeholders.c%',
-				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%',
-				'%i18n:common.note-placeholders.f%'
+				this.$t('@.note-placeholders.a'),
+				this.$t('@.note-placeholders.b'),
+				this.$t('@.note-placeholders.c'),
+				this.$t('@.note-placeholders.d'),
+				this.$t('@.note-placeholders.e'),
+				this.$t('@.note-placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
 			return this.renote
-				? '%i18n:@quote-placeholder%'
+				? this.$t('quote-placeholder')
 				: this.reply
-					? '%i18n:@reply-placeholder%'
+					? this.$t('reply-placeholder')
 					: x;
 		},
 
 		submitText(): string {
 			return this.renote
-				? '%i18n:@renote%'
+				? this.$t('renote')
 				: this.reply
-					? '%i18n:@reply%'
-					: '%i18n:@submit%';
+					? this.$t('reply')
+					: this.$t('submit');
 		},
 
 		canPost(): boolean {
-			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
+			return !this.posting &&
+				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
+				(length(this.text.trim()) <= this.maxNoteTextLength) &&
+				(!this.poll || this.pollChoices.length >= 2);
 		}
 	},
 
@@ -141,14 +179,14 @@ export default Vue.extend({
 		}
 
 		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
 
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
-			ast.filter(t => t.type == 'mention').forEach(x => {
-				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+			for (const x of extractMentions(ast)) {
+				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
 				if (this.$store.state.i.username == x.username && x.host == null) return;
@@ -158,6 +196,21 @@ export default Vue.extend({
 				if (this.text.indexOf(`${mention} `) != -1) return;
 
 				this.text += `${mention} `;
+			}
+		}
+
+		// デフォルト公開範囲
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
+
+		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
+		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
+			this.visibility = this.reply.visibility;
+		}
+
+		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
+		if (this.reply && this.reply.visibility === 'specified') {
+			this.$root.api('users/show', {	userId: this.reply.userId }).then(user => {
+				this.visibleUsers.push(user);
 			});
 		}
 
@@ -174,7 +227,7 @@ export default Vue.extend({
 							(this.$refs.poll as any).set(draft.data.poll);
 						});
 					}
-					this.$emit('change-attached-media', this.files);
+					this.$emit('change-attached-files', this.files);
 				}
 			}
 
@@ -183,6 +236,14 @@ export default Vue.extend({
 	},
 
 	methods: {
+	  trimmedLength(text: string) {
+			return length(text.trim());
+		},
+
+		addTag(tag: string) {
+			insertTextAtCursor(this.$refs.text, ` #${tag} `);
+		},
+
 		watch() {
 			this.$watch('text', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
@@ -198,25 +259,30 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			(this as any).apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
-				files.forEach(this.attachMedia);
+				for (const x of files) this.attachMedia(x);
 			});
 		},
 
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		detachMedia(id) {
 			this.files = this.files.filter(x => x.id != id);
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onChangeFile() {
-			Array.from((this.$refs.file as any).files).forEach(this.upload);
+			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
+		},
+
+		onPollUpdate() {
+			this.pollChoices = this.$refs.poll.get().choices;
+			this.saveDraft();
 		},
 
 		upload(file) {
@@ -231,19 +297,19 @@ export default Vue.extend({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
-			this.$emit('change-attached-media', this.files);
+			this.$emit('change-attached-files', this.files);
 		},
 
 		onKeydown(e) {
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canPost) this.post();
 		},
 
 		onPaste(e) {
-			Array.from(e.clipboardData.items).forEach((item: any) => {
+			for (const item of Array.from(e.clipboardData.items)) {
 				if (item.kind == 'file') {
 					this.upload(item.getAsFile());
 				}
-			});
+			}
 		},
 
 		onDragover(e) {
@@ -270,7 +336,7 @@ export default Vue.extend({
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
 				e.preventDefault();
-				Array.from(e.dataTransfer.files).forEach(this.upload);
+				for (const x of Array.from(e.dataTransfer.files)) this.upload(x);
 				return;
 			}
 
@@ -279,7 +345,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.files.push(file);
-				this.$emit('change-attached-media', this.files);
+				this.$emit('change-attached-files', this.files);
 				e.preventDefault();
 			}
 			//#endregion
@@ -287,7 +353,7 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('お使いの端末は位置情報に対応していません');
+				alert(this.$t('geolocation-alert'));
 				return;
 			}
 
@@ -295,10 +361,10 @@ export default Vue.extend({
 				this.geo = pos.coords;
 				this.$emit('geo-attached', this.geo);
 			}, err => {
-				alert('エラー: ' + err.message);
+				alert(`%i18n:@error%: ${err.message}`);
 			}, {
-				enableHighAccuracy: true
-			});
+					enableHighAccuracy: true
+				});
 		},
 
 		removeGeo() {
@@ -307,43 +373,65 @@ export default Vue.extend({
 		},
 
 		setVisibility() {
-			const w = (this as any).os.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton,
-				v: this.visibility
+			const w = this.$root.new(MkVisibilityChooser, {
+				source: this.$refs.visibilityButton
 			});
 			w.$once('chosen', v => {
-				this.visibility = v;
+				this.applyVisibility(v);
 			});
 		},
 
+		applyVisibility(v :string) {
+			const m = v.match(/^local-(.+)/);
+			if (m) {
+				this.localOnly = true;
+				this.visibility = m[1];
+			} else {
+				this.localOnly = false;
+				this.visibility = v;
+			}
+		},
+
 		addVisibleUser() {
-			(this as any).apis.input({
-				title: 'ユーザー名を入力してください'
-			}).then(username => {
-				(this as any).api('users/show', {
-					username
-				}).then(user => {
-					this.visibleUsers.push(user);
-				});
+			this.$root.dialog({
+				title: this.$t('enter-username'),
+				user: true
+			}).then(({ canceled, result: user }) => {
+				if (canceled) return;
+				this.visibleUsers.push(user);
 			});
 		},
 
 		removeVisibleUser(user) {
-			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+			this.visibleUsers = erase(user, this.visibleUsers);
+		},
+
+		async emoji() {
+			const Picker = await import('./emoji-picker-dialog.vue').then(m => m.default);
+			const button = this.$refs.emoji;
+			const rect = button.getBoundingClientRect();
+			const vm = this.$root.new(Picker, {
+				x: button.offsetWidth + rect.left + window.pageXOffset,
+				y: rect.top + window.pageYOffset
+			});
+			vm.$once('chosen', emoji => {
+				insertTextAtCursor(this.$refs.text, emoji);
+			});
 		},
 
 		post() {
 			this.posting = true;
 
-			(this as any).api('notes/create', {
+			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
-				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
+				localOnly: this.localOnly,
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
@@ -356,20 +444,26 @@ export default Vue.extend({
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
-				(this as any).apis.notify(this.renote
-					? '%i18n:@reposted%'
+				this.$notify(this.renote
+					? this.$t('reposted')
 					: this.reply
-						? '%i18n:@replied%'
-						: '%i18n:@posted%');
+						? this.$t('replied')
+						: this.$t('posted'));
 			}).catch(err => {
-				(this as any).apis.notify(this.renote
-					? '%i18n:@renote-failed%'
+				this.$notify(this.renote
+					? this.$t('renote-failed')
 					: this.reply
-						? '%i18n:@reply-failed%'
-						: '%i18n:@note-failed%');
+						? this.$t('reply-failed')
+						: this.$t('note-failed'));
 			}).then(() => {
 				this.posting = false;
 			});
+
+			if (this.text && this.text != '') {
+				const hashtags = parse(this.text).filter(x => x.type == 'hashtag').map(x => x.hashtag);
+				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
+				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
+			}
 		},
 
 		saveDraft() {
@@ -398,19 +492,18 @@ export default Vue.extend({
 		},
 
 		kao() {
-			this.text += getKao();
+			this.text += getFace();
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-post-form
 	display block
 	padding 16px
-	background isDark ? #282C37 : lighten($theme-color, 95%)
+	background var(--desktopPostFormBg)
+	overflow hidden
 
 	&:after
 		content ""
@@ -419,56 +512,138 @@ root(isDark)
 
 	> .content
 		> input
-		> textarea
+		> .textarea > textarea
 			display block
 			width 100%
 			padding 12px
 			font-size 16px
-			color isDark ? #fff : #333
-			background isDark ? #191d23 : #fff
+			color var(--desktopPostFormTextareaFg)
+			background var(--desktopPostFormTextareaBg)
 			outline none
-			border solid 1px rgba($theme-color, 0.1)
+			border solid 1px var(--primaryAlpha01)
 			border-radius 4px
 			transition border-color .2s ease
+			padding-right 30px
 
 			&:hover
-				border-color rgba($theme-color, 0.2)
+				border-color var(--primaryAlpha02)
 				transition border-color .1s ease
 
 			&:focus
-				border-color rgba($theme-color, 0.5)
+				border-color var(--primaryAlpha05)
 				transition border-color 0s ease
 
 			&:disabled
 				opacity 0.5
 
 			&::-webkit-input-placeholder
-				color rgba($theme-color, 0.3)
+				color var(--primaryAlpha03)
 
 		> input
 			margin-bottom 8px
 
-		> textarea
-			margin 0
-			max-width 100%
-			min-width 100%
-			min-height 64px
+		> .textarea
+			> .emoji
+				position absolute
+				top 0
+				right 0
+				padding 10px
+				font-size 18px
+				color var(--text)
+				opacity 0.5
 
-			&:hover
-				& + *
-				& + * + *
-					border-color rgba($theme-color, 0.2)
-					transition border-color .1s ease
+				&:hover
+					color var(--textHighlighted)
+					opacity 1
 
-			&:focus
-				& + *
-				& + * + *
-					border-color rgba($theme-color, 0.5)
-					transition border-color 0s ease
+				&:active
+					color var(--primary)
+					opacity 1
 
-			&.with
-				border-bottom solid 1px rgba($theme-color, 0.1) !important
-				border-radius 4px 4px 0 0
+			> textarea
+				margin 0
+				max-width 100%
+				min-width 100%
+				min-height 84px
+
+				&:hover
+					& + * + *
+					& + * + * + *
+						border-color var(--primaryAlpha02)
+						transition border-color .1s ease
+
+				&:focus
+					& + * + *
+					& + * + * + *
+						border-color var(--primaryAlpha05)
+						transition border-color 0s ease
+
+					& + .emoji
+						opacity 0.7
+
+				&.with
+					border-bottom solid 1px var(--primaryAlpha01) !important
+					border-radius 4px 4px 0 0
+
+			> .files
+				margin 0
+				padding 0
+				background var(--desktopPostFormTextareaBg)
+				border solid 1px var(--primaryAlpha01)
+				border-top none
+				border-radius 0 0 4px 4px
+				transition border-color .3s ease
+
+				&.with
+					border-bottom solid 1px var(--primaryAlpha01) !important
+					border-radius 0
+
+				> .remain
+					display block
+					position absolute
+					top 8px
+					right 8px
+					margin 0
+					padding 0
+					color var(--primaryAlpha04)
+
+				> div
+					padding 4px
+
+					&:after
+						content ""
+						display block
+						clear both
+
+					> div
+						float left
+						border solid 4px transparent
+						cursor move
+
+						&:hover > .remove
+							display block
+
+						> .img
+							width 64px
+							height 64px
+							background-size cover
+							background-position center center
+
+						> .remove
+							display none
+							position absolute
+							top -6px
+							right -6px
+							width 16px
+							height 16px
+							cursor pointer
+
+			> .mk-poll-editor
+				background var(--desktopPostFormTextareaBg)
+				border solid 1px var(--primaryAlpha01)
+				border-top none
+				border-radius 0 0 4px 4px
+				transition border-color .3s ease
 
 		> .visibleUsers
 			margin-bottom 8px
@@ -476,72 +651,29 @@ root(isDark)
 
 			> span
 				margin-right 16px
-				color isDark ? #fff : #666
+				color var(--primary)
 
-		> .medias
-			margin 0
-			padding 0
-			background isDark ? #181b23 : lighten($theme-color, 98%)
-			border solid 1px rgba($theme-color, 0.1)
-			border-top none
-			border-radius 0 0 4px 4px
-			transition border-color .3s ease
+		> .hashtags
+			margin 0 0 8px 0
+			overflow hidden
+			white-space nowrap
+			font-size 14px
 
-			&.with
-				border-bottom solid 1px rgba($theme-color, 0.1) !important
-				border-radius 0
+			> b
+				color var(--primary)
 
-			> .remain
-				display block
-				position absolute
-				top 8px
-				right 8px
-				margin 0
-				padding 0
-				color rgba($theme-color, 0.4)
+			> *
+				margin-right 8px
+				white-space nowrap
 
-			> div
-				padding 4px
-
-				&:after
-					content ""
-					display block
-					clear both
-
-				> div
-					float left
-					border solid 4px transparent
-					cursor move
-
-					&:hover > .remove
-						display block
-
-					> .img
-						width 64px
-						height 64px
-						background-size cover
-						background-position center center
-
-					> .remove
-						display none
-						position absolute
-						top -6px
-						right -6px
-						width 16px
-						height 16px
-						cursor pointer
-
-		> .mk-poll-editor
-			background isDark ? #181b23 : lighten($theme-color, 98%)
-			border solid 1px rgba($theme-color, 0.1)
-			border-top none
-			border-radius 0 0 4px 4px
-			transition border-color .3s ease
+		> .local-only
+			margin 0 0 8px 0
+			color var(--primary)
 
 	> .mk-uploader
 		margin 8px 0 0 0
 		padding 8px
-		border solid 1px rgba($theme-color, 0.2)
+		border solid 1px var(--primaryAlpha02)
 		border-radius 4px
 
 	input[type='file']
@@ -552,64 +684,8 @@ root(isDark)
 		position absolute
 		bottom 16px
 		right 16px
-		cursor pointer
-		padding 0
-		margin 0
 		width 110px
 		height 40px
-		font-size 1em
-		color $theme-color-foreground
-		background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
-		outline none
-		border solid 1px lighten($theme-color, 15%)
-		border-radius 4px
-
-		&:not(:disabled)
-			font-weight bold
-
-		&:hover:not(:disabled)
-			background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-			border-color $theme-color
-
-		&:active:not(:disabled)
-			background $theme-color
-			border-color $theme-color
-
-		&:focus
-			&:after
-				content ""
-				pointer-events none
-				position absolute
-				top -5px
-				right -5px
-				bottom -5px
-				left -5px
-				border 2px solid rgba($theme-color, 0.3)
-				border-radius 8px
-
-		&:disabled
-			opacity 0.7
-			cursor default
-
-		&.wait
-			background linear-gradient(
-				45deg,
-				darken($theme-color, 10%) 25%,
-				$theme-color              25%,
-				$theme-color              50%,
-				darken($theme-color, 10%) 50%,
-				darken($theme-color, 10%) 75%,
-				$theme-color              75%,
-				$theme-color
-			)
-			background-size 32px 32px
-			animation stripe-bg 1.5s linear infinite
-			opacity 0.7
-			cursor wait
-
-			@keyframes stripe-bg
-				from {background-position: 0 0;}
-				to   {background-position: -64px 32px;}
 
 	> .text-count
 		pointer-events none
@@ -619,7 +695,7 @@ root(isDark)
 		right 138px
 		margin 0
 		line-height 40px
-		color rgba($theme-color, 0.5)
+		color var(--primaryAlpha05)
 
 		&.over
 			color #ec3828
@@ -628,6 +704,7 @@ root(isDark)
 	> .drive
 	> .kao
 	> .poll
+	> .cw
 	> .geo
 	> .visibility
 		display inline-block
@@ -637,7 +714,7 @@ root(isDark)
 		width 40px
 		height 40px
 		font-size 1em
-		color isDark ? $theme-color : rgba($theme-color, 0.5)
+		color var(--desktopPostFormTransparentButtonFg)
 		background transparent
 		outline none
 		border solid 1px transparent
@@ -645,12 +722,12 @@ root(isDark)
 
 		&:hover
 			background transparent
-			border-color isDark ? rgba($theme-color, 0.5) : rgba($theme-color, 0.3)
+			border-color var(--primaryAlpha03)
 
 		&:active
-			color rgba($theme-color, 0.6)
-			background isDark ? transparent : linear-gradient(to bottom, lighten($theme-color, 80%) 0%, lighten($theme-color, 90%) 100%)
-			border-color rgba($theme-color, 0.5)
+			color var(--primaryAlpha06)
+			background linear-gradient(to bottom, var(--desktopPostFormTransparentButtonActiveGradientStart) 0%, var(--desktopPostFormTransparentButtonActiveGradientEnd) 100%)
+			border-color var(--primaryAlpha05)
 			box-shadow 0 2px 4px rgba(#000, 0.15) inset
 
 		&:focus
@@ -662,7 +739,7 @@ root(isDark)
 				right -5px
 				bottom -5px
 				left -5px
-				border 2px solid rgba($theme-color, 0.3)
+				border 2px solid var(--primaryAlpha03)
 				border-radius 8px
 
 	> .dropzone
@@ -671,13 +748,7 @@ root(isDark)
 		top 0
 		width 100%
 		height 100%
-		border dashed 2px rgba($theme-color, 0.5)
+		border dashed 2px var(--primaryAlpha05)
 		pointer-events none
-
-.mk-post-form[data-darkmode]
-	root(true)
-
-.mk-post-form:not([data-darkmode])
-	root(false)
 
 </style>

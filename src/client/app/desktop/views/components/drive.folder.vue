@@ -1,5 +1,5 @@
 <template>
-<div class="root folder"
+<div class="ynntpczxvnusfwdyxsfuhvcmuypqopdd"
 	:data-is-contextmenu-showing="isContextmenuShowing"
 	:data-draghover="draghover"
 	@click="onClick"
@@ -16,8 +16,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover">%fa:R folder-open .fw%</template>
-		<template v-if="!hover">%fa:R folder .fw%</template>
+		<template v-if="hover"><fa :icon="['far', 'folder-open']" fixed-width/></template>
+		<template v-if="!hover"><fa :icon="['far', 'folder']" fixed-width/></template>
 		{{ folder.name }}
 	</p>
 </div>
@@ -25,9 +25,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import contextmenu from '../../api/contextmenu';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/drive.folder.vue'),
 	props: ['folder'],
 	data() {
 		return {
@@ -52,25 +53,25 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			this.isContextmenuShowing = true;
-			contextmenu((this as any).os)(e, [{
+			this.$contextmenu(e, [{
 				type: 'item',
-				text: '%i18n:@contextmenu.move-to-this-folder%',
-				icon: '%fa:arrow-right%',
+				text: this.$t('contextmenu.move-to-this-folder'),
+				icon: 'arrow-right',
 				action: this.go
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.show-in-new-window%',
-				icon: '%fa:R window-restore%',
+				text: this.$t('contextmenu.show-in-new-window'),
+				icon: ['far', 'window-restore'],
 				action: this.newWindow
 			}, null, {
 				type: 'item',
-				text: '%i18n:@contextmenu.rename%',
-				icon: '%fa:i-cursor%',
+				text: this.$t('contextmenu.rename'),
+				icon: 'i-cursor',
 				action: this.rename
 			}, null, {
 				type: 'item',
-				text: '%i18n:common.delete%',
-				icon: '%fa:R trash-alt%',
+				text: this.$t('@.delete'),
+				icon: ['far', 'trash-alt'],
 				action: this.deleteFolder
 			}], {
 				closed: () => {
@@ -119,9 +120,9 @@ export default Vue.extend({
 
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
-				Array.from(e.dataTransfer.files).forEach(file => {
+				for (const file of Array.from(e.dataTransfer.files)) {
 					this.browser.upload(file, this.folder);
-				});
+				}
 				return;
 			}
 
@@ -130,7 +131,7 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				(this as any).api('drive/files/update', {
+				this.$root.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder.id
 				});
@@ -146,7 +147,7 @@ export default Vue.extend({
 				if (folder.id == this.folder.id) return;
 
 				this.browser.removeFolder(folder.id);
-				(this as any).api('drive/folders/update', {
+				this.$root.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder.id
 				}).then(() => {
@@ -154,16 +155,13 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
-								text: '%i18n:@circular-reference-detected%',
-								actions: [{
-									text: '%i18n:common.ok%'
-								}]
+							this.$root.dialog({
+								title: this.$t('unable-to-process'),
+								text: this.$t('circular-reference-detected')
 							});
 							break;
 						default:
-							alert('%i18n:@unhandled-error% ' + err);
+							alert(this.$t('unhandled-error'));
 					}
 				});
 			}
@@ -194,12 +192,15 @@ export default Vue.extend({
 		},
 
 		rename() {
-			(this as any).apis.input({
-				title: '%i18n:@contextmenu.rename-folder%',
-				placeholder: '%i18n:@contextmenu.input-new-folder-name%',
-				default: this.folder.name
-			}).then(name => {
-				(this as any).api('drive/folders/update', {
+			this.$root.dialog({
+				title: this.$t('contextmenu.rename-folder'),
+				input: {
+					placeholder: this.$t('contextmenu.input-new-folder-name'),
+					default: this.folder.name
+				}
+			}).then(({ canceled, result: name }) => {
+				if (canceled) return;
+				this.$root.api('drive/folders/update', {
 					folderId: this.folder.id,
 					name: name
 				});
@@ -207,19 +208,19 @@ export default Vue.extend({
 		},
 
 		deleteFolder() {
-			alert('not implemented yet');
+			this.$root.api('drive/folders/delete', {
+				folderId: this.folder.id
+			});
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-.root.folder
+.ynntpczxvnusfwdyxsfuhvcmuypqopdd
 	padding 8px
 	height 64px
-	background lighten($theme-color, 95%)
+	background var(--desktopDriveFolderBg)
 	border-radius 4px
 
 	&, *
@@ -229,10 +230,10 @@ export default Vue.extend({
 		pointer-events none
 
 	&:hover
-		background lighten($theme-color, 90%)
+		background var(--desktopDriveFolderHoverBg)
 
 	&:active
-		background lighten($theme-color, 85%)
+		background var(--desktopDriveFolderActiveBg)
 
 	&[data-is-contextmenu-showing]
 	&[data-draghover]
@@ -244,18 +245,18 @@ export default Vue.extend({
 			right -4px
 			bottom -4px
 			left -4px
-			border 2px dashed rgba($theme-color, 0.3)
+			border 2px dashed var(--primaryAlpha03)
 			border-radius 4px
 
 	&[data-draghover]
-		background lighten($theme-color, 90%)
+		background var(--desktopDriveFolderActiveBg)
 
 	> .name
 		margin 0
 		font-size 0.9em
-		color darken($theme-color, 30%)
+		color var(--desktopDriveFolderFg)
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 			margin-left 2px
 			text-align left

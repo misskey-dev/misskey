@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import * as Router from 'koa-router';
 
 import config from '../config';
-import parseAcct from '../acct/parse';
+import parseAcct from '../misc/acct/parse';
 import User, { IUser } from '../models/user';
 
 // Init router
@@ -68,6 +68,8 @@ router.get('/.well-known/webfinger', async ctx => {
 			template: `${config.url}/authorize-follow?acct={uri}`
 		}]
 	};
+
+	ctx.set('Cache-Control', 'public, max-age=180');
 });
 
 export default router;

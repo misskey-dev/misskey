@@ -8,21 +8,20 @@ import VueRouter from 'vue-router';
 import './style.styl';
 
 import init from '../init';
-
 import Index from './views/index.vue';
+import NotFound from '../common/views/pages/404.vue';
 
 /**
  * init
  */
 init(launch => {
-	document.title = 'Misskey | アプリの連携';
-
 	// Init router
 	const router = new VueRouter({
 		mode: 'history',
 		base: '/auth/',
 		routes: [
 			{ path: '/:token', component: Index },
+			{ path: '*', component: NotFound }
 		]
 	});
 

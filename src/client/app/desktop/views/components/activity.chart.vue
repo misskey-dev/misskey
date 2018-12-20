@@ -1,6 +1,6 @@
 <template>
 <svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" @mousedown.prevent="onMousedown">
-	<title>%i18n:@total%<br/>%i18n:@notes%<br/>%i18n:@replies%<br/>%i18n:@renotes%</title>
+	<title>{{ $t('total') }}<br/>{{ $t('notes') }}<br/>{{ $t('replies') }}<br/>{{ $t('renotes') }}</title>
 	<polyline
 		:points="pointsNote"
 		fill="none"
@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 function dragListen(fn) {
 	window.addEventListener('mousemove',  fn);
@@ -41,6 +42,7 @@ function dragClear(fn) {
 }
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/activity.chart.vue'),
 	props: ['data'],
 	data() {
 		return {
@@ -55,7 +57,10 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.data.forEach(d => d.total = d.notes + d.replies + d.renotes);
+		for (const d of this.data) {
+			d.total = d.notes + d.replies + d.renotes;
+		}
+
 		this.render();
 	},
 	methods: {

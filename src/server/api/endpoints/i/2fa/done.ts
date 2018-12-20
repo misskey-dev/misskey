@@ -1,16 +1,22 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
 import User from '../../../../../models/user';
+import define from '../../../define';
 
-module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'token' parameter
-	const [token, tokenErr] = $.str.get(params.token);
-	if (tokenErr) return rej('invalid token param');
+export const meta = {
+	requireCredential: true,
 
-	const _token = token.replace(/\s/g, '');
+	secure: true,
+
+	params: {
+		token: {
+			validator: $.str
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	const _token = ps.token.replace(/\s/g, '');
 
 	if (user.twoFactorTempSecret == null) {
 		return rej('二段階認証の設定が開始されていません');
@@ -34,4 +40,4 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	});
 
 	res();
-});
+}));

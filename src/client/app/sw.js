@@ -3,6 +3,7 @@
  */
 
 import composeNotification from './common/scripts/compose-notification';
+import { erase } from '../../prelude/array';
 
 // キャッシュするリソース
 const cachee = [
@@ -24,8 +25,7 @@ self.addEventListener('activate', ev => {
 	// Clean up old caches
 	ev.waitUntil(
 		caches.keys().then(keys => Promise.all(
-			keys
-				.filter(key => key != _VERSION_)
+			erase(_VERSION_, keys)
 				.map(key => caches.delete(key))
 		))
 	);
@@ -62,6 +62,8 @@ self.addEventListener('push', ev => {
 
 self.addEventListener('message', ev => {
 	if (ev.data == 'clear') {
-		caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+		caches.keys().then(keys => {
+			for (const key of keys) caches.delete(key);
+		});
 	}
 });

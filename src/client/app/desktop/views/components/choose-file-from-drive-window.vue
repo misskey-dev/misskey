@@ -1,11 +1,11 @@
 <template>
-<mk-window ref="window" is-modal width="800px" height="500px" @closed="$destroy">
+<mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
 	<span slot="header">
-		<span v-html="title" :class="$style.title"></span>
-		<span :class="$style.count" v-if="multiple && files.length > 0">({{ files.length }}%i18n:@choose-file%)</span>
+		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
+		<span :class="$style.count" v-if="multiple && files.length > 0">({{ $t('chosen-files', { count: files.length }) }})</span>
 	</span>
 
-	<mk-drive
+	<x-drive
 		ref="browser"
 		:class="$style.browser"
 		:multiple="multiple"
@@ -13,22 +13,24 @@
 		@change-selection="onChangeSelection"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.upload" title="%i18n:@upload%" @click="upload">%fa:upload%</button>
-		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
-		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">%i18n:@ok%</button>
+		<button :class="$style.upload" :title="$t('title')" @click="upload"><fa icon="upload"/></button>
+		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
+		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">{{ $t('ok') }}</button>
 	</div>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/choose-file-from-drive-window.vue'),
+	components: {
+		XDrive: () => import('./drive.vue').then(m => m.default),
+	},
 	props: {
 		multiple: {
 			default: false
-		},
-		title: {
-			default: '%fa:R file%%i18n:@choose-prompt%s'
 		}
 	},
 	data() {
@@ -59,10 +61,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-@import '~const.styl'
-
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .count
@@ -74,7 +74,7 @@ export default Vue.extend({
 
 .footer
 	height 72px
-	background lighten($theme-color, 95%)
+	background var(--primaryLighten95)
 
 .upload
 	display inline-block
@@ -87,7 +87,7 @@ export default Vue.extend({
 	width 40px
 	height 40px
 	font-size 1em
-	color rgba($theme-color, 0.5)
+	color var(--primaryAlpha05)
 	background transparent
 	outline none
 	border solid 1px transparent
@@ -95,13 +95,13 @@ export default Vue.extend({
 
 	&:hover
 		background transparent
-		border-color rgba($theme-color, 0.3)
+		border-color var(--primaryAlpha03)
 
 	&:active
-		color rgba($theme-color, 0.6)
+		color var(--primaryAlpha06)
 		background transparent
-		border-color rgba($theme-color, 0.5)
-		box-shadow 0 2px 4px rgba(darken($theme-color, 50%), 0.15) inset
+		border-color var(--primaryAlpha05)
+		//box-shadow 0 2px 4px rgba(var(--primaryDarken50), 0.15) inset
 
 	&:focus
 		&:after
@@ -112,7 +112,7 @@ export default Vue.extend({
 			right -5px
 			bottom -5px
 			left -5px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 8px
 
 .ok
@@ -138,7 +138,7 @@ export default Vue.extend({
 			right -5px
 			bottom -5px
 			left -5px
-			border 2px solid rgba($theme-color, 0.3)
+			border 2px solid var(--primaryAlpha03)
 			border-radius 8px
 
 	&:disabled
@@ -147,20 +147,20 @@ export default Vue.extend({
 
 .ok
 	right 16px
-	color $theme-color-foreground
-	background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
-	border solid 1px lighten($theme-color, 15%)
+	color var(--primaryForeground)
+	background linear-gradient(to bottom, var(--primaryLighten25) 0%, var(--primaryLighten10) 100%)
+	border solid 1px var(--primaryLighten15)
 
 	&:not(:disabled)
 		font-weight bold
 
 	&:hover:not(:disabled)
-		background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-		border-color $theme-color
+		background linear-gradient(to bottom, var(--primaryLighten8) 0%, var(--primaryDarken8) 100%)
+		border-color var(--primary)
 
 	&:active:not(:disabled)
-		background $theme-color
-		border-color $theme-color
+		background var(--primary)
+		border-color var(--primary)
 
 .cancel
 	right 148px

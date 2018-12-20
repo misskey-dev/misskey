@@ -4,27 +4,27 @@
 		<div class="mkw-calendar--body">
 			<div class="calendar" :data-is-holiday="isHoliday">
 				<p class="month-and-year">
-					<span class="year">{{ year }}年</span>
-					<span class="month">{{ month }}月</span>
+					<span class="year">{{ this.$t('year').split('{}')[0] }}{{ year }}{{ this.$t('year').split('{}')[1] }}</span>
+					<span class="month">{{ this.$t('month').split('{}')[0] }}{{ month }}{{ this.$t('month').split('{}')[1] }}</span>
 				</p>
-				<p class="day">{{ day }}日</p>
-				<p class="week-day">{{ weekDay }}曜日</p>
+				<p class="day">{{ this.$t('day').split('{}')[0] }}{{ day }}{{ this.$t('day').split('{}')[1] }}</p>
+				<p class="week-day">{{ weekDay }}</p>
 			</div>
 			<div class="info">
 				<div>
-					<p>今日:<b>{{ dayP.toFixed(1) }}%</b></p>
+					<p>{{ $t('today') }}<b>{{ dayP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${dayP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>今月:<b>{{ monthP.toFixed(1) }}%</b></p>
+					<p>{{ $t('this-month') }}<b>{{ monthP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${monthP}%` }"></div>
 					</div>
 				</div>
 				<div>
-					<p>今年:<b>{{ yearP.toFixed(1) }}%</b></p>
+					<p>{{ $t('this-year') }}<b>{{ yearP.toFixed(1) }}%</b></p>
 					<div class="meter">
 						<div class="val" :style="{ width: `${yearP}%` }"></div>
 					</div>
@@ -37,12 +37,15 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'calendar',
 	props: () => ({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/calendar.vue'),
 	data() {
 		return {
 			now: new Date(),
@@ -84,7 +87,15 @@ export default define({
 			this.year = ny;
 			this.month = nm + 1;
 			this.day = nd;
-			this.weekDay = ['日', '月', '火', '水', '木', '金', '土'][now.getDay()];
+			this.weekDay = [
+				this.$t('@.weekday.sunday'),
+				this.$t('@.weekday.monday'),
+				this.$t('@.weekday.tuesday'),
+				this.$t('@.weekday.wednesday'),
+				this.$t('@.weekday.thursday'),
+				this.$t('@.weekday.friday'),
+				this.$t('@.weekday.saturday')
+			][now.getDay()];
 
 			const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();
 			const dayDenom   = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;
@@ -108,15 +119,13 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mkw-calendar
 	&[data-special='on-new-years-day']
 		border-color #ef95a0
 
 	.mkw-calendar--body
 		padding 16px 0
-		color isDark ? #c5ced6 : #777
+		color var(--calendarDay)
 
 		&:after
 			content ""
@@ -161,7 +170,8 @@ root(isDark)
 					margin 0 0 2px 0
 					font-size 12px
 					line-height 18px
-					color isDark ? #7a8692 : #888
+					color var(--text)
+					opacity 0.8
 
 					> b
 						margin-left 2px
@@ -169,12 +179,13 @@ root(isDark)
 				> .meter
 					width 100%
 					overflow hidden
-					background isDark ? #1c1f25 : #eee
+					background var(--materBg)
 					border-radius 8px
 
 					> .val
 						height 4px
-						background $theme-color
+						background var(--primary)
+						transition width .3s cubic-bezier(0.23, 1, 0.32, 1)
 
 				&:nth-child(1)
 					> .meter > .val
@@ -187,11 +198,5 @@ root(isDark)
 				&:nth-child(3)
 					> .meter > .val
 						background #41ddde
-
-.mkw-calendar[data-darkmode]
-	root(true)
-
-.mkw-calendar:not([data-darkmode])
-	root(false)
 
 </style>

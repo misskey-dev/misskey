@@ -16,6 +16,7 @@ export interface IObject {
 	image?: any;
 	url?: string;
 	tag?: any[];
+	sensitive?: boolean;
 }
 
 export interface IActivity extends IObject {
@@ -39,6 +40,8 @@ export interface IOrderedCollection extends IObject {
 
 export interface INote extends IObject {
 	type: 'Note';
+	_misskey_content: string;
+	_misskey_quote: string;
 }
 
 export interface IPerson extends IObject {
@@ -47,9 +50,11 @@ export interface IPerson extends IObject {
 	preferredUsername: string;
 	manuallyApprovesFollowers: boolean;
 	inbox: string;
+	sharedInbox?: string;
 	publicKey: any;
 	followers: any;
 	following: any;
+	featured?: any;
 	outbox: any;
 	endpoints: string[];
 }
@@ -87,6 +92,14 @@ export interface IReject extends IActivity {
 	type: 'Reject';
 }
 
+export interface IAdd extends IActivity {
+	type: 'Add';
+}
+
+export interface IRemove extends IActivity {
+	type: 'Remove';
+}
+
 export interface ILike extends IActivity {
 	type: 'Like';
 	_misskey_reaction: string;
@@ -94,6 +107,10 @@ export interface ILike extends IActivity {
 
 export interface IAnnounce extends IActivity {
 	type: 'Announce';
+}
+
+export interface IBlock extends IActivity {
+	type: 'Block';
 }
 
 export type Object =
@@ -105,5 +122,8 @@ export type Object =
 	IFollow |
 	IAccept |
 	IReject |
+	IAdd |
+	IRemove |
 	ILike |
-	IAnnounce;
+	IAnnounce |
+	IBlock;

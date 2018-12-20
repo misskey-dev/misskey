@@ -1,30 +1,58 @@
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
+import * as nestedProperty from 'nested-property';
 
 import MiOS from './mios';
 import { hostname } from './config';
+import { erase } from '../../prelude/array';
+import getNoteSummary from '../../misc/get-note-summary';
 
 const defaultSettings = {
 	home: null,
 	mobileHome: [],
 	deck: null,
+	deckNav: true,
+	tagTimelines: [],
 	fetchOnScroll: true,
 	showMaps: true,
+	remainDeletedNote: false,
 	showPostFormOnTopOfTl: false,
+	suggestRecentHashtags: true,
+	showClockOnHeader: true,
+	useShadow: true,
+	roundedCorners: false,
 	circleIcons: true,
-	gradientWindowHeader: false,
+	contrastedAcct: true,
+	showFullAcct: false,
+	showVia: true,
 	showReplyTarget: true,
 	showMyRenotes: true,
 	showRenotedMyNotes: true,
+	showLocalRenotes: true,
 	loadRemoteMedia: true,
 	disableViaMobile: false,
-	memo: null
+	memo: null,
+	iLikeSushi: false,
+	rememberNoteVisibility: false,
+	defaultNoteVisibility: 'public',
+	webSearchEngine: 'https://www.google.com/?#q={{query}}',
+	mutedWords: [],
+	games: {
+		reversi: {
+			showBoardLabels: false,
+			useWhiteBlackStones: false,
+		}
+	}
 };
 
 const defaultDeviceSettings = {
+	reduceMotion: false,
 	apiViaStream: true,
 	autoPopout: false,
 	darkmode: false,
+	darkTheme: 'dark',
+	lightTheme: 'light',
+	themes: [],
 	enableSounds: true,
 	soundVolume: 0.5,
 	lang: null,
@@ -32,7 +60,15 @@ const defaultDeviceSettings = {
 	debug: false,
 	lightmode: false,
 	loadRawImages: false,
-	postStyle: 'standard'
+	alwaysShowNsfw: false,
+	postStyle: 'standard',
+	navbar: 'top',
+	deckColumnAlign: 'center',
+	deckColumnWidth: 'normal',
+	mobileNotificationPosition: 'bottom',
+	deckTemporaryColumn: null,
+	deckDefault: false,
+	useOsDefaultEmojis: false
 };
 
 export default (os: MiOS) => new Vuex.Store({
@@ -43,7 +79,9 @@ export default (os: MiOS) => new Vuex.Store({
 	state: {
 		i: null,
 		indicate: false,
-		uiHeaderHeight: 0
+		uiHeaderHeight: 0,
+		navHook: null,
+		behindNotes: []
 	},
 
 	getters: {
@@ -65,6 +103,22 @@ export default (os: MiOS) => new Vuex.Store({
 
 		setUiHeaderHeight(state, height) {
 			state.uiHeaderHeight = height;
+		},
+
+		navHook(state, callback) {
+			state.navHook = callback;
+		},
+
+		pushBehindNote(state, note) {
+			if (note.userId === state.i.id) return;
+			if (state.behindNotes.some(n => n.id === note.id)) return;
+			state.behindNotes.push(note);
+			document.title = `(${state.behindNotes.length}) ${getNoteSummary(note)}`;
+		},
+
+		clearBehindNotes(state) {
+			state.behindNotes = [];
+			document.title = os.instanceName;
 		}
 	},
 
@@ -76,13 +130,14 @@ export default (os: MiOS) => new Vuex.Store({
 
 		logout(ctx) {
 			ctx.commit('updateI', null);
-			document.cookie = `i=; domain=${hostname}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+			document.cookie = 'i=;';
+			localStorage.removeItem('i');
 		},
 
 		mergeMe(ctx, me) {
-			Object.entries(me).forEach(([key, value]) => {
+			for (const [key, value] of Object.entries(me)) {
 				ctx.commit('updateIKeyValue', { key, value });
-			});
+			}
 
 			if (me.clientSettings) {
 				ctx.dispatch('settings/merge', me.clientSettings);
@@ -106,6 +161,10 @@ export default (os: MiOS) => new Vuex.Store({
 						src: x.src,
 						arg: x.arg
 					};
+				},
+
+				setVisibility(state, visibility) {
+					state.visibility = visibility;
 				}
 			}
 		},
@@ -117,7 +176,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 			mutations: {
 				set(state, x: { key: string; value: any }) {
-					state[x.key] = x.value;
+					nestedProperty.set(state, x.key, x.value);
 				},
 
 				setHome(state, data) {
@@ -155,11 +214,11 @@ export default (os: MiOS) => new Vuex.Store({
 
 					//#region Deck
 					if (state.deck && state.deck.columns) {
-						state.deck.columns.filter(c => c.type == 'widgets').forEach(c => {
-							c.widgets.forEach(w => {
-								if (w.id == x.id) w.data = x.data;
-							});
-						});
+						for (const c of state.deck.columns.filter(c => c.type == 'widgets')) {
+							for (const w of c.widgets.filter(w => w.id == x.id)) {
+								w.data = x.data;
+							}
+						}
 					}
 					//#endregion
 				},
@@ -179,7 +238,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 				removeDeckColumn(state, id) {
 					state.deck.columns = state.deck.columns.filter(c => c.id != id);
-					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},
 
@@ -250,7 +309,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 				stackLeftDeckColumn(state, id) {
 					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
-					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					const left = state.deck.layout[i - 1];
 					if (left) state.deck.layout[i - 1].push(id);
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
@@ -258,7 +317,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 				popRightDeckColumn(state, id) {
 					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
-					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					state.deck.layout.splice(i + 1, 0, [id]);
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},
@@ -285,9 +344,9 @@ export default (os: MiOS) => new Vuex.Store({
 			actions: {
 				merge(ctx, settings) {
 					if (settings == null) return;
-					Object.entries(settings).forEach(([key, value]) => {
+					for (const [key, value] of Object.entries(settings)) {
 						ctx.commit('set', { key, value });
-					});
+					}
 				},
 
 				set(ctx, x) {

@@ -1,0 +1,20 @@
+{
+	id: 'bb5a8287-a072-4b0a-8ae5-ea2a0d33f4f2',
+
+	name: 'Future',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	vars: {
+		primary: 'rgb(94, 158, 185)',
+		secondary: 'rgb(22, 24, 30)',
+		text: 'rgb(214, 218, 224)',
+	},
+
+	props: {
+		renoteGradient: '#0a2d3c',
+		renoteText: '$primary',
+		quoteBorder: '$primary',
+	},
+}

@@ -1,22 +1,25 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import User from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import { publishMainStream } from '../../../../stream';
 import generateUserToken from '../../common/generate-native-user-token';
+import define from '../../define';
 
-/**
- * Regenerate native token
- */
-module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'password' parameter
-	const [password, passwordErr] = $.str.get(params.password);
-	if (passwordErr) return rej('invalid password param');
+export const meta = {
+	requireCredential: true,
 
+	secure: true,
+
+	params: {
+		password: {
+			validator: $.str
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = await bcrypt.compare(ps.password, user.password);
 
 	if (!same) {
 		return rej('incorrect password');
@@ -34,5 +37,5 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	res();
 
 	// Publish event
-	event(user._id, 'my_token_regenerated');
-});
+	publishMainStream(user._id, 'myTokenRegenerated');
+}));

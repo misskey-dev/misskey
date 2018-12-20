@@ -7,6 +7,7 @@ import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
 import isUrl = require('is-url');
+const pkg = require('../../package.json');
 
 /**
  * Path of configuration directory
@@ -26,7 +27,7 @@ export default function load() {
 	const mixin = {} as Mixin;
 
 	// Validate URLs
-	if (!isUrl(config.url)) urlError(config.url);
+	if (!isUrl(config.url)) throw `url="${config.url}" is not a valid URL`;
 
 	const url = new URL(config.url);
 	config.url = normalizeUrl(config.url);
@@ -43,15 +44,13 @@ export default function load() {
 	mixin.stats_url = `${mixin.scheme}://${mixin.host}/stats`;
 	mixin.status_url = `${mixin.scheme}://${mixin.host}/status`;
 	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
+	mixin.user_agent = `Misskey/${pkg.version} (${config.url})`;
+
+	if (config.autoAdmin == null) config.autoAdmin = false;
 
 	return Object.assign(config, mixin);
 }
 
 function normalizeUrl(url: string) {
-	return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
-}
-
-function urlError(url: string) {
-	console.error(`「${url}」は、正しいURLではありません。先頭に http:// または https:// をつけ忘れてないかなど確認してください。`);
-	process.exit(99);
+	return url.endsWith('/') ? url.substr(0, url.length - 1) : url;
 }

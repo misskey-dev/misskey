@@ -1,20 +1,26 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 import User from '../../../../../models/user';
 import config from '../../../../../config';
+import define from '../../../define';
 
-module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'password' parameter
-	const [password, passwordErr] = $.str.get(params.password);
-	if (passwordErr) return rej('invalid password param');
+export const meta = {
+	requireCredential: true,
 
+	secure: true,
+
+	params: {
+		password: {
+			validator: $.str
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = await bcrypt.compare(ps.password, user.password);
 
 	if (!same) {
 		return rej('incorrect password');
@@ -45,4 +51,4 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 			issuer: config.host
 		});
 	});
-});
+}));

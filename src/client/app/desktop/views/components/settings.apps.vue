@@ -1,8 +1,6 @@
 <template>
 <div class="root">
-	<div class="none ui info" v-if="!fetching && apps.length == 0">
-		<p>%fa:info-circle%%i18n:@no-apps%</p>
-	</div>
+	<ui-info v-if="!fetching && apps.length == 0">{{ $t('no-apps') }}</ui-info>
 	<div class="apps" v-if="apps.length != 0">
 		<div v-for="app in apps">
 			<p><b>{{ app.name }}</b></p>
@@ -14,7 +12,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/settings.apps.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -22,7 +22,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('i/authorized_apps').then(apps => {
+		this.$root.api('i/authorized_apps').then(apps => {
 			this.apps = apps;
 			this.fetching = false;
 		});

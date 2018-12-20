@@ -8,19 +8,19 @@
 		ref="textarea"
 		@keypress="onKeypress"
 		@paste="onPaste"
-		placeholder="%i18n:@input-message-here%"
-		v-autocomplete="'text'"
+		:placeholder="$t('input-message-here')"
+		v-autocomplete="{ model: 'text' }"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader" @uploaded="onUploaded"/>
-	<button class="send" @click="send" :disabled="!canSend || sending" title="%i18n:@send%">
-		<template v-if="!sending">%fa:paper-plane%</template><template v-if="sending">%fa:spinner .spin%</template>
+	<button class="send" @click="send" :disabled="!canSend || sending" :title="$t('send')">
+		<template v-if="!sending"><fa icon="paper-plane"/></template><template v-if="sending"><fa icon="spinner .spin"/></template>
 	</button>
-	<button class="attach-from-local" @click="chooseFile" title="%i18n:@attach-from-local%">
-		%fa:upload%
+	<button class="attach-from-local" @click="chooseFile" :title="$t('attach-from-local')">
+		<fa icon="upload"/>
 	</button>
-	<button class="attach-from-drive" @click="chooseFileFromDrive" title="%i18n:@attach-from-drive%">
-		%fa:R folder-open%
+	<button class="attach-from-drive" @click="chooseFileFromDrive" :title="$t('attach-from-drive')">
+		<fa :icon="['far', 'folder-open']"/>
 	</button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>
@@ -28,9 +28,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as autosize from 'autosize';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging-room.form.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -83,7 +85,7 @@ export default Vue.extend({
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					alert('メッセージに添付できるのはひとつのファイルのみです');
+					alert('%i18n:only-one-file-attached%');
 				}
 			}
 		},
@@ -105,7 +107,7 @@ export default Vue.extend({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				alert('メッセージに添付できるのはひとつのファイルのみです');
+				alert('%i18n:only-one-file-attached%');
 				return;
 			}
 
@@ -119,7 +121,7 @@ export default Vue.extend({
 		},
 
 		onKeypress(e) {
-			if ((e.which == 10 || e.which == 13) && e.ctrlKey) {
+			if ((e.which == 10 || e.which == 13) && e.ctrlKey && this.canSend) {
 				this.send();
 			}
 		},
@@ -129,7 +131,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			(this as any).apis.chooseDriveFile({
+			this.$chooseDriveFile({
 				multiple: false
 			}).then(file => {
 				this.file = file;
@@ -150,7 +152,7 @@ export default Vue.extend({
 
 		send() {
 			this.sending = true;
-			(this as any).api('messaging/messages/create', {
+			this.$root.api('messaging/messages/create', {
 				userId: this.user.id,
 				text: this.text ? this.text : undefined,
 				fileId: this.file ? this.file.id : undefined
@@ -195,9 +197,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-messaging-form
 	> textarea
 		cursor auto
 		display block
@@ -209,10 +209,10 @@ root(isDark)
 		padding 8px
 		resize none
 		font-size 1em
-		color isDark ? #fff : #000
+		color var(--inputText)
 		outline none
 		border none
-		border-top solid 1px isDark ? #4b5056 : #eee
+		border-top solid 1px var(--faceDivider)
 		border-radius 0
 		box-shadow none
 		background transparent
@@ -234,10 +234,10 @@ root(isDark)
 		transition color 0.1s ease
 
 		&:hover
-			color $theme-color
+			color var(--primary)
 
 		&:active
-			color darken($theme-color, 10%)
+			color var(--primaryDarken10)
 			transition color 0s ease
 
 	.files
@@ -293,19 +293,13 @@ root(isDark)
 		transition color 0.1s ease
 
 		&:hover
-			color $theme-color
+			color var(--primary)
 
 		&:active
-			color darken($theme-color, 10%)
+			color var(--primaryDarken10)
 			transition color 0s ease
 
 	input[type=file]
 		display none
-
-.mk-messaging-form[data-darkmode]
-	root(true)
-
-.mk-messaging-form:not([data-darkmode])
-	root(false)
 
 </style>

@@ -1,15 +1,17 @@
 import renderDocument from './document';
 import renderHashtag from './hashtag';
 import renderMention from './mention';
+import renderEmoji from './emoji';
 import config from '../../../config';
-import DriveFile from '../../../models/drive-file';
+import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
+import Emoji, { IEmoji } from '../../../models/emoji';
 
-export default async function renderNote(note: INote, dive = true) {
-	const promisedFiles = note.mediaIds
-		? DriveFile.find({ _id: { $in: note.mediaIds } })
+export default async function renderNote(note: INote, dive = true): Promise<any> {
+	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
+		? DriveFile.find({ _id: { $in: note.fileIds } })
 		: Promise.resolve([]);
 
 	let inReplyTo;
@@ -40,6 +42,18 @@ export default async function renderNote(note: INote, dive = true) {
 		inReplyTo = null;
 	}
 
+	let quote;
+
+	if (note.renoteId) {
+		const renote = await Note.findOne({
+			_id: note.renoteId,
+		});
+
+		if (renote) {
+			quote = renote.uri ? renote.uri : `${config.url}/notes/${renote._id}`;
+		}
+	}
+
 	const user = await User.findOne({
 		_id: note.userId
 	});
@@ -50,34 +64,91 @@ export default async function renderNote(note: INote, dive = true) {
 		? note.mentionedRemoteUsers.map(x => x.uri)
 		: [];
 
-	const cc = ['public', 'home', 'followers'].includes(note.visibility)
-		? [`${attributedTo}/followers`].concat(mentions)
-		: [];
+	let to: string[] = [];
+	let cc: string[] = [];
 
-	const mentionedUsers = await User.find({
+	if (note.visibility == 'public') {
+		to = ['https://www.w3.org/ns/activitystreams#Public'];
+		cc = [`${attributedTo}/followers`].concat(mentions);
+	} else if (note.visibility == 'home') {
+		to = [`${attributedTo}/followers`];
+		cc = ['https://www.w3.org/ns/activitystreams#Public'].concat(mentions);
+	} else if (note.visibility == 'followers') {
+		to = [`${attributedTo}/followers`];
+		cc = mentions;
+	} else {
+		to = mentions;
+	}
+
+	const mentionedUsers = note.mentions ? await User.find({
 		_id: {
 			$in: note.mentions
 		}
-	});
+	}) : [];
 
 	const hashtagTags = (note.tags || []).map(tag => renderHashtag(tag));
 	const mentionTags = mentionedUsers.map(u => renderMention(u));
+
+	const files = await promisedFiles;
+
+	let text = note.text;
+
+	if (note.poll != null) {
+		if (text == null) text = '';
+		const url = `${config.url}/notes/${note._id}`;
+		// TODO: i18n
+		text += `\n\n[投票を見る](${url})`;
+	}
+
+	let apText = text;
+
+	if (quote) {
+		if (apText == null) apText = '';
+		apText += `\n\nRE: ${quote}`;
+	}
+
+	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
+
+	const content = toHtml(Object.assign({}, note, {
+		text: apText
+	}));
+
+	const emojis = await getEmojis(note.emojis);
+	const apemojis = emojis.map(emoji => renderEmoji(emoji));
+
 	const tag = [
 		...hashtagTags,
 		...mentionTags,
+		...apemojis,
 	];
 
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
-		summary: note.cw,
-		content: toHtml(note),
+		summary,
+		content,
+		_misskey_content: text,
+		_misskey_quote: quote,
 		published: note.createdAt.toISOString(),
-		to: 'https://www.w3.org/ns/activitystreams#Public',
+		to,
 		cc,
 		inReplyTo,
-		attachment: (await promisedFiles).map(renderDocument),
+		attachment: files.map(renderDocument),
+		sensitive: files.some(file => file.metadata.isSensitive),
 		tag
 	};
+}
+
+export async function getEmojis(names: string[]): Promise<IEmoji[]> {
+	if (names == null || names.length < 1) return [];
+
+	const emojis = await Promise.all(
+		names.map(name => Emoji.findOne({
+			name,
+			host: null
+		}))
+	);
+
+	return emojis.filter(emoji => emoji != null);
 }

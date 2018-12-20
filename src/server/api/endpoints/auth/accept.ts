@@ -1,51 +1,27 @@
-/**
- * Module dependencies
- */
 import rndstr from 'rndstr';
 const crypto = require('crypto');
 import $ from 'cafy';
 import App from '../../../../models/app';
 import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';
+import define from '../../define';
 
-/**
- * @swagger
- * /auth/accept:
- *   note:
- *     summary: Accept a session
- *     parameters:
- *       - $ref: "#/parameters/NativeToken"
- *       -
- *         name: token
- *         description: Session Token
- *         in: formData
- *         required: true
- *         type: string
- *     responses:
- *       204:
- *         description: OK
- *
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
+export const meta = {
+	requireCredential: true,
 
-/**
- * Accept
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'token' parameter
-	const [token, tokenErr] = $.str.get(params.token);
-	if (tokenErr) return rej('invalid token param');
+	secure: true,
 
+	params: {
+		token: {
+			validator: $.str
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch token
 	const session = await AuthSess
-		.findOne({ token: token });
+		.findOne({ token: ps.token });
 
 	if (session === null) {
 		return rej('session not found');
@@ -90,4 +66,4 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Response
 	res();
-});
+}));

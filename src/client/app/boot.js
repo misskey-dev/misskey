@@ -3,20 +3,25 @@
  * (ENTRY POINT)
  */
 
-/**
- * ドメインに基づいて適切なスクリプトを読み込みます。
- * ユーザーの言語およびモバイル端末か否かも考慮します。
- * webpackは介さないためrequireやimportは使えません。
- */
-
 'use strict';
 
-(function() {
+(async function() {
 	// キャッシュ削除要求があれば従う
 	if (localStorage.getItem('shouldFlush') == 'true') {
 		refresh();
 		return;
 	}
+
+	const langs = LANGS;
+
+	//#region Apply theme
+	const theme = localStorage.getItem('theme');
+	if (theme) {
+		for (const [k, v] of Object.entries(JSON.parse(theme))) {
+			document.documentElement.style.setProperty(`--${k}`, v.toString());
+		}
+	}
+	//#endregion
 
 	//#region Load settings
 	let settings = null;
@@ -32,21 +37,48 @@
 	//#region Detect app name
 	let app = null;
 
-	if (url.pathname == '/docs' || url.pathname.startsWith('/docs/')) app = 'docs';
-	if (url.pathname == '/dev' || url.pathname.startsWith('/dev/')) app = 'dev';
-	if (url.pathname == '/auth' || url.pathname.startsWith('/auth/')) app = 'auth';
+	if (`${url.pathname}/`.startsWith('/docs/')) app = 'docs';
+	if (`${url.pathname}/`.startsWith('/dev/')) app = 'dev';
+	if (`${url.pathname}/`.startsWith('/auth/')) app = 'auth';
+	if (`${url.pathname}/`.startsWith('/admin/')) app = 'admin';
+	if (`${url.pathname}/`.startsWith('/test/')) app = 'test';
 	//#endregion
+
+	// Script version
+	const ver = localStorage.getItem('v') || VERSION;
 
 	//#region Detect the user language
-	let lang = navigator.language.split('-')[0];
+	let lang = null;
 
-	// The default language is English
-	if (!LANGS.includes(lang)) lang = 'en';
+	if (langs.includes(navigator.language)) {
+		lang = navigator.language;
+	} else {
+		lang = langs.find(x => x.split('-')[0] == navigator.language);
 
-	if (settings) {
-		if (settings.device.lang) lang = settings.device.lang;
+		if (lang == null) {
+			// Fallback
+			lang = 'en-US';
+		}
 	}
+
+	if (settings && settings.device.lang &&
+		langs.includes(settings.device.lang)) {
+		lang = settings.device.lang;
+	}
+
+	window.lang = lang;
 	//#endregion
+
+	let locale = localStorage.getItem('locale');
+	const localeKey = localStorage.getItem('localeKey');
+
+	if (locale == null || localeKey != `${ver}.${lang}`) {
+		const locale = await fetch(`/assets/locales/${lang}.json?ver=${ver}`)
+			.then(response => response.json());
+
+			localStorage.setItem('locale', JSON.stringify(locale));
+			localStorage.setItem('localeKey', `${ver}.${lang}`);
+	}
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
@@ -73,26 +105,16 @@
 		app = isMobile ? 'mobile' : 'desktop';
 	}
 
-	// Dark/Light
-	if (settings) {
-		if (settings.device.darkmode) {
-			document.documentElement.setAttribute('data-darkmode', 'true');
-		}
-	}
-
-	// Script version
-	const ver = localStorage.getItem('v') || VERSION;
-
 	// Get salt query
 	const salt = localStorage.getItem('salt')
-		? '?salt=' + localStorage.getItem('salt')
+		? `?salt=${localStorage.getItem('salt')}`
 		: '';
 
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.js${salt}`);
+	script.setAttribute('src', `/assets/${app}.${ver}.js${salt}`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);
@@ -104,7 +126,7 @@
 	// グローバルにタイマーIDを代入しておく
 	window.mkBootTimer = window.setTimeout(async () => {
 		// Fetch meta
-		const res = await fetch(API + '/meta', {
+		const res = await fetch('/api/meta', {
 			method: 'POST',
 			cache: 'no-cache'
 		});
@@ -128,15 +150,17 @@
 	function refresh() {
 		localStorage.setItem('shouldFlush', 'false');
 
-		// Random
-		localStorage.setItem('salt', Math.random().toString());
+		localStorage.removeItem('locale');
 
-		// Clear cache (serive worker)
+		// Random
+		localStorage.setItem('salt', Math.random().toString().substr(2, 8));
+
+		// Clear cache (service worker)
 		try {
 			navigator.serviceWorker.controller.postMessage('clear');
 
 			navigator.serviceWorker.getRegistrations().then(registrations => {
-				registrations.forEach(registration => registration.unregister());
+				for (const registration of registrations) registration.unregister();
 			});
 		} catch (e) {
 			console.error(e);

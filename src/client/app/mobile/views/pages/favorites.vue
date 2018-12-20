@@ -1,21 +1,25 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:star%%i18n:@title%</span>
+	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('title') }}</span>
 
 	<main>
-		<template v-for="favorite in favorites">
-			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
-		</template>
-		<a v-if="existMore" @click="more">%i18n:@more%</a>
+		<sequential-entrance animation="entranceFromTop" delay="25">
+			<template v-for="favorite in favorites">
+				<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
+			</template>
+		</sequential-entrance>
+		<ui-button v-if="existMore" @click="more">{{ $t('@.load-more') }}</ui-button>
 	</main>
 </mk-ui>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/favorites.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -28,14 +32,14 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = 'Misskey | %i18n:@notifications%';
+		document.title = `${this.$root.instanceName} | %i18n:@notifications%`;
 	},
 	methods: {
 		fetch() {
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('i/favorites', {
+			this.$root.api('i/favorites', {
 				limit: 11
 			}).then(favorites => {
 				if (favorites.length == 11) {
@@ -51,9 +55,9 @@ export default Vue.extend({
 		},
 		more() {
 			this.moreFetching = true;
-			(this as any).api('i/favorites', {
+			this.$root.api('i/favorites', {
 				limit: 11,
-				maxId: this.favorites[this.favorites.length - 1].id
+				untilId: this.favorites[this.favorites.length - 1].id
 			}).then(favorites => {
 				if (favorites.length == 11) {
 					this.existMore = true;
@@ -71,21 +75,19 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 main
 	width 100%
 	max-width 680px
 	margin 0 auto
 	padding 8px
 
-	> .post
+	> * > .post
 		margin-bottom 8px
 
 	@media (min-width 500px)
 		padding 16px
 
-		> .post
+		> * > .post
 			margin-bottom 16px
 
 	@media (min-width 600px)

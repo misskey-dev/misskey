@@ -1,17 +1,20 @@
 <template>
 <div class="mkw-polls">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:chart-pie%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
+		<template slot="header"><fa icon="chart-pie"/>{{ $t('title') }}</template>
+		<button slot="func" :title="$t('title')" @click="fetch">
+			<fa v-if="!fetching &&  more" icon="arrow-right"/>
+			<fa v-if="!fetching && !more" icon="sync"/>
+		</button> 
 
-		<div class="mkw-polls--body" :data-darkmode="$store.state.device.darkmode">
+		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
-				<p v-if="poll.text"><router-link to="poll | notePage">{{ poll.text }}</router-link></p>
-				<p v-if="!poll.text"><router-link to="poll | notePage">%fa:link%</router-link></p>
+				<p v-if="poll.text"><router-link :to="poll | notePage">{{ poll.text }}</router-link></p>
+				<p v-if="!poll.text"><router-link :to="poll | notePage"><fa icon="link"/></router-link></p>
 				<mk-poll :note="poll"/>
 			</div>
-			<p class="empty" v-if="!fetching && poll == null">%i18n:@nothing%</p>
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="empty" v-if="!fetching && poll == null">{{ $t('nothing') }}</p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		</div>
 	</mk-widget-container>
 </div>
@@ -19,6 +22,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'polls',
@@ -26,10 +30,12 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/polls.vue'),
 	data() {
 		return {
 			poll: null,
 			fetching: true,
+			more: true,
 			offset: 0
 		};
 	},
@@ -45,18 +51,24 @@ export default define({
 			this.fetching = true;
 			this.poll = null;
 
-			(this as any).api('notes/polls/recommendation', {
+			this.$root.api('notes/polls/recommendation', {
 				limit: 1,
 				offset: this.offset
 			}).then(notes => {
 				const poll = notes ? notes[0] : null;
 				if (poll == null) {
+					this.more = false;
 					this.offset = 0;
 				} else {
+					this.more = true;
 					this.offset++;
 				}
 				this.poll = poll;
 				this.fetching = false;
+			}).catch(() => {
+				this.poll = null;
+				this.fetching = false;
+				this.more = false;
 			});
 		}
 	}
@@ -64,11 +76,11 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-polls--body
 	> .poll
 		padding 16px
 		font-size 12px
-		color isDark ? #9ea4ad : #555
+		color var(--text)
 
 		> p
 			margin 0 0 8px 0
@@ -88,13 +100,7 @@ root(isDark)
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
-
-.mkw-polls--body[data-darkmode]
-	root(true)
-
-.mkw-polls--body:not([data-darkmode])
-	root(false)
 
 </style>

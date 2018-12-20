@@ -1,0 +1,12 @@
+.autogen
+.git
+.github
+.travis
+.vscode
+Dockerfile
+build/
+docker-compose.yml
+node_modules/
+mongo/
+redis/
+elasticsearch/

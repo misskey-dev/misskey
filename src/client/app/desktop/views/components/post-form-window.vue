@@ -1,11 +1,11 @@
 <template>
-<mk-window class="mk-post-form-window" ref="window" is-modal @closed="$destroy">
+<mk-window class="mk-post-form-window" ref="window" is-modal @closed="onWindowClosed" :animation="animation">
 	<span slot="header" class="mk-post-form-window--header">
-		<span class="icon" v-if="geo">%fa:map-marker-alt%</span>
-		<span v-if="!reply">%i18n:@note%</span>
-		<span v-if="reply">%i18n:@reply%</span>
-		<span class="count" v-if="media.length != 0">{{ '%i18n:@attaches%'.replace('{}', media.length) }}</span>
-		<span class="count" v-if="uploadings.length != 0">{{ '%i18n:@uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
+		<span class="icon" v-if="geo"><fa icon="map-marker-alt"/></span>
+		<span v-if="!reply">{{ $t('note') }}</span>
+		<span v-if="reply">{{ $t('reply') }}</span>
+		<span class="count" v-if="files.length != 0">{{ this.$t('attaches').replace('{}', files.length) }}</span>
+		<span class="count" v-if="uploadings.length != 0">{{ this.$t('uploading-media').replace('{}', uploadings.length) }}<mk-ellipsis/></span>
 	</span>
 
 	<div class="mk-post-form-window--body">
@@ -14,7 +14,7 @@
 			:reply="reply"
 			@posted="onPosted"
 			@change-uploadings="onChangeUploadings"
-			@change-attached-media="onChangeMedia"
+			@change-attached-files="onChangeFiles"
 			@geo-attached="onGeoAttached"
 			@geo-dettached="onGeoDettached"/>
 	</div>
@@ -23,27 +23,43 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
-	props: ['reply'],
+	i18n: i18n('desktop/views/components/post-form-window.vue'),
+	props: {
+		reply: {
+			type: Object,
+			required: false
+		},
+
+		animation: {
+			type: Boolean,
+			required: false,
+			default: true
+		}
+	},
+
 	data() {
 		return {
 			uploadings: [],
-			media: [],
+			files: [],
 			geo: null
 		};
 	},
+
 	mounted() {
 		this.$nextTick(() => {
 			(this.$refs.form as any).focus();
 		});
 	},
+
 	methods: {
 		onChangeUploadings(files) {
 			this.uploadings = files;
 		},
-		onChangeMedia(media) {
-			this.media = media;
+		onChangeFiles(files) {
+			this.files = files;
 		},
 		onGeoAttached(geo) {
 			this.geo = geo;
@@ -53,13 +69,17 @@ export default Vue.extend({
 		},
 		onPosted() {
 			(this.$refs.window as any).close();
+		},
+		onWindowClosed() {
+			this.$emit('closed');
+			this.destroyDom();
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-post-form-window
 	.mk-post-form-window--header
 		.icon
 			margin-right 8px
@@ -76,15 +96,6 @@ root(isDark)
 
 	.mk-post-form-window--body
 		.notePreview
-			if isDark
-				margin 16px 22px 0 22px
-			else
 				margin 16px 22px
-
-.mk-post-form-window[data-darkmode]
-	root(true)
-
-.mk-post-form-window:not([data-darkmode])
-	root(false)
 
 </style>

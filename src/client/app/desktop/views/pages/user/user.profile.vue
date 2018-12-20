@@ -1,64 +1,39 @@
 <template>
-<div class="profile">
-	<div class="friend-form" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id">
-		<mk-follow-button :user="user" size="big"/>
-		<p class="followed" v-if="user.isFollowed">%i18n:@follows-you%</p>
+<div class="profile" v-if="$store.getters.isSignedIn">
+	<div class="friend-form" v-if="$store.state.i.id != user.id">
+		<mk-follow-button :user="user" block/>
+		<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
 		<p class="stalk" v-if="user.isFollowing">
-			<span v-if="user.isStalking">%i18n:@stalking% <a @click="unstalk">%fa:meh% %i18n:@unstalk%</a></span>
-			<span v-if="!user.isStalking"><a @click="stalk">%fa:user-secret% %i18n:@stalk%</a></span>
+			<span v-if="user.isStalking">{{ $t('stalking') }} <a @click="unstalk"><fa icon="meh"/> {{ $t('unstalk') }}</a></span>
+			<span v-if="!user.isStalking"><a @click="stalk"><fa icon="user-secret"/> {{ $t('stalk') }}</a></span>
 		</p>
 	</div>
 	<div class="action-form">
-		<button class="mute ui" @click="user.isMuted ? unmute() : mute()">
-			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
-			<span v-if="!user.isMuted">%fa:eye-slash% %i18n:@mute%</span>
-		</button>
-		<button class="mute ui" @click="list">%fa:list% リストに追加</button>
-	</div>
-	<div class="description" v-if="user.description">{{ user.description }}</div>
-	<div class="birthday" v-if="user.host === null && user.profile.birthday">
-		<p>%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
-	</div>
-	<div class="twitter" v-if="user.host === null && user.twitter">
-		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">@{{ user.twitter.screenName }}</a></p>
-	</div>
-	<div class="status">
-		<p class="notes-count">%fa:angle-right%<a>{{ user.notesCount }}</a><b>投稿</b></p>
-		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.followingCount }}</a>人を<b>フォロー</b></p>
-		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followersCount }}</a>人の<b>フォロワー</b></p>
+		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
+			<span v-if="user.isMuted"><fa icon="eye"/> {{ $t('unmute') }}</span>
+			<span v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mute') }}</span>
+		</ui-button>
+		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
+			<span v-if="user.isBlocking"><fa icon="ban"/> {{ $t('unblock') }}</span>
+			<span v-else><fa icon="ban"/> {{ $t('block') }}</span>
+		</ui-button>
+		<ui-button @click="list"><fa icon="list"/> {{ $t('push-to-a-list') }}</ui-button>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import * as age from 's-age';
-import MkFollowingWindow from '../../components/following-window.vue';
-import MkFollowersWindow from '../../components/followers-window.vue';
+import i18n from '../../../../i18n';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.profile.vue'),
 	props: ['user'],
-	computed: {
-		age(): number {
-			return age(this.user.profile.birthday);
-		}
-	},
+
 	methods: {
-		showFollowing() {
-			(this as any).os.new(MkFollowingWindow, {
-				user: this.user
-			});
-		},
-
-		showFollowers() {
-			(this as any).os.new(MkFollowersWindow, {
-				user: this.user
-			});
-		},
-
 		stalk() {
-			(this as any).api('following/stalk', {
+			this.$root.api('following/stalk', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isStalking = true;
@@ -68,7 +43,7 @@ export default Vue.extend({
 		},
 
 		unstalk() {
-			(this as any).api('following/unstalk', {
+			this.$root.api('following/unstalk', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isStalking = false;
@@ -78,7 +53,7 @@ export default Vue.extend({
 		},
 
 		mute() {
-			(this as any).api('mute/create', {
+			this.$root.api('mute/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = true;
@@ -88,7 +63,7 @@ export default Vue.extend({
 		},
 
 		unmute() {
-			(this as any).api('mute/delete', {
+			this.$root.api('mute/delete', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = false;
@@ -97,17 +72,49 @@ export default Vue.extend({
 			});
 		},
 
+		block() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('block-confirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('blocking/create', {
+					userId: this.user.id
+				}).then(() => {
+					this.user.isBlocking = true;
+				}, () => {
+					alert('error');
+				});
+			});
+		},
+
+		unblock() {
+			this.$root.api('blocking/delete', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isBlocking = false;
+			}, () => {
+				alert('error');
+			});
+		},
+
 		list() {
-			const w = (this as any).os.new(MkUserListsWindow);
+			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', async list => {
 				w.close();
-				await (this as any).api('users/lists/push', {
+				await this.$root.api('users/lists/push', {
 					listId: list.id,
 					userId: this.user.id
 				});
-				(this as any).apis.dialog({
+				this.$root.dialog({
+					type: 'success',
 					title: 'Done!',
-					text: `${this.user.name}を${list.title}に追加しました。`
+					text: this.$t('list-pushed', {
+						user: this.user.name,
+						list: list.title
+					})
 				});
 			});
 		}
@@ -117,9 +124,9 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .profile
-	background #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
 
 	> *:first-child
 		border-top none !important
@@ -127,7 +134,7 @@ export default Vue.extend({
 	> .friend-form
 		padding 16px
 		text-align center
-		border-top solid 1px #eee
+		border-bottom solid 1px var(--faceDivider)
 
 		> .followed
 			margin 12px 0 0 0
@@ -145,51 +152,11 @@ export default Vue.extend({
 	> .action-form
 		padding 16px
 		text-align center
-		border-top solid 1px #eee
 
 		> *
 			width 100%
 
 			&:not(:last-child)
 				margin-bottom 12px
-
-	> .description
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
-	> .birthday
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
-		> p
-			margin 0
-
-			> i
-				margin-right 8px
-
-	> .twitter
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
-		> p
-			margin 0
-
-			> i
-				margin-right 8px
-
-	> .status
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
-		> p
-			margin 8px 0
-
-			> i
-				margin-left 8px
-				margin-right 8px
 
 </style>

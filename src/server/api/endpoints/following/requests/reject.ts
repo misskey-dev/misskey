@@ -1,18 +1,34 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import rejectFollowRequest from '../../../../../services/following/requests/reject';
 import User from '../../../../../models/user';
+import define from '../../../define';
 
-/**
- * Reject a follow request
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'userId' parameter
-	const [followerId, followerIdErr] = $.type(ID).get(params.userId);
-	if (followerIdErr) return rej('invalid userId param');
+export const meta = {
+	desc: {
+		'ja-JP': '自分に届いた、指定したフォローリクエストを拒否します。',
+		'en-US': 'Reject a follow request.'
+	},
 
+	requireCredential: true,
+
+	kind: 'following-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch follower
 	const follower = await User.findOne({
-		_id: followerId
+		_id: ps.userId
 	});
 
 	if (follower === null) {
@@ -21,6 +37,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	await rejectFollowRequest(user, follower);
 
-	// Send response
 	res();
-});
+}));

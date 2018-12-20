@@ -1,32 +1,49 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
+import define from '../../../define';
 
-/**
- * Show a file
- */
-module.exports = async (params, user) => {
-	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
-	if (fileIdErr) throw 'invalid fileId param';
+export const meta = {
+	stability: 'stable',
 
+	desc: {
+		'ja-JP': '指定したドライブのファイルの情報を取得します。',
+		'en-US': 'Get specified file of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read',
+
+	params: {
+		fileId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のファイルID',
+				'en-US': 'Target file ID'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: fileId,
-			'metadata.userId': user._id
+			_id: ps.fileId,
+			'metadata.userId': user._id,
+			'metadata.deletedAt': { $exists: false }
 		});
 
 	if (file === null) {
-		throw 'file-not-found';
+		return rej('file-not-found');
 	}
 
 	// Serialize
 	const _file = await pack(file, {
-		detail: true
+		detail: true,
+		self: true
 	});
 
-	return _file;
-};
+	res(_file);
+}));

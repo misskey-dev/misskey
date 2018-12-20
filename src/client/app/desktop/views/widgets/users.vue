@@ -1,22 +1,24 @@
 <template>
 <div class="mkw-users">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:users%%i18n:@title%</template>
-		<button slot="func" title="%i18n:@refresh%" @click="refresh">%fa:sync%</button>
+		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
+		<button slot="func" :title="$t('title')" @click="refresh">
+			<fa v-if="!fetching &&  more" icon="arrow-right"/>
+			<fa v-if="!fetching && !more" icon="sync"/>
+		</button>
 
 		<div class="mkw-users--body">
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 			<template v-else-if="users.length != 0">
 				<div class="user" v-for="_user in users">
 					<mk-avatar class="avatar" :user="_user"/>
 					<div class="body">
-						<router-link class="name" :to="_user | userPage" v-user-preview="_user.id">{{ _user | userName }}</router-link>
+						<router-link class="name" :to="_user | userPage" v-user-preview="_user.id"><mk-user-name :user="_user"/></router-link>
 						<p class="username">@{{ _user | acct }}</p>
 					</div>
-					<mk-follow-button :user="_user"/>
 				</div>
 			</template>
-			<p class="empty" v-else>%i18n:@no-one%</p>
+			<p class="empty" v-else>{{ $t('no-one') }}</p>
 		</div>
 	</mk-widget-container>
 </div>
@@ -24,6 +26,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
 
 const limit = 3;
 
@@ -33,10 +36,12 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('desktop/views/widgets/users.vue'),
 	data() {
 		return {
 			users: [],
 			fetching: true,
+			more: true,
 			page: 0
 		};
 	},
@@ -52,18 +57,25 @@ export default define({
 			this.fetching = true;
 			this.users = [];
 
-			(this as any).api('users/recommendation', {
+			this.$root.api('users/recommendation', {
 				limit: limit,
 				offset: limit * this.page
 			}).then(users => {
 				this.users = users;
 				this.fetching = false;
+			}).catch(() => {
+				this.users = [];
+				this.fetching = false;
+				this.more = false;
+				this.page = 0;
 			});
 		},
 		refresh() {
 			if (this.users.length < limit) {
+				this.more = false;
 				this.page = 0;
 			} else {
+				this.more = true;
 				this.page++;
 			}
 			this.fetch();
@@ -73,11 +85,11 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-users
 	.mkw-users--body
 		> .user
 			padding 16px
-			border-bottom solid 1px isDark ? #1c2023 : #eee
+			border-bottom solid 1px var(--faceDivider)
 
 			&:last-child
 				border-bottom none
@@ -103,19 +115,15 @@ root(isDark)
 					margin 0
 					font-size 16px
 					line-height 24px
-					color isDark ? #fff : #555
+					color var(--text)
 
 				> .username
 					display block
 					margin 0
 					font-size 15px
 					line-height 16px
-					color isDark ? #606984 : #ccc
-
-			> .mk-follow-button
-				position absolute
-				top 16px
-				right 16px
+					color var(--text)
+					opacity 0.7
 
 		> .empty
 			margin 0
@@ -129,13 +137,7 @@ root(isDark)
 			text-align center
 			color #aaa
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
-
-.mkw-users[data-darkmode]
-	root(true)
-
-.mkw-users:not([data-darkmode])
-	root(false)
 
 </style>

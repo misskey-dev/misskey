@@ -4,13 +4,16 @@
 	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown" :style="{ width, height }">
 		<div class="body">
 			<header ref="header"
-				:class="{ withGradient: $store.state.settings.gradientWindowHeader }"
 				@contextmenu.prevent="() => {}" @mousedown.prevent="onHeaderMousedown"
 			>
 				<h1><slot name="header"></slot></h1>
 				<div>
-					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%">%fa:R window-restore%</button>
-					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%">%fa:times%</button>
+					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" :title="$t('popout')">
+						<i><fa :icon="['far', 'window-restore']"/></i>
+					</button>
+					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" :title="$t('close')">
+						<i><fa icon="times"/></i>
+					</button>
 				</div>
 			</header>
 			<div class="content">
@@ -33,6 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 import contains from '../../../common/scripts/contains';
 
@@ -52,6 +56,7 @@ function dragClear(fn) {
 }
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/window.vue'),
 	props: {
 		isModal: {
 			type: Boolean,
@@ -76,6 +81,11 @@ export default Vue.extend({
 		name: {
 			type: String,
 			default: null
+		},
+		animation: {
+			type: Boolean,
+			required: false,
+			default: true
 		}
 	},
 
@@ -100,13 +110,13 @@ export default Vue.extend({
 			this.preventMount = true;
 		} else {
 			// ウィンドウをウィンドウシステムに登録
-			(this as any).os.windows.add(this);
+			this.$root.os.windows.add(this);
 		}
 	},
 
 	mounted() {
 		if (this.preventMount) {
-			this.$destroy();
+			this.destroyDom();
 			return;
 		}
 
@@ -123,7 +133,7 @@ export default Vue.extend({
 
 	destroyed() {
 		// ウィンドウをウィンドウシステムから削除
-		(this as any).os.windows.remove(this);
+		this.$root.os.windows.remove(this);
 
 		window.removeEventListener('resize', this.onBrowserResize);
 	},
@@ -142,7 +152,7 @@ export default Vue.extend({
 				anime({
 					targets: bg,
 					opacity: 1,
-					duration: 100,
+					duration: this.animation ? 100 : 0,
 					easing: 'linear'
 				});
 			}
@@ -152,7 +162,7 @@ export default Vue.extend({
 				targets: main,
 				opacity: 1,
 				scale: [1.1, 1],
-				duration: 200,
+				duration: this.animation ? 200 : 0,
 				easing: 'easeOutQuad'
 			});
 
@@ -160,7 +170,7 @@ export default Vue.extend({
 
 			setTimeout(() => {
 				this.$emit('opened');
-			}, 300);
+			}, this.animation ? 300 : 0);
 		},
 
 		close() {
@@ -174,7 +184,7 @@ export default Vue.extend({
 				anime({
 					targets: bg,
 					opacity: 0,
-					duration: 300,
+					duration: this.animation ? 300 : 0,
 					easing: 'linear'
 				});
 			}
@@ -185,14 +195,14 @@ export default Vue.extend({
 				targets: main,
 				opacity: 0,
 				scale: 0.8,
-				duration: 300,
+				duration: this.animation ? 300 : 0,
 				easing: [0.5, -0.5, 1, 0.5]
 			});
 
 			setTimeout(() => {
-				this.$destroy();
 				this.$emit('closed');
-			}, 300);
+				this.destroyDom();
+			}, this.animation ? 300 : 0);
 		},
 
 		popout() {
@@ -224,12 +234,12 @@ export default Vue.extend({
 		top() {
 			let z = 0;
 
-			(this as any).os.windows.getAll().forEach(w => {
-				if (w == this) return;
+			const ws = Array.from(this.$root.os.windows.getAll()).filter(w => w != this);
+			for (const w of ws) {
 				const m = w.$refs.main;
 				const mz = Number(document.defaultView.getComputedStyle(m, null).zIndex);
 				if (mz > z) z = mz;
-			});
+			}
 
 			if (z > 0) {
 				(this.$refs.main as any).style.zIndex = z + 1;
@@ -458,9 +468,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-window
 	display block
 
 	> .bg
@@ -488,10 +496,7 @@ root(isDark)
 		&:focus
 			&:not([data-is-modal])
 				> .body
-					if isDark
-						box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 12px 0 rgba(#000, 0.5)
-					else
-						box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(#000, 0.2)
+						box-shadow 0 0 0px 1px var(--primaryAlpha05), 0 2px 12px 0 var(--desktopWindowShadow)
 
 		> .handle
 			$size = 8px
@@ -557,13 +562,9 @@ root(isDark)
 		> .body
 			height 100%
 			overflow hidden
-			background isDark ? #282C37 : #fff
+			background var(--face)
 			border-radius 6px
-
-			if isDark
-				box-shadow 0 2px 12px 0 rgba(#000, 0.5)
-			else
-				box-shadow 0 2px 6px 0 rgba(#000, 0.2)
+			box-shadow 0 2px 12px 0 rgba(#000, 0.5)
 
 			> header
 				$header-height = 40px
@@ -573,13 +574,9 @@ root(isDark)
 				overflow hidden
 				white-space nowrap
 				cursor move
-				background isDark ? #313543 : #fff
+				background var(--faceHeader)
 				border-radius 6px 6px 0 0
 				box-shadow 0 1px 0 rgba(#000, 0.1)
-
-				&.withGradient
-					background isDark ? linear-gradient(to bottom, #313543, #1d2027) : linear-gradient(to bottom, #fff, #ececec)
-					box-shadow 0 1px 0 rgba(#000, 0.15)
 
 				&, *
 					user-select none
@@ -595,7 +592,7 @@ root(isDark)
 					font-size 1em
 					line-height $header-height
 					font-weight normal
-					color isDark ? #e3e5e8 : #666
+					color var(--desktopWindowTitle)
 
 				> div:last-child
 					position absolute
@@ -610,18 +607,19 @@ root(isDark)
 						padding 0
 						cursor pointer
 						font-size 1em
-						color isDark ? #9baec8 : rgba(#000, 0.4)
+						color var(--faceTextButton)
 						border none
 						outline none
 						background transparent
 
 						&:hover
-							color isDark ? #b2c1d5 : rgba(#000, 0.6)
+							color var(--faceTextButtonHover)
 
 						&:active
-							color isDark ? #b2c1d5 : darken(#000, 30%)
+							color var(--faceTextButtonActive)
 
-						> [data-fa]
+						> i
+							display inline-block
 							padding 0
 							width $header-height
 							line-height $header-height
@@ -633,11 +631,5 @@ root(isDark)
 	&:not([flexible])
 		> .main > .body > .content
 			height calc(100% - 40px)
-
-.mk-window[data-darkmode]
-	root(true)
-
-.mk-window:not([data-darkmode])
-	root(false)
 
 </style>

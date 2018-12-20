@@ -1,69 +1,65 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
-import Mute from '../../../../models/mute';
-import { pack } from '../../../../models/user';
-import { getFriendIds } from '../../common/get-friends';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import Mute, { packMany } from '../../../../models/mute';
+import define from '../../define';
 
-/**
- * Get muted users of a user
- */
-module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = $.bool.optional().get(params.iknow);
-	if (iknowErr) return rej('invalid iknow param');
+export const meta = {
+	desc: {
+		'ja-JP': 'ミュートしているユーザー一覧を取得します。',
+		'en-US': 'Get muted users.'
+	},
 
-	// Get 'limit' parameter
-	const [limit = 30, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	requireCredential: true,
 
-	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.type(ID).optional().get(params.cursor);
-	if (cursorErr) return rej('invalid cursor param');
+	kind: 'account/read',
 
-	// Construct query
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 30
+		},
+
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+	}
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	// Check if both of sinceId and untilId is specified
+	if (ps.sinceId && ps.untilId) {
+		return rej('cannot set sinceId and untilId');
+	}
+
 	const query = {
-		muterId: me._id,
-		deletedAt: { $exists: false }
+		muterId: me._id
 	} as any;
 
-	if (iknow) {
-		// Get my friends
-		const myFriends = await getFriendIds(me._id);
+	const sort = {
+		_id: -1
+	};
 
-		query.muteeId = {
-			$in: myFriends
-		};
-	}
-
-	// カーソルが指定されている場合
-	if (cursor) {
+	if (ps.sinceId) {
+		sort._id = 1;
 		query._id = {
-			$lt: cursor
+			$gt: ps.sinceId
+		};
+	} else if (ps.untilId) {
+		query._id = {
+			$lt: ps.untilId
 		};
 	}
 
-	// Get mutes
 	const mutes = await Mute
 		.find(query, {
-			limit: limit + 1,
-			sort: { _id: -1 }
+			limit: ps.limit,
+			sort: sort
 		});
 
-	// 「次のページ」があるかどうか
-	const inStock = mutes.length === limit + 1;
-	if (inStock) {
-		mutes.pop();
-	}
-
-	// Serialize
-	const users = await Promise.all(mutes.map(async m =>
-		await pack(m.muteeId, me, { detail: true })));
-
-	// Response
-	res({
-		users: users,
-		next: inStock ? mutes[mutes.length - 1]._id : null,
-	});
-});
+	res(await packMany(mutes, me));
+}));

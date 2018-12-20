@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:R bell%%i18n:@notifications%</span>
-	<template slot="func"><button @click="fn">%fa:check%</button></template>
+	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>{{ $t('notifications') }}</span>
+	<template slot="func"><button @click="fn"><fa icon="check"/></button></template>
 
 	<main>
 		<mk-notifications @fetched="onFetched"/>
@@ -11,20 +11,27 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/notifications.vue'),
 	mounted() {
-		document.title = 'Misskey | %i18n:@notifications%';
+		document.title = this.$t('notifications');
 
 		Progress.start();
 	},
 	methods: {
 		fn() {
-			const ok = window.confirm('%i18n:@read-all%');
-			if (!ok) return;
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('read-all'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
 
-			(this as any).api('notifications/mark_as_read_all');
+				this.$root.api('notifications/mark_all_as_read');
+			});
 		},
 		onFetched() {
 			Progress.done();
@@ -34,7 +41,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 main
 	width 100%

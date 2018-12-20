@@ -1,60 +1,62 @@
 <template>
 <div class="root home">
-	<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
+	<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 	<section class="recent-notes">
-		<h2>%fa:R comments%%i18n:@recent-notes%</h2>
+		<h2><fa :icon="['far', 'comments']"/>{{ $t('recent-notes') }}</h2>
 		<div>
 			<x-notes :user="user"/>
 		</div>
 	</section>
 	<section class="images">
-		<h2>%fa:image%%i18n:@images%</h2>
+		<h2><fa icon="image"/>{{ $t('images') }}</h2>
 		<div>
 			<x-photos :user="user"/>
 		</div>
 	</section>
 	<section class="activity">
-		<h2>%fa:chart-bar%%i18n:@activity%</h2>
+		<h2><fa icon="chart-bar"/>{{ $t('activity') }}</h2>
 		<div>
-			<mk-activity :user="user"/>
+			<x-activity :user="user"/>
 		</div>
 	</section>
 	<section class="frequently-replied-users">
-		<h2>%fa:users%%i18n:@frequently-replied-users%</h2>
+		<h2><fa icon="users"/>{{ $t('frequently-replied-users') }}</h2>
 		<div>
 			<x-friends :user="user"/>
 		</div>
 	</section>
 	<section class="followers-you-know" v-if="$store.getters.isSignedIn && $store.state.i.id !== user.id">
-		<h2>%fa:users%%i18n:@followers-you-know%</h2>
+		<h2><fa icon="users"/>{{ $t('followers-you-know') }}</h2>
 		<div>
 			<x-followers-you-know :user="user"/>
 		</div>
 	</section>
-	<p v-if="user.host === null">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import XNotes from './home.notes.vue';
 import XPhotos from './home.photos.vue';
 import XFriends from './home.friends.vue';
 import XFollowersYouKnow from './home.followers-you-know.vue';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/user/home.vue'),
 	components: {
 		XNotes,
 		XPhotos,
 		XFriends,
-		XFollowersYouKnow
+		XFollowersYouKnow,
+		XActivity: () => import('../../components/activity.vue').then(m => m.default)
 	},
 	props: ['user']
 });
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.root.home
 	max-width 600px
 	margin 0 auto
 
@@ -65,7 +67,7 @@ root(isDark)
 			margin 0 0 16px 0
 
 	> section
-		background isDark ? #21242f : #eee
+		background var(--face)
 		border-radius 8px
 		box-shadow 0 4px 16px rgba(#000, 0.1)
 
@@ -80,14 +82,14 @@ root(isDark)
 			padding 8px 10px
 			font-size 15px
 			font-weight normal
-			color isDark ? #b8c5cc : #465258
-			background isDark ? #282c37 : #fff
+			color var(--text)
+			background var(--faceHeader)
 			border-radius 8px 8px 0 0
 
 			@media (min-width 500px)
 				padding 10px 16px
 
-			> i
+			> [data-icon]
 				margin-right 6px
 
 	> .activity
@@ -98,12 +100,6 @@ root(isDark)
 		display block
 		margin 16px
 		text-align center
-		color isDark ? #cad2da : #929aa0
-
-.root.home[data-darkmode]
-	root(true)
-
-.root.home:not([data-darkmode])
-	root(false)
+		color var(--text)
 
 </style>

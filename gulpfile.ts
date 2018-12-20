@@ -2,28 +2,24 @@
  * Gulp tasks
  */
 
-import * as fs from 'fs';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
+const yaml = require('gulp-yaml');
 const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
 const cssnano = require('gulp-cssnano');
+const stylus = require('gulp-stylus');
 import * as uglifyComposer from 'gulp-uglify/composer';
-import pug = require('gulp-pug');
 import * as rimraf from 'rimraf';
 import chalk from 'chalk';
 const imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
-import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 
-import locales from './locales';
-import { fa } from './src/build/fa';
-const client = require('./built/client/meta.json');
-import config from './src/config';
+const locales = require('./locales');
 
 const uglify = uglifyComposer(uglifyes, console);
 
@@ -36,18 +32,13 @@ if (isDebug) {
 	console.warn(chalk.yellow.bold('         built script will not be compressed.'));
 }
 
-const constants = require('./src/const.json');
-
-require('./src/client/docs/gulpfile.ts');
-
 gulp.task('build', [
 	'build:ts',
 	'build:copy',
 	'build:client',
+	'locales',
 	'doc'
 ]);
-
-gulp.task('rebuild', ['clean', 'build']);
 
 gulp.task('build:ts', () => {
 	const tsProject = ts.createProject('./tsconfig.json');
@@ -74,7 +65,7 @@ gulp.task('build:copy', ['build:copy:views'], () =>
 	]).pipe(gulp.dest('./built/'))
 );
 
-gulp.task('test', ['lint', 'mocha']);
+gulp.task('test', ['mocha']);
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
@@ -85,19 +76,19 @@ gulp.task('lint', () =>
 );
 
 gulp.task('format', () =>
-gulp.src('./src/**/*.ts')
-	.pipe(tslint({
-		formatter: 'verbose',
-		fix: true
-	}))
-	.pipe(tslint.report())
+	gulp.src('./src/**/*.ts')
+		.pipe(tslint({
+			formatter: 'verbose',
+			fix: true
+		}))
+		.pipe(tslint.report())
 );
 
 gulp.task('mocha', () =>
-	gulp.src([])
+	gulp.src('./test/**/*.ts')
 		.pipe(mocha({
 			exit: true,
-			compilers: 'ts:ts-node/register'
+			require: 'ts-node/register'
 		} as any))
 );
 
@@ -114,21 +105,21 @@ gulp.task('default', ['build']);
 gulp.task('build:client', [
 	'build:ts',
 	'build:client:script',
-	'build:client:pug',
+	'build:client:styles',
 	'copy:client'
 ]);
 
-gulp.task('build:client:script', () =>
-	gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
+gulp.task('build:client:script', () => {
+	const client = require('./built/client/meta.json');
+	return gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
-		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
-		.pipe(gulp.dest('./built/client/assets/')) as any
-);
+		.pipe(gulp.dest('./built/client/assets/'));
+});
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/client/app/init.css')
@@ -153,51 +144,15 @@ gulp.task('copy:client', [
 			.pipe(gulp.dest('./built/client/assets/'))
 );
 
-gulp.task('build:client:pug', [
-	'copy:client',
-	'build:client:script',
-	'build:client:styles'
-], () =>
-		gulp.src('./src/client/app/base.pug')
-			.pipe(pug({
-				locals: {
-					themeColor: constants.themeColor,
-					facss: fa.dom.css(),
-					//hljscss: fs.readFileSync('./node_modules/highlight.js/styles/default.css', 'utf8')
-					hljscss: fs.readFileSync('./src/client/assets/code-highlight.css', 'utf8')
-				}
-			}))
-			.pipe(htmlmin({
-				// 真理値属性の簡略化 e.g.
-				// <input value="foo" readonly="readonly"> to
-				// <input value="foo" readonly>
-				collapseBooleanAttributes: true,
+gulp.task('locales', () =>
+	gulp.src('./locales/*.yml')
+		.pipe(yaml({ schema: 'DEFAULT_SAFE_SCHEMA' }))
+		.pipe(gulp.dest('./built/client/assets/locales/'))
+);
 
-				// テキストの一部かもしれない空白も削除する e.g.
-				// <div> <p>    foo </p>    </div> to
-				// <div><p>foo</p></div>
-				collapseWhitespace: true,
-
-				// タグ間の改行を保持する
-				preserveLineBreaks: true,
-
-				// (できる場合は)属性のクォーテーション削除する e.g.
-				// <p class="foo-bar" id="moo" title="blah blah">foo</p> to
-				// <p class=foo-bar id=moo title="blah blah">foo</p>
-				removeAttributeQuotes: true,
-
-				// 省略可能なタグを省略する e.g.
-				// <html><p>yo</p></html> ro
-				// <p>yo</p>
-				removeOptionalTags: true,
-
-				// 属性の値がデフォルトと同じなら省略する e.g.
-				// <input type="text"> to
-				// <input>
-				removeRedundantAttributes: true,
-
-				// CSSも圧縮する
-				minifyCSS: true
-			}))
-			.pipe(gulp.dest('./built/client/app/'))
+gulp.task('doc', () =>
+	gulp.src('./src/docs/**/*.styl')
+		.pipe(stylus())
+		.pipe((cssnano as any)())
+		.pipe(gulp.dest('./built/docs/assets/'))
 );

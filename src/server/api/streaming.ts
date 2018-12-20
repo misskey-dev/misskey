@@ -1,87 +1,89 @@
 import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
-import config from '../../config';
+import Xev from 'xev';
 
-import homeStream from './stream/home';
-import localTimelineStream from './stream/local-timeline';
-import globalTimelineStream from './stream/global-timeline';
-import userListStream from './stream/user-list';
-import driveStream from './stream/drive';
-import messagingStream from './stream/messaging';
-import messagingIndexStream from './stream/messaging-index';
-import reversiGameStream from './stream/reversi-game';
-import reversiStream from './stream/reversi';
-import serverStatsStream from './stream/server-stats';
-import notesStatsStream from './stream/notes-stats';
-import requestsStream from './stream/requests';
+import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
+import { EventEmitter } from 'events';
+import config from '../../config';
 
 module.exports = (server: http.Server) => {
-	/**
-	 * Init websocket server
-	 */
+	// Init websocket server
 	const ws = new websocket.server({
 		httpServer: server
 	});
 
 	ws.on('request', async (request) => {
-		const connection = request.accept();
-
-		if (request.resourceURL.pathname === '/server-stats') {
-			serverStatsStream(request, connection);
-			return;
-		}
-
-		if (request.resourceURL.pathname === '/notes-stats') {
-			notesStatsStream(request, connection);
-			return;
-		}
-
-		if (request.resourceURL.pathname === '/requests') {
-			requestsStream(request, connection);
-			return;
-		}
-
-		// Connect to Redis
-		const subscriber = redis.createClient(
-			config.redis.port, config.redis.host);
-
-		connection.on('close', () => {
-			subscriber.unsubscribe();
-			subscriber.quit();
-		});
-
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
 
-		if (request.resourceURL.pathname === '/reversi-game') {
-			reversiGameStream(request, connection, subscriber, user);
-			return;
-		}
+		const connection = request.accept();
 
-		if (user == null) {
-			connection.send('authentication-failed');
-			connection.close();
-			return;
-		}
+		let ev: EventEmitter;
 
-		const channel: any =
-			request.resourceURL.pathname === '/' ? homeStream :
-			request.resourceURL.pathname === '/local-timeline' ? localTimelineStream :
-			request.resourceURL.pathname === '/global-timeline' ? globalTimelineStream :
-			request.resourceURL.pathname === '/user-list' ? userListStream :
-			request.resourceURL.pathname === '/drive' ? driveStream :
-			request.resourceURL.pathname === '/messaging' ? messagingStream :
-			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
-			request.resourceURL.pathname === '/reversi' ? reversiStream :
-			null;
+		if (config.redis) {
+			// Connect to Redis
+			const subscriber = redis.createClient(
+				config.redis.port, config.redis.host);
 
-		if (channel !== null) {
-			channel(request, connection, subscriber, user, app);
+			subscriber.subscribe('misskey');
+
+			ev = new EventEmitter();
+
+			subscriber.on('message', async (_, data) => {
+				const obj = JSON.parse(data);
+
+				ev.emit(obj.channel, obj.message);
+			});
+
+			connection.once('close', () => {
+				subscriber.unsubscribe();
+				subscriber.quit();
+			});
 		} else {
-			connection.close();
+			ev = new Xev();
 		}
+
+		const main = new MainStreamConnection(connection, ev, user, app);
+
+		// 後方互換性のため
+		if (request.resourceURL.pathname !== '/streaming') {
+			main.sendMessageToWsOverride = (type: string, payload: any) => {
+				if (type == 'channel') {
+					type = payload.type;
+					payload = payload.body;
+				}
+				if (type.startsWith('api:')) {
+					type = type.replace('api:', 'api-res:');
+				}
+				connection.send(JSON.stringify({
+					type: type,
+					body: payload
+				}));
+			};
+
+			main.connectChannel(Math.random().toString().substr(2, 8), null,
+				request.resourceURL.pathname === '/' ? 'homeTimeline' :
+				request.resourceURL.pathname === '/local-timeline' ? 'localTimeline' :
+				request.resourceURL.pathname === '/hybrid-timeline' ? 'hybridTimeline' :
+				request.resourceURL.pathname === '/global-timeline' ? 'globalTimeline' : null);
+
+			if (request.resourceURL.pathname === '/') {
+				main.connectChannel(Math.random().toString().substr(2, 8), null, 'main');
+			}
+		}
+
+		connection.once('close', () => {
+			ev.removeAllListeners();
+			main.dispose();
+		});
+
+		connection.on('message', async (data) => {
+			if (data.utf8Data == 'ping') {
+				connection.send('pong');
+			}
+		});
 	});
 };

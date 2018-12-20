@@ -1,99 +1,84 @@
-/**
- * Module dependencies
- */
-import * as mongo from 'mongodb';
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
-import config from '../../../../config';
 const escapeRegexp = require('escape-regexp');
+import User, { pack, validateUsername, IUser } from '../../../../models/user';
+import define from '../../define';
 
-/**
- * Search a user
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
- */
-module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'query' parameter
-	const [query, queryError] = $.str.pipe(x => x != '').get(params.query);
-	if (queryError) return rej('invalid query param');
+export const meta = {
+	desc: {
+		'ja-JP': 'ユーザーを検索します。'
+	},
 
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
+	requireCredential: false,
 
-	// Get 'max' parameter
-	const [max = 10, maxErr] = $.num.optional().range(1, 30).get(params.max);
-	if (maxErr) return rej('invalid max param');
-
-	// If Elasticsearch is available, search by $
-	// If not, search by MongoDB
-	(config.elasticsearch.enable ? byElasticsearch : byNative)
-		(res, rej, me, query, offset, max);
-});
-
-// Search by MongoDB
-async function byNative(res, rej, me, query, offset, max) {
-	const escapedQuery = escapeRegexp(query);
-
-	// Search users
-	const users = await User
-		.find({
-			host: null,
-			$or: [{
-				usernameLower: new RegExp(escapedQuery.replace('@', '').toLowerCase())
-			}, {
-				name: new RegExp(escapedQuery)
-			}]
-		}, {
-			limit: max
-		});
-
-	// Serialize
-	res(await Promise.all(users.map(async user =>
-		await pack(user, me, { detail: true }))));
-}
-
-// Search by Elasticsearch
-async function byElasticsearch(res, rej, me, query, offset, max) {
-	const es = require('../../db/elasticsearch');
-
-	es.search({
-		index: 'misskey',
-		type: 'user',
-		body: {
-			size: max,
-			from: offset,
-			query: {
-				simple_query_string: {
-					fields: ['username', 'name', 'bio'],
-					query: query,
-					default_operator: 'and'
-				}
+	params: {
+		query: {
+			validator: $.str,
+			desc: {
+				'ja-JP': 'クエリ'
 			}
-		}
-	}, async (error, response) => {
-		if (error) {
-			console.error(error);
-			return res(500);
-		}
+		},
 
-		if (response.hits.total === 0) {
-			return res([]);
-		}
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0,
+			desc: {
+				'ja-JP': 'オフセット'
+			}
+		},
 
-		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10,
+			desc: {
+				'ja-JP': '取得する数'
+			}
+		},
 
-		const users = await User
+		localOnly: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'ローカルユーザーのみ検索対象にするか否か'
+			}
+		},
+
+		detail: {
+			validator: $.bool.optional,
+			default: true,
+			desc: {
+				'ja-JP': '詳細なユーザー情報を含めるか否か'
+			}
+		},
+	},
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
+
+	let users: IUser[] = [];
+
+	if (isUsername) {
+		users = await User
 			.find({
-				_id: {
-					$in: hits
-				}
+				host: null,
+				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase()))
+			}, {
+				limit: ps.limit,
+				skip: ps.offset
 			});
 
-		// Serialize
-		res(await Promise.all(users.map(async user =>
-			await pack(user, me, { detail: true }))));
-	});
-}
+		if (users.length < ps.limit && !ps.localOnly) {
+			const otherUsers = await User
+				.find({
+					host: { $ne: null },
+					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase()))
+				}, {
+					limit: ps.limit - users.length
+				});
+
+			users = users.concat(otherUsers);
+		}
+	}
+
+	res(await Promise.all(users.map(user => pack(user, me, { detail: ps.detail }))));
+}));

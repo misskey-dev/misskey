@@ -1,22 +1,54 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+const ms = require('ms');
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
+import define from '../../../define';
 
-/**
- * Create a file from a URL
- */
-module.exports = async (params, user): Promise<any> => {
-	// Get 'url' parameter
-	// TODO: Validate this url
-	const [url, urlErr] = $.str.get(params.url);
-	if (urlErr) throw 'invalid url param';
+export const meta = {
+	desc: {
+		'ja-JP': 'ドライブに指定されたURLに存在するファイルをアップロードします。'
+	},
 
-	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
-	if (folderIdErr) throw 'invalid folderId param';
+	limit: {
+		duration: ms('1hour'),
+		max: 60
+	},
 
-	return pack(await uploadFromUrl(url, user, folderId));
+	requireCredential: true,
+
+	kind: 'drive-write',
+
+	params: {
+		url: {
+			// TODO: Validate this url
+			validator: $.str,
+		},
+
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			default: null as any,
+			transform: transform
+		},
+
+		isSensitive: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
+				'en-US': 'Whether this media is NSFW'
+			}
+		},
+
+		force: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
+			}
+		}
+	}
 };
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	res(pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force), { self: true }));
+}));

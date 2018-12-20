@@ -1,9 +1,9 @@
 <template>
-<mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
-	<span slot="header">%fa:list% %i18n:@title%</span>
+<mk-window ref="window" width="450px" height="500px" @closed="destroyDom">
+	<span slot="header"><fa icon="list"/> {{ $t('title') }}</span>
 
-	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp" :data-darkmode="$store.state.device.darkmode">
-		<button class="ui" @click="add">%i18n:@create-list%</button>
+	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
+		<button class="ui" @click="add">{{ $t('create-list') }}</button>
 		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
 	</div>
 </mk-window>
@@ -11,7 +11,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
+
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/user-lists-window.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -19,17 +22,19 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/lists/list').then(lists => {
+		this.$root.api('users/lists/list').then(lists => {
 			this.fetching = false;
 			this.lists = lists;
 		});
 	},
 	methods: {
 		add() {
-			(this as any).apis.input({
-				title: 'リスト名',
-			}).then(async title => {
-				const list = await (this as any).api('users/lists/create', {
+			this.$root.dialog({
+				title: this.$t('list-name'),
+				input: true
+			}).then(async ({ canceled, result: title }) => {
+				if (canceled) return;
+				const list = await this.$root.api('users/lists/create', {
 					title
 				});
 
@@ -47,23 +52,34 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-root(isDark)
+.xkxvokkjlptzyewouewmceqcxhpgzprp
 	padding 16px
 
 	> button
+		display block
 		margin-bottom 16px
+		color var(--primaryForeground)
+		background var(--primary)
+		width 100%
+		border-radius 38px
+		user-select none
+		cursor pointer
+		padding 0 16px
+		min-width 100px
+		line-height 38px
+		font-size 14px
+		font-weight 700
+
+		&:hover
+			background var(--primaryLighten10)
+
+		&:active
+			background var(--primaryDarken10)
 
 	> a
 		display block
 		padding 16px
-		border solid 1px isDark ? #1c2023 : #eee
+		border solid 1px var(--faceDivider)
 		border-radius 4px
-
-.xkxvokkjlptzyewouewmceqcxhpgzprp[data-darkmode]
-	root(true)
-
-.xkxvokkjlptzyewouewmceqcxhpgzprp:not([data-darkmode])
-	root(false)
 
 </style>

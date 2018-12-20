@@ -1,28 +1,29 @@
 import * as mongo from 'mongodb';
+import isObjectId from '../../../misc/is-objectid';
 import { default as Notification, INotification } from '../../../models/notification';
-import publishUserStream from '../../../publishers/stream';
+import { publishMainStream } from '../../../stream';
 import Mute from '../../../models/mute';
 import User from '../../../models/user';
 
 /**
- * Mark as read notification(s)
+ * Mark notifications as read
  */
 export default (
 	user: string | mongo.ObjectID,
 	message: string | string[] | INotification | INotification[] | mongo.ObjectID | mongo.ObjectID[]
 ) => new Promise<any>(async (resolve, reject) => {
 
-	const userId = mongo.ObjectID.prototype.isPrototypeOf(user)
+	const userId = isObjectId(user)
 		? user
 		: new mongo.ObjectID(user);
 
 	const ids: mongo.ObjectID[] = Array.isArray(message)
-		? mongo.ObjectID.prototype.isPrototypeOf(message[0])
+		? isObjectId(message[0])
 			? (message as mongo.ObjectID[])
 			: typeof message[0] === 'string'
 				? (message as string[]).map(m => new mongo.ObjectID(m))
 				: (message as INotification[]).map(m => m._id)
-		: mongo.ObjectID.prototype.isPrototypeOf(message)
+		: isObjectId(message)
 			? [(message as mongo.ObjectID)]
 			: typeof message === 'string'
 				? [new mongo.ObjectID(message)]
@@ -38,12 +39,12 @@ export default (
 		_id: { $in: ids },
 		isRead: false
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
-	});
+			$set: {
+				isRead: true
+			}
+		}, {
+			multi: true
+		});
 
 	// Calc count of my unread notifications
 	const count = await Notification
@@ -54,8 +55,8 @@ export default (
 			},
 			isRead: false
 		}, {
-			limit: 1
-		});
+				limit: 1
+			});
 
 	if (count == 0) {
 		// Update flag
@@ -66,6 +67,6 @@ export default (
 		});
 
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
-		publishUserStream(userId, 'read_all_notifications');
+		publishMainStream(userId, 'readAllNotifications');
 	}
 });

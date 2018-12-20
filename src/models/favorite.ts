@@ -1,9 +1,11 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import { pack as packNote } from './note';
 
 const Favorite = db.get<IFavorite>('favorites');
+Favorite.createIndex('userId');
 Favorite.createIndex(['userId', 'noteId'], { unique: true });
 export default Favorite;
 
@@ -14,32 +16,12 @@ export type IFavorite = {
 	noteId: mongo.ObjectID;
 };
 
-/**
- * Favoriteを物理削除します
- */
-export async function deleteFavorite(favorite: string | mongo.ObjectID | IFavorite) {
-	let f: IFavorite;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(favorite)) {
-		f = await Favorite.findOne({
-			_id: favorite
-		});
-	} else if (typeof favorite === 'string') {
-		f = await Favorite.findOne({
-			_id: new mongo.ObjectID(favorite)
-		});
-	} else {
-		f = favorite as IFavorite;
-	}
-
-	if (f == null) return;
-
-	// このFavoriteを削除
-	await Favorite.remove({
-		_id: f._id
-	});
-}
+export const packMany = (
+	favorites: any[],
+	me: any
+) => {
+	return Promise.all(favorites.map(f => pack(f, me)));
+};
 
 /**
  * Pack a favorite for API response
@@ -51,7 +33,7 @@ export const pack = (
 	let _favorite: any;
 
 	// Populate the favorite if 'favorite' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(favorite)) {
+	if (isObjectId(favorite)) {
 		_favorite = await Favorite.findOne({
 			_id: favorite
 		});
@@ -68,7 +50,15 @@ export const pack = (
 	delete _favorite._id;
 
 	// Populate note
-	_favorite.note = await packNote(_favorite.noteId, me);
+	_favorite.note = await packNote(_favorite.noteId, me, {
+		detail: true
+	});
+
+	// (データベースの不具合などで)投稿が見つからなかったら
+	if (_favorite.note == null) {
+		console.warn(`[DAMAGED DB] (missing) pkg: favorite -> note :: ${_favorite.id} (note ${_favorite.noteId})`);
+		return resolve(null);
+	}
 
 	resolve(_favorite);
 });

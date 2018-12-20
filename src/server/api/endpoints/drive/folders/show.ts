@@ -1,21 +1,36 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
+import define from '../../../define';
 
-/**
- * Show a folder
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
-	if (folderIdErr) return rej('invalid folderId param');
+export const meta = {
+	stability: 'stable',
 
+	desc: {
+		'ja-JP': '指定したドライブのフォルダの情報を取得します。',
+		'en-US': 'Get specified folder of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-read',
+
+	params: {
+		folderId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のフォルダID',
+				'en-US': 'Target folder ID'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Get folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: folderId,
+			_id: ps.folderId,
 			userId: user._id
 		});
 
@@ -27,4 +42,4 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	res(await pack(folder, {
 		detail: true
 	}));
-});
+}));

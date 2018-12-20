@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-analog-clock">
-	<mk-widget-container :naked="props.naked" :show-header="false">
+	<mk-widget-container :naked="props.style % 2 === 0" :show-header="false">
 		<div class="mkw-analog-clock--body">
-			<mk-analog-clock :dark="$store.state.device.darkmode"/>
+			<mk-analog-clock :dark="$store.state.device.darkmode" :smooth="props.style < 2"/>
 		</div>
 	</mk-widget-container>
 </div>
@@ -13,12 +13,12 @@ import define from '../../../common/define-widget';
 export default define({
 	name: 'analog-clock',
 	props: () => ({
-		naked: false
+		style: 0
 	})
 }).extend({
 	methods: {
 		func() {
-			this.props.naked = !this.props.naked;
+			this.props.style = (this.props.style + 1) % 4;
 			this.save();
 		}
 	}
@@ -26,16 +26,8 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mkw-analog-clock
 	.mkw-analog-clock--body
 		padding 8px
-
-.mkw-analog-clock[data-darkmode]
-	root(true)
-
-.mkw-analog-clock:not([data-darkmode])
-	root(false)
 
 </style>

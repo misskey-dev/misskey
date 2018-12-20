@@ -1,24 +1,27 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import User from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import { publishMainStream } from '../../../../stream';
+import define from '../../define';
 
-/**
- * Update myself
- */
-module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.get(params.name);
-	if (nameErr) return rej('invalid name param');
+export const meta = {
+	requireCredential: true,
 
-	// Get 'value' parameter
-	const [value, valueErr] = $.any.nullable().get(params.value);
-	if (valueErr) return rej('invalid value param');
+	secure: true,
 
-	const x = {};
-	x[`clientSettings.${name}`] = value;
+	params: {
+		name: {
+			validator: $.str
+		},
+
+		value: {
+			validator: $.any.nullable
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	const x: any = {};
+	x[`clientSettings.${ps.name}`] = ps.value;
 
 	await User.update(user._id, {
 		$set: x
@@ -27,8 +30,8 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	res();
 
 	// Publish event
-	event(user._id, 'clientSettingUpdated', {
-		key: name,
-		value
+	publishMainStream(user._id, 'clientSettingUpdated', {
+		key: ps.name,
+		value: ps.value
 	});
-});
+}));

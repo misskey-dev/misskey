@@ -1,7 +1,8 @@
 <template>
-<div class="notifications">
-	<button :data-active="isOpen" @click="toggle" title="%i18n:@title%">
-		%fa:R bell%<template v-if="hasUnreadNotification">%fa:circle%</template>
+<div class="notifications" v-hotkey.global="keymap">
+	<button :data-active="isOpen" @click="toggle" :title="$t('title')">
+		<i class="bell"><fa :icon="['far', 'bell']"/></i>
+		<i class="circle" v-if="hasUnreadNotification"><fa icon="circle"/></i>
 	</button>
 	<div class="pop" v-if="isOpen">
 		<mk-notifications/>
@@ -11,19 +12,29 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.header.notifications.vue'),
 	data() {
 		return {
 			isOpen: false
 		};
 	},
+
 	computed: {
 		hasUnreadNotification(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
+		},
+
+		keymap(): any {
+			return {
+				'shift+n': this.toggle
+			};
 		}
 	},
+
 	methods: {
 		toggle() {
 			this.isOpen ? this.close() : this.open();
@@ -31,16 +42,16 @@ export default Vue.extend({
 
 		open() {
 			this.isOpen = true;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.addEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 
 		close() {
 			this.isOpen = false;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.removeEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 
 		onMousedown(e) {
@@ -53,16 +64,13 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-
+.notifications
 	> button
 		display block
 		margin 0
 		padding 0
 		width 32px
-		color #9eaba8
+		color var(--desktopHeaderFg)
 		border none
 		background transparent
 		cursor pointer
@@ -72,23 +80,20 @@ root(isDark)
 
 		&:hover
 		&[data-active='true']
-			color isDark ? #fff : darken(#9eaba8, 20%)
+			color var(--desktopHeaderHoverFg)
 
-		&:active
-			color isDark ? #fff : darken(#9eaba8, 30%)
-
-		> [data-fa].bell
+		> i.bell
 			font-size 1.2em
 			line-height 48px
 
-		> [data-fa].circle
+		> i.circle
 			margin-left -5px
 			vertical-align super
 			font-size 10px
-			color $theme-color
+			color var(--primary)
 
 	> .pop
-		$bgcolor = isDark ? #282c37 : #fff
+		$bgcolor = var(--face)
 		display block
 		position absolute
 		top 56px
@@ -126,11 +131,5 @@ root(isDark)
 			max-height 350px
 			font-size 1rem
 			overflow auto
-
-.notifications[data-darkmode]
-	root(true)
-
-.notifications:not([data-darkmode])
-	root(false)
 
 </style>

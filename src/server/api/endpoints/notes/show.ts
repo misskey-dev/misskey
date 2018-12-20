@@ -1,24 +1,33 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { pack } from '../../../../models/note';
+import define from '../../define';
 
-/**
- * Show a note
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	stability: 'stable',
 
+	desc: {
+		'ja-JP': '指定した投稿を取得します。',
+		'en-US': 'Get a note.'
+	},
+
+	requireCredential: false,
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID.'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Get note
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -29,4 +38,4 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	res(await pack(note, user, {
 		detail: true
 	}));
-});
+}));

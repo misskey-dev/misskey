@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { UserListStream } from '../../../common/scripts/streaming/user-list';
 
 const fetchLimit = 10;
 
@@ -37,13 +36,15 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.close();
+		this.connection.dispose();
 	},
 
 	methods: {
 		init() {
-			if (this.connection) this.connection.close();
-			this.connection = new UserListStream((this as any).os, this.$store.state.i, this.list.id);
+			if (this.connection) this.connection.dispose();
+			this.connection = this.$root.stream.connectToChannel('userList', {
+				listId: this.list.id
+			});
 			this.connection.on('note', this.onNote);
 			this.connection.on('userAdded', this.onUserAdded);
 			this.connection.on('userRemoved', this.onUserRemoved);
@@ -55,11 +56,12 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('notes/user-list-timeline', {
+				this.$root.api('notes/user-list-timeline', {
 					listId: this.list.id,
 					limit: fetchLimit + 1,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -77,12 +79,13 @@ export default Vue.extend({
 
 			this.moreFetching = true;
 
-			const promise = (this as any).api('notes/user-list-timeline', {
+			const promise = this.$root.api('notes/user-list-timeline', {
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 			});
 
 			promise.then(notes => {
@@ -91,7 +94,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) {
+					(this.$refs.timeline as any).append(n);
+				}
 				this.moreFetching = false;
 			});
 

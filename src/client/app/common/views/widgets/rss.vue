@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-rss">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:rss-square%RSS</template>
-		<button slot="func" title="設定" @click="setting">%fa:cog%</button>
+		<template slot="header"><fa icon="rss-square"/>RSS</template>
+		<button slot="func" title="設定" @click="setting"><fa icon="cog"/></button>
 
 		<div class="mkw-rss--body" :data-mobile="platform == 'mobile'">
-			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 			<div class="feed" v-else>
 				<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
 			</div>
@@ -16,6 +16,8 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'rss',
 	props: () => ({
@@ -23,6 +25,7 @@ export default define({
 		url: 'http://news.yahoo.co.jp/pickup/rss.xml'
 	})
 }).extend({
+	i18n: i18n(),
 	data() {
 		return {
 			items: [],
@@ -44,7 +47,6 @@ export default define({
 		},
 		fetch() {
 			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.props.url}`, {
-				cache: 'no-cache'
 			}).then(res => {
 				res.json().then(feed => {
 					this.items = feed.items;
@@ -65,7 +67,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-rss
 	.mkw-rss--body
 		.feed
 			padding 12px 16px
@@ -74,8 +76,8 @@ root(isDark)
 			> a
 				display block
 				padding 4px 0
-				color isDark ? #9aa4b3 : #666
-				border-bottom dashed 1px isDark ? #1c2023 : #eee
+				color var(--text)
+				border-bottom dashed 1px var(--faceDivider)
 
 				&:last-child
 					border-bottom none
@@ -86,11 +88,11 @@ root(isDark)
 			text-align center
 			color #aaa
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 4px
 
 		&[data-mobile]
-			background isDark ? #21242f : #f3f3f3
+			background var(--face)
 
 			.feed
 				padding 0
@@ -100,12 +102,6 @@ root(isDark)
 					border-bottom none
 
 					&:nth-child(even)
-						background isDark ? rgba(#000, 0.05) : rgba(#fff, 0.7)
-
-.mkw-rss[data-darkmode]
-	root(true)
-
-.mkw-rss:not([data-darkmode])
-	root(false)
+						background rgba(#000, 0.05)
 
 </style>

@@ -12,8 +12,8 @@ type IWebFinger = {
 	subject: string;
 };
 
-export default async function resolve(query): Promise<IWebFinger> {
-	return await new Promise((res, rej) => webFinger.lookup(query, (error, result) => {
+export default async function resolve(query: any): Promise<IWebFinger> {
+	return await new Promise((res, rej) => webFinger.lookup(query, (error: Error, result: any) => {
 		if (error) {
 			return rej(error);
 		}

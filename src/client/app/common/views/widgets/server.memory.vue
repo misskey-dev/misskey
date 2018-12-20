@@ -2,7 +2,7 @@
 <div class="memory">
 	<x-pie class="pie" :value="usage"/>
 	<div>
-		<p>%fa:flask%Memory</p>
+		<p><fa icon="memory"/>Memory</p>
 		<p>Total: {{ total | bytes(1) }}</p>
 		<p>Used: {{ used | bytes(1) }}</p>
 		<p>Free: {{ free | bytes(1) }}</p>
@@ -35,7 +35,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onStats(stats) {
-			stats.mem.used = stats.mem.total - stats.mem.free;
+			stats.mem.free = stats.mem.total - stats.mem.used;
 			this.usage = stats.mem.used / stats.mem.total;
 			this.total = stats.mem.total;
 			this.used = stats.mem.used;
@@ -46,7 +46,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.memory
 	> .pie
 		padding 10px
 		height 100px
@@ -60,23 +60,17 @@ root(isDark)
 		> p
 			margin 0
 			font-size 12px
-			color isDark ? #a8b4bd : #505050
+			color var(--chartCaption)
 
 			&:first-child
 				font-weight bold
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 	&:after
 		content ""
 		display block
 		clear both
-
-.memory[data-darkmode]
-	root(true)
-
-.memory:not([data-darkmode])
-	root(false)
 
 </style>

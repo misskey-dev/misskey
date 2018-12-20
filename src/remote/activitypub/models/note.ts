@@ -1,5 +1,4 @@
 import * as mongo from 'mongodb';
-import * as parse5 from 'parse5';
 import * as debug from 'debug';
 
 import config from '../../../config';
@@ -9,79 +8,14 @@ import post from '../../../services/note/create';
 import { INote as INoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
-import { IRemoteUser } from '../../../models/user';
+import { IRemoteUser, IUser } from '../../../models/user';
+import htmlToMFM from '../../../mfm/html-to-mfm';
+import Emoji, { IEmoji } from '../../../models/emoji';
+import { ITag } from './tag';
+import { toUnicode } from 'punycode';
+import { unique, concat, difference } from '../../../prelude/array';
 
 const log = debug('misskey:activitypub');
-
-function parse(html: string): string {
-	const dom = parse5.parseFragment(html) as parse5.AST.Default.Document;
-
-	let text = '';
-
-	dom.childNodes.forEach(n => analyze(n));
-
-	return text.trim();
-
-	function getText(node) {
-		if (node.nodeName == '#text') return node.value;
-
-		if (node.childNodes) {
-			return node.childNodes.map(n => getText(n)).join('');
-		}
-
-		return '';
-	}
-
-	function analyze(node) {
-		switch (node.nodeName) {
-			case '#text':
-				text += node.value;
-				break;
-
-			case 'br':
-				text += '\n';
-				break;
-
-			case 'a':
-				const txt = getText(node);
-
-				// メンション
-				if (txt.startsWith('@')) {
-					const part = txt.split('@');
-
-					if (part.length == 2) {
-						//#region ホスト名部分が省略されているので復元する
-						const href = new URL(node.attrs.find(x => x.name == 'href').value);
-						const acct = txt + '@' + href.hostname;
-						text += acct;
-						break;
-						//#endregion
-					} else if (part.length == 3) {
-						text += txt;
-						break;
-					}
-				}
-
-				if (node.childNodes) {
-					node.childNodes.forEach(n => analyze(n));
-				}
-				break;
-
-			case 'p':
-				text += '\n\n';
-				if (node.childNodes) {
-					node.childNodes.forEach(n => analyze(n));
-				}
-				break;
-
-			default:
-				if (node.childNodes) {
-					node.childNodes.forEach(n => analyze(n));
-				}
-				break;
-		}
-	}
-}
 
 /**
  * Noteをフェッチします。
@@ -126,7 +60,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	log(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
-	const actor = await resolvePerson(note.attributedTo) as IRemoteUser;
+	const actor = await resolvePerson(note.attributedTo, null, resolver) as IRemoteUser;
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
@@ -135,47 +69,74 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	//#region Visibility
 	let visibility = 'public';
-	let visibleUsers = [];
+	let visibleUsers: IUser[] = [];
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
 		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';
+		} else if (note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
+			visibility = 'followers';
 		} else {
 			visibility = 'specified';
-			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
+			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, null, resolver)));
 		}
 	}
-	if (note.cc.length == 0) visibility = 'followers';
 	//#endergion
 
-	// 添付メディア
+	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
+
+	const apHashtags = await extractHashtags(note.tag);
+
+	// 添付ファイル
 	// TODO: attachmentは必ずしもImageではない
 	// TODO: attachmentは必ずしも配列ではない
-	const media = note.attachment
+	// Noteがsensitiveなら添付もsensitiveにする
+	const files = note.attachment
+		.map(attach => attach.sensitive = note.sensitive)
 		? await Promise.all(note.attachment.map(x => resolveImage(actor, x)))
 		: [];
 
 	// リプライ
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
+	// 引用
+	let quote: INote;
+
+	if (note._misskey_quote && typeof note._misskey_quote == 'string') {
+		quote = await resolveNote(note._misskey_quote).catch(() => null);
+	}
+
+	const cw = note.summary === '' ? null : note.summary;
+
 	// テキストのパース
-	const text = parse(note.content);
+	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
+
+	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
+		console.log(`extractEmojis: ${e}`);
+		return [] as IEmoji[];
+	});
+
+	const apEmojis = emojis.map(emoji => emoji.name);
 
 	// ユーザーの情報が古かったらついでに更新しておく
-	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
+	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 		updatePerson(note.attributedTo);
 	}
 
 	return await post(actor, {
 		createdAt: new Date(note.published),
-		media,
+		files: files,
 		reply,
-		renote: undefined,
-		cw: note.summary,
+		renote: quote,
+		cw: cw,
 		text: text,
 		viaMobile: false,
+		localOnly: false,
 		geo: undefined,
 		visibility,
 		visibleUsers,
+		apMentions,
+		apHashtags,
+		apEmojis,
 		uri: note.id
 	}, silent);
 }
@@ -198,5 +159,77 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	//#endregion
 
 	// リモートサーバーからフェッチしてきて登録
-	return await createNote(value, resolver);
+	// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
+	// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
+	return await createNote(uri, resolver);
+}
+
+export async function extractEmojis(tags: ITag[], host_: string) {
+	const host = toUnicode(host_.toLowerCase());
+
+	if (!tags) return [];
+
+	const eomjiTags = tags.filter(tag => tag.type === 'Emoji' && tag.icon && tag.icon.url);
+
+	return await Promise.all(
+		eomjiTags.map(async tag => {
+			const name = tag.name.replace(/^:/, '').replace(/:$/, '');
+
+			const exists = await Emoji.findOne({
+				host,
+				name
+			});
+
+			if (exists) {
+				if ((tag.updated != null && exists.updatedAt == null)
+					|| (tag.id != null && exists.uri == null)
+					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)) {
+						return await Emoji.findOneAndUpdate({
+							host,
+							name,
+						}, {
+							$set: {
+								uri: tag.id,
+								url: tag.icon.url,
+								updatedAt: new Date(tag.updated),
+							}
+						});
+				}
+				return exists;
+			}
+
+			log(`register emoji host=${host}, name=${name}`);
+
+			return await Emoji.insert({
+				host,
+				name,
+				uri: tag.id,
+				url: tag.icon.url,
+				updatedAt: tag.updated ? new Date(tag.updated) : undefined,
+				aliases: []
+			});
+		})
+	);
+}
+
+async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: string[], resolver: Resolver) {
+	const ignoreUris = ['https://www.w3.org/ns/activitystreams#Public', `${actor.uri}/followers`];
+	const uris = difference(unique(concat([to || [], cc || []])), ignoreUris);
+
+	const users = await Promise.all(
+		uris.map(async uri => await resolvePerson(uri, null, resolver).catch(() => null))
+	);
+
+	return users.filter(x => x != null);
+}
+
+function extractHashtags(tags: ITag[]) {
+	if (!tags) return [];
+
+	const hashtags = tags.filter(tag => tag.type === 'Hashtag' && typeof tag.name == 'string');
+
+	return hashtags.map(tag => {
+		const m = tag.name.match(/^#(.+)/);
+		return m ? m[1] : null;
+	}).filter(x => x != null);
 }

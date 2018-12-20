@@ -1,35 +1,39 @@
 <template>
 <div class="mk-user-preview">
 	<template v-if="u != null">
-		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl}?thumbnail&size=512)` : ''"></div>
+		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
-			<router-link class="name" :to="u | userPage">{{ u | userName }}</router-link>
+			<router-link class="name" :to="u | userPage"><mk-user-name :user="u"/></router-link>
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
-		<div class="description">{{ u.description }}</div>
+		<div class="description">
+			<misskey-flavored-markdown v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+		</div>
 		<div class="status">
 			<div>
-				<p>%i18n:@notes%</p><a>{{ u.notesCount }}</a>
+				<p>{{ $t('notes') }}</p><span>{{ u.notesCount }}</span>
 			</div>
 			<div>
-				<p>%i18n:@following%</p><a>{{ u.followingCount }}</a>
+				<p>{{ $t('following') }}</p><span>{{ u.followingCount }}</span>
 			</div>
 			<div>
-				<p>%i18n:@followers%</p><a>{{ u.followersCount }}</a>
+				<p>{{ $t('followers') }}</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
-		<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="u"/>
+		<mk-follow-button class="follow-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
 	</template>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
-import parseAcct from '../../../../../acct/parse';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/user-preview.vue'),
 	props: {
 		user: {
 			type: [Object, String],
@@ -48,11 +52,11 @@ export default Vue.extend({
 				this.open();
 			});
 		} else {
-			const query = this.user[0] == '@' ?
+			const query = this.user.startsWith('@') ?
 				parseAcct(this.user.substr(1)) :
 				{ userId: this.user };
 
-			(this as any).api('users/show', query).then(user => {
+			this.$root.api('users/show', query).then(user => {
 				this.u = user;
 				this.open();
 			});
@@ -75,7 +79,7 @@ export default Vue.extend({
 				'margin-top': '-8px',
 				duration: 200,
 				easing: 'easeOutQuad',
-				complete: () => this.$destroy()
+				complete: () => this.destroyDom()
 			});
 		}
 	}
@@ -83,14 +87,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-user-preview
 	position absolute
 	z-index 2048
 	margin-top -8px
 	width 250px
-	background isDark ? #282c37 : #fff
+	background var(--face)
 	background-clip content-box
 	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
@@ -99,7 +101,7 @@ root(isDark)
 
 	> .banner
 		height 84px
-		background-color isDark ? #1c1e26 : #f5f5f5
+		background-color rgba(0, 0, 0, 0.1)
 		background-size cover
 		background-position center
 
@@ -111,7 +113,7 @@ root(isDark)
 		z-index 2
 		width 58px
 		height 58px
-		border solid 3px isDark ? #282c37 : #fff
+		border solid 3px var(--face)
 		border-radius 8px
 
 	> .title
@@ -123,19 +125,20 @@ root(isDark)
 			margin 0
 			font-weight bold
 			line-height 16px
-			color isDark ? #fff : #656565
+			color var(--text)
 
 		> .username
 			display block
 			margin 0
 			line-height 16px
 			font-size 0.8em
-			color isDark ? #606984 : #999
+			color var(--text)
+			opacity 0.7
 
 	> .description
 		padding 0 16px
 		font-size 0.7em
-		color isDark ? #9ea4ad : #555
+		color var(--text)
 
 	> .status
 		padding 8px 16px
@@ -147,21 +150,15 @@ root(isDark)
 			> p
 				margin 0
 				font-size 0.7em
-				color #aaa
+				color var(--text)
 
-			> a
+			> span
 				font-size 1em
-				color $theme-color
+				color var(--primary)
 
-	> .mk-follow-button
+	> .follow-button
 		position absolute
-		top 92px
+		top 8px
 		right 8px
-
-.mk-user-preview[data-darkmode]
-	root(true)
-
-.mk-user-preview:not([data-darkmode])
-	root(false)
 
 </style>

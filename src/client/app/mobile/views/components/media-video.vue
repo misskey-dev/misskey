@@ -1,28 +1,49 @@
 <template>
-	<a class="mk-media-video"
-		:href="video.url"
-		target="_blank"
-		:style="imageStyle"
-		:title="video.name">
-		%fa:R play-circle%
-	</a>
+<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="video.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
+	<div>
+		<b><fa icon="exclamation-triangle"/> {{ $t('sensitive') }}</b>
+		<span>{{ $t('click-to-show') }}</span>
+	</div>
+</div>
+<a class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else
+	:href="video.url"
+	target="_blank"
+	:style="imageStyle"
+	:title="video.name"
+>
+	<fa :icon="['far', 'play-circle']"/>
+</a>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
+import i18n from '../../../i18n';
+
 export default Vue.extend({
-	props: ['video'],
+	i18n: i18n('mobile/views/components/media-video.vue'),
+	props: {
+		video: {
+			type: Object,
+			required: true
+		}
+	},
+	data() {
+		return {
+			hide: true
+		};
+	},
 	computed: {
 		imageStyle(): any {
 			return {
-				'background-image': `url(${this.video.url}?thumbnail&size=512)`
+				'background-image': null // TODO `url(${this.video.thumbnailUrl})`
 			};
 		}
-	},})
+	}
+});
 </script>
 
 <style lang="stylus" scoped>
-.mk-media-video
+.kkjnbbplepmiyuadieoenjgutgcmtsvu
 	display flex
 	justify-content center
 	align-items center
@@ -33,4 +54,20 @@ export default Vue.extend({
 	background-size cover
 	width 100%
 	height 100%
+
+.icozogqfvdetwohsdglrbswgrejoxbdj
+	display flex
+	justify-content center
+	align-items center
+	background #111
+	color #fff
+
+	> div
+		display table-cell
+		text-align center
+		font-size 12px
+
+		> b
+			display block
+
 </style>

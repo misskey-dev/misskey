@@ -1,67 +1,112 @@
-# インスタンス名
-name:
+# Final accessible URL seen by a user.
+url: https://example.tld/
 
-# インスタンスの紹介
-description:
 
-# サーバーのメンテナ情報
-maintainer:
-  # メンテナの名前
-  name:
+### Port and TLS settings ######################################
+#
+# Misskey supports two deployment options for public.
+#
 
-  # メンテナの連絡先(URLかmailto形式のURL)
-  url:
+# Option 1: With Reverse Proxy
+#
+#                 +----- https://example.tld/ ------------+
+#   +------+      |+-------------+      +----------------+|
+#   | User | ---> || Proxy (443) | ---> | Misskey (3000) ||
+#   +------+      |+-------------+      +----------------+|
+#                 +---------------------------------------+
+#
+#   You need to setup reverse proxy. (eg. nginx)
+#   You do not define 'https' section.
 
-# (Misskeyを動かす)URL
-url:
+# Option 2: Standalone
+#
+#                 +- https://example.tld/ -+
+#   +------+      |   +---------------+    |
+#   | User | ---> |   | Misskey (443) |    |
+#   +------+      |   +---------------+    |
+#                 +------------------------+
+#
+#   You need to run Misskey as root.
+#   You need to set Certificate in 'https' section.
 
-# 待受ポート
-port:
+# To use option 1, uncomment below line.
+# port: 3000    # A port that your Misskey server should listen.
 
-# TLSの設定(利用しない場合は省略してください)
-https:
-  # 証明書のパス...
-  key:
-  cert:
+# To use option 2, uncomment below lines.
+# port: 443
+#
+# https:
+#   # path for certification
+#   key: /etc/letsencrypt/live/example.tld/privkey.pem
+#   cert: /etc/letsencrypt/live/example.tld/fullchain.pem
 
-# MongoDBの設定
+################################################################
+
+
 mongodb:
   host: localhost
   port: 27017
   db: misskey
-  user:
-  pass:
+  user: example-misskey-user
+  pass: example-misskey-pass
 
-# Redisの設定
-redis:
-  host: localhost
-  port: 6379
-  pass:
+drive:
+  storage: 'db'
 
-# reCAPTCHAの設定
-recaptcha:
-  site_key:
-  secret_key:
+  # OR
 
-# ServiceWrokerの設定
-sw:
-  # VAPIDの公開鍵
-  public_key:
+  # storage: 'minio'
+  # bucket:
+  # prefix:
+  # config:
+  #   endPoint:
+  #   port:
+  #   useSSL:
+  #   accessKey:
+  #   secretKey:
 
-  # VAPIDの秘密鍵
-  private_key:
+  # S3 example
+  # storage: 'minio'
+  # bucket: bucket-name
+  # prefix: files
+  # config:
+  #   endPoint: s3-us-west-2.amazonaws.com
+  #   region: us-west-2
+  #   useSSL: true
+  #   accessKey: XXX
+  #   secretKey: YYY
 
-# Google Maps API
-google_maps_api_key:
+  # S3 example (with CDN, custom domain)
+  # storage: 'minio'
+  # bucket: drive.example.com
+  # prefix: files
+  # baseUrl: https://drive.example.com
+  # config:
+  #   endPoint: s3-us-west-2.amazonaws.com
+  #   region: us-west-2
+  #   useSSL: true
+  #   accessKey: XXX
+  #   secretKey: YYY
 
-# Twitterインテグレーションの設定(利用しない場合は省略可能)
-twitter:
-  # インテグレーション用アプリのコンシューマーキー
-  consumer_key:
+# If enabled:
+#  The first account created is automatically marked as Admin.
+autoAdmin: true
 
-  # インテグレーション用アプリのコンシューマーシークレット
-  consumer_secret:
+#
+# Below settings are optional
+#
 
-# true にすると、リモートのファイルをキャッシュしなくなります(直リンクします)。
-# ストレージ容量を節約することができますが、「リモートメディアを表示しない」設定をオンにしているユーザーは、リモートの画像などは見えなくなります。
-preventCache: false
+# Redis
+#redis:
+#  host: localhost
+#  port: 6379
+#  pass: example-pass
+
+# Elasticsearch
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  pass: null
+
+# Clustering
+#clusterLimit: 1

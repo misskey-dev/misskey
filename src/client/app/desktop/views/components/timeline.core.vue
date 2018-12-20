@@ -1,13 +1,10 @@
 <template>
 <div class="mk-timeline-core">
 	<mk-friends-maker v-if="src == 'home' && alone"/>
-	<div class="fetching" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p :class="$style.empty" slot="empty">
-			%fa:R comments%%i18n:@empty%
+			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</p>
 	</mk-notes>
 </div>
@@ -15,14 +12,19 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/timeline.core.vue'),
 	props: {
 		src: {
 			type: String,
 			required: true
+		},
+		tagTl: {
+			required: false
 		}
 	},
 
@@ -32,8 +34,14 @@ export default Vue.extend({
 			moreFetching: false,
 			existMore: false,
 			connection: null,
-			connectionId: null,
-			date: null
+			date: null,
+			baseQuery: {
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+			},
+			query: {},
+			endpoint: null
 		};
 	},
 
@@ -42,51 +50,67 @@ export default Vue.extend({
 			return this.$store.state.i.followingCount == 0;
 		},
 
-		stream(): any {
-			return this.src == 'home'
-				? (this as any).os.stream
-				: this.src == 'local'
-					? (this as any).os.streams.localTimelineStream
-					: (this as any).os.streams.globalTimelineStream;
-		},
-
-		endpoint(): string {
-			return this.src == 'home'
-				? 'notes/timeline'
-				: this.src == 'local'
-					? 'notes/local-timeline'
-					: 'notes/global-timeline';
-		},
-
 		canFetchMore(): boolean {
 			return !this.moreFetching && !this.fetching && this.existMore;
 		}
 	},
 
 	mounted() {
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
+		const prepend = note => {
+			(this.$refs.timeline as any).prepend(note);
+		};
 
-		this.connection.on('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.on('follow', this.onChangeFollowing);
-			this.connection.on('unfollow', this.onChangeFollowing);
+		if (this.src == 'tag') {
+			this.endpoint = 'notes/search_by_tag';
+			this.query = {
+				query: this.tagTl.query
+			};
+			this.connection = this.$root.stream.connectToChannel('hashtag', { q: this.tagTl.query });
+			this.connection.on('note', prepend);
+		} else if (this.src == 'home') {
+			this.endpoint = 'notes/timeline';
+			const onChangeFollowing = () => {
+				this.fetch();
+			};
+			this.connection = this.$root.stream.useSharedConnection('homeTimeline');
+			this.connection.on('note', prepend);
+			this.connection.on('follow', onChangeFollowing);
+			this.connection.on('unfollow', onChangeFollowing);
+		} else if (this.src == 'local') {
+			this.endpoint = 'notes/local-timeline';
+			this.connection = this.$root.stream.useSharedConnection('localTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'hybrid') {
+			this.endpoint = 'notes/hybrid-timeline';
+			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'global') {
+			this.endpoint = 'notes/global-timeline';
+			this.connection = this.$root.stream.useSharedConnection('globalTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'mentions') {
+			this.endpoint = 'notes/mentions';
+			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection.on('mention', prepend);
+		} else if (this.src == 'messages') {
+			this.endpoint = 'notes/mentions';
+			this.query = {
+				visibility: 'specified'
+			};
+			const onNote = note => {
+				if (note.visibility == 'specified') {
+					prepend(note);
+				}
+			};
+			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection.on('mention', onNote);
 		}
-
-		document.addEventListener('keydown', this.onKeydown);
 
 		this.fetch();
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.off('follow', this.onChangeFollowing);
-			this.connection.off('unfollow', this.onChangeFollowing);
-		}
-		this.stream.dispose(this.connectionId);
-
-		document.removeEventListener('keydown', this.onKeydown);
+		this.connection.dispose();
 	},
 
 	methods: {
@@ -94,12 +118,10 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api(this.endpoint, {
+				this.$root.api(this.endpoint, Object.assign({
 					limit: fetchLimit + 1,
-					untilDate: this.date ? this.date.getTime() : undefined,
-					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
-				}).then(notes => {
+					untilDate: this.date ? this.date.getTime() : undefined
+				}, this.baseQuery, this.query)).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
 						this.existMore = true;
@@ -116,12 +138,10 @@ export default Vue.extend({
 
 			this.moreFetching = true;
 
-			const promise = (this as any).api(this.endpoint, {
+			const promise = this.$root.api(this.endpoint, Object.assign({
 				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
-			});
+				untilId: (this.$refs.timeline as any).tail().id
+			}, this.baseQuery, this.query));
 
 			promise.then(notes => {
 				if (notes.length == fetchLimit + 1) {
@@ -129,20 +149,13 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) {
+					(this.$refs.timeline as any).append(n);
+				}
 				this.moreFetching = false;
 			});
 
 			return promise;
-		},
-
-		onNote(note) {
-			// Prepend a note
-			(this.$refs.timeline as any).prepend(note);
-		},
-
-		onChangeFollowing() {
-			this.fetch();
 		},
 
 		focus() {
@@ -152,28 +165,15 @@ export default Vue.extend({
 		warp(date) {
 			this.date = date;
 			this.fetch();
-		},
-
-		onKeydown(e) {
-			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
-				if (e.which == 84) { // t
-					this.focus();
-				}
-			}
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 .mk-timeline-core
 	> .mk-friends-maker
 		border-bottom solid 1px #eee
-
-	> .fetching
-		padding 64px 0
 
 </style>
 
@@ -186,7 +186,7 @@ export default Vue.extend({
 	text-align center
 	color #999
 
-	> [data-fa]
+	> [data-icon]
 		display block
 		margin-bottom 16px
 		font-size 3em

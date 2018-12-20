@@ -1,72 +1,81 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
-import DriveFile, { pack } from '../../../../models/drive-file';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import DriveFile, { packMany } from '../../../../models/drive-file';
+import define from '../../define';
 
-/**
- * Get drive files
- */
-module.exports = async (params, user, app) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) throw 'invalid limit param';
+export const meta = {
+	desc: {
+		'ja-JP': 'ドライブのファイル一覧を取得します。',
+		'en-US': 'Get files of drive.'
+	},
 
-	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
-	if (sinceIdErr) throw 'invalid sinceId param';
+	requireCredential: true,
 
-	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
-	if (untilIdErr) throw 'invalid untilId param';
+	kind: 'drive-read',
 
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			default: null as any,
+			transform: transform,
+		},
+
+		type: {
+			validator: $.str.optional.match(/^[a-zA-Z\/\-\*]+$/)
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
-	if (sinceId && untilId) {
-		throw 'cannot set sinceId and untilId';
+	if (ps.sinceId && ps.untilId) {
+		return rej('cannot set sinceId and untilId');
 	}
 
-	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
-	if (folderIdErr) throw 'invalid folderId param';
-
-	// Get 'type' parameter
-	const [type, typeErr] = $.str.optional().match(/^[a-zA-Z\/\-\*]+$/).get(params.type);
-	if (typeErr) throw 'invalid type param';
-
-	// Construct query
 	const sort = {
 		_id: -1
 	};
 
 	const query = {
 		'metadata.userId': user._id,
-		'metadata.folderId': folderId,
+		'metadata.folderId': ps.folderId,
 		'metadata.deletedAt': { $exists: false }
 	} as any;
 
-	if (sinceId) {
+	if (ps.sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: sinceId
+			$gt: ps.sinceId
 		};
-	} else if (untilId) {
+	} else if (ps.untilId) {
 		query._id = {
-			$lt: untilId
+			$lt: ps.untilId
 		};
 	}
 
-	if (type) {
-		query.contentType = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
+	if (ps.type) {
+		query.contentType = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
 	}
 
-	// Issue query
 	const files = await DriveFile
 		.find(query, {
-			limit: limit,
+			limit: ps.limit,
 			sort: sort
 		});
 
-	// Serialize
-	const _files = await Promise.all(files.map(file => pack(file)));
-	return _files;
-};
+	res(await packMany(files, { detail: false, self: true }));
+}));

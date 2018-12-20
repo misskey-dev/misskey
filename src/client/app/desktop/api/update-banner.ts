@@ -1,28 +1,37 @@
-import OS from '../../mios';
 import { apiUrl } from '../../config';
 import CropWindow from '../views/components/crop-window.vue';
 import ProgressDialog from '../views/components/progress-dialog.vue';
 
-export default (os: OS) => {
+export default ($root: any) => {
 
 	const cropImage = file => new Promise((resolve, reject) => {
-		const w = os.new(CropWindow, {
+
+		const regex = RegExp('\.(jpg|jpeg|png|gif|webp|bmp|tiff)$');
+		if (!regex.test(file.name) ) {
+			$root.dialog({
+				title: '%fa:info-circle% %i18n:desktop.invalid-filetype%',
+				text: null
+			});
+			return reject('invalid-filetype');
+		}
+
+		const w = $root.new(CropWindow, {
 			image: file,
-			title: 'バナーとして表示する部分を選択',
+			title: '%i18n:desktop.banner-crop-title%',
 			aspectRatio: 16 / 9
 		});
 
 		w.$once('cropped', blob => {
 			const data = new FormData();
-			data.append('i', os.store.state.i.token);
+			data.append('i', $root.$store.state.i.token);
 			data.append('file', blob, file.name + '.cropped.png');
 
-			os.api('drive/folders/find', {
-				name: 'バナー'
+			$root.api('drive/folders/find', {
+				name: '%i18n:desktop.banner%'
 			}).then(bannerFolder => {
 				if (bannerFolder.length === 0) {
-					os.api('drive/folders/create', {
-						name: 'バナー'
+					$root.api('drive/folders/create', {
+						name: '%i18n:desktop.banner%'
 					}).then(iconFolder => {
 						resolve(upload(data, iconFolder));
 					});
@@ -42,8 +51,8 @@ export default (os: OS) => {
 	});
 
 	const upload = (data, folder) => new Promise((resolve, reject) => {
-		const dialog = os.new(ProgressDialog, {
-			title: '新しいバナーをアップロードしています'
+		const dialog = $root.new(ProgressDialog, {
+			title: '%i18n:desktop.uploading-banner%'
 		});
 		document.body.appendChild(dialog.$el);
 
@@ -66,24 +75,21 @@ export default (os: OS) => {
 	});
 
 	const setBanner = file => {
-		return os.api('i/update', {
+		return $root.api('i/update', {
 			bannerId: file.id
 		}).then(i => {
-			os.store.commit('updateIKeyValue', {
+			$root.$store.commit('updateIKeyValue', {
 				key: 'bannerId',
 				value: i.bannerId
 			});
-			os.store.commit('updateIKeyValue', {
+			$root.$store.commit('updateIKeyValue', {
 				key: 'bannerUrl',
 				value: i.bannerUrl
 			});
 
-			os.apis.dialog({
-				title: '%fa:info-circle%バナーを更新しました',
-				text: '新しいバナーが反映されるまで時間がかかる場合があります。',
-				actions: [{
-					text: 'わかった'
-				}]
+			$root.dialog({
+				title: '%fa:info-circle% %i18n:desktop.banner-updated%',
+				text: null
 			});
 
 			return i;
@@ -93,9 +99,9 @@ export default (os: OS) => {
 	return (file = null) => {
 		const selectedFile = file
 			? Promise.resolve(file)
-			: os.apis.chooseDriveFile({
+			: $root.$chooseDriveFile({
 				multiple: false,
-				title: '%fa:image%バナーにする画像を選択'
+				title: '%fa:image% %i18n:desktop.choose-banner%'
 			});
 
 		return selectedFile

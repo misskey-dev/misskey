@@ -1,19 +1,28 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import History from '../../../../models/messaging-history';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/messaging-message';
+import define from '../../define';
 
-/**
- * Show messaging history
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+export const meta = {
+	desc: {
+		'ja-JP': 'Messagingの履歴を取得します。',
+		'en-US': 'Show messaging history.'
+	},
 
+	requireCredential: true,
+
+	kind: 'messaging-read',
+
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const mute = await Mute.find({
 		muterId: user._id,
 		deletedAt: { $exists: false }
@@ -27,13 +36,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 				$nin: mute.map(m => m.muteeId)
 			}
 		}, {
-			limit: limit,
+			limit: ps.limit,
 			sort: {
 				updatedAt: -1
 			}
 		});
 
-	// Serialize
-	res(await Promise.all(history.map(async h =>
-		await pack(h.messageId, user))));
-});
+	res(await Promise.all(history.map(h => pack(h.messageId, user))));
+}));

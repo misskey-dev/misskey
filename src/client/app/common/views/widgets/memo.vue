@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-memo">
 	<mk-widget-container :show-header="!props.compact">
-		<template slot="header">%fa:R sticky-note%%i18n:@title%</template>
+		<template slot="header"><fa :icon="['far', 'sticky-note']"/>{{ $t('title') }}</template>
 
 		<div class="mkw-memo--body">
-			<textarea v-model="text" placeholder="%i18n:@memo%" @input="onChange"></textarea>
-			<button @click="saveMemo" :disabled="!changed">%i18n:@save%</button>
+			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
+			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
 		</div>
 	</mk-widget-container>
 </div>
@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import define from '../../define-widget';
+import i18n from '../../../i18n';
 
 export default define({
 	name: 'memo',
@@ -20,6 +21,7 @@ export default define({
 		compact: false
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/memo.vue'),
 	data() {
 		return {
 			text: null,
@@ -57,9 +59,7 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mkw-memo
 	.mkw-memo--body
 		padding-bottom 28px + 16px
 
@@ -69,10 +69,10 @@ root(isDark)
 			max-width 100%
 			min-width 100%
 			padding 16px
-			color isDark ? #fff : #222
-			background isDark ? #282c37 : #fff
+			color var(--inputText)
+			background var(--face)
 			border none
-			border-bottom solid 1px isDark ? #1c2023 : #eee
+			border-bottom solid 1px var(--faceDivider)
 			border-radius 0
 
 		> button
@@ -83,8 +83,8 @@ root(isDark)
 			margin 0
 			padding 0 10px
 			height 28px
-			color $theme-color-foreground
-			background $theme-color !important
+			color var(--primaryForeground)
+			background var(--primary) !important
 			outline none
 			border none
 			border-radius 4px
@@ -92,20 +92,14 @@ root(isDark)
 			cursor pointer
 
 			&:hover
-				background lighten($theme-color, 10%) !important
+				background var(--primaryLighten10) !important
 
 			&:active
-				background darken($theme-color, 10%) !important
+				background var(--primaryDarken10) !important
 				transition background 0s ease
 
 			&:disabled
 				opacity 0.7
 				cursor default
-
-.mkw-memo[data-darkmode]
-	root(true)
-
-.mkw-memo:not([data-darkmode])
-	root(false)
 
 </style>

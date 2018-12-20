@@ -16,23 +16,17 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mkw-nav
 	.mkw-nav--body
 		padding 16px
 		font-size 12px
-		color isDark ? #9aa4b3 : #aaa
-		background isDark ? #282c37 : #fff
+		color var(--text)
+		background var(--face)
 
 		a
-			color isDark ? #9aa4b3 : #999
+			color var(--text)
 
 		i
-			color isDark ? #9aa4b3 : #ccc
-
-.mkw-nav[data-darkmode]
-	root(true)
-
-.mkw-nav:not([data-darkmode])
-	root(false)
+			color var(--text)
 
 </style>

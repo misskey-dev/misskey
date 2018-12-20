@@ -1,22 +1,54 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
-import { publishDriveStream } from '../../../../../publishers/stream';
+import { publishDriveStream } from '../../../../../stream';
+import define from '../../../define';
 
-/**
- * Update a folder
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
-	if (folderIdErr) return rej('invalid folderId param');
+export const meta = {
+	stability: 'stable',
 
+	desc: {
+		'ja-JP': '指定したドライブのフォルダの情報を更新します。',
+		'en-US': 'Update specified folder of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-write',
+
+	params: {
+		folderId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のフォルダID',
+				'en-US': 'Target folder ID'
+			}
+		},
+
+		name: {
+			validator: $.str.optional.pipe(isValidFolderName),
+			desc: {
+				'ja-JP': 'フォルダ名',
+				'en-US': 'Folder name'
+			}
+		},
+
+		parentId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			desc: {
+				'ja-JP': '親フォルダID',
+				'en-US': 'Parent folder ID'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: folderId,
+			_id: ps.folderId,
 			userId: user._id
 		});
 
@@ -24,22 +56,16 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('folder-not-found');
 	}
 
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional().pipe(isValidFolderName).get(params.name);
-	if (nameErr) return rej('invalid name param');
-	if (name) folder.name = name;
+	if (ps.name) folder.name = ps.name;
 
-	// Get 'parentId' parameter
-	const [parentId, parentIdErr] = $.type(ID).optional().nullable().get(params.parentId);
-	if (parentIdErr) return rej('invalid parentId param');
-	if (parentId !== undefined) {
-		if (parentId === null) {
+	if (ps.parentId !== undefined) {
+		if (ps.parentId === null) {
 			folder.parentId = null;
 		} else {
 			// Get parent folder
 			const parent = await DriveFolder
 				.findOne({
-					_id: parentId,
+					_id: ps.parentId,
 					userId: user._id
 				});
 
@@ -48,7 +74,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			}
 
 			// Check if the circular reference will occur
-			async function checkCircle(folderId) {
+			async function checkCircle(folderId: any): Promise<boolean> {
 				// Fetch folder
 				const folder2 = await DriveFolder.findOne({
 					_id: folderId
@@ -90,6 +116,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Response
 	res(folderObj);
 
-	// Publish folder_updated event
-	publishDriveStream(user._id, 'folder_updated', folderObj);
-});
+	// Publish folderUpdated event
+	publishDriveStream(user._id, 'folderUpdated', folderObj);
+}));

@@ -51,11 +51,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.ui-radio
 	display inline-block
-	margin 32px 32px 32px 0
+	margin 0 32px 0 0
 	cursor pointer
 	transition all 0.3s
 
@@ -68,10 +66,10 @@ root(isDark)
 
 	&.checked
 		> .button
-			border-color $theme-color
+			border-color var(--primary)
 
 			&:after
-				background-color $theme-color
+				background-color var(--primary)
 				transform scale(1)
 				opacity 1
 
@@ -87,7 +85,7 @@ root(isDark)
 		width 20px
 		height 20px
 		background none
-		border solid 2px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+		border solid 2px var(--inputLabel)
 		border-radius 100%
 		transition inherit
 
@@ -110,11 +108,5 @@ root(isDark)
 		font-size 16px
 		line-height 20px
 		cursor pointer
-
-.ui-radio[data-darkmode]
-	root(true)
-
-.ui-radio:not([data-darkmode])
-	root(false)
 
 </style>

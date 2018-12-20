@@ -1,11 +1,22 @@
 import * as Koa from 'koa';
+import * as request from 'request-promise-native';
 import summaly from 'summaly';
+import fetchMeta from '../../misc/fetch-meta';
 
 module.exports = async (ctx: Koa.Context) => {
+	const meta = await fetchMeta();
+
 	try {
-		const summary = await summaly(ctx.query.url, {
+		const summary = meta.summalyProxy ? await request.get({
+			url: meta.summalyProxy,
+			qs: {
+				url: ctx.query.url
+			},
+			json: true
+		}) : await summaly(ctx.query.url, {
 			followRedirects: false
 		});
+
 		summary.icon = wrap(summary.icon);
 		summary.thumbnail = wrap(summary.thumbnail);
 
@@ -14,7 +25,9 @@ module.exports = async (ctx: Koa.Context) => {
 
 		ctx.body = summary;
 	} catch (e) {
-		ctx.status = 500;
+		ctx.status = 200;
+		ctx.set('Cache-Control', 'max-age=86400, immutable');
+		ctx.body = '{}';
 	}
 };
 

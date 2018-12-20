@@ -1,130 +1,127 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
-import { pack } from '../../../../models/note';
+import { packMany } from '../../../../models/note';
+import define from '../../define';
 
-/**
- * Search notes by tag
- */
-module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'tag' parameter
-	const [tag, tagError] = $.str.get(params.tag);
-	if (tagError) return rej('invalid tag param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定されたタグが付けられた投稿を取得します。'
+	},
 
-	// Get 'includeUserIds' parameter
-	const [includeUserIds = [], includeUserIdsErr] = $.arr($.type(ID)).optional().get(params.includeUserIds);
-	if (includeUserIdsErr) return rej('invalid includeUserIds param');
+	params: {
+		tag: {
+			validator: $.str.optional,
+			desc: {
+				'ja-JP': 'タグ'
+			}
+		},
 
-	// Get 'excludeUserIds' parameter
-	const [excludeUserIds = [], excludeUserIdsErr] = $.arr($.type(ID)).optional().get(params.excludeUserIds);
-	if (excludeUserIdsErr) return rej('invalid excludeUserIds param');
+		query: {
+			validator: $.arr($.arr($.str)).optional,
+			desc: {
+				'ja-JP': 'クエリ'
+			}
+		},
 
-	// Get 'includeUserUsernames' parameter
-	const [includeUserUsernames = [], includeUserUsernamesErr] = $.arr($.str).optional().get(params.includeUserUsernames);
-	if (includeUserUsernamesErr) return rej('invalid includeUserUsernames param');
+		following: {
+			validator: $.bool.optional.nullable,
+			default: null as any
+		},
 
-	// Get 'excludeUserUsernames' parameter
-	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $.arr($.str).optional().get(params.excludeUserUsernames);
-	if (excludeUserUsernamesErr) return rej('invalid excludeUserUsernames param');
+		mute: {
+			validator: $.str.optional,
+			default: 'mute_all'
+		},
 
-	// Get 'following' parameter
-	const [following = null, followingErr] = $.bool.optional().nullable().get(params.following);
-	if (followingErr) return rej('invalid following param');
+		reply: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
+			desc: {
+				'ja-JP': '返信に限定するか否か'
+			}
+		},
 
-	// Get 'mute' parameter
-	const [mute = 'mute_all', muteErr] = $.str.optional().get(params.mute);
-	if (muteErr) return rej('invalid mute param');
+		renote: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
+			desc: {
+				'ja-JP': 'Renoteに限定するか否か'
+			}
+		},
 
-	// Get 'reply' parameter
-	const [reply = null, replyErr] = $.bool.optional().nullable().get(params.reply);
-	if (replyErr) return rej('invalid reply param');
+		withFiles: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
+			}
+		},
 
-	// Get 'renote' parameter
-	const [renote = null, renoteErr] = $.bool.optional().nullable().get(params.renote);
-	if (renoteErr) return rej('invalid renote param');
+		media: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
+			desc: {
+				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
+			}
+		},
 
-	// Get 'media' parameter
-	const [media = null, mediaErr] = $.bool.optional().nullable().get(params.media);
-	if (mediaErr) return rej('invalid media param');
+		poll: {
+			validator: $.bool.optional.nullable,
+			default: null as any,
+			desc: {
+				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
+			}
+		},
 
-	// Get 'poll' parameter
-	const [poll = null, pollErr] = $.bool.optional().nullable().get(params.poll);
-	if (pollErr) return rej('invalid poll param');
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+			desc: {
+				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
+			}
+		},
 
-	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $.num.optional().get(params.sinceDate);
-	if (sinceDateErr) throw 'invalid sinceDate param';
+		sinceDate: {
+			validator: $.num.optional,
+		},
 
-	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $.num.optional().get(params.untilDate);
-	if (untilDateErr) throw 'invalid untilDate param';
+		untilDate: {
+			validator: $.num.optional,
+		},
 
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		},
 
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 30).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
-
-	let includeUsers = includeUserIds;
-	if (includeUserUsernames != null) {
-		const ids = (await Promise.all(includeUserUsernames.map(async (username) => {
-			const _user = await User.findOne({
-				usernameLower: username.toLowerCase()
-			});
-			return _user ? _user._id : null;
-		}))).filter(id => id != null);
-		includeUsers = includeUsers.concat(ids);
+		limit: {
+			validator: $.num.optional.range(1, 30),
+			default: 10
+		},
 	}
+};
 
-	let excludeUsers = excludeUserIds;
-	if (excludeUserUsernames != null) {
-		const ids = (await Promise.all(excludeUserUsernames.map(async (username) => {
-			const _user = await User.findOne({
-				usernameLower: username.toLowerCase()
-			});
-			return _user ? _user._id : null;
-		}))).filter(id => id != null);
-		excludeUsers = excludeUsers.concat(ids);
-	}
-
-	search(res, rej, me, tag, includeUsers, excludeUsers, following,
-			mute, reply, renote, media, poll, sinceDate, untilDate, offset, limit);
-});
-
-async function search(
-	res, rej, me, tag, includeUserIds, excludeUserIds, following,
-	mute, reply, renote, media, poll, sinceDate, untilDate, offset, max) {
-
-	let q: any = {
-		$and: [{
-			tagsLower: tag.toLowerCase()
-		}]
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	const q: any = {
+		$and: [ps.tag ? {
+			tagsLower: ps.tag.toLowerCase()
+		} : {
+			$or: ps.query.map(tags => ({
+				$and: tags.map(t => ({
+					tagsLower: t.toLowerCase()
+				}))
+			}))
+		}],
+		deletedAt: { $exists: false }
 	};
 
-	const push = x => q.$and.push(x);
+	const push = (x: any) => q.$and.push(x);
 
-	if (includeUserIds && includeUserIds.length != 0) {
-		push({
-			userId: {
-				$in: includeUserIds
-			}
-		});
-	} else if (excludeUserIds && excludeUserIds.length != 0) {
-		push({
-			userId: {
-				$nin: excludeUserIds
-			}
-		});
-	}
-
-	if (following != null && me != null) {
+	if (ps.following != null && me != null) {
 		const ids = await getFriendIds(me._id, false);
 		push({
-			userId: following ? {
+			userId: ps.following ? {
 				$in: ids
 			} : {
 				$nin: ids.concat(me._id)
@@ -139,7 +136,7 @@ async function search(
 		});
 		const mutedUserIds = mutes.map(m => m.muteeId);
 
-		switch (mute) {
+		switch (ps.mute) {
 			case 'mute_all':
 				push({
 					userId: {
@@ -210,8 +207,8 @@ async function search(
 		}
 	}
 
-	if (reply != null) {
-		if (reply) {
+	if (ps.reply != null) {
+		if (ps.reply) {
 			push({
 				replyId: {
 					$exists: true,
@@ -231,8 +228,8 @@ async function search(
 		}
 	}
 
-	if (renote != null) {
-		if (renote) {
+	if (ps.renote != null) {
+		if (ps.renote) {
 			push({
 				renoteId: {
 					$exists: true,
@@ -252,29 +249,16 @@ async function search(
 		}
 	}
 
-	if (media != null) {
-		if (media) {
-			push({
-				mediaIds: {
-					$exists: true,
-					$ne: null
-				}
-			});
-		} else {
-			push({
-				$or: [{
-					mediaIds: {
-						$exists: false
-					}
-				}, {
-					mediaIds: null
-				}]
-			});
-		}
+	const withFiles = ps.withFiles != null ? ps.withFiles : ps.media;
+
+	if (withFiles) {
+		push({
+			fileIds: { $exists: true, $ne: [] }
+		});
 	}
 
-	if (poll != null) {
-		if (poll) {
+	if (ps.poll != null) {
+		if (ps.poll) {
 			push({
 				poll: {
 					$exists: true,
@@ -294,24 +278,32 @@ async function search(
 		}
 	}
 
-	if (sinceDate) {
+	if (ps.untilId) {
 		push({
-			createdAt: {
-				$gt: new Date(sinceDate)
+			_id: {
+				$lt: ps.untilId
 			}
 		});
 	}
 
-	if (untilDate) {
+	if (ps.sinceDate) {
 		push({
 			createdAt: {
-				$lt: new Date(untilDate)
+				$gt: new Date(ps.sinceDate)
+			}
+		});
+	}
+
+	if (ps.untilDate) {
+		push({
+			createdAt: {
+				$lt: new Date(ps.untilDate)
 			}
 		});
 	}
 
 	if (q.$and.length == 0) {
-		q = {};
+		delete q.$and;
 	}
 
 	// Search notes
@@ -320,10 +312,10 @@ async function search(
 			sort: {
 				_id: -1
 			},
-			limit: max,
-			skip: offset
+			limit: ps.limit,
+			skip: ps.offset
 		});
 
 	// Serialize
-	res(await Promise.all(notes.map(note => pack(note, me))));
-}
+	res(await packMany(notes, me));
+}));

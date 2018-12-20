@@ -1,25 +1,24 @@
 <template>
-<div class="timeline">
+<div class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
 	<header>
-		<span :data-active="mode == 'default'" @click="mode = 'default'">%i18n:@default%</span>
-		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'">%i18n:@with-replies%</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'">%i18n:@with-media%</span>
+		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
+		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa :icon="['far', 'images']"/> {{ $t('with-media') }}</span>
 	</header>
-	<div class="loading" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
 	<mk-notes ref="timeline" :more="existMore ? more : null">
-		<p class="empty" slot="empty">%fa:R comments%%i18n:@empty%</p>
+		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>
 	</mk-notes>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.timeline.vue'),
 	props: ['user'],
 
 	data() {
@@ -61,12 +60,12 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('users/notes', {
+				this.$root.api('users/notes', {
 					userId: this.user.id,
 					limit: fetchLimit + 1,
-					untilDate: this.date ? this.date.getTime() : undefined,
+					untilDate: this.date ? this.date.getTime() : new Date().getTime() + 1000 * 86400 * 365,
 					includeReplies: this.mode == 'with-replies',
-					withMedia: this.mode == 'with-media'
+					withFiles: this.mode == 'with-media'
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -82,12 +81,12 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api('users/notes', {
+			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',
-				withMedia: this.mode == 'with-media',
-				untilId: (this.$refs.timeline as any).tail().id
+				withFiles: this.mode == 'with-media',
+				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime()
 			});
 
 			promise.then(notes => {
@@ -96,7 +95,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) {
+					(this.$refs.timeline as any).append(n);
+				}
 				this.moreFetching = false;
 			});
 
@@ -112,43 +113,60 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-.timeline
-	background #fff
+.oh5y2r7l5lx8j6jj791ykeiwgihheguk
+	background var(--face)
+	border-radius var(--round)
+	overflow hidden
 
 	> header
-		padding 8px 16px
-		border-bottom solid 1px #eee
+		padding 0 8px
+		z-index 10
+		background var(--faceHeader)
+		box-shadow 0 1px var(--desktopTimelineHeaderShadow)
 
 		> span
-			margin-right 16px
-			line-height 27px
-			font-size 18px
-			color #555
+			display inline-block
+			padding 0 10px
+			line-height 42px
+			font-size 12px
+			user-select none
+
+			&[data-active]
+				color var(--primary)
+				cursor default
+				font-weight bold
+
+				&:before
+					content ""
+					display block
+					position absolute
+					bottom 0
+					left -8px
+					width calc(100% + 16px)
+					height 2px
+					background var(--primary)
 
 			&:not([data-active])
-				color $theme-color
+				color var(--desktopTimelineSrc)
 				cursor pointer
 
 				&:hover
-					text-decoration underline
+					color var(--desktopTimelineSrcHover)
 
-	> .loading
-		padding 64px 0
+	> .mk-notes
 
-	> .empty
-		display block
-		margin 0 auto
-		padding 32px
-		max-width 400px
-		text-align center
-		color #999
-
-		> [data-fa]
+		> .empty
 			display block
-			margin-bottom 16px
-			font-size 3em
-			color #ccc
+			margin 0 auto
+			padding 32px
+			max-width 400px
+			text-align center
+			color var(--text)
+
+			> [data-icon]
+				display block
+				margin-bottom 16px
+				font-size 3em
+				color var(--faceHeaderText);
 
 </style>

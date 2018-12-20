@@ -1,24 +1,32 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import { publishMainStream } from '../../../../stream';
+import define from '../../define';
 
-module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'home' parameter
-	const [home, homeErr] = $.arr(
-		$.obj.strict()
-			.have('name', $.str)
-			.have('id', $.str)
-			.have('data', $.obj))
-		.get(params.home);
-	if (homeErr) return rej('invalid home param');
+export const meta = {
+	requireCredential: true,
 
+	secure: true,
+
+	params: {
+		home: {
+			validator: $.arr($.obj({
+				name: $.str,
+				id: $.str,
+				data: $.obj()
+			}).strict())
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	await User.update(user._id, {
 		$set: {
-			'clientSettings.mobileHome': home
+			'clientSettings.mobileHome': ps.home
 		}
 	});
 
 	res();
 
-	event(user._id, 'mobile_home_updated', home);
-});
+	publishMainStream(user._id, 'mobileHomeUpdated', ps.home);
+}));

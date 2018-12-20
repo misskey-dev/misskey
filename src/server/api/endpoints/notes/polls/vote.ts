@@ -1,25 +1,42 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Vote from '../../../../../models/poll-vote';
 import Note from '../../../../../models/note';
 import Watching from '../../../../../models/note-watching';
 import watch from '../../../../../services/note/watch';
-import { publishNoteStream } from '../../../../../publishers/stream';
-import notify from '../../../../../publishers/notify';
+import { publishNoteStream } from '../../../../../stream';
+import notify from '../../../../../notify';
+import define from '../../../define';
 
-/**
- * Vote poll of a note
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定した投稿のアンケートに投票します。',
+		'en-US': 'Vote poll of a note.'
+	},
 
+	requireCredential: true,
+
+	kind: 'vote-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID'
+			}
+		},
+
+		choice: {
+			validator: $.num
+		},
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Get votee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -30,12 +47,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('poll not found');
 	}
 
-	// Get 'choice' parameter
-	const [choice, choiceError] =
-		$.num
-			.pipe(c => note.poll.choices.some(x => x.id == c))
-			.get(params.choice);
-	if (choiceError) return rej('invalid choice param');
+	if (!note.poll.choices.some(x => x.id == ps.choice)) return rej('invalid choice param');
 
 	// if already voted
 	const exist = await Vote.findOne({
@@ -52,26 +64,29 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		createdAt: new Date(),
 		noteId: note._id,
 		userId: user._id,
-		choice: choice
+		choice: ps.choice
 	});
 
 	// Send response
 	res();
 
-	const inc = {};
-	inc[`poll.choices.${findWithAttr(note.poll.choices, 'id', choice)}.votes`] = 1;
+	const inc: any = {};
+	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == ps.choice)}.votes`] = 1;
 
 	// Increment votes count
 	await Note.update({ _id: note._id }, {
 		$inc: inc
 	});
 
-	publishNoteStream(note._id, 'poll_voted');
+	publishNoteStream(note._id, 'pollVoted', {
+		choice: ps.choice,
+		userId: user._id.toHexString()
+	});
 
 	// Notify
 	notify(note.userId, user._id, 'poll_vote', {
 		noteId: note._id,
-		choice: choice
+		choice: ps.choice
 	});
 
 	// Fetch watchers
@@ -87,25 +102,16 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			}
 		})
 		.then(watchers => {
-			watchers.forEach(watcher => {
+			for (const watcher of watchers) {
 				notify(watcher.userId, user._id, 'poll_vote', {
 					noteId: note._id,
-					choice: choice
+					choice: ps.choice
 				});
-			});
+			}
 		});
 
 	// この投稿をWatchする
 	if (user.settings.autoWatch !== false) {
 		watch(user._id, note);
 	}
-});
-
-function findWithAttr(array, attr, value) {
-	for (let i = 0; i < array.length; i += 1) {
-		if (array[i][attr] === value) {
-			return i;
-		}
-	}
-	return -1;
-}
+}));

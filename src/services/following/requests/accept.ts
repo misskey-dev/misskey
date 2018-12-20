@@ -1,16 +1,17 @@
-import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from "../../../models/user";
-import FollowRequest from "../../../models/follow-request";
+import User, { IUser, isRemoteUser, ILocalUser, pack as packUser, isLocalUser } from '../../../models/user';
+import FollowRequest from '../../../models/follow-request';
 import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
-import Following from "../../../models/following";
-import FollowingLog from "../../../models/following-log";
-import FollowedLog from "../../../models/followed-log";
-import event from '../../../publishers/stream';
+import Following from '../../../models/following';
+import { publishMainStream } from '../../../stream';
+import perUserFollowingChart from '../../../chart/per-user-following';
 
 export default async function(followee: IUser, follower: IUser) {
-	const following = await Following.insert({
+	let incremented = 1;
+
+	await Following.insert({
 		createdAt: new Date(),
 		followerId: follower._id,
 		followeeId: followee._id,
@@ -18,16 +19,30 @@ export default async function(followee: IUser, follower: IUser) {
 		// 非正規化
 		_follower: {
 			host: follower.host,
-			inbox: isRemoteUser(follower) ? follower.inbox : undefined
+			inbox: isRemoteUser(follower) ? follower.inbox : undefined,
+			sharedInbox: isRemoteUser(follower) ? follower.sharedInbox : undefined
 		},
 		_followee: {
 			host: followee.host,
-			inbox: isRemoteUser(followee) ? followee.inbox : undefined
+			inbox: isRemoteUser(followee) ? followee.inbox : undefined,
+			sharedInbox: isRemoteUser(followee) ? followee.sharedInbox : undefined
+		}
+	}).catch(e => {
+		if (e.code === 11000 && isRemoteUser(follower) && isLocalUser(followee)) {
+			console.log(`Accept => Insert duplicated ignore. ${follower._id} => ${followee._id}`);
+			incremented = 0;
+		} else {
+			throw e;
 		}
 	});
 
 	if (isRemoteUser(follower)) {
-		const content = pack(renderAccept(renderFollow(follower, followee)));
+		const request = await FollowRequest.findOne({
+			followeeId: followee._id,
+			followerId: follower._id
+		});
+
+		const content = pack(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
@@ -39,32 +54,32 @@ export default async function(followee: IUser, follower: IUser) {
 	//#region Increment following count
 	await User.update({ _id: follower._id }, {
 		$inc: {
-			followingCount: 1
+			followingCount: incremented
 		}
-	});
-
-	FollowingLog.insert({
-		createdAt: following.createdAt,
-		userId: follower._id,
-		count: follower.followingCount + 1
 	});
 	//#endregion
 
 	//#region Increment followers count
 	await User.update({ _id: followee._id }, {
 		$inc: {
-			followersCount: 1
+			followersCount: incremented
 		}
-	});
-
-	FollowedLog.insert({
-		createdAt: following.createdAt,
-		userId: followee._id,
-		count: followee.followersCount + 1
 	});
 	//#endregion
 
+	perUserFollowingChart.update(follower, followee, true);
+
+	await User.update({ _id: followee._id }, {
+		$inc: {
+			pendingReceivedFollowRequestsCount: -1
+		}
+	});
+
 	packUser(followee, followee, {
 		detail: true
-	}).then(packed => event(followee._id, 'meUpdated', packed));
+	}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
+
+	packUser(followee, follower, {
+		detail: true
+	}).then(packed => publishMainStream(follower._id, 'follow', packed));
 }

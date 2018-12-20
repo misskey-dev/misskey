@@ -3,36 +3,55 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
 		<div @click="choose('public')" :class="{ active: v == 'public' }">
-			<div>%fa:globe%</div>
+			<div><fa icon="globe"/></div>
 			<div>
-				<span>%i18n:@public%</span>
+				<span>{{ $t('public') }}</span>
 			</div>
 		</div>
 		<div @click="choose('home')" :class="{ active: v == 'home' }">
-			<div>%fa:home%</div>
+			<div><fa icon="home"/></div>
 			<div>
-				<span>%i18n:@home%</span>
-				<span>%i18n:@home-desc%</span>
+				<span>{{ $t('home') }}</span>
+				<span>{{ $t('home-desc') }}</span>
 			</div>
 		</div>
 		<div @click="choose('followers')" :class="{ active: v == 'followers' }">
-			<div>%fa:unlock%</div>
+			<div><fa icon="unlock"/></div>
 			<div>
-				<span>%i18n:@followers%</span>
-				<span>%i18n:@followers-desc%</span>
+				<span>{{ $t('followers') }}</span>
+				<span>{{ $t('followers-desc') }}</span>
 			</div>
 		</div>
 		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
-			<div>%fa:envelope%</div>
+			<div><fa icon="envelope"/></div>
 			<div>
-				<span>%i18n:@specified%</span>
-				<span>%i18n:@specified-desc%</span>
+				<span>{{ $t('specified') }}</span>
+				<span>{{ $t('specified-desc') }}</span>
 			</div>
 		</div>
 		<div @click="choose('private')" :class="{ active: v == 'private' }">
-			<div>%fa:lock%</div>
+			<div><fa icon="lock"/></div>
 			<div>
-				<span>%i18n:@private%</span>
+				<span>{{ $t('private') }}</span>
+			</div>
+		</div>
+		<div @click="choose('local-public')" :class="{ active: v == 'local-public' }">
+			<div><fa icon="globe"/></div>
+			<div>
+				<span>{{ $t('local-public') }}</span>
+				<span>{{ $t('local-public-desc') }}</span>
+			</div>
+		</div>
+		<div @click="choose('local-home')" :class="{ active: v == 'local-home' }">
+			<div><fa icon="home"/></div>
+			<div>
+				<span>{{ $t('local-home') }}</span>
+			</div>
+		</div>
+		<div @click="choose('local-followers')" :class="{ active: v == 'local-followers' }">
+			<div><fa icon="unlock"/></div>
+			<div>
+				<span>{{ $t('local-followers') }}</span>
 			</div>
 		</div>
 	</div>
@@ -41,10 +60,17 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	props: ['source', 'compact', 'v'],
+	i18n: i18n('common/views/components/visibility-chooser.vue'),
+	props: ['source', 'compact'],
+	data() {
+		return {
+			v: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility
+		}
+	},
 	mounted() {
 		this.$nextTick(() => {
 			const popover = this.$refs.popover as any;
@@ -92,8 +118,11 @@ export default Vue.extend({
 	},
 	methods: {
 		choose(visibility) {
+			if (this.$store.state.settings.rememberNoteVisibility) {
+				this.$store.commit('device/setVisibility', visibility);
+			}
 			this.$emit('chosen', visibility);
-			this.$destroy();
+			this.destroyDom();
 		},
 		close() {
 			(this.$refs.backdrop as any).style.pointerEvents = 'none';
@@ -111,7 +140,7 @@ export default Vue.extend({
 				scale: 0.5,
 				duration: 200,
 				easing: 'easeInBack',
-				complete: () => this.$destroy()
+				complete: () => this.destroyDom()
 			});
 		}
 	}
@@ -119,11 +148,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 $border-color = rgba(27, 31, 35, 0.15)
 
-root(isDark)
+.mk-visibility-chooser
 	position initial
 
 	> .backdrop
@@ -133,11 +160,11 @@ root(isDark)
 		z-index 10000
 		width 100%
 		height 100%
-		background isDark ? rgba(#000, 0.4) : rgba(#000, 0.1)
+		background var(--modalBackdrop)
 		opacity 0
 
 	> .popover
-		$bgcolor = isDark ? #2c303c : #fff
+		$bgcolor = var(--popupBg)
 		position absolute
 		z-index 10001
 		width 240px
@@ -181,18 +208,18 @@ root(isDark)
 			display flex
 			padding 8px 14px
 			font-size 12px
-			color isDark ? #fff : #666
+			color var(--popupFg)
 			cursor pointer
 
 			&:hover
-				background isDark ? #252731 : #eee
+				background var(--faceClearButtonHover)
 
 			&:active
-				background isDark ? #21242b : #ddd
+				background var(--faceClearButtonActive)
 
 			&.active
-				color $theme-color-foreground
-				background $theme-color
+				color var(--primaryForeground)
+				background var(--primary)
 
 			> *
 				user-select none
@@ -214,11 +241,4 @@ root(isDark)
 
 				> span:last-child:not(:first-child)
 					opacity 0.6
-
-.mk-visibility-chooser[data-darkmode]
-	root(true)
-
-.mk-visibility-chooser:not([data-darkmode])
-	root(false)
-
 </style>

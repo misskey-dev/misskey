@@ -1,40 +1,48 @@
 <template>
 <div class="mkw-photo-stream" :class="$style.root" :data-melt="props.design == 2">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header">%fa:camera%%i18n:@title%</template>
+		<template slot="header"><fa icon="camera"/>{{ $t('title') }}</template>
 
-		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<div :class="$style.stream" v-if="!fetching && images.length > 0">
-			<div v-for="image in images" :class="$style.img" :style="`background-image: url(${image.url}?thumbnail&size=256)`"></div>
+			<div v-for="image in images"
+				:class="$style.img"
+				:style="`background-image: url(${image.thumbnailUrl || image.url})`"
+				draggable="true"
+				@dragstart="onDragstart(image, $event)"
+			></div>
 		</div>
-		<p :class="$style.empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
+		<p :class="$style.empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 	</mk-widget-container>
 </div>
 </template>
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import i18n from '../../../i18n';
+
 export default define({
 	name: 'photo-stream',
 	props: () => ({
 		design: 0
 	})
 }).extend({
+	i18n: i18n('common/views/widgets/photo-stream.vue'),
+
 	data() {
 		return {
 			images: [],
 			fetching: true,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
+
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = this.$root.stream.useSharedConnection('main');
 
-		this.connection.on('drive_file_created', this.onDriveFileCreated);
+		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 
-		(this as any).api('drive/stream', {
+		this.$root.api('drive/stream', {
 			type: 'image/*',
 			limit: 9
 		}).then(images => {
@@ -42,10 +50,11 @@ export default define({
 			this.fetching = false;
 		});
 	},
+
 	beforeDestroy() {
-		this.connection.off('drive_file_created', this.onDriveFileCreated);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
+
 	methods: {
 		onDriveFileCreated(file) {
 			if (/^image\/.+$/.test(file.type)) {
@@ -53,6 +62,7 @@ export default define({
 				if (this.images.length > 9) this.images.pop();
 			}
 		},
+
 		func() {
 			if (this.props.design == 2) {
 				this.props.design = 0;
@@ -61,7 +71,12 @@ export default define({
 			}
 
 			this.save();
-		}
+		},
+
+		onDragstart(file, e) {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('mk_drive_file', JSON.stringify(file));
+		},
 	}
 });
 </script>
@@ -76,9 +91,6 @@ export default define({
 		border-radius 8px
 
 .stream
-	display -webkit-flex
-	display -moz-flex
-	display -ms-flex
 	display flex
 	justify-content center
 	flex-wrap wrap
@@ -100,7 +112,7 @@ export default define({
 	text-align center
 	color #aaa
 
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 </style>

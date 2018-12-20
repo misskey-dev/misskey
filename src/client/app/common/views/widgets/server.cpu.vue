@@ -2,8 +2,8 @@
 <div class="cpu">
 	<x-pie class="pie" :value="usage"/>
 	<div>
-		<p>%fa:microchip%CPU</p>
-		<p>{{ meta.cpu.cores }} Cores</p>
+		<p><fa icon="microchip"/>CPU</p>
+		<p>{{ meta.cpu.cores }} Logical cores</p>
 		<p>{{ meta.cpu.model }}</p>
 	</div>
 </div>
@@ -38,7 +38,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.cpu
 	> .pie
 		padding 10px
 		height 100px
@@ -52,23 +52,17 @@ root(isDark)
 		> p
 			margin 0
 			font-size 12px
-			color isDark ? #a8b4bd : #505050
+			color var(--chartCaption)
 
 			&:first-child
 				font-weight bold
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 	&:after
 		content ""
 		display block
 		clear both
-
-.cpu[data-darkmode]
-	root(true)
-
-.cpu:not([data-darkmode])
-	root(false)
 
 </style>

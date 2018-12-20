@@ -1,47 +1,85 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
-import { publishDriveStream } from '../../../../../publishers/stream';
+import { publishDriveStream } from '../../../../../stream';
+import define from '../../../define';
+import Note from '../../../../../models/note';
 
-/**
- * Update a file
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
-	if (fileIdErr) return rej('invalid fileId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定したドライブのファイルの情報を更新します。',
+		'en-US': 'Update specified file of drive.'
+	},
 
+	requireCredential: true,
+
+	kind: 'drive-write',
+
+	params: {
+		fileId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のファイルID'
+			}
+		},
+
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: undefined as any,
+			desc: {
+				'ja-JP': 'フォルダID'
+			}
+		},
+
+		name: {
+			validator: $.str.optional.pipe(validateFileName),
+			default: undefined as any,
+			desc: {
+				'ja-JP': 'ファイル名',
+				'en-US': 'Name of the file'
+			}
+		},
+
+		isSensitive: {
+			validator: $.bool.optional,
+			default: undefined as any,
+			desc: {
+				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
+				'en-US': 'Whether this media is NSFW'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: fileId,
-			'metadata.userId': user._id
+			_id: ps.fileId
 		});
 
 	if (file === null) {
 		return rej('file-not-found');
 	}
 
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional().pipe(validateFileName).get(params.name);
-	if (nameErr) return rej('invalid name param');
-	if (name) file.filename = name;
+	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
+		return rej('access denied');
+	}
 
-	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
-	if (folderIdErr) return rej('invalid folderId param');
+	if (ps.name) file.filename = ps.name;
 
-	if (folderId !== undefined) {
-		if (folderId === null) {
+	if (ps.isSensitive !== undefined) file.metadata.isSensitive = ps.isSensitive;
+
+	if (ps.folderId !== undefined) {
+		if (ps.folderId === null) {
 			file.metadata.folderId = null;
 		} else {
 			// Fetch folder
 			const folder = await DriveFolder
 				.findOne({
-					_id: folderId,
+					_id: ps.folderId,
 					userId: user._id
 				});
 
@@ -56,16 +94,31 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	await DriveFile.update(file._id, {
 		$set: {
 			filename: file.filename,
-			'metadata.folderId': file.metadata.folderId
+			'metadata.folderId': file.metadata.folderId,
+			'metadata.isSensitive': file.metadata.isSensitive
+		}
+	});
+
+	// ドライブのファイルが非正規化されているドキュメントも更新
+	Note.find({
+		'_files._id': file._id
+	}).then(notes => {
+		for (const note of notes) {
+			note._files[note._files.findIndex(f => f._id.equals(file._id))] = file;
+			Note.update({ _id: note._id }, {
+				$set: {
+					_files: note._files
+				}
+			});
 		}
 	});
 
 	// Serialize
-	const fileObj = await pack(file);
+	const fileObj = await pack(file, { self: true });
 
 	// Response
 	res(fileObj);
 
-	// Publish file_updated event
-	publishDriveStream(user._id, 'file_updated', fileObj);
-});
+	// Publish fileUpdated event
+	publishDriveStream(user._id, 'fileUpdated', fileObj);
+}));

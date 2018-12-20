@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<mk-home :mode="mode" @loaded="loaded"/>
+	<mk-home :mode="mode" @loaded="loaded" ref="home" v-hotkey.global="keymap"/>
 </mk-ui>
 </template>
 
@@ -15,14 +15,24 @@ export default Vue.extend({
 			default: 'timeline'
 		}
 	},
+	computed: {
+		keymap(): any {
+			return {
+				't': this.focus
+			};
+		}
+	},
 	mounted() {
-		document.title = 'Misskey';
+		document.title = this.$root.instanceName;
 
 		Progress.start();
 	},
 	methods: {
 		loaded() {
 			Progress.done();
+		},
+		focus() {
+			this.$refs.home.focus();
 		}
 	}
 });

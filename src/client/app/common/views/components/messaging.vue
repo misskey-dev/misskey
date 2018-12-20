@@ -2,8 +2,8 @@
 <div class="mk-messaging" :data-compact="compact">
 	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
-			<label for="search-input">%fa:search%</label>
-			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:@search-user%"/>
+			<label for="search-input"><i><fa icon="search"/></i></label>
+			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" :placeholder="$t('search-user')"/>
 		</div>
 		<div class="result">
 			<ol class="users" v-if="result.length > 0" ref="searchResult">
@@ -14,7 +14,7 @@
 					tabindex="-1"
 				>
 					<mk-avatar class="avatar" :user="user"/>
-					<span class="name">{{ user | userName }}</span>
+					<span class="name"><mk-user-name :user="user"/></span>
 					<span class="username">@{{ user | acct }}</span>
 				</li>
 			</ol>
@@ -33,27 +33,29 @@
 				<div>
 					<mk-avatar class="avatar" :user="isMe(message) ? message.recipient : message.user"/>
 					<header>
-						<span class="name">{{ isMe(message) ? message.recipient : message.user | userName }}</span>
+						<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
 						<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
 						<mk-time :time="message.createdAt"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">%i18n:@you%:</span>{{ message.text }}</p>
+						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
 					</div>
 				</div>
 			</a>
 		</template>
 	</div>
-	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:@no-history%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
+	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
+import i18n from '../../../i18n';
+import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging.vue'),
 	props: {
 		compact: {
 			type: Boolean,
@@ -71,26 +73,22 @@ export default Vue.extend({
 			messages: [],
 			q: null,
 			result: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.messagingIndexStream.getConnection();
-		this.connectionId = (this as any).os.streams.messagingIndexStream.use();
+		this.connection = this.$root.stream.useSharedConnection('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		(this as any).api('messaging/history').then(messages => {
+		this.$root.api('messaging/history').then(messages => {
 			this.messages = messages;
 			this.fetching = false;
 		});
 	},
 	beforeDestroy() {
-		this.connection.off('message', this.onMessage);
-		this.connection.off('read', this.onRead);
-		(this as any).os.streams.messagingIndexStream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 	methods: {
 		getAcct,
@@ -105,21 +103,23 @@ export default Vue.extend({
 			this.messages.unshift(message);
 		},
 		onRead(ids) {
-			ids.forEach(id => {
+			for (const id of ids) {
 				const found = this.messages.find(m => m.id == id);
 				if (found) found.isRead = true;
-			});
+			}
 		},
 		search() {
 			if (this.q == '') {
 				this.result = [];
 				return;
 			}
-			(this as any).api('users/search', {
+			this.$root.api('users/search', {
 				query: this.q,
-				max: 5
+				localOnly: true,
+				limit: 10,
+				detail: false
 			}).then(users => {
-				this.result = users;
+				this.result = users.filter(user => user.id != this.$store.state.i.id);
 			});
 		},
 		navigate(user) {
@@ -167,9 +167,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-messaging
 
 	&[data-compact]
 		font-size 0.8em
@@ -204,12 +202,10 @@ root(isDark)
 		left 0
 		z-index 1
 		width 100%
-		background #fff
 		box-shadow 0 0px 2px rgba(#000, 0.2)
 
 		> .form
-			padding 8px
-			background isDark ? #282c37 : #f7f7f7
+			background rgba(0, 0, 0, 0.02)
 
 			> label
 				display block
@@ -221,7 +217,7 @@ root(isDark)
 				width 38px
 				pointer-events none
 
-				> [data-fa]
+				> i
 					display block
 					position absolute
 					top 0
@@ -229,32 +225,22 @@ root(isDark)
 					bottom 0
 					left 0
 					width 1em
-					line-height 56px
+					line-height 48px
 					margin auto
 					color #555
 
 			> input
 				margin 0
-				padding 0 0 0 32px
+				padding 0 0 0 42px
 				width 100%
 				font-size 1em
-				line-height 38px
-				color #000
+				line-height 48px
+				color var(--faceText)
 				outline none
-				background isDark ? #191b22 : #fff
-				border solid 1px isDark ? #495156 : #eee
+				background transparent
+				border none
 				border-radius 5px
 				box-shadow none
-				transition color 0.5s ease, border 0.5s ease
-
-				&:hover
-					border solid 1px isDark ? #b0b0b0 : #ddd
-					transition border 0.2s ease
-
-				&:focus
-					color darken($theme-color, 20%)
-					border solid 1px $theme-color
-					transition color 0, border 0
 
 		> .result
 			display block
@@ -287,7 +273,7 @@ root(isDark)
 					&:hover
 					&:focus
 						color #fff
-						background $theme-color
+						background var(--primary)
 
 						.name
 							color #fff
@@ -297,7 +283,7 @@ root(isDark)
 
 					&:active
 						color #fff
-						background darken($theme-color, 10%)
+						background var(--primaryDarken10)
 
 						.name
 							color #fff
@@ -329,21 +315,21 @@ root(isDark)
 		> a
 			display block
 			text-decoration none
-			background isDark ? #282c37 : #fff
-			border-bottom solid 1px isDark ? #1c2023 : #eee
+			background var(--face)
+			border-bottom solid 1px var(--faceDivider)
 
 			*
 				pointer-events none
 				user-select none
 
 			&:hover
-				background isDark ? #1e2129 : #fafafa
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)
 
-				> .avatar
+				.avatar
 					filter saturate(200%)
 
 			&:active
-				background isDark ? #14161b : #eee
+				box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.1)
 
 			&[data-is-read]
 			&[data-is-me]
@@ -383,17 +369,17 @@ root(isDark)
 						overflow hidden
 						text-overflow ellipsis
 						font-size 1em
-						color isDark ? #fff : rgba(#000, 0.9)
+						color var(--noteHeaderName)
 						font-weight bold
 						transition all 0.1s ease
 
 					> .username
 						margin 0 8px
-						color isDark ? #606984 : rgba(#000, 0.5)
+						color var(--noteHeaderAcct)
 
 					> .mk-time
 						margin 0 0 0 auto
-						color isDark ? #606984 : rgba(#000, 0.5)
+						color var(--noteHeaderInfo)
 						font-size 80%
 
 				> .avatar
@@ -413,10 +399,10 @@ root(isDark)
 						overflow hidden
 						overflow-wrap break-word
 						font-size 1.1em
-						color isDark ? #fff : rgba(#000, 0.8)
+						color var(--faceText)
 
 						.me
-							color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.4)
+							opacity 0.7
 
 					> .image
 						display block
@@ -436,7 +422,7 @@ root(isDark)
 		text-align center
 		color #aaa
 
-		> [data-fa]
+		> [data-icon]
 			margin-right 4px
 
 	// TODO: element base media query
@@ -460,11 +446,5 @@ root(isDark)
 
 					> .avatar
 						margin 0 12px 0 0
-
-.mk-messaging[data-darkmode]
-	root(true)
-
-.mk-messaging:not([data-darkmode])
-	root(false)
 
 </style>

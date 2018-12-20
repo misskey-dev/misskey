@@ -1,13 +1,18 @@
 # 運営ガイド
 
 ## ジョブキューの状態を調べる
-Misskeyのディレクトリで:
-``` shell
-node_modules/kue/bin/kue-dashboard -p 3050
-```
-ポート3050にアクセスするとUIが表示されます
+coming soon
 
-## ユーザーを凍結する
+## 管理者ユーザーを設定する
 ``` shell
-node cli/suspend (ユーザーID)
+node cli/mark-admin (ユーザーID または ユーザー名)
+```
+
+例:
+``` shell
+# ユーザーID
+node cli/mark-admin 57d01a501fdf2d07be417afe
+
+# ユーザー名
+node cli/mark-admin @syuilo
 ```

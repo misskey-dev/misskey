@@ -1,46 +1,59 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
-import Note, { pack } from '../../../../models/note';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import Note, { packMany, INote } from '../../../../models/note';
+import define from '../../define';
 
-/**
- * Show conversation of a note
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定した投稿の文脈を取得します。',
+		'en-US': 'Show conversation of a note.'
+	},
 
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+	requireCredential: false,
 
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID'
+			}
+		},
 
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		},
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Lookup note
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
 		return rej('note not found');
 	}
 
-	const conversation = [];
+	const conversation: INote[] = [];
 	let i = 0;
 
-	async function get(id) {
+	async function get(id: any) {
 		i++;
 		const p = await Note.findOne({ _id: id });
 
-		if (i > offset) {
+		if (i > ps.offset) {
 			conversation.push(p);
 		}
 
-		if (conversation.length == limit) {
+		if (conversation.length == ps.limit) {
 			return;
 		}
 
@@ -53,6 +66,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		await get(note.replyId);
 	}
 
-	// Serialize
-	res(await Promise.all(conversation.map(note => pack(note, user))));
-});
+	res(await packMany(conversation, user));
+}));

@@ -1,29 +1,50 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+const ms = require('ms');
 import User, { pack } from '../../../../models/user';
 import Following from '../../../../models/following';
 import create from '../../../../services/following/create';
+import define from '../../define';
 
-/**
- * Follow a user
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+export const meta = {
+	stability: 'stable',
+
+	desc: {
+		'ja-JP': '指定したユーザーをフォローします。',
+		'en-US': 'Follow a user.'
+	},
+
+	limit: {
+		duration: ms('1hour'),
+		max: 100
+	},
+
+	requireCredential: true,
+
+	kind: 'following-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
 	// 自分自身
-	if (user._id.equals(userId)) {
+	if (user._id.equals(ps.userId)) {
 		return rej('followee is yourself');
 	}
 
 	// Get followee
 	const followee = await User.findOne({
-		_id: userId
+		_id: ps.userId
 	}, {
 		fields: {
 			data: false,
@@ -46,8 +67,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Create following
-	create(follower, followee);
+	try {
+		await create(follower, followee);
+	} catch (e) {
+		return rej(e && e.message ? e.message : e);
+	}
 
 	// Send response
 	res(await pack(followee._id, user));
-});
+}));

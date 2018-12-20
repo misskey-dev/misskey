@@ -1,21 +1,29 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import App, { pack } from '../../../../models/app';
+import define from '../../define';
 
-/**
- * Get my apps
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+export const meta = {
+	desc: {
+		'ja-JP': '自分のアプリケーション一覧を取得します。',
+		'en-US': 'Get my apps'
+	},
 
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
-	if (offsetErr) return rej('invalid offset param');
+	requireCredential: true,
 
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		offset: {
+			validator: $.num.optional.min(0),
+			default: 0
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const query = {
 		userId: user._id
 	};
@@ -23,14 +31,15 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Execute query
 	const apps = await App
 		.find(query, {
-			limit: limit,
-			skip: offset,
+			limit: ps.limit,
+			skip: ps.offset,
 			sort: {
 				_id: -1
 			}
 		});
 
 	// Reply
-	res(await Promise.all(apps.map(async app =>
-		await pack(app))));
-});
+	res(await Promise.all(apps.map(app => pack(app, user, {
+		detail: true
+	}))));
+}));

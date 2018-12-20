@@ -1,5 +1,5 @@
 <template>
-<div class="ui-card">
+<div class="ui-card" :class="{ shadow: $store.state.settings.useShadow }">
 	<header>
 		<slot name="title"></slot>
 	</header>
@@ -20,27 +20,40 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.ui-card
 	margin 16px
-	padding 16px
-	color isDark ? #fff : #000
-	background isDark ? #282C37 : #fff
-	box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
+	max-width 850px
+	color var(--faceText)
+	background var(--face)
+	border-radius var(--round)
 
-	@media (min-width 500px)
-		padding 32px
+	&.shadow
+		box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
 
 	> header
-		font-weight normal
-		font-size 24px
-		color isDark ? #fff : #444
+		padding 16px
+		font-weight bold
+		font-size 20px
+		color var(--faceText)
 
-.ui-card[data-darkmode]
-	root(true)
+		@media (min-width 500px)
+			padding 24px 32px
 
-.ui-card:not([data-darkmode])
-	root(false)
+	> section
+		padding 20px 16px
+		border-top solid 1px var(--faceDivider)
 
+		@media (min-width 500px)
+			padding 32px
+
+		&.fit-top
+			padding-top 0
+
+		&.fit-bottom
+			padding-bottom 0
+
+		> header
+			margin-bottom 16px
+			font-weight bold
+			color var(--faceText)
 </style>

@@ -2,7 +2,8 @@
 <div class="mk-note-card">
 	<a :href="note | notePage">
 		<header>
-			<img :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/><h3>{{ note.user | userName }}</h3>
+			<img :src="note.user.avatarUrl" alt="avatar"/>
+			<h3><mk-user-name :user="note.user"/></h3>
 		</header>
 		<div>
 			{{ text }}
@@ -14,7 +15,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import summary from '../../../../../renderers/get-note-summary';
+import summary from '../../../../../misc/get-note-summary';
 
 export default Vue.extend({
 	props: ['note'],
@@ -27,17 +28,18 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-note-card
 	display inline-block
 	width 150px
 	//height 120px
 	font-size 12px
-	background isDark ? #282c37 : #fff
+	background var(--face)
 	border-radius 4px
+	box-shadow 0 2px 8px rgba(0, 0, 0, 0.2)
 
 	> a
 		display block
-		color isDark ? #fff : #2c3940
+		color var(--noteText)
 
 		&:hover
 			text-decoration none
@@ -75,17 +77,11 @@ root(isDark)
 				left 0
 				width 100%
 				height 20px
-				background isDark ? linear-gradient(to bottom, rgba(#282c37, 0) 0%, #282c37 100%) : linear-gradient(to bottom, rgba(#fff, 0) 0%, #fff 100%)
+				background linear-gradient(to bottom, transparent 0%, var(--face) 100%)
 
 		> .mk-time
 			display inline-block
 			padding 8px
 			color #aaa
-
-.mk-note-card[data-darkmode]
-	root(true)
-
-.mk-note-card:not([data-darkmode])
-	root(false)
 
 </style>

@@ -1,13 +1,14 @@
 import * as mongo from 'mongodb';
+import isObjectId from '../../../misc/is-objectid';
 import Message from '../../../models/messaging-message';
 import { IMessagingMessage as IMessage } from '../../../models/messaging-message';
-import publishUserStream from '../../../publishers/stream';
-import { publishMessagingStream } from '../../../publishers/stream';
-import { publishMessagingIndexStream } from '../../../publishers/stream';
+import { publishMainStream } from '../../../stream';
+import { publishMessagingStream } from '../../../stream';
+import { publishMessagingIndexStream } from '../../../stream';
 import User from '../../../models/user';
 
 /**
- * Mark as read message(s)
+ * Mark messages as read
  */
 export default (
 	user: string | mongo.ObjectID,
@@ -15,21 +16,21 @@ export default (
 	message: string | string[] | IMessage | IMessage[] | mongo.ObjectID | mongo.ObjectID[]
 ) => new Promise<any>(async (resolve, reject) => {
 
-	const userId = mongo.ObjectID.prototype.isPrototypeOf(user)
+	const userId = isObjectId(user)
 		? user
 		: new mongo.ObjectID(user);
 
-	const otherpartyId = mongo.ObjectID.prototype.isPrototypeOf(otherparty)
+	const otherpartyId = isObjectId(otherparty)
 		? otherparty
 		: new mongo.ObjectID(otherparty);
 
 	const ids: mongo.ObjectID[] = Array.isArray(message)
-		? mongo.ObjectID.prototype.isPrototypeOf(message[0])
+		? isObjectId(message[0])
 			? (message as mongo.ObjectID[])
 			: typeof message[0] === 'string'
 				? (message as string[]).map(m => new mongo.ObjectID(m))
 				: (message as IMessage[]).map(m => m._id)
-		: mongo.ObjectID.prototype.isPrototypeOf(message)
+		: isObjectId(message)
 			? [(message as mongo.ObjectID)]
 			: typeof message === 'string'
 				? [new mongo.ObjectID(message)]
@@ -42,12 +43,12 @@ export default (
 		recipientId: userId,
 		isRead: false
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
-	});
+			$set: {
+				isRead: true
+			}
+		}, {
+			multi: true
+		});
 
 	// Publish event
 	publishMessagingStream(otherpartyId, userId, 'read', ids.map(id => id.toString()));
@@ -59,8 +60,8 @@ export default (
 			recipientId: userId,
 			isRead: false
 		}, {
-			limit: 1
-		});
+				limit: 1
+			});
 
 	if (count == 0) {
 		// Update flag
@@ -71,6 +72,6 @@ export default (
 		});
 
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
-		publishUserStream(userId, 'read_all_messaging_messages');
+		publishMainStream(userId, 'readAllMessagingMessages');
 	}
 });

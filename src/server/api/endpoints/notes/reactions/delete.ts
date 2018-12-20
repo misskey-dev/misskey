@@ -1,21 +1,34 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
+import define from '../../../define';
 
-/**
- * Unreact to a note
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定した投稿へのリアクションを取り消します。',
+		'en-US': 'Unreact to a note.'
+	},
 
+	requireCredential: true,
+
+	kind: 'reaction-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID'
+			}
+		},
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch unreactee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -34,22 +47,17 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Delete reaction
-	await Reaction.update({
+	await Reaction.remove({
 		_id: exist._id
-	}, {
-			$set: {
-				deletedAt: new Date()
-			}
-		});
+	});
 
-	// Send response
 	res();
 
-	const dec = {};
+	const dec: any = {};
 	dec[`reactionCounts.${exist.reaction}`] = -1;
 
 	// Decrement reactions count
 	Note.update({ _id: note._id }, {
 		$inc: dec
 	});
-});
+}));

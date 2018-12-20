@@ -1,20 +1,36 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Following from '../../../../models/following';
+import define from '../../define';
 
-/**
- * Stalk a user
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		'ja-JP': '指定したユーザーをストーキングします。',
+		'en-US': 'Stalk a user.'
+	},
+
+	requireCredential: true,
+
+	kind: 'following-write',
+
+	params: {
+		userId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const follower = user;
-
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
 
 	// Fetch following
 	const following = await Following.findOne({
 		followerId: follower._id,
-		followeeId: userId
+		followeeId: ps.userId
 	});
 
 	if (following === null) {
@@ -28,8 +44,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		}
 	});
 
-	// Send response
 	res();
 
 	// TODO: イベント
-});
+}));

@@ -1,26 +1,32 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
-	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
-		<span>%i18n:@username%</span>
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange" styl="fill">
+		<span>{{ $t('username') }}</span>
 		<span slot="prefix">@</span>
 		<span slot="suffix">@{{ host }}</span>
 	</ui-input>
-	<ui-input v-model="password" type="password" required>
-		<span>%i18n:@password%</span>
-		<span slot="prefix">%fa:lock%</span>
+	<ui-input v-model="password" type="password" required styl="fill">
+		<span>{{ $t('password') }}</span>
+		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
-	<ui-button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</ui-button>
-	<p style="margin: 8px 0;">または<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a></p>
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
+	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
+	<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`">{{ $t('signin-with-twitter') }}</a></p>
+	<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`">{{ $t('signin-with-github') }}</a></p>
+	<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`">{{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
 </form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
+import { toUnicode } from 'punycode';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/signin.vue'),
+
 	props: {
 		withAvatar: {
 			type: Boolean,
@@ -28,6 +34,7 @@ export default Vue.extend({
 			default: true
 		}
 	},
+
 	data() {
 		return {
 			signing: false,
@@ -36,12 +43,20 @@ export default Vue.extend({
 			password: '',
 			token: '',
 			apiUrl,
-			host
+			host: toUnicode(host),
+			meta: null
 		};
 	},
+
+	created() {
+		this.$root.getMeta().then(meta => {
+			this.meta = meta;
+		});
+	},
+
 	methods: {
 		onUsernameChange() {
-			(this as any).api('users/show', {
+			this.$root.api('users/show', {
 				username: this.username
 			}).then(user => {
 				this.user = user;
@@ -49,17 +64,19 @@ export default Vue.extend({
 				this.user = null;
 			});
 		},
+
 		onSubmit() {
 			this.signing = true;
 
-			(this as any).api('signin', {
+			this.$root.api('signin', {
 				username: this.username,
 				password: this.password,
 				token: this.user && this.user.twoFactorEnabled ? this.token : undefined
-			}).then(() => {
+			}, true).then(res => {
+				localStorage.setItem('i', res.i);
 				location.reload();
 			}).catch(() => {
-				alert('something happened');
+				alert(this.$t('login-failed'));
 				this.signing = false;
 			});
 		}
@@ -68,8 +85,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
 .mk-signin
 	color #555
 
@@ -78,7 +93,7 @@ export default Vue.extend({
 			cursor wait !important
 
 	> .avatar
-		margin 16px auto 0 auto
+		margin 0 auto 0 auto
 		width 64px
 		height 64px
 		background #ddd

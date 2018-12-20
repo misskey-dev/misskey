@@ -1,30 +1,35 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
+import define from '../../../define';
 
-/**
- * Find a file(s)
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	const [name, nameErr] = $.str.get(params.name);
-	if (nameErr) return rej('invalid name param');
+export const meta = {
+	requireCredential: true,
 
-	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
-	if (folderIdErr) return rej('invalid folderId param');
+	kind: 'drive-read',
 
-	// Issue query
+	params: {
+		name: {
+			validator: $.str
+		},
+
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: null as any,
+			desc: {
+				'ja-JP': 'フォルダID'
+			}
+		},
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const files = await DriveFile
 		.find({
-			filename: name,
+			filename: ps.name,
 			'metadata.userId': user._id,
-			'metadata.folderId': folderId
+			'metadata.folderId': ps.folderId
 		});
 
-	// Serialize
-	res(await Promise.all(files.map(async file =>
-		await pack(file))));
-});
+	res(await Promise.all(files.map(file => pack(file, { self: true }))));
+}));

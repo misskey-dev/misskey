@@ -1,18 +1,23 @@
 <template>
-<mk-window ref="window" @closed="$destroy" width="800px" height="500px" :popout-url="popout">
+<mk-window ref="window" @closed="destroyDom" width="800px" height="500px" :popout-url="popout">
 	<template slot="header">
-		<p v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> %i18n:@used%</p>
-		<span :class="$style.title">%fa:cloud%%i18n:@drive%</span>
+		<p v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> {{ $t('used') }}</p>
+		<span :class="$style.title"><fa icon="cloud"/>{{ $t('@.drive') }}</span>
 	</template>
-	<mk-drive :class="$style.browser" multiple :init-folder="folder" ref="browser"/>
+	<x-drive :class="$style.browser" multiple :init-folder="folder" ref="browser"/>
 </mk-window>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import { url } from '../../../config';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/drive-window.vue'),
+	components: {
+		XDrive: () => import('./drive.vue').then(m => m.default),
+	},
 	props: ['folder'],
 	data() {
 		return {
@@ -20,7 +25,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('drive').then(info => {
+		this.$root.api('drive').then(info => {
 			this.usage = info.usage / info.capacity * 100;
 		});
 	},
@@ -39,7 +44,7 @@ export default Vue.extend({
 
 <style lang="stylus" module>
 .title
-	> [data-fa]
+	> [data-icon]
 		margin-right 4px
 
 .info

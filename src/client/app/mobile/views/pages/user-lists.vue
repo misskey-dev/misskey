@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:list%%i18n:@title%</span>
-	<template slot="func"><button @click="fn">%fa:plus%</button></template>
+	<span slot="header"><fa icon="list"/>{{ $t('title') }}</span>
+	<template slot="func"><button @click="fn"><fa icon="plus"/></button></template>
 
 	<main>
 		<ul>
@@ -13,9 +13,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/user-lists.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -23,11 +25,11 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		document.title = 'Misskey | %i18n:@title%';
+		document.title = this.$t('title');
 
 		Progress.start();
 
-		(this as any).api('users/lists/list').then(lists => {
+		this.$root.api('users/lists/list').then(lists => {
 			this.fetching = false;
 			this.lists = lists;
 
@@ -36,14 +38,16 @@ export default Vue.extend({
 	},
 	methods: {
 		fn() {
-			(this as any).apis.input({
-				title: '%i18n:@enter-list-name%',
-			}).then(async title => {
-				const list = await (this as any).api('users/lists/create', {
+			this.$root.dialog({
+				title: this.$t('enter-list-name'),
+				input: true
+			}).then(async ({ canceled, result: title }) => {
+				if (canceled) return;
+				const list = await this.$root.api('users/lists/create', {
 					title
 				});
 
-				this.$router.push('/i/lists/' + list.id);
+				this.$router.push(`/i/lists/${list.id}`);
 			});
 		}
 	}
@@ -51,7 +55,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 main
 	width 100%

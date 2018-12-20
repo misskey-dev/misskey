@@ -1,37 +1,58 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
+import define from '../../../define';
 
-/**
- * React to a note
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	stability: 'stable',
 
-	// Get 'reaction' parameter
-	const [reaction, reactionErr] = $.str.pipe(validateReaction.ok).get(params.reaction);
-	if (reactionErr) return rej('invalid reaction param');
+	desc: {
+		'ja-JP': '指定した投稿にリアクションします。',
+		'en-US': 'React to a note.'
+	},
 
+	requireCredential: true,
+
+	kind: 'reaction-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿'
+			}
+		},
+
+		reaction: {
+			validator: $.str.pipe(validateReaction.ok),
+			desc: {
+				'ja-JP': 'リアクションの種類'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch reactee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
 		return rej('note not found');
 	}
 
+	if (note.deletedAt != null) {
+		return rej('this not is already deleted');
+	}
+
 	try {
-		await create(user, note, reaction);
+		await create(user, note, ps.reaction);
 	} catch (e) {
 		rej(e);
 	}
 
 	res();
-});
+}));

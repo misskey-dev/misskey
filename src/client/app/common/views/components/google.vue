@@ -1,13 +1,16 @@
 <template>
 <div class="mk-google">
 	<input type="search" v-model="query" :placeholder="q">
-	<button @click="search">検索</button>
+	<button @click="search"><fa icon="search"/> {{ $t('@.search') }}</button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
+
 export default Vue.extend({
+	i18n: i18n(),
 	props: ['q'],
 	data() {
 		return {
@@ -19,14 +22,17 @@ export default Vue.extend({
 	},
 	methods: {
 		search() {
-			window.open(`https://www.google.com/?#q=${this.query}`, '_blank');
+			const engine = this.$store.state.settings.webSearchEngine ||
+				'https://www.google.com/?#q={{query}}';
+			const url = engine.replace('{{query}}', this.query)
+			window.open(url, '_blank');
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.mk-google
 	display flex
 	margin 8px 0
 
@@ -37,31 +43,25 @@ root(isDark)
 		height 40px
 		font-family sans-serif
 		font-size 16px
-		color isDark ? #dee4e8 : #55595c
-		background isDark ? #191b22 : #fff
-		border solid 1px isDark ? #495156 : #dadada
+		color var(--googleSearchFg)
+		background var(--googleSearchBg)
+		border solid 1px var(--googleSearchBorder)
 		border-radius 4px 0 0 4px
 
 		&:hover
-			border-color isDark ? #777c86 : #b0b0b0
+			border-color var(--googleSearchHoverBorder)
 
 	> button
 		flex-shrink 0
 		padding 0 16px
-		border solid 1px isDark ? #495156 : #dadada
+		border solid 1px var(--googleSearchBorder)
 		border-left none
 		border-radius 0 4px 4px 0
 
 		&:hover
-			background-color isDark ? #2e3440 : #eee
+			background-color var(--googleSearchHoverButton)
 
 		&:active
 			box-shadow 0 2px 4px rgba(#000, 0.15) inset
-
-.mk-google[data-darkmode]
-	root(true)
-
-.mk-google:not([data-darkmode])
-	root(false)
 
 </style>

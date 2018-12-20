@@ -1,5 +1,5 @@
-import User, { IUser } from "../../../models/user";
-import FollowRequest from "../../../models/follow-request";
+import User, { IUser } from '../../../models/user';
+import FollowRequest from '../../../models/follow-request';
 import accept from './accept';
 
 /**
@@ -11,10 +11,10 @@ export default async function(user: IUser) {
 		followeeId: user._id
 	});
 
-	requests.forEach(async request => {
+	for (const request of requests) {
 		const follower = await User.findOne({ _id: request.followerId });
 		accept(user, follower);
-	});
+	}
 
 	User.update({ _id: user._id }, {
 		$set: {

@@ -2,8 +2,8 @@
 <div class="mk-user-timeline">
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<div slot="empty">
-			%fa:R comments%
-			{{ withMedia ? '%i18n:@no-notes-with-media%' : '%i18n:@no-notes%' }}
+			<fa :icon="['far', 'comments']"/>
+			{{ withMedia ? this.$t('no-notes-with-media') : this.$t('no-notes') }}
 		</div>
 	</mk-notes>
 </div>
@@ -11,10 +11,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/components/user-timeline.vue'),
 	props: ['user', 'withMedia'],
 
 	data() {
@@ -39,10 +41,11 @@ export default Vue.extend({
 		fetch() {
 			this.fetching = true;
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api('users/notes', {
+				this.$root.api('users/notes', {
 					userId: this.user.id,
-					withMedia: this.withMedia,
-					limit: fetchLimit + 1
+					withFiles: this.withMedia,
+					limit: fetchLimit + 1,
+					untilDate: new Date().getTime() + 1000 * 86400 * 365
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -60,11 +63,11 @@ export default Vue.extend({
 
 			this.moreFetching = true;
 
-			const promise = (this as any).api('users/notes', {
+			const promise = this.$root.api('users/notes', {
 				userId: this.user.id,
-				withMedia: this.withMedia,
+				withFiles: this.withMedia,
 				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id
+				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime()
 			});
 
 			promise.then(notes => {
@@ -73,7 +76,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) {
+					(this.$refs.timeline as any).append(n);
+				}
 				this.moreFetching = false;
 			});
 

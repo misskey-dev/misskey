@@ -3,28 +3,29 @@
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<p class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
-			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
+			<!-- <button class="delete-button" v-if="isMe" :title="$t('@.delete')">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
-			</button>
+			</button> -->
 			<div class="content" v-if="!message.isDeleted">
-				<mk-note-html class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
+				<misskey-flavored-markdown class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" target="_blank" :title="message.file.name">
-						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
+						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"
+							:style="{ backgroundColor: message.file.properties.avgColor && message.file.properties.avgColor.length == 3 ? `rgb(${message.file.properties.avgColor.join(',')})` : 'transparent' }"/>
 						<p v-else>{{ message.file.name }}</p>
 					</a>
 				</div>
 			</div>
 			<div class="content" v-if="message.isDeleted">
-				<p class="is-deleted">%i18n:@deleted%</p>
+				<p class="is-deleted">{{ $t('deleted') }}</p>
 			</div>
 		</div>
 		<div></div>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
+			<span class="read" v-if="isMe && message.isRead">{{ $t('is-read') }}</span>
 			<mk-time :time="message.createdAt"/>
-			<template v-if="message.is_edited">%fa:pencil-alt%</template>
+			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
 		</footer>
 	</div>
 </div>
@@ -32,9 +33,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parse from '../../../../../text/parse';
+import i18n from '../../../i18n';
+import parse from '../../../../../mfm/parse';
+import { unique } from '../../../../../prelude/array';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/messaging-room.message.vue'),
 	props: {
 		message: {
 			required: true
@@ -47,9 +51,9 @@ export default Vue.extend({
 		urls(): string[] {
 			if (this.message.text) {
 				const ast = parse(this.message.text);
-				return ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
+				return unique(ast
+					.filter(t => ((t.name == 'url' || t.name == 'link') && t.props.url && !t.silent))
+					.map(t => t.props.url));
 			} else {
 				return null;
 			}
@@ -59,10 +63,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-	$me-balloon-color = $theme-color
+.message
+	$me-balloon-color = var(--primary)
 
 	padding 10px 12px 10px 12px
 	background-color transparent
@@ -79,7 +81,8 @@ root(isDark)
 	> .content
 
 		> .balloon
-			display block
+			display flex
+			align-items center
 			padding 0
 			max-width calc(100% - 16px)
 			min-height 38px
@@ -120,17 +123,6 @@ root(isDark)
 					height 16px
 					cursor pointer
 
-			> .read
-				user-select none
-				display block
-				position absolute
-				z-index 1
-				bottom -4px
-				left -12px
-				margin 0
-				color isDark ? rgba(#fff, 0.5) : rgba(#000, 0.5)
-				font-size 11px
-
 			> .content
 
 				> .is-deleted
@@ -159,7 +151,6 @@ root(isDark)
 					> a
 						display block
 						max-width 100%
-						max-height 512px
 						border-radius 16px
 						overflow hidden
 						text-decoration none
@@ -174,7 +165,8 @@ root(isDark)
 							display block
 							margin 0
 							width 100%
-							height 100%
+							max-height 512px
+							object-fit contain
 
 						> p
 							padding 30px
@@ -189,9 +181,12 @@ root(isDark)
 			display block
 			margin 2px 0 0 0
 			font-size 10px
-			color isDark ? rgba(#fff, 0.4) : rgba(#000, 0.4)
+			color var(--messagingRoomMessageInfo)
 
-			> [data-fa]
+			> .read
+				margin 0 8px
+
+			> [data-icon]
 				margin-left 4px
 
 	&:not([data-is-me])
@@ -202,7 +197,7 @@ root(isDark)
 			padding-left 66px
 
 			> .balloon
-				$color = isDark ? #2d3338 : #eee
+				$color = var(--messagingRoomMessageBg)
 				float left
 				background $color
 
@@ -218,8 +213,7 @@ root(isDark)
 
 				> .content
 					> .text
-						if isDark
-							color #fff
+							color var(--messagingRoomMessageFg)
 
 			> footer
 				text-align left
@@ -258,14 +252,11 @@ root(isDark)
 			> footer
 				text-align right
 
+				> .read
+					user-select none
+
 	&[data-is-deleted]
-		> .baloon
+		> .balloon
 			opacity 0.5
-
-.message[data-darkmode]
-	root(true)
-
-.message:not([data-darkmode])
-	root(false)
 
 </style>

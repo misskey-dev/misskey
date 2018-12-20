@@ -1,70 +1,64 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+const deepcopy = require('deepcopy');
 import AccessToken from './access-token';
 import db from '../db/mongodb';
+import isObjectId from '../misc/is-objectid';
 import config from '../config';
 
 const App = db.get<IApp>('apps');
-App.createIndex('nameId');
-App.createIndex('nameIdLower');
 App.createIndex('secret');
 export default App;
 
 export type IApp = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
-	userId: mongo.ObjectID;
+	userId: mongo.ObjectID | null;
 	secret: string;
 	name: string;
-	nameId: string;
-	nameIdLower: string;
 	description: string;
 	permission: string[];
 	callbackUrl: string;
 };
 
-export function isValidNameId(nameId: string): boolean {
-	return typeof nameId == 'string' && /^[a-zA-Z0-9_]{1,30}$/.test(nameId);
-}
-
 /**
  * Pack an app for API response
- *
- * @param {any} app
- * @param {any} me?
- * @param {any} options?
- * @return {Promise<any>}
  */
 export const pack = (
 	app: any,
 	me?: any,
 	options?: {
+		detail?: boolean,
 		includeSecret?: boolean,
 		includeProfileImageIds?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
-	const opts = options || {
+	const opts = Object.assign({
+		detail: false,
 		includeSecret: false,
 		includeProfileImageIds: false
-	};
+	}, options);
 
 	let _app: any;
 
+	const fields = opts.detail ? {} : {
+		name: true
+	};
+
 	// Populate the app if 'app' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(app)) {
+	if (isObjectId(app)) {
 		_app = await App.findOne({
 			_id: app
 		});
 	} else if (typeof app === 'string') {
 		_app = await App.findOne({
 			_id: new mongo.ObjectID(app)
-		});
+		}, { fields });
 	} else {
 		_app = deepcopy(app);
 	}
 
 	// Me
-	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
+	if (me && !isObjectId(me)) {
 		if (typeof me === 'string') {
 			me = new mongo.ObjectID(me);
 		} else {
@@ -75,8 +69,6 @@ export const pack = (
 	// Rename _id to id
 	_app.id = _app._id;
 	delete _app._id;
-
-	delete _app.nameIdLower;
 
 	// Visible by only owner
 	if (!opts.includeSecret) {

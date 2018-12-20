@@ -1,19 +1,21 @@
 <template>
-<div class="photos">
-	<p class="title">%fa:camera%%i18n:@title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+<div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
+	<p class="title"><fa icon="camera"/>{{ $t('title') }}</p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<div v-for="image in images" class="img"
-			:style="`background-image: url(${image.url}?thumbnail&size=256)`"
+			:style="`background-image: url(${image.thumbnailUrl})`"
 		></div>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.photos.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -22,16 +24,22 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/notes', {
+		const image = [
+			'image/jpeg',
+			'image/png',
+			'image/gif'
+		];
+		this.$root.api('users/notes', {
 			userId: this.user.id,
-			withMedia: true,
-			limit: 9
+			fileType: image,
+			limit: 9,
+			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
-			notes.forEach(note => {
-				note.media.forEach(media => {
-					if (this.images.length < 9) this.images.push(media);
-				});
-			});
+			for (const note of notes) {
+				for (const file of note.files) {
+					if (this.images.length < 9) this.images.push(file);
+				}
+			}
 			this.fetching = false;
 		});
 	}
@@ -39,10 +47,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.photos
-	background #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+.dzsuvbsrrrwobdxifudxuefculdfiaxd
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
+	overflow hidden
 
 	> .title
 		z-index 1
@@ -51,16 +60,14 @@ export default Vue.extend({
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color #888
+		background var(--faceHeader)
+		color var(--faceHeaderText)
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
 			margin-right 4px
 
 	> .stream
-		display -webkit-flex
-		display -moz-flex
-		display -ms-flex
 		display flex
 		justify-content center
 		flex-wrap wrap

@@ -1,26 +1,49 @@
 <template>
-<form class="search" @submit.prevent="onSubmit">
-	%fa:search%
-	<input v-model="q" type="search" placeholder="%i18n:@placeholder%"/>
+<form class="wlvfdpkp" @submit.prevent="onSubmit">
+	<i><fa icon="search"/></i>
+	<input v-model="q" type="search" :placeholder="$t('placeholder')" v-autocomplete="{ model: 'q' }"/>
 	<div class="result"></div>
 </form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.header.search.vue'),
 	data() {
 		return {
-			q: ''
+			q: '',
+			wait: false
 		};
 	},
 	methods: {
-		onSubmit() {
-			if (this.q.startsWith('#')) {
-				this.$router.push(`/tags/${encodeURIComponent(this.q.substr(1))}`);
+		async onSubmit() {
+			if (this.wait) return;
+
+			const q = this.q.trim();
+			if (q.startsWith('@')) {
+				this.$router.push(`/${q}`);
+			} else if (q.startsWith('#')) {
+				this.$router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
+			} else if (q.startsWith('https://')) {
+				this.wait = true;
+				try {
+					const res = await this.$root.api('ap/show', {
+						uri: q
+					});
+					if (res.type == 'User') {
+						this.$router.push(`/@${res.object.username}@${res.object.host}`);
+					} else if (res.type == 'Note') {
+						this.$router.push(`/notes/${res.object.id}`);
+					}
+				} catch (e) {
+					// TODO
+				}
+				this.wait = false;
 			} else {
-				this.$router.push(`/search?q=${encodeURIComponent(this.q)}`);
+				this.$router.push(`/search?q=${encodeURIComponent(q)}`);
 			}
 		}
 	}
@@ -28,11 +51,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+.wlvfdpkp
+	@media (max-width 800px)
+		display none !important
 
-.search
-
-	> [data-fa]
+	> i
 		display block
 		position absolute
 		top 0
@@ -40,7 +63,7 @@ export default Vue.extend({
 		width 48px
 		text-align center
 		line-height 48px
-		color #9eaba8
+		color var(--desktopHeaderFg)
 		pointer-events none
 
 		> *
@@ -54,21 +77,23 @@ export default Vue.extend({
 		width 14em
 		height 32px
 		font-size 1em
-		background rgba(#000, 0.05)
+		background var(--desktopHeaderSearchBg)
 		outline none
-		//border solid 1px #ddd
 		border none
 		border-radius 16px
 		transition color 0.5s ease, border 0.5s ease
-		font-family FontAwesome, sans-serif
+		color var(--desktopHeaderSearchFg)
+
+		@media (max-width 1000px)
+			width 10em
 
 		&::placeholder
-			color #9eaba8
+			color var(--desktopHeaderFg)
 
 		&:hover
-			background rgba(#000, 0.08)
+			background var(--desktopHeaderSearchHoverBg)
 
 		&:focus
-			box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important
+			box-shadow 0 0 0 2px var(--primaryAlpha05) !important
 
 </style>

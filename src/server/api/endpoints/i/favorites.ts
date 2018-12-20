@@ -1,27 +1,38 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
-import Favorite, { pack } from '../../../../models/favorite';
+import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import Favorite, { packMany } from '../../../../models/favorite';
+import define from '../../define';
 
-/**
- * Get favorited notes
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
-	if (limitErr) return rej('invalid limit param');
+export const meta = {
+	desc: {
+		'ja-JP': 'お気に入りに登録した投稿一覧を取得します。',
+		'en-US': 'Get favorited notes'
+	},
 
-	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
-	if (sinceIdErr) return rej('invalid sinceId param');
+	requireCredential: true,
 
-	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
-	if (untilIdErr) return rej('invalid untilId param');
+	kind: 'favorites-read',
 
+	params: {
+		limit: {
+			validator: $.num.optional.range(1, 100),
+			default: 10
+		},
+
+		sinceId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		},
+
+		untilId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Check if both of sinceId and untilId is specified
-	if (sinceId && untilId) {
+	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
 	}
 
@@ -33,21 +44,23 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		_id: -1
 	};
 
-	if (sinceId) {
+	if (ps.sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: sinceId
+			$gt: ps.sinceId
 		};
-	} else if (untilId) {
+	} else if (ps.untilId) {
 		query._id = {
-			$lt: untilId
+			$lt: ps.untilId
 		};
 	}
 
 	// Get favorites
 	const favorites = await Favorite
-		.find(query, { limit, sort });
+		.find(query, {
+			limit: ps.limit,
+			sort: sort
+		});
 
-	// Serialize
-	res(await Promise.all(favorites.map(favorite => pack(favorite, user))));
-});
+	res(await packMany(favorites, user));
+}));

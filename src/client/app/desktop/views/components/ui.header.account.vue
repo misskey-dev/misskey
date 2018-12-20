@@ -1,44 +1,86 @@
 <template>
-<div class="account">
+<div class="account" v-hotkey.global="keymap">
 	<button class="header" :data-active="isOpen" @click="toggle">
-		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
+		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen"><fa icon="angle-down"/></template><template v-if="isOpen"><fa icon="angle-up"/></template></span>
 		<mk-avatar class="avatar" :user="$store.state.i"/>
 	</button>
 	<transition name="zoom-in-top">
 		<div class="menu" v-if="isOpen">
 			<ul>
 				<li>
-					<router-link :to="`/@${ $store.state.i.username }`">%fa:user%<span>%i18n:@profile%</span>%fa:angle-right%</router-link>
+					<router-link :to="`/@${ $store.state.i.username }`">
+						<i><fa icon="user"/></i>
+						<span>{{ $t('profile') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</router-link>
 				</li>
 				<li @click="drive">
-					<p>%fa:cloud%<span>%i18n:@drive%</span>%fa:angle-right%</p>
+					<p>
+						<i><fa icon="cloud"/></i>
+						<span>{{ $t('@.drive') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</p>
 				</li>
 				<li>
-					<router-link to="/i/favorites">%fa:star%<span>%i18n:@favorites%</span>%fa:angle-right%</router-link>
+					<router-link to="/i/favorites">
+						<i><fa icon="star"/></i>
+						<span>{{ $t('favorites') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</router-link>
 				</li>
 				<li @click="list">
-					<p>%fa:list%<span>%i18n:@lists%</span>%fa:angle-right%</p>
+					<p>
+						<i><fa icon="list"/></i>
+						<span>{{ $t('lists') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</p>
 				</li>
-				<li @click="followRequests" v-if="$store.state.i.isLocked">
-					<p>%fa:envelope R%<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>%fa:angle-right%</p>
+				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
+					<p>
+						<i><fa :icon="['far', 'envelope']"/></i>
+						<span>{{ $t('follow-requests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
+						<i><fa icon="angle-right"/></i>
+					</p>
 				</li>
 			</ul>
 			<ul>
 				<li>
-					<router-link to="/i/customize-home">%fa:wrench%<span>%i18n:@customize%</span>%fa:angle-right%</router-link>
+					<router-link to="/i/customize-home">
+						<i><fa icon="wrench"/></i>
+						<span>{{ $t('customize') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</router-link>
 				</li>
 				<li @click="settings">
-					<p>%fa:cog%<span>%i18n:@settings%</span>%fa:angle-right%</p>
+					<p>
+						<i><fa icon="cog"/></i>
+						<span>{{ $t('settings') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</p>
 				</li>
-			</ul>
-			<ul>
-				<li @click="signout">
-					<p class="signout">%fa:power-off%<span>%i18n:@signout%</span></p>
+				<li v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
+					<a href="/admin">
+						<i><fa icon="terminal"/></i>
+						<span>{{ $t('admin') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</a>
 				</li>
 			</ul>
 			<ul>
 				<li @click="dark">
-					<p><span>%i18n:@dark%</span><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template></p>
+					<p>
+						<span>{{ $t('dark') }}</span>
+						<template v-if="$store.state.device.darkmode"><i><fa icon="moon"/></i></template>
+						<template v-else><i><fa :icon="['far', 'moon']"/></i></template>
+					</p>
+				</li>
+			</ul>
+			<ul>
+				<li @click="signout">
+					<p class="signout">
+						<i><fa icon="power-off"/></i>
+						<span>{{ $t('signout') }}</span>
+					</p>
 				</li>
 			</ul>
 		</div>
@@ -48,17 +90,27 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import MkUserListsWindow from './user-lists-window.vue';
+import MkUserListWindow from './user-list-window.vue';
 import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/ui.header.account.vue'),
 	data() {
 		return {
 			isOpen: false
 		};
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'a|m': this.toggle
+			};
+		}
 	},
 	beforeDestroy() {
 		this.close();
@@ -69,15 +121,15 @@ export default Vue.extend({
 		},
 		open() {
 			this.isOpen = true;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.addEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 		close() {
 			this.isOpen = false;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.removeEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 		onMousedown(e) {
 			e.preventDefault();
@@ -86,25 +138,27 @@ export default Vue.extend({
 		},
 		drive() {
 			this.close();
-			(this as any).os.new(MkDriveWindow);
+			this.$root.new(MkDriveWindow);
 		},
 		list() {
 			this.close();
-			const w = (this as any).os.new(MkUserListsWindow);
+			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', list => {
-				this.$router.push(`i/lists/${ list.id }`);
+				this.$root.new(MkUserListWindow, {
+					list
+				});
 			});
 		},
 		followRequests() {
 			this.close();
-			(this as any).os.new(MkFollowRequestsWindow);
+			this.$root.new(MkFollowRequestsWindow);
 		},
 		settings() {
 			this.close();
-			(this as any).os.new(MkSettingsWindow);
+			this.$root.new(MkSettingsWindow);
 		},
 		signout() {
-			(this as any).os.signout();
+			this.$root.signout();
 		},
 		dark() {
 			this.$store.commit('device/set', {
@@ -117,14 +171,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.account
 	> .header
 		display block
 		margin 0
 		padding 0
-		color #9eaba8
+		color var(--desktopHeaderFg)
 		border none
 		background transparent
 		cursor pointer
@@ -134,13 +186,10 @@ root(isDark)
 
 		&:hover
 		&[data-active='true']
-			color isDark ? #fff : darken(#9eaba8, 20%)
+			color var(--desktopHeaderHoverFg)
 
 			> .avatar
 				filter saturate(150%)
-
-		&:active
-			color isDark ? #fff : darken(#9eaba8, 30%)
 
 		> .username
 			display block
@@ -152,7 +201,10 @@ root(isDark)
 			font-family Meiryo, sans-serif
 			text-decoration none
 
-			[data-fa]
+			@media (max-width 1100px)
+				display none
+
+			[data-icon]
 				margin-left 8px
 
 		> .avatar
@@ -166,8 +218,11 @@ root(isDark)
 			border-radius 4px
 			transition filter 100ms ease
 
+			@media (max-width 1100px)
+				margin-left 8px
+
 	> .menu
-		$bgcolor = isDark ? #282c37 : #fff
+		$bgcolor = var(--face)
 		display block
 		position absolute
 		top 56px
@@ -210,7 +265,7 @@ root(isDark)
 
 			& + ul
 				padding-top 10px
-				border-top solid 1px isDark ? #1c2023 : #eee
+				border-top solid 1px var(--faceDivider)
 
 			> li
 				display block
@@ -224,7 +279,7 @@ root(isDark)
 					padding 0 28px
 					margin 0
 					line-height 40px
-					color isDark ? #c8cece : #868C8C
+					color var(--text)
 					cursor pointer
 
 					*
@@ -239,15 +294,15 @@ root(isDark)
 							padding 2px 8px
 							font-size 90%
 							font-style normal
-							background $theme-color
-							color $theme-color-foreground
+							background var(--primary)
+							color var(--primaryForeground)
 							border-radius 8px
 
-					> [data-fa]:first-child
+					> i:first-child
 						margin-right 6px
 						width 16px
 
-					> [data-fa]:last-child
+					> i:last-child
 						display block
 						position absolute
 						top 0
@@ -259,11 +314,11 @@ root(isDark)
 
 					&:hover, &:active
 						text-decoration none
-						background $theme-color
-						color $theme-color-foreground
+						background var(--primary)
+						color var(--primaryForeground)
 
 					&:active
-						background darken($theme-color, 10%)
+						background var(--primaryDarken10)
 
 					&.signout
 						$color = #e64137
@@ -279,11 +334,5 @@ root(isDark)
 .zoom-in-top-leave-active {
 	transform-origin: center -16px;
 }
-
-.account[data-darkmode]
-	root(true)
-
-.account:not([data-darkmode])
-	root(false)
 
 </style>

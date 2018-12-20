@@ -1,1 +1,1 @@
-export default (token: string) => token[0] == '!';
+export default (token: string) => token.startsWith('!');

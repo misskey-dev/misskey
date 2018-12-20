@@ -1,38 +1,52 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
-import User, { pack } from '../../../../models/user';
+import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
+import User, { pack, isRemoteUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
+import define from '../../define';
 
 const cursorOption = { fields: { data: false } };
 
-/**
- * Show user(s)
- */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+export const meta = {
+	desc: {
+		'ja-JP': '指定したユーザーの情報を取得します。'
+	},
+
+	requireCredential: false,
+
+	params: {
+		userId: {
+			validator: $.type(ID).optional,
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のユーザーのID',
+				'en-US': 'Target user ID'
+			}
+		},
+
+		userIds: {
+			validator: $.arr($.type(ID)).optional.unique(),
+			transform: transformMany,
+			desc: {
+				'ja-JP': 'ユーザーID (配列)'
+			}
+		},
+
+		username: {
+			validator: $.str.optional
+		},
+
+		host: {
+			validator: $.str.optional.nullable
+		}
+	}
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	let user;
 
-	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).optional().get(params.userId);
-	if (userIdErr) return rej('invalid userId param');
-
-	// Get 'userIds' parameter
-	const [userIds, userIdsErr] = $.arr($.type(ID)).optional().get(params.userIds);
-	if (userIdsErr) return rej('invalid userIds param');
-
-	// Get 'username' parameter
-	const [username, usernameErr] = $.str.optional().get(params.username);
-	if (usernameErr) return rej('invalid username param');
-
-	// Get 'host' parameter
-	const [host, hostErr] = $.str.optional().nullable().get(params.host);
-	if (hostErr) return rej('invalid host param');
-
-	if (userIds) {
+	if (ps.userIds) {
 		const users = await User.find({
 			_id: {
-				$in: userIds
+				$in: ps.userIds
 			}
 		});
 
@@ -41,17 +55,17 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		}))));
 	} else {
 		// Lookup user
-		if (typeof host === 'string') {
+		if (typeof ps.host === 'string') {
 			try {
-				user = await resolveRemoteUser(username, host, cursorOption);
+				user = await resolveRemoteUser(ps.username, ps.host, cursorOption);
 			} catch (e) {
 				console.warn(`failed to resolve remote user: ${e}`);
 				return rej('failed to resolve remote user');
 			}
 		} else {
-			const q = userId !== undefined
-				? { _id: userId }
-				: { usernameLower: username.toLowerCase(), host: null };
+			const q: any = ps.userId != null
+				? { _id: ps.userId }
+				: { usernameLower: ps.username.toLowerCase(), host: null };
 
 			user = await User.findOne(q, cursorOption);
 
@@ -64,5 +78,11 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		res(await pack(user, me, {
 			detail: true
 		}));
+
+		if (isRemoteUser(user)) {
+			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
+				resolveRemoteUser(ps.username, ps.host, { }, true);
+			}
+		}
 	}
-});
+}));

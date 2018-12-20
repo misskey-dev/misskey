@@ -1,6 +1,6 @@
-import getNoteSummary from '../../../../renderers/get-note-summary';
-import getReactionEmoji from '../../../../renderers/get-reaction-emoji';
-import getUserName from '../../../../renderers/get-user-name';
+import getNoteSummary from '../../../../misc/get-note-summary';
+import getReactionEmoji from '../../../../misc/get-reaction-emoji';
+import getUserName from '../../../../misc/get-user-name';
 
 type Notification = {
 	title: string;
@@ -13,54 +13,60 @@ type Notification = {
 
 export default function(type, data): Notification {
 	switch (type) {
-		case 'drive_file_created':
+		case 'driveFileCreated':
 			return {
-				title: 'ファイルがアップロードされました',
+				title: '%i18n:common.notification.file-uploaded%',
 				body: data.name,
-				icon: data.url + '?thumbnail&size=64'
+				icon: data.url
 			};
 
-		case 'mention':
+		case 'unreadMessagingMessage':
 			return {
-				title: `${getUserName(data.user)}さんから:`,
-				body: getNoteSummary(data),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
-		case 'reply':
-			return {
-				title: `${getUserName(data.user)}さんから返信:`,
-				body: getNoteSummary(data),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
-		case 'quote':
-			return {
-				title: `${getUserName(data.user)}さんが引用:`,
-				body: getNoteSummary(data),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
-		case 'reaction':
-			return {
-				title: `${getUserName(data.user)}: ${getReactionEmoji(data.reaction)}:`,
-				body: getNoteSummary(data.note),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
-		case 'unread_messaging_message':
-			return {
-				title: `${getUserName(data.user)}さんからメッセージ:`,
+				title: '%i18n:common.notification.message-from%'.split('{}')[0] + `${getUserName(data.user)}` + '%i18n:common.notification.message-from%'.split('{}')[1] ,
 				body: data.text, // TODO: getMessagingMessageSummary(data),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
+				icon: data.user.avatarUrl
 			};
 
-		case 'reversi_invited':
+		case 'reversiInvited':
 			return {
-				title: '対局への招待があります',
-				body: `${getUserName(data.parent)}さんから`,
-				icon: data.parent.avatarUrl + '?thumbnail&size=64'
+				title: '%i18n:common.notification.reversi-invited%',
+				body: '%i18n:common.notification.reversi-invited-by%'.split('{}')[0] + `${getUserName(data.parent)}` + '%i18n:common.notification.reversi-invited-by%'.split('{}')[1],
+				icon: data.parent.avatarUrl
 			};
+
+		case 'notification':
+			switch (data.type) {
+				case 'mention':
+					return {
+						title: '%i18n:common.notification.notified-by%'.split('{}')[0] + `${getUserName(data.user)}:` + '%i18n:common.notification.notified-by%'.split('{}')[1],
+						body: getNoteSummary(data),
+						icon: data.user.avatarUrl
+					};
+
+				case 'reply':
+					return {
+						title: '%i18n:common.notification.reply-from%'.split('{}')[0] + `${getUserName(data.user)}` + '%i18n:common.notification.reply-from%'.split('{}')[1],
+						body: getNoteSummary(data),
+						icon: data.user.avatarUrl
+					};
+
+				case 'quote':
+					return {
+						title: '%i18n:common.notification.quoted-by%'.split('{}')[0] + `${getUserName(data.user)}` + '%i18n:common.notification.quoted-by%'.split('{}')[1],
+						body: getNoteSummary(data),
+						icon: data.user.avatarUrl
+					};
+
+				case 'reaction':
+					return {
+						title: `${getUserName(data.user)}: ${getReactionEmoji(data.reaction)}:`,
+						body: getNoteSummary(data.note),
+						icon: data.user.avatarUrl
+					};
+
+				default:
+					return null;
+			}
 
 		default:
 			return null;

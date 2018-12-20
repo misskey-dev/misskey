@@ -27,35 +27,3 @@ export type IDriveFileThumbnail = {
 	contentType: string;
 	metadata: IMetadata;
 };
-
-/**
- * DriveFileThumbnailを物理削除します
- */
-export async function deleteDriveFileThumbnail(driveFile: string | mongo.ObjectID | IDriveFileThumbnail) {
-	let d: IDriveFileThumbnail;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(driveFile)) {
-		d = await DriveFileThumbnail.findOne({
-			_id: driveFile
-		});
-	} else if (typeof driveFile === 'string') {
-		d = await DriveFileThumbnail.findOne({
-			_id: new mongo.ObjectID(driveFile)
-		});
-	} else {
-		d = driveFile as IDriveFileThumbnail;
-	}
-
-	if (d == null) return;
-
-	// このDriveFileThumbnailのチャンクをすべて削除
-	await DriveFileThumbnailChunk.remove({
-		files_id: d._id
-	});
-
-	// このDriveFileThumbnailを削除
-	await DriveFileThumbnail.remove({
-		_id: d._id
-	});
-}

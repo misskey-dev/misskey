@@ -1,7 +1,7 @@
 <template>
-<div class="friends">
-	<p class="title">%fa:users%%i18n:@title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+<div class="hozptpaliadatkehcmcayizwzwwctpbc">
+	<p class="title"><fa icon="users"/>{{ $t('title') }}</p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
 			<mk-avatar class="avatar" :user="friend"/>
@@ -9,17 +9,19 @@
 				<router-link class="name" :to="friend | userPage" v-user-preview="friend.id">{{ friend.name }}</router-link>
 				<p class="username">@{{ friend | acct }}</p>
 			</div>
-			<mk-follow-button :user="friend"/>
+			<mk-follow-button class="follow-button" :user="friend"/>
 		</div>
 	</template>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">{{ $t('no-users') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/user/user.friends.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -28,7 +30,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/get_frequently_replied_users', {
+		this.$root.api('users/get_frequently_replied_users', {
 			userId: this.user.id,
 			limit: 4
 		}).then(docs => {
@@ -40,10 +42,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.friends
-	background #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+.hozptpaliadatkehcmcayizwzwwctpbc
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
+	overflow hidden
 
 	> .title
 		z-index 1
@@ -52,7 +55,8 @@ export default Vue.extend({
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color #888
+		background var(--faceHeader)
+		color var(--faceHeaderText)
 		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
@@ -70,7 +74,7 @@ export default Vue.extend({
 
 	> .user
 		padding 16px
-		border-bottom solid 1px #eee
+		border-bottom solid 1px var(--faceDivider)
 
 		&:last-child
 			border-bottom none
@@ -96,16 +100,17 @@ export default Vue.extend({
 				margin 0
 				font-size 16px
 				line-height 24px
-				color #555
+				color var(--text)
 
 			> .username
 				display block
 				margin 0
 				font-size 15px
 				line-height 16px
-				color #ccc
+				color var(--text)
+				opacity 0.7
 
-		> .mk-follow-button
+		> .follow-button
 			position absolute
 			top 16px
 			right 16px

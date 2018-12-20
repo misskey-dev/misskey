@@ -1,32 +1,53 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
-import { publishDriveStream } from '../../../../../publishers/stream';
+import { publishDriveStream } from '../../../../../stream';
+import define from '../../../define';
 
-/**
- * Delete a file
- */
-module.exports = async (params, user) => {
-	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
-	if (fileIdErr) throw 'invalid fileId param';
+export const meta = {
+	stability: 'stable',
 
+	desc: {
+		'ja-JP': 'ドライブのファイルを削除します。',
+		'en-US': 'Delete a file of drive.'
+	},
+
+	requireCredential: true,
+
+	kind: 'drive-write',
+
+	params: {
+		fileId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象のファイルID',
+				'en-US': 'Target file ID'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: fileId,
-			'metadata.userId': user._id
+			_id: ps.fileId
 		});
 
 	if (file === null) {
-		throw 'file-not-found';
+		return rej('file-not-found');
+	}
+
+	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
+		return rej('access denied');
 	}
 
 	// Delete
 	await del(file);
 
-	// Publish file_deleted event
-	publishDriveStream(user._id, 'file_deleted', file._id);
+	// Publish fileDeleted event
+	publishDriveStream(user._id, 'fileDeleted', file._id);
 
-	return;
-};
+	res();
+}));

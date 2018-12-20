@@ -6,12 +6,14 @@
 	<span class="pathname" v-if="pathname != ''">{{ pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
-	%fa:external-link-square-alt%
+	<fa icon="external-link-square-alt"/>
 </a>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { toUnicode as decodePunycode } from 'punycode';
+
 export default Vue.extend({
 	props: ['url', 'target'],
 	data() {
@@ -27,11 +29,11 @@ export default Vue.extend({
 	created() {
 		const url = new URL(this.url);
 		this.schema = url.protocol;
-		this.hostname = url.hostname;
+		this.hostname = decodePunycode(url.hostname);
 		this.port = url.port;
-		this.pathname = url.pathname;
-		this.query = url.search;
-		this.hash = url.hash;
+		this.pathname = decodeURIComponent(url.pathname);
+		this.query = decodeURIComponent(url.search);
+		this.hash = decodeURIComponent(url.hash);
 	}
 });
 </script>
@@ -39,7 +41,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-url
 	word-break break-all
-	> [data-fa]
+	> [data-icon]
 		padding-left 2px
 		font-size .9em
 		font-weight 400

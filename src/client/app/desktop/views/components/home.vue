@@ -1,44 +1,43 @@
 <template>
 <div class="mk-home" :data-customize="customize">
 	<div class="customize" v-if="customize">
-		<router-link to="/">%fa:check%%i18n:@done%</router-link>
+		<router-link to="/"><fa icon="check"/>{{ $t('done') }}</router-link>
 		<div>
 			<div class="adder">
-				<p>%i18n:@add-widget%</p>
+				<p>{{ $t('add-widget') }}</p>
 				<select v-model="widgetAdderSelected">
-					<option value="profile">%i18n:common.widgets.profile%</option>
-					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
-					<option value="calendar">%i18n:common.widgets.calendar%</option>
-					<option value="timemachine">%i18n:common.widgets.timemachine%</option>
-					<option value="activity">%i18n:common.widgets.activity%</option>
-					<option value="rss">%i18n:common.widgets.rss%</option>
-					<option value="trends">%i18n:common.widgets.trends%</option>
-					<option value="photo-stream">%i18n:common.widgets.photo-stream%</option>
-					<option value="slideshow">%i18n:common.widgets.slideshow%</option>
-					<option value="version">%i18n:common.widgets.version%</option>
-					<option value="broadcast">%i18n:common.widgets.broadcast%</option>
-					<option value="notifications">%i18n:common.widgets.notifications%</option>
-					<option value="users">%i18n:common.widgets.users%</option>
-					<option value="polls">%i18n:common.widgets.polls%</option>
-					<option value="post-form">%i18n:common.widgets.post-form%</option>
-					<option value="messaging">%i18n:common.widgets.messaging%</option>
-					<option value="memo">%i18n:common.widgets.memo%</option>
-					<option value="hashtags">%i18n:common.widgets.hashtags%</option>
-					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
-					<option value="server">%i18n:common.widgets.server%</option>
-					<option value="donation">%i18n:common.widgets.donation%</option>
-					<option value="nav">%i18n:common.widgets.nav%</option>
-					<option value="tips">%i18n:common.widgets.tips%</option>
+					<option value="profile">{{ $t('@.widgets.profile') }}</option>
+					<option value="analog-clock">{{ $t('@.widgets.analog-clock') }}</option>
+					<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
+					<option value="timemachine">{{ $t('@.widgets.timemachine') }}</option>
+					<option value="activity">{{ $t('@.widgets.activity') }}</option>
+					<option value="rss">{{ $t('@.widgets.rss') }}</option>
+					<option value="trends">{{ $t('@.widgets.trends') }}</option>
+					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
+					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
+					<option value="version">{{ $t('@.widgets.version') }}</option>
+					<option value="broadcast">{{ $t('@.widgets.broadcast') }}</option>
+					<option value="notifications">{{ $t('@.widgets.notifications') }}</option>
+					<option value="users">{{ $t('@.widgets.users') }}</option>
+					<option value="polls">{{ $t('@.widgets.polls') }}</option>
+					<option value="post-form">{{ $t('@.widgets.post-form') }}</option>
+					<option value="messaging">{{ $t('@.widgets.messaging') }}</option>
+					<option value="memo">{{ $t('@.widgets.memo') }}</option>
+					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
+					<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
+					<option value="server">{{ $t('@.widgets.server') }}</option>
+					<option value="nav">{{ $t('@.widgets.nav') }}</option>
+					<option value="tips">{{ $t('@.widgets.tips') }}</option>
 				</select>
-				<button @click="addWidget">%i18n:@add%</button>
+				<button @click="addWidget">{{ $t('add') }}</button>
 			</div>
 			<div class="trash">
 				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
-				<p>ゴミ箱</p>
+				<p>{{ $t('@.trash') }}</p>
 			</div>
 		</div>
 	</div>
-	<div class="main">
+	<div class="main" :class="{ side: widgets.left.length == 0 || widgets.right.length == 0 }">
 		<template v-if="customize">
 			<x-draggable v-for="place in ['left', 'right']"
 				:list="widgets[place]"
@@ -53,7 +52,7 @@
 				</div>
 			</x-draggable>
 			<div class="main">
-				<a @click="hint">カスタマイズのヒント</a>
+				<a @click="hint">{{ $t('@.customization-tips.title') }}</a>
 				<div>
 					<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
 					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
@@ -66,7 +65,7 @@
 			</div>
 			<div class="main">
 				<mk-post-form class="form" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
-				<mk-timeline class="tl" cref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
+				<mk-timeline class="tl" ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 			</div>
 		</template>
 	</div>
@@ -75,6 +74,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
 
@@ -94,7 +94,6 @@ const defaultDesktopHomeWidgets = {
 		'users',
 		'polls',
 		'server',
-		'donation',
 		'nav',
 		'tips'
 	]
@@ -103,26 +102,27 @@ const defaultDesktopHomeWidgets = {
 //#region Construct home data
 const _defaultDesktopHomeWidgets = [];
 
-defaultDesktopHomeWidgets.left.forEach(widget => {
+for (const widget of defaultDesktopHomeWidgets.left) {
 	_defaultDesktopHomeWidgets.push({
 		name: widget,
 		id: uuid(),
 		place: 'left',
 		data: {}
 	});
-});
+}
 
-defaultDesktopHomeWidgets.right.forEach(widget => {
+for (const widget of defaultDesktopHomeWidgets.right) {
 	_defaultDesktopHomeWidgets.push({
 		name: widget,
 		id: uuid(),
 		place: 'right',
 		data: {}
 	});
-});
+}
 //#endregion
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/home.vue'),
 	components: {
 		XDraggable
 	},
@@ -141,7 +141,6 @@ export default Vue.extend({
 	data() {
 		return {
 			connection: null,
-			connectionId: null,
 			widgetAdderSelected: null,
 			trash: []
 		};
@@ -167,7 +166,7 @@ export default Vue.extend({
 
 	created() {
 		if (this.$store.state.settings.home == null) {
-			this.api('i/update_home', {
+			this.$root.api('i/update_home', {
 				home: _defaultDesktopHomeWidgets
 			}).then(() => {
 				this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
@@ -176,25 +175,18 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = this.$root.stream.useSharedConnection('main');
 	},
 
 	beforeDestroy() {
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {
 		hint() {
-			(this as any).apis.dialog({
-				title: '%fa:info-circle%カスタマイズのヒント',
-				text: '<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
-					'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
-					'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
-					'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
-				actions: [{
-					text: 'Got it!'
-				}]
+			this.$root.dialog({
+				title: this.$t('@.customization-tips.title'),
+				text: this.$t('@.customization-tips.paragraph')
 			});
 		},
 
@@ -228,24 +220,26 @@ export default Vue.extend({
 			const left = this.widgets.left;
 			const right = this.widgets.right;
 			this.$store.commit('settings/setHome', left.concat(right));
-			left.forEach(w => w.place = 'left');
-			right.forEach(w => w.place = 'right');
-			(this as any).api('i/update_home', {
+			for (const w of left) w.place = 'left';
+			for (const w of right) w.place = 'right';
+			this.$root.api('i/update_home', {
 				home: this.home
 			});
 		},
 
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
+		},
+
+		focus() {
+			(this.$refs.tl as any).focus();
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.mk-home
 	display block
 
 	&[data-customize]
@@ -275,8 +269,8 @@ root(isDark)
 		left 0
 		width 100%
 		height 48px
-		color isDark ? #fff : #000
-		background isDark ? #313543 : #f7f7f7
+		color var(--text)
+		background var(--desktopHeaderBg)
 		box-shadow 0 1px 1px rgba(#000, 0.075)
 
 		> a
@@ -288,18 +282,18 @@ root(isDark)
 			padding 0 16px
 			line-height 48px
 			text-decoration none
-			color $theme-color-foreground
-			background $theme-color
+			color var(--primaryForeground)
+			background var(--primary)
 			transition background 0.1s ease
 
 			&:hover
-				background lighten($theme-color, 10%)
+				background var(--primaryLighten10)
 
 			&:active
-				background darken($theme-color, 10%)
+				background var(--primaryDarken10)
 				transition background 0s ease
 
-			> [data-fa]
+			> [data-icon]
 				margin-right 8px
 
 		> div
@@ -316,7 +310,7 @@ root(isDark)
 						line-height 48px
 
 				&.trash
-					border-left solid 1px isDark ? #1c2023 : #ddd
+					border-left solid 1px var(--faceDivider)
 
 					> div
 						width 100%
@@ -336,7 +330,7 @@ root(isDark)
 		display flex
 		justify-content center
 		margin 0 auto
-		max-width 1220px
+		max-width 1240px
 
 		> *
 			.customize-container
@@ -351,23 +345,21 @@ root(isDark)
 
 		> .main
 			padding 16px
-			width calc(100% - 275px * 2)
+			width calc(100% - 280px * 2)
 			order 2
 
 			> .form
 				margin-bottom 16px
-				border solid 1px rgba(#000, 0.075)
-				border-radius 4px
+				box-shadow var(--shadow)
+				border-radius var(--round)
 
-			@media (max-width 700px)
-				padding 0
-
-				> .tl
-					border none
-					border-radius 0
+		&.side
+			> .main
+				width calc(100% - 280px)
+				max-width 680px
 
 		> *:not(.main)
-			width 275px
+			width 280px
 			padding 16px 0 16px 0
 
 			> *:not(:last-child)
@@ -381,20 +373,24 @@ root(isDark)
 			padding-right 16px
 			order 3
 
-		@media (max-width 1100px)
-			> *:not(.main)
-				display none
+		&.side
+			@media (max-width 1000px)
+				> *:not(.main)
+					display none
 
-			> .main
-				float none
-				width 100%
-				max-width 700px
-				margin 0 auto
+				> .main
+					width 100%
+					max-width 700px
+					margin 0 auto
 
-.mk-home[data-darkmode]
-	root(true)
+		&:not(.side)
+			@media (max-width 1200px)
+				> *:not(.main)
+					display none
 
-.mk-home:not([data-darkmode])
-	root(false)
+				> .main
+					width 100%
+					max-width 700px
+					margin 0 auto
 
 </style>

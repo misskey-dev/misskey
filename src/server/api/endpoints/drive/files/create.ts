@@ -1,19 +1,58 @@
-/**
- * Module dependencies
- */
-import * as fs from 'fs';
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+const ms = require('ms');
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
+import define from '../../../define';
 
-/**
- * Create a file
- */
-module.exports = async (file, params, user): Promise<any> => {
-	if (file == null) {
-		throw 'file is required';
+export const meta = {
+	desc: {
+		'ja-JP': 'ドライブにファイルをアップロードします。',
+		'en-US': 'Upload a file to drive.'
+	},
+
+	requireCredential: true,
+
+	limit: {
+		duration: ms('1hour'),
+		max: 120
+	},
+
+	requireFile: true,
+
+	kind: 'drive-write',
+
+	params: {
+		folderId: {
+			validator: $.type(ID).optional.nullable,
+			transform: transform,
+			default: null as any,
+			desc: {
+				'ja-JP': 'フォルダID'
+			}
+		},
+
+		isSensitive: {
+			validator: $.or($.bool, $.str).optional,
+			default: false,
+			transform: (v: any): boolean => v === true || v === 'true',
+			desc: {
+				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
+				'en-US': 'Whether this media is NSFW'
+			}
+		},
+
+		force: {
+			validator: $.or($.bool, $.str).optional,
+			default: false,
+			transform: (v: any): boolean => v === true || v === 'true',
+			desc: {
+				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
+			}
+		}
 	}
+};
 
+export default define(meta, (ps, user, app, file, cleanup) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	let name = file.originalname;
 	if (name !== undefined && name !== null) {
@@ -23,33 +62,24 @@ module.exports = async (file, params, user): Promise<any> => {
 		} else if (name === 'blob') {
 			name = null;
 		} else if (!validateFileName(name)) {
-			throw 'invalid name';
+			return rej('invalid name');
 		}
 	} else {
 		name = null;
 	}
 
-	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
-	if (folderIdErr) throw 'invalid folderId param';
-
-	function cleanup() {
-		fs.unlink(file.path, () => {});
-	}
-
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, folderId);
+		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
 
 		cleanup();
 
-		// Serialize
-		return pack(driveFile);
+		res(pack(driveFile, { self: true }));
 	} catch (e) {
 		console.error(e);
 
 		cleanup();
 
-		throw e;
+		rej(e);
 	}
-};
+}));

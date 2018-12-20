@@ -1,22 +1,27 @@
 <template>
 <div class="mkp-selectdrive">
-	<mk-drive ref="browser"
+	<x-drive ref="browser"
 		:multiple="multiple"
 		@selected="onSelected"
 		@change-selection="onChangeSelection"
 	/>
 	<footer>
-		<button class="upload" title="%i18n:@upload%" @click="upload">%fa:upload%</button>
-		<button class="cancel" @click="close">%i18n:@cancel%</button>
-		<button class="ok" @click="ok">%i18n:@ok%</button>
+		<button class="upload" :title="$t('upload')" @click="upload"><fa icon="upload"/></button>
+		<button class="cancel" @click="close">{{ $t('cancel') }}</button>
+		<button class="ok" @click="ok">{{ $t('ok') }}</button>
 	</footer>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/pages/selectdrive.vue'),
+	components: {
+		XDrive: () => import('../components/drive.vue').then(m => m.default),
+	},
 	data() {
 		return {
 			files: []
@@ -29,7 +34,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = '%i18n:@title%';
+		document.title = this.$t('title');
 	},
 	methods: {
 		onSelected(file) {
@@ -54,7 +59,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
+
 
 .mkp-selectdrive
 	display block
@@ -72,7 +77,7 @@ export default Vue.extend({
 		left 0
 		width 100%
 		height 72px
-		background lighten($theme-color, 95%)
+		background var(--primaryLighten95)
 
 		.upload
 			display inline-block
@@ -85,7 +90,7 @@ export default Vue.extend({
 			width 40px
 			height 40px
 			font-size 1em
-			color rgba($theme-color, 0.5)
+			color var(--primaryAlpha05)
 			background transparent
 			outline none
 			border solid 1px transparent
@@ -93,13 +98,13 @@ export default Vue.extend({
 
 			&:hover
 				background transparent
-				border-color rgba($theme-color, 0.3)
+				border-color var(--primaryAlpha03)
 
 			&:active
-				color rgba($theme-color, 0.6)
+				color var(--primaryAlpha06)
 				background transparent
-				border-color rgba($theme-color, 0.5)
-				box-shadow 0 2px 4px rgba(darken($theme-color, 50%), 0.15) inset
+				border-color var(--primaryAlpha05)
+				//box-shadow 0 2px 4px rgba(var(--primaryDarken50), 0.15) inset
 
 			&:focus
 				&:after
@@ -110,7 +115,7 @@ export default Vue.extend({
 					right -5px
 					bottom -5px
 					left -5px
-					border 2px solid rgba($theme-color, 0.3)
+					border 2px solid var(--primaryAlpha03)
 					border-radius 8px
 
 		.ok
@@ -136,7 +141,7 @@ export default Vue.extend({
 					right -5px
 					bottom -5px
 					left -5px
-					border 2px solid rgba($theme-color, 0.3)
+					border 2px solid var(--primaryAlpha03)
 					border-radius 8px
 
 			&:disabled
@@ -145,20 +150,20 @@ export default Vue.extend({
 
 		.ok
 			right 16px
-			color $theme-color-foreground
-			background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
-			border solid 1px lighten($theme-color, 15%)
+			color var(--primaryForeground)
+			background linear-gradient(to bottom, var(--primaryLighten25) 0%, var(--primaryLighten10) 100%)
+			border solid 1px var(--primaryLighten15)
 
 			&:not(:disabled)
 				font-weight bold
 
 			&:hover:not(:disabled)
-				background linear-gradient(to bottom, lighten($theme-color, 8%) 0%, darken($theme-color, 8%) 100%)
-				border-color $theme-color
+				background linear-gradient(to bottom, var(--primaryLighten8) 0%, var(--primaryDarken8) 100%)
+				border-color var(--primary)
 
 			&:active:not(:disabled)
-				background $theme-color
-				border-color $theme-color
+				background var(--primary)
+				border-color var(--primary)
 
 		.cancel
 			right 148px

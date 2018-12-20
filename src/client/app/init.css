@@ -32,7 +32,7 @@ body > noscript {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: #fff;
+	background: var(--bg);
 	cursor: wait;
 }
 	#ini > svg {
@@ -46,10 +46,6 @@ body > noscript {
 		height: 64px;
 		animation: ini 0.6s infinite linear;
 	}
-
-html[data-darkmode] #ini {
-	background: #191b22;
-}
 
 @keyframes ini {
 	from {

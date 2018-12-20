@@ -2,9 +2,9 @@
 <div class="disk">
 	<x-pie class="pie" :value="usage"/>
 	<div>
-		<p>%fa:R hdd%Storage</p>
+		<p><fa :icon="['far', 'hdd']"/>Storage</p>
 		<p>Total: {{ total | bytes(1) }}</p>
-		<p>Available: {{ available | bytes(1) }}</p>
+		<p>Free: {{ available | bytes(1) }}</p>
 		<p>Used: {{ used | bytes(1) }}</p>
 	</div>
 </div>
@@ -46,7 +46,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-root(isDark)
+.disk
 	> .pie
 		padding 10px
 		height 100px
@@ -60,23 +60,17 @@ root(isDark)
 		> p
 			margin 0
 			font-size 12px
-			color isDark ? #a8b4bd : #505050
+			color var(--chartCaption)
 
 			&:first-child
 				font-weight bold
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 4px
 
 	&:after
 		content ""
 		display block
 		clear both
-
-.disk[data-darkmode]
-	root(true)
-
-.disk:not([data-darkmode])
-	root(false)
 
 </style>

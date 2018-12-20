@@ -1,16 +1,16 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+const deepcopy = require('deepcopy');
 import { pack as packFolder } from './drive-folder';
-import config from '../config';
+import { pack as packUser } from './user';
 import monkDb, { nativeDbConn } from '../db/mongodb';
-import Note, { deleteNote } from './note';
-import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
-import User from './user';
-import DriveFileThumbnail, { deleteDriveFileThumbnail } from './drive-file-thumbnail';
+import isObjectId from '../misc/is-objectid';
+import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
-DriveFile.createIndex('metadata.uri', { sparse: true, unique: true });
+DriveFile.createIndex('metadata.uri');
+DriveFile.createIndex('metadata.userId');
+DriveFile.createIndex('metadata.folderId');
 export default DriveFile;
 
 export const DriveFileChunk = monkDb.get('driveFiles.chunks');
@@ -29,10 +29,78 @@ export type IMetadata = {
 	_user: any;
 	folderId: mongo.ObjectID;
 	comment: string;
+
+	/**
+	 * リモートインスタンスから取得した場合の元URL
+	 */
 	uri?: string;
+
+	/**
+	 * URL for web(生成されている場合) or original
+	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
+	 */
 	url?: string;
+
+	/**
+	 * URL for thumbnail (thumbnailがなければなし)
+	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
+	 */
+	thumbnailUrl?: string;
+
+	/**
+	 * URL for original (web用が生成されてない場合はurlがoriginalを指す)
+	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
+	 */
+	webpublicUrl?: string;
+
+	accessKey?: string;
+
+	src?: string;
 	deletedAt?: Date;
-	isMetaOnly?: boolean;
+
+	/**
+	 * このファイルの中身データがMongoDB内に保存されていないか否か
+	 * オブジェクトストレージを利用している or リモートサーバーへの直リンクである
+	 * な場合は true になります
+	 */
+	withoutChunks?: boolean;
+
+	storage?: string;
+
+	/***
+	 * ObjectStorage の格納先の情報
+	 */
+	storageProps?: IStorageProps;
+	isSensitive?: boolean;
+
+	/**
+	 * このファイルが添付された投稿のID一覧
+	 */
+	attachedNoteIds?: mongo.ObjectID[];
+
+	/**
+	 * 外部の(信頼されていない)URLへの直リンクか否か
+	 */
+	isRemote?: boolean;
+};
+
+export type IStorageProps = {
+	/**
+	 * ObjectStorage key for original
+	 */
+	key: string;
+
+	/***
+	 * ObjectStorage key for thumbnail (thumbnailがなければなし)
+	 */
+	thumbnailKey?: string;
+
+	/***
+	 * ObjectStorage key for webpublic (webpublicがなければなし)
+	 */
+	webpublicKey?: string;
+
+	id?: string;
 };
 
 export type IDriveFile = {
@@ -42,6 +110,11 @@ export type IDriveFile = {
 	filename: string;
 	contentType: string;
 	metadata: IMetadata;
+
+	/**
+	 * ファイルサイズ
+	 */
+	length: number;
 };
 
 export function validateFileName(name: string): boolean {
@@ -54,63 +127,16 @@ export function validateFileName(name: string): boolean {
 	);
 }
 
-/**
- * DriveFileを物理削除します
- */
-export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriveFile) {
-	let d: IDriveFile;
-
-	// Populate
-	if (mongo.ObjectID.prototype.isPrototypeOf(driveFile)) {
-		d = await DriveFile.findOne({
-			_id: driveFile
-		});
-	} else if (typeof driveFile === 'string') {
-		d = await DriveFile.findOne({
-			_id: new mongo.ObjectID(driveFile)
-		});
-	} else {
-		d = driveFile as IDriveFile;
+export const packMany = (
+	files: any[],
+	options?: {
+		detail?: boolean
+		self?: boolean,
+		withUser?: boolean,
 	}
-
-	if (d == null) return;
-
-	// このDriveFileを添付しているNoteをすべて削除
-	await Promise.all((
-		await Note.find({ mediaIds: d._id })
-	).map(x => deleteNote(x)));
-
-	// このDriveFileを添付しているMessagingMessageをすべて削除
-	await Promise.all((
-		await MessagingMessage.find({ fileId: d._id })
-	).map(x => deleteMessagingMessage(x)));
-
-	// このDriveFileがアバターやバナーに使われていたらそれらのプロパティをnullにする
-	const u = await User.findOne({ _id: d.metadata.userId });
-	if (u) {
-		if (u.avatarId && u.avatarId.equals(d._id)) {
-			await User.update({ _id: u._id }, { $set: { avatarId: null } });
-		}
-		if (u.bannerId && u.bannerId.equals(d._id)) {
-			await User.update({ _id: u._id }, { $set: { bannerId: null } });
-		}
-	}
-
-	// このDriveFileのDriveFileThumbnailをすべて削除
-	await Promise.all((
-		await DriveFileThumbnail.find({ 'metadata.originalId': d._id })
-	).map(x => deleteDriveFileThumbnail(x)));
-
-	// このDriveFileのチャンクをすべて削除
-	await DriveFileChunk.remove({
-		files_id: d._id
-	});
-
-	// このDriveFileを削除
-	await DriveFile.remove({
-		_id: d._id
-	});
-}
+) => {
+	return Promise.all(files.map(f => pack(f, options)));
+};
 
 /**
  * Pack a drive file for API response
@@ -118,17 +144,20 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 export const pack = (
 	file: any,
 	options?: {
-		detail: boolean
+		detail?: boolean,
+		self?: boolean,
+		withUser?: boolean,
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 	const opts = Object.assign({
-		detail: false
+		detail: false,
+		self: false
 	}, options);
 
 	let _file: any;
 
 	// Populate the file if 'file' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
+	if (isObjectId(file)) {
 		_file = await DriveFile.findOne({
 			_id: file
 		});
@@ -140,7 +169,11 @@ export const pack = (
 		_file = deepcopy(file);
 	}
 
-	if (!_file) return reject('invalid file arg.');
+	// (データベースの欠損などで)ファイルがデータベース上に見つからなかったとき
+	if (_file == null) {
+		console.warn(`[DAMAGED DB] (missing) pkg: driveFile :: ${file}`);
+		return resolve(null);
+	}
 
 	// rendered target
 	let _target: any = {};
@@ -154,9 +187,9 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
-	_target.src = _file.metadata.url;
-	_target.url = _file.metadata.isMetaOnly ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
-	_target.isRemote = _file.metadata.isMetaOnly;
+	_target.url = getDriveFileUrl(_file);
+	_target.thumbnailUrl = getDriveFileUrl(_file, true);
+	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
 
@@ -176,6 +209,21 @@ export const pack = (
 			);
 		}
 		*/
+	}
+
+	if (opts.withUser) {
+		// Populate user
+		_target.user = await packUser(_file.metadata.userId);
+	}
+
+	delete _target.withoutChunks;
+	delete _target.storage;
+	delete _target.storageProps;
+	delete _target.isRemote;
+	delete _target._user;
+
+	if (opts.self) {
+		_target.url = getOriginalUrl(_file);
 	}
 
 	resolve(_target);

@@ -1,42 +1,45 @@
 <template>
 <div class="form">
 	<header>
-		<h1><i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？</h1>
-		<img :src="`${app.iconUrl}?thumbnail&size=64`"/>
+		<h1 v-html="$t('share-access', { name: app.name })"></h1>
+		<img :src="app.iconUrl"/>
 	</header>
 	<div class="app">
 		<section>
 			<h2>{{ app.name }}</h2>
-			<p class="nid">{{ app.nameId }}</p>
+			<p class="id">{{ app.id }}</p>
 			<p class="description">{{ app.description }}</p>
 		</section>
 		<section>
-			<h2>このアプリは次の権限を要求しています:</h2>
+			<h2>{{ $t('permission-ask') }}</h2>
 			<ul>
 				<template v-for="p in app.permission">
-					<li v-if="p == 'account-read'">アカウントの情報を見る。</li>
-					<li v-if="p == 'account-write'">アカウントの情報を操作する。</li>
-					<li v-if="p == 'note-write'">投稿する。</li>
-					<li v-if="p == 'like-write'">いいねしたりいいね解除する。</li>
-					<li v-if="p == 'following-write'">フォローしたりフォロー解除する。</li>
-					<li v-if="p == 'drive-read'">ドライブを見る。</li>
-					<li v-if="p == 'drive-write'">ドライブを操作する。</li>
-					<li v-if="p == 'notification-read'">通知を見る。</li>
-					<li v-if="p == 'notification-write'">通知を操作する。</li>
+					<li v-if="p == 'account-read'">{{ $t('account-read') }}</li>
+					<li v-if="p == 'account-write'">{{ $t('account-write') }}</li>
+					<li v-if="p == 'note-write'">{{ $t('note-write') }}</li>
+					<li v-if="p == 'like-write'">{{ $t('like-write') }}</li>
+					<li v-if="p == 'following-write'">{{ $t('following-write') }}</li>
+					<li v-if="p == 'drive-read'">{{ $t('drive-read') }}</li>
+					<li v-if="p == 'drive-write'">{{ $t('drive-write') }}</li>
+					<li v-if="p == 'notification-read'">{{ $t('notification-read') }}</li>
+					<li v-if="p == 'notification-write'">{{ $t('notification-write') }}</li>
 				</template>
 			</ul>
 		</section>
 	</div>
 	<div class="action">
-		<button @click="cancel">キャンセル</button>
-		<button @click="accept">アクセスを許可</button>
+		<button @click="cancel">{{ $t('cancel') }}</button>
+		<button @click="accept">{{ $t('accept') }}</button>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../i18n';
+
 export default Vue.extend({
+	i18n: i18n('auth/views/form.vue'),
 	props: ['session'],
 	computed: {
 		app(): any {
@@ -45,7 +48,7 @@ export default Vue.extend({
 	},
 	methods: {
 		cancel() {
-			(this as any).api('auth/deny', {
+			this.$root.api('auth/deny', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('denied');
@@ -53,7 +56,7 @@ export default Vue.extend({
 		},
 
 		accept() {
-			(this as any).api('auth/accept', {
+			this.$root.api('auth/accept', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('accepted');

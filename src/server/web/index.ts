@@ -12,12 +12,11 @@ import * as views from 'koa-views';
 import docs from './docs';
 //import feed from './feed';
 import User from '../../models/user';
-import parseAcct from '../../acct/parse';
-import { fa } from '../../build/fa';
+import parseAcct from '../../misc/acct/parse';
 import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
-import getNoteSummary from '../../renderers/get-note-summary';
-const consts = require('../../const.json');
+import getNoteSummary from '../../misc/get-note-summary';
+import fetchMeta from '../../misc/fetch-meta';
 
 const client = `${__dirname}/../../client/`;
 
@@ -28,9 +27,7 @@ const app = new Koa();
 app.use(views(__dirname + '/views', {
 	extension: 'pug',
 	options: {
-		config,
-		themeColor: consts.themeColor,
-		facss: fa.dom.css()
+		config
 	}
 }));
 
@@ -50,9 +47,7 @@ const router = new Router();
 //#region static assets
 
 router.get('/assets/*', async ctx => {
-	// 互換性のため
-	const path = ctx.path.replace('.raw.js', '.js').replace('.min.js', '.js');
-	await send(ctx, path, {
+	await send(ctx, ctx.path, {
 		root: client,
 		maxage: ms('7 days'),
 		immutable: true
@@ -66,7 +61,7 @@ router.get('/apple-touch-icon.png', async ctx => {
 	});
 });
 
-// ServiceWroker
+// ServiceWorker
 router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
 	await send(ctx, `/assets/sw.${ctx.params[0]}.js`, {
 		root: client
@@ -115,6 +110,7 @@ router.get('/@:user', async (ctx, next) => {
 
 	if (user != null) {
 		await ctx.render('user', { user });
+		ctx.set('Cache-Control', 'public, max-age=180');
 	} else {
 		// リモートユーザーなので
 		await next();
@@ -131,6 +127,7 @@ router.get('/notes/:note', async ctx => {
 			note: _note,
 			summary: getNoteSummary(_note)
 		});
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 	} else {
 		ctx.status = 404;
 	}
@@ -139,11 +136,11 @@ router.get('/notes/:note', async ctx => {
 
 // Render base html for all requests
 router.get('*', async ctx => {
-	await send(ctx, `app/base.html`, {
-		root: client,
-		maxage: ms('3 days'),
-		immutable: true
+	const meta = await fetchMeta();
+	await ctx.render('base', {
+		img: meta.bannerUrl
 	});
+	ctx.set('Cache-Control', 'public, max-age=86400');
 });
 
 // Register router

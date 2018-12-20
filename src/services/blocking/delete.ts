@@ -1,0 +1,28 @@
+import { isLocalUser, isRemoteUser, IUser } from '../../models/user';
+import Blocking from '../../models/blocking';
+import pack from '../../remote/activitypub/renderer';
+import renderBlock from '../../remote/activitypub/renderer/block';
+import renderUndo from '../../remote/activitypub/renderer/undo';
+import { deliver } from '../../queue';
+
+export default async function(blocker: IUser, blockee: IUser) {
+	const blocking = await Blocking.findOne({
+		blockerId: blocker._id,
+		blockeeId: blockee._id
+	});
+
+	if (blocking == null) {
+		console.warn('ブロック解除がリクエストされましたがブロックしていませんでした');
+		return;
+	}
+
+	Blocking.remove({
+		_id: blocking._id
+	});
+
+	// deliver if remote bloking
+	if (isLocalUser(blocker) && isRemoteUser(blockee)) {
+		const content = pack(renderUndo(renderBlock(blocker, blockee), blocker));
+		deliver(blocker, content, blockee.inbox);
+	}
+}

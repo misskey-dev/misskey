@@ -3,13 +3,13 @@
 <div class="signins" v-if="signins.length != 0">
 	<div v-for="signin in signins">
 		<header @click="signin._show = !signin._show">
-			<template v-if="signin.success">%fa:check%</template>
-			<template v-else>%fa:times%</template>
+			<template v-if="signin.success"><fa icon="check"/></template>
+			<template v-else><fa icon="times"/></template>
 			<span class="ip">{{ signin.ip }}</span>
 			<mk-time :time="signin.createdAt"/>
 		</header>
 		<div class="headers" v-show="signin._show">
-			<tree-view :data="signin.headers"/>
+			<!-- TODO -->
 		</div>
 	</div>
 </div>
@@ -23,25 +23,25 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			signins: [],
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
+
 	mounted() {
-		(this as any).api('i/signin_history').then(signins => {
+		this.$root.api('i/signin_history').then(signins => {
 			this.signins = signins;
 			this.fetching = false;
 		});
 
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		this.connection = this.$root.stream.useSharedConnection('main');
 
 		this.connection.on('signin', this.onSignin);
 	},
+
 	beforeDestroy() {
-		this.connection.off('signin', this.onSignin);
-		(this as any).os.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
+
 	methods: {
 		onSignin(signin) {
 			this.signins.unshift(signin);
@@ -62,7 +62,7 @@ export default Vue.extend({
 				line-height 32px
 				cursor pointer
 
-				> [data-fa]
+				> [data-icon]
 					margin-right 8px
 					text-align left
 

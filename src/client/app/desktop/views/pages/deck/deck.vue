@@ -1,29 +1,40 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" ref="body" :style="style" :class="`${$store.state.device.deckColumnAlign} ${$store.state.device.deckColumnWidth}`" v-hotkey.global="keymap">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
-					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true"/>
+					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true" @parentFocus="moveFocus(id, $event)"/>
 				</template>
 			</div>
-			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
+			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])" @parentFocus="moveFocus(ids[0], $event)"/>
 		</template>
-		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
+		<template v-if="temporaryColumn">
+			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
+			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
+			<x-hashtag-column v-else-if="temporaryColumn.type == 'tag'" :tag="temporaryColumn.tag" :key="temporaryColumn.tag"/>
+		</template>
+		<button ref="add" @click="add" :title="$t('@deck.add-column')"><fa icon="plus"/></button>
 	</div>
 </mk-ui>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
+
 import * as uuid from 'uuid';
 
 export default Vue.extend({
+	i18n: i18n('deck'),
 	components: {
-		XColumnCore
+		XColumnCore,
+		XUserColumn: () => import('./deck.user-column.vue').then(m => m.default),
+		XNoteColumn: () => import('./deck.note-column.vue').then(m => m.default),
+		XHashtagColumn: () => import('./deck.hashtag-column.vue').then(m => m.default)
 	},
 
 	computed: {
@@ -31,10 +42,40 @@ export default Vue.extend({
 			if (this.$store.state.settings.deck == null) return [];
 			return this.$store.state.settings.deck.columns;
 		},
+
 		layout(): any[] {
 			if (this.$store.state.settings.deck == null) return [];
 			if (this.$store.state.settings.deck.layout == null) return this.$store.state.settings.deck.columns.map(c => [c.id]);
 			return this.$store.state.settings.deck.layout;
+		},
+
+		style(): any {
+			return {
+				height: `calc(100vh - ${this.$store.state.uiHeaderHeight}px)`
+			};
+		},
+
+		temporaryColumn(): any {
+			return this.$store.state.device.deckTemporaryColumn;
+		},
+
+		keymap(): any {
+			return {
+				't': this.focus
+			};
+		}
+	},
+
+	watch: {
+		temporaryColumn() {
+			if (this.temporaryColumn != null) {
+				this.$nextTick(() => {
+					this.$refs.body.scrollTo({
+						left: this.$refs.body.scrollWidth - this.$refs.body.clientWidth,
+						behavior: 'smooth'
+					});
+				});
+			}
 		}
 	},
 
@@ -45,6 +86,8 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$store.commit('navHook', this.onNav);
+
 		if (this.$store.state.settings.deck == null) {
 			const deck = {
 				columns: [/*{
@@ -85,10 +128,13 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		document.title = this.$root.instanceName;
 		document.documentElement.style.overflow = 'hidden';
 	},
 
 	beforeDestroy() {
+		this.$store.commit('navHook', null);
+
 		document.documentElement.style.overflow = 'auto';
 	},
 
@@ -97,13 +143,46 @@ export default Vue.extend({
 			return this.$refs[id][0];
 		},
 
+		onNav(to) {
+			if (!this.$store.state.settings.deckNav) return false;
+
+			if (to.name == 'user') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'user',
+						acct: to.params.user
+					}
+				});
+				return true;
+			} else if (to.name == 'note') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'note',
+						noteId: to.params.note
+					}
+				});
+				return true;
+			} else if (to.name == 'tag') {
+				this.$store.commit('device/set', {
+					key: 'deckTemporaryColumn',
+					value: {
+						type: 'tag',
+						tag: to.params.tag
+					}
+				});
+				return true;
+			}
+		},
+
 		add() {
-			this.os.new(Menu, {
+			this.$root.new(Menu, {
 				source: this.$refs.add,
 				compact: true,
 				items: [{
-					icon: '%fa:home%',
-					text: '%i18n:common.deck.home%',
+					icon: 'home',
+					text: this.$t('@deck.home'),
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -111,8 +190,8 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:comments R%',
-					text: '%i18n:common.deck.local%',
+					icon: ['far', 'comments'],
+					text: this.$t('@deck.local'),
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -120,8 +199,17 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:globe%',
-					text: '%i18n:common.deck.global%',
+					icon: 'share-alt',
+					text: this.$t('@deck.hybrid'),
+					action: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'hybrid'
+						});
+					}
+				}, {
+					icon: 'globe',
+					text: this.$t('@deck.global'),
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -129,10 +217,28 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:list%',
-					text: '%i18n:common.deck.list%',
+					icon: 'at',
+					text: this.$t('@deck.mentions'),
 					action: () => {
-						const w = (this as any).os.new(MkUserListsWindow);
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'mentions'
+						});
+					}
+				}, {
+					icon: ['far', 'envelope'],
+					text: this.$t('@deck.direct'),
+					action: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'direct'
+						});
+					}
+				}, {
+					icon: 'list',
+					text: this.$t('@deck.list'),
+					action: () => {
+						const w = this.$root.new(MkUserListsWindow);
 						w.$once('choosen', list => {
 							this.$store.dispatch('settings/addDeckColumn', {
 								id: uuid(),
@@ -143,8 +249,24 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:bell R%',
-					text: '%i18n:common.deck.notifications%',
+					icon: 'hashtag',
+					text: this.$t('@deck.hashtag'),
+					action: () => {
+						this.$root.dialog({
+							title: this.$t('enter-hashtag-tl-title'),
+							input: true
+						}).then(({ canceled, result: title }) => {
+							if (canceled) return;
+							this.$store.dispatch('settings/addDeckColumn', {
+								id: uuid(),
+								type: 'hashtag',
+								tagTlId: this.$store.state.settings.tagTimelines.find(x => x.title == title).id
+							});
+						});
+					}
+				}, {
+					icon: ['far', 'bell'],
+					text: this.$t('@deck.notifications'),
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -152,8 +274,8 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					icon: '%fa:calculator%',
-					text: '%i18n:common.deck.widgets%',
+					icon: 'calculator',
+					text: this.$t('@deck.widgets'),
 					action: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -163,6 +285,71 @@ export default Vue.extend({
 					}
 				}]
 			});
+		},
+
+		focus() {
+			// Flatten array of arrays
+			const ids = [].concat.apply([], this.layout);
+			const firstTl = ids.find(id => this.isTlColumn(id));
+
+			if (firstTl) {
+				this.$refs[firstTl][0].focus();
+			}
+		},
+
+		moveFocus(id, direction) {
+			let targetColumn;
+
+			if (direction == 'right') {
+				const currentColumnIndex = this.layout.findIndex(ids => ids.includes(id));
+				this.layout.some((ids, i) => {
+					if (i <= currentColumnIndex) return false;
+					const tl = ids.find(id => this.isTlColumn(id));
+					if (tl) {
+						targetColumn = tl;
+						return true;
+					}
+				});
+			} else if (direction == 'left') {
+				const currentColumnIndex = [...this.layout].reverse().findIndex(ids => ids.includes(id));
+				[...this.layout].reverse().some((ids, i) => {
+					if (i <= currentColumnIndex) return false;
+					const tl = ids.find(id => this.isTlColumn(id));
+					if (tl) {
+						targetColumn = tl;
+						return true;
+					}
+				});
+			} else if (direction == 'down') {
+				const currentColumn = this.layout.find(ids => ids.includes(id));
+				const currentIndex = currentColumn.indexOf(id);
+				currentColumn.some((_id, i) => {
+					if (i <= currentIndex) return false;
+					if (this.isTlColumn(_id)) {
+						targetColumn = _id;
+						return true;
+					}
+				});
+			} else if (direction == 'up') {
+				const currentColumn = [...this.layout.find(ids => ids.includes(id))].reverse();
+				const currentIndex = currentColumn.indexOf(id);
+				currentColumn.some((_id, i) => {
+					if (i <= currentIndex) return false;
+					if (this.isTlColumn(_id)) {
+						targetColumn = _id;
+						return true;
+					}
+				});
+			}
+
+			if (targetColumn) {
+				this.$refs[targetColumn][0].focus();
+			}
+		},
+
+		isTlColumn(id) {
+			const column = this.columns.find(c => c.id === id);
+			return ['home', 'local', 'hybrid', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(column.type);
 		}
 	}
 });
@@ -174,9 +361,7 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
+.qlvquzbjribqcaozciifydkngcwtyzje
 	display flex
 	flex 1
 	padding 16px 0 16px 16px
@@ -184,6 +369,8 @@ root(isDark)
 
 	> div
 		margin-right 8px
+		width 330px
+		min-width 330px
 
 		&:last-of-type
 			margin-right 0
@@ -195,27 +382,53 @@ root(isDark)
 			> *:not(:last-child)
 				margin-bottom 8px
 
-	> *
-		&:first-child
-			margin-left auto
+	&.narrow
+		> div
+			width 303px
+			min-width 303px
 
-		&:last-child
-			margin-right auto
+	&.narrower
+		> div
+			width 316.5px
+			min-width 316.5px
+
+	&.wider
+		> div
+			width 343.5px
+			min-width 343.5px
+
+	&.wide
+		> div
+			width 357px
+			min-width 357px
+
+	&.center
+		> *
+			&:first-child
+				margin-left auto
+
+			&:last-child
+				margin-right auto
+
+	&.:not(.flexible)
+		> *
+			flex-grow 0
+			flex-shrink 0
+
+	&.flexible
+		> *
+			flex-grow 1
+			flex-shrink 0
 
 	> button
 		padding 0 16px
-		color isDark ? #93a0a5 : #888
+		color var(--faceTextButton)
+		flex-grow 0 !important
 
 		&:hover
-			color isDark ? #b8c5ca : #777
+			color var(--faceTextButtonHover)
 
 		&:active
-			color isDark ? #fff : #555
-
-.qlvquzbjribqcaozciifydkngcwtyzje[data-darkmode]
-	root(true)
-
-.qlvquzbjribqcaozciifydkngcwtyzje:not([data-darkmode])
-	root(false)
+			color var(--faceTextButtonActive)
 
 </style>

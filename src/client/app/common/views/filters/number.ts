@@ -1,5 +1,3 @@
 import Vue from 'vue';
 
-Vue.filter('number', (n) => {
-	return n.toLocaleString();
-});
+Vue.filter('number', n => n == null ? 'N/A' : n.toLocaleString());

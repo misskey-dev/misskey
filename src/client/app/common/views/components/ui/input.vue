@@ -1,5 +1,5 @@
 <template>
-<div class="ui-input" :class="[{ focused, filled }, styl]">
+<div class="ui-input" :class="[{ focused, filled, inline, disabled }, styl]">
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
 	<div class="input">
 		<div class="password-meter" v-if="withPasswordMeter" v-show="passwordStrength != ''" :data-strength="passwordStrength">
@@ -9,30 +9,36 @@
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
 			<input ref="input"
-					:type="type"
-					v-model="v"
-					:required="required"
-					:readonly="readonly"
-					:pattern="pattern"
-					:autocomplete="autocomplete"
-					:spellcheck="spellcheck"
-					@focus="focused = true"
-					@blur="focused = false">
+				:type="type"
+				v-model="v"
+				:disabled="disabled"
+				:required="required"
+				:readonly="readonly"
+				:placeholder="placeholder"
+				:pattern="pattern"
+				:autocomplete="autocomplete"
+				:spellcheck="spellcheck"
+				@focus="focused = true"
+				@blur="focused = false"
+				@keydown="$emit('keydown', $event)"
+			>
 		</template>
 		<template v-else>
 			<input ref="input"
-					type="text"
-					:value="placeholder"
-					readonly
-					@click="chooseFile">
+				type="text"
+				:value="filePlaceholder"
+				readonly
+				@click="chooseFile"
+			>
 			<input ref="file"
-					type="file"
-					:value="value"
-					@change="onChangeFile">
+				type="file"
+				:value="value"
+				@change="onChangeFile"
+			>
 		</template>
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
-	<div class="text"><slot name="text"></slot></div>
+	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -41,6 +47,11 @@ import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
+	inject: {
+		horizonGrouped: {
+			default: false
+		}
+	},
 	props: {
 		value: {
 			required: false
@@ -57,9 +68,22 @@ export default Vue.extend({
 			type: Boolean,
 			required: false
 		},
+		disabled: {
+			type: Boolean,
+			required: false
+		},
 		pattern: {
 			type: String,
 			required: false
+		},
+		placeholder: {
+			type: String,
+			required: false
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false
 		},
 		autocomplete: {
 			required: false
@@ -71,21 +95,32 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		inline: {
+			type: Boolean,
+			required: false,
+			default(): boolean {
+				return this.horizonGrouped;
+			}
+		},
+		styl: {
+			type: String,
+			required: false,
+			default: 'line'
 		}
 	},
 	data() {
 		return {
 			v: this.value,
 			focused: false,
-			passwordStrength: '',
-			styl: 'fill'
+			passwordStrength: ''
 		};
 	},
 	computed: {
 		filled(): boolean {
 			return this.v != '' && this.v != null;
 		},
-		placeholder(): string {
+		filePlaceholder(): string {
 			if (this.type != 'file') return null;
 			if (this.v == null) return null;
 
@@ -117,26 +152,26 @@ export default Vue.extend({
 			}
 		}
 	},
-	inject: {
-		isCardChild: { default: false }
-	},
-	created() {
-		if (this.isCardChild) {
-			this.styl = 'line';
-		}
-	},
 	mounted() {
-		if (this.$refs.prefix) {
-			this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
-			if (this.$refs.prefix.offsetWidth) {
-				this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
-			}
+		if (this.autofocus) {
+			this.$nextTick(() => {
+				this.$refs.input.focus();
+			});
 		}
-		if (this.$refs.suffix) {
-			if (this.$refs.suffix.offsetWidth) {
-				this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+
+		this.$nextTick(() => {
+			if (this.$refs.prefix) {
+				this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
+				if (this.$refs.prefix.offsetWidth) {
+					this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
+				}
 			}
-		}
+			if (this.$refs.suffix) {
+				if (this.$refs.suffix.offsetWidth) {
+					this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+				}
+			}
+		});
 	},
 	methods: {
 		focus() {
@@ -155,9 +190,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark, fill)
+root(fill)
 	margin 32px 0
 
 	> .icon
@@ -167,7 +200,7 @@ root(isDark, fill)
 		width 24px
 		text-align center
 		line-height 32px
-		color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+		color var(--inputLabel)
 
 		&:not(:empty) + .input
 			margin-left 28px
@@ -183,7 +216,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				height 1px
-				background isDark ? rgba(#fff, 0.7) : rgba(#000, 0.42)
+				background var(--inputBorder)
 
 			&:after
 				content ''
@@ -193,7 +226,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				height 2px
-				background $theme-color
+				background var(--primary)
 				opacity 0
 				transform scaleX(0.12)
 				transition border 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
@@ -242,7 +275,7 @@ root(isDark, fill)
 			transition-duration 0.3s
 			font-size 16px
 			line-height 32px
-			color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+			color var(--inputLabel)
 			pointer-events none
 			//will-change transform
 			transform-origin top left
@@ -257,7 +290,7 @@ root(isDark, fill)
 			font-weight fill ? bold : normal
 			font-size 16px
 			line-height 32px
-			color isDark ? #fff : #000
+			color var(--inputText)
 			background transparent
 			border none
 			border-radius 0
@@ -280,7 +313,7 @@ root(isDark, fill)
 			top 0
 			font-size 16px
 			line-height fill ? 44px : 32px
-			color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
+			color var(--inputLabel)
 			pointer-events none
 
 			&:empty
@@ -308,9 +341,12 @@ root(isDark, fill)
 			if fill
 				padding-right 12px
 
-	> .text
+	> .desc
 		margin 6px 0
 		font-size 13px
+
+		&:empty
+			display none
 
 		*
 			margin 0
@@ -325,7 +361,7 @@ root(isDark, fill)
 					transform scaleX(1)
 
 			> .label
-				color $theme-color
+				color var(--primary)
 
 	&.focused
 	&.filled
@@ -335,16 +371,20 @@ root(isDark, fill)
 				left 0 !important
 				transform scale(0.75)
 
-.ui-input[data-darkmode]
+.ui-input
 	&.fill
-		root(true, true)
+		root(true)
 	&:not(.fill)
-		root(true, false)
+		root(false)
 
-.ui-input:not([data-darkmode])
-	&.fill
-		root(false, true)
-	&:not(.fill)
-		root(false, false)
+	&.inline
+		display inline-block
+		margin 0
+
+	&.disabled
+		opacity 0.7
+
+		&, *
+			cursor not-allowed !important
 
 </style>

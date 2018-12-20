@@ -1,44 +1,54 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import Subscription from '../../../../models/sw-subscription';
+import define from '../../define';
+import fetchMeta from '../../../../misc/fetch-meta';
 
-/**
- * subscribe service worker
- */
-module.exports = async (params, user, app) => new Promise(async (res, rej) => {
-	// Get 'endpoint' parameter
-	const [endpoint, endpointErr] = $.str.get(params.endpoint);
-	if (endpointErr) return rej('invalid endpoint param');
+export const meta = {
+	requireCredential: true,
 
-	// Get 'auth' parameter
-	const [auth, authErr] = $.str.get(params.auth);
-	if (authErr) return rej('invalid auth param');
+	params: {
+		endpoint: {
+			validator: $.str
+		},
 
-	// Get 'publickey' parameter
-	const [publickey, publickeyErr] = $.str.get(params.publickey);
-	if (publickeyErr) return rej('invalid publickey param');
+		auth: {
+			validator: $.str
+		},
 
+		publickey: {
+			validator: $.str
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// if already subscribed
 	const exist = await Subscription.findOne({
 		userId: user._id,
-		endpoint: endpoint,
-		auth: auth,
-		publickey: publickey,
+		endpoint: ps.endpoint,
+		auth: ps.auth,
+		publickey: ps.publickey,
 		deletedAt: { $exists: false }
 	});
 
-	if (exist !== null) {
-		return res();
+	const instance = await fetchMeta();
+
+	if (exist != null) {
+		return res({
+			state: 'already-subscribed',
+			key: instance.swPublicKey
+		});
 	}
 
 	await Subscription.insert({
 		userId: user._id,
-		endpoint: endpoint,
-		auth: auth,
-		publickey: publickey
+		endpoint: ps.endpoint,
+		auth: ps.auth,
+		publickey: ps.publickey
 	});
 
-	res();
-});
+	res({
+		state: 'subscribed',
+		key: instance.swPublicKey
+	});
+}));

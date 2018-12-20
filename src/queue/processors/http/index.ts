@@ -1,12 +1,12 @@
 import deliver from './deliver';
 import processInbox from './process-inbox';
 
-const handlers = {
+const handlers: any = {
 	deliver,
 	processInbox,
 };
 
-export default (job, done) => {
+export default (job: any, done: any) => {
 	const handler = handlers[job.data.type];
 
 	if (handler) {

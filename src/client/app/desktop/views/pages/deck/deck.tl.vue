@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
+<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
 </template>
 
 <script lang="ts">
@@ -36,9 +36,28 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
+	},
+
+	computed: {
+		stream(): any {
+			switch (this.src) {
+				case 'home': return this.$root.stream.useSharedConnection('homeTimeline');
+				case 'local': return this.$root.stream.useSharedConnection('localTimeline');
+				case 'hybrid': return this.$root.stream.useSharedConnection('hybridTimeline');
+				case 'global': return this.$root.stream.useSharedConnection('globalTimeline');
+			}
+		},
+
+		endpoint(): string {
+			switch (this.src) {
+				case 'home': return 'notes/timeline';
+				case 'local': return 'notes/local-timeline';
+				case 'hybrid': return 'notes/hybrid-timeline';
+				case 'global': return 'notes/global-timeline';
+			}
+		},
 	},
 
 	watch: {
@@ -47,27 +66,8 @@ export default Vue.extend({
 		}
 	},
 
-	computed: {
-		stream(): any {
-			return this.src == 'home'
-				? (this as any).os.stream
-				: this.src == 'local'
-					? (this as any).os.streams.localTimelineStream
-					: (this as any).os.streams.globalTimelineStream;
-		},
-
-		endpoint(): string {
-			return this.src == 'home'
-				? 'notes/timeline'
-				: this.src == 'local'
-					? 'notes/local-timeline'
-					: 'notes/global-timeline';
-		}
-	},
-
 	mounted() {
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
+		this.connection = this.stream;
 
 		this.connection.on('note', this.onNote);
 		if (this.src == 'home') {
@@ -79,12 +79,7 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.off('follow', this.onChangeFollowing);
-			this.connection.off('unfollow', this.onChangeFollowing);
-		}
-		this.stream.dispose(this.connectionId);
+		this.connection.dispose();
 	},
 
 	methods: {
@@ -92,11 +87,12 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api(this.endpoint, {
+				this.$root.api(this.endpoint, {
 					limit: fetchLimit + 1,
-					mediaOnly: this.mediaOnly,
+					withFiles: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -112,12 +108,13 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api(this.endpoint, {
+			const promise = this.$root.api(this.endpoint, {
 				limit: fetchLimit + 1,
-				mediaOnly: this.mediaOnly,
+				withFiles: this.mediaOnly,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 			});
 
 			promise.then(notes => {
@@ -126,7 +123,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) {
+					(this.$refs.timeline as any).append(n);
+				}
 				this.moreFetching = false;
 			});
 
@@ -134,7 +133,7 @@ export default Vue.extend({
 		},
 
 		onNote(note) {
-			if (this.mediaOnly && note.media.length == 0) return;
+			if (this.mediaOnly && note.files.length == 0) return;
 
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);

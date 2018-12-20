@@ -1,26 +1,35 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import { publishMainStream } from '../../../../stream';
+import define from '../../define';
 
-module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'id' parameter
-	const [id, idErr] = $.str.get(params.id);
-	if (idErr) return rej('invalid id param');
+export const meta = {
+	requireCredential: true,
 
-	// Get 'data' parameter
-	const [data, dataErr] = $.obj.get(params.data);
-	if (dataErr) return rej('invalid data param');
+	secure: true,
 
-	if (id == null && data == null) return rej('you need to set id and data params if home param unset');
+	params: {
+		id: {
+			validator: $.str
+		},
+
+		data: {
+			validator: $.obj()
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	if (ps.id == null && ps.data == null) return rej('you need to set id and data params if home param unset');
 
 	let widget;
 
 	//#region Desktop home
 	if (widget == null && user.clientSettings.home) {
 		const desktopHome = user.clientSettings.home;
-		widget = desktopHome.find(w => w.id == id);
+		widget = desktopHome.find((w: any) => w.id == ps.id);
 		if (widget) {
-				widget.data = data;
+				widget.data = ps.data;
 
 			await User.update(user._id, {
 				$set: {
@@ -34,9 +43,9 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	//#region Mobile home
 	if (widget == null && user.clientSettings.mobileHome) {
 		const mobileHome = user.clientSettings.mobileHome;
-		widget = mobileHome.find(w => w.id == id);
+		widget = mobileHome.find((w: any) => w.id == ps.id);
 		if (widget) {
-				widget.data = data;
+				widget.data = ps.data;
 
 			await User.update(user._id, {
 				$set: {
@@ -50,13 +59,13 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	//#region Deck
 	if (widget == null && user.clientSettings.deck && user.clientSettings.deck.columns) {
 		const deck = user.clientSettings.deck;
-		deck.columns.filter(c => c.type == 'widgets').forEach(c => {
-			c.widgets.forEach(w => {
-				if (w.id == id) widget = w;
-			});
-		});
+		for (const c of deck.columns.filter((c: any) => c.type == 'widgets')) {
+			for (const w of c.widgets.filter((w: any) => w.id == ps.id)) {
+				widget = w;
+			}
+		}
 		if (widget) {
-				widget.data = data;
+				widget.data = ps.data;
 
 			await User.update(user._id, {
 				$set: {
@@ -68,12 +77,12 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	//#endregion
 
 	if (widget) {
-		event(user._id, 'widgetUpdated', {
-			id, data
+		publishMainStream(user._id, 'widgetUpdated', {
+			id: ps.id, data: ps.data
 		});
 
 		res();
 	} else {
 		rej('widget not found');
 	}
-});
+}));

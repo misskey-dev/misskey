@@ -1,17 +1,29 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
+import define from '../../../define';
 
-/**
- * Show a user list
- */
-module.exports = async (params, me) => new Promise(async (res, rej) => {
-	// Get 'listId' parameter
-	const [listId, listIdErr] = $.type(ID).get(params.listId);
-	if (listIdErr) return rej('invalid listId param');
+export const meta = {
+	desc: {
+		'ja-JP': '指定したユーザーリストの情報を取得します。',
+		'en-US': 'Show a user list.'
+	},
 
+	requireCredential: true,
+
+	kind: 'account-read',
+
+	params: {
+		listId: {
+			validator: $.type(ID),
+			transform: transform,
+		},
+	}
+};
+
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
-		_id: listId,
+		_id: ps.listId,
 		userId: me._id,
 	});
 
@@ -20,4 +32,4 @@ module.exports = async (params, me) => new Promise(async (res, rej) => {
 	}
 
 	res(await pack(userList));
-});
+}));

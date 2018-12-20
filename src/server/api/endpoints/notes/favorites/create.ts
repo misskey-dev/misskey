@@ -1,21 +1,36 @@
-/**
- * Module dependencies
- */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import Favorite from '../../../../../models/favorite';
 import Note from '../../../../../models/note';
+import define from '../../../define';
 
-/**
- * Favorite a note
- */
-module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
+export const meta = {
+	stability: 'stable',
 
+	desc: {
+		'ja-JP': '指定した投稿をお気に入りに登録します。',
+		'en-US': 'Favorite a note.'
+	},
+
+	requireCredential: true,
+
+	kind: 'favorite-write',
+
+	params: {
+		noteId: {
+			validator: $.type(ID),
+			transform: transform,
+			desc: {
+				'ja-JP': '対象の投稿のID',
+				'en-US': 'Target note ID.'
+			}
+		}
+	}
+};
+
+export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Get favoritee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -41,4 +56,4 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Send response
 	res();
-});
+}));

@@ -1,21 +1,23 @@
 <template>
 <div class="root photos">
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
+	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images"
 			class="img"
-			:style="`background-image: url(${image.media.url}?thumbnail&size=256)`"
+			:style="`background-image: url(${image.media.thumbnailUrl})`"
 			:href="image.note | notePage"
 		></a>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('mobile/views/pages/user/home.photos.vue'),
 	props: ['user'],
 	data() {
 		return {
@@ -24,19 +26,27 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/notes', {
+		const image = [
+			'image/jpeg',
+			'image/png',
+			'image/gif'
+		];
+		this.$root.api('users/notes', {
 			userId: this.user.id,
-			withMedia: true,
-			limit: 6
+			fileType: image,
+			limit: 9,
+			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
-			notes.forEach(note => {
-				note.media.forEach(media => {
-					if (this.images.length < 9) this.images.push({
-						note,
-						media
-					});
-				});
-			});
+			for (const note of notes) {
+				for (const media of note.media) {
+					if (this.images.length < 9) {
+						this.images.push({
+							note,
+							media
+						});
+					}
+				}
+			}
 			this.fetching = false;
 		});
 	}
@@ -58,7 +68,7 @@ export default Vue.extend({
 		> .img
 			flex 1 1 33%
 			width 33%
-			height 80px
+			height 90px
 			background-position center center
 			background-size cover
 			background-clip content-box

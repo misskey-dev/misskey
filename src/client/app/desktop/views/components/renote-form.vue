@@ -1,11 +1,12 @@
 <template>
 <div class="mk-renote-form">
-	<mk-note-preview :note="note"/>
+	<mk-note-preview class="preview" :note="note"/>
 	<template v-if="!quote">
 		<footer>
-			<a class="quote" v-if="!quote" @click="onQuote">%i18n:@quote%</a>
-			<button class="ui cancel" @click="cancel">%i18n:@cancel%</button>
-			<button class="ui primary ok" @click="ok" :disabled="wait">{{ wait ? '%i18n:@reposting%' : '%i18n:@renote%' }}</button>
+			<a class="quote" v-if="!quote" @click="onQuote">{{ $t('quote') }}</a>
+			<ui-button class="button cancel" inline @click="cancel">{{ $t('cancel') }}</ui-button>
+			<ui-button class="button home" inline :primary="visibility != 'public'" @click="ok('home')"   :disabled="wait">{{ wait ? this.$t('reposting') : this.$t('renote-home') }}</ui-button>
+			<ui-button class="button ok"   inline :primary="visibility == 'public'" @click="ok('public')" :disabled="wait">{{ wait ? this.$t('reposting') : this.$t('renote') }}</ui-button>
 		</footer>
 	</template>
 	<template v-if="quote">
@@ -16,25 +17,29 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('desktop/views/components/renote-form.vue'),
 	props: ['note'],
 	data() {
 		return {
 			wait: false,
-			quote: false
+			quote: false,
+			visibility: this.$store.state.settings.defaultNoteVisibility
 		};
 	},
 	methods: {
-		ok() {
+		ok(v: string) {
 			this.wait = true;
-			(this as any).api('notes/create', {
-				renoteId: this.note.id
+			this.$root.api('notes/create', {
+				renoteId: this.note.id,
+				visibility: v || this.visibility
 			}).then(data => {
 				this.$emit('posted');
-				(this as any).apis.notify('%i18n:@success%');
+				this.$notify(this.$t('success'));
 			}).catch(err => {
-				(this as any).apis.notify('%i18n:@failure%');
+				this.$notify(this.$t('failure'));
 			}).then(() => {
 				this.wait = false;
 			});
@@ -57,16 +62,13 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-@import '~const.styl'
-
-root(isDark)
-
-	> .mk-note-preview
+.mk-renote-form
+	> .preview
 		margin 16px 22px
 
 	> footer
 		height 72px
-		background isDark ? #313543 : lighten($theme-color, 95%)
+		background var(--desktopRenoteFormFooter)
 
 		> .quote
 			position absolute
@@ -74,7 +76,7 @@ root(isDark)
 			left 28px
 			line-height 40px
 
-		button
+		> .button
 			display block
 			position absolute
 			bottom 16px
@@ -82,15 +84,13 @@ root(isDark)
 			height 40px
 
 			&.cancel
+				right 280px
+
+			&.home
 				right 148px
+				font-size 13px
 
 			&.ok
 				right 16px
-
-.mk-renote-form[data-darkmode]
-	root(true)
-
-.mk-renote-form:not([data-darkmode])
-	root(false)
 
 </style>

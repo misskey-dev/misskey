@@ -1,57 +1,24 @@
-/**
- * Module dependencies
- */
 import * as uuid from 'uuid';
 import $ from 'cafy';
 import App from '../../../../../models/app';
 import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
+import define from '../../../define';
 
-/**
- * @swagger
- * /auth/session/generate:
- *   note:
- *     summary: Generate a session
- *     parameters:
- *       -
- *         name: appSecret
- *         description: App Secret
- *         in: formData
- *         required: true
- *         type: string
- *
- *     responses:
- *       200:
- *         description: OK
- *         schema:
- *           type: object
- *           properties:
- *             token:
- *               type: string
- *               description: Session Token
- *             url:
- *               type: string
- *               description: Authentication form's URL
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
+export const meta = {
+	requireCredential: false,
 
-/**
- * Generate a session
- *
- * @param {any} params
- * @return {Promise<any>}
- */
-module.exports = (params) => new Promise(async (res, rej) => {
-	// Get 'appSecret' parameter
-	const [appSecret, appSecretErr] = $.str.get(params.appSecret);
-	if (appSecretErr) return rej('invalid appSecret param');
+	params: {
+		appSecret: {
+			validator: $.str
+		}
+	}
+};
 
+export default define(meta, (ps) => new Promise(async (res, rej) => {
 	// Lookup app
 	const app = await App.findOne({
-		secret: appSecret
+		secret: ps.appSecret
 	});
 
 	if (app == null) {
@@ -73,4 +40,4 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		token: doc.token,
 		url: `${config.auth_url}/${doc.token}`
 	});
-});
+}));
