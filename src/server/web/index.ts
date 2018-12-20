@@ -98,7 +98,7 @@ router.get('/@:user.atom', async ctx => {
 	const feed = await getFeed(ctx.params.user);
 
 	if (feed) {
-		ctx.set('Content-Type', 'application/atom+xml');
+		ctx.set('Content-Type', 'application/atom+xml; charset=utf-8');
 		ctx.body = feed.atom1();
 	} else {
 		ctx.status = 404;
@@ -110,7 +110,7 @@ router.get('/@:user.rss', async ctx => {
 	const feed = await getFeed(ctx.params.user);
 
 	if (feed) {
-		ctx.set('Content-Type', 'application/rss+xml');
+		ctx.set('Content-Type', 'application/rss+xml; charset=utf-8');
 		ctx.body = feed.rss2();
 	} else {
 		ctx.status = 404;
@@ -122,7 +122,7 @@ router.get('/@:user.json', async ctx => {
 	const feed = await getFeed(ctx.params.user);
 
 	if (feed) {
-		ctx.set('Content-Type', 'application/json');
+		ctx.set('Content-Type', 'application/json; charset=utf-8');
 		ctx.body = feed.json1();
 	} else {
 		ctx.status = 404;
