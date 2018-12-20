@@ -6,7 +6,7 @@ import { getOriginalUrl } from '../../misc/get-drive-file-url';
 
 export default async function(user: IUser) {
 	const author: Author = {
-		link: `${config.scheme}://${config.host}/@${user.username}`,
+		link: `${config.url}/@${user.username}`,
 		name: user.name || user.username
 	};
 
@@ -17,6 +17,9 @@ export default async function(user: IUser) {
 			{ visibility: 'public' },
 			{ visibility: 'home' }
 		]
+	}, {
+		sort: { createdAt: -1 },
+		limit: 20
 	});
 
 	const feed = new Feed({
@@ -39,7 +42,7 @@ export default async function(user: IUser) {
 
 		feed.addItem({
 			title: `New note by ${author.name}`,
-			link: `${config.scheme}://${config.host}/notes/${note._id}`,
+			link: `${config.url}/notes/${note._id}`,
 			date: note.createdAt,
 			description: note.text,
 			image: file && getOriginalUrl(file)
