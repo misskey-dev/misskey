@@ -44,7 +44,8 @@ export default async function(user: IUser) {
 			title: `New note by ${author.name}`,
 			link: `${config.url}/notes/${note._id}`,
 			date: note.createdAt,
-			description: note.text,
+			description: note.cw,
+			content: note.text,
 			image: file && getOriginalUrl(file)
 		});
 	}
