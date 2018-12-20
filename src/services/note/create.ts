@@ -24,12 +24,13 @@ import isQuote from '../../misc/is-quote';
 import notesChart from '../../chart/notes';
 import perUserNotesChart from '../../chart/per-user-notes';
 
-import { erase, unique } from '../../prelude/array';
+import { erase } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import registerInstance from '../register-instance';
 import Instance from '../../models/instance';
-import { Node } from '../../mfm/parser';
 import extractMentions from '../../misc/extract-mentions';
+import extractEmojis from '../../misc/extract-emojis';
+import extractHashtags from '../../misc/extract-hashtags';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -464,44 +465,6 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 		console.error(e);
 		throw 'something happened';
 	}
-}
-
-function extractHashtags(tokens: ReturnType<typeof parse>): string[] {
-	const hashtags: string[] = [];
-
-	const extract = (tokens: Node[]) => {
-		for (const x of tokens.filter(x => x.name === 'hashtag')) {
-			hashtags.push(x.props.hashtag);
-		}
-		for (const x of tokens.filter(x => x.children)) {
-			extract(x.children);
-		}
-	};
-
-	// Extract hashtags
-	extract(tokens);
-
-	return unique(hashtags);
-}
-
-export function extractEmojis(tokens: ReturnType<typeof parse>): string[] {
-	const emojis: string[] = [];
-
-	const extract = (tokens: Node[]) => {
-		for (const x of tokens.filter(x => x.name === 'emoji')) {
-			if (x.props.name && x.props.name.length <= 100) {
-				emojis.push(x.props.name);
-			}
-		}
-		for (const x of tokens.filter(x => x.children)) {
-			extract(x.children);
-		}
-	};
-
-	// Extract emojis
-	extract(tokens);
-
-	return unique(emojis);
 }
 
 function index(note: INote) {

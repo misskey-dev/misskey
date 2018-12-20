@@ -7,7 +7,7 @@ import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 import parse from '../../../../mfm/parse';
-import { extractEmojis } from '../../../../services/note/create';
+import extractEmojis from '../../../../misc/extract-emojis';
 const langmap = require('langmap');
 
 export const meta = {

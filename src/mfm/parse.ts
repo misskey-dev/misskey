@@ -1,40 +1,36 @@
-import parser, { Node, plainParser } from './parser';
+import parser, { plainParser, MfmForest, MfmTree } from './parser';
 import * as A from '../prelude/array';
 import * as S from '../prelude/string';
+import { createTree, createLeaf } from '../prelude/tree';
 
-export default (source: string, plainText = false): Node[] => {
+function concatTextTrees(ts: MfmForest): MfmTree {
+	return createLeaf({ type: 'text', props: { text: S.concat(ts.map(x => x.node.props.text)) } });
+}
+
+function concatIfTextTrees(ts: MfmForest): MfmForest {
+	return ts[0].node.type === 'text' ? [concatTextTrees(ts)] : ts;
+}
+
+function concatConsecutiveTextTrees(ts: MfmForest): MfmForest {
+	const us = A.concat(A.groupOn(t => t.node.type, ts).map(concatIfTextTrees));
+	return us.map(t => createTree(t.node, concatConsecutiveTextTrees(t.children)));
+}
+
+function isEmptyTextTree(t: MfmTree): boolean {
+	return t.node.type == 'text' && t.node.props.text === '';
+}
+
+function removeEmptyTextNodes(ts: MfmForest): MfmForest {
+	return ts
+		.filter(t => !isEmptyTextTree(t))
+		.map(t => createTree(t.node, removeEmptyTextNodes(t.children)));
+}
+
+export default (source: string, plainText = false): MfmForest => {
 	if (source == null || source == '') {
 		return null;
 	}
 
-	let nodes: Node[] = plainText ? plainParser.root.tryParse(source) : parser.root.tryParse(source);
-
-	const combineText = (es: Node[]): Node =>
-		({ name: 'text', props: { text: S.concat(es.map(e => e.props.text)) } });
-
-	const concatText = (nodes: Node[]): Node[] =>
-		A.concat(A.groupOn(x => x.name, nodes).map(es =>
-			es[0].name === 'text' ? [combineText(es)] : es
-		));
-
-	const concatTextRecursive = (es: Node[]): void => {
-		for (const x of es.filter(x => x.children)) {
-			x.children = concatText(x.children);
-			concatTextRecursive(x.children);
-		}
-	};
-
-	nodes = concatText(nodes);
-	concatTextRecursive(nodes);
-
-	const removeEmptyTextNodes = (nodes: Node[]) => {
-		for (const n of nodes.filter(n => n.children)) {
-			n.children = removeEmptyTextNodes(n.children);
-		}
-		return nodes.filter(n => !(n.name == 'text' && n.props.text == ''));
-	};
-
-	nodes = removeEmptyTextNodes(nodes);
-
-	return nodes;
+	const raw = plainText ? plainParser.root.tryParse(source) : parser.root.tryParse(source) as MfmForest;
+	return removeEmptyTextNodes(concatConsecutiveTextTrees(raw));
 };

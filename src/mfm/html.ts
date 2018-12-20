@@ -2,10 +2,10 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 import config from '../config';
 import { INote } from '../models/note';
-import { Node } from './parser';
 import { intersperse } from '../prelude/array';
+import { MfmForest, MfmTree } from './parser';
 
-export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
+export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
 	if (tokens == null) {
 		return null;
 	}
@@ -14,11 +14,11 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 	const doc = window.document;
 
-	function appendChildren(children: Node[], targetElement: any): void {
-		for (const child of children.map(n => handlers[n.name](n))) targetElement.appendChild(child);
+	function appendChildren(children: MfmForest, targetElement: any): void {
+		for (const child of children.map(t => handlers[t.node.type](t))) targetElement.appendChild(child);
 	}
 
-	const handlers: { [key: string]: (token: Node) => any } = {
+	const handlers: { [key: string]: (token: MfmTree) => any } = {
 		bold(token) {
 			const el = doc.createElement('b');
 			appendChildren(token.children, el);
@@ -58,7 +58,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 		blockCode(token) {
 			const pre = doc.createElement('pre');
 			const inner = doc.createElement('code');
-			inner.innerHTML = token.props.code;
+			inner.innerHTML = token.node.props.code;
 			pre.appendChild(inner);
 			return pre;
 		},
@@ -70,39 +70,39 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 		},
 
 		emoji(token) {
-			return doc.createTextNode(token.props.emoji ? token.props.emoji : `:${token.props.name}:`);
+			return doc.createTextNode(token.node.props.emoji ? token.node.props.emoji : `:${token.node.props.name}:`);
 		},
 
 		hashtag(token) {
 			const a = doc.createElement('a');
-			a.href = `${config.url}/tags/${token.props.hashtag}`;
-			a.textContent = `#${token.props.hashtag}`;
+			a.href = `${config.url}/tags/${token.node.props.hashtag}`;
+			a.textContent = `#${token.node.props.hashtag}`;
 			a.setAttribute('rel', 'tag');
 			return a;
 		},
 
 		inlineCode(token) {
 			const el = doc.createElement('code');
-			el.textContent = token.props.code;
+			el.textContent = token.node.props.code;
 			return el;
 		},
 
 		math(token) {
 			const el = doc.createElement('code');
-			el.textContent = token.props.formula;
+			el.textContent = token.node.props.formula;
 			return el;
 		},
 
 		link(token) {
 			const a = doc.createElement('a');
-			a.href = token.props.url;
+			a.href = token.node.props.url;
 			appendChildren(token.children, a);
 			return a;
 		},
 
 		mention(token) {
 			const a = doc.createElement('a');
-			const { username, host, acct } = token.props;
+			const { username, host, acct } = token.node.props;
 			switch (host) {
 				case 'github.com':
 					a.href = `https://github.com/${username}`;
@@ -133,7 +133,7 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 		text(token) {
 			const el = doc.createElement('span');
-			const nodes = (token.props.text as string).split('\n').map(x => doc.createTextNode(x));
+			const nodes = (token.node.props.text as string).split('\n').map(x => doc.createTextNode(x));
 
 			for (const x of intersperse('br', nodes)) {
 				el.appendChild(x === 'br' ? doc.createElement('br') : x);
@@ -144,15 +144,15 @@ export default (tokens: Node[], mentionedRemoteUsers: INote['mentionedRemoteUser
 
 		url(token) {
 			const a = doc.createElement('a');
-			a.href = token.props.url;
-			a.textContent = token.props.url;
+			a.href = token.node.props.url;
+			a.textContent = token.node.props.url;
 			return a;
 		},
 
 		search(token) {
 			const a = doc.createElement('a');
-			a.href = `https://www.google.com/?#q=${token.props.query}`;
-			a.textContent = token.props.content;
+			a.href = `https://www.google.com/?#q=${token.node.props.query}`;
+			a.textContent = token.node.props.content;
 			return a;
 		}
 	};

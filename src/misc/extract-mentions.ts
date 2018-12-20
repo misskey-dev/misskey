@@ -1,19 +1,10 @@
-import parse from '../mfm/parse';
-import { Node, IMentionNode } from '../mfm/parser';
+// test is located in test/extract-mentions
 
-export default function(tokens: ReturnType<typeof parse>): IMentionNode['props'][] {
-	const mentions: IMentionNode['props'][] = [];
+import { MentionNode, MfmForest } from '../mfm/parser';
+import { preorderF } from '../prelude/tree';
 
-	const extract = (tokens: Node[]) => {
-		for (const x of tokens.filter(x => x.name === 'mention')) {
-			mentions.push(x.props);
-		}
-		for (const x of tokens.filter(x => x.children)) {
-			extract(x.children);
-		}
-	};
-
-	extract(tokens);
-
-	return mentions;
+export default function(mfmForest: MfmForest): MentionNode['props'][] {
+	// TODO: 重複を削除
+	const mentionNodes = preorderF(mfmForest).filter(x => x.type === 'mention') as MentionNode[];
+	return mentionNodes.map(x => x.props);
 }
