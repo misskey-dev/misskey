@@ -25,11 +25,10 @@ export const meta = {
 	},
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const object = await fetchAny(ps.uri);
-	if (object == null) return rej('object not found');
-
-	res(object);
+export default define(meta, (ps) => new Promise((res, rej) => {
+	fetchAny(ps.uri)
+		.then(object => object != null ? res(object) : rej('object not found'))
+		.catch(e => rej(e));
 }));
 
 /***
