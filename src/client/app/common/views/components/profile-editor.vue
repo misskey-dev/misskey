@@ -24,7 +24,7 @@
 			</ui-input>
 
 			<ui-input v-model="birthday" type="date">
-				<span>{{ $t('birthday') }}</span>
+				<span slot="title">{{ $t('birthday') }}</span>
 				<span slot="prefix"><fa icon="birthday-cake"/></span>
 			</ui-input>
 
