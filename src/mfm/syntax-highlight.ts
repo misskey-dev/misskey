@@ -307,7 +307,7 @@ const elements: Element[] = [
 	}
 ];
 
-// specify lang is todo
+// TODO: specify lang
 export default (source: string, lang?: string): string => {
 	let code = source;
 	let html = '';
