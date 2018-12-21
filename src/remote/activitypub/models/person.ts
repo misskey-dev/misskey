@@ -18,6 +18,7 @@ import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
+import Following from '../../../models/following';
 
 const log = debug('misskey:activitypub');
 
@@ -365,6 +366,15 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 				id: person.publicKey.id,
 				publicKeyPem: person.publicKey.publicKeyPem
 			},
+		}
+	});
+
+	// 該当ユーザーが既にフォロワーになっていた場合はsharedInboxもアップデートする
+	await Following.update({
+		followerId: exist._id
+	}, {
+		$set: {
+			'_follower.sharedInbox': person.sharedInbox || person.endpoints ? person.endpoints.sharedInbox : undefined
 		}
 	});
 
