@@ -369,7 +369,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		}
 	});
 
-	// 該当ユーザーが既にフォロワーになっていた場合はsharedInboxもアップデートする
+	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 	await Following.update({
 		followerId: exist._id
 	}, {
