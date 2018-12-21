@@ -63,6 +63,7 @@ export default async (user: ILocalUser) => {
 		following: `${id}/following`,
 		featured: `${id}/collections/featured`,
 		sharedInbox: `${config.url}/inbox`,
+		endpoints: { sharedInbox: `${config.url}/inbox` },
 		url: `${config.url}/@${user.username}`,
 		preferredUsername: user.username,
 		name: user.name,

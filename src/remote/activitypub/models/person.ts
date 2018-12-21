@@ -164,7 +164,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 				publicKeyPem: person.publicKey.publicKeyPem
 			},
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox,
+			sharedInbox: person.sharedInbox || person.endpoints ? person.endpoints.sharedInbox : undefined,
 			featured: person.featured,
 			endpoints: person.endpoints,
 			uri: person.id,
@@ -340,7 +340,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		$set: {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox,
+			sharedInbox: person.sharedInbox || person.endpoints ? person.endpoints.sharedInbox : undefined,
 			featured: person.featured,
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
