@@ -114,6 +114,7 @@
 		"eslint": "5.8.0",
 		"eslint-plugin-vue": "4.7.1",
 		"eventemitter3": "3.1.0",
+		"feed": "2.0.2",
 		"file-loader": "2.0.0",
 		"file-type": "10.6.0",
 		"fuckadblock": "3.2.1",
