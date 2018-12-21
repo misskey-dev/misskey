@@ -3,7 +3,7 @@
 	<header :class="$style.header">
 		<h1>#{{ $route.params.tag }}</h1>
 	</header>
-	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q }) }}</p>
+	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q: $route.params.tag }) }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
