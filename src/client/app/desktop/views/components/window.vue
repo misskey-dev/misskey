@@ -627,6 +627,7 @@ export default Vue.extend({
 
 			> .content
 				height 100%
+				overflow auto
 
 	&:not([flexible])
 		> .main > .body > .content
