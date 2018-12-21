@@ -6,7 +6,7 @@ import * as assert from 'assert';
 
 import analyze from '../src/mfm/parse';
 import toHtml from '../src/mfm/html';
-import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/parser';
+import { createTree as tree, createLeaf as leaf, MfmTree, removeOrphanedBrackets } from '../src/mfm/parser';
 
 function text(text: string): MfmTree {
 	return leaf('text', { text });
@@ -46,6 +46,99 @@ describe('createTree', () => {
 				leaf('right', { b: 'hi' })
 			],
 		});
+	});
+});
+
+describe('removeOrphanedBrackets', () => {
+	it('single (contained)', () => {
+		const input = '(foo)';
+		const expected = '(foo)';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('single (head)', () => {
+		const input = '(foo)bar';
+		const expected = '(foo)bar';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('single (tail)', () => {
+		const input = 'foo(bar)';
+		const expected = 'foo(bar)';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('a', () => {
+		const input = '(foo';
+		const expected = '';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('b', () => {
+		const input = ')foo';
+		const expected = '';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('nested', () => {
+		const input = 'foo(「(bar)」)';
+		const expected = 'foo(「(bar)」)';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('no brackets', () => {
+		const input = 'foo';
+		const expected = 'foo';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('with foreign bracket (single)', () => {
+		const input = 'foo(bar))';
+		const expected = 'foo(bar)';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('with foreign bracket (open)', () => {
+		const input = 'foo(bar';
+		const expected = 'foo';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('with foreign bracket (close)', () => {
+		const input = 'foo)bar';
+		const expected = 'foo';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('with foreign bracket (close and open)', () => {
+		const input = 'foo)(bar';
+		const expected = 'foo';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('various bracket type', () => {
+		const input = 'foo「(bar)」(';
+		const expected = 'foo「(bar)」';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
+	});
+
+	it('intersected', () => {
+		const input = 'foo(「)」';
+		const expected = 'foo(「)」';
+		const actual = removeOrphanedBrackets(input);
+		assert.deepStrictEqual(actual, expected);
 	});
 });
 

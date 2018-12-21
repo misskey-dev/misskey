@@ -1,7 +1,7 @@
 import * as P from 'parsimmon';
 import parseAcct from '../misc/acct/parse';
 import { toUnicode } from 'punycode';
-import { takeWhile } from '../prelude/array';
+import { takeWhile, cumulativeSum } from '../prelude/array';
 import { Tree } from '../prelude/tree';
 import * as T from '../prelude/tree';
 
@@ -42,30 +42,18 @@ export function createTree(type: string, children: MfmForest, props: any): MfmTr
 	return T.createTree({ type, props }, children);
 }
 
-function getTrailingPosition(x: string): number {
-	const brackets = [
-		['(', ')'],
-		['「', '」'],
-	];
-	const pendingBrackets = [] as any;
-	const end = x.split('').findIndex(char => {
-		const closeMatch = brackets.map(x => x[1]).indexOf(char);
-		const openMatch = brackets.map(x => x[0]).indexOf(char);
-		if (closeMatch != -1) {
-			if (pendingBrackets[closeMatch] > 0) {
-				pendingBrackets[closeMatch]--;
-				return false;
-			} else {
-				return true;
-			}
-		} else if (openMatch != -1) {
-			pendingBrackets[openMatch] = (pendingBrackets[openMatch] || 0) + 1;
-			return false;
-		} else {
-			return false;
-		}
-	});
-	return end > 0 ? end : x.length;
+export function removeOrphanedBrackets(s: string): string {
+	const openBrackets = ['(', '「'];
+	const closeBrackets = [')', '」'];
+	const xs = cumulativeSum(s.split('').map(c => {
+		if (openBrackets.includes(c)) return 1;
+		if (closeBrackets.includes(c)) return -1;
+		return 0;
+	}));
+	const firstOrphanedCloseBracket = xs.findIndex(x => x < 0);
+	if (firstOrphanedCloseBracket !== -1) return s.substr(0, firstOrphanedCloseBracket);
+	const lastMatched = xs.lastIndexOf(0);
+	return s.substr(0, lastMatched + 1);
 }
 
 const newline = P((input, i) => {
@@ -220,7 +208,7 @@ const mfm = P.createLanguage({
 			const match = text.match(/^#([^\s\.,!\?#]+)/i);
 			if (!match) return P.makeFailure(i, 'not a hashtag');
 			let hashtag = match[1];
-			hashtag = hashtag.substr(0, getTrailingPosition(hashtag));
+			hashtag = removeOrphanedBrackets(hashtag);
 			if (hashtag.match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
 			if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a hashtag');
 			if (hashtag.length > 50) return P.makeFailure(i, 'not a hashtag');
@@ -390,7 +378,7 @@ const mfm = P.createLanguage({
 			const match = text.match(/^https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.,=\+\-]+/);
 			if (!match) return P.makeFailure(i, 'not a url');
 			let url = match[0];
-			url = url.substr(0, getTrailingPosition(url));
+			url = removeOrphanedBrackets(url);
 			if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
 			if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
 			return P.makeSuccess(i + url.length, url);

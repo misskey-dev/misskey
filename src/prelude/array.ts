@@ -109,3 +109,9 @@ export function takeWhile<T>(f: Predicate<T>, xs: T[]): T[] {
 	}
 	return ys;
 }
+
+export function cumulativeSum(xs: number[]): number[] {
+	const ys = Array.from(xs); // deep copy
+	for (let i = 1; i < ys.length; i++) ys[i] += ys[i - 1];
+	return ys;
+}
