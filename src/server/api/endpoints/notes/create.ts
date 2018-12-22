@@ -42,7 +42,7 @@ export const meta = {
 		},
 
 		visibleUserIds: {
-			validator: $.arr($.type(ID)).optional.unique().min(1),
+			validator: $.arr($.type(ID)).optional.unique().min(0),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
