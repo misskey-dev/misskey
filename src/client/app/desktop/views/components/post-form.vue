@@ -236,7 +236,7 @@ export default Vue.extend({
 	},
 
 	methods: {
-	  trimmedLength(text: string) {
+		trimmedLength(text: string) {
 			return length(text.trim());
 		},
 
