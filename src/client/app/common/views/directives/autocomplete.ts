@@ -132,44 +132,49 @@ class Autocomplete {
 		}
 		if (this.opening) return;
 		this.opening = true;
-		this.currentType = type;
+		try {
+			this.currentType = type;
 
-		//#region サジェストを表示すべき位置を計算
-		const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart);
+			//#region サジェストを表示すべき位置を計算
+			const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart);
 
-		const rect = this.textarea.getBoundingClientRect();
+			const rect = this.textarea.getBoundingClientRect();
 
-		const x = rect.left + caretPosition.left - this.textarea.scrollLeft;
-		const y = rect.top + caretPosition.top - this.textarea.scrollTop;
-		//#endregion
+			const x = rect.left + caretPosition.left - this.textarea.scrollLeft;
+			const y = rect.top + caretPosition.top - this.textarea.scrollTop;
+			//#endregion
 
-		if (this.suggestion) {
-			this.suggestion.x = x;
-			this.suggestion.y = y;
-			this.suggestion.q = q;
+			if (this.suggestion) {
+				this.suggestion.x = x;
+				this.suggestion.y = y;
+				this.suggestion.q = q;
 
+				this.opening = false;
+			} else {
+				const MkAutocomplete = await import('../components/autocomplete.vue').then(m => m.default);
+
+				// サジェスト要素作成
+				this.suggestion = new MkAutocomplete({
+					parent: this.vm,
+					propsData: {
+						textarea: this.textarea,
+						complete: this.complete,
+						close: this.close,
+						type: type,
+						q: q,
+						x,
+						y
+					}
+				}).$mount();
+
+				// 要素追加
+				document.body.appendChild(this.suggestion.$el);
+
+				this.opening = false;
+			}
+		} catch(e) {
 			this.opening = false;
-		} else {
-			const MkAutocomplete = await import('../components/autocomplete.vue').then(m => m.default);
-
-			// サジェスト要素作成
-			this.suggestion = new MkAutocomplete({
-				parent: this.vm,
-				propsData: {
-					textarea: this.textarea,
-					complete: this.complete,
-					close: this.close,
-					type: type,
-					q: q,
-					x,
-					y
-				}
-			}).$mount();
-
-			// 要素追加
-			document.body.appendChild(this.suggestion.$el);
-
-			this.opening = false;
+			console.error(e)
 		}
 	}
 
