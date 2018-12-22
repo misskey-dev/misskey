@@ -1039,8 +1039,8 @@ admin/views/instance.vue:
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "ServiceWorkerを有効にする"
   serviceworker-info: "プッシュ通知を行うには有効する必要があります。"
-  vapid-publickey: "VAPID公開鍵"
-  vapid-privatekey: "VAPID秘密鍵"
+  vapid-publickey: "Clé Publique VAPID"
+  vapid-privatekey: "Clé privée VAPID"
   vapid-info: "ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります。シェルで次のようにします:"
 admin/views/charts.vue:
   title: "Graph"
@@ -1071,7 +1071,7 @@ admin/views/drive.vue:
   sort:
     title: "Tri"
     createdAtAsc: "アップロード日時が古い順"
-    createdAtDesc: "アップロード日時が新しい順"
+    createdAtDesc: "Âge - Du plus récent"
     sizeAsc: "Taille - Ascendant"
     sizeDesc: "Taille - Volumineux en premier"
   origin:
@@ -1082,7 +1082,7 @@ admin/views/drive.vue:
   delete: "Supprimer"
   deleted: "Supprimé"
   mark-as-sensitive: "Marquer comme sensible"
-  unmark-as-sensitive: "閲覧注意を解除"
+  unmark-as-sensitive: "Ne pas marquer comme sensible"
 admin/views/users.vue:
   operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
