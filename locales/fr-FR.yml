@@ -475,8 +475,8 @@ common/views/components/user-list-editor.vue:
   users: "Utilisateur"
   rename: "Renommer la liste"
   delete: "Supprimer la liste"
-  remove-user: "このリストから削除"
-  delete-are-you-sure: "リスト「$1」を削除しますか？"
+  remove-user: "Retirer de cette liste"
+  delete-are-you-sure: "Voulez-vous vraiment supprimer la liste « $1 » ?"
   deleted: "Supprimé"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
@@ -1037,7 +1037,7 @@ admin/views/instance.vue:
   smtp-user: "Utilisateur SMTP"
   smtp-pass: "Mot de passe SMTP"
   serviceworker-config: "ServiceWorker"
-  enable-serviceworker: "ServiceWorkerを有効にする"
+  enable-serviceworker: "Activer ServiceWorker"
   serviceworker-info: "プッシュ通知を行うには有効する必要があります。"
   vapid-publickey: "Clé Publique VAPID"
   vapid-privatekey: "Clé privée VAPID"
@@ -1070,7 +1070,7 @@ admin/views/charts.vue:
 admin/views/drive.vue:
   sort:
     title: "Tri"
-    createdAtAsc: "アップロード日時が古い順"
+    createdAtAsc: "Âge - Du plus ancien"
     createdAtDesc: "Âge - Du plus récent"
     sizeAsc: "Taille - Ascendant"
     sizeDesc: "Taille - Volumineux en premier"
