@@ -85,7 +85,7 @@ export default Vue.extend({
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					alert('%i18n:only-one-file-attached%');
+					alert(this.$t('only-one-file-attached'));
 				}
 			}
 		},
@@ -107,7 +107,7 @@ export default Vue.extend({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				alert('%i18n:only-one-file-attached%');
+				alert(this.$t('only-one-file-attached'));
 				return;
 			}
 
