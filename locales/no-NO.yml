@@ -744,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "To-faktor autentisering"
   other: "Annet"
   license: "Lisens"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "Utseende"
   behaviour: "Oppførsel"
   fetch-on-scroll: "スクロールで自動読み込み"
@@ -1445,7 +1446,6 @@ mobile/views/pages/settings.vue:
   signout: "サインアウト"
   sound: "Lyder"
   enable-sounds: "サウンドを有効にする"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   password: "パスワード"
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
