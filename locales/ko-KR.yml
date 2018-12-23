@@ -744,7 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "2단계 인증"
   other: "기타"
   license: "라이선스"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  mark-as-read-all-unread-notes: "모든 글을 읽은 상태로 표시"
   theme: "테마"
   behaviour: "동작"
   fetch-on-scroll: "스크롤하여 자동으로 불러오기"
