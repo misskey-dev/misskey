@@ -838,6 +838,7 @@ desktop/views/components/settings.vue:
   2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "テーマ"
 
   behaviour: "動作"
@@ -1641,7 +1642,6 @@ mobile/views/pages/settings.vue:
   signout: "サインアウト"
   sound: "サウンド"
   enable-sounds: "サウンドを有効にする"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   password: "パスワード"
 
 mobile/views/pages/user.vue:
