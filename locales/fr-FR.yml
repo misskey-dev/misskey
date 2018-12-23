@@ -744,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "Vérification en deux étapes"
   other: "Autres"
   license: "Licence"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "Thèmes"
   behaviour: "Comportement"
   fetch-on-scroll: "Chargement lors du défilement"
@@ -1445,7 +1446,6 @@ mobile/views/pages/settings.vue:
   signout: "Déconnexion"
   sound: "Sons"
   enable-sounds: "Activer les sons"
-  mark-as-read-all-unread-notes: "Marquer toutes les publications comme lues"
   password: "Mot de Passe"
 mobile/views/pages/user.vue:
   follows-you: "Vous suit"
