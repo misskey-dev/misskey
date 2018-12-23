@@ -511,7 +511,7 @@ common/views/widgets/slideshow.vue:
   no-image: "Il n'y a aucune image dans ce dossier"
 common/views/widgets/tips.vue:
   tips-line1: "<kbd>t</kbd>でタイムラインにフォーカスできます"
-  tips-line2: "<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます"
+  tips-line2: "Ouvre la fenêtre de publication en appuyant sur <kbd>p</kbd> ou <kbd>n</kbd>."
   tips-line3: "Vous pouvez glisser et déposer des fichiers sur la fenêtre de la note"
   tips-line4: "Vous pouvez coller des images à partir du presse-papier sur la fenêtre de la note"
   tips-line5: "Vous pouvez téléverser des fichiers sur le Drive en faisant un glisser-déposer"
@@ -1038,7 +1038,7 @@ admin/views/instance.vue:
   smtp-pass: "Mot de passe SMTP"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Activer ServiceWorker"
-  serviceworker-info: "プッシュ通知を行うには有効する必要があります。"
+  serviceworker-info: "Devrait être activé pour les notifications push."
   vapid-publickey: "Clé Publique VAPID"
   vapid-privatekey: "Clé privée VAPID"
   vapid-info: "ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります。シェルで次のようにします:"
