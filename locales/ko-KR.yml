@@ -744,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "2단계 인증"
   other: "기타"
   license: "라이선스"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "테마"
   behaviour: "동작"
   fetch-on-scroll: "스크롤하여 자동으로 불러오기"
@@ -1445,7 +1446,6 @@ mobile/views/pages/settings.vue:
   signout: "로그아웃"
   sound: "소리"
   enable-sounds: "소리 사용"
-  mark-as-read-all-unread-notes: "모든 글을 읽은 상태로 표시"
   password: "비밀번호"
 mobile/views/pages/user.vue:
   follows-you: "당신을 팔로우합니다"
