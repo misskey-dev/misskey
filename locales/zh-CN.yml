@@ -744,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "两步验证"
   other: "其他"
   license: "许可证"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "主题"
   behaviour: "行为"
   fetch-on-scroll: "向下滚动时自动加载"
@@ -1445,7 +1446,6 @@ mobile/views/pages/settings.vue:
   signout: "注销"
   sound: "声音"
   enable-sounds: "开启声音"
-  mark-as-read-all-unread-notes: "将所有帖子标记为已读"
   password: "密码"
 mobile/views/pages/user.vue:
   follows-you: "关注您"
