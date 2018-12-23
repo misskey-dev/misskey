@@ -52,9 +52,9 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			_sort = {
 				length: -1
 			};
-		} else if (ps.sort == '+size') {
+		} else if (ps.sort == '-size') {
 			_sort = {
-				length: -1
+				length: 1
 			};
 		}
 	} else {
