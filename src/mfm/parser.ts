@@ -224,7 +224,7 @@ const mfm = P.createLanguage({
 
 	//#region Italic
 	italic: r =>
-		P.regexp(/<i>([\s\S]+?)<\/i>/, 1)
+		P.regexp(/(\*|_)([\s\S]+?)\1/, 2)
 		.map(x => createTree('italic', P.alt(
 			r.bold,
 			r.strike,
