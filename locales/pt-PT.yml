@@ -744,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "テーマ"
   behaviour: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
@@ -1445,7 +1446,6 @@ mobile/views/pages/settings.vue:
   signout: "Sair"
   sound: "Sons"
   enable-sounds: "Ativar sons"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   password: "パスワード"
 mobile/views/pages/user.vue:
   follows-you: "Te segue"
