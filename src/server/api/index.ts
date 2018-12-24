@@ -26,11 +26,7 @@ app.use(async (ctx, next) => {
 });
 
 app.use(bodyParser({
-	// リクエストが multipart/form-data および application/x-www-form-urlencoded でない限りはJSONだと見なす
-	detectJSON: ctx => ![
-		'multipart/form-data',
-		'application/x-www-form-urlencoded'
-	].some(ctx.is)
+	detectJSON: ctx => !!ctx.is('json')
 }));
 
 // Init multer instance
