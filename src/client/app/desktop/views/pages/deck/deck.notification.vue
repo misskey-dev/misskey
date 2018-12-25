@@ -11,7 +11,8 @@
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}
+				<fa icon="quote-left"/>
+					<misskey-flavored-markdown :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
 				<fa icon="quote-right"/>
 			</router-link>
 		</div>
@@ -28,7 +29,9 @@
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
-				<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
+				<fa icon="quote-left"/>
+					<misskey-flavored-markdown :text="getNoteSummary(notification.note.renote)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.renote.emojis"/>
+				<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
@@ -70,7 +73,9 @@
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-				<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
+				<fa icon="quote-left"/>
+					<misskey-flavored-markdown :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+				<fa icon="quote-right"/>
 			</router-link>
 		</div>
 	</div>
