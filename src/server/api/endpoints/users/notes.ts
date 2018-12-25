@@ -156,6 +156,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const sort = { } as any;
 
 	const query = {
+		$and: [ {} ],
 		deletedAt: null,
 		userId: user._id
 	} as any;
@@ -186,6 +187,22 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 
 	if (!ps.includeReplies) {
 		query.replyId = null;
+	}
+
+	if (ps.includeMyRenotes === false) {
+		query.$and.push({
+			$or: [{
+				userId: { $ne: user._id }
+			}, {
+				renoteId: null
+			}, {
+				text: { $ne: null }
+			}, {
+				fileIds: { $ne: [] }
+			}, {
+				poll: { $ne: null }
+			}]
+		});
 	}
 
 	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
