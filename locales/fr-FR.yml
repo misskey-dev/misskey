@@ -1214,7 +1214,7 @@ desktop/views/pages/user/user.profile.vue:
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
-  followers: "Abonné·e·s"
+  followers: "Abonnés"
   is-bot: "Ce compte est un Bot"
   years-old: "{age} ans"
   year: "/"
@@ -1245,7 +1245,7 @@ desktop/views/widgets/trends.vue:
   refresh: "Afficher d'autres"
   nothing: "Rien"
 desktop/views/widgets/users.vue:
-  title: "Utilisateurs·rices"
+  title: "Utilisateurs"
   refresh: "Afficher d'autres"
   no-one: "Personne"
 mobile/views/components/drive.vue:
@@ -1284,14 +1284,14 @@ mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 common/views/components/follow-button.vue:
-  following: "Abonné·e"
+  following: "Abonné"
   follow: " Suivre"
   request-pending: "Demande en attente"
   follow-processing: "En cours d’abonnement"
   follow-request: "Demande d’abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous à"
-  empty: "Impossible de trouver des utilisateurs·trices à recommander."
+  empty: "Impossible de trouver des utilisateurs à recommander."
   fetching: "Chargement"
   refresh: "Voir plus"
   close: "Fermer"
@@ -1320,7 +1320,7 @@ mobile/views/components/post-form.vue:
   submit: "Publier"
   reply: "Répondre"
   renote: "Republier"
-  quote-placeholder: "Citer ce billet ... (Facultatif)"
+  quote-placeholder: "Citer ce billet... (Facultatif)"
   reply-placeholder: "Répondre à cette note"
   cw-placeholder: "Commenter le contenu (optionnel)"
   location-alert: "Votre appareil ne prend pas en charge les services de localisation"
@@ -1350,7 +1350,7 @@ mobile/views/components/ui.nav.vue:
   admin: "Admin"
   about: "À propos de Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "Il semble que cet·te utilisateur·rice n’a rien publié pour le moment."
+  no-notes: "Il semble que cet utilisateur n’a rien publié pour le moment."
   no-notes-with-media: "Aucune notes avec des médias"
 mobile/views/components/users-list.vue:
   all: "Tout"
@@ -1363,9 +1363,9 @@ mobile/views/pages/user-lists.vue:
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
-  followers-of: "Abonné·e·s de {name}"
+  followers-of: "Abonnés de {name}"
 mobile/views/pages/following.vue:
-  following-of: "Abonné·e·s de {name}"
+  following-of: "Abonnés de {name}"
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
@@ -1379,7 +1379,7 @@ mobile/views/pages/welcome.vue:
   signup: "S'enregistrer"
 mobile/views/pages/widgets.vue:
   dashboard: "Tableau de bord"
-  widgets-hints: "Vous pouvez ajouter, supprimer et réaranger les widgets. Faites glisser « 三 » pour déplacer le widget. Appuyez sur « x » pour supprimer le widget. Certains widgets peuvent changer d’apparence en cliquant dessus."
+  widgets-hints: "Vous pouvez ajouter, supprimer et réarranger les widgets. Faites glisser « 三 » pour déplacer le widget. Appuyez sur « x » pour supprimer le widget. Certains widgets peuvent changer d’apparence en cliquant dessus."
   add-widget: "Ajouter"
   customization-tips: "Conseils de personnalisation"
 mobile/views/pages/widgets/activity.vue:
@@ -1405,7 +1405,7 @@ mobile/views/pages/search.vue:
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
-  signed-in-as: "Connecté·e en tant que {}"
+  signed-in-as: "Connecté en tant que {}"
   design: "Affichage et design"
   dark-mode: "Mode nuit"
   i-am-under-limited-internet: "J'ai un accès Internet limité"
