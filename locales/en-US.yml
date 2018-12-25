@@ -744,7 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "Two-factor authentication"
   other: "Other"
   license: "License"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  mark-as-read-all-unread-notes: "Mark all posts as read"
   theme: "Theme"
   behaviour: "Behavior"
   fetch-on-scroll: "Endless loading on scroll"
