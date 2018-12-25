@@ -14,7 +14,7 @@
 			<header>
 				<h1>{{ title }}</h1>
 			</header>
-			<p>{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
+			<p v-if="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
 			<footer>
 				<img class="icon" v-if="icon" :src="icon"/>
 				<p>{{ sitename }}</p>
