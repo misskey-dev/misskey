@@ -210,7 +210,7 @@ common/views/components/games/reversi/reversi.index.vue:
   invitations: "Vous avez reçu une invitation !"
   my-games: "Mes jeux"
   all-games: "Tous les jeux"
-  enter-username: "Saisir un nom d'utilisateur·rice"
+  enter-username: "Saisir un nom d'utilisateur"
   game-state:
     ended: "Terminée"
     playing: "En cours"
@@ -300,7 +300,7 @@ common/views/components/cw-button.vue:
   chars: "{count} caractères"
   files: "{count} fichiers"
 common/views/components/messaging.vue:
-  search-user: "Trouver un·e utilisateur·trice"
+  search-user: "Trouver un utilisateur"
   you: "Vous"
   no-history: "Pas d'historique"
 common/views/components/messaging-room.vue:
@@ -323,7 +323,7 @@ common/views/components/nav.vue:
   stats: "Statistiques"
   status: "Statut"
   wiki: "Wiki"
-  donors: "Donateur·rice·s"
+  donors: "Donateurs"
   repository: "Dépôt"
   develop: "Développeurs"
   feedback: "Suggestions"
@@ -340,7 +340,7 @@ common/views/components/note-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
-  total-users: "{} utilisateur·rice·s ont voté·e·s"
+  total-users: "{} utilisateurs ont voté"
   vote: "Vote"
   show-result: "Montrer les résultats"
   voted: "Voté"
@@ -363,7 +363,7 @@ common/views/components/emoji-picker.vue:
   symbols: "Symboles"
   flags: "Drapeaux"
 common/views/components/signin.vue:
-  username: "Nom d'utilisateur·rice"
+  username: "Nom d'utilisateur"
   password: "Mot de passe"
   token: "Jeton"
   signing-in: "Connexion…"
@@ -375,8 +375,8 @@ common/views/components/signin.vue:
   login-failed: "Échec d’authentification. Veuillez vérifier que votre nom d’utilisateur et mot de passe sont corrects."
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
-  invitation-info: "Si vous n’avez pas de code d’invitation, contactez un·e <a href=\"{}\">administrateur·rice</a>."
-  username: "Nom d'utilisateur·rice"
+  invitation-info: "Si vous n’avez pas de code d’invitation, contactez un <a href=\"{}\">administrateur</a>."
+  username: "Nom d'utilisateur"
   checking: "Vérification…"
   available: "Disponible"
   unavailable: "Non disponible"
