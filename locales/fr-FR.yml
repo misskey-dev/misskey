@@ -13,7 +13,7 @@ common:
     rich-contents: "Notes"
     rich-contents-desc: "Partagez vos idées, les événements et les sujets qui vous tiennent à cœur ainsi que tout autre chose que vous souhaitez partager avec les autres. Si vous le désirez, vous pouvez décorer vos messages en utilisant une syntaxe différente ou en y joignant des sondages et des fichiers, tels que les photos ou les vidéos que vous aimez."
     reaction: "Réactions"
-    reaction-desc: "Une manière simple d'exprimer vos émotions. Misskey peut attacher diverses réactions aux publications des autres utilisateurs. Si essayez les réactions sur Misskey, vous ne pourrez plus retourner sur une autre plateforme de réseaux sociaux n'offrant que des « J'aime »."
+    reaction-desc: "Une manière simple d'exprimer vos émotions. Misskey peut attacher diverses réactions aux publications des autres utilisateurs. Si vous essayez les réactions sur Misskey, vous ne pourrez plus retourner sur une autre plateforme de réseaux sociaux n'offrant que des « J'aime »."
     ui: "Interface utilisateur"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
     drive: "Drive"
@@ -1430,7 +1430,7 @@ mobile/views/pages/settings.vue:
   remember-note-visibility: "Se souvenir du mode de visibilité de la publication"
   web-search-engine: "Moteur de recherche Web"
   web-search-engine-desc: "Exemple : https://www.google.com/?#q={{query}}"
-  disable-via-mobile: "Ne pas mentionner que ma publication provient d'un 'périphérique mobile'"
+  disable-via-mobile: "Ne pas mentionner que ma publication provient d'un « périphérique mobile »"
   load-raw-images: "Afficher les photos jointes en haute qualité"
   load-remote-media: "Afficher les médias sur le serveur distant"
   update: "Mise à jour de Misskey"
@@ -1450,7 +1450,7 @@ mobile/views/pages/settings.vue:
 mobile/views/pages/user.vue:
   follows-you: "Vous suit"
   following: "Abonnements"
-  followers: "Abonné·e·s"
+  followers: "Abonnés"
   notes: "Notes"
   overview: "Aperçu"
   timeline: "Fil d'actualité"
@@ -1470,13 +1470,13 @@ mobile/views/pages/user/home.vue:
   activity: "Activité"
   keywords: "Mot clés"
   domains: "Domaines"
-  frequently-replied-users: "Utilisateurs·rices mentionné·e·s souvent"
-  followers-you-know: "Abonné·e·s que vous connaissez"
+  frequently-replied-users: "Utilisateurs mentionnés souvent"
+  followers-you-know: "Abonnés que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Aucun utilisateur·rice connu·e"
+  no-users: "Aucun utilisateur connu"
 mobile/views/pages/user/home.friends.vue:
-  no-users: "Aucun utilisateur·rice connu·e"
+  no-users: "Aucun utilisateur connu"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "Pas de notes"
 mobile/views/pages/user/home.photos.vue:
@@ -1508,7 +1508,7 @@ deck/deck.tl-column.vue:
 deck/deck.user-column.vue:
   posts: "Notes"
   following: "Suit"
-  followers: "Abonné·e·s"
+  followers: "Abonnés"
   images: "Images"
   activity: "Activité"
   timeline: "Fil d’actualité"
