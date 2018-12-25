@@ -813,7 +813,6 @@ desktop/views/components/settings.vue:
   update-settings: "Advanced settings"
   prevent-update: "Postpone updates (not recommended)"
   prevent-update-desc: "Even if you turn this setting on, updates may apply. This setting is enabled only for this device."
-  mark-as-read-all-unread-notes: "Mark all posts as read"
   no-updates: "No updates available"
   no-updates-desc: "Your Misskey is up to date."
   update-available: "A new version is available"
