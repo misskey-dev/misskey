@@ -471,6 +471,13 @@ common/views/components/profile-editor.vue:
   email-address: "メールアドレス"
   email-verified: "このメールアドレスOKや！"
   email-not-verified: "メールアドレスが確認されとらん。メールボックスもっぺん見てくれへん？"
+common/views/components/user-list-editor.vue:
+  users: "ユーザー"
+  rename: "リスト名を変更"
+  delete: "リストを削除"
+  remove-user: "このリストから削除"
+  delete-are-you-sure: "リスト「$1」を削除しますか？"
+  deleted: "削除しました"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
   no-broadcasts: "お知らせはあらへんで"
@@ -737,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "テーマ"
   behaviour: "動き"
   fetch-on-scroll: "スクロールしたらもっと見せてや"
@@ -1029,6 +1037,12 @@ admin/views/instance.vue:
   smtp-port: "SMTPポート"
   smtp-user: "SMTPユーザー"
   smtp-pass: "SMTPパスワード"
+  serviceworker-config: "ServiceWorker"
+  enable-serviceworker: "ServiceWorkerを有効にする"
+  serviceworker-info: "プッシュ通知を行うには有効する必要があります。"
+  vapid-publickey: "VAPID公開鍵"
+  vapid-privatekey: "VAPID秘密鍵"
+  vapid-info: "ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります。シェルで次のようにします:"
 admin/views/charts.vue:
   title: "チャート"
   per-day: "1日ごと"
@@ -1068,6 +1082,8 @@ admin/views/drive.vue:
     remote: "リモート"
   delete: "削除"
   deleted: "削除しました"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
 admin/views/users.vue:
   operation: "操作"
   username-or-userid: "ユーザー名またはユーザーID"
@@ -1430,7 +1446,6 @@ mobile/views/pages/settings.vue:
   signout: "さいなら"
   sound: "サウンド"
   enable-sounds: "サウンド鳴らす"
-  mark-as-read-all-unread-notes: "全部もう読んだわ"
   password: "パスワード"
 mobile/views/pages/user.vue:
   follows-you: "フォローされとるで"

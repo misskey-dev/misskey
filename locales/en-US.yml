@@ -8,7 +8,7 @@ common:
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   intro:
     title: "What is Misskey?"
-    about: "Misskey is a open-source <b>decentralized microblogging service</b>. Sophisticated fully customizable Ui, varieties of reaction for posts, free file storage providing integrated management system and other advancing functions are available. Also, network system called “Fediverse” enables us to communicate with users on other SNSs. Like, if you post something, then your posts will sent not only to Misskey but also mastodon. Just imagine that the planet is sending a microwave to other planet to communication."
+    about: "Misskey is an open-source <b>decentralized microblogging service</b>. Sophisticated fully customizable UI, varieties of reactions for posts, free file storage providing an integrated management system and other advanced functions are available. In addition, Misskey connects to a network system called the “Fediverse” enables us to communicate with users on other SNSs. For example, when you post something it will be sent not only to Misskey but also Mastodon and Pleroma. Just imagine that the planet is sending a radio transmission to other planet to communicate."
     features: "Features"
     rich-contents: "Post"
     rich-contents-desc: "Just post your idea, hot topics and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files including movies and create a poll - those are the things you can do on Misskey!"
@@ -335,7 +335,7 @@ common/views/components/note-menu.vue:
   pin: "Pin to your profile"
   unpin: "Unpin"
   delete: "Delete"
-  delete-confirm: "Delete this post?"
+  delete-confirm: "Are you sure you want to delete this post?"
   remote: "Show original note"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
@@ -471,6 +471,13 @@ common/views/components/profile-editor.vue:
   email-address: "Email Address"
   email-verified: "Your email has been verified."
   email-not-verified: "Email address is not confirmed. Please check your inbox."
+common/views/components/user-list-editor.vue:
+  users: "User"
+  rename: "Rename list"
+  delete: "Delete list"
+  remove-user: "Remove from this list"
+  delete-are-you-sure: "Delete list \"$1\"?"
+  deleted: "Deleted successfully"
 common/views/widgets/broadcast.vue:
   fetching: "Checking"
   no-broadcasts: "No announcements"
@@ -737,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "Two-factor authentication"
   other: "Other"
   license: "License"
+  mark-as-read-all-unread-notes: "Mark all posts as read"
   theme: "Theme"
   behaviour: "Behavior"
   fetch-on-scroll: "Endless loading on scroll"
@@ -1015,7 +1023,7 @@ admin/views/instance.vue:
   save: "Save"
   saved: "Saved"
   user-recommendation-config: "Recommended users"
-  enable-external-user-recommendation: "Enable to external user recommendation"
+  enable-external-user-recommendation: "Enable external user recommendations"
   external-user-recommendation-engine: "Engine"
   external-user-recommendation-engine-desc: "Example : https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
   external-user-recommendation-timeout: "Timeout"
@@ -1030,6 +1038,12 @@ admin/views/instance.vue:
   smtp-port: "SMTP Port"
   smtp-user: "SMTP User"
   smtp-pass: "SMTP Password"
+  serviceworker-config: "ServiceWorker"
+  enable-serviceworker: "Enable ServiceWorker"
+  serviceworker-info: "Must be enabled for push notifications."
+  vapid-publickey: "VAPID public key"
+  vapid-privatekey: "VAPID private key"
+  vapid-info: "If you want to enable ServiceWorker, you need to generate VAPID keys. Unless you have set your global node_modules location elsewhere, you need to run this as root:"
 admin/views/charts.vue:
   title: "Chart"
   per-day: "per Day"
@@ -1058,10 +1072,10 @@ admin/views/charts.vue:
 admin/views/drive.vue:
   sort:
     title: "Sort"
-    createdAtAsc: "アップロード日時が古い順"
-    createdAtDesc: "アップロード日時が新しい順"
-    sizeAsc: "サイズが小さい順"
-    sizeDesc: "サイズが大きい順"
+    createdAtAsc: "Age - Oldest First"
+    createdAtDesc: "Age - Newest First"
+    sizeAsc: "Size - Smallest First"
+    sizeDesc: "Size - Largest First"
   origin:
     title: "Origin"
     combined: "Local + Remote"
@@ -1069,6 +1083,8 @@ admin/views/drive.vue:
     remote: "Remote"
   delete: "Delete"
   deleted: "Deleted successfully"
+  mark-as-sensitive: "Mark as 'sensitive'"
+  unmark-as-sensitive: "Unmark as 'sensitive'"
 admin/views/users.vue:
   operation: "Operations"
   username-or-userid: "Username or user ID"

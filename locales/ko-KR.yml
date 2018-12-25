@@ -354,7 +354,7 @@ common/views/components/reaction-picker.vue:
   choose-reaction: "반응 선택"
 common/views/components/emoji-picker.vue:
   custom-emoji: "커스텀 이모지"
-  people: "명"
+  people: "사람들"
   animals-and-nature: "동물 & 자연"
   food-and-drink: "음식 & 음료"
   activity: "활동"
@@ -471,6 +471,13 @@ common/views/components/profile-editor.vue:
   email-address: "메일 주소"
   email-verified: "매일 주소가 확인되었습니다"
   email-not-verified: "메일 주소가 확인되지 않았습니다. 받은 편지함을 확인하여 주시기 바랍니다."
+common/views/components/user-list-editor.vue:
+  users: "사용자"
+  rename: "리스트 이름 바꾸기"
+  delete: "리스트 삭제"
+  remove-user: "이 리스트에서 제거"
+  delete-are-you-sure: "리스트 \"$1\"을 삭제하시겠습니까?"
+  deleted: "삭제하였습니다"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
   no-broadcasts: "공지사항이 없습니다"
@@ -737,6 +744,7 @@ desktop/views/components/settings.vue:
   2fa: "2단계 인증"
   other: "기타"
   license: "라이선스"
+  mark-as-read-all-unread-notes: "모든 글을 읽은 상태로 표시"
   theme: "테마"
   behaviour: "동작"
   fetch-on-scroll: "스크롤하여 자동으로 불러오기"
@@ -1029,6 +1037,12 @@ admin/views/instance.vue:
   smtp-port: "SMTP 포트"
   smtp-user: "SMTP 사용자"
   smtp-pass: "SMTP 비밀번호"
+  serviceworker-config: "ServiceWorker"
+  enable-serviceworker: "ServiceWorker 사용"
+  serviceworker-info: "푸시알림을 수행하려면 사용해야 합니다."
+  vapid-publickey: "VAPID 공개키"
+  vapid-privatekey: "VAPID 개인키"
+  vapid-info: "ServiceWorker를 사용하는 경우 VAPID 키 쌍을 생성해야 합니다. 셸에서 다음과 같이 합니다:"
 admin/views/charts.vue:
   title: "차트"
   per-day: "1일마다"
@@ -1068,6 +1082,8 @@ admin/views/drive.vue:
     remote: "리모트"
   delete: "삭제"
   deleted: "삭제하였습니다"
+  mark-as-sensitive: "열람주의로 설정"
+  unmark-as-sensitive: "열람주의 해제"
 admin/views/users.vue:
   operation: "작업"
   username-or-userid: "사용자명 혹은 사용자 ID"
@@ -1430,7 +1446,6 @@ mobile/views/pages/settings.vue:
   signout: "로그아웃"
   sound: "소리"
   enable-sounds: "소리 사용"
-  mark-as-read-all-unread-notes: "모든 글을 읽은 상태로 표시"
   password: "비밀번호"
 mobile/views/pages/user.vue:
   follows-you: "당신을 팔로우합니다"
