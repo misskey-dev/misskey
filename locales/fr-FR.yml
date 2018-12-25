@@ -841,14 +841,14 @@ desktop/views/components/settings.2fa.vue:
   enter-password: "Entrez un mot de passe"
   authenticator: "Vous devez au préalable installer Google Authenticator sur votre appareil :"
   howtoinstall: "Comment installer"
-  scan: "Ensuite scannez le QR code afficher sur votre écran:"
-  done: "Veuillez entrer le token qui s'affiche sur votre appareil:"
+  scan: "Ensuite, scannez le code QR affiché sur votre écran :"
+  done: "Veuillez entrer le token qui s'affiche sur votre appareil :"
   submit: "Envoyer"
   success: "Sauvegarde des paramètres avec succès !"
   failed: "L’opération a échoué. Veuillez vous assurer que le jeton a été saisi correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
 common/views/components/api-settings.vue:
-  intro: "Pour accéder à l'API, définissez ce jeton comme la clé de \"i\" dans les paramètres de requête."
+  intro: "Pour accéder à l'API, définissez ce jeton comme la clé de « i » dans les paramètres de requête."
   caution: "Merci de ne pas introduire ce jeton dans aucune application ou le divulguer à quiconque. Ceci risque de compromettre votre compte."
   regeneration-of-token: "Si votre jeton est compromis, vous pouvez le régénérer."
   regenerate-token: "Régénérer le jeton"
@@ -858,7 +858,7 @@ common/views/components/api-settings.vue:
     title: 'Console API'
     endpoint: 'Point de terminaison'
     parameter: 'Paramètres'
-    credential-info: "Le paramètre \"i\" est requis dans la console."
+    credential-info: "Le paramètre « i » est requis dans la console."
     send: 'Envoyer'
     sending: 'Envoi en cours'
     response: 'Résultat'
@@ -872,8 +872,8 @@ common/views/components/mute-and-block.vue:
   mute-and-block: "Silencés / Bloqués"
   mute: "Mettre en sourdine"
   block: "En cours blocage"
-  no-muted-users: "Aucun utilisateur·rice n’est mis·e en sourdine"
-  no-blocked-users: "Aucun utilisateur·rice n’est bloqué·e"
+  no-muted-users: "Aucun utilisateur n’est mis en sourdine"
+  no-blocked-users: "Aucun utilisateur n’est bloqué"
   word-mute: "Filtre de mots"
   muted-words: "Mots masqués"
   muted-words-description: "Description des mots mis en sourdine"
@@ -944,11 +944,11 @@ desktop/views/components/user-lists-window.vue:
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
-  followers: "Abonné·e·s"
+  followers: "Abonnés"
 desktop/views/components/users-list.vue:
   all: "Tout"
   iknow: "Vous connaissez"
-  fetching: "Chargement ..."
+  fetching: "Chargement..."
 desktop/views/components/users-list-item.vue:
   followed: "vous suit"
 desktop/views/components/window.vue:
@@ -959,7 +959,7 @@ admin/views/index.vue:
   instance: "Instance"
   emoji: "Émoji"
   moderators: "Modérateurs"
-  users: "Utilisateur·rice·s"
+  users: "Utilisateurs"
   federation: "Fédération"
   announcements: "Annonces"
   hashtags: "Hashtags"
@@ -977,7 +977,7 @@ admin/views/instance.vue:
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
   host: "Hôte"
-  banner-url: "Url de l’image de la bannière"
+  banner-url: "URL de l’image de la bannière"
   error-image-url: "URL de l’image d’erreur"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
@@ -997,7 +997,7 @@ admin/views/instance.vue:
   recaptcha-secret-key: "Clé secrète reCAPTCHA"
   twitter-integration-config: "Paramètres de connexion à Twitter"
   twitter-integration-info: "L'URL de callback est {url}."
-  enable-twitter-integration: "Activer la connection à Twitter"
+  enable-twitter-integration: "Activer la connexion à Twitter"
   twitter-integration-consumer-key: "Clé du consommateur"
   twitter-integration-consumer-secret: "Secret du consommateur"
   github-integration-config: "Paramètres d’authentification GitHub"
@@ -1021,8 +1021,8 @@ admin/views/instance.vue:
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
-  user-recommendation-config: "Utilisateur·rice·s"
-  enable-external-user-recommendation: "Activer la recommandation des utilisateur·trice·s distant·e·s"
+  user-recommendation-config: "Utilisateurs"
+  enable-external-user-recommendation: "Activer la recommandation des utilisateurs distants"
   external-user-recommendation-engine: "Moteur"
   external-user-recommendation-engine-desc: "Exemple : https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
   external-user-recommendation-timeout: "Délai d’expiration"
@@ -1044,12 +1044,12 @@ admin/views/instance.vue:
   vapid-privatekey: "Clé privée VAPID"
   vapid-info: "ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります。シェルで次のようにします:"
 admin/views/charts.vue:
-  title: "Graph"
+  title: "Graphe"
   per-day: "par jour"
   per-hour: "par heure"
   federation: "Fédération"
   notes: "Publications"
-  users: "Utilisateur·rice·s"
+  users: "Utilisateurs"
   drive: "Lecteur"
   network: "Réseau"
   charts:
@@ -1059,8 +1059,8 @@ admin/views/charts.vue:
     local-notes: "Nombre des publications : augmentation/diminution (Local)"
     remote-notes: "Nombre de publications : augmentation/diminution (distants)"
     notes-total: "Total des publications"
-    users: "Nombre d’utilisateur·rice·s : augmentation/diminution"
-    users-total: "Nombre total des utilisateur·rice·s"
+    users: "Nombre d’utilisateurs : augmentation/diminution"
+    users-total: "Nombre total des utilisateurs"
     drive: "Capacité utilisée comme stockage : augmentation/diminution"
     drive-total: "Utilisation totale du lecteur"
     drive-files: "Le nombre de fichiers sur l'espace de stockage : augmentation/diminution"
@@ -1087,20 +1087,20 @@ admin/views/drive.vue:
 admin/views/users.vue:
   operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
-  user-not-found: "Utilisateur·rice non trouvé·e"
+  user-not-found: "Utilisateur non trouvé"
   lookup: "Recherche"
   reset-password: "Réinitialiser mot de passe"
   password-updated: "Le mot de passe est « {password} »"
   suspend: "Suspendre"
-  suspended: "Suspendu·e avec succès."
+  suspended: "Suspendu avec succès."
   unsuspend: "Suspension levée"
-  unsuspended: "La suspension de l’utilisateur·rice a été levée avec succès"
+  unsuspended: "La suspension de l’utilisateur a été levée avec succès"
   verify: "Vérification du compte"
   verified: "Le compte a été vérifié"
-  unverify: "Ôter la vérification du compte"
+  unverify: "Enlever la vérification du compte"
   unverified: "Ce compte n'est plus vérifié"
   users:
-    title: "Utilisateur·rice·s"
+    title: "Utilisateurs"
     sort:
       title: "Trier par"
       createdAtAsc: "Date d’inscription (Ascendant)"
@@ -1183,11 +1183,11 @@ desktop/views/pages/share.vue:
 desktop/views/pages/tag.vue:
   no-posts-found: "Aucune publication contenant « {q} » n’a été trouvée."
 desktop/views/pages/user-list.users.vue:
-  users: "Utilisateurs·rices"
+  users: "Utilisateurs"
   add-user: "Ajouter un utilisateur"
   username: "Nom d'utilisateur"
 desktop/views/pages/user/user.followers-you-know.vue:
-  title: "Abonné·e·s que vous connaissez"
+  title: "Abonnés que vous connaissez"
   loading: "Chargement en cours"
   no-users: "Aucun abonné connu"
 desktop/views/pages/user/user.friends.vue:
