@@ -1224,6 +1224,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
   with-media: "Multimedia"
+  my-posts: "私の投稿"
   empty: "Ten użytkownik nie umieścił jeszcze niczego."
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
