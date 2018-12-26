@@ -1224,6 +1224,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
   with-media: "Média"
+  my-posts: "私の投稿"
   empty: "Cet utilisateur n'a rien posté encore."
 desktop/views/widgets/messaging.vue:
   title: "Messagerie"
