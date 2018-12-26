@@ -210,7 +210,7 @@
 		"tmp": "0.0.33",
 		"ts-loader": "5.3.1",
 		"ts-node": "7.0.1",
-		"tslint": "5.10.0",
+		"tslint": "5.12.0",
 		"typescript": "3.2.2",
 		"typescript-eslint-parser": "21.0.2",
 		"uglify-es": "3.3.9",
