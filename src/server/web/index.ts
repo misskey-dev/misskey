@@ -160,7 +160,7 @@ router.get('/notes/:note', async ctx => {
 				summary: getNoteSummary(_note)
 			});
 			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-			
+
 			return;
 		}
 	}
