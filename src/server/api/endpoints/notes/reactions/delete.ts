@@ -2,6 +2,8 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
 import define from '../../../define';
+import { publishNoteStream } from '../../../../../stream';
+const ms = require('ms');
 
 export const meta = {
 	desc: {
@@ -12,6 +14,12 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'reaction-write',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 5,
+		minInterval: ms('3sec')
+	},
 
 	params: {
 		noteId: {
@@ -59,5 +67,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Decrement reactions count
 	Note.update({ _id: note._id }, {
 		$inc: dec
+	});
+
+	publishNoteStream(note._id, 'unreacted', {
+		reaction: exist.reaction,
+		userId: user._id
 	});
 }));
