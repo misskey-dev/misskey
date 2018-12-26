@@ -1224,6 +1224,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
   with-media: "メディア"
+  my-posts: "私の投稿"
   empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
