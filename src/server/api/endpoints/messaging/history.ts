@@ -1,7 +1,6 @@
 import $ from 'cafy';
-import History from '../../../../models/messaging-history';
 import Mute from '../../../../models/mute';
-import { pack } from '../../../../models/messaging-message';
+import Message, { pack, IMessagingMessage } from '../../../../models/messaging-message';
 import define from '../../define';
 
 export const meta = {
@@ -28,19 +27,36 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		deletedAt: { $exists: false }
 	});
 
-	// Get history
-	const history = await History
-		.find({
-			userId: user._id,
-			partnerId: {
-				$nin: mute.map(m => m.muteeId)
-			}
+	const history: IMessagingMessage[] = [];
+
+	for (let i = 0; i < ps.limit; i++) {
+		const found = history.map(m => m.userId.equals(user._id) ? m.recipientId : m.userId);
+
+		const message = await Message.findOne({
+			$or: [{
+				userId: user._id
+			}, {
+				recipientId: user._id
+			}],
+			$and: [{
+				userId: { $nin: found },
+				recipientId: { $nin: found }
+			}, {
+				userId: { $nin: mute.map(m => m.muteeId) },
+				recipientId: { $nin: mute.map(m => m.muteeId) }
+			}]
 		}, {
-			limit: ps.limit,
 			sort: {
-				updatedAt: -1
+				createdAt: -1
 			}
 		});
 
-	res(await Promise.all(history.map(h => pack(h.messageId, user))));
+		if (message) {
+			history.push(message);
+		} else {
+			break;
+		}
+	}
+
+	res(await Promise.all(history.map(h => pack(h._id, user))));
 }));
