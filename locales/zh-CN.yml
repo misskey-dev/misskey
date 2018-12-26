@@ -1224,6 +1224,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "帖子"
   with-replies: "帖子与回复"
   with-media: "媒体"
+  my-posts: "私の投稿"
   empty: "看起来这个用户还没有发布什么呢。"
 desktop/views/widgets/messaging.vue:
   title: "信息"
