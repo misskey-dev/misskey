@@ -1,7 +1,8 @@
 {
 	"defaultSeverity": "error",
 	"extends": [
-		"tslint:recommended"
+		"tslint:recommended",
+		"tslint-sonarts"
 	],
 	"jsRules": {},
 	"rules": {
@@ -35,7 +36,28 @@
 		"ban": [
 			true,
 			{"name": ["*", "forEach"], "message": "Use for-of loop instead."}
-		]
+		],
+		"no-duplicate-string": false,
+		"no-commented-code": false,
+		"cognitive-complexity": false,
+		"no-nested-template-literals": false,
+		"no-identical-functions": false,
+		"max-union-size": false,
+		"no-big-function": false,
+		"no-statements-same-line": false,
+		"no-small-switch": false,
+		"no-identical-expressions": false,
+		"no-invalid-await": false,
+		"prefer-immediate-return": false,
+		"no-use-of-empty-return-value": false,
+		"no-collapsible-if": false,
+		"no-ignored-return": false,
+		"no-redundant-boolean": false,
+		"prefer-promise-shorthand": false,
+		"parameters-max-number": false,
+		"no-duplicated-branches": false,
+		"no-identical-conditions": false,
+		"no-useless-cast": false
 	},
 	"rulesDirectory": []
 }
