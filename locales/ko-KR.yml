@@ -1224,6 +1224,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "글"
   with-replies: "글과 답글"
   with-media: "미디어"
+  my-posts: "私の投稿"
   empty: "이 사용자는 아직 아무것도 게시하지 않은 것 같습니다."
 desktop/views/widgets/messaging.vue:
   title: "메시지"
