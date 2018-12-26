@@ -5,6 +5,7 @@
 		<mk-post-form ref="form"
 			:reply="reply"
 			:renote="renote"
+			:mention="mention"
 			:initial-text="initialText"
 			:instant="instant"
 			@posted="onPosted"
@@ -24,6 +25,10 @@ export default Vue.extend({
 			required: false
 		},
 		renote: {
+			type: Object,
+			required: false
+		},
+		mention: {
 			type: Object,
 			required: false
 		},

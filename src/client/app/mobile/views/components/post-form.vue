@@ -84,6 +84,10 @@ export default Vue.extend({
 			type: Object,
 			required: false
 		},
+		mention: {
+			type: Object,
+			required: false
+		},
 		initialText: {
 			type: String,
 			required: false
@@ -170,6 +174,11 @@ export default Vue.extend({
 
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
+		}
+
+		if (this.mention) {
+			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
+			this.text += ' ';
 		}
 
 		if (this.reply && this.reply.text != null) {

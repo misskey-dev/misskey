@@ -49,6 +49,9 @@
 					<b>{{ user.followersCount | number }}</b>
 					<span>{{ $t('followers') }}</span>
 				</div>
+				<div class="mention">
+					<button @click="mention" :title="$t('mention')"><fa icon="at"/></button>
+				</div>
 			</div>
 		</div>
 		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
@@ -307,6 +310,10 @@ export default Vue.extend({
 			return promise;
 		},
 
+		mention() {
+			this.$post({ mention: this.user });
+		},
+
 		menu() {
 			let menu = [{
 				icon: 'list',
@@ -454,7 +461,7 @@ export default Vue.extend({
 
 		> .counts
 			display grid
-			grid-template-columns 1fr 1fr 1fr
+			grid-template-columns 2fr 2fr 2fr 1fr
 			margin-top 8px
 			border-top solid 1px var(--faceDivider)
 
@@ -470,6 +477,9 @@ export default Vue.extend({
 					display block
 					font-size 80%
 					opacity 0.7
+
+			> .mention
+				display flex
 
 	> *
 		> p.caption

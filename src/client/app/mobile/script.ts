@@ -60,6 +60,7 @@ init((launch) => {
 
 				const vm = this.$root.new(PostForm, {
 					reply: o.reply,
+					mention: o.mention,
 					renote: o.renote
 				});
 
