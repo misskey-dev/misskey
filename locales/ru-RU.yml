@@ -26,7 +26,7 @@ common:
   close: "Закрыть"
   do-not-copy-paste: "Пожалуйста, не вводите и не вставляйте сюда код. Аккаунту может угрожать опасность."
   load-more: "Загрузить больше"
-  enter-password: "パスワードを入力してください"
+  enter-password: "Пожалуйста, введите ваш пароль"
   got-it: "わかった"
   customization-tips:
     title: "カスタマイズのヒント"
