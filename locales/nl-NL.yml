@@ -1224,6 +1224,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Berichten"
   with-replies: "Berichten en antwoorden"
   with-media: "Media"
+  my-posts: "私の投稿"
   empty: "Deze gebruiker heeft nog niks geplaatst."
 desktop/views/widgets/messaging.vue:
   title: "Gesprekken"
