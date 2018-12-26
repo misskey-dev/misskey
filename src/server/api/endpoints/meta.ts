@@ -42,6 +42,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		clientVersion: client.version,
 
 		name: instance.name,
+		uri: config.url,
 		description: instance.description,
 		langs: instance.langs,
 
