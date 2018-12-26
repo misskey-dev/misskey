@@ -155,7 +155,6 @@ if ((config as any).sw) {
 export type IMeta = {
 	name?: string;
 	description?: string;
-	uri?: string;
 
 	/**
 	 * メンテナ情報
