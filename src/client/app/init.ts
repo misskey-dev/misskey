@@ -14,7 +14,7 @@ import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
-import { clientVersion as version, codename, lang } from './config';
+import { clientVersion as version, codename, lang, locale } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
 import Dialog from './common/views/components/dialog.vue';
 
@@ -322,7 +322,7 @@ Vue.mixin({
 
 console.info(`Misskey v${version} (${codename})`);
 console.info(
-	'%c%i18n:common.do-not-copy-paste%',
+	`%c${locale['common']['do-not-copy-paste']}`,
 	'color: red; background: yellow; font-size: 16px; font-weight: bold;');
 
 // BootTimer解除
