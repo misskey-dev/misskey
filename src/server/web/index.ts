@@ -8,6 +8,7 @@ import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
+import { ObjectID } from 'mongodb';
 
 import docs from './docs';
 import packFeed from './feed';
@@ -149,18 +150,22 @@ router.get('/@:user', async (ctx, next) => {
 
 // Note
 router.get('/notes/:note', async ctx => {
-	const note = await Note.findOne({ _id: ctx.params.note });
+	if (ObjectID.isValid(ctx.params.note)) {
+		const note = await Note.findOne({ _id: ctx.params.note });
 
-	if (note != null) {
-		const _note = await packNote(note);
-		await ctx.render('note', {
-			note: _note,
-			summary: getNoteSummary(_note)
-		});
-		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-	} else {
-		ctx.status = 404;
+		if (note) {
+			const _note = await packNote(note);
+			await ctx.render('note', {
+				note: _note,
+				summary: getNoteSummary(_note)
+			});
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+			
+			return;
+		}
 	}
+
+	ctx.status = 404;
 });
 //#endregion
 
