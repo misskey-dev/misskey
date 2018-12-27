@@ -531,8 +531,8 @@ common/views/widgets/tips.vue:
   tips-line23: "Mayu is so cute with its eyebrows."
   tips-line24: "Misskey has been running since 2014."
   tips-line25: "In a browser compatible with notification features, you can receive notifications in case Misskey is not open"
-common/views/pages/404.vue:
-  page-not-found: "Page not found"
+common/views/pages/not-found.vue:
+  page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
