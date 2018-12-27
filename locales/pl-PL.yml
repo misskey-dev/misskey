@@ -121,14 +121,15 @@ common:
   reduce-motion: "Zredukuj ruch w UI"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "Użyj domyślnych Emoji systemowych"
-  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+  do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "Informacje o użytkowniku są kopiowane."
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user} udostępnił(a)"
   error:
-    title: 'Coś poszło nie tak'
-    retry: 'Ponów próbę'
+    title: "Coś poszło nie tak"
+    retry: "Ponów próbę"
   reversi:
     drawn: "Remis"
     my-turn: "Twoja kolej"
@@ -699,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Załącz zawartość multimedialną z komputera"
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
   attach-cancel: "Usuń załącznik"
-  insert-a-kao: "v('ω')v"
+  insert-a-kao: "v(\"ω\")v"
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
   recent-tags: "Ostatnie"
@@ -856,13 +857,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "Wprowadź hasło"
   console:
-    title: 'Konsola API'
-    endpoint: 'エンドポイント'
-    parameter: 'Parametry'
+    title: "Konsola API"
+    endpoint: "エンドポイント"
+    parameter: "Parametry"
     credential-info: "「i」パラメータは自動で付与されます。"
-    send: 'Wyślij'
-    sending: '応答待ち'
-    response: '結果'
+    send: "Wyślij"
+    sending: "応答待ち"
+    response: "結果"
 desktop/views/components/settings.apps.vue:
   no-apps: "Brak zautoryzowanych aplikacji"
 common/views/components/drive-settings.vue:
@@ -1457,7 +1458,6 @@ mobile/views/pages/user.vue:
   overview: "Przegląd"
   timeline: "Oś czasu"
   media: "Multimedia"
-  is-suspended: "To konto zostało zablokowane"
   mute: "Wycisz"
   unmute: "ミュート解除"
   block: "Zablokuj"
