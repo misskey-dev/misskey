@@ -122,7 +122,7 @@ common:
   this-setting-is-this-device-only: "Only for this device"
   use-os-default-emojis: "Use the OS default Emojis"
   do-not-use-in-production: "This is a development build. Do not use in production."
-  user-suspended: "このユーザーは凍結されています。"
+  user-suspended: "This user has been suspended."
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
   view-on-remote: "View it on remote"
@@ -300,7 +300,7 @@ common/views/components/cw-button.vue:
   show: "See more"
   chars: "{count} chars"
   files: "{count} files"
-  poll: "アンケート"
+  poll: "Poll"
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
@@ -330,7 +330,7 @@ common/views/components/nav.vue:
   develop: "Developers"
   feedback: "Feedback"
 common/views/components/note-menu.vue:
-  mention: "メンション"
+  mention: "Mentions"
   detail: "Details"
   copy-link: "Copy link"
   favorite: "Favorite this note"
@@ -534,7 +534,7 @@ common/views/widgets/tips.vue:
   tips-line24: "Misskey has been running since 2014."
   tips-line25: "In a browser compatible with notification features, you can receive notifications in case Misskey is not open"
 common/views/pages/not-found.vue:
-  page-not-found: "ページが見つかりませんでした"
+  page-not-found: "The page has not been found"
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -1218,7 +1218,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
   followers: "Followers"
-  mention: "メンション"
+  mention: "Mentions"
   is-bot: "This account is a Bot"
   years-old: "{age} years old"
   year: "/"
@@ -1513,7 +1513,7 @@ deck/deck.user-column.vue:
   posts: "Posts"
   following: "Following"
   followers: "Followers"
-  mention: "メンション"
+  mention: "Mentions"
   images: "Images"
   activity: "Activity"
   timeline: "Timeline"
