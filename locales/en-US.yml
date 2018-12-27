@@ -299,6 +299,7 @@ common/views/components/cw-button.vue:
   show: "See more"
   chars: "{count} chars"
   files: "{count} files"
+  poll: "アンケート"
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
