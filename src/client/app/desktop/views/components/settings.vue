@@ -170,17 +170,7 @@
 			</section>
 		</ui-card>
 
-		<ui-card class="notification" v-show="page == 'notification'">
-			<div slot="title"><fa :icon="['far', 'bell']"/> {{ $t('notification') }}</div>
-			<section>
-				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
-					{{ $t('auto-watch') }}<span slot="desc">{{ $t('auto-watch-desc') }}</span>
-				</ui-switch>
-				<section>
-					<ui-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</ui-button>
-				</section>
-			</section>
-		</ui-card>
+		<x-notification-settings v-show="page == 'notification'"/>
 
 		<div class="drive" v-if="page == 'drive'">
 			<x-drive-settings/>
@@ -289,6 +279,7 @@ import XPasswordSettings from '../../../common/views/components/password-setting
 import XProfileEditor from '../../../common/views/components/profile-editor.vue';
 import XApiSettings from '../../../common/views/components/api-settings.vue';
 import XLanguageSettings from '../../../common/views/components/language-settings.vue';
+import XNotificationSettings from '../../../common/views/components/notification-settings.vue';
 
 import { url, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
@@ -308,6 +299,7 @@ export default Vue.extend({
 		XProfileEditor,
 		XApiSettings,
 		XLanguageSettings,
+		XNotificationSettings,
 	},
 	props: {
 		initialPage: {
@@ -531,9 +523,6 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		readAllUnreadNotes() {
-			this.$root.api('i/read_all_unread_notes');
-		},
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
@@ -550,11 +539,6 @@ export default Vue.extend({
 		deleteWallpaper() {
 			this.$root.api('i/update', {
 				wallpaperId: null
-			});
-		},
-		onChangeAutoWatch(v) {
-			this.$root.api('i/update', {
-				autoWatch: v
 			});
 		},
 		checkForUpdate() {

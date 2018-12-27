@@ -94,6 +94,8 @@
 				</section>
 			</ui-card>
 
+			<x-notification-settings/>
+
 			<x-drive-settings/>
 
 			<x-mute-and-block/>
@@ -157,6 +159,7 @@ import XProfileEditor from '../../../common/views/components/profile-editor.vue'
 import XApiSettings from '../../../common/views/components/api-settings.vue';
 import XLanguageSettings from '../../../common/views/components/language-settings.vue';
 import XIntegrationSettings from '../../../common/views/components/integration-settings.vue';
+import XNotificationSettings from '../../../common/views/components/notification-settings.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
@@ -170,6 +173,7 @@ export default Vue.extend({
 		XApiSettings,
 		XLanguageSettings,
 		XIntegrationSettings,
+		XNotificationSettings,
 	},
 
 	data() {
