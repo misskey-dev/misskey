@@ -31,7 +31,7 @@ import MkReversi from './views/pages/games/reversi.vue';
 import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
-import MkNotFound from '../common/views/pages/404.vue';
+import MkNotFound from '../common/views/pages/not-found.vue';
 
 import PostForm from './views/components/post-form-dialog.vue';
 import FileChooser from './views/components/drive-file-chooser.vue';

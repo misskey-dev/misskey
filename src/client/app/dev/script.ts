@@ -18,7 +18,7 @@ import Apps from './views/apps.vue';
 import AppNew from './views/new-app.vue';
 import App from './views/app.vue';
 import ui from './views/ui.vue';
-import NotFound from '../common/views/pages/404.vue';
+import NotFound from '../common/views/pages/not-found.vue';
 
 Vue.use(BootstrapVue);
 
