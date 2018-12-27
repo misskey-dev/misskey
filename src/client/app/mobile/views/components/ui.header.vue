@@ -79,8 +79,10 @@ export default Vue.extend({
 
 	position fixed
 	top 0
+	left -8px
 	z-index 1024
-	width 100%
+	width calc(100% + 16px)
+	padding 0 8px
 	box-shadow 0 0px 8px rgba(0, 0, 0, 0.25)
 
 	&, *
