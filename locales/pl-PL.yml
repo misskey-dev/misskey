@@ -670,10 +670,12 @@ desktop/views/components/note-detail.vue:
   location: "Informacje o lokalizacji"
   renote: "Udostępnij"
   add-reaction: "Dodaj reakcję"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "Odpowiedz"
   renote: "Udostępnij"
   add-reaction: "Dodaj reakcję"
+  undo-reaction: "リアクション解除"
   detail: "Szczegóły"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
