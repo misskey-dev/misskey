@@ -700,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "PCからメディア持ってくる"
   attach-media-from-drive: "ドライブからメディア持ってくる"
   attach-cancel: "くっつけるのやめよか"
-  insert-a-kao: "v(\"ω\")v"
+  insert-a-kao: "v('ω')v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
   recent-tags: "最近のタグ"
