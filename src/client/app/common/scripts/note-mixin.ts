@@ -65,6 +65,10 @@ export default (opts: Opts = {}) => ({
 			return this.isRenote ? this.note.renote : this.note;
 		},
 
+		isMyNote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
 		reactionsCount(): number {
 			return this.appearNote.reactionCounts
 				? sum(Object.values(this.appearNote.reactionCounts))

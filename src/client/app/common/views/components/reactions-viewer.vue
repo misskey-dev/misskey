@@ -1,16 +1,16 @@
 <template>
-<div class="mk-reactions-viewer">
+<div class="mk-reactions-viewer" :class="{ isMe }">
 	<template v-if="reactions">
-		<span :class="{ reacted: note.myReaction == 'like' }" @click="toggleReaction('like')" v-if="reactions.like" v-particle><mk-reaction-icon reaction="like" ref="like"/><span>{{ reactions.like }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'love' }" @click="toggleReaction('love')" v-if="reactions.love" v-particle><mk-reaction-icon reaction="love" ref="love"/><span>{{ reactions.love }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'laugh' }" @click="toggleReaction('laugh')" v-if="reactions.laugh" v-particle><mk-reaction-icon reaction="laugh" ref="laugh"/><span>{{ reactions.laugh }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'hmm' }" @click="toggleReaction('hmm')" v-if="reactions.hmm" v-particle><mk-reaction-icon reaction="hmm" ref="hmm"/><span>{{ reactions.hmm }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'surprise' }" @click="toggleReaction('surprise')" v-if="reactions.surprise" v-particle><mk-reaction-icon reaction="surprise" ref="surprise"/><span>{{ reactions.surprise }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'congrats' }" @click="toggleReaction('congrats')" v-if="reactions.congrats" v-particle><mk-reaction-icon reaction="congrats" ref="congrats"/><span>{{ reactions.congrats }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'angry' }" @click="toggleReaction('angry')" v-if="reactions.angry" v-particle><mk-reaction-icon reaction="angry" ref="angry"/><span>{{ reactions.angry }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'confused' }" @click="toggleReaction('confused')" v-if="reactions.confused" v-particle><mk-reaction-icon reaction="confused" ref="confused"/><span>{{ reactions.confused }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'rip' }" @click="toggleReaction('rip')" v-if="reactions.rip" v-particle><mk-reaction-icon reaction="rip" ref="rip"/><span>{{ reactions.rip }}</span></span>
-		<span :class="{ reacted: note.myReaction == 'pudding' }" @click="toggleReaction('pudding')" v-if="reactions.pudding" v-particle><mk-reaction-icon reaction="pudding" ref="pudding"/><span>{{ reactions.pudding }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'like' }" @click="toggleReaction('like')" v-if="reactions.like" v-particle="!isMe"><mk-reaction-icon reaction="like" ref="like"/><span>{{ reactions.like }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'love' }" @click="toggleReaction('love')" v-if="reactions.love" v-particle="!isMe"><mk-reaction-icon reaction="love" ref="love"/><span>{{ reactions.love }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'laugh' }" @click="toggleReaction('laugh')" v-if="reactions.laugh" v-particle="!isMe"><mk-reaction-icon reaction="laugh" ref="laugh"/><span>{{ reactions.laugh }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'hmm' }" @click="toggleReaction('hmm')" v-if="reactions.hmm" v-particle="!isMe"><mk-reaction-icon reaction="hmm" ref="hmm"/><span>{{ reactions.hmm }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'surprise' }" @click="toggleReaction('surprise')" v-if="reactions.surprise" v-particle="!isMe"><mk-reaction-icon reaction="surprise" ref="surprise"/><span>{{ reactions.surprise }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'congrats' }" @click="toggleReaction('congrats')" v-if="reactions.congrats" v-particle="!isMe"><mk-reaction-icon reaction="congrats" ref="congrats"/><span>{{ reactions.congrats }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'angry' }" @click="toggleReaction('angry')" v-if="reactions.angry" v-particle="!isMe"><mk-reaction-icon reaction="angry" ref="angry"/><span>{{ reactions.angry }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'confused' }" @click="toggleReaction('confused')" v-if="reactions.confused" v-particle="!isMe"><mk-reaction-icon reaction="confused" ref="confused"/><span>{{ reactions.confused }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'rip' }" @click="toggleReaction('rip')" v-if="reactions.rip" v-particle="!isMe"><mk-reaction-icon reaction="rip" ref="rip"/><span>{{ reactions.rip }}</span></span>
+		<span :class="{ reacted: note.myReaction == 'pudding' }" @click="toggleReaction('pudding')" v-if="reactions.pudding" v-particle="!isMe"><mk-reaction-icon reaction="pudding" ref="pudding"/><span>{{ reactions.pudding }}</span></span>
 	</template>
 </div>
 </template>
@@ -21,10 +21,18 @@ import Icon from './reaction-icon.vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	props: ['note'],
+	props: {
+		note: {
+			type: Object,
+			required: true
+		}
+	},
 	computed: {
 		reactions(): any {
 			return this.note.reactionCounts;
+		},
+		isMe(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
 		}
 	},
 	watch: {
@@ -61,6 +69,8 @@ export default Vue.extend({
 	},
 	methods: {
 		toggleReaction(reaction: string) {
+			if (this.isMe) return;
+
 			const oldReaction = this.note.myReaction;
 			if (oldReaction) {
 				this.$root.api('notes/reactions/delete', {
@@ -127,6 +137,13 @@ export default Vue.extend({
 
 	&:empty
 		display none
+
+	&.isMe
+		> span
+			cursor default !important
+
+			&:hover
+				background var(--reactionViewerButtonBg) !important
 
 	> span
 		display inline-block

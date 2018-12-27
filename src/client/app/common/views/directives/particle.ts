@@ -5,6 +5,8 @@ export default {
 		if (vn.context.$store.state.device.reduceMotion) return;
 
 		el.addEventListener('click', () => {
+			if (binding.value === false) return;
+
 			const rect = el.getBoundingClientRect();
 
 			const x = rect.left + (el.clientWidth / 2);

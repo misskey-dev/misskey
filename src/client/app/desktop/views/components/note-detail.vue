@@ -70,14 +70,14 @@
 				<template v-else><fa icon="reply"/></template>
 				<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 			</button>
-				<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton" @click="renote()" :title="$t('renote')">
-					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
-				</button>
-				<button v-else class="inhibitedButton">
-					<fa icon="ban"/>
-				</button>
-			<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
-				<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
+			<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton" @click="renote()" :title="$t('renote')">
+				<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+			</button>
+			<button v-else class="inhibitedButton">
+				<fa icon="ban"/>
+			</button>
+			<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" v-if="!isMyNote" @click="react()" ref="reactButton" :title="$t('add-reaction')">
+				<fa icon="plus"/>
 			</button>
 			<button @click="menu()" ref="menuButton">
 				<fa icon="ellipsis-h"/>

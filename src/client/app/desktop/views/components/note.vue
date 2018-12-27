@@ -53,8 +53,8 @@
 				<button v-else class="inhibitedButton">
 					<fa icon="ban"/>
 				</button>
-				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('add-reaction')">
-					<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
+				<button class="reactionButton" :class="{ reacted: appearNote.myReaction != null }" v-if="!isMyNote" @click="react()" ref="reactButton" :title="$t('add-reaction')">
+					<fa icon="plus"/>
 				</button>
 				<button @click="menu()" ref="menuButton">
 					<fa icon="ellipsis-h"/>
