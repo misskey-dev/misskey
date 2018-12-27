@@ -15,7 +15,16 @@ export default Vue.extend({
 	},
 	computed: {
 		compiledFormula(): any {
-			return katex.renderToString(this.formula);
+			// let s: string;
+			// try {
+			// 	s = katex.renderToString(this.formula);
+			// } catch(e) {
+			// 	if ()
+			// }
+			// return s;
+			return katex.renderToString(this.formula, {
+				 throwOnError: false
+			} as any);
 		}
 	}
 });
