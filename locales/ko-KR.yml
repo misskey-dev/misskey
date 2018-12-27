@@ -670,10 +670,12 @@ desktop/views/components/note-detail.vue:
   location: "위치 정보"
   renote: "리노트"
   add-reaction: "리액션 추가"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "답글 달기"
   renote: "리노트"
   add-reaction: "리액션 추가"
+  undo-reaction: "リアクション解除"
   detail: "상세"
   private: "이 글은 비공개입니다"
   deleted: "이 글은 삭제되었습니다"
