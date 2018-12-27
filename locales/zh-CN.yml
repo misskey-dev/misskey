@@ -700,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "从设备中添加媒体文件"
   attach-media-from-drive: "从云盘中添加媒体文件"
   attach-cancel: "删除附件"
-  insert-a-kao: "v(\"ω\")v"
+  insert-a-kao: "v('ω')v"
   create-poll: "创建一个投票"
   text-remain: "还剩{}字"
   recent-tags: "最近"
