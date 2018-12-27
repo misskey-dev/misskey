@@ -330,6 +330,7 @@ common/views/components/nav.vue:
   develop: "Développeurs"
   feedback: "Suggestions"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "Détails"
   copy-link: "Copier le lien"
   favorite: "Mettre cette note en favoris"
@@ -1217,6 +1218,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
   followers: "Abonnés"
+  mention: "メンション"
   is-bot: "Ce compte est un Bot"
   years-old: "{age} ans"
   year: "/"
@@ -1511,6 +1513,7 @@ deck/deck.user-column.vue:
   posts: "Notes"
   following: "Suit"
   followers: "Abonnés"
+  mention: "メンション"
   images: "Images"
   activity: "Activité"
   timeline: "Fil d’actualité"
