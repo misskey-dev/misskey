@@ -121,14 +121,15 @@ common:
   reduce-motion: "UI의 애니메이션 줄이기"
   this-setting-is-this-device-only: "이 장치만"
   use-os-default-emojis: "운영체제의 기본 이모지 사용"
-  do-not-use-in-production: '이것은 개발 빌드입니다. 프로덕션 환경에서 사용하지 마십시오.'
+  do-not-use-in-production: "이것은 개발 빌드입니다. 프로덕션 환경에서 사용하지 마십시오."
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "이 유저 정보는 복사본입니다."
   is-remote-post: "이 글 정보는 복사본입니다."
   view-on-remote: "정확한 정보 보기"
   renoted-by: "{user}이(가) 리노트"
   error:
-    title: '오류가 발생했습니다'
-    retry: '다시 시도'
+    title: "오류가 발생했습니다"
+    retry: "다시 시도"
   reversi:
     drawn: "무승부"
     my-turn: "당신의 차례입니다"
@@ -699,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "PC에서 미디어 첨부"
   attach-media-from-drive: "드라이브에서 미디어 첨부"
   attach-cancel: "첨부 취소"
-  insert-a-kao: "v('ω')v"
+  insert-a-kao: "v(\"ω\")v"
   create-poll: "투표 만들기"
   text-remain: "{}문자 남음"
   recent-tags: "최근"
@@ -856,13 +857,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "비밀번호를 입력하여 주십시오"
   console:
-    title: 'API 콘솔'
-    endpoint: '엔드포인트'
-    parameter: '매개변수'
+    title: "API 콘솔"
+    endpoint: "엔드포인트"
+    parameter: "매개변수"
     credential-info: "\"i\" 패러미터는 자동으로 추가됩니다."
-    send: '전송'
-    sending: '응답을 기다리는 중'
-    response: '결과'
+    send: "전송"
+    sending: "응답을 기다리는 중"
+    response: "결과"
 desktop/views/components/settings.apps.vue:
   no-apps: "연결된 어플리케이션이 없습니다"
 common/views/components/drive-settings.vue:
@@ -1457,7 +1458,6 @@ mobile/views/pages/user.vue:
   overview: "요약"
   timeline: "타임라인"
   media: "미디어"
-  is-suspended: "이 사용자는 정지된 상태입니다."
   mute: "뮤트"
   unmute: "뮤트 해제"
   block: "차단"
