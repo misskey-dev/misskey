@@ -299,6 +299,7 @@ common/views/components/cw-button.vue:
   show: "더 보기"
   chars: "{count}문자"
   files: "{count}파일"
+  poll: "アンケート"
 common/views/components/messaging.vue:
   search-user: "사용자 찾기"
   you: "당신"
