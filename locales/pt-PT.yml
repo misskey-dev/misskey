@@ -121,14 +121,15 @@ common:
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "OS標準の絵文字を使用"
-  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+  do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
   error:
-    title: '問題が発生しました'
-    retry: 'やり直す'
+    title: "問題が発生しました"
+    retry: "やり直す"
   reversi:
     drawn: "Empatado"
     my-turn: "Seu turno"
@@ -699,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "PCからメディアを添付"
   attach-media-from-drive: "ドライブからメディアを添付"
   attach-cancel: "添付取り消し"
-  insert-a-kao: "v('ω')v"
+  insert-a-kao: "v(\"ω\")v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
   recent-tags: "最近"
@@ -856,13 +857,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "パスワードを入力してください"
   console:
-    title: 'APIコンソール'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
+    title: "APIコンソール"
+    endpoint: "エンドポイント"
+    parameter: "パラメータ"
     credential-info: "「i」パラメータは自動で付与されます。"
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    send: "送信"
+    sending: "応答待ち"
+    response: "結果"
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 common/views/components/drive-settings.vue:
@@ -1457,7 +1458,6 @@ mobile/views/pages/user.vue:
   overview: "概要"
   timeline: "Linha do tempo"
   media: "Mídia"
-  is-suspended: "Esta conta foi suspensa"
   mute: "ミュート"
   unmute: "ミュート解除"
   block: "ブロック"
