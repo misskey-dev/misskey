@@ -330,6 +330,7 @@ common/views/components/nav.vue:
   develop: "개발자"
   feedback: "피드백"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "상세"
   copy-link: "링크 복사"
   favorite: "이 노트 즐겨찾기"
@@ -1217,6 +1218,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "글"
   following: "팔로잉"
   followers: "팔로워"
+  mention: "メンション"
   is-bot: "이 계정은 Bot입니다"
   years-old: "{age}세"
   year: "년"
@@ -1511,6 +1513,7 @@ deck/deck.user-column.vue:
   posts: "글"
   following: "팔로잉"
   followers: "팔로워"
+  mention: "メンション"
   images: "이미지"
   activity: "활동"
   timeline: "타임라인"
