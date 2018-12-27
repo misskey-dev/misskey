@@ -299,6 +299,7 @@ common/views/components/cw-button.vue:
   show: "Pokaż więcej"
   chars: "{count} znaków"
   files: "{count} plików"
+  poll: "アンケート"
 common/views/components/messaging.vue:
   search-user: "Znajdź użytkownika"
   you: "Ty"
