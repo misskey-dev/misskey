@@ -19,6 +19,13 @@ export default Vue.extend({
 			return concat(intersperse([null], [
 				[
 					[{
+						icon: 'at',
+						text: this.$t('mention'),
+						action: this.mention
+					}]
+				],
+				[
+					[{
 						icon: 'info-circle',
 						text: this.$t('detail'),
 						action: this.detail
@@ -66,6 +73,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		mention() {
+			this.$post({ mention: this.note.user });
+		},
+
 		detail() {
 			this.$router.push(`/notes/${this.note.id}`);
 		},

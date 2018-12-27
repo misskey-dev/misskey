@@ -55,6 +55,7 @@
 						<b>{{ user.followersCount | number }}</b>
 						<i>{{ $t('followers') }}</i>
 					</a>
+					<button @click="mention"><fa icon="at"/></button>
 				</div>
 			</div>
 		</header>
@@ -124,6 +125,10 @@ export default Vue.extend({
 				Progress.done();
 				document.title = `${Vue.filter('userName')(this.user)} | ${this.$root.instanceName}`;
 			});
+		},
+
+		mention() {
+			this.$post({ mention: this.user });
 		},
 
 		menu() {
@@ -364,6 +369,9 @@ main
 
 					> i
 						font-size 14px
+
+				> button
+					color var(--text)
 
 	> nav
 		position -webkit-sticky

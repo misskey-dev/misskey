@@ -92,6 +92,10 @@ export default Vue.extend({
 			type: Object,
 			required: false
 		},
+		mention: {
+			type: Object,
+			required: false
+		},
 		initialText: {
 			type: String,
 			required: false
@@ -178,6 +182,11 @@ export default Vue.extend({
 			this.text = this.initialText;
 		}
 
+		if (this.mention) {
+			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
+			this.text += ' ';
+		}
+
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
@@ -215,7 +224,7 @@ export default Vue.extend({
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
-			if (!this.instant) {
+			if (!this.instant && !this.mention) {
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 				if (draft) {
 					this.text = draft.data.text;
