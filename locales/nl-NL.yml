@@ -700,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Media bijvoegen van je computer"
   attach-media-from-drive: "Media bijvoegen uit je Drive"
   attach-cancel: "Bijlage annuleren"
-  insert-a-kao: "v(\"ω\")v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Peiling creëren"
   text-remain: "{} resterende tekens"
   recent-tags: "最近"
