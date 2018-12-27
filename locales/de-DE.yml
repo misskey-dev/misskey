@@ -700,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Medien von deinem PC hinzufügen"
   attach-media-from-drive: "Medien von deinem Speicher hinzufügen"
   attach-cancel: "Hinzufügen abbrechen"
-  insert-a-kao: "v(\"ω\")v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Eine Abstimmung erstellen"
   text-remain: "{} Zeichen verbleibend"
   recent-tags: "最近"
