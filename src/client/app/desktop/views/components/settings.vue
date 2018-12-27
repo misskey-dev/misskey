@@ -1,6 +1,6 @@
 <template>
 <div class="mk-settings">
-	<div class="nav">
+	<div class="nav" :class="{ inWindow }">
 		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><fa icon="user" fixed-width/>{{ $t('profile') }}</p>
 		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><fa icon="palette" fixed-width/>{{ $t('theme') }}</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><fa icon="desktop" fixed-width/>Web</p>
@@ -313,6 +313,11 @@ export default Vue.extend({
 		initialPage: {
 			type: String,
 			required: false
+		},
+		inWindow: {
+			type: Boolean,
+			required: false,
+			default: true
 		}
 	},
 	data() {
@@ -598,8 +603,10 @@ export default Vue.extend({
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		box-shadow var(--shadowRight)
 		z-index 1
+
+		&.inWindow
+			box-shadow var(--shadowRight)
 
 		> p
 			display block

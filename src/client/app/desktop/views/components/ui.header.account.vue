@@ -51,12 +51,12 @@
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
-				<li @click="settings">
-					<p>
+				<li>
+					<router-link to="/i/settings">
 						<i><fa icon="cog"/></i>
 						<span>{{ $t('settings') }}</span>
 						<i><fa icon="angle-right"/></i>
-					</p>
+					</router-link>
 				</li>
 				<li v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
 					<a href="/admin">
@@ -152,10 +152,6 @@ export default Vue.extend({
 		followRequests() {
 			this.close();
 			this.$root.new(MkFollowRequestsWindow);
-		},
-		settings() {
-			this.close();
-			this.$root.new(MkSettingsWindow);
 		},
 		signout() {
 			this.$root.signout();

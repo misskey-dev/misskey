@@ -29,6 +29,7 @@ import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
 import MkNotFound from '../common/views/pages/not-found.vue';
+import MkSettings from './views/pages/settings.vue';
 
 import Ctx from './views/components/context-menu.vue';
 import PostFormWindow from './views/components/post-form-window.vue';
@@ -140,6 +141,7 @@ init(async (launch) => {
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
+			{ path: '/i/settings', component: MkSettings },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', name: 'tag', component: MkTag },
