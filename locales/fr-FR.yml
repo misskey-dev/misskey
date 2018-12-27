@@ -670,10 +670,12 @@ desktop/views/components/note-detail.vue:
   location: "Géolocalisation"
   renote: "Republier"
   add-reaction: "Ajouter votre reaction"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "Répondre"
   renote: "Partager"
   add-reaction: "Ajouter votre réaction"
+  undo-reaction: "リアクション解除"
   detail: "Détails"
   private: "Cette publication est privée"
   deleted: "Cette publication a été supprimée"
