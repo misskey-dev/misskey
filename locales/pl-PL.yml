@@ -531,7 +531,7 @@ common/views/widgets/tips.vue:
   tips-line23: "まゆかわいいよまゆ"
   tips-line24: "Misskey zaczął działać w 2014."
   tips-line25: "Możesz otrzymywać powiadomienia nawet jeżeli Misskey nie jest otwarty w obsługiwanej przeglądarce."
-common/views/pages/404.vue:
+common/views/pages/not-found.vue:
   page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "Zalogowany jako {}"
