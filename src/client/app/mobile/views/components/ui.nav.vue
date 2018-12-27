@@ -104,7 +104,7 @@ export default Vue.extend({
 			}).then(async ({ canceled, result: query }) => {
 				if (canceled) return;
 
-				const q = this.q.trim();
+				const q = query.trim();
 				if (q.startsWith('@')) {
 					this.$router.push(`/${q}`);
 				} else if (q.startsWith('#')) {
