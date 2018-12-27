@@ -330,6 +330,7 @@ common/views/components/nav.vue:
   develop: "开发者"
   feedback: "反馈"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "详细信息"
   copy-link: "复制链接"
   favorite: "收藏这个投稿"
@@ -1217,6 +1218,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "帖子"
   following: "关注中"
   followers: "关注者"
+  mention: "メンション"
   is-bot: "这个账户是Bot"
   years-old: "{age}岁"
   year: "年"
@@ -1511,6 +1513,7 @@ deck/deck.user-column.vue:
   posts: "帖子"
   following: "关注中"
   followers: "关注者"
+  mention: "メンション"
   images: "图片"
   activity: "活动"
   timeline: "时间线"
