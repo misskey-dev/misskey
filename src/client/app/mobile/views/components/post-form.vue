@@ -19,8 +19,8 @@
 				</span>
 				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
 			</div>
-			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="'cw'">
-			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
+			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="{ model: 'cw' }">
+			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }"></textarea>
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 					<div class="file" v-for="file in files" :key="file.id">
@@ -66,6 +66,7 @@ import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
+import extractMentions from '../../../../../misc/extract-mentions';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/post-form.vue'),
@@ -174,7 +175,7 @@ export default Vue.extend({
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
-			ast.filter(t => t.type == 'mention').forEach(x => {
+			for (const x of extractMentions(ast)) {
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
@@ -185,7 +186,7 @@ export default Vue.extend({
 				if (this.text.indexOf(`${mention} `) != -1) return;
 
 				this.text += `${mention} `;
-			});
+			}
 		}
 
 		// デフォルト公開範囲
@@ -196,9 +197,8 @@ export default Vue.extend({
 			this.visibility = this.reply.visibility;
 		}
 
-		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
-		if (this.reply && this.reply.visibility === 'specified') {
-			this.$root.api('users/show', {	userId: this.reply.userId }).then(user => {
+		if (this.reply) {
+			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
 		}
@@ -241,7 +241,7 @@ export default Vue.extend({
 			this.$chooseDriveFile({
 				multiple: true
 			}).then(files => {
-				files.forEach(this.attachMedia);
+				for (const x of files) this.attachMedia(x);
 			});
 		},
 
@@ -256,7 +256,7 @@ export default Vue.extend({
 		},
 
 		onChangeFile() {
-			Array.from((this.$refs.file as any).files).forEach(this.upload);
+			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
 		},
 
 		onPollUpdate() {

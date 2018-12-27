@@ -79,6 +79,7 @@ export default Vue.extend({
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
+		this.connection.on('deleted', this.onDeleted);
 
 		if (this.isNaked) {
 			window.addEventListener('scroll', this.onScroll, { passive: true });
@@ -196,12 +197,19 @@ export default Vue.extend({
 
 		onRead(ids) {
 			if (!Array.isArray(ids)) ids = [ids];
-			ids.forEach(id => {
+			for (const id of ids) {
 				if (this.messages.some(x => x.id == id)) {
 					const exist = this.messages.map(x => x.id).indexOf(id);
 					this.messages[exist].isRead = true;
 				}
-			});
+			}
+		},
+
+		onDeleted(id) {
+			const msg = this.messages.find(m => m.id === id);
+			if (msg) {
+				this.messages = this.messages.filter(m => m.id !== msg.id);
+			}
 		},
 
 		isBottom() {
@@ -248,13 +256,13 @@ export default Vue.extend({
 
 		onVisibilitychange() {
 			if (document.hidden) return;
-			this.messages.forEach(message => {
+			for (const message of this.messages) {
 				if (message.userId !== this.$store.state.i.id && !message.isRead) {
 					this.connection.send('read', {
 						id: message.id
 					});
 				}
-			});
+			}
 		}
 	}
 });

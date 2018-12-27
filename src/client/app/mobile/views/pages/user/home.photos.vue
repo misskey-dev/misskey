@@ -26,20 +26,27 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		const image = [
+			'image/jpeg',
+			'image/png',
+			'image/gif'
+		];
 		this.$root.api('users/notes', {
 			userId: this.user.id,
-			withFiles: true,
-			limit: 6,
+			fileType: image,
+			limit: 9,
 			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
-			notes.forEach(note => {
-				note.media.forEach(media => {
-					if (this.images.length < 9) this.images.push({
-						note,
-						media
-					});
-				});
-			});
+			for (const note of notes) {
+				for (const media of note.media) {
+					if (this.images.length < 9) {
+						this.images.push({
+							note,
+							media
+						});
+					}
+				}
+			}
 			this.fetching = false;
 		});
 	}

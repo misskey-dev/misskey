@@ -42,7 +42,7 @@ export const meta = {
 		},
 
 		visibleUserIds: {
-			validator: $.arr($.type(ID)).optional.unique().min(1),
+			validator: $.arr($.type(ID)).optional.unique().min(0),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
@@ -79,6 +79,30 @@ export const meta = {
 			default: false,
 			desc: {
 				'ja-JP': 'ローカルのみに投稿か否か。'
+			}
+		},
+
+		noExtractMentions: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': '本文からメンションを展開しないか否か。'
+			}
+		},
+
+		noExtractHashtags: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': '本文からハッシュタグを展開しないか否か。'
+			}
+		},
+
+		noExtractEmojis: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': '本文からカスタム絵文字を展開しないか否か。'
 			}
 		},
 
@@ -237,6 +261,9 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		localOnly: ps.localOnly,
 		visibility: ps.visibility,
 		visibleUsers,
+		apMentions: ps.noExtractMentions ? [] : undefined,
+		apHashtags: ps.noExtractHashtags ? [] : undefined,
+		apEmojis: ps.noExtractEmojis ? [] : undefined,
 		geo: ps.geo
 	})
 	.then(note => pack(note, user))

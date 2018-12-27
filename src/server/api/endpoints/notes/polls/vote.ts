@@ -102,12 +102,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			}
 		})
 		.then(watchers => {
-			watchers.forEach(watcher => {
+			for (const watcher of watchers) {
 				notify(watcher.userId, user._id, 'poll_vote', {
 					noteId: note._id,
 					choice: ps.choice
 				});
-			});
+			}
 		});
 
 	// この投稿をWatchする

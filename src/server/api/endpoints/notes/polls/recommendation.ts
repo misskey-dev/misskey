@@ -39,6 +39,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	const notes = await Note
 		.find({
+			'_user.host': null,
 			_id: {
 				$nin: nin
 			},

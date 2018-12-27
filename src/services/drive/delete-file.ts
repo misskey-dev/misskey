@@ -33,11 +33,24 @@ export default async function(file: IDriveFile, isExpired = false) {
 		files_id: file._id
 	});
 
-	await DriveFile.update({ _id: file._id }, {
-		$set: {
-			'metadata.deletedAt': new Date(),
-			'metadata.isExpired': isExpired
+	const set = {
+		metadata: {
+			deletedAt: new Date(),
+			isExpired: isExpired
 		}
+	} as any;
+
+	// リモートファイル期限切れ削除後は直リンクにする
+	if (isExpired && file.metadata && file.metadata._user && file.metadata._user.host != null) {
+		set.metadata.withoutChunks = true;
+		set.metadata.isRemote = true;
+		set.metadata.url = file.metadata.uri;
+		set.metadata.thumbnailUrl = undefined;
+		set.metadata.webpublicUrl = undefined;
+	}
+
+	await DriveFile.update({ _id: file._id }, {
+		$set: set
 	});
 
 	//#region サムネイルもあれば削除

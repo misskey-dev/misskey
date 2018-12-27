@@ -92,6 +92,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import MkUserListsWindow from './user-lists-window.vue';
+import MkUserListWindow from './user-list-window.vue';
 import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
@@ -120,15 +121,15 @@ export default Vue.extend({
 		},
 		open() {
 			this.isOpen = true;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.addEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 		close() {
 			this.isOpen = false;
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.removeEventListener('mousedown', this.onMousedown);
-			});
+			}
 		},
 		onMousedown(e) {
 			e.preventDefault();
@@ -143,7 +144,9 @@ export default Vue.extend({
 			this.close();
 			const w = this.$root.new(MkUserListsWindow);
 			w.$once('choosen', list => {
-				this.$router.push(`i/lists/${ list.id }`);
+				this.$root.new(MkUserListWindow, {
+					list
+				});
 			});
 		},
 		followRequests() {

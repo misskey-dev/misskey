@@ -3,7 +3,7 @@
 	<header :class="$style.header">
 		<h1>#{{ $route.params.tag }}</h1>
 	</header>
-	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q }) }}</p>
+	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q: $route.params.tag }) }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
@@ -83,7 +83,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) {
+					(this.$refs.timeline as any).append(n);
+				}
 				this.moreFetching = false;
 			});
 

@@ -8,14 +8,16 @@ import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
+import { ObjectID } from 'mongodb';
 
 import docs from './docs';
+import packFeed from './feed';
 import User from '../../models/user';
 import parseAcct from '../../misc/acct/parse';
 import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
 import getNoteSummary from '../../misc/get-note-summary';
-const consts = require('../../const.json');
+import fetchMeta from '../../misc/fetch-meta';
 
 const client = `${__dirname}/../../client/`;
 
@@ -26,8 +28,7 @@ const app = new Koa();
 app.use(views(__dirname + '/views', {
 	extension: 'pug',
 	options: {
-		config,
-		themeColor: consts.themeColor
+		config
 	}
 }));
 
@@ -83,6 +84,52 @@ router.use('/docs', docs.routes());
 // URL preview endpoint
 router.get('/url', require('./url-preview'));
 
+const getFeed = async (acct: string) => {
+	const { username, host } = parseAcct(acct);
+	const user = await User.findOne({
+		usernameLower: username.toLowerCase(),
+		host
+	});
+
+	return user && await packFeed(user);
+};
+
+// Atom
+router.get('/@:user.atom', async ctx => {
+	const feed = await getFeed(ctx.params.user);
+
+	if (feed) {
+		ctx.set('Content-Type', 'application/atom+xml; charset=utf-8');
+		ctx.body = feed.atom1();
+	} else {
+		ctx.status = 404;
+	}
+});
+
+// RSS
+router.get('/@:user.rss', async ctx => {
+	const feed = await getFeed(ctx.params.user);
+
+	if (feed) {
+		ctx.set('Content-Type', 'application/rss+xml; charset=utf-8');
+		ctx.body = feed.rss2();
+	} else {
+		ctx.status = 404;
+	}
+});
+
+// JSON
+router.get('/@:user.json', async ctx => {
+	const feed = await getFeed(ctx.params.user);
+
+	if (feed) {
+		ctx.set('Content-Type', 'application/json; charset=utf-8');
+		ctx.body = feed.json1();
+	} else {
+		ctx.status = 404;
+	}
+});
+
 //#region for crawlers
 // User
 router.get('/@:user', async (ctx, next) => {
@@ -103,27 +150,32 @@ router.get('/@:user', async (ctx, next) => {
 
 // Note
 router.get('/notes/:note', async ctx => {
-	const note = await Note.findOne({ _id: ctx.params.note });
+	if (ObjectID.isValid(ctx.params.note)) {
+		const note = await Note.findOne({ _id: ctx.params.note });
 
-	if (note != null) {
-		const _note = await packNote(note);
-		await ctx.render('note', {
-			note: _note,
-			summary: getNoteSummary(_note)
-		});
-		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-	} else {
-		ctx.status = 404;
+		if (note) {
+			const _note = await packNote(note);
+			await ctx.render('note', {
+				note: _note,
+				summary: getNoteSummary(_note)
+			});
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+
+			return;
+		}
 	}
+
+	ctx.status = 404;
 });
 //#endregion
 
 // Render base html for all requests
 router.get('*', async ctx => {
-	await send(ctx, `app/base.html`, {
-		root: client,
-		maxage: ms('5m')
+	const meta = await fetchMeta();
+	await ctx.render('base', {
+		img: meta.bannerUrl
 	});
+	ctx.set('Cache-Control', 'public, max-age=86400');
 });
 
 // Register router

@@ -6,6 +6,7 @@
 			<div class="value" ref="passwordMetar"></div>
 		</div>
 		<span class="label" ref="label"><slot></slot></span>
+		<span class="title" ref="title"><slot name="title"></slot></span>
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
 			<input ref="input"
@@ -280,6 +281,20 @@ root(fill)
 			//will-change transform
 			transform-origin top left
 			transform scale(1)
+
+		> .title
+			position absolute
+			z-index 1
+			top fill ? -24px : -17px
+			left 0 !important
+			pointer-events none
+			font-size 16px
+			line-height 32px
+			color var(--inputLabel)
+			pointer-events none
+			//will-change transform
+			transform-origin top left
+			transform scale(.75)
 
 		> input
 			display block

@@ -80,8 +80,8 @@ export default (opts: Opts = {}) => ({
 				const ast = parse(this.appearNote.text);
 				// TODO: 再帰的にURL要素がないか調べる
 				return unique(ast
-					.filter(t => ((t.name == 'url' || t.name == 'link') && t.props.url && !t.props.silent))
-					.map(t => t.props.url));
+					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
+					.map(t => t.node.props.url));
 			} else {
 				return null;
 			}

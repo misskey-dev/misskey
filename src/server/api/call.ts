@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks';
-import limitter from './limitter';
+import limiter from './limiter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 import endpoints from './endpoints';
@@ -39,7 +39,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 
 	if (ep.meta.requireCredential && ep.meta.limit) {
 		try {
-			await limitter(ep, user); // Rate limit
+			await limiter(ep, user); // Rate limit
 		} catch (e) {
 			// drop request if limit exceeded
 			return rej('RATE_LIMIT_EXCEEDED');

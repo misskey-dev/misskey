@@ -138,6 +138,19 @@ if ((config as any).user_recommendation) {
 		}
 	});
 }
+if ((config as any).sw) {
+	Meta.findOne({}).then(m => {
+		if (m != null && m.enableServiceWorker == null) {
+			Meta.update({}, {
+				$set: {
+					enableServiceWorker: true,
+					swPublicKey: (config as any).sw.public_key,
+					swPrivateKey: (config as any).sw.private_key
+				}
+			});
+		}
+	});
+}
 
 export type IMeta = {
 	name?: string;
@@ -173,6 +186,7 @@ export type IMeta = {
 	disableLocalTimeline?: boolean;
 	hidedTags?: string[];
 	bannerUrl?: string;
+	errorImageUrl?: string;
 
 	cacheRemoteFiles?: boolean;
 
@@ -222,4 +236,8 @@ export type IMeta = {
 	smtpPort?: number;
 	smtpUser?: string;
 	smtpPass?: string;
+
+	enableServiceWorker?: boolean;
+	swPublicKey?: string;
+	swPrivateKey?: string;
 };

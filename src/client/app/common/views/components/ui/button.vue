@@ -1,7 +1,7 @@
 <template>
 <component class="dmtdnykelhudezerjlfpbhgovrgnqqgr"
 	:is="link ? 'a' : 'button'"
-	:class="[styl, { inline, primary }]"
+	:class="{ inline, primary, wait }"
 	:type="type"
 	@click="$emit('click')"
 	@mousedown="onMousedown"
@@ -48,11 +48,11 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
-	},
-	data() {
-		return {
-			styl: 'fill'
-		};
+		wait: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 	mounted() {
 		if (this.autofocus) {
@@ -121,6 +121,24 @@ export default Vue.extend({
 	box-shadow none
 	text-decoration none
 	user-select none
+	color var(--text)
+	background var(--buttonBg)
+
+	&:not(:disabled):hover
+		background var(--buttonHoverBg)
+
+	&:not(:disabled):active
+		background var(--buttonActiveBg)
+
+	&.primary
+		color var(--primaryForeground)
+		background var(--primary)
+
+		&:not(:disabled):hover
+			background var(--primaryLighten5)
+
+		&:not(:disabled):active
+			background var(--primaryDarken5)
 
 	*
 		pointer-events none
@@ -152,35 +170,25 @@ export default Vue.extend({
 	&.primary
 		font-weight bold
 
-	&.fill
-		color var(--text)
-		background var(--buttonBg)
+	&.wait
+		background linear-gradient(
+			45deg,
+			var(--primaryDarken10) 25%,
+			var(--primary)              25%,
+			var(--primary)              50%,
+			var(--primaryDarken10) 50%,
+			var(--primaryDarken10) 75%,
+			var(--primary)              75%,
+			var(--primary)
+		)
+		background-size 32px 32px
+		animation stripe-bg 1.5s linear infinite
+		opacity 0.7
+		cursor wait
 
-		&:not(:disabled):hover
-			background var(--buttonHoverBg)
-
-		&:not(:disabled):active
-			background var(--buttonActiveBg)
-
-		&.primary
-			color var(--primaryForeground)
-			background var(--primary)
-
-			&:not(:disabled):hover
-				background var(--primaryLighten5)
-
-			&:not(:disabled):active
-				background var(--primaryDarken5)
-
-	&:not(.fill)
-		color var(--primary)
-		background none
-
-		&:not(:disabled):hover
-			color var(--primaryDarken5)
-
-		&:not(:disabled):active
-			background var(--primaryAlpha03)
+		@keyframes stripe-bg
+			from {background-position: 0 0;}
+			to   {background-position: -64px 32px;}
 
 	> .ripples
 		position absolute

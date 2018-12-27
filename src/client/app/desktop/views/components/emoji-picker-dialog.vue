@@ -43,9 +43,9 @@ export default Vue.extend({
 			this.$el.style.left = x + 'px';
 			this.$el.style.top = y + 'px';
 
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.addEventListener('mousedown', this.onMousedown);
-			});
+			}
 		});
 	},
 
@@ -62,9 +62,9 @@ export default Vue.extend({
 		},
 
 		close() {
-			Array.from(document.querySelectorAll('body *')).forEach(el => {
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
 				el.removeEventListener('mousedown', this.onMousedown);
-			});
+			}
 
 			this.$emit('closed');
 			this.destroyDom();

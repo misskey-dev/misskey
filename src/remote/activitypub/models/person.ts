@@ -17,6 +17,8 @@ import registerInstance from '../../../services/register-instance';
 import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
+import { ITag } from './tag';
+import Following from '../../../models/following';
 
 const log = debug('misskey:activitypub');
 
@@ -135,6 +137,10 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
+	const fields = await extractFields(person.attachment).catch(e => {
+		console.log(`cat not extract fields: ${e}`);
+	});
+
 	const isBot = object.type == 'Service';
 
 	// Create user
@@ -159,11 +165,12 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 				publicKeyPem: person.publicKey.publicKeyPem
 			},
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox,
+			sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 			featured: person.featured,
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
+			fields,
 			isBot: isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
@@ -325,12 +332,16 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
+	const fields = await extractFields(person.attachment).catch(e => {
+		console.log(`cat not extract fields: ${e}`);
+	});
+
 	// Update user
 	await User.update({ _id: exist._id }, {
 		$set: {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox,
+			sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 			featured: person.featured,
 			avatarId: avatar ? avatar._id : null,
 			bannerId: banner ? banner._id : null,
@@ -346,6 +357,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 			name: person.name,
 			url: person.url,
 			endpoints: person.endpoints,
+			fields,
 			isBot: object.type == 'Service',
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
@@ -354,6 +366,15 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 				id: person.publicKey.id,
 				publicKeyPem: person.publicKey.publicKeyPem
 			},
+		}
+	});
+
+	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
+	await Following.update({
+		followerId: exist._id
+	}, {
+		$set: {
+			'_follower.sharedInbox': person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined)
 		}
 	});
 
@@ -382,6 +403,18 @@ export async function resolvePerson(uri: string, verifier?: string, resolver?: R
 	return await createPerson(uri, resolver);
 }
 
+export async function extractFields(attachments: ITag[]) {
+	if (!attachments) return [];
+
+	return attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value)
+		.map(a => {
+			return {
+				name: a.name,
+				value: htmlToMFM(a.value)
+			};
+		});
+}
+
 export async function updateFeatured(userId: mongo.ObjectID) {
 	const user = await User.findOne({ _id: userId });
 	if (!isRemoteUser(user)) return;
@@ -408,7 +441,7 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 
 	await User.update({ _id: user._id }, {
 		$set: {
-			pinnedNoteIds: featuredNotes.map(note => note._id)
+			pinnedNoteIds: featuredNotes.filter(note => note != null).map(note => note._id)
 		}
 	});
 }

@@ -1,5 +1,5 @@
 import config from '../../../config';
-import { ILocalUser, IUser } from "../../../models/user";
+import { ILocalUser, IUser } from '../../../models/user';
 
 export default (object: any, user: ILocalUser | IUser) => ({
 	type: 'Undo',

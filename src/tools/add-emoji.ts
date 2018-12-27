@@ -1,5 +1,5 @@
 import * as debug from 'debug';
-import Emoji from "../models/emoji";
+import Emoji from '../models/emoji';
 
 debug.enable('*');
 

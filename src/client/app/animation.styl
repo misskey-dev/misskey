@@ -10,3 +10,19 @@
 	opacity: 0;
 	transform: scaleY(0);
 }
+
+.entranceFromTop {
+	animation-duration: 0.5s;
+	animation-name: entranceFromTop;
+}
+
+@keyframes entranceFromTop {
+	from {
+		opacity: 0;
+		transform: translateY(-64px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

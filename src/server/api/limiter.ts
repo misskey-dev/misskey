@@ -5,7 +5,7 @@ import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
 import { IUser } from '../../models/user';
 
-const log = debug('misskey:limitter');
+const log = debug('misskey:limiter');
 
 export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) => {
 	// Redisがインストールされてない場合は常に許可

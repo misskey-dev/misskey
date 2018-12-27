@@ -95,10 +95,31 @@ export default prop => ({
 						Vue.set(this.$_ns_target.reactionCounts, reaction, 0);
 					}
 
+					// Increment the count
 					this.$_ns_target.reactionCounts[reaction]++;
 
 					if (body.userId == this.$store.state.i.id) {
 						Vue.set(this.$_ns_target, 'myReaction', reaction);
+					}
+					break;
+				}
+
+				case 'unreacted': {
+					const reaction = body.reaction;
+
+					if (this.$_ns_target.reactionCounts == null) {
+						return;
+					}
+
+					if (this.$_ns_target.reactionCounts[reaction] == null) {
+						return;
+					}
+
+					// Decrement the count
+					if (this.$_ns_target.reactionCounts[reaction] > 0) this.$_ns_target.reactionCounts[reaction]--;
+
+					if (body.userId == this.$store.state.i.id) {
+						Vue.set(this.$_ns_target, 'myReaction', null);
 					}
 					break;
 				}

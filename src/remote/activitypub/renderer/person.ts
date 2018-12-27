@@ -43,7 +43,7 @@ export default async (user: ILocalUser) => {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>@${user.discord.username}#${user.discord.discriminator}</span></a>`
+			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`
 		});
 	}
 
@@ -63,6 +63,7 @@ export default async (user: ILocalUser) => {
 		following: `${id}/following`,
 		featured: `${id}/collections/featured`,
 		sharedInbox: `${config.url}/inbox`,
+		endpoints: { sharedInbox: `${config.url}/inbox` },
 		url: `${config.url}/@${user.username}`,
 		preferredUsername: user.username,
 		name: user.name,

@@ -62,6 +62,8 @@ self.addEventListener('push', ev => {
 
 self.addEventListener('message', ev => {
 	if (ev.data == 'clear') {
-		caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+		caches.keys().then(keys => {
+			for (const key of keys) caches.delete(key);
+		});
 	}
 });

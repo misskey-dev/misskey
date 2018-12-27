@@ -45,9 +45,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.$nextTick(() => {
-			this.$store.commit('setUiHeaderHeight', this.$refs.root.offsetHeight);
-		});
+		this.$store.commit('setUiHeaderHeight', 48);
 
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');

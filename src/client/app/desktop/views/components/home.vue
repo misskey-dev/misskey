@@ -102,23 +102,23 @@ const defaultDesktopHomeWidgets = {
 //#region Construct home data
 const _defaultDesktopHomeWidgets = [];
 
-defaultDesktopHomeWidgets.left.forEach(widget => {
+for (const widget of defaultDesktopHomeWidgets.left) {
 	_defaultDesktopHomeWidgets.push({
 		name: widget,
 		id: uuid(),
 		place: 'left',
 		data: {}
 	});
-});
+}
 
-defaultDesktopHomeWidgets.right.forEach(widget => {
+for (const widget of defaultDesktopHomeWidgets.right) {
 	_defaultDesktopHomeWidgets.push({
 		name: widget,
 		id: uuid(),
 		place: 'right',
 		data: {}
 	});
-});
+}
 //#endregion
 
 export default Vue.extend({
@@ -220,8 +220,8 @@ export default Vue.extend({
 			const left = this.widgets.left;
 			const right = this.widgets.right;
 			this.$store.commit('settings/setHome', left.concat(right));
-			left.forEach(w => w.place = 'left');
-			right.forEach(w => w.place = 'right');
+			for (const w of left) w.place = 'left';
+			for (const w of right) w.place = 'right';
 			this.$root.api('i/update_home', {
 				home: this.home
 			});

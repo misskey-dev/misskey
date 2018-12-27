@@ -1,4 +1,4 @@
-import { capitalize, toUpperCase } from "../prelude/string";
+import { capitalize, toUpperCase } from '../prelude/string';
 
 function escape(text: string) {
 	return text
@@ -307,7 +307,7 @@ const elements: Element[] = [
 	}
 ];
 
-// specify lang is todo
+// TODO: specify lang
 export default (source: string, lang?: string): string => {
 	let code = source;
 	let html = '';

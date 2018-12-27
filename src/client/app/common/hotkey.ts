@@ -28,15 +28,15 @@ const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): a
 			shift: false
 		} as pattern;
 
-		part.trim().split('+').forEach(key => {
-			key = key.trim().toLowerCase();
+		const keys = part.trim().split('+').map(x => x.trim().toLowerCase());
+		for (const key of keys) {
 			switch (key) {
 				case 'ctrl': pattern.ctrl = true; break;
 				case 'alt': pattern.alt = true; break;
 				case 'shift': pattern.shift = true; break;
 				default: pattern.which = keyCode(key).map(k => k.toLowerCase());
 			}
-		});
+		}
 
 		return pattern;
 	});

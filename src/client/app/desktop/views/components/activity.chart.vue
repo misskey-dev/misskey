@@ -57,7 +57,10 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.data.forEach(d => d.total = d.notes + d.replies + d.renotes);
+		for (const d of this.data) {
+			d.total = d.notes + d.replies + d.renotes;
+		}
+
 		this.render();
 	},
 	methods: {

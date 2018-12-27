@@ -3,9 +3,9 @@
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<!-- <button class="delete-button" v-if="isMe" :title="$t('@.delete')">
-				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
-			</button> -->
+			<button class="delete-button" v-if="isMe" :title="$t('@.delete')" @click="del">
+				<img src="/assets/desktop/remove.png" alt="Delete"/>
+			</button>
 			<div class="content" v-if="!message.isDeleted">
 				<misskey-flavored-markdown class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
@@ -16,7 +16,7 @@
 					</a>
 				</div>
 			</div>
-			<div class="content" v-if="message.isDeleted">
+			<div class="content" v-else>
 				<p class="is-deleted">{{ $t('deleted') }}</p>
 			</div>
 		</div>
@@ -52,11 +52,18 @@ export default Vue.extend({
 			if (this.message.text) {
 				const ast = parse(this.message.text);
 				return unique(ast
-					.filter(t => ((t.name == 'url' || t.name == 'link') && t.props.url && !t.silent))
-					.map(t => t.props.url));
+					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
+					.map(t => t.node.props.url));
 			} else {
 				return null;
 			}
+		}
+	},
+	methods: {
+		del() {
+			this.$root.api('messaging/messages/delete', {
+				messageId: this.message.id
+			});
 		}
 	}
 });

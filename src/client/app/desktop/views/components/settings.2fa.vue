@@ -1,6 +1,6 @@
 <template>
 <div class="2fa">
-	<p style="margin-top:0;">{{ $t('intro') }}<a :href="$t('href')" target="_blank">{{ $t('detail') }}</a></p>
+	<p style="margin-top:0;">{{ $t('intro') }}<a :href="$t('url')" target="_blank">{{ $t('detail') }}</a></p>
 	<ui-info warn>{{ $t('caution') }}</ui-info>
 	<p v-if="!data && !$store.state.i.twoFactorEnabled"><ui-button @click="register">{{ $t('register') }}</ui-button></p>
 	<template v-if="$store.state.i.twoFactorEnabled">
@@ -9,7 +9,7 @@
 	</template>
 	<div v-if="data">
 		<ol>
-			<li>{{ $t('authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:@howtoinstall') }}</a></li>
+			<li>{{ $t('authenticator') }}<a href="https://support.google.com/accounts/answer/1066447" target="_blank">{{ $t('howtoinstall') }}</a></li>
 			<li>{{ $t('scan') }}<br><img :src="data.qr"></li>
 			<li>{{ $t('done') }}<br>
 				<input type="number" v-model="token" class="ui">

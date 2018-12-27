@@ -47,16 +47,6 @@ En mode root :
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Télécharge la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Installez les dépendances de misskey.
 
-*(optionnel)* Génération des clés VAPID
-----------------------------------------------------------------
-Si vous désirez activer ServiceWorker, vous devez générer les clés VAPID :
-Unless you have set your global node_modules location elsewhere, vous devez lancer ceci en mode root.
-
-``` shell
-npm install web-push -g
-web-push generate-vapid-keys
-```
-
 *5.* Création du fichier de configuration
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copiez le fichier `.config/example.yml` et renommez-le `default.yml`.

@@ -91,5 +91,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	res(await packMany(mentions, user));
 
-	mentions.forEach(note => read(user._id, note._id));
+	for (const note of mentions) {
+		read(user._id, note._id);
+	}
 }));

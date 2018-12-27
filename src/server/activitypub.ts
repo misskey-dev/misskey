@@ -1,4 +1,4 @@
-import * as mongo from 'mongodb';
+import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
@@ -7,9 +7,11 @@ import { createHttpJob } from '../queue';
 import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
 import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
+import Emoji from '../models/emoji';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
+import renderEmoji from '../remote/activitypub/renderer/emoji';
 import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
 import Following from './activitypub/following';
@@ -64,8 +66,13 @@ router.post('/users/:user/inbox', json(), inbox);
 router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
+	if (!ObjectID.isValid(ctx.params.note)) {
+		ctx.status = 404;
+		return;
+	}
+
 	const note = await Note.findOne({
-		_id: new mongo.ObjectID(ctx.params.note),
+		_id: new ObjectID(ctx.params.note),
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
 	});
@@ -82,8 +89,13 @@ router.get('/notes/:note', async (ctx, next) => {
 
 // note activity
 router.get('/notes/:note/activity', async ctx => {
+	if (!ObjectID.isValid(ctx.params.note)) {
+		ctx.status = 404;
+		return;
+	}
+
 	const note = await Note.findOne({
-		_id: new mongo.ObjectID(ctx.params.note),
+		_id: new ObjectID(ctx.params.note),
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
 	});
@@ -112,7 +124,12 @@ router.get('/users/:user/collections/featured', Featured);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
 
 	const user = await User.findOne({
 		_id: userId,
@@ -146,7 +163,12 @@ async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 }
 
 router.get('/users/:user', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
 
 	const user = await User.findOne({
 		_id: userId,
@@ -167,5 +189,22 @@ router.get('/@:user', async (ctx, next) => {
 	await userInfo(ctx, user);
 });
 //#endregion
+
+// emoji
+router.get('/emojis/:emoji', async ctx => {
+	const emoji = await Emoji.findOne({
+		host: null,
+		name: ctx.params.emoji
+	});
+
+	if (emoji === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = pack(await renderEmoji(emoji));
+	ctx.set('Cache-Control', 'public, max-age=180');
+	setResponseType(ctx);
+});
 
 export default router;

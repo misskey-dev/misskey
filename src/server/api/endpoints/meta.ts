@@ -42,6 +42,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		clientVersion: client.version,
 
 		name: instance.name,
+		uri: config.url,
 		description: instance.description,
 		langs: instance.langs,
 
@@ -63,8 +64,9 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		cacheRemoteFiles: instance.cacheRemoteFiles,
 		enableRecaptcha: instance.enableRecaptcha,
 		recaptchaSiteKey: instance.recaptchaSiteKey,
-		swPublickey: config.sw ? config.sw.public_key : null,
+		swPublickey: instance.swPublicKey,
 		bannerUrl: instance.bannerUrl,
+		errorImageUrl: instance.errorImageUrl,
 		maxNoteTextLength: instance.maxNoteTextLength,
 		emojis: emojis,
 		enableEmail: instance.enableEmail,
@@ -84,7 +86,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			twitter: instance.enableTwitterIntegration,
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
-			serviceWorker: config.sw ? true : false,
+			serviceWorker: instance.enableServiceWorker,
 			userRecommendation: {
 				external: instance.enableExternalUserRecommendation,
 				engine: instance.externalUserRecommendationEngine,
@@ -113,6 +115,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.smtpPort = instance.smtpPort;
 		response.smtpUser = instance.smtpUser;
 		response.smtpPass = instance.smtpPass;
+		response.swPrivateKey = instance.swPrivateKey;
 	}
 
 	res(response);

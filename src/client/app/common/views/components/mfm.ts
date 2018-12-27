@@ -1,23 +1,19 @@
 import Vue, { VNode } from 'vue';
 import { length } from 'stringz';
-import { Node } from '../../../../../mfm/parser';
+import { MfmForest } from '../../../../../mfm/parser';
 import parse from '../../../../../mfm/parse';
 import MkUrl from './url.vue';
+import MkMention from './mention.vue';
 import { concat, sum } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
 import MkGoogle from './google.vue';
-import { toUnicode } from 'punycode';
 import syntaxHighlight from '../../../../../mfm/syntax-highlight';
+import { host } from '../../../config';
+import { preorderF, countNodesF } from '../../../../../prelude/tree';
 
-function getTextCount(tokens: Node[]): number {
-	const rootCount = sum(tokens.filter(x => x.name === 'text').map(x => length(x.props.text)));
-	const childrenCount = sum(tokens.filter(x => x.children).map(x => getTextCount(x.children)));
-	return rootCount + childrenCount;
-}
-
-function getChildrenCount(tokens: Node[]): number {
-	const countTree = tokens.filter(x => x.children).map(x => getChildrenCount(x.children));
-	return countTree.length + sum(countTree);
+function sumTextsLength(ts: MfmForest): number {
+	const textNodes = preorderF(ts).filter(n => n.type === 'text');
+	return sum(textNodes.map(x => length(x.props.text)));
 }
 
 export default Vue.component('misskey-flavored-markdown', {
@@ -25,10 +21,6 @@ export default Vue.component('misskey-flavored-markdown', {
 		text: {
 			type: String,
 			required: true
-		},
-		ast: {
-			type: [],
-			required: false
 		},
 		shouldBreak: {
 			type: Boolean,
@@ -54,17 +46,15 @@ export default Vue.component('misskey-flavored-markdown', {
 	render(createElement) {
 		if (this.text == null || this.text == '') return;
 
-		const ast = this.ast == null ?
-			parse(this.text, this.plainText) : // Parse text to ast
-			this.ast as Node[];
+		const ast = parse(this.text, this.plainText);
 
 		let bigCount = 0;
 		let motionCount = 0;
 
-		const genEl = (ast: Node[]) => concat(ast.map((token): VNode[] => {
-			switch (token.name) {
+		const genEl = (ast: MfmForest) => concat(ast.map((token): VNode[] => {
+			switch (token.node.type) {
 				case 'text': {
-					const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+					const text = token.node.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (this.shouldBreak) {
 						const x = text.split('\n')
@@ -94,7 +84,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'big': {
 					bigCount++;
-					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;
+					const isLong = sumTextsLength(token.children) > 10 || countNodesF(token.children) > 5;
 					const isMany = bigCount > 3;
 					return (createElement as any)('strong', {
 						attrs: {
@@ -121,7 +111,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'motion': {
 					motionCount++;
-					const isLong = getTextCount(token.children) > 10 || getChildrenCount(token.children) > 5;
+					const isLong = sumTextsLength(token.children) > 10 || countNodesF(token.children) > 5;
 					const isMany = motionCount > 3;
 					return (createElement as any)('span', {
 						attrs: {
@@ -138,7 +128,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement(MkUrl, {
 						key: Math.random(),
 						props: {
-							url: token.props.url,
+							url: token.node.props.url,
 							target: '_blank',
 							style: 'color:var(--mfmLink);'
 						}
@@ -149,40 +139,32 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('a', {
 						attrs: {
 							class: 'link',
-							href: token.props.url,
+							href: token.node.props.url,
 							target: '_blank',
-							title: token.props.url,
+							title: token.node.props.url,
 							style: 'color:var(--mfmLink);'
 						}
 					}, genEl(token.children))];
 				}
 
 				case 'mention': {
-					const host = token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host;
-					const canonical = host != null ? `@${token.props.username}@${toUnicode(host)}` : `@${token.props.username}`;
-					return (createElement as any)('router-link', {
+					return [createElement(MkMention, {
 						key: Math.random(),
-						attrs: {
-							to: `/${canonical}`,
-							// TODO
-							//dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token),
-							style: 'color:var(--mfmMention);'
-						},
-						directives: [{
-							name: 'user-preview',
-							value: canonical
-						}]
-					}, canonical);
+						props: {
+							host: (token.node.props.host == null && this.author && this.author.host != null ? this.author.host : token.node.props.host) || host,
+							username: token.node.props.username
+						}
+					})];
 				}
 
 				case 'hashtag': {
 					return [createElement('router-link', {
 						key: Math.random(),
 						attrs: {
-							to: `/tags/${encodeURIComponent(token.props.hashtag)}`,
+							to: `/tags/${encodeURIComponent(token.node.props.hashtag)}`,
 							style: 'color:var(--mfmHashtag);'
 						}
-					}, `#${token.props.hashtag}`)];
+					}, `#${token.node.props.hashtag}`)];
 				}
 
 				case 'blockCode': {
@@ -191,7 +173,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, [
 						createElement('code', {
 							domProps: {
-								innerHTML: syntaxHighlight(token.props.code)
+								innerHTML: syntaxHighlight(token.node.props.code)
 							}
 						})
 					])];
@@ -200,7 +182,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'inlineCode': {
 					return [createElement('code', {
 						domProps: {
-							innerHTML: syntaxHighlight(token.props.code)
+							innerHTML: syntaxHighlight(token.node.props.code)
 						}
 					})];
 				}
@@ -234,8 +216,8 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('mk-emoji', {
 						key: Math.random(),
 						attrs: {
-							emoji: token.props.emoji,
-							name: token.props.name
+							emoji: token.node.props.emoji,
+							name: token.node.props.name
 						},
 						props: {
 							customEmojis: this.customEmojis || customEmojis,
@@ -249,7 +231,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement(MkFormula, {
 						key: Math.random(),
 						props: {
-							formula: token.props.formula
+							formula: token.node.props.formula
 						}
 					})];
 				}
@@ -259,13 +241,13 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement(MkGoogle, {
 						key: Math.random(),
 						props: {
-							q: token.props.query
+							q: token.node.props.query
 						}
 					})];
 				}
 
 				default: {
-					console.log('unknown ast type:', token.name);
+					console.log('unknown ast type:', token.node.type);
 
 					return [];
 				}

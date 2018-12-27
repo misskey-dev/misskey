@@ -7,6 +7,7 @@
 			<ui-input v-model="name">{{ $t('instance-name') }}</ui-input>
 			<ui-textarea v-model="description">{{ $t('instance-description') }}</ui-textarea>
 			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('banner-url') }}</ui-input>
+			<ui-input v-model="errorImageUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('error-image-url') }}</ui-input>
 			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>{{ $t('languages') }}<span slot="desc">{{ $t('languages-desc') }}</span></ui-input>
 		</section>
 		<section class="fit-bottom">
@@ -31,8 +32,10 @@
 			<header><fa :icon="faShieldAlt"/> {{ $t('recaptcha-config') }}</header>
 			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
 			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
-			<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-site-key') }}</ui-input>
-			<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-secret-key') }}</ui-input>
+			<ui-horizon-group inputs>
+				<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-site-key') }}</ui-input>
+				<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><i slot="icon"><fa icon="key"/></i>{{ $t('recaptcha-secret-key') }}</ui-input>
+			</ui-horizon-group>
 		</section>
 		<section>
 			<header><fa :icon="faGhost"/> {{ $t('proxy-account-config') }}</header>
@@ -53,6 +56,15 @@
 				<ui-input v-model="smtpPass" :disabled="!enableEmail">{{ $t('smtp-pass') }}</ui-input>
 			</ui-horizon-group>
 			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<span slot="desc">{{ $t('smtp-secure-info') }}</span></ui-switch>
+		</section>
+		<section>
+			<header><fa :icon="faBolt"/> {{ $t('serviceworker-config') }}</header>
+			<ui-switch v-model="enableServiceWorker">{{ $t('enable-serviceworker') }}<span slot="desc">{{ $t('serviceworker-info') }}</span></ui-switch>
+			<ui-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></ui-info>
+			<ui-horizon-group inputs class="fit-bottom">
+				<ui-input v-model="swPublicKey" :disabled="!enableServiceWorker"><i slot="icon"><fa icon="key"/></i>{{ $t('vapid-publickey') }}</ui-input>
+				<ui-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><i slot="icon"><fa icon="key"/></i>{{ $t('vapid-privatekey') }}</ui-input>
+			</ui-horizon-group>
 		</section>
 		<section>
 			<header>summaly Proxy</header>
@@ -81,9 +93,11 @@
 		<div slot="title"><fa :icon="['fab', 'twitter']"/> {{ $t('twitter-integration-config') }}</div>
 		<section>
 			<ui-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</ui-switch>
+			<ui-horizon-group>
+				<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('twitter-integration-consumer-key') }}</ui-input>
+				<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('twitter-integration-consumer-secret') }}</ui-input>
+			</ui-horizon-group>
 			<ui-info>{{ $t('twitter-integration-info', { url: `${url}/api/tw/cb` }) }}</ui-info>
-			<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('twitter-integration-consumer-key') }}</ui-input>
-			<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('twitter-integration-consumer-secret') }}</ui-input>
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
@@ -92,9 +106,11 @@
 		<div slot="title"><fa :icon="['fab', 'github']"/> {{ $t('github-integration-config') }}</div>
 		<section>
 			<ui-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</ui-switch>
+			<ui-horizon-group>
+				<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('github-integration-client-id') }}</ui-input>
+				<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('github-integration-client-secret') }}</ui-input>
+			</ui-horizon-group>
 			<ui-info>{{ $t('github-integration-info', { url: `${url}/api/gh/cb` }) }}</ui-info>
-			<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('github-integration-client-id') }}</ui-input>
-			<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('github-integration-client-secret') }}</ui-input>
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
@@ -103,9 +119,11 @@
 		<div slot="title"><fa :icon="['fab', 'discord']"/> {{ $t('discord-integration-config') }}</div>
 		<section>
 			<ui-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</ui-switch>
+			<ui-horizon-group>
+				<ui-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-id') }}</ui-input>
+				<ui-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-secret') }}</ui-input>
+			</ui-horizon-group>
 			<ui-info>{{ $t('discord-integration-info', { url: `${url}/api/dc/cb` }) }}</ui-info>
-			<ui-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-id') }}</ui-input>
-			<ui-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><i slot="icon"><fa icon="key"/></i>{{ $t('discord-integration-client-secret') }}</ui-input>
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
@@ -117,7 +135,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import { url, host } from '../../config';
 import { toUnicode } from 'punycode';
-import { faHeadset, faShieldAlt, faGhost, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faShieldAlt, faGhost, faUserPlus, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope as farEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -132,6 +150,7 @@ export default Vue.extend({
 			disableRegistration: false,
 			disableLocalTimeline: false,
 			bannerUrl: null,
+			errorImageUrl: null,
 			name: null,
 			description: null,
 			languages: null,
@@ -164,7 +183,10 @@ export default Vue.extend({
 			smtpPort: null,
 			smtpUser: null,
 			smtpPass: null,
-			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope
+			enableServiceWorker: false,
+			swPublicKey: null,
+			swPrivateKey: null,
+			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt
 		};
 	},
 
@@ -172,7 +194,10 @@ export default Vue.extend({
 		this.$root.getMeta().then(meta => {
 			this.maintainerName = meta.maintainer.name;
 			this.maintainerEmail = meta.maintainer.email;
+			this.disableRegistration = meta.disableRegistration;
+			this.disableLocalTimeline = meta.disableLocalTimeline;
 			this.bannerUrl = meta.bannerUrl;
+			this.errorImageUrl = meta.errorImageUrl;
 			this.name = meta.name;
 			this.description = meta.description;
 			this.languages = meta.langs.join(' ');
@@ -204,6 +229,9 @@ export default Vue.extend({
 			this.smtpPort = meta.smtpPort;
 			this.smtpUser = meta.smtpUser;
 			this.smtpPass = meta.smtpPass;
+			this.enableServiceWorker = meta.enableServiceWorker;
+			this.swPublicKey = meta.swPublickey;
+			this.swPrivateKey = meta.swPrivateKey;
 		});
 	},
 
@@ -226,6 +254,7 @@ export default Vue.extend({
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
 				bannerUrl: this.bannerUrl,
+				errorImageUrl: this.errorImageUrl,
 				name: this.name,
 				description: this.description,
 				langs: this.languages.split(' '),
@@ -256,7 +285,10 @@ export default Vue.extend({
 				smtpHost: this.smtpHost,
 				smtpPort: parseInt(this.smtpPort, 10),
 				smtpUser: this.smtpUser,
-				smtpPass: this.smtpPass
+				smtpPass: this.smtpPass,
+				enableServiceWorker: this.enableServiceWorker,
+				swPublicKey: this.swPublicKey,
+				swPrivateKey: this.swPrivateKey
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',

@@ -53,15 +53,6 @@ adduser --disabled-password --disabled-login misskey
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 5. `npm install` Misskeyの依存パッケージをインストール
 
-*(オプション)* VAPIDキーペアの生成
-----------------------------------------------------------------
-ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります:
-
-``` shell
-npm install web-push -g
-web-push generate-vapid-keys
-```
-
 *5.* 設定ファイルを作成する
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする。

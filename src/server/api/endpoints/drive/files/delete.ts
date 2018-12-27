@@ -32,12 +32,15 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: ps.fileId,
-			'metadata.userId': user._id
+			_id: ps.fileId
 		});
 
 	if (file === null) {
 		return rej('file-not-found');
+	}
+
+	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
+		return rej('access denied');
 	}
 
 	// Delete

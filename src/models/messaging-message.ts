@@ -7,6 +7,8 @@ import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
 
 const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
+MessagingMessage.createIndex('userId');
+MessagingMessage.createIndex('recipientId');
 export default MessagingMessage;
 
 export interface IMessagingMessage {

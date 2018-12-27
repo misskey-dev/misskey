@@ -26,6 +26,16 @@
 			<div class="description">
 				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
+			<div class="fields" v-if="user.fields">
+				<dl class="field" v-for="(field, i) in user.fields" :key="i">
+					<dt class="name">
+						<misskey-flavored-markdown :text="field.name" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+					</dt>
+					<dd class="value">
+						<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					</dd>
+				</dl>
+			</div>
 			<div class="counts">
 				<div>
 					<b>{{ user.notesCount | number }}</b>
@@ -159,11 +169,11 @@ export default Vue.extend({
 				limit: 9,
 				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
-				notes.forEach(note => {
-					note.files.forEach(file => {
+				for (const note of notes) {
+					for (const file of note.files) {
 						file._note = note;
-					});
-				});
+					}
+				}
 				const files = concat(notes.map((n: any): any[] => n.files));
 				this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
 			});
@@ -290,7 +300,7 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				for (const n of notes) (this.$refs.timeline as any).append(n);
 				this.moreFetching = false;
 			});
 
@@ -415,6 +425,32 @@ export default Vue.extend({
 			border-left solid 16px transparent
 			border-right solid 16px transparent
 			border-bottom solid 16px var(--face)
+
+		> .fields
+			margin-top 8px
+
+			> .field
+				display flex
+				padding 0
+				margin 0
+				align-items center
+
+				> .name
+					padding 4px
+					margin 4px
+					width 30%
+					overflow hidden
+					white-space nowrap
+					text-overflow ellipsis
+					font-weight bold
+
+				> .value
+					padding 4px
+					margin 4px
+					width 70%
+					overflow hidden
+					white-space nowrap
+					text-overflow ellipsis
 
 		> .counts
 			display grid

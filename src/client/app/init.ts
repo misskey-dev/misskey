@@ -8,12 +8,13 @@ import VueRouter from 'vue-router';
 import VAnimateCss from 'v-animate-css';
 import VModal from 'vue-js-modal';
 import VueI18n from 'vue-i18n';
+import SequentialEntrance from 'vue-sequential-entrance';
 
 import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
-import { clientVersion as version, codename, lang } from './config';
+import { clientVersion as version, codename, lang, locale } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
 import Dialog from './common/views/components/dialog.vue';
 
@@ -122,6 +123,7 @@ import {
 	faArrowLeft,
 	faMapMarker,
 	faRobot,
+	faHourglassHalf,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -252,6 +254,7 @@ library.add(
 	faArrowLeft,
 	faMapMarker,
 	faRobot,
+	faHourglassHalf,
 
 	farBell,
 	farEnvelope,
@@ -287,6 +290,7 @@ Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
 Vue.use(VueI18n);
+Vue.use(SequentialEntrance);
 
 Vue.component('fa', FontAwesomeIcon);
 
@@ -318,7 +322,7 @@ Vue.mixin({
 
 console.info(`Misskey v${version} (${codename})`);
 console.info(
-	'%c%i18n:common.do-not-copy-paste%',
+	`%c${locale['common']['do-not-copy-paste']}`,
 	'color: red; background: yellow; font-size: 16px; font-weight: bold;');
 
 // BootTimer解除

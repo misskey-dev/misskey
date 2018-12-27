@@ -9,6 +9,7 @@ import './style.styl';
 
 import init from '../init';
 import Index from './views/index.vue';
+import NotFound from '../common/views/pages/404.vue';
 
 /**
  * init
@@ -20,6 +21,7 @@ init(launch => {
 		base: '/auth/',
 		routes: [
 			{ path: '/:token', component: Index },
+			{ path: '*', component: NotFound }
 		]
 	});
 

@@ -40,8 +40,7 @@ const defaultSettings = {
 	games: {
 		reversi: {
 			showBoardLabels: false,
-			useWhileBlackStones: false,
-			useContrastStones: false
+			useWhiteBlackStones: false,
 		}
 	}
 };
@@ -131,14 +130,14 @@ export default (os: MiOS) => new Vuex.Store({
 
 		logout(ctx) {
 			ctx.commit('updateI', null);
-			document.cookie = `i=; domain=${hostname}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+			document.cookie = 'i=;';
 			localStorage.removeItem('i');
 		},
 
 		mergeMe(ctx, me) {
-			Object.entries(me).forEach(([key, value]) => {
+			for (const [key, value] of Object.entries(me)) {
 				ctx.commit('updateIKeyValue', { key, value });
-			});
+			}
 
 			if (me.clientSettings) {
 				ctx.dispatch('settings/merge', me.clientSettings);
@@ -215,11 +214,11 @@ export default (os: MiOS) => new Vuex.Store({
 
 					//#region Deck
 					if (state.deck && state.deck.columns) {
-						state.deck.columns.filter(c => c.type == 'widgets').forEach(c => {
-							c.widgets.forEach(w => {
-								if (w.id == x.id) w.data = x.data;
-							});
-						});
+						for (const c of state.deck.columns.filter(c => c.type == 'widgets')) {
+							for (const w of c.widgets.filter(w => w.id == x.id)) {
+								w.data = x.data;
+							}
+						}
 					}
 					//#endregion
 				},
@@ -345,9 +344,9 @@ export default (os: MiOS) => new Vuex.Store({
 			actions: {
 				merge(ctx, settings) {
 					if (settings == null) return;
-					Object.entries(settings).forEach(([key, value]) => {
+					for (const [key, value] of Object.entries(settings)) {
 						ctx.commit('set', { key, value });
-					});
+					}
 				},
 
 				set(ctx, x) {

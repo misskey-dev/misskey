@@ -109,6 +109,10 @@ export interface ILocalUser extends IUserBase {
 		birthday: string; // 'YYYY-MM-DD'
 		tags: string[];
 	};
+	fields?: {
+		name: string;
+		value: string;
+	}[];
 	isCat: boolean;
 	isAdmin?: boolean;
 	isModerator?: boolean;
@@ -151,7 +155,7 @@ export const isRemoteUser = (user: any): user is IRemoteUser =>
 
 //#region Validators
 export function validateUsername(username: string, remote?: boolean): boolean {
-	return typeof username == 'string' && (remote ? /^\w+([\w\.-]+\w+)?$/ : /^[a-zA-Z0-9_]{1,20}$/).test(username);
+	return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
 }
 
 export function validatePassword(password: string): boolean {
