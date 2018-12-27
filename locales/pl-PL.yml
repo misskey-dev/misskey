@@ -330,6 +330,7 @@ common/views/components/nav.vue:
   develop: "Autorzy"
   feedback: "Podziel się opinią"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "Szczegóły"
   copy-link: "Skopiuj adres"
   favorite: "Dodaj do ulubionych"
@@ -1217,6 +1218,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
   followers: "Śledzący"
+  mention: "メンション"
   is-bot: "To konto jest botem"
   years-old: "{age} lat"
   year: "/"
@@ -1511,6 +1513,7 @@ deck/deck.user-column.vue:
   posts: "Wpisy"
   following: "Śledzeni"
   followers: "Śledzący"
+  mention: "メンション"
   images: "Zdjęcia"
   activity: "Aktywność"
   timeline: "Oś czasu"
