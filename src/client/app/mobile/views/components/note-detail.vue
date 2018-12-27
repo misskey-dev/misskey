@@ -72,8 +72,11 @@
 			<button v-else>
 				<fa icon="ban"/>
 			</button>
-			<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" v-if="!isMyNote" ref="reactButton" :title="$t('title')">
+			<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton">
 				<fa icon="plus"/>
+			</button>
+			<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton">
+				<fa icon="minus"/>
 			</button>
 			<button @click="menu()" ref="menuButton">
 				<fa icon="ellipsis-h"/>

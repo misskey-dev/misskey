@@ -142,6 +142,14 @@ export default (opts: Opts = {}) => ({
 			});
 		},
 
+		undoReact(note) {
+			const oldReaction = note.myReaction;
+			if (!oldReaction) return;
+			this.$root.api('notes/reactions/delete', {
+				noteId: note.id
+			});
+		},
+
 		favorite() {
 			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
