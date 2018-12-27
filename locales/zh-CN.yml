@@ -121,14 +121,15 @@ common:
   reduce-motion: "减弱UI中的动画效果"
   this-setting-is-this-device-only: "设置仅在本设备中生效"
   use-os-default-emojis: "使用设备系统默认的 emojis"
-  do-not-use-in-production: '这是一个开发者测试版. 请勿在生产环境中使用.'
+  do-not-use-in-production: "这是一个开发者测试版. 请勿在生产环境中使用."
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "该用户的信息已被复制."
   is-remote-post: "该投稿已被复制."
   view-on-remote: "查看准确的信息"
   renoted-by: "由 {user} Renote"
   error:
-    title: '哦不, 发生了一些问题! :('
-    retry: '重试'
+    title: "哦不, 发生了一些问题! :("
+    retry: "重试"
   reversi:
     drawn: "平局"
     my-turn: "轮到你了"
@@ -699,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "从设备中添加媒体文件"
   attach-media-from-drive: "从云盘中添加媒体文件"
   attach-cancel: "删除附件"
-  insert-a-kao: "v('ω')v"
+  insert-a-kao: "v(\"ω\")v"
   create-poll: "创建一个投票"
   text-remain: "还剩{}字"
   recent-tags: "最近"
@@ -856,13 +857,13 @@ common/views/components/api-settings.vue:
   token: "令牌:"
   enter-password: "请输入您的密码"
   console:
-    title: 'API 控制台'
-    endpoint: '端点'
-    parameter: '参数'
+    title: "API 控制台"
+    endpoint: "端点"
+    parameter: "参数"
     credential-info: "此控制台不需要参数“i”。"
-    send: '发送'
-    sending: '等待回应'
-    response: '结果'
+    send: "发送"
+    sending: "等待回应"
+    response: "结果"
 desktop/views/components/settings.apps.vue:
   no-apps: "没有已连接的应用程序"
 common/views/components/drive-settings.vue:
@@ -1457,7 +1458,6 @@ mobile/views/pages/user.vue:
   overview: "概观"
   timeline: "时间线"
   media: "媒体"
-  is-suspended: "此账户已被冻结。"
   mute: "静音"
   unmute: "取消静音"
   block: "屏蔽"
