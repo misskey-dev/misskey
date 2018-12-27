@@ -531,8 +531,8 @@ common/views/widgets/tips.vue:
   tips-line23: "Mayu est mignonne avec ses sourcils."
   tips-line24: "Misskey est fonctionnel depuis 2014"
   tips-line25: "Vous pouvez recevoir les notifications de Misskey dans un navigateur web compatible"
-common/views/pages/404.vue:
-  page-not-found: "La page demandée est introuvable !"
+common/views/pages/not-found.vue:
+  page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté en tant que {}"
   following: "Suit"
