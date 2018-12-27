@@ -76,10 +76,10 @@
 			<button v-else class="inhibitedButton">
 				<fa icon="ban"/>
 			</button>
-			<button v-if="appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton" :title="$t('add-reaction')">
+			<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 				<fa icon="plus"/>
 			</button>
-			<button v-if="appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton" :title="$t('undo-reaction')">
+			<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton" :title="$t('undo-reaction')">
 				<fa icon="minus"/>
 			</button>
 			<button @click="menu()" ref="menuButton">

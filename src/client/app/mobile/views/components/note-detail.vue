@@ -72,10 +72,10 @@
 			<button v-else>
 				<fa icon="ban"/>
 			</button>
-			<button v-if="appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton">
+			<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton">
 				<fa icon="plus"/>
 			</button>
-			<button v-if="appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton">
+			<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton">
 				<fa icon="minus"/>
 			</button>
 			<button @click="menu()" ref="menuButton">
