@@ -700,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "PC에서 미디어 첨부"
   attach-media-from-drive: "드라이브에서 미디어 첨부"
   attach-cancel: "첨부 취소"
-  insert-a-kao: "v(\"ω\")v"
+  insert-a-kao: "v('ω')v"
   create-poll: "투표 만들기"
   text-remain: "{}문자 남음"
   recent-tags: "최근"
