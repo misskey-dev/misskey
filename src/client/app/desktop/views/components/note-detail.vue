@@ -338,7 +338,8 @@ export default Vue.extend({
 				> .count
 					display inline
 					margin 0 0 0 8px
-					color #999
+					color var(--text)
+					opacity 0.7
 
 				&.reacted, &.reacted:hover
 					color var(--noteActionsReactionHover)
