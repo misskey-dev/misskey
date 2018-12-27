@@ -151,6 +151,7 @@ export default Vue.extend({
 		margin-right 6px
 		padding 0 6px
 		border-radius 4px
+		cursor pointer
 
 		*
 			user-select none
@@ -163,7 +164,6 @@ export default Vue.extend({
 				color var(--primaryForeground)
 
 		&:not(.reacted)
-			cursor pointer
 			background var(--reactionViewerButtonBg)
 
 			&:hover
