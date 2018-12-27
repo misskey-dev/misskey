@@ -121,14 +121,15 @@ common:
   reduce-motion: "Réduire les animations dans l’interface utilisateur"
   this-setting-is-this-device-only: "Uniquement sur cet appareil"
   use-os-default-emojis: "Utiliser les émojis standards du système"
-  do-not-use-in-production: 'Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production.'
+  do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "Ces informations appartiennent à un utilisateur distant."
   is-remote-post: "Ceci est une publication distante."
   view-on-remote: " Consulter le profil complet"
   renoted-by: "Renoté par {user}"
   error:
-    title: 'Une erreur est survenue'
-    retry: 'Réessayer'
+    title: "Une erreur est survenue"
+    retry: "Réessayer"
   reversi:
     drawn: "Partie nulle"
     my-turn: "C’est votre tour"
@@ -699,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Joindre un média depuis votre appareil"
   attach-media-from-drive: "Joindre un média depuis votre Drive"
   attach-cancel: "Annuler le fichier attaché"
-  insert-a-kao: "v('ω')v"
+  insert-a-kao: "v(\"ω\")v"
   create-poll: "Créer un sondage"
   text-remain: "{} caractères restants"
   recent-tags: "Récent"
@@ -856,13 +857,13 @@ common/views/components/api-settings.vue:
   token: "Jeton :"
   enter-password: "Entrez le mot de passe"
   console:
-    title: 'Console API'
-    endpoint: 'Point de terminaison'
-    parameter: 'Paramètres'
+    title: "Console API"
+    endpoint: "Point de terminaison"
+    parameter: "Paramètres"
     credential-info: "Le paramètre « i » est requis dans la console."
-    send: 'Envoyer'
-    sending: 'Envoi en cours'
-    response: 'Résultat'
+    send: "Envoyer"
+    sending: "Envoi en cours"
+    response: "Résultat"
 desktop/views/components/settings.apps.vue:
   no-apps: "Aucune application autorisée"
 common/views/components/drive-settings.vue:
@@ -1457,7 +1458,6 @@ mobile/views/pages/user.vue:
   overview: "Aperçu"
   timeline: "Fil d'actualité"
   media: "Média"
-  is-suspended: "This account has been suspended."
   mute: "Mettre en sourdine"
   unmute: "Enlever la sourdine"
   block: "Bloquer"
