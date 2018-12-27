@@ -22,5 +22,5 @@ export default Vue.extend({
 	> p
 		margin 0
 		font-size 12px
-		color #505050
+		color var(--text)
 </style>
