@@ -121,14 +121,15 @@ common:
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   use-os-default-emojis: "Use the OS default Emojis"
-  do-not-use-in-production: 'This is a development build. Do not use in production.'
+  do-not-use-in-production: "This is a development build. Do not use in production."
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
   view-on-remote: "View it on remote"
   renoted-by: "Renoted by {user}"
   error:
-    title: 'Something happened :('
-    retry: 'Retry'
+    title: "Something happened :("
+    retry: "Retry"
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
@@ -699,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Attach media from your device"
   attach-media-from-drive: "Attach media from your Drive"
   attach-cancel: "Cancel attachment"
-  insert-a-kao: "v('ω')v"
+  insert-a-kao: "v(\"ω\")v"
   create-poll: "Create a poll"
   text-remain: "{} characters remaining"
   recent-tags: "Recent"
@@ -856,13 +857,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "Enter the password"
   console:
-    title: 'API console'
-    endpoint: 'Endpoint'
-    parameter: 'Parameters'
+    title: "API console"
+    endpoint: "Endpoint"
+    parameter: "Parameters"
     credential-info: "Parameter \"i\" is not required at this console."
-    send: 'Send'
-    sending: 'Sending'
-    response: 'Result'
+    send: "Send"
+    sending: "Sending"
+    response: "Result"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
 common/views/components/drive-settings.vue:
@@ -1457,7 +1458,6 @@ mobile/views/pages/user.vue:
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
-  is-suspended: "This account has been suspended."
   mute: "Mute"
   unmute: "Unmute"
   block: "Block"
