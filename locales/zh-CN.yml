@@ -670,10 +670,12 @@ desktop/views/components/note-detail.vue:
   location: "位置信息"
   renote: "转发"
   add-reaction: "添加一个反应"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "回复"
   renote: "Renote"
   add-reaction: "添加一个反应"
+  undo-reaction: "リアクション解除"
   detail: "详细信息"
   private: "这个投稿是私密的"
   deleted: "投稿已删除"
