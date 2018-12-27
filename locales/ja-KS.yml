@@ -121,14 +121,15 @@ common:
   reduce-motion: "UI、動き過ぎや、静かにしてや"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "OSにもとから入っとる絵文字使う"
-  do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
+  do-not-use-in-production: "開発ビルドや。本番環境で使わんといて！知らんで！"
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "ちゃんとした情報見せてや！"
   renoted-by: "{user}がRenote"
   error:
-    title: '問題が起こったわ'
-    retry: 'もっぺん'
+    title: "問題が起こったわ"
+    retry: "もっぺん"
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
@@ -699,7 +700,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "PCからメディア持ってくる"
   attach-media-from-drive: "ドライブからメディア持ってくる"
   attach-cancel: "くっつけるのやめよか"
-  insert-a-kao: "v('ω')v"
+  insert-a-kao: "v(\"ω\")v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
   recent-tags: "最近のタグ"
@@ -856,13 +857,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "パスワードを入れてや"
   console:
-    title: 'APIコンソール'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
+    title: "APIコンソール"
+    endpoint: "エンドポイント"
+    parameter: "パラメータ"
     credential-info: "「i」パラメータは勝手に付くで。"
-    send: '送る'
-    sending: '応答待っとる'
-    response: 'こんなん返ってきたわ'
+    send: "送る"
+    sending: "応答待っとる"
+    response: "こんなん返ってきたわ"
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはあらへんで"
 common/views/components/drive-settings.vue:
@@ -1457,7 +1458,6 @@ mobile/views/pages/user.vue:
   overview: "こんなやつ"
   timeline: "タイムライン"
   media: "メディア"
-  is-suspended: "このユーザーはあかんわ。凍結されとる。"
   mute: "ミュート"
   unmute: "ミュートやめたる"
   block: "ブロック"
