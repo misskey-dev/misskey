@@ -212,7 +212,7 @@
 		reversiGameHeaderLine: '#c4cdd4',
 		reversiGameEmptyCell: 'rgba(0, 0, 0, 0.06)',
 		reversiGameEmptyCellMyTurn: 'rgba(0, 0, 0, 0.12)',
-		reversiGameEmptyCellCanPut: 'rgba(0, 0, 0, 0.9)',
+		reversiGameEmptyCellCanPut: 'rgba(0, 0, 0, 0.09)',
 
 		adminDashboardHeaderFg: ':alpha<0.9<$text',
 		adminDashboardHeaderBorder: 'rgba(0, 0, 0, 0.1)',
