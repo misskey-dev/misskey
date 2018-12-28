@@ -471,6 +471,7 @@ common/views/components/profile-editor.vue:
   is-bot: "整个账户是机器人"
   is-locked: "关注者请求需要批准"
   careful-bot: "机器人的关注者请求需要批准"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "其他选项"
   privacy: "隐私"
   save: "保存"
