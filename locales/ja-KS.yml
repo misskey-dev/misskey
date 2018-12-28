@@ -471,6 +471,7 @@ common/views/components/profile-editor.vue:
   is-bot: "このアカウントはBotやで"
   is-locked: "他人のフォローは許可してからや！"
   careful-bot: "Botからのフォローだけは許可制や"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "その他"
   privacy: "プライバシーってなんや？オカンの年齢か？"
   save: "保存"
