@@ -94,6 +94,13 @@ export const meta = {
 			}
 		},
 
+		autoAcceptFollowed: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'フォローしているユーザーからのフォローリクエストを自動承認するか'
+			}
+		},
+
 		isBot: {
 			validator: $.bool.optional,
 			desc: {
@@ -140,6 +147,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
+	if (typeof ps.autoAcceptFollowed == 'boolean') updates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
 	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
 	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
