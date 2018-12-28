@@ -90,7 +90,6 @@ common:
     followers-desc: "Nur für diejenigen sichtbar, die dir folgen"
     specified: "Direkt"
     specified-desc: "Nur für bestimmte Benutzer posten"
-    private: "Privat"
     local-public: "公開 (ローカルのみ)"
     local-home: "ホーム (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
@@ -121,14 +120,15 @@ common:
   reduce-motion: "Animationen der Benutzeroberfläche reduzieren"
   this-setting-is-this-device-only: "Nur auf diesem Gerät"
   use-os-default-emojis: "OS標準の絵文字を使用"
-  do-not-use-in-production: 'Dies ist eine Entwicklungsversion. Nicht in einer Produktionsumgebung verwenden.'
+  do-not-use-in-production: "Dies ist eine Entwicklungsversion. Nicht in einer Produktionsumgebung verwenden."
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
   error:
-    title: '問題が発生しました'
-    retry: 'Erneut versuchen'
+    title: "問題が発生しました"
+    retry: "Erneut versuchen"
   reversi:
     drawn: "Unentschieden"
     my-turn: "Du bist am Zug"
@@ -299,6 +299,7 @@ common/views/components/cw-button.vue:
   show: "もっと見る"
   chars: "{count}文字"
   files: "{count}ファイル"
+  poll: "アンケート"
 common/views/components/messaging.vue:
   search-user: "Einen Nutzer suchen"
   you: "Du"
@@ -328,6 +329,7 @@ common/views/components/nav.vue:
   develop: "Entwickler"
   feedback: "Feedback"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "詳細"
   copy-link: "リンクをコピー"
   favorite: "Diese Notiz favorisieren"
@@ -403,6 +405,13 @@ common/views/components/stream-indicator.vue:
   connecting: "Verbindung wird hergestellt"
   reconnecting: "Erneut verbinden"
   connected: "Verbindung hergestellt"
+common/views/components/notification-settings.vue:
+  title: "通知"
+  mark-as-read-all-notifications: "すべての通知を既読にする"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  mark-as-read-all-talk-messages: "すべてのトークを既読にする"
+  auto-watch: "投稿の自動ウォッチ"
+  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
 common/views/components/integration-settings.vue:
   title: "サービス連携"
   connect: "接続する"
@@ -432,7 +441,6 @@ common/views/components/visibility-chooser.vue:
   followers-desc: "Nur für diejenigen sichtbar, die dir folgen"
   specified: "Direkt"
   specified-desc: "Poste nur für bestimmte Benutzer"
-  private: "Privat"
   local-public: "公開 (ローカルのみ)"
   local-public-desc: "リモートへは公開しない"
   local-home: "ホーム (ローカルのみ)"
@@ -461,6 +469,7 @@ common/views/components/profile-editor.vue:
   is-bot: "このアカウントはBotです"
   is-locked: "フォローを承認制にする"
   careful-bot: "Botからのフォローだけ承認制にする"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "その他"
   privacy: "プライバシー"
   save: "保存"
@@ -527,10 +536,10 @@ common/views/widgets/tips.vue:
   tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができます"
   tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示しています"
   tips-line21: "APIを利用してbotの開発なども行えます"
-  tips-line23: "まゆかわいいよまゆ"
+  tips-line23: "藍かわいいよ藍"
   tips-line24: "Misskeyは2014年にサービスを開始しました"
   tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
-common/views/pages/404.vue:
+common/views/pages/not-found.vue:
   page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
@@ -667,10 +676,12 @@ desktop/views/components/note-detail.vue:
   location: "Ort"
   renote: "Anmerkung"
   add-reaction: "Reaktion hinzufügen"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "返信"
   renote: "Renote"
   add-reaction: "リアクション"
+  undo-reaction: "リアクション解除"
   detail: "詳細"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
@@ -744,7 +755,6 @@ desktop/views/components/settings.vue:
   2fa: "Zwei-Faktor-Authentifizierung"
   other: "Anderes"
   license: "Lizenz"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "テーマ"
   behaviour: "Verhalten"
   fetch-on-scroll: "Aktualisieren beim scrollen"
@@ -801,8 +811,6 @@ desktop/views/components/settings.vue:
   cache-warn: "Der Cache deines Benutzerkontos (Info, Beiträge, Antworten, Direktnachrichten, Einstellungen), die lokal im Browser gespeichert sind werden gelöscht.\nDu musst die Seite aktualisieren nachdem du aufgeräumt hast."
   cache-cleared: "キャッシュを削除しました"
   cache-cleared-desc: "ページを再度読み込みしてください。"
-  auto-watch: "投稿の自動ウォッチ"
-  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
   about: "Misskeyについて"
   operator: "このサーバーの運営者"
   update: "Misskey Update"
@@ -855,13 +863,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "パスワードを入力してください"
   console:
-    title: 'APIコンソール'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
+    title: "APIコンソール"
+    endpoint: "エンドポイント"
+    parameter: "パラメータ"
     credential-info: "「i」パラメータは自動で付与されます。"
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    send: "送信"
+    sending: "応答待ち"
+    response: "結果"
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 common/views/components/drive-settings.vue:
@@ -1215,6 +1223,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
+  mention: "メンション"
   is-bot: "このアカウントはBotです"
   years-old: "{age}歳"
   year: "年"
@@ -1224,6 +1233,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
   with-media: "メディア"
+  my-posts: "私の投稿"
   empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
@@ -1455,7 +1465,6 @@ mobile/views/pages/user.vue:
   overview: "概要"
   timeline: "タイムライン"
   media: "メディア"
-  is-suspended: "このユーザーは凍結されています。"
   mute: "ミュート"
   unmute: "ミュート解除"
   block: "ブロック"
@@ -1509,6 +1518,7 @@ deck/deck.user-column.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
+  mention: "メンション"
   images: "画像"
   activity: "アクティビティ"
   timeline: "タイムライン"

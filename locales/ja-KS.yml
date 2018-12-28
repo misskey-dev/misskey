@@ -90,7 +90,6 @@ common:
     followers-desc: "自分のフォロワー以外に見せんとって"
     specified: "ダイレクト"
     specified-desc: "今から言うユーザー以外に見せんとってや"
-    private: "非公開"
     local-public: "公開 (ローカルだけ)"
     local-home: "ホーム (ローカルだけ)"
     local-followers: "フォロワー (ローカルだけ)"
@@ -121,14 +120,15 @@ common:
   reduce-motion: "UI、動き過ぎや、静かにしてや"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "OSにもとから入っとる絵文字使う"
-  do-not-use-in-production: '開発ビルドや。本番環境で使わんといて！知らんで！'
+  do-not-use-in-production: "開発ビルドや。本番環境で使わんといて！知らんで！"
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "ちゃんとした情報見せてや！"
   renoted-by: "{user}がRenote"
   error:
-    title: '問題が起こったわ'
-    retry: 'もっぺん'
+    title: "問題が起こったわ"
+    retry: "もっぺん"
   reversi:
     drawn: "おあいこ"
     my-turn: "あんさんのターンや"
@@ -299,6 +299,7 @@ common/views/components/cw-button.vue:
   show: "見たいやろ？"
   chars: "{count}文字"
   files: "{count}ファイル"
+  poll: "アンケート"
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あんさん"
@@ -328,6 +329,7 @@ common/views/components/nav.vue:
   develop: "開発者"
   feedback: "フィードバック"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "もっと"
   copy-link: "リンクをコピー"
   favorite: "お気に入り"
@@ -403,6 +405,13 @@ common/views/components/stream-indicator.vue:
   connecting: "つないどるで"
   reconnecting: "つなぎ直すで"
   connected: "つないだわ"
+common/views/components/notification-settings.vue:
+  title: "通知"
+  mark-as-read-all-notifications: "すべての通知を既読にする"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  mark-as-read-all-talk-messages: "すべてのトークを既読にする"
+  auto-watch: "投稿の自動ウォッチ"
+  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
 common/views/components/integration-settings.vue:
   title: "サービス連携"
   connect: "つなげる"
@@ -432,7 +441,6 @@ common/views/components/visibility-chooser.vue:
   followers-desc: "自分のフォロワー以外に見せんとって"
   specified: "ダイレクト"
   specified-desc: "今から言うユーザー以外に見せんとってや"
-  private: "非公開"
   local-public: "公開 (ローカルだけ)"
   local-public-desc: "リモートには見せへん"
   local-home: "ホーム (ローカルだけ)"
@@ -461,6 +469,7 @@ common/views/components/profile-editor.vue:
   is-bot: "このアカウントはBotやで"
   is-locked: "他人のフォローは許可してからや！"
   careful-bot: "Botからのフォローだけは許可制や"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "その他"
   privacy: "プライバシーってなんや？オカンの年齢か？"
   save: "保存"
@@ -527,10 +536,10 @@ common/views/widgets/tips.vue:
   tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができんで"
   tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示してんねん"
   tips-line21: "APIをつこてbotの開発なども行えるで"
-  tips-line23: "ウチのタコちゃんかわええやろ…今の突っ込むところや！"
+  tips-line23: "藍かわいいよ藍"
   tips-line24: "Misskeyは2014年にサービスを開始したんよ"
   tips-line25: "対応ブラウザやったらMisskeyを開いとらんでも通知を受け取れんで"
-common/views/pages/404.vue:
+common/views/pages/not-found.vue:
   page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
@@ -667,10 +676,12 @@ desktop/views/components/note-detail.vue:
   location: "ここおるで:"
   renote: "Renote"
   add-reaction: "リアクション"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "返す"
   renote: "Renote"
   add-reaction: "リアクション"
+  undo-reaction: "リアクション解除"
   detail: "もっと"
   private: "この投稿は見せられへんわ"
   deleted: "この投稿なんか無くなってもうたわ"
@@ -744,7 +755,6 @@ desktop/views/components/settings.vue:
   2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "テーマ"
   behaviour: "動き"
   fetch-on-scroll: "スクロールしたらもっと見せてや"
@@ -801,8 +811,6 @@ desktop/views/components/settings.vue:
   cache-warn: "お掃除するとな、ブラウザが覚えてくれとるアカウントのあれこれや書きかけの投稿・返信・メッセージや設定情報なんかのデータが全部飛んでいくんや。これやったらページ再読込しといてな。"
   cache-cleared: "キャッシュお掃除したで"
   cache-cleared-desc: "もっぺんページ読みこみ直してくれや"
-  auto-watch: "投稿勝手にウォッチしといてや"
-  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を勝手に受け取るようにすんで。"
   about: "Misskeyってなんや？"
   operator: "このサーバー誰のや"
   update: "Misskey Update"
@@ -855,13 +863,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "パスワードを入れてや"
   console:
-    title: 'APIコンソール'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
+    title: "APIコンソール"
+    endpoint: "エンドポイント"
+    parameter: "パラメータ"
     credential-info: "「i」パラメータは勝手に付くで。"
-    send: '送る'
-    sending: '応答待っとる'
-    response: 'こんなん返ってきたわ'
+    send: "送る"
+    sending: "応答待っとる"
+    response: "こんなん返ってきたわ"
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはあらへんで"
 common/views/components/drive-settings.vue:
@@ -1215,6 +1223,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
+  mention: "メンション"
   is-bot: "このアカウントはBotや"
   years-old: "{age}歳"
   year: "年"
@@ -1224,6 +1233,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
   with-media: "メディア"
+  my-posts: "私の投稿"
   empty: "このユーザーはまだ何も投稿しとらんようや。"
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
@@ -1455,7 +1465,6 @@ mobile/views/pages/user.vue:
   overview: "こんなやつ"
   timeline: "タイムライン"
   media: "メディア"
-  is-suspended: "このユーザーはあかんわ。凍結されとる。"
   mute: "ミュート"
   unmute: "ミュートやめたる"
   block: "ブロック"
@@ -1509,6 +1518,7 @@ deck/deck.user-column.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
+  mention: "メンション"
   images: "画像"
   activity: "アクティビティ"
   timeline: "タイムライン"
