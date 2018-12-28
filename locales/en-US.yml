@@ -471,6 +471,7 @@ common/views/components/profile-editor.vue:
   is-bot: "This account is a Bot"
   is-locked: "Follower requests require approval"
   careful-bot: "Follower requests from bots require approval"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "Other"
   privacy: "Privacy"
   save: "Save"
