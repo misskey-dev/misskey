@@ -471,6 +471,7 @@ common/views/components/profile-editor.vue:
   is-bot: "To konto jest prowadzone przez bota"
   is-locked: "Żądanania śledzenia wymagają zatwierdzenia"
   careful-bot: "Botからのフォローだけ承認制にする"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "Inne"
   privacy: "Prywatność"
   save: "Zapisz"
