@@ -471,6 +471,7 @@ common/views/components/profile-editor.vue:
   is-bot: "이 계정은 Bot입니다"
   is-locked: "팔로우를 수동으로 승인"
   careful-bot: "Bot의 팔로우만 수동으로 승인"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "기타"
   privacy: "프라이버시"
   save: "저장"
