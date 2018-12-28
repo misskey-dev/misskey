@@ -75,6 +75,20 @@ props:
       ja-JP: "この投稿に対する自分の<a href='/docs/api/reactions'>リアクション</a>"
       en-US: "The your <a href='/docs/api/reactions'>reaction</a> of this note"
 
+  renoteCount:
+    type: "number"
+    optional: false
+    desc:
+      ja-JP: "この投稿がRenoteされた数"
+      en-US: "The number of renotes for this post"
+
+  repliesCount:
+    type: "number"
+    optional: false
+    desc:
+      ja-JP: "この投稿に返信された数"
+      en-US: "The number of replies to this post"
+
   reactionCounts:
     type: "object"
     optional: false
