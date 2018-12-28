@@ -45,8 +45,22 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
 	// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
 	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (isLocalUser(follower) && isRemoteUser(followee))) {
-		await createFollowRequest(follower, followee, requestId);
-		return;
+		let autoAccept = false;
+
+		// フォローしているユーザーは自動承認オプション
+		if (isLocalUser(followee) && followee.autoAcceptFollowed) {
+			const followed = await Following.findOne({
+				followerId: followee._id,
+				followeeId: follower._id
+			});
+
+			if (followed) autoAccept = true;
+		}
+
+		if (!autoAccept) {
+			await createFollowRequest(follower, followee, requestId);
+			return;
+		}
 	}
 
 	await Following.insert({

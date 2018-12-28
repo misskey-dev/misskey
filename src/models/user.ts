@@ -70,6 +70,11 @@ type IUserBase = {
 	carefulBot: boolean;
 
 	/**
+	 * フォローしているユーザーからのフォローリクエストを自動承認するか
+	 */
+	autoAcceptFollowed: boolean;
+
+	/**
 	 * このアカウントに届いているフォローリクエストの数
 	 */
 	pendingReceivedFollowRequestsCount: number;
