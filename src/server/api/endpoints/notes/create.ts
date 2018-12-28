@@ -247,6 +247,11 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		return rej('text, fileIds, renoteId or poll is required');
 	}
 
+	// 後方互換性のため
+	if (ps.visibility == 'private') {
+		ps.visibility = 'specified';
+	}
+
 	// 投稿を作成
 	create(user, {
 		createdAt: new Date(),

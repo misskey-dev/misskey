@@ -133,11 +133,6 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		return rej('Renote target is not public or home');
 	}
 
-	// リプライ対象が自分以外の非公開の投稿なら禁止
-	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
-		return rej('Reply target is private of others');
-	}
-
 	// ローカルのみをRenoteしたらローカルのみにする
 	if (data.renote && data.renote.localOnly) {
 		data.localOnly = true;
@@ -282,7 +277,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const noteActivity = await renderActivity(data, note);
 
-	if (isLocalUser(user) && note.visibility != 'private') {
+	if (isLocalUser(user)) {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
@@ -369,7 +364,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 			deliver(user, noteActivity, renote._user.inbox);
 		}
 
-		if (['private', 'followers', 'specified'].includes(note.visibility)) {
+		if (['followers', 'specified'].includes(note.visibility)) {
 			const detailPackedNote = await pack(note, user, {
 				detail: true
 			});

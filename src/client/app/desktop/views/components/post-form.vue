@@ -50,8 +50,7 @@
 		<span v-if="visibility === 'public'"><fa icon="globe"/></span>
 		<span v-if="visibility === 'home'"><fa icon="home"/></span>
 		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
-		<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-		<span v-if="visibility === 'private'"><fa icon="lock"/></span>
+		<span v-if="visibility === 'specified'"><fa icon="lock"/></span>
 	</button>
 	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
 	<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
@@ -212,7 +211,7 @@ export default Vue.extend({
 		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
+		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 		}
 

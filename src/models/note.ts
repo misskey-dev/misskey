@@ -67,9 +67,8 @@ export type INote = {
 	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
-	 * private ... 自分のみ
 	 */
-	visibility: 'public' | 'home' | 'followers' | 'specified' | 'private';
+	visibility: 'public' | 'home' | 'followers' | 'specified';
 
 	visibleUserIds: mongo.ObjectID[];
 
@@ -106,7 +105,7 @@ export type INote = {
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;
 
-	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示
+	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示(後方互換性のため)
 	if (packedNote.visibility == 'private' && (meId == null || !meId.equals(packedNote.userId))) {
 		hide = true;
 	}

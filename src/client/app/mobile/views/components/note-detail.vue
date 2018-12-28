@@ -54,8 +54,7 @@
 			<span class="visibility" v-if="appearNote.visibility != 'public'">
 				<fa v-if="appearNote.visibility == 'home'" icon="home"/>
 				<fa v-if="appearNote.visibility == 'followers'" icon="unlock"/>
-				<fa v-if="appearNote.visibility == 'specified'" icon="envelope"/>
-				<fa v-if="appearNote.visibility == 'private'" icon="lock"/>
+				<fa v-if="appearNote.visibility == 'specified'" icon="lock"/>
 			</span>
 			<span class="localOnly" v-if="appearNote.localOnly == true"><fa icon="heart"/></span>
 		</div>

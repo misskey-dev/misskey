@@ -23,16 +23,10 @@
 			</div>
 		</div>
 		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
-			<div><fa icon="envelope"/></div>
+			<div><fa icon="lock"/></div>
 			<div>
 				<span>{{ $t('specified') }}</span>
 				<span>{{ $t('specified-desc') }}</span>
-			</div>
-		</div>
-		<div @click="choose('private')" :class="{ active: v == 'private' }">
-			<div><fa icon="lock"/></div>
-			<div>
-				<span>{{ $t('private') }}</span>
 			</div>
 		</div>
 		<div @click="choose('local-public')" :class="{ active: v == 'local-public' }">
