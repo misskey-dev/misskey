@@ -155,7 +155,7 @@
 		"koa-slow": "2.1.0",
 		"koa-views": "6.1.4",
 		"langmap": "0.0.16",
-		"loader-utils": "1.1.0",
+		"loader-utils": "1.2.3",
 		"minio": "7.0.2",
 		"mkdirp": "0.5.1",
 		"mocha": "5.2.0",
