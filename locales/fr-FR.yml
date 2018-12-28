@@ -471,6 +471,7 @@ common/views/components/profile-editor.vue:
   is-bot: "Ce compte est un Bot"
   is-locked: "Demandes d’abonnements requièrent l’approbation"
   careful-bot: "Les demandes d’abonnements venant de Bots requièrent l’approbation"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "Avancé"
   privacy: "Vie privée"
   save: "Mettre à jour le profil"
