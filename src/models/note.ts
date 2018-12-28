@@ -273,6 +273,11 @@ export const pack = async (
 	// Populate files
 	_note.files = packFileMany(_note.fileIds || []);
 
+	// Some counts
+	_note.renoteCount = _note.renoteCount || 0;
+	_note.repliesCount = _note.repliesCount || 0;
+	_note.reactionCounts = _note.reactionCounts || {};
+
 	// 後方互換性のため
 	_note.mediaIds = _note.fileIds;
 	_note.media = _note.files;
