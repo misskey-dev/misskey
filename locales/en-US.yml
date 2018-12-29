@@ -90,7 +90,6 @@ common:
     followers-desc: "Post to followers only"
     specified: "Direct"
     specified-desc: "Post to specified users only"
-    private: "Private"
     local-public: "Public (Only local)"
     local-home: "Home (Only local)"
     local-followers: "Followers (Only local)"
@@ -121,14 +120,15 @@ common:
   reduce-motion: "Reduce motion in UI"
   this-setting-is-this-device-only: "Only for this device"
   use-os-default-emojis: "Use the OS default Emojis"
-  do-not-use-in-production: 'This is a development build. Do not use in production.'
+  do-not-use-in-production: "This is a development build. Do not use in production."
+  user-suspended: "This user has been suspended."
   is-remote-user: "This user information is copied."
   is-remote-post: "This post information is a copy."
   view-on-remote: "View it on remote"
   renoted-by: "Renoted by {user}"
   error:
-    title: 'Something happened :('
-    retry: 'Retry'
+    title: "Something happened :("
+    retry: "Retry"
   reversi:
     drawn: "Draw"
     my-turn: "Your turn"
@@ -299,6 +299,7 @@ common/views/components/cw-button.vue:
   show: "See more"
   chars: "{count} chars"
   files: "{count} files"
+  poll: "Poll"
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
@@ -328,6 +329,7 @@ common/views/components/nav.vue:
   develop: "Developers"
   feedback: "Feedback"
 common/views/components/note-menu.vue:
+  mention: "Mentions"
   detail: "Details"
   copy-link: "Copy link"
   favorite: "Favorite this note"
@@ -403,6 +405,13 @@ common/views/components/stream-indicator.vue:
   connecting: "Connecting"
   reconnecting: "Reconnecting"
   connected: "Connected"
+common/views/components/notification-settings.vue:
+  title: "Notifications"
+  mark-as-read-all-notifications: "Mark all notifications as read"
+  mark-as-read-all-unread-notes: "Mark all posts as read"
+  mark-as-read-all-talk-messages: "Mark all conversations as read"
+  auto-watch: "Automatically watch out for posts"
+  auto-watch-desc: "Automatically receive notifications about posts you react to, or respond to."
 common/views/components/integration-settings.vue:
   title: "Service cooperation"
   connect: "Connect"
@@ -416,7 +425,7 @@ common/views/components/github-setting.vue:
   connect: "Link your GitHub account"
   disconnect: "Disconnect"
 common/views/components/discord-setting.vue:
-  description: "Once you connect your Discord account to your Misskey account, you will be able to see information about your Discord account on your profile, and you will be able to sign-in using Discord."
+  description: "Once you connect your Discord account to your Misskey account, you will be able to see information from your Discord account on your profile, and you will be able to sign-in using Discord."
   connected-to: "You are connected to this Discord account"
   detail: "Details…"
   reconnect: "Reconnect"
@@ -432,7 +441,6 @@ common/views/components/visibility-chooser.vue:
   followers-desc: "Post to Followers only"
   specified: "Direct"
   specified-desc: "Post to specified users only"
-  private: "Private"
   local-public: "Local (Public)"
   local-public-desc: "Do not publish to remote"
   local-home: "Home (Only local)"
@@ -461,6 +469,7 @@ common/views/components/profile-editor.vue:
   is-bot: "This account is a Bot"
   is-locked: "Follower requests require approval"
   careful-bot: "Follower requests from bots require approval"
+  auto-accept-followed: "Automatically approve follows from the people you follow"
   advanced: "Other"
   privacy: "Privacy"
   save: "Save"
@@ -527,11 +536,11 @@ common/views/widgets/tips.vue:
   tips-line19: "Several windows can be detached outside the browser."
   tips-line20: "The percentage of the calendar widget shows the percentage of time elapsed."
   tips-line21: "You can also use the API to develop bots."
-  tips-line23: "Mayu is so cute with its eyebrows."
+  tips-line23: "Ai-chan kawaii!"
   tips-line24: "Misskey has been running since 2014."
   tips-line25: "In a browser compatible with notification features, you can receive notifications in case Misskey is not open"
-common/views/pages/404.vue:
-  page-not-found: "Page not found"
+common/views/pages/not-found.vue:
+  page-not-found: "The page has not been found"
 common/views/pages/follow.vue:
   signed-in-as: "Signed in as {}"
   following: "Following"
@@ -667,10 +676,12 @@ desktop/views/components/note-detail.vue:
   location: "Location"
   renote: "Repost"
   add-reaction: "Add a reaction"
+  undo-reaction: "Reverse reaction"
 desktop/views/components/note.vue:
   reply: "Reply"
   renote: "Renote"
   add-reaction: "Add a reaction"
+  undo-reaction: "Reverse reaction"
   detail: "Details"
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -744,7 +755,6 @@ desktop/views/components/settings.vue:
   2fa: "Two-factor authentication"
   other: "Other"
   license: "License"
-  mark-as-read-all-unread-notes: "Mark all posts as read"
   theme: "Theme"
   behaviour: "Behavior"
   fetch-on-scroll: "Endless loading on scroll"
@@ -801,8 +811,6 @@ desktop/views/components/settings.vue:
   cache-warn: "The cache of account info/posts/replies/messages/settings stored in the browser will be deleted. You need to reload the page after cleaning up."
   cache-cleared: "Cache cleared"
   cache-cleared-desc: "Please reload the page."
-  auto-watch: "Automatic watch"
-  auto-watch-desc: "Receive notifications about the post/reply/reaction automatically."
   about: "About Misskey"
   operator: "The admin of this instance"
   update: "Misskey Update"
@@ -855,13 +863,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "Enter the password"
   console:
-    title: 'API console'
-    endpoint: 'Endpoint'
-    parameter: 'Parameters'
+    title: "API console"
+    endpoint: "Endpoint"
+    parameter: "Parameters"
     credential-info: "Parameter \"i\" is not required at this console."
-    send: 'Send'
-    sending: 'Sending'
-    response: 'Result'
+    send: "Send"
+    sending: "Sending"
+    response: "Result"
 desktop/views/components/settings.apps.vue:
   no-apps: "No linked applications"
 common/views/components/drive-settings.vue:
@@ -1005,8 +1013,8 @@ admin/views/instance.vue:
   enable-github-integration: "Enable connection to GitHub"
   github-integration-client-id: "Client ID"
   github-integration-client-secret: "Client Secret"
-  discord-integration-config: "Setting of Discord Integration"
-  discord-integration-info: "The callback URL is set on {url}."
+  discord-integration-config: "Discord Integration settings"
+  discord-integration-info: "The callback URL is set to {url}."
   enable-discord-integration: "Enable Discord connection"
   discord-integration-client-id: "Client ID"
   discord-integration-client-secret: "Client Secret"
@@ -1215,6 +1223,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
   followers: "Followers"
+  mention: "Mentions"
   is-bot: "This account is a Bot"
   years-old: "{age} years old"
   year: "/"
@@ -1224,6 +1233,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
   with-media: "Media"
+  my-posts: "My posts"
   empty: "This user doesn't seem to have posted anything yet."
 desktop/views/widgets/messaging.vue:
   title: "Message"
@@ -1455,7 +1465,6 @@ mobile/views/pages/user.vue:
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
-  is-suspended: "This account has been suspended."
   mute: "Mute"
   unmute: "Unmute"
   block: "Block"
@@ -1509,6 +1518,7 @@ deck/deck.user-column.vue:
   posts: "Posts"
   following: "Following"
   followers: "Followers"
+  mention: "Mentions"
   images: "Images"
   activity: "Activity"
   timeline: "Timeline"

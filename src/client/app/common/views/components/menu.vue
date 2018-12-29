@@ -1,5 +1,5 @@
 <template>
-<div class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :class="{ big: $root.isMobile }">
+<div class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :class="{ isMobile: $root.isMobile }">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ hukidasi }" ref="popover">
 		<template v-for="item, i in items">
@@ -125,8 +125,10 @@ export default Vue.extend({
 
 	position initial
 
-	&.big
+	&.isMobile
 		> .popover
+			border none
+
 			> button
 				font-size 15px
 

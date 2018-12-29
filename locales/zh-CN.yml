@@ -90,7 +90,6 @@ common:
     followers-desc: "仅发送至粉丝"
     specified: "指定用户"
     specified-desc: "仅发送至指定用户"
-    private: "私密"
     local-public: "公开（仅限本地）"
     local-home: "首页（仅限本地）"
     local-followers: "关注者（仅限本地）"
@@ -121,14 +120,15 @@ common:
   reduce-motion: "减弱UI中的动画效果"
   this-setting-is-this-device-only: "设置仅在本设备中生效"
   use-os-default-emojis: "使用设备系统默认的 emojis"
-  do-not-use-in-production: '这是一个开发者测试版. 请勿在生产环境中使用.'
+  do-not-use-in-production: "这是一个开发者测试版. 请勿在生产环境中使用."
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "该用户的信息已被复制."
   is-remote-post: "该投稿已被复制."
   view-on-remote: "查看准确的信息"
   renoted-by: "由 {user} Renote"
   error:
-    title: '哦不, 发生了一些问题! :('
-    retry: '重试'
+    title: "哦不, 发生了一些问题! :("
+    retry: "重试"
   reversi:
     drawn: "平局"
     my-turn: "轮到你了"
@@ -299,6 +299,7 @@ common/views/components/cw-button.vue:
   show: "查看更多"
   chars: "{count}文字"
   files: "{count} 个文件"
+  poll: "アンケート"
 common/views/components/messaging.vue:
   search-user: "查找用户"
   you: "您"
@@ -328,6 +329,7 @@ common/views/components/nav.vue:
   develop: "开发者"
   feedback: "反馈"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "详细信息"
   copy-link: "复制链接"
   favorite: "收藏这个投稿"
@@ -403,6 +405,13 @@ common/views/components/stream-indicator.vue:
   connecting: "连接中"
   reconnecting: "重新连接中"
   connected: "已连接"
+common/views/components/notification-settings.vue:
+  title: "通知"
+  mark-as-read-all-notifications: "すべての通知を既読にする"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  mark-as-read-all-talk-messages: "すべてのトークを既読にする"
+  auto-watch: "投稿の自動ウォッチ"
+  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
 common/views/components/integration-settings.vue:
   title: "サービス連携"
   connect: "连接"
@@ -432,7 +441,6 @@ common/views/components/visibility-chooser.vue:
   followers-desc: "仅发送至关注者"
   specified: "直接"
   specified-desc: "仅发送至指定用户"
-  private: "私密"
   local-public: "公开（仅限本地）"
   local-public-desc: "不要发布到公开"
   local-home: "首页（仅限本地）"
@@ -461,6 +469,7 @@ common/views/components/profile-editor.vue:
   is-bot: "整个账户是机器人"
   is-locked: "关注者请求需要批准"
   careful-bot: "机器人的关注者请求需要批准"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "其他选项"
   privacy: "隐私"
   save: "保存"
@@ -527,11 +536,11 @@ common/views/widgets/tips.vue:
   tips-line19: "可以在浏览器外部分离多个窗口。"
   tips-line20: "日历小部件的百分比显示经过的时间百分比。"
   tips-line21: "您也可以使用API开发机器人。"
-  tips-line23: "Mayu的眉毛非常可爱。"
+  tips-line23: "藍かわいいよ藍"
   tips-line24: "Misskey自2014年开始运营。"
   tips-line25: "在与通知功能兼容的浏览器中，您可以在Misskey未打开的情况下接收通知"
-common/views/pages/404.vue:
-  page-not-found: "您要找的网页不存在。"
+common/views/pages/not-found.vue:
+  page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "用 {}登录"
   following: "正在关注"
@@ -667,10 +676,12 @@ desktop/views/components/note-detail.vue:
   location: "位置信息"
   renote: "转发"
   add-reaction: "添加一个反应"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "回复"
   renote: "Renote"
   add-reaction: "添加一个反应"
+  undo-reaction: "リアクション解除"
   detail: "详细信息"
   private: "这个投稿是私密的"
   deleted: "投稿已删除"
@@ -744,7 +755,6 @@ desktop/views/components/settings.vue:
   2fa: "两步验证"
   other: "其他"
   license: "许可证"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "主题"
   behaviour: "行为"
   fetch-on-scroll: "向下滚动时自动加载"
@@ -801,8 +811,6 @@ desktop/views/components/settings.vue:
   cache-warn: "将删除存储在浏览器中的帐户信息/帖子/回复/消息/设置的缓存。 清理完毕后需要刷新页面。"
   cache-cleared: "已清除缓存"
   cache-cleared-desc: "请刷新页面。"
-  auto-watch: "自动查看帖子"
-  auto-watch-desc: "自动接收有关帖子/回复/反应的通知。"
   about: "关于 Misskey"
   operator: "网站运营者"
   update: "更新 Misskey"
@@ -855,13 +863,13 @@ common/views/components/api-settings.vue:
   token: "令牌:"
   enter-password: "请输入您的密码"
   console:
-    title: 'API 控制台'
-    endpoint: '端点'
-    parameter: '参数'
+    title: "API 控制台"
+    endpoint: "端点"
+    parameter: "参数"
     credential-info: "此控制台不需要参数“i”。"
-    send: '发送'
-    sending: '等待回应'
-    response: '结果'
+    send: "发送"
+    sending: "等待回应"
+    response: "结果"
 desktop/views/components/settings.apps.vue:
   no-apps: "没有已连接的应用程序"
 common/views/components/drive-settings.vue:
@@ -1215,6 +1223,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "帖子"
   following: "关注中"
   followers: "关注者"
+  mention: "メンション"
   is-bot: "这个账户是Bot"
   years-old: "{age}岁"
   year: "年"
@@ -1224,6 +1233,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "帖子"
   with-replies: "帖子与回复"
   with-media: "媒体"
+  my-posts: "私の投稿"
   empty: "看起来这个用户还没有发布什么呢。"
 desktop/views/widgets/messaging.vue:
   title: "信息"
@@ -1455,7 +1465,6 @@ mobile/views/pages/user.vue:
   overview: "概观"
   timeline: "时间线"
   media: "媒体"
-  is-suspended: "此账户已被冻结。"
   mute: "静音"
   unmute: "取消静音"
   block: "屏蔽"
@@ -1509,6 +1518,7 @@ deck/deck.user-column.vue:
   posts: "帖子"
   following: "关注中"
   followers: "关注者"
+  mention: "メンション"
   images: "图片"
   activity: "活动"
   timeline: "时间线"
