@@ -1,0 +1,20 @@
+{
+	id: '0c6e70e2-a1ec-4053-9b1a-b6082fe016cb',
+
+	name: 'gruvbox dark',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	vars: {
+		primary: 'rgb(215, 153, 33))',
+		secondary: 'rgb(40, 40, 40)',
+		text: 'rgb(235, 219, 178)',
+	},
+
+	props: {
+		renoteGradient: '#58581e',
+		renoteText: 'rgb(169, 174, 36)',
+		quoteBorder: 'rgb(169, 174, 36)',
+	},
+}
