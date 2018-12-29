@@ -300,8 +300,7 @@ export default Vue.extend({
 
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton,
-				compact: true
+				source: this.$refs.visibilityButton
 			});
 			w.$once('chosen', v => {
 				this.applyVisibility(v);

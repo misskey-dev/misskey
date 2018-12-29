@@ -336,7 +336,6 @@ export default Vue.extend({
 
 			this.$root.new(Menu, {
 				source: this.$refs.menu,
-				compact: false,
 				items: menu
 			});
 		},

@@ -129,9 +129,7 @@ export default (opts: Opts = {}) => ({
 				source: this.$refs.reactButton,
 				note: this.appearNote,
 				showFocus: viaKeyboard,
-				animation: !viaKeyboard,
-				compact: opts.mobile,
-				big: opts.mobile
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 
@@ -171,8 +169,7 @@ export default (opts: Opts = {}) => ({
 			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
-				animation: !viaKeyboard,
-				compact: opts.mobile,
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 

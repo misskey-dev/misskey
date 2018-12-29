@@ -240,7 +240,6 @@ export default Vue.extend({
 		showMenu() {
 			this.$root.new(Menu, {
 				source: this.$refs.menu,
-				compact: false,
 				items: this.getMenu()
 			});
 		},

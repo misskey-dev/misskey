@@ -139,7 +139,6 @@ export default Vue.extend({
 
 			this.$root.new(Menu, {
 				source: this.$refs.listButton,
-				compact: false,
 				items: menu
 			});
 		},
@@ -170,7 +169,6 @@ export default Vue.extend({
 
 			this.$root.new(Menu, {
 				source: this.$refs.tagButton,
-				compact: false,
 				items: menu
 			});
 		}

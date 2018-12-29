@@ -1,6 +1,6 @@
 <template>
 <div style="position:initial">
-	<mk-menu :source="source" :compact="compact" :items="items" @closed="closed"/>
+	<mk-menu :source="source" :items="items" @closed="closed"/>
 </div>
 </template>
 
@@ -13,7 +13,7 @@ import { concat, intersperse } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/note-menu.vue'),
-	props: ['note', 'source', 'compact'],
+	props: ['note', 'source'],
 	computed: {
 		items(): any[] {
 			return concat(intersperse([null], [
