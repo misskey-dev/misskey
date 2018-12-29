@@ -849,6 +849,7 @@ desktop/views/components/settings.2fa.vue:
   enter-password: "Enter the password"
   authenticator: "First, you need to install Google Authenticator on your device:"
   howtoinstall: "How to install"
+  token: "トークン"
   scan: "And then, scan the QR code:"
   done: "Please enter the token displayed on your device:"
   submit: "Submit"
