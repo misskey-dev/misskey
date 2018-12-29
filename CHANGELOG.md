@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+10.70.1
+-------
+* notes/mentions にミュートを適用するように
+* Add id to return of users/relation
+* デザインの調整
+
 10.70.0
 -------
 * フォローしているユーザーからのフォローを自動承認するオプション
