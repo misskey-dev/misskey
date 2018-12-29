@@ -4,6 +4,7 @@ import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import read from '../../../../services/note/read';
+import Mute from '../../../../models/mute';
 
 export const meta = {
 	desc: {
@@ -55,6 +56,25 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			visibleUserIds: user._id
 		}]
 	} as any;
+
+	// ミュートしているユーザーを取得
+	const mutedUserIds = (await Mute.find({
+		muterId: user._id
+	})).map(m => m.muteeId);
+
+	if (mutedUserIds && mutedUserIds.length > 0) {
+		query.userId = {
+			$nin: mutedUserIds
+		};
+
+		query['_reply.userId'] = {
+			$nin: mutedUserIds
+		};
+
+		query['_renote.userId'] = {
+			$nin: mutedUserIds
+		};
+	}
 
 	const sort = {
 		_id: -1
