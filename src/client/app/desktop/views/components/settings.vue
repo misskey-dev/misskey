@@ -135,7 +135,7 @@
 			</section>
 			<section>
 				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
-				<ui-switch v-model="games_reversi_useWhiteBlackStones">{{ $t('@.use-white-black-reversi-stones') }}</ui-switch>
+				<ui-switch v-model="games_reversi_useAvatarStones">{{ $t('@.use-avatar-reversi-stones') }}</ui-switch>
 			</section>
 		</ui-card>
 
@@ -506,9 +506,9 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
 		},
 
-		games_reversi_useWhiteBlackStones: {
-			get() { return this.$store.state.settings.games.reversi.useWhiteBlackStones; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useWhiteBlackStones', value }); }
+		games_reversi_useAvatarStones: {
+			get() { return this.$store.state.settings.games.reversi.useAvatarStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useAvatarStones', value }); }
 		},
 
 		disableAnimatedMfm: {

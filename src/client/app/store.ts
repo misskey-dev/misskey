@@ -41,7 +41,7 @@ const defaultSettings = {
 	games: {
 		reversi: {
 			showBoardLabels: false,
-			useWhiteBlackStones: false,
+			useAvatarStones: true,
 		}
 	}
 };
