@@ -7,7 +7,7 @@
 	base: 'dark',
 
 	vars: {
-		primary: 'rgb(234, 136, 50))',
+		primary: 'rgb(234, 136, 50)',
 		secondary: 'rgb(34, 36, 42)',
 		text: 'rgb(221, 209, 203)',
 	},
