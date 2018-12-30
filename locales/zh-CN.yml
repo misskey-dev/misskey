@@ -260,6 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "阅读注意"
   click-to-show: "点击以显示"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "主题"
   dark-theme: "黑暗模式主题"
   light-themes: "明亮主题"
@@ -276,6 +277,7 @@ common/views/components/theme.vue:
   base-theme: "基础主题"
   base-theme-light: "亮"
   base-theme-dark: "暗"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "主题名称"
   preview-created-theme: "预览"
   invalid-theme: "无效主题"
@@ -1433,7 +1435,6 @@ mobile/views/pages/settings.vue:
   notification-position: "通知形式"
   notification-position-bottom: "底部"
   notification-position-top: "顶部"
-  theme: "主题"
   behavior: "动作"
   fetch-on-scroll: "滚动无限加载"
   note-visibility: "帖子可见性"
