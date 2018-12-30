@@ -109,7 +109,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
-  use-avatar-reversi-stones: "リバーシの石にアバターを使う"
+  use-avatar-reversi-stones: "Use avatar as stone in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
   suggest-recent-hashtags: "Suggest recently used hashtags within the post composition area"
