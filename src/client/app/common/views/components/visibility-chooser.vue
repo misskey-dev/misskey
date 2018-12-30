@@ -162,7 +162,6 @@ export default Vue.extend({
 		width 240px
 		padding 8px 0
 		background $bgcolor
-		border 1px solid $border-color
 		border-radius 4px
 		box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
 		transform scale(0.5)
