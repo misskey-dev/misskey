@@ -260,6 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "見せたらあかん"
   click-to-show: "押してみ、見せたるわ"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "ナイトゲームちゃう時のテーマどないする？"
   dark-theme: "ナイトゲームの時のテーマどないする？"
   light-themes: "デイゲーム"
@@ -276,6 +277,7 @@ common/views/components/theme.vue:
   base-theme: "この色が背景や！"
   base-theme-light: "Light"
   base-theme-dark: "Dark"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "テーマ名"
   preview-created-theme: "試してみる"
   invalid-theme: "このテーマあかんわ、なんか間違うとる"
@@ -1433,7 +1435,6 @@ mobile/views/pages/settings.vue:
   notification-position: "通知どこ見せる？"
   notification-position-bottom: "ミナミの方"
   notification-position-top: "キタの方"
-  theme: "テーマ"
   behavior: "動き"
   fetch-on-scroll: "スクロールしたらもっと見せてや"
   note-visibility: "投稿の公開範囲"
