@@ -18,7 +18,7 @@ common:
     ui-desc: "No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. Make your original home by editing, adjusting layouts of timeline and placing selectable widgets you can easily customize."
     drive: "Drive"
     drive-desc: "Wanna post a picture you have already uploaded? Wish to organize, name and create a folder for your uploaded files? Misskey Drive is the best solution for you. Very easy to share your files online."
-    outro: "Check further Misskey-unique features on your eyes! Feeling like this is not for you, try other instances as Misskey is a decentralized SNS so that you can easily find your mates. Then, GLHF!"
+    outro: "Check Misskey-unique features by seeing them with your own eyes! If you feel like this instance is not for you, try other instances, as Misskey is a decentralized SNS, so that you can easily find your mates. Then, GLHF!"
   adblock:
     detected: "Please disable ad blocker."
     warning: "Some features may be unavailable or cause malfunctions if ad blocking features are enabled. <strong>Misskey is not running ads</strong>."
@@ -109,7 +109,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
-  use-avatar-reversi-stones: "Use avatar as stone in reversi"
+  use-avatar-reversi-stones: "Use avatar as a stone in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
   suggest-recent-hashtags: "Suggest recently used hashtags within the post composition area"
@@ -1531,7 +1531,7 @@ deck/deck.user-column.vue:
   pinned-notes: "Pinned posts"
   push-to-a-list: "Add to list"
 docs:
-  edit-this-page-on-github: "Found a mistake or want to contribute for the documentation?"
+  edit-this-page-on-github: "Found an error, or do you want to contribute to the documentation?"
   edit-this-page-on-github-link: "Edit this page at GitHub!"
   api:
     entities:
