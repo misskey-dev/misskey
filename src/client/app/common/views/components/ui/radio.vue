@@ -29,7 +29,6 @@ export default Vue.extend({
 			required: false
 		},
 		value: {
-			type: String,
 			required: false
 		},
 		disabled: {

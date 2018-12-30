@@ -41,7 +41,7 @@ export default Vue.extend({
 
 	> section
 		padding 20px 16px
-		border-top solid 1px var(--faceDivider)
+		border-top solid var(--lineWidth) var(--faceDivider)
 
 		@media (min-width 500px)
 			padding 32px

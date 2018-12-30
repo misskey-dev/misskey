@@ -413,6 +413,15 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			});
 			//#endregion
 
+			//#region line width
+			document.documentElement.style.setProperty('--lineWidth', `${os.store.state.settings.lineWidth}px`);
+			os.store.watch(s => {
+				return s.settings.lineWidth;
+			}, v => {
+				document.documentElement.style.setProperty('--lineWidth', `${os.store.state.settings.lineWidth}px`);
+			});
+			//#endregion
+
 			// Navigation hook
 			router.beforeEach((to, from, next) => {
 				next(os.store.state.navHook && os.store.state.navHook(to) ? false : undefined);

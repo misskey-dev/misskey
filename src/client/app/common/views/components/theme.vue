@@ -342,7 +342,7 @@ export default Vue.extend({
 		margin-bottom 16px
 
 	> details
-		border-top solid 1px var(--faceDivider)
+		border-top solid var(--lineWidth) var(--faceDivider)
 
 		> summary
 			padding 16px 0
@@ -353,5 +353,5 @@ export default Vue.extend({
 	> .creator
 		> div
 			padding 16px 0
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 </style>

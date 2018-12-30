@@ -21,6 +21,7 @@ const defaultSettings = {
 	showClockOnHeader: true,
 	useShadow: true,
 	roundedCorners: false,
+	lineWidth: 1,
 	circleIcons: true,
 	contrastedAcct: true,
 	showFullAcct: false,

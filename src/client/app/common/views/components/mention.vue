@@ -54,13 +54,13 @@ export default Vue.extend({
 		user-select none
 		padding 0 4px
 		background var(--mfmMention)
-		border solid 1px var(--mfmMention)
+		border solid var(--lineWidth) var(--mfmMention)
 		border-radius 4px 0 0 4px
 		color var(--mfmMentionForeground)
 
 		& + .main
 			padding 0 4px
-			border solid 1px var(--mfmMention)
+			border solid var(--lineWidth) var(--mfmMention)
 			border-radius 0 4px 4px 0
 
 	> .main

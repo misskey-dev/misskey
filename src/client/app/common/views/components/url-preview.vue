@@ -207,7 +207,7 @@ export default Vue.extend({
 	> a
 		display block
 		font-size 14px
-		border solid 1px var(--urlPreviewBorder)
+		border solid var(--lineWidth) var(--urlPreviewBorder)
 		border-radius 4px
 		overflow hidden
 

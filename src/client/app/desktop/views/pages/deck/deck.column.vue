@@ -373,7 +373,7 @@ export default Vue.extend({
 		font-size 14px
 		color var(--faceHeaderText)
 		background var(--faceHeader)
-		box-shadow 0 1px rgba(#000, 0.15)
+		box-shadow 0 var(--lineWidth) rgba(#000, 0.15)
 		cursor pointer
 
 		&, *

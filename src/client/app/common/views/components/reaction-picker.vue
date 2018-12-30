@@ -254,7 +254,7 @@ export default Vue.extend({
 			padding 8px 10px
 			font-size 14px
 			color var(--popupFg)
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 
 		> div
 			padding 4px

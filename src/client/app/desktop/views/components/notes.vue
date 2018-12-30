@@ -209,7 +209,7 @@ export default Vue.extend({
 			text-align center
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -233,7 +233,7 @@ export default Vue.extend({
 			text-align center
 			color #ccc
 			background var(--face)
-			border-top solid 1px var(--faceDivider)
+			border-top solid var(--lineWidth) var(--faceDivider)
 			border-bottom-left-radius 6px
 			border-bottom-right-radius 6px
 

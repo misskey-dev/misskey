@@ -462,7 +462,7 @@ export default Vue.extend({
 			display grid
 			grid-template-columns 2fr 2fr 2fr 1fr
 			margin-top 8px
-			border-top solid 1px var(--faceDivider)
+			border-top solid var(--lineWidth) var(--faceDivider)
 
 			> div
 				padding 8px 8px 0 8px

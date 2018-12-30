@@ -98,7 +98,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .note
 	font-size 12px
-	border-bottom solid 1px var(--faceDivider)
+	border-bottom solid var(--lineWidth) var(--faceDivider)
 
 	&:focus
 		z-index 1
@@ -231,7 +231,7 @@ export default Vue.extend({
 
 						> *
 							padding 16px
-							border dashed 1px var(--quoteBorder)
+							border dashed var(--lineWidth) var(--quoteBorder)
 							border-radius 8px
 
 				> .app

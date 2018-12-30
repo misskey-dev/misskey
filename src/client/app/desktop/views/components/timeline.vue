@@ -187,7 +187,7 @@ export default Vue.extend({
 		padding 0 8px
 		z-index 10
 		background var(--faceHeader)
-		box-shadow 0 1px var(--desktopTimelineHeaderShadow)
+		box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
 
 		> .buttons
 			position absolute

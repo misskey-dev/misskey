@@ -227,7 +227,7 @@ export default Vue.extend({
 		font-size 0.8em
 		background $bgcolor
 		border-radius 4px
-		box-shadow 0 1px 4px rgba(#000, 0.25)
+		box-shadow 0 var(--lineWidth) 4px rgba(#000, 0.25)
 
 		&:before
 			content ""
@@ -261,7 +261,7 @@ export default Vue.extend({
 
 			& + ul
 				padding-top 10px
-				border-top solid 1px var(--faceDivider)
+				border-top solid var(--lineWidth) var(--faceDivider)
 
 			> li
 				display block

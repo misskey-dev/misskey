@@ -210,7 +210,7 @@ export default Vue.extend({
 			font-size 0.9em
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -240,7 +240,7 @@ export default Vue.extend({
 
 	> footer
 		text-align center
-		border-top solid 1px var(--faceDivider)
+		border-top solid var(--lineWidth) var(--faceDivider)
 
 		&:empty
 			display none

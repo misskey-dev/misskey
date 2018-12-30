@@ -99,12 +99,12 @@ function compile(theme: Theme): { [key: string]: string } {
 		props['primaryAlpha0' + i] = genValue(color);
 	}
 
-	for (let i = 1; i < 100; i++) {
+	for (let i = 5; i < 100; i += 5) {
 		const color = primary.clone().lighten(i);
 		props['primaryLighten' + i] = genValue(color);
 	}
 
-	for (let i = 1; i < 100; i++) {
+	for (let i = 5; i < 100; i += 5) {
 		const color = primary.clone().darken(i);
 		props['primaryDarken' + i] = genValue(color);
 	}

@@ -186,7 +186,7 @@ export default Vue.extend({
 
 		> div
 			margin 8px 0
-			height 1px
+			height var(--lineWidth)
 			background var(--faceDivider)
 
 </style>
