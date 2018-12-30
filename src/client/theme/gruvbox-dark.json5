@@ -1,7 +1,7 @@
 {
 	id: '0c6e70e2-a1ec-4053-9b1a-b6082fe016cb',
 
-	name: 'gruvbox dark',
+	name: 'Gruvbox Dark',
 	author: 'syuilo',
 
 	base: 'dark',

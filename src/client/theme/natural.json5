@@ -1,0 +1,22 @@
+{
+	id: 'b4b7d5fc-08d0-4915-b1cf-4090771e1a84',
+
+	name: 'Natural',
+	author: 'syuilo',
+
+	base: 'light',
+
+	vars: {
+		primary: 'rgb(0, 179, 104)',
+		secondary: '#fef8ec',
+		text: 'rgb(136, 132, 119)',
+	},
+
+	props: {
+		bg: 'rgb(248, 239, 221)',
+		mfmMention: 'rgb(238, 150, 43)',
+		mfmUrl: 'rgb(0, 189, 214)',
+		mfmLink: 'rgb(255, 87, 146)',
+		mfmHashtag: 'rgb(179, 134, 0)'
+	},
+}
