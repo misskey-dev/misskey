@@ -19,13 +19,7 @@
 			<x-integration-settings/>
 		</div>
 
-		<ui-card class="theme" v-show="page == 'theme'">
-			<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
-
-			<section>
-				<x-theme/>
-			</section>
-		</ui-card>
+		<x-theme class="theme" v-show="page == 'theme'"/>
 
 		<ui-card class="web" v-show="page == 'web'">
 			<div slot="title"><fa icon="sliders-h"/> {{ $t('behaviour') }}</div>

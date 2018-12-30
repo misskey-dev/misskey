@@ -7,12 +7,7 @@
 		<div>
 			<x-profile-editor/>
 
-			<ui-card>
-				<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
-				<section>
-					<x-theme/>
-				</section>
-			</ui-card>
+			<x-theme/>
 
 			<ui-card>
 				<div slot="title"><fa icon="poll-h"/> {{ $t('design') }}</div>
