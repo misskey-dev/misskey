@@ -414,11 +414,11 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			//#endregion
 
 			//#region line width
-			document.documentElement.style.setProperty('--lineWidth', `${os.store.state.settings.lineWidth}px`);
+			document.documentElement.style.setProperty('--lineWidth', `${os.store.state.device.lineWidth}px`);
 			os.store.watch(s => {
-				return s.settings.lineWidth;
+				return s.device.lineWidth;
 			}, v => {
-				document.documentElement.style.setProperty('--lineWidth', `${os.store.state.settings.lineWidth}px`);
+				document.documentElement.style.setProperty('--lineWidth', `${os.store.state.device.lineWidth}px`);
 			});
 			//#endregion
 

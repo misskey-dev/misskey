@@ -267,8 +267,8 @@ export default Vue.extend({
 		},
 
 		lineWidth: {
-			get() { return this.$store.state.settings.lineWidth; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'lineWidth', value }); }
+			get() { return this.$store.state.device.lineWidth; },
+			set(value) { this.$store.commit('device/set', { key: 'lineWidth', value }); }
 		},
 
 		contrastedAcct: {
