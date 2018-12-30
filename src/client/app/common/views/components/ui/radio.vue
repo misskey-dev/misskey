@@ -25,7 +25,6 @@ export default Vue.extend({
 	},
 	props: {
 		model: {
-			type: String,
 			required: false
 		},
 		value: {
