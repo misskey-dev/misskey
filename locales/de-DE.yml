@@ -260,6 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "Dieser Inhalt ist NSFW"
   click-to-show: "Klicke zum den Inhalt anzusehen"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "Thema"
   dark-theme: "Thema während des Nachtmodus"
   light-themes: "Helles Thema"
@@ -276,6 +277,7 @@ common/views/components/theme.vue:
   base-theme: "Basisthema"
   base-theme-light: "Hell"
   base-theme-dark: "Dunkel"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "Name des Themas"
   preview-created-theme: "Vorschau"
   invalid-theme: "Thema ist ungültig"
@@ -1433,7 +1435,6 @@ mobile/views/pages/settings.vue:
   notification-position: "通知の表示"
   notification-position-bottom: "下"
   notification-position-top: "上"
-  theme: "テーマ"
   behavior: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
   note-visibility: "投稿の公開範囲"
