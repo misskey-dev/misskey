@@ -207,7 +207,7 @@ export default Vue.extend({
 					top -4px
 					right 4px
 					font-size 10px
-					color var(--primary)
+					color var(--notificationIndicator)
 
 				&:hover
 					color var(--faceTextButtonHover)

@@ -238,7 +238,7 @@ export default Vue.extend({
 				> i.circle
 					margin-left 6px
 					font-size 10px
-					color var(--primary)
+					color var(--notificationIndicator)
 
 				> i:last-child
 					position absolute

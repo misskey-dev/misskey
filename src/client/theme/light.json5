@@ -24,6 +24,8 @@
 		scrollbarHandle: '#00000033',
 		scrollbarHandleHover: '#00000066',
 
+		notificationIndicator: '$primary',
+
 		face: '$secondary',
 		faceText: '$text',
 		faceHeader: ':lighten<5<$secondary',

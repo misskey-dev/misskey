@@ -225,7 +225,7 @@ main
 					> .badge
 						margin-left 6px
 						font-size 10px
-						color var(--primary)
+						color var(--notificationIndicator)
 
 	> .tl
 		max-width 680px
@@ -248,7 +248,7 @@ main
 .badge
 	margin-left 6px
 	font-size 10px
-	color var(--primary)
+	color var(--notificationIndicator)
 	vertical-align middle
 
 </style>

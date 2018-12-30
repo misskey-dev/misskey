@@ -20,6 +20,7 @@
 		mfmMentionForeground: '#fff',
 		mfmUrl: '#66d9ef',
 		mfmLink: '#e6db74',
-		mfmHashtag: '#fd971f'
+		mfmHashtag: '#fd971f',
+		notificationIndicator: '#66d9ef',
 	},
 }

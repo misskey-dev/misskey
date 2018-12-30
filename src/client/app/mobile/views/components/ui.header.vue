@@ -159,7 +159,7 @@ export default Vue.extend({
 				left 8px
 				pointer-events none
 				font-size 10px
-				color var(--primary)
+				color var(--notificationIndicator)
 
 			> button:last-child
 				display block
