@@ -260,6 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "非ダークモード時に使用するテーマ"
   dark-theme: "ダークモード時に使用するテーマ"
   light-themes: "Jasny Motyw"
@@ -276,6 +277,7 @@ common/views/components/theme.vue:
   base-theme: "Podstawowy motyw"
   base-theme-light: "Jasny"
   base-theme-dark: "Ciemny"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "Nazwa motywu"
   preview-created-theme: "Pokaż podgląd"
   invalid-theme: "テーマが正しくありません。"
@@ -1433,7 +1435,6 @@ mobile/views/pages/settings.vue:
   notification-position: "通知の表示"
   notification-position-bottom: "Dół"
   notification-position-top: "Góra"
-  theme: "Motyw"
   behavior: "Zachowanie"
   fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
   note-visibility: "Widoczność wpisów"
