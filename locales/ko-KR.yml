@@ -260,6 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "열람주의"
   click-to-show: "클릭하여 표시"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "다크 모드가 아닐 때 사용하는 테마"
   dark-theme: "다크 모드일 때 사용하는 테마"
   light-themes: "밝은 테마"
@@ -276,6 +277,7 @@ common/views/components/theme.vue:
   base-theme: "기본 테마"
   base-theme-light: "밝음"
   base-theme-dark: "어두움"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "테마명"
   preview-created-theme: "미리보기"
   invalid-theme: "테마가 올바르지 않습니다."
@@ -1433,7 +1435,6 @@ mobile/views/pages/settings.vue:
   notification-position: "알림 표시"
   notification-position-bottom: "아래"
   notification-position-top: "위"
-  theme: "테마"
   behavior: "동작"
   fetch-on-scroll: "스크롤하여 자동으로 불러오기"
   note-visibility: "게시물의 공개 범위"
