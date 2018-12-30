@@ -24,7 +24,14 @@
 		scrollbarHandle: ':lighten<5<$secondary',
 		scrollbarHandleHover: ':lighten<10<$secondary',
 
+		link: '$primary',
+		linkTapHighlight: ':alpha<0.7<@link',
+
 		notificationIndicator: '$primary',
+
+		switchActive: '$primary',
+		switchActiveTrack: ':alpha<0.4<@switchActive',
+		radioActive: '$primary',
 
 		face: '$secondary',
 		faceText: '#fff',

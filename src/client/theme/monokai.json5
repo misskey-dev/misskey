@@ -22,5 +22,8 @@
 		mfmLink: '#e6db74',
 		mfmHashtag: '#fd971f',
 		notificationIndicator: '#66d9ef',
+		switchActive: 'rgb(166, 226, 46)',
+		radioActive: '#fd971f',
+		link: '#e6db74',
 	},
 }

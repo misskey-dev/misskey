@@ -64,10 +64,10 @@ export default Vue.extend({
 
 	&.checked
 		> .button
-			border-color var(--primary)
+			border-color var(--radioActive)
 
 			&:after
-				background-color var(--primary)
+				background-color var(--radioActive)
 				transform scale(1)
 				opacity 1
 

@@ -24,7 +24,14 @@
 		scrollbarHandle: '#00000033',
 		scrollbarHandleHover: '#00000066',
 
+		link: '$primary',
+		linkTapHighlight: ':alpha<0.7<@link',
+
 		notificationIndicator: '$primary',
+
+		switchActive: '$primary',
+		switchActiveTrack: ':alpha<0.4<@switchActive',
+		radioActive: '$primary',
 
 		face: '$secondary',
 		faceText: '$text',

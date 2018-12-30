@@ -22,5 +22,8 @@
 		mfmLink: 'rgb(104, 157, 106)',
 		mfmHashtag: 'rgb(251, 73, 52)',
 		notificationIndicator: 'rgb(184, 187, 38)',
+		switchActive: 'rgb(254, 128, 25)',
+		radioActive: 'rgb(131, 165, 152)',
+		link: 'rgb(104, 157, 106)',
 	},
 }
