@@ -132,7 +132,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							target: '_blank'
 						},
 						attrs: {
-							style: 'color:var(--mfmLink);'
+							style: 'color:var(--mfmUrl);'
 						}
 					})];
 				}

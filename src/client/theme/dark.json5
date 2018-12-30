@@ -120,7 +120,8 @@
 		mfmTitleBg: 'rgba(0, 0, 0, 0.2)',
 		mfmQuote: ':alpha<0.7<$text',
 		mfmQuoteLine: ':alpha<0.6<$text',
-		mfmLink: '$primary',
+		mfmUrl: '$primary',
+		mfmLink: '@mfmUrl',
 		mfmMention: '$primary',
 		mfmHashtag: '$primary',
 
