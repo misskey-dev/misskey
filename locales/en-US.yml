@@ -260,6 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "Theme"
   dark-theme: "Theme during dark mode"
   light-themes: "Light theme"
@@ -276,6 +277,7 @@ common/views/components/theme.vue:
   base-theme: "Base theme"
   base-theme-light: "Light"
   base-theme-dark: "Dark"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "Theme name"
   preview-created-theme: "Preview"
   invalid-theme: "Not valid theme"
@@ -1433,7 +1435,6 @@ mobile/views/pages/settings.vue:
   notification-position: "Notification style"
   notification-position-bottom: "Bottom"
   notification-position-top: "Top"
-  theme: "Theme"
   behavior: "Behavior"
   fetch-on-scroll: "Endless loading on scroll"
   note-visibility: "Post visibility"
