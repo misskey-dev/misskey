@@ -100,10 +100,10 @@
 				<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
 				<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
 				<section>
-					<header>{{ $t('line-width') }}</header>
-					<ui-radio v-model="lineWidth" :value="0.5">{{ $t('line-width-thin') }}</ui-radio>
-					<ui-radio v-model="lineWidth" :value="1">{{ $t('line-width-normal') }}</ui-radio>
-					<ui-radio v-model="lineWidth" :value="2">{{ $t('line-width-thick') }}</ui-radio>
+					<header>{{ $t('@.line-width') }}</header>
+					<ui-radio v-model="lineWidth" :value="0.5">{{ $t('@.line-width-thin') }}</ui-radio>
+					<ui-radio v-model="lineWidth" :value="1">{{ $t('@.line-width-normal') }}</ui-radio>
+					<ui-radio v-model="lineWidth" :value="2">{{ $t('@.line-width-thick') }}</ui-radio>
 				</section>
 				<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }}</ui-switch>
 				<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
