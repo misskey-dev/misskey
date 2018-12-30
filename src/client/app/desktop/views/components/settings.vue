@@ -80,8 +80,10 @@
 			</section>
 			<section>
 				<header>{{ $t('wallpaper') }}</header>
-				<ui-button @click="updateWallpaper">{{ $t('choose-wallpaper') }}</ui-button>
-				<ui-button @click="deleteWallpaper">{{ $t('delete-wallpaper') }}</ui-button>
+				<ui-horizon-group class="fit-bottom">
+					<ui-button @click="updateWallpaper">{{ $t('choose-wallpaper') }}</ui-button>
+					<ui-button @click="deleteWallpaper">{{ $t('delete-wallpaper') }}</ui-button>
+				</ui-horizon-group>
 			</section>
 			<section>
 				<header>{{ $t('navbar-position') }}</header>
