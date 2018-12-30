@@ -15,6 +15,7 @@
 	props: {
 		bg: 'rgb(248, 239, 221)',
 		mfmMention: 'rgb(238, 150, 43)',
+		mfmMentionForeground: '#fff',
 		mfmUrl: 'rgb(0, 189, 214)',
 		mfmLink: 'rgb(255, 87, 146)',
 		mfmHashtag: 'rgb(179, 134, 0)'

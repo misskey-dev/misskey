@@ -17,6 +17,7 @@
 		renoteText: 'rgb(169, 174, 36)',
 		quoteBorder: 'rgb(169, 174, 36)',
 		mfmMention: 'rgb(177, 98, 134)',
+		mfmMentionForeground: '#fff',
 		mfmUrl: 'rgb(69, 133, 136)',
 		mfmLink: 'rgb(104, 157, 106)',
 		mfmHashtag: 'rgb(204, 36, 29)'

@@ -17,6 +17,7 @@
 		renoteText: '#a6e22e',
 		quoteBorder: '#a6e22e',
 		mfmMention: '#ae81ff',
+		mfmMentionForeground: '#fff',
 		mfmUrl: '#66d9ef',
 		mfmLink: '#e6db74',
 		mfmHashtag: '#fd971f'

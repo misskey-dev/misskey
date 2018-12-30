@@ -53,14 +53,14 @@ export default Vue.extend({
 		pointer-events none
 		user-select none
 		padding 0 4px
-		background var(--primary)
-		border solid 1px var(--primary)
+		background var(--mfmMention)
+		border solid 1px var(--mfmMention)
 		border-radius 4px 0 0 4px
-		color var(--primaryForeground)
+		color var(--mfmMentionForeground)
 
 		& + .main
 			padding 0 4px
-			border solid 1px var(--primary)
+			border solid 1px var(--mfmMention)
 			border-radius 0 4px 4px 0
 
 	> .main

@@ -24,6 +24,7 @@ p
 	padding 0 12px
 	text-align center
 	font-size 0.7em
-	color #aaa
+	color var(--text)
+	opacity 0.8
 
 </style>

@@ -123,6 +123,7 @@
 		mfmUrl: '$primary',
 		mfmLink: '@mfmUrl',
 		mfmMention: '$primary',
+		mfmMentionForeground: '@primaryForeground',
 		mfmHashtag: '$primary',
 
 		suspendedInfoBg: '#611d1d',
