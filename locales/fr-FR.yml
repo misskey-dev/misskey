@@ -260,7 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "Contenu sensible"
   click-to-show: "Cliquer pour afficher"
 common/views/components/theme.vue:
-  theme: "テーマ"
+  theme: "Thème"
   light-theme: "Thème en mode jour"
   dark-theme: "Thème en mode nuit"
   light-themes: "Thème clair"
