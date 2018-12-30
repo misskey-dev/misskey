@@ -260,6 +260,7 @@ common/views/components/media-banner.vue:
   sensitive: "Contenu sensible"
   click-to-show: "Cliquer pour afficher"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "Thème en mode jour"
   dark-theme: "Thème en mode nuit"
   light-themes: "Thème clair"
@@ -276,6 +277,7 @@ common/views/components/theme.vue:
   base-theme: "Thème de base"
   base-theme-light: "Clair"
   base-theme-dark: "Sombre"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "Nom du Thème"
   preview-created-theme: "Prévisualisation"
   invalid-theme: "Thème n’est pas valide."
@@ -1433,7 +1435,6 @@ mobile/views/pages/settings.vue:
   notification-position: "Style de notification"
   notification-position-bottom: "en bas"
   notification-position-top: "en haut"
-  theme: "Thème"
   behavior: "Comportement"
   fetch-on-scroll: "Chargement lors du défilement"
   note-visibility: "Visibilité de la publication"
