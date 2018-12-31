@@ -123,7 +123,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 
 :four_leaf_clover: Copyright
 ----------------------------------------------------------------
-> Copyright (c) 2014-2018 syuilo
+> Copyright (c) 2014-2019 syuilo
 
 Misskey is an open-source software licensed under the [GNU AGPLv3](LICENSE).
 
