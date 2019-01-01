@@ -372,7 +372,12 @@ export const pack = async (
 	//#endregion
 
 	if (_note.user.isCat && _note.text) {
-		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');
+		_note.text = (_note.text
+			// ja-JP
+			.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ')
+			// ko-KR
+			.replace(/[나-낳]/g, (match: string) => String.fromCharCode(match.codePointAt(0) + 56))
+		);
 	}
 
 	if (!opts.skipHide) {
