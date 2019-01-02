@@ -148,6 +148,27 @@ router.get('/@:user', async (ctx, next) => {
 	}
 });
 
+router.get('/users/:user', async ctx => {
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
+
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
+
+	if (user === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+});
+
 // Note
 router.get('/notes/:note', async ctx => {
 	if (ObjectID.isValid(ctx.params.note)) {
@@ -159,7 +180,12 @@ router.get('/notes/:note', async ctx => {
 				note: _note,
 				summary: getNoteSummary(_note)
 			});
-			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+
+			if (['public', 'home'].includes(note.visibility)) {
+				ctx.set('Cache-Control', 'public, max-age=180');
+			} else {
+				ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+			}
 
 			return;
 		}
