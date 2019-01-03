@@ -367,7 +367,7 @@ export default Vue.extend({
 
 		&.compact
 			> article
-				> header, p, footer
+				> header h1, p, footer
 					overflow: hidden;
 					white-space: nowrap;
 					text-overflow: ellipsis;
