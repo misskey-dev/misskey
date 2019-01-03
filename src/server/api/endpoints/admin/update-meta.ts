@@ -39,10 +39,10 @@ export const meta = {
 			}
 		},
 
-		logoUrl: {
+		mascotImageUrl: {
 			validator: $.str.optional.nullable,
 			desc: {
-				'ja-JP': 'インスタンスロゴ画像のURL'
+				'ja-JP': 'インスタンスキャラクター画像のURL'
 			}
 		},
 
@@ -335,8 +335,8 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		set.hidedTags = ps.hidedTags;
 	}
 
-	if (ps.logoUrl !== undefined) {
-		set.logoUrl = ps.logoUrl;
+	if (ps.mascotImageUrl !== undefined) {
+		set.mascotImageUrl = ps.mascotImageUrl;
 	}
 
 	if (ps.bannerUrl !== undefined) {

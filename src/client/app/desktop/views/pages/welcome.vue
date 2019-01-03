@@ -35,7 +35,7 @@
 						<span class="signin" @click="signin">{{ $t('signin') }}</span>
 					</p>
 
-					<img :src="meta.logoUrl || '/assets/ai.png'" alt="" title="藍" class="char">
+					<img :src="meta.mascotImageUrl" alt="" title="藍" class="char">
 				</div>
 			</div>
 
