@@ -30,7 +30,7 @@
 						<mk-media-list :media-list="appearNote.files"/>
 					</div>
 					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
-					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="compact"/>
 					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
 					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote"/></div>
 				</div>
@@ -90,6 +90,11 @@ export default Vue.extend({
 		note: {
 			type: Object,
 			required: true
+		},
+		compact: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	}
 });
