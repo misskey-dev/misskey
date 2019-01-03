@@ -122,9 +122,9 @@ common:
   use-os-default-emojis: "Use the OS default Emojis"
   do-not-use-in-production: "This is a development build. Do not use in production."
   user-suspended: "This user has been suspended."
-  is-remote-user: "This user information is copied."
-  is-remote-post: "This post information is a copy."
-  view-on-remote: "View it on remote"
+  is-remote-user: "This user's information is mirrored."
+  is-remote-post: "These post contents are mirrored."
+  view-on-remote: "For completion, view it remotely."
   renoted-by: "Renoted by {user}"
   error:
     title: "Something happened :("
