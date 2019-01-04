@@ -1065,7 +1065,7 @@ admin/views/charts.vue:
   federation: "Federation"
   notes: "Posts"
   users: "Users"
-  drive: "Drive"
+  drive: "Media storage"
   network: "Network"
   charts:
     federation-instances: "The number of instances: increase/decrease"
