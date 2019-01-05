@@ -14,7 +14,7 @@
 			<header>
 				<h1 :title="title">{{ title }}</h1>
 			</header>
-			<p v-if="description" :title="description">{{ description.length > 1000 ? description.slice(0, 1000) + '…' : description }}</p>
+			<p v-if="description" :title="description">{{ description }}</p>
 			<footer>
 				<img class="icon" v-if="icon" :src="icon"/>
 				<p :title="sitename">{{ sitename }}</p>
@@ -183,7 +183,7 @@ export default Vue.extend({
 			res.json().then(info => {
 				if (info.url == null) return;
 				this.title = info.title;
-				this.description = info.description;
+				this.description = info.description && info.description.length > 505 ? info.description.slice(0, 505) + '…' : info.description;
 				this.thumbnail = info.thumbnail;
 				this.icon = info.icon;
 				this.sitename = info.sitename;
