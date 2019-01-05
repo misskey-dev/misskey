@@ -124,7 +124,7 @@ common:
   user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "Informacje o użytkowniku są kopiowane."
   is-remote-post: "この投稿情報はコピーです。"
-  view-on-remote: "正確な情報を見る"
+  view-on-remote: "Dla dopełnienia, zobacz to zdalnie."
   renoted-by: "{user} udostępnił(a)"
   error:
     title: "Coś poszło nie tak"
@@ -277,7 +277,7 @@ common/views/components/theme.vue:
   base-theme: "Podstawowy motyw"
   base-theme-light: "Jasny"
   base-theme-dark: "Ciemny"
-  find-more-theme: "その他のテーマを入手"
+  find-more-theme: "Odkryj więcej motywów"
   theme-name: "Nazwa motywu"
   preview-created-theme: "Pokaż podgląd"
   invalid-theme: "テーマが正しくありません。"
@@ -548,7 +548,7 @@ common/views/pages/follow.vue:
   following: "Śledzisz"
   follow: "Śledź"
   request-pending: "Oczekiwanie na pozwolenie"
-  follow-processing: "フォロー処理中"
+  follow-processing: "Przetwarzanie śledzenia"
   follow-request: "Poproś o śledzenie"
 desktop:
   banner-crop-title: "バナーとして表示する部分を選択"
@@ -1304,7 +1304,7 @@ common/views/components/follow-button.vue:
   following: "フォロー中"
   follow: "Śledź"
   request-pending: "フォロー許可待ち"
-  follow-processing: "フォロー処理中"
+  follow-processing: "Przetwarzanie"
   follow-request: "Poproś o śledzenie"
 mobile/views/components/friends-maker.vue:
   title: "Zacznij śledzić ludzi takich jak Ty"
