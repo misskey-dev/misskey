@@ -261,7 +261,7 @@ common/views/components/media-banner.vue:
   click-to-show: "クリックして表示"
 common/views/components/theme.vue:
   theme: "テーマ"
-  light-theme: "非ダークモード時に使用するテーマ"
+  light-theme: "Motyw"
   dark-theme: "ダークモード時に使用するテーマ"
   light-themes: "Jasny Motyw"
   dark-themes: "Ciemny motyw"
@@ -331,7 +331,7 @@ common/views/components/nav.vue:
   develop: "Autorzy"
   feedback: "Podziel się opinią"
 common/views/components/note-menu.vue:
-  mention: "メンション"
+  mention: "Wspomnij"
   detail: "Szczegóły"
   copy-link: "Skopiuj adres"
   favorite: "Dodaj do ulubionych"
@@ -408,7 +408,7 @@ common/views/components/stream-indicator.vue:
   reconnecting: "Ponowne łączenie"
   connected: "Połączono"
 common/views/components/notification-settings.vue:
-  title: "通知"
+  title: "Powiadomienia"
   mark-as-read-all-notifications: "すべての通知を既読にする"
   mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   mark-as-read-all-talk-messages: "すべてのトークを既読にする"
@@ -908,7 +908,7 @@ desktop/views/components/sub-note-content.vue:
   poll: "Ankieta"
 desktop/views/components/settings.tags.vue:
   title: "Tagi"
-  query: "クエリ (省略可)"
+  query: "Zapytanie (opcjonalne)"
   add: "Dodaj"
   save: "Zapisz"
 desktop/views/components/taskmanager.vue:
@@ -1230,7 +1230,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
   followers: "Śledzący"
-  mention: "メンション"
+  mention: "Wspomnij"
   is-bot: "To konto jest botem"
   years-old: "{age} lat"
   year: "/"
@@ -1240,7 +1240,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
   with-media: "Multimedia"
-  my-posts: "私の投稿"
+  my-posts: "Moje wpisy"
   empty: "Ten użytkownik nie umieścił jeszcze niczego."
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
@@ -1524,7 +1524,7 @@ deck/deck.user-column.vue:
   posts: "Wpisy"
   following: "Śledzeni"
   followers: "Śledzący"
-  mention: "メンション"
+  mention: "Wspomnij"
   images: "Zdjęcia"
   activity: "Aktywność"
   timeline: "Oś czasu"
