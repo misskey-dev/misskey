@@ -35,7 +35,7 @@ while :
   cat patreon.cache | \
   awk -F'\t' '{print $2,$1}' | \
   sed -e 's/ /\\" alt=\\"/' | \
-  xargs -I% echo '<td><img src="%"></td>' >> patreon.md.cache && \
+  xargs -I% echo '<td><img src="%" width="100"></td>' >> patreon.md.cache && \
   echo '</tr><tr>' >> patreon.md.cache && \
   cat patreon.cache | \
   awk -F'\t' '{print $3,$1}' | \
