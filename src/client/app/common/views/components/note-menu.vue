@@ -30,6 +30,10 @@ export default Vue.extend({
 						text: this.$t('detail'),
 						action: this.detail
 					}], [{
+						icon: 'align-left',
+						text: this.$t('copy-content'),
+						action: this.copyContent
+					}], [{
 						icon: 'link',
 						text: this.$t('copy-link'),
 						action: this.copyLink
@@ -79,6 +83,10 @@ export default Vue.extend({
 
 		detail() {
 			this.$router.push(`/notes/${this.note.id}`);
+		},
+
+		copyContent() {
+			copyToClipboard(this.note.text);
 		},
 
 		copyLink() {
