@@ -34,7 +34,7 @@
 		"@types/debug": "0.0.31",
 		"@types/deep-equal": "1.0.1",
 		"@types/double-ended-queue": "2.1.0",
-		"@types/elasticsearch": "5.0.29",
+		"@types/elasticsearch": "5.0.30",
 		"@types/file-type": "10.6.0",
 		"@types/gulp": "3.8.36",
 		"@types/gulp-mocha": "0.0.32",
