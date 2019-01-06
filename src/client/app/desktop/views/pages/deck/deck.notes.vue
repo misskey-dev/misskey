@@ -18,6 +18,7 @@
 				:key="note.id"
 				@update:note="onNoteUpdated(i, $event)"
 				:media-view="mediaView"
+				:compact="true"
 				:mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
 				<span><fa icon="angle-up"/>{{ note._datetext }}</span>
