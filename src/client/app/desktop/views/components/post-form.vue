@@ -77,6 +77,7 @@ import extractMentions from '../../../../../misc/extract-mentions';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/post-form.vue'),
+
 	components: {
 		XDraggable,
 		MkVisibilityChooser
@@ -197,11 +198,11 @@ export default Vue.extend({
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.$store.state.i.username == x.username && x.host == null) return;
-				if (this.$store.state.i.username == x.username && x.host == host) return;
+				if (this.$store.state.i.username == x.username && x.host == null) continue;
+				if (this.$store.state.i.username == x.username && x.host == host) continue;
 
 				// 重複は除外
-				if (this.text.indexOf(`${mention} `) != -1) return;
+				if (this.text.indexOf(`${mention} `) != -1) continue;
 
 				this.text += `${mention} `;
 			}
@@ -219,6 +220,12 @@ export default Vue.extend({
 			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
+		}
+
+		// keep cw when reply
+		if (this.reply && this.reply.cw != null) {
+			this.useCw = true;
+			this.cw = this.reply.cw;
 		}
 
 		this.$nextTick(() => {

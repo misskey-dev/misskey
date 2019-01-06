@@ -21,7 +21,14 @@ import i18n from '../../../i18n';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/renote-form.vue'),
-	props: ['note'],
+
+	props: {
+		note: {
+			type: Object,
+			required: true
+		}
+	},
+
 	data() {
 		return {
 			wait: false,
@@ -29,6 +36,7 @@ export default Vue.extend({
 			visibility: this.$store.state.settings.defaultNoteVisibility
 		};
 	},
+
 	methods: {
 		ok(v: string) {
 			this.wait = true;
@@ -44,9 +52,11 @@ export default Vue.extend({
 				this.wait = false;
 			});
 		},
+
 		cancel() {
 			this.$emit('canceled');
 		},
+
 		onQuote() {
 			this.quote = true;
 
@@ -54,6 +64,7 @@ export default Vue.extend({
 				(this.$refs.form as any).focus();
 			});
 		},
+
 		onChildFormPosted() {
 			this.$emit('posted');
 		}

@@ -19,7 +19,7 @@
 				<span class="name">
 					<mk-user-name :user="user"/>
 				</span>
-				<span class="acct">@{{ user | acct }}</span>
+				<span class="acct">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
 			</div>
 		</header>
 		<div class="info">
@@ -410,6 +410,9 @@ export default Vue.extend({
 				font-size 14px
 				opacity 0.7
 				text-shadow 0 0 8px #000
+
+				> .locked
+					opacity 0.8
 
 	> .info
 		padding 16px

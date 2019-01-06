@@ -8,16 +8,16 @@
 	</blockquote>
 </div>
 <div v-else class="mk-url-preview">
-	<a :class="{ mini }" :href="url" target="_blank" :title="url" v-if="!fetching">
+	<a :class="{ mini, compact }" :href="url" target="_blank" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url(${thumbnail})`"></div>
 		<article>
 			<header>
-				<h1>{{ title }}</h1>
+				<h1 :title="title">{{ title }}</h1>
 			</header>
-			<p v-if="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
+			<p v-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
 			<footer>
 				<img class="icon" v-if="icon" :src="icon"/>
-				<p>{{ sitename }}</p>
+				<p :title="sitename">{{ sitename }}</p>
 			</footer>
 		</article>
 	</a>
@@ -115,6 +115,12 @@ export default Vue.extend({
 		},
 
 		detail: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+
+		compact: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -302,6 +308,23 @@ export default Vue.extend({
 						width 12px
 						height 12px
 
+			&.compact
+				> .thumbnail
+					position: absolute
+					width 56px
+					height 100%
+
+				> article
+					left 56px
+					width calc(100% - 56px)
+					padding 4px
+
+					> header
+						margin-bottom 2px
+
+					> footer
+						margin-top 2px
+
 		&.mini
 			font-size 10px
 
@@ -325,4 +348,27 @@ export default Vue.extend({
 						width 12px
 						height 12px
 
+			&.compact
+				> .thumbnail
+					position: absolute
+					width 56px
+					height 100%
+
+				> article
+					left 56px
+					width calc(100% - 56px)
+					padding 4px
+
+					> header
+						margin-bottom 2px
+
+					> footer
+						margin-top 2px
+
+		&.compact
+			> article
+				> header h1, p, footer
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
 </style>

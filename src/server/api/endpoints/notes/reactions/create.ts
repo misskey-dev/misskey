@@ -45,7 +45,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 
 	if (note.deletedAt != null) {
-		return rej('this not is already deleted');
+		return rej('this note is already deleted');
 	}
 
 	try {
