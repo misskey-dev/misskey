@@ -376,6 +376,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		$set: {
 			'_follower.sharedInbox': person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined)
 		}
+	}, {
+		multi: true
 	});
 
 	await updateFeatured(exist._id).catch(err => console.log(err));
