@@ -103,6 +103,18 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	const visibleQuery = me == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: me._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ me._id ] }
+	}];
+
 	const q: any = {
 		$and: [ps.tag ? {
 			tagsLower: ps.tag.toLowerCase()
@@ -113,7 +125,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 				}))
 			}))
 		}],
-		deletedAt: { $exists: false }
+		deletedAt: { $exists: false },
+		$or: visibleQuery
 	};
 
 	const push = (x: any) => q.$and.push(x);

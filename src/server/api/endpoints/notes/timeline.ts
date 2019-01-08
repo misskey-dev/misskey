@@ -139,12 +139,29 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}]
 	});
 
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}];
+
 	const query = {
 		$and: [{
 			deletedAt: null,
 
-			// フォローしている人の投稿
-			$or: followQuery,
+			$and: [{
+				// フォローしている人の投稿
+				$or: followQuery
+			}, {
+				// visible for me
+				$or: visibleQuery
+			}],
 
 			// mute
 			userId: {
