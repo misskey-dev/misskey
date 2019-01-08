@@ -40,6 +40,16 @@ export const meta = {
 		markAsRead: {
 			validator: $.bool.optional,
 			default: true
+		},
+
+		includeTypes: {
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			default: [] as string[]
+		},
+
+		excludeTypes: {
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			default: [] as string[]
 		}
 	}
 };
@@ -86,6 +96,16 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	} else if (ps.untilId) {
 		query._id = {
 			$lt: ps.untilId
+		};
+	}
+
+	if (ps.includeTypes.length > 0) {
+		query.type = {
+			$in: ps.includeTypes
+		};
+	} else if (ps.excludeTypes.length > 0) {
+		query.type = {
+			$nin: ps.excludeTypes
 		};
 	}
 
