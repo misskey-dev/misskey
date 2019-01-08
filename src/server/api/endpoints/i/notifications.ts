@@ -43,13 +43,13 @@ export const meta = {
 		},
 
 		includeTypes: {
-			validator: $.str.match(/^((follow|mention|reply|renote|quote|reaction|poll_vote)(,(follow|mention|reply|renote|quote|reaction|poll_vote))*)?$/).optional,
-			default: ''
+			validator: $.arr($.str.match(/^(follow|mention|reply|renote|quote|reaction|poll_vote)$/)).optional,
+			default: [] as string[]
 		},
 
 		excludeTypes: {
-			validator: $.str.match(/^((follow|mention|reply|renote|quote|reaction|poll_vote)(,(follow|mention|reply|renote|quote|reaction|poll_vote))*)?$/).optional,
-			default: ''
+			validator: $.arr($.str.match(/^(follow|mention|reply|renote|quote|reaction|poll_vote)$/)).optional,
+			default: [] as string[]
 		}
 	}
 };
@@ -101,11 +101,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	if (ps.includeTypes) {
 		query.type = {
-			$in: ps.includeTypes.split(',')
+			$in: ps.includeTypes
 		}
 	} else if (ps.excludeTypes) {
 		query.type = {
-			$nin: ps.includeTypes.split(',')
+			$nin: ps.includeTypes
 		}
 	}
 
