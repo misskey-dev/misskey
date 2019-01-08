@@ -155,10 +155,23 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	//#region Construct query
 	const sort = { } as any;
 
+	const visibleQuery = me == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: me._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ me._id ] }
+	}];
+
 	const query = {
 		$and: [ {} ],
 		deletedAt: null,
-		userId: user._id
+		userId: user._id,
+		$or: visibleQuery
 	} as any;
 
 	if (ps.sinceId) {

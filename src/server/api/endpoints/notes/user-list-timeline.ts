@@ -146,12 +146,29 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}]
 	}));
 
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}];
+
 	const query = {
 		$and: [{
 			deletedAt: null,
 
-			// リストに入っている人のタイムラインへの投稿
-			$or: listQuery,
+			$and: [{
+				// リストに入っている人のタイムラインへの投稿
+				$or: listQuery
+			}, {
+				// visible for me
+				$or: visibleQuery
+			}],
 
 			// mute
 			userId: {
