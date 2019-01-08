@@ -105,7 +105,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		};
 	} else if (ps.excludeTypes.length > 0) {
 		query.type = {
-			$nin: ps.includeTypes
+			$nin: ps.excludeTypes
 		};
 	}
 
