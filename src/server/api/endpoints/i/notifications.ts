@@ -40,6 +40,16 @@ export const meta = {
 		markAsRead: {
 			validator: $.bool.optional,
 			default: true
+		},
+
+		includeTypes: {
+			validator: $.str.match(/^((follow|mention|reply|renote|quote|reaction|poll_vote)(,(follow|mention|reply|renote|quote|reaction|poll_vote))*)?$/).optional,
+			default: ''
+		},
+
+		excludeTypes: {
+			validator: $.str.match(/^((follow|mention|reply|renote|quote|reaction|poll_vote)(,(follow|mention|reply|renote|quote|reaction|poll_vote))*)?$/).optional,
+			default: ''
 		}
 	}
 };
@@ -87,6 +97,16 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		query._id = {
 			$lt: ps.untilId
 		};
+	}
+
+	if (ps.includeTypes) {
+		query.type = {
+			$in: ps.includeTypes.split(',')
+		}
+	} else if (ps.excludeTypes) {
+		query.type = {
+			$nin: ps.includeTypes.split(',')
+		}
 	}
 
 	const notifications = await Notification
