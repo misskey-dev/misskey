@@ -77,5 +77,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			skip: ps.offset
 		});
 
-	res(await packMany(files, { detail: true, withUser: true }));
+	res(await packMany(files, { detail: true, withUser: true, self: true }));
 }));

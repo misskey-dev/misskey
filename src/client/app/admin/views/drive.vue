@@ -39,6 +39,7 @@
 						</div>
 					</div>
 					<div v-show="file._open">
+						<ui-input readonly :value="file.url"></ui-input>
 						<ui-horizon-group>
 							<ui-button @click="toggleSensitive(file)" v-if="file.isSensitive"><fa :icon="faEye"/> {{ $t('unmark-as-sensitive') }}</ui-button>
 							<ui-button @click="toggleSensitive(file)" v-else><fa :icon="faEyeSlash"/> {{ $t('mark-as-sensitive') }}</ui-button>
