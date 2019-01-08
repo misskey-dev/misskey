@@ -315,13 +315,13 @@ common/views/components/messaging-room.vue:
   no-history: "Brak dalszej historii"
   resize-form: "Przeciągnij aby zmienić rozmiar"
   new-message: "Nowa wiadomość"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "Tylko JEDEN plik może zostać dołączony do wiadomości"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Wprowadź wiadomość tutaj"
   send: "Wyślij"
   attach-from-local: "Załącz pliki z komputera"
   attach-from-drive: "Załącz pliki z dysku"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "Tylko jeden plik może zostać dołączony do wiadomości"
 common/views/components/messaging-room.message.vue:
   is-read: "Przeczytano"
   deleted: "Wiadomość została usunięta"
