@@ -99,11 +99,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		};
 	}
 
-	if (ps.includeTypes.length) {
+	if (ps.includeTypes.length > 0) {
 		query.type = {
 			$in: ps.includeTypes
 		};
-	} else if (ps.excludeTypes.length) {
+	} else if (ps.excludeTypes.length > 0) {
 		query.type = {
 			$nin: ps.includeTypes
 		};
