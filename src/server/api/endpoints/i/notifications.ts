@@ -43,12 +43,12 @@ export const meta = {
 		},
 
 		includeTypes: {
-			validator: $.arr($.str.match(/^(follow|mention|reply|renote|quote|reaction|poll_vote)$/)).optional,
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
 			default: [] as string[]
 		},
 
 		excludeTypes: {
-			validator: $.arr($.str.match(/^(follow|mention|reply|renote|quote|reaction|poll_vote)$/)).optional,
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
 			default: [] as string[]
 		}
 	}
