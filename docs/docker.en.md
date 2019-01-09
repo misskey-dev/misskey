@@ -17,7 +17,7 @@ This guide describes how to install and setup Misskey with Docker.
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
 2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` Copy the `.config/mongo_initdb_example.js` and rename it to `mongo_initdb.js`.
-2. Edit `default.yml` and `mongo_initdb.js`.
+3. Edit `default.yml` and `mongo_initdb.js`.
 
 *3.* Configure Docker
 ----------------------------------------------------------------
