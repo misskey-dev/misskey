@@ -383,6 +383,7 @@ root(fill)
 
 		> a
 			color var(--inputLabel)
+			text-decoration none
 
 	> .desc
 		margin 6px 0
