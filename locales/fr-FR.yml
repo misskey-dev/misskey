@@ -1125,6 +1125,14 @@ admin/views/users.vue:
       createdAtDesc: "Date d’inscription (Descendant)"
       updatedAtAsc: "Mis à jour récemment (Ascendant)"
       updatedAtDesc: "Mis à jour récemment (descendant)"
+    state:
+      title: "状態"
+      all: "すべて"
+      admin: "管理者"
+      moderator: "モデレーター"
+      adminOrModerator: "管理者+モデレーター"
+      verified: "公式アカウント"
+      suspended: "凍結済み"
     origin:
       title: "Origine"
       combined: "Locaux + distants"
@@ -1137,6 +1145,8 @@ admin/views/moderators.vue:
     title: "Ajout d’un modérateur"
     add: "Ajouter"
     added: "Ajouté en tant que modérateur"
+    remove: "解除"
+    removed: "モデレーター登録を解除しました"
 admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
