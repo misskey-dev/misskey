@@ -39,6 +39,12 @@
 		</template>
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
+	<div class="toggle" v-if="withPasswordToggle">
+		<a @click='togglePassword'>
+			<span v-if="type == 'password'"><fa :icon="['fa', 'eye']"/> {{ $t('@.show-password') }}</span>
+			<span v-if="type != 'password'"><fa :icon="['far', 'eye-slash']"/> {{ $t('@.hide-password') }}</span>
+		</a>
+	</div>
 	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
@@ -93,6 +99,11 @@ export default Vue.extend({
 			required: false
 		},
 		withPasswordMeter: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		withPasswordToggle: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -177,6 +188,13 @@ export default Vue.extend({
 	methods: {
 		focus() {
 			this.$refs.input.focus();
+		},
+		togglePassword() {
+			if(this.type == 'password') {
+				this.type = 'text'
+			} else {
+				this.type = 'password'
+			}
 		},
 		chooseFile() {
 			this.$refs.file.click();
@@ -355,6 +373,17 @@ root(fill)
 
 			if fill
 				padding-right 12px
+
+	> .toggle
+		cursor pointer
+		padding-left 0.5em
+		font-size 0.7em
+		opacity 0.7
+		text-align left
+
+		> a
+			color var(--inputLabel)
+			text-decoration none
 
 	> .desc
 		margin 6px 0
