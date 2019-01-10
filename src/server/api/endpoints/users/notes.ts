@@ -124,6 +124,14 @@ export const meta = {
 				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
 			}
 		},
+
+		excludeNsfw: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
+			}
+		},
 	}
 };
 
@@ -233,6 +241,12 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		query['_files.contentType'] = {
 			$in: ps.fileType
 		};
+
+		if (ps.excludeNsfw) {
+			query['_files.metadata.isSensitive'] = {
+				$ne: true
+			};
+		}
 	}
 	//#endregion
 
