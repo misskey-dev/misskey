@@ -339,7 +339,7 @@ common/views/components/nav.vue:
 common/views/components/note-menu.vue:
   mention: "Wspomnij"
   detail: "Szczegóły"
-  copy-content: "内容をコピー"
+  copy-content: "Skopiuj zawartość"
   copy-link: "Skopiuj adres"
   favorite: "Dodaj do ulubionych"
   unfavorite: "Usuń z ulubionych"
@@ -952,7 +952,7 @@ desktop/views/components/ui.header.post.vue:
 desktop/views/components/ui.header.search.vue:
   placeholder: "Szukaj"
 desktop/views/components/received-follow-requests-window.vue:
-  title: "Poproś o śledzenie"
+  title: "Prośby o śledzenie"
   accept: "Zatwierdź"
   reject: "Odmów"
 desktop/views/components/user-lists-window.vue:
