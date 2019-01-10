@@ -37,6 +37,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		return rej('cannot suspend admin');
 	}
 
+	if (user.isModerator) {
+		return rej('cannot suspend moderator');
+	}
+
 	await User.findOneAndUpdate({
 		_id: user._id
 	}, {
