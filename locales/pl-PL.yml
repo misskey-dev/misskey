@@ -416,11 +416,11 @@ common/views/components/stream-indicator.vue:
   connected: "Połączono"
 common/views/components/notification-settings.vue:
   title: "Powiadomienia"
-  mark-as-read-all-notifications: "すべての通知を既読にする"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
-  mark-as-read-all-talk-messages: "すべてのトークを既読にする"
-  auto-watch: "投稿の自動ウォッチ"
-  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
+  mark-as-read-all-notifications: "Oznacz wszystkie powiadomienia jako przeczytane"
+  mark-as-read-all-unread-notes: "Oznacz wszystkie wpisy jako przeczytane"
+  mark-as-read-all-talk-messages: "Oznacz wszystkie rozmowy jako przeczytane"
+  auto-watch: "Automatycznie nasłuchuj wpisów"
+  auto-watch-desc: "Automatycznie otrzymuj powiadomienia o wpisach, w których zareagowałeś(-aś) lub odpowiedziałeś(-aś)."
 common/views/components/integration-settings.vue:
   title: "サービス連携"
   connect: "Połącz"
