@@ -1125,6 +1125,14 @@ admin/views/users.vue:
       createdAtDesc: "登録日時が新しい順"
       updatedAtAsc: "更新日時が古い順"
       updatedAtDesc: "更新日時が新しい順"
+    state:
+      title: "状態"
+      all: "すべて"
+      admin: "管理者"
+      moderator: "モデレーター"
+      adminOrModerator: "管理者+モデレーター"
+      verified: "公式アカウント"
+      suspended: "凍結済み"
     origin:
       title: "オリジン"
       combined: "ローカル+リモート"
@@ -1137,6 +1145,8 @@ admin/views/moderators.vue:
     title: "モデレーターの登録"
     add: "登録"
     added: "モデレーターを登録しました"
+    remove: "解除"
+    removed: "モデレーター登録を解除しました"
 admin/views/emoji.vue:
   add-emoji:
     title: "絵文字の登録"
