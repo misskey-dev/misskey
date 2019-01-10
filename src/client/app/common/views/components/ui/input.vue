@@ -190,7 +190,7 @@ export default Vue.extend({
 			this.$refs.input.focus();
 		},
 		togglePassword() {
-			if(this.type == 'password') {
+			if (this.type == 'password') {
 				this.type = 'text'
 			} else {
 				this.type = 'password'
