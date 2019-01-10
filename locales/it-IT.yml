@@ -124,6 +124,8 @@ common:
   line-width-thin: "細い"
   line-width-normal: "普通"
   line-width-thick: "太い"
+  hide-password: "パスワードを隠す"
+  show-password: "パスワードを表示する"
   do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
   user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "このユーザー情報はコピーです。"
