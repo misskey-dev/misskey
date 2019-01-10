@@ -1276,6 +1276,8 @@ admin/views/moderators.vue:
     title: "モデレーターの登録"
     add: "登録"
     added: "モデレーターを登録しました"
+    remove: "解除"
+    removed: "モデレーター登録を解除しました"
 
 admin/views/emoji.vue:
   add-emoji:
