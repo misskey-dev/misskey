@@ -124,6 +124,8 @@ common:
   line-width-thin: "Fine"
   line-width-normal: "Normale"
   line-width-thick: "Épaisse"
+  hide-password: "パスワードを隠す"
+  show-password: "パスワードを表示する"
   do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
   user-suspended: "Cet·te utilisateur·trice a été suspendu·e"
   is-remote-user: "Ces informations appartiennent à un utilisateur distant."
