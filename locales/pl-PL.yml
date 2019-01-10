@@ -120,9 +120,9 @@ common:
   reduce-motion: "Zredukuj ruch w UI"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "Użyj domyślnych Emoji systemowych"
-  line-width: "線の太さ"
-  line-width-thin: "細い"
-  line-width-normal: "普通"
+  line-width: "Szerokości linii"
+  line-width-thin: "Chude"
+  line-width-normal: "Normalne"
   line-width-thick: "太い"
   hide-password: "パスワードを隠す"
   show-password: "パスワードを表示する"
@@ -549,7 +549,7 @@ common/views/widgets/tips.vue:
   tips-line24: "Misskey zaczął działać w 2014."
   tips-line25: "Możesz otrzymywać powiadomienia nawet jeżeli Misskey nie jest otwarty w obsługiwanej przeglądarce."
 common/views/pages/not-found.vue:
-  page-not-found: "ページが見つかりませんでした"
+  page-not-found: "Strona nie została znaleziona"
 common/views/pages/follow.vue:
   signed-in-as: "Zalogowany jako {}"
   following: "Śledzisz"
@@ -669,7 +669,7 @@ desktop/views/components/friends-maker.vue:
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
-  done: "Wyślij"
+  done: "Zakończ"
   add-widget: "Dodaj widżet:"
   add: "Dodaj"
 desktop/views/input-dialog.vue:
@@ -1105,7 +1105,7 @@ admin/views/drive.vue:
 admin/views/users.vue:
   operation: "操作"
   username-or-userid: "ユーザー名またはユーザーID"
-  user-not-found: "ユーザーが見つかりません"
+  user-not-found: "Nie znaleziono użytkownika"
   lookup: "照会"
   reset-password: "パスワードをリセット"
   password-updated: "パスワードは現在「{password}」です"
