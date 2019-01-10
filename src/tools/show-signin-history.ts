@@ -22,8 +22,6 @@ async function main(username: string, headers: string[]) {
 		userId: user._id
 	});
 
-	console.log(headers);
-
 	for (const signin of history) {
 		console.log(`${signin.success ? 'OK' : 'NG'} ${signin.createdAt ? signin.createdAt.toISOString() : 'Unknown'} ${signin.ip}`);
 
