@@ -1125,6 +1125,14 @@ admin/views/users.vue:
       createdAtDesc: "등록일이 최신인 순"
       updatedAtAsc: "수정일이 오래된 순"
       updatedAtDesc: "수정일이 최신인 순"
+    state:
+      title: "状態"
+      all: "すべて"
+      admin: "管理者"
+      moderator: "モデレーター"
+      adminOrModerator: "管理者+モデレーター"
+      verified: "公式アカウント"
+      suspended: "凍結済み"
     origin:
       title: "위치 (오리진)"
       combined: "로컬 + 원격"
@@ -1137,6 +1145,8 @@ admin/views/moderators.vue:
     title: "모더레이터 등록"
     add: "등록"
     added: "모더레이터를 등록하였습니다"
+    remove: "解除"
+    removed: "モデレーター登録を解除しました"
 admin/views/emoji.vue:
   add-emoji:
     title: "이모지 등록"
