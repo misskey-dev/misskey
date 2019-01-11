@@ -541,7 +541,7 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 			if (!following.stalk) {
 				// この投稿が返信ならスキップ
 				if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId))
-					return;
+					continue;
 			}
 
 			// Publish event to followers stream
