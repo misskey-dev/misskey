@@ -35,7 +35,7 @@ Installez les paquets suivants :
 En root :
 1. `mongo` Ouvre le shell mongo
 2. `use misskey` Utilise la base de données misskey
-3. `db.users.save( {dummy:"dummy"} )` Écris une donnée "dummy" pour initialiser la base.
+3. `db.users.save( {dummy:"dummy"} )` Écrit une donnée "dummy" pour initialiser la base.
 4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Crée l'utilisateur misskey.
 5. `exit` Vous avez terminé !
 
@@ -49,7 +49,7 @@ En root :
 
 *5.* Création du fichier de configuration
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copie le fichier `.config/example.yml` et renomme-le `default.yml`.
+1. `cp .config/example.yml .config/default.yml` Copie le fichier `.config/example.yml` et le renomme`default.yml`.
 2. Editez le fichier `default.yml`
 
 *6.* Construction de Misskey
