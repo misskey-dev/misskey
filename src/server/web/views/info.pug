@@ -1,0 +1,113 @@
+doctype html
+
+html
+
+	head
+		meta(charset='utf-8')
+		meta(name='application-name' content='Misskey')
+		title Misskey
+		style.
+			html {
+				font-family: sans-serif;
+			}
+
+			main {
+				max-width: 934px;
+				margin: 0 auto;
+			}
+
+			header {
+				padding: 5px;
+				background: rgb(153, 153, 204);
+				border: 1px solid #000;
+			}
+			header:after {
+				content: '';
+				display: block;
+				clear: both;
+			}
+
+			header > h1 {
+				float: left;
+				font-size: 2em;
+			}
+
+			header > img {
+				float: right;
+				width: 220px;
+			}
+
+			table {
+				margin: 1em 0;
+				width: 100%;
+				border-collapse: collapse;
+			}
+			table tr th {
+				background-color: #ccf;
+				border: 1px solid #000;
+				width: 300px;
+				font-weight: bold;
+				padding: 4px 5px;
+				text-align: left;
+			}
+			table tr td {
+				background-color: #ddd;
+				border: 1px solid #000;
+				padding: 4px 5px;
+			}
+
+	body
+		main
+			header
+				h1 Misskey Version #{version}
+				img(src='/assets/misskey-php-like-logo.png' alt='')
+			table
+				tr
+					th Instance
+					td= meta.name
+				tr
+					th Maintainer
+					td
+						= meta.maintainer.name
+						|  &lt;#{meta.maintainer.email}&gt;
+				tr
+					th System
+					td= os
+				tr
+					th Node version
+					td= node
+				tr
+					th Machine
+					td= machine
+				tr
+					th CPU
+					td= cpu.model
+				tr
+					th Registration
+					td= !meta.disableRegistration ? 'yes' : 'no'
+				tr
+					th reCAPTCHA enabled
+					td= meta.enableRecaptcha ? 'yes' : 'no'
+				tr
+					th Cache remote files
+					td= meta.cacheRemoteFiles ? 'yes' : 'no'
+				tr
+					th Drive capacity per local user
+					td
+						= meta.localDriveCapacityMb
+						|  MB
+				tr
+					th Drive capacity per remote user
+					td
+						= meta.remoteDriveCapacityMb
+						|  MB
+				tr
+					th Max text length
+					td= meta.maxNoteTextLength
+				tr
+					th Emojis
+					td
+						each emoji in emojis
+							| :#{emoji.name}:
+							= ' '
+
