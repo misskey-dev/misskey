@@ -7,7 +7,7 @@
 [![Dependencies](https://img.shields.io/david/syuilo/misskey.svg?style=for-the-badge)](https://david-dm.org/syuilo/misskey)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](http://makeapullrequest.com)
 
-**Sophisticated microblogging platform, evolving forever.**
+**A forever evolving, sophisticated microblogging platform.**
 
 <p align="justify">
 <a href="https://misskey.xyz">Misskey</a> is a decentralized microblogging platform born on Earth.
@@ -27,7 +27,7 @@ Why don't you take a short break from the hustle and bustle of the city, and div
 
 <h3 align="left">Posting</h3>
 <p align="justify">
-Just post your idea, hot topics and anything you want to share. You may decorate your words, attach your favorite pictures or movies, and create a poll - those are all supported in Misskey!
+Post your ideas, discussion topics, fun moments, or anything else you want to share! Misskey supports text, emoji, pictures, videos, and polls!
 </p>
 
 ---
@@ -36,7 +36,7 @@ Just post your idea, hot topics and anything you want to share. You may decorate
 
 <h3 align="right">Reactions</h3>
 <p align="justify">
-The simplest way to tell your emotions to the posts. You can choose the best reaction from various reactions. Reactions on Misskey has much more expressive than other social media which only allows pushing “likes”.
+Reactions are the simplest way to respond to others' posts. Simply pick a reaction emote from the list! Reactions on Misskey are much more expressive than other social media services which only allow “liking”.
 </p>
 
 ---
@@ -45,7 +45,7 @@ The simplest way to tell your emotions to the posts. You can choose the best rea
 
 <h3 align="left">Interface</h3>
 <p align="justify">
-Highly customizable UI for your taste. We understand no UI fits for everyone. Make your graceful home by editing, adjusting layouts of timeline, and placing widgets.
+Customize the UI to your own tastes! No UI will work for everyone, so Misskey is completely customizable. Make Misskey *yours* by editing the style, adjusting timeline layouts, and placing widgets.
 </p>
 
 ---
@@ -54,20 +54,20 @@ Highly customizable UI for your taste. We understand no UI fits for everyone. Ma
 
 <h3 align="right">Misskey Drive</h3>
 <p align="justify">
-Organized uploaded files. Wanna post a picture you have already uploaded? Wish to create a folder for your files? Misskey Drive is the best solution for you.
+Organize and store your files! Want to post a picture you have already uploaded? Wish you could organize your files into folders? Misskey Drive is a solution!
 </p>
 
 ---
 
-and more! Now it's time to experience the world with your own eyes at [misskey.xyz](https://misskey.xyz) or [other instances](https://joinmisskey.github.io/).
+...and more! Experience Misskey with your own eyes at [misskey.xyz](https://misskey.xyz) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
 
-:package: Create your own instance
+:package: Create Your Own Instance
 ----------------------------------------------------------------
-Please see [Setup and installation guide](./docs/setup.en.md).
+Please see the [Setup and Installation Guide](./docs/setup.en.md).
 
 :wrench: Contribution
 ----------------------------------------------------------------
-Please see [Contribution guide](./CONTRIBUTING.md).
+Please see the [Contribution Guide](./CONTRIBUTING.md).
 
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
@@ -123,7 +123,7 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 ----------------------------------------------------------------
 > Copyright (c) 2014-2019 syuilo
 
-Misskey is an open-source software licensed under the [GNU AGPLv3](LICENSE).
+Misskey is open-source software licensed under the [GNU AGPLv3](LICENSE).
 
 [![][agpl-3.0-badge]][AGPL-3.0]
 
