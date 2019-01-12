@@ -96,7 +96,7 @@
 		"bootstrap-vue": "2.0.0-rc.11",
 		"cafy": "12.0.0",
 		"chai": "4.2.0",
-		"chai-http": "4.2.0",
+		"chai-http": "4.2.1",
 		"chalk": "2.4.1",
 		"commander": "2.19.0",
 		"crc-32": "1.2.0",
