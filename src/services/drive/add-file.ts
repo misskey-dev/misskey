@@ -80,6 +80,11 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 			webpublicExt = 'png';
 			webpublicType = 'image/png';
+		} else if (['image/svg', 'image/svg+xml'].includes(type)) {
+			webpublic = await fs.readFile(path);
+
+			webpublicExt = 'svg';
+			webpublicType = 'image/svg+xml';
 		} else {
 			log(`web image not created (not an image)`);
 		}
@@ -117,16 +122,30 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		thumbnailExt = 'png';
 		thumbnailType = 'image/png';
+	} else if (['image/svg', 'image/svg+xml'].includes(type)) {
+		thumbnail = await fs.readFile(path).then(x => sharp()
+			.resize(498, 280, {
+				fit: 'inside',
+				withoutEnlargement: true
+			})
+			.overlayWith(x, { cutout: true })
+			.png()
+			.toBuffer());
+
+		thumbnailExt = 'png';
+		thumbnailType = 'image/png';
 	}
 	// #endregion thumbnail
 
 	if (config.drive && config.drive.storage == 'minio') {
 		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
+		const [primaryType] = type.split('+');
 
 		if (ext === '') {
-			if (type === 'image/jpeg') ext = '.jpg';
-			if (type === 'image/png') ext = '.png';
-			if (type === 'image/webp') ext = '.webp';
+			if (primaryType === 'image/jpeg') ext = '.jpg';
+			if (primaryType === 'image/png') ext = '.png';
+			if (primaryType === 'image/webp') ext = '.webp';
+			if (primaryType === 'image/svg') ext = '.svg';
 		}
 
 		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
