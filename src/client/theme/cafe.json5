@@ -16,5 +16,6 @@
 		renoteGradient: '#ffe1c7',
 		renoteText: '$primary',
 		quoteBorder: '$primary',
+		mfmMention: '#56907b',
 	},
 }
