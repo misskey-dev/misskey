@@ -6,7 +6,7 @@
 		<span slot="prefix">@</span>
 		<span slot="suffix">@{{ host }}</span>
 	</ui-input>
-	<ui-input v-model="password" type="password" required styl="fill">
+	<ui-input v-model="password" type="password" :with-password-toggle="true" required styl="fill">
 		<span>{{ $t('password') }}</span>
 		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>

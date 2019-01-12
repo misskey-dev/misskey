@@ -169,6 +169,7 @@ export default Vue.extend({
 			this.$root.api('users/notes', {
 				userId: this.user.id,
 				fileType: image,
+				excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
 				limit: 9,
 				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {

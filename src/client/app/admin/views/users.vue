@@ -31,6 +31,14 @@
 					<option value="-updatedAt">{{ $t('users.sort.updatedAtAsc') }}</option>
 					<option value="+updatedAt">{{ $t('users.sort.updatedAtDesc') }}</option>
 				</ui-select>
+				<ui-select v-model="state">
+					<span slot="label">{{ $t('users.state.title') }}</span>
+					<option value="all">{{ $t('users.state.all') }}</option>
+					<option value="admin">{{ $t('users.state.admin') }}</option>
+					<option value="moderator">{{ $t('users.state.moderator') }}</option>
+					<option value="verified">{{ $t('users.state.verified') }}</option>
+					<option value="suspended">{{ $t('users.state.suspended') }}</option>
+				</ui-select>
 				<ui-select v-model="origin">
 					<span slot="label">{{ $t('users.origin.title') }}</span>
 					<option value="combined">{{ $t('users.origin.combined') }}</option>
@@ -39,7 +47,7 @@
 				</ui-select>
 			</ui-horizon-group>
 			<sequential-entrance animation="entranceFromTop" delay="25">
-				<div class="kofvwchc" v-for="user in users">
+				<div class="kofvwchc" v-for="user in users" :key="user.id">
 					<div>
 						<a :href="user | userPage(null, true)">
 							<mk-avatar class="avatar" :user="user" :disable-link="true"/>
@@ -49,6 +57,10 @@
 						<header>
 							<b><mk-user-name :user="user"/></b>
 							<span class="username">@{{ user | acct }}</span>
+							<span class="is-admin" v-if="user.isAdmin">admin</span>
+							<span class="is-moderator" v-if="user.isModerator">moderator</span>
+							<span class="is-verified" v-if="user.isVerified" :title="$t('@.verified-user')"><fa icon="star"/></span>
+							<span class="is-suspended" v-if="user.isSuspended" :title="$t('@.suspended-user')"><fa :icon="faSnowflake"/></span>
 						</header>
 						<div>
 							<span>{{ $t('users.updatedAt') }}: <mk-time :time="user.updatedAt" mode="detail"/></span>
@@ -84,6 +96,7 @@ export default Vue.extend({
 			suspending: false,
 			unsuspending: false,
 			sort: '+createdAt',
+			state: 'all',
 			origin: 'combined',
 			limit: 10,
 			offset: 0,
@@ -95,6 +108,12 @@ export default Vue.extend({
 
 	watch: {
 		sort() {
+			this.users = [];
+			this.offset = 0;
+			this.fetchUsers();
+		},
+
+		state() {
 			this.users = [];
 			this.offset = 0;
 			this.fetchUsers();
@@ -236,7 +255,8 @@ export default Vue.extend({
 		},
 
 		fetchUsers() {
-			this.$root.api('users', {
+			this.$root.api('admin/show-users', {
+				state: this.state,
 				origin: this.origin,
 				sort: this.sort,
 				offset: this.offset,
@@ -284,4 +304,19 @@ export default Vue.extend({
 					margin-left 8px
 					opacity 0.7
 
+				> .is-admin
+				> .is-moderator
+					flex-shrink 0
+					align-self center
+					margin 0 0 0 .5em
+					padding 1px 6px
+					font-size 80%
+					border-radius 3px
+					background var(--noteHeaderAdminBg)
+					color var(--noteHeaderAdminFg)
+
+				> .is-verified
+				> .is-suspended
+					margin 0 0 0 .5em
+					color #4dabf7
 </style>

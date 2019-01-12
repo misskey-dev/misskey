@@ -41,7 +41,7 @@
 					<span v-if="visibility === 'public'"><fa icon="globe"/></span>
 					<span v-if="visibility === 'home'"><fa icon="home"/></span>
 					<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
-					<span v-if="visibility === 'specified'"><fa icon="lock"/></span>
+					<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
 				</button>
 			</footer>
 			<input ref="file" class="file" type="file" multiple="multiple" @change="onChangeFile"/>

@@ -3,6 +3,8 @@ const { sign } = require('http-signature');
 import { URL } from 'url';
 import * as debug from 'debug';
 const crypto = require('crypto');
+const { lookup } = require('lookup-dns-cache');
+const promiseAny = require('promise-any');
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
@@ -10,12 +12,12 @@ import { publishApLogStream } from '../../stream';
 
 const log = debug('misskey:activitypub:deliver');
 
-export default (user: ILocalUser, url: string, object: any) => new Promise((resolve, reject) => {
+export default (user: ILocalUser, url: string, object: any) => new Promise(async (resolve, reject) => {
 	log(`--> ${url}`);
 
 	const timeout = 10 * 1000;
 
-	const { protocol, hostname, port, pathname, search } = new URL(url);
+	const { protocol, host, hostname, port, pathname, search } = new URL(url);
 
 	const data = JSON.stringify(object);
 
@@ -23,14 +25,19 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 	sha256.update(data);
 	const hash = sha256.digest('base64');
 
+	const addr = await resolveAddr(hostname).catch(e => reject(e));
+	if (!addr) return;
+
 	const req = request({
 		protocol,
-		hostname,
+		hostname: addr,
+		setHost: false,
 		port,
 		method: 'POST',
 		path: pathname + search,
 		timeout,
 		headers: {
+			'Host': host,
 			'User-Agent': config.user_agent,
 			'Content-Type': 'application/activity+json',
 			'Digest': `SHA-256=${hash}`
@@ -75,3 +82,23 @@ export default (user: ILocalUser, url: string, object: any) => new Promise((reso
 	});
 	//#endregion
 });
+
+/**
+ * Resolve host (with cached, asynchrony)
+ */
+async function resolveAddr(domain: string) {
+	// v4/v6で先に取得できた方を採用する
+	return await promiseAny([
+		resolveAddrInner(domain, { ipv6: false }),
+		resolveAddrInner(domain, { ipv6: true  })
+	]);
+}
+
+function resolveAddrInner(domain: string, options = { }): Promise<string> {
+	return new Promise((res, rej) => {
+		lookup(domain, options, (error: any, address: string) => {
+			if (error) return rej(error);
+			return res(address);
+		});
+	});
+}

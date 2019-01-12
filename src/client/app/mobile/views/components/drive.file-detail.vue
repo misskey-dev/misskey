@@ -37,6 +37,7 @@
 	</div>
 	<div class="menu">
 		<div>
+			<ui-input readonly :value="file.url">URL</ui-input>
 			<ui-button link :href="`${file.url}?download`" :download="file.name"><fa icon="download"/> {{ $t('download') }}</ui-button>
 			<ui-button @click="rename"><fa icon="pencil-alt"/> {{ $t('rename') }}</ui-button>
 			<ui-button @click="move"><fa :icon="['far', 'folder-open']"/> {{ $t('move') }}</ui-button>
@@ -200,7 +201,7 @@ export default Vue.extend({
 				color #bf4633
 
 	> .menu
-		padding 14px
+		padding 0 14px 14px 14px
 		border-top solid 1px var(--faceDivider)
 
 		> div

@@ -357,6 +357,14 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('ignore colon', () => {
+				const tokens = analyze('#Foo:');
+				assert.deepStrictEqual(tokens, [
+					leaf('hashtag', { hashtag: 'Foo' }),
+					text(':'),
+				]);
+			});
+
 			it('allow including number', () => {
 				const tokens = analyze('#foo123');
 				assert.deepStrictEqual(tokens, [
