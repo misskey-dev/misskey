@@ -101,7 +101,7 @@
 		"commander": "2.19.0",
 		"crc-32": "1.2.0",
 		"css-loader": "1.0.1",
-		"cssnano": "4.1.7",
+		"cssnano": "4.1.8",
 		"dateformat": "3.0.3",
 		"debug": "4.1.0",
 		"deep-equal": "1.0.1",
