@@ -7,8 +7,8 @@ import * as debug from 'debug';
 import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
-import fileType from 'file-type';
-import isSvg from 'is-svg';
+import { fileType } from 'file-type';
+import { isSvg } from 'is-svg';
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
