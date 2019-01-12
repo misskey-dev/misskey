@@ -28,7 +28,7 @@
 /Dockerfile                                     @syuilo @AyaMorisawa @acid-chicken @khws4v1
 /LICENSE                                        @syuilo
 /README.md                                      @syuilo @AyaMorisawa @acid-chicken @nikhiljha
-/binding.gyp                                    @akihiksyuiloodaki
+/binding.gyp                                    @akihikodaki
 /crowdin.yml                                    @syuilo
 /docker-compose.yml                             @khws4v1
 /gulpfile.ts                                    @syuilo @AyaMorisawa
