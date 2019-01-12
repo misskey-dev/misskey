@@ -44,7 +44,7 @@ En root :
 1. `su - misskey` Basculez vers l'utilisateur misskey.
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clonez la branche master du dépôt misskey.
 3. `cd misskey` Accédez au dossier misskey.
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Télécharge la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
+4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Installez les dépendances de misskey.
 
 *5.* Création du fichier de configuration
@@ -59,7 +59,7 @@ Construisez Misskey comme ceci :
 
 `npm run build`
 
-Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential`, `python`.
+Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential` et `python`.
 
 Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 
