@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
-			<div><fa icon="lock"/></div>
+			<div><fa icon="envelope"/></div>
 			<div>
 				<span>{{ $t('specified') }}</span>
 				<span>{{ $t('specified-desc') }}</span>
