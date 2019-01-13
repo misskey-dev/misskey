@@ -3,7 +3,7 @@
 /.circleci/                                     @syuilo @acid-chicken
 /.config/                                       @syuilo @AyaMorisawa @mei23 @acid-chicken
 /.config/mongo_initdb_example.js                @khws4v1
-/.github/                                       @AyaMorisawa @acid-chicken
+/.github/                                       @syuilo @AyaMorisawa @acid-chicken
 /.vscode/                                       @acid-chicken
 /assets/                                        @syuilo @tamaina
 /cli/                                           @syuilo
