@@ -425,7 +425,7 @@ common/views/components/integration-settings.vue:
   title: "サービス連携"
   connect: "Połącz"
   disconnect: "Rozłącz"
-  connected-to: "次のアカウントに接続されています"
+  connected-to: "Jesteś połączony(-a) z następującym kontem"
 common/views/components/github-setting.vue:
   description: "お使いのGitHubアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでGitHubアカウント情報が表示されるようになったり、GitHubを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のGitHubアカウントに接続されています"
