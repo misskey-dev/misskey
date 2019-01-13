@@ -124,8 +124,8 @@ common:
   line-width-thin: "Fine"
   line-width-normal: "Normale"
   line-width-thick: "Épaisse"
-  hide-password: "パスワードを隠す"
-  show-password: "パスワードを表示する"
+  hide-password: "Masquer le mot de passe"
+  show-password: "Afficher le mot de passe"
   do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
   user-suspended: "Cet·te utilisateur·trice a été suspendu·e"
   is-remote-user: "Ces informations appartiennent à un utilisateur distant."
@@ -1127,12 +1127,12 @@ admin/views/users.vue:
       updatedAtDesc: "Mis à jour récemment (descendant)"
     state:
       title: "状態"
-      all: "すべて"
-      admin: "管理者"
-      moderator: "モデレーター"
+      all: "Tout"
+      admin: "Admin"
+      moderator: "Modérateur"
       adminOrModerator: "管理者+モデレーター"
       verified: "公式アカウント"
-      suspended: "凍結済み"
+      suspended: "Suspendu"
     origin:
       title: "Origine"
       combined: "Locaux + distants"
@@ -1145,7 +1145,7 @@ admin/views/moderators.vue:
     title: "Ajout d’un modérateur"
     add: "Ajouter"
     added: "Ajouté en tant que modérateur"
-    remove: "解除"
+    remove: "Révoquer"
     removed: "モデレーター登録を解除しました"
 admin/views/emoji.vue:
   add-emoji:
