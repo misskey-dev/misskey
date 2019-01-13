@@ -808,6 +808,20 @@ describe('API', () => {
 
 			expect(res).have.status(400);
 		}));
+
+		it('SVGファイルを作成できる', async(async () => {
+			const izumi = await signup({ username: 'izumi' });
+
+			const res = await assert.request(server)
+				.post('/drive/files/create')
+				.field('i', izumi.token)
+				.attach('file', fs.readFileSync(__dirname + '/resources/image.svg'), 'image.svg');
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('name').eql('image.svg');
+			expect(res.body).have.property('type').eql('image/svg+xml');
+		}));
 	});
 
 	describe('drive/files/update', () => {
