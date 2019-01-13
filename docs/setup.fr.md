@@ -10,8 +10,8 @@ Ce guide décrit les étapes à suivre afin d'installer et de configurer une ins
 
 *1.* Création de l'utilisateur Misskey
 ----------------------------------------------------------------
-Executer misskey en tant que super-utilisateur est une mauvaise idée, nous avons besoin de créer un utilisateur dédié.
-Sur Debian, par exemple :
+Executer misskey en tant que super-utilisateur étant une mauvaise idée, nous allons créer un utilisateur dédié.
+Sous Debian, par exemple :
 
 ```
 adduser --disabled-password --disabled-login misskey
@@ -33,10 +33,10 @@ Installez les paquets suivants :
 *3.* Paramètrage de MongoDB
 ----------------------------------------------------------------
 En root :
-1. `mongo` Ouvre le shell mongo
-2. `use misskey` Utilise la base de données misskey
-3. `db.users.save( {dummy:"dummy"} )` Écrit une donnée "dummy" pour initialiser la base.
-4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Crée l'utilisateur misskey.
+1. `mongo` Ouvrez le shell mongo
+2. `use misskey` Utilisez la base de données misskey
+3. `db.users.save( {dummy:"dummy"} )` Écrivez une donnée factice pour initialiser la base de données.
+4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
 5. `exit` Vous avez terminé !
 
 *4.* Installation de Misskey
@@ -49,7 +49,7 @@ En root :
 
 *5.* Création du fichier de configuration
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copie le fichier `.config/example.yml` et le renomme`default.yml`.
+1. `cp .config/example.yml .config/default.yml` Copiez le fichier `.config/example.yml` et renommez-le`default.yml`.
 2. Editez le fichier `default.yml`
 
 *6.* Construction de Misskey
