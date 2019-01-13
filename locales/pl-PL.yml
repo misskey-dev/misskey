@@ -867,7 +867,7 @@ desktop/views/components/settings.2fa.vue:
   info: "Od teraz, wprowadzaj token wyświetlany na urządzeniu przy każdym logowaniu do Misskey."
 common/views/components/api-settings.vue:
   intro: "Aby uzyskać dostęp do API, ustaw ten token jako klucz 'i' parametrów żądań."
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  caution: "Nie pokazuj tego tokenu osobom trzecim (nie wprowadzaj go nigdzie indziej), aby konto nie trafiło w niepowołane ręce."
   regeneration-of-token: "W przypadku wycieku tokenu, możesz wygenerować nowy."
   regenerate-token: "Wygeneruj nowy token"
   token: "Token:"
