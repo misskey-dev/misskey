@@ -11,14 +11,14 @@ Ce guide explique comment installer et configurer Misskey avec Docker.
 *1.* Télécharger Misskey
 ----------------------------------------------------------------
 1. `git clone -b master git://github.com/syuilo/misskey.git` Clone le dépôt de Misskey sur la branche master.
-2. `cd misskey` Permet de se déplacer dans le dossier du dépôt.
+2. `cd misskey` Naviguez dans le dossier du dépôt.
 3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout sur le tag de la [dernière version](https://github.com/syuilo/misskey/releases/latest).
 
 *2.* Configuration de Misskey
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copie le fichier `.config/example.yml` et le renommer en `default.yml`.
+1. `cp .config/example.yml .config/default.yml` Copiez le fichier `.config/example.yml` et renommez-le `default.yml`.
 2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` Copie le fichier `.config/mongo_initdb_example.js` et le renomme en `mongo_initdb.js`.
-3. Editer `default.yml` et `mongo_initdb.js`.
+3. Editez `default.yml` et `mongo_initdb.js`.
 
 *3.* Configurer Docker
 ----------------------------------------------------------------

@@ -10,8 +10,8 @@ Ce guide décrit les étapes à suivre afin d'installer et de configurer une ins
 
 *1.* Création de l'utilisateur Misskey
 ----------------------------------------------------------------
-Lancer misskey en tant qu'utilisateur est une mauvaise idée, nous avons besoin de créer un utilisateur dédié.
-Sur Debian, à titre d'exemple :
+Executer misskey en tant que super-utilisateur étant une mauvaise idée, nous allons créer un utilisateur dédié.
+Sous Debian, par exemple :
 
 ```
 adduser --disabled-password --disabled-login misskey
@@ -32,10 +32,10 @@ Installez les paquets suivants :
 
 *3.* Paramètrage de MongoDB
 ----------------------------------------------------------------
-En mode root :
-1. `mongo` Accédez au shell de mango
+En root :
+1. `mongo` Ouvrez le shell mongo
 2. `use misskey` Utilisez la base de données misskey
-3. `db.users.save( {dummy:"dummy"} )` Write dummy data to initialize the db.
+3. `db.users.save( {dummy:"dummy"} )` Écrivez une donnée factice pour initialiser la base de données.
 4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
 5. `exit` Vous avez terminé !
 
@@ -44,12 +44,12 @@ En mode root :
 1. `su - misskey` Basculez vers l'utilisateur misskey.
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clonez la branche master du dépôt misskey.
 3. `cd misskey` Accédez au dossier misskey.
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Télécharge la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
+4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Installez les dépendances de misskey.
 
 *5.* Création du fichier de configuration
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copiez le fichier `.config/example.yml` et renommez-le `default.yml`.
+1. `cp .config/example.yml .config/default.yml` Copiez le fichier `.config/example.yml` et renommez-le`default.yml`.
 2. Editez le fichier `default.yml`
 
 *6.* Construction de Misskey
@@ -59,7 +59,7 @@ Construisez Misskey comme ceci :
 
 `npm run build`
 
-Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential`, `python`.
+Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential` et `python`.
 
 Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 
@@ -77,7 +77,7 @@ Lancez tout simplement `npm start`. Bonne chance et amusez-vous bien !
 
 ### Démarrage avec systemd
 
-1. Créez une service systemd sur : `/etc/systemd/system/misskey.service`
+1. Créez un service systemd sur : `/etc/systemd/system/misskey.service`
 2. Editez-le puis copiez et coller ceci dans le fichier :
 
 ```
