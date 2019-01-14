@@ -1130,8 +1130,8 @@ admin/views/users.vue:
       all: "Tout"
       admin: "Admin"
       moderator: "Modérateur"
-      adminOrModerator: "管理者+モデレーター"
-      verified: "公式アカウント"
+      adminOrModerator: "Administrateur/Modérateur"
+      verified: "Compte vérifié"
       suspended: "Suspendu"
     origin:
       title: "Origine"
@@ -1146,7 +1146,7 @@ admin/views/moderators.vue:
     add: "Ajouter"
     added: "Ajouté en tant que modérateur"
     remove: "Révoquer"
-    removed: "モデレーター登録を解除しました"
+    removed: "Le modérateur a été révoqué"
 admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
