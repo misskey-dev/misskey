@@ -4,6 +4,7 @@ import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
 	desc: {
@@ -51,6 +52,13 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	const meta = await fetchMeta();
+	if (meta.disableLocalTimeline) {
+		if (user == null || (!user.isAdmin && !user.isModerator)) {
+			return rej('local timeline disabled');
+		}
+	}
+
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
 		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');

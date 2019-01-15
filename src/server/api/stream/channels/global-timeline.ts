@@ -3,6 +3,7 @@ import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 export default class extends Channel {
 	public readonly chName = 'globalTimeline';
@@ -13,6 +14,11 @@ export default class extends Channel {
 
 	@autobind
 	public async init(params: any) {
+		const meta = await fetchMeta();
+		if (meta.disableLocalTimeline) {
+			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;
+		}
+
 		// Subscribe events
 		this.subscriber.on('globalTimeline', this.onNote);
 
