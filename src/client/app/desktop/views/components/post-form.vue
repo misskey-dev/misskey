@@ -222,12 +222,6 @@ export default Vue.extend({
 			});
 		}
 
-		// keep cw when reply
-		if (this.reply && this.reply.cw != null) {
-			this.useCw = true;
-			this.cw = this.reply.cw;
-		}
-
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
 			if (!this.instant && !this.mention) {
