@@ -86,6 +86,12 @@ html
 					th CPU
 					td= cpu.model
 				tr
+					th Original users
+					td= meta.stats.originalUsersCount
+				tr
+					th Original notes
+					td= meta.stats.originalNotesCount
+				tr
 					th Registration
 					td= !meta.disableRegistration ? 'yes' : 'no'
 				tr
