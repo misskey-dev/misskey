@@ -159,7 +159,7 @@
 		"langmap": "0.0.16",
 		"loader-utils": "1.2.3",
 		"lookup-dns-cache": "2.1.0",
-		"minio": "7.0.2",
+		"minio": "7.0.3",
 		"mkdirp": "0.5.1",
 		"mocha": "5.2.0",
 		"moji": "0.5.1",
