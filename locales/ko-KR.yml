@@ -1133,7 +1133,7 @@ admin/views/users.vue:
       moderator: "모더레이터"
       adminOrModerator: "관리자+모더레이터"
       verified: "공식 계정"
-      suspended: "凍結済み"
+      suspended: "정지됨"
     origin:
       title: "위치 (오리진)"
       combined: "로컬 + 원격"
@@ -1146,8 +1146,8 @@ admin/views/moderators.vue:
     title: "모더레이터 등록"
     add: "등록"
     added: "모더레이터를 등록하였습니다"
-    remove: "解除"
-    removed: "モデレーター登録を解除しました"
+    remove: "해제"
+    removed: "모더레이터 등록을 해제했습니다"
 admin/views/emoji.vue:
   add-emoji:
     title: "이모지 등록"
