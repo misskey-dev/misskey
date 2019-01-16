@@ -76,7 +76,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		title(): string {
-			return new Date(this.appearNote.createdAt).toLocaleString();
+			return '';
 		},
 
 		urls(): string[] {
