@@ -96,7 +96,13 @@ html
 					td= !meta.disableRegistration ? 'yes' : 'no'
 				tr
 					th reCAPTCHA enabled
-					td= meta.enableRecaptcha ? 'yes' : 'no'
+					td= meta.enableRecaptcha ? 'enabled' : 'disabled'
+				tr
+					th LTL(STL) enabled
+					td= !meta.disableLocalTimeline ? 'enabled' : 'disabled'
+				tr
+					th GTL enabled
+					td= !meta.disableGlobalTimeline ? 'enabled' : 'disabled'
 				tr
 					th Cache remote files
 					td= meta.cacheRemoteFiles ? 'yes' : 'no'
