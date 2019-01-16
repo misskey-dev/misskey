@@ -1036,6 +1036,7 @@ admin/views/instance.vue:
   max-note-text-length: "Nombre maximal de caractères pour les messages"
   disable-registration: "Désactiver les inscriptions"
   disable-local-timeline: "Désactiver le fil local"
+  disable-global-timeline: "グローバルタイムラインを無効にする"
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
