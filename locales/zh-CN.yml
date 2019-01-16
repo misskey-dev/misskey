@@ -1036,6 +1036,7 @@ admin/views/instance.vue:
   max-note-text-length: "最大帖子字符数"
   disable-registration: "停用新用户注册功能"
   disable-local-timeline: "停用本地时间线功能"
+  disable-global-timeline: "グローバルタイムラインを無効にする"
   invite: "邀请"
   save: "保存"
   saved: "保存完毕"
