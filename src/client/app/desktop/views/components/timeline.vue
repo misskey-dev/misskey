@@ -65,7 +65,7 @@ export default Vue.extend({
 
 	created() {
 		this.$root.getMeta().then(meta => {
-			this.enableLocalTimeline = !meta.disableLocalTimeline;
+			this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
 		});
 
 		if (this.$store.state.device.tl) {
