@@ -1163,6 +1163,7 @@ admin/views/instance.vue:
   max-note-text-length: "投稿の最大文字数"
   disable-registration: "ユーザー登録の受付を停止する"
   disable-local-timeline: "ローカルタイムラインを無効にする"
+  disable-global-timeline: "グローバルタイムラインを無効にする"
   invite: "招待"
   save: "保存"
   saved: "保存しました"

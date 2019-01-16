@@ -22,6 +22,7 @@
 		<section>
 			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
 			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
+			<ui-switch v-model="disableGlobalTimeline">{{ $t('disable-global-timeline') }}</ui-switch>
 		</section>
 		<section class="fit-bottom">
 			<header><fa icon="cloud"/> {{ $t('drive-config') }}</header>
@@ -150,6 +151,7 @@ export default Vue.extend({
 			maintainerEmail: null,
 			disableRegistration: false,
 			disableLocalTimeline: false,
+			disableGlobalTimeline: false,
 			mascotImageUrl: null,
 			bannerUrl: null,
 			errorImageUrl: null,
@@ -198,6 +200,7 @@ export default Vue.extend({
 			this.maintainerEmail = meta.maintainer.email;
 			this.disableRegistration = meta.disableRegistration;
 			this.disableLocalTimeline = meta.disableLocalTimeline;
+			this.disableGlobalTimeline = meta.disableGlobalTimeline;
 			this.mascotImageUrl = meta.mascotImageUrl;
 			this.bannerUrl = meta.bannerUrl;
 			this.errorImageUrl = meta.errorImageUrl;
@@ -256,6 +259,7 @@ export default Vue.extend({
 				maintainerEmail: this.maintainerEmail,
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
+				disableGlobalTimeline: this.disableGlobalTimeline,
 				mascotImageUrl: this.mascotImageUrl,
 				bannerUrl: this.bannerUrl,
 				errorImageUrl: this.errorImageUrl,

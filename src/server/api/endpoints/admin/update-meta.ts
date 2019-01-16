@@ -32,6 +32,13 @@ export const meta = {
 			}
 		},
 
+		disableGlobalTimeline: {
+			validator: $.bool.optional.nullable,
+			desc: {
+				'ja-JP': 'グローバルタイムラインを無効にするか否か'
+			}
+		},
+
 		hidedTags: {
 			validator: $.arr($.str).optional.nullable,
 			desc: {
@@ -329,6 +336,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (typeof ps.disableLocalTimeline === 'boolean') {
 		set.disableLocalTimeline = ps.disableLocalTimeline;
+	}
+
+	if (typeof ps.disableGlobalTimeline === 'boolean') {
+		set.disableGlobalTimeline = ps.disableGlobalTimeline;
 	}
 
 	if (Array.isArray(ps.hidedTags)) {

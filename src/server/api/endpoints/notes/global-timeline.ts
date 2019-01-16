@@ -53,9 +53,9 @@ export const meta = {
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const meta = await fetchMeta();
-	if (meta.disableLocalTimeline) {
+	if (meta.disableGlobalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {
-			return rej('local timeline disabled');
+			return rej('global timeline disabled');
 		}
 	}
 
