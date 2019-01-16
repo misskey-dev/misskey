@@ -549,7 +549,7 @@ common/views/widgets/tips.vue:
   tips-line24: "Misskey自2014年开始运营。"
   tips-line25: "在与通知功能兼容的浏览器中，您可以在Misskey未打开的情况下接收通知"
 common/views/pages/not-found.vue:
-  page-not-found: "ページが見つかりませんでした"
+  page-not-found: "啊喔, 页面走丢了..."
 common/views/pages/follow.vue:
   signed-in-as: "用 {}登录"
   following: "正在关注"
