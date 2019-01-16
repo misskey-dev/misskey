@@ -1036,6 +1036,7 @@ admin/views/instance.vue:
   max-note-text-length: "글의 최대 문자수"
   disable-registration: "사용자 등록 비활성화"
   disable-local-timeline: "로컬 타임라인 비활성화"
+  disable-global-timeline: "グローバルタイムラインを無効にする"
   invite: "초대"
   save: "저장"
   saved: "저장하였습니다"
