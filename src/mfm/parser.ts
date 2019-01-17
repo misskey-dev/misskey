@@ -205,7 +205,7 @@ const mfm = P.createLanguage({
 	hashtag: r =>
 		P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^#([^\s\.,!\?"#:]+)/i);
+			const match = text.match(/^#([^\s\.,!\?'"#:]+)/i);
 			if (!match) return P.makeFailure(i, 'not a hashtag');
 			let hashtag = match[1];
 			hashtag = removeOrphanedBrackets(hashtag);
