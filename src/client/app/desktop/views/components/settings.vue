@@ -203,7 +203,7 @@
 		</ui-card>
 
 		<ui-card class="2fa" v-show="page == 'security'">
-			<div slot="title"><fa icon="mobile-alt"/> {{ $t('2fa') }}</div>
+			<div slot="title"><fa icon="mobile-alt"/> {{ $t('@.2fa') }}</div>
 			<section>
 				<x-2fa/>
 			</section>
