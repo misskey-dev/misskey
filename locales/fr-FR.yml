@@ -1037,6 +1037,7 @@ admin/views/instance.vue:
   disable-registration: "Désactiver les inscriptions"
   disable-local-timeline: "Désactiver le fil local"
   disable-global-timeline: "グローバルタイムラインを無効にする"
+  disabling-timelines-info: "これらのタイムラインを無効にしても、管理者およびモデレーターは引き続き利用できます。"
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
