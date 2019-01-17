@@ -189,7 +189,7 @@ export default Vue.extend({
 				},
 				legend: {
 					labels: {
-						color: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+						colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
 					},
 				},
 				xaxis: {

@@ -223,8 +223,7 @@ export default Vue.extend({
 					},
 					plotOptions: {
 						bar: {
-							columnWidth: '90%',
-							endingShape: 'rounded'
+							columnWidth: '90%'
 						}
 					},
 					grid: {
