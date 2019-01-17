@@ -1209,6 +1209,7 @@ admin/views/charts.vue:
     notes-total: "投稿の積算"
     users: "ユーザーの増減"
     users-total: "ユーザーの積算"
+    active-users: "アクティブユーザー数"
     drive: "ドライブ使用量の増減"
     drive-total: "ドライブ使用量の積算"
     drive-files: "ドライブのファイル数の増減"

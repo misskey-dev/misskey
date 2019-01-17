@@ -23,6 +23,7 @@ import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
 import notesChart from '../../chart/notes';
 import perUserNotesChart from '../../chart/per-user-notes';
+import activeUsersChart from '../../chart/active-users';
 
 import { erase } from '../../prelude/array';
 import insertNoteUnread from './unread';
@@ -196,6 +197,8 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// 統計を更新
 	notesChart.update(note, true);
 	perUserNotesChart.update(user, note, true);
+	// ローカルユーザーのチャートはタイムライン取得時に更新しているのでリモートユーザーの場合だけでよい
+	if (isRemoteUser(user)) activeUsersChart.update(user);
 
 	// Register host
 	if (isRemoteUser(user)) {

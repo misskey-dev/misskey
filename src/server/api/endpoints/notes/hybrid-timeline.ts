@@ -6,6 +6,7 @@ import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
+import activeUsersChart from '../../../../chart/active-users';
 
 export const meta = {
 	desc: {
@@ -272,4 +273,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		});
 
 	res(await packMany(timeline, user));
+
+	activeUsersChart.update(user);
 }));
