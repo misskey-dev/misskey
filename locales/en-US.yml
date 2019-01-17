@@ -1037,6 +1037,7 @@ admin/views/instance.vue:
   disable-registration: "Disable new user registration"
   disable-local-timeline: "Disable the Local Timeline"
   disable-global-timeline: "グローバルタイムラインを無効にする"
+  disabling-timelines-info: "これらのタイムラインを無効にしても、管理者およびモデレーターは引き続き利用できます。"
   invite: "Invite"
   save: "Save"
   saved: "Saved"
