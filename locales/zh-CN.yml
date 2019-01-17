@@ -1081,6 +1081,7 @@ admin/views/charts.vue:
     notes-total: "帖子总数"
     users: "用户数量：增加/减少"
     users-total: "用户总数"
+    active-users: "アクティブユーザー数"
     drive: "存储容量：增加/减少"
     drive-total: "云盘总容量"
     drive-files: "云盘上的文件数：增加/减少"
