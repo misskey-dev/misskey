@@ -1081,6 +1081,7 @@ admin/views/charts.vue:
     notes-total: "Total des notes"
     users: "Nombre d’utilisateurs : augmentation/diminution"
     users-total: "Nombre total des utilisateurs"
+    active-users: "アクティブユーザー数"
     drive: "Capacité utilisée comme stockage : augmentation/diminution"
     drive-total: "Utilisation totale du lecteur"
     drive-files: "Le nombre de fichiers sur l'espace de stockage : augmentation/diminution"
