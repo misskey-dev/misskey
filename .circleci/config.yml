@@ -54,6 +54,8 @@ jobs:
       - run:
           name: Build
           command: |
+            node-gyp configure
+            node-gyp build
             npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)
             ls -1ARl node_modules > ls
       - save_cache:
@@ -88,7 +90,7 @@ jobs:
       - run:
           name: Test
           command: |
-            npm run test || (npm rebuild && npm run test) || ((node-gyp configure && node-gyp build && npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)) && npm run test)
+            npm run test
             ls -1ARl node_modules > ls
       - save_cache:
           name: Cache npm packages
