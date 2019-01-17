@@ -11,7 +11,7 @@
 		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>
 	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill">
-		<span>{{ $t('2fa') }}</span>
+		<span>{{ $t('@.2fa') }}</span>
 		<span slot="prefix"><fa icon="gavel"/></span>
 	</ui-input>
 	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
