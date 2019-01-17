@@ -365,6 +365,14 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('ignore double quote', () => {
+				const tokens = analyze('#foo"');
+				assert.deepStrictEqual(tokens, [
+					leaf('hashtag', { hashtag: 'foo' }),
+					text('"'),
+				]);
+			});
+
 			it('allow including number', () => {
 				const tokens = analyze('#foo123');
 				assert.deepStrictEqual(tokens, [
