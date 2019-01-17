@@ -1081,6 +1081,7 @@ admin/views/charts.vue:
     notes-total: "글 누적 수"
     users: "사용자 증감"
     users-total: "사용자 누적"
+    active-users: "アクティブユーザー数"
     drive: "드라이브 사용량 증감"
     drive-total: "드라이브 사용량 누적"
     drive-files: "드라이브 파일 수 증감"
