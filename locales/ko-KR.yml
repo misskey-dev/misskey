@@ -27,6 +27,7 @@ common:
   do-not-copy-paste: "여기에 코드를 입력하거나 붙여넣지 마십시오. 계정이 무단으로 사용될 수 있습니다."
   load-more: "더보기"
   enter-password: "비밀번호를 입력하여 주십시오"
+  2fa: "二段階認証"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -761,7 +762,6 @@ desktop/views/components/settings.vue:
   security: "보안"
   signin: "로그인 기록"
   password: "비밀번호"
-  2fa: "2단계 인증"
   other: "기타"
   license: "라이선스"
   theme: "테마"
