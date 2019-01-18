@@ -27,6 +27,7 @@ common:
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
   load-more: "もっとあらへんのか！"
   enter-password: "パスワードを入れてや"
+  2fa: "二段階認証"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -761,7 +762,6 @@ desktop/views/components/settings.vue:
   security: "セキュリティ"
   signin: "こんな感じでサインインしたらしいで"
   password: "パスワード"
-  2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
   theme: "テーマ"
