@@ -27,6 +27,7 @@ common:
   do-not-copy-paste: "请不要在这里输入或粘贴代码。您帐户可能会受到损害。"
   load-more: "加载更多"
   enter-password: "请输入您的密码"
+  2fa: "二段階認証"
   got-it: "没问题"
   customization-tips:
     title: "客制化提示"
@@ -761,7 +762,6 @@ desktop/views/components/settings.vue:
   security: "安全性"
   signin: "登录历史"
   password: "密码"
-  2fa: "两步验证"
   other: "其他"
   license: "许可证"
   theme: "主题"
