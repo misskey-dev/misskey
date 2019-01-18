@@ -18,3 +18,4 @@ api-docs.json
 /elasticsearch
 *.code-workspace
 yarn.lock
+.DS_Store
