@@ -24,7 +24,7 @@
 		"@fortawesome/free-brands-svg-icons": "5.6.3",
 		"@fortawesome/free-regular-svg-icons": "5.5.0",
 		"@fortawesome/free-solid-svg-icons": "5.6.3",
-		"@fortawesome/vue-fontawesome": "0.1.2",
+		"@fortawesome/vue-fontawesome": "0.1.5",
 		"@koa/cors": "2.2.3",
 		"@prezzemolo/rap": "0.1.2",
 		"@prezzemolo/zip": "0.0.3",
