@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<span slot="header">
-		<fa icon="user"/><span>{{ title }}</span>
+		<fa icon="user"/><mk-user-name :user="user" v-if="user"/>
 	</span>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
@@ -137,10 +137,6 @@ export default Vue.extend({
 	},
 
 	computed: {
-		title(): string {
-			return this.user ? Vue.filter('userName')(this.user) : '';
-		},
-
 		bannerStyle(): any {
 			if (this.user == null) return {};
 			if (this.user.bannerUrl == null) return {};
