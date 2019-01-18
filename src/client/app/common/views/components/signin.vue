@@ -10,7 +10,10 @@
 		<span>{{ $t('password') }}</span>
 		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill">
+		<span>{{ $t('@.2fa') }}</span>
+		<span slot="prefix"><fa icon="gavel"/></span>
+	</ui-input>
 	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
 	<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`">{{ $t('signin-with-twitter') }}</a></p>
 	<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`">{{ $t('signin-with-github') }}</a></p>
