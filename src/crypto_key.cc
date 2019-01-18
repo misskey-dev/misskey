@@ -8,7 +8,7 @@
 
 NAN_METHOD(extractPublic)
 {
-	const auto sourceString = info[0]->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>());
+	const auto sourceString = info[0]->ToString(Nan::GetCurrentContext()).ToLocalChecked();
 	if (!sourceString->IsOneByte()) {
 		Nan::ThrowError("Malformed character found");
 		return;
