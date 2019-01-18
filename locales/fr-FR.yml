@@ -27,6 +27,7 @@ common:
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte pourrait être compromis."
   load-more: "Charger plus"
   enter-password: "Veuillez entrer le mot de passe"
+  2fa: "二段階認証"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -761,7 +762,6 @@ desktop/views/components/settings.vue:
   security: "Sécurité"
   signin: "Historique de connexion"
   password: "Mot de Passe"
-  2fa: "Vérification en deux étapes"
   other: "Autres"
   license: "Licence"
   theme: "Thèmes"
