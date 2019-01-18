@@ -27,6 +27,7 @@ common:
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
   load-more: "Load more"
   enter-password: "Please enter the Password"
+  2fa: "二段階認証"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -761,7 +762,6 @@ desktop/views/components/settings.vue:
   security: "Security"
   signin: "Sign in history"
   password: "Password"
-  2fa: "Two-factor authentication"
   other: "Other"
   license: "License"
   theme: "Theme"
