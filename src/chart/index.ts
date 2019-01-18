@@ -316,21 +316,9 @@ export default abstract class Chart<T> {
 		const res: ArrayValue<T> = {} as any;
 
 		/**
-		 * [{
-		 * 	xxxxx: 1, yyyyy: 5
-		 * }, {
-		 * 	xxxxx: 2, yyyyy: 6
-		 * }, {
-		 * 	xxxxx: 3, yyyyy: 7
-		 * }]
-		 *
+		 * [{ foo: 1, bar: 5 }, { foo: 2, bar: 6 }, { foo: 3, bar: 7 }]
 		 * を
-		 *
-		 * {
-		 * 	xxxxx: [1, 2, 3],
-		 * 	yyyyy: [5, 6, 7]
-		 * }
-		 *
+		 * { foo: [1, 2, 3], bar: [5, 6, 7] }
 		 * にする
 		 */
 		const dive = (x: Obj, path?: string) => {
