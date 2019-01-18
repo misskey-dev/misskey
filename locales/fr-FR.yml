@@ -27,7 +27,7 @@ common:
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte pourrait être compromis."
   load-more: "Charger plus"
   enter-password: "Veuillez entrer le mot de passe"
-  2fa: "二段階認証"
+  2fa: "Authentification à deux facteurs"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -1078,7 +1078,7 @@ admin/views/charts.vue:
     notes-total: "Total des notes"
     users: "Nombre d’utilisateurs : augmentation/diminution"
     users-total: "Nombre total des utilisateurs"
-    active-users: "アクティブユーザー数"
+    active-users: "Utilisateur·rice·s actif·ve·s"
     drive: "Capacité utilisée comme stockage : augmentation/diminution"
     drive-total: "Utilisation totale du lecteur"
     drive-files: "Le nombre de fichiers sur l'espace de stockage : augmentation/diminution"
@@ -1126,7 +1126,7 @@ admin/views/users.vue:
       updatedAtAsc: "Mis à jour récemment (Ascendant)"
       updatedAtDesc: "Mis à jour récemment (descendant)"
     state:
-      title: "状態"
+      title: "État"
       all: "Tout"
       admin: "Admin"
       moderator: "Modérateur"
