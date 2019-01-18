@@ -22,15 +22,15 @@
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
-					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 				</div>
 				<div class="fields" v-if="user.fields">
 					<dl class="field" v-for="(field, i) in user.fields" :key="i">
 						<dt class="name">
-							<misskey-flavored-markdown :text="field.name" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
+							<mfm :text="field.name" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
 						</dt>
 						<dd class="value">
-							<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+							<mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 						</dd>
 					</dl>
 				</div>

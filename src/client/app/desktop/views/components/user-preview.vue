@@ -8,7 +8,7 @@
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
 		<div class="description">
-			<misskey-flavored-markdown v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+			<mfm v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
 		</div>
 		<div class="status">
 			<div>

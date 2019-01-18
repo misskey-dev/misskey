@@ -1,14 +1,14 @@
 <template>
-<mfm v-bind="$attrs" class="havbbuyv"/>
+<mfm-core v-bind="$attrs" class="havbbuyv"/>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import Mfm from './mfm';
+import MfmCore from './mfm';
 
 export default Vue.extend({
 	components: {
-		Mfm
+		MfmCore
 	}
 });
 </script>
