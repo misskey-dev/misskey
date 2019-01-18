@@ -142,11 +142,11 @@ export default Vue.extend({
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
-			}, true).then(() => {
+			}).then(() => {
 				this.$root.api('signin', {
 					username: this.username,
 					password: this.password
-				}, true).then(res => {
+				}).then(res => {
 					localStorage.setItem('i', res.i);
 					location.reload();
 				});
