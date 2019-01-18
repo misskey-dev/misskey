@@ -1,7 +1,8 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="user.avatarUrl" alt="">{{ $t('followers-of', { name }) }}
+		<img :src="user.avatarUrl" alt="">
+		<misskey-flavored-markdown :text="$t('followers-of', { name })" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
 	</template>
 	<mk-users-list
 		v-if="!fetching"

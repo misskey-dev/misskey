@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<span slot="header">
-		<fa :icon="['far', 'comment-alt']"/><span>{{ title }}</span>
+		<fa :icon="['far', 'comment-alt']"/><mk-user-name :user="note.user" v-if="note"/>
 	</span>
 
 	<div class="rvtscbadixhhbsczoorqoaygovdeecsx" v-if="note">
@@ -43,12 +43,6 @@ export default Vue.extend({
 			note: null,
 			fetching: true
 		};
-	},
-
-	computed: {
-		title(): string {
-			return this.note ? Vue.filter('userName')(this.note.user) : '';
-		}
 	},
 
 	created() {
