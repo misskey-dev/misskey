@@ -27,6 +27,7 @@ common:
   do-not-copy-paste: "Por favor, não digite ou copie o código aqui. A conta pode ser comprometida."
   load-more: "もっと読み込む"
   enter-password: "パスワードを入力してください"
+  2fa: "二段階認証"
   got-it: "Entendi!"
   customization-tips:
     title: "Dicas de personalização"
@@ -761,7 +762,6 @@ desktop/views/components/settings.vue:
   security: "セキュリティ"
   signin: "サインイン履歴"
   password: "パスワード"
-  2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
   theme: "テーマ"
