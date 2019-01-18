@@ -1,7 +1,7 @@
 <template>
 <div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching">
 	<div class="signed-in-as">
-		<misskey-flavored-markdown :text="$t('signed-in-as').replace('{}', myName)" :shouldBreak="false" :plainText="true" :custom-emojis="$store.state.i.emojis"/>
+		<misskey-flavored-markdown :text="$t('signed-in-as').replace('{}', myName)" :should-break="false" :plain-text="true" :custom-emojis="$store.state.i.emojis"/>
 	</div>
 	<main>
 		<div class="banner" :style="bannerStyle"></div>

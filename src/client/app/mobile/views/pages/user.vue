@@ -27,7 +27,7 @@
 				<div class="fields" v-if="user.fields">
 					<dl class="field" v-for="(field, i) in user.fields" :key="i">
 						<dt class="name">
-							<misskey-flavored-markdown :text="field.name" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+							<misskey-flavored-markdown :text="field.name" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
 						</dt>
 						<dd class="value">
 							<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>

@@ -3,7 +3,7 @@
 	<span slot="header"><span style="margin-right:4px;"><fa icon="cog"/></span>{{ $t('settings') }}</span>
 	<main>
 		<div class="signed-in-as">
-			<misskey-flavored-markdown :text="$t('signed-in-as').replace('{}', name)" :shouldBreak="false" :plainText="true" :custom-emojis="$store.state.i.emojis"/>
+			<misskey-flavored-markdown :text="$t('signed-in-as').replace('{}', name)" :should-break="false" :plain-text="true" :custom-emojis="$store.state.i.emojis"/>
 		</div>
 		<div>
 			<x-profile-editor/>

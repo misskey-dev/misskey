@@ -2,7 +2,7 @@
 <mk-ui>
 	<template slot="header" v-if="!fetching">
 		<img :src="user.avatarUrl" alt="">
-		<misskey-flavored-markdown :text="$t('following-of', { name })" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+		<misskey-flavored-markdown :text="$t('following-of', { name })" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
 	</template>
 	<mk-users-list
 		v-if="!fetching"
