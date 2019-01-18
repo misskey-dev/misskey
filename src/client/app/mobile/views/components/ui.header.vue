@@ -19,7 +19,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import * as anime from 'animejs';
 import { env } from '../../../config';
 
 export default Vue.extend({

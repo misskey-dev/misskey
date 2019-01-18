@@ -18,7 +18,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Icon from './reaction-icon.vue';
-import * as anime from 'animejs';
+import anime from 'animejs';
 
 export default Vue.extend({
 	props: {
