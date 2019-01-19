@@ -104,7 +104,7 @@ export default Vue.extend({
 			}).then(async ({ canceled, result: query }) => {
 				if (canceled) return;
 
-				const q = this.q.trim();
+				const q = query.trim();
 				if (q.startsWith('@')) {
 					this.$router.push(`/${q}`);
 				} else if (q.startsWith('#')) {
@@ -238,7 +238,7 @@ export default Vue.extend({
 				> i.circle
 					margin-left 6px
 					font-size 10px
-					color var(--primary)
+					color var(--notificationIndicator)
 
 				> i:last-child
 					position absolute

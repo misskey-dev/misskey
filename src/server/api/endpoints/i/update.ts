@@ -98,6 +98,13 @@ export const meta = {
 			}
 		},
 
+		autoAcceptFollowed: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'フォローしているユーザーからのフォローリクエストを自動承認するか'
+			}
+		},
+
 		isBot: {
 			validator: $.bool.optional,
 			desc: {

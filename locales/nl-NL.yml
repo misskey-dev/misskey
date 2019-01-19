@@ -90,7 +90,6 @@ common:
     followers-desc: "自分のフォロワーにのみ公開"
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
-    private: "非公開"
     local-public: "公開 (ローカルのみ)"
     local-home: "ホーム (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
@@ -110,7 +109,7 @@ common:
   my-token-regenerated: "Je sleutel is gegenereerd; je wordt nu uitgelogd."
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
-  use-white-black-reversi-stones: "リバーシに白黒の石を使う"
+  use-avatar-reversi-stones: "リバーシの石にアバターを使う"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
@@ -121,14 +120,19 @@ common:
   reduce-motion: "UIの動きを減らす"
   this-setting-is-this-device-only: "このデバイスのみ"
   use-os-default-emojis: "OS標準の絵文字を使用"
-  do-not-use-in-production: 'これは開発ビルドです。本番環境で使用しないでください。'
+  line-width: "線の太さ"
+  line-width-thin: "細い"
+  line-width-normal: "普通"
+  line-width-thick: "太い"
+  do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
+  user-suspended: "このユーザーは凍結されています。"
   is-remote-user: "このユーザー情報はコピーです。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
   error:
-    title: '問題が発生しました'
-    retry: 'やり直す'
+    title: "問題が発生しました"
+    retry: "やり直す"
   reversi:
     drawn: "引き分け"
     my-turn: "あなたのターンです"
@@ -260,6 +264,7 @@ common/views/components/media-banner.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
 common/views/components/theme.vue:
+  theme: "テーマ"
   light-theme: "非ダークモード時に使用するテーマ"
   dark-theme: "ダークモード時に使用するテーマ"
   light-themes: "明るいテーマ"
@@ -276,6 +281,7 @@ common/views/components/theme.vue:
   base-theme: "ベーステーマ"
   base-theme-light: "Light"
   base-theme-dark: "Dark"
+  find-more-theme: "その他のテーマを入手"
   theme-name: "テーマ名"
   preview-created-theme: "プレビュー"
   invalid-theme: "テーマが正しくありません。"
@@ -299,6 +305,7 @@ common/views/components/cw-button.vue:
   show: "もっと見る"
   chars: "{count}文字"
   files: "{count}ファイル"
+  poll: "アンケート"
 common/views/components/messaging.vue:
   search-user: "Gebruiker zoeken"
   you: "Jij"
@@ -328,7 +335,9 @@ common/views/components/nav.vue:
   develop: "Ontwikkelaars"
   feedback: "Feedback"
 common/views/components/note-menu.vue:
+  mention: "メンション"
   detail: "詳細"
+  copy-content: "内容をコピー"
   copy-link: "リンクをコピー"
   favorite: "Deze notitie toevoegen aan favorieten"
   unfavorite: "お気に入り解除"
@@ -403,6 +412,13 @@ common/views/components/stream-indicator.vue:
   connecting: "Bezig met verbinden"
   reconnecting: "Bezig met herverbinden"
   connected: "Verbonden"
+common/views/components/notification-settings.vue:
+  title: "通知"
+  mark-as-read-all-notifications: "すべての通知を既読にする"
+  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
+  mark-as-read-all-talk-messages: "すべてのトークを既読にする"
+  auto-watch: "投稿の自動ウォッチ"
+  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
 common/views/components/integration-settings.vue:
   title: "サービス連携"
   connect: "接続する"
@@ -432,7 +448,6 @@ common/views/components/visibility-chooser.vue:
   followers-desc: "自分のフォロワーにのみ公開"
   specified: "ダイレクト"
   specified-desc: "指定したユーザーにのみ公開"
-  private: "非公開"
   local-public: "公開 (ローカルのみ)"
   local-public-desc: "リモートへは公開しない"
   local-home: "ホーム (ローカルのみ)"
@@ -461,6 +476,7 @@ common/views/components/profile-editor.vue:
   is-bot: "このアカウントはBotです"
   is-locked: "フォローを承認制にする"
   careful-bot: "Botからのフォローだけ承認制にする"
+  auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "その他"
   privacy: "プライバシー"
   save: "保存"
@@ -527,10 +543,10 @@ common/views/widgets/tips.vue:
   tips-line19: "いくつかのウィンドウはブラウザの外に切り離すことができます"
   tips-line20: "カレンダーウィジェットのパーセンテージは、経過の割合を示しています"
   tips-line21: "APIを利用してbotの開発なども行えます"
-  tips-line23: "まゆかわいいよまゆ"
+  tips-line23: "藍かわいいよ藍"
   tips-line24: "Misskeyは2014年にサービスを開始しました"
   tips-line25: "対応ブラウザではMisskeyを開いていなくても通知を受け取れます"
-common/views/pages/404.vue:
+common/views/pages/not-found.vue:
   page-not-found: "ページが見つかりませんでした"
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
@@ -667,10 +683,12 @@ desktop/views/components/note-detail.vue:
   location: "Locatie"
   renote: "Renote"
   add-reaction: "リアクション"
+  undo-reaction: "リアクション解除"
 desktop/views/components/note.vue:
   reply: "返信"
   renote: "Renote"
   add-reaction: "リアクション"
+  undo-reaction: "リアクション解除"
   detail: "詳細"
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
@@ -698,7 +716,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Media bijvoegen van je computer"
   attach-media-from-drive: "Media bijvoegen uit je Drive"
   attach-cancel: "Bijlage annuleren"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Peiling creëren"
   text-remain: "{} resterende tekens"
   recent-tags: "最近"
@@ -744,7 +762,6 @@ desktop/views/components/settings.vue:
   2fa: "Authenticatie in twee stappen"
   other: "Overig"
   license: "Licentie"
-  mark-as-read-all-unread-notes: "すべての投稿を既読にする"
   theme: "テーマ"
   behaviour: "Gedrag"
   fetch-on-scroll: "Ophalen bij scrollen"
@@ -801,8 +818,6 @@ desktop/views/components/settings.vue:
   cache-warn: "De cache van je accountinformatie/berichten/antwoorden/instellingen wordt verwijderd. Je moet de pagina herladen na het opschonen."
   cache-cleared: "Cache opgeschoond"
   cache-cleared-desc: "Herlaad de pagina."
-  auto-watch: "Automatisch volgen"
-  auto-watch-desc: "Automatisch meldingen ontvangen over het bericht/antwoord."
   about: "Over Misskey"
   operator: "De administrator van deze instantie"
   update: "Misskey-update"
@@ -841,6 +856,7 @@ desktop/views/components/settings.2fa.vue:
   enter-password: "Voer het wachtwoord in"
   authenticator: "Installeer eerst Google Authenticator op je apparaat:"
   howtoinstall: "Hoe installeer ik dit?"
+  token: "トークン"
   scan: "Scan daarna de QR-code:"
   done: "Voer de op je apparaat getoonde sleutel in:"
   submit: "Versturen"
@@ -855,13 +871,13 @@ common/views/components/api-settings.vue:
   token: "Token:"
   enter-password: "パスワードを入力してください"
   console:
-    title: 'APIコンソール'
-    endpoint: 'エンドポイント'
-    parameter: 'パラメータ'
+    title: "APIコンソール"
+    endpoint: "エンドポイント"
+    parameter: "パラメータ"
     credential-info: "「i」パラメータは自動で付与されます。"
-    send: '送信'
-    sending: '応答待ち'
-    response: '結果'
+    send: "送信"
+    sending: "応答待ち"
+    response: "結果"
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 common/views/components/drive-settings.vue:
@@ -1215,6 +1231,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
+  mention: "メンション"
   is-bot: "このアカウントはBotです"
   years-old: "{age}歳"
   year: "年"
@@ -1224,6 +1241,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Berichten"
   with-replies: "Berichten en antwoorden"
   with-media: "Media"
+  my-posts: "私の投稿"
   empty: "Deze gebruiker heeft nog niks geplaatst."
 desktop/views/widgets/messaging.vue:
   title: "Gesprekken"
@@ -1422,7 +1440,6 @@ mobile/views/pages/settings.vue:
   notification-position: "通知の表示"
   notification-position-bottom: "下"
   notification-position-top: "上"
-  theme: "テーマ"
   behavior: "Gedrag"
   fetch-on-scroll: "Ophalen bij scrollen"
   note-visibility: "投稿の公開範囲"
@@ -1455,7 +1472,6 @@ mobile/views/pages/user.vue:
   overview: "Overzicht"
   timeline: "Tijdlijn"
   media: "Media"
-  is-suspended: "Dit account is geschorst."
   mute: "ミュート"
   unmute: "ミュート解除"
   block: "ブロック"
@@ -1509,6 +1525,7 @@ deck/deck.user-column.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
+  mention: "メンション"
   images: "画像"
   activity: "アクティビティ"
   timeline: "タイムライン"

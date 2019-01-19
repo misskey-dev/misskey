@@ -30,11 +30,11 @@
 						:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
 						@click="set(i)"
 						:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`">
-					<template v-if="!$store.state.settings.games.reversi.useWhiteBlackStones">
+					<template v-if="$store.state.settings.games.reversi.useAvatarStones">
 						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
 						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
 					</template>
-					<template v-if="$store.state.settings.games.reversi.useWhiteBlackStones">
+					<template v-else>
 						<fa v-if="stone === true" :icon="fasCircle"/>
 						<fa v-if="stone === false" :icon="farCircle"/>
 					</template>

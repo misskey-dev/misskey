@@ -6,6 +6,7 @@ import define from '../../define';
 import read from '../../../../services/note/read';
 import { ObjectID } from 'mongodb';
 import { error } from '../../../../prelude/promise';
+import Mute from '../../../../models/mute';
 
 export const meta = {
 	desc: {
@@ -42,25 +43,29 @@ export const meta = {
 	}
 };
 
-const fetchFriendIds = async (following: boolean, userId: ObjectID) => following ? { $in: await getFriendIds(userId) } : undefined;
+const fetchFriendIds = async (following: boolean, userId: ObjectID) => following ? { $in: await getFriendIds(userId) } : {};
+
+const fetchMuteeIds = (muterId: ObjectID) => Mute.find({ muterId })
+	.then(x => x && x.length ? { $nin: x.map(x => x.muteeId) } : {});
 
 export default define(meta, (ps, user) => fetchFriendIds(ps.following, user._id)
-	.then(userId =>
+	.then(friends =>
 		ps.sinceId && ps.untilId ? error('cannot set sinceId and untilId') :
-		Note.find({
-				_id:
-					ps.sinceId ? { $gt: ps.sinceId } :
-					ps.untilId ? { $lt: ps.untilId } : undefined,
-				deletedAt: null,
-				userId,
-				visibility: ps.visibility || undefined,
-				$or: [
-					{ mentions: user._id },
-					{ visibleUserIds: user._id }
-				]
-			}, {
-				limit: ps.limit,
-				sort: { _id: ps.sinceId ? 1 : -1 }
-			}))
+		fetchMuteeIds(user._id)
+			.then(mutees => Note.find({
+					_id:
+						ps.sinceId ? { $gt: ps.sinceId } :
+						ps.untilId ? { $lt: ps.untilId } : undefined,
+					deletedAt: null,
+					userId: { ...friends, ...mutees },
+					visibility: ps.visibility || undefined,
+					$or: [
+						{ mentions: user._id },
+						{ visibleUserIds: user._id }
+					]
+				}, {
+					limit: ps.limit,
+					sort: { _id: ps.sinceId ? 1 : -1 }
+				})))
 	.then(x => packMany(x, user))
 	.then(x => (x.map(x => read(user._id, x._id), x))));

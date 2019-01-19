@@ -1,6 +1,6 @@
 <template>
 <div style="position:initial">
-	<mk-menu :source="source" :compact="compact" :items="items" @closed="closed"/>
+	<mk-menu :source="source" :items="items" @closed="closed"/>
 </div>
 </template>
 
@@ -13,15 +13,26 @@ import { concat, intersperse } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/note-menu.vue'),
-	props: ['note', 'source', 'compact'],
+	props: ['note', 'source'],
 	computed: {
 		items(): any[] {
 			return concat(intersperse([null], [
 				[
 					[{
+						icon: 'at',
+						text: this.$t('mention'),
+						action: this.mention
+					}]
+				],
+				[
+					[{
 						icon: 'info-circle',
 						text: this.$t('detail'),
 						action: this.detail
+					}], [{
+						icon: 'align-left',
+						text: this.$t('copy-content'),
+						action: this.copyContent
 					}], [{
 						icon: 'link',
 						text: this.$t('copy-link'),
@@ -66,8 +77,16 @@ export default Vue.extend({
 	},
 
 	methods: {
+		mention() {
+			this.$post({ mention: this.note.user });
+		},
+
 		detail() {
 			this.$router.push(`/notes/${this.note.id}`);
+		},
+
+		copyContent() {
+			copyToClipboard(this.note.text);
 		},
 
 		copyLink() {

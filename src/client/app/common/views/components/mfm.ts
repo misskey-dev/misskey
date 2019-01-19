@@ -129,8 +129,10 @@ export default Vue.component('misskey-flavored-markdown', {
 						key: Math.random(),
 						props: {
 							url: token.node.props.url,
-							target: '_blank',
-							style: 'color:var(--mfmLink);'
+							target: '_blank'
+						},
+						attrs: {
+							style: 'color:var(--mfmUrl);'
 						}
 					})];
 				}

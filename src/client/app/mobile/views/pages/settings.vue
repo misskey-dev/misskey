@@ -7,12 +7,7 @@
 		<div>
 			<x-profile-editor/>
 
-			<ui-card>
-				<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
-				<section>
-					<x-theme/>
-				</section>
-			</ui-card>
+			<x-theme/>
 
 			<ui-card>
 				<div slot="title"><fa icon="poll-h"/> {{ $t('design') }}</div>
@@ -20,6 +15,12 @@
 				<section>
 					<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
 					<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
+					<section>
+						<header>{{ $t('@.line-width') }}</header>
+						<ui-radio v-model="lineWidth" :value="0.5">{{ $t('@.line-width-thin') }}</ui-radio>
+						<ui-radio v-model="lineWidth" :value="1">{{ $t('@.line-width-normal') }}</ui-radio>
+						<ui-radio v-model="lineWidth" :value="2">{{ $t('@.line-width-thick') }}</ui-radio>
+					</section>
 					<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }} ({{ $t('@.this-setting-is-this-device-only') }})</ui-switch>
 					<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
 					<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
@@ -33,7 +34,7 @@
 
 				<section>
 					<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
-					<ui-switch v-model="games_reversi_useWhiteBlackStones">{{ $t('@.use-white-black-reversi-stones') }}</ui-switch>
+					<ui-switch v-model="games_reversi_useAvatarStones">{{ $t('@.use-avatar-reversi-stones') }}</ui-switch>
 				</section>
 
 				<section>
@@ -80,7 +81,6 @@
 							<option value="home">{{ $t('@.note-visibility.home') }}</option>
 							<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
 							<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
-							<option value="private">{{ $t('@.note-visibility.private') }}</option>
 							<option value="local-public">{{ $t('@.note-visibility.local-public') }}</option>
 							<option value="local-home">{{ $t('@.note-visibility.local-home') }}</option>
 							<option value="local-followers">{{ $t('@.note-visibility.local-followers') }}</option>
@@ -93,6 +93,8 @@
 					<ui-input v-model="webSearchEngine">{{ $t('web-search-engine') }}<span slot="desc">{{ $t('web-search-engine-desc') }}</span></ui-input>
 				</section>
 			</ui-card>
+
+			<x-notification-settings/>
 
 			<x-drive-settings/>
 
@@ -157,6 +159,7 @@ import XProfileEditor from '../../../common/views/components/profile-editor.vue'
 import XApiSettings from '../../../common/views/components/api-settings.vue';
 import XLanguageSettings from '../../../common/views/components/language-settings.vue';
 import XIntegrationSettings from '../../../common/views/components/integration-settings.vue';
+import XNotificationSettings from '../../../common/views/components/notification-settings.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/settings.vue'),
@@ -170,6 +173,7 @@ export default Vue.extend({
 		XApiSettings,
 		XLanguageSettings,
 		XIntegrationSettings,
+		XNotificationSettings,
 	},
 
 	data() {
@@ -262,6 +266,11 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'circleIcons', value }); }
 		},
 
+		lineWidth: {
+			get() { return this.$store.state.device.lineWidth; },
+			set(value) { this.$store.commit('device/set', { key: 'lineWidth', value }); }
+		},
+
 		contrastedAcct: {
 			get() { return this.$store.state.settings.contrastedAcct; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'contrastedAcct', value }); }
@@ -287,9 +296,9 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
 		},
 
-		games_reversi_useWhiteBlackStones: {
-			get() { return this.$store.state.settings.games.reversi.useWhiteBlackStones; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useWhiteBlackStones', value }); }
+		games_reversi_useAvatarStones: {
+			get() { return this.$store.state.settings.games.reversi.useAvatarStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useAvatarStones', value }); }
 		},
 
 		disableAnimatedMfm: {

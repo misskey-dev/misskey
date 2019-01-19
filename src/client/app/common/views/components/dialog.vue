@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as anime from 'animejs';
+import anime from 'animejs';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import parseAcct from "../../../../../misc/acct/parse";
 
@@ -93,7 +93,7 @@ export default Vue.extend({
 				opacity: 1,
 				scale: [1.2, 1],
 				duration: 300,
-				easing: [0, 0.5, 0.5, 1]
+				easing: 'cubicBezier(0, 0.5, 0.5, 1)'
 			});
 
 			if (this.splash) {
@@ -142,7 +142,7 @@ export default Vue.extend({
 				opacity: 0,
 				scale: 0.8,
 				duration: 300,
-				easing: [0, 0.5, 0.5, 1],
+				easing: 'cubicBezier(0, 0.5, 0.5, 1)',
 				complete: () => this.destroyDom()
 			});
 		},

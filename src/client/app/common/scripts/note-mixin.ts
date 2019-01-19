@@ -65,6 +65,10 @@ export default (opts: Opts = {}) => ({
 			return this.isRenote ? this.note.renote : this.note;
 		},
 
+		isMyNote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
 		reactionsCount(): number {
 			return this.appearNote.reactionCounts
 				? sum(Object.values(this.appearNote.reactionCounts))
@@ -72,7 +76,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		title(): string {
-			return new Date(this.appearNote.createdAt).toLocaleString();
+			return '';
 		},
 
 		urls(): string[] {
@@ -125,9 +129,7 @@ export default (opts: Opts = {}) => ({
 				source: this.$refs.reactButton,
 				note: this.appearNote,
 				showFocus: viaKeyboard,
-				animation: !viaKeyboard,
-				compact: opts.mobile,
-				big: opts.mobile
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 
@@ -135,6 +137,14 @@ export default (opts: Opts = {}) => ({
 			(this.$root.api('notes/reactions/create', {
 				noteId: this.appearNote.id,
 				reaction: reaction
+			});
+		},
+
+		undoReact(note) {
+			const oldReaction = note.myReaction;
+			if (!oldReaction) return;
+			this.$root.api('notes/reactions/delete', {
+				noteId: note.id
 			});
 		},
 
@@ -159,8 +169,7 @@ export default (opts: Opts = {}) => ({
 			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
-				animation: !viaKeyboard,
-				compact: opts.mobile,
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 

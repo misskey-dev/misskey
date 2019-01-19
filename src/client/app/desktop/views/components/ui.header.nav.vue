@@ -147,7 +147,7 @@ export default Vue.extend({
 				> [data-icon]:last-child
 					margin-left 5px
 					font-size 10px
-					color var(--primary)
+					color var(--notificationIndicator)
 
 					@media (max-width 1100px)
 						margin-left -5px

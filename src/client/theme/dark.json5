@@ -24,6 +24,15 @@
 		scrollbarHandle: ':lighten<5<$secondary',
 		scrollbarHandleHover: ':lighten<10<$secondary',
 
+		link: '$primary',
+		linkTapHighlight: ':alpha<0.7<@link',
+
+		notificationIndicator: '$primary',
+
+		switchActive: '$primary',
+		switchActiveTrack: ':alpha<0.4<@switchActive',
+		radioActive: '$primary',
+
 		face: '$secondary',
 		faceText: '#fff',
 		faceHeader: ':lighten<5<$secondary',
@@ -120,8 +129,10 @@
 		mfmTitleBg: 'rgba(0, 0, 0, 0.2)',
 		mfmQuote: ':alpha<0.7<$text',
 		mfmQuoteLine: ':alpha<0.6<$text',
-		mfmLink: '$primary',
+		mfmUrl: '$primary',
+		mfmLink: '@mfmUrl',
 		mfmMention: '$primary',
+		mfmMentionForeground: '@primaryForeground',
 		mfmHashtag: '$primary',
 
 		suspendedInfoBg: '#611d1d',

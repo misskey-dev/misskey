@@ -1,5 +1,5 @@
-
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import define from '../../../define';
 import { publishMessagingStream } from '../../../../../stream';

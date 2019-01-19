@@ -1,31 +1,17 @@
 import * as mongo from 'mongodb';
 import redis from './db/redis';
 import Xev from 'xev';
-import { IMeta } from './models/meta';
-import fetchMeta from './misc/fetch-meta';
 
 type ID = string | mongo.ObjectID;
 
 class Publisher {
 	private ev: Xev;
-	private meta: IMeta;
 
 	constructor() {
 		// Redisがインストールされてないときはプロセス間通信を使う
 		if (redis == null) {
 			this.ev = new Xev();
 		}
-
-		setInterval(async () => {
-			this.meta = await fetchMeta();
-		}, 5000);
-	}
-
-	public fetchMeta = async () => {
-		if (this.meta != null) return this.meta;
-
-		this.meta = await fetchMeta();
-		return this.meta;
 	}
 
 	private publish = (channel: string, type: string, value?: any): void => {
@@ -73,17 +59,11 @@ class Publisher {
 	public publishHomeTimelineStream = (userId: ID, note: any): Promise<void> => Promise.resolve()
 		.then(() => this.publish(`homeTimeline:${userId}`, null, note))
 
-	public publishLocalTimelineStream = async (note: any): Promise<void> => this.fetchMeta()
-		.then(meta => {
-			if (meta.disableLocalTimeline) return;
-			this.publish('localTimeline', null, note);
-		})
+	public publishLocalTimelineStream = async (note: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish('localTimeline', null, note))
 
-	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => this.fetchMeta()
-		.then(meta => {
-			if (meta.disableLocalTimeline) return;
-			this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
-		})
+	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note))
 
 	public publishGlobalTimelineStream = (note: any): Promise<void> => Promise.resolve()
 		.then(() => this.publish('globalTimeline', null, note))

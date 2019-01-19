@@ -4,7 +4,9 @@ import Mute from '../../../../models/mute';
 import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import { errorWhen } from '../../../../prelude/promise';
+import { error } from '../../../../prelude/promise';
+import fetchMeta from '../../../../misc/fetch-meta';
+import activeUsersChart from '../../../../chart/active-users';
 
 export const meta = {
 	desc: {
@@ -90,13 +92,16 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => errorWhen(
-	[ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x).length > 1,
-	'only one of sinceId, untilId, sinceDate, untilDate can be specified')
-	.then(() => Promise.all([
-			getFriends(user._id, true, false),
-			Mute.find({ muterId: user._id }).then(ms => ms.map(m => m.muteeId))
-		]))
+export default define(meta, (ps, user) => fetchMeta()
+	.then(({ disableLocalTimeline }) =>
+		[ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x).length > 1 ?
+			error('only one of sinceId, untilId, sinceDate, untilDate can be specified') :
+		disableLocalTimeline && !user.isAdmin && !user.isModerator ?
+			error('local timeline disabled') :
+			Promise.all([
+				getFriends(user._id, true, false),
+				Mute.find({ muterId: user._id }).then(ms => ms.map(m => m.muteeId))
+			]))
 	.then(([followings, $nin]) => Note.find({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
@@ -109,9 +114,18 @@ export default define(meta, (ps, user) => errorWhen(
 				$or: [{
 					$or: followings.map(x => ({
 						userId: x.id,
-						$or: x.stalk ? [{ replyId: null }, {
-							$expr: { $eq: ['$_reply.userId', '$userId'] }
-						}, { '_reply.userId': user._id }, { userId: user._id }] : undefined
+						$and: [{
+							$or: x.stalk ? [{ replyId: null }, {
+								$expr: { $eq: ['$_reply.userId', '$userId'] }
+							}, { '_reply.userId': user._id }, { userId: user._id }] : undefined
+						}, {
+							$or: [{
+								visibility: { $in: [ 'public', 'home' ] }
+							},
+							...(user ? [{ userId: user._id }, {
+								visibleUserIds: { $in: [ user._id ] }
+							}] : [])]
+						}]
 					}))
 				}, {
 					visibility: 'public',
@@ -160,4 +174,5 @@ export default define(meta, (ps, user) => errorWhen(
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		}))
-	.then(x => packMany(x, user)));
+	.then(x => packMany(x, user))
+	.then(x => (activeUsersChart.update(user), x)));

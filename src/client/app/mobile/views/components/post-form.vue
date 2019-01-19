@@ -42,7 +42,6 @@
 					<span v-if="visibility === 'home'"><fa icon="home"/></span>
 					<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 					<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-					<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 				</button>
 			</footer>
 			<input ref="file" class="file" type="file" multiple="multiple" @change="onChangeFile"/>
@@ -81,6 +80,10 @@ export default Vue.extend({
 			required: false
 		},
 		renote: {
+			type: Object,
+			required: false
+		},
+		mention: {
 			type: Object,
 			required: false
 		},
@@ -172,6 +175,11 @@ export default Vue.extend({
 			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
 
+		if (this.mention) {
+			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
+			this.text += ' ';
+		}
+
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
@@ -179,11 +187,11 @@ export default Vue.extend({
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.$store.state.i.username == x.username && x.host == null) return;
-				if (this.$store.state.i.username == x.username && x.host == host) return;
+				if (this.$store.state.i.username == x.username && x.host == null) continue;
+				if (this.$store.state.i.username == x.username && x.host == host) continue;
 
 				// 重複は除外
-				if (this.text.indexOf(`${mention} `) != -1) return;
+				if (this.text.indexOf(`${mention} `) != -1) continue;
 
 				this.text += `${mention} `;
 			}
@@ -193,7 +201,7 @@ export default Vue.extend({
 		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
+		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 		}
 
@@ -293,7 +301,7 @@ export default Vue.extend({
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				compact: true
+				currentVisibility: this.visibility
 			});
 			w.$once('chosen', v => {
 				this.applyVisibility(v);

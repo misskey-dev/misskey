@@ -23,6 +23,7 @@ import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
 import notesChart from '../../chart/notes';
 import perUserNotesChart from '../../chart/per-user-notes';
+import activeUsersChart from '../../chart/active-users';
 
 import { erase } from '../../prelude/array';
 import insertNoteUnread from './unread';
@@ -133,11 +134,6 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		return rej('Renote target is not public or home');
 	}
 
-	// リプライ対象が自分以外の非公開の投稿なら禁止
-	if (data.reply && data.reply.visibility == 'private' && !data.reply.userId.equals(user._id)) {
-		return rej('Reply target is private of others');
-	}
-
 	// ローカルのみをRenoteしたらローカルのみにする
 	if (data.renote && data.renote.localOnly) {
 		data.localOnly = true;
@@ -188,11 +184,6 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 				data.visibleUsers.push(u);
 			}
 		}
-
-		// ダイレクト投稿でユーザーが指定されていなかったらreject
-		if (data.visibleUsers.length === 0) {
-			return rej('Target user is not specified');
-		}
 	}
 
 	const note = await insertNote(user, data, tags, emojis, mentionedUsers);
@@ -206,6 +197,8 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// 統計を更新
 	notesChart.update(note, true);
 	perUserNotesChart.update(user, note, true);
+	// ローカルユーザーのチャートはタイムライン取得時に更新しているのでリモートユーザーの場合だけでよい
+	if (isRemoteUser(user)) activeUsersChart.update(user);
 
 	// Register host
 	if (isRemoteUser(user)) {
@@ -282,7 +275,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	const noteActivity = await renderActivity(data, note);
 
-	if (isLocalUser(user) && note.visibility != 'private') {
+	if (isLocalUser(user)) {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
@@ -369,7 +362,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 			deliver(user, noteActivity, renote._user.inbox);
 		}
 
-		if (['private', 'followers', 'specified'].includes(note.visibility)) {
+		if (['followers', 'specified'].includes(note.visibility)) {
 			const detailPackedNote = await pack(note, user, {
 				detail: true
 			});
@@ -551,7 +544,7 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 			if (!following.stalk) {
 				// この投稿が返信ならスキップ
 				if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId))
-					return;
+					continue;
 			}
 
 			// Publish event to followers stream

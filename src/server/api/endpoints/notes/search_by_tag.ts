@@ -139,7 +139,8 @@ const mika: { [x: string]: (x: ObjectID[]) => any } = {
 
 const query = (source: {
 	$and: any[],
-	deletedAt: any
+	deletedAt: any,
+	$or: any[]
 }) => {
 	if (!source.$and.length) delete source.$and;
 	return source;
@@ -204,7 +205,13 @@ export default define(meta, (ps, me) => Promise.resolve()
 				createdAt: { $lt: new Date(ps.untilDate) }
 			}] : [])
 		],
-		deletedAt: { $exists: false }
+		deletedAt: { $exists: false },
+		$or: [{
+			visibility: { $in: ['public', 'home'] }
+		},
+		...(!me ? [{ userId: me._id }, {
+			visibleUserIds: { $in: [ me._id ] }
+		}] : [])]
 	}))
 	.then(x => Note.find(x, {
 			sort: { _id: -1 },

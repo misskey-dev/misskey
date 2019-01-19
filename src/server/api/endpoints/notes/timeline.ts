@@ -5,6 +5,7 @@ import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
+import activeUsersChart from '../../../../chart/active-users';
 
 export const meta = {
 	desc: {
@@ -110,14 +111,23 @@ export default define(meta, (ps, user) => errorWhen(
 				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
 			$and: [{
 				deletedAt: null,
-				$or: x.map(f => ({
-					userId: f.id,
-					$or: !f.stalk ? [
-						{ replyId: null }, {
-							$expr: { $eq: ['$_reply.userId', '$userId'] }
-						}, { '_reply.userId': user._id },
-						{ userId: user._id }] : undefined
-				})),
+				$and: [{
+					$or: x.map(f => ({
+						userId: f.id,
+						$or: !f.stalk ? [
+							{ replyId: null }, {
+								$expr: { $eq: ['$_reply.userId', '$userId'] }
+							}, { '_reply.userId': user._id },
+							{ userId: user._id }] : undefined
+					}))
+				}, {
+					$or: [{
+						visibility: { $in: ['public', 'home'] }
+					},
+					...(!user ? [{ userId: user._id }, {
+						visibleUserIds: { $in: [ user._id ] }
+					}] : [])]
+				}],
 				userId: $nin,
 				'_reply.userId': $nin,
 				'_renote.userId': $nin
@@ -161,4 +171,6 @@ export default define(meta, (ps, user) => errorWhen(
 		}, {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
-		}).then(x => packMany(x, user))));
+		})
+		.then(x => packMany(x, user))
+		.then(x => (activeUsersChart.update(user), x))));

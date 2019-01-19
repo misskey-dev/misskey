@@ -173,7 +173,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-timeline-core
 	> .mk-friends-maker
-		border-bottom solid 1px #eee
+		border-bottom solid var(--lineWidth) #eee
 
 </style>
 

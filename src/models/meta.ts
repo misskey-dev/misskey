@@ -184,7 +184,9 @@ export type IMeta = {
 
 	disableRegistration?: boolean;
 	disableLocalTimeline?: boolean;
+	disableGlobalTimeline?: boolean;
 	hidedTags?: string[];
+	mascotImageUrl?: string;
 	bannerUrl?: string;
 	errorImageUrl?: string;
 

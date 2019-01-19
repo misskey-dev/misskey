@@ -67,9 +67,8 @@ export type INote = {
 	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
-	 * private ... 自分のみ
 	 */
-	visibility: 'public' | 'home' | 'followers' | 'specified' | 'private';
+	visibility: 'public' | 'home' | 'followers' | 'specified';
 
 	visibleUserIds: mongo.ObjectID[];
 
@@ -106,7 +105,7 @@ export type INote = {
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;
 
-	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示
+	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示(後方互換性のため)
 	if (packedNote.visibility == 'private' && (meId == null || !meId.equals(packedNote.userId))) {
 		hide = true;
 	}
@@ -273,6 +272,11 @@ export const pack = async (
 	// Populate files
 	_note.files = packFileMany(_note.fileIds || []);
 
+	// Some counts
+	_note.renoteCount = _note.renoteCount || 0;
+	_note.repliesCount = _note.repliesCount || 0;
+	_note.reactionCounts = _note.reactionCounts || {};
+
 	// 後方互換性のため
 	_note.mediaIds = _note.fileIds;
 	_note.media = _note.files;
@@ -368,7 +372,14 @@ export const pack = async (
 	//#endregion
 
 	if (_note.user.isCat && _note.text) {
-		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');
+		_note.text = (_note.text
+			// ja-JP
+			.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ')
+			// ko-KR
+			.replace(/[나-낳]/g, (match: string) => String.fromCharCode(
+				match.codePointAt(0)  + '냐'.charCodeAt(0) - '나'.charCodeAt(0)
+			))
+		);
 	}
 
 	if (!opts.skipHide) {

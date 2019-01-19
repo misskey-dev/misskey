@@ -124,6 +124,14 @@ export const meta = {
 				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
 			}
 		},
+
+		excludeNsfw: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
+			}
+		},
 	}
 };
 
@@ -164,6 +172,11 @@ export default define(meta, (ps, me) => errorWhen(
 					poll: { $ne: null }
 				}]
 			}] : [])],
+			$or: [{
+				visibility: { $in: ['public', 'home'] }
+			}, ...(me ? [{ userId: me._id }, {
+				visibleUserIds: { $in: [ me._id ] }
+			}] : [])],
 			deletedAt: null,
 			userId: x._id,
 			replyId: ps.includeReplies ? undefined : null,
@@ -171,7 +184,8 @@ export default define(meta, (ps, me) => errorWhen(
 				$exists: true,
 				$ne: []
 			} : undefined,
-			'_files.contentType': { $in: ps.fileType }
+			'_files.contentType': { $in: ps.fileType },
+			'_files.metadata.isSensitive': ps.excludeNsfw ? { $ne: true } : null
 		}, {
 			limit: ps.limit,
 			sort: {

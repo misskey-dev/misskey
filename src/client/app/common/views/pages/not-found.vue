@@ -13,7 +13,7 @@ import Vue from 'vue'
 import i18n from '../../../i18n';
 
 export default Vue.extend({
-	i18n: i18n('common/views/pages/404.vue'),
+	i18n: i18n('common/views/pages/not-found.vue'),
 	data() {
 		return {
 			src: ''

@@ -2,6 +2,7 @@
  * Web Client Server
  */
 
+import * as os from 'os';
 import ms = require('ms');
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
@@ -18,6 +19,8 @@ import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
 import getNoteSummary from '../../misc/get-note-summary';
 import fetchMeta from '../../misc/fetch-meta';
+import Emoji from '../../models/emoji';
+const pkg = require('../../../package.json');
 
 const client = `${__dirname}/../../client/`;
 
@@ -148,6 +151,27 @@ router.get('/@:user', async (ctx, next) => {
 	}
 });
 
+router.get('/users/:user', async ctx => {
+	if (!ObjectID.isValid(ctx.params.user)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const userId = new ObjectID(ctx.params.user);
+
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
+
+	if (user === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+});
+
 // Note
 router.get('/notes/:note', async ctx => {
 	if (ObjectID.isValid(ctx.params.note)) {
@@ -159,7 +183,12 @@ router.get('/notes/:note', async ctx => {
 				note: _note,
 				summary: getNoteSummary(_note)
 			});
-			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+
+			if (['public', 'home'].includes(note.visibility)) {
+				ctx.set('Cache-Control', 'public, max-age=180');
+			} else {
+				ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+			}
 
 			return;
 		}
@@ -168,6 +197,27 @@ router.get('/notes/:note', async ctx => {
 	ctx.status = 404;
 });
 //#endregion
+
+router.get('/info', async ctx => {
+	const meta = await fetchMeta();
+	const emojis = await Emoji.find({ host: null }, {
+		fields: {
+			_id: false
+		}
+	});
+	await ctx.render('info', {
+		version: pkg.version,
+		machine: os.hostname(),
+		os: os.platform(),
+		node: process.version,
+		cpu: {
+			model: os.cpus()[0].model,
+			cores: os.cpus().length
+		},
+		emojis: emojis,
+		meta: meta
+	});
+});
 
 // Render base html for all requests
 router.get('*', async ctx => {

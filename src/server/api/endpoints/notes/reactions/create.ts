@@ -38,5 +38,5 @@ export const meta = {
 export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
 	.then(x =>
 		x === null ? error('note not found') :
-		x.deletedAt ? error('this not is already deleted') :
+		x.deletedAt ? error('this note is already deleted') :
 		create(user, x, ps.reaction)));

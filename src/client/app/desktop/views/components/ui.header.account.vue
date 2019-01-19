@@ -51,12 +51,12 @@
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
-				<li @click="settings">
-					<p>
+				<li>
+					<router-link to="/i/settings">
 						<i><fa icon="cog"/></i>
 						<span>{{ $t('settings') }}</span>
 						<i><fa icon="angle-right"/></i>
-					</p>
+					</router-link>
 				</li>
 				<li v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
 					<a href="/admin">
@@ -153,10 +153,6 @@ export default Vue.extend({
 			this.close();
 			this.$root.new(MkFollowRequestsWindow);
 		},
-		settings() {
-			this.close();
-			this.$root.new(MkSettingsWindow);
-		},
 		signout() {
 			this.$root.signout();
 		},
@@ -231,7 +227,7 @@ export default Vue.extend({
 		font-size 0.8em
 		background $bgcolor
 		border-radius 4px
-		box-shadow 0 1px 4px rgba(#000, 0.25)
+		box-shadow 0 var(--lineWidth) 4px rgba(#000, 0.25)
 
 		&:before
 			content ""
@@ -265,7 +261,7 @@ export default Vue.extend({
 
 			& + ul
 				padding-top 10px
-				border-top solid 1px var(--faceDivider)
+				border-top solid var(--lineWidth) var(--faceDivider)
 
 			> li
 				display block

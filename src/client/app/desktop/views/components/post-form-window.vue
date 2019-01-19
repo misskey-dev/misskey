@@ -12,6 +12,7 @@
 		<mk-note-preview v-if="reply" class="notePreview" :note="reply"/>
 		<mk-post-form ref="form"
 			:reply="reply"
+			:mention="mention"
 			@posted="onPosted"
 			@change-uploadings="onChangeUploadings"
 			@change-attached-files="onChangeFiles"
@@ -29,6 +30,10 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/components/post-form-window.vue'),
 	props: {
 		reply: {
+			type: Object,
+			required: false
+		},
+		mention: {
 			type: Object,
 			required: false
 		},

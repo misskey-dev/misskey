@@ -46,7 +46,7 @@ export default Vue.extend({
 		&.divider
 			margin-top $padding
 			padding-top $padding
-			border-top solid 1px var(--faceDivider)
+			border-top solid var(--lineWidth) var(--faceDivider)
 
 		&.nest
 			> p

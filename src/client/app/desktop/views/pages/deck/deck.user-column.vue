@@ -19,7 +19,7 @@
 				<span class="name">
 					<mk-user-name :user="user"/>
 				</span>
-				<span class="acct">@{{ user | acct }}</span>
+				<span class="acct">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
 			</div>
 		</header>
 		<div class="info">
@@ -48,6 +48,9 @@
 				<div>
 					<b>{{ user.followersCount | number }}</b>
 					<span>{{ $t('followers') }}</span>
+				</div>
+				<div class="mention">
+					<button @click="mention" :title="$t('mention')"><fa icon="at"/></button>
 				</div>
 			</div>
 		</div>
@@ -166,6 +169,7 @@ export default Vue.extend({
 			this.$root.api('users/notes', {
 				userId: this.user.id,
 				fileType: image,
+				excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
 				limit: 9,
 				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
@@ -219,8 +223,7 @@ export default Vue.extend({
 					},
 					plotOptions: {
 						bar: {
-							columnWidth: '90%',
-							endingShape: 'rounded'
+							columnWidth: '90%'
 						}
 					},
 					grid: {
@@ -307,6 +310,10 @@ export default Vue.extend({
 			return promise;
 		},
 
+		mention() {
+			this.$post({ mention: this.user });
+		},
+
 		menu() {
 			let menu = [{
 				icon: 'list',
@@ -329,7 +336,6 @@ export default Vue.extend({
 
 			this.$root.new(Menu, {
 				source: this.$refs.menu,
-				compact: false,
 				items: menu
 			});
 		},
@@ -405,6 +411,9 @@ export default Vue.extend({
 				opacity 0.7
 				text-shadow 0 0 8px #000
 
+				> .locked
+					opacity 0.8
+
 	> .info
 		padding 16px
 		font-size 12px
@@ -454,9 +463,9 @@ export default Vue.extend({
 
 		> .counts
 			display grid
-			grid-template-columns 1fr 1fr 1fr
+			grid-template-columns 2fr 2fr 2fr 1fr
 			margin-top 8px
-			border-top solid 1px var(--faceDivider)
+			border-top solid var(--lineWidth) var(--faceDivider)
 
 			> div
 				padding 8px 8px 0 8px
@@ -470,6 +479,9 @@ export default Vue.extend({
 					display block
 					font-size 80%
 					opacity 0.7
+
+			> .mention
+				display flex
 
 	> *
 		> p.caption

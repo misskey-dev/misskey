@@ -19,7 +19,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import * as anime from 'animejs';
 import { env } from '../../../config';
 
 export default Vue.extend({
@@ -79,8 +78,10 @@ export default Vue.extend({
 
 	position fixed
 	top 0
+	left -8px
 	z-index 1024
-	width 100%
+	width calc(100% + 16px)
+	padding 0 8px
 	box-shadow 0 0px 8px rgba(0, 0, 0, 0.25)
 
 	&, *
@@ -157,7 +158,7 @@ export default Vue.extend({
 				left 8px
 				pointer-events none
 				font-size 10px
-				color var(--primary)
+				color var(--notificationIndicator)
 
 			> button:last-child
 				display block

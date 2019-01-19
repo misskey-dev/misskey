@@ -4,7 +4,7 @@
 		<mk-user-name :user="user"/>
 	</template>
 	<main v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</p></div>
+		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</p></div>
 		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
 		<header>
 			<div class="banner" :style="style"></div>
@@ -55,6 +55,7 @@
 						<b>{{ user.followersCount | number }}</b>
 						<i>{{ $t('followers') }}</i>
 					</a>
+					<button @click="mention"><fa icon="at"/></button>
 				</div>
 			</div>
 		</header>
@@ -124,6 +125,10 @@ export default Vue.extend({
 				Progress.done();
 				document.title = `${Vue.filter('userName')(this.user)} | ${this.$root.instanceName}`;
 			});
+		},
+
+		mention() {
+			this.$post({ mention: this.user });
 		},
 
 		menu() {
@@ -203,7 +208,6 @@ export default Vue.extend({
 
 			this.$root.new(Menu, {
 				source: this.$refs.menu,
-				compact: true,
 				items: menu
 			});
 		},
@@ -364,6 +368,9 @@ main
 
 					> i
 						font-size 14px
+
+				> button
+					color var(--text)
 
 	> nav
 		position -webkit-sticky

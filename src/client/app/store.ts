@@ -40,7 +40,7 @@ const defaultSettings = {
 	games: {
 		reversi: {
 			showBoardLabels: false,
-			useWhiteBlackStones: false,
+			useAvatarStones: true,
 		}
 	}
 };
@@ -52,6 +52,7 @@ const defaultDeviceSettings = {
 	darkmode: false,
 	darkTheme: 'dark',
 	lightTheme: 'light',
+	lineWidth: 1,
 	themes: [],
 	enableSounds: true,
 	soundVolume: 0.5,

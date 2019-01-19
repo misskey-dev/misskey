@@ -52,7 +52,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	});
 }
 
-type visibility = 'public' | 'home' | 'followers' | 'specified' | 'private';
+type visibility = 'public' | 'home' | 'followers' | 'specified';
 
 function getVisibility(to: string[], cc: string[], actor: IRemoteUser): visibility {
 	const PUBLIC = 'https://www.w3.org/ns/activitystreams#Public';

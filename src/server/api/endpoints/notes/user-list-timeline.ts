@@ -119,15 +119,24 @@ export default define(meta, (ps, user) => Promise.all([
 				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
 			$and: [{
 				deletedAt: null,
-				$or: list.userIds.map(userId => ({
-					userId,
-					$or: [
-						{ replyId: null }, {
-							$expr: { $eq: ['$_reply.userId', '$userId'] }
-						}, { '_reply.userId': user._id },
-						{ userId: user._id }
-					]
-				})),
+				$and: [{
+					$or: list.userIds.map(userId => ({
+						userId,
+						$or: [
+							{ replyId: null }, {
+								$expr: { $eq: ['$_reply.userId', '$userId'] }
+							}, { '_reply.userId': user._id },
+							{ userId: user._id }
+						]
+					}))
+				}, {
+					$or: [{
+						visibility: { $in: ['public', 'home'] }
+					},
+					...(!user ? [{ userId: user._id }, {
+						visibleUserIds: { $in: [ user._id ] }
+					}] : [])]
+				}],
 				userId: { $nin },
 				'_reply.userId': { $nin },
 				'_renote.userId': { $nin },

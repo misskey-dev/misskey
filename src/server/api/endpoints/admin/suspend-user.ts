@@ -25,6 +25,7 @@ export const meta = {
 	}
 };
 
+<<<<<<< HEAD
 export default define(meta, ps => User.findOne({ _id: ps.userId })
 	.then(x =>
 		!x ? error('user not found') :
@@ -33,3 +34,32 @@ export default define(meta, ps => User.findOne({ _id: ps.userId })
 			$set: { isSuspended: true }
 		}))
 	.then(() => {}));
+=======
+export default define(meta, (ps) => new Promise(async (res, rej) => {
+	const user = await User.findOne({
+		_id: ps.userId
+	});
+
+	if (user == null) {
+		return rej('user not found');
+	}
+
+	if (user.isAdmin) {
+		return rej('cannot suspend admin');
+	}
+
+	if (user.isModerator) {
+		return rej('cannot suspend moderator');
+	}
+
+	await User.findOneAndUpdate({
+		_id: user._id
+	}, {
+			$set: {
+				isSuspended: true
+			}
+		});
+
+	res();
+}));
+>>>>>>> develop

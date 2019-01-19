@@ -51,7 +51,6 @@
 		<span v-if="visibility === 'home'"><fa icon="home"/></span>
 		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 		<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-		<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 	</button>
 	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
 	<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
@@ -78,6 +77,7 @@ import extractMentions from '../../../../../misc/extract-mentions';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/post-form.vue'),
+
 	components: {
 		XDraggable,
 		MkVisibilityChooser
@@ -89,6 +89,10 @@ export default Vue.extend({
 			required: false
 		},
 		renote: {
+			type: Object,
+			required: false
+		},
+		mention: {
 			type: Object,
 			required: false
 		},
@@ -178,6 +182,11 @@ export default Vue.extend({
 			this.text = this.initialText;
 		}
 
+		if (this.mention) {
+			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
+			this.text += ' ';
+		}
+
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
@@ -189,11 +198,11 @@ export default Vue.extend({
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.$store.state.i.username == x.username && x.host == null) return;
-				if (this.$store.state.i.username == x.username && x.host == host) return;
+				if (this.$store.state.i.username == x.username && x.host == null) continue;
+				if (this.$store.state.i.username == x.username && x.host == host) continue;
 
 				// 重複は除外
-				if (this.text.indexOf(`${mention} `) != -1) return;
+				if (this.text.indexOf(`${mention} `) != -1) continue;
 
 				this.text += `${mention} `;
 			}
@@ -203,7 +212,7 @@ export default Vue.extend({
 		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
+		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 		}
 
@@ -215,7 +224,7 @@ export default Vue.extend({
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
-			if (!this.instant) {
+			if (!this.instant && !this.mention) {
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 				if (draft) {
 					this.text = draft.data.text;
@@ -373,7 +382,8 @@ export default Vue.extend({
 
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton
+				source: this.$refs.visibilityButton,
+				currentVisibility: this.visibility
 			});
 			w.$once('chosen', v => {
 				this.applyVisibility(v);

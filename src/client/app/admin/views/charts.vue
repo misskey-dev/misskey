@@ -10,6 +10,7 @@
 			<optgroup :label="$t('users')">
 				<option value="users">{{ $t('charts.users') }}</option>
 				<option value="users-total">{{ $t('charts.users-total') }}</option>
+				<option value="active-users">{{ $t('charts.active-users') }}</option>
 			</optgroup>
 			<optgroup :label="$t('notes')">
 				<option value="notes">{{ $t('charts.notes') }}</option>
@@ -67,6 +68,7 @@ export default Vue.extend({
 				case 'federation-instances-total': return this.federationInstancesChart(true);
 				case 'users': return this.usersChart(false);
 				case 'users-total': return this.usersChart(true);
+				case 'active-users': return this.activeUsersChart();
 				case 'notes': return this.notesChart('combined');
 				case 'local-notes': return this.notesChart('local');
 				case 'remote-notes': return this.notesChart('remote');
@@ -107,12 +109,14 @@ export default Vue.extend({
 		const [perHour, perDay] = await Promise.all([Promise.all([
 			this.$root.api('charts/federation', { limit: limit, span: 'hour' }),
 			this.$root.api('charts/users', { limit: limit, span: 'hour' }),
+			this.$root.api('charts/active-users', { limit: limit, span: 'hour' }),
 			this.$root.api('charts/notes', { limit: limit, span: 'hour' }),
 			this.$root.api('charts/drive', { limit: limit, span: 'hour' }),
 			this.$root.api('charts/network', { limit: limit, span: 'hour' })
 		]), Promise.all([
 			this.$root.api('charts/federation', { limit: limit, span: 'day' }),
 			this.$root.api('charts/users', { limit: limit, span: 'day' }),
+			this.$root.api('charts/active-users', { limit: limit, span: 'day' }),
 			this.$root.api('charts/notes', { limit: limit, span: 'day' }),
 			this.$root.api('charts/drive', { limit: limit, span: 'day' }),
 			this.$root.api('charts/network', { limit: limit, span: 'day' })
@@ -122,16 +126,18 @@ export default Vue.extend({
 			perHour: {
 				federation: perHour[0],
 				users: perHour[1],
-				notes: perHour[2],
-				drive: perHour[3],
-				network: perHour[4]
+				activeUsers: perHour[2],
+				notes: perHour[3],
+				drive: perHour[4],
+				network: perHour[5]
 			},
 			perDay: {
 				federation: perDay[0],
 				users: perDay[1],
-				notes: perDay[2],
-				drive: perDay[3],
-				network: perDay[4]
+				activeUsers: perDay[2],
+				notes: perDay[3],
+				drive: perDay[4],
+				network: perDay[5]
 			}
 		};
 
@@ -183,7 +189,7 @@ export default Vue.extend({
 				},
 				legend: {
 					labels: {
-						color: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+						colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
 					},
 				},
 				xaxis: {
@@ -317,6 +323,24 @@ export default Vue.extend({
 						? this.stats.users.remote.total
 						: sum(this.stats.users.remote.inc, negate(this.stats.users.remote.dec))
 					)
+				}]
+			};
+		},
+
+		activeUsersChart(): any {
+			return {
+				series: [{
+					name: 'Combined',
+					type: 'line',
+					data: this.format(sum(this.stats.activeUsers.local.count, this.stats.activeUsers.remote.count))
+				}, {
+					name: 'Local',
+					type: 'area',
+					data: this.format(this.stats.activeUsers.local.count)
+				}, {
+					name: 'Remote',
+					type: 'area',
+					data: this.format(this.stats.activeUsers.remote.count)
 				}]
 			};
 		},

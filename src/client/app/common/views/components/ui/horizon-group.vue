@@ -1,5 +1,5 @@
 <template>
-<div class="vnxwkwuf" :class="{ inputs, noGrow }">
+<div class="vnxwkwuf" :class="{ inputs, noGrow }" :data-children-count="children">
 	<slot></slot>
 </div>
 </template>
@@ -21,6 +21,16 @@ export default Vue.extend({
 			required: false,
 			default: false
 		}
+	},
+	data() {
+		return {
+			children: 0
+		};
+	},
+	mounted() {
+		this.$nextTick(() => {
+			this.children = this.$slots.default.length;
+		});
 	}
 });
 </script>
@@ -47,5 +57,20 @@ export default Vue.extend({
 
 	> *:not(:last-child)
 		margin-right 16px !important
+
+	&[data-children-count="3"]
+		@media (max-width 600px)
+			display block
+
+			> *
+				display block
+				width 100% !important
+				margin 16px 0 !important
+
+				&:first-child
+					margin-top 0 !important
+
+				&:last-child
+					margin-bottom 0 !important
 
 </style>

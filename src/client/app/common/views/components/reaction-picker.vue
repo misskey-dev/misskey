@@ -1,8 +1,8 @@
 <template>
-<div class="mk-reaction-picker" v-hotkey.global="keymap">
+<div class="rdfaahpb" v-hotkey.global="keymap">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
-	<div class="popover" :class="{ compact, big }" ref="popover">
-		<p v-if="!compact">{{ title }}</p>
+	<div class="popover" :class="{ isMobile: $root.isMobile }" ref="popover">
+		<p v-if="!$root.isMobile">{{ title }}</p>
 		<div ref="buttons" :class="{ showFocus }">
 			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" :title="$t('@.reactions.like')" v-particle><mk-reaction-icon reaction="like"/></button>
 			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" :title="$t('@.reactions.love')" v-particle><mk-reaction-icon reaction="love"/></button>
@@ -22,7 +22,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import * as anime from 'animejs';
+import anime from 'animejs';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/reaction-picker.vue'),
@@ -36,20 +36,8 @@ export default Vue.extend({
 			required: true
 		},
 
-		compact: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-
 		cb: {
 			required: false
-		},
-
-		big: {
-			type: Boolean,
-			required: false,
-			default: false
 		},
 
 		showFocus: {
@@ -115,7 +103,7 @@ export default Vue.extend({
 			const width = popover.offsetWidth;
 			const height = popover.offsetHeight;
 
-			if (this.compact) {
+			if (this.$root.isMobile) {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
 				popover.style.left = (x - (width / 2)) + 'px';
@@ -210,9 +198,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-$border-color = rgba(27, 31, 35, 0.15)
-
-.mk-reaction-picker
+.rdfaahpb
 	position initial
 
 	> .backdrop
@@ -230,41 +216,12 @@ $border-color = rgba(27, 31, 35, 0.15)
 		position absolute
 		z-index 10001
 		background $bgcolor
-		border 1px solid $border-color
 		border-radius 4px
 		box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
 		transform scale(0.5)
 		opacity 0
 
-		$balloon-size = 16px
-
-		&:not(.compact)
-			margin-top $balloon-size
-			transform-origin center -($balloon-size)
-
-			&:before
-				content ""
-				display block
-				position absolute
-				top -($balloon-size * 2)
-				left s('calc(50% - %s)', $balloon-size)
-				border-top solid $balloon-size transparent
-				border-left solid $balloon-size transparent
-				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size $border-color
-
-			&:after
-				content ""
-				display block
-				position absolute
-				top -($balloon-size * 2) + 1.5px
-				left s('calc(50% - %s)', $balloon-size)
-				border-top solid $balloon-size transparent
-				border-left solid $balloon-size transparent
-				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size $bgcolor
-
-		&.big
+		&.isMobile
 			> div
 				width 280px
 
@@ -274,13 +231,30 @@ $border-color = rgba(27, 31, 35, 0.15)
 					font-size 28px
 					border-radius 4px
 
+		&:not(.isMobile)
+			$arrow-size = 16px
+
+			margin-top $arrow-size
+			transform-origin center -($arrow-size)
+
+			&:before
+				content ""
+				display block
+				position absolute
+				top -($arrow-size * 2)
+				left s('calc(50% - %s)', $arrow-size)
+				border-top solid $arrow-size transparent
+				border-left solid $arrow-size transparent
+				border-right solid $arrow-size transparent
+				border-bottom solid $arrow-size $bgcolor
+
 		> p
 			display block
 			margin 0
 			padding 8px 10px
 			font-size 14px
 			color var(--popupFg)
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 
 		> div
 			padding 4px

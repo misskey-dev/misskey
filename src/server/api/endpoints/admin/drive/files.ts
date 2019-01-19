@@ -59,5 +59,6 @@ export default define(meta, ps => File.find({
 	})
 	.then(x => packMany(x, {
 		detail: true,
-		withUser: true
+		withUser: true,
+		self: true
 	})));

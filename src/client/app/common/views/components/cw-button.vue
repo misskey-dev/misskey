@@ -1,11 +1,7 @@
 <template>
 <button class="nrvgflfuaxwgkxoynpnumyookecqrrvh" @click="toggle">
 	<b>{{ value ? this.$t('hide') : this.$t('show') }}</b>
-	<span v-if="!value">
-		<span v-if="note.text">{{ this.$t('chars', { count: length(note.text) }) | number }}</span>
-		<span v-if="note.text && note.files && note.files.length > 0"> / </span>
-		<span v-if="note.files && note.files.length > 0">{{ this.$t('files', { count: note.files.length }) }}</span>
-	</span>
+	<span v-if="!value">{{ this.label }}</span>
 </button>
 </template>
 
@@ -13,6 +9,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { length } from 'stringz';
+import { concat } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/cw-button.vue'),
@@ -25,6 +22,16 @@ export default Vue.extend({
 		note: {
 			type: Object,
 			required: true
+		}
+	},
+
+	computed: {
+		label(): string {
+			return concat([
+				this.note.text ? [this.$t('chars', { count: length(this.note.text) })] : [],
+				this.note.files && this.note.files.length !== 0 ? [this.$t('files', { count: this.note.files.length }) ] : [],
+				this.note.poll != null ? [this.$t('poll')] : []
+			] as string[][]).join(' / ');
 		}
 	},
 

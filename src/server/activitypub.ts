@@ -83,7 +83,7 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	ctx.body = pack(await renderNote(note, false));
-	ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
 });
 
@@ -162,7 +162,9 @@ async function userInfo(ctx: Router.IRouterContext, user: IUser) {
 	setResponseType(ctx);
 }
 
-router.get('/users/:user', async ctx => {
+router.get('/users/:user', async (ctx, next) => {
+	if (!isActivityPubReq(ctx)) return await next();
+
 	if (!ObjectID.isValid(ctx.params.user)) {
 		ctx.status = 404;
 		return;

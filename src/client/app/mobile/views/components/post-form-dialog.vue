@@ -5,6 +5,7 @@
 		<mk-post-form ref="form"
 			:reply="reply"
 			:renote="renote"
+			:mention="mention"
 			:initial-text="initialText"
 			:instant="instant"
 			@posted="onPosted"
@@ -15,7 +16,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as anime from 'animejs';
+import anime from 'animejs';
 
 export default Vue.extend({
 	props: {
@@ -24,6 +25,10 @@ export default Vue.extend({
 			required: false
 		},
 		renote: {
+			type: Object,
+			required: false
+		},
+		mention: {
 			type: Object,
 			required: false
 		},

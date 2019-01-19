@@ -37,7 +37,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import * as anime from 'animejs';
+import anime from 'animejs';
 import contains from '../../../common/scripts/contains';
 
 const minHeight = 40;
@@ -196,7 +196,7 @@ export default Vue.extend({
 				opacity: 0,
 				scale: 0.8,
 				duration: this.animation ? 300 : 0,
-				easing: [0.5, -0.5, 1, 0.5]
+				easing: 'cubicBezier(0.5, -0.5, 1, 0.5)'
 			});
 
 			setTimeout(() => {

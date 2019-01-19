@@ -41,8 +41,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 main
 	width 100%
 	max-width 680px

@@ -124,6 +124,8 @@ import {
 	faMapMarker,
 	faRobot,
 	faHourglassHalf,
+	faAlignLeft,
+	faGavel
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -255,6 +257,8 @@ library.add(
 	faMapMarker,
 	faRobot,
 	faHourglassHalf,
+	faAlignLeft,
+	faGavel,
 
 	farBell,
 	farEnvelope,
@@ -410,6 +414,15 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 				return s.settings.roundedCorners;
 			}, v => {
 				document.documentElement.style.setProperty('--round', v ? round : '0');
+			});
+			//#endregion
+
+			//#region line width
+			document.documentElement.style.setProperty('--lineWidth', `${os.store.state.device.lineWidth}px`);
+			os.store.watch(s => {
+				return s.device.lineWidth;
+			}, v => {
+				document.documentElement.style.setProperty('--lineWidth', `${os.store.state.device.lineWidth}px`);
 			});
 			//#endregion
 

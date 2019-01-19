@@ -41,6 +41,16 @@ export const meta = {
 		markAsRead: {
 			validator: $.bool.optional,
 			default: true
+		},
+
+		includeTypes: {
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			default: [] as string[]
+		},
+
+		excludeTypes: {
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			default: [] as string[]
 		}
 	}
 };
@@ -58,7 +68,10 @@ export default define(meta, (ps, user) => errorWhen(
 				notifierId: { $nin: x.map(m => m.muteeId) }
 			}, ...(ps.following ? [{
 				notifierId: { $in: await getFriendIds(user._id) }
-			}] : [])]
+			}] : [])],
+			type:
+				ps.includeTypes.length ? { $in: ps.includeTypes } :
+				ps.excludeTypes.length ? { $nin: ps.excludeTypes } : undefined
 		}, {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId ? 1 : -1 }

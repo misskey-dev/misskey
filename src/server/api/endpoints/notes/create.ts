@@ -234,7 +234,7 @@ export default define(meta, (ps, user, app) => fetchRequirements(ps, user._id)
 		app,
 		viaMobile: ps.viaMobile,
 		localOnly: ps.localOnly,
-		visibility: ps.visibility,
+		visibility: ps.visibility === 'private' ? 'specified' : ps.visibility,
 		apMentions: ps.noExtractMentions ? [] : undefined,
 		apHashtags: ps.noExtractHashtags ? [] : undefined,
 		apEmojis: ps.noExtractEmojis ? [] : undefined,

@@ -72,7 +72,7 @@ export default define({
 			color var(--inputText)
 			background var(--face)
 			border none
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 			border-radius 0
 
 		> button

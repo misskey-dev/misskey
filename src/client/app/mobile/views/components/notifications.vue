@@ -152,7 +152,7 @@ export default Vue.extend({
 	> .notifications
 
 		> .mk-notification:not(:last-child)
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 
 		> .date
 			display block
@@ -162,7 +162,7 @@ export default Vue.extend({
 			font-size 0.8em
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -175,7 +175,7 @@ export default Vue.extend({
 		width 100%
 		padding 16px
 		color var(--text)
-		border-top solid 1px rgba(#000, 0.05)
+		border-top solid var(--lineWidth) rgba(#000, 0.05)
 
 		> [data-icon]
 			margin-right 4px

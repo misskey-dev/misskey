@@ -151,7 +151,7 @@ export default Vue.extend({
 		font-weight bold
 		color var(--faceHeaderText)
 		background var(--faceHeader)
-		box-shadow 0 1px rgba(#000, 0.07)
+		box-shadow 0 var(--lineWidth) rgba(#000, 0.07)
 
 		> [data-icon]
 			margin-right 4px
@@ -199,11 +199,11 @@ export default Vue.extend({
 					color var(--calendarSaturdayOrSunday)
 
 				&[data-today]
-					box-shadow 0 0 0 1px var(--calendarWeek) inset
+					box-shadow 0 0 0 var(--lineWidth) var(--calendarWeek) inset
 					border-radius 6px
 
 					&[data-is-donichi]
-						box-shadow 0 0 0 1px var(--calendarSaturdayOrSunday) inset
+						box-shadow 0 0 0 var(--lineWidth) var(--calendarSaturdayOrSunday) inset
 
 			&.day
 				cursor pointer

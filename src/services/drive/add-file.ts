@@ -4,10 +4,11 @@ import * as fs from 'fs';
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
 import * as debug from 'debug';
-import fileType = require('file-type');
 import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
+import * as fileType from 'file-type';
+import * as isSvg from 'is-svg';
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
@@ -320,6 +321,8 @@ export default async function(
 				const type = fileType(buffer);
 				if (type) {
 					res([type.mime, type.ext]);
+				} else if (isSvg(buffer)) {
+					res(['image/svg+xml', 'svg'])
 				} else {
 					// 種類が同定できなかったら application/octet-stream にする
 					res(['application/octet-stream', null]);

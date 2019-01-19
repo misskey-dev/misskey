@@ -70,6 +70,11 @@ type IUserBase = {
 	carefulBot: boolean;
 
 	/**
+	 * フォローしているユーザーからのフォローリクエストを自動承認するか
+	 */
+	autoAcceptFollowed: boolean;
+
+	/**
 	 * このアカウントに届いているフォローリクエストの数
 	 */
 	pendingReceivedFollowRequestsCount: number;
@@ -212,6 +217,7 @@ export async function getRelation(me: mongo.ObjectId, target: mongo.ObjectId) {
 	]);
 
 	return {
+		id: target,
 		isFollowing: following1 !== null,
 		isStalking: following1 ? following1.stalk : false,
 		hasPendingFollowRequestFromYou: followReq1 !== null,
