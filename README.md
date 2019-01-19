@@ -129,7 +129,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 ----------------------------------------------------------------
 > Copyright (c) 2014-2019 syuilo
 
-Misskey is an open-source software licensed under the [GNU AGPLv3](LICENSE).
+Misskey is open-source software licensed under the [GNU AGPLv3](LICENSE).
 
 [![][agpl-3.0-badge]][AGPL-3.0]
 
