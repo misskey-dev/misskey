@@ -1,5 +1,5 @@
 <template>
-<div class="axbwjelsbymowqjyywpirzhdlszoncqs">
+<div>
 	<ui-card>
 		<div slot="title"><fa icon="cog"/> {{ $t('instance') }}</div>
 		<section class="fit-top fit-bottom">
@@ -313,10 +313,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.axbwjelsbymowqjyywpirzhdlszoncqs
-	@media (min-width 500px)
-		padding 16px
-
-</style>

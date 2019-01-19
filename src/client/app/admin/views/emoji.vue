@@ -1,5 +1,5 @@
 <template>
-<div class="tumhkfkmgtvzljezfvmgkeurkfncshbe">
+<div>
 	<ui-card>
 		<div slot="title"><fa icon="plus"/> {{ $t('add-emoji.title') }}</div>
 		<section class="fit-top">
@@ -150,25 +150,21 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.tumhkfkmgtvzljezfvmgkeurkfncshbe
+.oryfrbft
 	@media (min-width 500px)
-		padding 16px
+		display flex
 
-	.oryfrbft
+	> div:first-child
+		@media (max-width 500px)
+			padding-bottom 16px
+
+		> img
+			vertical-align bottom
+
+	> div:last-child
+		flex 1
+
 		@media (min-width 500px)
-			display flex
-
-		> div:first-child
-			@media (max-width 500px)
-				padding-bottom 16px
-
-			> img
-				vertical-align bottom
-
-		> div:last-child
-			flex 1
-
-			@media (min-width 500px)
-				padding-left 16px
+			padding-left 16px
 
 </style>

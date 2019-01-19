@@ -1,5 +1,5 @@
 <template>
-<div class="wbjusose">
+<div>
 	<ui-card>
 		<div slot="title"><fa :icon="faExclamationCircle"/> {{ $t('title') }}</div>
 		<section class="fit-top">
@@ -76,12 +76,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.wbjusose
-	@media (min-width 500px)
-		padding 16px
-
-	.haexwsjc
-		padding-bottom 16px
-		border-bottom solid 1px var(--faceDivider)
+.haexwsjc
+	padding-bottom 16px
+	border-bottom solid 1px var(--faceDivider)
 
 </style>

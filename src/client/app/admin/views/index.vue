@@ -274,6 +274,9 @@ export default Vue.extend({
 		> .page
 			max-width 1150px
 
+			@media (min-width 500px)
+				padding 16px
+
 	&.isMobile
 		> main
 			padding $headerHeight 0 0 0

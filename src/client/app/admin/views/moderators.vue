@@ -1,5 +1,5 @@
 <template>
-<div class="jnhmugbb">
+<div>
 	<ui-card>
 		<div slot="title"><fa icon="plus"/> {{ $t('add-moderator.title') }}</div>
 		<section class="fit-top">
@@ -75,10 +75,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.jnhmugbb
-	@media (min-width 500px)
-		padding 16px
-
-</style>

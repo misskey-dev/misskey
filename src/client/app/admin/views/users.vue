@@ -1,5 +1,5 @@
 <template>
-<div class="ucnffhbtogqgscfmqcymwmmupoknpfsw">
+<div>
 	<ui-card>
 		<div slot="title"><fa :icon="faTerminal"/> {{ $t('operation') }}</div>
 		<section class="fit-top">
@@ -277,46 +277,42 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.ucnffhbtogqgscfmqcymwmmupoknpfsw
-	@media (min-width 500px)
-		padding 16px
+.kofvwchc
+	display flex
+	padding 16px 0
+	border-top solid 1px var(--faceDivider)
 
-	.kofvwchc
-		display flex
-		padding 16px 0
-		border-top solid 1px var(--faceDivider)
+	> div:first-child
+		> a
+			> .avatar
+				width 64px
+				height 64px
 
-		> div:first-child
-			> a
-				> .avatar
-					width 64px
-					height 64px
+	> div:last-child
+		flex 1
+		padding-left 16px
 
-		> div:last-child
-			flex 1
-			padding-left 16px
+		@media (max-width 500px)
+			font-size 14px
 
-			@media (max-width 500px)
-				font-size 14px
+		> header
+			> .username
+				margin-left 8px
+				opacity 0.7
 
-			> header
-				> .username
-					margin-left 8px
-					opacity 0.7
+			> .is-admin
+			> .is-moderator
+				flex-shrink 0
+				align-self center
+				margin 0 0 0 .5em
+				padding 1px 6px
+				font-size 80%
+				border-radius 3px
+				background var(--noteHeaderAdminBg)
+				color var(--noteHeaderAdminFg)
 
-				> .is-admin
-				> .is-moderator
-					flex-shrink 0
-					align-self center
-					margin 0 0 0 .5em
-					padding 1px 6px
-					font-size 80%
-					border-radius 3px
-					background var(--noteHeaderAdminBg)
-					color var(--noteHeaderAdminFg)
-
-				> .is-verified
-				> .is-suspended
-					margin 0 0 0 .5em
-					color #4dabf7
+			> .is-verified
+			> .is-suspended
+				margin 0 0 0 .5em
+				color #4dabf7
 </style>
