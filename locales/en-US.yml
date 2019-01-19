@@ -27,7 +27,7 @@ common:
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
   load-more: "Load more"
   enter-password: "Please enter the Password"
-  2fa: "二段階認証"
+  2fa: "Two-factor authentication"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
