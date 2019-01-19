@@ -1087,6 +1087,10 @@ admin/views/charts.vue:
     network-time: "応答時間"
     network-usage: "通信量"
 admin/views/drive.vue:
+  operation: "操作"
+  fileid-or-url: "ファイルIDまたはファイルURL"
+  file-not-found: "ファイルが見つかりません"
+  lookup: "照会"
   sort:
     title: "ソート"
     createdAtAsc: "アップロード日時が古い順"
@@ -1102,6 +1106,8 @@ admin/views/drive.vue:
   deleted: "削除しました"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
+  marked-as-sensitive: "閲覧注意に設定しました"
+  unmarked-as-sensitive: "閲覧注意を解除しました"
 admin/views/users.vue:
   operation: "操作"
   username-or-userid: "ユーザー名またはユーザーID"
