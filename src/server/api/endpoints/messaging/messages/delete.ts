@@ -38,7 +38,8 @@ export const meta = {
 export default define(meta, (ps, user) => Message.findOne({
 		_id: ps.messageId,
 		userId: user._id
-	}).then(async x => {
+	})
+	.then(async x => {
 		if (x === null) throw 'message not found';
 		await Message.remove({ _id: x._id });
 		publishMessagingStream(x.userId, x.recipientId, 'deleted', x._id);

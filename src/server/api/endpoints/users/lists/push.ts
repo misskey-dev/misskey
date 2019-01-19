@@ -49,7 +49,8 @@ export default define(meta, (ps, me) => UserList.findOne({
 					$push: { userIds: user._id }
 				})
 				.then(() => (
-					packUser(user).then(pack => publishUserListStream(x._id, 'userAdded', pack)),
+					packUser(user)
+						.then(pack => publishUserListStream(x._id, 'userAdded', pack)),
 					isRemoteUser(user) && fetchProxyAccount()
 						.then(x => deliver(x, ap(renderFollow(x, user)), user.inbox))),
 					undefined

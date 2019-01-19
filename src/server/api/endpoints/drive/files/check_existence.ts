@@ -26,6 +26,7 @@ export default define(meta, (ps, user) => DriveFile.findOne({
 		md5: ps.md5,
 		'metadata.userId': user._id,
 		'metadata.deletedAt': { $exists: false }
-	}).then(async x => ({
+	})
+	.then(async x => ({
 		file: x === null ? null : await pack(x, { self: true })
 	})));

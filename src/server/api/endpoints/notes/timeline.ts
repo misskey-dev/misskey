@@ -173,4 +173,4 @@ export default define(meta, (ps, user) => errorWhen(
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		})
 		.then(x => packMany(x, user))
-		.then(x => (activeUsersChart.update(user), x))));
+		.finally(() => activeUsersChart.update(user))));

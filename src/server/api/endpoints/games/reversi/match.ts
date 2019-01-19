@@ -39,7 +39,8 @@ const whenExist = async (user: ILocalUser, matching: IMatching) => {
 			bw: 'random',
 			isLlotheo: false
 		}
-	}).then(x => packGame(x, user));
+	})
+	.then(x => packGame(x, user));
 	packGame(result, matching.parentId)
 		.then(x => publishReversiStream(matching.parentId, 'matched', x));
 	if (!await Matching.count({ childId: user._id })) publishMainStream(user._id, 'reversiNoInvites');
@@ -47,7 +48,8 @@ const whenExist = async (user: ILocalUser, matching: IMatching) => {
 
 const whenNotExist = (user: ILocalUser, childId: ObjectID) => User.findOne({ _id: childId }, {
 		fields: { _id: true }
-	}).then(async child => {
+	})
+	.then(async child => {
 		if (child === null) throw 'user not found';
 		await Matching.remove({ parentId: user._id });
 		const matching = await Matching.insert({

@@ -24,7 +24,8 @@ export const meta = {
 export default define(meta, (ps, user) => Mute.find({
 		muterId: user._id,
 		deletedAt: { $exists: false },
-	}).then(x => Promise.all(Array(ps.limit).reduce((a, _) => a.then((b: IMessagingMessage[]) => {
+	})
+	.then(x => Promise.all(Array(ps.limit).reduce((a, _) => a.then((b: IMessagingMessage[]) => {
 		const $nin = b.map(m => m.userId.equals(user._id) ? m.recipientId : m.userId);
 		return Message.findOne({
 			$or: [

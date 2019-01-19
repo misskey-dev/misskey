@@ -27,7 +27,8 @@ export default define(meta, (_, user) => DriveFile.aggregate([{
 		}
 	}])
 	.then((aggregates: any[]) => aggregates.length ? aggregates[0].usage : 0)
-	.then(usage => fetchMeta().then(x => ({
-		capacity: 1024 * 1024 * x.localDriveCapacityMb,
-		usage
-	}))));
+	.then(usage => fetchMeta()
+		.then(x => ({
+			capacity: 1024 * 1024 * x.localDriveCapacityMb,
+			usage
+		}))));

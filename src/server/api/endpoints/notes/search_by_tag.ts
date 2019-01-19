@@ -155,9 +155,10 @@ export default define(meta, (ps, me) => Promise.resolve()
 			...(ps.following && me ? [await getFriendIds(me._id, false)
 				.then($in => ({ userId: ps.following ? { $in } : { $nin: $in.concat(me._id) } }))] : []),
 			...(me && mika[ps.mute] ? [await Mute.find({
-				muterId: me._id,
-				deletedAt: { $exists: false }
-			}).then(x => mika[ps.mute](x.map(x => x.muteeId)))] : []),
+					muterId: me._id,
+					deletedAt: { $exists: false }
+				})
+				.then(x => mika[ps.mute](x.map(x => x.muteeId)))] : []),
 			...(ps.reply ? [{
 					replyId: {
 						$exists: true,

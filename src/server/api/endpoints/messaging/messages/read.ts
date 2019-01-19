@@ -28,7 +28,8 @@ export const meta = {
 export default define(meta, (ps, user) => Message.findOne({
 		_id: ps.messageId,
 		recipientId: user._id
-	}).then(x => {
+	})
+	.then(x => {
 		if (!x) throw 'message not found';
 		read(user._id, x.userId, x);
 	}));

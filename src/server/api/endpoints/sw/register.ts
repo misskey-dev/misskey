@@ -27,17 +27,18 @@ export default define(meta, (ps, user) => Subscription.findOne({
 		auth: ps.auth,
 		publickey: ps.publickey,
 		deletedAt: { $exists: false }
-	}).then(x => fetchMeta()
-		.then(instance => x ? {
-				state: 'already-subscribed',
-				key: instance.swPublicKey
-			} : Subscription.insert({
-				userId: user._id,
-				endpoint: ps.endpoint,
-				auth: ps.auth,
-				publickey: ps.publickey
-			})
-			.then(() => ({
-				state: 'subscribed',
-				key: instance.swPublicKey
-			})))));
+	})
+	.then(x => fetchMeta()
+	.then(instance => x ? {
+			state: 'already-subscribed',
+			key: instance.swPublicKey
+		} : Subscription.insert({
+			userId: user._id,
+			endpoint: ps.endpoint,
+			auth: ps.auth,
+			publickey: ps.publickey
+		})
+		.then(() => ({
+			state: 'subscribed',
+			key: instance.swPublicKey
+		})))));

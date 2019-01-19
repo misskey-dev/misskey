@@ -35,7 +35,8 @@ export const meta = {
 export default define(meta, (ps, me) => UserList.findOne({
 		_id: ps.listId,
 		userId: me._id,
-	}).then(x =>
+	})
+	.then(x =>
 		(!x) ? error('list not found') :
 		User.findOne({ _id: ps.userId })
 			.then(user =>

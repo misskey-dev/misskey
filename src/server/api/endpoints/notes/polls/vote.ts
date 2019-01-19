@@ -50,7 +50,8 @@ export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
 		});
 		Note.update({ _id: x._id }, {
 			$inc: { [`poll.choices.${x.poll.choices.findIndex(x => x.id == ps.choice)}.votes`]: 1 }
-		}).then(() => {
+		})
+		.then(() => {
 			publishNoteStream(x._id, 'pollVoted', {
 				choice: ps.choice,
 				userId: user._id.toHexString()
@@ -66,7 +67,8 @@ export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
 				}, {
 					fields: { userId: true }
 				});
-		}).then(watchers => {
+		})
+		.then(watchers => {
 			for (const watcher of watchers) notify(watcher.userId, user._id, 'poll_vote', {
 					noteId: x._id,
 					choice: ps.choice

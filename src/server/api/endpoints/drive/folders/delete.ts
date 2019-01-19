@@ -32,7 +32,8 @@ export const meta = {
 export default define(meta, (ps, user) => DriveFolder.findOne({
 		_id: ps.folderId,
 		userId: user._id
-	}).then(async x => {
+	})
+	.then(async x => {
 		if (x === null) throw 'folder-not-found';
 		if (await Promise.all([
 			DriveFolder.count({ parentId: x._id }),

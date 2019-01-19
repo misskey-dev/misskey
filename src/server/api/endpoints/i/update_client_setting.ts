@@ -21,7 +21,8 @@ export const meta = {
 
 export default define(meta, (ps, user) => User.update(user._id, {
 		$set: { [`clientSettings.${ps.name}`]: ps.value }
-	}).then(() => {
+	})
+	.then(() => {
 		publishMainStream(user._id, 'clientSettingUpdated', {
 			key: ps.name,
 			value: ps.value

@@ -64,7 +64,7 @@ export default define(meta, (ps, me) =>
 				host: null
 			}))
 		.then(user => pack(user, me, { detail: true })
-			.then(x => (isRemoteUser(user) &&
-					(!user.lastFetchedAt || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) &&
-					resolveRemoteUser(ps.username, ps.host, {}, true),
-				x))));
+			.finally(() => {
+				if (isRemoteUser(user) && (!user.lastFetchedAt || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24))
+					resolveRemoteUser(ps.username, ps.host, {}, true);
+			})));

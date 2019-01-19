@@ -69,11 +69,12 @@ export default class Connection {
 		const endpoint = payload.endpoint || payload.ep; // alias
 
 		// 呼び出し
-		call(endpoint, user, this.app, payload.data).then(res => {
-			this.sendMessageToWs(`api:${payload.id}`, { res });
-		}).catch(e => {
-			this.sendMessageToWs(`api:${payload.id}`, { e });
-		});
+		call(endpoint, user, this.app, payload.data)
+			.then(res => {
+				this.sendMessageToWs(`api:${payload.id}`, { res });
+			}).catch(e => {
+				this.sendMessageToWs(`api:${payload.id}`, { e });
+			});
 	}
 
 	@autobind

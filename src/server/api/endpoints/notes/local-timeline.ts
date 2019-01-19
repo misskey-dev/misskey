@@ -99,4 +99,4 @@ export default define(meta, (ps, user) => fetchMeta()
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		}))
 	.then(x => packMany(x, user))
-	.then(x => (user && activeUsersChart.update(user), x)));
+	.finally(() => user && activeUsersChart.update(user)));

@@ -32,6 +32,7 @@ export default define(meta, (ps, user) => DriveFile.findOne({
 		_id: ps.fileId,
 		'metadata.userId': user._id,
 		'metadata.deletedAt': { $exists: false }
-	}).then(x =>
+	})
+	.then(x =>
 		x === null ? error('file-not-found') :
 		packMany(x.metadata.attachedNoteIds || [], user, { detail: true })));

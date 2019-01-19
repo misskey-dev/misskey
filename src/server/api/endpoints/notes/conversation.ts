@@ -37,7 +37,8 @@ export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
 	.then(x =>
 		x === null ? error('note not found') :
 		(Array(ps.limit + ps.offset) as INote[] /* TypeScript's bug? */).reduce(
-				(a, _, i) => a.then(b => b[i].replyId ? Note.findOne({ _id: b[i].replyId }).then(x => [ ...b, x ]) : b),
+				(a, _, i) => a.then(b => b[i].replyId ? Note.findOne({ _id: b[i].replyId })
+					.then(x => [ ...b, x ]) : b),
 				Promise.resolve([x])))
 	.then(x => x.splice(ps.offset))
 	.then(x => packMany(x, user)));

@@ -52,4 +52,5 @@ export default define(meta, (ps, user) => errorWhen(
 		}) === null) throw 'already not blocking';
 		await deleteBlocking(user, x);
 		return x._id;
-	}).then(x => pack(x, user, { detail: true })));
+	})
+	.then(x => pack(x, user, { detail: true })));

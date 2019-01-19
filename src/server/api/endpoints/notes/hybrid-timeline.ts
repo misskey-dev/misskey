@@ -100,7 +100,8 @@ export default define(meta, (ps, user) => fetchMeta()
 			error('local timeline disabled') :
 			Promise.all([
 				getFriends(user._id, true, false),
-				Mute.find({ muterId: user._id }).then(ms => ms.map(m => m.muteeId))
+				Mute.find({ muterId: user._id })
+					.then(ms => ms.map(m => m.muteeId))
 			]))
 	.then(([followings, $nin]) => Note.find({
 			_id:
@@ -175,4 +176,4 @@ export default define(meta, (ps, user) => fetchMeta()
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		}))
 	.then(x => packMany(x, user))
-	.then(x => (activeUsersChart.update(user), x)));
+	.finally(() => activeUsersChart.update(user)));

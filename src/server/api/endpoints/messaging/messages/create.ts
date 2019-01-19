@@ -46,7 +46,8 @@ export const meta = {
 const fetchFile = (_id: ObjectID, userId: ObjectID) => _id ? DriveFile.findOne({
 		_id,
 		'metadata.userId': userId
-	}).then(x =>
+	})
+	.then(x =>
 		x === null ? error('file not found') :
 		x._id) : undefined;
 

@@ -162,7 +162,8 @@ export default define(meta, (ps, user, app) => Object.entries({
 			reset: true
 		}
 	}).reduce(
-		async (a, [k, v]) => a.then(b => resolveImages(k, v.id, v.checkType, v.reset).then(x => Object.assign(b, x))),
+		async (a, [k, v]) => a.then(b => resolveImages(k, v.id, v.checkType, v.reset)
+			.then(x => Object.assign(b, x))),
 		Promise.resolve(Object.entries(meta.params as {
 			[x: string]: { locates?: string }
 		}).reduce((a, [k, v]) => Object.assign(a, { [v.locates || k]: (ps as any)[k] }), {} as any)))
@@ -173,11 +174,14 @@ export default define(meta, (ps, user, app) => Object.entries({
 			];
 			if (emojis.length) $set.emojis = emojis;
 			return User.update(user._id, { $set });
-		}).then(() => pack(user._id, user, {
+		})
+		.then(() => pack(user._id, user, {
 			detail: true,
 			includeSecrets: user && !app
-		})).then(x => (
-			publishMainStream(user._id, 'meUpdated', x),
-			user.isLocked && ps.isLocked === false && acceptAllFollowRequests(user),
-			publishToFollowers(user._id),
-			x)));
+		}))
+		.then(x => (publishMainStream(user._id, 'meUpdated', x), x))
+		.finally(() => {
+			if (user.isLocked && ps.isLocked === false)
+				acceptAllFollowRequests(user);
+			publishToFollowers(user._id);
+		}));
