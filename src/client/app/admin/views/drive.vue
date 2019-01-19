@@ -1,6 +1,22 @@
 <template>
 <div class="pwnqwyet">
 	<ui-card>
+		<div slot="title"><fa :icon="faTerminal"/> {{ $t('operation') }}</div>
+		<section class="fit-top">
+			<ui-input v-model="target" type="text">
+				<span>{{ $t('fileid-or-url') }}</span>
+			</ui-input>
+			<ui-horizon-group>
+				<ui-button @click="findAndToggleSensitive(true)"><fa :icon="faEyeSlash"/> {{ $t('mark-as-sensitive') }}</ui-button>
+				<ui-button @click="findAndToggleSensitive(false)"><fa :icon="faEye"/> {{ $t('unmark-as-sensitive') }}</ui-button>
+			</ui-horizon-group>
+			<ui-button @click="findAndDel()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
+			<ui-button @click="show()"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
+			<ui-textarea v-if="file" :value="file | json5" readonly tall style="margin-top:16px;"></ui-textarea>
+		</section>
+	</ui-card>
+
+	<ui-card>
 		<div slot="title"><fa :icon="faCloud"/> {{ $t('@.drive') }}</div>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
@@ -57,7 +73,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
-import { faCloud } from '@fortawesome/free-solid-svg-icons';
+import { faCloud, faTerminal, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -65,13 +81,15 @@ export default Vue.extend({
 
 	data() {
 		return {
+			file: null,
+			target: null,
 			sort: '+createdAt',
 			origin: 'combined',
 			limit: 10,
 			offset: 0,
 			files: [],
 			existMore: false,
-			faCloud, faTrashAlt, faEye, faEyeSlash
+			faCloud, faTrashAlt, faEye, faEyeSlash, faTerminal, faSearch
 		};
 	},
 
@@ -94,6 +112,24 @@ export default Vue.extend({
 	},
 
 	methods: {
+		async fetchFile() {
+			try {
+				return await this.$root.api('drive/files/show', this.target.startsWith('http') ? { url: this.target } : { fileId: this.target });
+			} catch (e) {
+				if (e == 'file-not-found') {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('file-not-found')
+					});
+				} else {
+					this.$root.dialog({
+						type: 'error',
+						text: e.toString()
+					});
+				}
+			}
+		},
+
 		fetch() {
 			this.$root.api('admin/drive/files', {
 				origin: this.origin,
@@ -146,6 +182,52 @@ export default Vue.extend({
 			});
 
 			file.isSensitive = !file.isSensitive;
+		},
+
+		async show() {
+			const file = await this.fetchFile();
+			this.$root.api('admin/drive/show-file', { fileId: file.id }).then(info => {
+				this.file = info;
+			});
+		},
+
+		async findAndToggleSensitive(sensitive) {
+			const process = async () => {
+				const file = await this.fetchFile();
+				await this.$root.api('drive/files/update', {
+					fileId: file.id,
+					isSensitive: sensitive
+				});
+				this.$root.dialog({
+					type: 'success',
+					text: sensitive ? this.$t('marked-as-sensitive') : this.$t('unmarked-as-sensitive')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
+		},
+
+		async findAndDel() {
+			const process = async () => {
+				const file = await this.fetchFile();
+				await this.$root.api('drive/files/delete', { fileId: file.id });
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('deleted')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
 		},
 	}
 });
