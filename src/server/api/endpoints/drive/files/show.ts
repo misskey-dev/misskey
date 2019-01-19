@@ -48,7 +48,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	} else if (ps.url) {
 		const isInternalStorageUrl = ps.url.startsWith(config.drive_url);
 		if (isInternalStorageUrl) {
-			// Extract file if from url
+			// Extract file ID from url
 			// e.g.
 			// http://misskey.local/files/foo?original=bar --> foo
 			const fileId = new mongo.ObjectID(ps.url.replace(config.drive_url, '').replace(/\?(.*)$/, '').replace(/\//g, ''));
