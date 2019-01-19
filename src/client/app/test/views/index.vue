@@ -9,7 +9,7 @@
 		</section>
 		<section>
 			<header>Preview</header>
-			<misskey-flavored-markdown :text="mfm" :i="$store.state.i"/>
+			<mfm :text="mfm" :i="$store.state.i"/>
 		</section>
 		<section>
 			<header style="margin-bottom:0;">AST</header>

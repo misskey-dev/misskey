@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<span slot="header">
-		<fa icon="user"/><span>{{ title }}</span>
+		<fa icon="user"/><mk-user-name :user="user" v-if="user"/>
 	</span>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
@@ -24,15 +24,15 @@
 		</header>
 		<div class="info">
 			<div class="description">
-				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+				<mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
 			<div class="fields" v-if="user.fields">
 				<dl class="field" v-for="(field, i) in user.fields" :key="i">
 					<dt class="name">
-						<misskey-flavored-markdown :text="field.name" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+						<mfm :text="field.name" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
 					</dt>
 					<dd class="value">
-						<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+						<mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 					</dd>
 				</dl>
 			</div>
@@ -137,10 +137,6 @@ export default Vue.extend({
 	},
 
 	computed: {
-		title(): string {
-			return this.user ? Vue.filter('userName')(this.user) : '';
-		},
-
 		bannerStyle(): any {
 			if (this.user == null) return {};
 			if (this.user.bannerUrl == null) return {};

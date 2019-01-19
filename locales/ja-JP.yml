@@ -870,9 +870,6 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "例: https://www.google.com/?#q={{query}}"
   auto-popout: "ウィンドウの自動ポップアウト"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  advanced: "詳細設定"
-  api-via-stream: "ストリームを経由したAPIリクエスト"
-  api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
   deck-default: "デッキをデフォルトのUIにする"
@@ -1219,6 +1216,10 @@ admin/views/charts.vue:
     network-usage: "通信量"
 
 admin/views/drive.vue:
+  operation: "操作"
+  fileid-or-url: "ファイルIDまたはファイルURL"
+  file-not-found: "ファイルが見つかりません"
+  lookup: "照会"
   sort:
     title: "ソート"
     createdAtAsc: "アップロード日時が古い順"
@@ -1234,6 +1235,8 @@ admin/views/drive.vue:
   deleted: "削除しました"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
+  marked-as-sensitive: "閲覧注意に設定しました"
+  unmarked-as-sensitive: "閲覧注意を解除しました"
 
 admin/views/users.vue:
   operation: "操作"

@@ -1,7 +1,8 @@
 <template>
 <div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching">
-	<div class="signed-in-as" v-html="this.$t('signed-in-as').replace('{}', `<b>${myName}`)"></div>
-
+	<div class="signed-in-as">
+		<mfm :text="$t('signed-in-as').replace('{}', myName)" :should-break="false" :plain-text="true" :custom-emojis="$store.state.i.emojis"/>
+	</div>
 	<main>
 		<div class="banner" :style="bannerStyle"></div>
 		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
@@ -11,7 +12,7 @@
 			</router-link>
 			<span class="username">@{{ user | acct }}</span>
 			<div class="description">
-				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+				<mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
 		</div>
 	</main>
@@ -127,6 +128,7 @@ export default Vue.extend({
 	> .signed-in-as
 		margin-bottom 16px
 		font-size 14px
+		font-weight bold
 
 	> main
 		margin-bottom 16px

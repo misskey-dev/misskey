@@ -4,13 +4,18 @@
 	<header><b><router-link :to="blackUser | userPage"><mk-user-name :user="blackUser"/></router-link></b>({{ $t('@.reversi.black') }}) vs <b><router-link :to="whiteUser | userPage"><mk-user-name :user="whiteUser"/></router-link></b>({{ $t('@.reversi.white') }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ $t('@.reversi.turn-of', { name: $options.filters.userName(turnUser) }) }}<mk-ellipsis/></p>
-		<p class="turn" v-if="logPos != logs.length">{{ $t('@.reversi.past-turn-of', { name: $options.filters.userName(turnUser) }) }}</p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">
+			<mfm :text="$t('@.reversi.turn-of', { name: $options.filters.userName(turnUser) })" :should-break="false" :plain-text="true" :custom-emojis="turnUser.emojis"/>
+			<mk-ellipsis/>
+		</p>
+		<p class="turn" v-if="logPos != logs.length">
+			<mfm :text="$t('@.reversi.past-turn-of', { name: $options.filters.userName(turnUser) })" :should-break="false" :plain-text="true" :custom-emojis="turnUser.emojis"/>
+		</p>
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ $t('@.reversi.opponent-turn') }}<mk-ellipsis/></p>
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">{{ $t('@.reversi.my-turn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
-				<misskey-flavored-markdown :text="$t('@.reversi.won', { name: $options.filters.userName(game.winner) })" :shouldBreak="false" :plainText="true" :custom-emojis="game.winner.emojis"/>
+				<mfm :text="$t('@.reversi.won', { name: $options.filters.userName(game.winner) })" :should-break="false" :plain-text="true" :custom-emojis="game.winner.emojis"/>
 				<span v-if="game.surrendered != null"> ({{ $t('surrendered') }})</span>
 			</template>
 			<template v-else>{{ $t('@.reversi.drawn') }}</template>

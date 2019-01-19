@@ -2,8 +2,9 @@
 <mk-ui>
 	<span slot="header"><span style="margin-right:4px;"><fa icon="cog"/></span>{{ $t('settings') }}</span>
 	<main>
-		<div class="signin-as" v-html="this.$t('signed-in-as').replace('{}', `<b>${name}</b>`)"></div>
-
+		<div class="signed-in-as">
+			<mfm :text="$t('signed-in-as').replace('{}', name)" :should-break="false" :plain-text="true" :custom-emojis="$store.state.i.emojis"/>
+		</div>
 		<div>
 			<x-profile-editor/>
 
@@ -381,6 +382,7 @@ main
 		color var(--mobileSignedInAsFg)
 		background var(--mobileSignedInAsBg)
 		box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
+		font-weight bold
 
 	> .signout
 		margin 16px
