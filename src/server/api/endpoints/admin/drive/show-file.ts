@@ -19,4 +19,4 @@ export const meta = {
 export default define(meta, (ps, me) => DriveFile.findOne({ _id: ps.fileId })
 	.then(x =>
 		!x ? error('file not found') :
-		error));
+		x));
