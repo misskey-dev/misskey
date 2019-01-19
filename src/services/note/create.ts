@@ -525,11 +525,6 @@ async function publishToUserLists(note: INote, noteObj: any) {
 }
 
 async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
-	const detailPackedNote = await pack(note, null, {
-		detail: true,
-		skipHide: true
-	});
-
 	const followers = await Following.find({
 		followeeId: note.userId
 	});
@@ -546,6 +541,11 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 				if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId))
 					continue;
 			}
+
+			const detailPackedNote = await pack(note, following.followerId, {
+				detail: true,
+				skipHide: true
+			});
 
 			// Publish event to followers stream
 			publishHomeTimelineStream(following.followerId, detailPackedNote);
