@@ -1087,6 +1087,10 @@ admin/views/charts.vue:
     network-time: "Response time"
     network-usage: "Traffic"
 admin/views/drive.vue:
+  operation: "操作"
+  fileid-or-url: "ファイルIDまたはファイルURL"
+  file-not-found: "ファイルが見つかりません"
+  lookup: "照会"
   sort:
     title: "Sort"
     createdAtAsc: "Age - Oldest First"
@@ -1102,6 +1106,8 @@ admin/views/drive.vue:
   deleted: "Deleted successfully"
   mark-as-sensitive: "Mark as 'sensitive'"
   unmark-as-sensitive: "Unmark as 'sensitive'"
+  marked-as-sensitive: "閲覧注意に設定しました"
+  unmarked-as-sensitive: "閲覧注意を解除しました"
 admin/views/users.vue:
   operation: "Operations"
   username-or-userid: "Username or user ID"
