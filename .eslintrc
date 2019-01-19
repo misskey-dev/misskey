@@ -17,6 +17,7 @@
 		"vue/require-default-prop": false,
 		"vue/html-closing-bracket-spacing": false,
 		"vue/singleline-html-element-content-newline": false,
+		"vue/no-v-html": false,
 		"no-console": 0,
 		"no-unused-vars": 0,
 		"no-empty": 0
