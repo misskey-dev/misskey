@@ -4,7 +4,7 @@ import define from '../../../define';
 const ms = require('ms');
 import deleteReaction from '../../../../../services/note/reaction/delete';
 import { IUser } from '../../../../../models/user';
-import { getValiedNote } from '../../../common/fetchers';
+import { getValiedNote } from '../../../common/getters';
 
 export const meta = {
 	desc: {

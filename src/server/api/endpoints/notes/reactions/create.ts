@@ -4,7 +4,7 @@ import createReaction from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
 import define from '../../../define';
 import { IUser } from '../../../../../models/user';
-import { getValiedNote } from '../../../common/fetchers';
+import { getValiedNote } from '../../../common/getters';
 
 export const meta = {
 	stability: 'stable',
