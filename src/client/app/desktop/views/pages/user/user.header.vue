@@ -36,7 +36,6 @@
 			<span class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</span>
 			<router-link :to="user | userPage('following')" class="following clickable"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
 			<router-link :to="user | userPage('followers')" class="followers clickable"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
-			<button @click="mention" :title="$t('mention')"><fa icon="at"/></button>
 		</div>
 	</div>
 </div>
