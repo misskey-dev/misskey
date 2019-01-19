@@ -13,7 +13,7 @@
 <a href="https://misskey.xyz">Misskey</a> is a decentralized microblogging platform born on Earth.
 Since it exists within the Fediverse (a universe where various social media platforms are organized),
 it is mutually linked with other social media platforms.
-Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? <a href="https://joinmisskey.github.io/">Find instance!</a>
+Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? <a href="https://joinmisskey.github.io/">Find an instance!</a>
 </p>
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
@@ -61,7 +61,7 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 ...and more! Experience Misskey with your own eyes at [misskey.xyz](https://misskey.xyz) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
 
-:package: Create Your Own Instance
+:package: Create your own instance
 ----------------------------------------------------------------
 Please see the [Setup and Installation Guide](./docs/setup.en.md).
 
@@ -129,7 +129,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 ----------------------------------------------------------------
 > Copyright (c) 2014-2019 syuilo
 
-Misskey is open-source software licensed under the [GNU AGPLv3](LICENSE).
+Misskey is an open-source software licensed under the [GNU AGPLv3](LICENSE).
 
 [![][agpl-3.0-badge]][AGPL-3.0]
 
