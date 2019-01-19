@@ -49,9 +49,6 @@
 					<b>{{ user.followersCount | number }}</b>
 					<span>{{ $t('followers') }}</span>
 				</div>
-				<div class="mention">
-					<button @click="mention" :title="$t('mention')"><fa icon="at"/></button>
-				</div>
 			</div>
 		</div>
 		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
@@ -100,8 +97,7 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
-import Menu from '../../../../common/views/components/menu.vue';
-import MkUserListsWindow from '../../components/user-lists-window.vue';
+import XUserMenu from '../../../../common/views/components/user-menu.vue';
 import { concat } from '../../../../../../prelude/array';
 import * as ApexCharts from 'apexcharts';
 
@@ -306,33 +302,10 @@ export default Vue.extend({
 			return promise;
 		},
 
-		mention() {
-			this.$post({ mention: this.user });
-		},
-
 		menu() {
-			let menu = [{
-				icon: 'list',
-				text: this.$t('push-to-a-list'),
-				action: () => {
-					const w = this.$root.new(MkUserListsWindow);
-					w.$once('choosen', async list => {
-						w.close();
-						await this.$root.api('users/lists/push', {
-							listId: list.id,
-							userId: this.user.id
-						});
-						this.$root.dialog({
-							type: 'success',
-							splash: true
-						});
-					});
-				}
-			}];
-
-			this.$root.new(Menu, {
+			this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
-				items: menu
+				user: this.user
 			});
 		},
 
@@ -459,7 +432,7 @@ export default Vue.extend({
 
 		> .counts
 			display grid
-			grid-template-columns 2fr 2fr 2fr 1fr
+			grid-template-columns 2fr 2fr 2fr
 			margin-top 8px
 			border-top solid var(--lineWidth) var(--faceDivider)
 
@@ -475,9 +448,6 @@ export default Vue.extend({
 					display block
 					font-size 80%
 					opacity 0.7
-
-			> .mention
-				display flex
 
 	> *
 		> p.caption

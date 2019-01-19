@@ -9,15 +9,7 @@
 		</p>
 	</div>
 	<div class="action-form">
-		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isMuted"><fa icon="eye"/> {{ $t('unmute') }}</span>
-			<span v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mute') }}</span>
-		</ui-button>
-		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isBlocking"><fa icon="ban"/> {{ $t('unblock') }}</span>
-			<span v-else><fa icon="ban"/> {{ $t('block') }}</span>
-		</ui-button>
-		<ui-button @click="list"><fa icon="list"/> {{ $t('push-to-a-list') }}</ui-button>
+		<ui-button @click="menu" ref="menu">{{ $t('menu') }}</ui-button>
 	</div>
 </div>
 </template>
@@ -25,7 +17,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import MkUserListsWindow from '../../components/user-lists-window.vue';
+import XUserMenu from '../../../../common/views/components/user-menu.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/user/user.profile.vue'),
@@ -52,72 +44,12 @@ export default Vue.extend({
 			});
 		},
 
-		mute() {
-			this.$root.api('mute/create', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isMuted = true;
-			}, () => {
-				alert('error');
+		menu() {
+			this.$root.new(XUserMenu, {
+				source: this.$refs.menu.$el,
+				user: this.user
 			});
 		},
-
-		unmute() {
-			this.$root.api('mute/delete', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isMuted = false;
-			}, () => {
-				alert('error');
-			});
-		},
-
-		block() {
-			this.$root.dialog({
-				type: 'warning',
-				text: this.$t('block-confirm'),
-				showCancelButton: true
-			}).then(({ canceled }) => {
-				if (canceled) return;
-
-				this.$root.api('blocking/create', {
-					userId: this.user.id
-				}).then(() => {
-					this.user.isBlocking = true;
-				}, () => {
-					alert('error');
-				});
-			});
-		},
-
-		unblock() {
-			this.$root.api('blocking/delete', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isBlocking = false;
-			}, () => {
-				alert('error');
-			});
-		},
-
-		list() {
-			const w = this.$root.new(MkUserListsWindow);
-			w.$once('choosen', async list => {
-				w.close();
-				await this.$root.api('users/lists/push', {
-					listId: list.id,
-					userId: this.user.id
-				});
-				this.$root.dialog({
-					type: 'success',
-					title: 'Done!',
-					text: this.$t('list-pushed', {
-						user: this.user.name,
-						list: list.title
-					})
-				});
-			});
-		}
 	}
 });
 </script>

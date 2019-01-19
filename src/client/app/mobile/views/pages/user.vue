@@ -55,7 +55,6 @@
 						<b>{{ user.followersCount | number }}</b>
 						<i>{{ $t('followers') }}</i>
 					</a>
-					<button @click="mention"><fa icon="at"/></button>
 				</div>
 			</div>
 		</header>
@@ -81,7 +80,7 @@ import i18n from '../../../i18n';
 import * as age from 's-age';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
-import Menu from '../../../common/views/components/menu.vue';
+import XUserMenu from '../../../common/views/components/user-menu.vue';
 import XHome from './user/home.vue';
 
 export default Vue.extend({
@@ -127,88 +126,10 @@ export default Vue.extend({
 			});
 		},
 
-		mention() {
-			this.$post({ mention: this.user });
-		},
-
 		menu() {
-			let menu = [{
-				icon: ['fas', 'list'],
-				text: this.$t('push-to-list'),
-				action: async () => {
-					const lists = await this.$root.api('users/lists/list');
-					const { canceled, result: listId } = await this.$root.dialog({
-						type: null,
-						title: this.$t('select-list'),
-						select: {
-							items: lists.map(list => ({
-								value: list.id, text: list.title
-							}))
-						},
-						showCancelButton: true
-					});
-					if (canceled) return;
-					await this.$root.api('users/lists/push', {
-						listId: listId,
-						userId: this.user.id
-					});
-					this.$root.dialog({
-						type: 'success',
-						text: this.$t('list-pushed', {
-							user: this.user.name,
-							list: lists.find(l => l.id === listId).title
-						})
-					});
-				}
-			}, null, {
-				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
-				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
-				action: () => {
-					if (this.user.isMuted) {
-						this.$root.api('mute/delete', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isMuted = false;
-						}, () => {
-							alert('error');
-						});
-					} else {
-						this.$root.api('mute/create', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isMuted = true;
-						}, () => {
-							alert('error');
-						});
-					}
-				}
-			}, {
-				icon: 'ban',
-				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
-				action: () => {
-					if (this.user.isBlocking) {
-						this.$root.api('blocking/delete', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isBlocking = false;
-						}, () => {
-							alert('error');
-						});
-					} else {
-						this.$root.api('blocking/create', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isBlocking = true;
-						}, () => {
-							alert('error');
-						});
-					}
-				}
-			}];
-
-			this.$root.new(Menu, {
+			this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
-				items: menu
+				user: this.user
 			});
 		},
 	}
