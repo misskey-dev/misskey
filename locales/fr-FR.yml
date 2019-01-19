@@ -1087,6 +1087,10 @@ admin/views/charts.vue:
     network-time: "Temps de réponse"
     network-usage: "Traffic"
 admin/views/drive.vue:
+  operation: "操作"
+  fileid-or-url: "ファイルIDまたはファイルURL"
+  file-not-found: "ファイルが見つかりません"
+  lookup: "照会"
   sort:
     title: "Tri"
     createdAtAsc: "Âge - Du plus ancien"
@@ -1102,6 +1106,8 @@ admin/views/drive.vue:
   deleted: "Supprimé"
   mark-as-sensitive: "Marquer comme sensible"
   unmark-as-sensitive: "Ne pas marquer comme sensible"
+  marked-as-sensitive: "閲覧注意に設定しました"
+  unmarked-as-sensitive: "閲覧注意を解除しました"
 admin/views/users.vue:
   operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
