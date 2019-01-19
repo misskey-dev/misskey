@@ -1,8 +1,10 @@
+import * as mongo from 'mongodb';
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
-import Note from '../../../../../models/note';
-import create from '../../../../../services/note/reaction/create';
+import createReaction from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
 import define from '../../../define';
+import { IUser } from '../../../../../models/user';
+import { getValiedNote } from '../../../common/getters';
 
 export const meta = {
 	stability: 'stable',
@@ -34,25 +36,12 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch reactee
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	if (note.deletedAt != null) {
-		return rej('this note is already deleted');
-	}
-
-	try {
-		await create(user, note, ps.reaction);
-	} catch (e) {
-		rej(e);
-	}
-
-	res();
+export default define(meta, (ps, user) => new Promise((res, rej) => {
+	createReactionById(user, ps.noteId, ps.reaction)
+		.then(r => res(r)).catch(e => rej(e));
 }));
+
+async function createReactionById(user: IUser, noteId: mongo.ObjectID, reaction: string) {
+	const note = await getValiedNote(noteId);
+	await createReaction(user, note, reaction);
+}

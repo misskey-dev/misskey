@@ -1,9 +1,10 @@
+import * as mongo from 'mongodb';
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
-import Reaction from '../../../../../models/note-reaction';
-import Note from '../../../../../models/note';
 import define from '../../../define';
-import { publishNoteStream } from '../../../../../stream';
 const ms = require('ms');
+import deleteReaction from '../../../../../services/note/reaction/delete';
+import { IUser } from '../../../../../models/user';
+import { getValiedNote } from '../../../common/getters';
 
 export const meta = {
 	desc: {
@@ -33,44 +34,12 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch unreactee
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	// if already unreacted
-	const exist = await Reaction.findOne({
-		noteId: note._id,
-		userId: user._id,
-		deletedAt: { $exists: false }
-	});
-
-	if (exist === null) {
-		return rej('never reacted');
-	}
-
-	// Delete reaction
-	await Reaction.remove({
-		_id: exist._id
-	});
-
-	res();
-
-	const dec: any = {};
-	dec[`reactionCounts.${exist.reaction}`] = -1;
-
-	// Decrement reactions count
-	Note.update({ _id: note._id }, {
-		$inc: dec
-	});
-
-	publishNoteStream(note._id, 'unreacted', {
-		reaction: exist.reaction,
-		userId: user._id
-	});
+export default define(meta, (ps, user) => new Promise((res, rej) => {
+	deleteReactionById(user, ps.noteId)
+		.then(r => res(r)).catch(e => rej(e));
 }));
+
+async function deleteReactionById(user: IUser, noteId: mongo.ObjectID) {
+	const note = await getValiedNote(noteId);
+	await deleteReaction(user, note);
+}
