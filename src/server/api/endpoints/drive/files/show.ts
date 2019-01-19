@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -26,24 +27,14 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			_id: ps.fileId,
-			'metadata.userId': user._id,
-			'metadata.deletedAt': { $exists: false }
-		});
-
-	if (file === null) {
-		return rej('file-not-found');
-	}
-
-	// Serialize
-	const _file = await pack(file, {
-		detail: true,
-		self: true
-	});
-
-	res(_file);
-}));
+export default define(meta, (ps, user) => DriveFile.findOne({
+		_id: ps.fileId,
+		'metadata.userId': user._id,
+		'metadata.deletedAt': { $exists: false }
+	})
+	.then(x =>
+		x === null ? error('file-not-found') :
+		pack(x, {
+			detail: true,
+			self: true
+		})));

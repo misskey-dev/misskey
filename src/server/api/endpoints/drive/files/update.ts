@@ -4,6 +4,8 @@ import DriveFile, { validateFileName, pack } from '../../../../../models/drive-f
 import { publishDriveStream } from '../../../../../stream';
 import define from '../../../define';
 import Note from '../../../../../models/note';
+import { ObjectID } from 'mongodb';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -53,72 +55,34 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			_id: ps.fileId
-		});
+const fetchFolder = (_id: ObjectID, userId: ObjectID) => DriveFolder.findOne({ _id, userId })
+	.then(x =>
+		x === null ? error('folder-not-found') :
+		x._id);
 
-	if (file === null) {
-		return rej('file-not-found');
-	}
-
-	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
-		return rej('access denied');
-	}
-
-	if (ps.name) file.filename = ps.name;
-
-	if (ps.isSensitive !== undefined) file.metadata.isSensitive = ps.isSensitive;
-
-	if (ps.folderId !== undefined) {
-		if (ps.folderId === null) {
-			file.metadata.folderId = null;
-		} else {
-			// Fetch folder
-			const folder = await DriveFolder
-				.findOne({
-					_id: ps.folderId,
-					userId: user._id
-				});
-
-			if (folder === null) {
-				return rej('folder-not-found');
+export default define(meta, (ps, user) => DriveFile.findOne({ _id: ps.fileId })
+	.then(async x => {
+		if (x === null) throw 'file-not-found';
+		if (!user.isAdmin && !user.isModerator && !x.metadata.userId.equals(user._id)) throw 'access denied';
+		if (ps.name) x.filename = ps.name;
+		if (ps.isSensitive !== undefined) x.metadata.isSensitive = ps.isSensitive;
+		if (ps.folderId !== undefined) x.metadata.folderId = ps.folderId ? await fetchFolder(ps.folderId, user._id) : null;
+		await DriveFile.update(x._id, {
+			$set: {
+				filename: x.filename,
+				'metadata.folderId': x.metadata.folderId,
+				'metadata.isSensitive': x.metadata.isSensitive
 			}
-
-			file.metadata.folderId = folder._id;
-		}
-	}
-
-	await DriveFile.update(file._id, {
-		$set: {
-			filename: file.filename,
-			'metadata.folderId': file.metadata.folderId,
-			'metadata.isSensitive': file.metadata.isSensitive
-		}
-	});
-
-	// ドライブのファイルが非正規化されているドキュメントも更新
-	Note.find({
-		'_files._id': file._id
-	}).then(notes => {
-		for (const note of notes) {
-			note._files[note._files.findIndex(f => f._id.equals(file._id))] = file;
-			Note.update({ _id: note._id }, {
-				$set: {
-					_files: note._files
+		});
+		Note.find({ '_files._id': x._id })
+			.then(notes => {
+				for (const note of notes) {
+					note._files[note._files.findIndex(f => f._id.equals(x._id))] = x;
+					Note.update({ _id: note._id }, {
+						$set: { _files: note._files }
+					});
 				}
 			});
-		}
-	});
-
-	// Serialize
-	const fileObj = await pack(file, { self: true });
-
-	// Response
-	res(fileObj);
-
-	// Publish fileUpdated event
-	publishDriveStream(user._id, 'fileUpdated', fileObj);
-}));
+		return pack(x, { self: true })
+			.then(x => (publishDriveStream(user._id, 'fileUpdated', x), x));
+	}));

@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
 import { getRelation } from '../../../../models/user';
 import define from '../../define';
+import { arrayOf, map } from '../../../../prelude/arrayable';
 
 export const meta = {
 	desc: {
@@ -12,7 +13,9 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.or($.type(ID), $.arr($.type(ID)).unique()),
-			transform: (v: any): ObjectId | ObjectId[] => Array.isArray(v) ? v.map(x => transform(x)) : transform(v),
+			transform(x: any): ObjectId | ObjectId[] {
+				return map(x, transform);
+			},
 			desc: {
 				'ja-JP': 'ユーザーID (配列でも可)'
 			}
@@ -20,10 +23,5 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
-
-	const relations = await Promise.all(ids.map(id => getRelation(me._id, id)));
-
-	res(Array.isArray(ps.userId) ? relations : relations[0]);
-}));
+export default define(meta, (ps, me) => Promise.all(arrayOf(ps.userId).map(id => getRelation(me._id, id)))
+	.then(x => Array.isArray(ps.userId) ? x : x[0]));

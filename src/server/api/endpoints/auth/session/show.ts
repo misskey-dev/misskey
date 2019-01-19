@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import AuthSess, { pack } from '../../../../../models/auth-session';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	requireCredential: false,
@@ -12,16 +13,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Lookup session
-	const session = await AuthSess.findOne({
-		token: ps.token
-	});
-
-	if (session == null) {
-		return rej('session not found');
-	}
-
-	// Response
-	res(await pack(session, user));
-}));
+export default define(meta, (ps, user) => AuthSess.findOne({ token: ps.token })
+	.then(x =>
+		!x ? error('session not found') :
+		pack(x, user)));

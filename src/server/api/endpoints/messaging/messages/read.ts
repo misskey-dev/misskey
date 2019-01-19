@@ -25,17 +25,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const message = await Message.findOne({
+export default define(meta, (ps, user) => Message.findOne({
 		_id: ps.messageId,
 		recipientId: user._id
-	});
-
-	if (message == null) {
-		return rej('message not found');
-	}
-
-	read(user._id, message.userId, message);
-
-	res();
-}));
+	}).then(x => {
+		if (!x) throw 'message not found';
+		read(user._id, x.userId, x);
+	}));

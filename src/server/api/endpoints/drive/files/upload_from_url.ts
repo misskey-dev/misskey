@@ -49,6 +49,5 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) =>
-	uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force)
-		.then(x => pack(x, { self: true })));
+export default define(meta, (ps, user) => uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force)
+	.then(x => pack(x, { self: true })));

@@ -2,6 +2,7 @@ import $ from 'cafy';
 import Emoji from '../../../../../models/emoji';
 import define from '../../../define';
 import ID from '../../../../../misc/cafy-id';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -30,21 +31,15 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const emoji = await Emoji.findOne({
-		_id: ps.id
-	});
-
-	if (emoji == null) return rej('emoji not found');
-
-	await Emoji.update({ _id: emoji._id }, {
-		$set: {
-			updatedAt: new Date(),
-			name: ps.name,
-			aliases: ps.aliases,
-			url: ps.url
-		}
-	});
-
-	res();
-}));
+export default define(meta, ps => Emoji.findOne({ _id: ps.id })
+	.then(x =>
+		!x ? error('emoji not found') :
+		Emoji.update({ _id: x._id }, {
+			$set: {
+				updatedAt: new Date(),
+				name: ps.name,
+				aliases: ps.aliases,
+				url: ps.url
+			}
+		}))
+	.then(() => {}));

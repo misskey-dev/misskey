@@ -1,10 +1,12 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
-import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
+import Matching, { pack as packMatching, IMatching } from '../../../../../models/games/reversi/matching';
 import ReversiGame, { pack as packGame } from '../../../../../models/games/reversi/game';
-import User from '../../../../../models/user';
+import User, { ILocalUser } from '../../../../../models/user';
 import { publishMainStream, publishReversiStream } from '../../../../../stream';
 import { eighteight } from '../../../../../games/reversi/maps';
 import define from '../../../define';
+import { ObjectID } from 'mongodb';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	requireCredential: true,
@@ -21,87 +23,50 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Myself
-	if (ps.userId.equals(user._id)) {
-		return rej('invalid userId param');
-	}
-
-	// Find session
-	const exist = await Matching.findOne({
-		parentId: ps.userId,
-		childId: user._id
-	});
-
-	if (exist) {
-		// Destroy session
-		Matching.remove({
-			_id: exist._id
-		});
-
-		// Create game
-		const game = await ReversiGame.insert({
-			createdAt: new Date(),
-			user1Id: exist.parentId,
-			user2Id: user._id,
-			user1Accepted: false,
-			user2Accepted: false,
-			isStarted: false,
-			isEnded: false,
-			logs: [],
-			settings: {
-				map: eighteight.data,
-				bw: 'random',
-				isLlotheo: false
-			}
-		});
-
-		// Reponse
-		res(await packGame(game, user));
-
-		publishReversiStream(exist.parentId, 'matched', await packGame(game, exist.parentId));
-
-		const other = await Matching.count({
-			childId: user._id
-		});
-
-		if (other == 0) {
-			publishMainStream(user._id, 'reversiNoInvites');
+const whenExist = async (user: ILocalUser, matching: IMatching) => {
+	Matching.remove({ _id: matching._id });
+	const result = await ReversiGame.insert({
+		createdAt: new Date(),
+		user1Id: matching.parentId,
+		user2Id: user._id,
+		user1Accepted: false,
+		user2Accepted: false,
+		isStarted: false,
+		isEnded: false,
+		logs: [],
+		settings: {
+			map: eighteight.data,
+			bw: 'random',
+			isLlotheo: false
 		}
-	} else {
-		// Fetch child
-		const child = await User.findOne({
-			_id: ps.userId
-		}, {
-			fields: {
-				_id: true
-			}
-		});
+	}).then(x => packGame(x, user));
+	packGame(result, matching.parentId)
+		.then(x => publishReversiStream(matching.parentId, 'matched', x));
+	if (!await Matching.count({ childId: user._id })) publishMainStream(user._id, 'reversiNoInvites');
+};
 
-		if (child === null) {
-			return rej('user not found');
-		}
-
-		// 以前のセッションはすべて削除しておく
-		await Matching.remove({
-			parentId: user._id
-		});
-
-		// セッションを作成
+const whenNotExist = (user: ILocalUser, childId: ObjectID) => User.findOne({ _id: childId }, {
+		fields: { _id: true }
+	}).then(async child => {
+		if (child === null) throw 'user not found';
+		await Matching.remove({ parentId: user._id });
 		const matching = await Matching.insert({
 			createdAt: new Date(),
 			parentId: user._id,
-			childId: child._id
+			childId
 		});
+		packMatching(matching, child)
+			.then(x => {
+				publishReversiStream(child._id, 'invited', x);
+				publishMainStream(child._id, 'reversiInvited', x);
+			});
+	});
 
-		// Reponse
-		res();
-
-		const packed = await packMatching(matching, child);
-
-		// 招待
-		publishReversiStream(child._id, 'invited', packed);
-
-		publishMainStream(child._id, 'reversiInvited', packed);
-	}
-}));
+export default define(meta, (ps, user) => Promise.resolve()
+	.then(async () =>
+		ps.userId.equals(user._id) ? error('invalid userId param') :
+		Matching.findOne({
+			parentId: ps.userId,
+			childId: user._id
+		}))
+	.then(x => x ? whenExist(user, x) : whenNotExist(user, x.childId)));

@@ -2,6 +2,8 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../stream';
 import define from '../../../define';
+import { ObjectID } from 'mongodb';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -36,36 +38,17 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// If the parent folder is specified
-	let parent = null;
-	if (ps.parentId) {
-		// Fetch parent folder
-		parent = await DriveFolder
-			.findOne({
-				_id: ps.parentId,
-				userId: user._id
-			});
+const fetchParent = (_id: ObjectID, userId: ObjectID) => _id !== null ? DriveFolder.findOne({ _id, userId })
+	.then(x =>
+		x === null ? error('parent-not-found') :
+		x._id) : Promise.resolve(null);
 
-		if (parent === null) {
-			return rej('parent-not-found');
-		}
-	}
-
-	// Create folder
-	const folder = await DriveFolder.insert({
-		createdAt: new Date(),
-		name: ps.name,
-		parentId: parent !== null ? parent._id : null,
-		userId: user._id
-	});
-
-	// Serialize
-	const folderObj = await pack(folder);
-
-	// Response
-	res(folderObj);
-
-	// Publish folderCreated event
-	publishDriveStream(user._id, 'folderCreated', folderObj);
-}));
+export default define(meta, (ps, user) => fetchParent(ps.parentId, user._id)
+	.then(parentId => DriveFolder.insert({
+			createdAt: new Date(),
+			name: ps.name,
+			parentId,
+			userId: user._id
+		}))
+	.then(pack)
+	.then(x => (publishDriveStream(user._id, 'folderCreated', x), x)));

@@ -1,4 +1,4 @@
-const ms = require('ms');
+import ms = require('ms');
 import $ from 'cafy';
 import User, { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
@@ -8,6 +8,7 @@ import config from '../../../../config';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import resolveUser from '../../../../remote/resolve-user';
+import { IMeta } from '../../../../models/meta';
 
 export const meta = {
 	desc: {
@@ -31,63 +32,39 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const instance = await fetchMeta();
+const requestExternal = (meta: IMeta, schema: { [x: string]: string }) => {
+	if (!meta.enableExternalUserRecommendation) throw null;
+	return request({
+		url: Object.entries(schema).reduce((a, [k, v]) => a.replace(`{{${k}}}`, v), meta.externalUserRecommendationEngine),
+		proxy: config.proxy,
+		timeout: meta.externalUserRecommendationTimeout,
+		json: true,
+		followRedirect: true,
+		followAllRedirects: true
+	});
+};
 
-	if (instance.enableExternalUserRecommendation) {
-		const userName = me.username;
-		const hostName = config.hostname;
-		const limit = ps.limit;
-		const offset = ps.offset;
-		const timeout = instance.externalUserRecommendationTimeout;
-		const engine = instance.externalUserRecommendationEngine;
-		const url = engine
-			.replace('{{host}}', hostName)
-			.replace('{{user}}', userName)
-			.replace('{{limit}}', limit.toString())
-			.replace('{{offset}}', offset.toString());
-
-		request({
-			url: url,
-			proxy: config.proxy,
-			timeout: timeout,
-			json: true,
-			followRedirect: true,
-			followAllRedirects: true
-		})
-			.then(body => convertUsers(body, me))
-			.then(packed => res(packed))
-			.catch(e => rej(e));
-	} else {
-		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriendIds(me._id);
-
-		// ミュートしているユーザーを取得
-		const mutedUserIds = (await Mute.find({
-			muterId: me._id
-		})).map(m => m.muteeId);
-
-		const users = await User
-			.find({
-				_id: {
-					$nin: followingIds.concat(mutedUserIds)
-				},
-				isLocked: { $ne: true },
-				updatedAt: {
-					$gte: new Date(Date.now() - ms('7days'))
-				},
-				host: null
-			}, {
-				limit: ps.limit,
-				skip: ps.offset,
-				sort: {
-					followersCount: -1
-				}
-			});
-
-		res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
-	}
-}));
+export default define(meta, (ps, me) => fetchMeta()
+	.then(x => requestExternal(x, {
+			host: config.hostname,
+			user: me.username,
+			limit: ps.limit.toString(),
+			offset: ps.offset.toString()
+		}))
+	.then(x => convertUsers(x, me))
+	.catch(() => getFriendIds(me._id)
+		.then(friends => Mute.find({ muterId: me._id })
+			.then(mutes => User.find({
+					_id: { $nin: [ ...friends, ...mutes.map(x => x.muteeId) ] },
+					isLocked: { $ne: true },
+					updatedAt: { $gte: new Date(Date.now() - ms('7days')) },
+					host: null
+				}, {
+					limit: ps.limit,
+					skip: ps.offset,
+					sort: { followersCount: -1 }
+				})))
+		.then(x => Promise.all(x.map(x => pack(x, me, { detail: true }))))));
 
 type IRecommendUser = {
 	name: string;

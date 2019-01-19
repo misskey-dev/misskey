@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
 import User from '../../../../models/user';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -24,22 +25,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const user = await User.findOne({
-		_id: ps.userId
-	});
-
-	if (user == null) {
-		return rej('user not found');
-	}
-
-	await User.findOneAndUpdate({
-		_id: user._id
-	}, {
-			$set: {
-				isVerified: false
-			}
-		});
-
-	res();
-}));
+export default define(meta, ps => User.findOne({ _id: ps.userId })
+	.then(x =>
+		!x ? error('user not found') :
+		User.findOneAndUpdate({ _id: x._id }, {
+			$set: { isVerified: false }
+		}))
+	.then(() => {}));

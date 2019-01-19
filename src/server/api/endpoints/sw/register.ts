@@ -21,34 +21,23 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// if already subscribed
-	const exist = await Subscription.findOne({
+export default define(meta, (ps, user) => Subscription.findOne({
 		userId: user._id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,
 		publickey: ps.publickey,
 		deletedAt: { $exists: false }
-	});
-
-	const instance = await fetchMeta();
-
-	if (exist != null) {
-		return res({
-			state: 'already-subscribed',
-			key: instance.swPublicKey
-		});
-	}
-
-	await Subscription.insert({
-		userId: user._id,
-		endpoint: ps.endpoint,
-		auth: ps.auth,
-		publickey: ps.publickey
-	});
-
-	res({
-		state: 'subscribed',
-		key: instance.swPublicKey
-	});
-}));
+	}).then(x => fetchMeta()
+		.then(instance => x ? {
+				state: 'already-subscribed',
+				key: instance.swPublicKey
+			} : Subscription.insert({
+				userId: user._id,
+				endpoint: ps.endpoint,
+				auth: ps.auth,
+				publickey: ps.publickey
+			})
+			.then(() => ({
+				state: 'subscribed',
+				key: instance.swPublicKey
+			})))));

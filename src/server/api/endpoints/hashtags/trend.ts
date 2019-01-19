@@ -2,6 +2,7 @@ import Note from '../../../../models/note';
 import { erase } from '../../../../prelude/array';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { ObjectID } from 'mongodb';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -14,132 +15,90 @@ const coefficient = 1.25; // 「n倍」の部分
 const requiredUsers = 3; // 最低何人がそのタグを投稿している必要があるか
 
 const max = 5;
+const range = 20;
+const interval = 1000 * 60 * 10;
 
 export const meta = {
 	requireCredential: false,
 };
 
-export default define(meta, () => new Promise(async (res, rej) => {
-	const instance = await fetchMeta();
-	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
+type Tags = [string, number][];
 
-	//#region 1. 直近Aの内に投稿されたハッシュタグ(とユーザーのペア)を集計
-	const data = await Note.aggregate([{
-		$match: {
-			createdAt: {
-				$gt: new Date(Date.now() - rangeA)
-			},
-			tagsLower: {
-				$exists: true,
-				$ne: []
-			}
-		}
-	}, {
-		$unwind: '$tagsLower'
-	}, {
-		$group: {
-			_id: { tag: '$tagsLower', userId: '$userId' }
-		}
-	}]) as Array<{
-		_id: {
-			tag: string;
-			userId: any;
-		}
-	}>;
-	//#endregion
-
-	if (data.length == 0) {
-		return res([]);
+const fetchTags = (data: {
+	_id: {
+		tag: string,
+		userId: ObjectID
 	}
+}[], ignores: string[]) => Object.entries(data
+	.map(x => x._id)
+	.filter(x => !ignores.includes(x.tag))
+	.reduce((a, c) => {
+		a[c.tag] = ++a[c.tag] || 1;
+		return a;
+	}, {} as { [name: string]: number }));
 
-	const tags: Array<{
-		name: string;
-		count: number;
-	}> = [];
+const aggregateFineTags = (tags: Tags) => Promise.all(tags
+		.filter(([, x]) => x >= requiredUsers)
+		.map(x => (Note.distinct('userId', {
+				tagsLower: x[0],
+				createdAt: {
+					$lt: new Date(Date.now() - rangeA),
+					$gt: new Date(Date.now() - rangeB)
+				}
+			}) as Promise<any>).then(({ length }) => x[1] >= length * coefficient ? x : null)))
+	.then(x => erase(null, x)
+		.sort(([, a], [, b]) => b - a)
+		.slice(0, max)
+		.map(([x]) => x));
 
-	// カウント
-	for (const x of data.map(x => x._id).filter(x => !hidedTags.includes(x.tag))) {
-		const i = tags.findIndex(tag => tag.name == x.tag);
-		if (i != -1) {
-			tags[i].count++;
-		} else {
-			tags.push({
-				name: x.tag,
-				count: 1
-			});
+const aggregateAllTags = (tags: Tags, fineTags: string[]) => fineTags.concat(tags
+	.filter(([x]) => !fineTags.includes(x))
+	.sort(([, a], [, b]) => b - a)
+	.slice(0, max - fineTags.length)
+	.map(([x]) => x));
+
+const aggregateLogs = (tags: string[]) => Promise.all([...Array(range).keys()]
+	.map(x => Promise.all(tags.map(tagsLower => Note.distinct('userId', {
+		tagsLower,
+		createdAt: {
+			$lt: new Date(Date.now() - (interval * x)),
+			$gt: new Date(Date.now() - (interval * (x + 1)))
 		}
-	}
+	}) as any))));
 
-	// 最低要求投稿者数を下回るならカットする
-	const limitedTags = tags.filter(tag => tag.count >= requiredUsers);
-
-	//#region 2. 1で取得したそれぞれのタグについて、「直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上」かどうかを判定する
-	const hotsPromises = limitedTags.map(async tag => {
-		const passedCount = (await Note.distinct('userId', {
-			tagsLower: tag.name,
-			createdAt: {
-				$lt: new Date(Date.now() - rangeA),
-				$gt: new Date(Date.now() - rangeB)
-			}
-		}) as any).length;
-
-		if (tag.count >= (passedCount * coefficient)) {
-			return tag;
-		} else {
-			return null;
-		}
-	});
-	//#endregion
-
-	// タグを人気順に並べ替え
-	let hots = erase(null, await Promise.all(hotsPromises))
-		.sort((a, b) => b.count - a.count)
-		.map(tag => tag.name)
-		.slice(0, max);
-
-	//#region 3. もし上記の方法でのトレンド抽出の結果、求められているタグ数に達しなければ「ただ単に現在投稿数が多いハッシュタグ」に切り替える
-	if (hots.length < max) {
-		hots = hots.concat(tags
-			.filter(tag => hots.indexOf(tag.name) == -1)
-			.sort((a, b) => b.count - a.count)
-			.map(tag => tag.name)
-			.slice(0, max - hots.length));
-	}
-	//#endregion
-
-	//#region 2(または3)で話題と判定されたタグそれぞれについて過去の投稿数グラフを取得する
-	const countPromises: Array<Promise<any[]>> = [];
-
-	const range = 20;
-
-	// 10分
-	const interval = 1000 * 60 * 10;
-
-	for (let i = 0; i < range; i++) {
-		countPromises.push(Promise.all(hots.map(tag => Note.distinct('userId', {
-			tagsLower: tag,
-			createdAt: {
-				$lt: new Date(Date.now() - (interval * i)),
-				$gt: new Date(Date.now() - (interval * (i + 1)))
-			}
-		}))));
-	}
-
-	const countsLog = await Promise.all(countPromises);
-
-	const totalCounts: any = await Promise.all(hots.map(tag => Note.distinct('userId', {
-		tagsLower: tag,
+const countTotal = (tags: string[]) => Promise.all(tags.map(tagsLower => Note.distinct('userId', {
+		tagsLower,
 		createdAt: {
 			$gt: new Date(Date.now() - (interval * range))
 		}
-	})));
-	//#endregion
+	}) as any));
 
-	const stats = hots.map((tag, i) => ({
-		tag,
-		chart: countsLog.map(counts => counts[i].length),
-		usersCount: totalCounts[i].length
-	}));
-
-	res(stats);
-}));
+export default define(meta, () => fetchMeta()
+	.then(instance => Note.aggregate([{
+			$match: {
+				createdAt: { $gt: new Date(Date.now() - rangeA) },
+				tagsLower: {
+					$exists: true,
+					$ne: []
+				}
+			}
+		}, { $unwind: '$tagsLower' }, {
+			$group: {
+				_id: {
+					tag: '$tagsLower',
+					userId: '$userId'
+				}
+			}
+		}])
+		.then(async x => {
+			const tags = fetchTags(x, instance.hidedTags.map(x => x.toLowerCase()));
+			const fine = await aggregateFineTags(tags);
+			const hots = fine.length < max ? aggregateAllTags(tags, fine) : fine;
+			const logs = await aggregateLogs(hots);
+			const total = await countTotal(hots);
+			return hots.map((tag, i) => ({
+				tag,
+				chart: logs.map(x => x[i].length),
+				usersCount: total[i].length
+			}));
+		})));

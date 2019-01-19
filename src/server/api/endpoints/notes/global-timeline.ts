@@ -3,7 +3,8 @@ import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
+import { ILocalUser } from '../../../../models/user';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -50,77 +51,29 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
-	}
+const fetchMutedUserIds = async (muter: ILocalUser) => muter ? await Mute.find({ muterId: muter._id })
+	.then(x => x.map(x => x.muteeId)) : null;
 
-	// ミュートしているユーザーを取得
-	const mutedUserIds = user ? (await Mute.find({
-		muterId: user._id
-	})).map(m => m.muteeId) : null;
-
-	//#region Construct query
-	const sort = {
-		_id: -1
-	};
-
-	const query = {
-		deletedAt: null,
-
-		// public only
-		visibility: 'public',
-
-		replyId: null
-	} as any;
-
-	if (mutedUserIds && mutedUserIds.length > 0) {
-		query.userId = {
-			$nin: mutedUserIds
-		};
-
-		query['_reply.userId'] = {
-			$nin: mutedUserIds
-		};
-
-		query['_renote.userId'] = {
-			$nin: mutedUserIds
-		};
-	}
-
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.fileIds = { $exists: true, $ne: [] };
-	}
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	} else if (ps.sinceDate) {
-		sort._id = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
-	}
-	//#endregion
-
-	const timeline = await Note
-		.find(query, {
+export default define(meta, (ps, user) => errorWhen(
+	[ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x).length > 1,
+	'only one of sinceId, untilId, sinceDate, untilDate can be specified')
+	.then(() => fetchMutedUserIds(user))
+	.then($nin => Note.find({
+			_id:
+				ps.sinceId ? { $gt: ps.sinceId } :
+				ps.untilId ? { $lt: ps.untilId } : undefined,
+			createdAt:
+				ps.sinceDate ? { $gt: new Date(ps.sinceDate) } :
+				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
+			deletedAt: null,
+			visibility: 'public',
+			replyId: null,
+			userId: $nin && $nin.length ? { $nin } : undefined,
+			['_reply.userId']: $nin && $nin.length ? { $nin } : undefined,
+			['_renote.userId']: $nin && $nin.length ? { $nin } : undefined,
+			fileIds: ps.withFiles !== false || ps.mediaOnly ? { $exists: true, $ne: [] } : undefined
+		}, {
 			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(timeline, user));
-}));
+			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
+		}))
+	.then(x => packMany(x, user)));

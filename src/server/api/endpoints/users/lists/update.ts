@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -33,24 +34,13 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch the list
-	const userList = await UserList.findOne({
+export default define(meta, (ps, user) => UserList.findOne({
 		_id: ps.listId,
 		userId: user._id
-	});
-
-	if (userList == null) {
-		return rej('list not found');
-	}
-
-	// update
-	await UserList.update({ _id: userList._id }, {
-		$set: {
-			title: ps.title
-		}
-	});
-
-	// Response
-	res(await pack(userList._id));
-}));
+	})
+	.then(x =>
+		!x ? error('list not found') :
+		UserList.update({ _id: x._id }, {
+			$set: { title: ps.title }
+		})
+		.then(() => pack(x._id))));

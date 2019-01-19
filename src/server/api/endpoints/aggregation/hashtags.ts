@@ -6,63 +6,39 @@ export const meta = {
 	requireCredential: false,
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const instance = await fetchMeta();
-	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
+const span = 1000 * 60 * 60 * 24 * 7; // 1週間
 
-	const span = 1000 * 60 * 60 * 24 * 7; // 1週間
+const aggregate = (data: {
+	_id: {
+		tag: string;
+		userId: any;
+	}
+}[], ignores: string[]) => Object.entries(data
+		.map(x => x._id)
+		.filter(x => !ignores.includes(x.tag))
+		.reduce((a, c) => {
+			a[c.tag] = ++a[c.tag] || 1;
+			return a;
+		}, {} as { [name: string]: number }))
+	.sort(([, a], [, b]) => b - a)
+	.slice(0, 30)
+	.map(([name, count]) => ({ name, count }));
 
-	//#region 1. 指定期間の内に投稿されたハッシュタグ(とユーザーのペア)を集計
-	const data = await Note.aggregate([{
+export default define(meta, () => fetchMeta()
+	.then(instance => Note.aggregate([{
 		$match: {
-			createdAt: {
-				$gt: new Date(Date.now() - span)
-			},
+			createdAt: { $gt: new Date(Date.now() - span) },
 			tagsLower: {
 				$exists: true,
 				$ne: []
 			}
 		}
-	}, {
-		$unwind: '$tagsLower'
-	}, {
+	}, { $unwind: '$tagsLower' }, {
 		$group: {
-			_id: { tag: '$tagsLower', userId: '$userId' }
+			_id: {
+				tag: '$tagsLower',
+				userId: '$userId'
+			}
 		}
-	}]) as Array<{
-		_id: {
-			tag: string;
-			userId: any;
-		}
-	}>;
-	//#endregion
-
-	if (data.length == 0) {
-		return res([]);
-	}
-
-	let tags: Array<{
-		name: string;
-		count: number;
-	}> = [];
-
-	// カウント
-	for (const x of data.map(x => x._id).filter(x => !hidedTags.includes(x.tag))) {
-		const i = tags.findIndex(tag => tag.name == x.tag);
-		if (i != -1) {
-			tags[i].count++;
-		} else {
-			tags.push({
-				name: x.tag,
-				count: 1
-			});
-		}
-	}
-
-	// タグを人気順に並べ替え
-	tags.sort((a, b) => b.count - a.count);
-
-	tags = tags.slice(0, 30);
-
-	res(tags);
-}));
+	}])
+	.then(x => aggregate(x, instance.hidedTags.map(t => t.toLowerCase())))));

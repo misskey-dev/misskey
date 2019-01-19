@@ -19,15 +19,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// insert
-	const userList = await UserList.insert({
+export default define(meta, (ps, user) => UserList.insert({
 		createdAt: new Date(),
 		userId: user._id,
 		title: ps.title,
 		userIds: []
-	});
-
-	// Response
-	res(await pack(userList));
-}));
+	})
+	.then(pack));

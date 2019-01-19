@@ -32,14 +32,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-
-	const notes = await Note.find({
-			replyId: ps.noteId
-		}, {
-			limit: ps.limit,
-			skip: ps.offset
-		});
-
-	res(await packMany(notes, user));
-}));
+export default define(meta, (ps, user) => Note.find({ replyId: ps.noteId }, {
+		limit: ps.limit,
+		skip: ps.offset
+	})
+	.then(x => packMany(x, user)));

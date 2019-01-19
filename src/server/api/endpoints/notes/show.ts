@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { pack } from '../../../../models/note';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -24,18 +25,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get note
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	// Serialize
-	res(await pack(note, user, {
-		detail: true
-	}));
-}));
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(x =>
+		x === null ? error('note not found') :
+		pack(x, user, { detail: true })));

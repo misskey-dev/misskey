@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Following from '../../../../models/following';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -24,27 +25,13 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const follower = user;
-
-	// Fetch following
-	const following = await Following.findOne({
-		followerId: follower._id,
+export default define(meta, (ps, user) => Following.findOne({
+		followerId: user._id,
 		followeeId: ps.userId
-	});
-
-	if (following === null) {
-		return rej('following not found');
-	}
-
-	// Stalk
-	await Following.update({ _id: following._id }, {
-		$set: {
-			stalk: false
-		}
-	});
-
-	res();
-
-	// TODO: イベント
-}));
+	})
+	.then(x =>
+		x === null ? error('following not found') :
+		Following.update({ _id: x._id }, {
+			$set: { stalk: false }
+		}))
+	.then(() => {}));

@@ -100,160 +100,76 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const [list, mutedUserIds] = await Promise.all([
-		// リストを取得
-		// Fetch the list
+export default define(meta, (ps, user) => Promise.all([
 		UserList.findOne({
 			_id: ps.listId,
 			userId: user._id
 		}),
-
-		// ミュートしているユーザーを取得
-		Mute.find({
-			muterId: user._id
-		}).then(ms => ms.map(m => m.muteeId))
-	]);
-
-	if (list.userIds.length == 0) {
-		res([]);
-		return;
-	}
-
-	//#region Construct query
-	const sort = {
-		_id: -1
-	};
-
-	const listQuery = list.userIds.map(u => ({
-		userId: u,
-
-		// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
-		$or: [{
-			// リプライでない
-			replyId: null
-		}, { // または
-			// リプライだが返信先が投稿者自身の投稿
-			$expr: {
-				$eq: ['$_reply.userId', '$userId']
-			}
-		}, { // または
-			// リプライだが返信先が自分(フォロワー)の投稿
-			'_reply.userId': user._id
-		}, { // または
-			// 自分(フォロワー)が送信したリプライ
-			userId: user._id
-		}]
-	}));
-
-	const query = {
-		$and: [{
-			deletedAt: null,
-
-			// リストに入っている人のタイムラインへの投稿
-			$or: listQuery,
-
-			// mute
-			userId: {
-				$nin: mutedUserIds
+		Mute.find({ muterId: user._id })
+			.then(ms => ms.map(m => m.muteeId))
+	])
+	.then(([list, $nin]) =>
+		!list.userIds.length ? [] :
+		Note.find({
+			_id:
+				ps.sinceId ? { $gt: ps.sinceId } :
+				ps.untilId ? { $lt: ps.untilId } : undefined,
+			createdAt:
+				ps.sinceDate ? { $gt: new Date(ps.sinceDate) } :
+				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
+			$and: [{
+				deletedAt: null,
+				$or: list.userIds.map(userId => ({
+					userId,
+					$or: [
+						{ replyId: null }, {
+							$expr: { $eq: ['$_reply.userId', '$userId'] }
+						}, { '_reply.userId': user._id },
+						{ userId: user._id }
+					]
+				})),
+				userId: { $nin },
+				'_reply.userId': { $nin },
+				'_renote.userId': { $nin },
 			},
-			'_reply.userId': {
-				$nin: mutedUserIds
-			},
-			'_renote.userId': {
-				$nin: mutedUserIds
-			},
-		}]
-	} as any;
-
-	// MongoDBではトップレベルで否定ができないため、De Morganの法則を利用してクエリします。
-	// つまり、「『自分の投稿かつRenote』ではない」を「『自分の投稿ではない』または『Renoteではない』」と表現します。
-	// for details: https://en.wikipedia.org/wiki/De_Morgan%27s_laws
-
-	if (ps.includeMyRenotes === false) {
-		query.$and.push({
-			$or: [{
-				userId: { $ne: user._id }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
-	}
-
-	if (ps.includeRenotedMyNotes === false) {
-		query.$and.push({
-			$or: [{
-				'_renote.userId': { $ne: user._id }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
-	}
-
-	if (ps.includeLocalRenotes === false) {
-		query.$and.push({
-			$or: [{
-				'_renote.user.host': { $ne: null }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
-	}
-
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.$and.push({
-			fileIds: { $exists: true, $ne: [] }
-		});
-	}
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	} else if (ps.sinceDate) {
-		sort._id = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
-	}
-	//#endregion
-
-	// Issue query
-	const timeline = await Note
-		.find(query, {
+			...(ps.includeMyRenotes === false ? [{
+				$or: [{
+					userId: { $ne: user._id }
+				}, { renoteId: null }, {
+					text: { $ne: null }
+				}, {
+					fileIds: { $ne: [] }
+				}, {
+					poll: { $ne: null }
+				}]
+			}] : []),
+			...(ps.includeRenotedMyNotes === false ? [{
+				$or: [{
+					'_renote.userId': { $ne: user._id }
+				}, { renoteId: null }, {
+					text: { $ne: null }
+				}, {
+					fileIds: { $ne: [] }
+				}, {
+					poll: { $ne: null }
+				}]
+			}] : []),
+			...(ps.includeLocalRenotes === false ? [{
+				$or: [{
+					'_renote.user.host': { $ne: null }
+				}, { renoteId: null }, {
+					text: { $ne: null }
+				}, {
+					fileIds: { $ne: [] }
+				}, {
+					poll: { $ne: null }
+				}]
+			}] : []),
+			...(ps.withFiles !== false || ps.mediaOnly ? [{
+				fileIds: { $exists: true, $ne: [] }
+			}] : [])]
+		}, {
 			limit: ps.limit,
-			sort: sort
-		});
-
-	// Serialize
-	res(await packMany(timeline, user));
-}));
+			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
+		}))
+	.then(x => packMany(x, user)));

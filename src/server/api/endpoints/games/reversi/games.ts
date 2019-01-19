@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import define from '../../../define';
+import { errorWhen } from '../../../../../prelude/promise';
 
 export const meta = {
 	params: {
@@ -26,46 +27,20 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	const q: any = ps.my ? {
-		isStarted: true,
-		$or: [{
-			user1Id: user._id
+export default define(meta, (ps, user) => errorWhen(
+	ps.sinceId && !!ps.untilId,
+	'cannot set sinceId and untilId')
+	.then(() => ReversiGame.find({
+			_id:
+				ps.sinceId ? { $gt: ps.sinceId } :
+				ps.untilId ? { $lt: ps.untilId } : undefined,
+			isStarted: true,
+			$or: ps.my ? [
+				{ user1Id: user._id },
+				{ user2Id: user._id }
+			] : undefined
 		}, {
-			user2Id: user._id
-		}]
-	} : {
-		isStarted: true
-	};
-
-	const sort = {
-		_id: -1
-	};
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		q._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		q._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	// Fetch games
-	const games = await ReversiGame.find(q, {
-		sort: sort,
-		limit: ps.limit
-	});
-
-	// Reponse
-	res(Promise.all(games.map(async (g) => await pack(g, user, {
-		detail: false
-	}))));
-}));
+			sort: { _id: ps.sinceId ? 1 : -1 },
+			limit: ps.limit
+		}))
+	.then(x => Promise.all(x.map(x => pack(x, user, { detail: false })))));

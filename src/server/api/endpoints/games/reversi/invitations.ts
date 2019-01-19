@@ -5,16 +5,7 @@ export const meta = {
 	requireCredential: true
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Find session
-	const invitations = await Matching.find({
-		childId: user._id
-	}, {
-		sort: {
-			_id: -1
-		}
-	});
-
-	// Reponse
-	res(Promise.all(invitations.map(async (i) => await packMatching(i, user))));
-}));
+export default define(meta, (_, user) => Matching.find({ childId: user._id }, {
+		sort: { id: -1 }
+	})
+	.then(x => Promise.all(x.map(x => packMatching(x, user)))));

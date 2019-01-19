@@ -37,45 +37,27 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let _sort;
-	if (ps.sort) {
-		if (ps.sort == '+createdAt') {
-			_sort = {
-				uploadDate: -1
-			};
-		} else if (ps.sort == '-createdAt') {
-			_sort = {
-				uploadDate: 1
-			};
-		} else if (ps.sort == '+size') {
-			_sort = {
-				length: -1
-			};
-		} else if (ps.sort == '-size') {
-			_sort = {
-				length: 1
-			};
-		}
-	} else {
-		_sort = {
-			_id: -1
-		};
+const sort = (sort: string) => {
+	switch (sort) {
+		case '+createdAt': return { uploadDate: -1 };
+		case '-createdAt': return { uploadDate: 1 };
+		case '+size': return { length: -1 };
+		case '-size': return { length: 1 };
+		default: return { _id: -1 };
 	}
+};
 
-	const q = {
+export default define(meta, ps => File.find({
 		'metadata.deletedAt': { $exists: false },
-	} as any;
-
-	if (ps.origin == 'local') q['metadata._user.host'] = null;
-	if (ps.origin == 'remote') q['metadata._user.host'] = { $ne: null };
-
-	const files = await File
-		.find(q, {
-			limit: ps.limit,
-			sort: _sort,
-			skip: ps.offset
-		});
-
-	res(await packMany(files, { detail: true, withUser: true }));
-}));
+		'metadata._user.host':
+			origin === 'local' ? null :
+			origin === 'remote' ? { $ne: null } : undefined as any
+	}, {
+		limit: ps.limit,
+		sort: sort(ps.sort),
+		skip: ps.offset
+	})
+	.then(x => packMany(x, {
+		detail: true,
+		withUser: true
+	})));

@@ -27,8 +27,4 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const stats = await driveChart.getChart(ps.span as any, ps.limit);
-
-	res(stats);
-}));
+export default define(meta, ps => driveChart.getChart(ps.span as any, ps.limit));

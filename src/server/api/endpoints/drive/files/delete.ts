@@ -3,6 +3,7 @@ import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../stream';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -28,26 +29,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			_id: ps.fileId
-		});
-
-	if (file === null) {
-		return rej('file-not-found');
-	}
-
-	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
-		return rej('access denied');
-	}
-
-	// Delete
-	await del(file);
-
-	// Publish fileDeleted event
-	publishDriveStream(user._id, 'fileDeleted', file._id);
-
-	res();
-}));
+export default define(meta, (ps, user) => DriveFile.findOne({ _id: ps.fileId })
+	.then(x =>
+		x === null ? error('file-not-found') :
+		!user.isAdmin && !user.isModerator && !x.metadata.userId.equals(user._id) ? error('access denied') :
+		del(x).then(_ => (
+			publishDriveStream(user._id, 'fileDeleted', x._id), _))));

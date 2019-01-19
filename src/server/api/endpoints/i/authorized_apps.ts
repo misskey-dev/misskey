@@ -26,20 +26,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get tokens
-	const tokens = await AccessToken
-		.find({
-			userId: user._id
-		}, {
-			limit: ps.limit,
-			skip: ps.offset,
-			sort: {
-				_id: ps.sort == 'asc' ? 1 : -1
-			}
-		});
-
-	res(await Promise.all(tokens.map(token => pack(token.appId, user, {
-		detail: true
-	}))));
-}));
+export default define(meta, (ps, user) => AccessToken.find({ userId: user._id }, {
+		limit: ps.limit,
+		skip: ps.offset,
+		sort: { _id: ps.sort == 'asc' ? 1 : -1 }
+	})
+	.then(x => Promise.all(x.map(x => pack(x.appId, user, { detail: true })))));

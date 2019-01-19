@@ -21,37 +21,21 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const game = await ReversiGame.findOne({ _id: ps.gameId });
-
-	if (game == null) {
-		return rej('game not found');
-	}
-
-	if (game.isEnded) {
-		return rej('this game is already ended');
-	}
-
-	if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) {
-		return rej('access denied');
-	}
-
-	const winnerId = game.user1Id.equals(user._id) ? game.user2Id : game.user1Id;
-
-	await ReversiGame.update({
-		_id: game._id
-	}, {
-		$set: {
-			surrendered: user._id,
-			isEnded: true,
-			winnerId: winnerId
-		}
-	});
-
-	publishReversiGameStream(game._id, 'ended', {
-		winnerId: winnerId,
-		game: await pack(game._id, user)
-	});
-
-	res();
-}));
+export default define(meta, (ps, user) => ReversiGame.findOne({ _id: ps.gameId })
+	.then(async x => {
+		if (!x) throw 'game not found';
+		if (x.isEnded) throw 'this game is already ended';
+		if (!x.user1Id.equals(user._id) && !x.user2Id.equals(user._id)) throw 'access denied';
+		const winnerId = x.user1Id.equals(user._id) ? x.user2Id : x.user1Id;
+		await ReversiGame.update({ _id: x._id }, {
+			$set: {
+				surrendered: user._id,
+				isEnded: true,
+				winnerId
+			}
+		});
+		publishReversiGameStream(x._id, 'ended', {
+			winnerId,
+			game: await pack(x._id, user)
+		});
+	}));

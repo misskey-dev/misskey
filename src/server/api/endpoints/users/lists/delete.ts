@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -25,19 +26,11 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const userList = await UserList.findOne({
+export default define(meta, (ps, user) => UserList.findOne({
 		_id: ps.listId,
 		userId: user._id
-	});
-
-	if (userList == null) {
-		return rej('list not found');
-	}
-
-	await UserList.remove({
-		_id: userList._id
-	});
-
-	res();
-}));
+	})
+	.then(x =>
+		!x ? error('list not found') :
+		UserList.remove({ _id: x._id }))
+	.then(() => {}));

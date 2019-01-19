@@ -9,6 +9,8 @@ import { publishMainStream } from '../../../../../stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
 import pushSw from '../../../../../push-sw';
 import define from '../../../define';
+import { ObjectID } from 'mongodb';
+import { error, errorWhen } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -41,93 +43,53 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Myself
-	if (ps.userId.equals(user._id)) {
-		return rej('cannot send message to myself');
-	}
+const fetchFile = (_id: ObjectID, userId: ObjectID) => _id ? DriveFile.findOne({
+		_id,
+		'metadata.userId': userId
+	}).then(x =>
+		x === null ? error('file not found') :
+		x._id) : undefined;
 
-	// Fetch recipient
-	const recipient = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			_id: true
-		}
-	});
-
-	if (recipient === null) {
-		return rej('user not found');
-	}
-
-	let file = null;
-	if (ps.fileId != null) {
-		file = await DriveFile.findOne({
-			_id: ps.fileId,
-			'metadata.userId': user._id
+export default define(meta, (ps, user) => errorWhen(
+	ps.userId.equals(user._id),
+	'cannot send message to myself')
+	.then(() => User.findOne({ _id: ps.userId }, {
+			fields: { _id: true }
+		}))
+	.then(async x => {
+		if (x === null) throw 'user not found';
+		const fileId = await fetchFile(ps.fileId, user._id);
+		if (!ps.text && !fileId) throw 'text or file is required';
+		return Message.insert({
+			createdAt: new Date(),
+			fileId,
+			recipientId: x._id,
+			text: ps.text && ps.text.trim(),
+			userId: user._id,
+			isRead: false
 		});
-
-		if (file === null) {
-			return rej('file not found');
-		}
-	}
-
-	// テキストが無いかつ添付ファイルも無かったらエラー
-	if (ps.text == null && file == null) {
-		return rej('text or file is required');
-	}
-
-	// メッセージを作成
-	const message = await Message.insert({
-		createdAt: new Date(),
-		fileId: file ? file._id : undefined,
-		recipientId: recipient._id,
-		text: ps.text ? ps.text.trim() : undefined,
-		userId: user._id,
-		isRead: false
-	});
-
-	// Serialize
-	const messageObj = await pack(message);
-
-	// Reponse
-	res(messageObj);
-
-	// 自分のストリーム
-	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
-	publishMessagingIndexStream(message.userId, 'message', messageObj);
-	publishMainStream(message.userId, 'messagingMessage', messageObj);
-
-	// 相手のストリーム
-	publishMessagingStream(message.recipientId, message.userId, 'message', messageObj);
-	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
-	publishMainStream(message.recipientId, 'messagingMessage', messageObj);
-
-	// Update flag
-	User.update({ _id: recipient._id }, {
-		$set: {
-			hasUnreadMessagingMessage: true
-		}
-	});
-
-	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
-	setTimeout(async () => {
-		const freshMessage = await Message.findOne({ _id: message._id }, { isRead: true });
-		if (freshMessage == null) return; // メッセージが削除されている場合もある
-		if (!freshMessage.isRead) {
-			//#region ただしミュートされているなら発行しない
-			const mute = await Mute.find({
-				muterId: recipient._id,
-				deletedAt: { $exists: false }
-			});
-			const mutedUserIds = mute.map(m => m.muteeId.toString());
-			if (mutedUserIds.indexOf(user._id.toString()) != -1) {
-				return;
-			}
-			//#endregion
-
-			publishMainStream(message.recipientId, 'unreadMessagingMessage', messageObj);
-			pushSw(message.recipientId, 'unreadMessagingMessage', messageObj);
-		}
-	}, 2000);
-}));
+	})
+	.then(async x => pack(x)
+		.then(response => (
+			publishMessagingStream(x.userId, x.recipientId, 'message', response),
+			publishMessagingIndexStream(x.userId, 'message', response),
+			publishMainStream(x.userId, 'messagingMessage', response),
+			publishMessagingStream(x.recipientId, x.userId, 'message', response),
+			publishMessagingIndexStream(x.recipientId, 'message', response),
+			publishMainStream(x.recipientId, 'messagingMessage', response),
+			User.update({ _id: x._id }, {
+				$set: { hasUnreadMessagingMessage: true }
+			}),
+			setTimeout(() => Message.findOne({ _id: x._id }, { isRead: true })
+				.then(fresh =>
+					!fresh || fresh.isRead ? error(null) :
+					Mute.find({
+						muterId: x._id,
+						deletedAt: { $exists: false }
+					}))
+				.then(mute => {
+					if (mute.map(m => m.muteeId.toString()).includes(user._id.toString())) return;
+					publishMainStream(x.recipientId, 'unreadMessagingMessage', response);
+					pushSw(x.recipientId, 'unreadMessagingMessage', response);
+				}, _ => {}), 2000),
+			x))));

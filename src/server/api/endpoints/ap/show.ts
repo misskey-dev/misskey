@@ -7,6 +7,7 @@ import { createPerson } from '../../../../remote/activitypub/models/person';
 import Note, { pack as packNote, INote } from '../../../../models/note';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -25,11 +26,10 @@ export const meta = {
 	},
 };
 
-export default define(meta, (ps) => new Promise((res, rej) => {
-	fetchAny(ps.uri)
-		.then(object => object != null ? res(object) : rej('object not found'))
-		.catch(e => rej(e));
-}));
+export default define(meta, ps => fetchAny(ps.uri)
+	.then(x =>
+		!x ? error('object not found') :
+		x));
 
 /***
  * URIからUserかNoteを解決する

@@ -26,97 +26,87 @@ export const meta = {
 	},
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const instance = await fetchMeta();
+export default define(meta, (ps, me) => fetchMeta()
+	.then(instance => Emoji.find({ host: null }, {
+			fields: { _id: false }
+		})
+		.then(emojis => ({
+			maintainer: instance.maintainer,
 
-	const emojis = await Emoji.find({ host: null }, {
-		fields: {
-			_id: false
-		}
-	});
+			version: pkg.version,
+			clientVersion: client.version,
 
-	const response: any = {
-		maintainer: instance.maintainer,
+			name: instance.name,
+			uri: config.url,
+			description: instance.description,
+			langs: instance.langs,
 
-		version: pkg.version,
-		clientVersion: client.version,
+			secure: config.https != null,
+			machine: os.hostname(),
+			os: os.platform(),
+			node: process.version,
 
-		name: instance.name,
-		uri: config.url,
-		description: instance.description,
-		langs: instance.langs,
+			cpu: {
+				model: os.cpus()[0].model,
+				cores: os.cpus().length
+			},
 
-		secure: config.https != null,
-		machine: os.hostname(),
-		os: os.platform(),
-		node: process.version,
+			broadcasts: instance.broadcasts || [],
+			disableRegistration: instance.disableRegistration,
+			disableLocalTimeline: instance.disableLocalTimeline,
+			driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
+			driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+			cacheRemoteFiles: instance.cacheRemoteFiles,
+			enableRecaptcha: instance.enableRecaptcha,
+			recaptchaSiteKey: instance.recaptchaSiteKey,
+			swPublickey: instance.swPublicKey,
+			bannerUrl: instance.bannerUrl,
+			errorImageUrl: instance.errorImageUrl,
+			maxNoteTextLength: instance.maxNoteTextLength,
+			emojis: emojis,
+			enableEmail: instance.enableEmail,
 
-		cpu: {
-			model: os.cpus()[0].model,
-			cores: os.cpus().length
-		},
+			enableTwitterIntegration: instance.enableTwitterIntegration,
+			enableGithubIntegration: instance.enableGithubIntegration,
+			enableDiscordIntegration: instance.enableDiscordIntegration,
 
-		broadcasts: instance.broadcasts || [],
-		disableRegistration: instance.disableRegistration,
-		disableLocalTimeline: instance.disableLocalTimeline,
-		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
-		cacheRemoteFiles: instance.cacheRemoteFiles,
-		enableRecaptcha: instance.enableRecaptcha,
-		recaptchaSiteKey: instance.recaptchaSiteKey,
-		swPublickey: instance.swPublicKey,
-		bannerUrl: instance.bannerUrl,
-		errorImageUrl: instance.errorImageUrl,
-		maxNoteTextLength: instance.maxNoteTextLength,
-		emojis: emojis,
-		enableEmail: instance.enableEmail,
+			...(ps.detail ? {
+				registration: !instance.disableRegistration,
+				localTimeLine: !instance.disableLocalTimeline,
+				elasticsearch: config.elasticsearch ? true : false,
+				recaptcha: instance.enableRecaptcha,
+				objectStorage: config.drive && config.drive.storage === 'minio',
+				twitter: instance.enableTwitterIntegration,
+				github: instance.enableGithubIntegration,
+				discord: instance.enableDiscordIntegration,
+				serviceWorker: instance.enableServiceWorker,
+				userRecommendation: {
+					external: instance.enableExternalUserRecommendation,
+					engine: instance.externalUserRecommendationEngine,
+					timeout: instance.externalUserRecommendationTimeout
+				}
+			} : {}),
 
-		enableTwitterIntegration: instance.enableTwitterIntegration,
-		enableGithubIntegration: instance.enableGithubIntegration,
-		enableDiscordIntegration: instance.enableDiscordIntegration,
-	};
-
-	if (ps.detail) {
-		response.features = {
-			registration: !instance.disableRegistration,
-			localTimeLine: !instance.disableLocalTimeline,
-			elasticsearch: config.elasticsearch ? true : false,
-			recaptcha: instance.enableRecaptcha,
-			objectStorage: config.drive && config.drive.storage === 'minio',
-			twitter: instance.enableTwitterIntegration,
-			github: instance.enableGithubIntegration,
-			discord: instance.enableDiscordIntegration,
-			serviceWorker: instance.enableServiceWorker,
-			userRecommendation: {
-				external: instance.enableExternalUserRecommendation,
-				engine: instance.externalUserRecommendationEngine,
-				timeout: instance.externalUserRecommendationTimeout
-			}
-		};
-	}
-
-	if (me && (me.isAdmin || me.isModerator)) {
-		response.hidedTags = instance.hidedTags;
-		response.recaptchaSecretKey = instance.recaptchaSecretKey;
-		response.proxyAccount = instance.proxyAccount;
-		response.twitterConsumerKey = instance.twitterConsumerKey;
-		response.twitterConsumerSecret = instance.twitterConsumerSecret;
-		response.githubClientId = instance.githubClientId;
-		response.githubClientSecret = instance.githubClientSecret;
-		response.discordClientId = instance.discordClientId;
-		response.discordClientSecret = instance.discordClientSecret;
-		response.enableExternalUserRecommendation = instance.enableExternalUserRecommendation;
-		response.externalUserRecommendationEngine = instance.externalUserRecommendationEngine;
-		response.externalUserRecommendationTimeout = instance.externalUserRecommendationTimeout;
-		response.summalyProxy = instance.summalyProxy;
-		response.email = instance.email;
-		response.smtpSecure = instance.smtpSecure;
-		response.smtpHost = instance.smtpHost;
-		response.smtpPort = instance.smtpPort;
-		response.smtpUser = instance.smtpUser;
-		response.smtpPass = instance.smtpPass;
-		response.swPrivateKey = instance.swPrivateKey;
-	}
-
-	res(response);
-}));
+			...(me && (me.isAdmin || me.isModerator) ? {
+				hidedTags: instance.hidedTags,
+				recaptchaSecretKey: instance.recaptchaSecretKey,
+				proxyAccount: instance.proxyAccount,
+				twitterConsumerKey: instance.twitterConsumerKey,
+				twitterConsumerSecret: instance.twitterConsumerSecret,
+				githubClientId: instance.githubClientId,
+				githubClientSecret: instance.githubClientSecret,
+				discordClientId: instance.discordClientId,
+				discordClientSecret: instance.discordClientSecret,
+				enableExternalUserRecommendation: instance.enableExternalUserRecommendation,
+				externalUserRecommendationEngine: instance.externalUserRecommendationEngine,
+				externalUserRecommendationTimeout: instance.externalUserRecommendationTimeout,
+				summalyProxy: instance.summalyProxy,
+				email: instance.email,
+				smtpSecure: instance.smtpSecure,
+				smtpHost: instance.smtpHost,
+				smtpPort: instance.smtpPort,
+				smtpUser: instance.smtpUser,
+				smtpPass: instance.smtpPass,
+				swPrivateKey: instance.swPrivateKey
+			} : {})
+		}))));

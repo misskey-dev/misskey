@@ -4,6 +4,7 @@ import User from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
 import generateUserToken from '../../common/generate-native-user-token';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	requireCredential: true,
@@ -17,25 +18,12 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Compare password
-	const same = await bcrypt.compare(ps.password, user.password);
-
-	if (!same) {
-		return rej('incorrect password');
-	}
-
-	// Generate secret
-	const secret = generateUserToken();
-
-	await User.update(user._id, {
-		$set: {
-			'token': secret
-		}
-	});
-
-	res();
-
-	// Publish event
-	publishMainStream(user._id, 'myTokenRegenerated');
-}));
+export default define(meta, (ps, user) => bcrypt.compare(ps.password, user.password)
+	.then(x =>
+		!x ? error('incorrect password') :
+		User.update(user._id, {
+			$set: { 'token': generateUserToken() }
+		}))
+	.then(() => {
+		publishMainStream(user._id, 'myTokenRegenerated');
+	}));

@@ -22,30 +22,15 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let _sort;
-	if (ps.sort) {
-		if (ps.sort == '+notes') {
-			_sort = {
-				notesCount: -1
-			};
-		} else if (ps.sort == '-notes') {
-			_sort = {
-				notesCount: 1
-			};
-		}
-	} else {
-		_sort = {
-			_id: -1
-		};
-	}
+const mika: { [x: string]: any } = {
+	'+notes': { notesCount: -1 },
+	'-notes': { notesCount: 1 }
+};
 
-	const instances = await Instance
-		.find({}, {
-			limit: ps.limit,
-			sort: _sort,
-			skip: ps.offset
-		});
+const rika = { _id: -1 };
 
-	res(instances);
-}));
+export default define(meta, ps => Instance.find({}, {
+		limit: ps.limit,
+		sort: mika[ps.sort] || rika,
+		skip: ps.offset
+	}));

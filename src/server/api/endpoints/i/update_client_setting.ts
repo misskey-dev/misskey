@@ -19,19 +19,11 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const x: any = {};
-	x[`clientSettings.${ps.name}`] = ps.value;
-
-	await User.update(user._id, {
-		$set: x
-	});
-
-	res();
-
-	// Publish event
-	publishMainStream(user._id, 'clientSettingUpdated', {
-		key: ps.name,
-		value: ps.value
-	});
-}));
+export default define(meta, (ps, user) => User.update(user._id, {
+		$set: { [`clientSettings.${ps.name}`]: ps.value }
+	}).then(() => {
+		publishMainStream(user._id, 'clientSettingUpdated', {
+			key: ps.name,
+			value: ps.value
+		});
+	}));

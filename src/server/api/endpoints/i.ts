@@ -18,13 +18,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
-	const isSecure = user != null && app == null;
-
-	// Serialize
-	res(await pack(user, user, {
+export default define(meta, (_, user, app) => pack(user, user, {
 		detail: true,
 		includeHasUnreadNotes: true,
-		includeSecrets: isSecure
+		includeSecrets: user && !app
 	}));
-}));

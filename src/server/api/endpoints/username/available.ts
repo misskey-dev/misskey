@@ -13,18 +13,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	// Get exist
-	const exist = await User
-		.count({
-			host: null,
-			usernameLower: ps.username.toLowerCase()
-		}, {
-			limit: 1
-		});
-
-	// Reply
-	res({
-		available: exist === 0
-	});
-}));
+export default define(meta, (ps) => User.count({
+		host: null,
+		usernameLower: ps.username.toLowerCase()
+	}, { limit: 1 })
+	.then(x => ({ available: !x })));

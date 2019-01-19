@@ -22,16 +22,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const file = await DriveFile.findOne({
+export default define(meta, (ps, user) => DriveFile.findOne({
 		md5: ps.md5,
 		'metadata.userId': user._id,
 		'metadata.deletedAt': { $exists: false }
-	});
-
-	if (file === null) {
-		res({ file: null });
-	} else {
-		res({ file: await pack(file, { self: true }) });
-	}
-}));
+	}).then(async x => ({
+		file: x === null ? null : await pack(x, { self: true })
+	})));

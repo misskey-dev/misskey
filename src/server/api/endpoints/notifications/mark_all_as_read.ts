@@ -14,29 +14,15 @@ export const meta = {
 	kind: 'notification-write'
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Update documents
-	await Notification.update({
-		notifieeId: user._id,
-		isRead: false
-	}, {
-			$set: {
-				isRead: true
-			}
+export default define(meta, (_, user) =>　Notification.update({
+			notifieeId: user._id,
+			isRead: false
 		}, {
-			multi: true
-		});
-
-	// Response
-	res();
-
-	// Update flag
-	User.update({ _id: user._id }, {
-		$set: {
-			hasUnreadNotification: false
-		}
-	});
-
-	// 全ての通知を読みましたよというイベントを発行
-	publishMainStream(user._id, 'readAllNotifications');
-}));
+			$set: { isRead: true }
+		}, { multi: true })
+	.then(_ => (
+		User.update({ _id: user._id }, {
+			$set: { hasUnreadNotification: false }
+		}),
+		publishMainStream(user._id, 'readAllNotifications'),
+		_)));

@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import DriveFile from '../../../../../models/drive-file';
 import define from '../../../define';
 import { packMany } from '../../../../../models/note';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -27,20 +28,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			_id: ps.fileId,
-			'metadata.userId': user._id,
-			'metadata.deletedAt': { $exists: false }
-		});
-
-	if (file === null) {
-		return rej('file-not-found');
-	}
-
-	res(await packMany(file.metadata.attachedNoteIds || [], user, {
-		detail: true
-	}));
-}));
+export default define(meta, (ps, user) => DriveFile.findOne({
+		_id: ps.fileId,
+		'metadata.userId': user._id,
+		'metadata.deletedAt': { $exists: false }
+	}).then(x =>
+		x === null ? error('file-not-found') :
+		packMany(x.metadata.attachedNoteIds || [], user, { detail: true })));

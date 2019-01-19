@@ -1,9 +1,10 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/user';
-import * as bcrypt from 'bcryptjs';
+import User, { IUser } from '../../../../models/user';
+import { hash } from 'bcryptjs';
 import rndstr from 'rndstr';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -25,33 +26,19 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const user = await User.findOne({
-		_id: ps.userId
-	});
-
-	if (user == null) {
-		return rej('user not found');
-	}
-
-	if (user.isAdmin) {
-		return rej('cannot reset password of admin');
-	}
-
-	const passwd = rndstr('a-zA-Z0-9', 8);
-
-	// Generate hash of password
-	const hash = bcrypt.hashSync(passwd);
-
+const update = async (user: IUser) => {
+	const password = rndstr('a-zA-Z0-9', 8);
 	await User.findOneAndUpdate({
 		_id: user._id
 	}, {
-			$set: {
-				password: hash
-			}
-		});
-
-	res({
-		password: passwd
+		$set: { password: await hash(password, 10) }
 	});
-}));
+	return { password };
+};
+
+export default define(meta, ps => User.findOne({ _id: ps.userId })
+	.then(x =>
+		!x ? error('user not found') :
+		x.isAdmin ? error('cannot reset password of admin') :
+		x)
+	.then(update));

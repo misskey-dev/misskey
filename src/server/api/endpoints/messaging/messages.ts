@@ -4,6 +4,7 @@ import User from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 import define from '../../define';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -47,66 +48,30 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	// Fetch recipient
-	const recipient = await User.findOne({
-		_id: ps.userId
-	}, {
-			fields: {
-				_id: true
-			}
-		});
-
-	if (recipient === null) {
-		return rej('user not found');
-	}
-
-	const query = {
-		$or: [{
-			userId: user._id,
-			recipientId: recipient._id
-		}, {
-			userId: recipient._id,
-			recipientId: user._id
-		}]
-	} as any;
-
-	const sort = {
-		_id: -1
-	};
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const messages = await Message
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await Promise.all(messages.map(message => pack(message, user, {
-		populateRecipient: false
-	}))));
-
-	if (messages.length === 0) {
-		return;
-	}
-
-	// Mark all as read
-	if (ps.markAsRead) {
-		read(user._id, recipient._id, messages);
-	}
-}));
+export default define(meta, (ps, user) => errorWhen(
+	ps.sinceId && !!ps.untilId,
+	'cannot set sinceId and untilId')
+	.then(() => User.findOne({ _id: ps.userId }, {
+			fields: { _id: true }
+		}))
+	.then(async x => {
+		if (x === null) throw 'user not found';
+		const messages = await Message.find({
+			_id:
+				ps.sinceId ? { $gt: ps.sinceId } :
+				ps.untilId ? { $lt: ps.untilId } : undefined,
+				$or: [{
+					userId: user._id,
+					recipientId: x._id
+				}, {
+					userId: x._id,
+					recipientId: user._id
+				}]
+			}, {
+				limit: ps.limit,
+				sort: ps.sinceId ? 1 : -1
+			});
+		const response = await Promise.all(messages.map(message => pack(message, user, { populateRecipient: false })));
+		if (messages.length !== 0 && ps.markAsRead) read(user._id, x._id, messages);
+		return response;
+	}));

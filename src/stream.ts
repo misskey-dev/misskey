@@ -43,68 +43,56 @@ class Publisher {
 		}
 	}
 
-	public publishMainStream = (userId: ID, type: string, value?: any): void => {
-		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
-	}
+	public publishMainStream = (userId: ID, type: string, value?: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value))
 
-	public publishDriveStream = (userId: ID, type: string, value?: any): void => {
-		this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value);
-	}
+	public publishDriveStream = (userId: ID, type: string, value?: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value))
 
-	public publishNoteStream = (noteId: ID, type: string, value: any): void => {
-		this.publish(`noteStream:${noteId}`, type, {
+	public publishNoteStream = (noteId: ID, type: string, value: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`noteStream:${noteId}`, type, {
 			id: noteId,
 			body: value
-		});
-	}
+		}))
 
-	public publishUserListStream = (listId: ID, type: string, value?: any): void => {
-		this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value);
-	}
+	public publishUserListStream = (listId: ID, type: string, value?: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value))
 
-	public publishMessagingStream = (userId: ID, otherpartyId: ID, type: string, value?: any): void => {
-		this.publish(`messagingStream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
-	}
+	public publishMessagingStream = (userId: ID, otherpartyId: ID, type: string, value?: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`messagingStream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value))
 
-	public publishMessagingIndexStream = (userId: ID, type: string, value?: any): void => {
-		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
-	}
+	public publishMessagingIndexStream = (userId: ID, type: string, value?: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value))
 
-	public publishReversiStream = (userId: ID, type: string, value?: any): void => {
-		this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value);
-	}
+	public publishReversiStream = (userId: ID, type: string, value?: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value))
 
-	public publishReversiGameStream = (gameId: ID, type: string, value?: any): void => {
-		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
-	}
+	public publishReversiGameStream = (gameId: ID, type: string, value?: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value))
 
-	public publishHomeTimelineStream = (userId: ID, note: any): void => {
-		this.publish(`homeTimeline:${userId}`, null, note);
-	}
+	public publishHomeTimelineStream = (userId: ID, note: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish(`homeTimeline:${userId}`, null, note))
 
-	public publishLocalTimelineStream = async (note: any): Promise<void> => {
-		const meta = await this.fetchMeta();
-		if (meta.disableLocalTimeline) return;
-		this.publish('localTimeline', null, note);
-	}
+	public publishLocalTimelineStream = async (note: any): Promise<void> => this.fetchMeta()
+		.then(meta => {
+			if (meta.disableLocalTimeline) return;
+			this.publish('localTimeline', null, note);
+		})
 
-	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => {
-		const meta = await this.fetchMeta();
-		if (meta.disableLocalTimeline) return;
-		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
-	}
+	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => this.fetchMeta()
+		.then(meta => {
+			if (meta.disableLocalTimeline) return;
+			this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
+		})
 
-	public publishGlobalTimelineStream = (note: any): void => {
-		this.publish('globalTimeline', null, note);
-	}
+	public publishGlobalTimelineStream = (note: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish('globalTimeline', null, note))
 
-	public publishHashtagStream = (note: any): void => {
-		this.publish('hashtag', null, note);
-	}
+	public publishHashtagStream = (note: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish('hashtag', null, note))
 
-	public publishApLogStream = (log: any): void => {
-		this.publish('apLog', null, log);
-	}
+	public publishApLogStream = (log: any): Promise<void> => Promise.resolve()
+		.then(() => this.publish('apLog', null, log))
 }
 
 const publisher = new Publisher();

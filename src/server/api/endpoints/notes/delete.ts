@@ -3,6 +3,7 @@ import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
 import User from '../../../../models/user';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 const ms = require('ms');
 
 export const meta = {
@@ -35,21 +36,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch note
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	if (!user.isAdmin && !user.isModerator && !note.userId.equals(user._id)) {
-		return rej('access denied');
-	}
-
-	await deleteNote(await User.findOne({ _id: note.userId }), note);
-
-	res();
-}));
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(note =>
+		note === null ? error('note not found') :
+		!user.isAdmin && !user.isModerator && !note.userId.equals(user._id) ? error('access denied') :
+		User.findOne({ _id: note.userId })
+			.then(x => deleteNote(x, note))));

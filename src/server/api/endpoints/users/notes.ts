@@ -3,7 +3,7 @@ import getHostLower from '../../common/get-host-lower';
 import Note, { packMany } from '../../../../models/note';
 import User from '../../../../models/user';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -127,109 +127,56 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	if (ps.userId === undefined && ps.username === undefined) {
-		return rej('userId or username is required');
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
-	}
-
-	const q = ps.userId != null
-		? { _id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: getHostLower(ps.host) } ;
-
-	// Lookup user
-	const user = await User.findOne(q, {
-		fields: {
-			_id: true
-		}
-	});
-
-	if (user === null) {
-		return rej('user not found');
-	}
-
-	//#region Construct query
-	const sort = { } as any;
-
-	const query = {
-		$and: [ {} ],
-		deletedAt: null,
-		userId: user._id
-	} as any;
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		sort._id = -1;
-		query._id = {
-			$lt: ps.untilId
-		};
-	} else if (ps.sinceDate) {
-		sort.createdAt = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		sort.createdAt = -1;
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
-	} else {
-		sort._id = -1;
-	}
-
-	if (!ps.includeReplies) {
-		query.replyId = null;
-	}
-
-	if (ps.includeMyRenotes === false) {
-		query.$and.push({
-			$or: [{
-				userId: { $ne: user._id }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
-	}
-
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.fileIds = {
-			$exists: true,
-			$ne: []
-		};
-	}
-
-	if (ps.fileType) {
-		query.fileIds = { $exists: true, $ne: [] };
-
-		query['_files.contentType'] = {
-			$in: ps.fileType
-		};
-	}
-	//#endregion
-
-	// Issue query
-	const notes = await Note
-		.find(query, {
+export default define(meta, (ps, me) => errorWhen(
+	ps.userId === undefined && ps.username === undefined,
+	'userId or username is required')
+	.then(() => errorWhen(
+		[ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate].filter(x => x).length > 1,
+		'only one of sinceId, untilId, sinceDate, untilDate can be specified'))
+	.then(() => User.findOne(ps.userId ?
+		{ _id: ps.userId } : {
+			usernameLower: ps.username.toLowerCase(),
+			host: getHostLower(ps.host)
+		}, {
+			fields: { _id: true }
+		}))
+	.then(x => errorWhen(
+		x === null,
+		'user not found',
+		x)
+	.then(x => Note.find({
+			_id:
+				ps.sinceId ? { $gt: ps.sinceId } :
+				ps.untilId ? { $lt: ps.untilId } : undefined,
+			createdAt:
+				ps.sinceDate ? { $gt: new Date(ps.sinceDate) } :
+				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
+			$and: [{
+			},
+			...(ps.includeMyRenotes === false ? [{
+				$or: [{
+					userId: { $ne: x._id }
+				}, { renoteId: null }, {
+					text: { $ne: null }
+				}, {
+					fileIds: { $ne: [] }
+				}, {
+					poll: { $ne: null }
+				}]
+			}] : [])],
+			deletedAt: null,
+			userId: x._id,
+			replyId: ps.includeReplies ? undefined : null,
+			fileIds: ps.fileType || ps.withFiles !== false || ps.mediaOnly ? {
+				$exists: true,
+				$ne: []
+			} : undefined,
+			'_files.contentType': { $in: ps.fileType }
+		}, {
 			limit: ps.limit,
-			sort: sort
-		});
-
-	// Serialize
-	res(await packMany(notes, me));
-}));
+			sort: {
+				_id: ps.sinceId ? 1 : -1,
+				createdAt: ps.sinceDate ? 1 : -1
+			}
+		}))
+	.then(x => packMany(x, me))));

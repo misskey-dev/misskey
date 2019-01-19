@@ -22,25 +22,15 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const day = 1000 * 60 * 60 * 24;
+const day = 1000 * 60 * 60 * 24;
 
-	const notes = await Note
-		.find({
-			createdAt: {
-				$gt: new Date(Date.now() - day)
-			},
-			deletedAt: null,
-			visibility: { $in: ['public', 'home'] }
-		}, {
-			limit: ps.limit,
-			sort: {
-				score: -1
-			},
-			hint: {
-				score: -1
-			}
-		});
-
-	res(await packMany(notes, user));
-}));
+export default define(meta, (ps, user) => Note.find({
+		createdAt: { $gt: new Date(Date.now() - day) },
+		deletedAt: null,
+		visibility: { $in: ['public', 'home'] }
+	}, {
+		limit: ps.limit,
+		sort: { score: -1 },
+		hint: { score: -1 }
+	})
+	.then(x => packMany(x, user)));

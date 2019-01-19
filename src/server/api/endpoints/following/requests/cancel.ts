@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
 import User, { pack } from '../../../../../models/user';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -25,21 +26,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch followee
-	const followee = await User.findOne({
-		_id: ps.userId
-	});
-
-	if (followee === null) {
-		return rej('followee not found');
-	}
-
-	try {
-		await cancelFollowRequest(followee, user);
-	} catch (e) {
-		return rej(e);
-	}
-
-	res(await pack(followee._id, user));
-}));
+export default define(meta, (ps, user) => User.findOne({ _id: ps.userId })
+	.then(x =>
+		x === null ? error('followee not found') :
+		cancelFollowRequest(x, user)
+			.then(() => pack(x._id, user))));

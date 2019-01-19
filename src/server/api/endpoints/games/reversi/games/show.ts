@@ -1,7 +1,8 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../../misc/cafy-id';
-import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
+import ReversiGame, { pack, IReversiGame } from '../../../../../../models/games/reversi/game';
 import Reversi from '../../../../../../games/reversi/core';
 import define from '../../../../define';
+import { error } from '../../../../../../prelude/promise';
 
 export const meta = {
 	params: {
@@ -12,26 +13,20 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const game = await ReversiGame.findOne({ _id: ps.gameId });
-
-	if (game == null) {
-		return rej('game not found');
-	}
-
+const replay = (game: IReversiGame) => {
 	const o = new Reversi(game.settings.map, {
 		isLlotheo: game.settings.isLlotheo,
 		canPutEverywhere: game.settings.canPutEverywhere,
 		loopedBoard: game.settings.loopedBoard
 	});
-
 	for (const log of game.logs)
 		o.put(log.color, log.pos);
+	const { board, turn } = o;
+	return { board, turn };
+};
 
-	const packed = await pack(game, user);
-
-	res(Object.assign({
-		board: o.board,
-		turn: o.turn
-	}, packed));
-}));
+export default define(meta, (ps, user) => ReversiGame.findOne({ _id: ps.gameId })
+	.then(game =>
+		!game ? error('game not found') :
+		pack(game, user)
+			.then(x => ({ ...replay(game), x }))));

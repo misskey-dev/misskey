@@ -1,9 +1,10 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -41,59 +42,28 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	// Lookup user
-	const user = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			_id: true
-		}
-	});
+const be = async (my: ILocalUser, baby: boolean) =>
+	my && baby ? { $in: await getFriendIds(my._id) } : undefined;
 
-	if (user === null) {
-		return rej('user not found');
-	}
-
-	// Construct query
-	const query = {
-		followerId: user._id
-	} as any;
-
-	// ログインしていてかつ iknow フラグがあるとき
-	if (me && ps.iknow) {
-		// Get my friends
-		const myFriends = await getFriendIds(me._id);
-
-		query.followeeId = {
-			$in: myFriends
-		};
-	}
-
-	// カーソルが指定されている場合
-	if (ps.cursor) {
-		query._id = {
-			$lt: ps.cursor
-		};
-	}
-
-	// Get followers
-	const following = await Following
-		.find(query, {
-			limit: ps.limit + 1,
-			sort: { _id: -1 }
-		});
-
-	// 「次のページ」があるかどうか
-	const inStock = following.length === ps.limit + 1;
-	if (inStock) {
-		following.pop();
-	}
-
-	const users = await Promise.all(following.map(f => pack(f.followeeId, me, { detail: true })));
-
-	res({
-		users: users,
-		next: inStock ? following[following.length - 1]._id : null,
-	});
-}));
+export default define(meta, (ps, me) => User.findOne({ _id: ps.userId }, {
+		fields: { _id: true }
+	})
+	.then(x =>
+		x === null ? error('user not found') :
+		be(me, ps.iknow)
+			.then($in => Following.find({
+					_id: ps.cursor ? { $lt: ps.cursor } : undefined,
+					followeeId: $in,
+					followerId: x._id
+				}, {
+					limit: ps.limit + 1,
+					sort: { _id: -1 }
+				})
+			.then(x => {
+				const inStock = x.length === ps.limit + 1;
+				(inStock && x.pop(), Promise.all(x.map(f => pack(f.followeeId, me, { detail: true }))))
+					.then(users => ({
+						users,
+						next: inStock ? x[x.length - 1]._id : null,
+					}));
+			}))));

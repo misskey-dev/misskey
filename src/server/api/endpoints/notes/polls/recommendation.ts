@@ -24,28 +24,16 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get votes
-	const votes = await Vote.find({
-		userId: user._id
-	}, {
+export default define(meta, (ps, user) => Vote.find({　userId: user._id　}, {
 		fields: {
 			_id: false,
 			noteId: true
 		}
-	});
-
-	const nin = votes && votes.length != 0 ? votes.map(v => v.noteId) : [];
-
-	const notes = await Note
-		.find({
+	})
+	.then(x => Note.find({
 			'_user.host': null,
-			_id: {
-				$nin: nin
-			},
-			userId: {
-				$ne: user._id
-			},
+			_id: { $nin: x && x.length ? x.map(x => x.noteId) : [] },
+			userId: { $ne: user._id },
 			poll: {
 				$exists: true,
 				$ne: null
@@ -53,12 +41,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}, {
 			limit: ps.limit,
 			skip: ps.offset,
-			sort: {
-				_id: -1
-			}
-		});
-
-	res(await Promise.all(notes.map(note => pack(note, user, {
-		detail: true
-	}))));
-}));
+			sort: { _id: -1 }
+		}))
+	.then(x => Promise.all(x.map(x => pack(x, user, { detail: true })))));

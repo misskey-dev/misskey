@@ -3,6 +3,7 @@ import UserList from '../../../../../models/user-list';
 import User, { pack as packUser } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../stream';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -31,34 +32,16 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	// Fetch the list
-	const userList = await UserList.findOne({
+export default define(meta, (ps, me) => UserList.findOne({
 		_id: ps.listId,
 		userId: me._id,
-	});
-
-	if (userList == null) {
-		return rej('list not found');
-	}
-
-	// Fetch the user
-	const user = await User.findOne({
-		_id: ps.userId
-	});
-
-	if (user == null) {
-		return rej('user not found');
-	}
-
-	// Pull the user
-	await UserList.update({ _id: userList._id }, {
-		$pull: {
-			userIds: user._id
-		}
-	});
-
-	res();
-
-	publishUserListStream(userList._id, 'userRemoved', await packUser(user));
-}));
+	}).then(x =>
+		(!x) ? error('list not found') :
+		User.findOne({ _id: ps.userId })
+			.then(user =>
+				!user ? error('user not found') :
+				UserList.update({ _id: x._id }, {
+					$pull: { userIds: user._id }
+				})
+				.then(() => (packUser(user)
+					.then(pack => publishUserListStream(x._id, 'userRemoved', pack)), undefined)))));

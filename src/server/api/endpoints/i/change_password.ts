@@ -2,6 +2,7 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import User from '../../../../models/user';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	requireCredential: true,
@@ -19,23 +20,12 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Compare password
-	const same = await bcrypt.compare(ps.currentPassword, user.password);
-
-	if (!same) {
-		return rej('incorrect password');
-	}
-
-	// Generate hash of password
-	const salt = await bcrypt.genSalt(8);
-	const hash = await bcrypt.hash(ps.newPassword, salt);
-
-	await User.update(user._id, {
-		$set: {
-			'password': hash
-		}
-	});
-
-	res();
-}));
+export default define(meta, (ps, user) => bcrypt.compare(ps.currentPassword, user.password)
+	.then(x =>
+		!x ? error('incorrect password') :
+		bcrypt.genSalt(8))
+	.then(x => bcrypt.hash(ps.newPassword, x))
+	.then(x => User.update(user._id, {
+		$set: { 'password': x }
+	}))
+	.then(() => {}));

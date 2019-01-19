@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Mute, { packMany } from '../../../../models/mute';
 import define from '../../define';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -30,36 +31,16 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	const query = {
-		muterId: me._id
-	} as any;
-
-	const sort = {
-		_id: -1
-	};
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const mutes = await Mute
-		.find(query, {
+export default define(meta, (ps, me) => errorWhen(
+	ps.sinceId && !!ps.untilId,
+	'cannot set sinceId and untilId')
+	.then(() => Mute.find({
+			_id:
+				ps.sinceId ? { $gt: ps.sinceId } :
+				ps.untilId ? { $lt: ps.untilId } : undefined,
+			muterId: me._id
+		}, {
 			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(mutes, me));
-}));
+			sort: { _id: ps.sinceId ? -1 : 1 }
+		}))
+	.then(x => packMany(x, me)));

@@ -33,85 +33,44 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get votee
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	if (note.poll == null) {
-		return rej('poll not found');
-	}
-
-	if (!note.poll.choices.some(x => x.id == ps.choice)) return rej('invalid choice param');
-
-	// if already voted
-	const exist = await Vote.findOne({
-		noteId: note._id,
-		userId: user._id
-	});
-
-	if (exist !== null) {
-		return rej('already voted');
-	}
-
-	// Create vote
-	await Vote.insert({
-		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id,
-		choice: ps.choice
-	});
-
-	// Send response
-	res();
-
-	const inc: any = {};
-	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == ps.choice)}.votes`] = 1;
-
-	// Increment votes count
-	await Note.update({ _id: note._id }, {
-		$inc: inc
-	});
-
-	publishNoteStream(note._id, 'pollVoted', {
-		choice: ps.choice,
-		userId: user._id.toHexString()
-	});
-
-	// Notify
-	notify(note.userId, user._id, 'poll_vote', {
-		noteId: note._id,
-		choice: ps.choice
-	});
-
-	// Fetch watchers
-	Watching
-		.find({
-			noteId: note._id,
-			userId: { $ne: user._id },
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
-		}, {
-			fields: {
-				userId: true
-			}
-		})
-		.then(watchers => {
-			for (const watcher of watchers) {
-				notify(watcher.userId, user._id, 'poll_vote', {
-					noteId: note._id,
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(async x => {
+		if (x === null) throw 'note not found';
+		if (!x.poll) throw 'poll not found';
+		if (!x.poll.choices.some(x => x.id == ps.choice)) throw 'invalid choice param';
+		if (await Vote.findOne({
+			noteId: x._id,
+			userId: user._id
+		}) !== null) throw 'already voted';
+		await Vote.insert({
+			createdAt: new Date(),
+			noteId: x._id,
+			userId: user._id,
+			choice: ps.choice
+		});
+		Note.update({ _id: x._id }, {
+			$inc: { [`poll.choices.${x.poll.choices.findIndex(x => x.id == ps.choice)}.votes`]: 1 }
+		}).then(() => {
+			publishNoteStream(x._id, 'pollVoted', {
+				choice: ps.choice,
+				userId: user._id.toHexString()
+			});
+			notify(x.userId, user._id, 'poll_vote', {
+				noteId: x._id,
+				choice: ps.choice
+			});
+			return Watching.find({
+					noteId: x._id,
+					userId: { $ne: user._id },
+					deletedAt: { $exists: false }
+				}, {
+					fields: { userId: true }
+				});
+		}).then(watchers => {
+			for (const watcher of watchers) notify(watcher.userId, user._id, 'poll_vote', {
+					noteId: x._id,
 					choice: ps.choice
 				});
-			}
+			if (user.settings.autoWatch !== false) watch(user._id, x);
 		});
-
-	// この投稿をWatchする
-	if (user.settings.autoWatch !== false) {
-		watch(user._id, note);
-	}
-}));
+	}));

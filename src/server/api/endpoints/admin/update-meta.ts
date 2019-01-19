@@ -127,6 +127,7 @@ export const meta = {
 
 		maintainerName: {
 			validator: $.str.optional,
+			locates: 'maintainer.name',
 			desc: {
 				'ja-JP': 'インスタンスの管理者名'
 			}
@@ -134,6 +135,7 @@ export const meta = {
 
 		maintainerEmail: {
 			validator: $.str.optional.nullable,
+			locates: 'maintainer.email',
 			desc: {
 				'ja-JP': 'インスタンス管理者の連絡先メールアドレス'
 			}
@@ -309,180 +311,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const set = {} as any;
-
-	if (ps.broadcasts) {
-		set.broadcasts = ps.broadcasts;
-	}
-
-	if (typeof ps.disableRegistration === 'boolean') {
-		set.disableRegistration = ps.disableRegistration;
-	}
-
-	if (typeof ps.disableLocalTimeline === 'boolean') {
-		set.disableLocalTimeline = ps.disableLocalTimeline;
-	}
-
-	if (Array.isArray(ps.hidedTags)) {
-		set.hidedTags = ps.hidedTags;
-	}
-
-	if (ps.bannerUrl !== undefined) {
-		set.bannerUrl = ps.bannerUrl;
-	}
-
-	if (ps.name !== undefined) {
-		set.name = ps.name;
-	}
-
-	if (ps.description !== undefined) {
-		set.description = ps.description;
-	}
-
-	if (ps.maxNoteTextLength) {
-		set.maxNoteTextLength = ps.maxNoteTextLength;
-	}
-
-	if (ps.localDriveCapacityMb !== undefined) {
-		set.localDriveCapacityMb = ps.localDriveCapacityMb;
-	}
-
-	if (ps.remoteDriveCapacityMb !== undefined) {
-		set.remoteDriveCapacityMb = ps.remoteDriveCapacityMb;
-	}
-
-	if (ps.cacheRemoteFiles !== undefined) {
-		set.cacheRemoteFiles = ps.cacheRemoteFiles;
-	}
-
-	if (ps.enableRecaptcha !== undefined) {
-		set.enableRecaptcha = ps.enableRecaptcha;
-	}
-
-	if (ps.recaptchaSiteKey !== undefined) {
-		set.recaptchaSiteKey = ps.recaptchaSiteKey;
-	}
-
-	if (ps.recaptchaSecretKey !== undefined) {
-		set.recaptchaSecretKey = ps.recaptchaSecretKey;
-	}
-
-	if (ps.proxyAccount !== undefined) {
-		set.proxyAccount = ps.proxyAccount;
-	}
-
-	if (ps.maintainerName !== undefined) {
-		set['maintainer.name'] = ps.maintainerName;
-	}
-
-	if (ps.maintainerEmail !== undefined) {
-		set['maintainer.email'] = ps.maintainerEmail;
-	}
-
-	if (ps.langs !== undefined) {
-		set.langs = ps.langs;
-	}
-
-	if (ps.summalyProxy !== undefined) {
-		set.summalyProxy = ps.summalyProxy;
-	}
-
-	if (ps.enableTwitterIntegration !== undefined) {
-		set.enableTwitterIntegration = ps.enableTwitterIntegration;
-	}
-
-	if (ps.twitterConsumerKey !== undefined) {
-		set.twitterConsumerKey = ps.twitterConsumerKey;
-	}
-
-	if (ps.twitterConsumerSecret !== undefined) {
-		set.twitterConsumerSecret = ps.twitterConsumerSecret;
-	}
-
-	if (ps.enableGithubIntegration !== undefined) {
-		set.enableGithubIntegration = ps.enableGithubIntegration;
-	}
-
-	if (ps.githubClientId !== undefined) {
-		set.githubClientId = ps.githubClientId;
-	}
-
-	if (ps.githubClientSecret !== undefined) {
-		set.githubClientSecret = ps.githubClientSecret;
-	}
-
-	if (ps.enableDiscordIntegration !== undefined) {
-		set.enableDiscordIntegration = ps.enableDiscordIntegration;
-	}
-
-	if (ps.discordClientId !== undefined) {
-		set.discordClientId = ps.discordClientId;
-	}
-
-	if (ps.discordClientSecret !== undefined) {
-		set.discordClientSecret = ps.discordClientSecret;
-	}
-
-	if (ps.enableExternalUserRecommendation !== undefined) {
-		set.enableExternalUserRecommendation = ps.enableExternalUserRecommendation;
-	}
-
-	if (ps.externalUserRecommendationEngine !== undefined) {
-		set.externalUserRecommendationEngine = ps.externalUserRecommendationEngine;
-	}
-
-	if (ps.externalUserRecommendationTimeout !== undefined) {
-		set.externalUserRecommendationTimeout = ps.externalUserRecommendationTimeout;
-	}
-
-	if (ps.enableEmail !== undefined) {
-		set.enableEmail = ps.enableEmail;
-	}
-
-	if (ps.email !== undefined) {
-		set.email = ps.email;
-	}
-
-	if (ps.smtpSecure !== undefined) {
-		set.smtpSecure = ps.smtpSecure;
-	}
-
-	if (ps.smtpHost !== undefined) {
-		set.smtpHost = ps.smtpHost;
-	}
-
-	if (ps.smtpPort !== undefined) {
-		set.smtpPort = ps.smtpPort;
-	}
-
-	if (ps.smtpUser !== undefined) {
-		set.smtpUser = ps.smtpUser;
-	}
-
-	if (ps.smtpPass !== undefined) {
-		set.smtpPass = ps.smtpPass;
-	}
-
-	if (ps.errorImageUrl !== undefined) {
-		set.errorImageUrl = ps.errorImageUrl;
-	}
-
-	if (ps.enableServiceWorker !== undefined) {
-		set.enableServiceWorker = ps.enableServiceWorker;
-	}
-
-	if (ps.swPublicKey !== undefined) {
-		set.swPublicKey = ps.swPublicKey;
-	}
-
-	if (ps.swPrivateKey !== undefined) {
-		set.swPrivateKey = ps.swPrivateKey;
-	}
-
-	await Meta.update({}, {
-		$set: set
-	}, { upsert: true });
-
-	res();
-}));
+export default define(meta, ps => Meta.update({}, {
+		$set: Object.entries(meta.params as {
+			[x: string]: { locates?: string }
+		}).reduce((a, [k, v]) => Object.assign(a, { [v.locates || k]: (ps as any)[k] }), {} as any)
+	}, { upsert: true })
+	.then(() => {}));

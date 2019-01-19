@@ -33,44 +33,21 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch unreactee
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	// if already unreacted
-	const exist = await Reaction.findOne({
-		noteId: note._id,
-		userId: user._id,
-		deletedAt: { $exists: false }
-	});
-
-	if (exist === null) {
-		return rej('never reacted');
-	}
-
-	// Delete reaction
-	await Reaction.remove({
-		_id: exist._id
-	});
-
-	res();
-
-	const dec: any = {};
-	dec[`reactionCounts.${exist.reaction}`] = -1;
-
-	// Decrement reactions count
-	Note.update({ _id: note._id }, {
-		$inc: dec
-	});
-
-	publishNoteStream(note._id, 'unreacted', {
-		reaction: exist.reaction,
-		userId: user._id
-	});
-}));
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(async x => {
+		if (x === null) throw 'note not found';
+		const exist = await Reaction.findOne({
+			noteId: x._id,
+			userId: user._id,
+			deletedAt: { $exists: false }
+		});
+		if (exist === null) throw 'never reacted';
+		await Reaction.remove({ _id: exist._id });
+		Note.update({ _id: x._id }, {
+			$inc: { [`reactionCounts.${exist.reaction}`]: -1 }
+		});
+		publishNoteStream(x._id, 'unreacted', {
+			reaction: exist.reaction,
+			userId: user._id
+		});
+	}));

@@ -3,6 +3,7 @@ import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -34,25 +35,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch reactee
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	if (note.deletedAt != null) {
-		return rej('this not is already deleted');
-	}
-
-	try {
-		await create(user, note, ps.reaction);
-	} catch (e) {
-		rej(e);
-	}
-
-	res();
-}));
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(x =>
+		x === null ? error('note not found') :
+		x.deletedAt ? error('this not is already deleted') :
+		create(user, x, ps.reaction)));

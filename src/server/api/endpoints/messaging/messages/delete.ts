@@ -35,20 +35,12 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const message = await Message.findOne({
+export default define(meta, (ps, user) => Message.findOne({
 		_id: ps.messageId,
 		userId: user._id
-	});
-
-	if (message === null) {
-		return rej('message not found');
-	}
-
-	await Message.remove({ _id: message._id });
-
-	publishMessagingStream(message.userId, message.recipientId, 'deleted', message._id);
-	publishMessagingStream(message.recipientId, message.userId, 'deleted', message._id);
-
-	res();
-}));
+	}).then(async x => {
+		if (x === null) throw 'message not found';
+		await Message.remove({ _id: x._id });
+		publishMessagingStream(x.userId, x.recipientId, 'deleted', x._id);
+		publishMessagingStream(x.recipientId, x.userId, 'deleted', x._id);
+	}));

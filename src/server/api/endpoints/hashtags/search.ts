@@ -36,17 +36,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const hashtags = await Hashtag
-		.find({
-			tag: new RegExp('^' + escapeRegexp(ps.query.toLowerCase()))
-		}, {
-			sort: {
-				count: -1
-			},
-			limit: ps.limit,
-			skip: ps.offset
-		});
-
-	res(hashtags.map(tag => tag.tag));
-}));
+export default define(meta, ps => Hashtag.find({ tag: new RegExp(`^${escapeRegexp(ps.query.toLowerCase())}`) }, {
+		sort: { count: -1 },
+		limit: ps.limit,
+		skip: ps.offset
+	})
+	.then(x => x.map(x => x.tag)));

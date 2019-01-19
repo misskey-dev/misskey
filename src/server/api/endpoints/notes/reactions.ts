@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import Reaction, { pack } from '../../../../models/note-reaction';
 import define from '../../define';
+import { error, errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -43,47 +44,20 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	// Lookup note
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	const query = {
-		noteId: note._id
-	} as any;
-
-	const sort = {
-		_id: -1
-	};
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const reactions = await Reaction
-		.find(query, {
-			limit: ps.limit,
-			skip: ps.offset,
-			sort: sort
-		});
-
-	// Serialize
-	res(await Promise.all(reactions.map(reaction => pack(reaction, user))));
-}));
+export default define(meta, (ps, user) => errorWhen(
+	ps.sinceId && !!ps.untilId,
+	'cannot set sinceId and untilId')
+	.then(() => Note.findOne({ _id: ps.noteId }))
+	.then(x =>
+		x === null ? error('note not found') :
+		Reaction.find({
+				_id:
+					ps.sinceId ? { $gt: ps.sinceId } :
+					ps.untilId ? { $lt: ps.untilId } : undefined,
+				noteId: x._id
+			}, {
+				limit: ps.limit,
+				skip: ps.offset,
+				sort: { _id: ps.sinceId ? 1 : -1 }
+			}))
+	.then(x => Promise.all(x.map(x => pack(x, user)))));

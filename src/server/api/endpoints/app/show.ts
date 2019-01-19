@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import App, { pack } from '../../../../models/app';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	params: {
@@ -11,19 +12,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
-	const isSecure = user != null && app == null;
-
-	// Lookup app
-	const ap = await App.findOne({ _id: ps.appId });
-
-	if (ap === null) {
-		return rej('app not found');
-	}
-
-	// Send response
-	res(await pack(ap, user, {
-		detail: true,
-		includeSecret: isSecure && ap.userId.equals(user._id)
-	}));
-}));
+export default define(meta, (ps, user, app) => App.findOne({ _id: ps.appId })
+	.then(x =>
+		x === null ? error('app not found') :
+		pack(x, user, {
+			detail: true,
+			includeSecret: user && !app && x.userId.equals(user._id)
+		})));

@@ -4,6 +4,7 @@ import User, { pack } from '../../../../models/user';
 import Blocking from '../../../../models/blocking';
 import create from '../../../../services/blocking/create';
 import define from '../../define';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -34,43 +35,21 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const blocker = user;
-
-	// 自分自身
-	if (user._id.equals(ps.userId)) {
-		return rej('blockee is yourself');
-	}
-
-	// Get blockee
-	const blockee = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			data: false,
-			profile: false
-		}
-	});
-
-	if (blockee === null) {
-		return rej('user not found');
-	}
-
-	// Check if already blocking
-	const exist = await Blocking.findOne({
-		blockerId: blocker._id,
-		blockeeId: blockee._id
-	});
-
-	if (exist !== null) {
-		return rej('already blocking');
-	}
-
-	// Create blocking
-	await create(blocker, blockee);
-
-	// Send response
-	res(await pack(blockee._id, user, {
-		detail: true
-	}));
-}));
+export default define(meta, (ps, user) => errorWhen(
+	user._id.equals(ps.userId),
+	'blockee is yourself')
+	.then(() => User.findOne({ _id: ps.userId }, {
+			fields: {
+				data: false,
+				profile: false
+			}
+		}))
+	.then(async x => {
+		if (x === null) throw 'user not found';
+		if (await Blocking.findOne({
+			blockerId: user._id,
+			blockeeId: x._id
+		}) !== null) throw 'already blocking';
+		await create(user, x);
+		return x._id;
+	}).then(x => pack(x, user, { detail: true })));

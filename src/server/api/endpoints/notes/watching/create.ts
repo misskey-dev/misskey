@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import Note from '../../../../../models/note';
 import define from '../../../define';
 import watch from '../../../../../services/note/watch';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -27,18 +28,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get note
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	await watch(user._id, note);
-
-	// Send response
-	res();
-}));
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(x =>
+		x === null ? error('note not found') :
+		watch(user._id, x)));

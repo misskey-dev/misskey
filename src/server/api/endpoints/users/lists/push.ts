@@ -6,6 +6,7 @@ import ap from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -34,45 +35,22 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	// Fetch the list
-	const userList = await UserList.findOne({
+export default define(meta, (ps, me) => UserList.findOne({
 		_id: ps.listId,
 		userId: me._id,
-	});
-
-	if (userList == null) {
-		return rej('list not found');
-	}
-
-	// Fetch the user
-	const user = await User.findOne({
-		_id: ps.userId
-	});
-
-	if (user == null) {
-		return rej('user not found');
-	}
-
-	if (userList.userIds.map(id => id.toHexString()).includes(user._id.toHexString())) {
-		return rej('the user already added');
-	}
-
-	// Push the user
-	await UserList.update({ _id: userList._id }, {
-		$push: {
-			userIds: user._id
-		}
-	});
-
-	res();
-
-	publishUserListStream(userList._id, 'userAdded', await packUser(user));
-
-	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
-	if (isRemoteUser(user)) {
-		const proxy = await fetchProxyAccount();
-		const content = ap(renderFollow(proxy, user));
-		deliver(proxy, content, user.inbox);
-	}
-}));
+	})
+	.then(x =>
+		!x ? error('list not found') :
+		User.findOne({ _id: ps.userId })
+			.then(user =>
+				!user ? error('user not found') :
+				x.userIds.map(id => id.toHexString()).includes(user._id.toHexString()) ? error('the user already added') :
+				UserList.update({ _id: x._id }, {
+					$push: { userIds: user._id }
+				})
+				.then(() => (
+					packUser(user).then(pack => publishUserListStream(x._id, 'userAdded', pack)),
+					isRemoteUser(user) && fetchProxyAccount()
+						.then(x => deliver(x, ap(renderFollow(x, user)), user.inbox))),
+					undefined
+				))));

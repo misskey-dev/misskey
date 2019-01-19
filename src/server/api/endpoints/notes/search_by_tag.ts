@@ -4,6 +4,7 @@ import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
+import { ObjectID } from 'mongodb';
 
 export const meta = {
 	desc: {
@@ -102,171 +103,89 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const q: any = {
-		$and: [ps.tag ? {
-			tagsLower: ps.tag.toLowerCase()
-		} : {
-			$or: ps.query.map(tags => ({
-				$and: tags.map(t => ({
-					tagsLower: t.toLowerCase()
-				}))
-			}))
-		}],
-		deletedAt: { $exists: false }
-	};
+const mika: { [x: string]: (x: ObjectID[]) => any } = {
+	'mute_all': $nin => ({
+		userId: { $nin },
+		'_reply.userId': { $nin },
+		'_renote.userId': { $nin }
+	}),
+	'mute_related': $nin => ({
+		'_reply.userId': { $nin },
+		'_renote.userId': { $nin }
+	}),
+	'mute_direct': $nin => ({
+		userId: { $nin }
+	}),
+	'direct_only': $in => ({
+		userId: { $in }
+	}),
+	'related_only': $in => ({
+		$or: [{
+			'_reply.userId': { $in }
+		}, {
+			'_renote.userId': { $in }
+		}]
+	}),
+	'all_only': $in => ({
+		$or: [{
+			userId: { $in }
+		}, {
+			'_reply.userId': { $in }
+		}, {
+			'_renote.userId': { $in }
+		}]
+	})
+};
 
-	const push = (x: any) => q.$and.push(x);
+const query = (source: {
+	$and: any[],
+	deletedAt: any
+}) => {
+	if (!source.$and.length) delete source.$and;
+	return source;
+};
 
-	if (ps.following != null && me != null) {
-		const ids = await getFriendIds(me._id, false);
-		push({
-			userId: ps.following ? {
-				$in: ids
-			} : {
-				$nin: ids.concat(me._id)
-			}
-		});
-	}
-
-	if (me != null) {
-		const mutes = await Mute.find({
-			muterId: me._id,
-			deletedAt: { $exists: false }
-		});
-		const mutedUserIds = mutes.map(m => m.muteeId);
-
-		switch (ps.mute) {
-			case 'mute_all':
-				push({
-					userId: {
-						$nin: mutedUserIds
-					},
-					'_reply.userId': {
-						$nin: mutedUserIds
-					},
-					'_renote.userId': {
-						$nin: mutedUserIds
-					}
-				});
-				break;
-			case 'mute_related':
-				push({
-					'_reply.userId': {
-						$nin: mutedUserIds
-					},
-					'_renote.userId': {
-						$nin: mutedUserIds
-					}
-				});
-				break;
-			case 'mute_direct':
-				push({
-					userId: {
-						$nin: mutedUserIds
-					}
-				});
-				break;
-			case 'direct_only':
-				push({
-					userId: {
-						$in: mutedUserIds
-					}
-				});
-				break;
-			case 'related_only':
-				push({
-					$or: [{
-						'_reply.userId': {
-							$in: mutedUserIds
-						}
-					}, {
-						'_renote.userId': {
-							$in: mutedUserIds
-						}
-					}]
-				});
-				break;
-			case 'all_only':
-				push({
-					$or: [{
-						userId: {
-							$in: mutedUserIds
-						}
-					}, {
-						'_reply.userId': {
-							$in: mutedUserIds
-						}
-					}, {
-						'_renote.userId': {
-							$in: mutedUserIds
-						}
-					}]
-				});
-				break;
-		}
-	}
-
-	if (ps.reply != null) {
-		if (ps.reply) {
-			push({
-				replyId: {
-					$exists: true,
-					$ne: null
-				}
-			});
-		} else {
-			push({
-				$or: [{
+export default define(meta, (ps, me) => Promise.resolve()
+	.then(async () => query({
+		$and: [
+			ps.tag ?
+				{ tagsLower: ps.tag.toLowerCase() } :
+				{ $or: ps.query.map(tags => ({ $and: tags.map(t => ({ tagsLower: t.toLowerCase() })) })) },
+			...(ps.following && me ? [await getFriendIds(me._id, false)
+				.then($in => ({ userId: ps.following ? { $in } : { $nin: $in.concat(me._id) } }))] : []),
+			...(me && mika[ps.mute] ? [await Mute.find({
+				muterId: me._id,
+				deletedAt: { $exists: false }
+			}).then(x => mika[ps.mute](x.map(x => x.muteeId)))] : []),
+			...(ps.reply ? [{
 					replyId: {
-						$exists: false
+						$exists: true,
+						$ne: null
 					}
-				}, {
-					replyId: null
-				}]
-			});
-		}
-	}
-
-	if (ps.renote != null) {
-		if (ps.renote) {
-			push({
+				}] : ps.reply === false ? [{
+					$or: [{
+						replyId: { $exists: false }
+					}, { replyId: null }]
+				}] : []),
+			...(ps.renote ? [{
 				renoteId: {
 					$exists: true,
 					$ne: null
 				}
-			});
-		} else {
-			push({
+			}] : ps.renote === false ? [{
 				$or: [{
-					renoteId: {
-						$exists: false
-					}
-				}, {
-					renoteId: null
-				}]
-			});
-		}
-	}
-
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.media;
-
-	if (withFiles) {
-		push({
-			fileIds: { $exists: true, $ne: [] }
-		});
-	}
-
-	if (ps.poll != null) {
-		if (ps.poll) {
-			push({
+					renoteId: { $exists: false }
+				}, { renoteId: null }]
+			}] : []),
+			...(ps.withFiles || ps.media ? [
+				{ fileIds: { $exists: true, $ne: [] } }
+			] : []),
+			...(ps.poll ? [{
 				poll: {
 					$exists: true,
 					$ne: null
 				}
-			});
-		} else {
-			push({
+			}] : ps.poll === false ? [{
 				$or: [{
 					poll: {
 						$exists: false
@@ -274,48 +193,22 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 				}, {
 					poll: null
 				}]
-			});
-		}
-	}
-
-	if (ps.untilId) {
-		push({
-			_id: {
-				$lt: ps.untilId
-			}
-		});
-	}
-
-	if (ps.sinceDate) {
-		push({
-			createdAt: {
-				$gt: new Date(ps.sinceDate)
-			}
-		});
-	}
-
-	if (ps.untilDate) {
-		push({
-			createdAt: {
-				$lt: new Date(ps.untilDate)
-			}
-		});
-	}
-
-	if (q.$and.length == 0) {
-		delete q.$and;
-	}
-
-	// Search notes
-	const notes = await Note
-		.find(q, {
-			sort: {
-				_id: -1
-			},
+			}] : []),
+			...(ps.untilId ? [{
+				_id: { $lt: ps.untilId 	}
+			}] : []),
+			...(ps.sinceDate ? [{
+				createdAt: { $gt: new Date(ps.sinceDate) }
+			}] : []),
+			...(ps.untilDate ? [{
+				createdAt: { $lt: new Date(ps.untilDate) }
+			}] : [])
+		],
+		deletedAt: { $exists: false }
+	}))
+	.then(x => Note.find(x, {
+			sort: { _id: -1 },
 			limit: ps.limit,
 			skip: ps.offset
-		});
-
-	// Serialize
-	res(await packMany(notes, me));
-}));
+		}))
+	.then(x => packMany(x, me)));

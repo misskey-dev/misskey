@@ -3,6 +3,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -52,34 +53,14 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user, app, file, cleanup) => new Promise(async (res, rej) => {
-	// Get 'name' parameter
-	let name = file.originalname;
-	if (name !== undefined && name !== null) {
-		name = name.trim();
-		if (name.length === 0) {
-			name = null;
-		} else if (name === 'blob') {
-			name = null;
-		} else if (!validateFileName(name)) {
-			return rej('invalid name');
-		}
-	} else {
-		name = null;
-	}
+const name = (original: string) => nameResolver((original || '').trim());
 
-	try {
-		// Create file
-		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
+const nameResolver = (original: string) =>
+	!original.length || original === 'blob' ? null :
+	!validateFileName(original) ? error('invalid name') :
+	original;
 
-		cleanup();
-
-		res(pack(driveFile, { self: true }));
-	} catch (e) {
-		console.error(e);
-
-		cleanup();
-
-		rej(e);
-	}
-}));
+export default define(meta, (ps, user, _, file, cleanup) => create(user, file.path, name(file.originalname), null, ps.folderId, ps.force, false, null, null, ps.isSensitive)
+	.then(
+		x => (cleanup(), pack(x, { self: true })),
+		x => (console.error(x), cleanup(), error(x))));

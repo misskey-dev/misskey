@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import define from '../../../define';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -26,20 +27,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get folder
-	const folder = await DriveFolder
-		.findOne({
-			_id: ps.folderId,
-			userId: user._id
-		});
-
-	if (folder === null) {
-		return rej('folder-not-found');
-	}
-
-	// Serialize
-	res(await pack(folder, {
-		detail: true
-	}));
-}));
+export default define(meta, (ps, user) => DriveFolder.findOne({
+		_id: ps.folderId,
+		userId: user._id
+	})
+	.then(x =>
+		x === null ? error('folder-not-found') :
+		pack(x, { detail: true })));

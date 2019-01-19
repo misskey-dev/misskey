@@ -1,9 +1,11 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-const ms = require('ms');
-import User, { pack } from '../../../../models/user';
+import ms = require('ms');
+import User, { pack, ILocalUser, IUser } from '../../../../models/user';
 import Following from '../../../../models/following';
 import create from '../../../../services/following/create';
 import define from '../../define';
+import { ObjectID } from 'mongodb';
+import { error, errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	stability: 'stable',
@@ -34,45 +36,24 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const follower = user;
+const tryCreate = async (follower: ILocalUser, followee: IUser) => create(follower, followee)
+	.catch(e => Promise.reject(e && e.message ? e.message : e));
 
-	// 自分自身
-	if (user._id.equals(ps.userId)) {
-		return rej('followee is yourself');
-	}
+const ensureExist = (followerId: ObjectID, followeeId: ObjectID) =>
+	Following.findOne({ followerId, followeeId })
+		.then(x => x !== null && error('already following'));
 
-	// Get followee
-	const followee = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			data: false,
-			profile: false
-		}
-	});
-
-	if (followee === null) {
-		return rej('user not found');
-	}
-
-	// Check if already following
-	const exist = await Following.findOne({
-		followerId: follower._id,
-		followeeId: followee._id
-	});
-
-	if (exist !== null) {
-		return rej('already following');
-	}
-
-	// Create following
-	try {
-		await create(follower, followee);
-	} catch (e) {
-		return rej(e && e.message ? e.message : e);
-	}
-
-	// Send response
-	res(await pack(followee._id, user));
-}));
+export default define(meta, (ps, user) => errorWhen(
+	user._id.equals(ps.userId),
+	'followee is yourself')
+	.then(() => User.findOne({ _id: ps.userId }, {
+			fields: {
+				data: false,
+				profile: false
+			}
+		}))
+	.then(x =>
+		x === null ? error('user not found') :
+		ensureExist(user._id, x._id)
+			.then(() => tryCreate(user, x))
+			.then(() => pack(x._id, user))));

@@ -1,12 +1,14 @@
 import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 const ms = require('ms');
 import { length } from 'stringz';
-import Note, { INote, isValidCw, pack } from '../../../../models/note';
-import User, { IUser } from '../../../../models/user';
-import DriveFile, { IDriveFile } from '../../../../models/drive-file';
+import Note, { isValidCw, pack } from '../../../../models/note';
+import User from '../../../../models/user';
+import DriveFile from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { ObjectID } from 'mongodb';
+import { error } from '../../../../prelude/promise';
 
 let maxNoteTextLength = 1000;
 
@@ -182,97 +184,61 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
-	let visibleUsers: IUser[] = [];
-	if (ps.visibleUserIds) {
-		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => User.findOne({
-			_id: id
-		})));
-	}
+const fetchVisibleUsers = async (ids: ObjectID[]) => ids ? await Promise.all(ids.map(_id => User.findOne({ _id }))) : [];
 
-	let files: IDriveFile[] = [];
-	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
-	if (fileIds != null) {
-		files = await Promise.all(fileIds.map(fileId => {
-			return DriveFile.findOne({
-				_id: fileId,
-				'metadata.userId': user._id
-			});
-		}));
+const fetchFiles = async (ids: ObjectID[], userId: ObjectID) => ids ? (await Promise.all(ids.map(_id => DriveFile.findOne({
+		_id,
+		'metadata.userId': userId
+	})))).filter(x => x) : [];
 
-		files = files.filter(file => file != null);
-	}
+const fetchRenote = async (_id: ObjectID) => _id ? await Note.findOne({ _id })
+	.then(x =>
+		!x ? error('renoteee is not found') :
+		x.renoteId && !x.text && !x.fileIds ? error('cannot renote to renote') :
+		x) : null;
 
-	let renote: INote = null;
-	if (ps.renoteId != null) {
-		// Fetch renote to note
-		renote = await Note.findOne({
-			_id: ps.renoteId
-		});
+const fetchReply = async (_id: ObjectID) => _id ? await Note.findOne({ _id })
+	.then(x =>
+		x === null ? error('in reply to note is not found') :
+		x.renoteId && !x.text && !x.fileIds ? error('cannot reply to renote') :
+		x) : null;
 
-		if (renote == null) {
-			return rej('renoteee is not found');
-		} else if (renote.renoteId && !renote.text && !renote.fileIds) {
-			return rej('cannot renote to renote');
-		}
-	}
+const fetchRequirements = async (ps: {
+	text: string,
+	poll: { choices: string[] },
+	visibleUserIds: ObjectID[],
+	fileIds: ObjectID[],
+	mediaIds: ObjectID[],
+	renoteId: ObjectID,
+	replyId: ObjectID
+}, userId: ObjectID) => {
+	const text = ps.text;
+	const poll = ps.poll ? ps.poll.choices.map((choice, id) => ({
+		id,
+		text: choice.trim(),
+		votes: 0
+	})) : null;
+	const visibleUsers = await fetchVisibleUsers(ps.visibleUserIds);
+	const files = await fetchFiles(ps.fileIds || ps.mediaIds, userId);
+	const renote = await fetchRenote(ps.renoteId);
+	const reply = await fetchReply(ps.replyId);
+	if (!(text || files.length || renote || poll)) throw 'text, fileIds, renoteId or poll is required';
+	return { text, poll, visibleUsers, files, renote, reply };
+};
 
-	let reply: INote = null;
-	if (ps.replyId != null) {
-		// Fetch reply
-		reply = await Note.findOne({
-			_id: ps.replyId
-		});
-
-		if (reply === null) {
-			return rej('in reply to note is not found');
-		}
-
-		// 返信対象が引用でないRenoteだったらエラー
-		if (reply.renoteId && !reply.text && !reply.fileIds) {
-			return rej('cannot reply to renote');
-		}
-	}
-
-	if (ps.poll) {
-		(ps.poll as any).choices = (ps.poll as any).choices.map((choice: string, i: number) => ({
-			id: i, // IDを付与
-			text: choice.trim(),
-			votes: 0
-		}));
-	}
-
-	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
-	if (!(ps.text || files.length || renote || ps.poll)) {
-		return rej('text, fileIds, renoteId or poll is required');
-	}
-
-	// 投稿を作成
-	create(user, {
+export default define(meta, (ps, user, app) => fetchRequirements(ps, user._id)
+	.then(requirements => create(user, {
+		...requirements,
 		createdAt: new Date(),
-		files: files,
-		poll: ps.poll,
-		text: ps.text,
-		reply,
-		renote,
 		cw: ps.cw,
 		app,
 		viaMobile: ps.viaMobile,
 		localOnly: ps.localOnly,
 		visibility: ps.visibility,
-		visibleUsers,
 		apMentions: ps.noExtractMentions ? [] : undefined,
 		apHashtags: ps.noExtractHashtags ? [] : undefined,
 		apEmojis: ps.noExtractEmojis ? [] : undefined,
 		geo: ps.geo
-	})
+	}))
 	.then(note => pack(note, user))
-	.then(noteObj => {
-		res({
-			createdNote: noteObj
-		});
-	})
-	.catch(e => {
-		rej(e);
-	});
-}));
+	.then(createdNote => ({ createdNote })));

@@ -2,6 +2,8 @@ import $ from 'cafy';
 import User from '../../../../models/user';
 import { publishMainStream } from '../../../../stream';
 import define from '../../define';
+import { ObjectID } from 'mongodb';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	requireCredential: true,
@@ -19,70 +21,52 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	if (ps.id == null && ps.data == null) return rej('you need to set id and data params if home param unset');
+type WidgetData = { [x: string]: any };
 
-	let widget;
+type Widget = {
+	id: string,
+	data: WidgetData
+};
 
-	//#region Desktop home
-	if (widget == null && user.clientSettings.home) {
-		const desktopHome = user.clientSettings.home;
-		widget = desktopHome.find((w: any) => w.id == ps.id);
-		if (widget) {
-				widget.data = ps.data;
+type Column = {
+	type: string,
+	widgets: Widget[]
+};
 
-			await User.update(user._id, {
-				$set: {
-					'clientSettings.home': desktopHome
-				}
-			});
-		}
-	}
-	//#endregion
+type Deck = { columns: Column[] };
 
-	//#region Mobile home
-	if (widget == null && user.clientSettings.mobileHome) {
-		const mobileHome = user.clientSettings.mobileHome;
-		widget = mobileHome.find((w: any) => w.id == ps.id);
-		if (widget) {
-				widget.data = ps.data;
-
-			await User.update(user._id, {
-				$set: {
-					'clientSettings.mobileHome': mobileHome
-				}
-			});
-		}
-	}
-	//#endregion
-
-	//#region Deck
-	if (widget == null && user.clientSettings.deck && user.clientSettings.deck.columns) {
-		const deck = user.clientSettings.deck;
-		for (const c of deck.columns.filter((c: any) => c.type == 'widgets')) {
-			for (const w of c.widgets.filter((w: any) => w.id == ps.id)) {
-				widget = w;
-			}
-		}
-		if (widget) {
-				widget.data = ps.data;
-
-			await User.update(user._id, {
-				$set: {
-					'clientSettings.deck': deck
-				}
-			});
-		}
-	}
-	//#endregion
-
+const update = async (widget: Widget, userId: ObjectID, data: WidgetData, home: any, name: string) => {
 	if (widget) {
-		publishMainStream(user._id, 'widgetUpdated', {
-			id: ps.id, data: ps.data
+		widget.data = data;
+		await User.update(userId, {
+			$set: { [name]: home }
 		});
-
-		res();
-	} else {
-		rej('widget not found');
 	}
-}));
+	return widget;
+};
+
+const updateHomeWidget = (id: string, userId: ObjectID, data: WidgetData, home: Widget[], name: string) =>
+	update(home.find(x => x.id === id), userId, data, home, name);
+
+const updateDeckWidget = (id: string, userId: ObjectID, data: WidgetData, deck: Deck) =>
+	update(deck.columns
+		.filter(x => x.type === 'widgets').reduce((a, c) => a || c.widgets
+			.filter(x => x.id === id).reduce((a, c) => a || c), null as Widget), userId, data, deck, 'clientSettings.deck');
+
+export default define(meta, (ps, user) => errorWhen(
+	!ps.id && !ps.data,
+	'you need to set id and data params if home param unset')
+	.then(() => errorWhen(!Object.entries({
+			'clientSettings.home': user.clientSettings.home,
+			'clientSettings.mobileHome': user.clientSettings.mobileHome
+		}).filter(([, x]) => x)
+			.reduce(
+				(a, [k, v]) => a.then(x => x || !v ? Promise.resolve(x) :
+					updateHomeWidget(ps.id, user._id, ps.data, v, k)),
+				Promise.resolve(null as Widget))
+			.then(x => x || !user.clientSettings.deck || !user.clientSettings.deck.columns ? Promise.resolve(x) :
+				updateDeckWidget(ps.id, user._id, ps.data, user.clientSettings.deck)), 'widget not found'))
+	.then(_ => (publishMainStream(user._id, 'widgetUpdated', {
+			id: ps.id,
+			data: ps.data
+		}), _)));

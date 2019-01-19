@@ -38,51 +38,24 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let _sort;
-	if (ps.sort) {
-		if (ps.sort == '+follower') {
-			_sort = {
-				followersCount: -1
-			};
-		} else if (ps.sort == '-follower') {
-			_sort = {
-				followersCount: 1
-			};
-		} else if (ps.sort == '+createdAt') {
-			_sort = {
-				createdAt: -1
-			};
-		} else if (ps.sort == '+updatedAt') {
-			_sort = {
-				updatedAt: -1
-			};
-		} else if (ps.sort == '-createdAt') {
-			_sort = {
-				createdAt: 1
-			};
-		} else if (ps.sort == '-updatedAt') {
-			_sort = {
-				updatedAt: 1
-			};
-		}
-	} else {
-		_sort = {
-			_id: -1
-		};
-	}
+const mika: { [x: string]: any } = {
+	'+follower': { followersCount: -1 },
+	'-follower': { followersCount: 1 },
+	'+createdAt': { createdAt: -1 },
+	'-createdAt': { createdAt: 1 },
+	'+updatedAt': { updatedAt: -1 },
+	'-updatedAt': { updatedAt: 1 },
+};
 
-	const q =
+const rika = { _id: -1 };
+
+export default define(meta, (ps, me) => User.find(
 		ps.origin == 'local' ? { host: null } :
-		ps.origin == 'remote' ? { host: { $ne: null } } :
-		{};
-
-	const users = await User
-		.find(q, {
-			limit: ps.limit,
-			sort: _sort,
-			skip: ps.offset
-		});
-
-	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
-}));
+		ps.origin == 'remote' ? { host:
+			{ $ne: null }
+		} : {}, {
+		limit: ps.limit,
+		sort: mika[ps.sort] || rika,
+		skip: ps.offset
+	})
+	.then(x => Promise.all(x.map(x => pack(x, me, { detail: true })))));

@@ -4,6 +4,7 @@ import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';
 import define from '../../define';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -30,49 +31,32 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	if (es == null) return rej('searching not available');
-
-	es.search({
-		index: 'misskey',
-		type: 'note',
-		body: {
-			size: ps.limit,
-			from: ps.offset,
-			query: {
-				simple_query_string: {
-					fields: ['text'],
-					query: ps.query,
-					default_operator: 'and'
-				}
-			},
-			sort: [
-				{ _doc: 'desc' }
-			]
-		}
-	}, async (error, response) => {
-		if (error) {
-			console.error(error);
-			return res(500);
-		}
-
-		if (response.hits.total === 0) {
-			return res([]);
-		}
-
-		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
-
-		// Fetch found notes
-		const notes = await Note.find({
-			_id: {
-				$in: hits
+export default define(meta, (ps, me) => errorWhen(
+	!es,
+	'searching not available')
+	.then(() => es.search({
+			index: 'misskey',
+			type: 'note',
+			body: {
+				size: ps.limit,
+				from: ps.offset,
+				query: {
+					simple_query_string: {
+						fields: ['text'],
+						query: ps.query,
+						default_operator: 'and'
+					}
+				},
+				sort: [
+					{ _doc: 'desc' }
+				]
 			}
+		})
+	.then(x =>
+		x.hits.total === 0 ? [] :
+		Note.find({
+			_id: { $in: x.hits.hits.map(x => new mongo.ObjectID(x._id)) }
 		}, {
-				sort: {
-					_id: -1
-				}
-			});
-
-		res(await packMany(notes, me));
-	});
-}));
+			sort: { _id: -1 }
+		})
+	.then(x => packMany(x, me)))));

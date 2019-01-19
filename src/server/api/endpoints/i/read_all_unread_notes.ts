@@ -17,22 +17,14 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Remove documents
-	await NoteUnread.remove({
-		userId: user._id
-	});
-
-	User.update({ _id: user._id }, {
-		$set: {
-			hasUnreadMentions: false,
-			hasUnreadSpecifiedNotes: false
-		}
-	});
-
-	// 全て既読になったイベントを発行
-	publishMainStream(user._id, 'readAllUnreadMentions');
-	publishMainStream(user._id, 'readAllUnreadSpecifiedNotes');
-
-	res();
-}));
+export default define(meta, (_, user) => NoteUnread.remove({ userId: user._id })
+	.then(() => {
+		User.update({ _id: user._id }, {
+			$set: {
+				hasUnreadMentions: false,
+				hasUnreadSpecifiedNotes: false
+			}
+		});
+		publishMainStream(user._id, 'readAllUnreadMentions');
+		publishMainStream(user._id, 'readAllUnreadSpecifiedNotes');
+	}));

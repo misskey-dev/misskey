@@ -7,7 +7,7 @@ import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 
 export default async (endpoint: IEndpoint, ctx: Koa.Context) => {
-	const body = ctx.is('multipart/form-data') ? (ctx.req as any).body : ctx.request.body;
+	const body = ctx.is('multipart/form-data') ? (ctx.req as any).body : (ctx.request as any).body;
 
 	const reply = (x?: any, y?: any) => {
 		if (x === undefined) {

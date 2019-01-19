@@ -27,33 +27,16 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get favoritee
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	// if already favorited
-	const exist = await Favorite.findOne({
-		noteId: note._id,
-		userId: user._id
-	});
-
-	if (exist !== null) {
-		return rej('already favorited');
-	}
-
-	// Create favorite
-	await Favorite.insert({
-		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id
-	});
-
-	// Send response
-	res();
-}));
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(async x => {
+		if (x === null) throw 'note not found';
+		if (await Favorite.findOne({
+			noteId: x._id,
+			userId: user._id
+		}) !== null) throw 'already favorited';
+		await Favorite.insert({
+			createdAt: new Date(),
+			noteId: x._id,
+			userId: user._id
+		});
+	}));

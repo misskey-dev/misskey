@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../misc/cafy-id';
 import Note, { packMany } from '../../../models/note';
 import define from '../define';
+import { errorWhen } from '../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -67,63 +68,26 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	// Construct query
-	const sort = {
-		_id: -1
-	};
-	const query = {
-		deletedAt: null,
-		visibility: 'public'
-	} as any;
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	if (ps.local) {
-		query['_user.host'] = null;
-	}
-
-	if (ps.reply != undefined) {
-		query.replyId = ps.reply ? { $exists: true, $ne: null } : null;
-	}
-
-	if (ps.renote != undefined) {
-		query.renoteId = ps.renote ? { $exists: true, $ne: null } : null;
-	}
-
-	const withFiles = ps.withFiles != undefined ? ps.withFiles : ps.media;
-
-	if (withFiles) query.fileIds = { $exists: true, $ne: null };
-
-	if (ps.poll != undefined) {
-		query.poll = ps.poll ? { $exists: true, $ne: null } : null;
-	}
-
-	// TODO
-	//if (bot != undefined) {
-	//	query.isBot = bot;
-	//}
-
-	// Issue query
-	const notes = await Note
-		.find(query, {
+export default define(meta, ps => errorWhen(
+	ps.sinceId && !!ps.untilId,
+	'cannot set sinceId and untilId')
+	.then(() => Note.find({
+			_id:
+				ps.sinceId ? { $gt: ps.sinceId } :
+				ps.untilId ? { $lt: ps.untilId } : undefined,
+			['_user.host']: ps.local ? null : undefined,
+			replyId:
+				ps.reply ? { $exists: true, $ne: null } :
+				ps.reply === false ? null : undefined,
+			renoteId:
+				ps.renote ? { $exists: true, $ne: null } :
+				ps.renote === false ? null : undefined,
+			fileIds: ps.withFiles !== false || ps.media ? { $exists: true, $ne: null } : undefined,
+			poll:
+				ps.poll ? { $exists: true, $ne: null } :
+				ps.poll === false ? null : undefined
+		}, {
 			limit: ps.limit,
-			sort: sort
-		});
-
-	// Serialize
-	res(await packMany(notes));
-}));
+			sort: { _id: ps.sinceId ? 1 : -1 }
+		}))
+	.then(packMany));

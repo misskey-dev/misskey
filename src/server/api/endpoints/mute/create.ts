@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import define from '../../define';
+import { errorWhen } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -25,44 +26,24 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const muter = user;
-
-	// 自分自身
-	if (user._id.equals(ps.userId)) {
-		return rej('mutee is yourself');
-	}
-
-	// Get mutee
-	const mutee = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			data: false,
-			profile: false
-		}
-	});
-
-	if (mutee === null) {
-		return rej('user not found');
-	}
-
-	// Check if already muting
-	const exist = await Mute.findOne({
-		muterId: muter._id,
-		muteeId: mutee._id
-	});
-
-	if (exist !== null) {
-		return rej('already muting');
-	}
-
-	// Create mute
-	await Mute.insert({
-		createdAt: new Date(),
-		muterId: muter._id,
-		muteeId: mutee._id,
-	});
-
-	res();
-}));
+export default define(meta, (ps, user) => errorWhen(
+	user._id.equals(ps.userId),
+	'mutee is yourself')
+	.then(() => User.findOne({ _id: ps.userId }, {
+			fields: {
+				data: false,
+				profile: false
+			}
+		}))
+	.then(async x => {
+		if (x === null) throw 'user not found';
+		if (await Mute.findOne({
+			muterId: user._id,
+			muteeId: x._id
+		}) !== null) throw 'already muting';
+		await Mute.insert({
+			createdAt: new Date(),
+			muterId: user._id,
+			muteeId: x._id,
+		});
+	}));

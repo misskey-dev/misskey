@@ -8,6 +8,8 @@ import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 import parse from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
+import { ObjectID } from 'mongodb';
+import { error } from '../../../../prelude/promise';
 const langmap = require('langmap');
 
 export const meta = {
@@ -44,6 +46,7 @@ export const meta = {
 
 		location: {
 			validator: $.str.optional.nullable.pipe(isValidLocation),
+			locates: 'profile.location',
 			desc: {
 				'ja-JP': '住んでいる地域、所在'
 			}
@@ -51,6 +54,7 @@ export const meta = {
 
 		birthday: {
 			validator: $.str.optional.nullable.pipe(isValidBirthday),
+			locates: 'profile.birthday',
 			desc: {
 				'ja-JP': '誕生日 (YYYY-MM-DD形式)'
 			}
@@ -110,6 +114,7 @@ export const meta = {
 
 		autoWatch: {
 			validator: $.bool.optional,
+			locates: 'settings.autoWatch',
 			desc: {
 				'ja-JP': '投稿の自動ウォッチをするか否か'
 			}
@@ -117,6 +122,7 @@ export const meta = {
 
 		alwaysMarkNsfw: {
 			validator: $.bool.optional,
+			locates: 'settings.alwaysMarkNsfw',
 			desc: {
 				'ja-JP': 'アップロードするメディアをデフォルトで「閲覧注意」として設定するか'
 			}
@@ -124,114 +130,47 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
-	const isSecure = user != null && app == null;
-
-	const updates = {} as any;
-
-	if (ps.name !== undefined) updates.name = ps.name;
-	if (ps.description !== undefined) updates.description = ps.description;
-	if (ps.lang !== undefined) updates.lang = ps.lang;
-	if (ps.location !== undefined) updates['profile.location'] = ps.location;
-	if (ps.birthday !== undefined) updates['profile.birthday'] = ps.birthday;
-	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
-	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
-	if (ps.wallpaperId !== undefined) updates.wallpaperId = ps.wallpaperId;
-	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
-	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
-	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
-	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
-	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
-
-	if (ps.avatarId) {
-		const avatar = await DriveFile.findOne({
-			_id: ps.avatarId
-		});
-
-		if (avatar == null) return rej('avatar not found');
-		if (!avatar.contentType.startsWith('image/')) return rej('avatar not an image');
-
-		updates.avatarUrl = getDriveFileUrl(avatar, true);
-
-		if (avatar.metadata.properties.avgColor) {
-			updates.avatarColor = avatar.metadata.properties.avgColor;
-		}
-	}
-
-	if (ps.bannerId) {
-		const banner = await DriveFile.findOne({
-			_id: ps.bannerId
-		});
-
-		if (banner == null) return rej('banner not found');
-		if (!banner.contentType.startsWith('image/')) return rej('banner not an image');
-
-		updates.bannerUrl = getDriveFileUrl(banner, false);
-
-		if (banner.metadata.properties.avgColor) {
-			updates.bannerColor = banner.metadata.properties.avgColor;
-		}
-	}
-
-	if (ps.wallpaperId !== undefined) {
-		if (ps.wallpaperId === null) {
-			updates.wallpaperUrl = null;
-			updates.wallpaperColor = null;
-		} else {
-			const wallpaper = await DriveFile.findOne({
-				_id: ps.wallpaperId
+const resolveImages = async (type: string, _id: ObjectID, checkType: boolean, reset: boolean) => reset && _id === null ? {
+		[`${type}Url`]: null,
+		[`${type}Color`]: null
+	} : _id && await DriveFile.findOne({ _id })
+		.then(x =>
+			!x ? error(`${type} not found`) :
+			checkType && !x.contentType.startsWith('image/') ? error(`${type} not an image`) : {
+				[`${type}Url`]: getDriveFileUrl(x, true),
+				[`${type}Color`]: x.metadata.properties.avgColor
 			});
 
-			if (wallpaper == null) return rej('wallpaper not found');
-
-			updates.wallpaperUrl = getDriveFileUrl(wallpaper);
-
-			if (wallpaper.metadata.properties.avgColor) {
-				updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
-			}
+export default define(meta, (ps, user, app) => Object.entries({
+		avatar: {
+			id: ps.avatarId,
+			checkType: true
+		},
+		banner: {
+			id: ps.bannerId,
+			checkType: true
+		},
+		wallpaper: {
+			id: ps.wallpaperId,
+			reset: true
 		}
-	}
-
-	//#region emojis
-	if (updates.name != null || updates.description != null) {
-		let emojis = [] as string[];
-
-		if (updates.name != null) {
-			const tokens = parse(updates.name, true);
-			emojis = emojis.concat(extractEmojis(tokens));
-		}
-
-		if (updates.description != null) {
-			const tokens = parse(updates.description);
-			emojis = emojis.concat(extractEmojis(tokens));
-		}
-
-		updates.emojis = emojis;
-	}
-	//#endregion
-
-	await User.update(user._id, {
-		$set: updates
-	});
-
-	// Serialize
-	const iObj = await pack(user._id, user, {
-		detail: true,
-		includeSecrets: isSecure
-	});
-
-	// Send response
-	res(iObj);
-
-	// Publish meUpdated event
-	publishMainStream(user._id, 'meUpdated', iObj);
-
-	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
-	if (user.isLocked && ps.isLocked === false) {
-		acceptAllFollowRequests(user);
-	}
-
-	// フォロワーにUpdateを配信
-	publishToFollowers(user._id);
-}));
+	}).reduce(
+		async (a, [k, v]) => a.then(b => resolveImages(k, v.id, v.checkType, v.reset).then(x => Object.assign(b, x))),
+		Promise.resolve(Object.entries(meta.params as {
+			[x: string]: { locates?: string }
+		}).reduce((a, [k, v]) => Object.assign(a, { [v.locates || k]: (ps as any)[k] }), {} as any)))
+		.then($set => {
+			const emojis = [
+				...($set.name ? extractEmojis(parse($set.name, true)) : []),
+				...($set.description ? extractEmojis(parse($set.description, true)) : [])
+			];
+			if (emojis.length) $set.emojis = emojis;
+			return User.update(user._id, { $set });
+		}).then(() => pack(user._id, user, {
+			detail: true,
+			includeSecrets: user && !app
+		})).then(x => (
+			publishMainStream(user._id, 'meUpdated', x),
+			user.isLocked && ps.isLocked === false && acceptAllFollowRequests(user),
+			publishToFollowers(user._id),
+			x)));

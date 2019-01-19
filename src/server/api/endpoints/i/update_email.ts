@@ -8,6 +8,7 @@ import rndstr from 'rndstr';
 import config from '../../../../config';
 const ms = require('ms');
 import * as bcrypt from 'bcryptjs';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	requireCredential: true,
@@ -30,71 +31,43 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Compare password
-	const same = await bcrypt.compare(ps.password, user.password);
-
-	if (!same) {
-		return rej('incorrect password');
-	}
-
-	await User.update(user._id, {
-		$set: {
-			email: ps.email,
-			emailVerified: false,
-			emailVerifyCode: null
-		}
-	});
-
-	// Serialize
-	const iObj = await pack(user._id, user, {
-		detail: true,
-		includeSecrets: true
-	});
-
-	// Send response
-	res(iObj);
-
-	// Publish meUpdated event
-	publishMainStream(user._id, 'meUpdated', iObj);
-
-	if (ps.email != null) {
-		const code = rndstr('a-z0-9', 16);
-
-		await User.update(user._id, {
+export default define(meta, (ps, user) => bcrypt.compare(ps.password, user.password)
+	.then(x =>
+		!x ? error('incorrect password') :
+		User.update(user._id, {
 			$set: {
-				emailVerifyCode: code
+				email: ps.email,
+				emailVerified: false,
+				emailVerifyCode: null
 			}
-		});
-
-		const meta = await fetchMeta();
-
-		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
-
-		const transporter = nodemailer.createTransport({
-			host: meta.smtpHost,
-			port: meta.smtpPort,
-			secure: meta.smtpSecure,
-			ignoreTLS: !enableAuth,
-			auth: enableAuth ? {
-				user: meta.smtpUser,
-				pass: meta.smtpPass
-			} : undefined
-		});
-
-		const link = `${config.url}/verify-email/${code}`;
-
-		transporter.sendMail({
-			from: meta.email,
-			to: ps.email,
-			subject: meta.name,
-			text: `To verify email, please click this link: ${link}`
-		}, (error, info) => {
-			if (error) {
-				return console.error(error);
-			}
-
-			console.log('Message sent: %s', info.messageId);
-		});
-	}
-}));
+		}))
+	.then(() => pack(user._id, user, {
+			detail: true,
+			includeSecrets: true
+		}))
+	.then(x => (publishMainStream(user._id, 'meUpdated', x), (ps.email || fetchMeta()
+		.then(async x => {
+			const emailVerifyCode = rndstr('a-z0-9', 16);
+			await User.update(user._id, {
+				$set: { emailVerifyCode }
+			});
+			const enableAuth = !x.smtpUser && x.smtpUser.length;
+			return nodemailer.createTransport({
+				host: x.smtpHost,
+				port: x.smtpPort,
+				secure: x.smtpSecure,
+				ignoreTLS: !enableAuth,
+				auth: enableAuth ? {
+					user: x.smtpUser,
+					pass: x.smtpPass
+				} : undefined
+			}).sendMail({
+				from: x.email,
+				to: ps.email,
+				subject: x.name,
+				text: `To verify email, please click this link: ${config.url}/verify-email/${emailVerifyCode}`
+			})
+			.then(
+				x => console.log('Message sent: %s', x.messageId),
+				console.error);
+		}), x))));

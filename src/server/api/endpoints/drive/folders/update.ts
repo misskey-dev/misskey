@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../stream';
 import define from '../../../define';
+import { ObjectID } from 'mongodb';
 
 export const meta = {
 	stability: 'stable',
@@ -44,78 +45,37 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Fetch folder
-	const folder = await DriveFolder
-		.findOne({
-			_id: ps.folderId,
-			userId: user._id
-		});
-
-	if (folder === null) {
-		return rej('folder-not-found');
-	}
-
-	if (ps.name) folder.name = ps.name;
-
-	if (ps.parentId !== undefined) {
-		if (ps.parentId === null) {
-			folder.parentId = null;
-		} else {
-			// Get parent folder
-			const parent = await DriveFolder
-				.findOne({
-					_id: ps.parentId,
-					userId: user._id
-				});
-
-			if (parent === null) {
-				return rej('parent-folder-not-found');
-			}
-
-			// Check if the circular reference will occur
-			async function checkCircle(folderId: any): Promise<boolean> {
-				// Fetch folder
-				const folder2 = await DriveFolder.findOne({
-					_id: folderId
-				}, {
-					_id: true,
-					parentId: true
-				});
-
-				if (folder2._id.equals(folder._id)) {
-					return true;
-				} else if (folder2.parentId) {
-					return await checkCircle(folder2.parentId);
-				} else {
-					return false;
-				}
-			}
-
-			if (parent.parentId !== null) {
-				if (await checkCircle(parent.parentId)) {
-					return rej('detected-circular-definition');
-				}
-			}
-
-			folder.parentId = parent._id;
-		}
-	}
-
-	// Update
-	DriveFolder.update(folder._id, {
-		$set: {
-			name: folder.name,
-			parentId: folder.parentId
-		}
+const ensureCircular = async (_id: ObjectID, baseId: ObjectID) => {
+	const folder = await DriveFolder.findOne({ _id }, {
+		_id: true,
+		parentId: true
 	});
+	if (folder._id.equals(baseId)) throw 'detected-circular-definition';
+	if (folder.parentId) await ensureCircular(folder.parentId, baseId);
+};
 
-	// Serialize
-	const folderObj = await pack(folder);
+const fetchParent = async (_id: ObjectID, userId: ObjectID, baseId: ObjectID) => {
+	const parent = await DriveFolder.findOne({ _id, userId });
+	if (parent === null) throw 'parent-folder-not-found';
+	if (parent.parentId) await ensureCircular(parent.parentId, baseId);
+	return parent._id;
+};
 
-	// Response
-	res(folderObj);
-
-	// Publish folderUpdated event
-	publishDriveStream(user._id, 'folderUpdated', folderObj);
-}));
+export default define(meta, (ps, user) => DriveFolder.findOne({
+		_id: ps.folderId,
+		userId: user._id
+	})
+	.then(async x => {
+		if (x === null) throw 'folder-not-found';
+		if (ps.name) x.name = ps.name;
+		if (ps.parentId !== undefined) x.parentId = ps.parentId === null ? null : await fetchParent(ps.parentId, user._id, x._id);
+		DriveFolder.update(x._id, {
+			$set: {
+				name: x.name,
+				parentId: x.parentId
+			}
+		});
+		const result = await pack(x);
+		publishDriveStream(user._id, 'folderUpdated', result);
+		return result;
+	}));

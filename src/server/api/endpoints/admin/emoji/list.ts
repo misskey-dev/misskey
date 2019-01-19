@@ -18,16 +18,11 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const emojis = await Emoji.find({
-		host: ps.host
-	});
-
-	res(emojis.map(e => ({
+export default define(meta, ps => Emoji.find({ host: ps.host })
+	.then(x => x.map(e => ({
 		id: e._id,
 		name: e.name,
 		aliases: e.aliases,
 		host: e.host,
 		url: e.url
-	})));
-}));
+	}))));

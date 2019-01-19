@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany, INote } from '../../../../models/note';
 import define from '../../define';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -32,39 +33,11 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Lookup note
-	const note = await Note.findOne({
-		_id: ps.noteId
-	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
-
-	const conversation: INote[] = [];
-	let i = 0;
-
-	async function get(id: any) {
-		i++;
-		const p = await Note.findOne({ _id: id });
-
-		if (i > ps.offset) {
-			conversation.push(p);
-		}
-
-		if (conversation.length == ps.limit) {
-			return;
-		}
-
-		if (p.replyId) {
-			await get(p.replyId);
-		}
-	}
-
-	if (note.replyId) {
-		await get(note.replyId);
-	}
-
-	res(await packMany(conversation, user));
-}));
+export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
+	.then(x =>
+		x === null ? error('note not found') :
+		(Array(ps.limit + ps.offset) as INote[] /* TypeScript's bug? */).reduce(
+				(a, _, i) => a.then(b => b[i].replyId ? Note.findOne({ _id: b[i].replyId }).then(x => [ ...b, x ]) : b),
+				Promise.resolve([x])))
+	.then(x => x.splice(ps.offset))
+	.then(x => packMany(x, user)));

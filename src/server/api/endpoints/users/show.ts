@@ -1,9 +1,9 @@
 import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
-import User, { pack, isRemoteUser } from '../../../../models/user';
+import User, { pack, isRemoteUser, ILocalUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';
-
-const cursorOption = { fields: { data: false } };
+import { ObjectID } from 'mongodb';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -40,49 +40,31 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let user;
+const options = {
+	fields: { data: false }
+};
 
-	if (ps.userIds) {
-		const users = await User.find({
-			_id: {
-				$in: ps.userIds
-			}
-		});
+const resolveUsers = ($in: ObjectID[], me: ILocalUser) => User.find({
+		_id: { $in }
+	})
+	.then(x => Promise.all(x.map(x => pack(x, me, { detail: true }))));
 
-		res(await Promise.all(users.map(u => pack(u, me, {
-			detail: true
-		}))));
-	} else {
-		// Lookup user
-		if (typeof ps.host === 'string') {
-			try {
-				user = await resolveRemoteUser(ps.username, ps.host, cursorOption);
-			} catch (e) {
-				console.warn(`failed to resolve remote user: ${e}`);
-				return rej('failed to resolve remote user');
-			}
-		} else {
-			const q: any = ps.userId != null
-				? { _id: ps.userId }
-				: { usernameLower: ps.username.toLowerCase(), host: null };
+const resolveLocalUser = (query: any) => User.findOne(query, options)
+	.then(x => x === null ? error('user not found') : x);
 
-			user = await User.findOne(q, cursorOption);
-
-			if (user === null) {
-				return rej('user not found');
-			}
-		}
-
-		// Send response
-		res(await pack(user, me, {
-			detail: true
-		}));
-
-		if (isRemoteUser(user)) {
-			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				resolveRemoteUser(ps.username, ps.host, { }, true);
-			}
-		}
-	}
-}));
+export default define(meta, (ps, me) =>
+	ps.userIds ? resolveUsers(ps.userIds, me) :
+	(ps.host ?
+		resolveRemoteUser(ps.username, ps.host, options)
+			.catch(e => (
+				console.warn(`failed to resolve remote user: ${e}`),
+				error('failed to resolve remote user'))) :
+		resolveLocalUser(ps.userId ? { _id: ps.userId } : {
+				usernameLower: ps.username.toLowerCase(),
+				host: null
+			}))
+		.then(user => pack(user, me, { detail: true })
+			.then(x => (isRemoteUser(user) &&
+					(!user.lastFetchedAt || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) &&
+					resolveRemoteUser(ps.username, ps.host, {}, true),
+				x))));

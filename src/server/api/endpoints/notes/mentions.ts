@@ -4,6 +4,8 @@ import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import read from '../../../../services/note/read';
+import { ObjectID } from 'mongodb';
+import { error } from '../../../../prelude/promise';
 
 export const meta = {
 	desc: {
@@ -40,58 +42,25 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
+const fetchFriendIds = async (following: boolean, userId: ObjectID) => following ? { $in: await getFriendIds(userId) } : undefined;
 
-	const query = {
-		deletedAt: null,
-
-		$or: [{
-			mentions: user._id
-		}, {
-			visibleUserIds: user._id
-		}]
-	} as any;
-
-	const sort = {
-		_id: -1
-	};
-
-	if (ps.visibility) {
-		query.visibility = ps.visibility;
-	}
-
-	if (ps.following) {
-		const followingIds = await getFriendIds(user._id);
-
-		query.userId = {
-			$in: followingIds
-		};
-	}
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const mentions = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(mentions, user));
-
-	for (const note of mentions) {
-		read(user._id, note._id);
-	}
-}));
+export default define(meta, (ps, user) => fetchFriendIds(ps.following, user._id)
+	.then(userId =>
+		ps.sinceId && ps.untilId ? error('cannot set sinceId and untilId') :
+		Note.find({
+				_id:
+					ps.sinceId ? { $gt: ps.sinceId } :
+					ps.untilId ? { $lt: ps.untilId } : undefined,
+				deletedAt: null,
+				userId,
+				visibility: ps.visibility || undefined,
+				$or: [
+					{ mentions: user._id },
+					{ visibleUserIds: user._id }
+				]
+			}, {
+				limit: ps.limit,
+				sort: { _id: ps.sinceId ? 1 : -1 }
+			}))
+	.then(x => packMany(x, user))
+	.then(x => (x.map(x => read(user._id, x._id), x))));

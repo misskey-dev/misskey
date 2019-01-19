@@ -21,42 +21,26 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const mute = await Mute.find({
+export default define(meta, (ps, user) => Mute.find({
 		muterId: user._id,
-		deletedAt: { $exists: false }
-	});
-
-	const history: IMessagingMessage[] = [];
-
-	for (let i = 0; i < ps.limit; i++) {
-		const found = history.map(m => m.userId.equals(user._id) ? m.recipientId : m.userId);
-
-		const message = await Message.findOne({
-			$or: [{
-				userId: user._id
-			}, {
-				recipientId: user._id
-			}],
+		deletedAt: { $exists: false },
+	}).then(x => Promise.all(Array(ps.limit).reduce((a, _) => a.then((b: IMessagingMessage[]) => {
+		const $nin = b.map(m => m.userId.equals(user._id) ? m.recipientId : m.userId);
+		return Message.findOne({
+			$or: [
+				{ userId: user._id },
+				{ recipientId: user._id }
+			],
 			$and: [{
-				userId: { $nin: found },
-				recipientId: { $nin: found }
+				userId: { $nin },
+				recipientId: { $nin }
 			}, {
-				userId: { $nin: mute.map(m => m.muteeId) },
-				recipientId: { $nin: mute.map(m => m.muteeId) }
+				userId: { $nin: x.map(m => m.muteeId) },
+				recipientId: { $nin: x.map(m => m.muteeId) }
 			}]
 		}, {
-			sort: {
-				createdAt: -1
-			}
-		});
-
-		if (message) {
-			history.push(message);
-		} else {
-			break;
-		}
-	}
-
-	res(await Promise.all(history.map(h => pack(h._id, user))));
-}));
+			sort: { createdAt: -1 }
+		})
+		.then(c => [...b, c]);
+	}), Promise.resolve([]/* as IMessagingMessage[]*/))
+	.then((x: IMessagingMessage[]) => x.filter(x => x).map(x => pack(x._id, user))))));

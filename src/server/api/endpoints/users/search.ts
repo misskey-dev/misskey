@@ -52,33 +52,22 @@ export const meta = {
 	},
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
+const searchLocalUsers = (query: string, skip: number, limit: number, localOnly: boolean) =>
+	validateUsername(query, !localOnly) ? User.find({
+			host: null,
+			usernameLower: new RegExp(`^${escapeRegexp(query)}`)
+		}, { limit, skip }) : Promise.resolve([] as IUser[]);
 
-	let users: IUser[] = [];
+const searchRemoteUsers = (query: string, skip: number, limit: number, localOnly: boolean) =>
+	skip && limit && localOnly ? User.find({
+			host: { $ne: null },
+			usernameLower: new RegExp(`^${escapeRegexp(query)}`)
+		}, { limit, skip }) : Promise.resolve([] as IUser[]);
 
-	if (isUsername) {
-		users = await User
-			.find({
-				host: null,
-				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase()))
-			}, {
-				limit: ps.limit,
-				skip: ps.offset
-			});
+const searchUsers = (query: string, skip: number, limit: number, localOnly: boolean) =>
+	searchLocalUsers(query, skip, limit, localOnly)
+		.then(local => searchRemoteUsers(query, Math.min(skip - local.length, 0), Math.min(limit - local.length, 0), localOnly)
+			.then(remote => [...local, ...remote]));
 
-		if (users.length < ps.limit && !ps.localOnly) {
-			const otherUsers = await User
-				.find({
-					host: { $ne: null },
-					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase()))
-				}, {
-					limit: ps.limit - users.length
-				});
-
-			users = users.concat(otherUsers);
-		}
-	}
-
-	res(await Promise.all(users.map(user => pack(user, me, { detail: ps.detail }))));
-}));
+export default define(meta, (ps, me) => searchUsers(ps.query.replace('@', '').toLowerCase(), ps.offset, ps.limit, ps.localOnly)
+	.then(x => Promise.all(x.map(x => pack(x, me, { detail: ps.detail })))));

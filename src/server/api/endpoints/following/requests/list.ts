@@ -13,11 +13,5 @@ export const meta = {
 	kind: 'following-read'
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const reqs = await FollowRequest.find({
-		followeeId: user._id
-	});
-
-	// Send response
-	res(await Promise.all(reqs.map(req => pack(req))));
-}));
+export default define(meta, (_, user) => FollowRequest.find({ followeeId: user._id })
+	.then(x => Promise.all(x.map(x => pack(x)))));
