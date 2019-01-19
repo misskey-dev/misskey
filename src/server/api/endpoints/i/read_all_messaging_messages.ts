@@ -17,26 +17,13 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Update documents
-	await Message.update({
-		recipientId: user._id,
-		isRead: false
-	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
-	});
-
-	User.update({ _id: user._id }, {
-		$set: {
-			hasUnreadMessagingMessage: false
-		}
-	});
-
-	publishMainStream(user._id, 'readAllMessagingMessages');
-
-	res();
-}));
+export default define(meta, (_, user) => Message.update({
+			recipientId: user._id,
+			isRead: false
+		}, {
+			$set: { isRead: true }
+		}, { multi: true })
+	.then(() => User.update({ _id: user._id }, {
+		$set: { hasUnreadMessagingMessage: false }
+	}))
+	.then(() => (publishMainStream(user._id, 'readAllMessagingMessages'), undefined)));

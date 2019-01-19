@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import DriveFile from '../../../../../models/drive-file';
+import { error } from '../../../../../prelude/promise';
 
 export const meta = {
 	requireCredential: true,
@@ -15,14 +16,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const file = await DriveFile.findOne({
-		_id: ps.fileId
-	});
-
-	if (file == null) {
-		return rej('file not found');
-	}
-
-	res(file);
-}));
+export default define(meta, (ps, me) => DriveFile.findOne({ _id: ps.fileId })
+	.then(x =>
+		!x ? error('file not found') :
+		error));
