@@ -113,10 +113,13 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
 	// vote
-	if (reply && reply.poll && text != null && text.match(/[0-9]$/)) {
-		log(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${text}`);
-		await vote(actor, reply, Number(text));
-		return null;
+	if (reply && reply.poll && text != null) {
+		const m = text.match(/([0-9])$/);
+		if (m) {
+			log(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${m[0]}`);
+			await vote(actor, reply, Number(m[0]));
+			return null;
+		}
 	}
 
 	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
