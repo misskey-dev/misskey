@@ -4,6 +4,7 @@ import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 import endpoints from './endpoints';
 import config from '../../config';
+import chalk from 'chalk';
 
 export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any) => new Promise<any>(async (ok, rej) => {
 	const isSecure = user != null && app == null;
@@ -58,12 +59,12 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		const time = after - before;
 
 		if (time > 1000) {
-			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
+			console.warn(chalk.yellowBright(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`));
 		}
 	} catch (e) {
 		if (e) {
 			if (config.env !== 'production')
-				console.error(e);
+				console.error(chalk`  {gray -\\-} {italic.bold ERROR} {yellow ${e}}`);
 			switch (e.name) {
 				case 'INVALID_PARAM':
 					rej({
