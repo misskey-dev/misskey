@@ -1253,9 +1253,6 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "写真はありません"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "フォローされています"
-  stalk: "ストークする"
-  stalking: "ストーキングしています"
-  unstalk: "ストーク解除"
   menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "Innlegg"
