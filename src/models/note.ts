@@ -39,9 +39,7 @@ export type INote = {
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
 	poll: {
-		choices: Array<{
-			id: number;
-		}>
+		choices: choice[]
 	};
 	text: string;
 	tags: string[];
@@ -100,6 +98,12 @@ export type INote = {
 		inbox?: string;
 	};
 	_files?: IDriveFile[];
+};
+
+export type choice = {
+	id: number;
+	text: string;
+	votes: number;
 };
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
