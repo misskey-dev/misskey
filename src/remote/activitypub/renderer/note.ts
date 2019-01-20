@@ -99,7 +99,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note._id}`;
 		// TODO: i18n
-		text += `\n\n[投票を見る](${url})`;
+		text += `\n\n[リモートで投票を見る](${url})`;
 
 		question = `${config.url}/questions/${note._id}`;
 	}
