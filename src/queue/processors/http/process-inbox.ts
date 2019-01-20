@@ -62,16 +62,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		}) as IRemoteUser;
 	}
 
-	// Update activityの場合は、ここで署名検証/更新処理まで実施して終了
-	if (activity.type === 'Update') {
-		if (activity.object && activity.object.type === 'Person') {
-			if (user == null) {
-				console.warn('Update activity received, but user not registed.');
-			} else if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
-				console.warn('Update activity received, but signature verification failed.');
-			} else {
-				updatePerson(activity.actor, null, activity.object);
-			}
+	// Update<Person> activityの場合は、ここで署名検証/更新処理まで実施して終了
+	if (activity.type === 'Update'
+		&& activity.object && activity.object.type === 'Person') {
+		if (user == null) {
+			console.warn('Update activity received, but user not registed.');
+		} else if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
+			console.warn('Update activity received, but signature verification failed.');
+		} else {
+			updatePerson(activity.actor, null, activity.object);
 		}
 		done();
 		return;
