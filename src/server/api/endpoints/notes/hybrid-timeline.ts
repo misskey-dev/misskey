@@ -112,11 +112,15 @@ export default define(meta, (ps, user) => fetchMeta()
 				ps.sinceDate ? { $gt: new Date(ps.sinceDate) } :
 				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
 			$and: [{
+				__cleanable: true,
 				deletedAt: null,
 				$or: [{
+					__cleanable: true,
 					$or: followings.map(x => ({
+						__cleanable: true,
 						userId: x.id,
 						$and: [{
+							__cleanable: true,
 							$or: x.stalk ? [{ replyId: null }, {
 								$expr: { $eq: ['$_reply.userId', '$userId'] }
 							}, { '_reply.userId': user._id }, { userId: user._id }] : undefined

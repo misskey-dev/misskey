@@ -32,7 +32,7 @@ export default define(meta, (ps) => errorWhen(
 	.then(() => Report.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
-				ps.untilId ? { $lt: ps.untilId } : undefined,
+				ps.untilId ? { $lt: ps.untilId } : undefined
 		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId ? 1 : -1 }

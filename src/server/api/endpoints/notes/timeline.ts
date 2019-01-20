@@ -111,9 +111,12 @@ export default define(meta, (ps, user) => errorWhen(
 				ps.sinceDate ? { $gt: new Date(ps.sinceDate) } :
 				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
 			$and: [{
+				__cleanable: true,
 				deletedAt: null,
 				$and: [{
+					__cleanable: true,
 					$or: x.map(f => ({
+						__cleanable: true,
 						userId: f.id,
 						$or: !f.stalk ? [
 							{ replyId: null }, {
