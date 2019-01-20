@@ -1253,9 +1253,6 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "Brak zdjęć"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Śledzi Cię"
-  stalk: "Stalkuj"
-  stalking: "Stalkujesz"
-  unstalk: "Przestań stalkować"
   menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
