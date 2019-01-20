@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
 import { error, errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -44,12 +45,12 @@ export default define(meta, (ps, user) => errorWhen(
 	.then(() => Note.findOne({ _id: ps.noteId }))
 	.then(x =>
 		x === null ? error('note not found') :
-		Note.find({
+		Note.find(query({
 				_id:
 					ps.sinceId ? { $gt: ps.sinceId } :
 					ps.untilId ? { $lt: ps.untilId } : undefined,
 				renoteId: x._id
-			}, {
+			}), {
 				limit: ps.limit,
 				sort: { _id: ps.sinceId ? 1 : -1 }
 			}))

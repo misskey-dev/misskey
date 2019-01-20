@@ -7,6 +7,7 @@ import define from '../../define';
 import { error } from '../../../../prelude/promise';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../chart/active-users';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -103,7 +104,7 @@ export default define(meta, (ps, user) => fetchMeta()
 				Mute.find({ muterId: user._id })
 					.then(ms => ms.map(m => m.muteeId))
 			]))
-	.then(([followings, $nin]) => Note.find({
+	.then(([followings, $nin]) => Note.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -171,7 +172,7 @@ export default define(meta, (ps, user) => fetchMeta()
 					$ne: []
 				}
 			}] : [])]
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		}))

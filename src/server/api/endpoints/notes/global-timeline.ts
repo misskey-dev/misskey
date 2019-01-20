@@ -6,6 +6,7 @@ import define from '../../define';
 import { ILocalUser } from '../../../../models/user';
 import { error } from '../../../../prelude/promise';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -62,7 +63,7 @@ export default define(meta, (ps, user) => fetchMeta()
 	disableGlobalTimeline && (!user || !user.isAdmin && !user.isModerator) ?
 		error('global timeline disabled') :
 		fetchMutedUserIds(user))
-	.then($nin => Note.find({
+	.then($nin => Note.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -76,7 +77,7 @@ export default define(meta, (ps, user) => fetchMeta()
 			['_reply.userId']: $nin && $nin.length ? { $nin } : undefined,
 			['_renote.userId']: $nin && $nin.length ? { $nin } : undefined,
 			fileIds: ps.withFiles !== false || ps.mediaOnly ? { $exists: true, $ne: [] } : undefined
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		}))

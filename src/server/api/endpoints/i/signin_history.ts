@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Signin, { pack } from '../../../../models/signin';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	requireCredential: true,
@@ -29,12 +30,12 @@ export const meta = {
 export default define(meta, (ps, user) => errorWhen(
 	ps.sinceId && !!ps.untilId,
 	'cannot set sinceId and untilId')
-	.then(() => Signin.find({
+	.then(() => Signin.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
 			userId: user._id
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId ? 1 : -1 }
 		}))

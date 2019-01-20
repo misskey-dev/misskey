@@ -4,6 +4,7 @@ import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import define from '../../define';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -110,7 +111,7 @@ export default define(meta, (ps, user) => Promise.all([
 	])
 	.then(([list, $nin]) =>
 		!list.userIds.length ? [] :
-		Note.find({
+		Note.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -177,7 +178,7 @@ export default define(meta, (ps, user) => Promise.all([
 			...(ps.withFiles !== false || ps.mediaOnly ? [{
 				fileIds: { $exists: true, $ne: [] }
 			}] : [])]
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		}))

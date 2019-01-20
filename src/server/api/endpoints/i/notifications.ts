@@ -6,6 +6,7 @@ import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -59,7 +60,7 @@ export default define(meta, (ps, user) => errorWhen(
 	ps.sinceId && !!ps.untilId,
 	'cannot set sinceId and untilId')
 	.then(() => Mute.find({ muterId: user._id }))
-	.then(async x => Notification.find({
+	.then(async x => Notification.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -72,7 +73,7 @@ export default define(meta, (ps, user) => errorWhen(
 			type:
 				ps.includeTypes.length ? { $in: ps.includeTypes } :
 				ps.excludeTypes.length ? { $nin: ps.excludeTypes } : undefined
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId ? 1 : -1 }
 		}))

@@ -7,6 +7,7 @@ import { ILocalUser } from '../../../../models/user';
 import { error } from '../../../../prelude/promise';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../chart/active-users';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -78,7 +79,7 @@ export default define(meta, (ps, user) => fetchMeta()
 		disableLocalTimeline && (!user || !user.isAdmin && !user.isModerator) ?
 			error('local timeline disabled') :
 			fetchMutedUserIds(user))
-	.then($nin => Note.find({
+	.then($nin => Note.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -94,7 +95,7 @@ export default define(meta, (ps, user) => fetchMeta()
 			fileIds: ps.fileType || ps.withFiles !== false || ps.mediaOnly ? { $exists: true, $ne: [] } : undefined,
 			['_files.contentType']: ps.fileType ? { $in: ps.fileType } : undefined,
 			['_files.metadata.isSensitive']: ps.fileType && ps.excludeNsfw ? { $ne: true } : undefined,
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		}))

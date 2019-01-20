@@ -5,6 +5,7 @@ import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
 import { error } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -51,11 +52,11 @@ export default define(meta, (ps, me) => User.findOne({ _id: ps.userId }, {
 	.then(x =>
 		x === null ? error('user not found') :
 		be(me, ps.iknow)
-			.then($in => Following.find({
+			.then($in => Following.find(query({
 					_id: ps.cursor ? { $lt: ps.cursor } : undefined,
 					followeeId: x._id,
 					followerId: $in
-				}, {
+				}), {
 					limit: ps.limit + 1,
 					sort: { _id: -1 }
 				})

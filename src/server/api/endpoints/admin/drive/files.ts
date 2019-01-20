@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import File, { packMany } from '../../../../../models/drive-file';
 import define from '../../../define';
+import { query } from '../../../../../prelude/query';
 
 export const meta = {
 	requireCredential: false,
@@ -47,12 +48,12 @@ const sort = (sort: string) => {
 	}
 };
 
-export default define(meta, ps => File.find({
+export default define(meta, ps => File.find(query({
 		'metadata.deletedAt': { $exists: false },
 		'metadata._user.host':
 			origin === 'local' ? null :
 			origin === 'remote' ? { $ne: null } : undefined as any
-	}, {
+	}), {
 		limit: ps.limit,
 		sort: sort(ps.sort),
 		skip: ps.offset

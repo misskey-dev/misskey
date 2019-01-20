@@ -3,6 +3,7 @@ import Note from '../../../../models/note';
 import Reaction, { pack } from '../../../../models/note-reaction';
 import define from '../../define';
 import { error, errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -50,12 +51,12 @@ export default define(meta, (ps, user) => errorWhen(
 	.then(() => Note.findOne({ _id: ps.noteId }))
 	.then(x =>
 		x === null ? error('note not found') :
-		Reaction.find({
+		Reaction.find(query({
 				_id:
 					ps.sinceId ? { $gt: ps.sinceId } :
 					ps.untilId ? { $lt: ps.untilId } : undefined,
 				noteId: x._id
-			}, {
+			}), {
 				limit: ps.limit,
 				skip: ps.offset,
 				sort: { _id: ps.sinceId ? 1 : -1 }

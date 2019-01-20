@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import DriveFile, { packMany } from '../../../../models/drive-file';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -44,7 +45,7 @@ export const meta = {
 export default define(meta, (ps, user) => errorWhen(
 	ps.sinceId && !!ps.untilId,
 	'cannot set sinceId and untilId')
-	.then(() => DriveFile.find({
+	.then(() => DriveFile.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -52,7 +53,7 @@ export default define(meta, (ps, user) => errorWhen(
 			'metadata.userId': user._id,
 			'metadata.folderId': ps.folderId,
 			'metadata.deletedAt': { $exists: false }
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId ? 1 : -1 }
 		}))

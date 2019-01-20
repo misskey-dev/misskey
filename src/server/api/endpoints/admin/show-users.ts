@@ -78,7 +78,7 @@ export default define(meta, (ps, me) => User.find({
 				...(
 					ps.origin == 'local' ? [{ host: null }] :
 					ps.origin == 'remote' ? [{
-						host: {$ne: null }
+						host: { $ne: null }
 					}] :
 					[])
 			]

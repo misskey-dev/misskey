@@ -5,6 +5,7 @@ import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -56,7 +57,7 @@ export default define(meta, (ps, user) => errorWhen(
 		}))
 	.then(async x => {
 		if (x === null) throw 'user not found';
-		const messages = await Message.find({
+		const messages = await Message.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -67,7 +68,7 @@ export default define(meta, (ps, user) => errorWhen(
 					userId: x._id,
 					recipientId: user._id
 				}]
-			}, {
+			}), {
 				limit: ps.limit,
 				sort: ps.sinceId ? 1 : -1
 			});

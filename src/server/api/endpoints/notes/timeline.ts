@@ -6,6 +6,7 @@ import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
 import activeUsersChart from '../../../../chart/active-users';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -102,7 +103,7 @@ export default define(meta, (ps, user) => errorWhen(
 			Mute.find({ muterId: user._id })
 				.then(ms => ms.map(m => m.muteeId))
 		]))
-	.then(([x, $nin]) => Note.find({
+	.then(([x, $nin]) => Note.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -168,7 +169,7 @@ export default define(meta, (ps, user) => errorWhen(
 			...(ps.withFiles !== false || ps.mediaOnly ? [{
 				fileIds: { $exists: true, $ne: [] }
 			}] : [])]
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }
 		})

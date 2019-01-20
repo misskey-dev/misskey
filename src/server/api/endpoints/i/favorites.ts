@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Favorite, { packMany } from '../../../../models/favorite';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -34,12 +35,12 @@ export const meta = {
 export default define(meta, (ps, user) => errorWhen(
 	ps.sinceId && !!ps.untilId,
 	'cannot set sinceId and untilId')
-	.then(() => Favorite.find({
+	.then(() => Favorite.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
 			userId: user._id
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId ? 1 : -1 }
 		}))

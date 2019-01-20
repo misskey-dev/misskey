@@ -4,6 +4,7 @@ import Note, { packMany } from '../../../../models/note';
 import User from '../../../../models/user';
 import define from '../../define';
 import { errorWhen } from '../../../../prelude/promise';
+import { query } from '../../../../prelude/query';
 
 export const meta = {
 	desc: {
@@ -152,7 +153,7 @@ export default define(meta, (ps, me) => errorWhen(
 		x === null,
 		'user not found',
 		x)
-	.then(x => Note.find({
+	.then(x => Note.find(query({
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
@@ -186,7 +187,7 @@ export default define(meta, (ps, me) => errorWhen(
 			} : undefined,
 			'_files.contentType': { $in: ps.fileType },
 			'_files.metadata.isSensitive': ps.excludeNsfw ? { $ne: true } : null
-		}, {
+		}), {
 			limit: ps.limit,
 			sort: {
 				_id: ps.sinceId ? 1 : -1,
