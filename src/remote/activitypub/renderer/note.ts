@@ -5,9 +5,10 @@ import renderEmoji from './emoji';
 import config from '../../../config';
 import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
-import User from '../../../models/user';
+import User, { ILocalUser } from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 import Emoji, { IEmoji } from '../../../models/emoji';
+import renderQuestion from './question';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
 	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
@@ -93,11 +94,14 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	let text = note.text;
 
+	const questions = [];
 	if (note.poll != null) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note._id}`;
 		// TODO: i18n
 		text += `\n\n[投票を見る](${url})`;
+
+		questions.push(await renderQuestion(user as ILocalUser, note));
 	}
 
 	let apText = text;
@@ -120,6 +124,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		...hashtagTags,
 		...mentionTags,
 		...apemojis,
+		...questions,
 	];
 
 	return {
