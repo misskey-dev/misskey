@@ -38,9 +38,7 @@ export type INote = {
 	fileIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
-	poll: {
-		choices: IChoice[]
-	};
+	poll: IPoll;
 	text: string;
 	tags: string[];
 	tagsLower: string[];
@@ -98,6 +96,10 @@ export type INote = {
 		inbox?: string;
 	};
 	_files?: IDriveFile[];
+};
+
+export type IPoll = {
+	choices: IChoice[]
 };
 
 export type IChoice = {

@@ -14,6 +14,7 @@ import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
+import { extractPollFromQuestion } from './question';
 
 const log = debug('misskey:activitypub');
 
@@ -117,6 +118,9 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const apEmojis = emojis.map(emoji => emoji.name);
 
+	const questionUri = note._misskey_question;
+	const poll = questionUri ? await extractPollFromQuestion(questionUri).catch(() => undefined) : undefined;
+
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 		updatePerson(note.attributedTo);
@@ -137,6 +141,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		apMentions,
 		apHashtags,
 		apEmojis,
+		questionUri,
+		poll,
 		uri: note.id
 	}, silent);
 }

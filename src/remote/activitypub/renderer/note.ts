@@ -94,14 +94,14 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	let text = note.text;
 
-	const questions = [];
+	let question: string;
 	if (note.poll != null) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note._id}`;
 		// TODO: i18n
 		text += `\n\n[投票を見る](${url})`;
 
-		questions.push(await renderQuestion(user as ILocalUser, note));
+		question = `${config.url}/questions/${note._id}`;
 	}
 
 	let apText = text;
@@ -124,7 +124,6 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		...hashtagTags,
 		...mentionTags,
 		...apemojis,
-		...questions,
 	];
 
 	return {
@@ -135,6 +134,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		content,
 		_misskey_content: text,
 		_misskey_quote: quote,
+		_misskey_question: question,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,
