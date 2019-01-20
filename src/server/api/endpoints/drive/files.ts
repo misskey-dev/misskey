@@ -49,7 +49,7 @@ export default define(meta, (ps, user) => errorWhen(
 			_id:
 				ps.sinceId ? { $gt: ps.sinceId } :
 				ps.untilId ? { $lt: ps.untilId } : undefined,
-			contentType: new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`),
+			contentType: ps.type ? new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`) : undefined,
 			'metadata.userId': user._id,
 			'metadata.folderId': ps.folderId,
 			'metadata.deletedAt': { $exists: false }

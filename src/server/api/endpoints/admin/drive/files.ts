@@ -38,15 +38,14 @@ export const meta = {
 	}
 };
 
-const sort = (sort: string) => {
-	switch (sort) {
-		case '+createdAt': return { uploadDate: -1 };
-		case '-createdAt': return { uploadDate: 1 };
-		case '+size': return { length: -1 };
-		case '-size': return { length: 1 };
-		default: return { _id: -1 };
-	}
+const mika: { [x: string]: any } = {
+	'+createdAt': { uploadDate: -1 },
+	'-createdAt': { uploadDate: 1 },
+	'+size': { length: -1 },
+	'-size': { length: 1 }
 };
+
+const rika = { _id: -1 };
 
 export default define(meta, ps => File.find(query({
 		'metadata.deletedAt': { $exists: false },
@@ -55,7 +54,7 @@ export default define(meta, ps => File.find(query({
 			origin === 'remote' ? { $ne: null } : undefined as any
 	}), {
 		limit: ps.limit,
-		sort: sort(ps.sort),
+		sort: mika[ps.sort] || rika,
 		skip: ps.offset
 	})
 	.then(x => packMany(x, {
