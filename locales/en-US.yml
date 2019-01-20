@@ -1253,9 +1253,6 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "No photos"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Follows you"
-  stalk: "Stalk"
-  stalking: "Stalking"
-  unstalk: "Unstalk"
   menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
