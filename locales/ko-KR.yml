@@ -1253,9 +1253,6 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "사진이 없습니다"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "당신을 팔로우합니다"
-  stalk: "스토킹"
-  stalking: "스토킹하고 있습니다"
-  unstalk: "스토킹 중단"
   menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "글"
