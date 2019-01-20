@@ -4,6 +4,7 @@ import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import define from '../../define';
+import { getFriends } from '../../common/get-friends';
 
 export const meta = {
 	desc: {
@@ -101,13 +102,17 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const [list, mutedUserIds] = await Promise.all([
+	const [list, followings, mutedUserIds] = await Promise.all([
 		// リストを取得
 		// Fetch the list
 		UserList.findOne({
 			_id: ps.listId,
 			userId: user._id
 		}),
+
+		// フォローを取得
+		// Fetch following
+		getFriends(user._id, true, false),
 
 		// ミュートしているユーザーを取得
 		Mute.find({
@@ -146,16 +151,17 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}]
 	}));
 
-	const visibleQuery = user == null ? [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}] : [{
-		visibility: { $in: [ 'public', 'home' ] }
+	const visibleQuery = [{
+		visibility: { $in: ['public', 'home'] }
 	}, {
 		// myself (for specified/private)
 		userId: user._id
 	}, {
 		// to me (for specified)
-		visibleUserIds: { $in: [ user._id ] }
+		visibleUserIds: { $in: [user._id] }
+	}, {
+		visibility: 'followers',
+		userId: { $in: followings.map(f => f.id) }
 	}];
 
 	const query = {
