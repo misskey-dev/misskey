@@ -154,7 +154,7 @@ const mfm = P.createLanguage({
 
 	//#region Bold
 	bold: r =>
-		P.regexp(/(\*\*|__)([\s\S]+?)\1/, 2)
+		P.alt(P.regexp(/\*\*([\s\S]+?)\*\*/, 1), P.regexp(/__([a-zA-Z0-9\s]+?)__/, 1))
 		.map(x => createTree('bold', P.alt(
 			r.strike,
 			r.italic,

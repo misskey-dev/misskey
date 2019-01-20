@@ -187,6 +187,13 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('with underscores (ensure it allows alphabet only)', () => {
+				const tokens = analyze('(=^・__________・^=)');
+				assert.deepStrictEqual(tokens, [
+					text('(=^・__________・^=)')
+				]);
+			});
+
 			it('mixed syntax', () => {
 				const tokens = analyze('**foo__');
 				assert.deepStrictEqual(tokens, [
