@@ -135,6 +135,7 @@ export default define(meta, (ps, user) => fetchMeta()
 					}))
 				}, {
 					visibility: 'public',
+					replyId: null,
 					'_user.host': null
 				}],
 				userId: { $nin },

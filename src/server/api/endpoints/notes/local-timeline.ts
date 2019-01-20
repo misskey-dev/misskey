@@ -88,6 +88,7 @@ export default define(meta, (ps, user) => fetchMeta()
 				ps.untilDate ? { $lt: new Date(ps.untilDate) } : undefined,
 			deletedAt: null,
 			visibility: 'public',
+			replyId: null,
 			'_user.host': null,
 			userId: $nin && $nin.length ? { $nin } : undefined,
 			'_reply.userId': $nin && $nin.length ? { $nin } : undefined,

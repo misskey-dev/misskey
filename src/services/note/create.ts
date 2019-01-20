@@ -375,11 +375,17 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 			// Publish note to local and hybrid timeline stream
 			if (note.visibility != 'home') {
-				publishLocalTimelineStream(noteObj);
+				// Ignore if it is a reply
+				if (note.replyId == null) {
+					publishLocalTimelineStream(noteObj);
+				}
 			}
 
 			if (note.visibility == 'public') {
-				publishHybridTimelineStream(null, noteObj);
+				// Ignore if it is a reply
+				if (note.replyId == null) {
+					publishHybridTimelineStream(null, noteObj);
+				}
 			} else {
 				// Publish event to myself's stream
 				publishHybridTimelineStream(note.userId, noteObj);
