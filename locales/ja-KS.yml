@@ -1253,9 +1253,6 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "写真はあらへんで"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "フォローされとるで"
-  stalk: "ストークする"
-  stalking: "ストーキングしとるで"
-  unstalk: "ストーク解除"
   menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
