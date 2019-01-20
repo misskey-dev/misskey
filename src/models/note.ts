@@ -39,7 +39,7 @@ export type INote = {
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
 	poll: {
-		choices: choice[]
+		choices: IChoice[]
 	};
 	text: string;
 	tags: string[];
@@ -100,7 +100,7 @@ export type INote = {
 	_files?: IDriveFile[];
 };
 
-export type choice = {
+export type IChoice = {
 	id: number;
 	text: string;
 	votes: number;
