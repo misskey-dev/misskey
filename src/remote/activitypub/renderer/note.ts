@@ -108,7 +108,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	// Provides choices as text for AP
 	if (note.poll != null) {
-		const cs = note.poll.choices.map(c => `${c.id}\uFE0E ${c.text}`);
+		const cs = note.poll.choices.map(c => `${c.id}: ${c.text}`);
 		apText += '\n';
 		apText += cs.join('\n');
 	}
