@@ -476,12 +476,9 @@ export default async function(
 		properties: properties,
 		withoutChunks: isLink,
 		isRemote: isLink,
-		isSensitive: (sensitive !== null && sensitive !== undefined)
-			? sensitive
-			: isLocalUser(user)
-				? user.settings.alwaysMarkNsfw
-					? true
-					: false
+		isSensitive: isLocalUser(user) && user.settings.alwaysMarkNsfw ? true :
+			(sensitive !== null && sensitive !== undefined)
+				? sensitive
 				: false
 	} as IMetadata;
 
