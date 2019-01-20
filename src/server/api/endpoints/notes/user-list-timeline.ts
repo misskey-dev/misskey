@@ -5,6 +5,7 @@ import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import define from '../../define';
 import { query } from '../../../../prelude/query';
+import { getFriends } from '../../common/get-friends';
 
 export const meta = {
 	desc: {
@@ -99,10 +100,12 @@ export default define(meta, (ps, user) => Promise.all([
 			_id: ps.listId,
 			userId: user._id
 		}),
+		getFriends(user._id, true, false)
+			.then(x => x.map(x => x.id)),
 		Mute.find({ muterId: user._id })
 			.then(ms => ms.map(m => m.muteeId))
 	])
-	.then(([list, $nin]) =>
+	.then(([list, $in, $nin]) =>
 		!list.userIds.length ? [] :
 		Note.find(query({
 			_id:
@@ -124,12 +127,19 @@ export default define(meta, (ps, user) => Promise.all([
 						]
 					}))
 				}, {
-					$or: [{
-						visibility: { $in: ['public', 'home'] }
-					},
-					...(!user ? [{ userId: user._id }, {
-						visibleUserIds: { $in: [user._id] }
-					}] : [])]
+					$or: [
+						{
+							visibility: { $in: ['public', 'home'] }
+						},
+						{ userId: user._id },
+						{
+							visibleUserIds: { $in: [user._id] }
+						},
+						{
+							visibility: 'followers',
+							userId: { $in }
+						}
+					]
 				}],
 				userId: { $nin },
 				'_reply.userId': { $nin },
