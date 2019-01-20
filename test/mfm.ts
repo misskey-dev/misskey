@@ -32,8 +32,8 @@ describe('createTree', () => {
 			leaf('left', { a: 2 }),
 			leaf('right', { b: 'hi' })
 		], {
-			c: 4
-		});
+				c: 4
+			});
 		assert.deepStrictEqual(t, {
 			node: {
 				type: 'tree',
@@ -177,6 +177,36 @@ describe('MFM', () => {
 					text('bar'),
 				]);
 			});
+
+			it('with underscores', () => {
+				const tokens = analyze('__foo__');
+				assert.deepStrictEqual(tokens, [
+					tree('bold', [
+						text('foo')
+					], {}),
+				]);
+			});
+
+			it('with underscores (ensure it allows alphabet only)', () => {
+				const tokens = analyze('(=^・__________・^=)');
+				assert.deepStrictEqual(tokens, [
+					text('(=^・__________・^=)')
+				]);
+			});
+
+			it('mixed syntax', () => {
+				const tokens = analyze('**foo__');
+				assert.deepStrictEqual(tokens, [
+						text('**foo__'),
+				]);
+			});
+
+			it('mixed syntax', () => {
+				const tokens = analyze('__foo**');
+				assert.deepStrictEqual(tokens, [
+						text('__foo**'),
+				]);
+			});
 		});
 
 		it('big', () => {
@@ -288,7 +318,7 @@ describe('MFM', () => {
 					leaf('mention', { acct: '@a', canonical: '@a', username: 'a', host: null })
 				]);
 
-				const tokens4 = analyze('@\n@v\n@veryverylongusername' /* \n@toolongtobeasamention */ );
+				const tokens4 = analyze('@\n@v\n@veryverylongusername' /* \n@toolongtobeasamention */);
 				assert.deepStrictEqual(tokens4, [
 					text('@\n'),
 					leaf('mention', { acct: '@v', canonical: '@v', username: 'v', host: null }),
@@ -883,12 +913,51 @@ describe('MFM', () => {
 		});
 
 		describe('italic', () => {
-			it('simple', () => {
+			it('<i>', () => {
 				const tokens = analyze('<i>foo</i>');
 				assert.deepStrictEqual(tokens, [
 					tree('italic', [
 						text('foo')
 					], {}),
+				]);
+			});
+
+			it('underscore', () => {
+				const tokens = analyze('_foo_');
+				assert.deepStrictEqual(tokens, [
+					tree('italic', [
+						text('foo')
+					], {}),
+				]);
+			});
+
+			it('simple with asterix', () => {
+				const tokens = analyze('*foo*');
+				assert.deepStrictEqual(tokens, [
+					tree('italic', [
+						text('foo')
+					], {}),
+				]);
+			});
+
+			it('exlude emotes', () => {
+				const tokens = analyze('*.*');
+				assert.deepStrictEqual(tokens, [
+					text("*.*"),
+				]);
+			});
+
+			it('mixed', () => {
+				const tokens = analyze('_foo*');
+				assert.deepStrictEqual(tokens, [
+					text('_foo*'),
+				]);
+			});
+
+			it('mixed', () => {
+				const tokens = analyze('*foo_');
+				assert.deepStrictEqual(tokens, [
+					text('*foo_'),
 				]);
 			});
 		});

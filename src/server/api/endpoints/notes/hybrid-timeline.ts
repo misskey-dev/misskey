@@ -114,12 +114,19 @@ export default define(meta, (ps, user) => fetchMeta()
 								$expr: { $eq: ['$_reply.userId', '$userId'] }
 							}, { '_reply.userId': user._id }, { userId: user._id }]
 						}, {
-							$or: [{
-								visibility: { $in: ['public', 'home'] }
-							},
-							...(user ? [{ userId: user._id }, {
-								visibleUserIds: { $in: [user._id] }
-							}] : [])]
+							$or: user ? [
+                {
+                  visibility: { $in: ['public', 'home'] }
+                }
+              ] : [
+                {
+                  visibility: { $in: ['public', 'home', 'followers'] }
+                },
+                { userId: user._id },
+                {
+                  visibleUserIds: { $in: [user._id] }
+                }
+              ]
 						}]
 					}))
 				}, {

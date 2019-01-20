@@ -110,6 +110,8 @@ You can check if the service is running with `systemctl status misskey`.
 3. `npm install`
 4. `npm run build`
 5. Check [ChangeLog](../CHANGELOG.md) for migration information
+6. Restart your Misskey process to apply changes
+7. Enjoy
 
 ----------------------------------------------------------------
 
