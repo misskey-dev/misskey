@@ -114,10 +114,6 @@ export interface IBlock extends IActivity {
 	type: 'Block';
 }
 
-export interface IUpdate extends IActivity {
-	type: 'Update';
-}
-
 export type Object =
 	ICollection |
 	IOrderedCollection |
@@ -131,5 +127,4 @@ export type Object =
 	IRemove |
 	ILike |
 	IAnnounce |
-	IBlock |
-	IUpdate;
+	IBlock;
