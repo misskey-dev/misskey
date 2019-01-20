@@ -117,7 +117,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		const m = text.match(/([0-9])$/);
 		if (m) {
 			log(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${m[0]}`);
-			await vote(actor, reply, Number(m[0]));
+			await vote(actor, reply, Number(m[1]));
 			return null;
 		}
 	}
