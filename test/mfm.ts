@@ -930,8 +930,7 @@ describe('MFM', () => {
 					text('*foo_'),
 				]);
 			});
-		},
-		);
+		});
 	});
 
 	describe('toHtml', () => {
