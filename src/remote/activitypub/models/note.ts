@@ -114,6 +114,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	// vote
 	if (reply && reply.poll && text != null && text.match(/^[0-9]$/)) {
+		log(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${text}`);
 		await vote(actor, reply, Number(text));
 		return null;
 	}
