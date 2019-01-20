@@ -168,6 +168,9 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 				// public only
 				visibility: 'public',
 
+				// リプライでない
+				replyId: null,
+
 				// local
 				'_user.host': null
 			}],
