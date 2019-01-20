@@ -1,9 +1,10 @@
+import * as mongo from 'mongodb';
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
-import Note from '../../../../../models/note';
-import create from '../../../../../services/note/reaction/create';
+import createReaction from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
 import define from '../../../define';
-import { error } from '../../../../../prelude/promise';
+import { IUser } from '../../../../../models/user';
+import { getValiedNote } from '../../../common/getters';
 
 export const meta = {
 	stability: 'stable',
@@ -35,8 +36,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
-	.then(x =>
-		x === null ? error('note not found') :
-		x.deletedAt ? error('this note is already deleted') :
-		create(user, x, ps.reaction)));
+export default define(meta, (ps, user) => createReactionById(user, ps.noteId, ps.reaction));
+
+async function createReactionById(user: IUser, noteId: mongo.ObjectID, reaction: string) {
+	const note = await getValiedNote(noteId);
+	await createReaction(user, note, reaction);
+}

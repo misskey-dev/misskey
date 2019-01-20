@@ -121,12 +121,12 @@ export default define(meta, (ps, user) => fetchMeta()
 						userId: x.id,
 						$and: [{
 							__cleanable: true,
-							$or: x.stalk ? [{ replyId: null }, {
+							$or: [{ replyId: null }, {
 								$expr: { $eq: ['$_reply.userId', '$userId'] }
-							}, { '_reply.userId': user._id }, { userId: user._id }] : undefined
+							}, { '_reply.userId': user._id }, { userId: user._id }]
 						}, {
 							$or: [{
-								visibility: { $in: [ 'public', 'home' ] }
+								visibility: { $in: ['public', 'home'] }
 							},
 							...(user ? [{ userId: user._id }, {
 								visibleUserIds: { $in: [ user._id ] }

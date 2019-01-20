@@ -118,11 +118,11 @@ export default define(meta, (ps, user) => errorWhen(
 					$or: x.map(f => ({
 						__cleanable: true,
 						userId: f.id,
-						$or: !f.stalk ? [
+						$or: [
 							{ replyId: null }, {
 								$expr: { $eq: ['$_reply.userId', '$userId'] }
 							}, { '_reply.userId': user._id },
-							{ userId: user._id }] : undefined
+							{ userId: user._id }]
 					}))
 				}, {
 					$or: [{

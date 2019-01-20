@@ -1,5 +1,5 @@
 <template>
-<div class="pwnqwyet">
+<div>
 	<ui-card>
 		<div slot="title"><fa :icon="faTerminal"/> {{ $t('operation') }}</div>
 		<section class="fit-top">
@@ -234,38 +234,34 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.pwnqwyet
-	@media (min-width 500px)
-		padding 16px
+.kidvdlkg
+	padding 16px 0
+	border-top solid 1px var(--faceDivider)
 
-	.kidvdlkg
-		padding 16px 0
-		border-top solid 1px var(--faceDivider)
+	> div:first-child
+		display flex
+		cursor pointer
 
-		> div:first-child
-			display flex
-			cursor pointer
+		> div:nth-child(1)
+			> .thumbnail
+				display block
+				width 64px
+				height 64px
+				background-size cover
+				background-position center center
 
-			> div:nth-child(1)
-				> .thumbnail
-					display block
-					width 64px
-					height 64px
-					background-size cover
-					background-position center center
+		> div:nth-child(2)
+			flex 1
+			padding-left 16px
 
-			> div:nth-child(2)
-				flex 1
-				padding-left 16px
+			@media (max-width 500px)
+				font-size 14px
 
-				@media (max-width 500px)
-					font-size 14px
+			> header
+				word-break break-word
 
-				> header
-					word-break break-word
-
-					> .username
-						margin-left 8px
-						opacity 0.7
+				> .username
+					margin-left 8px
+					opacity 0.7
 
 </style>

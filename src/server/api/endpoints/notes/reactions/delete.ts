@@ -1,9 +1,10 @@
+import * as mongo from 'mongodb';
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
-import Reaction from '../../../../../models/note-reaction';
-import Note from '../../../../../models/note';
 import define from '../../../define';
-import { publishNoteStream } from '../../../../../stream';
 const ms = require('ms');
+import deleteReaction from '../../../../../services/note/reaction/delete';
+import { IUser } from '../../../../../models/user';
+import { getValiedNote } from '../../../common/getters';
 
 export const meta = {
 	desc: {
@@ -33,21 +34,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => Note.findOne({ _id: ps.noteId })
-	.then(async x => {
-		if (x === null) throw 'note not found';
-		const exist = await Reaction.findOne({
-			noteId: x._id,
-			userId: user._id,
-			deletedAt: { $exists: false }
-		});
-		if (exist === null) throw 'never reacted';
-		await Reaction.remove({ _id: exist._id });
-		Note.update({ _id: x._id }, {
-			$inc: { [`reactionCounts.${exist.reaction}`]: -1 }
-		});
-		publishNoteStream(x._id, 'unreacted', {
-			reaction: exist.reaction,
-			userId: user._id
-		});
-	}));
+export default define(meta, (ps, user) => deleteReactionById(user, ps.noteId));
+
+async function deleteReactionById(user: IUser, noteId: mongo.ObjectID) {
+	const note = await getValiedNote(noteId);
+	await deleteReaction(user, note);
+}
