@@ -55,8 +55,8 @@ adduser --disabled-password --disabled-login misskey
 
 *5.* 設定ファイルを作成する
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする。
-2. `default.yml` を編集する。
+1. `cp .config/example.yaml .config/default.yaml` `.config/example.yaml`をコピーし名前を`default.yaml`にする。
+2. `default.yaml` を編集する。
 
 *6.* Misskeyのビルド
 ----------------------------------------------------------------

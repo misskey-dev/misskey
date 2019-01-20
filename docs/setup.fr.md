@@ -49,8 +49,8 @@ En root :
 
 *5.* Création du fichier de configuration
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copiez le fichier `.config/example.yml` et renommez-le`default.yml`.
-2. Editez le fichier `default.yml`
+1. `cp .config/example.yaml .config/default.yaml` Copiez le fichier `.config/example.yaml` et renommez-le`default.yaml`.
+2. Editez le fichier `default.yaml`
 
 *6.* Construction de Misskey
 ----------------------------------------------------------------

@@ -49,8 +49,8 @@ jobs:
       - run:
           name: Configure
           command: |
-            cp .circleci/misskey/default.yml .config
-            cp .circleci/misskey/test.yml .config
+            cp .circleci/misskey/default.yaml .config
+            cp .circleci/misskey/test.yaml .config
       - run:
           name: Build
           command: |
@@ -84,9 +84,9 @@ jobs:
             - run:
                 name: Configure
                 command: |
-                  mv .config/test.yml .config/test_redis.yml
-                  touch .config/test.yml
-                  cat .config/test_redis.yml | while IFS= read line; do if [[ "$line" = '# __REDIS__' ]]; then break; else echo "$line" >> .config/test.yml; fi; done
+                  mv .config/test.yaml .config/test_redis.yaml
+                  touch .config/test.yaml
+                  cat .config/test_redis.yaml | while IFS= read line; do if [[ "$line" = '# __REDIS__' ]]; then break; else echo "$line" >> .config/test.yaml; fi; done
       - run:
           name: Test
           command: |

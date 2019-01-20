@@ -18,11 +18,11 @@ const dir = `${__dirname}/../../.config`;
  * Path of configuration file
  */
 const path = process.env.NODE_ENV == 'test'
-	? `${dir}/test.yml`
-	: `${dir}/default.yml`;
+	? `${dir}/test.yaml`
+	: `${dir}/default.yaml`;
 
 export default function load() {
-	const config = yaml.safeLoad(fs.readFileSync(path, 'utf-8')) as Source;
+	const config = yaml.safeLoad(fs.readFileSync(fs.existsSync(path) ? path : path.replace('.yaml', '.yml'), 'utf-8')) as Source;
 
 	const mixin = {} as Mixin;
 

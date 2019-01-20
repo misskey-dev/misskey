@@ -1,4 +1,4 @@
-# **DO NOT edit locale files** except `ja-JP.yml`.
+# **DO NOT edit locale files** except `ja-JP.yaml`.
 
 When you add text to the ja-JP file (of syuilo/misskey), it will automatically be applied to other language files.
 Translations added in ja-JP file should contain the original Japanese strings.

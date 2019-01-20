@@ -145,7 +145,7 @@ gulp.task('copy:client', [
 );
 
 gulp.task('locales', () =>
-	gulp.src('./locales/*.yml')
+	gulp.src('./locales/*.yaml')
 		.pipe(yaml({ schema: 'DEFAULT_SAFE_SCHEMA' }))
 		.pipe(gulp.dest('./built/client/assets/locales/'))
 );

@@ -1,5 +1,5 @@
 /.config/*
-!/.config/example.yml
+!/.config/example.yaml
 !/.config/mongo_initdb_example.js
 /.vscode
 /node_modules

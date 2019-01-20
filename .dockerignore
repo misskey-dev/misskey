@@ -5,7 +5,7 @@
 .vscode
 Dockerfile
 build/
-docker-compose.yml
+docker-compose.yaml
 node_modules/
 mongo/
 redis/

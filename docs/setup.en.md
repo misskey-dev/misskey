@@ -49,8 +49,8 @@ As root:
 
 *5.* Configure Misskey
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
-2. Edit `default.yml`
+1. `cp .config/example.yaml .config/default.yaml` Copy the `.config/example.yaml` and rename it to `default.yaml`.
+2. Edit `default.yaml`
 
 *6.* Build Misskey
 ----------------------------------------------------------------

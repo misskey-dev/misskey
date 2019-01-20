@@ -15,13 +15,13 @@ Dockerを使ったMisskey構築方法
 
 *2.* 設定ファイルを作成する
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする
+1. `cp .config/example.yaml .config/default.yaml` `.config/example.yaml`をコピーし名前を`default.yaml`にする
 2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` `.config/mongo_initdb_example.js`をコピーし名前を`mongo_initdb.js`にする
-3. `default.yml`と`mongo_initdb.js`を編集する
+3. `default.yaml`と`mongo_initdb.js`を編集する
 
 *3.* Dockerの設定
 ----------------------------------------------------------------
-`docker-compose.yml`を編集してください。
+`docker-compose.yaml`を編集してください。
 
 *4.* Misskeyのビルド
 ----------------------------------------------------------------
