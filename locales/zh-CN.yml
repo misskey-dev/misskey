@@ -1253,9 +1253,6 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "没有图片"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "关注您"
-  stalk: "跟踪"
-  stalking: "正在跟踪"
-  unstalk: "解除跟踪"
   menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "帖子"
