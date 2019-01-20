@@ -39,7 +39,9 @@ export default async (endpoint: IEndpoint, ctx: Koa.Context) => {
 	try {
 		res = await call(endpoint.name, user, app, body, (ctx.req as any).file);
 	} catch (e) {
-		reply(400, e);
+		const response = e.response || 400;
+		delete e.response;
+		reply(response, e);
 		return;
 	}
 

@@ -3,6 +3,7 @@ import limiter from './limiter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 import endpoints from './endpoints';
+import config from '../../config';
 
 export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any) => new Promise<any>(async (ok, rej) => {
 	const isSecure = user != null && app == null;
@@ -60,14 +61,29 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 		}
 	} catch (e) {
-		if (e && e.name == 'INVALID_PARAM') {
-			rej({
-				code: e.name,
-				param: e.param,
-				reason: e.message
-			});
-		} else {
-			rej(e);
+		if (e) {
+			if (config.env !== 'production')
+				console.error(e);
+			switch (e.name) {
+				case 'INVALID_PARAM':
+					rej({
+						code: e.name,
+						param: e.param,
+						reason: e.message
+					});
+					break;
+				case 'MongoError':
+					rej({
+						response: 500,
+						code: 'DATABASE_ERROR'
+					});
+					break;
+				default:
+					rej({
+						code: 'UNKNOWN_ERROR'
+					});
+					break;
+			}
 		}
 		return;
 	}

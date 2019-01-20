@@ -129,7 +129,7 @@ export default define(meta, (ps, user) => fetchMeta()
 								visibility: { $in: ['public', 'home'] }
 							},
 							...(user ? [{ userId: user._id }, {
-								visibleUserIds: { $in: [ user._id ] }
+								visibleUserIds: { $in: [user._id] }
 							}] : [])]
 						}]
 					}))

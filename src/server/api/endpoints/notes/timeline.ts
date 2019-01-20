@@ -129,7 +129,7 @@ export default define(meta, (ps, user) => errorWhen(
 						visibility: { $in: ['public', 'home'] }
 					},
 					...(!user ? [{ userId: user._id }, {
-						visibleUserIds: { $in: [ user._id ] }
+						visibleUserIds: { $in: [user._id] }
 					}] : [])]
 				}],
 				userId: $nin,

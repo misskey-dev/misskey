@@ -55,7 +55,7 @@ export default define(meta, (ps, me) => fetchMeta()
 	.catch(() => getFriendIds(me._id)
 		.then(friends => Mute.find({ muterId: me._id })
 			.then(mutes => User.find({
-					_id: { $nin: [ ...friends, ...mutes.map(x => x.muteeId) ] },
+					_id: { $nin: [...friends, ...mutes.map(x => x.muteeId)] },
 					isLocked: { $ne: true },
 					updatedAt: { $gte: new Date(Date.now() - ms('7days')) },
 					host: null

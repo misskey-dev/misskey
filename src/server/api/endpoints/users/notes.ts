@@ -176,7 +176,7 @@ export default define(meta, (ps, me) => errorWhen(
 			$or: [{
 				visibility: { $in: ['public', 'home'] }
 			}, ...(me ? [{ userId: me._id }, {
-				visibleUserIds: { $in: [ me._id ] }
+				visibleUserIds: { $in: [me._id] }
 			}] : [])],
 			deletedAt: null,
 			userId: x._id,
@@ -185,8 +185,8 @@ export default define(meta, (ps, me) => errorWhen(
 				$exists: true,
 				$ne: []
 			} : undefined,
-			'_files.contentType': { $in: ps.fileType },
-			'_files.metadata.isSensitive': ps.excludeNsfw ? { $ne: true } : null
+			'_files.contentType': ps.fileType ? { $in: ps.fileType } : undefined,
+			'_files.metadata.isSensitive': ps.fileType && ps.excludeNsfw ? { $ne: true } : undefined
 		}), {
 			limit: ps.limit,
 			sort: {

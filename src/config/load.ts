@@ -45,6 +45,7 @@ export default function load() {
 	mixin.status_url = `${mixin.scheme}://${mixin.host}/status`;
 	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
 	mixin.user_agent = `Misskey/${pkg.version} (${config.url})`;
+	mixin.env = process.env.NODE_ENV;
 
 	if (config.autoAdmin == null) config.autoAdmin = false;
 

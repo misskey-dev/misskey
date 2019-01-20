@@ -135,7 +135,7 @@ export default define(meta, (ps, user) => Promise.all([
 						visibility: { $in: ['public', 'home'] }
 					},
 					...(!user ? [{ userId: user._id }, {
-						visibleUserIds: { $in: [ user._id ] }
+						visibleUserIds: { $in: [user._id] }
 					}] : [])]
 				}],
 				userId: { $nin },

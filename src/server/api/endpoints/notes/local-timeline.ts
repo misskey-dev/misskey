@@ -90,11 +90,11 @@ export default define(meta, (ps, user) => fetchMeta()
 			visibility: 'public',
 			'_user.host': null,
 			userId: $nin && $nin.length ? { $nin } : undefined,
-			['_reply.userId']: $nin && $nin.length ? { $nin } : undefined,
-			['_renote.userId']: $nin && $nin.length ? { $nin } : undefined,
+			'_reply.userId': $nin && $nin.length ? { $nin } : undefined,
+			'_renote.userId': $nin && $nin.length ? { $nin } : undefined,
 			fileIds: ps.fileType || ps.withFiles !== false || ps.mediaOnly ? { $exists: true, $ne: [] } : undefined,
-			['_files.contentType']: ps.fileType ? { $in: ps.fileType } : undefined,
-			['_files.metadata.isSensitive']: ps.fileType && ps.excludeNsfw ? { $ne: true } : undefined,
+			'_files.contentType': ps.fileType ? { $in: ps.fileType } : undefined,
+			'_files.metadata.isSensitive': ps.fileType && ps.excludeNsfw ? { $ne: true } : undefined,
 		}), {
 			limit: ps.limit,
 			sort: { _id: ps.sinceId || ps.sinceDate ? 1 : -1 }

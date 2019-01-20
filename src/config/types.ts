@@ -59,6 +59,7 @@ export type Mixin = {
 	dev_url: string;
 	drive_url: string;
 	user_agent: string;
+	env: string;
 };
 
 export type Config = Source & Mixin;

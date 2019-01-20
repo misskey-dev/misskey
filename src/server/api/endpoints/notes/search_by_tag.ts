@@ -211,7 +211,7 @@ export default define(meta, (ps, me) => Promise.resolve()
 			visibility: { $in: ['public', 'home'] }
 		},
 		...(!me ? [{ userId: me._id }, {
-			visibleUserIds: { $in: [ me._id ] }
+			visibleUserIds: { $in: [me._id] }
 		}] : [])]
 	}))
 	.then(x => Note.find(x, {
