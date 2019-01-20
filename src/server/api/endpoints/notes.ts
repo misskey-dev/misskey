@@ -2,7 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../misc/cafy-id';
 import Note, { packMany } from '../../../models/note';
 import define from '../define';
 import { errorWhen } from '../../../prelude/promise';
-import { query } from '../../../../prelude/query';
+import { query } from '../../../prelude/query';
 
 export const meta = {
 	desc: {
