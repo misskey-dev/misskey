@@ -219,7 +219,6 @@ export async function getRelation(me: mongo.ObjectId, target: mongo.ObjectId) {
 	return {
 		id: target,
 		isFollowing: following1 !== null,
-		isStalking: following1 ? following1.stalk : false,
 		hasPendingFollowRequestFromYou: followReq1 !== null,
 		hasPendingFollowRequestToYou: followReq2 !== null,
 		isFollowed: following2 !== null,
@@ -352,7 +351,6 @@ export const pack = (
 
 		_user.isFollowing = relation.isFollowing;
 		_user.isFollowed = relation.isFollowed;
-		_user.isStalking = relation.isStalking;
 		_user.hasPendingFollowRequestFromYou = relation.hasPendingFollowRequestFromYou;
 		_user.hasPendingFollowRequestToYou = relation.hasPendingFollowRequestToYou;
 		_user.isBlocking = relation.isBlocking;

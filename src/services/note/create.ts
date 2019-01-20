@@ -540,12 +540,9 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 		const follower = following._follower;
 
 		if (isLocalUser(follower)) {
-			// ストーキングしていない場合
-			if (!following.stalk) {
-				// この投稿が返信ならスキップ
-				if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId))
-					continue;
-			}
+			// この投稿が返信ならスキップ
+			if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId))
+				continue;
 
 			// Publish event to followers stream
 			publishHomeTimelineStream(following.followerId, detailPackedNote);

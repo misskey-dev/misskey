@@ -3,10 +3,6 @@
 	<div class="friend-form" v-if="$store.state.i.id != user.id">
 		<mk-follow-button :user="user" block/>
 		<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
-		<p class="stalk" v-if="user.isFollowing">
-			<span v-if="user.isStalking">{{ $t('stalking') }} <a @click="unstalk"><fa icon="meh"/> {{ $t('unstalk') }}</a></span>
-			<span v-if="!user.isStalking"><a @click="stalk"><fa icon="user-secret"/> {{ $t('stalk') }}</a></span>
-		</p>
 	</div>
 	<div class="action-form">
 		<ui-button @click="menu" ref="menu">{{ $t('menu') }}</ui-button>
@@ -24,26 +20,6 @@ export default Vue.extend({
 	props: ['user'],
 
 	methods: {
-		stalk() {
-			this.$root.api('following/stalk', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isStalking = true;
-			}, () => {
-				alert('error');
-			});
-		},
-
-		unstalk() {
-			this.$root.api('following/unstalk', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isStalking = false;
-			}, () => {
-				alert('error');
-			});
-		},
-
 		menu() {
 			this.$root.new(XUserMenu, {
 				source: this.$refs.menu.$el,
@@ -77,9 +53,6 @@ export default Vue.extend({
 			color #71afc7
 			background #eefaff
 			border-radius 4px
-
-		> .stalk
-			margin 12px 0 0 0
 
 	> .action-form
 		padding 16px
