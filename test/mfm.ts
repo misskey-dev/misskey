@@ -883,6 +883,15 @@ describe('MFM', () => {
 		});
 
 		describe('italic', () => {
+			it('<i>', () => {
+				const tokens = analyze('<i>foo</i>');
+				assert.deepStrictEqual(tokens, [
+					tree('italic', [
+						text('foo')
+					], {}),
+				]);
+			});
+
 			it('underscore', () => {
 				const tokens = analyze('_foo_');
 				assert.deepStrictEqual(tokens, [
