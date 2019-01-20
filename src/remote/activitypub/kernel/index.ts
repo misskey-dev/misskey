@@ -11,7 +11,6 @@ import reject from './reject';
 import add from './add';
 import remove from './remove';
 import block from './block';
-import update from './update';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	switch (activity.type) {
@@ -57,10 +56,6 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 
 	case 'Block':
 		await block(actor, activity);
-		break;
-
-	case 'Update':
-		await update(actor, activity);
 		break;
 
 	case 'Collection':
