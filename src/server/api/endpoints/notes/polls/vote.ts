@@ -7,7 +7,6 @@ import { publishNoteStream } from '../../../../../stream';
 import notify from '../../../../../notify';
 import define from '../../../define';
 import createNote from '../../../../../services/note/create';
-import { publishVoteToFollowers } from '../../../../../services/note/polls/vote';
 
 export const meta = {
 	desc: {
@@ -125,6 +124,4 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			reply: note,
 		});
 	}
-
-	publishVoteToFollowers(user, note);
 }));
