@@ -22,13 +22,6 @@ export const meta = {
 			}
 		},
 
-		mediaOnly: {
-			validator: $.bool.optional,
-			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
-
 		fileType: {
 			validator: $.arr($.str).optional,
 			desc: {
@@ -93,7 +86,7 @@ export default define(meta, (ps, user) => fetchMeta()
 			userId: $nin && $nin.length ? { $nin } : undefined,
 			'_reply.userId': $nin && $nin.length ? { $nin } : undefined,
 			'_renote.userId': $nin && $nin.length ? { $nin } : undefined,
-			fileIds: ps.fileType || ps.withFiles !== false || ps.mediaOnly ? { $exists: true, $ne: [] } : undefined,
+			fileIds: ps.fileType || ps.withFiles ? { $exists: true, $ne: [] } : undefined,
 			'_files.contentType': ps.fileType ? { $in: ps.fileType } : undefined,
 			'_files.metadata.isSensitive': ps.fileType && ps.excludeNsfw ? { $ne: true } : undefined,
 		}), {

@@ -84,14 +84,7 @@ export const meta = {
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
-		},
-
-		mediaOnly: {
-			validator: $.bool.optional,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
+		}
 	}
 };
 
@@ -169,7 +162,7 @@ export default define(meta, (ps, user) => errorWhen(
 					poll: { $ne: null }
 				}]
 			}] : []),
-			...(ps.withFiles !== false || ps.mediaOnly ? [{
+			...(ps.withFiles ? [{
 				fileIds: { $exists: true, $ne: [] }
 			}] : [])]
 		}), {

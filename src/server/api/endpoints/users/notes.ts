@@ -111,14 +111,6 @@ export const meta = {
 			}
 		},
 
-		mediaOnly: {
-			validator: $.bool.optional,
-			default: false,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
-
 		fileType: {
 			validator: $.arr($.str).optional,
 			desc: {
@@ -181,7 +173,7 @@ export default define(meta, (ps, me) => errorWhen(
 			deletedAt: null,
 			userId: x._id,
 			replyId: ps.includeReplies ? undefined : null,
-			fileIds: ps.fileType || ps.withFiles !== false || ps.mediaOnly ? {
+			fileIds: ps.fileType || ps.withFiles ? {
 				$exists: true,
 				$ne: []
 			} : undefined,
