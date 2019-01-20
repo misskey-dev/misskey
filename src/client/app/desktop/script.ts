@@ -147,7 +147,7 @@ init(async (launch) => {
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', name: 'tag', component: MkTag },
 			{ path: '/share', component: MkShare },
-			{ path: '/reversi/:game?', component: MkReversi },
+			{ path: '/games/reversi/:game?', component: MkReversi },
 			{ path: '/@:user', name: 'user', component: MkUser },
 			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
 			{ path: '/@:user/followers', name: 'userFollowers', component: MkUserFollowingOrFollowers },
