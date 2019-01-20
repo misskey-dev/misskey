@@ -5,7 +5,12 @@ import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../../stream';
 import notify from '../../../notify';
 import createNote from '../../../services/note/create';
-import { isLocalUser, IUser } from '../../../models/user';
+import { isLocalUser, IUser, isRemoteUser } from '../../../models/user';
+import Following from '../../../models/following';
+import packAp from '../../../remote/activitypub/renderer';
+import { deliver } from '../../../queue';
+import renderUpdate from '../../../remote/activitypub/renderer/update';
+import renderQuestion from '../../../remote/activitypub/renderer/question';
 
 export default (user: IUser, note: INote, choice: number) => new Promise(async (res, rej) => {
 	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
@@ -84,4 +89,33 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 			reply: note,
 		});
 	}
+
+	publishVoteToFollowers(user, note);
 });
+
+export async function publishVoteToFollowers(user: IUser, note: INote) {
+	const followers = await Following.find({
+		followeeId: user._id
+	});
+
+	const queue: string[] = [];
+
+	// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
+	if (isLocalUser(user)) {
+		for (const following of followers) {
+			const follower = following._follower;
+
+			if (isRemoteUser(follower)) {
+				const inbox = follower.sharedInbox || follower.inbox;
+				if (!queue.includes(inbox)) queue.push(inbox);
+			}
+		}
+
+		if (queue.length > 0) {
+			const content = packAp(renderUpdate(await renderQuestion(user, note), user));
+			for (const inbox of queue) {
+				deliver(user, content, inbox);
+			}
+		}
+	}
+}
