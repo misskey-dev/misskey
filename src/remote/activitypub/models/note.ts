@@ -15,6 +15,7 @@ import { ITag } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
+import vote from '../../../services/note/polls/vote';
 
 const log = debug('misskey:activitypub');
 
@@ -110,6 +111,12 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	// テキストのパース
 	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
+
+	// vote
+	if (reply && reply.poll && text != null && text.match(/^[0-9]$/)) {
+		await vote(actor, reply, Number(text));
+		return null;
+	}
 
 	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
 		console.log(`extractEmojis: ${e}`);
