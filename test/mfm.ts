@@ -177,6 +177,29 @@ describe('MFM', () => {
 					text('bar'),
 				]);
 			});
+
+			it('with underscores', () => {
+				const tokens = analyze('__foo__');
+				assert.deepStrictEqual(tokens, [
+					tree('bold', [
+						text('foo')
+					], {}),
+				]);
+			});
+
+			it('mixed syntax', () => {
+				const tokens = analyze('**foo__');
+				assert.deepStrictEqual(tokens, [
+						text('**foo__'),
+				]);
+			});
+
+			it('mixed syntax', () => {
+				const tokens = analyze('__foo**');
+				assert.deepStrictEqual(tokens, [
+						text('__foo**'),
+				]);
+			});
 		});
 
 		it('big', () => {
