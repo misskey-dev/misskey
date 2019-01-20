@@ -5,10 +5,9 @@ import renderEmoji from './emoji';
 import config from '../../../config';
 import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
-import User, { ILocalUser } from '../../../models/user';
+import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 import Emoji, { IEmoji } from '../../../models/emoji';
-import renderQuestion from './question';
 
 export default async function renderNote(note: INote, dive = true): Promise<any> {
 	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
@@ -109,7 +108,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	// Provides choices as text for AP
 	if (note.poll != null) {
-		const cs = note.poll.choices.map(c => `${c.id}\uFE0E: ${c.text}`);
+		const cs = note.poll.choices.map(c => `${c.id}\uFE0E ${c.text}`);
 		apText += '\n';
 		apText += cs.join('\n');
 	}
