@@ -141,9 +141,9 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}));
 
 	const visibleQuery = user == null ? [{
-		visibility: { $in: [ 'public', 'home' ] }
+		visibility: { $in: ['public', 'home'] }
 	}] : [{
-		visibility: { $in: [ 'public', 'home' ] }
+		visibility: { $in: ['public', 'home', 'followers'] }
 	}, {
 		// myself (for specified/private)
 		userId: user._id
