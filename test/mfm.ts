@@ -32,8 +32,8 @@ describe('createTree', () => {
 			leaf('left', { a: 2 }),
 			leaf('right', { b: 'hi' })
 		], {
-			c: 4
-		});
+				c: 4
+			});
 		assert.deepStrictEqual(t, {
 			node: {
 				type: 'tree',
@@ -288,7 +288,7 @@ describe('MFM', () => {
 					leaf('mention', { acct: '@a', canonical: '@a', username: 'a', host: null })
 				]);
 
-				const tokens4 = analyze('@\n@v\n@veryverylongusername' /* \n@toolongtobeasamention */ );
+				const tokens4 = analyze('@\n@v\n@veryverylongusername' /* \n@toolongtobeasamention */);
 				assert.deepStrictEqual(tokens4, [
 					text('@\n'),
 					leaf('mention', { acct: '@v', canonical: '@v', username: 'v', host: null }),
@@ -883,15 +883,46 @@ describe('MFM', () => {
 		});
 
 		describe('italic', () => {
-			it('simple', () => {
-				const tokens = analyze('<i>foo</i>');
+			it('underscore', () => {
+				const tokens = analyze('_foo_');
 				assert.deepStrictEqual(tokens, [
 					tree('italic', [
 						text('foo')
 					], {}),
 				]);
 			});
-		});
+
+			it('simple with asterix', () => {
+				const tokens = analyze('*foo*');
+				assert.deepStrictEqual(tokens, [
+					tree('italic', [
+						text('foo')
+					], {}),
+				]);
+			});
+
+			it('exlude emotes', () => {
+				const tokens = analyze('*.*');
+				assert.deepStrictEqual(tokens, [
+					text("*.*"),
+				]);
+			});
+
+			it('mixed', () => {
+				const tokens = analyze('_foo*');
+				assert.deepStrictEqual(tokens, [
+					text('_foo*'),
+				]);
+			});
+
+			it('mixed', () => {
+				const tokens = analyze('*foo_');
+				assert.deepStrictEqual(tokens, [
+					text('*foo_'),
+				]);
+			});
+		},
+		);
 	});
 
 	describe('toHtml', () => {
