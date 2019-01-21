@@ -211,6 +211,12 @@ export default Vue.extend({
 			});
 		}
 
+		// keep cw when reply
+		if (this.reply && this.reply.cw != null) {
+			this.useCw = true;
+			this.cw = this.reply.cw;
+		}
+
 		this.focus();
 
 		this.$nextTick(() => {
