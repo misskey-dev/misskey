@@ -103,6 +103,7 @@ type Option = {
 	apMentions?: IUser[];
 	apHashtags?: string[];
 	apEmojis?: string[];
+	questionUri?: string;
 	uri?: string;
 	app?: IApp;
 };

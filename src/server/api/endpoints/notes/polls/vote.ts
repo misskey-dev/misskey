@@ -6,6 +6,8 @@ import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../stream';
 import notify from '../../../../../notify';
 import define from '../../../define';
+import createNote from '../../../../../services/note/create';
+import User from '../../../../../models/user';
 
 export const meta = {
 	desc: {
@@ -113,5 +115,20 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// この投稿をWatchする
 	if (user.settings.autoWatch !== false) {
 		watch(user._id, note);
+	}
+
+	// リモート投票の場合リプライ送信
+	if (note._user.host != null) {
+		const pollOwner = await User.findOne({
+			_id: note.userId
+		});
+
+		createNote(user, {
+			createdAt: new Date(),
+			text: ps.choice.toString(),
+			reply: note,
+			visibility: 'specified',
+			visibleUsers: [ pollOwner ],
+		});
 	}
 }));

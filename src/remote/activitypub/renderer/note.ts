@@ -93,17 +93,27 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	let text = note.text;
 
+	let question: string;
 	if (note.poll != null) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note._id}`;
 		// TODO: i18n
-		text += `\n\n[投票を見る](${url})`;
+		text += `\n\n[リモートで投票を見る](${url})`;
+
+		question = `${config.url}/questions/${note._id}`;
 	}
 
 	let apText = text;
+	if (apText == null) apText = '';
+
+	// Provides choices as text for AP
+	if (note.poll != null) {
+		const cs = note.poll.choices.map(c => `${c.id}: ${c.text}`);
+		apText += '\n';
+		apText += cs.join('\n');
+	}
 
 	if (quote) {
-		if (apText == null) apText = '';
 		apText += `\n\nRE: ${quote}`;
 	}
 
@@ -130,6 +140,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		content,
 		_misskey_content: text,
 		_misskey_quote: quote,
+		_misskey_question: question,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,

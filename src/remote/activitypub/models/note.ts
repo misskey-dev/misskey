@@ -14,6 +14,8 @@ import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
+import { extractPollFromQuestion } from './question';
+import vote from '../../../services/note/polls/vote';
 
 const log = debug('misskey:activitypub');
 
@@ -110,12 +112,25 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// テキストのパース
 	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
 
+	// vote
+	if (reply && reply.poll && text != null) {
+		const m = text.match(/([0-9])$/);
+		if (m) {
+			log(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${m[0]}`);
+			await vote(actor, reply, Number(m[1]));
+			return null;
+		}
+	}
+
 	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
 		console.log(`extractEmojis: ${e}`);
 		return [] as IEmoji[];
 	});
 
 	const apEmojis = emojis.map(emoji => emoji.name);
+
+	const questionUri = note._misskey_question;
+	const poll = questionUri ? await extractPollFromQuestion(questionUri).catch(() => undefined) : undefined;
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -137,6 +152,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		apMentions,
 		apHashtags,
 		apEmojis,
+		questionUri,
+		poll,
 		uri: note.id
 	}, silent);
 }
