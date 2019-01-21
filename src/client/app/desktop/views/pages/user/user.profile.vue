@@ -50,8 +50,7 @@ export default Vue.extend({
 			text-align center
 			line-height 24px
 			font-size 0.8em
-			color #71afc7
-			background #eefaff
+			color var(--text)
 			border-radius 4px
 
 	> .action-form
