@@ -223,7 +223,7 @@ export default Vue.extend({
 		}
 
 		// keep cw when reply
-		if (this.reply && this.reply.cw != null) {
+		if (this.$store.state.settings.keepCw && this.reply && this.reply.cw) {
 			this.useCw = true;
 			this.cw = this.reply.cw;
 		}
