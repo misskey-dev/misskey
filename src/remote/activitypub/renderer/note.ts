@@ -97,6 +97,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	if (note.poll != null) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note._id}`;
+		// TODO: i18n
 		text += `\n[リモートで結果を表示](${url})`;
 
 		question = `${config.url}/questions/${note._id}`;
