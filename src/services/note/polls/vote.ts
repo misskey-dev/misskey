@@ -75,13 +75,4 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 	if (isLocalUser(user) && user.settings.autoWatch !== false) {
 		watch(user._id, note);
 	}
-
-	// ローカルからリモートへの投票の場合リプライ送信
-	if (isLocalUser(user) && note._user.host != null) {
-		createNote(user, {
-			createdAt: new Date(),
-			text: choice.toString(),
-			reply: note,
-		});
-	}
 });
