@@ -1,5 +1,7 @@
 /*
  * Tests of MFM
+ * How to run the tests:
+ * > mocha test/mfm.ts --require ts-node/register
  */
 
 import * as assert from 'assert';
