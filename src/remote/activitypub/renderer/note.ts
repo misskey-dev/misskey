@@ -112,7 +112,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		apText += '\n----------------------------------------\n';
 		apText += cs.join('\n');
 		apText += '\n----------------------------------------\n';
-		apText += '番号を返信して投票できます';
+		apText += '番号を返信して投票';
 	}
 
 	if (quote) {
