@@ -33,10 +33,6 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// Lookup user
 	const user = await User.findOne({
 		_id: ps.userId
-	}, {
-		fields: {
-			_id: true
-		}
 	});
 
 	if (user === null) {
