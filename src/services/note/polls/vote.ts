@@ -4,7 +4,6 @@ import Watching from '../../../models/note-watching';
 import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../../stream';
 import notify from '../../../notify';
-import createNote from '../../../services/note/create';
 import { isLocalUser, IUser } from '../../../models/user';
 
 export default (user: IUser, note: INote, choice: number) => new Promise(async (res, rej) => {
