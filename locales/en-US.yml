@@ -357,7 +357,6 @@ common/views/components/user-menu.vue:
   unblock: "Unblock"
   push-to-list: "Add to list"
   select-list: "Select a list"
-  list-pushed: "Successfully added {user} to {list}."
   report-abuse: "Report abuse"
   report-abuse-detail: "どのような迷惑行為を行っていますか？"
   report-abuse-reported: "管理者に報告されました。ご協力ありがとうございました。"
