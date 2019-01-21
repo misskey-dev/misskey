@@ -369,6 +369,13 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 			// Publish event to myself's stream
 			publishHomeTimelineStream(note.userId, detailPackedNote);
 			publishHybridTimelineStream(note.userId, detailPackedNote);
+
+			if (note.visibility == 'specified') {
+				for (const u of visibleUsers) {
+					publishHomeTimelineStream(u._id, detailPackedNote);
+					publishHybridTimelineStream(u._id, detailPackedNote);
+				}
+			}
 		} else {
 			// Publish event to myself's stream
 			publishHomeTimelineStream(note.userId, noteObj);
@@ -526,7 +533,13 @@ async function publishToUserLists(note: INote, noteObj: any) {
 	});
 
 	for (const list of lists) {
-		publishUserListStream(list._id, 'note', noteObj);
+		if (note.visibility == 'specified') {
+			if (note.visibleUserIds.some(id => id.equals(list.userId))) {
+				publishUserListStream(list._id, 'note', noteObj);
+			}
+		} else {
+			publishUserListStream(list._id, 'note', noteObj);
+		}
 	}
 }
 
