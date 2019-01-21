@@ -5,7 +5,8 @@ import isObjectId from './is-objectid';
 export const isAnId = (x: any) => mongo.ObjectID.isValid(x);
 export const isNotAnId = (x: any) => !isAnId(x);
 export const transform = (x: string | mongo.ObjectID): mongo.ObjectID => {
-	if (x == null) return null;
+	if (x === undefined) return undefined;
+	if (x === null) return null;
 
 	if (isAnId(x) && !isObjectId(x)) {
 		return new mongo.ObjectID(x);
