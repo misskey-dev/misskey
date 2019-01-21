@@ -4,6 +4,7 @@ import Note, { packMany } from '../../../../models/note';
 import User from '../../../../models/user';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
+import Following from '../../../../models/following';
 
 export const meta = {
 	desc: {
@@ -160,13 +161,20 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
+	const isFollowing = me == null ? false : ((await Following.findOne({
+		followerId: me._id,
+		followeeId: user._id
+	})) != null);
+
 	//#region Construct query
 	const sort = { } as any;
 
 	const visibleQuery = me == null ? [{
-		visibility: { $in: [ 'public', 'home' ] }
+		visibility: { $in: ['public', 'home'] }
 	}] : [{
-		visibility: { $in: [ 'public', 'home' ] }
+		visibility: {
+			$in: isFollowing ? ['public', 'home', 'followers'] : ['public', 'home']
+		}
 	}, {
 		// myself (for specified/private)
 		userId: me._id
