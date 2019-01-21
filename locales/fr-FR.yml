@@ -357,7 +357,6 @@ common/views/components/user-menu.vue:
   unblock: "ブロック解除"
   push-to-list: "リストに追加"
   select-list: "リストを選択してください"
-  list-pushed: "{user}を{list}に追加しました"
   report-abuse: "スパムを報告"
   report-abuse-detail: "どのような迷惑行為を行っていますか？"
   report-abuse-reported: "管理者に報告されました。ご協力ありがとうございました。"
