@@ -375,7 +375,7 @@ main
 	max-width 600px
 	width 100%
 
-	> .signin-as
+	> .signed-in-as
 		margin 16px
 		padding 16px
 		text-align center
