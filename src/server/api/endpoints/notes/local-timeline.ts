@@ -97,7 +97,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		visibility: 'public',
 
 		// リプライでない
-		replyId: null,
+		//replyId: null,
 
 		// local
 		'_user.host': null

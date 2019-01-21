@@ -133,7 +133,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const listQuery = list.userIds.map(u => ({
 		userId: u,
 
-		// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
+		/*// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
 		$or: [{
 			// リプライでない
 			replyId: null
@@ -148,7 +148,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}, { // または
 			// 自分(フォロワー)が送信したリプライ
 			userId: user._id
-		}]
+		}]*/
 	}));
 
 	const visibleQuery = [{

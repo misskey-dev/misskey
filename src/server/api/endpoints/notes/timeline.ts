@@ -120,7 +120,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const followQuery = followings.map(f => ({
 		userId: f.id,
 
-		// ストーキングしてないならリプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
+		/*// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
 		$or: [{
 			// リプライでない
 			replyId: null
@@ -135,7 +135,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}, { // または
 			// 自分(フォロワー)が送信したリプライ
 			userId: user._id
-		}]
+		}]*/
 	}));
 
 	const visibleQuery = user == null ? [{
