@@ -71,10 +71,7 @@ export default Vue.extend({
 			});
 			this.$root.dialog({
 				type: 'success',
-				text: this.$t('list-pushed', {
-					user: this.user.name,
-					list: lists.find(l => l.id === listId).title
-				})
+				splash: true
 			});
 		},
 
