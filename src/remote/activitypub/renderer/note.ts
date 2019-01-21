@@ -97,7 +97,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	if (note.poll != null) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note._id}`;
-		text += `\n[Show result at remote](${url})`;
+		text += `\n[Show results at remote](${url})`;
 
 		question = `${config.url}/questions/${note._id}`;
 	}
@@ -111,7 +111,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		apText += '\n----------------------------------------\n';
 		apText += cs.join('\n');
 		apText += '\n----------------------------------------\n';
-		apText += 'Reply number to vote';
+		apText += 'Reply the number and vote';
 	}
 
 	if (quote) {
