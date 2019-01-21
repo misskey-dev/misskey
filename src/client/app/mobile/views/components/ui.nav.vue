@@ -19,7 +19,7 @@
 					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><fa :icon="['far', 'bell']" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']" fixed-width/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/games/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 				</ul>
 				<ul>
 					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']" fixed-width/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
