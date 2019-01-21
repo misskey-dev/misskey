@@ -336,37 +336,45 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		console.log(`cat not extract fields: ${e}`);
 	});
 
+	const updates = {
+		lastFetchedAt: new Date(),
+		inbox: person.inbox,
+		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+		featured: person.featured,
+		emojis: emojiNames,
+		description: htmlToMFM(person.summary),
+		followersCount,
+		followingCount,
+		notesCount,
+		name: person.name,
+		url: person.url,
+		endpoints: person.endpoints,
+		fields,
+		isBot: object.type == 'Service',
+		isCat: (person as any).isCat === true,
+		isLocked: person.manuallyApprovesFollowers,
+		createdAt: Date.parse(person.published) || null,
+		publicKey: {
+			id: person.publicKey.id,
+			publicKeyPem: person.publicKey.publicKeyPem
+		},
+	} as any;
+
+	if (avatar) {
+		updates.avatarId = avatar._id;
+		updates.avatarUrl = getDriveFileUrl(avatar, true);
+		updates.avatarColor = avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
+	}
+
+	if (banner) {
+		updates.bannerId = banner._id;
+		updates.bannerUrl = getDriveFileUrl(banner, true);
+		updates.bannerColor = banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
+	}
+
 	// Update user
 	await User.update({ _id: exist._id }, {
-		$set: {
-			lastFetchedAt: new Date(),
-			inbox: person.inbox,
-			sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
-			featured: person.featured,
-			avatarId: avatar ? avatar._id : null,
-			bannerId: banner ? banner._id : null,
-			avatarUrl: getDriveFileUrl(avatar, true),
-			bannerUrl: getDriveFileUrl(banner, false),
-			avatarColor: avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null,
-			bannerColor: banner && banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null,
-			emojis: emojiNames,
-			description: htmlToMFM(person.summary),
-			followersCount,
-			followingCount,
-			notesCount,
-			name: person.name,
-			url: person.url,
-			endpoints: person.endpoints,
-			fields,
-			isBot: object.type == 'Service',
-			isCat: (person as any).isCat === true,
-			isLocked: person.manuallyApprovesFollowers,
-			createdAt: Date.parse(person.published) || null,
-			publicKey: {
-				id: person.publicKey.id,
-				publicKeyPem: person.publicKey.publicKeyPem
-			},
-		}
+		$set: updates
 	});
 
 	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
