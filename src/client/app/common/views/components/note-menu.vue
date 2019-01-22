@@ -87,10 +87,18 @@ export default Vue.extend({
 
 		copyContent() {
 			copyToClipboard(this.note.text);
+			this.$root.dialog({
+				type: 'success',
+				splash: true
+			});
 		},
 
 		copyLink() {
 			copyToClipboard(`${url}/notes/${this.note.id}`);
+			this.$root.dialog({
+				type: 'success',
+				splash: true
+			});
 		},
 
 		pin() {
