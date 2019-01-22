@@ -1,10 +1,17 @@
 /*
  * Tests of API
+ *
+ * How to run the tests:
+ * > mocha test/api.ts --require ts-node/register
+ *
+ * To specify test:
+ * > mocha test/api.ts --require ts-node/register -g 'test name'
  */
 
 import * as http from 'http';
 import * as fs from 'fs';
 import * as assert from 'chai';
+import * as WebSocket from 'ws';
 
 assert.use(require('chai-http'));
 const expect = assert.expect;
@@ -20,6 +27,7 @@ process.on('unhandledRejection', console.dir);
 //#endregion
 
 const app = require('../built/server/api').default;
+require('../built/server').default();
 const db = require('../built/db/mongodb').default;
 
 const server = http.createServer(app.callback());
@@ -1230,5 +1238,40 @@ describe('API', () => {
 
 			expect(res).have.status(400);
 		}));
+	});
+
+	describe('streaming', () => {
+		it('投稿がタイムラインに流れる', done => {
+			const post = {
+				text: 'foo'
+			};
+
+			signup().then(me => {
+				const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
+
+				ws.on('open', () => {
+					ws.on('message', data => {
+						const msg = JSON.parse(data.toString());
+						if (msg.type == 'channel' && msg.body.id == 'a') {
+							if (msg.body.type == 'note') {
+								expect(msg.body.body.text).eql(post.text);
+								done();
+							}
+						} else if (msg.type == 'connected' && msg.body.id == 'a') {
+							request('/notes/create', post, me);
+						}
+					});
+
+					ws.send(JSON.stringify({
+						type: 'connect',
+						body: {
+							channel: 'homeTimeline',
+							id: 'a',
+							pong: true
+						}
+					}));
+				});
+			});
+		});
 	});
 });
