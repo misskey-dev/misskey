@@ -1052,7 +1052,7 @@ admin/views/instance.vue:
   disable-registration: "사용자 등록 비활성화"
   disable-local-timeline: "로컬 타임라인 비활성화"
   disable-global-timeline: "글로벌 타임라인 비활성화"
-  disabling-timelines-info: "これらのタイムラインを無効にしても、管理者およびモデレーターは引き続き利用できます。"
+  disabling-timelines-info: "이 타임라인들을 비활성화해도 관리자 및 모더레이터는 계속 사용할 수 있습니다."
   invite: "초대"
   save: "저장"
   saved: "저장하였습니다"
@@ -1096,7 +1096,7 @@ admin/views/charts.vue:
     notes-total: "글 누적 수"
     users: "사용자 증감"
     users-total: "사용자 누적"
-    active-users: "アクティブユーザー数"
+    active-users: "활성 사용자 수"
     drive: "드라이브 사용량 증감"
     drive-total: "드라이브 사용량 누적"
     drive-files: "드라이브 파일 수 증감"
@@ -1105,10 +1105,10 @@ admin/views/charts.vue:
     network-time: "응답시간"
     network-usage: "통신량"
 admin/views/drive.vue:
-  operation: "操作"
-  fileid-or-url: "ファイルIDまたはファイルURL"
-  file-not-found: "ファイルが見つかりません"
-  lookup: "照会"
+  operation: "작업"
+  fileid-or-url: "파일 ID 또는 파일 URL"
+  file-not-found: "파일을 찾을 수 없습니다"
+  lookup: "조회"
   sort:
     title: "정렬"
     createdAtAsc: "업로드 날짜 오랜 순"
@@ -1124,8 +1124,8 @@ admin/views/drive.vue:
   deleted: "삭제하였습니다"
   mark-as-sensitive: "열람주의로 설정"
   unmark-as-sensitive: "열람주의 해제"
-  marked-as-sensitive: "閲覧注意に設定しました"
-  unmarked-as-sensitive: "閲覧注意を解除しました"
+  marked-as-sensitive: "열람주의로 설정하였습니다"
+  unmarked-as-sensitive: "열람주의를 제거하였습니다"
 admin/views/users.vue:
   operation: "작업"
   username-or-userid: "사용자명 혹은 사용자 ID"
@@ -1252,7 +1252,7 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "사진이 없습니다"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "당신을 팔로우합니다"
-  menu: "メニュー"
+  menu: "메뉴"
 desktop/views/pages/user/user.header.vue:
   posts: "글"
   following: "팔로잉"
