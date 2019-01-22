@@ -1,5 +1,5 @@
 import es from '../../db/elasticsearch';
-import Note, { pack, INote } from '../../models/note';
+import Note, { pack, INote, IChoice } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
 import { publishMainStream, publishHomeTimelineStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream, publishHashtagStream } from '../../stream';
 import Following from '../../models/following';
@@ -25,7 +25,7 @@ import notesChart from '../../chart/notes';
 import perUserNotesChart from '../../chart/per-user-notes';
 import activeUsersChart from '../../chart/active-users';
 
-import { erase } from '../../prelude/array';
+import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import registerInstance from '../register-instance';
 import Instance from '../../models/instance';
@@ -157,7 +157,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (!tags || !emojis || !mentionedUsers) {
 		const tokens = data.text ? parse(data.text) : [];
 		const cwTokens = data.cw ? parse(data.cw) : [];
-		const combinedTokens = tokens.concat(cwTokens);
+		const choiceTokens = data.poll && data.poll.choices
+			? concat((data.poll.choices as IChoice[]).map(choice => parse(choice.text)))
+			: [];
+
+		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
 
 		tags = data.apHashtags || extractHashtags(combinedTokens);
 
