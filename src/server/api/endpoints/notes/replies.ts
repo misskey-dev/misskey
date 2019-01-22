@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
+import Mute from '../../../../models/mute';
 
 export const meta = {
 	desc: {
@@ -33,13 +34,25 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	// ミュートしているユーザーを取得
+	const mutedUserIds = user ? (await Mute.find({
+		muterId: user._id
+	})).map(m => m.muteeId) : null;
 
-	const notes = await Note.find({
-			replyId: ps.noteId
-		}, {
-			limit: ps.limit,
-			skip: ps.offset
-		});
+	const q = {
+		replyId: ps.noteId
+	} as any;
+
+	if (mutedUserIds && mutedUserIds.length > 0) {
+		q['userId'] = {
+			$nin: mutedUserIds
+		};
+	}
+
+	const notes = await Note.find(q, {
+		limit: ps.limit,
+		skip: ps.offset
+	});
 
 	res(await packMany(notes, user));
 }));
