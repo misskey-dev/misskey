@@ -1666,6 +1666,7 @@ mobile/views/pages/settings.vue:
   notification-position-top: "上"
   behavior: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
+  keep-cw: "CW保持"
   note-visibility: "投稿の公開範囲"
   default-note-visibility: "デフォルトの公開範囲"
   remember-note-visibility: "投稿の公開範囲を記憶する"
