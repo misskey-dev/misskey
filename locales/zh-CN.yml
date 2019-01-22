@@ -54,7 +54,7 @@ common:
     years_ago: "{}年前"
   month-and-day: "{month}月 {day}日"
   trash: "垃圾箱"
-  drive: "Misskey 云盘"
+  drive: "网盘"
   messaging: "聊天"
   weekday-short:
     sunday: "日"
@@ -1252,7 +1252,7 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "没有图片"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "关注您"
-  menu: "メニュー"
+  menu: "菜单"
 desktop/views/pages/user/user.header.vue:
   posts: "帖子"
   following: "关注中"
@@ -1266,7 +1266,7 @@ desktop/views/pages/user/user.timeline.vue:
   default: "帖子"
   with-replies: "帖子与回复"
   with-media: "媒体"
-  my-posts: "私の投稿"
+  my-posts: "我的帖子"
   empty: "看起来这个用户还没有发布什么呢。"
 desktop/views/widgets/messaging.vue:
   title: "信息"
