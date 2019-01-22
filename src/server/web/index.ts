@@ -51,7 +51,7 @@ const router = new Router();
 //#region static assets
 
 router.get('/assets/*', async ctx => {
-	await send(ctx, ctx.path, {
+	await send(ctx as any, ctx.path, {
 		root: client,
 		maxage: ms('7 days'),
 		immutable: true
@@ -60,21 +60,21 @@ router.get('/assets/*', async ctx => {
 
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
-	await send(ctx, '/assets/apple-touch-icon.png', {
+	await send(ctx as any, '/assets/apple-touch-icon.png', {
 		root: client
 	});
 });
 
 // ServiceWorker
 router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
-	await send(ctx, `/assets/sw.${ctx.params[0]}.js`, {
+	await send(ctx as any, `/assets/sw.${ctx.params[0]}.js`, {
 		root: client
 	});
 });
 
 // Manifest
 router.get('/manifest.json', async ctx => {
-	await send(ctx, '/assets/manifest.json', {
+	await send(ctx as any, '/assets/manifest.json', {
 		root: client
 	});
 });

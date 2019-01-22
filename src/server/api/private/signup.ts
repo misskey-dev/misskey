@@ -9,7 +9,7 @@ import RegistrationTicket from '../../../models/registration-tickets';
 import usersChart from '../../../chart/users';
 import fetchMeta from '../../../misc/fetch-meta';
 
-export default async (ctx: Koa.Context) => {
+export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
 
 	const instance = await fetchMeta();

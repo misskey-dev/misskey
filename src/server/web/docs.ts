@@ -160,7 +160,7 @@ const extractPropDefRef = (props: any[]) => {
 const router = new Router();
 
 router.get('/assets/*', async ctx => {
-	await send(ctx, ctx.params[0], {
+	await send(ctx as any, ctx.params[0], {
 		root: `${__dirname}/../../docs/assets/`,
 		maxage: ms('1 days')
 	});
