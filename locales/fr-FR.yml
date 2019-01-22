@@ -989,7 +989,7 @@ admin/views/index.vue:
   federation: "Fédération"
   announcements: "Annonces"
   hashtags: "Hashtags"
-  abuse: "スパム報告"
+  abuse: "Abus"
   back-to-misskey: "Retour vers Misskey"
 admin/views/dashboard.vue:
   dashboard: "Tableau de bord"
@@ -1000,7 +1000,7 @@ admin/views/dashboard.vue:
   this-instance: "Cette instance"
   federated: "Fédérées"
 admin/views/abuse.vue:
-  title: "スパム報告"
+  title: "Abus"
   target: "Cible"
   reporter: "Signalé par"
   details: "Détails"
