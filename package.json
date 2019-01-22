@@ -178,7 +178,7 @@
 		"parsimmon": "1.12.0",
 		"portscanner": "2.2.0",
 		"postcss-loader": "3.0.0",
-		"progress-bar-webpack-plugin": "1.11.0",
+		"progress-bar-webpack-plugin": "1.12.0",
 		"promise-any": "0.2.0",
 		"promise-limit": "2.7.0",
 		"promise-sequential": "1.1.1",
