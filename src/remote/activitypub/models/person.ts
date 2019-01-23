@@ -19,7 +19,7 @@ import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import Following from '../../../models/following';
-import { IAuthentication } from './authentication';
+import { IIdentifier } from './identifier';
 
 const log = debug('misskey:activitypub');
 
@@ -412,31 +412,36 @@ export async function resolvePerson(uri: string, verifier?: string, resolver?: R
 	return await createPerson(uri, resolver);
 }
 
-const safeValue = (x: any) => x === null || ['number', 'string', 'boolean'].includes(typeof x);
+const isPropertyValue = (x: {
+		type: string,
+		name?: string,
+		value?: string
+	}) =>
+		x &&
+		x.type === 'PropertyValue' &&
+		typeof x.name === 'string' &&
+		typeof x.value === 'string';
 
 const services: {
-		[x: string]: (x: IAuthentication) => any
+		[x: string]: (id: string, username: string) => any
 	} = {
-	'twitter': x => ({
-		userId: x.id,
-		screenName: x.username
-	}),
-	'github': x => ({
-		id: x.id,
-		login: x.username
-	}),
-	'discord': x => {
-		if (typeof x.username !== 'string')
-			x.username = 'unknown#0000';
-		const [id, username, discriminator] = [x.id, ...x.username.split('#')];
+	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
+	'misskey:authentication:github': (id, login) => ({ id, login }),
+	'misskey:authentication:discord': (id, name) => {
+		if (typeof name !== 'string')
+			name = 'unknown#0000';
+		const [username, discriminator] = name.split('#');
 		return { id, username, discriminator };
 	}
 };
 
-export function addService(target: { [x: string]: any }, source: IAuthentication) {
-	const service = services[source.service];
-	if (service && Object.values(service).every(safeValue))
-		target[source.service] = service(source);
+export function addService(target: { [x: string]: any }, source: IIdentifier) {
+	const service = services[source.name];
+	if (typeof source.value !== 'string')
+		source.value = 'unknown';
+	const [id, username] = source.value.split('@');
+	if (service)
+		target[source.name] = service(id, username);
 }
 
 export function extractAttachments(attachments: ITag[]) {
@@ -447,9 +452,9 @@ export function extractAttachments(attachments: ITag[]) {
 	const services: { [x: string]: any } = {};
 
 	if (Array.isArray(attachments))
-		for (const attachment of attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value))
-			if (attachment.authentication && typeof attachment.authentication === 'object')
-				addService(services, attachment.authentication);
+		for (const attachment of attachments.filter(isPropertyValue))
+			if (isPropertyValue(attachment.identifier))
+				addService(services, attachment.identifier);
 			else
 				fields.push({
 					name: attachment.name,
