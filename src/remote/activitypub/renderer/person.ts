@@ -21,7 +21,11 @@ export default async (user: ILocalUser) => {
 		name: string,
 		value: string,
 		verified_at?: string,
-		authenticated?: boolean
+		authentication?: {
+			service: string,
+			id?: any,
+			username?: any
+		}
 	}[] = [];
 
 	if (user.twitter) {
@@ -29,7 +33,11 @@ export default async (user: ILocalUser) => {
 			type: 'PropertyValue',
 			name: 'Twitter',
 			value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`,
-			authenticated: true
+			authentication: {
+				service: 'twitter',
+				id: user.twitter.userId,
+				username: user.twitter.screenName
+			}
 		});
 	}
 
@@ -38,7 +46,11 @@ export default async (user: ILocalUser) => {
 			type: 'PropertyValue',
 			name: 'GitHub',
 			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`,
-			authenticated: true
+			authentication: {
+				service: 'github',
+				id: user.github.id,
+				username: user.github.login
+			}
 		});
 	}
 
@@ -47,7 +59,11 @@ export default async (user: ILocalUser) => {
 			type: 'PropertyValue',
 			name: 'Discord',
 			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`,
-			authenticated: true
+			authentication: {
+				service: 'discord',
+				id: user.discord.id,
+				username: `${user.discord.username}#${user.discord.discriminator}`
+			}
 		});
 	}
 
