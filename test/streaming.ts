@@ -27,19 +27,23 @@ process.on('unhandledRejection', console.dir);
 //#endregion
 
 const app = require('../built/server/api').default;
-require('../built/server').default();
+const server = require('../built/server').startServer();
 const db = require('../built/db/mongodb').default;
 
-const server = http.createServer(app.callback());
+const apiServer = http.createServer(app.callback());
 
 //#region Utilities
-const request = _request(server);
+const request = _request(apiServer);
 const signup = _signup(request);
 //#endregion
 
 describe('Streaming', () => {
 	// Reset database each test
 	beforeEach(resetDb(db));
+
+	before(() => {
+		server.close();
+	});
 
 	it('投稿がタイムラインに流れる', done => {
 		const post = {

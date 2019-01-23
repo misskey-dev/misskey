@@ -101,6 +101,19 @@ function createServer() {
 	}
 }
 
+// For testing
+export const startServer = () => {
+	const server = createServer();
+
+	// Init stream server
+	require('./api/streaming')(server);
+
+	// Listen
+	server.listen(config.port);
+
+	return server;
+};
+
 export default () => new Promise(resolve => {
 	const server = createServer();
 

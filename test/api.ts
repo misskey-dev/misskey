@@ -27,7 +27,6 @@ process.on('unhandledRejection', console.dir);
 //#endregion
 
 const app = require('../built/server/api').default;
-require('../built/server').default();
 const db = require('../built/db/mongodb').default;
 
 const server = http.createServer(app.callback());
@@ -43,6 +42,10 @@ const uploadFile = _uploadFile(server);
 describe('API', () => {
 	// Reset database each test
 	beforeEach(resetDb(db));
+
+	before(() => {
+		server.close();
+	});
 
 	describe('signup', () => {
 		it('不正なユーザー名でアカウントが作成できない', async(async () => {
