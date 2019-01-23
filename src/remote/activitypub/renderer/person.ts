@@ -20,14 +20,16 @@ export default async (user: ILocalUser) => {
 		type: string,
 		name: string,
 		value: string,
-		verified_at?: string
+		verified_at?: string,
+		authenticated?: boolean
 	}[] = [];
 
 	if (user.twitter) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`
+			value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`,
+			authenticated: true
 		});
 	}
 
@@ -35,7 +37,8 @@ export default async (user: ILocalUser) => {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`
+			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`,
+			authenticated: true
 		});
 	}
 
@@ -43,7 +46,8 @@ export default async (user: ILocalUser) => {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`
+			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`,
+			authenticated: true
 		});
 	}
 
