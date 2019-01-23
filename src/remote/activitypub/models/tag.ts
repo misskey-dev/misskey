@@ -1,4 +1,5 @@
 import { IIcon } from './icon';
+import { IAuthentication } from './authentication';
 
 /***
  * tag (ActivityPub)
@@ -10,4 +11,5 @@ export type ITag = {
 	value?: string;
 	updated?: Date;
 	icon?: IIcon;
+	authentication?: IAuthentication;
 };

@@ -7,6 +7,7 @@ import parse from '../../../mfm/parse';
 import DriveFile from '../../../models/drive-file';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';
+import { IAuthentication } from '../models/authentication';
 
 export default async (user: ILocalUser) => {
 	const id = `${config.url}/users/${user._id}`;
@@ -21,11 +22,7 @@ export default async (user: ILocalUser) => {
 		name: string,
 		value: string,
 		verified_at?: string,
-		authentication?: {
-			service: string,
-			id?: any,
-			username?: any
-		}
+		authentication?: IAuthentication
 	}[] = [];
 
 	if (user.twitter) {

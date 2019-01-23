@@ -19,6 +19,7 @@ import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import Following from '../../../models/following';
+import { IAuthentication } from './authentication';
 
 const log = debug('misskey:activitypub');
 
@@ -414,10 +415,7 @@ export async function resolvePerson(uri: string, verifier?: string, resolver?: R
 const safeValue = (x: any) => x === null || ['number', 'string', 'boolean'].includes(typeof x);
 
 const services: {
-		[x: string]: (x: {
-				id?: any,
-				username?: any
-			}) => any
+		[x: string]: (x: IAuthentication) => any
 	} = {
 	'twitter': x => ({
 		userId: x.id,
@@ -435,11 +433,7 @@ const services: {
 	}
 };
 
-export function addService(target: { [x: string]: any }, source: {
-		service: string,
-		id?: any,
-		username?: any
-	}) {
+export function addService(target: { [x: string]: any }, source: IAuthentication) {
 	const service = services[source.service];
 	if (service && Object.values(service).every(safeValue))
 		target[source.service] = service(source);
