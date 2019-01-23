@@ -441,7 +441,7 @@ export function addService(target: { [x: string]: any }, source: IIdentifier) {
 		source.value = 'unknown';
 	const [id, username] = source.value.split('@');
 	if (service)
-		target[source.name] = service(id, username);
+		target[source.name.split(':')[2]] = service(id, username);
 }
 
 export function extractAttachments(attachments: ITag[]) {
