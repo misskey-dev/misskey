@@ -4,37 +4,37 @@ import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 import endpoints from './endpoints';
 
-export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any) => new Promise<any>(async (ok, rej) => {
+export default async (endpoint: string, user: IUser, app: IApp, data: any, file?: any) => {
 	const isSecure = user != null && app == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);
 
 	if (ep == null) {
-		return rej('ENDPOINT_NOT_FOUND');
+		throw 'ENDPOINT_NOT_FOUND';
 	}
 
 	if (ep.meta.secure && !isSecure) {
-		return rej('ACCESS_DENIED');
+		throw 'ACCESS_DENIED';
 	}
 
 	if (ep.meta.requireCredential && user == null) {
-		return rej('CREDENTIAL_REQUIRED');
+		throw 'CREDENTIAL_REQUIRED';
 	}
 
 	if (ep.meta.requireCredential && user.isSuspended) {
-		return rej('YOUR_ACCOUNT_HAS_BEEN_SUSPENDED');
+		throw 'YOUR_ACCOUNT_HAS_BEEN_SUSPENDED';
 	}
 
 	if (ep.meta.requireAdmin && !user.isAdmin) {
-		return rej('YOU_ARE_NOT_ADMIN');
+		throw 'YOU_ARE_NOT_ADMIN';
 	}
 
 	if (ep.meta.requireModerator && !user.isAdmin && !user.isModerator) {
-		return rej('YOU_ARE_NOT_MODERATOR');
+		throw 'YOU_ARE_NOT_MODERATOR';
 	}
 
 	if (app && ep.meta.kind && !app.permission.some(p => p === ep.meta.kind)) {
-		return rej('PERMISSION_DENIED');
+		throw 'PERMISSION_DENIED';
 	}
 
 	if (ep.meta.requireCredential && ep.meta.limit) {
@@ -42,7 +42,7 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 			await limiter(ep, user); // Rate limit
 		} catch (e) {
 			// drop request if limit exceeded
-			return rej('RATE_LIMIT_EXCEEDED');
+			throw 'RATE_LIMIT_EXCEEDED';
 		}
 	}
 
@@ -61,16 +61,15 @@ export default (endpoint: string, user: IUser, app: IApp, data: any, file?: any)
 		}
 	} catch (e) {
 		if (e && e.name == 'INVALID_PARAM') {
-			rej({
+			throw {
 				code: e.name,
 				param: e.param,
 				reason: e.message
-			});
+			};
 		} else {
-			rej(e);
+			throw e;
 		}
-		return;
 	}
 
-	ok(res);
-});
+	return res;
+};
