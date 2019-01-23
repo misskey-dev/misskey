@@ -137,9 +137,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
-	const fields = await extractFields(person.attachment).catch(e => {
-		console.log(`cat not extract fields: ${e}`);
-	});
+	const { fields, services } = extractAttachments(person.attachment);
 
 	const isBot = object.type == 'Service';
 
@@ -171,7 +169,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			uri: person.id,
 			url: person.url,
 			fields,
-			isBot: isBot,
+			...services,
+			isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
 	} catch (e) {
@@ -332,9 +331,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	const fields = await extractFields(person.attachment).catch(e => {
-		console.log(`cat not extract fields: ${e}`);
-	});
+	const { fields, services } = extractAttachments(person.attachment);
 
 	const updates = {
 		lastFetchedAt: new Date(),
@@ -350,6 +347,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		url: person.url,
 		endpoints: person.endpoints,
 		fields,
+		...services,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
@@ -413,16 +411,58 @@ export async function resolvePerson(uri: string, verifier?: string, resolver?: R
 	return await createPerson(uri, resolver);
 }
 
-export async function extractFields(attachments: ITag[]) {
-	if (!attachments) return [];
+const safeValue = (x: any) => x === null || ['number', 'string', 'boolean'].includes(typeof x);
 
-	return attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value)
-		.map(a => {
-			return {
-				name: a.name,
-				value: htmlToMFM(a.value)
-			};
-		});
+const services: {
+		[x: string]: (x: {
+				id?: any,
+				username?: any
+			}) => any
+	} = {
+	'twitter': x => ({
+		userId: x.id,
+		screenName: x.username
+	}),
+	'github': x => ({
+		id: x.id,
+		login: x.username
+	}),
+	'discord': x => {
+		if (!typeof x.username === 'string')
+			x.username = 'unknown#0000';
+		const [id, username, discriminator] = [x.id, ...x.username.split('#')];
+		return { id, username, discriminator };
+	}
+};
+
+export const function addService(target: { [x: string]: any }, source: {
+		service: string,
+		id?: any,
+		username?: any
+	}) {
+	const service = services[source.service];
+	if (service && Object.values.every(safeValue))
+		target[source] = service(source);
+}
+
+export function extractAttachments(attachments: ITag[]) {
+	const fields: {
+		name: string,
+		value: string
+	}[] = [];
+	const services: { [x: string]: any } = {};
+	
+	if (Array.isArray(attachments))
+		for (const attachment of attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value))
+			if (attachment.authentication && typeof attachment.authentication === 'object')
+				addService(services, attachment.authentication);
+			else
+				fields.push({
+					name: attachment.name,
+					value: htmlToMFM(attachment.value)
+				});
+
+	return { fields, services };
 }
 
 export async function updateFeatured(userId: mongo.ObjectID) {
