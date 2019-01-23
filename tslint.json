@@ -57,7 +57,8 @@
 		"parameters-max-number": false,
 		"no-duplicated-branches": false,
 		"no-identical-conditions": false,
-		"no-useless-cast": false
+		"no-useless-cast": false,
+		"no-hardcoded-credentials": false
 	},
 	"rulesDirectory": []
 }
