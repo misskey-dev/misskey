@@ -28,7 +28,7 @@
 					</div>
 				</x-draggable>
 			</div>
-			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false"  @updated="onPollUpdate()"/>
+			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 			<footer>
 				<button class="upload" @click="chooseFile"><fa icon="upload"/></button>
