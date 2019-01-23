@@ -11,7 +11,7 @@
 import * as http from 'http';
 import * as fs from 'fs';
 import * as assert from 'chai';
-import * as WebSocket from 'ws';
+import { async, _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
 
 assert.use(require('chai-http'));
 const expect = assert.expect;
@@ -33,87 +33,16 @@ const db = require('../built/db/mongodb').default;
 const server = http.createServer(app.callback());
 
 //#region Utilities
-const async = (fn: Function) => (done: Function) => {
-	fn().then(() => {
-		done();
-	}, (err: Error) => {
-		done(err);
-	});
-};
-
-const request = async (endpoint: string, params: any, me?: any): Promise<ChaiHttp.Response> => {
-	const auth = me ? {
-		i: me.token
-	} : {};
-
-	const res = await assert.request(server)
-		.post(endpoint)
-		.send(Object.assign(auth, params));
-
-	return res;
-};
-
-const signup = async (params?: any): Promise<any> => {
-	const q = Object.assign({
-		username: 'test',
-		password: 'test'
-	}, params);
-
-	const res = await request('/signup', q);
-
-	return res.body;
-};
-
-const post = async (user: any, params?: any): Promise<any> => {
-	const q = Object.assign({
-		text: 'test'
-	}, params);
-
-	const res = await request('/notes/create', q, user);
-
-	return res.body.createdNote;
-};
-
-const react = async (user: any, note: any, reaction: string): Promise<any> => {
-	await request('/notes/reactions/create', {
-		noteId: note.id,
-		reaction: reaction
-	}, user);
-};
-
-const uploadFile = async (user: any): Promise<any> => {
-	const res = await assert.request(server)
-		.post('/drive/files/create')
-		.field('i', user.token)
-		.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
-
-	return res.body;
-};
+const request = _request(server);
+const signup = _signup(request);
+const post = _post(request);
+const react = _react(request);
+const uploadFile = _uploadFile(server);
 //#endregion
 
 describe('API', () => {
 	// Reset database each test
-	beforeEach(() => new Promise((res) => {
-		// APIがなにかレスポンスを返した後に、後処理を行う場合があり、
-		// レスポンスを受け取ってすぐデータベースをリセットすると
-		// その後処理と競合し(テスト自体は合格するものの)エラーがコンソールに出力され
-		// 見た目的に気持ち悪くなるので、後処理が終るのを待つために500msくらい待ってから
-		// データベースをリセットするようにする
-		setTimeout(async () => {
-			await Promise.all([
-				db.get('users').drop(),
-				db.get('notes').drop(),
-				db.get('driveFiles.files').drop(),
-				db.get('driveFiles.chunks').drop(),
-				db.get('driveFolders').drop(),
-				db.get('apps').drop(),
-				db.get('accessTokens').drop(),
-				db.get('authSessions').drop()
-			]);
-
-			res();
-		}, 500);
-	}));
+	beforeEach(resetDb(db));
 
 	describe('signup', () => {
 		it('不正なユーザー名でアカウントが作成できない', async(async () => {
@@ -1238,40 +1167,5 @@ describe('API', () => {
 
 			expect(res).have.status(400);
 		}));
-	});
-
-	describe('streaming', () => {
-		it('投稿がタイムラインに流れる', done => {
-			const post = {
-				text: 'foo'
-			};
-
-			signup().then(me => {
-				const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
-
-				ws.on('open', () => {
-					ws.on('message', data => {
-						const msg = JSON.parse(data.toString());
-						if (msg.type == 'channel' && msg.body.id == 'a') {
-							if (msg.body.type == 'note') {
-								expect(msg.body.body.text).eql(post.text);
-								done();
-							}
-						} else if (msg.type == 'connected' && msg.body.id == 'a') {
-							request('/notes/create', post, me);
-						}
-					});
-
-					ws.send(JSON.stringify({
-						type: 'connect',
-						body: {
-							channel: 'homeTimeline',
-							id: 'a',
-							pong: true
-						}
-					}));
-				});
-			});
-		});
 	});
 });
