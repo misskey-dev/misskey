@@ -70,8 +70,7 @@ import extractMentions from '../../../../../misc/extract-mentions';
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/post-form.vue'),
 	components: {
-		XDraggable,
-		MkVisibilityChooser
+		XDraggable
 	},
 
 	props: {
