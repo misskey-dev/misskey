@@ -3,10 +3,9 @@ import { default as User, IUser } from '../../models/user';
 import AccessToken from '../../models/access-token';
 import isNativeToken from './common/is-native-token';
 
-export default (token: string) => new Promise<[IUser, IApp]>(async (resolve, reject) => {
+export default async (token: string): Promise<[IUser, IApp]> => {
 	if (token == null) {
-		resolve([null, null]);
-		return;
+		return [null, null];
 	}
 
 	if (isNativeToken(token)) {
@@ -15,17 +14,17 @@ export default (token: string) => new Promise<[IUser, IApp]>(async (resolve, rej
 			.findOne({ token });
 
 		if (user === null) {
-			return reject('user not found');
+			throw 'user not found';
 		}
 
-		resolve([user, null]);
+		return [user, null];
 	} else {
 		const accessToken = await AccessToken.findOne({
 			hash: token.toLowerCase()
 		});
 
 		if (accessToken === null) {
-			return reject('invalid signature');
+			throw 'invalid signature';
 		}
 
 		const app = await App
@@ -34,6 +33,6 @@ export default (token: string) => new Promise<[IUser, IApp]>(async (resolve, rej
 		const user = await User
 			.findOne({ _id: accessToken.userId });
 
-		resolve([user, app]);
+		return [user, app];
 	}
-});
+};
