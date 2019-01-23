@@ -1124,7 +1124,7 @@ admin/views/drive.vue:
   deleted: "Deleted successfully"
   mark-as-sensitive: "Mark as 'sensitive'"
   unmark-as-sensitive: "Unmark as 'sensitive'"
-  marked-as-sensitive: "閲覧注意に設定しました"
+  marked-as-sensitive: "Set a sensitive content notice"
   unmarked-as-sensitive: "Remove the sensitive content notice"
 admin/views/users.vue:
   operation: "Operations"
