@@ -26,7 +26,7 @@ import User from '../models/user';
 const app = new Koa();
 app.proxy = true;
 
-if (process.env.NODE_ENV != 'production' && process.env.NODE_ENV != 'test') {
+if (!['production', 'test'].includes(process.env.NODE_ENV)) {
 	// Logger
 	app.use(logger());
 
