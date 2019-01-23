@@ -358,8 +358,8 @@ common/views/components/user-menu.vue:
   push-to-list: "Add to list"
   select-list: "Select a list"
   report-abuse: "Report abuse"
-  report-abuse-detail: "どのような迷惑行為を行っていますか？"
-  report-abuse-reported: "管理者に報告されました。ご協力ありがとうございました。"
+  report-abuse-detail: "What kind of nuisance did you encounter?"
+  report-abuse-reported: "The issue has been reported to the administrator. Your cooperation is much appreciated."
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
@@ -1125,7 +1125,7 @@ admin/views/drive.vue:
   mark-as-sensitive: "Mark as 'sensitive'"
   unmark-as-sensitive: "Unmark as 'sensitive'"
   marked-as-sensitive: "閲覧注意に設定しました"
-  unmarked-as-sensitive: "閲覧注意を解除しました"
+  unmarked-as-sensitive: "Remove the sensitive content notice"
 admin/views/users.vue:
   operation: "Operations"
   username-or-userid: "Username or user ID"
