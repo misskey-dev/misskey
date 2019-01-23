@@ -41,7 +41,7 @@ describe('Streaming', () => {
 	// Reset database each test
 	beforeEach(resetDb(db));
 
-	before(() => {
+	after(() => {
 		server.close();
 	});
 
