@@ -66,6 +66,7 @@
 
 				<section>
 					<ui-switch v-model="fetchOnScroll">{{ $t('fetch-on-scroll') }}</ui-switch>
+					<ui-switch v-model="keepCw">{{ $t('keep-cw') }}</ui-switch>
 					<ui-switch v-model="disableViaMobile">{{ $t('disable-via-mobile') }}</ui-switch>
 					<ui-switch v-model="loadRawImages">{{ $t('load-raw-images') }}</ui-switch>
 					<ui-switch v-model="loadRemoteMedia">{{ $t('load-remote-media') }}</ui-switch>
@@ -245,6 +246,11 @@ export default Vue.extend({
 		fetchOnScroll: {
 			get() { return this.$store.state.settings.fetchOnScroll; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'fetchOnScroll', value }); }
+		},
+
+		keepCw: {
+			get() { return this.$store.state.settings.keepCw; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'keepCw', value }); }
 		},
 
 		rememberNoteVisibility: {

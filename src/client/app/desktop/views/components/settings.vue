@@ -31,7 +31,12 @@
 				<ui-switch v-model="autoPopout">{{ $t('auto-popout') }}
 					<span slot="desc">{{ $t('auto-popout-desc') }}</span>
 				</ui-switch>
-				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}<span slot="desc">{{ $t('deck-nav-desc') }}</span></ui-switch>
+				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}
+					<span slot="desc">{{ $t('deck-nav-desc') }}</span>
+				</ui-switch>
+				<ui-switch v-model="keepCw">{{ $t('keep-cw') }}
+					<span slot="desc">{{ $t('keep-cw-desc') }}</span>
+				</ui-switch>
 			</section>
 
 			<section>
@@ -334,6 +339,11 @@ export default Vue.extend({
 		deckNav: {
 			get() { return this.$store.state.settings.deckNav; },
 			set(value) { this.$store.commit('settings/set', { key: 'deckNav', value }); }
+		},
+
+		keepCw: {
+			get() { return this.$store.state.settings.keepCw; },
+			set(value) { this.$store.commit('settings/set', { key: 'keepCw', value }); }
 		},
 
 		darkmode: {

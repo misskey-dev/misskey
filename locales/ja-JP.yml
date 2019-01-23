@@ -884,6 +884,8 @@ desktop/views/components/settings.vue:
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
   deck-nav: "デッキ内ナビゲーション"
   deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
+  keep-cw: "CW保持"
+  keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
   deck-default: "デッキをデフォルトのUIにする"
 
   display: "デザインと表示"
@@ -1664,6 +1666,7 @@ mobile/views/pages/settings.vue:
   notification-position-top: "上"
   behavior: "動作"
   fetch-on-scroll: "スクロールで自動読み込み"
+  keep-cw: "CW保持"
   note-visibility: "投稿の公開範囲"
   default-note-visibility: "デフォルトの公開範囲"
   remember-note-visibility: "投稿の公開範囲を記憶する"
