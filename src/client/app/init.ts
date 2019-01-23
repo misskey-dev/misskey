@@ -396,7 +396,7 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 					applyTheme(theme);
 				}
 			} catch (e) {
-				console.log(`Can not reapply theme. ${e}`);
+				console.log(`Cannot reapply theme. ${e}`);
 			}
 
 			//#region shadow
