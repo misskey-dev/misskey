@@ -428,21 +428,21 @@ const services: {
 		login: x.username
 	}),
 	'discord': x => {
-		if (!typeof x.username === 'string')
+		if (typeof x.username !== 'string')
 			x.username = 'unknown#0000';
 		const [id, username, discriminator] = [x.id, ...x.username.split('#')];
 		return { id, username, discriminator };
 	}
 };
 
-export const function addService(target: { [x: string]: any }, source: {
+export function addService(target: { [x: string]: any }, source: {
 		service: string,
 		id?: any,
 		username?: any
 	}) {
 	const service = services[source.service];
-	if (service && Object.values.every(safeValue))
-		target[source] = service(source);
+	if (service && Object.values(service).every(safeValue))
+		target[source.service] = service(source);
 }
 
 export function extractAttachments(attachments: ITag[]) {
@@ -451,7 +451,7 @@ export function extractAttachments(attachments: ITag[]) {
 		value: string
 	}[] = [];
 	const services: { [x: string]: any } = {};
-	
+
 	if (Array.isArray(attachments))
 		for (const attachment of attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value))
 			if (attachment.authentication && typeof attachment.authentication === 'object')
