@@ -138,7 +138,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
-	const { fields, services } = extractAttachments(person.attachment);
+	const { fields, services } = analyzeAttachments(person.attachment);
 
 	const isBot = object.type == 'Service';
 
@@ -332,7 +332,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	const { fields, services } = extractAttachments(person.attachment);
+	const { fields, services } = analyzeAttachments(person.attachment);
 
 	const updates = {
 		lastFetchedAt: new Date(),
@@ -427,24 +427,29 @@ const services: {
 	} = {
 	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
 	'misskey:authentication:github': (id, login) => ({ id, login }),
-	'misskey:authentication:discord': (id, name) => {
-		if (typeof name !== 'string')
-			name = 'unknown#0000';
-		const [username, discriminator] = name.split('#');
-		return { id, username, discriminator };
-	}
+	'misskey:authentication:discord': (id, name) => $discord(id, name)
 };
 
-export function addService(target: { [x: string]: any }, source: IIdentifier) {
+const $discord = (id: string, name: string) => {
+	if (typeof name !== 'string')
+		name = 'unknown#0000';
+	const [username, discriminator] = name.split('#');
+	return { id, username, discriminator };
+};
+
+function addService(target: { [x: string]: any }, source: IIdentifier) {
 	const service = services[source.name];
+
 	if (typeof source.value !== 'string')
 		source.value = 'unknown';
+
 	const [id, username] = source.value.split('@');
+
 	if (service)
 		target[source.name.split(':')[2]] = service(id, username);
 }
 
-export function extractAttachments(attachments: ITag[]) {
+export function analyzeAttachments(attachments: ITag[]) {
 	const fields: {
 		name: string,
 		value: string
