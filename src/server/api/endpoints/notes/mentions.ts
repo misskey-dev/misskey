@@ -47,8 +47,24 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('cannot set sinceId and untilId');
 	}
 
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}];
+
 	const query = {
-		deletedAt: null,
+		$and: [{
+			deletedAt: null,
+		}, {
+			$or: visibleQuery,
+		}],
 
 		$or: [{
 			mentions: user._id
