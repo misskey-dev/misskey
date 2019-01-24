@@ -369,7 +369,7 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 
-		it('can make nyanize enable', async(async () => {
+		it('can make nyaize enable', async(async () => {
 			const me = await signup();
 
 			const post = {
@@ -384,7 +384,7 @@ describe('API', () => {
 			expect(res.body.createdNote).have.property('text').eql('なんにゃんなんにゃんなん');
 		}));
 
-		it('can make nyanize disable', async(async () => {
+		it('can make nyaize disable', async(async () => {
 			const me = await signup();
 
 			await request('/i/update', {

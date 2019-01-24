@@ -148,16 +148,17 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.text) {
 		data.text = data.text.trim();
 
+		const match = data.text.match(/<\/?!?nya>/ig) || [];
 		const stack: string[] = [];
-		for (const tag of [...data.text.match(/<\/?!?nya>/ig)]
+		for (const tag of [...match]
 			.map(x => x.toLocaleLowerCase()))
 				if (tag.includes('/')) {
 					if (stack.pop() !== tag.replace('/', ''))
-						return rej('Invalid nyanize syntax');
+						return rej('Invalid nyaize syntax');
 				} else
 					stack.push(tag);
 		if (stack.length)
-			return rej('Invalid nyanize syntax');
+			return rej('Invalid nyaize syntax');
 	}
 
 	let tags = data.apHashtags;
@@ -170,7 +171,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		const tokens = text ? parse(text) : [];
 		const cwTokens = data.cw ? parse(data.cw) : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat((data.poll.choices as IChoice[]).map(choice => parse(choice.text.replace(/^<\/?!?nya>/ig, ''))))
+			? concat((data.poll.choices as IChoice[]).map(choice => parse(choice.text && choice.text.replace(/^<\/?!?nya>/ig, ''))))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
@@ -351,7 +352,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 async function renderActivity(data: Option, note: INote) {
 	if (data.localOnly) return null;
 
-	const content = data.renote && !data.text && !data.text.replace(/^<\/?!?nya>/ig, '') && !data.poll && (!data.files || !data.files.length)
+	const content = data.renote && (!data.text || !data.text.replace(/^<\/?!?nya>/ig, '')) && !data.poll && (!data.files || !data.files.length)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
