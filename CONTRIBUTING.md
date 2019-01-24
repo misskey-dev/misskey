@@ -38,3 +38,9 @@ Stands for _**M**iss**k**ey_.
 
 ### SW
 Stands for _**S**ervice**W**orker_.
+
+### Nyaize
+な を にゃ にすること
+
+#### Denyaize
+Nyaizeを解除すること
