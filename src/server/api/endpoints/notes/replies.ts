@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
 import Mute from '../../../../models/mute';
+import { getFriends } from '../../common/get-friends';
 
 export const meta = {
 	desc: {
@@ -34,13 +35,35 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// ミュートしているユーザーを取得
-	const mutedUserIds = user ? (await Mute.find({
-		muterId: user._id
-	})).map(m => m.muteeId) : null;
+	const [followings, mutedUserIds] = await Promise.all([
+		// フォローを取得
+		// Fetch following
+		user ? getFriends(user._id) : [],
+
+		// ミュートしているユーザーを取得
+		user ? (await Mute.find({
+			muterId: user._id
+		})).map(m => m.muteeId) : null
+	]);
+
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}, {
+		visibility: 'followers',
+		userId: { $in: followings.map(f => f.id) }
+	}];
 
 	const q = {
-		replyId: ps.noteId
+		replyId: ps.noteId,
+		$or: visibleQuery
 	} as any;
 
 	if (mutedUserIds && mutedUserIds.length > 0) {

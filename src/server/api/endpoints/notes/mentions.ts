@@ -1,6 +1,6 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import { getFriendIds } from '../../common/get-friends';
+import { getFriendIds, getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import read from '../../../../services/note/read';
@@ -47,8 +47,28 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('cannot set sinceId and untilId');
 	}
 
+	// フォローを取得
+	const followings = await getFriends(user._id);
+
+	const visibleQuery = [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}, {
+		visibility: 'followers',
+		userId: { $in: followings.map(f => f.id) }
+	}];
+
 	const query = {
-		deletedAt: null,
+		$and: [{
+			deletedAt: null,
+		}, {
+			$or: visibleQuery,
+		}],
 
 		$or: [{
 			mentions: user._id
