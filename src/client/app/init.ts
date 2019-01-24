@@ -387,6 +387,18 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			});
 			//#endregion
 
+			// Reapply current theme
+			try {
+				const themeName = os.store.state.device.darkmode ? os.store.state.device.darkTheme : os.store.state.device.lightTheme;
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const theme = themes.find(t => t.id == themeName);
+				if (theme) {
+					applyTheme(theme);
+				}
+			} catch (e) {
+				console.log(`Cannot reapply theme. ${e}`);
+			}
+
 			//#region shadow
 			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
 			const shadowRight = '4px 0 4px rgba(0, 0, 0, 0.1)';
