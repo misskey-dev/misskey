@@ -7,6 +7,7 @@ import parse from '../../../mfm/parse';
 import DriveFile from '../../../models/drive-file';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';
+import { IIdentifier } from '../models/identifier';
 
 export default async (user: ILocalUser) => {
 	const id = `${config.url}/users/${user._id}`;
@@ -20,14 +21,20 @@ export default async (user: ILocalUser) => {
 		type: string,
 		name: string,
 		value: string,
-		verified_at?: string
+		verified_at?: string,
+		identifier?: IIdentifier
 	}[] = [];
 
 	if (user.twitter) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`
+			value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`,
+			identifier: {
+				type: 'PropertyValue',
+				name: 'misskey:authentication:twitter',
+				value: `${user.twitter.userId}@${user.twitter.screenName}`
+			}
 		});
 	}
 
@@ -35,7 +42,12 @@ export default async (user: ILocalUser) => {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`
+			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`,
+			identifier: {
+				type: 'PropertyValue',
+				name: 'misskey:authentication:github',
+				value: `${user.github.id}@${user.github.login}`
+			}
 		});
 	}
 
@@ -43,7 +55,12 @@ export default async (user: ILocalUser) => {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`
+			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`,
+			identifier: {
+				type: 'PropertyValue',
+				name: 'misskey:authentication:discord',
+				value: `${user.discord.id}@${user.discord.username}#${user.discord.discriminator}`
+			}
 		});
 	}
 

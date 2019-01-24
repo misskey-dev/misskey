@@ -1,4 +1,5 @@
 import { IIcon } from './icon';
+import { IIdentifier } from './identifier';
 
 /***
  * tag (ActivityPub)
@@ -10,4 +11,5 @@ export type ITag = {
 	value?: string;
 	updated?: Date;
 	icon?: IIcon;
+	identifier?: IIdentifier;
 };

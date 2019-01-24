@@ -19,6 +19,7 @@ import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import Following from '../../../models/following';
+import { IIdentifier } from './identifier';
 
 const log = debug('misskey:activitypub');
 
@@ -137,9 +138,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
-	const fields = await extractFields(person.attachment).catch(e => {
-		console.log(`cat not extract fields: ${e}`);
-	});
+	const { fields, services } = analyzeAttachments(person.attachment);
 
 	const isBot = object.type == 'Service';
 
@@ -171,7 +170,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			uri: person.id,
 			url: person.url,
 			fields,
-			isBot: isBot,
+			...services,
+			isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
 	} catch (e) {
@@ -332,9 +332,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	const fields = await extractFields(person.attachment).catch(e => {
-		console.log(`cat not extract fields: ${e}`);
-	});
+	const { fields, services } = analyzeAttachments(person.attachment);
 
 	const updates = {
 		lastFetchedAt: new Date(),
@@ -350,6 +348,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		url: person.url,
 		endpoints: person.endpoints,
 		fields,
+		...services,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
@@ -413,16 +412,61 @@ export async function resolvePerson(uri: string, verifier?: string, resolver?: R
 	return await createPerson(uri, resolver);
 }
 
-export async function extractFields(attachments: ITag[]) {
-	if (!attachments) return [];
+const isPropertyValue = (x: {
+		type: string,
+		name?: string,
+		value?: string
+	}) =>
+		x &&
+		x.type === 'PropertyValue' &&
+		typeof x.name === 'string' &&
+		typeof x.value === 'string';
 
-	return attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value)
-		.map(a => {
-			return {
-				name: a.name,
-				value: htmlToMFM(a.value)
-			};
-		});
+const services: {
+		[x: string]: (id: string, username: string) => any
+	} = {
+	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
+	'misskey:authentication:github': (id, login) => ({ id, login }),
+	'misskey:authentication:discord': (id, name) => $discord(id, name)
+};
+
+const $discord = (id: string, name: string) => {
+	if (typeof name !== 'string')
+		name = 'unknown#0000';
+	const [username, discriminator] = name.split('#');
+	return { id, username, discriminator };
+};
+
+function addService(target: { [x: string]: any }, source: IIdentifier) {
+	const service = services[source.name];
+
+	if (typeof source.value !== 'string')
+		source.value = 'unknown';
+
+	const [id, username] = source.value.split('@');
+
+	if (service)
+		target[source.name.split(':')[2]] = service(id, username);
+}
+
+export function analyzeAttachments(attachments: ITag[]) {
+	const fields: {
+		name: string,
+		value: string
+	}[] = [];
+	const services: { [x: string]: any } = {};
+
+	if (Array.isArray(attachments))
+		for (const attachment of attachments.filter(isPropertyValue))
+			if (isPropertyValue(attachment.identifier))
+				addService(services, attachment.identifier);
+			else
+				fields.push({
+					name: attachment.name,
+					value: htmlToMFM(attachment.value)
+				});
+
+	return { fields, services };
 }
 
 export async function updateFeatured(userId: mongo.ObjectID) {
