@@ -377,15 +377,40 @@ export const pack = async (
 	}
 	//#endregion
 
-	if (_note.user.isCat && _note.text) {
-		_note.text = (_note.text
-			// ja-JP
-			.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ')
-			// ko-KR
-			.replace(/[나-낳]/g, (match: string) => String.fromCharCode(
-				match.codePointAt(0)  + '냐'.charCodeAt(0) - '나'.charCodeAt(0)
-			))
-		);
+	const nyamap: { [x: string]: string } = {
+	//#region nyanize: ja-JP
+		'な': 'にゃ',
+		'ナ': 'ニャ',
+		'ﾅ': 'ﾆｬ'
+	//#endregion
+	};
+
+	//#region nyanize: ko-KR
+	const diffKoKr = '냐'.charCodeAt(0) - '나'.charCodeAt(0);
+	for (let i = '나'.charCodeAt(0); i <= '낳'.charCodeAt(0); i++)
+		nyamap[String.fromCharCode(i)] = String.fromCharCode(i + diffKoKr);
+	//#endregion
+
+	const raw: string = _note.text;
+	const stack = [!!_note.user.isCat];
+	for (let i = 0; i < raw.length; i++) {
+		const head = raw[i];
+
+		if (head === '<') {
+			const [, tag, state] = raw.slice(i).match(/^<((\/?!?)nya>)/i) || [, , , ];
+
+			if (typeof state === 'string') {
+				if (state[0] === '/')
+					stack.shift();
+				else
+					stack.unshift(!state);
+
+				i += tag.length;
+				continue;
+			}
+		}
+
+		_note.text += stack[0] && nyamap[head] || head;
 	}
 
 	if (!opts.skipHide) {

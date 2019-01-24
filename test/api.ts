@@ -369,6 +369,52 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 
+		it('can make nyanize enable', async(async () => {
+			const me = await signup();
+
+			const post = {
+				text: 'なん<nya>なん<!nya>なん</!nya>なん</nya>なん'
+			};
+
+			const res = await request('/notes/create', post, me);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('createdNote');
+			expect(res.body.createdNote).have.property('text').eql('なんにゃんなんにゃんなん');
+		}));
+
+		it('can make nyanize disable', async(async () => {
+			const me = await signup();
+
+			await request('/i/update', {
+				isCat: true
+			}, me);
+
+			const post = {
+				text: 'なん<!nya>なん<nya>なん</nya>なん</!nya>なん'
+			};
+
+			const res = await request('/notes/create', post, me);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('createdNote');
+			expect(res.body.createdNote).have.property('text').eql('にゃんなんにゃんなんにゃん');
+		}));
+
+		it('throw error when invalid syntax', async(async () => {
+			const me = await signup();
+
+			const post = {
+				text: 'なん<nya>なん'
+			};
+
+			const res = await request('/notes/create', post, me);
+
+			expect(res).have.status(400);
+		}));
+
 		it('存在しないリプライ先で怒られる', async(async () => {
 			const me = await signup();
 			const post = {

@@ -147,6 +147,17 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	if (data.text) {
 		data.text = data.text.trim();
+
+		const stack: string[] = [];
+		for (const tag of [...data.text.match(/<\/?!?nya>/ig)]
+			.map(x => x.toLocaleLowerCase()))
+				if (tag.includes('/')) {
+					if (stack.pop() !== tag.replace('/', ''))
+						return rej('Invalid nyanize syntax');
+				} else
+					stack.push(tag);
+		if (stack.length)
+			return rej('Invalid nyanize syntax');
 	}
 
 	let tags = data.apHashtags;
@@ -155,10 +166,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// Parse MFM if needed
 	if (!tags || !emojis || !mentionedUsers) {
-		const tokens = data.text ? parse(data.text) : [];
+		const text = data.text && data.text.replace(/^<\/?!?nya>/ig, '');
+		const tokens = text ? parse(text) : [];
 		const cwTokens = data.cw ? parse(data.cw) : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat((data.poll.choices as IChoice[]).map(choice => parse(choice.text)))
+			? concat((data.poll.choices as IChoice[]).map(choice => parse(choice.text.replace(/^<\/?!?nya>/ig, ''))))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
@@ -303,7 +315,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// If it is renote
 	if (data.renote) {
-		const type = data.text ? 'quote' : 'renote';
+		const type = data.text && data.text.replace(/^<\/?!?nya>/ig, '') ? 'quote' : 'renote';
 
 		// Notify
 		if (isLocalUser(data.renote._user)) {
@@ -339,7 +351,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 async function renderActivity(data: Option, note: INote) {
 	if (data.localOnly) return null;
 
-	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
+	const content = data.renote && !data.text && !data.text.replace(/^<\/?!?nya>/ig, '') && !data.poll && (!data.files || !data.files.length)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
@@ -484,15 +496,17 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 }
 
 function index(note: INote) {
-	if (note.text == null || config.elasticsearch == null) return;
+	if (!note.text || !config.elasticsearch) return;
+
+	const text = note.text.replace(/^<\/?!?nya>/ig, '');
+
+	if (!text) return;
 
 	es.index({
 		index: 'misskey',
 		type: 'note',
 		id: note._id.toString(),
-		body: {
-			text: note.text
-		}
+		body: { text }
 	});
 }
 
