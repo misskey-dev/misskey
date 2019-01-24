@@ -47,9 +47,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('cannot set sinceId and untilId');
 	}
 
-	const visibleQuery = user == null ? [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}] : [{
+	const visibleQuery = [{
 		visibility: { $in: [ 'public', 'home' ] }
 	}, {
 		// myself (for specified/private)
