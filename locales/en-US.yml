@@ -790,7 +790,7 @@ desktop/views/components/settings.vue:
   deck-nav-desc: "You get a temporary column without page transitions during navigation when using the deck."
   keep-cw: "Preserve content warning"
   keep-cw-desc: "When replying to a post, the same content warning is set by default to the reply, as has been set by the original post."
-  deck-default: "Use Deck as default UI"
+  deck-default: "Use Deck view as the default UI"
   display: "Design and display"
   customize: "Customize home layout"
   wallpaper: "Wallpaper"
