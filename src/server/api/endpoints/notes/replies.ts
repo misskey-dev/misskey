@@ -39,8 +39,21 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		muterId: user._id
 	})).map(m => m.muteeId) : null;
 
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}];
+
 	const q = {
-		replyId: ps.noteId
+		replyId: ps.noteId,
+		$or: visibleQuery
 	} as any;
 
 	if (mutedUserIds && mutedUserIds.length > 0) {
