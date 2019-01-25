@@ -45,37 +45,37 @@ describe('Streaming', () => {
 		server.close();
 	});
 
-	it('投稿がタイムラインに流れる', done => {
+	it('投稿がタイムラインに流れる', () => new Promise(async done => {
 		const post = {
 			text: 'foo'
 		};
 
-		signup().then(me => {
-			const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
+		const me = await signup();
 
-			ws.on('open', () => {
-				ws.on('message', data => {
-					const msg = JSON.parse(data.toString());
-					if (msg.type == 'channel' && msg.body.id == 'a') {
-						if (msg.body.type == 'note') {
-							expect(msg.body.body.text).eql(post.text);
-							ws.close();
-							done();
-						}
-					} else if (msg.type == 'connected' && msg.body.id == 'a') {
-						request('/notes/create', post, me);
-					}
-				});
+		const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
 
-				ws.send(JSON.stringify({
-					type: 'connect',
-					body: {
-						channel: 'homeTimeline',
-						id: 'a',
-						pong: true
+		ws.on('open', () => {
+			ws.on('message', data => {
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					if (msg.body.type == 'note') {
+						expect(msg.body.body.text).eql(post.text);
+						ws.close();
+						done();
 					}
-				}));
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					request('/notes/create', post, me);
+				}
 			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: 'homeTimeline',
+					id: 'a',
+					pong: true
+				}
+			}));
 		});
-	});
+	}));
 });
