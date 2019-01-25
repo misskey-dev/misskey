@@ -966,6 +966,13 @@ describe('MFM', () => {
 					text('*foo_'),
 				]);
 			});
+
+			it('ignore snake_case string', () => {
+				const tokens = analyze('foo_bar_baz');
+				assert.deepStrictEqual(tokens, [
+					text('foo_bar_baz'),
+				]);
+			});
 		});
 	});
 
