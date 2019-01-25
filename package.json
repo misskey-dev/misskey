@@ -155,7 +155,7 @@
 		"koa-router": "7.4.0",
 		"koa-send": "5.0.0",
 		"koa-slow": "2.1.0",
-		"koa-views": "6.1.4",
+		"koa-views": "6.1.5",
 		"langmap": "0.0.16",
 		"loader-utils": "1.2.3",
 		"lookup-dns-cache": "2.1.0",
