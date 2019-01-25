@@ -35,6 +35,7 @@ const apiServer = http.createServer(app.callback());
 //#region Utilities
 const request = _request(apiServer);
 const signup = _signup(request);
+const post = _post(request);
 //#endregion
 
 describe('Streaming', () => {
@@ -51,7 +52,6 @@ describe('Streaming', () => {
 		};
 
 		const me = await signup();
-
 		const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
 
 		ws.on('open', () => {
@@ -72,6 +72,76 @@ describe('Streaming', () => {
 				type: 'connect',
 				body: {
 					channel: 'homeTimeline',
+					id: 'a',
+					pong: true
+				}
+			}));
+		});
+	}));
+
+	it('mention event', () => new Promise(async done => {
+		const alice = await signup({ username: 'alice' });
+		const bob = await signup({ username: 'bob' });
+		const aliceNote = {
+			text: 'foo @bob bar'
+		};
+
+		const ws = new WebSocket(`ws://localhost/streaming?i=${bob.token}`);
+
+		ws.on('open', () => {
+			ws.on('message', data => {
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					if (msg.body.type == 'mention') {
+						expect(msg.body.body.text).eql(aliceNote.text);
+						ws.close();
+						done();
+					}
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					request('/notes/create', aliceNote, alice);
+				}
+			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: 'main',
+					id: 'a',
+					pong: true
+				}
+			}));
+		});
+	}));
+
+	it('renote event', () => new Promise(async done => {
+		const alice = await signup({ username: 'alice' });
+		const bob = await signup({ username: 'bob' });
+		const bobNote = await post(bob, {
+			text: 'foo'
+		});
+
+		const ws = new WebSocket(`ws://localhost/streaming?i=${bob.token}`);
+
+		ws.on('open', () => {
+			ws.on('message', data => {
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					if (msg.body.type == 'renote') {
+						expect(msg.body.body.renoteId).eql(bobNote.id);
+						ws.close();
+						done();
+					}
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					request('/notes/create', {
+						renoteId: bobNote.id
+					}, alice);
+				}
+			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: 'main',
 					id: 'a',
 					pong: true
 				}
