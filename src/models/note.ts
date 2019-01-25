@@ -387,7 +387,7 @@ export const pack = async (
 
 	//#region nyaize: ko-KR
 	const diffKoKr = '냐'.charCodeAt(0) - '나'.charCodeAt(0);
-	for (let i = '나'.charCodeAt(0); i <= '낳'.charCodeAt(0); i++)
+	for (let i = '나'.charCodeAt(0); i < '내'.charCodeAt(0); i++)
 		nyamap[String.fromCharCode(i)] = String.fromCharCode(i + diffKoKr);
 	//#endregion
 
