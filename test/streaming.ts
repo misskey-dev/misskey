@@ -10,11 +10,8 @@
 
 import * as http from 'http';
 import * as WebSocket from 'ws';
-import * as assert from 'chai';
+import * as assert from 'assert';
 import { _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
-
-assert.use(require('chai-http'));
-const expect = assert.expect;
 
 //#region process
 Error.stackTraceLimit = Infinity;
@@ -59,7 +56,7 @@ describe('Streaming', () => {
 				const msg = JSON.parse(data.toString());
 				if (msg.type == 'channel' && msg.body.id == 'a') {
 					if (msg.body.type == 'note') {
-						expect(msg.body.body.text).eql(post.text);
+						assert.deepStrictEqual(msg.body.body.text, post.text);
 						ws.close();
 						done();
 					}
@@ -93,7 +90,7 @@ describe('Streaming', () => {
 				const msg = JSON.parse(data.toString());
 				if (msg.type == 'channel' && msg.body.id == 'a') {
 					if (msg.body.type == 'mention') {
-						expect(msg.body.body.text).eql(aliceNote.text);
+						assert.deepStrictEqual(msg.body.body.text, aliceNote.text);
 						ws.close();
 						done();
 					}
@@ -127,7 +124,7 @@ describe('Streaming', () => {
 				const msg = JSON.parse(data.toString());
 				if (msg.type == 'channel' && msg.body.id == 'a') {
 					if (msg.body.type == 'renote') {
-						expect(msg.body.body.renoteId).eql(bobNote.id);
+						assert.deepStrictEqual(msg.body.body.renoteId, bobNote.id);
 						ws.close();
 						done();
 					}

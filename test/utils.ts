@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as assert from 'chai';
+assert.use(require('chai-http'));
 
 export const async = (fn: Function) => (done: Function) => {
 	fn().then(() => {

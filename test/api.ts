@@ -13,7 +13,6 @@ import * as fs from 'fs';
 import * as assert from 'chai';
 import { async, _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
 
-assert.use(require('chai-http'));
 const expect = assert.expect;
 
 //#region process
