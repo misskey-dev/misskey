@@ -1171,4 +1171,31 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 	});
+
+	describe('notes/replies', () => {
+		it('自分に閲覧権限のない投稿は含まれない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+			const carol = await signup({ username: 'carol' });
+
+			const alicePost = await post(alice, {
+				text: 'foo'
+			});
+
+			await post(bob, {
+				replyId: alicePost.id,
+				text: 'bar',
+				visibility: 'specified',
+				visibleUserIds: [alice.id]
+			});
+
+			const res = await request('/notes/replies', {
+				noteId: alicePost.id
+			}, carol);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('array');
+			expect(res.body).length(0);
+		}));
+	});
 });
