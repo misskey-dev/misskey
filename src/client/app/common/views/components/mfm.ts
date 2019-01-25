@@ -228,12 +228,24 @@ export default Vue.component('misskey-flavored-markdown', {
 					})];
 				}
 
-				case 'math': {
+				case 'mathInline': {
 					//const MkFormula = () => import('./formula.vue').then(m => m.default);
 					return [createElement(MkFormula, {
 						key: Math.random(),
 						props: {
-							formula: token.node.props.formula
+							formula: token.node.props.formula,
+							block: false
+						}
+					})];
+				}
+
+				case 'mathBlock': {
+					//const MkFormula = () => import('./formula.vue').then(m => m.default);
+					return [createElement(MkFormula, {
+						key: Math.random(),
+						props: {
+							formula: token.node.props.formula,
+							block: true
 						}
 					})];
 				}

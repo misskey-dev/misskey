@@ -87,7 +87,13 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 			return el;
 		},
 
-		math(token) {
+		mathInline(token) {
+			const el = doc.createElement('code');
+			el.textContent = token.node.props.formula;
+			return el;
+		},
+
+		mathBlock(token) {
 			const el = doc.createElement('code');
 			el.textContent = token.node.props.formula;
 			return el;
