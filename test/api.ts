@@ -1198,4 +1198,27 @@ describe('API', () => {
 			expect(res.body).length(0);
 		}));
 	});
+
+	describe('notes/timeline', () => {
+		it('フォロワー限定投稿が含まれる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			await request('/following/create', {
+				userId: alice.id
+			}, bob);
+
+			const alicePost = await post(alice, {
+				text: 'foo',
+				visibility: 'followers'
+			});
+
+			const res = await request('/notes/timeline', {}, bob);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('array');
+			expect(res.body).length(1);
+			expect(res.body[0].id).equals(alicePost.id);
+		}));
+	});
 });
