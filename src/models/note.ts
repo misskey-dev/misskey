@@ -377,43 +377,56 @@ export const pack = async (
 	}
 	//#endregion
 
-	const nyamap: { [x: string]: string } = {
-	//#region nyaize: ja-JP
-		'な': 'にゃ',
-		'ナ': 'ニャ',
-		'ﾅ': 'ﾆｬ'
-	//#endregion
-	};
+	if ((() => { // Recheck syntax
+		const match = _note.text && _note.text.match(/<\/?!?nya>/ig) || [];
+		const stack: string[] = [];
+		for (const tag of [...match]
+			.map(x => x.toLocaleLowerCase()))
+				if (tag.includes('/')) {
+					if (stack.pop() !== tag.replace('/', ''))
+						return false;
+				} else
+					stack.push(tag);
+		return !stack.length;
+	})()) {
+		const nyamap: { [x: string]: string } = {
+		//#region nyaize: ja-JP
+			'な': 'にゃ',
+			'ナ': 'ニャ',
+			'ﾅ': 'ﾆｬ'
+		//#endregion
+		};
 
-	//#region nyaize: ko-KR
-	const diffKoKr = '냐'.charCodeAt(0) - '나'.charCodeAt(0);
-	for (let i = '나'.charCodeAt(0); i < '내'.charCodeAt(0); i++)
-		nyamap[String.fromCharCode(i)] = String.fromCharCode(i + diffKoKr);
-	//#endregion
+		//#region nyaize: ko-KR
+		const diffKoKr = '냐'.charCodeAt(0) - '나'.charCodeAt(0);
+		for (let i = '나'.charCodeAt(0); i < '내'.charCodeAt(0); i++)
+			nyamap[String.fromCharCode(i)] = String.fromCharCode(i + diffKoKr);
+		//#endregion
 
-	const raw: string = _note.text;
-	const stack = [!!_note.user.isCat];
-	if (raw) {
-		_note.text = '';
+		const raw: string = _note.text;
+		const stack = [!!_note.user.isCat];
+		if (raw) {
+			_note.text = '';
 
-		for (let i = 0; i < raw.length; i++) {
-			const head = raw[i];
+			for (let i = 0; i < raw.length; i++) {
+				const head = raw[i];
 
-			if (head === '<') {
-				const [, tag, state] = raw.slice(i).match(/^<((\/?!?)nya>)/i) || [, , , ];
+				if (head === '<') {
+					const [, tag, state] = raw.slice(i).match(/^<((\/?!?)nya>)/i) || [, , , ];
 
-				if (typeof state === 'string') {
-					if (state[0] === '/')
-						stack.shift();
-					else
-						stack.unshift(!state);
+					if (typeof state === 'string') {
+						if (state[0] === '/')
+							stack.shift();
+						else
+							stack.unshift(!state);
 
-					i += tag.length;
-					continue;
+						i += tag.length;
+						continue;
+					}
 				}
-			}
 
-			_note.text += stack[0] && nyamap[head] || head;
+				_note.text += stack[0] && nyamap[head] || head;
+			}
 		}
 	}
 
