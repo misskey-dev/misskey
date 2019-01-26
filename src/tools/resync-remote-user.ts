@@ -24,9 +24,7 @@ if (!acct.match(/^\w+@\w/)) {
 console.log(`resync ${acct}`);
 
 main(acct).then(() => {
-	console.log('success');
-	process.exit(0);
+	console.log('Done');
 }).catch(e => {
 	console.warn(e);
-	process.exit(1);
 });
