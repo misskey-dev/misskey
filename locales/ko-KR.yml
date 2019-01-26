@@ -1148,6 +1148,8 @@ admin/views/users.vue:
   unverify: "공식 계정 해제"
   unverify-confirm: "公式アカウントを解除しますか？"
   unverified: "공식 계정을 해제하였습니다"
+  update-remote-user: "リモートユーザー情報の更新"
+  remote-user-updated: "リモートユーザー情報を更新しました"
   users:
     title: "사용자"
     sort:
