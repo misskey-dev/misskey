@@ -100,20 +100,6 @@ export default class Reversi {
 		return count(WHITE, this.board);
 	}
 
-	/**
-	 * 黒石の比率
-	 */
-	public get blackP() {
-		return this.blackCount == 0 && this.whiteCount == 0 ? 0 : this.blackCount / (this.blackCount + this.whiteCount);
-	}
-
-	/**
-	 * 白石の比率
-	 */
-	public get whiteP() {
-		return this.blackCount == 0 && this.whiteCount == 0 ? 0 : this.whiteCount / (this.blackCount + this.whiteCount);
-	}
-
 	public transformPosToXy(pos: number): number[] {
 		const x = pos % this.mapWidth;
 		const y = Math.floor(pos / this.mapWidth);
