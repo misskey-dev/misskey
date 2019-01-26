@@ -36,9 +36,9 @@ export default Vue.extend({
 	>>> code
 		padding 4px 8px
 		margin 0 0.5em
-		font-size 80%
+		font-size 90%
 		color #525252
-		background rgba(0, 0, 0, 0.05)
+		background var(--bg)
 		border-radius 2px
 
 	>>> pre > code
