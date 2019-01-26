@@ -3,24 +3,25 @@
 	<ui-card>
 		<div slot="title"><fa :icon="faTerminal"/> {{ $t('operation') }}</div>
 		<section class="fit-top">
-			<ui-input v-model="target" type="text" @change="showUser">
+			<ui-input class="target" v-model="target" type="text">
 				<span>{{ $t('username-or-userid') }}</span>
 			</ui-input>
-
 			<ui-button @click="showUser"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 
-			<div v-if="user">
+			<div class="user" v-if="user">
 				<x-user :user='user'/>
-				<ui-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('reset-password') }}</ui-button>
-				<ui-horizon-group>
-					<ui-button @click="verifyUser" :disabled="verifying"><fa :icon="faCertificate"/> {{ $t('verify') }}</ui-button>
-					<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
-				</ui-horizon-group>
-				<ui-horizon-group>
-					<ui-button @click="suspendUser" :disabled="suspending"><fa :icon="faSnowflake"/> {{ $t('suspend') }}</ui-button>
-					<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
-				</ui-horizon-group>
-				<ui-textarea v-if="user" :value="user | json5" readonly tall style="margin-top:16px;"></ui-textarea>
+				<div class="actions">
+					<ui-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('reset-password') }}</ui-button>
+					<ui-horizon-group>
+						<ui-button @click="verifyUser" :disabled="verifying"><fa :icon="faCertificate"/> {{ $t('verify') }}</ui-button>
+						<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
+					</ui-horizon-group>
+					<ui-horizon-group>
+						<ui-button @click="suspendUser" :disabled="suspending"><fa :icon="faSnowflake"/> {{ $t('suspend') }}</ui-button>
+						<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
+					</ui-horizon-group>
+					<ui-textarea v-if="user" :value="user | json5" readonly tall style="margin-top:16px;"></ui-textarea>
+				</div>
 			</div>
 		</section>
 	</ui-card>
@@ -117,6 +118,7 @@ export default Vue.extend({
 	},
 
 	methods: {
+		/** テキストエリアのユーザーを解決する */
 		async fetchUser() {
 			try {
 				return await this.$root.api('users/show', this.target.startsWith('@') ? parseAcct(this.target) : { userId: this.target });
@@ -135,6 +137,7 @@ export default Vue.extend({
 			}
 		},
 
+		/** テキストエリアから処理対象ユーザーを設定する */
 		async showUser() {
 			this.user = null;
 			const user = await this.fetchUser();
@@ -144,8 +147,15 @@ export default Vue.extend({
 			this.target = '';
 		},
 
+		/** 処理対象ユーザーの情報を更新する */
+		async refreshUser() {
+			this.$root.api('admin/show-user', { userId: this.user._id }).then(info => {
+				this.user = info;
+			});
+		},
+
 		async resetPassword() {
-			if (!await this.getConfirmed(this.$t('reset-confirm'))) return;
+			if (!await this.getConfirmed(this.$t('reset-password-confirm'))) return;
 
 			this.$root.api('admin/reset-password', { userId: this.user._id }).then(res => {
 				this.$root.dialog({
@@ -176,7 +186,8 @@ export default Vue.extend({
 			});
 
 			this.verifying = false;
-			this.showUser();
+
+			this.refreshUser();
 		},
 
 		async unverifyUser() {
@@ -200,7 +211,8 @@ export default Vue.extend({
 			});
 
 			this.unverifying = false;
-			this.showUser();
+
+			this.refreshUser();
 		},
 
 		async suspendUser() {
@@ -224,7 +236,8 @@ export default Vue.extend({
 			});
 
 			this.suspending = false;
-			this.showUser();
+
+			this.refreshUser();
 		},
 
 		async unsuspendUser() {
@@ -248,13 +261,15 @@ export default Vue.extend({
 			});
 
 			this.unsuspending = false;
-			this.showUser();
+
+			this.refreshUser();
 		},
 
 		async getConfirmed(text: string): Promise<Boolean> {
 			const confirm = await this.$root.dialog({
 				type: 'warning',
 				showCancelButton: true,
+				title: 'confirm',
 				text,
 			});
 
@@ -284,42 +299,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.kofvwchc
-	display flex
-	padding 16px 0
-	border-top solid 1px var(--faceDivider)
+.target
+	margin-bottom 16px !important
 
-	> div:first-child
-		> a
-			> .avatar
-				width 64px
-				height 64px
+.user
+	margin-top 32px
 
-	> div:last-child
-		flex 1
-		padding-left 16px
-
-		@media (max-width 500px)
-			font-size 14px
-
-		> header
-			> .username
-				margin-left 8px
-				opacity 0.7
-
-			> .is-admin
-			> .is-moderator
-				flex-shrink 0
-				align-self center
-				margin 0 0 0 .5em
-				padding 1px 6px
-				font-size 80%
-				border-radius 3px
-				background var(--noteHeaderAdminBg)
-				color var(--noteHeaderAdminFg)
-
-			> .is-verified
-			> .is-suspended
-				margin 0 0 0 .5em
-				color #4dabf7
+	> .actions
+		margin-left 80px
 </style>
