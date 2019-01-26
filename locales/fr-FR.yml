@@ -1148,6 +1148,8 @@ admin/views/users.vue:
   unverify: "Enlever la vérification du compte"
   unverify-confirm: "公式アカウントを解除しますか？"
   unverified: "Ce compte n'est plus vérifié"
+  update-remote-user: "リモートユーザー情報の更新"
+  remote-user-updated: "リモートユーザー情報を更新しました"
   users:
     title: "Utilisateurs"
     sort:
