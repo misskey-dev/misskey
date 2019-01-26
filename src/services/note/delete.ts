@@ -30,11 +30,24 @@ export default async function(user: IUser, note: INote) {
 			text: null,
 			tags: [],
 			fileIds: [],
+			renoteId: null,
 			poll: null,
 			geo: null,
 			cw: null
 		}
 	});
+
+	if (note.renoteId) {
+		Note.update({ _id: note.renoteId }, {
+			$inc: {
+				renoteCount: -1,
+				score: -1
+			},
+			$pull: {
+				_quoteIds: note._id
+			}
+		});
+	}
 
 	publishNoteStream(note._id, 'deleted', {
 		deletedAt: deletedAt
