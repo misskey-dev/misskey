@@ -20,6 +20,7 @@
 						<ui-button @click="suspendUser" :disabled="suspending"><fa :icon="faSnowflake"/> {{ $t('suspend') }}</ui-button>
 						<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
 					</ui-horizon-group>
+					<ui-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('update-remote-user') }}</ui-button>
 					<ui-textarea v-if="user" :value="user | json5" readonly tall style="margin-top:16px;"></ui-textarea>
 				</div>
 			</div>
@@ -65,7 +66,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import parseAcct from "../../../../misc/acct/parse";
-import { faCertificate, faUsers, faTerminal, faSearch, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faCertificate, faUsers, faTerminal, faSearch, faKey, faSync } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 import XUser from './users.user.vue';
 
@@ -89,7 +90,7 @@ export default Vue.extend({
 			offset: 0,
 			users: [],
 			existMore: false,
-			faTerminal, faCertificate, faUsers, faSnowflake, faSearch, faKey
+			faTerminal, faCertificate, faUsers, faSnowflake, faSearch, faKey, faSync
 		};
 	},
 
@@ -261,6 +262,17 @@ export default Vue.extend({
 			});
 
 			this.unsuspending = false;
+
+			this.refreshUser();
+		},
+
+		async updateRemoteUser() {
+			this.$root.api('admin/update-remote-user', { userId: this.user._id }).then(res => {
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('remote-user-updated')
+				});
+			});
 
 			this.refreshUser();
 		},
