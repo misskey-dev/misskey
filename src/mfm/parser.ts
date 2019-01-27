@@ -102,6 +102,7 @@ const mfm = P.createLanguage({
 		r.hashtag,
 		r.emoji,
 		r.blockCode,
+		r.flip,
 		r.inlineCode,
 		r.quote,
 		r.math,
@@ -173,6 +174,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.url,
 			r.link,
+			r.flip,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -195,6 +197,7 @@ const mfm = P.createLanguage({
 			r.math,
 			r.url,
 			r.link,
+			r.flip,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
@@ -228,6 +231,23 @@ const mfm = P.createLanguage({
 		}),
 	//#endregion
 
+	//#region Flip
+	flip: r =>
+		P.regexp(/<flip>(.+?)<\/flip>/, 1)
+		.map(x => createTree('flip', P.alt(
+			r.big,
+			r.small,
+			r.spin,
+			r.bold,
+			r.strike,
+			r.link,
+			r.italic,
+			r.motion,
+			r.emoji,
+			r.text
+		).atLeast(1).tryParse(x), {})),
+	//#endregion
+
 	//#region Inline code
 	inlineCode: r =>
 		P.regexp(/`([^´\n]+?)`/, 1)
@@ -253,6 +273,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.url,
 			r.link,
+			r.flip,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -325,6 +346,7 @@ const mfm = P.createLanguage({
 			r.emoji,
 			r.url,
 			r.link,
+			r.flip,
 			r.math,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -363,6 +385,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.url,
 			r.link,
+			r.flip,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -385,6 +408,7 @@ const mfm = P.createLanguage({
 				r.motion,
 				r.url,
 				r.link,
+				r.flip,
 				r.mention,
 				r.hashtag,
 				r.emoji,

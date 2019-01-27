@@ -135,6 +135,14 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'flip': {
+					return (createElement as any)('span', {
+						attrs: {
+							style: 'display: inline-block; transform: scaleX(-1);'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'url': {
 					return [createElement(MkUrl, {
 						key: Math.random(),

@@ -244,6 +244,15 @@ describe('MFM', () => {
 			]);
 		});
 
+		it('flip', () => {
+			const tokens = analyze('<flip>foo</flip>');
+			assert.deepStrictEqual(tokens, [
+				tree('flip', [
+					text('flip')
+				], {}),
+			]);
+		});
+
 		it('spin', () => {
 			const tokens = analyze('<spin>:foo:</spin>');
 			assert.deepStrictEqual(tokens, [
