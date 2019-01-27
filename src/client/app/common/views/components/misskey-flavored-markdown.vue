@@ -45,13 +45,4 @@ export default Vue.extend({
 		padding 16px
 		margin 0
 
-	>>> [data-is-me]:after
-		content "you"
-		padding 0 4px
-		margin-left 4px
-		font-size 80%
-		color var(--primaryForeground)
-		background var(--primary)
-		border-radius 4px
-
 </style>
