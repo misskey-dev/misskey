@@ -65,6 +65,7 @@
 		"@types/ms": "0.7.30",
 		"@types/node": "10.12.18",
 		"@types/nodemailer": "4.6.5",
+		"@types/nprogress": "0.0.29",
 		"@types/oauth": "0.9.1",
 		"@types/parsimmon": "1.10.0",
 		"@types/portscanner": "2.1.0",
