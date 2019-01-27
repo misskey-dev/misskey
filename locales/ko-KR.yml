@@ -786,7 +786,7 @@ desktop/views/components/settings.vue:
   deck-nav: "덱 내 탐색"
   deck-nav-desc: "덱을 사용중일 때, 내비게이션이 발생하였을 경우 페이지를 이동하지 않고 일시적으로 임시 칼럼을 생성하도록 합니다."
   keep-cw: "CW 유지"
-  keep-cw-desc: "글에 답글을 달 때, 답글 대상 글에 CW가 설정되어 있는 경우 기본으로 동일한 CW를 설정하도록 합니다."
+  keep-cw-desc: "글에 답글을 달 때, 답글할 글에 CW가 설정되어 있는 경우 기본값으로 동일한 CW를 설정하도록 합니다."
   deck-default: "덱을 기본 UI로 설정"
   display: "디자인 및 표시"
   customize: "홈 커스터마이징"
