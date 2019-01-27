@@ -105,7 +105,8 @@ const mfm = P.createLanguage({
 		r.flip,
 		r.inlineCode,
 		r.quote,
-		r.math,
+		r.mathInline,
+		r.mathBlock,
 		r.search,
 		r.title,
 		r.center,
@@ -123,7 +124,7 @@ const mfm = P.createLanguage({
 			r.mention,
 			r.hashtag,
 			r.emoji,
-			r.math,
+			r.mathInline,
 			r.spin,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -138,7 +139,7 @@ const mfm = P.createLanguage({
 			r.mention,
 			r.hashtag,
 			r.emoji,
-			r.math,
+			r.mathInline,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
@@ -194,7 +195,7 @@ const mfm = P.createLanguage({
 			r.mention,
 			r.hashtag,
 			r.emoji,
-			r.math,
+			r.mathInline,
 			r.url,
 			r.link,
 			r.flip,
@@ -308,10 +309,16 @@ const mfm = P.createLanguage({
 		}),
 	//#endregion
 
-	//#region Math
-	math: r =>
+	//#region Math (inline)
+	mathInline: r =>
 		P.regexp(/\\\((.+?)\\\)/, 1)
-		.map(x => createLeaf('math', { formula: x })),
+		.map(x => createLeaf('mathInline', { formula: x })),
+	//#endregion
+
+	//#region Math (block)
+	mathBlock: r =>
+		P.regexp(/\\\[([\s\S]+?)\\\]/, 1)
+		.map(x => createLeaf('mathBlock', { formula: x.trim() })),
 	//#endregion
 
 	//#region Mention
@@ -347,7 +354,7 @@ const mfm = P.createLanguage({
 			r.url,
 			r.link,
 			r.flip,
-			r.math,
+			r.mathInline,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion

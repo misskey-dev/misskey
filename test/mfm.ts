@@ -901,13 +901,24 @@ describe('MFM', () => {
 			});
 		});
 
-		it('math', () => {
+		it('mathInline', () => {
 			const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}';
-			const text = `\\(${fomula}\\)`;
-			const tokens = analyze(text);
+			const content = `\\(${fomula}\\)`;
+			const tokens = analyze(content);
 			assert.deepStrictEqual(tokens, [
-				leaf('math', { formula: fomula })
+				leaf('mathInline', { formula: fomula })
 			]);
+		});
+
+		describe('mathBlock', () => {
+			it('simple', () => {
+				const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}';
+				const content = `\\[\n${fomula}\n\\]`;
+				const tokens = analyze(content);
+				assert.deepStrictEqual(tokens, [
+					leaf('mathBlock', { formula: fomula })
+				]);
+			});
 		});
 
 		it('search', () => {
