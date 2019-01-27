@@ -894,6 +894,13 @@ describe('MFM', () => {
 					text('after')
 				]);
 			});
+
+			it('ignore multiple title blocks', () => {
+				const tokens = analyze('【foo】bar【baz】');
+				assert.deepStrictEqual(tokens, [
+					text('【foo】bar【baz】')
+				]);
+			});
 		});
 
 		describe('center', () => {
