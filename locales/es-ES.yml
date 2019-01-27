@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "Crear una carpeta"
     upload: "Subir fichero"
     url-upload: "Subir desde una URL"
-desktop/views/components/media-image.vue:
-  sensitive: "El contenido es NSFW (no seguro para ver en el trabajo, 'not safe for work')"
-  click-to-show: "Click para mostrar"
 desktop/views/components/media-video.vue:
   sensitive: "Este contenido no es apropiado para ver en el trabajo"
   click-to-show: "Click para mostrar"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "¡Configuraciones guardadas!"
   failed: "Error al configurar. Por favor asegúrate de que el token es correcto."
   info: "Desde ahora, ingresa el token que se muestra en tu dispositivo adicionalmente a tu contraseña cuando inicies sesión en Misskey"
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "閲覧注意"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
-mobile/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
