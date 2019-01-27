@@ -146,7 +146,7 @@ const mfm = P.createLanguage({
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
 
-	//#region Spin
+	//#region Jump
 	spin: r =>
 		P.regexp(/<spin>(.+?)<\/spin>/, 1)
 		.map(x => createTree('spin', P.alt(
@@ -155,7 +155,7 @@ const mfm = P.createLanguage({
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
 
-	//#region Spin
+	//#region Jump
 	jump: r =>
 		P.regexp(/<jump>(.+?)<\/jump>/, 1)
 		.map(x => createTree('jump', P.alt(
