@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "フォルダー作る"
     upload: "ファイル上げる"
     url-upload: "URLつこうて上げる"
-desktop/views/components/media-image.vue:
-  sensitive: "ちょっと見せられへんわ"
-  click-to-show: "クリックして見せるで"
 desktop/views/components/media-video.vue:
   sensitive: "ちょっと見せられへんわ"
   click-to-show: "クリックして見せるで"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "設定が完了したで！"
   failed: "なんか設定に失敗したで。トークンを間違えとらんか確認してや。"
   info: "次のサインインからは、パスワードに加えてデバイスに出とるトークンを入力してな。"
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/api-settings.vue:
   intro: "API使うんやったらこのトークンを「i」っちゅうパラメータにくっつけてリクエストできるで。"
   caution: "アカウント勝手にいじられるかも知れんから、このトークンは教えたらあかんし、アプリにも書いたらあかんで(これはフリちゃうで)"
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "ちょっと見せられへんわ"
   mark-as-sensitive: "見たらあかん感じにしとく"
   unmark-as-sensitive: "やっぱ見せたるわ"
-mobile/views/components/media-image.vue:
-  sensitive: "見たらあかんで"
-  click-to-show: "押してみ、見せたるわ"
 mobile/views/components/media-video.vue:
   sensitive: "ちょっと見せられへんわ"
   click-to-show: "押してみ、見せたるわ"
