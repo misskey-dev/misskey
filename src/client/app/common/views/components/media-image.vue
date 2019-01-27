@@ -1,25 +1,25 @@
 <template>
-<div class="ldwbgwstjsdgcjruamauqdrffetqudry" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
+<div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
 	<div>
 		<b><fa icon="exclamation-triangle"/> {{ $t('sensitive') }}</b>
 		<span>{{ $t('click-to-show') }}</span>
 	</div>
 </div>
-<a class="lcjomzwbohoelkxsnuqjiaccdbdfiazy" v-else
+<a class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else
 	:href="image.url"
-	@click.prevent="onClick"
 	:style="style"
 	:title="image.name"
+	@click.prevent="onClick"
 ></a>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import ImageViewer from '../../../common/views/components/image-viewer.vue';
+import ImageViewer from './image-viewer.vue';
 
 export default Vue.extend({
-	i18n: i18n('desktop/views/components/media-image.vue'),
+	i18n: i18n('common/views/components/media-image.vue'),
 	props: {
 		image: {
 			type: Object,
@@ -33,12 +33,20 @@ export default Vue.extend({
 		return {
 			hide: true
 		};
-	},
+	}
 	computed: {
 		style(): any {
+			let url = `url(${this.image.thumbnailUrl})`;
+
+			if (this.$store.state.device.loadRemoteMedia || this.$store.state.device.lightmode) {
+				url = null;
+			} else if (this.raw || this.$store.state.device.loadRawImages) {
+				url = `url(${this.image.url})`;
+			}
+
 			return {
 				'background-color': this.image.properties.avgColor && this.image.properties.avgColor.length == 3 ? `rgb(${this.image.properties.avgColor.join(',')})` : 'transparent',
-				'background-image': this.raw ? `url(${this.image.url})` : `url(${this.image.thumbnailUrl})`
+				'background-image': url
 			};
 		}
 	},
@@ -53,7 +61,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.lcjomzwbohoelkxsnuqjiaccdbdfiazy
+.gqnyydlzavusgskkfvwvjiattxdzsqlf
 	display block
 	cursor zoom-in
 	overflow hidden
@@ -63,7 +71,7 @@ export default Vue.extend({
 	background-size contain
 	background-repeat no-repeat
 
-.ldwbgwstjsdgcjruamauqdrffetqudry
+.qjewsnkgzzxlxtzncydssfbgjibiehcy
 	display flex
 	justify-content center
 	align-items center
