@@ -901,6 +901,13 @@ describe('MFM', () => {
 					text('【foo】bar【baz】')
 				]);
 			});
+
+			it('disallow linebreak in title', () => {
+				const tokens = analyze('【foo\nbar】');
+				assert.deepStrictEqual(tokens, [
+					text('【foo\nbar】')
+				]);
+			});
 		});
 
 		describe('center', () => {
