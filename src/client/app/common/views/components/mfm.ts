@@ -135,6 +135,17 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'jump': {
+					motionCount++;
+					const isLong = sumTextsLength(token.children) > 5 || countNodesF(token.children) > 3;
+					const isMany = motionCount > 3;
+					return (createElement as any)('span', {
+						attrs: {
+							style: (this.$store.state.settings.disableAnimatedMfm || isLong || isMany) ? 'display: inline-block;' : 'display: inline-block; animation: jump 0.75s linear infinite;'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'flip': {
 					return (createElement as any)('span', {
 						attrs: {

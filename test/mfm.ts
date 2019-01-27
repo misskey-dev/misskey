@@ -262,6 +262,15 @@ describe('MFM', () => {
 			]);
 		});
 
+		it('jump', () => {
+			const tokens = analyze('<jump>:foo:</jump>');
+			assert.deepStrictEqual(tokens, [
+				tree('jump', [
+					leaf('emoji', { name: 'foo' })
+				], {}),
+			]);
+		});
+
 		describe('motion', () => {
 			it('by triple brackets', () => {
 				const tokens = analyze('(((foo)))');
