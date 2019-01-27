@@ -29,6 +29,10 @@ jobs:
     executor: default
     steps:
       - checkout
+      - run:
+          name: Ensure yarn.lock
+          command: |
+            touch yarn.lock
       - restore_cache:
           name: Restore npm package caches
           keys:
@@ -53,7 +57,7 @@ jobs:
             yarn install
             yarn autoclean
             yarn build
-            [ ! -e yarn.lock ] && touch yarn.lock
+            touch yarn.lock
       - save_cache:
           name: Cache npm packages
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
@@ -87,7 +91,7 @@ jobs:
           name: Test
           command: |
             yarn test
-            [ ! -e yarn.lock ] && touch yarn.lock
+            touch yarn.lock
       - save_cache:
           name: Cache npm packages
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
