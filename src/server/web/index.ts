@@ -20,7 +20,7 @@ import Note, { pack as packNote } from '../../models/note';
 import getNoteSummary from '../../misc/get-note-summary';
 import fetchMeta from '../../misc/fetch-meta';
 import Emoji from '../../models/emoji';
-const pkg = require('../../../package.json');
+import * as pkg from '../../../package.json';
 
 const client = `${__dirname}/../../client/`;
 
