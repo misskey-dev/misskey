@@ -128,9 +128,16 @@ export default Vue.component('misskey-flavored-markdown', {
 					motionCount++;
 					const isLong = sumTextsLength(token.children) > 5 || countNodesF(token.children) > 3;
 					const isMany = motionCount > 3;
+					const direction =
+						token.node.props.attr == 'left' ? 'reverse' :
+						token.node.props.attr == 'alternate' ? 'alternate' :
+						'normal';
+					const style = (this.$store.state.settings.disableAnimatedMfm || isLong || isMany)
+						? ''
+						: `animation: spin 1.5s linear infinite; animation-direction: ${direction};`;
 					return (createElement as any)('span', {
 						attrs: {
-							style: (this.$store.state.settings.disableAnimatedMfm || isLong || isMany) ? 'display: inline-block;' : 'display: inline-block; animation: spin 1.5s linear infinite;'
+							style: 'display: inline-block;' + style
 						},
 					}, genEl(token.children));
 				}

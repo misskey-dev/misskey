@@ -148,12 +148,21 @@ const mfm = P.createLanguage({
 
 	//#region Spin
 	spin: r =>
-		P.regexp(/<spin>(.+?)<\/spin>/, 1)
+		P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^<spin(\s[a-z]+?)?>(.+?)<\/spin>/i);
+			if (!match) return P.makeFailure(i, 'not a spin');
+			return P.makeSuccess(i + match[0].length, {
+				content: match[2], attr: match[1] ? match[1].trim() : null
+			});
+		})
 		.map(x => createTree('spin', P.alt(
 			r.emoji,
 			r.flip,
 			r.text
-		).atLeast(1).tryParse(x), {})),
+		).atLeast(1).tryParse(x.content), {
+			attr: x.attr
+		})),
 	//#endregion
 
 	//#region Jump
