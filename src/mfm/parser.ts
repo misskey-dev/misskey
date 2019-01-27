@@ -91,6 +91,7 @@ const mfm = P.createLanguage({
 	root: r => P.alt(
 		r.big,
 		r.small,
+		r.spin,
 		r.bold,
 		r.strike,
 		r.italic,
@@ -122,6 +123,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.emoji,
 			r.math,
+			r.spin,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
@@ -136,6 +138,15 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.emoji,
 			r.math,
+			r.text
+		).atLeast(1).tryParse(x), {})),
+	//#endregion
+
+	//#region Spin
+	spin: r =>
+		P.regexp(/<spin>(.+?)<\/spin>/, 1)
+		.map(x => createTree('spin', P.alt(
+			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
@@ -173,6 +184,7 @@ const mfm = P.createLanguage({
 		.map(x => createTree('center', P.alt(
 			r.big,
 			r.small,
+			r.spin,
 			r.bold,
 			r.strike,
 			r.italic,
@@ -261,6 +273,7 @@ const mfm = P.createLanguage({
 			return createTree('link', P.alt(
 				r.big,
 				r.small,
+				r.spin,
 				r.bold,
 				r.strike,
 				r.italic,
@@ -304,6 +317,7 @@ const mfm = P.createLanguage({
 		.map(x => createTree('motion', P.alt(
 			r.bold,
 			r.small,
+			r.spin,
 			r.strike,
 			r.italic,
 			r.mention,
@@ -364,6 +378,7 @@ const mfm = P.createLanguage({
 			const contents = P.alt(
 				r.big,
 				r.small,
+				r.spin,
 				r.bold,
 				r.strike,
 				r.italic,

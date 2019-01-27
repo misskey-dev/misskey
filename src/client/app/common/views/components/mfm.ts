@@ -124,6 +124,17 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'spin': {
+					motionCount++;
+					const isLong = sumTextsLength(token.children) > 5 || countNodesF(token.children) > 3;
+					const isMany = motionCount > 3;
+					return (createElement as any)('span', {
+						attrs: {
+							style: (this.$store.state.settings.disableAnimatedMfm || isLong || isMany) ? 'display: inline-block;' : 'display: inline-block; animation: spin 1.5s linear infinite;'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'url': {
 					return [createElement(MkUrl, {
 						key: Math.random(),
