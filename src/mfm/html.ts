@@ -61,6 +61,12 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 			return el;
 		},
 
+		jump(token) {
+			const el = doc.createElement('i');
+			appendChildren(token.children, el);
+			return el;
+		},
+
 		flip(token) {
 			const el = doc.createElement('span');
 			appendChildren(token.children, el);
