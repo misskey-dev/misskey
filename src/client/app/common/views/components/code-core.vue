@@ -1,5 +1,5 @@
 <template>
-<prism :inline="inline" :language="lang">{{ code }}</prism>
+<prism :inline="inline" :language="lang || 'js'">{{ code }}</prism>
 </template>
 
 <script lang="ts">
