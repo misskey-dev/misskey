@@ -358,10 +358,9 @@ const mfm = P.createLanguage({
 	title: r =>
 		newline.then(P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^((【|\[)(.+?)(】|]))(\n|$)/);
+			const match = text.match(/^([【\[]([^【\[】\]\n]+?)[】\]])(\n|$)/);
 			if (!match) return P.makeFailure(i, 'not a title');
-			const q = match[1].trim().substring(1, match[1].length - 1);
-			if (q.includes('】')) return P.makeFailure(i, 'not a title');
+			const q = match[2].trim();
 			const contents = P.alt(
 				r.big,
 				r.small,
