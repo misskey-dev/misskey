@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import 'prismjs';
-import 'prismjs/themes/prism.css';
+import 'prismjs/themes/prism-okaidia.css';
 import Prism from 'vue-prism-component';
 
 export default Vue.extend({
