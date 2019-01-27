@@ -1,5 +1,4 @@
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
+import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
 import { intersperse } from '../prelude/array';
