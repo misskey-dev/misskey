@@ -133,6 +133,7 @@ export default prop => ({
 
 				case 'deleted': {
 					Vue.set(this.$_ns_target, 'deletedAt', body.deletedAt);
+					Vue.set(this.$_ns_target, 'renote', null);
 					this.$_ns_target.text = null;
 					this.$_ns_target.tags = [];
 					this.$_ns_target.fileIds = [];

@@ -1,21 +1,23 @@
 <template>
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
-	<span slot="header">
-		<span :class="$style.title">{{ $t('choose-prompt') }}</span>
-		<span :class="$style.count" v-if="multiple && files.length > 0">({{ $t('chosen-files', { count: files.length }) }})</span>
+	<span slot="header" class="jqiaciqv">
+		<span class="title">{{ $t('choose-prompt') }}</span>
+		<span class="count" v-if="multiple && files.length > 0">({{ $t('chosen-files', { count: files.length }) }})</span>
 	</span>
 
-	<x-drive
-		ref="browser"
-		:class="$style.browser"
-		:multiple="multiple"
-		@selected="onSelected"
-		@change-selection="onChangeSelection"
-	/>
-	<div :class="$style.footer">
-		<button :class="$style.upload" :title="$t('title')" @click="upload"><fa icon="upload"/></button>
-		<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
-		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">{{ $t('ok') }}</button>
+	<div class="rqsvbumu">
+		<x-drive
+			ref="browser"
+			class="browser"
+			:multiple="multiple"
+			@selected="onSelected"
+			@change-selection="onChangeSelection"
+		/>
+		<div class="footer">
+			<button class="upload" :title="$t('title')" @click="upload"><fa icon="upload"/></button>
+			<ui-button inline @click="cancel" style="margin-right:16px;">{{ $t('cancel') }}</ui-button>
+			<ui-button inline primary :disabled="multiple && files.length == 0" @click="ok">{{ $t('ok') }}</ui-button>
+		</div>
 	</div>
 </mk-window>
 </template>
@@ -60,120 +62,67 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" module>
-.title
-	> [data-icon]
-		margin-right 4px
+<style lang="stylus" scoped>
+.jqiaciqv
+	.title
+		> [data-icon]
+			margin-right 4px
 
-.count
-	margin-left 8px
-	opacity 0.7
-
-.browser
-	height calc(100% - 72px)
-
-.footer
-	height 72px
-	background var(--primaryLighten95)
-
-.upload
-	display inline-block
-	position absolute
-	top 8px
-	left 16px
-	cursor pointer
-	padding 0
-	margin 8px 4px 0 0
-	width 40px
-	height 40px
-	font-size 1em
-	color var(--primaryAlpha05)
-	background transparent
-	outline none
-	border solid 1px transparent
-	border-radius 4px
-
-	&:hover
-		background transparent
-		border-color var(--primaryAlpha03)
-
-	&:active
-		color var(--primaryAlpha06)
-		background transparent
-		border-color var(--primaryAlpha05)
-		//box-shadow 0 2px 4px rgba(var(--primaryDarken50), 0.15) inset
-
-	&:focus
-		&:after
-			content ""
-			pointer-events none
-			position absolute
-			top -5px
-			right -5px
-			bottom -5px
-			left -5px
-			border 2px solid var(--primaryAlpha03)
-			border-radius 8px
-
-.ok
-.cancel
-	display block
-	position absolute
-	bottom 16px
-	cursor pointer
-	padding 0
-	margin 0
-	width 120px
-	height 40px
-	font-size 1em
-	outline none
-	border-radius 4px
-
-	&:focus
-		&:after
-			content ""
-			pointer-events none
-			position absolute
-			top -5px
-			right -5px
-			bottom -5px
-			left -5px
-			border 2px solid var(--primaryAlpha03)
-			border-radius 8px
-
-	&:disabled
+	.count
+		margin-left 8px
 		opacity 0.7
-		cursor default
 
-.ok
-	right 16px
-	color var(--primaryForeground)
-	background linear-gradient(to bottom, var(--primaryLighten25) 0%, var(--primaryLighten10) 100%)
-	border solid 1px var(--primaryLighten15)
+.rqsvbumu
+	display flex
+	flex-direction column
+	height 100%
 
-	&:not(:disabled)
-		font-weight bold
+	.browser
+		flex 1
+		overflow auto
 
-	&:hover:not(:disabled)
-		background linear-gradient(to bottom, var(--primaryLighten8) 0%, var(--primaryDarken8) 100%)
-		border-color var(--primary)
+	.footer
+		padding 16px
+		background var(--desktopPostFormBg)
+		text-align right
 
-	&:active:not(:disabled)
-		background var(--primary)
-		border-color var(--primary)
+	.upload
+		display inline-block
+		position absolute
+		top 8px
+		left 16px
+		cursor pointer
+		padding 0
+		margin 8px 4px 0 0
+		width 40px
+		height 40px
+		font-size 1em
+		color var(--primaryAlpha05)
+		background transparent
+		outline none
+		border solid 1px transparent
+		border-radius 4px
 
-.cancel
-	right 148px
-	color #888
-	background linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%)
-	border solid 1px #e2e2e2
+		&:hover
+			background transparent
+			border-color var(--primaryAlpha03)
 
-	&:hover
-		background linear-gradient(to bottom, #f9f9f9 0%, #ececec 100%)
-		border-color #dcdcdc
+		&:active
+			color var(--primaryAlpha06)
+			background transparent
+			border-color var(--primaryAlpha05)
+			//box-shadow 0 2px 4px rgba(var(--primaryDarken50), 0.15) inset
 
-	&:active
-		background #ececec
-		border-color #dcdcdc
+		&:focus
+			&:after
+				content ""
+				pointer-events none
+				position absolute
+				top -5px
+				right -5px
+				bottom -5px
+				left -5px
+				border 2px solid var(--primaryAlpha03)
+				border-radius 8px
 
 </style>

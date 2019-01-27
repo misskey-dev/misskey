@@ -377,8 +377,10 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 			if (note.visibility == 'specified') {
 				for (const u of visibleUsers) {
-					publishHomeTimelineStream(u._id, detailPackedNote);
-					publishHybridTimelineStream(u._id, detailPackedNote);
+					if (!u._id.equals(user._id)) {
+						publishHomeTimelineStream(u._id, detailPackedNote);
+						publishHybridTimelineStream(u._id, detailPackedNote);
+					}
 				}
 			}
 		} else {

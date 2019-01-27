@@ -7,7 +7,7 @@
 		<div :data-count="mediaList.filter(media => previewable(media)).length" ref="grid">
 			<template v-for="media in mediaList">
 				<mk-media-video :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
-				<mk-media-image :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
+				<x-image :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
 			</template>
 		</div>
 	</div>
@@ -17,10 +17,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import XBanner from './media-banner.vue';
+import XImage from './media-image.vue';
 
 export default Vue.extend({
 	components: {
-		XBanner
+		XBanner,
+		XImage
 	},
 	props: {
 		mediaList: {

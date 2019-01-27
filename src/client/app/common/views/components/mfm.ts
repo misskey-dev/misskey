@@ -6,8 +6,8 @@ import MkUrl from './url.vue';
 import MkMention from './mention.vue';
 import { concat, sum } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
+import MkCode from './code.vue';
 import MkGoogle from './google.vue';
-import syntaxHighlight from '../../../../../mfm/syntax-highlight';
 import { host } from '../../../config';
 import { preorderF, countNodesF } from '../../../../../prelude/tree';
 
@@ -124,6 +124,25 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'spin': {
+					motionCount++;
+					const isLong = sumTextsLength(token.children) > 5 || countNodesF(token.children) > 3;
+					const isMany = motionCount > 3;
+					return (createElement as any)('span', {
+						attrs: {
+							style: (this.$store.state.settings.disableAnimatedMfm || isLong || isMany) ? 'display: inline-block;' : 'display: inline-block; animation: spin 1.5s linear infinite;'
+						},
+					}, genEl(token.children));
+				}
+
+				case 'flip': {
+					return (createElement as any)('span', {
+						attrs: {
+							style: 'display: inline-block; transform: scaleX(-1);'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'url': {
 					return [createElement(MkUrl, {
 						key: Math.random(),
@@ -170,21 +189,22 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'blockCode': {
-					return [createElement('pre', {
-						class: 'code'
-					}, [
-						createElement('code', {
-							domProps: {
-								innerHTML: syntaxHighlight(token.node.props.code)
-							}
-						})
-					])];
+					return [createElement(MkCode, {
+						key: Math.random(),
+						props: {
+							code: token.node.props.code,
+							lang: token.node.props.lang,
+						}
+					})];
 				}
 
 				case 'inlineCode': {
-					return [createElement('code', {
-						domProps: {
-							innerHTML: syntaxHighlight(token.node.props.code)
+					return [createElement(MkCode, {
+						key: Math.random(),
+						props: {
+							code: token.node.props.code,
+							lang: token.node.props.lang,
+							inline: true
 						}
 					})];
 				}

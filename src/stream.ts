@@ -87,6 +87,10 @@ class Publisher {
 	public publishApLogStream = (log: any): void => {
 		this.publish('apLog', null, log);
 	}
+
+	public publishAdminStream = (userId: ID, type: string, value?: any): void => {
+		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
 }
 
 const publisher = new Publisher();
@@ -107,3 +111,4 @@ export const publishHybridTimelineStream = publisher.publishHybridTimelineStream
 export const publishGlobalTimelineStream = publisher.publishGlobalTimelineStream;
 export const publishHashtagStream = publisher.publishHashtagStream;
 export const publishApLogStream = publisher.publishApLogStream;
+export const publishAdminStream = publisher.publishAdminStream;

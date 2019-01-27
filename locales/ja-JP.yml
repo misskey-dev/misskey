@@ -730,10 +730,6 @@ desktop/views/components/drive.vue:
     upload: "ファイルをアップロード"
     url-upload: "URLからアップロード"
 
-desktop/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
-
 desktop/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
@@ -979,6 +975,10 @@ desktop/views/components/settings.2fa.vue:
   success: "設定が完了しました！"
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 
 common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
@@ -1266,15 +1266,22 @@ admin/views/users.vue:
   user-not-found: "ユーザーが見つかりません"
   lookup: "照会"
   reset-password: "パスワードをリセット"
+  reset-password-confirm: "パスワードをリセットしますか？"
   password-updated: "パスワードは現在「{password}」です"
   suspend: "凍結"
+  suspend-confirm: "凍結しますか？"
   suspended: "凍結しました"
   unsuspend: "凍結の解除"
+  unsuspend-confirm: "凍結を解除しますか？"
   unsuspended: "凍結を解除しました"
   verify: "公式アカウントにする"
+  verify-confirm: "公式アカウントにしますか？"
   verified: "公式アカウントにしました"
   unverify: "公式アカウントを解除する"
+  unverify-confirm: "公式アカウントを解除しますか？"
   unverified: "公式アカウントを解除しました"
+  update-remote-user: "リモートユーザー情報の更新"
+  remote-user-updated: "リモートユーザー情報を更新しました"
   users:
     title: "ユーザー"
     sort:
@@ -1485,10 +1492,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "閲覧注意"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
-
-mobile/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
 
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"

@@ -91,6 +91,7 @@ const mfm = P.createLanguage({
 	root: r => P.alt(
 		r.big,
 		r.small,
+		r.spin,
 		r.bold,
 		r.strike,
 		r.italic,
@@ -101,6 +102,7 @@ const mfm = P.createLanguage({
 		r.hashtag,
 		r.emoji,
 		r.blockCode,
+		r.flip,
 		r.inlineCode,
 		r.quote,
 		r.mathInline,
@@ -123,6 +125,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.emoji,
 			r.mathInline,
+			r.spin,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
@@ -137,6 +140,15 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.emoji,
 			r.mathInline,
+			r.text
+		).atLeast(1).tryParse(x), {})),
+	//#endregion
+
+	//#region Spin
+	spin: r =>
+		P.regexp(/<spin>(.+?)<\/spin>/, 1)
+		.map(x => createTree('spin', P.alt(
+			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
@@ -163,6 +175,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.url,
 			r.link,
+			r.flip,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -174,6 +187,7 @@ const mfm = P.createLanguage({
 		.map(x => createTree('center', P.alt(
 			r.big,
 			r.small,
+			r.spin,
 			r.bold,
 			r.strike,
 			r.italic,
@@ -184,6 +198,7 @@ const mfm = P.createLanguage({
 			r.mathInline,
 			r.url,
 			r.link,
+			r.flip,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
@@ -217,6 +232,23 @@ const mfm = P.createLanguage({
 		}),
 	//#endregion
 
+	//#region Flip
+	flip: r =>
+		P.regexp(/<flip>(.+?)<\/flip>/, 1)
+		.map(x => createTree('flip', P.alt(
+			r.big,
+			r.small,
+			r.spin,
+			r.bold,
+			r.strike,
+			r.link,
+			r.italic,
+			r.motion,
+			r.emoji,
+			r.text
+		).atLeast(1).tryParse(x), {})),
+	//#endregion
+
 	//#region Inline code
 	inlineCode: r =>
 		P.regexp(/`([^´\n]+?)`/, 1)
@@ -242,6 +274,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.url,
 			r.link,
+			r.flip,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -262,6 +295,7 @@ const mfm = P.createLanguage({
 			return createTree('link', P.alt(
 				r.big,
 				r.small,
+				r.spin,
 				r.bold,
 				r.strike,
 				r.italic,
@@ -311,6 +345,7 @@ const mfm = P.createLanguage({
 		.map(x => createTree('motion', P.alt(
 			r.bold,
 			r.small,
+			r.spin,
 			r.strike,
 			r.italic,
 			r.mention,
@@ -318,6 +353,7 @@ const mfm = P.createLanguage({
 			r.emoji,
 			r.url,
 			r.link,
+			r.flip,
 			r.mathInline,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -356,6 +392,7 @@ const mfm = P.createLanguage({
 			r.hashtag,
 			r.url,
 			r.link,
+			r.flip,
 			r.emoji,
 			r.text
 		).atLeast(1).tryParse(x), {})),
@@ -365,18 +402,20 @@ const mfm = P.createLanguage({
 	title: r =>
 		newline.then(P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^((【|\[)(.+?)(】|]))(\n|$)/);
+			const match = text.match(/^([【\[]([^【\[】\]\n]+?)[】\]])(\n|$)/);
 			if (!match) return P.makeFailure(i, 'not a title');
-			const q = match[1].trim().substring(1, match[1].length - 1);
+			const q = match[2].trim();
 			const contents = P.alt(
 				r.big,
 				r.small,
+				r.spin,
 				r.bold,
 				r.strike,
 				r.italic,
 				r.motion,
 				r.url,
 				r.link,
+				r.flip,
 				r.mention,
 				r.hashtag,
 				r.emoji,
