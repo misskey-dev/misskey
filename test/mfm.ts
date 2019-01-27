@@ -248,7 +248,7 @@ describe('MFM', () => {
 			const tokens = analyze('<flip>foo</flip>');
 			assert.deepStrictEqual(tokens, [
 				tree('flip', [
-					text('flip')
+					text('foo')
 				], {}),
 			]);
 		});
