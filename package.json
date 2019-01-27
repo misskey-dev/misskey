@@ -76,7 +76,7 @@
 		"@types/request-promise-native": "1.0.15",
 		"@types/rimraf": "2.0.2",
 		"@types/seedrandom": "2.4.27",
-		"@types/sharp": "0.21.0",
+		"@types/sharp": "0.21.1",
 		"@types/showdown": "1.9.2",
 		"@types/speakeasy": "2.0.3",
 		"@types/systeminformation": "3.23.1",
