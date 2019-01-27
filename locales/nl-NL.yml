@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "Map creëren"
     upload: "Bestand uploaden"
     url-upload: "Uploaden via URL"
-desktop/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
 desktop/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "Instellen voltooid!"
   failed: "Instellen mislukt. Zorg ervoor dat de sleutel juist is."
   info: "Vanaf nu moet je ook de op je apparaat getoonde sleutel tonen bij het inloggen op Misskey."
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "閲覧注意"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
-mobile/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"

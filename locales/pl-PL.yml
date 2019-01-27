@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "Utwórz katalog"
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
-desktop/views/components/media-image.vue:
-  sensitive: "To jest zawartość NSFW"
-  click-to-show: "Naciśnij aby wyświetlić"
 desktop/views/components/media-video.vue:
   sensitive: "To jest zawartość NSFW"
   click-to-show: "Naciśnij aby wyświetlić"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "Pomyślnie ukończono konfigurację!"
   failed: "Nie udało się skonfigurować uwierzytelniania dwuetapowego, upewnij się że wprowadziłeś prawidłowy token."
   info: "Od teraz, wprowadzaj token wyświetlany na urządzeniu przy każdym logowaniu do Misskey."
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/api-settings.vue:
   intro: "Aby uzyskać dostęp do API, ustaw ten token jako klucz 'i' parametrów żądań."
   caution: "Nie pokazuj tego tokenu osobom trzecim (nie wprowadzaj go nigdzie indziej), aby konto nie trafiło w niepowołane ręce."
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "NSFW"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
-mobile/views/components/media-image.vue:
-  sensitive: "To jest zawartość NSFW"
-  click-to-show: "Naciśnij aby wyświetlić"
 mobile/views/components/media-video.vue:
   sensitive: "To jest zawartość NSFW"
   click-to-show: "Naciśnij aby wyświetlić"

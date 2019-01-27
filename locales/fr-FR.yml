@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "Créer un dossier"
     upload: "Téléverser un fichier"
     url-upload: "Téléverser à partir d’une URL"
-desktop/views/components/media-image.vue:
-  sensitive: "Le contenu est NSFW"
-  click-to-show: "Cliquer pour afficher"
 desktop/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "Sauvegarde des paramètres avec succès !"
   failed: "L’opération a échoué. Veuillez vous assurer que le jeton a été saisi correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
+common/views/components/media-image.vue:
+  sensitive: "Contenu sensible"
+  click-to-show: "Cliquer pour afficher"
 common/views/components/api-settings.vue:
   intro: "Pour accéder à l'API, définissez ce jeton comme la clé de « i » dans les paramètres de requête."
   caution: "Merci de ne pas introduire ce jeton dans aucune application ou le divulguer à quiconque. Ceci risque de compromettre votre compte."
@@ -1134,7 +1134,7 @@ admin/views/users.vue:
   user-not-found: "Utilisateur non trouvé"
   lookup: "Recherche"
   reset-password: "Réinitialiser mot de passe"
-  reset-password-confirm: "パスワードをリセットしますか？"
+  reset-password-confirm: "Souhaitez-vous réinitialiser votre mot de passe ?"
   password-updated: "Le mot de passe est « {password} »"
   suspend: "Suspendre"
   suspend-confirm: "Désirez-vous suspendre ce compte ?"
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "CW"
   mark-as-sensitive: "Marquer comme sensible"
   unmark-as-sensitive: "Ne pas marquer comme sensible"
-mobile/views/components/media-image.vue:
-  sensitive: "Le contenu est NSFW"
-  click-to-show: "Cliquer pour afficher"
 mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"

@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "フォルダーを作成"
     upload: "ファイルをアップロード"
     url-upload: "URLからアップロード"
-desktop/views/components/media-image.vue:
-  sensitive: "NSFW"
-  click-to-show: "クリックして表示"
 desktop/views/components/media-video.vue:
   sensitive: "Innholdet er NSFW"
   click-to-show: "クリックして表示"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "設定が完了しました！"
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "NSFW"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
-mobile/views/components/media-image.vue:
-  sensitive: "NSFW"
-  click-to-show: "クリックして表示"
 mobile/views/components/media-video.vue:
   sensitive: "Innholdet er NSFW"
   click-to-show: "クリックして表示"
