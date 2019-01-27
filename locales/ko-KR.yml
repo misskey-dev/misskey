@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "폴더 만들기"
     upload: "파일 업로드"
     url-upload: "URL에서 업로드"
-desktop/views/components/media-image.vue:
-  sensitive: "열람주의"
-  click-to-show: "클릭하여 표시"
 desktop/views/components/media-video.vue:
   sensitive: "열람주의"
   click-to-show: "클릭하여 표시"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "설정이 완료되었습니다!"
   failed: "설정에 실패했습니다. 토큰이 잘못되었는지 확인해주십시오."
   info: "다음 로그인부터는 이와 동일하게 비밀번호에 더해 장치에 표시된 토큰을 입력합니다."
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/api-settings.vue:
   intro: "API를 사용하려면 위의 토큰을 \"i\" 라는 키의 값으로 매개변수를 추가하여 요청합니다."
   caution: "계정을 부정 사용할 가능성이 있으므로, 이 토큰은 제 3자에게 알려주지 마십시오 (앱 등에 붙여넣지 마십시오)."
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "열람주의"
   mark-as-sensitive: "열람주의로 설정"
   unmark-as-sensitive: "열람주의 해제"
-mobile/views/components/media-image.vue:
-  sensitive: "열람주의"
-  click-to-show: "클릭하여 표시"
 mobile/views/components/media-video.vue:
   sensitive: "열람주의"
   click-to-show: "클릭하여 표시"
