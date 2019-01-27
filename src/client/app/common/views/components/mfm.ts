@@ -6,8 +6,8 @@ import MkUrl from './url.vue';
 import MkMention from './mention.vue';
 import { concat, sum } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
+import MkCode from './code.vue';
 import MkGoogle from './google.vue';
-import syntaxHighlight from '../../../../../mfm/syntax-highlight';
 import { host } from '../../../config';
 import { preorderF, countNodesF } from '../../../../../prelude/tree';
 
@@ -170,21 +170,22 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'blockCode': {
-					return [createElement('pre', {
-						class: 'code'
-					}, [
-						createElement('code', {
-							domProps: {
-								innerHTML: syntaxHighlight(token.node.props.code)
-							}
-						})
-					])];
+					return [createElement(MkCode, {
+						key: Math.random(),
+						props: {
+							code: token.node.props.code,
+							lang: token.node.props.lang,
+						}
+					})];
 				}
 
 				case 'inlineCode': {
-					return [createElement('code', {
-						domProps: {
-							innerHTML: syntaxHighlight(token.node.props.code)
+					return [createElement(MkCode, {
+						key: Math.random(),
+						props: {
+							code: token.node.props.code,
+							lang: token.node.props.lang,
+							inline: true
 						}
 					})];
 				}
