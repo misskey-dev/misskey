@@ -149,6 +149,7 @@ const mfm = P.createLanguage({
 		P.regexp(/<spin>(.+?)<\/spin>/, 1)
 		.map(x => createTree('spin', P.alt(
 			r.emoji,
+			r.flip,
 			r.text
 		).atLeast(1).tryParse(x), {})),
 	//#endregion
