@@ -1,7 +1,6 @@
 import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
-import { intersperse } from '../prelude/array';
 import { MfmForest, MfmTree } from './parser';
 
 export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
@@ -156,11 +155,13 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 
 		text(token) {
 			const el = doc.createElement('span');
-			const nodes = (token.node.props.text as string).split('\n').map(x => doc.createTextNode(x));
+			const nodes = (token.node.props.text as string)
+				.split('\n')
+				.map(x => doc.createTextNode(x))
+				.reduce<Node[]>((a, c) => a ? [...a, doc.createElement('br'), c] : [c], undefined);
 
-			for (const x of intersperse('br', nodes)) {
-				el.appendChild(x === 'br' ? doc.createElement('br') : x);
-			}
+			for (const x of nodes)
+				el.appendChild(x);
 
 			return el;
 		},
