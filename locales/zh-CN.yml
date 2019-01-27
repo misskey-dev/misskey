@@ -658,9 +658,6 @@ desktop/views/components/drive.vue:
     create-folder: "创建文件夹"
     upload: "上传文件"
     url-upload: "从URL上传"
-desktop/views/components/media-image.vue:
-  sensitive: "阅读注意"
-  click-to-show: "点击以显示"
 desktop/views/components/media-video.vue:
   sensitive: "阅读注意"
   click-to-show: "点击以显示"
@@ -875,6 +872,9 @@ desktop/views/components/settings.2fa.vue:
   success: "设置完成"
   failed: "设置失败, 请确保您的密钥是正确的。"
   info: "从下次登录Misskey时，您的设备上显示的令牌以及密码也是必需的。"
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
 common/views/components/api-settings.vue:
   intro: "要访问API，请将此标记设置为请求参数的关键字“i”。"
   caution: "请勿将此令牌输入任何应用，也不要将此令牌告诉其他人，否则您的账户可能会受到损害。"
@@ -1329,9 +1329,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "阅读注意"
   mark-as-sensitive: "标记为“敏感”"
   unmark-as-sensitive: "取消标记为“敏感”"
-mobile/views/components/media-image.vue:
-  sensitive: "阅读注意"
-  click-to-show: "点击以显示"
 mobile/views/components/media-video.vue:
   sensitive: "阅读注意"
   click-to-show: "点击以显示"
