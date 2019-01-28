@@ -322,7 +322,7 @@ export default async function(
 				if (type) {
 					res([type.mime, type.ext]);
 				} else if (isSvg(buffer)) {
-					res(['image/svg+xml', 'svg'])
+					res(['image/svg+xml', 'svg']);
 				} else {
 					// 種類が同定できなかったら application/octet-stream にする
 					res(['application/octet-stream', null]);
