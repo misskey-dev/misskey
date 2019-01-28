@@ -119,7 +119,7 @@
 		"feed": "2.0.2",
 		"file-type": "10.7.0",
 		"fuckadblock": "3.2.1",
-		"gulp": "3.9.1",
+		"gulp": "4.0.0",
 		"gulp-cssnano": "2.1.3",
 		"gulp-imagemin": "4.1.0",
 		"gulp-mocha": "6.0.0",
