@@ -2,6 +2,7 @@ import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
 import { MfmForest, MfmTree } from './parser';
+import { intersperse } from '../prelude/array';
 
 export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
 	if (tokens == null) {
@@ -155,13 +156,11 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 
 		text(token) {
 			const el = doc.createElement('span');
-			const nodes = (token.node.props.text as string)
-				.split('\n')
-				.map(x => doc.createTextNode(x))
-				.reduce<Node[]>((a, c) => a ? [...a, doc.createElement('br'), c] : [c], undefined);
+			const nodes = (token.node.props.text as string).split('\n').map(x => doc.createTextNode(x) as Node);
 
-			for (const x of nodes)
+			for (const x of intersperse(doc.createElement('br') , nodes)) {
 				el.appendChild(x);
+			}
 
 			return el;
 		},
