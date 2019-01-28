@@ -1,8 +1,8 @@
 import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
-import { MfmForest, MfmTree } from './parser';
 import { intersperse } from '../prelude/array';
+import { MfmForest, MfmTree } from './parser';
 
 export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
 	if (tokens == null) {
