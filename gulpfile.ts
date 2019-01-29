@@ -104,7 +104,6 @@ gulp.task('cleanall', ['clean'], cb =>
 gulp.task('default', ['build']);
 
 gulp.task('build:client', [
-	'build:ts',
 	'build:client:script',
 	'build:client:styles',
 	'copy:client'
@@ -130,9 +129,7 @@ gulp.task('build:client:styles', () =>
 		.pipe(gulp.dest('./built/client/assets/'))
 );
 
-gulp.task('copy:client', [
-	'build:client:script'
-], () =>
+gulp.task('copy:client', () =>
 		gulp.src([
 			'./assets/**/*',
 			'./src/client/assets/**/*',
