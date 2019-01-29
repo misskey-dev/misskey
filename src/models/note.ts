@@ -140,6 +140,12 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 			hide = true;
 		} else if (meId.equals(packedNote.userId)) {
 			hide = false;
+		} else if (packedNote.reply && meId.equals(packedNote.reply.userId)) {
+			// 自分の投稿に対するリプライ
+			hide = false;
+		} else if (packedNote.mentions && packedNote.mentions.some((id: any) => meId.equals(id))) {
+			// 自分へのメンション
+			hide = false;
 		} else {
 			// フォロワーかどうか
 			const following = await Following.findOne({
