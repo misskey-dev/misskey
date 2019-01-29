@@ -53,14 +53,23 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const visibleQuery = [{
 		visibility: { $in: [ 'public', 'home' ] }
 	}, {
-		// myself (for specified/private)
+		// myself (for followers/specified/private)
 		userId: user._id
 	}, {
 		// to me (for specified)
 		visibleUserIds: { $in: [ user._id ] }
 	}, {
 		visibility: 'followers',
-		userId: { $in: followings.map(f => f.id) }
+		$or: [{
+			// フォロワーの投稿
+			userId: { $in: followings.map(f => f.id) },
+		}, {
+			// 自分の投稿へのリプライ
+			'_reply.userId': user._id,
+		}, {
+			// 自分へのメンションが含まれている
+			mentions: { $in: [ user._id ] }
+		}]
 	}];
 
 	const query = {
