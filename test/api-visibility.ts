@@ -547,38 +547,10 @@ describe('API visibility', () => {
 		//#endregion
 
 		//#region MTL
-		it('[MTL] public-reply が 非フォロワー (リプライ先ではない) から見れる', async(async () => {
-			const res = await request('/notes/mentions', { noteId: tgt.id, limit: 100 }, other);
-			expect(res).have.status(200);
-			const notes = res.body.filter((n: any) => n.id == pubR.id);
-			expect(notes).length(0);
-		}));
-
-		it('[MTL] followers-reply が 非フォロワー (リプライ先ではない) から見れない', async(async () => {
-			const res = await request('/notes/mentions', { noteId: tgt.id, limit: 100 }, other);
-			expect(res).have.status(200);
-			const notes = res.body.filter((n: any) => n.id == folR.id);
-			expect(notes).length(0);
-		}));
-
 		it('[MTL] followers-reply が 非フォロワー (リプライ先である) から見れない', async(async () => {
 			const res = await request('/notes/mentions', { noteId: tgt.id, limit: 100 }, target);
 			expect(res).have.status(200);
 			const notes = res.body.filter((n: any) => n.id == folR.id);
-			expect(notes).length(0);
-		}));
-
-		it('[MTL] public-mention が 非フォロワー (メンション先ではない) から見れる', async(async () => {
-			const res = await request('/notes/mentions', { noteId: tgt.id, limit: 100 }, other);
-			expect(res).have.status(200);
-			const notes = res.body.filter((n: any) => n.id == pubM.id);
-			expect(notes).length(0);
-		}));
-
-		it('[MTL] followers-mention が 非フォロワー (メンション先ではない) から見れない', async(async () => {
-			const res = await request('/notes/mentions', { noteId: tgt.id, limit: 100 }, other);
-			expect(res).have.status(200);
-			const notes = res.body.filter((n: any) => n.id == folM.id);
 			expect(notes).length(0);
 		}));
 
