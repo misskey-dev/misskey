@@ -32,14 +32,6 @@ if (isDebug) {
 	console.warn(chalk.yellow.bold('         built script will not be compressed.'));
 }
 
-gulp.task('build', gulp.parallel(
-	'build:ts',
-	'build:copy',
-	'build:client',
-	'locales',
-	'doc'
-));
-
 gulp.task('build:ts', () => {
 	const tsProject = ts.createProject('./tsconfig.json');
 
@@ -66,8 +58,6 @@ gulp.task('build:copy', gulp.parallel('build:copy:views', () =>
 	]).pipe(gulp.dest('./built/'))
 ));
 
-gulp.task('test', gulp.task('mocha'));
-
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
 		.pipe(tslint({
@@ -93,20 +83,14 @@ gulp.task('mocha', () =>
 		} as any))
 );
 
+gulp.task('test', gulp.task('mocha'));
+
 gulp.task('clean', cb =>
 	rimraf('./built', cb)
 );
 
 gulp.task('cleanall', gulp.parallel('clean', cb =>
 	rimraf('./node_modules', cb)
-));
-
-gulp.task('default', gulp.task('build'));
-
-gulp.task('build:client', gulp.parallel(
-	'build:client:script',
-	'build:client:styles',
-	'copy:client'
 ));
 
 gulp.task('build:client:script', () => {
@@ -154,3 +138,19 @@ gulp.task('doc', () =>
 		.pipe((cssnano as any)())
 		.pipe(gulp.dest('./built/docs/assets/'))
 );
+
+gulp.task('build:client', gulp.parallel(
+	'build:client:script',
+	'build:client:styles',
+	'copy:client'
+));
+
+gulp.task('build', gulp.parallel(
+	'build:ts',
+	'build:copy',
+	'build:client',
+	'locales',
+	'doc'
+));
+
+gulp.task('default', gulp.task('build'));
