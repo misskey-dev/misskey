@@ -1097,8 +1097,8 @@ describe('MFM', () => {
 			assert.equal(toHtml(analyze(input)), output);
 		});
 
-		it('br with CRLF', () => {
-			const input = 'foo\r\nbar\r\nbaz';
+		it('br alt', () => {
+			const input = 'foo\r\nbar\rbaz';
 			const output = '<p><span>foo<br>bar<br>baz</span></p>';
 			assert.equal(toHtml(analyze(input)), output);
 		});
