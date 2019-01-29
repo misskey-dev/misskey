@@ -1,8 +1,8 @@
 ---
-name: Feature request
+name: Client-side Feature Request
 about: Suggest an idea for this project
 title: ''
-labels: feature
+labels: ''
 assignees: ''
 
 ---

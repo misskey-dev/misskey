@@ -1,8 +1,8 @@
 ---
-name: Feature request
+name: Server-side Feature request
 about: Suggest an idea for this project
 title: ''
-labels: feature
+labels: feature, server-side
 assignees: ''
 
 ---
