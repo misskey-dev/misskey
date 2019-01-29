@@ -157,7 +157,7 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 
 		text(token) {
 			const el = doc.createElement('span');
-			const nodes = (token.node.props.text as string).split('\n').map(x => doc.createTextNode(x));
+			const nodes = (token.node.props.text as string).split(/\r\n|\r|\n/).map(x => doc.createTextNode(x));
 
 			for (const x of intersperse('br', nodes)) {
 				el.appendChild(x === 'br' ? doc.createElement('br') : x);
