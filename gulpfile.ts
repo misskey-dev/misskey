@@ -47,6 +47,7 @@ gulp.task('build:ts', () => {
 		.src()
 		.pipe(sourcemaps.init())
 		.pipe(tsProject())
+		.on('error', () => {})
 		.pipe(sourcemaps.write('.', { includeContent: false, sourceRoot: '../built' }))
 		.pipe(gulp.dest('./built/'));
 });
