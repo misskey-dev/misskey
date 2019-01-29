@@ -2,7 +2,7 @@
 name: Client-side Feature Request
 about: Suggest an idea for this project
 title: ''
-labels: ''
+labels: client-side, feature
 assignees: ''
 
 ---
