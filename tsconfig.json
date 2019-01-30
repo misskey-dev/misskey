@@ -15,7 +15,8 @@
     "noLib": false,
     "strict": true,
     "strictNullChecks": false,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true
   },
   "compileOnSave": false,
   "include": [

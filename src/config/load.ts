@@ -7,7 +7,7 @@ import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
 import * as isUrl from 'is-url';
-const pkg = require('../../package.json');
+import * as pkg from '../../package.json';
 
 /**
  * Path of configuration directory
