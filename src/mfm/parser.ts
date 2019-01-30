@@ -28,7 +28,7 @@ const newline = P((input, i) => {
 	}
 });
 
-const mfm = P.createLanguage({
+export const mfmLanguage = P.createLanguage({
 	root: r => P.alt(
 		r.big,
 		r.small,
@@ -413,5 +413,3 @@ const mfm = P.createLanguage({
 		.map(x => createLeaf('url', { url: x })),
 	//#endregion
 });
-
-export default mfm;

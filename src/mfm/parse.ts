@@ -1,19 +1,19 @@
-import parser from './parser';
+import { mfmLanguage } from './parser';
 import { MfmForest } from './types';
 import { normalize } from './normalize';
 
-export default (source: string): MfmForest => {
+export function parse(source: string): MfmForest {
 	if (source == null || source == '') {
 		return null;
 	}
 
-	return normalize(parser.root.tryParse(source));
-};
+	return normalize(mfmLanguage.root.tryParse(source));
+}
 
 export function parsePlain(source: string): MfmForest {
 	if (source == null || source == '') {
 		return null;
 	}
 
-	return normalize(parser.plain.tryParse(source));
+	return normalize(mfmLanguage.plain.tryParse(source));
 }

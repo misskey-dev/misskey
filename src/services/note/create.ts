@@ -13,7 +13,7 @@ import notify from '../../notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
 import Mute from '../../models/mute';
-import parse from '../../mfm/parse';
+import { parse } from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';

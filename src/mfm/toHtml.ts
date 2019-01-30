@@ -5,7 +5,7 @@ import { INote } from '../models/note';
 import { intersperse } from '../prelude/array';
 import { MfmForest, MfmTree } from './types';
 
-export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
+export function toHtml(tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) {
 	if (tokens == null) {
 		return null;
 	}
@@ -184,4 +184,4 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 	appendChildren(tokens, doc.body);
 
 	return `<p>${doc.body.innerHTML}</p>`;
-};
+}

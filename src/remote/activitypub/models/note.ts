@@ -9,7 +9,7 @@ import { INote as INoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
-import fromHtml from '../../../mfm/fromHtml';
+import { fromHtml } from '../../../mfm/fromHtml';
 import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
