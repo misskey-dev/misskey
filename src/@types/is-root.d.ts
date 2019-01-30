@@ -1,5 +1,5 @@
-declare module 'is-root' {
-	function isRoot(): boolean;
+declare module 'is-root';
 
-	export default isRoot;
+declare namespace isRoot {
+	export function isRoot(): boolean;
 }
