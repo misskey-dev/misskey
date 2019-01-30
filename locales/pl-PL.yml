@@ -350,12 +350,12 @@ common/views/components/note-menu.vue:
   delete-confirm: "Czy na pewno chcesz usunąć ten wpis?"
   remote: "Pokaż oryginał"
 common/views/components/user-menu.vue:
-  mention: "メンション"
+  mention: "Wspomnij"
   mute: "ミュート"
   unmute: "ミュート解除"
   block: "ブロック"
   unblock: "ブロック解除"
-  push-to-list: "リストに追加"
+  push-to-list: "Dodaj do listy"
   select-list: "リストを選択してください"
   report-abuse: "スパムを報告"
   report-abuse-detail: "どのような迷惑行為を行っていますか？"
@@ -1263,7 +1263,7 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "Brak zdjęć"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Śledzi Cię"
-  menu: "メニュー"
+  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
