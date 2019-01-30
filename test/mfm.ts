@@ -13,7 +13,7 @@ import * as assert from 'assert';
 import { parse, parsePlain } from '../src/mfm/parse';
 import { toHtml } from '../src/mfm/toHtml';
 import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/types';
-import { removeOrphanedBrackets } from '../src/mfm/parser';
+import { removeOrphanedBrackets } from '../src/mfm/language';
 
 function text(text: string): MfmTree {
 	return leaf('text', { text });
