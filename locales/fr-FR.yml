@@ -1142,6 +1142,8 @@ admin/views/users.vue:
   unsuspend: "Suspension levée"
   unsuspend-confirm: "Souhaiteriez-vous ne plus suspendre ce compte ?"
   unsuspended: "La suspension de l’utilisateur a été levée avec succès"
+  make-silence: "サイレンス"
+  unmake-silence: "サイレンスの解除"
   verify: "Vérification du compte"
   verify-confirm: "Souhaiteriez-vous rendre votre compte comme étant un compte vérifié ?"
   verified: "Le compte a été vérifié"
