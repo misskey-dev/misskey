@@ -593,7 +593,7 @@ desktop/views/components/calendar.vue:
   title: "{year}년 {month}월"
   prev: "이전 달"
   next: "다음 달"
-  go: "클릭 하 여 시간 회귀"
+  go: "클릭하여 시간역행"
 desktop/views/components/choose-file-from-drive-window.vue:
   chosen-files: "{count} 파일 선택중"
   upload: "PC에서 드라이브에 파일을 업로드"
