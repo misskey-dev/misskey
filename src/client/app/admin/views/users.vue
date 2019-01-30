@@ -17,7 +17,7 @@
 						<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
 					</ui-horizon-group>
 					<ui-horizon-group>
-						<ui-button @click="silenceUser"><fa :icon="faSnowflake"/> {{ $t('make-silence') }}</ui-button>
+						<ui-button @click="silenceUser"><fa :icon="faMicrophoneSlash"/> {{ $t('make-silence') }}</ui-button>
 						<ui-button @click="unsilenceUser">{{ $t('unmake-silence') }}</ui-button>
 					</ui-horizon-group>
 					<ui-horizon-group>
@@ -70,7 +70,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import parseAcct from "../../../../misc/acct/parse";
-import { faCertificate, faUsers, faTerminal, faSearch, faKey, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faCertificate, faUsers, faTerminal, faSearch, faKey, faSync, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 import XUser from './users.user.vue';
 
@@ -94,7 +94,7 @@ export default Vue.extend({
 			offset: 0,
 			users: [],
 			existMore: false,
-			faTerminal, faCertificate, faUsers, faSnowflake, faSearch, faKey, faSync
+			faTerminal, faCertificate, faUsers, faSnowflake, faSearch, faKey, faSync, faMicrophoneSlash
 		};
 	},
 
