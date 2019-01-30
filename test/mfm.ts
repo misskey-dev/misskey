@@ -12,7 +12,8 @@ import * as assert from 'assert';
 
 import analyze from '../src/mfm/parse';
 import toHtml from '../src/mfm/html';
-import { createTree as tree, createLeaf as leaf, MfmTree, removeOrphanedBrackets } from '../src/mfm/parser';
+import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/types';
+import { removeOrphanedBrackets } from '../src/mfm/parser';
 
 function text(text: string): MfmTree {
 	return leaf('text', { text });

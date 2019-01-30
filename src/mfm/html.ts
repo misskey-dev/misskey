@@ -3,7 +3,7 @@ const { JSDOM } = jsdom;
 import config from '../config';
 import { INote } from '../models/note';
 import { intersperse } from '../prelude/array';
-import { MfmForest, MfmTree } from './parser';
+import { MfmForest, MfmTree } from './types';
 
 export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
 	if (tokens == null) {
