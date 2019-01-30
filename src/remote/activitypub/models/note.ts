@@ -9,7 +9,7 @@ import { INote as INoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
-import htmlToMFM from '../../../mfm/html-to-mfm';
+import fromHtml from '../../../mfm/fromHtml';
 import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag } from './tag';
 import { toUnicode } from 'punycode';
@@ -110,7 +110,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
+	const text = note._misskey_content ? note._misskey_content : fromHtml(note.content);
 
 	// vote
 	if (reply && reply.poll && text != null) {
