@@ -1,7 +1,7 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
 import Following from '../../models/following';
 import { publishMainStream } from '../../stream';
-import pack from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
@@ -48,7 +48,7 @@ export default async function(follower: IUser, followee: IUser) {
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {
-		const content = pack(renderUndo(renderFollow(follower, followee), follower));
+		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
 	}
 }
