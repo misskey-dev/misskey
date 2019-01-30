@@ -1142,6 +1142,8 @@ admin/views/users.vue:
   unsuspend: "정지 해제"
   unsuspend-confirm: "정지를 해제하시겠습니까?"
   unsuspended: "정지를 해제하였습니다"
+  make-silence: "サイレンス"
+  unmake-silence: "サイレンスの解除"
   verify: "공식 계정으로 설정"
   verify-confirm: "공식 계정으로 설정하시겠습니까?"
   verified: "공식 계정으로 설정하였습니다"
