@@ -2,7 +2,7 @@ import { request } from 'https';
 const { sign } = require('http-signature');
 import { URL } from 'url';
 import * as debug from 'debug';
-const crypto = require('crypto');
+import * as crypto from 'crypto';
 const { lookup } = require('lookup-dns-cache');
 const promiseAny = require('promise-any');
 
