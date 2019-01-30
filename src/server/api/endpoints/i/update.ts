@@ -6,7 +6,7 @@ import acceptAllFollowRequests from '../../../../services/following/requests/acc
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
-import parse from '../../../../mfm/parse';
+import parse, { parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
 const langmap = require('langmap');
 
@@ -206,7 +206,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		let emojis = [] as string[];
 
 		if (updates.name != null) {
-			const tokens = parse(updates.name, true);
+			const tokens = parsePlain(updates.name);
 			emojis = emojis.concat(extractEmojis(tokens));
 		}
 

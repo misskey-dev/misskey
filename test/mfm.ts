@@ -10,7 +10,7 @@
 
 import * as assert from 'assert';
 
-import analyze from '../src/mfm/parse';
+import analyze, { parsePlain } from '../src/mfm/parse';
 import toHtml from '../src/mfm/toHtml';
 import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/types';
 import { removeOrphanedBrackets } from '../src/mfm/parser';
@@ -1093,21 +1093,21 @@ describe('MFM', () => {
 
 	describe('plainText', () => {
 		it('text', () => {
-			const tokens = analyze('foo', true);
+			const tokens = parsePlain('foo');
 			assert.deepStrictEqual(tokens, [
 				text('foo'),
 			]);
 		});
 
 		it('emoji', () => {
-			const tokens = analyze(':foo:', true);
+			const tokens = parsePlain(':foo:');
 			assert.deepStrictEqual(tokens, [
 				leaf('emoji', { name: 'foo' })
 			]);
 		});
 
 		it('emoji in text', () => {
-			const tokens = analyze('foo:bar:baz', true);
+			const tokens = parsePlain('foo:bar:baz');
 			assert.deepStrictEqual(tokens, [
 				text('foo'),
 				leaf('emoji', { name: 'bar' }),
@@ -1116,7 +1116,7 @@ describe('MFM', () => {
 		});
 
 		it('disallow other syntax', () => {
-			const tokens = analyze('foo **bar** baz', true);
+			const tokens = parsePlain('foo **bar** baz');
 			assert.deepStrictEqual(tokens, [
 				text('foo **bar** baz'),
 			]);
