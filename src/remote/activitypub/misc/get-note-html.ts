@@ -1,5 +1,5 @@
 import { INote } from '../../../models/note';
-import toHtml from '../../../mfm/html';
+import toHtml from '../../../mfm/toHtml';
 import parse from '../../../mfm/parse';
 
 export default function(note: INote) {
