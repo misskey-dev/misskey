@@ -6,7 +6,7 @@ import { ObjectID } from 'bson';
 import Emoji from '../../../models/emoji';
 import { toMastodonEmojis } from './emoji';
 import fetchMeta from '../../../misc/fetch-meta';
-import * as pkg from '../../package.json';
+import * as pkg from '../../../package.json';
 
 // Init router
 const router = new Router();
