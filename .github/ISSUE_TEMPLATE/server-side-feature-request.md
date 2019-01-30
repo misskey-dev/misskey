@@ -1,5 +1,5 @@
 ---
-name: Server-side Feature request
+name: Server-side Feature Request
 about: Suggest an idea for this project
 title: ''
 labels: feature, server-side
