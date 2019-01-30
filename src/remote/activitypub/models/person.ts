@@ -9,7 +9,7 @@ import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
-import htmlToMFM from '../../../mfm/html-to-mfm';
+import fromHtml from '../../../mfm/fromHtml';
 import usersChart from '../../../chart/users';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
@@ -150,7 +150,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
 			lastFetchedAt: new Date(),
-			description: htmlToMFM(person.summary),
+			description: fromHtml(person.summary),
 			followersCount,
 			followingCount,
 			notesCount,
@@ -340,7 +340,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		featured: person.featured,
 		emojis: emojiNames,
-		description: htmlToMFM(person.summary),
+		description: fromHtml(person.summary),
 		followersCount,
 		followingCount,
 		notesCount,
@@ -463,7 +463,7 @@ export function analyzeAttachments(attachments: ITag[]) {
 			else
 				fields.push({
 					name: attachment.name,
-					value: htmlToMFM(attachment.value)
+					value: fromHtml(attachment.value)
 				});
 
 	return { fields, services };
