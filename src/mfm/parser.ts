@@ -28,29 +28,6 @@ const newline = P((input, i) => {
 	}
 });
 
-export const plainParser = P.createLanguage({
-	root: r => P.alt(
-		r.emoji,
-		r.text
-	).atLeast(1),
-
-	text: () => P.any.map(x => createLeaf('text', { text: x })),
-
-	//#region Emoji
-	emoji: r =>
-		P.alt(
-			P.regexp(/:([a-z0-9_+-]+):/i, 1)
-			.map(x => createLeaf('emoji', {
-				name: x
-			})),
-			P.regexp(emojiRegex)
-			.map(x => createLeaf('emoji', {
-				emoji: x
-			})),
-		),
-	//#endregion
-});
-
 const mfm = P.createLanguage({
 	root: r => P.alt(
 		r.big,
@@ -75,6 +52,11 @@ const mfm = P.createLanguage({
 		r.search,
 		r.title,
 		r.center,
+		r.text
+	).atLeast(1),
+
+	plain: r => P.alt(
+		r.emoji,
 		r.text
 	).atLeast(1),
 

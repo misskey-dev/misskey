@@ -1091,6 +1091,38 @@ describe('MFM', () => {
 		});
 	});
 
+	describe('plainText', () => {
+		it('text', () => {
+			const tokens = analyze('foo', true);
+			assert.deepStrictEqual(tokens, [
+				text('foo'),
+			]);
+		});
+
+		it('emoji', () => {
+			const tokens = analyze(':foo:', true);
+			assert.deepStrictEqual(tokens, [
+				leaf('emoji', { name: 'foo' })
+			]);
+		});
+
+		it('emoji in text', () => {
+			const tokens = analyze('foo:bar:baz', true);
+			assert.deepStrictEqual(tokens, [
+				text('foo'),
+				leaf('emoji', { name: 'bar' }),
+				text('baz'),
+			]);
+		});
+
+		it('disallow other syntax', () => {
+			const tokens = analyze('foo **bar** baz', true);
+			assert.deepStrictEqual(tokens, [
+				text('foo **bar** baz'),
+			]);
+		});
+	});
+
 	describe('toHtml', () => {
 		it('br', () => {
 			const input = 'foo\nbar\nbaz';
