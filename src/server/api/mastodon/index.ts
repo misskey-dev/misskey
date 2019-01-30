@@ -6,6 +6,7 @@ import { ObjectID } from 'bson';
 import Emoji from '../../../models/emoji';
 import { toMastodonEmojis } from './emoji';
 import fetchMeta from '../../../misc/fetch-meta';
+import * as pkg from '../../package.json';
 
 // Init router
 const router = new Router();
@@ -48,7 +49,7 @@ router.get('/v1/instance', async ctx => { // TODO: This is a temporary implement
 		title: meta.name || 'Misskey',
 		description: meta.description || '',
 		email: meta.maintainer.email,
-		version: `0.0.0 (compatible; Misskey)`, // TODO: commit hash
+		version: `0.0.0 (compatible; Misskey ${pkg.version})`, // TODO: commit hash
 		thumbnail: meta.bannerUrl,
 		/*
 		urls: {
