@@ -1,7 +1,7 @@
 import Vue, { VNode } from 'vue';
 import { length } from 'stringz';
 import { MfmForest } from '../../../../../mfm/types';
-import parse, { parsePlain } from '../../../../../mfm/parse';
+import { parse, parsePlain } from '../../../../../mfm/parse';
 import MkUrl from './url.vue';
 import MkMention from './mention.vue';
 import { concat, sum } from '../../../../../prelude/array';

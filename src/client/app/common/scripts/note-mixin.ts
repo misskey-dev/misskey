@@ -1,4 +1,4 @@
-import parse from '../../../../mfm/parse';
+import { parse } from '../../../../mfm/parse';
 import { sum, unique } from '../../../../prelude/array';
 import shouldMuteNote from './should-mute-note';
 import MkNoteMenu from '../views/components/note-menu.vue';
