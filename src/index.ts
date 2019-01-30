@@ -11,7 +11,7 @@ import * as cluster from 'cluster';
 import * as debug from 'debug';
 import chalk from 'chalk';
 import * as portscanner from 'portscanner';
-import isRoot = require('is-root');
+import * as isRoot from 'is-root';
 import Xev from 'xev';
 import * as program from 'commander';
 import * as sysUtils from 'systeminformation';
