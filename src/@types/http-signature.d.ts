@@ -1,69 +1,67 @@
 declare module 'http-signature' {
 	import { IncomingMessage, ClientRequest } from 'http';
 
-	interface Signature {
-		keyId: string,
-		algorithm: string,
-		headers: string[],
-		signature: string
+	interface ISignature {
+		keyId: string;
+		algorithm: string;
+		headers: string[];
+		signature: string;
 	}
 
-	interface ParseRequestOptions {
-		clockSkew?: number,
-		headers?: string[],
-		algorithms?: string[],
-		strict?: boolean,
-		authorizationHeaderName?: string
+	interface IOptions {
+		headers?: string[];
+		algorithm?: string;
+		strict?: boolean;
+		authorizationHeaderName?: string;
 	}
 
-	interface ParsedSignature  {
-		scheme: string,
-		params: Signature,
-		signingString: string
+	interface IParseRequestOptions extends IOptions {
+		clockSkew?: number;
+	}
+
+	interface IParsedSignature  {
+		scheme: string;
+		params: ISignature;
+		signingString: string;
 	}
 
 	type RequestSignerConstructorOptions =
-		RequestSignerConstructorOptionsFromProperties |
-		RequestSignerConstructorOptionsFromFunction;
+		IRequestSignerConstructorOptionsFromProperties |
+		IRequestSignerConstructorOptionsFromFunction;
 
-	interface RequestSignerConstructorOptionsFromProperties {
-		keyId: string,
-		key: string | Buffer
-		algorithm?: string
+	interface IRequestSignerConstructorOptionsFromProperties {
+		keyId: string;
+		key: string | Buffer;
+		algorithm?: string;
 	}
 
-	interface RequestSignerConstructorOptionsFromFunction {
-		sign?: (data: string, cb: (err: any, sig: Signature) => void) => void
+	interface IRequestSignerConstructorOptionsFromFunction {
+		sign?: (data: string, cb: (err: any, sig: ISignature) => void) => void;
 	}
 
 	class RequestSigner {
 		constructor(options: RequestSignerConstructorOptions);
 
-		writeHeader(
-			header: string,
-			value: string): string;
+		public writeHeader(header: string, value: string): string;
 
-		writeDateHeader(): string;
+		public writeDateHeader(): string;
 
-		writeTarget(method: string,path: string): void;
+		public writeTarget(method: string, path: string): void;
 
-		sign(cb: (err: any, authz: string) => void): void;
+		public sign(cb: (err: any, authz: string) => void): void;
 	}
 
-	interface SignRequestOptions {
-		keyId: string,
-		key: string,
-		headers?: string[],
-		algorithm?: string,
-		httpVersion?: string,
-		strict?: boolean
+	interface ISignRequestOptions extends IOptions {
+		keyId: string;
+		key: string;
+		httpVersion?: string;
 	}
 
-	export function parse(request: IncomingMessage, options?: ParseRequestOptions): ParsedSignature;
-	export function parseRequest(request: IncomingMessage, options?: ParseRequestOptions): ParsedSignature;
+	export function parse(request: IncomingMessage, options?: IParseRequestOptions): IParsedSignature;
+	export function parseRequest(request: IncomingMessage, options?: IParseRequestOptions): IParsedSignature;
 
-	export function sign(request: ClientRequest, options: SignRequestOptions): boolean;
-	export function signRequest(request: ClientRequest, options: SignRequestOptions): boolean;
+	export function sign(request: ClientRequest, options: ISignRequestOptions): boolean;
+	export function signRequest(request: ClientRequest, options: ISignRequestOptions): boolean;
 	export function createSigner(): RequestSigner;
 	export function isSigner(obj: any): obj is RequestSigner;
 
@@ -71,7 +69,7 @@ declare module 'http-signature' {
 	export function sshKeyFingerprint(key: string): string;
 	export function pemToRsaSSHKey(pem: string, comment: string): string;
 
-	export function verify(parsedSignature: ParsedSignature, pubkey: string | Buffer): boolean;
-	export function verifySignature(parsedSignature: ParsedSignature, pubkey: string | Buffer): boolean;
-	export function verifyHMAC(parsedSignature: ParsedSignature, secret: string): boolean;
+	export function verify(parsedSignature: IParsedSignature, pubkey: string | Buffer): boolean;
+	export function verifySignature(parsedSignature: IParsedSignature, pubkey: string | Buffer): boolean;
+	export function verifyHMAC(parsedSignature: IParsedSignature, secret: string): boolean;
 }
