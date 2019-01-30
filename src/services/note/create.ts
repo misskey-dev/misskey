@@ -116,6 +116,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.viaMobile == null) data.viaMobile = false;
 	if (data.localOnly == null) data.localOnly = false;
 
+	// サイレンス
+	if (user.isSilenced && data.visibility == 'public') {
+		data.visibility = 'home';
+	}
+
 	if (data.visibleUsers) {
 		data.visibleUsers = erase(null, data.visibleUsers);
 	}

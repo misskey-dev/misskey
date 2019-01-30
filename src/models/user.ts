@@ -55,6 +55,11 @@ type IUserBase = {
 	isSuspended: boolean;
 
 	/**
+	 * サイレンスされているか否か
+	 */
+	isSilenced: boolean;
+
+	/**
 	 * 鍵アカウントか否か
 	 */
 	isLocked: boolean;
