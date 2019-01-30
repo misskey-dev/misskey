@@ -1,4 +1,4 @@
-import { mfmLanguage } from './parser';
+import { mfmLanguage } from './language';
 import { MfmForest } from './types';
 import { normalize } from './normalize';
 
