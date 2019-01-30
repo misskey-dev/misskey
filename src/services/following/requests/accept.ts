@@ -1,6 +1,6 @@
 import User, { IUser, isRemoteUser, ILocalUser, pack as packUser, isLocalUser } from '../../../models/user';
 import FollowRequest from '../../../models/follow-request';
-import pack from '../../../remote/activitypub/renderer';
+import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
@@ -42,7 +42,7 @@ export default async function(followee: IUser, follower: IUser) {
 			followerId: follower._id
 		});
 
-		const content = pack(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
+		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 

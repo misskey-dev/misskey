@@ -2,7 +2,7 @@ import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../
 import Following from '../../models/following';
 import FollowRequest from '../../models/follow-request';
 import { publishMainStream } from '../../stream';
-import pack from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import renderBlock from '../../remote/activitypub/renderer/block';
@@ -27,7 +27,7 @@ export default async function(blocker: IUser, blockee: IUser) {
 	});
 
 	if (isLocalUser(blocker) && isRemoteUser(blockee)) {
-		const content = pack(renderBlock(blocker, blockee));
+		const content = renderActivity(renderBlock(blocker, blockee));
 		deliver(blocker, content, blockee.inbox);
 	}
 }
@@ -67,13 +67,13 @@ async function cancelRequest(follower: IUser, followee: IUser) {
 
 	// リモートにフォローリクエストをしていたらUndoFollow送信
 	if (isLocalUser(follower) && isRemoteUser(followee)) {
-		const content = pack(renderUndo(renderFollow(follower, followee), follower));
+		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
 	}
 
 	// リモートからフォローリクエストを受けていたらReject送信
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
-		const content = pack(renderReject(renderFollow(follower, followee, request.requestId), followee));
+		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId), followee));
 		deliver(followee, content, follower.inbox);
 	}
 }
@@ -119,7 +119,7 @@ async function unFollow(follower: IUser, followee: IUser) {
 
 	// リモートにフォローをしていたらUndoFollow送信
 	if (isLocalUser(follower) && isRemoteUser(followee)) {
-		const content = pack(renderUndo(renderFollow(follower, followee), follower));
+		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
 	}
 }
