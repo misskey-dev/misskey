@@ -1,6 +1,6 @@
 import Vue, { VNode } from 'vue';
 import { length } from 'stringz';
-import { MfmForest } from '../../../../../mfm/parser';
+import { MfmForest } from '../../../../../mfm/types';
 import parse from '../../../../../mfm/parse';
 import MkUrl from './url.vue';
 import MkMention from './mention.vue';

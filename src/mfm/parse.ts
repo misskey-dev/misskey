@@ -1,4 +1,5 @@
-import parser, { plainParser, MfmForest } from './parser';
+import parser, { plainParser } from './parser';
+import { MfmForest } from './types';
 import { normalize } from './normalize';
 
 export default (source: string, plainText = false): MfmForest => {
