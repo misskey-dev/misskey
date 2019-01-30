@@ -1,5 +1,5 @@
 ---
-name: Server-side Bug report
+name: Server-side Bug Report
 about: Create a report to help us improve
 title: ''
 labels: bug, server-side
