@@ -1,4 +1,4 @@
-import parser, { plainParser } from './parser';
+import parser from './parser';
 import { MfmForest } from './types';
 import { normalize } from './normalize';
 
@@ -7,6 +7,6 @@ export default (source: string, plainText = false): MfmForest => {
 		return null;
 	}
 
-	const raw = plainText ? plainParser.root.tryParse(source) : parser.root.tryParse(source) as MfmForest;
+	const raw = plainText ? parser.plain.tryParse(source) : parser.root.tryParse(source) as MfmForest;
 	return normalize(raw);
 };
