@@ -311,6 +311,7 @@ export const pack = (
 		delete _user.password;
 		delete _user.token;
 		delete _user.twoFactorTempSecret;
+		delete _user.two_factor_temp_secret;
 		delete _user.twoFactorSecret;
 		if (_user.twitter) {
 			delete _user.twitter.accessToken;
