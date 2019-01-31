@@ -306,7 +306,7 @@ common/views/components/theme.vue:
 common/views/components/cw-button.vue:
   hide: "隐藏"
   show: "查看更多"
-  chars: "{count} 字"
+  chars: "{count}个字符"
   files: "{count} 个文件"
   poll: "调查问卷"
 common/views/components/messaging.vue:
@@ -322,20 +322,20 @@ common/views/components/messaging-room.vue:
 common/views/components/messaging-room.form.vue:
   input-message-here: "在此键入信息"
   send: "发送"
-  attach-from-local: "从设备中添加文件"
+  attach-from-local: "从电脑中添加文件"
   attach-from-drive: "从云盘中添加文件"
   only-one-file-attached: "在信息中只允许添加一个附件"
 common/views/components/messaging-room.message.vue:
-  is-read: "已阅"
+  is-read: "已读"
   deleted: "这条信息已被删除"
 common/views/components/nav.vue:
-  about: "关于"
+  about: "关于Misskey"
   stats: "统计"
   status: "状态"
-  wiki: "百科 (Wiki)"
+  wiki: "维基百科"
   donors: "捐赠者"
-  repository: "源"
-  develop: "开发者"
+  repository: "代码库"
+  develop: "开发人员"
   feedback: "反馈"
 common/views/components/note-menu.vue:
   mention: "提到"
