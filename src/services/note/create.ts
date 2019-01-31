@@ -7,13 +7,13 @@ import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
-import packAp from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import DriveFile, { IDriveFile } from '../../models/drive-file';
 import notify from '../../notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
 import Mute from '../../models/mute';
-import parse from '../../mfm/parse';
+import { parse } from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
@@ -116,6 +116,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.viaMobile == null) data.viaMobile = false;
 	if (data.localOnly == null) data.localOnly = false;
 
+	// サイレンス
+	if (user.isSilenced && data.visibility == 'public') {
+		data.visibility = 'home';
+	}
+
 	if (data.visibleUsers) {
 		data.visibleUsers = erase(null, data.visibleUsers);
 	}
@@ -133,6 +138,16 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
 	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
 		return rej('Renote target is not public or home');
+	}
+
+	// Renote対象がpublicではないならhomeにする
+	if (data.renote && data.renote.visibility != 'public' && data.visibility == 'public') {
+		data.visibility = 'home';
+	}
+
+	// 返信対象がpublicではないならhomeにする
+	if (data.reply && data.reply.visibility != 'public' && data.visibility == 'public') {
+		data.visibility = 'home';
 	}
 
 	// ローカルのみをRenoteしたらローカルのみにする
@@ -278,7 +293,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	createMentionedEvents(mentionedUsers, note, nm);
 
-	const noteActivity = await renderActivity(data, note);
+	const noteActivity = await renderNoteOrRenoteActivity(data, note);
 
 	if (isLocalUser(user)) {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
@@ -336,14 +351,14 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	index(note);
 });
 
-async function renderActivity(data: Option, note: INote) {
+async function renderNoteOrRenoteActivity(data: Option, note: INote) {
 	if (data.localOnly) return null;
 
 	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
-	return packAp(content);
+	return renderActivity(content);
 }
 
 function incRenoteCount(renote: INote) {

@@ -15,7 +15,12 @@
     "noLib": false,
     "strict": true,
     "strictNullChecks": false,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "src/@types"
+    ]
   },
   "compileOnSave": false,
   "include": [

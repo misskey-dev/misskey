@@ -1,5 +1,5 @@
 import rndstr from 'rndstr';
-const crypto = require('crypto');
+import * as crypto from 'crypto';
 import $ from 'cafy';
 import App from '../../../../models/app';
 import AuthSess from '../../../../models/auth-session';

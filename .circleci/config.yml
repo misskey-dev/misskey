@@ -30,17 +30,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Ensure package-lock.json
+          name: Ensure yarn.lock
           command: |
-            [ ! -e package-lock.json ] && echo '{}' > package-lock.json
+            touch yarn.lock
       - restore_cache:
           name: Restore npm package caches
           keys:
-            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-
-            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-
-            - npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-
-            - npm-v1-arch-{{ arch }}-
-            - npm-v1-
+            - yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
+            - yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-
+            - yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-
+            - yarn-v1-arch-{{ arch }}-
+            - yarn-v1-
       - run:
           name: Install Dependencies
           command: |
@@ -54,13 +54,13 @@ jobs:
       - run:
           name: Build
           command: |
-            node-gyp configure
-            node-gyp build
-            npm run build || (echo -e '\033[0;34mRebuild modules\033[0;39m' && ls -1A node_modules | grep '^[^@]' | xargs npm rebuild && ls -1A node_modules | grep '^@' | xargs -I%1 sh -c 'ls -1A node_modules/'%1' | xargs -P0 -I%2 npm rebuild node_modules/'%1'/%2' && npm run build)
-            ls -1ARl node_modules > ls
+            yarn install
+            yarn autoclean
+            yarn build
+            touch yarn.lock
       - save_cache:
           name: Cache npm packages
-          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-ls-{{ checksum "ls" }}
+          key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 #      - store_artifacts:
@@ -90,11 +90,11 @@ jobs:
       - run:
           name: Test
           command: |
-            npm run test
-            ls -1ARl node_modules > ls
+            yarn test
+            touch yarn.lock
       - save_cache:
           name: Cache npm packages
-          key: npm-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "package-lock.json" }}-ls-{{ checksum "ls" }}
+          key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 

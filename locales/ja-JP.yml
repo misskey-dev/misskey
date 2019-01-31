@@ -1274,6 +1274,8 @@ admin/views/users.vue:
   unsuspend: "凍結の解除"
   unsuspend-confirm: "凍結を解除しますか？"
   unsuspended: "凍結を解除しました"
+  make-silence: "サイレンス"
+  unmake-silence: "サイレンスの解除"
   verify: "公式アカウントにする"
   verify-confirm: "公式アカウントにしますか？"
   verified: "公式アカウントにしました"

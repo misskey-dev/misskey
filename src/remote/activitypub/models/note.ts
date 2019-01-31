@@ -9,9 +9,9 @@ import { INote as INoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
-import htmlToMFM from '../../../mfm/html-to-mfm';
+import { fromHtml } from '../../../mfm/fromHtml';
 import Emoji, { IEmoji } from '../../../models/emoji';
-import { ITag } from './tag';
+import { ITag, extractHashtags } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
@@ -110,7 +110,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
+	const text = note._misskey_content ? note._misskey_content : fromHtml(note.content);
 
 	// vote
 	if (reply && reply.poll && text != null) {
@@ -238,15 +238,4 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	);
 
 	return users.filter(x => x != null);
-}
-
-function extractHashtags(tags: ITag[]) {
-	if (!tags) return [];
-
-	const hashtags = tags.filter(tag => tag.type === 'Hashtag' && typeof tag.name == 'string');
-
-	return hashtags.map(tag => {
-		const m = tag.name.match(/^#(.+)/);
-		return m ? m[1] : null;
-	}).filter(x => x != null);
 }

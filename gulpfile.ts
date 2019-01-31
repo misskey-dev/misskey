@@ -32,14 +32,6 @@ if (isDebug) {
 	console.warn(chalk.yellow.bold('         built script will not be compressed.'));
 }
 
-gulp.task('build', [
-	'build:ts',
-	'build:copy',
-	'build:client',
-	'locales',
-	'doc'
-]);
-
 gulp.task('build:ts', () => {
 	const tsProject = ts.createProject('./tsconfig.json');
 
@@ -47,6 +39,7 @@ gulp.task('build:ts', () => {
 		.src()
 		.pipe(sourcemaps.init())
 		.pipe(tsProject())
+		.on('error', () => {})
 		.pipe(sourcemaps.write('.', { includeContent: false, sourceRoot: '../built' }))
 		.pipe(gulp.dest('./built/'));
 });
@@ -55,7 +48,7 @@ gulp.task('build:copy:views', () =>
 	gulp.src('./src/server/web/views/**/*').pipe(gulp.dest('./built/server/web/views'))
 );
 
-gulp.task('build:copy', ['build:copy:views'], () =>
+gulp.task('build:copy', gulp.parallel('build:copy:views', () =>
 	gulp.src([
 		'./build/Release/crypto_key.node',
 		'./src/const.json',
@@ -63,9 +56,7 @@ gulp.task('build:copy', ['build:copy:views'], () =>
 		'./src/**/assets/**/*',
 		'!./src/client/app/**/assets/**/*'
 	]).pipe(gulp.dest('./built/'))
-);
-
-gulp.task('test', ['mocha']);
+));
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
@@ -92,22 +83,15 @@ gulp.task('mocha', () =>
 		} as any))
 );
 
+gulp.task('test', gulp.task('mocha'));
+
 gulp.task('clean', cb =>
 	rimraf('./built', cb)
 );
 
-gulp.task('cleanall', ['clean'], cb =>
+gulp.task('cleanall', gulp.parallel('clean', cb =>
 	rimraf('./node_modules', cb)
-);
-
-gulp.task('default', ['build']);
-
-gulp.task('build:client', [
-	'build:ts',
-	'build:client:script',
-	'build:client:styles',
-	'copy:client'
-]);
+));
 
 gulp.task('build:client:script', () => {
 	const client = require('./built/client/meta.json');
@@ -129,9 +113,7 @@ gulp.task('build:client:styles', () =>
 		.pipe(gulp.dest('./built/client/assets/'))
 );
 
-gulp.task('copy:client', [
-	'build:client:script'
-], () =>
+gulp.task('copy:client', () =>
 		gulp.src([
 			'./assets/**/*',
 			'./src/client/assets/**/*',
@@ -156,3 +138,19 @@ gulp.task('doc', () =>
 		.pipe((cssnano as any)())
 		.pipe(gulp.dest('./built/docs/assets/'))
 );
+
+gulp.task('build:client', gulp.parallel(
+	'build:client:script',
+	'build:client:styles',
+	'copy:client'
+));
+
+gulp.task('build', gulp.parallel(
+	'build:ts',
+	'build:copy',
+	'build:client',
+	'locales',
+	'doc'
+));
+
+gulp.task('default', gulp.task('build'));

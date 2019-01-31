@@ -1,5 +1,5 @@
 // スクリプトサイズがデカい
-//const crypto = require('crypto');
+//import * as crypto from 'crypto';
 
 export default (data: ArrayBuffer) => {
 	//const buf = new Buffer(data);

@@ -1,6 +1,6 @@
 import { isLocalUser, isRemoteUser, IUser } from '../../models/user';
 import Blocking from '../../models/blocking';
-import pack from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import renderBlock from '../../remote/activitypub/renderer/block';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
@@ -22,7 +22,7 @@ export default async function(blocker: IUser, blockee: IUser) {
 
 	// deliver if remote bloking
 	if (isLocalUser(blocker) && isRemoteUser(blockee)) {
-		const content = pack(renderUndo(renderBlock(blocker, blockee), blocker));
+		const content = renderActivity(renderUndo(renderBlock(blocker, blockee), blocker));
 		deliver(blocker, content, blockee.inbox);
 	}
 }

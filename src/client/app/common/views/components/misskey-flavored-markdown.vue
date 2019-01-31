@@ -30,4 +30,7 @@ export default Vue.extend({
 		color var(--mfmQuote)
 		border-left solid 3px var(--mfmQuoteLine)
 
+	>>> pre code
+		font-size 80%
+
 </style>

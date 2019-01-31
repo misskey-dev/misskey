@@ -1,7 +1,7 @@
 import { parseFragment, DefaultTreeDocumentFragment } from 'parse5';
 import { URL } from 'url';
 
-export default function(html: string): string {
+export function fromHtml(html: string): string {
 	if (html == null) return null;
 
 	const dom = parseFragment(html) as DefaultTreeDocumentFragment;

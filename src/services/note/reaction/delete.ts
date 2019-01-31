@@ -4,7 +4,7 @@ import Reaction from '../../../models/note-reaction';
 import { publishNoteStream } from '../../../stream';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
-import pack from '../../../remote/activitypub/renderer';
+import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
 
 export default async (user: IUser, note: INote) => new Promise(async (res, rej) => {
@@ -42,7 +42,7 @@ export default async (user: IUser, note: INote) => new Promise(async (res, rej) 
 	//#region 配信
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (isLocalUser(user) && isRemoteUser(note._user)) {
-		const content = pack(renderUndo(renderLike(user, note, exist.reaction), user));
+		const content = renderActivity(renderUndo(renderLike(user, note, exist.reaction), user));
 		deliver(user, content, note._user.inbox);
 	}
 	//#endregion

@@ -5,7 +5,7 @@ import Note, { packMany } from '../../models/note';
 import Following from '../../models/following';
 import renderAdd from '../../remote/activitypub/renderer/add';
 import renderRemove from '../../remote/activitypub/renderer/remove';
-import packAp from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 
 /**
@@ -100,7 +100,7 @@ export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.
 	const target = `${config.url}/users/${user._id}/collections/featured`;
 
 	const item = `${config.url}/notes/${noteId}`;
-	const content = packAp(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
+	const content = renderActivity(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
 	for (const inbox of queue) {
 		deliver(user, content, inbox);
 	}
