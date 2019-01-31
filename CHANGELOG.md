@@ -4,6 +4,7 @@ ChangeLog
 unreleased
 ----------
 * public の Renote/Reply/Quote先 が public以外 だったら、public => homeに
+* おすすめのアンケートでミュートユーザーのものは表示しないように
 
 10.80.0
 ----------
