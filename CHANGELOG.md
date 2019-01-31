@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+unreleased
+----------
+* public の Renote/Reply/Quote先 が public以外 だったら、public => homeに
+
 10.80.0
 ----------
 * サイレンス機能の追加
