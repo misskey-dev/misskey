@@ -303,4 +303,4 @@ router.get('/dc/cb', async ctx => {
 	}
 });
 
-module.exports = router;
+export default router;
