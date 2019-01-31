@@ -3,7 +3,7 @@ const { sign } = require('http-signature');
 import { URL } from 'url';
 import * as debug from 'debug';
 import * as crypto from 'crypto';
-const { lookup } = require('lookup-dns-cache');
+import { lookup, IRunOptions } from 'lookup-dns-cache';
 import * as promiseAny from 'promise-any';
 
 import config from '../../config';
@@ -89,16 +89,16 @@ export default (user: ILocalUser, url: string, object: any) => new Promise(async
 async function resolveAddr(domain: string) {
 	// v4/v6で先に取得できた方を採用する
 	return await promiseAny([
-		resolveAddrInner(domain, { ipv6: false }),
-		resolveAddrInner(domain, { ipv6: true  })
+		resolveAddrInner(domain, { family: 4 }),
+		resolveAddrInner(domain, { family: 6 })
 	]);
 }
 
-function resolveAddrInner(domain: string, options = { }): Promise<string> {
+function resolveAddrInner(domain: string, options: IRunOptions = {}): Promise<string> {
 	return new Promise((res, rej) => {
-		lookup(domain, options, (error: any, address: string) => {
+		lookup(domain, options, (error: any, address: string | string[]) => {
 			if (error) return rej(error);
-			return res(address);
+			return res(Array.isArray(address) ? address[0] : address);
 		});
 	});
 }
