@@ -1,6 +1,7 @@
-declare module 'is-url';
+declare module 'is-url' {
+	function isUrl(string: string): boolean;
 
-declare namespace isUrl {
-	export function isUrl(string: string): boolean;
+	namespace isUrl {} // Hack
+
+	export = isUrl;
 }
-
