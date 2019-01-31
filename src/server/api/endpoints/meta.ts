@@ -6,7 +6,7 @@ import define from '../define';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';
 
-const client = require('../../../../built/client/meta.json');
+import * as client from '../../../../built/client/meta.json';
 
 export const meta = {
 	stability: 'stable',
