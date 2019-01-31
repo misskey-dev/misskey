@@ -486,8 +486,8 @@ common/views/components/profile-editor.vue:
   birthday: "生日"
   avatar: "头像"
   banner: "背景"
-  is-cat: "这个账户是 Cat"
-  is-bot: "整个账户是机器人"
+  is-cat: "这个账户是CAT"
+  is-bot: "这个账户是BOT"
   is-locked: "关注者请求需要批准"
   careful-bot: "机器人的关注者请求需要批准"
   auto-accept-followed: "自动同意来自您关注的人的关注申请"
@@ -557,11 +557,11 @@ common/views/widgets/tips.vue:
   tips-line19: "可以在浏览器外部分离多个窗口。"
   tips-line20: "日历小部件的百分比显示经过的时间百分比。"
   tips-line21: "您也可以使用API开发机器人。"
-  tips-line23: "Ai-chan kawaii!"
+  tips-line23: "小蓝很可爱"
   tips-line24: "Misskey自2014年开始运营。"
   tips-line25: "在与通知功能兼容的浏览器中，您可以在Misskey未打开的情况下接收通知"
 common/views/pages/not-found.vue:
-  page-not-found: "啊喔, 页面走丢了..."
+  page-not-found: "您要找的网页不存在。"
 common/views/pages/follow.vue:
   signed-in-as: "用 {}登录"
   following: "正在关注"
@@ -583,7 +583,7 @@ desktop:
   invalid-filetype: "不接受此文件类型"
 desktop/views/components/activity.chart.vue:
   total: "黑 ... 总计"
-  notes: "蓝 ... Notes"
+  notes: "蓝 ... 投稿"
   replies: "红 ... 回复"
   renotes: "绿 ... 转发"
 desktop/views/components/activity.vue:
@@ -591,9 +591,9 @@ desktop/views/components/activity.vue:
   toggle: "切换显示"
 desktop/views/components/calendar.vue:
   title: "{year}年{month}月"
-  prev: "前一个月"
-  next: "下一个月"
-  go: "点击已启用时间旅行"
+  prev: "上个月"
+  next: "下个月"
+  go: "点击按时间浏览"
 desktop/views/components/choose-file-from-drive-window.vue:
   chosen-files: "{count}文件已被选择"
   upload: "从设备中上传文件"
