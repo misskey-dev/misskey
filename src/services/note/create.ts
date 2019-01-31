@@ -140,6 +140,16 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		return rej('Renote target is not public or home');
 	}
 
+	// Renote対象がpublicではないならhomeにする
+	if (data.renote && data.renote.visibility != 'public' && data.visibility == 'public') {
+		data.visibility = 'home';
+	}
+
+	// 返信対象がpublicではないならhomeにする
+	if (data.reply && data.reply.visibility != 'public' && data.visibility == 'public') {
+		data.visibility = 'home';
+	}
+
 	// ローカルのみをRenoteしたらローカルのみにする
 	if (data.renote && data.renote.localOnly) {
 		data.localOnly = true;

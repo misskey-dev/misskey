@@ -3,8 +3,13 @@ ChangeLog
 
 unreleased
 ----------
+* public の Renote/Reply/Quote先 が public以外 だったら、public => homeに
+
+10.80.0
+----------
 * サイレンス機能の追加
 * リプライ/メンションされていれば非フォロワーへのフォロワー限定でも参照可能に
+* MFMの解析を強化
 * Misskey以外のインスタンスからMisskeyの投稿を見たときに改行が多い問題を修正
 * Misskey以外のインスタンスからMisskeyの投稿を見たときにメンションのURLが展開されるのを修正
 
