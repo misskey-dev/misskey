@@ -4,7 +4,7 @@ import { URL } from 'url';
 import * as debug from 'debug';
 import * as crypto from 'crypto';
 const { lookup } = require('lookup-dns-cache');
-const promiseAny = require('promise-any');
+import * as promiseAny from 'promise-any';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
