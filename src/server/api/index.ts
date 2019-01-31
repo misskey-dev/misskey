@@ -11,7 +11,7 @@ const cors = require('@koa/cors');
 import endpoints from './endpoints';
 import handler from './api-handler';
 import signup from './private/signup';
-import signin from './private/signup';
+import signin from './private/signin';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
