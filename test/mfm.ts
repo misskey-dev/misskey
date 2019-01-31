@@ -276,6 +276,21 @@ describe('MFM', () => {
 					}),
 				]);
 			});
+
+			it('nested', () => {
+				const tokens = parse('<spin><spin>:foo:</spin></spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						tree('spin', [
+							leaf('emoji', { name: 'foo' })
+						], {
+							attr: null
+						}),
+					], {
+						attr: null
+					}),
+				]);
+			});
 		});
 
 		it('jump', () => {
