@@ -482,6 +482,7 @@ common/views/components/profile-editor.vue:
   account: "Account"
   location: "Location"
   description: "About me"
+  you-can-include-hashtags: "ハッシュタグを含めることができます。"
   language: "Language"
   birthday: "Birthday"
   avatar: "Icon"
