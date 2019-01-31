@@ -277,6 +277,22 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('multi', () => {
+				const tokens = parse('<spin>:foo:</spin><spin>:foo:</spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						leaf('emoji', { name: 'foo' })
+					], {
+						attr: 'left'
+					}),
+					tree('spin', [
+						leaf('emoji', { name: 'foo' })
+					], {
+						attr: 'left'
+					}),
+				]);
+			});
+
 			it('nested', () => {
 				const tokens = parse('<spin><spin>:foo:</spin></spin>');
 				assert.deepStrictEqual(tokens, [
