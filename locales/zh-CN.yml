@@ -383,7 +383,7 @@ common/views/components/emoji-picker.vue:
   activity: "活动"
   travel-and-places: "位置"
   objects: "物品"
-  symbols: "标志"
+  symbols: "符号"
   flags: "旗帜"
 common/views/components/signin.vue:
   username: "用户名"
@@ -395,7 +395,7 @@ common/views/components/signin.vue:
   signin-with-twitter: "用 Twitter 登录"
   signin-with-github: "用 GitHub 登录"
   signin-with-discord: "用 Discord 登录"
-  login-failed: "登录失败。请确保您已输入恰当的用户名和密码。"
+  login-failed: "登录失败。请检查用户名和密码。"
 common/views/components/signup.vue:
   invitation-code: "邀请码"
   invitation-info: "如果您没有邀请码，请联系<a href=\"{}\">管理员</a>。"
@@ -404,7 +404,7 @@ common/views/components/signup.vue:
   available: "可用"
   unavailable: "不可用"
   error: "网络错误"
-  invalid-format: "可以用字母，数字和_。"
+  invalid-format: "可使用大小写英文字母、数字和下划线。"
   too-short: "不可以留空哦~"
   too-long: "20字以内。"
   password: "密码"
