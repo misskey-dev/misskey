@@ -203,12 +203,12 @@ common/views/components/games/reversi/reversi.vue:
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "认输"
   surrendered: "已认输"
-  is-llotheo: "石头少的一方获胜"
-  looped-map: "环状地图"
-  can-put-everywhere: "可以随意放置"
+  is-llotheo: "棋子较少一方获胜(LLoTheO规则)"
+  looped-map: "环形棋盘"
+  can-put-everywhere: "可以下在任意放置"
 common/views/components/games/reversi/reversi.index.vue:
-  title: "Misskey Reversi"
-  sub-title: "和你的朋友一起玩 Reversi!"
+  title: "Misskey 黑白棋"
+  sub-title: "和其他人一起来玩Misskey黑白棋"
   invite: "邀请"
   rule: "游戏说明"
   rule-desc: "Reversi是与对方交替地把石头放在板上，把对方的石头夹在自己的颜色上，最终留下的石头多的人获胜。"
