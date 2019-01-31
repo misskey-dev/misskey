@@ -48,6 +48,7 @@ type IUserBase = {
 	lang?: string;
 	pinnedNoteIds: mongo.ObjectID[];
 	emojis?: string[];
+	tags?: string[];
 
 	/**
 	 * 凍結されているか否か
