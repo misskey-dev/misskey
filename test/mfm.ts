@@ -283,12 +283,12 @@ describe('MFM', () => {
 					tree('spin', [
 						leaf('emoji', { name: 'foo' })
 					], {
-						attr: 'left'
+						attr: null
 					}),
 					tree('spin', [
 						leaf('emoji', { name: 'foo' })
 					], {
-						attr: 'left'
+						attr: null
 					}),
 				]);
 			});
