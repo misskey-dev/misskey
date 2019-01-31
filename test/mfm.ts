@@ -255,7 +255,18 @@ describe('MFM', () => {
 		});
 
 		describe('spin', () => {
-			it('simple', () => {
+			it('text', () => {
+				const tokens = parse('<spin>foo</spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						text('foo')
+					], {
+						attr: null
+					}),
+				]);
+			});
+
+			it('emoji', () => {
 				const tokens = parse('<spin>:foo:</spin>');
 				assert.deepStrictEqual(tokens, [
 					tree('spin', [
