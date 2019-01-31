@@ -1,8 +1,8 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
-import Mute from '../../../../models/mute';
 import { getFriends } from '../../common/get-friends';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -35,15 +35,13 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const [followings, mutedUserIds] = await Promise.all([
+	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
 		user ? getFriends(user._id) : [],
 
-		// ミュートしているユーザーを取得
-		user ? (await Mute.find({
-			muterId: user._id
-		})).map(m => m.muteeId) : null
+		// 隠すユーザーを取得
+		getHideUserIds(user)
 	]);
 
 	const visibleQuery = user == null ? [{
@@ -75,9 +73,9 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		$or: visibleQuery
 	} as any;
 
-	if (mutedUserIds && mutedUserIds.length > 0) {
+	if (hideUserIds && hideUserIds.length > 0) {
 		q['userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 	}
 
