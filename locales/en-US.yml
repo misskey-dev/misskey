@@ -482,7 +482,7 @@ common/views/components/profile-editor.vue:
   account: "Account"
   location: "Location"
   description: "About me"
-  you-can-include-hashtags: "ハッシュタグを含めることができます。"
+  you-can-include-hashtags: "You can also include hashtags in your profile description."
   language: "Language"
   birthday: "Birthday"
   avatar: "Icon"
