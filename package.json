@@ -75,6 +75,7 @@
 		"@types/redis": "2.8.10",
 		"@types/request": "2.48.1",
 		"@types/request-promise-native": "1.0.15",
+		"@types/request-stats": "3.0.0",
 		"@types/rimraf": "2.0.2",
 		"@types/seedrandom": "2.4.27",
 		"@types/sharp": "0.21.1",
