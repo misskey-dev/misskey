@@ -271,4 +271,4 @@ router.get('/gh/cb', async ctx => {
 	}
 });
 
-module.exports = router;
+export default router;
