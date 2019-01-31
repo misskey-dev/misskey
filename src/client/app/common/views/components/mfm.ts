@@ -98,7 +98,11 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'small': {
-					return [createElement('small', genEl(token.children))];
+					return [createElement('small', {
+						attrs: {
+							style: 'opacity: 0.7;'
+						},
+					}, genEl(token.children))];
 				}
 
 				case 'center': {
