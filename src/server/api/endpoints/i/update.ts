@@ -8,7 +8,7 @@ import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
-const langmap = require('langmap');
+import * as langmap from 'langmap';
 
 export const meta = {
 	desc: {
