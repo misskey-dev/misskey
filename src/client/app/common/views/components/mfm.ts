@@ -126,7 +126,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'spin': {
 					motionCount++;
-					const isLong = sumTextsLength(token.children) > 5 || countNodesF(token.children) > 3;
+					const isLong = sumTextsLength(token.children) > 10 || countNodesF(token.children) > 5;
 					const isMany = motionCount > 5;
 					const direction =
 						token.node.props.attr == 'left' ? 'reverse' :
@@ -144,7 +144,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'jump': {
 					motionCount++;
-					const isLong = sumTextsLength(token.children) > 5 || countNodesF(token.children) > 3;
+					const isLong = sumTextsLength(token.children) > 30 || countNodesF(token.children) > 5;
 					const isMany = motionCount > 5;
 					return (createElement as any)('span', {
 						attrs: {
