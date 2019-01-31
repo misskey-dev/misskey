@@ -27,7 +27,9 @@ export const mfmLanguage = P.createLanguage({
 		r.title,
 		r.quote,
 		r.search,
-		r.blockCode
+		r.blockCode,
+		r.mathBlock,
+		r.center,
 	),
 	startOfLine: () => P((input, i) => {
 		if (i == 0 || input[i] == '\n' || input[i - 1] == '\n') {
@@ -75,9 +77,7 @@ export const mfmLanguage = P.createLanguage({
 		r.spin,
 		r.jump,
 		r.flip,
-		r.center,
 		r.inlineCode,
-		r.mathBlock,
 		r.mathInline,
 		r.mention,
 		r.hashtag,
@@ -123,9 +123,9 @@ export const mfmLanguage = P.createLanguage({
 	},
 	jump: r => P.regexp(/<jump>(.+?)<\/jump>/, 1).map(x => createTree('jump', r.inline.atLeast(1).tryParse(x), {})),
 	flip: r => P.regexp(/<flip>(.+?)<\/flip>/, 1).map(x => createTree('flip', r.inline.atLeast(1).tryParse(x), {})),
-	center: r => P.regexp(/<center>([\s\S]+?)<\/center>/, 1).map(x => createTree('center', r.inline.atLeast(1).tryParse(x), {})),
+	center: r => r.startOfLine.then(P.regexp(/<center>([\s\S]+?)<\/center>/, 1).map(x => createTree('center', r.inline.atLeast(1).tryParse(x), {}))),
 	inlineCode: () => P.regexp(/`([^´\n]+?)`/, 1).map(x => createLeaf('inlineCode', { code: x })),
-	mathBlock: () => P.regexp(/\\\[([\s\S]+?)\\\]/, 1).map(x => createLeaf('mathBlock', { formula: x.trim() })),
+	mathBlock: r => r.startOfLine.then(P.regexp(/\\\[([\s\S]+?)\\\]/, 1).map(x => createLeaf('mathBlock', { formula: x.trim() }))),
 	mathInline: () => P.regexp(/\\\((.+?)\\\)/, 1).map(x => createLeaf('mathInline', { formula: x })),
 	mention: () => {
 		return P((input, i) => {
