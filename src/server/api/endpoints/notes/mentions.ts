@@ -4,7 +4,7 @@ import { getFriendIds, getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import read from '../../../../services/note/read';
-import Mute from '../../../../models/mute';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -86,22 +86,20 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}]
 	} as any;
 
-	// ミュートしているユーザーを取得
-	const mutedUserIds = (await Mute.find({
-		muterId: user._id
-	})).map(m => m.muteeId);
+	// 隠すユーザーを取得
+	const hideUserIds = await getHideUserIds(user);
 
-	if (mutedUserIds && mutedUserIds.length > 0) {
+	if (hideUserIds && hideUserIds.length > 0) {
 		query.userId = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_reply.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_renote.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 	}
 

@@ -2,7 +2,7 @@ import $ from 'cafy';
 import Vote from '../../../../../models/poll-vote';
 import Note, { pack } from '../../../../../models/note';
 import define from '../../../define';
-import Mute from '../../../../../models/mute';
+import { getHideUserIds } from '../../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -38,10 +38,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	const nin = votes && votes.length != 0 ? votes.map(v => v.noteId) : [];
 
-	// ミュートしているユーザーを取得
-	const mutedUserIds = await Mute.find({
-		muterId: user._id
-	}).then(ms => ms.map(m => m.muteeId));
+	// 隠すユーザーを取得
+	const hideUserIds = await getHideUserIds(user);
 
 	const notes = await Note
 		.find({
@@ -51,7 +49,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			},
 			userId: {
 				$ne: user._id,
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			poll: {
 				$exists: true,
