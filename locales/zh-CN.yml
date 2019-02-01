@@ -329,7 +329,7 @@ common/views/components/messaging-room.message.vue:
   is-read: "已读"
   deleted: "这条信息已被删除"
 common/views/components/nav.vue:
-  about: "关于Misskey"
+  about: "关于 Misskey"
   stats: "统计"
   status: "状态"
   wiki: "维基百科"
