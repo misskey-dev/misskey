@@ -6,7 +6,7 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as multer from 'koa-multer';
 import * as bodyParser from 'koa-bodyparser';
-const cors = require('@koa/cors');
+import * as cors from '@koa/cors';
 
 import endpoints from './endpoints';
 import handler from './api-handler';
