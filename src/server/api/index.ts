@@ -6,11 +6,15 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as multer from 'koa-multer';
 import * as bodyParser from 'koa-bodyparser';
-const cors = require('@koa/cors');
+import * as cors from '@koa/cors';
 
 import endpoints from './endpoints';
-
-const handler = require('./api-handler').default;
+import handler from './api-handler';
+import signup from './private/signup';
+import signin from './private/signin';
+import discord from './service/discord';
+import github from './service/github';
+import twitter from './service/twitter';
 
 // Init app
 const app = new Koa();
@@ -49,14 +53,12 @@ for (const endpoint of endpoints) {
 	}
 }
 
-router.post('/signup', require('./private/signup').default);
-router.post('/signin', require('./private/signin').default);
+router.post('/signup', signup);
+router.post('/signin', signin);
 
-router.use(require('./service/discord').routes());
-router.use(require('./service/github').routes());
-router.use(require('./service/twitter').routes());
-
-router.use(require('./mastodon').routes());
+router.use(discord.routes());
+router.use(github.routes());
+router.use(twitter.routes());
 
 // Return 404 for unknown API
 router.all('*', async ctx => {
