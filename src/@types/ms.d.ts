@@ -1,6 +1,6 @@
 declare module 'ms' {
 	interface IMSOptions {
-		long: boolean
+		long: boolean;
 	}
 
 	function ms(value: string): number;
