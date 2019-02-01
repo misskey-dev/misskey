@@ -129,7 +129,7 @@ common:
   show-password: "パスワードを表示する"
   do-not-use-in-production: "Эта сборка для разработчиков. Не используйте в продакшне."
   user-suspended: "このユーザーは凍結されています。"
-  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-user: "このユーザー情報は不正確な可能性があります。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
