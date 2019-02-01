@@ -1,6 +1,6 @@
-const ThumbnailGenerator = require('video-thumbnail-generator').default;
-import * as tmp from 'tmp';
 import * as fs from 'fs';
+import * as tmp from 'tmp';
+const ThumbnailGenerator = require('video-thumbnail-generator').default;
 
 export async function GenerateVideoThumbnail(path: string): Promise<Buffer> {
 	const [outDir, cleanup] = await new Promise<[string, any]>((res, rej) => {
