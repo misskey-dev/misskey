@@ -129,7 +129,7 @@ common:
   show-password: "Show Password"
   do-not-use-in-production: "This is a development build. Do not use in production."
   user-suspended: "This user has been suspended."
-  is-remote-user: "このユーザー情報は不正確な可能性があります。"
+  is-remote-user: "The information about this user may not be entirely complete."
   is-remote-post: "These post contents are mirrored."
   view-on-remote: "For completion, view it remotely."
   renoted-by: "Renoted by {user}"
