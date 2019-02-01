@@ -7,14 +7,19 @@ export async function getHideUserIds(me: IUser) {
 	return me ? await getHideUserIdsById(me._id) : [];
 }
 
-export async function getHideUserIdsById(meId: mongo.ObjectID) {
-	const suspended = (await User.find({
-		isSuspended: true
-	})).map(user => user._id);
+export async function getHideUserIdsById(meId?: mongo.ObjectID) {
+	const [suspended, muted] = await Promise.all([
+		User.find({
+			isSuspended: true
+		}, {
+			fields: {
+				_id: true
+			}
+		}),
+		meId ? Mute.find({
+			muterId: meId
+		}) : Promise.resolve([])
+	]);
 
-	const muted = meId ? (await Mute.find({
-		muterId: meId
-	})).map(mute => mute.muteeId) : [];
-
-	return unique(suspended.concat(muted));
+	return unique(suspended.map(user => user._id).concat(muted.map(mute => mute.muteeId)));
 }
