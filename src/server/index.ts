@@ -5,13 +5,14 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as http2 from 'http2';
+import * as https from 'https';
 import * as zlib from 'zlib';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
 import * as logger from 'koa-logger';
-const requestStats = require('request-stats');
+import * as requestStats from 'request-stats';
 //const slow = require('koa-slow');
 
 import activityPub from './activitypub';
@@ -26,7 +27,7 @@ import User from '../models/user';
 const app = new Koa();
 app.proxy = true;
 
-if (process.env.NODE_ENV != 'production') {
+if (!['production', 'test'].includes(process.env.NODE_ENV)) {
 	// Logger
 	app.use(logger());
 
@@ -95,11 +96,24 @@ function createServer() {
 			certs[k] = fs.readFileSync(config.https[k]);
 		}
 		certs['allowHTTP1'] = true;
-		return http2.createSecureServer(certs, app.callback());
+		return http2.createSecureServer(certs, app.callback()) as https.Server;
 	} else {
 		return http.createServer(app.callback());
 	}
 }
+
+// For testing
+export const startServer = () => {
+	const server = createServer();
+
+	// Init stream server
+	require('./api/streaming')(server);
+
+	// Listen
+	server.listen(config.port);
+
+	return server;
+};
 
 export default () => new Promise(resolve => {
 	const server = createServer();

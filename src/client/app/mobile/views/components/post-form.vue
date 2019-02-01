@@ -19,8 +19,8 @@
 				</span>
 				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
 			</div>
-			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="'cw'">
-			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="'text'"></textarea>
+			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="{ model: 'cw' }">
+			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }"></textarea>
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 					<div class="file" v-for="file in files" :key="file.id">
@@ -28,7 +28,7 @@
 					</div>
 				</x-draggable>
 			</div>
-			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false"  @updated="onPollUpdate()"/>
+			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 			<footer>
 				<button class="upload" @click="chooseFile"><fa icon="upload"/></button>
@@ -42,7 +42,6 @@
 					<span v-if="visibility === 'home'"><fa icon="home"/></span>
 					<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 					<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-					<span v-if="visibility === 'private'"><fa icon="lock"/></span>
 				</button>
 			</footer>
 			<input ref="file" class="file" type="file" multiple="multiple" @change="onChangeFile"/>
@@ -61,17 +60,17 @@ import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import getFace from '../../../common/scripts/get-face';
-import parse from '../../../../../mfm/parse';
+import { parse } from '../../../../../mfm/parse';
 import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
+import extractMentions from '../../../../../misc/extract-mentions';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/post-form.vue'),
 	components: {
-		XDraggable,
-		MkVisibilityChooser
+		XDraggable
 	},
 
 	props: {
@@ -80,6 +79,10 @@ export default Vue.extend({
 			required: false
 		},
 		renote: {
+			type: Object,
+			required: false
+		},
+		mention: {
 			type: Object,
 			required: false
 		},
@@ -171,18 +174,23 @@ export default Vue.extend({
 			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
 		}
 
+		if (this.mention) {
+			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
+			this.text += ' ';
+		}
+
 		if (this.reply && this.reply.text != null) {
 			const ast = parse(this.reply.text);
 
-			for (const x of ast.filter(t => t.type == 'mention')) {
+			for (const x of extractMentions(ast)) {
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.$store.state.i.username == x.username && x.host == null) return;
-				if (this.$store.state.i.username == x.username && x.host == host) return;
+				if (this.$store.state.i.username == x.username && x.host == null) continue;
+				if (this.$store.state.i.username == x.username && x.host == host) continue;
 
 				// 重複は除外
-				if (this.text.indexOf(`${mention} `) != -1) return;
+				if (this.text.indexOf(`${mention} `) != -1) continue;
 
 				this.text += `${mention} `;
 			}
@@ -192,15 +200,20 @@ export default Vue.extend({
 		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-		if (this.reply && ['home', 'followers', 'specified', 'private'].includes(this.reply.visibility)) {
+		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 		}
 
-		// ダイレクトへのリプライはリプライ先ユーザーを初期設定
-		if (this.reply && this.reply.visibility === 'specified') {
-			this.$root.api('users/show', {	userId: this.reply.userId }).then(user => {
+		if (this.reply) {
+			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
+		}
+
+		// keep cw when reply
+		if (this.$store.state.settings.keepCw && this.reply && this.reply.cw) {
+			this.useCw = true;
+			this.cw = this.reply.cw;
 		}
 
 		this.focus();
@@ -293,7 +306,7 @@ export default Vue.extend({
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				compact: true
+				currentVisibility: this.visibility
 			});
 			w.$once('chosen', v => {
 				this.applyVisibility(v);

@@ -24,6 +24,15 @@
 		scrollbarHandle: '#00000033',
 		scrollbarHandleHover: '#00000066',
 
+		link: '$primary',
+		linkTapHighlight: ':alpha<0.7<@link',
+
+		notificationIndicator: '$primary',
+
+		switchActive: '$primary',
+		switchActiveTrack: ':alpha<0.4<@switchActive',
+		radioActive: '$primary',
+
 		face: '$secondary',
 		faceText: '$text',
 		faceHeader: ':lighten<5<$secondary',
@@ -120,8 +129,10 @@
 		mfmTitleBg: 'rgba(0, 0, 0, 0.07)',
 		mfmQuote: ':alpha<0.6<$text',
 		mfmQuoteLine: ':alpha<0.5<$text',
-		mfmLink: '$primary',
+		mfmUrl: '$primary',
+		mfmLink: '@mfmUrl',
 		mfmMention: '$primary',
+		mfmMentionForeground: '@primaryForeground',
 		mfmHashtag: '$primary',
 
 		suspendedInfoBg: '#ffdbdb',
@@ -212,7 +223,7 @@
 		reversiGameHeaderLine: '#c4cdd4',
 		reversiGameEmptyCell: 'rgba(0, 0, 0, 0.06)',
 		reversiGameEmptyCellMyTurn: 'rgba(0, 0, 0, 0.12)',
-		reversiGameEmptyCellCanPut: 'rgba(0, 0, 0, 0.9)',
+		reversiGameEmptyCellCanPut: 'rgba(0, 0, 0, 0.09)',
 
 		adminDashboardHeaderFg: ':alpha<0.9<$text',
 		adminDashboardHeaderBorder: 'rgba(0, 0, 0, 0.1)',

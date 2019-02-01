@@ -1,10 +1,11 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import Mute from '../../../../models/mute';
 import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
+import activeUsersChart from '../../../../chart/active-users';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -100,15 +101,13 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return;
 	}
 
-	const [followings, mutedUserIds] = await Promise.all([
+	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
 		getFriends(user._id),
 
-		// ミュートしているユーザーを取得
-		Mute.find({
-			muterId: user._id
-		}).then(ms => ms.map(m => m.muteeId))
+		// 隠すユーザーを取得
+		getHideUserIds(user)
 	]);
 
 	//#region Construct query
@@ -116,12 +115,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		_id: -1
 	};
 
-	const followQuery = followings.map(f => f.stalk ? {
-		userId: f.id
-	} : {
+	const followQuery = followings.map(f => ({
 		userId: f.id,
 
-		// ストーキングしてないならリプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
+		/*// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
 		$or: [{
 			// リプライでない
 			replyId: null
@@ -136,25 +133,42 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}, { // または
 			// 自分(フォロワー)が送信したリプライ
 			userId: user._id
-		}]
-	});
+		}]*/
+	}));
+
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home', 'followers' ] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}];
 
 	const query = {
 		$and: [{
 			deletedAt: null,
 
-			// フォローしている人の投稿
-			$or: followQuery,
+			$and: [{
+				// フォローしている人の投稿
+				$or: followQuery
+			}, {
+				// visible for me
+				$or: visibleQuery
+			}],
 
 			// mute
 			userId: {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_reply.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_renote.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 		}]
 	} as any;
@@ -249,4 +263,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await packMany(timeline, user));
+
+	activeUsersChart.update(user);
 }));

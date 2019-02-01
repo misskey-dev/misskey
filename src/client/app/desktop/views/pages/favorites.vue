@@ -1,9 +1,11 @@
 <template>
 <mk-ui>
 	<main v-if="!fetching">
-		<template v-for="favorite in favorites">
-			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
-		</template>
+		<sequential-entrance animation="entranceFromTop" delay="25">
+			<template v-for="favorite in favorites">
+				<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
+			</template>
+		</sequential-entrance>
 		<div class="more" v-if="existMore">
 			<ui-button inline @click="more">{{ $t('@.load-more') }}</ui-button>
 		</div>
@@ -75,7 +77,7 @@ main
 	padding 16px
 	max-width 700px
 
-	> .post
+	> * > .post
 		margin-bottom 16px
 
 	> .more

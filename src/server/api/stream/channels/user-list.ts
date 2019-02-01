@@ -1,5 +1,6 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
+import { pack } from '../../../../models/note';
 
 export default class extends Channel {
 	public readonly chName = 'userList';
@@ -11,7 +12,11 @@ export default class extends Channel {
 		const listId = params.listId as string;
 
 		// Subscribe stream
-		this.subscriber.on(`userListStream:${listId}`, data => {
+		this.subscriber.on(`userListStream:${listId}`, async data => {
+			// 再パック
+			if (data.type == 'note') data.body = await pack(data.body.id, this.user, {
+				detail: true
+			});
 			this.send(data);
 		});
 	}

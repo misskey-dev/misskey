@@ -3,7 +3,7 @@ import Following from '../../models/following';
 import Blocking from '../../models/blocking';
 import { publishMainStream } from '../../stream';
 import notify from '../../notify';
-import pack from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
 import renderReject from '../../remote/activitypub/renderer/reject';
@@ -26,7 +26,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 
 	if (isRemoteUser(follower) && isLocalUser(followee) && blocked) {
 		// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
-		const content = pack(renderReject(renderFollow(follower, followee, requestId), followee));
+		const content = renderActivity(renderReject(renderFollow(follower, followee, requestId), followee));
 		deliver(followee , content, follower.inbox);
 		return;
 	} else if (isRemoteUser(follower) && isLocalUser(followee) && blocking) {
@@ -45,8 +45,22 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
 	// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
 	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (isLocalUser(follower) && isRemoteUser(followee))) {
-		await createFollowRequest(follower, followee, requestId);
-		return;
+		let autoAccept = false;
+
+		// フォローしているユーザーは自動承認オプション
+		if (isLocalUser(followee) && followee.autoAcceptFollowed) {
+			const followed = await Following.findOne({
+				followerId: followee._id,
+				followeeId: follower._id
+			});
+
+			if (followed) autoAccept = true;
+		}
+
+		if (!autoAccept) {
+			await createFollowRequest(follower, followee, requestId);
+			return;
+		}
 	}
 
 	await Following.insert({
@@ -101,7 +115,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	}
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
-		const content = pack(renderAccept(renderFollow(follower, followee, requestId), followee));
+		const content = renderActivity(renderAccept(renderFollow(follower, followee, requestId), followee));
 		deliver(followee, content, follower.inbox);
 	}
 }

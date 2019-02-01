@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import * as anime from 'animejs';
+import anime from 'animejs';
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
 

@@ -75,7 +75,7 @@ export default Vue.extend({
 			return this.dark ? '#fff' : '#777';
 		},
 		hHandColor(): string {
-			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--themeColor')).toHexString();
+			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--primary')).toHexString();
 		},
 
 		ms(): number {

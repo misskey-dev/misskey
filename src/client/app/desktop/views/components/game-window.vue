@@ -23,8 +23,8 @@ export default Vue.extend({
 	computed: {
 		popout(): string {
 			return this.game
-				? `${url}/reversi/${this.game.id}`
-				: `${url}/reversi`;
+				? `${url}/games/reversi/${this.game.id}`
+				: `${url}/games/reversi`;
 		}
 	}
 });

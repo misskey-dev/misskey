@@ -27,6 +27,7 @@
 			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
 			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
 			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('hashtags') }}</li>
+			<li @click="nav('abuse')" :class="{ active: page == 'abuse' }"><fa :icon="faExclamationCircle" fixed-width/>{{ $t('abuse') }}</li>
 		</ul>
 		<div class="back-to-misskey">
 			<a href="/"><fa :icon="faArrowLeft"/> {{ $t('back-to-misskey') }}</a>
@@ -45,7 +46,7 @@
 			<div v-if="page == 'announcements'"><x-announcements/></div>
 			<div v-if="page == 'hashtags'"><x-hashtags/></div>
 			<div v-if="page == 'drive'"><x-drive/></div>
-			<div v-if="page == 'update'"></div>
+			<div v-if="page == 'abuse'"><x-abuse/></div>
 		</div>
 	</main>
 </div>
@@ -63,7 +64,8 @@ import XAnnouncements from "./announcements.vue";
 import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
 import XDrive from "./drive.vue";
-import { faHeadset, faArrowLeft, faShareAlt } from '@fortawesome/free-solid-svg-icons';
+import XAbuse from "./abuse.vue";
+import { faHeadset, faArrowLeft, faShareAlt, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 // Detect the user agent
@@ -81,6 +83,7 @@ export default Vue.extend({
 		XHashtags,
 		XUsers,
 		XDrive,
+		XAbuse,
 	},
 	provide: {
 		isMobile
@@ -94,7 +97,8 @@ export default Vue.extend({
 			faGrin,
 			faArrowLeft,
 			faHeadset,
-			faShareAlt
+			faShareAlt,
+			faExclamationCircle
 		};
 	},
 	methods: {
@@ -269,6 +273,9 @@ export default Vue.extend({
 
 		> .page
 			max-width 1150px
+
+			@media (min-width 500px)
+				padding 16px
 
 	&.isMobile
 		> main

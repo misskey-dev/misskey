@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
 import $ from 'cafy';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import Reaction from './note-reaction';

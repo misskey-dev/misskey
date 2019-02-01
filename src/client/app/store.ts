@@ -12,6 +12,7 @@ const defaultSettings = {
 	mobileHome: [],
 	deck: null,
 	deckNav: true,
+	keepCw: false,
 	tagTimelines: [],
 	fetchOnScroll: true,
 	showMaps: true,
@@ -40,19 +41,18 @@ const defaultSettings = {
 	games: {
 		reversi: {
 			showBoardLabels: false,
-			useWhileBlackStones: false,
-			useContrastStones: false
+			useAvatarStones: true,
 		}
 	}
 };
 
 const defaultDeviceSettings = {
 	reduceMotion: false,
-	apiViaStream: true,
 	autoPopout: false,
 	darkmode: false,
 	darkTheme: 'dark',
 	lightTheme: 'light',
+	lineWidth: 1,
 	themes: [],
 	enableSounds: true,
 	soundVolume: 0.5,

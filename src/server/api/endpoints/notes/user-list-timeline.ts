@@ -1,9 +1,10 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import define from '../../define';
+import { getFriends } from '../../common/get-friends';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -101,7 +102,7 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const [list, mutedUserIds] = await Promise.all([
+	const [list, followings, hideUserIds] = await Promise.all([
 		// リストを取得
 		// Fetch the list
 		UserList.findOne({
@@ -109,10 +110,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			userId: user._id
 		}),
 
-		// ミュートしているユーザーを取得
-		Mute.find({
-			muterId: user._id
-		}).then(ms => ms.map(m => m.muteeId))
+		// フォローを取得
+		// Fetch following
+		getFriends(user._id, true, false),
+
+		// 隠すユーザーを取得
+		getHideUserIds(user)
 	]);
 
 	if (list.userIds.length == 0) {
@@ -128,7 +131,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const listQuery = list.userIds.map(u => ({
 		userId: u,
 
-		// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
+		/*// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
 		$or: [{
 			// リプライでない
 			replyId: null
@@ -143,25 +146,43 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}, { // または
 			// 自分(フォロワー)が送信したリプライ
 			userId: user._id
-		}]
+		}]*/
 	}));
+
+	const visibleQuery = [{
+		visibility: { $in: ['public', 'home'] }
+	}, {
+		// myself (for specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [user._id] }
+	}, {
+		visibility: 'followers',
+		userId: { $in: followings.map(f => f.id) }
+	}];
 
 	const query = {
 		$and: [{
 			deletedAt: null,
 
-			// リストに入っている人のタイムラインへの投稿
-			$or: listQuery,
+			$and: [{
+				// リストに入っている人のタイムラインへの投稿
+				$or: listQuery
+			}, {
+				// visible for me
+				$or: visibleQuery
+			}],
 
 			// mute
 			userId: {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_reply.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_renote.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 		}]
 	} as any;

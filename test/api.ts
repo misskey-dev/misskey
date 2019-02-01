@@ -1,12 +1,18 @@
 /*
  * Tests of API
+ *
+ * How to run the tests:
+ * > mocha test/api.ts --require ts-node/register
+ *
+ * To specify test:
+ * > mocha test/api.ts --require ts-node/register -g 'test name'
  */
 
 import * as http from 'http';
 import * as fs from 'fs';
 import * as assert from 'chai';
+import { async, _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
 
-assert.use(require('chai-http'));
 const expect = assert.expect;
 
 //#region process
@@ -25,87 +31,20 @@ const db = require('../built/db/mongodb').default;
 const server = http.createServer(app.callback());
 
 //#region Utilities
-const async = (fn: Function) => (done: Function) => {
-	fn().then(() => {
-		done();
-	}, (err: Error) => {
-		done(err);
-	});
-};
-
-const request = async (endpoint: string, params: any, me?: any): Promise<ChaiHttp.Response> => {
-	const auth = me ? {
-		i: me.token
-	} : {};
-
-	const res = await assert.request(server)
-		.post(endpoint)
-		.send(Object.assign(auth, params));
-
-	return res;
-};
-
-const signup = async (params?: any): Promise<any> => {
-	const q = Object.assign({
-		username: 'test',
-		password: 'test'
-	}, params);
-
-	const res = await request('/signup', q);
-
-	return res.body;
-};
-
-const post = async (user: any, params?: any): Promise<any> => {
-	const q = Object.assign({
-		text: 'test'
-	}, params);
-
-	const res = await request('/notes/create', q, user);
-
-	return res.body.createdNote;
-};
-
-const react = async (user: any, note: any, reaction: string): Promise<any> => {
-	await request('/notes/reactions/create', {
-		noteId: note.id,
-		reaction: reaction
-	}, user);
-};
-
-const uploadFile = async (user: any): Promise<any> => {
-	const res = await assert.request(server)
-		.post('/drive/files/create')
-		.field('i', user.token)
-		.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
-
-	return res.body;
-};
+const request = _request(server);
+const signup = _signup(request);
+const post = _post(request);
+const react = _react(request);
+const uploadFile = _uploadFile(server);
 //#endregion
 
 describe('API', () => {
 	// Reset database each test
-	beforeEach(() => new Promise((res) => {
-		// APIがなにかレスポンスを返した後に、後処理を行う場合があり、
-		// レスポンスを受け取ってすぐデータベースをリセットすると
-		// その後処理と競合し(テスト自体は合格するものの)エラーがコンソールに出力され
-		// 見た目的に気持ち悪くなるので、後処理が終るのを待つために500msくらい待ってから
-		// データベースをリセットするようにする
-		setTimeout(async () => {
-			await Promise.all([
-				db.get('users').drop(),
-				db.get('notes').drop(),
-				db.get('driveFiles.files').drop(),
-				db.get('driveFiles.chunks').drop(),
-				db.get('driveFolders').drop(),
-				db.get('apps').drop(),
-				db.get('accessTokens').drop(),
-				db.get('authSessions').drop()
-			]);
+	beforeEach(resetDb(db));
 
-			res();
-		}, 500);
-	}));
+	after(() => {
+		server.close();
+	});
 
 	describe('signup', () => {
 		it('不正なユーザー名でアカウントが作成できない', async(async () => {
@@ -808,6 +747,20 @@ describe('API', () => {
 
 			expect(res).have.status(400);
 		}));
+
+		it('SVGファイルを作成できる', async(async () => {
+			const izumi = await signup({ username: 'izumi' });
+
+			const res = await assert.request(server)
+				.post('/drive/files/create')
+				.field('i', izumi.token)
+				.attach('file', fs.readFileSync(__dirname + '/resources/image.svg'), 'image.svg');
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('object');
+			expect(res.body).have.property('name').eql('image.svg');
+			expect(res.body).have.property('type').eql('image/svg+xml');
+		}));
 	});
 
 	describe('drive/files/update', () => {
@@ -1215,6 +1168,56 @@ describe('API', () => {
 			}, alice);
 
 			expect(res).have.status(400);
+		}));
+	});
+
+	describe('notes/replies', () => {
+		it('自分に閲覧権限のない投稿は含まれない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+			const carol = await signup({ username: 'carol' });
+
+			const alicePost = await post(alice, {
+				text: 'foo'
+			});
+
+			await post(bob, {
+				replyId: alicePost.id,
+				text: 'bar',
+				visibility: 'specified',
+				visibleUserIds: [alice.id]
+			});
+
+			const res = await request('/notes/replies', {
+				noteId: alicePost.id
+			}, carol);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('array');
+			expect(res.body).length(0);
+		}));
+	});
+
+	describe('notes/timeline', () => {
+		it('フォロワー限定投稿が含まれる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			await request('/following/create', {
+				userId: alice.id
+			}, bob);
+
+			const alicePost = await post(alice, {
+				text: 'foo',
+				visibility: 'followers'
+			});
+
+			const res = await request('/notes/timeline', {}, bob);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('array');
+			expect(res.body).length(1);
+			expect(res.body[0].id).equals(alicePost.id);
 		}));
 	});
 });

@@ -148,7 +148,7 @@ export default Vue.extend({
 		},
 
 		updateStats() {
-			this.$root.api('stats', {}, false, true).then(stats => {
+			this.$root.api('stats', {}, true).then(stats => {
 				this.stats = stats;
 			});
 		}
@@ -161,7 +161,7 @@ export default Vue.extend({
 	padding 16px
 
 	@media (min-width 500px)
-		padding 32px
+		padding 16px
 
 	> header
 		display flex

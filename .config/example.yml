@@ -108,13 +108,5 @@ autoAdmin: true
 #  port: 9200
 #  pass: null
 
-# ServiceWorker
-#sw:
-#  # Public key of VAPID
-#  public_key: example-sw-public-key
-#
-#  # Private key of VAPID
-#  private_key: example-sw-private-key
-
 # Clustering
 #clusterLimit: 1

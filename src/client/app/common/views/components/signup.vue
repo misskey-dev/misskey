@@ -50,6 +50,7 @@ import { toUnicode } from 'punycode';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/signup.vue'),
+
 	data() {
 		return {
 			host: toUnicode(host),
@@ -64,6 +65,7 @@ export default Vue.extend({
 			meta: null
 		}
 	},
+
 	computed: {
 		shouldShowProfileUrl(): boolean {
 			return (this.username != '' &&
@@ -72,17 +74,20 @@ export default Vue.extend({
 				this.usernameState != 'max-range');
 		}
 	},
+
 	created() {
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	},
+
 	mounted() {
 		const head = document.getElementsByTagName('head')[0];
 		const script = document.createElement('script');
 		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
 		head.appendChild(script);
 	},
+
 	methods: {
 		onChangeUsername() {
 			if (this.username == '') {
@@ -111,6 +116,7 @@ export default Vue.extend({
 				this.usernameState = 'error';
 			});
 		},
+
 		onChangePassword() {
 			if (this.password == '') {
 				this.passwordStrength = '';
@@ -120,6 +126,7 @@ export default Vue.extend({
 			const strength = getPasswordStrength(this.password);
 			this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
 		},
+
 		onChangePasswordRetype() {
 			if (this.retypedPassword == '') {
 				this.passwordRetypeState = null;
@@ -128,18 +135,20 @@ export default Vue.extend({
 
 			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
 		},
+
 		onSubmit() {
 			this.$root.api('signup', {
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
-			}, true).then(() => {
+			}).then(() => {
 				this.$root.api('signin', {
 					username: this.username,
 					password: this.password
-				}, true).then(() => {
-					location.href = '/';
+				}).then(res => {
+					localStorage.setItem('i', res.i);
+					location.reload();
 				});
 			}).catch(() => {
 				alert(this.$t('some-error'));
@@ -154,8 +163,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .mk-signup
 	min-width 302px
 </style>

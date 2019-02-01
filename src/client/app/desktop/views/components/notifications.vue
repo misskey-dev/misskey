@@ -23,7 +23,9 @@
 								</router-link>
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
+								<fa icon="quote-left"/>
+									<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+								<fa icon="quote-right"/>
 							</router-link>
 						</div>
 					</template>
@@ -37,7 +39,9 @@
 								</router-link>
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
-								<fa icon="quote-left"/>{{ getNoteSummary(notification.note.renote) }}<fa icon="quote-right"/>
+								<fa icon="quote-left"/>
+									<mfm :text="getNoteSummary(notification.note.renote)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.renote.emojis"/>
+								<fa icon="quote-right"/>
 							</router-link>
 						</div>
 					</template>
@@ -50,7 +54,9 @@
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
 							</p>
-							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</router-link>
+							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+								<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+							</router-link>
 						</div>
 					</template>
 
@@ -84,7 +90,9 @@
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
 							</p>
-							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</router-link>
+							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+								<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+							</router-link>
 						</div>
 					</template>
 
@@ -96,7 +104,9 @@
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
 							</p>
-							<a class="note-preview" :href="notification.note | notePage" :title="getNoteSummary(notification.note)">{{ getNoteSummary(notification.note) }}</a>
+							<a class="note-preview" :href="notification.note | notePage" :title="getNoteSummary(notification.note)">
+								<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+							</a>
 						</div>
 					</template>
 
@@ -107,7 +117,9 @@
 								<mk-user-name :user="notification.user"/>
 							</a></p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-								<fa icon="quote-left"/>{{ getNoteSummary(notification.note) }}<fa icon="quote-right"/>
+								<fa icon="quote-left"/>
+									<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+								<fa icon="quote-right"/>
 							</router-link>
 						</div>
 					</template>
@@ -236,7 +248,7 @@ export default Vue.extend({
 				padding 16px
 				overflow-wrap break-word
 				font-size 12px
-				border-bottom solid 1px var(--faceDivider)
+				border-bottom solid var(--lineWidth) var(--faceDivider)
 
 				&:last-child
 					border-bottom none
@@ -320,7 +332,7 @@ export default Vue.extend({
 				font-size 0.8em
 				color var(--dateDividerFg)
 				background var(--dateDividerBg)
-				border-bottom solid 1px var(--faceDivider)
+				border-bottom solid var(--lineWidth) var(--faceDivider)
 
 				span
 					margin 0 16px
@@ -333,7 +345,7 @@ export default Vue.extend({
 		width 100%
 		padding 16px
 		color var(--text)
-		border-top solid 1px rgba(#000, 0.05)
+		border-top solid var(--lineWidth) rgba(#000, 0.05)
 
 		&:hover
 			background rgba(#000, 0.025)

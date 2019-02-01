@@ -1,12 +1,13 @@
 <template>
-<div class="jnhmugbb">
+<div>
 	<ui-card>
 		<div slot="title"><fa icon="plus"/> {{ $t('add-moderator.title') }}</div>
 		<section class="fit-top">
 			<ui-input v-model="username" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="add" :disabled="adding">{{ $t('add-moderator.add') }}</ui-button>
+			<ui-button @click="add" :disabled="changing">{{ $t('add-moderator.add') }}</ui-button>
+			<ui-button @click="remove" :disabled="changing">{{ $t('add-moderator.remove') }}</ui-button>
 		</section>
 	</ui-card>
 </div>
@@ -23,13 +24,13 @@ export default Vue.extend({
 	data() {
 		return {
 			username: '',
-			adding: false
+			changing: false
 		};
 	},
 
 	methods: {
 		async add() {
-			this.adding = true;
+			this.changing = true;
 
 			const process = async () => {
 				const user = await this.$root.api('users/show', parseAcct(this.username));
@@ -47,15 +48,30 @@ export default Vue.extend({
 				});
 			});
 
-			this.adding = false;
+			this.changing = false;
+		},
+
+		async remove() {
+			this.changing = true;
+
+			const process = async () => {
+				const user = await this.$root.api('users/show', parseAcct(this.username));
+				await this.$root.api('admin/moderators/remove', { userId: user.id });
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('add-moderator.removed')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
+
+			this.changing = false;
 		},
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.jnhmugbb
-	@media (min-width 500px)
-		padding 16px
-
-</style>

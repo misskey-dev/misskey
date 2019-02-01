@@ -1,5 +1,5 @@
 <template>
-<div class="cdeuzmsthagexbkpofbmatmugjuvogfb">
+<div>
 	<ui-card>
 		<div slot="title"><fa icon="broadcast-tower"/> {{ $t('announcements') }}</div>
 		<section v-for="(announcement, i) in announcements" class="fit-top">
@@ -83,10 +83,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.cdeuzmsthagexbkpofbmatmugjuvogfb
-	@media (min-width 500px)
-		padding 16px
-
-</style>

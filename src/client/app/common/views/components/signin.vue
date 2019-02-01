@@ -6,11 +6,14 @@
 		<span slot="prefix">@</span>
 		<span slot="suffix">@{{ host }}</span>
 	</ui-input>
-	<ui-input v-model="password" type="password" required styl="fill">
+	<ui-input v-model="password" type="password" :with-password-toggle="true" required styl="fill">
 		<span>{{ $t('password') }}</span>
 		<span slot="prefix"><fa icon="lock"/></span>
 	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill"/>
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill">
+		<span>{{ $t('@.2fa') }}</span>
+		<span slot="prefix"><fa icon="gavel"/></span>
+	</ui-input>
 	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
 	<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`">{{ $t('signin-with-twitter') }}</a></p>
 	<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`">{{ $t('signin-with-github') }}</a></p>
@@ -26,6 +29,7 @@ import { toUnicode } from 'punycode';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/signin.vue'),
+
 	props: {
 		withAvatar: {
 			type: Boolean,
@@ -33,6 +37,7 @@ export default Vue.extend({
 			default: true
 		}
 	},
+
 	data() {
 		return {
 			signing: false,
@@ -45,11 +50,13 @@ export default Vue.extend({
 			meta: null
 		};
 	},
+
 	created() {
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	},
+
 	methods: {
 		onUsernameChange() {
 			this.$root.api('users/show', {
@@ -60,6 +67,7 @@ export default Vue.extend({
 				this.user = null;
 			});
 		},
+
 		onSubmit() {
 			this.signing = true;
 
@@ -67,7 +75,7 @@ export default Vue.extend({
 				username: this.username,
 				password: this.password,
 				token: this.user && this.user.twoFactorEnabled ? this.token : undefined
-			}, true).then(res => {
+			}).then(res => {
 				localStorage.setItem('i', res.i);
 				location.reload();
 			}).catch(() => {
@@ -80,8 +88,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 .mk-signin
 	color #555
 

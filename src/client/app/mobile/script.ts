@@ -31,7 +31,7 @@ import MkReversi from './views/pages/games/reversi.vue';
 import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
-import MkNotFound from '../common/views/pages/404.vue';
+import MkNotFound from '../common/views/pages/not-found.vue';
 
 import PostForm from './views/components/post-form-dialog.vue';
 import FileChooser from './views/components/drive-file-chooser.vue';
@@ -60,6 +60,7 @@ init((launch) => {
 
 				const vm = this.$root.new(PostForm, {
 					reply: o.reply,
+					mention: o.mention,
 					renote: o.renote
 				});
 
@@ -134,7 +135,7 @@ init((launch) => {
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/share', component: MkShare },
-			{ path: '/reversi/:game?', name: 'reversi', component: MkReversi },
+			{ path: '/games/reversi/:game?', name: 'reversi', component: MkReversi },
 			{ path: '/@:user', component: () => import('./views/pages/user.vue').then(m => m.default) },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },

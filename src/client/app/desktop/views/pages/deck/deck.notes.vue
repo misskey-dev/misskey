@@ -11,20 +11,21 @@
 	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
-	<transition-group name="mk-notes" class="transition notes" ref="notes">
+	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="transition notes" ref="notes" tag="div">
 		<template v-for="(note, i) in _notes">
 			<x-note
 				:note="note"
 				:key="note.id"
 				@update:note="onNoteUpdated(i, $event)"
 				:media-view="mediaView"
+				:compact="true"
 				:mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
 				<span><fa icon="angle-up"/>{{ note._datetext }}</span>
 				<span><fa icon="angle-down"/>{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</transition-group>
+	</component>
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
@@ -214,7 +215,7 @@ export default Vue.extend({
 			text-align center
 			color var(--dateDividerFg)
 			background var(--dateDividerBg)
-			border-bottom solid 1px var(--faceDivider)
+			border-bottom solid var(--lineWidth) var(--faceDivider)
 
 			span
 				margin 0 16px
@@ -231,7 +232,7 @@ export default Vue.extend({
 			text-align center
 			color #ccc
 			background var(--face)
-			border-top solid 1px var(--faceDivider)
+			border-top solid var(--lineWidth) var(--faceDivider)
 			border-bottom-left-radius 6px
 			border-bottom-right-radius 6px
 

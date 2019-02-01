@@ -42,6 +42,7 @@ export interface INote extends IObject {
 	type: 'Note';
 	_misskey_content: string;
 	_misskey_quote: string;
+	_misskey_question: string;
 }
 
 export interface IPerson extends IObject {
@@ -56,7 +57,7 @@ export interface IPerson extends IObject {
 	following: any;
 	featured?: any;
 	outbox: any;
-	endpoints: string[];
+	endpoints: any;
 }
 
 export const isCollection = (object: IObject): object is ICollection =>

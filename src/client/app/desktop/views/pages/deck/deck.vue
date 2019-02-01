@@ -179,7 +179,6 @@ export default Vue.extend({
 		add() {
 			this.$root.new(Menu, {
 				source: this.$refs.add,
-				compact: true,
 				items: [{
 					icon: 'home',
 					text: this.$t('@deck.home'),

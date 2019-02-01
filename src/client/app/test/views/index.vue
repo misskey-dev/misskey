@@ -9,7 +9,7 @@
 		</section>
 		<section>
 			<header>Preview</header>
-			<misskey-flavored-markdown :text="mfm" :i="$store.state.i"/>
+			<mfm :text="mfm" :i="$store.state.i"/>
 		</section>
 		<section>
 			<header style="margin-bottom:0;">AST</header>
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parse from '../../../../mfm/parse';
+import { parse } from '../../../../mfm/parse';
 import * as JSON5 from 'json5';
 
 export default Vue.extend({

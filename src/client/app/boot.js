@@ -69,16 +69,18 @@
 	window.lang = lang;
 	//#endregion
 
-	let locale = localStorage.getItem('locale');
+	//#region Fetch locale data
+	const cachedLocale = localStorage.getItem('locale');
 	const localeKey = localStorage.getItem('localeKey');
 
-	if (locale == null || localeKey != `${ver}.${lang}`) {
+	if (cachedLocale == null || localeKey != `${ver}.${lang}`) {
 		const locale = await fetch(`/assets/locales/${lang}.json?ver=${ver}`)
 			.then(response => response.json());
 
-			localStorage.setItem('locale', JSON.stringify(locale));
-			localStorage.setItem('localeKey', `${ver}.${lang}`);
+		localStorage.setItem('locale', JSON.stringify(locale));
+		localStorage.setItem('localeKey', `${ver}.${lang}`);
 	}
+	//#endregion
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();

@@ -3,11 +3,7 @@
 	<span slot="header" v-if="!fetching"><fa icon="list"/>{{ list.title }}</span>
 
 	<main v-if="!fetching">
-		<ul>
-			<li v-for="user in users" :key="user.id"><router-link :to="user | userPage">
-				<mk-user-name :user="user"/>
-			</router-link></li>
-		</ul>
+		<x-editor :list="list"/>
 	</main>
 </mk-ui>
 </template>
@@ -15,13 +11,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
+import XEditor from '../../../common/views/components/user-list-editor.vue';
 
 export default Vue.extend({
+	components: {
+		XEditor
+	},
 	data() {
 		return {
 			fetching: true,
-			list: null,
-			users: null
+			list: null
 		};
 	},
 	watch: {
@@ -42,12 +41,6 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
-
-				this.$root.api('users/show', {
-					userIds: this.list.userIds
-				}).then(users => {
-					this.users = users;
-				});
 			});
 		}
 	}
@@ -55,8 +48,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-
-
 main
 	width 100%
 	max-width 680px

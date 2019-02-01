@@ -36,14 +36,12 @@ export const getFriends = async (me: mongodb.ObjectID, includeMe = true, remoteO
 
 	// ID list of other users who the I follows
 	const myfollowings = followings.map(following => ({
-		id: following.followeeId,
-		stalk: following.stalk
+		id: following.followeeId
 	}));
 
 	if (includeMe) {
 		myfollowings.push({
-			id: me,
-			stalk: true
+			id: me
 		});
 	}
 

@@ -385,7 +385,7 @@ export default class MiOS extends EventEmitter {
 	 * @param data パラメータ
 	 */
 	@autobind
-	public api(endpoint: string, data: { [x: string]: any } = {}, forceFetch = false, silent = false): Promise<{ [x: string]: any }> {
+	public api(endpoint: string, data: { [x: string]: any } = {}, silent = false): Promise<{ [x: string]: any }> {
 		if (!silent) {
 			if (++pending === 1) {
 				spinner = document.createElement('div');
@@ -401,66 +401,44 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream && this.stream.state == 'connected' && this.store.state.device.apiViaStream && !forceFetch;
+			// Append a credential
+			if (this.store.getters.isSignedIn) (data as any).i = this.store.state.i.token;
 
-			if (viaStream) {
-				const id = Math.random().toString().substr(2, 8);
+			const req = {
+				id: uuid(),
+				date: new Date(),
+				name: endpoint,
+				data,
+				res: null,
+				status: null
+			};
 
-				this.stream.once(`api:${id}`, res => {
-					if (res == null || Object.keys(res).length == 0) {
-						resolve(null);
-					} else if (res.res) {
-						resolve(res.res);
-					} else {
-						reject(res.e);
-					}
-				});
+			if (this.debug) {
+				this.requests.push(req);
+			}
 
-				this.stream.send('api', {
-					id: id,
-					ep: endpoint,
-					data: data
-				});
-			} else {
-				// Append a credential
-				if (this.store.getters.isSignedIn) (data as any).i = this.store.state.i.token;
-
-				const req = {
-					id: uuid(),
-					date: new Date(),
-					name: endpoint,
-					data,
-					res: null,
-					status: null
-				};
+			// Send request
+			fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
+				method: 'POST',
+				body: JSON.stringify(data),
+				credentials: endpoint === 'signin' ? 'include' : 'omit',
+				cache: 'no-cache'
+			}).then(async (res) => {
+				const body = res.status === 204 ? null : await res.json();
 
 				if (this.debug) {
-					this.requests.push(req);
+					req.status = res.status;
+					req.res = body;
 				}
 
-				// Send request
-				fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
-					method: 'POST',
-					body: JSON.stringify(data),
-					credentials: endpoint === 'signin' ? 'include' : 'omit',
-					cache: 'no-cache'
-				}).then(async (res) => {
-					const body = res.status === 204 ? null : await res.json();
-
-					if (this.debug) {
-						req.status = res.status;
-						req.res = body;
-					}
-
-					if (res.status === 200) {
-						resolve(body);
-					} else if (res.status === 204) {
-						resolve();
-					} else {
-						reject(body.error);
-					}
-				}).catch(reject);
-			}
+				if (res.status === 200) {
+					resolve(body);
+				} else if (res.status === 204) {
+					resolve();
+				} else {
+					reject(body.error);
+				}
+			}).catch(reject);
 		});
 
 		promise.then(onFinally, onFinally);

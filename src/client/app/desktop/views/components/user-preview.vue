@@ -8,7 +8,7 @@
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
 		<div class="description">
-			<misskey-flavored-markdown v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+			<mfm v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
 		</div>
 		<div class="status">
 			<div>
@@ -29,7 +29,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import * as anime from 'animejs';
+import anime from 'animejs';
 import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({

@@ -1,11 +1,12 @@
 <template>
-<div class="axbwjelsbymowqjyywpirzhdlszoncqs">
+<div>
 	<ui-card>
 		<div slot="title"><fa icon="cog"/> {{ $t('instance') }}</div>
 		<section class="fit-top fit-bottom">
 			<ui-input :value="host" readonly>{{ $t('host') }}</ui-input>
 			<ui-input v-model="name">{{ $t('instance-name') }}</ui-input>
 			<ui-textarea v-model="description">{{ $t('instance-description') }}</ui-textarea>
+			<ui-input v-model="mascotImageUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('logo-url') }}</ui-input>
 			<ui-input v-model="bannerUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('banner-url') }}</ui-input>
 			<ui-input v-model="errorImageUrl"><i slot="icon"><fa icon="link"/></i>{{ $t('error-image-url') }}</ui-input>
 			<ui-input v-model="languages"><i slot="icon"><fa icon="language"/></i>{{ $t('languages') }}<span slot="desc">{{ $t('languages-desc') }}</span></ui-input>
@@ -21,6 +22,8 @@
 		<section>
 			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
 			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
+			<ui-switch v-model="disableGlobalTimeline">{{ $t('disable-global-timeline') }}</ui-switch>
+			<ui-info>{{ $t('disabling-timelines-info') }}</ui-info>
 		</section>
 		<section class="fit-bottom">
 			<header><fa icon="cloud"/> {{ $t('drive-config') }}</header>
@@ -53,9 +56,18 @@
 			</ui-horizon-group>
 			<ui-horizon-group inputs>
 				<ui-input v-model="smtpUser" :disabled="!enableEmail">{{ $t('smtp-user') }}</ui-input>
-				<ui-input v-model="smtpPass" :disabled="!enableEmail">{{ $t('smtp-pass') }}</ui-input>
+				<ui-input v-model="smtpPass" type="password" :withPasswordToggle="true" :disabled="!enableEmail">{{ $t('smtp-pass') }}</ui-input>
 			</ui-horizon-group>
 			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<span slot="desc">{{ $t('smtp-secure-info') }}</span></ui-switch>
+		</section>
+		<section>
+			<header><fa :icon="faBolt"/> {{ $t('serviceworker-config') }}</header>
+			<ui-switch v-model="enableServiceWorker">{{ $t('enable-serviceworker') }}<span slot="desc">{{ $t('serviceworker-info') }}</span></ui-switch>
+			<ui-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></ui-info>
+			<ui-horizon-group inputs class="fit-bottom">
+				<ui-input v-model="swPublicKey" :disabled="!enableServiceWorker"><i slot="icon"><fa icon="key"/></i>{{ $t('vapid-publickey') }}</ui-input>
+				<ui-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><i slot="icon"><fa icon="key"/></i>{{ $t('vapid-privatekey') }}</ui-input>
+			</ui-horizon-group>
 		</section>
 		<section>
 			<header>summaly Proxy</header>
@@ -126,7 +138,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import { url, host } from '../../config';
 import { toUnicode } from 'punycode';
-import { faHeadset, faShieldAlt, faGhost, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faShieldAlt, faGhost, faUserPlus, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope as farEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -140,6 +152,8 @@ export default Vue.extend({
 			maintainerEmail: null,
 			disableRegistration: false,
 			disableLocalTimeline: false,
+			disableGlobalTimeline: false,
+			mascotImageUrl: null,
 			bannerUrl: null,
 			errorImageUrl: null,
 			name: null,
@@ -174,7 +188,10 @@ export default Vue.extend({
 			smtpPort: null,
 			smtpUser: null,
 			smtpPass: null,
-			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope
+			enableServiceWorker: false,
+			swPublicKey: null,
+			swPrivateKey: null,
+			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt
 		};
 	},
 
@@ -184,6 +201,8 @@ export default Vue.extend({
 			this.maintainerEmail = meta.maintainer.email;
 			this.disableRegistration = meta.disableRegistration;
 			this.disableLocalTimeline = meta.disableLocalTimeline;
+			this.disableGlobalTimeline = meta.disableGlobalTimeline;
+			this.mascotImageUrl = meta.mascotImageUrl;
 			this.bannerUrl = meta.bannerUrl;
 			this.errorImageUrl = meta.errorImageUrl;
 			this.name = meta.name;
@@ -217,6 +236,9 @@ export default Vue.extend({
 			this.smtpPort = meta.smtpPort;
 			this.smtpUser = meta.smtpUser;
 			this.smtpPass = meta.smtpPass;
+			this.enableServiceWorker = meta.enableServiceWorker;
+			this.swPublicKey = meta.swPublickey;
+			this.swPrivateKey = meta.swPrivateKey;
 		});
 	},
 
@@ -238,6 +260,8 @@ export default Vue.extend({
 				maintainerEmail: this.maintainerEmail,
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
+				disableGlobalTimeline: this.disableGlobalTimeline,
+				mascotImageUrl: this.mascotImageUrl,
 				bannerUrl: this.bannerUrl,
 				errorImageUrl: this.errorImageUrl,
 				name: this.name,
@@ -270,7 +294,10 @@ export default Vue.extend({
 				smtpHost: this.smtpHost,
 				smtpPort: parseInt(this.smtpPort, 10),
 				smtpUser: this.smtpUser,
-				smtpPass: this.smtpPass
+				smtpPass: this.smtpPass,
+				enableServiceWorker: this.enableServiceWorker,
+				swPublicKey: this.swPublicKey,
+				swPrivateKey: this.swPrivateKey
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
@@ -286,10 +313,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.axbwjelsbymowqjyywpirzhdlszoncqs
-	@media (min-width 500px)
-		padding 16px
-
-</style>

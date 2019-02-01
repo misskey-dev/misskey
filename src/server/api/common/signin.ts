@@ -3,7 +3,7 @@ import * as Koa from 'koa';
 import config from '../../../config';
 import { ILocalUser } from '../../../models/user';
 
-export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
+export default function(ctx: Koa.BaseContext, user: ILocalUser, redirect = false) {
 	if (redirect) {
 		//#region Cookie
 		const expires = 1000 * 60 * 60 * 24 * 365; // One Year

@@ -1,4 +1,4 @@
-import parse from '../../../../mfm/parse';
+import { parse } from '../../../../mfm/parse';
 import { sum, unique } from '../../../../prelude/array';
 import shouldMuteNote from './should-mute-note';
 import MkNoteMenu from '../views/components/note-menu.vue';
@@ -65,6 +65,10 @@ export default (opts: Opts = {}) => ({
 			return this.isRenote ? this.note.renote : this.note;
 		},
 
+		isMyNote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
 		reactionsCount(): number {
 			return this.appearNote.reactionCounts
 				? sum(Object.values(this.appearNote.reactionCounts))
@@ -72,7 +76,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		title(): string {
-			return new Date(this.appearNote.createdAt).toLocaleString();
+			return '';
 		},
 
 		urls(): string[] {
@@ -80,8 +84,8 @@ export default (opts: Opts = {}) => ({
 				const ast = parse(this.appearNote.text);
 				// TODO: 再帰的にURL要素がないか調べる
 				return unique(ast
-					.filter(t => ((t.name == 'url' || t.name == 'link') && t.props.url && !t.props.silent))
-					.map(t => t.props.url));
+					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
+					.map(t => t.node.props.url));
 			} else {
 				return null;
 			}
@@ -125,9 +129,7 @@ export default (opts: Opts = {}) => ({
 				source: this.$refs.reactButton,
 				note: this.appearNote,
 				showFocus: viaKeyboard,
-				animation: !viaKeyboard,
-				compact: opts.mobile,
-				big: opts.mobile
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 
@@ -135,6 +137,14 @@ export default (opts: Opts = {}) => ({
 			(this.$root.api('notes/reactions/create', {
 				noteId: this.appearNote.id,
 				reaction: reaction
+			});
+		},
+
+		undoReact(note) {
+			const oldReaction = note.myReaction;
+			if (!oldReaction) return;
+			this.$root.api('notes/reactions/delete', {
+				noteId: note.id
 			});
 		},
 
@@ -159,8 +169,7 @@ export default (opts: Opts = {}) => ({
 			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
-				animation: !viaKeyboard,
-				compact: opts.mobile,
+				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},
 

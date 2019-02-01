@@ -21,6 +21,9 @@ block og
 block meta
 	meta(name='twitter:card' content='summary')
 
+	if user.twitter
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
+
 	if !user.host
 		link(rel='alternate' href=`${config.url}/users/${user._id}` type='application/activity+json')
 	if user.uri

@@ -3,21 +3,9 @@
 	<div class="friend-form" v-if="$store.state.i.id != user.id">
 		<mk-follow-button :user="user" block/>
 		<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
-		<p class="stalk" v-if="user.isFollowing">
-			<span v-if="user.isStalking">{{ $t('stalking') }} <a @click="unstalk"><fa icon="meh"/> {{ $t('unstalk') }}</a></span>
-			<span v-if="!user.isStalking"><a @click="stalk"><fa icon="user-secret"/> {{ $t('stalk') }}</a></span>
-		</p>
 	</div>
 	<div class="action-form">
-		<ui-button @click="user.isMuted ? unmute() : mute()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isMuted"><fa icon="eye"/> {{ $t('unmute') }}</span>
-			<span v-else><fa :icon="['far', 'eye-slash']"/> {{ $t('mute') }}</span>
-		</ui-button>
-		<ui-button @click="user.isBlocking ? unblock() : block()" v-if="$store.state.i.id != user.id">
-			<span v-if="user.isBlocking"><fa icon="ban"/> {{ $t('unblock') }}</span>
-			<span v-else><fa icon="ban"/> {{ $t('block') }}</span>
-		</ui-button>
-		<ui-button @click="list"><fa icon="list"/> {{ $t('push-to-a-list') }}</ui-button>
+		<ui-button @click="menu" ref="menu">{{ $t('menu') }}</ui-button>
 	</div>
 </div>
 </template>
@@ -25,99 +13,19 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import MkUserListsWindow from '../../components/user-lists-window.vue';
+import XUserMenu from '../../../../common/views/components/user-menu.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/user/user.profile.vue'),
 	props: ['user'],
 
 	methods: {
-		stalk() {
-			this.$root.api('following/stalk', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isStalking = true;
-			}, () => {
-				alert('error');
+		menu() {
+			this.$root.new(XUserMenu, {
+				source: this.$refs.menu.$el,
+				user: this.user
 			});
 		},
-
-		unstalk() {
-			this.$root.api('following/unstalk', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isStalking = false;
-			}, () => {
-				alert('error');
-			});
-		},
-
-		mute() {
-			this.$root.api('mute/create', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isMuted = true;
-			}, () => {
-				alert('error');
-			});
-		},
-
-		unmute() {
-			this.$root.api('mute/delete', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isMuted = false;
-			}, () => {
-				alert('error');
-			});
-		},
-
-		block() {
-			this.$root.dialog({
-				type: 'warning',
-				text: this.$t('block-confirm'),
-				showCancelButton: true
-			}).then(({ canceled }) => {
-				if (canceled) return;
-
-				this.$root.api('blocking/create', {
-					userId: this.user.id
-				}).then(() => {
-					this.user.isBlocking = true;
-				}, () => {
-					alert('error');
-				});
-			});
-		},
-
-		unblock() {
-			this.$root.api('blocking/delete', {
-				userId: this.user.id
-			}).then(() => {
-				this.user.isBlocking = false;
-			}, () => {
-				alert('error');
-			});
-		},
-
-		list() {
-			const w = this.$root.new(MkUserListsWindow);
-			w.$once('choosen', async list => {
-				w.close();
-				await this.$root.api('users/lists/push', {
-					listId: list.id,
-					userId: this.user.id
-				});
-				this.$root.dialog({
-					type: 'success',
-					title: 'Done!',
-					text: this.$t('list-pushed', {
-						user: this.user.name,
-						list: list.title
-					})
-				});
-			});
-		}
 	}
 });
 </script>
@@ -142,12 +50,8 @@ export default Vue.extend({
 			text-align center
 			line-height 24px
 			font-size 0.8em
-			color #71afc7
-			background #eefaff
+			color var(--text)
 			border-radius 4px
-
-		> .stalk
-			margin 12px 0 0 0
 
 	> .action-form
 		padding 16px

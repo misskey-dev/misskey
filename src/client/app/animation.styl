@@ -10,3 +10,32 @@
 	opacity: 0;
 	transform: scaleY(0);
 }
+
+.entranceFromTop {
+	animation-duration: 0.5s;
+	animation-name: entranceFromTop;
+}
+
+@keyframes entranceFromTop {
+	from {
+		opacity: 0;
+		transform: translateY(-64px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+@keyframes jump {
+	0% { transform: translateY(0); }
+	25% { transform: translateY(-16px); }
+	50% { transform: translateY(0); }
+	75% { transform: translateY(-8px); }
+	100% { transform: translateY(0); }
+}

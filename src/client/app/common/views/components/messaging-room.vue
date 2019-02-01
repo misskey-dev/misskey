@@ -79,6 +79,7 @@ export default Vue.extend({
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
+		this.connection.on('deleted', this.onDeleted);
 
 		if (this.isNaked) {
 			window.addEventListener('scroll', this.onScroll, { passive: true });
@@ -201,6 +202,13 @@ export default Vue.extend({
 					const exist = this.messages.map(x => x.id).indexOf(id);
 					this.messages[exist].isRead = true;
 				}
+			}
+		},
+
+		onDeleted(id) {
+			const msg = this.messages.find(m => m.id === id);
+			if (msg) {
+				this.messages = this.messages.filter(m => m.id !== msg.id);
 			}
 		},
 

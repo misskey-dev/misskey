@@ -22,7 +22,7 @@ export default function(type, data): Notification {
 
 		case 'unreadMessagingMessage':
 			return {
-				title: '%i18n:common.notification.message-from%'.split("{}")[0] + `${getUserName(data.user)}` + '%i18n:common.notification.message-from%'.split("{}")[1] ,
+				title: '%i18n:common.notification.message-from%'.split('{}')[0] + `${getUserName(data.user)}` + '%i18n:common.notification.message-from%'.split('{}')[1] ,
 				body: data.text, // TODO: getMessagingMessageSummary(data),
 				icon: data.user.avatarUrl
 			};
@@ -30,7 +30,7 @@ export default function(type, data): Notification {
 		case 'reversiInvited':
 			return {
 				title: '%i18n:common.notification.reversi-invited%',
-				body: '%i18n:common.notification.reversi-invited-by%'.split("{}")[0] + `${getUserName(data.parent)}` + '%i18n:common.notification.reversi-invited-by%'.split("{}")[1],
+				body: '%i18n:common.notification.reversi-invited-by%'.split('{}')[0] + `${getUserName(data.parent)}` + '%i18n:common.notification.reversi-invited-by%'.split('{}')[1],
 				icon: data.parent.avatarUrl
 			};
 
@@ -38,21 +38,21 @@ export default function(type, data): Notification {
 			switch (data.type) {
 				case 'mention':
 					return {
-						title: '%i18n:common.notification.notified-by%'.split("{}")[0] + `${getUserName(data.user)}:` + '%i18n:common.notification.notified-by%'.split("{}")[1],
+						title: '%i18n:common.notification.notified-by%'.split('{}')[0] + `${getUserName(data.user)}:` + '%i18n:common.notification.notified-by%'.split('{}')[1],
 						body: getNoteSummary(data),
 						icon: data.user.avatarUrl
 					};
 
 				case 'reply':
 					return {
-						title: '%i18n:common.notification.reply-from%'.split("{}")[0] + `${getUserName(data.user)}` + '%i18n:common.notification.reply-from%'.split("{}")[1],
+						title: '%i18n:common.notification.reply-from%'.split('{}')[0] + `${getUserName(data.user)}` + '%i18n:common.notification.reply-from%'.split('{}')[1],
 						body: getNoteSummary(data),
 						icon: data.user.avatarUrl
 					};
 
 				case 'quote':
 					return {
-						title: '%i18n:common.notification.quoted-by%'.split("{}")[0] + `${getUserName(data.user)}` + '%i18n:common.notification.quoted-by%'.split("{}")[1],
+						title: '%i18n:common.notification.quoted-by%'.split('{}')[0] + `${getUserName(data.user)}` + '%i18n:common.notification.quoted-by%'.split('{}')[1],
 						body: getNoteSummary(data),
 						icon: data.user.avatarUrl
 					};

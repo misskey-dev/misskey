@@ -26,7 +26,7 @@
 	</section>
 	<section v-if="myGames.length > 0">
 		<h2>{{ $t('my-games') }}</h2>
-		<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
+		<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/games/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>
@@ -36,7 +36,7 @@
 	</section>
 	<section v-if="games.length > 0">
 		<h2>{{ $t('all-games') }}</h2>
-		<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
+		<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/games/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>

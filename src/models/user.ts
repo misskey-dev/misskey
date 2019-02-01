@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
@@ -48,11 +48,17 @@ type IUserBase = {
 	lang?: string;
 	pinnedNoteIds: mongo.ObjectID[];
 	emojis?: string[];
+	tags?: string[];
 
 	/**
 	 * 凍結されているか否か
 	 */
 	isSuspended: boolean;
+
+	/**
+	 * サイレンスされているか否か
+	 */
+	isSilenced: boolean;
 
 	/**
 	 * 鍵アカウントか否か
@@ -68,6 +74,11 @@ type IUserBase = {
 	 * Botからのフォローを承認制にするか
 	 */
 	carefulBot: boolean;
+
+	/**
+	 * フォローしているユーザーからのフォローリクエストを自動承認するか
+	 */
+	autoAcceptFollowed: boolean;
 
 	/**
 	 * このアカウントに届いているフォローリクエストの数
@@ -155,7 +166,7 @@ export const isRemoteUser = (user: any): user is IRemoteUser =>
 
 //#region Validators
 export function validateUsername(username: string, remote?: boolean): boolean {
-	return typeof username == 'string' && (remote ? /^\w+([\w\.-]+\w+)?$/ : /^[a-zA-Z0-9_]{1,20}$/).test(username);
+	return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
 }
 
 export function validatePassword(password: string): boolean {
@@ -212,8 +223,8 @@ export async function getRelation(me: mongo.ObjectId, target: mongo.ObjectId) {
 	]);
 
 	return {
+		id: target,
 		isFollowing: following1 !== null,
-		isStalking: following1 ? following1.stalk : false,
 		hasPendingFollowRequestFromYou: followReq1 !== null,
 		hasPendingFollowRequestToYou: followReq2 !== null,
 		isFollowed: following2 !== null,
@@ -301,6 +312,7 @@ export const pack = (
 		delete _user.password;
 		delete _user.token;
 		delete _user.twoFactorTempSecret;
+		delete _user.two_factor_temp_secret; // 後方互換性のため
 		delete _user.twoFactorSecret;
 		if (_user.twitter) {
 			delete _user.twitter.accessToken;
@@ -346,7 +358,6 @@ export const pack = (
 
 		_user.isFollowing = relation.isFollowing;
 		_user.isFollowed = relation.isFollowed;
-		_user.isStalking = relation.isStalking;
 		_user.hasPendingFollowRequestFromYou = relation.hasPendingFollowRequestFromYou;
 		_user.hasPendingFollowRequestToYou = relation.hasPendingFollowRequestToYou;
 		_user.isBlocking = relation.isBlocking;

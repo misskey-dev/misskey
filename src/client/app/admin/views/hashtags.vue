@@ -39,10 +39,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.jdnqwkzlnxcfftthoybjxrebyolvoucw
-	width 100%
-	min-height 300px
-
-</style>

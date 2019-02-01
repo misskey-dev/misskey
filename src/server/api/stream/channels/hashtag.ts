@@ -20,7 +20,8 @@ export default class extends Channel {
 
 		// Subscribe stream
 		this.subscriber.on('hashtag', async note => {
-			const matched = q.some(tags => tags.every(tag => note.tags.map((t: string) => t.toLowerCase()).includes(tag.toLowerCase())));
+			const noteTags = note.tags.map((t: string) => t.toLowerCase());
+			const matched = q.some(tags => tags.every(tag => noteTags.includes(tag.toLowerCase())));
 			if (!matched) return;
 
 			// Renoteなら再pack

@@ -7,9 +7,10 @@
 		<router-link :to="user | userPage" class="name">
 			<mk-user-name :user="user"/>
 		</router-link>
-		<span class="username">@{{ user | acct }}</span>
+		<span class="username">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
+
 		<div class="description">
-			<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+			<mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 		</div>
 	</div>
 </div>
@@ -74,6 +75,9 @@ export default Vue.extend({
 		> .username
 			display block
 			opacity 0.7
+
+			> .locked
+				opacity 0.8
 
 		> .description
 			margin 8px 0 16px 0

@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<span slot="header">
-		<fa icon="user"/><span>{{ title }}</span>
+		<fa icon="user"/><mk-user-name :user="user" v-if="user"/>
 	</span>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
@@ -19,20 +19,20 @@
 				<span class="name">
 					<mk-user-name :user="user"/>
 				</span>
-				<span class="acct">@{{ user | acct }}</span>
+				<span class="acct">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
 			</div>
 		</header>
 		<div class="info">
 			<div class="description">
-				<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+				<mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
 			<div class="fields" v-if="user.fields">
 				<dl class="field" v-for="(field, i) in user.fields" :key="i">
 					<dt class="name">
-						<misskey-flavored-markdown :text="field.name" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+						<mfm :text="field.name" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
 					</dt>
 					<dd class="value">
-						<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+						<mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 					</dd>
 				</dl>
 			</div>
@@ -97,8 +97,7 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
-import Menu from '../../../../common/views/components/menu.vue';
-import MkUserListsWindow from '../../components/user-lists-window.vue';
+import XUserMenu from '../../../../common/views/components/user-menu.vue';
 import { concat } from '../../../../../../prelude/array';
 import * as ApexCharts from 'apexcharts';
 
@@ -134,10 +133,6 @@ export default Vue.extend({
 	},
 
 	computed: {
-		title(): string {
-			return this.user ? Vue.filter('userName')(this.user) : '';
-		},
-
 		bannerStyle(): any {
 			if (this.user == null) return {};
 			if (this.user.bannerUrl == null) return {};
@@ -166,6 +161,7 @@ export default Vue.extend({
 			this.$root.api('users/notes', {
 				userId: this.user.id,
 				fileType: image,
+				excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
 				limit: 9,
 				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
@@ -219,8 +215,7 @@ export default Vue.extend({
 					},
 					plotOptions: {
 						bar: {
-							columnWidth: '90%',
-							endingShape: 'rounded'
+							columnWidth: '90%'
 						}
 					},
 					grid: {
@@ -308,29 +303,9 @@ export default Vue.extend({
 		},
 
 		menu() {
-			let menu = [{
-				icon: 'list',
-				text: this.$t('push-to-a-list'),
-				action: () => {
-					const w = this.$root.new(MkUserListsWindow);
-					w.$once('choosen', async list => {
-						w.close();
-						await this.$root.api('users/lists/push', {
-							listId: list.id,
-							userId: this.user.id
-						});
-						this.$root.dialog({
-							type: 'success',
-							splash: true
-						});
-					});
-				}
-			}];
-
-			this.$root.new(Menu, {
+			this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
-				compact: false,
-				items: menu
+				user: this.user
 			});
 		},
 
@@ -405,6 +380,9 @@ export default Vue.extend({
 				opacity 0.7
 				text-shadow 0 0 8px #000
 
+				> .locked
+					opacity 0.8
+
 	> .info
 		padding 16px
 		font-size 12px
@@ -454,9 +432,9 @@ export default Vue.extend({
 
 		> .counts
 			display grid
-			grid-template-columns 1fr 1fr 1fr
+			grid-template-columns 2fr 2fr 2fr
 			margin-top 8px
-			border-top solid 1px var(--faceDivider)
+			border-top solid var(--lineWidth) var(--faceDivider)
 
 			> div
 				padding 8px 8px 0 8px

@@ -4,7 +4,7 @@
 		<mk-user-name :user="user"/>
 	</template>
 	<main v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('is-suspended') }}</p></div>
+		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</p></div>
 		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
 		<header>
 			<div class="banner" :style="style"></div>
@@ -22,15 +22,15 @@
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
-					<misskey-flavored-markdown v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 				</div>
 				<div class="fields" v-if="user.fields">
 					<dl class="field" v-for="(field, i) in user.fields" :key="i">
 						<dt class="name">
-							<misskey-flavored-markdown :text="field.name" :shouldBreak="false" :plainText="true" :custom-emojis="user.emojis"/>
+							<mfm :text="field.name" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
 						</dt>
 						<dd class="value">
-							<misskey-flavored-markdown :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+							<mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 						</dd>
 					</dl>
 				</div>
@@ -80,7 +80,7 @@ import i18n from '../../../i18n';
 import * as age from 's-age';
 import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
-import Menu from '../../../common/views/components/menu.vue';
+import XUserMenu from '../../../common/views/components/user-menu.vue';
 import XHome from './user/home.vue';
 
 export default Vue.extend({
@@ -127,84 +127,9 @@ export default Vue.extend({
 		},
 
 		menu() {
-			let menu = [{
-				icon: ['fas', 'list'],
-				text: this.$t('push-to-list'),
-				action: async () => {
-					const lists = await this.$root.api('users/lists/list');
-					const { canceled, result: listId } = await this.$root.dialog({
-						type: null,
-						title: this.$t('select-list'),
-						select: {
-							items: lists.map(list => ({
-								value: list.id, text: list.title
-							}))
-						},
-						showCancelButton: true
-					});
-					if (canceled) return;
-					await this.$root.api('users/lists/push', {
-						listId: listId,
-						userId: this.user.id
-					});
-					this.$root.dialog({
-						type: 'success',
-						text: this.$t('list-pushed', {
-							user: this.user.name,
-							list: lists.find(l => l.id === listId).title
-						})
-					});
-				}
-			}, null, {
-				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
-				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
-				action: () => {
-					if (this.user.isMuted) {
-						this.$root.api('mute/delete', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isMuted = false;
-						}, () => {
-							alert('error');
-						});
-					} else {
-						this.$root.api('mute/create', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isMuted = true;
-						}, () => {
-							alert('error');
-						});
-					}
-				}
-			}, {
-				icon: 'ban',
-				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
-				action: () => {
-					if (this.user.isBlocking) {
-						this.$root.api('blocking/delete', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isBlocking = false;
-						}, () => {
-							alert('error');
-						});
-					} else {
-						this.$root.api('blocking/create', {
-							userId: this.user.id
-						}).then(() => {
-							this.user.isBlocking = true;
-						}, () => {
-							alert('error');
-						});
-					}
-				}
-			}];
-
-			this.$root.new(Menu, {
+			this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
-				compact: true,
-				items: menu
+				user: this.user
 			});
 		},
 	}
@@ -364,6 +289,9 @@ main
 
 					> i
 						font-size 14px
+
+				> button
+					color var(--text)
 
 	> nav
 		position -webkit-sticky

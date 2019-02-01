@@ -1,6 +1,8 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
+import { getFriends } from '../../common/get-friends';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -33,13 +35,54 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	const [followings, hideUserIds] = await Promise.all([
+		// フォローを取得
+		// Fetch following
+		user ? getFriends(user._id) : [],
 
-	const notes = await Note.find({
-			replyId: ps.noteId
+		// 隠すユーザーを取得
+		getHideUserIds(user)
+	]);
+
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for followers/specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}, {
+		visibility: 'followers',
+		$or: [{
+			// フォロワーの投稿
+			userId: { $in: followings.map(f => f.id) },
 		}, {
-			limit: ps.limit,
-			skip: ps.offset
-		});
+			// 自分の投稿へのリプライ
+			'_reply.userId': user._id,
+		}, {
+			// 自分へのメンションが含まれている
+			mentions: { $in: [ user._id ] }
+		}]
+	}];
+
+	const q = {
+		replyId: ps.noteId,
+		$or: visibleQuery
+	} as any;
+
+	if (hideUserIds && hideUserIds.length > 0) {
+		q['userId'] = {
+			$nin: hideUserIds
+		};
+	}
+
+	const notes = await Note.find(q, {
+		limit: ps.limit,
+		skip: ps.offset
+	});
 
 	res(await packMany(notes, user));
 }));

@@ -3,7 +3,7 @@ import * as request from 'request-promise-native';
 import summaly from 'summaly';
 import fetchMeta from '../../misc/fetch-meta';
 
-module.exports = async (ctx: Koa.Context) => {
+module.exports = async (ctx: Koa.BaseContext) => {
 	const meta = await fetchMeta();
 
 	try {

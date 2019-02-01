@@ -34,8 +34,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import * as anime from 'animejs';
+import anime from 'animejs';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
+import updateAvatar from '../../api/update-avatar';
+import updateBanner from '../../api/update-banner';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/drive.file.vue'),
@@ -180,11 +182,11 @@ export default Vue.extend({
 		},
 
 		setAsAvatar() {
-			this.$updateAvatar(this.file);
+			updateAvatar(this.$root)(this.file);
 		},
 
 		setAsBanner() {
-			this.$updateBanner(this.file);
+			updateBanner(this.$root)(this.file);
 		},
 
 		addApp() {

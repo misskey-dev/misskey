@@ -1,10 +1,10 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Notification from '../../../../models/notification';
-import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/notification';
 import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 import define from '../../define';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -40,6 +40,16 @@ export const meta = {
 		markAsRead: {
 			validator: $.bool.optional,
 			default: true
+		},
+
+		includeTypes: {
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			default: [] as string[]
+		},
+
+		excludeTypes: {
+			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			default: [] as string[]
 		}
 	}
 };
@@ -50,15 +60,13 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('cannot set sinceId and untilId');
 	}
 
-	const mute = await Mute.find({
-		muterId: user._id
-	});
+	const hideUserIds = await getHideUserIds(user);
 
 	const query = {
 		notifieeId: user._id,
 		$and: [{
 			notifierId: {
-				$nin: mute.map(m => m.muteeId)
+				$nin: hideUserIds
 			}
 		}]
 	} as any;
@@ -86,6 +94,16 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	} else if (ps.untilId) {
 		query._id = {
 			$lt: ps.untilId
+		};
+	}
+
+	if (ps.includeTypes.length > 0) {
+		query.type = {
+			$in: ps.includeTypes
+		};
+	} else if (ps.excludeTypes.length > 0) {
+		query.type = {
+			$nin: ps.excludeTypes
 		};
 	}
 

@@ -1,7 +1,7 @@
 <template>
-<form class="search" @submit.prevent="onSubmit">
+<form class="wlvfdpkp" @submit.prevent="onSubmit">
 	<i><fa icon="search"/></i>
-	<input v-model="q" type="search" :placeholder="$t('placeholder')"/>
+	<input v-model="q" type="search" :placeholder="$t('placeholder')" v-autocomplete="{ model: 'q' }"/>
 	<div class="result"></div>
 </form>
 </template>
@@ -14,15 +14,36 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.search.vue'),
 	data() {
 		return {
-			q: ''
+			q: '',
+			wait: false
 		};
 	},
 	methods: {
-		onSubmit() {
-			if (this.q.startsWith('#')) {
-				this.$router.push(`/tags/${encodeURIComponent(this.q.substr(1))}`);
+		async onSubmit() {
+			if (this.wait) return;
+
+			const q = this.q.trim();
+			if (q.startsWith('@')) {
+				this.$router.push(`/${q}`);
+			} else if (q.startsWith('#')) {
+				this.$router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
+			} else if (q.startsWith('https://')) {
+				this.wait = true;
+				try {
+					const res = await this.$root.api('ap/show', {
+						uri: q
+					});
+					if (res.type == 'User') {
+						this.$router.push(`/@${res.object.username}@${res.object.host}`);
+					} else if (res.type == 'Note') {
+						this.$router.push(`/notes/${res.object.id}`);
+					}
+				} catch (e) {
+					// TODO
+				}
+				this.wait = false;
 			} else {
-				this.$router.push(`/search?q=${encodeURIComponent(this.q)}`);
+				this.$router.push(`/search?q=${encodeURIComponent(q)}`);
 			}
 		}
 	}
@@ -30,7 +51,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.search
+.wlvfdpkp
 	@media (max-width 800px)
 		display none !important
 

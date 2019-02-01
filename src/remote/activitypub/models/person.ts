@@ -9,7 +9,7 @@ import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
-import htmlToMFM from '../../../mfm/html-to-mfm';
+import { fromHtml } from '../../../mfm/fromHtml';
 import usersChart from '../../../chart/users';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
@@ -17,7 +17,9 @@ import registerInstance from '../../../services/register-instance';
 import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
-import { ITag } from './tag';
+import { ITag, extractHashtags } from './tag';
+import Following from '../../../models/following';
+import { IIdentifier } from './identifier';
 
 const log = debug('misskey:activitypub');
 
@@ -136,9 +138,9 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
-	const fields = await extractFields(person.attachment).catch(e => {
-		console.log(`cat not extract fields: ${e}`);
-	});
+	const { fields, services } = analyzeAttachments(person.attachment);
+
+	const tags = extractHashtags(person.tag);
 
 	const isBot = object.type == 'Service';
 
@@ -150,7 +152,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
 			lastFetchedAt: new Date(),
-			description: htmlToMFM(person.summary),
+			description: fromHtml(person.summary),
 			followersCount,
 			followingCount,
 			notesCount,
@@ -164,13 +166,15 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 				publicKeyPem: person.publicKey.publicKeyPem
 			},
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox,
+			sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 			featured: person.featured,
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
 			fields,
-			isBot: isBot,
+			...services,
+			tags,
+			isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
 	} catch (e) {
@@ -331,41 +335,62 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	const fields = await extractFields(person.attachment).catch(e => {
-		console.log(`cat not extract fields: ${e}`);
-	});
+	const { fields, services } = analyzeAttachments(person.attachment);
+
+	const tags = extractHashtags(person.tag);
+
+	const updates = {
+		lastFetchedAt: new Date(),
+		inbox: person.inbox,
+		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+		featured: person.featured,
+		emojis: emojiNames,
+		description: fromHtml(person.summary),
+		followersCount,
+		followingCount,
+		notesCount,
+		name: person.name,
+		url: person.url,
+		endpoints: person.endpoints,
+		fields,
+		...services,
+		tags,
+		isBot: object.type == 'Service',
+		isCat: (person as any).isCat === true,
+		isLocked: person.manuallyApprovesFollowers,
+		createdAt: Date.parse(person.published) || null,
+		publicKey: {
+			id: person.publicKey.id,
+			publicKeyPem: person.publicKey.publicKeyPem
+		},
+	} as any;
+
+	if (avatar) {
+		updates.avatarId = avatar._id;
+		updates.avatarUrl = getDriveFileUrl(avatar, true);
+		updates.avatarColor = avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
+	}
+
+	if (banner) {
+		updates.bannerId = banner._id;
+		updates.bannerUrl = getDriveFileUrl(banner, true);
+		updates.bannerColor = banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
+	}
 
 	// Update user
 	await User.update({ _id: exist._id }, {
+		$set: updates
+	});
+
+	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
+	await Following.update({
+		followerId: exist._id
+	}, {
 		$set: {
-			lastFetchedAt: new Date(),
-			inbox: person.inbox,
-			sharedInbox: person.sharedInbox,
-			featured: person.featured,
-			avatarId: avatar ? avatar._id : null,
-			bannerId: banner ? banner._id : null,
-			avatarUrl: getDriveFileUrl(avatar, true),
-			bannerUrl: getDriveFileUrl(banner, false),
-			avatarColor: avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null,
-			bannerColor: banner && banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null,
-			emojis: emojiNames,
-			description: htmlToMFM(person.summary),
-			followersCount,
-			followingCount,
-			notesCount,
-			name: person.name,
-			url: person.url,
-			endpoints: person.endpoints,
-			fields,
-			isBot: object.type == 'Service',
-			isCat: (person as any).isCat === true,
-			isLocked: person.manuallyApprovesFollowers,
-			createdAt: Date.parse(person.published) || null,
-			publicKey: {
-				id: person.publicKey.id,
-				publicKeyPem: person.publicKey.publicKeyPem
-			},
+			'_follower.sharedInbox': person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined)
 		}
+	}, {
+		multi: true
 	});
 
 	await updateFeatured(exist._id).catch(err => console.log(err));
@@ -393,16 +418,61 @@ export async function resolvePerson(uri: string, verifier?: string, resolver?: R
 	return await createPerson(uri, resolver);
 }
 
-export async function extractFields(attachments: ITag[]) {
-	if (!attachments) return [];
+const isPropertyValue = (x: {
+		type: string,
+		name?: string,
+		value?: string
+	}) =>
+		x &&
+		x.type === 'PropertyValue' &&
+		typeof x.name === 'string' &&
+		typeof x.value === 'string';
 
-	return attachments.filter(a => a.type === 'PropertyValue' && a.name && a.value)
-		.map(a => {
-			return {
-				name: a.name,
-				value: htmlToMFM(a.value)
-			};
-		});
+const services: {
+		[x: string]: (id: string, username: string) => any
+	} = {
+	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
+	'misskey:authentication:github': (id, login) => ({ id, login }),
+	'misskey:authentication:discord': (id, name) => $discord(id, name)
+};
+
+const $discord = (id: string, name: string) => {
+	if (typeof name !== 'string')
+		name = 'unknown#0000';
+	const [username, discriminator] = name.split('#');
+	return { id, username, discriminator };
+};
+
+function addService(target: { [x: string]: any }, source: IIdentifier) {
+	const service = services[source.name];
+
+	if (typeof source.value !== 'string')
+		source.value = 'unknown';
+
+	const [id, username] = source.value.split('@');
+
+	if (service)
+		target[source.name.split(':')[2]] = service(id, username);
+}
+
+export function analyzeAttachments(attachments: ITag[]) {
+	const fields: {
+		name: string,
+		value: string
+	}[] = [];
+	const services: { [x: string]: any } = {};
+
+	if (Array.isArray(attachments))
+		for (const attachment of attachments.filter(isPropertyValue))
+			if (isPropertyValue(attachment.identifier))
+				addService(services, attachment.identifier);
+			else
+				fields.push({
+					name: attachment.name,
+					value: fromHtml(attachment.value)
+				});
+
+	return { fields, services };
 }
 
 export async function updateFeatured(userId: mongo.ObjectID) {
@@ -431,7 +501,7 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 
 	await User.update({ _id: user._id }, {
 		$set: {
-			pinnedNoteIds: featuredNotes.map(note => note._id)
+			pinnedNoteIds: featuredNotes.filter(note => note != null).map(note => note._id)
 		}
 	});
 }

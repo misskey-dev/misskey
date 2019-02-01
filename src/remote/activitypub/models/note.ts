@@ -9,11 +9,13 @@ import { INote as INoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
-import htmlToMFM from '../../../mfm/html-to-mfm';
+import { fromHtml } from '../../../mfm/fromHtml';
 import Emoji, { IEmoji } from '../../../models/emoji';
-import { ITag } from './tag';
+import { ITag, extractHashtags } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
+import { extractPollFromQuestion } from './question';
+import vote from '../../../services/note/polls/vote';
 
 const log = debug('misskey:activitypub');
 
@@ -108,7 +110,17 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content ? note._misskey_content : htmlToMFM(note.content);
+	const text = note._misskey_content ? note._misskey_content : fromHtml(note.content);
+
+	// vote
+	if (reply && reply.poll && text != null) {
+		const m = text.match(/([0-9])$/);
+		if (m) {
+			log(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${m[0]}`);
+			await vote(actor, reply, Number(m[1]));
+			return null;
+		}
+	}
 
 	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
 		console.log(`extractEmojis: ${e}`);
@@ -116,6 +128,9 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	});
 
 	const apEmojis = emojis.map(emoji => emoji.name);
+
+	const questionUri = note._misskey_question;
+	const poll = questionUri ? await extractPollFromQuestion(questionUri).catch(() => undefined) : undefined;
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -137,6 +152,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		apMentions,
 		apHashtags,
 		apEmojis,
+		questionUri,
+		poll,
 		uri: note.id
 	}, silent);
 }
@@ -181,6 +198,20 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 			});
 
 			if (exists) {
+				if ((tag.updated != null && exists.updatedAt == null)
+					|| (tag.id != null && exists.uri == null)
+					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)) {
+						return await Emoji.findOneAndUpdate({
+							host,
+							name,
+						}, {
+							$set: {
+								uri: tag.id,
+								url: tag.icon.url,
+								updatedAt: new Date(tag.updated),
+							}
+						});
+				}
 				return exists;
 			}
 
@@ -189,8 +220,10 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 			return await Emoji.insert({
 				host,
 				name,
+				uri: tag.id,
 				url: tag.icon.url,
-				aliases: [],
+				updatedAt: tag.updated ? new Date(tag.updated) : undefined,
+				aliases: []
 			});
 		})
 	);
@@ -205,15 +238,4 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	);
 
 	return users.filter(x => x != null);
-}
-
-function extractHashtags(tags: ITag[]) {
-	if (!tags) return [];
-
-	const hashtags = tags.filter(tag => tag.type === 'Hashtag' && typeof tag.name == 'string');
-
-	return hashtags.map(tag => {
-		const m = tag.name.match(/^#(.+)/);
-		return m ? m[1] : null;
-	}).filter(x => x != null);
 }

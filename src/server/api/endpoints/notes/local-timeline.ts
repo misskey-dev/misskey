@@ -1,9 +1,11 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
+import fetchMeta from '../../../../misc/fetch-meta';
+import activeUsersChart from '../../../../chart/active-users';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -66,15 +68,20 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+	const meta = await fetchMeta();
+	if (meta.disableLocalTimeline) {
+		if (user == null || (!user.isAdmin && !user.isModerator)) {
+			return rej('local timeline disabled');
+		}
+	}
+
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
 		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
-	// ミュートしているユーザーを取得
-	const mutedUserIds = user ? (await Mute.find({
-		muterId: user._id
-	})).map(m => m.muteeId) : null;
+	// 隠すユーザーを取得
+	const hideUserIds = await getHideUserIds(user);
 
 	//#region Construct query
 	const sort = {
@@ -87,21 +94,24 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		// public only
 		visibility: 'public',
 
+		// リプライでない
+		//replyId: null,
+
 		// local
 		'_user.host': null
 	} as any;
 
-	if (mutedUserIds && mutedUserIds.length > 0) {
+	if (hideUserIds && hideUserIds.length > 0) {
 		query.userId = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_reply.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_renote.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 	}
 
@@ -153,4 +163,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		});
 
 	res(await packMany(timeline, user));
+
+	if (user) {
+		activeUsersChart.update(user);
+	}
 }));

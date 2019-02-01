@@ -19,7 +19,7 @@
 					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><fa :icon="['far', 'bell']" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']" fixed-width/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+					<li><router-link to="/games/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 				</ul>
 				<ul>
 					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']" fixed-width/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
@@ -60,7 +60,8 @@ export default Vue.extend({
 			hasGameInvitation: false,
 			connection: null,
 			aboutUrl: `/docs/${lang}/about`,
-			announcements: []
+			announcements: [],
+			searching: false,
 		};
 	},
 
@@ -95,12 +96,37 @@ export default Vue.extend({
 
 	methods: {
 		search() {
+			if (this.searching) return;
+
 			this.$root.dialog({
 				title: this.$t('search'),
 				input: true
-			}).then(({ canceled, result: query }) => {
+			}).then(async ({ canceled, result: query }) => {
 				if (canceled) return;
-				this.$router.push(`/search?q=${encodeURIComponent(query)}`);
+
+				const q = query.trim();
+				if (q.startsWith('@')) {
+					this.$router.push(`/${q}`);
+				} else if (q.startsWith('#')) {
+					this.$router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
+				} else if (q.startsWith('https://')) {
+					this.searching = true;
+					try {
+						const res = await this.$root.api('ap/show', {
+							uri: q
+						});
+						if (res.type == 'User') {
+							this.$router.push(`/@${res.object.username}@${res.object.host}`);
+						} else if (res.type == 'Note') {
+							this.$router.push(`/notes/${res.object.id}`);
+						}
+					} catch (e) {
+						// TODO
+					}
+					this.searching = false;
+				} else {
+					this.$router.push(`/search?q=${encodeURIComponent(q)}`);
+				}
 			});
 		},
 
@@ -212,7 +238,7 @@ export default Vue.extend({
 				> i.circle
 					margin-left 6px
 					font-size 10px
-					color var(--primary)
+					color var(--notificationIndicator)
 
 				> i:last-child
 					position absolute

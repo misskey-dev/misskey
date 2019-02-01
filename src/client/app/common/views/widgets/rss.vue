@@ -77,7 +77,7 @@ export default define({
 				display block
 				padding 4px 0
 				color var(--text)
-				border-bottom dashed 1px var(--faceDivider)
+				border-bottom dashed var(--lineWidth) var(--faceDivider)
 
 				&:last-child
 					border-bottom none

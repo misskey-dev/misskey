@@ -1,5 +1,6 @@
 <template>
-<span v-html="compiledFormula"></span>
+<div v-if="block" v-html="compiledFormula"></div>
+<span v-else v-html="compiledFormula"></span>
 </template>
 
 <script lang="ts">
@@ -11,11 +12,17 @@ export default Vue.extend({
 		formula: {
 			type: String,
 			required: true
+		},
+		block: {
+			type: Boolean,
+			required: true
 		}
 	},
 	computed: {
 		compiledFormula(): any {
-			return katex.renderToString(this.formula);
+			return katex.renderToString(this.formula, {
+				throwOnError: false
+			} as any);
 		}
 	}
 });

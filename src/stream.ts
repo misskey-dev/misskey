@@ -1,31 +1,17 @@
 import * as mongo from 'mongodb';
 import redis from './db/redis';
 import Xev from 'xev';
-import { IMeta } from './models/meta';
-import fetchMeta from './misc/fetch-meta';
 
 type ID = string | mongo.ObjectID;
 
 class Publisher {
 	private ev: Xev;
-	private meta: IMeta;
 
 	constructor() {
 		// Redisがインストールされてないときはプロセス間通信を使う
 		if (redis == null) {
 			this.ev = new Xev();
 		}
-
-		setInterval(async () => {
-			this.meta = await fetchMeta();
-		}, 5000);
-	}
-
-	public fetchMeta = async () => {
-		if (this.meta != null) return this.meta;
-
-		this.meta = await fetchMeta();
-		return this.meta;
 	}
 
 	private publish = (channel: string, type: string, value?: any): void => {
@@ -83,14 +69,10 @@ class Publisher {
 	}
 
 	public publishLocalTimelineStream = async (note: any): Promise<void> => {
-		const meta = await this.fetchMeta();
-		if (meta.disableLocalTimeline) return;
 		this.publish('localTimeline', null, note);
 	}
 
 	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => {
-		const meta = await this.fetchMeta();
-		if (meta.disableLocalTimeline) return;
 		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
 	}
 
@@ -104,6 +86,10 @@ class Publisher {
 
 	public publishApLogStream = (log: any): void => {
 		this.publish('apLog', null, log);
+	}
+
+	public publishAdminStream = (userId: ID, type: string, value?: any): void => {
+		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }
 
@@ -125,3 +111,4 @@ export const publishHybridTimelineStream = publisher.publishHybridTimelineStream
 export const publishGlobalTimelineStream = publisher.publishGlobalTimelineStream;
 export const publishHashtagStream = publisher.publishHashtagStream;
 export const publishApLogStream = publisher.publishApLogStream;
+export const publishAdminStream = publisher.publishAdminStream;

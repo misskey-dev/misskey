@@ -26,14 +26,14 @@
 		</header>
 		<div class="body">
 			<p v-if="appearNote.cw != null" class="cw">
-				<misskey-flavored-markdown v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" />
+				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" />
 				<mk-cw-button v-model="showContent" :note="appearNote"/>
 			</p>
 			<div class="content" v-show="appearNote.cw == null || showContent">
 				<div class="text">
 					<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 					<span v-if="appearNote.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
-					<misskey-flavored-markdown v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
+					<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 				</div>
 				<div class="files" v-if="appearNote.files.length > 0">
 					<mk-media-list :media-list="appearNote.files" :raw="true"/>
@@ -55,7 +55,6 @@
 				<fa v-if="appearNote.visibility == 'home'" icon="home"/>
 				<fa v-if="appearNote.visibility == 'followers'" icon="unlock"/>
 				<fa v-if="appearNote.visibility == 'specified'" icon="envelope"/>
-				<fa v-if="appearNote.visibility == 'private'" icon="lock"/>
 			</span>
 			<span class="localOnly" v-if="appearNote.localOnly == true"><fa icon="heart"/></span>
 		</div>
@@ -72,8 +71,11 @@
 			<button v-else>
 				<fa icon="ban"/>
 			</button>
-			<button :class="{ reacted: appearNote.myReaction != null }" @click="react()" ref="reactButton" :title="$t('title')">
-				<fa icon="plus"/><p class="count" v-if="appearNote.reactions_count > 0">{{ appearNote.reactions_count }}</p>
+			<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton">
+				<fa icon="plus"/>
+			</button>
+			<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton">
+				<fa icon="minus"/>
 			</button>
 			<button @click="menu()" ref="menuButton">
 				<fa icon="ellipsis-h"/>
@@ -328,7 +330,8 @@ export default Vue.extend({
 				> .count
 					display inline
 					margin 0 0 0 8px
-					color #999
+					color var(--text)
+					opacity 0.7
 
 				&.reacted
 					color var(--primary)

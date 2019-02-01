@@ -4,6 +4,7 @@ import Note, { packMany } from '../../../../models/note';
 import User from '../../../../models/user';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
+import Following from '../../../../models/following';
 
 export const meta = {
 	desc: {
@@ -124,6 +125,14 @@ export const meta = {
 				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
 			}
 		},
+
+		excludeNsfw: {
+			validator: $.bool.optional,
+			default: false,
+			desc: {
+				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
+			}
+		},
 	}
 };
 
@@ -152,12 +161,33 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
+	const isFollowing = me == null ? false : ((await Following.findOne({
+		followerId: me._id,
+		followeeId: user._id
+	})) != null);
+
 	//#region Construct query
 	const sort = { } as any;
 
+	const visibleQuery = me == null ? [{
+		visibility: { $in: ['public', 'home'] }
+	}] : [{
+		visibility: {
+			$in: isFollowing ? ['public', 'home', 'followers'] : ['public', 'home']
+		}
+	}, {
+		// myself (for specified/private)
+		userId: me._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ me._id ] }
+	}];
+
 	const query = {
+		$and: [ {} ],
 		deletedAt: null,
-		userId: user._id
+		userId: user._id,
+		$or: visibleQuery
 	} as any;
 
 	if (ps.sinceId) {
@@ -188,6 +218,22 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		query.replyId = null;
 	}
 
+	if (ps.includeMyRenotes === false) {
+		query.$and.push({
+			$or: [{
+				userId: { $ne: user._id }
+			}, {
+				renoteId: null
+			}, {
+				text: { $ne: null }
+			}, {
+				fileIds: { $ne: [] }
+			}, {
+				poll: { $ne: null }
+			}]
+		});
+	}
+
 	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
 
 	if (withFiles) {
@@ -203,6 +249,12 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		query['_files.contentType'] = {
 			$in: ps.fileType
 		};
+
+		if (ps.excludeNsfw) {
+			query['_files.metadata.isSensitive'] = {
+				$ne: true
+			};
+		}
 	}
 	//#endregion
 

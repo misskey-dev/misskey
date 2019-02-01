@@ -66,6 +66,7 @@ import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import contains from '../../../common/scripts/contains';
 import { url } from '../../../config';
+import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/drive.vue'),
@@ -149,7 +150,7 @@ export default Vue.extend({
 			}, {
 				type: 'item',
 				text: this.$t('contextmenu.url-upload'),
-				icon: 'cloud-upload-alt',
+				icon: faCloudUploadAlt,
 				action: this.urlUpload
 			}]);
 		},

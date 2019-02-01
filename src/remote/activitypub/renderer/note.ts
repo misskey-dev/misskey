@@ -93,19 +93,30 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	let text = note.text;
 
+	let question: string;
 	if (note.poll != null) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note._id}`;
 		// TODO: i18n
-		text += `\n\n[投票を見る](${url})`;
+		text += `\n[リモートで結果を表示](${url})`;
+
+		question = `${config.url}/questions/${note._id}`;
 	}
 
 	let apText = text;
+	if (apText == null) apText = '';
 
-	if (note.renoteId != null) {
-		if (apText == null) apText = '';
-		const url = `${config.url}/notes/${note.renoteId}`;
-		apText += `\n\nRE: ${url}`;
+	// Provides choices as text for AP
+	if (note.poll != null) {
+		const cs = note.poll.choices.map(c => `${c.id}: ${c.text}`);
+		apText += '\n----------------------------------------\n';
+		apText += cs.join('\n');
+		apText += '\n----------------------------------------\n';
+		apText += '番号を返信して投票';
+	}
+
+	if (quote) {
+		apText += `\n\nRE: ${quote}`;
 	}
 
 	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
@@ -131,6 +142,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		content,
 		_misskey_content: text,
 		_misskey_quote: quote,
+		_misskey_question: question,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,

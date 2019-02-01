@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as anime from 'animejs';
+import anime from 'animejs';
 import contains from '../../../common/scripts/contains';
 import XMenu from './context-menu.menu.vue';
 

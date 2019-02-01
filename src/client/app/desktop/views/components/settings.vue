@@ -1,6 +1,6 @@
 <template>
 <div class="mk-settings">
-	<div class="nav">
+	<div class="nav" :class="{ inWindow }">
 		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><fa icon="user" fixed-width/>{{ $t('profile') }}</p>
 		<p :class="{ active: page == 'theme' }" @mousedown="page = 'theme'"><fa icon="palette" fixed-width/>{{ $t('theme') }}</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'"><fa icon="desktop" fixed-width/>Web</p>
@@ -19,13 +19,7 @@
 			<x-integration-settings/>
 		</div>
 
-		<ui-card class="theme" v-show="page == 'theme'">
-			<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
-
-			<section>
-				<x-theme/>
-			</section>
-		</ui-card>
+		<x-theme class="theme" v-show="page == 'theme'"/>
 
 		<ui-card class="web" v-show="page == 'web'">
 			<div slot="title"><fa icon="sliders-h"/> {{ $t('behaviour') }}</div>
@@ -37,14 +31,12 @@
 				<ui-switch v-model="autoPopout">{{ $t('auto-popout') }}
 					<span slot="desc">{{ $t('auto-popout-desc') }}</span>
 				</ui-switch>
-				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}<span slot="desc">{{ $t('deck-nav-desc') }}</span></ui-switch>
-
-				<details>
-					<summary>{{ $t('advanced') }}</summary>
-					<ui-switch v-model="apiViaStream">{{ $t('api-via-stream') }}
-						<span slot="desc">{{ $t('api-via-stream-desc') }}</span>
-					</ui-switch>
-				</details>
+				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}
+					<span slot="desc">{{ $t('deck-nav-desc') }}</span>
+				</ui-switch>
+				<ui-switch v-model="keepCw">{{ $t('keep-cw') }}
+					<span slot="desc">{{ $t('keep-cw-desc') }}</span>
+				</ui-switch>
 			</section>
 
 			<section>
@@ -64,7 +56,6 @@
 						<option value="home">{{ $t('@.note-visibility.home') }}</option>
 						<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
 						<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
-						<option value="private">{{ $t('@.note-visibility.private') }}</option>
 						<option value="local-public">{{ $t('@.note-visibility.local-public') }}</option>
 						<option value="local-home">{{ $t('@.note-visibility.local-home') }}</option>
 						<option value="local-followers">{{ $t('@.note-visibility.local-followers') }}</option>
@@ -87,8 +78,10 @@
 			</section>
 			<section>
 				<header>{{ $t('wallpaper') }}</header>
-				<ui-button @click="updateWallpaper">{{ $t('choose-wallpaper') }}</ui-button>
-				<ui-button @click="deleteWallpaper">{{ $t('delete-wallpaper') }}</ui-button>
+				<ui-horizon-group class="fit-bottom">
+					<ui-button @click="updateWallpaper">{{ $t('choose-wallpaper') }}</ui-button>
+					<ui-button @click="deleteWallpaper">{{ $t('delete-wallpaper') }}</ui-button>
+				</ui-horizon-group>
 			</section>
 			<section>
 				<header>{{ $t('navbar-position') }}</header>
@@ -104,6 +97,12 @@
 				<ui-switch v-model="useShadow">{{ $t('use-shadow') }}</ui-switch>
 				<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
 				<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
+				<section>
+					<header>{{ $t('@.line-width') }}</header>
+					<ui-radio v-model="lineWidth" :value="0.5">{{ $t('@.line-width-thin') }}</ui-radio>
+					<ui-radio v-model="lineWidth" :value="1">{{ $t('@.line-width-normal') }}</ui-radio>
+					<ui-radio v-model="lineWidth" :value="2">{{ $t('@.line-width-thick') }}</ui-radio>
+				</section>
 				<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }}</ui-switch>
 				<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
 				<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
@@ -137,8 +136,7 @@
 			</section>
 			<section>
 				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>
-				<ui-switch v-model="games_reversi_useWhiteBlackStones">{{ $t('@.use-white-black-reversi-stones') }}</ui-switch>
-				<ui-switch v-model="games_reversi_useContrastStones">{{ $t('@.use-contrast-reversi-stones') }}</ui-switch>
+				<ui-switch v-model="games_reversi_useAvatarStones">{{ $t('@.use-avatar-reversi-stones') }}</ui-switch>
 			</section>
 		</ui-card>
 
@@ -172,17 +170,7 @@
 			</section>
 		</ui-card>
 
-		<ui-card class="notification" v-show="page == 'notification'">
-			<div slot="title"><fa :icon="['far', 'bell']"/> {{ $t('notification') }}</div>
-			<section>
-				<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
-					{{ $t('auto-watch') }}<span slot="desc">{{ $t('auto-watch-desc') }}</span>
-				</ui-switch>
-				<section>
-					<ui-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</ui-button>
-				</section>
-			</section>
-		</ui-card>
+		<x-notification-settings v-show="page == 'notification'"/>
 
 		<div class="drive" v-if="page == 'drive'">
 			<x-drive-settings/>
@@ -214,7 +202,7 @@
 		</ui-card>
 
 		<ui-card class="2fa" v-show="page == 'security'">
-			<div slot="title"><fa icon="mobile-alt"/> {{ $t('2fa') }}</div>
+			<div slot="title"><fa icon="mobile-alt"/> {{ $t('@.2fa') }}</div>
 			<section>
 				<x-2fa/>
 			</section>
@@ -291,6 +279,7 @@ import XPasswordSettings from '../../../common/views/components/password-setting
 import XProfileEditor from '../../../common/views/components/profile-editor.vue';
 import XApiSettings from '../../../common/views/components/api-settings.vue';
 import XLanguageSettings from '../../../common/views/components/language-settings.vue';
+import XNotificationSettings from '../../../common/views/components/notification-settings.vue';
 
 import { url, clientVersion as version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
@@ -310,11 +299,17 @@ export default Vue.extend({
 		XProfileEditor,
 		XApiSettings,
 		XLanguageSettings,
+		XNotificationSettings,
 	},
 	props: {
 		initialPage: {
 			type: String,
 			required: false
+		},
+		inWindow: {
+			type: Boolean,
+			required: false,
+			default: true
 		}
 	},
 	data() {
@@ -337,11 +332,6 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'reduceMotion', value }); }
 		},
 
-		apiViaStream: {
-			get() { return this.$store.state.device.apiViaStream; },
-			set(value) { this.$store.commit('device/set', { key: 'apiViaStream', value }); }
-		},
-
 		autoPopout: {
 			get() { return this.$store.state.device.autoPopout; },
 			set(value) { this.$store.commit('device/set', { key: 'autoPopout', value }); }
@@ -350,6 +340,11 @@ export default Vue.extend({
 		deckNav: {
 			get() { return this.$store.state.settings.deckNav; },
 			set(value) { this.$store.commit('settings/set', { key: 'deckNav', value }); }
+		},
+
+		keepCw: {
+			get() { return this.$store.state.settings.keepCw; },
+			set(value) { this.$store.commit('settings/set', { key: 'keepCw', value }); }
 		},
 
 		darkmode: {
@@ -420,6 +415,11 @@ export default Vue.extend({
 		roundedCorners: {
 			get() { return this.$store.state.settings.roundedCorners; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'roundedCorners', value }); }
+		},
+
+		lineWidth: {
+			get() { return this.$store.state.device.lineWidth; },
+			set(value) { this.$store.commit('device/set', { key: 'lineWidth', value }); }
 		},
 
 		fetchOnScroll: {
@@ -512,14 +512,9 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
 		},
 
-		games_reversi_useWhiteBlackStones: {
-			get() { return this.$store.state.settings.games.reversi.useWhiteBlackStones; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useWhiteBlackStones', value }); }
-		},
-
-		games_reversi_useContrastStones: {
-			get() { return this.$store.state.settings.games.reversi.useContrastStones; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useContrastStones', value }); }
+		games_reversi_useAvatarStones: {
+			get() { return this.$store.state.settings.games.reversi.useAvatarStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useAvatarStones', value }); }
 		},
 
 		disableAnimatedMfm: {
@@ -538,9 +533,6 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		readAllUnreadNotes() {
-			this.$root.api('i/read_all_unread_notes');
-		},
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
@@ -557,11 +549,6 @@ export default Vue.extend({
 		deleteWallpaper() {
 			this.$root.api('i/update', {
 				wallpaperId: null
-			});
-		},
-		onChangeAutoWatch(v) {
-			this.$root.api('i/update', {
-				autoWatch: v
 			});
 		},
 		checkForUpdate() {
@@ -610,8 +597,10 @@ export default Vue.extend({
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		box-shadow var(--shadowRight)
 		z-index 1
+
+		&.inWindow
+			box-shadow var(--shadowRight)
 
 		> p
 			display block

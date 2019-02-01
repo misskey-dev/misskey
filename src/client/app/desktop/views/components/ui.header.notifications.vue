@@ -90,7 +90,7 @@ export default Vue.extend({
 			margin-left -5px
 			vertical-align super
 			font-size 10px
-			color var(--primary)
+			color var(--notificationIndicator)
 
 	> .pop
 		$bgcolor = var(--face)

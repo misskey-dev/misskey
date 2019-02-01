@@ -15,7 +15,7 @@
 					@paste="onPaste"
 					:placeholder="placeholder"
 					ref="text"
-					v-autocomplete="'text'"
+					v-autocomplete="{ model: 'text' }"
 				></textarea>
 				<button class="emoji" @click="emoji" ref="emoji">
 					<fa :icon="['far', 'laugh']"/>
@@ -179,6 +179,7 @@ export default define({
 			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				visibility: this.$store.state.settings.defaultNoteVisibility
 			}).then(data => {
 				this.clear();
 			}).catch(err => {

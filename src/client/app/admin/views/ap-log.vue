@@ -69,7 +69,7 @@ export default Vue.extend({
 	display block
 	padding 12px 16px 16px 16px
 	height 250px
-	overflow hidden
+	overflow auto
 	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
 	background var(--adminDashboardCardBg)
 	border-radius 8px

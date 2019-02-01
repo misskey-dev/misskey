@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
@@ -38,11 +38,7 @@ export type INote = {
 	fileIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
-	poll: {
-		choices: Array<{
-			id: number;
-		}>
-	};
+	poll: IPoll;
 	text: string;
 	tags: string[];
 	tagsLower: string[];
@@ -67,9 +63,8 @@ export type INote = {
 	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
-	 * private ... 自分のみ
 	 */
-	visibility: 'public' | 'home' | 'followers' | 'specified' | 'private';
+	visibility: 'public' | 'home' | 'followers' | 'specified';
 
 	visibleUserIds: mongo.ObjectID[];
 
@@ -103,10 +98,20 @@ export type INote = {
 	_files?: IDriveFile[];
 };
 
+export type IPoll = {
+	choices: IChoice[]
+};
+
+export type IChoice = {
+	id: number;
+	text: string;
+	votes: number;
+};
+
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;
 
-	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示
+	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示(後方互換性のため)
 	if (packedNote.visibility == 'private' && (meId == null || !meId.equals(packedNote.userId))) {
 		hide = true;
 	}
@@ -134,6 +139,12 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 		if (meId == null) {
 			hide = true;
 		} else if (meId.equals(packedNote.userId)) {
+			hide = false;
+		} else if (packedNote.reply && meId.equals(packedNote.reply.userId)) {
+			// 自分の投稿に対するリプライ
+			hide = false;
+		} else if (packedNote.mentions && packedNote.mentions.some((id: any) => meId.equals(id))) {
+			// 自分へのメンション
 			hide = false;
 		} else {
 			// フォロワーかどうか
@@ -273,6 +284,11 @@ export const pack = async (
 	// Populate files
 	_note.files = packFileMany(_note.fileIds || []);
 
+	// Some counts
+	_note.renoteCount = _note.renoteCount || 0;
+	_note.repliesCount = _note.repliesCount || 0;
+	_note.reactionCounts = _note.reactionCounts || {};
+
 	// 後方互換性のため
 	_note.mediaIds = _note.fileIds;
 	_note.media = _note.files;
@@ -368,7 +384,14 @@ export const pack = async (
 	//#endregion
 
 	if (_note.user.isCat && _note.text) {
-		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ');
+		_note.text = (_note.text
+			// ja-JP
+			.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ')
+			// ko-KR
+			.replace(/[나-낳]/g, (match: string) => String.fromCharCode(
+				match.codePointAt(0)  + '냐'.charCodeAt(0) - '나'.charCodeAt(0)
+			))
+		);
 	}
 
 	if (!opts.skipHide) {

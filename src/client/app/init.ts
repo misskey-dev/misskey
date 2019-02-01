@@ -8,12 +8,13 @@ import VueRouter from 'vue-router';
 import VAnimateCss from 'v-animate-css';
 import VModal from 'vue-js-modal';
 import VueI18n from 'vue-i18n';
+import SequentialEntrance from 'vue-sequential-entrance';
 
 import VueHotkey from './common/hotkey';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
-import { clientVersion as version, codename, lang } from './config';
+import { clientVersion as version, codename, lang, locale } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
 import Dialog from './common/views/components/dialog.vue';
 
@@ -122,6 +123,8 @@ import {
 	faArrowLeft,
 	faMapMarker,
 	faRobot,
+	faHourglassHalf,
+	faGavel
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -252,6 +255,8 @@ library.add(
 	faArrowLeft,
 	faMapMarker,
 	faRobot,
+	faHourglassHalf,
+	faGavel,
 
 	farBell,
 	farEnvelope,
@@ -287,6 +292,7 @@ Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
 Vue.use(VueI18n);
+Vue.use(SequentialEntrance);
 
 Vue.component('fa', FontAwesomeIcon);
 
@@ -318,7 +324,7 @@ Vue.mixin({
 
 console.info(`Misskey v${version} (${codename})`);
 console.info(
-	'%c%i18n:common.do-not-copy-paste%',
+	`%c${locale['common']['do-not-copy-paste']}`,
 	'color: red; background: yellow; font-size: 16px; font-weight: bold;');
 
 // BootTimer解除
@@ -381,6 +387,18 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			});
 			//#endregion
 
+			// Reapply current theme
+			try {
+				const themeName = os.store.state.device.darkmode ? os.store.state.device.darkTheme : os.store.state.device.lightTheme;
+				const themes = os.store.state.device.themes.concat(builtinThemes);
+				const theme = themes.find(t => t.id == themeName);
+				if (theme) {
+					applyTheme(theme);
+				}
+			} catch (e) {
+				console.log(`Cannot reapply theme. ${e}`);
+			}
+
 			//#region shadow
 			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
 			const shadowRight = '4px 0 4px rgba(0, 0, 0, 0.1)';
@@ -406,6 +424,15 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 				return s.settings.roundedCorners;
 			}, v => {
 				document.documentElement.style.setProperty('--round', v ? round : '0');
+			});
+			//#endregion
+
+			//#region line width
+			document.documentElement.style.setProperty('--lineWidth', `${os.store.state.device.lineWidth}px`);
+			os.store.watch(s => {
+				return s.device.lineWidth;
+			}, v => {
+				document.documentElement.style.setProperty('--lineWidth', `${os.store.state.device.lineWidth}px`);
 			});
 			//#endregion
 

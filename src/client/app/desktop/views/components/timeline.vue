@@ -4,7 +4,7 @@
 		<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
 		<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
 		<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
-		<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> {{ $t('global') }}</span>
+		<span :data-active="src == 'global'" @click="src = 'global'" v-if="enableGlobalTimeline"><fa icon="globe"/> {{ $t('global') }}</span>
 		<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><fa icon="hashtag"/> {{ tagTl.title }}</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.title }}</span>
 		<div class="buttons">
@@ -43,7 +43,8 @@ export default Vue.extend({
 			src: 'home',
 			list: null,
 			tagTl: null,
-			enableLocalTimeline: false
+			enableLocalTimeline: false,
+			enableGlobalTimeline: false,
 		};
 	},
 
@@ -65,7 +66,8 @@ export default Vue.extend({
 
 	created() {
 		this.$root.getMeta().then(meta => {
-			this.enableLocalTimeline = !meta.disableLocalTimeline;
+			this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
+			this.enableGlobalTimeline = !meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
 		});
 
 		if (this.$store.state.device.tl) {
@@ -139,7 +141,6 @@ export default Vue.extend({
 
 			this.$root.new(Menu, {
 				source: this.$refs.listButton,
-				compact: false,
 				items: menu
 			});
 		},
@@ -170,7 +171,6 @@ export default Vue.extend({
 
 			this.$root.new(Menu, {
 				source: this.$refs.tagButton,
-				compact: false,
 				items: menu
 			});
 		}
@@ -189,7 +189,7 @@ export default Vue.extend({
 		padding 0 8px
 		z-index 10
 		background var(--faceHeader)
-		box-shadow 0 1px var(--desktopTimelineHeaderShadow)
+		box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
 
 		> .buttons
 			position absolute
@@ -209,7 +209,7 @@ export default Vue.extend({
 					top -4px
 					right 4px
 					font-size 10px
-					color var(--primary)
+					color var(--notificationIndicator)
 
 				&:hover
 					color var(--faceTextButtonHover)

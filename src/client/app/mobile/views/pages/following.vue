@@ -1,7 +1,8 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="user.avatarUrl" alt="">{{ $t('following-of', { name }) }}
+		<img :src="user.avatarUrl" alt="">
+		<mfm :text="$t('following-of', { name })" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
 	</template>
 	<mk-users-list
 		v-if="!fetching"

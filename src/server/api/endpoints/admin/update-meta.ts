@@ -32,10 +32,24 @@ export const meta = {
 			}
 		},
 
+		disableGlobalTimeline: {
+			validator: $.bool.optional.nullable,
+			desc: {
+				'ja-JP': 'グローバルタイムラインを無効にするか否か'
+			}
+		},
+
 		hidedTags: {
 			validator: $.arr($.str).optional.nullable,
 			desc: {
 				'ja-JP': '統計などで無視するハッシュタグ'
+			}
+		},
+
+		mascotImageUrl: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'インスタンスキャラクター画像のURL'
 			}
 		},
 
@@ -285,6 +299,27 @@ export const meta = {
 				'ja-JP': 'SMTPサーバのパスワード'
 			}
 		},
+
+		enableServiceWorker: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'ServiceWorkerを有効にするか否か'
+			}
+		},
+
+		swPublicKey: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'ServiceWorkerのVAPIDキーペアの公開鍵'
+			}
+		},
+
+		swPrivateKey: {
+			validator: $.str.optional.nullable,
+			desc: {
+				'ja-JP': 'ServiceWorkerのVAPIDキーペアの秘密鍵'
+			}
+		},
 	}
 };
 
@@ -303,8 +338,16 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		set.disableLocalTimeline = ps.disableLocalTimeline;
 	}
 
+	if (typeof ps.disableGlobalTimeline === 'boolean') {
+		set.disableGlobalTimeline = ps.disableGlobalTimeline;
+	}
+
 	if (Array.isArray(ps.hidedTags)) {
 		set.hidedTags = ps.hidedTags;
+	}
+
+	if (ps.mascotImageUrl !== undefined) {
+		set.mascotImageUrl = ps.mascotImageUrl;
 	}
 
 	if (ps.bannerUrl !== undefined) {
@@ -445,6 +488,18 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	if (ps.errorImageUrl !== undefined) {
 		set.errorImageUrl = ps.errorImageUrl;
+	}
+
+	if (ps.enableServiceWorker !== undefined) {
+		set.enableServiceWorker = ps.enableServiceWorker;
+	}
+
+	if (ps.swPublicKey !== undefined) {
+		set.swPublicKey = ps.swPublicKey;
+	}
+
+	if (ps.swPrivateKey !== undefined) {
+		set.swPrivateKey = ps.swPrivateKey;
 	}
 
 	await Meta.update({}, {

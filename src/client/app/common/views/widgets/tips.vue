@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import * as anime from 'animejs';
+import anime from 'animejs';
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
 
@@ -84,6 +84,7 @@ export default define({
 <style lang="stylus" scoped>
 .mkw-tips
 	overflow visible !important
+	opacity 0.8
 
 	> p
 		display block
@@ -91,7 +92,7 @@ export default define({
 		padding 0 12px
 		text-align center
 		font-size 0.7em
-		color #999
+		color var(--text)
 
 		> [data-icon]
 			margin-right 4px
@@ -102,7 +103,7 @@ export default define({
 			margin 0 2px
 			font-size 1em
 			font-family inherit
-			border solid 1px #999
+			border solid 1px var(--text)
 			border-radius 2px
 
 </style>

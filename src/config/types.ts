@@ -39,21 +39,7 @@ export type Source = {
 
 	accesslog?: string;
 
-	/**
-	 * Service Worker
-	 */
-	sw?: {
-		public_key: string;
-		private_key: string;
-	};
-
 	clusterLimit?: number;
-
-	user_recommendation?: {
-		external: boolean;
-		engine: string;
-		timeout: number;
-	};
 };
 
 /**

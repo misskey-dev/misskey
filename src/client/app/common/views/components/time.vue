@@ -1,5 +1,5 @@
 <template>
-<time class="mk-time">
+<time class="mk-time" :title="absolute">
 	<span v-if=" mode == 'relative' ">{{ relative }}</span>
 	<span v-if=" mode == 'absolute' ">{{ absolute }}</span>
 	<span v-if=" mode == 'detail' ">{{ absolute }} ({{ relative }})</span>
@@ -33,14 +33,7 @@ export default Vue.extend({
 			return typeof this.time == 'string' ? new Date(this.time) : this.time;
 		},
 		absolute(): string {
-			const time = this._time;
-			return (
-				time.getFullYear()    + '年' +
-				(time.getMonth() + 1) + '月' +
-				time.getDate()        + '日' +
-				' ' +
-				time.getHours()       + '時' +
-				time.getMinutes()     + '分');
+			return this._time.toLocaleString();
 		},
 		relative(): string {
 			const time = this._time;

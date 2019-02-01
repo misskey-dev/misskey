@@ -6,8 +6,9 @@ import acceptAllFollowRequests from '../../../../services/following/requests/acc
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import getDriveFileUrl from '../../../../misc/get-drive-file-url';
-import parse from '../../../../mfm/parse';
-import { extractEmojis } from '../../../../services/note/create';
+import { parse, parsePlain } from '../../../../mfm/parse';
+import extractEmojis from '../../../../misc/extract-emojis';
+import extractHashtags from '../../../../misc/extract-hashtags';
 const langmap = require('langmap');
 
 export const meta = {
@@ -94,6 +95,13 @@ export const meta = {
 			}
 		},
 
+		autoAcceptFollowed: {
+			validator: $.bool.optional,
+			desc: {
+				'ja-JP': 'フォローしているユーザーからのフォローリクエストを自動承認するか'
+			}
+		},
+
 		isBot: {
 			validator: $.bool.optional,
 			desc: {
@@ -140,6 +148,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
+	if (typeof ps.autoAcceptFollowed == 'boolean') updates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
 	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
 	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
@@ -193,21 +202,24 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		}
 	}
 
-	//#region emojis
+	//#region emojis/tags
 	if (updates.name != null || updates.description != null) {
 		let emojis = [] as string[];
+		let tags = [] as string[];
 
 		if (updates.name != null) {
-			const tokens = parse(updates.name, true);
+			const tokens = parsePlain(updates.name);
 			emojis = emojis.concat(extractEmojis(tokens));
 		}
 
 		if (updates.description != null) {
 			const tokens = parse(updates.description);
 			emojis = emojis.concat(extractEmojis(tokens));
+			tags = extractHashtags(tokens);
 		}
 
 		updates.emojis = emojis;
+		updates.tags = tags;
 	}
 	//#endregion
 

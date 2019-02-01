@@ -11,7 +11,7 @@ import * as cluster from 'cluster';
 import * as debug from 'debug';
 import chalk from 'chalk';
 import * as portscanner from 'portscanner';
-import isRoot = require('is-root');
+import * as isRoot from 'is-root';
 import Xev from 'xev';
 import * as program from 'commander';
 import * as sysUtils from 'systeminformation';
@@ -23,6 +23,7 @@ import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
 import { Config } from './config/types';
 import { lessThan } from './prelude/array';
+import * as pkg from '../package.json';
 
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
@@ -30,8 +31,6 @@ const ev = new Xev();
 if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {
 	debug.enable('misskey');
 }
-
-const pkg = require('../package.json');
 
 //#region Command line argument definitions
 program

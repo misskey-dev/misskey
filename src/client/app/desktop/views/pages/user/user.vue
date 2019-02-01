@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
-		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.is-suspended') }}</div>
+		<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</div>
 		<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
 		<main>
 			<div class="main">
@@ -12,7 +12,7 @@
 			<div class="side">
 				<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 				<x-profile :user="user"/>
-				<x-integrations :user="user" v-if="!user.host"/>
+				<x-integrations :user="user"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>

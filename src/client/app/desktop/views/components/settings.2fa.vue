@@ -7,16 +7,16 @@
 		<p>{{ $t('already-registered') }}</p>
 		<ui-button @click="unregister">{{ $t('unregister') }}</ui-button>
 	</template>
-	<div v-if="data">
+	<div v-if="data && !$store.state.i.twoFactorEnabled">
 		<ol>
 			<li>{{ $t('authenticator') }}<a href="https://support.google.com/accounts/answer/1066447" target="_blank">{{ $t('howtoinstall') }}</a></li>
 			<li>{{ $t('scan') }}<br><img :src="data.qr"></li>
 			<li>{{ $t('done') }}<br>
-				<input type="number" v-model="token" class="ui">
+				<ui-input v-model="token">{{ $t('token') }}</ui-input>
 				<ui-button primary @click="submit">{{ $t('submit') }}</ui-button>
 			</li>
 		</ol>
-		<div class="ui info"><p><fa icon="info-circle"/>{{ $t('info') }}</p></div>
+		<ui-info>{{ $t('info') }}</ui-info>
 	</div>
 </div>
 </template>

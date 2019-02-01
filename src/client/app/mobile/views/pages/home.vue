@@ -31,7 +31,7 @@
 					<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
 					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
 					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
-					<span :data-active="src == 'global'" @click="src = 'global'"><fa icon="globe"/> {{ $t('global') }}</span>
+					<span :data-active="src == 'global'" @click="src = 'global'" v-if="enableGlobalTimeline"><fa icon="globe"/> {{ $t('global') }}</span>
 					<div class="hr"></div>
 					<span :data-active="src == 'mentions'" @click="src = 'mentions'"><fa icon="at"/> {{ $t('mentions') }}<i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></span>
 					<span :data-active="src == 'messages'" @click="src = 'messages'"><fa :icon="['far', 'envelope']"/> {{ $t('messages') }}<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></span>
@@ -79,7 +79,8 @@ export default Vue.extend({
 			lists: null,
 			tagTl: null,
 			showNav: false,
-			enableLocalTimeline: false
+			enableLocalTimeline: false,
+			enableGlobalTimeline: false,
 		};
 	},
 
@@ -112,7 +113,8 @@ export default Vue.extend({
 
 	created() {
 		this.$root.getMeta().then(meta => {
-			this.enableLocalTimeline = !meta.disableLocalTimeline;
+			this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
+			this.enableGlobalTimeline = !meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
 		});
 
 		if (this.$store.state.device.tl) {
@@ -225,7 +227,7 @@ main
 					> .badge
 						margin-left 6px
 						font-size 10px
-						color var(--primary)
+						color var(--notificationIndicator)
 
 	> .tl
 		max-width 680px
@@ -248,7 +250,7 @@ main
 .badge
 	margin-left 6px
 	font-size 10px
-	color var(--primary)
+	color var(--notificationIndicator)
 	vertical-align middle
 
 </style>

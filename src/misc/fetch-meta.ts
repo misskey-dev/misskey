@@ -17,9 +17,11 @@ const defaultMeta: any = {
 	enableGithubIntegration: false,
 	enableDiscordIntegration: false,
 	enableExternalUserRecommendation: false,
-	externalUserRecommendationEngine: "https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}",
+	externalUserRecommendationEngine: 'https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}',
 	externalUserRecommendationTimeout: 300000,
-	errorImageUrl: 'https://ai.misskey.xyz/aiart/yubitun.png'
+	mascotImageUrl: '/assets/ai.png',
+	errorImageUrl: 'https://ai.misskey.xyz/aiart/yubitun.png',
+	enableServiceWorker: false
 };
 
 export default async function(): Promise<IMeta> {

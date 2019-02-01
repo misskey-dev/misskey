@@ -9,7 +9,7 @@
 		@keypress="onKeypress"
 		@paste="onPaste"
 		:placeholder="$t('input-message-here')"
-		v-autocomplete="'text'"
+		v-autocomplete="{ model: 'text' }"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader" @uploaded="onUploaded"/>
@@ -85,7 +85,7 @@ export default Vue.extend({
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					alert('%i18n:only-one-file-attached%');
+					alert(this.$t('only-one-file-attached'));
 				}
 			}
 		},
@@ -107,7 +107,7 @@ export default Vue.extend({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				alert('%i18n:only-one-file-attached%');
+				alert(this.$t('only-one-file-attached'));
 				return;
 			}
 
