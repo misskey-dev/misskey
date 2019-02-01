@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
-const json = require('koa-json-body');
+import * as json from 'koa-json-body';
 import * as httpSignature from 'http-signature';
 
 import { createHttpJob } from '../queue';
