@@ -43,7 +43,7 @@ common:
     quoted-by: "来自{}的引用："
   time:
     unknown: "未知"
-    future: "将来"
+    future: "未来"
     just_now: "刚刚"
     seconds_ago: "{}秒前"
     minutes_ago: "{}分前"
