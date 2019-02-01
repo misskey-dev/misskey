@@ -14,7 +14,7 @@ export default function(file: IDriveFile, thumbnail = false): string {
 		}
 	} else {
 		if (thumbnail) {
-			return isImage ? `${config.drive_url}/${file._id}?thumbnail` : null;
+			return `${config.drive_url}/${file._id}?thumbnail`;
 		} else {
 			return `${config.drive_url}/${file._id}?web`;
 		}
