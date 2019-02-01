@@ -1,4 +1,4 @@
-const ms = require('ms');
+import * as ms from 'ms';
 import $ from 'cafy';
 import User, { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';

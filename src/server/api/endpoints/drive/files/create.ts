@@ -1,4 +1,4 @@
-const ms = require('ms');
+import * as ms from 'ms';
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
