@@ -3,7 +3,7 @@
  */
 
 import * as moment from 'moment';
-const nestedProperty = require('nested-property');
+import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';

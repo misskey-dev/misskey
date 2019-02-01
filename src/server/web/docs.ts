@@ -17,7 +17,7 @@ import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
 import endpoints from '../api/endpoints';
 const locales = require('../../../locales');
-const nestedProperty = require('nested-property');
+import * as nestedProperty from 'nested-property';
 
 async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const vars = {} as { [key: string]: any };
