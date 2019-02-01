@@ -1181,7 +1181,7 @@ admin/views/moderators.vue:
     title: "注册版主"
     add: "注册"
     added: "已注册版主。"
-    remove: "解除"
+    remove: "取消"
     removed: "取消注册版主"
 admin/views/emoji.vue:
   add-emoji:
@@ -1195,12 +1195,12 @@ admin/views/emoji.vue:
     info: "我们建议使用50KB以下的PNG图像。"
     added: "Emoji 已添加"
   emojis:
-    title: "Emojis"
+    title: "表情符号列表"
     update: "更新"
     remove: "移除"
   updated: "已更新"
   remove-emoji:
-    are-you-sure: "删除 \"%1$s\"?"
+    are-you-sure: "删除「$1」?"
     removed: "已删除"
 admin/views/announcements.vue:
   announcements: "公告"
@@ -1211,7 +1211,7 @@ admin/views/announcements.vue:
   text: "内容"
   saved: "已保存"
   _remove:
-    are-you-sure: "删除 \"%1$s\"?"
+    are-you-sure: "删除「$1」?"
     removed: "已删除"
 admin/views/hashtags.vue:
   hided-tags: "隐藏标签"
@@ -1252,15 +1252,15 @@ desktop/views/pages/user-list.users.vue:
   username: "用户名"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "您可能认识的关注者"
-  loading: "正在加载, 请耐心等待哦~"
+  loading: "正在加载中"
   no-users: "没有你知道的关注者"
 desktop/views/pages/user/user.friends.vue:
   title: "活跃用户"
-  loading: "正在加载, 等着就好啦"
+  loading: "正在加载中"
   no-users: "没有活跃用户"
 desktop/views/pages/user/user.photos.vue:
   title: "照片"
-  loading: "正在加载, 请耐心等待哦~"
+  loading: "正在加载中"
   no-photos: "没有图片"
 desktop/views/pages/user/user.profile.vue:
   follows-you: "关注您"
@@ -1311,7 +1311,7 @@ mobile/views/components/drive.vue:
   nothing-in-drive: "云盘上没有任何东西"
   folder-is-empty: "这文件夹是空的"
   prompt: "您想要干什么呢？(请输入数字):<1 → 上传文件 | 2 → 从URL上传文件 | 3 → 创建新文件夹 | 4 → 更改这个文件夹的名称 | 5 → 移动这个文件夹 | 6 → 删除这个文件夹>"
-  deletion-alert: "抱歉! 尚未删除文件夹。"
+  deletion-alert: "抱歉！ 删除文件夹功能尚未实现。"
   folder-name: "文件夹名称"
   root-rename-alert: "您目前在root模式; 它无法重命名，因为它不是文件夹。 导航到要重命名的文件夹，然后重试。"
   root-move-alert: "您目前在root模式; 它无法移动，因为它不是文件夹。 导航到要移动的文件夹，然后重试。"
