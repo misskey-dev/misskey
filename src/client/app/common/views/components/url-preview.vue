@@ -9,7 +9,7 @@
 </div>
 <div v-else class="mk-url-preview">
 	<a :class="{ mini, compact }" :href="url" target="_blank" :title="url" v-if="!fetching">
-		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url(${thumbnail})`"></div>
+		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`"></div>
 		<article>
 			<header>
 				<h1 :title="title">{{ title }}</h1>
