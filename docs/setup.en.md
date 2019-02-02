@@ -35,9 +35,8 @@ Please install and setup these softwares:
 As root:
 1. `mongo` Go to the mongo shell
 2. `use misskey` Use the misskey database
-3. `db.users.save( {dummy:"dummy"} )` Write dummy data to initialize the db.
-4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Create the misskey user.
-5. `exit` You're done !
+3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Create the misskey user.
+4. `exit` You're done!
 
 *4.* Install Misskey
 ----------------------------------------------------------------

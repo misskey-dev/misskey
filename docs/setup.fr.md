@@ -35,9 +35,8 @@ Installez les paquets suivants :
 En root :
 1. `mongo` Ouvrez le shell mongo
 2. `use misskey` Utilisez la base de données misskey
-3. `db.users.save( {dummy:"dummy"} )` Écrivez une donnée factice pour initialiser la base de données.
-4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
-5. `exit` Vous avez terminé !
+3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
+4. `exit` Vous avez terminé !
 
 *4.* Installation de Misskey
 ----------------------------------------------------------------

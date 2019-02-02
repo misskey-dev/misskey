@@ -41,9 +41,8 @@ adduser --disabled-password --disabled-login misskey
 ルートで:
 1. `mongo` mongoシェルを起動
 2. `use misskey` misskeyデータベースを使用
-3. `db.users.save( {dummy:"dummy"} )` ダミーデータを書き込みDBを初期化
-4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` misskeyユーザーを作成
-5. `exit` mongoシェルを終了
+3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` misskeyユーザーを作成
+4. `exit` mongoシェルを終了
 
 *4.* Misskeyのインストール
 ----------------------------------------------------------------
