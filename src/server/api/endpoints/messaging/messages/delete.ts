@@ -3,7 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import define from '../../../define';
 import { publishMessagingStream } from '../../../../../stream';
-const ms = require('ms');
+import * as ms from 'ms';
 
 export const meta = {
 	stability: 'stable',

@@ -9,7 +9,7 @@ import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
-import htmlToMFM from '../../../mfm/html-to-mfm';
+import { fromHtml } from '../../../mfm/fromHtml';
 import usersChart from '../../../chart/users';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
@@ -17,7 +17,7 @@ import registerInstance from '../../../services/register-instance';
 import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
-import { ITag } from './tag';
+import { ITag, extractHashtags } from './tag';
 import Following from '../../../models/following';
 import { IIdentifier } from './identifier';
 
@@ -140,6 +140,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const { fields, services } = analyzeAttachments(person.attachment);
 
+	const tags = extractHashtags(person.tag);
+
 	const isBot = object.type == 'Service';
 
 	// Create user
@@ -150,7 +152,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
 			lastFetchedAt: new Date(),
-			description: htmlToMFM(person.summary),
+			description: fromHtml(person.summary),
 			followersCount,
 			followingCount,
 			notesCount,
@@ -171,6 +173,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			url: person.url,
 			fields,
 			...services,
+			tags,
 			isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
@@ -334,13 +337,15 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const { fields, services } = analyzeAttachments(person.attachment);
 
+	const tags = extractHashtags(person.tag);
+
 	const updates = {
 		lastFetchedAt: new Date(),
 		inbox: person.inbox,
 		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		featured: person.featured,
 		emojis: emojiNames,
-		description: htmlToMFM(person.summary),
+		description: fromHtml(person.summary),
 		followersCount,
 		followingCount,
 		notesCount,
@@ -349,6 +354,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		endpoints: person.endpoints,
 		fields,
 		...services,
+		tags,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
@@ -463,7 +469,7 @@ export function analyzeAttachments(attachments: ITag[]) {
 			else
 				fields.push({
 					name: attachment.name,
-					value: htmlToMFM(attachment.value)
+					value: fromHtml(attachment.value)
 				});
 
 	return { fields, services };

@@ -3,7 +3,7 @@ import Following from '../../models/following';
 import Blocking from '../../models/blocking';
 import { publishMainStream } from '../../stream';
 import notify from '../../notify';
-import pack from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
 import renderReject from '../../remote/activitypub/renderer/reject';
@@ -26,7 +26,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 
 	if (isRemoteUser(follower) && isLocalUser(followee) && blocked) {
 		// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
-		const content = pack(renderReject(renderFollow(follower, followee, requestId), followee));
+		const content = renderActivity(renderReject(renderFollow(follower, followee, requestId), followee));
 		deliver(followee , content, follower.inbox);
 		return;
 	} else if (isRemoteUser(follower) && isLocalUser(followee) && blocking) {
@@ -115,7 +115,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	}
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
-		const content = pack(renderAccept(renderFollow(follower, followee, requestId), followee));
+		const content = renderActivity(renderAccept(renderFollow(follower, followee, requestId), followee));
 		deliver(followee, content, follower.inbox);
 	}
 }

@@ -5,7 +5,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
-import pack from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
@@ -78,12 +78,12 @@ export default async (ctx: Router.IRouterContext) => {
 			inStock ? `${partOf}?page=true&cursor=${followings[followings.length - 1]._id}` : null
 		);
 
-		ctx.body = pack(rendered);
+		ctx.body = renderActivity(rendered);
 		setResponseType(ctx);
 	} else {
 		// index page
 		const rendered = renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`, null);
-		ctx.body = pack(rendered);
+		ctx.body = renderActivity(rendered);
 		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		setResponseType(ctx);
 	}

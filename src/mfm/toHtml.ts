@@ -2,9 +2,9 @@ import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
 import { intersperse } from '../prelude/array';
-import { MfmForest, MfmTree } from './parser';
+import { MfmForest, MfmTree } from './types';
 
-export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
+export function toHtml(tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) {
 	if (tokens == null) {
 		return null;
 	}
@@ -136,6 +136,7 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 				default:
 					const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
 					a.href = remoteUserInfo ? remoteUserInfo.uri : `${config.url}/${acct}`;
+					a.className = 'mention';
 					break;
 			}
 			a.textContent = acct;
@@ -156,7 +157,7 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 
 		text(token) {
 			const el = doc.createElement('span');
-			const nodes = (token.node.props.text as string).split('\n').map(x => doc.createTextNode(x) as Node);
+			const nodes = (token.node.props.text as string).split(/\r\n|\r|\n/).map(x => doc.createTextNode(x) as Node);
 
 			for (const x of intersperse<Node | 'br'>('br', nodes)) {
 				el.appendChild(x === 'br' ? doc.createElement('br') : x);
@@ -183,4 +184,4 @@ export default (tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteU
 	appendChildren(tokens, doc.body);
 
 	return `<p>${doc.body.innerHTML}</p>`;
-};
+}

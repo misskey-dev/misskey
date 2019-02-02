@@ -1,12 +1,12 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import Mute from '../../../../models/mute';
 import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../chart/active-users';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -103,15 +103,13 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
-	const [followings, mutedUserIds] = await Promise.all([
+	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
 		getFriends(user._id, true, false),
 
-		// ミュートしているユーザーを取得
-		Mute.find({
-			muterId: user._id
-		}).then(ms => ms.map(m => m.muteeId))
+		// 隠すユーザーを取得
+		getHideUserIds(user)
 	]);
 
 	//#region Construct query
@@ -175,15 +173,15 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 				'_user.host': null
 			}],
 
-			// mute
+			// hide
 			userId: {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_reply.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_renote.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 		}]
 	} as any;

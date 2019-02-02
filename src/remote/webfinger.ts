@@ -1,4 +1,4 @@
-const WebFinger = require('webfinger.js');
+import { WebFinger } from 'webfinger.js';
 
 const webFinger = new WebFinger({ });
 
@@ -13,7 +13,7 @@ type IWebFinger = {
 };
 
 export default async function resolve(query: any): Promise<IWebFinger> {
-	return await new Promise((res, rej) => webFinger.lookup(query, (error: Error, result: any) => {
+	return await new Promise((res, rej) => webFinger.lookup(query, (error: Error | string, result: any) => {
 		if (error) {
 			return rej(error);
 		}

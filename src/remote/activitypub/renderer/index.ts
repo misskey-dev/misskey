@@ -1,7 +1,7 @@
 import config from '../../../config';
 import * as uuid from 'uuid';
 
-export default (x: any) => {
+export const renderActivity = (x: any) => {
 	if (x == null) return null;
 
 	if (x !== null && typeof x === 'object' && x.id == null) {

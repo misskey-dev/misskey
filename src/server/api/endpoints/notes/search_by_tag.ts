@@ -1,9 +1,9 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -143,47 +143,43 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	}
 
 	if (me != null) {
-		const mutes = await Mute.find({
-			muterId: me._id,
-			deletedAt: { $exists: false }
-		});
-		const mutedUserIds = mutes.map(m => m.muteeId);
+		const hideUserIds = await getHideUserIds(me);
 
 		switch (ps.mute) {
 			case 'mute_all':
 				push({
 					userId: {
-						$nin: mutedUserIds
+						$nin: hideUserIds
 					},
 					'_reply.userId': {
-						$nin: mutedUserIds
+						$nin: hideUserIds
 					},
 					'_renote.userId': {
-						$nin: mutedUserIds
+						$nin: hideUserIds
 					}
 				});
 				break;
 			case 'mute_related':
 				push({
 					'_reply.userId': {
-						$nin: mutedUserIds
+						$nin: hideUserIds
 					},
 					'_renote.userId': {
-						$nin: mutedUserIds
+						$nin: hideUserIds
 					}
 				});
 				break;
 			case 'mute_direct':
 				push({
 					userId: {
-						$nin: mutedUserIds
+						$nin: hideUserIds
 					}
 				});
 				break;
 			case 'direct_only':
 				push({
 					userId: {
-						$in: mutedUserIds
+						$in: hideUserIds
 					}
 				});
 				break;
@@ -191,11 +187,11 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 				push({
 					$or: [{
 						'_reply.userId': {
-							$in: mutedUserIds
+							$in: hideUserIds
 						}
 					}, {
 						'_renote.userId': {
-							$in: mutedUserIds
+							$in: hideUserIds
 						}
 					}]
 				});
@@ -204,15 +200,15 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 				push({
 					$or: [{
 						userId: {
-							$in: mutedUserIds
+							$in: hideUserIds
 						}
 					}, {
 						'_reply.userId': {
-							$in: mutedUserIds
+							$in: hideUserIds
 						}
 					}, {
 						'_renote.userId': {
-							$in: mutedUserIds
+							$in: hideUserIds
 						}
 					}]
 				});

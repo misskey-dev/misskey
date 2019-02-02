@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
@@ -140,6 +140,12 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 			hide = true;
 		} else if (meId.equals(packedNote.userId)) {
 			hide = false;
+		} else if (packedNote.reply && meId.equals(packedNote.reply.userId)) {
+			// 自分の投稿に対するリプライ
+			hide = false;
+		} else if (packedNote.mentions && packedNote.mentions.some((id: any) => meId.equals(id))) {
+			// 自分へのメンション
+			hide = false;
 		} else {
 			// フォロワーかどうか
 			const following = await Following.findOne({
@@ -264,6 +270,7 @@ export const pack = async (
 	delete _note._renote;
 	delete _note._files;
 	delete _note._replyIds;
+	delete _note.mentionedRemoteUsers;
 
 	if (_note.geo) delete _note.geo.type;
 

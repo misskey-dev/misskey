@@ -22,6 +22,7 @@ import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import driveChart from '../../chart/drive';
 import perUserDriveChart from '../../chart/per-user-drive';
 import fetchMeta from '../../misc/fetch-meta';
+import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 
 const log = debug('misskey:drive:add-file');
 
@@ -118,6 +119,14 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		thumbnailExt = 'png';
 		thumbnailType = 'image/png';
+	} else if (type.startsWith('video/')) {
+		try {
+			thumbnail = await GenerateVideoThumbnail(path);
+			thumbnailExt = 'png';
+			thumbnailType = 'image/png';
+		} catch (e) {
+			console.log(`GenerateVideoThumbnail failed: ${e}`);
+		}
 	}
 	// #endregion thumbnail
 
@@ -322,7 +331,7 @@ export default async function(
 				if (type) {
 					res([type.mime, type.ext]);
 				} else if (isSvg(buffer)) {
-					res(['image/svg+xml', 'svg'])
+					res(['image/svg+xml', 'svg']);
 				} else {
 					// 種類が同定できなかったら application/octet-stream にする
 					res(['application/octet-stream', null]);

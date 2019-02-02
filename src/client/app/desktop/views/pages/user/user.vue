@@ -12,7 +12,7 @@
 			<div class="side">
 				<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 				<x-profile :user="user"/>
-				<x-integrations :user="user" v-if="!user.host"/>
+				<x-integrations :user="user"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>

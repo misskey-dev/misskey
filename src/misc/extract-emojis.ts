@@ -1,4 +1,4 @@
-import { EmojiNode, MfmForest } from '../mfm/parser';
+import { EmojiNode, MfmForest } from '../mfm/types';
 import { preorderF } from '../prelude/tree';
 import { unique } from '../prelude/array';
 

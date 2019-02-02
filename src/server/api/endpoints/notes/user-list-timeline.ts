@@ -1,10 +1,10 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import UserList from '../../../../models/user-list';
 import define from '../../define';
 import { getFriends } from '../../common/get-friends';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -102,7 +102,7 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const [list, followings, mutedUserIds] = await Promise.all([
+	const [list, followings, hideUserIds] = await Promise.all([
 		// リストを取得
 		// Fetch the list
 		UserList.findOne({
@@ -114,10 +114,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		// Fetch following
 		getFriends(user._id, true, false),
 
-		// ミュートしているユーザーを取得
-		Mute.find({
-			muterId: user._id
-		}).then(ms => ms.map(m => m.muteeId))
+		// 隠すユーザーを取得
+		getHideUserIds(user)
 	]);
 
 	if (list.userIds.length == 0) {
@@ -178,13 +176,13 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 			// mute
 			userId: {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_reply.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 			'_renote.userId': {
-				$nin: mutedUserIds
+				$nin: hideUserIds
 			},
 		}]
 	} as any;

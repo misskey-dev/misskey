@@ -1,6 +1,6 @@
 import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from '../../../models/user';
 import FollowRequest from '../../../models/follow-request';
-import pack from '../../../remote/activitypub/renderer';
+import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
 import { deliver } from '../../../queue';
@@ -8,7 +8,7 @@ import { publishMainStream } from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(followee)) {
-		const content = pack(renderUndo(renderFollow(follower, followee), follower));
+		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower as ILocalUser, content, followee.inbox);
 	}
 
