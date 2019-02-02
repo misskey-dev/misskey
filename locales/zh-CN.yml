@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "Fediverse中的一颗⭐"
   about-title: "Fediverse中的一颗⭐"
-  about: "非常感谢您找到了Misskey。 Misskey是出生于地球上的<b>分布式微博SNS</b>。因为她处于Fediverse(由各种SNS组成的宇宙)中，所以她与其他SNS相互连接。想要远离喧嚣的城市，不如深入这个新的互联网来探索一下吧。"
+  about: "非常感谢您找到了Misskey。 Misskey是诞生于地球的<b>分布式微博SNS</b>。因为她处于Fediverse(由各种SNS组成的宇宙)中，所以她与其他SNS相互连接。想要远离喧嚣的城市，不如深入这个新的互联网来探索一下吧。"
   intro:
     title: "什么是 Misskey 呢?"
     about: "Misskey是开源的<b>分散式微博SNS</b>。复杂的完全可定制的Ui，各种各样的帖子反应，提供集成管理系统和其他先进功能的免费文件存储。此外，称为“Fediverse”的网络系统使我们能够与其他SNS的用户进行通信。比如，如果你张贴一些东西，那么你的帖子不仅会发送给Misskey，还会发送到其他SNS平台。想象一下，正如一颗行星和另一颗行星通过电磁波来进行通信一样。"
@@ -240,7 +240,7 @@ common/views/components/games/reversi/reversi.room.vue:
   ready: "准备完成"
   cancel-ready: "取消准备"
 common/views/components/connect-failed.vue:
-  title: "无法连接至服务器"
+  title: "无法连接到服务器"
   description: "您的网络连接可能出现了问题, 或是远程服务器暂时不可用. 请稍后{重试}."
   thanks: "感谢您使用 Misskey"
   troubleshoot: "故障排除"
@@ -258,7 +258,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet: "无网络连接"
   no-internet-desc: "网络已连接，但无法连接到Internet。 请确保您的PC的Internet连接正常。"
   no-server: "无法连接到 Misskey 服务器"
-  no-server-desc: "您设备与互联网的网络连接正常，但是无法连接至 Misskey 服务器。这可能是服务器暂时不可用或正在维护，请稍后再试."
+  no-server-desc: "您设备与互联网的网络连接正常，但是无法连接至 Misskey 服务器。这可能是服务器暂时不可用或正在维护，请稍后再试。"
   success: "成功连接至 Misskey 服务器"
   success-desc: "看起来我们连接正常. 请刷新网页."
   flush: "清除缓存"
@@ -327,7 +327,7 @@ common/views/components/messaging-room.form.vue:
   only-one-file-attached: "在信息中只允许添加一个附件"
 common/views/components/messaging-room.message.vue:
   is-read: "已读"
-  deleted: "这条信息已被删除"
+  deleted: "此消息已被删除"
 common/views/components/nav.vue:
   about: "关于 Misskey"
   stats: "统计"
