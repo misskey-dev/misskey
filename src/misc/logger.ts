@@ -44,7 +44,7 @@ export default class Logger {
 	}
 
 	public succ(message: string): void { // 何かに成功した状況で使う
-		this.log(chalk.blue.bold('INFO'), chalk.green.bold(message));
+		this.log(chalk.blue.green('DONE'), chalk.green.bold(message));
 	}
 
 	public info(message: string): void { // それ以外
