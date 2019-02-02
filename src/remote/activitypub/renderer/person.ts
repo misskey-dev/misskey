@@ -8,6 +8,7 @@ import DriveFile from '../../../models/drive-file';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
+import renderHashtag from './hashtag';
 
 export default async (user: ILocalUser) => {
 	const id = `${config.url}/users/${user._id}`;
@@ -67,8 +68,11 @@ export default async (user: ILocalUser) => {
 	const emojis = await getEmojis(user.emojis);
 	const apemojis = emojis.map(emoji => renderEmoji(emoji));
 
+	const hashtagTags = (user.tags || []).map(tag => renderHashtag(tag));
+
 	const tag = [
 		...apemojis,
+		...hashtagTags,
 	];
 
 	return {

@@ -1,10 +1,10 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -64,10 +64,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
-	// ミュートしているユーザーを取得
-	const mutedUserIds = user ? (await Mute.find({
-		muterId: user._id
-	})).map(m => m.muteeId) : null;
+	// 隠すユーザーを取得
+	const hideUserIds = await getHideUserIds(user);
 
 	//#region Construct query
 	const sort = {
@@ -83,17 +81,17 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		replyId: null
 	} as any;
 
-	if (mutedUserIds && mutedUserIds.length > 0) {
+	if (hideUserIds && hideUserIds.length > 0) {
 		query.userId = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_reply.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_renote.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 	}
 

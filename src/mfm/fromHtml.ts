@@ -1,10 +1,10 @@
-const parse5 = require('parse5');
+import { parseFragment, DefaultTreeDocumentFragment } from 'parse5';
 import { URL } from 'url';
 
 export function fromHtml(html: string): string {
 	if (html == null) return null;
 
-	const dom = parse5.parseFragment(html);
+	const dom = parseFragment(html) as DefaultTreeDocumentFragment;
 
 	let text = '';
 

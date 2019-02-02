@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
-const ms = require('ms');
+import * as ms from 'ms';
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 import define from '../../../define';

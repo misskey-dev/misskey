@@ -6,7 +6,7 @@ import User, { pack, ILocalUser } from '../../../models/user';
 import config from '../../../config';
 import { publishMainStream } from '../../../stream';
 import redis from '../../../db/redis';
-import uuid = require('uuid');
+import * as uuid from 'uuid';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
 
@@ -303,4 +303,4 @@ router.get('/dc/cb', async ctx => {
 	}
 });
 
-module.exports = router;
+export default router;

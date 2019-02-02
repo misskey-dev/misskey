@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
@@ -48,6 +48,7 @@ type IUserBase = {
 	lang?: string;
 	pinnedNoteIds: mongo.ObjectID[];
 	emojis?: string[];
+	tags?: string[];
 
 	/**
 	 * 凍結されているか否か

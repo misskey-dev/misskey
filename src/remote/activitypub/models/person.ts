@@ -17,7 +17,7 @@ import registerInstance from '../../../services/register-instance';
 import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
-import { ITag } from './tag';
+import { ITag, extractHashtags } from './tag';
 import Following from '../../../models/following';
 import { IIdentifier } from './identifier';
 
@@ -140,6 +140,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const { fields, services } = analyzeAttachments(person.attachment);
 
+	const tags = extractHashtags(person.tag);
+
 	const isBot = object.type == 'Service';
 
 	// Create user
@@ -171,6 +173,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			url: person.url,
 			fields,
 			...services,
+			tags,
 			isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
@@ -334,6 +337,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const { fields, services } = analyzeAttachments(person.attachment);
 
+	const tags = extractHashtags(person.tag);
+
 	const updates = {
 		lastFetchedAt: new Date(),
 		inbox: person.inbox,
@@ -349,6 +354,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		endpoints: person.endpoints,
 		fields,
 		...services,
+		tags,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
