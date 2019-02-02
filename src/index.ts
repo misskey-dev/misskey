@@ -25,7 +25,8 @@ import { Config } from './config/types';
 import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
 
-const clusterLog = debug('misskey:cluster');
+const bootLogger = new Logger('boot');
+const clusterLog = new Logger('cluster');
 const ev = new Xev();
 
 if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {
@@ -75,17 +76,17 @@ async function masterMain() {
 		config = await init();
 	} catch (e) {
 		console.error(e);
-		Logger.error('Fatal error occurred during initialization');
+		bootLogger.error('Fatal error occurred during initialization');
 		process.exit(1);
 	}
 
-	Logger.succ('Misskey initialized');
+	bootLogger.succ('Misskey initialized');
 
 	if (!program.disableClustering) {
 		await spawnWorkers(config.clusterLimit);
 	}
 
-	Logger.succ(`Now listening on port ${config.port} on ${config.url}`);
+	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`);
 }
 
 /**
@@ -114,7 +115,7 @@ async function isPortAvailable(port: number): Promise<boolean> {
 }
 
 async function showMachine() {
-	const logger = new Logger('Machine');
+	const logger = new Logger('Machine', bootLogger);
 	logger.info(`Hostname: ${os.hostname()}`);
 	logger.info(`Platform: ${process.platform}`);
 	logger.info(`Architecture: ${process.arch}`);
@@ -127,7 +128,7 @@ async function showMachine() {
 
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
-	const logger = new Logger('Env');
+	const logger = new Logger('Env', bootLogger);
 	logger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
 
 	if (env !== 'production') {
@@ -142,20 +143,22 @@ function showEnvironment(): void {
  * Init app
  */
 async function init(): Promise<Config> {
-	Logger.info('Welcome to Misskey!');
-	Logger.info(`<<< Misskey v${pkg.version} >>>`);
+	bootLogger.info('Welcome to Misskey!');
+	bootLogger.info(`<<< Misskey v${pkg.version} >>>`);
 
-	new Logger('Nodejs').info(`Version ${runningNodejsVersion.join('.')}`);
+	const nodejsLogger = new Logger('Nodejs', bootLogger);
+
+	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
 
 	if (!satisfyNodejsVersion) {
-		new Logger('Nodejs').error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`);
+		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`);
 		process.exit(1);
 	}
 
 	await showMachine();
 	showEnvironment();
 
-	const configLogger = new Logger('Config');
+	const configLogger = new Logger('Config', bootLogger);
 	let config;
 
 	try {
@@ -175,17 +178,17 @@ async function init(): Promise<Config> {
 	configLogger.succ('Loaded');
 
 	if (config.port == null) {
-		Logger.error('The port is not configured. Please configure port.');
+		bootLogger.error('The port is not configured. Please configure port.');
 		process.exit(1);
 	}
 
 	if (process.platform === 'linux' && isWellKnownPort(config.port) && !isRoot()) {
-		Logger.error('You need root privileges to listen on well-known port on Linux');
+		bootLogger.error('You need root privileges to listen on well-known port on Linux');
 		process.exit(1);
 	}
 
 	if (!await isPortAvailable(config.port)) {
-		Logger.error(`Port ${config.port} is already in use`);
+		bootLogger.error(`Port ${config.port} is already in use`);
 		process.exit(1);
 	}
 
@@ -198,7 +201,7 @@ async function init(): Promise<Config> {
 const requiredMongoDBVersion = [3, 6];
 
 function checkMongoDB(config: Config) {
-	const mongoDBLogger = new Logger('MongoDB');
+	const mongoDBLogger = new Logger('MongoDB', bootLogger);
 	const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
 	const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
 	const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
@@ -221,9 +224,9 @@ function checkMongoDB(config: Config) {
 
 async function spawnWorkers(limit: number = Infinity) {
 	const workers = Math.min(limit, os.cpus().length);
-	Logger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
+	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
 	await Promise.all([...Array(workers)].map(spawnWorker));
-	Logger.succ('All workers started');
+	bootLogger.succ('All workers started');
 }
 
 function spawnWorker(): Promise<void> {
@@ -231,7 +234,7 @@ function spawnWorker(): Promise<void> {
 		const worker = cluster.fork();
 		worker.on('message', message => {
 			if (message !== 'ready') return;
-			Logger.succ('A worker started');
+			bootLogger.succ('A worker started');
 			res();
 		});
 	});
@@ -241,19 +244,19 @@ function spawnWorker(): Promise<void> {
 
 // Listen new workers
 cluster.on('fork', worker => {
-	clusterLog(`Process forked: [${worker.id}]`);
+	clusterLog.info(`Process forked: [${worker.id}]`);
 });
 
 // Listen online workers
 cluster.on('online', worker => {
-	clusterLog(`Process is now online: [${worker.id}]`);
+	clusterLog.succ(`Process is now online: [${worker.id}]`);
 });
 
 // Listen for dying workers
 cluster.on('exit', worker => {
 	// Replace the dead worker,
 	// we're not sentimental
-	clusterLog(chalk.red(`[${worker.id}] died :(`));
+	clusterLog.error(chalk.red(`[${worker.id}] died :(`));
 	cluster.fork();
 });
 

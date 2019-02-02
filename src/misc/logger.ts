@@ -3,14 +3,20 @@ import * as dateformat from 'dateformat';
 
 export default class Logger {
 	private domain: string;
+	private parentLogger: Logger;
 
-	constructor(domain: string) {
+	constructor(domain: string, parentLogger?: Logger) {
 		this.domain = domain;
+		this.parentLogger = parentLogger;
 	}
 
-	public static log(level: string, message: string): void {
-		const time = dateformat(new Date(), 'HH:MM:ss');
-		console.log(`[${time} ${level}] ${message}`);
+	public log(level: string, message: string): void {
+		if (this.parentLogger) {
+			this.parentLogger.log(level, `[${this.domain}] ${message}`);
+		} else {
+			const time = dateformat(new Date(), 'HH:MM:ss');
+			console.log(`${chalk.gray(time)} ${level} [${this.domain}] ${message}`);
+		}
 	}
 
 	public static error(message: string): void {
@@ -27,11 +33,6 @@ export default class Logger {
 
 	public static info(message: string): void {
 		(new Logger('')).info(message);
-	}
-
-	public log(level: string, message: string) {
-		const domain = this.domain.length > 0 ? `[${this.domain}] ` : '';
-		Logger.log(level, `${domain}${message}`);
 	}
 
 	public error(message: string): void { // 実行を継続できない状況で使う
