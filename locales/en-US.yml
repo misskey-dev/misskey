@@ -360,6 +360,10 @@ common/views/components/user-menu.vue:
   report-abuse: "Report abuse"
   report-abuse-detail: "What kind of nuisance did you encounter?"
   report-abuse-reported: "The issue has been reported to the administrator. Your cooperation is much appreciated."
+  silence: "Make Silence"
+  unsilence: "Unsilence"
+  suspend: "Suspend"
+  unsuspend: "Unsuspend"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
@@ -1013,7 +1017,6 @@ admin/views/instance.vue:
   instance-name: "Instance name"
   instance-description: "Instance description"
   host: "Host"
-  logo-url: "Logo image URL"
   banner-url: "Banner image URL"
   error-image-url: "Error image URL"
   languages: "Language of this instance"

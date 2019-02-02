@@ -360,6 +360,10 @@ common/views/components/user-menu.vue:
   report-abuse: "举报骚扰"
   report-abuse-detail: "做了什么骚扰的行为？"
   report-abuse-reported: "已报告给管理员。 非常感谢你的合作。"
+  silence: "サイレンス"
+  unsilence: "サイレンス解除"
+  suspend: "凍結"
+  unsuspend: "凍結解除"
 common/views/components/poll.vue:
   vote-to: "为\"{}\"投票"
   vote-count: "{}票"
