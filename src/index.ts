@@ -25,8 +25,9 @@ import { Config } from './config/types';
 import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
 
-const bootLogger = new Logger('boot');
-const clusterLog = new Logger('cluster');
+const logger = new Logger('core');
+const bootLogger = new Logger('boot', logger);
+const clusterLog = new Logger('cluster', logger);
 const ev = new Xev();
 
 if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {
@@ -86,7 +87,7 @@ async function masterMain() {
 		await spawnWorkers(config.clusterLimit);
 	}
 
-	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`);
+	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, true);
 }
 
 /**
@@ -264,12 +265,12 @@ process.on('unhandledRejection', console.dir);
 
 // Display detail of uncaught exception
 process.on('uncaughtException', err => {
-	console.error(err);
+	logger.error(err);
 });
 
 // Dying away...
 process.on('exit', code => {
-	Logger.info(`The process is going to exit with code ${code}`);
+	logger.info(`The process is going to exit with code ${code}`);
 });
 
 //#endregion

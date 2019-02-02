@@ -10,41 +10,26 @@ export default class Logger {
 		this.parentLogger = parentLogger;
 	}
 
-	public log(level: string, message: string): void {
+	public log(level: string, message: string, important = false): void {
 		if (this.parentLogger) {
-			this.parentLogger.log(level, `[${this.domain}] ${message}`);
+			this.parentLogger.log(level, `[${this.domain}]\t${message}`, important);
 		} else {
 			const time = dateformat(new Date(), 'HH:MM:ss');
-			console.log(`${chalk.gray(time)} ${level} [${this.domain}] ${message}`);
+			const log = `${chalk.gray(time)} ${level} [${this.domain}]\t${message}`;
+			console.log(important ? chalk.bold(log) : log);
 		}
 	}
 
-	public static error(message: string): void {
-		(new Logger('')).error(message);
-	}
-
-	public static warn(message: string): void {
-		(new Logger('')).warn(message);
-	}
-
-	public static succ(message: string): void {
-		(new Logger('')).succ(message);
-	}
-
-	public static info(message: string): void {
-		(new Logger('')).info(message);
-	}
-
-	public error(message: string): void { // 実行を継続できない状況で使う
-		this.log(chalk.red.bold('ERROR'), chalk.red.bold(message));
+	public error(message: string | Error): void { // 実行を継続できない状況で使う
+		this.log(chalk.red.bold('ERROR'), chalk.red.bold(message.toString()));
 	}
 
 	public warn(message: string): void {　// 実行を継続できるが改善すべき状況で使う
 		this.log(chalk.yellow.bold('WARN'), chalk.yellow.bold(message));
 	}
 
-	public succ(message: string): void { // 何かに成功した状況で使う
-		this.log(chalk.blue.green('DONE'), chalk.green.bold(message));
+	public succ(message: string, important = false): void { // 何かに成功した状況で使う
+		this.log(chalk.blue.green('DONE'), chalk.green.bold(message), important);
 	}
 
 	public info(message: string): void { // それ以外
