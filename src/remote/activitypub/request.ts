@@ -1,7 +1,6 @@
 import { request } from 'https';
 import { sign } from 'http-signature';
 import { URL } from 'url';
-import * as debug from 'debug';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
 import * as promiseAny from 'promise-any';
@@ -9,11 +8,12 @@ import * as promiseAny from 'promise-any';
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
 import { publishApLogStream } from '../../stream';
+import { apLogger } from './logger';
 
-const log = debug('misskey:activitypub:deliver');
+export const logger = apLogger.createSubLogger('deliver');
 
 export default (user: ILocalUser, url: string, object: any) => new Promise(async (resolve, reject) => {
-	log(`--> ${url}`);
+	logger.info(`--> ${url}`);
 
 	const timeout = 10 * 1000;
 
@@ -43,7 +43,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise(async
 			'Digest': `SHA-256=${hash}`
 		}
 	}, res => {
-		log(`${url} --> ${res.statusCode}`);
+		logger.info(`${url} --> ${res.statusCode}`);
 
 		if (res.statusCode >= 400) {
 			reject(res);

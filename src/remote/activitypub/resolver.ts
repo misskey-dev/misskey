@@ -1,9 +1,9 @@
 import * as request from 'request-promise-native';
-import * as debug from 'debug';
 import { IObject } from './type';
 import config from '../../config';
+import { apLogger } from './logger';
 
-const log = debug('misskey:activitypub:resolver');
+export const logger = apLogger.createSubLogger('resolver');
 
 export default class Resolver {
 	private history: Set<string>;
@@ -67,7 +67,7 @@ export default class Resolver {
 				!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		)) {
-			log(`invalid response: ${value}`);
+			logger.error(`invalid response: ${value}`);
 			throw new Error('invalid response');
 		}
 
