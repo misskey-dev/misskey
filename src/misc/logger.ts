@@ -5,9 +5,14 @@ export default class Logger {
 	private domain: string;
 	private parentLogger: Logger;
 
-	constructor(domain: string, parentLogger?: Logger) {
+	constructor(domain: string) {
 		this.domain = domain;
-		this.parentLogger = parentLogger;
+	}
+
+	public createSubLogger(domain: string): Logger {
+		const logger = new Logger(domain);
+		logger.parentLogger = this;
+		return logger;
 	}
 
 	public log(level: string, message: string, important = false): void {

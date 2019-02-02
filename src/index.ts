@@ -26,8 +26,8 @@ import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
 
 const logger = new Logger('core');
-const bootLogger = new Logger('boot', logger);
-const clusterLog = new Logger('cluster', logger);
+const bootLogger = logger.createSubLogger('boot');
+const clusterLog = logger.createSubLogger('cluster');
 const ev = new Xev();
 
 if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {
@@ -116,7 +116,7 @@ async function isPortAvailable(port: number): Promise<boolean> {
 }
 
 async function showMachine() {
-	const logger = new Logger('Machine', bootLogger);
+	const logger = bootLogger.createSubLogger('machine');
 	logger.info(`Hostname: ${os.hostname()}`);
 	logger.info(`Platform: ${process.platform}`);
 	logger.info(`Architecture: ${process.arch}`);
@@ -129,7 +129,7 @@ async function showMachine() {
 
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
-	const logger = new Logger('Env', bootLogger);
+	const logger = bootLogger.createSubLogger('env');
 	logger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
 
 	if (env !== 'production') {
@@ -147,7 +147,7 @@ async function init(): Promise<Config> {
 	bootLogger.info('Welcome to Misskey!');
 	bootLogger.info(`<<< Misskey v${pkg.version} >>>`);
 
-	const nodejsLogger = new Logger('Nodejs', bootLogger);
+	const nodejsLogger = bootLogger.createSubLogger('nodejs');
 
 	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
 
@@ -159,7 +159,7 @@ async function init(): Promise<Config> {
 	await showMachine();
 	showEnvironment();
 
-	const configLogger = new Logger('Config', bootLogger);
+	const configLogger = bootLogger.createSubLogger('config');
 	let config;
 
 	try {
@@ -202,7 +202,7 @@ async function init(): Promise<Config> {
 const requiredMongoDBVersion = [3, 6];
 
 function checkMongoDB(config: Config) {
-	const mongoDBLogger = new Logger('MongoDB', bootLogger);
+	const mongoDBLogger = bootLogger.createSubLogger('db');
 	const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
 	const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
 	const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
