@@ -25,9 +25,9 @@ import { Config } from './config/types';
 import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
 
-const logger = new Logger('core');
-const bootLogger = logger.createSubLogger('boot');
-const clusterLog = logger.createSubLogger('cluster');
+const logger = new Logger('core', 'cyan');
+const bootLogger = logger.createSubLogger('boot', 'magenta');
+const clusterLog = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
 
 if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {

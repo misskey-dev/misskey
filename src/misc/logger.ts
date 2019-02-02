@@ -3,24 +3,27 @@ import * as dateformat from 'dateformat';
 
 export default class Logger {
 	private domain: string;
+	private color?: string;
 	private parentLogger: Logger;
 
-	constructor(domain: string) {
+	constructor(domain: string, color?: string) {
 		this.domain = domain;
+		this.color = color;
 	}
 
-	public createSubLogger(domain: string): Logger {
-		const logger = new Logger(domain);
+	public createSubLogger(domain: string, color?: string): Logger {
+		const logger = new Logger(domain, color);
 		logger.parentLogger = this;
 		return logger;
 	}
 
 	public log(level: string, message: string, important = false): void {
+		const domain = this.color ? chalk.keyword(this.color)(this.domain) : chalk.white(this.domain);
 		if (this.parentLogger) {
-			this.parentLogger.log(level, `[${this.domain}]\t${message}`, important);
+			this.parentLogger.log(level, `[${domain}]\t${message}`, important);
 		} else {
 			const time = dateformat(new Date(), 'HH:MM:ss');
-			const log = `${chalk.gray(time)} ${level} [${this.domain}]\t${message}`;
+			const log = `${chalk.gray(time)} ${level} [${domain}]\t${message}`;
 			console.log(important ? chalk.bold(log) : log);
 		}
 	}
