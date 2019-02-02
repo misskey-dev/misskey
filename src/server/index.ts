@@ -11,7 +11,7 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
-import * as logger from 'koa-logger';
+import * as koaLogger from 'koa-logger';
 import * as requestStats from 'request-stats';
 //const slow = require('koa-slow');
 
@@ -22,6 +22,9 @@ import networkChart from '../chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
 import User from '../models/user';
+import Logger from '../misc/logger';
+
+const logger = new Logger('server');
 
 // Init app
 const app = new Koa();
@@ -29,7 +32,9 @@ app.proxy = true;
 
 if (!['production', 'test'].includes(process.env.NODE_ENV)) {
 	// Logger
-	app.use(logger());
+	app.use(koaLogger(str => {
+		logger.info(str);
+	}));
 
 	// Delay
 	//app.use(slow({
