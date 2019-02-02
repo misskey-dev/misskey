@@ -234,7 +234,6 @@ function spawnWorker(): Promise<void> {
 		const worker = cluster.fork();
 		worker.on('message', message => {
 			if (message !== 'ready') return;
-			bootLogger.succ('A worker started');
 			res();
 		});
 	});
