@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as tmp from 'tmp';
-import sharp = require('sharp');
+import * as sharp from 'sharp';
 const ThumbnailGenerator = require('video-thumbnail-generator').default;
 
 export async function GenerateVideoThumbnail(path: string): Promise<Buffer> {
