@@ -1,7 +1,7 @@
 import * as bq from 'bee-queue';
 import * as debug from 'debug';
 
-const httpSignature = require('http-signature');
+import * as httpSignature from 'http-signature';
 import parseAcct from '../../../misc/acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import perform from '../../../remote/activitypub/perform';

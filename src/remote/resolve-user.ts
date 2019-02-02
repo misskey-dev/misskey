@@ -56,7 +56,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 			await User.update({
 				usernameLower,
 				host: host
-			 }, {
+			}, {
 				$set: {
 					uri: self.href
 				}

@@ -1,7 +1,7 @@
 import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
-const json = require('koa-json-body');
-const httpSignature = require('http-signature');
+import * as json from 'koa-json-body';
+import * as httpSignature from 'http-signature';
 
 import { createHttpJob } from '../queue';
 import { renderActivity } from '../remote/activitypub/renderer';

@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
-const ms = require('ms');
+import * as ms from 'ms';
 import User, { pack } from '../../../../models/user';
 import Blocking from '../../../../models/blocking';
 import create from '../../../../services/blocking/create';

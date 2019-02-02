@@ -64,7 +64,12 @@ export default async function(ctx: Koa.BaseContext) {
 			const bucket = await getDriveFileThumbnailBucket();
 			ctx.body = bucket.openDownloadStream(thumb._id);
 		} else {
-			await sendRaw();
+			if (file.contentType.startsWith('image/')) {
+				await sendRaw();
+			} else {
+				ctx.status = 404;
+				await send(ctx as any, '/dummy.png', { root: assets });
+			}
 		}
 	} else if ('web' in ctx.query) {
 		const web = await DriveFileWebpublic.findOne({

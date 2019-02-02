@@ -1,5 +1,5 @@
 import { request } from 'https';
-const { sign } = require('http-signature');
+import { sign } from 'http-signature';
 import { URL } from 'url';
 import * as debug from 'debug';
 import * as crypto from 'crypto';

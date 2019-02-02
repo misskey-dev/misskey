@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
@@ -270,6 +270,7 @@ export const pack = async (
 	delete _note._renote;
 	delete _note._files;
 	delete _note._replyIds;
+	delete _note.mentionedRemoteUsers;
 
 	if (_note.geo) delete _note.geo.type;
 
