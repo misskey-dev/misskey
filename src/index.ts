@@ -72,6 +72,9 @@ function main() {
 async function masterMain() {
 	let config: Config;
 
+	bootLogger.info('Welcome to Misskey!');
+	bootLogger.info(`Misskey v${pkg.version}`, true);
+
 	try {
 		// initialize app
 		config = await init();
@@ -133,8 +136,8 @@ function showEnvironment(): void {
 	logger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
 
 	if (env !== 'production') {
-		logger.warn('The environment is not in production mode');
-		logger.warn('Do not use for production purpose');
+		logger.warn('The environment is not in production mode.');
+		logger.warn('Do not use for production purpose!', true);
 	}
 
 	logger.info(`You ${isRoot() ? '' : 'do not '}have root privileges`);
@@ -144,8 +147,7 @@ function showEnvironment(): void {
  * Init app
  */
 async function init(): Promise<Config> {
-	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`<<< Misskey v${pkg.version} >>>`);
+	showEnvironment();
 
 	const nodejsLogger = bootLogger.createSubLogger('nodejs');
 
@@ -157,7 +159,6 @@ async function init(): Promise<Config> {
 	}
 
 	await showMachine();
-	showEnvironment();
 
 	const configLogger = bootLogger.createSubLogger('config');
 	let config;

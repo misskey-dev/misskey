@@ -29,16 +29,16 @@ export default class Logger {
 		this.log(chalk.red.bold('ERROR'), chalk.red.bold(message.toString()));
 	}
 
-	public warn(message: string): void {　// 実行を継続できるが改善すべき状況で使う
-		this.log(chalk.yellow.bold('WARN'), chalk.yellow.bold(message));
+	public warn(message: string, important = false): void {　// 実行を継続できるが改善すべき状況で使う
+		this.log(chalk.yellow.bold('WARN'), chalk.yellow.bold(message), important);
 	}
 
 	public succ(message: string, important = false): void { // 何かに成功した状況で使う
 		this.log(chalk.blue.green('DONE'), chalk.green.bold(message), important);
 	}
 
-	public info(message: string): void { // それ以外
-		this.log(chalk.blue.bold('INFO'), message);
+	public info(message: string, important = false): void { // それ以外
+		this.log(chalk.blue.bold('INFO'), message, important);
 	}
 
 }
