@@ -6,7 +6,7 @@ import * as nodemailer from 'nodemailer';
 import fetchMeta from '../../../../misc/fetch-meta';
 import rndstr from 'rndstr';
 import config from '../../../../config';
-const ms = require('ms');
+import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 
 export const meta = {

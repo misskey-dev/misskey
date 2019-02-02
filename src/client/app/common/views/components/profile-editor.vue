@@ -30,6 +30,7 @@
 
 			<ui-textarea v-model="description" :max="500">
 				<span>{{ $t('description') }}</span>
+				<span slot="desc">{{ $t('you-can-include-hashtags') }}</span>
 			</ui-textarea>
 
 			<ui-select v-model="lang">

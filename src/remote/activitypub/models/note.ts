@@ -11,7 +11,7 @@ import { resolveImage } from './image';
 import { IRemoteUser, IUser } from '../../../models/user';
 import { fromHtml } from '../../../mfm/fromHtml';
 import Emoji, { IEmoji } from '../../../models/emoji';
-import { ITag } from './tag';
+import { ITag, extractHashtags } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
@@ -238,15 +238,4 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	);
 
 	return users.filter(x => x != null);
-}
-
-function extractHashtags(tags: ITag[]) {
-	if (!tags) return [];
-
-	const hashtags = tags.filter(tag => tag.type === 'Hashtag' && typeof tag.name == 'string');
-
-	return hashtags.map(tag => {
-		const m = tag.name.match(/^#(.+)/);
-		return m ? m[1] : null;
-	}).filter(x => x != null);
 }

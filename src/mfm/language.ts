@@ -108,20 +108,20 @@ export const mfmLanguage = P.createLanguage({
 	strike: r => P.regexp(/~~(.+?)~~/, 1).map(x => createTree('strike', r.inline.atLeast(1).tryParse(x), {})),
 	motion: r => {
 		const paren = P.regexp(/\(\(\(([\s\S]+?)\)\)\)/, 1);
-		const xml = P.regexp(/<motion>(.+)<\/motion>/, 1);
+		const xml = P.regexp(/<motion>(.+?)<\/motion>/, 1);
 		return P.alt(paren, xml).map(x => createTree('motion', r.inline.atLeast(1).tryParse(x), {}));
 	},
 	spin: r => {
 		return P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^<spin(\s[a-z]+?)?>(.+)<\/spin>/i);
+			const match = text.match(/^<spin(\s[a-z]+?)?>(.+?)<\/spin>/i);
 			if (!match) return P.makeFailure(i, 'not a spin');
 			return P.makeSuccess(i + match[0].length, {
 				content: match[2], attr: match[1] ? match[1].trim() : null
 			});
 		}).map(x => createTree('spin', r.inline.atLeast(1).tryParse(x.content), { attr: x.attr }));
 	},
-	jump: r => P.regexp(/<jump>(.+)<\/jump>/, 1).map(x => createTree('jump', r.inline.atLeast(1).tryParse(x), {})),
+	jump: r => P.regexp(/<jump>(.+?)<\/jump>/, 1).map(x => createTree('jump', r.inline.atLeast(1).tryParse(x), {})),
 	flip: r => P.regexp(/<flip>(.+?)<\/flip>/, 1).map(x => createTree('flip', r.inline.atLeast(1).tryParse(x), {})),
 	center: r => r.startOfLine.then(P.regexp(/<center>([\s\S]+?)<\/center>/, 1).map(x => createTree('center', r.inline.atLeast(1).tryParse(x), {}))),
 	inlineCode: () => P.regexp(/`([^´\n]+?)`/, 1).map(x => createLeaf('inlineCode', { code: x })),

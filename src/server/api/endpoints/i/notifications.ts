@@ -1,10 +1,10 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import Notification from '../../../../models/notification';
-import Mute from '../../../../models/mute';
 import { packMany } from '../../../../models/notification';
 import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 import define from '../../define';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -60,15 +60,13 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('cannot set sinceId and untilId');
 	}
 
-	const mute = await Mute.find({
-		muterId: user._id
-	});
+	const hideUserIds = await getHideUserIds(user);
 
 	const query = {
 		notifieeId: user._id,
 		$and: [{
 			notifierId: {
-				$nin: mute.map(m => m.muteeId)
+				$nin: hideUserIds
 			}
 		}]
 	} as any;

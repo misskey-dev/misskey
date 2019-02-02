@@ -1,5 +1,7 @@
-declare module 'is-root';
+declare module 'is-root' {
+	function isRoot(): boolean;
 
-declare namespace isRoot {
-	export function isRoot(): boolean;
+	namespace isRoot {} // Hack
+
+	export = isRoot;
 }

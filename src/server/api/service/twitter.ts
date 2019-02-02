@@ -185,4 +185,4 @@ router.get('/tw/cb', async ctx => {
 	}
 });
 
-module.exports = router;
+export default router;

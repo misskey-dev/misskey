@@ -138,7 +138,7 @@ common:
 
   do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
   user-suspended: "このユーザーは凍結されています。"
-  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-user: "このユーザー情報は不正確な可能性があります。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
@@ -530,6 +530,7 @@ common/views/components/profile-editor.vue:
   account: "アカウント"
   location: "場所"
   description: "自己紹介"
+  you-can-include-hashtags: "ハッシュタグを含めることができます。"
   language: "言語"
   birthday: "誕生日"
   avatar: "アイコン"
