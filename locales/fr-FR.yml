@@ -333,7 +333,7 @@ common/views/components/nav.vue:
   stats: "Statistiques"
   status: "Statut"
   wiki: "Wiki"
-  donors: "Donateurs"
+  donors: "Donateur·rice·s"
   repository: "Dépôt"
   develop: "Développeurs"
   feedback: "Suggestions"
@@ -367,7 +367,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
-  total-users: "{} utilisateurs ont voté"
+  total-users: "{} utilisateur·rice·s ont voté"
   vote: "Vote"
   show-result: "Montrer les résultats"
   voted: "Voté"
@@ -403,7 +403,7 @@ common/views/components/signin.vue:
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
   invitation-info: "Si vous n’avez pas de code d’invitation, contactez un <a href=\"{}\">administrateur</a>."
-  username: "Nom d'utilisateur"
+  username: "Nom d'utilisateur·rice"
   checking: "Vérification…"
   available: "Disponible"
   unavailable: "Non disponible"
@@ -462,8 +462,8 @@ common/views/components/visibility-chooser.vue:
   public: "Public"
   home: "Accueil"
   home-desc: "Publier sur le fil d’Accueil uniquement"
-  followers: "Abonnés"
-  followers-desc: "Publier à vos abonnés uniquement"
+  followers: "Abonné·e·s"
+  followers-desc: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
   specified-desc: "Publier uniquement aux utilisateurs mentionnés"
   local-public: "Local (Public)"
@@ -507,7 +507,7 @@ common/views/components/profile-editor.vue:
   email-verified: "L’adresse du courrier électronique a été vérifiée."
   email-not-verified: "Adresse de courriel n’est pas confirmée. Veuillez vérifier votre boite de réception."
 common/views/components/user-list-editor.vue:
-  users: "Utilisateur"
+  users: "Utilisateur·rice"
   rename: "Renommer la liste"
   delete: "Supprimer la liste"
   remove-user: "Retirer de cette liste"
@@ -667,7 +667,7 @@ desktop/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 desktop/views/components/followers-window.vue:
-  followers: "{} abonnés"
+  followers: "{} abonné·e·s"
 desktop/views/components/followers.vue:
   empty: "Il semble que vous n’avez pas encore d’abonné·e·s."
 desktop/views/components/following-window.vue:
