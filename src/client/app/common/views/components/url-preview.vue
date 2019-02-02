@@ -185,7 +185,6 @@ export default Vue.extend({
 				this.title = info.title;
 				this.description = info.description;
 				this.thumbnail = info.thumbnail;
-				console.log(info.thumbnail);
 				this.icon = info.icon;
 				this.sitename = info.sitename;
 				this.fetching = false;
