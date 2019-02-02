@@ -8,7 +8,8 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/user-menu.vue'),
@@ -39,6 +40,18 @@ export default Vue.extend({
 			text: this.$t('report-abuse'),
 			action: this.reportAbuse
 		}];
+
+		if (this.$store.getters.isSignedIn && (this.$store.state.i.isAdmin || this.$store.state.i.isModerator)) {
+			menu = menu.concat([null, {
+				icon: faMicrophoneSlash,
+				text: this.user.isSilenced ? this.$t('unsilence') : this.$t('silence'),
+				action: this.toggleSilence
+			}, {
+				icon: faSnowflake,
+				text: this.user.isSuspended ? this.$t('unsuspend') : this.$t('suspend'),
+				action: this.toggleSuspend
+			}]);
+		}
 
 		return {
 			items: menu
@@ -141,6 +154,40 @@ export default Vue.extend({
 				this.$root.dialog({
 					type: 'success',
 					text: reported
+				});
+			}, e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
+		toggleSilence() {
+			this.$root.api(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isSilenced = !this.user.isSilenced;
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+			}, e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
+		toggleSuspend() {
+			this.$root.api(this.user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isSuspended = !this.user.isSuspended;
+				this.$root.dialog({
+					type: 'success',
+					splash: true
 				});
 			}, e => {
 				this.$root.dialog({
