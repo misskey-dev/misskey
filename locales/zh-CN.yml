@@ -806,7 +806,7 @@ desktop/views/components/settings.vue:
   show-my-renotes: "在时间表中显示Renote"
   show-renoted-my-notes: "在时间线上显示我的Renote"
   show-local-renotes: "在时间线中显示Local Renote(s)"
-  show-maps: "显示地图以显示位置"
+  show-maps: "自动显示地图"
   remain-deleted-note: "继续显示已删除的帖子"
   deck-column-align: "列对齐设置"
   deck-column-align-center: "中央"
