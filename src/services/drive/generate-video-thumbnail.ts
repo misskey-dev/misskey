@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as tmp from 'tmp';
+import * as sharp from 'sharp';
 const ThumbnailGenerator = require('video-thumbnail-generator').default;
 
 export async function GenerateVideoThumbnail(path: string): Promise<Buffer> {
@@ -15,18 +16,27 @@ export async function GenerateVideoThumbnail(path: string): Promise<Buffer> {
 		thumbnailPath: outDir,
 	});
 
-	await tg.generateOneByPercent(10, {
-		size: '498x280',
+	await tg.generateOneByPercent(5, {
+		size: '100%',
 		filename: 'output.png',
 	});
 
 	const outPath = `${outDir}/output.png`;
 
-	const buffer = fs.readFileSync(outPath);
+	const thumbnail = await sharp(outPath)
+		.resize(498, 280, {
+			fit: 'inside',
+			withoutEnlargement: true
+		})
+		.jpeg({
+			quality: 85,
+			progressive: true
+		})
+		.toBuffer();
 
 	// cleanup
 	fs.unlinkSync(outPath);
 	cleanup();
 
-	return buffer;
+	return thumbnail;
 }

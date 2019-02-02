@@ -122,8 +122,6 @@ async function save(path: string, name: string, type: string, hash: string, size
 	} else if (type.startsWith('video/')) {
 		try {
 			thumbnail = await GenerateVideoThumbnail(path);
-			thumbnailExt = 'png';
-			thumbnailType = 'image/png';
 		} catch (e) {
 			console.log(`GenerateVideoThumbnail failed: ${e}`);
 		}
