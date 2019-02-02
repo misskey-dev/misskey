@@ -3,7 +3,7 @@
 	<ui-card>
 		<div slot="title"><fa :icon="faTerminal"/> {{ $t('operation') }}</div>
 		<section class="fit-top">
-			<ui-input class="target" v-model="target" type="text">
+			<ui-input class="target" v-model="target" type="text" @enter="showUser">
 				<span>{{ $t('username-or-userid') }}</span>
 			</ui-input>
 			<ui-button @click="showUser"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
