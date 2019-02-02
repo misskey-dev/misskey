@@ -1,4 +1,3 @@
-import { performance } from 'perf_hooks';
 import limiter from './limiter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
@@ -50,15 +49,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 
 	// API invoking
 	try {
-		const before = performance.now();
 		res = await ep.exec(data, user, app, file);
-		const after = performance.now();
-
-		const time = after - before;
-
-		if (time > 1000) {
-			console.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
-		}
 	} catch (e) {
 		if (e && e.name == 'INVALID_PARAM') {
 			throw {
