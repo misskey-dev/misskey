@@ -360,6 +360,10 @@ common/views/components/user-menu.vue:
   report-abuse: "스팸 신고"
   report-abuse-detail: "어떤 스팸 행위를 하고 있습니까?"
   report-abuse-reported: "관리자에게 보고되었습니다. 협조해주셔서 감사합니다."
+  silence: "サイレンス"
+  unsilence: "サイレンス解除"
+  suspend: "凍結"
+  unsuspend: "凍結解除"
 common/views/components/poll.vue:
   vote-to: "\"{}\"에 투표하기"
   vote-count: "{}표"
