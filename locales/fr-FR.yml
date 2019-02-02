@@ -362,7 +362,7 @@ common/views/components/user-menu.vue:
   report-abuse-reported: "Transmit à l’administrateur. Merci de votre collaboration."
   silence: "サイレンス"
   unsilence: "サイレンス解除"
-  suspend: "凍結"
+  suspend: "Suspendre"
   unsuspend: "凍結解除"
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
@@ -436,7 +436,7 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-unread-notes: "Marquer toutes les notes comme lues"
   mark-as-read-all-talk-messages: "Marquer toutes les conversations comme lues"
   auto-watch: "投稿の自動ウォッチ"
-  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
+  auto-watch-desc: "Recevoir automatiquement des notifications à propos des publications auxquelles vous avez réagi ou répondu"
 common/views/components/integration-settings.vue:
   title: "Intégrations"
   connect: "Connecter"
@@ -486,7 +486,7 @@ common/views/components/profile-editor.vue:
   account: "Compte"
   location: "Lieu"
   description: "À propos de moi"
-  you-can-include-hashtags: "ハッシュタグを含めることができます。"
+  you-can-include-hashtags: "Vous pouvez également inclure un hashtag sur votre description de profile."
   language: "Langue"
   birthday: "Date de naissance"
   avatar: "Avatar"
