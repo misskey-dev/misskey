@@ -1,6 +1,8 @@
 <template>
 <span class="mk-nav">
-	<a :href="aboutUrl">{{ $t('about') }}</a>
+	<a :href="enAboutUrl">{{ $t('about_en') }}</a>
+	<i>・</i>
+	<a :href="jpAboutUrl">{{ $t('about_jp') }}</a>
 	<i>・</i>
 	<a :href="repositoryUrl">{{ $t('repository') }}</a>
 	<i>・</i>
@@ -19,7 +21,8 @@ export default Vue.extend({
 	i18n: i18n('common/views/components/nav.vue'),
 	data() {
 		return {
-			aboutUrl: `/docs/${lang}/about`,
+			enAboutUrl: `/docs/en-US/about`,
+			jpAboutUrl: `/docs/ja-JP/about`,
 			repositoryUrl: 'https://github.com/syuilo/misskey',
 			feedbackUrl: 'https://github.com/syuilo/misskey/issues/new'
 		}

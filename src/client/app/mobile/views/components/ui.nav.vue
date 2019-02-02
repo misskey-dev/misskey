@@ -40,7 +40,8 @@
 					<div v-html="announcement.text"></div>
 				</article>
 			</div>
-			<a :href="aboutUrl"><p class="about">{{ $t('about') }}</p></a>
+			<a :href="enAboutUrl"><p class="about">{{ $t('about_en') }}</p></a>
+			<a :href="jpAboutUrl"><p class="about">{{ $t('about_jp') }}</p></a>
 		</div>
 	</transition>
 </div>
@@ -59,7 +60,8 @@ export default Vue.extend({
 		return {
 			hasGameInvitation: false,
 			connection: null,
-			aboutUrl: `/docs/${lang}/about`,
+			enAboutUrl: `/docs/en-US/about`,
+			jpAboutUrl: `/docs/ja-JP/about`,
 			announcements: [],
 			searching: false,
 		};

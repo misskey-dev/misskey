@@ -358,7 +358,8 @@ common/views/components/messaging-room.message.vue:
   deleted: "このメッセージは削除されました"
 
 common/views/components/nav.vue:
-  about: "Misskeyについて"
+  about_jp: "Misskeyについて(日本語)"
+  about_en: "About Misskey(English)"
   stats: "統計"
   status: "ステータス"
   wiki: "Wiki"
@@ -1576,7 +1577,8 @@ mobile/views/components/ui.nav.vue:
   darkmode: "ダークモード"
   settings: "設定"
   admin: "管理"
-  about: "Misskeyについて"
+  about_jp: "Misskeyについて(日本語)"
+  about_en: "About Misskey(English)"
 
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
