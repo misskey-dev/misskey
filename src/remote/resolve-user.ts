@@ -5,6 +5,7 @@ import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';
 import { URL } from 'url';
 import { remoteLogger } from './logger';
+import chalk from 'chalk';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
@@ -34,7 +35,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 	if (user === null) {
 		const self = await resolveSelf(acctLower);
 
-		logger.info(`return new remote user: ${acctLower}`);
+		logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
 		return await createPerson(self.href);
 	}
 
@@ -69,14 +70,14 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 
 		logger.info(`return resynced remote user: ${acctLower}`);
 		return await User.findOne({ uri: self.href });
-}
+	}
 
-logger.info(`return existing remote user: ${acctLower}`);
+	logger.info(`return existing remote user: ${acctLower}`);
 	return user;
 };
 
 async function resolveSelf(acctLower: string) {
-	logger.info(`WebFinger for ${acctLower}`);
+	logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 	const finger = await webFinger(acctLower);
 	const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
 	if (!self) {
