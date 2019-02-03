@@ -72,6 +72,12 @@ function main() {
 async function masterMain() {
 	let config: Config;
 
+	console.log(' _____ _         _           ');
+	console.log('|     |_|___ ___| |_ ___ _ _ ');
+	console.log('| | | | |_ -|_ -| \'_| -_| | |');
+	console.log('|_|_|_|_|___|___|_,_|___|_  |');
+	console.log('                        |___|\n');
+
 	bootLogger.info('Welcome to Misskey!');
 	bootLogger.info(`Misskey v${pkg.version}`, true);
 
