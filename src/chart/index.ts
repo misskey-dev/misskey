@@ -181,7 +181,7 @@ export default abstract class Chart<T> {
 			if (e.code === 11000) {
 				log = await this.getLatestLog(span, group);
 			} else {
-				console.error(e);
+				logger.error(e);
 				throw e;
 			}
 		}

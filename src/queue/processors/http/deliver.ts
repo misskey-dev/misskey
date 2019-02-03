@@ -1,6 +1,7 @@
 import * as bq from 'bee-queue';
 
 import request from '../../../remote/activitypub/request';
+import { queueLogger } from '../..';
 
 export default async (job: bq.Job, done: any): Promise<void> => {
 	try {
@@ -13,11 +14,11 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 				// 何回再送しても成功することはないということなのでエラーにはしないでおく
 				done();
 			} else {
-				console.warn(`deliver failed: ${res.statusCode} ${res.statusMessage} to=${job.data.to}`);
+				queueLogger.warn(`deliver failed: ${res.statusCode} ${res.statusMessage} to=${job.data.to}`);
 				done(res.statusMessage);
 			}
 		} else {
-			console.warn(`deliver failed: ${res} to=${job.data.to}`);
+			queueLogger.warn(`deliver failed: ${res} to=${job.data.to}`);
 			done();
 		}
 	}

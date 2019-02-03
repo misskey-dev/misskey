@@ -495,7 +495,6 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 			return null;
 		}
 
-		console.error(e);
 		throw 'something happened';
 	}
 }

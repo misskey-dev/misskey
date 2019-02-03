@@ -11,6 +11,7 @@ import reject from './reject';
 import add from './add';
 import remove from './remove';
 import block from './block';
+import { apLogger } from '../logger';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	switch (activity.type) {
@@ -35,11 +36,11 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 		break;
 
 	case 'Add':
-		await add(actor, activity).catch(err => console.log(err));
+		await add(actor, activity).catch(err => apLogger.error(err));
 		break;
 
 	case 'Remove':
-		await remove(actor, activity).catch(err => console.log(err));
+		await remove(actor, activity).catch(err => apLogger.error(err));
 		break;
 
 	case 'Announce':
@@ -64,7 +65,7 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 		break;
 
 	default:
-		console.warn(`unknown activity type: ${(activity as any).type}`);
+		apLogger.warn(`unknown activity type: ${(activity as any).type}`);
 		return null;
 	}
 };

@@ -1,13 +1,12 @@
-import * as debug from 'debug';
-
 import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
 import { IRemoteUser, IUser } from '../../../../models/user';
 import { IAnnounce, INote } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
+import { apLogger } from '../../logger';
 
-const log = debug('misskey:activitypub');
+const logger = apLogger;
 
 /**
  * アナウンスアクティビティを捌きます
@@ -32,7 +31,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 
 	const renote = await resolveNote(note);
 
-	log(`Creating the (Re)Note: ${uri}`);
+	logger.info(`Creating the (Re)Note: ${uri}`);
 
 	//#region Visibility
 	const visibility = getVisibility(activity.to, activity.cc, actor);

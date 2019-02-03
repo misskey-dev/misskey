@@ -6,6 +6,9 @@ import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
 import perUserFollowingChart from '../../chart/per-user-following';
+import Logger from '../../misc/logger';
+
+const logger = new Logger('following/delete');
 
 export default async function(follower: IUser, followee: IUser) {
 	const following = await Following.findOne({
@@ -14,7 +17,7 @@ export default async function(follower: IUser, followee: IUser) {
 	});
 
 	if (following == null) {
-		console.warn('フォロー解除がリクエストされましたがフォローしていませんでした');
+		logger.warn('フォロー解除がリクエストされましたがフォローしていませんでした');
 		return;
 	}
 

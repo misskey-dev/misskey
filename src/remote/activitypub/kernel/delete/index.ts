@@ -3,6 +3,7 @@ import deleteNote from './note';
 import Note from '../../../../models/note';
 import { IRemoteUser } from '../../../../models/user';
 import { IDelete } from '../../type';
+import { apLogger } from '../../logger';
 
 /**
  * 削除アクティビティを捌きます
@@ -31,7 +32,7 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<void> => {
 		break;
 
 	default:
-		console.warn(`Unknown type: ${object.type}`);
+		apLogger.warn(`Unknown type: ${object.type}`);
 		break;
 	}
 };

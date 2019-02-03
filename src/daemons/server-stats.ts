@@ -60,7 +60,6 @@ async function usedMem() {
 		const data = await sysUtils.mem();
 		return data.active;
 	} catch (error) {
-		console.error(error);
 		throw error;
 	}
 }
@@ -71,7 +70,6 @@ async function totalMem() {
 		const data = await sysUtils.mem();
 		return data.total;
 	} catch (error) {
-		console.error(error);
 		throw error;
 	}
 }

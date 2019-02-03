@@ -30,7 +30,6 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 			return rej('already reacted');
 		}
 
-		console.error(e);
 		return rej('something happened');
 	}
 

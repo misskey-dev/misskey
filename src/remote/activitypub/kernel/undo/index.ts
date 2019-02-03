@@ -1,13 +1,12 @@
-import * as debug from 'debug';
-
 import { IRemoteUser } from '../../../../models/user';
 import { IUndo, IFollow, IBlock, ILike } from '../../type';
 import unfollow from './follow';
 import unblock from './block';
 import undoLike from './like';
 import Resolver from '../../resolver';
+import { apLogger } from '../../logger';
 
-const log = debug('misskey:activitypub');
+const logger = apLogger;
 
 export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {
@@ -16,7 +15,7 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 
 	const uri = activity.id || activity;
 
-	log(`Undo: ${uri}`);
+	logger.info(`Undo: ${uri}`);
 
 	const resolver = new Resolver();
 
@@ -25,7 +24,7 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 	try {
 		object = await resolver.resolve(activity.object);
 	} catch (e) {
-		log(`Resolution failed: ${e}`);
+		logger.error(`Resolution failed: ${e}`);
 		throw e;
 	}
 

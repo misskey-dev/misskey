@@ -44,9 +44,9 @@ export default async function(userId: mongo.ObjectID | string, type: string, bod
 		push.sendNotification(pushSubscription, JSON.stringify({
 			type, body
 		})).catch((err: any) => {
-			//console.log(err.statusCode);
-			//console.log(err.headers);
-			//console.log(err.body);
+			//swLogger.info(err.statusCode);
+			//swLogger.info(err.headers);
+			//swLogger.info(err.body);
 
 			if (err.statusCode == 410) {
 				Subscription.remove({

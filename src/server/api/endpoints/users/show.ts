@@ -2,6 +2,7 @@ import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../
 import User, { pack, isRemoteUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';
+import { apiLogger } from '../../logger';
 
 const cursorOption = { fields: { data: false } };
 
@@ -59,7 +60,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			try {
 				user = await resolveRemoteUser(ps.username, ps.host, cursorOption);
 			} catch (e) {
-				console.warn(`failed to resolve remote user: ${e}`);
+				apiLogger.warn(`failed to resolve remote user: ${e}`);
 				return rej('failed to resolve remote user');
 			}
 		} else {

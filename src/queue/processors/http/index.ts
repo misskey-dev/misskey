@@ -1,5 +1,6 @@
 import deliver from './deliver';
 import processInbox from './process-inbox';
+import { queueLogger } from '../..';
 
 const handlers: any = {
 	deliver,
@@ -12,7 +13,7 @@ export default (job: any, done: any) => {
 	if (handler) {
 		handler(job, done);
 	} else {
-		console.error(`Unknown job: ${job.data.type}`);
+		queueLogger.error(`Unknown job: ${job.data.type}`);
 		done();
 	}
 };

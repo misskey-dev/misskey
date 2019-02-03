@@ -1,6 +1,4 @@
 import * as bq from 'bee-queue';
-import * as debug from 'debug';
-
 import * as httpSignature from 'http-signature';
 import parseAcct from '../../../misc/acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
@@ -9,8 +7,9 @@ import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
 import { publishApLogStream } from '../../../stream';
+import Logger from '../../../misc/logger';
 
-const log = debug('misskey:queue:inbox');
+const logger = new Logger('inbox');
 
 // ユーザーのinboxにアクティビティが届いた時の処理
 export default async (job: bq.Job, done: any): Promise<void> => {
@@ -21,7 +20,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	const info = Object.assign({}, activity);
 	delete info['@context'];
 	delete info['signature'];
-	log(info);
+	logger.info(info);
 	//#endregion
 
 	const keyIdLower = signature.keyId.toLowerCase();
@@ -30,7 +29,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	if (keyIdLower.startsWith('acct:')) {
 		const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
 		if (host === null) {
-			console.warn(`request was made by local user: @${username}`);
+			logger.warn(`request was made by local user: @${username}`);
 			done();
 			return;
 		}
@@ -39,7 +38,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		try {
 			ValidateActivity(activity, host);
 		} catch (e) {
-			console.warn(e.message);
+			logger.warn(e.message);
 			done();
 			return;
 		}
@@ -51,7 +50,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		try {
 			ValidateActivity(activity, host);
 		} catch (e) {
-			console.warn(e.message);
+			logger.warn(e.message);
 			done();
 			return;
 		}
@@ -66,9 +65,9 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	if (activity.type === 'Update') {
 		if (activity.object && activity.object.type === 'Person') {
 			if (user == null) {
-				console.warn('Update activity received, but user not registed.');
+				logger.warn('Update activity received, but user not registed.');
 			} else if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
-				console.warn('Update activity received, but signature verification failed.');
+				logger.warn('Update activity received, but signature verification failed.');
 			} else {
 				updatePerson(activity.actor, null, activity.object);
 			}
@@ -88,7 +87,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	}
 
 	if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
-		console.warn('signature verification failed');
+		logger.error('signature verification failed');
 		done();
 		return;
 	}

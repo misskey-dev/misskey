@@ -7,6 +7,9 @@ import { deliver } from '../../../queue';
 import Following from '../../../models/following';
 import { publishMainStream } from '../../../stream';
 import perUserFollowingChart from '../../../chart/per-user-following';
+import Logger from '../../../misc/logger';
+
+const logger = new Logger('following/requests/accept');
 
 export default async function(followee: IUser, follower: IUser) {
 	let incremented = 1;
@@ -29,7 +32,7 @@ export default async function(followee: IUser, follower: IUser) {
 		}
 	}).catch(e => {
 		if (e.code === 11000 && isRemoteUser(follower) && isLocalUser(followee)) {
-			console.log(`Accept => Insert duplicated ignore. ${follower._id} => ${followee._id}`);
+			logger.info(`Accept => Insert duplicated ignore. ${follower._id} => ${followee._id}`);
 			incremented = 0;
 		} else {
 			throw e;

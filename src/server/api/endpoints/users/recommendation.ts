@@ -8,6 +8,7 @@ import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import resolveUser from '../../../../remote/resolve-user';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { apiLogger } from '../../logger';
 
 export const meta = {
 	desc: {
@@ -102,7 +103,7 @@ async function convertUsers(src: IRecommendUser[], me: ILocalUser) {
 	const packed = await Promise.all(src.map(async x => {
 		const user = await resolveUser(x.username, x.host)
 			.catch(() => {
-				console.warn(`Can't resolve ${x.username}@${x.host}`);
+				apiLogger.warn(`Can't resolve ${x.username}@${x.host}`);
 				return null;
 			});
 

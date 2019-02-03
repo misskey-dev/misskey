@@ -1,16 +1,15 @@
-import * as debug from 'debug';
-
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/user';
 import acceptFollow from './follow';
 import { IAccept, IFollow } from '../../type';
+import { apLogger } from '../../logger';
 
-const log = debug('misskey:activitypub');
+const logger = apLogger;
 
 export default async (actor: IRemoteUser, activity: IAccept): Promise<void> => {
 	const uri = activity.id || activity;
 
-	log(`Accept: ${uri}`);
+	logger.info(`Accept: ${uri}`);
 
 	const resolver = new Resolver();
 
@@ -19,7 +18,7 @@ export default async (actor: IRemoteUser, activity: IAccept): Promise<void> => {
 	try {
 		object = await resolver.resolve(activity.object);
 	} catch (e) {
-		log(`Resolution failed: ${e}`);
+		logger.error(`Resolution failed: ${e}`);
 		throw e;
 	}
 
@@ -29,7 +28,7 @@ export default async (actor: IRemoteUser, activity: IAccept): Promise<void> => {
 		break;
 
 	default:
-		console.warn(`Unknown accept type: ${object.type}`);
+		logger.warn(`Unknown accept type: ${object.type}`);
 		break;
 	}
 };

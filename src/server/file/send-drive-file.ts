@@ -4,11 +4,12 @@ import * as mongodb from 'mongodb';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
+import { serverLogger } from '..';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
 const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): void => {
-	console.error(e);
+	serverLogger.error(e);
 	ctx.status = 500;
 };
 

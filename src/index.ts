@@ -34,6 +34,7 @@ program
 	.version(pkg.version)
 	.option('--no-daemons', 'Disable daemon processes (for debbuging)')
 	.option('--disable-clustering', 'Disable clustering')
+	.option('--quiet', 'Suppress all logs')
 	.parse(process.argv);
 //#endregion
 
@@ -67,11 +68,15 @@ function main() {
 async function masterMain() {
 	let config: Config;
 
-	console.log(' _____ _         _           ');
-	console.log('|     |_|___ ___| |_ ___ _ _ ');
-	console.log('| | | | |_ -|_ -| \'_| -_| | |');
-	console.log('|_|_|_|_|___|___|_,_|___|_  |');
-	console.log('                        |___|\n');
+	if (!program.quiet) {
+		//#region Misskey logo
+		console.log(' _____ _         _           ');
+		console.log('|     |_|___ ___| |_ ___ _ _ ');
+		console.log('| | | | |_ -|_ -| \'_| -_| | |');
+		console.log('|_|_|_|_|___|___|_,_|___|_  |');
+		console.log('                        |___|\n');
+		//#endregion
+	}
 
 	bootLogger.info('Welcome to Misskey!');
 	bootLogger.info(`Misskey v${pkg.version}`, true);
@@ -80,8 +85,7 @@ async function masterMain() {
 		// initialize app
 		config = await init();
 	} catch (e) {
-		console.error(e);
-		bootLogger.error('Fatal error occurred during initialization');
+		bootLogger.error('Fatal error occurred during initialization', true);
 		process.exit(1);
 	}
 
@@ -191,7 +195,7 @@ async function init(): Promise<Config> {
 	}
 
 	if (!await isPortAvailable(config.port)) {
-		bootLogger.error(`Port ${config.port} is already in use`);
+		bootLogger.error(`Port ${config.port} is already in use`, true);
 		process.exit(1);
 	}
 
@@ -263,7 +267,9 @@ cluster.on('exit', worker => {
 });
 
 // Display detail of unhandled promise rejection
-process.on('unhandledRejection', console.dir);
+if (!program.quiet) {
+	process.on('unhandledRejection', console.dir);
+}
 
 // Display detail of uncaught exception
 process.on('uncaughtException', err => {

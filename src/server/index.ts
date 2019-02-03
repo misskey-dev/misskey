@@ -24,7 +24,7 @@ import { sum } from '../prelude/array';
 import User from '../models/user';
 import Logger from '../misc/logger';
 
-const logger = new Logger('server', 'gray');
+export const serverLogger = new Logger('server', 'gray');
 
 // Init app
 const app = new Koa();
@@ -33,7 +33,7 @@ app.proxy = true;
 if (!['production', 'test'].includes(process.env.NODE_ENV)) {
 	// Logger
 	app.use(koaLogger(str => {
-		logger.info(str);
+		serverLogger.info(str);
 	}));
 
 	// Delay

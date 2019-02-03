@@ -2,6 +2,8 @@ import * as cluster from 'cluster';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
 
+const quiet = process.argv.find(x => x == '--quiet');
+
 export default class Logger {
 	private domain: string;
 	private color?: string;
@@ -19,6 +21,7 @@ export default class Logger {
 	}
 
 	public log(level: string, message: string, important = false): void {
+		if (quiet) return;
 		const domain = this.color ? chalk.keyword(this.color)(this.domain) : chalk.white(this.domain);
 		if (this.parentLogger) {
 			this.parentLogger.log(level, `[${domain}]\t${message}`, important);
@@ -30,8 +33,8 @@ export default class Logger {
 		}
 	}
 
-	public error(message: string | Error): void { // 実行を継続できない状況で使う
-		this.log(chalk.red('ERR '), chalk.red(message.toString()));
+	public error(message: string | Error, important = false): void { // 実行を継続できない状況で使う
+		this.log(chalk.red('ERR '), chalk.red(message.toString()), important);
 	}
 
 	public warn(message: string, important = false): void {　// 実行を継続できるが改善すべき状況で使う
