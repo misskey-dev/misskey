@@ -20,7 +20,7 @@ export default Vue.extend({
 		});
 		const videoTag = this.$refs.video as HTMLVideoElement;
 		if (this.start) videoTag.currentTime = this.start
-		videoTag.volume = this.$store.state.device.mediaVolume != null ? this.$store.state.device.mediaVolume : 0.5;
+		videoTag.volume = this.$store.state.device.mediaVolume;
 	},
 	methods: {
 		close() {

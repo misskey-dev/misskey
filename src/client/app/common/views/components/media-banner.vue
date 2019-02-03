@@ -44,7 +44,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		const audioTag = this.$refs.audio as HTMLAudioElement;
-		audioTag.volume = this.$store.state.device.mediaVolume != null ? this.$store.state.device.mediaVolume : 0.5;
+		audioTag.volume = this.$store.state.device.mediaVolume;
 	},
 	methods: {
 		volumechange() {
