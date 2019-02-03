@@ -137,7 +137,7 @@ function showEnvironment(): void {
 
 	if (env !== 'production') {
 		logger.warn('The environment is not in production mode.');
-		logger.warn('Do not use for production purpose!', true);
+		logger.warn('DO NOT USE FOR PRODUCTION PURPOSE!', true);
 	}
 
 	logger.info(`You ${isRoot() ? '' : 'do not '}have root privileges`);
