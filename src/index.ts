@@ -61,11 +61,12 @@ async function masterMain() {
 
 	if (!program.quiet) {
 		//#region Misskey logo
-		console.log(' _____ _         _           ');
-		console.log('|     |_|___ ___| |_ ___ _ _ ');
-		console.log('| | | | |_ -|_ -| \'_| -_| | |');
-		console.log('|_|_|_|_|___|___|_,_|___|_  |');
-		console.log('                        |___|\n');
+		const v = `v${pkg.version}`;
+		console.log('  _____ _         _           ');
+		console.log(' |     |_|___ ___| |_ ___ _ _ ');
+		console.log(' | | | | |_ -|_ -| \'_| -_| | |');
+		console.log(' |_|_|_|_|___|___|_,_|___|_  |');
+		console.log(' ' + chalk.gray(v) + ('                        |___|\n'.substr(v.length)));
 		//#endregion
 	}
 
