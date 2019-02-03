@@ -19,6 +19,9 @@
 		"test": "gulp test",
 		"format": "gulp format"
 	},
+	"resolutions": {
+		"teaser": "3.14.1"
+	}
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "1.2.14",
 		"@fortawesome/free-brands-svg-icons": "5.6.3",
