@@ -57,7 +57,7 @@ function tryCreateUrl(url: string) {
 
 function validateUrl(url: string) {
 	const result = tryCreateUrl(url);
-	if (result.pathname.trim('/').length) throw `url="${url}" is not a valid URL, has a pathname.`;
+	if (result.pathname.replace('/', '').length) throw `url="${url}" is not a valid URL, has a pathname.`;
 	if (!url.includes(result.host)) throw `url="${url}" is not a valid URL, has an invalid hostname.`;
 	if (!/^https?:$/.test(result.protocol)) throw `url="${url}" is not a valid URL, has an invalid protocol.`;
 	return result;
