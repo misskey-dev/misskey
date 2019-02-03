@@ -33,7 +33,7 @@ export default class Logger {
 	}
 
 	public error(message: string | Error, important = false): void { // 実行を継続できない状況で使う
-		this.log(chalk.red('ERR '), chalk.red(message.toString()), important);
+		this.log(important ? chalk.bgRed.white('ERR ') : chalk.red('ERR '), chalk.red(message.toString()), important);
 	}
 
 	public warn(message: string, important = false): void {　// 実行を継続できるが改善すべき状況で使う
@@ -41,7 +41,7 @@ export default class Logger {
 	}
 
 	public succ(message: string, important = false): void { // 何かに成功した状況で使う
-		this.log(chalk.green('DONE'), chalk.green(message), important);
+		this.log(important ? chalk.bgGreen.white('DONE') : chalk.green('DONE'), chalk.green(message), important);
 	}
 
 	public info(message: string, important = false): void { // それ以外
