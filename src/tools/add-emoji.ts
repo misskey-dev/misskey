@@ -1,7 +1,4 @@
-import * as debug from 'debug';
 import Emoji from '../models/emoji';
-
-debug.enable('*');
 
 async function main(name: string, url: string, alias?: string): Promise<any> {
 	const aliases = alias != null ? [ alias ] : [];

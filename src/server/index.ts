@@ -24,7 +24,7 @@ import { sum } from '../prelude/array';
 import User from '../models/user';
 import Logger from '../misc/logger';
 
-const logger = new Logger('server');
+const logger = new Logger('server', 'gray');
 
 // Init app
 const app = new Koa();

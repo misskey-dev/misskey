@@ -1,7 +1,5 @@
 import * as fs from 'fs';
 import * as URL from 'url';
-
-import * as debug from 'debug';
 import * as tmp from 'tmp';
 import * as request from 'request';
 
@@ -10,8 +8,9 @@ import create from './add-file';
 import config from '../../config';
 import { IUser } from '../../models/user';
 import * as mongodb from 'mongodb';
+import { driveLogger } from './logger';
 
-const log = debug('misskey:drive:upload-from-url');
+const logger = driveLogger.createSubLogger('downloader');
 
 export default async (
 	url: string,
@@ -22,14 +21,14 @@ export default async (
 	force = false,
 	link = false
 ): Promise<IDriveFile> => {
-	log(`REQUESTED: ${url}`);
+	logger.info(`REQUESTED: ${url}`);
 
 	let name = URL.parse(url).pathname.split('/').pop();
 	if (!validateFileName(name)) {
 		name = null;
 	}
 
-	log(`name: ${name}`);
+	logger.info(`name: ${name}`);
 
 	// Create temp file
 	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
@@ -82,10 +81,10 @@ export default async (
 
 	try {
 		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
-		log(`got: ${driveFile._id}`);
+		logger.succ(`got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;
-		log(`failed: ${e}`);
+		logger.error(`failed: ${e}`);
 	}
 
 	// clean-up

@@ -8,7 +8,6 @@ require('events').EventEmitter.defaultMaxListeners = 128;
 
 import * as os from 'os';
 import * as cluster from 'cluster';
-import * as debug from 'debug';
 import chalk from 'chalk';
 import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
@@ -29,10 +28,6 @@ const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
 const clusterLog = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
-
-if (process.env.NODE_ENV != 'production' && process.env.DEBUG == null) {
-	debug.enable('misskey');
-}
 
 //#region Command line argument definitions
 program

@@ -1,11 +1,11 @@
 import * as Limiter from 'ratelimiter';
-import * as debug from 'debug';
 import limiterDB from '../../db/redis';
 import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
 import { IUser } from '../../models/user';
+import Logger from '../../misc/logger';
 
-const log = debug('misskey:limiter');
+const logger = new Logger('limiter');
 
 export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) => {
 	// Redisがインストールされてない場合は常に許可
@@ -49,7 +49,7 @@ export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) =>
 				return reject('ERR');
 			}
 
-			log(`@${getAcct(user)} ${endpoint.name} min remaining: ${info.remaining}`);
+			logger.debug(`@${getAcct(user)} ${endpoint.name} min remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('BRIEF_REQUEST_INTERVAL');
@@ -77,7 +77,7 @@ export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) =>
 				return reject('ERR');
 			}
 
-			log(`@${getAcct(user)} ${endpoint.name} max remaining: ${info.remaining}`);
+			logger.debug(`@${getAcct(user)} ${endpoint.name} max remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('RATE_LIMIT_EXCEEDED');
