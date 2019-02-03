@@ -44,8 +44,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            npm install
-            npm prune
+            yarn install
       - run:
           name: Configure
           command: |
@@ -54,8 +53,6 @@ jobs:
       - run:
           name: Build
           command: |
-            yarn install
-            yarn autoclean
             yarn build
             touch yarn.lock
       - save_cache:
