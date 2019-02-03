@@ -14,7 +14,7 @@ import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import config from '../../config';
 import { licenseHtml } from '../../misc/license';
-const constants = require('../../const.json');
+import { copyright } from '../../const.json';
 import endpoints from '../api/endpoints';
 import locales from '../../../locales';
 import * as nestedProperty from 'nested-property';
@@ -59,7 +59,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	vars['config'] = config;
 
-	vars['copyright'] = constants.copyright;
+	vars['copyright'] = copyright;
 
 	vars['license'] = licenseHtml;
 
