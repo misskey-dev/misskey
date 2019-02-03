@@ -69,6 +69,7 @@ export default Vue.extend({
 
 					const data = new FormData();
 					data.append('i', this.$store.state.i.token);
+					data.append('force', 'true');
 					data.append('file', file);
 
 					if (folder) data.append('folderId', folder);
