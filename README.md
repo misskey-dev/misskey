@@ -85,7 +85,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 	</tr>
 </table>
 
-:heart: Backers & Sponsors
+:heart: Backers
 ----------------------------------------------------------------
 <!-- PATREON_START -->
 <table><tr>
