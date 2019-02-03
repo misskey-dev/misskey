@@ -9,7 +9,7 @@ import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
 import extractHashtags from '../../../../misc/extract-hashtags';
-const langmap = require('langmap');
+import * as langmap from 'langmap';
 
 export const meta = {
 	desc: {
