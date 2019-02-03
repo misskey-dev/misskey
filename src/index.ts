@@ -12,7 +12,6 @@ import chalk from 'chalk';
 import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
 import Xev from 'xev';
-import * as program from 'commander';
 import * as sysUtils from 'systeminformation';
 import mongo, { nativeDbConn } from './db/mongodb';
 
@@ -23,20 +22,12 @@ import loadConfig from './config/load';
 import { Config } from './config/types';
 import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
+import { program } from './argv';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
 const clusterLog = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
-
-//#region Command line argument definitions
-program
-	.version(pkg.version)
-	.option('--no-daemons', 'Disable daemon processes (for debbuging)')
-	.option('--disable-clustering', 'Disable clustering')
-	.option('--quiet', 'Suppress all logs')
-	.parse(process.argv);
-//#endregion
 
 /**
  * Init process

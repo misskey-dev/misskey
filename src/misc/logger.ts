@@ -1,8 +1,7 @@
 import * as cluster from 'cluster';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
-
-const quiet = process.argv.find(x => x == '--quiet');
+import { program } from '../argv';
 
 export default class Logger {
 	private domain: string;
@@ -21,7 +20,7 @@ export default class Logger {
 	}
 
 	public log(level: string, message: string, important = false): void {
-		if (quiet) return;
+		if (program.quiet) return;
 		const domain = this.color ? chalk.keyword(this.color)(this.domain) : chalk.white(this.domain);
 		if (this.parentLogger) {
 			this.parentLogger.log(level, `[${domain}]\t${message}`, important);
