@@ -19,15 +19,16 @@ export default class Logger {
 		return logger;
 	}
 
-	public log(level: string, message: string, important = false): void {
+	public log(level: string, message: string, important = false, subDomains: string[] = []): void {
 		if (program.quiet) return;
 		const domain = this.color ? chalk.keyword(this.color)(this.domain) : chalk.white(this.domain);
+		const domains = [domain].concat(subDomains);
 		if (this.parentLogger) {
-			this.parentLogger.log(level, `[${domain}]\t${message}`, important);
+			this.parentLogger.log(level, message, important, domains);
 		} else {
 			const time = dateformat(new Date(), 'HH:MM:ss');
 			const process = cluster.isMaster ? '*' : cluster.worker.id;
-			const log = `${chalk.gray(time)} ${level} ${process}\t[${domain}]\t${message}`;
+			const log = `${chalk.gray(time)} ${level} ${process}\t[${domains.join(' ')}]\t${message}`;
 			console.log(important ? chalk.bold(log) : log);
 		}
 	}
