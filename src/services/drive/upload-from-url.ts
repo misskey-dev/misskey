@@ -9,6 +9,7 @@ import config from '../../config';
 import { IUser } from '../../models/user';
 import * as mongodb from 'mongodb';
 import { driveLogger } from './logger';
+import chalk from 'chalk';
 
 const logger = driveLogger.createSubLogger('downloader');
 
@@ -21,14 +22,10 @@ export default async (
 	force = false,
 	link = false
 ): Promise<IDriveFile> => {
-	logger.info(`REQUESTED: ${url}`);
-
 	let name = URL.parse(url).pathname.split('/').pop();
 	if (!validateFileName(name)) {
 		name = null;
 	}
-
-	logger.info(`name: ${name}`);
 
 	// Create temp file
 	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
@@ -40,13 +37,17 @@ export default async (
 
 	// write content at URL to temp file
 	await new Promise((res, rej) => {
+		logger.info(`Downloading ${chalk.cyan(url)} ...`);
+
 		const writable = fs.createWriteStream(path);
 
 		writable.on('finish', () => {
+			logger.succ(`Download succeeded: ${chalk.cyan(url)}`);
 			res();
 		});
 
 		writable.on('error', error => {
+			logger.error(error);
 			rej(error);
 		});
 
@@ -65,12 +66,14 @@ export default async (
 
 		req.on('response', response => {
 			if (response.statusCode !== 200) {
+				logger.error(`Got ${response.statusCode} (${url})`);
 				writable.close();
 				rej(response.statusCode);
 			}
 		});
 
 		req.on('error', error => {
+			logger.error(error);
 			writable.close();
 			rej(error);
 		});
@@ -81,10 +84,10 @@ export default async (
 
 	try {
 		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
-		logger.succ(`got: ${driveFile._id}`);
+		logger.succ(`Got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;
-		logger.error(`failed: ${e}`);
+		logger.error(`Failed: ${e}`);
 	}
 
 	// clean-up
