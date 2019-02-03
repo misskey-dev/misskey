@@ -8,6 +8,9 @@ import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import { ICollection } from 'monk';
+import Logger from '../misc/logger';
+
+const logger = new Logger('chart');
 
 const utc = moment.utc;
 
@@ -58,14 +61,18 @@ type Log<T extends Obj> = {
 export default abstract class Chart<T> {
 	protected collection: ICollection<Log<T>>;
 	protected abstract async getTemplate(init: boolean, latest?: T, group?: any): Promise<T>;
+	private name: string;
 
 	constructor(name: string, grouped = false) {
+		this.name = name;
 		this.collection = db.get<Log<T>>(`chart.${name}`);
+
 		const keys = {
 			span: -1,
 			date: -1
 		} as { [key: string]: 1 | -1; };
 		if (grouped) keys.group = -1;
+
 		this.collection.createIndex(keys, { unique: true });
 	}
 
@@ -155,6 +162,8 @@ export default abstract class Chart<T> {
 
 			// 初期ログデータを作成
 			data = await this.getTemplate(true, null, group);
+
+			logger.info(`${this.name}: Initial commit created`);
 		}
 
 		try {
