@@ -16,7 +16,7 @@ import config from '../../config';
 import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
 import endpoints from '../api/endpoints';
-const locales = require('../../../locales');
+import locales from '../../../locales';
 import * as nestedProperty from 'nested-property';
 
 function getLang(lang: string): string {
