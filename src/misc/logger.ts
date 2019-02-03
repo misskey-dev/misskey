@@ -1,3 +1,4 @@
+import * as cluster from 'cluster';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
 
@@ -23,7 +24,8 @@ export default class Logger {
 			this.parentLogger.log(level, `[${domain}]\t${message}`, important);
 		} else {
 			const time = dateformat(new Date(), 'HH:MM:ss');
-			const log = `${chalk.gray(time)} ${level} [${domain}]\t${message}`;
+			const process = cluster.isMaster ? '*' : cluster.worker.id;
+			const log = `${chalk.gray(time)} ${level} ${process}\t[${domain}]\t${message}`;
 			console.log(important ? chalk.bold(log) : log);
 		}
 	}
