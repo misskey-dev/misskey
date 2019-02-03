@@ -18,7 +18,7 @@
 		"no-empty":false,
 		"ordered-imports": [false],
 		"arrow-parens": false,
-		"array-type": false,
+		"array-type": [true, "array"],
 		"object-literal-shorthand": false,
 		"object-literal-key-quotes": false,
 		"triple-equals": [false],
