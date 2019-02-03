@@ -8,13 +8,12 @@ import Meta from '../../../models/meta';
 import RegistrationTicket from '../../../models/registration-tickets';
 import usersChart from '../../../chart/users';
 import fetchMeta from '../../../misc/fetch-meta';
+import * as recaptcha from 'recaptcha-promise';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
 
 	const instance = await fetchMeta();
-
-	const recaptcha = require('recaptcha-promise');
 
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
