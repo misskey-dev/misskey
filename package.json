@@ -20,7 +20,7 @@
 		"format": "gulp format"
 	},
 	"resolutions": {
-		"teaser": "3.14.1"
+		"terser": "3.14.1"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "1.2.14",
