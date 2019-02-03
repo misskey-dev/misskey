@@ -356,7 +356,7 @@ common/views/components/user-menu.vue:
   block: "Zablokuj"
   unblock: "Odblokuj"
   push-to-list: "Dodaj do listy"
-  select-list: "リストを選択してください"
+  select-list: "Wybierz listę"
   report-abuse: "Zgłoś nadużycie"
   report-abuse-detail: "どのような迷惑行為を行っていますか？"
   report-abuse-reported: "管理者に報告されました。ご協力ありがとうございました。"
@@ -1011,7 +1011,7 @@ admin/views/abuse.vue:
   target: "対象"
   reporter: "報告者"
   details: "詳細"
-  remove-report: "削除"
+  remove-report: "Usuń"
 admin/views/instance.vue:
   instance: "インスタンス"
   instance-name: "インスタンス名"
