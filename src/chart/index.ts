@@ -21,7 +21,7 @@ export type Partial<T> = {
 };
 
 type ArrayValue<T> = {
-	[P in keyof T]: T[P] extends number ? Array<T[P]> : ArrayValue<T[P]>;
+	[P in keyof T]: T[P] extends number ? T[P][] : ArrayValue<T[P]>;
 };
 
 type Span = 'day' | 'hour';

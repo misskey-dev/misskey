@@ -121,7 +121,7 @@ const parsePropDefinition = (key: string, prop: any) => {
 	return prop;
 };
 
-const sortParams = (params: Array<{ name: string }>) => {
+const sortParams = (params: { name: string }[]) => {
 	return params;
 };
 

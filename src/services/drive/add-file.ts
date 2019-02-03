@@ -429,7 +429,7 @@ export default async function(
 
 	const properties: {[key: string]: any} = {};
 
-	let propPromises: Array<Promise<void>> = [];
+	let propPromises: Promise<void>[] = [];
 
 	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/webp'].includes(mime);
 
