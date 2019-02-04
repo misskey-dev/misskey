@@ -168,7 +168,7 @@ export default Vue.extend({
 		padding-bottom 16px
 		border-bottom solid 1px var(--adminDashboardHeaderBorder)
 		color var(--adminDashboardHeaderFg)
-		font-size 14px
+		font-size 16px
 		white-space nowrap
 
 		@media (max-width 1000px)
@@ -192,7 +192,7 @@ export default Vue.extend({
 	> .instances
 		padding 16px
 		color var(--adminDashboardHeaderFg)
-		font-size 13px
+		font-size 15px
 
 		>>> .instance
 			margin 0 10px
