@@ -13,7 +13,7 @@ import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
 import * as koaLogger from 'koa-logger';
 import * as requestStats from 'request-stats';
-//const slow = require('koa-slow');
+//import * as slow from 'koa-slow';
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';

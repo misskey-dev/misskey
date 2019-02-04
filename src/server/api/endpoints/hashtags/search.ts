@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import Hashtag from '../../../../models/hashtag';
 import define from '../../define';
-const escapeRegexp = require('escape-regexp');
+import * as escapeRegexp from 'escape-regexp';
 
 export const meta = {
 	desc: {

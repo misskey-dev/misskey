@@ -3,7 +3,7 @@ import * as sysUtils from 'systeminformation';
 import * as diskusage from 'diskusage';
 import * as Deque from 'double-ended-queue';
 import Xev from 'xev';
-const osUtils = require('os-utils');
+import * as osUtils from 'os-utils';
 
 const ev = new Xev();
 

@@ -8,7 +8,7 @@ declare namespace deepcopy {
 		valueType: DeepcopyCustomizerValueType) => T;
 
 	interface DeepcopyOptions<T> {
-		customizer: DeepcopyCustomizer<T>
+		customizer: DeepcopyCustomizer<T>;
 	}
 
 	export function deepcopy<T>(
