@@ -50,29 +50,29 @@ export default Vue.extend({
 			this.isFavorited ? {
 				icon: 'star',
 				text: this.$t('unfavorite'),
-				action: this.unfavorite
+				action: () => this.toggleFavorite(false)
 			} : {
 				icon: 'star',
 				text: this.$t('favorite'),
-				action: this.favorite
+				action: () => this.toggleFavorite(true)
 			},
 			this.note.userId != this.$store.state.i.id ? this.isWatching ? {
 				icon: faEyeSlash,
 				text: this.$t('unwatch'),
-				action: this.unwatch
+				action: () => this.toggleWatch(false)
 			} : {
 				icon: faEye,
 				text: this.$t('watch'),
-				action: this.watch
+				action: () => this.toggleWatch(true)
 			} : undefined,
 			this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
 				icon: 'thumbtack',
 				text: this.$t('unpin'),
-				action: this.unpin
+				action: () => this.togglePin(false)
 			} : {
 				icon: 'thumbtack',
 				text: this.$t('pin'),
-				action: this.pin
+				action: () => this.togglePin(true)
 			} : undefined,
 			null,
 			this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? {
@@ -117,22 +117,14 @@ export default Vue.extend({
 			});
 		},
 
-		pin() {
-			this.$root.api('i/pin', {
+		togglePin(pin: boolean) {
+			this.$root.api(pin ? 'i/pin' : 'i/unpin', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
 					splash: true
 				});
-				this.destroyDom();
-			});
-		},
-
-		unpin() {
-			this.$root.api('i/unpin', {
-				noteId: this.note.id
-			}).then(() => {
 				this.destroyDom();
 			});
 		},
@@ -153,8 +145,8 @@ export default Vue.extend({
 			});
 		},
 
-		favorite() {
-			this.$root.api('notes/favorites/create', {
+		toggleFavorite(favorite: boolean) {
+			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$root.dialog({
@@ -165,32 +157,8 @@ export default Vue.extend({
 			});
 		},
 
-		unfavorite() {
-			this.$root.api('notes/favorites/delete', {
-				noteId: this.note.id
-			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					splash: true
-				});
-				this.destroyDom();
-			});
-		},
-
-		watch() {
-			this.$root.api('notes/watching/create', {
-				noteId: this.note.id
-			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					splash: true
-				});
-				this.destroyDom();
-			});
-		},
-
-		unwatch() {
-			this.$root.api('notes/watching/delete', {
+		toggleWatch(watch: boolean) {
+			this.$root.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$root.dialog({
