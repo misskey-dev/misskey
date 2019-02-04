@@ -157,7 +157,7 @@ async function init(): Promise<Config> {
 	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
 
 	if (!satisfyNodejsVersion) {
-		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`);
+		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`, true);
 		process.exit(1);
 	}
 
@@ -174,7 +174,7 @@ async function init(): Promise<Config> {
 			process.exit(1);
 		}
 		if (exception.code === 'ENOENT') {
-			configLogger.error('Configuration file not found');
+			configLogger.error('Configuration file not found', true);
 			process.exit(1);
 		}
 		throw exception;
@@ -183,12 +183,12 @@ async function init(): Promise<Config> {
 	configLogger.succ('Loaded');
 
 	if (config.port == null) {
-		bootLogger.error('The port is not configured. Please configure port.');
+		bootLogger.error('The port is not configured. Please configure port.', true);
 		process.exit(1);
 	}
 
 	if (process.platform === 'linux' && isWellKnownPort(config.port) && !isRoot()) {
-		bootLogger.error('You need root privileges to listen on well-known port on Linux');
+		bootLogger.error('You need root privileges to listen on well-known port on Linux', true);
 		process.exit(1);
 	}
 
