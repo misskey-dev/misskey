@@ -90,18 +90,18 @@ export default async (ctx: Router.IRouterContext) => {
 		const activities = await Promise.all(notes.map(note => packActivity(note)));
 		const rendered = renderOrderedCollectionPage(
 			`${partOf}?${stringify({
-				page: true,
+				page: 'true',
 				...(sinceId ? { since_id: sinceId } : {}),
 				...(untilId ? { until_id: untilId } : {})
 			})}`,
 			user.notesCount, activities, partOf,
 			notes.length ? `${partOf}?${stringify({
-				page: true,
-				since_id: notes[0]._id
+				page: 'true',
+				since_id: notes[0]._id.toHexString()
 			})}` : null,
 			notes.length ? `${partOf}?${stringify({
-				page: true,
-				until_id: notes[notes.length - 1]._id
+				page: 'true',
+				until_id: notes[notes.length - 1]._id.toHexString()
 			})}` : null
 		);
 
