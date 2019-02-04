@@ -344,6 +344,8 @@ common/views/components/note-menu.vue:
   copy-link: "复制链接"
   favorite: "收藏这个投稿"
   unfavorite: "取消收藏"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "固定个人资料"
   unpin: "解除固定"
   delete: "删除"
