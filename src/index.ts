@@ -74,7 +74,7 @@ async function masterMain() {
 
 	bootLogger.info('Welcome to Misskey!');
 	bootLogger.info(`Misskey v${pkg.version}`, true);
-	bootLogger.info('Misskey is maintained by @syuilo, @AyaMorisawa, @mei23 and @acid-chicken.');
+	bootLogger.info('Misskey is maintained by @syuilo, @AyaMorisawa, @mei23, and @acid-chicken.');
 
 	try {
 		// initialize app
