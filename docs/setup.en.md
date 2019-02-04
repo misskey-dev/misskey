@@ -54,6 +54,11 @@ As root:
 *6.* Build Misskey
 ----------------------------------------------------------------
 
+Before build, you need to set `NODE_ENV` to `production`. like this:
+* Linux: `export NODE_ENV=production`
+* Windows (PowerShell): `$env:NODE_ENV="production"`
+* Windows (CMD): `set NODE_ENV=production`
+
 Build misskey with the following:
 
 `npm run build`

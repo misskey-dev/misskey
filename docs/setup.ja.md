@@ -60,6 +60,11 @@ adduser --disabled-password --disabled-login misskey
 *6.* Misskeyのビルド
 ----------------------------------------------------------------
 
+ビルドする前に、`NODE_ENV`を`production`にする必要があります。例:
+* Linux: `export NODE_ENV=production`
+* Windows (PowerShell): `$env:NODE_ENV="production"`
+* Windows (CMD): `set NODE_ENV=production`
+
 次のコマンドでMisskeyをビルドしてください:
 
 `npm run build`
