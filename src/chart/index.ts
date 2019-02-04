@@ -58,7 +58,7 @@ type Log<T extends Obj> = {
 /**
  * 様々なチャートの管理を司るクラス
  */
-export default abstract class Chart<T> {
+export default abstract class Chart<T extends Obj> {
 	protected collection: ICollection<Log<T>>;
 	protected abstract async getTemplate(init: boolean, latest?: T, group?: any): Promise<T>;
 	private name: string;
