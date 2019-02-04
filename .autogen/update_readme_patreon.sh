@@ -2,7 +2,7 @@
 # __MISSKEY_BEARER_TOKEN=
 # __MISSKEY_CAMPAIGN_ID=
 # __MISSKEY_GITHUB_TOKEN=
-# __MISSKEY_HEAD=acid-chicken:patch-autogen
+# __MISSKEY_HEAD=syuilo:patch-autogen
 # __MISSKEY_REPO=syuilo/misskey
 # __MISSKEY_BRANCH=develop
 test "$(curl -LSs -w '\n' -- "https://api.github.com/repos/$REPO/pulls?access_token=$__MISSKEY_GITHUB_TOKEN" | jq -r -f check_pr.jq | grep $__MISSKEY_HEAD)" && exit 1
