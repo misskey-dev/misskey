@@ -45,13 +45,13 @@ export default class Logger {
 		this.log(important ? chalk.bgGreen.white('DONE') : chalk.green('DONE'), chalk.green(message), important);
 	}
 
-	public info(message: string, important = false): void { // それ以外
-		this.log(chalk.blue('INFO'), message, important);
-	}
-
-	public debug(message: string, important = false): void { // デバッグ用に使う
+	public debug(message: string, important = false): void { // デバッグ用に使う(開発者にとっては必要だが利用者にとっては不要な情報)
 		if (process.env.NODE_ENV != 'production') {
 			this.log(chalk.gray('VERB'), chalk.gray(message), important);
 		}
+	}
+
+	public info(message: string, important = false): void { // それ以外
+		this.log(chalk.blue('INFO'), message, important);
 	}
 }

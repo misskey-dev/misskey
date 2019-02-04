@@ -70,6 +70,8 @@ async function masterMain() {
 		//#endregion
 	}
 
+	console.log(chalk`${os.hostname()} {gray (PID: ${process.pid.toString()})}`);
+
 	bootLogger.info('Welcome to Misskey!');
 	bootLogger.info(`Misskey v${pkg.version}`, true);
 	bootLogger.info('Misskey is maintained by @syuilo, @AyaMorisawa, @mei23 and @acid-chicken.');
@@ -118,14 +120,14 @@ async function isPortAvailable(port: number): Promise<boolean> {
 
 async function showMachine() {
 	const logger = bootLogger.createSubLogger('machine');
-	logger.info(`Hostname: ${os.hostname()}`);
-	logger.info(`Platform: ${process.platform}`);
-	logger.info(`Architecture: ${process.arch}`);
-	logger.info(`CPU: ${os.cpus().length} core`);
+	logger.debug(`Hostname: ${os.hostname()}`);
+	logger.debug(`Platform: ${process.platform}`);
+	logger.debug(`Architecture: ${process.arch}`);
+	logger.debug(`CPU: ${os.cpus().length} core`);
 	const mem = await sysUtils.mem();
 	const totalmem = (mem.total / 1024 / 1024 / 1024).toFixed(1);
 	const availmem = (mem.available / 1024 / 1024 / 1024).toFixed(1);
-	logger.info(`MEM: ${totalmem}GB (available: ${availmem}GB)`);
+	logger.debug(`MEM: ${totalmem}GB (available: ${availmem}GB)`);
 }
 
 function showEnvironment(): void {
@@ -257,12 +259,12 @@ function spawnWorker(): Promise<void> {
 
 // Listen new workers
 cluster.on('fork', worker => {
-	clusterLog.info(`Process forked: [${worker.id}]`);
+	clusterLog.debug(`Process forked: [${worker.id}]`);
 });
 
 // Listen online workers
 cluster.on('online', worker => {
-	clusterLog.succ(`Process is now online: [${worker.id}]`);
+	clusterLog.debug(`Process is now online: [${worker.id}]`);
 });
 
 // Listen for dying workers
