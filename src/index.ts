@@ -13,7 +13,6 @@ import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
 import Xev from 'xev';
 import * as sysUtils from 'systeminformation';
-import { nativeDbConn } from './db/mongodb';
 
 import Logger from './misc/logger';
 import serverStats from './daemons/server-stats';
@@ -23,6 +22,7 @@ import { Config } from './config/types';
 import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
 import { program } from './argv';
+import { checkMongoDB } from './misc/check-mongodb';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
@@ -199,46 +199,13 @@ async function init(): Promise<Config> {
 
 	// Try to connect to MongoDB
 	try {
-		await checkMongoDB(config);
+		await checkMongoDB(config, bootLogger);
 	} catch (e) {
 		bootLogger.error('Cannot connect to database', true);
 		process.exit(1);
 	}
 
 	return config;
-}
-
-const requiredMongoDBVersion = [3, 6];
-
-function checkMongoDB(config: Config) {
-	return new Promise((res, rej) => {
-		const mongoDBLogger = bootLogger.createSubLogger('db');
-		const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
-		const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
-		const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
-		mongoDBLogger.info(`Connecting to ${uri} ...`);
-
-		nativeDbConn().then(db => {
-			mongoDBLogger.succ('Connectivity confirmed');
-
-			db.admin().serverInfo().then(x => {
-				const version = x.version as string;
-				mongoDBLogger.info(`Version: ${version}`);
-				if (lessThan(version.split('.').map(x => parseInt(x, 10)), requiredMongoDBVersion)) {
-					mongoDBLogger.error(`MongoDB version is less than ${requiredMongoDBVersion.join('.')}. Please upgrade it.`);
-					rej('outdated version');
-				} else {
-					res();
-				}
-			}).catch(err => {
-				mongoDBLogger.error(`Failed to fetch server info: ${err.message}`);
-				rej(err);
-			});
-		}).catch(err => {
-			mongoDBLogger.error(err.message);
-			rej(err);
-		});
-	});
 }
 
 async function spawnWorkers(limit: number = Infinity) {
