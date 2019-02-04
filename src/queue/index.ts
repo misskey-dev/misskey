@@ -3,8 +3,9 @@ import config from '../config';
 import http from './processors/http';
 import { ILocalUser } from '../models/user';
 import Logger from '../misc/logger';
+import { program } from '../argv';
 
-const enableQueue = config.redis != null;
+const enableQueue = config.redis != null && !program.disableQueue;
 
 const queue = new Queue('misskey', {
 	redis: {
