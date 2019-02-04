@@ -102,7 +102,7 @@ export default Vue.extend({
 			> input
 				padding 6px 8px
 				width 300px
-				font-size 14px
+				font-size 16px
 				color var(--inputText)
 				background var(--pollEditorInputBg)
 				border solid 1px var(--primaryAlpha01)
