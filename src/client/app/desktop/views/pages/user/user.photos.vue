@@ -3,8 +3,8 @@
 	<p class="title"><fa icon="camera"/>{{ $t('title') }}</p>
 	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
-		<div v-for="image in images" class="img"
-			:style="`background-image: url(${image.thumbnailUrl})`"
+		<div v-for="(image, i) in images" :key="i" class="img"
+			:style="`background-image: url(${thumbnail(image)})`"
 		></div>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
@@ -14,6 +14,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
+import { getStaticImageUrl } from '../../../../common/scripts/get-static-image-url';
+
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/user/user.photos.vue'),
 	props: ['user'],
@@ -44,7 +46,14 @@ export default Vue.extend({
 			}
 			this.fetching = false;
 		});
-	}
+	},
+	methods: {
+		thumbnail(image: any): string {
+			return this.$store.state.device.disableShowingAnimatedImages
+				? getStaticImageUrl(image.thumbnailUrl)
+				: image.thumbnailUrl;
+		},
+	},
 });
 </script>
 
