@@ -13,7 +13,7 @@ export default function(url: string, me: any) {
 		const u = new URL(url);
 		const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
 		return `${config.url}/proxy/${dummy}?${urlQuery({
-			url: encodeURI(u.href),
+			url: u.href,
 			static: 1
 		})}`;
 	}
