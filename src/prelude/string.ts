@@ -13,3 +13,7 @@ export function toUpperCase(s: string): string {
 export function toLowerCase(s: string): string {
 	return s.toLowerCase();
 }
+
+export function urlQuery(xs: { [x: string]: any }): string {
+	return Object.entries(xs).map(x => x.join('=')).join('&');
+}
