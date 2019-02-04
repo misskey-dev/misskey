@@ -15,66 +15,70 @@ import { faCopy } from '@fortawesome/free-regular-svg-icons';
 export default Vue.extend({
 	i18n: i18n('common/views/components/note-menu.vue'),
 	props: ['note', 'source'],
+	data() {
+		return {
+			isFavorited: false
+		};
+	},
 	computed: {
 		items(): any[] {
-			return concat(intersperse([null], [
-				[
-					[{
-						icon: 'at',
-						text: this.$t('mention'),
-						action: this.mention
-					}]
-				],
-				[
-					[{
-						icon: 'info-circle',
-						text: this.$t('detail'),
-						action: this.detail
-					}], [{
-						icon: faCopy,
-						text: this.$t('copy-content'),
-						action: this.copyContent
-					}], [{
-						icon: 'link',
-						text: this.$t('copy-link'),
-						action: this.copyLink
-					}], this.note.uri ? [{
-						icon: 'external-link-square-alt',
-						text: this.$t('remote'),
-						action: () => {
-							window.open(this.note.uri, '_blank');
-						}
-					}] : []
-				],
-				[
-					this.note.isFavorited ? [{
-						icon: 'star',
-						text: this.$t('unfavorite'),
-						action: this.unfavorite
-					}] : [{
-						icon: 'star',
-						text: this.$t('favorite'),
-						action: this.favorite
-					}], this.note.userId == this.$store.state.i.id ? [
-						(this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
-							icon: 'thumbtack',
-							text: this.$t('unpin'),
-							action: this.unpin
-						} : {
-								icon: 'thumbtack',
-								text: this.$t('pin'),
-								action: this.pin
-							}
-					] : []
-				], [
-					this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [{
-						icon: ['far', 'trash-alt'],
-						text: this.$t('delete'),
-						action: this.del
-					}] : []
-				]
-			].map(concat).filter(x => x.length > 0)));
+			return [{
+				icon: 'at',
+				text: this.$t('mention'),
+				action: this.mention
+			}, null, {
+				icon: 'info-circle',
+				text: this.$t('detail'),
+				action: this.detail
+			}, {
+				icon: faCopy,
+				text: this.$t('copy-content'),
+				action: this.copyContent
+			}, {
+				icon: 'link',
+				text: this.$t('copy-link'),
+				action: this.copyLink
+			}, this.note.uri ? {
+				icon: 'external-link-square-alt',
+				text: this.$t('remote'),
+				action: () => {
+					window.open(this.note.uri, '_blank');
+				}
+			} : undefined,
+			null,
+			this.isFavorited ? {
+				icon: 'star',
+				text: this.$t('unfavorite'),
+				action: this.unfavorite
+			} : {
+				icon: 'star',
+				text: this.$t('favorite'),
+				action: this.favorite
+			},
+			this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
+				icon: 'thumbtack',
+				text: this.$t('unpin'),
+				action: this.unpin
+			} : {
+				icon: 'thumbtack',
+				text: this.$t('pin'),
+				action: this.pin
+			} : undefined,
+			null,
+			this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? {
+				icon: ['far', 'trash-alt'],
+				text: this.$t('delete'),
+				action: this.del
+			} : undefined].filter(x => x !== undefined)
 		}
+	},
+
+	created() {
+		this.$root.api('notes/state', {
+			noteId: this.note.id
+		}).then(state => {
+			this.isFavorited = state.isFavorited;
+		});
 	},
 
 	methods: {

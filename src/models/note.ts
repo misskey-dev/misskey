@@ -9,7 +9,6 @@ import { pack as packApp } from './app';
 import PollVote from './poll-vote';
 import Reaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
-import Favorite from './favorite';
 import Following from './following';
 import Emoji from './emoji';
 
@@ -345,19 +344,6 @@ export const pack = async (
 				}
 
 				return null;
-			})();
-
-			// isFavorited
-			_note.isFavorited = (async () => {
-				const favorite = await Favorite
-					.count({
-						userId: meId,
-						noteId: id
-					}, {
-						limit: 1
-					});
-
-				return favorite === 1;
 			})();
 		}
 	}
