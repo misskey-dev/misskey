@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
 import Favorite from '../../../../models/favorite';
+import NoteWatching from '../../../../models/note-watching';
 
 export const meta = {
 	stability: 'stable',
@@ -25,14 +26,23 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const favorite = await Favorite.count({
-		userId: user._id,
-		noteId: ps.noteId
-	}, {
-		limit: 1
-	});
+	const [favorite, watching] = await Promise.all([
+		Favorite.count({
+			userId: user._id,
+			noteId: ps.noteId
+		}, {
+			limit: 1
+		}),
+		NoteWatching.count({
+			userId: user._id,
+			noteId: ps.noteId
+		}, {
+			limit: 1
+		})
+	]);
 
 	res({
-		isFavorited: favorite !== 0
+		isFavorited: favorite !== 0,
+		isWatching: watching !== 0
 	});
 }));

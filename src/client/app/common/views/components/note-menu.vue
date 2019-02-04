@@ -10,14 +10,15 @@ import i18n from '../../../i18n';
 import { url } from '../../../config';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import { concat, intersperse } from '../../../../../prelude/array';
-import { faCopy } from '@fortawesome/free-regular-svg-icons';
+import { faCopy, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/note-menu.vue'),
 	props: ['note', 'source'],
 	data() {
 		return {
-			isFavorited: false
+			isFavorited: false,
+			isWatching: false
 		};
 	},
 	computed: {
@@ -55,6 +56,15 @@ export default Vue.extend({
 				text: this.$t('favorite'),
 				action: this.favorite
 			},
+			this.note.userId != this.$store.state.i.id ? this.isWatching ? {
+				icon: faEyeSlash,
+				text: this.$t('unwatch'),
+				action: this.unwatch
+			} : {
+				icon: faEye,
+				text: this.$t('watch'),
+				action: this.watch
+			} : undefined,
 			this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
 				icon: 'thumbtack',
 				text: this.$t('unpin'),
@@ -78,6 +88,7 @@ export default Vue.extend({
 			noteId: this.note.id
 		}).then(state => {
 			this.isFavorited = state.isFavorited;
+			this.isWatching = state.isWatching;
 		});
 	},
 
@@ -156,6 +167,30 @@ export default Vue.extend({
 
 		unfavorite() {
 			this.$root.api('notes/favorites/delete', {
+				noteId: this.note.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+				this.destroyDom();
+			});
+		},
+
+		watch() {
+			this.$root.api('notes/watching/create', {
+				noteId: this.note.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+				this.destroyDom();
+			});
+		},
+
+		unwatch() {
+			this.$root.api('notes/watching/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$root.dialog({
