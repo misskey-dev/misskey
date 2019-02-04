@@ -46,7 +46,7 @@ export default class Logger {
 	}
 
 	public debug(message: string, important = false): void { // デバッグ用に使う(開発者にとっては必要だが利用者にとっては不要な情報)
-		if (process.env.NODE_ENV != 'production') {
+		if (process.env.NODE_ENV != 'production' || program.verbose) {
 			this.log(chalk.gray('VERB'), chalk.gray(message), important);
 		}
 	}
