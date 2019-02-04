@@ -13,7 +13,7 @@ import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
 import * as koaLogger from 'koa-logger';
 import * as requestStats from 'request-stats';
-//import * as slow from 'koa-slow';
+import * as slow from 'koa-slow';
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
@@ -23,6 +23,7 @@ import apiServer from './api';
 import { sum } from '../prelude/array';
 import User from '../models/user';
 import Logger from '../misc/logger';
+import { program } from '../argv';
 
 export const serverLogger = new Logger('server', 'gray');
 
@@ -37,9 +38,11 @@ if (!['production', 'test'].includes(process.env.NODE_ENV)) {
 	}));
 
 	// Delay
-	//app.use(slow({
-	//	delay: 1000
-	//}));
+	if (program.slow) {
+		app.use(slow({
+			delay: 3000
+		}));
+	}
 }
 
 // Compress response
