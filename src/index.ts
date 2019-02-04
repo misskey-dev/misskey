@@ -13,7 +13,7 @@ import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
 import Xev from 'xev';
 import * as sysUtils from 'systeminformation';
-import mongo, { nativeDbConn } from './db/mongodb';
+import { nativeDbConn } from './db/mongodb';
 
 import Logger from './misc/logger';
 import serverStats from './daemons/server-stats';
@@ -193,7 +193,12 @@ async function init(): Promise<Config> {
 	}
 
 	// Try to connect to MongoDB
-	await checkMongoDB(config);
+	try {
+		await checkMongoDB(config);
+	} catch (e) {
+		bootLogger.error('Cannot connect to database', true);
+		process.exit(1);
+	}
 
 	return config;
 }
@@ -201,24 +206,33 @@ async function init(): Promise<Config> {
 const requiredMongoDBVersion = [3, 6];
 
 function checkMongoDB(config: Config) {
-	const mongoDBLogger = bootLogger.createSubLogger('db');
-	const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
-	const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
-	const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
-	mongoDBLogger.info(`Connecting to ${uri}`);
+	return new Promise((res, rej) => {
+		const mongoDBLogger = bootLogger.createSubLogger('db');
+		const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
+		const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
+		const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
+		mongoDBLogger.info(`Connecting to ${uri} ...`);
 
-	mongo.then(() => {
-		mongoDBLogger.succ('Connectivity confirmed');
+		nativeDbConn().then(db => {
+			mongoDBLogger.succ('Connectivity confirmed');
 
-		nativeDbConn().then(db => db.admin().serverInfo()).then(x => x.version).then((version: string) => {
-			mongoDBLogger.info(`Version: ${version}`);
-			if (lessThan(version.split('.').map(x => parseInt(x, 10)), requiredMongoDBVersion)) {
-				mongoDBLogger.error(`MongoDB version is less than ${requiredMongoDBVersion.join('.')}. Please upgrade it.`);
-				process.exit(1);
-			}
+			db.admin().serverInfo().then(x => {
+				const version = x.version as string;
+				mongoDBLogger.info(`Version: ${version}`);
+				if (lessThan(version.split('.').map(x => parseInt(x, 10)), requiredMongoDBVersion)) {
+					mongoDBLogger.error(`MongoDB version is less than ${requiredMongoDBVersion.join('.')}. Please upgrade it.`);
+					rej('outdated version');
+				} else {
+					res();
+				}
+			}).catch(err => {
+				mongoDBLogger.error(`Failed to fetch server info: ${err.message}`);
+				rej(err);
+			});
+		}).catch(err => {
+			mongoDBLogger.error(err.message);
+			rej(err);
 		});
-	}).catch(err => {
-		mongoDBLogger.error(err.message);
 	});
 }
 
