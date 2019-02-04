@@ -47,20 +47,12 @@ export default function load() {
 	return Object.assign(config, mixin);
 }
 
-function tryCreateUrl(url: string) {
+function validateUrl(url: string) {
 	try {
 		return new URL(url);
 	} catch (e) {
-		throw `url="${url}" is not a valid URL.`;
+		throw `url="${url}" is not a valid URL`;
 	}
-}
-
-function validateUrl(url: string) {
-	const result = tryCreateUrl(url);
-	if (result.pathname.replace('/', '').length) throw `url="${url}" is not a valid URL, has a pathname.`;
-	if (!url.includes(result.host)) throw `url="${url}" is not a valid URL, has an invalid hostname.`;
-	if (!/^https?:$/.test(result.protocol)) throw `url="${url}" is not a valid URL, has an invalid protocol.`;
-	return result;
 }
 
 function normalizeUrl(url: string) {
