@@ -29,22 +29,22 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		$group: {
 			_id: { tag: '$tagsLower', userId: '$userId' }
 		}
-	}]) as Array<{
+	}]) as {
 		_id: {
 			tag: string;
 			userId: any;
 		}
-	}>;
+	}[];
 	//#endregion
 
 	if (data.length == 0) {
 		return res([]);
 	}
 
-	let tags: Array<{
+	let tags: {
 		name: string;
 		count: number;
-	}> = [];
+	}[] = [];
 
 	// カウント
 	for (const x of data.map(x => x._id).filter(x => !hidedTags.includes(x.tag))) {

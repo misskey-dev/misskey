@@ -38,10 +38,10 @@ type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 class NotificationManager {
 	private notifier: IUser;
 	private note: INote;
-	private queue: Array<{
+	private queue: {
 		target: ILocalUser['_id'];
 		reason: NotificationType;
-	}>;
+	}[];
 
 	constructor(notifier: IUser, note: INote) {
 		this.notifier = notifier;
