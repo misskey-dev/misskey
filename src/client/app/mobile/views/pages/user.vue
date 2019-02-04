@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template slot="header" v-if="!fetching"><img :src="user.avatarUrl" alt="">
+	<template slot="header" v-if="!fetching"><img :src="avator" alt="">
 		<mk-user-name :user="user"/>
 	</template>
 	<main v-if="!fetching">
@@ -11,7 +11,7 @@
 			<div class="body">
 				<div class="top">
 					<a class="avatar">
-						<img :src="user.avatarUrl" alt="avatar"/>
+						<img :src="avator" alt="avatar"/>
 					</a>
 					<button class="menu" ref="menu" @click="menu"><fa icon="ellipsis-h"/></button>
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
@@ -82,6 +82,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
 import XUserMenu from '../../../common/views/components/user-menu.vue';
 import XHome from './user/home.vue';
+import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/user.vue'),
@@ -98,6 +99,11 @@ export default Vue.extend({
 	computed: {
 		age(): number {
 			return age(this.user.profile.birthday);
+		},
+		avator(): string {
+			return this.$store.state.device.disableShowingAnimatedImages
+				? getStaticImageUrl(this.user.avatarUrl)
+				: this.user.avatarUrl;
 		},
 		style(): any {
 			if (this.user.bannerUrl == null) return {};

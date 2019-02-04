@@ -2,7 +2,7 @@
 <div class="mk-note-card">
 	<a :href="note | notePage">
 		<header>
-			<img :src="note.user.avatarUrl" alt="avatar"/>
+			<img :src="avator" alt="avatar"/>
 			<h3><mk-user-name :user="note.user"/></h3>
 		</header>
 		<div>
@@ -16,13 +16,19 @@
 <script lang="ts">
 import Vue from 'vue';
 import summary from '../../../../../misc/get-note-summary';
+import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 
 export default Vue.extend({
 	props: ['note'],
 	computed: {
 		text(): string {
 			return summary(this.note);
-		}
+		},
+		avator(): string {
+			return this.$store.state.device.disableShowingAnimatedImages
+				? getStaticImageUrl(this.note.user.avatarUrl)
+				: this.note.user.avatarUrl;
+		},
 	}
 });
 </script>
