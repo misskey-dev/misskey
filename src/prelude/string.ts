@@ -15,5 +15,5 @@ export function toLowerCase(s: string): string {
 }
 
 export function urlQuery(xs: { [x: string]: any }): string {
-	return Object.entries(xs).map(x => x.join('=')).join('&');
+	return Object.entries(xs).map(x => x.map(encodeURIComponent).join('=')).join('&');
 }
