@@ -344,6 +344,8 @@ common/views/components/note-menu.vue:
   copy-link: "リンクをコピー"
   favorite: "Diese Notiz favorisieren"
   unfavorite: "Aus Favoriten entfernen"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "An die Profilseite pinnen"
   unpin: "ピン留め解除"
   delete: "Löschen"
