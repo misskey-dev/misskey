@@ -113,6 +113,7 @@ common:
   use-avatar-reversi-stones: "リバーシの石にアバターを使う"
   verified-user: "公式アカウント"
   disable-animated-mfm: "Отключить анимированный текст в постах"
+  do-not-autoplay-animation: "アニメーションを自動再生しない"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   always-show-nsfw: "Всегда показывать NSFW контент"
   always-mark-nsfw: "Всегда помечать посты с медиафайлами как NSFW"
