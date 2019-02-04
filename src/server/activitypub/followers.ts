@@ -1,10 +1,10 @@
+import { stringify } from 'querystring';
 import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy'; import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
-import { urlQuery } from '../../prelude/string';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
@@ -72,13 +72,13 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const renderedFollowers = await Promise.all(followings.map(following => renderFollowUser(following.followerId)));
 		const rendered = renderOrderedCollectionPage(
-			`${partOf}?${urlQuery({
+			`${partOf}?${stringify({
 				page: 'true',
 				...(cursor ? { cursor } : {})
 			})}`,
 			user.followersCount, renderedFollowers, partOf,
 			null,
-			inStock ? `${partOf}?${urlQuery({
+			inStock ? `${partOf}?${stringify({
 				page: 'true',
 				cursor: followings[followings.length - 1]._id.toHexString()
 			})}` : null

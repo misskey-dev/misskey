@@ -1,3 +1,4 @@
+import { stringify } from 'querystring';
 import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
@@ -14,7 +15,6 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
-import { urlQuery } from '../../prelude/string';
 
 export default async (ctx: Router.IRouterContext) => {
 	if (!ObjectID.isValid(ctx.params.user)) {
@@ -89,17 +89,17 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const activities = await Promise.all(notes.map(note => packActivity(note)));
 		const rendered = renderOrderedCollectionPage(
-			`${partOf}?${urlQuery({
+			`${partOf}?${stringify({
 				page: true,
 				...(sinceId ? { since_id: sinceId } : {}),
 				...(untilId ? { until_id: untilId } : {})
 			})}`,
 			user.notesCount, activities, partOf,
-			notes.length ? `${partOf}?${urlQuery({
+			notes.length ? `${partOf}?${stringify({
 				page: true,
 				since_id: notes[0]._id
 			})}` : null,
-			notes.length ? `${partOf}?${urlQuery({
+			notes.length ? `${partOf}?${stringify({
 				page: true,
 				until_id: notes[notes.length - 1]._id
 			})}` : null

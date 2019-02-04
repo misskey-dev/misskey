@@ -13,7 +13,3 @@ export function toUpperCase(s: string): string {
 export function toLowerCase(s: string): string {
 	return s.toLowerCase();
 }
-
-export function urlQuery(xs: string | string[][] | Record<string, string> | URLSearchParams): string {
-	return new URLSearchParams(xs).toString();
-}
