@@ -12,6 +12,7 @@ import config from '../config';
 import FollowRequest from './follow-request';
 import fetchMeta from '../misc/fetch-meta';
 import Emoji from './emoji';
+import wrapUrl from '../misc/wrap-url';
 
 const User = db.get<IUser>('users');
 
@@ -344,6 +345,8 @@ export const pack = (
 
 	if (_user.avatarUrl == null) {
 		_user.avatarUrl = `${config.drive_url}/default-avatar.jpg`;
+	} else {
+		_user.avatarUrl = wrapUrl(_user.avatarUrl, me);
 	}
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
@@ -368,7 +371,7 @@ export const pack = (
 	if (opts.detail) {
 		if (_user.pinnedNoteIds) {
 			// Populate pinned notes
-			_user.pinnedNotes = packNoteMany(_user.pinnedNoteIds, meId, {
+			_user.pinnedNotes = packNoteMany(_user.pinnedNoteIds, me, {
 				detail: true
 			});
 		}
@@ -397,11 +400,14 @@ export const pack = (
 
 	// カスタム絵文字添付
 	if (_user.emojis) {
-		_user.emojis = Emoji.find({
+		_user.emojis = (await Emoji.find({
 			name: { $in: _user.emojis },
 			host: _user.host
 		}, {
 			fields: { _id: false }
+		})).map(emoji => {
+			emoji.url = wrapUrl(emoji.url, me);
+			return emoji;
 		});
 	}
 

@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as tmp from 'tmp';
-import * as sharp from 'sharp';
+import { IImage, ConvertToJpeg } from './image-processor';
 const ThumbnailGenerator = require('video-thumbnail-generator').default;
 
-export async function GenerateVideoThumbnail(path: string): Promise<Buffer> {
+export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 	const [outDir, cleanup] = await new Promise<[string, any]>((res, rej) => {
 		tmp.dir((e, path, cleanup) => {
 			if (e) return rej(e);
@@ -23,16 +23,7 @@ export async function GenerateVideoThumbnail(path: string): Promise<Buffer> {
 
 	const outPath = `${outDir}/output.png`;
 
-	const thumbnail = await sharp(outPath)
-		.resize(498, 280, {
-			fit: 'inside',
-			withoutEnlargement: true
-		})
-		.jpeg({
-			quality: 85,
-			progressive: true
-		})
-		.toBuffer();
+	const thumbnail = await ConvertToJpeg(outPath, 498, 280);
 
 	// cleanup
 	fs.unlinkSync(outPath);
