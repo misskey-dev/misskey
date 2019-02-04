@@ -113,7 +113,7 @@ common:
   use-avatar-reversi-stones: "Use avatar as a stone in reversi"
   verified-user: "Verified account"
   disable-animated-mfm: "Disable animated texts in a post"
-  do-not-autoplay-animation: "アニメーション画像を再生しない"
+  disable-showing-animated-images: "アニメーション画像を再生しない"
   suggest-recent-hashtags: "Suggest recently used hashtags within the post composition area"
   always-show-nsfw: "Always show NSFW contents"
   always-mark-nsfw: "Always mark posts with media attachments as NSFW"
