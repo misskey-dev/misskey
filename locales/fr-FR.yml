@@ -344,6 +344,8 @@ common/views/components/note-menu.vue:
   copy-link: "Copier le lien"
   favorite: "Mettre cette note en favoris"
   unfavorite: "Retirer des favoris"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "Épingler sur votre profil"
   unpin: "Désépingler"
   delete: "Supprimer"
