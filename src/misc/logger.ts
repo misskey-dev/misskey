@@ -19,7 +19,7 @@ export default class Logger {
 		return logger;
 	}
 
-	public log(level: string, message: string, important = false, subDomains: string[] = []): void {
+	private log(level: string, message: string, important = false, subDomains: string[] = []): void {
 		if (program.quiet) return;
 		const domain = this.color ? chalk.keyword(this.color)(this.domain) : chalk.white(this.domain);
 		const domains = [domain].concat(subDomains);
