@@ -113,7 +113,7 @@ common:
   use-avatar-reversi-stones: "リバーシの石にアバターを使う"
   verified-user: "アメちゃん付きアカウント"
   disable-animated-mfm: "投稿内のちょろちょろ動いてんのを止める"
-  do-not-autoplay-animation: "アニメーションを自動再生しない"
+  do-not-autoplay-animation: "アニメーション画像を再生しない"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   always-show-nsfw: "閲覧注意？見せたらあかん？そんなん知らんわ、見せろや！"
   always-mark-nsfw: "わからんからとりあえずメディアは見せたらあかん"
