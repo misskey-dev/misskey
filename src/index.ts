@@ -12,7 +12,6 @@ import chalk from 'chalk';
 import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
 import Xev from 'xev';
-import * as sysUtils from 'systeminformation';
 
 import Logger from './misc/logger';
 import serverStats from './daemons/server-stats';
@@ -23,6 +22,7 @@ import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
 import { program } from './argv';
 import { checkMongoDB } from './misc/check-mongodb';
+import { showMachineInfo } from './misc/show-machine-info';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
@@ -121,18 +121,6 @@ async function isPortAvailable(port: number): Promise<boolean> {
 	return await portscanner.checkPortStatus(port, '127.0.0.1') === 'closed';
 }
 
-async function showMachine() {
-	const logger = bootLogger.createSubLogger('machine');
-	logger.debug(`Hostname: ${os.hostname()}`);
-	logger.debug(`Platform: ${process.platform}`);
-	logger.debug(`Architecture: ${process.arch}`);
-	logger.debug(`CPU: ${os.cpus().length} core`);
-	const mem = await sysUtils.mem();
-	const totalmem = (mem.total / 1024 / 1024 / 1024).toFixed(1);
-	const availmem = (mem.available / 1024 / 1024 / 1024).toFixed(1);
-	logger.debug(`MEM: ${totalmem}GB (available: ${availmem}GB)`);
-}
-
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
 	const logger = bootLogger.createSubLogger('env');
@@ -161,7 +149,7 @@ async function init(): Promise<Config> {
 		process.exit(1);
 	}
 
-	await showMachine();
+	await showMachineInfo(bootLogger);
 
 	const configLogger = bootLogger.createSubLogger('config');
 	let config;
