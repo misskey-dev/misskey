@@ -49,7 +49,7 @@ export default Vue.extend({
 			};
 		},
 		url(): string {
-			return this.$store.state.device.doNotAutoplayAnimation
+			return this.$store.state.device.disableShowingAnimatedImages
 				? getStaticImageUrl(this.user.avatarUrl)
 				: this.user.avatarUrl;
 		},

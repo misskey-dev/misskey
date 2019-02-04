@@ -38,7 +38,7 @@ export default Vue.extend({
 	computed: {
 		style(): any {
 			let url = `url(${
-				this.$store.state.device.doNotAutoplayAnimation
+				this.$store.state.device.disableShowingAnimatedImages
 					? getStaticImageUrl(this.image.thumbnailUrl)
 					: this.image.thumbnailUrl
 			})`;

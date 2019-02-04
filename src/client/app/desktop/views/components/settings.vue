@@ -117,7 +117,7 @@
 				<ui-switch v-model="showReplyTarget">{{ $t('show-reply-target') }}</ui-switch>
 				<ui-switch v-model="showMaps">{{ $t('show-maps') }}</ui-switch>
 				<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
-				<ui-switch v-model="doNotAutoplayAnimation">{{ $t('@.do-not-autoplay-animation') }}</ui-switch>
+				<ui-switch v-model="disableShowingAnimatedImages">{{ $t('@.disable-showing-animated-images') }}</ui-switch>
 				<ui-switch v-model="remainDeletedNote">{{ $t('remain-deleted-note') }}</ui-switch>
 			</section>
 			<section>
@@ -517,9 +517,9 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
 		},
 
-		doNotAutoplayAnimation: {
-			get() { return this.$store.state.device.doNotAutoplayAnimation; },
-			set(value) { this.$store.commit('device/set', { key: 'doNotAutoplayAnimation', value }); }
+		disableShowingAnimatedImages: {
+			get() { return this.$store.state.device.disableShowingAnimatedImages; },
+			set(value) { this.$store.commit('device/set', { key: 'disableShowingAnimatedImages', value }); }
 		},
 
 		remainDeletedNote: {

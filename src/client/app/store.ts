@@ -70,7 +70,7 @@ const defaultDeviceSettings = {
 	deckTemporaryColumn: null,
 	deckDefault: false,
 	useOsDefaultEmojis: false,
-	doNotAutoplayAnimation: false
+	disableShowingAnimatedImages: false
 };
 
 export default (os: MiOS) => new Vuex.Store({
