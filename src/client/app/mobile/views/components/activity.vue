@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as ApexCharts from 'apexcharts';
+import ApexCharts from 'apexcharts';
 
 export default Vue.extend({
 	props: ['user'],

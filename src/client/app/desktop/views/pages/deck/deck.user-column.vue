@@ -99,7 +99,7 @@ import XNotes from './deck.notes.vue';
 import XNote from '../../components/note.vue';
 import XUserMenu from '../../../../common/views/components/user-menu.vue';
 import { concat } from '../../../../../../prelude/array';
-import * as ApexCharts from 'apexcharts';
+import ApexCharts from 'apexcharts';
 
 const fetchLimit = 10;
 
