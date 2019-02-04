@@ -84,6 +84,7 @@ async function resolveSelf(acctLower: string) {
 	});
 	const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
 	if (!self) {
+		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
 		throw new Error('self link not found');
 	}
 	return self;
