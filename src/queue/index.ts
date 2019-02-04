@@ -7,19 +7,27 @@ import { program } from '../argv';
 
 const enableQueue = config.redis != null && !program.disableQueue;
 
-const queue = new Queue('misskey', {
-	redis: {
-		port: config.redis.port,
-		host: config.redis.host,
-		password: config.redis.pass
-	},
+const queue = initializeQueue();
 
-	removeOnSuccess: true,
-	removeOnFailure: true,
-	getEvents: false,
-	sendEvents: false,
-	storeJobs: false
-});
+function initializeQueue() {
+	if (enableQueue) {
+		return new Queue('misskey', {
+			redis: {
+				port: config.redis.port,
+				host: config.redis.host,
+				password: config.redis.pass
+			},
+
+			removeOnSuccess: true,
+			removeOnFailure: true,
+			getEvents: false,
+			sendEvents: false,
+			storeJobs: false
+		});
+	} else {
+		return null;
+	}
+}
 
 export function createHttpJob(data: any) {
 	if (enableQueue) {
