@@ -393,7 +393,7 @@ root(fill)
 
 	> .desc
 		margin 6px 0
-		font-size 13px
+		font-size 14px
 
 		&:empty
 			display none
