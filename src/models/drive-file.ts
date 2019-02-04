@@ -1,10 +1,11 @@
 import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
 import { pack as packFolder } from './drive-folder';
-import { pack as packUser } from './user';
+import { pack as packUser, IUser } from './user';
 import monkDb, { nativeDbConn, dbLogger } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
+import wrapUrl from '../misc/wrap-url';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
@@ -133,6 +134,7 @@ export const packMany = (
 		detail?: boolean
 		self?: boolean,
 		withUser?: boolean,
+		me?: string | mongo.ObjectID | IUser,
 	}
 ) => {
 	return Promise.all(files.map(f => pack(f, options)));
@@ -147,6 +149,7 @@ export const pack = (
 		detail?: boolean,
 		self?: boolean,
 		withUser?: boolean,
+		me?: string | mongo.ObjectID | IUser,
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 	const opts = Object.assign({
@@ -189,6 +192,11 @@ export const pack = (
 
 	_target.url = getDriveFileUrl(_file);
 	_target.thumbnailUrl = getDriveFileUrl(_file, true);
+
+	if (_target.thumbnailUrl != null) {
+		_target.thumbnailUrl = wrapUrl(_target.thumbnailUrl, options.me);
+	}
+
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};

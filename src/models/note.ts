@@ -12,6 +12,7 @@ import { packMany as packFileMany, IDriveFile } from './drive-file';
 import Favorite from './favorite';
 import Following from './following';
 import Emoji from './emoji';
+import wrapUrl from '../misc/wrap-url';
 
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
@@ -248,11 +249,14 @@ export const pack = async (
 				fields: { _id: false }
 			});
 		} else {
-			_note.emojis = Emoji.find({
+			_note.emojis = (await Emoji.find({
 				name: { $in: _note.emojis },
 				host: host
 			}, {
 				fields: { _id: false }
+			})).map(emoji => async () => {
+				emoji.url = await wrapUrl(emoji.url, me);
+				return emoji;
 			});
 		}
 	}
@@ -275,7 +279,7 @@ export const pack = async (
 	if (_note.geo) delete _note.geo.type;
 
 	// Populate user
-	_note.user = packUser(_note.userId, meId);
+	_note.user = packUser(_note.userId, me);
 
 	// Populate app
 	if (_note.appId) {
@@ -283,7 +287,7 @@ export const pack = async (
 	}
 
 	// Populate files
-	_note.files = packFileMany(_note.fileIds || []);
+	_note.files = packFileMany(_note.fileIds || [], { me });
 
 	// Some counts
 	_note.renoteCount = _note.renoteCount || 0;
