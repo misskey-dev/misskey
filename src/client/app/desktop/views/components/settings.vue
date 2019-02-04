@@ -518,8 +518,8 @@ export default Vue.extend({
 		},
 
 		doNotAutoplayAnimation: {
-			get() { return !!this.$store.state.settings.doNotAutoplayAnimation; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'doNotAutoplayAnimation', value }); }
+			get() { return this.$store.state.device.doNotAutoplayAnimation; },
+			set(value) { this.$store.commit('device/set', { key: 'doNotAutoplayAnimation', value }); }
 		},
 
 		remainDeletedNote: {

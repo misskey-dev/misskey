@@ -11,7 +11,6 @@ import { IImage, ConvertToPng } from '../../services/drive/image-processor';
 
 export async function proxyMedia(ctx: Koa.BaseContext) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
-	console.log(url);
 
 	// Create temp file
 	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {

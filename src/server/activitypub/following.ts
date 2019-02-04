@@ -74,14 +74,14 @@ export default async (ctx: Router.IRouterContext) => {
 		const renderedFollowees = await Promise.all(followings.map(following => renderFollowUser(following.followeeId)));
 		const rendered = renderOrderedCollectionPage(
 			`${partOf}?${urlQuery({
-				page: true,
+				page: 'true',
 				...(cursor ? { cursor } : {})
 			})}`,
 			user.followingCount, renderedFollowees, partOf,
 			null,
 			inStock ? `${partOf}?${urlQuery({
-				page: true,
-				cursor: followings[followings.length - 1]._id
+				page: 'true',
+				cursor: followings[followings.length - 1]._id.toHexString()
 			})}` : null
 		);
 
