@@ -344,6 +344,8 @@ common/views/components/note-menu.vue:
   copy-link: "링크 복사"
   favorite: "이 노트 즐겨찾기"
   unfavorite: "즐겨찾기에서 제거"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "프로필에 고정"
   unpin: "프로필에서 고정 해제"
   delete: "삭제"
