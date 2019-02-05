@@ -4,6 +4,7 @@
 
 import composeNotification from './common/scripts/compose-notification';
 import { erase } from '../../prelude/array';
+import { clientVersion } from './config';
 
 // キャッシュするリソース
 const cachee = [
@@ -16,7 +17,7 @@ self.addEventListener('install', ev => {
 
 	ev.waitUntil(Promise.all([
 		self.skipWaiting(), // Force activate
-		caches.open(_VERSION_).then(cache => cache.addAll(cachee)) // Cache
+		caches.open(clientVersion).then(cache => cache.addAll(cachee)) // Cache
 	]));
 });
 
@@ -25,7 +26,7 @@ self.addEventListener('activate', ev => {
 	// Clean up old caches
 	ev.waitUntil(
 		caches.keys().then(keys => Promise.all(
-			erase(_VERSION_, keys)
+			erase(clientVersion, keys)
 				.map(key => caches.delete(key))
 		))
 	);
