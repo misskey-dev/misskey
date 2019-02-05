@@ -12,7 +12,6 @@ RUN unlink /usr/bin/free
 RUN apk add --no-cache \
     autoconf \
     automake \
-    ffmpeg \
     file \
     g++ \
     gcc \
@@ -36,7 +35,9 @@ RUN node-gyp configure \
 
 FROM base AS runner
 
-RUN apk add --no-cache tini
+RUN apk add --no-cache \
+    ffmpeg \
+    tini
 ENTRYPOINT ["/sbin/tini", "--"]
 
 COPY --from=builder /misskey/node_modules ./node_modules
