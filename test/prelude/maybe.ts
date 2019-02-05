@@ -11,16 +11,18 @@
 import * as assert from 'assert';
 import { just, nothing } from '../../src/prelude/maybe';
 
-describe('Maybe', () => {
-	it('just has a value', () => {
+describe('just', () => {
+	it('has a value', () => {
 		assert.deepStrictEqual(just(3).isJust(), true);
 	});
 
-	it('nothing has no value', () => {
-		assert.deepStrictEqual(nothing().isJust(), false);
-	});
-
-	it('get is the inverse of just', () => {
+	it('has the inverse called get', () => {
 		assert.deepStrictEqual(just(3).get(), 3);
+	});
+});
+
+describe('nothing', () => {
+	it('has no value', () => {
+		assert.deepStrictEqual(nothing().isJust(), false);
 	});
 });
