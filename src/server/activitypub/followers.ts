@@ -21,7 +21,7 @@ export default async (ctx: Router.IRouterContext) => {
 	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.type(ID).optional.get(ctx.request.query.cursor);
+	const [cursor, cursorErr] = $.type(ID).optional.get(ctx.request.query.cursor);
 
 	// Get 'page' parameter
 	const pageErr = !$.str.optional.or(['true', 'false']).ok(ctx.request.query.page);
@@ -75,7 +75,7 @@ export default async (ctx: Router.IRouterContext) => {
 		const rendered = renderOrderedCollectionPage(
 			`${partOf}?${urlQuery({
 				page: 'true',
-				...(cursor ? { cursor } : {})
+				cursor
 			})}`,
 			user.followersCount, renderedFollowers, partOf,
 			null,
