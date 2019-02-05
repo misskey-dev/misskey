@@ -35,6 +35,7 @@ adduser --disabled-password --disabled-login misskey
 		* Twitter連携
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
+* ffmpeg
 
 *3.* MongoDBの設定
 ----------------------------------------------------------------
