@@ -12,7 +12,6 @@ RUN unlink /usr/bin/free
 RUN apk add --no-cache \
     autoconf \
     automake \
-    ffmpeg \
     file \
     g++ \
     gcc \
