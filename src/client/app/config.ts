@@ -1,5 +1,4 @@
 declare const _LANGS_: string[];
-declare const _THEME_COLOR_: string;
 declare const _COPYRIGHT_: string;
 declare const _VERSION_: string;
 declare const _CLIENT_VERSION_: string;
