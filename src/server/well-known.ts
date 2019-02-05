@@ -51,7 +51,7 @@ router.get(webFingerPath, async ctx => {
 		});
 
 	const fromAcct = (acct: Acct): Record<string, any> | number =>
-		acct.host || acct.host === config.host.toLowerCase() ? {
+		!acct.host || acct.host === config.host.toLowerCase() ? {
 			usernameLower: acct.username,
 			host: null
 		} : 422;
