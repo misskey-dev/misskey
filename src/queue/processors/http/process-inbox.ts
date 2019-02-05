@@ -20,7 +20,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	const info = Object.assign({}, activity);
 	delete info['@context'];
 	delete info['signature'];
-	logger.info(info);
+	logger.debug(JSON.stringify(info, null, 2));
 	//#endregion
 
 	const keyIdLower = signature.keyId.toLowerCase();
