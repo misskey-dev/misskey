@@ -62,7 +62,8 @@
 	}
 
 	if (settings && settings.device.lang &&
-		langs.includes(settings.device.lang)) {
+		langs.includes(settings.device.lang))
+	{
 		lang = settings.device.lang;
 	}
 
