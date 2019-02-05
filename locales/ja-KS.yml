@@ -509,6 +509,9 @@ common/views/components/profile-editor.vue:
   email-address: "メールアドレス"
   email-verified: "このメールアドレスOKや！"
   email-not-verified: "メールアドレスが確認されとらん。メールボックスもっぺん見てくれへん？"
+  export: "エクスポート"
+  export-notes: "すべての投稿のエクスポート"
+  export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
   rename: "リスト名を変更"
