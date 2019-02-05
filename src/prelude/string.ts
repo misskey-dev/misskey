@@ -17,5 +17,5 @@ export function toLowerCase(s: string): string {
 }
 
 export function urlQuery(obj: {}): string {
-	return stringify(Object.entries(obj).filter(([, v]) => v !== undefined).reduce((a, [k, v]) => (a[k] = v, a), {}));
+	return stringify(Object.entries(obj).filter(([, v]) => v !== undefined).reduce((a, [k, v]) => (a[k] = v, a), {} as Obj));
 }
