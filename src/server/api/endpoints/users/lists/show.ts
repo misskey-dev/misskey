@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
 import define from '../../../define';
 

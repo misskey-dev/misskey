@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
 import Favorite from '../../../../models/favorite';
 import NoteWatching from '../../../../models/note-watching';
