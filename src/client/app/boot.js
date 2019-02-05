@@ -66,7 +66,7 @@
 		lang = settings.device.lang;
 	}
 
-	window.lang = lang;
+	localStorage.setItem('lang', lang);
 	//#endregion
 
 	//#region Fetch locale data
