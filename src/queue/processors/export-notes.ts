@@ -30,6 +30,17 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
+	await new Promise((res, rej) => {
+		stream.write('[', err => {
+			if (err) {
+				logger.error(err);
+				rej(err);
+			} else {
+				res();
+			}
+		});
+	});
+
 	let exportedNotesCount = 0;
 	let ended = false;
 	let cursor: any = null;
@@ -56,7 +67,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 		for (const note of notes) {
 			const content = JSON.stringify(note);
 			await new Promise((res, rej) => {
-				stream.write(content + ',\n', err => {
+				stream.write(exportedNotesCount === 0 ? content : ',\n' + content, err => {
 					if (err) {
 						logger.error(err);
 						rej(err);
@@ -65,21 +76,32 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 					}
 				});
 			});
+			exportedNotesCount++;
 		}
 
 		const total = await Note.count({
 			userId: user._id,
 		});
 
-		exportedNotesCount += notes.length;
 		job.reportProgress(exportedNotesCount / total);
 	}
+
+	await new Promise((res, rej) => {
+		stream.write(']', err => {
+			if (err) {
+				logger.error(err);
+				rej(err);
+			} else {
+				res();
+			}
+		});
+	});
 
 	stream.end();
 	logger.succ(`Exported to: ${path}`);
 
-	const driveFile = await addFile(
-		user, path, dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss'));
+	const fileName = dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.json';
+	const driveFile = await addFile(user, path, fileName);
 
 	logger.succ(`Exported to: ${driveFile._id}`);
 	cleanup();
