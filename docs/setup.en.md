@@ -29,7 +29,7 @@ Please install and setup these softwares:
 * [Redis](https://redis.io/)
   * Redis is optional, but we strongly recommended to install it
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
-* ffmpeg
+* [FFmpeg](https://www.ffmpeg.org/)
 
 *3.* Setup MongoDB
 ----------------------------------------------------------------
