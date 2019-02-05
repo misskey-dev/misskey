@@ -91,8 +91,8 @@ export default async (ctx: Router.IRouterContext) => {
 		const rendered = renderOrderedCollectionPage(
 			`${partOf}?${urlQuery({
 				page: 'true',
-				...(sinceId ? { since_id: sinceId } : {}),
-				...(untilId ? { until_id: untilId } : {})
+				since_id: sinceId,
+				until_id: untilId
 			})}`,
 			user.notesCount, activities, partOf,
 			notes.length ? `${partOf}?${urlQuery({
