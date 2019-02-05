@@ -32,6 +32,7 @@ adduser --disabled-password --disabled-login misskey
 	* 具体的には、Redisをインストールしないと、次の事が出来なくなります:
 		* Misskeyプロセスを複数起動しての負荷分散
 		* レートリミット
+		* ジョブキュー
 		* Twitter連携
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
