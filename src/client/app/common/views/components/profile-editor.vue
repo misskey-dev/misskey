@@ -87,6 +87,14 @@
 			<ui-button @click="updateEmail()">{{ $t('save') }}</ui-button>
 		</div>
 	</section>
+
+	<section>
+		<header>{{ $t('export') }}</header>
+
+		<div>
+			<ui-button @click="exportNotes()">{{ $t('export-notes') }}</ui-button>
+		</div>
+	</section>
 </ui-card>
 </template>
 
@@ -251,6 +259,15 @@ export default Vue.extend({
 					password: password,
 					email: this.email == '' ? null : this.email
 				});
+			});
+		},
+
+		exportNotes() {
+			this.$root.api('i/export-notes', {});
+
+			this.$root.dialog({
+				type: 'info',
+				text: this.$t('export-requested')
 			});
 		}
 	}
