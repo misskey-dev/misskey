@@ -4,6 +4,10 @@
 	"version": "10.81.0",
 	"clientVersion": "2.0.14026",
 	"codename": "nighthike",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/syuilo/misskey.git"
+	},
 	"main": "./index.js",
 	"private": true,
 	"scripts": {

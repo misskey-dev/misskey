@@ -1,8 +1,5 @@
-type UserLike = {
-	host: string;
-	username: string;
-};
+import Acct from './type';
 
-export default (user: UserLike) => {
+export default (user: Acct) => {
 	return user.host === null ? user.username : `${user.username}@${user.host}`;
 };
