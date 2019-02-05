@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as mongo from 'mongodb';
 
 import { queueLogger } from '../logger';
-import Note from '../../models/note';
+import Note, { INote } from '../../models/note';
 import addFile from '../../services/drive/add-file';
 import User from '../../models/user';
 import dateFormat = require('dateformat');
@@ -65,7 +65,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 		cursor = notes[notes.length - 1]._id;
 
 		for (const note of notes) {
-			const content = JSON.stringify(note);
+			const content = JSON.stringify(serialize(note));
 			await new Promise((res, rej) => {
 				stream.write(exportedNotesCount === 0 ? content : ',\n' + content, err => {
 					if (err) {
@@ -106,4 +106,23 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 	logger.succ(`Exported to: ${driveFile._id}`);
 	cleanup();
 	done();
+}
+
+function serialize(note: INote): any {
+	return {
+		id: note._id,
+		text: note.text,
+		createdAt: note.createdAt,
+		fileIds: note.fileIds,
+		replyId: note.replyId,
+		renoteId: note.renoteId,
+		poll: note.poll,
+		cw: note.cw,
+		viaMobile: note.viaMobile,
+		visibility: note.visibility,
+		visibleUserIds: note.visibleUserIds,
+		appId: note.appId,
+		geo: note.geo,
+		localOnly: note.localOnly
+	};
 }
