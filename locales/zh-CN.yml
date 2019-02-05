@@ -509,8 +509,8 @@ common/views/components/profile-editor.vue:
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
   email-not-verified: "邮件地址尚未验证。 请检查您的邮箱。"
-  export: "エクスポート"
-  export-notes: "すべての投稿のエクスポート"
+  export: "导出"
+  export-notes: "导出所有帖子"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 common/views/components/user-list-editor.vue:
   users: "用户"
