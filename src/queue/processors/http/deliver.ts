@@ -1,7 +1,7 @@
 import * as bq from 'bee-queue';
 
 import request from '../../../remote/activitypub/request';
-import { queueLogger } from '../..';
+import { queueLogger } from '../../logger';
 
 export default async (job: bq.Job, done: any): Promise<void> => {
 	try {

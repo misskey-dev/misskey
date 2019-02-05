@@ -1,9 +1,9 @@
 import * as Queue from 'bee-queue';
 import config from '../config';
-import http from './processors/http';
+
 import { ILocalUser } from '../models/user';
-import Logger from '../misc/logger';
 import { program } from '../argv';
+import handler from './processors';
 
 const enableQueue = config.redis != null && !program.disableQueue;
 
@@ -36,7 +36,7 @@ export function createHttpJob(data: any) {
 			.backoff('exponential', 16384) // 16s
 			.save();
 	} else {
-		return http({ data }, () => {});
+		return handler({ data }, () => {});
 	}
 }
 
@@ -51,10 +51,18 @@ export function deliver(user: ILocalUser, content: any, to: any) {
 	});
 }
 
-export const queueLogger = new Logger('queue');
+export function createExportNotesJob(user: ILocalUser) {
+	if (!enableQueue) throw 'queue disabled';
+
+	return queue.createJob({
+		type: 'exportNotes',
+		user: user
+	})
+		.save();
+}
 
 export default function() {
 	if (enableQueue) {
-		queue.process(128, http);
+		queue.process(128, handler);
 	}
 }
