@@ -61,6 +61,10 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 ...and more! Experience Misskey with your own eyes at [misskey.xyz](https://misskey.xyz) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
 
+:new: What's new
+----------------------------------------------------------------
+Please see the [Release notes](./CHANGELOG.md).
+
 :package: Create your own instance
 ----------------------------------------------------------------
 Please see the [Setup and Installation Guide](./docs/setup.en.md).
