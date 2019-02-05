@@ -5,7 +5,7 @@ import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
 import Following from '../../../models/following';
-import { publishMainStream } from '../../../stream';
+import { publishMainStream } from '../../stream';
 import perUserFollowingChart from '../../../chart/per-user-following';
 import Logger from '../../../misc/logger';
 

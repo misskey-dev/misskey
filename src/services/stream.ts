@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import redis from './db/redis';
+import redis from '../db/redis';
 import Xev from 'xev';
 
 type ID = string | mongo.ObjectID;

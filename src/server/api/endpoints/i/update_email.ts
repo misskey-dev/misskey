@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
-import { publishMainStream } from '../../../../stream';
+import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import * as nodemailer from 'nodemailer';
 import fetchMeta from '../../../../misc/fetch-meta';

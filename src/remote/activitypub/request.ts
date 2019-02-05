@@ -7,7 +7,7 @@ import * as promiseAny from 'promise-any';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
-import { publishApLogStream } from '../../stream';
+import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 
 export const logger = apLogger.createSubLogger('deliver');

@@ -1,6 +1,6 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../../models/user';
-import { publishMainStream } from '../../../stream';
-import notify from '../../../notify';
+import { publishMainStream } from '../../stream';
+import notify from '../../../services/create-notification';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../queue';

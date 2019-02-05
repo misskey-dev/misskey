@@ -2,7 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
-import { publishDriveStream } from '../../../../../stream';
+import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 
 export const meta = {

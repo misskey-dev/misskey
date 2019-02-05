@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import * as CRC32 from 'crc-32';
 import * as mongo from 'mongodb';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
-import { publishReversiGameStream } from '../../../../../stream';
+import { publishReversiGameStream } from '../../../../../services/stream';
 import Reversi from '../../../../../games/reversi/core';
 import * as maps from '../../../../../games/reversi/maps';
 import Channel from '../../channel';

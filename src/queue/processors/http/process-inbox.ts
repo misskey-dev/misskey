@@ -6,7 +6,7 @@ import perform from '../../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
-import { publishApLogStream } from '../../../stream';
+import { publishApLogStream } from '../../../services/stream';
 import Logger from '../../../misc/logger';
 
 const logger = new Logger('inbox');

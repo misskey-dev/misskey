@@ -1,5 +1,5 @@
 import User from '../../../../models/user';
-import { publishMainStream } from '../../../../stream';
+import { publishMainStream } from '../../../../services/stream';
 import Message from '../../../../models/messaging-message';
 import define from '../../define';
 

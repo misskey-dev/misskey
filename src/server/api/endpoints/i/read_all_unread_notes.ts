@@ -1,5 +1,5 @@
 import User from '../../../../models/user';
-import { publishMainStream } from '../../../../stream';
+import { publishMainStream } from '../../../../services/stream';
 import NoteUnread from '../../../../models/note-unread';
 import define from '../../define';
 
