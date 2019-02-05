@@ -148,7 +148,8 @@ export default Vue.extend({
 	> span
 		display inline-block
 		height 32px
-		margin-right 6px
+		margin-right 4px
+		margin-bottom 4px
 		padding 0 6px
 		border-radius 4px
 		cursor pointer
