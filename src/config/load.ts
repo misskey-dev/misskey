@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
-import isUrl = require('is-url');
 import * as pkg from '../../package.json';
 
 /**
@@ -26,10 +25,7 @@ export default function load() {
 
 	const mixin = {} as Mixin;
 
-	// Validate URLs
-	if (!isUrl(config.url)) throw `url="${config.url}" is not a valid URL`;
-
-	const url = new URL(config.url);
+	const url = validateUrl(config.url);
 	config.url = normalizeUrl(config.url);
 
 	mixin.host = url.host;
@@ -49,6 +45,14 @@ export default function load() {
 	if (config.autoAdmin == null) config.autoAdmin = false;
 
 	return Object.assign(config, mixin);
+}
+
+function validateUrl(url: string) {
+	try {
+		return new URL(url);
+	} catch (e) {
+		throw `url="${url}" is not a valid URL`;
+	}
 }
 
 function normalizeUrl(url: string) {
