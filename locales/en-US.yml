@@ -1003,6 +1003,7 @@ admin/views/index.vue:
   announcements: "Announcements"
   hashtags: "Hashtags"
   abuse: "Abuse"
+  queue: "ジョブキュー"
   back-to-misskey: "Back to Misskey"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
@@ -1012,6 +1013,9 @@ admin/views/dashboard.vue:
   instances: "Instances"
   this-instance: "This instance"
   federated: "Federated"
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "Abuse"
   target: "Target"
