@@ -38,7 +38,7 @@ export default Vue.extend({
 	},
 	computed: {
 		isMe(): boolean {
-			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
+			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
 		},
 	},
 	watch: {

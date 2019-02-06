@@ -1,8 +1,6 @@
 <template>
 <div class="mk-reactions-viewer" :class="{ isMe }">
-	<template v-for="(count, reaction) in reactions">
-		<x-reaction :reaction="reaction" :count="count" :note="note" :key="reaction"/>
-	</template>
+	<x-reaction v-for="(count, reaction) in reactions" :reaction="reaction" :count="count" :note="note" :key="reaction"/>
 </div>
 </template>
 
@@ -25,7 +23,7 @@ export default Vue.extend({
 			return this.note.reactionCounts;
 		},
 		isMe(): boolean {
-			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
+			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
 		},
 	},
 });
