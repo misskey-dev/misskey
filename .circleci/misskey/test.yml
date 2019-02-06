@@ -11,3 +11,5 @@ redis:
   host: localhost
   port: 6379
   pass: ''
+drive:
+  storage: 'db'
