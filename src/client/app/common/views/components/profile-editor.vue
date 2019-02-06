@@ -92,7 +92,7 @@
 		<header>{{ $t('export') }}</header>
 
 		<div>
-			<ui-button @click="exportNotes()">{{ $t('export-notes') }}</ui-button>
+			<ui-button @click="exportNotes()"><fa :icon="faDownload"/> {{ $t('export-notes') }}</ui-button>
 		</div>
 	</section>
 </ui-card>
@@ -105,6 +105,7 @@ import { apiUrl, host } from '../../../config';
 import { toUnicode } from 'punycode';
 import langmap from 'langmap';
 import { unique } from '../../../../../prelude/array';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/profile-editor.vue'),
@@ -131,7 +132,8 @@ export default Vue.extend({
 			autoAcceptFollowed: false,
 			saving: false,
 			avatarUploading: false,
-			bannerUploading: false
+			bannerUploading: false,
+			faDownload
 		};
 	},
 
