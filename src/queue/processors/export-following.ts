@@ -1,4 +1,3 @@
-
 import * as bq from 'bee-queue';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
