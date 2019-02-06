@@ -133,10 +133,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-reactions-viewer
-	display flex
-	flex-flow wrap
-	gap 4px
-	margin 4px 0
+	margin 6px 0
 
 	&:empty
 		display none
