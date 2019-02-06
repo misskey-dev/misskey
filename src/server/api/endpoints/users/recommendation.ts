@@ -50,7 +50,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 
 		request({
 			url: url,
-			proxy: config.proxy,
+			proxy: config.proxy.getOrElse(null),
 			timeout: timeout,
 			json: true,
 			followRedirect: true,

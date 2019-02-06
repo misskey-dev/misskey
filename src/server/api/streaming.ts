@@ -23,10 +23,10 @@ module.exports = (server: http.Server) => {
 
 		let ev: EventEmitter;
 
-		if (config.redis) {
+		if (config.redis.isJust()) {
 			// Connect to Redis
 			const subscriber = redis.createClient(
-				config.redis.port, config.redis.host);
+				config.redis.get().port, config.redis.get().host);
 
 			subscriber.subscribe('misskey');
 
