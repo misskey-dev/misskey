@@ -20,7 +20,7 @@ export default Vue.extend({
 	props: {
 		reaction: {
 			type: String,
-			required: true
+			required: true,
 		},
 		count: {
 			type: Number,
@@ -28,7 +28,7 @@ export default Vue.extend({
 		},
 		note: {
 			type: Object,
-			required: true
+			required: true,
 		},
 		canToggle: {
 			type: Boolean,
@@ -39,12 +39,12 @@ export default Vue.extend({
 	computed: {
 		isMe(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
-		}
+		},
 	},
 	watch: {
 		count() {
 			this.anime();
-		}
+		},
 	},
 	methods: {
 		toggleReaction() {
@@ -106,7 +106,7 @@ export default Vue.extend({
 					}
 				});
 			});
-		}
+		},
 	}
 });
 </script>

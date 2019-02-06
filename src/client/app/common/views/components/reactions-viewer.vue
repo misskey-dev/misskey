@@ -18,7 +18,7 @@ export default Vue.extend({
 		note: {
 			type: Object,
 			required: true
-		}
+		},
 	},
 	computed: {
 		reactions(): any {
@@ -26,7 +26,7 @@ export default Vue.extend({
 		},
 		isMe(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
-		}
+		},
 	},
 });
 </script>
