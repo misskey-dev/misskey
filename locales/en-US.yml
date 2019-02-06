@@ -509,6 +509,9 @@ common/views/components/profile-editor.vue:
   email-address: "Email Address"
   email-verified: "Your email has been verified."
   email-not-verified: "Email address is not confirmed. Please check your inbox."
+  export: "Export"
+  export-notes: "Export all of your Notes"
+  export-requested: "You have requested an export. This may take a while. After the export is complete, the resulting file will be added to the drive."
 common/views/components/user-list-editor.vue:
   users: "User"
   rename: "Rename list"
