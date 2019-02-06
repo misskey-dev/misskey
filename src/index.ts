@@ -26,7 +26,7 @@ import { showMachineInfo } from './misc/show-machine-info';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
-const clusterLog = logger.createSubLogger('cluster', 'orange');
+const clusterLogger = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
 
 /**
@@ -249,19 +249,19 @@ function spawnWorker(): Promise<void> {
 
 // Listen new workers
 cluster.on('fork', worker => {
-	clusterLog.debug(`Process forked: [${worker.id}]`);
+	clusterLogger.debug(`Process forked: [${worker.id}]`);
 });
 
 // Listen online workers
 cluster.on('online', worker => {
-	clusterLog.debug(`Process is now online: [${worker.id}]`);
+	clusterLogger.debug(`Process is now online: [${worker.id}]`);
 });
 
 // Listen for dying workers
 cluster.on('exit', worker => {
 	// Replace the dead worker,
 	// we're not sentimental
-	clusterLog.error(chalk.red(`[${worker.id}] died :(`));
+	clusterLogger.error(chalk.red(`[${worker.id}] died :(`));
 	cluster.fork();
 });
 
