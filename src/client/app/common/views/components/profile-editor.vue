@@ -92,7 +92,14 @@
 		<header>{{ $t('export') }}</header>
 
 		<div>
-			<ui-button @click="exportNotes()"><fa :icon="faDownload"/> {{ $t('export-notes') }}</ui-button>
+			<ui-select v-model="exportTarget">
+				<span slot="label">{{ $t('export-target') }}</span>
+				<option value="notes">{{ $t('export-targets.all-notes') }}</option>
+				<option value="following">{{ $t('export-targets.following-list') }}</option>
+				<option value="mute">{{ $t('export-targets.mute-list') }}</option>
+				<option value="blocking">{{ $t('export-targets.blocking-list') }}</option>
+			</ui-select>
+			<ui-button @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</ui-button>
 		</div>
 	</section>
 </ui-card>
@@ -133,6 +140,7 @@ export default Vue.extend({
 			saving: false,
 			avatarUploading: false,
 			bannerUploading: false,
+			exportTarget: 'notes',
 			faDownload
 		};
 	},
@@ -264,8 +272,13 @@ export default Vue.extend({
 			});
 		},
 
-		exportNotes() {
-			this.$root.api('i/export-notes', {});
+		doExport() {
+			this.$root.api(
+				this.exportTarget == 'notes' ? 'i/export-notes' :
+				this.exportTarget == 'following' ? 'i/export-following' :
+				this.exportTarget == 'mute' ? 'i/export-mute' :
+				this.exportTarget == 'blocking' ? 'i/export-blocking' :
+				null, {});
 
 			this.$root.dialog({
 				type: 'info',
