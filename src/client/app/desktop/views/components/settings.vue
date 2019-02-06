@@ -598,6 +598,7 @@ export default Vue.extend({
 		padding 16px 0 0 0
 		overflow auto
 		z-index 1
+		font-size 15px
 
 		&.inWindow
 			box-shadow var(--shadowRight)
