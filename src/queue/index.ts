@@ -8,17 +8,17 @@ import handler from './processors';
 import { queueLogger } from './logger';
 
 const enableQueue = !program.disableQueue;
-const queueAvailable = config.redis != null;
+const queueAvailable = config.redis.isJust();
 
 const queue = initializeQueue();
 
 function initializeQueue() {
-	if (queueAvailable) {
+	return config.redis.map(({ port, host, pass }) => {
 		return new Queue('misskey', {
 			redis: {
-				port: config.redis.port,
-				host: config.redis.host,
-				password: config.redis.pass
+				port: port,
+				host: host,
+				password: pass.getOrElse(null)
 			},
 
 			removeOnSuccess: true,
@@ -27,9 +27,7 @@ function initializeQueue() {
 			sendEvents: false,
 			storeJobs: false
 		});
-	} else {
-		return null;
-	}
+	}).getOrElse(null);
 }
 
 export function deliver(user: ILocalUser, content: any, to: any) {
