@@ -37,8 +37,9 @@ async function job(file: IDriveFile): Promise<any> {
 	const thumbnailKeyDir = `${config.drive.prefix}/${uuid.v4()}`;
 	const thumbnailKey = `${thumbnailKeyDir}/${name}.thumbnail.jpg`;
 
-	const baseUrl = config.drive.baseUrl
-		|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
+	const baseUrl = config.drive.baseUrl.getOrElse(
+		`${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`
+	);
 
 	const bucket = await getDriveFileBucket();
 	const readable = bucket.openDownloadStream(file._id);

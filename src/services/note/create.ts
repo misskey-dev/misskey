@@ -500,7 +500,7 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 }
 
 function index(note: INote) {
-	if (note.text == null || config.elasticsearch == null) return;
+	if (note.text == null || !config.elasticsearch.isJust()) return;
 
 	es.index({
 		index: 'misskey',

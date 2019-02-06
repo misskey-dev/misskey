@@ -96,13 +96,14 @@ app.use(router.routes());
 app.use(mount(require('./web')));
 
 function createServer() {
-	if (config.https) {
-		const certs: any = {};
-		for (const k of Object.keys(config.https)) {
-			certs[k] = fs.readFileSync(config.https[k]);
-		}
-		certs['allowHTTP1'] = true;
-		return http2.createSecureServer(certs, app.callback()) as https.Server;
+	if (config.https.isJust()) {
+		const opts = {
+			key: fs.readFileSync(config.https.get().key),
+			cert: fs.readFileSync(config.https.get().cert),
+			...config.https.get().ca.map<any>(path => ({ ca: fs.readFileSync(path) })).getOrElse({}),
+			allowHTTP1: true
+		};
+		return http2.createSecureServer(opts, app.callback()) as https.Server;
 	} else {
 		return http.createServer(app.callback());
 	}

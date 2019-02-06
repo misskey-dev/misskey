@@ -57,7 +57,7 @@ export default class Resolver {
 
 		const object = await request({
 			url: value,
-			proxy: config.proxy,
+			proxy: config.proxy.getOrElse(null),
 			timeout: this.timeout,
 			headers: {
 				'User-Agent': config.user_agent,
