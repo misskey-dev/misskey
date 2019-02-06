@@ -34,8 +34,8 @@ function initializeQueue() {
 export function createHttpJob(data: any) {
 	if (queueAvailable) {
 		return queue.createJob(data)
-			.retries(4)
-			.backoff('exponential', 16384) // 16s
+			.retries(3)
+			.backoff('exponential', 1000)
 			.save();
 	} else {
 		return handler({ data }, () => {});
