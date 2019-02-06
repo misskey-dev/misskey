@@ -1,6 +1,7 @@
 import * as Queue from 'bee-queue';
-import config from '../config';
+import * as httpSignature from 'http-signature';
 
+import config from '../config';
 import { ILocalUser } from '../models/user';
 import { program } from '../argv';
 import handler from './processors';
@@ -31,10 +32,19 @@ function initializeQueue() {
 	}
 }
 
-export function createHttpJob(data: any) {
-	if (queueAvailable) {
+export function deliver(user: ILocalUser, content: any, to: any) {
+	if (content == null) return;
+
+	const data = {
+		type: 'deliver',
+		user,
+		content,
+		to
+	};
+
+	if (queueAvailable && !program.disableApQueue) {
 		return queue.createJob(data)
-			.retries(3)
+			.retries(8)
 			.backoff('exponential', 1000)
 			.save();
 	} else {
@@ -42,15 +52,21 @@ export function createHttpJob(data: any) {
 	}
 }
 
-export function deliver(user: ILocalUser, content: any, to: any) {
-	if (content == null) return;
+export function processInbox(activity: any, signature: httpSignature.IParsedSignature) {
+	const data = {
+		type: 'processInbox',
+		activity: activity,
+		signature
+	};
 
-	createHttpJob({
-		type: 'deliver',
-		user,
-		content,
-		to
-	});
+	if (queueAvailable && !program.disableApQueue) {
+		return queue.createJob(data)
+			.retries(3)
+			.backoff('exponential', 500)
+			.save();
+	} else {
+		return handler({ data }, () => {});
+	}
 }
 
 export function createExportNotesJob(user: ILocalUser) {
