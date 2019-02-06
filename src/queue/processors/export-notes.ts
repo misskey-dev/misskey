@@ -100,7 +100,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 	stream.end();
 	logger.succ(`Exported to: ${path}`);
 
-	const fileName = 'notes' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.json';
+	const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.json';
 	const driveFile = await addFile(user, path, fileName);
 
 	logger.succ(`Exported to: ${driveFile._id}`);
