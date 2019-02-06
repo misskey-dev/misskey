@@ -3,6 +3,7 @@
 
 	name: 'Rainy',
 	author: 'syuilo',
+	desc: 'It\'s a rainy day.',
 
 	base: 'light',
 

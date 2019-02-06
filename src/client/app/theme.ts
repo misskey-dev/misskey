@@ -23,6 +23,7 @@ export const colorfulTheme: Theme = require('../theme/colorful.json5');
 export const rainyTheme: Theme = require('../theme/rainy.json5');
 export const mauveTheme: Theme = require('../theme/mauve.json5');
 export const grayTheme: Theme = require('../theme/gray.json5');
+export const tweetDeckTheme: Theme = require('../theme/tweet-deck.json5');
 
 export const builtinThemes = [
 	lightTheme,
@@ -38,6 +39,7 @@ export const builtinThemes = [
 	rainyTheme,
 	mauveTheme,
 	grayTheme,
+	tweetDeckTheme,
 ];
 
 export function applyTheme(theme: Theme, persisted = true) {
