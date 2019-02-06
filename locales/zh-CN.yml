@@ -509,6 +509,9 @@ common/views/components/profile-editor.vue:
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
   email-not-verified: "邮件地址尚未验证。 请检查您的邮箱。"
+  export: "导出"
+  export-notes: "导出所有帖子"
+  export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
 common/views/components/user-list-editor.vue:
   users: "用户"
   rename: "重命名列表"
