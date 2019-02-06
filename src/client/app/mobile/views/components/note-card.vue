@@ -88,6 +88,6 @@ export default Vue.extend({
 		> .mk-time
 			display inline-block
 			padding 8px
-			color #aaa
+			color var(--text)
 
 </style>
