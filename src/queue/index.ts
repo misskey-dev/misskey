@@ -79,6 +79,36 @@ export function createExportNotesJob(user: ILocalUser) {
 		.save();
 }
 
+export function createExportFollowingJob(user: ILocalUser) {
+	if (!queueAvailable) throw 'queue unavailable';
+
+	return queue.createJob({
+		type: 'exportFollowing',
+		user: user
+	})
+		.save();
+}
+
+export function createExportMuteJob(user: ILocalUser) {
+	if (!queueAvailable) throw 'queue unavailable';
+
+	return queue.createJob({
+		type: 'exportMute',
+		user: user
+	})
+		.save();
+}
+
+export function createExportBlockingJob(user: ILocalUser) {
+	if (!queueAvailable) throw 'queue unavailable';
+
+	return queue.createJob({
+		type: 'exportBlocking',
+		user: user
+	})
+		.save();
+}
+
 export default function() {
 	if (queueAvailable && enableQueue) {
 		queue.process(128, handler);

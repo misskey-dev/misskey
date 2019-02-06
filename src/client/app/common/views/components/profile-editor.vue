@@ -93,7 +93,6 @@
 
 		<div>
 			<ui-select v-model="exportTarget">
-				<span slot="label">{{ $t('export-target') }}</span>
 				<option value="notes">{{ $t('export-targets.all-notes') }}</option>
 				<option value="following">{{ $t('export-targets.following-list') }}</option>
 				<option value="mute">{{ $t('export-targets.mute-list') }}</option>
