@@ -87,3 +87,9 @@ export default function() {
 
 	return queue;
 }
+
+export function destroy() {
+	queue.destroy().then(n => {
+		queueLogger.succ(`All job removed (${n} jobs)`);
+	});
+}
