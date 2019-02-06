@@ -133,7 +133,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-reactions-viewer
-	margin: 0 -2px
+	margin: 4px -2px
 
 	&:empty
 		display none
