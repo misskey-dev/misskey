@@ -80,7 +80,7 @@ export async function exportFollowing(job: bq.Job, done: any): Promise<void> {
 	stream.end();
 	logger.succ(`Exported to: ${path}`);
 
-	const fileName = dateFormat(new Date(), 'following-yyyy-mm-dd-HH-MM-ss') + '.json';
+	const fileName = dateFormat(new Date(), 'following-yyyy-mm-dd-HH-MM-ss') + '.csv';
 	const driveFile = await addFile(user, path, fileName);
 
 	logger.succ(`Exported to: ${driveFile._id}`);
