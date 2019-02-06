@@ -1003,6 +1003,7 @@ admin/views/index.vue:
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
   abuse: "スパム報告"
+  queue: "ジョブキュー"
   back-to-misskey: "Misskeyに戻る"
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
@@ -1012,6 +1013,9 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "このインスタンス"
   federated: "連合"
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "スパム報告"
   target: "対象"
