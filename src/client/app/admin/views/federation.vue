@@ -40,7 +40,7 @@
 					<span>{{ $t('latest-request-received-at') }}</span>
 				</ui-input>
 				<section>
-					<ui-button @click="removeAllFollowing()">{{ $t('remove-all-following') }}</ui-button>
+					<ui-button @click="removeAllFollowing()"><fa :icon="faMinusCircle"/> {{ $t('remove-all-following') }}</ui-button>
 					<ui-info warn>{{ $t('remove-all-following-info', { host: instance.host }) }}</ui-info>
 				</section>
 			</div>
@@ -92,7 +92,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
-import { faGlobe, faTerminal, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faTerminal, faSearch, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/federation.vue'),
@@ -104,7 +104,7 @@ export default Vue.extend({
 			sort: '+caughtAt',
 			limit: 50,
 			instances: [],
-			faGlobe, faTerminal, faSearch
+			faGlobe, faTerminal, faSearch, faMinusCircle
 		};
 	},
 
