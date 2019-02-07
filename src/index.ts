@@ -228,7 +228,7 @@ async function init(): Promise<Config> {
 	return config;
 }
 
-async function spawnWorkers(limit: number) {
+async function spawnWorkers(limit: number = Infinity) {
 	const workers = Math.min(limit, os.cpus().length);
 	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
 	await Promise.all([...Array(workers)].map(spawnWorker));

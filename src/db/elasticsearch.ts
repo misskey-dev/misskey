@@ -42,10 +42,9 @@ const index = {
 };
 
 // Init ElasticSearch connection
-
-const client = config.elasticsearch.map(({ host, port }) => {
-	return new elasticsearch.Client({ host: `${host}:${port}` });
-}).getOrElse(null);
+const client = config.elasticsearch ? new elasticsearch.Client({
+	host: `${config.elasticsearch.host}:${config.elasticsearch.port}`
+}) : null;
 
 if (client) {
 	// Send a HEAD request

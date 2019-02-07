@@ -55,7 +55,7 @@ export default async (
 
 		const req = request({
 			url: requestUrl,
-			proxy: config.proxy.getOrElse(null),
+			proxy: config.proxy,
 			timeout: 10 * 1000,
 			headers: {
 				'User-Agent': config.user_agent
