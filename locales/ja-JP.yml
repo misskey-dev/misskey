@@ -1371,6 +1371,30 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 
+admin/views/federation.vue:
+  federation: "連合"
+  host: "ホスト"
+  notes: "投稿"
+  users: "ユーザー"
+  following: "フォロー中"
+  followers: "フォロワー"
+  status: "ステータス"
+  lookup: "照会"
+  instances: "インスタンス"
+  instance-not-registered: "そのインスタンスは登録されていません"
+  sort: "ソート"
+  sorts:
+    caughtAtAsc: "登録日時が古い順"
+    caughtAtDesc: "登録日時が新しい順"
+    notesAsc: "投稿が少ない順"
+    notesDesc: "投稿が多い順"
+    usersAsc: "ユーザーが少ない順"
+    usersDesc: "ユーザーが多い順"
+    followingAsc: "フォローが少ない順"
+    followingDesc: "フォローが多い順"
+    followersAsc: "フォロワーが少ない順"
+    followersDesc: "フォロワーが多い順"
+
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"

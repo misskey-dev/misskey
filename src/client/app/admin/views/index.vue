@@ -24,7 +24,7 @@
 			<li @click="nav('moderators')" :class="{ active: page == 'moderators' }"><fa :icon="faHeadset" fixed-width/>{{ $t('moderators') }}</li>
 			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
 			<li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</li>
-			<!-- <li @click="nav('federation')" :class="{ active: page == 'federation' }"><fa :icon="faShareAlt" fixed-width/>{{ $t('federation') }}</li> -->
+			<li @click="nav('federation')" :class="{ active: page == 'federation' }"><fa :icon="faGlobe" fixed-width/>{{ $t('federation') }}</li>
 			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
 			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
 			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('hashtags') }}</li>
@@ -48,6 +48,7 @@
 			<div v-if="page == 'announcements'"><x-announcements/></div>
 			<div v-if="page == 'hashtags'"><x-hashtags/></div>
 			<div v-if="page == 'drive'"><x-drive/></div>
+			<div v-if="page == 'federation'"><x-federation/></div>
 			<div v-if="page == 'abuse'"><x-abuse/></div>
 		</div>
 	</main>
@@ -68,7 +69,9 @@ import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
 import XDrive from "./drive.vue";
 import XAbuse from "./abuse.vue";
-import { faHeadset, faArrowLeft, faShareAlt, faExclamationCircle, faTasks } from '@fortawesome/free-solid-svg-icons';
+import XFederation from "./federation.vue";
+
+import { faHeadset, faArrowLeft, faGlobe, faExclamationCircle, faTasks } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 // Detect the user agent
@@ -88,6 +91,7 @@ export default Vue.extend({
 		XUsers,
 		XDrive,
 		XAbuse,
+		XFederation,
 	},
 	provide: {
 		isMobile
@@ -101,7 +105,7 @@ export default Vue.extend({
 			faGrin,
 			faArrowLeft,
 			faHeadset,
-			faShareAlt,
+			faGlobe,
 			faExclamationCircle,
 			faTasks
 		};
