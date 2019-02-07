@@ -1,13 +1,14 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import User from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
-import { publishMainStream } from '../../../../../stream';
-import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
-import pushSw from '../../../../../push-sw';
+import { publishMainStream } from '../../../../../services/stream';
+import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../services/stream';
+import pushSw from '../../../../../services/push-notification';
 import define from '../../../define';
 
 export const meta = {

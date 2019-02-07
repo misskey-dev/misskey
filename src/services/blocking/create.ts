@@ -1,7 +1,7 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
 import Following from '../../models/following';
 import FollowRequest from '../../models/follow-request';
-import { publishMainStream } from '../../stream';
+import { publishMainStream } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';

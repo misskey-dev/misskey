@@ -113,6 +113,7 @@ common:
   use-avatar-reversi-stones: "リバーシの石にアバターを使う"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
+  disable-showing-animated-images: "アニメーション画像を再生しない"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
@@ -344,6 +345,8 @@ common/views/components/note-menu.vue:
   copy-link: "リンクをコピー"
   favorite: "Merket som favoritt"
   unfavorite: "お気に入り解除"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "Fest til profilen din"
   unpin: "ピン留め解除"
   delete: "Slett"
@@ -506,6 +509,13 @@ common/views/components/profile-editor.vue:
   email-address: "メールアドレス"
   email-verified: "メールアドレスが確認されました"
   email-not-verified: "メールアドレスが確認されていません。メールボックスをご確認ください。"
+  export: "エクスポート"
+  export-targets:
+    all-notes: "すべての投稿データ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
+  export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
   rename: "リスト名を変更"
@@ -997,6 +1007,7 @@ admin/views/index.vue:
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
   abuse: "スパム報告"
+  queue: "ジョブキュー"
   back-to-misskey: "Misskeyに戻る"
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
@@ -1006,6 +1017,9 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "このインスタンス"
   federated: "連合"
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "スパム報告"
   target: "対象"

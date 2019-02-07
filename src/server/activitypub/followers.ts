@@ -1,7 +1,8 @@
 import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
-import $ from 'cafy'; import ID, { transform } from '../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
 import { renderActivity } from '../../remote/activitypub/renderer';

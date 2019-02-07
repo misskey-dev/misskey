@@ -2,7 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import define from '../../../define';
-import { publishMessagingStream } from '../../../../../stream';
+import { publishMessagingStream } from '../../../../../services/stream';
 import * as ms from 'ms';
 
 export const meta = {

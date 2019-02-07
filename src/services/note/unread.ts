@@ -2,7 +2,7 @@ import NoteUnread from '../../models/note-unread';
 import User, { IUser } from '../../models/user';
 import { INote } from '../../models/note';
 import Mute from '../../models/mute';
-import { publishMainStream } from '../../stream';
+import { publishMainStream } from '../stream';
 
 export default async function(user: IUser, note: INote, isSpecified = false) {
 	//#region ミュートしているなら無視

@@ -18,7 +18,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as tinycolor from 'tinycolor2';
-import * as ApexCharts from 'apexcharts';
+import ApexCharts from 'apexcharts';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/drive-settings.vue'),

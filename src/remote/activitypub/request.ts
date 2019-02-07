@@ -7,7 +7,7 @@ import * as promiseAny from 'promise-any';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
-import { publishApLogStream } from '../../stream';
+import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 
 export const logger = apLogger.createSubLogger('deliver');
@@ -43,11 +43,11 @@ export default (user: ILocalUser, url: string, object: any) => new Promise(async
 			'Digest': `SHA-256=${hash}`
 		}
 	}, res => {
-		logger.info(`${url} --> ${res.statusCode}`);
-
 		if (res.statusCode >= 400) {
+			logger.warn(`${url} --> ${res.statusCode}`);
 			reject(res);
 		} else {
+			logger.succ(`${url} --> ${res.statusCode}`);
 			resolve();
 		}
 	});

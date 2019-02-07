@@ -121,6 +121,7 @@ common:
   use-avatar-reversi-stones: "リバーシの石にアバターを使う"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
+  disable-showing-animated-images: "アニメーション画像を再生しない"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
@@ -374,6 +375,8 @@ common/views/components/note-menu.vue:
   copy-link: "リンクをコピー"
   favorite: "お気に入り"
   unfavorite: "お気に入り解除"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "ピン留め"
   unpin: "ピン留め解除"
   delete: "削除"
@@ -554,6 +557,13 @@ common/views/components/profile-editor.vue:
   email-address: "メールアドレス"
   email-verified: "メールアドレスが確認されました"
   email-not-verified: "メールアドレスが確認されていません。メールボックスをご確認ください。"
+  export: "エクスポート"
+  export-targets:
+    all-notes: "すべての投稿データ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
+  export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
@@ -1123,6 +1133,7 @@ admin/views/index.vue:
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
   abuse: "スパム報告"
+  queue: "ジョブキュー"
   back-to-misskey: "Misskeyに戻る"
 
 admin/views/dashboard.vue:
@@ -1133,6 +1144,10 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "このインスタンス"
   federated: "連合"
+
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 
 admin/views/abuse.vue:
   title: "スパム報告"
@@ -1355,6 +1370,34 @@ admin/views/announcements.vue:
 
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
+
+admin/views/federation.vue:
+  federation: "連合"
+  host: "ホスト"
+  notes: "投稿"
+  users: "ユーザー"
+  following: "フォロー中"
+  followers: "フォロワー"
+  status: "ステータス"
+  latest-request-sent-at: "直近のリクエスト送信"
+  latest-request-received-at: "直近のリクエスト受信"
+  remove-all-following: "フォローを全解除"
+  remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  lookup: "照会"
+  instances: "インスタンス"
+  instance-not-registered: "そのインスタンスは登録されていません"
+  sort: "ソート"
+  sorts:
+    caughtAtAsc: "登録日時が古い順"
+    caughtAtDesc: "登録日時が新しい順"
+    notesAsc: "投稿が少ない順"
+    notesDesc: "投稿が多い順"
+    usersAsc: "ユーザーが少ない順"
+    usersDesc: "ユーザーが多い順"
+    followingAsc: "フォローが少ない順"
+    followingDesc: "フォローが多い順"
+    followersAsc: "フォロワーが少ない順"
+    followersDesc: "フォロワーが多い順"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."

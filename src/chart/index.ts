@@ -21,7 +21,7 @@ export type Partial<T> = {
 };
 
 type ArrayValue<T> = {
-	[P in keyof T]: T[P] extends number ? Array<T[P]> : ArrayValue<T[P]>;
+	[P in keyof T]: T[P] extends number ? T[P][] : ArrayValue<T[P]>;
 };
 
 type Span = 'day' | 'hour';
@@ -58,7 +58,7 @@ type Log<T extends Obj> = {
 /**
  * 様々なチャートの管理を司るクラス
  */
-export default abstract class Chart<T> {
+export default abstract class Chart<T extends Obj> {
 	protected collection: ICollection<Log<T>>;
 	protected abstract async getTemplate(init: boolean, latest?: T, group?: any): Promise<T>;
 	private name: string;

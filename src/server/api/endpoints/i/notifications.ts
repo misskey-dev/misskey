@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import Notification from '../../../../models/notification';
 import { packMany } from '../../../../models/notification';
 import { getFriendIds } from '../../common/get-friends';

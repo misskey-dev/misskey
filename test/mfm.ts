@@ -611,6 +611,14 @@ describe('MFM', () => {
 					text('(#123)'),
 				]);
 			});
+
+			it('ignore slash', () => {
+				const tokens = parse('#foo/bar');
+				assert.deepStrictEqual(tokens, [
+					leaf('hashtag', { hashtag: 'foo' }),
+					text('/bar'),
+				]);
+			});
 		});
 
 		describe('quote', () => {

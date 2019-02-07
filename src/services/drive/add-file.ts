@@ -12,7 +12,7 @@ import * as isSvg from 'is-svg';
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
-import { publishMainStream, publishDriveStream } from '../../stream';
+import { publishMainStream, publishDriveStream } from '../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
@@ -23,6 +23,7 @@ import perUserDriveChart from '../../chart/per-user-drive';
 import fetchMeta from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
+import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -36,99 +37,11 @@ const logger = driveLogger.createSubLogger('register', 'yellow');
  * @param metadata
  */
 async function save(path: string, name: string, type: string, hash: string, size: number, metadata: IMetadata): Promise<IDriveFile> {
-	// #region webpublic
-	let webpublic: Buffer;
-	let webpublicExt = 'jpg';
-	let webpublicType = 'image/jpeg';
-
-	if (!metadata.uri) {	// from local instance
-		logger.info(`creating web image of ${name}`);
-
-		if (['image/jpeg'].includes(type)) {
-			webpublic = await sharp(path)
-				.resize(2048, 2048, {
-					fit: 'inside',
-					withoutEnlargement: true
-				})
-				.rotate()
-				.jpeg({
-					quality: 85,
-					progressive: true
-				})
-				.toBuffer();
-		} else if (['image/webp'].includes(type)) {
-			webpublic = await sharp(path)
-				.resize(2048, 2048, {
-					fit: 'inside',
-					withoutEnlargement: true
-				})
-				.rotate()
-				.webp({
-					quality: 85
-				})
-				.toBuffer();
-
-				webpublicExt = 'webp';
-				webpublicType = 'image/webp';
-		} else if (['image/png'].includes(type)) {
-			webpublic = await sharp(path)
-				.resize(2048, 2048, {
-					fit: 'inside',
-					withoutEnlargement: true
-				})
-				.rotate()
-				.png()
-				.toBuffer();
-
-			webpublicExt = 'png';
-			webpublicType = 'image/png';
-		} else {
-			logger.info(`web image not created (not an image)`);
-		}
-	} else {
-		logger.info(`web image not created (from remote)`);
-	}
-	// #endregion webpublic
-
-	// #region thumbnail
-	let thumbnail: Buffer;
-	let thumbnailExt = 'jpg';
-	let thumbnailType = 'image/jpeg';
-
-	if (['image/jpeg', 'image/webp'].includes(type)) {
-		thumbnail = await sharp(path)
-			.resize(498, 280, {
-				fit: 'inside',
-				withoutEnlargement: true
-			})
-			.rotate()
-			.jpeg({
-				quality: 85,
-				progressive: true
-			})
-			.toBuffer();
-	} else if (['image/png'].includes(type)) {
-		thumbnail = await sharp(path)
-			.resize(498, 280, {
-				fit: 'inside',
-				withoutEnlargement: true
-			})
-			.rotate()
-			.png()
-			.toBuffer();
-
-		thumbnailExt = 'png';
-		thumbnailType = 'image/png';
-	} else if (type.startsWith('video/')) {
-		try {
-			thumbnail = await GenerateVideoThumbnail(path);
-		} catch (e) {
-			logger.error(`GenerateVideoThumbnail failed: ${e}`);
-		}
-	}
-	// #endregion thumbnail
+	// thunbnail, webpublic を必要なら生成
+	const alts = await generateAlts(path, type, !metadata.uri);
 
 	if (config.drive && config.drive.storage == 'minio') {
+		//#region ObjectStorage params
 		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
 
 		if (ext === '') {
@@ -137,41 +50,57 @@ async function save(path: string, name: string, type: string, hash: string, size
 			if (type === 'image/webp') ext = '.webp';
 		}
 
-		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
-		const webpublicKey = `${config.drive.prefix}/${uuid.v4()}.${webpublicExt}`;
-		const thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${thumbnailExt}`;
+		const baseUrl = config.drive.baseUrl
+			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
 
+		// for original
+		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const url = `${ baseUrl }/${ key }`;
+
+		// for alts
+		let webpublicKey = null as string;
+		let webpublicUrl = null as string;
+		let thumbnailKey = null as string;
+		let thumbnailUrl = null as string;
+		//#endregion
+
+		//#region Uploads
 		logger.info(`uploading original: ${key}`);
 		const uploads = [
 			upload(key, fs.createReadStream(path), type)
 		];
 
-		if (webpublic) {
+		if (alts.webpublic) {
+			webpublicKey = `${config.drive.prefix}/${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
+
 			logger.info(`uploading webpublic: ${webpublicKey}`);
-			uploads.push(upload(webpublicKey, webpublic, webpublicType));
+			uploads.push(upload(webpublicKey, alts.webpublic.data, alts.webpublic.type));
 		}
 
-		if (thumbnail) {
+		if (alts.thumbnail) {
+			thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
+
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
-			uploads.push(upload(thumbnailKey, thumbnail, thumbnailType));
+			uploads.push(upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
 		}
 
 		await Promise.all(uploads);
+		//#endregion
 
-		const baseUrl = config.drive.baseUrl
-			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
-
+		//#region DB
 		Object.assign(metadata, {
 			withoutChunks: true,
 			storage: 'minio',
 			storageProps: {
-				key: key,
-				webpublicKey: webpublic ? webpublicKey : null,
-				thumbnailKey: thumbnail ? thumbnailKey : null,
+				key,
+				webpublicKey,
+				thumbnailKey,
 			},
-			url: `${ baseUrl }/${ key }`,
-			webpublicUrl: webpublic ? `${ baseUrl }/${ webpublicKey }` : null,
-			thumbnailUrl: thumbnail ? `${ baseUrl }/${ thumbnailKey }` : null
+			url,
+			webpublicUrl,
+			thumbnailUrl,
 		} as IMetadata);
 
 		const file = await DriveFile.insert({
@@ -182,79 +111,131 @@ async function save(path: string, name: string, type: string, hash: string, size
 			metadata: metadata,
 			contentType: type
 		});
+		//#endregion
 
 		return file;
-	} else {
+	} else {	// use MongoDB GridFS
 		// #region store original
 		const originalDst = await getDriveFileBucket();
 
 		// web用(Exif削除済み)がある場合はオリジナルにアクセス制限
-		if (webpublic) metadata.accessKey = uuid.v4();
+		if (alts.webpublic) metadata.accessKey = uuid.v4();
 
-		const originalFile = await new Promise<IDriveFile>((resolve, reject) => {
-			const writeStream = originalDst.openUploadStream(name, {
-				contentType: type,
-				metadata
-			});
-
-			writeStream.once('finish', resolve);
-			writeStream.on('error', reject);
-			fs.createReadStream(path).pipe(writeStream);
-		});
+		const originalFile = await storeOriginal(originalDst, name, path, type, metadata);
 
 		logger.info(`original stored to ${originalFile._id}`);
 		// #endregion store original
 
 		// #region store webpublic
-		if (webpublic) {
+		if (alts.webpublic) {
 			const webDst = await getDriveFileWebpublicBucket();
-
-			const webFile = await new Promise<IDriveFile>((resolve, reject) => {
-				const writeStream = webDst.openUploadStream(name, {
-					contentType: webpublicType,
-					metadata: {
-						originalId: originalFile._id
-					}
-				});
-
-				writeStream.once('finish', resolve);
-				writeStream.on('error', reject);
-				writeStream.end(webpublic);
-			});
-
+			const webFile = await storeAlts(webDst, name, alts.webpublic.data, alts.webpublic.type, originalFile._id);
 			logger.info(`web stored ${webFile._id}`);
 		}
 		// #endregion store webpublic
 
-		if (thumbnail) {
-			const thumbnailBucket = await getDriveFileThumbnailBucket();
-
-			const tuhmFile = await new Promise<IDriveFile>((resolve, reject) => {
-				const writeStream = thumbnailBucket.openUploadStream(name, {
-					contentType: thumbnailType,
-					metadata: {
-						originalId: originalFile._id
-					}
-				});
-
-				writeStream.once('finish', resolve);
-				writeStream.on('error', reject);
-				writeStream.end(thumbnail);
-			});
-
-			logger.info(`thumbnail stored ${tuhmFile._id}`);
+		if (alts.thumbnail) {
+			const thumDst = await getDriveFileThumbnailBucket();
+			const thumFile = await storeAlts(thumDst, name, alts.thumbnail.data, alts.thumbnail.type, originalFile._id);
+			logger.info(`web stored ${thumFile._id}`);
 		}
 
 		return originalFile;
 	}
 }
 
+/**
+ * Generate webpublic, thumbnail, etc
+ * @param path Path for original
+ * @param type Content-Type for original
+ * @param generateWeb Generate webpublic or not
+ */
+export async function generateAlts(path: string, type: string, generateWeb: boolean) {
+	// #region webpublic
+	let webpublic: IImage;
+
+	if (generateWeb) {
+		logger.info(`creating web image`);
+
+		if (['image/jpeg'].includes(type)) {
+			webpublic = await ConvertToJpeg(path, 2048, 2048);
+		} else if (['image/webp'].includes(type)) {
+			webpublic = await ConvertToWebp(path, 2048, 2048);
+		} else if (['image/png'].includes(type)) {
+			webpublic = await ConvertToPng(path, 2048, 2048);
+		} else {
+			logger.info(`web image not created (not an image)`);
+		}
+	} else {
+		logger.info(`web image not created (from remote)`);
+	}
+	// #endregion webpublic
+
+	// #region thumbnail
+	let thumbnail: IImage;
+
+	if (['image/jpeg', 'image/webp'].includes(type)) {
+		thumbnail = await ConvertToJpeg(path, 498, 280);
+	} else if (['image/png'].includes(type)) {
+		thumbnail = await ConvertToPng(path, 498, 280);
+	} else if (type.startsWith('video/')) {
+		try {
+			thumbnail = await GenerateVideoThumbnail(path);
+		} catch (e) {
+			logger.error(`GenerateVideoThumbnail failed: ${e}`);
+		}
+	}
+	// #endregion thumbnail
+
+	return {
+		webpublic,
+		thumbnail,
+	};
+}
+
+/**
+ * Upload to ObjectStorage
+ */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string) {
 	const minio = new Minio.Client(config.drive.config);
 
 	await minio.putObject(config.drive.bucket, key, stream, null, {
 		'Content-Type': type,
 		'Cache-Control': 'max-age=31536000, immutable'
+	});
+}
+
+/**
+ * GridFSBucketにオリジナルを格納する
+ */
+export async function storeOriginal(bucket: mongodb.GridFSBucket, name: string, path: string, contentType: string, metadata: any) {
+	return new Promise<IDriveFile>((resolve, reject) => {
+		const writeStream = bucket.openUploadStream(name, {
+			contentType,
+			metadata
+		});
+
+		writeStream.once('finish', resolve);
+		writeStream.on('error', reject);
+		fs.createReadStream(path).pipe(writeStream);
+	});
+}
+
+/**
+ * GridFSBucketにオリジナル以外を格納する
+ */
+export async function storeAlts(bucket: mongodb.GridFSBucket, name: string, data: Buffer, contentType: string, originalId: mongodb.ObjectID) {
+	return new Promise<IDriveFile>((resolve, reject) => {
+		const writeStream = bucket.openUploadStream(name, {
+			contentType,
+			metadata: {
+				originalId
+			}
+		});
+
+		writeStream.once('finish', resolve);
+		writeStream.on('error', reject);
+		writeStream.end(data);
 	});
 }
 
@@ -429,7 +410,7 @@ export default async function(
 
 	const properties: {[key: string]: any} = {};
 
-	let propPromises: Array<Promise<void>> = [];
+	let propPromises: Promise<void>[] = [];
 
 	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/webp'].includes(mime);
 

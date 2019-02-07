@@ -17,6 +17,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import ImageViewer from './image-viewer.vue';
+import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/media-image.vue'),
@@ -36,7 +37,11 @@ export default Vue.extend({
 	}
 	computed: {
 		style(): any {
-			let url = `url(${this.image.thumbnailUrl})`;
+			let url = `url(${
+				this.$store.state.device.disableShowingAnimatedImages
+					? getStaticImageUrl(this.image.thumbnailUrl)
+					: this.image.thumbnailUrl
+			})`;
 
 			if (this.$store.state.device.loadRemoteMedia || this.$store.state.device.lightmode) {
 				url = null;

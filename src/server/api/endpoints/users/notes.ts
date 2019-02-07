@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import getHostLower from '../../common/get-host-lower';
 import Note, { packMany } from '../../../../models/note';
 import User from '../../../../models/user';

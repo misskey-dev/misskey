@@ -1,6 +1,7 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
-import { publishMainStream } from '../../../../stream';
+import { publishMainStream } from '../../../../services/stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
@@ -9,7 +10,7 @@ import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
 import extractHashtags from '../../../../misc/extract-hashtags';
-const langmap = require('langmap');
+import * as langmap from 'langmap';
 
 export const meta = {
 	desc: {

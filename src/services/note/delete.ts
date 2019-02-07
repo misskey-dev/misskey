@@ -1,6 +1,6 @@
 import Note, { INote } from '../../models/note';
 import { IUser, isLocalUser } from '../../models/user';
-import { publishNoteStream } from '../../stream';
+import { publishNoteStream } from '../stream';
 import renderDelete from '../../remote/activitypub/renderer/delete';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';

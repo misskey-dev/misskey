@@ -144,11 +144,12 @@ export default Vue.extend({
 .note
 	margin 0
 	padding 0
+	overflow hidden
 	background var(--face)
 	border-bottom solid var(--lineWidth) var(--faceDivider)
 
 	&.mini
-		font-size 13px
+		font-size 14px
 
 		> .renote
 			padding 8px 16px 0 16px

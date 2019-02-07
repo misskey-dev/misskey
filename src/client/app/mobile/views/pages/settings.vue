@@ -29,6 +29,7 @@
 					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
 					<ui-switch v-model="iLikeSushi">{{ $t('@.i-like-sushi') }}</ui-switch>
 					<ui-switch v-model="disableAnimatedMfm">{{ $t('@.disable-animated-mfm') }}</ui-switch>
+					<ui-switch v-model="disableShowingAnimatedImages">{{ $t('@.disable-showing-animated-images') }}</ui-switch>
 					<ui-switch v-model="suggestRecentHashtags">{{ $t('@.suggest-recent-hashtags') }}</ui-switch>
 					<ui-switch v-model="alwaysShowNsfw">{{ $t('@.always-show-nsfw') }} ({{ $t('@.this-setting-is-this-device-only') }})</ui-switch>
 				</section>
@@ -311,6 +312,11 @@ export default Vue.extend({
 		disableAnimatedMfm: {
 			get() { return this.$store.state.settings.disableAnimatedMfm; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableAnimatedMfm', value }); }
+		},
+
+		disableShowingAnimatedImages: {
+			get() { return this.$store.state.device.disableShowingAnimatedImages; },
+			set(value) { this.$store.commit('device/set', { key: 'disableShowingAnimatedImages', value }); }
 		},
 
 		showReplyTarget: {

@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
 import { getRelation } from '../../../../models/user';
 import define from '../../define';
 

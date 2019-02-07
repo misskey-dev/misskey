@@ -2,9 +2,9 @@ import * as mongo from 'mongodb';
 import isObjectId from '../../../misc/is-objectid';
 import Message from '../../../models/messaging-message';
 import { IMessagingMessage as IMessage } from '../../../models/messaging-message';
-import { publishMainStream } from '../../../stream';
-import { publishMessagingStream } from '../../../stream';
-import { publishMessagingIndexStream } from '../../../stream';
+import { publishMainStream } from '../../../services/stream';
+import { publishMessagingStream } from '../../../services/stream';
+import { publishMessagingIndexStream } from '../../../services/stream';
 import User from '../../../models/user';
 
 /**

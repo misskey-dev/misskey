@@ -113,6 +113,7 @@ common:
   use-avatar-reversi-stones: "用头像作为黑白棋的棋子"
   verified-user: "认证用户"
   disable-animated-mfm: "在帖子中禁用动画文本"
+  disable-showing-animated-images: "不播放动画"
   suggest-recent-hashtags: "在帖子表单上显示最近流行的主题标签"
   always-show-nsfw: "总是显示 NSFW 的内容"
   always-mark-nsfw: "总是用 NSFW 来标记附件"
@@ -344,6 +345,8 @@ common/views/components/note-menu.vue:
   copy-link: "复制链接"
   favorite: "收藏这个投稿"
   unfavorite: "取消收藏"
+  watch: "关注"
+  unwatch: "取消关注"
   pin: "固定个人资料"
   unpin: "解除固定"
   delete: "删除"
@@ -506,6 +509,13 @@ common/views/components/profile-editor.vue:
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
   email-not-verified: "邮件地址尚未验证。 请检查您的邮箱。"
+  export: "导出"
+  export-targets:
+    all-notes: "すべての投稿データ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
+  export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
 common/views/components/user-list-editor.vue:
   users: "用户"
   rename: "重命名列表"
@@ -997,6 +1007,7 @@ admin/views/index.vue:
   announcements: "公告"
   hashtags: "标签"
   abuse: "举报垃圾信息"
+  queue: "ジョブキュー"
   back-to-misskey: "返回 Misskey"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
@@ -1006,6 +1017,9 @@ admin/views/dashboard.vue:
   instances: "例子"
   this-instance: "此实例"
   federated: "联合"
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "举报垃圾信息"
   target: "目标"

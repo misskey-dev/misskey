@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 
 export default Vue.extend({
 	props: {
@@ -47,6 +48,11 @@ export default Vue.extend({
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
 		},
+		url(): string {
+			return this.$store.state.device.disableShowingAnimatedImages
+				? getStaticImageUrl(this.user.avatarUrl)
+				: this.user.avatarUrl;
+		},
 		icon(): any {
 			return {
 				backgroundColor: this.lightmode
@@ -54,7 +60,7 @@ export default Vue.extend({
 					: this.user.avatarColor && this.user.avatarColor.length == 3
 						? `rgb(${this.user.avatarColor.join(',')})`
 						: null,
-				backgroundImage: this.lightmode ? null : `url(${this.user.avatarUrl})`,
+				backgroundImage: this.lightmode ? null : `url(${this.url})`,
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
 		}

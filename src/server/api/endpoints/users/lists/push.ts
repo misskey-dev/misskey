@@ -1,7 +1,8 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import User, { pack as packUser, isRemoteUser, fetchProxyAccount } from '../../../../../models/user';
-import { publishUserListStream } from '../../../../../stream';
+import { publishUserListStream } from '../../../../../services/stream';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';

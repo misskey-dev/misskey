@@ -1,10 +1,11 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import Vote from '../../../../../models/poll-vote';
 import Note from '../../../../../models/note';
 import Watching from '../../../../../models/note-watching';
 import watch from '../../../../../services/note/watch';
-import { publishNoteStream } from '../../../../../stream';
-import notify from '../../../../../notify';
+import { publishNoteStream } from '../../../../../services/stream';
+import notify from '../../../../../services/create-notification';
 import define from '../../../define';
 import createNote from '../../../../../services/note/create';
 import User from '../../../../../models/user';

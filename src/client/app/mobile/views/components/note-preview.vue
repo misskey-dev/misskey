@@ -40,6 +40,7 @@ export default Vue.extend({
 	display flex
 	margin 0
 	padding 0
+	overflow hidden
 	font-size 10px
 
 	@media (min-width 350px)

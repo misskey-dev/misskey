@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 import User, { pack, isRemoteUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';

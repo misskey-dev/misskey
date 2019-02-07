@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import * as ms from 'ms';
 import deleteReaction from '../../../../../services/note/reaction/delete';

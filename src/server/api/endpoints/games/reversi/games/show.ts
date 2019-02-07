@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
 import Reversi from '../../../../../../games/reversi/core';
 import define from '../../../../define';

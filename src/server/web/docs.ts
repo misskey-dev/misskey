@@ -14,9 +14,9 @@ import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import config from '../../config';
 import { licenseHtml } from '../../misc/license';
-const constants = require('../../const.json');
+import { copyright } from '../../const.json';
 import endpoints from '../api/endpoints';
-const locales = require('../../../locales');
+import locales from '../../../locales';
 import * as nestedProperty from 'nested-property';
 
 function getLang(lang: string): string {
@@ -59,7 +59,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	vars['config'] = config;
 
-	vars['copyright'] = constants.copyright;
+	vars['copyright'] = copyright;
 
 	vars['license'] = licenseHtml;
 
@@ -121,7 +121,7 @@ const parsePropDefinition = (key: string, prop: any) => {
 	return prop;
 };
 
-const sortParams = (params: Array<{ name: string }>) => {
+const sortParams = (params: { name: string }[]) => {
 	return params;
 };
 

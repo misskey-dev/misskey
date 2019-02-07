@@ -1,5 +1,5 @@
 import $ from 'cafy';
-const escapeRegexp = require('escape-regexp');
+import * as escapeRegexp from 'escape-regexp';
 import User, { pack, validateUsername, IUser } from '../../../../models/user';
 import define from '../../define';
 

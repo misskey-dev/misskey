@@ -4,7 +4,7 @@ import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
-import { publishMainStream } from '../../../stream';
+import { publishMainStream } from '../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(follower)) {

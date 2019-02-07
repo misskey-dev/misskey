@@ -11,6 +11,7 @@
 			:title="media.name"
 			controls
 			ref="audio"
+			@volumechange="volumechange"
 			preload="metadata" />
 	</div>
 	<a class="download" v-else
@@ -40,7 +41,17 @@ export default Vue.extend({
 		return {
 			hide: true
 		};
-	}
+	},
+	mounted() {
+		const audioTag = this.$refs.audio as HTMLAudioElement;
+		audioTag.volume = this.$store.state.device.mediaVolume;
+	},
+	methods: {
+		volumechange() {
+			const audioTag = this.$refs.audio as HTMLAudioElement;
+			this.$store.commit('device/set', { key: 'mediaVolume', value: audioTag.volume });
+		},
+	},
 })
 </script>
 

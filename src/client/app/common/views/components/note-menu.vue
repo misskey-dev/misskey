@@ -10,71 +10,89 @@ import i18n from '../../../i18n';
 import { url } from '../../../config';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import { concat, intersperse } from '../../../../../prelude/array';
-import { faCopy } from '@fortawesome/free-regular-svg-icons';
+import { faCopy, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/note-menu.vue'),
 	props: ['note', 'source'],
+	data() {
+		return {
+			isFavorited: false,
+			isWatching: false
+		};
+	},
 	computed: {
 		items(): any[] {
-			return concat(intersperse([null], [
-				[
-					[{
-						icon: 'at',
-						text: this.$t('mention'),
-						action: this.mention
-					}]
-				],
-				[
-					[{
-						icon: 'info-circle',
-						text: this.$t('detail'),
-						action: this.detail
-					}], [{
-						icon: faCopy,
-						text: this.$t('copy-content'),
-						action: this.copyContent
-					}], [{
-						icon: 'link',
-						text: this.$t('copy-link'),
-						action: this.copyLink
-					}], this.note.uri ? [{
-						icon: 'external-link-square-alt',
-						text: this.$t('remote'),
-						action: () => {
-							window.open(this.note.uri, '_blank');
-						}
-					}] : []
-				],
-				[
-					this.note.isFavorited ? [{
-						icon: 'star',
-						text: this.$t('unfavorite'),
-						action: this.unfavorite
-					}] : [{
-						icon: 'star',
-						text: this.$t('favorite'),
-						action: this.favorite
-					}], this.note.userId == this.$store.state.i.id ? [
-						(this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
-							icon: 'thumbtack',
-							text: this.$t('unpin'),
-							action: this.unpin
-						} : {
-								icon: 'thumbtack',
-								text: this.$t('pin'),
-								action: this.pin
-							}
-					] : []
-				], [
-					this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [{
-						icon: ['far', 'trash-alt'],
-						text: this.$t('delete'),
-						action: this.del
-					}] : []
-				]
-			].map(concat).filter(x => x.length > 0)));
+			return [{
+				icon: 'at',
+				text: this.$t('mention'),
+				action: this.mention
+			}, null, {
+				icon: 'info-circle',
+				text: this.$t('detail'),
+				action: this.detail
+			}, {
+				icon: faCopy,
+				text: this.$t('copy-content'),
+				action: this.copyContent
+			}, {
+				icon: 'link',
+				text: this.$t('copy-link'),
+				action: this.copyLink
+			}, this.note.uri ? {
+				icon: 'external-link-square-alt',
+				text: this.$t('remote'),
+				action: () => {
+					window.open(this.note.uri, '_blank');
+				}
+			} : undefined,
+			null,
+			this.isFavorited ? {
+				icon: 'star',
+				text: this.$t('unfavorite'),
+				action: () => this.toggleFavorite(false)
+			} : {
+				icon: 'star',
+				text: this.$t('favorite'),
+				action: () => this.toggleFavorite(true)
+			},
+			this.note.userId != this.$store.state.i.id ? this.isWatching ? {
+				icon: faEyeSlash,
+				text: this.$t('unwatch'),
+				action: () => this.toggleWatch(false)
+			} : {
+				icon: faEye,
+				text: this.$t('watch'),
+				action: () => this.toggleWatch(true)
+			} : undefined,
+			this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
+				icon: 'thumbtack',
+				text: this.$t('unpin'),
+				action: () => this.togglePin(false)
+			} : {
+				icon: 'thumbtack',
+				text: this.$t('pin'),
+				action: () => this.togglePin(true)
+			} : undefined,
+			...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
+				null, {
+					icon: ['far', 'trash-alt'],
+					text: this.$t('delete'),
+					action: this.del
+				}]
+				: []
+			)]
+			.filter(x => x !== undefined)
 		}
+	},
+
+	created() {
+		this.$root.api('notes/state', {
+			noteId: this.note.id
+		}).then(state => {
+			this.isFavorited = state.isFavorited;
+			this.isWatching = state.isWatching;
+		});
 	},
 
 	methods: {
@@ -102,22 +120,14 @@ export default Vue.extend({
 			});
 		},
 
-		pin() {
-			this.$root.api('i/pin', {
+		togglePin(pin: boolean) {
+			this.$root.api(pin ? 'i/pin' : 'i/unpin', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
 					splash: true
 				});
-				this.destroyDom();
-			});
-		},
-
-		unpin() {
-			this.$root.api('i/unpin', {
-				noteId: this.note.id
-			}).then(() => {
 				this.destroyDom();
 			});
 		},
@@ -138,8 +148,8 @@ export default Vue.extend({
 			});
 		},
 
-		favorite() {
-			this.$root.api('notes/favorites/create', {
+		toggleFavorite(favorite: boolean) {
+			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$root.dialog({
@@ -150,8 +160,8 @@ export default Vue.extend({
 			});
 		},
 
-		unfavorite() {
-			this.$root.api('notes/favorites/delete', {
+		toggleWatch(watch: boolean) {
+			this.$root.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$root.dialog({

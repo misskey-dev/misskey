@@ -32,4 +32,29 @@ export interface IInstance {
 	 * このインスタンスから受け取った投稿数
 	 */
 	notesCount: number;
+
+	/**
+	 * このインスタンスのユーザーからフォローされている、自インスタンスのユーザーの数
+	 */
+	followingCount: number;
+
+	/**
+	 * このインスタンスのユーザーをフォローしている、自インスタンスのユーザーの数
+	 */
+	followersCount: number;
+
+	/**
+	 * 直近のリクエスト送信日時
+	 */
+	latestRequestSentAt?: Date;
+
+	/**
+	 * 直近のリクエスト送信時のHTTPステータスコード
+	 */
+	latestStatus?: number;
+
+	/**
+	 * 直近のリクエスト受信日時
+	 */
+	latestRequestReceivedAt?: Date;
 }

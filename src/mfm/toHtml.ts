@@ -1,5 +1,4 @@
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
+import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
 import { intersperse } from '../prelude/array';
@@ -158,9 +157,9 @@ export function toHtml(tokens: MfmForest, mentionedRemoteUsers: INote['mentioned
 
 		text(token) {
 			const el = doc.createElement('span');
-			const nodes = (token.node.props.text as string).split(/\r\n|\r|\n/).map(x => doc.createTextNode(x));
+			const nodes = (token.node.props.text as string).split(/\r\n|\r|\n/).map(x => doc.createTextNode(x) as Node);
 
-			for (const x of intersperse('br', nodes)) {
+			for (const x of intersperse<Node | 'br'>('br', nodes)) {
 				el.appendChild(x === 'br' ? doc.createElement('br') : x);
 			}
 

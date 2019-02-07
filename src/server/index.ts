@@ -13,16 +13,18 @@ import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
 import * as koaLogger from 'koa-logger';
 import * as requestStats from 'request-stats';
-//const slow = require('koa-slow');
+import * as slow from 'koa-slow';
 
 import activityPub from './activitypub';
-import webFinger from './webfinger';
+import nodeinfo from './nodeinfo';
+import wellKnown from './well-known';
 import config from '../config';
 import networkChart from '../chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
 import User from '../models/user';
 import Logger from '../misc/logger';
+import { program } from '../argv';
 
 export const serverLogger = new Logger('server', 'gray');
 
@@ -37,9 +39,11 @@ if (!['production', 'test'].includes(process.env.NODE_ENV)) {
 	}));
 
 	// Delay
-	//app.use(slow({
-	//	delay: 1000
-	//}));
+	if (program.slow) {
+		app.use(slow({
+			delay: 3000
+		}));
+	}
 }
 
 // Compress response
@@ -58,13 +62,15 @@ if (config.url.startsWith('https') && !config.disableHsts) {
 
 app.use(mount('/api', apiServer));
 app.use(mount('/files', require('./file')));
+app.use(mount('/proxy', require('./proxy')));
 
 // Init router
 const router = new Router();
 
 // Routing
 router.use(activityPub.routes());
-router.use(webFinger.routes());
+router.use(nodeinfo.routes());
+router.use(wellKnown.routes());
 
 router.get('/verify-email/:code', async ctx => {
 	const user = await User.findOne({ emailVerifyCode: ctx.params.code });
@@ -82,11 +88,6 @@ router.get('/verify-email/:code', async ctx => {
 	} else {
 		ctx.status = 404;
 	}
-});
-
-// Return 404 for other .well-known
-router.all('/.well-known/*', async ctx => {
-	ctx.status = 404;
 });
 
 // Register router
