@@ -40,10 +40,11 @@
 					<span>{{ $t('latest-request-received-at') }}</span>
 				</ui-input>
 				<ui-switch v-model="instance.isBlocked" @change="updateInstance()">{{ $t('block') }}</ui-switch>
-				<section>
-					<ui-button @click="removeAllFollowing()"><fa :icon="faMinusCircle"/> {{ $t('remove-all-following') }}</ui-button>
+				<details>
+					<summary>{{ $t('remove-all-following') }}</summary>
+					<ui-button @click="removeAllFollowing()" style="margin-top: 16px;"><fa :icon="faMinusCircle"/> {{ $t('remove-all-following') }}</ui-button>
 					<ui-info warn>{{ $t('remove-all-following-info', { host: instance.host }) }}</ui-info>
-				</section>
+				</details>
 			</div>
 		</section>
 	</ui-card>
