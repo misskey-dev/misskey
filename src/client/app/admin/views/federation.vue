@@ -39,6 +39,10 @@
 				<ui-input :value="instance.latestRequestReceivedAt" type="text" readonly>
 					<span>{{ $t('latest-request-received-at') }}</span>
 				</ui-input>
+				<section>
+					<ui-button @click="removeAllFollowing()">{{ $t('remove-all-following') }}</ui-button>
+					<ui-info warn>{{ $t('remove-all-following-info', { host: instance.host }) }}</ui-info>
+				</section>
 			</div>
 		</section>
 	</ui-card>
@@ -137,6 +141,17 @@ export default Vue.extend({
 				sort: this.sort
 			}).then(instances => {
 				this.instances = instances;
+			});
+		},
+
+		removeAllFollowing() {
+			this.$root.api('admin/federation/remove-all-following', {
+				host: this.instance.host
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
 			});
 		}
 	}

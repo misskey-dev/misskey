@@ -1381,6 +1381,8 @@ admin/views/federation.vue:
   status: "ステータス"
   latest-request-sent-at: "直近のリクエスト送信"
   latest-request-received-at: "直近のリクエスト受信"
+  remove-all-following: "フォローを全解除"
+  remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
   lookup: "照会"
   instances: "インスタンス"
   instance-not-registered: "そのインスタンスは登録されていません"
