@@ -32,48 +32,50 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	if (es == null) return rej('searching not available');
+	if (!es.isJust()) return rej('searching not available');
 
-	es.search({
-		index: 'misskey',
-		type: 'note',
-		body: {
-			size: ps.limit,
-			from: ps.offset,
-			query: {
-				simple_query_string: {
-					fields: ['text'],
-					query: ps.query,
-					default_operator: 'and'
-				}
-			},
-			sort: [
-				{ _doc: 'desc' }
-			]
-		}
-	}, async (error, response) => {
-		if (error) {
-			apiLogger.error(error);
-			return res(500);
-		}
-
-		if (response.hits.total === 0) {
-			return res([]);
-		}
-
-		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
-
-		// Fetch found notes
-		const notes = await Note.find({
-			_id: {
-				$in: hits
+	for (const e of es) {
+		e.search({
+			index: 'misskey',
+			type: 'note',
+			body: {
+				size: ps.limit,
+				from: ps.offset,
+				query: {
+					simple_query_string: {
+						fields: ['text'],
+						query: ps.query,
+						default_operator: 'and'
+					}
+				},
+				sort: [
+					{ _doc: 'desc' }
+				]
 			}
-		}, {
-				sort: {
-					_id: -1
-				}
-			});
+		}, async (error, response) => {
+			if (error) {
+				apiLogger.error(error);
+				return res(500);
+			}
 
-		res(await packMany(notes, me));
-	});
+			if (response.hits.total === 0) {
+				return res([]);
+			}
+
+			const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
+
+			// Fetch found notes
+			const notes = await Note.find({
+				_id: {
+					$in: hits
+				}
+			}, {
+					sort: {
+						_id: -1
+					}
+				});
+
+			res(await packMany(notes, me));
+		});
+	}
 }));

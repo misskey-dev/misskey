@@ -45,11 +45,11 @@ const index = {
 
 const client = config.elasticsearch.map(({ host, port }) => {
 	return new elasticsearch.Client({ host: `${host}:${port}` });
-}).getOrElse(null);
+});
 
-if (client) {
+for (const c of client) {
 	// Send a HEAD request
-	client.ping({
+	c.ping({
 		// Ping usually has a 3000ms timeout
 		requestTimeout: 30000
 	}, error => {
@@ -60,12 +60,12 @@ if (client) {
 		}
 	});
 
-	client.indices.exists({
+	c.indices.exists({
 		index: 'misskey'
 	}).then(exist => {
 		if (exist) return;
 
-		client.indices.create({
+		c.indices.create({
 			index: 'misskey',
 			body: index
 		});

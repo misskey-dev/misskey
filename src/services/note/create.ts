@@ -500,16 +500,18 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 }
 
 function index(note: INote) {
-	if (note.text == null || !config.elasticsearch.isJust()) return;
+	if (note.text == null) return;
 
-	es.index({
-		index: 'misskey',
-		type: 'note',
-		id: note._id.toString(),
-		body: {
-			text: note.text
-		}
-	});
+	for (const e of es) {
+		e.index({
+			index: 'misskey',
+			type: 'note',
+			id: note._id.toString(),
+			body: {
+				text: note.text
+			}
+		});
+	}
 }
 
 async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: NotificationManager, type: NotificationType) {
