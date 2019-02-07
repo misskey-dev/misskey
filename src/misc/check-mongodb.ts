@@ -8,8 +8,8 @@ const requiredMongoDBVersion = [3, 6];
 export function checkMongoDB(config: Config, logger: Logger) {
 	return new Promise((res, rej) => {
 		const mongoDBLogger = logger.createSubLogger('db');
-		const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
-		const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
+		const u = config.mongodb.user.map(x => encodeURIComponent(x)).getOrElse(null);
+		const p = config.mongodb.pass.map(x => encodeURIComponent(x)).getOrElse(null);
 		const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
 		mongoDBLogger.info(`Connecting to ${uri} ...`);
 
