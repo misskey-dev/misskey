@@ -28,7 +28,8 @@ export default class Logger {
 		} else {
 			const time = dateformat(new Date(), 'HH:MM:ss');
 			const process = cluster.isMaster ? '*' : cluster.worker.id;
-			const log = `${chalk.gray(time)} ${level} ${process}\t[${domains.join(' ')}]\t${message}`;
+			let log = `${level} ${process}\t[${domains.join(' ')}]\t${message}`;
+			if (program.withLogTime) log = chalk.gray(time) + ' ' + log;
 			console.log(important ? chalk.bold(log) : log);
 		}
 	}
