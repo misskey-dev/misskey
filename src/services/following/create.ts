@@ -9,7 +9,7 @@ import renderAccept from '../../remote/activitypub/renderer/accept';
 import renderReject from '../../remote/activitypub/renderer/reject';
 import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
-import perUserFollowingChart from '../../chart/per-user-following';
+import perUserFollowingChart from '../../services/chart/per-user-following';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 

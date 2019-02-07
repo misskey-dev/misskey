@@ -5,7 +5,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
-import perUserFollowingChart from '../../chart/per-user-following';
+import perUserFollowingChart from '../../services/chart/per-user-following';
 import Logger from '../../misc/logger';
 
 const logger = new Logger('following/delete');

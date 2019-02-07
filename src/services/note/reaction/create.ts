@@ -8,7 +8,7 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
-import perUserReactionsChart from '../../../chart/per-user-reactions';
+import perUserReactionsChart from '../../../services/chart/per-user-reactions';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself

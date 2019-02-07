@@ -1,6 +1,6 @@
 import { IUser } from '../models/user';
 import Hashtag from '../models/hashtag';
-import hashtagChart from '../chart/hashtag';
+import hashtagChart from '../services/chart/hashtag';
 
 export default async function(user: IUser, tag: string) {
 	tag = tag.toLowerCase();

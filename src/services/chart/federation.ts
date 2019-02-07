@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '.';
-import Instance from '../models/instance';
+import Instance from '../../models/instance';
 
 /**
  * フェデレーションに関するチャート

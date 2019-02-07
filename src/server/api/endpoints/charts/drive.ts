@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import driveChart from '../../../../chart/drive';
+import driveChart from '../../../../services/chart/drive';
 
 export const meta = {
 	stability: 'stable',

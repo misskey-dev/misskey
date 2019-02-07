@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart from './';
-import { IUser, isLocalUser } from '../models/user';
-import { INote } from '../models/note';
+import { IUser, isLocalUser } from '../../models/user';
+import { INote } from '../../models/note';
 
 /**
  * ユーザーごとのリアクションに関するチャート

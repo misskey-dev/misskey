@@ -1,5 +1,5 @@
 import Instance, { IInstance } from '../models/instance';
-import federationChart from '../chart/federation';
+import federationChart from '../services/chart/federation';
 
 export async function registerOrFetchInstanceDoc(host: string): Promise<IInstance> {
 	if (host == null) return null;

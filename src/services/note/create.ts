@@ -21,9 +21,9 @@ import Meta from '../../models/meta';
 import config from '../../config';
 import registerHashtag from '../register-hashtag';
 import isQuote from '../../misc/is-quote';
-import notesChart from '../../chart/notes';
-import perUserNotesChart from '../../chart/per-user-notes';
-import activeUsersChart from '../../chart/active-users';
+import notesChart from '../../services/chart/notes';
+import perUserNotesChart from '../../services/chart/per-user-notes';
+import activeUsersChart from '../../services/chart/active-users';
 
 import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';

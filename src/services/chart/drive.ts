@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
-import DriveFile, { IDriveFile } from '../models/drive-file';
-import { isLocalUser } from '../models/user';
+import DriveFile, { IDriveFile } from '../../models/drive-file';
+import { isLocalUser } from '../../models/user';
 
 /**
  * ドライブに関するチャート

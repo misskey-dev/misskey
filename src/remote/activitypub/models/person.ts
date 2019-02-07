@@ -9,7 +9,7 @@ import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type'
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import { fromHtml } from '../../../mfm/fromHtml';
-import usersChart from '../../../chart/users';
+import usersChart from '../../../services/chart/users';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';

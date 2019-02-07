@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
-import Note, { INote } from '../models/note';
-import { IUser } from '../models/user';
+import Note, { INote } from '../../models/note';
+import { IUser } from '../../models/user';
 
 /**
  * ユーザーごとの投稿に関するチャート

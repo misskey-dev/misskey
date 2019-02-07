@@ -6,9 +6,9 @@ import * as moment from 'moment';
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
-import db from '../db/mongodb';
+import db from '../../db/mongodb';
 import { ICollection } from 'monk';
-import Logger from '../misc/logger';
+import Logger from '../../misc/logger';
 
 const logger = new Logger('chart');
 

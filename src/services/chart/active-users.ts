@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '.';
-import { IUser, isLocalUser } from '../models/user';
+import { IUser, isLocalUser } from '../../models/user';
 
 /**
  * アクティブユーザーに関するチャート

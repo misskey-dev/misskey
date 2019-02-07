@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
-import Following from '../models/following';
-import { IUser, isLocalUser } from '../models/user';
+import Following from '../../models/following';
+import { IUser, isLocalUser } from '../../models/user';
 
 /**
  * ユーザーごとのフォローに関するチャート

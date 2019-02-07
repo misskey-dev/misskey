@@ -6,7 +6,7 @@ import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
 import Following from '../../../models/following';
 import { publishMainStream } from '../../stream';
-import perUserFollowingChart from '../../../chart/per-user-following';
+import perUserFollowingChart from '../../../services/chart/per-user-following';
 import Logger from '../../../misc/logger';
 
 const logger = new Logger('following/requests/accept');
