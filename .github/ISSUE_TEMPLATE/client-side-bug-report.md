@@ -1,8 +1,8 @@
 ---
-name: Bug Report
+name: Client-side Bug Report
 about: Create a report to help us improve
 title: ''
-labels: bug
+labels: bug, client-side
 assignees: ''
 
 ---
@@ -28,3 +28,4 @@ assignees: ''
 # Environment
 
 <!-- Tell us where on the platform it happens -->
+<!-- e.g. desktop or mobile version, your browser, your OS -->
