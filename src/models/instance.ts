@@ -57,4 +57,9 @@ export interface IInstance {
 	 * 直近のリクエスト受信日時
 	 */
 	latestRequestReceivedAt?: Date;
+
+	/**
+	 * このインスタンスをブロックしているか
+	 */
+	isBlocked: boolean;
 }

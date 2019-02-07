@@ -1398,6 +1398,11 @@ admin/views/federation.vue:
     followingDesc: "フォローが多い順"
     followersAsc: "フォロワーが少ない順"
     followersDesc: "フォロワーが多い順"
+  state: "状態"
+  states:
+    all: "すべて"
+    blocked: "ブロック"
+  result-is-truncated: "上位{n}件を表示しています。"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
