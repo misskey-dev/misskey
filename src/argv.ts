@@ -14,7 +14,7 @@ program
 	.option('--color', 'This option is a dummy for some external program\'s (e.g. forever) issue.')
 	.parse(process.argv);
 
-if (process.env.MK_DISABLE_AP_QUEUE) program.disableApQueue = true;
+/*if (process.env.MK_DISABLE_AP_QUEUE)*/ program.disableApQueue = true;
 if (process.env.MK_DISABLE_QUEUE) program.disableQueue = true;
 if (process.env.MK_ONLY_QUEUE) program.onlyQueue = true;
 
