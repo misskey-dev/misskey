@@ -1254,10 +1254,10 @@ admin/views/federation.vue:
     caughtAtDesc: "登録日時が新しい順"
     notesAsc: "投稿が少ない順"
     notesDesc: "投稿が多い順"
-    usersAsc: "Least followed"
-    usersDesc: "More users"
+    usersAsc: "Less followers"
+    usersDesc: "More followers"
     followingAsc: "Least followed"
-    followingDesc: "Has the most followers"
+    followingDesc: "Has more followers"
     followersAsc: "Sort by having less followers"
     followersDesc: "Sort by the larger number of followers"
 desktop/views/pages/welcome.vue:
