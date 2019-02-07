@@ -1,9 +1,9 @@
 import * as Router from 'koa-router';
 import config from '../config';
 import fetchMeta from '../misc/fetch-meta';
-import User from '../models/user';
+import NodeinfoStats, { INodeinfoStats } from '../models/nodeinfo-stats';
 import { name as softwareName, version, repository } from '../../package.json';
-import Note from '../models/note';
+import { fetchStats } from '../daemons/nodeinfo-stats';
 
 const router = new Router();
 
@@ -18,24 +18,28 @@ export const links = [/* (awaiting release) {
 	href: config.url + nodeinfo2_0path
 }];
 
-const nodeinfo2 = async () => {
-	const [
-		{ name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker },
-		total,
-		activeHalfyear,
-		activeMonth,
-		localPosts,
-		localComments
-	] = await Promise.all([
-		fetchMeta(),
-		User.count({ host: null }),
-		User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
-		User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
-		Note.count({ '_user.host': null, replyId: null }),
-		Note.count({ '_user.host': null, replyId: { $ne: null } })
-	]);
+const keys = [
+	'name',
+	'description',
+	'maintainer',
+	'langs',
+	'broadcasts',
+	'disableRegistration',
+	'disableLocalTimeline',
+	'disableGlobalTimeline',
+	'enableRecaptcha',
+	'maxNoteTextLength',
+	'enableTwitterIntegration',
+	'enableGithubIntegration',
+	'enableDiscordIntegration',
+	'enableEmail',
+	'enableServiceWorker'
+];
 
-	return {
+const nodeinfo2 = () => Promise.all([
+		fetchMeta().then(x => Object.entries(x).filter(([k, v]) => keys.includes(k)).reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>)),
+		NodeinfoStats.count().then(x => x ? NodeinfoStats.findOne() : fetchStats())
+	]).then(([metadata, usage]: [any, INodeinfoStats]) => ({
 		software: {
 			name: softwareName,
 			version,
@@ -46,15 +50,10 @@ const nodeinfo2 = async () => {
 			inbound: [] as string[],
 			outbound: ['atom1.0', 'rss2.0']
 		},
-		openRegistrations: !disableRegistration,
-		usage: {
-			users: { total, activeHalfyear, activeMonth },
-			localPosts,
-			localComments
-		},
-		metadata: { name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker }
-	};
-};
+		openRegistrations: !metadata.disableRegistration,
+		usage,
+		metadata
+	}));
 
 router.get(nodeinfo2_1path, async ctx => {
 	const base = await nodeinfo2();

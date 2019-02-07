@@ -13,16 +13,17 @@ import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
 import Xev from 'xev';
 
-import Logger from './misc/logger';
-import serverStats from './daemons/server-stats';
-import notesStats from './daemons/notes-stats';
+import { program } from './argv';
 import loadConfig from './config/load';
 import { Config } from './config/types';
+import nodeinfoStats from './daemons/nodeinfo-stats';
+import notesStats from './daemons/notes-stats';
+import serverStats from './daemons/server-stats';
+import { checkMongoDB } from './misc/check-mongodb';
+import Logger from './misc/logger';
+import { showMachineInfo } from './misc/show-machine-info';
 import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
-import { program } from './argv';
-import { checkMongoDB } from './misc/check-mongodb';
-import { showMachineInfo } from './misc/show-machine-info';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
@@ -48,8 +49,9 @@ function main() {
 		}
 
 		if (program.daemons) {
-			serverStats();
+			nodeinfoStats();
 			notesStats();
+			serverStats();
 		}
 	}
 
