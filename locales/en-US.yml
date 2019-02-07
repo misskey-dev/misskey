@@ -1256,8 +1256,8 @@ admin/views/federation.vue:
     notesDesc: "投稿が多い順"
     usersAsc: "ユーザーが少ない順"
     usersDesc: "ユーザーが多い順"
-    followingAsc: "フォローが少ない順"
-    followingDesc: "フォローが多い順"
+    followingAsc: "Sort order ascendingly by most number of followers"
+    followingDesc: "Sort order descendingly by least number of followers"
     followersAsc: "フォロワーが少ない順"
     followersDesc: "フォロワーが多い順"
 desktop/views/pages/welcome.vue:
