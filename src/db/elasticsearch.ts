@@ -1,5 +1,8 @@
 import * as elasticsearch from 'elasticsearch';
 import config from '../config';
+import Logger from '../misc/logger';
+
+const esLogger = new Logger('es');
 
 const index = {
 	settings: {
@@ -50,9 +53,9 @@ if (client) {
 		requestTimeout: 30000
 	}, error => {
 		if (error) {
-			console.error('elasticsearch is down!');
+			esLogger.error('elasticsearch is down!');
 		} else {
-			console.log('elasticsearch is available!');
+			esLogger.succ('elasticsearch is available!');
 		}
 	});
 

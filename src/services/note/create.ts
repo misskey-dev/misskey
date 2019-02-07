@@ -1,19 +1,19 @@
 import es from '../../db/elasticsearch';
 import Note, { pack, INote, IChoice } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
-import { publishMainStream, publishHomeTimelineStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream, publishHashtagStream } from '../../stream';
+import { publishMainStream, publishHomeTimelineStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream, publishHashtagStream } from '../stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
-import packAp from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import DriveFile, { IDriveFile } from '../../models/drive-file';
-import notify from '../../notify';
+import notify from '../../services/create-notification';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
 import Mute from '../../models/mute';
-import parse from '../../mfm/parse';
+import { parse } from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
@@ -27,7 +27,7 @@ import activeUsersChart from '../../chart/active-users';
 
 import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
-import registerInstance from '../register-instance';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
@@ -38,10 +38,10 @@ type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 class NotificationManager {
 	private notifier: IUser;
 	private note: INote;
-	private queue: Array<{
+	private queue: {
 		target: ILocalUser['_id'];
 		reason: NotificationType;
-	}>;
+	}[];
 
 	constructor(notifier: IUser, note: INote) {
 		this.notifier = notifier;
@@ -116,6 +116,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	if (data.viaMobile == null) data.viaMobile = false;
 	if (data.localOnly == null) data.localOnly = false;
 
+	// サイレンス
+	if (user.isSilenced && data.visibility == 'public') {
+		data.visibility = 'home';
+	}
+
 	if (data.visibleUsers) {
 		data.visibleUsers = erase(null, data.visibleUsers);
 	}
@@ -133,6 +138,16 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
 	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
 		return rej('Renote target is not public or home');
+	}
+
+	// Renote対象がpublicではないならhomeにする
+	if (data.renote && data.renote.visibility != 'public' && data.visibility == 'public') {
+		data.visibility = 'home';
+	}
+
+	// 返信対象がpublicではないならhomeにする
+	if (data.reply && data.reply.visibility != 'public' && data.visibility == 'public') {
+		data.visibility = 'home';
 	}
 
 	// ローカルのみをRenoteしたらローカルのみにする
@@ -220,7 +235,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// Register host
 	if (isRemoteUser(user)) {
-		registerInstance(user.host).then(i => {
+		registerOrFetchInstanceDoc(user.host).then(i => {
 			Instance.update({ _id: i._id }, {
 				$inc: {
 					notesCount: 1
@@ -291,7 +306,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	createMentionedEvents(mentionedUsers, note, nm);
 
-	const noteActivity = await renderActivity(data, note);
+	const noteActivity = await renderNoteOrRenoteActivity(data, note);
 
 	if (isLocalUser(user)) {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
@@ -349,14 +364,14 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	index(note);
 });
 
-async function renderActivity(data: Option, note: INote) {
+async function renderNoteOrRenoteActivity(data: Option, note: INote) {
 	if (data.localOnly) return null;
 
 	const content = data.renote && (!data.text || !data.text.replace(/^<\/?!?nya>/ig, '')) && !data.poll && (!data.files || !data.files.length)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
-	return packAp(content);
+	return renderActivity(content);
 }
 
 function incRenoteCount(renote: INote) {
@@ -390,8 +405,10 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 			if (note.visibility == 'specified') {
 				for (const u of visibleUsers) {
-					publishHomeTimelineStream(u._id, detailPackedNote);
-					publishHybridTimelineStream(u._id, detailPackedNote);
+					if (!u._id.equals(user._id)) {
+						publishHomeTimelineStream(u._id, detailPackedNote);
+						publishHybridTimelineStream(u._id, detailPackedNote);
+					}
 				}
 			}
 		} else {
@@ -491,7 +508,6 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 			return null;
 		}
 
-		console.error(e);
 		throw 'something happened';
 	}
 }

@@ -1,7 +1,9 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
-import Mute from '../../../../models/mute';
+import { getFriends } from '../../common/get-friends';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -34,18 +36,47 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// ミュートしているユーザーを取得
-	const mutedUserIds = user ? (await Mute.find({
-		muterId: user._id
-	})).map(m => m.muteeId) : null;
+	const [followings, hideUserIds] = await Promise.all([
+		// フォローを取得
+		// Fetch following
+		user ? getFriends(user._id) : [],
+
+		// 隠すユーザーを取得
+		getHideUserIds(user)
+	]);
+
+	const visibleQuery = user == null ? [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}] : [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for followers/specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}, {
+		visibility: 'followers',
+		$or: [{
+			// フォロワーの投稿
+			userId: { $in: followings.map(f => f.id) },
+		}, {
+			// 自分の投稿へのリプライ
+			'_reply.userId': user._id,
+		}, {
+			// 自分へのメンションが含まれている
+			mentions: { $in: [ user._id ] }
+		}]
+	}];
 
 	const q = {
-		replyId: ps.noteId
+		replyId: ps.noteId,
+		$or: visibleQuery
 	} as any;
 
-	if (mutedUserIds && mutedUserIds.length > 0) {
+	if (hideUserIds && hideUserIds.length > 0) {
 		q['userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 	}
 

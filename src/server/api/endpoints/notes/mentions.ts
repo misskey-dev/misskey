@@ -1,10 +1,11 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import { getFriendIds } from '../../common/get-friends';
+import { getFriendIds, getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
 import read from '../../../../services/note/read';
-import Mute from '../../../../models/mute';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -47,8 +48,37 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		return rej('cannot set sinceId and untilId');
 	}
 
+	// フォローを取得
+	const followings = await getFriends(user._id);
+
+	const visibleQuery = [{
+		visibility: { $in: [ 'public', 'home' ] }
+	}, {
+		// myself (for followers/specified/private)
+		userId: user._id
+	}, {
+		// to me (for specified)
+		visibleUserIds: { $in: [ user._id ] }
+	}, {
+		visibility: 'followers',
+		$or: [{
+			// フォロワーの投稿
+			userId: { $in: followings.map(f => f.id) },
+		}, {
+			// 自分の投稿へのリプライ
+			'_reply.userId': user._id,
+		}, {
+			// 自分へのメンションが含まれている
+			mentions: { $in: [ user._id ] }
+		}]
+	}];
+
 	const query = {
-		deletedAt: null,
+		$and: [{
+			deletedAt: null,
+		}, {
+			$or: visibleQuery,
+		}],
 
 		$or: [{
 			mentions: user._id
@@ -57,22 +87,20 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}]
 	} as any;
 
-	// ミュートしているユーザーを取得
-	const mutedUserIds = (await Mute.find({
-		muterId: user._id
-	})).map(m => m.muteeId);
+	// 隠すユーザーを取得
+	const hideUserIds = await getHideUserIds(user);
 
-	if (mutedUserIds && mutedUserIds.length > 0) {
+	if (hideUserIds && hideUserIds.length > 0) {
 		query.userId = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_reply.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 
 		query['_renote.userId'] = {
-			$nin: mutedUserIds
+			$nin: hideUserIds
 		};
 	}
 

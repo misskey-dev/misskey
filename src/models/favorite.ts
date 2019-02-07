@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
-import db from '../db/mongodb';
+import * as deepcopy from 'deepcopy';
+import db, { dbLogger } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import { pack as packNote } from './note';
 
@@ -56,7 +56,7 @@ export const pack = (
 
 	// (データベースの不具合などで)投稿が見つからなかったら
 	if (_favorite.note == null) {
-		console.warn(`[DAMAGED DB] (missing) pkg: favorite -> note :: ${_favorite.id} (note ${_favorite.noteId})`);
+		dbLogger.warn(`[DAMAGED DB] (missing) pkg: favorite -> note :: ${_favorite.id} (note ${_favorite.noteId})`);
 		return resolve(null);
 	}
 

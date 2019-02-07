@@ -3,11 +3,14 @@
  */
 
 import * as moment from 'moment';
-const nestedProperty = require('nested-property');
+import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import { ICollection } from 'monk';
+import Logger from '../misc/logger';
+
+const logger = new Logger('chart');
 
 const utc = moment.utc;
 
@@ -18,7 +21,7 @@ export type Partial<T> = {
 };
 
 type ArrayValue<T> = {
-	[P in keyof T]: T[P] extends number ? Array<T[P]> : ArrayValue<T[P]>;
+	[P in keyof T]: T[P] extends number ? T[P][] : ArrayValue<T[P]>;
 };
 
 type Span = 'day' | 'hour';
@@ -55,17 +58,21 @@ type Log<T extends Obj> = {
 /**
  * 様々なチャートの管理を司るクラス
  */
-export default abstract class Chart<T> {
+export default abstract class Chart<T extends Obj> {
 	protected collection: ICollection<Log<T>>;
 	protected abstract async getTemplate(init: boolean, latest?: T, group?: any): Promise<T>;
+	private name: string;
 
 	constructor(name: string, grouped = false) {
+		this.name = name;
 		this.collection = db.get<Log<T>>(`chart.${name}`);
+
 		const keys = {
 			span: -1,
 			date: -1
 		} as { [key: string]: 1 | -1; };
 		if (grouped) keys.group = -1;
+
 		this.collection.createIndex(keys, { unique: true });
 	}
 
@@ -155,6 +162,8 @@ export default abstract class Chart<T> {
 
 			// 初期ログデータを作成
 			data = await this.getTemplate(true, null, group);
+
+			logger.info(`${this.name}: Initial commit created`);
 		}
 
 		try {
@@ -172,7 +181,7 @@ export default abstract class Chart<T> {
 			if (e.code === 11000) {
 				log = await this.getLatestLog(span, group);
 			} else {
-				console.error(e);
+				logger.error(e);
 				throw e;
 			}
 		}

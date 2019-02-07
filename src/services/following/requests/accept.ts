@@ -1,12 +1,15 @@
 import User, { IUser, isRemoteUser, ILocalUser, pack as packUser, isLocalUser } from '../../../models/user';
 import FollowRequest from '../../../models/follow-request';
-import pack from '../../../remote/activitypub/renderer';
+import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
 import Following from '../../../models/following';
-import { publishMainStream } from '../../../stream';
+import { publishMainStream } from '../../stream';
 import perUserFollowingChart from '../../../chart/per-user-following';
+import Logger from '../../../misc/logger';
+
+const logger = new Logger('following/requests/accept');
 
 export default async function(followee: IUser, follower: IUser) {
 	let incremented = 1;
@@ -29,7 +32,7 @@ export default async function(followee: IUser, follower: IUser) {
 		}
 	}).catch(e => {
 		if (e.code === 11000 && isRemoteUser(follower) && isLocalUser(followee)) {
-			console.log(`Accept => Insert duplicated ignore. ${follower._id} => ${followee._id}`);
+			logger.info(`Accept => Insert duplicated ignore. ${follower._id} => ${followee._id}`);
 			incremented = 0;
 		} else {
 			throw e;
@@ -42,7 +45,7 @@ export default async function(followee: IUser, follower: IUser) {
 			followerId: follower._id
 		});
 
-		const content = pack(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
+		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 

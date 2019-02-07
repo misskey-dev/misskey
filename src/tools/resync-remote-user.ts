@@ -1,8 +1,5 @@
 import parseAcct from '../misc/acct/parse';
 import resolveUser from '../remote/resolve-user';
-import * as debug from 'debug';
-
-debug.enable('*');
 
 async function main(acct: string): Promise<any> {
 	const { username, host } = parseAcct(acct);
@@ -24,9 +21,7 @@ if (!acct.match(/^\w+@\w/)) {
 console.log(`resync ${acct}`);
 
 main(acct).then(() => {
-	console.log('success');
-	process.exit(0);
+	console.log('Done');
 }).catch(e => {
 	console.warn(e);
-	process.exit(1);
 });

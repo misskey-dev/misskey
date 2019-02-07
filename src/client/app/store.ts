@@ -3,7 +3,6 @@ import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 
 import MiOS from './mios';
-import { hostname } from './config';
 import { erase } from '../../prelude/array';
 import getNoteSummary from '../../misc/get-note-summary';
 
@@ -56,6 +55,7 @@ const defaultDeviceSettings = {
 	themes: [],
 	enableSounds: true,
 	soundVolume: 0.5,
+	mediaVolume: 0.5,
 	lang: null,
 	preventUpdate: false,
 	debug: false,
@@ -69,7 +69,8 @@ const defaultDeviceSettings = {
 	mobileNotificationPosition: 'bottom',
 	deckTemporaryColumn: null,
 	deckDefault: false,
-	useOsDefaultEmojis: false
+	useOsDefaultEmojis: false,
+	disableShowingAnimatedImages: false
 };
 
 export default (os: MiOS) => new Vuex.Store({

@@ -68,7 +68,7 @@ import insertTextAtCursor from 'insert-text-at-cursor';
 import * as XDraggable from 'vuedraggable';
 import getFace from '../../../common/scripts/get-face';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
-import parse from '../../../../../mfm/parse';
+import { parse } from '../../../../../mfm/parse';
 import { host } from '../../../config';
 import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';

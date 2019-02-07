@@ -113,6 +113,7 @@ common:
   use-avatar-reversi-stones: "Utiliser l’avatar comme pion dans Reversi"
   verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
+  disable-showing-animated-images: "アニメーション画像を再生しない"
   suggest-recent-hashtags: "Suggérer les hashtags récemment utilisés dans le champs de saisie"
   always-show-nsfw: "Toujours afficher les contenus sensibles"
   always-mark-nsfw: "Toujours marquer les notes ayant des attachements comme sensibles"
@@ -129,7 +130,7 @@ common:
   show-password: "Afficher le mot de passe"
   do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
   user-suspended: "Cet·te utilisateur·trice a été suspendu·e"
-  is-remote-user: "Ces informations appartiennent à un utilisateur distant."
+  is-remote-user: "このユーザー情報は不正確な可能性があります。"
   is-remote-post: "Ceci est une publication distante."
   view-on-remote: " Consulter le profil complet"
   renoted-by: "Renoté par {user}"
@@ -333,7 +334,7 @@ common/views/components/nav.vue:
   stats: "Statistiques"
   status: "Statut"
   wiki: "Wiki"
-  donors: "Donateurs"
+  donors: "Donateur·rice·s"
   repository: "Dépôt"
   develop: "Développeurs"
   feedback: "Suggestions"
@@ -344,6 +345,8 @@ common/views/components/note-menu.vue:
   copy-link: "Copier le lien"
   favorite: "Mettre cette note en favoris"
   unfavorite: "Retirer des favoris"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "Épingler sur votre profil"
   unpin: "Désépingler"
   delete: "Supprimer"
@@ -360,10 +363,14 @@ common/views/components/user-menu.vue:
   report-abuse: "Signaler un abus"
   report-abuse-detail: "Détail du signalement"
   report-abuse-reported: "Transmit à l’administrateur. Merci de votre collaboration."
+  silence: "サイレンス"
+  unsilence: "サイレンス解除"
+  suspend: "Suspendre"
+  unsuspend: "凍結解除"
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
-  total-users: "{} utilisateurs ont voté"
+  total-users: "{} utilisateur·rice·s ont voté"
   vote: "Vote"
   show-result: "Montrer les résultats"
   voted: "Voté"
@@ -386,7 +393,7 @@ common/views/components/emoji-picker.vue:
   symbols: "Symboles"
   flags: "Drapeaux"
 common/views/components/signin.vue:
-  username: "Nom d'utilisateur"
+  username: "Nom d'utilisateur·rice"
   password: "Mot de passe"
   token: "Jeton"
   signing-in: "Connexion…"
@@ -399,7 +406,7 @@ common/views/components/signin.vue:
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
   invitation-info: "Si vous n’avez pas de code d’invitation, contactez un <a href=\"{}\">administrateur</a>."
-  username: "Nom d'utilisateur"
+  username: "Nom d'utilisateur·rice"
   checking: "Vérification…"
   available: "Disponible"
   unavailable: "Non disponible"
@@ -432,7 +439,7 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-unread-notes: "Marquer toutes les notes comme lues"
   mark-as-read-all-talk-messages: "Marquer toutes les conversations comme lues"
   auto-watch: "投稿の自動ウォッチ"
-  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
+  auto-watch-desc: "Recevoir automatiquement des notifications à propos des publications auxquelles vous avez réagi ou répondu"
 common/views/components/integration-settings.vue:
   title: "Intégrations"
   connect: "Connecter"
@@ -458,8 +465,8 @@ common/views/components/visibility-chooser.vue:
   public: "Public"
   home: "Accueil"
   home-desc: "Publier sur le fil d’Accueil uniquement"
-  followers: "Abonnés"
-  followers-desc: "Publier à vos abonnés uniquement"
+  followers: "Abonné·e·s"
+  followers-desc: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
   specified-desc: "Publier uniquement aux utilisateurs mentionnés"
   local-public: "Local (Public)"
@@ -482,6 +489,7 @@ common/views/components/profile-editor.vue:
   account: "Compte"
   location: "Lieu"
   description: "À propos de moi"
+  you-can-include-hashtags: "Vous pouvez également inclure un hashtag sur votre description de profile."
   language: "Langue"
   birthday: "Date de naissance"
   avatar: "Avatar"
@@ -501,8 +509,15 @@ common/views/components/profile-editor.vue:
   email-address: "Adresse de courrier électronique"
   email-verified: "L’adresse du courrier électronique a été vérifiée."
   email-not-verified: "Adresse de courriel n’est pas confirmée. Veuillez vérifier votre boite de réception."
+  export: "エクスポート"
+  export-targets:
+    all-notes: "すべての投稿データ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
+  export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 common/views/components/user-list-editor.vue:
-  users: "Utilisateur"
+  users: "Utilisateur·rice"
   rename: "Renommer la liste"
   delete: "Supprimer la liste"
   remove-user: "Retirer de cette liste"
@@ -658,23 +673,20 @@ desktop/views/components/drive.vue:
     create-folder: "Créer un dossier"
     upload: "Téléverser un fichier"
     url-upload: "Téléverser à partir d’une URL"
-desktop/views/components/media-image.vue:
-  sensitive: "Le contenu est NSFW"
-  click-to-show: "Cliquer pour afficher"
 desktop/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 desktop/views/components/followers-window.vue:
-  followers: "{} abonnés"
+  followers: "{} abonné·e·s"
 desktop/views/components/followers.vue:
-  empty: "Il semble que vous n'avez pas encore d'abonnés."
+  empty: "Il semble que vous n’avez pas encore d’abonné·e·s."
 desktop/views/components/following-window.vue:
   following: "Suit {}"
 desktop/views/components/following.vue:
   empty: "Vous ne suivez aucun compte."
 desktop/views/components/friends-maker.vue:
-  title: "Utilisateurs recommandés :"
-  empty: "Impossible de trouver des utilisateurs à recommander."
+  title: "Utilisateur·rice·s recommandé·e·s :"
+  empty: "Impossible de trouver des utilisateur·trice·s à recommander."
   fetching: "Chargement"
   refresh: "Plus"
   close: "Fermer"
@@ -788,6 +800,8 @@ desktop/views/components/settings.vue:
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
   deck-nav: "Deck sans tansitions"
   deck-nav-desc: "Vous obtenez une colonne temporaire sans transitions dans la page pendant la navigation, lors de l’utilisation du Deck."
+  keep-cw: "Maintenir l'avertissement de contenu"
+  keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
   deck-default: "Utiliser le Deck comme IU par défaut"
   display: "Affichage et design"
   customize: "Personnaliser l'Accueil"
@@ -873,6 +887,9 @@ desktop/views/components/settings.2fa.vue:
   success: "Sauvegarde des paramètres avec succès !"
   failed: "L’opération a échoué. Veuillez vous assurer que le jeton a été saisi correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
+common/views/components/media-image.vue:
+  sensitive: "Contenu sensible"
+  click-to-show: "Cliquer pour afficher"
 common/views/components/api-settings.vue:
   intro: "Pour accéder à l'API, définissez ce jeton comme la clé de « i » dans les paramètres de requête."
   caution: "Merci de ne pas introduire ce jeton dans aucune application ou le divulguer à quiconque. Ceci risque de compromettre votre compte."
@@ -970,7 +987,7 @@ desktop/views/components/user-lists-window.vue:
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
-  followers: "Abonnés"
+  followers: "Abonné·e·s"
 desktop/views/components/users-list.vue:
   all: "Tout"
   iknow: "Vous connaissez"
@@ -990,6 +1007,7 @@ admin/views/index.vue:
   announcements: "Annonces"
   hashtags: "Hashtags"
   abuse: "Abus"
+  queue: "ジョブキュー"
   back-to-misskey: "Retour vers Misskey"
 admin/views/dashboard.vue:
   dashboard: "Tableau de bord"
@@ -999,6 +1017,9 @@ admin/views/dashboard.vue:
   instances: "Instances"
   this-instance: "Cette instance"
   federated: "Fédérées"
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "Abus"
   target: "Cible"
@@ -1132,15 +1153,24 @@ admin/views/users.vue:
   user-not-found: "Utilisateur non trouvé"
   lookup: "Recherche"
   reset-password: "Réinitialiser mot de passe"
+  reset-password-confirm: "Souhaitez-vous réinitialiser votre mot de passe ?"
   password-updated: "Le mot de passe est « {password} »"
   suspend: "Suspendre"
+  suspend-confirm: "Désirez-vous suspendre ce compte ?"
   suspended: "Suspendu avec succès."
   unsuspend: "Suspension levée"
+  unsuspend-confirm: "Souhaiteriez-vous ne plus suspendre ce compte ?"
   unsuspended: "La suspension de l’utilisateur a été levée avec succès"
+  make-silence: "サイレンス"
+  unmake-silence: "サイレンスの解除"
   verify: "Vérification du compte"
+  verify-confirm: "Souhaiteriez-vous rendre votre compte comme étant un compte vérifié ?"
   verified: "Le compte a été vérifié"
   unverify: "Enlever la vérification du compte"
+  unverify-confirm: "公式アカウントを解除しますか？"
   unverified: "Ce compte n'est plus vérifié"
+  update-remote-user: "Mettre à jour les informations de l’utilisateur·rice distant·e"
+  remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   users:
     title: "Utilisateurs"
     sort:
@@ -1235,11 +1265,11 @@ desktop/views/pages/share.vue:
 desktop/views/pages/tag.vue:
   no-posts-found: "Aucune publication contenant « {q} » n’a été trouvée."
 desktop/views/pages/user-list.users.vue:
-  users: "Utilisateurs"
+  users: "Utilisateur·rice·s"
   add-user: "Ajouter un utilisateur"
   username: "Nom d'utilisateur"
 desktop/views/pages/user/user.followers-you-know.vue:
-  title: "Abonnés que vous connaissez"
+  title: "Abonné·e·s que vous connaissez"
   loading: "Chargement en cours"
   no-users: "Aucun abonné connu"
 desktop/views/pages/user/user.friends.vue:
@@ -1256,7 +1286,7 @@ desktop/views/pages/user/user.profile.vue:
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
-  followers: "Abonnés"
+  followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
   years-old: "{age} ans"
   year: "/"
@@ -1288,7 +1318,7 @@ desktop/views/widgets/trends.vue:
   refresh: "Afficher d'autres"
   nothing: "Rien"
 desktop/views/widgets/users.vue:
-  title: "Utilisateurs"
+  title: "Utilisateurs·rices"
   refresh: "Afficher d'autres"
   no-one: "Personne"
 mobile/views/components/drive.vue:
@@ -1320,9 +1350,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "CW"
   mark-as-sensitive: "Marquer comme sensible"
   unmark-as-sensitive: "Ne pas marquer comme sensible"
-mobile/views/components/media-image.vue:
-  sensitive: "Le contenu est NSFW"
-  click-to-show: "Cliquer pour afficher"
 mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
@@ -1334,7 +1361,7 @@ common/views/components/follow-button.vue:
   follow-request: "Demande d’abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous à"
-  empty: "Impossible de trouver des utilisateurs à recommander."
+  empty: "Impossible de trouver des utilisateurs·trices à recommander."
   fetching: "Chargement"
   refresh: "Voir plus"
   close: "Fermer"
@@ -1448,7 +1475,7 @@ mobile/views/pages/search.vue:
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
 mobile/views/pages/settings.vue:
-  signed-in-as: "Connecté en tant que {}"
+  signed-in-as: "Connecté·e en tant que {}"
   design: "Affichage et design"
   dark-mode: "Mode nuit"
   i-am-under-limited-internet: "J'ai un accès Internet limité"
@@ -1467,6 +1494,7 @@ mobile/views/pages/settings.vue:
   notification-position-top: "en haut"
   behavior: "Comportement"
   fetch-on-scroll: "Chargement lors du défilement"
+  keep-cw: "Garder l'avertissement de contenu"
   note-visibility: "Visibilité de la publication"
   default-note-visibility: "Visibilité par défaut"
   remember-note-visibility: "Se souvenir du mode de visibilité de la publication"
@@ -1492,7 +1520,7 @@ mobile/views/pages/settings.vue:
 mobile/views/pages/user.vue:
   follows-you: "Vous suit"
   following: "Abonnements"
-  followers: "Abonnés"
+  followers: "Abonné·e·s"
   notes: "Notes"
   overview: "Aperçu"
   timeline: "Fil d’actualité"
@@ -1505,10 +1533,10 @@ mobile/views/pages/user/home.vue:
   keywords: "Mot clés"
   domains: "Domaines"
   frequently-replied-users: "Utilisateurs mentionnés souvent"
-  followers-you-know: "Abonnés que vous connaissez"
+  followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
 mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Aucun utilisateur connu"
+  no-users: "Aucun utilisateur·rice connu·e"
 mobile/views/pages/user/home.friends.vue:
   no-users: "Aucun utilisateur connu"
 mobile/views/pages/user/home.notes.vue:

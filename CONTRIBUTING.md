@@ -38,3 +38,21 @@ Stands for _**M**iss**k**ey_.
 
 ### SW
 Stands for _**S**ervice**W**orker_.
+
+### Nyaize
+な を にゃ にすること
+
+#### Denyaize
+Nyaizeを解除すること
+
+## Code style
+### Don't use `export default`
+Bad:
+``` ts
+export default function(foo: string): string {
+```
+
+Good:
+``` ts
+export function something(foo: string): string {
+```

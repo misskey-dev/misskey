@@ -1,8 +1,9 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import User, { pack as packUser, isRemoteUser, fetchProxyAccount } from '../../../../../models/user';
-import { publishUserListStream } from '../../../../../stream';
-import ap from '../../../../../remote/activitypub/renderer';
+import { publishUserListStream } from '../../../../../services/stream';
+import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
 import define from '../../../define';
@@ -72,7 +73,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 	if (isRemoteUser(user)) {
 		const proxy = await fetchProxyAccount();
-		const content = ap(renderFollow(proxy, user));
+		const content = renderActivity(renderFollow(proxy, user));
 		deliver(proxy, content, user.inbox);
 	}
 }));

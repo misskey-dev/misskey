@@ -20,10 +20,11 @@
 		<ul>
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</li>
 			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>{{ $t('instance') }}</li>
+			<li @click="nav('queue')" :class="{ active: page == 'queue' }"><fa :icon="faTasks" fixed-width/>{{ $t('queue') }}</li>
 			<li @click="nav('moderators')" :class="{ active: page == 'moderators' }"><fa :icon="faHeadset" fixed-width/>{{ $t('moderators') }}</li>
 			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
 			<li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</li>
-			<!-- <li @click="nav('federation')" :class="{ active: page == 'federation' }"><fa :icon="faShareAlt" fixed-width/>{{ $t('federation') }}</li> -->
+			<li @click="nav('federation')" :class="{ active: page == 'federation' }"><fa :icon="faGlobe" fixed-width/>{{ $t('federation') }}</li>
 			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
 			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
 			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('hashtags') }}</li>
@@ -40,12 +41,14 @@
 		<div class="page">
 			<div v-if="page == 'dashboard'"><x-dashboard/></div>
 			<div v-if="page == 'instance'"><x-instance/></div>
+			<div v-if="page == 'queue'"><x-queue/></div>
 			<div v-if="page == 'moderators'"><x-moderators/></div>
 			<div v-if="page == 'users'"><x-users/></div>
 			<div v-if="page == 'emoji'"><x-emoji/></div>
 			<div v-if="page == 'announcements'"><x-announcements/></div>
 			<div v-if="page == 'hashtags'"><x-hashtags/></div>
 			<div v-if="page == 'drive'"><x-drive/></div>
+			<div v-if="page == 'federation'"><x-federation/></div>
 			<div v-if="page == 'abuse'"><x-abuse/></div>
 		</div>
 	</main>
@@ -58,6 +61,7 @@ import i18n from '../../i18n';
 import { version } from '../../config';
 import XDashboard from "./dashboard.vue";
 import XInstance from "./instance.vue";
+import XQueue from "./queue.vue";
 import XModerators from "./moderators.vue";
 import XEmoji from "./emoji.vue";
 import XAnnouncements from "./announcements.vue";
@@ -65,7 +69,9 @@ import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
 import XDrive from "./drive.vue";
 import XAbuse from "./abuse.vue";
-import { faHeadset, faArrowLeft, faShareAlt, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import XFederation from "./federation.vue";
+
+import { faHeadset, faArrowLeft, faGlobe, faExclamationCircle, faTasks } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 // Detect the user agent
@@ -77,6 +83,7 @@ export default Vue.extend({
 	components: {
 		XDashboard,
 		XInstance,
+		XQueue,
 		XModerators,
 		XEmoji,
 		XAnnouncements,
@@ -84,6 +91,7 @@ export default Vue.extend({
 		XUsers,
 		XDrive,
 		XAbuse,
+		XFederation,
 	},
 	provide: {
 		isMobile
@@ -97,8 +105,9 @@ export default Vue.extend({
 			faGrin,
 			faArrowLeft,
 			faHeadset,
-			faShareAlt,
-			faExclamationCircle
+			faGlobe,
+			faExclamationCircle,
+			faTasks
 		};
 	},
 	methods: {

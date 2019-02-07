@@ -4,7 +4,7 @@ import * as uuid from 'uuid';
 import autwh from 'autwh';
 import redis from '../../../db/redis';
 import User, { pack, ILocalUser } from '../../../models/user';
-import { publishMainStream } from '../../../stream';
+import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
@@ -185,4 +185,4 @@ router.get('/tw/cb', async ctx => {
 	}
 });
 
-module.exports = router;
+export default router;

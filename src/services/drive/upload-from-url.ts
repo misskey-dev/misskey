@@ -1,7 +1,5 @@
 import * as fs from 'fs';
 import * as URL from 'url';
-
-import * as debug from 'debug';
 import * as tmp from 'tmp';
 import * as request from 'request';
 
@@ -10,8 +8,10 @@ import create from './add-file';
 import config from '../../config';
 import { IUser } from '../../models/user';
 import * as mongodb from 'mongodb';
+import { driveLogger } from './logger';
+import chalk from 'chalk';
 
-const log = debug('misskey:drive:upload-from-url');
+const logger = driveLogger.createSubLogger('downloader');
 
 export default async (
 	url: string,
@@ -22,14 +22,10 @@ export default async (
 	force = false,
 	link = false
 ): Promise<IDriveFile> => {
-	log(`REQUESTED: ${url}`);
-
 	let name = URL.parse(url).pathname.split('/').pop();
 	if (!validateFileName(name)) {
 		name = null;
 	}
-
-	log(`name: ${name}`);
 
 	// Create temp file
 	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
@@ -41,13 +37,17 @@ export default async (
 
 	// write content at URL to temp file
 	await new Promise((res, rej) => {
+		logger.info(`Downloading ${chalk.cyan(url)} ...`);
+
 		const writable = fs.createWriteStream(path);
 
 		writable.on('finish', () => {
+			logger.succ(`Download succeeded: ${chalk.cyan(url)}`);
 			res();
 		});
 
 		writable.on('error', error => {
+			logger.error(error);
 			rej(error);
 		});
 
@@ -66,12 +66,14 @@ export default async (
 
 		req.on('response', response => {
 			if (response.statusCode !== 200) {
+				logger.error(`Got ${response.statusCode} (${url})`);
 				writable.close();
 				rej(response.statusCode);
 			}
 		});
 
 		req.on('error', error => {
+			logger.error(error);
 			writable.close();
 			rej(error);
 		});
@@ -82,10 +84,10 @@ export default async (
 
 	try {
 		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
-		log(`got: ${driveFile._id}`);
+		logger.succ(`Got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;
-		log(`failed: ${e}`);
+		logger.error(`Failed: ${e}`);
 	}
 
 	// clean-up

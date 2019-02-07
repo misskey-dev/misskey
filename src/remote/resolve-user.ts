@@ -4,15 +4,16 @@ import webFinger from './webfinger';
 import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';
 import { URL } from 'url';
-import * as debug from 'debug';
+import { remoteLogger } from './logger';
+import chalk from 'chalk';
 
-const log = debug('misskey:remote:resolve-user');
+const logger = remoteLogger.createSubLogger('resolve-user');
 
 export default async (username: string, _host: string, option?: any, resync?: boolean): Promise<IUser> => {
 	const usernameLower = username.toLowerCase();
 
 	if (_host == null) {
-		log(`return local user: ${usernameLower}`);
+		logger.info(`return local user: ${usernameLower}`);
 		return await User.findOne({ usernameLower, host: null });
 	}
 
@@ -23,7 +24,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 	const host = toUnicode(hostAscii);
 
 	if (configHost == host) {
-		log(`return local user: ${usernameLower}`);
+		logger.info(`return local user: ${usernameLower}`);
 		return await User.findOne({ usernameLower, host: null });
 	}
 
@@ -34,18 +35,18 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 	if (user === null) {
 		const self = await resolveSelf(acctLower);
 
-		log(`return new remote user: ${acctLower}`);
+		logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
 		return await createPerson(self.href);
 	}
 
 	if (resync) {
-		log(`try resync: ${acctLower}`);
+		logger.info(`try resync: ${acctLower}`);
 		const self = await resolveSelf(acctLower);
 
 		if ((user as IRemoteUser).uri !== self.href) {
 			// if uri mismatch, Fix (user@host <=> AP's Person id(IRemoteUser.uri)) mapping.
-			log(`uri missmatch: ${acctLower}`);
-			console.log(`recovery missmatch uri for (username=${username}, host=${host}) from ${(user as IRemoteUser).uri} to ${self.href}`);
+			logger.info(`uri missmatch: ${acctLower}`);
+			logger.info(`recovery missmatch uri for (username=${username}, host=${host}) from ${(user as IRemoteUser).uri} to ${self.href}`);
 
 			// validate uri
 			const uri = new URL(self.href);
@@ -56,30 +57,34 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 			await User.update({
 				usernameLower,
 				host: host
-			 }, {
+			}, {
 				$set: {
 					uri: self.href
 				}
 			});
 		} else {
-			log(`uri is fine: ${acctLower}`);
+			logger.info(`uri is fine: ${acctLower}`);
 		}
 
 		await updatePerson(self.href);
 
-		log(`return resynced remote user: ${acctLower}`);
+		logger.info(`return resynced remote user: ${acctLower}`);
 		return await User.findOne({ uri: self.href });
-}
+	}
 
-	log(`return existing remote user: ${acctLower}`);
+	logger.info(`return existing remote user: ${acctLower}`);
 	return user;
 };
 
 async function resolveSelf(acctLower: string) {
-	log(`WebFinger for ${acctLower}`);
-	const finger = await webFinger(acctLower);
+	logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
+	const finger = await webFinger(acctLower).catch(e => {
+		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${e.message} (${e.status})`);
+		throw e;
+	});
 	const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
 	if (!self) {
+		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
 		throw new Error('self link not found');
 	}
 	return self;

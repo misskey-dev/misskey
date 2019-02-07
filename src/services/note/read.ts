@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
 import isObjectId from '../../misc/is-objectid';
-import { publishMainStream } from '../../stream';
+import { publishMainStream } from '../stream';
 import User from '../../models/user';
 import NoteUnread from '../../models/note-unread';
 

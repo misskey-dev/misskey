@@ -9,6 +9,7 @@
 import Vue from 'vue';
 // スクリプトサイズがデカい
 //import { lib } from 'emojilib';
+import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 
 export default Vue.extend({
 	props: {
@@ -54,7 +55,9 @@ export default Vue.extend({
 			const customEmoji = this.customEmojis.find(x => x.name == this.name);
 			if (customEmoji) {
 				this.customEmoji = customEmoji;
-				this.url = customEmoji.url;
+				this.url = this.$store.state.device.disableShowingAnimatedImages
+					? getStaticImageUrl(customEmoji.url)
+					: customEmoji.url;
 			} else {
 				//const emoji = lib[this.name];
 				//if (emoji) {

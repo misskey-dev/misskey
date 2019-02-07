@@ -1,7 +1,9 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
 import User from '../../../../models/user';
 import AbuseUserReport from '../../../../models/abuse-user-report';
+import { publishAdminStream } from '../../../../services/stream';
 
 export const meta = {
 	desc: {
@@ -47,12 +49,31 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		return rej('cannot report admin');
 	}
 
-	await AbuseUserReport.insert({
+	const report = await AbuseUserReport.insert({
 		createdAt: new Date(),
 		userId: user._id,
 		reporterId: me._id,
 		comment: ps.comment
 	});
+
+	// Publish event to moderators
+	setTimeout(async () => {
+		const moderators = await User.find({
+			$or: [{
+				isAdmin: true
+			}, {
+				isModerator: true
+			}]
+		});
+		for (const moderator of moderators) {
+			publishAdminStream(moderator._id, 'newAbuseUserReport', {
+				id: report._id,
+				userId: report.userId,
+				reporterId: report.reporterId,
+				comment: report.comment
+			});
+		}
+	}, 1);
 
 	res();
 }));

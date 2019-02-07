@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import createReaction from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
 import define from '../../../define';

@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import { pack as packUser, IUser } from './user';
 
 const Mute = db.get<IMute>('mute');

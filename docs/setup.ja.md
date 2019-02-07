@@ -32,18 +32,19 @@ adduser --disabled-password --disabled-login misskey
 	* 具体的には、Redisをインストールしないと、次の事が出来なくなります:
 		* Misskeyプロセスを複数起動しての負荷分散
 		* レートリミット
+		* ジョブキュー
 		* Twitter連携
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
+* [FFmpeg](https://www.ffmpeg.org/)
 
 *3.* MongoDBの設定
 ----------------------------------------------------------------
 ルートで:
 1. `mongo` mongoシェルを起動
 2. `use misskey` misskeyデータベースを使用
-3. `db.users.save( {dummy:"dummy"} )` ダミーデータを書き込みDBを初期化
-4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` misskeyユーザーを作成
-5. `exit` mongoシェルを終了
+3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` misskeyユーザーを作成
+4. `exit` mongoシェルを終了
 
 *4.* Misskeyのインストール
 ----------------------------------------------------------------
@@ -60,6 +61,11 @@ adduser --disabled-password --disabled-login misskey
 
 *6.* Misskeyのビルド
 ----------------------------------------------------------------
+
+ビルドする前に、`NODE_ENV`を`production`にする必要があります。例:
+* Linux: `export NODE_ENV=production`
+* Windows (PowerShell): `$env:NODE_ENV="production"`
+* Windows (CMD): `set NODE_ENV=production`
 
 次のコマンドでMisskeyをビルドしてください:
 

@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parse from '../../../../mfm/parse';
+import { parse } from '../../../../mfm/parse';
 import * as JSON5 from 'json5';
 
 export default Vue.extend({

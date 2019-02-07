@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import define from '../../../define';
 import { packMany } from '../../../../../models/note';

@@ -4,11 +4,12 @@ import * as mongodb from 'mongodb';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
+import { serverLogger } from '..';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
 const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): void => {
-	console.error(e);
+	serverLogger.error(e);
 	ctx.status = 500;
 };
 
@@ -64,7 +65,12 @@ export default async function(ctx: Koa.BaseContext) {
 			const bucket = await getDriveFileThumbnailBucket();
 			ctx.body = bucket.openDownloadStream(thumb._id);
 		} else {
-			await sendRaw();
+			if (file.contentType.startsWith('image/')) {
+				await sendRaw();
+			} else {
+				ctx.status = 404;
+				await send(ctx as any, '/dummy.png', { root: assets });
+			}
 		}
 	} else if ('web' in ctx.query) {
 		const web = await DriveFileWebpublic.findOne({

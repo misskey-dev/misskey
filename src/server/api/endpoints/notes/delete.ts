@@ -1,9 +1,10 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import deleteNote from '../../../../services/note/delete';
 import User from '../../../../models/user';
 import define from '../../define';
-const ms = require('ms');
+import * as ms from 'ms';
 
 export const meta = {
 	stability: 'stable',

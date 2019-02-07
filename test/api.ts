@@ -13,7 +13,6 @@ import * as fs from 'fs';
 import * as assert from 'chai';
 import { async, _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
 
-assert.use(require('chai-http'));
 const expect = assert.expect;
 
 //#region process
@@ -1215,6 +1214,56 @@ describe('API', () => {
 			}, alice);
 
 			expect(res).have.status(400);
+		}));
+	});
+
+	describe('notes/replies', () => {
+		it('自分に閲覧権限のない投稿は含まれない', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+			const carol = await signup({ username: 'carol' });
+
+			const alicePost = await post(alice, {
+				text: 'foo'
+			});
+
+			await post(bob, {
+				replyId: alicePost.id,
+				text: 'bar',
+				visibility: 'specified',
+				visibleUserIds: [alice.id]
+			});
+
+			const res = await request('/notes/replies', {
+				noteId: alicePost.id
+			}, carol);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('array');
+			expect(res.body).length(0);
+		}));
+	});
+
+	describe('notes/timeline', () => {
+		it('フォロワー限定投稿が含まれる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			await request('/following/create', {
+				userId: alice.id
+			}, bob);
+
+			const alicePost = await post(alice, {
+				text: 'foo',
+				visibility: 'followers'
+			});
+
+			const res = await request('/notes/timeline', {}, bob);
+
+			expect(res).have.status(200);
+			expect(res.body).be.a('array');
+			expect(res.body).length(1);
+			expect(res.body[0].id).equals(alicePost.id);
 		}));
 	});
 });

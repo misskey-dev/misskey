@@ -10,9 +10,10 @@
 
 import * as assert from 'assert';
 
-import analyze from '../src/mfm/parse';
-import toHtml from '../src/mfm/html';
-import { createTree as tree, createLeaf as leaf, MfmTree, removeOrphanedBrackets } from '../src/mfm/parser';
+import { parse, parsePlain } from '../src/mfm/parse';
+import { toHtml } from '../src/mfm/toHtml';
+import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/types';
+import { removeOrphanedBrackets } from '../src/mfm/language';
 
 function text(text: string): MfmTree {
 	return leaf('text', { text });
@@ -150,11 +151,21 @@ describe('removeOrphanedBrackets', () => {
 
 describe('MFM', () => {
 	it('can be analyzed', () => {
-		const tokens = analyze('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
+		const tokens = parse('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
 		assert.deepStrictEqual(tokens, [
-			leaf('mention', { acct: '@himawari', canonical: '@himawari', username: 'himawari', host: null }),
+			leaf('mention', {
+				acct: '@himawari',
+				canonical: '@himawari',
+				username: 'himawari',
+				host: null
+			}),
 			text(' '),
-			leaf('mention', { acct: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
+			leaf('mention', {
+				acct: '@hima_sub@namori.net',
+				canonical: '@hima_sub@namori.net',
+				username: 'hima_sub',
+				host: 'namori.net'
+			}),
 			text(' お腹ペコい '),
 			leaf('emoji', { name: 'cat' }),
 			text(' '),
@@ -165,7 +176,7 @@ describe('MFM', () => {
 	describe('elements', () => {
 		describe('bold', () => {
 			it('simple', () => {
-				const tokens = analyze('**foo**');
+				const tokens = parse('**foo**');
 				assert.deepStrictEqual(tokens, [
 					tree('bold', [
 						text('foo')
@@ -174,7 +185,7 @@ describe('MFM', () => {
 			});
 
 			it('with other texts', () => {
-				const tokens = analyze('bar**foo**bar');
+				const tokens = parse('bar**foo**bar');
 				assert.deepStrictEqual(tokens, [
 					text('bar'),
 					tree('bold', [
@@ -185,7 +196,7 @@ describe('MFM', () => {
 			});
 
 			it('with underscores', () => {
-				const tokens = analyze('__foo__');
+				const tokens = parse('__foo__');
 				assert.deepStrictEqual(tokens, [
 					tree('bold', [
 						text('foo')
@@ -194,21 +205,21 @@ describe('MFM', () => {
 			});
 
 			it('with underscores (ensure it allows alphabet only)', () => {
-				const tokens = analyze('(=^・__________・^=)');
+				const tokens = parse('(=^・__________・^=)');
 				assert.deepStrictEqual(tokens, [
 					text('(=^・__________・^=)')
 				]);
 			});
 
 			it('mixed syntax', () => {
-				const tokens = analyze('**foo__');
+				const tokens = parse('**foo__');
 				assert.deepStrictEqual(tokens, [
 						text('**foo__'),
 				]);
 			});
 
 			it('mixed syntax', () => {
-				const tokens = analyze('__foo**');
+				const tokens = parse('__foo**');
 				assert.deepStrictEqual(tokens, [
 						text('__foo**'),
 				]);
@@ -216,7 +227,7 @@ describe('MFM', () => {
 		});
 
 		it('big', () => {
-			const tokens = analyze('***Strawberry*** Pasta');
+			const tokens = parse('***Strawberry*** Pasta');
 			assert.deepStrictEqual(tokens, [
 				tree('big', [
 					text('Strawberry')
@@ -226,7 +237,7 @@ describe('MFM', () => {
 		});
 
 		it('small', () => {
-			const tokens = analyze('<small>smaller</small>');
+			const tokens = parse('<small>smaller</small>');
 			assert.deepStrictEqual(tokens, [
 				tree('small', [
 					text('smaller')
@@ -234,9 +245,94 @@ describe('MFM', () => {
 			]);
 		});
 
+		it('flip', () => {
+			const tokens = parse('<flip>foo</flip>');
+			assert.deepStrictEqual(tokens, [
+				tree('flip', [
+					text('foo')
+				], {}),
+			]);
+		});
+
+		describe('spin', () => {
+			it('text', () => {
+				const tokens = parse('<spin>foo</spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						text('foo')
+					], {
+						attr: null
+					}),
+				]);
+			});
+
+			it('emoji', () => {
+				const tokens = parse('<spin>:foo:</spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						leaf('emoji', { name: 'foo' })
+					], {
+						attr: null
+					}),
+				]);
+			});
+
+			it('with attr', () => {
+				const tokens = parse('<spin left>:foo:</spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						leaf('emoji', { name: 'foo' })
+					], {
+						attr: 'left'
+					}),
+				]);
+			});
+/*
+			it('multi', () => {
+				const tokens = parse('<spin>:foo:</spin><spin>:foo:</spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						leaf('emoji', { name: 'foo' })
+					], {
+						attr: null
+					}),
+					tree('spin', [
+						leaf('emoji', { name: 'foo' })
+					], {
+						attr: null
+					}),
+				]);
+			});
+
+			it('nested', () => {
+				const tokens = parse('<spin><spin>:foo:</spin></spin>');
+				assert.deepStrictEqual(tokens, [
+					tree('spin', [
+						tree('spin', [
+							leaf('emoji', { name: 'foo' })
+						], {
+							attr: null
+						}),
+					], {
+						attr: null
+					}),
+				]);
+			});
+*/
+		});
+
+		it('jump', () => {
+			const tokens = parse('<jump>:foo:</jump>');
+			assert.deepStrictEqual(tokens, [
+				tree('jump', [
+					leaf('emoji', { name: 'foo' })
+				], {}),
+			]);
+		});
+
 		describe('motion', () => {
 			it('by triple brackets', () => {
-				const tokens = analyze('(((foo)))');
+				const tokens = parse('(((foo)))');
 				assert.deepStrictEqual(tokens, [
 					tree('motion', [
 						text('foo')
@@ -245,7 +341,7 @@ describe('MFM', () => {
 			});
 
 			it('by triple brackets (with other texts)', () => {
-				const tokens = analyze('bar(((foo)))bar');
+				const tokens = parse('bar(((foo)))bar');
 				assert.deepStrictEqual(tokens, [
 					text('bar'),
 					tree('motion', [
@@ -256,7 +352,7 @@ describe('MFM', () => {
 			});
 
 			it('by <motion> tag', () => {
-				const tokens = analyze('<motion>foo</motion>');
+				const tokens = parse('<motion>foo</motion>');
 				assert.deepStrictEqual(tokens, [
 					tree('motion', [
 						text('foo')
@@ -265,7 +361,7 @@ describe('MFM', () => {
 			});
 
 			it('by <motion> tag (with other texts)', () => {
-				const tokens = analyze('bar<motion>foo</motion>bar');
+				const tokens = parse('bar<motion>foo</motion>bar');
 				assert.deepStrictEqual(tokens, [
 					text('bar'),
 					tree('motion', [
@@ -278,80 +374,117 @@ describe('MFM', () => {
 
 		describe('mention', () => {
 			it('local', () => {
-				const tokens = analyze('@himawari foo');
+				const tokens = parse('@himawari foo');
 				assert.deepStrictEqual(tokens, [
-					leaf('mention', { acct: '@himawari', canonical: '@himawari', username: 'himawari', host: null }),
+					leaf('mention', {
+						acct: '@himawari',
+						canonical: '@himawari',
+						username: 'himawari',
+						host: null
+					}),
 					text(' foo')
 				]);
 			});
 
 			it('remote', () => {
-				const tokens = analyze('@hima_sub@namori.net foo');
+				const tokens = parse('@hima_sub@namori.net foo');
 				assert.deepStrictEqual(tokens, [
-					leaf('mention', { acct: '@hima_sub@namori.net', canonical: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' }),
+					leaf('mention', {
+						acct: '@hima_sub@namori.net',
+						canonical: '@hima_sub@namori.net',
+						username: 'hima_sub',
+						host: 'namori.net'
+					}),
 					text(' foo')
 				]);
 			});
 
 			it('remote punycode', () => {
-				const tokens = analyze('@hima_sub@xn--q9j5bya.xn--zckzah foo');
+				const tokens = parse('@hima_sub@xn--q9j5bya.xn--zckzah foo');
 				assert.deepStrictEqual(tokens, [
-					leaf('mention', { acct: '@hima_sub@xn--q9j5bya.xn--zckzah', canonical: '@hima_sub@なもり.テスト', username: 'hima_sub', host: 'xn--q9j5bya.xn--zckzah' }),
+					leaf('mention', {
+						acct: '@hima_sub@xn--q9j5bya.xn--zckzah',
+						canonical: '@hima_sub@なもり.テスト',
+						username: 'hima_sub',
+						host: 'xn--q9j5bya.xn--zckzah'
+					}),
 					text(' foo')
 				]);
 			});
 
 			it('ignore', () => {
-				const tokens = analyze('idolm@ster');
+				const tokens = parse('idolm@ster');
 				assert.deepStrictEqual(tokens, [
 					text('idolm@ster')
 				]);
 
-				const tokens2 = analyze('@a\n@b\n@c');
+				const tokens2 = parse('@a\n@b\n@c');
 				assert.deepStrictEqual(tokens2, [
-					leaf('mention', { acct: '@a', canonical: '@a', username: 'a', host: null }),
+					leaf('mention', {
+						acct: '@a',
+						canonical: '@a',
+						username: 'a',
+						host: null
+					}),
 					text('\n'),
-					leaf('mention', { acct: '@b', canonical: '@b', username: 'b', host: null }),
+					leaf('mention', {
+						acct: '@b',
+						canonical: '@b',
+						username: 'b',
+						host: null
+					}),
 					text('\n'),
-					leaf('mention', { acct: '@c', canonical: '@c', username: 'c', host: null })
+					leaf('mention', {
+						acct: '@c',
+						canonical: '@c',
+						username: 'c',
+						host: null
+					})
 				]);
 
-				const tokens3 = analyze('**x**@a');
+				const tokens3 = parse('**x**@a');
 				assert.deepStrictEqual(tokens3, [
 					tree('bold', [
 						text('x')
 					], {}),
-					leaf('mention', { acct: '@a', canonical: '@a', username: 'a', host: null })
+					leaf('mention', {
+						acct: '@a',
+						canonical: '@a',
+						username: 'a',
+						host: null
+					})
 				]);
 
-				const tokens4 = analyze('@\n@v\n@veryverylongusername' /* \n@toolongtobeasamention */);
+				const tokens4 = parse('@\n@v\n@veryverylongusername');
 				assert.deepStrictEqual(tokens4, [
 					text('@\n'),
-					leaf('mention', { acct: '@v', canonical: '@v', username: 'v', host: null }),
+					leaf('mention', {
+						acct: '@v',
+						canonical: '@v',
+						username: 'v',
+						host: null
+					}),
 					text('\n'),
-					leaf('mention', { acct: '@veryverylongusername', canonical: '@veryverylongusername', username: 'veryverylongusername', host: null }),
-					// text('\n@toolongtobeasamention')
+					leaf('mention', {
+						acct: '@veryverylongusername',
+						canonical: '@veryverylongusername',
+						username: 'veryverylongusername',
+						host: null
+					}),
 				]);
-				/*
-				const tokens5 = analyze('@domain_is@valid.example.com\n@domain_is@.invalid\n@domain_is@invali.d\n@domain_is@invali.d\n@domain_is@-invalid.com\n@domain_is@invalid-.com');
-				assert.deepStrictEqual([
-					leaf('mention', { acct: '@domain_is@valid.example.com', canonical: '@domain_is@valid.example.com', username: 'domain_is', host: 'valid.example.com' }),
-					text('\n@domain_is@.invalid\n@domain_is@invali.d\n@domain_is@invali.d\n@domain_is@-invalid.com\n@domain_is@invalid-.com')
-				], tokens5);
-				*/
 			});
 		});
 
 		describe('hashtag', () => {
 			it('simple', () => {
-				const tokens = analyze('#alice');
+				const tokens = parse('#alice');
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'alice' })
 				]);
 			});
 
 			it('after line break', () => {
-				const tokens = analyze('foo\n#alice');
+				const tokens = parse('foo\n#alice');
 				assert.deepStrictEqual(tokens, [
 					text('foo\n'),
 					leaf('hashtag', { hashtag: 'alice' })
@@ -359,7 +492,7 @@ describe('MFM', () => {
 			});
 
 			it('with text', () => {
-				const tokens = analyze('Strawberry Pasta #alice');
+				const tokens = parse('Strawberry Pasta #alice');
 				assert.deepStrictEqual(tokens, [
 					text('Strawberry Pasta '),
 					leaf('hashtag', { hashtag: 'alice' })
@@ -367,7 +500,7 @@ describe('MFM', () => {
 			});
 
 			it('with text (zenkaku)', () => {
-				const tokens = analyze('こんにちは#世界');
+				const tokens = parse('こんにちは#世界');
 				assert.deepStrictEqual(tokens, [
 					text('こんにちは'),
 					leaf('hashtag', { hashtag: '世界' })
@@ -375,7 +508,7 @@ describe('MFM', () => {
 			});
 
 			it('ignore comma and period', () => {
-				const tokens = analyze('Foo #bar, baz #piyo.');
+				const tokens = parse('Foo #bar, baz #piyo.');
 				assert.deepStrictEqual(tokens, [
 					text('Foo '),
 					leaf('hashtag', { hashtag: 'bar' }),
@@ -386,7 +519,7 @@ describe('MFM', () => {
 			});
 
 			it('ignore exclamation mark', () => {
-				const tokens = analyze('#Foo!');
+				const tokens = parse('#Foo!');
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'Foo' }),
 					text('!'),
@@ -394,7 +527,7 @@ describe('MFM', () => {
 			});
 
 			it('ignore colon', () => {
-				const tokens = analyze('#Foo:');
+				const tokens = parse('#Foo:');
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'Foo' }),
 					text(':'),
@@ -402,7 +535,7 @@ describe('MFM', () => {
 			});
 
 			it('ignore single quote', () => {
-				const tokens = analyze('#foo\'');
+				const tokens = parse('#foo\'');
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'foo' }),
 					text('\''),
@@ -410,7 +543,7 @@ describe('MFM', () => {
 			});
 
 			it('ignore double quote', () => {
-				const tokens = analyze('#foo"');
+				const tokens = parse('#foo"');
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'foo' }),
 					text('"'),
@@ -418,21 +551,21 @@ describe('MFM', () => {
 			});
 
 			it('allow including number', () => {
-				const tokens = analyze('#foo123');
+				const tokens = parse('#foo123');
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'foo123' }),
 				]);
 			});
 
 			it('with brackets', () => {
-				const tokens1 = analyze('(#foo)');
+				const tokens1 = parse('(#foo)');
 				assert.deepStrictEqual(tokens1, [
 					text('('),
 					leaf('hashtag', { hashtag: 'foo' }),
 					text(')'),
 				]);
 
-				const tokens2 = analyze('「#foo」');
+				const tokens2 = parse('「#foo」');
 				assert.deepStrictEqual(tokens2, [
 					text('「'),
 					leaf('hashtag', { hashtag: 'foo' }),
@@ -441,7 +574,7 @@ describe('MFM', () => {
 			});
 
 			it('with mixed brackets', () => {
-				const tokens = analyze('「#foo(bar)」');
+				const tokens = parse('「#foo(bar)」');
 				assert.deepStrictEqual(tokens, [
 					text('「'),
 					leaf('hashtag', { hashtag: 'foo(bar)' }),
@@ -450,14 +583,14 @@ describe('MFM', () => {
 			});
 
 			it('with brackets (space before)', () => {
-				const tokens1 = analyze('(bar #foo)');
+				const tokens1 = parse('(bar #foo)');
 				assert.deepStrictEqual(tokens1, [
 					text('(bar '),
 					leaf('hashtag', { hashtag: 'foo' }),
 					text(')'),
 				]);
 
-				const tokens2 = analyze('「bar #foo」');
+				const tokens2 = parse('「bar #foo」');
 				assert.deepStrictEqual(tokens2, [
 					text('「bar '),
 					leaf('hashtag', { hashtag: 'foo' }),
@@ -466,30 +599,38 @@ describe('MFM', () => {
 			});
 
 			it('disallow number only', () => {
-				const tokens = analyze('#123');
+				const tokens = parse('#123');
 				assert.deepStrictEqual(tokens, [
 					text('#123'),
 				]);
 			});
 
 			it('disallow number only (with brackets)', () => {
-				const tokens = analyze('(#123)');
+				const tokens = parse('(#123)');
 				assert.deepStrictEqual(tokens, [
 					text('(#123)'),
+				]);
+			});
+
+			it('ignore slash', () => {
+				const tokens = parse('#foo/bar');
+				assert.deepStrictEqual(tokens, [
+					leaf('hashtag', { hashtag: 'foo' }),
+					text('/bar'),
 				]);
 			});
 		});
 
 		describe('quote', () => {
 			it('basic', () => {
-				const tokens1 = analyze('> foo');
+				const tokens1 = parse('> foo');
 				assert.deepStrictEqual(tokens1, [
 					tree('quote', [
 						text('foo')
 					], {})
 				]);
 
-				const tokens2 = analyze('>foo');
+				const tokens2 = parse('>foo');
 				assert.deepStrictEqual(tokens2, [
 					tree('quote', [
 						text('foo')
@@ -498,7 +639,7 @@ describe('MFM', () => {
 			});
 
 			it('series', () => {
-				const tokens = analyze('> foo\n\n> bar');
+				const tokens = parse('> foo\n\n> bar');
 				assert.deepStrictEqual(tokens, [
 					tree('quote', [
 						text('foo')
@@ -511,14 +652,14 @@ describe('MFM', () => {
 			});
 
 			it('trailing line break', () => {
-				const tokens1 = analyze('> foo\n');
+				const tokens1 = parse('> foo\n');
 				assert.deepStrictEqual(tokens1, [
 					tree('quote', [
 						text('foo')
 					], {}),
 				]);
 
-				const tokens2 = analyze('> foo\n\n');
+				const tokens2 = parse('> foo\n\n');
 				assert.deepStrictEqual(tokens2, [
 					tree('quote', [
 						text('foo')
@@ -528,14 +669,14 @@ describe('MFM', () => {
 			});
 
 			it('multiline', () => {
-				const tokens1 = analyze('>foo\n>bar');
+				const tokens1 = parse('>foo\n>bar');
 				assert.deepStrictEqual(tokens1, [
 					tree('quote', [
 						text('foo\nbar')
 					], {})
 				]);
 
-				const tokens2 = analyze('> foo\n> bar');
+				const tokens2 = parse('> foo\n> bar');
 				assert.deepStrictEqual(tokens2, [
 					tree('quote', [
 						text('foo\nbar')
@@ -544,14 +685,14 @@ describe('MFM', () => {
 			});
 
 			it('multiline with trailing line break', () => {
-				const tokens1 = analyze('> foo\n> bar\n');
+				const tokens1 = parse('> foo\n> bar\n');
 				assert.deepStrictEqual(tokens1, [
 					tree('quote', [
 						text('foo\nbar')
 					], {}),
 				]);
 
-				const tokens2 = analyze('> foo\n> bar\n\n');
+				const tokens2 = parse('> foo\n> bar\n\n');
 				assert.deepStrictEqual(tokens2, [
 					tree('quote', [
 						text('foo\nbar')
@@ -561,7 +702,7 @@ describe('MFM', () => {
 			});
 
 			it('with before and after texts', () => {
-				const tokens = analyze('before\n> foo\nafter');
+				const tokens = parse('before\n> foo\nafter');
 				assert.deepStrictEqual(tokens, [
 					text('before\n'),
 					tree('quote', [
@@ -572,7 +713,7 @@ describe('MFM', () => {
 			});
 
 			it('multiple quotes', () => {
-				const tokens = analyze('> foo\nbar\n\n> foo\nbar\n\n> foo\nbar');
+				const tokens = parse('> foo\nbar\n\n> foo\nbar\n\n> foo\nbar');
 				assert.deepStrictEqual(tokens, [
 					tree('quote', [
 						text('foo')
@@ -590,14 +731,14 @@ describe('MFM', () => {
 			});
 
 			it('require line break before ">"', () => {
-				const tokens = analyze('foo>bar');
+				const tokens = parse('foo>bar');
 				assert.deepStrictEqual(tokens, [
 					text('foo>bar'),
 				]);
 			});
 
 			it('nested', () => {
-				const tokens = analyze('>> foo\n> bar');
+				const tokens = parse('>> foo\n> bar');
 				assert.deepStrictEqual(tokens, [
 					tree('quote', [
 						tree('quote', [
@@ -609,7 +750,7 @@ describe('MFM', () => {
 			});
 
 			it('trim line breaks', () => {
-				const tokens = analyze('foo\n\n>a\n>>b\n>>\n>>>\n>>>c\n>>>\n>d\n\n');
+				const tokens = parse('foo\n\n>a\n>>b\n>>\n>>>\n>>>c\n>>>\n>d\n\n');
 				assert.deepStrictEqual(tokens, [
 					text('foo\n\n'),
 					tree('quote', [
@@ -629,14 +770,14 @@ describe('MFM', () => {
 
 		describe('url', () => {
 			it('simple', () => {
-				const tokens = analyze('https://example.com');
+				const tokens = parse('https://example.com');
 				assert.deepStrictEqual(tokens, [
 					leaf('url', { url: 'https://example.com' })
 				]);
 			});
 
 			it('ignore trailing period', () => {
-				const tokens = analyze('https://example.com.');
+				const tokens = parse('https://example.com.');
 				assert.deepStrictEqual(tokens, [
 					leaf('url', { url: 'https://example.com' }),
 					text('.')
@@ -644,14 +785,14 @@ describe('MFM', () => {
 			});
 
 			it('with comma', () => {
-				const tokens = analyze('https://example.com/foo?bar=a,b');
+				const tokens = parse('https://example.com/foo?bar=a,b');
 				assert.deepStrictEqual(tokens, [
 					leaf('url', { url: 'https://example.com/foo?bar=a,b' })
 				]);
 			});
 
 			it('ignore trailing comma', () => {
-				const tokens = analyze('https://example.com/foo, bar');
+				const tokens = parse('https://example.com/foo, bar');
 				assert.deepStrictEqual(tokens, [
 					leaf('url', { url: 'https://example.com/foo' }),
 					text(', bar')
@@ -659,14 +800,14 @@ describe('MFM', () => {
 			});
 
 			it('with brackets', () => {
-				const tokens = analyze('https://example.com/foo(bar)');
+				const tokens = parse('https://example.com/foo(bar)');
 				assert.deepStrictEqual(tokens, [
 					leaf('url', { url: 'https://example.com/foo(bar)' })
 				]);
 			});
 
 			it('ignore parent brackets', () => {
-				const tokens = analyze('(https://example.com/foo)');
+				const tokens = parse('(https://example.com/foo)');
 				assert.deepStrictEqual(tokens, [
 					text('('),
 					leaf('url', { url: 'https://example.com/foo' }),
@@ -675,7 +816,7 @@ describe('MFM', () => {
 			});
 
 			it('ignore parent brackets 2', () => {
-				const tokens = analyze('(foo https://example.com/foo)');
+				const tokens = parse('(foo https://example.com/foo)');
 				assert.deepStrictEqual(tokens, [
 					text('(foo '),
 					leaf('url', { url: 'https://example.com/foo' }),
@@ -684,7 +825,7 @@ describe('MFM', () => {
 			});
 
 			it('ignore parent brackets with internal brackets', () => {
-				const tokens = analyze('(https://example.com/foo(bar))');
+				const tokens = parse('(https://example.com/foo(bar))');
 				assert.deepStrictEqual(tokens, [
 					text('('),
 					leaf('url', { url: 'https://example.com/foo(bar)' }),
@@ -695,7 +836,7 @@ describe('MFM', () => {
 
 		describe('link', () => {
 			it('simple', () => {
-				const tokens = analyze('[foo](https://example.com)');
+				const tokens = parse('[foo](https://example.com)');
 				assert.deepStrictEqual(tokens, [
 					tree('link', [
 						text('foo')
@@ -704,7 +845,7 @@ describe('MFM', () => {
 			});
 
 			it('simple (with silent flag)', () => {
-				const tokens = analyze('?[foo](https://example.com)');
+				const tokens = parse('?[foo](https://example.com)');
 				assert.deepStrictEqual(tokens, [
 					tree('link', [
 						text('foo')
@@ -713,7 +854,7 @@ describe('MFM', () => {
 			});
 
 			it('in text', () => {
-				const tokens = analyze('before[foo](https://example.com)after');
+				const tokens = parse('before[foo](https://example.com)after');
 				assert.deepStrictEqual(tokens, [
 					text('before'),
 					tree('link', [
@@ -724,7 +865,7 @@ describe('MFM', () => {
 			});
 
 			it('with brackets', () => {
-				const tokens = analyze('[foo](https://example.com/foo(bar))');
+				const tokens = parse('[foo](https://example.com/foo(bar))');
 				assert.deepStrictEqual(tokens, [
 					tree('link', [
 						text('foo')
@@ -733,7 +874,7 @@ describe('MFM', () => {
 			});
 
 			it('with parent brackets', () => {
-				const tokens = analyze('([foo](https://example.com/foo(bar)))');
+				const tokens = parse('([foo](https://example.com/foo(bar)))');
 				assert.deepStrictEqual(tokens, [
 					text('('),
 					tree('link', [
@@ -745,19 +886,19 @@ describe('MFM', () => {
 		});
 
 		it('emoji', () => {
-			const tokens1 = analyze(':cat:');
+			const tokens1 = parse(':cat:');
 			assert.deepStrictEqual(tokens1, [
 				leaf('emoji', { name: 'cat' })
 			]);
 
-			const tokens2 = analyze(':cat::cat::cat:');
+			const tokens2 = parse(':cat::cat::cat:');
 			assert.deepStrictEqual(tokens2, [
 				leaf('emoji', { name: 'cat' }),
 				leaf('emoji', { name: 'cat' }),
 				leaf('emoji', { name: 'cat' })
 			]);
 
-			const tokens3 = analyze('🍎');
+			const tokens3 = parse('🍎');
 			assert.deepStrictEqual(tokens3, [
 				leaf('emoji', { emoji: '🍎' })
 			]);
@@ -765,21 +906,21 @@ describe('MFM', () => {
 
 		describe('block code', () => {
 			it('simple', () => {
-				const tokens = analyze('```\nvar x = "Strawberry Pasta";\n```');
+				const tokens = parse('```\nvar x = "Strawberry Pasta";\n```');
 				assert.deepStrictEqual(tokens, [
 					leaf('blockCode', { code: 'var x = "Strawberry Pasta";', lang: null })
 				]);
 			});
 
 			it('can specify language', () => {
-				const tokens = analyze('``` json\n{ "x": 42 }\n```');
+				const tokens = parse('``` json\n{ "x": 42 }\n```');
 				assert.deepStrictEqual(tokens, [
 					leaf('blockCode', { code: '{ "x": 42 }', lang: 'json' })
 				]);
 			});
 
 			it('require line break before "```"', () => {
-				const tokens = analyze('before```\nfoo\n```');
+				const tokens = parse('before```\nfoo\n```');
 				assert.deepStrictEqual(tokens, [
 					text('before'),
 					leaf('inlineCode', { code: '`' }),
@@ -789,7 +930,7 @@ describe('MFM', () => {
 			});
 
 			it('series', () => {
-				const tokens = analyze('```\nfoo\n```\n```\nbar\n```\n```\nbaz\n```');
+				const tokens = parse('```\nfoo\n```\n```\nbar\n```\n```\nbaz\n```');
 				assert.deepStrictEqual(tokens, [
 					leaf('blockCode', { code: 'foo', lang: null }),
 					leaf('blockCode', { code: 'bar', lang: null }),
@@ -798,14 +939,14 @@ describe('MFM', () => {
 			});
 
 			it('ignore internal marker', () => {
-				const tokens = analyze('```\naaa```bbb\n```');
+				const tokens = parse('```\naaa```bbb\n```');
 				assert.deepStrictEqual(tokens, [
 					leaf('blockCode', { code: 'aaa```bbb', lang: null })
 				]);
 			});
 
 			it('trim after line break', () => {
-				const tokens = analyze('```\nfoo\n```\nbar');
+				const tokens = parse('```\nfoo\n```\nbar');
 				assert.deepStrictEqual(tokens, [
 					leaf('blockCode', { code: 'foo', lang: null }),
 					text('bar')
@@ -815,53 +956,64 @@ describe('MFM', () => {
 
 		describe('inline code', () => {
 			it('simple', () => {
-				const tokens = analyze('`var x = "Strawberry Pasta";`');
+				const tokens = parse('`var x = "Strawberry Pasta";`');
 				assert.deepStrictEqual(tokens, [
 					leaf('inlineCode', { code: 'var x = "Strawberry Pasta";' })
 				]);
 			});
 
 			it('disallow line break', () => {
-				const tokens = analyze('`foo\nbar`');
+				const tokens = parse('`foo\nbar`');
 				assert.deepStrictEqual(tokens, [
 					text('`foo\nbar`')
 				]);
 			});
 
 			it('disallow ´', () => {
-				const tokens = analyze('`foo´bar`');
+				const tokens = parse('`foo´bar`');
 				assert.deepStrictEqual(tokens, [
 					text('`foo´bar`')
 				]);
 			});
 		});
 
-		it('math', () => {
+		it('mathInline', () => {
 			const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}';
-			const text = `\\(${fomula}\\)`;
-			const tokens = analyze(text);
+			const content = `\\(${fomula}\\)`;
+			const tokens = parse(content);
 			assert.deepStrictEqual(tokens, [
-				leaf('math', { formula: fomula })
+				leaf('mathInline', { formula: fomula })
 			]);
 		});
 
+		describe('mathBlock', () => {
+			it('simple', () => {
+				const fomula = 'x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}';
+				const content = `\\[\n${fomula}\n\\]`;
+				const tokens = parse(content);
+				assert.deepStrictEqual(tokens, [
+					leaf('mathBlock', { formula: fomula })
+				]);
+			});
+		});
+
 		it('search', () => {
-			const tokens1 = analyze('a b c 検索');
+			const tokens1 = parse('a b c 検索');
 			assert.deepStrictEqual(tokens1, [
 				leaf('search', { content: 'a b c 検索', query: 'a b c' })
 			]);
 
-			const tokens2 = analyze('a b c Search');
+			const tokens2 = parse('a b c Search');
 			assert.deepStrictEqual(tokens2, [
 				leaf('search', { content: 'a b c Search', query: 'a b c' })
 			]);
 
-			const tokens3 = analyze('a b c search');
+			const tokens3 = parse('a b c search');
 			assert.deepStrictEqual(tokens3, [
 				leaf('search', { content: 'a b c search', query: 'a b c' })
 			]);
 
-			const tokens4 = analyze('a b c SEARCH');
+			const tokens4 = parse('a b c SEARCH');
 			assert.deepStrictEqual(tokens4, [
 				leaf('search', { content: 'a b c SEARCH', query: 'a b c' })
 			]);
@@ -869,7 +1021,7 @@ describe('MFM', () => {
 
 		describe('title', () => {
 			it('simple', () => {
-				const tokens = analyze('【foo】');
+				const tokens = parse('【foo】');
 				assert.deepStrictEqual(tokens, [
 					tree('title', [
 						text('foo')
@@ -878,14 +1030,14 @@ describe('MFM', () => {
 			});
 
 			it('require line break', () => {
-				const tokens = analyze('a【foo】');
+				const tokens = parse('a【foo】');
 				assert.deepStrictEqual(tokens, [
 					text('a【foo】')
 				]);
 			});
 
 			it('with before and after texts', () => {
-				const tokens = analyze('before\n【foo】\nafter');
+				const tokens = parse('before\n【foo】\nafter');
 				assert.deepStrictEqual(tokens, [
 					text('before\n'),
 					tree('title', [
@@ -894,11 +1046,25 @@ describe('MFM', () => {
 					text('after')
 				]);
 			});
+
+			it('ignore multiple title blocks', () => {
+				const tokens = parse('【foo】bar【baz】');
+				assert.deepStrictEqual(tokens, [
+					text('【foo】bar【baz】')
+				]);
+			});
+
+			it('disallow linebreak in title', () => {
+				const tokens = parse('【foo\nbar】');
+				assert.deepStrictEqual(tokens, [
+					text('【foo\nbar】')
+				]);
+			});
 		});
 
 		describe('center', () => {
 			it('simple', () => {
-				const tokens = analyze('<center>foo</center>');
+				const tokens = parse('<center>foo</center>');
 				assert.deepStrictEqual(tokens, [
 					tree('center', [
 						text('foo')
@@ -909,7 +1075,7 @@ describe('MFM', () => {
 
 		describe('strike', () => {
 			it('simple', () => {
-				const tokens = analyze('~~foo~~');
+				const tokens = parse('~~foo~~');
 				assert.deepStrictEqual(tokens, [
 					tree('strike', [
 						text('foo')
@@ -920,7 +1086,7 @@ describe('MFM', () => {
 
 		describe('italic', () => {
 			it('<i>', () => {
-				const tokens = analyze('<i>foo</i>');
+				const tokens = parse('<i>foo</i>');
 				assert.deepStrictEqual(tokens, [
 					tree('italic', [
 						text('foo')
@@ -929,7 +1095,7 @@ describe('MFM', () => {
 			});
 
 			it('underscore', () => {
-				const tokens = analyze('_foo_');
+				const tokens = parse('_foo_');
 				assert.deepStrictEqual(tokens, [
 					tree('italic', [
 						text('foo')
@@ -938,7 +1104,7 @@ describe('MFM', () => {
 			});
 
 			it('simple with asterix', () => {
-				const tokens = analyze('*foo*');
+				const tokens = parse('*foo*');
 				assert.deepStrictEqual(tokens, [
 					tree('italic', [
 						text('foo')
@@ -947,25 +1113,64 @@ describe('MFM', () => {
 			});
 
 			it('exlude emotes', () => {
-				const tokens = analyze('*.*');
+				const tokens = parse('*.*');
 				assert.deepStrictEqual(tokens, [
 					text("*.*"),
 				]);
 			});
 
 			it('mixed', () => {
-				const tokens = analyze('_foo*');
+				const tokens = parse('_foo*');
 				assert.deepStrictEqual(tokens, [
 					text('_foo*'),
 				]);
 			});
 
 			it('mixed', () => {
-				const tokens = analyze('*foo_');
+				const tokens = parse('*foo_');
 				assert.deepStrictEqual(tokens, [
 					text('*foo_'),
 				]);
 			});
+
+			it('ignore snake_case string', () => {
+				const tokens = parse('foo_bar_baz');
+				assert.deepStrictEqual(tokens, [
+					text('foo_bar_baz'),
+				]);
+			});
+		});
+	});
+
+	describe('plainText', () => {
+		it('text', () => {
+			const tokens = parsePlain('foo');
+			assert.deepStrictEqual(tokens, [
+				text('foo'),
+			]);
+		});
+
+		it('emoji', () => {
+			const tokens = parsePlain(':foo:');
+			assert.deepStrictEqual(tokens, [
+				leaf('emoji', { name: 'foo' })
+			]);
+		});
+
+		it('emoji in text', () => {
+			const tokens = parsePlain('foo:bar:baz');
+			assert.deepStrictEqual(tokens, [
+				text('foo'),
+				leaf('emoji', { name: 'bar' }),
+				text('baz'),
+			]);
+		});
+
+		it('disallow other syntax', () => {
+			const tokens = parsePlain('foo **bar** baz');
+			assert.deepStrictEqual(tokens, [
+				text('foo **bar** baz'),
+			]);
 		});
 	});
 
@@ -973,12 +1178,18 @@ describe('MFM', () => {
 		it('br', () => {
 			const input = 'foo\nbar\nbaz';
 			const output = '<p><span>foo<br>bar<br>baz</span></p>';
-			assert.equal(toHtml(analyze(input)), output);
+			assert.equal(toHtml(parse(input)), output);
+		});
+
+		it('br alt', () => {
+			const input = 'foo\r\nbar\rbaz';
+			const output = '<p><span>foo<br>bar<br>baz</span></p>';
+			assert.equal(toHtml(parse(input)), output);
 		});
 	});
 
 	it('code block with quote', () => {
-		const tokens = analyze('> foo\n```\nbar\n```');
+		const tokens = parse('> foo\n```\nbar\n```');
 		assert.deepStrictEqual(tokens, [
 			tree('quote', [
 				text('foo')
@@ -988,7 +1199,7 @@ describe('MFM', () => {
 	});
 
 	it('quote between two code blocks', () => {
-		const tokens = analyze('```\nbefore\n```\n> foo\n```\nafter\n```');
+		const tokens = parse('```\nbefore\n```\n> foo\n```\nafter\n```');
 		assert.deepStrictEqual(tokens, [
 			leaf('blockCode', { code: 'before', lang: null }),
 			tree('quote', [

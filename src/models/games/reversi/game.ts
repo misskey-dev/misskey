@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import db from '../../../db/mongodb';
 import isObjectId from '../../../misc/is-objectid';
 import { IUser, pack as packUser } from '../../user';
@@ -27,11 +27,11 @@ export interface IReversiGame {
 	isEnded: boolean;
 	winnerId: mongo.ObjectID;
 	surrendered: mongo.ObjectID;
-	logs: Array<{
+	logs: {
 		at: Date;
 		color: boolean;
 		pos: number;
-	}>;
+	}[];
 	settings: {
 		map: string[];
 		bw: string | number;

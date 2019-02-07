@@ -1,5 +1,6 @@
-import $ from 'cafy'; import ID, { transform, transformMany } from '../../../../misc/cafy-id';
-const ms = require('ms');
+import $ from 'cafy';
+import ID, { transform, transformMany } from '../../../../misc/cafy-id';
+import * as ms from 'ms';
 import { length } from 'stringz';
 import Note, { INote, isValidCw, pack } from '../../../../models/note';
 import User, { IUser } from '../../../../models/user';

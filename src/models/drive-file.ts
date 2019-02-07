@@ -1,8 +1,8 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import { pack as packFolder } from './drive-folder';
 import { pack as packUser } from './user';
-import monkDb, { nativeDbConn } from '../db/mongodb';
+import monkDb, { nativeDbConn, dbLogger } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
 
@@ -171,7 +171,7 @@ export const pack = (
 
 	// (データベースの欠損などで)ファイルがデータベース上に見つからなかったとき
 	if (_file == null) {
-		console.warn(`[DAMAGED DB] (missing) pkg: driveFile :: ${file}`);
+		dbLogger.warn(`[DAMAGED DB] (missing) pkg: driveFile :: ${file}`);
 		return resolve(null);
 	}
 

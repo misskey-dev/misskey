@@ -14,7 +14,7 @@ export default class extends Channel {
 		const mute = this.user ? await Mute.find({ muterId: this.user._id }) : null;
 		const mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
 
-		const q: Array<string[]> = params.q;
+		const q: string[][] = params.q;
 
 		if (q == null) return;
 

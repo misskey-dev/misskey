@@ -1,12 +1,11 @@
-import * as debug from 'debug';
-
 import uploadFromUrl from '../../../services/drive/upload-from-url';
 import { IRemoteUser } from '../../../models/user';
 import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Resolver from '../resolver';
 import fetchMeta from '../../../misc/fetch-meta';
+import { apLogger } from '../logger';
 
-const log = debug('misskey:activitypub');
+const logger = apLogger;
 
 /**
  * Imageを作成します。
@@ -23,7 +22,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 		throw new Error('invalid image: url not privided');
 	}
 
-	log(`Creating the Image: ${image.url}`);
+	logger.info(`Creating the Image: ${image.url}`);
 
 	const instance = await fetchMeta();
 	const cache = instance.cacheRemoteFiles;

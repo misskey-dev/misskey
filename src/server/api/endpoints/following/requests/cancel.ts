@@ -1,4 +1,5 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
 import User, { pack } from '../../../../../models/user';
 import define from '../../../define';

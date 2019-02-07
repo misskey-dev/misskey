@@ -14,10 +14,18 @@ import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import config from '../../config';
 import { licenseHtml } from '../../misc/license';
-const constants = require('../../const.json');
+import { copyright } from '../../const.json';
 import endpoints from '../api/endpoints';
-const locales = require('../../../locales');
-const nestedProperty = require('nested-property');
+import locales from '../../../locales';
+import * as nestedProperty from 'nested-property';
+
+function getLang(lang: string): string {
+	if (['en-US', 'ja-JP'].includes(lang)) {
+		return lang;
+	} else {
+		return 'en-US';
+	}
+}
 
 async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const vars = {} as { [key: string]: any };
@@ -51,7 +59,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 
 	vars['config'] = config;
 
-	vars['copyright'] = constants.copyright;
+	vars['copyright'] = copyright;
 
 	vars['license'] = licenseHtml;
 
@@ -113,7 +121,7 @@ const parsePropDefinition = (key: string, prop: any) => {
 	return prop;
 };
 
-const sortParams = (params: Array<{ name: string }>) => {
+const sortParams = (params: { name: string }[]) => {
 	return params;
 };
 
@@ -167,7 +175,7 @@ router.get('/assets/*', async ctx => {
 });
 
 router.get('/*/api/endpoints/*', async ctx => {
-	const lang = ctx.params[0];
+	const lang = getLang(ctx.params[0]);
 	const name = ctx.params[1];
 	const ep = endpoints.find(e => e.name === name);
 
@@ -194,7 +202,7 @@ router.get('/*/api/endpoints/*', async ctx => {
 });
 
 router.get('/*/api/entities/*', async ctx => {
-	const lang = ctx.params[0];
+	const lang = getLang(ctx.params[0]);
 	const entity = ctx.params[1];
 
 	const x = yaml.safeLoad(fs.readFileSync(path.resolve(`${__dirname}/../../../src/docs/api/entities/${entity}.yaml`), 'utf-8'));
@@ -211,7 +219,7 @@ router.get('/*/api/entities/*', async ctx => {
 });
 
 router.get('/*/*', async ctx => {
-	const lang = ctx.params[0];
+	const lang = getLang(ctx.params[0]);
 	const doc = ctx.params[1];
 
 	showdown.extension('urlExtension', () => ({

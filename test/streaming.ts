@@ -10,11 +10,8 @@
 
 import * as http from 'http';
 import * as WebSocket from 'ws';
-import * as assert from 'chai';
+import * as assert from 'assert';
 import { _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
-
-assert.use(require('chai-http'));
-const expect = assert.expect;
 
 //#region process
 Error.stackTraceLimit = Infinity;
@@ -35,6 +32,7 @@ const apiServer = http.createServer(app.callback());
 //#region Utilities
 const request = _request(apiServer);
 const signup = _signup(request);
+const post = _post(request);
 //#endregion
 
 describe('Streaming', () => {
@@ -45,37 +43,106 @@ describe('Streaming', () => {
 		server.close();
 	});
 
-	it('投稿がタイムラインに流れる', done => {
+	it('投稿がタイムラインに流れる', () => new Promise(async done => {
 		const post = {
 			text: 'foo'
 		};
 
-		signup().then(me => {
-			const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
+		const me = await signup();
+		const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
 
-			ws.on('open', () => {
-				ws.on('message', data => {
-					const msg = JSON.parse(data.toString());
-					if (msg.type == 'channel' && msg.body.id == 'a') {
-						if (msg.body.type == 'note') {
-							expect(msg.body.body.text).eql(post.text);
-							ws.close();
-							done();
-						}
-					} else if (msg.type == 'connected' && msg.body.id == 'a') {
-						request('/notes/create', post, me);
+		ws.on('open', () => {
+			ws.on('message', data => {
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					if (msg.body.type == 'note') {
+						assert.deepStrictEqual(msg.body.body.text, post.text);
+						ws.close();
+						done();
 					}
-				});
-
-				ws.send(JSON.stringify({
-					type: 'connect',
-					body: {
-						channel: 'homeTimeline',
-						id: 'a',
-						pong: true
-					}
-				}));
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					request('/notes/create', post, me);
+				}
 			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: 'homeTimeline',
+					id: 'a',
+					pong: true
+				}
+			}));
 		});
-	});
+	}));
+
+	it('mention event', () => new Promise(async done => {
+		const alice = await signup({ username: 'alice' });
+		const bob = await signup({ username: 'bob' });
+		const aliceNote = {
+			text: 'foo @bob bar'
+		};
+
+		const ws = new WebSocket(`ws://localhost/streaming?i=${bob.token}`);
+
+		ws.on('open', () => {
+			ws.on('message', data => {
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					if (msg.body.type == 'mention') {
+						assert.deepStrictEqual(msg.body.body.text, aliceNote.text);
+						ws.close();
+						done();
+					}
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					request('/notes/create', aliceNote, alice);
+				}
+			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: 'main',
+					id: 'a',
+					pong: true
+				}
+			}));
+		});
+	}));
+
+	it('renote event', () => new Promise(async done => {
+		const alice = await signup({ username: 'alice' });
+		const bob = await signup({ username: 'bob' });
+		const bobNote = await post(bob, {
+			text: 'foo'
+		});
+
+		const ws = new WebSocket(`ws://localhost/streaming?i=${bob.token}`);
+
+		ws.on('open', () => {
+			ws.on('message', data => {
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					if (msg.body.type == 'renote') {
+						assert.deepStrictEqual(msg.body.body.renoteId, bobNote.id);
+						ws.close();
+						done();
+					}
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					request('/notes/create', {
+						renoteId: bobNote.id
+					}, alice);
+				}
+			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: 'main',
+					id: 'a',
+					pong: true
+				}
+			}));
+		});
+	}));
 });

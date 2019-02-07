@@ -1,6 +1,7 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
-import { publishDriveStream } from '../../../../../stream';
+import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 
 export const meta = {

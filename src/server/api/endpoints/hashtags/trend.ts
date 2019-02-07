@@ -40,22 +40,22 @@ export default define(meta, () => new Promise(async (res, rej) => {
 		$group: {
 			_id: { tag: '$tagsLower', userId: '$userId' }
 		}
-	}]) as Array<{
+	}]) as {
 		_id: {
 			tag: string;
 			userId: any;
 		}
-	}>;
+	}[];
 	//#endregion
 
 	if (data.length == 0) {
 		return res([]);
 	}
 
-	const tags: Array<{
+	const tags: {
 		name: string;
 		count: number;
-	}> = [];
+	}[] = [];
 
 	// カウント
 	for (const x of data.map(x => x._id).filter(x => !hidedTags.includes(x.tag))) {
@@ -108,7 +108,7 @@ export default define(meta, () => new Promise(async (res, rej) => {
 	//#endregion
 
 	//#region 2(または3)で話題と判定されたタグそれぞれについて過去の投稿数グラフを取得する
-	const countPromises: Array<Promise<any[]>> = [];
+	const countPromises: Promise<any[]>[] = [];
 
 	const range = 20;
 

@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
-import db from '../db/mongodb';
+import * as deepcopy from 'deepcopy';
+import db, { dbLogger } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
@@ -106,12 +106,12 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 
 			// (データベースの不具合などで)投稿が見つからなかったら
 			if (_notification.note == null) {
-				console.warn(`[DAMAGED DB] (missing) pkg: notification -> note :: ${_notification.id} (note ${_notification.noteId})`);
+				dbLogger.warn(`[DAMAGED DB] (missing) pkg: notification -> note :: ${_notification.id} (note ${_notification.noteId})`);
 				return resolve(null);
 			}
 			break;
 		default:
-			console.error(`Unknown type: ${_notification.type}`);
+			dbLogger.error(`Unknown type: ${_notification.type}`);
 			break;
 	}
 

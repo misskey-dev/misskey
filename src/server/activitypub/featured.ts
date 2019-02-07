@@ -2,7 +2,7 @@ import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
 import User from '../../models/user';
-import pack from '../../remote/activitypub/renderer';
+import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import { setResponseType } from '../activitypub';
 import Note from '../../models/note';
@@ -38,7 +38,7 @@ export default async (ctx: Router.IRouterContext) => {
 		renderedNotes.length, null, null, renderedNotes
 	);
 
-	ctx.body = pack(rendered);
+	ctx.body = renderActivity(rendered);
 	ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 	setResponseType(ctx);
 };

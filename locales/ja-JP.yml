@@ -121,6 +121,7 @@ common:
   use-avatar-reversi-stones: "リバーシの石にアバターを使う"
   verified-user: "公式アカウント"
   disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
+  disable-showing-animated-images: "アニメーション画像を再生しない"
   suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
   always-show-nsfw: "常に閲覧注意のメディアを表示する"
   always-mark-nsfw: "常にメディアを閲覧注意として投稿"
@@ -138,7 +139,7 @@ common:
 
   do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
   user-suspended: "このユーザーは凍結されています。"
-  is-remote-user: "このユーザー情報はコピーです。"
+  is-remote-user: "このユーザー情報は不正確な可能性があります。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
@@ -374,6 +375,8 @@ common/views/components/note-menu.vue:
   copy-link: "リンクをコピー"
   favorite: "お気に入り"
   unfavorite: "お気に入り解除"
+  watch: "ウォッチ"
+  unwatch: "ウォッチ解除"
   pin: "ピン留め"
   unpin: "ピン留め解除"
   delete: "削除"
@@ -391,6 +394,10 @@ common/views/components/user-menu.vue:
   report-abuse: "スパムを報告"
   report-abuse-detail: "どのような迷惑行為を行っていますか？"
   report-abuse-reported: "管理者に報告されました。ご協力ありがとうございました。"
+  silence: "サイレンス"
+  unsilence: "サイレンス解除"
+  suspend: "凍結"
+  unsuspend: "凍結解除"
 
 common/views/components/poll.vue:
   vote-to: "「{}」に投票する"
@@ -530,6 +537,7 @@ common/views/components/profile-editor.vue:
   account: "アカウント"
   location: "場所"
   description: "自己紹介"
+  you-can-include-hashtags: "ハッシュタグを含めることができます。"
   language: "言語"
   birthday: "誕生日"
   avatar: "アイコン"
@@ -549,6 +557,13 @@ common/views/components/profile-editor.vue:
   email-address: "メールアドレス"
   email-verified: "メールアドレスが確認されました"
   email-not-verified: "メールアドレスが確認されていません。メールボックスをご確認ください。"
+  export: "エクスポート"
+  export-targets:
+    all-notes: "すべての投稿データ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
+  export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
@@ -729,10 +744,6 @@ desktop/views/components/drive.vue:
     create-folder: "フォルダーを作成"
     upload: "ファイルをアップロード"
     url-upload: "URLからアップロード"
-
-desktop/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
 
 desktop/views/components/media-video.vue:
   sensitive: "閲覧注意"
@@ -980,6 +991,10 @@ desktop/views/components/settings.2fa.vue:
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
 
+common/views/components/media-image.vue:
+  sensitive: "閲覧注意"
+  click-to-show: "クリックして表示"
+
 common/views/components/api-settings.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
@@ -1118,6 +1133,7 @@ admin/views/index.vue:
   announcements: "お知らせ"
   hashtags: "ハッシュタグ"
   abuse: "スパム報告"
+  queue: "ジョブキュー"
   back-to-misskey: "Misskeyに戻る"
 
 admin/views/dashboard.vue:
@@ -1128,6 +1144,10 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "このインスタンス"
   federated: "連合"
+
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 
 admin/views/abuse.vue:
   title: "スパム報告"
@@ -1266,15 +1286,24 @@ admin/views/users.vue:
   user-not-found: "ユーザーが見つかりません"
   lookup: "照会"
   reset-password: "パスワードをリセット"
+  reset-password-confirm: "パスワードをリセットしますか？"
   password-updated: "パスワードは現在「{password}」です"
   suspend: "凍結"
+  suspend-confirm: "凍結しますか？"
   suspended: "凍結しました"
   unsuspend: "凍結の解除"
+  unsuspend-confirm: "凍結を解除しますか？"
   unsuspended: "凍結を解除しました"
+  make-silence: "サイレンス"
+  unmake-silence: "サイレンスの解除"
   verify: "公式アカウントにする"
+  verify-confirm: "公式アカウントにしますか？"
   verified: "公式アカウントにしました"
   unverify: "公式アカウントを解除する"
+  unverify-confirm: "公式アカウントを解除しますか？"
   unverified: "公式アカウントを解除しました"
+  update-remote-user: "リモートユーザー情報の更新"
+  remote-user-updated: "リモートユーザー情報を更新しました"
   users:
     title: "ユーザー"
     sort:
@@ -1341,6 +1370,34 @@ admin/views/announcements.vue:
 
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
+
+admin/views/federation.vue:
+  federation: "連合"
+  host: "ホスト"
+  notes: "投稿"
+  users: "ユーザー"
+  following: "フォロー中"
+  followers: "フォロワー"
+  status: "ステータス"
+  latest-request-sent-at: "直近のリクエスト送信"
+  latest-request-received-at: "直近のリクエスト受信"
+  remove-all-following: "フォローを全解除"
+  remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  lookup: "照会"
+  instances: "インスタンス"
+  instance-not-registered: "そのインスタンスは登録されていません"
+  sort: "ソート"
+  sorts:
+    caughtAtAsc: "登録日時が古い順"
+    caughtAtDesc: "登録日時が新しい順"
+    notesAsc: "投稿が少ない順"
+    notesDesc: "投稿が多い順"
+    usersAsc: "ユーザーが少ない順"
+    usersDesc: "ユーザーが多い順"
+    followingAsc: "フォローが少ない順"
+    followingDesc: "フォローが多い順"
+    followersAsc: "フォロワーが少ない順"
+    followersDesc: "フォロワーが多い順"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
@@ -1485,10 +1542,6 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "閲覧注意"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
-
-mobile/views/components/media-image.vue:
-  sensitive: "閲覧注意"
-  click-to-show: "クリックして表示"
 
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"

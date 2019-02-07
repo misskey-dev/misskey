@@ -1,19 +1,19 @@
 import { request } from 'https';
-const { sign } = require('http-signature');
+import { sign } from 'http-signature';
 import { URL } from 'url';
-import * as debug from 'debug';
-const crypto = require('crypto');
-const { lookup } = require('lookup-dns-cache');
-const promiseAny = require('promise-any');
+import * as crypto from 'crypto';
+import { lookup, IRunOptions } from 'lookup-dns-cache';
+import * as promiseAny from 'promise-any';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
-import { publishApLogStream } from '../../stream';
+import { publishApLogStream } from '../../services/stream';
+import { apLogger } from './logger';
 
-const log = debug('misskey:activitypub:deliver');
+export const logger = apLogger.createSubLogger('deliver');
 
 export default (user: ILocalUser, url: string, object: any) => new Promise(async (resolve, reject) => {
-	log(`--> ${url}`);
+	logger.info(`--> ${url}`);
 
 	const timeout = 10 * 1000;
 
@@ -43,11 +43,11 @@ export default (user: ILocalUser, url: string, object: any) => new Promise(async
 			'Digest': `SHA-256=${hash}`
 		}
 	}, res => {
-		log(`${url} --> ${res.statusCode}`);
-
 		if (res.statusCode >= 400) {
+			logger.warn(`${url} --> ${res.statusCode}`);
 			reject(res);
 		} else {
+			logger.succ(`${url} --> ${res.statusCode}`);
 			resolve();
 		}
 	});
@@ -89,16 +89,16 @@ export default (user: ILocalUser, url: string, object: any) => new Promise(async
 async function resolveAddr(domain: string) {
 	// v4/v6で先に取得できた方を採用する
 	return await promiseAny([
-		resolveAddrInner(domain, { ipv6: false }),
-		resolveAddrInner(domain, { ipv6: true  })
+		resolveAddrInner(domain, { family: 4 }),
+		resolveAddrInner(domain, { family: 6 })
 	]);
 }
 
-function resolveAddrInner(domain: string, options = { }): Promise<string> {
+function resolveAddrInner(domain: string, options: IRunOptions = {}): Promise<string> {
 	return new Promise((res, rej) => {
-		lookup(domain, options, (error: any, address: string) => {
+		lookup(domain, options, (error: any, address: string | string[]) => {
 			if (error) return rej(error);
-			return res(address);
+			return res(Array.isArray(address) ? address[0] : address);
 		});
 	});
 }

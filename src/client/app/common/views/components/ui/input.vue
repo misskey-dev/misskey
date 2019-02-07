@@ -184,6 +184,12 @@ export default Vue.extend({
 				}
 			}
 		});
+
+		this.$on('keydown', (e: KeyboardEvent) => {
+			if (e.code == 'Enter') {
+				this.$emit('enter');
+			}
+		});
 	},
 	methods: {
 		focus() {

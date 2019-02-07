@@ -1,5 +1,6 @@
 <template>
-<span v-html="compiledFormula"></span>
+<div v-if="block" v-html="compiledFormula"></div>
+<span v-else v-html="compiledFormula"></span>
 </template>
 
 <script lang="ts">
@@ -10,6 +11,10 @@ export default Vue.extend({
 	props: {
 		formula: {
 			type: String,
+			required: true
+		},
+		block: {
+			type: Boolean,
 			required: true
 		}
 	},

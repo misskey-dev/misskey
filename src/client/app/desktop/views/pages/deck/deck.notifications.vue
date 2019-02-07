@@ -218,6 +218,6 @@ export default Vue.extend({
 		margin 0
 		padding 16px
 		text-align center
-		color #aaa
+		color var(--text)
 
 </style>

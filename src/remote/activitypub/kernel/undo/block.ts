@@ -1,18 +1,18 @@
 import * as mongo from 'mongodb';
 import User, { IRemoteUser } from '../../../../models/user';
 import config from '../../../../config';
-import * as debug from 'debug';
 import { IBlock } from '../../type';
 import unblock from '../../../../services/blocking/delete';
+import { apLogger } from '../../logger';
 
-const log = debug('misskey:activitypub');
+const logger = apLogger;
 
 export default async (actor: IRemoteUser, activity: IBlock): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
 
 	const uri = activity.id || activity;
 
-	log(`UnBlock: ${uri}`);
+	logger.info(`UnBlock: ${uri}`);
 
 	if (!id.startsWith(config.url + '/')) {
 		return null;

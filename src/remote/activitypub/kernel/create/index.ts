@@ -1,17 +1,16 @@
-import * as debug from 'debug';
-
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/user';
 import createNote from './note';
 import createImage from './image';
 import { ICreate } from '../../type';
+import { apLogger } from '../../logger';
 
-const log = debug('misskey:activitypub');
+const logger = apLogger;
 
 export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 	const uri = activity.id || activity;
 
-	log(`Create: ${uri}`);
+	logger.info(`Create: ${uri}`);
 
 	const resolver = new Resolver();
 
@@ -20,7 +19,7 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 	try {
 		object = await resolver.resolve(activity.object);
 	} catch (e) {
-		log(`Resolution failed: ${e}`);
+		logger.error(`Resolution failed: ${e}`);
 		throw e;
 	}
 
@@ -34,7 +33,7 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 		break;
 
 	default:
-		console.warn(`Unknown type: ${object.type}`);
+		logger.warn(`Unknown type: ${object.type}`);
 		break;
 	}
 };

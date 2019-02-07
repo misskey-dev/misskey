@@ -29,15 +29,15 @@ Installez les paquets suivants :
 * [Redis](https://redis.io/)
   * Redis est optionnel mais nous vous recommandons vivement de l'installer
 * [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
+* [FFmpeg](https://www.ffmpeg.org/)
 
 *3.* Paramètrage de MongoDB
 ----------------------------------------------------------------
 En root :
 1. `mongo` Ouvrez le shell mongo
 2. `use misskey` Utilisez la base de données misskey
-3. `db.users.save( {dummy:"dummy"} )` Écrivez une donnée factice pour initialiser la base de données.
-4. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
-5. `exit` Vous avez terminé !
+3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
+4. `exit` Vous avez terminé !
 
 *4.* Installation de Misskey
 ----------------------------------------------------------------

@@ -1,13 +1,12 @@
-import * as debug from 'debug';
-
 import Note from '../../../../models/note';
 import { IRemoteUser } from '../../../../models/user';
 import deleteNode from '../../../../services/note/delete';
+import { apLogger } from '../../logger';
 
-const log = debug('misskey:activitypub');
+const logger = apLogger;
 
 export default async function(actor: IRemoteUser, uri: string): Promise<void> {
-	log(`Deleting the Note: ${uri}`);
+	logger.info(`Deleting the Note: ${uri}`);
 
 	const note = await Note.findOne({ uri });
 

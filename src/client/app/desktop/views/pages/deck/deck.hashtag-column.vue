@@ -15,7 +15,7 @@
 import Vue from 'vue';
 import XColumn from './deck.column.vue';
 import XHashtagTl from './deck.hashtag-tl.vue';
-import * as ApexCharts from 'apexcharts';
+import ApexCharts from 'apexcharts';
 
 export default Vue.extend({
 	components: {
