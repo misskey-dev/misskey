@@ -6,11 +6,13 @@ import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-
 import Instance from '../../../models/instance';
 
 export default async (job: bq.Job, done: any): Promise<void> => {
+	const { host } = new URL(job.data.to);
+
 	try {
 		await request(job.data.user, job.data.to, job.data.content);
 
 		// Update stats
-		registerOrFetchInstanceDoc(job.data.user.host).then(i => {
+		registerOrFetchInstanceDoc(host).then(i => {
 			Instance.update({ _id: i._id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
@@ -22,7 +24,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		done();
 	} catch (res) {
 		// Update stats
-		registerOrFetchInstanceDoc(job.data.user.host).then(i => {
+		registerOrFetchInstanceDoc(host).then(i => {
 			Instance.update({ _id: i._id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
