@@ -45,6 +45,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			return;
 		}
 
+		// ブロックしてたら中断
+		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		if (instance && instance.isBlocked) {
+			logger.warn(`Blocked request: ${host}`);
+			done();
+			return;
+		}
+
 		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
 	} else {
 		// アクティビティ内のホストの検証
@@ -53,6 +62,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			ValidateActivity(activity, host);
 		} catch (e) {
 			logger.warn(e.message);
+			done();
+			return;
+		}
+
+		// ブロックしてたら中断
+		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		if (instance && instance.isBlocked) {
+			logger.warn(`Blocked request: ${host}`);
 			done();
 			return;
 		}

@@ -39,6 +39,7 @@
 				<ui-input :value="instance.latestRequestReceivedAt" type="text" readonly>
 					<span>{{ $t('latest-request-received-at') }}</span>
 				</ui-input>
+				<ui-switch v-model="instance.isBlocked" @change="updateInstance()">{{ $t('block') }}</ui-switch>
 				<section>
 					<ui-button @click="removeAllFollowing()"><fa :icon="faMinusCircle"/> {{ $t('remove-all-following') }}</ui-button>
 					<ui-info warn>{{ $t('remove-all-following-info', { host: instance.host }) }}</ui-info>
@@ -64,6 +65,11 @@
 					<option value="-followers">{{ $t('sorts.followersAsc') }}</option>
 					<option value="+followers">{{ $t('sorts.followersDesc') }}</option>
 				</ui-select>
+				<ui-select v-model="state">
+					<span slot="label">{{ $t('state') }}</span>
+					<option value="all">{{ $t('states.all') }}</option>
+					<option value="blocked">{{ $t('states.blocked') }}</option>
+				</ui-select>
 			</ui-horizon-group>
 
 			<div class="instances">
@@ -84,6 +90,8 @@
 					<span>{{ instance.latestStatus }}</span>
 				</div>
 			</div>
+
+			<ui-info v-if="instances.length == limit">{{ $t('result-is-truncated', { n: limit }) }}</ui-info>
 		</section>
 	</ui-card>
 </div>
@@ -102,6 +110,7 @@ export default Vue.extend({
 			instance: null,
 			target: null,
 			sort: '+caughtAt',
+			state: 'all',
 			limit: 50,
 			instances: [],
 			faGlobe, faTerminal, faSearch, faMinusCircle
@@ -110,7 +119,10 @@ export default Vue.extend({
 
 	watch: {
 		sort() {
-			this.instances = [];
+			this.fetchInstances();
+		},
+
+		state() {
 			this.fetchInstances();
 		},
 	},
@@ -137,9 +149,11 @@ export default Vue.extend({
 		},
 
 		fetchInstances() {
+			this.instances = [];
 			this.$root.api('federation/instances', {
+				state: this.state,
 				sort: this.sort,
-				limit: 50
+				limit: this.limit
 			}).then(instances => {
 				this.instances = instances;
 			});
@@ -154,7 +168,14 @@ export default Vue.extend({
 					splash: true
 				});
 			});
-		}
+		},
+
+		updateInstance() {
+			this.$root.api('admin/federation/update-instance', {
+				host: this.instance.host,
+				isBlocked: this.instance.isBlocked,
+			});
+		},
 	}
 });
 </script>

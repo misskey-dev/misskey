@@ -6,6 +6,10 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
+		state: {
+			validator: $.str.optional,
+		},
+
 		limit: {
 			validator: $.num.optional.range(1, 100),
 			default: 30
@@ -73,8 +77,14 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		};
 	}
 
+	const q = {} as any;
+
+	if (ps.state === 'blocked') {
+		q.isBlocked = true;
+	}
+
 	const instances = await Instance
-		.find({}, {
+		.find(q, {
 			limit: ps.limit,
 			sort: sort,
 			skip: ps.offset
