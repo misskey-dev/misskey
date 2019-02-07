@@ -72,15 +72,15 @@ export default function load() {
 	}
 
 	if (config.drive.storage === 'minio') {
-		if (typeof config.drive.storage.bucket !== 'string') {
+		if (typeof config.drive.bucket !== 'string') {
 			throw 'You need to configure the minio bucket.';
 		}
 
-		if (typeof config.drive.storage.prefix !== 'string') {
+		if (typeof config.drive.prefix !== 'string') {
 			throw 'You need to configure the minio prefix.';
 		}
 
-		if (config.drive.storage.prefix.config == null) {
+		if (config.drive.prefix.config == null) {
 			throw 'You need to configure the minio.';
 		}
 	}
