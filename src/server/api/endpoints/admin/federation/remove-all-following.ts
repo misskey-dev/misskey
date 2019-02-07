@@ -1,6 +1,5 @@
 import $ from 'cafy';
 import define from '../../../define';
-import Instance from '../../../../../models/instance';
 import Following from '../../../../../models/following';
 import User from '../../../../../models/user';
 import deleteFollowing from '../../../../../services/following/delete';
