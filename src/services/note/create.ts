@@ -27,7 +27,7 @@ import activeUsersChart from '../../chart/active-users';
 
 import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
-import registerInstance from '../register-instance';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
@@ -222,7 +222,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	// Register host
 	if (isRemoteUser(user)) {
-		registerInstance(user.host).then(i => {
+		registerOrFetchInstanceDoc(user.host).then(i => {
 			Instance.update({ _id: i._id }, {
 				$inc: {
 					notesCount: 1

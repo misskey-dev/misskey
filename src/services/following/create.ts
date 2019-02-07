@@ -10,6 +10,8 @@ import renderReject from '../../remote/activitypub/renderer/reject';
 import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 import perUserFollowingChart from '../../chart/per-user-following';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
+import Instance from '../../models/instance';
 
 export default async function(follower: IUser, followee: IUser, requestId?: string) {
 	// check blocking
@@ -95,6 +97,32 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 			followersCount: 1
 		}
 	});
+	//#endregion
+
+	//#region Update instance stats
+	if (isRemoteUser(follower) && isLocalUser(followee)) {
+		registerOrFetchInstanceDoc(follower.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					followingCount: 1
+				}
+			});
+
+			// TODO
+			//perInstanceChart.newFollowing();
+		});
+	} else if (isLocalUser(follower) && isRemoteUser(followee)) {
+		registerOrFetchInstanceDoc(followee.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					followersCount: 1
+				}
+			});
+
+			// TODO
+			//perInstanceChart.newFollower();
+		});
+	}
 	//#endregion
 
 	perUserFollowingChart.update(follower, followee, true);

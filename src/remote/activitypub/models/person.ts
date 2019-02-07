@@ -12,7 +12,7 @@ import { fromHtml } from '../../../mfm/fromHtml';
 import usersChart from '../../../chart/users';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
-import registerInstance from '../../../services/register-instance';
+import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import Instance from '../../../models/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
@@ -188,7 +188,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	}
 
 	// Register host
-	registerInstance(host).then(i => {
+	registerOrFetchInstanceDoc(host).then(i => {
 		Instance.update({ _id: i._id }, {
 			$inc: {
 				usersCount: 1
