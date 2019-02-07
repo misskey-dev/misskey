@@ -512,7 +512,7 @@ common/views/components/profile-editor.vue:
   export: "导出"
   export-targets:
     all-notes: "すべての投稿データ"
-    following-list: "フォロー"
+    following-list: "关注列表"
     mute-list: "ミュート"
     blocking-list: "ブロック"
   export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
