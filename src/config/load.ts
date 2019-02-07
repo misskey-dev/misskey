@@ -80,7 +80,7 @@ export default function load() {
 			throw 'You need to configure the minio prefix.';
 		}
 
-		if (config.drive.prefix.config == null) {
+		if (config.drive.config == null) {
 			throw 'You need to configure the minio.';
 		}
 	}
