@@ -1,8 +1,8 @@
 ---
-name: Bug Report
+name: Server-side Bug Report
 about: Create a report to help us improve
 title: ''
-labels: bug
+labels: bug, server-side
 assignees: ''
 
 ---
@@ -28,3 +28,4 @@ assignees: ''
 # Environment
 
 <!-- Tell us where on the platform it happens -->
+<!-- e.g. your Node.js version, your OS -->
