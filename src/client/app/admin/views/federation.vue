@@ -9,7 +9,36 @@
 			<ui-button @click="showInstance"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 
 			<div class="instance" v-if="instance">
-				{{ instance.host }}
+				<ui-input :value="instance.host" type="text" readonly>
+					<span>{{ $t('host') }}</span>
+				</ui-input>
+				<ui-horizon-group inputs>
+					<ui-input :value="instance.notesCount | number" type="text" readonly>
+						<span>{{ $t('notes') }}</span>
+					</ui-input>
+					<ui-input :value="instance.usersCount | number" type="text" readonly>
+						<span>{{ $t('users') }}</span>
+					</ui-input>
+				</ui-horizon-group>
+				<ui-horizon-group inputs>
+					<ui-input :value="instance.followingCount | number" type="text" readonly>
+						<span>{{ $t('following') }}</span>
+					</ui-input>
+					<ui-input :value="instance.followersCount | number" type="text" readonly>
+						<span>{{ $t('followers') }}</span>
+					</ui-input>
+				</ui-horizon-group>
+				<ui-horizon-group inputs>
+					<ui-input :value="instance.latestRequestSentAt" type="text" readonly>
+						<span>{{ $t('latest-request-sent-at') }}</span>
+					</ui-input>
+					<ui-input :value="instance.latestStatus" type="text" readonly>
+						<span>{{ $t('status') }}</span>
+					</ui-input>
+				</ui-horizon-group>
+				<ui-input :value="instance.latestRequestReceivedAt" type="text" readonly>
+					<span>{{ $t('latest-request-received-at') }}</span>
+				</ui-input>
 			</div>
 		</section>
 	</ui-card>
