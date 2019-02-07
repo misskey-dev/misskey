@@ -17,15 +17,8 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const instance = await Instance
-		.findOne({ host: ps.host });
-
-	if (instance == null) {
-		return rej('instance not found');
-	}
-
 	const followings = await Following.find({
-		'_follower.host': { $ne: null }
+		'_follower.host': ps.host
 	});
 
 	const pairs = await Promise.all(followings.map(f => Promise.all([
