@@ -4,6 +4,7 @@ import { URL } from 'url';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
 import * as promiseAny from 'promise-any';
+import { toUnicode } from 'punycode';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
@@ -22,7 +23,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise(async
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instance.findOne({ host });
+	const instance = await Instance.findOne({ host: toUnicode(host) });
 	if (instance && instance.isBlocked) return;
 
 	const data = JSON.stringify(object);
