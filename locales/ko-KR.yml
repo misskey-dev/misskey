@@ -510,7 +510,11 @@ common/views/components/profile-editor.vue:
   email-verified: "매일 주소가 확인되었습니다"
   email-not-verified: "메일 주소가 확인되지 않았습니다. 받은 편지함을 확인하여 주시기 바랍니다."
   export: "エクスポート"
-  export-notes: "すべての投稿のエクスポート"
+  export-targets:
+    all-notes: "すべての投稿データ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 common/views/components/user-list-editor.vue:
   users: "사용자"
@@ -1003,6 +1007,7 @@ admin/views/index.vue:
   announcements: "공지사항"
   hashtags: "해시태그"
   abuse: "스팸 신고"
+  queue: "ジョブキュー"
   back-to-misskey: "Misskey로 돌아가기"
 admin/views/dashboard.vue:
   dashboard: "대시보드"
@@ -1012,6 +1017,9 @@ admin/views/dashboard.vue:
   instances: "인스턴스"
   this-instance: "이 인스턴스"
   federated: "연합"
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "스팸 신고"
   target: "대상"

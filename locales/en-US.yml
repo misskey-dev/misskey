@@ -510,7 +510,11 @@ common/views/components/profile-editor.vue:
   email-verified: "Your email has been verified."
   email-not-verified: "Email address is not confirmed. Please check your inbox."
   export: "Export"
-  export-notes: "Export all of your Notes"
+  export-targets:
+    all-notes: "All posted Notes"
+    following-list: "List of followers"
+    mute-list: "List of muted accounts"
+    blocking-list: "List of blocked accounts"
   export-requested: "You have requested an export. This may take a while. After the export is complete, the resulting file will be added to the drive."
 common/views/components/user-list-editor.vue:
   users: "User"
@@ -1003,6 +1007,7 @@ admin/views/index.vue:
   announcements: "Announcements"
   hashtags: "Hashtags"
   abuse: "Abuse"
+  queue: "Job Queue"
   back-to-misskey: "Back to Misskey"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
@@ -1012,6 +1017,9 @@ admin/views/dashboard.vue:
   instances: "Instances"
   this-instance: "This instance"
   federated: "Federated"
+admin/views/queue.vue:
+  operation: "Action(s)"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "Abuse"
   target: "Target"

@@ -510,7 +510,11 @@ common/views/components/profile-editor.vue:
   email-verified: "L’adresse du courrier électronique a été vérifiée."
   email-not-verified: "Adresse de courriel n’est pas confirmée. Veuillez vérifier votre boite de réception."
   export: "エクスポート"
-  export-notes: "すべての投稿のエクスポート"
+  export-targets:
+    all-notes: "すべての投稿データ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
 common/views/components/user-list-editor.vue:
   users: "Utilisateur·rice"
@@ -1003,6 +1007,7 @@ admin/views/index.vue:
   announcements: "Annonces"
   hashtags: "Hashtags"
   abuse: "Abus"
+  queue: "ジョブキュー"
   back-to-misskey: "Retour vers Misskey"
 admin/views/dashboard.vue:
   dashboard: "Tableau de bord"
@@ -1012,6 +1017,9 @@ admin/views/dashboard.vue:
   instances: "Instances"
   this-instance: "Cette instance"
   federated: "Fédérées"
+admin/views/queue.vue:
+  operation: "操作"
+  remove-all-jobs: "すべてのジョブをクリア"
 admin/views/abuse.vue:
   title: "Abus"
   target: "Cible"
