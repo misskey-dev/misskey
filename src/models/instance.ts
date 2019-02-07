@@ -44,12 +44,17 @@ export interface IInstance {
 	followersCount: number;
 
 	/**
-	 * 最近の通信日時
+	 * 直近のリクエスト送信日時
 	 */
 	latestRequestSentAt?: Date;
 
 	/**
-	 * 最近の通信のHTTPステータス
+	 * 直近のリクエスト送信時のHTTPステータスコード
 	 */
 	latestStatus?: number;
+
+	/**
+	 * 直近のリクエスト受信日時
+	 */
+	latestRequestReceivedAt?: Date;
 }
