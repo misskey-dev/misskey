@@ -28,7 +28,7 @@
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "1.2.14",
-		"@fortawesome/free-brands-svg-icons": "5.6.3",
+		"@fortawesome/free-brands-svg-icons": "5.7.1",
 		"@fortawesome/free-regular-svg-icons": "5.7.0",
 		"@fortawesome/free-solid-svg-icons": "5.6.3",
 		"@fortawesome/vue-fontawesome": "0.1.5",
@@ -223,7 +223,7 @@
 		"tmp": "0.0.33",
 		"ts-loader": "5.3.3",
 		"ts-node": "7.0.1",
-		"tslint": "5.12.0",
+		"tslint": "5.12.1",
 		"tslint-sonarts": "1.9.0",
 		"typescript": "3.2.4",
 		"typescript-eslint-parser": "21.0.2",
