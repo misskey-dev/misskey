@@ -138,7 +138,8 @@ export default Vue.extend({
 
 		fetchInstances() {
 			this.$root.api('federation/instances', {
-				sort: this.sort
+				sort: this.sort,
+				limit: 50
 			}).then(instances => {
 				this.instances = instances;
 			});
