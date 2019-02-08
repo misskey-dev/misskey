@@ -1246,6 +1246,7 @@ admin/views/federation.vue:
   remove-all-following: "取消所有关注"
   remove-all-following-info: "取消{host}的所有关注者。当实例不存在时执行。"
   block: "拉黑"
+  marked-as-closed: "閉鎖されているとマーク"
   lookup: "查询"
   instances: "实例"
   instance-not-registered: "实例未注册"
@@ -1253,6 +1254,8 @@ admin/views/federation.vue:
   sorts:
     caughtAtAsc: "注册时间从旧到新"
     caughtAtDesc: "注册时间从新到旧"
+    lastCommunicatedAtAsc: "最後にやり取りした日時が古い順"
+    lastCommunicatedAtDesc: "最後にやり取りした日時が新しい順"
     notesAsc: "发帖数量从少到多"
     notesDesc: "发帖数量从多到少"
     usersAsc: "用户数从少到多"
@@ -1269,6 +1272,8 @@ admin/views/federation.vue:
   states:
     all: "所有"
     blocked: "已拉黑"
+    not-responding: "応答なし"
+    marked-as-closed: "閉鎖とマーク済み"
   result-is-truncated: "显示最前面的{n}项。"
   charts: "チャート"
   chart-srcs:
