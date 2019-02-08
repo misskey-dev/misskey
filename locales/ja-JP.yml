@@ -1399,11 +1399,31 @@ admin/views/federation.vue:
     followingDesc: "フォローが多い順"
     followersAsc: "フォロワーが少ない順"
     followersDesc: "フォロワーが多い順"
+    driveUsageAsc: "ドライブ使用量が少ない順"
+    driveUsageDesc: "ドライブ使用量が多い順"
+    driveFilesAsc: "ドライブのファイル数が少ない順"
+    driveFilesDesc: "ドライブのファイル数が多い順"
   state: "状態"
   states:
     all: "すべて"
     blocked: "ブロック"
   result-is-truncated: "上位{n}件を表示しています。"
+  charts: "チャート"
+  chart-srcs:
+    requests: "リクエスト"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの積算"
+    notes: "投稿の増減"
+    notes-total: "投稿の積算"
+    ff: "フォロー/フォロワーの増減"
+    ff-total: "フォロー/フォロワーの積算"
+    drive-usage: "ドライブ使用量の増減"
+    drive-usage-total: "ドライブ使用量の増減"
+    drive-files: "ドライブファイル数の増減"
+    drive-files-total: "ドライブファイル数の増減"
+  chart-spans:
+    hour: "1時間ごと"
+    day: "1日ごと"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."

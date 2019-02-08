@@ -44,6 +44,16 @@ export interface IInstance {
 	followersCount: number;
 
 	/**
+	 * ドライブ使用量
+	 */
+	driveUsage: number;
+
+	/**
+	 * ドライブのファイル数
+	 */
+	driveFiles: number;
+
+	/**
 	 * 直近のリクエスト送信日時
 	 */
 	latestRequestSentAt?: Date;

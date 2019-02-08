@@ -10,6 +10,7 @@ import { publishApLogStream } from '../../../services/stream';
 import Logger from '../../../misc/logger';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import Instance from '../../../models/instance';
+import instanceChart from '../../../services/chart/instance';
 
 const logger = new Logger('inbox');
 
@@ -128,6 +129,8 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 				latestRequestReceivedAt: new Date()
 			}
 		});
+
+		instanceChart.requestReceived(i.host);
 	});
 
 	// アクティビティを処理
