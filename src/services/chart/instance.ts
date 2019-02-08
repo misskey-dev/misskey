@@ -177,11 +177,12 @@ class InstanceChart extends Chart<InstanceLog> {
 	}
 
 	@autobind
-	public async newNote(host: string) {
+	public async updateNote(host: string, isAdditional: boolean) {
 		await this.inc({
 			notes: {
-				total: 1,
-				inc: 1
+				total: isAdditional ? 1 : -1,
+				inc: isAdditional ? 1 : 0,
+				dec: isAdditional ? 0 : 1,
 			}
 		}, host);
 	}

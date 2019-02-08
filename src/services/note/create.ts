@@ -230,7 +230,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 				}
 			});
 
-			instanceChart.newNote(i.host);
+			instanceChart.updateNote(i.host, true);
 		});
 	}
 
