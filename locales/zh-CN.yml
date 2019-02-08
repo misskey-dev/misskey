@@ -514,7 +514,7 @@ common/views/components/profile-editor.vue:
     all-notes: "すべての投稿データ"
     following-list: "关注列表"
     mute-list: "屏蔽列表"
-    blocking-list: "ブロック"
+    blocking-list: "黑名单"
   export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
 common/views/components/user-list-editor.vue:
   users: "用户"
@@ -914,7 +914,7 @@ common/views/components/drive-settings.vue:
 common/views/components/mute-and-block.vue:
   mute-and-block: "屏蔽/拉黑"
   mute: "屏蔽"
-  block: "封锁中"
+  block: "已拉黑"
   no-muted-users: "无屏蔽用户"
   no-blocked-users: "没有封锁的用户"
   word-mute: "文字屏蔽"
@@ -1245,7 +1245,7 @@ admin/views/federation.vue:
   latest-request-received-at: "直近のリクエスト受信"
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
-  block: "ブロック"
+  block: "拉黑"
   lookup: "照会"
   instances: "インスタンス"
   instance-not-registered: "そのインスタンスは登録されていません"
@@ -1264,7 +1264,7 @@ admin/views/federation.vue:
   state: "状態"
   states:
     all: "すべて"
-    blocked: "ブロック"
+    blocked: "已拉黑"
   result-is-truncated: "上位{n}件を表示しています。"
 desktop/views/pages/welcome.vue:
   about: "更多信息..."
