@@ -4,6 +4,7 @@ import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-
 import config from '../../config';
 import driveChart from '../../services/chart/drive';
 import perUserDriveChart from '../../services/chart/per-user-drive';
+import instanceChart from '../../services/chart/instance';
 import DriveFileWebpublic, { DriveFileWebpublicChunk } from '../../models/drive-file-webpublic';
 
 export default async function(file: IDriveFile, isExpired = false) {
@@ -84,4 +85,5 @@ export default async function(file: IDriveFile, isExpired = false) {
 	// 統計を更新
 	driveChart.update(file, false);
 	perUserDriveChart.update(file, false);
+	instanceChart.updateDrive(file, false);
 }

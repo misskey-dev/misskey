@@ -20,6 +20,7 @@ import { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import driveChart from '../../services/chart/drive';
 import perUserDriveChart from '../../services/chart/per-user-drive';
+import instanceChart from '../../services/chart/instance';
 import fetchMeta from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
@@ -523,6 +524,7 @@ export default async function(
 	// 統計を更新
 	driveChart.update(driveFile, true);
 	perUserDriveChart.update(driveFile, true);
+	instanceChart.updateDrive(driveFile, true);
 
 	return driveFile;
 }

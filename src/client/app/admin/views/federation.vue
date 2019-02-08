@@ -51,6 +51,10 @@
 							<option value="notes-total">{{ $t('chart-srcs.notes-total') }}</option>
 							<option value="ff">{{ $t('chart-srcs.ff') }}</option>
 							<option value="ff-total">{{ $t('chart-srcs.ff-total') }}</option>
+							<option value="drive-usage">{{ $t('chart-srcs.drive-usage') }}</option>
+							<option value="drive-usage-total">{{ $t('chart-srcs.drive-usage-total') }}</option>
+							<option value="drive-files">{{ $t('chart-srcs.drive-files') }}</option>
+							<option value="drive-files-total">{{ $t('chart-srcs.drive-files-total') }}</option>
 						</ui-select>
 						<ui-select v-model="chartSpan">
 							<option value="hour">{{ $t('chart-spans.hour') }}</option>
@@ -158,6 +162,10 @@ export default Vue.extend({
 				case 'notes-total': return this.notesChart(true);
 				case 'ff': return this.ffChart(false);
 				case 'ff-total': return this.ffChart(true);
+				case 'drive-usage': return this.driveUsageChart(false);
+				case 'drive-usage-total': return this.driveUsageChart(true);
+				case 'drive-files': return this.driveFilesChart(false);
+				case 'drive-files-total': return this.driveFilesChart(true);
 			}
 		},
 
@@ -318,7 +326,7 @@ export default Vue.extend({
 				},
 				yaxis: {
 					labels: {
-						formatter: v => Vue.filter('number')(v),
+						formatter: this.data.bytes ? v => Vue.filter('bytes')(v, 0) : v => Vue.filter('number')(v),
 						style: {
 							color: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
 						}
@@ -403,6 +411,33 @@ export default Vue.extend({
 					data: this.format(total
 						? this.stats.followers.total
 						: sum(this.stats.followers.inc, negate(this.stats.followers.dec))
+					)
+				}]
+			};
+		},
+
+		driveUsageChart(total: boolean): any {
+			return {
+				bytes: true,
+				series: [{
+					name: 'Drive usage',
+					type: 'area',
+					data: this.format(total
+						? this.stats.drive.totalUsage
+						: sum(this.stats.drive.incUsage, negate(this.stats.drive.decUsage))
+					)
+				}]
+			};
+		},
+
+		driveFilesChart(total: boolean): any {
+			return {
+				series: [{
+					name: 'Drive files',
+					type: 'area',
+					data: this.format(total
+						? this.stats.drive.totalFiles
+						: sum(this.stats.drive.incFiles, negate(this.stats.drive.decFiles))
 					)
 				}]
 			};

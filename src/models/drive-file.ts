@@ -11,6 +11,7 @@ DriveFile.createIndex('md5');
 DriveFile.createIndex('metadata.uri');
 DriveFile.createIndex('metadata.userId');
 DriveFile.createIndex('metadata.folderId');
+DriveFile.createIndex('metadata._user.host');
 export default DriveFile;
 
 export const DriveFileChunk = monkDb.get('driveFiles.chunks');
