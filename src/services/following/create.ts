@@ -14,6 +14,7 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
 import Logger from '../../misc/logger';
+import FollowRequest from '../../models/follow-request';
 
 const logger = new Logger('following/create');
 
@@ -43,6 +44,11 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 		} else {
 			throw e;
 		}
+	});
+
+	await FollowRequest.remove({
+		followeeId: followee._id,
+		followerId: follower._id
 	});
 
 	if (alreadyFollowed) return;
