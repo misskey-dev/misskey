@@ -10,6 +10,7 @@ import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import { fromHtml } from '../../../mfm/fromHtml';
 import usersChart from '../../../services/chart/users';
+import instanceChart from '../../../services/chart/instance';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
@@ -195,8 +196,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			}
 		});
 
-		// TODO
-		//perInstanceChart.newUser();
+		instanceChart.newUser(i.host);
 	});
 
 	//#region Increment users count
