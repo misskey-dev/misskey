@@ -88,6 +88,10 @@
 					<option value="+following">{{ $t('sorts.followingDesc') }}</option>
 					<option value="-followers">{{ $t('sorts.followersAsc') }}</option>
 					<option value="+followers">{{ $t('sorts.followersDesc') }}</option>
+					<option value="-driveUsage">{{ $t('sorts.driveUsageAsc') }}</option>
+					<option value="+driveUsage">{{ $t('sorts.driveUsageDesc') }}</option>
+					<option value="-driveFiles">{{ $t('sorts.driveFilesAsc') }}</option>
+					<option value="+driveFiles">{{ $t('sorts.driveFilesDesc') }}</option>
 				</ui-select>
 				<ui-select v-model="state">
 					<span slot="label">{{ $t('state') }}</span>

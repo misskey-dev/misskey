@@ -1399,6 +1399,10 @@ admin/views/federation.vue:
     followingDesc: "フォローが多い順"
     followersAsc: "フォロワーが少ない順"
     followersDesc: "フォロワーが多い順"
+    driveUsageAsc: "ドライブ使用量が少ない順"
+    driveUsageDesc: "ドライブ使用量が多い順"
+    driveFilesAsc: "ドライブのファイル数が少ない順"
+    driveFilesDesc: "ドライブのファイル数が多い順"
   state: "状態"
   states:
     all: "すべて"

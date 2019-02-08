@@ -13,7 +13,7 @@ import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../mode
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import { publishMainStream, publishDriveStream } from '../stream';
-import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
+import { isLocalUser, IUser, IRemoteUser, isRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
 import { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
@@ -25,6 +25,7 @@ import fetchMeta from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
+import Instance from '../../models/instance';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -524,7 +525,15 @@ export default async function(
 	// 統計を更新
 	driveChart.update(driveFile, true);
 	perUserDriveChart.update(driveFile, true);
-	instanceChart.updateDrive(driveFile, true);
+	if (isRemoteUser(driveFile.metadata._user.host)) {
+		instanceChart.updateDrive(driveFile, true);
+		Instance.update({ host: driveFile.metadata._user.host }, {
+			$inc: {
+				driveUsage: driveFile.length,
+				driveFiles: 1
+			}
+		});
+	}
 
 	return driveFile;
 }

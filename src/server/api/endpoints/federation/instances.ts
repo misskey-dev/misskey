@@ -70,6 +70,22 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			sort = {
 				caughtAt: 1
 			};
+		} else if (ps.sort == '+driveUsage') {
+			sort = {
+				driveUsage: -1
+			};
+		} else if (ps.sort == '-driveUsage') {
+			sort = {
+				driveUsage: 1
+			};
+		} else if (ps.sort == '+driveFiles') {
+			sort = {
+				driveFiles: -1
+			};
+		} else if (ps.sort == '-driveFiles') {
+			sort = {
+				driveFiles: 1
+			};
 		}
 	} else {
 		sort = {
