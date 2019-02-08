@@ -1243,7 +1243,7 @@ admin/views/federation.vue:
   status: "Status"
   latest-request-sent-at: "Time of last request sent"
   latest-request-received-at: "Last request received at"
-  remove-all-following: "Clear all followers"
+  remove-all-following: "Withold all followers"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
   block: "Block"
   marked-as-closed: "Marked as closed"
