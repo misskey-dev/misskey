@@ -1423,9 +1423,9 @@ admin/views/federation.vue:
     ff: "フォロー/フォロワーの増減"
     ff-total: "フォロー/フォロワーの積算"
     drive-usage: "ドライブ使用量の増減"
-    drive-usage-total: "ドライブ使用量の増減"
+    drive-usage-total: "ドライブ使用量の積算"
     drive-files: "ドライブファイル数の増減"
-    drive-files-total: "ドライブファイル数の増減"
+    drive-files-total: "ドライブファイル数の積算"
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"
