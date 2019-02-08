@@ -1384,6 +1384,7 @@ admin/views/federation.vue:
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
   block: "ブロック"
+  marked-as-closed: "閉鎖されているとマーク"
   lookup: "照会"
   instances: "インスタンス"
   instance-not-registered: "そのインスタンスは登録されていません"
@@ -1391,6 +1392,8 @@ admin/views/federation.vue:
   sorts:
     caughtAtAsc: "登録日時が古い順"
     caughtAtDesc: "登録日時が新しい順"
+    lastCommunicatedAtAsc: "最後にやり取りした日時が古い順"
+    lastCommunicatedAtDesc: "最後にやり取りした日時が新しい順"
     notesAsc: "投稿が少ない順"
     notesDesc: "投稿が多い順"
     usersAsc: "ユーザーが少ない順"
@@ -1407,6 +1410,8 @@ admin/views/federation.vue:
   states:
     all: "すべて"
     blocked: "ブロック"
+    not-responding: "応答なし"
+    marked-as-closed: "閉鎖とマーク済み"
   result-is-truncated: "上位{n}件を表示しています。"
   charts: "チャート"
   chart-srcs:

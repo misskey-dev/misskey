@@ -40,6 +40,7 @@
 					<span>{{ $t('latest-request-received-at') }}</span>
 				</ui-input>
 				<ui-switch v-model="instance.isBlocked" @change="updateInstance()">{{ $t('block') }}</ui-switch>
+				<ui-switch v-model="instance.isMarkedAsClosed" @change="updateInstance()">{{ $t('marked-as-closed') }}</ui-switch>
 				<details>
 					<summary>{{ $t('charts') }}</summary>
 					<ui-horizon-group inputs>
@@ -80,6 +81,8 @@
 					<span slot="label">{{ $t('sort') }}</span>
 					<option value="-caughtAt">{{ $t('sorts.caughtAtAsc') }}</option>
 					<option value="+caughtAt">{{ $t('sorts.caughtAtDesc') }}</option>
+					<option value="-lastCommunicatedAt">{{ $t('sorts.lastCommunicatedAtAsc') }}</option>
+					<option value="+lastCommunicatedAt">{{ $t('sorts.lastCommunicatedAtDesc') }}</option>
 					<option value="-notes">{{ $t('sorts.notesAsc') }}</option>
 					<option value="+notes">{{ $t('sorts.notesDesc') }}</option>
 					<option value="-users">{{ $t('sorts.usersAsc') }}</option>
@@ -97,6 +100,8 @@
 					<span slot="label">{{ $t('state') }}</span>
 					<option value="all">{{ $t('states.all') }}</option>
 					<option value="blocked">{{ $t('states.blocked') }}</option>
+					<option value="notResponding">{{ $t('states.not-responding') }}</option>
+					<option value="markedAsClosed">{{ $t('states.marked-as-closed') }}</option>
 				</ui-select>
 			</ui-horizon-group>
 
@@ -247,7 +252,9 @@ export default Vue.extend({
 		fetchInstances() {
 			this.instances = [];
 			this.$root.api('federation/instances', {
-				state: this.state,
+				blocked: this.state === 'blocked' ? true : null,
+				notResponding: this.state === 'notResponding' ? true : null,
+				markedAsClosed: this.state === 'markedAsClosed' ? true : null,
 				sort: this.sort,
 				limit: this.limit
 			}).then(instances => {
@@ -269,7 +276,8 @@ export default Vue.extend({
 		updateInstance() {
 			this.$root.api('admin/federation/update-instance', {
 				host: this.instance.host,
-				isBlocked: this.instance.isBlocked,
+				isBlocked: this.instance.isBlocked || false,
+				isClosed: this.instance.isMarkedAsClosed || false
 			});
 		},
 

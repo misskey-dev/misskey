@@ -126,7 +126,9 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	registerOrFetchInstanceDoc(user.host).then(i => {
 		Instance.update({ _id: i._id }, {
 			$set: {
-				latestRequestReceivedAt: new Date()
+				latestRequestReceivedAt: new Date(),
+				lastCommunicatedAt: new Date(),
+				isNotResponding: false
 			}
 		});
 

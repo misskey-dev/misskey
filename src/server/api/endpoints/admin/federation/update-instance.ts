@@ -14,6 +14,10 @@ export const meta = {
 		isBlocked: {
 			validator: $.bool
 		},
+
+		isClosed: {
+			validator: $.bool
+		},
 	}
 };
 
@@ -26,7 +30,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 
 	Instance.update({ host: ps.host }, {
 		$set: {
-			isBlocked: ps.isBlocked
+			isBlocked: ps.isBlocked,
+			isMarkedAsClosed: ps.isClosed
 		}
 	});
 
