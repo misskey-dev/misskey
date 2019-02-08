@@ -1407,6 +1407,12 @@ admin/views/federation.vue:
   charts: "チャート"
   chart-srcs:
     requests: "リクエスト"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの積算"
+    notes: "投稿の増減"
+    notes-total: "投稿の積算"
+    ff: "フォロー/フォロワーの増減"
+    ff-total: "フォロー/フォロワーの積算"
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"

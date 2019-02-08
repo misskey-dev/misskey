@@ -45,6 +45,12 @@
 					<ui-horizon-group inputs>
 						<ui-select v-model="chartSrc">
 							<option value="requests">{{ $t('chart-srcs.requests') }}</option>
+							<option value="users">{{ $t('chart-srcs.users') }}</option>
+							<option value="users-total">{{ $t('chart-srcs.users-total') }}</option>
+							<option value="notes">{{ $t('chart-srcs.notes') }}</option>
+							<option value="notes-total">{{ $t('chart-srcs.notes-total') }}</option>
+							<option value="ff">{{ $t('chart-srcs.ff') }}</option>
+							<option value="ff-total">{{ $t('chart-srcs.ff-total') }}</option>
 						</ui-select>
 						<ui-select v-model="chartSpan">
 							<option value="hour">{{ $t('chart-spans.hour') }}</option>
@@ -150,10 +156,8 @@ export default Vue.extend({
 				case 'users-total': return this.usersChart(true);
 				case 'notes': return this.notesChart(false);
 				case 'notes-total': return this.notesChart(true);
-				case 'following': return this.followingChart(false);
-				case 'following-total': return this.followingChart(true);
-				case 'followers': return this.followersChart(false);
-				case 'followers-total': return this.followersChart(true);
+				case 'ff': return this.ffChart(false);
+				case 'ff-total': return this.ffChart(true);
 			}
 		},
 
@@ -384,7 +388,7 @@ export default Vue.extend({
 			};
 		},
 
-		followingChart(total: boolean): any {
+		ffChart(total: boolean): any {
 			return {
 				series: [{
 					name: 'Following',
@@ -393,13 +397,7 @@ export default Vue.extend({
 						? this.stats.following.total
 						: sum(this.stats.following.inc, negate(this.stats.following.dec))
 					)
-				}]
-			};
-		},
-
-		followersChart(total: boolean): any {
-			return {
-				series: [{
+				}, {
 					name: 'Followers',
 					type: 'area',
 					data: this.format(total
