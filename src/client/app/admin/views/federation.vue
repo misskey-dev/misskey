@@ -73,7 +73,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">{{ $t('instances') }}</div>
+		<div slot="title"><fa :icon="faServer"/> {{ $t('instances') }}</div>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-select v-model="sort">
@@ -128,7 +128,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
-import { faGlobe, faTerminal, faSearch, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faTerminal, faSearch, faMinusCircle, faServer } from '@fortawesome/free-solid-svg-icons';
 import ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
 
@@ -151,7 +151,7 @@ export default Vue.extend({
 			chartSrc: 'requests',
 			chartSpan: 'hour',
 			chartInstance: null,
-			faGlobe, faTerminal, faSearch, faMinusCircle
+			faGlobe, faTerminal, faSearch, faMinusCircle, faServer
 		};
 	},
 
