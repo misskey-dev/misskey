@@ -1259,13 +1259,13 @@ admin/views/federation.vue:
     usersDesc: "用户数从多到少"
     followingAsc: "关注数从少到多"
     followingDesc: "关注数从多到少"
-    followersAsc: "フォロワーが少ない順"
-    followersDesc: "フォロワーが多い順"
-  state: "状態"
+    followersAsc: "粉丝数从少到多"
+    followersDesc: "粉丝数从多到少"
+  state: "状态"
   states:
-    all: "すべて"
+    all: "所有"
     blocked: "已拉黑"
-  result-is-truncated: "上位{n}件を表示しています。"
+  result-is-truncated: "显示最前面的{n}项。"
 desktop/views/pages/welcome.vue:
   about: "更多信息..."
   gotit: "没问题! "
