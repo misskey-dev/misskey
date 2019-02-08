@@ -35,6 +35,11 @@ type InstanceLog = {
 		 * 増加した投稿数
 		 */
 		inc: number;
+
+		/**
+		 * 減少した投稿数
+		 */
+		dec: number;
 	};
 
 	users: {
@@ -47,6 +52,11 @@ type InstanceLog = {
 		 * 増加したユーザー数
 		 */
 		inc: number;
+
+		/**
+		 * 減少したユーザー数
+		 */
+		dec: number;
 	};
 
 	following: {
@@ -111,11 +121,13 @@ class InstanceChart extends Chart<InstanceLog> {
 			},
 			notes: {
 				total: notesCount,
-				inc: 0
+				inc: 0,
+				dec: 0
 			},
 			users: {
 				total: usersCount,
-				inc: 0
+				inc: 0,
+				dec: 0
 			},
 			following: {
 				total: followingCount,

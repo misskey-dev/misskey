@@ -25,7 +25,7 @@ export const meta = {
 			}
 		},
 
-		userId: {
+		host: {
 			validator: $.str,
 			desc: {
 				'ja-JP': '対象のインスタンスのホスト',
@@ -36,7 +36,7 @@ export const meta = {
 };
 
 export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const stats = await instanceChart.getChart(ps.span as any, ps.limit, ps.userId);
+	const stats = await instanceChart.getChart(ps.span as any, ps.limit, ps.host);
 
 	res(stats);
 }));

@@ -41,6 +41,19 @@
 				</ui-input>
 				<ui-switch v-model="instance.isBlocked" @change="updateInstance()">{{ $t('block') }}</ui-switch>
 				<details>
+					<summary>{{ $t('charts') }}</summary>
+					<ui-horizon-group inputs>
+						<ui-select v-model="chartSrc">
+							<option value="requests">{{ $t('chart-srcs.requests') }}</option>
+						</ui-select>
+						<ui-select v-model="chartSpan">
+							<option value="hour">{{ $t('chart-spans.hour') }}</option>
+							<option value="day">{{ $t('chart-spans.day') }}</option>
+						</ui-select>
+					</ui-horizon-group>
+					<div ref="chart"></div>
+				</details>
+				<details>
 					<summary>{{ $t('remove-all-following') }}</summary>
 					<ui-button @click="removeAllFollowing()" style="margin-top: 16px;"><fa :icon="faMinusCircle"/> {{ $t('remove-all-following') }}</ui-button>
 					<ui-info warn>{{ $t('remove-all-following-info', { host: instance.host }) }}</ui-info>
@@ -50,7 +63,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="faUsers"/> {{ $t('instances') }}</div>
+		<div slot="title">{{ $t('instances') }}</div>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-select v-model="sort">
@@ -102,6 +115,12 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faGlobe, faTerminal, faSearch, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import ApexCharts from 'apexcharts';
+import * as tinycolor from 'tinycolor2';
+
+const chartLimit = 90;
+const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
+const negate = arr => arr.map(x => -x);
 
 export default Vue.extend({
 	i18n: i18n('admin/views/federation.vue'),
@@ -114,8 +133,38 @@ export default Vue.extend({
 			state: 'all',
 			limit: 50,
 			instances: [],
+			chart: null,
+			chartSrc: 'requests',
+			chartSpan: 'hour',
+			chartInstance: null,
 			faGlobe, faTerminal, faSearch, faMinusCircle
 		};
+	},
+
+	computed: {
+		data(): any {
+			if (this.chart == null) return null;
+			switch (this.chartSrc) {
+				case 'requests': return this.requestsChart();
+				case 'users': return this.usersChart(false);
+				case 'users-total': return this.usersChart(true);
+				case 'notes': return this.notesChart(false);
+				case 'notes-total': return this.notesChart(true);
+				case 'following': return this.followingChart(false);
+				case 'following-total': return this.followingChart(true);
+				case 'followers': return this.followersChart(false);
+				case 'followers-total': return this.followersChart(true);
+			}
+		},
+
+		stats(): any[] {
+			const stats =
+				this.chartSpan == 'day' ? this.chart.perDay :
+				this.chartSpan == 'hour' ? this.chart.perHour :
+				null;
+
+			return stats;
+		}
 	},
 
 	watch: {
@@ -126,10 +175,40 @@ export default Vue.extend({
 		state() {
 			this.fetchInstances();
 		},
+
+		async instance() {
+			this.now = new Date();
+
+			const [perHour, perDay] = await Promise.all([
+				this.$root.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'hour' }),
+				this.$root.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'day' }),
+			]);
+
+			const chart = {
+				perHour: perHour,
+				perDay: perDay
+			};
+
+			this.chart = chart;
+
+			this.renderChart();
+		},
+
+		chartSrc() {
+			this.renderChart();
+		},
+
+		chartSpan() {
+			this.renderChart();
+		}
 	},
 
 	mounted() {
 		this.fetchInstances();
+	},
+
+	beforeDestroy() {
+		this.chartInstance.destroy();
 	},
 
 	methods: {
@@ -176,6 +255,159 @@ export default Vue.extend({
 				host: this.instance.host,
 				isBlocked: this.instance.isBlocked,
 			});
+		},
+
+		setSrc(src) {
+			this.chartSrc = src;
+		},
+
+		renderChart() {
+			if (this.chartInstance) {
+				this.chartInstance.destroy();
+			}
+
+			this.chartInstance = new ApexCharts(this.$refs.chart, {
+				chart: {
+					type: 'area',
+					height: 300,
+					animations: {
+						dynamicAnimation: {
+							enabled: false
+						}
+					},
+					toolbar: {
+						show: false
+					},
+					zoom: {
+						enabled: false
+					}
+				},
+				dataLabels: {
+					enabled: false
+				},
+				grid: {
+					clipMarkers: false,
+					borderColor: 'rgba(0, 0, 0, 0.1)'
+				},
+				stroke: {
+					curve: 'straight',
+					width: 2
+				},
+				legend: {
+					labels: {
+						colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+					},
+				},
+				xaxis: {
+					type: 'datetime',
+					labels: {
+						style: {
+							colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+						}
+					},
+					axisBorder: {
+						color: 'rgba(0, 0, 0, 0.1)'
+					},
+					axisTicks: {
+						color: 'rgba(0, 0, 0, 0.1)'
+					},
+				},
+				yaxis: {
+					labels: {
+						formatter: v => Vue.filter('number')(v),
+						style: {
+							color: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+						}
+					}
+				},
+				series: this.data.series
+			});
+
+			this.chartInstance.render();
+		},
+
+		getDate(i: number) {
+			const y = this.now.getFullYear();
+			const m = this.now.getMonth();
+			const d = this.now.getDate();
+			const h = this.now.getHours();
+
+			return (
+				this.chartSpan == 'day' ? new Date(y, m, d - i) :
+				this.chartSpan == 'hour' ? new Date(y, m, d, h - i) :
+				null
+			);
+		},
+
+		format(arr) {
+			return arr.map((v, i) => ({ x: this.getDate(i).getTime(), y: v }));
+		},
+
+		requestsChart(): any {
+			return {
+				series: [{
+					name: 'Incoming',
+					data: this.format(this.stats.requests.received)
+				}, {
+					name: 'Outgoing (succeeded)',
+					data: this.format(this.stats.requests.succeeded)
+				}, {
+					name: 'Outgoing (failed)',
+					data: this.format(this.stats.requests.failed)
+				}]
+			};
+		},
+
+		usersChart(total: boolean): any {
+			return {
+				series: [{
+					name: 'Users',
+					type: 'area',
+					data: this.format(total
+						? this.stats.users.total
+						: sum(this.stats.users.inc, negate(this.stats.users.dec))
+					)
+				}]
+			};
+		},
+
+		notesChart(total: boolean): any {
+			return {
+				series: [{
+					name: 'Notes',
+					type: 'area',
+					data: this.format(total
+						? this.stats.notes.total
+						: sum(this.stats.notes.inc, negate(this.stats.notes.dec))
+					)
+				}]
+			};
+		},
+
+		followingChart(total: boolean): any {
+			return {
+				series: [{
+					name: 'Following',
+					type: 'area',
+					data: this.format(total
+						? this.stats.following.total
+						: sum(this.stats.following.inc, negate(this.stats.following.dec))
+					)
+				}]
+			};
+		},
+
+		followersChart(total: boolean): any {
+			return {
+				series: [{
+					name: 'Followers',
+					type: 'area',
+					data: this.format(total
+						? this.stats.followers.total
+						: sum(this.stats.followers.inc, negate(this.stats.followers.dec))
+					)
+				}]
+			};
 		},
 	}
 });
