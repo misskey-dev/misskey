@@ -17,7 +17,9 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			Instance.update({ _id: i._id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
-					latestStatus: 200
+					latestStatus: 200,
+					lastCommunicatedAt: new Date(),
+					isNotResponding: false
 				}
 			});
 
@@ -31,7 +33,8 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			Instance.update({ _id: i._id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
-					latestStatus: res != null && res.hasOwnProperty('statusCode') ? res.statusCode : null
+					latestStatus: res != null && res.hasOwnProperty('statusCode') ? res.statusCode : null,
+					isNotResponding: true
 				}
 			});
 
