@@ -525,7 +525,7 @@ export default async function(
 	// 統計を更新
 	driveChart.update(driveFile, true);
 	perUserDriveChart.update(driveFile, true);
-	if (isRemoteUser(driveFile.metadata._user.host)) {
+	if (isRemoteUser(driveFile.metadata._user)) {
 		instanceChart.updateDrive(driveFile, true);
 		Instance.update({ host: driveFile.metadata._user.host }, {
 			$inc: {

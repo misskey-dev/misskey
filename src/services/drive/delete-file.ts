@@ -87,7 +87,7 @@ export default async function(file: IDriveFile, isExpired = false) {
 	// 統計を更新
 	driveChart.update(file, false);
 	perUserDriveChart.update(file, false);
-	if (isRemoteUser(file.metadata._user.host)) {
+	if (isRemoteUser(file.metadata._user)) {
 		instanceChart.updateDrive(file, false);
 		Instance.update({ host: file.metadata._user.host }, {
 			$inc: {
