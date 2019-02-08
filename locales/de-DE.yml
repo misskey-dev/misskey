@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "Ein ⭐ des Fediversums"
   about-title: "Ein ⭐ des Fediversums."
-  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  about: "Danke, dass Du Misskey gefunden hast. Misskey ist eine <b>dezentralisierte Microblogging-Plattform</b>, welche auf der ganzen Welt verteilt ist. Da es innerhalb es Fediversums existiert (ein Universum, in dem verschiedene Soziale Netzwerke organisiert sind), ist es unmittelbar mit anderen sozialen Netzwerken verbunden. Warum nimmst du dir nicht einmal eine Auszeit von dem Trubel der Stadt und tauchst in das neue Internet hinein?"
   intro:
     title: "Was ist Misskey?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
@@ -25,9 +25,9 @@ common:
   application-authorization: "Autorisierte Anwendungen"
   close: "Schließen"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
-  load-more: "もっと読み込む"
-  enter-password: "パスワードを入力してください"
-  2fa: "二段階認証"
+  load-more: "Mehr laden"
+  enter-password: "Bitte Passwort eingeben"
+  2fa: "Zwei-Faktor-Authentifizierung"
   got-it: "Verstanden!"
   customization-tips:
     title: "Anpassung-Tipps"
@@ -54,8 +54,8 @@ common:
     years_ago: "vor {} Jahr(en)"
   month-and-day: "{day}/{month}"
   trash: "Papierkorb"
-  drive: "ドライブ"
-  messaging: "トーク"
+  drive: "Drive"
+  messaging: "Unterhaltungen"
   weekday-short:
     sunday: "So"
     monday: "Mo"
@@ -91,9 +91,9 @@ common:
     followers-desc: "Nur für diejenigen sichtbar, die dir folgen"
     specified: "Direkt"
     specified-desc: "Nur für bestimmte Benutzer posten"
-    local-public: "公開 (ローカルのみ)"
-    local-home: "ホーム (ローカルのみ)"
-    local-followers: "フォロワー (ローカルのみ)"
+    local-public: "Öffentlich (nur lokal)"
+    local-home: "Home (nur lokal)"
+    local-followers: "Follower (nur lokal)"
   note-placeholders:
     a: "Was machst du gerade?"
     b: "Was ist so passiert?"
