@@ -3,10 +3,10 @@
 	<ui-card>
 		<div slot="title"><fa :icon="faTerminal"/> {{ $t('federation') }}</div>
 		<section class="fit-top">
-			<ui-input class="target" v-model="target" type="text" @enter="showInstance">
+			<ui-input class="target" v-model="target" type="text" @enter="showInstance()">
 				<span>{{ $t('host') }}</span>
 			</ui-input>
-			<ui-button @click="showInstance"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
+			<ui-button @click="showInstance()"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 
 			<div class="instance" v-if="instance">
 				<ui-input :value="instance.host" type="text" readonly>
@@ -115,7 +115,7 @@
 					<span>{{ $t('status') }}</span>
 				</header>
 				<div v-for="instance in instances">
-					<span>{{ instance.host }}</span>
+					<a @click.prevent="showInstance(instance.host)" target="_blank" :href="`https://${instance.host}`">{{ instance.host }}</a>
 					<span>{{ instance.notesCount | number }}</span>
 					<span>{{ instance.usersCount | number }}</span>
 					<span>{{ instance.followingCount | number }}</span>
@@ -233,9 +233,9 @@ export default Vue.extend({
 	},
 
 	methods: {
-		showInstance() {
+		showInstance(target?: string) {
 			this.$root.api('federation/show-instance', {
-				host: this.target
+				host: target || this.target
 			}).then(instance => {
 				if (instance == null) {
 					this.$root.dialog({
