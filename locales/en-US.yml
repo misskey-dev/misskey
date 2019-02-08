@@ -1019,7 +1019,7 @@ admin/views/dashboard.vue:
   federated: "Federated"
 admin/views/queue.vue:
   operation: "Action(s)"
-  remove-all-jobs: "すべてのジョブをクリア"
+  remove-all-jobs: "Clear all queued jobs"
 admin/views/abuse.vue:
   title: "Abuse"
   target: "Target"
@@ -1233,6 +1233,39 @@ admin/views/announcements.vue:
     removed: "Deleted"
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
+admin/views/federation.vue:
+  federation: "Federation"
+  host: "Host"
+  notes: "Notes"
+  users: "Users"
+  following: "Following"
+  followers: "Followers"
+  status: "Status"
+  latest-request-sent-at: "Time of last request sent"
+  latest-request-received-at: "Last request received at"
+  remove-all-following: "フォローを全解除"
+  remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  block: "Block"
+  lookup: "Look up"
+  instances: "Instances"
+  instance-not-registered: "The instance has not been discovered"
+  sort: "Sort by"
+  sorts:
+    caughtAtAsc: "Date of discovery (Ascending)"
+    caughtAtDesc: "Date of discovery (Descending)"
+    notesAsc: "Order by least Notes posted"
+    notesDesc: "Order by most Notes posted"
+    usersAsc: "Less followers"
+    usersDesc: "More followers"
+    followingAsc: "Least followed"
+    followingDesc: "Has more followers"
+    followersAsc: "Sort by having less followers"
+    followersDesc: "Sort by the larger number of followers"
+  state: "Status"
+  states:
+    all: "All"
+    blocked: "Blocked"
+  result-is-truncated: "Displaying the top {n} items."
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
