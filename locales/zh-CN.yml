@@ -1244,7 +1244,7 @@ admin/views/federation.vue:
   latest-request-sent-at: "上次发送的请求"
   latest-request-received-at: "上次收到的请求"
   remove-all-following: "取消所有关注"
-  remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  remove-all-following-info: "取消{host}的所有关注者。当实例不存在时执行。"
   block: "拉黑"
   lookup: "查询"
   instances: "实例"
