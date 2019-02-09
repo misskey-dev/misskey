@@ -114,8 +114,8 @@
 					<span>{{ $t('followers') }}</span>
 					<span>{{ $t('status') }}</span>
 				</header>
-				<div v-for="instance in instances">
-					<a @click.prevent="showInstance(instance.host)" target="_blank" :href="`https://${instance.host}`">{{ instance.host }}</a>
+				<div v-for="instance in instances" :style="{ opacity: instance.isNotResponding ? 0.5 : 1 }">
+					<a @click.prevent="showInstance(instance.host)" target="_blank" :href="`https://${instance.host}`" :style="{ textDecoration: instance.isMarkedAsClosed ? 'line-through' : 'none' }">{{ instance.host }}</a>
 					<span>{{ instance.notesCount | number }}</span>
 					<span>{{ instance.usersCount | number }}</span>
 					<span>{{ instance.followingCount | number }}</span>
