@@ -13,6 +13,101 @@ import perUserFollowingChart from '../../services/chart/per-user-following';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
+import Logger from '../../misc/logger';
+import FollowRequest from '../../models/follow-request';
+
+const logger = new Logger('following/create');
+
+export async function insertFollowingDoc(followee: IUser, follower: IUser) {
+	let alreadyFollowed = false;
+
+	await Following.insert({
+		createdAt: new Date(),
+		followerId: follower._id,
+		followeeId: followee._id,
+
+		// 非正規化
+		_follower: {
+			host: follower.host,
+			inbox: isRemoteUser(follower) ? follower.inbox : undefined,
+			sharedInbox: isRemoteUser(follower) ? follower.sharedInbox : undefined
+		},
+		_followee: {
+			host: followee.host,
+			inbox: isRemoteUser(followee) ? followee.inbox : undefined,
+			sharedInbox: isRemoteUser(followee) ? followee.sharedInbox : undefined
+		}
+	}).catch(e => {
+		if (e.code === 11000 && isRemoteUser(follower) && isLocalUser(followee)) {
+			logger.info(`Insert duplicated ignore. ${follower._id} => ${followee._id}`);
+			alreadyFollowed = true;
+		} else {
+			throw e;
+		}
+	});
+
+	await FollowRequest.remove({
+		followeeId: followee._id,
+		followerId: follower._id
+	});
+
+	if (alreadyFollowed) return;
+
+	//#region Increment counts
+	User.update({ _id: follower._id }, {
+		$inc: {
+			followingCount: 1
+		}
+	});
+
+	User.update({ _id: followee._id }, {
+		$inc: {
+			followersCount: 1
+		}
+	});
+	//#endregion
+
+	//#region Update instance stats
+	if (isRemoteUser(follower) && isLocalUser(followee)) {
+		registerOrFetchInstanceDoc(follower.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					followingCount: 1
+				}
+			});
+
+			instanceChart.updateFollowing(i.host, true);
+		});
+	} else if (isLocalUser(follower) && isRemoteUser(followee)) {
+		registerOrFetchInstanceDoc(followee.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					followersCount: 1
+				}
+			});
+
+			instanceChart.updateFollowers(i.host, true);
+		});
+	}
+	//#endregion
+
+	perUserFollowingChart.update(follower, followee, true);
+
+	// Publish follow event
+	if (isLocalUser(follower)) {
+		packUser(followee, follower, {
+			detail: true
+		}).then(packed => publishMainStream(follower._id, 'follow', packed));
+	}
+
+	// Publish followed event
+	if (isLocalUser(followee)) {
+		packUser(follower, followee).then(packed => publishMainStream(followee._id, 'followed', packed)),
+
+		// 通知を作成
+		notify(followee._id, follower._id, 'follow');
+	}
+}
 
 export default async function(follower: IUser, followee: IUser, requestId?: string) {
 	// check blocking
@@ -66,80 +161,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		}
 	}
 
-	await Following.insert({
-		createdAt: new Date(),
-		followerId: follower._id,
-		followeeId: followee._id,
-
-		// 非正規化
-		_follower: {
-			host: follower.host,
-			inbox: isRemoteUser(follower) ? follower.inbox : undefined,
-			sharedInbox: isRemoteUser(follower) ? follower.sharedInbox : undefined
-		},
-		_followee: {
-			host: followee.host,
-			inbox: isRemoteUser(followee) ? followee.inbox : undefined,
-			sharedInbox: isRemoteUser(followee) ? followee.sharedInbox : undefined
-		}
-	});
-
-	//#region Increment following count
-	User.update({ _id: follower._id }, {
-		$inc: {
-			followingCount: 1
-		}
-	});
-	//#endregion
-
-	//#region Increment followers count
-	User.update({ _id: followee._id }, {
-		$inc: {
-			followersCount: 1
-		}
-	});
-	//#endregion
-
-	//#region Update instance stats
-	if (isRemoteUser(follower) && isLocalUser(followee)) {
-		registerOrFetchInstanceDoc(follower.host).then(i => {
-			Instance.update({ _id: i._id }, {
-				$inc: {
-					followingCount: 1
-				}
-			});
-
-			instanceChart.updateFollowing(i.host, true);
-		});
-	} else if (isLocalUser(follower) && isRemoteUser(followee)) {
-		registerOrFetchInstanceDoc(followee.host).then(i => {
-			Instance.update({ _id: i._id }, {
-				$inc: {
-					followersCount: 1
-				}
-			});
-
-			instanceChart.updateFollowers(i.host, true);
-		});
-	}
-	//#endregion
-
-	perUserFollowingChart.update(follower, followee, true);
-
-	// Publish follow event
-	if (isLocalUser(follower)) {
-		packUser(followee, follower, {
-			detail: true
-		}).then(packed => publishMainStream(follower._id, 'follow', packed));
-	}
-
-	// Publish followed event
-	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => publishMainStream(followee._id, 'followed', packed)),
-
-		// 通知を作成
-		notify(followee._id, follower._id, 'follow');
-	}
+	await insertFollowingDoc(followee, follower);
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
 		const content = renderActivity(renderAccept(renderFollow(follower, followee, requestId), followee));
