@@ -159,7 +159,7 @@ workflows:
                 - l10n_develop
                 - imgbot
                 - patch-autogen
-      - test-without-redis:
+      - test:
           without_redis: true
           requires:
             - build
@@ -183,7 +183,7 @@ workflows:
           filters:
             branches:
               ignore: master
-      - docker-with-deploy:
+      - docker:
           with_deploy: true
           filters:
             branches:
