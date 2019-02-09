@@ -317,6 +317,9 @@ export default Vue.extend({
 					curve: 'straight',
 					width: 2
 				},
+				tooltip: {
+					theme: this.$store.state.device.darkmode ? 'dark' : 'light'
+				},
 				legend: {
 					labels: {
 						colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
