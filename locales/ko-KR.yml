@@ -515,7 +515,7 @@ common/views/components/profile-editor.vue:
     following-list: "팔로잉"
     mute-list: "뮤트"
     blocking-list: "차단"
-  export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
+  export-requested: "내보내기를 요청하였습니다. 이 작업은 시간이 걸릴 수 있습니다. 내보내기가 완료되면 드라이브에 파일이 추가됩니다."
 common/views/components/user-list-editor.vue:
   users: "사용자"
   rename: "리스트 이름 바꾸기"
@@ -1007,7 +1007,7 @@ admin/views/index.vue:
   announcements: "공지사항"
   hashtags: "해시태그"
   abuse: "스팸 신고"
-  queue: "ジョブキュー"
+  queue: "작업 대기열"
   back-to-misskey: "Misskey로 돌아가기"
 admin/views/dashboard.vue:
   dashboard: "대시보드"
@@ -1018,8 +1018,8 @@ admin/views/dashboard.vue:
   this-instance: "이 인스턴스"
   federated: "연합"
 admin/views/queue.vue:
-  operation: "操作"
-  remove-all-jobs: "すべてのジョブをクリア"
+  operation: "동작"
+  remove-all-jobs: "모든 작업 제거"
 admin/views/abuse.vue:
   title: "스팸 신고"
   target: "대상"
@@ -1234,15 +1234,15 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 admin/views/federation.vue:
-  federation: "連合"
-  host: "ホスト"
-  notes: "投稿"
-  users: "ユーザー"
-  following: "フォロー中"
-  followers: "フォロワー"
-  status: "ステータス"
-  latest-request-sent-at: "直近のリクエスト送信"
-  latest-request-received-at: "直近のリクエスト受信"
+  federation: "연합"
+  host: "호스트"
+  notes: "글"
+  users: "사용자"
+  following: "팔로우 중"
+  followers: "팔로워"
+  status: "상태"
+  latest-request-sent-at: "최근에 요청을 전송한 시간"
+  latest-request-received-at: "최근에 요청을 받은 시간"
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
   block: "ブロック"
