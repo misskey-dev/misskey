@@ -115,3 +115,18 @@ export function cumulativeSum(xs: number[]): number[] {
 	for (let i = 1; i < ys.length; i++) ys[i] += ys[i - 1];
 	return ys;
 }
+
+export function toEnglishString(x: string[], n = 'and'): string {
+	switch (x.length) {
+		case 0:
+			return '';
+
+		case 1:
+			return x[0];
+
+		default:
+			const y = [...x];
+			const z = y.pop();
+			return `${y.join(', ')}, ${n} ${z}`;
+	}
+}

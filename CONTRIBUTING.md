@@ -68,6 +68,7 @@ src ... ソースコード
 	server ... Webサーバー
 	client ... クライアント
 	mfm ... MFM
+	sanctuary ... TypeScriptの制約を強くしたエリア ~~乃々の聖域ではない~~
 
 test ... テスト
 
