@@ -1626,6 +1626,7 @@ deck/deck.tl-column.vue:
   is-media-view: "媒体视图"
   edit: "选项"
 deck/deck.user-column.vue:
+  follows-you: "フォローされています"
   posts: "帖子"
   following: "关注中"
   followers: "关注者"

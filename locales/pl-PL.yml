@@ -1626,6 +1626,7 @@ deck/deck.tl-column.vue:
   is-media-view: "Widok multimediów"
   edit: "Opcje"
 deck/deck.user-column.vue:
+  follows-you: "フォローされています"
   posts: "Wpisy"
   following: "Śledzeni"
   followers: "Śledzący"
