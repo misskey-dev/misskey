@@ -133,15 +133,15 @@ workflows:
             branches:
               only:
                 - l10n_develop
-                - imgbot
-                - patch-autogen
+#                - imgbot
+#                - patch-autogen
       - build:
           filters:
             branches:
               ignore:
                 - l10n_develop
-                - imgbot
-                - patch-autogen
+#                - imgbot
+#                - patch-autogen
       - test:
           requires:
             - build
@@ -150,8 +150,8 @@ workflows:
               ignore:
 #                - master
                 - l10n_develop
-                - imgbot
-                - patch-autogen
+#                - imgbot
+#                - patch-autogen
       - test:
           without_redis: "true"
           requires:
@@ -163,8 +163,8 @@ workflows:
               ignore:
 #                - master
                 - l10n_develop
-                - imgbot
-                - patch-autogen
+#                - imgbot
+#                - patch-autogen
 #      - docker:
 #          filters:
 #            branches:
