@@ -389,6 +389,7 @@ export default Vue.extend({
 				display inline-block
 				font-size 12px
 				background rgba(0, 0, 0, 0.5)
+				opacity 0.7
 				margin-top: 2px
 				padding 4px
 				border-radius 4px
