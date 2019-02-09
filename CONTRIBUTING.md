@@ -58,18 +58,15 @@ export function something(foo: string): string {
 ```
 
 ## Directory structure
-```
-src ... ソースコード
-	@types ... 外部ライブラリなどの型定義
-	prelude ... Misskeyに関係ないかつ副作用なし
-	misc ... 副作用なしのユーティリティ処理
-	service ... 副作用ありの共通処理
-	queue ... ジョブキューとジョブ
-	server ... Webサーバー
-	client ... クライアント
-	mfm ... MFM
-	sanctuary ... TypeScriptの制約を強くしたエリア ~~乃々の聖域ではない~~
 
-test ... テスト
-
-```
+<dl><dt>src</dt><dd>ソースコード
+	<dl><dt>@types</dt><dd>外部ライブラリなどの型定義</dd></dl>
+	<dl><dt>prelude</dt><dd>Misskeyに関係ないかつ副作用なし</dd></dl>
+	<dl><dt>misc</dt><dd>副作用なしのユーティリティ処理</dd></dl>
+	<dl><dt>service</dt><dd>副作用ありの共通処理</dd></dl>
+	<dl><dt>queue</dt><dd>ジョブキューとジョブ</dd></dl>
+	<dl><dt>server</dt><dd>Webサーバー</dd></dl>
+	<dl><dt>client</dt><dd>クライアント</dd></dl>
+	<dl><dt>mfm</dt><dd>MFM</dd></dl>
+	<dl><dt>sanctuary</dt><dd>TypeScriptの制約を強くしたエリア <strike>乃々の聖域ではない</strike></dd></dl></dd></dl>
+<dl><dt>test</dt><dd>テスト</dd></dl>
