@@ -179,7 +179,7 @@ workflows:
               ignore: master
       - docker:
           requires:
-            - hold-docker
+            - hold
           filters:
             branches:
               ignore: master
