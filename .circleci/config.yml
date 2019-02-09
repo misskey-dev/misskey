@@ -173,6 +173,7 @@ workflows:
                 - imgbot
                 - patch-autogen
   docker:
+    jobs:
       - hold:
           type: approval
           filters:
