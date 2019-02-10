@@ -7,7 +7,7 @@
 		<mk-user-name :user="user"/>
 	</a>
 	<p class="username"><mk-acct :user="user"/></p>
-	<mk-follow-button class="follow-button" :user="user"/>
+	<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" class="follow-button" :user="user"/>
 </div>
 </template>
 

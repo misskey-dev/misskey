@@ -8,12 +8,13 @@ import handler from './processors';
 import { queueLogger } from './logger';
 
 const enableQueue = !program.disableQueue;
+const enableQueueProcessing = !program.onlyServer && enableQueue;
 const queueAvailable = config.redis != null;
 
 const queue = initializeQueue();
 
 function initializeQueue() {
-	if (queueAvailable) {
+	if (queueAvailable && enableQueue) {
 		return new Queue('misskey', {
 			redis: {
 				port: config.redis.port,
@@ -42,7 +43,7 @@ export function deliver(user: ILocalUser, content: any, to: any) {
 		to
 	};
 
-	if (queueAvailable && !program.disableApQueue) {
+	if (queueAvailable && enableQueueProcessing) {
 		return queue.createJob(data)
 			.retries(8)
 			.backoff('exponential', 1000)
@@ -59,7 +60,7 @@ export function processInbox(activity: any, signature: httpSignature.IParsedSign
 		signature
 	};
 
-	if (queueAvailable && !program.disableApQueue) {
+	if (queueAvailable && enableQueueProcessing) {
 		return queue.createJob(data)
 			.retries(3)
 			.backoff('exponential', 500)
@@ -70,47 +71,59 @@ export function processInbox(activity: any, signature: httpSignature.IParsedSign
 }
 
 export function createExportNotesJob(user: ILocalUser) {
-	if (!queueAvailable) throw 'queue unavailable';
-
-	return queue.createJob({
+	const data = {
 		type: 'exportNotes',
 		user: user
-	})
-		.save();
+	};
+
+	if (queueAvailable && enableQueueProcessing) {
+		return queue.createJob(data).save();
+	} else {
+		return handler({ data }, () => {});
+	}
 }
 
 export function createExportFollowingJob(user: ILocalUser) {
-	if (!queueAvailable) throw 'queue unavailable';
-
-	return queue.createJob({
+	const data = {
 		type: 'exportFollowing',
 		user: user
-	})
-		.save();
+	};
+
+	if (queueAvailable && enableQueueProcessing) {
+		return queue.createJob(data).save();
+	} else {
+		return handler({ data }, () => {});
+	}
 }
 
 export function createExportMuteJob(user: ILocalUser) {
-	if (!queueAvailable) throw 'queue unavailable';
-
-	return queue.createJob({
+	const data = {
 		type: 'exportMute',
 		user: user
-	})
-		.save();
+	};
+
+	if (queueAvailable && enableQueueProcessing) {
+		return queue.createJob(data).save();
+	} else {
+		return handler({ data }, () => {});
+	}
 }
 
 export function createExportBlockingJob(user: ILocalUser) {
-	if (!queueAvailable) throw 'queue unavailable';
-
-	return queue.createJob({
+	const data = {
 		type: 'exportBlocking',
 		user: user
-	})
-		.save();
+	};
+
+	if (queueAvailable && enableQueueProcessing) {
+		return queue.createJob(data).save();
+	} else {
+		return handler({ data }, () => {});
+	}
 }
 
 export default function() {
-	if (queueAvailable && enableQueue) {
+	if (queueAvailable && enableQueueProcessing) {
 		queue.process(128, handler);
 		queueLogger.succ('Processing started');
 	}

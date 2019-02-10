@@ -2,7 +2,7 @@
 <div class="zvdbznxvfixtmujpsigoccczftvpiwqh">
 	<div class="banner" :style="bannerStyle"></div>
 	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
-	<mk-follow-button :user="user" class="follow" mini/>
+	<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
 	<div class="body">
 		<router-link :to="user | userPage" class="name">
 			<mk-user-name :user="user"/>

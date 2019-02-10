@@ -1833,6 +1833,7 @@ deck/deck.tl-column.vue:
   edit: "オプション"
 
 deck/deck.user-column.vue:
+  follows-you: "フォローされています"
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
