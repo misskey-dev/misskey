@@ -35,6 +35,7 @@ export const meta = {
 				'moderator',
 				'adminOrModerator',
 				'verified',
+				'silenced',
 				'suspended',
 			]),
 			default: 'all'
@@ -101,6 +102,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			}]
 		} :
 		ps.state == 'verified' ? { isVerified: true } :
+		ps.state == 'silenced' ? { isSilenced: true } :
 		ps.state == 'suspended' ? { isSuspended: true } :
 		{}
 	);
