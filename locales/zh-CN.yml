@@ -1186,7 +1186,7 @@ admin/views/users.vue:
       moderator: "版主"
       adminOrModerator: "管理员+版主"
       verified: "官方认证账户"
-      silenced: "サイレンス済み"
+      silenced: "已禁言"
       suspended: "已冻结"
     origin:
       title: "源自"
@@ -1627,7 +1627,7 @@ deck/deck.tl-column.vue:
   is-media-view: "媒体视图"
   edit: "选项"
 deck/deck.user-column.vue:
-  follows-you: "フォローされています"
+  follows-you: "关注您"
   posts: "帖子"
   following: "关注中"
   followers: "关注者"
