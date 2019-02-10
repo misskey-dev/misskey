@@ -1626,7 +1626,7 @@ deck/deck.tl-column.vue:
   is-media-view: "미디어 보기"
   edit: "옵션"
 deck/deck.user-column.vue:
-  follows-you: "フォローされています"
+  follows-you: "당신을 팔로우합니다"
   posts: "글"
   following: "팔로잉"
   followers: "팔로워"
