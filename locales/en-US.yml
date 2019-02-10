@@ -1283,7 +1283,7 @@ admin/views/federation.vue:
     notes: "Increase, or decrease in the number of notes"
     notes-total: "Total number of notes"
     ff: "フォロー/フォロワーの増減"
-    ff-total: "フォロー/フォロワーの積算"
+    ff-total: "Total follow/followers"
     drive-usage: "ドライブ使用量の増減"
     drive-usage-total: "ドライブ使用量の積算"
     drive-files: "ドライブファイル数の増減"
