@@ -24,7 +24,6 @@
 		"format": "gulp format"
 	},
 	"resolutions": {
-		"ajv": "6.8.1",
 		"terser": "3.14.1"
 	},
 	"dependencies": {
