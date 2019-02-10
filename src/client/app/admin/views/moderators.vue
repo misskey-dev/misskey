@@ -6,8 +6,10 @@
 			<ui-input v-model="username" type="text">
 				<span slot="prefix">@</span>
 			</ui-input>
-			<ui-button @click="add" :disabled="changing">{{ $t('add-moderator.add') }}</ui-button>
-			<ui-button @click="remove" :disabled="changing">{{ $t('add-moderator.remove') }}</ui-button>
+			<ui-horizon-group>
+				<ui-button @click="add" :disabled="changing">{{ $t('add-moderator.add') }}</ui-button>
+				<ui-button @click="remove" :disabled="changing">{{ $t('add-moderator.remove') }}</ui-button>
+			</ui-horizon-group>
 		</section>
 	</ui-card>
 </div>

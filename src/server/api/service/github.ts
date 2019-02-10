@@ -4,7 +4,7 @@ import * as request from 'request';
 import { OAuth2 } from 'oauth';
 import User, { pack, ILocalUser } from '../../../models/user';
 import config from '../../../config';
-import { publishMainStream } from '../../../stream';
+import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';

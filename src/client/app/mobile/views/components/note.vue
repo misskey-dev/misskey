@@ -102,6 +102,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .note
+	overflow hidden
 	font-size 12px
 	border-bottom solid var(--lineWidth) var(--faceDivider)
 

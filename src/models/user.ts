@@ -17,6 +17,7 @@ const User = db.get<IUser>('users');
 
 User.createIndex('username');
 User.createIndex('usernameLower');
+User.createIndex('host');
 User.createIndex(['username', 'host'], { unique: true });
 User.createIndex(['usernameLower', 'host'], { unique: true });
 User.createIndex('token', { sparse: true, unique: true });

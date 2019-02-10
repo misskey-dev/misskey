@@ -6,6 +6,11 @@ executors:
     docker:
       - image: misskey/ci:latest
       - image: circleci/mongo:latest
+  with-redis:
+    working_directory: /tmp/workspace
+    docker:
+      - image: misskey/ci:latest
+      - image: circleci/mongo:latest
       - image: circleci/redis:latest
   docker:
     working_directory: /tmp/workspace
@@ -24,7 +29,6 @@ jobs:
           name: OK
           command: |
             echo -e '\033[0;32mOK\033[0;39m'
-
   build:
     executor: default
     steps:
@@ -68,10 +72,13 @@ jobs:
             - .
   test:
     parameters:
-      without_redis:
+      executor:
         type: string
-        default: ""
-    executor: default
+        default: "default"
+      without_redis:
+        type: boolean
+        default: false
+    executor: <<parameters.executor>>
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -94,12 +101,11 @@ jobs:
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-
   docker:
     parameters:
       with_deploy:
-        type: string
-        default: ""
+        type: boolean
+        default: false
     executor: docker
     steps:
       - checkout
@@ -126,7 +132,7 @@ jobs:
 
 workflows:
   version: 2
-  build-and-test:
+  nodejs:
     jobs:
       - ok:
           filters:
@@ -143,6 +149,7 @@ workflows:
                 - imgbot
                 - patch-autogen
       - test:
+          executor: with-redis
           requires:
             - build
           filters:
@@ -153,7 +160,7 @@ workflows:
                 - imgbot
                 - patch-autogen
       - test:
-          without_redis: "true"
+          without_redis: true
           requires:
             - build
           filters:
@@ -165,12 +172,21 @@ workflows:
                 - l10n_develop
                 - imgbot
                 - patch-autogen
-#      - docker:
-#          filters:
-#            branches:
-#              ignore: master
+  docker:
+    jobs:
+      - hold:
+          type: approval
+          filters:
+            branches:
+              ignore: master
       - docker:
-          with_deploy: "true"
+          requires:
+            - hold
+          filters:
+            branches:
+              ignore: master
+      - docker:
+          with_deploy: true
           filters:
             branches:
               only: master

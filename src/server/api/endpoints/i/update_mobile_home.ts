@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
-import { publishMainStream } from '../../../../stream';
+import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 
 export const meta = {

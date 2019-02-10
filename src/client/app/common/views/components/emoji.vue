@@ -55,7 +55,7 @@ export default Vue.extend({
 			const customEmoji = this.customEmojis.find(x => x.name == this.name);
 			if (customEmoji) {
 				this.customEmoji = customEmoji;
-				this.url = this.$store.state.device.doNotAutoplayAnimation
+				this.url = this.$store.state.device.disableShowingAnimatedImages
 					? getStaticImageUrl(customEmoji.url)
 					: customEmoji.url;
 			} else {

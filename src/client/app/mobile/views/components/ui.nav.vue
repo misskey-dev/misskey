@@ -171,6 +171,7 @@ export default Vue.extend({
 		overflow auto
 		-webkit-overflow-scrolling touch
 		background var(--secondary)
+		font-size 15px
 
 	.me
 		display block

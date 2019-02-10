@@ -1,14 +1,14 @@
 import { IUser, isLocalUser, isRemoteUser } from '../../../models/user';
 import Note, { INote } from '../../../models/note';
 import NoteReaction from '../../../models/note-reaction';
-import { publishNoteStream } from '../../../stream';
-import notify from '../../../notify';
+import { publishNoteStream } from '../../stream';
+import notify from '../../create-notification';
 import NoteWatching from '../../../models/note-watching';
 import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
-import perUserReactionsChart from '../../../chart/per-user-reactions';
+import perUserReactionsChart from '../../../services/chart/per-user-reactions';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself

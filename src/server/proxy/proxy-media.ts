@@ -42,7 +42,12 @@ export async function proxyMedia(ctx: Koa.BaseContext) {
 		ctx.body = image.data;
 	} catch (e) {
 		serverLogger.error(e);
-		ctx.status = 500;
+
+		if (typeof e == 'number' && e >= 400 && e < 500) {
+			ctx.status = e;
+		} else {
+			ctx.status = 500;
+		}
 	} finally {
 		cleanup();
 	}

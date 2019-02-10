@@ -16,9 +16,10 @@ import * as requestStats from 'request-stats';
 import * as slow from 'koa-slow';
 
 import activityPub from './activitypub';
-import webFinger from './webfinger';
+import nodeinfo from './nodeinfo';
+import wellKnown from './well-known';
 import config from '../config';
-import networkChart from '../chart/network';
+import networkChart from '../services/chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
 import User from '../models/user';
@@ -68,7 +69,8 @@ const router = new Router();
 
 // Routing
 router.use(activityPub.routes());
-router.use(webFinger.routes());
+router.use(nodeinfo.routes());
+router.use(wellKnown.routes());
 
 router.get('/verify-email/:code', async ctx => {
 	const user = await User.findOne({ emailVerifyCode: ctx.params.code });
@@ -86,11 +88,6 @@ router.get('/verify-email/:code', async ctx => {
 	} else {
 		ctx.status = 404;
 	}
-});
-
-// Return 404 for other .well-known
-router.all('/.well-known/*', async ctx => {
-	ctx.status = 404;
 });
 
 // Register router

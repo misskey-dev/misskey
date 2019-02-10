@@ -5,7 +5,7 @@
 		<button slot="func" :title="$t('title')" @click="fetch">
 			<fa v-if="!fetching &&  more" icon="arrow-right"/>
 			<fa v-if="!fetching && !more" icon="sync"/>
-		</button> 
+		</button>
 
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
@@ -92,13 +92,13 @@ export default define({
 		margin 0
 		padding 16px
 		text-align center
-		color #aaa
+		color var(--text)
 
 	> .fetching
 		margin 0
 		padding 16px
 		text-align center
-		color #aaa
+		color var(--text)
 
 		> [data-icon]
 			margin-right 4px

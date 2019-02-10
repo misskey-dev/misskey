@@ -2,8 +2,8 @@ import Vote from '../../../models/poll-vote';
 import Note, { INote } from '../../../models/note';
 import Watching from '../../../models/note-watching';
 import watch from '../../../services/note/watch';
-import { publishNoteStream } from '../../../stream';
-import notify from '../../../notify';
+import { publishNoteStream } from '../../stream';
+import notify from '../../../services/create-notification';
 import { isLocalUser, IUser } from '../../../models/user';
 
 export default (user: IUser, note: INote, choice: number) => new Promise(async (res, rej) => {

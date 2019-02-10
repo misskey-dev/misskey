@@ -1,7 +1,8 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
-import { publishDriveStream } from '../../../../../stream';
+import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import Note from '../../../../../models/note';
 

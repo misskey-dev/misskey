@@ -1,6 +1,7 @@
-import $ from 'cafy'; import ID, { transform } from '../../../../../../misc/cafy-id';
+import $ from 'cafy';
+import ID, { transform } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
-import { publishReversiGameStream } from '../../../../../../stream';
+import { publishReversiGameStream } from '../../../../../../services/stream';
 import define from '../../../../define';
 
 export const meta = {

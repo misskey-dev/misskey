@@ -124,7 +124,7 @@ export default Vue.extend({
 			this.meta = meta;
 		});
 
-		this.$root.api('instances', {
+		this.$root.api('federation/instances', {
 			sort: '+notes'
 		}).then(instances => {
 			for (const i of instances) {

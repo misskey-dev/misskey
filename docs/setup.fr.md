@@ -29,6 +29,7 @@ Installez les paquets suivants :
 * [Redis](https://redis.io/)
   * Redis est optionnel mais nous vous recommandons vivement de l'installer
 * [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
+* [FFmpeg](https://www.ffmpeg.org/)
 
 *3.* Paramètrage de MongoDB
 ----------------------------------------------------------------

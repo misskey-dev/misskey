@@ -29,6 +29,7 @@ Please install and setup these softwares:
 * [Redis](https://redis.io/)
   * Redis is optional, but we strongly recommended to install it
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
+* [FFmpeg](https://www.ffmpeg.org/)
 
 *3.* Setup MongoDB
 ----------------------------------------------------------------
@@ -53,6 +54,11 @@ As root:
 
 *6.* Build Misskey
 ----------------------------------------------------------------
+
+Before build, you need to set `NODE_ENV` to `production`. like this:
+* Linux: `export NODE_ENV=production`
+* Windows (PowerShell): `$env:NODE_ENV="production"`
+* Windows (CMD): `set NODE_ENV=production`
 
 Build misskey with the following:
 

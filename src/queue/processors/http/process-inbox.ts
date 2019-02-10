@@ -6,8 +6,11 @@ import perform from '../../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
-import { publishApLogStream } from '../../../stream';
+import { publishApLogStream } from '../../../services/stream';
 import Logger from '../../../misc/logger';
+import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
+import Instance from '../../../models/instance';
+import instanceChart from '../../../services/chart/instance';
 
 const logger = new Logger('inbox');
 
@@ -20,7 +23,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	const info = Object.assign({}, activity);
 	delete info['@context'];
 	delete info['signature'];
-	logger.info(info);
+	logger.debug(JSON.stringify(info, null, 2));
 	//#endregion
 
 	const keyIdLower = signature.keyId.toLowerCase();
@@ -43,6 +46,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			return;
 		}
 
+		// ブロックしてたら中断
+		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		if (instance && instance.isBlocked) {
+			logger.warn(`Blocked request: ${host}`);
+			done();
+			return;
+		}
+
 		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
 	} else {
 		// アクティビティ内のホストの検証
@@ -51,6 +63,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			ValidateActivity(activity, host);
 		} catch (e) {
 			logger.warn(e.message);
+			done();
+			return;
+		}
+
+		// ブロックしてたら中断
+		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		if (instance && instance.isBlocked) {
+			logger.warn(`Blocked request: ${host}`);
 			done();
 			return;
 		}
@@ -100,6 +121,19 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		actor: user.username
 	});
 	//#endregion
+
+	// Update stats
+	registerOrFetchInstanceDoc(user.host).then(i => {
+		Instance.update({ _id: i._id }, {
+			$set: {
+				latestRequestReceivedAt: new Date(),
+				lastCommunicatedAt: new Date(),
+				isNotResponding: false
+			}
+		});
+
+		instanceChart.requestReceived(i.host);
+	});
 
 	// アクティビティを処理
 	try {

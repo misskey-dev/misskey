@@ -119,11 +119,11 @@ export default Vue.extend({
 		font-size 16px
 		cursor pointer
 		transition inherit
+		color var(--text)
 
 		> span
 			display block
 			line-height 20px
-			color var(--text)
 			transition inherit
 
 		> p

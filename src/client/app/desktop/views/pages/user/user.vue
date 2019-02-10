@@ -132,7 +132,7 @@ export default Vue.extend({
 				padding 0 12px
 				text-align center
 				font-size 0.8em
-				color #aaa
+				color var(--text)
 
 			> .instance
 				box-shadow var(--shadow)

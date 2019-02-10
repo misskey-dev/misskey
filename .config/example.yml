@@ -108,5 +108,8 @@ autoAdmin: true
 #  port: 9200
 #  pass: null
 
+# Whether disable HSTS
+#disableHsts: true
+
 # Clustering
 #clusterLimit: 1

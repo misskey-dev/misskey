@@ -1,5 +1,5 @@
 import Notification from '../../../../models/notification';
-import { publishMainStream } from '../../../../stream';
+import { publishMainStream } from '../../../../services/stream';
 import User from '../../../../models/user';
 import define from '../../define';
 

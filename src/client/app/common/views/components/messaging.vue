@@ -420,7 +420,7 @@ export default Vue.extend({
 		margin 0
 		padding 16px
 		text-align center
-		color #aaa
+		color var(--text)
 
 		> [data-icon]
 			margin-right 4px

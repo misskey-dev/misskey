@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import * as promiseLimit from 'promise-limit';
 
 import config from '../../../config';
 import Resolver from '../resolver';
@@ -16,6 +17,7 @@ import { unique, concat, difference } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
 import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
+import { IDriveFile } from '../../../models/drive-file';
 
 const logger = apLogger;
 
@@ -92,9 +94,10 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// TODO: attachmentは必ずしもImageではない
 	// TODO: attachmentは必ずしも配列ではない
 	// Noteがsensitiveなら添付もsensitiveにする
+	const limit = promiseLimit(2);
 	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
-		? await Promise.all(note.attachment.map(x => resolveImage(actor, x)))
+		? await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<IDriveFile>))
 		: [];
 
 	// リプライ
@@ -233,8 +236,9 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	const ignoreUris = ['https://www.w3.org/ns/activitystreams#Public', `${actor.uri}/followers`];
 	const uris = difference(unique(concat([to || [], cc || []])), ignoreUris);
 
+	const limit = promiseLimit(2);
 	const users = await Promise.all(
-		uris.map(async uri => await resolvePerson(uri, null, resolver).catch(() => null))
+		uris.map(uri => limit(() => resolvePerson(uri, null, resolver).catch(() => null)) as Promise<IUser>)
 	);
 
 	return users.filter(x => x != null);

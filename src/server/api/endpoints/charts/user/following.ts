@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserFollowingChart from '../../../../../chart/per-user-following';
+import perUserFollowingChart from '../../../../../services/chart/per-user-following';
 import ID, { transform } from '../../../../../misc/cafy-id';
 
 export const meta = {

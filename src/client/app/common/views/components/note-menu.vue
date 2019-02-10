@@ -74,12 +74,15 @@ export default Vue.extend({
 				text: this.$t('pin'),
 				action: () => this.togglePin(true)
 			} : undefined,
-			null,
-			this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? {
-				icon: ['far', 'trash-alt'],
-				text: this.$t('delete'),
-				action: this.del
-			} : undefined].filter(x => x !== undefined)
+			...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
+				null, {
+					icon: ['far', 'trash-alt'],
+					text: this.$t('delete'),
+					action: this.del
+				}]
+				: []
+			)]
+			.filter(x => x !== undefined)
 		}
 	},
 
