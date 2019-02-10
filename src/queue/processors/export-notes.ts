@@ -58,7 +58,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 
 		if (notes.length === 0) {
 			ended = true;
-			job.reportProgress(100);
+			if (job.reportProgress) job.reportProgress(100);
 			break;
 		}
 
@@ -83,7 +83,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 			userId: user._id,
 		});
 
-		job.reportProgress(exportedNotesCount / total);
+		if (job.reportProgress) job.reportProgress(exportedNotesCount / total);
 	}
 
 	await new Promise((res, rej) => {
