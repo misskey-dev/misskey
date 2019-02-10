@@ -90,7 +90,7 @@ export default Vue.extend({
 			unsuspending: false,
 			sort: '+createdAt',
 			state: 'all',
-			origin: 'combined',
+			origin: 'local',
 			limit: 10,
 			offset: 0,
 			users: [],
