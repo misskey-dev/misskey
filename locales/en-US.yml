@@ -1256,7 +1256,7 @@ admin/views/federation.vue:
     caughtAtAsc: "Date of discovery (Ascending)"
     caughtAtDesc: "Date of discovery (Descending)"
     lastCommunicatedAtAsc: "最後にやり取りした日時が古い順"
-    lastCommunicatedAtDesc: "最後にやり取りした日時が新しい順"
+    lastCommunicatedAtDesc: "The date and time of the newest interaction"
     notesAsc: "Order by least Notes posted"
     notesDesc: "Order by most Notes posted"
     usersAsc: "Less followers"
