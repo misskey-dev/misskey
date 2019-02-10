@@ -1186,7 +1186,7 @@ admin/views/users.vue:
       moderator: "모더레이터"
       adminOrModerator: "관리자+모더레이터"
       verified: "공식 계정"
-      silenced: "サイレンス済み"
+      silenced: "침묵됨"
       suspended: "정지됨"
     origin:
       title: "위치 (오리진)"
