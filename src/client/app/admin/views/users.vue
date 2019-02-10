@@ -129,16 +129,25 @@ export default Vue.extend({
 				const usernamePromise = this.$root.api('users/show', parseAcct(this.target));
 				const idPromise = this.$root.api('users/show', { userId: this.target });
 
-				usernamePromise.then(res);
-				idPromise.then(res);
-
-				idPromise.catch(e => {
-					if (e == 'user not found') {
+				let _notFound = false;
+				const notFound = () => {
+					if (_notFound) {
 						this.$root.dialog({
 							type: 'error',
 							text: this.$t('user-not-found')
 						});
+					} else {
+						_notFound = true;
 					}
+				};
+
+				usernamePromise.then(res).catch(e => {
+					if (e == 'user not found') {
+						notFound();
+					}
+				});
+				idPromise.then(res).catch(e => {
+					notFound();
 				});
 			});
 		},
