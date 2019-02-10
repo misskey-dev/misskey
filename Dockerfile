@@ -23,15 +23,13 @@ RUN apk add --no-cache \
     procps \
     python \
     zlib-dev
-RUN npm i -g node-gyp
+RUN npm i -g yarn
 
 COPY ./package.json ./
-RUN npm i
+RUN yarn install
 
 COPY . ./
-RUN node-gyp configure \
- && node-gyp build \
- && npm run build
+RUN yarn build
 
 FROM base AS runner
 
