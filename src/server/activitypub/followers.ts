@@ -5,7 +5,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
-import { urlQuery } from '../../prelude/string';
+import * as url from '../../prelude/url';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
@@ -73,13 +73,13 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const renderedFollowers = await Promise.all(followings.map(following => renderFollowUser(following.followerId)));
 		const rendered = renderOrderedCollectionPage(
-			`${partOf}?${urlQuery({
+			`${partOf}?${url.query({
 				page: 'true',
 				cursor
 			})}`,
 			user.followersCount, renderedFollowers, partOf,
 			null,
-			inStock ? `${partOf}?${urlQuery({
+			inStock ? `${partOf}?${url.query({
 				page: 'true',
 				cursor: followings[followings.length - 1]._id.toHexString()
 			})}` : null

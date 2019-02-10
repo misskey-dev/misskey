@@ -1,5 +1,3 @@
-import { stringify } from 'querystring';
-
 export function concat(xs: string[]): string {
 	return xs.join('');
 }
@@ -14,10 +12,4 @@ export function toUpperCase(s: string): string {
 
 export function toLowerCase(s: string): string {
 	return s.toLowerCase();
-}
-
-export function urlQuery(obj: {}): string {
-	return stringify(Object.entries(obj)
-		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
-		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>));
 }
