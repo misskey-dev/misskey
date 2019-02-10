@@ -48,7 +48,7 @@ export async function exportFollowing(job: bq.Job, done: any): Promise<void> {
 
 		if (followings.length === 0) {
 			ended = true;
-			job.reportProgress(100);
+			if (job.reportProgress) job.reportProgress(100);
 			break;
 		}
 
@@ -74,7 +74,7 @@ export async function exportFollowing(job: bq.Job, done: any): Promise<void> {
 			followerId: user._id,
 		});
 
-		job.reportProgress(exportedCount / total);
+		if (job.reportProgress) job.reportProgress(exportedCount / total);
 	}
 
 	stream.end();
