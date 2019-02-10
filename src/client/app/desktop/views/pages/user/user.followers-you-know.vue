@@ -64,6 +64,8 @@ export default Vue.extend({
 			margin 4px
 
 			> img
+				display inline-block
+				text-align center
 				width 48px
 				height 48px
 				vertical-align bottom
