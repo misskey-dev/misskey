@@ -1284,7 +1284,7 @@ admin/views/federation.vue:
     notes: "Increase, or decrease in the number of notes"
     notes-total: "Total number of notes"
     ff: "Increase of followers"
-    ff-total: "Total follow/followers"
+    ff-total: "Total number of follows accumulated"
     drive-usage: "Increase and decrease in storage use"
     drive-usage-total: "Total usage of the Drive"
     drive-files: "Increase, or decrease in the number of files stored on Drive"
