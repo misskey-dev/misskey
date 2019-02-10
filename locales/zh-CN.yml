@@ -1186,6 +1186,7 @@ admin/views/users.vue:
       moderator: "版主"
       adminOrModerator: "管理员+版主"
       verified: "官方认证账户"
+      silenced: "サイレンス済み"
       suspended: "已冻结"
     origin:
       title: "源自"
