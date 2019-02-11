@@ -46,10 +46,18 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 		}
 	});
 
-	await FollowRequest.remove({
+	const removed = await FollowRequest.remove({
 		followeeId: followee._id,
 		followerId: follower._id
 	});
+
+	if (removed.deletedCount === 1) {
+		await User.update({ _id: followee._id }, {
+			$inc: {
+				pendingReceivedFollowRequestsCount: -1
+			}
+		});
+	}
 
 	if (alreadyFollowed) return;
 

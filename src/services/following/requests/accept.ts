@@ -20,12 +20,6 @@ export default async function(followee: IUser, follower: IUser) {
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
-	await User.update({ _id: followee._id }, {
-		$inc: {
-			pendingReceivedFollowRequestsCount: -1
-		}
-	});
-
 	packUser(followee, followee, {
 		detail: true
 	}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
