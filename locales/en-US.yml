@@ -1245,7 +1245,7 @@ admin/views/federation.vue:
   latest-request-sent-at: "Time of last request sent"
   latest-request-received-at: "Last request received at"
   remove-all-following: "Withold all followers"
-  remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  remove-all-following-info: "Unfollow all accounts from {host}. Please run this if the instance no longer exists."
   block: "Block"
   marked-as-closed: "Marked as closed"
   lookup: "Look up"
