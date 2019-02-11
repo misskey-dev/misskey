@@ -16,7 +16,7 @@ import config from '../../config';
 import { licenseHtml } from '../../misc/license';
 import { copyright } from '../../const.json';
 import endpoints from '../api/endpoints';
-import locales from '../../../locales';
+import * as locales from '../../../locales';
 import * as nestedProperty from 'nested-property';
 
 function getLang(lang: string): string {
