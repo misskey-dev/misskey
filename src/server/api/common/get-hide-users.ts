@@ -4,7 +4,7 @@ import User, { IUser } from '../../../models/user';
 import { unique } from '../../../prelude/array';
 
 export async function getHideUserIds(me: IUser) {
-	return me ? await getHideUserIdsById(me._id) : [];
+	return await getHideUserIdsById(me._id);
 }
 
 export async function getHideUserIdsById(meId?: mongo.ObjectID) {
