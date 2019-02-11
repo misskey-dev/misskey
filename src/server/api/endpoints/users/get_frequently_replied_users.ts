@@ -64,13 +64,13 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	}
 
 	const hideUserIds = await getHideUserIds(me);
+	hideUserIds.push(user._id);
 
 	const replyTargetNotes = await Note.find({
 		_id: {
 			$in: recentNotes.map(p => p.replyId)
 		},
 		userId: {
-			$ne: user._id,
 			$nin: hideUserIds
 		}
 	}, {
