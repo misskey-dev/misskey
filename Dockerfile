@@ -32,6 +32,7 @@ FROM base AS runner
 RUN apk add --no-cache \
     ffmpeg \
     tini
+RUN npm i -g web-push
 ENTRYPOINT ["/sbin/tini", "--"]
 
 COPY --from=builder /misskey/node_modules ./node_modules
