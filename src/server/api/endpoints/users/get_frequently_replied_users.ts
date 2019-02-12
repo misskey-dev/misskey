@@ -4,6 +4,7 @@ import Note from '../../../../models/note';
 import User, { pack } from '../../../../models/user';
 import define from '../../define';
 import { maximum } from '../../../../prelude/array';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	requireCredential: false,
@@ -62,12 +63,15 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		return res([]);
 	}
 
+	const hideUserIds = await getHideUserIds(me);
+	hideUserIds.push(user._id);
+
 	const replyTargetNotes = await Note.find({
 		_id: {
 			$in: recentNotes.map(p => p.replyId)
 		},
 		userId: {
-			$ne: user._id
+			$nin: hideUserIds
 		}
 	}, {
 		fields: {
