@@ -9,7 +9,7 @@
 			</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
-				<span v-if="user.isBot" :title="$t('title')"><fa icon="robot"/></span>
+				<span v-if="user.isBot" :title="$t('is-bot')"><fa icon="robot"/></span>
 			</div>
 		</div>
 	</div>
