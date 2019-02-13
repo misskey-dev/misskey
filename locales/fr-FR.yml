@@ -1186,6 +1186,7 @@ admin/views/users.vue:
       moderator: "Modérateur"
       adminOrModerator: "Administrateur/Modérateur"
       verified: "Compte vérifié"
+      silenced: "サイレンス済み"
       suspended: "Suspendu"
     origin:
       title: "Origine"

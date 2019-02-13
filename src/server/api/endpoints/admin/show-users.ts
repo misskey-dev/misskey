@@ -8,17 +8,17 @@ export const meta = {
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		sort: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'+follower',
 				'-follower',
 				'+createdAt',
@@ -29,19 +29,20 @@ export const meta = {
 		},
 
 		state: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'all',
 				'admin',
 				'moderator',
 				'adminOrModerator',
 				'verified',
+				'silenced',
 				'suspended',
 			]),
 			default: 'all'
 		},
 
 		origin: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'combined',
 				'local',
 				'remote',
@@ -101,6 +102,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			}]
 		} :
 		ps.state == 'verified' ? { isVerified: true } :
+		ps.state == 'silenced' ? { isSilenced: true } :
 		ps.state == 'suspended' ? { isSuspended: true } :
 		{}
 	);

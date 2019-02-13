@@ -13,7 +13,7 @@ export const meta = {
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 30),
+			validator: $.optional.num.range(1, 30),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'

@@ -25,18 +25,18 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		cursor: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			default: null as any,
 			transform: transform,
 		},
 
 		iknow: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 		}
 	}

@@ -26,7 +26,7 @@ export const meta = {
 		},
 
 		email: {
-			validator: $.str.optional.nullable
+			validator: $.optional.nullable.str
 		},
 	}
 };

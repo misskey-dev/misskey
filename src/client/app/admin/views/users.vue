@@ -48,6 +48,7 @@
 					<option value="admin">{{ $t('users.state.admin') }}</option>
 					<option value="moderator">{{ $t('users.state.moderator') }}</option>
 					<option value="verified">{{ $t('users.state.verified') }}</option>
+					<option value="silenced">{{ $t('users.state.silenced') }}</option>
 					<option value="suspended">{{ $t('users.state.suspended') }}</option>
 				</ui-select>
 				<ui-select v-model="origin">
@@ -89,7 +90,7 @@ export default Vue.extend({
 			unsuspending: false,
 			sort: '+createdAt',
 			state: 'all',
-			origin: 'combined',
+			origin: 'local',
 			limit: 10,
 			offset: 0,
 			users: [],
@@ -129,16 +130,25 @@ export default Vue.extend({
 				const usernamePromise = this.$root.api('users/show', parseAcct(this.target));
 				const idPromise = this.$root.api('users/show', { userId: this.target });
 
-				usernamePromise.then(res);
-				idPromise.then(res);
-
-				idPromise.catch(e => {
-					if (e == 'user not found') {
+				let _notFound = false;
+				const notFound = () => {
+					if (_notFound) {
 						this.$root.dialog({
 							type: 'error',
 							text: this.$t('user-not-found')
 						});
+					} else {
+						_notFound = true;
 					}
+				};
+
+				usernamePromise.then(res).catch(e => {
+					if (e == 'user not found') {
+						notFound();
+					}
+				});
+				idPromise.then(res).catch(e => {
+					notFound();
 				});
 			});
 		},

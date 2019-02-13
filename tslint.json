@@ -7,15 +7,15 @@
 	"jsRules": {},
 	"rules": {
 		"align": false,
-		"indent": ["tab"],
-		"quotemark": ["single"],
+		"indent": [true, "tabs"],
+		"quotemark": [true, "single"],
 		"no-var-requires": false,
 		"no-string-throw": false,
 		"trailing-comma": [false],
 		"object-literal-sort-keys": false,
 		"curly": false,
 		"no-console": [false],
-		"no-empty":false,
+		"no-empty": false,
 		"ordered-imports": [false],
 		"arrow-parens": false,
 		"array-type": [true, "array"],
@@ -31,11 +31,12 @@
 		"max-classes-per-file": false,
 		"member-ordering": [false],
 		"ban-types": [
+			true,
 			"Object"
 		],
 		"ban": [
 			true,
-			{"name": ["*", "forEach"], "message": "Use for-of loop instead."}
+			{ "name": ["*", "forEach"], "message": "Use for-of loop instead." }
 		],
 		"no-duplicate-string": false,
 		"no-commented-code": false,

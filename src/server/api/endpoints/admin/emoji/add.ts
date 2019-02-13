@@ -20,7 +20,7 @@ export const meta = {
 		},
 
 		aliases: {
-			validator: $.arr($.str.min(1)).optional,
+			validator: $.optional.arr($.str.min(1)),
 			default: [] as string[]
 		}
 	}

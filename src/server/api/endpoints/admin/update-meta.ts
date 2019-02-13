@@ -12,84 +12,84 @@ export const meta = {
 
 	params: {
 		broadcasts: {
-			validator: $.arr($.obj()).optional.nullable,
+			validator: $.optional.nullable.arr($.obj()),
 			desc: {
 				'ja-JP': 'ブロードキャスト'
 			}
 		},
 
 		disableRegistration: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			desc: {
 				'ja-JP': '招待制か否か'
 			}
 		},
 
 		disableLocalTimeline: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			desc: {
 				'ja-JP': 'ローカルタイムライン(とソーシャルタイムライン)を無効にするか否か'
 			}
 		},
 
 		disableGlobalTimeline: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			desc: {
 				'ja-JP': 'グローバルタイムラインを無効にするか否か'
 			}
 		},
 
 		hidedTags: {
-			validator: $.arr($.str).optional.nullable,
+			validator: $.optional.nullable.arr($.str),
 			desc: {
 				'ja-JP': '統計などで無視するハッシュタグ'
 			}
 		},
 
 		mascotImageUrl: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'インスタンスキャラクター画像のURL'
 			}
 		},
 
 		bannerUrl: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'インスタンスのバナー画像URL'
 			}
 		},
 
 		errorImageUrl: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'インスタンスのエラー画像URL'
 			}
 		},
 
 		name: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'インスタンス名'
 			}
 		},
 
 		description: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'インスタンスの紹介文'
 			}
 		},
 
 		maxNoteTextLength: {
-			validator: $.num.optional.min(1),
+			validator: $.optional.num.min(1),
 			desc: {
 				'ja-JP': '投稿の最大文字数'
 			}
 		},
 
 		localDriveCapacityMb: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			desc: {
 				'ja-JP': 'ローカルユーザーひとりあたりのドライブ容量 (メガバイト単位)',
 				'en-US': 'Drive capacity of a local user (MB)'
@@ -97,7 +97,7 @@ export const meta = {
 		},
 
 		remoteDriveCapacityMb: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			desc: {
 				'ja-JP': 'リモートユーザーひとりあたりのドライブ容量 (メガバイト単位)',
 				'en-US': 'Drive capacity of a remote user (MB)'
@@ -105,217 +105,217 @@ export const meta = {
 		},
 
 		cacheRemoteFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'リモートのファイルをキャッシュするか否か'
 			}
 		},
 
 		enableRecaptcha: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'reCAPTCHAを使用するか否か'
 			}
 		},
 
 		recaptchaSiteKey: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'reCAPTCHA site key'
 			}
 		},
 
 		recaptchaSecretKey: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'reCAPTCHA secret key'
 			}
 		},
 
 		proxyAccount: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'プロキシアカウントのユーザー名'
 			}
 		},
 
 		maintainerName: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 			desc: {
 				'ja-JP': 'インスタンスの管理者名'
 			}
 		},
 
 		maintainerEmail: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'インスタンス管理者の連絡先メールアドレス'
 			}
 		},
 
 		langs: {
-			validator: $.arr($.str).optional,
+			validator: $.optional.arr($.str),
 			desc: {
 				'ja-JP': 'インスタンスの対象言語'
 			}
 		},
 
 		summalyProxy: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'summalyプロキシURL'
 			}
 		},
 
 		enableTwitterIntegration: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'Twitter連携機能を有効にするか否か'
 			}
 		},
 
 		twitterConsumerKey: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'TwitterアプリのConsumer key'
 			}
 		},
 
 		twitterConsumerSecret: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'TwitterアプリのConsumer secret'
 			}
 		},
 
 		enableGithubIntegration: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'GitHub連携機能を有効にするか否か'
 			}
 		},
 
 		githubClientId: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'GitHubアプリのClient ID'
 			}
 		},
 
 		githubClientSecret: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'GitHubアプリのClient Secret'
 			}
 		},
 
 		enableDiscordIntegration: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'Discord連携機能を有効にするか否か'
 			}
 		},
 
 		discordClientId: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'DiscordアプリのClient ID'
 			}
 		},
 
 		discordClientSecret: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'DiscordアプリのClient Secret'
 			}
 		},
 
 		enableExternalUserRecommendation: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': '外部ユーザーレコメンデーションを有効にする'
 			}
 		},
 
 		externalUserRecommendationEngine: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': '外部ユーザーレコメンデーションのサードパーティエンジン'
 			}
 		},
 
 		externalUserRecommendationTimeout: {
-			validator: $.num.optional.nullable.min(0),
+			validator: $.optional.nullable.num.min(0),
 			desc: {
 				'ja-JP': '外部ユーザーレコメンデーションのタイムアウト (ミリ秒)'
 			}
 		},
 
 		enableEmail: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'メール配信を有効にするか否か'
 			}
 		},
 
 		email: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'メール配信する際に利用するメールアドレス'
 			}
 		},
 
 		smtpSecure: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'SMTPサーバがSSLを使用しているか否か'
 			}
 		},
 
 		smtpHost: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'SMTPサーバのホスト'
 			}
 		},
 
 		smtpPort: {
-			validator: $.num.optional.nullable,
+			validator: $.optional.nullable.num,
 			desc: {
 				'ja-JP': 'SMTPサーバのポート'
 			}
 		},
 
 		smtpUser: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'SMTPサーバのユーザー名'
 			}
 		},
 
 		smtpPass: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'SMTPサーバのパスワード'
 			}
 		},
 
 		enableServiceWorker: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ServiceWorkerを有効にするか否か'
 			}
 		},
 
 		swPublicKey: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'ServiceWorkerのVAPIDキーペアの公開鍵'
 			}
 		},
 
 		swPrivateKey: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'ServiceWorkerのVAPIDキーペアの秘密鍵'
 			}
