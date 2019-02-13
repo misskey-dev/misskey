@@ -84,16 +84,12 @@ export default Vue.extend({
 		color var(--secondary)
 		display inline-block
 		font-size 14px
-		font-weight 900
-		height 24px
-		left calc(var(--round) * 2)
-		line-height 1
+		font-weight bold
+		left 12px
 		opacity .5
-		padding 5px 0
+		padding 0 6px
 		text-align center
-		top calc(var(--round) * 2)
-		vertical-align middle
-		width 36px
+		top 12px
 
 .qjewsnkgzzxlxtzncydssfbgjibiehcy
 	display flex
