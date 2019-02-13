@@ -5,6 +5,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
+import * as url from '../../prelude/url';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
@@ -20,7 +21,7 @@ export default async (ctx: Router.IRouterContext) => {
 	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);
+	const [cursor, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);
 
 	// Get 'page' parameter
 	const pageErr = !$.optional.str.or(['true', 'false']).ok(ctx.request.query.page);
@@ -72,10 +73,16 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const renderedFollowees = await Promise.all(followings.map(following => renderFollowUser(following.followeeId)));
 		const rendered = renderOrderedCollectionPage(
-			`${partOf}?page=true${cursor ? `&cursor=${cursor}` : ''}`,
+			`${partOf}?${url.query({
+				page: 'true',
+				cursor
+			})}`,
 			user.followingCount, renderedFollowees, partOf,
 			null,
-			inStock ? `${partOf}?page=true&cursor=${followings[followings.length - 1]._id}` : null
+			inStock ? `${partOf}?${url.query({
+				page: 'true',
+				cursor: followings[followings.length - 1]._id.toHexString()
+			})}` : null
 		);
 
 		ctx.body = renderActivity(rendered);
