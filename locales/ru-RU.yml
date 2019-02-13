@@ -1591,13 +1591,13 @@ mobile/views/pages/user/home.vue:
   activity: "アクティビティ"
   keywords: "キーワード"
   domains: "頻出ドメイン"
-  frequently-replied-users: "よく会話するユーザー"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "知り合いのフォロワー"
   last-used-at: "最終ログイン"
 mobile/views/pages/user/home.followers-you-know.vue:
   no-users: "知り合いのユーザーはいません"
 mobile/views/pages/user/home.friends.vue:
-  no-users: "よく会話するユーザーはいません"
+  no-users: "よく話すユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "投稿はありません"
 mobile/views/pages/user/home.photos.vue:
