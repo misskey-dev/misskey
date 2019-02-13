@@ -14,6 +14,7 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
+import * as url from '../../prelude/url';
 
 export default async (ctx: Router.IRouterContext) => {
 	if (!ObjectID.isValid(ctx.params.user)) {
@@ -88,10 +89,20 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const activities = await Promise.all(notes.map(note => packActivity(note)));
 		const rendered = renderOrderedCollectionPage(
-			`${partOf}?page=true${sinceId ? `&since_id=${sinceId}` : ''}${untilId ? `&until_id=${untilId}` : ''}`,
+			`${partOf}?${url.query({
+				page: 'true',
+				since_id: sinceId,
+				until_id: untilId
+			})}`,
 			user.notesCount, activities, partOf,
-			notes.length > 0 ? `${partOf}?page=true&since_id=${notes[0]._id}` : null,
-			notes.length > 0 ? `${partOf}?page=true&until_id=${notes[notes.length - 1]._id}` : null
+			notes.length ? `${partOf}?${url.query({
+				page: 'true',
+				since_id: notes[0]._id.toHexString()
+			})}` : null,
+			notes.length ? `${partOf}?${url.query({
+				page: 'true',
+				until_id: notes[notes.length - 1]._id.toHexString()
+			})}` : null
 		);
 
 		ctx.body = renderActivity(rendered);
