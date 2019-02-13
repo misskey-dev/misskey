@@ -10,7 +10,9 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	const instance = await fetchMeta();
 	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
 
-	const span = 1000 * 60 * 60 * 24 * 7; // 1週間
+	// 重い
+	//const span = 1000 * 60 * 60 * 24 * 7; // 1週間
+	const span = 1000 * 60 * 60 * 24; // 1日
 
 	//#region 1. 指定期間の内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{
