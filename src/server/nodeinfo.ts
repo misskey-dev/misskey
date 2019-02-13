@@ -21,18 +21,18 @@ export const links = [/* (awaiting release) {
 const nodeinfo2 = async () => {
 	const [
 		{ name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker },
-		total,
-		activeHalfyear,
-		activeMonth,
-		localPosts,
-		localComments
+		// total,
+		// activeHalfyear,
+		// activeMonth,
+		// localPosts,
+		// localComments
 	] = await Promise.all([
 		fetchMeta(),
-		Promise.resolve(null), // User.count({ host: null }),
-		Promise.resolve(null), // User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
-		Promise.resolve(null), // User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
-		Promise.resolve(null), // Note.count({ '_user.host': null, replyId: null }),
-		Promise.resolve(null), // Note.count({ '_user.host': null, replyId: { $ne: null } })
+		// Promise.resolve(null), User.count({ host: null }),
+		// Promise.resolve(null), User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
+		// Promise.resolve(null), User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
+		// Note.count({ '_user.host': null, replyId: null }),
+		// Note.count({ '_user.host': null, replyId: { $ne: null } })
 	]);
 
 	return {
@@ -47,11 +47,11 @@ const nodeinfo2 = async () => {
 			outbound: ['atom1.0', 'rss2.0']
 		},
 		openRegistrations: !disableRegistration,
-		usage: ({
-			users: { total, activeHalfyear, activeMonth },
-			localPosts,
-			localComments
-		}, null),
+		usage: {
+			users: null // { total, activeHalfyear, activeMonth },
+			// localPosts,
+			// localComments
+		},
 		metadata: { name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker }
 	};
 };
