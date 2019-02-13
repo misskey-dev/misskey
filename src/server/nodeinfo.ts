@@ -28,11 +28,11 @@ const nodeinfo2 = async () => {
 		localComments
 	] = await Promise.all([
 		fetchMeta(),
-		User.count({ host: null }),
-		User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
-		User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
-		Note.count({ '_user.host': null, replyId: null }),
-		Note.count({ '_user.host': null, replyId: { $ne: null } })
+		Promise.resolve(null), // User.count({ host: null }),
+		Promise.resolve(null), // User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
+		Promise.resolve(null), // User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
+		Promise.resolve(null), // Note.count({ '_user.host': null, replyId: null }),
+		Promise.resolve(null), // Note.count({ '_user.host': null, replyId: { $ne: null } })
 	]);
 
 	return {
