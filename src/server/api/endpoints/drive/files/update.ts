@@ -26,7 +26,7 @@ export const meta = {
 		},
 
 		folderId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			transform: transform,
 			default: undefined as any,
 			desc: {
@@ -35,7 +35,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.str.optional.pipe(validateFileName),
+			validator: $.optional.str.pipe(validateFileName),
 			default: undefined as any,
 			desc: {
 				'ja-JP': 'ファイル名',
@@ -44,7 +44,7 @@ export const meta = {
 		},
 
 		isSensitive: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: undefined as any,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',

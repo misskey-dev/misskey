@@ -25,7 +25,7 @@ export const meta = {
 
 	params: {
 		folderId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			transform: transform,
 			default: null as any,
 			desc: {
@@ -34,7 +34,7 @@ export const meta = {
 		},
 
 		isSensitive: {
-			validator: $.or($.bool, $.str).optional,
+			validator: $.optional.or($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
 			desc: {
@@ -44,7 +44,7 @@ export const meta = {
 		},
 
 		force: {
-			validator: $.or($.bool, $.str).optional,
+			validator: $.optional.or($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
 			desc: {

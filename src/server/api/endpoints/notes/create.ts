@@ -35,7 +35,7 @@ export const meta = {
 
 	params: {
 		visibility: {
-			validator: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']),
+			validator: $.optional.str.or(['public', 'home', 'followers', 'specified', 'private']),
 			default: 'public',
 			desc: {
 				'ja-JP': '投稿の公開範囲'
@@ -43,7 +43,7 @@ export const meta = {
 		},
 
 		visibleUserIds: {
-			validator: $.arr($.type(ID)).optional.unique().min(0),
+			validator: $.optional.arr($.type(ID)).unique().min(0),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
@@ -51,7 +51,7 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.str.optional.nullable.pipe(text =>
+			validator: $.optional.nullable.str.pipe(text =>
 				length(text.trim()) <= maxNoteTextLength && text.trim() != ''
 			),
 			default: null as any,
@@ -61,14 +61,14 @@ export const meta = {
 		},
 
 		cw: {
-			validator: $.str.optional.nullable.pipe(isValidCw),
+			validator: $.optional.nullable.str.pipe(isValidCw),
 			desc: {
 				'ja-JP': 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
 			}
 		},
 
 		viaMobile: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'モバイルデバイスからの投稿か否か。'
@@ -76,7 +76,7 @@ export const meta = {
 		},
 
 		localOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'ローカルのみに投稿か否か。'
@@ -84,7 +84,7 @@ export const meta = {
 		},
 
 		noExtractMentions: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': '本文からメンションを展開しないか否か。'
@@ -92,7 +92,7 @@ export const meta = {
 		},
 
 		noExtractHashtags: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': '本文からハッシュタグを展開しないか否か。'
@@ -100,7 +100,7 @@ export const meta = {
 		},
 
 		noExtractEmojis: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': '本文からカスタム絵文字を展開しないか否か。'
@@ -108,16 +108,16 @@ export const meta = {
 		},
 
 		geo: {
-			validator: $.obj({
+			validator: $.optional.nullable.obj({
 				coordinates: $.arr().length(2)
 					.item(0, $.num.range(-180, 180))
 					.item(1, $.num.range(-90, 90)),
-				altitude: $.num.nullable,
-				accuracy: $.num.nullable,
-				altitudeAccuracy: $.num.nullable,
-				heading: $.num.nullable.range(0, 360),
-				speed: $.num.nullable
-			}).optional.nullable.strict(),
+				altitude: $.nullable.num,
+				accuracy: $.nullable.num,
+				altitudeAccuracy: $.nullable.num,
+				heading: $.nullable.num.range(0, 360),
+				speed: $.nullable.num
+			}).strict(),
 			desc: {
 				'ja-JP': '位置情報'
 			},
@@ -125,7 +125,7 @@ export const meta = {
 		},
 
 		fileIds: {
-			validator: $.arr($.type(ID)).optional.unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '添付するファイル'
@@ -133,7 +133,7 @@ export const meta = {
 		},
 
 		mediaIds: {
-			validator: $.arr($.type(ID)).optional.unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
@@ -141,7 +141,7 @@ export const meta = {
 		},
 
 		replyId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '返信対象'
@@ -149,7 +149,7 @@ export const meta = {
 		},
 
 		renoteId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': 'Renote対象'
@@ -157,12 +157,12 @@ export const meta = {
 		},
 
 		poll: {
-			validator: $.obj({
+			validator: $.optional.obj({
 				choices: $.arr($.str)
 					.unique()
 					.range(2, 10)
 					.each(c => c.length > 0 && c.length < 50)
-			}).optional.strict(),
+			}).strict(),
 			desc: {
 				'ja-JP': 'アンケート'
 			},

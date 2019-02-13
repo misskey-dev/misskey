@@ -19,7 +19,7 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '対象のファイルID',
@@ -28,7 +28,7 @@ export const meta = {
 		},
 
 		url: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 			desc: {
 				'ja-JP': '対象のファイルのURL',
 				'en-US': 'Target file URL'

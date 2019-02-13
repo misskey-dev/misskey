@@ -20,10 +20,10 @@ export default async (ctx: Router.IRouterContext) => {
 	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.type(ID).optional.get(ctx.request.query.cursor);
+	const [cursor = null, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);
 
 	// Get 'page' parameter
-	const pageErr = !$.str.optional.or(['true', 'false']).ok(ctx.request.query.page);
+	const pageErr = !$.optional.str.or(['true', 'false']).ok(ctx.request.query.page);
 	const page: boolean = ctx.request.query.page === 'true';
 
 	// Validate parameters
