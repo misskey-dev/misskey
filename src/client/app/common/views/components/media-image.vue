@@ -90,6 +90,7 @@ export default Vue.extend({
 		padding 0 6px
 		text-align center
 		top 12px
+		pointer-events none
 
 .qjewsnkgzzxlxtzncydssfbgjibiehcy
 	display flex
