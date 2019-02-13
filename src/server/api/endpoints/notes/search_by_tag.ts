@@ -13,31 +13,31 @@ export const meta = {
 
 	params: {
 		tag: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 			desc: {
 				'ja-JP': 'タグ'
 			}
 		},
 
 		query: {
-			validator: $.arr($.arr($.str)).optional,
+			validator: $.optional.arr($.arr($.str)),
 			desc: {
 				'ja-JP': 'クエリ'
 			}
 		},
 
 		following: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			default: null as any
 		},
 
 		mute: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 			default: 'mute_all'
 		},
 
 		reply: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			default: null as any,
 			desc: {
 				'ja-JP': '返信に限定するか否か'
@@ -45,7 +45,7 @@ export const meta = {
 		},
 
 		renote: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			default: null as any,
 			desc: {
 				'ja-JP': 'Renoteに限定するか否か'
@@ -53,14 +53,14 @@ export const meta = {
 		},
 
 		withFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
 		},
 
 		media: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			default: null as any,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
@@ -68,7 +68,7 @@ export const meta = {
 		},
 
 		poll: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 			default: null as any,
 			desc: {
 				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
@@ -76,7 +76,7 @@ export const meta = {
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
@@ -84,20 +84,20 @@ export const meta = {
 		},
 
 		sinceDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 		},
 
 		untilDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 30),
+			validator: $.optional.num.range(1, 30),
 			default: 10
 		},
 	}

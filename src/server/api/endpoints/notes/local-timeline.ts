@@ -15,28 +15,28 @@ export const meta = {
 
 	params: {
 		withFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
 			}
 		},
 
 		mediaOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		},
 
 		fileType: {
-			validator: $.arr($.str).optional,
+			validator: $.optional.arr($.str),
 			desc: {
 				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
 			}
 		},
 
 		excludeNsfw: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
@@ -44,26 +44,26 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		sinceDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 		},
 
 		untilDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 		},
 	}
 };

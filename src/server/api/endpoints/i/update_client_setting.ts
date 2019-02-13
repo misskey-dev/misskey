@@ -14,7 +14,7 @@ export const meta = {
 		},
 
 		value: {
-			validator: $.any.nullable
+			validator: $.nullable.any
 		}
 	}
 };
