@@ -48,7 +48,7 @@ const nodeinfo2 = async () => {
 		},
 		openRegistrations: !disableRegistration,
 		usage: {
-			users: null // { total, activeHalfyear, activeMonth },
+			users: {} // { total, activeHalfyear, activeMonth },
 			// localPosts,
 			// localComments
 		},
