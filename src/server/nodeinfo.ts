@@ -1,9 +1,9 @@
 import * as Router from 'koa-router';
 import config from '../config';
 import fetchMeta from '../misc/fetch-meta';
-import User from '../models/user';
+// import User from '../models/user';
 import { name as softwareName, version, repository } from '../../package.json';
-import Note from '../models/note';
+// import Note from '../models/note';
 
 const router = new Router();
 
@@ -47,11 +47,11 @@ const nodeinfo2 = async () => {
 			outbound: ['atom1.0', 'rss2.0']
 		},
 		openRegistrations: !disableRegistration,
-		usage: {
+		usage: ({
 			users: { total, activeHalfyear, activeMonth },
 			localPosts,
 			localComments
-		},
+		}, null),
 		metadata: { name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker }
 	};
 };
