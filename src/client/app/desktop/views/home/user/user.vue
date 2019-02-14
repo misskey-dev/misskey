@@ -7,14 +7,12 @@
 		<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 		<x-timeline class="timeline" ref="tl" :user="user"/>
 		<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
-		<x-profile :user="user"/>
 		<x-integrations :user="user"/>
-		<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
+		<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
 		<mk-activity :user="user"/>
 		<x-photos :user="user"/>
 		<x-friends :user="user"/>
 		<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
-		<div class="nav"><mk-nav/></div>
 	</div>
 </div>
 </template>
@@ -26,7 +24,6 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
 import XTimeline from './user.timeline.vue';
-import XProfile from './user.profile.vue';
 import XPhotos from './user.photos.vue';
 import XFollowersYouKnow from './user.followers-you-know.vue';
 import XFriends from './user.friends.vue';
@@ -37,7 +34,6 @@ export default Vue.extend({
 	components: {
 		XHeader,
 		XTimeline,
-		XProfile,
 		XPhotos,
 		XFollowersYouKnow,
 		XFriends,

@@ -1486,10 +1486,6 @@ desktop/views/pages/user/user.photos.vue:
   loading: "読み込み中"
   no-photos: "写真はありません"
 
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "フォローされています"
-  menu: "メニュー"
-
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
@@ -1499,6 +1495,7 @@ desktop/views/pages/user/user.header.vue:
   year: "年"
   month: "月"
   day: "日"
+  follows-you: "フォローされています"
 
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
