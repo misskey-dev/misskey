@@ -25,14 +25,17 @@
 					<template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template>
 				</a>
 			</li>
-			<li class="game">
-				<a @click="game">
-					<fa icon="gamepad"/>
-					<p>{{ $t('game') }}</p>
-					<template v-if="hasGameInvitations"><fa icon="circle"/></template>
-				</a>
-			</li>
 		</template>
+		<li class="featured">
+			<router-link to="/featured"><fa :icon="faNewspaper"/><p>{{ $t('@.featured-notes') }}</p></router-link>
+		</li>
+		<li class="game">
+			<a @click="game">
+				<fa icon="gamepad"/>
+				<p>{{ $t('game') }}</p>
+				<template v-if="hasGameInvitations"><fa icon="circle"/></template>
+			</a>
+		</li>
 	</ul>
 </div>
 </template>
@@ -42,13 +45,15 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import MkMessagingWindow from './messaging-window.vue';
 import MkGameWindow from './game-window.vue';
+import { faNewspaper } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.nav.vue'),
 	data() {
 		return {
 			hasGameInvitations: false,
-			connection: null
+			connection: null,
+			faNewspaper
 		};
 	},
 	computed: {

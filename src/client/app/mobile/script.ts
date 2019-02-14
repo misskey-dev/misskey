@@ -12,7 +12,6 @@ import init from '../init';
 
 import MkIndex from './views/pages/index.vue';
 import MkSignup from './views/pages/signup.vue';
-import MkUser from './views/pages/user.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkNotifications from './views/pages/notifications.vue';
@@ -134,6 +133,7 @@ init((launch) => {
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
+			{ path: '/featured', name: 'featured', component: () => import('./views/pages/featured.vue').then(m => m.default) },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', name: 'reversi', component: MkReversi },
 			{ path: '/@:user', component: () => import('./views/pages/user.vue').then(m => m.default) },

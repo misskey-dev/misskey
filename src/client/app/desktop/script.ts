@@ -134,6 +134,7 @@ init(async (launch, os) => {
 					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default) },
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/deck/deck.note-column.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
+					{ path: '/featured', component: () => import('./views/deck/deck.featured-column.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/deck/deck.favorites-column.vue').then(m => m.default) }
 				]}
 				: { path: '/', component: MkHome, children: [
@@ -141,6 +142,7 @@ init(async (launch, os) => {
 					{ path: '/@:user', name: 'user', component: () => import('./views/home/user/user.vue').then(m => m.default) },
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
+					{ path: '/featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
 				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
