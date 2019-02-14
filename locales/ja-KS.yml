@@ -29,6 +29,7 @@ common:
   enter-password: "パスワードを入れてや"
   2fa: "二段階認証"
   customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
