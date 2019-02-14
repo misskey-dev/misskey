@@ -64,7 +64,7 @@
 					<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="desktop"/>
 				</div>
 				<div class="main">
-					<router-view></router-view>
+					<router-view ref="content"></router-view>
 				</div>
 			</template>
 		</div>
@@ -240,10 +240,9 @@ export default Vue.extend({
 			location.href = '/';
 		},
 
-/*
 		focus() {
-			(this.$refs.tl as any).focus();
-		}*/
+			(this.$refs.content as any).focus();
+		}
 	}
 });
 </script>
