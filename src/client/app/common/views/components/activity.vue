@@ -42,7 +42,7 @@ export default Vue.extend({
 			const m = now.getMonth();
 			const d = now.getDate();
 
-			for (let i = 0; i < 21; i++) {
+			for (let i = 0; i < this.limit; i++) {
 				const x = new Date(y, m, d - i);
 				normal.push([
 					x,

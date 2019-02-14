@@ -87,7 +87,7 @@ export default Vue.extend({
 		> .img
 			flex 1 1 33%
 			width 33%
-			height 80px
+			height 120px
 			background-position center center
 			background-size cover
 			background-clip content-box

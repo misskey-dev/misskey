@@ -9,7 +9,10 @@
 		<x-integrations :user="user"/>
 		<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
 		<div class="activity">
-			<x-activity :user="user" :limit="28"/>
+			<mk-widget-container :show-header="true" :naked="false">
+				<template slot="header"><fa icon="chart-bar"/>{{ $t('activity') }}</template>
+				<x-activity :user="user" :limit="35" style="padding: 16px;"/>
+			</mk-widget-container>
 		</div>
 		<x-photos :user="user"/>
 		<x-friends :user="user"/>
