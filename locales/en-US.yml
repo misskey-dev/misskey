@@ -28,8 +28,8 @@ common:
   load-more: "Load more"
   enter-password: "Please enter the Password"
   2fa: "Two-factor authentication"
-  customize-home: "ホームをカスタマイズ"
-  featured-notes: "ハイライト"
+  customize-home: "Customize your home layout"
+  featured-notes: "Featured notes"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -773,7 +773,7 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "Do you want to Repost it?"
 desktop/views/components/timeline.core.vue:
-  empty: "投稿がありません"
+  empty: "Without any notes"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}'s following"
   followers: "{user}'s follower"
@@ -1345,7 +1345,7 @@ desktop/views/pages/user/user.header.vue:
   year: "/"
   month: "/"
   day: "-"
-  follows-you: "フォローされています"
+  follows-you: "Follows you"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
@@ -1498,7 +1498,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "Messages"
 mobile/views/pages/home.timeline.vue:
-  empty: "投稿がありません"
+  empty: "Without any notes"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/welcome.vue:
