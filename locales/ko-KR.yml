@@ -28,6 +28,7 @@ common:
   load-more: "더보기"
   enter-password: "비밀번호를 입력하여 주십시오"
   2fa: "2단계 인증"
+  customize-home: "ホームをカスタマイズ"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -798,13 +799,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "예: https://www.google.com/?#q={{query}}"
   auto-popout: "창 자동 팝아웃"
   auto-popout-desc: "창이 열릴 때 팝아웃 (브라우저 밖으로 분리) 이 가능한 경우 자동으로 팝아웃합니다. 이 설정은 브라우저에 저장됩니다."
-  deck-nav: "덱 내 탐색"
-  deck-nav-desc: "덱을 사용중일 때, 내비게이션이 발생하였을 경우 페이지를 이동하지 않고 일시적으로 임시 칼럼을 생성하도록 합니다."
   keep-cw: "CW 유지"
   keep-cw-desc: "글에 답글을 달 때, 답글할 글에 CW가 설정되어 있는 경우 기본값으로 동일한 CW를 설정하도록 합니다."
-  deck-default: "덱을 기본 UI로 설정"
   display: "디자인 및 표시"
-  customize: "홈 커스터마이징"
   wallpaper: "배경"
   choose-wallpaper: "배경 설정"
   delete-wallpaper: "배경 제거"
@@ -961,7 +958,6 @@ desktop/views/components/ui.header.account.vue:
   favorites: "즐겨찾기"
   lists: "리스트"
   follow-requests: "팔로우 요청"
-  customize: "홈 커스터마이징"
   admin: "관리"
   settings: "설정"
   signout: "로그아웃"
@@ -1306,8 +1302,6 @@ desktop/views/pages/welcome.vue:
   info: "정보"
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
-desktop/views/pages/home-customize.vue:
-  title: "홈 커스터마이징"
 desktop/views/pages/note.vue:
   prev: "이전 글"
   next: "다음 글"
@@ -1339,9 +1333,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "사진"
   loading: "로드 중"
   no-photos: "사진이 없습니다"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "당신을 팔로우합니다"
-  menu: "메뉴"
 desktop/views/pages/user/user.header.vue:
   posts: "글"
   following: "팔로잉"
@@ -1351,6 +1342,7 @@ desktop/views/pages/user/user.header.vue:
   year: "년"
   month: "월"
   day: "일"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "글"
   with-replies: "글과 답글"
