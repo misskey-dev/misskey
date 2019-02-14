@@ -28,6 +28,7 @@ common:
   load-more: "Charger plus"
   enter-password: "Veuillez entrer le mot de passe"
   2fa: "Authentification à deux facteurs"
+  customize-home: "ホームをカスタマイズ"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -798,13 +799,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Exemple : https://www.google.com/?#q={{query}}"
   auto-popout: "Fenêtre contextuelle automatique"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  deck-nav: "Deck sans tansitions"
-  deck-nav-desc: "Vous obtenez une colonne temporaire sans transitions dans la page pendant la navigation, lors de l’utilisation du Deck."
   keep-cw: "Maintenir l'avertissement de contenu"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "Utiliser le Deck comme IU par défaut"
   display: "Affichage et design"
-  customize: "Personnaliser l'Accueil"
   wallpaper: "Arrière plan"
   choose-wallpaper: "Sélectionner un fond d'écran"
   delete-wallpaper: "Supprimer le fond d'écran"
@@ -961,7 +958,6 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Listes"
   follow-requests: "Demandes de suivi"
-  customize: "Personnaliser l'Accueil"
   admin: "Admin"
   settings: "Réglages"
   signout: "Déconnexion"
@@ -1306,8 +1302,6 @@ desktop/views/pages/welcome.vue:
   info: "Informations"
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
-desktop/views/pages/home-customize.vue:
-  title: "Personnaliser l'Accueil"
 desktop/views/pages/note.vue:
   prev: "Note précédente"
   next: "Note suivante"
@@ -1339,9 +1333,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Chargement en cours"
   no-photos: "Pas de photos"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Vous suit"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
@@ -1351,6 +1342,7 @@ desktop/views/pages/user/user.header.vue:
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
