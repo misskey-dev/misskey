@@ -28,6 +28,7 @@ common:
   load-more: "Load more"
   enter-password: "Please enter the Password"
   2fa: "Two-factor authentication"
+  customize-home: "ホームをカスタマイズ"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -798,13 +799,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Example: https://www.google.com/?#q={{query}}"
   auto-popout: "Auto pop-out window"
   auto-popout-desc: "If it's possible, pop-out display will be used instead of opening a new window. This setting is stored in your browser."
-  deck-nav: "Transitionless deck navigation"
-  deck-nav-desc: "You get a temporary column without page transitions during navigation when using the deck."
   keep-cw: "Preserve content warning"
   keep-cw-desc: "When replying to a post, the same content warning is set by default to the reply, as has been set by the original post."
-  deck-default: "Use Deck view as the default UI"
   display: "Design and display"
-  customize: "Customize home layout"
   wallpaper: "Wallpaper"
   choose-wallpaper: "Choose a background"
   delete-wallpaper: "Remove background"
@@ -961,7 +958,6 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
-  customize: "Customize home layout"
   admin: "Admin"
   settings: "Settings"
   signout: "Sign out"
@@ -1306,8 +1302,6 @@ desktop/views/pages/welcome.vue:
   info: "Information"
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
-desktop/views/pages/home-customize.vue:
-  title: "Customize home layout"
 desktop/views/pages/note.vue:
   prev: "Previous post"
   next: "Next post"
@@ -1339,9 +1333,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
   no-photos: "No photos"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Follows you"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
@@ -1351,6 +1342,7 @@ desktop/views/pages/user/user.header.vue:
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
