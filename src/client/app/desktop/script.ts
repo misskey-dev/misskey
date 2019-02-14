@@ -12,19 +12,13 @@ import init from '../init';
 import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import composeNotification from '../common/scripts/compose-notification';
 
-import MkIndex from './views/pages/index.vue';
-import MkHome from './views/pages/home.vue';
-import MkDeck from './views/pages/deck/deck.vue';
-import MkUser from './views/pages/user/user.vue';
+import MkHome from './views/home/home.vue';
+import MkDeck from './views/deck/deck.vue';
 import MkUserFollowingOrFollowers from './views/pages/user-following-or-followers.vue';
-import MkFavorites from './views/pages/favorites.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
-import MkHomeCustomize from './views/pages/home-customize.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
-import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
-import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
@@ -36,6 +30,7 @@ import PostFormWindow from './views/components/post-form-window.vue';
 import RenoteFormWindow from './views/components/renote-form-window.vue';
 import MkChooseFileFromDriveWindow from './views/components/choose-file-from-drive-window.vue';
 import MkChooseFolderFromDriveWindow from './views/components/choose-folder-from-drive-window.vue';
+import MkHomeTimeline from './views/home/timeline.vue';
 import Notification from './views/components/ui-notification.vue';
 
 import { url } from '../config';
@@ -44,7 +39,7 @@ import MiOS from '../mios';
 /**
  * init
  */
-init(async (launch) => {
+init(async (launch, os) => {
 	Vue.mixin({
 		methods: {
 			$contextmenu(e, menu, opts?) {
@@ -134,31 +129,37 @@ init(async (launch) => {
 	const router = new VueRouter({
 		mode: 'history',
 		routes: [
-			{ path: '/', name: 'index', component: MkIndex },
-			{ path: '/home', name: 'home', component: MkHome },
-			{ path: '/deck', name: 'deck', component: MkDeck },
-			{ path: '/i/customize-home', component: MkHomeCustomize },
-			{ path: '/i/favorites', component: MkFavorites },
+			os.store.getters.isSignedIn && os.store.state.device.deckMode
+				? { path: '/', name: 'index', component: MkDeck, children: [
+					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default) },
+					{ path: '/notes/:note', name: 'note', component: () => import('./views/deck/deck.note-column.vue').then(m => m.default) },
+					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
+					{ path: '/i/favorites', component: () => import('./views/deck/deck.favorites-column.vue').then(m => m.default) }
+				]}
+				: { path: '/', component: MkHome, children: [
+					{ path: '', name: 'index', component: MkHomeTimeline },
+					{ path: '/@:user', name: 'user', component: () => import('./views/home/user/user.vue').then(m => m.default) },
+					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
+					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
+					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
+				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/i/settings', component: MkSettings },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
-			{ path: '/tags/:tag', name: 'tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', component: MkReversi },
-			{ path: '/@:user', name: 'user', component: MkUser },
 			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
 			{ path: '/@:user/followers', name: 'userFollowers', component: MkUserFollowingOrFollowers },
-			{ path: '/notes/:note', name: 'note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '*', component: MkNotFound }
 		]
 	});
 
 	// Launch the app
-	const [app, os] = launch(router);
+	const [app, _] = launch(router);
 
 	if (os.store.getters.isSignedIn) {
 		/**

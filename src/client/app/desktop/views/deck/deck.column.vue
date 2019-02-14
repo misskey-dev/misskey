@@ -27,9 +27,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
-import Menu from '../../../../common/views/components/menu.vue';
-import { countIf } from '../../../../../../prelude/array';
+import i18n from '../../../i18n';
+import Menu from '../../../common/views/components/menu.vue';
+import { countIf } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('deck'),
@@ -245,10 +245,7 @@ export default Vue.extend({
 		},
 
 		close() {
-			this.$store.commit('device/set', {
-				key: 'deckTemporaryColumn',
-				value: null
-			});
+			this.$router.push('/');
 		},
 
 		goTop() {

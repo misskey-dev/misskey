@@ -6,7 +6,7 @@
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">
-			<template v-if="$store.state.device.deckDefault">
+			<template v-if="$store.state.device.deckMode">
 				<div class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
 					<router-link to="/"><fa icon="columns"/></router-link>
 				</div>

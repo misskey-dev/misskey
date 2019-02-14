@@ -31,9 +31,6 @@
 				<ui-switch v-model="autoPopout">{{ $t('auto-popout') }}
 					<span slot="desc">{{ $t('auto-popout-desc') }}</span>
 				</ui-switch>
-				<ui-switch v-model="deckNav">{{ $t('deck-nav') }}
-					<span slot="desc">{{ $t('deck-nav-desc') }}</span>
-				</ui-switch>
 				<ui-switch v-model="keepCw">{{ $t('keep-cw') }}
 					<span slot="desc">{{ $t('keep-cw-desc') }}</span>
 				</ui-switch>
@@ -88,9 +85,6 @@
 				<ui-radio v-model="navbar" value="top">{{ $t('navbar-position-top') }}</ui-radio>
 				<ui-radio v-model="navbar" value="left">{{ $t('navbar-position-left') }}</ui-radio>
 				<ui-radio v-model="navbar" value="right">{{ $t('navbar-position-right') }}</ui-radio>
-			</section>
-			<section>
-				<ui-switch v-model="deckDefault">{{ $t('deck-default') }}</ui-switch>
 			</section>
 			<section>
 				<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
@@ -337,11 +331,6 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'autoPopout', value }); }
 		},
 
-		deckNav: {
-			get() { return this.$store.state.settings.deckNav; },
-			set(value) { this.$store.commit('settings/set', { key: 'deckNav', value }); }
-		},
-
 		keepCw: {
 			get() { return this.$store.state.settings.keepCw; },
 			set(value) { this.$store.commit('settings/set', { key: 'keepCw', value }); }
@@ -365,11 +354,6 @@ export default Vue.extend({
 		deckColumnWidth: {
 			get() { return this.$store.state.device.deckColumnWidth; },
 			set(value) { this.$store.commit('device/set', { key: 'deckColumnWidth', value }); }
-		},
-
-		deckDefault: {
-			get() { return this.$store.state.device.deckDefault; },
-			set(value) { this.$store.commit('device/set', { key: 'deckDefault', value }); }
 		},
 
 		enableSounds: {
@@ -534,8 +518,7 @@ export default Vue.extend({
 	},
 	methods: {
 		customizeHome() {
-			this.$router.push('/i/customize-home');
-			this.$emit('done');
+			location.href = '/?customize';
 		},
 		updateWallpaper() {
 			this.$chooseDriveFile({

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-activity">
+<div>
 	<div ref="chart"></div>
 </div>
 </template>
@@ -9,7 +9,17 @@ import Vue from 'vue';
 import ApexCharts from 'apexcharts';
 
 export default Vue.extend({
-	props: ['user'],
+	props: {
+		user: {
+			type: Object,
+			required: true
+		},
+		limit: {
+			type: Number,
+			required: false,
+			default: 21
+		}
+	},
 	data() {
 		return {
 			fetching: true,
@@ -21,7 +31,7 @@ export default Vue.extend({
 		this.$root.api('charts/user/notes', {
 			userId: this.user.id,
 			span: 'day',
-			limit: 21
+			limit: this.limit
 		}).then(stats => {
 			const normal = [];
 			const reply = [];
@@ -32,7 +42,7 @@ export default Vue.extend({
 			const m = now.getMonth();
 			const d = now.getDate();
 
-			for (let i = 0; i < 21; i++) {
+			for (let i = 0; i < this.limit; i++) {
 				const x = new Date(y, m, d - i);
 				normal.push([
 					x,
@@ -99,10 +109,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.mk-activity
-	max-width 600px
-	margin 0 auto
-
-</style>

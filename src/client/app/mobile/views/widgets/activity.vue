@@ -21,7 +21,7 @@ export default define({
 }).extend({
 	i18n: i18n(),
 	components: {
-		XActivity: () => import('../components/activity.vue').then(m => m.default)
+		XActivity: () => import('../../../common/views/components/activity.vue').then(m => m.default)
 	},
 	methods: {
 		func() {

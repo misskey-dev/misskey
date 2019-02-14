@@ -1,16 +1,14 @@
 <template>
-<mk-ui>
-	<main v-if="!fetching">
-		<sequential-entrance animation="entranceFromTop" delay="25">
-			<template v-for="favorite in favorites">
-				<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
-			</template>
-		</sequential-entrance>
-		<div class="more" v-if="existMore">
-			<ui-button inline @click="more">{{ $t('@.load-more') }}</ui-button>
-		</div>
-	</main>
-</mk-ui>
+<div class="ecsvsegy" v-if="!fetching">
+	<sequential-entrance animation="entranceFromTop" delay="25">
+		<template v-for="favorite in favorites">
+			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
+		</template>
+	</sequential-entrance>
+	<div class="more" v-if="existMore">
+		<ui-button inline @click="more">{{ $t('@.load-more') }}</ui-button>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -72,10 +70,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-main
+.ecsvsegy
 	margin 0 auto
-	padding 16px
-	max-width 700px
 
 	> * > .post
 		margin-bottom 16px

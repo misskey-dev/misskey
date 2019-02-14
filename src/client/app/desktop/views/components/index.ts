@@ -2,8 +2,6 @@ import Vue from 'vue';
 
 import ui from './ui.vue';
 import uiNotification from './ui-notification.vue';
-import home from './home.vue';
-import timeline from './timeline.vue';
 import notes from './notes.vue';
 import subNoteContent from './sub-note-content.vue';
 import window from './window.vue';
@@ -24,8 +22,6 @@ import widgetContainer from './widget-container.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-notification', uiNotification);
-Vue.component('mk-home', home);
-Vue.component('mk-timeline', timeline);
 Vue.component('mk-notes', notes);
 Vue.component('mk-sub-note-content', subNoteContent);
 Vue.component('mk-window', window);

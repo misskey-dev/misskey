@@ -350,7 +350,7 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, sw = false) => {
+export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {
@@ -436,11 +436,6 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			});
 			//#endregion
 
-			// Navigation hook
-			router.beforeEach((to, from, next) => {
-				next(os.store.state.navHook && os.store.state.navHook(to) ? false : undefined);
-			});
-
 			document.addEventListener('visibilitychange', () => {
 				if (!document.hidden) {
 					os.store.commit('clearBehindNotes');
@@ -507,6 +502,6 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			return [app, os] as [Vue, MiOS];
 		};
 
-		callback(launch);
+		callback(launch, os);
 	});
 };

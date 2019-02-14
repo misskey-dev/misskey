@@ -18,10 +18,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
+import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
-import XNote from '../../components/note.vue';
+import XNote from '../components/note.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -31,13 +31,6 @@ export default Vue.extend({
 		XNote
 	},
 
-	props: {
-		noteId: {
-			type: String,
-			required: true
-		}
-	},
-
 	data() {
 		return {
 			note: null,
@@ -45,11 +38,25 @@ export default Vue.extend({
 		};
 	},
 
+	watch: {
+		$route: 'fetch'
+	},
+
 	created() {
-		this.$root.api('notes/show', { noteId: this.noteId }).then(note => {
-			this.note = note;
-			this.fetching = false;
-		});
+		this.fetch();
+	},
+
+	methods: {
+		fetch() {
+			this.fetching = true;
+
+			this.$root.api('notes/show', {
+				noteId: this.$route.params.note
+			}).then(note => {
+				this.note = note;
+				this.fetching = false;
+			});
+		}
 	}
 });
 </script>

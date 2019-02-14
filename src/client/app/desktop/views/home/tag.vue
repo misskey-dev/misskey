@@ -1,11 +1,8 @@
 <template>
-<mk-ui>
-	<header :class="$style.header">
-		<h1>#{{ $route.params.tag }}</h1>
-	</header>
+<div>
 	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q: $route.params.tag }) }}</p>
 	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
-</mk-ui>
+</div>
 </template>
 
 <script lang="ts">
@@ -96,17 +93,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-.header
-	width 100%
-	max-width 600px
-	margin 0 auto
-	color #555
-
 .notes
-	width 600px
-	margin 0 auto
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
+	overflow hidden
 	overflow hidden
 
 .empty

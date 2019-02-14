@@ -38,10 +38,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
-import shouldMuteNote from '../../../../common/scripts/should-mute-note';
+import i18n from '../../../i18n';
+import shouldMuteNote from '../../../common/scripts/should-mute-note';
 
-import XNote from '../../components/note.vue';
+import XNote from '../components/note.vue';
 
 const displayLimit = 20;
 

@@ -28,6 +28,7 @@ common:
   load-more: "もっと読み込む"
   enter-password: "パスワードを入力してください"
   2fa: "二段階認証"
+  customize-home: "ホームをカスタマイズ"
 
   got-it: "わかった"
   customization-tips:
@@ -893,14 +894,10 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "例: https://www.google.com/?#q={{query}}"
   auto-popout: "ウィンドウの自動ポップアウト"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
   keep-cw: "CW保持"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "デッキをデフォルトのUIにする"
 
   display: "デザインと表示"
-  customize: "ホームをカスタマイズ"
   wallpaper: "壁紙"
   choose-wallpaper: "壁紙を選択"
   delete-wallpaper: "壁紙を削除"
@@ -1076,7 +1073,6 @@ desktop/views/components/ui.header.account.vue:
   favorites: "お気に入り"
   lists: "リスト"
   follow-requests: "フォロー申請"
-  customize: "ホームのカスタマイズ"
   admin: "管理"
   settings: "設定"
   signout: "サインアウト"
@@ -1447,9 +1443,6 @@ desktop/views/pages/welcome.vue:
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 
-desktop/views/pages/home-customize.vue:
-  title: "ホームのカスタマイズ"
-
 desktop/views/pages/note.vue:
   prev: "前の投稿"
   next: "次の投稿"
@@ -1490,10 +1483,6 @@ desktop/views/pages/user/user.photos.vue:
   loading: "読み込み中"
   no-photos: "写真はありません"
 
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "フォローされています"
-  menu: "メニュー"
-
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
@@ -1503,6 +1492,7 @@ desktop/views/pages/user/user.header.vue:
   year: "年"
   month: "月"
   day: "日"
+  follows-you: "フォローされています"
 
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"

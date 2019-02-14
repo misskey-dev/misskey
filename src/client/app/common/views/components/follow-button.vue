@@ -1,8 +1,9 @@
 <template>
 <button class="wfliddvnhxvyusikowhxozkyxyenqxqr"
-	:class="{ wait, block, mini, active: isFollowing || hasPendingFollowRequestFromYou }"
+	:class="{ wait, block, inline, mini, active: isFollowing || hasPendingFollowRequestFromYou }"
 	@click="onClick"
 	:disabled="wait"
+	:inline="inline"
 >
 	<template v-if="!wait">
 		<fa :icon="iconAndText[0]"/> <template v-if="!mini">{{ iconAndText[1] }}</template>
@@ -24,6 +25,11 @@ export default Vue.extend({
 			required: true
 		},
 		block: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		inline: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -127,6 +133,9 @@ export default Vue.extend({
 	outline none
 	border solid 1px var(--primary)
 	border-radius 36px
+
+	&.inline
+		display inline-block
 
 	&.mini
 		padding 0

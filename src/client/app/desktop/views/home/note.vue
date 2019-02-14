@@ -1,13 +1,11 @@
 <template>
-<mk-ui>
-	<main v-if="!fetching">
-		<mk-note-detail :note="note"/>
-		<footer>
-			<router-link v-if="note.next" :to="note.next"><fa icon="angle-left"/> {{ $t('next') }}</router-link>
-			<router-link v-if="note.prev" :to="note.prev">{{ $t('prev') }} <fa icon="angle-right"/></router-link>
-		</footer>
-	</main>
-</mk-ui>
+<div v-if="!fetching" class="kcthdwmv">
+	<mk-note-detail :note="note"/>
+	<footer>
+		<router-link v-if="note.next" :to="note.next"><fa icon="angle-left"/> {{ $t('next') }}</router-link>
+		<router-link v-if="note.prev" :to="note.prev">{{ $t('prev') }} <fa icon="angle-right"/></router-link>
+	</footer>
+</div>
 </template>
 
 <script lang="ts">
@@ -48,8 +46,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-main
-	padding 16px
+.kcthdwmv
 	text-align center
 
 	> footer
