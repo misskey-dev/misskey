@@ -139,7 +139,7 @@ init(async (launch, os) => {
 					{ path: '', name: 'index', component: MkHomeTimeline },
 					{ path: '/@:user', name: 'user', component: () => import('./views/home/user/user.vue').then(m => m.default) },
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
-					{ path: '/tags/:tag', name: 'tag', component: import('./views/home/tag.vue').then(m => m.default) },
+					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
 				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
