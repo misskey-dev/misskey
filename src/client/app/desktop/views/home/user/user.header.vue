@@ -17,7 +17,7 @@
 	<div class="body">
 		<div class="actions" v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.i.id != user.id">
-				<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
+				<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				<mk-follow-button :user="user" :inline="true" class="follow"/>
 			</template>
 			<ui-button @click="menu" ref="menu" :inline="true"><fa icon="ellipsis-h"/></ui-button>
@@ -203,8 +203,15 @@ export default Vue.extend({
 		color var(--text)
 
 		> .actions
+			text-align right
+			padding-bottom 16px
+			border-bottom solid 1px var(--faceDivider)
+
+			> *
+				margin-left 8px
+
 			> .follow
-				width 200px
+				width 180px
 
 		> .fields
 			margin-top 16px
