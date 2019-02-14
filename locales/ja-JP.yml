@@ -863,6 +863,9 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしますか？"
 
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
+
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
   followers: "{user}のフォロワー"
@@ -1678,6 +1681,9 @@ mobile/views/pages/home.vue:
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "メッセージ"
+
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
