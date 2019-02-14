@@ -29,6 +29,7 @@ common:
   enter-password: "비밀번호를 입력하여 주십시오"
   2fa: "2단계 인증"
   customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
