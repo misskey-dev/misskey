@@ -28,6 +28,7 @@ common:
   load-more: "もっとあらへんのか！"
   enter-password: "パスワードを入れてや"
   2fa: "二段階認証"
+  customize-home: "ホームをカスタマイズ"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -798,13 +799,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "例: https://www.google.com/?#q?{{query}}"
   auto-popout: "ウィンドウの自動ポップアウト"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトすんで。この設定はブラウザに記憶されんで。"
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使うとるとき、ナビゲーションが発生するときにページ移動せんで、一時的なカラムで受けれるようにするで"
   keep-cw: "CW保持"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "デッキをデフォルトのUIにする"
   display: "見た感じ"
-  customize: "ホームをカスタマイズ"
   wallpaper: "壁紙"
   choose-wallpaper: "壁紙選ぶ"
   delete-wallpaper: "壁紙ほかす"
@@ -961,7 +958,6 @@ desktop/views/components/ui.header.account.vue:
   favorites: "お気に入り"
   lists: "リスト"
   follow-requests: "フォロー許してくれや！言うてみる"
-  customize: "ホームをカスタマイズ"
   admin: "管理"
   settings: "設定"
   signout: "さいなら"
@@ -1306,8 +1302,6 @@ desktop/views/pages/welcome.vue:
   info: "情報"
 desktop/views/pages/drive.vue:
   title: "ドライブ"
-desktop/views/pages/home-customize.vue:
-  title: "ホームをカスタマイズ"
 desktop/views/pages/note.vue:
   prev: "前のやつ"
   next: "次のやつ"
@@ -1339,9 +1333,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "写真"
   loading: "読み込んどります"
   no-photos: "写真はあらへんで"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "フォローされとるで"
-  menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
@@ -1351,6 +1342,7 @@ desktop/views/pages/user/user.header.vue:
   year: "年"
   month: "月"
   day: "日"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
