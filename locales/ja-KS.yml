@@ -1591,13 +1591,13 @@ mobile/views/pages/user/home.vue:
   activity: "やっとること"
   keywords: "キーワード"
   domains: "よく出るドメイン"
-  frequently-replied-users: "よう話しとるユーザー"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "知っとるフォロワー"
   last-used-at: "最後いつ来た？"
 mobile/views/pages/user/home.followers-you-know.vue:
   no-users: "知っとるユーザーは居らん"
 mobile/views/pages/user/home.friends.vue:
-  no-users: "よう話すユーザーは居らん"
+  no-users: "よく話すユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "投稿はあらへん"
 mobile/views/pages/user/home.photos.vue:
