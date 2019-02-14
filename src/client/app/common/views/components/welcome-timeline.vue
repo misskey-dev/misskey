@@ -76,6 +76,7 @@ export default Vue.extend({
 			if (note.replyId != null) return;
 			if (note.renoteId != null) return;
 			if (note.poll != null) return;
+			if (note.localOnly) return;
 
 			this.notes.unshift(note);
 		},
