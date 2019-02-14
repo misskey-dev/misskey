@@ -45,13 +45,6 @@
 			</ul>
 			<ul>
 				<li>
-					<router-link to="/i/customize-home">
-						<i><fa icon="wrench"/></i>
-						<span>{{ $t('customize') }}</span>
-						<i><fa icon="angle-right"/></i>
-					</router-link>
-				</li>
-				<li>
 					<router-link to="/i/settings">
 						<i><fa icon="cog"/></i>
 						<span>{{ $t('settings') }}</span>

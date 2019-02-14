@@ -17,7 +17,6 @@ import MkDeck from './views/deck/deck.vue';
 import MkUserFollowingOrFollowers from './views/pages/user-following-or-followers.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
-import MkHomeCustomize from './views/pages/home-customize.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkSearch from './views/pages/search.vue';
 import MkTag from './views/pages/tag.vue';
@@ -143,7 +142,6 @@ init(async (launch, os) => {
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
 				]},
-			{ path: '/i/customize-home', component: MkHomeCustomize },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
