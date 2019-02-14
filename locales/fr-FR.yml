@@ -724,11 +724,11 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "Aucune de notification !"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Ajouter un utilisateur"
+  add-visible-user: "+Ajouter un·e utilisateur·rice"
   attach-location-information: "Attacher des informations de localisation"
   hide-contents: "Masquer les contenus"
-  reply-placeholder: "Répondre à cette note…"
-  quote-placeholder: "Citer cette note…"
+  reply-placeholder: "Répondre à cette note …"
+  quote-placeholder: "Citer cette note …"
   submit: "Publier"
   reply: "Répondre"
   renote: "Republier"
@@ -738,7 +738,7 @@ desktop/views/components/post-form.vue:
   note-failed: "La note à échoué"
   reply-failed: "La réponse a échoué"
   renote-failed: "Échec lors de la republication"
-  posting: "Publication…"
+  posting: "Publication …"
   attach-media-from-local: "Joindre un média depuis votre appareil"
   attach-media-from-drive: "Joindre un média depuis votre Drive"
   attach-cancel: "Annuler le fichier attaché"
@@ -751,8 +751,8 @@ desktop/views/components/post-form.vue:
   visibility: "Visibilité"
   geolocation-alert: "Votre appareil ne prend pas en charge les services de localisation"
   error: "Erreur"
-  enter-username: "Saisir un nom d'utilisateur…"
-  annotations: "内容への注釈 (オプション)"
+  enter-username: "Saisir un nom d'utilisateur …"
+  annotations: "Commenter le contenu (optionnel)"
 desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
   reply: "Répondre"
@@ -1356,7 +1356,7 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Publications et réponses"
   with-media: "Média"
   my-posts: "Mes Messages"
-  empty: "Cet utilisateur n'a rien posté encore."
+  empty: "Cet·te utilisateur·rice n'a rien posté encore."
 desktop/views/widgets/messaging.vue:
   title: "Messagerie"
 desktop/views/widgets/notifications.vue:
@@ -1445,11 +1445,11 @@ mobile/views/components/note-sub.vue:
 mobile/views/components/notifications.vue:
   empty: "Aucune de notification !"
 mobile/views/components/post-form.vue:
-  add-visible-user: "Ajouter un utilisateur"
+  add-visible-user: "Ajouter un·e utilisateur·rice"
   submit: "Publier"
   reply: "Répondre"
   renote: "Republier"
-  quote-placeholder: "Citer ce billet... (Facultatif)"
+  quote-placeholder: "Citer ce billet ... (Facultatif)"
   reply-placeholder: "Répondre à cette note"
   cw-placeholder: "Commenter le contenu (optionnel)"
   location-alert: "Votre appareil ne prend pas en charge les services de localisation"
@@ -1479,7 +1479,7 @@ mobile/views/components/ui.nav.vue:
   admin: "Admin"
   about: "À propos de Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "Il semble que cet utilisateur n’a rien publié pour le moment."
+  no-notes: "Il semble que cet·te utilisateur·rice n’a rien publié pour le moment."
   no-notes-with-media: "Aucune note comprenant des médias"
 mobile/views/components/users-list.vue:
   all: "Tout"
@@ -1520,7 +1520,7 @@ mobile/views/pages/received-follow-requests.vue:
   accept: "Accepter"
   reject: "Refuser"
 mobile/views/pages/note.vue:
-  title: "Post"
+  title: "Publication"
   prev: "Note précédente"
   next: "Note suivante"
 mobile/views/pages/notifications.vue:
