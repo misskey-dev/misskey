@@ -771,6 +771,8 @@ desktop/views/components/renote-form.vue:
   failure: "리노트에 실패하였습니다"
 desktop/views/components/renote-form-window.vue:
   title: "이 글을 리노트하시겠습니까?"
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}의 팔로잉"
   followers: "{user}의 팔로워"
@@ -1494,6 +1496,8 @@ mobile/views/pages/home.vue:
   global: "글로벌"
   mentions: "받은 멘션"
   messages: "메시지"
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 mobile/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 mobile/views/pages/welcome.vue:
