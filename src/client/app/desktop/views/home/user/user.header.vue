@@ -205,6 +205,7 @@ export default Vue.extend({
 		> .actions
 			text-align right
 			padding-bottom 16px
+			margin-bottom 16px
 			border-bottom solid 1px var(--faceDivider)
 
 			> *
