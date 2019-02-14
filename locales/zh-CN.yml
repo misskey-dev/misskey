@@ -29,6 +29,7 @@ common:
   enter-password: "请输入您的密码"
   2fa: "双重身份验证"
   customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
   got-it: "没问题"
   customization-tips:
     title: "自定义提示"
