@@ -1591,13 +1591,13 @@ mobile/views/pages/user/home.vue:
   activity: "Activity"
   keywords: "Keywords"
   domains: "Domains"
-  frequently-replied-users: "Frequently mentioned users"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
 mobile/views/pages/user/home.followers-you-know.vue:
   no-users: "No users you know"
 mobile/views/pages/user/home.friends.vue:
-  no-users: "There are no users that you know"
+  no-users: "よく話すユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "No notes"
 mobile/views/pages/user/home.photos.vue:
