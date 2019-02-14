@@ -80,7 +80,8 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	};
 	const query = {
 		deletedAt: null,
-		visibility: 'public'
+		visibility: 'public',
+		localOnly: { $ne: true },
 	} as any;
 	if (ps.sinceId) {
 		sort._id = 1;
