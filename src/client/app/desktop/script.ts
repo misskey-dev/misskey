@@ -133,7 +133,8 @@ init(async (launch, os) => {
 				? { path: '/', name: 'index', component: MkDeck, children: [
 					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default) },
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/deck/deck.note-column.vue').then(m => m.default) },
-					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) }
+					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
+					{ path: '/i/favorites', component: () => import('./views/deck/deck.favorites-column.vue').then(m => m.default) }
 				]}
 				: { path: '/', component: MkHome, children: [
 					{ path: '', name: 'index', component: MkHomeTimeline },
