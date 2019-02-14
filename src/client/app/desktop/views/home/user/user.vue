@@ -5,14 +5,16 @@
 	<div class="main">
 		<x-header :user="user"/>
 		<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
-		<x-timeline class="timeline" ref="tl" :user="user"/>
 		<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 		<x-integrations :user="user"/>
 		<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
-		<mk-activity :user="user"/>
+		<div class="activity">
+			<x-activity :user="user" :limit="28"/>
+		</div>
 		<x-photos :user="user"/>
 		<x-friends :user="user"/>
 		<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
+		<x-timeline class="timeline" ref="tl" :user="user"/>
 	</div>
 </div>
 </template>
@@ -28,6 +30,7 @@ import XPhotos from './user.photos.vue';
 import XFollowersYouKnow from './user.followers-you-know.vue';
 import XFriends from './user.friends.vue';
 import XIntegrations from './user.integrations.vue';
+import XActivity from '../../../../common/views/components/activity.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -37,7 +40,8 @@ export default Vue.extend({
 		XPhotos,
 		XFollowersYouKnow,
 		XFriends,
-		XIntegrations
+		XIntegrations,
+		XActivity
 	},
 	data() {
 		return {
