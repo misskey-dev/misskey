@@ -1591,13 +1591,13 @@ mobile/views/pages/user/home.vue:
   activity: "Activiteit"
   keywords: "Sleutelwoorden"
   domains: "Domeinnamen"
-  frequently-replied-users: "Frequent gesproken gebruikers"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "Volgers die je kent"
   last-used-at: "Laatst actief"
 mobile/views/pages/user/home.followers-you-know.vue:
   no-users: "Geen gebruikers"
 mobile/views/pages/user/home.friends.vue:
-  no-users: "Geen gebruikers"
+  no-users: "よく話すユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "Geen notities"
 mobile/views/pages/user/home.photos.vue:
