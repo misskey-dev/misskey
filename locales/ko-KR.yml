@@ -1591,13 +1591,13 @@ mobile/views/pages/user/home.vue:
   activity: "활동"
   keywords: "키워드"
   domains: "자주 보이는 도메인"
-  frequently-replied-users: "자주 대화하는 사용자"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "아는 사람의 팔로워"
   last-used-at: "마지막 로그인"
 mobile/views/pages/user/home.followers-you-know.vue:
   no-users: "아는 사용자가 없습니다"
 mobile/views/pages/user/home.friends.vue:
-  no-users: "자주 대화하는 사용자가 없습니다"
+  no-users: "よく話すユーザーはいません"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "글이 없습니다"
 mobile/views/pages/user/home.photos.vue:
