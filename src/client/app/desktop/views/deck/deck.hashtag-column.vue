@@ -23,14 +23,11 @@ export default Vue.extend({
 		XHashtagTl
 	},
 
-	props: {
-		tag: {
-			type: String,
-			required: true
-		}
-	},
-
 	computed: {
+		tag(): string {
+			return this.$route.params.tag;
+		},
+
 		tagTl(): any {
 			return {
 				query: [[this.tag]]
@@ -38,62 +35,72 @@ export default Vue.extend({
 		}
 	},
 
-	mounted() {
-		this.$root.api('charts/hashtag', {
-			tag: this.tag,
-			span: 'hour',
-			limit: 24
-		}).then(stats => {
-			const local = [];
-			const remote = [];
+	watch: {
+		$route: 'fetch'
+	},
 
-			const now = new Date();
-			const y = now.getFullYear();
-			const m = now.getMonth();
-			const d = now.getDate();
-			const h = now.getHours();
+	created() {
+		this.fetch();
+	},
 
-			for (let i = 0; i < 24; i++) {
-				const x = new Date(y, m, d, h - i);
-				local.push([x, stats.local.count[i]]);
-				remote.push([x, stats.remote.count[i]]);
-			}
+	methods: {
+		fetch() {
+			this.$root.api('charts/hashtag', {
+				tag: this.tag,
+				span: 'hour',
+				limit: 24
+			}).then(stats => {
+				const local = [];
+				const remote = [];
 
-			const chart = new ApexCharts(this.$refs.chart, {
-				chart: {
-					type: 'area',
-					height: 70,
-					sparkline: {
-						enabled: true
-					},
-				},
-				grid: {
-					clipMarkers: false,
-					padding: {
-						top: 16,
-						right: 16,
-						bottom: 16,
-						left: 16
-					}
-				},
-				stroke: {
-					curve: 'straight',
-					width: 2
-				},
-				series: [{
-					name: 'Local',
-					data: local
-				}, {
-					name: 'Remote',
-					data: remote
-				}],
-				xaxis: {
-					type: 'datetime',
+				const now = new Date();
+				const y = now.getFullYear();
+				const m = now.getMonth();
+				const d = now.getDate();
+				const h = now.getHours();
+
+				for (let i = 0; i < 24; i++) {
+					const x = new Date(y, m, d, h - i);
+					local.push([x, stats.local.count[i]]);
+					remote.push([x, stats.remote.count[i]]);
 				}
-			});
 
-			chart.render();
-		});
+				const chart = new ApexCharts(this.$refs.chart, {
+					chart: {
+						type: 'area',
+						height: 70,
+						sparkline: {
+							enabled: true
+						},
+					},
+					grid: {
+						clipMarkers: false,
+						padding: {
+							top: 16,
+							right: 16,
+							bottom: 16,
+							left: 16
+						}
+					},
+					stroke: {
+						curve: 'straight',
+						width: 2
+					},
+					series: [{
+						name: 'Local',
+						data: local
+					}, {
+						name: 'Remote',
+						data: remote
+					}],
+					xaxis: {
+						type: 'datetime',
+					}
+				});
+
+				chart.render();
+			});
+		}
 	}
 });
 </script>
