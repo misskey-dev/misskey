@@ -6,7 +6,7 @@
 		<div class="user" v-for="friend in users">
 			<mk-avatar class="avatar" :user="friend"/>
 			<div class="body">
-				<router-link class="name" :to="friend | userPage" v-user-preview="friend.id">{{ friend.name }}</router-link>
+				<router-link class="name" :to="friend | userPage" v-user-preview="friend.id"><mk-user-name :user="friend"/></router-link>
 				<p class="username">@{{ friend | acct }}</p>
 			</div>
 		</div>

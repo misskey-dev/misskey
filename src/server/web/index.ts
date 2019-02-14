@@ -237,7 +237,7 @@ router.get('*', async ctx => {
 	await ctx.render('base', {
 		img: meta.bannerUrl
 	});
-	ctx.set('Cache-Control', 'public, max-age=86400');
+	ctx.set('Cache-Control', 'public, max-age=300');
 });
 
 // Register router
