@@ -82,7 +82,7 @@ export const meta = {
 		},
 
 		maxNoteTextLength: {
-			validator: $.optional.num.min(1),
+			validator: $.optional.num.min(0),
 			desc: {
 				'ja-JP': '投稿の最大文字数'
 			}
