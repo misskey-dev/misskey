@@ -156,6 +156,7 @@ init(async (launch, os) => {
 			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
 			{ path: '/@:user/followers', name: 'userFollowers', component: MkUserFollowingOrFollowers },
 			{ path: '/authorize-follow', component: MkFollow },
+			{ path: '/deck', redirect: '/' },
 			{ path: '*', component: MkNotFound }
 		]
 	});
