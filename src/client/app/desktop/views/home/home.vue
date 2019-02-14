@@ -1,5 +1,6 @@
 <template>
-<div class="mk-home" :data-customize="customize">
+<mk-ui v-hotkey.global="keymap" v-if="$store.getters.isSignedIn || $route.name != 'index'">
+<div class="wqsofvpm" :data-customize="customize">
 	<div class="customize" v-if="customize">
 		<router-link to="/"><fa icon="check"/>{{ $t('done') }}</router-link>
 		<div>
@@ -54,22 +55,22 @@
 			<div class="main">
 				<a @click="hint">{{ $t('@.customization-tips.title') }}</a>
 				<div>
-					<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
-					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
+					<x-timeline/>
 				</div>
 			</div>
 		</template>
 		<template v-else>
 			<div v-for="place in ['left', 'right']" :class="place">
-				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp" platform="desktop"/>
+				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="desktop"/>
 			</div>
 			<div class="main">
-				<mk-post-form class="form" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
-				<mk-timeline class="tl" ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
+				<router-view></router-view>
 			</div>
 		</template>
 	</div>
 </div>
+</mk-ui>
+<x-welcome v-else/>
 </template>
 
 <script lang="ts">
@@ -77,6 +78,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
+import XWelcome from '../pages/welcome.vue';
 
 const defaultDesktopHomeWidgets = {
 	left: [
@@ -124,7 +126,8 @@ for (const widget of defaultDesktopHomeWidgets.right) {
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/home.vue'),
 	components: {
-		XDraggable
+		XDraggable,
+		XWelcome
 	},
 
 	props: {
@@ -142,7 +145,8 @@ export default Vue.extend({
 		return {
 			connection: null,
 			widgetAdderSelected: null,
-			trash: []
+			trash: [],
+			view: null
 		};
 	},
 
@@ -160,6 +164,11 @@ export default Vue.extend({
 			return {
 				left: this.left,
 				right: this.right
+			};
+		},
+		keymap(): any {
+			return {
+				't': this.focus
 			};
 		}
 	},
@@ -227,19 +236,16 @@ export default Vue.extend({
 			});
 		},
 
-		warp(date) {
-			(this.$refs.tl as any).warp(date);
-		},
-
+/*
 		focus() {
 			(this.$refs.tl as any).focus();
-		}
+		}*/
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.mk-home
+.wqsofvpm
 	display block
 
 	&[data-customize]
@@ -259,7 +265,7 @@ export default Vue.extend({
 					pointer-events none
 
 	&:not([data-customize])
-		> .main > *:empty
+		> .main > *:not(.main):empty
 			display none
 
 	> .customize
@@ -347,11 +353,6 @@ export default Vue.extend({
 			padding 16px
 			width calc(100% - 280px * 2)
 			order 2
-
-			> .form
-				margin-bottom 16px
-				box-shadow var(--shadow)
-				border-radius var(--round)
 
 		&.side
 			> .main

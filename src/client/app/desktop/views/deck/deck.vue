@@ -9,11 +9,7 @@
 			</div>
 			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])" @parentFocus="moveFocus(ids[0], $event)"/>
 		</template>
-		<template v-if="temporaryColumn">
-			<x-user-column v-if="temporaryColumn.type == 'user'" :acct="temporaryColumn.acct" :key="temporaryColumn.acct"/>
-			<x-note-column v-else-if="temporaryColumn.type == 'note'" :note-id="temporaryColumn.noteId" :key="temporaryColumn.noteId"/>
-			<x-hashtag-column v-else-if="temporaryColumn.type == 'tag'" :tag="temporaryColumn.tag" :key="temporaryColumn.tag"/>
-		</template>
+		<router-view></router-view>
 		<button ref="add" @click="add" :title="$t('@deck.add-column')"><fa icon="plus"/></button>
 	</div>
 </mk-ui>
@@ -21,20 +17,17 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
+import i18n from '../../../i18n';
 import XColumnCore from './deck.column-core.vue';
-import Menu from '../../../../common/views/components/menu.vue';
-import MkUserListsWindow from '../../components/user-lists-window.vue';
+import Menu from '../../../common/views/components/menu.vue';
+import MkUserListsWindow from '../components/user-lists-window.vue';
 
 import * as uuid from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('deck'),
 	components: {
-		XColumnCore,
-		XUserColumn: () => import('./deck.user-column.vue').then(m => m.default),
-		XNoteColumn: () => import('./deck.note-column.vue').then(m => m.default),
-		XHashtagColumn: () => import('./deck.hashtag-column.vue').then(m => m.default)
+		XColumnCore
 	},
 
 	computed: {
@@ -55,10 +48,6 @@ export default Vue.extend({
 			};
 		},
 
-		temporaryColumn(): any {
-			return this.$store.state.device.deckTemporaryColumn;
-		},
-
 		keymap(): any {
 			return {
 				't': this.focus
@@ -66,7 +55,7 @@ export default Vue.extend({
 		}
 	},
 
-	watch: {
+	watch: {/*
 		temporaryColumn() {
 			if (this.temporaryColumn != null) {
 				this.$nextTick(() => {
@@ -76,7 +65,7 @@ export default Vue.extend({
 					});
 				});
 			}
-		}
+		}*/
 	},
 
 	provide() {
@@ -86,8 +75,6 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$store.commit('navHook', this.onNav);
-
 		if (this.$store.state.settings.deck == null) {
 			const deck = {
 				columns: [/*{
@@ -133,47 +120,12 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.$store.commit('navHook', null);
-
 		document.documentElement.style.overflow = 'auto';
 	},
 
 	methods: {
 		getColumnVm(id) {
 			return this.$refs[id][0];
-		},
-
-		onNav(to) {
-			if (!this.$store.state.settings.deckNav) return false;
-
-			if (to.name == 'user') {
-				this.$store.commit('device/set', {
-					key: 'deckTemporaryColumn',
-					value: {
-						type: 'user',
-						acct: to.params.user
-					}
-				});
-				return true;
-			} else if (to.name == 'note') {
-				this.$store.commit('device/set', {
-					key: 'deckTemporaryColumn',
-					value: {
-						type: 'note',
-						noteId: to.params.note
-					}
-				});
-				return true;
-			} else if (to.name == 'tag') {
-				this.$store.commit('device/set', {
-					key: 'deckTemporaryColumn',
-					value: {
-						type: 'tag',
-						tag: to.params.tag
-					}
-				});
-				return true;
-			}
 		},
 
 		add() {

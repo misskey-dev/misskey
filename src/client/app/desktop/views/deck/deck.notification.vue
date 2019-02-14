@@ -96,8 +96,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../../misc/get-note-summary';
-import XNote from '../../components/note.vue';
+import getNoteSummary from '../../../../../misc/get-note-summary';
+import XNote from '../components/note.vue';
 
 export default Vue.extend({
 	components: {

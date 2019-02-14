@@ -93,13 +93,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
-import parseAcct from '../../../../../../misc/acct/parse';
+import i18n from '../../../i18n';
+import parseAcct from '../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
-import XNote from '../../components/note.vue';
-import XUserMenu from '../../../../common/views/components/user-menu.vue';
-import { concat } from '../../../../../../prelude/array';
+import XNote from '../components/note.vue';
+import XUserMenu from '../../../common/views/components/user-menu.vue';
+import { concat } from '../../../../../prelude/array';
 import ApexCharts from 'apexcharts';
 
 const fetchLimit = 10;
@@ -110,13 +110,6 @@ export default Vue.extend({
 		XColumn,
 		XNotes,
 		XNote
-	},
-
-	props: {
-		acct: {
-			type: String,
-			required: true
-		}
 	},
 
 	data() {
@@ -144,119 +137,128 @@ export default Vue.extend({
 		},
 	},
 
+	watch: {
+		$route: 'fetch'
+	},
+
 	created() {
-		this.$root.api('users/show', parseAcct(this.acct)).then(user => {
-			this.user = user;
-			this.fetching = false;
-
-			this.$nextTick(() => {
-				(this.$refs.timeline as any).init(() => this.initTl());
-			});
-
-			const image = [
-				'image/jpeg',
-				'image/png',
-				'image/gif'
-			];
-
-			this.$root.api('users/notes', {
-				userId: this.user.id,
-				fileType: image,
-				excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
-				limit: 9,
-				untilDate: new Date().getTime() + 1000 * 86400 * 365
-			}).then(notes => {
-				for (const note of notes) {
-					for (const file of note.files) {
-						file._note = note;
-					}
-				}
-				const files = concat(notes.map((n: any): any[] => n.files));
-				this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
-			});
-
-			this.$root.api('charts/user/notes', {
-				userId: this.user.id,
-				span: 'day',
-				limit: 21
-			}).then(stats => {
-				const normal = [];
-				const reply = [];
-				const renote = [];
-
-				const now = new Date();
-				const y = now.getFullYear();
-				const m = now.getMonth();
-				const d = now.getDate();
-
-				for (let i = 0; i < 21; i++) {
-					const x = new Date(y, m, d - i);
-					normal.push([
-						x,
-						stats.diffs.normal[i]
-					]);
-					reply.push([
-						x,
-						stats.diffs.reply[i]
-					]);
-					renote.push([
-						x,
-						stats.diffs.renote[i]
-					]);
-				}
-
-				const chart = new ApexCharts(this.$refs.chart, {
-					chart: {
-						type: 'bar',
-						stacked: true,
-						height: 100,
-						sparkline: {
-							enabled: true
-						},
-					},
-					plotOptions: {
-						bar: {
-							columnWidth: '90%'
-						}
-					},
-					grid: {
-						clipMarkers: false,
-						padding: {
-							top: 16,
-							right: 16,
-							bottom: 16,
-							left: 16
-						}
-					},
-					tooltip: {
-						shared: true,
-						intersect: false
-					},
-					series: [{
-						name: 'Normal',
-						data: normal
-					}, {
-						name: 'Reply',
-						data: reply
-					}, {
-						name: 'Renote',
-						data: renote
-					}],
-					xaxis: {
-						type: 'datetime',
-						crosshairs: {
-							width: 1,
-							opacity: 1
-						}
-					}
-				});
-
-				chart.render();
-			});
-		});
+		this.fetch();
 	},
 
 	methods: {
+		fetch() {
+			this.fetching = true;
+			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
+				this.user = user;
+				this.fetching = false;
+
+				this.$nextTick(() => {
+					(this.$refs.timeline as any).init(() => this.initTl());
+				});
+
+				const image = [
+					'image/jpeg',
+					'image/png',
+					'image/gif'
+				];
+
+				this.$root.api('users/notes', {
+					userId: this.user.id,
+					fileType: image,
+					excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
+					limit: 9,
+					untilDate: new Date().getTime() + 1000 * 86400 * 365
+				}).then(notes => {
+					for (const note of notes) {
+						for (const file of note.files) {
+							file._note = note;
+						}
+					}
+					const files = concat(notes.map((n: any): any[] => n.files));
+					this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
+				});
+
+				this.$root.api('charts/user/notes', {
+					userId: this.user.id,
+					span: 'day',
+					limit: 21
+				}).then(stats => {
+					const normal = [];
+					const reply = [];
+					const renote = [];
+
+					const now = new Date();
+					const y = now.getFullYear();
+					const m = now.getMonth();
+					const d = now.getDate();
+
+					for (let i = 0; i < 21; i++) {
+						const x = new Date(y, m, d - i);
+						normal.push([
+							x,
+							stats.diffs.normal[i]
+						]);
+						reply.push([
+							x,
+							stats.diffs.reply[i]
+						]);
+						renote.push([
+							x,
+							stats.diffs.renote[i]
+						]);
+					}
+
+					const chart = new ApexCharts(this.$refs.chart, {
+						chart: {
+							type: 'bar',
+							stacked: true,
+							height: 100,
+							sparkline: {
+								enabled: true
+							},
+						},
+						plotOptions: {
+							bar: {
+								columnWidth: '90%'
+							}
+						},
+						grid: {
+							clipMarkers: false,
+							padding: {
+								top: 16,
+								right: 16,
+								bottom: 16,
+								left: 16
+							}
+						},
+						tooltip: {
+							shared: true,
+							intersect: false
+						},
+						series: [{
+							name: 'Normal',
+							data: normal
+						}, {
+							name: 'Reply',
+							data: reply
+						}, {
+							name: 'Renote',
+							data: renote
+						}],
+						xaxis: {
+							type: 'datetime',
+							crosshairs: {
+								width: 1,
+								opacity: 1
+							}
+						}
+					});
+
+					chart.render();
+				});
+			});
+		},
+
 		initTl() {
 			return new Promise((res, rej) => {
 				this.$root.api('users/notes', {

@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
+import i18n from '../../../i18n';
 import XNotification from './deck.notification.vue';
 
 const displayLimit = 20;

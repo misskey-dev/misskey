@@ -1,22 +1,22 @@
 <template>
 <x-column :name="name" :column="column" :is-stacked="isStacked">
-	<span slot="header"><fa icon="at"/>{{ name }}</span>
+	<span slot="header"><fa :icon="['far', 'bell']"/>{{ name }}</span>
 
-	<x-mentions ref="tl"/>
+	<x-notifications/>
 </x-column>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
+import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
-import XMentions from './deck.mentions.vue';
+import XNotifications from './deck.notifications.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
 	components: {
 		XColumn,
-		XMentions
+		XNotifications
 	},
 
 	props: {
@@ -33,14 +33,8 @@ export default Vue.extend({
 	computed: {
 		name(): string {
 			if (this.column.name) return this.column.name;
-			return this.$t('@deck.mentions');
+			return this.$t('@deck.notifications');
 		}
 	},
-
-	methods: {
-		focus() {
-			this.$refs.tl.focus();
-		}
-	}
 });
 </script>

@@ -2,20 +2,20 @@
 <div class="nav">
 	<ul>
 		<template v-if="$store.getters.isSignedIn">
-			<template v-if="$store.state.device.deckDefault">
-				<li class="deck" :class="{ active: $route.name == 'deck' || $route.name == 'index' }" @click="goToTop">
+			<template v-if="$store.state.device.deckMode">
+				<li class="deck active" @click="goToTop">
 					<router-link to="/"><fa icon="columns"/><p>{{ $t('deck') }}</p></router-link>
 				</li>
-				<li class="home" :class="{ active: $route.name == 'home' }" @click="goToTop">
-					<router-link to="/home"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
+				<li class="home">
+					<a @click="toggleDeckMode(false)"><fa icon="home"/><p>{{ $t('home') }}</p></a>
 				</li>
 			</template>
 			<template v-else>
-				<li class="home" :class="{ active: $route.name == 'home' || $route.name == 'index' }" @click="goToTop">
+				<li class="home active" @click="goToTop">
 					<router-link to="/"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
 				</li>
-				<li class="deck" :class="{ active: $route.name == 'deck' }" @click="goToTop">
-					<router-link to="/deck"><fa icon="columns"/><p>{{ $t('deck') }}</p></router-link>
+				<li class="deck">
+					<a @click="toggleDeckMode(true)"><fa icon="columns"/><p>{{ $t('deck') }}</p></a>
 				</li>
 			</template>
 			<li class="messaging">
@@ -70,6 +70,11 @@ export default Vue.extend({
 		}
 	},
 	methods: {
+		toggleDeckMode(deck) {
+			this.$store.commit('device/set', { key: 'deckMode', value: deck });
+			location.reload();
+		},
+
 		onReversiInvited() {
 			this.hasGameInvitations = true;
 		},
