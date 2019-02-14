@@ -28,6 +28,7 @@ common:
   load-more: "もっと読み込む"
   enter-password: "パスワードを入力してください"
   2fa: "二段階認証"
+  customize-home: "ホームをカスタマイズ"
 
   got-it: "わかった"
   customization-tips:
@@ -897,7 +898,6 @@ desktop/views/components/settings.vue:
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
 
   display: "デザインと表示"
-  customize: "ホームをカスタマイズ"
   wallpaper: "壁紙"
   choose-wallpaper: "壁紙を選択"
   delete-wallpaper: "壁紙を削除"
@@ -1442,9 +1442,6 @@ desktop/views/pages/welcome.vue:
 
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
-
-desktop/views/pages/home-customize.vue:
-  title: "ホームのカスタマイズ"
 
 desktop/views/pages/note.vue:
   prev: "前の投稿"

@@ -518,8 +518,7 @@ export default Vue.extend({
 	},
 	methods: {
 		customizeHome() {
-			this.$router.push('/i/customize-home');
-			this.$emit('done');
+			location.href = '/?customize';
 		},
 		updateWallpaper() {
 			this.$chooseDriveFile({

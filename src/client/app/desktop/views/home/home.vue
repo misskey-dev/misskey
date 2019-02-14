@@ -1,75 +1,75 @@
 <template>
-<mk-ui v-hotkey.global="keymap" v-if="$store.getters.isSignedIn || $route.name != 'index'">
-<div class="wqsofvpm" :data-customize="customize">
-	<div class="customize" v-if="customize">
-		<router-link to="/"><fa icon="check"/>{{ $t('done') }}</router-link>
-		<div>
-			<div class="adder">
-				<p>{{ $t('add-widget') }}</p>
-				<select v-model="widgetAdderSelected">
-					<option value="profile">{{ $t('@.widgets.profile') }}</option>
-					<option value="analog-clock">{{ $t('@.widgets.analog-clock') }}</option>
-					<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
-					<option value="timemachine">{{ $t('@.widgets.timemachine') }}</option>
-					<option value="activity">{{ $t('@.widgets.activity') }}</option>
-					<option value="rss">{{ $t('@.widgets.rss') }}</option>
-					<option value="trends">{{ $t('@.widgets.trends') }}</option>
-					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
-					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
-					<option value="version">{{ $t('@.widgets.version') }}</option>
-					<option value="broadcast">{{ $t('@.widgets.broadcast') }}</option>
-					<option value="notifications">{{ $t('@.widgets.notifications') }}</option>
-					<option value="users">{{ $t('@.widgets.users') }}</option>
-					<option value="polls">{{ $t('@.widgets.polls') }}</option>
-					<option value="post-form">{{ $t('@.widgets.post-form') }}</option>
-					<option value="messaging">{{ $t('@.widgets.messaging') }}</option>
-					<option value="memo">{{ $t('@.widgets.memo') }}</option>
-					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
-					<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
-					<option value="server">{{ $t('@.widgets.server') }}</option>
-					<option value="nav">{{ $t('@.widgets.nav') }}</option>
-					<option value="tips">{{ $t('@.widgets.tips') }}</option>
-				</select>
-				<button @click="addWidget">{{ $t('add') }}</button>
-			</div>
-			<div class="trash">
-				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
-				<p>{{ $t('@.trash') }}</p>
+<component :is="customize ? 'mk-dummy' : 'mk-ui'" v-hotkey.global="keymap" v-if="$store.getters.isSignedIn || $route.name != 'index'">
+	<div class="wqsofvpm" :data-customize="customize">
+		<div class="customize" v-if="customize">
+			<a @click="done()"><fa icon="check"/>{{ $t('done') }}</a>
+			<div>
+				<div class="adder">
+					<p>{{ $t('add-widget') }}</p>
+					<select v-model="widgetAdderSelected">
+						<option value="profile">{{ $t('@.widgets.profile') }}</option>
+						<option value="analog-clock">{{ $t('@.widgets.analog-clock') }}</option>
+						<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
+						<option value="timemachine">{{ $t('@.widgets.timemachine') }}</option>
+						<option value="activity">{{ $t('@.widgets.activity') }}</option>
+						<option value="rss">{{ $t('@.widgets.rss') }}</option>
+						<option value="trends">{{ $t('@.widgets.trends') }}</option>
+						<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
+						<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
+						<option value="version">{{ $t('@.widgets.version') }}</option>
+						<option value="broadcast">{{ $t('@.widgets.broadcast') }}</option>
+						<option value="notifications">{{ $t('@.widgets.notifications') }}</option>
+						<option value="users">{{ $t('@.widgets.users') }}</option>
+						<option value="polls">{{ $t('@.widgets.polls') }}</option>
+						<option value="post-form">{{ $t('@.widgets.post-form') }}</option>
+						<option value="messaging">{{ $t('@.widgets.messaging') }}</option>
+						<option value="memo">{{ $t('@.widgets.memo') }}</option>
+						<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
+						<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
+						<option value="server">{{ $t('@.widgets.server') }}</option>
+						<option value="nav">{{ $t('@.widgets.nav') }}</option>
+						<option value="tips">{{ $t('@.widgets.tips') }}</option>
+					</select>
+					<button @click="addWidget">{{ $t('add') }}</button>
+				</div>
+				<div class="trash">
+					<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
+					<p>{{ $t('@.trash') }}</p>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="main" :class="{ side: widgets.left.length == 0 || widgets.right.length == 0 }">
-		<template v-if="customize">
-			<x-draggable v-for="place in ['left', 'right']"
-				:list="widgets[place]"
-				:class="place"
-				:data-place="place"
-				:options="{ group: 'x', animation: 150 }"
-				@sort="onWidgetSort"
-				:key="place"
-			>
-				<div v-for="widget in widgets[place]" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="desktop"/>
+		<div class="main" :class="{ side: widgets.left.length == 0 || widgets.right.length == 0 }">
+			<template v-if="customize">
+				<x-draggable v-for="place in ['left', 'right']"
+					:list="widgets[place]"
+					:class="place"
+					:data-place="place"
+					:options="{ group: 'x', animation: 150 }"
+					@sort="onWidgetSort"
+					:key="place"
+				>
+					<div v-for="widget in widgets[place]" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
+						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="desktop"/>
+					</div>
+				</x-draggable>
+				<div class="main">
+					<a @click="hint">{{ $t('@.customization-tips.title') }}</a>
+					<div>
+						<x-timeline/>
+					</div>
 				</div>
-			</x-draggable>
-			<div class="main">
-				<a @click="hint">{{ $t('@.customization-tips.title') }}</a>
-				<div>
-					<x-timeline/>
+			</template>
+			<template v-else>
+				<div v-for="place in ['left', 'right']" :class="place">
+					<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="desktop"/>
 				</div>
-			</div>
-		</template>
-		<template v-else>
-			<div v-for="place in ['left', 'right']" :class="place">
-				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="desktop"/>
-			</div>
-			<div class="main">
-				<router-view></router-view>
-			</div>
-		</template>
+				<div class="main">
+					<router-view></router-view>
+				</div>
+			</template>
+		</div>
 	</div>
-</div>
-</mk-ui>
+</component>
 <x-welcome v-else/>
 </template>
 
@@ -91,6 +91,7 @@ const defaultDesktopHomeWidgets = {
 		'version'
 	],
 	right: [
+		'customize',
 		'broadcast',
 		'notifications',
 		'users',
@@ -130,19 +131,9 @@ export default Vue.extend({
 		XWelcome
 	},
 
-	props: {
-		customize: {
-			type: Boolean,
-			default: false
-		},
-		mode: {
-			type: String,
-			default: 'timeline'
-		}
-	},
-
 	data() {
 		return {
+			customize: window.location.search == '?customize',
 			connection: null,
 			widgetAdderSelected: null,
 			trash: [],
@@ -234,6 +225,10 @@ export default Vue.extend({
 			this.$root.api('i/update_home', {
 				home: this.home
 			});
+		},
+
+		done() {
+			location.href = '/';
 		},
 
 /*
