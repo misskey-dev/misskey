@@ -245,7 +245,7 @@ export default Vue.extend({
 		},
 
 		close() {
-			// todo: nav to root
+			this.$router.push('/');
 		},
 
 		goTop() {

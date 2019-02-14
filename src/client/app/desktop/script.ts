@@ -19,7 +19,6 @@ import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkSearch from './views/pages/search.vue';
-import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
@@ -140,6 +139,7 @@ init(async (launch, os) => {
 					{ path: '', name: 'index', component: MkHomeTimeline },
 					{ path: '/@:user', name: 'user', component: () => import('./views/home/user/user.vue').then(m => m.default) },
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
+					{ path: '/tags/:tag', name: 'tag', component: import('./views/home/tag.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
 				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
@@ -148,7 +148,6 @@ init(async (launch, os) => {
 			{ path: '/i/settings', component: MkSettings },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
-			{ path: '/tags/:tag', name: 'tag', component: MkTag },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', component: MkReversi },
 			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
