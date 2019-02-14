@@ -47,3 +47,24 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+main
+	width 100%
+	max-width 680px
+	margin 0 auto
+	padding 8px
+
+	> * > .post
+		margin-bottom 8px
+
+	@media (min-width 500px)
+		padding 16px
+
+		> * > .post
+			margin-bottom 16px
+
+	@media (min-width 600px)
+		padding 32px
+
+</style>
