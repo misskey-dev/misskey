@@ -28,6 +28,7 @@ common:
   load-more: "Załaduj więcej"
   enter-password: "Wprowadź Hasło"
   2fa: "Uwierzytelnienie dwuetapowe"
+  customize-home: "ホームをカスタマイズ"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -798,13 +799,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Np: https://www.google.com/?#q={{query}}"
   auto-popout: "Automatycznie pojawiające się okna"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
   keep-cw: "CW保持"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "Użyj Talię jako domyślne UI"
   display: "Wygląd i wyświetlanie"
-  customize: "Dostosuj stronę główną"
   wallpaper: "Tapeta"
   choose-wallpaper: "Wybierz tło"
   delete-wallpaper: "Usuń tło"
@@ -961,7 +958,6 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Ulubione"
   lists: "Listy"
   follow-requests: "Prośby o śledzenie"
-  customize: "Dostosuj stronę główną"
   admin: "Admin"
   settings: "Ustawienia"
   signout: "Wyloguj się"
@@ -1306,8 +1302,6 @@ desktop/views/pages/welcome.vue:
   info: "Informacje"
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
-desktop/views/pages/home-customize.vue:
-  title: "Dostosuj stronę główną"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -1339,9 +1333,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "Zdjęcia"
   loading: "Ładowanie"
   no-photos: "Brak zdjęć"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Śledzi Cię"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
@@ -1351,6 +1342,7 @@ desktop/views/pages/user/user.header.vue:
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
