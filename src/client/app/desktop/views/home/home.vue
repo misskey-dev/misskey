@@ -105,6 +105,10 @@ export default Vue.extend({
 				return [{
 					name: 'instance',
 					place: 'right'
+				}, {
+					name: 'broadcast',
+					place: 'right',
+					data: {}
 				}];
 			}
 		},
