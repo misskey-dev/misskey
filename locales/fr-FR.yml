@@ -771,6 +771,8 @@ desktop/views/components/renote-form.vue:
   failure: "La renote a échoué"
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user} suit"
   followers: "Abonné·e·s de {user}"
@@ -1494,6 +1496,8 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "Messages"
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 mobile/views/pages/tag.vue:
   no-posts-found: "Aucune publication ayant pour hashtag « {q} » n’a été trouvée."
 mobile/views/pages/welcome.vue:
