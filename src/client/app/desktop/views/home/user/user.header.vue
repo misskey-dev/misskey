@@ -15,7 +15,7 @@
 	</div>
 	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 	<div class="body">
-		<div class="actions">
+		<div class="actions" v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.i.id != user.id">
 				<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
 				<mk-follow-button :user="user" :inline="true" class="follow"/>

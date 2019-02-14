@@ -5,7 +5,6 @@
 	<div class="main">
 		<x-header :user="user"/>
 		<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
-		<div class="instance" v-if="!$store.getters.isSignedIn"><mk-instance/></div>
 		<x-integrations :user="user"/>
 		<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
 		<div class="activity">

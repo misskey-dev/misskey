@@ -80,50 +80,6 @@ import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
 import XWelcome from '../pages/welcome.vue';
 
-const defaultDesktopHomeWidgets = {
-	left: [
-		'profile',
-		'calendar',
-		'activity',
-		'rss',
-		'hashtags',
-		'photo-stream',
-		'version'
-	],
-	right: [
-		'customize',
-		'broadcast',
-		'notifications',
-		'users',
-		'polls',
-		'server',
-		'nav',
-		'tips'
-	]
-};
-
-//#region Construct home data
-const _defaultDesktopHomeWidgets = [];
-
-for (const widget of defaultDesktopHomeWidgets.left) {
-	_defaultDesktopHomeWidgets.push({
-		name: widget,
-		id: uuid(),
-		place: 'left',
-		data: {}
-	});
-}
-
-for (const widget of defaultDesktopHomeWidgets.right) {
-	_defaultDesktopHomeWidgets.push({
-		name: widget,
-		id: uuid(),
-		place: 'right',
-		data: {}
-	});
-}
-//#endregion
-
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/home.vue'),
 	components: {
@@ -143,7 +99,14 @@ export default Vue.extend({
 
 	computed: {
 		home(): any[] {
-			return this.$store.state.settings.home || [];
+			if (this.$store.getters.isSignedIn) {
+				return this.$store.state.settings.home || [];
+			} else {
+				return [{
+					name: 'instance',
+					place: 'right'
+				}];
+			}
 		},
 		left(): any[] {
 			return this.home.filter(w => w.place == 'left');
@@ -165,12 +128,58 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.$store.state.settings.home == null) {
-			this.$root.api('i/update_home', {
-				home: _defaultDesktopHomeWidgets
-			}).then(() => {
-				this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
-			});
+		if (this.$store.getters.isSignedIn) {
+			const defaultDesktopHomeWidgets = {
+				left: [
+					'profile',
+					'calendar',
+					'activity',
+					'rss',
+					'hashtags',
+					'photo-stream',
+					'version'
+				],
+				right: [
+					'customize',
+					'broadcast',
+					'notifications',
+					'users',
+					'polls',
+					'server',
+					'nav',
+					'tips'
+				]
+			};
+
+			//#region Construct home data
+			const _defaultDesktopHomeWidgets = [];
+
+			for (const widget of defaultDesktopHomeWidgets.left) {
+				_defaultDesktopHomeWidgets.push({
+					name: widget,
+					id: uuid(),
+					place: 'left',
+					data: {}
+				});
+			}
+
+			for (const widget of defaultDesktopHomeWidgets.right) {
+				_defaultDesktopHomeWidgets.push({
+					name: widget,
+					id: uuid(),
+					place: 'right',
+					data: {}
+				});
+			}
+			//#endregion
+
+			if (this.$store.state.settings.home == null) {
+				this.$root.api('i/update_home', {
+					home: _defaultDesktopHomeWidgets
+				}).then(() => {
+					this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
+				});
+			}
 		}
 	},
 
