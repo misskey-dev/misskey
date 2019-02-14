@@ -8,18 +8,18 @@
 		<div class="nav" v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.device.deckMode">
 				<div class="deck active" @click="goToTop">
-					<router-link to="/"><fa icon="columns"/><p>{{ $t('deck') }}</p></router-link>
+					<router-link to="/"><fa icon="columns"/></router-link>
 				</div>
 				<div class="home">
-					<a @click="toggleDeckMode(false)"><fa icon="home"/><p>{{ $t('home') }}</p></a>
+					<a @click="toggleDeckMode(false)"><fa icon="home"/></a>
 				</div>
 			</template>
 			<template v-else>
 				<div class="home active" @click="goToTop">
-					<router-link to="/"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
+					<router-link to="/"><fa icon="home"/></router-link>
 				</div>
 				<div class="deck">
-					<a @click="toggleDeckMode(true)"><fa icon="columns"/><p>{{ $t('deck') }}</p></a>
+					<a @click="toggleDeckMode(true)"><fa icon="columns"/></a>
 				</div>
 			</template>
 			<div class="messaging">
