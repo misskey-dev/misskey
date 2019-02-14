@@ -771,6 +771,8 @@ desktop/views/components/renote-form.vue:
   failure: "重新发送失败"
 desktop/views/components/renote-form-window.vue:
   title: "您是否要重新发送？"
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}的正在关注"
   followers: "{user}的关注者"
@@ -1494,6 +1496,8 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "信息"
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 mobile/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 mobile/views/pages/welcome.vue:
