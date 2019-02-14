@@ -116,7 +116,7 @@ export default Vue.extend({
 			> .container
 				display flex
 				width 100%
-				max-width 1300px
+				max-width 1208px
 				margin 0 auto
 
 				> *
