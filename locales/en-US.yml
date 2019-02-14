@@ -982,7 +982,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create list"
+  create-list: "Create a list"
   list-name: "List name"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
@@ -1543,7 +1543,7 @@ mobile/views/pages/settings.vue:
   timeline: "Timeline"
   show-reply-target: "Show reply target"
   show-my-renotes: "Show my reposts"
-  show-renoted-my-notes: "Show renoted posts of mine"
+  show-renoted-my-notes: "Show the renotes of my posts"
   show-local-renotes: "Show renoted local posts"
   post-style: "Post design"
   post-style-standard: "Standard"
