@@ -58,6 +58,8 @@ common:
   trash: "휴지통"
   drive: "드라이브"
   messaging: "대화"
+  deck: "デッキ"
+  explore: "みつける"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -967,7 +969,6 @@ desktop/views/components/ui.header.account.vue:
   dark: "어둠에 삼켜져라"
 desktop/views/components/ui.header.nav.vue:
   home: "홈"
-  deck: "덱"
   game: "게임"
 desktop/views/components/ui.header.notifications.vue:
   title: "알림"
