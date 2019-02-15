@@ -60,6 +60,8 @@ common:
   trash: "ゴミ箱"
   drive: "ドライブ"
   messaging: "トーク"
+  deck: "デッキ"
+  explore: "みつける"
 
   weekday-short:
     sunday: "日"
@@ -1084,7 +1086,6 @@ desktop/views/components/ui.header.account.vue:
 
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
-  deck: "デッキ"
   game: "ゲーム"
 
 desktop/views/components/ui.header.notifications.vue:

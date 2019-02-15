@@ -27,6 +27,18 @@ export const meta = {
 			]),
 		},
 
+		state: {
+			validator: $.optional.str.or([
+				'all',
+				'admin',
+				'moderator',
+				'adminOrModerator',
+				'verified',
+				'alive'
+			]),
+			default: 'all'
+		},
+
 		origin: {
 			validator: $.optional.str.or([
 				'combined',
@@ -72,10 +84,32 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		};
 	}
 
-	const q =
+	const q = {
+		$and: []
+	} as any;
+
+	// state
+	q.$and.push(
+		ps.state == 'admin' ? { isAdmin: true } :
+		ps.state == 'moderator' ? { isModerator: true } :
+		ps.state == 'adminOrModerator' ? {
+			$or: [{
+				isAdmin: true
+			}, {
+				isModerator: true
+			}]
+		} :
+		ps.state == 'verified' ? { isVerified: true } :
+		ps.state == 'alive' ? { updatedAt: { $gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 5)) } } :
+		{}
+	);
+
+	// origin
+	q.$and.push(
 		ps.origin == 'local' ? { host: null } :
 		ps.origin == 'remote' ? { host: { $ne: null } } :
-		{};
+		{}
+	);
 
 	const users = await User
 		.find(q, {

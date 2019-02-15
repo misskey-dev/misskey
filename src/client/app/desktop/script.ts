@@ -135,6 +135,7 @@ init(async (launch, os) => {
 					{ path: '/search', component: () => import('./views/deck/deck.search-column.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
 					{ path: '/featured', component: () => import('./views/deck/deck.featured-column.vue').then(m => m.default) },
+					{ path: '/explore', component: () => import('./views/deck/deck.explore-column.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/deck/deck.favorites-column.vue').then(m => m.default) }
 				]}
 				: { path: '/', component: MkHome, children: [
@@ -144,6 +145,7 @@ init(async (launch, os) => {
 					{ path: '/search', component: () => import('./views/home/search.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
 					{ path: '/featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
+					{ path: '/explore', component: () => import('../common/views/pages/explore.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
 				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },

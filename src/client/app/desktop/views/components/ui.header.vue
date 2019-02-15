@@ -16,6 +16,7 @@
 				<div class="right">
 					<x-search/>
 					<x-account v-if="$store.getters.isSignedIn"/>
+					<x-messaging v-if="$store.getters.isSignedIn"/>
 					<x-notifications v-if="$store.getters.isSignedIn"/>
 					<x-post v-if="$store.getters.isSignedIn"/>
 					<x-clock v-if="$store.state.settings.showClockOnHeader" class="clock"/>
@@ -37,6 +38,7 @@ import XAccount from './ui.header.account.vue';
 import XNotifications from './ui.header.notifications.vue';
 import XPost from './ui.header.post.vue';
 import XClock from './ui.header.clock.vue';
+import XMessaging from './ui.header.messaging.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -45,6 +47,7 @@ export default Vue.extend({
 		XSearch,
 		XAccount,
 		XNotifications,
+		XMessaging,
 		XPost,
 		XClock
 	},

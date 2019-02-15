@@ -109,7 +109,8 @@ export default Vue.extend({
 		return {
 			column: this,
 			isScrollTop: this.isScrollTop,
-			count: v => this.count = v
+			count: v => this.count = v,
+			inDeck: !this.naked
 		};
 	},
 

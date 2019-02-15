@@ -134,6 +134,7 @@ init((launch) => {
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/featured', name: 'featured', component: () => import('./views/pages/featured.vue').then(m => m.default) },
+			{ path: '/explore', name: 'explore', component: () => import('./views/pages/explore.vue').then(m => m.default) },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', name: 'reversi', component: MkReversi },
 			{ path: '/@:user', component: () => import('./views/pages/user.vue').then(m => m.default) },

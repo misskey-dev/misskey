@@ -56,19 +56,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-			<p class="caption" @click="toggleShowPinned"><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</p>
-			<span class="angle" v-if="showPinned"><fa icon="angle-up"/></span>
-			<span class="angle" v-else><fa icon="angle-down"/></span>
-			<div class="notes" v-show="showPinned">
+		<ui-container v-if="user.pinnedNotes && user.pinnedNotes.length > 0" :body-togglable="true">
+			<span slot="header"><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</span>
+			<div>
 				<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
 			</div>
-		</div>
-		<div class="images" v-if="images.length > 0">
-			<p class="caption" @click="toggleShowImages"><fa :icon="['far', 'images']"/> {{ $t('images') }}</p>
-			<span class="angle" v-if="showImages"><fa icon="angle-up"/></span>
-			<span class="angle" v-else><fa icon="angle-down"/></span>
-			<div v-show="showImages">
+		</ui-container>
+		<ui-container v-if="images.length > 0" :body-togglable="true">
+			<span slot="header"><fa :icon="['far', 'images']"/> {{ $t('images') }}</span>
+			<div class="sainvnaq">
 				<router-link v-for="image in images"
 					:style="`background-image: url(${image.thumbnailUrl})`"
 					:key="`${image.id}:${image._note.id}`"
@@ -76,21 +72,19 @@
 					:title="`${image.name}\n${(new Date(image.createdAt)).toLocaleString()}`"
 				></router-link>
 			</div>
-		</div>
-		<div class="activity">
-			<p class="caption" @click="toggleShowActivity"><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</p>
-			<span class="angle" v-if="showActivity"><fa icon="angle-up"/></span>
-			<span class="angle" v-else><fa icon="angle-down"/></span>
-			<div v-show="showActivity">
+		</ui-container>
+		<ui-container :body-togglable="true">
+			<span slot="header"><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</span>
+			<div>
 				<div ref="chart"></div>
 			</div>
-		</div>
-		<div class="tl">
-			<p class="caption"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</p>
+		</ui-container>
+		<ui-container>
+			<span slot="header"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</span>
 			<div>
 				<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
 			</div>
-		</div>
+		</ui-container>
 	</div>
 </x-column>
 </template>
@@ -124,9 +118,6 @@ export default Vue.extend({
 			moreFetching: false,
 			withFiles: false,
 			images: [],
-			showPinned: true,
-			showImages: true,
-			showActivity: true
 		};
 	},
 
@@ -314,18 +305,6 @@ export default Vue.extend({
 				source: this.$refs.menu,
 				user: this.user
 			});
-		},
-
-		toggleShowPinned() {
-			this.showPinned = !this.showPinned;
-		},
-
-		toggleShowImages() {
-			this.showImages = !this.showImages;
-		},
-
-		toggleShowActivity() {
-			this.showActivity = !this.showActivity;
 		}
 	}
 });
@@ -469,39 +448,18 @@ export default Vue.extend({
 					font-size 80%
 					opacity 0.7
 
-	> *
-		> p.caption
-			margin 0
-			padding 8px 16px
-			font-size 12px
-			color var(--text)
+	.sainvnaq
+		display grid
+		grid-template-columns 1fr 1fr 1fr
+		gap 8px
+		padding 16px
 
-			& + .angle
-				position absolute
-				top 0
-				right 8px
-				padding 6px
-				font-size 14px
-				color var(--text)
-
-	> .pinned
-		> .notes
-			background var(--face)
-
-	> .images
-		> div
-			display grid
-			grid-template-columns 1fr 1fr 1fr
-			gap 8px
-			padding 16px
-			background var(--face)
-
-			> *
-				height 70px
-				background-position center center
-				background-size cover
-				background-clip content-box
-				border-radius 4px
+		> *
+			height 70px
+			background-position center center
+			background-size cover
+			background-clip content-box
+			border-radius 4px
 
 	> .activity
 		> div

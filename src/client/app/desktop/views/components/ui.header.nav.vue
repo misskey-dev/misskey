@@ -1,33 +1,14 @@
 <template>
 <div class="nav">
 	<ul>
-		<template v-if="$store.getters.isSignedIn">
-			<template v-if="$store.state.device.deckMode">
-				<li class="deck active" @click="goToTop">
-					<router-link to="/"><fa icon="columns"/><p>{{ $t('deck') }}</p></router-link>
-				</li>
-				<li class="home">
-					<a @click="toggleDeckMode(false)"><fa icon="home"/><p>{{ $t('home') }}</p></a>
-				</li>
-			</template>
-			<template v-else>
-				<li class="home active" @click="goToTop">
-					<router-link to="/"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
-				</li>
-				<li class="deck">
-					<a @click="toggleDeckMode(true)"><fa icon="columns"/><p>{{ $t('deck') }}</p></a>
-				</li>
-			</template>
-			<li class="messaging">
-				<a @click="messaging">
-					<fa icon="comments"/>
-					<p>{{ $t('@.messaging') }}</p>
-					<template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template>
-				</a>
-			</li>
-		</template>
+		<li class="home active" @click="goToTop">
+			<router-link to="/"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
+		</li>
 		<li class="featured">
 			<router-link to="/featured"><fa :icon="faNewspaper"/><p>{{ $t('@.featured-notes') }}</p></router-link>
+		</li>
+		<li class="explore">
+			<router-link to="/explore"><fa :icon="faHashtag"/><p>{{ $t('@.explore') }}</p></router-link>
 		</li>
 		<li class="game">
 			<a @click="game">
@@ -43,9 +24,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import MkMessagingWindow from './messaging-window.vue';
 import MkGameWindow from './game-window.vue';
-import { faNewspaper } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faHashtag } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.nav.vue'),
@@ -53,13 +33,8 @@ export default Vue.extend({
 		return {
 			hasGameInvitations: false,
 			connection: null,
-			faNewspaper
+			faNewspaper, faHashtag
 		};
-	},
-	computed: {
-		hasUnreadMessagingMessage(): boolean {
-			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
-		}
 	},
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
@@ -75,21 +50,12 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		toggleDeckMode(deck) {
-			this.$store.commit('device/set', { key: 'deckMode', value: deck });
-			location.reload();
-		},
-
 		onReversiInvited() {
 			this.hasGameInvitations = true;
 		},
 
 		onReversiNoInvites() {
 			this.hasGameInvitations = false;
-		},
-
-		messaging() {
-			this.$root.new(MkMessagingWindow);
 		},
 
 		game() {
