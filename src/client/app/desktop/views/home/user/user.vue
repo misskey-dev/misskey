@@ -4,8 +4,8 @@
 	<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
 	<div class="main">
 		<x-header :user="user"/>
-		<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 		<x-integrations :user="user"/>
+		<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 		<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
 		<div class="activity">
 			<mk-widget-container :show-header="true" :naked="false">

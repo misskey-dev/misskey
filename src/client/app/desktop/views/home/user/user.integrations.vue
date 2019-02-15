@@ -20,15 +20,18 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .usertwitxxxgithxxdiscxxxintegrat
+	display flex
+
 	> a
 		display flex
+		flex 1
 		align-items center
-		padding 32px 38px
+		padding 16px
 		box-shadow var(--shadow)
 		border-radius var(--round)
 
 		&:not(:last-child)
-			margin-bottom 16px
+			margin-right 16px
 
 		&:hover
 			text-decoration none
