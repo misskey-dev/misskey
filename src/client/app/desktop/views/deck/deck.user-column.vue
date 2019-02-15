@@ -43,12 +43,16 @@
 					<span>{{ $t('posts') }}</span>
 				</div>
 				<div>
-					<b>{{ user.followingCount | number }}</b>
-					<span>{{ $t('following') }}</span>
+					<router-link :to="user | userPage('following')">
+						<b>{{ user.followingCount | number }}</b>
+						<span>{{ $t('following') }}</span>
+					</router-link>
 				</div>
 				<div>
-					<b>{{ user.followersCount | number }}</b>
-					<span>{{ $t('followers') }}</span>
+					<router-link :to="user | userPage('followers')">
+						<b>{{ user.followersCount | number }}</b>
+						<span>{{ $t('followers') }}</span>
+					</router-link>
 				</div>
 			</div>
 		</div>
@@ -453,11 +457,14 @@ export default Vue.extend({
 				padding 8px 8px 0 8px
 				text-align center
 
-				> b
+				> a
+					color var(--text)
+
+				>>> b
 					display block
 					font-size 110%
 
-				> span
+				>>> span
 					display block
 					font-size 80%
 					opacity 0.7
