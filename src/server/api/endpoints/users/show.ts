@@ -70,10 +70,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 				: { usernameLower: ps.username.toLowerCase(), host: null };
 
 			user = await User.findOne(q, cursorOption);
+		}
 
-			if (user === null) {
-				return rej('user not found');
-			}
+		if (user === null) {
+			return rej('user not found');
 		}
 
 		// Send response
