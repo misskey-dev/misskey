@@ -58,6 +58,8 @@ common:
   trash: "Мусорное ведро"
   drive: "Drive"
   messaging: "Чат"
+  deck: "デッキ"
+  explore: "みつける"
   weekday-short:
     sunday: "Вс"
     monday: "Пн"
@@ -967,7 +969,6 @@ desktop/views/components/ui.header.account.vue:
   dark: "闇に飲まれる"
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
-  deck: "デッキ"
   game: "ゲーム"
 desktop/views/components/ui.header.notifications.vue:
   title: "通知"
