@@ -46,6 +46,9 @@ export default Vue.extend({
 	box-shadow 0 4px 16px rgba(#000, 0.1)
 	overflow hidden
 
+	& + .ukygtjoj
+		margin-top 16px
+
 	&.naked
 		background transparent !important
 		box-shadow none !important
