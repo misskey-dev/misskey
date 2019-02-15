@@ -58,6 +58,8 @@ common:
   trash: "垃圾箱"
   drive: "网盘"
   messaging: "聊天"
+  deck: "デッキ"
+  explore: "みつける"
   weekday-short:
     sunday: "日"
     monday: "一"
@@ -967,7 +969,6 @@ desktop/views/components/ui.header.account.vue:
   dark: "切换到黑暗模式 (夜间使用请打开此选项哦~)"
 desktop/views/components/ui.header.nav.vue:
   home: "首页"
-  deck: "Deck"
   game: "游戏"
 desktop/views/components/ui.header.notifications.vue:
   title: "通知"
