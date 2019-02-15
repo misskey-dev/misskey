@@ -18,7 +18,7 @@
 					<x-account v-if="$store.getters.isSignedIn"/>
 					<x-notifications v-if="$store.getters.isSignedIn"/>
 					<x-post v-if="$store.getters.isSignedIn"/>
-					<x-clock v-if="$store.state.settings.showClockOnHeader"/>
+					<x-clock v-if="$store.state.settings.showClockOnHeader" class="clock"/>
 				</div>
 			</div>
 		</div>
@@ -152,7 +152,7 @@ export default Vue.extend({
 						vertical-align top
 
 					@media (max-width 1100px)
-						> .mk-ui-header-search
+						> .clock
 							display none
 
 </style>
