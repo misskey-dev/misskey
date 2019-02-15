@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-server">
-	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
+	<ui-container :show-header="props.design == 0" :naked="props.design == 2">
 		<template slot="header"><fa icon="server"/>{{ $t('title') }}</template>
 		<button slot="func" @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button>
 
@@ -13,7 +13,7 @@
 			<x-uptimes v-show="props.view == 4" :connection="connection"/>
 			<x-info v-show="props.view == 5" :connection="connection" :meta="meta"/>
 		</template>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

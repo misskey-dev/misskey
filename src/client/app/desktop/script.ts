@@ -158,7 +158,10 @@ init(async (launch, os) => {
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '/deck', redirect: '/' },
 			{ path: '*', component: MkNotFound }
-		]
+		],
+		scrollBehavior(to, from, savedPosition) {
+			return { x: 0, y: 0 };
+		}
 	});
 
 	// Launch the app

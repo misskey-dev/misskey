@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-instance">
-	<mk-widget-container>
+	<ui-container>
 		<mk-instance/>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 
