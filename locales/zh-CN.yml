@@ -28,8 +28,8 @@ common:
   load-more: "加载更多"
   enter-password: "请输入您的密码"
   2fa: "双重身份验证"
-  customize-home: "ホームをカスタマイズ"
-  featured-notes: "ハイライト"
+  customize-home: "自定义主页"
+  featured-notes: "高亮"
   got-it: "没问题"
   customization-tips:
     title: "自定义提示"
@@ -773,7 +773,7 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "您是否要重新发送？"
 desktop/views/components/timeline.core.vue:
-  empty: "投稿がありません"
+  empty: "没有帖子"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}的正在关注"
   followers: "{user}的关注者"
@@ -1345,7 +1345,7 @@ desktop/views/pages/user/user.header.vue:
   year: "年"
   month: "月"
   day: "日"
-  follows-you: "フォローされています"
+  follows-you: "关注您"
 desktop/views/pages/user/user.timeline.vue:
   default: "帖子"
   with-replies: "帖子与回复"
@@ -1498,7 +1498,7 @@ mobile/views/pages/home.vue:
   mentions: "Mentions"
   messages: "信息"
 mobile/views/pages/home.timeline.vue:
-  empty: "投稿がありません"
+  empty: "没有帖子"
 mobile/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 mobile/views/pages/welcome.vue:
