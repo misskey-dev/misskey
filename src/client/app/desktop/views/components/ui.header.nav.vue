@@ -136,7 +136,7 @@ export default Vue.extend({
 				display inline-block
 				z-index 1
 				height 100%
-				padding 0 24px
+				padding 0 20px
 				font-size 13px
 				font-variant small-caps
 				color var(--desktopHeaderFg)
