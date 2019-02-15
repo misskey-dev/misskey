@@ -42,7 +42,7 @@ export default Vue.extend({
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
 				this.$root.api('notes/featured', {
-					limit: 15,
+					limit: 20,
 				}).then(notes => {
 					res(notes);
 					this.fetching = false;
