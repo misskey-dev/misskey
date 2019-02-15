@@ -28,7 +28,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			this.$root.api('notes/featured', {
-				limit: 10
+				limit: 15
 			}).then(notes => {
 				this.notes = notes;
 				this.fetching = false;
