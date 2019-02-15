@@ -65,6 +65,16 @@ export default Vue.extend({
 		}
 	},
 
+	data() {
+		return {
+			count: 0,
+			active: true,
+			dragging: false,
+			draghover: false,
+			dropready: false
+		};
+	},
+
 	computed: {
 		isTemporaryColumn(): boolean {
 			return this.column == null;
@@ -82,16 +92,6 @@ export default Vue.extend({
 
 	inject: {
 		getColumnVm: { from: 'getColumnVm' }
-	},
-
-	data() {
-		return {
-			count: 0,
-			active: true,
-			dragging: false,
-			draghover: false,
-			dropready: false
-		};
 	},
 
 	watch: {
