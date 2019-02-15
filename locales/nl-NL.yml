@@ -58,6 +58,8 @@ common:
   trash: "ゴミ箱"
   drive: "ドライブ"
   messaging: "トーク"
+  deck: "デッキ"
+  explore: "みつける"
   weekday-short:
     sunday: "Z"
     monday: "M"
@@ -967,7 +969,6 @@ desktop/views/components/ui.header.account.vue:
   dark: "Donkere modus"
 desktop/views/components/ui.header.nav.vue:
   home: "Startpagina"
-  deck: "デッキ"
   game: "Othello spelen"
 desktop/views/components/ui.header.notifications.vue:
   title: "Meldingen"
