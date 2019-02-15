@@ -58,6 +58,8 @@ common:
   trash: "Papelera"
   drive: "Drive"
   messaging: "Conversación"
+  deck: "デッキ"
+  explore: "みつける"
   weekday-short:
     sunday: "domingo"
     monday: "lunes"
@@ -967,7 +969,6 @@ desktop/views/components/ui.header.account.vue:
   dark: "Sumergirse en la oscuridad"
 desktop/views/components/ui.header.nav.vue:
   home: "Inicio"
-  deck: "Cubierta"
   game: "Juegos"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notificaciones"
