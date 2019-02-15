@@ -18,7 +18,6 @@ import MkUserFollowingOrFollowers from './views/pages/user-following-or-follower
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
-import MkSearch from './views/pages/search.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
@@ -133,6 +132,7 @@ init(async (launch, os) => {
 				? { path: '/', name: 'index', component: MkDeck, children: [
 					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default) },
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/deck/deck.note-column.vue').then(m => m.default) },
+					{ path: '/search', component: () => import('./views/deck/deck.search-column.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
 					{ path: '/featured', component: () => import('./views/deck/deck.featured-column.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/deck/deck.favorites-column.vue').then(m => m.default) }
@@ -141,6 +141,7 @@ init(async (launch, os) => {
 					{ path: '', name: 'index', component: MkHomeTimeline },
 					{ path: '/@:user', name: 'user', component: () => import('./views/home/user/user.vue').then(m => m.default) },
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
+					{ path: '/search', component: () => import('./views/home/search.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
 					{ path: '/featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
@@ -150,7 +151,6 @@ init(async (launch, os) => {
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/i/settings', component: MkSettings },
 			{ path: '/selectdrive', component: MkSelectDrive },
-			{ path: '/search', component: MkSearch },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', component: MkReversi },
 			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
