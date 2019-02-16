@@ -1619,6 +1619,9 @@ deck:
   rename: "Rename"
   stack-left: "Stack to the left"
   pop-right: "Dock on the right"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
