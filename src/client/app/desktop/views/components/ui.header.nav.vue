@@ -1,13 +1,13 @@
 <template>
 <div class="nav">
 	<ul>
-		<li v-if="!$store.state.device.deckMode" class="timeline" @click="goToTop">
+		<li v-if="!$store.state.device.deckMode" class="timeline" :class="{ active: $route.name == 'index' }" @click="goToTop">
 			<router-link to="/"><fa icon="home"/><p>{{ $t('@.timeline') }}</p></router-link>
 		</li>
-		<li class="featured">
+		<li class="featured" :class="{ active: $route.name == 'featured' }">
 			<router-link to="/featured"><fa :icon="faNewspaper"/><p>{{ $t('@.featured-notes') }}</p></router-link>
 		</li>
-		<li class="explore">
+		<li class="explore" :class="{ active: $route.name == 'explore' }">
 			<router-link to="/explore"><fa :icon="faHashtag"/><p>{{ $t('@.explore') }}</p></router-link>
 		</li>
 		<li class="game">
