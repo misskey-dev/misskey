@@ -20,7 +20,14 @@
 		<button v-else class="close" @click.stop="close"><fa icon="times"/></button>
 	</header>
 	<div ref="body" v-show="active">
-		<slot></slot>
+		<div class="disabled" v-if="disabled">
+			<p>
+				<fa icon="minus-circle"/>
+				{{ $t('disabled.title') }}
+			</p>
+			<p class="desc">{{ $t('disabled.description') }}</p>
+		</div>
+		<slot v-else></slot>
 	</div>
 </div>
 </template>
@@ -71,8 +78,18 @@ export default Vue.extend({
 			active: true,
 			dragging: false,
 			draghover: false,
-			dropready: false
+			dropready: false,
+			disabled: false
 		};
+	},
+
+	created() {
+		if (this.column)
+			this.$root.getMeta().then(meta => {
+				this.disabled =
+					meta.disableLocalTimeline && ['local', 'hybrid'].includes(this.column.type) ||
+					meta.disableGlobalTimeline && ['global'].includes(this.column.type);
+			});
 	},
 
 	computed: {
@@ -419,4 +436,13 @@ export default Vue.extend({
 		overflow auto
 		overflow-x hidden
 
+		> .disabled
+			color var(--text)
+			text-align center
+
+			> p
+				margin 16px
+
+				&.desc
+					font-size 14px
 </style>
