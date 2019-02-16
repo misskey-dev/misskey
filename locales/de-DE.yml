@@ -204,6 +204,10 @@ auth/views/index.vue:
   please-go-back: "Bitte gehe zurück zur Anwendung."
   error: "Sitzung ist nicht vorhanden."
   sign-in: "Bitte melde dich an."
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Warten auf {}"
