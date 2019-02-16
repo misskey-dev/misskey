@@ -6,24 +6,16 @@
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">
-			<template v-if="$store.state.device.deckMode">
-				<div class="deck active" @click="goToTop">
-					<router-link to="/"><fa icon="columns"/></router-link>
-				</div>
-				<div class="home">
-					<a @click="toggleDeckMode(false)"><fa icon="home"/></a>
-				</div>
-			</template>
-			<template v-else>
-				<div class="home active" @click="goToTop">
+			<template v-if="!$store.state.device.deckMode">
+				<div class="home" :class="{ active: $route.name == 'index' }" @click="goToTop">
 					<router-link to="/"><fa icon="home"/></router-link>
 				</div>
-				<div class="deck">
-					<a @click="toggleDeckMode(true)"><fa icon="columns"/></a>
-				</div>
 			</template>
-			<div class="messaging">
-				<a @click="messaging"><fa icon="comments"/><template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template></a>
+			<div class="featured" :class="{ active: $route.name == 'featured' }">
+				<router-link to="/featured"><fa :icon="faNewspaper"/></router-link>
+			</div>
+			<div class="explore" :class="{ active: $route.name == 'explore' }">
+				<router-link to="/explore"><fa :icon="faHashtag"/></router-link>
 			</div>
 			<div class="game">
 				<a @click="game"><fa icon="gamepad"/><template v-if="hasGameInvitations"><fa icon="circle"/></template></a>
@@ -37,30 +29,34 @@
 			<div ref="notificationsButton" :class="{ active: showNotifications }">
 				<a @click="notifications"><fa :icon="['far', 'bell']"/></a>
 			</div>
+			<div class="messaging">
+				<a @click="messaging"><fa icon="comments"/><template v-if="hasUnreadMessagingMessage"><fa icon="circle"/></template></a>
+			</div>
 			<div>
 				<a @click="settings"><fa icon="cog"/></a>
 			</div>
-		</div>
-
-		<div class="account">
-			<router-link :to="`/@${ $store.state.i.username }`">
-				<mk-avatar class="avatar" :user="$store.state.i"/>
-			</router-link>
-
-			<div class="nav menu">
-				<div class="signout">
-					<a @click="signout"><fa icon="power-off"/></a>
-				</div>
-				<div>
-					<router-link to="/i/favorites"><fa icon="star"/></router-link>
-				</div>
-				<div v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
-					<a @click="followRequests"><fa :icon="['far', 'envelope']"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
-				</div>
+			<div class="signout">
+				<a @click="signout"><fa icon="power-off"/></a>
 			</div>
-		</div>
-
-		<div class="nav dark">
+			<div>
+				<router-link to="/i/favorites"><fa icon="star"/></router-link>
+			</div>
+			<div v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
+				<a @click="followRequests"><fa :icon="['far', 'envelope']"/><i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></a>
+			</div>
+			<div class="account">
+				<router-link :to="`/@${ $store.state.i.username }`">
+					<mk-avatar class="avatar" :user="$store.state.i"/>
+				</router-link>
+			</div>
+			<div>
+				<template v-if="$store.state.device.deckMode">
+					<a @click="toggleDeckMode(false)"><fa icon="home"/></a>
+				</template>
+				<template v-else>
+					<a @click="toggleDeckMode(true)"><fa icon="columns"/></a>
+				</template>
+			</div>
 			<div>
 				<a @click="dark"><template v-if="$store.state.device.darkmode"><fa icon="moon"/></template><template v-else><fa :icon="['far', 'moon']"/></template></a>
 			</div>
@@ -85,6 +81,7 @@ import MkDriveWindow from './drive-window.vue';
 import MkMessagingWindow from './messaging-window.vue';
 import MkGameWindow from './game-window.vue';
 import contains from '../../../common/scripts/contains';
+import { faNewspaper, faHashtag } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.sidebar.vue'),
@@ -92,7 +89,8 @@ export default Vue.extend({
 		return {
 			hasGameInvitations: false,
 			connection: null,
-			showNotifications: false
+			showNotifications: false,
+			faNewspaper, faHashtag
 		};
 	},
 
@@ -278,44 +276,23 @@ export default Vue.extend({
 
 		> .nav.bottom
 			position absolute
-			bottom 128px
+			bottom 0
 			left 0
 
-		> .account
-			position absolute
-			bottom 64px
-			left 0
-			width $width
-			height $width
-			padding 14px
+			> .account
+				width $width
+				height $width
+				padding 14px
 
-			> .menu
-				display none
-				position absolute
-				bottom 64px
-				left 0
-				background var(--desktopHeaderBg)
-
-			&:hover
-				> .menu
+				> *
 					display block
-
-			> *:not(.menu)
-				display block
-				width 100%
-				height 100%
-
-				> .avatar
-					pointer-events none
 					width 100%
 					height 100%
 
-		> .dark
-			position absolute
-			bottom 0
-			left 0
-			width $width
-			height $width
+					> .avatar
+						pointer-events none
+						width 100%
+						height 100%
 
 	> .notifications
 		position fixed
