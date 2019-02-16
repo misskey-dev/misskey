@@ -204,6 +204,10 @@ auth/views/index.vue:
   please-go-back: "Por favor, vuelve a la aplicación."
   error: "Esta sesión no existe."
   sign-in: "Por favor inicia sesión."
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Esperando por {}"
