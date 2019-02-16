@@ -60,6 +60,8 @@ common:
   messaging: "トーク"
   deck: "デッキ"
   explore: "みつける"
+  following: "フォロー中"
+  followers: "フォロワー"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -1477,9 +1479,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
-mobile/views/components/users-list.vue:
-  all: "Alle"
-  known: "Du kjenner"
 mobile/views/pages/favorites.vue:
   title: "Favoritter"
 mobile/views/pages/user-lists.vue:
