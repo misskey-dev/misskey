@@ -60,6 +60,8 @@ common:
   messaging: "聊天"
   deck: "デッキ"
   explore: "みつける"
+  following: "フォロー中"
+  followers: "フォロワー"
   weekday-short:
     sunday: "日"
     monday: "一"
@@ -1477,9 +1479,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "看起来该用户还没有发表任何东西哎。"
   no-notes-with-media: "媒体附件没有备注"
-mobile/views/components/users-list.vue:
-  all: "所有"
-  known: "共同"
 mobile/views/pages/favorites.vue:
   title: "收藏"
 mobile/views/pages/user-lists.vue:
