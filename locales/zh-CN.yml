@@ -204,6 +204,10 @@ auth/views/index.vue:
   please-go-back: "请返回到应用程序"
   error: "会话不存在。"
   sign-in: "请登录。"
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "等待 {}"
