@@ -2,7 +2,7 @@
 <div class="nav">
 	<ul>
 		<li v-if="!$store.state.device.deckMode" class="timeline" @click="goToTop">
-			<router-link to="/"><fa icon="list"/><p>{{ $t('@.timeline') }}</p></router-link>
+			<router-link to="/"><fa icon="home"/><p>{{ $t('@.timeline') }}</p></router-link>
 		</li>
 		<li class="featured">
 			<router-link to="/featured"><fa :icon="faNewspaper"/><p>{{ $t('@.featured-notes') }}</p></router-link>
