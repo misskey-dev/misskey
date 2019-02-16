@@ -60,6 +60,8 @@ common:
   messaging: "대화"
   deck: "デッキ"
   explore: "みつける"
+  following: "フォロー中"
+  followers: "フォロワー"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -1477,9 +1479,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "이 사용자는 작성한 글이 없는 것 같습니다."
   no-notes-with-media: "미디어가 첨부된 글이 없습니다."
-mobile/views/components/users-list.vue:
-  all: "모두"
-  known: "아는 사람"
 mobile/views/pages/favorites.vue:
   title: "즐겨찾기"
 mobile/views/pages/user-lists.vue:
