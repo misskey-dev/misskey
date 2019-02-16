@@ -1823,6 +1823,9 @@ deck:
   rename: "名前を変更"
   stack-left: "左に重ねる"
   pop-right: "右に出す"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
