@@ -59,6 +59,7 @@ common:
   drive: "드라이브"
   messaging: "대화"
   deck: "デッキ"
+  timeline: "タイムライン"
   explore: "みつける"
   following: "フォロー中"
   followers: "フォロワー"
@@ -970,7 +971,6 @@ desktop/views/components/ui.header.account.vue:
   signout: "로그아웃"
   dark: "어둠에 삼켜져라"
 desktop/views/components/ui.header.nav.vue:
-  home: "홈"
   game: "게임"
 desktop/views/components/ui.header.notifications.vue:
   title: "알림"
