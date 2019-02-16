@@ -61,6 +61,7 @@ common:
   drive: "ドライブ"
   messaging: "トーク"
   deck: "デッキ"
+  timeline: "タイムライン"
   explore: "みつける"
   following: "フォロー中"
   followers: "フォロワー"

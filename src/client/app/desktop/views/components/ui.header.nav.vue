@@ -1,8 +1,8 @@
 <template>
 <div class="nav">
 	<ul>
-		<li class="home active" @click="goToTop">
-			<router-link to="/"><fa icon="home"/><p>{{ $t('home') }}</p></router-link>
+		<li v-if="!$store.state.device.deckMode" class="timeline" @click="goToTop">
+			<router-link to="/"><fa icon="list"/><p>{{ $t('@.timeline') }}</p></router-link>
 		</li>
 		<li class="featured">
 			<router-link to="/featured"><fa :icon="faNewspaper"/><p>{{ $t('@.featured-notes') }}</p></router-link>
