@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-activity">
-	<mk-widget-container :show-header="!props.compact">
+	<ui-container :show-header="!props.compact">
 		<template slot="header"><fa icon="chart-bar"/>{{ $t('activity') }}</template>
 		<div :class="$style.body">
 			<x-activity :user="$store.state.i"/>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 
@@ -21,7 +21,7 @@ export default define({
 }).extend({
 	i18n: i18n(),
 	components: {
-		XActivity: () => import('../components/activity.vue').then(m => m.default)
+		XActivity: () => import('../../../common/views/components/activity.vue').then(m => m.default)
 	},
 	methods: {
 		func() {

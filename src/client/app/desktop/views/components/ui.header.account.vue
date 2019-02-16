@@ -45,13 +45,6 @@
 			</ul>
 			<ul>
 				<li>
-					<router-link to="/i/customize-home">
-						<i><fa icon="wrench"/></i>
-						<span>{{ $t('customize') }}</span>
-						<i><fa icon="angle-right"/></i>
-					</router-link>
-				</li>
-				<li>
 					<router-link to="/i/settings">
 						<i><fa icon="cog"/></i>
 						<span>{{ $t('settings') }}</span>
@@ -67,6 +60,13 @@
 				</li>
 			</ul>
 			<ul>
+				<li @click="toggleDeckMode">
+					<p>
+						<span>{{ $t('@.deck') }}</span>
+						<template v-if="$store.state.device.deckMode"><i><fa :icon="faHome"/></i></template>
+						<template v-else><i><fa :icon="faColumns"/></i></template>
+					</p>
+				</li>
 				<li @click="dark">
 					<p>
 						<span>{{ $t('dark') }}</span>
@@ -97,12 +97,14 @@ import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
+import { faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.account.vue'),
 	data() {
 		return {
-			isOpen: false
+			isOpen: false,
+			faHome, faColumns
 		};
 	},
 	computed: {
@@ -161,7 +163,11 @@ export default Vue.extend({
 				key: 'darkmode',
 				value: !this.$store.state.device.darkmode
 			});
-		}
+		},
+		toggleDeckMode() {
+			this.$store.commit('device/set', { key: 'deckMode', value: !this.$store.state.device.deckMode });
+			location.reload();
+		},
 	}
 });
 </script>

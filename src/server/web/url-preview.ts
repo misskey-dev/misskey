@@ -33,8 +33,8 @@ module.exports = async (ctx: Koa.BaseContext) => {
 
 function wrap(url: string): string {
 	return url != null
-		? url.startsWith('https://') || url.startsWith('data:')
-			? url
-			: `https://images.weserv.nl/?url=${encodeURIComponent(url.replace(/^http:\/\//, ''))}`
+		? url.match(/^https?:\/\//)
+			? `https://images.weserv.nl/?url=${encodeURIComponent(url.replace(/^http:\/\//, '').replace(/^https:\/\//, 'ssl:'))}&w=200&h=200`
+			: url
 		: null;
 }

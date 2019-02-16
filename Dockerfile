@@ -8,7 +8,6 @@ WORKDIR /misskey
 
 FROM base AS builder
 
-RUN unlink /usr/bin/free
 RUN apk add --no-cache \
     autoconf \
     automake \
@@ -20,18 +19,13 @@ RUN apk add --no-cache \
     make \
     nasm \
     pkgconfig \
-    procps \
     python \
     zlib-dev
-RUN npm i -g node-gyp
-
-COPY ./package.json ./
-RUN npm i
+RUN npm i -g yarn
 
 COPY . ./
-RUN node-gyp configure \
- && node-gyp build \
- && npm run build
+RUN yarn install
+RUN yarn build
 
 FROM base AS runner
 

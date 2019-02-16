@@ -160,6 +160,7 @@ export default Vue.extend({
 			color #222
 
 		> [data-icon]
+			box-sizing initial
 			padding 14px
 
 </style>

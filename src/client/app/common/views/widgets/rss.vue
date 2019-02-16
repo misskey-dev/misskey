@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-rss">
-	<mk-widget-container :show-header="!props.compact">
+	<ui-container :show-header="!props.compact">
 		<template slot="header"><fa icon="rss-square"/>RSS</template>
 		<button slot="func" title="設定" @click="setting"><fa icon="cog"/></button>
 
@@ -10,7 +10,7 @@
 				<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
 			</div>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

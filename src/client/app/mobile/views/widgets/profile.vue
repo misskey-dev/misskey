@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-profile">
-	<mk-widget-container>
+	<ui-container>
 		<div :class="$style.banner"
 			:style="$store.state.i.bannerUrl ? `background-image: url(${$store.state.i.bannerUrl})` : ''"
 		></div>
@@ -11,7 +11,7 @@
 		<router-link :class="$style.name" :to="$store.state.i | userPage">
 			<mk-user-name :user="$store.state.i"/>
 		</router-link>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

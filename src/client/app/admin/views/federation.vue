@@ -148,7 +148,7 @@ export default Vue.extend({
 		return {
 			instance: null,
 			target: null,
-			sort: '+caughtAt',
+			sort: '+lastCommunicatedAt',
 			state: 'all',
 			limit: 50,
 			instances: [],

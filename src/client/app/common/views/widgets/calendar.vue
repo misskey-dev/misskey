@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-calendar" :data-special="special" :data-mobile="platform == 'mobile'">
-	<mk-widget-container :naked="props.design == 1" :show-header="false">
+	<ui-container :naked="props.design == 1" :show-header="false">
 		<div class="mkw-calendar--body">
 			<div class="calendar" :data-is-holiday="isHoliday">
 				<p class="month-and-year">
@@ -31,7 +31,7 @@
 				</div>
 			</div>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

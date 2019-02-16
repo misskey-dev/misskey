@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-nav">
-	<mk-widget-container>
+	<ui-container>
 		<div class="mkw-nav--body">
 			<mk-nav/>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

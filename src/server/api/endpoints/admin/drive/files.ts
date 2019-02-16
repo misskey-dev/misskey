@@ -9,17 +9,17 @@ export const meta = {
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		sort: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'+createdAt',
 				'-createdAt',
 				'+size',
@@ -28,7 +28,7 @@ export const meta = {
 		},
 
 		origin: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'combined',
 				'local',
 				'remote',

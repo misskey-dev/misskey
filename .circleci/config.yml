@@ -141,7 +141,14 @@ workflows:
                 - l10n_develop
                 - imgbot
                 - patch-autogen
+      - hold:
+          type: approval
+          filters:
+            branches:
+              ignore: master
       - build:
+          requires:
+            - hold
           filters:
             branches:
               ignore:
