@@ -220,6 +220,11 @@ auth/views/index.vue:
   error: "セッションが存在しません。"
   sign-in: "サインインしてください"
 
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
+
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}を待っています"
