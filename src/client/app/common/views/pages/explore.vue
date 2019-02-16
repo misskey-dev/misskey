@@ -1,12 +1,12 @@
 <template>
 <div>
-	<mk-user-list :users="verifiedUsers">
+	<mk-user-list :make-promise="verifiedUsers">
 		<span><fa :icon="faBookmark"/> {{ $t('verified-users') }}</span>
 	</mk-user-list>
-	<mk-user-list :users="popularUsers">
+	<mk-user-list :make-promise="popularUsers">
 		<span><fa :icon="faChartLine"/> {{ $t('popular-users') }}</span>
 	</mk-user-list>
-	<mk-user-list :users="recentlyUpdatedUsers">
+	<mk-user-list :make-promise="recentlyUpdatedUsers">
 		<span><fa :icon="faCommentAlt"/> {{ $t('recently-updated-users') }}</span>
 	</mk-user-list>
 </div>
@@ -23,40 +23,26 @@ export default Vue.extend({
 
 	data() {
 		return {
-			verifiedUsers: [],
-			popularUsers: [],
-			recentlyUpdatedUsers: [],
+			verifiedUsers: () => this.$root.api('users', {
+				state: 'verified',
+				origin: 'local',
+				sort: '+follower',
+				limit: 10
+			}),
+			popularUsers: () => this.$root.api('users', {
+				state: 'alive',
+				origin: 'local',
+				sort: '+follower',
+				limit: 10
+			}),
+			recentlyUpdatedUsers: () => this.$root.api('users', {
+				origin: 'local',
+				sort: '+updatedAt',
+				limit: 10
+			}),
 			faBookmark, faChartLine, faCommentAlt
 		};
 	},
-
-	created() {
-		this.$root.api('users', {
-			state: 'verified',
-			origin: 'local',
-			sort: '+follower',
-			limit: 10
-		}).then(users => {
-			this.verifiedUsers = users;
-		});
-
-		this.$root.api('users', {
-			state: 'alive',
-			origin: 'local',
-			sort: '+follower',
-			limit: 10
-		}).then(users => {
-			this.popularUsers = users;
-		});
-
-		this.$root.api('users', {
-			origin: 'local',
-			sort: '+updatedAt',
-			limit: 10
-		}).then(users => {
-			this.recentlyUpdatedUsers = users;
-		});
-	}
 });
 </script>
 

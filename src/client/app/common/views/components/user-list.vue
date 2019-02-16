@@ -1,8 +1,11 @@
 <template>
 <ui-container :body-togglable="true">
 	<template slot="header"><slot></slot></template>
+
+	<mk-error v-if="!fetching && !inited" @retry="init()"/>
+
 	<div class="efvhhmdq" v-size="[{ lt: 500, class: 'narrow' }]">
-		<div class="user" v-for="user in users">
+		<div class="user" v-for="user in us">
 			<mk-avatar class="avatar" :user="user"/>
 			<div class="body">
 				<div class="name">
@@ -14,6 +17,9 @@
 				</div>
 			</div>
 		</div>
+		<button class="more" :class="{ fetching: fetchingMoreUsers }" v-if="cursor != null" @click="fetchMoreUsers()" :disabled="fetchingMoreUsers">
+			<template v-if="fetchingMoreUsers"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreUsers ? $t('@.loading') : $t('@.load-more') }}
+		</button>
 	</div>
 </ui-container>
 </template>
@@ -23,13 +29,55 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: {
-		users: {
-			type: Array,
+		makePromise: {
 			required: true
 		},
 		iconOnly: {
 			type: Boolean,
 			default: false
+		}
+	},
+
+	data() {
+		return {
+			fetching: true,
+			fetchingMoreUsers: false,
+			us: [],
+			inited: false,
+			cursor: null
+		};
+	},
+
+	created() {
+		this.init();
+	},
+
+	methods: {
+		init() {
+			this.fetching = true;
+			this.makePromise().then(x => {
+				if (Array.isArray(x)) {
+					this.us = x;
+				} else {
+					this.us = x.users;
+					this.cursor = x.cursor;
+				}
+				this.inited = true;
+				this.fetching = false;
+			}, e => {
+				this.fetching = false;
+			});
+		},
+
+		fetchMoreUsers() {
+			this.fetchingMoreUsers = true;
+			this.makePromise(this.cursor).then(x => {
+				this.us = x.users;
+				this.cursor = x.cursor;
+				this.fetchingMoreUsers = false;
+			}, e => {
+				this.fetchingMoreUsers = false;
+			});
 		}
 	}
 });
