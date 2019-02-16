@@ -21,8 +21,6 @@ import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkReceivedFollowRequests from './views/pages/received-follow-requests.vue';
 import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
-import MkFollowers from './views/pages/followers.vue';
-import MkFollowing from './views/pages/following.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkUserLists from './views/pages/user-lists.vue';
 import MkUserList from './views/pages/user-list.vue';
@@ -137,9 +135,11 @@ init((launch) => {
 			{ path: '/explore', name: 'explore', component: () => import('./views/pages/explore.vue').then(m => m.default) },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', name: 'reversi', component: MkReversi },
-			{ path: '/@:user', component: () => import('./views/pages/user.vue').then(m => m.default) },
-			{ path: '/@:user/followers', component: MkFollowers },
-			{ path: '/@:user/following', component: MkFollowing },
+			{ path: '/@:user', component: () => import('./views/pages/user/index.vue').then(m => m.default), children: [
+				{ path: '', name: 'user', component: () => import('./views/pages/user/home.vue').then(m => m.default) },
+				{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
+				{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
+			]},
 			{ path: '/notes/:note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '*', component: MkNotFound }

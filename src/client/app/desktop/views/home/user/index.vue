@@ -1,22 +1,10 @@
 <template>
-<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching">
+<div class="omechnps" v-if="!fetching">
 	<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</div>
 	<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
 	<div class="main">
-		<x-header :user="user"/>
-		<x-integrations :user="user" v-if="user.twitter || user.github || user.discord"/>
-		<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
-		<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
-		<div class="activity">
-			<ui-container :body-togglable="true">
-				<template slot="header"><fa icon="chart-bar"/>{{ $t('activity') }}</template>
-				<x-activity :user="user" :limit="35" style="padding: 16px;"/>
-			</ui-container>
-		</div>
-		<x-photos :user="user"/>
-		<x-friends :user="user"/>
-		<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
-		<x-timeline class="timeline" ref="tl" :user="user"/>
+		<x-header class="header" :user="user"/>
+		<router-view :user="user"></router-view>
 	</div>
 </div>
 </template>
@@ -27,23 +15,11 @@ import i18n from '../../../../i18n';
 import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
-import XTimeline from './user.timeline.vue';
-import XPhotos from './user.photos.vue';
-import XFollowersYouKnow from './user.followers-you-know.vue';
-import XFriends from './user.friends.vue';
-import XIntegrations from './user.integrations.vue';
-import XActivity from '../../../../common/views/components/activity.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
 	components: {
-		XHeader,
-		XTimeline,
-		XPhotos,
-		XFollowersYouKnow,
-		XFriends,
-		XIntegrations,
-		XActivity
+		XHeader
 	},
 	data() {
 		return {
@@ -76,7 +52,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.xygkxeaeontfaokvqmiblezmhvhostak
+.omechnps
 	width 100%
 	margin 0 auto
 
@@ -100,10 +76,7 @@ export default Vue.extend({
 			font-weight bold
 
 	> .main
-		> *
+		> .header
 			margin-bottom 16px
-
-		> .timeline
-			box-shadow var(--shadow)
 
 </style>

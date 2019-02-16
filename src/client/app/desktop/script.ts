@@ -130,7 +130,11 @@ init(async (launch, os) => {
 		routes: [
 			os.store.getters.isSignedIn && os.store.state.device.deckMode
 				? { path: '/', name: 'index', component: MkDeck, children: [
-					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default) },
+					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default), children: [
+						{ path: '', name: 'user', component: () => import('./views/deck/deck.user-column.home.vue').then(m => m.default) },
+						{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
+						{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
+					]},
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/deck/deck.note-column.vue').then(m => m.default) },
 					{ path: '/search', component: () => import('./views/deck/deck.search-column.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
@@ -140,13 +144,17 @@ init(async (launch, os) => {
 				]}
 				: { path: '/', component: MkHome, children: [
 					{ path: '', name: 'index', component: MkHomeTimeline },
-					{ path: '/@:user', name: 'user', component: () => import('./views/home/user/user.vue').then(m => m.default) },
+					{ path: '/@:user', component: () => import('./views/home/user/index.vue').then(m => m.default), children: [
+						{ path: '', name: 'user', component: () => import('./views/home/user/user.home.vue').then(m => m.default) },
+						{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
+						{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
+					]},
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
 					{ path: '/search', component: () => import('./views/home/search.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
 					{ path: '/featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
 					{ path: '/explore', component: () => import('../common/views/pages/explore.vue').then(m => m.default) },
-					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
+					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) },
 				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
@@ -155,8 +163,6 @@ init(async (launch, os) => {
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', component: MkReversi },
-			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
-			{ path: '/@:user/followers', name: 'userFollowers', component: MkUserFollowingOrFollowers },
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '/deck', redirect: '/' },
 			{ path: '*', component: MkNotFound }

@@ -12,7 +12,7 @@
 					<router-link class="name" :to="user | userPage" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
 					<p class="username">@{{ user | acct }}</p>
 				</div>
-				<div class="description" v-if="user.description">
+				<div class="description" v-if="user.description" :title="user.description">
 					<mfm :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :should-break="false"/>
 				</div>
 			</div>
@@ -137,5 +137,6 @@ export default Vue.extend({
 				overflow hidden
 				text-overflow ellipsis
 				opacity 0.7
+				font-size 14px
 
 </style>

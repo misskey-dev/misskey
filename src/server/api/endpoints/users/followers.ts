@@ -16,12 +16,20 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(ID),
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}
+		},
+
+		username: {
+			validator: $.optional.str
+		},
+
+		host: {
+			validator: $.optional.nullable.str
 		},
 
 		limit: {
@@ -43,14 +51,11 @@ export const meta = {
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	// Lookup user
-	const user = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			_id: true
-		}
-	});
+	const q: any = ps.userId != null
+		? { _id: ps.userId }
+		: { usernameLower: ps.username.toLowerCase(), host: ps.host };
+
+	const user = await User.findOne(q);
 
 	if (user === null) {
 		return rej('user not found');

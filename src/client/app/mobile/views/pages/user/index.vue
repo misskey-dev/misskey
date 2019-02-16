@@ -43,22 +43,22 @@
 					</p>
 				</div>
 				<div class="status">
-					<a>
+					<router-link :to="user | userPage()">
 						<b>{{ user.notesCount | number }}</b>
 						<i>{{ $t('notes') }}</i>
-					</a>
-					<a :href="user | userPage('following')">
+					</router-link>
+					<router-link :to="user | userPage('following')">
 						<b>{{ user.followingCount | number }}</b>
 						<i>{{ $t('following') }}</i>
-					</a>
-					<a :href="user | userPage('followers')">
+					</router-link>
+					<router-link :to="user | userPage('followers')">
 						<b>{{ user.followersCount | number }}</b>
 						<i>{{ $t('followers') }}</i>
-					</a>
+					</router-link>
 				</div>
 			</div>
 		</header>
-		<nav>
+		<nav v-if="$route.name == 'user'">
 			<div class="nav-container">
 				<a :data-active="page == 'home'" @click="page = 'home'"><fa icon="home"/> {{ $t('overview') }}</a>
 				<a :data-active="page == 'notes'" @click="page = 'notes'"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</a>
@@ -66,9 +66,12 @@
 			</div>
 		</nav>
 		<div class="body">
-			<x-home v-if="page == 'home'" :user="user"/>
-			<mk-user-timeline v-if="page == 'notes'" :user="user" key="tl"/>
-			<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" key="media"/>
+			<template v-if="$route.name == 'user'">
+				<x-home v-if="page == 'home'" :user="user"/>
+				<mk-user-timeline v-if="page == 'notes'" :user="user" key="tl"/>
+				<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" key="media"/>
+			</template>
+			<router-view :user="user"></router-view>
 		</div>
 	</main>
 </mk-ui>
@@ -76,13 +79,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
+import i18n from '../../../../i18n';
 import * as age from 's-age';
-import parseAcct from '../../../../../misc/acct/parse';
-import Progress from '../../../common/scripts/loading';
-import XUserMenu from '../../../common/views/components/user-menu.vue';
-import XHome from './user/home.vue';
-import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
+import parseAcct from '../../../../../../misc/acct/parse';
+import Progress from '../../../../common/scripts/loading';
+import XUserMenu from '../../../../common/views/components/user-menu.vue';
+import XHome from './home.vue';
+import { getStaticImageUrl } from '../../../../common/scripts/get-static-image-url';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/user.vue'),
@@ -93,7 +96,7 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			user: null,
-			page: 'home'
+			page: this.$route.name == 'user' ? 'home' : null
 		};
 	},
 	computed: {
