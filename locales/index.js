@@ -13,9 +13,12 @@ const locales = langs
 	.map(([lang, locale], _, locales) => {
 		switch (lang) {
 			case 'ja-JP': return [lang, locale];
-			case 'ja-KS':
 			case 'en-US': return [lang, { ...locales['ja-JP'], ...locale }];
-			default: return [lang, { ...locales['en-US'], ...locales['ja-JP'], ...locale }];
+			default: return [lang, {
+				(lang.startsWith('ja-') ? {} : ...locales['en-US']),
+				...locales['ja-JP'],
+				...locale
+		}];
 		}
 	})
 	.map(([lang, locale]) => ({ [lang]: loadLocale(lang) }));
