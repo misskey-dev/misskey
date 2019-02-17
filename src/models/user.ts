@@ -18,6 +18,7 @@ const User = db.get<IUser>('users');
 User.createIndex('createdAt');
 User.createIndex('updatedAt');
 User.createIndex('followersCount');
+User.createIndex('tags');
 User.createIndex('username');
 User.createIndex('usernameLower');
 User.createIndex('host');

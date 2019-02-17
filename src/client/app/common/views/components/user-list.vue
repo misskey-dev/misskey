@@ -13,7 +13,7 @@
 					<p class="username">@{{ user | acct }}</p>
 				</div>
 				<div class="description" v-if="user.description" :title="user.description">
-					<mfm :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :should-break="false"/>
+					<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :should-break="false"/>
 				</div>
 			</div>
 		</div>
