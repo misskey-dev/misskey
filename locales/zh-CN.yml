@@ -63,6 +63,9 @@ common:
   explore: "みつける"
   following: "フォロー中"
   followers: "フォロワー"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
   weekday-short:
     sunday: "日"
     monday: "一"
@@ -698,12 +701,6 @@ desktop/views/components/following-window.vue:
   following: "正在关注 {}"
 desktop/views/components/following.vue:
   empty: "看起来您没有正在关注的用户..."
-desktop/views/components/friends-maker.vue:
-  title: "推荐用户："
-  empty: "找不到推荐用户。"
-  fetching: "正在加载"
-  refresh: "浏览更多"
-  close: "关闭"
 desktop/views/components/game-window.vue:
   game: "游戏"
 desktop/views/components/home.vue:
@@ -1423,12 +1420,6 @@ common/views/components/follow-button.vue:
   request-pending: "发送关注申请"
   follow-processing: "申请处理中"
   follow-request: "关注申请"
-mobile/views/components/friends-maker.vue:
-  title: "推荐用户："
-  empty: "找不到推荐用户。"
-  fetching: "正在加载..."
-  refresh: "浏览更多"
-  close: "关闭"
 mobile/views/components/note.vue:
   private: "私密帖子"
   deleted: "帖子已删除"
