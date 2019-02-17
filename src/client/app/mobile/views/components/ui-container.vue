@@ -1,10 +1,16 @@
 <template>
-<div class="mk-widget-container" :class="{ naked }">
+<div class="ukygtjoj" :class="{ naked, hideHeader: !showHeader }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
+		<button v-if="bodyTogglable" @click="() => showBody = !showBody">
+			<template v-if="showBody"><fa icon="angle-up"/></template>
+			<template v-else><fa icon="angle-down"/></template>
+		</button>
 	</header>
-	<slot></slot>
+	<div v-show="showBody">
+		<slot></slot>
+	</div>
 </div>
 </template>
 
@@ -19,34 +25,46 @@ export default Vue.extend({
 		naked: {
 			type: Boolean,
 			default: false
-		}
+		},
+		bodyTogglable: {
+			type: Boolean,
+			default: false
+		},
+	},
+	data() {
+		return {
+			showBody: true
+		};
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.mk-widget-container
+.ukygtjoj
 	background var(--face)
-	box-shadow var(--shadow)
-	border-radius var(--round)
+	border-radius 8px
+	box-shadow 0 4px 16px rgba(#000, 0.1)
 	overflow hidden
+
+	& + .ukygtjoj
+		margin-top 16px
+
+		@media (max-width 500px)
+			margin-top 8px
 
 	&.naked
 		background transparent !important
 		box-shadow none !important
 
 	> header
-		background var(--faceHeader)
-
 		> .title
-			z-index 1
 			margin 0
-			padding 0 16px
-			line-height 42px
-			font-size 0.9em
-			font-weight bold
+			padding 8px 10px
+			font-size 15px
+			font-weight normal
 			color var(--faceHeaderText)
-			box-shadow 0 var(--lineWidth) rgba(#000, 0.07)
+			background var(--faceHeader)
+			border-radius 8px 8px 0 0
 
 			> [data-icon]
 				margin-right 6px
@@ -61,14 +79,8 @@ export default Vue.extend({
 			right 0
 			padding 0
 			width 42px
-			font-size 0.9em
-			line-height 42px
+			height 100%
+			font-size 15px
 			color var(--faceTextButton)
-
-			&:hover
-				color var(--faceTextButtonHover)
-
-			&:active
-				color var(--faceTextButtonActive)
 
 </style>

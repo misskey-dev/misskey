@@ -29,6 +29,7 @@ common:
   enter-password: "パスワードを入力してください"
   2fa: "二段階認証"
   customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
 
   got-it: "わかった"
   customization-tips:
@@ -59,6 +60,11 @@ common:
   trash: "ゴミ箱"
   drive: "ドライブ"
   messaging: "トーク"
+  deck: "デッキ"
+  timeline: "タイムライン"
+  explore: "みつける"
+  following: "フォロー中"
+  followers: "フォロワー"
 
   weekday-short:
     sunday: "日"
@@ -213,6 +219,12 @@ auth/views/index.vue:
   please-go-back: "アプリケーションに戻って、やっていってください。"
   error: "セッションが存在しません。"
   sign-in: "サインインしてください"
+
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
+  recently-registered-users: "新規ユーザー"
 
 common/views/components/games/reversi/reversi.vue:
   matching:
@@ -863,6 +875,9 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしますか？"
 
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
+
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
   followers: "{user}のフォロワー"
@@ -1079,8 +1094,6 @@ desktop/views/components/ui.header.account.vue:
   dark: "闇に飲まれる"
 
 desktop/views/components/ui.header.nav.vue:
-  home: "ホーム"
-  deck: "デッキ"
   game: "ゲーム"
 
 desktop/views/components/ui.header.notifications.vue:
@@ -1651,10 +1664,6 @@ mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
 
-mobile/views/components/users-list.vue:
-  all: "すべて"
-  known: "知り合い"
-
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 
@@ -1678,6 +1687,9 @@ mobile/views/pages/home.vue:
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "メッセージ"
+
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
@@ -1817,6 +1829,9 @@ deck:
   rename: "名前を変更"
   stack-left: "左に重ねる"
   pop-right: "右に出す"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"

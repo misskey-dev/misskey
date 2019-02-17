@@ -98,7 +98,6 @@ export default Vue.extend({
 	box-shadow var(--shadow)
 	border-radius var(--round)
 	overflow hidden
-	overflow hidden
 
 .empty
 	display block

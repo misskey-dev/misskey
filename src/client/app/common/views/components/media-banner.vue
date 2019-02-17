@@ -5,7 +5,7 @@
 		<b>{{ $t('sensitive') }}</b>
 		<span>{{ $t('click-to-show') }}</span>
 	</div>
-	<div class="audio" v-else-if="media.type.startsWith('audio')">
+	<div class="audio" v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'">
 		<audio class="audio"
 			:src="media.url"
 			:title="media.name"

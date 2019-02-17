@@ -1,20 +1,27 @@
 <template>
-<div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
-	<p class="title"><fa icon="camera"/>{{ $t('title') }}</p>
-	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
-	<div class="stream" v-if="!fetching && images.length > 0">
-		<div v-for="(image, i) in images" :key="i" class="img"
-			:style="`background-image: url(${thumbnail(image)})`"
-		></div>
+<ui-container :body-togglable="true">
+	<span slot="header"><fa icon="camera"/> {{ $t('title') }}</span>
+
+	<div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
+		<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>
+		<div class="stream" v-if="!fetching && images.length > 0">
+			<router-link v-for="image in images" class="img"
+				:style="`background-image: url(${image.thumbnailUrl})`"
+				:key="`${image.id}:${image._note.id}`"
+				:to="image._note | notePage"
+				:title="`${image.name}\n${(new Date(image.createdAt)).toLocaleString()}`"
+			></router-link>
+		</div>
+		<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
-</div>
+</ui-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { getStaticImageUrl } from '../../../../common/scripts/get-static-image-url';
+import { concat } from '../../../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/user/user.photos.vue'),
@@ -41,9 +48,11 @@ export default Vue.extend({
 		}).then(notes => {
 			for (const note of notes) {
 				for (const file of note.files) {
-					if (this.images.length < 9) this.images.push(file);
+					file._note = note;
 				}
 			}
+			const files = concat(notes.map((n: any): any[] => n.files));
+			this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
 			this.fetching = false;
 		});
 	},
@@ -59,39 +68,19 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .dzsuvbsrrrwobdxifudxuefculdfiaxd
-	background var(--face)
-	box-shadow var(--shadow)
-	border-radius var(--round)
-	overflow hidden
-
-	> .title
-		z-index 1
-		margin 0
-		padding 0 16px
-		line-height 42px
-		font-size 0.9em
-		font-weight bold
-		background var(--faceHeader)
-		color var(--faceHeaderText)
-		box-shadow 0 1px rgba(#000, 0.07)
-
-		> i
-			margin-right 4px
-
 	> .stream
-		display flex
-		justify-content center
-		flex-wrap wrap
-		padding 8px
+		display grid
+		grid-template-columns 1fr 1fr 1fr
+		gap 8px
+		padding 16px
+		background var(--face)
 
-		> .img
-			flex 1 1 33%
-			width 33%
+		> *
 			height 120px
 			background-position center center
 			background-size cover
 			background-clip content-box
-			border solid 2px transparent
+			border-radius 4px
 
 	> .initializing
 	> .empty

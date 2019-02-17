@@ -55,17 +55,16 @@ export default Vue.extend({
 		}
 	},
 
-	watch: {/*
-		temporaryColumn() {
-			if (this.temporaryColumn != null) {
-				this.$nextTick(() => {
-					this.$refs.body.scrollTo({
-						left: this.$refs.body.scrollWidth - this.$refs.body.clientWidth,
-						behavior: 'smooth'
-					});
+	watch: {
+		$route() {
+			if (this.$route.name == 'index') return;
+			this.$nextTick(() => {
+				this.$refs.body.scrollTo({
+					left: this.$refs.body.scrollWidth - this.$refs.body.clientWidth,
+					behavior: 'smooth'
 				});
-			}
-		}*/
+			});
+		}
 	},
 
 	provide() {

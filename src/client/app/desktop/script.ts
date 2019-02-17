@@ -18,7 +18,6 @@ import MkUserFollowingOrFollowers from './views/pages/user-following-or-follower
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
-import MkSearch from './views/pages/search.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkShare from './views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
@@ -125,37 +124,57 @@ init(async (launch, os) => {
 	require('./views/components');
 	require('./views/widgets');
 
+	os.store.commit('device/set', {
+		key: 'inDeckMode',
+		value: os.store.getters.isSignedIn && os.store.state.device.deckMode && document.location.pathname === '/'
+	});
+
 	// Init router
 	const router = new VueRouter({
 		mode: 'history',
 		routes: [
-			os.store.getters.isSignedIn && os.store.state.device.deckMode
+			os.store.state.device.inDeckMode
 				? { path: '/', name: 'index', component: MkDeck, children: [
-					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default) },
+					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default), children: [
+						{ path: '', name: 'user', component: () => import('./views/deck/deck.user-column.home.vue').then(m => m.default) },
+						{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
+						{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
+					]},
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/deck/deck.note-column.vue').then(m => m.default) },
+					{ path: '/search', component: () => import('./views/deck/deck.search-column.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
+					{ path: '/featured', component: () => import('./views/deck/deck.featured-column.vue').then(m => m.default) },
+					{ path: '/explore', component: () => import('./views/deck/deck.explore-column.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/deck/deck.favorites-column.vue').then(m => m.default) }
 				]}
 				: { path: '/', component: MkHome, children: [
 					{ path: '', name: 'index', component: MkHomeTimeline },
-					{ path: '/@:user', name: 'user', component: () => import('./views/home/user/user.vue').then(m => m.default) },
+					{ path: '/@:user', component: () => import('./views/home/user/index.vue').then(m => m.default), children: [
+						{ path: '', name: 'user', component: () => import('./views/home/user/user.home.vue').then(m => m.default) },
+						{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
+						{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
+					]},
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
+					{ path: '/search', component: () => import('./views/home/search.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
-					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
+					{ path: '/featured', name: 'featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
+					{ path: '/explore', name: 'explore', component: () => import('../common/views/pages/explore.vue').then(m => m.default) },
+					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) },
 				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/i/settings', component: MkSettings },
 			{ path: '/selectdrive', component: MkSelectDrive },
-			{ path: '/search', component: MkSearch },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', component: MkReversi },
-			{ path: '/@:user/following', name: 'userFollowing', component: MkUserFollowingOrFollowers },
-			{ path: '/@:user/followers', name: 'userFollowers', component: MkUserFollowingOrFollowers },
 			{ path: '/authorize-follow', component: MkFollow },
+			{ path: '/deck', redirect: '/' },
 			{ path: '*', component: MkNotFound }
-		]
+		],
+		scrollBehavior(to, from, savedPosition) {
+			return { x: 0, y: 0 };
+		}
 	});
 
 	// Launch the app

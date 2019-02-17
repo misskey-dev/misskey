@@ -23,7 +23,7 @@ export const meta = {
 };
 
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const day = 1000 * 60 * 60 * 24;
+	const day = 1000 * 60 * 60 * 24 * 2;
 
 	const notes = await Note
 		.find({
@@ -31,7 +31,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 				$gt: new Date(Date.now() - day)
 			},
 			deletedAt: null,
-			visibility: { $in: ['public', 'home'] }
+			visibility: { $in: ['public', 'home'] },
+			'_user.host': null
 		}, {
 			limit: ps.limit,
 			sort: {

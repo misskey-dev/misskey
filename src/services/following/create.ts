@@ -153,8 +153,17 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (isLocalUser(follower) && isRemoteUser(followee))) {
 		let autoAccept = false;
 
+		// 鍵アカウントであっても、既にフォローされていた場合はスルー
+		const following = await Following.findOne({
+			followerId: follower._id,
+			followeeId: followee._id,
+		});
+		if (following) {
+			autoAccept = true;
+		}
+
 		// フォローしているユーザーは自動承認オプション
-		if (isLocalUser(followee) && followee.autoAcceptFollowed) {
+		if (!autoAccept && (isLocalUser(followee) && followee.autoAcceptFollowed)) {
 			const followed = await Following.findOne({
 				followerId: followee._id,
 				followeeId: follower._id
