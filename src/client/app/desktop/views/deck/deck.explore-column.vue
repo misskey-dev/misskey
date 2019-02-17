@@ -5,7 +5,7 @@
 	</span>
 
 	<div>
-		<x-explore/>
+		<x-explore v-bind="$attrs"/>
 	</div>
 </x-column>
 </template>
