@@ -40,7 +40,11 @@ export default Vue.component('misskey-flavored-markdown', {
 		},
 		customEmojis: {
 			required: false,
-		}
+		},
+		isNote: {
+			type: Boolean,
+			default: true
+		},
 	},
 
 	render(createElement) {
@@ -204,7 +208,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('router-link', {
 						key: Math.random(),
 						attrs: {
-							to: `/tags/${encodeURIComponent(token.node.props.hashtag)}`,
+							to: this.isNote ? `/tags/${encodeURIComponent(token.node.props.hashtag)}` : `/explore/tags/${encodeURIComponent(token.node.props.hashtag)}`,
 							style: 'color:var(--mfmHashtag);'
 						}
 					}, `#${token.node.props.hashtag}`)];

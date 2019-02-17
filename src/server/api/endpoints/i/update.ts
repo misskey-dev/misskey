@@ -11,6 +11,7 @@ import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
 import extractHashtags from '../../../../misc/extract-hashtags';
 import * as langmap from 'langmap';
+import registerHashtag from '../../../../services/register-hashtag';
 
 export const meta = {
 	desc: {
@@ -221,6 +222,9 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 
 		updates.emojis = emojis;
 		updates.tags = tags;
+
+		// ハッシュタグ登録
+		for (const tag of tags) registerHashtag(user, tag, true);
 	}
 	//#endregion
 

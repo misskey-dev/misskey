@@ -23,6 +23,7 @@ import Following from '../../../models/following';
 import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { INote } from '../../../models/note';
+import registerHashtag from '../../../services/register-hashtag';
 const logger = apLogger;
 
 /**
@@ -210,6 +211,9 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	usersChart.update(user, true);
 	//#endregion
 
+	// ハッシュタグ登録
+	for (const tag of tags) registerHashtag(user, tag, true);
+
 	//#region アイコンとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<IDriveFile>([
 		person.icon,
@@ -382,6 +386,9 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	await User.update({ _id: exist._id }, {
 		$set: updates
 	});
+
+	// ハッシュタグ登録
+	for (const tag of tags) registerHashtag(exist, tag, true);
 
 	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 	await Following.update({

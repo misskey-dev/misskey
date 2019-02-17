@@ -10,7 +10,7 @@
 		</header>
 		<div class="body">
 			<div class="description">
-				<mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+				<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 			</div>
 		</div>
 	</div>
