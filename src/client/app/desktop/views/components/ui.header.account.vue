@@ -63,7 +63,7 @@
 				<li @click="toggleDeckMode">
 					<p>
 						<span>{{ $t('@.deck') }}</span>
-						<template v-if="$store.state.device.deckMode"><i><fa :icon="faHome"/></i></template>
+						<template v-if="$store.state.device.inDeckMode"><i><fa :icon="faHome"/></i></template>
 						<template v-else><i><fa :icon="faColumns"/></i></template>
 					</p>
 				</li>
@@ -165,7 +165,7 @@ export default Vue.extend({
 			});
 		},
 		toggleDeckMode() {
-			this.$store.commit('device/set', { key: 'deckMode', value: !this.$store.state.device.deckMode });
+			this.$store.commit('device/set', { key: 'deckMode', value: !this.$store.state.device.inDeckMode });
 			location.reload();
 		},
 	}
