@@ -3,7 +3,7 @@
 	<span slot="header"><span style="margin-right:4px;"><fa :icon="faHashtag"/></span>{{ $t('@.explore') }}</span>
 
 	<main>
-		<x-explore/>
+		<x-explore v-bind="$attrs"/>
 	</main>
 </mk-ui>
 </template>
