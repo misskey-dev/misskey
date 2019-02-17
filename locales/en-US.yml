@@ -209,8 +209,8 @@ common/views/pages/explore.vue:
   popular-users: "Popular users"
   recently-updated-users: "Recently active users"
   recently-registered-users: "Users who joined recently"
-  popular-tags: "人気のタグ"
-  federated: "連合"
+  popular-tags: "Popular Tags"
+  federated: "From the fediverse"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Waiting for {}"
