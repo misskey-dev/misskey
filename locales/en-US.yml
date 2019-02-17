@@ -63,6 +63,9 @@ common:
   explore: "Discover"
   following: "Following"
   followers: "Followers"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -698,12 +701,6 @@ desktop/views/components/following-window.vue:
   following: "Following {}"
 desktop/views/components/following.vue:
   empty: "It seems you don't have any following users…"
-desktop/views/components/friends-maker.vue:
-  title: "Recommended users:"
-  empty: "Couldn't find any recommended users."
-  fetching: "Loading"
-  refresh: "More"
-  close: "Close"
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
@@ -1423,12 +1420,6 @@ common/views/components/follow-button.vue:
   request-pending: "Pending"
   follow-processing: "Processing"
   follow-request: "Follow request"
-mobile/views/components/friends-maker.vue:
-  title: "Let's follow them"
-  empty: "Featured user was not found."
-  fetching: "Loading"
-  refresh: "See more"
-  close: "Close"
 mobile/views/components/note.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
