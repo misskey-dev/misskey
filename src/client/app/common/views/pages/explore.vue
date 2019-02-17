@@ -1,9 +1,9 @@
 <template>
 <div>
-	<mk-user-list v-if="tag != null" :make-promise="tagUsers" :key="tag">
+	<mk-user-list v-if="tag != null" :make-promise="tagUsers" :key="`${tag}-local`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
 	</mk-user-list>
-	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers" :key="tag">
+	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers" :key="`${tag}-remote`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }} ({{ $t('federated') }})
 	</mk-user-list>
 
