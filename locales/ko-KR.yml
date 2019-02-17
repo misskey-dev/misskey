@@ -220,7 +220,7 @@ common/views/components/games/reversi/reversi.game.vue:
   can-put-everywhere: "어디에도 둘 수 있는 모드"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
-  sub-title: "다른 Misskey 유저와 리버시로 대결하자"
+  sub-title: "다른 Misskey 사용자와 리버시로 대결하자"
   invite: "초대"
   rule: "게임 방법"
   rule-desc: "리버시는 상대와 번갈아가며 돌을 판에 두고, 상대의 돌을 자신의 돌 사이에 두어 자신의 색으로 바꿔나가며, 최종적으로 남아있는 돌이 많은 쪽이 승리하는 보드게임입니다."
@@ -1046,7 +1046,7 @@ admin/views/instance.vue:
   maintainer-email: "관리자 연락처"
   drive-config: "드라이브 설정"
   cache-remote-files: "원격 파일을 캐시"
-  cache-remote-files-desc: "이 설정을 해지하면 원격 파일을 캐시하지 않고 해당 파일을 직접 링크하게 됩니다. 그에 따라 서버의 저장 공간을 절약할 수 있지만, 프라이버시 설정에서 직접 링크를 무효로 설정한 유저에게는 파일이 보이지 않거나, 썸네일이 생성되지 않기 때문에 통신량이 증가합니다. 일반적으로 이 설정을 ON으로 두는 것을 추천합니다."
+  cache-remote-files-desc: "이 설정을 해지하면 원격 파일을 캐시하지 않고 해당 파일을 직접 링크하게 됩니다. 그에 따라 서버의 저장 공간을 절약할 수 있지만, 프라이버시 설정에서 직접 링크를 무효로 설정한 사용자에게는 파일이 보이지 않거나, 썸네일이 생성되지 않기 때문에 통신량이 증가합니다. 일반적으로 이 설정을 ON으로 두는 것을 추천합니다."
   local-drive-capacity-mb: "로컬 사용자 한 명당 드라이브 용량"
   remote-drive-capacity-mb: "원격 사용자 한 명당 드라이브 용량"
   mb: "메가바이트 단위"
@@ -1624,8 +1624,8 @@ deck:
   stack-left: "왼쪽에 쌓기"
   pop-right: "오른쪽으로 빼기"
   disabled-timeline:
-    title: "無効化されたタイムライン"
-    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
+    title: "비활성화된 타임라인"
+    description: "서버 운영자에 의해 이 타임라인이 사용할 수 없도록 설정되어 있습니다."
 deck/deck.tl-column.vue:
   is-media-only: "미디어가 달린 글만"
   is-media-view: "미디어 보기"
