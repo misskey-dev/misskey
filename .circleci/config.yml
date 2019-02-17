@@ -136,8 +136,8 @@ workflows:
           requires:
             - hold
           filters:
-            only:
-              ignore: master
+            branches:
+              only: master
       - test:
           executor: with-redis
           requires:
