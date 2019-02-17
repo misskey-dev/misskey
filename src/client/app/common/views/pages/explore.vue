@@ -94,4 +94,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+.vxjfqztj
+	padding 16px
+
+	> *
+		margin-right 16px
+
 </style>
