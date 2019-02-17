@@ -9,13 +9,16 @@
 	<mk-user-list :make-promise="recentlyUpdatedUsers">
 		<span><fa :icon="faCommentAlt"/> {{ $t('recently-updated-users') }}</span>
 	</mk-user-list>
+	<mk-user-list :make-promise="recentlyRegisteredUsers">
+		<span><fa :icon="faPlus"/> {{ $t('recently-registered-users') }}</span>
+	</mk-user-list>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -40,7 +43,13 @@ export default Vue.extend({
 				sort: '+updatedAt',
 				limit: 10
 			}),
-			faBookmark, faChartLine, faCommentAlt
+			recentlyRegisteredUsers: () => this.$root.api('users', {
+				origin: 'local',
+				state: 'alive',
+				sort: '+createdAt',
+				limit: 10
+			}),
+			faBookmark, faChartLine, faCommentAlt, faPlus
 		};
 	},
 });
