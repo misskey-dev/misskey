@@ -28,6 +28,8 @@ common:
   load-more: "もっと読み込む"
   enter-password: "パスワードを入力してください"
   2fa: "二段階認証"
+  customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
 
   got-it: "わかった"
   customization-tips:
@@ -58,6 +60,11 @@ common:
   trash: "ゴミ箱"
   drive: "ドライブ"
   messaging: "トーク"
+  deck: "デッキ"
+  timeline: "タイムライン"
+  explore: "みつける"
+  following: "フォロー中"
+  followers: "フォロワー"
 
   weekday-short:
     sunday: "日"
@@ -212,6 +219,11 @@ auth/views/index.vue:
   please-go-back: "アプリケーションに戻って、やっていってください。"
   error: "セッションが存在しません。"
   sign-in: "サインインしてください"
+
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
 
 common/views/components/games/reversi/reversi.vue:
   matching:
@@ -862,6 +874,9 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしますか？"
 
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
+
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
   followers: "{user}のフォロワー"
@@ -893,14 +908,10 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "例: https://www.google.com/?#q={{query}}"
   auto-popout: "ウィンドウの自動ポップアウト"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
   keep-cw: "CW保持"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "デッキをデフォルトのUIにする"
 
   display: "デザインと表示"
-  customize: "ホームをカスタマイズ"
   wallpaper: "壁紙"
   choose-wallpaper: "壁紙を選択"
   delete-wallpaper: "壁紙を削除"
@@ -1076,15 +1087,12 @@ desktop/views/components/ui.header.account.vue:
   favorites: "お気に入り"
   lists: "リスト"
   follow-requests: "フォロー申請"
-  customize: "ホームのカスタマイズ"
   admin: "管理"
   settings: "設定"
   signout: "サインアウト"
   dark: "闇に飲まれる"
 
 desktop/views/components/ui.header.nav.vue:
-  home: "ホーム"
-  deck: "デッキ"
   game: "ゲーム"
 
 desktop/views/components/ui.header.notifications.vue:
@@ -1319,6 +1327,7 @@ admin/views/users.vue:
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"
       verified: "公式アカウント"
+      silenced: "サイレンス済み"
       suspended: "凍結済み"
     origin:
       title: "オリジン"
@@ -1383,6 +1392,8 @@ admin/views/federation.vue:
   latest-request-received-at: "直近のリクエスト受信"
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  block: "ブロック"
+  marked-as-closed: "閉鎖されているとマーク"
   lookup: "照会"
   instances: "インスタンス"
   instance-not-registered: "そのインスタンスは登録されていません"
@@ -1390,6 +1401,8 @@ admin/views/federation.vue:
   sorts:
     caughtAtAsc: "登録日時が古い順"
     caughtAtDesc: "登録日時が新しい順"
+    lastCommunicatedAtAsc: "最後にやり取りした日時が古い順"
+    lastCommunicatedAtDesc: "最後にやり取りした日時が新しい順"
     notesAsc: "投稿が少ない順"
     notesDesc: "投稿が多い順"
     usersAsc: "ユーザーが少ない順"
@@ -1398,6 +1411,33 @@ admin/views/federation.vue:
     followingDesc: "フォローが多い順"
     followersAsc: "フォロワーが少ない順"
     followersDesc: "フォロワーが多い順"
+    driveUsageAsc: "ドライブ使用量が少ない順"
+    driveUsageDesc: "ドライブ使用量が多い順"
+    driveFilesAsc: "ドライブのファイル数が少ない順"
+    driveFilesDesc: "ドライブのファイル数が多い順"
+  state: "状態"
+  states:
+    all: "すべて"
+    blocked: "ブロック"
+    not-responding: "応答なし"
+    marked-as-closed: "閉鎖とマーク済み"
+  result-is-truncated: "上位{n}件を表示しています。"
+  charts: "チャート"
+  chart-srcs:
+    requests: "リクエスト"
+    users: "ユーザーの増減"
+    users-total: "ユーザーの積算"
+    notes: "投稿の増減"
+    notes-total: "投稿の積算"
+    ff: "フォロー/フォロワーの増減"
+    ff-total: "フォロー/フォロワーの積算"
+    drive-usage: "ドライブ使用量の増減"
+    drive-usage-total: "ドライブ使用量の積算"
+    drive-files: "ドライブファイル数の増減"
+    drive-files-total: "ドライブファイル数の積算"
+  chart-spans:
+    hour: "1時間ごと"
+    day: "1日ごと"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
@@ -1414,9 +1454,6 @@ desktop/views/pages/welcome.vue:
 
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
-
-desktop/views/pages/home-customize.vue:
-  title: "ホームのカスタマイズ"
 
 desktop/views/pages/note.vue:
   prev: "前の投稿"
@@ -1458,10 +1495,6 @@ desktop/views/pages/user/user.photos.vue:
   loading: "読み込み中"
   no-photos: "写真はありません"
 
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "フォローされています"
-  menu: "メニュー"
-
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
@@ -1471,6 +1504,7 @@ desktop/views/pages/user/user.header.vue:
   year: "年"
   month: "月"
   day: "日"
+  follows-you: "フォローされています"
 
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
@@ -1629,10 +1663,6 @@ mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿していないようです。"
   no-notes-with-media: "メディア付き投稿はありません。"
 
-mobile/views/components/users-list.vue:
-  all: "すべて"
-  known: "知り合い"
-
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 
@@ -1656,6 +1686,9 @@ mobile/views/pages/home.vue:
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "メッセージ"
+
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
@@ -1759,7 +1792,7 @@ mobile/views/pages/user/home.vue:
   activity: "アクティビティ"
   keywords: "キーワード"
   domains: "頻出ドメイン"
-  frequently-replied-users: "よく会話するユーザー"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "知り合いのフォロワー"
   last-used-at: "最終ログイン"
 
@@ -1767,7 +1800,7 @@ mobile/views/pages/user/home.followers-you-know.vue:
   no-users: "知り合いのユーザーはいません"
 
 mobile/views/pages/user/home.friends.vue:
-  no-users: "よく会話するユーザーはいません"
+  no-users: "よく話すユーザーはいません"
 
 mobile/views/pages/user/home.notes.vue:
   no-notes: "投稿はありません"
@@ -1795,6 +1828,9 @@ deck:
   rename: "名前を変更"
   stack-left: "左に重ねる"
   pop-right: "右に出す"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
@@ -1802,6 +1838,7 @@ deck/deck.tl-column.vue:
   edit: "オプション"
 
 deck/deck.user-column.vue:
+  follows-you: "フォローされています"
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"

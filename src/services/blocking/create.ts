@@ -8,7 +8,7 @@ import renderUndo from '../../remote/activitypub/renderer/undo';
 import renderBlock from '../../remote/activitypub/renderer/block';
 import { deliver } from '../../queue';
 import renderReject from '../../remote/activitypub/renderer/reject';
-import perUserFollowingChart from '../../chart/per-user-following';
+import perUserFollowingChart from '../../services/chart/per-user-following';
 import Blocking from '../../models/blocking';
 
 export default async function(blocker: IUser, blockee: IUser) {

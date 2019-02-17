@@ -6,18 +6,30 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
+		blocked: {
+			validator: $.optional.nullable.bool,
+		},
+
+		notResponding: {
+			validator: $.optional.nullable.bool,
+		},
+
+		markedAsClosed: {
+			validator: $.optional.nullable.bool,
+		},
+
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 30
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		sort: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 		}
 	}
 };
@@ -66,6 +78,30 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			sort = {
 				caughtAt: 1
 			};
+		} else if (ps.sort == '+lastCommunicatedAt') {
+			sort = {
+				lastCommunicatedAt: -1
+			};
+		} else if (ps.sort == '-lastCommunicatedAt') {
+			sort = {
+				lastCommunicatedAt: 1
+			};
+		} else if (ps.sort == '+driveUsage') {
+			sort = {
+				driveUsage: -1
+			};
+		} else if (ps.sort == '-driveUsage') {
+			sort = {
+				driveUsage: 1
+			};
+		} else if (ps.sort == '+driveFiles') {
+			sort = {
+				driveFiles: -1
+			};
+		} else if (ps.sort == '-driveFiles') {
+			sort = {
+				driveFiles: 1
+			};
 		}
 	} else {
 		sort = {
@@ -73,8 +109,14 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		};
 	}
 
+	const q = {} as any;
+
+	if (typeof ps.blocked === 'boolean') q.isBlocked = ps.blocked;
+	if (typeof ps.notResponding === 'boolean') q.isNotResponding = ps.notResponding;
+	if (typeof ps.markedAsClosed === 'boolean') q.isMarkedAsClosed = ps.markedAsClosed;
+
 	const instances = await Instance
-		.find({}, {
+		.find(q, {
 			limit: ps.limit,
 			sort: sort,
 			skip: ps.offset

@@ -2,9 +2,12 @@ import * as Minio from 'minio';
 import DriveFile, { DriveFileChunk, IDriveFile } from '../../models/drive-file';
 import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
 import config from '../../config';
-import driveChart from '../../chart/drive';
-import perUserDriveChart from '../../chart/per-user-drive';
+import driveChart from '../../services/chart/drive';
+import perUserDriveChart from '../../services/chart/per-user-drive';
+import instanceChart from '../../services/chart/instance';
 import DriveFileWebpublic, { DriveFileWebpublicChunk } from '../../models/drive-file-webpublic';
+import Instance from '../../models/instance';
+import { isRemoteUser } from '../../models/user';
 
 export default async function(file: IDriveFile, isExpired = false) {
 	if (file.metadata.storage == 'minio') {
@@ -84,4 +87,13 @@ export default async function(file: IDriveFile, isExpired = false) {
 	// 統計を更新
 	driveChart.update(file, false);
 	perUserDriveChart.update(file, false);
+	if (isRemoteUser(file.metadata._user)) {
+		instanceChart.updateDrive(file, false);
+		Instance.update({ host: file.metadata._user.host }, {
+			$inc: {
+				driveUsage: -file.length,
+				driveFiles: -1
+			}
+		});
+	}
 }

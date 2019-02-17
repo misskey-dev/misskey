@@ -4,6 +4,7 @@ import request from '../../../remote/activitypub/request';
 import { queueLogger } from '../../logger';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import Instance from '../../../models/instance';
+import instanceChart from '../../../services/chart/instance';
 
 export default async (job: bq.Job, done: any): Promise<void> => {
 	const { host } = new URL(job.data.to);
@@ -16,9 +17,13 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			Instance.update({ _id: i._id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
-					latestStatus: 200
+					latestStatus: 200,
+					lastCommunicatedAt: new Date(),
+					isNotResponding: false
 				}
 			});
+
+			instanceChart.requestSent(i.host, true);
 		});
 
 		done();
@@ -28,9 +33,12 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			Instance.update({ _id: i._id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
-					latestStatus: res != null && res.hasOwnProperty('statusCode') ? res.statusCode : null
+					latestStatus: res != null && res.hasOwnProperty('statusCode') ? res.statusCode : null,
+					isNotResponding: true
 				}
 			});
+
+			instanceChart.requestSent(i.host, false);
 		});
 
 		if (res != null && res.hasOwnProperty('statusCode')) {

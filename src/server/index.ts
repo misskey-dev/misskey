@@ -19,7 +19,7 @@ import activityPub from './activitypub';
 import nodeinfo from './nodeinfo';
 import wellKnown from './well-known';
 import config from '../config';
-import networkChart from '../chart/network';
+import networkChart from '../services/chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
 import User from '../models/user';

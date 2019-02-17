@@ -1,17 +1,20 @@
 import Note, { INote } from '../../models/note';
-import { IUser, isLocalUser } from '../../models/user';
+import { IUser, isLocalUser, isRemoteUser } from '../../models/user';
 import { publishNoteStream } from '../stream';
 import renderDelete from '../../remote/activitypub/renderer/delete';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import Following from '../../models/following';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import notesChart from '../../chart/notes';
-import perUserNotesChart from '../../chart/per-user-notes';
+import notesChart from '../../services/chart/notes';
+import perUserNotesChart from '../../services/chart/per-user-notes';
 import config from '../../config';
 import NoteUnread from '../../models/note-unread';
 import read from './read';
 import DriveFile from '../../models/drive-file';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
+import Instance from '../../models/instance';
+import instanceChart from '../../services/chart/instance';
 
 /**
  * 投稿を削除します。
@@ -91,4 +94,16 @@ export default async function(user: IUser, note: INote) {
 	// 統計を更新
 	notesChart.update(note, false);
 	perUserNotesChart.update(user, note, false);
+
+	if (isRemoteUser(user)) {
+		registerOrFetchInstanceDoc(user.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					notesCount: -1
+				}
+			});
+
+			instanceChart.updateNote(i.host, false);
+		});
+	}
 }

@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-messaging">
-	<mk-widget-container :show-header="props.design == 0">
+	<ui-container :show-header="props.design == 0">
 		<template slot="header"><fa icon="comments"/>{{ $t('title') }}</template>
 		<button slot="func" @click="add"><fa icon="plus"/></button>
 
 		<x-messaging ref="index" compact @navigate="navigate"/>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

@@ -5,8 +5,11 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
-import perUserFollowingChart from '../../chart/per-user-following';
+import perUserFollowingChart from '../../services/chart/per-user-following';
 import Logger from '../../misc/logger';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
+import Instance from '../../models/instance';
+import instanceChart from '../../services/chart/instance';
 
 const logger = new Logger('following/delete');
 
@@ -39,6 +42,30 @@ export default async function(follower: IUser, followee: IUser) {
 			followersCount: -1
 		}
 	});
+	//#endregion
+
+	//#region Update instance stats
+	if (isRemoteUser(follower) && isLocalUser(followee)) {
+		registerOrFetchInstanceDoc(follower.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					followingCount: -1
+				}
+			});
+
+			instanceChart.updateFollowing(i.host, false);
+		});
+	} else if (isLocalUser(follower) && isRemoteUser(followee)) {
+		registerOrFetchInstanceDoc(followee.host).then(i => {
+			Instance.update({ _id: i._id }, {
+				$inc: {
+					followersCount: -1
+				}
+			});
+
+			instanceChart.updateFollowers(i.host, false);
+		});
+	}
 	//#endregion
 
 	perUserFollowingChart.update(follower, followee, false);

@@ -11,6 +11,7 @@ import VueI18n from 'vue-i18n';
 import SequentialEntrance from 'vue-sequential-entrance';
 
 import VueHotkey from './common/hotkey';
+import VueSize from './common/size';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
@@ -291,6 +292,7 @@ Vue.use(VueRouter);
 Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
+Vue.use(VueSize);
 Vue.use(VueI18n);
 Vue.use(SequentialEntrance);
 
@@ -350,7 +352,7 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, sw = false) => {
+export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {
@@ -436,11 +438,6 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			});
 			//#endregion
 
-			// Navigation hook
-			router.beforeEach((to, from, next) => {
-				next(os.store.state.navHook && os.store.state.navHook(to) ? false : undefined);
-			});
-
 			document.addEventListener('visibilitychange', () => {
 				if (!document.hidden) {
 					os.store.commit('clearBehindNotes');
@@ -507,6 +504,6 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS]) => void, 
 			return [app, os] as [Vue, MiOS];
 		};
 
-		callback(launch);
+		callback(launch, os);
 	});
 };

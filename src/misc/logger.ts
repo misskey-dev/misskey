@@ -21,6 +21,7 @@ export default class Logger {
 
 	private log(level: string, message: string, important = false, subDomains: string[] = []): void {
 		if (program.quiet) return;
+		if (process.env.NODE_ENV === 'test') return;
 		const domain = this.color ? chalk.keyword(this.color)(this.domain) : chalk.white(this.domain);
 		const domains = [domain].concat(subDomains);
 		if (this.parentLogger) {

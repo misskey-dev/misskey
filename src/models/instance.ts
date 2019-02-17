@@ -44,6 +44,16 @@ export interface IInstance {
 	followersCount: number;
 
 	/**
+	 * ドライブ使用量
+	 */
+	driveUsage: number;
+
+	/**
+	 * ドライブのファイル数
+	 */
+	driveFiles: number;
+
+	/**
 	 * 直近のリクエスト送信日時
 	 */
 	latestRequestSentAt?: Date;
@@ -57,4 +67,24 @@ export interface IInstance {
 	 * 直近のリクエスト受信日時
 	 */
 	latestRequestReceivedAt?: Date;
+
+	/**
+	 * このインスタンスと不通かどうか
+	 */
+	isNotResponding: boolean;
+
+	/**
+	 * このインスタンスと最後にやり取りした日時
+	 */
+	lastCommunicatedAt: Date;
+
+	/**
+	 * このインスタンスをブロックしているか
+	 */
+	isBlocked: boolean;
+
+	/**
+	 * このインスタンスが閉鎖済みとしてマークされているか
+	 */
+	isMarkedAsClosed: boolean;
 }

@@ -1,6 +1,6 @@
 import define from '../define';
-import driveChart from '../../../chart/drive';
-import federationChart from '../../../chart/federation';
+import driveChart from '../../../services/chart/drive';
+import federationChart from '../../../services/chart/federation';
 import fetchMeta from '../../../misc/fetch-meta';
 
 export const meta = {

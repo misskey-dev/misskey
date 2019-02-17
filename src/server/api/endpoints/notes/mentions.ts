@@ -17,27 +17,27 @@ export const meta = {
 
 	params: {
 		following: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		visibility: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 		},
 	}
 };

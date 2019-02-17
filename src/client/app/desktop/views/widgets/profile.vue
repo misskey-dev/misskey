@@ -1,6 +1,6 @@
 <template>
 <div class="egwyvoaaryotefqhqtmiyawwefemjfsd">
-	<mk-widget-container :show-header="false" :naked="props.design == 2">
+	<ui-container :show-header="false" :naked="props.design == 2">
 		<div class="egwyvoaaryotefqhqtmiyawwefemjfsd-body"
 			:data-compact="props.design == 1 || props.design == 2"
 			:data-melt="props.design == 2"
@@ -18,7 +18,7 @@
 			<router-link class="name" :to="$store.state.i | userPage"><mk-user-name :user="$store.state.i"/></router-link>
 			<p class="username">@{{ $store.state.i | acct }}</p>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

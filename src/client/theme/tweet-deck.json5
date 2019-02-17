@@ -28,7 +28,7 @@
 		suspendedInfoBg: '$secondary',
 		suspendedInfoFg: '$primary',
 		remoteInfoBg: '$secondary',
-		remoteInfoFg: '#$primary',
+		remoteInfoFg: '$primary',
 		desktopHeaderBg: '#1c2938',
 		desktopHeaderFg: '#a9adae',
 		desktopHeaderHoverFg: '#fff',

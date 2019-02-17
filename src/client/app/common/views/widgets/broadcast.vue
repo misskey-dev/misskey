@@ -1,6 +1,6 @@
 <template>
 <div class="anltbovirfeutcigvwgmgxipejaeozxi">
-	<mk-widget-container :show-header="false" :naked="props.design == 1">
+	<ui-container :show-header="false" :naked="props.design == 1">
 		<div class="anltbovirfeutcigvwgmgxipejaeozxi-body"
 			:data-found="announcements && announcements.length != 0"
 			:data-melt="props.design == 1"
@@ -23,7 +23,7 @@
 			</p>
 			<a v-if="announcements.length > 1" @click="next">{{ $t('next') }} &gt;&gt;</a>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

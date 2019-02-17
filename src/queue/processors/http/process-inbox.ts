@@ -10,6 +10,7 @@ import { publishApLogStream } from '../../../services/stream';
 import Logger from '../../../misc/logger';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import Instance from '../../../models/instance';
+import instanceChart from '../../../services/chart/instance';
 
 const logger = new Logger('inbox');
 
@@ -45,6 +46,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			return;
 		}
 
+		// ブロックしてたら中断
+		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		if (instance && instance.isBlocked) {
+			logger.warn(`Blocked request: ${host}`);
+			done();
+			return;
+		}
+
 		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
 	} else {
 		// アクティビティ内のホストの検証
@@ -53,6 +63,15 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			ValidateActivity(activity, host);
 		} catch (e) {
 			logger.warn(e.message);
+			done();
+			return;
+		}
+
+		// ブロックしてたら中断
+		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		if (instance && instance.isBlocked) {
+			logger.warn(`Blocked request: ${host}`);
 			done();
 			return;
 		}
@@ -107,9 +126,13 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 	registerOrFetchInstanceDoc(user.host).then(i => {
 		Instance.update({ _id: i._id }, {
 			$set: {
-				latestRequestReceivedAt: new Date()
+				latestRequestReceivedAt: new Date(),
+				lastCommunicatedAt: new Date(),
+				isNotResponding: false
 			}
 		});
+
+		instanceChart.requestReceived(i.host);
 	});
 
 	// アクティビティを処理

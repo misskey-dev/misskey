@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import * as promiseLimit from 'promise-limit';
 import { toUnicode } from 'punycode';
 
 import config from '../../../config';
@@ -9,7 +10,8 @@ import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type'
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import { fromHtml } from '../../../mfm/fromHtml';
-import usersChart from '../../../chart/users';
+import usersChart from '../../../services/chart/users';
+import instanceChart from '../../../services/chart/instance';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
@@ -20,7 +22,7 @@ import { ITag, extractHashtags } from './tag';
 import Following from '../../../models/following';
 import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
-
+import { INote } from '../../../models/note';
 const logger = apLogger;
 
 /**
@@ -195,8 +197,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			}
 		});
 
-		// TODO
-		//perInstanceChart.newUser();
+		instanceChart.newUser(i.host);
 	});
 
 	//#region Increment users count
@@ -494,10 +495,11 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
 
 	// Resolve and regist Notes
+	const limit = promiseLimit(2);
 	const featuredNotes = await Promise.all(items
 		.filter(item => item.type === 'Note')
 		.slice(0, 5)
-		.map(item => resolveNote(item, resolver)));
+		.map(item => limit(() => resolveNote(item, resolver)) as Promise<INote>));
 
 	await User.update({ _id: user._id }, {
 		$set: {
