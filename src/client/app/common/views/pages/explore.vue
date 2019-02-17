@@ -3,6 +3,9 @@
 	<mk-user-list v-if="tag != null" :make-promise="tagUsers">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
 	</mk-user-list>
+	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers">
+		<fa :icon="faHashtag" fixed-width/>{{ tag }} ({{ $t('federated') }})
+	</mk-user-list>
 
 	<ui-container :body-togglable="true">
 		<template slot="header"><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
@@ -51,6 +54,13 @@ export default Vue.extend({
 				tag: this.tag,
 				state: 'alive',
 				origin: 'local',
+				sort: '+follower',
+				limit: 30
+			}),
+			tagRemoteUsers: () => this.$root.api('hashtags/users', {
+				tag: this.tag,
+				state: 'alive',
+				origin: 'remote',
 				sort: '+follower',
 				limit: 30
 			}),
