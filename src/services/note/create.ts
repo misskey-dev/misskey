@@ -234,7 +234,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 		});
 	}
 
-	// ハッシュタグ登録
+	// ハッシュタグ更新
 	for (const tag of tags) updateHashtag(user, tag);
 
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加

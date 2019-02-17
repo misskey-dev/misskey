@@ -143,7 +143,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const { fields, services } = analyzeAttachments(person.attachment);
 
-	const tags = extractHashtags(person.tag);
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
 
 	const isBot = object.type == 'Service';
 
@@ -211,7 +211,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 	usersChart.update(user, true);
 	//#endregion
 
-	// ハッシュタグ登録
+	// ハッシュタグ更新
 	for (const tag of tags) updateHashtag(user, tag, true, true);
 	for (const tag of (user.tags || []).filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
 
@@ -343,7 +343,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	const { fields, services } = analyzeAttachments(person.attachment);
 
-	const tags = extractHashtags(person.tag);
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
 
 	const updates = {
 		lastFetchedAt: new Date(),
