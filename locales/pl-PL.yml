@@ -63,6 +63,9 @@ common:
   explore: "みつける"
   following: "フォロー中"
   followers: "フォロワー"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -698,12 +701,6 @@ desktop/views/components/following-window.vue:
   following: "Śledzeni przez {}"
 desktop/views/components/following.vue:
   empty: "Nikt Cię nie śledzi."
-desktop/views/components/friends-maker.vue:
-  title: "Zacznij śledzić ludzi takich jak Ty:"
-  empty: "Nie znaleziono podobnych użytkowników."
-  fetching: "Ładowanie…"
-  refresh: "Więcej"
-  close: "Zamknij"
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
@@ -1423,12 +1420,6 @@ common/views/components/follow-button.vue:
   request-pending: "フォロー許可待ち"
   follow-processing: "Przetwarzanie"
   follow-request: "Poproś o śledzenie"
-mobile/views/components/friends-maker.vue:
-  title: "Zacznij śledzić ludzi takich jak Ty"
-  empty: "Nie znaleziono podobnych użytkowników."
-  fetching: "Ładowanie…"
-  refresh: "Więcej"
-  close: "Zamknij"
 mobile/views/components/note.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
