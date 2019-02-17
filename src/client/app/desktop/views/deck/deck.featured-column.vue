@@ -5,7 +5,7 @@
 	</span>
 
 	<div>
-		<x-notes ref="timeline" :more="null"/>
+		<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 	</div>
 </x-column>
 </template>
@@ -27,31 +27,17 @@ export default Vue.extend({
 
 	data() {
 		return {
-			fetching: true,
-			faNewspaper
+			faNewspaper,
+			makePromise: cursor => this.$root.api('notes/featured', {
+				limit: 20,
+			}).then(notes => {
+				notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+				return notes;
+			})
 		};
 	},
 
-	mounted() {
-		this.fetch();
-	},
-
 	methods: {
-		fetch() {
-			this.fetching = true;
-
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api('notes/featured', {
-					limit: 20,
-				}).then(notes => {
-					notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-					res(notes);
-					this.fetching = false;
-					this.$emit('loaded');
-				}, rej);
-			}));
-		},
-
 		focus() {
 			this.$refs.timeline.focus();
 		}

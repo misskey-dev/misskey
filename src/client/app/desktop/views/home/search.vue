@@ -46,7 +46,9 @@ export default Vue.extend({
 		}
 	},
 	watch: {
-		$route: 'fetch'
+		$route() {
+			this.$refs.timeline.reload();
+		}
 	},
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);

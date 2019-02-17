@@ -40,7 +40,9 @@ export default Vue.extend({
 		};
 	},
 	watch: {
-		$route: 'fetch'
+		$route() {
+			this.$refs.timeline.reload();
+		}
 	},
 	computed: {
 		q(): string {

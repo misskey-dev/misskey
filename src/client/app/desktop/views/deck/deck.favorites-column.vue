@@ -5,7 +5,7 @@
 	</span>
 
 	<div>
-		<x-notes ref="timeline" :more="existMore ? more : null"/>
+		<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 	</div>
 </x-column>
 </template>
@@ -28,58 +28,28 @@ export default Vue.extend({
 
 	data() {
 		return {
-			fetching: true,
-			moreFetching: false,
-			existMore: false,
+			makePromise: cursor => this.$root.api('i/favorites', {
+				limit: fetchLimit + 1,
+				untilId: cursor ? cursor : undefined,
+			}).then(notes => {
+				notes = notes.map(x => x.note);
+				if (notes.length == fetchLimit + 1) {
+					notes.pop();
+					return {
+						notes: notes,
+						cursor: notes[notes.length - 1].id
+					};
+				} else {
+					return {
+						notes: notes,
+						cursor: null
+					};
+				}
+			})
 		};
 	},
 
-	mounted() {
-		this.fetch();
-	},
-
 	methods: {
-		fetch() {
-			this.fetching = true;
-
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api('i/favorites', {
-					limit: fetchLimit + 1,
-				}).then(notes => {
-					if (notes.length == fetchLimit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes.map(x => x.note));
-					this.fetching = false;
-					this.$emit('loaded');
-				}, rej);
-			}));
-		},
-
-		more() {
-			this.moreFetching = true;
-
-			const promise = this.$root.api('i/favorites', {
-				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id,
-			});
-
-			promise.then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) {
-					(this.$refs.timeline as any).append(n);
-				}
-				this.moreFetching = false;
-			});
-
-			return promise;
-		},
-
 		focus() {
 			this.$refs.timeline.focus();
 		}

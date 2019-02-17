@@ -1,14 +1,14 @@
 <template>
 <div class="eamppglmnmimdhrlzhplwpvyeaqmmhxu">
-	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
+	<slot name="empty" v-if="notes.length == 0 && !fetching && inited"></slot>
+
+	<mk-error v-if="!fetching && !inited" @retry="init()"/>
 
 	<div class="placeholder" v-if="fetching">
 		<template v-for="i in 10">
 			<mk-note-skeleton :key="i"/>
 		</template>
 	</div>
-
-	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="transition notes" ref="notes" tag="div">
@@ -27,8 +27,8 @@
 		</template>
 	</component>
 
-	<footer v-if="more">
-		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+	<footer v-if="cursor != null">
+		<button @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
 			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>
 		</button>
@@ -40,13 +40,13 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import shouldMuteNote from '../../../common/scripts/should-mute-note';
-
 import XNote from '../components/note.vue';
 
 const displayLimit = 20;
 
 export default Vue.extend({
 	i18n: i18n(),
+
 	components: {
 		XNote
 	},
@@ -54,9 +54,8 @@ export default Vue.extend({
 	inject: ['column', 'isScrollTop', 'count'],
 
 	props: {
-		more: {
-			type: Function,
-			required: false
+		makePromise: {
+			required: true
 		},
 		mediaView: {
 			type: Boolean,
@@ -68,11 +67,12 @@ export default Vue.extend({
 	data() {
 		return {
 			rootEl: null,
-			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
 			fetching: true,
-			moreFetching: false
+			moreFetching: false,
+			inited: false,
+			cursor: null
 		};
 	},
 
@@ -97,6 +97,7 @@ export default Vue.extend({
 	created() {
 		this.column.$on('top', this.onTop);
 		this.column.$on('bottom', this.onBottom);
+		this.init();
 	},
 
 	beforeDestroy() {
@@ -113,24 +114,38 @@ export default Vue.extend({
 			Vue.set((this as any).notes, i, note);
 		},
 
-		init(promiseGenerator: () => Promise<any[]>) {
-			this.requestInitPromise = promiseGenerator;
-			this.resolveInitPromise();
-		},
-
-		resolveInitPromise() {
+		reload() {
 			this.queue = [];
 			this.notes = [];
+			this.init();
+		},
+
+		init() {
 			this.fetching = true;
-
-			const promise = this.requestInitPromise();
-
-			promise.then(notes => {
-				this.notes = notes;
-				this.requestInitPromise = null;
+			this.makePromise().then(x => {
+				if (Array.isArray(x)) {
+					this.notes = x;
+				} else {
+					this.notes = x.notes;
+					this.cursor = x.cursor;
+				}
+				this.inited = true;
 				this.fetching = false;
+				this.$emit('inited');
 			}, e => {
 				this.fetching = false;
+			});
+		},
+
+		more() {
+			if (this.cursor == null || this.moreFetching) return;
+			this.moreFetching = true;
+			this.makePromise(this.cursor).then(x => {
+				this.notes = this.notes.concat(x.notes);
+				this.cursor = x.cursor;
+				this.moreFetching = false;
+			}, e => {
+				this.moreFetching = false;
 			});
 		},
 
@@ -160,10 +175,6 @@ export default Vue.extend({
 			this.notes.push(note);
 		},
 
-		tail() {
-			return this.notes[this.notes.length - 1];
-		},
-
 		releaseQueue() {
 			for (const n of this.queue) {
 				this.prepend(n, true);
@@ -171,21 +182,12 @@ export default Vue.extend({
 			this.queue = [];
 		},
 
-		async loadMore() {
-			if (this.more == null) return;
-			if (this.moreFetching) return;
-
-			this.moreFetching = true;
-			await this.more();
-			this.moreFetching = false;
-		},
-
 		onTop() {
 			this.releaseQueue();
 		},
 
 		onBottom() {
-			this.loadMore();
+			this.more();
 		}
 	}
 });
