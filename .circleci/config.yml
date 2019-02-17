@@ -122,64 +122,72 @@ workflows:
   nodejs:
     jobs:
       - hold:
+          name: manual-build-trigger
           type: approval
           filters:
             branches:
               ignore: master
       - build:
+          name: manual-build
           requires:
-            - hold
+            - manual-build-trigger
           filters:
             branches:
               ignore: master
       - build:
-          requires:
-            - hold
+          name: auto-build
           filters:
             branches:
               only: master
       - test:
+          name: manual-test-with-redis
           executor: with-redis
           requires:
-            - build
+            - manual-build
           filters:
             branches:
               ignore: master
       - test:
+          name: auto-test-without-redis
           executor: with-redis
           requires:
-            - build
+            - auto-build
           filters:
             branches:
               only: master
       - test:
+          name: manual-test-with-redis
           without_redis: true
           requires:
-            - build
+            - manual-build
           filters:
             branches:
               ignore: master
       - test:
+          name: auto-test-without-redis
           without_redis: true
           requires:
-            - build
+            - auto-build
           filters:
             branches:
               only: master
   docker:
     jobs:
       - hold:
+          name: manual-build-trigger
           type: approval
           filters:
             branches:
               ignore: master
       - docker:
+          name: manual-build
           requires:
-            - hold
+            - manual-build-trigger
           filters:
             branches:
               ignore: master
       - docker:
+          name: auto-build
           with_deploy: true
           filters:
             branches:
