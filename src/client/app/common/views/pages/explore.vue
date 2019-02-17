@@ -52,7 +52,7 @@ export default Vue.extend({
 				state: 'alive',
 				origin: 'local',
 				sort: '+follower',
-				limit: 15
+				limit: 30
 			}),
 			verifiedUsers: () => this.$root.api('users', {
 				state: 'verified',
