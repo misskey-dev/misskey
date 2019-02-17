@@ -1,6 +1,10 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+		<header class="wqraeznr" slot="header">
+			<span><fa icon="hashtag"/> {{ $route.params.tag }}</span>
+		</header>
+	</mk-notes>
 </div>
 </template>
 
@@ -63,3 +67,17 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.wqraeznr
+	padding 0 8px
+	z-index 10
+	background var(--faceHeader)
+	box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
+
+	> span
+		padding 0 8px
+		font-size 0.9em
+		line-height 42px
+		color var(--text)
+</style>

@@ -77,11 +77,6 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .oxgbmvii
 	> .notes
-		background var(--face)
-		box-shadow var(--shadow)
-		border-radius var(--round)
-		overflow hidden
-
 		> header
 			padding 0 8px
 			z-index 10
