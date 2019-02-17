@@ -64,20 +64,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" module>
-.empty
-	display block
-	margin 0 auto
-	padding 32px
-	max-width 400px
-	text-align center
-	color #999
-
-	> [data-icon]
-		display block
-		margin-bottom 16px
-		font-size 3em
-		color #ccc
-
-</style>

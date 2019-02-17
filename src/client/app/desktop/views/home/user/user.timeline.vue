@@ -6,7 +6,7 @@
 		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa :icon="['far', 'images']"/> {{ $t('with-media') }}</span>
 		<span :data-active="mode == 'my-posts'" @click="mode = 'my-posts'"><fa icon="user"/> {{ $t('my-posts') }}</span>
 	</header>
-	<mk-notes ref="timeline" :more="existMore ? more : null">
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
 		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>
 	</mk-notes>
 </div>
@@ -20,29 +20,47 @@ const fetchLimit = 10;
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/user/user.timeline.vue'),
+
 	props: ['user'],
 
 	data() {
 		return {
 			fetching: true,
-			moreFetching: false,
-			existMore: false,
 			mode: 'default',
 			unreadCount: 0,
-			date: null
+			date: null,
+			makePromise: cursor => this.$root.api('users/notes', {
+				userId: this.user.id,
+				limit: fetchLimit + 1,
+				includeReplies: this.mode == 'with-replies',
+				includeMyRenotes: this.mode != 'my-posts',
+				withFiles: this.mode == 'with-media',
+				untilId: cursor ? cursor : undefined
+			}).then(notes => {
+				if (notes.length == fetchLimit + 1) {
+					notes.pop();
+					return {
+						notes: notes,
+						cursor: notes[notes.length - 1].id
+					};
+				} else {
+					return {
+						notes: notes,
+						cursor: null
+					};
+				}
+			})
 		};
 	},
 
 	watch: {
 		mode() {
-			this.fetch();
+			(this.$refs.timeline as any).reload();
 		}
 	},
 
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
-
-		this.fetch(() => this.$emit('loaded'));
 	},
 
 	beforeDestroy() {
@@ -58,58 +76,9 @@ export default Vue.extend({
 			}
 		},
 
-		fetch(cb?) {
-			this.fetching = true;
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api('users/notes', {
-					userId: this.user.id,
-					limit: fetchLimit + 1,
-					untilDate: this.date ? this.date.getTime() : new Date().getTime() + 1000 * 86400 * 365,
-					includeReplies: this.mode == 'with-replies',
-					includeMyRenotes: this.mode != 'my-posts',
-					withFiles: this.mode == 'with-media'
-				}).then(notes => {
-					if (notes.length == fetchLimit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-					this.fetching = false;
-					if (cb) cb();
-				}, rej);
-			}));
-		},
-
-		more() {
-			this.moreFetching = true;
-
-			const promise = this.$root.api('users/notes', {
-				userId: this.user.id,
-				limit: fetchLimit + 1,
-				includeReplies: this.mode == 'with-replies',
-				includeMyRenotes: this.mode != 'my-posts',
-				withFiles: this.mode == 'with-media',
-				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime()
-			});
-
-			promise.then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) {
-					(this.$refs.timeline as any).append(n);
-				}
-				this.moreFetching = false;
-			});
-
-			return promise;
-		},
-
 		warp(date) {
 			this.date = date;
-			this.fetch();
+			(this.$refs.timeline as any).reload();
 		}
 	}
 });
@@ -155,21 +124,5 @@ export default Vue.extend({
 
 				&:hover
 					color var(--desktopTimelineSrcHover)
-
-	> .mk-notes
-
-		> .empty
-			display block
-			margin 0 auto
-			padding 32px
-			max-width 400px
-			text-align center
-			color var(--text)
-
-			> [data-icon]
-				display block
-				margin-bottom 16px
-				font-size 3em
-				color var(--faceHeaderText);
 
 </style>

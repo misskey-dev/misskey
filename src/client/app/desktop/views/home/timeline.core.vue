@@ -9,7 +9,7 @@
 		<template slot="header">
 			<slot></slot>
 		</template>
-		<p :class="$style.empty" slot="empty">
+		<p slot="empty">
 			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</p>
 	</mk-notes>
@@ -157,22 +157,5 @@ export default Vue.extend({
 
 		> p
 			margin 0 0 8px 0
-
-</style>
-
-<style lang="stylus" module>
-.empty
-	display block
-	margin 0 auto
-	padding 32px
-	max-width 400px
-	text-align center
-	color #999
-
-	> [data-icon]
-		display block
-		margin-bottom 16px
-		font-size 3em
-		color #ccc
 
 </style>
