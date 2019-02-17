@@ -16,19 +16,8 @@ executors:
     working_directory: /tmp/workspace
     docker:
       - image: docker:latest
-  alpine:
-    working_directory: /tmp/workspace
-    docker:
-      - image: alpine:latest
 
 jobs:
-  ok:
-    executor: alpine
-    steps:
-      - run:
-          name: OK
-          command: |
-            echo -e '\033[0;32mOK\033[0;39m'
   build:
     executor: default
     steps:
@@ -64,8 +53,6 @@ jobs:
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-#      - store_artifacts:
-#          path: built
       - persist_to_workspace:
           root: .
           paths:
@@ -134,13 +121,6 @@ workflows:
   version: 2
   nodejs:
     jobs:
-      - ok:
-          filters:
-            branches:
-              only:
-                - l10n_develop
-                - imgbot
-                - patch-autogen
       - hold:
           type: approval
           filters:
@@ -149,20 +129,45 @@ workflows:
       - build:
           requires:
             - hold
+          filters:
+            branches:
+              ignore: master
+      - build:
+          requires:
+            - hold
+          filters:
+            only:
+              ignore: master
       - test:
           executor: with-redis
           requires:
             - build
+          filters:
+            branches:
+              ignore: master
+      - test:
+          executor: with-redis
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
       - test:
           without_redis: true
           requires:
             - build
-  docker:
-    jobs:
-      - ok:
           filters:
             branches:
               ignore: master
+      - test:
+          without_redis: true
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+  docker:
+    jobs:
       - hold:
           type: approval
           filters:
