@@ -275,7 +275,7 @@ import XApiSettings from '../../../common/views/components/api-settings.vue';
 import XLanguageSettings from '../../../common/views/components/language-settings.vue';
 import XNotificationSettings from '../../../common/views/components/notification-settings.vue';
 
-import { url, clientVersion as version } from '../../../config';
+import { url, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({

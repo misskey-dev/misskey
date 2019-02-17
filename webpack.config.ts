@@ -18,7 +18,7 @@ const constants = require('./src/const.json');
 
 const locales = require('./locales');
 const meta = require('./package.json');
-const version = isProduction ? meta.clientVersion : meta.clientVersion + '-' + rndstr({ length: 8, chars: '0-9a-z' });
+const version = isProduction ? meta.version : meta.version + '-' + rndstr({ length: 8, chars: '0-9a-z' });
 const codename = meta.codename;
 
 const postcss = {
@@ -116,7 +116,6 @@ module.exports = {
 		new webpack.DefinePlugin({
 			_COPYRIGHT_: JSON.stringify(constants.copyright),
 			_VERSION_: JSON.stringify(meta.version),
-			_CLIENT_VERSION_: JSON.stringify(version),
 			_CODENAME_: JSON.stringify(codename),
 			_LANGS_: JSON.stringify(Object.keys(locales).map(l => [l, locales[l].meta.lang])),
 			_ENV_: JSON.stringify(process.env.NODE_ENV)

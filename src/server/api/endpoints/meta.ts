@@ -6,8 +6,6 @@ import define from '../define';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';
 
-import * as client from '../../../../built/client/meta.json';
-
 export const meta = {
 	stability: 'stable',
 
@@ -39,7 +37,6 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		maintainer: instance.maintainer,
 
 		version: pkg.version,
-		clientVersion: client.version,
 
 		name: instance.name,
 		uri: config.url,

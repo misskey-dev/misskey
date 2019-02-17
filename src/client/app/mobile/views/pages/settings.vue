@@ -152,7 +152,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { apiUrl, clientVersion as version, codename } from '../../../config';
+import { apiUrl, version, codename } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 import XTheme from '../../../common/views/components/theme.vue';
 import XDriveSettings from '../../../common/views/components/drive-settings.vue';

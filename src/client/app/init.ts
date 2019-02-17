@@ -15,7 +15,7 @@ import VueSize from './common/size';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
-import { clientVersion as version, codename, lang, locale } from './config';
+import { version, codename, lang, locale } from './config';
 import { builtinThemes, lightTheme, applyTheme } from './theme';
 import Dialog from './common/views/components/dialog.vue';
 
