@@ -1625,8 +1625,8 @@ deck:
   stack-left: "Stack to the left"
   pop-right: "Dock on the right"
   disabled-timeline:
-    title: "無効化されたタイムライン"
-    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
+    title: "Timeline has been disabled"
+    description: "This timeline has been disabled by the server administrator."
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
