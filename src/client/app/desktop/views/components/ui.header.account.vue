@@ -165,7 +165,7 @@ export default Vue.extend({
 			});
 		},
 		toggleDeckMode() {
-			this.$store.commit('device/set', { key: 'deckMode', value: !this.$store.state.device.deckMode });
+			this.$store.commit('device/set', { key: 'deckMode', value: !this.$store.state.device.inDeckMode });
 			location.reload();
 		},
 	}

@@ -124,7 +124,10 @@ init(async (launch, os) => {
 	require('./views/components');
 	require('./views/widgets');
 
-	os.store.state.device.inDeckMode = os.store.getters.isSignedIn && os.store.state.device.deckMode && document.location.pathname === '/';
+	os.store.commit('device/set', {
+		key: 'inDeckMode',
+		value: os.store.getters.isSignedIn && os.store.state.device.deckMode && document.location.pathname === '/'
+	});
 
 	// Init router
 	const router = new VueRouter({
