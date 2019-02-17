@@ -126,7 +126,8 @@ init(async (launch, os) => {
 
 	os.store.commit('device/set', {
 		key: 'inDeckMode',
-		value: os.store.getters.isSignedIn && os.store.state.device.deckMode && document.location.pathname === '/'
+		value: os.store.getters.isSignedIn && os.store.state.device.deckMode
+			&& (document.location.pathname === '/' || window.performance.navigation.type === 1)
 	});
 
 	// Init router

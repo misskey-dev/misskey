@@ -122,7 +122,7 @@ export default Vue.extend({
 	methods: {
 		toggleDeckMode(deck) {
 			this.$store.commit('device/set', { key: 'deckMode', value: deck });
-			location.reload();
+			location.replace('/');
 		},
 
 		onReversiInvited() {
