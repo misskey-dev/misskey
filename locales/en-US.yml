@@ -205,10 +205,10 @@ auth/views/index.vue:
   error: "Session does not exist."
   sign-in: "Please sign in."
 common/views/pages/explore.vue:
-  verified-users: "公式アカウント"
-  popular-users: "人気のユーザー"
-  recently-updated-users: "最近投稿したユーザー"
-  recently-registered-users: "新規ユーザー"
+  verified-users: "Verified account"
+  popular-users: "Popular users"
+  recently-updated-users: "Recently active users"
+  recently-registered-users: "Users who joined recently"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Waiting for {}"
