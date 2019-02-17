@@ -1,9 +1,9 @@
 <template>
 <div>
-	<mk-user-list v-if="tag != null" :make-promise="tagUsers">
+	<mk-user-list v-if="tag != null" :make-promise="tagUsers" :key="tag">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
 	</mk-user-list>
-	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers">
+	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers" :key="tag">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }} ({{ $t('federated') }})
 	</mk-user-list>
 
@@ -50,20 +50,6 @@ export default Vue.extend({
 
 	data() {
 		return {
-			tagUsers: () => this.$root.api('hashtags/users', {
-				tag: this.tag,
-				state: 'alive',
-				origin: 'local',
-				sort: '+follower',
-				limit: 30
-			}),
-			tagRemoteUsers: () => this.$root.api('hashtags/users', {
-				tag: this.tag,
-				state: 'alive',
-				origin: 'remote',
-				sort: '+follower',
-				limit: 30
-			}),
 			verifiedUsers: () => this.$root.api('users', {
 				state: 'verified',
 				origin: 'local',
@@ -90,6 +76,28 @@ export default Vue.extend({
 			tags: [],
 			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag
 		};
+	},
+
+	computed: {
+		tagUsers(): () => Promise<any> {
+			return () => this.$root.api('hashtags/users', {
+				tag: this.tag,
+				state: 'alive',
+				origin: 'local',
+				sort: '+follower',
+				limit: 30
+			});
+		},
+
+		tagRemoteUsers(): () => Promise<any> {
+			return () => this.$root.api('hashtags/users', {
+				tag: this.tag,
+				state: 'alive',
+				origin: 'remote',
+				sort: '+follower',
+				limit: 30
+			});
+		},
 	},
 
 	created() {
