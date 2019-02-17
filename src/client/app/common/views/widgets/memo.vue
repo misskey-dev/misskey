@@ -1,13 +1,13 @@
 <template>
 <div class="mkw-memo">
-	<mk-widget-container :show-header="!props.compact">
+	<ui-container :show-header="!props.compact">
 		<template slot="header"><fa :icon="['far', 'sticky-note']"/>{{ $t('title') }}</template>
 
 		<div class="mkw-memo--body">
 			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
 			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

@@ -56,8 +56,4 @@ export default Vue.extend({
 			display inline-block
 			margin 0 16px
 
-	> .mk-note-detail
-		margin 0 auto
-		width 640px
-
 </style>

@@ -65,6 +65,16 @@ export default Vue.extend({
 		}
 	},
 
+	data() {
+		return {
+			count: 0,
+			active: true,
+			dragging: false,
+			draghover: false,
+			dropready: false
+		};
+	},
+
 	computed: {
 		isTemporaryColumn(): boolean {
 			return this.column == null;
@@ -84,16 +94,6 @@ export default Vue.extend({
 		getColumnVm: { from: 'getColumnVm' }
 	},
 
-	data() {
-		return {
-			count: 0,
-			active: true,
-			dragging: false,
-			draghover: false,
-			dropready: false
-		};
-	},
-
 	watch: {
 		active(v) {
 			if (v && this.isScrollTop()) {
@@ -109,7 +109,8 @@ export default Vue.extend({
 		return {
 			column: this,
 			isScrollTop: this.isScrollTop,
-			count: v => this.count = v
+			count: v => this.count = v,
+			inDeck: !this.naked
 		};
 	},
 

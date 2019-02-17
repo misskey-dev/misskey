@@ -39,54 +39,26 @@
 			</div>
 			<div class="counts">
 				<div>
-					<b>{{ user.notesCount | number }}</b>
-					<span>{{ $t('posts') }}</span>
+					<router-link :to="user | userPage()">
+						<b>{{ user.notesCount | number }}</b>
+						<span>{{ $t('posts') }}</span>
+					</router-link>
 				</div>
 				<div>
-					<b>{{ user.followingCount | number }}</b>
-					<span>{{ $t('following') }}</span>
+					<router-link :to="user | userPage('following')">
+						<b>{{ user.followingCount | number }}</b>
+						<span>{{ $t('following') }}</span>
+					</router-link>
 				</div>
 				<div>
-					<b>{{ user.followersCount | number }}</b>
-					<span>{{ $t('followers') }}</span>
+					<router-link :to="user | userPage('followers')">
+						<b>{{ user.followersCount | number }}</b>
+						<span>{{ $t('followers') }}</span>
+					</router-link>
 				</div>
 			</div>
 		</div>
-		<div class="pinned" v-if="user.pinnedNotes && user.pinnedNotes.length > 0">
-			<p class="caption" @click="toggleShowPinned"><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</p>
-			<span class="angle" v-if="showPinned"><fa icon="angle-up"/></span>
-			<span class="angle" v-else><fa icon="angle-down"/></span>
-			<div class="notes" v-show="showPinned">
-				<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
-			</div>
-		</div>
-		<div class="images" v-if="images.length > 0">
-			<p class="caption" @click="toggleShowImages"><fa :icon="['far', 'images']"/> {{ $t('images') }}</p>
-			<span class="angle" v-if="showImages"><fa icon="angle-up"/></span>
-			<span class="angle" v-else><fa icon="angle-down"/></span>
-			<div v-show="showImages">
-				<router-link v-for="image in images"
-					:style="`background-image: url(${image.thumbnailUrl})`"
-					:key="`${image.id}:${image._note.id}`"
-					:to="image._note | notePage"
-					:title="`${image.name}\n${(new Date(image.createdAt)).toLocaleString()}`"
-				></router-link>
-			</div>
-		</div>
-		<div class="activity">
-			<p class="caption" @click="toggleShowActivity"><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</p>
-			<span class="angle" v-if="showActivity"><fa icon="angle-up"/></span>
-			<span class="angle" v-else><fa icon="angle-down"/></span>
-			<div v-show="showActivity">
-				<div ref="chart"></div>
-			</div>
-		</div>
-		<div class="tl">
-			<p class="caption"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</p>
-			<div>
-				<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
-			</div>
-		</div>
+		<router-view :user="user"></router-view>
 	</div>
 </x-column>
 </template>
@@ -96,33 +68,18 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import parseAcct from '../../../../../misc/acct/parse';
 import XColumn from './deck.column.vue';
-import XNotes from './deck.notes.vue';
-import XNote from '../components/note.vue';
 import XUserMenu from '../../../common/views/components/user-menu.vue';
-import { concat } from '../../../../../prelude/array';
-import ApexCharts from 'apexcharts';
-
-const fetchLimit = 10;
 
 export default Vue.extend({
 	i18n: i18n('deck/deck.user-column.vue'),
 	components: {
 		XColumn,
-		XNotes,
-		XNote
 	},
 
 	data() {
 		return {
 			user: null,
 			fetching: true,
-			existMore: false,
-			moreFetching: false,
-			withFiles: false,
-			images: [],
-			showPinned: true,
-			showImages: true,
-			showActivity: true
 		};
 	},
 
@@ -151,158 +108,7 @@ export default Vue.extend({
 			this.$root.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
-
-				this.$nextTick(() => {
-					(this.$refs.timeline as any).init(() => this.initTl());
-				});
-
-				const image = [
-					'image/jpeg',
-					'image/png',
-					'image/gif'
-				];
-
-				this.$root.api('users/notes', {
-					userId: this.user.id,
-					fileType: image,
-					excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
-					limit: 9,
-					untilDate: new Date().getTime() + 1000 * 86400 * 365
-				}).then(notes => {
-					for (const note of notes) {
-						for (const file of note.files) {
-							file._note = note;
-						}
-					}
-					const files = concat(notes.map((n: any): any[] => n.files));
-					this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
-				});
-
-				this.$root.api('charts/user/notes', {
-					userId: this.user.id,
-					span: 'day',
-					limit: 21
-				}).then(stats => {
-					const normal = [];
-					const reply = [];
-					const renote = [];
-
-					const now = new Date();
-					const y = now.getFullYear();
-					const m = now.getMonth();
-					const d = now.getDate();
-
-					for (let i = 0; i < 21; i++) {
-						const x = new Date(y, m, d - i);
-						normal.push([
-							x,
-							stats.diffs.normal[i]
-						]);
-						reply.push([
-							x,
-							stats.diffs.reply[i]
-						]);
-						renote.push([
-							x,
-							stats.diffs.renote[i]
-						]);
-					}
-
-					const chart = new ApexCharts(this.$refs.chart, {
-						chart: {
-							type: 'bar',
-							stacked: true,
-							height: 100,
-							sparkline: {
-								enabled: true
-							},
-						},
-						plotOptions: {
-							bar: {
-								columnWidth: '90%'
-							}
-						},
-						grid: {
-							clipMarkers: false,
-							padding: {
-								top: 16,
-								right: 16,
-								bottom: 16,
-								left: 16
-							}
-						},
-						tooltip: {
-							shared: true,
-							intersect: false
-						},
-						series: [{
-							name: 'Normal',
-							data: normal
-						}, {
-							name: 'Reply',
-							data: reply
-						}, {
-							name: 'Renote',
-							data: renote
-						}],
-						xaxis: {
-							type: 'datetime',
-							crosshairs: {
-								width: 1,
-								opacity: 1
-							}
-						}
-					});
-
-					chart.render();
-				});
 			});
-		},
-
-		initTl() {
-			return new Promise((res, rej) => {
-				this.$root.api('users/notes', {
-					userId: this.user.id,
-					limit: fetchLimit + 1,
-					untilDate: new Date().getTime() + 1000 * 86400 * 365,
-					withFiles: this.withFiles,
-					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-				}).then(notes => {
-					if (notes.length == fetchLimit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-				}, rej);
-			});
-		},
-
-		fetchMoreNotes() {
-			this.moreFetching = true;
-
-			const promise = this.$root.api('users/notes', {
-				userId: this.user.id,
-				limit: fetchLimit + 1,
-				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime(),
-				withFiles: this.withFiles,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			});
-
-			promise.then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) (this.$refs.timeline as any).append(n);
-				this.moreFetching = false;
-			});
-
-			return promise;
 		},
 
 		menu() {
@@ -310,18 +116,6 @@ export default Vue.extend({
 				source: this.$refs.menu,
 				user: this.user
 			});
-		},
-
-		toggleShowPinned() {
-			this.showPinned = !this.showPinned;
-		},
-
-		toggleShowImages() {
-			this.showImages = !this.showImages;
-		},
-
-		toggleShowActivity() {
-			this.showActivity = !this.showActivity;
 		}
 	}
 });
@@ -453,55 +247,16 @@ export default Vue.extend({
 				padding 8px 8px 0 8px
 				text-align center
 
-				> b
-					display block
-					font-size 110%
+				> a
+					color var(--text)
 
-				> span
-					display block
-					font-size 80%
-					opacity 0.7
+					> b
+						display block
+						font-size 110%
 
-	> *
-		> p.caption
-			margin 0
-			padding 8px 16px
-			font-size 12px
-			color var(--text)
-
-			& + .angle
-				position absolute
-				top 0
-				right 8px
-				padding 6px
-				font-size 14px
-				color var(--text)
-
-	> .pinned
-		> .notes
-			background var(--face)
-
-	> .images
-		> div
-			display grid
-			grid-template-columns 1fr 1fr 1fr
-			gap 8px
-			padding 16px
-			background var(--face)
-
-			> *
-				height 70px
-				background-position center center
-				background-size cover
-				background-clip content-box
-				border-radius 4px
-
-	> .activity
-		> div
-			background var(--face)
-
-	> .tl
-		> div
-			background var(--face)
+					> span
+						display block
+						font-size 80%
+						opacity 0.7
 
 </style>

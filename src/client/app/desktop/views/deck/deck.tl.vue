@@ -1,14 +1,25 @@
 <template>
-<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
+<div class="iwaalbte" v-if="disabled">
+	<p>
+		<fa :icon="faMinusCircle"/>
+		{{ $t('disabled-timeline.title') }}
+	</p>
+	<p class="desc">{{ $t('disabled-timeline.description') }}</p>
+</div>
+<x-notes v-else ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import XNotes from './deck.notes.vue';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import i18n from '../../../i18n';
 
 const fetchLimit = 10;
 
 export default Vue.extend({
+	i18n: i18n('deck'),
+
 	components: {
 		XNotes
 	},
@@ -36,7 +47,9 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			connection: null
+			connection: null,
+			disabled: false,
+			faMinusCircle
 		};
 	},
 
@@ -74,6 +87,12 @@ export default Vue.extend({
 			this.connection.on('follow', this.onChangeFollowing);
 			this.connection.on('unfollow', this.onChangeFollowing);
 		}
+
+		this.$root.getMeta().then(meta => {
+			this.disabled = !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin && (
+				meta.disableLocalTimeline && ['local', 'hybrid'].includes(this.src) ||
+				meta.disableGlobalTimeline && ['global'].includes(this.src));
+		});
 
 		this.fetch();
 	},
@@ -149,3 +168,16 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.iwaalbte
+	color var(--text)
+	text-align center
+
+	> p
+		margin 16px
+
+		&.desc
+			font-size 14px
+
+</style>

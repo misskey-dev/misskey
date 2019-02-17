@@ -18,7 +18,7 @@ import activity from './activity.vue';
 import friendsMaker from './friends-maker.vue';
 import userCard from './user-card.vue';
 import userListTimeline from './user-list-timeline.vue';
-import widgetContainer from './widget-container.vue';
+import uiContainer from './ui-container.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-notification', uiNotification);
@@ -38,4 +38,4 @@ Vue.component('mk-activity', activity);
 Vue.component('mk-friends-maker', friendsMaker);
 Vue.component('mk-user-card', userCard);
 Vue.component('mk-user-list-timeline', userListTimeline);
-Vue.component('mk-widget-container', widgetContainer);
+Vue.component('ui-container', uiContainer);

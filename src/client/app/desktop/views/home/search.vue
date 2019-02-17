@@ -1,12 +1,14 @@
 <template>
-<mk-ui>
-	<header :class="$style.header">
-		<h1>{{ q }}</h1>
-	</header>
-	<p :class="$style.notAvailable" v-if="!fetching && notAvailable">{{ $t('not-available') }}</p>
-	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('not-found', { q }) }}</p>
-	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
-</mk-ui>
+<div class="oxgbmvii">
+	<div class="notes">
+		<header>
+			<span><fa icon="search"/> {{ q }}</span>
+		</header>
+		<p v-if="!fetching && notAvailable">{{ $t('not-available') }}</p>
+		<p v-if="!fetching && empty"><fa icon="search"/> {{ $t('not-found', { q }) }}</p>
+		<mk-notes ref="timeline" :more="existMore ? more : null"/>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -106,45 +108,23 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" module>
-.header
-	width 100%
-	max-width 600px
-	margin 0 auto
-	color #555
+<style lang="stylus" scoped>
+.oxgbmvii
+	> .notes
+		background var(--face)
+		box-shadow var(--shadow)
+		border-radius var(--round)
+		overflow hidden
 
-.notes
-	max-width 600px
-	margin 0 auto
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
-	overflow hidden
+		> header
+			padding 0 8px
+			z-index 10
+			background var(--faceHeader)
+			box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
 
-.empty
-	display block
-	margin 0 auto
-	padding 32px
-	max-width 400px
-	text-align center
-	color #999
-
-	> [data-icon]
-		display block
-		margin-bottom 16px
-		font-size 3em
-		color #ccc
-
-.notAvailable
-	display block
-	margin 0 auto
-	padding 32px
-	max-width 400px
-	text-align center
-	color #999
-
-	> [data-icon]
-		display block
-		margin-bottom 16px
-		font-size 3em
-		color #ccc
+			> span
+				padding 0 8px
+				font-size 0.9em
+				line-height 42px
+				color var(--text)
 </style>

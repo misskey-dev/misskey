@@ -11,6 +11,7 @@ import VueI18n from 'vue-i18n';
 import SequentialEntrance from 'vue-sequential-entrance';
 
 import VueHotkey from './common/hotkey';
+import VueSize from './common/size';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
@@ -291,6 +292,7 @@ Vue.use(VueRouter);
 Vue.use(VAnimateCss);
 Vue.use(VModal);
 Vue.use(VueHotkey);
+Vue.use(VueSize);
 Vue.use(VueI18n);
 Vue.use(SequentialEntrance);
 

@@ -1,8 +1,8 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "10.84.2",
-	"clientVersion": "2.0.14267",
+	"version": "10.86.2",
+	"clientVersion": "2.0.14342",
 	"codename": "nighthike",
 	"repository": {
 		"type": "git",
@@ -110,7 +110,7 @@
 		"commander": "2.19.0",
 		"crc-32": "1.2.0",
 		"css-loader": "2.1.0",
-		"cssnano": "4.1.8",
+		"cssnano": "4.1.10",
 		"dateformat": "3.0.3",
 		"deep-equal": "1.0.1",
 		"deepcopy": "0.6.3",

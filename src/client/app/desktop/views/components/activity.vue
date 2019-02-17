@@ -1,6 +1,6 @@
 <template>
 <div class="mk-activity">
-	<mk-widget-container :show-header="design == 0" :naked="design == 2">
+	<ui-container :show-header="design == 0" :naked="design == 2">
 		<template slot="header"><fa icon="chart-bar"/>{{ $t('title') }}</template>
 		<button slot="func" :title="$t('toggle')" @click="toggle"><fa icon="sort"/></button>
 
@@ -9,7 +9,7 @@
 			<x-calendar v-show="view == 0" :data="[].concat(activity)"/>
 			<x-chart v-show="view == 1" :data="[].concat(activity)"/>
 		</template>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

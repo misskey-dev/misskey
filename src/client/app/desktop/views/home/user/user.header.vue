@@ -17,7 +17,7 @@
 	<div class="body">
 		<div class="actions" v-if="$store.getters.isSignedIn">
 			<template v-if="$store.state.i.id != user.id">
-				<p class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</p>
+				<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				<mk-follow-button :user="user" :inline="true" class="follow"/>
 			</template>
 			<ui-button @click="menu" ref="menu" :inline="true"><fa icon="ellipsis-h"/></ui-button>
@@ -40,7 +40,7 @@
 			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', $t('year')).replace('-', $t('month')) + $t('day') }} ({{ $t('years-old', { age }) }})</span>
 		</div>
 		<div class="status">
-			<span class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</span>
+			<router-link :to="user | userPage()" class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</router-link>
 			<router-link :to="user | userPage('following')" class="following clickable"><b>{{ user.followingCount | number }}</b>{{ $t('following') }}</router-link>
 			<router-link :to="user | userPage('followers')" class="followers clickable"><b>{{ user.followersCount | number }}</b>{{ $t('followers') }}</router-link>
 		</div>
@@ -203,8 +203,16 @@ export default Vue.extend({
 		color var(--text)
 
 		> .actions
+			text-align right
+			padding-bottom 16px
+			margin-bottom 16px
+			border-bottom solid 1px var(--faceDivider)
+
+			> *
+				margin-left 8px
+
 			> .follow
-				width 200px
+				width 180px
 
 		> .fields
 			margin-top 16px

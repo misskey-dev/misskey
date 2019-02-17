@@ -94,6 +94,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <!-- PATREON_START -->
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12190916/fb7fa7983c14425f890369535b1506a4/1?token-time=2145916800&token-hash=WeuDzzz24cRXJogyIkU-mxARqkdyms-rcZKbO-GpGjw%3D" alt="weep" width="100"></td>
+<td><img src="https://c8.patreon.com/2/200/12059069" alt="naga_rus" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/3?token-time=2145916800&token-hash=c8HeVqLtmdgH-gSBJg8i10gmOcwllM87MDHeznl3el0%3D" alt="Melilot" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/16869916" alt="見当かなみ" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12999811/5f349fafcce44dd1824a8b1ebbec4564/3?token-time=2145916800&token-hash=LtV2lRi3L2jOWMLwccr9qWYfPrFlzIo2jYZHKzHEb6k%3D" alt="Xeltica" width="100"></td>
@@ -101,6 +102,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12021162/963128bb8d14476dbd8407943db8f31a/1?token-time=2145916800&token-hash=1FlxS9MEgmNGH_RHUVHbO5hIXB5I1z0lvA33CTvYvjA%3D" alt="gutfuckllc" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/weepjp">weep</a></td>
+<td><a href="https://www.patreon.com/user?u=12059069">naga_rus</a></td>
 <td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>
 <td><a href="https://www.patreon.com/user?u=16869916">見当かなみ</a></td>
 <td><a href="https://www.patreon.com/Xeltica">Xeltica</a></td>
@@ -113,6 +115,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c8.patreon.com/2/200/16542964" alt="Takumi Sugita" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13039004/509d0c412eb14ae08d6a812a3054f7d6/1?token-time=2145916800&token-hash=2PsbFNw0tnubZzgSXD01R6hIgncfiElG7H7HX2Y3dyo%3D" alt="nemu" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/3?token-time=2145916800&token-hash=9JtETp0X8gI280Ne1E8bxn6j4Lw5o2k4mJkICx97V_k%3D" alt="YUKIMOCHI" width="100"></td>
+<td><img src="https://c8.patreon.com/2/200/17463605" alt="Sampot" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17195955/be45e5e14c3e48b2bee0456c84e19df4/4?token-time=2145916800&token-hash=SbdZeN5SmsuT9stD6v0jN1z0hftg0FmRiCTxysU0Ihw%3D" alt="Damillora" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/8241184/39e18850e87a449e9c9a71acb3310ebd/3?token-time=2145916800&token-hash=gMq30aylxu5v3G8pRhWR5jeRBbYWEoRKjGbNeiCQz5g%3D" alt="Acid Chicken" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/2?token-time=2145916800&token-hash=zcwFxb2zopzWwksKVU1YpfAEjsl4yKT02aQ6yiAFRiQ%3D" alt="natalie" width="100"></td>
@@ -123,6 +126,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=16542964">Takumi Sugita</a></td>
 <td><a href="https://www.patreon.com/user?u=13039004">nemu</a></td>
 <td><a href="https://www.patreon.com/yukimochi">YUKIMOCHI</a></td>
+<td><a href="https://www.patreon.com/user?u=17463605">Sampot</a></td>
 <td><a href="https://www.patreon.com/damillora">Damillora</a></td>
 <td><a href="https://www.patreon.com/acid_chicken">Acid Chicken</a></td>
 <td><a href="https://www.patreon.com/user?u=4389829">natalie</a></td>
@@ -140,7 +144,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Thu, 14 Feb 2019 12:02:06 UTC
+**Last updated:** Fri, 15 Feb 2019 19:12:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
