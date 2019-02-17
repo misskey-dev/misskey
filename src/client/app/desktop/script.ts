@@ -128,7 +128,7 @@ init(async (launch, os) => {
 	const router = new VueRouter({
 		mode: 'history',
 		routes: [
-			os.store.getters.isSignedIn && os.store.state.device.deckMode
+			os.store.getters.isSignedIn && os.store.state.device.deckMode && document.location.pathname === '/'
 				? { path: '/', name: 'index', component: MkDeck, children: [
 					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default), children: [
 						{ path: '', name: 'user', component: () => import('./views/deck/deck.user-column.home.vue').then(m => m.default) },
@@ -152,8 +152,8 @@ init(async (launch, os) => {
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/home/note.vue').then(m => m.default) },
 					{ path: '/search', component: () => import('./views/home/search.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/home/tag.vue').then(m => m.default) },
-					{ path: '/featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
-					{ path: '/explore', component: () => import('../common/views/pages/explore.vue').then(m => m.default) },
+					{ path: '/featured', name: 'featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
+					{ path: '/explore', name: 'explore', component: () => import('../common/views/pages/explore.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) },
 				]},
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },

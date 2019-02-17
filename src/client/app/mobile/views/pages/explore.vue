@@ -34,4 +34,10 @@ main
 	margin 0 auto
 	padding 8px
 
+	@media (min-width 500px)
+		padding 16px
+
+	@media (min-width 600px)
+		padding 32px
+
 </style>

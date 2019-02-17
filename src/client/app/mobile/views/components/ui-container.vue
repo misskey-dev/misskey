@@ -49,6 +49,9 @@ export default Vue.extend({
 	& + .ukygtjoj
 		margin-top 16px
 
+		@media (max-width 500px)
+			margin-top 8px
+
 	&.naked
 		background transparent !important
 		box-shadow none !important

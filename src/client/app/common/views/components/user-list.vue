@@ -72,7 +72,7 @@ export default Vue.extend({
 		fetchMoreUsers() {
 			this.fetchingMoreUsers = true;
 			this.makePromise(this.cursor).then(x => {
-				this.us = x.users;
+				this.us = this.us.concat(x.users);
 				this.cursor = x.cursor;
 				this.fetchingMoreUsers = false;
 			}, e => {
@@ -138,5 +138,24 @@ export default Vue.extend({
 				text-overflow ellipsis
 				opacity 0.7
 				font-size 14px
+
+	> .more
+		display block
+		width 100%
+		padding 16px
+		color var(--text)
+		border-top solid var(--lineWidth) rgba(#000, 0.05)
+
+		&:hover
+			background rgba(#000, 0.025)
+
+		&:active
+			background rgba(#000, 0.05)
+
+		&.fetching
+			cursor wait
+
+		> [data-icon]
+			margin-right 4px
 
 </style>

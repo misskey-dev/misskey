@@ -61,6 +61,7 @@ common:
   drive: "ドライブ"
   messaging: "トーク"
   deck: "デッキ"
+  timeline: "タイムライン"
   explore: "みつける"
   following: "フォロー中"
   followers: "フォロワー"
@@ -218,6 +219,12 @@ auth/views/index.vue:
   please-go-back: "アプリケーションに戻って、やっていってください。"
   error: "セッションが存在しません。"
   sign-in: "サインインしてください"
+
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
+  recently-registered-users: "新規ユーザー"
 
 common/views/components/games/reversi/reversi.vue:
   matching:
@@ -1087,7 +1094,6 @@ desktop/views/components/ui.header.account.vue:
   dark: "闇に飲まれる"
 
 desktop/views/components/ui.header.nav.vue:
-  home: "ホーム"
   game: "ゲーム"
 
 desktop/views/components/ui.header.notifications.vue:
@@ -1823,6 +1829,9 @@ deck:
   rename: "名前を変更"
   stack-left: "左に重ねる"
   pop-right: "右に出す"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"

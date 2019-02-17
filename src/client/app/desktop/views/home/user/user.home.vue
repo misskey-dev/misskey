@@ -10,8 +10,6 @@
 		</ui-container>
 	</div>
 	<x-photos :user="user"/>
-	<x-friends :user="user"/>
-	<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 	<x-timeline class="timeline" ref="tl" :user="user"/>
 </div>
 </template>
@@ -23,8 +21,6 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XTimeline from './user.timeline.vue';
 import XPhotos from './user.photos.vue';
-import XFollowersYouKnow from './user.followers-you-know.vue';
-import XFriends from './user.friends.vue';
 import XIntegrations from './user.integrations.vue';
 import XActivity from '../../../../common/views/components/activity.vue';
 
@@ -33,8 +29,6 @@ export default Vue.extend({
 	components: {
 		XTimeline,
 		XPhotos,
-		XFollowersYouKnow,
-		XFriends,
 		XIntegrations,
 		XActivity
 	},

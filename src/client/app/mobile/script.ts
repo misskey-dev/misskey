@@ -135,8 +135,7 @@ init((launch) => {
 			{ path: '/explore', name: 'explore', component: () => import('./views/pages/explore.vue').then(m => m.default) },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', name: 'reversi', component: MkReversi },
-			{ path: '/@:user', component: () => import('./views/pages/user/index.vue').then(m => m.default), children: [
-				{ path: '', name: 'user', component: () => import('./views/pages/user/home.vue').then(m => m.default) },
+			{ path: '/@:user', name: 'user', component: () => import('./views/pages/user/index.vue').then(m => m.default), children: [
 				{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
 				{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
 			]},

@@ -149,38 +149,20 @@ workflows:
       - build:
           requires:
             - hold
-          filters:
-            branches:
-              ignore:
-                - l10n_develop
-                - imgbot
-                - patch-autogen
       - test:
           executor: with-redis
           requires:
             - build
-          filters:
-            branches:
-              ignore:
-#                - master
-                - l10n_develop
-                - imgbot
-                - patch-autogen
       - test:
           without_redis: true
           requires:
             - build
-          filters:
-#            branches:
-#              only: master
-            branches:
-              ignore:
-#                - master
-                - l10n_develop
-                - imgbot
-                - patch-autogen
   docker:
     jobs:
+      - ok:
+          filters:
+            branches:
+              ignore: master
       - hold:
           type: approval
           filters:
