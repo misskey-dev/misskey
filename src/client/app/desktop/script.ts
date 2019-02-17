@@ -124,11 +124,16 @@ init(async (launch, os) => {
 	require('./views/components');
 	require('./views/widgets');
 
+	os.store.commit('device/set', {
+		key: 'inDeckMode',
+		value: os.store.getters.isSignedIn && os.store.state.device.deckMode && document.location.pathname === '/'
+	});
+
 	// Init router
 	const router = new VueRouter({
 		mode: 'history',
 		routes: [
-			os.store.getters.isSignedIn && os.store.state.device.deckMode && document.location.pathname === '/'
+			os.store.state.device.inDeckMode
 				? { path: '/', name: 'index', component: MkDeck, children: [
 					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default), children: [
 						{ path: '', name: 'user', component: () => import('./views/deck/deck.user-column.home.vue').then(m => m.default) },
