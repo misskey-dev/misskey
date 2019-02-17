@@ -49,7 +49,7 @@ export type INote = {
 	localOnly: boolean;
 	renoteCount: number;
 	repliesCount: number;
-	reactionCounts: any;
+	reactionCounts: Record<string, number>;
 	mentions: mongo.ObjectID[];
 	mentionedRemoteUsers: {
 		uri: string;
