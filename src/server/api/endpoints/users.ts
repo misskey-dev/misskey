@@ -3,7 +3,7 @@ import User, { pack } from '../../../models/user';
 import define from '../define';
 import { fallback } from '../../../prelude/symbol';
 
-const nonnull = { $ne: null };
+const nonnull = { $ne: null as any };
 
 export const meta = {
 	requireCredential: false,
