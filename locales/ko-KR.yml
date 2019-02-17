@@ -64,8 +64,8 @@ common:
   following: "팔로우 중"
   followers: "팔로워"
   empty-timeline-info:
-    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
-    explore: "ユーザーを探索する"
+    follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
+    explore: "사용자 검색하기"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -211,9 +211,9 @@ common/views/pages/explore.vue:
   verified-users: "공식 계정"
   popular-users: "인기 사용자"
   recently-updated-users: "최근 게시한 사용자"
-  recently-registered-users: "新規ユーザー"
-  popular-tags: "人気のタグ"
-  federated: "連合"
+  recently-registered-users: "신규 사용자"
+  popular-tags: "인기 태그"
+  federated: "연합"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}을(를) 기다리고 있습니다"
