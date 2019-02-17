@@ -16,19 +16,8 @@ executors:
     working_directory: /tmp/workspace
     docker:
       - image: docker:latest
-  alpine:
-    working_directory: /tmp/workspace
-    docker:
-      - image: alpine:latest
 
 jobs:
-  ok:
-    executor: alpine
-    steps:
-      - run:
-          name: OK
-          command: |
-            echo -e '\033[0;32mOK\033[0;39m'
   build:
     executor: default
     steps:
@@ -64,8 +53,6 @@ jobs:
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-#      - store_artifacts:
-#          path: built
       - persist_to_workspace:
           root: .
           paths:
@@ -134,47 +121,73 @@ workflows:
   version: 2
   nodejs:
     jobs:
-      - ok:
-          filters:
-            branches:
-              only:
-                - l10n_develop
-                - imgbot
-                - patch-autogen
       - hold:
+          name: manual-build-trigger
           type: approval
           filters:
             branches:
               ignore: master
       - build:
+          name: manual-build
           requires:
-            - hold
-      - test:
-          executor: with-redis
-          requires:
-            - build
-      - test:
-          without_redis: true
-          requires:
-            - build
-  docker:
-    jobs:
-      - ok:
+            - manual-build-trigger
           filters:
             branches:
               ignore: master
+      - build:
+          name: auto-build
+          filters:
+            branches:
+              only: master
+      - test:
+          name: manual-test-with-redis
+          executor: with-redis
+          requires:
+            - manual-build
+          filters:
+            branches:
+              ignore: master
+      - test:
+          name: auto-test-without-redis
+          executor: with-redis
+          requires:
+            - auto-build
+          filters:
+            branches:
+              only: master
+      - test:
+          name: manual-test-with-redis
+          without_redis: true
+          requires:
+            - manual-build
+          filters:
+            branches:
+              ignore: master
+      - test:
+          name: auto-test-without-redis
+          without_redis: true
+          requires:
+            - auto-build
+          filters:
+            branches:
+              only: master
+  docker:
+    jobs:
       - hold:
+          name: manual-build-trigger
           type: approval
           filters:
             branches:
               ignore: master
       - docker:
+          name: manual-build
           requires:
-            - hold
+            - manual-build-trigger
           filters:
             branches:
               ignore: master
       - docker:
+          name: auto-build
           with_deploy: true
           filters:
             branches:
