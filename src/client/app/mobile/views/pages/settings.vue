@@ -383,9 +383,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 main
-	margin 0 auto
-	max-width 600px
-	width 100%
 
 	> .signed-in-as
 		margin 16px

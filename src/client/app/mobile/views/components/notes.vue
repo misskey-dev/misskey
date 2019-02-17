@@ -189,11 +189,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .ivaojijs
-	$width = 640px
-	$margin = 8px
-	width $width
-	max-width calc(100% - 16px)
-	margin $margin auto
 	overflow hidden
 	background var(--face)
 	border-radius 8px
@@ -201,14 +196,6 @@ export default Vue.extend({
 
 	@media (min-width 500px)
 		box-shadow 0 8px 32px rgba(#000, 0.1)
-		margin-top 16px
-		margin-bottom 16px
-		max-width calc(100% - 32px)
-
-	@media (min-width 600px)
-		margin-top 32px
-		margin-bottom 32px
-		max-width calc(100% - 64px)
 
 	.transition
 		.mk-notes-enter
