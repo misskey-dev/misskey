@@ -64,8 +64,8 @@ common:
   following: "Following"
   followers: "Followers"
   empty-timeline-info:
-    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
-    explore: "ユーザーを探索する"
+    follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
+    explore: "Find users"
   weekday-short:
     sunday: "S"
     monday: "M"
