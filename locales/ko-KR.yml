@@ -63,6 +63,9 @@ common:
   explore: "발견"
   following: "팔로우 중"
   followers: "팔로워"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -698,12 +701,6 @@ desktop/views/components/following-window.vue:
   following: "{} 의 팔로우"
 desktop/views/components/following.vue:
   empty: "팔로우중인 사용자가 없는 것 같습니다."
-desktop/views/components/friends-maker.vue:
-  title: "마음에 드는 사용자를 팔로우:"
-  empty: "추천 사용자를 찾을 수 없습니다."
-  fetching: "불러오는 중입니다"
-  refresh: "더 보기"
-  close: "닫기"
 desktop/views/components/game-window.vue:
   game: "리버시"
 desktop/views/components/home.vue:
@@ -1423,12 +1420,6 @@ common/views/components/follow-button.vue:
   request-pending: "팔로우 허가 대기중"
   follow-processing: "팔로우 처리중"
   follow-request: "팔로우 요청"
-mobile/views/components/friends-maker.vue:
-  title: "마음에 드는 사용자를 팔로우"
-  empty: "추천 사용자를 찾을 수 없습니다."
-  fetching: "불러오는 중입니다"
-  refresh: "더 보기"
-  close: "닫기"
 mobile/views/components/note.vue:
   private: "이 글은 비공개입니다"
   deleted: "이 글은 삭제되었습니다"
