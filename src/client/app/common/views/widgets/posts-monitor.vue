@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-posts-monitor">
-	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
+	<ui-container :show-header="props.design == 0" :naked="props.design == 2">
 		<template slot="header"><fa icon="chart-line"/>{{ $t('title') }}</template>
 		<button slot="func" @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button>
 
@@ -64,7 +64,7 @@
 				<text x="1" y="5">Fedi</text>
 			</svg>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

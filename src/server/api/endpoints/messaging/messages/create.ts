@@ -32,11 +32,11 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.str.optional.pipe(isValidText)
+			validator: $.optional.str.pipe(isValidText)
 		},
 
 		fileId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		}
 	}

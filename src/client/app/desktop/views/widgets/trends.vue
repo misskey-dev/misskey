@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-trends">
-	<mk-widget-container :show-header="!props.compact">
+	<ui-container :show-header="!props.compact">
 		<template slot="header"><fa icon="fire"/>{{ $t('title') }}</template>
 		<button slot="func" :title="$t('title')" @click="fetch"><fa icon="sync"/></button>
 
@@ -12,7 +12,7 @@
 			</div>
 			<p class="empty" v-else>{{ $t('nothing') }}</p>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

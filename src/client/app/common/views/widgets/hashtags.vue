@@ -1,12 +1,12 @@
 <template>
 <div class="mkw-hashtags">
-	<mk-widget-container :show-header="!props.compact">
+	<ui-container :show-header="!props.compact">
 		<template slot="header"><fa icon="hashtag"/>{{ $t('title') }}</template>
 
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<mk-trends/>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

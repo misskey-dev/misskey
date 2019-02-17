@@ -12,7 +12,7 @@ export const meta = {
 
 	params: {
 		host: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			default: null as any
 		}
 	}

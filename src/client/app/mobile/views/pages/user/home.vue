@@ -49,7 +49,7 @@ export default Vue.extend({
 		XPhotos,
 		XFriends,
 		XFollowersYouKnow,
-		XActivity: () => import('../../components/activity.vue').then(m => m.default)
+		XActivity: () => import('../../../../common/views/components/activity.vue').then(m => m.default)
 	},
 	props: ['user']
 });

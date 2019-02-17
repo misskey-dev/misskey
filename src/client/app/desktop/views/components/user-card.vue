@@ -41,7 +41,6 @@ export default Vue.extend({
 	height 280px
 	overflow hidden
 	font-size 13px
-	text-align center
 	background $bg
 	box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
 	color var(--faceText)
@@ -54,7 +53,7 @@ export default Vue.extend({
 
 	> .avatar
 		display block
-		margin -40px auto 0 auto
+		margin -40px 0 0 16px
 		width 80px
 		height 80px
 		border-radius 100%
@@ -67,6 +66,7 @@ export default Vue.extend({
 
 	> .body
 		padding 0px 24px
+		margin-top -40px
 
 		> .name
 			font-size 120%

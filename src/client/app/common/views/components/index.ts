@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import dummy from './dummy.vue';
 import userName from './user-name.vue';
 import followButton from './follow-button.vue';
 import error from './error.vue';
@@ -32,6 +33,7 @@ import urlPreview from './url-preview.vue';
 import fileTypeIcon from './file-type-icon.vue';
 import emoji from './emoji.vue';
 import welcomeTimeline from './welcome-timeline.vue';
+import userList from './user-list.vue';
 import uiInput from './ui/input.vue';
 import uiButton from './ui/button.vue';
 import uiHorizonGroup from './ui/horizon-group.vue';
@@ -46,6 +48,7 @@ import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
 Vue.component('mfm', misskeyFlavoredMarkdown);
+Vue.component('mk-dummy', dummy);
 Vue.component('mk-user-name', userName);
 Vue.component('mk-follow-button', followButton);
 Vue.component('mk-error', error);
@@ -77,6 +80,7 @@ Vue.component('mk-url-preview', urlPreview);
 Vue.component('mk-file-type-icon', fileTypeIcon);
 Vue.component('mk-emoji', emoji);
 Vue.component('mk-welcome-timeline', welcomeTimeline);
+Vue.component('mk-user-list', userList);
 Vue.component('ui-input', uiInput);
 Vue.component('ui-button', uiButton);
 Vue.component('ui-horizon-group', uiHorizonGroup);

@@ -339,7 +339,7 @@ export default Vue.extend({
 			});
 
 			return !confirm.canceled;
-		}
+		},
 
 		fetchUsers() {
 			this.$root.api('admin/show-users', {

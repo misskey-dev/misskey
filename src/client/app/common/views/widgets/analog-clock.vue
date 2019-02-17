@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-analog-clock">
-	<mk-widget-container :naked="props.style % 2 === 0" :show-header="false">
+	<ui-container :naked="props.style % 2 === 0" :show-header="false">
 		<div class="mkw-analog-clock--body">
 			<mk-analog-clock :dark="$store.state.device.darkmode" :smooth="props.style < 2"/>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

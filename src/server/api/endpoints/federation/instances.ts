@@ -7,29 +7,29 @@ export const meta = {
 
 	params: {
 		blocked: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 		},
 
 		notResponding: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 		},
 
 		markedAsClosed: {
-			validator: $.bool.optional.nullable,
+			validator: $.optional.nullable.bool,
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 30
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		sort: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 		}
 	}
 };

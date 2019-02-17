@@ -8,7 +8,6 @@ WORKDIR /misskey
 
 FROM base AS builder
 
-RUN unlink /usr/bin/free
 RUN apk add --no-cache \
     autoconf \
     automake \
@@ -20,7 +19,6 @@ RUN apk add --no-cache \
     make \
     nasm \
     pkgconfig \
-    procps \
     python \
     zlib-dev
 RUN npm i -g yarn
@@ -34,6 +32,7 @@ FROM base AS runner
 RUN apk add --no-cache \
     ffmpeg \
     tini
+RUN npm i -g web-push
 ENTRYPOINT ["/sbin/tini", "--"]
 
 COPY --from=builder /misskey/node_modules ./node_modules

@@ -20,7 +20,7 @@ export const meta = {
 
 	params: {
 		detail: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true
 		}
 	},

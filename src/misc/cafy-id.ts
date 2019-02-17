@@ -25,9 +25,9 @@ export type ObjectId = mongo.ObjectID;
 /**
  * ID
  */
-export default class ID extends Context<string> {
-	constructor() {
-		super();
+export default class ID<Maybe = string> extends Context<string | Maybe> {
+	constructor(optional = false, nullable = false) {
+		super(optional, nullable);
 
 		this.push((v: any) => {
 			if (!isObjectId(v) && isNotAnId(v)) {
@@ -39,5 +39,17 @@ export default class ID extends Context<string> {
 
 	public getType() {
 		return super.getType('string');
+	}
+
+	public makeOptional(): ID<undefined> {
+		return new ID(true, false);
+	}
+
+	public makeNullable(): ID<null> {
+		return new ID(false, true);
+	}
+
+	public makeOptionalNullable(): ID<undefined | null> {
+		return new ID(true, true);
 	}
 }
