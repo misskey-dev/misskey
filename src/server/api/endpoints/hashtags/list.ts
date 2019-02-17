@@ -26,18 +26,18 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const sort: any = {
-		'+mentionedUsers': { mentionedUsersCount: -1 },
-		'-mentionedUsers': { mentionedUsersCount: 1 },
-		'+mentionedLocalUsers': { mentionedLocalUsersCount: -1 },
-		'-mentionedLocalUsers': { mentionedLocalUsersCount: 1 },
-		'+attachedUsers': { attachedUsersCount: -1 },
-		'-attachedUsers': { attachedUsersCount: 1 },
-		'+attachedLocalUsers': { attachedLocalUsersCount: -1 },
-		'-attachedLocalUsers': { attachedLocalUsersCount: 1 },
-	};
+const sort: any = {
+	'+mentionedUsers': { mentionedUsersCount: -1 },
+	'-mentionedUsers': { mentionedUsersCount: 1 },
+	'+mentionedLocalUsers': { mentionedLocalUsersCount: -1 },
+	'-mentionedLocalUsers': { mentionedLocalUsersCount: 1 },
+	'+attachedUsers': { attachedUsersCount: -1 },
+	'-attachedUsers': { attachedUsersCount: 1 },
+	'+attachedLocalUsers': { attachedLocalUsersCount: -1 },
+	'-attachedLocalUsers': { attachedLocalUsersCount: 1 },
+};
 
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const tags = await Hashtag
 		.find({}, {
 			limit: ps.limit,

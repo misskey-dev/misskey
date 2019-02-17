@@ -45,16 +45,16 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	const sort: any = {
-		'+follower': { followersCount: -1 },
-		'-follower': { followersCount: 1 },
-		'+createdAt': { createdAt: -1 },
-		'-createdAt': { createdAt: 1 },
-		'+updatedAt': { updatedAt: -1 },
-		'-updatedAt': { updatedAt: 1 },
-	};
+const sort: any = {
+	'+follower': { followersCount: -1 },
+	'-follower': { followersCount: 1 },
+	'+createdAt': { createdAt: -1 },
+	'-createdAt': { createdAt: 1 },
+	'+updatedAt': { updatedAt: -1 },
+	'-updatedAt': { updatedAt: 1 },
+};
 
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const q = {
 		tags: ps.tag,
 		$and: []
