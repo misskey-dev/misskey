@@ -6,6 +6,9 @@
 	</div>
 
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+		<template slot="header">
+			<slot></slot>
+		</template>
 		<p :class="$style.empty" slot="empty">
 			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</p>

@@ -1,5 +1,7 @@
 <template>
 <div class="mk-notes">
+	<slot name="header"></slot>
+
 	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && inited"></slot>
@@ -193,6 +195,11 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-notes
+	background var(--face)
+	box-shadow var(--shadow)
+	border-radius var(--round)
+	overflow hidden
+
 	.transition
 		.mk-notes-enter
 		.mk-notes-leave-to

@@ -29,7 +29,7 @@ export default Vue.extend({
 				offset: cursor ? cursor : undefined,
 				query: this.q
 			}).then(notes => {
-				if (notes.length == fetchLimit + 1) {
+				if (notes.length == limit + 1) {
 					notes.pop();
 					return {
 						notes: notes,

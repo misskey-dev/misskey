@@ -1,6 +1,10 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+		<template slot="header">
+			<slot></slot>
+		</template>
+	</mk-notes>
 </div>
 </template>
 

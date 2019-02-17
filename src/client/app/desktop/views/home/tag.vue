@@ -1,7 +1,7 @@
 <template>
 <div>
 	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q: $route.params.tag }) }}</p>
-	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>
 </div>
 </template>
 
@@ -17,10 +17,24 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			moreFetching: false,
-			existMore: false,
-			offset: 0,
-			empty: false
+			makePromise: cursor => this.$root.api('notes/search_by_tag', {
+				limit: limit + 1,
+				offset: cursor ? cursor : undefined,
+				tag: this.$route.params.tag
+			}).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
+					return {
+						notes: notes,
+						cursor: cursor ? cursor + limit : limit
+					};
+				} else {
+					return {
+						notes: notes,
+						cursor: null
+					};
+				}
+			})
 		};
 	},
 	watch: {
@@ -29,8 +43,7 @@ export default Vue.extend({
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
 		window.addEventListener('scroll', this.onScroll, { passive: true });
-
-		this.fetch();
+		Progress.start();
 	},
 	beforeDestroy() {
 		document.removeEventListener('keydown', this.onDocumentKeydown);
@@ -44,61 +57,15 @@ export default Vue.extend({
 				}
 			}
 		},
-		fetch() {
-			this.fetching = true;
-			Progress.start();
-
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api('notes/search_by_tag', {
-					limit: limit + 1,
-					offset: this.offset,
-					tag: this.$route.params.tag
-				}).then(notes => {
-					if (notes.length == 0) this.empty = true;
-					if (notes.length == limit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-					this.fetching = false;
-					Progress.done();
-				}, rej);
-			}));
+		inited() {
+			this.fetching = false;
+			Progress.done();
 		},
-		more() {
-			this.offset += limit;
-
-			const promise = this.$root.api('notes/search_by_tag', {
-				limit: limit + 1,
-				offset: this.offset,
-				tag: this.$route.params.tag
-			});
-
-			promise.then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) {
-					(this.$refs.timeline as any).append(n);
-				}
-				this.moreFetching = false;
-			});
-
-			return promise;
-		}
 	}
 });
 </script>
 
 <style lang="stylus" module>
-.notes
-	background var(--face)
-	box-shadow var(--shadow)
-	border-radius var(--round)
-	overflow hidden
-
 .empty
 	display block
 	margin 0 auto
