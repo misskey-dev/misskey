@@ -6,11 +6,9 @@
 		</div>
 
 		<div class="nav" v-if="$store.getters.isSignedIn">
-			<template v-if="!$store.state.device.inDeckMode">
-				<div class="home" :class="{ active: $route.name == 'index' }" @click="goToTop">
-					<router-link to="/"><fa icon="home"/></router-link>
-				</div>
-			</template>
+			<div class="home" :class="{ active: $route.name == 'index' }" @click="goToTop">
+				<router-link to="/"><fa icon="home"/></router-link>
+			</div>
 			<div class="featured" :class="{ active: $route.name == 'featured' }">
 				<router-link to="/featured"><fa :icon="faNewspaper"/></router-link>
 			</div>

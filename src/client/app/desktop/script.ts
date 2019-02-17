@@ -144,8 +144,8 @@ init(async (launch, os) => {
 					{ path: '/notes/:note', name: 'note', component: () => import('./views/deck/deck.note-column.vue').then(m => m.default) },
 					{ path: '/search', component: () => import('./views/deck/deck.search-column.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('./views/deck/deck.hashtag-column.vue').then(m => m.default) },
-					{ path: '/featured', component: () => import('./views/deck/deck.featured-column.vue').then(m => m.default) },
-					{ path: '/explore', component: () => import('./views/deck/deck.explore-column.vue').then(m => m.default) },
+					{ path: '/featured', name: 'featured', component: () => import('./views/deck/deck.featured-column.vue').then(m => m.default) },
+					{ path: '/explore', name: 'explore', component: () => import('./views/deck/deck.explore-column.vue').then(m => m.default) },
 					{ path: '/explore/tags/:tag', props: true, component: () => import('./views/deck/deck.explore-column.vue').then(m => m.default) },
 					{ path: '/i/favorites', component: () => import('./views/deck/deck.favorites-column.vue').then(m => m.default) }
 				]}

@@ -1,7 +1,7 @@
 <template>
 <div class="nav">
 	<ul>
-		<li v-if="!$store.state.device.inDeckMode" class="timeline" :class="{ active: $route.name == 'index' }" @click="goToTop">
+		<li class="timeline" :class="{ active: $route.name == 'index' }" @click="goToTop">
 			<router-link to="/"><fa icon="home"/><p>{{ $t('@.timeline') }}</p></router-link>
 		</li>
 		<li class="featured" :class="{ active: $route.name == 'featured' }">
