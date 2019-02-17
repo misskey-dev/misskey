@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import File, { packMany } from '../../../../../models/drive-file';
 import define from '../../../define';
+import { fallback } from '../../../../../prelude/symbol';
 
 export const meta = {
 	requireCredential: false,
@@ -37,32 +38,15 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let _sort;
-	if (ps.sort) {
-		if (ps.sort == '+createdAt') {
-			_sort = {
-				uploadDate: -1
-			};
-		} else if (ps.sort == '-createdAt') {
-			_sort = {
-				uploadDate: 1
-			};
-		} else if (ps.sort == '+size') {
-			_sort = {
-				length: -1
-			};
-		} else if (ps.sort == '-size') {
-			_sort = {
-				length: 1
-			};
-		}
-	} else {
-		_sort = {
-			_id: -1
-		};
-	}
+const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
+	'+createdAt': { uploadDate: -1 },
+	'-createdAt': { uploadDate: 1 },
+	'+size': { length: -1 },
+	'-size': { length: 1 },
+	[fallback]: { _id: -1 }
+};
 
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const q = {
 		'metadata.deletedAt': { $exists: false },
 	} as any;
@@ -73,7 +57,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const files = await File
 		.find(q, {
 			limit: ps.limit,
-			sort: _sort,
+			sort: sort[ps.sort] || sort[fallback],
 			skip: ps.offset
 		});
 
