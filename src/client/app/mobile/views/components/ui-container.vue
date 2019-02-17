@@ -83,4 +83,7 @@ export default Vue.extend({
 			font-size 15px
 			color var(--faceTextButton)
 
+	> div
+		color var(--text)
+
 </style>

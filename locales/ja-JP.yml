@@ -66,6 +66,10 @@ common:
   following: "フォロー中"
   followers: "フォロワー"
 
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
+
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -775,13 +779,6 @@ desktop/views/components/following-window.vue:
 
 desktop/views/components/following.vue:
   empty: "フォロー中のユーザーはいないようです。"
-
-desktop/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー:"
-  empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
-  refresh: "もっと見る"
-  close: "閉じる"
 
 desktop/views/components/game-window.vue:
   game: "リバーシ"
@@ -1590,13 +1587,6 @@ common/views/components/follow-button.vue:
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
-
-mobile/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー"
-  empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
-  refresh: "もっと見る"
-  close: "閉じる"
 
 mobile/views/components/note.vue:
   private: "この投稿は非公開です"

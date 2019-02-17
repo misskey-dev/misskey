@@ -1,6 +1,9 @@
 <template>
-<div class="mk-timeline-core">
-	<mk-friends-maker v-if="src == 'home' && alone"/>
+<div class="ibpylqas">
+	<div v-if="src == 'home' && alone" class="explore">
+		<p>{{ $t('@.empty-timeline-info.follow-users-to-make-your-timeline') }}</p>
+		<router-link to="/explore">{{ $t('@.empty-timeline-info.explore') }}</router-link>
+	</div>
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p :class="$style.empty" slot="empty">
@@ -171,9 +174,16 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-timeline-core
-	> .mk-friends-maker
-		border-bottom solid var(--lineWidth) #eee
+.ibpylqas
+	> .explore
+		padding 16px
+		text-align center
+		color var(--text)
+		border-bottom solid var(--lineWidth) var(--faceDivider)
+		font-size 14px
+
+		> p
+			margin 0 0 8px 0
 
 </style>
 

@@ -1,6 +1,11 @@
 <template>
 <div>
-	<mk-friends-maker v-if="src == 'home' && alone" style="margin-bottom:8px"/>
+	<ui-container v-if="src == 'home' && alone" :show-header="false" style="margin-bottom:8px;">
+		<div class="zrzngnxs">
+			<p>{{ $t('@.empty-timeline-info.follow-users-to-make-your-timeline') }}</p>
+			<router-link to="/explore">{{ $t('@.empty-timeline-info.explore') }}</router-link>
+		</div>
+	</ui-container>
 
 	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<div slot="empty">
@@ -18,7 +23,7 @@ const fetchLimit = 10;
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/home.timeline.vue'),
-	
+
 	props: {
 		src: {
 			type: String,
@@ -172,3 +177,14 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.zrzngnxs
+	padding 16px
+	text-align center
+	font-size 14px
+
+	> p
+		margin 0 0 8px 0
+
+</style>
