@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
 		<template slot="header">
 			<slot></slot>
 		</template>
@@ -59,9 +59,6 @@ export default Vue.extend({
 			this.connection.on('note', this.onNote);
 			this.connection.on('userAdded', this.onUserAdded);
 			this.connection.on('userRemoved', this.onUserRemoved);
-		},
-		inited() {
-			this.$emit('loaded');
 		},
 		onNote(note) {
 			(this.$refs.timeline as any).prepend(note);

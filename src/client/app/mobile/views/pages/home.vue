@@ -233,17 +233,6 @@ main
 						font-size 10px
 						color var(--notificationIndicator)
 
-	> .tl
-		max-width 680px
-		margin 0 auto
-		padding 8px
-
-		@media (min-width 500px)
-			padding 16px
-
-		@media (min-width 600px)
-			padding 32px
-
 </style>
 
 <style lang="stylus" module>

@@ -5,7 +5,7 @@
 		<router-link to="/explore">{{ $t('@.empty-timeline-info.explore') }}</router-link>
 	</div>
 
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
 		<template slot="header">
 			<slot></slot>
 		</template>
@@ -37,7 +37,6 @@ export default Vue.extend({
 
 	data() {
 		return {
-			fetching: true,
 			connection: null,
 			date: null,
 			baseQuery: {
@@ -134,11 +133,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		inited() {
-			this.fetching = false;
-			this.$emit('loaded');
-		},
-
 		focus() {
 			(this.$refs.timeline as any).focus();
 		}

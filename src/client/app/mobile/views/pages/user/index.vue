@@ -67,11 +67,11 @@
 		</nav>
 		<div class="body">
 			<template v-if="$route.name == 'user'">
-				<x-home v-if="page == 'home'" :user="user"/>
+				<x-home v-if="page == 'home'" :user="user" class="padding"/>
 				<mk-user-timeline v-if="page == 'notes'" :user="user" key="tl"/>
 				<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" key="media"/>
 			</template>
-			<router-view :user="user"></router-view>
+			<router-view :user="user" class="padding"></router-view>
 		</div>
 	</main>
 </mk-ui>
@@ -336,15 +336,16 @@ main
 					border-color var(--primary)
 
 	> .body
-		max-width 680px
-		margin 0 auto
-		padding 8px
-		color var(--text)
+		> .padding
+			max-width 680px
+			margin 0 auto
+			padding 8px
+			color var(--text)
 
-		@media (min-width 500px)
-			padding 16px
+			@media (min-width 500px)
+				padding 16px
 
-		@media (min-width 600px)
-			padding 32px
+			@media (min-width 600px)
+				padding 32px
 
 </style>

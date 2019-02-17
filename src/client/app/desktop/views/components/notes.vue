@@ -128,7 +128,7 @@ export default Vue.extend({
 		},
 
 		more() {
-			if (this.cursor == null) return;
+			if (this.cursor == null || this.moreFetching) return;
 			this.moreFetching = true;
 			this.makePromise(this.cursor).then(x => {
 				this.notes = this.notes.concat(x.notes);

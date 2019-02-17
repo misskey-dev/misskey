@@ -1,6 +1,5 @@
 <template>
 <div>
-	<p :class="$style.empty" v-if="!fetching && empty"><fa icon="search"/> {{ $t('no-posts-found', { q: $route.params.tag }) }}</p>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>
 </div>
 </template>
@@ -16,7 +15,6 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/pages/tag.vue'),
 	data() {
 		return {
-			fetching: true,
 			makePromise: cursor => this.$root.api('notes/search_by_tag', {
 				limit: limit + 1,
 				offset: cursor ? cursor : undefined,
@@ -58,7 +56,6 @@ export default Vue.extend({
 			}
 		},
 		inited() {
-			this.fetching = false;
 			Progress.done();
 		},
 	}

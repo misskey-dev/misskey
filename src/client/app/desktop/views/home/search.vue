@@ -4,8 +4,6 @@
 		<header>
 			<span><fa icon="search"/> {{ q }}</span>
 		</header>
-		<p v-if="!fetching && notAvailable">{{ $t('not-available') }}</p>
-		<p v-if="!fetching && empty"><fa icon="search"/> {{ $t('not-found', { q }) }}</p>
 		<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>
 	</div>
 </div>
@@ -22,8 +20,6 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/pages/search.vue'),
 	data() {
 		return {
-			fetching: true,
-			notAvailable: false,
 			makePromise: cursor => this.$root.api('notes/search', {
 				limit: limit + 1,
 				offset: cursor ? cursor : undefined,
@@ -70,7 +66,6 @@ export default Vue.extend({
 			}
 		},
 		inited() {
-			this.fetching = false;
 			Progress.done();
 		},
 	}
