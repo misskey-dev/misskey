@@ -60,12 +60,12 @@ common:
   messaging: "聊天"
   deck: "Deck"
   timeline: "时间线"
-  explore: "みつける"
+  explore: "发现"
   following: "正在关注"
   followers: "关注者"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
-    explore: "ユーザーを探索する"
+    explore: "查找用户"
   weekday-short:
     sunday: "日"
     monday: "一"
@@ -213,11 +213,11 @@ common/views/pages/explore.vue:
   recently-updated-users: "活跃用户"
   recently-registered-users: "新用户"
   popular-tags: "热门标签"
-  federated: "連合"
-  explore: "{host}を探索"
-  users-info: "現在{users}ユーザーが登録されています"
+  federated: "联合"
+  explore: "查找{host}"
+  users-info: "当前有{users}个注册用户"
 common/views/components/user-list.vue:
-  no-users: "ユーザーがいません"
+  no-users: "无用户"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "等待 {}"
