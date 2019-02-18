@@ -7,7 +7,7 @@
 		</div>
 		<span class="label" ref="label"><slot></slot></span>
 		<span class="title" ref="title"><slot name="title"></slot></span>
-		<div class="prefix" ref="prefix"><span><slot name="prefix"></slot></span></div>
+		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
 			<input ref="input"
 				:type="type"
@@ -37,7 +37,7 @@
 				@change="onChangeFile"
 			>
 		</template>
-		<div class="suffix" ref="suffix"><span><slot name="suffix"></slot></span></div>
+		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
 	<div class="toggle" v-if="withPasswordToggle">
 		<a @click='togglePassword'>
