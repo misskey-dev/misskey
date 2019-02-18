@@ -14,7 +14,6 @@ import composeNotification from '../common/scripts/compose-notification';
 
 import MkHome from './views/home/home.vue';
 import MkDeck from './views/deck/deck.vue';
-import MkUserFollowingOrFollowers from './views/pages/user-following-or-followers.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
