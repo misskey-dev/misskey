@@ -1,8 +1,8 @@
-import { version as current } from '../../config';
+import { clientVersion as current } from '../../config';
 
 export default async function($root: any, force = false, silent = false) {
 	const meta = await $root.getMeta(force);
-	const newer = meta.version;
+	const newer = meta.clientVersion;
 
 	if (newer != current) {
 		localStorage.setItem('should-refresh', 'true');
