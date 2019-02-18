@@ -28,8 +28,8 @@ common:
   load-more: "Charger plus"
   enter-password: "Veuillez entrer le mot de passe"
   2fa: "Authentification à deux facteurs"
-  customize-home: "ホームをカスタマイズ"
-  featured-notes: "ハイライト"
+  customize-home: "Personnaliser la disposition de votre accueil"
+  featured-notes: "Les notes mises en avant"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -211,7 +211,7 @@ common/views/pages/explore.vue:
   verified-users: "Comptes vérifiés"
   popular-users: "Utilisateurs populaires"
   recently-updated-users: "Utilisateurs actifs récemment"
-  recently-registered-users: "新規ユーザー"
+  recently-registered-users: "Les nouveaux inscrits"
   popular-tags: "Mots-clés populaires"
   federated: "Du Fédiverse"
 common/views/components/games/reversi/reversi.vue:
@@ -782,7 +782,7 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
 desktop/views/components/timeline.core.vue:
-  empty: "投稿がありません"
+  empty: "Sans aucune note"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user} suit"
   followers: "Abonné·e·s de {user}"
@@ -1618,8 +1618,8 @@ deck:
   stack-left: "Vers la gauche"
   pop-right: "Vers la droite"
   disabled-timeline:
-    title: "無効化されたタイムライン"
-    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
+    title: "Le fil été désactivé"
+    description: "Ce fil a été désactivé par l'administrateur du serveur."
 deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
