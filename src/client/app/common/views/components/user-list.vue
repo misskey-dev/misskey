@@ -4,13 +4,13 @@
 
 	<mk-error v-if="!fetching && !inited" @retry="init()"/>
 
-	<div class="efvhhmdq" v-size="[{ lt: 500, class: 'narrow' }]">
+	<div class="efvhhmdq" :class="{ iconOnly }" v-size="[{ lt: 500, class: 'narrow' }]">
 		<div class="no-users" v-if="inited && us.length == 0">
 			<p>{{ $t('no-users') }}</p>
 		</div>
 		<div class="user" v-for="user in us">
 			<mk-avatar class="avatar" :user="user"/>
-			<div class="body">
+			<div class="body" v-if="!iconOnly">
 				<div class="name">
 					<router-link class="name" :to="user | userPage" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
 					<p class="username">@{{ user | acct }}</p>
@@ -97,6 +97,18 @@ export default Vue.extend({
 
 		> .user > .body > .description
 			display none
+
+	&.iconOnly
+		padding 12px
+
+		> .user
+			display inline-block
+			padding 0
+			border-bottom none
+
+			> .avatar
+				display inline-block
+				margin 4px
 
 	> .no-users
 		text-align center
