@@ -214,6 +214,8 @@ common/views/pages/explore.vue:
   recently-registered-users: "신규 사용자"
   popular-tags: "인기 태그"
   federated: "연합"
+common/views/components/user-list.vue:
+  no-users: "ユーザーがいません"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}을(를) 기다리고 있습니다"
