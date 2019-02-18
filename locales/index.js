@@ -15,7 +15,7 @@ const locales = langs
 			case 'ja-JP': return [lang, locale];
 			case 'en-US': return [lang, { ...locales['ja-JP'], ...locale }];
 			default: return [lang, {
-				(lang.startsWith('ja-') ? {} : ...locales['en-US']),
+				...(lang.startsWith('ja-') ? {} : locales['en-US']),
 				...locales['ja-JP'],
 				...locale
 		}];
