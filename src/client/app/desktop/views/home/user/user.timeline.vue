@@ -1,12 +1,12 @@
 <template>
-<div class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
-	<header>
-		<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
-		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa :icon="['far', 'images']"/> {{ $t('with-media') }}</span>
-		<span :data-active="mode == 'my-posts'" @click="mode = 'my-posts'"><fa icon="user"/> {{ $t('my-posts') }}</span>
-	</header>
+<div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
+		<header slot="header" class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
+			<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
+			<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
+			<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa :icon="['far', 'images']"/> {{ $t('with-media') }}</span>
+			<span :data-active="mode == 'my-posts'" @click="mode = 'my-posts'"><fa icon="user"/> {{ $t('my-posts') }}</span>
+		</header>
 		<p class="empty" slot="empty"><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</p>
 	</mk-notes>
 </div>
@@ -86,43 +86,38 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .oh5y2r7l5lx8j6jj791ykeiwgihheguk
-	background var(--face)
-	border-radius var(--round)
-	overflow hidden
+	padding 0 8px
+	z-index 10
+	background var(--faceHeader)
+	box-shadow 0 1px var(--desktopTimelineHeaderShadow)
 
-	> header
-		padding 0 8px
-		z-index 10
-		background var(--faceHeader)
-		box-shadow 0 1px var(--desktopTimelineHeaderShadow)
+	> span
+		display inline-block
+		padding 0 10px
+		line-height 42px
+		font-size 12px
+		user-select none
 
-		> span
-			display inline-block
-			padding 0 10px
-			line-height 42px
-			font-size 12px
-			user-select none
+		&[data-active]
+			color var(--primary)
+			cursor default
+			font-weight bold
 
-			&[data-active]
-				color var(--primary)
-				cursor default
-				font-weight bold
+			&:before
+				content ""
+				display block
+				position absolute
+				bottom 0
+				left -8px
+				width calc(100% + 16px)
+				height 2px
+				background var(--primary)
 
-				&:before
-					content ""
-					display block
-					position absolute
-					bottom 0
-					left -8px
-					width calc(100% + 16px)
-					height 2px
-					background var(--primary)
+		&:not([data-active])
+			color var(--desktopTimelineSrc)
+			cursor pointer
 
-			&:not([data-active])
-				color var(--desktopTimelineSrc)
-				cursor pointer
-
-				&:hover
-					color var(--desktopTimelineSrcHover)
+			&:hover
+				color var(--desktopTimelineSrcHover)
 
 </style>
