@@ -1234,6 +1234,7 @@ admin/views/instance.vue:
   smtp-secure-info: "STARTTLS使用時はオフにします。"
   smtp-host: "SMTPホスト"
   smtp-port: "SMTPポート"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTPユーザー"
   smtp-pass: "SMTPパスワード"
   serviceworker-config: "ServiceWorker"

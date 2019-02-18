@@ -54,9 +54,10 @@
 				<ui-input v-model="smtpHost" :disabled="!enableEmail">{{ $t('smtp-host') }}</ui-input>
 				<ui-input v-model="smtpPort" type="number" :disabled="!enableEmail">{{ $t('smtp-port') }}</ui-input>
 			</ui-horizon-group>
+			<ui-switch v-model="smtpAuth">{{ $t('smtp-auth') }}</ui-switch>
 			<ui-horizon-group inputs>
-				<ui-input v-model="smtpUser" :disabled="!enableEmail">{{ $t('smtp-user') }}</ui-input>
-				<ui-input v-model="smtpPass" type="password" :withPasswordToggle="true" :disabled="!enableEmail">{{ $t('smtp-pass') }}</ui-input>
+				<ui-input v-model="smtpUser" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-user') }}</ui-input>
+				<ui-input v-model="smtpPass" type="password" :withPasswordToggle="true" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-pass') }}</ui-input>
 			</ui-horizon-group>
 			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<template #desc>{{ $t('smtp-secure-info') }}</template></ui-switch>
 		</section>
@@ -188,6 +189,7 @@ export default Vue.extend({
 			smtpPort: null,
 			smtpUser: null,
 			smtpPass: null,
+			smtpAuth: false,
 			enableServiceWorker: false,
 			swPublicKey: null,
 			swPrivateKey: null,
@@ -236,6 +238,7 @@ export default Vue.extend({
 			this.smtpPort = meta.smtpPort;
 			this.smtpUser = meta.smtpUser;
 			this.smtpPass = meta.smtpPass;
+			this.smtpAuth = meta.smtpUser != null && meta.smtpUser !== '';
 			this.enableServiceWorker = meta.enableServiceWorker;
 			this.swPublicKey = meta.swPublickey;
 			this.swPrivateKey = meta.swPrivateKey;
@@ -293,8 +296,8 @@ export default Vue.extend({
 				smtpSecure: this.smtpSecure,
 				smtpHost: this.smtpHost,
 				smtpPort: parseInt(this.smtpPort, 10),
-				smtpUser: this.smtpUser,
-				smtpPass: this.smtpPass,
+				smtpUser: this.smtpAuth ? this.smtpUser : '',
+				smtpPass: this.smtpAuth ? this.smtpPass : '',
 				enableServiceWorker: this.enableServiceWorker,
 				swPublicKey: this.swPublicKey,
 				swPrivateKey: this.swPrivateKey
