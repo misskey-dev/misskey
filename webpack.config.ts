@@ -18,7 +18,7 @@ const constants = require('./src/const.json');
 
 const locales = require('./locales');
 const meta = require('./package.json');
-const version = isProduction ? meta.clientVersion : meta.clientVersion + '-' + rndstr({ length: 8, chars: '0-9a-z' });
+const version = isProduction ? meta.version : meta.version + '-' + rndstr({ length: 8, chars: '0-9a-z' });
 const codename = meta.codename;
 
 const postcss = {
