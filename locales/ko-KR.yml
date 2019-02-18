@@ -217,7 +217,7 @@ common/views/pages/explore.vue:
   explore: "{host}를 탐색"
   users-info: "현재 {users} 사용자가 등록되어 있습니다"
 common/views/components/user-list.vue:
-  no-users: "ユーザーがいません"
+  no-users: "사용자가 없습니다"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}을(를) 기다리고 있습니다"
