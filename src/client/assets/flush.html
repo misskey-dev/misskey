@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 		<title>Misskeyのリカバリ</title>
 		<script>
-			const yn = window.confirm('キャッシュをクリアしますか？\n\nDo you want to clear caches?');
+			const yn = location.search === '?force' || window.confirm('キャッシュをクリアしますか？\n\nDo you want to clear caches?');
 			if (yn) {
 				localStorage.setItem('shouldFlush', 'true');
 			}
