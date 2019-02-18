@@ -1,13 +1,12 @@
 <template>
-<div class="ibpylqas">
-	<div v-if="src == 'home' && alone" class="explore">
-		<p>{{ $t('@.empty-timeline-info.follow-users-to-make-your-timeline') }}</p>
-		<router-link to="/explore">{{ $t('@.empty-timeline-info.explore') }}</router-link>
-	</div>
-
+<div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
 		<template v-slot:header>
 			<slot></slot>
+			<div v-if="src == 'home' && alone" class="ibpylqas">
+				<p>{{ $t('@.empty-timeline-info.follow-users-to-make-your-timeline') }}</p>
+				<router-link to="/explore">{{ $t('@.empty-timeline-info.explore') }}</router-link>
+			</div>
 		</template>
 		<template v-slot:empty>
 			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
@@ -142,14 +141,13 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .ibpylqas
-	> .explore
-		padding 16px
-		text-align center
-		color var(--text)
-		border-bottom solid var(--lineWidth) var(--faceDivider)
-		font-size 14px
+	padding 16px
+	text-align center
+	color var(--text)
+	border-bottom solid var(--lineWidth) var(--faceDivider)
+	font-size 14px
 
-		> p
-			margin 0 0 8px 0
+	> p
+		margin 0 0 8px 0
 
 </style>
