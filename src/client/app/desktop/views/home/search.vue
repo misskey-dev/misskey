@@ -1,11 +1,10 @@
 <template>
-<div class="oxgbmvii">
-	<div class="notes">
-		<header>
+<div>
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+		<header slot="header" class="oxgbmvii">
 			<span><fa icon="search"/> {{ q }}</span>
 		</header>
-		<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>
-	</div>
+	</mk-notes>
 </div>
 </template>
 
@@ -76,16 +75,14 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .oxgbmvii
-	> .notes
-		> header
-			padding 0 8px
-			z-index 10
-			background var(--faceHeader)
-			box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
+	padding 0 8px
+	z-index 10
+	background var(--faceHeader)
+	box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
 
-			> span
-				padding 0 8px
-				font-size 0.9em
-				line-height 42px
-				color var(--text)
+	> span
+		padding 0 8px
+		font-size 0.9em
+		line-height 42px
+		color var(--text)
 </style>
