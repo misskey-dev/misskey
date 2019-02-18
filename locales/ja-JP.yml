@@ -232,6 +232,9 @@ common/views/pages/explore.vue:
   popular-tags: "人気のタグ"
   federated: "連合"
 
+common/views/components/user-list.vue:
+  no-users: "ユーザーがいません"
+
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}を待っています"

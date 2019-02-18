@@ -5,6 +5,9 @@
 	<mk-error v-if="!fetching && !inited" @retry="init()"/>
 
 	<div class="efvhhmdq" v-size="[{ lt: 500, class: 'narrow' }]">
+		<div class="no-users" v-if="inited && us.length == 0">
+			<p>{{ $t('no-users') }}</p>
+		</div>
 		<div class="user" v-for="user in us">
 			<mk-avatar class="avatar" :user="user"/>
 			<div class="body">
@@ -26,8 +29,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('common/views/components/user-list.vue'),
+
 	props: {
 		makePromise: {
 			required: true
@@ -91,6 +97,10 @@ export default Vue.extend({
 
 		> .user > .body > .description
 			display none
+
+	> .no-users
+		text-align center
+		color var(--text)
 
 	> .user
 		display flex
