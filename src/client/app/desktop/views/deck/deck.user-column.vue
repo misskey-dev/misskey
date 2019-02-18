@@ -16,9 +16,9 @@
 				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
-				<span class="name">
+				<router-link class="name" :to="user | userPage()">
 					<mk-user-name :user="user"/>
-				</span>
+				</router-link>
 				<span class="acct">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
 				<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 			</div>
@@ -171,6 +171,7 @@ export default Vue.extend({
 				margin-top 8px
 				font-weight bold
 				text-shadow 0 0 8px #000
+				color #fff
 
 			> .acct
 				display block
