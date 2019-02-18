@@ -136,7 +136,7 @@ init(async (launch, os) => {
 		routes: [
 			os.store.state.device.inDeckMode
 				? { path: '/', name: 'index', component: MkDeck, children: [
-					{ path: '/@:user', name: 'user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default), children: [
+					{ path: '/@:user', component: () => import('./views/deck/deck.user-column.vue').then(m => m.default), children: [
 						{ path: '', name: 'user', component: () => import('./views/deck/deck.user-column.home.vue').then(m => m.default) },
 						{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
 						{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
