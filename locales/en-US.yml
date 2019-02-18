@@ -214,10 +214,10 @@ common/views/pages/explore.vue:
   recently-registered-users: "Users who joined recently"
   popular-tags: "Popular Tags"
   federated: "From the fediverse"
-  explore: "{host}を探索"
-  users-info: "現在{users}ユーザーが登録されています"
+  explore: "Explore {host}"
+  users-info: "Currently, {users} users are registered here"
 common/views/components/user-list.vue:
-  no-users: "ユーザーがいません"
+  no-users: "There are no users."
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Waiting for {}"
