@@ -65,7 +65,7 @@ common:
   followers: "팔로워"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
-    explore: "사용자 검색하기"
+    explore: "사용자 탐색"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -214,8 +214,8 @@ common/views/pages/explore.vue:
   recently-registered-users: "신규 사용자"
   popular-tags: "인기 태그"
   federated: "연합"
-  explore: "{host}を探索"
-  users-info: "現在{users}ユーザーが登録されています"
+  explore: "{host}를 탐색"
+  users-info: "현재 {users} 사용자가 등록되어 있습니다"
 common/views/components/user-list.vue:
   no-users: "ユーザーがいません"
 common/views/components/games/reversi/reversi.vue:
