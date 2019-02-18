@@ -1,10 +1,10 @@
 import { apiUrl, locale } from '../../config';
-import CropWindow from '../views/components/crop-window.vue';
 import ProgressDialog from '../views/components/progress-dialog.vue';
 
 export default ($root: any) => {
 
-	const cropImage = file => new Promise((resolve, reject) => {
+	const cropImage = file => new Promise(async (resolve, reject) => {
+		const CropWindow = await import('../views/components/crop-window.vue').then(x => x.default);
 		const w = $root.new(CropWindow, {
 			image: file,
 			title: locale['desktop']['banner-crop-title'],
