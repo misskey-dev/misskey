@@ -7,7 +7,7 @@
 		<li class="featured" :class="{ active: $route.name == 'featured' }">
 			<router-link to="/featured"><fa :icon="faNewspaper"/><p>{{ $t('@.featured-notes') }}</p></router-link>
 		</li>
-		<li class="explore" :class="{ active: $route.name == 'explore' }">
+		<li class="explore" :class="{ active: $route.name == 'explore' || $route.name == 'explore-tag' }">
 			<router-link to="/explore"><fa :icon="faHashtag"/><p>{{ $t('@.explore') }}</p></router-link>
 		</li>
 		<li class="game">
