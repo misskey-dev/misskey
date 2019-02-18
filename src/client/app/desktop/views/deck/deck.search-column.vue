@@ -1,8 +1,8 @@
 <template>
 <x-column>
-	<span slot="header">
+	<template v-slot:header>
 		<fa icon="search"/><span>{{ q }}</span>
-	</span>
+	</template>
 
 	<div>
 		<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>

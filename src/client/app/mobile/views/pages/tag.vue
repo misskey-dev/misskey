@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa icon="hashtag"/></span>{{ $route.params.tag }}</span>
+	<template v-slot:header><span style="margin-right:4px;"><fa icon="hashtag"/></span>{{ $route.params.tag }}</template>
 
 	<main>
 		<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>

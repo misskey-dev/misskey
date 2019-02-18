@@ -1,9 +1,11 @@
 <template>
 <div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
-		<header class="wqraeznr" slot="header">
-			<span><fa icon="hashtag"/> {{ $route.params.tag }}</span>
-		</header>
+		<template v-slot:header>
+			<header class="wqraeznr">
+				<span><fa icon="hashtag"/> {{ $route.params.tag }}</span>
+			</header>
+		</template>
 	</mk-notes>
 </div>
 </template>

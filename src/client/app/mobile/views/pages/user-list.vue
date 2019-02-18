@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header" v-if="!fetching"><fa icon="list"/>{{ list.title }}</span>
+	<template v-slot:header v-if="!fetching"><fa icon="list"/>{{ list.title }}</template>
 
 	<main v-if="!fetching">
 		<x-editor :list="list"/>

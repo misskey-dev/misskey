@@ -1,6 +1,6 @@
 <template>
 <ui-container :body-togglable="true">
-	<span slot="header"><fa icon="camera"/> {{ $t('title') }}</span>
+	<template v-slot:header><fa icon="camera"/> {{ $t('title') }}</template>
 
 	<div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">
 		<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('loading') }}<mk-ellipsis/></p>

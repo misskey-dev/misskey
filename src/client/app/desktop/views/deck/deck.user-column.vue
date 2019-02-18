@@ -1,8 +1,8 @@
 <template>
 <x-column>
-	<span slot="header">
+	<template v-slot:header>
 		<fa icon="user"/><mk-user-name :user="user" v-if="user"/>
-	</span>
+	</template>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
 		<div class="is-remote" v-if="user.host != null">

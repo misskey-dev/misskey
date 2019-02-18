@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-container :show-header="props.design == 0">
-		<template slot="header"><fa icon="pencil-alt"/>{{ $t('title') }}</template>
+		<template v-slot:header><fa icon="pencil-alt"/>{{ $t('title') }}</template>
 
 		<div class="lhcuptdmcdkfwmipgazeawoiuxpzaclc-body"
 			@dragover.stop="onDragover"

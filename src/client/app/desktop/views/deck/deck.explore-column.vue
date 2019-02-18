@@ -1,8 +1,8 @@
 <template>
 <x-column>
-	<span slot="header">
+	<template v-slot:header>
 		<fa :icon="faHashtag"/>{{ $t('@.explore') }}
-	</span>
+	</template>
 
 	<div>
 		<x-explore v-bind="$attrs"/>

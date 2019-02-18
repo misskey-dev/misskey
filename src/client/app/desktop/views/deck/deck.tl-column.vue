@@ -1,6 +1,6 @@
 <template>
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
-	<span slot="header">
+	<template v-slot:header>
 		<fa v-if="column.type == 'home'" icon="home"/>
 		<fa v-if="column.type == 'local'" :icon="['far', 'comments']"/>
 		<fa v-if="column.type == 'hybrid'" icon="share-alt"/>
@@ -8,7 +8,7 @@
 		<fa v-if="column.type == 'list'" icon="list"/>
 		<fa v-if="column.type == 'hashtag'" icon="hashtag"/>
 		<span>{{ name }}</span>
-	</span>
+	</template>
 
 	<div class="editor" style="padding:12px" v-if="edit">
 		<ui-switch v-model="column.isMediaOnly" @change="onChangeSettings">{{ $t('is-media-only') }}</ui-switch>

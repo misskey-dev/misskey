@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-activity">
 	<ui-container :show-header="!props.compact">
-		<template slot="header"><fa icon="chart-bar"/>{{ $t('activity') }}</template>
+		<template v-slot:header><fa icon="chart-bar"/>{{ $t('activity') }}</template>
 		<div :class="$style.body">
 			<x-activity :user="$store.state.i"/>
 		</div>

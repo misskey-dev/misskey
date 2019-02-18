@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-hashtags">
 	<ui-container :show-header="!props.compact">
-		<template slot="header"><fa icon="hashtag"/>{{ $t('title') }}</template>
+		<template v-slot:header><fa icon="hashtag"/>{{ $t('title') }}</template>
 
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<mk-trends/>

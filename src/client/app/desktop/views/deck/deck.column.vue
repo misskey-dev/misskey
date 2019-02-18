@@ -14,7 +14,7 @@
 			<template v-if="active"><fa icon="angle-up"/></template>
 			<template v-else><fa icon="angle-down"/></template>
 		</button>
-		<slot name="header"></slot>
+		<span><slot name="header"></slot></span>
 		<span class="count" v-if="count > 0">({{ count }})</span>
 		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu"><fa icon="caret-down"/></button>
 		<button v-else class="close" @click.stop="close"><fa icon="times"/></button>

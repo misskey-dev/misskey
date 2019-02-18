@@ -6,12 +6,12 @@
 	</div>
 
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
-		<template slot="header">
+		<template v-slot:header>
 			<slot></slot>
 		</template>
-		<p slot="empty">
+		<template v-slot:empty>
 			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
-		</p>
+		</template>
 	</mk-notes>
 </div>
 </template>

@@ -1,10 +1,10 @@
 <template>
 <div class="mk-user-timeline">
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
-		<div slot="empty">
+		<template v-slot:empty>
 			<fa :icon="['far', 'comments']"/>
 			{{ withMedia ? this.$t('no-notes-with-media') : this.$t('no-notes') }}
-		</div>
+		</template>
 	</mk-notes>
 </div>
 </template>

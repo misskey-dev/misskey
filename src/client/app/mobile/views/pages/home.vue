@@ -1,24 +1,26 @@
 <template>
 <mk-ui>
-	<span slot="header" @click="showNav = true">
-		<span :class="$style.title">
-			<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
-			<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
-			<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
-			<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
-			<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
-			<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
-			<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
-			<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
+	<template v-slot:header>
+		<span @click="showNav = true">
+			<span :class="$style.title">
+				<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
+				<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
+				<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
+				<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
+				<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
+				<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
+				<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
+				<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
+			</span>
+			<span style="margin-left:8px">
+				<template v-if="!showNav"><fa icon="angle-down"/></template>
+				<template v-else><fa icon="angle-up"/></template>
+			</span>
+			<i :class="$style.badge" v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i>
 		</span>
-		<span style="margin-left:8px">
-			<template v-if="!showNav"><fa icon="angle-down"/></template>
-			<template v-else><fa icon="angle-up"/></template>
-		</span>
-		<i :class="$style.badge" v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i>
-	</span>
+	</template>
 
-	<template slot="func">
+	<template v-slot:func>
 		<button @click="fn"><fa icon="pencil-alt"/></button>
 	</template>
 

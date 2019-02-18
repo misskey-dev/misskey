@@ -1,11 +1,13 @@
 <template>
 <div class="mkw-polls">
 	<ui-container :show-header="!props.compact">
-		<template slot="header"><fa icon="chart-pie"/>{{ $t('title') }}</template>
-		<button slot="func" :title="$t('title')" @click="fetch">
-			<fa v-if="!fetching &&  more" icon="arrow-right"/>
-			<fa v-if="!fetching && !more" icon="sync"/>
-		</button>
+		<template v-slot:header><fa icon="chart-pie"/>{{ $t('title') }}</template>
+		<template v-slot:func>
+			<button :title="$t('title')" @click="fetch">
+				<fa v-if="!fetching && more" icon="arrow-right"/>
+				<fa v-if="!fetching && !more" icon="sync"/>
+			</button>
+		</template>
 
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">

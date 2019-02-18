@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa icon="home"/></span>{{ $t('dashboard') }}</span>
-	<template slot="func">
+	<template v-slot:header><span style="margin-right:4px;"><fa icon="home"/></span>{{ $t('dashboard') }}</template>
+	<template v-slot:func>
 		<button @click="customizing = !customizing"><fa icon="cog"/></button>
 	</template>
 	<main>

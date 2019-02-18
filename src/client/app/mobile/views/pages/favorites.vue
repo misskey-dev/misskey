@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('title') }}</span>
+	<template v-slot:header><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('title') }}</template>
 
 	<main>
 		<sequential-entrance animation="entranceFromTop" delay="25">

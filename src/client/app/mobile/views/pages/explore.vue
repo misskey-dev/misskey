@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa :icon="faHashtag"/></span>{{ $t('@.explore') }}</span>
+	<template v-slot:header><span style="margin-right:4px;"><fa :icon="faHashtag"/></span>{{ $t('@.explore') }}</template>
 
 	<main>
 		<x-explore v-bind="$attrs"/>

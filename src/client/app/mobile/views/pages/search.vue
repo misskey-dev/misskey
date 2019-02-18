@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><fa icon="search"/> {{ q }}</span>
+	<template v-slot:header><fa icon="search"/> {{ q }}</template>
 
 	<main>
 		<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited"/>

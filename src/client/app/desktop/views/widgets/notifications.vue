@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-notifications">
 	<ui-container :show-header="!props.compact">
-		<template slot="header"><fa :icon="['far', 'bell']"/>{{ $t('title') }}</template>
-		<!-- <button slot="func" :title="$t('title')" @click="settings"><fa icon="cog"/></button> -->
+		<template v-slot:header><fa :icon="['far', 'bell']"/>{{ $t('title') }}</template>
+		<!-- <button v-slot:func :title="$t('title')" @click="settings"><fa icon="cog"/></button> -->
 
 		<mk-notifications :class="$style.notifications"/>
 	</ui-container>

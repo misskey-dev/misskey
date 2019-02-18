@@ -1,6 +1,6 @@
 <template>
 <x-column :name="name" :column="column" :is-stacked="isStacked">
-	<span slot="header"><fa icon="at"/>{{ name }}</span>
+	<template v-slot:header><fa icon="at"/>{{ name }}</template>
 
 	<x-mentions ref="tl"/>
 </x-column>

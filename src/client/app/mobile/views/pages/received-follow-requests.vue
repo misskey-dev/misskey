@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><fa :icon="['far', 'envelope']"/>{{ $t('title') }}</span>
+	<template v-slot:header><fa :icon="['far', 'envelope']"/>{{ $t('title') }}</template>
 
 	<main>
 		<div v-for="req in requests">

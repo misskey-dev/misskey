@@ -1,8 +1,8 @@
 <template>
 <div class="mk-activity">
 	<ui-container :show-header="design == 0" :naked="design == 2">
-		<template slot="header"><fa icon="chart-bar"/>{{ $t('title') }}</template>
-		<button slot="func" :title="$t('toggle')" @click="toggle"><fa icon="sort"/></button>
+		<template v-slot:header><fa icon="chart-bar"/>{{ $t('title') }}</template>
+		<template v-slot:func><button :title="$t('toggle')" @click="toggle"><fa icon="sort"/></button></template>
 
 		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<template v-else>

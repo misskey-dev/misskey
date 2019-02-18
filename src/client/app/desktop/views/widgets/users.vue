@@ -1,11 +1,13 @@
 <template>
 <div class="mkw-users">
 	<ui-container :show-header="!props.compact">
-		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
-		<button slot="func" :title="$t('title')" @click="refresh">
-			<fa v-if="!fetching &&  more" icon="arrow-right"/>
-			<fa v-if="!fetching && !more" icon="sync"/>
-		</button>
+		<template v-slot:header><fa icon="users"/>{{ $t('title') }}</template>
+		<template v-slot:func>
+			<button :title="$t('title')" @click="refresh">
+				<fa v-if="!fetching && more" icon="arrow-right"/>
+				<fa v-if="!fetching && !more" icon="sync"/>
+			</button>
+		</template>
 
 		<div class="mkw-users--body">
 			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>

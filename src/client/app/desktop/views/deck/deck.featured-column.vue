@@ -1,8 +1,8 @@
 <template>
 <x-column>
-	<span slot="header">
+	<template v-slot:header>
 		<fa :icon="faNewspaper"/>{{ $t('@.featured-notes') }}
-	</span>
+	</template>
 
 	<div>
 		<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>

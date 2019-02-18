@@ -1,9 +1,11 @@
 <template>
 <div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
-		<header slot="header" class="oxgbmvii">
-			<span><fa icon="search"/> {{ q }}</span>
-		</header>
+		<template v-slot:header>
+			<header class="oxgbmvii">
+				<span><fa icon="search"/> {{ q }}</span>
+			</header>
+		</template>
 	</mk-notes>
 </div>
 </template>
