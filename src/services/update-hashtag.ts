@@ -1,4 +1,4 @@
-import { IUser, isLocalUser } from '../models/user';
+import { IUser, isLocalUser, isRemoteUser } from '../models/user';
 import Hashtag from '../models/hashtag';
 import hashtagChart from './chart/hashtag';
 
@@ -26,12 +26,20 @@ export async function updateHashtag(user: IUser, tag: string, isUserAttached = f
 					$push.attachedLocalUserIds = user._id;
 					$inc.attachedLocalUsersCount = 1;
 				}
+				// 自分が(リモートで)初めてこのタグを使ったなら
+				if (isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id.equals(user._id))) {
+					$push.attachedRemoteUserIds = user._id;
+					$inc.attachedRemoteUsersCount = 1;
+				}
 			} else {
 				$pull.attachedUserIds = user._id;
 				$inc.attachedUsersCount = -1;
 				if (isLocalUser(user)) {
 					$pull.attachedLocalUserIds = user._id;
 					$inc.attachedLocalUsersCount = -1;
+				} else {
+					$pull.attachedRemoteUserIds = user._id;
+					$inc.attachedRemoteUsersCount = -1;
 				}
 			}
 		} else {
@@ -44,6 +52,11 @@ export async function updateHashtag(user: IUser, tag: string, isUserAttached = f
 			if (isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id.equals(user._id))) {
 				$push.mentionedLocalUserIds = user._id;
 				$inc.mentionedLocalUsersCount = 1;
+			}
+			// 自分が(リモートで)初めてこのタグを使ったなら
+			if (isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id.equals(user._id))) {
+				$push.mentionedRemoteUserIds = user._id;
+				$inc.mentionedRemoteUsersCount = 1;
 			}
 		}
 
@@ -60,10 +73,14 @@ export async function updateHashtag(user: IUser, tag: string, isUserAttached = f
 				mentionedUsersCount: 0,
 				mentionedLocalUserIds: [],
 				mentionedLocalUsersCount: 0,
+				mentionedRemoteUserIds: [],
+				mentionedRemoteUsersCount: 0,
 				attachedUserIds: [user._id],
 				attachedUsersCount: 1,
 				attachedLocalUserIds: isLocalUser(user) ? [user._id] : [],
-				attachedLocalUsersCount: isLocalUser(user) ? 1 : 0
+				attachedLocalUsersCount: isLocalUser(user) ? 1 : 0,
+				attachedRemoteUserIds: isRemoteUser(user) ? [user._id] : [],
+				attachedRemoteUsersCount: isRemoteUser(user) ? 1 : 0,
 			});
 		} else {
 			Hashtag.insert({
@@ -72,10 +89,14 @@ export async function updateHashtag(user: IUser, tag: string, isUserAttached = f
 				mentionedUsersCount: 1,
 				mentionedLocalUserIds: isLocalUser(user) ? [user._id] : [],
 				mentionedLocalUsersCount: isLocalUser(user) ? 1 : 0,
+				mentionedRemoteUserIds: isRemoteUser(user) ? [user._id] : [],
+				mentionedRemoteUsersCount: isRemoteUser(user) ? 1 : 0,
 				attachedUserIds: [],
 				attachedUsersCount: 0,
 				attachedLocalUserIds: [],
-				attachedLocalUsersCount: 0
+				attachedLocalUsersCount: 0,
+				attachedRemoteUserIds: [],
+				attachedRemoteUsersCount: 0,
 			});
 		}
 	}

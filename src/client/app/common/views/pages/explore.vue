@@ -11,7 +11,8 @@
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
-			<router-link v-for="tag in tags" :to="`/explore/tags/${tag.tag}`" :key="tag.tag">{{ tag.tag }}</router-link>
+			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="tag.tag" class="local">{{ tag.tag }}</router-link>
+			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="tag.tag">{{ tag.tag }}</router-link>
 		</div>
 	</ui-container>
 
@@ -73,7 +74,8 @@ export default Vue.extend({
 				sort: '+createdAt',
 				limit: 10
 			}),
-			tags: [],
+			tagsLocal: [],
+			tagsRemote: [],
 			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag
 		};
 	},
@@ -103,9 +105,17 @@ export default Vue.extend({
 	created() {
 		this.$root.api('hashtags/list', {
 			sort: '+attachedLocalUsers',
+			attachedToLocalUserOnly: true,
 			limit: 30
 		}).then(tags => {
-			this.tags = tags;
+			this.tagsLocal = tags;
+		});
+		this.$root.api('hashtags/list', {
+			sort: '+attachedRemoteUsers',
+			attachedToRemoteUserOnly: true,
+			limit: 30
+		}).then(tags => {
+			this.tagsRemote = tags;
 		});
 	}
 });
@@ -117,5 +127,8 @@ export default Vue.extend({
 
 	> *
 		margin-right 16px
+
+		&.local
+			font-weight bold
 
 </style>

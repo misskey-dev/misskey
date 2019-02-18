@@ -5,8 +5,10 @@ const Hashtag = db.get<IHashtags>('hashtags');
 Hashtag.createIndex('tag', { unique: true });
 Hashtag.createIndex('mentionedUsersCount');
 Hashtag.createIndex('mentionedLocalUsersCount');
+Hashtag.createIndex('mentionedRemoteUsersCount');
 Hashtag.createIndex('attachedUsersCount');
 Hashtag.createIndex('attachedLocalUsersCount');
+Hashtag.createIndex('attachedRemoteUsersCount');
 export default Hashtag;
 
 // 後方互換性のため
@@ -29,6 +31,20 @@ Hashtag.findOne({ attachedUserIds: { $exists: false }}).then(h => {
 		});
 	}
 });
+Hashtag.findOne({ attachedRemoteUserIds: { $exists: false }}).then(h => {
+	if (h != null) {
+		Hashtag.update({}, {
+			$set: {
+				mentionedRemoteUserIds: [],
+				mentionedRemoteUsersCount: 0,
+				attachedRemoteUserIds: [],
+				attachedRemoteUsersCount: 0,
+			}
+		}, {
+			multi: true
+		});
+	}
+});
 
 export interface IHashtags {
 	tag: string;
@@ -36,8 +52,12 @@ export interface IHashtags {
 	mentionedUsersCount: number;
 	mentionedLocalUserIds: mongo.ObjectID[];
 	mentionedLocalUsersCount: number;
+	mentionedRemoteUserIds: mongo.ObjectID[];
+	mentionedRemoteUsersCount: number;
 	attachedUserIds: mongo.ObjectID[];
 	attachedUsersCount: number;
 	attachedLocalUserIds: mongo.ObjectID[];
 	attachedLocalUsersCount: number;
+	attachedRemoteUserIds: mongo.ObjectID[];
+	attachedRemoteUsersCount: number;
 }
