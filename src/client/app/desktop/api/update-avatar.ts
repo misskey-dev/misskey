@@ -5,16 +5,6 @@ import ProgressDialog from '../views/components/progress-dialog.vue';
 export default ($root: any) => {
 
 	const cropImage = file => new Promise((resolve, reject) => {
-
-		const regex = RegExp('\.(jpg|jpeg|png|gif|webp|bmp|tiff)$');
-		if (!regex.test(file.name) ) {
-			$root.dialog({
-				title: locale['desktop']['invalid-filetype'],
-				text: null
-			});
-			return reject('invalid-filetype');
-		}
-
 		const w = $root.new(CropWindow, {
 			image: file,
 			title: locale['desktop']['avatar-crop-title'],
