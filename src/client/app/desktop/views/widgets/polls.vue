@@ -1,11 +1,13 @@
 <template>
 <div class="mkw-polls">
-	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa icon="chart-pie"/>{{ $t('title') }}</template>
-		<button slot="func" :title="$t('title')" @click="fetch">
-			<fa v-if="!fetching &&  more" icon="arrow-right"/>
-			<fa v-if="!fetching && !more" icon="sync"/>
-		</button>
+	<ui-container :show-header="!props.compact">
+		<template #header><fa icon="chart-pie"/>{{ $t('title') }}</template>
+		<template #func>
+			<button :title="$t('title')" @click="fetch">
+				<fa v-if="!fetching && more" icon="arrow-right"/>
+				<fa v-if="!fetching && !more" icon="sync"/>
+			</button>
+		</template>
 
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
@@ -16,7 +18,7 @@
 			<p class="empty" v-if="!fetching && poll == null">{{ $t('nothing') }}</p>
 			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

@@ -1,24 +1,26 @@
 <template>
 <mk-ui>
-	<span slot="header" @click="showNav = true">
-		<span :class="$style.title">
-			<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
-			<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
-			<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
-			<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
-			<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
-			<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
-			<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
-			<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
+	<template #header>
+		<span @click="showNav = true">
+			<span :class="$style.title">
+				<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
+				<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
+				<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
+				<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
+				<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
+				<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
+				<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
+				<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
+			</span>
+			<span style="margin-left:8px">
+				<template v-if="!showNav"><fa icon="angle-down"/></template>
+				<template v-else><fa icon="angle-up"/></template>
+			</span>
+			<i :class="$style.badge" v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i>
 		</span>
-		<span style="margin-left:8px">
-			<template v-if="!showNav"><fa icon="angle-down"/></template>
-			<template v-else><fa icon="angle-up"/></template>
-		</span>
-		<i :class="$style.badge" v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i>
-	</span>
+	</template>
 
-	<template slot="func">
+	<template #func>
 		<button @click="fn"><fa icon="pencil-alt"/></button>
 	</template>
 
@@ -112,9 +114,13 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then(meta => {
-			this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
-			this.enableGlobalTimeline = !meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
+		this.$root.getMeta().then((meta: Record<string, any>) => {
+			if (!(
+				this.enableGlobalTimeline = !meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
+			) && this.src === 'global') this.src = 'local';
+			if (!(
+				this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
+			) && ['local', 'hybrid'].includes(this.src)) this.src = 'home';
 		});
 
 		if (this.$store.state.device.tl) {
@@ -228,17 +234,6 @@ main
 						margin-left 6px
 						font-size 10px
 						color var(--notificationIndicator)
-
-	> .tl
-		max-width 680px
-		margin 0 auto
-		padding 8px
-
-		@media (min-width 500px)
-			padding 16px
-
-		@media (min-width 600px)
-			padding 32px
 
 </style>
 

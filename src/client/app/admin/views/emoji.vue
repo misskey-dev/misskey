@@ -1,20 +1,20 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title"><fa icon="plus"/> {{ $t('add-emoji.title') }}</div>
+		<template #title><fa icon="plus"/> {{ $t('add-emoji.title') }}</template>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-input v-model="name">
 					<span>{{ $t('add-emoji.name') }}</span>
-					<span slot="desc">{{ $t('add-emoji.name-desc') }}</span>
+					<template #desc>{{ $t('add-emoji.name-desc') }}</template>
 				</ui-input>
 				<ui-input v-model="aliases">
 					<span>{{ $t('add-emoji.aliases') }}</span>
-					<span slot="desc">{{ $t('add-emoji.aliases-desc') }}</span>
+					<template #desc>{{ $t('add-emoji.aliases-desc') }}</template>
 				</ui-input>
 			</ui-horizon-group>
 			<ui-input v-model="url">
-				<i slot="icon"><fa icon="link"/></i>
+				<template #icon><fa icon="link"/></template>
 				<span>{{ $t('add-emoji.url') }}</span>
 			</ui-input>
 			<ui-info>{{ $t('add-emoji.info') }}</ui-info>
@@ -23,7 +23,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="faGrin"/> {{ $t('emojis.title') }}</div>
+		<template #title><fa :icon="faGrin"/> {{ $t('emojis.title') }}</template>
 		<section v-for="emoji in emojis" class="oryfrbft">
 			<div>
 				<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
@@ -38,7 +38,7 @@
 					</ui-input>
 				</ui-horizon-group>
 				<ui-input v-model="emoji.url">
-					<i slot="icon"><fa icon="link"/></i>
+					<template #icon><fa icon="link"/></template>
 					<span>{{ $t('add-emoji.url') }}</span>
 				</ui-input>
 				<ui-horizon-group class="fit-bottom">

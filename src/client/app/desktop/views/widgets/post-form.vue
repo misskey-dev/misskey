@@ -1,7 +1,7 @@
 <template>
 <div>
-	<mk-widget-container :show-header="props.design == 0">
-		<template slot="header"><fa icon="pencil-alt"/>{{ $t('title') }}</template>
+	<ui-container :show-header="props.design == 0">
+		<template #header><fa icon="pencil-alt"/>{{ $t('title') }}</template>
 
 		<div class="lhcuptdmcdkfwmipgazeawoiuxpzaclc-body"
 			@dragover.stop="onDragover"
@@ -37,7 +37,7 @@
 				<button @click="post" :disabled="posting" class="post">{{ $t('note') }}</button>
 			</footer>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

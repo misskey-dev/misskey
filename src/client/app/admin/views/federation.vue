@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title"><fa :icon="faTerminal"/> {{ $t('federation') }}</div>
+		<template #title><fa :icon="faTerminal"/> {{ $t('federation') }}</template>
 		<section class="fit-top">
 			<ui-input class="target" v-model="target" type="text" @enter="showInstance()">
 				<span>{{ $t('host') }}</span>
@@ -74,11 +74,11 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="faServer"/> {{ $t('instances') }}</div>
+		<template #title><fa :icon="faServer"/> {{ $t('instances') }}</template>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-select v-model="sort">
-					<span slot="label">{{ $t('sort') }}</span>
+					<template #label>{{ $t('sort') }}</template>
 					<option value="-caughtAt">{{ $t('sorts.caughtAtAsc') }}</option>
 					<option value="+caughtAt">{{ $t('sorts.caughtAtDesc') }}</option>
 					<option value="-lastCommunicatedAt">{{ $t('sorts.lastCommunicatedAtAsc') }}</option>
@@ -97,7 +97,7 @@
 					<option value="+driveFiles">{{ $t('sorts.driveFilesDesc') }}</option>
 				</ui-select>
 				<ui-select v-model="state">
-					<span slot="label">{{ $t('state') }}</span>
+					<template #label>{{ $t('state') }}</template>
 					<option value="all">{{ $t('states.all') }}</option>
 					<option value="blocked">{{ $t('states.blocked') }}</option>
 					<option value="notResponding">{{ $t('states.not-responding') }}</option>

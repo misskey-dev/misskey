@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title">{{ $t('operation') }}</div>
+		<template #title>{{ $t('operation') }}</template>
 		<section>
 			<ui-button @click="removeAllJobs">{{ $t('remove-all-jobs') }}</ui-button>
 		</section>

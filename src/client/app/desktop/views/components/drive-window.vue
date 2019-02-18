@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" @closed="destroyDom" width="800px" height="500px" :popout-url="popout">
-	<template slot="header">
+	<template #header>
 		<p v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> {{ $t('used') }}</p>
 		<span :class="$style.title"><fa icon="cloud"/>{{ $t('@.drive') }}</span>
 	</template>

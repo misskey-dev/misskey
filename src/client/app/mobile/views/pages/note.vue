@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'sticky-note']"/></span>{{ $t('title') }}</span>
+	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'sticky-note']"/></span>{{ $t('title') }}</template>
 	<main v-if="!fetching">
 		<div>
 			<mk-note-detail :note="note"/>
@@ -56,18 +56,6 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 main
 	text-align center
-	padding 8px
-
-	@media (min-width 500px)
-		padding 16px
-
-	@media (min-width 600px)
-		padding 32px
-
-	> div
-		margin 0 auto
-		padding 0
-		max-width 600px
 
 	> footer
 		margin-top 16px

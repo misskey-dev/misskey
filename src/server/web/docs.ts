@@ -9,7 +9,6 @@ import 'showdown-highlightjs-extension';
 import ms = require('ms');
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
-import { Context, ObjectContext } from 'cafy';
 import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import config from '../../config';
@@ -125,27 +124,6 @@ const sortParams = (params: { name: string }[]) => {
 	return params;
 };
 
-// WIP type
-const extractParamDefRef = (params: Context[]) => {
-	let defs: any[] = [];
-
-	for (const param of params) {
-		if (param.data && param.data.ref) {
-			const props = (param as ObjectContext<any>).props;
-			defs.push({
-				name: param.data.ref,
-				params: sortParams(Object.keys(props).map(k => parseParamDefinition(k, props[k])))
-			});
-
-			const childDefs = extractParamDefRef(Object.keys(props).map(k => props[k]));
-
-			defs = defs.concat(childDefs);
-		}
-	}
-
-	return sortParams(defs);
-};
-
 const extractPropDefRef = (props: any[]) => {
 	let defs: any[] = [];
 
@@ -189,7 +167,6 @@ router.get('/*/api/endpoints/*', async ctx => {
 		},
 		// @ts-ignore
 		params: ep.meta.params ? sortParams(Object.entries(ep.meta.params).map(([k, v]) => parseParamDefinition(k, v))) : null,
-		paramDefs: ep.meta.params ? extractParamDefRef(Object.values(ep.meta.params).map(x => x.validator)) : null,
 		res: ep.meta.res,
 		resProps: ep.meta.res && ep.meta.res.props ? sortParams(Object.entries(ep.meta.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
 		resDefs: null as any, //extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))

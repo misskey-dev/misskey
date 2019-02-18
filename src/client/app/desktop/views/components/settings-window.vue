@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="700px" height="550px" @closed="destroyDom">
-	<span slot="header" :class="$style.header"><fa icon="cog"/>{{ $t('settings') }}</span>
+	<template #header :class="$style.header"><fa icon="cog"/>{{ $t('settings') }}</template>
 	<x-settings :initial-page="initialPage" @done="close"/>
 </mk-window>
 </template>

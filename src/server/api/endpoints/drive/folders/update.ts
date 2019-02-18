@@ -27,7 +27,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.str.optional.pipe(isValidFolderName),
+			validator: $.optional.str.pipe(isValidFolderName),
 			desc: {
 				'ja-JP': 'フォルダ名',
 				'en-US': 'Folder name'
@@ -35,7 +35,7 @@ export const meta = {
 		},
 
 		parentId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '親フォルダID',

@@ -1,7 +1,7 @@
 <template>
 <main>
 	<ui-card>
-		<div slot="title">MFM Playground</div>
+		<template #title>MFM Playground</template>
 		<section class="fit-top">
 			<ui-textarea v-model="mfm">
 				<span>MFM</span>
@@ -18,7 +18,7 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title">Dialog Generator</div>
+		<template #title>Dialog Generator</template>
 		<section class="fit-top">
 			<ui-select v-model="dialogType" placeholder="">
 				<option value="info">Information</option>

@@ -1,16 +1,14 @@
 <template>
-<div class="mk-notes">
-	<slot name="head"></slot>
+<div class="ivaojijs">
+	<slot name="empty" v-if="notes.length == 0 && !fetching && inited"></slot>
 
-	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
+	<mk-error v-if="!fetching && !inited" @retry="init()"/>
 
 	<div class="placeholder" v-if="fetching">
 		<template v-for="i in 10">
 			<mk-note-skeleton :key="i"/>
 		</template>
 	</div>
-
-	<mk-error v-if="!fetching && requestInitPromise != null" @retry="resolveInitPromise"/>
 
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="transition" tag="div">
@@ -23,8 +21,8 @@
 		</template>
 	</component>
 
-	<footer v-if="more">
-		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+	<footer v-if="cursor != null">
+		<button @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
 			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>
 		</button>
@@ -41,20 +39,21 @@ const displayLimit = 30;
 
 export default Vue.extend({
 	i18n: i18n(),
+
 	props: {
-		more: {
-			type: Function,
-			required: false
+		makePromise: {
+			required: true
 		}
 	},
 
 	data() {
 		return {
-			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
 			fetching: true,
-			moreFetching: false
+			moreFetching: false,
+			inited: false,
+			cursor: null
 		};
 	},
 
@@ -80,6 +79,10 @@ export default Vue.extend({
 		}
 	},
 
+	created() {
+		this.init();
+	},
+
 	mounted() {
 		window.addEventListener('scroll', this.onScroll, { passive: true });
 	},
@@ -97,24 +100,38 @@ export default Vue.extend({
 			Vue.set((this as any).notes, i, note);
 		},
 
-		init(promiseGenerator: () => Promise<any[]>) {
-			this.requestInitPromise = promiseGenerator;
-			this.resolveInitPromise();
-		},
-
-		resolveInitPromise() {
+		reload() {
 			this.queue = [];
 			this.notes = [];
+			this.init();
+		},
+
+		init() {
 			this.fetching = true;
-
-			const promise = this.requestInitPromise();
-
-			promise.then(notes => {
-				this.notes = notes;
-				this.requestInitPromise = null;
+			this.makePromise().then(x => {
+				if (Array.isArray(x)) {
+					this.notes = x;
+				} else {
+					this.notes = x.notes;
+					this.cursor = x.cursor;
+				}
+				this.inited = true;
 				this.fetching = false;
+				this.$emit('inited');
 			}, e => {
 				this.fetching = false;
+			});
+		},
+
+		more() {
+			if (this.cursor == null || this.moreFetching) return;
+			this.moreFetching = true;
+			this.makePromise(this.cursor).then(x => {
+				this.notes = this.notes.concat(x.notes);
+				this.cursor = x.cursor;
+				this.moreFetching = false;
+			}, e => {
+				this.moreFetching = false;
 			});
 		},
 
@@ -144,24 +161,11 @@ export default Vue.extend({
 			this.notes.push(note);
 		},
 
-		tail() {
-			return this.notes[this.notes.length - 1];
-		},
-
 		releaseQueue() {
 			for (const n of this.queue) {
 				this.prepend(n, true);
 			}
 			this.queue = [];
-		},
-
-		async loadMore() {
-			if (this.more == null) return;
-			if (this.moreFetching) return;
-
-			this.moreFetching = true;
-			await this.more();
-			this.moreFetching = false;
 		},
 
 		onScroll() {
@@ -176,7 +180,7 @@ export default Vue.extend({
 				if (this.$el.offsetHeight == 0) return;
 
 				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) this.loadMore();
+				if (current > document.body.offsetHeight - 8) this.more();
 			}
 		}
 	}
@@ -184,7 +188,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-notes
+.ivaojijs
 	overflow hidden
 	background var(--face)
 	border-radius 8px

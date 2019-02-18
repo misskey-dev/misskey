@@ -1,7 +1,7 @@
 <template>
 <div class="mk-ui">
 	<x-header>
-		<template slot="func"><slot name="func"></slot></template>
+		<template #func><slot name="func"></slot></template>
 		<slot name="header"></slot>
 	</x-header>
 	<x-nav :is-open="isDrawerOpening"/>

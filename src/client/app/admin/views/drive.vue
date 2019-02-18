@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title"><fa :icon="faTerminal"/> {{ $t('operation') }}</div>
+		<template #title><fa :icon="faTerminal"/> {{ $t('operation') }}</template>
 		<section class="fit-top">
 			<ui-input v-model="target" type="text">
 				<span>{{ $t('fileid-or-url') }}</span>
@@ -17,18 +17,18 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="faCloud"/> {{ $t('@.drive') }}</div>
+		<template #title><fa :icon="faCloud"/> {{ $t('@.drive') }}</template>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-select v-model="sort">
-					<span slot="label">{{ $t('sort.title') }}</span>
+					<template #label>{{ $t('sort.title') }}</template>
 					<option value="-createdAt">{{ $t('sort.createdAtAsc') }}</option>
 					<option value="+createdAt">{{ $t('sort.createdAtDesc') }}</option>
 					<option value="-size">{{ $t('sort.sizeAsc') }}</option>
 					<option value="+size">{{ $t('sort.sizeDesc') }}</option>
 				</ui-select>
 				<ui-select v-model="origin">
-					<span slot="label">{{ $t('origin.title') }}</span>
+					<template #label>{{ $t('origin.title') }}</template>
 					<option value="combined">{{ $t('origin.combined') }}</option>
 					<option value="local">{{ $t('origin.local') }}</option>
 					<option value="remote">{{ $t('origin.remote') }}</option>

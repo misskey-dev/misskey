@@ -138,8 +138,8 @@
 		const meta = await res.json();
 
 		// Compare versions
-		if (meta.clientVersion != ver) {
-			localStorage.setItem('v', meta.clientVersion);
+		if (meta.version != ver) {
+			localStorage.setItem('v', meta.version);
 
 			alert(
 				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +

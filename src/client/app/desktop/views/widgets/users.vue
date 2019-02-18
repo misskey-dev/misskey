@@ -1,11 +1,13 @@
 <template>
 <div class="mkw-users">
-	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa icon="users"/>{{ $t('title') }}</template>
-		<button slot="func" :title="$t('title')" @click="refresh">
-			<fa v-if="!fetching &&  more" icon="arrow-right"/>
-			<fa v-if="!fetching && !more" icon="sync"/>
-		</button>
+	<ui-container :show-header="!props.compact">
+		<template #header><fa icon="users"/>{{ $t('title') }}</template>
+		<template #func>
+			<button :title="$t('title')" @click="refresh">
+				<fa v-if="!fetching && more" icon="arrow-right"/>
+				<fa v-if="!fetching && !more" icon="sync"/>
+			</button>
+		</template>
 
 		<div class="mkw-users--body">
 			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
@@ -20,7 +22,7 @@
 			</template>
 			<p class="empty" v-else>{{ $t('no-one') }}</p>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

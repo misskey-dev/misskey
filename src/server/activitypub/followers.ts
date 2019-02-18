@@ -5,6 +5,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
+import * as url from '../../prelude/url';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
@@ -20,10 +21,10 @@ export default async (ctx: Router.IRouterContext) => {
 	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $.type(ID).optional.get(ctx.request.query.cursor);
+	const [cursor, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);
 
 	// Get 'page' parameter
-	const pageErr = !$.str.optional.or(['true', 'false']).ok(ctx.request.query.page);
+	const pageErr = !$.optional.str.or(['true', 'false']).ok(ctx.request.query.page);
 	const page: boolean = ctx.request.query.page === 'true';
 
 	// Validate parameters
@@ -72,10 +73,16 @@ export default async (ctx: Router.IRouterContext) => {
 
 		const renderedFollowers = await Promise.all(followings.map(following => renderFollowUser(following.followerId)));
 		const rendered = renderOrderedCollectionPage(
-			`${partOf}?page=true${cursor ? `&cursor=${cursor}` : ''}`,
+			`${partOf}?${url.query({
+				page: 'true',
+				cursor
+			})}`,
 			user.followersCount, renderedFollowers, partOf,
 			null,
-			inStock ? `${partOf}?page=true&cursor=${followings[followings.length - 1]._id}` : null
+			inStock ? `${partOf}?${url.query({
+				page: 'true',
+				cursor: followings[followings.length - 1]._id.toHexString()
+			})}` : null
 		);
 
 		ctx.body = renderActivity(rendered);

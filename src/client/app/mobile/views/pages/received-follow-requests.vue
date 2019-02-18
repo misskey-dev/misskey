@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><fa :icon="['far', 'envelope']"/>{{ $t('title') }}</span>
+	<template #header><fa :icon="['far', 'envelope']"/>{{ $t('title') }}</template>
 
 	<main>
 		<div v-for="req in requests">
@@ -57,17 +57,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 main
-	width 100%
-	max-width 680px
-	margin 0 auto
-	padding 8px
-
-	@media (min-width 500px)
-		padding 16px
-
-	@media (min-width 600px)
-		padding 32px
-
 	> div
 		display flex
 		padding 16px

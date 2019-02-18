@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="destroyDom">
-	<span slot="header" :class="$style.header"><fa icon="gamepad"/>{{ $t('game') }}</span>
+	<template #header><fa icon="gamepad"/> {{ $t('game') }}</template>
 	<x-reversi :class="$style.content" @gamed="g => game = g"/>
 </mk-window>
 </template>
@@ -31,10 +31,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-.header
-	> [data-icon]
-		margin-right 4px
-
 .content
 	height 100%
 	overflow auto

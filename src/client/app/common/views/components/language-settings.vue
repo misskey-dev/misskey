@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="language"/> {{ $t('title') }}</div>
+	<template #title><fa icon="language"/> {{ $t('title') }}</template>
 
 	<section class="fit-top">
 		<ui-select v-model="lang" :placeholder="$t('pick-language')">

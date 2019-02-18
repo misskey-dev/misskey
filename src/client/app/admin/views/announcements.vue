@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title"><fa icon="broadcast-tower"/> {{ $t('announcements') }}</div>
+		<template #title><fa icon="broadcast-tower"/> {{ $t('announcements') }}</template>
 		<section v-for="(announcement, i) in announcements" class="fit-top">
 			<ui-input v-model="announcement.title" @change="save">
 				<span>{{ $t('title') }}</span>

@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
 import define from '../../define';
+import { fallback } from '../../../../prelude/symbol';
 
 export const meta = {
 	requireCredential: true,
@@ -8,17 +9,17 @@ export const meta = {
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		sort: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'+follower',
 				'-follower',
 				'+createdAt',
@@ -29,7 +30,7 @@ export const meta = {
 		},
 
 		state: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'all',
 				'admin',
 				'moderator',
@@ -42,7 +43,7 @@ export const meta = {
 		},
 
 		origin: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'combined',
 				'local',
 				'remote',
@@ -52,40 +53,17 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let _sort;
-	if (ps.sort) {
-		if (ps.sort == '+follower') {
-			_sort = {
-				followersCount: -1
-			};
-		} else if (ps.sort == '-follower') {
-			_sort = {
-				followersCount: 1
-			};
-		} else if (ps.sort == '+createdAt') {
-			_sort = {
-				createdAt: -1
-			};
-		} else if (ps.sort == '+updatedAt') {
-			_sort = {
-				updatedAt: -1
-			};
-		} else if (ps.sort == '-createdAt') {
-			_sort = {
-				createdAt: 1
-			};
-		} else if (ps.sort == '-updatedAt') {
-			_sort = {
-				updatedAt: 1
-			};
-		}
-	} else {
-		_sort = {
-			_id: -1
-		};
-	}
+const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
+	'+follower': { followersCount: -1 },
+	'-follower': { followersCount: 1 },
+	'+createdAt': { createdAt: -1 },
+	'-createdAt': { createdAt: 1 },
+	'+updatedAt': { updatedAt: -1 },
+	'-updatedAt': { updatedAt: 1 },
+	[fallback]: { _id: -1 }
+};
 
+export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const q = {
 		$and: []
 	} as any;
@@ -117,7 +95,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const users = await User
 		.find(q, {
 			limit: ps.limit,
-			sort: _sort,
+			sort: sort[ps.sort] || sort[fallback],
 			skip: ps.offset
 		});
 
