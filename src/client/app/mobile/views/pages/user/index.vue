@@ -3,7 +3,7 @@
 	<template slot="header" v-if="!fetching"><img :src="avator" alt="">
 		<mk-user-name :user="user"/>
 	</template>
-	<main v-if="!fetching">
+	<div class="wwtwuxyh" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</p></div>
 		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
 		<header>
@@ -65,15 +65,15 @@
 				<a :data-active="page == 'media'" @click="page = 'media'"><fa icon="image"/> {{ $t('media') }}</a>
 			</div>
 		</nav>
-		<div class="body">
+		<main>
 			<template v-if="$route.name == 'user'">
 				<x-home v-if="page == 'home'" :user="user"/>
 				<mk-user-timeline v-if="page == 'notes'" :user="user" key="tl"/>
 				<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" key="media"/>
 			</template>
 			<router-view :user="user"></router-view>
-		</div>
-	</main>
+		</main>
+	</div>
 </mk-ui>
 </template>
 
@@ -146,7 +146,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-main
+.wwtwuxyh
 	$bg = var(--face)
 
 	> .is-suspended
@@ -314,7 +314,7 @@ main
 			display flex
 			justify-content center
 			margin 0 auto
-			max-width 600px
+			max-width 616px
 
 			> a
 				display block
@@ -334,17 +334,5 @@ main
 					font-weight bold
 					color var(--primary)
 					border-color var(--primary)
-
-	> .body
-		max-width 680px
-		margin 0 auto
-		padding 8px
-		color var(--text)
-
-		@media (min-width 500px)
-			padding 16px
-
-		@media (min-width 600px)
-			padding 32px
 
 </style>

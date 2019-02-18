@@ -5,7 +5,7 @@
 	</span>
 
 	<div>
-		<x-notes ref="timeline" :more="existMore ? more : null"/>
+		<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 	</div>
 </x-column>
 </template>
@@ -25,12 +25,24 @@ export default Vue.extend({
 
 	data() {
 		return {
-			fetching: true,
-			moreFetching: false,
-			existMore: false,
-			offset: 0,
-			empty: false,
-			notAvailable: false
+			makePromise: cursor => this.$root.api('notes/search', {
+				limit: limit + 1,
+				offset: cursor ? cursor : undefined,
+				query: this.q
+			}).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
+					return {
+						notes: notes,
+						cursor: cursor ? cursor + limit : limit
+					};
+				} else {
+					return {
+						notes: notes,
+						cursor: null
+					};
+				}
+			})
 		};
 	},
 
@@ -41,59 +53,9 @@ export default Vue.extend({
 	},
 
 	watch: {
-		$route: 'fetch'
-	},
-
-	created() {
-		this.fetch();
-	},
-
-	methods: {
-		fetch() {
-			this.fetching = true;
-
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api('notes/search', {
-					limit: limit + 1,
-					offset: this.offset,
-					query: this.q
-				}).then(notes => {
-					if (notes.length == 0) this.empty = true;
-					if (notes.length == limit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-					this.fetching = false;
-				}, (e: string) => {
-					this.fetching = false;
-					if (e === 'searching not available') this.notAvailable = true;
-				});
-			}));
-		},
-		more() {
-			this.offset += limit;
-
-			const promise = this.$root.api('notes/search', {
-				limit: limit + 1,
-				offset: this.offset,
-				query: this.q
-			});
-
-			promise.then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) {
-					(this.$refs.timeline as any).append(n);
-				}
-				this.moreFetching = false;
-			});
-
-			return promise;
+		$route() {
+			this.$refs.timeline.reload();
 		}
-	}
+	},
 });
 </script>

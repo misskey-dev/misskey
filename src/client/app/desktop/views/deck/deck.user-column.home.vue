@@ -26,7 +26,7 @@
 	<ui-container>
 		<span slot="header"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</span>
 		<div>
-			<x-notes ref="timeline" :more="existMore ? fetchMoreNotes : null"/>
+			<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 		</div>
 	</ui-container>
 </div>
@@ -35,7 +35,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import parseAcct from '../../../../../misc/acct/parse';
 import XNotes from './deck.notes.vue';
 import XNote from '../components/note.vue';
 import { concat } from '../../../../../prelude/array';
@@ -45,6 +44,7 @@ const fetchLimit = 10;
 
 export default Vue.extend({
 	i18n: i18n('deck/deck.user-column.vue'),
+
 	components: {
 		XNotes,
 		XNote
@@ -59,10 +59,30 @@ export default Vue.extend({
 
 	data() {
 		return {
-			existMore: false,
-			moreFetching: false,
 			withFiles: false,
 			images: [],
+			makePromise: cursor => this.$root.api('users/notes', {
+				userId: this.user.id,
+				limit: fetchLimit + 1,
+				untilId: cursor ? cursor : undefined,
+				withFiles: this.withFiles,
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+			}).then(notes => {
+				if (notes.length == fetchLimit + 1) {
+					notes.pop();
+					return {
+						notes: notes,
+						cursor: notes[notes.length - 1].id
+					};
+				} else {
+					return {
+						notes: notes,
+						cursor: null
+					};
+				}
+			})
 		};
 	},
 
@@ -72,10 +92,6 @@ export default Vue.extend({
 
 	methods: {
 		fetch() {
-			this.$nextTick(() => {
-				(this.$refs.timeline as any).init(() => this.initTl());
-			});
-
 			const image = [
 				'image/jpeg',
 				'image/png',
@@ -177,52 +193,6 @@ export default Vue.extend({
 				chart.render();
 			});
 		},
-
-		initTl() {
-			return new Promise((res, rej) => {
-				this.$root.api('users/notes', {
-					userId: this.user.id,
-					limit: fetchLimit + 1,
-					untilDate: new Date().getTime() + 1000 * 86400 * 365,
-					withFiles: this.withFiles,
-					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-				}).then(notes => {
-					if (notes.length == fetchLimit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-				}, rej);
-			});
-		},
-
-		fetchMoreNotes() {
-			this.moreFetching = true;
-
-			const promise = this.$root.api('users/notes', {
-				userId: this.user.id,
-				limit: fetchLimit + 1,
-				untilDate: new Date((this.$refs.timeline as any).tail().createdAt).getTime(),
-				withFiles: this.withFiles,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			});
-
-			promise.then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) (this.$refs.timeline as any).append(n);
-				this.moreFetching = false;
-			});
-
-			return promise;
-		}
 	}
 });
 </script>

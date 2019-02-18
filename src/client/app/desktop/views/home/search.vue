@@ -1,13 +1,10 @@
 <template>
-<div class="oxgbmvii">
-	<div class="notes">
-		<header>
+<div>
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+		<header slot="header" class="oxgbmvii">
 			<span><fa icon="search"/> {{ q }}</span>
 		</header>
-		<p v-if="!fetching && notAvailable">{{ $t('not-available') }}</p>
-		<p v-if="!fetching && empty"><fa icon="search"/> {{ $t('not-found', { q }) }}</p>
-		<mk-notes ref="timeline" :more="existMore ? more : null"/>
-	</div>
+	</mk-notes>
 </div>
 </template>
 
@@ -22,27 +19,40 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/pages/search.vue'),
 	data() {
 		return {
-			fetching: true,
-			moreFetching: false,
-			existMore: false,
-			offset: 0,
-			empty: false,
-			notAvailable: false
+			makePromise: cursor => this.$root.api('notes/search', {
+				limit: limit + 1,
+				offset: cursor ? cursor : undefined,
+				query: this.q
+			}).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
+					return {
+						notes: notes,
+						cursor: cursor ? cursor + limit : limit
+					};
+				} else {
+					return {
+						notes: notes,
+						cursor: null
+					};
+				}
+			})
 		};
-	},
-	watch: {
-		$route: 'fetch'
 	},
 	computed: {
 		q(): string {
 			return this.$route.query.q;
 		}
 	},
+	watch: {
+		$route() {
+			this.$refs.timeline.reload();
+		}
+	},
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
 		window.addEventListener('scroll', this.onScroll, { passive: true });
-
-		this.fetch();
+		Progress.start();
 	},
 	beforeDestroy() {
 		document.removeEventListener('keydown', this.onDocumentKeydown);
@@ -56,75 +66,23 @@ export default Vue.extend({
 				}
 			}
 		},
-		fetch() {
-			this.fetching = true;
-			Progress.start();
-
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api('notes/search', {
-					limit: limit + 1,
-					offset: this.offset,
-					query: this.q
-				}).then(notes => {
-					if (notes.length == 0) this.empty = true;
-					if (notes.length == limit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-					this.fetching = false;
-					Progress.done();
-				}, (e: string) => {
-					this.fetching = false;
-					Progress.done();
-					if (e === 'searching not available') this.notAvailable = true;
-				});
-			}));
+		inited() {
+			Progress.done();
 		},
-		more() {
-			this.offset += limit;
-
-			const promise = this.$root.api('notes/search', {
-				limit: limit + 1,
-				offset: this.offset,
-				query: this.q
-			});
-
-			promise.then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) {
-					(this.$refs.timeline as any).append(n);
-				}
-				this.moreFetching = false;
-			});
-
-			return promise;
-		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
 .oxgbmvii
-	> .notes
-		background var(--face)
-		box-shadow var(--shadow)
-		border-radius var(--round)
-		overflow hidden
+	padding 0 8px
+	z-index 10
+	background var(--faceHeader)
+	box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
 
-		> header
-			padding 0 8px
-			z-index 10
-			background var(--faceHeader)
-			box-shadow 0 var(--lineWidth) var(--desktopTimelineHeaderShadow)
-
-			> span
-				padding 0 8px
-				font-size 0.9em
-				line-height 42px
-				color var(--text)
+	> span
+		padding 0 8px
+		font-size 0.9em
+		line-height 42px
+		color var(--text)
 </style>

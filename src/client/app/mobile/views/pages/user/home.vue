@@ -57,7 +57,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .root.home
-	max-width 600px
 	margin 0 auto
 
 	> .mk-note-detail

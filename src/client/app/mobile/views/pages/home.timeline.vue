@@ -7,7 +7,7 @@
 		</div>
 	</ui-container>
 
-	<mk-notes ref="timeline" :more="existMore ? more : null">
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
 		<div slot="empty">
 			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</div>
@@ -36,9 +36,6 @@ export default Vue.extend({
 
 	data() {
 		return {
-			fetching: true,
-			moreFetching: false,
-			existMore: false,
 			streamManager: null,
 			connection: null,
 			unreadCount: 0,
@@ -49,21 +46,18 @@ export default Vue.extend({
 				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 			},
 			query: {},
-			endpoint: null
+			endpoint: null,
+			makePromise: null
 		};
 	},
 
 	computed: {
 		alone(): boolean {
 			return this.$store.state.i.followingCount == 0;
-		},
-
-		canFetchMore(): boolean {
-			return !this.moreFetching && !this.fetching && this.existMore;
 		}
 	},
 
-	mounted() {
+	created() {
 		const prepend = note => {
 			(this.$refs.timeline as any).prepend(note);
 		};
@@ -114,7 +108,25 @@ export default Vue.extend({
 			this.connection.on('mention', onNote);
 		}
 
-		this.fetch();
+		this.makePromise = cursor => this.$root.api(this.endpoint, {
+			limit: fetchLimit + 1,
+			untilDate: cursor ? undefined : (this.date ? this.date.getTime() : undefined),
+			untilId: cursor ? cursor : undefined,
+			...this.baseQuery, ...this.query
+		}).then(notes => {
+			if (notes.length == fetchLimit + 1) {
+				notes.pop();
+				return {
+					notes: notes,
+					cursor: notes[notes.length - 1].id
+				};
+			} else {
+				return {
+					notes: notes,
+					cursor: null
+				};
+			}
+		});
 	},
 
 	beforeDestroy() {
@@ -122,57 +134,13 @@ export default Vue.extend({
 	},
 
 	methods: {
-		fetch() {
-			this.fetching = true;
-
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api(this.endpoint, Object.assign({
-					limit: fetchLimit + 1,
-					untilDate: this.date ? this.date.getTime() : undefined
-				}, this.baseQuery, this.query)).then(notes => {
-					if (notes.length == fetchLimit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-					this.fetching = false;
-					this.$emit('loaded');
-				}, rej);
-			}));
-		},
-
-		more() {
-			if (!this.canFetchMore) return;
-
-			this.moreFetching = true;
-
-			const promise = this.$root.api(this.endpoint, Object.assign({
-				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id
-			}, this.baseQuery, this.query));
-
-			promise.then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) {
-					(this.$refs.timeline as any).append(n);
-				}
-				this.moreFetching = false;
-			});
-
-			return promise;
-		},
-
 		focus() {
 			(this.$refs.timeline as any).focus();
 		},
 
 		warp(date) {
 			this.date = date;
-			this.fetch();
+			(this.$refs.timeline as any).reload();
 		}
 	}
 });

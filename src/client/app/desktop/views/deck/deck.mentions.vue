@@ -1,5 +1,5 @@
 <template>
-<x-notes ref="timeline" :more="existMore ? more : null"/>
+<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 </template>
 
 <script lang="ts">
@@ -13,23 +13,35 @@ export default Vue.extend({
 		XNotes
 	},
 
-	props: {
-	},
-
 	data() {
 		return {
-			fetching: true,
-			moreFetching: false,
-			existMore: false,
-			connection: null
+			connection: null,
+			makePromise: cursor => this.$root.api('notes/mentions', {
+				limit: fetchLimit + 1,
+				untilId: cursor ? cursor : undefined,
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+			}).then(notes => {
+				if (notes.length == fetchLimit + 1) {
+					notes.pop();
+					return {
+						notes: notes,
+						cursor: notes[notes.length - 1].id
+					};
+				} else {
+					return {
+						notes: notes,
+						cursor: null
+					};
+				}
+			})
 		};
 	},
 
 	mounted() {
 		this.connection = this.$root.stream.useSharedConnection('main');
 		this.connection.on('mention', this.onNote);
-
-		this.fetch();
 	},
 
 	beforeDestroy() {
@@ -37,55 +49,7 @@ export default Vue.extend({
 	},
 
 	methods: {
-		fetch() {
-			this.fetching = true;
-
-			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				this.$root.api('notes/mentions', {
-					limit: fetchLimit + 1,
-					includeMyRenotes: this.$store.state.settings.showMyRenotes,
-					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-				}).then(notes => {
-					if (notes.length == fetchLimit + 1) {
-						notes.pop();
-						this.existMore = true;
-					}
-					res(notes);
-					this.fetching = false;
-					this.$emit('loaded');
-				}, rej);
-			}));
-		},
-
-		more() {
-			this.moreFetching = true;
-
-			const promise = this.$root.api('notes/mentions', {
-				limit: fetchLimit + 1,
-				untilId: (this.$refs.timeline as any).tail().id,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			});
-
-			promise.then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				for (const n of notes) {
-					(this.$refs.timeline as any).append(n);
-				}
-				this.moreFetching = false;
-			});
-
-			return promise;
-		},
-
 		onNote(note) {
-			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
 

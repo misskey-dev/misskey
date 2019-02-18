@@ -10,7 +10,7 @@
 		</ui-container>
 	</div>
 	<x-photos :user="user"/>
-	<x-timeline class="timeline" ref="tl" :user="user"/>
+	<x-timeline ref="tl" :user="user"/>
 </div>
 </template>
 
@@ -50,8 +50,5 @@ export default Vue.extend({
 .lnctpgve
 	> *
 		margin-bottom 16px
-
-	> .timeline
-		box-shadow var(--shadow)
 
 </style>
