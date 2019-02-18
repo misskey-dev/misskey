@@ -28,6 +28,8 @@ common:
   load-more: "Charger plus"
   enter-password: "Veuillez entrer le mot de passe"
   2fa: "Authentification à deux facteurs"
+  customize-home: "Personnaliser la disposition de votre accueil"
+  featured-notes: "Les notes mises en avant"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -56,6 +58,14 @@ common:
   trash: "Corbeille"
   drive: "Drive"
   messaging: "Conversations"
+  deck: "Deck"
+  timeline: "Fil"
+  explore: "Découvrir"
+  following: "Suit"
+  followers: "Abonné·e·s"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "Trouver des utilisateurs"
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -113,7 +123,7 @@ common:
   use-avatar-reversi-stones: "Utiliser l’avatar comme pion dans Reversi"
   verified-user: "Compte vérifié"
   disable-animated-mfm: "Désactiver les textes animés dans les publications"
-  disable-showing-animated-images: "アニメーション画像を再生しない"
+  disable-showing-animated-images: "Désactiver l'animation dans les images"
   suggest-recent-hashtags: "Suggérer les hashtags récemment utilisés dans le champs de saisie"
   always-show-nsfw: "Toujours afficher les contenus sensibles"
   always-mark-nsfw: "Toujours marquer les notes ayant des attachements comme sensibles"
@@ -130,7 +140,7 @@ common:
   show-password: "Afficher le mot de passe"
   do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
   user-suspended: "Cet·te utilisateur·trice a été suspendu·e"
-  is-remote-user: "このユーザー情報は不正確な可能性があります。"
+  is-remote-user: "Les informations à propos de ce compte peuvent être incomplètes."
   is-remote-post: "Ceci est une publication distante."
   view-on-remote: " Consulter le profil complet"
   renoted-by: "Renoté par {user}"
@@ -197,6 +207,17 @@ auth/views/index.vue:
   please-go-back: "Veillez retourner à l'application."
   error: "La session n’existe pas."
   sign-in: "Veuillez vous connecter"
+common/views/pages/explore.vue:
+  verified-users: "Comptes vérifiés"
+  popular-users: "Utilisateurs populaires"
+  recently-updated-users: "Utilisateurs actifs récemment"
+  recently-registered-users: "Les nouveaux inscrits"
+  popular-tags: "Mots-clés populaires"
+  federated: "Du Fédiverse"
+  explore: "{host}を探索"
+  users-info: "現在{users}ユーザーが登録されています"
+common/views/components/user-list.vue:
+  no-users: "ユーザーがいません"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "En attente de {}"
@@ -684,12 +705,6 @@ desktop/views/components/following-window.vue:
   following: "Suit {}"
 desktop/views/components/following.vue:
   empty: "Vous ne suivez aucun compte."
-desktop/views/components/friends-maker.vue:
-  title: "Utilisateur·rice·s recommandé·e·s :"
-  empty: "Impossible de trouver des utilisateur·trice·s à recommander."
-  fetching: "Chargement"
-  refresh: "Plus"
-  close: "Fermer"
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
@@ -724,11 +739,11 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "Aucune de notification !"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Ajouter un utilisateur"
+  add-visible-user: "+Ajouter un·e utilisateur·rice"
   attach-location-information: "Attacher des informations de localisation"
   hide-contents: "Masquer les contenus"
-  reply-placeholder: "Répondre à cette note…"
-  quote-placeholder: "Citer cette note…"
+  reply-placeholder: "Répondre à cette note …"
+  quote-placeholder: "Citer cette note …"
   submit: "Publier"
   reply: "Répondre"
   renote: "Republier"
@@ -738,7 +753,7 @@ desktop/views/components/post-form.vue:
   note-failed: "La note à échoué"
   reply-failed: "La réponse a échoué"
   renote-failed: "Échec lors de la republication"
-  posting: "Publication…"
+  posting: "Publication …"
   attach-media-from-local: "Joindre un média depuis votre appareil"
   attach-media-from-drive: "Joindre un média depuis votre Drive"
   attach-cancel: "Annuler le fichier attaché"
@@ -751,8 +766,8 @@ desktop/views/components/post-form.vue:
   visibility: "Visibilité"
   geolocation-alert: "Votre appareil ne prend pas en charge les services de localisation"
   error: "Erreur"
-  enter-username: "Saisir un nom d'utilisateur…"
-  annotations: "内容への注釈 (オプション)"
+  enter-username: "Saisir un nom d'utilisateur …"
+  annotations: "Commenter le contenu (optionnel)"
 desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
   reply: "Répondre"
@@ -770,6 +785,8 @@ desktop/views/components/renote-form.vue:
   failure: "La renote a échoué"
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
+desktop/views/components/timeline.core.vue:
+  empty: "Sans aucune note"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user} suit"
   followers: "Abonné·e·s de {user}"
@@ -798,13 +815,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Exemple : https://www.google.com/?#q={{query}}"
   auto-popout: "Fenêtre contextuelle automatique"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  deck-nav: "Deck sans tansitions"
-  deck-nav-desc: "Vous obtenez une colonne temporaire sans transitions dans la page pendant la navigation, lors de l’utilisation du Deck."
   keep-cw: "Maintenir l'avertissement de contenu"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "Utiliser le Deck comme IU par défaut"
   display: "Affichage et design"
-  customize: "Personnaliser l'Accueil"
   wallpaper: "Arrière plan"
   choose-wallpaper: "Sélectionner un fond d'écran"
   delete-wallpaper: "Supprimer le fond d'écran"
@@ -961,14 +974,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Listes"
   follow-requests: "Demandes de suivi"
-  customize: "Personnaliser l'Accueil"
   admin: "Admin"
   settings: "Réglages"
   signout: "Déconnexion"
   dark: "Fall in dark"
 desktop/views/components/ui.header.nav.vue:
-  home: "Accueil"
-  deck: "Deck"
   game: "Jeux"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -1019,7 +1029,7 @@ admin/views/dashboard.vue:
   federated: "Fédérées"
 admin/views/queue.vue:
   operation: "Action(s)"
-  remove-all-jobs: "すべてのジョブをクリア"
+  remove-all-jobs: "Enlever toutes les tâches en attente"
 admin/views/abuse.vue:
   title: "Abus"
   target: "Cible"
@@ -1091,6 +1101,7 @@ admin/views/instance.vue:
   smtp-secure-info: "Désactiver STARTTLS lorsque celui-ci est utilisé."
   smtp-host: "Hôte SMTP"
   smtp-port: "Port SMTP"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "Utilisateur SMTP"
   smtp-pass: "Mot de passe SMTP"
   serviceworker-config: "ServiceWorker"
@@ -1167,7 +1178,7 @@ admin/views/users.vue:
   verify-confirm: "Souhaiteriez-vous rendre votre compte comme étant un compte vérifié ?"
   verified: "Le compte a été vérifié"
   unverify: "Enlever la vérification du compte"
-  unverify-confirm: "公式アカウントを解除しますか？"
+  unverify-confirm: "Désirez-vous considérer ce compte comme étant non-vérifié ?"
   unverified: "Ce compte n'est plus vérifié"
   update-remote-user: "Mettre à jour les informations de l’utilisateur·rice distant·e"
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
@@ -1186,7 +1197,7 @@ admin/views/users.vue:
       moderator: "Modérateur"
       adminOrModerator: "Administrateur/Modérateur"
       verified: "Compte vérifié"
-      silenced: "サイレンス済み"
+      silenced: "Déjà mis en sourdine"
       suspended: "Suspendu"
     origin:
       title: "Origine"
@@ -1246,9 +1257,9 @@ admin/views/federation.vue:
   latest-request-received-at: "Dernière requête reçue"
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
-  block: "ブロック"
-  marked-as-closed: "閉鎖されているとマーク"
-  lookup: "照会"
+  block: "Bloquer"
+  marked-as-closed: "Marquées comme fermées"
+  lookup: "Recherche"
   instances: "Instances"
   instance-not-registered: "そのインスタンスは登録されていません"
   sort: "Trier par"
@@ -1262,36 +1273,36 @@ admin/views/federation.vue:
     usersAsc: "ユーザーが少ない順"
     usersDesc: "ユーザーが多い順"
     followingAsc: "Les moins suivies"
-    followingDesc: "フォローが多い順"
+    followingDesc: "Ayant le plus d'abonné·e·s"
     followersAsc: "Ayant le moins d'abonné·e·s"
     followersDesc: "Ayant le plus d'abonné·e·s"
     driveUsageAsc: "ドライブ使用量が少ない順"
     driveUsageDesc: "ドライブ使用量が多い順"
     driveFilesAsc: "ドライブのファイル数が少ない順"
     driveFilesDesc: "ドライブのファイル数が多い順"
-  state: "状態"
+  state: "État"
   states:
-    all: "すべて"
-    blocked: "ブロック"
-    not-responding: "応答なし"
-    marked-as-closed: "閉鎖とマーク済み"
+    all: "Tout"
+    blocked: "Bloquées"
+    not-responding: "Sans réponse"
+    marked-as-closed: "Marquée comme fermée"
   result-is-truncated: "上位{n}件を表示しています。"
-  charts: "チャート"
+  charts: "Graphs"
   chart-srcs:
-    requests: "リクエスト"
-    users: "ユーザーの増減"
-    users-total: "ユーザーの積算"
-    notes: "投稿の増減"
-    notes-total: "投稿の積算"
-    ff: "フォロー/フォロワーの増減"
+    requests: "Requêtes"
+    users: "Nombre d’utilisateurs·trices : augmentation/diminution"
+    users-total: "Nombre total des utilisateur·rice·s"
+    notes: "Augmentation/diminution du nombre des notes"
+    notes-total: "Nombre total des notes"
+    ff: "Augmentation des abonné·e·s"
     ff-total: "フォロー/フォロワーの積算"
-    drive-usage: "ドライブ使用量の増減"
-    drive-usage-total: "ドライブ使用量の積算"
+    drive-usage: "Augmentation et diminution de la capacité stockage"
+    drive-usage-total: "Utilisation totale du stockage"
     drive-files: "ドライブファイル数の増減"
-    drive-files-total: "ドライブファイル数の積算"
+    drive-files-total: "Nombre total des fichiers sur le Drive"
   chart-spans:
-    hour: "1時間ごと"
-    day: "1日ごと"
+    hour: "Par heure"
+    day: "Par jour"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   gotit: "J'ai compris !"
@@ -1306,8 +1317,6 @@ desktop/views/pages/welcome.vue:
   info: "Informations"
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
-desktop/views/pages/home-customize.vue:
-  title: "Personnaliser l'Accueil"
 desktop/views/pages/note.vue:
   prev: "Note précédente"
   next: "Note suivante"
@@ -1339,9 +1348,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Chargement en cours"
   no-photos: "Pas de photos"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Vous suit"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Suit"
@@ -1351,12 +1357,13 @@ desktop/views/pages/user/user.header.vue:
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "Vous suit"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
   with-media: "Média"
   my-posts: "Mes Messages"
-  empty: "Cet utilisateur n'a rien posté encore."
+  empty: "Cet·te utilisateur·rice n'a rien posté encore."
 desktop/views/widgets/messaging.vue:
   title: "Messagerie"
 desktop/views/widgets/notifications.vue:
@@ -1418,12 +1425,6 @@ common/views/components/follow-button.vue:
   request-pending: "Demande en attente"
   follow-processing: "En cours d’abonnement"
   follow-request: "Demande d’abonnement"
-mobile/views/components/friends-maker.vue:
-  title: "Abonnez-vous à"
-  empty: "Impossible de trouver des utilisateurs·trices à recommander."
-  fetching: "Chargement"
-  refresh: "Voir plus"
-  close: "Fermer"
 mobile/views/components/note.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
@@ -1445,11 +1446,11 @@ mobile/views/components/note-sub.vue:
 mobile/views/components/notifications.vue:
   empty: "Aucune de notification !"
 mobile/views/components/post-form.vue:
-  add-visible-user: "Ajouter un utilisateur"
+  add-visible-user: "Ajouter un·e utilisateur·rice"
   submit: "Publier"
   reply: "Répondre"
   renote: "Republier"
-  quote-placeholder: "Citer ce billet... (Facultatif)"
+  quote-placeholder: "Citer ce billet ... (Facultatif)"
   reply-placeholder: "Répondre à cette note"
   cw-placeholder: "Commenter le contenu (optionnel)"
   location-alert: "Votre appareil ne prend pas en charge les services de localisation"
@@ -1479,11 +1480,8 @@ mobile/views/components/ui.nav.vue:
   admin: "Admin"
   about: "À propos de Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "Il semble que cet utilisateur n’a rien publié pour le moment."
+  no-notes: "Il semble que cet·te utilisateur·rice n’a rien publié pour le moment."
   no-notes-with-media: "Aucune note comprenant des médias"
-mobile/views/components/users-list.vue:
-  all: "Tout"
-  known: "Vous connaissez"
 mobile/views/pages/favorites.vue:
   title: "Favoris"
 mobile/views/pages/user-lists.vue:
@@ -1502,6 +1500,8 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "Messages"
+mobile/views/pages/home.timeline.vue:
+  empty: "Sans aucune note"
 mobile/views/pages/tag.vue:
   no-posts-found: "Aucune publication ayant pour hashtag « {q} » n’a été trouvée."
 mobile/views/pages/welcome.vue:
@@ -1520,7 +1520,7 @@ mobile/views/pages/received-follow-requests.vue:
   accept: "Accepter"
   reject: "Refuser"
 mobile/views/pages/note.vue:
-  title: "Post"
+  title: "Publication"
   prev: "Note précédente"
   next: "Note suivante"
 mobile/views/pages/notifications.vue:
@@ -1591,13 +1591,9 @@ mobile/views/pages/user/home.vue:
   activity: "Activité"
   keywords: "Mot clés"
   domains: "Domaines"
-  frequently-replied-users: "Utilisateurs mentionnés souvent"
+  frequently-replied-users: "Mentions fréquentes"
   followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Aucun utilisateur·rice connu·e"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "Aucun utilisateur connu"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "Pas de notes"
 mobile/views/pages/user/home.photos.vue:
@@ -1622,12 +1618,15 @@ deck:
   rename: "Renommer"
   stack-left: "Vers la gauche"
   pop-right: "Vers la droite"
+  disabled-timeline:
+    title: "Le fil été désactivé"
+    description: "Ce fil a été désactivé par l'administrateur du serveur."
 deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
   edit: "Option"
 deck/deck.user-column.vue:
-  follows-you: "フォローされています"
+  follows-you: "Vous suit"
   posts: "Notes"
   following: "Suit"
   followers: "Abonnés"

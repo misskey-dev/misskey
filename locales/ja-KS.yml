@@ -28,6 +28,8 @@ common:
   load-more: "もっとあらへんのか！"
   enter-password: "パスワードを入れてや"
   2fa: "二段階認証"
+  customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -56,6 +58,14 @@ common:
   trash: "ゴミ箱"
   drive: "ドライブ"
   messaging: "トーク"
+  deck: "デッキ"
+  timeline: "タイムライン"
+  explore: "みつける"
+  following: "フォロー中"
+  followers: "フォロワー"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -197,6 +207,17 @@ auth/views/index.vue:
   please-go-back: "アプリケーションに戻って、気張ってってな。"
   error: "セッションが存在してへん。"
   sign-in: "サインインしてや"
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
+  recently-registered-users: "新規ユーザー"
+  popular-tags: "人気のタグ"
+  federated: "連合"
+  explore: "{host}を探索"
+  users-info: "現在{users}ユーザーが登録されています"
+common/views/components/user-list.vue:
+  no-users: "ユーザーがいません"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}を待っとります"
@@ -684,12 +705,6 @@ desktop/views/components/following-window.vue:
   following: "{} のフォロー"
 desktop/views/components/following.vue:
   empty: "フォロー中のユーザーはおらんっぽいで、知らんけど。"
-desktop/views/components/friends-maker.vue:
-  title: "おもろそうやな:"
-  empty: "おもろいユーザー居らんかったわ"
-  fetching: "読み込んどります"
-  refresh: "もっとあるやろ！"
-  close: "さいなら"
 desktop/views/components/game-window.vue:
   game: "ゲーム"
 desktop/views/components/home.vue:
@@ -770,6 +785,8 @@ desktop/views/components/renote-form.vue:
   failure: "Renoteでけへん"
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしてもええか？"
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
   followers: "{user}のフォロワー"
@@ -798,13 +815,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "例: https://www.google.com/?#q?{{query}}"
   auto-popout: "ウィンドウの自動ポップアウト"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトすんで。この設定はブラウザに記憶されんで。"
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使うとるとき、ナビゲーションが発生するときにページ移動せんで、一時的なカラムで受けれるようにするで"
   keep-cw: "CW保持"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "デッキをデフォルトのUIにする"
   display: "見た感じ"
-  customize: "ホームをカスタマイズ"
   wallpaper: "壁紙"
   choose-wallpaper: "壁紙選ぶ"
   delete-wallpaper: "壁紙ほかす"
@@ -961,14 +974,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "お気に入り"
   lists: "リスト"
   follow-requests: "フォロー許してくれや！言うてみる"
-  customize: "ホームをカスタマイズ"
   admin: "管理"
   settings: "設定"
   signout: "さいなら"
   dark: "ナイトゲームじゃ！"
 desktop/views/components/ui.header.nav.vue:
-  home: "ホーム"
-  deck: "デッキ"
   game: "ゲーム"
 desktop/views/components/ui.header.notifications.vue:
   title: "通知"
@@ -1091,6 +1101,7 @@ admin/views/instance.vue:
   smtp-secure-info: "STARTTLS使用時はオフにします。"
   smtp-host: "SMTPホスト"
   smtp-port: "SMTPポート"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTPユーザー"
   smtp-pass: "SMTPパスワード"
   serviceworker-config: "ServiceWorker"
@@ -1306,8 +1317,6 @@ desktop/views/pages/welcome.vue:
   info: "情報"
 desktop/views/pages/drive.vue:
   title: "ドライブ"
-desktop/views/pages/home-customize.vue:
-  title: "ホームをカスタマイズ"
 desktop/views/pages/note.vue:
   prev: "前のやつ"
   next: "次のやつ"
@@ -1339,9 +1348,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "写真"
   loading: "読み込んどります"
   no-photos: "写真はあらへんで"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "フォローされとるで"
-  menu: "メニュー"
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
@@ -1351,6 +1357,7 @@ desktop/views/pages/user/user.header.vue:
   year: "年"
   month: "月"
   day: "日"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
@@ -1418,12 +1425,6 @@ common/views/components/follow-button.vue:
   request-pending: "フォロー許してくれるん待っとる"
   follow-processing: "今フォロー処理やっとる‥"
   follow-request: "フォローさせてや！言うてみる"
-mobile/views/components/friends-maker.vue:
-  title: "おもろそうやな"
-  empty: "おすすめのユーザーはおらん。"
-  fetching: "読み込んどります"
-  refresh: "もっとあるやろ！"
-  close: "さいなら"
 mobile/views/components/note.vue:
   private: "この投稿は見せられへんわ"
   deleted: "この投稿なんか無くなってもうたわ"
@@ -1481,9 +1482,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "このユーザーは投稿しとらんようや。"
   no-notes-with-media: "メディア付き投稿はあらへん。"
-mobile/views/components/users-list.vue:
-  all: "すべて"
-  known: "知っとる"
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 mobile/views/pages/user-lists.vue:
@@ -1502,6 +1500,8 @@ mobile/views/pages/home.vue:
   global: "グローバル"
   mentions: "あんた宛て"
   messages: "メッセージ"
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿はあらへんかった。"
 mobile/views/pages/welcome.vue:
@@ -1591,13 +1591,9 @@ mobile/views/pages/user/home.vue:
   activity: "やっとること"
   keywords: "キーワード"
   domains: "よく出るドメイン"
-  frequently-replied-users: "よう話しとるユーザー"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "知っとるフォロワー"
   last-used-at: "最後いつ来た？"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "知っとるユーザーは居らん"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "よう話すユーザーは居らん"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "投稿はあらへん"
 mobile/views/pages/user/home.photos.vue:
@@ -1622,6 +1618,9 @@ deck:
   rename: "名前を変えるで"
   stack-left: "左に重ねんで！"
   pop-right: "右に出すで！"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿だけや"
   is-media-view: "メディアビュー"

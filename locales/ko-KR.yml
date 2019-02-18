@@ -28,6 +28,8 @@ common:
   load-more: "더보기"
   enter-password: "비밀번호를 입력하여 주십시오"
   2fa: "2단계 인증"
+  customize-home: "홈 커스터마이징"
+  featured-notes: "하이라이트"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -56,6 +58,14 @@ common:
   trash: "휴지통"
   drive: "드라이브"
   messaging: "대화"
+  deck: "덱"
+  timeline: "타임라인"
+  explore: "발견"
+  following: "팔로우 중"
+  followers: "팔로워"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
+    explore: "사용자 탐색"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -197,6 +207,17 @@ auth/views/index.vue:
   please-go-back: "어플리케이션으로 돌아가여 시도하여 주십시오."
   error: "세션이 존재하지 않습니다."
   sign-in: "로그인 해주시기 바랍니다"
+common/views/pages/explore.vue:
+  verified-users: "공식 계정"
+  popular-users: "인기 사용자"
+  recently-updated-users: "최근 게시한 사용자"
+  recently-registered-users: "신규 사용자"
+  popular-tags: "인기 태그"
+  federated: "연합"
+  explore: "{host}를 탐색"
+  users-info: "현재 {users} 사용자가 등록되어 있습니다"
+common/views/components/user-list.vue:
+  no-users: "사용자가 없습니다"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}을(를) 기다리고 있습니다"
@@ -209,7 +230,7 @@ common/views/components/games/reversi/reversi.game.vue:
   can-put-everywhere: "어디에도 둘 수 있는 모드"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
-  sub-title: "다른 Misskey 유저와 리버시로 대결하자"
+  sub-title: "다른 Misskey 사용자와 리버시로 대결하자"
   invite: "초대"
   rule: "게임 방법"
   rule-desc: "리버시는 상대와 번갈아가며 돌을 판에 두고, 상대의 돌을 자신의 돌 사이에 두어 자신의 색으로 바꿔나가며, 최종적으로 남아있는 돌이 많은 쪽이 승리하는 보드게임입니다."
@@ -684,12 +705,6 @@ desktop/views/components/following-window.vue:
   following: "{} 의 팔로우"
 desktop/views/components/following.vue:
   empty: "팔로우중인 사용자가 없는 것 같습니다."
-desktop/views/components/friends-maker.vue:
-  title: "마음에 드는 사용자를 팔로우:"
-  empty: "추천 사용자를 찾을 수 없습니다."
-  fetching: "불러오는 중입니다"
-  refresh: "더 보기"
-  close: "닫기"
 desktop/views/components/game-window.vue:
   game: "리버시"
 desktop/views/components/home.vue:
@@ -770,6 +785,8 @@ desktop/views/components/renote-form.vue:
   failure: "리노트에 실패하였습니다"
 desktop/views/components/renote-form-window.vue:
   title: "이 글을 리노트하시겠습니까?"
+desktop/views/components/timeline.core.vue:
+  empty: "글이 없습니다"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}의 팔로잉"
   followers: "{user}의 팔로워"
@@ -798,13 +815,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "예: https://www.google.com/?#q={{query}}"
   auto-popout: "창 자동 팝아웃"
   auto-popout-desc: "창이 열릴 때 팝아웃 (브라우저 밖으로 분리) 이 가능한 경우 자동으로 팝아웃합니다. 이 설정은 브라우저에 저장됩니다."
-  deck-nav: "덱 내 탐색"
-  deck-nav-desc: "덱을 사용중일 때, 내비게이션이 발생하였을 경우 페이지를 이동하지 않고 일시적으로 임시 칼럼을 생성하도록 합니다."
   keep-cw: "CW 유지"
   keep-cw-desc: "글에 답글을 달 때, 답글할 글에 CW가 설정되어 있는 경우 기본값으로 동일한 CW를 설정하도록 합니다."
-  deck-default: "덱을 기본 UI로 설정"
   display: "디자인 및 표시"
-  customize: "홈 커스터마이징"
   wallpaper: "배경"
   choose-wallpaper: "배경 설정"
   delete-wallpaper: "배경 제거"
@@ -961,14 +974,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "즐겨찾기"
   lists: "리스트"
   follow-requests: "팔로우 요청"
-  customize: "홈 커스터마이징"
   admin: "관리"
   settings: "설정"
   signout: "로그아웃"
   dark: "어둠에 삼켜져라"
 desktop/views/components/ui.header.nav.vue:
-  home: "홈"
-  deck: "덱"
   game: "게임"
 desktop/views/components/ui.header.notifications.vue:
   title: "알림"
@@ -1040,7 +1050,7 @@ admin/views/instance.vue:
   maintainer-email: "관리자 연락처"
   drive-config: "드라이브 설정"
   cache-remote-files: "원격 파일을 캐시"
-  cache-remote-files-desc: "이 설정을 해지하면 원격 파일을 캐시하지 않고 해당 파일을 직접 링크하게 됩니다. 그에 따라 서버의 저장 공간을 절약할 수 있지만, 프라이버시 설정에서 직접 링크를 무효로 설정한 유저에게는 파일이 보이지 않거나, 썸네일이 생성되지 않기 때문에 통신량이 증가합니다. 일반적으로 이 설정을 ON으로 두는 것을 추천합니다."
+  cache-remote-files-desc: "이 설정을 해지하면 원격 파일을 캐시하지 않고 해당 파일을 직접 링크하게 됩니다. 그에 따라 서버의 저장 공간을 절약할 수 있지만, 프라이버시 설정에서 직접 링크를 무효로 설정한 사용자에게는 파일이 보이지 않거나, 썸네일이 생성되지 않기 때문에 통신량이 증가합니다. 일반적으로 이 설정을 ON으로 두는 것을 추천합니다."
   local-drive-capacity-mb: "로컬 사용자 한 명당 드라이브 용량"
   remote-drive-capacity-mb: "원격 사용자 한 명당 드라이브 용량"
   mb: "메가바이트 단위"
@@ -1091,6 +1101,7 @@ admin/views/instance.vue:
   smtp-secure-info: "STARTTLS를 사용 시 ON으로 합니다."
   smtp-host: "SMTP 호스트"
   smtp-port: "SMTP 포트"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTP 사용자"
   smtp-pass: "SMTP 비밀번호"
   serviceworker-config: "ServiceWorker"
@@ -1306,8 +1317,6 @@ desktop/views/pages/welcome.vue:
   info: "정보"
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
-desktop/views/pages/home-customize.vue:
-  title: "홈 커스터마이징"
 desktop/views/pages/note.vue:
   prev: "이전 글"
   next: "다음 글"
@@ -1339,9 +1348,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "사진"
   loading: "로드 중"
   no-photos: "사진이 없습니다"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "당신을 팔로우합니다"
-  menu: "메뉴"
 desktop/views/pages/user/user.header.vue:
   posts: "글"
   following: "팔로잉"
@@ -1351,6 +1357,7 @@ desktop/views/pages/user/user.header.vue:
   year: "년"
   month: "월"
   day: "일"
+  follows-you: "당신을 팔로우합니다"
 desktop/views/pages/user/user.timeline.vue:
   default: "글"
   with-replies: "글과 답글"
@@ -1418,12 +1425,6 @@ common/views/components/follow-button.vue:
   request-pending: "팔로우 허가 대기중"
   follow-processing: "팔로우 처리중"
   follow-request: "팔로우 요청"
-mobile/views/components/friends-maker.vue:
-  title: "마음에 드는 사용자를 팔로우"
-  empty: "추천 사용자를 찾을 수 없습니다."
-  fetching: "불러오는 중입니다"
-  refresh: "더 보기"
-  close: "닫기"
 mobile/views/components/note.vue:
   private: "이 글은 비공개입니다"
   deleted: "이 글은 삭제되었습니다"
@@ -1481,9 +1482,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "이 사용자는 작성한 글이 없는 것 같습니다."
   no-notes-with-media: "미디어가 첨부된 글이 없습니다."
-mobile/views/components/users-list.vue:
-  all: "모두"
-  known: "아는 사람"
 mobile/views/pages/favorites.vue:
   title: "즐겨찾기"
 mobile/views/pages/user-lists.vue:
@@ -1502,6 +1500,8 @@ mobile/views/pages/home.vue:
   global: "글로벌"
   mentions: "받은 멘션"
   messages: "메시지"
+mobile/views/pages/home.timeline.vue:
+  empty: "글이 없습니다"
 mobile/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 mobile/views/pages/welcome.vue:
@@ -1591,13 +1591,9 @@ mobile/views/pages/user/home.vue:
   activity: "활동"
   keywords: "키워드"
   domains: "자주 보이는 도메인"
-  frequently-replied-users: "자주 대화하는 사용자"
+  frequently-replied-users: "자주 언급되는 사용자"
   followers-you-know: "아는 사람의 팔로워"
   last-used-at: "마지막 로그인"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "아는 사용자가 없습니다"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "자주 대화하는 사용자가 없습니다"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "글이 없습니다"
 mobile/views/pages/user/home.photos.vue:
@@ -1622,6 +1618,9 @@ deck:
   rename: "이름 변경"
   stack-left: "왼쪽에 쌓기"
   pop-right: "오른쪽으로 빼기"
+  disabled-timeline:
+    title: "비활성화된 타임라인"
+    description: "서버 운영자에 의해 이 타임라인이 사용할 수 없도록 설정되어 있습니다."
 deck/deck.tl-column.vue:
   is-media-only: "미디어가 달린 글만"
   is-media-view: "미디어 보기"

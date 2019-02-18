@@ -28,6 +28,8 @@ common:
   load-more: "Load more"
   enter-password: "Please enter the Password"
   2fa: "Two-factor authentication"
+  customize-home: "Customize your home layout"
+  featured-notes: "Featured notes"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -56,6 +58,14 @@ common:
   trash: "Trash"
   drive: "Drive"
   messaging: "Talk"
+  deck: "Deck"
+  timeline: "Timeline"
+  explore: "Discover"
+  following: "Following"
+  followers: "Followers"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
+    explore: "Find users"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -197,6 +207,17 @@ auth/views/index.vue:
   please-go-back: "Please go back to the application."
   error: "Session does not exist."
   sign-in: "Please sign in."
+common/views/pages/explore.vue:
+  verified-users: "Verified accounts"
+  popular-users: "Popular users"
+  recently-updated-users: "Recently active users"
+  recently-registered-users: "Users who joined recently"
+  popular-tags: "Popular Tags"
+  federated: "From the fediverse"
+  explore: "Explore {host}"
+  users-info: "Currently, {users} users are registered here"
+common/views/components/user-list.vue:
+  no-users: "There are no users."
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Waiting for {}"
@@ -684,12 +705,6 @@ desktop/views/components/following-window.vue:
   following: "Following {}"
 desktop/views/components/following.vue:
   empty: "It seems you don't have any following users…"
-desktop/views/components/friends-maker.vue:
-  title: "Recommended users:"
-  empty: "Couldn't find any recommended users."
-  fetching: "Loading"
-  refresh: "More"
-  close: "Close"
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
@@ -770,6 +785,8 @@ desktop/views/components/renote-form.vue:
   failure: "Failed to Repost"
 desktop/views/components/renote-form-window.vue:
   title: "Do you want to Repost it?"
+desktop/views/components/timeline.core.vue:
+  empty: "Without any notes"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}'s following"
   followers: "{user}'s follower"
@@ -798,13 +815,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Example: https://www.google.com/?#q={{query}}"
   auto-popout: "Auto pop-out window"
   auto-popout-desc: "If it's possible, pop-out display will be used instead of opening a new window. This setting is stored in your browser."
-  deck-nav: "Transitionless deck navigation"
-  deck-nav-desc: "You get a temporary column without page transitions during navigation when using the deck."
   keep-cw: "Preserve content warning"
   keep-cw-desc: "When replying to a post, the same content warning is set by default to the reply, as has been set by the original post."
-  deck-default: "Use Deck view as the default UI"
   display: "Design and display"
-  customize: "Customize home layout"
   wallpaper: "Wallpaper"
   choose-wallpaper: "Choose a background"
   delete-wallpaper: "Remove background"
@@ -961,14 +974,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
-  customize: "Customize home layout"
   admin: "Admin"
   settings: "Settings"
   signout: "Sign out"
   dark: "Toggle dark mode"
 desktop/views/components/ui.header.nav.vue:
-  home: "Home"
-  deck: "Deck"
   game: "Games"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -982,7 +992,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create list"
+  create-list: "Create a list"
   list-name: "List name"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
@@ -1091,6 +1101,7 @@ admin/views/instance.vue:
   smtp-secure-info: "Turn off STARTTLS when used that."
   smtp-host: "SMTP Host"
   smtp-port: "SMTP Port"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTP User"
   smtp-pass: "SMTP Password"
   serviceworker-config: "ServiceWorker"
@@ -1306,8 +1317,6 @@ desktop/views/pages/welcome.vue:
   info: "Information"
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
-desktop/views/pages/home-customize.vue:
-  title: "Customize home layout"
 desktop/views/pages/note.vue:
   prev: "Previous post"
   next: "Next post"
@@ -1339,9 +1348,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
   no-photos: "No photos"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Follows you"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
@@ -1351,6 +1357,7 @@ desktop/views/pages/user/user.header.vue:
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "Follows you"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
@@ -1418,12 +1425,6 @@ common/views/components/follow-button.vue:
   request-pending: "Pending"
   follow-processing: "Processing"
   follow-request: "Follow request"
-mobile/views/components/friends-maker.vue:
-  title: "Let's follow them"
-  empty: "Featured user was not found."
-  fetching: "Loading"
-  refresh: "See more"
-  close: "Close"
 mobile/views/components/note.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -1481,9 +1482,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted anything yet."
   no-notes-with-media: "There are no notes with media attachments"
-mobile/views/components/users-list.vue:
-  all: "All"
-  known: "In common"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
 mobile/views/pages/user-lists.vue:
@@ -1502,6 +1500,8 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "Messages"
+mobile/views/pages/home.timeline.vue:
+  empty: "Without any notes"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/welcome.vue:
@@ -1543,7 +1543,7 @@ mobile/views/pages/settings.vue:
   timeline: "Timeline"
   show-reply-target: "Show reply target"
   show-my-renotes: "Show my reposts"
-  show-renoted-my-notes: "Show renoted posts of mine"
+  show-renoted-my-notes: "Show the renotes of my posts"
   show-local-renotes: "Show renoted local posts"
   post-style: "Post design"
   post-style-standard: "Standard"
@@ -1591,13 +1591,9 @@ mobile/views/pages/user/home.vue:
   activity: "Activity"
   keywords: "Keywords"
   domains: "Domains"
-  frequently-replied-users: "Frequently mentioned users"
+  frequently-replied-users: "Frequent mentions"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "No users you know"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "There are no users that you know"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "No notes"
 mobile/views/pages/user/home.photos.vue:
@@ -1622,6 +1618,9 @@ deck:
   rename: "Rename"
   stack-left: "Stack to the left"
   pop-right: "Dock on the right"
+  disabled-timeline:
+    title: "Timeline has been disabled"
+    description: "This timeline has been disabled by the server administrator."
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"

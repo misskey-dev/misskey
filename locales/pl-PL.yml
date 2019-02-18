@@ -28,6 +28,8 @@ common:
   load-more: "Załaduj więcej"
   enter-password: "Wprowadź Hasło"
   2fa: "Uwierzytelnienie dwuetapowe"
+  customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -56,6 +58,14 @@ common:
   trash: "Kosz"
   drive: "Dysk"
   messaging: "Rozmowy"
+  deck: "デッキ"
+  timeline: "タイムライン"
+  explore: "みつける"
+  following: "フォロー中"
+  followers: "フォロワー"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -197,6 +207,17 @@ auth/views/index.vue:
   please-go-back: "Wróć do aplikacji."
   error: "Sesja nie istnieje."
   sign-in: "Proszę zalogować się."
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
+  recently-registered-users: "新規ユーザー"
+  popular-tags: "人気のタグ"
+  federated: "連合"
+  explore: "{host}を探索"
+  users-info: "現在{users}ユーザーが登録されています"
+common/views/components/user-list.vue:
+  no-users: "ユーザーがいません"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Oczekiwanie na {}"
@@ -684,12 +705,6 @@ desktop/views/components/following-window.vue:
   following: "Śledzeni przez {}"
 desktop/views/components/following.vue:
   empty: "Nikt Cię nie śledzi."
-desktop/views/components/friends-maker.vue:
-  title: "Zacznij śledzić ludzi takich jak Ty:"
-  empty: "Nie znaleziono podobnych użytkowników."
-  fetching: "Ładowanie…"
-  refresh: "Więcej"
-  close: "Zamknij"
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
@@ -770,6 +785,8 @@ desktop/views/components/renote-form.vue:
   failure: "Nie udało się udostępnić"
 desktop/views/components/renote-form-window.vue:
   title: "Czy na pewno chcesz udostępnić ten wpis?"
+desktop/views/components/timeline.core.vue:
+  empty: "投稿がありません"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
   followers: "{user}のフォロワー"
@@ -798,13 +815,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Np: https://www.google.com/?#q={{query}}"
   auto-popout: "Automatycznie pojawiające się okna"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
   keep-cw: "CW保持"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "Użyj Talię jako domyślne UI"
   display: "Wygląd i wyświetlanie"
-  customize: "Dostosuj stronę główną"
   wallpaper: "Tapeta"
   choose-wallpaper: "Wybierz tło"
   delete-wallpaper: "Usuń tło"
@@ -961,14 +974,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Ulubione"
   lists: "Listy"
   follow-requests: "Prośby o śledzenie"
-  customize: "Dostosuj stronę główną"
   admin: "Admin"
   settings: "Ustawienia"
   signout: "Wyloguj się"
   dark: "Sprowadź ciemność"
 desktop/views/components/ui.header.nav.vue:
-  home: "Strona główna"
-  deck: "Talia"
   game: "Gra"
 desktop/views/components/ui.header.notifications.vue:
   title: "Powiadomienia"
@@ -1091,6 +1101,7 @@ admin/views/instance.vue:
   smtp-secure-info: "STARTTLS使用時はオフにします。"
   smtp-host: "SMTPホスト"
   smtp-port: "SMTPポート"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTPユーザー"
   smtp-pass: "SMTPパスワード"
   serviceworker-config: "ServiceWorker"
@@ -1306,8 +1317,6 @@ desktop/views/pages/welcome.vue:
   info: "Informacje"
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
-desktop/views/pages/home-customize.vue:
-  title: "Dostosuj stronę główną"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -1339,9 +1348,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "Zdjęcia"
   loading: "Ładowanie"
   no-photos: "Brak zdjęć"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Śledzi Cię"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
@@ -1351,6 +1357,7 @@ desktop/views/pages/user/user.header.vue:
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
@@ -1418,12 +1425,6 @@ common/views/components/follow-button.vue:
   request-pending: "フォロー許可待ち"
   follow-processing: "Przetwarzanie"
   follow-request: "Poproś o śledzenie"
-mobile/views/components/friends-maker.vue:
-  title: "Zacznij śledzić ludzi takich jak Ty"
-  empty: "Nie znaleziono podobnych użytkowników."
-  fetching: "Ładowanie…"
-  refresh: "Więcej"
-  close: "Zamknij"
 mobile/views/components/note.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
@@ -1481,9 +1482,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "Wygląda na to, że ten użytkownik nie opublikował jeszcze niczego"
   no-notes-with-media: "Brak wpisów z zawartością multimedialną"
-mobile/views/components/users-list.vue:
-  all: "Wszyscy"
-  known: "Znasz"
 mobile/views/pages/favorites.vue:
   title: "Ulubione"
 mobile/views/pages/user-lists.vue:
@@ -1502,6 +1500,8 @@ mobile/views/pages/home.vue:
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Wiadomości"
+mobile/views/pages/home.timeline.vue:
+  empty: "投稿がありません"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
@@ -1591,13 +1591,9 @@ mobile/views/pages/user/home.vue:
   activity: "Aktywność"
   keywords: "Słowa kluczowe"
   domains: "Domeny"
-  frequently-replied-users: "Często aktywni użytkownicy"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "Śledzący których znasz"
   last-used-at: "Ostatnio aktywny"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Brak użytkowników"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "Brak użytkowników"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "Brak wpisów"
 mobile/views/pages/user/home.photos.vue:
@@ -1622,6 +1618,9 @@ deck:
   rename: "Zmień nazwę"
   stack-left: "Przypnij do lewej"
   pop-right: "右に出す"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 deck/deck.tl-column.vue:
   is-media-only: "Tylko wpisy z zawartością multimedialną"
   is-media-view: "Widok multimediów"

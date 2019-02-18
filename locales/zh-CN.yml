@@ -28,6 +28,8 @@ common:
   load-more: "加载更多"
   enter-password: "请输入您的密码"
   2fa: "双重身份验证"
+  customize-home: "自定义主页"
+  featured-notes: "高亮"
   got-it: "没问题"
   customization-tips:
     title: "自定义提示"
@@ -56,6 +58,14 @@ common:
   trash: "垃圾箱"
   drive: "网盘"
   messaging: "聊天"
+  deck: "Deck"
+  timeline: "时间线"
+  explore: "发现"
+  following: "正在关注"
+  followers: "关注者"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
+    explore: "查找用户"
   weekday-short:
     sunday: "日"
     monday: "一"
@@ -87,7 +97,7 @@ common:
     public: "公开"
     home: "首页"
     home-desc: "仅发送至首页的时间线"
-    followers: "粉丝"
+    followers: "关注者"
     followers-desc: "仅发送至粉丝"
     specified: "指定用户"
     specified-desc: "仅发送至指定用户"
@@ -104,7 +114,7 @@ common:
   search: "搜索"
   delete: "删除"
   loading: "正在加载中"
-  ok: "OK"
+  ok: "确定"
   update-available-title: "有可用更新"
   update-available: "新的 Misskey 版本现已发布({newer}。目前版本{current}). 刷新页面以应用更新。"
   my-token-regenerated: "您的 Token 已被重置, 您将自动登出。"
@@ -197,6 +207,17 @@ auth/views/index.vue:
   please-go-back: "请返回到应用程序"
   error: "会话不存在。"
   sign-in: "请登录。"
+common/views/pages/explore.vue:
+  verified-users: "官方账户"
+  popular-users: "热门用户"
+  recently-updated-users: "活跃用户"
+  recently-registered-users: "新用户"
+  popular-tags: "热门标签"
+  federated: "联合"
+  explore: "查找{host}"
+  users-info: "当前有{users}个注册用户"
+common/views/components/user-list.vue:
+  no-users: "无用户"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "等待 {}"
@@ -684,12 +705,6 @@ desktop/views/components/following-window.vue:
   following: "正在关注 {}"
 desktop/views/components/following.vue:
   empty: "看起来您没有正在关注的用户..."
-desktop/views/components/friends-maker.vue:
-  title: "推荐用户："
-  empty: "找不到推荐用户。"
-  fetching: "正在加载"
-  refresh: "浏览更多"
-  close: "关闭"
 desktop/views/components/game-window.vue:
   game: "游戏"
 desktop/views/components/home.vue:
@@ -698,7 +713,7 @@ desktop/views/components/home.vue:
   add: "添加"
 desktop/views/input-dialog.vue:
   cancel: "取消"
-  ok: "完成"
+  ok: "确定"
 desktop/views/components/messaging-room-window.vue:
   title: "信息："
 desktop/views/components/messaging-window.vue:
@@ -770,6 +785,8 @@ desktop/views/components/renote-form.vue:
   failure: "重新发送失败"
 desktop/views/components/renote-form-window.vue:
   title: "您是否要重新发送？"
+desktop/views/components/timeline.core.vue:
+  empty: "没有帖子"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}的正在关注"
   followers: "{user}的关注者"
@@ -798,13 +815,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "例如: https://www.google.com/?#q={{query}}"
   auto-popout: "自动弹出窗口"
   auto-popout-desc: "如果可用，将使用弹出显示而不是打开新窗口。 此设置存储在浏览器中。"
-  deck-nav: "Deck 内的导航"
-  deck-nav-desc: "在使用Deck时，您会在导航期间获得一个没有页面过渡的临时列。"
   keep-cw: "保留内容警告"
   keep-cw-desc: "在回复帖子时，如果原帖设置了内容警告，默认情况下回帖也会设置相同的内容警告。"
-  deck-default: "将Deck界面设置为默认UI显示界面"
   display: "设计与展示"
-  customize: "自定义首页摆放"
   wallpaper: "壁纸"
   choose-wallpaper: "选择一个背景壁纸"
   delete-wallpaper: "移除背景壁纸"
@@ -961,14 +974,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "最爱"
   lists: "列表"
   follow-requests: "关注申请"
-  customize: "自定义首页布局"
   admin: "管理"
   settings: "设置"
   signout: "登出"
   dark: "切换到黑暗模式 (夜间使用请打开此选项哦~)"
 desktop/views/components/ui.header.nav.vue:
-  home: "首页"
-  deck: "Deck"
   game: "游戏"
 desktop/views/components/ui.header.notifications.vue:
   title: "通知"
@@ -1091,6 +1101,7 @@ admin/views/instance.vue:
   smtp-secure-info: "使用时关闭 STARTTLS。"
   smtp-host: "SMTP 服务器地址 (主机名)"
   smtp-port: "SMTP 端口"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTP 用户名"
   smtp-pass: "SMTP 密码"
   serviceworker-config: "ServiceWorker"
@@ -1306,8 +1317,6 @@ desktop/views/pages/welcome.vue:
   info: "信息"
 desktop/views/pages/drive.vue:
   title: "Misskey 网盘"
-desktop/views/pages/home-customize.vue:
-  title: "自定义首页布局"
 desktop/views/pages/note.vue:
   prev: "上一个帖子"
   next: "下一个帖子"
@@ -1339,9 +1348,6 @@ desktop/views/pages/user/user.photos.vue:
   title: "照片"
   loading: "正在加载中"
   no-photos: "没有图片"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "关注您"
-  menu: "菜单"
 desktop/views/pages/user/user.header.vue:
   posts: "帖子"
   following: "关注中"
@@ -1351,6 +1357,7 @@ desktop/views/pages/user/user.header.vue:
   year: "年"
   month: "月"
   day: "日"
+  follows-you: "关注您"
 desktop/views/pages/user/user.timeline.vue:
   default: "帖子"
   with-replies: "帖子与回复"
@@ -1418,12 +1425,6 @@ common/views/components/follow-button.vue:
   request-pending: "发送关注申请"
   follow-processing: "申请处理中"
   follow-request: "关注申请"
-mobile/views/components/friends-maker.vue:
-  title: "推荐用户："
-  empty: "找不到推荐用户。"
-  fetching: "正在加载..."
-  refresh: "浏览更多"
-  close: "关闭"
 mobile/views/components/note.vue:
   private: "私密帖子"
   deleted: "帖子已删除"
@@ -1481,9 +1482,6 @@ mobile/views/components/ui.nav.vue:
 mobile/views/components/user-timeline.vue:
   no-notes: "看起来该用户还没有发表任何东西哎。"
   no-notes-with-media: "媒体附件没有备注"
-mobile/views/components/users-list.vue:
-  all: "所有"
-  known: "共同"
 mobile/views/pages/favorites.vue:
   title: "收藏"
 mobile/views/pages/user-lists.vue:
@@ -1502,6 +1500,8 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "信息"
+mobile/views/pages/home.timeline.vue:
+  empty: "没有帖子"
 mobile/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 mobile/views/pages/welcome.vue:
@@ -1591,13 +1591,9 @@ mobile/views/pages/user/home.vue:
   activity: "活动"
   keywords: "关键字"
   domains: "域名"
-  frequently-replied-users: "活跃的用户"
+  frequently-replied-users: "活跃用户"
   followers-you-know: "您可能认识的关注者"
   last-used-at: "上次登录:"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "没有您认识的用户"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "没有您知道的用户"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "没有帖子"
 mobile/views/pages/user/home.photos.vue:
@@ -1622,6 +1618,9 @@ deck:
   rename: "重命名"
   stack-left: "向左折叠"
   pop-right: "带到右边"
+  disabled-timeline:
+    title: "禁用时间线"
+    description: "服务器管理员已禁用时间线。"
 deck/deck.tl-column.vue:
   is-media-only: "只有媒体的帖子"
   is-media-view: "媒体视图"
