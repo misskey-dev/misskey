@@ -64,7 +64,7 @@ common:
   following: "正在关注"
   followers: "关注者"
   empty-timeline-info:
-    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
     explore: "ユーザーを探索する"
   weekday-short:
     sunday: "日"
@@ -208,11 +208,11 @@ auth/views/index.vue:
   error: "会话不存在。"
   sign-in: "请登录。"
 common/views/pages/explore.vue:
-  verified-users: "公式アカウント"
-  popular-users: "人気のユーザー"
-  recently-updated-users: "最近投稿したユーザー"
-  recently-registered-users: "新規ユーザー"
-  popular-tags: "人気のタグ"
+  verified-users: "官方账户"
+  popular-users: "热门用户"
+  recently-updated-users: "活跃用户"
+  recently-registered-users: "新用户"
+  popular-tags: "热门标签"
   federated: "連合"
 common/views/components/user-list.vue:
   no-users: "ユーザーがいません"
