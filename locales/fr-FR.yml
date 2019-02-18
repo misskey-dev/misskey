@@ -214,6 +214,8 @@ common/views/pages/explore.vue:
   recently-registered-users: "Les nouveaux inscrits"
   popular-tags: "Mots-clés populaires"
   federated: "Du Fédiverse"
+  explore: "{host}を探索"
+  users-info: "現在{users}ユーザーが登録されています"
 common/views/components/user-list.vue:
   no-users: "ユーザーがいません"
 common/views/components/games/reversi/reversi.vue:
