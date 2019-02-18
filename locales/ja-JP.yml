@@ -231,6 +231,8 @@ common/views/pages/explore.vue:
   recently-registered-users: "新規ユーザー"
   popular-tags: "人気のタグ"
   federated: "連合"
+  explore: "{host}を探索"
+  users-info: "現在{users}ユーザーが登録されています"
 
 common/views/components/user-list.vue:
   no-users: "ユーザーがいません"

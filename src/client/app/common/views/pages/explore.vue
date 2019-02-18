@@ -1,5 +1,14 @@
 <template>
 <div>
+	<ui-container :show-header="false">
+		<div class="kpdsmpnk" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
+			<div>
+				<b>{{ $t('explore', { host: meta.name }) }}</b>
+				<span>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</span>
+			</div>
+		</div>
+	</ui-container>
+
 	<mk-user-list v-if="tag != null" :make-promise="tagUsers" :key="`${tag}-local`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
 	</mk-user-list>
@@ -76,6 +85,9 @@ export default Vue.extend({
 			}),
 			tagsLocal: [],
 			tagsRemote: [],
+			stats: null,
+			meta: null,
+			num: Vue.filter('number'),
 			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag
 		};
 	},
@@ -117,6 +129,12 @@ export default Vue.extend({
 		}).then(tags => {
 			this.tagsRemote = tags;
 		});
+		this.$root.api('stats').then(stats => {
+			this.stats = stats;
+		});
+		this.$root.getMeta().then(meta => {
+			this.meta = meta;
+		});
 	}
 });
 </script>
@@ -130,5 +148,34 @@ export default Vue.extend({
 
 		&.local
 			font-weight bold
+
+.kpdsmpnk
+	min-height 100px
+	padding 16px
+	background-position center
+	background-size cover
+
+	&:before
+		content ""
+		display block
+		position absolute
+		top 0
+		left 0
+		width 100%
+		height 100%
+		background rgba(0, 0, 0, 0.3)
+
+	> div
+		color #fff
+		text-shadow 0 0 8px #00
+
+		> b
+			display block
+			font-size 20px
+			font-weight bold
+
+		> span
+			font-size 14px
+			opacity 0.8
 
 </style>
