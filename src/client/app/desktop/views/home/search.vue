@@ -1,7 +1,7 @@
 <template>
 <div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
-		<template v-slot:header>
+		<template #header>
 			<header class="oxgbmvii">
 				<span><fa icon="search"/> {{ q }}</span>
 			</header>

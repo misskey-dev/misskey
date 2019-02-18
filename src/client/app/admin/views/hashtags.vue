@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<template v-slot:title>{{ $t('hided-tags') }}</template>
+		<template #title>{{ $t('hided-tags') }}</template>
 		<section>
 			<textarea class="jdnqwkzlnxcfftthoybjxrebyolvoucw" v-model="hidedTags"></textarea>
 			<ui-button @click="save">{{ $t('save') }}</ui-button>

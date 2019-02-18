@@ -1,10 +1,10 @@
 <template>
 <div>
 	<ui-card>
-		<template v-slot:title><fa icon="plus"/> {{ $t('add-moderator.title') }}</template>
+		<template #title><fa icon="plus"/> {{ $t('add-moderator.title') }}</template>
 		<section class="fit-top">
 			<ui-input v-model="username" type="text">
-				<template v-slot:prefix>@</template>
+				<template #prefix>@</template>
 			</ui-input>
 			<ui-horizon-group>
 				<ui-button @click="add" :disabled="changing">{{ $t('add-moderator.add') }}</ui-button>

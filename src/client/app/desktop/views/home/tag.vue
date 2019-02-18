@@ -1,7 +1,7 @@
 <template>
 <div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
-		<template v-slot:header>
+		<template #header>
 			<header class="wqraeznr">
 				<span><fa icon="hashtag"/> {{ $route.params.tag }}</span>
 			</header>

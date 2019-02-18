@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template v-slot:header><span style="margin-right:4px;"><fa :icon="faNewspaper"/></span>{{ $t('@.featured-notes') }}</template>
+	<template #header><span style="margin-right:4px;"><fa :icon="faNewspaper"/></span>{{ $t('@.featured-notes') }}</template>
 
 	<main>
 		<sequential-entrance animation="entranceFromTop" delay="25">

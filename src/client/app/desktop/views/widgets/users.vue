@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-users">
 	<ui-container :show-header="!props.compact">
-		<template v-slot:header><fa icon="users"/>{{ $t('title') }}</template>
-		<template v-slot:func>
+		<template #header><fa icon="users"/>{{ $t('title') }}</template>
+		<template #func>
 			<button :title="$t('title')" @click="refresh">
 				<fa v-if="!fetching && more" icon="arrow-right"/>
 				<fa v-if="!fetching && !more" icon="sync"/>

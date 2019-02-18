@@ -22,17 +22,17 @@
 		<x-theme class="theme" v-show="page == 'theme'"/>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<template v-slot:title><fa icon="sliders-h"/> {{ $t('behaviour') }}</template>
+			<template #title><fa icon="sliders-h"/> {{ $t('behaviour') }}</template>
 
 			<section>
 				<ui-switch v-model="fetchOnScroll">{{ $t('fetch-on-scroll') }}
-					<template v-slot:desc>{{ $t('fetch-on-scroll-desc') }}</template>
+					<template #desc>{{ $t('fetch-on-scroll-desc') }}</template>
 				</ui-switch>
 				<ui-switch v-model="autoPopout">{{ $t('auto-popout') }}
-					<template v-slot:desc>{{ $t('auto-popout-desc') }}</template>
+					<template #desc>{{ $t('auto-popout-desc') }}</template>
 				</ui-switch>
 				<ui-switch v-model="keepCw">{{ $t('keep-cw') }}
-					<template v-slot:desc>{{ $t('keep-cw-desc') }}</template>
+					<template #desc>{{ $t('keep-cw-desc') }}</template>
 				</ui-switch>
 			</section>
 
@@ -62,12 +62,12 @@
 
 			<section>
 				<header>{{ $t('web-search-engine') }}</header>
-				<ui-input v-model="webSearchEngine">{{ $t('web-search-engine') }}<template v-slot:desc>{{ $t('web-search-engine-desc') }}</template></ui-input>
+				<ui-input v-model="webSearchEngine">{{ $t('web-search-engine') }}<template #desc>{{ $t('web-search-engine-desc') }}</template></ui-input>
 			</section>
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<template v-slot:title><fa icon="desktop"/> {{ $t('display') }}</template>
+			<template #title><fa icon="desktop"/> {{ $t('display') }}</template>
 
 			<section>
 				<ui-switch v-model="showPostFormOnTopOfTl">{{ $t('post-form-on-timeline') }}</ui-switch>
@@ -135,11 +135,11 @@
 		</ui-card>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<template v-slot:title><fa icon="volume-up"/> {{ $t('sound') }}</template>
+			<template #title><fa icon="volume-up"/> {{ $t('sound') }}</template>
 
 			<section>
 				<ui-switch v-model="enableSounds">{{ $t('enable-sounds') }}
-					<template v-slot:desc>{{ $t('enable-sounds-desc') }}</template>
+					<template #desc>{{ $t('enable-sounds-desc') }}</template>
 				</ui-switch>
 				<label>{{ $t('volume') }}</label>
 				<input type="range"
@@ -155,7 +155,7 @@
 		<x-language-settings v-show="page == 'web'"/>
 
 		<ui-card class="web" v-show="page == 'web'">
-			<template v-slot:title><fa :icon="['far', 'trash-alt']"/> {{ $t('cache') }}</template>
+			<template #title><fa :icon="['far', 'trash-alt']"/> {{ $t('cache') }}</template>
 			<section>
 				<ui-button @click="clean">{{ $t('clean-cache') }}</ui-button>
 				<div class="none ui info warn">
@@ -171,7 +171,7 @@
 		</div>
 
 		<ui-card class="hashtags" v-show="page == 'hashtags'">
-			<template v-slot:title><fa icon="hashtag"/> {{ $t('tags') }}</template>
+			<template #title><fa icon="hashtag"/> {{ $t('tags') }}</template>
 			<section>
 				<x-tags/>
 			</section>
@@ -182,28 +182,28 @@
 		</div>
 
 		<ui-card class="apps" v-show="page == 'apps'">
-			<template v-slot:title><fa icon="puzzle-piece"/> {{ $t('apps') }}</template>
+			<template #title><fa icon="puzzle-piece"/> {{ $t('apps') }}</template>
 			<section>
 				<x-apps/>
 			</section>
 		</ui-card>
 
 		<ui-card class="password" v-show="page == 'security'">
-			<template v-slot:title><fa icon="unlock-alt"/> {{ $t('password') }}</template>
+			<template #title><fa icon="unlock-alt"/> {{ $t('password') }}</template>
 			<section>
 				<x-password-settings/>
 			</section>
 		</ui-card>
 
 		<ui-card class="2fa" v-show="page == 'security'">
-			<template v-slot:title><fa icon="mobile-alt"/> {{ $t('@.2fa') }}</template>
+			<template #title><fa icon="mobile-alt"/> {{ $t('@.2fa') }}</template>
 			<section>
 				<x-2fa/>
 			</section>
 		</ui-card>
 
 		<ui-card class="signin" v-show="page == 'security'">
-			<template v-slot:title><fa icon="sign-in-alt"/> {{ $t('signin') }}</template>
+			<template #title><fa icon="sign-in-alt"/> {{ $t('signin') }}</template>
 			<section>
 				<x-signins/>
 			</section>
@@ -214,14 +214,14 @@
 		</div>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<template v-slot:title><fa icon="info-circle"/> {{ $t('about') }}</template>
+			<template #title><fa icon="info-circle"/> {{ $t('about') }}</template>
 			<section>
 				<p v-if="meta">{{ $t('operator') }}: <i><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></i></p>
 			</section>
 		</ui-card>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<template v-slot:title><fa icon="sync-alt"/> {{ $t('update') }}</template>
+			<template #title><fa icon="sync-alt"/> {{ $t('update') }}</template>
 			<section>
 				<p>
 					<span>{{ $t('version') }} <i>{{ version }}</i></span>
@@ -237,20 +237,20 @@
 				<details>
 					<summary>{{ $t('update-settings') }}</summary>
 					<ui-switch v-model="preventUpdate">
-						{{ $t('prevent-update') }}<template v-slot:desc>{{ $t('prevent-update-desc') }}</template>
+						{{ $t('prevent-update') }}<template #desc>{{ $t('prevent-update-desc') }}</template>
 					</ui-switch>
 				</details>
 			</section>
 		</ui-card>
 
 		<ui-card class="other" v-show="page == 'other'">
-			<template v-slot:title><fa icon="cogs"/> {{ $t('advanced-settings') }}</template>
+			<template #title><fa icon="cogs"/> {{ $t('advanced-settings') }}</template>
 			<section>
 				<ui-switch v-model="debug">
-					{{ $t('debug-mode') }}<template v-slot:desc>{{ $t('debug-mode-desc') }}</template>
+					{{ $t('debug-mode') }}<template #desc>{{ $t('debug-mode-desc') }}</template>
 				</ui-switch>
 				<ui-switch v-model="enableExperimentalFeatures">
-					{{ $t('experimental') }}<template v-slot:desc>{{ $t('experimental-desc') }}</template>
+					{{ $t('experimental') }}<template #desc>{{ $t('experimental-desc') }}</template>
 				</ui-switch>
 			</section>
 		</ui-card>

@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<template v-slot:header><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>{{ $t('notifications') }}</template>
-	<template v-slot:func><button @click="fn"><fa icon="check"/></button></template>
+	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>{{ $t('notifications') }}</template>
+	<template #func><button @click="fn"><fa icon="check"/></button></template>
 
 	<main>
 		<mk-notifications @fetched="onFetched"/>

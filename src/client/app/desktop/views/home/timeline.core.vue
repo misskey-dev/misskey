@@ -1,14 +1,14 @@
 <template>
 <div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
-		<template v-slot:header>
+		<template #header>
 			<slot></slot>
 			<div v-if="src == 'home' && alone" class="ibpylqas">
 				<p>{{ $t('@.empty-timeline-info.follow-users-to-make-your-timeline') }}</p>
 				<router-link to="/explore">{{ $t('@.empty-timeline-info.explore') }}</router-link>
 			</div>
 		</template>
-		<template v-slot:empty>
+		<template #empty>
 			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
 		</template>
 	</mk-notes>

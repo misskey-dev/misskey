@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template v-slot:header><span style="margin-right:4px;"><fa :icon="['far', 'sticky-note']"/></span>{{ $t('title') }}</template>
+	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'sticky-note']"/></span>{{ $t('title') }}</template>
 	<main v-if="!fetching">
 		<div>
 			<mk-note-detail :note="note"/>

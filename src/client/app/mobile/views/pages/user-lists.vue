@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<template v-slot:header><fa icon="list"/>{{ $t('title') }}</template>
-	<template v-slot:func><button @click="fn"><fa icon="plus"/></button></template>
+	<template #header><fa icon="list"/>{{ $t('title') }}</template>
+	<template #func><button @click="fn"><fa icon="plus"/></button></template>
 
 	<main>
 		<ul>

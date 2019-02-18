@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template v-slot:header>
+	<template #header>
 		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span><mk-user-name :user="user"/></template>
 		<template v-else><mk-ellipsis/></template>
 	</template>

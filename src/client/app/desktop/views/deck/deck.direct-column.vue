@@ -1,6 +1,6 @@
 <template>
 <x-column :name="name" :column="column" :is-stacked="isStacked">
-	<template v-slot:header><fa :icon="['far', 'envelope']"/>{{ name }}</template>
+	<template #header><fa :icon="['far', 'envelope']"/>{{ name }}</template>
 
 	<x-direct/>
 </x-column>

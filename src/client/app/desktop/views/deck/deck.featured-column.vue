@@ -1,6 +1,6 @@
 <template>
 <x-column>
-	<template v-slot:header>
+	<template #header>
 		<fa :icon="faNewspaper"/>{{ $t('@.featured-notes') }}
 	</template>
 

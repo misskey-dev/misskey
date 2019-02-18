@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template v-slot:header>
+	<template #header>
 		<span @click="showNav = true">
 			<span :class="$style.title">
 				<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
@@ -20,7 +20,7 @@
 		</span>
 	</template>
 
-	<template v-slot:func>
+	<template #func>
 		<button @click="fn"><fa icon="pencil-alt"/></button>
 	</template>
 

@@ -1,6 +1,6 @@
 <template>
 <ui-container :body-togglable="true">
-	<template v-slot:header><slot></slot></template>
+	<template #header><slot></slot></template>
 
 	<mk-error v-if="!fetching && !inited" @retry="init()"/>
 

@@ -1,6 +1,6 @@
 <template>
 <x-column>
-	<template v-slot:header>
+	<template #header>
 		<fa :icon="faHashtag"/>{{ $t('@.explore') }}
 	</template>
 

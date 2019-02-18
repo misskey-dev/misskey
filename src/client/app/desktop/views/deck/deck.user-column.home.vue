@@ -1,13 +1,13 @@
 <template>
 <div>
 	<ui-container v-if="user.pinnedNotes && user.pinnedNotes.length > 0" :body-togglable="true">
-		<template v-slot:header><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</template>
+		<template #header><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</template>
 		<div>
 			<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
 		</div>
 	</ui-container>
 	<ui-container v-if="images.length > 0" :body-togglable="true">
-		<template v-slot:header><fa :icon="['far', 'images']"/> {{ $t('images') }}</template>
+		<template #header><fa :icon="['far', 'images']"/> {{ $t('images') }}</template>
 		<div class="sainvnaq">
 			<router-link v-for="image in images"
 				:style="`background-image: url(${image.thumbnailUrl})`"
@@ -18,13 +18,13 @@
 		</div>
 	</ui-container>
 	<ui-container :body-togglable="true">
-		<template v-slot:header><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</template>
+		<template #header><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</template>
 		<div>
 			<div ref="chart"></div>
 		</div>
 	</ui-container>
 	<ui-container>
-		<template v-slot:header><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</template>
+		<template #header><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</template>
 		<div>
 			<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 		</div>

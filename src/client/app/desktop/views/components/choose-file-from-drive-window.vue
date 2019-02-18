@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
-	<template v-slot:header>
+	<template #header>
 		<span class="jqiaciqv">
 			<span class="title">{{ $t('choose-prompt') }}</span>
 			<span class="count" v-if="multiple && files.length > 0">({{ $t('chosen-files', { count: files.length }) }})</span>

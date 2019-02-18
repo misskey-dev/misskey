@@ -1,7 +1,7 @@
 <template>
 <div>
 	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
-		<template v-slot:header>
+		<template #header>
 			<slot></slot>
 		</template>
 	</mk-notes>

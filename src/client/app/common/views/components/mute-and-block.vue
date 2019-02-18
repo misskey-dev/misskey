@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<template v-slot:title><fa icon="ban"/> {{ $t('mute-and-block') }}</template>
+	<template #title><fa icon="ban"/> {{ $t('mute-and-block') }}</template>
 
 	<section>
 		<header>{{ $t('mute') }}</header>
@@ -25,7 +25,7 @@
 	<section>
 		<header>{{ $t('word-mute') }}</header>
 		<ui-textarea v-model="mutedWords">
-			{{ $t('muted-words') }}<template v-slot:desc>{{ $t('muted-words-description') }}</template>
+			{{ $t('muted-words') }}<template #desc>{{ $t('muted-words-description') }}</template>
 		</ui-textarea>
 		<ui-button @click="save">{{ $t('save') }}</ui-button>
 	</section>

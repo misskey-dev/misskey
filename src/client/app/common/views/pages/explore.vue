@@ -8,7 +8,7 @@
 	</mk-user-list>
 
 	<ui-container :body-togglable="true">
-		<template v-slot:header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
+		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
 			<router-link v-for="tag in tags" :to="`/explore/tags/${tag.tag}`" :key="tag.tag">{{ tag.tag }}</router-link>

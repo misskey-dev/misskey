@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template v-slot:header><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ $t('@.messaging') }}</template>
+	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ $t('@.messaging') }}</template>
 	<x-messaging @navigate="navigate" :header-top="48"/>
 </mk-ui>
 </template>

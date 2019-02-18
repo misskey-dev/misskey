@@ -1,6 +1,6 @@
 <template>
 <x-column :menu="menu" :naked="true" :narrow="true" :name="name" :column="column" :is-stacked="isStacked" class="wtdtxvecapixsepjtcupubtsmometobz">
-	<template v-slot:header><fa icon="calculator"/>{{ name }}</template>
+	<template #header><fa icon="calculator"/>{{ name }}</template>
 
 	<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
 		<template v-if="edit">

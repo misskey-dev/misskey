@@ -1,6 +1,6 @@
 <template>
 <x-column>
-	<template v-slot:header>
+	<template #header>
 		<fa icon="user"/><mk-user-name :user="user" v-if="user"/>
 	</template>
 

@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template v-slot:header v-if="!fetching"><img :src="avator" alt="">
+	<template #header v-if="!fetching"><img :src="avator" alt="">
 		<mk-user-name :user="user"/>
 	</template>
 	<div class="wwtwuxyh" v-if="!fetching">

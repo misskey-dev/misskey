@@ -1,6 +1,6 @@
 <template>
 <x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
-	<template v-slot:header>
+	<template #header>
 		<fa v-if="column.type == 'home'" icon="home"/>
 		<fa v-if="column.type == 'local'" :icon="['far', 'comments']"/>
 		<fa v-if="column.type == 'hybrid'" icon="share-alt"/>

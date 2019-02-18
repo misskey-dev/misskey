@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-memo">
 	<ui-container :show-header="!props.compact">
-		<template v-slot:header><fa :icon="['far', 'sticky-note']"/>{{ $t('title') }}</template>
+		<template #header><fa :icon="['far', 'sticky-note']"/>{{ $t('title') }}</template>
 
 		<div class="mkw-memo--body">
 			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>

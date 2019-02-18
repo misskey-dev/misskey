@@ -1,9 +1,9 @@
 <template>
 <ui-card>
-	<template v-slot:title><fa :icon="['far', 'bell']"/> {{ $t('title') }}</template>
+	<template #title><fa :icon="['far', 'bell']"/> {{ $t('title') }}</template>
 	<section>
 		<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
-			{{ $t('auto-watch') }}<template v-slot:desc>{{ $t('auto-watch-desc') }}</template>
+			{{ $t('auto-watch') }}<template #desc>{{ $t('auto-watch-desc') }}</template>
 		</ui-switch>
 		<section>
 			<ui-button @click="readAllNotifications">{{ $t('mark-as-read-all-notifications') }}</ui-button>

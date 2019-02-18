@@ -1,6 +1,6 @@
 <template>
 <ui-card v-if="enableTwitterIntegration || enableDiscordIntegration || enableGithubIntegration">
-	<template v-slot:title><fa icon="share-alt"/> {{ $t('title') }}</template>
+	<template #title><fa icon="share-alt"/> {{ $t('title') }}</template>
 
 	<section v-if="enableTwitterIntegration">
 		<header><fa :icon="['fab', 'twitter']"/> Twitter</header>

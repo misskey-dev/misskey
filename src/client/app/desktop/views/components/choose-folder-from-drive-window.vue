@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="destroyDom">
-	<template v-slot:header>
+	<template #header>
 		<span>{{ $t('choose-prompt') }}</span>
 	</template>
 

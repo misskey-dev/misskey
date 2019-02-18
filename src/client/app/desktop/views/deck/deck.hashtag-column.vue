@@ -1,6 +1,6 @@
 <template>
 <x-column>
-	<template v-slot:header>
+	<template #header>
 		<fa icon="hashtag"/><span>{{ tag }}</span>
 	</template>
 

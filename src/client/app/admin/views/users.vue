@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<template v-slot:title><fa :icon="faTerminal"/> {{ $t('operation') }}</template>
+		<template #title><fa :icon="faTerminal"/> {{ $t('operation') }}</template>
 		<section class="fit-top">
 			<ui-input class="target" v-model="target" type="text" @enter="showUser">
 				<span>{{ $t('username-or-userid') }}</span>
@@ -32,18 +32,18 @@
 	</ui-card>
 
 	<ui-card>
-		<template v-slot:title><fa :icon="faUsers"/> {{ $t('users.title') }}</template>
+		<template #title><fa :icon="faUsers"/> {{ $t('users.title') }}</template>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-select v-model="sort">
-					<template v-slot:label>{{ $t('users.sort.title') }}</template>
+					<template #label>{{ $t('users.sort.title') }}</template>
 					<option value="-createdAt">{{ $t('users.sort.createdAtAsc') }}</option>
 					<option value="+createdAt">{{ $t('users.sort.createdAtDesc') }}</option>
 					<option value="-updatedAt">{{ $t('users.sort.updatedAtAsc') }}</option>
 					<option value="+updatedAt">{{ $t('users.sort.updatedAtDesc') }}</option>
 				</ui-select>
 				<ui-select v-model="state">
-					<template v-slot:label>{{ $t('users.state.title') }}</template>
+					<template #label>{{ $t('users.state.title') }}</template>
 					<option value="all">{{ $t('users.state.all') }}</option>
 					<option value="admin">{{ $t('users.state.admin') }}</option>
 					<option value="moderator">{{ $t('users.state.moderator') }}</option>
@@ -52,7 +52,7 @@
 					<option value="suspended">{{ $t('users.state.suspended') }}</option>
 				</ui-select>
 				<ui-select v-model="origin">
-					<template v-slot:label>{{ $t('users.origin.title') }}</template>
+					<template #label>{{ $t('users.origin.title') }}</template>
 					<option value="combined">{{ $t('users.origin.combined') }}</option>
 					<option value="local">{{ $t('users.origin.local') }}</option>
 					<option value="remote">{{ $t('users.origin.remote') }}</option>

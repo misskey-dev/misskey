@@ -1,6 +1,6 @@
 <template>
 <x-column>
-	<template v-slot:header>
+	<template #header>
 		<fa :icon="['far', 'comment-alt']"/><mk-user-name :user="note.user" v-if="note"/>
 	</template>
 

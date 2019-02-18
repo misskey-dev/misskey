@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<template v-slot:title><fa icon="user"/> {{ $t('title') }}</template>
+	<template #title><fa icon="user"/> {{ $t('title') }}</template>
 
 	<section class="esokaraujimuwfttfzgocmutcihewscl">
 		<div class="header" :style="bannerStyle">
@@ -14,41 +14,41 @@
 
 			<ui-input v-model="username" readonly>
 				<span>{{ $t('account') }}</span>
-				<template v-slot:prefix>@</template>
-				<template v-slot:suffix>@{{ host }}</template>
+				<template #prefix>@</template>
+				<template #suffix>@{{ host }}</template>
 			</ui-input>
 
 			<ui-input v-model="location">
 				<span>{{ $t('location') }}</span>
-				<template v-slot:prefix><fa icon="map-marker-alt"/></template>
+				<template #prefix><fa icon="map-marker-alt"/></template>
 			</ui-input>
 
 			<ui-input v-model="birthday" type="date">
-				<template v-slot:title>{{ $t('birthday') }}</template>
-				<template v-slot:prefix><fa icon="birthday-cake"/></template>
+				<template #title>{{ $t('birthday') }}</template>
+				<template #prefix><fa icon="birthday-cake"/></template>
 			</ui-input>
 
 			<ui-textarea v-model="description" :max="500">
 				<span>{{ $t('description') }}</span>
-				<template v-slot:desc>{{ $t('you-can-include-hashtags') }}</template>
+				<template #desc>{{ $t('you-can-include-hashtags') }}</template>
 			</ui-textarea>
 
 			<ui-select v-model="lang">
-				<template v-slot:label>{{ $t('language') }}</template>
-				<template v-slot:icon><fa icon="language"/></template>
+				<template #label>{{ $t('language') }}</template>
+				<template #icon><fa icon="language"/></template>
 				<option v-for="lang in unique(Object.values(langmap).map(x => x.nativeName)).map(name => Object.keys(langmap).find(k => langmap[k].nativeName == name))" :value="lang" :key="lang">{{ langmap[lang].nativeName }}</option>
 			</ui-select>
 
 			<ui-input type="file" @change="onAvatarChange">
 				<span>{{ $t('avatar') }}</span>
-				<template v-slot:icon><fa icon="image"/></template>
-				<template v-slot:desc v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
+				<template #icon><fa icon="image"/></template>
+				<template #desc v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
 			</ui-input>
 
 			<ui-input type="file" @change="onBannerChange">
 				<span>{{ $t('banner') }}</span>
-				<template v-slot:icon><fa icon="image"/></template>
-				<template v-slot:desc v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
+				<template #icon><fa icon="image"/></template>
+				<template #desc v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
 			</ui-input>
 
 			<ui-button @click="save(true)">{{ $t('save') }}</ui-button>

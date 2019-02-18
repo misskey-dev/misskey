@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<template v-slot:title><fa icon="key"/> API</template>
+	<template #title><fa icon="key"/> API</template>
 
 	<section class="fit-top">
 		<ui-input :value="$store.state.i.token" readonly>
@@ -19,7 +19,7 @@
 		</ui-input>
 		<ui-textarea v-model="body">
 			<span>{{ $t('console.parameter') }} (JSON or JSON5)</span>
-			<template v-slot:desc>{{ $t('console.credential-info') }}</template>
+			<template #desc>{{ $t('console.credential-info') }}</template>
 		</ui-textarea>
 		<ui-button @click="send" :disabled="sending">
 			<template v-if="sending">{{ $t('console.sending') }}</template>

@@ -1,7 +1,7 @@
 <template>
 <div class="cudqjmnl">
 	<ui-card>
-		<template v-slot:title><fa :icon="faList"/> {{ list.title }}</template>
+		<template #title><fa :icon="faList"/> {{ list.title }}</template>
 
 		<section>
 			<ui-button @click="rename"><fa :icon="faICursor"/> {{ $t('rename') }}</ui-button>
@@ -10,7 +10,7 @@
 	</ui-card>
 
 	<ui-card>
-		<template v-slot:title><fa :icon="faUsers"/> {{ $t('users') }}</template>
+		<template #title><fa :icon="faUsers"/> {{ $t('users') }}</template>
 
 		<section>
 			<sequential-entrance animation="entranceFromTop" delay="25">

@@ -3,16 +3,16 @@
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
 	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange" styl="fill">
 		<span>{{ $t('username') }}</span>
-		<template v-slot:prefix>@</template>
-		<template v-slot:suffix>@{{ host }}</template>
+		<template #prefix>@</template>
+		<template #suffix>@{{ host }}</template>
 	</ui-input>
 	<ui-input v-model="password" type="password" :with-password-toggle="true" required styl="fill">
 		<span>{{ $t('password') }}</span>
-		<template v-slot:prefix><fa icon="lock"/></template>
+		<template #prefix><fa icon="lock"/></template>
 	</ui-input>
 	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill">
 		<span>{{ $t('@.2fa') }}</span>
-		<template v-slot:prefix><fa icon="gavel"/></template>
+		<template #prefix><fa icon="gavel"/></template>
 	</ui-input>
 	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('signin') }}</ui-button>
 	<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`">{{ $t('signin-with-twitter') }}</a></p>
