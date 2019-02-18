@@ -1593,10 +1593,6 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "Frequent mentions"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "No users you know"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "No frequent mentions"
 mobile/views/pages/user/home.notes.vue:
   no-notes: "No notes"
 mobile/views/pages/user/home.photos.vue:
