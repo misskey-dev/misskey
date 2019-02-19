@@ -214,7 +214,7 @@ common/views/pages/explore.vue:
   recently-registered-users: "신규 사용자"
   popular-tags: "인기 태그"
   federated: "연합"
-  explore: "{host}를 탐색"
+  explore: "{host}을(를) 탐색"
   users-info: "현재 {users} 사용자가 등록되어 있습니다"
 common/views/components/user-list.vue:
   no-users: "사용자가 없습니다"
