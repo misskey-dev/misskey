@@ -1101,7 +1101,7 @@ admin/views/instance.vue:
   smtp-secure-info: "使用时关闭 STARTTLS。"
   smtp-host: "SMTP 服务器地址 (主机名)"
   smtp-port: "SMTP 端口"
-  smtp-auth: "SMTP認証を行う"
+  smtp-auth: "SMTP身份验证"
   smtp-user: "SMTP 用户名"
   smtp-pass: "SMTP 密码"
   serviceworker-config: "ServiceWorker"
