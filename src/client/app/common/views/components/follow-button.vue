@@ -1,6 +1,6 @@
 <template>
 <button class="wfliddvnhxvyusikowhxozkyxyenqxqr"
-	:class="{ wait, block, inline, mini, active: isFollowing || hasPendingFollowRequestFromYou }"
+	:class="{ wait, block, inline, mini, transparent, active: isFollowing || hasPendingFollowRequestFromYou }"
 	@click="onClick"
 	:disabled="wait"
 	:inline="inline"
@@ -38,7 +38,12 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		transparent: {
+			type: Boolean,
+			required: false,
+			default: true
+		},
 	},
 
 	data() {
@@ -133,6 +138,9 @@ export default Vue.extend({
 	outline none
 	border solid 1px var(--primary)
 	border-radius 36px
+
+	&:not(.transparent)
+		background #fff
 
 	&.inline
 		display inline-block
