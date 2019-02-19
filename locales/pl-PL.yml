@@ -1353,6 +1353,7 @@ desktop/views/pages/user/user.header.vue:
   following: "Śledzeni"
   followers: "Śledzący"
   is-bot: "To konto jest botem"
+  no-description: "自己紹介はありません"
   years-old: "{age} lat"
   year: "/"
   month: "/"
