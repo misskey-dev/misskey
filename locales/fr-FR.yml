@@ -1353,6 +1353,7 @@ desktop/views/pages/user/user.header.vue:
   following: "Suit"
   followers: "Abonné·e·s"
   is-bot: "Ce compte est un Bot"
+  no-description: "自己紹介はありません"
   years-old: "{age} ans"
   year: "/"
   month: "/"
