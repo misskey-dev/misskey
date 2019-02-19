@@ -9,7 +9,7 @@
 		</div>
 	</ui-container>
 
-	<ui-container :body-togglable="true">
+	<ui-container :body-togglable="true" ref="tags">
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
@@ -112,6 +112,12 @@ export default Vue.extend({
 				limit: 30
 			});
 		},
+	},
+
+	watch: {
+		tag() {
+			if (this.$refs.tags) this.$refs.tags.toggleContent(this.tag == null);
+		}
 	},
 
 	created() {

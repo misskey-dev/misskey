@@ -35,6 +35,11 @@ export default Vue.extend({
 		return {
 			showBody: true
 		};
+	},
+	methods: {
+		toggleContent(show: boolean) {
+			this.showBody = show;
+		}
 	}
 });
 </script>
