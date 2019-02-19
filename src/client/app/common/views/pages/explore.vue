@@ -1,6 +1,6 @@
 <template>
 <div>
-	<ui-container :show-header="false">
+	<ui-container :show-header="false" v-if="meta && stats">
 		<div class="kpdsmpnk" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 			<div>
 				<b>{{ $t('explore', { host: meta.name }) }}</b>
