@@ -61,6 +61,14 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 ...and more! Experience Misskey with your own eyes at [misskey.xyz](https://misskey.xyz) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
 
+Screen shots
+----------------------------------------------------------------
+### Profile page
+<img src="/assets/ss/user.jpg" width="500px"/>
+
+### Explore users
+<img src="/assets/ss/explore.jpg" width="500px"/>
+
 :new: What's new
 ----------------------------------------------------------------
 Please see the [Release notes](./CHANGELOG.md).
