@@ -9,13 +9,6 @@
 		</div>
 	</ui-container>
 
-	<mk-user-list v-if="tag != null" :make-promise="tagUsers" :key="`${tag}-local`">
-		<fa :icon="faHashtag" fixed-width/>{{ tag }}
-	</mk-user-list>
-	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers" :key="`${tag}-remote`">
-		<fa :icon="faHashtag" fixed-width/>{{ tag }} ({{ $t('federated') }})
-	</mk-user-list>
-
 	<ui-container :body-togglable="true">
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
@@ -24,6 +17,13 @@
 			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="tag.tag">{{ tag.tag }}</router-link>
 		</div>
 	</ui-container>
+
+	<mk-user-list v-if="tag != null" :make-promise="tagUsers" :key="`${tag}-local`">
+		<fa :icon="faHashtag" fixed-width/>{{ tag }}
+	</mk-user-list>
+	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers" :key="`${tag}-remote`">
+		<fa :icon="faHashtag" fixed-width/>{{ tag }} ({{ $t('federated') }})
+	</mk-user-list>
 
 	<template v-if="tag == null">
 		<mk-user-list :make-promise="verifiedUsers">
