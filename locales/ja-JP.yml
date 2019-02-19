@@ -1506,6 +1506,7 @@ desktop/views/pages/user/user.header.vue:
   following: "フォロー"
   followers: "フォロワー"
   is-bot: "このアカウントはBotです"
+  no-description: "自己紹介はありません"
   years-old: "{age}歳"
   year: "年"
   month: "月"

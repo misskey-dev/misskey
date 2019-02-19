@@ -22,6 +22,7 @@
 	<div class="body">
 		<div class="description">
 			<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+			<p v-else class="empty">{{ $t('no-description') }}</p>
 		</div>
 		<div class="fields" v-if="user.fields">
 			<dl class="field" v-for="(field, i) in user.fields" :key="i">
@@ -212,6 +213,11 @@ export default Vue.extend({
 	> .body
 		padding 16px 16px 16px 154px
 		color var(--text)
+
+		> .description
+			> .empty
+				margin 0
+				opacity 0.5
 
 		> .fields
 			margin-top 16px
