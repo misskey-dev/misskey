@@ -8,14 +8,14 @@ import { publishMainStream } from '../../stream';
 import { insertFollowingDoc } from '../create';
 
 export default async function(followee: IUser, follower: IUser) {
+	const request = await FollowRequest.findOne({
+		followeeId: followee._id,
+		followerId: follower._id
+	});
+
 	await insertFollowingDoc(followee, follower);
 
-	if (isRemoteUser(follower)) {
-		const request = await FollowRequest.findOne({
-			followeeId: followee._id,
-			followerId: follower._id
-		});
-
+	if (isRemoteUser(follower) && request) {
 		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
