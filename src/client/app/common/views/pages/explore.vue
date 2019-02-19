@@ -3,7 +3,7 @@
 	<ui-container :show-header="false" v-if="meta && stats">
 		<div class="kpdsmpnk" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 			<div>
-				<b>{{ $t('explore', { host: meta.name }) }}</b>
+				<router-link to="/explore" class="title">{{ $t('explore', { host: meta.name }) }}</router-link>
 				<span>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</span>
 			</div>
 		</div>
@@ -175,10 +175,11 @@ export default Vue.extend({
 		color #fff
 		text-shadow 0 0 8px #00
 
-		> b
+		> .title
 			display block
 			font-size 20px
 			font-weight bold
+			color inherit
 
 		> span
 			font-size 14px
