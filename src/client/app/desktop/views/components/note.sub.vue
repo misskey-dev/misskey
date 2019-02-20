@@ -55,7 +55,7 @@ export default Vue.extend({
 
 	&.mini
 		padding 16px
-		font-size 14px
+		font-size 13px
 
 		> .avatar
 			margin 0 8px 0 0
@@ -99,6 +99,6 @@ export default Vue.extend({
 
 					pre
 						max-height 120px
-						font-size 82%
+						font-size 80%
 
 </style>
