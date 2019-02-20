@@ -1624,7 +1624,6 @@ deck:
     description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿だけや"
-  is-media-view: "メディアビュー"
   edit: "オプション"
 deck/deck.user-column.vue:
   follows-you: "フォローされています"
