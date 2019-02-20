@@ -119,6 +119,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		getHideUserIds(user)
 	]);
 
+	if (list == null) {
+		rej('list not found');
+		return;
+	}
+
 	if (list.userIds.length == 0) {
 		res([]);
 		return;
