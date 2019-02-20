@@ -215,6 +215,8 @@ export default Vue.extend({
 		color var(--text)
 
 		> .description
+			font-size 15px
+
 			> .empty
 				margin 0
 				opacity 0.5
@@ -251,6 +253,7 @@ export default Vue.extend({
 			margin-top 16px
 			padding-top 16px
 			border-top solid 1px var(--faceDivider)
+			font-size 15px
 
 			&:empty
 				display none
