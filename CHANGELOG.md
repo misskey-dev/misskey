@@ -4,6 +4,7 @@ ChangeLog
 unreleased
 ----------
 * モバイル版でも連携サービスを表示するように
+* webfingerのacceptが反映されない問題を修正
 * デザインの調整
 
 10.87.4
