@@ -1353,6 +1353,7 @@ desktop/views/pages/user/user.header.vue:
   following: "关注中"
   followers: "关注者"
   is-bot: "这个账户是Bot"
+  no-description: "没有自我介绍"
   years-old: "{age}岁"
   year: "年"
   month: "月"
