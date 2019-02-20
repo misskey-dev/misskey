@@ -73,16 +73,18 @@ export default Vue.extend({
 
 	watch: {
 		mediaOnly() {
-			this.fetch();
+			(this.$refs.timeline as any).reload();
 		}
 	},
 
 	created() {
 		this.makePromise = cursor => this.$root.api(this.endpoint, {
 			limit: fetchLimit + 1,
-			untilDate: cursor ? undefined : (this.date ? this.date.getTime() : undefined),
 			untilId: cursor ? cursor : undefined,
-			...this.baseQuery, ...this.query
+			withFiles: this.mediaOnly,
+			includeMyRenotes: this.$store.state.settings.showMyRenotes,
+			includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+			includeLocalRenotes: this.$store.state.settings.showLocalRenotes
 		}).then(notes => {
 			if (notes.length == fetchLimit + 1) {
 				notes.pop();
