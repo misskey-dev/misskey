@@ -91,6 +91,9 @@ export default Vue.extend({
 	watch: {
 		queue(q) {
 			this.count(q.length);
+		},
+		makePromise() {
+			this.init();
 		}
 	},
 
@@ -115,12 +118,12 @@ export default Vue.extend({
 		},
 
 		reload() {
-			this.queue = [];
-			this.notes = [];
 			this.init();
 		},
 
 		init() {
+			this.queue = [];
+			this.notes = [];
 			this.fetching = true;
 			this.makePromise().then(x => {
 				if (Array.isArray(x)) {

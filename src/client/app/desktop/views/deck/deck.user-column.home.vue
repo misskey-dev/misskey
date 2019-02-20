@@ -61,7 +61,24 @@ export default Vue.extend({
 		return {
 			withFiles: false,
 			images: [],
-			makePromise: cursor => this.$root.api('users/notes', {
+			makePromise: null
+		};
+	},
+
+	watch: {
+		user() {
+			this.genPromiseMaker();
+		}
+	},
+
+	created() {
+		this.fetch();
+		this.genPromiseMaker();
+	},
+
+	methods: {
+		genPromiseMaker() {
+			this.makePromise = cursor => this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				untilId: cursor ? cursor : undefined,
@@ -82,15 +99,9 @@ export default Vue.extend({
 						cursor: null
 					};
 				}
-			})
-		};
-	},
+			});
+		},
 
-	created() {
-		this.fetch();
-	},
-
-	methods: {
 		fetch() {
 			const image = [
 				'image/jpeg',
