@@ -13,8 +13,8 @@ const router = new Router();
 
 const XRD = (...x: { element: string, value?: string, attributes?: Record<string, string> }[]) =>
 	`<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">${x.map(({ element, value, attributes }) =>
-	`<${element}${
-		typeof attributes === 'object' && attributes ? Object.entries(attributes).reduce((a, [k, v]) => `${a} ${k}="${escapeAttribute(v)}"`, '') : ''
+	`<${
+		Object.entries(typeof attributes === 'object' && attributes || {}).reduce((a, [k, v]) => `${a} ${k}="${escapeAttribute(v)}"`, element) : ''
 	}${
 		typeof value === 'string' ? `>${escapeValue(value)}</${element}` : '/'
 	}>`).reduce((a, c) => a + c, '')}</XRD>`;
