@@ -54,25 +54,25 @@ export const meta = {
 };
 
 const state: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-  'admin': { isAdmin: true },
-  'moderator': { isModerator: true },
-  'adminOrModerator': {
-    $or: [
-      { isAdmin: true },
-      { isModerator: true }
-    ]
-  },
-  'verified': { isVerified: true },
-  'alive': {
-    updatedAt: { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }
-  },
-  [fallback]: {}
+	'admin': { isAdmin: true },
+	'moderator': { isModerator: true },
+	'adminOrModerator': {
+		$or: [
+			{ isAdmin: true },
+			{ isModerator: true }
+		]
+	},
+	'verified': { isVerified: true },
+	'alive': {
+		updatedAt: { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }
+	},
+	[fallback]: {}
 };
 
 const origin: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-  'local': { host: null },
-  'remote': { host: nonnull },
-  [fallback]: {}
+	'local': { host: null },
+	'remote': { host: nonnull },
+	[fallback]: {}
 };
 
 const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
