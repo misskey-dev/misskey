@@ -144,7 +144,7 @@ common:
   is-remote-post: "These post contents are mirrored."
   view-on-remote: "For completion, view it remotely."
   renoted-by: "Renoted by {user}"
-  no-notes: "投稿がありません"
+  no-notes: "Without any notes"
   error:
     title: "Something happened :("
     retry: "Retry"
