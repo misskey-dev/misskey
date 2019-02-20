@@ -144,7 +144,7 @@ common:
   is-remote-post: "该投稿已被复制."
   view-on-remote: "查看准确的信息"
   renoted-by: "由 {user} Renote"
-  no-notes: "投稿がありません"
+  no-notes: "没有帖子"
   error:
     title: "出现问题"
     retry: "重试"
