@@ -251,9 +251,6 @@ export default Vue.extend({
 				@media (max-width 450px)
 					font-size 15px
 
-				@media (max-width 400px)
-					font-size 14px
-
 			> .fields
 				margin 8px 0
 
@@ -284,6 +281,9 @@ export default Vue.extend({
 
 			> .info
 				margin 8px 0
+
+				@media (max-width 450px)
+					font-size 15px
 
 				> p
 					display inline
