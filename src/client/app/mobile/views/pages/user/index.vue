@@ -23,7 +23,7 @@
 				</div>
 				<div class="description">
 					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-					<x-integrations :user="user" style="margin:16px 0;"/>
+					<x-integrations :user="user" style="margin:24px 0;"/>
 				</div>
 				<div class="fields" v-if="user.fields">
 					<dl class="field" v-for="(field, i) in user.fields" :key="i">
@@ -247,6 +247,12 @@ export default Vue.extend({
 			> .description
 				margin 8px 0
 				color var(--mobileUserPageDescription)
+
+				@media (max-width 450px)
+					font-size 15px
+
+				@media (max-width 400px)
+					font-size 14px
 
 			> .fields
 				margin 8px 0
