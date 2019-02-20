@@ -30,10 +30,14 @@ export default Vue.extend({
 			type: Boolean,
 			default: false
 		},
+		expanded: {
+			type: Boolean,
+			default: true
+		},
 	},
 	data() {
 		return {
-			showBody: true
+			showBody: this.expanded
 		};
 	},
 	methods: {

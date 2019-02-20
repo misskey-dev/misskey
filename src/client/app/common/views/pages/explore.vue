@@ -9,7 +9,7 @@
 		</div>
 	</ui-container>
 
-	<ui-container :body-togglable="true" ref="tags">
+	<ui-container :body-togglable="true" :expanded="tag == null" ref="tags">
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
