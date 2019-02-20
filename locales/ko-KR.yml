@@ -1624,7 +1624,6 @@ deck:
     description: "서버 운영자에 의해 이 타임라인이 사용할 수 없도록 설정되어 있습니다."
 deck/deck.tl-column.vue:
   is-media-only: "미디어가 달린 글만"
-  is-media-view: "미디어 보기"
   edit: "옵션"
 deck/deck.user-column.vue:
   follows-you: "당신을 팔로우합니다"
