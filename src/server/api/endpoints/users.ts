@@ -2,6 +2,7 @@ import $ from 'cafy';
 import User, { pack } from '../../../models/user';
 import define from '../define';
 import { fallback } from '../../../prelude/symbol';
+import { getHideUserIds } from '../common/get-hide-users';
 
 const nonnull = { $ne: null as any };
 
@@ -86,12 +87,15 @@ const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 };
 
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+	const hideUserIds = await getHideUserIds(me);
+
 	const users = await User
 		.find({
 			$and: [
 				state[ps.state] || state[fallback],
 				origin[ps.origin] || origin[fallback]
-			]
+			],
+			...(hideUserIds && hideUserIds.length > 0 ? { _id: { $nin: hideUserIds } } : {})
 		}, {
 			limit: ps.limit,
 			sort: sort[ps.sort] || sort[fallback],
