@@ -23,6 +23,7 @@
 				</div>
 				<div class="description">
 					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<x-integrations :user="user" style="margin:16px 0;"/>
 				</div>
 				<div class="fields" v-if="user.fields">
 					<dl class="field" v-for="(field, i) in user.fields" :key="i">
@@ -86,11 +87,13 @@ import Progress from '../../../../common/scripts/loading';
 import XUserMenu from '../../../../common/views/components/user-menu.vue';
 import XHome from './home.vue';
 import { getStaticImageUrl } from '../../../../common/scripts/get-static-image-url';
+import XIntegrations from '../../../../common/views/components/integrations.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/user.vue'),
 	components: {
-		XHome
+		XHome,
+		XIntegrations
 	},
 	data() {
 		return {

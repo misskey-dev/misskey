@@ -1,6 +1,5 @@
 <template>
 <div class="lnctpgve">
-	<x-integrations :user="user" v-if="user.twitter || user.github || user.discord"/>
 	<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 	<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
 	<div class="activity">
@@ -17,11 +16,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import parseAcct from '../../../../../../misc/acct/parse';
-import Progress from '../../../../common/scripts/loading';
 import XTimeline from './user.timeline.vue';
 import XPhotos from './user.photos.vue';
-import XIntegrations from './user.integrations.vue';
 import XActivity from '../../../../common/views/components/activity.vue';
 
 export default Vue.extend({
@@ -29,7 +25,6 @@ export default Vue.extend({
 	components: {
 		XTimeline,
 		XPhotos,
-		XIntegrations,
 		XActivity
 	},
 	props: {
