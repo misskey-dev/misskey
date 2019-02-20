@@ -9,7 +9,6 @@
 				<span :data-active="mode == 'my-posts'" @click="mode = 'my-posts'"><fa icon="user"/> {{ $t('my-posts') }}</span>
 			</header>
 		</template>
-		<template #empty><fa :icon="['far', 'comments']"/>{{ $t('empty') }}</template>
 	</mk-notes>
 </div>
 </template>

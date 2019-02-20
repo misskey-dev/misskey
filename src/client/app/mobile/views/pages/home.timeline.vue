@@ -7,11 +7,7 @@
 		</div>
 	</ui-container>
 
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
-		<template #empty>
-			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
-		</template>
-	</mk-notes>
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 </div>
 </template>
 

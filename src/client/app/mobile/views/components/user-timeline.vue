@@ -1,11 +1,6 @@
 <template>
 <div class="mk-user-timeline">
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
-		<template #empty>
-			<fa :icon="['far', 'comments']"/>
-			{{ withMedia ? this.$t('no-notes-with-media') : this.$t('no-notes') }}
-		</template>
-	</mk-notes>
+	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 </div>
 </template>
 

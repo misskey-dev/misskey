@@ -8,9 +8,6 @@
 				<router-link to="/explore">{{ $t('@.empty-timeline-info.explore') }}</router-link>
 			</div>
 		</template>
-		<template #empty>
-			<fa :icon="['far', 'comments']"/>{{ $t('empty') }}
-		</template>
 	</mk-notes>
 </div>
 </template>

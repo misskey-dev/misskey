@@ -4,7 +4,7 @@
 
 	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
 
-	<slot name="empty" v-if="notes.length == 0 && !fetching && inited"></slot>
+	<div class="empty" v-if="notes.length == 0 && !fetching && inited">{{ $t('@.no-notes') }}</div>
 
 	<mk-error v-if="!fetching && !inited" @retry="init()"/>
 
@@ -208,6 +208,11 @@ export default Vue.extend({
 
 		> *
 			transition transform .3s ease, opacity .3s ease
+
+	> .empty
+		padding 16px
+		text-align center
+		color var(--text)
 
 	> .placeholder
 		padding 32px

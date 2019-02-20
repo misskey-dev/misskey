@@ -1,6 +1,6 @@
 <template>
 <div class="ivaojijs">
-	<slot name="empty" v-if="notes.length == 0 && !fetching && inited"></slot>
+	<div class="empty" v-if="notes.length == 0 && !fetching && inited">{{ $t('@.no-notes') }}</div>
 
 	<mk-error v-if="!fetching && !inited" @retry="init()"/>
 
@@ -196,6 +196,11 @@ export default Vue.extend({
 
 	@media (min-width 500px)
 		box-shadow 0 8px 32px rgba(#000, 0.1)
+
+	> .empty
+		padding 16px
+		text-align center
+		color var(--text)
 
 	.transition
 		.mk-notes-enter
