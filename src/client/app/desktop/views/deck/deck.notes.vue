@@ -17,7 +17,6 @@
 				:note="note"
 				:key="note.id"
 				@update:note="onNoteUpdated(i, $event)"
-				:media-view="mediaView"
 				:compact="true"
 				:mini="true"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
@@ -56,11 +55,6 @@ export default Vue.extend({
 	props: {
 		makePromise: {
 			required: true
-		},
-		mediaView: {
-			type: Boolean,
-			required: false,
-			default: false
 		}
 	},
 

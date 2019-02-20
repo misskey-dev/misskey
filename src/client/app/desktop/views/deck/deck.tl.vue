@@ -6,7 +6,7 @@
 	</p>
 	<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 </div>
-<x-notes v-else ref="timeline" :make-promise="makePromise" :media-view="mediaView" @inited="() => $emit('loaded')"/>
+<x-notes v-else ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
 </template>
 
 <script lang="ts">
@@ -31,11 +31,6 @@ export default Vue.extend({
 			default: 'home'
 		},
 		mediaOnly: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		mediaView: {
 			type: Boolean,
 			required: false,
 			default: false

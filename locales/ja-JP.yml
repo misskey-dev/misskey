@@ -1828,7 +1828,6 @@ deck:
 
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
-  is-media-view: "メディアビュー"
   edit: "オプション"
 
 deck/deck.user-column.vue:
