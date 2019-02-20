@@ -1624,7 +1624,6 @@ deck:
     description: "服务器管理员已禁用时间线。"
 deck/deck.tl-column.vue:
   is-media-only: "只有媒体的帖子"
-  is-media-view: "媒体视图"
   edit: "选项"
 deck/deck.user-column.vue:
   follows-you: "关注您"
