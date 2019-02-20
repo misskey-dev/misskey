@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<template #header v-if="!fetching"><img :src="avator" alt="">
-		<mk-user-name :user="user"/>
+	<template #header v-if="!fetching">
+		<img :src="avator" alt=""><mk-user-name :user="user"/>
 	</template>
 	<div class="wwtwuxyh" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</p></div>
