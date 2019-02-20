@@ -101,28 +101,25 @@ router.get(webFingerPath, async ctx => {
 		template: `${config.url}/authorize-follow?acct={uri}`
 	};
 
-	switch (ctx.accepts(jrd, xrd)) {
-		case jrd:
-			ctx.body = {
-				subject,
-				links: [self, profilePage, subscribe]
-			};
-			break;
-
-		case xrd:
-			ctx.body = XRD(
-				{ element: 'Subject', value: subject },
-				{ element: 'Link', attributes: self },
-				{ element: 'Link', attributes: profilePage },
-				{ element: 'Link', attributes: subscribe });
-			break;
-
-		default:
-			ctx.set('Accept', `${jrd}, ${xrd}`);
-			ctx.status = 406;
+	if (ctx.accepts(jrd, xrd) === xrd) {
+		ctx.body = XRD(
+			{ element: 'Subject', value: subject },
+			{ element: 'Link', attributes: self },
+			{ element: 'Link', attributes: profilePage },
+			{ element: 'Link', attributes: subscribe });
+		ctx.type = xrd;
+	} else {
+		ctx.body = {
+			subject,
+			links: [self, profilePage, subscribe]
+		};
+		ctx.type = jrd;
 	}
 
-	ctx.set('Cache-Control', 'public, max-age=180');
+	ctx.set({
+		'Cache-Control': 'public, max-age=180',
+		'Vary': 'Accept'
+	});
 });
 
 // Return 404 for other .well-known
