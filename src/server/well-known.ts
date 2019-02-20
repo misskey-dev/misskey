@@ -116,10 +116,8 @@ router.get(webFingerPath, async ctx => {
 		ctx.type = jrd;
 	}
 
-	ctx.set({
-		'Cache-Control': 'public, max-age=180',
-		'Vary': 'Accept'
-	});
+	ctx.vary('Accept');
+	ctx.set('Cache-Control', 'public, max-age=180');
 });
 
 // Return 404 for other .well-known
