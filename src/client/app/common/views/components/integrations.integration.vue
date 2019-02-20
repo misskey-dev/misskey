@@ -14,8 +14,12 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .zxrjzpcj
+	display inline-block
 	padding 6px 8px 6px 6px
+	margin-top 4px
+	margin-bottom 4px
 	border-radius 32px
+	white-space nowrap
 
 	&:hover
 		text-decoration none
