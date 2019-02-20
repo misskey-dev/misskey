@@ -2,6 +2,7 @@ import $ from 'cafy';
 import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
+import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
 	desc: {
@@ -25,6 +26,8 @@ export const meta = {
 export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const day = 1000 * 60 * 60 * 24 * 2;
 
+	const hideUserIds = await getHideUserIds(user);
+
 	const notes = await Note
 		.find({
 			createdAt: {
@@ -32,7 +35,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			},
 			deletedAt: null,
 			visibility: { $in: ['public', 'home'] },
-			'_user.host': null
+			'_user.host': null,
+			...(hideUserIds && hideUserIds.length > 0 ? { userId: { $nin: hideUserIds } } : {})
 		}, {
 			limit: ps.limit,
 			sort: {
