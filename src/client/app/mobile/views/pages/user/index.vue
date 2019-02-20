@@ -68,9 +68,9 @@
 		</nav>
 		<main>
 			<template v-if="$route.name == 'user'">
-				<x-home v-if="page == 'home'" :user="user"/>
-				<mk-user-timeline v-if="page == 'notes'" :user="user" key="tl"/>
-				<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" key="media"/>
+				<x-home v-if="page == 'home'" :user="user" :key="user.id"/>
+				<mk-user-timeline v-if="page == 'notes'" :user="user" :key="`tl:${user.id}`"/>
+				<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" :key="`media:${user.id}`"/>
 			</template>
 			<router-view :user="user"></router-view>
 		</main>
