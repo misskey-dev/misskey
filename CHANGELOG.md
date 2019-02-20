@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-unreleased
+10.87.5
 ----------
 * モバイル版でも連携サービスを表示するように
 * webfingerのacceptが反映されない問題を修正
