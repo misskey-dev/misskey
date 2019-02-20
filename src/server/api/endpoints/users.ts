@@ -88,11 +88,11 @@ const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const users = await User
 		.find({
-      $and: [
-        state[ps.state] || state[fallback],
-        origin[ps.origin] || origin[fallback]
-      ]
-    }, {
+			$and: [
+				state[ps.state] || state[fallback],
+				origin[ps.origin] || origin[fallback]
+			]
+		}, {
 			limit: ps.limit,
 			sort: sort[ps.sort] || sort[fallback],
 			skip: ps.offset
