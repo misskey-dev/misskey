@@ -1624,7 +1624,6 @@ deck:
     description: "Ce fil a été désactivé par l'administrateur du serveur."
 deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
-  is-media-view: "Vue média"
   edit: "Option"
 deck/deck.user-column.vue:
   follows-you: "Vous suit"
