@@ -128,15 +128,16 @@ export default Vue.extend({
 		},
 
 		close() {
+			this.$el.style.pointerEvents = 'none';
 			(this.$refs.bg as any).style.pointerEvents = 'none';
+			(this.$refs.main as any).style.pointerEvents = 'none';
+
 			anime({
 				targets: this.$refs.bg,
 				opacity: 0,
 				duration: 300,
 				easing: 'linear'
 			});
-
-			(this.$refs.main as any).style.pointerEvents = 'none';
 			anime({
 				targets: this.$refs.main,
 				opacity: 0,
