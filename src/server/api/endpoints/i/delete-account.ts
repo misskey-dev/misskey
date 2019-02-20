@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import User from '../../../../models/user';
 import define from '../../define';
 import { createDeleteNotesJob, createDeleteDriveFilesJob } from '../../../../queue';
+import Message from '../../../../models/messaging-message';
 
 export const meta = {
 	requireCredential: true,
@@ -42,6 +43,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}
 	});
 
+	Message.remove({ userId: user._id });
 	createDeleteNotesJob(user);
 	createDeleteDriveFilesJob(user);
 
