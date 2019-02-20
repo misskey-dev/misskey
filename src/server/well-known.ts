@@ -6,27 +6,37 @@ import parseAcct from '../misc/acct/parse';
 import User from '../models/user';
 import Acct from '../misc/acct/type';
 import { links } from './nodeinfo';
+import { escapeAttribute, escapeValue } from '../prelude/xml';
 
 // Init router
 const router = new Router();
 
+const XRD = (...x: { element: string, value?: string, attributes?: Record<string, string> }[]) =>
+	`<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">${x.map(({ element, value, attributes }) =>
+	`<${
+		Object.entries(typeof attributes === 'object' && attributes || {}).reduce((a, [k, v]) => `${a} ${k}="${escapeAttribute(v)}"`, element)
+	}${
+		typeof value === 'string' ? `>${escapeValue(value)}</${element}` : '/'
+	}>`).reduce((a, c) => a + c, '')}</XRD>`;
+
 const webFingerPath = '/.well-known/webfinger';
+const jrd = 'application/jrd+json';
+const xrd = 'application/xrd+xml';
 
 router.get('/.well-known/host-meta', async ctx => {
-	ctx.set('Content-Type', 'application/xrd+xml');
-	ctx.body = `<?xml version="1.0" encoding="UTF-8"?>
-<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
-  <Link rel="lrdd" type="application/xrd+xml" template="${config.url}${webFingerPath}?resource={uri}"/>
-</XRD>
-`;
+	ctx.set('Content-Type', xrd);
+	ctx.body = XRD({ element: 'Link', attributes: {
+		type: xrd,
+		template: `${config.url}${webFingerPath}?resource={uri}`
+	}});
 });
 
 router.get('/.well-known/host-meta.json', async ctx => {
-	ctx.set('Content-Type', 'application/jrd+json');
+	ctx.set('Content-Type', jrd);
 	ctx.body = {
 		links: [{
 			rel: 'lrdd',
-			type: 'application/xrd+xml',
+			type: jrd,
 			template: `${config.url}${webFingerPath}?resource={uri}`
 		}]
 	};
@@ -75,22 +85,38 @@ router.get(webFingerPath, async ctx => {
 		return;
 	}
 
-	ctx.body = {
-		subject: `acct:${user.username}@${config.host}`,
-		links: [{
-			rel: 'self',
-			type: 'application/activity+json',
-			href: `${config.url}/users/${user._id}`
-		}, {
-			rel: 'http://webfinger.net/rel/profile-page',
-			type: 'text/html',
-			href: `${config.url}/@${user.username}`
-		}, {
-			rel: 'http://ostatus.org/schema/1.0/subscribe',
-			template: `${config.url}/authorize-follow?acct={uri}`
-		}]
+	const subject = `acct:${user.username}@${config.host}`;
+	const self = {
+		rel: 'self',
+		type: 'application/activity+json',
+		href: `${config.url}/users/${user._id}`
+	};
+	const profilePage = {
+		rel: 'http://webfinger.net/rel/profile-page',
+		type: 'text/html',
+		href: `${config.url}/@${user.username}`
+	};
+	const subscribe = {
+		rel: 'http://ostatus.org/schema/1.0/subscribe',
+		template: `${config.url}/authorize-follow?acct={uri}`
 	};
 
+	if (ctx.accepts(jrd, xrd) === xrd) {
+		ctx.body = XRD(
+			{ element: 'Subject', value: subject },
+			{ element: 'Link', attributes: self },
+			{ element: 'Link', attributes: profilePage },
+			{ element: 'Link', attributes: subscribe });
+		ctx.type = xrd;
+	} else {
+		ctx.body = {
+			subject,
+			links: [self, profilePage, subscribe]
+		};
+		ctx.type = jrd;
+	}
+
+	ctx.vary('Accept');
 	ctx.set('Cache-Control', 'public, max-age=180');
 });
 
