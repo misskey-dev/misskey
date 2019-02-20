@@ -122,19 +122,23 @@ export default Vue.extend({
 		};
 	},
 
-	mounted() {
-		// Get replies
-		if (!this.compact) {
+	watch: {
+		note() {
+			this.fetchReplies();
+		}
+	},
+
+	methods: {
+		fetchReplies() {
+			if (this.compact) return;
 			this.$root.api('notes/replies', {
 				noteId: this.appearNote.id,
 				limit: 8
 			}).then(replies => {
 				this.replies = replies;
 			});
-		}
-	},
+		},
 
-	methods: {
 		fetchConversation() {
 			this.conversationFetching = true;
 
