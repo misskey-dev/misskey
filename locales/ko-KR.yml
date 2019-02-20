@@ -144,6 +144,7 @@ common:
   is-remote-post: "이 글 정보는 복사본입니다."
   view-on-remote: "정확한 정보 보기"
   renoted-by: "{user}이(가) 리노트"
+  no-notes: "投稿がありません"
   error:
     title: "오류가 발생했습니다"
     retry: "다시 시도"
@@ -537,6 +538,10 @@ common/views/components/profile-editor.vue:
     mute-list: "뮤트"
     blocking-list: "차단"
   export-requested: "내보내기를 요청하였습니다. 이 작업은 시간이 걸릴 수 있습니다. 내보내기가 완료되면 드라이브에 파일이 추가됩니다."
+  enter-password: "パスワードを入力してください"
+  danger-zone: "危険な設定"
+  delete-account: "アカウントを削除"
+  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
 common/views/components/user-list-editor.vue:
   users: "사용자"
   rename: "리스트 이름 바꾸기"
@@ -785,8 +790,6 @@ desktop/views/components/renote-form.vue:
   failure: "리노트에 실패하였습니다"
 desktop/views/components/renote-form-window.vue:
   title: "이 글을 리노트하시겠습니까?"
-desktop/views/components/timeline.core.vue:
-  empty: "글이 없습니다"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}의 팔로잉"
   followers: "{user}의 팔로워"
@@ -1364,7 +1367,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "글과 답글"
   with-media: "미디어"
   my-posts: "내 글"
-  empty: "이 사용자는 아직 아무것도 게시하지 않은 것 같습니다."
 desktop/views/widgets/messaging.vue:
   title: "메시지"
 desktop/views/widgets/notifications.vue:
@@ -1462,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "이 글은 삭제되었습니다"
   media-count: "{}개의 미디어"
   poll: "투표"
-mobile/views/components/timeline.vue:
-  empty: "글이 없습니다"
 mobile/views/components/ui.header.vue:
   welcome-back: "돌아오신 걸 환영합니다."
   adjective: "님"
@@ -1480,9 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "설정"
   admin: "관리"
   about: "Misskey에 대하여"
-mobile/views/components/user-timeline.vue:
-  no-notes: "이 사용자는 작성한 글이 없는 것 같습니다."
-  no-notes-with-media: "미디어가 첨부된 글이 없습니다."
 mobile/views/pages/favorites.vue:
   title: "즐겨찾기"
 mobile/views/pages/user-lists.vue:
@@ -1501,8 +1498,6 @@ mobile/views/pages/home.vue:
   global: "글로벌"
   mentions: "받은 멘션"
   messages: "메시지"
-mobile/views/pages/home.timeline.vue:
-  empty: "글이 없습니다"
 mobile/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 mobile/views/pages/welcome.vue:
@@ -1595,8 +1590,6 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "자주 언급되는 사용자"
   followers-you-know: "아는 사람의 팔로워"
   last-used-at: "마지막 로그인"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "글이 없습니다"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "사진이 없습니다"
 deck:
@@ -1624,7 +1617,6 @@ deck:
     description: "서버 운영자에 의해 이 타임라인이 사용할 수 없도록 설정되어 있습니다."
 deck/deck.tl-column.vue:
   is-media-only: "미디어가 달린 글만"
-  is-media-view: "미디어 보기"
   edit: "옵션"
 deck/deck.user-column.vue:
   follows-you: "당신을 팔로우합니다"

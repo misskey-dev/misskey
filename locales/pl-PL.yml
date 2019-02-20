@@ -144,6 +144,7 @@ common:
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "Dla dopełnienia, zobacz to zdalnie."
   renoted-by: "{user} udostępnił(a)"
+  no-notes: "投稿がありません"
   error:
     title: "Coś poszło nie tak"
     retry: "Ponów próbę"
@@ -537,6 +538,10 @@ common/views/components/profile-editor.vue:
     mute-list: "ミュート"
     blocking-list: "ブロック"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
+  enter-password: "パスワードを入力してください"
+  danger-zone: "危険な設定"
+  delete-account: "アカウントを削除"
+  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
 common/views/components/user-list-editor.vue:
   users: "Użytkownicy"
   rename: "Zmień nazwę listy"
@@ -785,8 +790,6 @@ desktop/views/components/renote-form.vue:
   failure: "Nie udało się udostępnić"
 desktop/views/components/renote-form-window.vue:
   title: "Czy na pewno chcesz udostępnić ten wpis?"
-desktop/views/components/timeline.core.vue:
-  empty: "投稿がありません"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
   followers: "{user}のフォロワー"
@@ -1364,7 +1367,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Wpisy i odpowiedzi"
   with-media: "Multimedia"
   my-posts: "Moje wpisy"
-  empty: "Ten użytkownik nie umieścił jeszcze niczego."
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
 desktop/views/widgets/notifications.vue:
@@ -1462,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "ten wpis został usunięty"
   media-count: "{}zawartości multimedialnej"
   poll: "Ankieta"
-mobile/views/components/timeline.vue:
-  empty: "Brak wpisów"
 mobile/views/components/ui.header.vue:
   welcome-back: "Witaj ponownie, "
   adjective: "さん"
@@ -1480,9 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "Ustawienia"
   admin: "Admin"
   about: "O Misskey"
-mobile/views/components/user-timeline.vue:
-  no-notes: "Wygląda na to, że ten użytkownik nie opublikował jeszcze niczego"
-  no-notes-with-media: "Brak wpisów z zawartością multimedialną"
 mobile/views/pages/favorites.vue:
   title: "Ulubione"
 mobile/views/pages/user-lists.vue:
@@ -1501,8 +1498,6 @@ mobile/views/pages/home.vue:
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Wiadomości"
-mobile/views/pages/home.timeline.vue:
-  empty: "投稿がありません"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
@@ -1595,8 +1590,6 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "よく話すユーザー"
   followers-you-know: "Śledzący których znasz"
   last-used-at: "Ostatnio aktywny"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "Brak wpisów"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Brak zdjęć"
 deck:
@@ -1624,7 +1617,6 @@ deck:
     description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 deck/deck.tl-column.vue:
   is-media-only: "Tylko wpisy z zawartością multimedialną"
-  is-media-view: "Widok multimediów"
   edit: "Opcje"
 deck/deck.user-column.vue:
   follows-you: "フォローされています"

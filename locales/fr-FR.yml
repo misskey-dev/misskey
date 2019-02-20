@@ -144,6 +144,7 @@ common:
   is-remote-post: "Ceci est une publication distante."
   view-on-remote: " Consulter le profil complet"
   renoted-by: "Renoté par {user}"
+  no-notes: "投稿がありません"
   error:
     title: "Une erreur est survenue"
     retry: "Réessayer"
@@ -537,6 +538,10 @@ common/views/components/profile-editor.vue:
     mute-list: "Liste des comptes mis en sourdine"
     blocking-list: "Liste des comptes bloqués"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
+  enter-password: "パスワードを入力してください"
+  danger-zone: "危険な設定"
+  delete-account: "アカウントを削除"
+  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
 common/views/components/user-list-editor.vue:
   users: "Utilisateur·rice"
   rename: "Renommer la liste"
@@ -785,8 +790,6 @@ desktop/views/components/renote-form.vue:
   failure: "La renote a échoué"
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
-desktop/views/components/timeline.core.vue:
-  empty: "Sans aucune note"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user} suit"
   followers: "Abonné·e·s de {user}"
@@ -1364,7 +1367,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Publications et réponses"
   with-media: "Média"
   my-posts: "Mes Messages"
-  empty: "Cet·te utilisateur·rice n'a rien posté encore."
 desktop/views/widgets/messaging.vue:
   title: "Messagerie"
 desktop/views/widgets/notifications.vue:
@@ -1462,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "cette publication a été supprimée"
   media-count: "{} médias attachés"
   poll: "Sondage"
-mobile/views/components/timeline.vue:
-  empty: "Pas de notes"
 mobile/views/components/ui.header.vue:
   welcome-back: "Content de vous revoir ! "
   adjective: "M."
@@ -1480,9 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "Réglages"
   admin: "Admin"
   about: "À propos de Misskey"
-mobile/views/components/user-timeline.vue:
-  no-notes: "Il semble que cet·te utilisateur·rice n’a rien publié pour le moment."
-  no-notes-with-media: "Aucune note comprenant des médias"
 mobile/views/pages/favorites.vue:
   title: "Favoris"
 mobile/views/pages/user-lists.vue:
@@ -1501,8 +1498,6 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "Messages"
-mobile/views/pages/home.timeline.vue:
-  empty: "Sans aucune note"
 mobile/views/pages/tag.vue:
   no-posts-found: "Aucune publication ayant pour hashtag « {q} » n’a été trouvée."
 mobile/views/pages/welcome.vue:
@@ -1595,8 +1590,6 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "Mentions fréquentes"
   followers-you-know: "Abonné·e·s que vous connaissez"
   last-used-at: "Dernière connexion il y a"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "Pas de notes"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Pas de photos"
 deck:
@@ -1624,7 +1617,6 @@ deck:
     description: "Ce fil a été désactivé par l'administrateur du serveur."
 deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
-  is-media-view: "Vue média"
   edit: "Option"
 deck/deck.user-column.vue:
   follows-you: "Vous suit"

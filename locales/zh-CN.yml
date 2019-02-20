@@ -144,6 +144,7 @@ common:
   is-remote-post: "该投稿已被复制."
   view-on-remote: "查看准确的信息"
   renoted-by: "由 {user} Renote"
+  no-notes: "没有帖子"
   error:
     title: "出现问题"
     retry: "重试"
@@ -537,6 +538,10 @@ common/views/components/profile-editor.vue:
     mute-list: "屏蔽列表"
     blocking-list: "黑名单"
   export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
+  enter-password: "パスワードを入力してください"
+  danger-zone: "危険な設定"
+  delete-account: "アカウントを削除"
+  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
 common/views/components/user-list-editor.vue:
   users: "用户"
   rename: "重命名列表"
@@ -785,8 +790,6 @@ desktop/views/components/renote-form.vue:
   failure: "重新发送失败"
 desktop/views/components/renote-form-window.vue:
   title: "您是否要重新发送？"
-desktop/views/components/timeline.core.vue:
-  empty: "没有帖子"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}的正在关注"
   followers: "{user}的关注者"
@@ -1364,7 +1367,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "帖子与回复"
   with-media: "媒体"
   my-posts: "我的帖子"
-  empty: "看起来这个用户还没有发布什么呢。"
 desktop/views/widgets/messaging.vue:
   title: "信息"
 desktop/views/widgets/notifications.vue:
@@ -1462,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "帖子已删除"
   media-count: "附加{}媒体"
   poll: "投票"
-mobile/views/components/timeline.vue:
-  empty: "无帖子"
 mobile/views/components/ui.header.vue:
   welcome-back: "欢迎回来！"
   adjective: "先生"
@@ -1480,9 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "设置"
   admin: "管理"
   about: "关于 Misskey"
-mobile/views/components/user-timeline.vue:
-  no-notes: "看起来该用户还没有发表任何东西哎。"
-  no-notes-with-media: "媒体附件没有备注"
 mobile/views/pages/favorites.vue:
   title: "收藏"
 mobile/views/pages/user-lists.vue:
@@ -1501,8 +1498,6 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "信息"
-mobile/views/pages/home.timeline.vue:
-  empty: "没有帖子"
 mobile/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 mobile/views/pages/welcome.vue:
@@ -1595,8 +1590,6 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "活跃用户"
   followers-you-know: "您可能认识的关注者"
   last-used-at: "上次登录:"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "没有帖子"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "没有图片"
 deck:
@@ -1624,7 +1617,6 @@ deck:
     description: "服务器管理员已禁用时间线。"
 deck/deck.tl-column.vue:
   is-media-only: "只有媒体的帖子"
-  is-media-view: "媒体视图"
   edit: "选项"
 deck/deck.user-column.vue:
   follows-you: "关注您"

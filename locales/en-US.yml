@@ -8,7 +8,7 @@ common:
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   intro:
     title: "What is Misskey?"
-    about: "Misskey is an open-source, <b>decentralized microblogging service</b>. Sophisticated, fully customizable UI, varieties of reactions for posts, free file storage providing an integrated management system and other advanced features are available. In addition, Misskey connects to a network system called the “Fediverse”, that enables us to communicate with users on other SNSs. For example, when you post something, it will be sent not only to Misskey, but also to Mastodon, Osada and Pleroma. Just imagine that the planet is sending a radio transmission to another planet to communicate."
+    about: "Misskey is an open-source, <b>decentralized microblogging software</b>. It has a sophisticated, fully customizable user interface, a variety of ways for expressing a reaction to posts, free file storage providing an integrated management system, and other advanced features are available. In addition, Misskey connects to a network system called the “Fediverse” enables us to communicate with users on other SNSs. For example, when you post something, it will be sent not only to Misskey users, but also those on Mastodon and Pleroma. Just imagine that the planet is sending a radio transmission to another planet, in order to communicate."
     features: "Features"
     rich-contents: "Post"
     rich-contents-desc: "Just post your idea, hot topics, and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files, including videos, or create a poll - those are some of the things you can do with Misskey!"
@@ -144,6 +144,7 @@ common:
   is-remote-post: "These post contents are mirrored."
   view-on-remote: "For completion, view it remotely."
   renoted-by: "Renoted by {user}"
+  no-notes: "Without any notes"
   error:
     title: "Something happened :("
     retry: "Retry"
@@ -537,6 +538,10 @@ common/views/components/profile-editor.vue:
     mute-list: "List of muted accounts"
     blocking-list: "List of blocked accounts"
   export-requested: "You have requested an export. This may take a while. After the export is complete, the resulting file will be added to the drive."
+  enter-password: "Please enter your password"
+  danger-zone: "Cautious options"
+  delete-account: "Remove the account"
+  account-deleted: "The account has been deleted. It may take some time until all of the data disappears."
 common/views/components/user-list-editor.vue:
   users: "User"
   rename: "Rename list"
@@ -785,8 +790,6 @@ desktop/views/components/renote-form.vue:
   failure: "Failed to Repost"
 desktop/views/components/renote-form-window.vue:
   title: "Do you want to Repost it?"
-desktop/views/components/timeline.core.vue:
-  empty: "Without any notes"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}'s following"
   followers: "{user}'s follower"
@@ -1353,7 +1356,7 @@ desktop/views/pages/user/user.header.vue:
   following: "Following"
   followers: "Followers"
   is-bot: "This account is a Bot"
-  no-description: "自己紹介はありません"
+  no-description: "The user has not written their profile introduction"
   years-old: "{age} years old"
   year: "/"
   month: "/"
@@ -1364,7 +1367,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Posts and replies"
   with-media: "Media"
   my-posts: "My posts"
-  empty: "This user doesn't seem to have posted anything yet."
 desktop/views/widgets/messaging.vue:
   title: "Message"
 desktop/views/widgets/notifications.vue:
@@ -1462,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
-mobile/views/components/timeline.vue:
-  empty: "No notes"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
   adjective: "Sir"
@@ -1480,9 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "Settings"
   admin: "Admin"
   about: "About Misskey"
-mobile/views/components/user-timeline.vue:
-  no-notes: "It seems this user hasn't posted anything yet."
-  no-notes-with-media: "There are no notes with media attachments"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
 mobile/views/pages/user-lists.vue:
@@ -1501,8 +1498,6 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Mentions"
   messages: "Messages"
-mobile/views/pages/home.timeline.vue:
-  empty: "Without any notes"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/welcome.vue:
@@ -1595,8 +1590,6 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "Frequent mentions"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "No notes"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "No photos"
 deck:
@@ -1624,7 +1617,6 @@ deck:
     description: "This timeline has been disabled by the server administrator."
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
-  is-media-view: "Media view"
   edit: "Options"
 deck/deck.user-column.vue:
   follows-you: "Follows you"

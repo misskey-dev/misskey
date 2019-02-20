@@ -144,6 +144,7 @@ common:
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
+  no-notes: "投稿がありません"
   error:
     title: "Что-то пошло не так :("
     retry: "Повторить"
@@ -537,6 +538,10 @@ common/views/components/profile-editor.vue:
     mute-list: "ミュート"
     blocking-list: "ブロック"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
+  enter-password: "パスワードを入力してください"
+  danger-zone: "危険な設定"
+  delete-account: "アカウントを削除"
+  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
   rename: "リスト名を変更"
@@ -785,8 +790,6 @@ desktop/views/components/renote-form.vue:
   failure: "Renoteに失敗しました"
 desktop/views/components/renote-form-window.vue:
   title: "この投稿をRenoteしますか？"
-desktop/views/components/timeline.core.vue:
-  empty: "投稿がありません"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
   followers: "{user}のフォロワー"
@@ -1364,7 +1367,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "投稿と返信"
   with-media: "メディア"
   my-posts: "私の投稿"
-  empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
 desktop/views/widgets/notifications.vue:
@@ -1462,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
   poll: "アンケート"
-mobile/views/components/timeline.vue:
-  empty: "投稿がありません"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
   adjective: "さん"
@@ -1480,9 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "設定"
   admin: "管理"
   about: "Misskeyについて"
-mobile/views/components/user-timeline.vue:
-  no-notes: "このユーザーは投稿していないようです。"
-  no-notes-with-media: "メディア付き投稿はありません。"
 mobile/views/pages/favorites.vue:
   title: "お気に入り"
 mobile/views/pages/user-lists.vue:
@@ -1501,8 +1498,6 @@ mobile/views/pages/home.vue:
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "メッセージ"
-mobile/views/pages/home.timeline.vue:
-  empty: "投稿がありません"
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 mobile/views/pages/welcome.vue:
@@ -1595,8 +1590,6 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "よく話すユーザー"
   followers-you-know: "知り合いのフォロワー"
   last-used-at: "最終ログイン"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "投稿はありません"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "写真はありません"
 deck:
@@ -1624,7 +1617,6 @@ deck:
     description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
-  is-media-view: "メディアビュー"
   edit: "オプション"
 deck/deck.user-column.vue:
   follows-you: "フォローされています"
