@@ -21,7 +21,7 @@ import instanceChart from '../../services/chart/instance';
  * @param user 投稿者
  * @param note 投稿
  */
-export default async function(user: IUser, note: INote) {
+export default async function(user: IUser, note: INote, quiet = false) {
 	const deletedAt = new Date();
 
 	await Note.update({
@@ -52,10 +52,6 @@ export default async function(user: IUser, note: INote) {
 		});
 	}
 
-	publishNoteStream(note._id, 'deleted', {
-		deletedAt: deletedAt
-	});
-
 	// この投稿が関わる未読通知を削除
 	NoteUnread.find({
 		noteId: note._id
@@ -76,34 +72,40 @@ export default async function(user: IUser, note: INote) {
 		}
 	}
 
-	//#region ローカルの投稿なら削除アクティビティを配送
-	if (isLocalUser(user)) {
-		const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note._id}`), user));
-
-		const followings = await Following.find({
-			followeeId: user._id,
-			'_follower.host': { $ne: null }
+	if (!quiet) {
+		publishNoteStream(note._id, 'deleted', {
+			deletedAt: deletedAt
 		});
 
-		for (const following of followings) {
-			deliver(user, content, following._follower.inbox);
-		}
-	}
-	//#endregion
+		//#region ローカルの投稿なら削除アクティビティを配送
+		if (isLocalUser(user)) {
+			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note._id}`), user));
 
-	// 統計を更新
-	notesChart.update(note, false);
-	perUserNotesChart.update(user, note, false);
-
-	if (isRemoteUser(user)) {
-		registerOrFetchInstanceDoc(user.host).then(i => {
-			Instance.update({ _id: i._id }, {
-				$inc: {
-					notesCount: -1
-				}
+			const followings = await Following.find({
+				followeeId: user._id,
+				'_follower.host': { $ne: null }
 			});
 
-			instanceChart.updateNote(i.host, false);
-		});
+			for (const following of followings) {
+				deliver(user, content, following._follower.inbox);
+			}
+		}
+		//#endregion
+
+		// 統計を更新
+		notesChart.update(note, false);
+		perUserNotesChart.update(user, note, false);
+
+		if (isRemoteUser(user)) {
+			registerOrFetchInstanceDoc(user.host).then(i => {
+				Instance.update({ _id: i._id }, {
+					$inc: {
+						notesCount: -1
+					}
+				});
+
+				instanceChart.updateNote(i.host, false);
+			});
+		}
 	}
 }

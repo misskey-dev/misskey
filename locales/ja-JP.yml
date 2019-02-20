@@ -589,6 +589,10 @@ common/views/components/profile-editor.vue:
     mute-list: "ミュート"
     blocking-list: "ブロック"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
+  enter-password: "パスワードを入力してください"
+  danger-zone: "危険な設定"
+  delete-account: "アカウントを削除"
+  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
 
 common/views/components/user-list-editor.vue:
   users: "ユーザー"

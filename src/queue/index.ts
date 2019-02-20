@@ -70,6 +70,32 @@ export function processInbox(activity: any, signature: httpSignature.IParsedSign
 	}
 }
 
+export function createDeleteNotesJob(user: ILocalUser) {
+	const data = {
+		type: 'deleteNotes',
+		user: user
+	};
+
+	if (queueAvailable && enableQueueProcessing) {
+		return queue.createJob(data).save();
+	} else {
+		return handler({ data }, () => {});
+	}
+}
+
+export function createDeleteDriveFilesJob(user: ILocalUser) {
+	const data = {
+		type: 'deleteDriveFiles',
+		user: user
+	};
+
+	if (queueAvailable && enableQueueProcessing) {
+		return queue.createJob(data).save();
+	} else {
+		return handler({ data }, () => {});
+	}
+}
+
 export function createExportNotesJob(user: ILocalUser) {
 	const data = {
 		type: 'exportNotes',

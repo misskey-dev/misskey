@@ -101,6 +101,13 @@
 			<ui-button @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</ui-button>
 		</div>
 	</section>
+
+	<section>
+		<details>
+			<summary>{{ $t('danger-zone') }}</summary>
+			<ui-button @click="deleteAccount()">{{ $t('delete-account') }}</ui-button>
+		</details>
+	</section>
 </ui-card>
 </template>
 
@@ -282,6 +289,25 @@ export default Vue.extend({
 			this.$root.dialog({
 				type: 'info',
 				text: this.$t('export-requested')
+			});
+		},
+
+		async deleteAccount() {
+			const { canceled: canceled, result: password } = await this.$root.dialog({
+				title: this.$t('enter-password'),
+				input: {
+					type: 'password'
+				}
+			});
+			if (canceled) return;
+
+			this.$root.api('i/delete-account', {
+				password
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('account-deleted')
+				});
 			});
 		}
 	}

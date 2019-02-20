@@ -55,6 +55,8 @@ type IUserBase = {
 	emojis?: string[];
 	tags?: string[];
 
+	isDeleted: boolean;
+
 	/**
 	 * 凍結されているか否か
 	 */
