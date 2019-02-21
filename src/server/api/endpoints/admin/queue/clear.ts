@@ -8,7 +8,7 @@ export const meta = {
 	params: {}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	destroy();
 
 	res();

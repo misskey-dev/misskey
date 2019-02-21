@@ -37,7 +37,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const stats = await perUserReactionsChart.getChart(ps.span as any, ps.limit, ps.userId);
 
 	res(stats);

@@ -25,7 +25,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	if (ps.sinceId && ps.untilId) {
 		return rej('cannot set sinceId and untilId');
 	}

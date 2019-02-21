@@ -35,7 +35,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const stats = await instanceChart.getChart(ps.span as any, ps.limit, ps.host);
 
 	res(stats);

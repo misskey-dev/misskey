@@ -19,7 +19,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	// Lookup app
 	const app = await App.findOne({
 		secret: ps.appSecret
