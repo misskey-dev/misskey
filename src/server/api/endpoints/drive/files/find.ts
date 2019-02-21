@@ -32,5 +32,5 @@ export default define(meta, async (ps, user) => {
 			'metadata.folderId': ps.folderId
 		});
 
-	res(await Promise.all(files.map(file => pack(file, { self: true }))));
-}));
+	return await Promise.all(files.map(file => pack(file, { self: true })));
+});
