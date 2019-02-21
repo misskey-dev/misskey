@@ -80,7 +80,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 			throw e;
 		} else {
 			apiLogger.error(e);
-			throw new ApiError();
+			throw new ApiError(null, { e });
 		}
 	}
 

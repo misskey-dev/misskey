@@ -38,11 +38,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
 	const sort = {
 		_id: -1
 	};
@@ -67,5 +62,5 @@ export default define(meta, async (ps, user) => {
 			sort: sort
 		});
 
-	res(await Promise.all(folders.map(folder => pack(folder))));
-}));
+	return await Promise.all(folders.map(folder => pack(folder)));
+});

@@ -1,5 +1,3 @@
-// import $ from 'cafy';
-// import ID, { transform } from '../../../../../cafy-id';
 import FollowRequest, { pack } from '../../../../../models/follow-request';
 import define from '../../../define';
 
@@ -19,6 +17,5 @@ export default define(meta, async (ps, user) => {
 		followeeId: user._id
 	});
 
-	// Send response
-	res(await Promise.all(reqs.map(req => pack(req))));
-}));
+	return await Promise.all(reqs.map(req => pack(req)));
+});

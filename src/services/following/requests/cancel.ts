@@ -5,6 +5,7 @@ import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
 import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
+import { IdentifiableError } from '../../../misc/identifiable-error';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(followee)) {
@@ -18,7 +19,7 @@ export default async function(followee: IUser, follower: IUser) {
 	});
 
 	if (request == null) {
-		throw 'request not found';
+		throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'request not found');
 	}
 
 	await FollowRequest.remove({

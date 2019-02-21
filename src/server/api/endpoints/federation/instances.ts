@@ -122,5 +122,5 @@ export default define(meta, async (ps, me) => {
 			skip: ps.offset
 		});
 
-	res(instances);
-}));
+	return instances;
+});

@@ -7,7 +7,7 @@ export class ApiError extends Error {
 
 	constructor(e?: { message: string, code: string, id: string, kind?: 'client' | 'server' }, info?: any) {
 		if (e == null) e = {
-			message: 'Internal error occured.',
+			message: 'Internal error occurred. Please contact us if the error persists.',
 			code: 'INTERNAL_ERROR',
 			id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
 			kind: 'server'

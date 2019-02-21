@@ -16,5 +16,5 @@ export default define(meta, async (ps, me) => {
 	const instance = await Instance
 		.findOne({ host: ps.host });
 
-	res(instance);
-}));
+	return instance;
+});
