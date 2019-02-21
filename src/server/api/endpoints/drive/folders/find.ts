@@ -32,5 +32,5 @@ export default define(meta, async (ps, user) => {
 			parentId: ps.parentId
 		});
 
-	res(await Promise.all(folders.map(folder => pack(folder))));
-}));
+	return await Promise.all(folders.map(folder => pack(folder)));
+});

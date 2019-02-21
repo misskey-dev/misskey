@@ -30,7 +30,7 @@ export const meta = {
 	},
 
 	errors: {
-		fileNotFound: {
+		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
 			id: '908939ec-e52b-4458-b395-1025195cea58'
@@ -52,7 +52,7 @@ export default define(meta, async (ps, user) => {
 		});
 
 	if (file === null) {
-		throw new ApiError(meta.errors.fileNotFound);
+		throw new ApiError(meta.errors.noSuchFile);
 	}
 
 	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {

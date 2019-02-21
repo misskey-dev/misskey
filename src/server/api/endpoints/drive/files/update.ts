@@ -55,7 +55,7 @@ export const meta = {
 	},
 
 	errors: {
-		fileNotFound: {
+		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
 			id: 'e7778c7e-3af9-49cd-9690-6dbc3e6c972d'
@@ -67,7 +67,7 @@ export const meta = {
 			id: '01a53b27-82fc-445b-a0c1-b558465a8ed2'
 		},
 
-		folderNotFound: {
+		noSuchFolder: {
 			message: 'No such folder.',
 			code: 'NO_SUCH_FOLDER',
 			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73'
@@ -83,7 +83,7 @@ export default define(meta, async (ps, user) => {
 		});
 
 	if (file === null) {
-		throw new ApiError(meta.errors.fileNotFound);
+		throw new ApiError(meta.errors.noSuchFile);
 	}
 
 	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
@@ -106,7 +106,7 @@ export default define(meta, async (ps, user) => {
 				});
 
 			if (folder === null) {
-				throw new ApiError(meta.errors.folderNotFound);
+				throw new ApiError(meta.errors.noSuchFolder);
 			}
 
 			file.metadata.folderId = folder._id;

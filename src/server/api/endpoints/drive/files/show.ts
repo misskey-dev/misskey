@@ -38,7 +38,7 @@ export const meta = {
 	},
 
 	errors: {
-		fileNotFound: {
+		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
 			id: '067bc436-2718-4795-b0fb-ecbe43949e31'
@@ -98,7 +98,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (file === null) {
-		throw new ApiError(meta.errors.fileNotFound);
+		throw new ApiError(meta.errors.noSuchFile);
 	}
 
 	return await pack(file, {

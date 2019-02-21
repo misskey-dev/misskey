@@ -29,7 +29,7 @@ export const meta = {
 	},
 
 	errors: {
-		fileNotFound: {
+		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
 			id: 'c118ece3-2e4b-4296-99d1-51756e32d232',
@@ -47,7 +47,7 @@ export default define(meta, async (ps, user) => {
 		});
 
 	if (file === null) {
-		throw new ApiError(meta.errors.fileNotFound);
+		throw new ApiError(meta.errors.noSuchFile);
 	}
 
 	return await packMany(file.metadata.attachedNoteIds || [], user, {

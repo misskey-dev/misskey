@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -24,6 +25,14 @@ export const meta = {
 				'en-US': 'Target folder ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchFolder: {
+			message: 'No such folder.',
+			code: 'NO_SUCH_FOLDER',
+			id: 'd74ab9eb-bb09-4bba-bf24-fb58f761e1e9'
+		},
 	}
 };
 
@@ -36,11 +45,10 @@ export default define(meta, async (ps, user) => {
 		});
 
 	if (folder === null) {
-		return rej('folder-not-found');
+		throw new ApiError(meta.errors.noSuchFolder);
 	}
 
-	// Serialize
-	res(await pack(folder, {
+	return await pack(folder, {
 		detail: true
-	}));
-}));
+	});
+});
