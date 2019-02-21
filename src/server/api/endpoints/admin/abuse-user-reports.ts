@@ -26,10 +26,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
 	const sort = {
 		_id: -1
 	};
@@ -51,5 +47,5 @@ export default define(meta, async (ps) => {
 			sort: sort
 		});
 
-	res(await packMany(reports));
-}));
+	return await packMany(reports);
+});

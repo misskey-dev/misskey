@@ -23,9 +23,9 @@ export default define(meta, async (ps) => {
 		_id: ps.id
 	});
 
-	if (emoji == null) return rej('emoji not found');
+	if (emoji == null) throw new Error('emoji not found');
 
 	await Emoji.remove({ _id: emoji._id });
 
-	res();
-}));
+	return;
+});

@@ -29,12 +29,12 @@ export default define(meta, async (ps, me) => {
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	if (me.isModerator && user.isAdmin) {
-		return rej('cannot show info of admin');
+		throw new Error('cannot show info of admin');
 	}
 
-	res(user);
-}));
+	return user;
+});

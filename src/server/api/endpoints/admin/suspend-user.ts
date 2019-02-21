@@ -30,24 +30,24 @@ export default define(meta, async (ps) => {
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	if (user.isAdmin) {
-		return rej('cannot suspend admin');
+		throw new Error('cannot suspend admin');
 	}
 
 	if (user.isModerator) {
-		return rej('cannot suspend moderator');
+		throw new Error('cannot suspend moderator');
 	}
 
 	await User.findOneAndUpdate({
 		_id: user._id
 	}, {
-			$set: {
-				isSuspended: true
-			}
-		});
+		$set: {
+			isSuspended: true
+		}
+	});
 
-	res();
-}));
+	return;
+});

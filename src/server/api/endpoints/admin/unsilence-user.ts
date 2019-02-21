@@ -30,7 +30,7 @@ export default define(meta, async (ps) => {
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	await User.findOneAndUpdate({
@@ -41,5 +41,5 @@ export default define(meta, async (ps) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

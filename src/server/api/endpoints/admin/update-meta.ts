@@ -506,5 +506,5 @@ export default define(meta, async (ps) => {
 		$set: set
 	}, { upsert: true });
 
-	res();
-}));
+	return;
+});

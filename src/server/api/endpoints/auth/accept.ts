@@ -5,6 +5,7 @@ import App from '../../../../models/app';
 import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	requireCredential: true,
@@ -15,6 +16,14 @@ export const meta = {
 		token: {
 			validator: $.str
 		}
+	},
+
+	errors: {
+		noSuchSession: {
+			message: 'No such session.',
+			code: 'NO_SUCH_SESSION',
+			id: '9c72d8de-391a-43c1-9d06-08d29efde8df'
+		},
 	}
 };
 
@@ -24,7 +33,7 @@ export default define(meta, async (ps, user) => {
 		.findOne({ token: ps.token });
 
 	if (session === null) {
-		return rej('session not found');
+		throw new ApiError(meta.errors.noSuchSession);
 	}
 
 	// Generate access token
@@ -64,6 +73,5 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	// Response
-	res();
-}));
+	return;
+});

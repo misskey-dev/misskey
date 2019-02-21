@@ -30,11 +30,11 @@ export default define(meta, async (ps) => {
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	if (user.isAdmin) {
-		return rej('cannot silence admin');
+		throw new Error('cannot silence admin');
 	}
 
 	await User.findOneAndUpdate({
@@ -45,5 +45,5 @@ export default define(meta, async (ps) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

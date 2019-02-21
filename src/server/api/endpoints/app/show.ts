@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import App, { pack } from '../../../../models/app';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	params: {
@@ -9,6 +10,14 @@ export const meta = {
 			validator: $.type(ID),
 			transform: transform
 		},
+	},
+
+	errors: {
+		noSuchApp: {
+			message: 'No such app.',
+			code: 'NO_SUCH_APP',
+			id: 'dce83913-2dc6-4093-8a7b-71dbb11718a3'
+		}
 	}
 };
 
@@ -19,10 +28,9 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	const ap = await App.findOne({ _id: ps.appId });
 
 	if (ap === null) {
-		return rej('app not found');
+		throw new ApiError(meta.errors.noSuchApp);
 	}
 
-	// Send response
 	res(await pack(ap, user, {
 		detail: true,
 		includeSecret: isSecure && ap.userId.equals(user._id)

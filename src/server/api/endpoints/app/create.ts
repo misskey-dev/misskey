@@ -42,9 +42,8 @@ export default define(meta, async (ps, user) => {
 		secret: secret
 	});
 
-	// Response
-	res(await pack(app, null, {
+	return await pack(app, null, {
 		detail: true,
 		includeSecret: true
-	}));
-}));
+	});
+});

@@ -35,7 +35,7 @@ export default define(meta, async (ps) => {
 		url: ps.url
 	});
 
-	res({
+	return {
 		id: emoji._id
-	});
-}));
+	};
+});

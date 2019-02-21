@@ -29,5 +29,5 @@ export default define(meta, async (ps, me) => {
 		deleteFollowing(pair[0], pair[1]);
 	}
 
-	res();
-}));
+	return;
+});

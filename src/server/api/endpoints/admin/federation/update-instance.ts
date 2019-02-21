@@ -25,7 +25,7 @@ export default define(meta, async (ps, me) => {
 	const instance = await Instance.findOne({ host: ps.host });
 
 	if (instance == null) {
-		return rej('instance not found');
+		throw new Error('instance not found');
 	}
 
 	Instance.update({ host: ps.host }, {
@@ -35,5 +35,5 @@ export default define(meta, async (ps, me) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

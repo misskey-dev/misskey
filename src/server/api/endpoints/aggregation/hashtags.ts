@@ -40,7 +40,7 @@ export default define(meta, async (ps) => {
 	//#endregion
 
 	if (data.length == 0) {
-		return res([]);
+		return [];
 	}
 
 	let tags: {
@@ -66,5 +66,5 @@ export default define(meta, async (ps) => {
 
 	tags = tags.slice(0, 30);
 
-	res(tags);
-}));
+	return tags;
+});

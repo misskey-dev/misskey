@@ -21,12 +21,12 @@ export default define(meta, async (ps) => {
 	});
 
 	if (report == null) {
-		return rej('report not found');
+		throw new Error('report not found');
 	}
 
 	await AbuseUserReport.remove({
 		_id: report._id
 	});
 
-	res();
-}));
+	return;
+});

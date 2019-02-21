@@ -21,7 +21,7 @@ export default define(meta, async (ps) => {
 		code: code
 	});
 
-	res({
+	return {
 		code: code
-	});
-}));
+	};
+});

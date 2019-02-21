@@ -23,11 +23,11 @@ export default define(meta, async (ps) => {
 		host: ps.host
 	});
 
-	res(emojis.map(e => ({
+	return emojis.map(e => ({
 		id: e._id,
 		name: e.name,
 		aliases: e.aliases,
 		host: e.host,
 		url: e.url
-	})));
-}));
+	}));
+});

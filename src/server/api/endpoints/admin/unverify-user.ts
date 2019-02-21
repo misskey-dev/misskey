@@ -30,16 +30,16 @@ export default define(meta, async (ps) => {
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	await User.findOneAndUpdate({
 		_id: user._id
 	}, {
-			$set: {
-				isVerified: false
-			}
-		});
+		$set: {
+			isVerified: false
+		}
+	});
 
-	res();
-}));
+	return;
+});

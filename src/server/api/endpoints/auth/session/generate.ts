@@ -4,6 +4,7 @@ import App from '../../../../../models/app';
 import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	requireCredential: false,
@@ -11,6 +12,14 @@ export const meta = {
 	params: {
 		appSecret: {
 			validator: $.str
+		}
+	},
+
+	errors: {
+		noSuchApp: {
+			message: 'No such app.',
+			code: 'NO_SUCH_APP',
+			id: '92f93e63-428e-4f2f-a5a4-39e1407fe998'
 		}
 	}
 };
@@ -22,7 +31,7 @@ export default define(meta, async (ps) => {
 	});
 
 	if (app == null) {
-		return rej('app not found');
+		throw new ApiError(meta.errors.noSuchApp);
 	}
 
 	// Generate token
@@ -35,9 +44,8 @@ export default define(meta, async (ps) => {
 		token: token
 	});
 
-	// Response
-	res({
+	return {
 		token: doc.token,
 		url: `${config.auth_url}/${doc.token}`
-	});
-}));
+	};
+});
