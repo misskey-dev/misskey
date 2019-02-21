@@ -15,6 +15,5 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	// Reponse
-	res(Promise.all(invitations.map(async (i) => await packMatching(i, user))));
-}));
+	return await Promise.all(invitations.map((i) => packMatching(i, user)));
+});

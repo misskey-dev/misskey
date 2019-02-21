@@ -10,5 +10,5 @@ export default define(meta, async (ps, user) => {
 		parentId: user._id
 	});
 
-	res();
-}));
+	return;
+});
