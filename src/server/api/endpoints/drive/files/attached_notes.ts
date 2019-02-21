@@ -3,6 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import define from '../../../define';
 import { packMany } from '../../../../../models/note';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -25,6 +26,14 @@ export const meta = {
 				'en-US': 'Target file ID'
 			}
 		}
+	},
+
+	errors: {
+		fileNotFound: {
+			message: 'File not found.',
+			code: 'FILE_NOT_FOUND',
+			id: 'c118ece3-2e4b-4296-99d1-51756e32d232'
+		}
 	}
 };
 
@@ -38,10 +47,10 @@ export default define(meta, async (ps, user) => {
 		});
 
 	if (file === null) {
-		return rej('file-not-found');
+		throw new ApiError(meta.errors.fileNotFound);
 	}
 
-	res(await packMany(file.metadata.attachedNoteIds || [], user, {
+	return await packMany(file.metadata.attachedNoteIds || [], user, {
 		detail: true
-	}));
-}));
+	});
+});
