@@ -19,7 +19,7 @@ export const meta = {
 	requireCredential: false,
 };
 
-export default define(meta, () => new Promise(async (res, rej) => {
+export default define(meta, async () => {
 	const instance = await fetchMeta();
 	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
 
@@ -49,7 +49,7 @@ export default define(meta, () => new Promise(async (res, rej) => {
 	//#endregion
 
 	if (data.length == 0) {
-		return res([]);
+		return [];
 	}
 
 	const tags: {
@@ -141,5 +141,5 @@ export default define(meta, () => new Promise(async (res, rej) => {
 		usersCount: totalCounts[i].length
 	}));
 
-	res(stats);
-}));
+	return stats;
+});

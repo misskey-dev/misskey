@@ -48,5 +48,5 @@ export default define(meta, async (ps) => {
 			skip: ps.offset
 		});
 
-	res(hashtags.map(tag => tag.tag));
-}));
+	return hashtags.map(tag => tag.tag);
+});

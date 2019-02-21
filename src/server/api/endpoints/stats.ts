@@ -14,7 +14,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, () => new Promise(async (res, rej) => {
+export default define(meta, async () => {
 	const instance = await fetchMeta();
 
 	const stats: any = instance.stats;

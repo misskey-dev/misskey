@@ -80,5 +80,5 @@ export default define(meta, async (ps, me) => {
 			}
 		});
 
-	res(tags);
-}));
+	return tags;
+});

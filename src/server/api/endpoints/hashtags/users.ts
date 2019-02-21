@@ -79,5 +79,5 @@ export default define(meta, async (ps, me) => {
 			sort: sort[ps.sort],
 		});
 
-	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
-}));
+	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
+});
