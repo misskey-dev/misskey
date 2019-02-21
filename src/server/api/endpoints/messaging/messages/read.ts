@@ -3,6 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import read from '../../../common/read-messaging-message';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -23,6 +24,14 @@ export const meta = {
 				'en-US': 'The ID of a message that you want to mark as read'
 			}
 		}
+	},
+
+	errors: {
+		noSuchMessage: {
+			message: 'No such message.',
+			code: 'NO_SUCH_MESSAGE',
+			id: '86d56a2f-a9c3-4afb-b13c-3e9bfef9aa14'
+		},
 	}
 };
 
@@ -33,10 +42,10 @@ export default define(meta, async (ps, user) => {
 	});
 
 	if (message == null) {
-		return rej('message not found');
+		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
 	read(user._id, message.userId, message);
 
-	res();
-}));
+	return;
+});

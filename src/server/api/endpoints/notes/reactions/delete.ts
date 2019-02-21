@@ -35,7 +35,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise((res, rej) => {
+export default define(meta, async (ps, user) => {
 	deleteReactionById(user, ps.noteId)
 		.then(r => res(r)).catch(e => rej(e));
 }));

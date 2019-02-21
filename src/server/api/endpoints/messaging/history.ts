@@ -58,5 +58,5 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	res(await Promise.all(history.map(h => pack(h._id, user))));
-}));
+	return await Promise.all(history.map(h => pack(h._id, user)));
+});

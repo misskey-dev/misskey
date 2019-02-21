@@ -37,10 +37,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise((res, rej) => {
-	createReactionById(user, ps.noteId, ps.reaction)
-		.then(r => res(r)).catch(e => rej(e));
-}));
+export default define(meta, async (ps, user) => {
+	await createReactionById(user, ps.noteId, ps.reaction);
+	return;
+});
 
 async function createReactionById(user: IUser, noteId: mongo.ObjectID, reaction: string) {
 	const note = await getValiedNote(noteId);

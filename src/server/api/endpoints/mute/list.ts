@@ -32,11 +32,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
 	const query = {
 		muterId: me._id
 	} as any;
@@ -62,5 +57,5 @@ export default define(meta, async (ps, me) => {
 			sort: sort
 		});
 
-	res(await packMany(mutes, me));
-}));
+	return await packMany(mutes, me);
+});

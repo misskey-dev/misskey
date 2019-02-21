@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
-import Note from "../../../models/note";
-import User, { isRemoteUser, isLocalUser } from "../../../models/user";
+import Note from '../../../models/note';
+import User, { isRemoteUser, isLocalUser } from '../../../models/user';
+import { ApiError } from '../error';
 
 /**
  * Get valied note for API processing
@@ -12,7 +13,11 @@ export async function getValiedNote(noteId: mongo.ObjectID) {
 	});
 
 	if (note === null) {
-		throw 'note not found';
+		throw new ApiError({
+			message: 'No such note.',
+			code: 'NO_SUCH_NOTE',
+			id: '9725d0ce-ba28-4dde-95a7-2cbb2c15de24'
+		});
 	}
 
 	return note;
@@ -27,7 +32,11 @@ export async function getUser(userId: mongo.ObjectID) {
 	});
 
 	if (user == null) {
-		throw 'user not found';
+		throw new ApiError({
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '15348ddd-432d-49c2-8a5a-8069753becff'
+		});
 	}
 
 	return user;
