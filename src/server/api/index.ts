@@ -15,6 +15,8 @@ import signin from './private/signin';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
+import User from '../../models/user';
+import { toASCII } from 'punycode';
 
 // Init app
 const app = new Koa();
@@ -59,6 +61,12 @@ router.post('/signin', signin);
 router.use(discord.routes());
 router.use(github.routes());
 router.use(twitter.routes());
+
+router.get('/v1/instance/peers', async ctx => {
+	const peers = await User.distinct('host', { host: { $ne: null } }) as any as string[];
+	const punyCodes = peers.map(peer => toASCII(peer));
+	ctx.body = punyCodes;
+});
 
 // Return 404 for unknown API
 router.all('*', async ctx => {
