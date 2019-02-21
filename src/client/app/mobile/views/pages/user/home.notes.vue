@@ -4,7 +4,7 @@
 	<div v-if="!fetching && notes.length > 0">
 		<mk-note-card v-for="note in notes" :key="note.id" :note="note"/>
 	</div>
-	<p class="empty" v-if="!fetching && notes.length == 0">{{ $t('no-notes') }}</p>
+	<p class="empty" v-if="!fetching && notes.length == 0">{{ $t('@.no-notes') }}</p>
 </div>
 </template>
 
