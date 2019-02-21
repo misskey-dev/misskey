@@ -61,12 +61,14 @@ export default Vue.extend({
 		return {
 			withFiles: false,
 			images: [],
-			makePromise: null
+			makePromise: null,
+			chart: null as ApexCharts
 		};
 	},
 
 	watch: {
 		user() {
+			this.fetch();
 			this.genPromiseMaker();
 		}
 	},
@@ -155,7 +157,9 @@ export default Vue.extend({
 					]);
 				}
 
-				const chart = new ApexCharts(this.$refs.chart, {
+				if (this.chart) this.chart.destroy();
+
+				this.chart = new ApexCharts(this.$refs.chart, {
 					chart: {
 						type: 'bar',
 						stacked: true,
@@ -201,7 +205,7 @@ export default Vue.extend({
 					}
 				});
 
-				chart.render();
+				this.chart.render();
 			});
 		},
 	}
