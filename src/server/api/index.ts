@@ -15,7 +15,7 @@ import signin from './private/signin';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
-import User from '../../models/user';
+import Instance from '../../models/instance';
 import { toASCII } from 'punycode';
 
 // Init app
@@ -63,8 +63,13 @@ router.use(github.routes());
 router.use(twitter.routes());
 
 router.get('/v1/instance/peers', async ctx => {
-	const peers = await User.distinct('host', { host: { $ne: null } }) as any as string[];
-	const punyCodes = peers.map(peer => toASCII(peer));
+	const instances = await Instance.find({
+		}, {
+			host: 1
+		});
+
+	const punyCodes = instances.map(instance => toASCII(instance.host));
+
 	ctx.body = punyCodes;
 });
 
