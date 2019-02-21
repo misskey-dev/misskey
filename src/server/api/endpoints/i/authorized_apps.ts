@@ -39,7 +39,7 @@ export default define(meta, async (ps, user) => {
 			}
 		});
 
-	res(await Promise.all(tokens.map(token => pack(token.appId, user, {
+	return await Promise.all(tokens.map(token => pack(token.appId, user, {
 		detail: true
-	}))));
-}));
+	})));
+});

@@ -27,11 +27,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
 	const query = {
 		userId: user._id
 	} as any;
@@ -57,6 +52,5 @@ export default define(meta, async (ps, user) => {
 			sort: sort
 		});
 
-	// Serialize
-	res(await Promise.all(history.map(record => pack(record))));
-}));
+	return await Promise.all(history.map(record => pack(record)));
+});

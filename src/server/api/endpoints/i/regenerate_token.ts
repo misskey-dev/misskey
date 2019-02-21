@@ -22,7 +22,7 @@ export default define(meta, async (ps, user) => {
 	const same = await bcrypt.compare(ps.password, user.password);
 
 	if (!same) {
-		return rej('incorrect password');
+		throw new Error('incorrect password');
 	}
 
 	// Generate secret
@@ -34,8 +34,8 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	res();
-
 	// Publish event
 	publishMainStream(user._id, 'myTokenRegenerated');
-}));
+
+	return;
+});

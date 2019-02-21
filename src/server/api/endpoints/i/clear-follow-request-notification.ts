@@ -17,5 +17,5 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

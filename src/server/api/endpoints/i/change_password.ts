@@ -24,7 +24,7 @@ export default define(meta, async (ps, user) => {
 	const same = await bcrypt.compare(ps.currentPassword, user.password);
 
 	if (!same) {
-		return rej('incorrect password');
+		throw new Error('incorrect password');
 	}
 
 	// Generate hash of password
@@ -37,5 +37,5 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

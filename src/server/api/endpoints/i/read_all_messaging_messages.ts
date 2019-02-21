@@ -38,5 +38,5 @@ export default define(meta, async (ps, user) => {
 
 	publishMainStream(user._id, 'readAllMessagingMessages');
 
-	res();
-}));
+	return;
+});

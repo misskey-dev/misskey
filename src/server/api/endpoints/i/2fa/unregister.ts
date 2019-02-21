@@ -20,7 +20,7 @@ export default define(meta, async (ps, user) => {
 	const same = await bcrypt.compare(ps.password, user.password);
 
 	if (!same) {
-		return rej('incorrect password');
+		throw new Error('incorrect password');
 	}
 
 	await User.update(user._id, {
@@ -30,5 +30,5 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

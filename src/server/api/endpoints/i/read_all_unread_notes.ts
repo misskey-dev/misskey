@@ -34,5 +34,5 @@ export default define(meta, async (ps, user) => {
 	publishMainStream(user._id, 'readAllUnreadMentions');
 	publishMainStream(user._id, 'readAllUnreadSpecifiedNotes');
 
-	res();
-}));
+	return;
+});

@@ -23,7 +23,7 @@ export default define(meta, async (ps, user) => {
 	const same = await bcrypt.compare(ps.password, user.password);
 
 	if (!same) {
-		return rej('incorrect password');
+		throw new Error('incorrect password');
 	}
 
 	// Generate user's secret key
@@ -38,17 +38,17 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Get the data URL of the authenticator URL
-	QRCode.toDataURL(speakeasy.otpauthURL({
+	const dataUrl = await QRCode.toDataURL(speakeasy.otpauthURL({
 		secret: secret.base32,
 		encoding: 'base32',
 		label: user.username,
 		issuer: config.host
-	}), (err, data_url) => {
-		res({
-			qr: data_url,
-			secret: secret.base32,
-			label: user.username,
-			issuer: config.host
-		});
-	});
-}));
+	}));
+
+	return {
+		qr: dataUrl,
+		secret: secret.base32,
+		label: user.username,
+		issuer: config.host
+	};
+});

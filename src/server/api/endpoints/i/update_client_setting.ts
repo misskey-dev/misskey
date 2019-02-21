@@ -27,11 +27,11 @@ export default define(meta, async (ps, user) => {
 		$set: x
 	});
 
-	res();
-
 	// Publish event
 	publishMainStream(user._id, 'clientSettingUpdated', {
 		key: ps.name,
 		value: ps.value
 	});
-}));
+
+	return;
+});

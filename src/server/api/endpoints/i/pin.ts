@@ -28,18 +28,9 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Processing
-	try {
-		await addPinned(user, ps.noteId);
-	} catch (e) {
-		return rej(e.message);
-	}
+	await addPinned(user, ps.noteId);
 
-	// Serialize
-	const iObj = await pack(user, user, {
+	return await pack(user, user, {
 		detail: true
 	});
-
-	// Send response
-	res(iObj);
-}));
+});

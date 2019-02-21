@@ -14,5 +14,5 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	createExportBlockingJob(user);
 
-	res();
-}));
+	return;
+});
