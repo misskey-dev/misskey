@@ -29,9 +29,5 @@ export default define(meta, async (ps, user) => {
 		'metadata.deletedAt': { $exists: false }
 	});
 
-	if (file === null) {
-		res({ file: null });
-	} else {
-		res({ file: await pack(file, { self: true }) });
-	}
-}));
+	return { file: file ? await pack(file, { self: true }) : null };
+});
