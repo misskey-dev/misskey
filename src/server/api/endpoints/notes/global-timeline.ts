@@ -52,7 +52,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const meta = await fetchMeta();
 	if (meta.disableGlobalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {

@@ -36,7 +36,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get votee
 	const note = await Note.findOne({
 		_id: ps.noteId

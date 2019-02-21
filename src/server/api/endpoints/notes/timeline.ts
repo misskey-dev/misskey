@@ -95,7 +95,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
 		rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');

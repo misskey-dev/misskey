@@ -13,7 +13,7 @@ export const meta = {
 	kind: 'drive-read'
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const instance = await fetchMeta();
 
 	// Calculate drive usage

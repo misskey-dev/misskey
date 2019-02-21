@@ -31,7 +31,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	// Lookup user
 	const user = await User.findOne({
 		_id: ps.userId

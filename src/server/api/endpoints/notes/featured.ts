@@ -23,7 +23,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const day = 1000 * 60 * 60 * 24 * 2;
 
 	const hideUserIds = await getHideUserIds(user);

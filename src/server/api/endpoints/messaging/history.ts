@@ -21,7 +21,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const mute = await Mute.find({
 		muterId: user._id,
 		deletedAt: { $exists: false }

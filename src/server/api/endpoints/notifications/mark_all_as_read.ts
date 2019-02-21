@@ -14,7 +14,7 @@ export const meta = {
 	kind: 'notification-write'
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Update documents
 	await Notification.update({
 		notifieeId: user._id,

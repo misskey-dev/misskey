@@ -93,7 +93,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const meta = await fetchMeta();
 	if (meta.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
 		return rej('local timeline disabled');

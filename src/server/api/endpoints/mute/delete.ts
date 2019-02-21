@@ -26,7 +26,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const muter = user;
 
 	// Check if the mutee is yourself

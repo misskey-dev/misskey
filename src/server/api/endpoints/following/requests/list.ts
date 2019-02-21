@@ -14,7 +14,7 @@ export const meta = {
 	kind: 'following-read'
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const reqs = await FollowRequest.find({
 		followeeId: user._id
 	});

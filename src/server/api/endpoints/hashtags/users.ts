@@ -54,7 +54,7 @@ const sort: any = {
 	'-updatedAt': { updatedAt: 1 },
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const q = {
 		tags: ps.tag,
 		$and: []

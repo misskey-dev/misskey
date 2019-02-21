@@ -102,7 +102,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const [list, followings, hideUserIds] = await Promise.all([
 		// リストを取得
 		// Fetch the list

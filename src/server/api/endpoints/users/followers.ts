@@ -50,7 +50,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const q: any = ps.userId != null
 		? { _id: ps.userId }
 		: { usernameLower: ps.username.toLowerCase(), host: ps.host };

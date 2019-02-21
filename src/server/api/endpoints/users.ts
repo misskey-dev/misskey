@@ -86,7 +86,7 @@ const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 	[fallback]: { _id: -1 }
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const hideUserIds = await getHideUserIds(me);
 
 	const users = await User

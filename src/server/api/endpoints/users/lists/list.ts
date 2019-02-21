@@ -11,7 +11,7 @@ export const meta = {
 	kind: 'account-read'
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	// Fetch lists
 	const userLists = await UserList.find({
 		userId: me._id,

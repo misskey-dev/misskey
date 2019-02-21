@@ -27,7 +27,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 

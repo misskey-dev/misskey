@@ -19,7 +19,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	if (ps.id == null && ps.data == null) return rej('you need to set id and data params if home param unset');
 
 	let widget;

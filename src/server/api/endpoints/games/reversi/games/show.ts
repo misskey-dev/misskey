@@ -13,7 +13,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const game = await ReversiGame.findOne({ _id: ps.gameId });
 
 	if (game == null) {

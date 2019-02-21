@@ -15,7 +15,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const _token = ps.token.replace(/\s/g, '');
 
 	if (user.twoFactorTempSecret == null) {

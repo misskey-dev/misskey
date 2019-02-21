@@ -22,7 +22,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const file = await DriveFile.findOne({
 		md5: ps.md5,
 		'metadata.userId': user._id,

@@ -29,7 +29,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get folder
 	const folder = await DriveFolder
 		.findOne({

@@ -31,7 +31,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	if (es == null) return rej('searching not available');
 
 	es.search({

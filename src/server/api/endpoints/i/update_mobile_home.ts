@@ -19,7 +19,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	await User.update(user._id, {
 		$set: {
 			'clientSettings.mobileHome': ps.home

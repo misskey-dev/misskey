@@ -42,7 +42,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	let user;
 
 	if (ps.userIds) {

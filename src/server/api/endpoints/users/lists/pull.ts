@@ -32,7 +32,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
