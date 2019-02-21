@@ -539,7 +539,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "黑名单"
   export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
   enter-password: "请输入您的密码"
-  danger-zone: "危険な設定"
+  danger-zone: "危险选项"
   delete-account: "删除帐户"
   account-deleted: "帐户已被删除。 数据会在一段时间之后清除。"
 common/views/components/user-list-editor.vue:
