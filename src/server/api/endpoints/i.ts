@@ -18,7 +18,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user, app) => {
 	const isSecure = user != null && app == null;
 
 	// Serialize

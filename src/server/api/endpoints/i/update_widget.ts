@@ -20,7 +20,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	if (ps.id == null && ps.data == null) return rej('you need to set id and data params if home param unset');
+	if (ps.id == null && ps.data == null) throw new Error('you need to set id and data params if home param unset');
 
 	let widget;
 
@@ -81,8 +81,8 @@ export default define(meta, async (ps, user) => {
 			id: ps.id, data: ps.data
 		});
 
-		res();
+		return;
 	} else {
-		rej('widget not found');
+		throw new Error('widget not found');
 	}
-}));
+});

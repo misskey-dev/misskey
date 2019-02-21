@@ -27,7 +27,7 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	res();
-
 	publishMainStream(user._id, 'homeUpdated', ps.home);
-}));
+
+	return;
+});
