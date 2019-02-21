@@ -10,7 +10,9 @@ type Params<T extends IEndpointMeta> = {
 		: ReturnType<T['params'][P]['validator']['get']>[0];
 };
 
-export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T>, user: ILocalUser, app: IApp, file?: any, cleanup?: Function) => Promise<any>): (params: any, user: ILocalUser, app: IApp, file?: any) => Promise<any> {
+export type Response = Record<string, any> | void;
+
+export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T>, user: ILocalUser, app: IApp, file?: any, cleanup?: Function) => Promise<Response>): (params: any, user: ILocalUser, app: IApp, file?: any) => Promise<any> {
 	return (params: any, user: ILocalUser, app: IApp, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});

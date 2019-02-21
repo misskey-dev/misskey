@@ -51,5 +51,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	res(pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force), { self: true }));
-}));
+	return await pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force), { self: true });
+});

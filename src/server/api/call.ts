@@ -4,6 +4,7 @@ import { IApp } from '../../models/app';
 import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
+import { Response } from './define';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -69,7 +70,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 		}
 	}
 
-	let res;
+	let res: Response;
 
 	// API invoking
 	try {
