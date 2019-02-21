@@ -60,7 +60,7 @@ common:
   messaging: "Talk"
   deck: "Deck"
   timeline: "Timeline"
-  explore: "Discover"
+  explore: "Explore"
   following: "Following"
   followers: "Followers"
   empty-timeline-info:
