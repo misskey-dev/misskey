@@ -38,7 +38,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const stats = await perUserNotesChart.getChart(ps.span as any, ps.limit, ps.userId);
-
-	res(stats);
-}));
+	return await perUserNotesChart.getChart(ps.span as any, ps.limit, ps.userId);
+});

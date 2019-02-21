@@ -35,7 +35,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const stats = await hashtagChart.getChart(ps.span as any, ps.limit, ps.tag);
-
-	res(stats);
-}));
+	return await hashtagChart.getChart(ps.span as any, ps.limit, ps.tag);
+});

@@ -28,7 +28,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const stats = await networkChart.getChart(ps.span as any, ps.limit);
-
-	res(stats);
-}));
+	return await networkChart.getChart(ps.span as any, ps.limit);
+});
