@@ -5,7 +5,7 @@ export class ApiError extends Error {
 	public kind: string;
 	public info?: any;
 
-	constructor(e?: { message: string, code: string, id: string, kind: 'client' | 'server' }, info?: any) {
+	constructor(e?: { message: string, code: string, id: string, kind?: 'client' | 'server' }, info?: any) {
 		if (e == null) e = {
 			message: 'Internal error occured.',
 			code: 'INTERNAL_ERROR',
@@ -17,7 +17,7 @@ export class ApiError extends Error {
 		this.message = e.message;
 		this.code = e.code;
 		this.id = e.id;
-		this.kind = e.kind;
+		this.kind = e.kind || 'client';
 		this.info = info;
 	}
 }

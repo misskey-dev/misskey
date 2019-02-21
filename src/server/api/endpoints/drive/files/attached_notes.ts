@@ -32,7 +32,7 @@ export const meta = {
 		fileNotFound: {
 			message: 'File not found.',
 			code: 'FILE_NOT_FOUND',
-			id: 'c118ece3-2e4b-4296-99d1-51756e32d232'
+			id: 'c118ece3-2e4b-4296-99d1-51756e32d232',
 		}
 	}
 };
