@@ -3,12 +3,21 @@ import ID, { transform } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
 import Reversi from '../../../../../../games/reversi/core';
 import define from '../../../../define';
+import { ApiError } from '../../../../error';
 
 export const meta = {
 	params: {
 		gameId: {
 			validator: $.type(ID),
 			transform: transform,
+		},
+	},
+
+	errors: {
+		noSuchGame: {
+			message: 'No such game.',
+			code: 'NO_SUCH_GAME',
+			id: 'f13a03db-fae1-46c9-87f3-43c8165419e1'
 		},
 	}
 };
@@ -17,7 +26,7 @@ export default define(meta, async (ps, user) => {
 	const game = await ReversiGame.findOne({ _id: ps.gameId });
 
 	if (game == null) {
-		return rej('game not found');
+		throw new ApiError(meta.errors.noSuchGame);
 	}
 
 	const o = new Reversi(game.settings.map, {
@@ -31,8 +40,8 @@ export default define(meta, async (ps, user) => {
 
 	const packed = await pack(game, user);
 
-	res(Object.assign({
+	return Object.assign({
 		board: o.board,
 		turn: o.turn
-	}, packed));
-}));
+	}, packed);
+});
