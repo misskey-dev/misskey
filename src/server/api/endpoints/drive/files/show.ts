@@ -39,8 +39,8 @@ export const meta = {
 
 	errors: {
 		fileNotFound: {
-			message: 'File not found.',
-			code: 'FILE_NOT_FOUND',
+			message: 'No such file.',
+			code: 'NO_SUCH_FILE',
 			id: '067bc436-2718-4795-b0fb-ecbe43949e31'
 		},
 

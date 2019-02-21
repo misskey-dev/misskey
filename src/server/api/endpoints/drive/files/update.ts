@@ -5,6 +5,7 @@ import DriveFile, { validateFileName, pack } from '../../../../../models/drive-f
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import Note from '../../../../../models/note';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -51,6 +52,26 @@ export const meta = {
 				'en-US': 'Whether this media is NSFW'
 			}
 		}
+	},
+
+	errors: {
+		fileNotFound: {
+			message: 'No such file.',
+			code: 'NO_SUCH_FILE',
+			id: 'e7778c7e-3af9-49cd-9690-6dbc3e6c972d'
+		},
+
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '01a53b27-82fc-445b-a0c1-b558465a8ed2'
+		},
+
+		folderNotFound: {
+			message: 'No such folder.',
+			code: 'NO_SUCH_FOLDER',
+			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73'
+		},
 	}
 };
 
@@ -62,11 +83,11 @@ export default define(meta, async (ps, user) => {
 		});
 
 	if (file === null) {
-		return rej('file-not-found');
+		throw new ApiError(meta.errors.fileNotFound);
 	}
 
 	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
-		return rej('access denied');
+		throw new ApiError(meta.errors.accessDenied);
 	}
 
 	if (ps.name) file.filename = ps.name;
@@ -85,7 +106,7 @@ export default define(meta, async (ps, user) => {
 				});
 
 			if (folder === null) {
-				return rej('folder-not-found');
+				throw new ApiError(meta.errors.folderNotFound);
 			}
 
 			file.metadata.folderId = folder._id;
@@ -114,12 +135,10 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	// Serialize
 	const fileObj = await pack(file, { self: true });
-
-	// Response
-	res(fileObj);
 
 	// Publish fileUpdated event
 	publishDriveStream(user._id, 'fileUpdated', fileObj);
-}));
+
+	return fileObj;
+});
