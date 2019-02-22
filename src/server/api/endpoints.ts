@@ -2,18 +2,28 @@ import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
 
+export type Param = {
+	validator: Context<any>;
+	transform?: any;
+	default?: any;
+	desc?: { [key: string]: string };
+	ref?: string;
+};
+
 export interface IEndpointMeta {
 	stability?: string; //'deprecated' | 'experimental' | 'stable';
 
 	desc?: { [key: string]: string };
 
 	params?: {
+		[key: string]: Param;
+	};
+
+	errors?: {
 		[key: string]: {
-			validator: Context<any>;
-			transform?: any;
-			default?: any;
-			desc?: { [key: string]: string };
-			ref?: string;
+			message: string;
+			code: string;
+			id: string;
 		};
 	};
 

@@ -3,9 +3,10 @@ export class ApiError extends Error {
 	public code: string;
 	public id: string;
 	public kind: string;
+	public httpStatusCode?: number;
 	public info?: any;
 
-	constructor(e?: { message: string, code: string, id: string, kind?: 'client' | 'server' }, info?: any) {
+	constructor(e?: { message: string, code: string, id: string, kind?: 'client' | 'server', httpStatusCode?: number }, info?: any) {
 		if (e == null) e = {
 			message: 'Internal error occurred. Please contact us if the error persists.',
 			code: 'INTERNAL_ERROR',
@@ -18,6 +19,7 @@ export class ApiError extends Error {
 		this.code = e.code;
 		this.id = e.id;
 		this.kind = e.kind || 'client';
+		this.httpStatusCode = e.httpStatusCode;
 		this.info = info;
 	}
 }

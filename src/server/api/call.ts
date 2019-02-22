@@ -21,6 +21,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 			message: 'No such endpoint.',
 			code: 'NO_SUCH_ENDPOINT',
 			id: 'f8080b67-5f9c-4eb7-8c18-7f1eeae8f709',
+			httpStatusCode: 404
 		});
 	}
 
@@ -63,6 +64,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 				message: 'Rate limit exceeded. Please try again later.',
 				code: 'RATE_LIMIT_EXCEEDED',
 				id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
+				httpStatusCode: 429
 			});
 		});
 	}

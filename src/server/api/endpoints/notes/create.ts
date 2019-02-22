@@ -175,7 +175,7 @@ export const meta = {
 		type: 'object',
 		props: {
 			createdNote: {
-				type: 'entity(Note)',
+				type: 'Note',
 				desc: {
 					'ja-JP': '作成した投稿'
 				}

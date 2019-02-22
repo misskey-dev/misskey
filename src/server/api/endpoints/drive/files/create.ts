@@ -35,7 +35,7 @@ export const meta = {
 		},
 
 		isSensitive: {
-			validator: $.optional.or($.bool, $.str),
+			validator: $.optional.either($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
 			desc: {
@@ -45,7 +45,7 @@ export const meta = {
 		},
 
 		force: {
-			validator: $.optional.or($.bool, $.str),
+			validator: $.optional.either($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
 			desc: {

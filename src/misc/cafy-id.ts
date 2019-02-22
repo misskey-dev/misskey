@@ -26,6 +26,8 @@ export type ObjectId = mongo.ObjectID;
  * ID
  */
 export default class ID<Maybe = string> extends Context<string | Maybe> {
+	public readonly name = 'ID';
+
 	constructor(optional = false, nullable = false) {
 		super(optional, nullable);
 
@@ -38,7 +40,7 @@ export default class ID<Maybe = string> extends Context<string | Maybe> {
 	}
 
 	public getType() {
-		return super.getType('string');
+		return super.getType('String');
 	}
 
 	public makeOptional(): ID<undefined> {
