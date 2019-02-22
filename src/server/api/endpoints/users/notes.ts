@@ -1,10 +1,8 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
-import getHostLower from '../../common/get-host-lower';
 import Note, { packMany } from '../../../../models/note';
 import User from '../../../../models/user';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
 import Following from '../../../../models/following';
 import { ApiError } from '../../error';
 

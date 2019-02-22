@@ -31,8 +31,8 @@ export default define(meta, async (ps, user, app) => {
 		throw new ApiError(meta.errors.noSuchApp);
 	}
 
-	res(await pack(ap, user, {
+	return await pack(ap, user, {
 		detail: true,
 		includeSecret: isSecure && ap.userId.equals(user._id)
-	}));
-}));
+	});
+});

@@ -4,7 +4,6 @@ import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';
 import define from '../../define';
-import { apiLogger } from '../../logger';
 import { ApiError } from '../../error';
 
 export const meta = {
