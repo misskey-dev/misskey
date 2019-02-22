@@ -4,6 +4,8 @@ import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
+	tags: ['account'],
+
 	requireCredential: true,
 
 	params: {

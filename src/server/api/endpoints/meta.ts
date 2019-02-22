@@ -14,6 +14,8 @@ export const meta = {
 		'en-US': 'Get the information of this instance.'
 	},
 
+	tags: ['meta'],
+
 	requireCredential: false,
 
 	params: {

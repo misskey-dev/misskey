@@ -10,6 +10,8 @@ export const meta = {
 		'en-US': 'Get the instance\'s statistics'
 	},
 
+	tags: ['meta'],
+
 	params: {
 	}
 };

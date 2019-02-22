@@ -3,6 +3,8 @@ import define from '../../define';
 import Instance from '../../../../models/instance';
 
 export const meta = {
+	tags: ['federation'],
+
 	requireCredential: false,
 
 	params: {
