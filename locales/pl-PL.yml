@@ -12,7 +12,7 @@ common:
     features: "Funkcje"
     rich-contents: "Wpis"
     rich-contents-desc: "Po prostu opublikuj swój pomysł, gorące tematy i wszystko, co chcesz udostępnić. Możesz ozdobić swoje słowa, dołączyć swoje ulubione zdjęcia, wysłać pliki, w tym filmy i utworzyć ankietę - to są rzeczy, które możesz zrobić w Misskey!"
-    reaction: "Reakcje"
+    reaction: "Reakcja"
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
     ui: "Interfejs"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
@@ -22,7 +22,7 @@ common:
   adblock:
     detected: "Spróbuj wyłączyć blokadę reklam."
     warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
-  application-authorization: "アプリの連携"
+  application-authorization: "Współpraca aplikacji"
   close: "Zamknij"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   load-more: "Załaduj więcej"
@@ -60,7 +60,7 @@ common:
   messaging: "Rozmowy"
   deck: "デッキ"
   timeline: "タイムライン"
-  explore: "みつける"
+  explore: "Znajdź"
   following: "フォロー中"
   followers: "フォロワー"
   empty-timeline-info:
