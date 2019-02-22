@@ -97,9 +97,12 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		openapi: '3.0.0',
 
 		info: {
-			version: '1',
+			version: 'v1',
 			title: 'Misskey API',
 			description: 'Misskey is a decentralized microblogging platform.',
+			'x-logo': {
+				url: '/assets/apple-touch-icon.png'
+			}
 		},
 
 		servers: [{
