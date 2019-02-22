@@ -1,10 +1,8 @@
-import * as mongo from 'mongodb';
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import * as ms from 'ms';
 import deleteReaction from '../../../../../services/note/reaction/delete';
-import { IUser } from '../../../../../models/user';
 import { getValiedNote } from '../../../common/getters';
 import { ApiError } from '../../../error';
 
