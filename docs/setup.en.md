@@ -94,6 +94,7 @@ Type=simple
 User=misskey
 ExecStart=/usr/bin/npm start
 WorkingDirectory=/home/misskey/misskey
+Environment="NODE_ENV=production"
 TimeoutSec=60
 StandardOutput=syslog
 StandardError=syslog
