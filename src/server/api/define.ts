@@ -18,7 +18,11 @@ export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T
 			fs.unlink(file.path, () => {});
 		}
 
-		if (meta.requireFile && file == null) return Promise.reject('file required');
+		if (meta.requireFile && file == null) return Promise.reject(new ApiError({
+			message: 'File required.',
+			code: 'FILE_REQUIRED',
+			id: '4267801e-70d1-416a-b011-4ee502885d8b',
+		}));
 
 		const [ps, pserr] = getParams(meta, params);
 		if (pserr) {
