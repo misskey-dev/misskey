@@ -15,6 +15,7 @@ import DriveFile from '../../models/drive-file';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
+import Favorite from '../../models/favorite';
 
 /**
  * 投稿を削除します。
@@ -59,6 +60,11 @@ export default async function(user: IUser, note: INote, quiet = false) {
 		for (const unread of unreads) {
 			read(unread.userId, unread.noteId);
 		}
+	});
+
+	// この投稿をお気に入りから削除
+	Favorite.remove({
+		noteId: note._id
 	});
 
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティからこの投稿を削除
