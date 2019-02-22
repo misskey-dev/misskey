@@ -90,7 +90,7 @@ const schemas = {
 					id: {
 						type: 'string',
 						format: 'uuid',
-						description: 'An error ID.',
+						description: 'An error ID. This ID is static.',
 					}
 				},
 				required: ['code', 'id', 'message']
