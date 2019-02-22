@@ -6,8 +6,9 @@ import renderLike from '../../../remote/activitypub/renderer/like';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
+import { IdentifiableError } from '../../../misc/identifiable-error';
 
-export default async (user: IUser, note: INote) => new Promise(async (res, rej) => {
+export default async (user: IUser, note: INote) => {
 	// if already unreacted
 	const exist = await Reaction.findOne({
 		noteId: note._id,
@@ -16,15 +17,13 @@ export default async (user: IUser, note: INote) => new Promise(async (res, rej) 
 	});
 
 	if (exist === null) {
-		return rej('never reacted');
+		throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 	}
 
 	// Delete reaction
 	await Reaction.remove({
 		_id: exist._id
 	});
-
-	res();
 
 	const dec: any = {};
 	dec[`reactionCounts.${exist.reaction}`] = -1;
@@ -46,4 +45,6 @@ export default async (user: IUser, note: INote) => new Promise(async (res, rej) 
 		deliver(user, content, note._user.inbox);
 	}
 	//#endregion
-});
+
+	return;
+};
