@@ -62,14 +62,9 @@ adduser --disabled-password --disabled-login misskey
 *6.* Misskeyのビルド
 ----------------------------------------------------------------
 
-ビルドする前に、`NODE_ENV`を`production`にする必要があります。例:
-* Linux: `export NODE_ENV=production`
-* Windows (PowerShell): `$env:NODE_ENV="production"`
-* Windows (CMD): `set NODE_ENV=production`
-
 次のコマンドでMisskeyをビルドしてください:
 
-`npm run build`
+`NODE_ENV=production npm run build`
 
 Debianをお使いであれば、`build-essential`パッケージをインストールする必要があります。
 
@@ -77,7 +72,7 @@ Debianをお使いであれば、`build-essential`パッケージをインスト
 1. `npm install -g node-gyp`
 2. `node-gyp configure`
 3. `node-gyp build`
-4. `npm run build`
+4. `NODE_ENV=production npm run build`
 
 *7.* 以上です！
 ----------------------------------------------------------------
@@ -120,7 +115,7 @@ CentOSで1024以下のポートを使用してMisskeyを使用する場合は`Ex
 1. `git fetch`
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
 3. `npm install`
-4. `npm run build`
+4. `NODE_ENV=production npm run build`
 5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
 
 なにか問題が発生した場合は、`npm run clean`すると直る場合があります。

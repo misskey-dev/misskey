@@ -55,14 +55,9 @@ As root:
 *6.* Build Misskey
 ----------------------------------------------------------------
 
-Before build, you need to set `NODE_ENV` to `production`. like this:
-* Linux: `export NODE_ENV=production`
-* Windows (PowerShell): `$env:NODE_ENV="production"`
-* Windows (CMD): `set NODE_ENV=production`
-
 Build misskey with the following:
 
-`npm run build`
+`NODE_ENV=production npm run build`
 
 If you're on Debian, you will need to install the `build-essential`, `python` package.
 
@@ -71,7 +66,7 @@ If you're still encountering errors about some modules, use node-gyp:
 1. `npm install -g node-gyp`
 2. `node-gyp configure`
 3. `node-gyp build`
-4. `npm run build`
+4. `NODE_ENV=production npm run build`
 
 *7.* That is it.
 ----------------------------------------------------------------
@@ -114,7 +109,7 @@ You can check if the service is running with `systemctl status misskey`.
 1. `git fetch`
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
 3. `npm install`
-4. `npm run build`
+4. `NODE_ENV=production npm run build`
 5. Check [ChangeLog](../CHANGELOG.md) for migration information
 6. Restart your Misskey process to apply changes
 7. Enjoy
